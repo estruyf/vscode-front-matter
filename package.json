@@ -3,7 +3,7 @@
 	"displayName": "vscode-hugo-helpers",
 	"description": "",
 	"version": "0.0.1",
-  "publisher": "eliostruyf",
+	"publisher": "eliostruyf",
 	"engines": {
 		"vscode": "^1.37.0"
 	},
@@ -67,5 +67,8 @@
 		"typescript": "^3.3.1",
 		"tslint": "^5.12.1",
 		"vscode-test": "^1.0.2"
+	},
+	"dependencies": {
+		"gray-matter": "4.0.2"
 	}
 }
