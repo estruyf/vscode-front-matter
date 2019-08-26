@@ -2,7 +2,7 @@
 	"name": "vscode-front-matter",
 	"displayName": "vscode-front-matter",
 	"description": "Simplifies front matter configuration for your articles/posts/...",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"publisher": "eliostruyf",
 	"engines": {
 		"vscode": "^1.37.0"
@@ -17,10 +17,10 @@
 		"Taxonomy"
 	],
 	"license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/estruyf/vscode-front-matter"
-  },
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/estruyf/vscode-front-matter"
+	},
 	"activationEvents": [
 		"onCommand:frontMatter.insertTags",
 		"onCommand:frontMatter.insertCategories",
@@ -28,7 +28,7 @@
 		"onCommand:frontMatter.createCategory",
 		"onCommand:frontMatter.exportTaxonomy"
 	],
-	"main": "./out/extension.js",
+	"main": "./dist/extension",
 	"contributes": {
 		"configuration": {
 			"title": "Front Matter: Configuration",
@@ -67,11 +67,10 @@
 		]
 	},
 	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"pretest": "npm run compile",
-		"test": "node ./out/test/runTest.js"
+    "vscode:prepublish": "webpack --mode production",
+    "webpack": "webpack --mode development",
+    "webpack-dev": "webpack --mode development --watch",
+    "test-compile": "tsc -p ./"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
@@ -80,9 +79,12 @@
 		"@types/vscode": "^1.37.0",
 		"glob": "^7.1.4",
 		"mocha": "^6.1.4",
-		"typescript": "^3.3.1",
+		"ts-loader": "^6.0.4",
 		"tslint": "^5.12.1",
-		"vscode-test": "^1.0.2"
+		"typescript": "^3.3.1",
+		"vscode-test": "^1.0.2",
+		"webpack": "^4.39.2",
+		"webpack-cli": "^3.3.7"
 	},
 	"dependencies": {
 		"gray-matter": "4.0.2"
