@@ -2,7 +2,7 @@
 	"name": "vscode-front-matter",
 	"displayName": "vscode-front-matter",
 	"description": "Simplifies front matter configuration for your articles/posts/...",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"publisher": "eliostruyf",
 	"engines": {
 		"vscode": "^1.37.0"
@@ -97,7 +97,5 @@
 		"date-fns": "2.0.1",
 		"gray-matter": "4.0.2"
 	},
-	"dependencies": {
-		
-	}
+	"dependencies": {}
 }
