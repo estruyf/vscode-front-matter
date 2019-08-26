@@ -133,10 +133,13 @@ export class FrontMatter {
 
     // Retrieve all the Markdown files
     const mdFiles = await vscode.workspace.findFiles('**/*.md', "**/node_modules/**");
-    if (!mdFiles) {
+    const markdownFiles = await vscode.workspace.findFiles('**/*.markdown', "**/node_modules/**");
+    if (!mdFiles && !markdownFiles) {
       vscode.window.showInformationMessage(`No MD files found.`);
       return;
     }
+
+    const allMdFiles = mdFiles.concat(markdownFiles);
 
     vscode.window.withProgress({
       location: vscode.ProgressLocation.Notification,
@@ -148,11 +151,11 @@ export class FrontMatter {
       let categories: string[] = [];
 
       // Set the initial progress
-      const progressNr = mdFiles.length/100;
+      const progressNr = allMdFiles.length/100;
       progress.report({ increment: 0});
 
       let i = 0;
-      for (const file of mdFiles) {
+      for (const file of allMdFiles) {
         progress.report({ increment: (++i/progressNr) });
         const mdFile = await vscode.workspace.openTextDocument(file);
         if (mdFile) {
@@ -184,6 +187,7 @@ export class FrontMatter {
       crntTags = [...crntTags, ...tags];
       // Update the tags and filter out the duplicates
       crntTags = [...new Set(crntTags)];
+      crntTags = crntTags.sort();
       config.update(ACTION_TAXONOMY_TAGS, crntTags);
 
       // Retrieve the currently known tags, and add the new ones
@@ -192,6 +196,7 @@ export class FrontMatter {
       crntCategories = [...crntCategories, ...categories];
       // Update the categories and filter out the duplicates
       crntCategories = [...new Set(crntCategories)];
+      crntCategories = crntCategories.sort();
       config.update(ACTION_TAXONOMY_CATEGORIES, crntCategories);
 
       // Done
