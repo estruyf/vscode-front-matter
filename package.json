@@ -26,7 +26,8 @@
 		"onCommand:frontMatter.insertCategories",
 		"onCommand:frontMatter.createTag",
 		"onCommand:frontMatter.createCategory",
-		"onCommand:frontMatter.exportTaxonomy"
+		"onCommand:frontMatter.exportTaxonomy",
+		"onCommand:frontMatter.setDate"
 	],
 	"main": "./dist/extension",
 	"contributes": {
@@ -40,6 +41,10 @@
 				"frontMatter.taxonomy.categories": {
 					"type": "array",
 					"description": "Specifies the categories which can be used in the Front Matter"
+				},
+				"frontMatter.taxonomy.dateFormat": {
+					"type": "string",
+					"markdownDescription": "Specify the date format for your articles. Check [date-fns formating](https://date-fns.org/v2.0.1/docs/format) for more information."
 				}
 			}
 		},
@@ -63,6 +68,10 @@
 			{
 				"command": "frontMatter.exportTaxonomy",
 				"title": "Front Matter: Export all tags & categories to your settings"
+			},
+			{
+				"command": "frontMatter.setDate",
+				"title": "Front Matter: Set current date"
 			}
 		]
 	},
@@ -84,9 +93,11 @@
 		"typescript": "^3.3.1",
 		"vscode-test": "^1.0.2",
 		"webpack": "^4.39.2",
-		"webpack-cli": "^3.3.7"
+		"webpack-cli": "^3.3.7",
+		"date-fns": "2.0.1",
+		"gray-matter": "4.0.2"
 	},
 	"dependencies": {
-		"gray-matter": "4.0.2"
+		
 	}
 }

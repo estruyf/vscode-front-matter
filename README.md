@@ -17,6 +17,12 @@
 **Front Matter: Export all tags & categories to your settings**
   - Export all the already used tags & categories in your articles/posts/... to your user settings
 
+**Front Matter: Set current date**
+
+  - Update the `date` property of the current article/post/... to the current date & time.
+
+> **Optional**: if you want, you can specify the format of the date property by adding your own preference in your settings. Settings key: `frontMatter.taxonomy.dateFormat`. Check [date-fns formating](https://date-fns.org/v2.0.1/docs/format) for more information which patterns you can use.
+
 ## Where is the data stored?
 
 The tags and categories are stored in the project VSCode user settings. You can find them back under: `.vscode/settings.json`.
@@ -27,6 +33,13 @@ The tags and categories are stored in the project VSCode user settings. You can 
   "frontMatter.taxonomy.categories": []
 }
 ```
+
+## Usage
+
+- Start by opening the command prompt:
+  - Windows ⇧+ctrl+P
+  - Mac: ⇧+⌘+P
+- Use one of the commands from above
 
 ## Feedback / issues / ideas
 

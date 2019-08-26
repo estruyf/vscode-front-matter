@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.4] - 2019-08-26
+
+- Added set date command
+
 ## [0.0.3] - 2019-08-26
 
 - Support added for `*.markdown` files

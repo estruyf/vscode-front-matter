@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import { TaxonomyType } from "../models";
-import { CONFIG_KEY, ACTION_TAXONOMY_TAGS, ACTION_TAXONOMY_CATEGORIES } from "../constants/settings";
+import { CONFIG_KEY, ACTION_TAXONOMY_TAGS, ACTION_TAXONOMY_CATEGORIES, ACTION_DATE_FORMAT } from "../constants/settings";
 import * as matter from "gray-matter";
+import { format } from "date-fns";
 
 export class FrontMatter {
   
@@ -202,6 +203,34 @@ export class FrontMatter {
       // Done
       vscode.window.showInformationMessage(`Front Matter: export completed. Tags: ${crntTags.length} - Categories: ${crntCategories.length}.`);
     });
+  }
+
+  public static async setDate() {
+    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+
+    const fileTxt = editor.document.getText();
+    const article = matter(fileTxt);
+    if (!article || !article.data) {
+      return;
+    }
+
+    const dateFormat = config.get(ACTION_DATE_FORMAT) as string;
+    try {
+      if (dateFormat && typeof dateFormat === "string") {
+        article.data["date"] = format(new Date(), dateFormat);
+      } else {
+        article.data["date"] = new Date();
+      }
+      
+      this.updatePage(editor, article);
+    } catch (e) {
+      vscode.window.showErrorMessage(`Front Matter: Something failed while parsing the date format. Check your "${CONFIG_KEY}${ACTION_DATE_FORMAT}" setting.`);
+      console.log(e.message);
+    }
   }
 
   /**

@@ -23,11 +23,17 @@ export function activate(context: vscode.ExtensionContext) {
 	let exportTaxonomy = vscode.commands.registerCommand('frontMatter.exportTaxonomy', () => {
 		FrontMatter.export();
 	});
+	
+	let setDate = vscode.commands.registerCommand('frontMatter.setDate', () => {
+		FrontMatter.setDate();
+	});
 
 	context.subscriptions.push(insertTags);
 	context.subscriptions.push(insertCategories);
 	context.subscriptions.push(createTag);
 	context.subscriptions.push(createCategory);
+	context.subscriptions.push(exportTaxonomy);
+	context.subscriptions.push(setDate);
 }
 
 export function deactivate() {}
