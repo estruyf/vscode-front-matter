@@ -3,7 +3,7 @@ import { TaxonomyType } from "../models";
 import { CONFIG_KEY, ACTION_TAXONOMY_TAGS, ACTION_TAXONOMY_CATEGORIES } from "../constants/settings";
 import * as matter from "gray-matter";
 
-export class Hugo {
+export class FrontMatter {
   
   /**
   * Insert taxonomy
@@ -123,6 +123,80 @@ export class Hugo {
         this.updatePage(editor, article);
       }
     }
+  }
+
+  /**
+   * Export the tags/categories front matter to the user settings
+   */
+  public static async export() {
+    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+
+    // Retrieve all the Markdown files
+    const mdFiles = await vscode.workspace.findFiles('**/*.md', "**/node_modules/**");
+    if (!mdFiles) {
+      vscode.window.showInformationMessage(`No MD files found.`);
+      return;
+    }
+
+    vscode.window.withProgress({
+      location: vscode.ProgressLocation.Notification,
+      title: `Front Matter: exporting tags and categories`,
+      cancellable: false
+    }, async (progress) => {
+      // Fetching all tags and categories from MD files
+      let tags: string[] = [];
+      let categories: string[] = [];
+
+      // Set the initial progress
+      const progressNr = mdFiles.length/100;
+      progress.report({ increment: 0});
+
+      let i = 0;
+      for (const file of mdFiles) {
+        progress.report({ increment: (++i/progressNr) });
+        const mdFile = await vscode.workspace.openTextDocument(file);
+        if (mdFile) {
+          const txtData = mdFile.getText();
+          if (txtData) {
+            try {
+              const article = matter(txtData);
+              if (article && article.data) {
+                const { data } = article;
+                const mdTags = data["tags"];
+                const mdCategories = data["categories"];
+                if (mdTags) {
+                  tags = [...tags, ...mdTags];
+                }
+                if (mdCategories) {
+                  categories = [...categories, ...mdCategories];
+                }
+              } 
+            } catch (e) {
+              // Continue with the next file
+            }
+          }
+        }
+      }
+
+      // Retrieve the currently known tags, and add the new ones
+      let crntTags: string[] = config.get(ACTION_TAXONOMY_TAGS) as string[];
+      if (!crntTags) { crntTags = []; }
+      crntTags = [...crntTags, ...tags];
+      // Update the tags and filter out the duplicates
+      crntTags = [...new Set(crntTags)];
+      config.update(ACTION_TAXONOMY_TAGS, crntTags);
+
+      // Retrieve the currently known tags, and add the new ones
+      let crntCategories: string[] = config.get(ACTION_TAXONOMY_CATEGORIES) as string[];
+      if (!crntCategories) { crntCategories = []; }
+      crntCategories = [...crntCategories, ...categories];
+      // Update the categories and filter out the duplicates
+      crntCategories = [...new Set(crntCategories)];
+      config.update(ACTION_TAXONOMY_CATEGORIES, crntCategories);
+
+      // Done
+      vscode.window.showInformationMessage(`Front Matter: export completed. Tags: ${crntTags.length} - Categories: ${crntCategories.length}.`);
+    });
   }
 
   /**

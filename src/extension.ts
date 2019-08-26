@@ -1,23 +1,27 @@
 import * as vscode from 'vscode';
-import { Hugo } from './commands';
+import { FrontMatter } from './commands';
 import { TaxonomyType } from './models';
 
 export function activate(context: vscode.ExtensionContext) {
 
-	let insertTags = vscode.commands.registerCommand('hugo.insertTags', () => {
-		Hugo.insert(TaxonomyType.Tag);
+	let insertTags = vscode.commands.registerCommand('frontMatter.insertTags', () => {
+		FrontMatter.insert(TaxonomyType.Tag);
 	});
 
-	let insertCategories = vscode.commands.registerCommand('hugo.insertCategories', () => {
-		Hugo.insert(TaxonomyType.Category);
+	let insertCategories = vscode.commands.registerCommand('frontMatter.insertCategories', () => {
+		FrontMatter.insert(TaxonomyType.Category);
 	});
 
-	let createTag = vscode.commands.registerCommand('hugo.createTag', () => {
-		Hugo.create(TaxonomyType.Tag);
+	let createTag = vscode.commands.registerCommand('frontMatter.createTag', () => {
+		FrontMatter.create(TaxonomyType.Tag);
 	});
 
-	let createCategory = vscode.commands.registerCommand('hugo.createCategory', () => {
-		Hugo.create(TaxonomyType.Category);
+	let createCategory = vscode.commands.registerCommand('frontMatter.createCategory', () => {
+		FrontMatter.create(TaxonomyType.Category);
+	});
+
+	let exportTaxonomy = vscode.commands.registerCommand('frontMatter.exportTaxonomy', () => {
+		FrontMatter.export();
 	});
 
 	context.subscriptions.push(insertTags);

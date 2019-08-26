@@ -1,1 +1,1 @@
-export * from './Hugo';
+export * from './FrontMatter';

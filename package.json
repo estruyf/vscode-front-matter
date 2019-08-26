@@ -1,7 +1,7 @@
 {
-	"name": "vscode-hugo-helpers",
-	"displayName": "vscode-hugo-helpers",
-	"description": "",
+	"name": "vscode-front-matter",
+	"displayName": "vscode-front-matter",
+	"description": "Simplifies front matter configuration for your articles/posts/...",
 	"version": "0.0.1",
 	"publisher": "eliostruyf",
 	"engines": {
@@ -10,43 +10,59 @@
 	"categories": [
 		"Other"
 	],
+	"keywords": [
+		"Front Matter",
+		"Hugo",
+		"Jekyll",
+		"Taxonomy"
+	],
+	"license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/estruyf/vscode-front-matter"
+  },
 	"activationEvents": [
-		"onCommand:hugo.insertTags",
-		"onCommand:hugo.insertCategories",
-		"onCommand:hugo.createTag",
-		"onCommand:hugo.createCategory"
+		"onCommand:frontMatter.insertTags",
+		"onCommand:frontMatter.insertCategories",
+		"onCommand:frontMatter.createTag",
+		"onCommand:frontMatter.createCategory",
+		"onCommand:frontMatter.exportTaxonomy"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"configuration": {
-			"title": "Hugo: Helpers Configuration",
+			"title": "Front Matter: Configuration",
 			"properties": {
-				"hugo.taxonomy.tags": {
+				"frontMatter.taxonomy.tags": {
 					"type": "array",
-					"description": "Specifies the tags which can be used for Hugo"
+					"description": "Specifies the tags which can be used in the Front Matter"
 				},
-				"hugo.taxonomy.categories": {
+				"frontMatter.taxonomy.categories": {
 					"type": "array",
-					"description": "Specifies the categories which can be used for Hugo"
+					"description": "Specifies the categories which can be used in the Front Matter"
 				}
 			}
 		},
 		"commands": [
 			{
-				"command": "hugo.insertTags",
-				"title": "Hugo: Insert tags"
+				"command": "frontMatter.insertTags",
+				"title": "Front Matter: Insert tags"
 			},
 			{
-				"command": "hugo.insertCategories",
-				"title": "Hugo: Insert categories"
+				"command": "frontMatter.insertCategories",
+				"title": "Front Matter: Insert categories"
 			},
 			{
-				"command": "hugo.createTag",
-				"title": "Hugo: Create tag"
+				"command": "frontMatter.createTag",
+				"title": "Front Matter: Create tag"
 			},
 			{
-				"command": "hugo.createCategory",
-				"title": "Hugo: Create category"
+				"command": "frontMatter.createCategory",
+				"title": "Front Matter: Create category"
+			},
+			{
+				"command": "frontMatter.exportTaxonomy",
+				"title": "Front Matter: Export all tags & categories to your settings"
 			}
 		]
 	},
