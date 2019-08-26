@@ -2,7 +2,7 @@
 	"name": "vscode-front-matter",
 	"displayName": "vscode-front-matter",
 	"description": "Simplifies front matter configuration for your articles/posts/...",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"publisher": "eliostruyf",
 	"engines": {
 		"vscode": "^1.37.0"
@@ -67,10 +67,10 @@
 		]
 	},
 	"scripts": {
-    "vscode:prepublish": "webpack --mode production",
-    "webpack": "webpack --mode development",
-    "webpack-dev": "webpack --mode development --watch",
-    "test-compile": "tsc -p ./"
+		"vscode:prepublish": "webpack --mode production",
+		"webpack": "webpack --mode development",
+		"webpack-dev": "webpack --mode development --watch",
+		"test-compile": "tsc -p ./"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
