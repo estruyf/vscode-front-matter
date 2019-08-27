@@ -1,7 +1,8 @@
 {
 	"name": "vscode-front-matter",
-	"displayName": "vscode-front-matter",
-	"description": "Simplifies front matter configuration for your articles/posts/...",
+	"displayName": "Front Matter",
+	"description": "Simplifies working with front matter of your articles. Useful extension when you are using a static site generator like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
+	"icon": "assets/front-matter.png",
 	"version": "0.0.4",
 	"publisher": "eliostruyf",
 	"engines": {
@@ -14,6 +15,7 @@
 		"Front Matter",
 		"Hugo",
 		"Jekyll",
+		"Gatsby",
 		"Taxonomy"
 	],
 	"license": "MIT",

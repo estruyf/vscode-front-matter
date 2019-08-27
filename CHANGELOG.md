@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.5] - 2019-08-26
+
+- Updated title, description and logo
+
 ## [0.0.4] - 2019-08-26
 
 - Added set date command
