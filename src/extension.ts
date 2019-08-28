@@ -2,7 +2,10 @@ import * as vscode from 'vscode';
 import { FrontMatter } from './commands';
 import { TaxonomyType } from './models';
 
-export function activate(context: vscode.ExtensionContext) {
+let frontMatterStatusBar: vscode.StatusBarItem;
+let debouncer: { (fnc: any, time: number): void; };
+
+export function activate({ subscriptions }: vscode.ExtensionContext) {
 
 	let insertTags = vscode.commands.registerCommand('frontMatter.insertTags', () => {
 		FrontMatter.insert(TaxonomyType.Tag);
@@ -28,12 +31,45 @@ export function activate(context: vscode.ExtensionContext) {
 		FrontMatter.setDate();
 	});
 
-	context.subscriptions.push(insertTags);
-	context.subscriptions.push(insertCategories);
-	context.subscriptions.push(createTag);
-	context.subscriptions.push(createCategory);
-	context.subscriptions.push(exportTaxonomy);
-	context.subscriptions.push(setDate);
+	const toggleDraftCommand = 'frontMatter.toggleDraft';
+	const toggleDraft = vscode.commands.registerCommand(toggleDraftCommand, async () => {
+		await FrontMatter.toggleDraft();
+		triggerShowDraftStatus();
+	});
+
+	// Create the status bar
+ 	frontMatterStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+	frontMatterStatusBar.command = toggleDraftCommand;
+	subscriptions.push(frontMatterStatusBar);
+	debouncer = debounceShowDraftTrigger();
+	// Register listeners that make sure the status bar
+	subscriptions.push(vscode.window.onDidChangeActiveTextEditor(triggerShowDraftStatus));
+	subscriptions.push(vscode.window.onDidChangeTextEditorSelection(triggerShowDraftStatus));
+	// Automatically run the command
+	triggerShowDraftStatus();
+
+	// Subscribe all commands
+	subscriptions.push(insertTags);
+	subscriptions.push(insertCategories);
+	subscriptions.push(createTag);
+	subscriptions.push(createCategory);
+	subscriptions.push(exportTaxonomy);
+	subscriptions.push(setDate);
+	subscriptions.push(toggleDraft);
 }
 
 export function deactivate() {}
+
+const triggerShowDraftStatus = () => {
+	debouncer(() => { FrontMatter.showDraftStatus(frontMatterStatusBar); }, 1000);
+};
+
+const debounceShowDraftTrigger = () => {
+  let timeout: NodeJS.Timeout;
+
+  return (fnc: any, time: number) => {
+    const functionCall = (...args: any[]) => fnc.apply(args);
+    clearTimeout(timeout);
+    timeout = setTimeout(functionCall, time);
+  };
+};

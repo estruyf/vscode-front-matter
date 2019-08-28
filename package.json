@@ -4,7 +4,19 @@
 	"description": "Simplifies working with front matter of your articles. Useful extension when you are using a static site generator like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
 	"icon": "assets/front-matter.png",
 	"version": "0.0.5",
+	"preview": true,
 	"publisher": "eliostruyf",
+	"galleryBanner": {
+		"color": "#011627",
+		"theme": "dark"
+	},
+	"badges": [
+		{
+			"description": "version",
+			"url": "https://img.shields.io/github/package-json/v/estruyf/vscode-front-matter?color=green&label=vscode-front-matter&style=flat-square",
+			"href": "https://github.com/estruyf/vscode-front-matter"
+		}
+	],
 	"engines": {
 		"vscode": "^1.37.0"
 	},
@@ -16,6 +28,7 @@
 		"Hugo",
 		"Jekyll",
 		"Gatsby",
+		"Hexo",
 		"Taxonomy"
 	],
 	"license": "MIT",
@@ -24,6 +37,7 @@
 		"url": "https://github.com/estruyf/vscode-front-matter"
 	},
 	"activationEvents": [
+		"*",
 		"onCommand:frontMatter.insertTags",
 		"onCommand:frontMatter.insertCategories",
 		"onCommand:frontMatter.createTag",

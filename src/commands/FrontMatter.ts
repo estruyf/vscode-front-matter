@@ -4,8 +4,9 @@ import { CONFIG_KEY, ACTION_TAXONOMY_TAGS, ACTION_TAXONOMY_CATEGORIES, ACTION_DA
 import * as matter from "gray-matter";
 import { format } from "date-fns";
 
+
 export class FrontMatter {
-  
+
   /**
   * Insert taxonomy
   * 
@@ -18,9 +19,8 @@ export class FrontMatter {
       return;
     }
     
-    const fileTxt = editor.document.getText();
-    const article = matter(fileTxt);
-    if (!article || !article.data) {
+    const article = this.getArticleData(editor);
+    if (!article) {
       return;
     }
     
@@ -104,9 +104,8 @@ export class FrontMatter {
           return;
         }
 
-        const fileTxt = editor.document.getText();
-        const article = matter(fileTxt);
-        if (!article || !article.data) {
+        const article = this.getArticleData(editor);
+        if (!article) {
           return;
         }
 
@@ -205,6 +204,9 @@ export class FrontMatter {
     });
   }
 
+  /**
+   * Sets the article date
+   */
   public static async setDate() {
     const config = vscode.workspace.getConfiguration(CONFIG_KEY);
     const editor = vscode.window.activeTextEditor;
@@ -212,9 +214,8 @@ export class FrontMatter {
       return;
     }
 
-    const fileTxt = editor.document.getText();
-    const article = matter(fileTxt);
-    if (!article || !article.data) {
+    const article = this.getArticleData(editor);
+    if (!article) {
       return;
     }
 
@@ -234,14 +235,77 @@ export class FrontMatter {
   }
 
   /**
+   * Update the text of the status bar
+   * 
+   * @param frontMatterStatusBar 
+   */
+  public static async showDraftStatus(frontMatterSB: vscode.StatusBarItem) {
+    const draftMsg = "in draft";
+    const publishMsg = "to publish";
+    
+    let editor = vscode.window.activeTextEditor;
+    if (editor && editor.document && editor.document.languageId.toLowerCase() === "markdown") {
+      try {
+        const article = this.getArticleData(editor);        
+        if (article && typeof article.data["draft"] !== "undefined") {
+          console.log(`Draft status: ${article.data["draft"]}`);
+          if (article.data["draft"] === true) {
+            frontMatterSB.text = `$(book) ${draftMsg}`;
+            frontMatterSB.show();
+          } else if (article.data["draft"] === false) {
+            frontMatterSB.text = `$(book) ${publishMsg}`;
+            frontMatterSB.show();
+          }
+          return;
+        }
+      } catch (e) {
+        // Nothing to do
+      }
+    }
+
+    frontMatterSB.hide();
+  }
+
+  /**
+   * Toggle the page its draft mode
+   */
+  public static async toggleDraft() {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+    const article = this.getArticleData(editor);
+    if (!article) {
+      return;
+    }
+
+    const newDraftStatus = !article.data["draft"];
+    article.data["draft"] = newDraftStatus;
+    this.updatePage(editor, article);
+  }
+
+  /**
+   * Get the contents of the current article
+   * 
+   * @param editor 
+   */
+  private static getArticleData(editor: vscode.TextEditor) {
+    const article = matter(editor.document.getText());
+    if (article && article.data) {
+      return article;
+    }
+    return null;
+  }
+
+  /**
    * Store the new information in the file
    * 
    * @param editor 
    * @param article 
    */
-  private static updatePage(editor: vscode.TextEditor, article: matter.GrayMatterFile<string>) {
+  private static async updatePage(editor: vscode.TextEditor, article: matter.GrayMatterFile<string>) {
     const newMarkdown = matter.stringify(article.content, article.data);
     const nrOfLines = editor.document.lineCount as number;
-    editor.edit(builder => builder.replace(new vscode.Range(new vscode.Position(0, 0), new vscode.Position(nrOfLines, 0)), newMarkdown));
+    await editor.edit(builder => builder.replace(new vscode.Range(new vscode.Position(0, 0), new vscode.Position(nrOfLines, 0)), newMarkdown));
   }
 }

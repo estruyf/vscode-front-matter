@@ -2,6 +2,8 @@
 
 > **Info**: Extension is still in development, but can already be tested out.
 
+This VSCode extension simplifies working with front matter of your markdown articles when using a static site generator like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more... For example, with the extension you can keep a list of used tags, categories and add/remove them from your article.
+
 ## Available commands:
 
 **Front Matter: Create <tag | category>**

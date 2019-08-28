@@ -1,6 +1,10 @@
 # Change Log
 
-## [0.0.5] - 2019-08-26
+## [0.0.6] - 2019-08-28
+
+- Updated `package.json` file to include preview label
+
+## [0.0.5] - 2019-08-27
 
 - Updated title, description and logo
 
