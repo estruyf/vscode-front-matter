@@ -1,3 +1,5 @@
+export const EXTENSION_NAME = "Front Matter";
+
 export const CONFIG_KEY = "frontMatter";
 
 export const ACTION_TAXONOMY_TAGS = "taxonomy.tags";

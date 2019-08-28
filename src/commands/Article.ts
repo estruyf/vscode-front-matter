@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { TaxonomyType } from "../models";
-import { CONFIG_KEY, ACTION_TAXONOMY_TAGS, ACTION_TAXONOMY_CATEGORIES, ACTION_DATE_FORMAT } from "../constants/settings";
+import { CONFIG_KEY, ACTION_TAXONOMY_TAGS, ACTION_TAXONOMY_CATEGORIES, ACTION_DATE_FORMAT, EXTENSION_NAME } from "../constants/settings";
 import { format } from "date-fns";
 import { ArticleHelper, SettingsHelper } from '../helpers';
 
@@ -51,7 +51,7 @@ export class Article {
     }
     
     if (options.length === 0) {
-      vscode.window.showInformationMessage(`No ${type === TaxonomyType.Tag ? "tags" : "categories"} configured.`);
+      vscode.window.showInformationMessage(`${EXTENSION_NAME}: No ${type === TaxonomyType.Tag ? "tags" : "categories"} configured.`);
       return;
     }
     
@@ -92,7 +92,7 @@ export class Article {
       
       ArticleHelper.update(editor, article);
     } catch (e) {
-      vscode.window.showErrorMessage(`Front Matter: Something failed while parsing the date format. Check your "${CONFIG_KEY}${ACTION_DATE_FORMAT}" setting.`);
+      vscode.window.showErrorMessage(`${EXTENSION_NAME}: Something failed while parsing the date format. Check your "${CONFIG_KEY}${ACTION_DATE_FORMAT}" setting.`);
       console.log(e.message);
     }
   }

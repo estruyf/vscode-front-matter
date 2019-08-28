@@ -22,11 +22,11 @@ Inserts a selected <tags | categories> into the front matter of your article/pos
 
 Export all the already used tags & categories in your articles/posts/... to your user settings
 
-**Front Matter: Remap tag/category in all articles**
+**Front Matter: Remap or remove tag/category in all articles**
 
-This is commands helps you quickly update/remap a tag or category in all your markdown files. You'll be asked to select the taxonomy type (*tag* or *category*), the old taxonomy value and the new one. 
+This is commands helps you quickly update/remap or delete a tag or category in all your markdown files. You'll be asked to select the taxonomy type (*tag* or *category*), the old taxonomy value and the new one (leave the input field *blank* to remove the tag/category). 
 
-> **Info**: Once the remapping is completed, the taxonomy tags/categories will be updated in your user settings.
+> **Info**: Once the remapping/deleting process is completed. The taxonomy tags/categories will be updated in your user settings.
 
 **Front Matter: Set current date**
 

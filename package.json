@@ -88,7 +88,7 @@
 			},
 			{
 				"command": "frontMatter.remap",
-				"title": "Front Matter: Remap tag/category in all articles"
+				"title": "Front Matter: Remap or remove tag/category in all articles"
 			},
 			{
 				"command": "frontMatter.setDate",

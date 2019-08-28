@@ -9,7 +9,7 @@ export class SettingsHelper {
    * 
    * @param type 
    */
-  public static getTaxonomy(type: TaxonomyType) {
+  public static getTaxonomy(type: TaxonomyType): string[] {
     const config = vscode.workspace.getConfiguration(CONFIG_KEY);
     // Add all the known options to the selection list
     const configSetting = type === TaxonomyType.Tag ? ACTION_TAXONOMY_TAGS : ACTION_TAXONOMY_CATEGORIES;
@@ -17,7 +17,7 @@ export class SettingsHelper {
     if (crntOptions && crntOptions.length > 0) {
       return crntOptions;
     }
-    return null;
+    return [];
   }
 
   /**

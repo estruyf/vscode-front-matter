@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as matter from 'gray-matter';
 import * as fs from 'fs';
 import { TaxonomyType } from "../models";
-import { CONFIG_KEY, ACTION_TAXONOMY_TAGS, ACTION_TAXONOMY_CATEGORIES } from '../constants';
+import { CONFIG_KEY, ACTION_TAXONOMY_TAGS, ACTION_TAXONOMY_CATEGORIES, EXTENSION_NAME } from '../constants';
 import { ArticleHelper, SettingsHelper, FilesHelper } from '../helpers';
 
 export class Settings {
@@ -27,7 +27,7 @@ export class Settings {
       }
 
       if (options.find(o => o === newOption)) {
-        vscode.window.showInformationMessage(`The provided ${type === TaxonomyType.Tag ? "tag" : "category"} already exists.`);
+        vscode.window.showInformationMessage(`${EXTENSION_NAME}: The provided ${type === TaxonomyType.Tag ? "tag" : "category"} already exists.`);
         return;
       }
 
@@ -79,7 +79,7 @@ export class Settings {
 
     vscode.window.withProgress({
       location: vscode.ProgressLocation.Notification,
-      title: `Front Matter: exporting tags and categories`,
+      title: `${EXTENSION_NAME}: exporting tags and categories`,
       cancellable: false
     }, async (progress) => {
       // Fetching all tags and categories from MD files
@@ -136,7 +136,7 @@ export class Settings {
       await config.update(ACTION_TAXONOMY_CATEGORIES, crntCategories);
 
       // Done
-      vscode.window.showInformationMessage(`Front Matter: export completed. Tags: ${crntTags.length} - Categories: ${crntCategories.length}.`);
+      vscode.window.showInformationMessage(`${EXTENSION_NAME}: Export completed. Tags: ${crntTags.length} - Categories: ${crntCategories.length}.`);
     });
   }
 
@@ -159,10 +159,10 @@ export class Settings {
     }
 
     const type = taxType === "Tag" ? TaxonomyType.Tag : TaxonomyType.Category;
-    const options = SettingsHelper.getTaxonomy(type);
+    let options = SettingsHelper.getTaxonomy(type);
     
     if (!options || options.length === 0) {
-      vscode.window.showInformationMessage(`No ${type === TaxonomyType.Tag ? "tags" : "categories"} configured.`);
+      vscode.window.showInformationMessage(`${EXTENSION_NAME}: No ${type === TaxonomyType.Tag ? "tags" : "categories"} configured.`);
       return;
     }
 
@@ -176,13 +176,15 @@ export class Settings {
     }
 
     const newOptionValue = await vscode.window.showInputBox({  
-      prompt: `Insert the value of the ${type === TaxonomyType.Tag ? "tag" : "category"} with which you want to remap "${selectedOption}".`,
+      prompt: `Specify the value of the ${type === TaxonomyType.Tag ? "tag" : "category"} with which you want to remap "${selectedOption}". Leave the input <blank> if you want to remove the ${type === TaxonomyType.Tag ? "tag" : "category"} from all articles.`,
       placeHolder: `Name of the ${type === TaxonomyType.Tag ? "tag" : "category"}`
     });
 
     if (!newOptionValue) {
-      vscode.window.showInformationMessage(`You didn't provide a new value.`);
-      return;
+      const deleteAnswer = await vscode.window.showQuickPick(["yes", "no"], { canPickMany: false, placeHolder: `Delete ${selectedOption} ${type === TaxonomyType.Tag ? "tag" : "category"}?` });
+      if (deleteAnswer === "no") {
+        return;
+      }
     }
 
     // Retrieve all the markdown files
@@ -191,9 +193,13 @@ export class Settings {
       return;
     }
 
+    let progressText = `${EXTENSION_NAME}: Remapping "${selectedOption}" ${type === TaxonomyType.Tag ? "tag" : "category"} to "${newOptionValue}".`;
+    if (!newOptionValue) {
+      progressText = `${EXTENSION_NAME}: Deleting "${selectedOption}" ${type === TaxonomyType.Tag ? "tag" : "category"}.`;
+    }
     vscode.window.withProgress({
       location: vscode.ProgressLocation.Notification,
-      title: `Front Matter: remapping "${selectedOption}" ${type === TaxonomyType.Tag ? "tag" : "category"} to "${newOptionValue}".`,
+      title: progressText,
       cancellable: false
     }, async (progress) => {
       // Set the initial progress
@@ -205,41 +211,50 @@ export class Settings {
       let i = 0;
       for (const file of allMdFiles) {
         progress.report({ increment: (++i/progressNr) });
-        const mdFile = await vscode.workspace.openTextDocument(file);
+        const mdFile = fs.readFileSync(file.path, { encoding: "utf8" });
         if (mdFile) {
-          const txtData = mdFile.getText();
-          if (txtData) {
-            try {
-              const article = matter(txtData);
-              if (article && article.data) {
-                const { data } = article;
-                const options: string[] = data[matterProp];
-                if (options && options.length > 0) {
-                  const idx = options.findIndex(o => o === selectedOption);
-                  if (idx !== -1) {
-                    options[idx] = newOptionValue;
-                    data[matterProp] = [...new Set(options)].sort();
-
-                    // Update the file
-                    fs.writeFileSync(mdFile.fileName, matter.stringify(article.content, article.data), { encoding: "utf8" });
+          try {
+            const article = matter(mdFile);
+            if (article && article.data) {
+              const { data } = article;
+              let taxonomies: string[] = data[matterProp];
+              if (taxonomies && taxonomies.length > 0) {
+                const idx = taxonomies.findIndex(o => o === selectedOption);
+                if (idx !== -1) {
+                  if (newOptionValue) {
+                    taxonomies[idx] = newOptionValue;
+                  } else {
+                    taxonomies = taxonomies.filter(o => o !== selectedOption);
                   }
+                  data[matterProp] = [...new Set(taxonomies)].sort();
+                  // Update the file
+                  fs.writeFileSync(file.path, matter.stringify(article.content, article.data), { encoding: "utf8" });
                 }
-              } 
-            } catch (e) {
-              // Continue with the next file
-            }
+              }
+            } 
+          } catch (e) {
+            console.log(file.path);
+            // Continue with the next file
           }
         }
       }
       
       // Update the settings
       const idx = options.findIndex(o => o === selectedOption);
-      if (idx !== -1) {
-        options[idx] = newOptionValue;
+      if (newOptionValue) {
+        // Add or update the new option
+        if (idx !== -1) {
+          options[idx] = newOptionValue;
+        } else {
+          options.push(newOptionValue);
+        }
       } else {
-        options.push(newOptionValue);
+        // Remove the selected option
+        options = options.filter(o => o !== selectedOption);
       }
       await SettingsHelper.update(type, options);
+
+      vscode.window.showInformationMessage(`${EXTENSION_NAME}: ${newOptionValue ? "Remapping" : "Deleation"} of the ${selectedOption} ${type === TaxonomyType.Tag ? "tag" : "category"} completed.`);
     });
   }
 }
