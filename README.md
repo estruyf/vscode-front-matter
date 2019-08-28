@@ -7,21 +7,30 @@ This VSCode extension simplifies working with front matter of your markdown arti
 ## Available commands:
 
 **Front Matter: Create <tag | category>**
-  - Creates a new <tag | category> and allows you to automatically include it into your post
+
+Creates a new <tag | category> and allows you to automatically include it into your post
 
 ![Create tag or category](./assets/create-tag-category.gif)
   
 **Front Matter: Insert <tags | categories>**
-  - Inserts a selected <tags | categories> into the front matter of your article/post/...
+
+Inserts a selected <tags | categories> into the front matter of your article/post/...
 
 ![Insert tags or categories](./assets/insert-tag-category.gif)
 
 **Front Matter: Export all tags & categories to your settings**
-  - Export all the already used tags & categories in your articles/posts/... to your user settings
+
+Export all the already used tags & categories in your articles/posts/... to your user settings
+
+**Front Matter: Remap tag/category in all articles**
+
+This is commands helps you quickly update/remap a tag or category in all your markdown files. You'll be asked to select the taxonomy type (*tag* or *category*), the old taxonomy value and the new one. 
+
+> **Info**: Once the remapping is completed, the taxonomy tags/categories will be updated in your user settings.
 
 **Front Matter: Set current date**
 
-  - Update the `date` property of the current article/post/... to the current date & time.
+Update the `date` property of the current article/post/... to the current date & time.
 
 > **Optional**: if you want, you can specify the format of the date property by adding your own preference in your settings. Settings key: `frontMatter.taxonomy.dateFormat`. Check [date-fns formating](https://date-fns.org/v2.0.1/docs/format) for more information which patterns you can use.
 
@@ -39,7 +48,7 @@ The tags and categories are stored in the project VSCode user settings. You can 
 ## Usage
 
 - Start by opening the command prompt:
-  - Windows ⇧+ctrl+P
+  - Windows: ⇧+ctrl+P
   - Mac: ⇧+⌘+P
 - Use one of the commands from above
 

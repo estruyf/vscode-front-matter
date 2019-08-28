@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { FrontMatter } from './commands';
+import { Article, Settings, StatusBar } from './commands';
 import { TaxonomyType } from './models';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
@@ -8,32 +8,36 @@ let debouncer: { (fnc: any, time: number): void; };
 export function activate({ subscriptions }: vscode.ExtensionContext) {
 
 	let insertTags = vscode.commands.registerCommand('frontMatter.insertTags', () => {
-		FrontMatter.insert(TaxonomyType.Tag);
+		Article.insert(TaxonomyType.Tag);
 	});
 
 	let insertCategories = vscode.commands.registerCommand('frontMatter.insertCategories', () => {
-		FrontMatter.insert(TaxonomyType.Category);
+		Article.insert(TaxonomyType.Category);
 	});
 
 	let createTag = vscode.commands.registerCommand('frontMatter.createTag', () => {
-		FrontMatter.create(TaxonomyType.Tag);
+		Settings.create(TaxonomyType.Tag);
 	});
 
 	let createCategory = vscode.commands.registerCommand('frontMatter.createCategory', () => {
-		FrontMatter.create(TaxonomyType.Category);
+		Settings.create(TaxonomyType.Category);
 	});
 
 	let exportTaxonomy = vscode.commands.registerCommand('frontMatter.exportTaxonomy', () => {
-		FrontMatter.export();
+		Settings.export();
+	});
+
+	let remap = vscode.commands.registerCommand('frontMatter.remap', () => {
+		Settings.remap();
 	});
 	
 	let setDate = vscode.commands.registerCommand('frontMatter.setDate', () => {
-		FrontMatter.setDate();
+		Article.setDate();
 	});
 
 	const toggleDraftCommand = 'frontMatter.toggleDraft';
 	const toggleDraft = vscode.commands.registerCommand(toggleDraftCommand, async () => {
-		await FrontMatter.toggleDraft();
+		await Article.toggleDraft();
 		triggerShowDraftStatus();
 	});
 
@@ -54,6 +58,7 @@ export function activate({ subscriptions }: vscode.ExtensionContext) {
 	subscriptions.push(createTag);
 	subscriptions.push(createCategory);
 	subscriptions.push(exportTaxonomy);
+	subscriptions.push(remap);
 	subscriptions.push(setDate);
 	subscriptions.push(toggleDraft);
 }
@@ -61,7 +66,7 @@ export function activate({ subscriptions }: vscode.ExtensionContext) {
 export function deactivate() {}
 
 const triggerShowDraftStatus = () => {
-	debouncer(() => { FrontMatter.showDraftStatus(frontMatterStatusBar); }, 1000);
+	debouncer(() => { StatusBar.showDraftStatus(frontMatterStatusBar); }, 1000);
 };
 
 const debounceShowDraftTrigger = () => {

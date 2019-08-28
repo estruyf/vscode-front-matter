@@ -43,6 +43,7 @@
 		"onCommand:frontMatter.createTag",
 		"onCommand:frontMatter.createCategory",
 		"onCommand:frontMatter.exportTaxonomy",
+		"onCommand:frontMatter.remap",
 		"onCommand:frontMatter.setDate"
 	],
 	"main": "./dist/extension",
@@ -84,6 +85,10 @@
 			{
 				"command": "frontMatter.exportTaxonomy",
 				"title": "Front Matter: Export all tags & categories to your settings"
+			},
+			{
+				"command": "frontMatter.remap",
+				"title": "Front Matter: Remap tag/category in all articles"
 			},
 			{
 				"command": "frontMatter.setDate",
