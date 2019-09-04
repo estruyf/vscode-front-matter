@@ -1,6 +1,10 @@
 # VSCode Front Matter Helpers
 
-[![Version](https://vsmarketplacebadge.apphb.com/version/eliostruyf.vscode-front-matter.svg)](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter) [![Installations](https://vsmarketplacebadge.apphb.com/installs/eliostruyf.vscode-front-matter.svg)](vscode:extension/eliostruyf.vscode-front-matter) [![Rating](https://vsmarketplacebadge.apphb.com/rating/eliostruyf.vscode-front-matter.svg)](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter&ssr=false#review-details)
+[![Version](https://vsmarketplacebadge.apphb.com/version/eliostruyf.vscode-front-matter.svg)](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter)
+&nbsp;&nbsp;
+<a href="vscode:extension/eliostruyf.vscode-front-matter"><img src="https://vsmarketplacebadge.apphb.com/installs/eliostruyf.vscode-front-matter.svg" /></a>
+&nbsp;&nbsp;
+[![Rating](https://vsmarketplacebadge.apphb.com/rating/eliostruyf.vscode-front-matter.svg)](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter&ssr=false#review-details)
 
 > **Info**: Extension is still in development, but can already be tested out.
 
