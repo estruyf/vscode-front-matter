@@ -1,5 +1,7 @@
 # VSCode Front Matter Helpers
 
+[![Version](https://vsmarketplacebadge.apphb.com/version/eliostruyf.vscode-front-matter.svg)](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter) [![Installations](https://vsmarketplacebadge.apphb.com/installs/eliostruyf.vscode-front-matter.svg)](vscode:extension/eliostruyf.vscode-front-matter) [![Rating](https://vsmarketplacebadge.apphb.com/rating/eliostruyf.vscode-front-matter.svg)](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter&ssr=false#review-details)
+
 > **Info**: Extension is still in development, but can already be tested out.
 
 This VSCode extension simplifies working with front matter of your markdown articles when using a static site generator like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more... For example, with the extension you can keep a list of used tags, categories and add/remove them from your article.
