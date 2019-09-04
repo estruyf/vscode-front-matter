@@ -34,6 +34,20 @@ Update the `date` property of the current article/post/... to the current date &
 
 > **Optional**: if you want, you can specify the format of the date property by adding your own preference in your settings. Settings key: `frontMatter.taxonomy.dateFormat`. Check [date-fns formating](https://date-fns.org/v2.0.1/docs/format) for more information which patterns you can use.
 
+**Front Matter: Generate slug based on article title**
+
+Generates a clean slug for your article. It removes known stop words, punctuations, and special characters. 
+
+Example:
+```
+title: Just a sample page with a title
+slug: sample-page-title
+```
+
+If you want, you can also specify a prefix and suffix which can be added to the slug. Use the following settings to do this: `frontMatter.taxonomy.slugPrefix` and `frontMatter.taxonomy.slugSuffix`. By default both options are not provided and will not add anything to the slug.
+
+> **Info**: At the moment only English stop words are supported.
+
 ## Where is the data stored?
 
 The tags and categories are stored in the project VSCode user settings. You can find them back under: `.vscode/settings.json`.

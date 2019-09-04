@@ -35,6 +35,10 @@ export function activate({ subscriptions }: vscode.ExtensionContext) {
 		Article.setDate();
 	});
 
+	let generateSlug = vscode.commands.registerCommand('frontMatter.generateSlug', () => {
+		Article.generateSlug();
+	});
+
 	const toggleDraftCommand = 'frontMatter.toggleDraft';
 	const toggleDraft = vscode.commands.registerCommand(toggleDraftCommand, async () => {
 		await Article.toggleDraft();
@@ -60,6 +64,7 @@ export function activate({ subscriptions }: vscode.ExtensionContext) {
 	subscriptions.push(exportTaxonomy);
 	subscriptions.push(remap);
 	subscriptions.push(setDate);
+	subscriptions.push(generateSlug);
 	subscriptions.push(toggleDraft);
 }
 

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { TaxonomyType } from "../models";
-import { CONFIG_KEY, ACTION_TAXONOMY_TAGS, ACTION_TAXONOMY_CATEGORIES, ACTION_DATE_FORMAT, EXTENSION_NAME } from "../constants/settings";
+import { CONFIG_KEY, ACTION_TAXONOMY_TAGS, ACTION_TAXONOMY_CATEGORIES, ACTION_DATE_FORMAT, EXTENSION_NAME, ACTION_SLUG_PREFIX, ACTION_SLUG_SUFFIX } from "../constants/settings";
 import { format } from "date-fns";
 import { ArticleHelper, SettingsHelper } from '../helpers';
 
@@ -96,6 +96,31 @@ export class Article {
       console.log(e.message);
     }
   }
+
+  /**
+   * Generate the slug based on the article title
+   */
+	public static generateSlug() {
+    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+    const prefix = config.get(ACTION_SLUG_PREFIX) as string;
+    const suffix = config.get(ACTION_SLUG_SUFFIX) as string;
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+
+    const article = ArticleHelper.getFrontMatter(editor);
+    if (!article || !article.data) {
+      return;
+    }
+
+    const articleTitle: string = article.data["title"];
+    const slug = ArticleHelper.createSlug(articleTitle);
+    if (slug) {
+      article.data["slug"] = `${prefix}${slug}${suffix}`;
+      ArticleHelper.update(editor, article);
+    }
+	}
 
   /**
    * Toggle the page its draft mode
