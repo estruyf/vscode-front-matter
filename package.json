@@ -76,6 +76,11 @@
 					"type": "boolean",
 					"default": true,
 					"markdownDescription": "Specify if arrays in front matter are indented. Default: true."
+				},
+				"frontMatter.taxonomy.noPropertyValueQuotes": {
+					"type": "array",
+					"default": [],
+					"markdownDescription": "Specify the properties from which quotes need to be removed."
 				}
 			}
 		},

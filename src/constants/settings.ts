@@ -10,3 +10,4 @@ export const SETTING_SLUG_PREFIX = "taxonomy.slugPrefix";
 export const SETTING_SLUG_SUFFIX = "taxonomy.slugSuffix";
 
 export const SETTING_INDENT_ARRAY = "taxonomy.indentArrays";
+export const SETTING_REMOVE_QUOTES = "taxonomy.noPropertyValueQuotes";

@@ -2,8 +2,8 @@ import * as vscode from 'vscode';
 import * as matter from "gray-matter";
 import { stopWords } from '../constants/stopwords-en';
 import { charMap } from '../constants/charMap';
-import { DEFAULT_SAFE_SCHEMA, CORE_SCHEMA, DumpOptions } from 'js-yaml';
-import { CONFIG_KEY, SETTING_INDENT_ARRAY, SETTING_DATE_FORMAT } from '../constants';
+import { CONFIG_KEY, SETTING_INDENT_ARRAY, SETTING_DATE_FORMAT, SETTING_REMOVE_QUOTES } from '../constants';
+import { DumpOptions } from 'js-yaml';
 
 export class ArticleHelper {
   
@@ -29,12 +29,22 @@ export class ArticleHelper {
   public static async update(editor: vscode.TextEditor, article: matter.GrayMatterFile<string>) {
     const config = vscode.workspace.getConfiguration(CONFIG_KEY);
     const indentArray = config.get(SETTING_INDENT_ARRAY) as boolean;
-    const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
+    const removeQuotes = config.get(SETTING_REMOVE_QUOTES) as string[];
 
-    const newMarkdown = matter.stringify(article.content, article.data, ({
-      schema: dateFormat ? CORE_SCHEMA : DEFAULT_SAFE_SCHEMA,
+    let newMarkdown = matter.stringify(article.content, article.data, ({
       noArrayIndent: !indentArray
     } as DumpOptions as any));
+
+    // Check for field where quotes need to be removed
+    if (removeQuotes && removeQuotes.length) {
+      for (const toRemove of removeQuotes) {
+        if (article && article.data && article.data[toRemove]) {
+          newMarkdown = newMarkdown.replace(`'${article.data[toRemove]}'`, article.data[toRemove]);
+          newMarkdown = newMarkdown.replace(`"${article.data[toRemove]}"`, article.data[toRemove]);
+        }
+      }
+    }
+
     const nrOfLines = editor.document.lineCount as number;
     await editor.edit(builder => builder.replace(new vscode.Range(new vscode.Position(0, 0), new vscode.Position(nrOfLines, 0)), newMarkdown));
   }
