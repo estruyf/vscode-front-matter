@@ -65,12 +65,27 @@ The tags and categories are stored in the project VSCode user settings. You can 
 }
 ```
 
-## Settings
+## Additional extension settings
 
 The extension has more settings which allow you to further configure it to your needs. Here is a list of settings which you can set:
 
 - `frontMatter.taxonomy.indentArrays`
-  - Specify if arrays in front matter are indented. Default: `true`.
+  - Specify if arrays in front matter are indented. Default: `true`. If you do not want to indent the array values, you can update it with the following setting change:
+
+```json
+{
+  "frontMatter.taxonomy.indentArrays": false
+}
+```
+
+- `frontMatter.taxonomy.noPropertyValueQuotes`
+  - Specify the property names of which you want to remove the quotes in the output value. **Warning**: only use this when you know what you are doing. If you want to for instance remove the quotes from the date property, you can add the following:
+
+```json
+{
+  "frontMatter.taxonomy.noPropertyValueQuotes": ["date"]
+}
+```
 
 ## Usage
 

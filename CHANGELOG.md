@@ -1,5 +1,18 @@
 # Change Log
 
+## [0.0.10] - 2019-09-17
+
+- Updated the logic to remove quotes from front matter property values
+
+## [0.0.9] - 2019-09-17
+
+- Added setting to specify if you want to enable/disable array indents in the front matter of your article
+- Remove quotes on date strings
+
+## [0.0.8] - 2019-09-04
+
+- Added command to generate a clean article slug
+
 ## [0.0.7] - 2019-08-28
 
 - Added command to remap tags or categories in all posts: `Front Matter: Remap tag/category in all articles`
