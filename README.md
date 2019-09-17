@@ -65,6 +65,13 @@ The tags and categories are stored in the project VSCode user settings. You can 
 }
 ```
 
+## Settings
+
+The extension has more settings which allow you to further configure it to your needs. Here is a list of settings which you can set:
+
+- `frontMatter.taxonomy.indentArrays`
+  - Specify if arrays in front matter are indented. Default: `true`.
+
 ## Usage
 
 - Start by opening the command prompt:

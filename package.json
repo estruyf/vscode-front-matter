@@ -75,7 +75,7 @@
 				"frontMatter.taxonomy.indentArrays": {
 					"type": "boolean",
 					"default": true,
-					"markdownDescription": "Specify if arrays in front matter are indented. Default is true."
+					"markdownDescription": "Specify if arrays in front matter are indented. Default: true."
 				}
 			}
 		},
