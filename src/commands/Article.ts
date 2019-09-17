@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { TaxonomyType } from "../models";
-import { CONFIG_KEY, ACTION_TAXONOMY_TAGS, ACTION_TAXONOMY_CATEGORIES, ACTION_DATE_FORMAT, EXTENSION_NAME, ACTION_SLUG_PREFIX, ACTION_SLUG_SUFFIX } from "../constants/settings";
+import { CONFIG_KEY, SETTING_DATE_FORMAT, EXTENSION_NAME, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX } from "../constants/settings";
 import { format } from "date-fns";
 import { ArticleHelper, SettingsHelper } from '../helpers';
 
@@ -82,7 +82,7 @@ export class Article {
       return;
     }
 
-    const dateFormat = config.get(ACTION_DATE_FORMAT) as string;
+    const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
     try {
       if (dateFormat && typeof dateFormat === "string") {
         article.data["date"] = format(new Date(), dateFormat);
@@ -92,7 +92,7 @@ export class Article {
       
       ArticleHelper.update(editor, article);
     } catch (e) {
-      vscode.window.showErrorMessage(`${EXTENSION_NAME}: Something failed while parsing the date format. Check your "${CONFIG_KEY}${ACTION_DATE_FORMAT}" setting.`);
+      vscode.window.showErrorMessage(`${EXTENSION_NAME}: Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`);
       console.log(e.message);
     }
   }
@@ -102,8 +102,8 @@ export class Article {
    */
 	public static generateSlug() {
     const config = vscode.workspace.getConfiguration(CONFIG_KEY);
-    const prefix = config.get(ACTION_SLUG_PREFIX) as string;
-    const suffix = config.get(ACTION_SLUG_SUFFIX) as string;
+    const prefix = config.get(SETTING_SLUG_PREFIX) as string;
+    const suffix = config.get(SETTING_SLUG_SUFFIX) as string;
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;

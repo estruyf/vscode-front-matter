@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 import * as matter from "gray-matter";
 import { stopWords } from '../constants/stopwords-en';
 import { charMap } from '../constants/charMap';
+import { DEFAULT_SAFE_SCHEMA, CORE_SCHEMA, DumpOptions } from 'js-yaml';
+import { CONFIG_KEY, SETTING_INDENT_ARRAY, SETTING_DATE_FORMAT } from '../constants';
 
 export class ArticleHelper {
   
@@ -25,7 +27,14 @@ export class ArticleHelper {
    * @param article 
    */
   public static async update(editor: vscode.TextEditor, article: matter.GrayMatterFile<string>) {
-    const newMarkdown = matter.stringify(article.content, article.data);
+    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+    const indentArray = config.get(SETTING_INDENT_ARRAY) as boolean;
+    const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
+
+    const newMarkdown = matter.stringify(article.content, article.data, ({
+      schema: dateFormat ? CORE_SCHEMA : DEFAULT_SAFE_SCHEMA,
+      noArrayIndent: !indentArray
+    } as DumpOptions as any));
     const nrOfLines = editor.document.lineCount as number;
     await editor.edit(builder => builder.replace(new vscode.Range(new vscode.Position(0, 0), new vscode.Position(nrOfLines, 0)), newMarkdown));
   }

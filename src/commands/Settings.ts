@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as matter from 'gray-matter';
 import * as fs from 'fs';
 import { TaxonomyType } from "../models";
-import { CONFIG_KEY, ACTION_TAXONOMY_TAGS, ACTION_TAXONOMY_CATEGORIES, EXTENSION_NAME } from '../constants';
+import { CONFIG_KEY, SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, EXTENSION_NAME } from '../constants';
 import { ArticleHelper, SettingsHelper, FilesHelper } from '../helpers';
 
 export class Settings {
@@ -20,7 +20,7 @@ export class Settings {
     
     if (newOption) {
       const config = vscode.workspace.getConfiguration(CONFIG_KEY);
-      const configSetting = type === TaxonomyType.Tag ? ACTION_TAXONOMY_TAGS : ACTION_TAXONOMY_CATEGORIES;
+      const configSetting = type === TaxonomyType.Tag ? SETTING_TAXONOMY_TAGS : SETTING_TAXONOMY_CATEGORIES;
       let options = config.get(configSetting) as string[];
       if (!options) {
         options = [];
@@ -118,22 +118,22 @@ export class Settings {
       }
 
       // Retrieve the currently known tags, and add the new ones
-      let crntTags: string[] = config.get(ACTION_TAXONOMY_TAGS) as string[];
+      let crntTags: string[] = config.get(SETTING_TAXONOMY_TAGS) as string[];
       if (!crntTags) { crntTags = []; }
       crntTags = [...crntTags, ...tags];
       // Update the tags and filter out the duplicates
       crntTags = [...new Set(crntTags)];
       crntTags = crntTags.sort();
-      await config.update(ACTION_TAXONOMY_TAGS, crntTags);
+      await config.update(SETTING_TAXONOMY_TAGS, crntTags);
 
       // Retrieve the currently known tags, and add the new ones
-      let crntCategories: string[] = config.get(ACTION_TAXONOMY_CATEGORIES) as string[];
+      let crntCategories: string[] = config.get(SETTING_TAXONOMY_CATEGORIES) as string[];
       if (!crntCategories) { crntCategories = []; }
       crntCategories = [...crntCategories, ...categories];
       // Update the categories and filter out the duplicates
       crntCategories = [...new Set(crntCategories)];
       crntCategories = crntCategories.sort();
-      await config.update(ACTION_TAXONOMY_CATEGORIES, crntCategories);
+      await config.update(SETTING_TAXONOMY_CATEGORIES, crntCategories);
 
       // Done
       vscode.window.showInformationMessage(`${EXTENSION_NAME}: Export completed. Tags: ${crntTags.length} - Categories: ${crntCategories.length}.`);
