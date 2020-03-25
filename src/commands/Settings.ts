@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { TaxonomyType } from "../models";
 import { CONFIG_KEY, SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, EXTENSION_NAME } from '../constants';
 import { ArticleHelper, SettingsHelper, FilesHelper } from '../helpers';
+import { FMLanguage, TomlEngine } from '../helpers/TomlEngine';
 
 export class Settings {
   
@@ -98,7 +99,10 @@ export class Settings {
           const txtData = mdFile.getText();
           if (txtData) {
             try {
-              const article = matter(txtData);
+              const article = matter(txtData, {
+                ...TomlEngine,
+                language: FMLanguage()
+              });
               if (article && article.data) {
                 const { data } = article;
                 const mdTags = data["tags"];
@@ -214,7 +218,10 @@ export class Settings {
         const mdFile = fs.readFileSync(file.path, { encoding: "utf8" });
         if (mdFile) {
           try {
-            const article = matter(mdFile);
+            const article = matter(mdFile, {
+              ...TomlEngine,
+              language: FMLanguage()
+            });
             if (article && article.data) {
               const { data } = article;
               let taxonomies: string[] = data[matterProp];
@@ -228,7 +235,10 @@ export class Settings {
                   }
                   data[matterProp] = [...new Set(taxonomies)].sort();
                   // Update the file
-                  fs.writeFileSync(file.path, matter.stringify(article.content, article.data), { encoding: "utf8" });
+                  fs.writeFileSync(file.path, matter.stringify(article.content, article.data, {
+                    ...TomlEngine,
+                    language: FMLanguage()
+                  }), { encoding: "utf8" });
                 }
               }
             } 

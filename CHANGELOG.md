@@ -1,5 +1,14 @@
 # Change Log
 
+## [1.1.0] - 2020-03-25
+
+- `TOML` support added
+
+## [1.0.0] - 2020-03-25
+
+- First major release
+- Fixed an issue with `null` tag/category values
+
 ## [0.0.10] - 2019-09-17
 
 - Updated the logic to remove quotes from front matter property values

@@ -11,3 +11,5 @@ export const SETTING_SLUG_SUFFIX = "taxonomy.slugSuffix";
 
 export const SETTING_INDENT_ARRAY = "taxonomy.indentArrays";
 export const SETTING_REMOVE_QUOTES = "taxonomy.noPropertyValueQuotes";
+
+export const SETTING_FRONTMATTER_TYPE = "taxonomy.frontMatterType";

@@ -69,6 +69,15 @@ The tags and categories are stored in the project VSCode user settings. You can 
 
 The extension has more settings which allow you to further configure it to your needs. Here is a list of settings which you can set:
 
+- `frontMatter.taxonomy.frontMatterType`
+  - Specify which Front Matter language you want to use. The extension supports `YAML` (default) and `TOML`.
+
+```json
+{
+  "frontMatter.taxonomy.frontMatterType": "YAML"
+}
+```
+
 - `frontMatter.taxonomy.indentArrays`
   - Specify if arrays in front matter are indented. Default: `true`. If you do not want to indent the array values, you can update it with the following setting change:
 

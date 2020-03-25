@@ -81,6 +81,18 @@
 					"type": "array",
 					"default": [],
 					"markdownDescription": "Specify the properties from which quotes need to be removed."
+				},
+				"frontMatter.taxonomy.frontMatterType": {
+					"type": "string",
+					"default": "YAML",
+					"enum": [
+						"YAML",
+						"TOML"
+					],
+					"enumDescriptions": [
+						"Specifies you want to use YAML markup for the front matter (default)",
+						"Specifies you want to use TOML markup for the front matter"
+					]
 				}
 			}
 		},
@@ -142,5 +154,7 @@
 		"webpack": "^4.39.2",
 		"webpack-cli": "^3.3.7"
 	},
-	"dependencies": {}
+	"dependencies": {
+		"@iarna/toml": "2.2.3"
+	}
 }
