@@ -15,6 +15,14 @@
 				"kind": "build",
 				"isDefault": true
 			}
+		},
+		{
+			"type": "npm",
+			"script": "webpack",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
 		}
 	]
 }

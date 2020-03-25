@@ -123,7 +123,7 @@ export class Settings {
       crntTags = [...crntTags, ...tags];
       // Update the tags and filter out the duplicates
       crntTags = [...new Set(crntTags)];
-      crntTags = crntTags.sort();
+      crntTags = crntTags.sort().filter(t => !!t);
       await config.update(SETTING_TAXONOMY_TAGS, crntTags);
 
       // Retrieve the currently known tags, and add the new ones
@@ -132,7 +132,7 @@ export class Settings {
       crntCategories = [...crntCategories, ...categories];
       // Update the categories and filter out the duplicates
       crntCategories = [...new Set(crntCategories)];
-      crntCategories = crntCategories.sort();
+      crntCategories = crntCategories.sort().filter(c => !!c);
       await config.update(SETTING_TAXONOMY_CATEGORIES, crntCategories);
 
       // Done

@@ -31,7 +31,7 @@ export class SettingsHelper {
     const config = vscode.workspace.getConfiguration(CONFIG_KEY);
     const configSetting = type === TaxonomyType.Tag ? SETTING_TAXONOMY_TAGS : SETTING_TAXONOMY_CATEGORIES;
     options = [...new Set(options)];
-    options = options.sort();
+    options = options.sort().filter(o => !!o);
     await config.update(configSetting, options);
   }
 }
