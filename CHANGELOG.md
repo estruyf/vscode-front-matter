@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.1.1] - 2020-04-07
+
+- `TOML` delimiter fix
+
 ## [1.1.0] - 2020-03-25
 
 - `TOML` support added
