@@ -2,10 +2,9 @@ import * as vscode from 'vscode';
 import * as matter from "gray-matter";
 import { stopWords } from '../constants/stopwords-en';
 import { charMap } from '../constants/charMap';
-import { CONFIG_KEY, SETTING_INDENT_ARRAY, SETTING_DATE_FORMAT, SETTING_REMOVE_QUOTES, SETTING_FRONTMATTER_TYPE } from '../constants';
+import { CONFIG_KEY, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES } from '../constants';
 import { DumpOptions } from 'js-yaml';
-import { TomlEngine, FMLanguage } from './TomlEngine';
-
+import { TomlEngine, getFmLanguage, getFormatOpts } from './TomlEngine';
 
 export class ArticleHelper {
   
@@ -15,10 +14,11 @@ export class ArticleHelper {
    * @param editor 
    */
   public static getFrontMatter(editor: vscode.TextEditor) {   
-    const language = FMLanguage() 
+    const language: string = getFmLanguage(); 
+    const langOpts = getFormatOpts(language);
     let article: matter.GrayMatterFile<string> | null = matter(editor.document.getText(), {
       ...TomlEngine,
-      language
+      ...langOpts
     });
 
     if (article && article.data) {
@@ -37,10 +37,12 @@ export class ArticleHelper {
     const config = vscode.workspace.getConfiguration(CONFIG_KEY);
     const indentArray = config.get(SETTING_INDENT_ARRAY) as boolean;
     const removeQuotes = config.get(SETTING_REMOVE_QUOTES) as string[];
+    const language = getFmLanguage();
+    const langOpts = getFormatOpts(language);
     
     let newMarkdown = matter.stringify(article.content, article.data, ({
       ...TomlEngine,
-      language: FMLanguage(),
+      ...langOpts,
       noArrayIndent: !indentArray
     } as DumpOptions as any));
 

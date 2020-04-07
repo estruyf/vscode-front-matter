@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import { TaxonomyType } from "../models";
 import { CONFIG_KEY, SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, EXTENSION_NAME } from '../constants';
 import { ArticleHelper, SettingsHelper, FilesHelper } from '../helpers';
-import { FMLanguage, TomlEngine } from '../helpers/TomlEngine';
+import { TomlEngine, getFmLanguage, getFormatOpts } from '../helpers/TomlEngine';
 
 export class Settings {
   
@@ -91,6 +91,10 @@ export class Settings {
       const progressNr = allMdFiles.length/100;
       progress.report({ increment: 0});
 
+      // Get language options
+      const language = getFmLanguage();
+      const langOpts = getFormatOpts(language);
+
       let i = 0;
       for (const file of allMdFiles) {
         progress.report({ increment: (++i/progressNr) });
@@ -101,7 +105,7 @@ export class Settings {
             try {
               const article = matter(txtData, {
                 ...TomlEngine,
-                language: FMLanguage()
+                ...langOpts
               });
               if (article && article.data) {
                 const { data } = article;
@@ -217,10 +221,12 @@ export class Settings {
         progress.report({ increment: (++i/progressNr) });
         const mdFile = fs.readFileSync(file.path, { encoding: "utf8" });
         if (mdFile) {
+          const language = getFmLanguage();
+          const langOpts = getFormatOpts(language);
           try {
             const article = matter(mdFile, {
               ...TomlEngine,
-              language: FMLanguage()
+              ...langOpts
             });
             if (article && article.data) {
               const { data } = article;
@@ -237,7 +243,7 @@ export class Settings {
                   // Update the file
                   fs.writeFileSync(file.path, matter.stringify(article.content, article.data, {
                     ...TomlEngine,
-                    language: FMLanguage()
+                    ...langOpts
                   }), { encoding: "utf8" });
                 }
               }
