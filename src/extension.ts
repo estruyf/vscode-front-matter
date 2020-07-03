@@ -1,11 +1,13 @@
 import * as vscode from 'vscode';
-import { Article, Settings, StatusBar } from './commands';
+import { Article, Settings, StatusListener } from './commands';
 import { TaxonomyType } from './models';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let debouncer: { (fnc: any, time: number): void; };
+let collection: vscode.DiagnosticCollection;
 
 export function activate({ subscriptions }: vscode.ExtensionContext) {
+	collection = vscode.languages.createDiagnosticCollection('frontMatter');
 
 	let insertTags = vscode.commands.registerCommand('frontMatter.insertTags', () => {
 		Article.insert(TaxonomyType.Tag);
@@ -50,7 +52,7 @@ export function activate({ subscriptions }: vscode.ExtensionContext) {
 	frontMatterStatusBar.command = toggleDraftCommand;
 	subscriptions.push(frontMatterStatusBar);
 	debouncer = debounceShowDraftTrigger();
-	// Register listeners that make sure the status bar
+	// Register listeners that make sure the status bar updates
 	subscriptions.push(vscode.window.onDidChangeActiveTextEditor(triggerShowDraftStatus));
 	subscriptions.push(vscode.window.onDidChangeTextEditorSelection(triggerShowDraftStatus));
 	// Automatically run the command
@@ -71,7 +73,7 @@ export function activate({ subscriptions }: vscode.ExtensionContext) {
 export function deactivate() {}
 
 const triggerShowDraftStatus = () => {
-	debouncer(() => { StatusBar.showDraftStatus(frontMatterStatusBar); }, 1000);
+	debouncer(() => { StatusListener.verify(frontMatterStatusBar, collection); }, 1000);
 };
 
 const debounceShowDraftTrigger = () => {

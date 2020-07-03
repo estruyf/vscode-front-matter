@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.2.0] - 2020-07-03
+
+- Added SEO title warning when over 60 characters is used
+
 ## [1.1.1] - 2020-04-07
 
 - `TOML` delimiter fix

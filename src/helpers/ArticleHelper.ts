@@ -35,16 +35,9 @@ export class ArticleHelper {
    */
   public static async update(editor: vscode.TextEditor, article: matter.GrayMatterFile<string>) {
     const config = vscode.workspace.getConfiguration(CONFIG_KEY);
-    const indentArray = config.get(SETTING_INDENT_ARRAY) as boolean;
     const removeQuotes = config.get(SETTING_REMOVE_QUOTES) as string[];
-    const language = getFmLanguage();
-    const langOpts = getFormatOpts(language);
     
-    let newMarkdown = matter.stringify(article.content, article.data, ({
-      ...TomlEngine,
-      ...langOpts,
-      noArrayIndent: !indentArray
-    } as DumpOptions as any));
+    let newMarkdown = this.stringifyFrontMatter(article.content, article.data);
 
     // Check for field where quotes need to be removed
     if (removeQuotes && removeQuotes.length) {
@@ -61,11 +54,32 @@ export class ArticleHelper {
   }
 
   /**
+   * Stringify the front matter
+   * 
+   * @param content 
+   * @param data 
+   */
+  public static stringifyFrontMatter(content: string, data: any) {
+    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+    const indentArray = config.get(SETTING_INDENT_ARRAY) as boolean;
+
+    const language = getFmLanguage();
+    const langOpts = getFormatOpts(language);
+
+    return matter.stringify(content, data, ({
+      ...TomlEngine,
+      ...langOpts,
+      noArrayIndent: !indentArray,
+      lineWidth: 500
+    } as DumpOptions as any));
+  }
+
+  /**
    * Generate the slug
    * 
    * @param articleTitle 
    */
-  static createSlug(articleTitle: string): string | null {
+  public static createSlug(articleTitle: string): string | null {
     if (!articleTitle) {
       return null;
     }
