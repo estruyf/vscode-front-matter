@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { ArticleHelper } from '../helpers';
+import { ArticleHelper, SeoHelper } from '../helpers';
 
 export class StatusListener {
   
@@ -30,36 +30,18 @@ export class StatusListener {
           }
         }
 
-        // Check SEO of the title
-        if (article && article.data && article.data.title) {
-          const title: string = article.data.title;
-          console.log(`Title length: ${title.length}`);
-          if (title.length >= 60) {
-            const text = editor.document.getText();
-            
-            const markdown = ArticleHelper.stringifyFrontMatter("", article.data);
-
-            const txtIdx = text.indexOf(title);
-            if (txtIdx !== -1 && txtIdx < markdown.length) {
-              collection.clear();
-              const posStart = editor.document.positionAt(txtIdx);
-              const posEnd = editor.document.positionAt(txtIdx + 1 + title.length);
-              
-              collection.set(editor.document.uri, [{
-                code: '',
-                message: `Article title is longer than 60 characters (current length: ${title.length}). For SEO reasons, it would be better to make it less than 60 characters.`,
-                range: new vscode.Range(posStart, posEnd),
-                severity: vscode.DiagnosticSeverity.Warning,
-                source: 'Front Matter'
-              }]);
-            } else {
-              collection.clear();
-            }
-          } else {
-            collection.clear();
+        // Check SEO for title and description length
+        if (article && article.data) {
+          collection.clear();
+          
+          if (article.data.title) {
+            SeoHelper.checkLength(editor, collection, article, "title", 60);
+          }
+          
+          if (article.data.description) {
+            SeoHelper.checkLength(editor, collection, article, "description", 140);
           }
         }
-
         return;
       } catch (e) {
         // Nothing to do

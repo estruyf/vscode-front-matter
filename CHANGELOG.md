@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.3.0] - 2020-08-22
+
+- Added SEO description warning when over 140 characters is used
+
 ## [1.2.0] - 2020-07-03
 
 - Added SEO title warning when over 60 characters is used
