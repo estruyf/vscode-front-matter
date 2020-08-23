@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.4.0] - 2020-08-24
+
+- Added set lastmod date command
+
 ## [1.3.0] - 2020-08-22
 
 - Added SEO description warning when over 140 characters is used
