@@ -2,7 +2,8 @@
 
 ## [1.4.0] - 2020-08-24
 
-- Added set lastmod date command
+- Added set `lastmod` date command
+- [#16](https://github.com/estruyf/vscode-front-matter/issues/16): Fixed hardcoded length value
 
 ## [1.3.0] - 2020-08-22
 

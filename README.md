@@ -44,7 +44,7 @@ Update the `date` property of the current article/post/... to the current date &
 
 Update the `lastmod` (last modified) property of the current article/post/... to the current date & time.
 
-**note**: Uses the same date format settings key as current date: `frontMatter.taxonomy.dateFormat`.
+> **note**: Uses the same date format settings key as current date: `frontMatter.taxonomy.dateFormat`.
 
 **Front Matter: Generate slug based on article title**
 
