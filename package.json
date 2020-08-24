@@ -3,7 +3,7 @@
 	"displayName": "Front Matter",
 	"description": "Simplifies working with front matter of your articles. Useful extension when you are using a static site generator like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
 	"icon": "assets/front-matter.png",
-	"version": "1.3.0",
+	"version": "1.4.0",
 	"preview": false,
 	"publisher": "eliostruyf",
 	"galleryBanner": {
@@ -45,6 +45,7 @@
 		"onCommand:frontMatter.exportTaxonomy",
 		"onCommand:frontMatter.remap",
 		"onCommand:frontMatter.setDate",
+		"onCommand:frontMatter.setLastModifiedDate",
 		"onCommand:frontMatter.generateSlug"
 	],
 	"main": "./dist/extension",
@@ -124,6 +125,10 @@
 			{
 				"command": "frontMatter.setDate",
 				"title": "Front Matter: Set current date"
+			},
+			{
+				"command": "frontMatter.setLastModifiedDate",
+				"title": "Front Matter: Set lastmod date"
 			},
 			{
 				"command": "frontMatter.generateSlug",

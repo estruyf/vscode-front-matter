@@ -32,9 +32,13 @@ export function activate({ subscriptions }: vscode.ExtensionContext) {
 	let remap = vscode.commands.registerCommand('frontMatter.remap', () => {
 		Settings.remap();
 	});
-	
+
 	let setDate = vscode.commands.registerCommand('frontMatter.setDate', () => {
 		Article.setDate();
+	});
+
+	let setLastModifiedDate = vscode.commands.registerCommand('frontMatter.setLastModifiedDate', () => {
+		Article.setLastModifiedDate();
 	});
 
 	let generateSlug = vscode.commands.registerCommand('frontMatter.generateSlug', () => {
@@ -66,6 +70,7 @@ export function activate({ subscriptions }: vscode.ExtensionContext) {
 	subscriptions.push(exportTaxonomy);
 	subscriptions.push(remap);
 	subscriptions.push(setDate);
+	subscriptions.push(setLastModifiedDate);
 	subscriptions.push(generateSlug);
 	subscriptions.push(toggleDraft);
 }
