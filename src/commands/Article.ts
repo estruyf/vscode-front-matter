@@ -9,8 +9,8 @@ export class Article {
 
   /**
   * Insert taxonomy
-  * 
-  * @param type 
+  *
+  * @param type
   */
   public static async insert(type: TaxonomyType) {
     const config = vscode.workspace.getConfiguration(CONFIG_KEY);
@@ -18,15 +18,15 @@ export class Article {
     if (!editor) {
       return;
     }
-    
+
     const article = ArticleHelper.getFrontMatter(editor);
     if (!article) {
       return;
     }
-    
+
     let options: vscode.QuickPickItem[] = [];
     const matterProp: string = type === TaxonomyType.Tag ? "tags" : "categories";
-    
+
     // Add the selected options to the options array
     if (article.data[matterProp]) {
       const propData = article.data[matterProp];
@@ -37,7 +37,7 @@ export class Article {
         } as vscode.QuickPickItem));
       }
     }
-    
+
     // Add all the known options to the selection list
     const crntOptions = SettingsHelper.getTaxonomy(type);
     if (crntOptions && crntOptions.length > 0) {
@@ -49,21 +49,21 @@ export class Article {
         }
       }
     }
-    
+
     if (options.length === 0) {
       vscode.window.showInformationMessage(`${EXTENSION_NAME}: No ${type === TaxonomyType.Tag ? "tags" : "categories"} configured.`);
       return;
     }
-    
-    const selectedOptions = await vscode.window.showQuickPick(options, { 
+
+    const selectedOptions = await vscode.window.showQuickPick(options, {
       placeHolder: `Select your ${type === TaxonomyType.Tag ? "tags" : "categories"} to insert`,
-      canPickMany: true 
+      canPickMany: true
     });
-    
+
     if (selectedOptions) {
       article.data[matterProp] = selectedOptions.map(o => o.label);
     }
-    
+
     ArticleHelper.update(editor, article);
   }
 
@@ -89,7 +89,37 @@ export class Article {
       } else {
         article.data["date"] = new Date();
       }
-      
+
+      ArticleHelper.update(editor, article);
+    } catch (e) {
+      vscode.window.showErrorMessage(`${EXTENSION_NAME}: Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`);
+      console.log(e.message);
+    }
+  }
+
+  /**
+   * Sets the article lastmod date
+   */
+  public static async setLastModifiedDate() {
+    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+
+    const article = ArticleHelper.getFrontMatter(editor);
+    if (!article) {
+      return;
+    }
+
+    const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
+    try {
+      if (dateFormat && typeof dateFormat === "string") {
+        article.data["lastmod"] = format(new Date(), dateFormat);
+      } else {
+        article.data["lastmod"] = new Date();
+      }
+
       ArticleHelper.update(editor, article);
     } catch (e) {
       vscode.window.showErrorMessage(`${EXTENSION_NAME}: Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`);

@@ -18,7 +18,7 @@ export class SeoHelper {
 
         const diagnostic: vscode.Diagnostic = {
           code: '',
-          message: `Article ${fieldName} is longer than ${length} characters (current length: ${value.length}). For SEO reasons, it would be better to make it less than 60 characters.`,
+          message: `Article ${fieldName} is longer than ${length} characters (current length: ${value.length}). For SEO reasons, it would be better to make it less than ${length} characters.`,
           range: new vscode.Range(posStart, posEnd),
           severity: vscode.DiagnosticSeverity.Warning,
           source: 'Front Matter'

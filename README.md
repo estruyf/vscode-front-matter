@@ -40,6 +40,12 @@ Update the `date` property of the current article/post/... to the current date &
 
 **Optional**: if you want, you can specify the date property format by adding your preference in your settings. Settings key: `frontMatter.taxonomy.dateFormat`. Check [date-fns formatting](https://date-fns.org/v2.0.1/docs/format) for more information on which patterns you can use.
 
+**Front Matter: Set lastmod date**
+
+Update the `lastmod` (last modified) property of the current article/post/... to the current date & time.
+
+> **note**: Uses the same date format settings key as current date: `frontMatter.taxonomy.dateFormat`.
+
 **Front Matter: Generate slug based on article title**
 
 This command generates a clean slug for your article. It removes known stop words, punctuations, and special characters. 
