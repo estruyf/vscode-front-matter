@@ -66,11 +66,14 @@ export class ArticleHelper {
     const language = getFmLanguage();
     const langOpts = getFormatOpts(language);
 
+    const spaces = vscode.window.activeTextEditor?.options?.tabSize;
+
     return matter.stringify(content, data, ({
       ...TomlEngine,
       ...langOpts,
       noArrayIndent: !indentArray,
-      lineWidth: 500
+      lineWidth: 500,
+      indent: spaces || 2
     } as DumpOptions as any));
   }
 

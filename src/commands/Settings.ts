@@ -5,6 +5,7 @@ import { TaxonomyType } from "../models";
 import { CONFIG_KEY, SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, EXTENSION_NAME } from '../constants';
 import { ArticleHelper, SettingsHelper, FilesHelper } from '../helpers';
 import { TomlEngine, getFmLanguage, getFormatOpts } from '../helpers/TomlEngine';
+import { DumpOptions } from 'js-yaml';
 
 export class Settings {
   
@@ -240,11 +241,13 @@ export class Settings {
                     taxonomies = taxonomies.filter(o => o !== selectedOption);
                   }
                   data[matterProp] = [...new Set(taxonomies)].sort();
+                  const spaces = vscode.window.activeTextEditor?.options?.tabSize;
                   // Update the file
                   fs.writeFileSync(file.path, matter.stringify(article.content, article.data, {
                     ...TomlEngine,
-                    ...langOpts
-                  }), { encoding: "utf8" });
+                    ...langOpts,
+                    indent: spaces || 2
+                  } as DumpOptions as any), { encoding: "utf8" });
                 }
               }
             } 
