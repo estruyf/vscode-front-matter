@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.5.0] - 2020-09-10
+
+- [#17](https://github.com/estruyf/vscode-front-matter/issues/17): Make front matter be indentation `tabSize` aware
+
 ## [1.4.0] - 2020-08-24
 
 - Added set `lastmod` date command
