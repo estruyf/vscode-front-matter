@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.6.0] - 2020-09-23
+
+- Syntax highlighting for Hugo shortcodes has been added
+
 ## [1.5.0] - 2020-09-10
 
 - [#17](https://github.com/estruyf/vscode-front-matter/issues/17): Make front matter be indentation `tabSize` aware

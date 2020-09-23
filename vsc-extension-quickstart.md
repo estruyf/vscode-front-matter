@@ -40,3 +40,9 @@
  * Reduce the extension size and improve the startup time by [bundling your extension](https://code.visualstudio.com/api/working-with-extensions/testing-extension).
  * [Publish your extension](https://code.visualstudio.com/api/working-with-extensions/publishing-extension) on the VSCode extension marketplace.
  * Automate builds by setting up [Continuous Integration](https://code.visualstudio.com/api/working-with-extensions/continuous-integration).
+
+
+## Usefull links
+
+https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide#injection-grammars
+https://github.com/microsoft/vscode-textmate/blob/e8f439d613afa00674e83b3b3ae382fc774665e1/test-cases/themes/syntaxes/html.json

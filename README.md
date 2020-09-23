@@ -10,6 +10,10 @@ The extension will automatically verify if your title and description are SEO co
 
 > If you see something missing in your article creation flow, please feel free to reach out.
 
+## Syntax highlighting for Hugo Shortcodes
+
+![Shortcode syntax highlighting](./assets/syntax-highlighting.png)
+
 ## Available commands:
 
 **Front Matter: Create <tag | category>**

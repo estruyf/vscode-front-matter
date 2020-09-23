@@ -134,7 +134,14 @@
 				"command": "frontMatter.generateSlug",
 				"title": "Front Matter: Generate slug based on article title"
 			}
-		]
+		],
+		"grammars": [
+      {
+        "path": "./syntaxes/hugo.tmLanguage.json",
+        "scopeName": "frontmatter.markdown.hugo",
+        "injectTo": [ "text.html.markdown" ]
+      }
+    ]
 	},
 	"scripts": {
 		"vscode:prepublish": "webpack --mode production",

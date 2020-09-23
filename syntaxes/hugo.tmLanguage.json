@@ -1,0 +1,63 @@
+{
+  "scopeName": "frontmatter.markdown.hugo",
+  "injectionSelector": "L:text.html.markdown",
+  "patterns": [
+    {
+      "include": "#shortcodes"
+    }
+  ],
+  "repository": {
+    "string-double-quoted": {
+			"begin": "\"",
+			"beginCaptures": {
+				"0": { "name": "punctuation.definition.string.begin.hugo" }
+			},
+			"end": "\"",
+			"endCaptures": {
+				"0": { "name": "punctuation.definition.string.end.hugo" }
+			},
+			"name": "string.quoted.double.hugo",
+			"patterns": [
+			]
+    },
+    "unquoted-attribute": {
+			"match": "(?<==)(?:[^\\s<>/'\"]|/(?!>))+",
+			"name": "string.unquoted.hugo"
+		},
+    "tag-generic-attribute": {
+      "match": "(?<=[^=])\\b([a-zA-Z0-9:-]+)",
+      "name": "entity.other.attribute-name.hugo"
+    },
+    "shortcode-name": {
+      "match": "(\\s[\\w\\-\\_]+\\s)",
+      "name": "hugo.shortcode.name",
+      "captures": {
+        "1": { "name": "keyword.other.important.hugo" }
+      }
+    },
+    "shortcodes": {
+      "begin": "{{<|{{%",
+      "end": ">}}|%}}",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.tag.begin.hugo" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.tag.end.hugo" }
+      },
+      "patterns": [
+        {
+          "include": "#shortcode-name"
+        },
+        {
+          "include": "#tag-generic-attribute"
+        },
+        {
+          "include": "#string-double-quoted"
+        },
+        {
+          "include": "#unquoted-attribute"
+        }
+      ]
+    }
+  }
+}
