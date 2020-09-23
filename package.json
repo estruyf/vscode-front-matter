@@ -3,7 +3,7 @@
 	"displayName": "Front Matter",
 	"description": "Simplifies working with front matter of your articles. Useful extension when you are using a static site generator like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
 	"icon": "assets/front-matter.png",
-	"version": "1.5.0",
+	"version": "1.6.0",
 	"preview": false,
 	"publisher": "eliostruyf",
 	"galleryBanner": {
@@ -136,12 +136,14 @@
 			}
 		],
 		"grammars": [
-      {
-        "path": "./syntaxes/hugo.tmLanguage.json",
-        "scopeName": "frontmatter.markdown.hugo",
-        "injectTo": [ "text.html.markdown" ]
-      }
-    ]
+			{
+				"path": "./syntaxes/hugo.tmLanguage.json",
+				"scopeName": "frontmatter.markdown.hugo",
+				"injectTo": [
+					"text.html.markdown"
+				]
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "webpack --mode production",
