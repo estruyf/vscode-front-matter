@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.7.0] - 2020-09-30
+
+- [#18](https://github.com/estruyf/vscode-front-matter/issues/18): Added date and modified date field names settings to be able to change the extension its behavior
+
 ## [1.6.0] - 2020-09-23
 
 - Syntax highlighting for Hugo shortcodes has been added

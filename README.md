@@ -79,8 +79,9 @@ The tags and categories are stored in the project VSCode user settings. You can 
 
 The extension has more settings that allow you to configure it to your needs further. Here is a list of settings which you can set:
 
-- `frontMatter.taxonomy.frontMatterType`
-  - Specify which Front Matter language you want to use. The extension supports `YAML` (default) and `TOML`.
+### `frontMatter.taxonomy.frontMatterType`
+
+Specify which Front Matter language you want to use. The extension supports `YAML` (default) and `TOML`.
 
 ```json
 {
@@ -88,8 +89,9 @@ The extension has more settings that allow you to configure it to your needs fur
 }
 ```
 
-- `frontMatter.taxonomy.indentArrays`
-  - Specify if arrays in the front matter are indented. Default: `true`. If you do not want to indent the array values, you can update it with the following setting change:
+### `frontMatter.taxonomy.indentArrays`
+
+Specify if arrays in the front matter are indented. Default: `true`. If you do not want to indent the array values, you can update it with the following setting change:
 
 ```json
 {
@@ -97,12 +99,33 @@ The extension has more settings that allow you to configure it to your needs fur
 }
 ```
 
-- `frontMatter.taxonomy.noPropertyValueQuotes`
-  - Specify the property names of which you want to remove the quotes in the output value. **Warning**: only use this when you know what you are doing. If you want to, for instance, remove the quotes from the date property, you can add the following:
+### `frontMatter.taxonomy.noPropertyValueQuotes`
+
+Specify the property names of which you want to remove the quotes in the output value. **Warning**: only use this when you know what you are doing. If you want to, for instance, remove the quotes from the date property, you can add the following:
 
 ```json
 {
   "frontMatter.taxonomy.noPropertyValueQuotes": ["date"]
+}
+```
+
+### `frontMatter.taxonomy.dateField`
+
+Specifies the date field name to use in your Front Matter. Default value: `date`.
+
+```json
+{
+  "frontMatter.taxonomy.dateField": "date"
+}
+```
+
+### `frontMatter.taxonomy.modifiedField`
+
+Specifies the modified date field name to use in your Front Matter. Default value: `lastmod`.
+
+```json
+{
+  "frontMatter.taxonomy.modifiedField": "lastmod"
 }
 ```
 

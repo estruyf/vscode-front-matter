@@ -53,6 +53,16 @@
 		"configuration": {
 			"title": "Front Matter: Configuration",
 			"properties": {
+				"frontMatter.taxonomy.dateField": {
+					"type": "string",
+					"default": "date",
+					"description": "Specifies the date field name to use in your Front Matter"
+				},
+				"frontMatter.taxonomy.modifiedField": {
+					"type": "string",
+					"default": "lastmod",
+					"description": "Specifies the modified date field name to use in your Front Matter"
+				},
 				"frontMatter.taxonomy.tags": {
 					"type": "array",
 					"description": "Specifies the tags which can be used in the Front Matter"

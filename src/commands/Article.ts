@@ -1,6 +1,7 @@
+import { SETTING_MODIFIED_FIELD } from './../constants/settings';
 import * as vscode from 'vscode';
 import { TaxonomyType } from "../models";
-import { CONFIG_KEY, SETTING_DATE_FORMAT, EXTENSION_NAME, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX } from "../constants/settings";
+import { CONFIG_KEY, SETTING_DATE_FORMAT, EXTENSION_NAME, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_DATE_FIELD } from "../constants/settings";
 import { format } from "date-fns";
 import { ArticleHelper, SettingsHelper } from '../helpers';
 
@@ -83,11 +84,12 @@ export class Article {
     }
 
     const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
+    const dateField = config.get(SETTING_DATE_FIELD) as string || "date";
     try {
       if (dateFormat && typeof dateFormat === "string") {
-        article.data["date"] = format(new Date(), dateFormat);
+        article.data[dateField] = format(new Date(), dateFormat);
       } else {
-        article.data["date"] = new Date();
+        article.data[dateField] = new Date();
       }
 
       ArticleHelper.update(editor, article);
@@ -113,11 +115,12 @@ export class Article {
     }
 
     const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
+    const dateField = config.get(SETTING_MODIFIED_FIELD) as string || "lastmod";
     try {
       if (dateFormat && typeof dateFormat === "string") {
-        article.data["lastmod"] = format(new Date(), dateFormat);
+        article.data[dateField] = format(new Date(), dateFormat);
       } else {
-        article.data["lastmod"] = new Date();
+        article.data[dateField] = new Date();
       }
 
       ArticleHelper.update(editor, article);
