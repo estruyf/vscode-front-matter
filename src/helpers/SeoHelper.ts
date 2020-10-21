@@ -6,7 +6,7 @@ export class SeoHelper {
 
   public static checkLength(editor: vscode.TextEditor, collection: vscode.DiagnosticCollection, article: matter.GrayMatterFile<string>, fieldName: string, length: number) {
     const value = article.data[fieldName];
-    if (value.length >= length) {
+    if (value.length > length) {
       const text = editor.document.getText();
       
       const markdown = ArticleHelper.stringifyFrontMatter("", article.data);
