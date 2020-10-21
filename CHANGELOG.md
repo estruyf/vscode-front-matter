@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.7.1] - 2020-10-21
+
+- Fix for title and description length check
+
 ## [1.7.0] - 2020-09-30
 
 - [#18](https://github.com/estruyf/vscode-front-matter/issues/18): Added date and modified date field names settings to be able to change the extension its behavior
