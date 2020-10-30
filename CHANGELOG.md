@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.7.2] - 2020-10-30
+
+- [#19](https://github.com/estruyf/vscode-front-matter/issues/19): fix for tag insertion when empty tag is used
+
 ## [1.7.1] - 2020-10-21
 
 - Fix for title and description length check

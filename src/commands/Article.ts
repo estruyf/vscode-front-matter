@@ -32,7 +32,7 @@ export class Article {
     if (article.data[matterProp]) {
       const propData = article.data[matterProp];
       if (propData && propData.length > 0) {
-        options = [...propData].map(p => ({
+        options = [...propData].filter(p => p).map(p => ({
           label: p,
           picked: true
         } as vscode.QuickPickItem));
