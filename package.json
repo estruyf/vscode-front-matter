@@ -104,6 +104,16 @@
 						"Specifies you want to use YAML markup for the front matter (default)",
 						"Specifies you want to use TOML markup for the front matter"
 					]
+				},
+				"frontMatter.taxonomy.seoTitleLength": {
+					"type": "number",
+					"default": 60,
+					"description": "Specifies the optimal title length for SEO (set to `-1` to turn it off)."
+				},
+				"frontMatter.taxonomy.seoDescriptionLength": {
+					"type": "number",
+					"default": 160,
+					"description": "Specifies the optimal description length for SEO (set to `-1` to turn it off)."
 				}
 			}
 		},

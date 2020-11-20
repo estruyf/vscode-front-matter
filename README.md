@@ -79,6 +79,25 @@ The tags and categories are stored in the project VSCode user settings. You can 
 
 The extension has more settings that allow you to configure it to your needs further. Here is a list of settings which you can set:
 
+### `frontMatter.taxonomy.seoTitleLength`
+
+Specifies the optimal title length for SEO (set to `-1` to turn it off). Default value: `60`.
+
+```json
+{
+  "frontMatter.taxonomy.seoTitleLength": 60
+}
+```
+### `frontMatter.taxonomy.seoDescriptionLength`
+
+Specifies the optimal description length for SEO (set to `-1` to turn it off). Default value: `160`.
+
+```json
+{
+  "frontMatter.taxonomy.seoDescriptionLength": 160
+}
+```
+
 ### `frontMatter.taxonomy.frontMatterType`
 
 Specify which Front Matter language you want to use. The extension supports `YAML` (default) and `TOML`.

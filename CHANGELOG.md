@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.8.0] - 2020-11-20
+
+- [#22](https://github.com/estruyf/vscode-front-matter/issues/22): Allow to configure the SEO Title and Description lengths.
+
 ## [1.7.2] - 2020-10-30
 
 - [#19](https://github.com/estruyf/vscode-front-matter/issues/19): fix for tag insertion when empty tag is used
