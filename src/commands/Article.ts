@@ -4,6 +4,7 @@ import { TaxonomyType } from "../models";
 import { CONFIG_KEY, SETTING_DATE_FORMAT, EXTENSION_NAME, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_DATE_FIELD } from "../constants/settings";
 import { format } from "date-fns";
 import { ArticleHelper, SettingsHelper } from '../helpers';
+import matter = require('gray-matter');
 
 
 export class Article {
@@ -72,31 +73,43 @@ export class Article {
    * Sets the article date
    */
   public static async setDate() {
-    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;
     }
 
-    const article = ArticleHelper.getFrontMatter(editor);
+    let article = ArticleHelper.getFrontMatter(editor);
     if (!article) {
       return;
     }
 
-    const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
-    const dateField = config.get(SETTING_DATE_FIELD) as string || "date";
-    try {
-      if (dateFormat && typeof dateFormat === "string") {
-        article.data[dateField] = format(new Date(), dateFormat);
-      } else {
-        article.data[dateField] = new Date();
-      }
+    article = this.updateDate(article, true);
 
+    try {
       ArticleHelper.update(editor, article);
     } catch (e) {
       vscode.window.showErrorMessage(`${EXTENSION_NAME}: Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`);
       console.log(e.message);
     }
+  }
+
+  /**
+   * Update the date in the front matter
+   * @param article 
+   */
+  public static updateDate(article: matter.GrayMatterFile<string>, forceCreate: boolean = false) {
+    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+    const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
+    const dateField = config.get(SETTING_DATE_FIELD) as string || "date";
+
+    if (typeof article.data[dateField] !== "undefined" || forceCreate) {
+      if (dateFormat && typeof dateFormat === "string") {
+        article.data[dateField] = format(new Date(), dateFormat);
+      } else {
+        article.data[dateField] = new Date();
+      }
+    }
+    return article;
   }
 
   /**

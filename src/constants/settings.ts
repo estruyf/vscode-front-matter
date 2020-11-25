@@ -18,3 +18,6 @@ export const SETTING_FRONTMATTER_TYPE = "taxonomy.frontMatterType";
 
 export const SETTING_SEO_TITLE_LENGTH = "taxonomy.seoTitleLength";
 export const SETTING_SEO_DESCRIPTION_LENGTH = "taxonomy.seoDescriptionLength";
+
+export const SETTING_TEMPLATES_FOLDER = "templates.folder";
+export const SETTING_TEMPLATES_PREFIX = "templates.prefix";

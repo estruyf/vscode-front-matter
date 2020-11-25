@@ -10,6 +10,16 @@ The extension will automatically verify if your title and description are SEO co
 
 > If you see something missing in your article creation flow, please feel free to reach out.
 
+## Creating articles from templates
+
+By default, the extension looks for files stored in a `.templates` folder which should be located in the root of your website project.
+
+> **Info**: You can overwrite the path, by specifying it with the `frontMatter.templates.folder` setting.
+
+When adding files in the folder, you'll be able to runt the `Front Matter: New article from template` from a command or explorer menu. It will present you with the article template options. Once you pick one, and specify the title. It creates the file and updates its front matter.
+
+> **Info**: By default the extension will create articles with a `yyyy-MM-dd` prefix. If you do not want that, or change the date format, you can do this by updating the `frontMatter.templates.prefix` setting.
+
 ## Syntax highlighting for Hugo Shortcodes
 
 ![Shortcode syntax highlighting](./assets/syntax-highlighting.png)

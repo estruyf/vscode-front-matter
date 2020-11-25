@@ -46,7 +46,8 @@
 		"onCommand:frontMatter.remap",
 		"onCommand:frontMatter.setDate",
 		"onCommand:frontMatter.setLastModifiedDate",
-		"onCommand:frontMatter.generateSlug"
+		"onCommand:frontMatter.generateSlug",
+		"onCommand:frontMatter.createFromTemplate"
 	],
 	"main": "./dist/extension",
 	"contributes": {
@@ -114,6 +115,16 @@
 					"type": "number",
 					"default": 160,
 					"description": "Specifies the optimal description length for SEO (set to `-1` to turn it off)."
+				},
+				"frontMatter.templates.folder": {
+					"type": "string",
+					"default": ".templates",
+					"description": "Specify the folder to use for your article templates."
+				},
+				"frontMatter.templates.prefix": {
+					"type": "string",
+					"default": "yyyy-MM-dd",
+					"description": "Specify the prefix you want to add for your new article filenames."
 				}
 			}
 		},
@@ -153,8 +164,21 @@
 			{
 				"command": "frontMatter.generateSlug",
 				"title": "Front Matter: Generate slug based on article title"
+			},
+			{
+				"command": "frontMatter.createFromTemplate",
+				"title": "Front Matter: New article from template"
 			}
 		],
+		"menus": {
+			"explorer/context": [
+				{
+					"command": "frontMatter.createFromTemplate",
+					"when": "explorerResourceIsFolder",
+					"group": "Front Matter@1"
+				}
+			]
+		},
 		"grammars": [
 			{
 				"path": "./syntaxes/hugo.tmLanguage.json",

@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { Article, Settings, StatusListener } from './commands';
+import { Template } from './commands/Template';
 import { TaxonomyType } from './models';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
@@ -45,6 +46,16 @@ export function activate({ subscriptions }: vscode.ExtensionContext) {
 		Article.generateSlug();
 	});
 
+	let createFromTemplate = vscode.commands.registerCommand('frontMatter.createFromTemplate', (e: vscode.Uri) => {
+		let folderPath = "";
+		if (e && e.fsPath) {
+			folderPath = e.fsPath;
+		} else if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
+			folderPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+		}
+		Template.create(folderPath);
+	});
+
 	const toggleDraftCommand = 'frontMatter.toggleDraft';
 	const toggleDraft = vscode.commands.registerCommand(toggleDraftCommand, async () => {
 		await Article.toggleDraft();
@@ -72,6 +83,7 @@ export function activate({ subscriptions }: vscode.ExtensionContext) {
 	subscriptions.push(setDate);
 	subscriptions.push(setLastModifiedDate);
 	subscriptions.push(generateSlug);
+	subscriptions.push(createFromTemplate);
 	subscriptions.push(toggleDraft);
 }
 

@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.9.0] - 2020-11-25
+
+- [#23](https://github.com/estruyf/vscode-front-matter/issues/23): Implemented the option to create and use templates for aticle creation (front matter will be updates as well).
+
 ## [1.8.0] - 2020-11-20
 
 - [#22](https://github.com/estruyf/vscode-front-matter/issues/22): Allow to configure the SEO Title and Description lengths.

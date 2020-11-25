@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as matter from "gray-matter";
+import * as fs from "fs";
 import { stopWords } from '../constants/stopwords-en';
 import { charMap } from '../constants/charMap';
 import { CONFIG_KEY, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES } from '../constants';
@@ -23,6 +24,27 @@ export class ArticleHelper {
 
     if (article && article.data) {
       return article;
+    }
+    return null;
+  }
+
+  /**
+   * Retrieve the file's front matter by its path
+   * @param filePath 
+   */
+  public static getFrontMatterByPath(filePath: string) {   
+    const file = fs.readFileSync(filePath, { encoding: "utf-8" });
+    if (file) {
+      const language: string = getFmLanguage(); 
+      const langOpts = getFormatOpts(language);
+      let article: matter.GrayMatterFile<string> | null = matter(file, {
+        ...TomlEngine,
+        ...langOpts
+      });
+  
+      if (article && article.data) {
+        return article;
+      }
     }
     return null;
   }
