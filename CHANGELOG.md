@@ -2,7 +2,7 @@
 
 ## [1.9.0] - 2020-11-25
 
-- [#23](https://github.com/estruyf/vscode-front-matter/issues/23): Implemented the option to create and use templates for aticle creation (front matter will be updates as well).
+- [#23](https://github.com/estruyf/vscode-front-matter/issues/23): Implemented the option to create and use templates for article creation (front matter will be updates as well).
 
 ## [1.8.0] - 2020-11-20
 
