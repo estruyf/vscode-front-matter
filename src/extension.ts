@@ -2,13 +2,21 @@ import * as vscode from 'vscode';
 import { Article, Settings, StatusListener } from './commands';
 import { Template } from './commands/Template';
 import { TaxonomyType } from './models';
+import { ExplorerView } from './webview/ExplorerView';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let debouncer: { (fnc: any, time: number): void; };
 let collection: vscode.DiagnosticCollection;
 
-export function activate({ subscriptions }: vscode.ExtensionContext) {
+export function activate({ subscriptions, extensionUri }: vscode.ExtensionContext) {
 	collection = vscode.languages.createDiagnosticCollection('frontMatter');
+
+	const explorerSidebar = ExplorerView.getInstance(extensionUri);
+	let explorerView = vscode.window.registerWebviewViewProvider(ExplorerView.viewType, explorerSidebar, {
+		webviewOptions: {
+			retainContextWhenHidden: true
+		}
+	});
 
 	let insertTags = vscode.commands.registerCommand('frontMatter.insertTags', () => {
 		Article.insert(TaxonomyType.Tag);
@@ -75,6 +83,7 @@ export function activate({ subscriptions }: vscode.ExtensionContext) {
 
 	// Subscribe all commands
 	subscriptions.push(insertTags);
+	subscriptions.push(explorerView);
 	subscriptions.push(insertCategories);
 	subscriptions.push(createTag);
 	subscriptions.push(createCategory);

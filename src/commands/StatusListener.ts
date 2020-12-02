@@ -2,6 +2,7 @@ import { SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH } from './../c
 import * as vscode from 'vscode';
 import { CONFIG_KEY } from '../constants';
 import { ArticleHelper, SeoHelper } from '../helpers';
+import { ExplorerView } from '../webview/ExplorerView';
 
 export class StatusListener {
   
@@ -38,8 +39,8 @@ export class StatusListener {
 
           // Retrieve the SEO config properties
           const config = vscode.workspace.getConfiguration(CONFIG_KEY);
-          let titleLength = config.get(SETTING_SEO_TITLE_LENGTH) as number || -1;
-          let descLength = config.get(SETTING_SEO_DESCRIPTION_LENGTH) as number || -1;
+          const titleLength = config.get(SETTING_SEO_TITLE_LENGTH) as number || -1;
+          const descLength = config.get(SETTING_SEO_DESCRIPTION_LENGTH) as number || -1;
           
           if (article.data.title && titleLength > -1) {
             SeoHelper.checkLength(editor, collection, article, "title", titleLength);
@@ -49,6 +50,12 @@ export class StatusListener {
             SeoHelper.checkLength(editor, collection, article, "description", descLength);
           }
         }
+        
+        const panel = ExplorerView.getInstance();
+        if (panel && panel.visible) {
+          panel.pushMetadata(article!.data);
+        }
+
         return;
       } catch (e) {
         // Nothing to do

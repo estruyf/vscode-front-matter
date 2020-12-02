@@ -1,0 +1,226 @@
+import { PanelSettings } from './../models/PanelSettings';
+import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace } from "vscode";
+import { CONFIG_KEY, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from "../constants";
+import { ArticleHelper } from "../helpers";
+import { Command } from "../viewpanel/Command";
+import { CommandToCode } from '../viewpanel/CommandToCode';
+import { Article } from '../commands';
+import { TagType } from '../viewpanel/TagType';
+
+
+
+export class ExplorerView implements WebviewViewProvider, Disposable {
+  public static readonly viewType = "frontMatter.explorer";
+  private static instance: ExplorerView;
+
+  private panel: WebviewView | null = null;
+  private disposable: Disposable | null = null;
+
+  private constructor(private readonly extPath: Uri) {}
+
+  /**
+   * Creates the singleton instance for the panel
+   * @param extPath 
+   */
+  public static getInstance(extPath?: Uri): ExplorerView {
+    if (!ExplorerView.instance) {
+      ExplorerView.instance = new ExplorerView(extPath as Uri);
+    }
+
+    return ExplorerView.instance;
+  }
+
+  /**
+   * Retrieve the visibility of the webview
+   */
+  get visible() {
+		return this.panel ? this.panel.visible : false;
+  }
+  
+  /**
+   * Webview panel dispose
+   */
+  public dispose() {
+		if (this.disposable) {
+      this.disposable.dispose();
+    } 
+	}
+
+  /**
+   * Default resolve webview panel
+   * @param webviewView 
+   * @param context 
+   * @param token 
+   */
+  public async resolveWebviewView(webviewView: WebviewView, context: WebviewViewResolveContext, token: CancellationToken): Promise<void> {
+
+    this.panel = webviewView;
+
+    webviewView.webview.options = {
+      enableScripts: true,
+      enableCommandUris: true,
+      localResourceRoots: [this.extPath]
+    };
+
+    webviewView.webview.html = this.getWebviewContent(webviewView.webview);
+
+    this.disposable = Disposable.from(
+			webviewView.onDidDispose(() => { webviewView.webview.html = ""; }, this),
+			// window.onDidChangeWindowState(() => { console.log(`onDidChangeWindowState visible`, this.visible);  }, this)
+    );
+    
+    webviewView.webview.onDidReceiveMessage(msg => {
+      switch(msg.command) {
+        case CommandToCode.getData:
+          this.getSettings();
+          this.getFileData();
+          break;
+        case CommandToCode.updateSlug:
+          Article.generateSlug();
+          break;
+        case CommandToCode.updateDate:
+          Article.setDate();
+          break;
+        case CommandToCode.publish:
+          Article.toggleDraft();
+          break;
+        case CommandToCode.updateTags:
+          this.updateTags(TagType.tags, msg.data || []);
+          break;
+        case CommandToCode.updateCategories:
+          this.updateTags(TagType.categories, msg.data || []);
+          break;
+      }
+    });
+
+    webviewView.onDidChangeVisibility(() => {
+      if (this.visible) {
+        this.getFileData();
+      }
+    });
+
+    window.onDidChangeActiveTextEditor(() => {
+      this.postWebviewMessage({ command: Command.loading, data: true });
+      if (this.visible) {
+        this.getFileData();
+      }
+    }, this);
+
+    workspace.onDidChangeConfiguration(() => {
+      this.getSettings();
+    });
+  }
+
+  /**
+   * Triggers a metadata change in the panel
+   * @param metadata 
+   */
+  public pushMetadata(metadata: any) {
+    this.postWebviewMessage({ command: Command.metadata, data: metadata });
+  }
+
+  /**
+   * Retrieve the extension settings
+   */
+  private getSettings() {
+    const config = workspace.getConfiguration(CONFIG_KEY);
+
+    this.postWebviewMessage({
+      command: Command.settings,
+      data: {
+        seo: {
+          title: config.get(SETTING_SEO_TITLE_LENGTH) as number || -1,
+          description: config.get(SETTING_SEO_DESCRIPTION_LENGTH) as number || -1
+        },
+        slug: {
+          prefix: config.get(SETTING_SLUG_PREFIX) || "",
+          suffix: config.get(SETTING_SLUG_SUFFIX) || ""
+        },
+        tags: config.get(SETTING_TAXONOMY_TAGS) || [],
+        categories: config.get(SETTING_TAXONOMY_CATEGORIES) || []
+      } as PanelSettings
+    });
+  }
+
+  /**
+   * Retrieve the file its front matter
+   */
+  private getFileData() {
+    const editor = window.activeTextEditor;
+    if (!editor) {
+      return "";
+    }
+
+    const article = ArticleHelper.getFrontMatter(editor);
+    this.postWebviewMessage({ command: Command.metadata, data: article!.data });
+  }
+
+  /**
+   * Update the tags in the current document
+   * @param tagType 
+   * @param values 
+   */
+  private updateTags(tagType: TagType, values: string[]) {
+    const editor = window.activeTextEditor;
+    if (!editor) {
+      return "";
+    }
+
+    const article = ArticleHelper.getFrontMatter(editor);
+    if (article && article.data) {
+      article.data[tagType.toLowerCase()] = values || [];
+      ArticleHelper.update(editor, article);
+      this.postWebviewMessage({ command: Command.metadata, data: article.data });
+    }
+  }
+
+  /**
+   * Post data to the panel
+   * @param msg 
+   */
+  private postWebviewMessage(msg: { command: Command, data: any }) {
+    this.panel!.webview.postMessage(msg);
+  }
+
+
+  private getNonce() {
+    let text = '';
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (let i = 0; i < 32; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+  }
+
+  /**
+   * Retrieve the webview HTML contents
+   * @param webView 
+   */
+  private getWebviewContent(webView: Webview): string {
+    const styleVSCodeUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'assets/media', 'vscode.css'));
+    const styleResetUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'assets/media', 'reset.css'));
+    const stylesUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'assets/media', 'styles.css'));
+    const scriptUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'dist', 'bundle.js'));
+    const nonce = this.getNonce();
+
+    return `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${webView.cspSource} 'self' 'unsafe-inline'; script-src 'nonce-${nonce}'; style-src ${webView.cspSource} 'self' 'unsafe-inline'; font-src ${webView.cspSource}">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="${styleResetUri}" rel="stylesheet">
+        <link href="${styleVSCodeUri}" rel="stylesheet">
+        <link href="${stylesUri}" rel="stylesheet">
+
+        <title>FrontMatter</title>
+      </head>
+      <body>
+        <div id="app"></div>
+
+        <script nonce="${nonce}" src="${scriptUri}"></script>
+      </body>
+      </html>
+    `;
+  }
+}

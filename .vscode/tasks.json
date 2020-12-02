@@ -18,7 +18,7 @@
 		},
 		{
 			"type": "npm",
-			"script": "webpack",
+			"script": "build:ext",
 			"group": {
 				"kind": "build",
 				"isDefault": true

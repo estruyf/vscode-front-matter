@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { TaxonomyType } from "../models";
 import { CONFIG_KEY, SETTING_DATE_FORMAT, EXTENSION_NAME, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_DATE_FIELD } from "../constants/settings";
 import { format } from "date-fns";
-import { ArticleHelper, SettingsHelper } from '../helpers';
+import { ArticleHelper, SettingsHelper, SlugHelper } from '../helpers';
 import matter = require('gray-matter');
 
 
@@ -161,7 +161,7 @@ export class Article {
     }
 
     const articleTitle: string = article.data["title"];
-    const slug = ArticleHelper.createSlug(articleTitle);
+    const slug = SlugHelper.createSlug(articleTitle);
     if (slug) {
       article.data["slug"] = `${prefix}${slug}${suffix}`;
       ArticleHelper.update(editor, article);
