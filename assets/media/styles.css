@@ -89,6 +89,18 @@
   margin-bottom: 1rem;
 }
 
+.article__tags__dropbox {
+  width: 90%;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+  position: absolute;
+  list-style: none;
+  overflow: auto;
+  max-height: 200px;
+  border: 1px solid rgba(0, 0, 0, .9);
+}
+
 .article__tags ul {
 	color: var(--vscode-dropdown-foreground);
   background-color: var(--vscode-dropdown-background);
@@ -96,6 +108,7 @@
 
 .article__tags li {
   padding: var(--input-padding-vertical) var(--input-padding-horizontal);
+  cursor: pointer;
 }
 
 .article__tags li:active {

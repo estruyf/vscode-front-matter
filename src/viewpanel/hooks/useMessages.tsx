@@ -2,14 +2,9 @@ import { useState, useEffect } from 'react';
 import { PanelSettings } from '../../models/PanelSettings';
 import { Command } from '../Command';
 import { CommandToCode } from '../CommandToCode';
+import { MessageHelper } from '../helper/MessageHelper';
 
-declare const acquireVsCodeApi: <T = unknown>() => {
-  getState: () => T;
-  setState: (data: T) => void;
-  postMessage: (msg: unknown) => void;
-};
-
-const vscode = acquireVsCodeApi();
+const vscode = MessageHelper.getVsCodeAPI();
 
 export default function useMessages() {
   const [metadata, setMetadata] = useState<any>({});
@@ -42,13 +37,6 @@ export default function useMessages() {
   return {
     metadata,
     settings,
-    loading,
-    sendMessage: (command: CommandToCode, data?: any) => {
-      if (data) {
-        vscode.postMessage({ command, data });
-      } else {
-        vscode.postMessage({ command });
-      }
-    }
+    loading
   };
 }

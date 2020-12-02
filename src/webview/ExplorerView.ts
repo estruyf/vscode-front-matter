@@ -8,7 +8,6 @@ import { Article } from '../commands';
 import { TagType } from '../viewpanel/TagType';
 
 
-
 export class ExplorerView implements WebviewViewProvider, Disposable {
   public static readonly viewType = "frontMatter.explorer";
   private static instance: ExplorerView;
@@ -66,7 +65,6 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
     this.disposable = Disposable.from(
 			webviewView.onDidDispose(() => { webviewView.webview.html = ""; }, this),
-			// window.onDidChangeWindowState(() => { console.log(`onDidChangeWindowState visible`, this.visible);  }, this)
     );
     
     webviewView.webview.onDidReceiveMessage(msg => {
@@ -95,7 +93,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
     webviewView.onDidChangeVisibility(() => {
       if (this.visible) {
-        this.getFileData();
+        // this.getFileData();
       }
     });
 

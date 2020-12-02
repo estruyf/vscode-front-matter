@@ -2,15 +2,14 @@
 
 import * as React from 'react';
 import { CommandToCode } from '../CommandToCode';
-import useMessages from '../hooks/useMessages';
+import { MessageHelper } from '../helper/MessageHelper';
 
 export interface IDateActionProps {}
 
 export const DateAction: React.FunctionComponent<IDateActionProps> = (props: React.PropsWithChildren<IDateActionProps>) => {
-  const { sendMessage } = useMessages(); 
 
   const setDate = () => {
-    sendMessage(CommandToCode.updateDate);
+    MessageHelper.sendMessage(CommandToCode.updateDate);
   };
 
   return (
