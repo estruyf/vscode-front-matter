@@ -35,10 +35,10 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
         settings && metadata && <Actions metadata={metadata} settings={settings} />
       }
       {
-        (settings && settings.tags && settings.tags.length > 0) && <TagPicker type={TagType.tags} crntSelected={metadata.tags || []} options={settings.tags} />
+        (settings && settings.tags && settings.tags.length > 0) && <TagPicker type={TagType.tags} crntSelected={metadata.tags || []} options={settings.tags} freeform={settings.freeform} />
       }
       {
-        (settings && settings.categories && settings.categories.length > 0) && <TagPicker type={TagType.categories} crntSelected={metadata.categories || []} options={settings.categories} />
+        (settings && settings.categories && settings.categories.length > 0) && <TagPicker type={TagType.categories} crntSelected={metadata.categories || []} options={settings.categories} freeform={settings.freeform} />
       }
     </div>
   );

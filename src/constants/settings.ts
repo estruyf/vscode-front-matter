@@ -21,3 +21,5 @@ export const SETTING_SEO_DESCRIPTION_LENGTH = "taxonomy.seoDescriptionLength";
 
 export const SETTING_TEMPLATES_FOLDER = "templates.folder";
 export const SETTING_TEMPLATES_PREFIX = "templates.prefix";
+
+export const SETTING_PANEL_FREEFORM = "panel.freeform";

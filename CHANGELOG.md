@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.10.0] - 2020-12-03
+
+- FrontMatter panel implemented. This panel allows you to control all extension actions, but not only that. It makes adding tags and categories in a easier way to your page.
+
 ## [1.9.0] - 2020-11-25
 
 - [#23](https://github.com/estruyf/vscode-front-matter/issues/23): Implemented the option to create and use templates for article creation (front matter will be updates as well).

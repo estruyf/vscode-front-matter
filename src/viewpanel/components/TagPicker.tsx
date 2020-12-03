@@ -10,10 +10,11 @@ export interface ITagPickerProps {
   type: string;
   crntSelected: string[];
   options: string[];
+  freeform: boolean;
 }
 
 export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsWithChildren<ITagPickerProps>) => {
-  const { type, crntSelected, options } = props;
+  const { type, crntSelected, options, freeform } = props;
   const [ selected, setSelected ] = React.useState<string[]>([]);
   const prevSelected = usePrevious(crntSelected);
 
@@ -21,7 +22,7 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
     id: 'use-autocomplete',
     options: options,
     multiple: true,
-    autoComplete: true,
+    freeSolo: freeform,
     value: crntSelected,
     getOptionDisabled: (option) => selected.includes(option),
     onChange: (e, values: string[]) => {
@@ -35,6 +36,11 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
     const newSelection = selected.filter(s => s !== tag);
     setSelected(newSelection);
     sendUpdate(newSelection);
+  };
+
+  const onCreate = (tag: string) => {
+    const cmdType = type === TagType.tags ? CommandToCode.addTagToSettings : CommandToCode.addCategoryToSettings;
+    MessageHelper.sendMessage(cmdType, tag);
   };
 
   const sendUpdate = (values: string[]) => {
@@ -66,7 +72,7 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
         ) : null
       }
 
-      <Tags values={selected} onRemove={onRemove} options={options} />
+      <Tags values={selected} onRemove={onRemove} onCreate={onCreate} options={options} />
     </div>
   );
 };

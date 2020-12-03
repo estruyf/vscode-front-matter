@@ -146,6 +146,11 @@
 					"type": "string",
 					"default": "yyyy-MM-dd",
 					"description": "Specify the prefix you want to add for your new article filenames."
+				},
+				"frontMatter.panel.freeform": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "Specifies if you want to allow yourself from entering unknown tags/categories in the tag picker (when enabled, you will have the option to store them afterwards). Default: true."
 				}
 			}
 		},
@@ -217,6 +222,10 @@
 		"test-compile": "tsc -p ./"
 	},
 	"devDependencies": {
+		"@iarna/toml": "2.2.3",
+		"@material-ui/core": "4.11.1",
+		"@material-ui/icons": "4.11.2",
+		"@material-ui/lab": "4.0.0-alpha.56",
 		"@types/glob": "7.1.3",
 		"@types/js-yaml": "3.12.1",
 		"@types/mocha": "^5.2.6",
@@ -229,16 +238,13 @@
 		"gray-matter": "4.0.2",
 		"html-loader": "1.3.2",
 		"html-webpack-plugin": "4.5.0",
+		"react": "17.0.1",
+		"react-dom": "17.0.1",
 		"ts-loader": "8.0.3",
 		"tslint": "6.1.3",
 		"typescript": "4.0.2",
 		"webpack": "4.44.2",
-		"webpack-cli": "3.3.12",
-		"@iarna/toml": "2.2.3",
-		"@material-ui/core": "4.11.1",
-		"@material-ui/lab": "4.0.0-alpha.56",
-		"react": "17.0.1",
-		"react-dom": "17.0.1"
+		"webpack-cli": "3.3.12"
 	},
 	"dependencies": {}
 }

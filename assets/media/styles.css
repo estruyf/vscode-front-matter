@@ -101,6 +101,10 @@
   border: 1px solid rgba(0, 0, 0, .9);
 }
 
+.article__tags input {
+  border: 1px solid var(--vscode-inputValidation-infoBorder);
+}
+
 .article__tags ul {
 	color: var(--vscode-dropdown-foreground);
   background-color: var(--vscode-dropdown-background);
@@ -117,6 +121,7 @@
 }
 
 .article__tags li[data-focus="true"] {
+  color: var(--vscode-button-foreground);
   background-color: var(--vscode-button-hoverBackground);
 }
 
@@ -128,18 +133,50 @@
   margin-top: 1rem;
 }
 
-.article__tags__items__btn {
+.article__tags__items__item {
   display: inline-block;
   margin-bottom: .5rem;
   margin-right: .5rem;
+}
+
+.article__tags__items__item_add,
+.article__tags__items__item_delete {
+  display: inline-block;
   width: auto;
 }
 
-.article__tags__items__btn span {
+.article__tags__items__item svg {
+  display: inline;
+  vertical-align: bottom;
+}
+
+.article__tags__items__item_delete span {
   margin-left: .5rem;
 }
 
 .article__tags__items__pill_notexists {
   color: var(--vscode-inputValidation-errorForeground);
   background-color: var(--vscode-inputValidation-errorBackground);
+  padding-left: .5rem;
+}
+
+.article__tags__items__pill_notexists:hover {
+  color: var(--vscode-inputValidation-errorForeground);
+  background-color: var(--vscode-inputValidation-errorBackground);
+
+  filter: contrast(60%);
+}
+
+.article__tags__items__item_add {
+  color: var(--vscode-inputValidation-infoForeground);
+  background-color: var(--vscode-inputValidation-infoBackground);
+  border-right: 1px solid var(--vscode-inputValidation-infoBorder);
+}
+
+.article__tags__items__item_add:hover {
+  color: var(--vscode-inputValidation-infoForeground);
+  background-color: var(--vscode-inputValidation-infoBackground);
+  border-right: 1px solid var(--vscode-inputValidation-infoBorder);
+
+  filter: contrast(60%);
 }

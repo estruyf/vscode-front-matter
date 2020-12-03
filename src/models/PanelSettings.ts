@@ -4,6 +4,7 @@ export interface PanelSettings {
   slug: Slug;
   tags: string[];
   categories: string[];
+  freeform: boolean;
 }
 
 export interface SEO {
