@@ -4,5 +4,7 @@ export enum CommandToCode {
   updateDate = 'update-date',
   publish = 'publish',
   updateTags = "update-tags",
-  updateCategories = "update-categories"
+  updateCategories = "update-categories",
+  addTagToSettings = "add-tag",
+  addCategoryToSettings = "add-category"
 }

@@ -1,12 +1,12 @@
 import { PanelSettings } from './../models/PanelSettings';
 import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace } from "vscode";
-import { CONFIG_KEY, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from "../constants";
-import { ArticleHelper } from "../helpers";
+import { CONFIG_KEY, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from "../constants";
+import { ArticleHelper, SettingsHelper } from "../helpers";
 import { Command } from "../viewpanel/Command";
 import { CommandToCode } from '../viewpanel/CommandToCode';
 import { Article } from '../commands';
 import { TagType } from '../viewpanel/TagType';
-
+import { TaxonomyType } from '../models';
 
 
 export class ExplorerView implements WebviewViewProvider, Disposable {
@@ -66,7 +66,6 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
     this.disposable = Disposable.from(
 			webviewView.onDidDispose(() => { webviewView.webview.html = ""; }, this),
-			// window.onDidChangeWindowState(() => { console.log(`onDidChangeWindowState visible`, this.visible);  }, this)
     );
     
     webviewView.webview.onDidReceiveMessage(msg => {
@@ -90,12 +89,18 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         case CommandToCode.updateCategories:
           this.updateTags(TagType.categories, msg.data || []);
           break;
+        case CommandToCode.addTagToSettings:
+          this.addTags(TagType.tags, msg.data);
+          break;
+        case CommandToCode.addCategoryToSettings:
+          this.addTags(TagType.categories, msg.data);
+          break;
       }
     });
 
     webviewView.onDidChangeVisibility(() => {
       if (this.visible) {
-        this.getFileData();
+        // this.getFileData();
       }
     });
 
@@ -137,7 +142,8 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
           suffix: config.get(SETTING_SLUG_SUFFIX) || ""
         },
         tags: config.get(SETTING_TAXONOMY_TAGS) || [],
-        categories: config.get(SETTING_TAXONOMY_CATEGORIES) || []
+        categories: config.get(SETTING_TAXONOMY_CATEGORIES) || [],
+        freeform: config.get(SETTING_PANEL_FREEFORM)
       } as PanelSettings
     });
   }
@@ -171,6 +177,26 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       article.data[tagType.toLowerCase()] = values || [];
       ArticleHelper.update(editor, article);
       this.postWebviewMessage({ command: Command.metadata, data: article.data });
+    }
+  }
+
+  /**
+   * Add tag to the settings
+   * @param tagType 
+   * @param value 
+   */
+  private async addTags(tagType: TagType, value: string) {
+    if (value) {
+      const config = workspace.getConfiguration(CONFIG_KEY);
+      let options = tagType === TagType.tags ? config.get<string[]>(SETTING_TAXONOMY_TAGS) : config.get<string[]>(SETTING_TAXONOMY_CATEGORIES);
+
+      if (!options) {
+        options = [];
+      }
+
+      options.push(value);
+      const taxType = tagType === TagType.tags ? TaxonomyType.Tag : TaxonomyType.Category;
+      await SettingsHelper.update(taxType, options);
     }
   }
 

@@ -5,17 +5,26 @@ export interface ITagsProps {
   values: string[];
   options: string[];
 
+  onCreate: (tags: string) => void;
   onRemove: (tags: string) => void;
 }
 
 export const Tags: React.FunctionComponent<ITagsProps> = (props: React.PropsWithChildren<ITagsProps>) => {
-  const { values, options, onRemove } = props;
+  const { values, options, onCreate, onRemove } = props;
+
+  const knownTags = values.filter(v => options.includes(v));
+  const unknownTags = values.filter(v => !options.includes(v));
   
   return (
     <div className={`article__tags__items`}>
       {
-        values.map(t => (
-          <Tag key={t.replace(/ /g, "_")} value={t} className={`${options.includes(t) ? 'article__tags__items__pill_exists' : 'article__tags__items__pill_notexists'}`} onRemove={onRemove} title={`${options.includes(t) ? `Remove ${t}` : `Be aware, this tag "${t}" is not saved in your settings.`}`} />
+        knownTags.map(t => (
+          <Tag key={t.replace(/ /g, "_")} value={t} className={`article__tags__items__pill_exists`} onRemove={onRemove} title={`Remove ${t}`} />
+        ))
+      }
+      {
+        unknownTags.map(t => (
+          <Tag key={t.replace(/ /g, "_")} value={t} className={`article__tags__items__pill_notexists`} onRemove={onRemove} onCreate={onCreate} title={`Be aware, this tag "${t}" is not saved in your settings. Once removed, it will be gone forever.`} />
         ))
       }
     </div>

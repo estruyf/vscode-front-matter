@@ -10,6 +10,18 @@ The extension will automatically verify if your title and description are SEO co
 
 > If you see something missing in your article creation flow, please feel free to reach out.
 
+## FrontMatter Panel (introduced in 1.10.0)
+
+In version `1.10.0` of this extension, the FrontMatter panel got introduced. This panel allows you to perform most of the extension actions by just a click on the button. 
+
+![FrontMatter Panel](./assets/frontmatter-panel.png)
+
+Originally this panel was created to make it easier to add tags and categories to your articles. As the current vscode multi-select is not optimal to use.
+
+To leverage most of the capabilities of the extension. SEO information and common actions like slug optimization, updating the date and publish/drafting the article.
+
+> **Info**: By default the tags/categories picker allows you to insert none existing tags/categories. When you enter a none existing tag/category, the panel shows an add `+` icon in front of that button. This allows you to store this tag/category to your settings. If you want to disable this feature, you can do that by setting the `frontMatter.panel.freeform` setting to `false`.
+
 ## Creating articles from templates
 
 By default, the extension looks for files stored in a `.templates` folder which should be located in the root of your website project.
