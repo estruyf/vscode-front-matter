@@ -14,7 +14,7 @@ export const SeoDetails: React.FunctionComponent<ISeoDetailsProps> = (props: Rea
       <h4><strong>{title}</strong></h4>
       <ul>
         <li><b>Length</b>: {value.length}</li>
-        <li><b>Allowed length</b>: {allowedLength}</li>
+        <li><b>Recommended length</b>: {allowedLength}</li>
       </ul>
     </div>
   );
