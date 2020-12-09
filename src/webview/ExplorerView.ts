@@ -54,6 +54,8 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    */
   public async resolveWebviewView(webviewView: WebviewView, context: WebviewViewResolveContext, token: CancellationToken): Promise<void> {
 
+    console.log(context);
+
     this.panel = webviewView;
 
     webviewView.webview.options = {
@@ -122,6 +124,18 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    */
   public pushMetadata(metadata: any) {
     this.postWebviewMessage({ command: Command.metadata, data: metadata });
+  }
+
+  /**
+   * Allows the webview panel to focus on tags or categories input
+   * @param tagType 
+   */
+  public triggerInputFocus(tagType: TagType) {
+    if (tagType === TagType.tags) {
+      this.postWebviewMessage({ command: Command.focusOnTags });
+    } else {
+      this.postWebviewMessage({ command: Command.focusOnCategories });
+    }
   }
 
   /**
@@ -204,7 +218,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * Post data to the panel
    * @param msg 
    */
-  private postWebviewMessage(msg: { command: Command, data: any }) {
+  private postWebviewMessage(msg: { command: Command, data?: any }) {
     this.panel!.webview.postMessage(msg);
   }
 
