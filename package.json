@@ -216,10 +216,11 @@
 		]
 	},
 	"scripts": {
-		"vscode:prepublish": "webpack --mode production",
+		"vscode:prepublish": "npm run clean && webpack --mode production",
 		"build:ext": "webpack --mode development",
 		"dev:ext": "webpack --mode development --watch",
-		"test-compile": "tsc -p ./"
+		"test-compile": "tsc -p ./",
+		"clean": "rm -rf dist"
 	},
 	"devDependencies": {
 		"@iarna/toml": "2.2.3",
@@ -244,9 +245,8 @@
 		"tslint": "6.1.3",
 		"typescript": "4.0.2",
 		"webpack": "4.44.2",
-		"webpack-cli": "3.3.12"
-	},
-	"dependencies": {
+		"webpack-cli": "3.3.12",
 		"downshift": "6.0.6"
-	}
+	},
+	"dependencies": {}
 }
