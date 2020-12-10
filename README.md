@@ -4,7 +4,7 @@
 &nbsp;&nbsp;
 [![Rating](https://vsmarketplacebadge.apphb.com/rating/eliostruyf.vscode-front-matter.svg)](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter&ssr=false#review-details)
 
-This VSCode extension simplifies working with front matter of your markdown articles when using a static site generator like Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more... For example, with the extension, you can keep a list of used tags, categories and add/remove them from your article.
+This VSCode extension simplifies working with your markdown articles' front matter when using a static site generator like Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more... For example, you can keep a list of used tags, categories and add/remove them from your article with the extension.
 
 The extension will automatically verify if your title and description are SEO compliant. If this would not be the case, it will give you a warning.
 
@@ -16,21 +16,21 @@ In version `1.10.0` of this extension, the FrontMatter panel got introduced. Thi
 
 ![FrontMatter Panel](./assets/frontmatter-panel.png)
 
-Originally this panel was created to make it easier to add tags and categories to your articles. As the current vscode multi-select is not optimal to use.
+Initially, this panel has been created to make it easier to add tags and categories to your articles as the current VSCode multi-select is not optimal to use.
 
-To leverage most of the capabilities of the extension. SEO information and common actions like slug optimization, updating the date and publish/drafting the article.
+To leverage most of the capabilities of the extension. SEO information and everyday actions like slug optimization, updating the date, and publish/drafting the article.
 
-> **Info**: By default the tags/categories picker allows you to insert none existing tags/categories. When you enter a none existing tag/category, the panel shows an add `+` icon in front of that button. This allows you to store this tag/category to your settings. If you want to disable this feature, you can do that by setting the `frontMatter.panel.freeform` setting to `false`.
+> **Info**: By default, the tags/categories picker allows you to insert existing and none tags/categories. When you enter a none existing tag/category, the panel shows an add `+` icon in front of that button. This functionality allows you to store this tag/category in your settings. If you want to disable this feature, you can do that by setting the `frontMatter.panel.freeform` setting to `false`.
 
 ## Creating articles from templates
 
-By default, the extension looks for files stored in a `.templates` folder which should be located in the root of your website project.
+By default, the extension looks for files stored in a `.templates` folder that should be located in your website project's root.
 
-> **Info**: You can overwrite the path, by specifying it with the `frontMatter.templates.folder` setting.
+> **Info**: You can overwrite the path by specifying it with the `frontMatter.templates.folder` setting.
 
-When adding files in the folder, you'll be able to runt the `Front Matter: New article from template` from a command or explorer menu. It will present you with the article template options. Once you pick one, and specify the title. It creates the file and updates its front matter.
+When adding files in the folder, you'll be able to run the `Front Matter: New article from template` from a command or explorer menu. It will present you with the article template options once you pick one and specify the title. It creates the file and updates its front matter.
 
-> **Info**: By default the extension will create articles with a `yyyy-MM-dd` prefix. If you do not want that, or change the date format, you can do this by updating the `frontMatter.templates.prefix` setting.
+> **Info**: By default, the extension will create articles with a `yyyy-MM-dd` prefix. If you do not want that or change the date format, you can update the `frontMatter.templates.prefix` setting.
 
 ## Syntax highlighting for Hugo Shortcodes
 
@@ -46,25 +46,25 @@ Creates a new <tag | category> and allows you to include it into your post autom
   
 **Front Matter: Insert <tags | categories>**
 
-Inserts a selected <tags | categories> into the front matter of your article/post/...
+Inserts a selected <tags | categories> into the front matter of your article/post/... - When using this command, the FrontMatter panel opens and focuses on the specified type.
 
-![Insert tags or categories](./assets/insert-tag-category.gif)
+> **Info**: This experience changed in version `1.11.0`.
 
 **Front Matter: Export all tags & categories to your settings**
 
-Export all the already used tags & categories in your articles/posts/... to your user settings
+Export all the already used tags & categories in your articles/posts/... to your user settings.
 
 **Front Matter: Remap or remove tag/category in all articles**
 
 This command helps you quickly update/remap or delete a tag or category in your markdown files. The extension will ask you to select the taxonomy type (*tag* or *category*), the old taxonomy value, and the new one (leave the input field *blank* to remove the tag/category). 
 
-> **Info**: Once the remapping/deleting process is completed. The user settings will be updated with all new taxonomy tags/categories.
+> **Info**: Once the remapping/deleting process completes. Your VSCode settings update with all new taxonomy tags/categories.
 
 **Front Matter: Set current date**
 
 Update the `date` property of the current article/post/... to the current date & time.
 
-**Optional**: if you want, you can specify the date property format by adding your preference in your settings. Settings key: `frontMatter.taxonomy.dateFormat`. Check [date-fns formatting](https://date-fns.org/v2.0.1/docs/format) for more information on which patterns you can use.
+**Optional**: if you want, you can specify the date property format by adding your settings' preference. Settings key: `frontMatter.taxonomy.dateFormat`. Check [date-fns formatting](https://date-fns.org/v2.0.1/docs/format) for more information on which patterns you can use.
 
 **Front Matter: Set lastmod date**
 
@@ -84,7 +84,7 @@ slug: sample-page-title
 
 You can also specify a prefix and suffix, which can be added to the slug if you want. Use the following settings to do this: `frontMatter.taxonomy.slugPrefix` and `frontMatter.taxonomy.slugSuffix`. By default, both options are not provided and will not add anything to the slug.
 
-> **Info**: At the moment, only English stop words are supported.
+> **Info**: At the moment, the extension only supports English stopwords.
 
 ## Where is the data stored?
 
@@ -99,7 +99,7 @@ The tags and categories are stored in the project VSCode user settings. You can 
 
 ## Additional extension settings
 
-The extension has more settings that allow you to configure it to your needs further. Here is a list of settings which you can set:
+The extension has more settings that allow you to configure it to your needs further. Here is a list of settings that you can set:
 
 ### `frontMatter.taxonomy.seoTitleLength`
 
@@ -142,7 +142,7 @@ Specify if arrays in the front matter are indented. Default: `true`. If you do n
 
 ### `frontMatter.taxonomy.noPropertyValueQuotes`
 
-Specify the property names of which you want to remove the quotes in the output value. **Warning**: only use this when you know what you are doing. If you want to, for instance, remove the quotes from the date property, you can add the following:
+Specify the property names of which you want to remove the quotes in the output value. **Warning**: only use this when you know what you are doing. If you're going to, for instance, remove the quotes from the date property, you can add the following:
 
 ```json
 {

@@ -10,7 +10,7 @@ export interface IViewPanelProps {
 }
 
 export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React.PropsWithChildren<IViewPanelProps>) => {
-  const { loading, metadata, settings } = useMessages();
+  const { loading, metadata, settings, focusElm, unsetFocus } = useMessages();
 
   if (loading) {
     return (
@@ -35,10 +35,24 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
         settings && metadata && <Actions metadata={metadata} settings={settings} />
       }
       {
-        (settings && settings.tags && settings.tags.length > 0) && <TagPicker type={TagType.tags} crntSelected={metadata.tags || []} options={settings.tags} freeform={settings.freeform} />
+        (settings && settings.tags && settings.tags.length > 0) && (
+          <TagPicker type={TagType.tags} 
+                     crntSelected={metadata.tags || []} 
+                     options={settings.tags} 
+                     freeform={settings.freeform} 
+                     focussed={focusElm === TagType.tags}
+                     unsetFocus={unsetFocus} />
+        )
       }
       {
-        (settings && settings.categories && settings.categories.length > 0) && <TagPicker type={TagType.categories} crntSelected={metadata.categories || []} options={settings.categories} freeform={settings.freeform} />
+        (settings && settings.categories && settings.categories.length > 0) && (
+          <TagPicker type={TagType.categories} 
+                     crntSelected={metadata.categories || []} 
+                     options={settings.categories} 
+                     freeform={settings.freeform} 
+                     focussed={focusElm === TagType.categories}
+                     unsetFocus={unsetFocus} />
+        )
       }
     </div>
   );

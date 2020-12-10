@@ -98,6 +98,9 @@
   list-style: none;
   overflow: auto;
   max-height: 200px;
+}
+
+.article__tags__dropbox.open {
   border: 1px solid rgba(0, 0, 0, .9);
 }
 
@@ -120,7 +123,7 @@
   background-color: var(--vscode-button-background);
 }
 
-.article__tags li[data-focus="true"] {
+.article__tags li[aria-selected="true"] {
   color: var(--vscode-button-foreground);
   background-color: var(--vscode-button-hoverBackground);
 }

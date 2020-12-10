@@ -1,5 +1,7 @@
 export enum Command {
   loading = "loading",
   metadata = "metadata",
-  settings = "settings"
+  settings = "settings",
+  focusOnTags = "focusOnTags",
+  focusOnCategories = "focusOnCategories"
 }

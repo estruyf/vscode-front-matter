@@ -3,6 +3,7 @@ import { PanelSettings } from '../../models/PanelSettings';
 import { Command } from '../Command';
 import { CommandToCode } from '../CommandToCode';
 import { MessageHelper } from '../helper/MessageHelper';
+import { TagType } from '../TagType';
 
 const vscode = MessageHelper.getVsCodeAPI();
 
@@ -10,6 +11,7 @@ export default function useMessages() {
   const [metadata, setMetadata] = useState<any>({});
   const [settings, setSettings] = useState<PanelSettings>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [focusElm, setFocus] = useState<TagType | null>(null);
 
   window.addEventListener('message', event => {
     const message = event.data;
@@ -26,6 +28,12 @@ export default function useMessages() {
       case Command.loading:
         setLoading(message.data);
         break;
+      case Command.focusOnTags:
+        setFocus(TagType.tags);
+        break;
+      case Command.focusOnCategories:
+        setFocus(TagType.categories);
+        break;
     }
   });
 
@@ -37,6 +45,8 @@ export default function useMessages() {
   return {
     metadata,
     settings,
-    loading
+    focusElm,
+    loading,
+    unsetFocus: () => { setFocus(null) }
   };
 }

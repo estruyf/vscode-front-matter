@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.11.0] - 2020-12-10
+
+- Moved from Material UI Autocomplete to Downshift. This gives more flexibility, and allows to focus the inputs from a VSCode command.
+- Changed the `Front Matter: Insert <tags | categories>` functionality to open in the panel, instead of using the VSCode dialogs.
+
 ## [1.10.0] - 2020-12-03
 
 - FrontMatter panel implemented. This panel allows you to control all extension actions, but not only that. It makes adding tags and categories in a easier way to your page.

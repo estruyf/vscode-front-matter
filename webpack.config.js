@@ -20,7 +20,7 @@ module.exports = [
       vscode: 'commonjs vscode'
     },
     resolve: {
-      extensions: ['.ts', '.js', '.tsx', '.jsx']
+      extensions: ['.ts', '.js']
     },
     module: {
       rules: [{
@@ -30,6 +30,10 @@ module.exports = [
           loader: 'ts-loader'
         }]
       }]
+    },
+    performance: {
+      maxEntrypointSize: 400000,
+      maxAssetSize: 400000
     }
   },
   {
@@ -38,7 +42,7 @@ module.exports = [
     entry: './src/viewpanel/index.tsx',
     output: {
       path: path.resolve(__dirname, 'dist'),
-      filename: 'bundle.js'
+      filename: 'viewpanel.js'
     },
     devtool: 'source-map',
     resolve: {
@@ -52,6 +56,10 @@ module.exports = [
           loader: 'ts-loader'
         }]
       }]
+    },
+    performance: {
+      maxEntrypointSize: 400000,
+      maxAssetSize: 400000
     }
   }
 ];
