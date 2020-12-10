@@ -1,8 +1,12 @@
 # Change Log
 
+## [1.11.1] - 2020-12-10
+
+- [#26](https://github.com/estruyf/vscode-front-matter/issues/26): Fix for arrow selection in the dropdown.
+
 ## [1.11.0] - 2020-12-10
 
-- Moved from Material UI Autocomplete to Downshift. This gives more flexibility, and allows to focus the inputs from a VSCode command.
+- [#25](https://github.com/estruyf/vscode-front-matter/issues/25): Moved from Material UI Autocomplete to Downshift. This gives more flexibility, and allows to focus the inputs from a VSCode command.
 - Changed the `Front Matter: Insert <tags | categories>` functionality to open in the panel, instead of using the VSCode dialogs.
 
 ## [1.10.0] - 2020-12-03

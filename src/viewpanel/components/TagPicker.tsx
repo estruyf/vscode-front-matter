@@ -6,10 +6,12 @@ import { TagType } from '../TagType';
 import { MessageHelper } from '../helper/MessageHelper';
 import Downshift from 'downshift';
 
+export interface KeyValue { key: string, value: string };
+
 export interface ITagPickerProps {
   type: string;
   crntSelected: string[];
-  options: string[];
+  options: KeyValue[];
   freeform: boolean;
   focussed: boolean;
   unsetFocus: () => void;
@@ -21,7 +23,7 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
   const [ inputValue, setInputValue ] = React.useState<string>("");
   const prevSelected = usePrevious(crntSelected);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
-  const dsRef = React.useRef<Downshift<string> | null>(null);
+  const dsRef = React.useRef<Downshift<KeyValue> | null>(null);
 
   /**
    * Removes an option
@@ -66,8 +68,16 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
    * @param compState 
    */
   const onSelect = (selectedItem: string | null) => {
+    console.log(selectedItem)
     if (selectedItem) {
-      const uniqValues = Array.from(new Set([...selected, selectedItem]));
+      let value = selectedItem || "";
+
+      const item = options.find(o => o.key === selectedItem.toLowerCase());
+      if (item && item.value) {
+        value = item.value;
+      }
+
+      const uniqValues = Array.from(new Set([...selected, value]));
       setSelected(uniqValues);
       sendUpdate(uniqValues);
       setInputValue("");
@@ -80,15 +90,15 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
    */
   const onEnterSelection = (event: React.KeyboardEvent<HTMLInputElement>, closeCb: () => void) => {
     if (freeform && event.key === "Enter" && inputValue) {
-      onSelect(inputValue);
-      
-      if (closeCb) {
-        closeCb();
-      }
+      setTimeout(() => {
+        onSelect(inputValue);
+      }, 100);
     } else if (event.key === "Escape") {
       if (closeCb) {
         closeCb();
       }
+    } else {
+      return true;
     }
   }
 
@@ -97,8 +107,20 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
    * @param option 
    * @param inputValue 
    */
-  const filterList = (option: string, inputValue: string | null) => {
-    return !selected.includes(option) && option.toLowerCase().includes((inputValue || "").toLowerCase());
+  const filterList = (option: KeyValue, inputValue: string | null) => {
+    return !selected.includes(option.value) && option.key.includes((inputValue || "").toLowerCase());
+  }
+
+  function stateReducer(state: any, changes: any) {
+    // this prevents the menu from being closed when the user
+    // selects an item with a keyboard or mouse
+    switch (changes.type) {
+      case Downshift.stateChangeTypes.keyDownEnter:
+        console.log(`Enter`, JSON.stringify(changes));
+        return changes;
+      default:
+        return changes
+    }
   }
 
   React.useEffect(() => {
@@ -118,25 +140,30 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
       <h3>{type}</h3>
 
       <Downshift ref={dsRef}
-                 onChange={onSelect}
-                 itemToString={item => (item ? item : '')}
+                 onChange={(selected) => onSelect(selected?.key || "")}
+                 itemToString={item => (item ? item.value : '')}
                  inputValue={inputValue}
-                 onInputValueChange={(value) => setInputValue(value)}>
+                 onInputValueChange={(value) => setInputValue(value)}
+                 stateReducer={stateReducer}>
         {
           ({ getInputProps, getItemProps, getMenuProps, isOpen, inputValue, getRootProps, openMenu, closeMenu }) => (
             <>
               <div {...getRootProps(undefined, {suppressRefError: true})}>
-                <input {...getInputProps({ ref: inputRef, onFocus: openMenu })}
-                       onBlur={() => { closeMenu(); unsetFocus(); } } 
-                       placeholder={`Pick your ${type.toLowerCase()}`}
-                       onKeyDown={(e) => onEnterSelection(e, closeMenu)} />
+                <input {...getInputProps({ 
+                          ref: inputRef, 
+                          onFocus: openMenu as any, 
+                          onClick: openMenu as any,
+                          onBlur: () => { closeMenu(); unsetFocus(); },
+                          onKeyDown: (e) => onEnterSelection(e, closeMenu)
+                       })}
+                       placeholder={`Pick your ${type.toLowerCase()}`} />
               </div>
 
               <ul className={`article__tags__dropbox ${isOpen ? "open" : "closed" }`} {...getMenuProps()}>
                 { 
                   isOpen ? options.filter((option) => filterList(option, inputValue)).map((item, index) => (
-                    <li {...getItemProps({ key: item, index, item })} >
-                      { item }
+                    <li {...getItemProps({ key: item.value, index, item })} >
+                      { item.value }
                     </li>
                   )) : null
                 }

@@ -20,14 +20,12 @@ export function activate({ subscriptions, extensionUri }: vscode.ExtensionContex
 	});
 
 	let insertTags = vscode.commands.registerCommand('frontMatter.insertTags', async () => {
-		// Article.insert(TaxonomyType.Tag);
 		await vscode.commands.executeCommand('workbench.view.extension.frontmatter-explorer');
 		await vscode.commands.executeCommand('workbench.action.focusSideBar');
 		explorerSidebar.triggerInputFocus(TagType.tags);
 	});
 
 	let insertCategories = vscode.commands.registerCommand('frontMatter.insertCategories', async () => {
-		// Article.insert(TaxonomyType.Category);
 		await vscode.commands.executeCommand('workbench.view.extension.frontmatter-explorer');
 		await vscode.commands.executeCommand('workbench.action.focusSideBar');
 		explorerSidebar.triggerInputFocus(TagType.categories);
