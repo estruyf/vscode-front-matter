@@ -58,7 +58,7 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
     if (focussed && inputRef && inputRef.current) {
       inputRef.current.focus();
     }
-  }
+  };
 
   /**
    * On item selection
@@ -67,30 +67,30 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
    */
   const onSelect = (selectedItem: string | null) => {
     if (selectedItem) {
-      const uniqValues = Array.from(new Set([...selected, selectedItem]));
+      let value = selectedItem || "";
+
+      const item = options.find(o => o.toLowerCase() === selectedItem.toLowerCase());
+      if (item) {
+        value = item;
+      }
+
+      const uniqValues = Array.from(new Set([...selected, value]));
       setSelected(uniqValues);
       sendUpdate(uniqValues);
       setInputValue("");
     }
-  }
+  };
 
   /**
-   * Allow free value entries
-   * @param event 
+   * Inserts a tag which is not known
+   * @param closeMenu 
    */
-  const onEnterSelection = (event: React.KeyboardEvent<HTMLInputElement>, closeCb: () => void) => {
-    if (freeform && event.key === "Enter" && inputValue) {
+  const insertUnkownTag = (closeMenu: (cb?: any) => void) => {
+    if (inputValue) {
       onSelect(inputValue);
-      
-      if (closeCb) {
-        closeCb();
-      }
-    } else if (event.key === "Escape") {
-      if (closeCb) {
-        closeCb();
-      }
+      closeMenu();
     }
-  }
+  };
 
   /**
    * Filters the options which can be selected
@@ -99,7 +99,7 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
    */
   const filterList = (option: string, inputValue: string | null) => {
     return !selected.includes(option) && option.toLowerCase().includes((inputValue || "").toLowerCase());
-  }
+  };
 
   React.useEffect(() => {
     setTimeout(() => {
@@ -118,18 +118,37 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
       <h3>{type}</h3>
 
       <Downshift ref={dsRef}
-                 onChange={onSelect}
+                 onChange={(selected) => onSelect(selected || "")}
                  itemToString={item => (item ? item : '')}
                  inputValue={inputValue}
                  onInputValueChange={(value) => setInputValue(value)}>
         {
-          ({ getInputProps, getItemProps, getMenuProps, isOpen, inputValue, getRootProps, openMenu, closeMenu }) => (
+          ({ getInputProps, getItemProps, getMenuProps, isOpen, inputValue, getRootProps, openMenu, closeMenu, clearSelection }) => (
             <>
-              <div {...getRootProps(undefined, {suppressRefError: true})}>
-                <input {...getInputProps({ ref: inputRef, onFocus: openMenu })}
-                       onBlur={() => { closeMenu(); unsetFocus(); } } 
-                       placeholder={`Pick your ${type.toLowerCase()}`}
-                       onKeyDown={(e) => onEnterSelection(e, closeMenu)} />
+              <div {...getRootProps(undefined, {suppressRefError: true})} className={`article__tags__input ${freeform ? 'freeform' : ''}`}>
+                <input {
+                          ...getInputProps({ 
+                            ref: inputRef, 
+                            onFocus: openMenu as any, 
+                            onClick: openMenu as any,
+                            onBlur: () => { 
+                              closeMenu(); 
+                              unsetFocus(); 
+                              if (!inputValue) {
+                                clearSelection();
+                              }
+                            }
+                          })
+                       }
+                       placeholder={`Pick your ${type.toLowerCase()}`} />
+                
+                {
+                  freeform && (
+                    <button title={`Add the unknown tag`}
+                            disabled={!inputValue} 
+                            onClick={() => insertUnkownTag(closeMenu)}>+</button>
+                  )
+                }
               </div>
 
               <ul className={`article__tags__dropbox ${isOpen ? "open" : "closed" }`} {...getMenuProps()}>
@@ -146,7 +165,7 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
         }
       </Downshift>
 
-      <Tags values={selected} onRemove={onRemove} onCreate={onCreate} options={options} />
+      <Tags values={selected.sort((a: string, b: string) => a.toLowerCase() < b.toLowerCase() ? -1 : 1 )} onRemove={onRemove} onCreate={onCreate} options={options} />
     </div>
   );
 };
