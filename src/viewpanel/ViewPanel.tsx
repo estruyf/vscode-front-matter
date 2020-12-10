@@ -38,7 +38,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
         (settings && settings.tags && settings.tags.length > 0) && (
           <TagPicker type={TagType.tags} 
                      crntSelected={metadata.tags || []} 
-                     options={settings.tags} 
+                     options={settings.tags.map(c => ({ key: c.toLowerCase(), value: c }))} 
                      freeform={settings.freeform} 
                      focussed={focusElm === TagType.tags}
                      unsetFocus={unsetFocus} />
@@ -48,7 +48,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
         (settings && settings.categories && settings.categories.length > 0) && (
           <TagPicker type={TagType.categories} 
                      crntSelected={metadata.categories || []} 
-                     options={settings.categories} 
+                     options={settings.categories.map(c => ({ key: c.toLowerCase(), value: c }))} 
                      freeform={settings.freeform} 
                      focussed={focusElm === TagType.categories}
                      unsetFocus={unsetFocus} />
