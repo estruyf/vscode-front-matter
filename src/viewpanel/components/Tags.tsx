@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { Tag } from './Tag';
-import { KeyValue } from './TagPicker';
 
 export interface ITagsProps {
   values: string[];
-  options: KeyValue[];
+  options: string[];
 
   onCreate: (tags: string) => void;
   onRemove: (tags: string) => void;
@@ -13,8 +12,8 @@ export interface ITagsProps {
 export const Tags: React.FunctionComponent<ITagsProps> = (props: React.PropsWithChildren<ITagsProps>) => {
   const { values, options, onCreate, onRemove } = props;
 
-  const knownTags = values.filter(v => options.map(o => o.value).includes(v));
-  const unknownTags = values.filter(v => !options.map(o => o.value).includes(v));
+  const knownTags = values.filter(v => options.includes(v));
+  const unknownTags = values.filter(v => !options.includes(v));
   
   return (
     <div className={`article__tags__items`}>

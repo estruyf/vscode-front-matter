@@ -104,8 +104,23 @@
   border: 1px solid rgba(0, 0, 0, .9);
 }
 
-.article__tags input {
+.article__tags__input input {
   border: 1px solid var(--vscode-inputValidation-infoBorder);
+}
+
+.article__tags__input.freeform {
+  position: relative;
+}
+
+.article__tags__input.freeform input {
+  padding-right: 35px;
+}
+
+.article__tags__input button {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  width: 30px;
 }
 
 .article__tags ul {
