@@ -121,6 +121,8 @@
   top: 1px;
   right: 1px;
   width: 30px;
+  padding-bottom: 2px; 
+  padding-top: 2px;
 }
 
 .article__tags ul {

@@ -5,6 +5,7 @@ import { CommandToCode } from '../CommandToCode';
 import { TagType } from '../TagType';
 import { MessageHelper } from '../helper/MessageHelper';
 import Downshift from 'downshift';
+import LocalOfferTwoToneIcon from '@material-ui/icons/LocalOfferTwoTone';
 
 export interface ITagPickerProps {
   type: string;
@@ -146,7 +147,9 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
                   freeform && (
                     <button title={`Add the unknown tag`}
                             disabled={!inputValue} 
-                            onClick={() => insertUnkownTag(closeMenu)}>+</button>
+                            onClick={() => insertUnkownTag(closeMenu)}>
+                      <LocalOfferTwoToneIcon />
+                    </button>
                   )
                 }
               </div>
