@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.12.0] - 2020-01-26
+
+- [#29](https://github.com/estruyf/vscode-front-matter/issues/29): Open file after creating it from the template
+
 ## [1.11.1] - 2020-12-10
 
 - [#26](https://github.com/estruyf/vscode-front-matter/issues/26): Fix for arrow selection in the dropdown.

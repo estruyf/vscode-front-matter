@@ -92,6 +92,8 @@ export class Template {
       frontMatter = Article.updateDate(frontMatter);
 
       fs.writeFileSync(newFilePath, ArticleHelper.stringifyFrontMatter(frontMatter.content, frontMatter.data), { encoding: "utf8" });
+
+      await vscode.commands.executeCommand('vscode.open', vscode.Uri.file(newFilePath));
     }
 
     const txtDoc = await vscode.workspace.openTextDocument(vscode.Uri.parse(newFilePath));
