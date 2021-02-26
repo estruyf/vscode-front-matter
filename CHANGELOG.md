@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.13.0] - 2020-02-26
+
+- Implemented links to quickly open the extension settings + issue from the FrontMatter view panel
+- Added button to update the modified time in the FrontMatter view panel
+
 ## [1.12.1] - 2020-02-13
 
 - Fix Front Matter SVG

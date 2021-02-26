@@ -1,5 +1,5 @@
 import { PanelSettings } from './../models/PanelSettings';
-import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace } from "vscode";
+import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands } from "vscode";
 import { CONFIG_KEY, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from "../constants";
 import { ArticleHelper, SettingsHelper } from "../helpers";
 import { Command } from "../viewpanel/Command";
@@ -82,6 +82,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         case CommandToCode.updateDate:
           Article.setDate();
           break;
+        case CommandToCode.updateLastMod:
+          Article.setLastModifiedDate();
+          break;
         case CommandToCode.publish:
           Article.toggleDraft();
           break;
@@ -96,6 +99,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
           break;
         case CommandToCode.addCategoryToSettings:
           this.addTags(TagType.categories, msg.data);
+          break;
+        case CommandToCode.openSettings:
+          commands.executeCommand('workbench.action.openSettings', '@ext:eliostruyf.vscode-front-matter');
           break;
       }
     });

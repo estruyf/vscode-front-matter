@@ -1,8 +1,10 @@
 import * as React from 'react';
+import { CommandToCode } from './CommandToCode';
 import { Actions } from './components/Actions';
 import { SeoStatus } from './components/SeoStatus';
 import { Spinner } from './components/Spinner';
 import { TagPicker } from './components/TagPicker';
+import { MessageHelper } from './helper/MessageHelper';
 import useMessages from './hooks/useMessages';
 import { TagType } from './TagType';
 
@@ -25,6 +27,10 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
       </div>
     );
   }
+
+  const openSettings = () => {
+    MessageHelper.sendMessage(CommandToCode.openSettings);
+  };
 
   return (
     <div className="frontmatter">
@@ -54,6 +60,14 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
                      unsetFocus={unsetFocus} />
         )
       }
+
+      <div className="ext_link_block">
+        <a href="javascript:;" onClick={openSettings}>Open settings</a>
+      </div>
+
+      <div className="ext_link_block">
+        <a href="https://github.com/estruyf/vscode-front-matter/issues" title="Open an issue on GitHub">Report an issue</a>
+      </div>
     </div>
   );
 };

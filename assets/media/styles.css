@@ -198,3 +198,19 @@
 
   filter: contrast(60%);
 }
+
+.ext_link_block {
+  margin-bottom: .5rem;
+  text-align: right;
+}
+
+.ext_link_block a {
+  color: var(--vscode-textLink-foreground);
+}
+
+.ext_link_block a:hover, 
+.ext_link_block a:active, 
+.ext_link_block a:focus,
+.ext_link_block a:visited {
+  color: var(--vscode-textLink-activeForeground);
+}
