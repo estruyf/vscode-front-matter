@@ -8,5 +8,7 @@ export enum CommandToCode {
   updateCategories = "update-categories",
   addTagToSettings = "add-tag",
   addCategoryToSettings = "add-category",
-  openSettings = "open-settings"
+  openSettings = "open-settings",
+  openFile = "open-file",
+  openProject = "open-project"
 }

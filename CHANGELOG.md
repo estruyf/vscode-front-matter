@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.14.0] - 2020-03-19
+
+- New links added to the Front Matter panel to reveal the file and folder.
+
 ## [1.13.0] - 2020-02-26
 
 - Implemented links to quickly open the extension settings + issue from the FrontMatter view panel

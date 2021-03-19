@@ -1,3 +1,4 @@
+import * as os from 'os';
 import { PanelSettings } from './../models/PanelSettings';
 import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands } from "vscode";
 import { CONFIG_KEY, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from "../constants";
@@ -7,6 +8,7 @@ import { CommandToCode } from '../viewpanel/CommandToCode';
 import { Article } from '../commands';
 import { TagType } from '../viewpanel/TagType';
 import { TaxonomyType } from '../models';
+import { exec } from 'child_process';
 
 
 export class ExplorerView implements WebviewViewProvider, Disposable {
@@ -102,6 +104,22 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
           break;
         case CommandToCode.openSettings:
           commands.executeCommand('workbench.action.openSettings', '@ext:eliostruyf.vscode-front-matter');
+          break;
+        case CommandToCode.openFile:
+          commands.executeCommand('revealFileInOS');
+          break;
+        case CommandToCode.openProject:
+          const wsFolders = workspace.workspaceFolders;
+          if (wsFolders && wsFolders.length > 0) {
+            const wsPath = wsFolders[0].uri.fsPath;
+            if (os.type() === "Darwin") {
+              exec(`open ${wsPath}`);
+            } else if (os.type() === "Windows_NT") {
+              exec(`explorer ${wsPath}`);
+            } else {
+              exec(`xdg-open ${wsPath}`);
+            }
+          }
           break;
       }
     });

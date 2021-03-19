@@ -31,6 +31,14 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
   const openSettings = () => {
     MessageHelper.sendMessage(CommandToCode.openSettings);
   };
+  
+  const openFile = () => {
+    MessageHelper.sendMessage(CommandToCode.openFile);
+  };
+  
+  const openProject = () => {
+    MessageHelper.sendMessage(CommandToCode.openProject);
+  };
 
   return (
     <div className="frontmatter">
@@ -63,6 +71,14 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
 
       <div className="ext_link_block">
         <a href="javascript:;" onClick={openSettings}>Open settings</a>
+      </div>
+
+      <div className="ext_link_block">
+        <a href="javascript:;" onClick={openFile}>Reveal file in folder</a>
+      </div>
+
+      <div className="ext_link_block">
+        <a href="javascript:;" onClick={openProject}>Reveal project folder</a>
       </div>
 
       <div className="ext_link_block">
