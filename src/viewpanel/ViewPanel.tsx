@@ -48,6 +48,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
       {
         settings && metadata && <Actions metadata={metadata} settings={settings} />
       }
+
       {
         (settings && settings.tags && settings.tags.length > 0) && (
           <TagPicker type={TagType.tags} 

@@ -5,6 +5,7 @@ export interface PanelSettings {
   tags: string[];
   categories: string[];
   freeform: boolean;
+  scripts: CustomScript[];
 }
 
 export interface SEO {
@@ -15,4 +16,9 @@ export interface SEO {
 export interface Slug {
   prefix: number;
   suffix: number;
+}
+
+export interface CustomScript {
+  title: string;
+  script: string;
 }

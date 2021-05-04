@@ -10,5 +10,6 @@ export enum CommandToCode {
   addCategoryToSettings = "add-category",
   openSettings = "open-settings",
   openFile = "open-file",
-  openProject = "open-project"
+  openProject = "open-project",
+  runCustomScript = "custom-script"
 }

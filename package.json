@@ -151,6 +151,11 @@
 					"type": "boolean",
 					"default": true,
 					"markdownDescription": "Specifies if you want to allow yourself from entering unknown tags/categories in the tag picker (when enabled, you will have the option to store them afterwards). Default: true."
+				},
+				"frontMatter.custom.scripts": {
+					"type": "array",
+					"default": [],
+					"markdownDescription": "Specify the path to a Node.js script to execute. The current file path will be provided as an argument."
 				}
 			}
 		},

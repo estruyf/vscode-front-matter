@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { PanelSettings } from '../../models/PanelSettings';
+import { CustomScript } from './CustomScript';
 import { DateAction } from './DateAction';
 import { PublishAction } from './PublishAction';
 import { SlugAction } from './SlugAction';
@@ -25,6 +26,14 @@ export const Actions: React.FunctionComponent<IActionsProps> = (props: React.Pro
       <DateAction />
 
       { metadata && typeof metadata.draft !== undefined && <PublishAction draft={metadata.draft} />}
+
+      {
+        (settings && settings.scripts && settings.scripts.length > 0) && (
+          settings.scripts.map((value) => (
+            <CustomScript {...value} />
+          ))
+        )
+      }
     </div>
   );
 };

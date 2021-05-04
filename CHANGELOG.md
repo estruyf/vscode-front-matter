@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.15.0] - 2020-05-04
+
+- Added the ability to add your own custom scripts as panel actions.
+
 ## [1.14.0] - 2020-03-19
 
 - New links added to the Front Matter panel to reveal the file and folder.

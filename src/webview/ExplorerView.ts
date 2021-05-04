@@ -1,6 +1,7 @@
+import { SETTING_CUSTOM_SCRIPTS } from './../constants/settings';
 import * as os from 'os';
-import { PanelSettings } from './../models/PanelSettings';
-import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands } from "vscode";
+import { PanelSettings, CustomScript } from './../models/PanelSettings';
+import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv } from "vscode";
 import { CONFIG_KEY, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from "../constants";
 import { ArticleHelper, SettingsHelper } from "../helpers";
 import { Command } from "../viewpanel/Command";
@@ -9,6 +10,7 @@ import { Article } from '../commands';
 import { TagType } from '../viewpanel/TagType';
 import { TaxonomyType } from '../models';
 import { exec } from 'child_process';
+import * as path from 'path';
 
 
 export class ExplorerView implements WebviewViewProvider, Disposable {
@@ -108,6 +110,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         case CommandToCode.openFile:
           commands.executeCommand('revealFileInOS');
           break;
+        case CommandToCode.runCustomScript:
+          this.runCustomScript(msg);
+          break;
         case CommandToCode.openProject:
           const wsFolders = workspace.workspaceFolders;
           if (wsFolders && wsFolders.length > 0) {
@@ -163,6 +168,36 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   }
 
   /**
+   * Run a custom script
+   * @param msg 
+   */
+  private runCustomScript(msg: { command: string, data: any}) {
+    const config = workspace.getConfiguration(CONFIG_KEY);
+    const scripts: CustomScript[] | undefined = config.get(SETTING_CUSTOM_SCRIPTS);
+
+
+    if (msg?.data?.title && msg?.data?.script && scripts && scripts.find((s: CustomScript) => s.title === msg?.data?.title)?.title) {
+      const editor = window.activeTextEditor;
+      const wsFolders = workspace.workspaceFolders;
+      if (wsFolders && wsFolders.length > 0) {
+        const wsPath = wsFolders[0].uri.fsPath;
+        exec(`node ${path.join(wsPath, msg.data.script)} "${wsPath}" "${editor?.document.uri.fsPath}"`, (error, stdout) => {
+          if (error) {
+            window.showErrorMessage(`${msg?.data?.title}: ${error.message}`);
+            return;
+          }
+
+          window.showInformationMessage(`${msg?.data?.title}: ${stdout || "Executed your custom script."}`, 'Copy output').then(value => {
+            if (value === 'Copy output') {
+              vscodeEnv.clipboard.writeText(stdout);
+            }
+          });
+        });
+      }
+    }
+  }
+
+  /**
    * Retrieve the extension settings
    */
   private getSettings() {
@@ -181,7 +216,8 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         },
         tags: config.get(SETTING_TAXONOMY_TAGS) || [],
         categories: config.get(SETTING_TAXONOMY_CATEGORIES) || [],
-        freeform: config.get(SETTING_PANEL_FREEFORM)
+        freeform: config.get(SETTING_PANEL_FREEFORM),
+        scripts: config.get(SETTING_CUSTOM_SCRIPTS)
       } as PanelSettings
     });
   }

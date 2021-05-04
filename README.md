@@ -22,6 +22,24 @@ To leverage most of the capabilities of the extension. SEO information and every
 
 > **Info**: By default, the tags/categories picker allows you to insert existing and none tags/categories. When you enter a none existing tag/category, the panel shows an add `+` icon in front of that button. This functionality allows you to store this tag/category in your settings. If you want to disable this feature, you can do that by setting the `frontMatter.panel.freeform` setting to `false`.
 
+Since version `1.15.0`, the extension allows you to create your own custom actions, by running Node.js scripts from your project. In order to use this functionality, you will need to configure the [`frontMatter.custom.scripts`](#frontMatter.custom.scripts) setting for your project.
+
+Once a custom action has been configured, it will appear on the Front Matter panel.
+
+![](./assets/custom-actions.png)
+
+The current workspace- and file-path will be passed as an argument. In your script fetch these arguments as follows:
+
+```javascript
+const arguments = process.argv;
+const workspaceArg = arguments[2];
+const fileArg = arguments[3];
+```
+
+The output of the script will be passed as a notification, and it allows you to copy the output.
+
+![](./assets/custom-action-notification.png)
+
 ## Creating articles from templates
 
 By default, the extension looks for files stored in a `.templates` folder that should be located in your website project's root.
@@ -167,6 +185,19 @@ Specifies the modified date field name to use in your Front Matter. Default valu
 ```json
 {
   "frontMatter.taxonomy.modifiedField": "lastmod"
+}
+```
+
+### `frontMatter.custom.scripts`
+
+Allows you to specify a title and script path (starting relative from the root of your project). These values will be used to create custom actions on the Front Matter panel. Default value: `[]`.
+
+```json
+{
+  "frontMatter.custom.scripts": [{
+    "title": "Generate social image",
+    "script": "./scripts/social-img.js"
+  }]
 }
 ```
 
