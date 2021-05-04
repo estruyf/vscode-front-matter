@@ -196,10 +196,13 @@ Allows you to specify a title and script path (starting relative from the root o
 {
   "frontMatter.custom.scripts": [{
     "title": "Generate social image",
-    "script": "./scripts/social-img.js"
+    "script": "./scripts/social-img.js",
+    "nodeBin": "~/.nvm/versions/node/v14.15.5/bin/node"
   }]
 }
 ```
+
+> **Important**: When the command execution would fail when it cannot find the `node` command. You are able to specify your path to the node app. This is for instance required when using `nvm`.
 
 ## Usage
 

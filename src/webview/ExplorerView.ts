@@ -176,23 +176,27 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     const scripts: CustomScript[] | undefined = config.get(SETTING_CUSTOM_SCRIPTS);
 
 
-    if (msg?.data?.title && msg?.data?.script && scripts && scripts.find((s: CustomScript) => s.title === msg?.data?.title)?.title) {
-      const editor = window.activeTextEditor;
-      const wsFolders = workspace.workspaceFolders;
-      if (wsFolders && wsFolders.length > 0) {
-        const wsPath = wsFolders[0].uri.fsPath;
-        exec(`node ${path.join(wsPath, msg.data.script)} "${wsPath}" "${editor?.document.uri.fsPath}"`, (error, stdout) => {
-          if (error) {
-            window.showErrorMessage(`${msg?.data?.title}: ${error.message}`);
-            return;
-          }
+    if (msg?.data?.title && msg?.data?.script && scripts) {
+      const customScript = scripts.find((s: CustomScript) => s.title === msg.data.title);
+      if (customScript?.script && customScript?.title) {
+        const editor = window.activeTextEditor;
+        const wsFolders = workspace.workspaceFolders;
+        if (wsFolders && wsFolders.length > 0) {
+          const wsPath = wsFolders[0].uri.fsPath;
 
-          window.showInformationMessage(`${msg?.data?.title}: ${stdout || "Executed your custom script."}`, 'Copy output').then(value => {
-            if (value === 'Copy output') {
-              vscodeEnv.clipboard.writeText(stdout);
+          exec(`${customScript.nodeBin || "node"} ${path.join(wsPath, msg.data.script)} "${wsPath}" "${editor?.document.uri.fsPath}"`, (error, stdout) => {
+            if (error) {
+              window.showErrorMessage(`${msg?.data?.title}: ${error.message}`);
+              return;
             }
+
+            window.showInformationMessage(`${msg?.data?.title}: ${stdout || "Executed your custom script."}`, 'Copy output').then(value => {
+              if (value === 'Copy output') {
+                vscodeEnv.clipboard.writeText(stdout);
+              }
+            });
           });
-        });
+        }
       }
     }
   }

@@ -21,4 +21,5 @@ export interface Slug {
 export interface CustomScript {
   title: string;
   script: string;
+  nodeBin?: string;
 }

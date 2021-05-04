@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.15.1] - 2020-05-04
+
+- Add the ability to specify a custom Node path
+
 ## [1.15.0] - 2020-05-04
 
 - Added the ability to add your own custom scripts as panel actions.
