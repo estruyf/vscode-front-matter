@@ -175,16 +175,19 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     const config = workspace.getConfiguration(CONFIG_KEY);
     const scripts: CustomScript[] | undefined = config.get(SETTING_CUSTOM_SCRIPTS);
 
-
     if (msg?.data?.title && msg?.data?.script && scripts) {
       const customScript = scripts.find((s: CustomScript) => s.title === msg.data.title);
       if (customScript?.script && customScript?.title) {
         const editor = window.activeTextEditor;
+        if (!editor) return;
+
+        const article = ArticleHelper.getFrontMatter(editor);
+
         const wsFolders = workspace.workspaceFolders;
         if (wsFolders && wsFolders.length > 0) {
           const wsPath = wsFolders[0].uri.fsPath;
 
-          exec(`${customScript.nodeBin || "node"} ${path.join(wsPath, msg.data.script)} "${wsPath}" "${editor?.document.uri.fsPath}"`, (error, stdout) => {
+          exec(`${customScript.nodeBin || "node"} ${path.join(wsPath, msg.data.script)} "${wsPath}" "${editor?.document.uri.fsPath}" "${JSON.stringify(article?.data)}"`, (error, stdout) => {
             if (error) {
               window.showErrorMessage(`${msg?.data?.title}: ${error.message}`);
               return;

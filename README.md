@@ -28,12 +28,14 @@ Once a custom action has been configured, it will appear on the Front Matter pan
 
 ![](./assets/custom-actions.png)
 
-The current workspace- and file-path will be passed as an argument. In your script fetch these arguments as follows:
+The current workspace-, file-path, and front matter data will be passed as an argument. In your script fetch these arguments as follows:
 
 ```javascript
 const arguments = process.argv;
 const workspaceArg = arguments[2];
 const fileArg = arguments[3];
+const dataArg = arguments[4];
+const data = dataArg && typeof dataArg === "string" ? JSON.parse(dataArg) : null;
 ```
 
 The output of the script will be passed as a notification, and it allows you to copy the output.

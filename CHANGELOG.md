@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.16.0] - 2020-05-04
+
+- Add all front matter properties as an argument for custom scripts
+
 ## [1.15.1] - 2020-05-04
 
 - Add the ability to specify a custom Node path
