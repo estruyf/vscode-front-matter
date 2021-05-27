@@ -187,7 +187,12 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         if (wsFolders && wsFolders.length > 0) {
           const wsPath = wsFolders[0].uri.fsPath;
 
-          exec(`${customScript.nodeBin || "node"} ${path.join(wsPath, msg.data.script)} "${wsPath}" "${editor?.document.uri.fsPath}" "${JSON.stringify(article?.data)}"`, (error, stdout) => {
+          let articleData = `'${JSON.stringify(article?.data)}'`;
+          if (os.type() === "Windows_NT") {
+            articleData = `"${JSON.stringify(article?.data).replace(/"/g, `""`)}"`;
+          }
+
+          exec(`${customScript.nodeBin || "node"} ${path.join(wsPath, msg.data.script)} "${wsPath}" "${editor?.document.uri.fsPath}" ${articleData}`, (error, stdout) => {
             if (error) {
               window.showErrorMessage(`${msg?.data?.title}: ${error.message}`);
               return;

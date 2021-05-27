@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.16.0] - 2020-05-27
+
+- Fix for Node.js v14.16.0
+
 ## [1.16.0] - 2020-05-04
 
 - Add all front matter properties as an argument for custom scripts
