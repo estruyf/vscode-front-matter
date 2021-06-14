@@ -1,4 +1,4 @@
-import { SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH } from './../constants/settings';
+import { SETTING_SEO_DESCRIPTION_FIELD, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH } from './../constants/settings';
 import * as vscode from 'vscode';
 import { CONFIG_KEY } from '../constants';
 import { ArticleHelper, SeoHelper } from '../helpers';
@@ -41,13 +41,14 @@ export class StatusListener {
           const config = vscode.workspace.getConfiguration(CONFIG_KEY);
           const titleLength = config.get(SETTING_SEO_TITLE_LENGTH) as number || -1;
           const descLength = config.get(SETTING_SEO_DESCRIPTION_LENGTH) as number || -1;
+          const fieldName = config.get(SETTING_SEO_DESCRIPTION_FIELD) as string || "description";
           
           if (article.data.title && titleLength > -1) {
             SeoHelper.checkLength(editor, collection, article, "title", titleLength);
           }
           
-          if (article.data.description && descLength > -1) {
-            SeoHelper.checkLength(editor, collection, article, "description", descLength);
+          if (article.data[fieldName] && descLength > -1) {
+            SeoHelper.checkLength(editor, collection, article, fieldName, descLength);
           }
         }
         

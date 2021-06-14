@@ -139,6 +139,15 @@ Specifies the optimal description length for SEO (set to `-1` to turn it off). D
   "frontMatter.taxonomy.seoDescriptionLength": 160
 }
 ```
+### `frontMatter.taxonomy.seoDescriptionLength`
+
+Specifies the name of the SEO description field for your page. Default is `description`.
+
+```json
+{
+  "frontMatter.taxonomy.seoDescriptionField": "description"
+}
+```
 
 ### `frontMatter.taxonomy.frontMatterType`
 

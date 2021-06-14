@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.17.0] - 2020-06-14
+
+- [#36](https://github.com/estruyf/vscode-front-matter/issues/36): Add the option to change the Front Matter its description field
+
 ## [1.16.1] - 2020-05-27
 
 - Fix for Node.js v14.16.0

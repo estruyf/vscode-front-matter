@@ -11,7 +11,9 @@ export const SeoStatus: React.FunctionComponent<ISeoStatusProps> = (props: React
   const { data, seo } = props;
   const { title, description } = data;
 
-  if (!title && !description) {
+  const { descriptionField } = seo;
+
+  if (!title && !data[descriptionField]) {
     return null;
   }
 
@@ -19,7 +21,7 @@ export const SeoStatus: React.FunctionComponent<ISeoStatusProps> = (props: React
     <div className="seo__status">
       <h3>SEO Status</h3>
       { (title && seo.title > 0) && <SeoDetails title="Title" allowedLength={seo.title} value={title} /> }
-      { (description && seo.description > 0) && <SeoDetails title="Description" allowedLength={seo.description} value={description} /> }
+      { (data[descriptionField] && seo.description > 0) && <SeoDetails title="Description" allowedLength={seo.description} value={data[descriptionField]} /> }
     </div>
   );
 };

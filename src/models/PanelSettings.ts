@@ -11,6 +11,7 @@ export interface PanelSettings {
 export interface SEO {
   title: number;
   description: number;
+  descriptionField: string;
 }
 
 export interface Slug {

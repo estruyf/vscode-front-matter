@@ -137,6 +137,11 @@
 					"default": 160,
 					"description": "Specifies the optimal description length for SEO (set to `-1` to turn it off)."
 				},
+				"frontMatter.taxonomy.seoDescriptionField": {
+					"type": "string",
+					"default": "description",
+					"description": "Specifies the name of the SEO description field for your page. Default is 'description'."
+				},
 				"frontMatter.templates.folder": {
 					"type": "string",
 					"default": ".templates",
