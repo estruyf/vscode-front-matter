@@ -101,14 +101,11 @@ export class Article {
     const config = vscode.workspace.getConfiguration(CONFIG_KEY);
     const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
     const dateField = config.get(SETTING_DATE_FIELD) as string || "date";
+    const modField = config.get(SETTING_MODIFIED_FIELD) as string || "date";
 
-    if (typeof article.data[dateField] !== "undefined" || forceCreate) {
-      if (dateFormat && typeof dateFormat === "string") {
-        article.data[dateField] = format(new Date(), dateFormat);
-      } else {
-        article.data[dateField] = new Date();
-      }
-    }
+    article = this.articleDate(article, dateFormat, dateField, forceCreate);
+    article = this.articleDate(article, dateFormat, modField, false);   
+
     return article;
   }
 
@@ -184,5 +181,23 @@ export class Article {
     const newDraftStatus = !article.data["draft"];
     article.data["draft"] = newDraftStatus;
     ArticleHelper.update(editor, article);
+  }
+
+  /**
+   * Update the article date and return it
+   * @param article 
+   * @param dateFormat 
+   * @param field 
+   * @param forceCreate 
+   */
+  private static articleDate(article: matter.GrayMatterFile<string>, dateFormat: string, field: string, forceCreate: boolean) {
+    if (typeof article.data[field] !== "undefined" || forceCreate) {
+      if (dateFormat && typeof dateFormat === "string") {
+        article.data[field] = format(new Date(), dateFormat);
+      } else {
+        article.data[field] = new Date();
+      }
+    }
+    return article;
   }
 }
