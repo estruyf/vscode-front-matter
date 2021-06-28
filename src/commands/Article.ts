@@ -130,7 +130,7 @@ export class Article {
       if (dateFormat && typeof dateFormat === "string") {
         article.data[dateField] = format(new Date(), dateFormat);
       } else {
-        article.data[dateField] = new Date();
+        article.data[dateField] = new Date().toISOString();
       }
 
       ArticleHelper.update(editor, article);
@@ -195,7 +195,7 @@ export class Article {
       if (dateFormat && typeof dateFormat === "string") {
         article.data[field] = format(new Date(), dateFormat);
       } else {
-        article.data[field] = new Date();
+        article.data[field] = new Date().toISOString();
       }
     }
     return article;
