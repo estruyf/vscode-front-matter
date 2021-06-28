@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.17.1] - 2020-06-28
+
+- [#34](https://github.com/estruyf/vscode-front-matter/issues/34): Fix that last modification date does not update publication date
+= [#38](https://github.com/estruyf/vscode-front-matter/issues/38): Update the last modification date on new page creation from template
+
 ## [1.17.0] - 2020-06-14
 
 - [#36](https://github.com/estruyf/vscode-front-matter/issues/36): Add the option to change the Front Matter its description field
