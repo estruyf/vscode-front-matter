@@ -42,7 +42,7 @@ if (arguments && arguments.length > 0) {
 }
 ```
 
-> A sample file can be found here: ![script-sample.js](./sample/script-sample.js)
+> A sample file can be found here: [script-sample.js](./sample/script-sample.js)
 
 The output of the script will be passed as a notification, and it allows you to copy the output.
 
