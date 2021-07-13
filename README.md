@@ -231,3 +231,9 @@ Allows you to specify a title and script path (starting relative from the root o
 ## Feedback / issues / ideas
 
 Please submit them via creating an issue in the project repository: [issue list](https://github.com/estruyf/vscode-front-matter/issues).
+
+<p align="center">
+  <a href="#">
+      <img src="https://estruyf-github.azurewebsites.net/api/VisitorHit?user=estruyf&repo=vscode-front-matter&countColor=%23F141A8&labelColor=%230E131F" />
+   </a>
+</p>
