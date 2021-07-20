@@ -1,10 +1,8 @@
-<p align="center">
+<h1 align="center">
   <a href="https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter">
-    <img alt="Hide Comments" src="./assets/front-matter.png">
+    <img alt="Front Matter" src="./assets/front-matter.png">
   </a>
-</p>
-
-<h1 align="center">Front Matter</h1>
+</h1>
 
 <h2 align="center">Front Matter is an essential Visual Studio Code extension when you want to manage the markdown pages of your static sites.</h2>
 
