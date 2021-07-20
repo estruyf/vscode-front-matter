@@ -1,6 +1,7 @@
 import * as React from 'react';
 import AddIcon from '@material-ui/icons/Add';
-import DeleteForeverTwoToneIcon from '@material-ui/icons/DeleteForeverTwoTone';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { Icon } from './Icon';
 
 export interface ITagProps {
   className: string;
@@ -18,9 +19,10 @@ export const Tag: React.FunctionComponent<ITagProps> = (props: React.PropsWithCh
     <div className={`article__tags__items__item`}>
       {
         onCreate && 
-        <button title={`Add ${value} to your settings`} className={`article__tags__items__item_add`} onClick={() => onCreate(value)}><AddIcon /></button>
+        <button title={`Add ${value} to your settings`} className={`article__tags__items__item_add`} onClick={() => onCreate(value)}><Icon name="add" /></button>
       }
-      <button title={title} className={`article__tags__items__item_delete ${className}`} onClick={() => onRemove(value)}>{value} <span><DeleteForeverTwoToneIcon /></span></button>
+      
+      <button title={title} className={`article__tags__items__item_delete ${className}`} onClick={() => onRemove(value)}>{value} <Icon name={`archive`} /></button>
     </div>
   );
 };

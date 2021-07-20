@@ -1,8 +1,24 @@
-[![Version](https://vsmarketplacebadge.apphb.com/version/eliostruyf.vscode-front-matter.svg)](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter)
-&nbsp;&nbsp;
-[![Installs](https://vsmarketplacebadge.apphb.com/installs/eliostruyf.vscode-front-matter.svg)](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter)
-&nbsp;&nbsp;
-[![Rating](https://vsmarketplacebadge.apphb.com/rating/eliostruyf.vscode-front-matter.svg)](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter&ssr=false#review-details)
+<h1 align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter">
+    <img alt="Front Matter" src="./assets/front-matter.png">
+  </a>
+</h1>
+
+<h2 align="center">Front Matter is an essential Visual Studio Code extension when you want to manage the markdown pages of your static sites.</h2>
+
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter" title="Check it out on the Visual Studio Marketplace">
+    <img src="https://vsmarketplacebadge.apphb.com/version/eliostruyf.vscode-front-matter.svg" alt="Visual Studio Marketplace" style="display: inline-block" />
+  </a>
+
+  <img src="https://vsmarketplacebadge.apphb.com/installs/eliostruyf.vscode-front-matter.svg" alt="Number of installs"  style="display: inline-block;margin-left:10px" />
+  
+  <img src="https://vsmarketplacebadge.apphb.com/rating/eliostruyf.vscode-front-matter.svg" alt="Ratings" style="display: inline-block;margin-left:10px" />
+
+  <a href="https://www.buymeacoffee.com/zMeFRy9" title="Buy me a coffee" style="margin-left:10px">
+    <img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-€%203-blue?logo=buy-me-a-coffee&style=flat" alt="Buy me a coffee" style="display: inline-block" />
+  </a>
+</p>
 
 This VSCode extension simplifies working with your markdown articles' front matter when using a static site generator like Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more... For example, you can keep a list of used tags, categories and add/remove them from your article with the extension.
 
@@ -21,6 +37,32 @@ Initially, this panel has been created to make it easier to add tags and categor
 To leverage most of the capabilities of the extension. SEO information and everyday actions like slug optimization, updating the date, and publish/drafting the article.
 
 > **Info**: By default, the tags/categories picker allows you to insert existing and none tags/categories. When you enter a none existing tag/category, the panel shows an add `+` icon in front of that button. This functionality allows you to store this tag/category in your settings. If you want to disable this feature, you can do that by setting the `frontMatter.panel.freeform` setting to `false`.
+
+Since version `1.15.0`, the extension allows you to create your own custom actions, by running Node.js scripts from your project. In order to use this functionality, you will need to configure the [`frontMatter.custom.scripts`](#frontmattercustomscripts) setting for your project.
+
+Once a custom action has been configured, it will appear on the Front Matter panel.
+
+![](./assets/custom-actions.png)
+
+The current workspace-, file-path, and front matter data will be passed as an argument. In your script fetch these arguments as follows:
+
+```javascript
+const arguments = process.argv;
+
+if (arguments && arguments.length > 0) {
+  const workspaceArg = arguments[2]; // The workspace path
+  const fileArg = arguments[3]; // The file path
+  const frontMatterArg = arguments[4]; // Front matter data
+
+  console.log(`The content returned for your notification.`);
+}
+```
+
+> A sample file can be found here: [script-sample.js](./sample/script-sample.js)
+
+The output of the script will be passed as a notification, and it allows you to copy the output.
+
+![](./assets/custom-action-notification.png)
 
 ## Creating articles from templates
 
@@ -119,6 +161,15 @@ Specifies the optimal description length for SEO (set to `-1` to turn it off). D
   "frontMatter.taxonomy.seoDescriptionLength": 160
 }
 ```
+### `frontMatter.taxonomy.seoDescriptionLength`
+
+Specifies the name of the SEO description field for your page. Default is `description`.
+
+```json
+{
+  "frontMatter.taxonomy.seoDescriptionField": "description"
+}
+```
 
 ### `frontMatter.taxonomy.frontMatterType`
 
@@ -170,6 +221,22 @@ Specifies the modified date field name to use in your Front Matter. Default valu
 }
 ```
 
+### `frontMatter.custom.scripts`
+
+Allows you to specify a title and script path (starting relative from the root of your project). These values will be used to create custom actions on the Front Matter panel. Default value: `[]`.
+
+```json
+{
+  "frontMatter.custom.scripts": [{
+    "title": "Generate social image",
+    "script": "./scripts/social-img.js",
+    "nodeBin": "~/.nvm/versions/node/v14.15.5/bin/node"
+  }]
+}
+```
+
+> **Important**: When the command execution would fail when it cannot find the `node` command. You are able to specify your path to the node app. This is for instance required when using `nvm`.
+
 ## Usage
 
 - Start by opening the command prompt:
@@ -180,3 +247,9 @@ Specifies the modified date field name to use in your Front Matter. Default valu
 ## Feedback / issues / ideas
 
 Please submit them via creating an issue in the project repository: [issue list](https://github.com/estruyf/vscode-front-matter/issues).
+
+<p align="center">
+  <a href="#">
+      <img src="https://estruyf-github.azurewebsites.net/api/VisitorHit?user=estruyf&repo=vscode-front-matter&countColor=%23F05450&labelColor=%230E131F" />
+   </a>
+</p>

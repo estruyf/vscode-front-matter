@@ -1,5 +1,7 @@
-import { PanelSettings } from './../models/PanelSettings';
-import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace } from "vscode";
+import { SETTING_CUSTOM_SCRIPTS, SETTING_SEO_DESCRIPTION_FIELD } from './../constants/settings';
+import * as os from 'os';
+import { PanelSettings, CustomScript } from './../models/PanelSettings';
+import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv } from "vscode";
 import { CONFIG_KEY, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from "../constants";
 import { ArticleHelper, SettingsHelper } from "../helpers";
 import { Command } from "../viewpanel/Command";
@@ -7,6 +9,8 @@ import { CommandToCode } from '../viewpanel/CommandToCode';
 import { Article } from '../commands';
 import { TagType } from '../viewpanel/TagType';
 import { TaxonomyType } from '../models';
+import { exec } from 'child_process';
+import * as path from 'path';
 
 
 export class ExplorerView implements WebviewViewProvider, Disposable {
@@ -54,8 +58,6 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    */
   public async resolveWebviewView(webviewView: WebviewView, context: WebviewViewResolveContext, token: CancellationToken): Promise<void> {
 
-    console.log(context);
-
     this.panel = webviewView;
 
     webviewView.webview.options = {
@@ -82,6 +84,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         case CommandToCode.updateDate:
           Article.setDate();
           break;
+        case CommandToCode.updateLastMod:
+          Article.setLastModifiedDate();
+          break;
         case CommandToCode.publish:
           Article.toggleDraft();
           break;
@@ -96,6 +101,28 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
           break;
         case CommandToCode.addCategoryToSettings:
           this.addTags(TagType.categories, msg.data);
+          break;
+        case CommandToCode.openSettings:
+          commands.executeCommand('workbench.action.openSettings', '@ext:eliostruyf.vscode-front-matter');
+          break;
+        case CommandToCode.openFile:
+          commands.executeCommand('revealFileInOS');
+          break;
+        case CommandToCode.runCustomScript:
+          this.runCustomScript(msg);
+          break;
+        case CommandToCode.openProject:
+          const wsFolders = workspace.workspaceFolders;
+          if (wsFolders && wsFolders.length > 0) {
+            const wsPath = wsFolders[0].uri.fsPath;
+            if (os.type() === "Darwin") {
+              exec(`open ${wsPath}`);
+            } else if (os.type() === "Windows_NT") {
+              exec(`explorer ${wsPath}`);
+            } else {
+              exec(`xdg-open ${wsPath}`);
+            }
+          }
           break;
       }
     });
@@ -139,6 +166,48 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   }
 
   /**
+   * Run a custom script
+   * @param msg 
+   */
+  private runCustomScript(msg: { command: string, data: any}) {
+    const config = workspace.getConfiguration(CONFIG_KEY);
+    const scripts: CustomScript[] | undefined = config.get(SETTING_CUSTOM_SCRIPTS);
+
+    if (msg?.data?.title && msg?.data?.script && scripts) {
+      const customScript = scripts.find((s: CustomScript) => s.title === msg.data.title);
+      if (customScript?.script && customScript?.title) {
+        const editor = window.activeTextEditor;
+        if (!editor) return;
+
+        const article = ArticleHelper.getFrontMatter(editor);
+
+        const wsFolders = workspace.workspaceFolders;
+        if (wsFolders && wsFolders.length > 0) {
+          const wsPath = wsFolders[0].uri.fsPath;
+
+          let articleData = `'${JSON.stringify(article?.data)}'`;
+          if (os.type() === "Windows_NT") {
+            articleData = `"${JSON.stringify(article?.data).replace(/"/g, `""`)}"`;
+          }
+
+          exec(`${customScript.nodeBin || "node"} ${path.join(wsPath, msg.data.script)} "${wsPath}" "${editor?.document.uri.fsPath}" ${articleData}`, (error, stdout) => {
+            if (error) {
+              window.showErrorMessage(`${msg?.data?.title}: ${error.message}`);
+              return;
+            }
+
+            window.showInformationMessage(`${msg?.data?.title}: ${stdout || "Executed your custom script."}`, 'Copy output').then(value => {
+              if (value === 'Copy output') {
+                vscodeEnv.clipboard.writeText(stdout);
+              }
+            });
+          });
+        }
+      }
+    }
+  }
+
+  /**
    * Retrieve the extension settings
    */
   private getSettings() {
@@ -149,7 +218,8 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       data: {
         seo: {
           title: config.get(SETTING_SEO_TITLE_LENGTH) as number || -1,
-          description: config.get(SETTING_SEO_DESCRIPTION_LENGTH) as number || -1
+          description: config.get(SETTING_SEO_DESCRIPTION_LENGTH) as number || -1,
+          descriptionField: config.get(SETTING_SEO_DESCRIPTION_FIELD) as string || "description"
         },
         slug: {
           prefix: config.get(SETTING_SLUG_PREFIX) || "",
@@ -157,7 +227,8 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         },
         tags: config.get(SETTING_TAXONOMY_TAGS) || [],
         categories: config.get(SETTING_TAXONOMY_CATEGORIES) || [],
-        freeform: config.get(SETTING_PANEL_FREEFORM)
+        freeform: config.get(SETTING_PANEL_FREEFORM),
+        scripts: config.get(SETTING_CUSTOM_SCRIPTS)
       } as PanelSettings
     });
   }
@@ -241,6 +312,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     const styleResetUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'assets/media', 'reset.css'));
     const stylesUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'assets/media', 'styles.css'));
     const scriptUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'dist', 'viewpanel.js'));
+    const codiconsUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css'));
     const nonce = this.getNonce();
 
     return `
@@ -252,8 +324,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         <link href="${styleResetUri}" rel="stylesheet">
         <link href="${styleVSCodeUri}" rel="stylesheet">
         <link href="${stylesUri}" rel="stylesheet">
+        <link href="${codiconsUri}" rel="stylesheet">
 
-        <title>FrontMatter</title>
+        <title>Front Matter</title>
       </head>
       <body>
         <div id="app"></div>

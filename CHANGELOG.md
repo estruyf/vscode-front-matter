@@ -1,5 +1,55 @@
 # Change Log
 
+## [1.19.0] - 2020-07-20
+
+- Sidebar background styling match the VSCode defined sidebar color
+
+## [1.18.0] - 2020-07-20
+
+- Updated README
+
+## [1.17.1] - 2020-06-28
+
+- [#34](https://github.com/estruyf/vscode-front-matter/issues/34): Fix that last modification date does not update the publication date
+- [#38](https://github.com/estruyf/vscode-front-matter/issues/38): Update the last modification date on new page creation from the template
+
+## [1.17.0] - 2020-06-14
+
+- [#36](https://github.com/estruyf/vscode-front-matter/issues/36): Add the option to change the Front Matter its description field
+
+## [1.16.1] - 2020-05-27
+
+- Fix for Node.js v14.16.0
+
+## [1.16.0] - 2020-05-04
+
+- Add all front matter properties as an argument for custom scripts
+
+## [1.15.1] - 2020-05-04
+
+- Add the ability to specify a custom Node path
+
+## [1.15.0] - 2020-05-04
+
+- Added the ability to add your own custom scripts as panel actions.
+
+## [1.14.0] - 2020-03-19
+
+- New links added to the Front Matter panel to reveal the file and folder.
+
+## [1.13.0] - 2020-02-26
+
+- Implemented links to quickly open the extension settings + issue from the FrontMatter view panel
+- Added button to update the modified time in the FrontMatter view panel
+
+## [1.12.1] - 2020-02-13
+
+- Fix Front Matter SVG
+
+## [1.12.0] - 2020-01-26
+
+- [#29](https://github.com/estruyf/vscode-front-matter/issues/29): Open file after creating it from the template
+
 ## [1.11.1] - 2020-12-10
 
 - [#26](https://github.com/estruyf/vscode-front-matter/issues/26): Fix for arrow selection in the dropdown.

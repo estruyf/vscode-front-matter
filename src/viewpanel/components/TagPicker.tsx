@@ -9,6 +9,7 @@ import LocalOfferTwoToneIcon from '@material-ui/icons/LocalOfferTwoTone';
 
 export interface ITagPickerProps {
   type: string;
+  icon: JSX.Element;
   crntSelected: string[];
   options: string[];
   freeform: boolean;
@@ -17,7 +18,7 @@ export interface ITagPickerProps {
 }
 
 export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsWithChildren<ITagPickerProps>) => {
-  const { type, crntSelected, options, freeform, focussed, unsetFocus } = props;
+  const { icon, type, crntSelected, options, freeform, focussed, unsetFocus } = props;
   const [ selected, setSelected ] = React.useState<string[]>([]);
   const [ inputValue, setInputValue ] = React.useState<string>("");
   const prevSelected = usePrevious(crntSelected);
@@ -115,8 +116,8 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
   }, [crntSelected]);
   
   return (
-    <div className={`article__tags`}>
-      <h3>{type}</h3>
+    <div className={`section article__tags`}>
+      <h3>{icon} {type}</h3>
 
       <Downshift ref={dsRef}
                  onChange={(selected) => onSelect(selected || "")}

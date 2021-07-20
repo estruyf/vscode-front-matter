@@ -1,5 +1,3 @@
-
-
 import * as React from 'react';
 import { CommandToCode } from '../CommandToCode';
 import { MessageHelper } from '../helper/MessageHelper';
@@ -11,10 +9,19 @@ export const DateAction: React.FunctionComponent<IDateActionProps> = (props: Rea
   const setDate = () => {
     MessageHelper.sendMessage(CommandToCode.updateDate);
   };
+  
+  const setLastMod = () => {
+    MessageHelper.sendMessage(CommandToCode.updateLastMod);
+  };
 
   return (
-    <div className={`article__action`}>
-      <button onClick={setDate}>Set current date</button>
-    </div>
+    <>
+      <div className={`article__action`}>
+        <button onClick={setDate}>Set publish date</button>
+      </div>
+      <div className={`article__action`}>
+        <button onClick={setLastMod}>Set modified date</button>
+      </div>
+    </>
   );
 };
