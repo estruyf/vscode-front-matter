@@ -138,6 +138,7 @@
 
 .article__tags__input button {
   position: absolute;
+  bottom: 1px;
   top: 1px;
   right: 1px;
   width: 30px;
@@ -179,22 +180,22 @@
   margin-right: .5rem;
 }
 
-.article__tags__items__item_add {
-  display: inline-flex;
-  align-items: center;
-  width: auto;
+.article__tags__items__item {
+  display: inline-block;
+  margin-bottom: .5rem;
+  margin-right: .5rem;
 }
 
+.article__tags__items__item_add,
 .article__tags__items__item_delete {
-  display: inline-flex;
-  align-items: center;
+  display: inline-block;
   width: auto;
 }
 
-.article__tags__items__item_delete i {
-  margin-left: 0.5rem;
+.article__tags__items__item svg {
+  display: inline;
+  vertical-align: bottom;
 }
-
 
 .article__tags__items__item_delete span {
   margin-left: .5rem;
