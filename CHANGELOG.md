@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.18.0] - 2020-07-20
+
+- Updated README
 ## [1.17.1] - 2020-06-28
 
 - [#34](https://github.com/estruyf/vscode-front-matter/issues/34): Fix that last modification date does not update the publication date
