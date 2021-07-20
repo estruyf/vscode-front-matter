@@ -2,6 +2,7 @@ import * as React from 'react';
 import { PanelSettings } from '../../models/PanelSettings';
 import { CustomScript } from './CustomScript';
 import { DateAction } from './DateAction';
+import { Icon } from './Icon';
 import { PublishAction } from './PublishAction';
 import { SlugAction } from './SlugAction';
 
@@ -18,8 +19,8 @@ export const Actions: React.FunctionComponent<IActionsProps> = (props: React.Pro
   }
 
   return (
-    <div className={`article__actions`}>
-      <h3>Actions</h3>
+    <div className={`section article__actions`}>
+      <h3><Icon name={`rocket`} /> Actions</h3>
 
       { metadata && metadata.title && <SlugAction value={metadata.title} crntValue={metadata.slug} slugOpts={settings.slug} /> }
       
@@ -30,7 +31,7 @@ export const Actions: React.FunctionComponent<IActionsProps> = (props: React.Pro
       {
         (settings && settings.scripts && settings.scripts.length > 0) && (
           settings.scripts.map((value) => (
-            <CustomScript {...value} />
+            <CustomScript key={value.title.replace(/ /g, '')} {...value} />
           ))
         )
       }

@@ -19,6 +19,18 @@
 			"preLaunchTask": "npm: build:ext"
 		},
 		{
+			"name": "Attach Extension",
+			"type": "extensionHost",
+			"request": "launch",
+			"runtimeExecutable": "${execPath}",
+			"args": [
+					"--extensionDevelopmentPath=${workspaceFolder}"
+			],
+			"outFiles": [
+					"${workspaceFolder}/dist/**/*.js"
+			]
+		},
+		{
 			"name": "Extension Tests",
 			"type": "extensionHost",
 			"request": "launch",

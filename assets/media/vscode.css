@@ -6,24 +6,22 @@
 	--input-margin-horizontal: 0;
 }
 
+html, body {
+	height: 100%;
+}
+
 body {
 	padding: 0 var(--container-paddding);
 	color: var(--vscode-foreground);
 	font-size: var(--vscode-font-size);
 	font-weight: var(--vscode-font-weight);
 	font-family: var(--vscode-font-family);
-	background-color: var(--vscode-editor-background);
+	background-color: var(--vscode-sideBar-background);	
 }
 
 ol,
 ul {
 	padding-left: var(--container-paddding);
-}
-
-body > *,
-form > * {
-	margin-block-start: var(--input-margin-vertical);
-	margin-block-end: var(--input-margin-vertical);
 }
 
 *:focus {
