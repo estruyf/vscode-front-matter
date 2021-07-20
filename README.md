@@ -250,6 +250,6 @@ Please submit them via creating an issue in the project repository: [issue list]
 
 <p align="center">
   <a href="#">
-      <img src="https://estruyf-github.azurewebsites.net/api/VisitorHit?user=estruyf&repo=vscode-front-matter&countColor=%23F141A8&labelColor=%230E131F" />
+      <img src="https://estruyf-github.azurewebsites.net/api/VisitorHit?user=estruyf&repo=vscode-front-matter&countColor=%23F05450&labelColor=%230E131F" />
    </a>
 </p>
