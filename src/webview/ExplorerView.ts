@@ -11,6 +11,8 @@ import { TagType } from '../viewpanel/TagType';
 import { TaxonomyType } from '../models';
 import { exec } from 'child_process';
 import * as path from 'path';
+import { fromMarkdown } from 'mdast-util-from-markdown';
+import { Content } from 'mdast';
 
 
 export class ExplorerView implements WebviewViewProvider, Disposable {
@@ -150,7 +152,10 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * @param metadata 
    */
   public pushMetadata(metadata: any) {
-    this.postWebviewMessage({ command: Command.metadata, data: metadata });
+    this.postWebviewMessage({ command: Command.metadata, data: {
+      ...metadata,
+      articleDetails: this.getArticleDetails()
+    } });
   }
 
   /**
@@ -243,7 +248,10 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     }
 
     const article = ArticleHelper.getFrontMatter(editor);
-    this.postWebviewMessage({ command: Command.metadata, data: article!.data });
+    this.postWebviewMessage({ command: Command.metadata, data: {
+      ...article!.data,
+      articleDetails: this.getArticleDetails() 
+    }});
   }
 
   /**
@@ -261,7 +269,10 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     if (article && article.data) {
       article.data[tagType.toLowerCase()] = values || [];
       ArticleHelper.update(editor, article);
-      this.postWebviewMessage({ command: Command.metadata, data: article.data });
+      this.postWebviewMessage({ command: Command.metadata, data: {
+        ...article.data,
+        articleDetails: this.getArticleDetails()
+      }});
     }
   }
 
@@ -282,6 +293,58 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       options.push(value);
       const taxType = tagType === TagType.tags ? TaxonomyType.Tag : TaxonomyType.Category;
       await SettingsHelper.update(taxType, options);
+    }
+  }
+
+  /**
+   * Get article details
+   */
+  private getArticleDetails() {
+    const editor = window.activeTextEditor;
+    if (!editor) {
+      return "";
+    }
+
+    const article = ArticleHelper.getFrontMatter(editor);
+
+    if (article && article.content) {
+      let content = article.content;
+      content = content.replace(/({{(.*?)}})/g, ''); // remove hugo shortcodes
+      
+      const mdTree = fromMarkdown(content);
+      const headings = mdTree.children.filter(node => node.type === 'heading').length;
+      const paragraphs = mdTree.children.filter(node => node.type === 'paragraph').length;
+      const wordCount = this.wordCount(0, mdTree);
+
+      return {
+        headings,
+        paragraphs,
+        wordCount
+      };
+    }
+
+    return null;
+  }
+
+  private counts(acc: any, node: any) {
+    // add 1 to an initial or existing value
+    acc[node.type] = (acc[node.type] || 0) + 1;
+  
+    // find and add up the counts from all of this node's children
+    return (node.children || []).reduce(
+      (childAcc: any, childNode: any) => this.counts(childAcc, childNode),
+      acc
+    );
+  }
+
+  /**
+   * Get the word count for the current document
+   */
+  private wordCount(count: number, node: Content | any) {
+    if (node.type === "text") {
+      return count + node.value.split(" ").length;
+    } else {
+      return (node.children || []).reduce((childCount: number, childNode: any) => this.wordCount(childCount, childNode), count);
     }
   }
 

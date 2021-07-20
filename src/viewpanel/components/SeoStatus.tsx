@@ -23,8 +23,21 @@ export const SeoStatus: React.FunctionComponent<ISeoStatusProps> = (props: React
       <h3>
         <Icon name="search" /> SEO Status
       </h3>
-      { (title && seo.title > 0) && <SeoDetails title="Title" allowedLength={seo.title} value={title} /> }
-      { (data[descriptionField] && seo.description > 0) && <SeoDetails title="Description" allowedLength={seo.description} value={data[descriptionField]} /> }
+
+      { (title && seo.title > 0) && <SeoDetails title="Title" valueTitle="Length" allowedLength={seo.title} value={title.length} /> }
+      
+      { (data[descriptionField] && seo.description > 0) && <SeoDetails title="Description" valueTitle="Length" allowedLength={seo.description} value={data[descriptionField].length} /> }
+
+      { data?.articleDetails !== null && (
+        <div className={`seo__status__details valid`}>
+          <h4><strong>Article details</strong></h4>
+          <ul>
+            { data?.articleDetails?.headings && <li><b>Headings</b>: {data?.articleDetails?.headings}</li> }
+            { data?.articleDetails?.paragraphs && <li><b>Paragraphs</b>: {data?.articleDetails?.paragraphs}</li> }
+            { data?.articleDetails?.wordCount && <li><b>Words</b>: {data?.articleDetails?.wordCount}</li> }
+          </ul>
+        </div>
+      ) }
     </div>
   );
 };

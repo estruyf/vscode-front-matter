@@ -17,7 +17,7 @@ export class StatusListener {
     const publishMsg = "to publish";
     
     let editor = vscode.window.activeTextEditor;
-    if (editor && editor.document && editor.document.languageId.toLowerCase() === "markdown") {
+    if (editor && editor.document && (editor.document.languageId.toLowerCase() === "markdown" || editor.document.languageId.toLowerCase() === "mdx")) {
       try {
         const article = ArticleHelper.getFrontMatter(editor);
 

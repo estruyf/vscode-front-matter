@@ -228,6 +228,7 @@
   filter: contrast(60%);
 }
 
+.seo__status__details ul > * + *,
 .ext_settings > * + * {
   --tw-space-y-reverse: 0;
   margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
