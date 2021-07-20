@@ -3,6 +3,8 @@
 ## [1.19.0] - 2020-07-20
 
 - Sidebar background styling match the VSCode defined sidebar color
+- Added support for `mdx` files
+- [#41](https://github.com/estruyf/vscode-front-matter/issues/41): Word count implementation + extra details
 
 ## [1.18.0] - 2020-07-20
 

@@ -5,7 +5,6 @@ import { CommandToCode } from '../CommandToCode';
 import { TagType } from '../TagType';
 import { MessageHelper } from '../helper/MessageHelper';
 import Downshift from 'downshift';
-import LocalOfferTwoToneIcon from '@material-ui/icons/LocalOfferTwoTone';
 import { Icon } from './Icon';
 
 export interface ITagPickerProps {
