@@ -1,6 +1,6 @@
 # Change Log
 
-## [1.19.0] - 2020-07-20
+## [1.19.0] - 2020-07-22
 
 - Sidebar background styling match the VSCode defined sidebar color
 - Added support for `mdx` files
