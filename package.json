@@ -3,7 +3,7 @@
 	"displayName": "Front Matter",
 	"description": "Simplifies working with front matter of your articles. Useful extension when you are using a static site generator like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
 	"icon": "assets/front-matter.png",
-	"version": "1.18.0",
+	"version": "2.0.0",
 	"preview": false,
 	"publisher": "eliostruyf",
 	"galleryBanner": {
@@ -255,6 +255,7 @@
 		"@types/react": "17.0.0",
 		"@types/react-dom": "17.0.0",
 		"@types/vscode": "1.51.0",
+		"@vscode/codicons": "0.0.20",
 		"date-fns": "2.0.1",
 		"downshift": "6.0.6",
 		"glob": "7.1.6",
@@ -271,7 +272,5 @@
 		"webpack": "4.44.2",
 		"webpack-cli": "3.3.12"
 	},
-	"dependencies": {
-		"@vscode/codicons": "0.0.20"
-	}
+	"dependencies": {}
 }

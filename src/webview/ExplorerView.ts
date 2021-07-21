@@ -380,7 +380,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     const styleResetUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'assets/media', 'reset.css'));
     const stylesUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'assets/media', 'styles.css'));
     const scriptUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'dist', 'viewpanel.js'));
-    const codiconsUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css'));
+
     const nonce = this.getNonce();
 
     return `
@@ -392,7 +392,6 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         <link href="${styleResetUri}" rel="stylesheet">
         <link href="${styleVSCodeUri}" rel="stylesheet">
         <link href="${stylesUri}" rel="stylesheet">
-        <link href="${codiconsUri}" rel="stylesheet">
 
         <title>Front Matter</title>
       </head>

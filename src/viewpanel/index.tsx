@@ -2,6 +2,7 @@ import * as React from "react";
 import { render } from "react-dom";
 import { ViewPanel } from "./ViewPanel";
 
+// require('@vscode/codicons/dist/codicon.css');
 import '@bendera/vscode-webview-elements/dist/vscode-table';
 import '@bendera/vscode-webview-elements/dist/vscode-table-header';
 import '@bendera/vscode-webview-elements/dist/vscode-table-header-cell';

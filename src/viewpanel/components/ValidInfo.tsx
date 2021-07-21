@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Icon } from './Icon';
+import { CheckIcon } from './Icons/CheckIcon';
+import { WarningIcon } from './Icons/WarningIcon';
 
 export interface IValidInfoProps {
   isValid: boolean;
@@ -10,9 +11,9 @@ export const ValidInfo: React.FunctionComponent<IValidInfoProps> = ({isValid}: R
     <>
       {
         isValid ? (
-          <span className="valid"><Icon name="check" /></span>
+          <span className="valid"><CheckIcon /></span>
         ) : (
-          <span className="warning"><Icon name="warning" /></span>
+          <span className="warning"><WarningIcon /></span>
         )
       }
     </>

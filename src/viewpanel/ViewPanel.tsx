@@ -2,7 +2,13 @@ import * as React from 'react';
 import { CommandToCode } from './CommandToCode';
 import { Actions } from './components/Actions';
 import { Collapsible } from './components/Collapsible';
-import { Icon } from './components/Icon';
+import { BugIcon } from './components/Icons/BugIcon';
+import { FileIcon } from './components/Icons/FileIcon';
+import { FolderOpenedIcon } from './components/Icons/FolderOpenedIcon';
+import { ListUnorderedIcon } from './components/Icons/ListUnorderedIcon';
+import { SettingsIcon } from './components/Icons/SettingsIcon';
+import { SymbolKeywordIcon } from './components/Icons/SymbolKeywordIcon';
+import { TagIcon } from './components/Icons/TagIcon';
 import { SeoStatus } from './components/SeoStatus';
 import { Spinner } from './components/Spinner';
 import { TagPicker } from './components/TagPicker';
@@ -55,7 +61,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
         <Collapsible title="Metadata">
           {
             <TagPicker type={TagType.keywords} 
-                       icon={<Icon name="symbol-keyword" />}
+                       icon={<SymbolKeywordIcon />}
                        crntSelected={metadata.keywords || []} 
                        options={[]} 
                        freeform={true} 
@@ -66,7 +72,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
           {
             (settings && settings.tags && settings.tags.length > 0) && (
               <TagPicker type={TagType.tags} 
-                        icon={<Icon name="tag" />}
+                        icon={<TagIcon />}
                         crntSelected={metadata.tags || []} 
                         options={settings.tags} 
                         freeform={settings.freeform} 
@@ -77,7 +83,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
           {
             (settings && settings.categories && settings.categories.length > 0) && (
               <TagPicker type={TagType.categories}
-                        icon={<Icon name="list-unordered" />}
+                        icon={<ListUnorderedIcon />}
                         crntSelected={metadata.categories || []} 
                         options={settings.categories} 
                         freeform={settings.freeform} 
@@ -90,19 +96,19 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
 
       <div className={`ext_settings`}>
         <div className="ext_link_block">
-          <button onClick={openSettings}><Icon name={`settings`} /> Open settings</button>
+          <button onClick={openSettings}><SettingsIcon /> Open settings</button>
         </div>
 
         <div className="ext_link_block">
-          <button onClick={openFile}><Icon name={`file`} /> Reveal file in folder</button>
+          <button onClick={openFile}><FileIcon /> Reveal file in folder</button>
         </div>
 
         <div className="ext_link_block">
-          <button onClick={openProject}><Icon name={`folder-opened`} /> Reveal project folder</button>
+          <button onClick={openProject}><FolderOpenedIcon /> Reveal project folder</button>
         </div>
 
         <div className="ext_link_block">
-          <a href="https://github.com/estruyf/vscode-front-matter/issues" title="Open an issue on GitHub"><Icon name={`bug`} /> Report an issue</a>
+          <a href="https://github.com/estruyf/vscode-front-matter/issues" title="Open an issue on GitHub"><BugIcon /> Report an issue</a>
         </div>
       </div>
     </div>

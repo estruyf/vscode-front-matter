@@ -97,7 +97,7 @@
   position: relative;
 }
 
-.section h3 i {
+.section h3 svg {
   margin-right: 0.5rem;
 }
 
@@ -255,7 +255,7 @@
   align-items: center;
 }
 
-.ext_link_block i {
+.ext_link_block svg {
   margin-right: .5rem;
 }
 

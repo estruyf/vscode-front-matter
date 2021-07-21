@@ -45,15 +45,39 @@ The extension will automatically verify if your title and description are SEO co
 
 The Front Matter panel allows you to perform most of the extension actions by just a click on the button and it shows the SEO statuses of your title, description, and more.
 
-<p align="center">
-  <img src="./assets/frontmatter-panel.png" alt="Front Matter Panel" style="display: inline-block" />
-</p>
-
 Initially, this panel has been created to make it easier to add tags and categories to your articles as the current VSCode multi-select is not optimal to use.
 
 To leverage most of the capabilities of the extension. SEO information and everyday actions like slug optimization, updating the date, and publish/drafting the article.
 
+The panel consists of the following sections:
+
+**SEO Status**
+
+<p align="center">
+  <img src="./assets/v2.0.0/seo.png" alt="SEO article status" style="display: inline-block" />
+</p>
+
+**Actions**
+
+<p align="center">
+  <img src="./assets/v2.0.0/actions.png" alt="Actions" style="display: inline-block" />
+</p>
+
+**Metadata: Keywords, Tags, Categories**
+
+<p align="center">
+  <img src="./assets/v2.0.0/metadata.png" alt="Article metadata" style="display: inline-block" />
+</p>
+
 > **Info**: By default, the tags/categories picker allows you to insert existing and none tags/categories. When you enter a none existing tag/category, the panel shows an add `+` icon in front of that button. This functionality allows you to store this tag/category in your settings. If you want to disable this feature, you can do that by setting the `frontMatter.panel.freeform` setting to `false`.
+
+**Other actions**
+
+At the bottom of the panel you can find the following actions:
+
+<p align="center">
+  <img src="./assets/v2.0.0/other-actions.png" alt="Other actions" style="display: inline-block" />
+</p>
 
 ## Custom actions
 
@@ -62,7 +86,7 @@ Since version `1.15.0`, the extension allows you to create your own custom actio
 Once a custom action has been configured, it will appear on the Front Matter panel.
 
 <p align="center">
-  <img src="./assets/custom-actions.png" alt="Custom actions" style="display: inline-block" />
+  <img src="./assets/v2.0.0/custom-action.png" alt="Custom action" style="display: inline-block" />
 </p>
 
 The current workspace-, file-path, and front matter data will be passed as an argument. In your script fetch these arguments as follows:
