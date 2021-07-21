@@ -11,6 +11,7 @@ export interface PanelSettings {
 export interface SEO {
   title: number;
   description: number;
+  content: number;
   descriptionField: string;
 }
 

@@ -93,6 +93,11 @@
   margin-bottom: 2rem;
 }
 
+.seo__status__details h4 {
+  text-align: center;
+  font-weight: bold;
+}
+
 .not-valid {
   color: var(--vscode-errorForeground);
 }
@@ -244,13 +249,28 @@
   margin-right: .5rem;
 }
 
+.ext_link_block button,
 .ext_link_block a {
-  color: var(--vscode-textLink-foreground);
+  align-items: center;
+  color: var(--vscode-button-secondaryForeground);
+  background-color: var(--vscode-button-secondaryBackground);
+  border: 0px;
+  border-radius: 0px;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: var(--vscode-font-size);
+  font-weight: var(--vscode-font-weight);
+  line-height: 26px;
+  padding: 0px 14px;
+  user-select: none;
+  text-decoration: none;
+  width: auto;
 }
 
 .ext_link_block a:hover, 
 .ext_link_block a:active, 
 .ext_link_block a:focus,
 .ext_link_block a:visited {
-  color: var(--vscode-textLink-activeForeground);
+  color: var(--vscode-button-secondaryForeground);
 }

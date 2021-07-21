@@ -1,4 +1,4 @@
-import { SETTING_CUSTOM_SCRIPTS, SETTING_SEO_DESCRIPTION_FIELD } from './../constants/settings';
+import { SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD } from './../constants/settings';
 import * as os from 'os';
 import { PanelSettings, CustomScript } from './../models/PanelSettings';
 import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv } from "vscode";
@@ -224,6 +224,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         seo: {
           title: config.get(SETTING_SEO_TITLE_LENGTH) as number || -1,
           description: config.get(SETTING_SEO_DESCRIPTION_LENGTH) as number || -1,
+          content: config.get(SETTING_SEO_CONTENT_MIN_LENGTH) as number || -1,
           descriptionField: config.get(SETTING_SEO_DESCRIPTION_FIELD) as string || "description"
         },
         slug: {

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { SEO } from '../../models/PanelSettings';
+import { ArticleDetails } from './ArticleDetails';
 import { Icon } from './Icon';
 import { SeoDetails } from './SeoDetails';
 
@@ -28,16 +29,17 @@ export const SeoStatus: React.FunctionComponent<ISeoStatusProps> = (props: React
       
       { (data[descriptionField] && seo.description > 0) && <SeoDetails title="Description" valueTitle="Length" allowedLength={seo.description} value={data[descriptionField].length} /> }
 
-      { data?.articleDetails !== null && (
-        <div className={`seo__status__details valid`}>
-          <h4><strong>Article details</strong></h4>
-          <ul>
-            { data?.articleDetails?.headings && <li><b>Headings</b>: {data?.articleDetails?.headings}</li> }
-            { data?.articleDetails?.paragraphs && <li><b>Paragraphs</b>: {data?.articleDetails?.paragraphs}</li> }
-            { data?.articleDetails?.wordCount && <li><b>Words</b>: {data?.articleDetails?.wordCount}</li> }
-          </ul>
-        </div>
-      ) }
+      {
+        seo.content > 0 && data?.articleDetails?.wordCount && (
+          <SeoDetails title="Article length" 
+                      valueTitle="Words" 
+                      allowedLength={seo.content} 
+                      value={data?.articleDetails?.wordCount}
+                      noValidation />
+        )
+      }
+
+      <ArticleDetails details={data.articleDetails} />
     </div>
   );
 };

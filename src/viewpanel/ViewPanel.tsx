@@ -77,23 +77,19 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
 
       <div className={`ext_settings`}>
         <div className="ext_link_block">
-          <Icon name={`settings`} />
-          <a href="javascript:;" onClick={openSettings}>Open settings</a>
+          <button onClick={openSettings}><Icon name={`settings`} /> Open settings</button>
         </div>
 
         <div className="ext_link_block">
-          <Icon name={`file`} /> 
-          <a href="javascript:;" onClick={openFile}>Reveal file in folder</a>
+          <button onClick={openFile}><Icon name={`file`} /> Reveal file in folder</button>
         </div>
 
         <div className="ext_link_block">
-          <Icon name={`folder-opened`} />
-          <a href="javascript:;" onClick={openProject}>Reveal project folder</a>
+          <button onClick={openProject}><Icon name={`folder-opened`} /> Reveal project folder</button>
         </div>
 
         <div className="ext_link_block">
-          <Icon name={`bug`} /> 
-          <a href="https://github.com/estruyf/vscode-front-matter/issues" title="Open an issue on GitHub">Report an issue</a>
+          <a href="https://github.com/estruyf/vscode-front-matter/issues" title="Open an issue on GitHub"><Icon name={`bug`} /> Report an issue</a>
         </div>
       </div>
     </div>
