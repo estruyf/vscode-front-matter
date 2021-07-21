@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { CommandToCode } from './CommandToCode';
 import { Actions } from './components/Actions';
+import { Collapsible } from './components/Collapsible';
 import { Icon } from './components/Icon';
 import { SeoStatus } from './components/SeoStatus';
 import { Spinner } from './components/Spinner';
@@ -51,28 +52,40 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
           settings && metadata && <Actions metadata={metadata} settings={settings} />
         }
 
-        {
-          (settings && settings.tags && settings.tags.length > 0) && (
-            <TagPicker type={TagType.tags} 
-                      icon={<Icon name="tag" />}
-                      crntSelected={metadata.tags || []} 
-                      options={settings.tags} 
-                      freeform={settings.freeform} 
-                      focussed={focusElm === TagType.tags}
-                      unsetFocus={unsetFocus} />
-          )
-        }
-        {
-          (settings && settings.categories && settings.categories.length > 0) && (
-            <TagPicker type={TagType.categories}
-                      icon={<Icon name="list-unordered" />}
-                      crntSelected={metadata.categories || []} 
-                      options={settings.categories} 
-                      freeform={settings.freeform} 
-                      focussed={focusElm === TagType.categories}
-                      unsetFocus={unsetFocus} />
-          )
-        }
+        <Collapsible title="Metadata">
+          {
+            <TagPicker type={TagType.keywords} 
+                       icon={<Icon name="symbol-keyword" />}
+                       crntSelected={metadata.keywords || []} 
+                       options={[]} 
+                       freeform={true} 
+                       focussed={focusElm === TagType.keywords}
+                       unsetFocus={unsetFocus}
+                       disableConfigurable />
+          }
+          {
+            (settings && settings.tags && settings.tags.length > 0) && (
+              <TagPicker type={TagType.tags} 
+                        icon={<Icon name="tag" />}
+                        crntSelected={metadata.tags || []} 
+                        options={settings.tags} 
+                        freeform={settings.freeform} 
+                        focussed={focusElm === TagType.tags}
+                        unsetFocus={unsetFocus} />
+            )
+          }
+          {
+            (settings && settings.categories && settings.categories.length > 0) && (
+              <TagPicker type={TagType.categories}
+                        icon={<Icon name="list-unordered" />}
+                        crntSelected={metadata.categories || []} 
+                        options={settings.categories} 
+                        freeform={settings.freeform} 
+                        focussed={focusElm === TagType.categories}
+                        unsetFocus={unsetFocus} />
+            )
+          }
+        </Collapsible>
       </div>
 
       <div className={`ext_settings`}>

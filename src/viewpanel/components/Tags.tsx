@@ -5,12 +5,14 @@ export interface ITagsProps {
   values: string[];
   options: string[];
 
+  disableConfigurable?: boolean;
+
   onCreate: (tags: string) => void;
   onRemove: (tags: string) => void;
 }
 
 export const Tags: React.FunctionComponent<ITagsProps> = (props: React.PropsWithChildren<ITagsProps>) => {
-  const { values, options, onCreate, onRemove } = props;
+  const { values, options, onCreate, onRemove, disableConfigurable } = props;
 
   const knownTags = values.filter(v => options.includes(v));
   const unknownTags = values.filter(v => !options.includes(v));
@@ -24,7 +26,7 @@ export const Tags: React.FunctionComponent<ITagsProps> = (props: React.PropsWith
       }
       {
         unknownTags.map(t => (
-          <Tag key={t.replace(/ /g, "_")} value={t} className={`article__tags__items__pill_notexists`} onRemove={onRemove} onCreate={onCreate} title={`Be aware, this tag "${t}" is not saved in your settings. Once removed, it will be gone forever.`} />
+          <Tag key={t.replace(/ /g, "_")} value={t} className={`article__tags__items__pill_notexists`} onRemove={onRemove} onCreate={onCreate} title={`Be aware, this tag "${t}" is not saved in your settings. Once removed, it will be gone forever.`} disableConfigurable={disableConfigurable} />
         ))
       }
     </div>

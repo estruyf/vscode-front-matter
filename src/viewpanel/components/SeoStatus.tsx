@@ -22,8 +22,6 @@ export const SeoStatus: React.FunctionComponent<ISeoStatusProps> = (props: React
   }
 
   const renderContent = () => {
-    console.log(`render`);
-
     if (!isOpen) {
       return null;
     }
@@ -44,7 +42,11 @@ export const SeoStatus: React.FunctionComponent<ISeoStatusProps> = (props: React
           )
         }
 
-        <SeoKeywords keywords={data?.keywords} />
+        <SeoKeywords keywords={data?.keywords}
+                     title={title} 
+                     description={data[descriptionField]} 
+                     slug={data.slug}
+                     content={data?.articleDetails?.content} />
 
         <ArticleDetails details={data.articleDetails} />
       </div>

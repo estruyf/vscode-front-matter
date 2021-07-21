@@ -11,7 +11,7 @@ export const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({childre
 
   // This is a work around for a lit-element issue of duplicate slot names
   const triggerClick = (e: React.MouseEvent<HTMLElement>) => {
-    if ((e.target as any).tagName === 'VSCODE-COLLAPSIBLE') {
+    if ((e.target as any).tagName.toUpperCase() === 'VSCODE-COLLAPSIBLE') {
       setIsOpen(prev => {
         if (sendUpdate) {
           sendUpdate(!prev);

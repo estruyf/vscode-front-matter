@@ -98,6 +98,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         case CommandToCode.updateCategories:
           this.updateTags(TagType.categories, msg.data || []);
           break;
+        case CommandToCode.updateKeywords:
+          this.updateTags(TagType.keywords, msg.data || []);
+          break;
         case CommandToCode.addTagToSettings:
           this.addTags(TagType.tags, msg.data);
           break;
@@ -320,7 +323,8 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       return {
         headings,
         paragraphs,
-        wordCount
+        wordCount,
+        content: article.content
       };
     }
 
