@@ -30,7 +30,9 @@ The extension will automatically verify if your title and description are SEO co
 
 In version `1.10.0` of this extension, the FrontMatter panel got introduced. This panel allows you to perform most of the extension actions by just a click on the button. 
 
-![FrontMatter Panel](./assets/frontmatter-panel.png)
+<p align="center">
+  <img src="./assets/frontmatter-panel.png" alt="FrontMatter Panel" style="display: inline-block" />
+</p>
 
 Initially, this panel has been created to make it easier to add tags and categories to your articles as the current VSCode multi-select is not optimal to use.
 
@@ -42,7 +44,9 @@ Since version `1.15.0`, the extension allows you to create your own custom actio
 
 Once a custom action has been configured, it will appear on the Front Matter panel.
 
-![](./assets/custom-actions.png)
+<p align="center">
+  <img src="./assets/custom-actions.png" alt="Custom actions" style="display: inline-block" />
+</p>
 
 The current workspace-, file-path, and front matter data will be passed as an argument. In your script fetch these arguments as follows:
 
@@ -62,7 +66,9 @@ if (arguments && arguments.length > 0) {
 
 The output of the script will be passed as a notification, and it allows you to copy the output.
 
-![](./assets/custom-action-notification.png)
+<p align="center">
+  <img src="./assets/custom-action-notification.png" alt="Custom action notification" style="display: inline-block" />
+</p>
 
 ## Creating articles from templates
 
@@ -76,7 +82,9 @@ When adding files in the folder, you'll be able to run the `Front Matter: New ar
 
 ## Syntax highlighting for Hugo Shortcodes
 
-![Shortcode syntax highlighting](./assets/syntax-highlighting.png)
+<p align="center">
+  <img src="./assets/syntax-highlighting.png" alt="Shortcode syntax highlighting" style="display: inline-block" />
+</p>
 
 ## Available commands:
 
@@ -84,7 +92,9 @@ When adding files in the folder, you'll be able to run the `Front Matter: New ar
 
 Creates a new <tag | category> and allows you to include it into your post automatically
 
-![Create tag or category](./assets/create-tag-category.gif)
+<p align="center">
+  <img src="./assets/create-tag-category.gif" alt="Create tag or category" style="display: inline-block" />
+</p>
   
 **Front Matter: Insert <tags | categories>**
 
@@ -119,6 +129,7 @@ Update the `lastmod` (last modified) property of the current article/post/... to
 This command generates a clean slug for your article. It removes known stop words, punctuations, and special characters. 
 
 Example:
+
 ```
 title: Just a sample page with a title
 slug: sample-page-title
