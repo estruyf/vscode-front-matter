@@ -26,12 +26,27 @@ The extension will automatically verify if your title and description are SEO co
 
 > If you see something missing in your article creation flow, please feel free to reach out.
 
-## FrontMatter Panel (introduced in 1.10.0)
+<h2 id="table-of-contents">Table of Contents</h2>
 
-In version `1.10.0` of this extension, the FrontMatter panel got introduced. This panel allows you to perform most of the extension actions by just a click on the button. 
+<details open="open">
+  <summary>Table of Contents</summary>
+  <ol>
+    <li><a href="#the-panel">The panel</a></li>
+    <li><a href="#custom-actions">Custom actions</a></li>
+    <li><a href="#creating-articles-from-templates">Create articles from templates</a></li>
+    <li><a href="#syntax-highlighting-for-hugo-shortcodes">Syntax highlighting for Hugo Shortcodes</a></li>
+    <li><a href="#available-commands">Available commands</a></li>
+    <li><a href="#extension-settings">Extension settings</a></li>
+    <li><a href="#feedback--issues--ideas">Feedback / issues / ideas</a></li>
+  </ol>
+</details>
+
+## The panel
+
+The Front Matter panel allows you to perform most of the extension actions by just a click on the button and it shows the SEO statuses of your title, description, and more.
 
 <p align="center">
-  <img src="./assets/frontmatter-panel.png" alt="FrontMatter Panel" style="display: inline-block" />
+  <img src="./assets/frontmatter-panel.png" alt="Front Matter Panel" style="display: inline-block" />
 </p>
 
 Initially, this panel has been created to make it easier to add tags and categories to your articles as the current VSCode multi-select is not optimal to use.
@@ -39,6 +54,8 @@ Initially, this panel has been created to make it easier to add tags and categor
 To leverage most of the capabilities of the extension. SEO information and everyday actions like slug optimization, updating the date, and publish/drafting the article.
 
 > **Info**: By default, the tags/categories picker allows you to insert existing and none tags/categories. When you enter a none existing tag/category, the panel shows an add `+` icon in front of that button. This functionality allows you to store this tag/category in your settings. If you want to disable this feature, you can do that by setting the `frontMatter.panel.freeform` setting to `false`.
+
+## Custom actions
 
 Since version `1.15.0`, the extension allows you to create your own custom actions, by running Node.js scripts from your project. In order to use this functionality, you will need to configure the [`frontMatter.custom.scripts`](#frontmattercustomscripts) setting for your project.
 
@@ -98,7 +115,7 @@ Creates a new <tag | category> and allows you to include it into your post autom
   
 **Front Matter: Insert <tags | categories>**
 
-Inserts a selected <tags | categories> into the front matter of your article/post/... - When using this command, the FrontMatter panel opens and focuses on the specified type.
+Inserts a selected <tags | categories> into the front matter of your article/post/... - When using this command, the Front Matter panel opens and focuses on the specified type.
 
 > **Info**: This experience changed in version `1.11.0`.
 
@@ -139,6 +156,13 @@ You can also specify a prefix and suffix, which can be added to the slug if you 
 
 > **Info**: At the moment, the extension only supports English stopwords.
 
+### Usage
+
+- Start by opening the command prompt:
+  - Windows: ⇧+ctrl+P
+  - Mac: ⇧+⌘+P
+- Use one of the commands from above
+
 ## Where is the data stored?
 
 The tags and categories are stored in the project VSCode user settings. You can find them back under: `.vscode/settings.json`.
@@ -150,7 +174,7 @@ The tags and categories are stored in the project VSCode user settings. You can 
 }
 ```
 
-## Additional extension settings
+## Extension settings
 
 The extension has more settings that allow you to configure it to your needs further. Here is a list of settings that you can set:
 
@@ -258,13 +282,6 @@ Allows you to specify a title and script path (starting relative from the root o
 ```
 
 > **Important**: When the command execution would fail when it cannot find the `node` command. You are able to specify your path to the node app. This is for instance required when using `nvm`.
-
-## Usage
-
-- Start by opening the command prompt:
-  - Windows: ⇧+ctrl+P
-  - Mac: ⇧+⌘+P
-- Use one of the commands from above
 
 ## Feedback / issues / ideas
 
