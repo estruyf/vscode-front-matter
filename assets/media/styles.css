@@ -21,6 +21,10 @@
   }
 }
 
+.collapsible__body {
+	padding: 1rem 2rem;
+}
+
 #app, .frontmatter {
   height: 100%;
 }
@@ -63,7 +67,8 @@
 }
 
 .frontmatter {
-  padding: var(--input-margin-vertical) 0;
+  padding-top: 0;
+  padding-bottom: var(--input-margin-vertical);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -89,11 +94,11 @@
   margin-right: 0.5rem;
 }
 
-.seo__status__details {
-  margin-bottom: 2rem;
+.seo__status__details, .seo__status__keywords {
+  margin-bottom: 1rem;
 }
 
-.seo__status__details h4 {
+.collapsible__body h4 {
   text-align: center;
   font-weight: bold;
 }

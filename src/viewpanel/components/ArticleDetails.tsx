@@ -10,9 +10,7 @@ export interface IArticleDetailsProps {
 }
 
 export const ArticleDetails: React.FunctionComponent<IArticleDetailsProps> = ({details}: React.PropsWithChildren<IArticleDetailsProps>) => {
-
-  console.log(details);
-
+  
   if (!details || (details.headings === undefined && details.paragraphs === undefined)) {
     return null;
   }
@@ -21,7 +19,7 @@ export const ArticleDetails: React.FunctionComponent<IArticleDetailsProps> = ({d
     <div className={`seo__status__details valid`}>
       <h4>More details</h4>
 
-      <VsTable>
+      <VsTable bordered>
         <VsTableHeader slot="header">
           <VsTableHeaderCell>Type</VsTableHeaderCell>
           <VsTableHeaderCell>Total</VsTableHeaderCell>

@@ -145,7 +145,7 @@
 				"frontMatter.taxonomy.seoContentLengh": {
 					"type": "number",
 					"default": 1760,
-					"description": "Specifies the optimal minimum length for your articles. Between 1,760 words – 2,400 is the absolute ideal blog length for SEO in 2021. (set to `-1` to turn it off)."
+					"description": "Specifies the optimal minimum length for your articles. Between 1,760 words – 2,400 is the absolute ideal article length for SEO in 2021. (set to `-1` to turn it off)."
 				},
 				"frontMatter.taxonomy.seoDescriptionField": {
 					"type": "string",

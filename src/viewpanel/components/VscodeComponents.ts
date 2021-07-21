@@ -6,3 +6,4 @@ export const VsTableHeaderCell = wrapWc(`vscode-table-header-cell`);
 export const VsTableBody = wrapWc(`vscode-table-body`);
 export const VsTableRow = wrapWc(`vscode-table-row`);
 export const VsTableCell = wrapWc(`vscode-table-cell`);
+export const VsCollapsible = wrapWc(`vscode-collapsible`);

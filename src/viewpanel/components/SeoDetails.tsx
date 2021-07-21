@@ -24,7 +24,7 @@ export const SeoDetails: React.FunctionComponent<ISeoDetailsProps> = (props: Rea
     <div className={`seo__status__details ${validate()}`}>
       <h4>{title}</h4>
 
-      <VsTable>
+      <VsTable {...{bordered:true}}>
         <VsTableHeader slot="header">
           <VsTableHeaderCell className={validate()}>{valueTitle}</VsTableHeaderCell>
           <VsTableHeaderCell>Recommended</VsTableHeaderCell>

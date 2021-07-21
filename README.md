@@ -161,6 +161,17 @@ Specifies the optimal description length for SEO (set to `-1` to turn it off). D
   "frontMatter.taxonomy.seoDescriptionLength": 160
 }
 ```
+
+### `frontMatter.taxonomy.seoContentLength`
+
+Specifies the optimal minimum length for your articles. Between 1,760 words – 2,400 is the absolute ideal article length for SEO in 2021. (set to `-1` to turn it off).
+
+```json
+{
+  "frontMatter.taxonomy.seoContentLength": 1760
+}
+```
+
 ### `frontMatter.taxonomy.seoDescriptionLength`
 
 Specifies the name of the SEO description field for your page. Default is `description`.

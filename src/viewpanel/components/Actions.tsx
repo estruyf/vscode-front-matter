@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { PanelSettings } from '../../models/PanelSettings';
+import { Collapsible } from './Collapsible';
 import { CustomScript } from './CustomScript';
 import { DateAction } from './DateAction';
-import { Icon } from './Icon';
 import { PublishAction } from './PublishAction';
 import { SlugAction } from './SlugAction';
 
@@ -19,22 +19,22 @@ export const Actions: React.FunctionComponent<IActionsProps> = (props: React.Pro
   }
 
   return (
-    <div className={`section article__actions`}>
-      <h3><Icon name={`rocket`} /> Actions</h3>
+    <Collapsible title="Actions">
+      <div className={`article__actions`}>
+        { metadata && metadata.title && <SlugAction value={metadata.title} crntValue={metadata.slug} slugOpts={settings.slug} /> }
 
-      { metadata && metadata.title && <SlugAction value={metadata.title} crntValue={metadata.slug} slugOpts={settings.slug} /> }
-      
-      <DateAction />
+        <DateAction />
 
-      { metadata && typeof metadata.draft !== undefined && <PublishAction draft={metadata.draft} />}
+        { metadata && typeof metadata.draft !== undefined && <PublishAction draft={metadata.draft} />}
 
-      {
-        (settings && settings.scripts && settings.scripts.length > 0) && (
-          settings.scripts.map((value) => (
-            <CustomScript key={value.title.replace(/ /g, '')} {...value} />
-          ))
-        )
-      }
-    </div>
+        {
+          (settings && settings.scripts && settings.scripts.length > 0) && (
+            settings.scripts.map((value) => (
+              <CustomScript key={value.title.replace(/ /g, '')} {...value} />
+            ))
+          )
+        }
+      </div>
+    </Collapsible>
   );
 };

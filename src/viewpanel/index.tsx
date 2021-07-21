@@ -8,6 +8,7 @@ import '@bendera/vscode-webview-elements/dist/vscode-table-header-cell';
 import '@bendera/vscode-webview-elements/dist/vscode-table-body';
 import '@bendera/vscode-webview-elements/dist/vscode-table-row';
 import '@bendera/vscode-webview-elements/dist/vscode-table-cell';
+import '@bendera/vscode-webview-elements/dist/vscode-collapsible';
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
