@@ -1,7 +1,8 @@
 # Change Log
 
-## [1.19.0] - 2020-07-22
+## [2.0.0] - 2020-07-23
 
+- Redesigned sidebar panel
 - Sidebar background styling match the VSCode defined sidebar color
 - Added support for `mdx` files
 - Added support for `enter` press in the combobox

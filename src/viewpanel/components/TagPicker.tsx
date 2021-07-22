@@ -5,6 +5,7 @@ import { CommandToCode } from '../CommandToCode';
 import { TagType } from '../TagType';
 import { MessageHelper } from '../helper/MessageHelper';
 import Downshift from 'downshift';
+import { AddIcon } from './Icons/AddIcon';
 
 export interface ITagPickerProps {
   type: string;
@@ -165,7 +166,7 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
                             title={`Add the unknown tag`}
                             disabled={!inputValue} 
                             onClick={() => insertUnkownTag(closeMenu)}>
-                      {icon}
+                      <AddIcon />
                     </button>
                   )
                 }

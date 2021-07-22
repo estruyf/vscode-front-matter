@@ -26,6 +26,10 @@ The extension will automatically verify if your title and description are SEO co
 
 > If you see something missing in your article creation flow, please feel free to reach out.
 
+**Version 2**
+
+In version two we released the new redesigned sidebar panel with improved SEO support.
+
 <h2 id="table-of-contents">Table of Contents</h2>
 
 <details open="open">
