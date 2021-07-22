@@ -28,7 +28,7 @@ The extension will automatically verify if your title and description are SEO co
 
 **Version 2**
 
-In version two we released the new redesigned sidebar panel with improved SEO support.
+In version v2.0.0 we released the newly redesigned sidebar panel with improved SEO support. This extension makes it the only extension to manage your Markdown pages for your static sites in Visual Studio Code.
 
 <h2 id="table-of-contents">Table of Contents</h2>
 
