@@ -1,7 +1,14 @@
 import * as React from 'react';
 import { CommandToCode } from './CommandToCode';
 import { Actions } from './components/Actions';
-import { Icon } from './components/Icon';
+import { Collapsible } from './components/Collapsible';
+import { BugIcon } from './components/Icons/BugIcon';
+import { FileIcon } from './components/Icons/FileIcon';
+import { FolderOpenedIcon } from './components/Icons/FolderOpenedIcon';
+import { ListUnorderedIcon } from './components/Icons/ListUnorderedIcon';
+import { SettingsIcon } from './components/Icons/SettingsIcon';
+import { SymbolKeywordIcon } from './components/Icons/SymbolKeywordIcon';
+import { TagIcon } from './components/Icons/TagIcon';
 import { SeoStatus } from './components/SeoStatus';
 import { Spinner } from './components/Spinner';
 import { TagPicker } from './components/TagPicker';
@@ -51,49 +58,57 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
           settings && metadata && <Actions metadata={metadata} settings={settings} />
         }
 
-        {
-          (settings && settings.tags && settings.tags.length > 0) && (
-            <TagPicker type={TagType.tags} 
-                      icon={<Icon name="tag" />}
-                      crntSelected={metadata.tags || []} 
-                      options={settings.tags} 
-                      freeform={settings.freeform} 
-                      focussed={focusElm === TagType.tags}
-                      unsetFocus={unsetFocus} />
-          )
-        }
-        {
-          (settings && settings.categories && settings.categories.length > 0) && (
-            <TagPicker type={TagType.categories}
-                      icon={<Icon name="list-unordered" />}
-                      crntSelected={metadata.categories || []} 
-                      options={settings.categories} 
-                      freeform={settings.freeform} 
-                      focussed={focusElm === TagType.categories}
-                      unsetFocus={unsetFocus} />
-          )
-        }
+        <Collapsible title="Metadata">
+          {
+            <TagPicker type={TagType.keywords} 
+                       icon={<SymbolKeywordIcon />}
+                       crntSelected={metadata.keywords || []} 
+                       options={[]} 
+                       freeform={true} 
+                       focussed={focusElm === TagType.keywords}
+                       unsetFocus={unsetFocus}
+                       disableConfigurable />
+          }
+          {
+            (settings && settings.tags && settings.tags.length > 0) && (
+              <TagPicker type={TagType.tags} 
+                        icon={<TagIcon />}
+                        crntSelected={metadata.tags || []} 
+                        options={settings.tags} 
+                        freeform={settings.freeform} 
+                        focussed={focusElm === TagType.tags}
+                        unsetFocus={unsetFocus} />
+            )
+          }
+          {
+            (settings && settings.categories && settings.categories.length > 0) && (
+              <TagPicker type={TagType.categories}
+                        icon={<ListUnorderedIcon />}
+                        crntSelected={metadata.categories || []} 
+                        options={settings.categories} 
+                        freeform={settings.freeform} 
+                        focussed={focusElm === TagType.categories}
+                        unsetFocus={unsetFocus} />
+            )
+          }
+        </Collapsible>
       </div>
 
       <div className={`ext_settings`}>
         <div className="ext_link_block">
-          <Icon name={`settings`} />
-          <a href="javascript:;" onClick={openSettings}>Open settings</a>
+          <button onClick={openSettings}><SettingsIcon /> Open settings</button>
         </div>
 
         <div className="ext_link_block">
-          <Icon name={`file`} /> 
-          <a href="javascript:;" onClick={openFile}>Reveal file in folder</a>
+          <button onClick={openFile}><FileIcon /> Reveal file in folder</button>
         </div>
 
         <div className="ext_link_block">
-          <Icon name={`folder-opened`} />
-          <a href="javascript:;" onClick={openProject}>Reveal project folder</a>
+          <button onClick={openProject}><FolderOpenedIcon /> Reveal project folder</button>
         </div>
 
         <div className="ext_link_block">
-          <Icon name={`bug`} /> 
-          <a href="https://github.com/estruyf/vscode-front-matter/issues" title="Open an issue on GitHub">Report an issue</a>
+          <a href="https://github.com/estruyf/vscode-front-matter/issues" title="Open an issue on GitHub"><BugIcon /> Report an issue</a>
         </div>
       </div>
     </div>

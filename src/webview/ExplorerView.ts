@@ -1,4 +1,4 @@
-import { SETTING_CUSTOM_SCRIPTS, SETTING_SEO_DESCRIPTION_FIELD } from './../constants/settings';
+import { SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD } from './../constants/settings';
 import * as os from 'os';
 import { PanelSettings, CustomScript } from './../models/PanelSettings';
 import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv } from "vscode";
@@ -11,6 +11,8 @@ import { TagType } from '../viewpanel/TagType';
 import { TaxonomyType } from '../models';
 import { exec } from 'child_process';
 import * as path from 'path';
+import { fromMarkdown } from 'mdast-util-from-markdown';
+import { Content } from 'mdast';
 
 
 export class ExplorerView implements WebviewViewProvider, Disposable {
@@ -96,6 +98,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         case CommandToCode.updateCategories:
           this.updateTags(TagType.categories, msg.data || []);
           break;
+        case CommandToCode.updateKeywords:
+          this.updateTags(TagType.keywords, msg.data || []);
+          break;
         case CommandToCode.addTagToSettings:
           this.addTags(TagType.tags, msg.data);
           break;
@@ -150,7 +155,10 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * @param metadata 
    */
   public pushMetadata(metadata: any) {
-    this.postWebviewMessage({ command: Command.metadata, data: metadata });
+    this.postWebviewMessage({ command: Command.metadata, data: {
+      ...metadata,
+      articleDetails: this.getArticleDetails()
+    } });
   }
 
   /**
@@ -219,6 +227,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         seo: {
           title: config.get(SETTING_SEO_TITLE_LENGTH) as number || -1,
           description: config.get(SETTING_SEO_DESCRIPTION_LENGTH) as number || -1,
+          content: config.get(SETTING_SEO_CONTENT_MIN_LENGTH) as number || -1,
           descriptionField: config.get(SETTING_SEO_DESCRIPTION_FIELD) as string || "description"
         },
         slug: {
@@ -243,7 +252,10 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     }
 
     const article = ArticleHelper.getFrontMatter(editor);
-    this.postWebviewMessage({ command: Command.metadata, data: article!.data });
+    this.postWebviewMessage({ command: Command.metadata, data: {
+      ...article!.data,
+      articleDetails: this.getArticleDetails() 
+    }});
   }
 
   /**
@@ -261,7 +273,10 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     if (article && article.data) {
       article.data[tagType.toLowerCase()] = values || [];
       ArticleHelper.update(editor, article);
-      this.postWebviewMessage({ command: Command.metadata, data: article.data });
+      this.postWebviewMessage({ command: Command.metadata, data: {
+        ...article.data,
+        articleDetails: this.getArticleDetails()
+      }});
     }
   }
 
@@ -282,6 +297,59 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       options.push(value);
       const taxType = tagType === TagType.tags ? TaxonomyType.Tag : TaxonomyType.Category;
       await SettingsHelper.update(taxType, options);
+    }
+  }
+
+  /**
+   * Get article details
+   */
+  private getArticleDetails() {
+    const editor = window.activeTextEditor;
+    if (!editor) {
+      return "";
+    }
+
+    const article = ArticleHelper.getFrontMatter(editor);
+
+    if (article && article.content) {
+      let content = article.content;
+      content = content.replace(/({{(.*?)}})/g, ''); // remove hugo shortcodes
+      
+      const mdTree = fromMarkdown(content);
+      const headings = mdTree.children.filter(node => node.type === 'heading').length;
+      const paragraphs = mdTree.children.filter(node => node.type === 'paragraph').length;
+      const wordCount = this.wordCount(0, mdTree);
+
+      return {
+        headings,
+        paragraphs,
+        wordCount,
+        content: article.content
+      };
+    }
+
+    return null;
+  }
+
+  private counts(acc: any, node: any) {
+    // add 1 to an initial or existing value
+    acc[node.type] = (acc[node.type] || 0) + 1;
+  
+    // find and add up the counts from all of this node's children
+    return (node.children || []).reduce(
+      (childAcc: any, childNode: any) => this.counts(childAcc, childNode),
+      acc
+    );
+  }
+
+  /**
+   * Get the word count for the current document
+   */
+  private wordCount(count: number, node: Content | any) {
+    if (node.type === "text") {
+      return count + node.value.split(" ").length;
+    } else {
+      return (node.children || []).reduce((childCount: number, childNode: any) => this.wordCount(childCount, childNode), count);
     }
   }
 
@@ -312,7 +380,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     const styleResetUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'assets/media', 'reset.css'));
     const stylesUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'assets/media', 'styles.css'));
     const scriptUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'dist', 'viewpanel.js'));
-    const codiconsUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css'));
+
     const nonce = this.getNonce();
 
     return `
@@ -324,7 +392,6 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         <link href="${styleResetUri}" rel="stylesheet">
         <link href="${styleVSCodeUri}" rel="stylesheet">
         <link href="${stylesUri}" rel="stylesheet">
-        <link href="${codiconsUri}" rel="stylesheet">
 
         <title>Front Matter</title>
       </head>

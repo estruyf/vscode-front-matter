@@ -6,6 +6,7 @@ export enum CommandToCode {
   publish = 'publish',
   updateTags = "update-tags",
   updateCategories = "update-categories",
+  updateKeywords = "update-keywords",
   addTagToSettings = "add-tag",
   addCategoryToSettings = "add-category",
   openSettings = "open-settings",

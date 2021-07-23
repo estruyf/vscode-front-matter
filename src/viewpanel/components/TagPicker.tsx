@@ -5,6 +5,7 @@ import { CommandToCode } from '../CommandToCode';
 import { TagType } from '../TagType';
 import { MessageHelper } from '../helper/MessageHelper';
 import Downshift from 'downshift';
+import { AddIcon } from './Icons/AddIcon';
 
 export interface ITagPickerProps {
   type: string;
@@ -14,10 +15,11 @@ export interface ITagPickerProps {
   freeform: boolean;
   focussed: boolean;
   unsetFocus: () => void;
+  disableConfigurable?: boolean;
 }
 
 export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsWithChildren<ITagPickerProps>) => {
-  const { icon, type, crntSelected, options, freeform, focussed, unsetFocus } = props;
+  const { icon, type, crntSelected, options, freeform, focussed, unsetFocus, disableConfigurable } = props;
   const [ selected, setSelected ] = React.useState<string[]>([]);
   const [ inputValue, setInputValue ] = React.useState<string>("");
   const prevSelected = usePrevious(crntSelected);
@@ -48,7 +50,16 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
    * @param values 
    */
   const sendUpdate = (values: string[]) => {
-    const cmdType = type === TagType.tags ? CommandToCode.updateTags : CommandToCode.updateCategories;
+    let cmdType = CommandToCode.updateCategories;
+    
+    if (type === TagType.tags) {
+      cmdType = CommandToCode.updateTags;
+    } else if (type === TagType.categories) {
+      cmdType = CommandToCode.updateCategories;
+    } else if (type === TagType.keywords) {
+      cmdType = CommandToCode.updateKeywords;
+    }
+
     MessageHelper.sendMessage(cmdType, values);
   };
 
@@ -132,6 +143,12 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
                             ref: inputRef, 
                             onFocus: openMenu as any, 
                             onClick: openMenu as any,
+                            onKeyDown: (e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                insertUnkownTag(closeMenu);
+                              }
+                            },
                             onBlur: () => { 
                               closeMenu(); 
                               unsetFocus(); 
@@ -145,9 +162,12 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
                 
                 {
                   freeform && (
-                    <button title={`Add the unknown tag`}
+                    <button className={`article__tags__input__button`}
+                            title={`Add the unknown tag`}
                             disabled={!inputValue} 
-                            onClick={() => insertUnkownTag(closeMenu)}>+</button>
+                            onClick={() => insertUnkownTag(closeMenu)}>
+                      <AddIcon />
+                    </button>
                   )
                 }
               </div>
@@ -166,7 +186,7 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
         }
       </Downshift>
 
-      <Tags values={selected.sort((a: string, b: string) => a.toLowerCase() < b.toLowerCase() ? -1 : 1 )} onRemove={onRemove} onCreate={onCreate} options={options} />
+      <Tags values={selected.sort((a: string, b: string) => a.toLowerCase() < b.toLowerCase() ? -1 : 1 )} onRemove={onRemove} onCreate={onCreate} options={options} disableConfigurable={!!disableConfigurable} />
     </div>
   );
 };

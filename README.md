@@ -26,23 +26,72 @@ The extension will automatically verify if your title and description are SEO co
 
 > If you see something missing in your article creation flow, please feel free to reach out.
 
-## FrontMatter Panel (introduced in 1.10.0)
+**Version 2**
 
-In version `1.10.0` of this extension, the FrontMatter panel got introduced. This panel allows you to perform most of the extension actions by just a click on the button. 
+In version v2.0.0 we released the newly redesigned sidebar panel with improved SEO support. This extension makes it the only extension to manage your Markdown pages for your static sites in Visual Studio Code.
 
-![FrontMatter Panel](./assets/frontmatter-panel.png)
+<h2 id="table-of-contents">Table of Contents</h2>
+
+<details open="open">
+  <summary>Table of Contents</summary>
+  <ol>
+    <li><a href="#the-panel">The panel</a></li>
+    <li><a href="#custom-actions">Custom actions</a></li>
+    <li><a href="#creating-articles-from-templates">Create articles from templates</a></li>
+    <li><a href="#syntax-highlighting-for-hugo-shortcodes">Syntax highlighting for Hugo Shortcodes</a></li>
+    <li><a href="#available-commands">Available commands</a></li>
+    <li><a href="#extension-settings">Extension settings</a></li>
+    <li><a href="#feedback--issues--ideas">Feedback / issues / ideas</a></li>
+  </ol>
+</details>
+
+## The panel
+
+The Front Matter panel allows you to perform most of the extension actions by just a click on the button and it shows the SEO statuses of your title, description, and more.
 
 Initially, this panel has been created to make it easier to add tags and categories to your articles as the current VSCode multi-select is not optimal to use.
 
 To leverage most of the capabilities of the extension. SEO information and everyday actions like slug optimization, updating the date, and publish/drafting the article.
 
+The panel consists of the following sections:
+
+**SEO Status**
+
+<p align="center">
+  <img src="./assets/v2.0.0/seo.png" alt="SEO article status" style="display: inline-block" />
+</p>
+
+**Actions**
+
+<p align="center">
+  <img src="./assets/v2.0.0/actions.png" alt="Actions" style="display: inline-block" />
+</p>
+
+**Metadata: Keywords, Tags, Categories**
+
+<p align="center">
+  <img src="./assets/v2.0.0/metadata.png" alt="Article metadata" style="display: inline-block" />
+</p>
+
 > **Info**: By default, the tags/categories picker allows you to insert existing and none tags/categories. When you enter a none existing tag/category, the panel shows an add `+` icon in front of that button. This functionality allows you to store this tag/category in your settings. If you want to disable this feature, you can do that by setting the `frontMatter.panel.freeform` setting to `false`.
+
+**Other actions**
+
+At the bottom of the panel you can find the following actions:
+
+<p align="center">
+  <img src="./assets/v2.0.0/other-actions.png" alt="Other actions" style="display: inline-block" />
+</p>
+
+## Custom actions
 
 Since version `1.15.0`, the extension allows you to create your own custom actions, by running Node.js scripts from your project. In order to use this functionality, you will need to configure the [`frontMatter.custom.scripts`](#frontmattercustomscripts) setting for your project.
 
 Once a custom action has been configured, it will appear on the Front Matter panel.
 
-![](./assets/custom-actions.png)
+<p align="center">
+  <img src="./assets/v2.0.0/custom-action.png" alt="Custom action" style="display: inline-block" />
+</p>
 
 The current workspace-, file-path, and front matter data will be passed as an argument. In your script fetch these arguments as follows:
 
@@ -62,7 +111,9 @@ if (arguments && arguments.length > 0) {
 
 The output of the script will be passed as a notification, and it allows you to copy the output.
 
-![](./assets/custom-action-notification.png)
+<p align="center">
+  <img src="./assets/custom-action-notification.png" alt="Custom action notification" style="display: inline-block" />
+</p>
 
 ## Creating articles from templates
 
@@ -76,7 +127,9 @@ When adding files in the folder, you'll be able to run the `Front Matter: New ar
 
 ## Syntax highlighting for Hugo Shortcodes
 
-![Shortcode syntax highlighting](./assets/syntax-highlighting.png)
+<p align="center">
+  <img src="./assets/syntax-highlighting.png" alt="Shortcode syntax highlighting" style="display: inline-block" />
+</p>
 
 ## Available commands:
 
@@ -84,11 +137,13 @@ When adding files in the folder, you'll be able to run the `Front Matter: New ar
 
 Creates a new <tag | category> and allows you to include it into your post automatically
 
-![Create tag or category](./assets/create-tag-category.gif)
+<p align="center">
+  <img src="./assets/create-tag-category.gif" alt="Create tag or category" style="display: inline-block" />
+</p>
   
 **Front Matter: Insert <tags | categories>**
 
-Inserts a selected <tags | categories> into the front matter of your article/post/... - When using this command, the FrontMatter panel opens and focuses on the specified type.
+Inserts a selected <tags | categories> into the front matter of your article/post/... - When using this command, the Front Matter panel opens and focuses on the specified type.
 
 > **Info**: This experience changed in version `1.11.0`.
 
@@ -119,6 +174,7 @@ Update the `lastmod` (last modified) property of the current article/post/... to
 This command generates a clean slug for your article. It removes known stop words, punctuations, and special characters. 
 
 Example:
+
 ```
 title: Just a sample page with a title
 slug: sample-page-title
@@ -127,6 +183,13 @@ slug: sample-page-title
 You can also specify a prefix and suffix, which can be added to the slug if you want. Use the following settings to do this: `frontMatter.taxonomy.slugPrefix` and `frontMatter.taxonomy.slugSuffix`. By default, both options are not provided and will not add anything to the slug.
 
 > **Info**: At the moment, the extension only supports English stopwords.
+
+### Usage
+
+- Start by opening the command prompt:
+  - Windows: ⇧+ctrl+P
+  - Mac: ⇧+⌘+P
+- Use one of the commands from above
 
 ## Where is the data stored?
 
@@ -139,7 +202,7 @@ The tags and categories are stored in the project VSCode user settings. You can 
 }
 ```
 
-## Additional extension settings
+## Extension settings
 
 The extension has more settings that allow you to configure it to your needs further. Here is a list of settings that you can set:
 
@@ -161,6 +224,17 @@ Specifies the optimal description length for SEO (set to `-1` to turn it off). D
   "frontMatter.taxonomy.seoDescriptionLength": 160
 }
 ```
+
+### `frontMatter.taxonomy.seoContentLength`
+
+Specifies the optimal minimum length for your articles. Between 1,760 words – 2,400 is the absolute ideal article length for SEO in 2021. (set to `-1` to turn it off).
+
+```json
+{
+  "frontMatter.taxonomy.seoContentLength": 1760
+}
+```
+
 ### `frontMatter.taxonomy.seoDescriptionLength`
 
 Specifies the name of the SEO description field for your page. Default is `description`.
@@ -236,13 +310,6 @@ Allows you to specify a title and script path (starting relative from the root o
 ```
 
 > **Important**: When the command execution would fail when it cannot find the `node` command. You are able to specify your path to the node app. This is for instance required when using `nvm`.
-
-## Usage
-
-- Start by opening the command prompt:
-  - Windows: ⇧+ctrl+P
-  - Mac: ⇧+⌘+P
-- Use one of the commands from above
 
 ## Feedback / issues / ideas
 

@@ -1,8 +1,13 @@
 # Change Log
 
-## [1.19.0] - 2020-07-20
+## [2.0.0] - 2020-07-23
 
+- Redesigned sidebar panel
 - Sidebar background styling match the VSCode defined sidebar color
+- Added support for `mdx` files
+- Added support for `enter` press in the combobox
+- [#41](https://github.com/estruyf/vscode-front-matter/issues/41): Word count implementation + extra details
+- [#40](https://github.com/estruyf/vscode-front-matter/issues/40): Added checks for the keyword usage in title, description, slug, and content
 
 ## [1.18.0] - 2020-07-20
 
