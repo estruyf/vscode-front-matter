@@ -143,12 +143,6 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
                             ref: inputRef, 
                             onFocus: openMenu as any, 
                             onClick: openMenu as any,
-                            onKeyDown: (e) => {
-                              if (e.key === 'Enter') {
-                                e.preventDefault();
-                                insertUnkownTag(closeMenu);
-                              }
-                            },
                             onBlur: () => { 
                               closeMenu(); 
                               unsetFocus(); 
@@ -175,7 +169,7 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
               <ul className={`article__tags__dropbox ${isOpen ? "open" : "closed" }`} {...getMenuProps()}>
                 { 
                   isOpen ? options.filter((option) => filterList(option, inputValue)).map((item, index) => (
-                    <li {...getItemProps({ key: item, index, item })} >
+                    <li {...getItemProps({ key: item, index, item })}>
                       { item }
                     </li>
                   )) : null
