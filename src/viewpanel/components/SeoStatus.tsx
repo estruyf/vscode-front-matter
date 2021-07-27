@@ -38,25 +38,24 @@ export const SeoStatus: React.FunctionComponent<ISeoStatusProps> = (props: React
             <VsTableHeader slot="header">
               <VsTableHeaderCell className={`table__cell`}>Property</VsTableHeaderCell>
               <VsTableHeaderCell className={`table__cell`}>Length</VsTableHeaderCell>
-              <VsTableHeaderCell className={`table__cell`}>Recommended</VsTableHeaderCell>
               <VsTableHeaderCell className={`table__cell`}>Valid</VsTableHeaderCell>
             </VsTableHeader>
             <VsTableBody slot="body">
               { 
                 (title && seo.title > 0) && (
-                  <SeoFieldInfo title={`title`} value={`${title.length} chars`} recommendation={`${seo.title} chars`} isValid={title.length <= seo.title} />
+                  <SeoFieldInfo title={`title`} value={title.length} recommendation={`${seo.title} chars`} isValid={title.length <= seo.title} />
                 )
               }
 
               {
                 (data[descriptionField] && seo.description > 0) && (
-                  <SeoFieldInfo title={descriptionField} value={`${data[descriptionField].length} chars`} recommendation={`${seo.description} chars`} isValid={data[descriptionField].length <= seo.description} />
+                  <SeoFieldInfo title={descriptionField} value={data[descriptionField].length} recommendation={`${seo.description} chars`} isValid={data[descriptionField].length <= seo.description} />
                 )
               }
 
               {
                 (seo.content > 0 && data?.articleDetails?.wordCount) && (
-                  <SeoFieldInfo title={`Article length`} value={`${data?.articleDetails?.wordCount} words`} recommendation={`${seo.content} words`} />
+                  <SeoFieldInfo title={`Article length`} value={data?.articleDetails?.wordCount} recommendation={`${seo.content} words`} />
                 )
               }
             </VsTableBody>

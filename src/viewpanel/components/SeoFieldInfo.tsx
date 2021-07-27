@@ -13,8 +13,7 @@ export const SeoFieldInfo: React.FunctionComponent<ISeoFieldInfoProps> = ({ titl
   return (
     <VsTableRow>
       <VsTableCell className={`table__cell table__title`}>{title}</VsTableCell>
-      <VsTableCell className={`table__cell`}>{value}</VsTableCell>
-      <VsTableCell className={`table__cell`}>{recommendation}</VsTableCell>
+      <VsTableCell className={`table__cell`}>{value}/{recommendation}</VsTableCell>
       <VsTableCell className={`table__cell table__cell__validation`}>
         { isValid !== undefined ? <ValidInfo isValid={isValid} /> : <span>-</span> }
       </VsTableCell>
