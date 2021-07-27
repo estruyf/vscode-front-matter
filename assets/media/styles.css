@@ -21,6 +21,10 @@
   }
 }
 
+.absolute {
+  position: absolute !important;
+}
+
 .collapsible__body,
 .ext_settings {
 	padding: 1rem 1.25rem;

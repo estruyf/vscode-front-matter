@@ -3,10 +3,11 @@ import { VsCollapsible } from './VscodeComponents';
 
 export interface ICollapsibleProps {
   title: string;
+  className?: string;
   sendUpdate?: (open: boolean) => void;
 }
 
-export const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({children, title, sendUpdate}: React.PropsWithChildren<ICollapsibleProps>) => {
+export const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({children, title, sendUpdate, className}: React.PropsWithChildren<ICollapsibleProps>) => {
   const [ isOpen, setIsOpen ] = React.useState(true);
 
   // This is a work around for a lit-element issue of duplicate slot names
@@ -23,7 +24,7 @@ export const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({childre
 
   return (
     <VsCollapsible title={title} onClick={triggerClick} open={isOpen}>
-      <div className={`section collapsible__body`} slot="body">
+      <div className={`section collapsible__body ${className || ""}`} slot="body">
         {children}
       </div>
     </VsCollapsible>
