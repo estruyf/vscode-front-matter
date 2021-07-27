@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.0.1] - 2020-07-27
+
+- [#43](https://github.com/estruyf/vscode-front-matter/issues/43): Fix for collapsible sections and taxonomy picker
+
 ## [2.0.0] - 2020-07-23
 
 - Redesigned sidebar panel
