@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { Article, Settings, StatusListener } from './commands';
+import { Folders } from './commands/Folders';
 import { Template } from './commands/Template';
 import { TaxonomyType } from './models';
 import { TagType } from './viewpanel/TagType';
@@ -9,7 +10,7 @@ let frontMatterStatusBar: vscode.StatusBarItem;
 let debouncer: { (fnc: any, time: number): void; };
 let collection: vscode.DiagnosticCollection;
 
-export function activate({ subscriptions, extensionUri }: vscode.ExtensionContext) {
+export async function activate({ subscriptions, extensionUri }: vscode.ExtensionContext) {
 	collection = vscode.languages.createDiagnosticCollection('frontMatter');
 
 	const explorerSidebar = ExplorerView.getInstance(extensionUri);
@@ -59,14 +60,11 @@ export function activate({ subscriptions, extensionUri }: vscode.ExtensionContex
 		Article.generateSlug();
 	});
 
-	let createFromTemplate = vscode.commands.registerCommand('frontMatter.createFromTemplate', (e: vscode.Uri) => {
-		let folderPath = "";
-		if (e && e.fsPath) {
-			folderPath = e.fsPath;
-		} else if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
-			folderPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-		}
-		Template.create(folderPath);
+	let createFromTemplate = vscode.commands.registerCommand('frontMatter.createFromTemplate', (folder: vscode.Uri) => {
+		const folderPath = Folders.getFolderPath(folder);
+    if (folderPath) {
+      Template.create(folderPath);
+    }
 	});
 
 	const toggleDraftCommand = 'frontMatter.toggleDraft';
@@ -74,6 +72,15 @@ export function activate({ subscriptions, extensionUri }: vscode.ExtensionContex
 		await Article.toggleDraft();
 		triggerShowDraftStatus();
 	});
+
+  // Register project folders
+  const registerFolder = vscode.commands.registerCommand(`frontMatter.registerFolder`, Folders.register);
+
+  const unregisterFolder = vscode.commands.registerCommand(`frontMatter.unregisterFolder`, Folders.unregister);
+
+  const createContent = vscode.commands.registerCommand(`frontMatter.createContent`, Folders.create);
+
+  Folders.updateVsCodeCtx();
 
 	// Create the status bar
  	frontMatterStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
@@ -99,6 +106,9 @@ export function activate({ subscriptions, extensionUri }: vscode.ExtensionContex
 	subscriptions.push(generateSlug);
 	subscriptions.push(createFromTemplate);
 	subscriptions.push(toggleDraft);
+	subscriptions.push(registerFolder);
+	subscriptions.push(unregisterFolder);
+	subscriptions.push(createContent);
 }
 
 export function deactivate() {}
