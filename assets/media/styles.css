@@ -25,6 +25,10 @@
   position: absolute !important;
 }
 
+.w-full {
+  width: 100% !important;
+}
+
 .collapsible__body,
 .ext_settings {
 	padding: 1rem 1.25rem;

@@ -58,7 +58,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
           settings && metadata && <Actions metadata={metadata} settings={settings} />
         }
 
-        <Collapsible title="Metadata" className={`absolute`}>
+        <Collapsible title="Metadata" className={`absolute w-full`}>
           {
             <TagPicker type={TagType.keywords} 
                        icon={<SymbolKeywordIcon />}

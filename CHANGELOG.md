@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.1.0] - 2020-08-XX - Upcoming release
+
+- [#46](https://github.com/estruyf/vscode-front-matter/issues/46): Make the tag pickers render in full width
+
 ## [2.0.1] - 2020-07-27
 
 - [#42](https://github.com/estruyf/vscode-front-matter/issues/42): Small enhancement to the table layout
