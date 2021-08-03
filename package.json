@@ -214,6 +214,14 @@
 			{
 				"command": "frontMatter.createFromTemplate",
 				"title": "Front Matter: New article from template"
+			},
+			{
+				"command": "frontMatter.registerFolder",
+				"title": "Front Matter: Register folder"
+			},
+			{
+				"command": "frontMatter.unregisterFolder",
+				"title": "Front Matter: Unregister folder"
 			}
 		],
 		"menus": {
