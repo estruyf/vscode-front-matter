@@ -111,7 +111,11 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
           commands.executeCommand('workbench.action.openSettings', '@ext:eliostruyf.vscode-front-matter');
           break;
         case CommandToCode.openFile:
-          commands.executeCommand('revealFileInOS');
+          if (os.type() === "Linux" && vscodeEnv.remoteName?.toLowerCase() === "wsl") {
+            commands.executeCommand('remote-wsl.revealInExplorer');
+          } else {
+            commands.executeCommand('revealFileInOS');
+          }
           break;
         case CommandToCode.runCustomScript:
           this.runCustomScript(msg);
@@ -124,6 +128,8 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
               exec(`open ${wsPath}`);
             } else if (os.type() === "Windows_NT") {
               exec(`explorer ${wsPath}`);
+            } else if (os.type() === "Linux" && vscodeEnv.remoteName?.toLowerCase() === "wsl") {
+              exec('explorer.exe `wslpath -w "$PWD"`');
             } else {
               exec(`xdg-open ${wsPath}`);
             }
