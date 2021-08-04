@@ -133,6 +133,24 @@ When adding files in the folder, you'll be able to run the `Front Matter: New ar
 
 ## Available commands:
 
+**Front Matter: Create content**
+
+With this command, you can easily create content in your project within the registered folders and provided templates.
+
+<p align="center">
+  <img src="./assets/v2.1.0/create-content.png" alt="Create content" style="display: inline-block" />
+</p>
+
+You can register and unregister folders by right-clicking on the folder in your VSCode explorer panel.
+
+<p align="center">
+  <img src="./assets/v2.1.0/register-folder.png" alt="Register/unregister a folder" style="display: inline-block" />
+</p>
+
+Once you registered a folder and a template has been defined ([how to create a template](#creating-articles-from-templates)), you can make use of this command. 
+
+> **Info**: The benefit of this command is that you do not need to search the folder in which you want to create a new article/page/... The extension will do it automatically for you.
+
 **Front Matter: Create <tag | category>**
 
 Creates a new <tag | category> and allows you to include it into your post automatically
@@ -310,6 +328,22 @@ Allows you to specify a title and script path (starting relative from the root o
 ```
 
 > **Important**: When the command execution would fail when it cannot find the `node` command. You are able to specify your path to the node app. This is for instance required when using `nvm`.
+
+### `frontMatter.content.folders`
+
+This array of folders defines where the extension can easily create new content by running the create article command.
+
+```json
+{
+  "frontMatter.content.folders": [{
+    "title": "Articles",
+    "fsPath": "<the path to the folder>",
+    "paths": ["<wsl-folder-path>"]
+  }]
+}
+```
+
+> **Important**: This setting can be configured by right-clicking on a folder in the VSCode file explorer view and clicking on the `Front Matter: Register folder` menu item.
 
 ## Feedback / issues / ideas
 
