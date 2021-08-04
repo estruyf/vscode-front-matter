@@ -3,7 +3,6 @@ import { CONFIG_KEY, EXTENSION_NAME, SETTINGS_CONTENT_FOLDERS } from "../constan
 import { basename } from "path";
 import { ContentFolder } from "../models";
 import uniqBy = require("lodash.uniqby");
-import { VscodeCollapsible } from "@bendera/vscode-webview-elements/dist/vscode-collapsible";
 import { Template } from "./Template";
 
 export class Folders {

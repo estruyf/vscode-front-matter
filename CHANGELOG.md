@@ -2,6 +2,8 @@
 
 ## [2.1.0] - 2020-08-XX - Upcoming release
 
+- [#44](https://github.com/estruyf/vscode-front-matter/issues/45): Added article creation command
+- [#45](https://github.com/estruyf/vscode-front-matter/issues/45): WSL support added
 - [#46](https://github.com/estruyf/vscode-front-matter/issues/46): Make the tag pickers render in full width
 
 ## [2.0.1] - 2020-07-27

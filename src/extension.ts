@@ -73,14 +73,26 @@ export async function activate({ subscriptions, extensionUri }: vscode.Extension
 		triggerShowDraftStatus();
 	});
 
-  // Register project folders
-  const registerFolder = vscode.commands.registerCommand(`frontMatter.registerFolder`, Folders.register);
+	// Register project folders
+	const registerFolder = vscode.commands.registerCommand(`frontMatter.registerFolder`, Folders.register);
 
-  const unregisterFolder = vscode.commands.registerCommand(`frontMatter.unregisterFolder`, Folders.unregister);
+	const unregisterFolder = vscode.commands.registerCommand(`frontMatter.unregisterFolder`, Folders.unregister);
 
-  const createContent = vscode.commands.registerCommand(`frontMatter.createContent`, Folders.create);
+	const createContent = vscode.commands.registerCommand(`frontMatter.createContent`, Folders.create);
 
-  Folders.updateVsCodeCtx();
+	try {
+		const allPaths = await vscode.commands.executeCommand("_workbench.getRecentlyOpened");
+
+		console.log(vscode.window.activeTextEditor?.document.uri)
+		console.log(vscode.Uri.parse(`vscode-remote:///home`))
+
+		console.log(`remoteName`, vscode.env.remoteName);
+		console.log(`appRoot`, vscode.env.appRoot);
+	} catch (e) {
+		console.log(e?.message || e)
+	}
+
+	Folders.updateVsCodeCtx();
 
 	// Create the status bar
  	frontMatterStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
