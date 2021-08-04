@@ -1,6 +1,6 @@
 # Change Log
 
-## [2.1.0] - 2020-08-XX - Upcoming release
+## [2.1.0] - 2020-08-04
 
 - [#44](https://github.com/estruyf/vscode-front-matter/issues/45): Added article creation command
 - [#45](https://github.com/estruyf/vscode-front-matter/issues/45): WSL support added

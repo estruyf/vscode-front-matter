@@ -7,6 +7,10 @@ import { Template } from "./Template";
 
 export class Folders {
 
+  /**
+   * Create content in a registered folder
+   * @returns 
+   */
   public static async create() {
     const folders = Folders.get();
 
@@ -38,12 +42,12 @@ export class Folders {
    * @param folder 
    */
   public static async register(folder: Uri) {
-    if (folder && folder.path) {
-      const wslPath = folder.path.replace(/\//g, '\\');
+    if (folder && folder.fsPath) {
+      const wslPath = folder.fsPath.replace(/\//g, '\\');
 
       let folders = Folders.get();
 
-      const exists = folders.find(f => f.paths.includes(folder.path) || f.paths.includes(wslPath));
+      const exists = folders.find(f => f.paths.includes(folder.fsPath) || f.paths.includes(wslPath));
 
       if (exists) {
         return window.showInformationMessage(`Folder is already registered`);
@@ -58,10 +62,7 @@ export class Folders {
       folders.push({
         title: folderName,
         fsPath: folder.fsPath,
-        paths: [
-          folder.path, 
-          wslPath
-        ]
+        paths: folder.fsPath === wslPath ? [folder.fsPath] : [folder.fsPath, wslPath]
       } as ContentFolder);
 
       folders = uniqBy(folders, f => f.fsPath);

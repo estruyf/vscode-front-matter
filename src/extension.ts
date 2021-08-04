@@ -80,18 +80,6 @@ export async function activate({ subscriptions, extensionUri }: vscode.Extension
 
 	const createContent = vscode.commands.registerCommand(`frontMatter.createContent`, Folders.create);
 
-	try {
-		const allPaths = await vscode.commands.executeCommand("_workbench.getRecentlyOpened");
-
-		console.log(vscode.window.activeTextEditor?.document.uri)
-		console.log(vscode.Uri.parse(`vscode-remote:///home`))
-
-		console.log(`remoteName`, vscode.env.remoteName);
-		console.log(`appRoot`, vscode.env.appRoot);
-	} catch (e) {
-		console.log(e?.message || e)
-	}
-
 	Folders.updateVsCodeCtx();
 
 	// Create the status bar
