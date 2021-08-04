@@ -131,7 +131,7 @@ When adding files in the folder, you'll be able to run the `Front Matter: New ar
   <img src="./assets/syntax-highlighting.png" alt="Shortcode syntax highlighting" style="display: inline-block" />
 </p>
 
-## Available commands:
+## Available commands
 
 **Front Matter: Create content**
 
