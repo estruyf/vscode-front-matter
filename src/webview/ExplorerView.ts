@@ -394,7 +394,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       <!DOCTYPE html>
       <html lang="en">
       <head>
-        <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${webView.cspSource} 'self' 'unsafe-inline'; script-src 'nonce-${nonce}'; style-src ${webView.cspSource} 'self' 'unsafe-inline'; font-src ${webView.cspSource}">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${webView.cspSource} https://api.visitorbadge.io 'self' 'unsafe-inline'; script-src 'nonce-${nonce}'; style-src ${webView.cspSource} 'self' 'unsafe-inline'; font-src ${webView.cspSource}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="${styleResetUri}" rel="stylesheet">
         <link href="${styleVSCodeUri}" rel="stylesheet">
@@ -404,6 +404,8 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       </head>
       <body>
         <div id="app"></div>
+
+        <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759" alt="Daily usage" />
 
         <script nonce="${nonce}" src="${scriptUri}"></script>
       </body>

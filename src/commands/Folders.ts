@@ -5,6 +5,7 @@ import { ContentFolder } from "../models";
 import uniqBy = require("lodash.uniqby");
 import { Template } from "./Template";
 import { Notifications } from "../helpers/Notifications";
+import { CONTEXT } from "../constants/context";
 
 export class Folders {
 
@@ -99,7 +100,7 @@ export class Folders {
     for (const folder of folders) {
       allFolders = [...allFolders, ...folder.paths]
     }
-    commands.executeCommand('setContext', 'frontMatter.registeredFolders', allFolders);
+    commands.executeCommand('setContext', CONTEXT.registeredFolders, allFolders);
   }
 
   /**

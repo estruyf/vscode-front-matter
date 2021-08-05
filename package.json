@@ -56,6 +56,7 @@
 		"onCommand:frontMatter.registerFolder",
 		"onCommand:frontMatter.unregisterFolder",
 		"onCommand:frontMatter.createContent",
+		"onCommand:frontMatter.init",
 		"onView:frontMatter.explorer"
 	],
 	"main": "./dist/extension",
@@ -185,55 +186,73 @@
 		"commands": [
 			{
 				"command": "frontMatter.insertTags",
-				"title": "Front Matter: Insert tags"
+				"title": "Insert tags",
+				"category": "Front matter"
 			},
 			{
 				"command": "frontMatter.insertCategories",
-				"title": "Front Matter: Insert categories"
+				"title": "Insert categories",
+				"category": "Front matter"
 			},
 			{
 				"command": "frontMatter.createTag",
-				"title": "Front Matter: Create tag"
+				"title": "Create tag",
+				"category": "Front matter"
 			},
 			{
 				"command": "frontMatter.createCategory",
-				"title": "Front Matter: Create category"
+				"title": "Create category",
+				"category": "Front matter"
 			},
 			{
 				"command": "frontMatter.exportTaxonomy",
-				"title": "Front Matter: Export all tags & categories to your settings"
+				"title": "Export all tags & categories to your settings",
+				"category": "Front matter"
 			},
 			{
 				"command": "frontMatter.remap",
-				"title": "Front Matter: Remap or remove tag/category in all articles"
+				"title": "Remap or remove tag/category in all articles",
+				"category": "Front matter"
 			},
 			{
 				"command": "frontMatter.setDate",
-				"title": "Front Matter: Set current date"
+				"title": "Set current date",
+				"category": "Front matter"
 			},
 			{
 				"command": "frontMatter.setLastModifiedDate",
-				"title": "Front Matter: Set lastmod date"
+				"title": "Set lastmod date",
+				"category": "Front matter"
 			},
 			{
 				"command": "frontMatter.generateSlug",
-				"title": "Front Matter: Generate slug based on article title"
+				"title": "Generate slug based on article title",
+				"category": "Front matter"
 			},
 			{
 				"command": "frontMatter.createFromTemplate",
-				"title": "Front Matter: New article from template"
+				"title": "New article from template",
+				"category": "Front matter"
 			},
 			{
 				"command": "frontMatter.registerFolder",
-				"title": "Front Matter: Register folder"
+				"title": "Register folder",
+				"category": "Front matter"
 			},
 			{
 				"command": "frontMatter.unregisterFolder",
-				"title": "Front Matter: Unregister folder"
+				"title": "Unregister folder",
+				"category": "Front matter"
 			},
 			{
 				"command": "frontMatter.createContent",
-				"title": "Front Matter: Create content"
+				"title": "Create content",
+				"category": "Front matter"
+			},
+			{
+				"command": "frontMatter.init",
+				"title": "Initialize project",
+				"category": "Front matter"
 			}
 		],
 		"menus": {
@@ -252,6 +271,12 @@
 					"command": "frontMatter.unregisterFolder",
 					"when": "explorerResourceIsFolder && resourcePath in frontMatter.registeredFolders",
 					"group": "Front Matter@3"
+				}
+			],
+			"commandPalette": [
+				{
+					"command": "frontMatter.init",
+					"when": "frontMatterCanInit"
 				}
 			]
 		},

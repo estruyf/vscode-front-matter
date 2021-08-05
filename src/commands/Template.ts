@@ -1,14 +1,40 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import { CONFIG_KEY, EXTENSION_NAME, SETTING_TEMPLATES_FOLDER, SETTING_TEMPLATES_PREFIX } from '../constants';
+import { CONFIG_KEY, SETTING_TEMPLATES_FOLDER, SETTING_TEMPLATES_PREFIX } from '../constants';
 import { format } from 'date-fns';
 import sanitize from '../helpers/Sanitize';
 import { ArticleHelper } from '../helpers';
 import { Article } from '.';
 import { Notifications } from '../helpers/Notifications';
+import { CONTEXT } from '../constants/context';
 
 export class Template {
+
+  /**
+   * Check if the template folder is available
+   */
+  public static async init() {
+    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+    const folder = config.get<string>(SETTING_TEMPLATES_FOLDER);
+
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+
+    if (!folder || !workspaceFolders || workspaceFolders.length === 0) {
+      vscode.commands.executeCommand('setContext', CONTEXT.canInit, true);
+      return;
+    }
+    
+    const workspaceFolder = workspaceFolders[0];
+    const templatePath = vscode.Uri.file(path.join(workspaceFolder.uri.fsPath, folder));
+
+    try {
+      await vscode.workspace.fs.stat(templatePath);
+      vscode.commands.executeCommand('setContext', CONTEXT.canInit, false);
+    } catch (e) {
+      vscode.commands.executeCommand('setContext', CONTEXT.canInit, true);
+    }
+  }
 
   /**
    * Create from a template

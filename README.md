@@ -133,6 +133,10 @@ When adding files in the folder, you'll be able to run the `Front Matter: New ar
 
 ## Available commands
 
+**Front Matter: Initialize project**
+
+This command will initialize the project with a template folder and an article template. It makes it easier to get you started with the extension and creating your content.
+
 **Front Matter: Create content**
 
 With this command, you can easily create content in your project within the registered folders and provided templates.

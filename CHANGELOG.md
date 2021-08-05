@@ -1,10 +1,11 @@
 # Change Log
 
-## [2.x.x] - 2020-08-xx
+## [2.2.0] - 2020-08-xx
 
-- [#47](https://github.com/estruyf/vscode-front-matter/issues/#47): Fix when table shows only value `0`
-- [#48](https://github.com/estruyf/vscode-front-matter/issues/#48): Added new folder registration message + notification helper
-- [#50](https://github.com/estruyf/vscode-front-matter/issues/#50): Fix in the table rendering of rows
+- [#47](https://github.com/estruyf/vscode-front-matter/issues/47): Fix when table shows only value `0`
+- [#48](https://github.com/estruyf/vscode-front-matter/issues/48): Added new folder registration message + notification helper
+- [#49](https://github.com/estruyf/vscode-front-matter/issues/49): New initialize project command
+- [#50](https://github.com/estruyf/vscode-front-matter/issues/50): Fix in the table rendering of rows
 
 ## [2.1.0] - 2020-08-04
 
