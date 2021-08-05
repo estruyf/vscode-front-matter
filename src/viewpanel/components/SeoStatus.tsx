@@ -2,11 +2,9 @@ import * as React from 'react';
 import { SEO } from '../../models/PanelSettings';
 import { ArticleDetails } from './ArticleDetails';
 import { Collapsible } from './Collapsible';
-import { SeoDetails } from './SeoDetails';
 import { SeoFieldInfo } from './SeoFieldInfo';
 import { SeoKeywords } from './SeoKeywords';
-import { ValidInfo } from './ValidInfo';
-import { VsTable, VsTableBody, VsTableCell, VsTableHeader, VsTableHeaderCell, VsTableRow } from './VscodeComponents';
+import { VsTable, VsTableBody, VsTableHeader, VsTableHeaderCell } from './VscodeComponents';
 
 export interface ISeoStatusProps {
   seo: SEO;
@@ -17,6 +15,7 @@ export const SeoStatus: React.FunctionComponent<ISeoStatusProps> = (props: React
   const { data, seo } = props;
   const { title } = data;
   const [ isOpen, setIsOpen ] = React.useState(true);
+  const tableRef = React.useRef<HTMLElement>();
 
   const { descriptionField } = seo;
 
@@ -34,7 +33,7 @@ export const SeoStatus: React.FunctionComponent<ISeoStatusProps> = (props: React
         <div className={`seo__status__details`}>
           <h4>Recommendations</h4>
 
-          <VsTable bordered>
+          <VsTable ref={tableRef} bordered zebra>
             <VsTableHeader slot="header">
               <VsTableHeaderCell className={`table__cell`}>Property</VsTableHeaderCell>
               <VsTableHeaderCell className={`table__cell`}>Length</VsTableHeaderCell>
@@ -72,6 +71,21 @@ export const SeoStatus: React.FunctionComponent<ISeoStatusProps> = (props: React
       </div>
     );
   };
+
+  // Workaround for lit components not updating render
+  React.useEffect(() => {
+    setTimeout(() => {
+      let height = 0;
+
+      tableRef.current?.childNodes.forEach((elm: any) => {
+        height += elm.clientHeight;
+      });
+
+      if (height > 0 && tableRef.current) {
+        tableRef.current.style.height = `${height}px`;
+      }
+    }, 10);
+  }, [title, data[descriptionField], data?.articleDetails?.wordCount]);
 
   return (
     <Collapsible title="SEO Status" sendUpdate={(value) => setIsOpen(value)}>

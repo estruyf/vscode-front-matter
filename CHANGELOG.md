@@ -1,5 +1,10 @@
 # Change Log
 
+## [2.x.x] - 2020-08-xx
+
+- [#47](https://github.com/estruyf/vscode-front-matter/issues/#47): Fix when table shows only value `0`
+- [#50](https://github.com/estruyf/vscode-front-matter/issues/#50): Fix in the table rendering of rows
+
 ## [2.1.0] - 2020-08-04
 
 - [#44](https://github.com/estruyf/vscode-front-matter/issues/45): Added article creation command
