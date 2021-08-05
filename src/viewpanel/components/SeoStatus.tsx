@@ -54,7 +54,7 @@ export const SeoStatus: React.FunctionComponent<ISeoStatusProps> = (props: React
               }
 
               {
-                (seo.content > 0 && data?.articleDetails?.wordCount) && (
+                (seo.content > 0 && data?.articleDetails?.wordCount > 0) && (
                   <SeoFieldInfo title={`Article length`} value={data?.articleDetails?.wordCount} recommendation={`${seo.content} words`} />
                 )
               }
