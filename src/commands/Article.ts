@@ -5,6 +5,7 @@ import { CONFIG_KEY, SETTING_DATE_FORMAT, EXTENSION_NAME, SETTING_SLUG_PREFIX, S
 import { format } from "date-fns";
 import { ArticleHelper, SettingsHelper, SlugHelper } from '../helpers';
 import matter = require('gray-matter');
+import { Notifications } from '../helpers/Notifications';
 
 
 export class Article {
@@ -53,7 +54,7 @@ export class Article {
     }
 
     if (options.length === 0) {
-      vscode.window.showInformationMessage(`${EXTENSION_NAME}: No ${type === TaxonomyType.Tag ? "tags" : "categories"} configured.`);
+      Notifications.info(`No ${type === TaxonomyType.Tag ? "tags" : "categories"} configured.`);
       return;
     }
 
@@ -88,7 +89,7 @@ export class Article {
     try {
       ArticleHelper.update(editor, article);
     } catch (e) {
-      vscode.window.showErrorMessage(`${EXTENSION_NAME}: Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`);
+      Notifications.error(`Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`);
       console.log(e.message);
     }
   }
@@ -135,7 +136,7 @@ export class Article {
 
       ArticleHelper.update(editor, article);
     } catch (e) {
-      vscode.window.showErrorMessage(`${EXTENSION_NAME}: Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`);
+      Notifications.error(`Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`);
       console.log(e.message);
     }
   }

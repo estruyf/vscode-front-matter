@@ -13,6 +13,7 @@ import { exec } from 'child_process';
 import * as path from 'path';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { Content } from 'mdast';
+import { Notifications } from '../helpers/Notifications';
 
 
 export class ExplorerView implements WebviewViewProvider, Disposable {
@@ -206,7 +207,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
           exec(`${customScript.nodeBin || "node"} ${path.join(wsPath, msg.data.script)} "${wsPath}" "${editor?.document.uri.fsPath}" ${articleData}`, (error, stdout) => {
             if (error) {
-              window.showErrorMessage(`${msg?.data?.title}: ${error.message}`);
+              Notifications.error(`${msg?.data?.title}: ${error.message}`);
               return;
             }
 

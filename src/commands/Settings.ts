@@ -6,6 +6,7 @@ import { CONFIG_KEY, SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, EXTENSI
 import { ArticleHelper, SettingsHelper, FilesHelper } from '../helpers';
 import { TomlEngine, getFmLanguage, getFormatOpts } from '../helpers/TomlEngine';
 import { DumpOptions } from 'js-yaml';
+import { Notifications } from '../helpers/Notifications';
 
 export class Settings {
   
@@ -29,7 +30,7 @@ export class Settings {
       }
 
       if (options.find(o => o === newOption)) {
-        vscode.window.showInformationMessage(`${EXTENSION_NAME}: The provided ${type === TaxonomyType.Tag ? "tag" : "category"} already exists.`);
+        Notifications.info(`The provided ${type === TaxonomyType.Tag ? "tag" : "category"} already exists.`);
         return;
       }
 
@@ -145,7 +146,7 @@ export class Settings {
       await config.update(SETTING_TAXONOMY_CATEGORIES, crntCategories);
 
       // Done
-      vscode.window.showInformationMessage(`${EXTENSION_NAME}: Export completed. Tags: ${crntTags.length} - Categories: ${crntCategories.length}.`);
+      Notifications.info(`Export completed. Tags: ${crntTags.length} - Categories: ${crntCategories.length}.`);
     });
   }
 
@@ -171,7 +172,7 @@ export class Settings {
     let options = SettingsHelper.getTaxonomy(type);
     
     if (!options || options.length === 0) {
-      vscode.window.showInformationMessage(`${EXTENSION_NAME}: No ${type === TaxonomyType.Tag ? "tags" : "categories"} configured.`);
+      Notifications.info(`No ${type === TaxonomyType.Tag ? "tags" : "categories"} configured.`);
       return;
     }
 
@@ -273,7 +274,7 @@ export class Settings {
       }
       await SettingsHelper.update(type, options);
 
-      vscode.window.showInformationMessage(`${EXTENSION_NAME}: ${newOptionValue ? "Remapping" : "Deleation"} of the ${selectedOption} ${type === TaxonomyType.Tag ? "tag" : "category"} completed.`);
+      Notifications.info(`${newOptionValue ? "Remapping" : "Deleation"} of the ${selectedOption} ${type === TaxonomyType.Tag ? "tag" : "category"} completed.`);
     });
   }
 }

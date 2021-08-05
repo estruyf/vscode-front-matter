@@ -4,6 +4,7 @@ import { basename } from "path";
 import { ContentFolder } from "../models";
 import uniqBy = require("lodash.uniqby");
 import { Template } from "./Template";
+import { Notifications } from "../helpers/Notifications";
 
 export class Folders {
 
@@ -15,7 +16,7 @@ export class Folders {
     const folders = Folders.get();
 
     if (!folders || folders.length === 0) {
-      window.showWarningMessage(`${EXTENSION_NAME}: There are no known content locations defined in this project.`);
+      Notifications.warning(`There are no known content locations defined in this project.`);
       return;
     }
 
@@ -24,7 +25,7 @@ export class Folders {
     });
 
     if (!selectedFolder) {
-      window.showWarningMessage(`${EXTENSION_NAME}: You didn't select a place where you wanted to create your content.`);
+      Notifications.warning(`You didn't select a place where you wanted to create your content.`);
       return;
     }
 
@@ -50,7 +51,8 @@ export class Folders {
       const exists = folders.find(f => f.paths.includes(folder.fsPath) || f.paths.includes(wslPath));
 
       if (exists) {
-        return window.showInformationMessage(`Folder is already registered`);
+        Notifications.warning(`Folder is already registered`);
+        return;
       }
 
       const folderName = await window.showInputBox({  
@@ -67,6 +69,8 @@ export class Folders {
 
       folders = uniqBy(folders, f => f.fsPath);
       await Folders.update(folders);
+
+      Notifications.info(`Folder registered`);
     }
 
 		Folders.updateVsCodeCtx();

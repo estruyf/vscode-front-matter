@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import sanitize from '../helpers/Sanitize';
 import { ArticleHelper } from '../helpers';
 import { Article } from '.';
+import { Notifications } from '../helpers/Notifications';
 
 export class Template {
 
@@ -18,18 +19,18 @@ export class Template {
     const prefix = config.get<string>(SETTING_TEMPLATES_PREFIX);
 
     if (!folderPath) {
-      this.showNoTemplates(`Incorrect project folder path retrieved.`);
+      Notifications.warning(`Incorrect project folder path retrieved.`);
       return;
     }
 
     if (!folder) {
-      this.showNoTemplates(`No templates found.`);
+      Notifications.warning(`No templates found.`);
       return;
     }
 
     const templates = await vscode.workspace.findFiles(`${folder}/**/*`, "**/node_modules/**,**/archetypes/**");
     if (!templates || templates.length === 0) {
-      this.showNoTemplates(`No templates found.`);
+      Notifications.warning(`No templates found.`);
       return;
     }
 
@@ -37,7 +38,7 @@ export class Template {
       placeHolder: `Select the article template to use`
     });
     if (!selectedTemplate) {
-      this.showNoTemplates(`No template selected.`);
+      Notifications.warning(`No template selected.`);
       return;
     }
 
@@ -46,14 +47,14 @@ export class Template {
       placeHolder: `Article title`
     });
     if (!titleValue) {
-      this.showNoTemplates(`You did not specify an article title.`);
+      Notifications.warning(`You did not specify an article title.`);
       return;
     }
 
     // Start the template read
     const template = templates.find(t => t.fsPath.endsWith(selectedTemplate));
     if (!template) {
-      this.showNoTemplates(`Article template could not be found.`);
+      Notifications.warning(`Article template could not be found.`);
       return;
     }
 
@@ -66,7 +67,7 @@ export class Template {
 
     const newFilePath = path.join(folderPath, newFileName);
     if (fs.existsSync(newFilePath)) {
-      this.showNoTemplates(`File already exists, please remove it before creating a new one with the same title.`);
+      Notifications.warning(`File already exists, please remove it before creating a new one with the same title.`);
       return;
     }
     
@@ -76,7 +77,7 @@ export class Template {
     // Update the properties inside the template
     let frontMatter = ArticleHelper.getFrontMatterByPath(newFilePath);
     if (!frontMatter) {
-      this.showNoTemplates(`Something failed when retrieving the newly created file.`);
+      Notifications.warning(`Something failed when retrieving the newly created file.`);
       return;
     }
 
@@ -101,13 +102,6 @@ export class Template {
       vscode.window.showTextDocument(txtDoc);
     }
 
-    vscode.window.showInformationMessage(`${EXTENSION_NAME}: Your new article has been created.`);
-  }
-
-  /**
-   * Show a warning message when no templates are found
-   */
-  private static showNoTemplates(value: string) {
-    vscode.window.showWarningMessage(`${EXTENSION_NAME}: ${value}`);
+    Notifications.info(`Your new article has been created.`);
   }
 }

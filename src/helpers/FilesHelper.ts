@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { EXTENSION_NAME } from '../constants';
+import { Notifications } from './Notifications';
 
 export class FilesHelper {
 
@@ -11,7 +12,7 @@ export class FilesHelper {
     const markdownFiles = await vscode.workspace.findFiles('**/*.markdown', "**/node_modules/**,**/archetypes/**");
     const mdxFiles = await vscode.workspace.findFiles('**/*.mdx', "**/node_modules/**,**/archetypes/**");
     if (!mdFiles && !markdownFiles) {
-      vscode.window.showInformationMessage(`${EXTENSION_NAME}: No MD files found.`);
+      Notifications.info(`No MD files found.`);
       return null;
     }
 
