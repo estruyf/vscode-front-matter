@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { CommandToCode } from './CommandToCode';
 import { Actions } from './components/Actions';
+import { BaseView } from './components/BaseView';
 import { Collapsible } from './components/Collapsible';
 import { BugIcon } from './components/Icons/BugIcon';
 import { FileIcon } from './components/Icons/FileIcon';
@@ -30,9 +31,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
 
   if (!metadata || Object.keys(metadata).length === 0) {
     return (
-      <div className="frontmatter">
-        <p>Current view/file is not supported by FrontMatter.</p>
-      </div>
+      <BaseView />
     );
   }
 
