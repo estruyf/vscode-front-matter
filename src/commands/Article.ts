@@ -1,11 +1,12 @@
-import { SETTING_MODIFIED_FIELD } from './../constants/settings';
+import { SETTING_MODIFIED_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TEMPLATES_PREFIX } from './../constants/settings';
 import * as vscode from 'vscode';
 import { TaxonomyType } from "../models";
-import { CONFIG_KEY, SETTING_DATE_FORMAT, EXTENSION_NAME, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_DATE_FIELD } from "../constants/settings";
+import { CONFIG_KEY, SETTING_DATE_FORMAT, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_DATE_FIELD } from "../constants/settings";
 import { format } from "date-fns";
 import { ArticleHelper, SettingsHelper, SlugHelper } from '../helpers';
 import matter = require('gray-matter');
 import { Notifications } from '../helpers/Notifications';
+import { extname, basename } from 'path';
 
 
 export class Article {
@@ -144,11 +145,14 @@ export class Article {
   /**
    * Generate the slug based on the article title
    */
-	public static generateSlug() {
+	public static async generateSlug() {
     const config = vscode.workspace.getConfiguration(CONFIG_KEY);
     const prefix = config.get(SETTING_SLUG_PREFIX) as string;
     const suffix = config.get(SETTING_SLUG_SUFFIX) as string;
+    const updateFileName = config.get(SETTING_SLUG_UPDATE_FILE_NAME) as string;
+    const filePrefix = config.get<string>(SETTING_TEMPLATES_PREFIX);
     const editor = vscode.window.activeTextEditor;
+
     if (!editor) {
       return;
     }
@@ -159,10 +163,42 @@ export class Article {
     }
 
     const articleTitle: string = article.data["title"];
-    const slug = SlugHelper.createSlug(articleTitle);
+    let slug = SlugHelper.createSlug(articleTitle);
     if (slug) {
-      article.data["slug"] = `${prefix}${slug}${suffix}`;
+      slug = `${prefix}${slug}${suffix}`;
+      article.data["slug"] = slug;
       ArticleHelper.update(editor, article);
+
+      // Check if the file name should be updated by the slug
+      // This is required for systems like Jekyll
+      if (updateFileName) {
+        const editor = vscode.window.activeTextEditor;
+        if (editor) {
+          const ext = extname(editor.document.fileName);
+          const fileName = basename(editor.document.fileName);
+          
+          let slugName = slug.startsWith("/") ? slug.substring(1) : slug;
+          slugName = slugName.endsWith("/") ? slugName.substring(0, slugName.length - 1) : slugName;
+
+          let newFileName = `${slugName}${ext}`;
+          if (filePrefix && typeof filePrefix === "string") {
+            newFileName = `${format(new Date(), filePrefix)}-${newFileName}`;
+          }
+
+          const newPath = editor.document.uri.fsPath.replace(fileName, newFileName);
+
+          try {
+            await editor.document.save();
+
+            await vscode.workspace.fs.rename(editor.document.uri, vscode.Uri.file(newPath), {
+              overwrite: false
+            });
+          } catch (e) {
+            Notifications.error(`Failed to rename file.`);
+            console.log(e?.message || e);
+          }
+        }
+      }
     }
 	}
 

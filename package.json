@@ -114,6 +114,11 @@
 					"type": "string",
 					"markdownDescription": "Specify a suffix for the slug"
 				},
+				"frontMatter.taxonomy.alignFilename": {
+					"type": "boolean",
+					"default": false,
+					"markdownDescription": "Align the filename with the new slug when it gets generated."
+				},
 				"frontMatter.taxonomy.indentArrays": {
 					"type": "boolean",
 					"default": true,

@@ -2,6 +2,7 @@
 
 ## [2.2.0] - 2020-08-xx
 
+- [#28](https://github.com/estruyf/vscode-front-matter/issues/28): Align the file its name with the article slug
 - [#47](https://github.com/estruyf/vscode-front-matter/issues/47): Fix when table shows only value `0`
 - [#48](https://github.com/estruyf/vscode-front-matter/issues/48): Added new folder registration message + notification helper
 - [#49](https://github.com/estruyf/vscode-front-matter/issues/49): New initialize project command
