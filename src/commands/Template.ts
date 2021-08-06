@@ -15,24 +15,30 @@ export class Template {
    * Check if the template folder is available
    */
   public static async init() {
+    const isInitialized = await Template.isInitialized();
+    await vscode.commands.executeCommand('setContext', CONTEXT.canInit, !isInitialized);
+  }
+
+  /**
+   * Check if the project is already initialized
+   */
+  public static async isInitialized() {
     const config = vscode.workspace.getConfiguration(CONFIG_KEY);
     const folder = config.get<string>(SETTING_TEMPLATES_FOLDER);
-
     const workspaceFolders = vscode.workspace.workspaceFolders;
 
     if (!folder || !workspaceFolders || workspaceFolders.length === 0) {
-      vscode.commands.executeCommand('setContext', CONTEXT.canInit, true);
-      return;
+      return false;
     }
-    
+
     const workspaceFolder = workspaceFolders[0];
     const templatePath = vscode.Uri.file(path.join(workspaceFolder.uri.fsPath, folder));
 
     try {
       await vscode.workspace.fs.stat(templatePath);
-      vscode.commands.executeCommand('setContext', CONTEXT.canInit, false);
+      return true;
     } catch (e) {
-      vscode.commands.executeCommand('setContext', CONTEXT.canInit, true);
+      return false;
     }
   }
 

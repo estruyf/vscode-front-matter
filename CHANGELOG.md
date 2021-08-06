@@ -7,6 +7,7 @@
 - [#48](https://github.com/estruyf/vscode-front-matter/issues/48): Added new folder registration message + notification helper
 - [#49](https://github.com/estruyf/vscode-front-matter/issues/49): New initialize project command
 - [#50](https://github.com/estruyf/vscode-front-matter/issues/50): Fix in the table rendering of rows
+- [#51](https://github.com/estruyf/vscode-front-matter/issues/51): Panel actions base view enhanced to show project actions and information
 
 ## [2.1.0] - 2020-08-04
 

@@ -6,6 +6,8 @@ export interface PanelSettings {
   categories: string[];
   freeform: boolean;
   scripts: CustomScript[];
+  isInitialized: boolean;
+  contentInfo: FolderInfo[] | null;
 }
 
 export interface SEO {
@@ -18,6 +20,11 @@ export interface SEO {
 export interface Slug {
   prefix: number;
   suffix: number;
+}
+
+export interface FolderInfo {
+  title: string;
+  files: number;
 }
 
 export interface CustomScript {

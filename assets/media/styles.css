@@ -248,7 +248,9 @@
   filter: contrast(60%);
 }
 
-.article__actions > * + * {
+.article__actions > * + *,
+.base__actions > * + *,
+.base__information > * + * {
   --tw-space-y-reverse: 0;
   margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1rem * var(--tw-space-y-reverse));

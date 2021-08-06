@@ -1,7 +1,7 @@
 import { commands, Uri, workspace, window } from "vscode";
-import { CONFIG_KEY, EXTENSION_NAME, SETTINGS_CONTENT_FOLDERS } from "../constants";
+import { CONFIG_KEY, SETTINGS_CONTENT_FOLDERS } from "../constants";
 import { basename } from "path";
-import { ContentFolder } from "../models";
+import { ContentFolder, FolderInfo } from "../models";
 import uniqBy = require("lodash.uniqby");
 import { Template } from "./Template";
 import { Notifications } from "../helpers/Notifications";
@@ -116,6 +116,34 @@ export class Folders {
 			folderPath = workspace.workspaceFolders[0].uri.fsPath;
 		}
     return folderPath;
+  }
+
+  /**
+   * Get the registered folders information
+   */
+  public static async getInfo(): Promise<FolderInfo[] | null> {
+    const folders = Folders.get();
+    if (folders && folders.length > 0) {
+      let folderInfo: FolderInfo[] = [];
+      
+      for (const folder of folders) {
+        try {
+          const files = await workspace.fs.readDirectory(Uri.file(folder.fsPath));
+          if (files) {
+            folderInfo.push({
+              title: folder.title,
+              files: files.length
+            });
+          }
+        } catch (e) {
+          // Skip the current folder
+        }
+      }
+
+      return folderInfo;
+    }
+
+    return null;
   }
 
   /**

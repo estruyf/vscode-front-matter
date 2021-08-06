@@ -53,7 +53,13 @@ Initially, this panel has been created to make it easier to add tags and categor
 
 To leverage most of the capabilities of the extension. SEO information and everyday actions like slug optimization, updating the date, and publish/drafting the article.
 
-The panel consists of the following sections:
+When the panel opens on a none markdown file, it will contain the following sections:
+
+<p align="center">
+  <img src="./assets/v2.2.0/baseview.png" alt="Base view" style="display: inline-block" />
+</p>
+
+When you open the Front Matter panel on a Markdown file, you get to see the following sections:
 
 **SEO Status**
 

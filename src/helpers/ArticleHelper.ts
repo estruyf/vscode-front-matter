@@ -96,4 +96,12 @@ export class ArticleHelper {
       indent: spaces || 2
     } as DumpOptions as any));
   }
+
+  /**
+   * Checks if the current file is a markdown file
+   */ 
+  public static isMarkdownDile() {
+    const editor = vscode.window.activeTextEditor;
+    return (editor && editor.document && (editor.document.languageId.toLowerCase() === "markdown" || editor.document.languageId.toLowerCase() === "mdx"));
+  }
 }

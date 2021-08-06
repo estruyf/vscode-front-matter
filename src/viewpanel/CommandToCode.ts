@@ -12,5 +12,7 @@ export enum CommandToCode {
   openSettings = "open-settings",
   openFile = "open-file",
   openProject = "open-project",
-  runCustomScript = "custom-script"
+  runCustomScript = "custom-script",
+  initProject = "init-project",
+  createContent = "create-content",
 }

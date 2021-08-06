@@ -1,3 +1,4 @@
+import { Template } from './../commands/Template';
 import { SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME } from './../constants/settings';
 import * as os from 'os';
 import { PanelSettings, CustomScript } from './../models/PanelSettings';
@@ -14,6 +15,8 @@ import * as path from 'path';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { Content } from 'mdast';
 import { Notifications } from '../helpers/Notifications';
+import { COMMAND_NAME } from '../constants/Extension';
+import { Folders } from '../commands/Folders';
 
 
 export class ExplorerView implements WebviewViewProvider, Disposable {
@@ -75,7 +78,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 			webviewView.onDidDispose(() => { webviewView.webview.html = ""; }, this),
     );
     
-    webviewView.webview.onDidReceiveMessage(msg => {
+    webviewView.webview.onDidReceiveMessage(async (msg) => {
       switch(msg.command) {
         case CommandToCode.getData:
           this.getSettings();
@@ -136,6 +139,13 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
             }
           }
           break;
+        case CommandToCode.initProject:
+          await commands.executeCommand(COMMAND_NAME.init);
+          this.getSettings();
+          break;
+        case CommandToCode.createContent:
+          await commands.executeCommand(COMMAND_NAME.createContent);
+          break;
       }
     });
 
@@ -162,10 +172,15 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * @param metadata 
    */
   public pushMetadata(metadata: any) {
+    const articleDetails = this.getArticleDetails();
+
+    if (articleDetails) {
+      metadata.articleDetails = articleDetails;
+    }
+
     this.postWebviewMessage({ command: Command.metadata, data: {
-      ...metadata,
-      articleDetails: this.getArticleDetails()
-    } });
+      ...metadata
+    }});
   }
 
   /**
@@ -225,7 +240,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   /**
    * Retrieve the extension settings
    */
-  private getSettings() {
+  private async getSettings() {
     const config = workspace.getConfiguration(CONFIG_KEY);
 
     this.postWebviewMessage({
@@ -245,7 +260,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         tags: config.get(SETTING_TAXONOMY_TAGS) || [],
         categories: config.get(SETTING_TAXONOMY_CATEGORIES) || [],
         freeform: config.get(SETTING_PANEL_FREEFORM),
-        scripts: config.get(SETTING_CUSTOM_SCRIPTS)
+        scripts: config.get(SETTING_CUSTOM_SCRIPTS),
+        isInitialized: await Template.isInitialized(),
+        contentInfo: await Folders.getInfo() || null
       } as PanelSettings
     });
   }
@@ -260,10 +277,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     }
 
     const article = ArticleHelper.getFrontMatter(editor);
-    this.postWebviewMessage({ command: Command.metadata, data: {
-      ...article!.data,
-      articleDetails: this.getArticleDetails() 
-    }});
+    this.pushMetadata(article!.data);
   }
 
   /**
@@ -281,10 +295,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     if (article && article.data) {
       article.data[tagType.toLowerCase()] = values || [];
       ArticleHelper.update(editor, article);
-      this.postWebviewMessage({ command: Command.metadata, data: {
-        ...article.data,
-        articleDetails: this.getArticleDetails()
-      }});
+      this.pushMetadata(article!.data);
     }
   }
 
@@ -314,7 +325,11 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   private getArticleDetails() {
     const editor = window.activeTextEditor;
     if (!editor) {
-      return "";
+      return null;
+    }
+
+    if (!ArticleHelper.isMarkdownDile()) {
+      return null;
     }
 
     const article = ArticleHelper.getFrontMatter(editor);
