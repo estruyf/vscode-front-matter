@@ -3,6 +3,7 @@ import { CommandToCode } from './CommandToCode';
 import { Actions } from './components/Actions';
 import { BaseView } from './components/BaseView';
 import { Collapsible } from './components/Collapsible';
+import { GlobalSettings } from './components/GlobalSettings';
 import { BugIcon } from './components/Icons/BugIcon';
 import { FileIcon } from './components/Icons/FileIcon';
 import { FolderOpenedIcon } from './components/Icons/FolderOpenedIcon';
@@ -50,6 +51,8 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
   return (
     <div className="frontmatter">
       <div className={`ext_actions`}>
+        <GlobalSettings settings={settings} />
+
         {
           settings && settings.seo && <SeoStatus seo={settings.seo} data={metadata} />
         }

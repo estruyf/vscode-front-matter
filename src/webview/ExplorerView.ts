@@ -1,5 +1,5 @@
 import { Template } from './../commands/Template';
-import { SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME } from './../constants/settings';
+import { SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME } from './../constants/settings';
 import * as os from 'os';
 import { PanelSettings, CustomScript } from './../models/PanelSettings';
 import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv } from "vscode";
@@ -146,6 +146,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         case CommandToCode.createContent:
           await commands.executeCommand(COMMAND_NAME.createContent);
           break;
+        case CommandToCode.updateModifiedUpdating:
+          this.updateModifiedUpdating(msg.data || false);
+          break;
       }
     });
 
@@ -262,7 +265,8 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         freeform: config.get(SETTING_PANEL_FREEFORM),
         scripts: config.get(SETTING_CUSTOM_SCRIPTS),
         isInitialized: await Template.isInitialized(),
-        contentInfo: await Folders.getInfo() || null
+        contentInfo: await Folders.getInfo() || null,
+        modifiedDateUpdate: config.get(SETTING_AUTO_UPDATE_DATE) || false
       } as PanelSettings
     });
   }
@@ -374,6 +378,12 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     } else {
       return (node.children || []).reduce((childCount: number, childNode: any) => this.wordCount(childCount, childNode), count);
     }
+  }
+
+  private async updateModifiedUpdating(autoUpdate: boolean) {
+    const config = workspace.getConfiguration(CONFIG_KEY);
+    await config.update(SETTING_AUTO_UPDATE_DATE, autoUpdate);
+    this.getSettings();
   }
 
   /**

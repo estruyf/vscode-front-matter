@@ -7,6 +7,7 @@ export interface PanelSettings {
   freeform: boolean;
   scripts: CustomScript[];
   isInitialized: boolean;
+  modifiedDateUpdate: boolean;
   contentInfo: FolderInfo[] | null;
 }
 

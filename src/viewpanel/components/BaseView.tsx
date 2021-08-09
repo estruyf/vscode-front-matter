@@ -3,6 +3,7 @@ import { PanelSettings } from '../../models';
 import { CommandToCode } from '../CommandToCode';
 import { MessageHelper } from '../helper/MessageHelper';
 import { Collapsible } from './Collapsible';
+import { GlobalSettings } from './GlobalSettings';
 
 export interface IBaseViewProps {
   settings: PanelSettings | undefined;
@@ -21,6 +22,8 @@ export const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings}: Re
   return (
     <div className="frontmatter">
       <div className={`ext_actions`}>
+        <GlobalSettings settings={settings} />
+        
         <Collapsible title="Actions">
           <div className={`base__actions`}>
             <button onClick={initProject} disabled={settings?.isInitialized}>Initialize project</button>

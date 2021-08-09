@@ -7,6 +7,7 @@ export const SETTING_TAXONOMY_CATEGORIES = "taxonomy.categories";
 export const SETTING_DATE_FORMAT = "taxonomy.dateFormat";
 export const SETTING_DATE_FIELD = "taxonomy.dateField";
 export const SETTING_MODIFIED_FIELD = "taxonomy.modifiedField";
+export const SETTING_AUTO_UPDATE_DATE = "content.autoUpdateDate";
 
 export const SETTING_SLUG_PREFIX = "taxonomy.slugPrefix";
 export const SETTING_SLUG_SUFFIX = "taxonomy.slugSuffix";

@@ -94,6 +94,11 @@
 					"default": "lastmod",
 					"description": "Specifies the modified date field name to use in your Front Matter"
 				},
+				"frontMatter.content.autoUpdateDate": {
+					"type": "boolean",
+					"default": false,
+					"description": "Specify if you want to automatically update the modified date of your article/page."
+				},
 				"frontMatter.taxonomy.tags": {
 					"type": "array",
 					"description": "Specifies the tags which can be used in the Front Matter"

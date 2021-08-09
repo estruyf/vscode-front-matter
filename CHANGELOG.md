@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.3.0] - 2020-08-XX
+
+- [#31](https://github.com/estruyf/vscode-front-matter/issues/31): Automatically update the last modification date of the file when performing changes
+
 ## [2.2.0] - 2020-08-06
 
 - [#28](https://github.com/estruyf/vscode-front-matter/issues/28): Align the file its name with the article slug

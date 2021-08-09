@@ -10,6 +10,7 @@ import '@bendera/vscode-webview-elements/dist/vscode-table-body';
 import '@bendera/vscode-webview-elements/dist/vscode-table-row';
 import '@bendera/vscode-webview-elements/dist/vscode-table-cell';
 import '@bendera/vscode-webview-elements/dist/vscode-collapsible';
+import '@bendera/vscode-webview-elements/dist/vscode-checkbox';
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;

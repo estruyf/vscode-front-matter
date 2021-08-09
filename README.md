@@ -193,7 +193,7 @@ Update the `date` property of the current article/post/... to the current date &
 
 **Front Matter: Set lastmod date**
 
-Update the `lastmod` (last modified) property of the current article/post/... to the current date & time.
+Update the `lastmod` (last modified) property of the current article/post/... to the current date & time. By setting the `frontMatter.content.autoUpdateDate` setting, it can be done automatically when performing changes to your markdown files.
 
 > **note**: Uses the same date format settings key as current date: `frontMatter.taxonomy.dateFormat`.
 
@@ -354,6 +354,16 @@ This array of folders defines where the extension can easily create new content 
 ```
 
 > **Important**: This setting can be configured by right-clicking on a folder in the VSCode file explorer view and clicking on the `Front Matter: Register folder` menu item.
+
+### `frontMatter.content.autoUpdateDate`
+
+Specify if you want to automatically update the modification date of your markdown page when doing changes to it. Default: `false`.
+
+```json
+{
+  "frontMatter.content.autoUpdateDate": false
+}
+```
 
 ## Feedback / issues / ideas
 

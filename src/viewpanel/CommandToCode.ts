@@ -15,4 +15,5 @@ export enum CommandToCode {
   runCustomScript = "custom-script",
   initProject = "init-project",
   createContent = "create-content",
+  updateModifiedUpdating = "update-modified-updates",
 }

@@ -126,16 +126,17 @@ export class Article {
       return;
     }
 
+    const cloneArticle = Object.assign({}, article);
     const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
     const dateField = config.get(SETTING_MODIFIED_FIELD) as string || "lastmod";
     try {
       if (dateFormat && typeof dateFormat === "string") {
-        article.data[dateField] = format(new Date(), dateFormat);
+        cloneArticle.data[dateField] = format(new Date(), dateFormat);
       } else {
-        article.data[dateField] = new Date().toISOString();
+        cloneArticle.data[dateField] = new Date().toISOString();
       }
 
-      ArticleHelper.update(editor, article);
+      ArticleHelper.update(editor, cloneArticle);
     } catch (e) {
       Notifications.error(`Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`);
       console.log(e.message);
