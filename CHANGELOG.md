@@ -2,7 +2,10 @@
 
 ## [2.3.0] - 2020-08-XX
 
+- Refactoring and showing other actions in the base view
+- Show `BaseView` in Front Matter panel when switching to `welcome` tab
 - [#31](https://github.com/estruyf/vscode-front-matter/issues/31): Automatically update the last modification date of the file when performing changes
+- [#53](https://github.com/estruyf/vscode-front-matter/issues/53): Create current Markdown file as template
 
 ## [2.2.0] - 2020-08-06
 

@@ -8,6 +8,7 @@ import { ArticleHelper } from '../helpers';
 import { Article } from '.';
 import { Notifications } from '../helpers/Notifications';
 import { CONTEXT } from '../constants/context';
+import { Project } from './Project';
 
 export class Template {
 
@@ -23,9 +24,8 @@ export class Template {
    * Check if the project is already initialized
    */
   public static async isInitialized() {
-    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
-    const folder = config.get<string>(SETTING_TEMPLATES_FOLDER);
     const workspaceFolders = vscode.workspace.workspaceFolders;
+    const folder = Template.getSettings();
 
     if (!folder || !workspaceFolders || workspaceFolders.length === 0) {
       return false;
@@ -39,6 +39,53 @@ export class Template {
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  /**
+   * Generate a template
+   */
+  public static async generate() {
+    const folder = Template.getSettings();
+    const editor = vscode.window.activeTextEditor;
+
+    if (folder && editor && ArticleHelper.isMarkdownFile()) {
+      const article = ArticleHelper.getFrontMatter(editor);
+      const clonedArticle = Object.assign({}, article);
+
+      const titleValue = await vscode.window.showInputBox({  
+        prompt: `What name would you like to give your template?`,
+        placeHolder: `article`
+      });
+
+      if (!titleValue) {
+        Notifications.warning(`You did not specify a template title.`);
+        return;
+      }
+
+      const keepContents = await vscode.window.showQuickPick(
+        ["yes", "no"], 
+        { 
+          canPickMany: false, 
+          placeHolder: `Do you want to keep the article its contents for the template?`,
+        }
+      );
+
+      if (!keepContents) {
+        Notifications.warning(`You did not pick any of the options for keeping the template its content.`);
+        return;
+      }
+
+      await Project.init(false);
+      const templatePath = Project.templatePath();
+      if (templatePath) {
+        let fileContents = ArticleHelper.stringifyFrontMatter(keepContents === "no" ? "" : clonedArticle.content, clonedArticle.data);
+
+        const templateFile = path.join(templatePath.fsPath, `${titleValue}.md`);
+        fs.writeFileSync(templateFile, fileContents, { encoding: "utf-8" });
+
+        Notifications.info(`Template created and is now available in your ${folder} folder.`);
+      }
     }
   }
 
@@ -135,5 +182,14 @@ export class Template {
     }
 
     Notifications.info(`Your new article has been created.`);
+  }
+
+  /**
+   * Get the folder settings
+   */
+  public static getSettings() {
+    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+    const folder = config.get<string>(SETTING_TEMPLATES_FOLDER);
+    return folder;
   }
 }

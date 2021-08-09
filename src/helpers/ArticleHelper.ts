@@ -100,7 +100,7 @@ export class ArticleHelper {
   /**
    * Checks if the current file is a markdown file
    */ 
-  public static isMarkdownDile() {
+  public static isMarkdownFile() {
     const editor = vscode.window.activeTextEditor;
     return (editor && editor.document && (editor.document.languageId.toLowerCase() === "markdown" || editor.document.languageId.toLowerCase() === "mdx"));
   }

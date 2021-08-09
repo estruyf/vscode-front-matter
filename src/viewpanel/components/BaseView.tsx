@@ -4,6 +4,7 @@ import { CommandToCode } from '../CommandToCode';
 import { MessageHelper } from '../helper/MessageHelper';
 import { Collapsible } from './Collapsible';
 import { GlobalSettings } from './GlobalSettings';
+import { OtherActions } from './OtherActions';
 
 export interface IBaseViewProps {
   settings: PanelSettings | undefined;
@@ -46,6 +47,8 @@ export const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings}: Re
             </Collapsible>
           )
         }
+
+        <OtherActions isFile={false} />
       </div>
     </div>
   );

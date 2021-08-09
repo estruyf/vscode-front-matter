@@ -146,6 +146,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         case CommandToCode.createContent:
           await commands.executeCommand(COMMAND_NAME.createContent);
           break;
+        case CommandToCode.createTemplate:
+          await commands.executeCommand(COMMAND_NAME.createTemplate);
+          break;
         case CommandToCode.updateModifiedUpdating:
           this.updateModifiedUpdating(msg.data || false);
           break;
@@ -332,7 +335,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       return null;
     }
 
-    if (!ArticleHelper.isMarkdownDile()) {
+    if (!ArticleHelper.isMarkdownFile()) {
       return null;
     }
 

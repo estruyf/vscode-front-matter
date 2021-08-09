@@ -256,12 +256,17 @@
 			},
 			{
 				"command": "frontMatter.createContent",
-				"title": "Create content",
+				"title": "New article from template",
 				"category": "Front matter"
 			},
 			{
 				"command": "frontMatter.init",
 				"title": "Initialize project",
+				"category": "Front matter"
+			},
+			{
+				"command": "frontMatter.createTemplate",
+				"title": "Create a template from current file",
 				"category": "Front matter"
 			}
 		],
@@ -287,6 +292,10 @@
 				{
 					"command": "frontMatter.init",
 					"when": "frontMatterCanInit"
+				},
+				{
+					"command": "frontMatter.createTemplate",
+					"when": "!frontMatterCanInit"
 				}
 			]
 		},

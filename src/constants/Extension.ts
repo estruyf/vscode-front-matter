@@ -19,5 +19,6 @@ export const COMMAND_NAME = {
   toggleDraft: getCommandName("toggleDraft"),
   registerFolder: getCommandName("registerFolder"),
   unregisterFolder: getCommandName("unregisterFolder"),
-  createContent: getCommandName("createContent")
+  createContent: getCommandName("createContent"),
+  createTemplate: getCommandName("createTemplate")
 };

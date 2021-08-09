@@ -53,13 +53,21 @@ Initially, this panel has been created to make it easier to add tags and categor
 
 To leverage most of the capabilities of the extension. SEO information and everyday actions like slug optimization, updating the date, and publish/drafting the article.
 
-When the panel opens on a none markdown file, it will contain the following sections:
+When you open the panel and the current file is not a Markdown file, it will contain the following sections:
 
 <p align="center">
-  <img src="./assets/v2.2.0/baseview.png" alt="Base view" style="display: inline-block" />
+  <img src="./assets/v2.3.0/baseview.png" alt="Base view" style="display: inline-block" />
 </p>
 
+> **Info**: both **Global Settings** and **Other Actions** sections are shown for the base view as when a Markdown file is openend.
+
 When you open the Front Matter panel on a Markdown file, you get to see the following sections:
+
+**Global Settings**
+
+<p align="center">
+  <img src="./assets/v2.3.0/global-settings.png.png" alt="Global settings" style="display: inline-block" />
+</p>
 
 **SEO Status**
 
@@ -83,10 +91,8 @@ When you open the Front Matter panel on a Markdown file, you get to see the foll
 
 **Other actions**
 
-At the bottom of the panel you can find the following actions:
-
 <p align="center">
-  <img src="./assets/v2.0.0/other-actions.png" alt="Other actions" style="display: inline-block" />
+  <img src="./assets/v2.3.0/other-actions.png" alt="Other actions" style="display: inline-block" />
 </p>
 
 ## Custom actions
@@ -143,13 +149,15 @@ When adding files in the folder, you'll be able to run the `Front Matter: New ar
 
 This command will initialize the project with a template folder and an article template. It makes it easier to get you started with the extension and creating your content.
 
-**Front Matter: Create content**
+**Front Matter: Create a template from current file**
+
+This command allows you to create a new template from the current open Markdown file. It will ask you for the name of the template and if you want to keep the current file its content in the template.
+
+> **Info**: The create as template action is also available from the `other actions` section in the Front Matter panel.
+
+**Front Matter: New article from template**
 
 With this command, you can easily create content in your project within the registered folders and provided templates.
-
-<p align="center">
-  <img src="./assets/v2.1.0/create-content.png" alt="Create content" style="display: inline-block" />
-</p>
 
 You can register and unregister folders by right-clicking on the folder in your VSCode explorer panel.
 

@@ -230,7 +230,7 @@ export class Article {
     const txtChanges = fileChanges.contentChanges.map(c => c.text);
     const editor = vscode.window.activeTextEditor;
 
-		if (txtChanges.length > 0 && editor) {
+		if (txtChanges.length > 0 && editor && ArticleHelper.isMarkdownFile()) {
       const config = vscode.workspace.getConfiguration(CONFIG_KEY);
 			const autoUpdate = config.get(SETTING_AUTO_UPDATE_DATE);
 

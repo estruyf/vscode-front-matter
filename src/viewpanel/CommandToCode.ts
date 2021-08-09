@@ -16,4 +16,5 @@ export enum CommandToCode {
   initProject = "init-project",
   createContent = "create-content",
   updateModifiedUpdating = "update-modified-updates",
+  createTemplate = "create-template",
 }

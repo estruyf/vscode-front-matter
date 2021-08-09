@@ -70,6 +70,8 @@ export async function activate({ subscriptions, extensionUri }: vscode.Extension
     }
 	});
 
+	let createTemplate = vscode.commands.registerCommand(COMMAND_NAME.createTemplate, Template.generate);
+
 	const toggleDraftCommand = COMMAND_NAME.toggleDraft;
 	const toggleDraft = vscode.commands.registerCommand(toggleDraftCommand, async () => {
 		await Article.toggleDraft();
@@ -125,6 +127,7 @@ export async function activate({ subscriptions, extensionUri }: vscode.Extension
 		setLastModifiedDate,
 		generateSlug,
 		createFromTemplate,
+		createTemplate,
 		toggleDraft,
 		registerFolder,
 		unregisterFolder,

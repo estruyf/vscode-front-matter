@@ -17,7 +17,7 @@ export class StatusListener {
     const publishMsg = "to publish";
     
     let editor = vscode.window.activeTextEditor;
-    if (editor && ArticleHelper.isMarkdownDile()) {
+    if (editor && ArticleHelper.isMarkdownFile()) {
       try {
         const article = ArticleHelper.getFrontMatter(editor);
 
@@ -60,6 +60,11 @@ export class StatusListener {
         return;
       } catch (e) {
         // Nothing to do
+      }
+    } else {
+      const panel = ExplorerView.getInstance();
+      if (panel && panel.visible) {
+        panel.pushMetadata(null);
       }
     }
 

@@ -3,6 +3,7 @@ import { CONFIG_KEY, SETTING_TEMPLATES_FOLDER } from "../constants";
 import { join } from "path";
 import * as fs from "fs";
 import { Notifications } from "../helpers/Notifications";
+import { Template } from "./Template";
 
 export class Project {
 
@@ -22,28 +23,43 @@ categories: []
   /**
    * Initialize a new "Project" instance.
    */
-  public static async init() {
+  public static async init(sampleTemplate: boolean = true) {
     try {
-      const config = workspace.getConfiguration(CONFIG_KEY);
-      const folder = config.get<string>(SETTING_TEMPLATES_FOLDER);
+      const folder = Template.getSettings();
+      const templatePath = Project.templatePath();
 
-      const workspaceFolders = workspace.workspaceFolders;
-
-      if (!folder || !workspaceFolders || workspaceFolders.length === 0) {
+      if (!folder || !templatePath) {
         return;
       }
       
-      const workspaceFolder = workspaceFolders[0];
-      const templatePath = Uri.file(join(workspaceFolder.uri.fsPath, folder));
       const article = Uri.file(join(templatePath.fsPath, "article.md"));
 
-      await workspace.fs.createDirectory(templatePath);
+      if (!fs.existsSync(templatePath.fsPath)) {
+        await workspace.fs.createDirectory(templatePath);
+      }
 
-      fs.writeFileSync(article.fsPath, Project.content, { encoding: "utf-8" });
-
-      Notifications.info("Project initialized successfully.");
+      if (sampleTemplate) {
+        fs.writeFileSync(article.fsPath, Project.content, { encoding: "utf-8" });
+        Notifications.info("Project initialized successfully.");
+      }
     } catch (err) {
       Notifications.error(`Sorry, something went wrong - ${err?.message || err}`);
     }
+  }
+
+  /**
+   * Get the template path for the current project
+   */
+  public static templatePath() {
+    const folder = Template.getSettings();
+    const workspaceFolders = workspace.workspaceFolders;
+
+    if (!folder || !workspaceFolders || workspaceFolders.length === 0) {
+      return null;
+    }
+
+    const workspaceFolder = workspaceFolders[0];
+    const templatePath = Uri.file(join(workspaceFolder.uri.fsPath, folder));
+    return templatePath;
   }
 }

@@ -126,7 +126,7 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
   }, [crntSelected]);
   
   return (
-    <div className={`section article__tags`}>
+    <div className={`article__tags`}>
       <h3>{icon} {type}</h3>
 
       <Downshift ref={dsRef}

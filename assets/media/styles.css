@@ -21,9 +21,20 @@
   }
 }
 
+.relative {
+  position: relative !important;
+}
+
 .absolute {
   position: absolute !important;
 }
+
+.inherit {
+  position: inherit !important;
+}
+
+.z-10 { z-index: 10 !important; }
+.z-20 { z-index: 10 !important; }
 
 .w-full {
   width: 100% !important;
@@ -249,6 +260,7 @@
 }
 
 .article__actions > * + *,
+.other_actions > * + *,
 .base__actions > * + *,
 .base__information > * + * {
   --tw-space-y-reverse: 0;
@@ -288,7 +300,7 @@
   padding: 0px 14px;
   user-select: none;
   text-decoration: none;
-  width: auto;
+  width: 100%;
 }
 
 .ext_link_block a:hover, 
