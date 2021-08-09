@@ -1,9 +1,8 @@
-import { SETTING_AUTO_UPDATE_DATE, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH } from './../constants/settings';
+import { SETTING_SEO_DESCRIPTION_FIELD, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH } from './../constants/settings';
 import * as vscode from 'vscode';
 import { CONFIG_KEY } from '../constants';
 import { ArticleHelper, SeoHelper } from '../helpers';
 import { ExplorerView } from '../webview/ExplorerView';
-import { Article } from '.';
 
 export class StatusListener {
   
@@ -16,7 +15,6 @@ export class StatusListener {
   public static async verify(frontMatterSB: vscode.StatusBarItem, collection: vscode.DiagnosticCollection) {
     const draftMsg = "in draft";
     const publishMsg = "to publish";
-    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
     
     let editor = vscode.window.activeTextEditor;
     if (editor && ArticleHelper.isMarkdownDile()) {
@@ -52,11 +50,6 @@ export class StatusListener {
           if (article.data[fieldName] && descLength > -1) {
             SeoHelper.checkLength(editor, collection, article, fieldName, descLength);
           }
-        }
-
-        const autoUpdate = config.get(SETTING_AUTO_UPDATE_DATE);
-        if (autoUpdate) {
-          Article.setLastModifiedDate();
         }
         
         const panel = ExplorerView.getInstance();

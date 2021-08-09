@@ -1,4 +1,4 @@
-import { SETTING_MODIFIED_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TEMPLATES_PREFIX } from './../constants/settings';
+import { SETTING_AUTO_UPDATE_DATE, SETTING_MODIFIED_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TEMPLATES_PREFIX } from './../constants/settings';
 import * as vscode from 'vscode';
 import { TaxonomyType } from "../models";
 import { CONFIG_KEY, SETTING_DATE_FORMAT, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_DATE_FIELD } from "../constants/settings";
@@ -10,6 +10,7 @@ import { extname, basename } from 'path';
 
 
 export class Article {
+  private static prevContent = "";
 
   /**
   * Insert taxonomy
@@ -219,6 +220,35 @@ export class Article {
     const newDraftStatus = !article.data["draft"];
     article.data["draft"] = newDraftStatus;
     ArticleHelper.update(editor, article);
+  }
+
+  /**
+   * Article auto updater
+   * @param fileChanges
+   */
+  public static async autoUpdate(fileChanges: vscode.TextDocumentChangeEvent) {
+    const txtChanges = fileChanges.contentChanges.map(c => c.text);
+    const editor = vscode.window.activeTextEditor;
+
+		if (txtChanges.length > 0 && editor) {
+      const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+			const autoUpdate = config.get(SETTING_AUTO_UPDATE_DATE);
+
+			if (autoUpdate) {  
+        const article = ArticleHelper.getFrontMatter(editor);
+        if (!article) {
+          return;
+        }
+
+        if (article.content === Article.prevContent) {
+          return;
+        }
+
+        Article.prevContent = article.content;
+
+        Article.setLastModifiedDate();
+      }
+		}
   }
 
   /**

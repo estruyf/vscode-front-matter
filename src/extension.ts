@@ -9,7 +9,8 @@ import { TagType } from './viewpanel/TagType';
 import { ExplorerView } from './webview/ExplorerView';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
-let debouncer: { (fnc: any, time: number): void; };
+let statusDebouncer: { (fnc: any, time: number): void; };
+let editDebounce: { (fnc: any, time: number): void; };
 let collection: vscode.DiagnosticCollection;
 
 export async function activate({ subscriptions, extensionUri }: vscode.ExtensionContext) {
@@ -98,12 +99,18 @@ export async function activate({ subscriptions, extensionUri }: vscode.Extension
  	frontMatterStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
 	frontMatterStatusBar.command = toggleDraftCommand;
 	subscriptions.push(frontMatterStatusBar);
-	debouncer = debounceShowDraftTrigger();
+	statusDebouncer = debounceCallback();
+	
 	// Register listeners that make sure the status bar updates
 	subscriptions.push(vscode.window.onDidChangeActiveTextEditor(triggerShowDraftStatus));
 	subscriptions.push(vscode.window.onDidChangeTextEditorSelection(triggerShowDraftStatus));
+	
 	// Automatically run the command
 	triggerShowDraftStatus();
+
+	// Listener for file edit changes
+	editDebounce = debounceCallback();
+	subscriptions.push(vscode.workspace.onDidChangeTextDocument(triggerFileChange));
 
 	// Subscribe all commands
 	subscriptions.push(
@@ -128,11 +135,15 @@ export async function activate({ subscriptions, extensionUri }: vscode.Extension
 
 export function deactivate() {}
 
-const triggerShowDraftStatus = () => {
-	debouncer(() => { StatusListener.verify(frontMatterStatusBar, collection); }, 1000);
+const triggerFileChange = (e: vscode.TextDocumentChangeEvent) => {
+	editDebounce(() => Article.autoUpdate(e), 1000);
 };
 
-const debounceShowDraftTrigger = () => {
+const triggerShowDraftStatus = () => {
+	statusDebouncer(() => { StatusListener.verify(frontMatterStatusBar, collection); }, 1000);
+};
+
+const debounceCallback = () => {
   let timeout: NodeJS.Timeout;
 
   return (fnc: any, time: number) => {
