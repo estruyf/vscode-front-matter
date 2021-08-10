@@ -66,7 +66,7 @@ When you open the Front Matter panel on a Markdown file, you get to see the foll
 **Global Settings**
 
 <p align="center">
-  <img src="./assets/v2.3.0/global-settings.png.png" alt="Global settings" style="display: inline-block" />
+  <img src="./assets/v2.3.0/global-settings.png" alt="Global settings" style="display: inline-block" />
 </p>
 
 **SEO Status**
