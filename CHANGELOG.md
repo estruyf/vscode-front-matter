@@ -1,6 +1,6 @@
 # Change Log
 
-## [2.3.0] - 2020-08-XX
+## [2.3.0] - 2020-08-10
 
 - Refactoring and showing other actions in the base view
 - Show `BaseView` in Front Matter panel when switching to `welcome` tab
