@@ -5,6 +5,7 @@ import { Project } from './commands/Project';
 import { Template } from './commands/Template';
 import { COMMAND_NAME } from './constants/Extension';
 import { TaxonomyType } from './models';
+import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
 import { TagType } from './viewpanel/TagType';
 import { ExplorerView } from './webview/ExplorerView';
 
@@ -12,6 +13,8 @@ let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
 let editDebounce: { (fnc: any, time: number): void; };
 let collection: vscode.DiagnosticCollection;
+
+const mdSelector: vscode.DocumentSelector = { language: 'markdown', scheme: 'file' };
 
 export async function activate({ subscriptions, extensionUri }: vscode.ExtensionContext) {
 	collection = vscode.languages.createDiagnosticCollection('frontMatter');
@@ -22,6 +25,8 @@ export async function activate({ subscriptions, extensionUri }: vscode.Extension
 			retainContextWhenHidden: true
 		}
 	});
+
+	vscode.languages.registerFoldingRangeProvider(mdSelector, new MarkdownFoldingProvider());
 
 	let insertTags = vscode.commands.registerCommand(COMMAND_NAME.insertTags, async () => {
 		await vscode.commands.executeCommand('workbench.view.extension.frontmatter-explorer');
