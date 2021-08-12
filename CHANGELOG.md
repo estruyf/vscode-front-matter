@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.4.0] - 2020-08-xx
+
+- [#21](https://github.com/estruyf/vscode-front-matter/issues/21): Folding provider for Front Matter implemented
+
 ## [2.3.0] - 2020-08-10
 
 - Refactoring and showing other actions in the base view
