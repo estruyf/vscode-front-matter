@@ -3,6 +3,7 @@ import { SlugHelper } from '../../helpers/SlugHelper';
 import { Slug } from '../../models/PanelSettings';
 import { CommandToCode } from '../CommandToCode';
 import { MessageHelper } from '../helper/MessageHelper';
+import { ActionButton } from './ActionButton';
 
 export interface ISlugActionProps {
   value: string;
@@ -21,8 +22,6 @@ export const SlugAction: React.FunctionComponent<ISlugActionProps> = (props: Rea
   };
 
   return (
-    <div className={`article__action`}>
-      <button onClick={optimize} disabled={crntValue === slug}>Optimize slug</button>
-    </div>
+    <ActionButton onClick={optimize} disabled={crntValue === slug} title={`Optimize slug`} />
   );
 };

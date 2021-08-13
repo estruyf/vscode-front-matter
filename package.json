@@ -57,6 +57,7 @@
 		"onCommand:frontMatter.unregisterFolder",
 		"onCommand:frontMatter.createContent",
 		"onCommand:frontMatter.init",
+		"onCommand:frontMatter.collapseSections",
 		"onView:frontMatter.explorer"
 	],
 	"main": "./dist/extension",
@@ -268,6 +269,15 @@
 				"command": "frontMatter.createTemplate",
 				"title": "Create a template from current file",
 				"category": "Front matter"
+			},
+			{
+				"command": "frontMatter.collapseSections",
+				"title": "Collapse sections",
+				"category": "Front matter",
+				"icon": {
+					"light": "assets/icons/close-light.svg",
+					"dark": "assets/icons/close-dark.svg"
+				}
 			}
 		],
 		"menus": {
@@ -296,8 +306,16 @@
 				{
 					"command": "frontMatter.createTemplate",
 					"when": "!frontMatterCanInit"
+				},
+				{
+					"command": "frontMatter.collapseSections",
+					"when": "false"
 				}
-			]
+			],
+			"view/title": [{
+				"command": "frontMatter.collapseSections",
+				"group": "navigation"
+			}]
 		},
 		"grammars": [
 			{

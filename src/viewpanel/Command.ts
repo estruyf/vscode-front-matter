@@ -3,5 +3,6 @@ export enum Command {
   metadata = "metadata",
   settings = "settings",
   focusOnTags = "focusOnTags",
-  focusOnCategories = "focusOnCategories"
+  focusOnCategories = "focusOnCategories",
+  closeSections = "closeSections",
 }

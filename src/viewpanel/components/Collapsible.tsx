@@ -1,14 +1,22 @@
 import * as React from 'react';
+import { useEffect } from 'react';
+import { Command } from '../Command';
 import { VsCollapsible } from './VscodeComponents';
 
 export interface ICollapsibleProps {
+  id: string;
   title: string;
   className?: string;
   sendUpdate?: (open: boolean) => void;
 }
 
-export const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({children, title, sendUpdate, className}: React.PropsWithChildren<ICollapsibleProps>) => {
-  const [ isOpen, setIsOpen ] = React.useState(true);
+export const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({id, children, title, sendUpdate, className}: React.PropsWithChildren<ICollapsibleProps>) => {
+  const [ isOpen, setIsOpen ] = React.useState(false);
+  const collapseKey = `collapse-${id}`;
+
+  const updateStorage = (value: boolean) => {
+    window.localStorage.setItem(collapseKey, value.toString());
+  }
 
   // This is a work around for a lit-element issue of duplicate slot names
   const triggerClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -17,10 +25,28 @@ export const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({childre
         if (sendUpdate) {
           sendUpdate(!prev);
         }
+
+        updateStorage(!prev);
         return !prev;
       }); 
     }
   }
+
+  useEffect(() => {
+    const collapsed = window.localStorage.getItem(collapseKey);
+    if (collapsed === null || collapsed === 'true') {
+      setIsOpen(true);
+      updateStorage(true);
+    }
+
+    window.addEventListener('message', event => {
+      const message = event.data;
+      if (message.command === Command.closeSections) {
+        setIsOpen(false);
+        updateStorage(false);
+      }
+    });
+  }, ['']);
 
   return (
     <VsCollapsible title={title} onClick={triggerClick} open={isOpen}>

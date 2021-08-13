@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { PanelSettings } from '../../models';
 import { CommandToCode } from '../CommandToCode';
 import { MessageHelper } from '../helper/MessageHelper';
 import { Collapsible } from './Collapsible';
@@ -7,12 +8,16 @@ import { FileIcon } from './Icons/FileIcon';
 import { FolderOpenedIcon } from './Icons/FolderOpenedIcon';
 import { SettingsIcon } from './Icons/SettingsIcon';
 import { TemplateIcon } from './Icons/TemplateIcon';
+import { WritingIcon } from './Icons/WritingIcon';
+import { OtherActionButton } from './OtherActionButton';
 
 export interface IOtherActionsProps {
   isFile: boolean;
+  settings: PanelSettings | undefined;
+  isBase?: boolean;
 }
 
-export const OtherActions: React.FunctionComponent<IOtherActionsProps> = ({isFile}: React.PropsWithChildren<IOtherActionsProps>) => {
+export const OtherActions: React.FunctionComponent<IOtherActionsProps> = ({isFile, settings, isBase}: React.PropsWithChildren<IOtherActionsProps>) => {
 
   const openSettings = () => {
     MessageHelper.sendMessage(CommandToCode.openSettings);
@@ -30,27 +35,25 @@ export const OtherActions: React.FunctionComponent<IOtherActionsProps> = ({isFil
     MessageHelper.sendMessage(CommandToCode.createTemplate);
   };
   
+  const toggleWritingSettings = () => {
+    MessageHelper.sendMessage(CommandToCode.toggleWritingSettings);
+  };
+  
   return (
     <>
-      <Collapsible title="Other actions" className={`other_actions`}>
-        <div className="ext_link_block">
-          <button onClick={createAsTemplate} disabled={!isFile}><TemplateIcon /> Create as template</button>
-        </div>
+      <Collapsible id={`${isBase ? "base_" : ""}other_actions`} title="Other actions" className={`other_actions`}>
+        <OtherActionButton className={settings?.writingSettingsEnabled ? "active" : ""} onClick={toggleWritingSettings} disabled={typeof settings?.writingSettingsEnabled === "undefined"}><WritingIcon /> <span>{settings?.writingSettingsEnabled ? "Writing settings enabled" : "Enable writing settings"}</span></OtherActionButton>
+
+        <OtherActionButton onClick={createAsTemplate} disabled={!isFile}><TemplateIcon /> <span>Create as template</span></OtherActionButton>
+
+        <OtherActionButton onClick={openSettings}><SettingsIcon /> <span>Open settings</span></OtherActionButton>
+
+        <OtherActionButton onClick={openFile} disabled={!isFile}><FileIcon /> <span>Reveal file in folder</span></OtherActionButton>
+
+        <OtherActionButton onClick={openProject}><FolderOpenedIcon /> <span>Reveal project folder</span></OtherActionButton>
 
         <div className="ext_link_block">
-          <button onClick={openSettings}><SettingsIcon /> Open settings</button>
-        </div>
-
-        <div className="ext_link_block">
-          <button onClick={openFile} disabled={!isFile}><FileIcon /> Reveal file in folder</button>
-        </div>
-
-        <div className="ext_link_block">
-          <button onClick={openProject}><FolderOpenedIcon /> Reveal project folder</button>
-        </div>
-
-        <div className="ext_link_block">
-          <a href="https://github.com/estruyf/vscode-front-matter/issues" title="Open an issue on GitHub"><BugIcon /> Report an issue</a>
+          <a href="https://github.com/estruyf/vscode-front-matter/issues" title="Open an issue on GitHub"><BugIcon /> <span>Report an issue</span></a>
         </div>
       </Collapsible>
     </>

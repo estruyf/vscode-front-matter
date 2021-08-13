@@ -278,10 +278,21 @@
 .ext_link_block {
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .ext_link_block svg {
   margin-right: .5rem;
+  display: block;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+}
+
+.ext_link_block button span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .ext_link_block button,
@@ -301,6 +312,16 @@
   user-select: none;
   text-decoration: none;
   width: 100%;
+  white-space: nowrap;
+}
+
+.ext_link_block button.active {
+	color: var(--vscode-button-foreground);
+	background: var(--vscode-button-background);
+}
+.ext_link_block button.active:hover {
+	cursor: pointer;
+	background: var(--vscode-button-hoverBackground);
 }
 
 .ext_link_block a:hover, 

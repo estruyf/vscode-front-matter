@@ -9,6 +9,7 @@ export interface PanelSettings {
   isInitialized: boolean;
   modifiedDateUpdate: boolean;
   contentInfo: FolderInfo[] | null;
+  writingSettingsEnabled: boolean;
 }
 
 export interface SEO {

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { CommandToCode } from '../CommandToCode';
 import { MessageHelper } from '../helper/MessageHelper';
+import { ActionButton } from './ActionButton';
 
 export interface IDateActionProps {}
 
@@ -16,12 +17,8 @@ export const DateAction: React.FunctionComponent<IDateActionProps> = (props: Rea
 
   return (
     <>
-      <div className={`article__action`}>
-        <button onClick={setDate}>Set publish date</button>
-      </div>
-      <div className={`article__action`}>
-        <button onClick={setLastMod}>Set modified date</button>
-      </div>
+      <ActionButton onClick={setDate} title={`Set publish date`} />
+      <ActionButton onClick={setLastMod} title={`Set modified date`} />
     </>
   );
 };

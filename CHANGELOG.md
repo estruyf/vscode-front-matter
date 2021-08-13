@@ -3,6 +3,11 @@
 ## [2.4.0] - 2020-08-xx
 
 - [#21](https://github.com/estruyf/vscode-front-matter/issues/21): Folding provider for Front Matter implemented
+- [#55](https://github.com/estruyf/vscode-front-matter/issues/55): Highlight Front Matter in Markdown files
+- [#56](https://github.com/estruyf/vscode-front-matter/issues/56): Action to collapse all Front Matter panel sections at once
+- [#57](https://github.com/estruyf/vscode-front-matter/issues/57): New action added to provide better writing settings (only for Markdown files)
+- [#58](https://github.com/estruyf/vscode-front-matter/issues/58): Sections remember their previous state (folded/unfolded)
+- [#59](https://github.com/estruyf/vscode-front-matter/issues/59): Center layout view toggle action added
 
 ## [2.3.0] - 2020-08-10
 

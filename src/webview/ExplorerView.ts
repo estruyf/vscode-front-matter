@@ -152,6 +152,12 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         case CommandToCode.updateModifiedUpdating:
           this.updateModifiedUpdating(msg.data || false);
           break;
+        case CommandToCode.toggleWritingSettings:
+          this.toggleWritingSettings();
+          break;
+        case CommandToCode.toggleCenterMode:
+          await commands.executeCommand(`workbench.action.toggleCenteredLayout`);
+          break;
       }
     });
 
@@ -199,6 +205,13 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     } else {
       this.postWebviewMessage({ command: Command.focusOnCategories });
     }
+  }
+
+  /**
+   * Trigger all sections to close
+   */
+  public collapseAll() {
+    this.postWebviewMessage({ command: Command.closeSections });
   }
 
   /**
@@ -269,7 +282,8 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         scripts: config.get(SETTING_CUSTOM_SCRIPTS),
         isInitialized: await Template.isInitialized(),
         contentInfo: await Folders.getInfo() || null,
-        modifiedDateUpdate: config.get(SETTING_AUTO_UPDATE_DATE) || false
+        modifiedDateUpdate: config.get(SETTING_AUTO_UPDATE_DATE) || false,
+        writingSettingsEnabled: this.isWritingSettingsEnabled() || false
       } as PanelSettings
     });
   }
@@ -383,6 +397,43 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     }
   }
 
+  /**
+   * Toggle the writing settings
+   */
+  private async toggleWritingSettings() {
+    const config = workspace.getConfiguration("", { languageId: "markdown" });
+    const enabled = this.isWritingSettingsEnabled();
+    
+    await config.update("editor.fontSize", enabled ? undefined : 14, false, true);
+    await config.update("editor.lineHeight", enabled ? undefined : 26, false, true);
+    await config.update("editor.wordWrap", enabled ? undefined : "wordWrapColumn", false, true);
+    await config.update("editor.wordWrapColumn", enabled ? undefined : 64, false, true);
+    await config.update("editor.lineNumbers", enabled ? undefined : "off", false, true);
+    await config.update("editor.quickSuggestions", enabled ? undefined : false, false, true);
+    await config.update("editor.minimap.enabled", enabled ? undefined : false, false, true);
+
+    this.getSettings();
+  }
+
+  /**
+   * Check if the writing settings are enabled
+   */
+  private isWritingSettingsEnabled() {
+    const config = workspace.getConfiguration("", { languageId: "markdown" });
+    
+    const fontSize = config.get("editor.fontSize");
+    const lineHeight = config.get("editor.lineHeight");
+    const wordWrap = config.get("editor.wordWrap");
+    const wordWrapColumn = config.get("editor.wordWrapColumn");
+    const lineNumbers = config.get("editor.lineNumbers");
+    const quickSuggestions = config.get<boolean>("editor.quickSuggestions");
+
+    return fontSize && lineHeight && wordWrap && wordWrapColumn && lineNumbers && quickSuggestions !== undefined;
+  }
+
+  /**
+   * Toggle the modified auto-update setting
+   */
   private async updateModifiedUpdating(autoUpdate: boolean) {
     const config = workspace.getConfiguration(CONFIG_KEY);
     await config.update(SETTING_AUTO_UPDATE_DATE, autoUpdate);
@@ -397,7 +448,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     this.panel!.webview.postMessage(msg);
   }
 
-
+  /**
+   * Generate a unique nonce
+   */
   private getNonce() {
     let text = '';
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

@@ -7,9 +7,10 @@ import { VsCheckbox } from './VscodeComponents';
 
 export interface IGlobalSettingsProps {
   settings: PanelSettings | undefined;
+  isBase?: boolean;
 }
 
-export const GlobalSettings: React.FunctionComponent<IGlobalSettingsProps> = ({settings}: React.PropsWithChildren<IGlobalSettingsProps>) => {
+export const GlobalSettings: React.FunctionComponent<IGlobalSettingsProps> = ({settings, isBase}: React.PropsWithChildren<IGlobalSettingsProps>) => {
   const { modifiedDateUpdate } = settings || {};
 
   const onCheck = () => {
@@ -18,7 +19,7 @@ export const GlobalSettings: React.FunctionComponent<IGlobalSettingsProps> = ({s
 
   return (
     <>
-      <Collapsible title="Global settings">
+      <Collapsible id={`${isBase ? "base_" : ""}settings`} title="Global settings">
         <div className={`base__actions`}>
           <VsCheckbox label="Auto-update modified date" checked={modifiedDateUpdate} onClick={onCheck} />
         </div>

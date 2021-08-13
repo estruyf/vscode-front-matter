@@ -17,4 +17,6 @@ export enum CommandToCode {
   createContent = "create-content",
   updateModifiedUpdating = "update-modified-updates",
   createTemplate = "create-template",
+  toggleCenterMode = "toggle-center-mode",
+  toggleWritingSettings = "toggle-writing-settings",
 }

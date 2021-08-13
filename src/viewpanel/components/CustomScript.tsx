@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { CommandToCode } from '../CommandToCode';
 import { MessageHelper } from '../helper/MessageHelper';
+import { ActionButton } from './ActionButton';
 
 export interface ICustomScriptProps {
   title: string;
@@ -14,8 +15,6 @@ export const CustomScript: React.FunctionComponent<ICustomScriptProps> = ({title
   };
 
   return (
-    <div className={`article__action`}>
-      <button onClick={runCustomScript}>{title}</button>
-    </div>
+    <ActionButton onClick={runCustomScript} title={title} />
   );
 };

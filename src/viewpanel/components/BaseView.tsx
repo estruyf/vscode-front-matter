@@ -23,9 +23,9 @@ export const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings}: Re
   return (
     <div className="frontmatter">
       <div className={`ext_actions`}>
-        <GlobalSettings settings={settings} />
+        <GlobalSettings settings={settings} isBase />
         
-        <Collapsible title="Actions">
+        <Collapsible id={`base_actions`} title="Actions">
           <div className={`base__actions`}>
             <button onClick={initProject} disabled={settings?.isInitialized}>Initialize project</button>
             <button onClick={createContent} disabled={!settings?.isInitialized}>Create new content</button>
@@ -34,7 +34,7 @@ export const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings}: Re
 
         {
           settings?.contentInfo && (
-            <Collapsible title="Content information">
+            <Collapsible id={`base_content`} title="Content information">
               <div className="base__information">
                 {
                   settings.contentInfo.map(folder => (
@@ -48,7 +48,7 @@ export const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings}: Re
           )
         }
 
-        <OtherActions isFile={false} />
+        <OtherActions settings={settings} isFile={false} isBase />
       </div>
     </div>
   );

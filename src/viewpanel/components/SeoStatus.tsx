@@ -88,7 +88,7 @@ export const SeoStatus: React.FunctionComponent<ISeoStatusProps> = (props: React
   }, [title, data[descriptionField], data?.articleDetails?.wordCount]);
 
   return (
-    <Collapsible title="SEO Status" sendUpdate={(value) => setIsOpen(value)}>
+    <Collapsible id={`seo`} title="SEO Status" sendUpdate={(value) => setIsOpen(value)}>
       { renderContent() }
     </Collapsible>
   );

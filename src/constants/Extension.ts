@@ -20,5 +20,6 @@ export const COMMAND_NAME = {
   registerFolder: getCommandName("registerFolder"),
   unregisterFolder: getCommandName("unregisterFolder"),
   createContent: getCommandName("createContent"),
-  createTemplate: getCommandName("createTemplate")
+  createTemplate: getCommandName("createTemplate"),
+  collapseSections: getCommandName("collapseSections"),
 };

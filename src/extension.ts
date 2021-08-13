@@ -26,6 +26,7 @@ export async function activate({ subscriptions, extensionUri }: vscode.Extension
 		}
 	});
 
+	// Folding the front matter of markdown files
 	vscode.languages.registerFoldingRangeProvider(mdSelector, new MarkdownFoldingProvider());
 
 	let insertTags = vscode.commands.registerCommand(COMMAND_NAME.insertTags, async () => {
@@ -73,7 +74,7 @@ export async function activate({ subscriptions, extensionUri }: vscode.Extension
     if (folderPath) {
       Template.create(folderPath);
     }
-	});
+	}); 
 
 	let createTemplate = vscode.commands.registerCommand(COMMAND_NAME.createTemplate, Template.generate);
 
@@ -95,6 +96,11 @@ export async function activate({ subscriptions, extensionUri }: vscode.Extension
 	// Initialize command
 	Template.init();
 	const projectInit = vscode.commands.registerCommand(COMMAND_NAME.init, Project.init);
+
+	// Collapse all sections in the webview
+	const collapseAll = vscode.commands.registerCommand(COMMAND_NAME.collapseSections, () => {
+		ExplorerView.getInstance()?.collapseAll();
+	});
 
 	// Things to do when configuration changes
 	vscode.workspace.onDidChangeConfiguration(() => {
@@ -137,7 +143,8 @@ export async function activate({ subscriptions, extensionUri }: vscode.Extension
 		registerFolder,
 		unregisterFolder,
 		createContent,
-		projectInit
+		projectInit,
+		collapseAll
 	);
 }
 

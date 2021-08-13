@@ -43,7 +43,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
           settings && metadata && <Actions metadata={metadata} settings={settings} />
         }
 
-        <Collapsible title="Metadata" className={`inherit z-20`}>
+        <Collapsible id={`tags`} title="Metadata" className={`inherit z-20`}>
           {
             <TagPicker type={TagType.keywords} 
                        icon={<SymbolKeywordIcon />}
@@ -78,7 +78,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
           }
         </Collapsible>
 
-        <OtherActions isFile={true} />
+        <OtherActions settings={settings} isFile={true} />
       </div>
     </div>
   );
