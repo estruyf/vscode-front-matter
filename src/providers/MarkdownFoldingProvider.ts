@@ -44,13 +44,14 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
   public static triggerHighlighting() {
     const config = workspace.getConfiguration(CONFIG_KEY);
     const fmHighlight = config.get<boolean>(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT);
-    const decoration = new FrontMatterDecorationProvider().get();
 
-    if (fmHighlight && MarkdownFoldingProvider.start !== null && MarkdownFoldingProvider.end !== null && MarkdownFoldingProvider.endLine !== null) {
+    if (MarkdownFoldingProvider.start !== null && MarkdownFoldingProvider.end !== null && MarkdownFoldingProvider.endLine !== null) {
       const range = new Range(new Position(MarkdownFoldingProvider.start, 0), new Position(MarkdownFoldingProvider.end, MarkdownFoldingProvider.endLine));
-      window.activeTextEditor?.setDecorations(decoration, [range]);
-    } else {
-      window.activeTextEditor?.setDecorations(decoration, []);
+
+      if (fmHighlight) {
+        const decoration = new FrontMatterDecorationProvider().get();
+        window.activeTextEditor?.setDecorations(decoration, [range]);
+      }
     }
   }
 }

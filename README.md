@@ -52,13 +52,17 @@ The Front Matter extension tries to make it easy to manage your Markdown pages/c
 
 ### Front Matter folding
 
-![](./assets/v2.4.0/folding.png)
+<p align="center">
+  <img src="./assets/v2.4.0/folding.png" alt="Front Matter folding" style="display: inline-block" />
+</p>
 
 ### Front Matter highlighting
 
-![](./assets/v2.4.0/fm-highlight.png)
+<p align="center">
+  <img src="./assets/v2.4.0/fm-highlight.png" alt="Front Matter highlighting" style="display: inline-block" />
+</p>
 
-> **
+> **Info**: If you do not want this feature, you can disable it in the extension settings -> `Highlight Front Matter` or by setting the `frontMatter.content.fmHighlight` setting to `false`.
 
 ## The panel
 
@@ -71,7 +75,7 @@ To leverage most of the capabilities of the extension. SEO information and every
 When you open the panel and the current file is not a Markdown file, it will contain the following sections:
 
 <p align="center">
-  <img src="./assets/v2.3.0/baseview.png" alt="Base view" style="display: inline-block" />
+  <img src="./assets/v2.4.0/baseview.png" alt="Base view" style="display: inline-block" />
 </p>
 
 > **Info**: both **Global Settings** and **Other Actions** sections are shown for the base view as when a Markdown file is openend.
@@ -81,7 +85,7 @@ When you open the Front Matter panel on a Markdown file, you get to see the foll
 **Global Settings**
 
 <p align="center">
-  <img src="./assets/v2.3.0/global-settings.png" alt="Global settings" style="display: inline-block" />
+  <img src="./assets/v2.4.0/global-settings.png" alt="Global settings" style="display: inline-block" />
 </p>
 
 **SEO Status**
@@ -93,7 +97,7 @@ When you open the Front Matter panel on a Markdown file, you get to see the foll
 **Actions**
 
 <p align="center">
-  <img src="./assets/v2.0.0/actions.png" alt="Actions" style="display: inline-block" />
+  <img src="./assets/v2.4.0/actions.png" alt="Actions" style="display: inline-block" />
 </p>
 
 **Metadata: Keywords, Tags, Categories**
@@ -107,8 +111,10 @@ When you open the Front Matter panel on a Markdown file, you get to see the foll
 **Other actions**
 
 <p align="center">
-  <img src="./assets/v2.3.0/other-actions.png" alt="Other actions" style="display: inline-block" />
+  <img src="./assets/v2.4.0/other-actions.png" alt="Other actions" style="display: inline-block" />
 </p>
+
+**Info**: The `Enable write settings` action allow you to make Markdown specific changes to optimize the writing of your articles. It will change settings like the `fontSize`, `lineHeight`, `wordWrap`, `lineNumbers` and more.
 
 ## Custom actions
 
@@ -385,6 +391,16 @@ Specify if you want to automatically update the modification date of your markdo
 ```json
 {
   "frontMatter.content.autoUpdateDate": false
+}
+```
+
+### `frontMatter.content.fmHighlight`
+
+Specify if you want to highlight the Front Matter in the Markdown file. Default: `true`.
+
+```json
+{
+  "frontMatter.content.fmHighlight": true
 }
 ```
 

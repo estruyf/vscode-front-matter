@@ -1,6 +1,5 @@
 import { TextEditorDecorationType, window, ColorThemeKind } from "vscode";
 
-
 export class FrontMatterDecorationProvider {
 
   get(): TextEditorDecorationType {
