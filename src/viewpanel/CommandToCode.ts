@@ -16,6 +16,7 @@ export enum CommandToCode {
   initProject = "init-project",
   createContent = "create-content",
   updateModifiedUpdating = "update-modified-updates",
+  updateFmHighlight = "update-fm-highlight",
   createTemplate = "create-template",
   toggleCenterMode = "toggle-center-mode",
   toggleWritingSettings = "toggle-writing-settings",

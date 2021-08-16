@@ -7,7 +7,6 @@ export const SETTING_TAXONOMY_CATEGORIES = "taxonomy.categories";
 export const SETTING_DATE_FORMAT = "taxonomy.dateFormat";
 export const SETTING_DATE_FIELD = "taxonomy.dateField";
 export const SETTING_MODIFIED_FIELD = "taxonomy.modifiedField";
-export const SETTING_AUTO_UPDATE_DATE = "content.autoUpdateDate";
 
 export const SETTING_SLUG_PREFIX = "taxonomy.slugPrefix";
 export const SETTING_SLUG_SUFFIX = "taxonomy.slugSuffix";
@@ -30,4 +29,6 @@ export const SETTING_PANEL_FREEFORM = "panel.freeform";
 
 export const SETTING_CUSTOM_SCRIPTS = "custom.scripts";
 
+export const SETTING_AUTO_UPDATE_DATE = "content.autoUpdateDate";
 export const SETTINGS_CONTENT_FOLDERS = "content.folders";
+export const SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT = "content.fmHighlight";

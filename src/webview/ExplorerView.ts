@@ -1,5 +1,5 @@
 import { Template } from './../commands/Template';
-import { SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME } from './../constants/settings';
+import { SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME } from './../constants/settings';
 import * as os from 'os';
 import { PanelSettings, CustomScript } from './../models/PanelSettings';
 import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv } from "vscode";
@@ -155,6 +155,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         case CommandToCode.toggleWritingSettings:
           this.toggleWritingSettings();
           break;
+        case CommandToCode.updateFmHighlight:
+          this.updateFmHighlight((msg.data !== null && msg.data !== undefined) ? msg.data : false);
+          break;
         case CommandToCode.toggleCenterMode:
           await commands.executeCommand(`workbench.action.toggleCenteredLayout`);
           break;
@@ -283,7 +286,8 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         isInitialized: await Template.isInitialized(),
         contentInfo: await Folders.getInfo() || null,
         modifiedDateUpdate: config.get(SETTING_AUTO_UPDATE_DATE) || false,
-        writingSettingsEnabled: this.isWritingSettingsEnabled() || false
+        writingSettingsEnabled: this.isWritingSettingsEnabled() || false,
+        fmHighlighting: config.get(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT),
       } as PanelSettings
     });
   }
@@ -429,6 +433,15 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     const quickSuggestions = config.get<boolean>("editor.quickSuggestions");
 
     return fontSize && lineHeight && wordWrap && wordWrapColumn && lineNumbers && quickSuggestions !== undefined;
+  }
+
+  /**
+   * Toggle the Front Matter highlighting
+   */
+  private async updateFmHighlight(autoUpdate: boolean) {
+    const config = workspace.getConfiguration(CONFIG_KEY);
+    await config.update(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, autoUpdate);
+    this.getSettings();
   }
 
   /**

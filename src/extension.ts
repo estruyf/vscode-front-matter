@@ -125,6 +125,11 @@ export async function activate({ subscriptions, extensionUri }: vscode.Extension
 	editDebounce = debounceCallback();
 	subscriptions.push(vscode.workspace.onDidChangeTextDocument(triggerFileChange));
 
+	// Listener for setting changes
+	subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => {
+		MarkdownFoldingProvider.triggerHighlighting();
+	}));
+
 	// Subscribe all commands
 	subscriptions.push(
 		insertTags,

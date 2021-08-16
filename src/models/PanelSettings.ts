@@ -10,6 +10,7 @@ export interface PanelSettings {
   modifiedDateUpdate: boolean;
   contentInfo: FolderInfo[] | null;
   writingSettingsEnabled: boolean;
+  fmHighlighting: boolean;
 }
 
 export interface SEO {

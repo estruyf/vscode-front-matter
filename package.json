@@ -85,6 +85,31 @@
 		"configuration": {
 			"title": "Front Matter: Configuration",
 			"properties": {
+				"frontMatter.content.autoUpdateDate": {
+					"type": "boolean",
+					"default": false,
+					"description": "Specify if you want to automatically update the modified date of your article/page."
+				},
+				"frontMatter.content.fmHighlight": {
+					"type": "boolean",
+					"default": true,
+					"description": "Specify if you want to highlight the Front Matter in the Markdown file."
+				},
+				"frontMatter.content.folders": {
+					"type": "array",
+					"default": [],
+					"markdownDescription": "This array of folders defines where the extension can easily create new content by running the create article command."
+				},
+				"frontMatter.custom.scripts": {
+					"type": "array",
+					"default": [],
+					"markdownDescription": "Specify the path to a Node.js script to execute. The current file path will be provided as an argument."
+				},
+				"frontMatter.panel.freeform": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "Specifies if you want to allow yourself from entering unknown tags/categories in the tag picker (when enabled, you will have the option to store them afterwards). Default: true."
+				},
 				"frontMatter.taxonomy.dateField": {
 					"type": "string",
 					"default": "date",
@@ -94,11 +119,6 @@
 					"type": "string",
 					"default": "lastmod",
 					"description": "Specifies the modified date field name to use in your Front Matter"
-				},
-				"frontMatter.content.autoUpdateDate": {
-					"type": "boolean",
-					"default": false,
-					"description": "Specify if you want to automatically update the modified date of your article/page."
 				},
 				"frontMatter.taxonomy.tags": {
 					"type": "array",
@@ -176,21 +196,6 @@
 					"type": "string",
 					"default": "yyyy-MM-dd",
 					"description": "Specify the prefix you want to add for your new article filenames."
-				},
-				"frontMatter.panel.freeform": {
-					"type": "boolean",
-					"default": true,
-					"markdownDescription": "Specifies if you want to allow yourself from entering unknown tags/categories in the tag picker (when enabled, you will have the option to store them afterwards). Default: true."
-				},
-				"frontMatter.custom.scripts": {
-					"type": "array",
-					"default": [],
-					"markdownDescription": "Specify the path to a Node.js script to execute. The current file path will be provided as an argument."
-				},
-				"frontMatter.content.folders": {
-					"type": "array",
-					"default": [],
-					"markdownDescription": "This array of folders defines where the extension can easily create new content by running the create article command."
 				}
 			}
 		},

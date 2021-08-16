@@ -35,6 +35,7 @@ In version v2.0.0 we released the newly redesigned sidebar panel with improved S
 <details open="open">
   <summary>Table of Contents</summary>
   <ol>
+    <li><a href="#markdown-features">Markdown features</a></li>
     <li><a href="#the-panel">The panel</a></li>
     <li><a href="#custom-actions">Custom actions</a></li>
     <li><a href="#creating-articles-from-templates">Create articles from templates</a></li>
@@ -44,6 +45,20 @@ In version v2.0.0 we released the newly redesigned sidebar panel with improved S
     <li><a href="#feedback--issues--ideas">Feedback / issues / ideas</a></li>
   </ol>
 </details>
+
+## Markdown features
+
+The Front Matter extension tries to make it easy to manage your Markdown pages/content. Within a Markdown page, we allow you to fold the file's Front Matter to be less distracting when writing. Also, do we highlight the Front Matter content to create a visual difference between content and metadata.
+
+### Front Matter folding
+
+![](./assets/v2.4.0/folding.png)
+
+### Front Matter highlighting
+
+![](./assets/v2.4.0/fm-highlight.png)
+
+> **
 
 ## The panel
 
