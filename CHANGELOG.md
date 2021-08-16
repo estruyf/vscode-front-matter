@@ -1,6 +1,6 @@
 # Change Log
 
-## [2.4.0] - 2020-08-xx
+## [2.4.0] - 2020-08-16
 
 - [#21](https://github.com/estruyf/vscode-front-matter/issues/21): Folding provider for Front Matter implemented
 - [#55](https://github.com/estruyf/vscode-front-matter/issues/55): Highlight Front Matter in Markdown files
