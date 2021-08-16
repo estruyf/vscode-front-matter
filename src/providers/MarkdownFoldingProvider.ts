@@ -1,4 +1,4 @@
-import { workspace } from 'vscode';
+import { TextEditorDecorationType, workspace } from 'vscode';
 import { CancellationToken, FoldingContext, FoldingRange, FoldingRangeKind, FoldingRangeProvider, Range, TextDocument, window, Position } from 'vscode';
 import { CONFIG_KEY, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT } from '../constants';
 import { FrontMatterDecorationProvider } from './FrontMatterDecorationProvider';
@@ -7,6 +7,7 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
   private static start: number | null = null;
   private static end: number | null = null;
   private static endLine: number | null = null;
+  private static decType: TextEditorDecorationType | null = null;
 
   public async provideFoldingRanges(document: TextDocument, context: FoldingContext, token: CancellationToken): Promise<FoldingRange[]> {
     const ranges: FoldingRange[] = [];
@@ -48,9 +49,13 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
     if (MarkdownFoldingProvider.start !== null && MarkdownFoldingProvider.end !== null && MarkdownFoldingProvider.endLine !== null) {
       const range = new Range(new Position(MarkdownFoldingProvider.start, 0), new Position(MarkdownFoldingProvider.end, MarkdownFoldingProvider.endLine));
 
+      if (MarkdownFoldingProvider.decType !== null) {
+        MarkdownFoldingProvider.decType.dispose();
+      }
+
       if (fmHighlight) {
-        const decoration = new FrontMatterDecorationProvider().get();
-        window.activeTextEditor?.setDecorations(decoration, [range]);
+        MarkdownFoldingProvider.decType = new FrontMatterDecorationProvider().get();
+        window.activeTextEditor?.setDecorations(MarkdownFoldingProvider.decType, [range]);
       }
     }
   }

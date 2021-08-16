@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.4.1] - 2020-08-16
+
+- Better editor highlighting functionality
+
 ## [2.4.0] - 2020-08-16
 
 - [#21](https://github.com/estruyf/vscode-front-matter/issues/21): Folding provider for Front Matter implemented

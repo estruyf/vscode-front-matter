@@ -442,11 +442,6 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     const config = workspace.getConfiguration(CONFIG_KEY);
     await config.update(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, autoUpdate);
     this.getSettings();
-
-    if (ArticleHelper.isMarkdownFile()) {
-      // To unset the decorations, we need to reload the whole document/instance
-      commands.executeCommand(`workbench.action.reloadWindow`);
-    }
   }
 
   /**
