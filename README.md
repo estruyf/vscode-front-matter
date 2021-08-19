@@ -31,7 +31,9 @@ The extension will automatically verify if your title and description are SEO co
 In version v2.0.0 we released the newly redesigned sidebar panel with improved SEO support. This extension makes it the only extension to manage your Markdown pages for your static sites in Visual Studio Code.
 
 <p align="center" style="margin-top: 2rem;">
-  <a href="https://www.producthunt.com/posts/front-matter?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-front-matter" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=309033&theme=dark" alt="Front Matter - Managing your static sites straight from within VS Code | Product Hunt" style="width: 250px; height: 40px;" width="250" height="40" /></a>
+  <a href="https://www.producthunt.com/posts/front-matter?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-front-matter" target="_blank">
+    <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.png?post_id=309033&theme=dark" alt="Front Matter - Managing your static sites straight from within VS Code | Product Hunt" style="width: 250px; height: 40px;" />
+  </a>
 </p>
 
 <h2 id="table-of-contents">Table of Contents</h2>
