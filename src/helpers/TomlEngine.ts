@@ -1,9 +1,10 @@
 import * as vscode from 'vscode';
 import * as toml from '@iarna/toml';
-import { CONFIG_KEY, SETTING_FRONTMATTER_TYPE } from '../constants';
+import { SETTING_FRONTMATTER_TYPE } from '../constants';
+import { SettingsHelper } from '.';
 
 export const getFmLanguage = (): string => {
-  const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+  const config = SettingsHelper.getConfig();
   const language = config.get(SETTING_FRONTMATTER_TYPE) as string || "YAML";
   return language.toLowerCase();
 };

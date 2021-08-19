@@ -6,6 +6,7 @@ import uniqBy = require("lodash.uniqby");
 import { Template } from "./Template";
 import { Notifications } from "../helpers/Notifications";
 import { CONTEXT } from "../constants/context";
+import { SettingsHelper } from "../helpers";
 
 export class Folders {
 
@@ -151,7 +152,7 @@ export class Folders {
    * @returns 
    */
   private static get() {
-    const config = workspace.getConfiguration(CONFIG_KEY);
+    const config = SettingsHelper.getConfig();
     const folders: ContentFolder[] = config.get(SETTINGS_CONTENT_FOLDERS) as ContentFolder[];
     return folders;
   }
@@ -161,7 +162,7 @@ export class Folders {
    * @param folders 
    */
   private static async update(folders: ContentFolder[]) {
-    const config = workspace.getConfiguration(CONFIG_KEY);
+    const config = SettingsHelper.getConfig();
     await config.update(SETTINGS_CONTENT_FOLDERS, folders);
   }
 }

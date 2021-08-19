@@ -18,13 +18,13 @@ export class Article {
   * @param type
   */
   public static async insert(type: TaxonomyType) {
-    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;
     }
 
-    const article = ArticleHelper.getFrontMatter(editor);
+    const article = Article.getCurrent();
+
     if (!article) {
       return;
     }
@@ -101,7 +101,7 @@ export class Article {
    * @param article 
    */
   public static updateDate(article: matter.GrayMatterFile<string>, forceCreate: boolean = false) {
-    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+    const config = SettingsHelper.getConfig();
     const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
     const dateField = config.get(SETTING_DATE_FIELD) as string || "date";
     const modField = config.get(SETTING_MODIFIED_FIELD) as string || "date";
@@ -116,7 +116,7 @@ export class Article {
    * Sets the article lastmod date
    */
   public static async setLastModifiedDate() {
-    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+    const config = SettingsHelper.getConfig();
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;
@@ -148,7 +148,7 @@ export class Article {
    * Generate the slug based on the article title
    */
 	public static async generateSlug() {
-    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+    const config = SettingsHelper.getConfig();
     const prefix = config.get(SETTING_SLUG_PREFIX) as string;
     const suffix = config.get(SETTING_SLUG_SUFFIX) as string;
     const updateFileName = config.get(SETTING_SLUG_UPDATE_FILE_NAME) as string;
@@ -231,7 +231,7 @@ export class Article {
     const editor = vscode.window.activeTextEditor;
 
 		if (txtChanges.length > 0 && editor && ArticleHelper.isMarkdownFile()) {
-      const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+      const config = SettingsHelper.getConfig();
 			const autoUpdate = config.get(SETTING_AUTO_UPDATE_DATE);
 
 			if (autoUpdate) {  
@@ -249,6 +249,23 @@ export class Article {
         Article.setLastModifiedDate();
       }
 		}
+  }
+
+  /**
+   * Get the current article
+   */
+  private static getCurrent(): matter.GrayMatterFile<string> | undefined {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+
+    const article = ArticleHelper.getFrontMatter(editor);
+    if (!article) {
+      return;
+    }
+
+    return article;
   }
 
   /**

@@ -27,6 +27,9 @@ export const SETTING_TEMPLATES_PREFIX = "templates.prefix";
 
 export const SETTING_PANEL_FREEFORM = "panel.freeform";
 
+export const SETTING_PREVIEW_HOST = "preview.host";
+export const SETTING_PREVIEW_PATHNAME = "preview.pathName";
+
 export const SETTING_CUSTOM_SCRIPTS = "custom.scripts";
 
 export const SETTING_AUTO_UPDATE_DATE = "content.autoUpdateDate";

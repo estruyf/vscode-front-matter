@@ -1,7 +1,6 @@
 import { SETTING_SEO_DESCRIPTION_FIELD, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH } from './../constants/settings';
 import * as vscode from 'vscode';
-import { CONFIG_KEY } from '../constants';
-import { ArticleHelper, SeoHelper } from '../helpers';
+import { ArticleHelper, SeoHelper, SettingsHelper } from '../helpers';
 import { ExplorerView } from '../webview/ExplorerView';
 
 export class StatusListener {
@@ -38,7 +37,7 @@ export class StatusListener {
           collection.clear();
 
           // Retrieve the SEO config properties
-          const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+          const config = SettingsHelper.getConfig();
           const titleLength = config.get(SETTING_SEO_TITLE_LENGTH) as number || -1;
           const descLength = config.get(SETTING_SEO_DESCRIPTION_LENGTH) as number || -1;
           const fieldName = config.get(SETTING_SEO_DESCRIPTION_FIELD) as string || "description";

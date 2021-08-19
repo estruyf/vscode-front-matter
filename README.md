@@ -1,6 +1,6 @@
 <h1 align="center">
   <a href="https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter">
-    <img alt="Front Matter" src="./assets/front-matter.png">
+    <img alt="Front Matter" src="./assets/frontmatter-128x128.png">
   </a>
 </h1>
 
@@ -30,6 +30,10 @@ The extension will automatically verify if your title and description are SEO co
 
 In version v2.0.0 we released the newly redesigned sidebar panel with improved SEO support. This extension makes it the only extension to manage your Markdown pages for your static sites in Visual Studio Code.
 
+<p align="center" style="margin-top: 2rem;">
+  <a href="https://www.producthunt.com/posts/front-matter?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-front-matter" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=309033&theme=dark" alt="Front Matter - Managing your static sites straight from within VS Code | Product Hunt" style="width: 250px; height: 40px;" width="250" height="40" /></a>
+</p>
+
 <h2 id="table-of-contents">Table of Contents</h2>
 
 <details open="open">
@@ -37,7 +41,8 @@ In version v2.0.0 we released the newly redesigned sidebar panel with improved S
   <ol>
     <li><a href="#markdown-features">Markdown features</a></li>
     <li><a href="#the-panel">The panel</a></li>
-    <li><a href="#custom-actions">Custom actions</a></li>
+    <li><a href="#site-preview">Site preview</a></li>
+    <li><a href="#custom-actions">Custom actions/scripts</a></li>
     <li><a href="#creating-articles-from-templates">Create articles from templates</a></li>
     <li><a href="#syntax-highlighting-for-hugo-shortcodes">Syntax highlighting for Hugo Shortcodes</a></li>
     <li><a href="#available-commands">Available commands</a></li>
@@ -75,7 +80,7 @@ To leverage most of the capabilities of the extension. SEO information and every
 When you open the panel and the current file is not a Markdown file, it will contain the following sections:
 
 <p align="center">
-  <img src="./assets/v2.4.0/baseview.png" alt="Base view" style="display: inline-block" />
+  <img src="./assets/v2.5.0/baseview.png" alt="Base view" style="display: inline-block" />
 </p>
 
 > **Info**: both **Global Settings** and **Other Actions** sections are shown for the base view as when a Markdown file is openend.
@@ -85,7 +90,7 @@ When you open the Front Matter panel on a Markdown file, you get to see the foll
 **Global Settings**
 
 <p align="center">
-  <img src="./assets/v2.4.0/global-settings.png" alt="Global settings" style="display: inline-block" />
+  <img src="./assets/v2.5.0/global-settings.png" alt="Global settings" style="display: inline-block" />
 </p>
 
 **SEO Status**
@@ -97,8 +102,10 @@ When you open the Front Matter panel on a Markdown file, you get to see the foll
 **Actions**
 
 <p align="center">
-  <img src="./assets/v2.4.0/actions.png" alt="Actions" style="display: inline-block" />
+  <img src="./assets/v2.5.0/actions.png" alt="Actions" style="display: inline-block" />
 </p>
+
+> **Info**: To gain the `open preview` button to show up, you will need to first set the `local preview URL`. You can do this within the `Global Settings` section or by updating the `frontMatter.preview.host` setting.
 
 **Metadata: Keywords, Tags, Categories**
 
@@ -111,10 +118,22 @@ When you open the Front Matter panel on a Markdown file, you get to see the foll
 **Other actions**
 
 <p align="center">
-  <img src="./assets/v2.4.0/other-actions.png" alt="Other actions" style="display: inline-block" />
+  <img src="./assets/v2.5.0/other-actions.png" alt="Other actions" style="display: inline-block" />
 </p>
 
 **Info**: The `Enable write settings` action allow you to make Markdown specific changes to optimize the writing of your articles. It will change settings like the `fontSize`, `lineHeight`, `wordWrap`, `lineNumbers` and more.
+
+## Site preview
+
+The Markdown preview is not consistently delivering the same result as the one you will see on your site. The Front Matter extension provides you a way to show the site result. For this, you will first have to set the `frontMatter.preview.host` setting. You can perform it from the `Global Settings` section in the panel or in your `settings.json` file to set the setting.
+
+For example, with Hugo, the local server spins up on `http://localhost:1313`. When you set this URL as the value of the `frontMatter.preview.host` setting. You can click on the `open preview` button and the site preview will be shown.
+
+<p align="center">
+  <img src="./assets/v2.5.0/site-preview.png" alt="Site preview" style="display: inline-block" />
+</p>
+
+> **Important**: Be sure to spin up your local server. This is an action the extension currently doesn't do for you. If you want, you create yourself a custom action in order to start it.
 
 ## Custom actions
 
@@ -240,6 +259,10 @@ slug: sample-page-title
 You can also specify a prefix and suffix, which can be added to the slug if you want. Use the following settings to do this: `frontMatter.taxonomy.slugPrefix` and `frontMatter.taxonomy.slugSuffix`. By default, both options are not provided and will not add anything to the slug. Another setting is to allow you to sync the filename with the generated slug. The setting you need to turn on enable for this is `frontMatter.taxonomy.alignFilename`.
 
 > **Info**: At the moment, the extension only supports English stopwords.
+
+**Front Matter: Preview article**
+
+Opens the site preview for the current article. More information about it can be found in the [site preview](#site-preview) section.
 
 ### Usage
 
@@ -404,12 +427,34 @@ Specify if you want to highlight the Front Matter in the Markdown file. Default:
 }
 ```
 
+### `frontMatter.preview.host`
+
+Specify the host URL (example: http://localhost:1313) to be used when opening the preview.
+
+```json
+{
+  "frontMatter.preview.host": ""
+}
+```
+
+### `frontMatter.preview.pathName`
+
+Specify the path you want to add after the host and before your slug. This can be used for instance to include the year/month like: `yyyy/MM` (if not set via the slug). The date will be generated based on the article its date field value.
+
+```json
+{
+  "frontMatter.preview.pathName": ""
+}
+```
+
+> **Important**: As the value will be formatted with the article's date, it will try to convert all characters you enter. In case you wan to skip some characters or all of them, you need to wrap that part between two single quotes. Example: `"'blog/'yyyy/MM"` will result in: `blog/2021/08`.
+
 ## Feedback / issues / ideas
 
 Please submit them via creating an issue in the project repository: [issue list](https://github.com/estruyf/vscode-front-matter/issues).
 
 <p align="center">
-  <a href="#">
-      <img src="https://estruyf-github.azurewebsites.net/api/VisitorHit?user=estruyf&repo=vscode-front-matter&countColor=%23F05450&labelColor=%230E131F" />
+  <a href="https://visitorbadge.io">
+      <img src="https://estruyf-github.azurewebsites.net/api/VisitorHit?user=estruyf&repo=vscode-front-matter&countColor=%23F05450&labelColor=%230E131F" height="25px" />
    </a>
 </p>

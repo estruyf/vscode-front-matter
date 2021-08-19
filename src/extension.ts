@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { Article, Settings, StatusListener } from './commands';
 import { Folders } from './commands/Folders';
+import { Preview } from './commands/Preview';
 import { Project } from './commands/Project';
 import { Template } from './commands/Template';
 import { COMMAND_NAME } from './constants/Extension';
@@ -16,7 +17,7 @@ let collection: vscode.DiagnosticCollection;
 
 const mdSelector: vscode.DocumentSelector = { language: 'markdown', scheme: 'file' };
 
-export async function activate({ subscriptions, extensionUri }: vscode.ExtensionContext) {
+export async function activate({ subscriptions, extensionUri, extensionPath }: vscode.ExtensionContext) {
 	collection = vscode.languages.createDiagnosticCollection('frontMatter');
 
 	const explorerSidebar = ExplorerView.getInstance(extensionUri);
@@ -105,6 +106,7 @@ export async function activate({ subscriptions, extensionUri }: vscode.Extension
 	// Things to do when configuration changes
 	vscode.workspace.onDidChangeConfiguration(() => {
 		Template.init();
+		Preview.init();
 		Folders.updateVsCodeCtx();
 	});
 
@@ -127,6 +129,10 @@ export async function activate({ subscriptions, extensionUri }: vscode.Extension
 
 	// Listener for setting changes
 	subscriptions.push(vscode.workspace.onDidChangeConfiguration(MarkdownFoldingProvider.triggerHighlighting));
+
+	// Webview for preview
+	Preview.init();
+	subscriptions.push(vscode.commands.registerCommand('frontMatter.preview', () => Preview.open(extensionPath) ));
 
 	// Subscribe all commands
 	subscriptions.push(

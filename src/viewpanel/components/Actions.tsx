@@ -1,11 +1,9 @@
 import * as React from 'react';
 import { PanelSettings } from '../../models/PanelSettings';
-import { CommandToCode } from '../CommandToCode';
-import { MessageHelper } from '../helper/MessageHelper';
-import { ActionButton } from './ActionButton';
 import { Collapsible } from './Collapsible';
 import { CustomScript } from './CustomScript';
 import { DateAction } from './DateAction';
+import { Preview } from './Preview';
 import { PublishAction } from './PublishAction';
 import { SlugAction } from './SlugAction';
 
@@ -25,9 +23,9 @@ export const Actions: React.FunctionComponent<IActionsProps> = (props: React.Pro
     <Collapsible id={`actions`} title="Actions">
       <div className={`article__actions`}>
 
-        <ActionButton onClick={() => MessageHelper.sendMessage(CommandToCode.toggleCenterMode)} title={`Toggle center mode`} />
-
         { metadata && metadata.title && <SlugAction value={metadata.title} crntValue={metadata.slug} slugOpts={settings.slug} /> }
+
+        { settings?.preview?.host && <Preview slug={metadata.slug} /> }
 
         <DateAction />
 

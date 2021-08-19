@@ -2,7 +2,7 @@
 	"name": "vscode-front-matter",
 	"displayName": "Front Matter",
 	"description": "Simplifies working with front matter of your articles. Useful extension when you are using a static site generator like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
-	"icon": "assets/front-matter.png",
+	"icon": "assets/frontmatter-128x128.png",
 	"version": "2.4.1",
 	"preview": false,
 	"publisher": "eliostruyf",
@@ -58,6 +58,7 @@
 		"onCommand:frontMatter.createContent",
 		"onCommand:frontMatter.init",
 		"onCommand:frontMatter.collapseSections",
+		"onCommand:frontMatter.preview",
 		"onView:frontMatter.explorer"
 	],
 	"main": "./dist/extension",
@@ -109,6 +110,16 @@
 					"type": "boolean",
 					"default": true,
 					"markdownDescription": "Specifies if you want to allow yourself from entering unknown tags/categories in the tag picker (when enabled, you will have the option to store them afterwards). Default: true."
+				},
+				"frontMatter.preview.host": {
+					"type": "string",
+					"default": "",
+					"markdownDescription": "Specify the host URL (example: http://localhost:1313) to be used when opening the preview."
+				},
+				"frontMatter.preview.pathName": {
+					"type": "string",
+					"default": "",
+					"markdownDescription": "Specify the path you want to add after the host and before your slug. This can be used for instance to include the year/month like: `yyyy/MM`. The date will be generated based on the article its date field value."
 				},
 				"frontMatter.taxonomy.dateField": {
 					"type": "string",
@@ -283,6 +294,11 @@
 					"light": "assets/icons/close-light.svg",
 					"dark": "assets/icons/close-dark.svg"
 				}
+			},
+			{
+				"command": "frontMatter.preview",
+				"title": "Preview article",
+				"category": "Front matter"
 			}
 		],
 		"menus": {
@@ -311,6 +327,10 @@
 				{
 					"command": "frontMatter.createTemplate",
 					"when": "!frontMatterCanInit"
+				},
+				{
+					"command": "frontMatter.openPreview",
+					"when": "frontMatterCanOpenPreview"
 				},
 				{
 					"command": "frontMatter.collapseSections",

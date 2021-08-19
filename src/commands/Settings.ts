@@ -22,7 +22,7 @@ export class Settings {
     });
     
     if (newOption) {
-      const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+      const config = SettingsHelper.getConfig();
       const configSetting = type === TaxonomyType.Tag ? SETTING_TAXONOMY_TAGS : SETTING_TAXONOMY_CATEGORIES;
       let options = config.get(configSetting) as string[];
       if (!options) {
@@ -72,7 +72,7 @@ export class Settings {
    * Export the tags/categories front matter to the user settings
    */
   public static async export() {
-    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+    const config = SettingsHelper.getConfig();
 
     // Retrieve all the Markdown files
     const allMdFiles = await FilesHelper.getMdFiles();
@@ -155,8 +155,6 @@ export class Settings {
    * Remap a tag or category to a new one
    */
   public static async remap() {
-    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
-
     const taxType = await vscode.window.showQuickPick([
       "Tag",
       "Category"

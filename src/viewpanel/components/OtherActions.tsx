@@ -4,6 +4,7 @@ import { CommandToCode } from '../CommandToCode';
 import { MessageHelper } from '../helper/MessageHelper';
 import { Collapsible } from './Collapsible';
 import { BugIcon } from './Icons/BugIcon';
+import { CenterIcon } from './Icons/CenterIcon';
 import { FileIcon } from './Icons/FileIcon';
 import { FolderOpenedIcon } from './Icons/FolderOpenedIcon';
 import { SettingsIcon } from './Icons/SettingsIcon';
@@ -43,6 +44,10 @@ export const OtherActions: React.FunctionComponent<IOtherActionsProps> = ({isFil
     <>
       <Collapsible id={`${isBase ? "base_" : ""}other_actions`} title="Other actions" className={`other_actions`}>
         <OtherActionButton className={settings?.writingSettingsEnabled ? "active" : ""} onClick={toggleWritingSettings} disabled={typeof settings?.writingSettingsEnabled === "undefined"}><WritingIcon /> <span>{settings?.writingSettingsEnabled ? "Writing settings enabled" : "Enable writing settings"}</span></OtherActionButton>
+
+        <OtherActionButton onClick={() => MessageHelper.sendMessage(CommandToCode.toggleCenterMode)}>
+          <CenterIcon /> <span>Toggle center mode</span>
+        </OtherActionButton>
 
         <OtherActionButton onClick={createAsTemplate} disabled={!isFile}><TemplateIcon /> <span>Create as template</span></OtherActionButton>
 

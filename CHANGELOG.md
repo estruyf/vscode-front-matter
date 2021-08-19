@@ -1,5 +1,10 @@
 # Change Log
 
+## [2.5.0] - 2020-08-16
+
+- Moved the center layout button the the other actions section
+- [#60](https://github.com/estruyf/vscode-front-matter/issues/60): Added the ability to open a site preview in VS Code 
+
 ## [2.4.1] - 2020-08-16
 
 - Better editor highlighting functionality

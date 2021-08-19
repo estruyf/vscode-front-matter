@@ -20,4 +20,6 @@ export enum CommandToCode {
   createTemplate = "create-template",
   toggleCenterMode = "toggle-center-mode",
   toggleWritingSettings = "toggle-writing-settings",
+  openPreview = "open-preview",
+  updatePreviewUrl = "update-preview-url",
 }

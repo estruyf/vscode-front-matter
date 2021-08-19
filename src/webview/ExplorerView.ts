@@ -1,9 +1,9 @@
 import { Template } from './../commands/Template';
-import { SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME } from './../constants/settings';
+import { SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST } from './../constants/settings';
 import * as os from 'os';
 import { PanelSettings, CustomScript } from './../models/PanelSettings';
 import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv } from "vscode";
-import { CONFIG_KEY, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from "../constants";
+import { SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from "../constants";
 import { ArticleHelper, SettingsHelper } from "../helpers";
 import { Command } from "../viewpanel/Command";
 import { CommandToCode } from '../viewpanel/CommandToCode';
@@ -17,6 +17,7 @@ import { Content } from 'mdast';
 import { Notifications } from '../helpers/Notifications';
 import { COMMAND_NAME } from '../constants/Extension';
 import { Folders } from '../commands/Folders';
+import { Preview } from '../commands/Preview';
 
 
 export class ExplorerView implements WebviewViewProvider, Disposable {
@@ -161,6 +162,12 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         case CommandToCode.toggleCenterMode:
           await commands.executeCommand(`workbench.action.toggleCenteredLayout`);
           break;
+        case CommandToCode.openPreview:
+          await commands.executeCommand(COMMAND_NAME.preview);
+          break;
+        case CommandToCode.updatePreviewUrl:
+          this.updatePreviewUrl(msg.data || "");
+          break;
       }
     });
 
@@ -222,7 +229,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * @param msg 
    */
   private runCustomScript(msg: { command: string, data: any}) {
-    const config = workspace.getConfiguration(CONFIG_KEY);
+    const config = SettingsHelper.getConfig();
     const scripts: CustomScript[] | undefined = config.get(SETTING_CUSTOM_SCRIPTS);
 
     if (msg?.data?.title && msg?.data?.script && scripts) {
@@ -263,7 +270,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * Retrieve the extension settings
    */
   private async getSettings() {
-    const config = workspace.getConfiguration(CONFIG_KEY);
+    const config = SettingsHelper.getConfig();
 
     this.postWebviewMessage({
       command: Command.settings,
@@ -288,6 +295,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         modifiedDateUpdate: config.get(SETTING_AUTO_UPDATE_DATE) || false,
         writingSettingsEnabled: this.isWritingSettingsEnabled() || false,
         fmHighlighting: config.get(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT),
+        preview: Preview.getSettings(),
       } as PanelSettings
     });
   }
@@ -331,7 +339,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    */
   private async addTags(tagType: TagType, value: string) {
     if (value) {
-      const config = workspace.getConfiguration(CONFIG_KEY);
+      const config = SettingsHelper.getConfig();
       let options = tagType === TagType.tags ? config.get<string[]>(SETTING_TAXONOMY_TAGS) : config.get<string[]>(SETTING_TAXONOMY_CATEGORIES);
 
       if (!options) {
@@ -436,10 +444,19 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   }
 
   /**
+   * Update the preview URL
+   */
+  private async updatePreviewUrl(previewUrl: string) {
+    const config = SettingsHelper.getConfig();
+    await config.update(SETTING_PREVIEW_HOST, previewUrl);
+    this.getSettings();
+  }
+
+  /**
    * Toggle the Front Matter highlighting
    */
   private async updateFmHighlight(autoUpdate: boolean) {
-    const config = workspace.getConfiguration(CONFIG_KEY);
+    const config = SettingsHelper.getConfig();
     await config.update(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, autoUpdate);
     this.getSettings();
   }
@@ -448,7 +465,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * Toggle the modified auto-update setting
    */
   private async updateModifiedUpdating(autoUpdate: boolean) {
-    const config = workspace.getConfiguration(CONFIG_KEY);
+    const config = SettingsHelper.getConfig();
     await config.update(SETTING_AUTO_UPDATE_DATE, autoUpdate);
     this.getSettings();
   }

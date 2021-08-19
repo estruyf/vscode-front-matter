@@ -8,3 +8,4 @@ export const VsTableRow = wrapWc(`vscode-table-row`);
 export const VsTableCell = wrapWc(`vscode-table-cell`);
 export const VsCollapsible = wrapWc(`vscode-collapsible`);
 export const VsCheckbox = wrapWc(`vscode-checkbox`);
+export const VsLabel = wrapWc(`vscode-label`);

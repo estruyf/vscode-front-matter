@@ -1,9 +1,11 @@
 import * as vscode from 'vscode';
 import * as matter from "gray-matter";
 import * as fs from "fs";
-import { CONFIG_KEY, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES } from '../constants';
+import { CONFIG_KEY, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { TomlEngine, getFmLanguage, getFormatOpts } from './TomlEngine';
+import { SettingsHelper } from '.';
+import { parse } from 'date-fns';
 
 export class ArticleHelper {
   
@@ -54,7 +56,7 @@ export class ArticleHelper {
    * @param article 
    */
   public static async update(editor: vscode.TextEditor, article: matter.GrayMatterFile<string>) {
-    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+    const config = SettingsHelper.getConfig();
     const removeQuotes = config.get(SETTING_REMOVE_QUOTES) as string[];
     
     let newMarkdown = this.stringifyFrontMatter(article.content, article.data);
@@ -80,7 +82,7 @@ export class ArticleHelper {
    * @param data 
    */
   public static stringifyFrontMatter(content: string, data: any) {
-    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+    const config = SettingsHelper.getConfig();
     const indentArray = config.get(SETTING_INDENT_ARRAY) as boolean;
 
     const language = getFmLanguage();
@@ -103,5 +105,29 @@ export class ArticleHelper {
   public static isMarkdownFile() {
     const editor = vscode.window.activeTextEditor;
     return (editor && editor.document && (editor.document.languageId.toLowerCase() === "markdown" || editor.document.languageId.toLowerCase() === "mdx"));
+  }
+
+  /**
+   * Get date from front matter
+   */ 
+  public static getDate(article: matter.GrayMatterFile<string> | null) {
+    if (!article) {
+      return;
+    }
+
+    const config = SettingsHelper.getConfig();
+    const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
+    const dateField = config.get(SETTING_DATE_FIELD) as string || "date";
+
+    if (typeof article.data[dateField] !== "undefined") {
+      if (dateFormat && typeof dateFormat === "string") {
+        const date = parse(article.data[dateField], dateFormat, new Date());
+        return date;
+      } else {
+        const date = new Date(article.data[dateField]);
+        return date;
+      }
+    }
+    return;
   }
 }

@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import { CONFIG_KEY, SETTING_TEMPLATES_FOLDER, SETTING_TEMPLATES_PREFIX } from '../constants';
 import { format } from 'date-fns';
 import sanitize from '../helpers/Sanitize';
-import { ArticleHelper } from '../helpers';
+import { ArticleHelper, SettingsHelper } from '../helpers';
 import { Article } from '.';
 import { Notifications } from '../helpers/Notifications';
 import { CONTEXT } from '../constants/context';
@@ -93,7 +93,7 @@ export class Template {
    * Create from a template
    */
   public static async create(folderPath: string) {
-    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+    const config = SettingsHelper.getConfig();
     const folder = config.get<string>(SETTING_TEMPLATES_FOLDER);
     const prefix = config.get<string>(SETTING_TEMPLATES_PREFIX);
 
@@ -188,7 +188,7 @@ export class Template {
    * Get the folder settings
    */
   public static getSettings() {
-    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+    const config = SettingsHelper.getConfig();
     const folder = config.get<string>(SETTING_TEMPLATES_FOLDER);
     return folder;
   }

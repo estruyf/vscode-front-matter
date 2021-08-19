@@ -11,6 +11,7 @@ export interface PanelSettings {
   contentInfo: FolderInfo[] | null;
   writingSettingsEnabled: boolean;
   fmHighlighting: boolean;
+  preview: PreviewSettings;
 }
 
 export interface SEO {
@@ -34,4 +35,9 @@ export interface CustomScript {
   title: string;
   script: string;
   nodeBin?: string;
+}
+
+export interface PreviewSettings {
+  host: string | undefined;
+  pathname: string | undefined;
 }

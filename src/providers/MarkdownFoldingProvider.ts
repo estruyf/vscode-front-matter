@@ -1,6 +1,7 @@
-import { TextEditorDecorationType, workspace } from 'vscode';
+import { TextEditorDecorationType } from 'vscode';
 import { CancellationToken, FoldingContext, FoldingRange, FoldingRangeKind, FoldingRangeProvider, Range, TextDocument, window, Position } from 'vscode';
-import { CONFIG_KEY, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT } from '../constants';
+import { SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT } from '../constants';
+import { SettingsHelper } from '../helpers';
 import { FrontMatterDecorationProvider } from './FrontMatterDecorationProvider';
 
 export class MarkdownFoldingProvider implements FoldingRangeProvider {
@@ -43,7 +44,7 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
   }
 
   public static triggerHighlighting() {
-    const config = workspace.getConfiguration(CONFIG_KEY);
+    const config = SettingsHelper.getConfig();
     const fmHighlight = config.get<boolean>(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT);
 
     if (MarkdownFoldingProvider.start !== null && MarkdownFoldingProvider.end !== null && MarkdownFoldingProvider.endLine !== null) {

@@ -4,6 +4,10 @@ import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY } from '
 
 export class SettingsHelper {
 
+  public static getConfig(): vscode.WorkspaceConfiguration {
+    return vscode.workspace.getConfiguration(CONFIG_KEY);
+  }
+
   /**
    * Return the taxonomy settings
    * 
