@@ -24,6 +24,10 @@ This VSCode extension simplifies working with your markdown articles' front matt
 
 The extension will automatically verify if your title and description are SEO compliant. If this would not be the case, it will give you a warning.
 
+<p align="center">
+  <img src="./assets/v2.5.0/site-preview.png" alt="Site preview" style="display: inline-block" />
+</p>
+
 > If you see something missing in your article creation flow, please feel free to reach out.
 
 **Version 2**
