@@ -5,6 +5,7 @@ import { MessageHelper } from '../helper/MessageHelper';
 import { Collapsible } from './Collapsible';
 import { GlobalSettings } from './GlobalSettings';
 import { OtherActions } from './OtherActions';
+import { FileList } from './FileList';
 
 export interface IBaseViewProps {
   settings: PanelSettings | undefined;
@@ -18,10 +19,6 @@ export const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings}: Re
   
   const createContent = () => {
     MessageHelper.sendMessage(CommandToCode.createContent);
-  };
-  
-  const openFile = (filePath: string) => {
-    MessageHelper.sendMessage(CommandToCode.openInEditor, filePath);
   };
 
 
@@ -47,15 +44,7 @@ export const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings}: Re
                       {folder.title}: {folder.files} file{folder.files > 1 ? 's' : ''}
 
                       {
-                        folder.lastModified && (
-                          <ul>
-                            {
-                              folder.lastModified.map(file => (
-                                <li key={file.fileName} onClick={() => openFile(file.filePath)}>{file.fileName}</li>
-                              ))
-                            }
-                          </ul>
-                        )
+                        folder.lastModified ? <FileList files={folder.lastModified} /> : null
                       }
                     </div>
                   ))
