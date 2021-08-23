@@ -10,6 +10,7 @@ import { OtherActions } from './components/OtherActions';
 import { SeoStatus } from './components/SeoStatus';
 import { Spinner } from './components/Spinner';
 import { TagPicker } from './components/TagPicker';
+import { FileList } from './components/FileList';
 import useMessages from './hooks/useMessages';
 import { TagType } from './TagType';
 
@@ -77,6 +78,26 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
             )
           }
         </Collapsible>
+
+        {
+          (settings?.contentInfo && settings?.contentInfo.length > 0) && (
+            <Collapsible id={`content`} title="Recently modified">
+              <div className="information">
+                {
+                  settings.contentInfo.map(folder => (
+                    <>
+                      {folder.lastModified && (
+                        <div key={folder.title}>
+                          <FileList folderName={folder.title} totalFiles={folder.files} files={folder.lastModified} />
+                        </div>
+                      )}
+                    </>
+                  ))
+                }
+              </div>
+            </Collapsible>
+          )
+        }
 
         <OtherActions settings={settings} isFile={true} />
       </div>

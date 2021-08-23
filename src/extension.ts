@@ -127,12 +127,20 @@ export async function activate({ subscriptions, extensionUri, extensionPath }: v
 	editDebounce = debounceCallback();
 	subscriptions.push(vscode.workspace.onDidChangeTextDocument(triggerFileChange));
 
+	// Listener for file saves
+	subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc: vscode.TextDocument) => {
+		if (doc.languageId === 'markdown') {
+			// Optimize the list of recently changed files
+			ExplorerView.getInstance().getSettings();
+		}
+	}));
+
 	// Listener for setting changes
 	subscriptions.push(vscode.workspace.onDidChangeConfiguration(MarkdownFoldingProvider.triggerHighlighting));
 
 	// Webview for preview
 	Preview.init();
-	subscriptions.push(vscode.commands.registerCommand('frontMatter.preview', () => Preview.open(extensionPath) ));
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.preview, () => Preview.open(extensionPath) ));
 
 	// Subscribe all commands
 	subscriptions.push(

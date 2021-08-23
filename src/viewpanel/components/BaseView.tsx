@@ -6,6 +6,7 @@ import { Collapsible } from './Collapsible';
 import { GlobalSettings } from './GlobalSettings';
 import { OtherActions } from './OtherActions';
 import { FileList } from './FileList';
+import { VsLabel } from './VscodeComponents';
 
 export interface IBaseViewProps {
   settings: PanelSettings | undefined;
@@ -36,15 +37,15 @@ export const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings}: Re
 
         {
           settings?.contentInfo && (
-            <Collapsible id={`base_content`} title="Content information">
+            <Collapsible id={`base_content`} title="Recently modified">
               <div className="base__information">
                 {
                   settings.contentInfo.map(folder => (
                     <div key={folder.title}>
-                      {folder.title}: {folder.files} file{folder.files > 1 ? 's' : ''}
-
                       {
-                        folder.lastModified ? <FileList files={folder.lastModified} /> : null
+                        folder.lastModified ? <FileList folderName={folder.title} totalFiles={folder.files} files={folder.lastModified} /> : (
+                          <VsLabel>{folder.title}: {folder.files} file{folder.files > 1 ? 's' : ''}</VsLabel>
+                        )
                       }
                     </div>
                   ))

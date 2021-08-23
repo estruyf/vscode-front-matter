@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.6.0]
+
+- [#61](https://github.com/estruyf/vscode-front-matter/issues/61): List of recently modified files
+
 ## [2.5.1] - 2020-08-23
 
 - Fix typo in the `package.json` file for the preview command

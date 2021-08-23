@@ -358,3 +358,47 @@
 .table__cell__validation .warning {
   color: #E6AF2E;
 }
+
+/* File list */
+.file_list vscode-label {
+  border-bottom: 1px solid var(--vscode-foreground);
+}
+
+.file_list__items {
+  padding: 0;
+  list-style: none;
+}
+
+.file_list__items__item {
+	color: var(--vscode-foreground);
+  font-size: var(--vscode-font-size);
+  font-weight: var(--vscode-font-weight);
+  cursor: pointer;
+  height: 22px;
+  line-height: 22px;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.file_list__items__item:hover {
+	background-color: var(--vscode-list-hoverBackground);
+  color: var(--vscode-list-hoverForeground);
+  cursor: pointer;
+}
+
+.file_list__items__item svg {
+  display: block;
+  flex-shrink: 0;
+  height: 20px;
+  width: 20px;
+  margin-right: .25rem;
+}
+
+.file_list__items__item span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

@@ -286,7 +286,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   /**
    * Retrieve the extension settings
    */
-  private async getSettings() {
+  public async getSettings() {
     const config = SettingsHelper.getConfig();
 
     this.postWebviewMessage({
