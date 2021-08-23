@@ -168,6 +168,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         case CommandToCode.updatePreviewUrl:
           this.updatePreviewUrl(msg.data || "");
           break;
+        case CommandToCode.openInEditor:
+          this.openFileInEditor(msg.data);
+          break;
       }
     });
 
@@ -222,6 +225,20 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    */
   public collapseAll() {
     this.postWebviewMessage({ command: Command.closeSections });
+  }
+
+  /**
+   * Open the file via its path
+   */
+  private async openFileInEditor(filePath: string) {
+    if (filePath) {
+      try {
+        const doc = await workspace.openTextDocument(Uri.file(filePath));
+        await window.showTextDocument(doc, 1, false);
+      } catch (e) {
+        Notifications.error(`Couldn't open the file.`);
+      }
+    }
   }
 
   /**

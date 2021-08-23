@@ -19,6 +19,11 @@ export const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings}: Re
   const createContent = () => {
     MessageHelper.sendMessage(CommandToCode.createContent);
   };
+  
+  const openFile = (filePath: string) => {
+    MessageHelper.sendMessage(CommandToCode.openInEditor, filePath);
+  };
+
 
   return (
     <div className="frontmatter">
@@ -40,6 +45,18 @@ export const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings}: Re
                   settings.contentInfo.map(folder => (
                     <div key={folder.title}>
                       {folder.title}: {folder.files} file{folder.files > 1 ? 's' : ''}
+
+                      {
+                        folder.lastModified && (
+                          <ul>
+                            {
+                              folder.lastModified.map(file => (
+                                <li key={file.fileName} onClick={() => openFile(file.filePath)}>{file.fileName}</li>
+                              ))
+                            }
+                          </ul>
+                        )
+                      }
                     </div>
                   ))
                 }

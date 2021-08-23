@@ -1,7 +1,7 @@
 import { commands, Uri, workspace, window } from "vscode";
 import { CONFIG_KEY, SETTINGS_CONTENT_FOLDERS } from "../constants";
-import { basename } from "path";
-import { ContentFolder, FolderInfo } from "../models";
+import { basename, join } from "path";
+import { ContentFolder, FileInfo, FolderInfo } from "../models";
 import uniqBy = require("lodash.uniqby");
 import { Template } from "./Template";
 import { Notifications } from "../helpers/Notifications";
@@ -129,11 +129,28 @@ export class Folders {
       
       for (const folder of folders) {
         try {
-          const files = await workspace.fs.readDirectory(Uri.file(folder.fsPath));
+          const folderPath = Uri.file(folder.fsPath);
+          const files = await workspace.fs.readDirectory(folderPath);
           if (files) {
+            let fileStats: FileInfo[] = [];
+
+            for (const file of files) {
+              const fileName = file[0];
+              const filePath = Uri.file(join(folderPath.fsPath, fileName));
+              const stats = await workspace.fs.stat(filePath);
+              fileStats.push({
+                filePath: filePath.fsPath,
+                fileName,
+                ...stats
+              });
+            }
+
+            fileStats = fileStats.sort((a, b) => b.mtime - a.mtime).slice(0, 10);
+
             folderInfo.push({
               title: folder.title,
-              files: files.length
+              files: files.length,
+              lastModified: fileStats
             });
           }
         } catch (e) {

@@ -22,4 +22,5 @@ export enum CommandToCode {
   toggleWritingSettings = "toggle-writing-settings",
   openPreview = "open-preview",
   updatePreviewUrl = "update-preview-url",
+  openInEditor = "open-in-editor",
 }

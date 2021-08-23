@@ -1,3 +1,4 @@
+import { FileType } from "vscode";
 
 export interface PanelSettings {
   seo: SEO;
@@ -29,7 +30,17 @@ export interface Slug {
 export interface FolderInfo {
   title: string;
   files: number;
+  lastModified: FileInfo[];
 }
+
+export interface FileInfo {
+  type: FileType;
+  ctime: number;
+  mtime: number;
+  size: number;
+  filePath: string;
+  fileName: string;
+};
 
 export interface CustomScript {
   title: string;
