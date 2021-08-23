@@ -135,14 +135,18 @@ export class Folders {
             let fileStats: FileInfo[] = [];
 
             for (const file of files) {
-              const fileName = file[0];
-              const filePath = Uri.file(join(folderPath.fsPath, fileName));
-              const stats = await workspace.fs.stat(filePath);
-              fileStats.push({
-                filePath: filePath.fsPath,
-                fileName,
-                ...stats
-              });
+              try {
+                const fileName = file[0];
+                const filePath = Uri.file(join(folderPath.fsPath, fileName));
+                const stats = await workspace.fs.stat(filePath);
+                fileStats.push({
+                  filePath: filePath.fsPath,
+                  fileName,
+                  ...stats
+                });
+              } catch (error) {
+                // Skip the file
+              }
             }
 
             fileStats = fileStats.sort((a, b) => b.mtime - a.mtime).slice(0, 10);

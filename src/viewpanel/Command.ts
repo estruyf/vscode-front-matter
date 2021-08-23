@@ -5,4 +5,5 @@ export enum Command {
   focusOnTags = "focusOnTags",
   focusOnCategories = "focusOnCategories",
   closeSections = "closeSections",
+  folderInfo = "folderInfo",
 }

@@ -23,4 +23,5 @@ export enum CommandToCode {
   openPreview = "open-preview",
   updatePreviewUrl = "update-preview-url",
   openInEditor = "open-in-editor",
+  updateMetadata = "update-metadata",
 }

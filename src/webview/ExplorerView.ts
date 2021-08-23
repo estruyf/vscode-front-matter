@@ -83,6 +83,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       switch(msg.command) {
         case CommandToCode.getData:
           this.getSettings();
+          this.getFoldersAndFiles();
           this.getFileData();
           break;
         case CommandToCode.updateSlug:
@@ -308,12 +309,21 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         freeform: config.get(SETTING_PANEL_FREEFORM),
         scripts: config.get(SETTING_CUSTOM_SCRIPTS),
         isInitialized: await Template.isInitialized(),
-        contentInfo: await Folders.getInfo() || null,
         modifiedDateUpdate: config.get(SETTING_AUTO_UPDATE_DATE) || false,
         writingSettingsEnabled: this.isWritingSettingsEnabled() || false,
         fmHighlighting: config.get(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT),
         preview: Preview.getSettings(),
       } as PanelSettings
+    });
+  }
+
+  /**
+   * Retrieve the information about the registered folders and its files
+   */
+  public async getFoldersAndFiles() {
+    this.postWebviewMessage({
+      command: Command.folderInfo,
+      data: await Folders.getInfo() || null
     });
   }
 

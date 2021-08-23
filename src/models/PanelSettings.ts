@@ -9,7 +9,6 @@ export interface PanelSettings {
   scripts: CustomScript[];
   isInitialized: boolean;
   modifiedDateUpdate: boolean;
-  contentInfo: FolderInfo[] | null;
   writingSettingsEnabled: boolean;
   fmHighlighting: boolean;
   preview: PreviewSettings;

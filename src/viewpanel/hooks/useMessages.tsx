@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { PanelSettings } from '../../models/PanelSettings';
+import { FolderInfo, PanelSettings } from '../../models/PanelSettings';
 import { Command } from '../Command';
 import { CommandToCode } from '../CommandToCode';
 import { MessageHelper } from '../helper/MessageHelper';
@@ -12,6 +12,7 @@ export default function useMessages() {
   const [settings, setSettings] = useState<PanelSettings>();
   const [loading, setLoading] = useState<boolean>(false);
   const [focusElm, setFocus] = useState<TagType | null>(null);
+  const [folderAndFiles, setFolderAndFiles] = useState<FolderInfo[] | undefined>(undefined);
 
   window.addEventListener('message', event => {
     const message = event.data;
@@ -24,6 +25,9 @@ export default function useMessages() {
       case Command.settings:
         setSettings(message.data);
         setLoading(false);
+        break;
+      case Command.folderInfo:
+        setFolderAndFiles(message.data);
         break;
       case Command.loading:
         setLoading(message.data);
@@ -45,6 +49,7 @@ export default function useMessages() {
   return {
     metadata,
     settings,
+    folderAndFiles,
     focusElm,
     loading,
     unsetFocus: () => { setFocus(null) }

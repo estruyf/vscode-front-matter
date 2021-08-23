@@ -108,6 +108,11 @@ export async function activate({ subscriptions, extensionUri, extensionPath }: v
 		Template.init();
 		Preview.init();
 		Folders.updateVsCodeCtx();
+
+		const exView = ExplorerView.getInstance();	
+		exView.getSettings();
+		exView.getFoldersAndFiles();	
+		MarkdownFoldingProvider.triggerHighlighting();
 	});
 
 	// Create the status bar
@@ -131,12 +136,9 @@ export async function activate({ subscriptions, extensionUri, extensionPath }: v
 	subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc: vscode.TextDocument) => {
 		if (doc.languageId === 'markdown') {
 			// Optimize the list of recently changed files
-			ExplorerView.getInstance().getSettings();
+			ExplorerView.getInstance().getFoldersAndFiles();
 		}
 	}));
-
-	// Listener for setting changes
-	subscriptions.push(vscode.workspace.onDidChangeConfiguration(MarkdownFoldingProvider.triggerHighlighting));
 
 	// Webview for preview
 	Preview.init();

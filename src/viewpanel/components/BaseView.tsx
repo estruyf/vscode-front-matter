@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { PanelSettings } from '../../models';
+import { FolderInfo, PanelSettings } from '../../models';
 import { CommandToCode } from '../CommandToCode';
 import { MessageHelper } from '../helper/MessageHelper';
 import { Collapsible } from './Collapsible';
@@ -7,12 +7,14 @@ import { GlobalSettings } from './GlobalSettings';
 import { OtherActions } from './OtherActions';
 import { FileList } from './FileList';
 import { VsLabel } from './VscodeComponents';
+import { FolderAndFiles } from './FolderAndFiles';
 
 export interface IBaseViewProps {
   settings: PanelSettings | undefined;
+  folderAndFiles: FolderInfo[] | undefined;
 }
 
-export const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings}: React.PropsWithChildren<IBaseViewProps>) => {
+export const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings, folderAndFiles}: React.PropsWithChildren<IBaseViewProps>) => {
   
   const initProject = () => {
     MessageHelper.sendMessage(CommandToCode.initProject);
@@ -34,26 +36,8 @@ export const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings}: Re
             <button onClick={createContent} disabled={!settings?.isInitialized}>Create new content</button>
           </div>
         </Collapsible>
-
-        {
-          settings?.contentInfo && (
-            <Collapsible id={`base_content`} title="Recently modified">
-              <div className="base__information">
-                {
-                  settings.contentInfo.map(folder => (
-                    <div key={folder.title}>
-                      {
-                        folder.lastModified ? <FileList folderName={folder.title} totalFiles={folder.files} files={folder.lastModified} /> : (
-                          <VsLabel>{folder.title}: {folder.files} file{folder.files > 1 ? 's' : ''}</VsLabel>
-                        )
-                      }
-                    </div>
-                  ))
-                }
-              </div>
-            </Collapsible>
-          )
-        }
+        
+        <FolderAndFiles data={folderAndFiles} isBase />
 
         <OtherActions settings={settings} isFile={false} isBase />
       </div>
