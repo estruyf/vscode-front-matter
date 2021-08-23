@@ -329,7 +329,7 @@
 					"when": "!frontMatterCanInit"
 				},
 				{
-					"command": "frontMatter.openPreview",
+					"command": "frontMatter.preview",
 					"when": "frontMatterCanOpenPreview"
 				},
 				{

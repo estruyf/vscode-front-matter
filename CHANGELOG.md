@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.5.1] - 2020-08-23
+
+- Fix typo in the `package.json` file for the preview command
+
 ## [2.5.0] - 2020-08-19
 
 - Moved the center layout button to the other actions section
