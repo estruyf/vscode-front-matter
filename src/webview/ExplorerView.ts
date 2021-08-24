@@ -172,6 +172,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         case CommandToCode.openInEditor:
           this.openFileInEditor(msg.data);
           break;
+        case CommandToCode.updateMetadata:
+          this.updateMetadata(msg.data);
+          break;
       }
     });
 
@@ -226,6 +229,28 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    */
   public collapseAll() {
     this.postWebviewMessage({ command: Command.closeSections });
+  }
+
+  /**
+   * Update the metadata of the article
+   */
+  private updateMetadata({field, value}: { field: string, value: string }) {
+    if (!field) {
+      return;
+    }
+
+    const editor = window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+
+    const article = ArticleHelper.getFrontMatter(editor);
+    if (!article) {
+      return;
+    }
+
+    article.data[field] = value;
+    ArticleHelper.update(editor, article);
   }
 
   /**

@@ -4,10 +4,13 @@ import { CommandToCode } from '../CommandToCode';
 import { MessageHelper } from '../helper/MessageHelper';
 import { TagType } from '../TagType';
 import { Collapsible } from './Collapsible';
+import { Toggle } from './Fields/Toggle';
 import { ListUnorderedIcon } from './Icons/ListUnorderedIcon';
+import { RocketIcon } from './Icons/RocketIcon';
 import { SymbolKeywordIcon } from './Icons/SymbolKeywordIcon';
 import { TagIcon } from './Icons/TagIcon';
 import { TagPicker } from './TagPicker';
+import { VsCheckbox, VsLabel } from './VscodeComponents';
 
 export interface IMetadataProps {
   settings: PanelSettings | undefined;
@@ -18,7 +21,7 @@ export interface IMetadataProps {
 
 export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, focusElm, unsetFocus}: React.PropsWithChildren<IMetadataProps>) => {
 
-  const sendUpdate = (field: string, value: string) => {
+  const sendUpdate = (field: string, value: any) => {
     MessageHelper.sendMessage(CommandToCode.updateMetadata, {
       field,
       value
@@ -27,6 +30,16 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
 
   return (
     <Collapsible id={`tags`} title="Metadata" className={`inherit z-20`}>
+
+      <div className={`metadata_field`}>
+        <VsLabel>
+          <div className={`metadata_field__label`}>
+            <RocketIcon /> <span style={{ lineHeight: "16px"}}>Published</span>
+          </div>
+        </VsLabel>
+        <Toggle checked={!metadata.draft as any} onChanged={(checked) => sendUpdate("draft", !checked)} />
+      </div>
+
       {
         <TagPicker type={TagType.keywords} 
                    icon={<SymbolKeywordIcon />}

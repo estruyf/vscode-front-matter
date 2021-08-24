@@ -3,6 +3,7 @@
 ## [2.6.0]
 
 - [#61](https://github.com/estruyf/vscode-front-matter/issues/61): List of recently modified files
+- [#64](https://github.com/estruyf/vscode-front-matter/issues/64): Publish toggle for easier publishing an article
 
 ## [2.5.1] - 2020-08-23
 

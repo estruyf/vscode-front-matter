@@ -6,6 +6,7 @@ import { TagType } from '../TagType';
 import { MessageHelper } from '../helper/MessageHelper';
 import Downshift from 'downshift';
 import { AddIcon } from './Icons/AddIcon';
+import { VsLabel } from './VscodeComponents';
 
 export interface ITagPickerProps {
   type: string;
@@ -126,8 +127,12 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
   }, [crntSelected]);
   
   return (
-    <div className={`article__tags`}>
-      <h3>{icon} {type}</h3>
+    <div className={`article__tags`}>      
+      <VsLabel>
+        <div className={`metadata_field__label`}>
+          {icon} <span style={{ lineHeight: "16px"}}>{type}</span>
+        </div>
+      </VsLabel>
 
       <Downshift ref={dsRef}
                  onChange={(selected) => onSelect(selected || "")}
