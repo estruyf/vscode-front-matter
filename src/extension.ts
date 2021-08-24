@@ -1,3 +1,4 @@
+import { Dashboard } from './commands/Dashboard';
 import * as vscode from 'vscode';
 import { Article, Settings, StatusListener } from './commands';
 import { Folders } from './commands/Folders';
@@ -107,6 +108,7 @@ export async function activate({ subscriptions, extensionUri, extensionPath }: v
 	vscode.workspace.onDidChangeConfiguration(() => {
 		Template.init();
 		Preview.init();
+		Dashboard.init();
 		Folders.updateVsCodeCtx();
 
 		const exView = ExplorerView.getInstance();	
@@ -143,6 +145,10 @@ export async function activate({ subscriptions, extensionUri, extensionPath }: v
 	// Webview for preview
 	Preview.init();
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.preview, () => Preview.open(extensionPath) ));
+
+	// Pages dashboard
+	Dashboard.init();
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboard, () => Dashboard.open(extensionPath) ));
 
 	// Subscribe all commands
 	subscriptions.push(

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { PanelSettings } from '../../models';
 import { CommandToCode } from '../CommandToCode';
-import { MessageHelper } from '../helper/MessageHelper';
+import { MessageHelper } from '../../helpers/MessageHelper';
 import { useDebounce } from '../hooks/useDebounce';
 import { Collapsible } from './Collapsible';
 import { VsCheckbox, VsLabel } from './VscodeComponents';

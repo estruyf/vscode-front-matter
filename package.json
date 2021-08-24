@@ -59,6 +59,7 @@
 		"onCommand:frontMatter.init",
 		"onCommand:frontMatter.collapseSections",
 		"onCommand:frontMatter.preview",
+		"onCommand:frontMatter.dashboard",
 		"onView:frontMatter.explorer"
 	],
 	"main": "./dist/extension",
@@ -100,6 +101,11 @@
 					"type": "array",
 					"default": [],
 					"markdownDescription": "This array of folders defines where the extension can easily create new content by running the create article command."
+				},
+				"frontMatter.content.publicFolder": {
+					"type": "string",
+					"default": "",
+					"markdownDescription": "Specify the folder name where all your assets are located. For instance in Hugo this is the `static` folder."
 				},
 				"frontMatter.custom.scripts": {
 					"type": "array",
@@ -299,6 +305,11 @@
 				"command": "frontMatter.preview",
 				"title": "Preview article",
 				"category": "Front matter"
+			},
+			{
+				"command": "frontMatter.dashboard",
+				"title": "Open pages dashboard",
+				"category": "Front matter"
 			}
 		],
 		"menus": {
@@ -335,6 +346,10 @@
 				{
 					"command": "frontMatter.collapseSections",
 					"when": "false"
+				},
+				{
+					"command": "frontMatter.dashboard",
+					"when": "frontMatterCanOpenDashboard"
 				}
 			],
 			"view/title": [
@@ -375,7 +390,7 @@
 		"@vscode/codicons": "0.0.20",
 		"autoprefixer": "^10.3.2",
 		"css-loader": "5.2.7",
-		"date-fns": "2.0.1",
+		"date-fns": "2.23.0",
 		"downshift": "6.0.6",
 		"glob": "7.1.6",
 		"gray-matter": "4.0.2",
@@ -396,6 +411,8 @@
 		"webpack-cli": "3.3.12"
 	},
 	"dependencies": {
+		"@headlessui/react": "1.4.0",
+		"@heroicons/react": "1.0.4",
 		"lodash.uniqby": "4.7.0"
 	}
 }

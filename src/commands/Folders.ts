@@ -122,7 +122,7 @@ export class Folders {
   /**
    * Get the registered folders information
    */
-  public static async getInfo(): Promise<FolderInfo[] | null> {
+  public static async getInfo(limit?: number): Promise<FolderInfo[] | null> {
     const folders = Folders.get();
     if (folders && folders.length > 0) {
       let folderInfo: FolderInfo[] = [];
@@ -149,7 +149,11 @@ export class Folders {
               }
             }
 
-            fileStats = fileStats.sort((a, b) => b.mtime - a.mtime).slice(0, 10);
+            fileStats = fileStats.sort((a, b) => b.mtime - a.mtime);
+            
+            if (limit) {
+              fileStats = fileStats.slice(0, limit);
+            }
 
             folderInfo.push({
               title: folder.title,
@@ -172,7 +176,7 @@ export class Folders {
    * Get the folder settings
    * @returns 
    */
-  private static get() {
+  public static get() {
     const config = SettingsHelper.getConfig();
     const folders: ContentFolder[] = config.get(SETTINGS_CONTENT_FOLDERS) as ContentFolder[];
     return folders;

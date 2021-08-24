@@ -23,4 +23,5 @@ export const COMMAND_NAME = {
   createTemplate: getCommandName("createTemplate"),
   collapseSections: getCommandName("collapseSections"),
   preview: getCommandName("preview"),
+  dashboard: getCommandName("dashboard"),
 };

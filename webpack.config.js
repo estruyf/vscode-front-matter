@@ -56,6 +56,34 @@ module.exports = [
           use: [{
             loader: 'ts-loader'
           }]
+        }
+      ]
+    },
+    performance: {
+      maxEntrypointSize: 400000,
+      maxAssetSize: 400000
+    }
+  },
+  {
+    name: 'pagesView',
+    target: 'web',
+    entry: './src/pagesView/index.tsx',
+    output: {
+      path: path.resolve(__dirname, 'dist'),
+      filename: 'pages.js'
+    },
+    devtool: 'source-map',
+    resolve: {
+      extensions: ['.ts', '.js', '.tsx', '.jsx']
+    },
+    module: {
+      rules: [
+        {
+          test: /\.(ts|tsx)$/,
+          exclude: /node_modules/,
+          use: [{
+            loader: 'ts-loader'
+          }]
         },
         {
           test: /\.css$/,
