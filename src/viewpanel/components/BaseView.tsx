@@ -16,6 +16,10 @@ export interface IBaseViewProps {
 
 export const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings, folderAndFiles}: React.PropsWithChildren<IBaseViewProps>) => {
   
+  const openDashboard = () => {
+    MessageHelper.sendMessage(CommandToCode.openDashboard);
+  };
+  
   const initProject = () => {
     MessageHelper.sendMessage(CommandToCode.initProject);
   };
@@ -32,6 +36,7 @@ export const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings, fol
         
         <Collapsible id={`base_actions`} title="Actions">
           <div className={`base__actions`}>
+            <button onClick={openDashboard}>Open dashboard</button>
             <button onClick={initProject} disabled={settings?.isInitialized}>Initialize project</button>
             <button onClick={createContent} disabled={!settings?.isInitialized}>Create new content</button>
           </div>

@@ -1,4 +1,5 @@
 export enum DashboardCommand {
   loading = "loading",
-  data = "data"
+  pages = "pages",
+  settings = "settings"
 }

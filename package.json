@@ -346,10 +346,6 @@
 				{
 					"command": "frontMatter.collapseSections",
 					"when": "false"
-				},
-				{
-					"command": "frontMatter.dashboard",
-					"when": "frontMatterCanOpenDashboard"
 				}
 			],
 			"view/title": [
@@ -392,6 +388,7 @@
 		"css-loader": "5.2.7",
 		"date-fns": "2.23.0",
 		"downshift": "6.0.6",
+		"fuse.js": "6.4.6",
 		"glob": "7.1.6",
 		"gray-matter": "4.0.2",
 		"html-loader": "1.3.2",

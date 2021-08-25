@@ -169,6 +169,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         case CommandToCode.openPreview:
           await commands.executeCommand(COMMAND_NAME.preview);
           break;
+        case CommandToCode.openDashboard:
+          await commands.executeCommand(COMMAND_NAME.dashboard);
+          break;
         case CommandToCode.updatePreviewUrl:
           this.updatePreviewUrl(msg.data || "");
           break;
@@ -516,7 +519,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * @param msg 
    */
   private postWebviewMessage(msg: { command: Command, data?: any }) {
-    this.panel!.webview.postMessage(msg);
+    this.panel?.webview?.postMessage(msg);
   }
 
   /**

@@ -108,7 +108,6 @@ export async function activate({ subscriptions, extensionUri, extensionPath }: v
 	vscode.workspace.onDidChangeConfiguration(() => {
 		Template.init();
 		Preview.init();
-		Dashboard.init();
 		Folders.updateVsCodeCtx();
 
 		const exView = ExplorerView.getInstance();	
@@ -147,8 +146,13 @@ export async function activate({ subscriptions, extensionUri, extensionPath }: v
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.preview, () => Preview.open(extensionPath) ));
 
 	// Pages dashboard
-	Dashboard.init();
-	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboard, () => Dashboard.open(extensionPath) ));
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboard, () => {
+		if (Dashboard.isOpen) {
+			Dashboard.reveal();
+		} else {
+			Dashboard.open(extensionPath);
+		}
+	}));
 
 	// Subscribe all commands
 	subscriptions.push(

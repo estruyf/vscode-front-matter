@@ -11,6 +11,6 @@ export const DateField: React.FunctionComponent<IDateFieldProps> = ({value}: Rea
   const dateString = format(parsedValue, 'yyyy-MM-dd');
 
   return (
-    <span className={`text-vulcan-100 text-xs`}>{dateString}</span>
+    <span className={`text-vulcan-100 dark:text-whisper-900 text-xs`}>{dateString}</span>
   );
 };
