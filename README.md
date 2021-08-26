@@ -104,6 +104,8 @@ In order to start using the dashboard, you will have to let the extension know i
 
 > **Info**: If you want, you can click on the `Open on startup?` checkbox. This setting will allow the dashboard to automatically open when you launch the project in VS Code. It will only apply to the current project, not for all of them.
 
+> **Details**: If your preview images aren't loaded, it might be that you need to configure the `publicFolder` where the extension can find them. For instance, in Hugo this is the `static` folder. You can configure this by updating the `frontMatter.content.publicFolder` setting.
+
 ## The panel
 
 The Front Matter panel allows you to perform most of the extension actions by just a click on the button and it shows the SEO statuses of your title, description, and more.
@@ -491,6 +493,26 @@ Specify the path you want to add after the host and before your slug. This can b
 ```
 
 > **Important**: As the value will be formatted with the article's date, it will try to convert all characters you enter. In case you wan to skip some characters or all of them, you need to wrap that part between two single quotes. Example: `"'blog/'yyyy/MM"` will result in: `blog/2021/08`.
+
+### `frontMatter.dashboard.openOnStart`
+
+Specify if you want to open the dashboard when you start VS Code.
+
+```json
+{
+  "frontMatter.dashboard.openOnStart": null
+}
+```
+
+### `frontMatter.content.publicFolder`
+
+Specify the folder name where all your assets are located. For instance in Hugo this is the `static` folder.
+
+```json
+{
+  "frontMatter.content.publicFolder": ""
+}
+```
 
 ## Feedback / issues / ideas
 
