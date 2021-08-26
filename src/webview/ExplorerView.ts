@@ -18,7 +18,10 @@ import { Notifications } from '../helpers/Notifications';
 import { COMMAND_NAME } from '../constants/Extension';
 import { Folders } from '../commands/Folders';
 import { Preview } from '../commands/Preview';
+import { getNonce } from '../helpers/getNonce';
+import { openFileInEditor } from '../helpers/openFileInEditor';
 
+const FILE_LIMIT = 10;
 
 export class ExplorerView implements WebviewViewProvider, Disposable {
   public static readonly viewType = "frontMatter.explorer";
@@ -166,11 +169,14 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         case CommandToCode.openPreview:
           await commands.executeCommand(COMMAND_NAME.preview);
           break;
+        case CommandToCode.openDashboard:
+          await commands.executeCommand(COMMAND_NAME.dashboard);
+          break;
         case CommandToCode.updatePreviewUrl:
           this.updatePreviewUrl(msg.data || "");
           break;
         case CommandToCode.openInEditor:
-          this.openFileInEditor(msg.data);
+          openFileInEditor(msg.data);
           break;
         case CommandToCode.updateMetadata:
           this.updateMetadata(msg.data);
@@ -254,20 +260,6 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   }
 
   /**
-   * Open the file via its path
-   */
-  private async openFileInEditor(filePath: string) {
-    if (filePath) {
-      try {
-        const doc = await workspace.openTextDocument(Uri.file(filePath));
-        await window.showTextDocument(doc, 1, false);
-      } catch (e) {
-        Notifications.error(`Couldn't open the file.`);
-      }
-    }
-  }
-
-  /**
    * Run a custom script
    * @param msg 
    */
@@ -348,7 +340,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   public async getFoldersAndFiles() {
     this.postWebviewMessage({
       command: Command.folderInfo,
-      data: await Folders.getInfo() || null
+      data: await Folders.getInfo(FILE_LIMIT) || null
     });
   }
 
@@ -527,19 +519,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * @param msg 
    */
   private postWebviewMessage(msg: { command: Command, data?: any }) {
-    this.panel!.webview.postMessage(msg);
-  }
-
-  /**
-   * Generate a unique nonce
-   */
-  private getNonce() {
-    let text = '';
-    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (let i = 0; i < 32; i++) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
+    this.panel?.webview?.postMessage(msg);
   }
 
   /**
@@ -552,7 +532,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     const stylesUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'assets/media', 'styles.css'));
     const scriptUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'dist', 'viewpanel.js'));
 
-    const nonce = this.getNonce();
+    const nonce = getNonce();
 
     return `
       <!DOCTYPE html>

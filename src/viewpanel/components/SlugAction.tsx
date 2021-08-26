@@ -1,8 +1,8 @@
 import * as React from 'react';
+import { MessageHelper } from '../../helpers/MessageHelper';
 import { SlugHelper } from '../../helpers/SlugHelper';
 import { Slug } from '../../models/PanelSettings';
 import { CommandToCode } from '../CommandToCode';
-import { MessageHelper } from '../helper/MessageHelper';
 import { ActionButton } from './ActionButton';
 
 export interface ISlugActionProps {

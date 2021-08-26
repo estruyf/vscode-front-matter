@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { CommandToCode } from '../CommandToCode';
-import { MessageHelper } from '../helper/MessageHelper';
+import { MessageHelper } from '../../helpers/MessageHelper';
 import { ActionButton } from './ActionButton';
 
 export interface IDateActionProps {}

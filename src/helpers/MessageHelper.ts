@@ -1,4 +1,6 @@
-import { CommandToCode } from "../CommandToCode";
+import { DashboardMessage } from './../pagesView/DashboardMessage';
+import { CommandToCode } from "../viewpanel/CommandToCode";
+
 
 interface ClientVsCode<T> {
   getState: () => T;
@@ -16,7 +18,7 @@ export class MessageHelper {
     return MessageHelper.vscode;
   }
   
-  public static sendMessage = (command: CommandToCode, data?: any) => {    
+  public static sendMessage = (command: CommandToCode | DashboardMessage, data?: any) => {    
     if (data) {
       MessageHelper.vscode.postMessage({ command, data });
     } else {

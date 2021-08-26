@@ -8,6 +8,11 @@ export class SettingsHelper {
     return vscode.workspace.getConfiguration(CONFIG_KEY);
   }
 
+  public static async updateSetting(name: string, value: any) {
+    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
+    await config.update(name, value);
+  }
+
   /**
    * Return the taxonomy settings
    * 

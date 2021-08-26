@@ -471,3 +471,39 @@ input:checked + .field__toggle__slider:before {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
+/* Sponsor */
+.sponsor {
+  opacity: 0.5;
+}
+
+.sponsor:hover {
+  opacity: 1;
+}
+
+.sponsor:hover svg {
+  fill: currentcolor;
+}
+
+.sponsor svg {
+  height: 20px;
+  width: 20px;
+  margin-right: .25rem;
+}
+
+.sponsor a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--vscode-foreground);
+  text-decoration: none;
+}
+
+.sponsor a:hover {
+  color: var(--vscode-foreground);
+  text-decoration: none;
+}
+
+.sponsor a > span {
+  margin-right: .25rem;
+}

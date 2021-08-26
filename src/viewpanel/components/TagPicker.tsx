@@ -3,10 +3,10 @@ import { Tags } from './Tags';
 import { usePrevious } from '../hooks/usePrevious';
 import { CommandToCode } from '../CommandToCode';
 import { TagType } from '../TagType';
-import { MessageHelper } from '../helper/MessageHelper';
 import Downshift from 'downshift';
 import { AddIcon } from './Icons/AddIcon';
 import { VsLabel } from './VscodeComponents';
+import { MessageHelper } from '../../helpers/MessageHelper';
 
 export interface ITagPickerProps {
   type: string;

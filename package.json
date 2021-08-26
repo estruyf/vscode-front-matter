@@ -1,7 +1,7 @@
 {
 	"name": "vscode-front-matter",
 	"displayName": "Front Matter",
-	"description": "Simplifies working with front matter of your articles. Useful extension when you are using a static site generator like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
+	"description": "An essential Visual Studio Code extension when you want to manage the markdown pages of your static site like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
 	"icon": "assets/frontmatter-128x128.png",
 	"version": "2.5.1",
 	"preview": false,
@@ -59,6 +59,7 @@
 		"onCommand:frontMatter.init",
 		"onCommand:frontMatter.collapseSections",
 		"onCommand:frontMatter.preview",
+		"onCommand:frontMatter.dashboard",
 		"onView:frontMatter.explorer"
 	],
 	"main": "./dist/extension",
@@ -101,10 +102,20 @@
 					"default": [],
 					"markdownDescription": "This array of folders defines where the extension can easily create new content by running the create article command."
 				},
+				"frontMatter.content.publicFolder": {
+					"type": "string",
+					"default": "",
+					"markdownDescription": "Specify the folder name where all your assets are located. For instance in Hugo this is the `static` folder."
+				},
 				"frontMatter.custom.scripts": {
 					"type": "array",
 					"default": [],
 					"markdownDescription": "Specify the path to a Node.js script to execute. The current file path will be provided as an argument."
+				},
+				"frontMatter.dashboard.openOnStart": {
+					"type": "boolean",
+					"default": null,
+					"description": "Specify if you want to open the dashboard when you start VS Code."
 				},
 				"frontMatter.panel.freeform": {
 					"type": "boolean",
@@ -299,6 +310,11 @@
 				"command": "frontMatter.preview",
 				"title": "Preview article",
 				"category": "Front matter"
+			},
+			{
+				"command": "frontMatter.dashboard",
+				"title": "Open pages dashboard",
+				"category": "Front matter"
 			}
 		],
 		"menus": {
@@ -373,15 +389,22 @@
 		"@types/react-dom": "17.0.0",
 		"@types/vscode": "1.51.0",
 		"@vscode/codicons": "0.0.20",
-		"date-fns": "2.0.1",
+		"autoprefixer": "^10.3.2",
+		"css-loader": "5.2.7",
+		"date-fns": "2.23.0",
 		"downshift": "6.0.6",
+		"fuse.js": "6.4.6",
 		"glob": "7.1.6",
 		"gray-matter": "4.0.2",
 		"html-loader": "1.3.2",
 		"html-webpack-plugin": "4.5.0",
 		"mdast-util-from-markdown": "1.0.0",
+		"postcss": "^8.3.6",
+		"postcss-loader": "4.3.0",
 		"react": "17.0.1",
 		"react-dom": "17.0.1",
+		"style-loader": "2.0.0",
+		"tailwindcss": "^2.2.7",
 		"ts-loader": "8.0.3",
 		"tslint": "6.1.3",
 		"typescript": "4.0.2",
@@ -390,6 +413,8 @@
 		"webpack-cli": "3.3.12"
 	},
 	"dependencies": {
+		"@headlessui/react": "1.4.0",
+		"@heroicons/react": "1.0.4",
 		"lodash.uniqby": "4.7.0"
 	}
 }

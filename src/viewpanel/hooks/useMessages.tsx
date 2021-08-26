@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
+import { MessageHelper } from '../../helpers/MessageHelper';
 import { FolderInfo, PanelSettings } from '../../models/PanelSettings';
 import { Command } from '../Command';
 import { CommandToCode } from '../CommandToCode';
-import { MessageHelper } from '../helper/MessageHelper';
 import { TagType } from '../TagType';
 
 const vscode = MessageHelper.getVsCodeAPI();

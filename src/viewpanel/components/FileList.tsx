@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FileInfo } from '../../models';
 import { CommandToCode } from '../CommandToCode';
-import { MessageHelper } from '../helper/MessageHelper';
+import { MessageHelper } from '../../helpers/MessageHelper';
 import { FileIcon } from './Icons/FileIcon';
 import { MarkdownIcon } from './Icons/MarkdownIcon';
 import { VsLabel } from './VscodeComponents';
