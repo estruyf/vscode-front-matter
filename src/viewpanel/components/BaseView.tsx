@@ -8,6 +8,7 @@ import { OtherActions } from './OtherActions';
 import { FileList } from './FileList';
 import { VsLabel } from './VscodeComponents';
 import { FolderAndFiles } from './FolderAndFiles';
+import { SponsorMsg } from './SponsorMsg';
 
 export interface IBaseViewProps {
   settings: PanelSettings | undefined;
@@ -46,6 +47,8 @@ export const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings, fol
 
         <OtherActions settings={settings} isFile={false} isBase />
       </div>
+
+      <SponsorMsg />
     </div>
   );
 };

@@ -48,8 +48,8 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({currentTab, curre
   };
 
   return (
-    <div className={`mb-6 sticky top-0 z-40 bg-gray-100 dark:bg-vulcan-500`}>
-      <div className={`px-4 mb-2 flex items-center justify-between`}>
+    <div className={`w-full max-w-7xl mx-auto sticky top-0 z-40 bg-gray-100 dark:bg-vulcan-500`}>
+      <div className={`px-4 my-2 flex items-center justify-between`}>
         <Searchbox onSearch={onSearch} />
 
         <div className={`flex items-center space-x-4`}>

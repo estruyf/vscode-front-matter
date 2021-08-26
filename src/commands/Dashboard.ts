@@ -222,7 +222,7 @@ export class Dashboard {
 
         <title>Front Matter Dashboard</title>
       </head>
-      <body style="width:100%;height:100%;margin:0;padding:0;" class="bg-gray-100 text-vulcan-500 dark:bg-vulcan-500 dark:text-whisper-500">
+      <body style="width:100%;height:100%;margin:0;padding:0;overflow:hidden" class="bg-gray-100 text-vulcan-500 dark:bg-vulcan-500 dark:text-whisper-500">
         <div id="app" style="width:100%;height:100%;margin:0;padding:0;"></div>
 
         <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759" alt="Daily usage" />

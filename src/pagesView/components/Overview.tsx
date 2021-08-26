@@ -15,7 +15,7 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({pages, settin
 
   if (!pages || !pages.length) {
     return (
-      <div className={`flex items-center justify-center mt-16`}>
+      <div className={`flex items-center justify-center h-full`}>
         <div className={`max-w-xl text-center`}>
           <MarkdownIcon className={`text-vulcan-300 dark:text-whisper-800 h-32 mx-auto`} />
           {

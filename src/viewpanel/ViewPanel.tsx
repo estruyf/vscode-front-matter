@@ -10,6 +10,7 @@ import useMessages from './hooks/useMessages';
 import { TagType } from './TagType';
 import { FolderAndFiles } from './components/FolderAndFiles';
 import { Metadata } from './components/Metadata';
+import { SponsorMsg } from './components/SponsorMsg';
 
 export interface IViewPanelProps {
 }
@@ -51,6 +52,8 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
 
         <OtherActions settings={settings} isFile={true} />
       </div>
+
+      <SponsorMsg />
     </div>
   );
 };

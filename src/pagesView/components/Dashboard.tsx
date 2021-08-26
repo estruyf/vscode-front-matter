@@ -25,7 +25,7 @@ export const Dashboard: React.FunctionComponent<IDashboardProps> = ({}: React.Pr
   
   return (
     <main className={`h-full w-full`}>
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <div className="flex flex-col h-full overflow-auto">
         <Header currentTab={tab}
                 currentSorting={sorting}
                 groups={pageGroups}
@@ -42,7 +42,11 @@ export const Dashboard: React.FunctionComponent<IDashboardProps> = ({}: React.Pr
                 settings={settings}
                  />
 
-        { loading ? <Spinner /> : <Overview pages={pageItems} settings={settings} /> }
+        <div className="flex-grow max-w-7xl mx-auto py-6 px-4">
+          { loading ? <Spinner /> : <Overview pages={pageItems} settings={settings} /> }
+        </div>
+
+        <p className={`text-vulcan-50 dark:text-whisper-900 py-2 text-center`}>If you find FrontMatter useful, please consider <a className={`text-vulcan-500 dark:text-whisper-500 hover:text-vulcan-600 dark:hover:text-whisper-300`} href="https://github.com/sponsors/estruyf" title="Sponsor Front Matter">sponsoring</a> it, or if you use FrontMatter for work, please encourage your employer to <a className={`text-vulcan-500 dark:text-whisper-500 hover:text-vulcan-600 dark:hover:text-whisper-300`} href="https://github.com/sponsors/estruyf" title="Sponsor Front Matter">sponsoring</a> it.</p>
       </div>
     </main>
   );
