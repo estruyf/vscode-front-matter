@@ -146,12 +146,9 @@ export async function activate({ subscriptions, extensionUri, extensionPath }: v
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.preview, () => Preview.open(extensionPath) ));
 
 	// Pages dashboard
+	Dashboard.init(extensionPath);
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboard, () => {
-		if (Dashboard.isOpen) {
-			Dashboard.reveal();
-		} else {
-			Dashboard.open(extensionPath);
-		}
+		Dashboard.open(extensionPath);
 	}));
 
 	// Subscribe all commands

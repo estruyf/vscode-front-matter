@@ -1,7 +1,7 @@
 {
 	"name": "vscode-front-matter",
 	"displayName": "Front Matter",
-	"description": "Simplifies working with front matter of your articles. Useful extension when you are using a static site generator like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
+	"description": "An essential Visual Studio Code extension when you want to manage the markdown pages of your static site like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
 	"icon": "assets/frontmatter-128x128.png",
 	"version": "2.5.1",
 	"preview": false,
@@ -111,6 +111,11 @@
 					"type": "array",
 					"default": [],
 					"markdownDescription": "Specify the path to a Node.js script to execute. The current file path will be provided as an argument."
+				},
+				"frontMatter.dashboard.openOnStart": {
+					"type": "boolean",
+					"default": null,
+					"description": "Specify if you want to open the dashboard when you start VS Code."
 				},
 				"frontMatter.panel.freeform": {
 					"type": "boolean",

@@ -13,7 +13,7 @@ export const MenuItem: React.FunctionComponent<IMenuItemProps> = ({title, value,
     <Menu.Item>
       <button
         onClick={() => onClick(value)}
-        className={`${!isCurrent ? `text-vulcan-500 dark:text-whisper-500` : `text-gray-500 dark:text-whisper-900`} block px-4 py-2 text-sm font-medium w-full text-left hover:text-gray-700 dark:hover:text-whisper-600`}
+        className={`${!isCurrent ? `text-vulcan-500 dark:text-whisper-500` : `text-gray-500 dark:text-whisper-900`} block px-4 py-2 text-sm font-medium w-full text-left hover:bg-gray-100 hover:text-gray-700 dark:hover:text-whisper-600 dark:hover:bg-vulcan-100`}
       >
         {title}
       </button>

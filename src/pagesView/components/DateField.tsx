@@ -6,11 +6,23 @@ export interface IDateFieldProps {
 }
 
 export const DateField: React.FunctionComponent<IDateFieldProps> = ({value}: React.PropsWithChildren<IDateFieldProps>) => {
+  const [ dateValue, setDateValue ] = React.useState<string>("");
 
-  const parsedValue = typeof value === 'string' ? parseJSON(value) : value;
-  const dateString = format(parsedValue, 'yyyy-MM-dd');
+  React.useEffect(() => {
+    try {
+      const parsedValue = typeof value === 'string' ? parseJSON(value) : value;
+      const dateString = format(parsedValue, 'yyyy-MM-dd');
+      setDateValue(dateString);
+    } catch (e) {
+      // Date is invalid
+    }
+  }, [value]);
+
+  if (!dateValue) {
+    return null;
+  }
 
   return (
-    <span className={`text-vulcan-100 dark:text-whisper-900 text-xs`}>{dateString}</span>
+    <span className={`text-vulcan-100 dark:text-whisper-900 text-xs`}>{dateValue}</span>
   );
 };

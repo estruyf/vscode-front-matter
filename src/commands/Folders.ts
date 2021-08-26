@@ -111,12 +111,36 @@ export class Folders {
    */
   public static getFolderPath(folder: Uri) {
     let folderPath = "";
+    const wsFolder = Folders.getWorkspaceFolder();
 		if (folder && folder.fsPath) {
 			folderPath = folder.fsPath;
-		} else if (workspace.workspaceFolders && workspace.workspaceFolders.length > 0) {
-			folderPath = workspace.workspaceFolders[0].uri.fsPath;
+		} else if (wsFolder) {
+			folderPath = wsFolder.fsPath;
 		}
     return folderPath;
+  }
+
+  /**
+   * Retrieve the workspace folder
+   */
+  public static getWorkspaceFolder(): Uri | undefined {
+    const folders = workspace.workspaceFolders;
+    if (folders && folders.length > 0) {
+      return folders[0].uri;
+    }
+    return undefined;
+  }
+
+  /**
+   * Get the name of the project
+   */
+  public static getProjectFolderName(): string {
+    const wsFolder = Folders.getWorkspaceFolder();
+    if (wsFolder) {
+      // const projectFolder = wsFolder?.fsPath.split('\\').join('/').split('/').pop();
+      return basename(wsFolder.fsPath);
+    }
+    return "";
   }
 
   /**
@@ -129,37 +153,42 @@ export class Folders {
       
       for (const folder of folders) {
         try {
-          const folderPath = Uri.file(folder.fsPath);
-          const files = await workspace.fs.readDirectory(folderPath);
-          if (files) {
-            let fileStats: FileInfo[] = [];
+          const projectName = Folders.getProjectFolderName();
+          let projectStart = folder.fsPath.split(projectName).pop();
+          if (projectStart) {
+            projectStart = projectStart.startsWith('/') ? projectStart.substr(1) : projectStart;
+            const mdFiles = await workspace.findFiles(join(projectStart, '**/*.md'));
+            const mdxFiles = await workspace.findFiles(join(projectStart, '**/*.mdx'));
+            let files = [...mdFiles, ...mdxFiles];
+            if (files) {
+              let fileStats: FileInfo[] = [];
 
-            for (const file of files) {
-              try {
-                const fileName = file[0];
-                const filePath = Uri.file(join(folderPath.fsPath, fileName));
-                const stats = await workspace.fs.stat(filePath);
-                fileStats.push({
-                  filePath: filePath.fsPath,
-                  fileName,
-                  ...stats
-                });
-              } catch (error) {
-                // Skip the file
+              for (const file of files) {
+                try {
+                  const fileName = basename(file.fsPath);
+                  const stats = await workspace.fs.stat(file);
+                  fileStats.push({
+                    filePath: file.fsPath,
+                    fileName,
+                    ...stats
+                  });
+                } catch (error) {
+                  // Skip the file
+                }
               }
-            }
 
-            fileStats = fileStats.sort((a, b) => b.mtime - a.mtime);
-            
-            if (limit) {
-              fileStats = fileStats.slice(0, limit);
-            }
+              fileStats = fileStats.sort((a, b) => b.mtime - a.mtime);
+              
+              if (limit) {
+                fileStats = fileStats.slice(0, limit);
+              }
 
-            folderInfo.push({
-              title: folder.title,
-              files: files.length,
-              lastModified: fileStats
-            });
+              folderInfo.push({
+                title: folder.title,
+                files: files.length,
+                lastModified: fileStats
+              });
+            }
           }
         } catch (e) {
           // Skip the current folder
