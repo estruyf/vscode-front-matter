@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { FrontMatterIcon } from '../../viewpanel/components/Icons/FrontMatterIcon';
 import { MarkdownIcon } from '../../viewpanel/components/Icons/MarkdownIcon';
 import { Page } from '../models/Page';
 import { Settings } from '../models/Settings';
@@ -17,12 +18,15 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({pages, settin
     return (
       <div className={`flex items-center justify-center h-full`}>
         <div className={`max-w-xl text-center`}>
-          <MarkdownIcon className={`text-vulcan-300 dark:text-whisper-800 h-32 mx-auto`} />
+          <FrontMatterIcon className={`text-vulcan-300 dark:text-whisper-800 h-32 mx-auto opacity-10 mb-8`} />
           {
             settings?.folders?.length > 0 ? (
               <p className={`text-xl font-medium`}>No Markdown to show</p>
             ) : (
-              <p className={`text-lg font-medium`}>Make sure you registered a content folder in your project to let Front Matter find the contents.</p>
+              <>
+                <p className={`text-lg font-medium`}>Hi, this might be the first time you opened the dashboard, or recently started using Front Matter.</p>
+                <p className={`text-lg font-medium`}>Make sure you registered a content folder in your project to let Front Matter find the contents.</p>
+              </>
             )
           }
         </div>
