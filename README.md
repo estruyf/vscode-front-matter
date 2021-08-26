@@ -20,9 +20,17 @@
   </a>
 </p>
 
-This VSCode extension simplifies working with your markdown articles' front matter when using a static site generator like Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more... For example, you can keep a list of used tags, categories and add/remove them from your article with the extension.
+Front Matter is an essential Visual Studio Code extension that simplifies working and managing your markdown articles. We created the extension to support many static-site generators like Hugo, Jekyll, Hexo, NextJs, Gatsby, and more. 
 
-The extension will automatically verify if your title and description are SEO compliant. If this would not be the case, it will give you a warning.
+The extension brings Content Management System (CMS) capabilities straight within Visual Studio Code. For example, you can keep a list of the used tags, categories, create content, and so much more.
+
+Our main extension features are:
+
+- Page dashboard where you can get an overview of all your markdown pages. You can use it to search, filter, sort your contents.
+- Site preview within Visual Studio Code
+- SEO checks for title, description, and keywords
+- Support for custom actions/scripts
+- and many more
 
 <p align="center">
   <img src="./assets/v2.5.0/site-preview.png" alt="Site preview" style="display: inline-block" />
