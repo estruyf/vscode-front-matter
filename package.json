@@ -30,10 +30,8 @@
 	],
 	"keywords": [
 		"Front Matter",
-		"Hugo",
-		"Jekyll",
-		"Gatsby",
-		"Hexo",
+		"CMS",
+		"Markdown",
 		"Taxonomy"
 	],
 	"license": "MIT",
@@ -113,7 +111,7 @@
 					"markdownDescription": "Specify the path to a Node.js script to execute. The current file path will be provided as an argument."
 				},
 				"frontMatter.dashboard.openOnStart": {
-					"type": "boolean",
+					"type": ["boolean", "null"],
 					"default": null,
 					"description": "Specify if you want to open the dashboard when you start VS Code."
 				},
@@ -410,11 +408,10 @@
 		"typescript": "4.0.2",
 		"wc-react": "github:estruyf/wc-react",
 		"webpack": "4.44.2",
-		"webpack-cli": "3.3.12"
-	},
-	"dependencies": {
+		"webpack-cli": "3.3.12",
 		"@headlessui/react": "1.4.0",
 		"@heroicons/react": "1.0.4",
 		"lodash.uniqby": "4.7.0"
-	}
+	},
+	"dependencies": {}
 }

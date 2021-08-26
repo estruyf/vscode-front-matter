@@ -5,11 +5,12 @@ import { Folders } from './commands/Folders';
 import { Preview } from './commands/Preview';
 import { Project } from './commands/Project';
 import { Template } from './commands/Template';
-import { COMMAND_NAME } from './constants/Extension';
+import { COMMAND_NAME, EXTENSION_ID, EXTENSION_STATE_VERSION } from './constants/Extension';
 import { TaxonomyType } from './models';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
 import { TagType } from './viewpanel/TagType';
 import { ExplorerView } from './webview/ExplorerView';
+import { Notifications } from './helpers/Notifications';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
@@ -18,14 +19,22 @@ let collection: vscode.DiagnosticCollection;
 
 const mdSelector: vscode.DocumentSelector = { language: 'markdown', scheme: 'file' };
 
-export async function activate({ subscriptions, extensionUri, extensionPath }: vscode.ExtensionContext) {
+export async function activate({ subscriptions, extensionUri, extensionPath, globalState }: vscode.ExtensionContext) {
 	collection = vscode.languages.createDiagnosticCollection('frontMatter');
+
+	const frontMatter = vscode.extensions.getExtension(EXTENSION_ID)!;
+	const frontMatterVersoin = frontMatter.packageJSON.version;
+	const crntVersion = globalState.get<string>(EXTENSION_STATE_VERSION);
 
 	// Pages dashboard
 	Dashboard.init(extensionPath);
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboard, () => {
 		Dashboard.open(extensionPath);
 	}));
+
+	if (!crntVersion) {
+		vscode.commands.executeCommand(COMMAND_NAME.dashboard);
+	}
 
 	// Register the explorer view
 	const explorerSidebar = ExplorerView.getInstance(extensionUri);
