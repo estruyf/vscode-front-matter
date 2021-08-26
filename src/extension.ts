@@ -21,6 +21,13 @@ const mdSelector: vscode.DocumentSelector = { language: 'markdown', scheme: 'fil
 export async function activate({ subscriptions, extensionUri, extensionPath }: vscode.ExtensionContext) {
 	collection = vscode.languages.createDiagnosticCollection('frontMatter');
 
+	// Pages dashboard
+	Dashboard.init(extensionPath);
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboard, () => {
+		Dashboard.open(extensionPath);
+	}));
+
+	// Register the explorer view
 	const explorerSidebar = ExplorerView.getInstance(extensionUri);
 	let explorerView = vscode.window.registerWebviewViewProvider(ExplorerView.viewType, explorerSidebar, {
 		webviewOptions: {
@@ -51,25 +58,15 @@ export async function activate({ subscriptions, extensionUri, extensionPath }: v
 		Settings.create(TaxonomyType.Category);
 	});
 
-	let exportTaxonomy = vscode.commands.registerCommand(COMMAND_NAME.exportTaxonomy, () => {
-		Settings.export();
-	});
+	let exportTaxonomy = vscode.commands.registerCommand(COMMAND_NAME.exportTaxonomy, Settings.export);
 
-	let remap = vscode.commands.registerCommand(COMMAND_NAME.remap, () => {
-		Settings.remap();
-	});
+	let remap = vscode.commands.registerCommand(COMMAND_NAME.remap, Settings.remap);
 
-	let setDate = vscode.commands.registerCommand(COMMAND_NAME.setDate, () => {
-		Article.setDate();
-	});
+	let setDate = vscode.commands.registerCommand(COMMAND_NAME.setDate, Article.setDate);
 
-	let setLastModifiedDate = vscode.commands.registerCommand(COMMAND_NAME.setLastModifiedDate, () => {
-		Article.setLastModifiedDate();
-	});
+	let setLastModifiedDate = vscode.commands.registerCommand(COMMAND_NAME.setLastModifiedDate, Article.setLastModifiedDate);
 
-	let generateSlug = vscode.commands.registerCommand(COMMAND_NAME.generateSlug, () => {
-		Article.generateSlug();
-	});
+	let generateSlug = vscode.commands.registerCommand(COMMAND_NAME.generateSlug, Article.generateSlug);
 
 	let createFromTemplate = vscode.commands.registerCommand(COMMAND_NAME.createFromTemplate, (folder: vscode.Uri) => {
 		const folderPath = Folders.getFolderPath(folder);
@@ -144,12 +141,6 @@ export async function activate({ subscriptions, extensionUri, extensionPath }: v
 	// Webview for preview
 	Preview.init();
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.preview, () => Preview.open(extensionPath) ));
-
-	// Pages dashboard
-	Dashboard.init(extensionPath);
-	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboard, () => {
-		Dashboard.open(extensionPath);
-	}));
 
 	// Subscribe all commands
 	subscriptions.push(
