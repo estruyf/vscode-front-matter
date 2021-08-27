@@ -20,6 +20,10 @@
   </a>
 </p>
 
+<p align="center">
+  <img src="./assets/v3.0.0/welcome-progress.png" alt="Welcome to Front Matter" style="display: inline-block" />
+</p>
+
 Front Matter is an essential Visual Studio Code extension that simplifies working and managing your markdown articles. We created the extension to support many static-site generators like Hugo, Jekyll, Hexo, NextJs, Gatsby, and more. 
 
 The extension brings Content Management System (CMS) capabilities straight within Visual Studio Code. For example, you can keep a list of the used tags, categories, create content, and so much more.
@@ -40,7 +44,7 @@ Our main extension features are:
 
 **Version 3**
 
-In version v3 we introduced the dashboard webview. Which allows you to manage all your markdown pages in one place. This makes it easy to search, filter, sort, and more.
+In version v3 we introduced the welcome and dashboard webview. The welcome view allows to get you started using the extension, and the dashboard allows you to manage all your markdown pages in one place. This makes it easy to search, filter, sort, and more.
 
 **Version 2**
 
@@ -58,6 +62,7 @@ In version v2 we released the re-designed sidebar panel with improved SEO suppor
   <summary>Table of Contents</summary>
   <ol>
     <li><a href="#markdown-features">Markdown features</a></li>
+    <li><a href="#welcome-view">Welcome view</a></li>
     <li><a href="#dashboard">Dashboard</a></li>
     <li><a href="#the-panel">The panel</a></li>
     <li><a href="#site-preview">Site preview</a></li>
@@ -87,6 +92,20 @@ The Front Matter extension tries to make it easy to manage your Markdown pages/c
 </p>
 
 > **Info**: If you do not want this feature, you can disable it in the extension settings -> `Highlight Front Matter` or by setting the `frontMatter.content.fmHighlight` setting to `false`.
+
+## Welcome view
+
+The first time you open the dashboard, or when you did not initialize the Front Matter extension yet, the welcome view will get shown.
+
+<p align="center">
+  <img src="./assets/v3.0.0/welcome.png" alt="Welcome to Front Matter" style="display: inline-block" />
+</p>
+
+It also supports light themes:
+
+<p align="center">
+  <img src="./assets/v3.0.0/welcome-light.png" alt="Welcome view light" style="display: inline-block" />
+</p>
 
 ## Dashboard
 
