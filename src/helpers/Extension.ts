@@ -1,17 +1,17 @@
-import { Memento, extensions } from "vscode";
+import { Memento, extensions, Uri } from "vscode";
 import { EXTENSION_ID, EXTENSION_STATE_VERSION } from "../constants/Extension";
 
 
 export class Extension {
   private static instance: Extension;
   
-  private constructor(private globalState: Memento, private extPath: string) {}
+  private constructor(private globalState: Memento, private extPath: Uri) {}
 
   /**
    * Creates the singleton instance for the panel
    * @param extPath 
    */
-  public static getInstance(globalState?: Memento, extPath?: string): Extension {
+  public static getInstance(globalState?: Memento, extPath?: Uri): Extension {
     if (!Extension.instance && globalState && extPath) {
       Extension.instance = new Extension(globalState, extPath);
     }
@@ -19,6 +19,9 @@ export class Extension {
     return Extension.instance;
   }
 
+  /**
+   * Get the current version information for the extension
+   */
   public getVersion(): { usedVersion: string | undefined, installedVersion: string } {
     const frontMatter = extensions.getExtension(EXTENSION_ID)!;
     const installedVersion = frontMatter.packageJSON.version;
@@ -34,11 +37,17 @@ export class Extension {
     };
   }
 
+  /**
+   * Set the current version information for the extension
+   */
   public setVersion(installedVersion: string): void {
     this.globalState.update(EXTENSION_STATE_VERSION, installedVersion);
   }
 
-  public get extensionPath(): string {
+  /**
+   * Get the path to the extension
+   */
+  public get extensionPath(): Uri {
     return this.extPath;
   }
 }

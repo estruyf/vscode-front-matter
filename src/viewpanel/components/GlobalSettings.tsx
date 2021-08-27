@@ -38,7 +38,6 @@ export const GlobalSettings: React.FunctionComponent<IGlobalSettingsProps> = ({s
 
   React.useEffect(() => {
     if (isDirty) {
-      console.log(debouncePreviewUrl);
       setIsDirty(false);
       MessageHelper.sendMessage(CommandToCode.updatePreviewUrl, debouncePreviewUrl);
     }

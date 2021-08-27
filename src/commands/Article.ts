@@ -196,8 +196,7 @@ export class Article {
               overwrite: false
             });
           } catch (e) {
-            Notifications.error(`Failed to rename file.`);
-            console.log(e?.message || e);
+            Notifications.error(`Failed to rename file: ${e?.message || e}`);
           }
         }
       }

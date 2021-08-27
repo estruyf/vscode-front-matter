@@ -22,7 +22,6 @@ export class StatusListener {
 
         // Update the StatusBar based on the article draft state
         if (article && typeof article.data["draft"] !== "undefined") {
-          // console.log(`Draft status: ${article.data["draft"]}`);
           if (article.data["draft"] === true) {
             frontMatterSB.text = `$(book) ${draftMsg}`;
             frontMatterSB.show();

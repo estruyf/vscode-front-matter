@@ -20,14 +20,14 @@ let collection: vscode.DiagnosticCollection;
 const mdSelector: vscode.DocumentSelector = { language: 'markdown', scheme: 'file' };
 
 export async function activate({ subscriptions, extensionUri, extensionPath, globalState }: vscode.ExtensionContext) {
-	const extension = Extension.getInstance(globalState, extensionPath);
+	const extension = Extension.getInstance(globalState, extensionUri);
 
 	collection = vscode.languages.createDiagnosticCollection('frontMatter');
 
 	// Pages dashboard
-	Dashboard.init(extensionPath);
+	Dashboard.init();
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboard, () => {
-		Dashboard.open(extensionPath);
+		Dashboard.open();
 	}));
 
 	if (!extension.getVersion().usedVersion) {
@@ -101,7 +101,13 @@ export async function activate({ subscriptions, extensionUri, extensionPath, glo
 
 	// Initialize command
 	Template.init();
-	const projectInit = vscode.commands.registerCommand(COMMAND_NAME.init, Project.init);
+	const projectInit = vscode.commands.registerCommand(COMMAND_NAME.init, async (cb: Function) => {
+		await Project.init();
+
+		if (cb) {
+			cb();
+		}
+	});
 
 	// Collapse all sections in the webview
 	const collapseAll = vscode.commands.registerCommand(COMMAND_NAME.collapseSections, () => {

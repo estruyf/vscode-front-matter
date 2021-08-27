@@ -24,22 +24,22 @@ export class Dashboard {
   /** 
    * Init the dashboard
    */
-  public static async init(extensionPath: string) {
+  public static async init() {
     const config = SettingsHelper.getConfig();
     const openOnStartup = config.get(SETTINGS_DASHBOARD_OPENONSTART);
     if (openOnStartup) {
-      Dashboard.open(extensionPath);
+      Dashboard.open();
     }
   }
 
   /**
    * Open or reveal the dashboard
    */
-  public static async open(extensionPath: string) {
+  public static async open() {
     if (Dashboard.isOpen) {
 			Dashboard.reveal();
 		} else {
-			Dashboard.create(extensionPath);
+			Dashboard.create();
 		}
   }
 
@@ -62,7 +62,8 @@ export class Dashboard {
   /**
    * Create the dashboard webview
    */
-  public static async create(extensionPath: string) {
+  public static async create() {
+    const extensionUri = Extension.getInstance().extensionPath;
 
     // Create the preview webview
     Dashboard.webview = window.createWebviewPanel(
@@ -77,11 +78,11 @@ export class Dashboard {
     Dashboard.isDisposed = false;
 
     Dashboard.webview.iconPath = {
-      dark: Uri.file(join(extensionPath, 'assets/frontmatter-dark.svg')),
-      light: Uri.file(join(extensionPath, 'assets/frontmatter.svg'))
+      dark: Uri.file(join(extensionUri.fsPath, 'assets/frontmatter-dark.svg')),
+      light: Uri.file(join(extensionUri.fsPath, 'assets/frontmatter.svg'))
     };
 
-    Dashboard.webview.webview.html = Dashboard.getWebviewContent(Dashboard.webview.webview, Uri.parse(extensionPath));
+    Dashboard.webview.webview.html = Dashboard.getWebviewContent(Dashboard.webview.webview, extensionUri);
 
     Dashboard.webview.onDidChangeViewState(() => {
       if (this.webview?.visible) {
@@ -113,16 +114,12 @@ export class Dashboard {
           Dashboard.updateSetting(msg.data);
           break;
         case DashboardMessage.InitializeProject:
-          await commands.executeCommand(COMMAND_NAME.init);
-          // Delay to allow the project to be initialized
-          setTimeout(() => {
-            Dashboard.getSettings();
-          }, 1000);
+          await commands.executeCommand(COMMAND_NAME.init, Dashboard.getSettings);
           break;
         case DashboardMessage.Reload:
           Dashboard.webview?.dispose();
           setTimeout(() => {
-            Dashboard.open(Extension.getInstance().extensionPath);
+            Dashboard.open();
           }, 100);
           break;
       }

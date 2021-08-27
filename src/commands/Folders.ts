@@ -156,6 +156,7 @@ export class Folders {
           const projectName = Folders.getProjectFolderName();
           let projectStart = folder.fsPath.split(projectName).pop();
           if (projectStart) {
+            projectStart = projectStart.replace(/\\/g, '/');
             projectStart = projectStart.startsWith('/') ? projectStart.substr(1) : projectStart;
             const mdFiles = await workspace.findFiles(join(projectStart, '**/*.md'));
             const mdxFiles = await workspace.findFiles(join(projectStart, '**/*.mdx'));

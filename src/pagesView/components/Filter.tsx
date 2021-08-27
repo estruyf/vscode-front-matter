@@ -15,8 +15,6 @@ const DEFAULT_VALUE = "No filter";
 
 export const Filter: React.FunctionComponent<IFilterProps> = ({label, activeItem, items, onClick}: React.PropsWithChildren<IFilterProps>) => {
 
-  console.log(items);
-
   if (!items || items.length === 0) {
     return null;
   }

@@ -251,7 +251,6 @@ export class Settings {
               }
             } 
           } catch (e) {
-            console.log(file.path);
             // Continue with the next file
           }
         }

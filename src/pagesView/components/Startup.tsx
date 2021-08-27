@@ -17,7 +17,6 @@ export const Startup: React.FunctionComponent<IStartupProps> = ({settings}: Reac
   };
 
   React.useEffect(() => {
-    console.log(`openOnStart`, settings.openOnStart);
     setIsChecked(!!settings.openOnStart);
   }, [settings?.openOnStart]);
 

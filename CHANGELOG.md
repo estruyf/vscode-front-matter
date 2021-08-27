@@ -1,6 +1,6 @@
 # Change Log
 
-## [3.0.0]
+## [3.0.0] - 2020-08-27
 
 - [#61](https://github.com/estruyf/vscode-front-matter/issues/61): List of recently modified files
 - [#64](https://github.com/estruyf/vscode-front-matter/issues/64): Publish toggle for easier publishing an article
@@ -12,7 +12,7 @@
 
 - Fix typo in the `package.json` file for the preview command
 
-## [2.5.0] - 2020-08-19
+## [2.5.0] - 2020-08-19  
 
 - Moved the center layout button to the other actions section
 - [#60](https://github.com/estruyf/vscode-front-matter/issues/60): Added the ability to open a site preview in VS Code 
