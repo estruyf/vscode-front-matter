@@ -61,8 +61,8 @@ In version v2 we released the re-designed sidebar panel with improved SEO suppor
 <details open="open">
   <summary>Table of Contents</summary>
   <ol>
-    <li><a href="#markdown-features">Markdown features</a></li>
     <li><a href="#welcome-view">Welcome view</a></li>
+    <li><a href="#markdown-features">Markdown features</a></li>
     <li><a href="#dashboard">Dashboard</a></li>
     <li><a href="#the-panel">The panel</a></li>
     <li><a href="#site-preview">Site preview</a></li>
@@ -74,6 +74,20 @@ In version v2 we released the re-designed sidebar panel with improved SEO suppor
     <li><a href="#feedback--issues--ideas">Feedback / issues / ideas</a></li>
   </ol>
 </details>
+
+## Welcome view
+
+The first time you open the dashboard, or when you did not initialize the Front Matter extension yet, the welcome view will get shown.
+
+<p align="center">
+  <img src="./assets/v3.0.0/welcome.png" alt="Welcome to Front Matter" style="display: inline-block" />
+</p>
+
+It also supports light themes:
+
+<p align="center">
+  <img src="./assets/v3.0.0/welcome-light.png" alt="Welcome view light" style="display: inline-block" />
+</p>
 
 ## Markdown features
 
@@ -92,20 +106,6 @@ The Front Matter extension tries to make it easy to manage your Markdown pages/c
 </p>
 
 > **Info**: If you do not want this feature, you can disable it in the extension settings -> `Highlight Front Matter` or by setting the `frontMatter.content.fmHighlight` setting to `false`.
-
-## Welcome view
-
-The first time you open the dashboard, or when you did not initialize the Front Matter extension yet, the welcome view will get shown.
-
-<p align="center">
-  <img src="./assets/v3.0.0/welcome.png" alt="Welcome to Front Matter" style="display: inline-block" />
-</p>
-
-It also supports light themes:
-
-<p align="center">
-  <img src="./assets/v3.0.0/welcome-light.png" alt="Welcome view light" style="display: inline-block" />
-</p>
 
 ## Dashboard
 
