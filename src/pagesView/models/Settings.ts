@@ -1,3 +1,4 @@
+import { VersionInfo } from '../../models/VersionInfo';
 import { ContentFolder } from './../../models/ContentFolder';
 
 export interface Settings { 
@@ -6,4 +7,5 @@ export interface Settings {
   tags: string[];
   categories: string[];
   openOnStart: boolean | null;
+  versionInfo: VersionInfo;
 }

@@ -14,6 +14,7 @@ import { COMMAND_NAME } from '../constants/Extension';
 import { Template } from './Template';
 import { Notifications } from '../helpers/Notifications';
 import { Settings } from '../pagesView/models/Settings';
+import { Extension } from '../helpers/Extension';
 
 
 export class Dashboard {
@@ -92,6 +93,10 @@ export class Dashboard {
       Dashboard.isDisposed = true;
     });
 
+    workspace.onDidChangeConfiguration(() => {
+      Dashboard.getSettings();
+    });
+
     Dashboard.webview.webview.onDidReceiveMessage(async (msg) => {
       switch(msg.command) {
         case DashboardMessage.getData:
@@ -106,6 +111,19 @@ export class Dashboard {
           break;
         case DashboardMessage.updateSetting:
           Dashboard.updateSetting(msg.data);
+          break;
+        case DashboardMessage.InitializeProject:
+          await commands.executeCommand(COMMAND_NAME.init);
+          // Delay to allow the project to be initialized
+          setTimeout(() => {
+            Dashboard.getSettings();
+          }, 1000);
+          break;
+        case DashboardMessage.Reload:
+          Dashboard.webview?.dispose();
+          setTimeout(() => {
+            Dashboard.open(Extension.getInstance().extensionPath);
+          }, 100);
           break;
       }
     });
@@ -122,7 +140,8 @@ export class Dashboard {
         initialized: await Template.isInitialized(),
         tags: SettingsHelper.getTaxonomy(TaxonomyType.Tag),
         categories: SettingsHelper.getTaxonomy(TaxonomyType.Category),
-        openOnStart: SettingsHelper.getConfig().get(SETTINGS_DASHBOARD_OPENONSTART)
+        openOnStart: SettingsHelper.getConfig().get(SETTINGS_DASHBOARD_OPENONSTART),
+        versionInfo: Extension.getInstance().getVersion()
       } as Settings
     });
   }
@@ -213,6 +232,8 @@ export class Dashboard {
 
     const nonce = getNonce();
 
+    const version = Extension.getInstance().getVersion();
+
     return `
       <!DOCTYPE html>
       <html lang="en" style="width:100%;height:100%;margin:0;padding:0;">
@@ -223,7 +244,7 @@ export class Dashboard {
         <title>Front Matter Dashboard</title>
       </head>
       <body style="width:100%;height:100%;margin:0;padding:0;overflow:hidden" class="bg-gray-100 text-vulcan-500 dark:bg-vulcan-500 dark:text-whisper-500">
-        <div id="app" style="width:100%;height:100%;margin:0;padding:0;"></div>
+        <div id="app" style="width:100%;height:100%;margin:0;padding:0;" ${version.usedVersion ? "" : `data-showWelcome="true"`}></div>
 
         <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759" alt="Daily usage" />
 

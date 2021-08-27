@@ -11,6 +11,7 @@ import { SettingsIcon } from './Icons/SettingsIcon';
 import { TemplateIcon } from './Icons/TemplateIcon';
 import { WritingIcon } from './Icons/WritingIcon';
 import { OtherActionButton } from './OtherActionButton';
+import { ISSUE_LINK } from '../../constants/Links';
 
 export interface IOtherActionsProps {
   isFile: boolean;
@@ -58,7 +59,7 @@ export const OtherActions: React.FunctionComponent<IOtherActionsProps> = ({isFil
         <OtherActionButton onClick={openProject}><FolderOpenedIcon /> <span>Reveal project folder</span></OtherActionButton>
 
         <div className="ext_link_block">
-          <a href="https://github.com/estruyf/vscode-front-matter/issues" title="Open an issue on GitHub"><BugIcon /> <span>Report an issue</span></a>
+          <a href={ISSUE_LINK} title="Open an issue on GitHub"><BugIcon /> <span>Report an issue</span></a>
         </div>
       </Collapsible>
     </>

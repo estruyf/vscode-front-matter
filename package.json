@@ -267,18 +267,15 @@
 			},
 			{
 				"command": "frontMatter.createFromTemplate",
-				"title": "New article from template",
-				"category": "Front matter"
+				"title": "Front Matter: New article from template"
 			},
 			{
 				"command": "frontMatter.registerFolder",
-				"title": "Register folder",
-				"category": "Front matter"
+				"title": "Front Matter: Register folder"
 			},
 			{
 				"command": "frontMatter.unregisterFolder",
-				"title": "Unregister folder",
-				"category": "Front matter"
+				"title": "Front Matter: Unregister folder"
 			},
 			{
 				"command": "frontMatter.createContent",

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { MessageHelper } from '../../helpers/MessageHelper';
-import { ContentFolder } from '../../models';
 import { DashboardCommand } from '../DashboardCommand';
 import { DashboardMessage } from '../DashboardMessage';
 import { Page } from '../models/Page';
@@ -11,7 +10,7 @@ const vscode = MessageHelper.getVsCodeAPI();
 export default function useMessages(options?: any) {
   const [loading, setLoading] = useState<boolean>(false);
   const [pages, setPages] = useState<Page[]>([]);
-  const [settings, setSettings] = useState<Settings>({} as any);
+  const [settings, setSettings] = useState<Settings | undefined>(undefined);
 
   window.addEventListener('message', event => {
     const message = event.data;

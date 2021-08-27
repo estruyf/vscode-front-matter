@@ -6,6 +6,7 @@
 - [#64](https://github.com/estruyf/vscode-front-matter/issues/64): Publish toggle for easier publishing an article
 - [#65](https://github.com/estruyf/vscode-front-matter/issues/65): Aggregate articles in draft
 - [#66](https://github.com/estruyf/vscode-front-matter/issues/66): New dashboard webview on which you can manage all your content
+- [#69](https://github.com/estruyf/vscode-front-matter/issues/69): Welcome screen for getting started
 
 ## [2.5.1] - 2020-08-23
 

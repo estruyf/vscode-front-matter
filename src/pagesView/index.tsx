@@ -11,4 +11,5 @@ declare const acquireVsCodeApi: <T = unknown>() => {
 };
 
 const elm = document.querySelector("#app");
-render(<Dashboard />, elm);
+const welcome = elm?.getAttribute("data-showWelcome");
+render(<Dashboard showWelcome={!!welcome} />, elm);
