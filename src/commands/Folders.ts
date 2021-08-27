@@ -1,5 +1,5 @@
 import { commands, Uri, workspace, window } from "vscode";
-import { CONFIG_KEY, SETTINGS_CONTENT_FOLDERS } from "../constants";
+import { SETTINGS_CONTENT_FOLDERS } from "../constants";
 import { basename, join } from "path";
 import { ContentFolder, FileInfo, FolderInfo } from "../models";
 import uniqBy = require("lodash.uniqby");
@@ -22,9 +22,14 @@ export class Folders {
       return;
     }
 
-    const selectedFolder = await window.showQuickPick(folders.map(f => f.title), {
-      placeHolder: `Select where you want to create your content`
-    });
+    let selectedFolder: string | undefined;
+    if (folders.length > 1) {
+      selectedFolder = await window.showQuickPick(folders.map(f => f.title), {
+        placeHolder: `Select where you want to create your content`
+      });
+    } else {
+      selectedFolder = folders[0].title;
+    }
 
     if (!selectedFolder) {
       Notifications.warning(`You didn't select a place where you wanted to create your content.`);
