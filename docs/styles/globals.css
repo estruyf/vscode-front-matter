@@ -27,3 +27,43 @@ html, body {height: 100%;}
     @apply text-teal-800;
   }
 }
+
+.markdown {
+  @apply space-y-4;
+
+  h1 {
+    @apply text-5xl tracking-tight font-extrabold sm:leading-none lg:text-5xl xl:text-6xl;
+  }
+
+  h2 {
+    @apply tracking-tight font-extrabold sm:leading-none text-3xl xl:text-4xl;
+  }
+
+  h3 {
+    @apply tracking-tight font-extrabold sm:leading-none text-xl xl:text-2xl;
+  }
+
+  img {
+    @apply mx-auto my-8;
+  }
+
+  p {
+    @apply my-4;
+  }
+
+  ul {
+    @apply list-disc pl-4 my-4;
+  }
+
+  a, a:visited {
+    @apply text-teal-500;
+  }
+
+  a:hover {
+    @apply text-teal-800;
+  }
+
+  blockquote {
+    @apply py-2 px-4 my-4 border-l-4 border-teal-500;
+  }
+}

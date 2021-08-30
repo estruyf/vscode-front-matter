@@ -7,5 +7,17 @@
         "out": true // set this to false to include "out" folder in search results
     },
     // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
-    "typescript.tsc.autoDetect": "off"
+    "typescript.tsc.autoDetect": "off",
+    "frontMatter.content.folders": [
+        {
+            "title": "documentation",
+            "fsPath": "/Users/eliostruyf/nodejs/vscode/vscode-front-matter/docs/content/docs",
+            "paths": [
+                "/Users/eliostruyf/nodejs/vscode/vscode-front-matter/docs/content/docs",
+                "\\Users\\eliostruyf\\nodejs\\vscode\\vscode-front-matter\\docs\\content\\docs"
+            ]
+        }
+    ],
+    "eliostruyf.writingstyleguide.terms.isDisabled": true,
+    "eliostruyf.writingstyleguide.biasFree.isDisabled": true
 }
