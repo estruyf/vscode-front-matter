@@ -11,6 +11,7 @@ export function getPostSlugs(type: ContentType) {
 }
 
 export function getPostByFilename(type: ContentType, crntFile: string, fields: string[] = []) {
+  
   const realSlug = crntFile.replace(/\.md$/, '');
   const fullPath = join(postsDirectory, type, `${realSlug}.md`)
   const fileContents = fs.readFileSync(fullPath, 'utf8')
@@ -41,10 +42,12 @@ export function getPostByFilename(type: ContentType, crntFile: string, fields: s
 }
 
 export function getAllPosts(type: ContentType, fields: string[] = []) {
-  const fileNames = getPostSlugs(type)
+  const fileNames = getPostSlugs(type);
+  
   const posts = fileNames
     .map((fileName) => getPostByFilename(type, fileName, fields))
     // sort posts by date in descending order
-    .sort((post1, post2) => ((post1 as any)?.date > (post2 as any)?.date ? -1 : 1))
+    .sort((post1, post2) => ((post1 as any)?.date > (post2 as any)?.date ? -1 : 1));
+
   return posts
 }

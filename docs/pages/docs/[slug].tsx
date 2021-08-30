@@ -1,85 +1,79 @@
 import React from 'react';
-import ReactMarkdown from 'react-markdown';
 import { getAllPosts, getPostByFilename } from '../../lib/api';
 import { useRouter } from 'next/router';
-import rehypeRaw from 'rehype-raw';
 import { Description, OtherMeta, Title } from '../../components/Meta';
 import { Layout } from '../../components/Page/Layout';
+import { useTranslation } from 'react-i18next';
+import { Page } from '../../components/Docs/Page';
+import { Markdown } from '../../components/Docs/Markdown';
 
-export default function News({ page }: any) {
+export default function Documentation({ page, pages }: any) {
+  const { t: strings } = useTranslation();
+  const router = useRouter();
 
-  const router = useRouter()
   if (!router.isFallback && !page?.slug) {
     return <p>Error</p>
   }
 
   return (
     <>
-      <Title value={page.title} />
-      <Description value={page.description} />
-      <OtherMeta image={page.image} type={`article`} />
+      <Title value={strings(`documentation_title`)} />
+      <Description value={`documentation_description`} />
+      <OtherMeta image={`/assets/frontmatter-preview.png`} />
 
       <Layout>
-        <ReactMarkdown 
-          components={{
-            a: ({node, ...props}) => {
-              const url = props?.href || "";
-              const title = props?.children.length > 0 ? `${props?.children[0] as string}` : "";
-              const elm = <a key={url as string} href={url as string} title={title}>{title}</a>;
-              return elm;
-            }
-          }}
-          rehypePlugins={[rehypeRaw]} 
-          children={page.content} />
+        <Page items={pages}>
+          <Markdown content={page?.content} />
+        </Page>
       </Layout>
     </>
   )
 }
 
 export async function getStaticProps({ params }: any) {
-  const blogItems = getAllPosts('docs', ['fileName', 'slug']);
-  const article: any = blogItems.find((b: any) => b.slug === params.slug);
-
-  const blog: any = getPostByFilename('docs', article.fileName, [
+  const pages = getAllPosts('docs', [
     'title',
-    'date',
-    'content',
     'slug',
-    'fileName',
-    'category',
     'description',
-    'image'
+    'date',
+    'lastmod',
+    'weight',
+    'content',
+    'fileName'
+  ]);
+
+  const article: any = pages.find((b: any) => b.slug === params.slug);
+
+  const doc: any = getPostByFilename('docs', article.fileName, [
+    'title',
+    'slug',
+    'description',
+    'date',
+    'lastmod',
+    'weight',
+    'content'
   ])
 
   return {
     props: {
       page: {
-        ...blog
-      }
+        ...doc
+      },
+      pages
     }
   }
 }
 
 export async function getStaticPaths() {
-  const blogItems = getAllPosts('docs', [
-    'title',
-    'date',
-    'slug',
-    'fileName',
-    'category',
-    'description',
-    'image'
-  ])
+  const pages = getAllPosts('docs', ['slug', 'fileName']);
 
   return {
-    paths: blogItems.map((news: any) => {
-      return {
-        params: {
-          slug: news.slug,
-          fileName: news.fileName
-        }
+    paths: pages.map((page: any) => ({
+      params: {
+        slug: page.slug,
+        fileName: page.fileName
       }
-    }),
+    })),
     fallback: false
   }
 }

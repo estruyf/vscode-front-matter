@@ -1,11 +1,18 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import ReactMarkdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
+import { Markdown } from '../../components/Docs/Markdown';
+import { Page } from '../../components/Docs/Page';
 import { Description, OtherMeta, Title } from '../../components/Meta';
 import { Layout } from '../../components/Page/Layout';
 import { getAllPosts } from '../../lib/api';
+import { PageFrontMatter } from '../../models/PageFrontMatter';
 
-export default function Home({ docs }: any) {
+export default function Home({ pages }: { pages: PageFrontMatter[] }) {
   const { t: strings } = useTranslation();
+
+  const welcome = pages?.find(p => p.slug === "index");
   
   return (
     <>
@@ -14,28 +21,26 @@ export default function Home({ docs }: any) {
       <OtherMeta image={`/assets/frontmatter-preview.png`} />
 
       <Layout>
-        <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:py-24 lg:px-8">
-          <div className="text-6xl text-whisper-500">
-            Coming soon...
-          </div>
-        </div>
+        <Page items={pages}>
+          <Markdown content={welcome?.content} />
+        </Page>
       </Layout>
     </>
   )
 }
 
 export const getStaticProps = async () => {
-  const blogItems = getAllPosts('docs', [
+  const pages = getAllPosts('docs', [
     'title',
-    'date',
     'slug',
-    'fileName',
-    'category',
     'description',
-    'image'
-  ])
+    'date',
+    'lastmod',
+    'weight',
+    'content'
+  ]);
 
   return {
-    props: { blogItems: blogItems.map(item => ({...item, type: 'blog'})) },
+    props: { pages },
   }
 }

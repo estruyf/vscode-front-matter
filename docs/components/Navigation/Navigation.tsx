@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { navigation } from '../../constants/navigation';
 import { Logo } from '../Images';
-import Link from 'next/Link';
+import Link from 'next/link';
 import { Extension } from '../../constants/extension';
 import { useRouter } from 'next/router';
 

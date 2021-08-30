@@ -12,6 +12,7 @@ export const Generators: React.FunctionComponent<IGeneratorsProps> = (props: Rea
         <p className="text-center text-sm font-semibold uppercase text-vulcan-500 tracking-wide">
           {strings(`generators_title`)}
         </p>
+
         <div className="mt-6 grid grid-cols-2 gap-8 md:grid-cols-6">
           <div className="col-span-1 flex justify-center">
             <img className="h-12" src="/assets/logos/11ty.svg" alt="11ty" />
@@ -31,6 +32,10 @@ export const Generators: React.FunctionComponent<IGeneratorsProps> = (props: Rea
           <div className="col-span-1 flex justify-center">
             <img className="h-12" src="/assets/logos/nextjs.svg" alt="Next.js" />
           </div>
+        </div>
+
+        <div className="mt-6 flex justify-center">
+          <p className={`text-2xl tracking-tight font-bold sm:leading-none text-vulcan-500`}>and many more...</p>
         </div>
       </div>
     </div>
