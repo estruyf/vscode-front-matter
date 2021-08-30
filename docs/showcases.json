@@ -1,0 +1,23 @@
+[
+  {
+    "title": "Elio Struyf",
+    "link": "https://www.eliostruyf.com",
+    "description": "Personal website/blog from Elio Struyf created with Hugo and Tailwind. Managed by Front Matter.",
+    "image": "eliostruyf.png",
+    "generator": "Hugo"
+  },
+  {
+    "title": "PimpYourOwnDevice",
+    "link": "https://pimpyourowndevice.com",
+    "description": "Pimp Your Own Device is created with Hugo and Bootstrap. Managed by Front Matter.",
+    "image": "pimpyourowndevice.png",
+    "generator": "Hugo"
+  },
+  {
+    "title": "Squarl",
+    "link": "https://squarl.com",
+    "description": "Squarl is created with Next.js and Tailwind. Managed by Front Matter.",
+    "image": "squarl.png",
+    "generator": "Next.js"
+  }
+]
