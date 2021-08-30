@@ -16,7 +16,7 @@ export default function Home({ content }: any) {
       <OtherMeta image={`/assets/frontmatter-preview.png`} />
 
       <Layout>
-        <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:py-24 lg:px-8 divide-y-2 divide-vulcan-200">
+        <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:py-24 lg:px-8 divide-y-2 divide-vulcan-200">
           <div className="py-8 space-y-2 md:space-y-5 ">
             <h1 className="text-5xl tracking-tight font-extrabold sm:leading-none lg:text-5xl xl:text-6xl">{strings(`changelog_page_title`)}</h1>
             
