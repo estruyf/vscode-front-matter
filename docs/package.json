@@ -12,6 +12,7 @@
   "dependencies": {
     "@headlessui/react": "^1.4.0",
     "@heroicons/react": "^1.0.4",
+    "gray-matter": "^4.0.3",
     "i18next": "^20.4.0",
     "i18next-browser-languagedetector": "^6.1.2",
     "next": "11.1.0",
