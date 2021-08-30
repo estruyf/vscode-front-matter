@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.0.1] - 2020-08-30
+
+- [#79](https://github.com/estruyf/vscode-front-matter/issues/79): Fix scrollbar not visible on the welcome screen
+
 ## [3.0.0] - 2020-08-27
 
 - [#61](https://github.com/estruyf/vscode-front-matter/issues/61): List of recently modified files
