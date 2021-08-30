@@ -23,7 +23,7 @@ export default function Home({ showcases }: any) {
 
           <div className={`py-8 grid grid-cols-2 gap-8`}>
             {showcases.filter((showcase: any) => showcase.image).map((showcase: any) => (
-              <a className="group space-y-2 md:space-y-5 relative" href={showcase.link} title={showcase.title} rel={`noopener noreferrer`}>
+              <a key={showcase.title} className="group space-y-2 md:space-y-5 relative" href={showcase.link} title={showcase.title} rel={`noopener noreferrer`}>
                 <figure className={`relative h-[25rem] overflow-hidden grayscale group-hover:grayscale-0`}>
                   <img className={`w-full object-cover`} src={`/showcases/${showcase.image}`} alt={showcase.title} loading={`lazy`} />
                 </figure>

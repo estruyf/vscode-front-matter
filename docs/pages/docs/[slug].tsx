@@ -20,6 +20,7 @@ export default function News({ page }: any) {
       <OtherMeta image={page.image} type={`article`} />
 
       <Layout>
+        {/* eslint-disable react/no-children-prop */}
         <ReactMarkdown 
           components={{
             a: ({node, ...props}) => {

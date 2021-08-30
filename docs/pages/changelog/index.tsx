@@ -24,6 +24,7 @@ export default function Home({ content }: any) {
           </div>
 
           <div className={`changelog`}>
+            {/* eslint-disable react/no-children-prop */}
             <ReactMarkdown 
               components={{
                 a: ({node, ...props}) => {
