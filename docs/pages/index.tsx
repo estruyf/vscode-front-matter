@@ -1,9 +1,27 @@
 import type { NextPage } from 'next';
-import Head from 'next/head';
+import React from 'react';
+import { Description, OtherMeta, Title } from '../components/Meta';
+import { CTA } from '../components/Page/CTA';
+import { Features } from '../components/Page/Features';
+import { Generators } from '../components/Page/Generators';
+import { Layout } from '../components/Page/Layout';
+import { Extension } from '../constants/extension';
 
 const Home: NextPage = () => {
   return (
-    <h1 className="mt-4 text-4xl tracking-tight font-extrabold sm:mt-5 sm:leading-none lg:mt-6 lg:text-5xl xl:text-6xl"><span className="md:block">Manage your static site with</span> <span className="text-teal-500 md:block">Front Matter</span></h1>
+    <>
+      <Title value={Extension.home} />
+      <Description value={Extension.description} />
+      <OtherMeta image={`/assets/frontmatter-preview.png`} />
+      
+      <Layout>
+        <CTA />
+
+        <Generators />
+
+        <Features />
+      </Layout> 
+    </>
   )
 }
 

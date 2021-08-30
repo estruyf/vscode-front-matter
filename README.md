@@ -1,5 +1,5 @@
 <h1 align="center">
-  <a href="https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter">
+  <a href="https://frontmatter.codes">
     <img alt="Front Matter" src="./assets/frontmatter-teal-128x128.png">
   </a>
 </h1>
