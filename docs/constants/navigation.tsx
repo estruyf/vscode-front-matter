@@ -1,4 +1,4 @@
-import { HeartIcon } from "@heroicons/react/outline";
+import { HeartIcon, StarIcon } from "@heroicons/react/outline";
 import React from "react";
 import { Extension } from "./extension";
 
@@ -24,11 +24,19 @@ export const navigation = {
       )
     },
     { 
-      name: 'Sponsor us', 
+      name: 'Become a sponsor', 
       title: 'Become a sponsor, and get mentioned', 
       href: Extension.sponsorLink,
       icon: (props: any) => (
         <HeartIcon {...props} />
+      )
+    },
+    { 
+      name: 'Review', 
+      title: 'Write a review on the marketplace', 
+      href: Extension.reviewLink,
+      icon: (props: any) => (
+        <StarIcon {...props} />
       )
     }
   ]
