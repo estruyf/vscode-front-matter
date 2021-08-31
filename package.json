@@ -311,7 +311,7 @@
 			},
 			{
 				"command": "frontMatter.dashboard",
-				"title": "Open pages dashboard",
+				"title": "Open dashboard",
 				"category": "Front matter"
 			}
 		],
@@ -348,6 +348,18 @@
 				},
 				{
 					"command": "frontMatter.collapseSections",
+					"when": "false"
+				},
+				{
+					"command": "frontMatter.registerFolder",
+					"when": "false"
+				},
+				{
+					"command": "frontMatter.unregisterFolder",
+					"when": "false"
+				},
+				{
+					"command": "frontMatter.createFromTemplate",
 					"when": "false"
 				}
 			],
