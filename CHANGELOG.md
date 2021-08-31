@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.0.2] - 2021-08-31
+
+- [#82](https://github.com/estruyf/vscode-front-matter/issues/82): Hide the register and unregister commands from the command palette
+
 ## [3.0.1] - 2021-08-30
 
 - [#79](https://github.com/estruyf/vscode-front-matter/issues/79): Fix scrollbar not visible on the welcome screen
