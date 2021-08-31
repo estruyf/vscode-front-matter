@@ -9,4 +9,5 @@ export const Extension = {
   sponsorLink: "https://github.com/sponsors/estruyf",
   extensionLink: "https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter",
   reviewLink: "https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter&ssr=false#review-details",
+  installLink: "vscode:extension/eliostruyf.vscode-front-matter"
 }

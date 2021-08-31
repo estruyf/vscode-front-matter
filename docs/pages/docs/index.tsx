@@ -21,7 +21,7 @@ export default function Home({ pages }: { pages: PageFrontMatter[] }) {
       <OtherMeta image={`/assets/frontmatter-preview.png`} />
 
       <Layout>
-        <Page items={pages}>
+        <Page items={pages} page={welcome}>
           <Markdown content={welcome?.content} />
         </Page>
       </Layout>
@@ -37,7 +37,8 @@ export const getStaticProps = async () => {
     'date',
     'lastmod',
     'weight',
-    'content'
+    'content',
+    'fileName'
   ]);
 
   return {

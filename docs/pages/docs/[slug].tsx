@@ -22,7 +22,7 @@ export default function Documentation({ page, pages }: any) {
       <OtherMeta image={`/assets/frontmatter-preview.png`} />
 
       <Layout>
-        <Page items={pages}>
+        <Page items={pages} page={page}>
           <Markdown content={page?.content} />
         </Page>
       </Layout>
@@ -51,7 +51,8 @@ export async function getStaticProps({ params }: any) {
     'date',
     'lastmod',
     'weight',
-    'content'
+    'content',
+    'fileName'
   ])
 
   return {
