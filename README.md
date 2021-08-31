@@ -52,17 +52,26 @@ In version v3 we introduced the welcome and dashboard webview. The welcome view 
 
 In version v2 we released the re-designed sidebar panel with improved SEO support. This extension makes it the only extension to manage your Markdown pages for your static sites in Visual Studio Code.
 
+<p align="center" style="margin-top: 2rem;">
+  <a href="https://www.producthunt.com/posts/front-matter?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-front-matter" target="_blank">
+    <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.png?post_id=309033&theme=dark" alt="Front Matter - Managing your static sites straight from within VS Code | Product Hunt" style="width: 250px; height: 40px;" />
+  </a>
+</p>
+
 <h2 align="center">
   <a href="https://frontmatter.codes" title="Documentation @ frontmatter.codes">
     Check out the extension documentation at frontmatter.codes
   </a>
 </h2>
 
-<p align="center" style="margin-top: 2rem;">
-  <a href="https://www.producthunt.com/posts/front-matter?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-front-matter" target="_blank">
-    <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.png?post_id=309033&theme=dark" alt="Front Matter - Managing your static sites straight from within VS Code | Product Hunt" style="width: 250px; height: 40px;" />
-  </a>
-</p>
+## 👉 Contributors 🤘
+
+<a href="https://github.com/estruyf/vscode-front-matter/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=estruyf/vscode-front-matter" />
+</a>
+
+<br />
+<br />
 
 <p align="center">
   <a href="https://visitorbadge.io">
