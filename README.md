@@ -21,8 +21,8 @@
 </p>
 
 <h2 align="center">
-  <a href="https://frontmatter.codes" title="Documenation @ frontmatter.codes">
-    Check out the extension documenation at frontmatter.codes
+  <a href="https://frontmatter.codes" title="Documentation @ frontmatter.codes">
+    Check out the extension documentation at frontmatter.codes
   </a>
 </h2>
 
@@ -53,8 +53,8 @@ In version v3 we introduced the welcome and dashboard webview. The welcome view 
 In version v2 we released the re-designed sidebar panel with improved SEO support. This extension makes it the only extension to manage your Markdown pages for your static sites in Visual Studio Code.
 
 <h2 align="center">
-  <a href="https://frontmatter.codes" title="Documenation @ frontmatter.codes">
-    Check out the extension documenation at frontmatter.codes
+  <a href="https://frontmatter.codes" title="Documentation @ frontmatter.codes">
+    Check out the extension documentation at frontmatter.codes
   </a>
 </h2>
 

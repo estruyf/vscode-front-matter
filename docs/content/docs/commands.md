@@ -9,7 +9,7 @@ weight: 6
 
 # Commands
 
-Front Matter actions are also available as commands. In this section of the documenation all commands will be explained.
+Front Matter actions are also available as commands. In this section of the documentation all commands will be explained.
 
 ![Commands](/assets/commands.png)
 
