@@ -5,5 +5,6 @@ export interface PageFrontMatter {
   date: string;
   lastmod: string;
   content: string;
+  fileName: string;
   weight?: number;
 }

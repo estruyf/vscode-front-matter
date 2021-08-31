@@ -1,4 +1,6 @@
+import Link from 'next/link';
 import * as React from 'react';
+import { useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 
@@ -21,6 +23,16 @@ export const Markdown: React.FunctionComponent<IMarkdownProps> = ({content}: Rea
     return title.toLowerCase().replace(/\s/g, '-');
   };
 
+  useEffect(() => {
+    const elms = document.querySelectorAll('blockquote > p > strong');
+    for (let i = 0; i < elms.length; i++) {
+      const elm = elms[i];
+      if (elm.textContent?.toLowerCase() === "important") {
+        elm.parentElement?.parentElement?.classList.add('important');
+      }
+    }
+  }, ['']);
+
   return (
     <div className={`markdown`}>
       {/* eslint-disable react/no-children-prop */}
@@ -29,7 +41,7 @@ export const Markdown: React.FunctionComponent<IMarkdownProps> = ({content}: Rea
           a: ({node, ...props}) => {
             const url = props?.href || "";
             const title = getTitle(props);
-            const elm = <a key={url as string} href={url as string} title={title}>{title}</a>;
+            const elm = <Link key={url as string} href={url as string}><a title={title}>{title}</a></Link>;
             return elm;
           },
           h1: ({node, ...props}) => (<h1 id={generateId(props)}>{getTitle(props)}</h1>),
