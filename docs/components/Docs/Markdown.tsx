@@ -9,9 +9,6 @@ export interface IMarkdownProps {
 }
 
 export const Markdown: React.FunctionComponent<IMarkdownProps> = ({content}: React.PropsWithChildren<IMarkdownProps>) => {
-  if (!content) {
-    return null;
-  }
 
   const getTitle = (props: any) => {
     const title = props?.children.length > 0 ? `${props?.children[0] as string}` : "";
@@ -32,6 +29,10 @@ export const Markdown: React.FunctionComponent<IMarkdownProps> = ({content}: Rea
       }
     }
   }, ['']);
+  
+  if (!content) {
+    return null;
+  }
 
   return (
     <div className={`markdown`}>

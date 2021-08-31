@@ -26,7 +26,7 @@ export const PageInfo: React.FunctionComponent<IPageInfoProps> = ({page}: React.
       }
 
       <div className="mt-2 text-sm">
-        <p>Did you spot an issue in our documentation, or want to contribute? Edit this page on <a className={`text-teal-500 hover:text-teal-900`} href={`${Extension.githubLink}/edit/main/docs/content/docs/${page.fileName}.md`} target="_blank">Github</a>!</p>
+        <p>Did you spot an issue in our documentation, or want to contribute? Edit this page on <a className={`text-teal-500 hover:text-teal-900`} href={`${Extension.githubLink}/edit/main/docs/content/docs/${page.fileName}.md`} target="_blank" rel={`noopener noreferrer`}>Github</a>!</p>
       </div>
     </div>
   );
