@@ -40,7 +40,7 @@ export const strings = {
 
   // Showcase
   showcase_title: "Showcase",
-  showcase_description: "Check out our showcase of static-sites using Front Matter.",
+  showcase_description: "Check out our showcase of sites using Front Matter.",
 
   // Changelog
   changelog_title: "Changelog",
