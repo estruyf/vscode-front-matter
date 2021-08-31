@@ -11,3 +11,8 @@ vsc-extension-quickstart.md
 webpack.config.js
 node_modules
 docs
+tailwind.config.js
+sample
+postcss.config.js
+.templates
+.github
