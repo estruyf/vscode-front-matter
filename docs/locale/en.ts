@@ -34,6 +34,9 @@ export const strings = {
   feature_title_6: "Extensibility",
   feature_description_6: "Add your actions with our custom scripting capability. For instance, you can use a script and hook it up to the extension if you want to generate preview images. If we do not support it, you can build it and share it with us.",
 
+  // Sponsors
+  sponsors_title: "Special thanks to our sponsor",
+
   // Documentation
   documentation_title: "Documentation",
   documentation_description: `Get to know more about how you can use ${Extension.name} with our documentation.`,
