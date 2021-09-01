@@ -3,7 +3,7 @@ import { Extension } from "../constants/extension";
 
 export const strings = {
   // CTA
-  cta_title: "Manage your static site with",
+  cta_title: "The headless CMS running in VS Code",
   cta_description: "Create, edit, and preview your pages within Visual Studio Code. Front Matter allows you to keep control of your static site without any external tools.",
   cta_button_primary: "Get the extension",
   cta_button_secondary: "Read our docs",
