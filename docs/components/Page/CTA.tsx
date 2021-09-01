@@ -12,8 +12,8 @@ export const CTA: React.FunctionComponent<ICTAProps> = (props: React.PropsWithCh
       <div className="mx-auto sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl lg:grid lg:grid-cols-2 lg:gap-24">
         <div className={`my-4 sm:my-5 lg:my-6`}>
           <h1 className="text-5xl tracking-tight font-extrabold sm:leading-none lg:text-5xl xl:text-6xl">
-            <span className="md:block">{strings(`cta_title`)}</span>{' '}
-            <span className="text-teal-500 md:block">{Extension.name}</span>
+            <span className="text-teal-500 md:block">{Extension.name}</span>{' '}
+            <span className="md:block">{strings(`cta_title`)}</span>
           </h1>
 
           <p className="mt-3 text-base text-whisper-700 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
