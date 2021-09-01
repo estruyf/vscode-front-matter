@@ -77,7 +77,7 @@ In version v2 we released the re-designed sidebar panel with improved SEO suppor
 
 <p align="center">
   <a href="https://vercel.com/?utm_source=vscode-frontmatter&utm_campaign=oss">
-      <img src="assets/sponsors/powered-by-vercel.png" height="25px" />
+      <img src="assets/sponsors/powered-by-vercel.png" />
    </a>
 </p>
 
