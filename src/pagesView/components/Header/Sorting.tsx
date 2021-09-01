@@ -1,11 +1,7 @@
-import { Menu, Transition } from '@headlessui/react';
+import { Menu } from '@headlessui/react';
 import * as React from 'react';
-import { SortOption } from '../constants/SortOption';
-import { ChevronDownIcon } from '@heroicons/react/solid';
-import { Fragment } from 'react';
-import { MenuItem } from './MenuItem';
-import { MenuItems } from './MenuItems';
-import { MenuButton } from './MenuButton';
+import { SortOption } from '../../constants/SortOption';
+import { MenuButton, MenuItem, MenuItems } from '../Menu';
 
 export interface ISortingProps {
   currentSorting: SortOption;

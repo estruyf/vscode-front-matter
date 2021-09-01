@@ -177,7 +177,7 @@ export class Dashboard {
                 const page: Page = {
                   ...article.data,
                   // FrontMatter properties
-                  fmGroup: folder.title,
+                  fmFolder: folder.title,
                   fmModified: file.mtime,
                   fmFilePath: file.filePath,
                   fmFileName: file.fileName,

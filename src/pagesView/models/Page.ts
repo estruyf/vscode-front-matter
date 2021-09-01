@@ -1,7 +1,7 @@
 import { Uri } from "vscode";
 
 export interface Page {
-  fmGroup: string;
+  fmFolder: string;
   fmFilePath: string;
   fmFileName: string;
   fmModified: number;

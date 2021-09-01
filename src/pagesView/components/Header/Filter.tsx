@@ -1,8 +1,6 @@
 import { Menu } from '@headlessui/react';
 import * as React from 'react';
-import { MenuButton } from './MenuButton';
-import { MenuItem } from './MenuItem';
-import { MenuItems } from './MenuItems';
+import { MenuButton, MenuItem, MenuItems } from '../Menu';
 
 export interface IFilterProps {
   label: string;

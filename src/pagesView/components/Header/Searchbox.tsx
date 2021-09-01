@@ -1,6 +1,6 @@
 import { FilterIcon, SearchIcon } from '@heroicons/react/solid';
 import * as React from 'react';
-import { useDebounce } from '../../hooks/useDebounce';
+import { useDebounce } from '../../../hooks/useDebounce';
 
 export interface ISearchboxProps {
   onSearch: (searchText: string) => void;

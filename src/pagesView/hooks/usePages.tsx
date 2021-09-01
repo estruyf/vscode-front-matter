@@ -13,7 +13,7 @@ const fuseOptions: Fuse.IFuseOptions<Page> = {
   ]
 };
 
-export default function usePages(pages: Page[], tab: Tab, sorting: SortOption, group: string | null, search: string | null, tag: string | null, category: string | null) {
+export default function usePages(pages: Page[], tab: Tab, sorting: SortOption, folder: string | null, search: string | null, tag: string | null, category: string | null) {
   const [ pageItems, setPageItems ] = useState<Page[]>([]);
 
   useEffect(() => {
@@ -45,8 +45,8 @@ export default function usePages(pages: Page[], tab: Tab, sorting: SortOption, g
       pagesSorted = pagesToShow.sort((a, b) => b.fmModified - a.fmModified);
     }
 
-    if (group) {
-      pagesSorted = pagesSorted.filter(page => page.fmGroup === group);
+    if (folder) {
+      pagesSorted = pagesSorted.filter(page => page.fmFolder === folder);
     }
 
     // Filter by tag
@@ -60,7 +60,7 @@ export default function usePages(pages: Page[], tab: Tab, sorting: SortOption, g
     }
 
     setPageItems(pagesSorted);
-  }, [ pages, tab, sorting, group, search, tag, category ]);
+  }, [ pages, tab, sorting, folder, search, tag, category ]);
 
   return {
     pageItems

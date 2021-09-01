@@ -1,16 +1,17 @@
 import * as React from 'react';
-import { Tab } from '../constants/Tab';
-import { SortOption } from '../constants/SortOption';
-import { Navigation } from './Navigation';
 import { Sorting } from './Sorting';
-import { Grouping } from './Grouping';
-import { MessageHelper } from '../../helpers/MessageHelper';
-import { DashboardMessage } from '../DashboardMessage';
 import { Searchbox } from './Searchbox';
-import { Settings } from '../models/Settings';
-import { Startup } from './Startup';
-import { Button } from './Button';
 import { Filter } from './Filter';
+import { Folders } from './Folders';
+import { Settings } from '../../models';
+import { Tab } from '../../constants/Tab';
+import { SortOption } from '../../constants/SortOption';
+import { MessageHelper } from '../../../helpers/MessageHelper';
+import { DashboardMessage } from '../../DashboardMessage';
+import { Startup } from '../Startup';
+import { Button } from '../Button';
+import { Navigation } from '../Navigation';
+import { Grouping } from '.';
 
 export interface IHeaderProps {
   settings: Settings;
@@ -25,9 +26,9 @@ export interface IHeaderProps {
   switchSorting: (sortId: SortOption) => void;
 
   // Grouping
-  groups: string[];
-  crntGroup: string | null;
-  switchGroup: (group: string | null) => void;
+  folders: string[];
+  crntFolder: string | null;
+  switchFolder: (folderName: string | null) => void;
 
   // Searching
   onSearch: (value: string | null) => void;
@@ -39,9 +40,13 @@ export interface IHeaderProps {
   // Categories
   crntCategory: string | null;
   switchCategory: (category: string | null) => void;
+
+  // Grouping
+  crntGroup: string | null;
+  switchGroup: (groupId: string | null) => void;
 }
 
-export const Header: React.FunctionComponent<IHeaderProps> = ({currentTab, currentSorting, switchSorting, switchTab, totalPages, crntGroup, groups, switchGroup, onSearch, settings, switchTag, crntTag, switchCategory, crntCategory}: React.PropsWithChildren<IHeaderProps>) => {
+export const Header: React.FunctionComponent<IHeaderProps> = ({currentTab, currentSorting, switchSorting, switchTab, totalPages, crntFolder, folders, switchFolder, onSearch, settings, switchTag, crntTag, switchCategory, crntCategory, crntGroup, switchGroup}: React.PropsWithChildren<IHeaderProps>) => {
 
   const createContent = () => {
     MessageHelper.sendMessage(DashboardMessage.createContent);
@@ -62,11 +67,13 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({currentTab, curre
       <div className="px-4 flex items-center border-b border-gray-200 dark:border-whisper-600">
         <Navigation currentTab={currentTab} totalPages={totalPages} switchTab={switchTab} />
 
-        <Grouping crntGroup={crntGroup} groups={groups} switchGroup={switchGroup} />
+        <Folders crntFolder={crntFolder} folders={folders} switchFolder={switchFolder} />
 
         <Filter label={`Tag filter`} activeItem={crntTag} items={settings.tags} onClick={switchTag} />
 
         <Filter label={`Category filter`} activeItem={crntCategory} items={settings.categories} onClick={switchCategory} />
+
+        <Grouping crntGroup={crntGroup} switchGroup={switchGroup} />
 
         <Sorting currentSorting={currentSorting} switchSorting={switchSorting} />
       </div>

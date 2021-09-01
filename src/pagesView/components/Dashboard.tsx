@@ -18,14 +18,15 @@ export const Dashboard: React.FunctionComponent<IDashboardProps> = ({showWelcome
   const { loading, pages, settings } = useMessages();
   const [ tab, setTab ] = React.useState(Tab.All);
   const [ sorting, setSorting ] = React.useState(SortOption.LastModified);
-  const [ group, setGroup ] = React.useState<string | null>(null);
+  const [ folder, setFolder ] = React.useState<string | null>(null);
   const [ search, setSearch ] = React.useState<string | null>(null);
   const [ tag, setTag ] = React.useState<string | null>(null);
   const [ category, setCategory ] = React.useState<string | null>(null);
-  const { pageItems } = usePages(pages, tab, sorting, group, search, tag, category);
+  const [ group, setGroup ] = React.useState<string | null>(null);
+  const { pageItems } = usePages(pages, tab, sorting, folder, search, tag, category);
   useDarkMode();
 
-  const pageGroups = [...new Set(pages.map(page => page.fmGroup))];
+  const pageFolders = [...new Set(pages.map(page => page.fmFolder))];
 
   if (!settings) {
     return <Spinner />;
@@ -44,16 +45,18 @@ export const Dashboard: React.FunctionComponent<IDashboardProps> = ({showWelcome
       <div className="flex flex-col h-full overflow-auto">
         <Header currentTab={tab}
                 currentSorting={sorting}
-                groups={pageGroups}
-                crntGroup={group}
+                folders={pageFolders}
+                crntFolder={folder}
                 totalPages={pageItems.length}
                 crntTag={tag}
                 crntCategory={category}
+                crntGroup={group}
                 switchTab={(tabId: Tab) => setTab(tabId)}
                 switchSorting={(sortId: SortOption) => setSorting(sortId)}
-                switchGroup={(groupId: string | null) => setGroup(groupId)}
+                switchFolder={(folderName: string | null) => setFolder(folderName)}
                 switchTag={(tagId: string | null) => setTag(tagId)}
                 switchCategory={(categoryId: string | null) => setCategory(categoryId)}
+                switchGroup={(groupName: string | null) => setGroup(groupName)}
                 onSearch={(value: string | null) => setSearch(value)}
                 settings={settings}
                  />
