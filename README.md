@@ -73,6 +73,17 @@ In version v2 we released the re-designed sidebar panel with improved SEO suppor
 <br />
 <br />
 
+## 🖤 Sponsors
+
+<p align="center">
+  <a href="https://vercel.com/?utm_source=vscode-frontmatter&utm_campaign=oss">
+      <img src="assets/sponsors/powered-by-vercel.png" height="25px" />
+   </a>
+</p>
+
+<br />
+<br />
+
 <p align="center">
   <a href="https://visitorbadge.io">
       <img src="https://estruyf-github.azurewebsites.net/api/VisitorHit?user=estruyf&repo=vscode-front-matter&countColor=%23F05450&labelColor=%230E131F" height="25px" />
