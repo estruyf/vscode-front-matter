@@ -18,8 +18,12 @@ export const Footer: React.FunctionComponent<IFooterProps> = (props: React.Props
           ))}
         </nav>
         <div className="mt-8 flex justify-center space-x-6">
-          <a href="https://visitorbadge.io/status?path=https%3A%2F%2Ffrontmatter.codes" title={`Daily Front Matter visitors`}>
-            <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Ffrontmatter.codes&countColor=%23060A15&labelColor=%23060A15" />
+          <a href="https://visitorbadge.io/status?path=https%3A%2F%2Ffrontmatter.codes" title={`Daily Front Matter visitors`} rel={`noopener noreferrer`}>
+            <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Ffrontmatter.codes&countColor=%23060A15&labelColor=%23060A15" alt={`Visitors`} />
+          </a>
+          
+          <a href={Extension.extensionLink} title={`Extension installs`} rel={`noopener noreferrer`}>
+            <img src={`https://vsmarketplacebadge.apphb.com/installs-short/eliostruyf.vscode-front-matter.svg?style=for-the-badge&color=060A15&labelColor=060A15`} alt={`Installations of the extension`} />
           </a>
 
           {navigation.social.map((item) => (
