@@ -21,7 +21,7 @@ export const Navigation: React.FunctionComponent<INavigationProps> = (props: Rea
             </a>
           </Link>
         </div>
-        <div className="ml-10 space-x-4">
+        <div className="space-x-4">
           <div className="hidden ml-10 space-x-8 lg:block">
             {navigation.main.map((link) => (
               <a key={link.name} href={link.href} title={link.title} className={`text-base font-medium text-whisper-500 hover:text-whisper-900 ${link.href === router.asPath ? `text-teal-800` : ``}`}>
