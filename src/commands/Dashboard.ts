@@ -118,10 +118,12 @@ export class Dashboard {
           await commands.executeCommand(COMMAND_NAME.init, Dashboard.getSettings);
           break;
         case DashboardMessage.Reload:
-          Dashboard.webview?.dispose();
-          setTimeout(() => {
-            Dashboard.open();
-          }, 100);
+          if (!Dashboard.isDisposed) {
+            Dashboard.webview?.dispose();
+            setTimeout(() => {
+              Dashboard.open();
+            }, 100);
+          }
           break;
       }
     });
@@ -157,8 +159,7 @@ export class Dashboard {
    */
   private static async getPages() {
     const config = SettingsHelper.getConfig();
-    const wsFolders = workspace.workspaceFolders;
-    const crntWsFolder = wsFolders && wsFolders.length > 0 ? wsFolders[0] : null;
+    const wsFolder = Folders.getWorkspaceFolder();
 
     const descriptionField = config.get(SETTING_SEO_DESCRIPTION_FIELD) as string || "description";
     const dateField = config.get(SETTING_DATE_FIELD) as string || "date";
@@ -192,8 +193,8 @@ export class Dashboard {
                   description: article?.data[descriptionField] || "",
                 };
       
-                if (article?.data.preview && crntWsFolder) {
-                  const previewPath = join(crntWsFolder.uri.fsPath, staticFolder || "", article?.data.preview);
+                if (article?.data.preview && wsFolder) {
+                  const previewPath = join(wsFolder.fsPath, staticFolder || "", article?.data.preview);
                   const previewUri = Uri.file(previewPath);
                   const preview = Dashboard.webview?.webview.asWebviewUri(previewUri);
                   page.preview = preview?.toString() || "";

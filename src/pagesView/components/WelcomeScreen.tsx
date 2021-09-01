@@ -1,8 +1,10 @@
 import { HeartIcon, StarIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { GITHUB_LINK, REVIEW_LINK, SPONSOR_LINK } from '../../constants/Links';
+import { MessageHelper } from '../../helpers/MessageHelper';
 import { FrontMatterIcon } from '../../viewpanel/components/Icons/FrontMatterIcon';
 import { GitHubIcon } from '../../viewpanel/components/Icons/GitHubIcon';
+import { DashboardMessage } from '../DashboardMessage';
 import { Settings } from '../models/Settings';
 import { StepsToGetStarted } from './Steps/StepsToGetStarted';
 
@@ -11,6 +13,12 @@ export interface IWelcomeScreenProps {
 }
 
 export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({settings}: React.PropsWithChildren<IWelcomeScreenProps>) => {
+
+  React.useEffect(() => {
+    return () => {
+      MessageHelper.sendMessage(DashboardMessage.Reload)
+    };
+  }, ['']);
   
   return (
     <div className={`h-full overflow-auto py-24`}>

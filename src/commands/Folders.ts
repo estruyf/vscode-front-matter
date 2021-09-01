@@ -1,5 +1,5 @@
+import { SETTINGS_CONTENT_PAGE_FOLDERS } from './../constants/settings';
 import { commands, Uri, workspace, window } from "vscode";
-import { SETTINGS_CONTENT_FOLDERS } from "../constants";
 import { basename, join } from "path";
 import { ContentFolder, FileInfo, FolderInfo } from "../models";
 import uniqBy = require("lodash.uniqby");
@@ -7,6 +7,8 @@ import { Template } from "./Template";
 import { Notifications } from "../helpers/Notifications";
 import { CONTEXT } from "../constants/context";
 import { SettingsHelper } from "../helpers";
+
+export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
 export class Folders {
 
@@ -38,7 +40,7 @@ export class Folders {
 
     const location = folders.find(f => f.title === selectedFolder);
     if (location) {
-      const folderPath = Folders.getFolderPath(Uri.file(location.fsPath));
+      const folderPath = Folders.getFolderPath(Uri.file(location.path));
       if (folderPath) {
         Template.create(folderPath);
       }
@@ -55,7 +57,7 @@ export class Folders {
 
       let folders = Folders.get();
 
-      const exists = folders.find(f => f.paths.includes(folder.fsPath) || f.paths.includes(wslPath));
+      const exists = folders.find(f => f.path.includes(folder.fsPath) || f.path.includes(wslPath));
 
       if (exists) {
         Notifications.warning(`Folder is already registered`);
@@ -70,11 +72,10 @@ export class Folders {
 
       folders.push({
         title: folderName,
-        fsPath: folder.fsPath,
-        paths: folder.fsPath === wslPath ? [folder.fsPath] : [folder.fsPath, wslPath]
+        path: folder.fsPath
       } as ContentFolder);
 
-      folders = uniqBy(folders, f => f.fsPath);
+      folders = uniqBy(folders, f => f.path);
       await Folders.update(folders);
 
       Notifications.info(`Folder registered`);
@@ -90,7 +91,7 @@ export class Folders {
   public static async unregister(folder: Uri) {
     if (folder && folder.path) {
       let folders = Folders.get();
-      folders = folders.filter(f => f.fsPath !== folder.fsPath);
+      folders = folders.filter(f => f.path !== folder.fsPath);
       await Folders.update(folders);
     }
     
@@ -104,7 +105,7 @@ export class Folders {
     const folders = Folders.get();
     let allFolders: string[] = [];
     for (const folder of folders) {
-      allFolders = [...allFolders, ...folder.paths]
+      allFolders = [...allFolders, folder.path]
     }
     commands.executeCommand('setContext', CONTEXT.registeredFolders, allFolders);
   }
@@ -159,7 +160,7 @@ export class Folders {
       for (const folder of folders) {
         try {
           const projectName = Folders.getProjectFolderName();
-          let projectStart = folder.fsPath.split(projectName).pop();
+          let projectStart = folder.path.split(projectName).pop();
           if (projectStart) {
             projectStart = projectStart.replace(/\\/g, '/');
             projectStart = projectStart.startsWith('/') ? projectStart.substr(1) : projectStart;
@@ -211,10 +212,14 @@ export class Folders {
    * Get the folder settings
    * @returns 
    */
-  public static get() {
+  public static get(): ContentFolder[] {
     const config = SettingsHelper.getConfig();
-    const folders: ContentFolder[] = config.get(SETTINGS_CONTENT_FOLDERS) as ContentFolder[];
-    return folders;
+    const wsPath = Folders.getWorkspaceFolder();
+    const folders: ContentFolder[] = config.get(SETTINGS_CONTENT_PAGE_FOLDERS) as ContentFolder[];
+    return folders.map(folder => ({
+      title: folder.title,
+      path: folder.path.replace(WORKSPACE_PLACEHOLDER, wsPath?.fsPath || "")
+    }));
   }
   
   /**
@@ -223,6 +228,7 @@ export class Folders {
    */
   private static async update(folders: ContentFolder[]) {
     const config = SettingsHelper.getConfig();
-    await config.update(SETTINGS_CONTENT_FOLDERS, folders);
+    const wsFolder = Folders.getWorkspaceFolder();
+    await config.update(SETTINGS_CONTENT_PAGE_FOLDERS, folders.map(folder => ({ title: folder.title, path: folder.path.replace(wsFolder?.fsPath || "", WORKSPACE_PLACEHOLDER) })));
   }
 }

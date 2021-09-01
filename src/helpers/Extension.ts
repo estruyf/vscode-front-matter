@@ -1,5 +1,9 @@
+import { basename } from "path";
 import { Memento, extensions, Uri } from "vscode";
+import { Folders, WORKSPACE_PLACEHOLDER } from "../commands/Folders";
+import { SETTINGS_CONTENT_FOLDERS, SETTINGS_CONTENT_PAGE_FOLDERS } from "../constants";
 import { EXTENSION_ID, EXTENSION_STATE_VERSION } from "../constants/Extension";
+import { SettingsHelper } from "./SettingsHelper";
 
 
 export class Extension {
@@ -49,5 +53,24 @@ export class Extension {
    */
   public get extensionPath(): Uri {
     return this.extPath;
+  }
+
+  /**
+   * Migrate old settings to new settings
+   */
+  public async migrateSettings(): Promise<void> {
+    const config = SettingsHelper.getConfig();
+    const folders = config.get<any>(SETTINGS_CONTENT_FOLDERS);
+    if (folders && folders.length > 0) {
+      const workspace = Folders.getWorkspaceFolder();
+      const projectFolder = basename(workspace?.fsPath || "");
+
+      const paths = folders.map((folder: any) => ({
+        title: folder.title,
+        path: `${WORKSPACE_PLACEHOLDER}${folder.fsPath.split(projectFolder).slice(1).join('')}`
+      }));
+
+      await config.update(`${SETTINGS_CONTENT_PAGE_FOLDERS}`, paths);
+    }
   }
 }

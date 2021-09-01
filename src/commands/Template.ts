@@ -9,6 +9,7 @@ import { Article } from '.';
 import { Notifications } from '../helpers/Notifications';
 import { CONTEXT } from '../constants/context';
 import { Project } from './Project';
+import { Folders } from './Folders';
 
 export class Template {
 
@@ -24,15 +25,14 @@ export class Template {
    * Check if the project is already initialized
    */
   public static async isInitialized() {
-    const workspaceFolders = vscode.workspace.workspaceFolders;
+    const wsFolder = Folders.getWorkspaceFolder();
     const folder = Template.getSettings();
 
-    if (!folder || !workspaceFolders || workspaceFolders.length === 0) {
+    if (!folder || !wsFolder) {
       return false;
     }
 
-    const workspaceFolder = workspaceFolders[0];
-    const templatePath = vscode.Uri.file(path.join(workspaceFolder.uri.fsPath, folder));
+    const templatePath = vscode.Uri.file(path.join(wsFolder.fsPath, folder));
 
     try {
       await vscode.workspace.fs.stat(templatePath);
