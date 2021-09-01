@@ -9,6 +9,7 @@ import useDarkMode from '../../hooks/useDarkMode';
 import usePages from '../hooks/usePages';
 import { SponsorMsg } from './SponsorMsg';
 import { WelcomeScreen } from './WelcomeScreen';
+import { GroupOption } from '../constants/GroupOption';
 
 export interface IDashboardProps {
   showWelcome: boolean;
@@ -22,7 +23,7 @@ export const Dashboard: React.FunctionComponent<IDashboardProps> = ({showWelcome
   const [ search, setSearch ] = React.useState<string | null>(null);
   const [ tag, setTag ] = React.useState<string | null>(null);
   const [ category, setCategory ] = React.useState<string | null>(null);
-  const [ group, setGroup ] = React.useState<string | null>(null);
+  const [ group, setGroup ] = React.useState<GroupOption>(GroupOption.none);
   const { pageItems } = usePages(pages, tab, sorting, folder, search, tag, category);
   useDarkMode();
 
@@ -56,13 +57,13 @@ export const Dashboard: React.FunctionComponent<IDashboardProps> = ({showWelcome
                 switchFolder={(folderName: string | null) => setFolder(folderName)}
                 switchTag={(tagId: string | null) => setTag(tagId)}
                 switchCategory={(categoryId: string | null) => setCategory(categoryId)}
-                switchGroup={(groupName: string | null) => setGroup(groupName)}
+                switchGroup={(groupId: GroupOption) => setGroup(groupId)}
                 onSearch={(value: string | null) => setSearch(value)}
                 settings={settings}
                  />
 
-        <div className="flex-grow max-w-7xl mx-auto py-6 px-4">
-          { loading ? <Spinner /> : <Overview pages={pageItems} settings={settings} /> }
+        <div className="w-full flex-grow max-w-7xl mx-auto py-6 px-4">
+          { loading ? <Spinner /> : <Overview pages={pageItems} settings={settings} grouping={group} /> }
         </div>
 
         <SponsorMsg />

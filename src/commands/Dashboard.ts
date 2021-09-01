@@ -15,6 +15,7 @@ import { Template } from './Template';
 import { Notifications } from '../helpers/Notifications';
 import { Settings } from '../pagesView/models/Settings';
 import { Extension } from '../helpers/Extension';
+import { parseJSON } from 'date-fns';
 
 
 export class Dashboard {
@@ -181,6 +182,8 @@ export class Dashboard {
                   fmModified: file.mtime,
                   fmFilePath: file.filePath,
                   fmFileName: file.fileName,
+                  fmDraft: article?.data.draft ? "Draft" : "Published",
+                  fmYear: article?.data[dateField] ? parseJSON(article?.data[dateField]).getFullYear() : null,
                   // Make sure these are always set
                   title: article?.data.title,
                   slug: article?.data.slug,

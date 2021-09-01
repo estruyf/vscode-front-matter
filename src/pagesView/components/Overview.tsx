@@ -1,5 +1,9 @@
+import { Disclosure } from '@headlessui/react';
+import { ChevronRightIcon } from '@heroicons/react/solid';
 import * as React from 'react';
+import { groupBy } from '../../helpers/GroupBy';
 import { FrontMatterIcon } from '../../viewpanel/components/Icons/FrontMatterIcon';
+import { GroupOption } from '../constants/GroupOption';
 import { Page } from '../models/Page';
 import { Settings } from '../models/Settings';
 import { Item } from './Item';
@@ -7,11 +11,13 @@ import { List } from './List';
 
 export interface IOverviewProps {
   pages: Page[];
+  grouping: GroupOption;
   
   settings: Settings;
 }
 
-export const Overview: React.FunctionComponent<IOverviewProps> = ({pages, settings}: React.PropsWithChildren<IOverviewProps>) => {
+export const Overview: React.FunctionComponent<IOverviewProps> = ({pages, settings, grouping}: React.PropsWithChildren<IOverviewProps>) => {
+  const [ open, setOpen ] = React.useState(true);
 
   if (!pages || !pages.length) {
     return (
@@ -29,6 +35,46 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({pages, settin
           }
         </div>
       </div>
+    );
+  }
+
+  if (grouping !== GroupOption.none) {
+    const groupedPages = groupBy(pages, grouping === GroupOption.Year ? 'fmYear' : 'fmDraft');
+    let groupKeys = Object.keys(groupedPages);
+
+    if (grouping === GroupOption.Year) {
+      groupKeys = groupKeys.sort((a, b) => { return parseInt(b) - parseInt(a) });
+    }
+
+    return (
+      <>
+        {
+          groupKeys.map((groupId, idx) => (
+            <Disclosure key={groupId} as={`div`} className={`w-full`} defaultOpen>
+              {({ open }) => (
+                <>
+                  <Disclosure.Button className={`mb-4 ${idx !== 0 ? "mt-8" : ""}`}>
+                    <h2 className={`text-2xl font-bold flex items-center`}>
+                      <ChevronRightIcon
+                        className={`w-8 h-8 mr-1 ${open ? "transform rotate-90" : ""}`}
+                      />
+                      {GroupOption[grouping]}: {groupId} ({groupedPages[groupId].length})
+                    </h2>
+                  </Disclosure.Button>
+                  
+                  <Disclosure.Panel>
+                    <List>
+                      {groupedPages[groupId].map((page: Page) => (
+                        <Item key={page.slug} {...page} />
+                      ))}
+                    </List>
+                  </Disclosure.Panel>
+                </>
+              )}
+            </Disclosure>
+          ))
+        }
+      </>
     );
   }
 

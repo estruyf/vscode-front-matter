@@ -12,6 +12,7 @@ import { Startup } from '../Startup';
 import { Button } from '../Button';
 import { Navigation } from '../Navigation';
 import { Grouping } from '.';
+import { GroupOption } from '../../constants/GroupOption';
 
 export interface IHeaderProps {
   settings: Settings;
@@ -42,8 +43,8 @@ export interface IHeaderProps {
   switchCategory: (category: string | null) => void;
 
   // Grouping
-  crntGroup: string | null;
-  switchGroup: (groupId: string | null) => void;
+  crntGroup: GroupOption;
+  switchGroup: (groupId: GroupOption) => void;
 }
 
 export const Header: React.FunctionComponent<IHeaderProps> = ({currentTab, currentSorting, switchSorting, switchTab, totalPages, crntFolder, folders, switchFolder, onSearch, settings, switchTag, crntTag, switchCategory, crntCategory, crntGroup, switchGroup}: React.PropsWithChildren<IHeaderProps>) => {
@@ -73,7 +74,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({currentTab, curre
 
         <Filter label={`Category filter`} activeItem={crntCategory} items={settings.categories} onClick={switchCategory} />
 
-        <Grouping crntGroup={crntGroup} switchGroup={switchGroup} />
+        <Grouping group={crntGroup} switchGroup={switchGroup} />
 
         <Sorting currentSorting={currentSorting} switchSorting={switchSorting} />
       </div>
