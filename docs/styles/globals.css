@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "@docsearch/css";
+
 html, body {height: 100%;}
 
 .changelog {
@@ -82,4 +84,56 @@ html, body {height: 100%;}
   pre {
     @apply p-4 my-4 bg-vulcan-200;
   }
+}
+
+/* DocSearch */
+html[data-theme=dark] {
+  --docsearch-text-color: #f3eff5;
+  --docsearch-logo-color: #f3eff5;
+
+  /* Search button */
+  --docsearch-searchbox-background: #2c313d;
+  --docsearch-searchbox-focus-background: #222733;
+  --docsearch-muted-color: #cbc7cd;
+
+  /* Overlap background */
+  --docsearch-container-background: rgba(54,59,71, 0.8);
+
+  /* Modal */
+  --docsearch-modal-background: #0e131f;
+  --docsearch-modal-shadow: none;
+  --docsearch-footer-background: #0e131f;
+
+  /* Colors */
+  --docsearch-primary-color: #15c2cb;
+
+  --docsearch-hit-color: #bec3c9;
+  --docsearch-hit-background: #090a11;
+
+  --docsearch-hit-shadow: none;
+  /* --docsearch-key-gradient: none; */
+  --docsearch-key-shadow: none;
+  --docsearch-footer-shadow: none;
+}
+
+.DocSearch-Screen-Icon svg {
+  @apply mx-auto;
+}
+
+.DocSearch-Button {
+  @apply border border-transparent !important;
+  border-radius: 0;
+  box-shadow: none !important;
+
+  &:hover {
+    @apply border border-whisper-50 !important;
+  }
+}
+
+.DocSearch-Button-Keys, .DocSearch-Button-Key {
+  @apply top-auto;
+}
+
+.DocSearch--active {
+  overflow: auto !important;
 }

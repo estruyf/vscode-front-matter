@@ -426,5 +426,7 @@
 		"@heroicons/react": "1.0.4",
 		"lodash.uniqby": "4.7.0"
 	},
-	"dependencies": {}
+	"dependencies": {
+		"@docsearch/js": "^3.0.0-alpha.40"
+	}
 }

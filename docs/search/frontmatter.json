@@ -1,0 +1,16 @@
+{
+  "index_name": "documentation",
+  "start_urls": [
+    "https://frontmatter.codes/docs/"
+  ],
+  "stop_urls": [],
+  "selectors": {
+    "lvl0": ".markdown h1",
+    "lvl1": ".markdown h2",
+    "lvl2": ".markdown h3",
+    "lvl3": ".markdown h4",
+    "lvl4": ".markdown h5",
+    "lvl5": ".markdown h6",
+    "text": ".markdown p, .markdown li, .markdown pre"
+  }
+}

@@ -4,6 +4,7 @@ import { Logo } from '../Images';
 import Link from 'next/link';
 import { Extension } from '../../constants/extension';
 import { useRouter } from 'next/router';
+import { Searchbox } from '../Page/Searchbox';
 
 export interface INavigationProps {}
 
@@ -22,7 +23,7 @@ export const Navigation: React.FunctionComponent<INavigationProps> = (props: Rea
           </Link>
         </div>
         <div className="space-x-4">
-          <div className="hidden ml-10 space-x-8 lg:block">
+          <div className="hidden ml-10 space-x-8 lg:flex justify-center items-center">
             {navigation.main.map((link) => (
               <a key={link.name} href={link.href} title={link.title} className={`text-base font-medium text-whisper-500 hover:text-whisper-900 ${link.href === router.asPath ? `text-teal-800` : ``}`}>
                 {link.name}
@@ -34,6 +35,8 @@ export const Navigation: React.FunctionComponent<INavigationProps> = (props: Rea
                 <link.icon className="inline-block h-6 w-6" aria-hidden="true" />
               </a>
             ))}
+
+            <Searchbox />
           </div>
         </div>
       </div>
