@@ -32,7 +32,6 @@ export const Searchbox: React.FunctionComponent<ISearchboxProps> = ({onSearch}: 
             className={`block w-full py-2 pl-10 pr-3 sm:text-sm bg-white dark:bg-vulcan-300 border border-gray-300 dark:border-vulcan-100 text-vulcan-500 dark:text-whisper-500 placeholder-gray-400 dark:placeholder-whisper-800 focus:outline-none`}
             placeholder="Search"
             value={value}
-            autoFocus={true}
             onChange={handleChange}
           />
         </div>
