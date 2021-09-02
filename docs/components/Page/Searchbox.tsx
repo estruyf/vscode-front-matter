@@ -10,9 +10,9 @@ export const Searchbox: React.FunctionComponent<ISearchboxProps> = (props: React
   return (
     <>
       <DocSearch 
-        apiKey={`00a3aec5d2fd408fdfce332b0b8c8dcb`} 
-        indexName={`documentation`} 
-        appId={`ITVR93WPJF`} 
+        apiKey={process.env.NEXT_PUBLIC_AGOLIA_APIKEY || ""} 
+        indexName={process.env.NEXT_PUBLIC_AGOLIA_INDEX || ""} 
+        appId={process.env.NEXT_PUBLIC_AGOLIA_APPID || ""} 
         disableUserPersonalization={true} 
         />
     </>
