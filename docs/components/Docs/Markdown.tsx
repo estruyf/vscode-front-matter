@@ -41,9 +41,12 @@ export const Markdown: React.FunctionComponent<IMarkdownProps> = ({content}: Rea
         components={{
           a: ({node, ...props}) => {
             const url = props?.href || "";
+            const vscodeUrl = props && (props as any)["data-vscode"] ? (props as any)["data-vscode"] : "";
             const title = getTitle(props);
-            const elm = <Link key={url as string} href={url as string}><a title={title}>{title}</a></Link>;
-            return elm;
+            if (vscodeUrl) {
+              return <Link key={vscodeUrl as string} href={vscodeUrl as string}><a title={title}>{title}</a></Link>;
+            }
+            return <Link key={url as string} href={url as string}><a title={title}>{title}</a></Link>;
           },
           h1: ({node, ...props}) => (<h1 id={generateId(props)}>{getTitle(props)}</h1>),
           h2: ({node, ...props}) => (<h2 id={generateId(props)}>{getTitle(props)}</h2>),

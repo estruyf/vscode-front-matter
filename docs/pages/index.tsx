@@ -1,10 +1,7 @@
 import type { NextPage } from 'next';
 import React from 'react';
 import { Description, OtherMeta, Title } from '../components/Meta';
-import { CTA } from '../components/Page/CTA';
-import { Features } from '../components/Page/Features';
-import { Generators } from '../components/Page/Generators';
-import { Layout } from '../components/Page/Layout';
+import { CTA, Features, Generators, Hero, Layout } from '../components/Page';
 import { Extension } from '../constants/extension';
 
 const Home: NextPage = () => {
@@ -18,6 +15,8 @@ const Home: NextPage = () => {
         <CTA />
 
         <Generators />
+
+        <Hero />
 
         <Features />
       </Layout> 

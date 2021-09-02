@@ -385,7 +385,8 @@
 		"build:ext": "webpack --mode development",
 		"dev:ext": "webpack --mode development --watch",
 		"test-compile": "tsc -p ./",
-		"clean": "rm -rf dist"
+		"clean": "rm -rf dist",
+		"start:site": "cd ./docs && npm run dev"
 	},
 	"devDependencies": {
 		"@bendera/vscode-webview-elements": "0.6.2",

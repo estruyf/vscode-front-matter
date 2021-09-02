@@ -3,26 +3,40 @@ import { Extension } from "../constants/extension";
 
 export const strings = {
   // CTA
-  cta_title: "The headless CMS running in VS Code",
-  cta_description: "Create, edit, and preview your pages within Visual Studio Code. Front Matter allows you to keep control of your static site without any external tools.",
+  cta_title: "Headless CMS running in VS Code",
+  cta_title_sr: " that helps managing your static sites and Markdown based sites. Supports Hugo, Jekyll, Docusaurus, NextJs, Gatsby, and more.",
+  cta_description: "Why leave your editor if it can give you all power to manage your static sites? Front Matter is a headless CMS that lets you create, edit, and preview your Markdown based content straight within Visual Studio Code.",
   cta_button_primary: "Get the extension",
   cta_button_secondary: "Read our docs",
 
   // Generators
   generators_title: "Built for any static-site generator you might like",
+  generators_more: "and many more...",
+
+  // Hero
+  hero_title: "Brining the CMS to your editor",
+  hero_description: "Why would you leave your editor when you can perform all tasks straight from within it?",
+  hero_description_second: "We at Front Matter believe that you should keep using what you like. For us, this is Visual Studio Code. Use the same editor you use to code, but with unique features to make it suitable for writing and managing your Markdown articles.",
+  hero_button_primary: "Get started",
+
+  // Testimonials
+  testimonials_title: "What others are saying",
+  testimonials_description: "We love Front Matter and we're excited to share it with the world.",
 
   // Features
   features_title: "Features",
   features_description: "Check out our main features which help you manage your static-site",
+  features_cta_title: "Missing a feature?",
+  features_cta_button: "Tell us what you need",
 
   // Feature
-  feature_title_1: "Manage your site within VS Code",
-  feature_description_1: "A Content Management System built to run within Visual Studio Code. No dependencies on any website or API.",
+  feature_title_1: "Offline management",
+  feature_description_1: "A Content Management System built to run within Visual Studio Code. No dependencies on any website or API. Write wherever you are, commit when you are online.",
 
-  feature_title_2: "Preview",
-  feature_description_2: "Allow showing your page previews within Visual Studio Code.",
+  feature_title_2: "Full site/page preview",
+  feature_description_2: "Allow showing your site and page previews within Visual Studio Code without the need of opening a browser.",
 
-  feature_title_3: "Page dashboard",
+  feature_title_3: "Content dashboard",
   feature_description_3: "Our page dashboard allows you to search, filter, sort, and group all your static site pages.",
 
   feature_title_4: "SEO Checks",

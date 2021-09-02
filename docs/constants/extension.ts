@@ -1,8 +1,9 @@
+import { CodeAction } from "vscode"
 
 export const Extension = {
   name: `Front Matter`,
-  home: `The CMS running in VS Code`,
-  description: `Front Matter is an essential Visual Studio Code extension that simplifies working and managing your markdown articles. We created the extension to support many static-site generators like Hugo, Jekyll, Hexo, NextJs, Gatsby, and more.`,
+  home: `The CMS running in VS Code for your static sites`,
+  description: `Headless CMS running in Visual Studio Code that helps managing your static sites. Supports Hugo, Jekyll, Docusaurus, NextJs, Gatsby, and more.`,
 
   githubLink: "https://github.com/estruyf/vscode-front-matter",
   issueLink: "https://github.com/estruyf/vscode-front-matter/issues",
@@ -10,5 +11,6 @@ export const Extension = {
   extensionLink: "https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter",
   reviewLink: "https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter&ssr=false#review-details",
   installLink: "vscode:extension/eliostruyf.vscode-front-matter",
-  showcaseLink: "https://github.com/estruyf/vscode-front-matter/issues/new?assignees=&labels=&template=showcase.md&title=Showcase: "
+  showcaseLink: "https://github.com/estruyf/vscode-front-matter/issues/new?assignees=&labels=&template=showcase.md&title=Showcase%3A+",
+  featureLink: "https://github.com/estruyf/vscode-front-matter/issues/new?assignees=&labels=&template=feature_request.md&title=Enhancement%3A+"
 }

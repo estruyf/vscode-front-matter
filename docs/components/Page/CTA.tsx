@@ -8,17 +8,18 @@ export const CTA: React.FunctionComponent<ICTAProps> = (props: React.PropsWithCh
   const { t: strings } = useTranslation();
 
   return (
-    <div className="px-4 sm:px-0 pt-8 overflow-hidden sm:pt-12 lg:relative lg:py-48">
+    <div className="px-4 sm:px-0 pt-8 overflow-hidden sm:py-16 lg:relative lg:py-48">
       <div className="mx-auto sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl lg:grid lg:grid-cols-2 lg:gap-24">
         <div className={`my-4 sm:my-5 lg:my-6`}>
-          <h1 className="text-5xl tracking-tight font-extrabold sm:leading-none lg:text-5xl xl:text-6xl">
+          <h1 className="text-5xl lg:text-5xl xl:text-6xl tracking-tight font-extrabold sm:leading-none">
             <span className="text-teal-500 md:block">{Extension.name}</span>{' '}
             <span className="md:block">{strings(`cta_title`)}</span>
+            <span className={`sr-only`}>{strings(`cta_title_sr`)}</span>
           </h1>
 
-          <p className="mt-3 text-base text-whisper-700 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
+          <h2 className="mt-3 text-base text-whisper-700 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
             {strings(`cta_description`)}
-          </p>
+          </h2>
 
           <div className="mt-10 max-w-sm mx-auto sm:max-w-none">
             <div className="space-y-4 sm:space-y-0 sm:mx-auto sm:inline-grid sm:grid-cols-2 sm:gap-5">
