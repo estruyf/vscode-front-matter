@@ -14,7 +14,7 @@ export const strings = {
   generators_more: "and many more...",
 
   // Hero
-  hero_title: "Brining the CMS to your editor",
+  hero_title: "Bringing the CMS to your editor",
   hero_description: "Why would you leave your editor when you can perform all tasks straight from within it?",
   hero_description_second: "We at Front Matter believe that you should keep using what you like. For us, this is Visual Studio Code. Use the same editor you use to code, but with unique features to make it suitable for writing and managing your Markdown articles.",
   hero_button_primary: "Get started",
