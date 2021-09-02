@@ -1,5 +1,3 @@
-import { CodeAction } from "vscode"
-
 export const Extension = {
   name: `Front Matter`,
   home: `The CMS running in VS Code for your static sites`,
