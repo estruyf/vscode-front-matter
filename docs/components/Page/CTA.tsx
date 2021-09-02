@@ -8,12 +8,12 @@ export const CTA: React.FunctionComponent<ICTAProps> = (props: React.PropsWithCh
   const { t: strings } = useTranslation();
 
   return (
-    <div className="px-4 sm:px-0 pt-8 overflow-hidden sm:py-16 lg:relative lg:py-48">
+    <div className="px-4 sm:px-0 py-8 overflow-hidden lg:relative lg:py-48">
       <div className="mx-auto sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl lg:grid lg:grid-cols-2 lg:gap-24">
         <div className={`my-4 sm:my-5 lg:my-6`}>
           <h1 className="text-5xl lg:text-5xl xl:text-6xl tracking-tight font-extrabold sm:leading-none">
             <span className="text-teal-500 md:block">{Extension.name}</span>{' '}
-            <span className="md:block">{strings(`cta_title`)}</span>
+            <span className="block">{strings(`cta_title`)}</span>
             <span className={`sr-only`}>{strings(`cta_title_sr`)}</span>
           </h1>
 

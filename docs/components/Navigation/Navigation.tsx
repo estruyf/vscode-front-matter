@@ -44,6 +44,14 @@ export const Navigation: React.FunctionComponent<INavigationProps> = (props: Rea
           </a>
         ))}
       </div>
+      <div className="py-4 flex flex-wrap justify-center space-x-6 lg:hidden">
+        {navigation.social.map((link) => (
+          <a key={link.name} href={link.href} title={link.title} className={`text-base font-medium text-whisper-500 hover:text-whisper-900`} rel={`noopener noreferrer`}>
+            <span className="sr-only">{link.name}</span>
+            <link.icon className="inline-block h-6 w-6" aria-hidden="true" />
+          </a>
+        ))}
+      </div>
     </nav>
   );
 };
