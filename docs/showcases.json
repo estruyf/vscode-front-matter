@@ -19,5 +19,12 @@
     "description": "Squarl is created with Next.js and Tailwind. Managed by Front Matter.",
     "image": "squarl.png",
     "generator": "Next.js"
+  },
+  {
+    "title": "M365Princess.com",
+    "link": "https://m365princess.com",
+    "description": "Personal website/blog of Luise Freese created with a Hugo template. Managed with Front Matter.",
+    "image": "m365princess.png",
+    "generator": "Hugo"
   }
 ]

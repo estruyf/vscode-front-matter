@@ -25,6 +25,12 @@ const toBase64 = (str: string) =>
     ? Buffer.from(str).toString('base64')
     : window.btoa(str);
 
+const sortTitle = (a: { title: string }, b: { title: string }) => {
+  if (a.title < b.title) return -1;
+  if (a.title > b.title) return 1;
+  return 0;
+};
+
 export default function Home({ showcases }: any) {
   const { t: strings } = useTranslation();
   
@@ -43,7 +49,7 @@ export default function Home({ showcases }: any) {
           </div>
 
           <div className={`py-8 grid grid-cols-1 lg:grid-cols-2 gap-8`}>
-            {showcases.filter((showcase: any) => showcase.image).map((showcase: any) => (
+            {showcases.filter((showcase: any) => showcase.image).sort(sortTitle).map((showcase: any) => (
               <a key={showcase.title} className="group space-y-2 md:space-y-5 relative" href={showcase.link} title={showcase.title} rel={`noopener noreferrer`}>
                 <figure className={`relative h-64 lg:h-[25rem] overflow-hidden grayscale group-hover:grayscale-0`}>
                   <Image 
