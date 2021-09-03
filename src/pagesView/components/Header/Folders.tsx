@@ -16,7 +16,7 @@ export const Folders: React.FunctionComponent<IFoldersProps> = ({folders, crntFo
   }
   
   return (
-    <div className="flex items-center ml-6">
+    <div className="flex items-center">
       <Menu as="div" className="relative z-10 inline-block text-left">
         <MenuButton label={`Showing`} title={crntFolder || DEFAULT_TYPE} />
 

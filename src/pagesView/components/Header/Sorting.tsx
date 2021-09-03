@@ -20,7 +20,7 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({currentSorting,
   const crntSort = sortOptions.find(x => x.id === currentSorting);
 
   return (
-    <div className="flex items-center ml-6">
+    <div className="flex items-center">
       <Menu as="div" className="relative z-10 inline-block text-left">
         <MenuButton label={`Sort by`} title={crntSort?.name || ""} />
 

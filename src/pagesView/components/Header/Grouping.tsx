@@ -18,7 +18,7 @@ export const Grouping: React.FunctionComponent<IGroupingProps> = ({group, switch
   const crntGroup = groupOptions.find(x => x.id === group);
 
   return (
-    <div className="flex items-center ml-6">
+    <div className="flex items-center">
       <Menu as="div" className="relative z-10 inline-block text-left">
         <MenuButton label={`Group by`} title={crntGroup?.name || ""} />
 
