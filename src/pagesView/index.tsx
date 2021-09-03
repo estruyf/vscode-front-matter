@@ -1,5 +1,6 @@
 import * as React from "react";
 import { render } from "react-dom";
+import { RecoilRoot } from "recoil";
 import { Dashboard } from "./components/Dashboard";
 
 import './styles.css';
@@ -12,4 +13,4 @@ declare const acquireVsCodeApi: <T = unknown>() => {
 
 const elm = document.querySelector("#app");
 const welcome = elm?.getAttribute("data-showWelcome");
-render(<Dashboard showWelcome={!!welcome} />, elm);
+render(<RecoilRoot><Dashboard showWelcome={!!welcome} /></RecoilRoot>, elm);

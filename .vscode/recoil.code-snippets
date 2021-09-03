@@ -1,0 +1,66 @@
+{
+	"Recoil Atom": {
+		"prefix": "sq-atom",
+		"body": [
+      "import { atom } from 'recoil';",
+      "",
+      "export const ${1:CollectionId}Atom = atom({",
+      "  key: '${1:CollectionId}Atom',",
+      "  default: 1",
+      "});"
+    ],
+    "description": "Creates a new atom",
+    "scope": "typescript"
+  },
+	"Recoil Selector (sync)": {
+		"prefix": "sq-selector-sync",
+		"body": [
+      "import { selector } from 'recoil';",
+      "",
+      "export const ${1:CollectionData}Selector = selector({",
+      "  key: '${1:CollectionData}Selector',",
+      "  get: ({get}) => {",
+      "    return get(${2:CollectionIdState});",
+      "  }",
+      "});"
+    ],
+    "description": "Creates a new synchronous selector",
+    "scope": "typescript"
+  },
+	"Recoil Selector (async)": {
+		"prefix": "sq-selector-async",
+		"body": [
+      "import { selector } from 'recoil';",
+      "",
+      "export const ${1:CollectionData}Selector = selector({",
+      "  key: '${1:CollectionData}Selector',",
+      "  get: async ({get}) => {",
+      "    return await dataFetch(get(${2:CollectionIdState}));",
+      "  }",
+      "});"
+    ],
+    "description": "Creates a new asynchronous selector",
+    "scope": "typescript"
+  },
+	"Recoil selectorFamily": {
+		"prefix": "sq-selector-fam",
+		"body": [
+      "import { selectorFamily } from 'recoil';",
+      "",
+      "export const ${1:CollectionData}Selector = selectorFamily({",
+      "  key: '${1:CollectionData}Selector',",
+      "  get: id => async () => {",
+      "    return await dataFetch({id});",
+      "  }",
+      "});"
+    ],
+    "description": "Creates a selectorFamily (same as selector, but used to provide parameters)",
+    "scope": "typescript"
+  },
+  "useTranslation": {
+    "prefix": ["sq-translation", "useTranslation"],
+    "body": "const { t: strings } = useTranslation();",
+    "description": "Include the translations",
+    "scope": "typescriptreact"
+  }
+}

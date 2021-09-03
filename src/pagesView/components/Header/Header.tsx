@@ -13,6 +13,7 @@ import { Button } from '../Button';
 import { Navigation } from '../Navigation';
 import { Grouping } from '.';
 import { GroupOption } from '../../constants/GroupOption';
+import { ViewSwitch } from './ViewSwitch';
 
 export interface IHeaderProps {
   settings: Settings;
@@ -66,11 +67,11 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({currentTab, curre
       </div>
 
       <div className="px-4 flex flex-col lg:flex-row items-center border-b border-gray-200 dark:border-whisper-600">
-        <div className={`w-full`}>
+        <div className={`w-full lg:w-auto`}>
           <Navigation currentTab={currentTab} totalPages={totalPages} switchTab={switchTab} />
         </div>
 
-        <div className={`my-4 lg:my-0 w-full flex items-center justify-between order-first lg:order-last `}>
+        <div className={`my-4 lg:my-0 w-full flex items-center justify-end space-x-4 lg:space-x-6 xl:space-x-8 order-first lg:order-last`}>
           <Folders crntFolder={crntFolder} folders={folders} switchFolder={switchFolder} />
 
           <Filter label={`Tag filter`} activeItem={crntTag} items={settings.tags} onClick={switchTag} />
@@ -80,6 +81,8 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({currentTab, curre
           <Grouping group={crntGroup} switchGroup={switchGroup} />
 
           <Sorting currentSorting={currentSorting} switchSorting={switchSorting} />
+
+          <ViewSwitch />
         </div>
       </div>
     </div>
