@@ -95,10 +95,10 @@
 					"default": true,
 					"description": "Specify if you want to highlight the Front Matter in the Markdown file."
 				},
-				"frontMatter.content.folders": {
+				"frontMatter.content.pageFolders": {
 					"type": "array",
 					"default": [],
-					"markdownDescription": "This array of folders defines where the extension can easily create new content by running the create article command."
+					"markdownDescription": "This array of folders defines where the extension can retrieve or create new pages."
 				},
 				"frontMatter.content.publicFolder": {
 					"type": "string",

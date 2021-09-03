@@ -4,6 +4,7 @@ import { join } from "path";
 import * as fs from "fs";
 import { Notifications } from "../helpers/Notifications";
 import { Template } from "./Template";
+import { Folders } from "./Folders";
 
 export class Project {
 
@@ -52,14 +53,13 @@ categories: []
    */
   public static templatePath() {
     const folder = Template.getSettings();
-    const workspaceFolders = workspace.workspaceFolders;
+    const wsFolder = Folders.getWorkspaceFolder();
 
-    if (!folder || !workspaceFolders || workspaceFolders.length === 0) {
+    if (!folder || !wsFolder) {
       return null;
     }
 
-    const workspaceFolder = workspaceFolders[0];
-    const templatePath = Uri.file(join(workspaceFolder.uri.fsPath, folder));
+    const templatePath = Uri.file(join(wsFolder.fsPath, folder));
     return templatePath;
   }
 }

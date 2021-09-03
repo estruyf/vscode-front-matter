@@ -21,6 +21,7 @@ const mdSelector: vscode.DocumentSelector = { language: 'markdown', scheme: 'fil
 
 export async function activate({ subscriptions, extensionUri, extensionPath, globalState }: vscode.ExtensionContext) {
 	const extension = Extension.getInstance(globalState, extensionUri);
+	extension.migrateSettings()
 
 	collection = vscode.languages.createDiagnosticCollection('frontMatter');
 

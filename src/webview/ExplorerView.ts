@@ -130,9 +130,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
           this.runCustomScript(msg);
           break;
         case CommandToCode.openProject:
-          const wsFolders = workspace.workspaceFolders;
-          if (wsFolders && wsFolders.length > 0) {
-            const wsPath = wsFolders[0].uri.fsPath;
+          const wsFolder = Folders.getWorkspaceFolder();
+          if (wsFolder) {
+            const wsPath = wsFolder.fsPath;
             if (os.type() === "Darwin") {
               exec(`open ${wsPath}`);
             } else if (os.type() === "Windows_NT") {
@@ -275,9 +275,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
         const article = ArticleHelper.getFrontMatter(editor);
 
-        const wsFolders = workspace.workspaceFolders;
-        if (wsFolders && wsFolders.length > 0) {
-          const wsPath = wsFolders[0].uri.fsPath;
+        const wsFolder = Folders.getWorkspaceFolder();
+        if (wsFolder) {
+          const wsPath = wsFolder.fsPath;
 
           let articleData = `'${JSON.stringify(article?.data)}'`;
           if (os.type() === "Windows_NT") {
