@@ -1,13 +1,14 @@
 import { FilterIcon, SearchIcon } from '@heroicons/react/solid';
 import * as React from 'react';
+import { useRecoilState } from 'recoil';
 import { useDebounce } from '../../../hooks/useDebounce';
+import { SearchAtom } from '../../state';
 
-export interface ISearchboxProps {
-  onSearch: (searchText: string) => void;
-}
+export interface ISearchboxProps {}
 
-export const Searchbox: React.FunctionComponent<ISearchboxProps> = ({onSearch}: React.PropsWithChildren<ISearchboxProps>) => {
+export const Searchbox: React.FunctionComponent<ISearchboxProps> = ({}: React.PropsWithChildren<ISearchboxProps>) => {
   const [ value, setValue ] = React.useState('');
+  const [ , setDebounceValue ] = useRecoilState(SearchAtom);
   const debounceSearch = useDebounce<string>(value, 500);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -15,7 +16,7 @@ export const Searchbox: React.FunctionComponent<ISearchboxProps> = ({onSearch}: 
   };
 
   React.useEffect(() => {
-    onSearch(debounceSearch);
+    setDebounceValue(debounceSearch);
   }, [debounceSearch]);
 
   return (

@@ -1,23 +1,23 @@
 import { Disclosure } from '@headlessui/react';
 import { ChevronRightIcon } from '@heroicons/react/solid';
 import * as React from 'react';
+import { useRecoilValue } from 'recoil';
 import { groupBy } from '../../helpers/GroupBy';
 import { FrontMatterIcon } from '../../viewpanel/components/Icons/FrontMatterIcon';
 import { GroupOption } from '../constants/GroupOption';
 import { Page } from '../models/Page';
 import { Settings } from '../models/Settings';
+import { GroupingSelector } from '../state';
 import { Item } from './Item';
 import { List } from './List';
 
 export interface IOverviewProps {
-  pages: Page[];
-  grouping: GroupOption;
-  
+  pages: Page[];  
   settings: Settings;
 }
 
-export const Overview: React.FunctionComponent<IOverviewProps> = ({pages, settings, grouping}: React.PropsWithChildren<IOverviewProps>) => {
-  const [ open, setOpen ] = React.useState(true);
+export const Overview: React.FunctionComponent<IOverviewProps> = ({pages, settings}: React.PropsWithChildren<IOverviewProps>) => {
+  const grouping = useRecoilValue(GroupingSelector);
 
   if (!pages || !pages.length) {
     return (
@@ -65,7 +65,7 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({pages, settin
                   <Disclosure.Panel>
                     <List>
                       {groupedPages[groupId].map((page: Page) => (
-                        <Item key={page.slug} {...page} />
+                        <Item key={`${page.slug}-${idx}`} {...page} />
                       ))}
                     </List>
                   </Disclosure.Panel>
@@ -80,8 +80,8 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({pages, settin
 
   return (
     <List>
-      {pages.map(page => (
-        <Item key={page.slug} {...page} />
+      {pages.map((page, idx) => (
+        <Item key={`${page.slug}-${idx}`} {...page} />
       ))}
     </List>
   );

@@ -3,18 +3,25 @@ import { SortOption } from '../constants/SortOption';
 import { Tab } from '../constants/Tab';
 import { Page } from '../models/Page';
 import Fuse from 'fuse.js';
+import { useRecoilValue } from 'recoil';
+import { CategorySelector, FolderSelector, SearchSelector, SortingSelector, TabSelector, TagSelector } from '../state';
 
 const fuseOptions: Fuse.IFuseOptions<Page> = {
   keys: [
-    "title",
-    "slug",
-    "description",
-    "fmFileName"
+    { name: 'title', weight: 0.8 },
+    { name: 'slug', weight: 0.8 },
+    { name: 'description', weight: 0.5 }
   ]
 };
 
-export default function usePages(pages: Page[], tab: Tab, sorting: SortOption, folder: string | null, search: string | null, tag: string | null, category: string | null) {
+export default function usePages(pages: Page[]) {
   const [ pageItems, setPageItems ] = useState<Page[]>([]);
+  const tab = useRecoilValue(TabSelector);
+  const sorting = useRecoilValue(SortingSelector);
+  const folder = useRecoilValue(FolderSelector);
+  const search = useRecoilValue(SearchSelector);
+  const tag = useRecoilValue(TagSelector);
+  const category = useRecoilValue(CategorySelector);
 
   useEffect(() => {
     // Check if search needs to be performed
@@ -26,7 +33,7 @@ export default function usePages(pages: Page[], tab: Tab, sorting: SortOption, f
     }
 
     // Filter the pages
-    let pagesToShow = searchedPages;
+    let pagesToShow: Page[] = Object.assign([], searchedPages);
     if (tab === Tab.Published) {
       pagesToShow = searchedPages.filter(page => !page.draft);
     } else if (tab === Tab.Draft) {
@@ -36,13 +43,15 @@ export default function usePages(pages: Page[], tab: Tab, sorting: SortOption, f
     }
 
     // Sort the pages
-    let pagesSorted = pagesToShow;
-    if (sorting === SortOption.FileNameAsc) {
-      pagesSorted = pagesToShow.sort((a, b) => a.fmFileName.toLowerCase().localeCompare(b.fmFileName.toLowerCase()));
-    } else if (sorting === SortOption.FileNameDesc) {
-      pagesSorted = pagesToShow.sort((a, b) => b.fmFileName.toLowerCase().localeCompare(a.fmFileName.toLowerCase()));
-    } else {
-      pagesSorted = pagesToShow.sort((a, b) => b.fmModified - a.fmModified);
+    let pagesSorted: Page[] = Object.assign([], pagesToShow);
+    if (!search) {
+      if (sorting === SortOption.FileNameAsc) {
+        pagesSorted = pagesToShow.sort((a, b) => a.fmFileName.toLowerCase().localeCompare(b.fmFileName.toLowerCase()));
+      } else if (sorting === SortOption.FileNameDesc) {
+        pagesSorted = pagesToShow.sort((a, b) => b.fmFileName.toLowerCase().localeCompare(a.fmFileName.toLowerCase()));
+      } else {
+        pagesSorted = pagesToShow.sort((a, b) => b.fmModified - a.fmModified);
+      }
     }
 
     if (folder) {

@@ -20,7 +20,7 @@
       "export const ${1:CollectionData}Selector = selector({",
       "  key: '${1:CollectionData}Selector',",
       "  get: ({get}) => {",
-      "    return get(${2:CollectionIdState});",
+      "    return get(${1:CollectionData}Atom);",
       "  }",
       "});"
     ],

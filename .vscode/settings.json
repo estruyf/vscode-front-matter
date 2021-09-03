@@ -19,5 +19,9 @@
         }
     ],
     "eliostruyf.writingstyleguide.terms.isDisabled": true,
-    "eliostruyf.writingstyleguide.biasFree.isDisabled": true
+    "eliostruyf.writingstyleguide.biasFree.isDisabled": true,
+    "exportall.config.folderListener": [
+        "/src/pagesView/state/atom",
+        "/src/pagesView/state/selectors"
+    ]
 }

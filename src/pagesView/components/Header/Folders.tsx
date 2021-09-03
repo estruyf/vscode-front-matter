@@ -1,16 +1,18 @@
 import { Menu, Transition } from '@headlessui/react';
 import * as React from 'react';
+import { useRecoilState } from 'recoil';
+import { FolderAtom } from '../../state';
 import { MenuButton, MenuItem, MenuItems } from '../Menu';
 
 export interface IFoldersProps {
   folders: string[];
-  crntFolder: string | null;
-  switchFolder: (group: string | null) => void;
 }
 
 const DEFAULT_TYPE = "All types";
 
-export const Folders: React.FunctionComponent<IFoldersProps> = ({folders, crntFolder, switchFolder}: React.PropsWithChildren<IFoldersProps>) => {
+export const Folders: React.FunctionComponent<IFoldersProps> = ({folders}: React.PropsWithChildren<IFoldersProps>) => {
+  const [ crntFolder, setCrntFolder ] = useRecoilState(FolderAtom);
+
   if (folders.length <= 1) {
     return null;
   }
@@ -25,7 +27,7 @@ export const Folders: React.FunctionComponent<IFoldersProps> = ({folders, crntFo
             title={DEFAULT_TYPE}
             value={null}
             isCurrent={!crntFolder}
-            onClick={switchFolder} />
+            onClick={(value) => setCrntFolder(value)} />
 
           {folders.map((option) => (
             <MenuItem 
@@ -33,7 +35,7 @@ export const Folders: React.FunctionComponent<IFoldersProps> = ({folders, crntFo
               title={option}
               value={option}
               isCurrent={option === crntFolder}
-              onClick={switchFolder} />
+              onClick={(value) => setCrntFolder(value)} />
           ))}
         </MenuItems>
       </Menu>

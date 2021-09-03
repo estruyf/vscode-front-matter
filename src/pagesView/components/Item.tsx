@@ -12,13 +12,6 @@ export interface IItemProps extends Page {}
 
 export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, title, draft, description, preview }: React.PropsWithChildren<IItemProps>) => {
   const view = useRecoilValue(ViewSelector);
-
-  let className = '';
-  if (view === ViewType.Grid) {
-    className = `grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8`;
-  } else if (view === ViewType.List) {
-    className = `divide-y divide-vulcan-200`;
-  }
   
   const openFile = () => {
     MessageHelper.sendMessage(DashboardMessage.openFile, fmFilePath);
