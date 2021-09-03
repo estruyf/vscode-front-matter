@@ -32,7 +32,7 @@ export const Hero: React.FunctionComponent<IHeroProps> = (props: React.PropsWith
         <div className="lg:pr-6 lg:-ml-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
           <img className="w-full rounded-xl lg:absolute lg:right-0 lg:h-full lg:w-auto lg:max-w-none" 
                src="/assets/dashboard.png" 
-               alt="Editor dashboard of your static site content" />
+               alt="Front Matter CMS editor dashboard of your static site content" />
         </div>
       </div>
     </div>
