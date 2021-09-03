@@ -3,6 +3,7 @@
 ## [3.1.0] - (Upcoming release)
 
 - [#77](https://github.com/estruyf/vscode-front-matter/issues/77): Dashboard grouping pages functionality integrated
+- [#81](https://github.com/estruyf/vscode-front-matter/issues/81): Optimizing the content folders to use a new setting to simplify configuration
 - [#87](https://github.com/estruyf/vscode-front-matter/issues/87): Fix issue with autofocus and command palette
 
 ## [3.0.2] - 2021-08-31
