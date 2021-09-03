@@ -5,12 +5,10 @@ import { GlobalSettings } from './components/GlobalSettings';
 import { OtherActions } from './components/OtherActions';
 import { SeoStatus } from './components/SeoStatus';
 import { Spinner } from './components/Spinner';
-import { TagPicker } from './components/TagPicker';
-import useMessages from './hooks/useMessages';
-import { TagType } from './TagType';
 import { FolderAndFiles } from './components/FolderAndFiles';
 import { Metadata } from './components/Metadata';
 import { SponsorMsg } from './components/SponsorMsg';
+import useMessages from './hooks/useMessages';
 
 export interface IViewPanelProps {
 }
