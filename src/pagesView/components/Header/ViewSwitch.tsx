@@ -26,11 +26,11 @@ export const ViewSwitch: React.FunctionComponent<IViewSwitchProps> = (props: Rea
 
   return (
     <div className={`flex rounded-sm bg-vulcan-50 lg:mb-1`}>
-      <button className={`flex items-center p-2 rounded-l-sm ${view === ViewType.Grid ? 'bg-teal-500 text-vulcan-500' : 'text-whisper-500'}`} onClick={toggleView}>
+      <button className={`flex items-center px-2 py-1 rounded-l-sm ${view === ViewType.Grid ? 'bg-teal-500 text-vulcan-500' : 'text-whisper-500'}`} onClick={toggleView}>
         <ViewGridIcon className={`w-4 h-4`} />
         <span className={`sr-only`}>Change to grid</span>
       </button>
-      <button className={`flex items-center p-2 rounded-r-sm ${view === ViewType.List ? 'bg-teal-500 text-vulcan-500' : 'text-whisper-500'}`} onClick={toggleView}>
+      <button className={`flex items-center px-2 py-1 rounded-r-sm ${view === ViewType.List ? 'bg-teal-500 text-vulcan-500' : 'text-whisper-500'}`} onClick={toggleView}>
         <ViewListIcon className={`w-4 h-4`} />
         <span className={`sr-only`}>Change to list</span>
       </button>

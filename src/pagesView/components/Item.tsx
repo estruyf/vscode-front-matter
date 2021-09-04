@@ -51,7 +51,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
   } else if (view === ViewType.List) {
     return (
       <li className="relative">
-        <button className={`px-5 cursor-pointer w-full text-left grid grid-cols-12 gap-x-4 sm:gap-x-6 xl:gap-x-8 py-2 border-b border-vulcan-50 hover:bg-vulcan-50 hover:bg-opacity-70`} onClick={openFile}>
+        <button className={`px-5 cursor-pointer w-full text-left grid grid-cols-12 gap-x-4 sm:gap-x-6 xl:gap-x-8 py-2 border-b border-gray-300 hover:bg-gray-200 dark:border-vulcan-50 dark:hover:bg-vulcan-50 hover:bg-opacity-70`} onClick={openFile}>
           <div className="col-span-8 font-bold truncate">
             {title}
           </div>

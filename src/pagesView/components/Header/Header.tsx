@@ -44,24 +44,26 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
         </div>
       </div>
 
-      <div className="px-4 flex flex-col lg:flex-row items-center border-b border-gray-200 dark:border-whisper-600">
-        <div className={`w-full lg:w-auto`}>
+      <div className="px-4 flex flex-row items-center border-b border-gray-200 dark:border-whisper-600 justify-between">
+        <div>
           <Navigation totalPages={totalPages} />
         </div>
 
-        <div className={`my-4 lg:my-0 w-full flex items-center justify-between lg:justify-end space-x-4 lg:space-x-6 xl:space-x-8 order-first lg:order-last`}>
-          <Folders folders={folders} />
-
-          <Filter label={`Tag filter`} activeItem={crntTag} items={settings.tags} onClick={(value) => setCrntTag(value)} />
-
-          <Filter label={`Category filter`} activeItem={crntCategory} items={settings.categories} onClick={(value) => setCrntCategory(value)} />
-
-          <Grouping />
-
-          <Sorting />
-
+        <div>
           <ViewSwitch />
         </div>
+      </div>
+
+      <div className={`py-4 px-5 w-full flex items-center justify-between lg:justify-end space-x-4 lg:space-x-6 xl:space-x-8 bg-gray-200 border-b border-gray-300 dark:bg-vulcan-400  dark:border-vulcan-300`}>
+        <Folders folders={folders} />
+
+        <Filter label={`Tag filter`} activeItem={crntTag} items={settings.tags} onClick={(value) => setCrntTag(value)} />
+
+        <Filter label={`Category filter`} activeItem={crntCategory} items={settings.categories} onClick={(value) => setCrntCategory(value)} />
+
+        <Grouping />
+
+        <Sorting />
       </div>
     </div>
   );

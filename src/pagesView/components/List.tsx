@@ -11,7 +11,7 @@ export const List: React.FunctionComponent<IListProps> = ({children}: React.Prop
   if (view === ViewType.Grid) {
     className = `grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8`;
   } else if (view === ViewType.List) {
-    className = `-mx-5`;
+    className = `-mx-4`;
   }
 
   return (
