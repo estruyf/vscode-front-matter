@@ -1,5 +1,5 @@
 import { selector } from 'recoil';
-import { SettingsAtom } from '../atom/SettingsAtom';
+import { SettingsAtom } from '..';
 
 export const SettingsSelector = selector({
   key: 'SettingsSelector',

@@ -2,6 +2,7 @@ export * from './CategoryAtom';
 export * from './FolderAtom';
 export * from './GroupingAtom';
 export * from './SearchAtom';
+export * from './SettingsAtom';
 export * from './SortingAtom';
 export * from './TabAtom';
 export * from './TagAtom';

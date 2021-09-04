@@ -4,7 +4,7 @@ import { MessageHelper } from '../../helpers/MessageHelper';
 import { DashboardCommand } from '../DashboardCommand';
 import { DashboardMessage } from '../DashboardMessage';
 import { Page } from '../models/Page';
-import { SettingsAtom } from '../state/atom/SettingsAtom';
+import { SettingsAtom } from '../state';
 
 const vscode = MessageHelper.getVsCodeAPI();
 
