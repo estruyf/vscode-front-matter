@@ -1,1 +1,0 @@
-export const STORAGE_VIEW_TYPE = 'FrontMatter:ListViewType';

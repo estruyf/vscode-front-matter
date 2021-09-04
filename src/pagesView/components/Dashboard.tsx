@@ -43,7 +43,7 @@ export const Dashboard: React.FunctionComponent<IDashboardProps> = ({showWelcome
           { loading ? <Spinner /> : <Overview pages={pageItems} settings={settings} /> }
         </div>
 
-        <SponsorMsg />
+        <SponsorMsg version={settings.versionInfo} />
       </div>
     </main>
   );

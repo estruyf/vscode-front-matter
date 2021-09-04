@@ -4,6 +4,7 @@ export enum DashboardMessage {
   getTheme = 'getTheme',
   createContent = 'createContent',
   updateSetting = 'updateSetting',
-  InitializeProject = 'InitializeProject',
-  Reload = 'Reload',
+  initializeProject = 'initializeProject',
+  reload = 'reload',
+  setPageViewType = 'setPageViewType',
 }

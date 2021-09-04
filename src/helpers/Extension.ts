@@ -73,4 +73,12 @@ export class Extension {
       await config.update(`${SETTINGS_CONTENT_PAGE_FOLDERS}`, paths);
     }
   }
+
+  public async setState(propKey: string, propValue: string): Promise<void> {
+    await this.globalState.update(propKey, propValue);
+  }
+
+  public async getState<T>(propKey: string): Promise<T | undefined> {
+    return await this.globalState.get(propKey);
+  }
 }

@@ -10,12 +10,13 @@ import { DashboardCommand } from '../pagesView/DashboardCommand';
 import { DashboardMessage } from '../pagesView/DashboardMessage';
 import { Page } from '../pagesView/models/Page';
 import { openFileInEditor } from '../helpers/openFileInEditor';
-import { COMMAND_NAME } from '../constants/Extension';
+import { COMMAND_NAME, EXTENSION_STATE_PAGES_VIEW } from '../constants/Extension';
 import { Template } from './Template';
 import { Notifications } from '../helpers/Notifications';
 import { Settings } from '../pagesView/models/Settings';
 import { Extension } from '../helpers/Extension';
 import { parseJSON } from 'date-fns';
+import { ViewType } from '../pagesView/state';
 
 
 export class Dashboard {
@@ -114,16 +115,19 @@ export class Dashboard {
         case DashboardMessage.updateSetting:
           Dashboard.updateSetting(msg.data);
           break;
-        case DashboardMessage.InitializeProject:
+        case DashboardMessage.initializeProject:
           await commands.executeCommand(COMMAND_NAME.init, Dashboard.getSettings);
           break;
-        case DashboardMessage.Reload:
+        case DashboardMessage.reload:
           if (!Dashboard.isDisposed) {
             Dashboard.webview?.dispose();
             setTimeout(() => {
               Dashboard.open();
             }, 100);
           }
+          break;
+        case DashboardMessage.setPageViewType:
+          Extension.getInstance().setState(EXTENSION_STATE_PAGES_VIEW, msg.data);
           break;
       }
     });
@@ -133,6 +137,8 @@ export class Dashboard {
    * Retrieve the settings for the dashboard
    */
   private static async getSettings() { 
+    const ext = Extension.getInstance();
+    
     Dashboard.postWebviewMessage({
       command: DashboardCommand.settings,
       data: {
@@ -141,7 +147,8 @@ export class Dashboard {
         tags: SettingsHelper.getTaxonomy(TaxonomyType.Tag),
         categories: SettingsHelper.getTaxonomy(TaxonomyType.Category),
         openOnStart: SettingsHelper.getConfig().get(SETTINGS_DASHBOARD_OPENONSTART),
-        versionInfo: Extension.getInstance().getVersion()
+        versionInfo: ext.getVersion(),
+        pageViewType: await ext.getState<ViewType | undefined>(EXTENSION_STATE_PAGES_VIEW)
       } as Settings
     });
   }
@@ -202,7 +209,7 @@ export class Dashboard {
       
                 pages.push(page);
               }
-            } catch (error) {
+            } catch (error: any) {
               Notifications.error(`File error: ${file.filePath} - ${error?.message || error}`);
             }
           }

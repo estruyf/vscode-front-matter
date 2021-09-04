@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
+import { useRecoilState } from 'recoil';
 import { MessageHelper } from '../../helpers/MessageHelper';
 import { DashboardCommand } from '../DashboardCommand';
 import { DashboardMessage } from '../DashboardMessage';
 import { Page } from '../models/Page';
-import { Settings } from '../models/Settings';
+import { SettingsAtom } from '../state/atom/SettingsAtom';
 
 const vscode = MessageHelper.getVsCodeAPI();
 
-export default function useMessages(options?: any) {
+export default function useMessages() {
   const [loading, setLoading] = useState<boolean>(false);
   const [pages, setPages] = useState<Page[]>([]);
-  const [settings, setSettings] = useState<Settings | undefined>(undefined);
+  const [settings, setSettings] = useRecoilState(SettingsAtom);
 
   window.addEventListener('message', event => {
     const message = event.data;

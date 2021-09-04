@@ -16,7 +16,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
       name: 'Initialize project', 
       description: 'Initialize the project with a template folder and sample markdown file. The template folder can be used to define your own templates. <b>Start by clicking on this action</b>.',
       status: settings.initialized ? Status.Completed : Status.NotStarted,
-      onClick: settings.initialized ? undefined : () => { MessageHelper.sendMessage(DashboardMessage.InitializeProject); }  
+      onClick: settings.initialized ? undefined : () => { MessageHelper.sendMessage(DashboardMessage.initializeProject); }  
     },
     {
       name: 'Register content folders (manual action)',
@@ -27,7 +27,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
       name: 'Show the dashboard',
       description: 'Once both actions are completed, click on this action to load the dashboard.',
       status: (settings.initialized && settings.folders && settings.folders.length > 0) ? Status.Active : Status.NotStarted,
-      onClick: (settings.initialized && settings.folders && settings.folders.length > 0) ? () => { MessageHelper.sendMessage(DashboardMessage.Reload); } : undefined
+      onClick: (settings.initialized && settings.folders && settings.folders.length > 0) ? () => { MessageHelper.sendMessage(DashboardMessage.reload); } : undefined
     }
   ];
   

@@ -16,7 +16,7 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({set
 
   React.useEffect(() => {
     return () => {
-      MessageHelper.sendMessage(DashboardMessage.Reload)
+      MessageHelper.sendMessage(DashboardMessage.reload)
     };
   }, ['']);
   

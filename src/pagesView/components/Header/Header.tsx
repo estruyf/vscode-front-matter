@@ -49,7 +49,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
           <Navigation totalPages={totalPages} />
         </div>
 
-        <div className={`my-4 lg:my-0 w-full flex items-center justify-end space-x-4 lg:space-x-6 xl:space-x-8 order-first lg:order-last`}>
+        <div className={`my-4 lg:my-0 w-full flex items-center justify-between lg:justify-end space-x-4 lg:space-x-6 xl:space-x-8 order-first lg:order-last`}>
           <Folders folders={folders} />
 
           <Filter label={`Tag filter`} activeItem={crntTag} items={settings.tags} onClick={(value) => setCrntTag(value)} />
