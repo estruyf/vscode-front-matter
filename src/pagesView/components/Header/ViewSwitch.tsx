@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { ViewAtom, ViewType, SettingsSelector } from '../../state';
 import { ViewGridIcon, ViewListIcon } from '@heroicons/react/solid';
-import { MessageHelper } from '../../../helpers/MessageHelper';
+import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
 
 export interface IViewSwitchProps {}
@@ -14,7 +14,7 @@ export const ViewSwitch: React.FunctionComponent<IViewSwitchProps> = (props: Rea
   const toggleView = () => {
     const newView = view === ViewType.Grid ? ViewType.List : ViewType.Grid;
     setView(newView);
-    MessageHelper.sendMessage(DashboardMessage.setPageViewType, newView);
+    Messenger.send(DashboardMessage.setPageViewType, newView);
   };
 
   React.useEffect(() => {

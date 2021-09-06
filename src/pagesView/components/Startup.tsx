@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { SETTINGS_DASHBOARD_OPENONSTART } from '../../constants';
-import { MessageHelper } from '../../helpers/MessageHelper';
+import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../DashboardMessage';
 import { Settings } from '../models/Settings';
 
@@ -13,7 +13,7 @@ export const Startup: React.FunctionComponent<IStartupProps> = ({settings}: Reac
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsChecked(e.target.checked);
-    MessageHelper.sendMessage(DashboardMessage.updateSetting, { name: SETTINGS_DASHBOARD_OPENONSTART, value: e.target.checked });
+    Messenger.send(DashboardMessage.updateSetting, { name: SETTINGS_DASHBOARD_OPENONSTART, value: e.target.checked });
   };
 
   React.useEffect(() => {

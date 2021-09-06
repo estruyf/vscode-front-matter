@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
-import { MessageHelper } from '../../helpers/MessageHelper';
 import { MarkdownIcon } from '../../viewpanel/components/Icons/MarkdownIcon';
 import { DashboardMessage } from '../DashboardMessage';
 import { Page } from '../models/Page';
 import { ViewSelector, ViewType } from '../state';
 import { DateField } from './DateField';
 import { Status } from './Status';
+import { Messenger } from '@estruyf/vscode/dist/client';
 
 export interface IItemProps extends Page {}
 
@@ -14,7 +14,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
   const view = useRecoilValue(ViewSelector);
   
   const openFile = () => {
-    MessageHelper.sendMessage(DashboardMessage.openFile, fmFilePath);
+    Messenger.send(DashboardMessage.openFile, fmFilePath);
   };
 
   if (view === ViewType.Grid) {

@@ -1,4 +1,5 @@
 import { Menu } from '@headlessui/react';
+import { FilterIcon } from '@heroicons/react/solid';
 import * as React from 'react';
 import { MenuButton, MenuItem, MenuItems } from '../Menu';
 
@@ -20,7 +21,13 @@ export const Filter: React.FunctionComponent<IFilterProps> = ({label, activeItem
   return (
     <div className="flex items-center">
       <Menu as="div" className="relative z-10 inline-block text-left">
-        <MenuButton label={label} title={activeItem || DEFAULT_VALUE} />
+        <MenuButton 
+          label={(
+            <>
+              <FilterIcon className={`inline-block w-5 h-5 mr-1`} /><span>{label}</span>
+            </>
+          )} 
+          title={activeItem || DEFAULT_VALUE} />
 
         <MenuItems>
           <MenuItem 

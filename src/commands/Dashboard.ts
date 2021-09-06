@@ -5,7 +5,6 @@ import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace } f
 import { SettingsHelper } from '../helpers';
 import { TaxonomyType } from '../models';
 import { Folders } from './Folders';
-import { getNonce } from '../helpers/getNonce';
 import { DashboardCommand } from '../pagesView/DashboardCommand';
 import { DashboardMessage } from '../pagesView/DashboardMessage';
 import { Page } from '../pagesView/models/Page';
@@ -17,6 +16,7 @@ import { Settings } from '../pagesView/models/Settings';
 import { Extension } from '../helpers/Extension';
 import { parseJSON } from 'date-fns';
 import { ViewType } from '../pagesView/state';
+import { WebviewHelper } from '@estruyf/vscode';
 
 
 export class Dashboard {
@@ -238,7 +238,7 @@ export class Dashboard {
   private static getWebviewContent(webView: Webview, extensionPath: Uri): string {
     const scriptUri = webView.asWebviewUri(Uri.joinPath(extensionPath, 'dist', 'pages.js'));
 
-    const nonce = getNonce();
+    const nonce = WebviewHelper.getNonce();
 
     const version = Extension.getInstance().getVersion();
 

@@ -22,18 +22,18 @@ export const FolderAndFiles: React.FunctionComponent<IFolderAndFilesProps> = ({d
           <Collapsible id={`${isBase ? "base_" : ""}content`} title="Recently modified">
             <div className="information">
               {
-                data.map((folder: FolderInfo) => (
-                  <>
+                data.map((folder: FolderInfo, idx) => (
+                  <div key={`container-${folder.title}-${idx}`}>
                     {folder.lastModified ? (
-                      <div key={folder.title}>
+                      <div key={`${folder.title}-${idx}`}>
                         <FileList folderName={folder.title} totalFiles={folder.files} files={folder.lastModified} />
                       </div>
                     ) : (
                       isBase ? (
-                        <VsLabel>{folder.title}: {folder.files} file{folder.files > 1 ? 's' : ''}</VsLabel>
+                        <VsLabel key={`${folder.title}-${idx}`}>{folder.title}: {folder.files} file{folder.files > 1 ? 's' : ''}</VsLabel>
                       ) : null
                     )}
-                  </>
+                  </div>
                 ))
               }
             </div>

@@ -18,8 +18,8 @@ import { Notifications } from '../helpers/Notifications';
 import { COMMAND_NAME } from '../constants/Extension';
 import { Folders } from '../commands/Folders';
 import { Preview } from '../commands/Preview';
-import { getNonce } from '../helpers/getNonce';
 import { openFileInEditor } from '../helpers/openFileInEditor';
+import { WebviewHelper } from '@estruyf/vscode';
 
 const FILE_LIMIT = 10;
 
@@ -532,7 +532,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     const stylesUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'assets/media', 'styles.css'));
     const scriptUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'dist', 'viewpanel.js'));
 
-    const nonce = getNonce();
+    const nonce = WebviewHelper.getNonce();
 
     return `
       <!DOCTYPE html>

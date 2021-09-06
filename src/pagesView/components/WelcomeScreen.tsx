@@ -1,7 +1,7 @@
 import { HeartIcon, StarIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { GITHUB_LINK, REVIEW_LINK, SPONSOR_LINK } from '../../constants/Links';
-import { MessageHelper } from '../../helpers/MessageHelper';
+import { Messenger } from '@estruyf/vscode/dist/client';
 import { FrontMatterIcon } from '../../viewpanel/components/Icons/FrontMatterIcon';
 import { GitHubIcon } from '../../viewpanel/components/Icons/GitHubIcon';
 import { DashboardMessage } from '../DashboardMessage';
@@ -16,7 +16,7 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({set
 
   React.useEffect(() => {
     return () => {
-      MessageHelper.sendMessage(DashboardMessage.reload)
+      Messenger.send(DashboardMessage.reload)
     };
   }, ['']);
   

@@ -1,21 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
-import { MessageHelper } from '../../helpers/MessageHelper';
 import { DashboardCommand } from '../DashboardCommand';
 import { DashboardMessage } from '../DashboardMessage';
 import { Page } from '../models/Page';
 import { SettingsAtom } from '../state';
-
-const vscode = MessageHelper.getVsCodeAPI();
+import { Messenger } from '@estruyf/vscode/dist/client';
+import { EventData } from '@estruyf/vscode/dist/models';
 
 export default function useMessages() {
   const [loading, setLoading] = useState<boolean>(false);
   const [pages, setPages] = useState<Page[]>([]);
   const [settings, setSettings] = useRecoilState(SettingsAtom);
 
-  window.addEventListener('message', event => {
-    const message = event.data;
-
+  Messenger.listen((message: EventData<any>) => {
     switch (message.command) {
       case DashboardCommand.loading:
         setLoading(message.data);
@@ -32,8 +29,8 @@ export default function useMessages() {
 
   useEffect(() => {    
     setLoading(true);
-    vscode.postMessage({ command: DashboardMessage.getTheme });
-    vscode.postMessage({ command: DashboardMessage.getData });
+    Messenger.send(DashboardMessage.getTheme);
+    Messenger.send(DashboardMessage.getData);
   }, ['']);
 
   return {
