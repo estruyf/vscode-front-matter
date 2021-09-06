@@ -2,8 +2,12 @@
 
 ## [3.1.0] - (Upcoming release)
 
+- [#73](https://github.com/estruyf/vscode-front-matter/issues/73): List view option for the dashboard
 - [#77](https://github.com/estruyf/vscode-front-matter/issues/77): Dashboard grouping pages functionality integrated
+- [#81](https://github.com/estruyf/vscode-front-matter/issues/81): Optimizing the content folders to use a new setting to simplify configuration
 - [#87](https://github.com/estruyf/vscode-front-matter/issues/87): Fix issue with autofocus and command palette
+- [#88](https://github.com/estruyf/vscode-front-matter/issues/88): Fix issue with search sorting
+- [#90](https://github.com/estruyf/vscode-front-matter/issues/90): Refactoring to use Recoil state management
 
 ## [3.0.2] - 2021-08-31
 
