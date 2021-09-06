@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { Spinner } from './Spinner';
 import useMessages from '../hooks/useMessages';
-import { Overview } from './Overview';
-import { Header } from './Header';
 import useDarkMode from '../../hooks/useDarkMode';
 import usePages from '../hooks/usePages';
-import { SponsorMsg } from './SponsorMsg';
 import { WelcomeScreen } from './WelcomeScreen';
+import { useRecoilValue } from 'recoil';
+import { DashboardViewSelector } from '../state';
+import { Contents } from './Contents/Contents';
+import { Media } from './Media/Media';
 
 export interface IDashboardProps {
   showWelcome: boolean;
@@ -15,9 +16,8 @@ export interface IDashboardProps {
 export const Dashboard: React.FunctionComponent<IDashboardProps> = ({showWelcome}: React.PropsWithChildren<IDashboardProps>) => {
   const { loading, pages, settings } = useMessages();
   const { pageItems } = usePages(pages);
+  const view = useRecoilValue(DashboardViewSelector);
   useDarkMode();
-
-  const pageFolders = [...new Set(pages.map(page => page.fmFolder))];
 
   if (!settings) {
     return <Spinner />;
@@ -30,21 +30,14 @@ export const Dashboard: React.FunctionComponent<IDashboardProps> = ({showWelcome
   if (!settings.initialized || settings.folders?.length === 0) {
     return <WelcomeScreen settings={settings} />;
   }
-  
-  return (
-    <main className={`h-full w-full`}>
-      <div className="flex flex-col h-full overflow-auto">
-        <Header 
-          folders={pageFolders}
-          totalPages={pageItems.length}
-          settings={settings} />
 
-        <div className="w-full flex-grow max-w-7xl mx-auto py-6 px-4">
-          { loading ? <Spinner /> : <Overview pages={pageItems} settings={settings} /> }
-        </div>
-
-        <SponsorMsg version={settings.versionInfo} />
-      </div>
-    </main>
-  );
+  if (view === "contents") {
+    return (
+      <Contents pages={pageItems} loading={loading} />
+    );
+  } else {
+    return (
+      <Media />
+    );
+  }
 };

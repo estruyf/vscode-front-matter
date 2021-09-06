@@ -1,6 +1,6 @@
 import { SETTINGS_CONTENT_STATIC_FOLDERS, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART } from './../constants/settings';
 import { ArticleHelper } from './../helpers/ArticleHelper';
-import { join } from "path";
+import { basename, extname, join } from "path";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace } from "vscode";
 import { SettingsHelper } from '../helpers';
 import { TaxonomyType } from '../models';
@@ -17,6 +17,7 @@ import { Extension } from '../helpers/Extension';
 import { parseJSON } from 'date-fns';
 import { ViewType } from '../pagesView/state';
 import { WebviewHelper } from '@estruyf/vscode';
+import { MediaPaths } from '../models/MediaPaths';
 
 
 export class Dashboard {
@@ -129,6 +130,9 @@ export class Dashboard {
         case DashboardMessage.setPageViewType:
           Extension.getInstance().setState(EXTENSION_STATE_PAGES_VIEW, msg.data);
           break;
+        case DashboardMessage.getMedia:
+          Dashboard.getMedia();
+          break;
       }
     });
   }
@@ -159,6 +163,29 @@ export class Dashboard {
   private static async updateSetting(data: { name: string, value: any }) {
     await SettingsHelper.updateSetting(data.name, data.value);
     Dashboard.getSettings();
+  }
+
+  /**
+   * Retrieve all media files
+   */
+  private static async getMedia() {
+    const config = SettingsHelper.getConfig();
+    const staticFolder = config.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
+    
+    workspace.findFiles(`${staticFolder || ""}/**/*`).then(async (files) => {
+      const media = files.filter(file => {
+        const ext = extname(file.fsPath);
+        return ['.jpg', '.jpeg', '.png', '.gif', '.svg'].includes(ext);
+      }).map((file) => ({
+        fsPath: file.fsPath,
+        vsPath: Dashboard.webview?.webview.asWebviewUri(file).toString()
+      } as MediaPaths));
+
+      Dashboard.postWebviewMessage({
+        command: DashboardCommand.media,
+        data: media
+      });
+    });
   }
 
   /**

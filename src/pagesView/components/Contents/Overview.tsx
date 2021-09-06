@@ -2,18 +2,18 @@ import { Disclosure } from '@headlessui/react';
 import { ChevronRightIcon } from '@heroicons/react/solid';
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
-import { groupBy } from '../../helpers/GroupBy';
-import { FrontMatterIcon } from '../../viewpanel/components/Icons/FrontMatterIcon';
-import { GroupOption } from '../constants/GroupOption';
-import { Page } from '../models/Page';
-import { Settings } from '../models/Settings';
-import { GroupingSelector } from '../state';
-import { Item } from './Item';
-import { List } from './List';
+import { groupBy } from '../../../helpers/GroupBy';
+import { FrontMatterIcon } from '../../../viewpanel/components/Icons/FrontMatterIcon';
+import { GroupOption } from '../../constants/GroupOption';
+import { Page } from '../../models/Page';
+import { Settings } from '../../models/Settings';
+import { GroupingSelector } from '../../state';
+import { Item } from '../Item';
+import { List } from '../List';
 
 export interface IOverviewProps {
   pages: Page[];  
-  settings: Settings;
+  settings: Settings | null;
 }
 
 export const Overview: React.FunctionComponent<IOverviewProps> = ({pages, settings}: React.PropsWithChildren<IOverviewProps>) => {
@@ -25,7 +25,7 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({pages, settin
         <div className={`max-w-xl text-center`}>
           <FrontMatterIcon className={`text-vulcan-300 dark:text-whisper-800 h-32 mx-auto opacity-90 mb-8`} />
           {
-            settings?.folders?.length > 0 ? (
+            settings && settings?.folders?.length > 0 ? (
               <p className={`text-xl font-medium`}>No Markdown to show</p>
             ) : (
               <>

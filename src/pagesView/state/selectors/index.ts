@@ -1,4 +1,5 @@
 export * from './CategorySelector';
+export * from './DashboardViewSelector';
 export * from './FolderSelector';
 export * from './GroupingSelector';
 export * from './SearchSelector';

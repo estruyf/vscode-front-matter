@@ -5,7 +5,7 @@ import { DashboardMessage } from '../DashboardMessage';
 import { Settings } from '../models/Settings';
 
 export interface IStartupProps {
-  settings: Settings;
+  settings: Settings | null;
 }
 
 export const Startup: React.FunctionComponent<IStartupProps> = ({settings}: React.PropsWithChildren<IStartupProps>) => {
@@ -17,7 +17,7 @@ export const Startup: React.FunctionComponent<IStartupProps> = ({settings}: Reac
   };
 
   React.useEffect(() => {
-    setIsChecked(!!settings.openOnStart);
+    setIsChecked(!!settings?.openOnStart);
   }, [settings?.openOnStart]);
 
   return (

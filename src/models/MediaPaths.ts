@@ -1,0 +1,1 @@
+export interface MediaPaths { fsPath: string; vsPath: string | undefined; }

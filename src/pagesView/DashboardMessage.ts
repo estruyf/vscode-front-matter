@@ -7,4 +7,5 @@ export enum DashboardMessage {
   initializeProject = 'initializeProject',
   reload = 'reload',
   setPageViewType = 'setPageViewType',
+  getMedia = 'getMedia',
 }

@@ -4,7 +4,7 @@ import { REVIEW_LINK, SPONSOR_LINK } from '../../constants/Links';
 import { VersionInfo } from '../../models';
 
 export interface ISponsorMsgProps {
-  version: VersionInfo;
+  version: VersionInfo | undefined;
 }
 
 export const SponsorMsg: React.FunctionComponent<ISponsorMsgProps> = ({version}: React.PropsWithChildren<ISponsorMsgProps>) => {
