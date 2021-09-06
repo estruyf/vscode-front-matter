@@ -4,7 +4,6 @@ import { Searchbox } from './Searchbox';
 import { Filter } from './Filter';
 import { Folders } from './Folders';
 import { Settings } from '../../models';
-import { MessageHelper } from '../../../helpers/MessageHelper';
 import { DashboardMessage } from '../../DashboardMessage';
 import { Startup } from '../Startup';
 import { Button } from '../Button';
@@ -13,6 +12,8 @@ import { Grouping } from '.';
 import { ViewSwitch } from './ViewSwitch';
 import { useRecoilState } from 'recoil';
 import { CategoryAtom, TagAtom } from '../../state';
+import { Messenger } from '@estruyf/vscode/dist/client';
+import { ClearFilters } from './ClearFilters';
 
 export interface IHeaderProps {
   settings: Settings;
@@ -29,7 +30,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
   const [ crntCategory, setCrntCategory ] = useRecoilState(CategoryAtom);
 
   const createContent = () => {
-    MessageHelper.sendMessage(DashboardMessage.createContent);
+    Messenger.send(DashboardMessage.createContent);
   };
 
   return (
@@ -55,11 +56,13 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
       </div>
 
       <div className={`py-4 px-5 w-full flex items-center justify-between lg:justify-end space-x-4 lg:space-x-6 xl:space-x-8 bg-gray-200 border-b border-gray-300 dark:bg-vulcan-400  dark:border-vulcan-300`}>
+        <ClearFilters />
+
         <Folders folders={folders} />
 
-        <Filter label={`Tag filter`} activeItem={crntTag} items={settings.tags} onClick={(value) => setCrntTag(value)} />
+        <Filter label={`Tag`} activeItem={crntTag} items={settings.tags} onClick={(value) => setCrntTag(value)} />
 
-        <Filter label={`Category filter`} activeItem={crntCategory} items={settings.categories} onClick={(value) => setCrntCategory(value)} />
+        <Filter label={`Category`} activeItem={crntCategory} items={settings.categories} onClick={(value) => setCrntCategory(value)} />
 
         <Grouping />
 
