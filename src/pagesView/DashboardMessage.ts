@@ -8,4 +8,5 @@ export enum DashboardMessage {
   reload = 'reload',
   setPageViewType = 'setPageViewType',
   getMedia = 'getMedia',
+  copyToClipboard = 'copyToClipboard',
 }

@@ -16,6 +16,7 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import { ClearFilters } from './ClearFilters';
 import { MarkdownIcon } from '../../../viewpanel/components/Icons/MarkdownIcon';
 import { PhotographIcon } from '@heroicons/react/outline';
+import { Pagination } from '../Media/Pagination';
 
 export interface IHeaderProps {
   settings: Settings | null;
@@ -37,15 +38,15 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
   };
 
   return (
-    <div className={`w-full max-w-7xl mx-auto sticky top-0 z-40 bg-gray-100 dark:bg-vulcan-500`}>
+    <div className={`w-full sticky top-0 z-40 bg-gray-100 dark:bg-vulcan-500`}>
       
-      <div className={`px-4 bg-vulcan-50 border-b-2 border-gray-300 dark:border-vulcan-200`}>
-        <div className={`py-2 flex items-center justify-start space-x-6 xl:space-x-8`}>
-          <button className={`flex items-center hover:text-teal-900 ${view === "contents" ? "font-bold" : ""}`} onClick={() => setView("contents")}>
+      <div className={`px-4 bg-gray-50 dark:bg-vulcan-50 border-b-2 border-gray-200 dark:border-vulcan-200`}>
+        <div className={`flex items-center justify-start`}>
+          <button className={`p-2 flex items-center ${view === "contents" ? "bg-gray-200 dark:bg-vulcan-200" : ""} hover:bg-gray-100 dark:hover:bg-vulcan-100`} onClick={() => setView("contents")}>
             <MarkdownIcon className={`h-6 w-auto mr-2`} /><span>Contents</span>
           </button>
-          <button className={`flex items-center hover:text-teal-900 ${view === "media" ? "font-bold" : ""}`} onClick={() => setView("media")}>
-            <PhotographIcon className={`h-5 w-auto mr-2`} /><span>Media</span>
+          <button className={`p-2 flex items-center ${view === "media" ? "bg-gray-200 dark:bg-vulcan-200" : ""} hover:bg-gray-100 dark:hover:bg-vulcan-100`} onClick={() => setView("media")}>
+            <PhotographIcon className={`h-6 w-auto mr-2`} /><span>Media</span>
           </button>
         </div>
       </div>
@@ -87,6 +88,12 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
               <Sorting />
             </div>
           </>
+        )
+      }
+
+      {
+        view === "media" && (
+          <Pagination />
         )
       }
     </div>

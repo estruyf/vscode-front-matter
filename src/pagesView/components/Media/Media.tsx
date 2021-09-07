@@ -1,35 +1,32 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
-import { useRecoilValue } from 'recoil';
-import { MediaPaths } from '../../../models/MediaPaths';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { MediaInfo, MediaPaths } from '../../../models/MediaPaths';
 import { DashboardCommand } from '../../DashboardCommand';
-import { DashboardMessage } from '../../DashboardMessage';
-import { SettingsSelector } from '../../state';
+import { MediaFoldersAtom, MediaTotalAtom, SettingsSelector } from '../../state';
 import { Header } from '../Header';
+import { Item } from './Item';
+import { List } from './List';
 
 export interface IMediaProps {}
 
-const LIMIT = 25;
+export const LIMIT = 16;
 
 export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWithChildren<IMediaProps>) => {
   const settings = useRecoilValue(SettingsSelector);
-  const [ media, setMedia ] = React.useState<MediaPaths[]>([]);
-  const [ page, setPage ] = React.useState<number>(0);
-
-  const crntMedia = media.splice(page * LIMIT, LIMIT);
+  const [ media, setMedia ] = React.useState<MediaInfo[]>([]);
+  const [ , setTotal ] = useRecoilState(MediaTotalAtom);
+  const [ , setFolders ] = useRecoilState(MediaFoldersAtom);
 
   React.useEffect(() => {
-    Messenger.send(DashboardMessage.getMedia);
-
-    Messenger.listen<MediaPaths[]>((message) => {
+    Messenger.listen<MediaPaths>((message) => {
       if (message.command === DashboardCommand.media) {
-        setMedia(message.data);
-        setPage(0);
+        setMedia(message.data.media);
+        setTotal(message.data.total);
+        setFolders(message.data.folders);
       }
     });
   }, ['']);
-
-  console.log(crntMedia)
   
   return (
     <main className={`h-full w-full`}>
@@ -37,13 +34,13 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
         <Header settings={settings} />
 
         <div className="w-full max-w-7xl mx-auto py-6 px-4">
-          {
-            crntMedia.map((media) => (
-              <div key={media.fsPath} className="flex flex-col items-center justify-center w-full h-64">
-                <img src={media.vsPath} className="w-full h-full" />
-              </div>
-            ))
-          }
+          <List>
+            {
+              media.map((file) => (
+                <Item key={file.fsPath} media={file} />
+              ))
+            }
+          </List>
         </div>
       </div>
     </main>

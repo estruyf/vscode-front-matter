@@ -1,7 +1,8 @@
 import { SETTINGS_CONTENT_STATIC_FOLDERS, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART } from './../constants/settings';
 import { ArticleHelper } from './../helpers/ArticleHelper';
-import { basename, extname, join } from "path";
-import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace } from "vscode";
+import { dirname, extname, join } from "path";
+import { existsSync, statSync } from "fs";
+import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env } from "vscode";
 import { SettingsHelper } from '../helpers';
 import { TaxonomyType } from '../models';
 import { Folders } from './Folders';
@@ -17,12 +18,13 @@ import { Extension } from '../helpers/Extension';
 import { parseJSON } from 'date-fns';
 import { ViewType } from '../pagesView/state';
 import { WebviewHelper } from '@estruyf/vscode';
-import { MediaPaths } from '../models/MediaPaths';
+import { MediaInfo, MediaPaths } from './../models/MediaPaths';
 
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
   private static isDisposed: boolean = true;
+  private static media: MediaInfo[] = [];
 
   /** 
    * Init the dashboard
@@ -131,7 +133,10 @@ export class Dashboard {
           Extension.getInstance().setState(EXTENSION_STATE_PAGES_VIEW, msg.data);
           break;
         case DashboardMessage.getMedia:
-          Dashboard.getMedia();
+          Dashboard.getMedia(msg?.data?.page, msg?.data?.folder)
+          break;
+        case DashboardMessage.copyToClipboard:
+          env.clipboard.writeText(msg.data);
           break;
       }
     });
@@ -142,15 +147,19 @@ export class Dashboard {
    */
   private static async getSettings() { 
     const ext = Extension.getInstance();
+    const config = SettingsHelper.getConfig();
+    const wsFolder = Folders.getWorkspaceFolder();
     
     Dashboard.postWebviewMessage({
       command: DashboardCommand.settings,
       data: {
+        wsFolder: wsFolder ? wsFolder.fsPath : '',
+        staticFolder: config.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS),
         folders: Folders.get(),
         initialized: await Template.isInitialized(),
         tags: SettingsHelper.getTaxonomy(TaxonomyType.Tag),
         categories: SettingsHelper.getTaxonomy(TaxonomyType.Category),
-        openOnStart: SettingsHelper.getConfig().get(SETTINGS_DASHBOARD_OPENONSTART),
+        openOnStart: config.get(SETTINGS_DASHBOARD_OPENONSTART),
         versionInfo: ext.getVersion(),
         pageViewType: await ext.getState<ViewType | undefined>(EXTENSION_STATE_PAGES_VIEW)
       } as Settings
@@ -168,23 +177,80 @@ export class Dashboard {
   /**
    * Retrieve all media files
    */
-  private static async getMedia() {
+  private static async getMedia(page: number = 0, folder: string = '') {
+    const wsFolder = Folders.getWorkspaceFolder();
     const config = SettingsHelper.getConfig();
     const staticFolder = config.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
-    
-    workspace.findFiles(`${staticFolder || ""}/**/*`).then(async (files) => {
-      const media = files.filter(file => {
-        const ext = extname(file.fsPath);
-        return ['.jpg', '.jpeg', '.png', '.gif', '.svg'].includes(ext);
-      }).map((file) => ({
-        fsPath: file.fsPath,
-        vsPath: Dashboard.webview?.webview.asWebviewUri(file).toString()
-      } as MediaPaths));
 
-      Dashboard.postWebviewMessage({
-        command: DashboardCommand.media,
-        data: media
+    if (Dashboard.media.length === 0) {
+      const contentFolder = Folders.get();
+      let allMedia: MediaInfo[] = [];
+
+      if (staticFolder) {
+        const files = await workspace.findFiles(`${staticFolder || ""}/**/*`);
+        const media = Dashboard.filterMedia(files);
+
+        allMedia = [...media];
+      }
+
+      if (contentFolder && wsFolder) {
+        for (let i = 0; i < contentFolder.length; i++) {
+          const folder = contentFolder[i];
+          const relFolderPath = folder.path.substring(wsFolder.fsPath.length + 1);
+          const files = await workspace.findFiles(`${relFolderPath}/**/*`);
+          const media = Dashboard.filterMedia(files);
+    
+          allMedia = [...allMedia, ...media];
+        }
+      }
+
+      allMedia = allMedia.sort((a, b) => {
+        if (b.fsPath < a.fsPath) {
+          return -1;
+        }
+        if (b.fsPath > a.fsPath) {
+          return 1;
+        }
+        return 0;
       });
+
+      Dashboard.media = Object.assign([], allMedia);
+    }
+
+    // Filter the media
+    let files = Dashboard.media;
+    if (folder) {
+      files = files.filter(f => f.fsPath.includes(folder));
+    }
+
+    // Retrieve the total after filtering and before the slicing happens
+    const total = files.length;
+
+    // Get media set
+    files = files.slice(page * 16, ((page + 1) * 16));
+    files = files.map((file) => ({
+      ...file,
+      stats: statSync(file.fsPath)
+    }));
+
+    const folders = [...new Set(Dashboard.media.map((file) => {
+      let relFolderPath = wsFolder ? file.fsPath.substring(wsFolder.fsPath.length + 1) : file.fsPath;
+      if (staticFolder && relFolderPath.startsWith(staticFolder)) {
+        relFolderPath = relFolderPath.substring(staticFolder.length);
+      }
+      if (relFolderPath?.startsWith('/')) {
+        relFolderPath = relFolderPath.substring(1);
+      }
+      return dirname(relFolderPath);
+    }))];
+
+    Dashboard.postWebviewMessage({
+      command: DashboardCommand.media,
+      data: {
+        media: files,
+        total: total,
+        folders
+      } as MediaPaths
     });
   }
 
@@ -228,10 +294,22 @@ export class Dashboard {
                 };
       
                 if (article?.data.preview && wsFolder) {
-                  const previewPath = join(wsFolder.fsPath, staticFolder || "", article?.data.preview);
-                  const previewUri = Uri.file(previewPath);
-                  const preview = Dashboard.webview?.webview.asWebviewUri(previewUri);
-                  page.preview = preview?.toString() || "";
+                  const staticPath = join(wsFolder.fsPath, staticFolder || "", article?.data.preview);
+                  const contentFolderPath = join(dirname(file.filePath), article?.data.preview);
+
+                  let previewUri = null;
+                  if (existsSync(staticPath)) {
+                    previewUri = Uri.file(staticPath);
+                  } else if (existsSync(contentFolderPath)) {
+                    previewUri = Uri.file(contentFolderPath);
+                  }
+
+                  if (previewUri) {
+                    const preview = Dashboard.webview?.webview.asWebviewUri(previewUri);
+                    page.preview = preview?.toString() || "";
+                  } else {
+                    page.preview = "";
+                  }
                 }
       
                 pages.push(page);
@@ -248,6 +326,20 @@ export class Dashboard {
       command: DashboardCommand.pages,
       data: pages
     });
+  }
+
+  /**
+   * Filter the media files
+   */
+  private static filterMedia(files: Uri[]) {
+    return files.filter(file => {
+      const ext = extname(file.fsPath);
+      return ['.jpg', '.jpeg', '.png', '.gif', '.svg'].includes(ext);
+    }).map((file) => ({
+      fsPath: file.fsPath,
+      vsPath: Dashboard.webview?.webview.asWebviewUri(file).toString(),
+      stats: undefined
+    } as MediaInfo));
   }
 
   /**

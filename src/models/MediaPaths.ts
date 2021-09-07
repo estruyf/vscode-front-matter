@@ -1,1 +1,13 @@
-export interface MediaPaths { fsPath: string; vsPath: string | undefined; }
+import { Stats } from "fs";
+
+export interface MediaPaths { 
+  media: MediaInfo[];
+  total: number;
+  folders: string[];
+}
+
+export interface MediaInfo {
+  fsPath: string; 
+  vsPath: string | undefined;
+  stats: Stats | undefined;
+}

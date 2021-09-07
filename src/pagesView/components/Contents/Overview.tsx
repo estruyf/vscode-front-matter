@@ -8,8 +8,8 @@ import { GroupOption } from '../../constants/GroupOption';
 import { Page } from '../../models/Page';
 import { Settings } from '../../models/Settings';
 import { GroupingSelector } from '../../state';
-import { Item } from '../Item';
-import { List } from '../List';
+import { Item } from './Item';
+import { List } from './List';
 
 export interface IOverviewProps {
   pages: Page[];  
