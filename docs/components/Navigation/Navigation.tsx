@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Extension } from '../../constants/extension';
 import { useRouter } from 'next/router';
 import { Searchbox } from '../Page/Searchbox';
-import { publicUrl } from '../../lib/publicUrl';
+import { isProduction } from '../../helpers/isProduction';
 
 export interface INavigationProps {}
 
@@ -15,7 +15,7 @@ export const Navigation: React.FunctionComponent<INavigationProps> = (props: Rea
   return (
     <>
       {
-        process.env.NEXT_PUBLIC_VERCEL_ENV !== 'production' ? (
+        !isProduction() ? (
           <div className={`bg-yellow-500 text-center py-2 px-4`}>
             <a href={`https://frontmatter.codes`} title={`Go to main release documentation`} className={`text-base font-medium text-vulcan-500 hover:text-vulcan-900`}>
               You are currently viewing the BETA version of Front Matter documentation. Click on the banner to go to the main release documentation.
