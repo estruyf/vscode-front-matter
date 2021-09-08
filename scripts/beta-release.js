@@ -14,3 +14,9 @@ packageJson.homepage = "https://beta.frontmatter.codes";
 console.log(packageJson.version);
 
 fs.writeFileSync(path.join(path.resolve('.'), 'package.json'), JSON.stringify(packageJson, null, 2));
+
+const readme = fs.readFileSync(path.join(path.resolve('.'), 'README.md'), 'utf8');
+readme.replace(/frontmatter.codes/g, 'beta.frontmatter.codes');
+readme.replace(/frontmatter-teal-128x128.png/g, 'frontmatter-beta.png');
+
+fs.writeFileSync(path.join(path.resolve('.'), 'README.md'), readme);

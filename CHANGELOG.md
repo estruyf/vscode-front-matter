@@ -2,6 +2,7 @@
 
 ## [3.1.0] - (Upcoming release)
 
+- BETA version available at: [beta.frontmatter.codes](https://beta.frontmatter.codes)
 - [#73](https://github.com/estruyf/vscode-front-matter/issues/73): List view option for the dashboard
 - [#77](https://github.com/estruyf/vscode-front-matter/issues/77): Dashboard grouping pages functionality integrated
 - [#81](https://github.com/estruyf/vscode-front-matter/issues/81): Optimizing the content folders to use a new setting to simplify configuration
