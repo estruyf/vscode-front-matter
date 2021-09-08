@@ -19,6 +19,9 @@ jobs:
 
       - name: Install the dependencies
         run: npm i
+      
+      - name: Prepare MAIN release
+        run: node scripts/main-release.js
 
       - name: Publish
         run: npx vsce publish -p ${{ secrets.VSCE_PAT }}

@@ -21,19 +21,15 @@ let collection: vscode.DiagnosticCollection;
 
 const mdSelector: vscode.DocumentSelector = { language: 'markdown', scheme: 'file' };
 
-export async function activate({ subscriptions, extensionUri, extensionPath, globalState, globalStorageUri }: vscode.ExtensionContext) {
-	
-	// Check if Front Matter is extension is installed
-	if (basename(globalStorageUri.fsPath) === EXTENSION_BETA_ID) {
-		const mainVersion = vscode.extensions.getExtension(EXTENSION_ID);
+export async function activate(context: vscode.ExtensionContext) {
+	const { subscriptions, extensionUri, extensionPath } = context;
 
-		if (mainVersion) {
-			Notifications.error(`Front Matter BETA cannot be used while the main version is installed. Please ensure that you have only over version installed.`);
-			return undefined;
-		}
+	const extension = Extension.getInstance(context);
+
+	if (!extension.checkIfExtensionCanRun()) {
+		return undefined;
 	}
 
-	const extension = Extension.getInstance(globalState, extensionUri);
 	extension.migrateSettings()
 
 	collection = vscode.languages.createDiagnosticCollection('frontMatter');
