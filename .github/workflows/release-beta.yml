@@ -22,6 +22,6 @@ jobs:
       - name: Prepare BETA
         run: node scripts/beta-release.js $GITHUB_RUN_ID
 
-      # - name: Publish
-      #   run: npx vsce publish -p ${{ secrets.VSCE_PAT }}
+      - name: Publish
+        run: npx vsce publish -p ${{ secrets.VSCE_PAT }}
 
