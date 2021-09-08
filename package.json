@@ -35,6 +35,11 @@
 		"Taxonomy"
 	],
 	"license": "MIT",
+  "author": "Elio Struyf <elio@struyfconsulting.be> (https://www.eliostruyf.com)",
+  "homepage": "https://frontmatter.codes",
+	"bugs": {
+    "url" : "https://github.com/estruyf/vscode-front-matter/issues"
+  },
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/estruyf/vscode-front-matter"

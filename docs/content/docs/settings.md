@@ -1,9 +1,9 @@
 ---
 title: Settings
 slug: settings
-description: 
+description: null
 date: '2021-08-30T16:13:00.546Z'
-lastmod: '2021-08-30T16:13:01.763Z'
+lastmod: '2021-09-08T07:08:17.747Z'
 weight: 7
 ---
 

@@ -9,6 +9,7 @@ packageJson.name = `${packageJson.name}-beta`;
 packageJson.displayName = `${packageJson.displayName} BETA`;
 packageJson.description = `BETA Version of Front Matter. ${packageJson.description}`;
 packageJson.icon = "assets/frontmatter-beta.png";
+packageJson.homepage = "https://beta.frontmatter.codes";
 
 console.log(packageJson.version);
 
