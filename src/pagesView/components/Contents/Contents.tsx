@@ -29,7 +29,7 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({pages, loadin
           { loading ? <Spinner /> : <Overview pages={pages} settings={settings} /> }
         </div>
 
-        <SponsorMsg version={settings?.versionInfo} />
+        <SponsorMsg beta={settings?.beta} version={settings?.versionInfo} />
       </div>
     </main>
   );

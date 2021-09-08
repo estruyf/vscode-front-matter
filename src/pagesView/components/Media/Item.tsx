@@ -1,5 +1,5 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { ClipboardCopyIcon, FolderIcon, PhotographIcon } from '@heroicons/react/outline';
+import { ClipboardCopyIcon } from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
@@ -69,12 +69,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
           {basename(media.fsPath)}
         </p>
         <p className="mt-2 text-sm dark:text-whisper-900 font-medium pointer-events-none flex items-center">
-          <FolderIcon className={`w-5 h-5 mr-1`} /> {getFolder()}
+          <b className={`mr-2`}>Folder:</b> {getFolder()}
         </p>
         {
           media?.stats?.size && (
             <p className="mt-2 text-sm dark:text-whisper-900 font-medium pointer-events-none flex items-center">
-              {calculateSize()}
+              <b className={`mr-1`}>Size:</b> {calculateSize()}
             </p>
           )
         }

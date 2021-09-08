@@ -1,10 +1,13 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
+import { EventData } from '@estruyf/vscode/dist/models';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { MediaInfo, MediaPaths } from '../../../models/MediaPaths';
 import { DashboardCommand } from '../../DashboardCommand';
-import { MediaFoldersAtom, MediaTotalAtom, SettingsSelector } from '../../state';
+import { LoadingAtom, MediaFoldersAtom, MediaTotalAtom, SettingsSelector } from '../../state';
 import { Header } from '../Header';
+import { Spinner } from '../Spinner';
+import { SponsorMsg } from '../SponsorMsg';
 import { Item } from './Item';
 import { List } from './List';
 
@@ -17,15 +20,23 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
   const [ media, setMedia ] = React.useState<MediaInfo[]>([]);
   const [ , setTotal ] = useRecoilState(MediaTotalAtom);
   const [ , setFolders ] = useRecoilState(MediaFoldersAtom);
+  const [ loading, setLoading ] = useRecoilState(LoadingAtom);
+
+  const messageListener = (message: MessageEvent<EventData<MediaPaths>>) => {
+    if (message.data.command === DashboardCommand.media) {
+      setLoading(false);
+      setMedia(message.data.data.media);
+      setTotal(message.data.data.total);
+      setFolders(message.data.data.folders);
+    }
+  }
 
   React.useEffect(() => {
-    Messenger.listen<MediaPaths>((message) => {
-      if (message.command === DashboardCommand.media) {
-        setMedia(message.data.media);
-        setTotal(message.data.total);
-        setFolders(message.data.folders);
-      }
-    });
+    Messenger.listen<MediaPaths>(messageListener);
+
+    return () => {
+      Messenger.unlisten(messageListener);
+    }
   }, ['']);
   
   return (
@@ -33,7 +44,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
       <div className="flex flex-col h-full overflow-auto">
         <Header settings={settings} />
 
-        <div className="w-full max-w-7xl mx-auto py-6 px-4">
+        <div className="w-full flex-grow max-w-7xl mx-auto py-6 px-4">
           <List>
             {
               media.map((file) => (
@@ -42,6 +53,12 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
             }
           </List>
         </div>
+
+        {
+          loading && ( <Spinner /> )
+        }
+
+        <SponsorMsg beta={settings?.beta} version={settings?.versionInfo} />
       </div>
     </main>
   );

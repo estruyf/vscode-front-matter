@@ -12,16 +12,16 @@ export default function useMessages() {
   const [pages, setPages] = useState<Page[]>([]);
   const [settings, setSettings] = useRecoilState(SettingsAtom);
 
-  Messenger.listen((message: EventData<any>) => {
-    switch (message.command) {
+  Messenger.listen((message: MessageEvent<EventData<any>>) => {
+    switch (message.data.command) {
       case DashboardCommand.loading:
-        setLoading(message.data);
+        setLoading(message.data.data);
         break;
       case DashboardCommand.settings:
-        setSettings(message.data);
+        setSettings(message.data.data);
         break;
       case DashboardCommand.pages:
-        setPages(message.data);
+        setPages(message.data.data);
         setLoading(false);
         break;
     }

@@ -2,6 +2,7 @@ export * from './CategorySelector';
 export * from './DashboardViewSelector';
 export * from './FolderSelector';
 export * from './GroupingSelector';
+export * from './LoadingSelector';
 export * from './MediaFoldersSelector';
 export * from './MediaTotalSelector';
 export * from './SearchSelector';

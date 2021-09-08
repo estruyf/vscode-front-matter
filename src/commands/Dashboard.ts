@@ -138,6 +138,10 @@ export class Dashboard {
         case DashboardMessage.copyToClipboard:
           env.clipboard.writeText(msg.data);
           break;
+        case DashboardMessage.refreshMedia:
+          Dashboard.media = [];
+          Dashboard.getMedia(0, msg?.data?.folder);
+          break;
       }
     });
   }
@@ -153,6 +157,7 @@ export class Dashboard {
     Dashboard.postWebviewMessage({
       command: DashboardCommand.settings,
       data: {
+        beta: ext.isBetaVersion(),
         wsFolder: wsFolder ? wsFolder.fsPath : '',
         staticFolder: config.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS),
         folders: Folders.get(),

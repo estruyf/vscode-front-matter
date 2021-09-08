@@ -2,6 +2,7 @@ export * from './CategoryAtom';
 export * from './DashboardViewAtom';
 export * from './FolderAtom';
 export * from './GroupingAtom';
+export * from './LoadingAtom';
 export * from './MediaFoldersAtom';
 export * from './MediaTotalAtom';
 export * from './SearchAtom';

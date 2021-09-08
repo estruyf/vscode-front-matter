@@ -1,8 +1,9 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
+import { RefreshIcon } from '@heroicons/react/outline';
 import * as React from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { DashboardMessage } from '../../DashboardMessage';
-import { MediaTotalSelector, SelectedMediaFolderSelector } from '../../state';
+import { LoadingAtom, MediaTotalSelector, SelectedMediaFolderSelector } from '../../state';
 import { FolderSelection } from './FolderSelection';
 import { LIMIT } from './Media';
 import { PaginationButton } from './PaginationButton';
@@ -12,6 +13,7 @@ export interface IPaginationProps {}
 export const Pagination: React.FunctionComponent<IPaginationProps> = ({}: React.PropsWithChildren<IPaginationProps>) => {
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const totalMedia = useRecoilValue(MediaTotalSelector);
+  const [ , setLoading ] = useRecoilState(LoadingAtom);
   const [ page, setPage ] = React.useState<number>(0);
   
   const totalPages = Math.ceil(totalMedia / LIMIT) - 1;
@@ -39,9 +41,13 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({}: React.
     return buttons;
   };
 
-  const buttons = getButtons();
+  const refresh = () => {
+    setPage(0);
+    Messenger.send(DashboardMessage.refreshMedia, { folder: selectedFolder });
+  }
 
   React.useEffect(() => {
+    setLoading(true);
     Messenger.send(DashboardMessage.getMedia, {
       page,
       folder: selectedFolder || ''
@@ -49,6 +55,7 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({}: React.
   }, [page]);
 
   React.useEffect(() => {
+    setLoading(true);
     Messenger.send(DashboardMessage.getMedia, {
       page: 0,
       folder: selectedFolder || ''
@@ -61,7 +68,14 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({}: React.
       className="py-4 px-5 flex items-center justify-between bg-gray-200 border-b border-gray-300 dark:bg-vulcan-400  dark:border-vulcan-100"
       aria-label="Pagination"
     >
-      <div className="hidden sm:block">
+      <div className="hidden sm:flex">
+        <button className={`mr-2 text-gray-500 hover:text-gray-600 dark:text-whisper-900 dark:hover:text-whisper-500`}
+                title="Refresh media"
+                onClick={refresh}>
+          <RefreshIcon className={`h-5 w-5`} />
+          <span className="sr-only">Refresh media</span>
+        </button>
+        
         <p className="text-sm text-gray-500 dark:text-whisper-900">
           Showing <span className="font-medium">{(page * LIMIT) + 1}</span> to <span className="font-medium">{getTotalPage()}</span> of{' '}
           <span className="font-medium">{totalMedia}</span> results
@@ -89,7 +103,7 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({}: React.
             }
           }} />
         
-        {buttons.map((button) => (
+        {getButtons().map((button) => (
           <button
             key={button}
             disabled={button === page}
