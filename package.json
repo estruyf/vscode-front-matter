@@ -35,11 +35,11 @@
 		"Taxonomy"
 	],
 	"license": "MIT",
-  "author": "Elio Struyf <elio@struyfconsulting.be> (https://www.eliostruyf.com)",
-  "homepage": "https://frontmatter.codes",
+	"author": "Elio Struyf <elio@struyfconsulting.be> (https://www.eliostruyf.com)",
+	"homepage": "https://frontmatter.codes",
 	"bugs": {
-    "url" : "https://github.com/estruyf/vscode-front-matter/issues"
-  },
+		"url": "https://github.com/estruyf/vscode-front-matter/issues"
+	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/estruyf/vscode-front-matter"
@@ -396,7 +396,7 @@
 	},
 	"devDependencies": {
 		"@bendera/vscode-webview-elements": "0.6.2",
-		"@estruyf/vscode": "0.0.1",
+		"@estruyf/vscode": "0.0.2",
 		"@headlessui/react": "1.4.0",
 		"@heroicons/react": "1.0.4",
 		"@iarna/toml": "2.2.3",
