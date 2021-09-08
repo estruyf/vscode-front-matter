@@ -1,9 +1,8 @@
-name: Release
+name: BETA Release
 on:
-  release:
-    types:
-      - published
-  workflow_dispatch:
+  push:
+    branches:
+      - dev
 
 jobs:
   build:
@@ -19,7 +18,10 @@ jobs:
 
       - name: Install the dependencies
         run: npm i
+      
+      - name: Prepare BETA
+        run: node ./scripts/beta-release.js
 
-      - name: Publish
-        run: npx vsce publish -p ${{ secrets.VSCE_PAT }}
+      # - name: Publish
+      #   run: npx vsce publish -p ${{ secrets.VSCE_PAT }}
 
