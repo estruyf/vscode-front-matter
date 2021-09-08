@@ -15,8 +15,8 @@ console.log(packageJson.version);
 
 fs.writeFileSync(path.join(path.resolve('.'), 'package.json'), JSON.stringify(packageJson, null, 2));
 
-const readme = fs.readFileSync(path.join(path.resolve('.'), 'README.md'), 'utf8');
-readme.replace(/frontmatter.codes/g, 'beta.frontmatter.codes');
-readme.replace(/frontmatter-teal-128x128.png/g, 'frontmatter-beta.png');
+let readme = fs.readFileSync(path.join(__dirname, '../README.md'), 'utf8');
+readme = readme.replace(/frontmatter.codes/g, 'beta.frontmatter.codes');
+readme = readme.replace(/frontmatter-teal-128x128.png/g, 'frontmatter-beta.png');
 
-fs.writeFileSync(path.join(path.resolve('.'), 'README.md'), readme);
+fs.writeFileSync(path.join(__dirname, '../README.md'), readme);
