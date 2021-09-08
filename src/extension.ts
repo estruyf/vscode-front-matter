@@ -27,7 +27,7 @@ export async function activate({ subscriptions, extensionUri, extensionPath, glo
 	if (basename(globalStorageUri.fsPath) === EXTENSION_BETA_ID) {
 		const mainVersion = vscode.extensions.getExtension(EXTENSION_ID);
 
-		if (!mainVersion) {
+		if (mainVersion) {
 			Notifications.error(`Front Matter BETA cannot be used while the main version is installed. Please ensure that you have only over version installed.`);
 			return undefined;
 		}
