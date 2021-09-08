@@ -27,6 +27,8 @@ If you have the courage to test out the beta features, we made available a beta 
 - The extension CLI: `ext install eliostruyf.vscode-front-matter-beta`
 - Or by clicking on the following link: <a href="" title="open extension in VS Code" data-vscode="vscode:extension/eliostruyf.vscode-front-matter-beta">open extension in VS Code</a>
 
+> **Info**: The BETA docs can be found on [beta.frontmatter.codes](https://beta.frontmatter.codes).
+
 ## Welcome screen
 
 Once installed, Front Matter will open the **welcome screen** the first time Visual Studio Code gets reloaded.
