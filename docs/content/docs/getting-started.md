@@ -11,11 +11,21 @@ weight: 2
 
 To get you started, you first need to install the extension in Visual Studio Code. 
 
+## Installation
+
 You can get the extension via:
 
 - The VS Code marketplace: [VS Code Marketplace - Front Matter](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter).
 - The extension CLI: `ext install eliostruyf.vscode-front-matter`
 - Or by clicking on the following link: <a href="" title="open extension in VS Code" data-vscode="vscode:extension/eliostruyf.vscode-front-matter">open extension in VS Code</a>
+
+### Beta version
+
+If you have the courage to test out the beta features, we made available a beta version as well. You can install this via:
+
+- The VS Code marketplace: [VS Code Marketplace - Front Matter BETA](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter-beta).
+- The extension CLI: `ext install eliostruyf.vscode-front-matter-beta`
+- Or by clicking on the following link: <a href="" title="open extension in VS Code" data-vscode="vscode:extension/eliostruyf.vscode-front-matter-beta">open extension in VS Code</a>
 
 ## Welcome screen
 

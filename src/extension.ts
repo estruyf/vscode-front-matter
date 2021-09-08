@@ -5,12 +5,14 @@ import { Folders } from './commands/Folders';
 import { Preview } from './commands/Preview';
 import { Project } from './commands/Project';
 import { Template } from './commands/Template';
-import { COMMAND_NAME } from './constants/Extension';
+import { COMMAND_NAME, EXTENSION_BETA_ID, EXTENSION_ID } from './constants/Extension';
 import { TaxonomyType } from './models';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
 import { TagType } from './viewpanel/TagType';
 import { ExplorerView } from './webview/ExplorerView';
 import { Extension } from './helpers/Extension';
+import { basename } from 'path';
+import { Notifications } from './helpers/Notifications';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
@@ -19,7 +21,18 @@ let collection: vscode.DiagnosticCollection;
 
 const mdSelector: vscode.DocumentSelector = { language: 'markdown', scheme: 'file' };
 
-export async function activate({ subscriptions, extensionUri, extensionPath, globalState }: vscode.ExtensionContext) {
+export async function activate({ subscriptions, extensionUri, extensionPath, globalState, globalStorageUri }: vscode.ExtensionContext) {
+	
+	// Check if Front Matter is extension is installed
+	if (basename(globalStorageUri.fsPath) === EXTENSION_BETA_ID) {
+		const mainVersion = vscode.extensions.getExtension(EXTENSION_ID);
+
+		if (!mainVersion) {
+			Notifications.error(`Front Matter BETA cannot be used while the main version is installed. Please ensure that you have only over version installed.`);
+			return undefined;
+		}
+	}
+
 	const extension = Extension.getInstance(globalState, extensionUri);
 	extension.migrateSettings()
 

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Extension } from '../../constants/extension';
+import { isProduction } from '../../helpers/isProduction';
 
 export interface ICTAProps {}
 
@@ -23,8 +24,8 @@ export const CTA: React.FunctionComponent<ICTAProps> = (props: React.PropsWithCh
 
           <div className="mt-10 max-w-sm mx-auto sm:max-w-none">
             <div className="space-y-4 sm:space-y-0 sm:mx-auto sm:inline-grid sm:grid-cols-2 sm:gap-5">
-              <a href={Extension.installLink} className="flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium shadow-sm text-white bg-teal-500 hover:bg-opacity-70 sm:px-8" rel={`noopener noreferrer`}>
-                {strings(`cta_button_primary`)}
+              <a href={isProduction ? Extension.installLink : Extension.installBetaLink} className="flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium shadow-sm text-white bg-teal-500 hover:bg-opacity-70 sm:px-8" rel={`noopener noreferrer`}>
+                {isProduction ? strings(`cta_button_primary`) : strings(`cta_button_beta_primary`)}
               </a>
               <a href={`/docs`} title={`Read our documentation`} className="flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium shadow-sm text-vulcan-500 bg-whisper-500 hover:bg-opacity-70 sm:px-8">
                 {strings(`cta_button_secondary`)}
