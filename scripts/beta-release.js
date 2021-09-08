@@ -2,7 +2,8 @@ const fs = require('fs');
 const path = require('path');
 
 const packageJson = require('../package.json');
-packageJson.version += `.${process.argv[process.argv.length-1].substr(0, 7)}`;
+const version = packageJson.version.split('.');
+packageJson.version = `${version[0]}.${version[1]}.${process.argv[process.argv.length-1].substr(0, 7)}`;
 packageJson.preview = true;
 packageJson.name = `${packageJson.name}-beta`;
 packageJson.displayName = `${packageJson.displayName} BETA`;
