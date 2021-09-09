@@ -200,6 +200,7 @@ export class Folders {
     const config = SettingsHelper.getConfig();
     const wsFolder = Folders.getWorkspaceFolder();
     const folders: ContentFolder[] = config.get(SETTINGS_CONTENT_PAGE_FOLDERS) as ContentFolder[];
+    
     return folders.map(folder => ({
       title: folder.title,
       path: Folders.absWsFolder(folder, wsFolder)
@@ -213,7 +214,7 @@ export class Folders {
   private static async update(folders: ContentFolder[]) {
     const config = SettingsHelper.getConfig();
     const wsFolder = Folders.getWorkspaceFolder();
-    await config.update(SETTINGS_CONTENT_PAGE_FOLDERS, folders.map(folder => ({ title: folder.title, path: Folders.absWsFolder(folder, wsFolder) })));
+    await config.update(SETTINGS_CONTENT_PAGE_FOLDERS, folders.map(folder => ({ title: folder.title, path: Folders.relWsFolder(folder, wsFolder) })));
   }
 
   /**
@@ -223,6 +224,22 @@ export class Folders {
    * @returns 
    */
   private static absWsFolder(folder: ContentFolder, wsFolder?: Uri) {
-    return folder.path.replace(wsFolder?.fsPath || "", WORKSPACE_PLACEHOLDER)
+    const isWindows = process.platform === 'win32';
+    let absPath =  folder.path.replace(WORKSPACE_PLACEHOLDER, wsFolder?.fsPath || "");
+    absPath = isWindows ? absPath.split('/').join('\\') : absPath;
+    return absPath;
+  }
+
+  /**
+   * Generate relative folder path
+   * @param folder 
+   * @param wsFolder 
+   * @returns 
+   */
+  private static relWsFolder(folder: ContentFolder, wsFolder?: Uri) {
+    const isWindows = process.platform === 'win32';
+    let absPath =  folder.path.replace(wsFolder?.fsPath || "", WORKSPACE_PLACEHOLDER);
+    absPath = isWindows ? absPath.split('\\').join('/') : absPath;
+    return absPath;
   }
 }

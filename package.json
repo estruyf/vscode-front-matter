@@ -391,7 +391,7 @@
 		"build:ext": "npm run clean && webpack --mode development",
 		"dev:ext": "npm run clean && webpack --mode development --watch",
 		"test-compile": "tsc -p ./",
-		"clean": "rm -rf dist",
+		"clean": "rimraf dist",
 		"start:site": "cd ./docs && npm run dev"
 	},
 	"devDependencies": {
@@ -426,6 +426,7 @@
 		"react": "17.0.1",
 		"react-dom": "17.0.1",
 		"recoil": "^0.4.1",
+		"rimraf": "^3.0.2",
 		"style-loader": "2.0.0",
 		"tailwindcss": "^2.2.7",
 		"ts-loader": "8.0.3",
