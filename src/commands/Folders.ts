@@ -80,8 +80,6 @@ export class Folders {
 
       Notifications.info(`Folder registered`);
     }
-
-		Folders.updateVsCodeCtx();
   }
 
   /**
@@ -94,20 +92,6 @@ export class Folders {
       folders = folders.filter(f => f.path !== folder.fsPath);
       await Folders.update(folders);
     }
-    
-    Folders.updateVsCodeCtx();
-  }
-
-  /**
-   * Update the registered folders context
-   */
-  public static updateVsCodeCtx() {
-    const folders = Folders.get();
-    let allFolders: string[] = [];
-    for (const folder of folders) {
-      allFolders = [...allFolders, folder.path]
-    }
-    commands.executeCommand('setContext', CONTEXT.registeredFolders, allFolders);
   }
 
   /**
@@ -214,11 +198,11 @@ export class Folders {
    */
   public static get(): ContentFolder[] {
     const config = SettingsHelper.getConfig();
-    const wsPath = Folders.getWorkspaceFolder();
+    const wsFolder = Folders.getWorkspaceFolder();
     const folders: ContentFolder[] = config.get(SETTINGS_CONTENT_PAGE_FOLDERS) as ContentFolder[];
     return folders.map(folder => ({
       title: folder.title,
-      path: folder.path.replace(WORKSPACE_PLACEHOLDER, wsPath?.fsPath || "")
+      path: Folders.absWsFolder(folder, wsFolder)
     }));
   }
   
@@ -229,6 +213,16 @@ export class Folders {
   private static async update(folders: ContentFolder[]) {
     const config = SettingsHelper.getConfig();
     const wsFolder = Folders.getWorkspaceFolder();
-    await config.update(SETTINGS_CONTENT_PAGE_FOLDERS, folders.map(folder => ({ title: folder.title, path: folder.path.replace(wsFolder?.fsPath || "", WORKSPACE_PLACEHOLDER) })));
+    await config.update(SETTINGS_CONTENT_PAGE_FOLDERS, folders.map(folder => ({ title: folder.title, path: Folders.absWsFolder(folder, wsFolder) })));
+  }
+
+  /**
+   * Generate the absolute URL for the workspace
+   * @param folder 
+   * @param wsFolder 
+   * @returns 
+   */
+  private static absWsFolder(folder: ContentFolder, wsFolder?: Uri) {
+    return folder.path.replace(wsFolder?.fsPath || "", WORKSPACE_PLACEHOLDER)
   }
 }

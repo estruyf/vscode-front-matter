@@ -68,7 +68,7 @@ export class Extension {
 
       const paths = folders.map((folder: any) => ({
         title: folder.title,
-        path: `${WORKSPACE_PLACEHOLDER}${folder.fsPath.split(projectFolder).slice(1).join('')}`
+        path: `${WORKSPACE_PLACEHOLDER}${folder.fsPath.split(projectFolder).slice(1).join('')}`.split('\\').join('/')
       }));
 
       await config.update(`${SETTINGS_CONTENT_PAGE_FOLDERS}`, paths);
