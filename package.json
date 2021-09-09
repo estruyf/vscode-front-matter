@@ -388,8 +388,8 @@
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run clean && webpack --mode production",
-		"build:ext": "webpack --mode development",
-		"dev:ext": "webpack --mode development --watch",
+		"build:ext": "npm run clean && webpack --mode development",
+		"dev:ext": "npm run clean && webpack --mode development --watch",
 		"test-compile": "tsc -p ./",
 		"clean": "rm -rf dist",
 		"start:site": "cd ./docs && npm run dev"
