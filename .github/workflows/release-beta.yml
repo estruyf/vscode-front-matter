@@ -23,5 +23,5 @@ jobs:
         run: node scripts/beta-release.js $GITHUB_RUN_ID
 
       - name: Publish
-        run: npx vsce publish -p ${{ secrets.VSCE_PAT }}
+        run: npx vsce publish -p ${{ secrets.VSCE_PAT }} --baseImagesUrl dev
 
