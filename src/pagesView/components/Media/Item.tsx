@@ -15,6 +15,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   const settings = useRecoilValue(SettingsSelector);
   const [ , setLightbox ] = useRecoilState(LightboxAtom);
 
+  const parseWinPath = (path: string | undefined) => {
+    return path?.split(`\\`).join(`/`);
+  }
+
   const getFolder = () => {
     if (settings?.wsFolder && media.fsPath) {
       let relPath = media.fsPath.split(settings.wsFolder).pop();
@@ -23,7 +27,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
         relPath = relPath.split(settings.staticFolder).pop();
       }
 
-      return dirname(relPath || "");
+      return dirname(parseWinPath(relPath) || "");
     }
     return "";
   };
@@ -38,7 +42,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
       }
     }
 
-    Messenger.send(DashboardMessage.copyToClipboard, relPath || "");
+    Messenger.send(DashboardMessage.copyToClipboard, parseWinPath(relPath) || "");
   };
 
   const calculateSize = () => {
@@ -71,7 +75,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
           </button>
         </div>
         <p className="text-sm dark:text-whisper-900 font-bold pointer-events-none flex items-center">
-          {basename(media.fsPath)}
+          {basename(parseWinPath(media.fsPath) || "")}
         </p>
         <p className="mt-2 text-sm dark:text-whisper-900 font-medium pointer-events-none flex items-center">
           <b className={`mr-2`}>Folder:</b> {getFolder()}
