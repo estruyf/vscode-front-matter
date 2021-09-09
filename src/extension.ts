@@ -107,8 +107,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const createContent = vscode.commands.registerCommand(COMMAND_NAME.createContent, Folders.create);
 
-	Folders.updateVsCodeCtx();
-
 	// Initialize command
 	Template.init();
 	const projectInit = vscode.commands.registerCommand(COMMAND_NAME.init, async (cb: Function) => {
@@ -128,7 +126,6 @@ export async function activate(context: vscode.ExtensionContext) {
 	vscode.workspace.onDidChangeConfiguration(() => {
 		Template.init();
 		Preview.init();
-		Folders.updateVsCodeCtx();
 
 		const exView = ExplorerView.getInstance();	
 		exView.getSettings();

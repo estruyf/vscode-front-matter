@@ -335,7 +335,7 @@
 				},
 				{
 					"command": "frontMatter.unregisterFolder",
-					"when": "explorerResourceIsFolder && resourcePath in frontMatter.registeredFolders",
+					"when": "explorerResourceIsFolder",
 					"group": "Front Matter@3"
 				}
 			],
