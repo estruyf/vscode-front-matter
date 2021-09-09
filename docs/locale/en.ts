@@ -20,6 +20,11 @@ export const strings = {
   hero_description_second: "We at Front Matter believe that you should keep using what you like. For us, this is Visual Studio Code. Use the same editor you use to code, but with unique features to make it suitable for writing and managing your Markdown articles.",
   hero_button_primary: "Get started",
 
+  // Hero media
+  hero_media_title: "Checking your media was never easier",
+  hero_media_description: "Quickly glance all your media files straight from within VS Code. You will be able to filter by your content folders, and perform quick media actions.",
+  hero_media_button_primary: "See what it can do",
+
   // Testimonials
   testimonials_title: "What others are saying",
   testimonials_description: "We love Front Matter and we're excited to share it with the world.",

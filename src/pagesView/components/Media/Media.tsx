@@ -9,6 +9,7 @@ import { Header } from '../Header';
 import { Spinner } from '../Spinner';
 import { SponsorMsg } from '../SponsorMsg';
 import { Item } from './Item';
+import { Lightbox } from './Lightbox';
 import { List } from './List';
 
 export interface IMediaProps {}
@@ -57,6 +58,8 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
         {
           loading && ( <Spinner /> )
         }
+
+        <Lightbox />
 
         <SponsorMsg beta={settings?.beta} version={settings?.versionInfo} />
       </div>

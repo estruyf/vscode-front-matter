@@ -2,10 +2,10 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import { ClipboardCopyIcon } from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { MediaInfo } from '../../../models/MediaPaths';
 import { DashboardMessage } from '../../DashboardMessage';
-import { SettingsSelector } from '../../state';
+import { LightboxAtom, SettingsSelector } from '../../state';
 
 export interface IItemProps {
   media: MediaInfo;
@@ -13,6 +13,7 @@ export interface IItemProps {
 
 export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWithChildren<IItemProps>) => {
   const settings = useRecoilValue(SettingsSelector);
+  const [ , setLightbox ] = useRecoilState(LightboxAtom);
 
   const getFolder = () => {
     if (settings?.wsFolder && media.fsPath) {
@@ -51,11 +52,15 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     }
   };
 
+  const openLightbox = () => {
+    setLightbox(media.vsPath || "");
+  };
+
   return (
-    <li className="relative bg-gray-50 dark:bg-vulcan-200 hover:shadow-xl dark:hover:bg-vulcan-100">
-      <div className="bg-white group block w-full aspect-w-10 aspect-h-7 overflow-hidden ">
-        <img src={media.vsPath} alt={basename(media.fsPath)} className="mx-auto object-cover pointer-events-none" />
-      </div>
+    <li className="group relative bg-gray-50 dark:bg-vulcan-200 hover:shadow-xl dark:hover:bg-vulcan-100">
+      <button className="bg-white block w-full aspect-w-10 aspect-h-7 overflow-hidden cursor-pointer" onClick={openLightbox}>
+        <img src={media.vsPath} alt={basename(media.fsPath)} className="mx-auto object-cover" />
+      </button>
       <div className={`relative py-4 pl-4 pr-10`}>
         <div className={`absolute top-4 right-4`}>
           <button title={`Copy media path`} 
