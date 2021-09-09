@@ -54,7 +54,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
       {
         view === "contents" && (
           <>
-            <div className={`px-4 my-2 flex items-center justify-between`}>
+            <div className={`px-4 mt-3 mb-2 flex items-center justify-between`}>
               <Searchbox />
 
               <div className={`flex items-center space-x-4`}>
