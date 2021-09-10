@@ -12,6 +12,7 @@
 - [#89](https://github.com/estruyf/vscode-front-matter/issues/89): Clear filter, sorting, and grouping button added
 - [#90](https://github.com/estruyf/vscode-front-matter/issues/90): Refactoring to use Recoil state management
 - [#91](https://github.com/estruyf/vscode-front-matter/issues/91): Support image previews from content folders
+- [#98](https://github.com/estruyf/vscode-front-matter/issues/98): Add drag and drop support for media upload in a folder
 
 ## [3.0.2] - 2021-08-31
 

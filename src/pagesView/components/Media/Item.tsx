@@ -1,5 +1,5 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { ClipboardCopyIcon, PhotographIcon } from '@heroicons/react/outline';
+import { ClipboardCopyIcon, PhotographIcon, TrashIcon } from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -45,6 +45,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     Messenger.send(DashboardMessage.copyToClipboard, parseWinPath(relPath) || "");
   };
 
+  const deleteMedia = () => {
+
+  };
+
   const calculateSize = () => {
     if (media?.stats?.size) {
       const size = media.stats.size / (1024*1024);
@@ -62,21 +66,27 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
 
   return (
     <li className="group relative bg-gray-50 dark:bg-vulcan-200 hover:shadow-xl dark:hover:bg-vulcan-100">
-      <button className="relative bg-gray-100 dark:bg-vulcan-300 block w-full aspect-w-10 aspect-h-7 overflow-hidden cursor-pointer h-48" onClick={openLightbox}>
+      <button className="relative bg-gray-200 dark:bg-vulcan-300 block w-full aspect-w-10 aspect-h-7 overflow-hidden cursor-pointer h-48" onClick={openLightbox}>
         <div className={`absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center`}>
-          <PhotographIcon className={`h-1/2 text-gray-50 dark:text-vulcan-200`} />
+          <PhotographIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />
         </div>
         <div className={`absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center`}>
           <img src={media.vsPath} alt={basename(media.fsPath)} className="mx-auto object-cover" />
         </div>
       </button>
       <div className={`relative py-4 pl-4 pr-10`}>
-        <div className={`absolute top-4 right-4`}>
+        <div className={`absolute top-4 right-4 flex flex-col space-y-2`}>
           <button title={`Copy media path`} 
                   className={`hover:text-teal-900 focus:outline-none`} 
                   onClick={copyToClipboard}>
             <ClipboardCopyIcon className={`h-5 w-5`} />
             <span className={`sr-only`}>Copy media path</span>
+          </button>
+          <button title={`Delete media`} 
+                  className={`hover:text-teal-900 focus:outline-none`} 
+                  onClick={deleteMedia}>
+            <TrashIcon className={`h-5 w-5`} />
+            <span className={`sr-only`}>Delete media</span>
           </button>
         </div>
         <p className="text-sm dark:text-whisper-900 font-bold pointer-events-none flex items-center">

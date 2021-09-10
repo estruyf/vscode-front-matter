@@ -1,7 +1,7 @@
 import { SETTINGS_CONTENT_STATIC_FOLDERS, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART } from './../constants/settings';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { dirname, extname, join } from "path";
-import { existsSync, statSync } from "fs";
+import { existsSync, statSync, writeFileSync } from "fs";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env } from "vscode";
 import { SettingsHelper } from '../helpers';
 import { TaxonomyType } from '../models';
@@ -19,12 +19,14 @@ import { parseJSON } from 'date-fns';
 import { ViewType } from '../pagesView/state';
 import { WebviewHelper } from '@estruyf/vscode';
 import { MediaInfo, MediaPaths } from './../models/MediaPaths';
+import { decodeBase64Image } from '../helpers/decodeBase64Image';
 
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
   private static isDisposed: boolean = true;
   private static media: MediaInfo[] = [];
+  private static timers: { [folder: string]: any } = {};
 
   /** 
    * Init the dashboard
@@ -142,6 +144,9 @@ export class Dashboard {
           Dashboard.media = [];
           Dashboard.getMedia(0, msg?.data?.folder);
           break;
+        case DashboardMessage.uploadMedia:
+          Dashboard.saveFile(msg?.data);
+          break;
       }
     });
   }
@@ -223,7 +228,7 @@ export class Dashboard {
     }
 
     // Filter the media
-    let files = Dashboard.media;
+    let files: MediaInfo[] = Dashboard.media;
     if (folder) {
       files = files.filter(f => f.fsPath.includes(folder));
     }
@@ -233,10 +238,16 @@ export class Dashboard {
 
     // Get media set
     files = files.slice(page * 16, ((page + 1) * 16));
-    files = files.map((file) => ({
-      ...file,
-      stats: statSync(file.fsPath)
-    }));
+    files = files.map((file) => {
+      try {
+        return {
+          ...file,
+          stats: statSync(file.fsPath)
+        };
+      } catch (e) {
+        return {...file, stats: undefined};
+      }
+    }).filter(f => f.stats !== undefined);
 
     const folders = [...new Set(Dashboard.media.map((file) => {
       let relFolderPath = wsFolder ? file.fsPath.substring(wsFolder.fsPath.length + 1) : file.fsPath;
@@ -345,6 +356,51 @@ export class Dashboard {
       vsPath: Dashboard.webview?.webview.asWebviewUri(file).toString(),
       stats: undefined
     } as MediaInfo));
+  }
+
+  /**
+   * Save the dropped file in the current folder
+   * @param fileData 
+   */
+  private static async saveFile({fileName, contents, folder}: { fileName: string; contents: string; folder: string | null }) {
+    if (fileName && contents) {
+      const wsFolder = Folders.getWorkspaceFolder();
+      const config = SettingsHelper.getConfig();
+      const staticFolder = config.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
+      const wsPath = wsFolder ? wsFolder.fsPath : "";
+      let absFolderPath = join(wsPath, staticFolder || "", folder || "");
+
+      if (!existsSync(absFolderPath)) {
+        absFolderPath = join(wsPath, folder || "");
+      }
+
+      if (!existsSync(absFolderPath)) {
+        Notifications.error(`We couldn't find your selected folder.`);
+        return;
+      }
+
+      const staticPath = join(absFolderPath, fileName);
+      const imgData = decodeBase64Image(contents);
+
+      if (imgData) {
+        writeFileSync(staticPath, imgData.data);
+        Notifications.info(`File ${fileName} uploaded to: ${staticFolder}/${folder}`);
+        
+        const folderPath = `${staticFolder}/${folder}`;
+        if (Dashboard.timers[folderPath]) {
+          clearTimeout(Dashboard.timers[folderPath]);
+          delete Dashboard.timers[folderPath];
+        }
+        
+        Dashboard.timers[folderPath] = setTimeout(() => {
+          Dashboard.media = [];
+          Dashboard.getMedia(0, folder || "");
+          delete Dashboard.timers[folderPath];
+        }, 500);
+      } else {
+        Notifications.error(`Something went wrong uploading ${fileName}`);
+      }
+    }
   }
 
   /**
