@@ -18,7 +18,7 @@ export const Hero: React.FunctionComponent<IHeroProps> = ({view, title, descript
   return (
     <div className={`overflow-hidden lg:relative`}>
       <div className={`${className || ""} px-4 sm:px-6 xl:px-0 py-12 sm:py-16 lg:relative lg:mx-auto lg:max-w-7xl lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24`}>
-        <div className={`max-w-3xl mx-auto lg:py-32 lg:max-w-none lg:mx-0 lg:px-0 ${view === "left" ? `lg:col-start-2` : `lg:col-start-1`}`}>
+        <div className={`max-w-3xl mx-auto lg:py-48 lg:max-w-none lg:mx-0 lg:px-0 ${view === "left" ? `lg:col-start-2` : `lg:col-start-1`}`}>
           <div>
             <h2 className="text-3xl lg:text-3xl xl:text-4xl tracking-tight font-extrabold sm:leading-none">
               {title}

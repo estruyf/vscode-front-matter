@@ -42,7 +42,17 @@ The media view has been created to make it easier to look at all media files ava
 
 ![Dashboard - Media view - Lightbox](/assets/lightbox.png)
 
-On the image card, there are actions like copying the relative path which you can then use in your article.
+### Media actions
+
+On the image card, there are actions like copying the relative path or deleting the media file.
+
+![Dashboard - Delete media file](/assets/delete-media.png)
+
+### Drag and Drop
+
+On the media view, we enabled drag and drop for your media files. You can easily drop any image from your explorer/finder window into one of your folders.
+
+![Dashboard - Upload media file](/assets/upload-media.png)
 
 ## Show on startup
 
