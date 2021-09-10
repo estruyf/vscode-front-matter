@@ -11,4 +11,5 @@ export enum DashboardMessage {
   copyToClipboard = 'copyToClipboard',
   refreshMedia = 'refreshMedia',
   uploadMedia = 'uploadMedia',
+  deleteMedia = 'deleteMedia',
 }

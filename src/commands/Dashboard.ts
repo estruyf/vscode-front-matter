@@ -1,7 +1,7 @@
 import { SETTINGS_CONTENT_STATIC_FOLDERS, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART } from './../constants/settings';
 import { ArticleHelper } from './../helpers/ArticleHelper';
-import { dirname, extname, join } from "path";
-import { existsSync, statSync, writeFileSync } from "fs";
+import { basename, dirname, extname, join } from "path";
+import { existsSync, statSync, unlinkSync, writeFileSync } from "fs";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env } from "vscode";
 import { SettingsHelper } from '../helpers';
 import { TaxonomyType } from '../models';
@@ -146,6 +146,9 @@ export class Dashboard {
           break;
         case DashboardMessage.uploadMedia:
           Dashboard.saveFile(msg?.data);
+          break;
+        case DashboardMessage.deleteMedia:
+          Dashboard.deleteFile(msg?.data);
           break;
       }
     });
@@ -400,6 +403,25 @@ export class Dashboard {
       } else {
         Notifications.error(`Something went wrong uploading ${fileName}`);
       }
+    }
+  }
+
+  /**
+   * Delete the selected file
+   * @param fileData 
+   */
+  private static async deleteFile({ file, page, folder }: { file: string; page: number; folder: string | null; }) {
+    if (!file) {
+      return;
+    }
+
+    try {
+      unlinkSync(file);
+
+      Dashboard.media = [];
+      Dashboard.getMedia(page || 0, folder || "");
+    } catch(err) {
+      Notifications.error(`Something went wrong deleting ${basename(file)}`);
     }
   }
 

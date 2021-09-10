@@ -397,7 +397,7 @@
 	"devDependencies": {
 		"@bendera/vscode-webview-elements": "0.6.2",
 		"@estruyf/vscode": "0.0.2",
-		"@headlessui/react": "1.4.0",
+		"@headlessui/react": "^1.4.1",
 		"@heroicons/react": "1.0.4",
 		"@iarna/toml": "2.2.3",
 		"@tailwindcss/forms": "^0.3.3",

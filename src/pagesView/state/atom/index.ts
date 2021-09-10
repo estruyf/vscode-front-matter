@@ -6,6 +6,7 @@ export * from './LightboxAtom';
 export * from './LoadingAtom';
 export * from './MediaFoldersAtom';
 export * from './MediaTotalAtom';
+export * from './PageAtom';
 export * from './SearchAtom';
 export * from './SelectedMediaFolderAtom';
 export * from './SettingsAtom';
