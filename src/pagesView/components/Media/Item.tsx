@@ -1,5 +1,5 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { ClipboardCopyIcon } from '@heroicons/react/outline';
+import { ClipboardCopyIcon, PhotographIcon } from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -62,8 +62,13 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
 
   return (
     <li className="group relative bg-gray-50 dark:bg-vulcan-200 hover:shadow-xl dark:hover:bg-vulcan-100">
-      <button className="bg-white block w-full aspect-w-10 aspect-h-7 overflow-hidden cursor-pointer" onClick={openLightbox}>
-        <img src={media.vsPath} alt={basename(media.fsPath)} className="mx-auto object-cover" />
+      <button className="relative bg-gray-100 dark:bg-vulcan-300 block w-full aspect-w-10 aspect-h-7 overflow-hidden cursor-pointer h-48" onClick={openLightbox}>
+        <div className={`absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center`}>
+          <PhotographIcon className={`h-1/2 text-gray-50 dark:text-vulcan-200`} />
+        </div>
+        <div className={`absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center`}>
+          <img src={media.vsPath} alt={basename(media.fsPath)} className="mx-auto object-cover" />
+        </div>
       </button>
       <div className={`relative py-4 pl-4 pr-10`}>
         <div className={`absolute top-4 right-4`}>
