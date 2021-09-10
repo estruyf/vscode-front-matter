@@ -1,9 +1,9 @@
 ---
 title: Settings
 slug: settings
-description: 
+description: null
 date: '2021-08-30T16:13:00.546Z'
-lastmod: '2021-08-30T16:13:01.763Z'
+lastmod: '2021-09-08T07:08:17.747Z'
 weight: 7
 ---
 
@@ -31,9 +31,9 @@ Specify if you want to highlight the Front Matter in the Markdown file.
 - Type: `boolean`
 - Default: `true`
 
-### frontMatter.content.folders
+### frontMatter.content.pageFolders
 
-This array of folders defines where the extension can easily create new content by running the create article command.
+This array of folders defines where the extension can find your content and create new content by running the create article command.
 
 - Type: `object[]`
 - Default: `[]`
@@ -42,13 +42,16 @@ Sample:
 
 ```json
 {
-  "frontMatter.content.folders": [{
-    "title": "Articles",
-    "fsPath": "<the path to the folder>",
-    "paths": ["<wsl-folder-path>"]
-  }]
+  "frontMatter.content.pageFolders": [
+    {
+      "title": "Blog posts",
+      "path": "[[workspace]]/content/posts"
+    }
+  ]
 }
 ```
+
+> **Important**: `[[workspace]]` is a placeholder that the extension uses to replace the workspace path. The reason why we choose to use this, is because some do not keep the original folder name.
 
 ### frontMatter.content.publicFolder
 
@@ -231,3 +234,10 @@ Specify the prefix you want to add for your new article filenames.
 
 - Type: `string`
 - Default: `yyyy-MM-dd`
+
+
+## Deprecated settings
+
+### frontMatter.content.folders
+
+This setting has been deprecated since version `3.1.0` in favor of the newly introduced `frontMatter.content.pageFolders` setting.

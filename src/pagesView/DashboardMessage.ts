@@ -7,4 +7,9 @@ export enum DashboardMessage {
   initializeProject = 'initializeProject',
   reload = 'reload',
   setPageViewType = 'setPageViewType',
+  getMedia = 'getMedia',
+  copyToClipboard = 'copyToClipboard',
+  refreshMedia = 'refreshMedia',
+  uploadMedia = 'uploadMedia',
+  deleteMedia = 'deleteMedia',
 }

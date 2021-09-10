@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
-import { MarkdownIcon } from '../../viewpanel/components/Icons/MarkdownIcon';
-import { DashboardMessage } from '../DashboardMessage';
-import { Page } from '../models/Page';
-import { ViewSelector, ViewType } from '../state';
-import { DateField } from './DateField';
-import { Status } from './Status';
+import { MarkdownIcon } from '../../../viewpanel/components/Icons/MarkdownIcon';
+import { DashboardMessage } from '../../DashboardMessage';
+import { Page } from '../../models/Page';
+import { ViewSelector, ViewType } from '../../state';
+import { DateField } from '../DateField';
+import { Status } from '../Status';
 import { Messenger } from '@estruyf/vscode/dist/client';
 
 export interface IItemProps extends Page {}

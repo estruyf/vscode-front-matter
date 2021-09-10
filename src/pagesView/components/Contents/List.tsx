@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
-import { ViewSelector, ViewType } from '../state';
+import { ViewSelector, ViewType } from '../../state';
 
 export interface IListProps {}
 

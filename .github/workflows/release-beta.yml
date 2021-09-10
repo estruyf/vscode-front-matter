@@ -1,0 +1,27 @@
+name: BETA Release
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build:
+    name: "Build and release"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install the dependencies
+        run: npm i
+      
+      - name: Prepare BETA
+        run: node scripts/beta-release.js $GITHUB_RUN_ID
+
+      - name: Publish
+        run: npx vsce publish -p ${{ secrets.VSCE_PAT }} --baseImagesUrl https://raw.githubusercontent.com/estruyf/vscode-front-matter/dev
+

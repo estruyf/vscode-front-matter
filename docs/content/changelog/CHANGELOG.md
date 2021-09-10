@@ -2,12 +2,17 @@
 
 ## [3.1.0] - (Upcoming release)
 
+- BETA version available at: [beta.frontmatter.codes](https://beta.frontmatter.codes)
+- [#72](https://github.com/estruyf/vscode-front-matter/issues/72): Media view on the dashboard
 - [#73](https://github.com/estruyf/vscode-front-matter/issues/73): List view option for the dashboard
 - [#77](https://github.com/estruyf/vscode-front-matter/issues/77): Dashboard grouping pages functionality integrated
 - [#81](https://github.com/estruyf/vscode-front-matter/issues/81): Optimizing the content folders to use a new setting to simplify configuration
 - [#87](https://github.com/estruyf/vscode-front-matter/issues/87): Fix issue with autofocus and command palette
 - [#88](https://github.com/estruyf/vscode-front-matter/issues/88): Fix issue with search sorting
+- [#89](https://github.com/estruyf/vscode-front-matter/issues/89): Clear filter, sorting, and grouping button added
 - [#90](https://github.com/estruyf/vscode-front-matter/issues/90): Refactoring to use Recoil state management
+- [#91](https://github.com/estruyf/vscode-front-matter/issues/91): Support image previews from content folders
+- [#98](https://github.com/estruyf/vscode-front-matter/issues/98): Add drag and drop support for media upload in a folder
 
 ## [3.0.2] - 2021-08-31
 

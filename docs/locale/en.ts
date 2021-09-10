@@ -7,6 +7,7 @@ export const strings = {
   cta_title_sr: " that helps managing your static sites and Markdown based sites. Supports Hugo, Jekyll, Docusaurus, NextJs, Gatsby, and more.",
   cta_description: "Why leave your editor if it can give you all power to manage your static sites? Front Matter is a headless CMS that lets you create, edit, and preview your Markdown based content straight within Visual Studio Code.",
   cta_button_primary: "Get the extension",
+  cta_button_beta_primary: "Get the BETA extension",
   cta_button_secondary: "Read our docs",
 
   // Generators
@@ -18,6 +19,11 @@ export const strings = {
   hero_description: "Why would you leave your editor when you can perform all tasks straight from within it?",
   hero_description_second: "We at Front Matter believe that you should keep using what you like. For us, this is Visual Studio Code. Use the same editor you use to code, but with unique features to make it suitable for writing and managing your Markdown articles.",
   hero_button_primary: "Get started",
+
+  // Hero media
+  hero_media_title: "Checking your media was never easier",
+  hero_media_description: "Quickly glance all your media files straight from within VS Code. You will be able to filter by your content folders, and perform quick media actions.",
+  hero_media_button_primary: "See what it can do",
 
   // Testimonials
   testimonials_title: "What others are saying",

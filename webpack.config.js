@@ -4,7 +4,7 @@
 
 const path = require('path');
 
-module.exports = [
+const config = [
   {
     name: 'extension',
     target: 'node',
@@ -97,3 +97,11 @@ module.exports = [
     }
   }
 ];
+
+module.exports = (env, argv) => {
+  for (const configItem of config) {
+    configItem.mode = argv.mode;
+  }
+
+  return config;
+};

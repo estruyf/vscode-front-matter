@@ -5,12 +5,14 @@ import { Folders } from './commands/Folders';
 import { Preview } from './commands/Preview';
 import { Project } from './commands/Project';
 import { Template } from './commands/Template';
-import { COMMAND_NAME } from './constants/Extension';
+import { COMMAND_NAME, EXTENSION_BETA_ID, EXTENSION_ID } from './constants/Extension';
 import { TaxonomyType } from './models';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
 import { TagType } from './viewpanel/TagType';
 import { ExplorerView } from './webview/ExplorerView';
 import { Extension } from './helpers/Extension';
+import { basename } from 'path';
+import { Notifications } from './helpers/Notifications';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
@@ -19,8 +21,15 @@ let collection: vscode.DiagnosticCollection;
 
 const mdSelector: vscode.DocumentSelector = { language: 'markdown', scheme: 'file' };
 
-export async function activate({ subscriptions, extensionUri, extensionPath, globalState }: vscode.ExtensionContext) {
-	const extension = Extension.getInstance(globalState, extensionUri);
+export async function activate(context: vscode.ExtensionContext) {
+	const { subscriptions, extensionUri, extensionPath } = context;
+
+	const extension = Extension.getInstance(context);
+
+	if (!extension.checkIfExtensionCanRun()) {
+		return undefined;
+	}
+
 	extension.migrateSettings()
 
 	collection = vscode.languages.createDiagnosticCollection('frontMatter');
@@ -98,8 +107,6 @@ export async function activate({ subscriptions, extensionUri, extensionPath, glo
 
 	const createContent = vscode.commands.registerCommand(COMMAND_NAME.createContent, Folders.create);
 
-	Folders.updateVsCodeCtx();
-
 	// Initialize command
 	Template.init();
 	const projectInit = vscode.commands.registerCommand(COMMAND_NAME.init, async (cb: Function) => {
@@ -119,7 +126,6 @@ export async function activate({ subscriptions, extensionUri, extensionPath, glo
 	vscode.workspace.onDidChangeConfiguration(() => {
 		Template.init();
 		Preview.init();
-		Folders.updateVsCodeCtx();
 
 		const exView = ExplorerView.getInstance();	
 		exView.getSettings();

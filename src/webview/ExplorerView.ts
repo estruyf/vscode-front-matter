@@ -20,6 +20,7 @@ import { Folders } from '../commands/Folders';
 import { Preview } from '../commands/Preview';
 import { openFileInEditor } from '../helpers/openFileInEditor';
 import { WebviewHelper } from '@estruyf/vscode';
+import { Extension } from '../helpers/Extension';
 
 const FILE_LIMIT = 10;
 
@@ -534,6 +535,8 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
     const nonce = WebviewHelper.getNonce();
 
+    const version = Extension.getInstance().getVersion();
+
     return `
       <!DOCTYPE html>
       <html lang="en">
@@ -549,7 +552,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       <body>
         <div id="app"></div>
 
-        <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759" alt="Daily usage" />
+        <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759&slug=${`panel-${version.installedVersion}`}" alt="Daily usage" />
 
         <script nonce="${nonce}" src="${scriptUri}"></script>
       </body>

@@ -1,5 +1,6 @@
 export enum DashboardCommand {
   loading = "loading",
   pages = "pages",
-  settings = "settings"
+  settings = "settings",
+  media = "media",
 }
