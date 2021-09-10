@@ -29,8 +29,12 @@ export class Extension {
    */
   public getVersion(): { usedVersion: string | undefined, installedVersion: string } {
     const frontMatter = extensions.getExtension(this.isBetaVersion() ? EXTENSION_BETA_ID : EXTENSION_ID)!;
-    const installedVersion = frontMatter.packageJSON.version;
+    let installedVersion = frontMatter.packageJSON.version;
     const usedVersion = this.ctx.globalState.get<string>(EXTENSION_STATE_VERSION);
+    
+    if (this.isBetaVersion()) {
+      installedVersion = `${installedVersion}-beta`;
+    }
 
     if (!usedVersion) {
       this.setVersion(installedVersion);
