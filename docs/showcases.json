@@ -26,5 +26,12 @@
     "description": "Personal website/blog of Luise Freese created with a Hugo template. Managed with Front Matter.",
     "image": "m365princess.png",
     "generator": "Hugo"
+  },
+  {
+    "title": "MichaelFasani.com",
+    "link": "https://www.michaelfasani.com",
+    "description": "Personal blog of Michael Fasani, content stored as markdown in GitHub, built with Gatsby, managed with Front Matter.",
+    "image": "www.michaelfasani.com.png",
+    "generator": "Gatsby"
   }
 ]
