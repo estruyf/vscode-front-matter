@@ -13,11 +13,11 @@ Managing your Markdown pages/media has never been easier in VS Code. With the Fr
 
 On the contents view, you can **search**, **filter**, **sort** your pages and much more.
 
-![Dashboard - Contents view](/assets/dashboard.png)
+![Dashboard - Contents view](https://res.cloudinary.com/estruyf/image/upload/w_1256/v1631520508/frontmatter/dashboard.png)
 
 On the media view, you can quickly glance all the available media files in your project and perform quick actions like copying the relative path.
 
-![Dashboard - Media view](/assets/media.png)
+![Dashboard - Media view](https://res.cloudinary.com/estruyf/image/upload/w_1256/v1631520508/frontmatter/media.png)
 
 In order to start using the dashboard, you will have to let the extension know in which folder(s) it can find your pages. Be sure to follow our [getting started](/docs/getting-started) guide.
 

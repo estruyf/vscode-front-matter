@@ -32,7 +32,7 @@ const Home: NextPage = () => {
               </p>
             </>
           )}
-          imgSrc={"https://res.cloudinary.com/estruyf/image/upload/h_710,w_1256/dpr_3.0/v1631342303/dashboard_bdu3xl.png"}
+          imgSrc={"https://res.cloudinary.com/estruyf/image/upload/w_1256/v1631520508/frontmatter/dashboard.png"}
           imgAlt={"Front Matter CMS editor dashboard of your static site content"}
           link={`/docs/getting-started`}
           linkText={strings(`hero_button_primary`)} />
@@ -42,7 +42,7 @@ const Home: NextPage = () => {
           view={"right"}
           title={strings(`hero_media_title`)}
           description={strings(`hero_media_description`)}
-          imgSrc={"https://res.cloudinary.com/estruyf/image/upload/h_710,w_1256/dpr_3.0/v1631342349/media_p1nhry.png"}
+          imgSrc={"https://res.cloudinary.com/estruyf/image/upload/w_1256/v1631520508/frontmatter/media.png"}
           imgAlt={"Front Matter CMS - media management was never easier in VS Code"}
           link={`/docs/dashboard`}
           linkText={strings(`hero_media_button_primary`)}

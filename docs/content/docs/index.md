@@ -23,7 +23,7 @@ Our main extension features are:
 - Support for custom actions/scripts
 - and many more
 
-![Site preview](/assets/site-preview.png)
+![Site preview](https://res.cloudinary.com/estruyf/image/upload/w_1256/v1631520508/frontmatter/preview.png)
 
 ## Why Front Matter?
 
