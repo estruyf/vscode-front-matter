@@ -13,7 +13,7 @@ export const Page: React.FunctionComponent<IPageProps> = ({items, page, children
     <div className={`mb-6 py-8 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8`}>
       <div className={`lg:flex`}>
 
-        <div className={`h-screen sticky top-16 lg:block hidden lg:w-60 xl:w-72`}>
+        <div className={`h-screen top-16 lg:block hidden lg:w-60 xl:w-72`}>
           <Sidebar items={items} />
         </div>
 
