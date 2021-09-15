@@ -428,6 +428,15 @@ input:checked + .field__toggle__slider:before {
   margin-right: .5rem;
 }
 
+.metadata_field__textarea, .metadata_field__textarea:focus {
+  outline: none;
+}
+
+.metadata_field__limit {
+  color: var(--vscode-inputValidation-warningBorder);
+  margin-top: .25rem;
+}
+
 /* File list */
 .file_list vscode-label {
   border-bottom: 1px solid var(--vscode-foreground);

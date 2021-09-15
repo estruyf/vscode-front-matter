@@ -16,6 +16,8 @@ import { useState } from 'react';
 import "react-datepicker/dist/react-datepicker.css";
 import { parseJSON } from 'date-fns';
 import { DateTime } from './Fields/DateTime';
+import { TextField } from './Fields/TextField';
+import { DefaultFields } from '../../constants';
 
 export interface IMetadataProps {
   settings: PanelSettings | undefined;
@@ -53,8 +55,23 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
     modifying = metadata[modDate] ? getDate(metadata[modDate] as string) : null;
   }
 
+  const descriptionField = settings?.seo.descriptionField || DefaultFields.Description;
+
   return (
     <Collapsible id={`tags`} title="Metadata" className={`inherit z-20`}>
+
+      <TextField 
+        label={`Title`}
+        limit={settings?.seo.title}
+        onChange={(value) => sendUpdate('title', value)}
+        value={metadata.title as string || null} />
+
+      <TextField 
+        label={`Description`}
+        limit={settings?.seo.description}
+        rows={3}
+        onChange={(value) => sendUpdate(descriptionField, value)}
+        value={metadata[descriptionField] as string || null} />
 
       <DateTime
         label={`Article date`}
