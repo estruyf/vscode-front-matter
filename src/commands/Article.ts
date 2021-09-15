@@ -93,7 +93,6 @@ export class Article {
       ArticleHelper.update(editor, article);
     } catch (e) {
       Notifications.error(`Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`);
-      console.log(e.message);
     }
   }
 

@@ -1,5 +1,5 @@
 import { Template } from './../commands/Template';
-import { SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD } from './../constants/settings';
+import { SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, SETTING_COMMA_SEPARATED_FIELDS } from './../constants/settings';
 import * as os from 'os';
 import { PanelSettings, CustomScript } from './../models/PanelSettings';
 import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv } from "vscode";
@@ -344,6 +344,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         writingSettingsEnabled: this.isWritingSettingsEnabled() || false,
         fmHighlighting: config.get(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT),
         preview: Preview.getSettings(),
+        commaSeparatedFields: config.get(SETTING_COMMA_SEPARATED_FIELDS) || [],
       } as PanelSettings
     });
   }

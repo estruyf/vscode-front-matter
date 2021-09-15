@@ -156,6 +156,10 @@
 					"type": "array",
 					"markdownDescription": "Specifies the categories which can be used in the Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.categories)"
 				},
+				"frontMatter.taxonomy.commaSeparatedFields": {
+					"type": "array",
+					"markdownDescription": "Specify the fields that are comma seperated arrays in your front matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.taxonomy.commaSeparatedFields)"
+				},
 				"frontMatter.taxonomy.dateFormat": {
 					"type": "string",
 					"markdownDescription": "Specify the date format for your articles. Check [date-fns formating](https://date-fns.org/v2.0.1/docs/format) for more information. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.dateformat)"

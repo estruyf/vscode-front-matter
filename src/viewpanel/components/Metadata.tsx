@@ -94,12 +94,13 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
                    unsetFocus={unsetFocus}
                    disableConfigurable />
       }
+
       {
-        (settings && settings.tags && settings.tags.length > 0) && (
+        (settings) && (
           <TagPicker type={TagType.tags} 
                      icon={<TagIcon />}
                      crntSelected={metadata.tags as string[] || []} 
-                     options={settings.tags} 
+                     options={settings?.tags || []} 
                      freeform={settings.freeform} 
                      focussed={focusElm === TagType.tags}
                      unsetFocus={unsetFocus} />
