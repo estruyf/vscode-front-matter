@@ -208,14 +208,26 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * @param metadata 
    */
   public pushMetadata(metadata: any) {
+    const config = SettingsHelper.getConfig();
+    const commaSeparated = config.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
+    
     const articleDetails = this.getArticleDetails();
 
     if (articleDetails) {
       metadata.articleDetails = articleDetails;
     }
 
+    let updatedMetadata = Object.assign({}, metadata);
+    if (commaSeparated) {
+      for (const key of commaSeparated) {
+        if (updatedMetadata[key] && typeof updatedMetadata[key] === "string") {
+          updatedMetadata[key] = updatedMetadata[key].split(",").map((s: string) => s.trim());
+        }
+      }
+    }
+    
     this.postWebviewMessage({ command: Command.metadata, data: {
-      ...metadata
+      ...updatedMetadata
     }});
   }
 
