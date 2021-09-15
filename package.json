@@ -158,7 +158,7 @@
 				},
 				"frontMatter.taxonomy.commaSeparatedFields": {
 					"type": "array",
-					"markdownDescription": "Specify the fields that are comma seperated arrays in your front matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.taxonomy.commaSeparatedFields)"
+					"markdownDescription": "Specify the fields names that Front Matter should treat as a comma-separated array. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.taxonomy.commaSeparatedFields)"
 				},
 				"frontMatter.taxonomy.dateFormat": {
 					"type": "string",

@@ -131,6 +131,15 @@ Specify the date format for your articles. Check [date-fns formating](https://da
 - Type: `string`
 - Default: `iso`
 
+## frontMatter.taxonomy.commaSeparatedFields
+
+Specify the fields names that Front Matter should treat as a comma-separated array.
+
+- Type: `string[]`
+- Default: `[]`
+
+> **Info**: As some site generators expect arrays in `YAML` to be comma-separated like Pelican. You can use this setting to define which of the front matter properties should be treated as an comma-separated array.
+
 ### frontMatter.taxonomy.tags
 
 Specifies the tags which can be used in the Front Matter.
