@@ -20,6 +20,7 @@ import { ViewType } from '../pagesView/state';
 import { WebviewHelper } from '@estruyf/vscode';
 import { MediaInfo, MediaPaths } from './../models/MediaPaths';
 import { decodeBase64Image } from '../helpers/decodeBase64Image';
+import { DefaultFields } from '../constants';
 
 
 export class Dashboard {
@@ -280,8 +281,8 @@ export class Dashboard {
     const config = SettingsHelper.getConfig();
     const wsFolder = Folders.getWorkspaceFolder();
 
-    const descriptionField = config.get(SETTING_SEO_DESCRIPTION_FIELD) as string || "description";
-    const dateField = config.get(SETTING_DATE_FIELD) as string || "date";
+    const descriptionField = config.get(SETTING_SEO_DESCRIPTION_FIELD) as string || DefaultFields.Description;
+    const dateField = config.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
     const staticFolder = config.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
 
     const folderInfo = await Folders.getInfo();

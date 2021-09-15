@@ -507,3 +507,21 @@ input:checked + .field__toggle__slider:before {
 .sponsor a > span {
   margin-right: .25rem;
 }
+
+/* Timepicker */
+.react-datepicker button:hover {
+  background-color: none !important;
+}
+
+.react-datepicker__triangle {
+  transform: translate3d(15px, 0px, 0px) !important;
+}
+
+.react-datepicker-time__input {
+  background: transparent !important;
+  color: #000 !important;
+}
+
+.react-datepicker-time__input input {
+  border: 1px solid #aeaeae !important;
+}

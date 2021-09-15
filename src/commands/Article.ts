@@ -7,6 +7,7 @@ import { ArticleHelper, SettingsHelper, SlugHelper } from '../helpers';
 import matter = require('gray-matter');
 import { Notifications } from '../helpers/Notifications';
 import { extname, basename } from 'path';
+import { DefaultFields } from '../constants';
 
 
 export class Article {
@@ -102,12 +103,11 @@ export class Article {
    */
   public static updateDate(article: matter.GrayMatterFile<string>, forceCreate: boolean = false) {
     const config = SettingsHelper.getConfig();
-    const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
-    const dateField = config.get(SETTING_DATE_FIELD) as string || "date";
-    const modField = config.get(SETTING_MODIFIED_FIELD) as string || "date";
+    const dateField = config.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
+    const modField = config.get(SETTING_MODIFIED_FIELD) as string || DefaultFields.PublishingDate;
 
-    article = this.articleDate(article, dateFormat, dateField, forceCreate);
-    article = this.articleDate(article, dateFormat, modField, false);   
+    article = this.articleDate(article, dateField, forceCreate);
+    article = this.articleDate(article, modField, false);   
 
     return article;
   }
@@ -128,19 +128,13 @@ export class Article {
     }
 
     const cloneArticle = Object.assign({}, article);
-    const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
-    const dateField = config.get(SETTING_MODIFIED_FIELD) as string || "lastmod";
+    const dateField = config.get(SETTING_MODIFIED_FIELD) as string || DefaultFields.LastModified;
     try {
-      if (dateFormat && typeof dateFormat === "string") {
-        cloneArticle.data[dateField] = format(new Date(), dateFormat);
-      } else {
-        cloneArticle.data[dateField] = new Date().toISOString();
-      }
+      cloneArticle.data[dateField] = Article.formatDate(new Date());
 
       ArticleHelper.update(editor, cloneArticle);
-    } catch (e) {
+    } catch (e: any) {
       Notifications.error(`Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`);
-      console.log(e.message);
     }
   }
 
@@ -251,6 +245,20 @@ export class Article {
   }
 
   /**
+   * Format the date to the defined format
+   */
+  public static formatDate(dateValue: Date) {
+    const config = SettingsHelper.getConfig();
+    const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
+
+    if (dateFormat && typeof dateFormat === "string") {
+      return format(dateValue, dateFormat);
+    } else {
+      return dateValue.toISOString();
+    }
+  }
+
+  /**
    * Get the current article
    */
   private static getCurrent(): matter.GrayMatterFile<string> | undefined {
@@ -274,13 +282,9 @@ export class Article {
    * @param field 
    * @param forceCreate 
    */
-  private static articleDate(article: matter.GrayMatterFile<string>, dateFormat: string, field: string, forceCreate: boolean) {
+  private static articleDate(article: matter.GrayMatterFile<string>, field: string, forceCreate: boolean) {
     if (typeof article.data[field] !== "undefined" || forceCreate) {
-      if (dateFormat && typeof dateFormat === "string") {
-        article.data[field] = format(new Date(), dateFormat);
-      } else {
-        article.data[field] = new Date().toISOString();
-      }
+      article.data[field] = Article.formatDate(new Date());
     }
     return article;
   }

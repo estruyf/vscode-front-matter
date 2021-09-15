@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as matter from "gray-matter";
 import * as fs from "fs";
-import { CONFIG_KEY, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES } from '../constants';
+import { CONFIG_KEY, DefaultFields, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { TomlEngine, getFmLanguage, getFormatOpts } from './TomlEngine';
 import { SettingsHelper } from '.';
@@ -117,7 +117,7 @@ export class ArticleHelper {
 
     const config = SettingsHelper.getConfig();
     const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
-    const dateField = config.get(SETTING_DATE_FIELD) as string || "date";
+    const dateField = config.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
 
     if (typeof article.data[dateField] !== "undefined") {
       if (dateFormat && typeof dateFormat === "string") {

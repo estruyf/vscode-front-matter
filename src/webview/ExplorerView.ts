@@ -1,9 +1,9 @@
 import { Template } from './../commands/Template';
-import { SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST } from './../constants/settings';
+import { SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD } from './../constants/settings';
 import * as os from 'os';
 import { PanelSettings, CustomScript } from './../models/PanelSettings';
 import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv } from "vscode";
-import { SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from "../constants";
+import { DefaultFields, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from "../constants";
 import { ArticleHelper, SettingsHelper } from "../helpers";
 import { Command } from "../viewpanel/Command";
 import { CommandToCode } from '../viewpanel/CommandToCode';
@@ -242,6 +242,10 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * Update the metadata of the article
    */
   private updateMetadata({field, value}: { field: string, value: string }) {
+    const config = SettingsHelper.getConfig();
+    const pubDate = config.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
+    const modDate = config.get(SETTING_MODIFIED_FIELD) as string || DefaultFields.LastModified;
+
     if (!field) {
       return;
     }
@@ -256,8 +260,12 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       return;
     }
 
-    article.data[field] = value;
-    ArticleHelper.update(editor, article);
+    if ((field === pubDate || field === modDate) && value) {
+      article.data[field] = Article.formatDate(new Date(value));
+    } else {
+      article.data[field] = value;
+    }
+    ArticleHelper.update(editor, article); 
   }
 
   /**
@@ -315,12 +323,17 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
           title: config.get(SETTING_SEO_TITLE_LENGTH) as number || -1,
           description: config.get(SETTING_SEO_DESCRIPTION_LENGTH) as number || -1,
           content: config.get(SETTING_SEO_CONTENT_MIN_LENGTH) as number || -1,
-          descriptionField: config.get(SETTING_SEO_DESCRIPTION_FIELD) as string || "description"
+          descriptionField: config.get(SETTING_SEO_DESCRIPTION_FIELD) as string || DefaultFields.Description
         },
         slug: {
           prefix: config.get(SETTING_SLUG_PREFIX) || "",
           suffix: config.get(SETTING_SLUG_SUFFIX) || "",
           updateFileName: !!config.get<boolean>(SETTING_SLUG_UPDATE_FILE_NAME),
+        },
+        date: {
+          format: config.get(SETTING_DATE_FORMAT),
+          pubDate: config.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate,
+          modDate: config.get(SETTING_MODIFIED_FIELD) as string || DefaultFields.LastModified
         },
         tags: config.get(SETTING_TAXONOMY_TAGS) || [],
         categories: config.get(SETTING_TAXONOMY_CATEGORIES) || [],

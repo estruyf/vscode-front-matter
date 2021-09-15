@@ -4,6 +4,7 @@ export interface PanelSettings {
   seo: SEO;
   slug: Slug;
   tags: string[];
+  date: DateInfo;
   categories: string[];
   freeform: boolean;
   scripts: CustomScript[];
@@ -12,6 +13,12 @@ export interface PanelSettings {
   writingSettingsEnabled: boolean;
   fmHighlighting: boolean;
   preview: PreviewSettings;
+}
+
+export interface DateInfo {
+  format: string;
+  pubDate: string;
+  modDate: string;
 }
 
 export interface SEO {
