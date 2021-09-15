@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.2.0] - (upcoming release)
+
+- [#101](https://github.com/estruyf/vscode-front-matter/issues/101): Date picker available on the metadata section
+
 ## [3.1.0] - 2021-09-10
 
 - BETA version available at: [beta.frontmatter.codes](https://beta.frontmatter.codes)
