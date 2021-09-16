@@ -1,21 +1,24 @@
 import { PhotographIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { MessageHelper } from '../../../helpers/MessageHelper';
-import { PanelSettings } from '../../../models';
 import { CommandToCode } from '../../CommandToCode';
 import { VsLabel } from '../VscodeComponents';
 
 export interface IPreviewImageFieldProps {
   label: string;
+  fieldName: string;
   value: string | null;
   filePath: string | null;
   onChange: (value: string | null) => void;
 }
 
-export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps> = ({label, onChange, value, filePath}: React.PropsWithChildren<IPreviewImageFieldProps>) => {
+export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps> = ({label, fieldName, onChange, value, filePath}: React.PropsWithChildren<IPreviewImageFieldProps>) => {
 
   const selectImage = () => {
-    MessageHelper.sendMessage(CommandToCode.selectImage, { filePath });
+    MessageHelper.sendMessage(CommandToCode.selectImage, { 
+      filePath,
+      fieldName
+    });
   };
 
   return (

@@ -109,12 +109,6 @@ Another setting is to allow you to sync the filename with the generated slug. Th
 
 ID: `frontMatter.generateSlug`
 
-### Set current date
-
-Sets/updates the current date in your Markdown file.
-
-ID: `frontMatter.setDate`
-
 ### Set lastmod date
 
 Sets/updates the current modified date in your Markdown file.
@@ -126,3 +120,11 @@ ID: `frontMatter.setLastModifiedDate`
 Open the site preview of your article in VS Code.
 
 ID: `frontMatter.preview`
+
+## Removed commands
+
+### Set current date
+
+This command has been removed, as it became obsolete since the introduction of Content Types.
+
+ID: `frontMatter.setDate`

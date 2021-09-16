@@ -52,7 +52,6 @@
 		"onCommand:frontMatter.createCategory",
 		"onCommand:frontMatter.exportTaxonomy",
 		"onCommand:frontMatter.remap",
-		"onCommand:frontMatter.setDate",
 		"onCommand:frontMatter.setLastModifiedDate",
 		"onCommand:frontMatter.generateSlug",
 		"onCommand:frontMatter.createFromTemplate",
@@ -180,18 +179,6 @@
 					"default": "",
 					"markdownDescription": "Specify the path you want to add after the host and before your slug. This can be used for instance to include the year/month like: `yyyy/MM`. The date will be generated based on the article its date field value. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.preview.pathname)",
 					"scope": "Site preview"
-				},
-				"frontMatter.taxonomy.dateField": {
-					"type": "string",
-					"default": "date",
-					"markdownDescription": "Specifies the date field name to use in your Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.datefield)",
-					"scope": "Taxonomy"
-				},
-				"frontMatter.taxonomy.modifiedField": {
-					"type": "string",
-					"default": "lastmod",
-					"markdownDescription": "Specifies the modified date field name to use in your Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.modifiedfield)",
-					"scope": "Taxonomy"
 				},
 				"frontMatter.taxonomy.tags": {
 					"type": "array",
@@ -331,6 +318,10 @@
 										"name": {
 											"type": "string",
 											"description": "Name of the field to use"
+										},
+										"title": {
+											"type": "string",
+											"description": "Title to show in the UI"
 										}
 									},
 									"additionalProperties": false,
@@ -346,30 +337,37 @@
 							"name": "default",
 							"fields": [
 								{
+									"title": "Title",
 									"name": "title",
 									"type": "string"
 								},
 								{
+									"title": "Description",
 									"name": "description",
 									"type": "string"
 								},
 								{
+									"title": "Publishing date",
 									"name": "date",
 									"type": "datetime"
 								},
 								{
+									"title": "Article preview",
 									"name": "preview",
 									"type": "image"
 								},
 								{
+									"title": "Is in draft",
 									"name": "draft",
 									"type": "boolean"
 								},
 								{
+									"title": "Tags",
 									"name": "tags",
 									"type": "tags"
 								},
 								{
+									"title": "Categories",
 									"name": "categories",
 									"type": "categories"
 								}
@@ -409,11 +407,6 @@
 			{
 				"command": "frontMatter.remap",
 				"title": "Remap or remove tag/category in all articles",
-				"category": "Front matter"
-			},
-			{
-				"command": "frontMatter.setDate",
-				"title": "Set current date",
 				"category": "Front matter"
 			},
 			{

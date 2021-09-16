@@ -1,7 +1,7 @@
 import { SETTING_AUTO_UPDATE_DATE, SETTING_MODIFIED_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TEMPLATES_PREFIX } from './../constants/settings';
 import * as vscode from 'vscode';
 import { TaxonomyType } from "../models";
-import { CONFIG_KEY, SETTING_DATE_FORMAT, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_DATE_FIELD } from "../constants/settings";
+import { CONFIG_KEY, SETTING_DATE_FORMAT, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX } from "../constants/settings";
 import { format } from "date-fns";
 import { ArticleHelper, SettingsHelper, SlugHelper } from '../helpers';
 import matter = require('gray-matter');
@@ -101,13 +101,7 @@ export class Article {
    * @param article 
    */
   public static updateDate(article: matter.GrayMatterFile<string>, forceCreate: boolean = false) {
-    const config = SettingsHelper.getConfig();
-    const dateField = config.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
-    const modField = config.get(SETTING_MODIFIED_FIELD) as string || DefaultFields.PublishingDate;
-
-    article = this.articleDate(article, dateField, forceCreate);
-    article = this.articleDate(article, modField, false);   
-
+    article.data = ArticleHelper.updateDates(article.data);   
     return article;
   }
 

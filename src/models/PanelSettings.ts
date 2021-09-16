@@ -13,12 +13,22 @@ export interface PanelSettings {
   writingSettingsEnabled: boolean;
   fmHighlighting: boolean;
   preview: PreviewSettings;
+  contentTypes: ContentType[];
+}
+
+export interface ContentType {
+  name: string;
+  fields: Field[];
+}
+
+export interface Field {
+  title?: string;
+  name: string;
+  type: "string" | "datetime" | "boolean" | "image" | "tags" | "categories";
 }
 
 export interface DateInfo {
   format: string;
-  pubDate: string;
-  modDate: string;
 }
 
 export interface SEO {

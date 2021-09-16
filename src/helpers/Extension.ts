@@ -1,8 +1,10 @@
 import { basename } from "path";
 import { extensions, Uri, ExtensionContext } from "vscode";
 import { Folders, WORKSPACE_PLACEHOLDER } from "../commands/Folders";
-import { SETTINGS_CONTENT_FOLDERS, SETTINGS_CONTENT_PAGE_FOLDERS } from "../constants";
+import { SETTINGS_CONTENT_FOLDERS, SETTINGS_CONTENT_PAGE_FOLDERS, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTING_TAXONOMY_CONTENT_TYPES } from "../constants";
+import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
 import { EXTENSION_BETA_ID, EXTENSION_ID, EXTENSION_STATE_VERSION } from "../constants/Extension";
+import { ContentType } from "../models";
 import { Notifications } from "./Notifications";
 import { SettingsHelper } from "./SettingsHelper";
 
@@ -65,6 +67,8 @@ export class Extension {
    */
   public async migrateSettings(): Promise<void> {
     const config = SettingsHelper.getConfig();
+
+    // Migration to version 3.1.0
     const folders = config.get<any>(SETTINGS_CONTENT_FOLDERS);
     if (folders && folders.length > 0) {
       const workspace = Folders.getWorkspaceFolder();
@@ -76,6 +80,44 @@ export class Extension {
       }));
 
       await config.update(`${SETTINGS_CONTENT_PAGE_FOLDERS}`, paths);
+    }
+
+    // Migration to version 3.2.0
+    const dateField = config.get<string>(SETTING_DATE_FIELD);
+    const lastModField = config.get<string>(SETTING_MODIFIED_FIELD);
+    const description = config.get<string>(SETTING_SEO_DESCRIPTION_FIELD);
+    const contentTypes = config.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
+
+    if (contentTypes) {
+      let defaultContentType = contentTypes.find(ct => ct.name === DEFAULT_CONTENT_TYPE_NAME);
+
+      if (defaultContentType) {
+        if (dateField && dateField !== "date") {
+          defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== "date");
+          defaultContentType.fields.push({
+            name: dateField,
+            type: "datetime"
+          });
+        }
+  
+        if (lastModField && lastModField !== "lastmod") {
+          defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== "lastmod");
+          defaultContentType.fields.push({
+            name: lastModField,
+            type: "datetime"
+          });
+        }
+  
+        if (description && description !== "description") {
+          defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== "lastmod");
+          defaultContentType.fields.push({
+            name: description,
+            type: "string"
+          });
+        }
+  
+        await config.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes);
+      }
     }
   }
 

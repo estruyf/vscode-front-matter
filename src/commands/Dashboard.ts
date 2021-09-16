@@ -165,7 +165,7 @@ export class Dashboard {
           if (msg.data?.file && msg.data?.image) {
             await commands.executeCommand(`workbench.view.extension.frontmatter-explorer`);
             await EditorHelper.showFile(msg.data.file);
-            ExplorerView.getInstance(extensionUri).updateMetadata({field: `preview`, value: msg.data.image});
+            ExplorerView.getInstance(extensionUri).updateMetadata({field: msg.data.fieldName, value: msg.data.image});
           }
           break;
       }

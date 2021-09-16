@@ -57,7 +57,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     const relPath = getRelPath();
     Messenger.send(DashboardMessage.insertPreviewImage, {
       image: parseWinPath(relPath) || "",
-      file: viewData?.data?.filePath
+      file: viewData?.data?.filePath,
+      fieldName: viewData?.data?.fieldName
     });
   };
 

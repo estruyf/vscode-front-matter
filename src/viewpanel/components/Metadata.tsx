@@ -1,22 +1,21 @@
 import * as React from 'react';
-import { PanelSettings } from '../../models';
+import { Field, PanelSettings } from '../../models';
 import { CommandToCode } from '../CommandToCode';
 import { MessageHelper } from '../../helpers/MessageHelper';
 import { TagType } from '../TagType';
 import { Collapsible } from './Collapsible';
 import { Toggle } from './Fields/Toggle';
-import { ListUnorderedIcon } from './Icons/ListUnorderedIcon';
-import { RocketIcon } from './Icons/RocketIcon';
 import { SymbolKeywordIcon } from './Icons/SymbolKeywordIcon';
 import { TagIcon } from './Icons/TagIcon';
 import { TagPicker } from './TagPicker';
 import { parseJSON } from 'date-fns';
 import { DateTimeField } from './Fields/DateTimeField';
 import { TextField } from './Fields/TextField';
-import { DefaultFields } from '../../constants';
 
 import "react-datepicker/dist/react-datepicker.css";
 import { PreviewImageField } from './Fields/PreviewImageField';
+import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from '../../constants/ContentType';
+import { ListUnorderedIcon } from './Icons/ListUnorderedIcon';
 export interface IMetadataProps {
   settings: PanelSettings | undefined;
   metadata: { [prop: string]: string[] | string | null };
@@ -44,59 +43,109 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
     return date;
   }
 
-  let publishing: Date | null = null;
-  let modifying: Date | null = null;
-
-  if (settings?.date) {
-    const { modDate, pubDate } = settings.date;
-    publishing = metadata[pubDate] ? getDate(metadata[pubDate] as string) : null;
-    modifying = metadata[modDate] ? getDate(metadata[modDate] as string) : null;
+  if (!settings) {
+    return null;
   }
 
-  const descriptionField = settings?.seo.descriptionField || DefaultFields.Description;
+  const contentTypeName = metadata.type as string || DEFAULT_CONTENT_TYPE_NAME;
+  let contentType = settings.contentTypes.find(ct => ct.name === contentTypeName);
+
+  if (!contentType) {
+    contentType = settings.contentTypes.find(ct => ct.name === DEFAULT_CONTENT_TYPE_NAME);
+  }
+
+  if (!contentType || !contentType.fields) {
+    contentType = DEFAULT_CONTENT_TYPE;
+  }
+
+  const renderFields = (ctFields: Field[]) => {
+    if (!ctFields) {
+      return;
+    }
+
+    return ctFields.map(field => {
+      if (field.type === 'datetime') {
+        const dateValue = metadata[field.name] ? getDate(metadata[field.name] as string) : null;
+
+        return (
+          <DateTimeField
+            key={field.name}
+            label={field.title || field.name}
+            date={dateValue}
+            format={settings?.date?.format}
+            onChange={(date => sendUpdate(field.name, date))} />
+        );
+      } else if (field.type === 'boolean') {
+        return (
+          <Toggle 
+            key={field.name}
+            label={field.title || field.name}
+            checked={!!metadata[field.name] as any} 
+            onChanged={(checked) => sendUpdate(field.name, checked)} />
+        );
+      } else if (field.type === 'string') {
+        const textValue = metadata[field.name];
+
+        let limit = -1;
+        if (field.name === 'title') {
+          limit = settings?.seo.title;
+        } else if (field.name === settings.seo.descriptionField) {
+          limit = settings?.seo.description;
+        }
+
+        return (
+          <TextField 
+            key={field.name}
+            label={field.title || field.name}
+            limit={limit}
+            rows={3}
+            onChange={(value) => sendUpdate(field.name, value)}
+            value={textValue as string || null} />
+        );
+      } else if (field.type === 'image') {
+        return (
+          <PreviewImageField 
+            key={field.name}
+            label={field.title || field.name}
+            fieldName={field.name}
+            filePath={metadata.filePath as string}
+            value={metadata[field.name] as string}
+            onChange={(value => sendUpdate(field.name, value))} />
+        );
+      } else if (field.type === 'tags') {
+        return (
+          <TagPicker 
+            key={field.name}
+            type={TagType.tags} 
+            icon={<TagIcon />}
+            crntSelected={metadata[field.name] as string[] || []} 
+            options={settings?.tags || []} 
+            freeform={settings.freeform} 
+            focussed={focusElm === TagType.tags}
+            unsetFocus={unsetFocus} />
+        );
+      } else if (field.type === 'categories') {
+        return (
+          <TagPicker 
+            key={field.name}
+            type={TagType.categories}
+            icon={<ListUnorderedIcon />}
+            crntSelected={metadata.categories as string[] || []} 
+            options={settings.categories} 
+            freeform={settings.freeform} 
+            focussed={focusElm === TagType.categories}
+            unsetFocus={unsetFocus} />
+        );
+      }
+    });
+  };
 
   return (
     <Collapsible id={`tags`} title="Metadata" className={`inherit z-20`}>
 
-      <TextField 
-        label={`Title`}
-        limit={settings?.seo.title}
-        onChange={(value) => sendUpdate('title', value)}
-        value={metadata.title as string || null} />
-
-      <TextField 
-        label={`Description`}
-        limit={settings?.seo.description}
-        rows={3}
-        onChange={(value) => sendUpdate(descriptionField, value)}
-        value={metadata[descriptionField] as string || null} />
-
-      <DateTimeField
-        label={`Article date`}
-        date={publishing}
-        format={settings?.date?.format}
-        onChange={(date => sendUpdate(settings?.date?.pubDate, date))} />
-
       {
-        modifying && (
-          <DateTimeField
-            label={`Modified date`}
-            date={modifying}
-            format={settings?.date?.format}
-            onChange={(date => sendUpdate(settings?.date?.modDate, date))} />
-        )
+        renderFields(contentType?.fields)
       }
-
-      <Toggle 
-        label={`Published`}
-        checked={!metadata.draft as any} 
-        onChanged={(checked) => sendUpdate("draft", !checked)} />
-
-      <PreviewImageField 
-        label={`Preview`}
-        filePath={metadata.filePath as string}
-        value={metadata.preview as string}
-        onChange={(value => sendUpdate('preview', value))} />
 
       {
         <TagPicker type={TagType.keywords} 
@@ -107,29 +156,6 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
                    focussed={focusElm === TagType.keywords}
                    unsetFocus={unsetFocus}
                    disableConfigurable />
-      }
-
-      {
-        (settings) && (
-          <TagPicker type={TagType.tags} 
-                     icon={<TagIcon />}
-                     crntSelected={metadata.tags as string[] || []} 
-                     options={settings?.tags || []} 
-                     freeform={settings.freeform} 
-                     focussed={focusElm === TagType.tags}
-                     unsetFocus={unsetFocus} />
-        )
-      }
-      {
-        (settings && settings.categories && settings.categories.length > 0) && (
-          <TagPicker type={TagType.categories}
-                     icon={<ListUnorderedIcon />}
-                     crntSelected={metadata.categories as string[] || []} 
-                     options={settings.categories} 
-                     freeform={settings.freeform} 
-                     focussed={focusElm === TagType.categories}
-                     unsetFocus={unsetFocus} />
-        )
       }
     </Collapsible>
   );

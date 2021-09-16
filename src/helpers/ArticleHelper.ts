@@ -1,12 +1,15 @@
+import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from './../constants/ContentType';
+import { ContentType } from './../models/PanelSettings';
 import * as vscode from 'vscode';
 import * as matter from "gray-matter";
 import * as fs from "fs";
-import { DefaultFields, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES } from '../constants';
+import { DefaultFields, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_TAXONOMY_CONTENT_TYPES } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { TomlEngine, getFmLanguage, getFormatOpts } from './TomlEngine';
 import { SettingsHelper } from '.';
 import { parse } from 'date-fns';
 import { Notifications } from './Notifications';
+import { Article } from '../commands';
 
 export class ArticleHelper {
   
@@ -125,6 +128,42 @@ export class ArticleHelper {
       }
     }
     return;
+  }
+
+  /**
+   * Retrieve the content type of the current file
+   * @param updatedMetadata 
+   */
+  public static getContentType(metadata: { [field: string]: string; }): ContentType {
+    const config = SettingsHelper.getConfig();
+    const contentTypes = config.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
+
+    if (!contentTypes || !metadata) {
+      return DEFAULT_CONTENT_TYPE;
+    }
+
+    let contentType = contentTypes.find(ct => ct.name === (metadata.type || DEFAULT_CONTENT_TYPE_NAME));
+    if (!contentType) {
+      contentType = contentTypes.find(ct => ct.name === DEFAULT_CONTENT_TYPE_NAME);
+    }
+    return contentType || DEFAULT_CONTENT_TYPE;
+  }
+
+  /**
+   * Update all dates in the metadata
+   * @param metadata 
+   */
+  public static updateDates(metadata: { [field: string]: string; }) {
+    const contentType = ArticleHelper.getContentType(metadata);
+    const dateFields = contentType.fields.filter((field) => field.type === "datetime");
+
+    for (const dateField of dateFields) {
+      if (typeof metadata[dateField.name] !== "undefined") {
+        metadata[dateField.name] = Article.formatDate(new Date());
+      }
+    }
+
+    return metadata;
   }
 
   /**

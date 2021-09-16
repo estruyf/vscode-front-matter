@@ -22,7 +22,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
     );
   }
 
-  if (!metadata || Object.keys(metadata).length === 0) {
+  if (!metadata || Object.keys(metadata || {}).length === 0) {
     return (
       <BaseView settings={settings} folderAndFiles={folderAndFiles} />
     );

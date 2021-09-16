@@ -1,6 +1,6 @@
 import { DashboardData } from './../models/DashboardData';
 import { Template } from './../commands/Template';
-import { SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, SETTING_COMMA_SEPARATED_FIELDS, SETTINGS_CONTENT_STATIC_FOLDERS } from './../constants/settings';
+import { SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, SETTING_COMMA_SEPARATED_FIELDS, SETTINGS_CONTENT_STATIC_FOLDERS, SETTING_TAXONOMY_CONTENT_TYPES } from './../constants/settings';
 import * as os from 'os';
 import { PanelSettings, CustomScript } from './../models/PanelSettings';
 import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv } from "vscode";
@@ -94,9 +94,6 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
           break;
         case CommandToCode.updateSlug:
           Article.generateSlug();
-          break;
-        case CommandToCode.updateDate:
-          Article.setDate();
           break;
         case CommandToCode.updateLastMod:
           Article.setLastModifiedDate();
@@ -221,6 +218,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     const config = SettingsHelper.getConfig();
     const commaSeparated = config.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
     const staticFolder = config.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
+    const contentTypes = config.get<string>(SETTING_TAXONOMY_CONTENT_TYPES);
     
     const articleDetails = this.getArticleDetails();
 
@@ -237,27 +235,38 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       }
     }
 
-    if (updatedMetadata.preview && wsFolder) {
-      const staticPath = join(wsFolder.fsPath, staticFolder || "", updatedMetadata.preview);
-      const contentFolderPath = filePath ? join(dirname(filePath), updatedMetadata.preview) : null;
+    const keys = Object.keys(updatedMetadata);
+    if (keys.length > 0) {
+      updatedMetadata.filePath = filePath;
+    }
 
-      let previewUri = null;
-      if (existsSync(staticPath)) {
-        previewUri = Uri.file(staticPath);
-      } else if (contentFolderPath && existsSync(contentFolderPath)) {
-        previewUri = Uri.file(contentFolderPath);
-      }
+    if (keys.length > 0 && contentTypes && wsFolder) {
+      // Get the current content type
+      const contentType = ArticleHelper.getContentType(updatedMetadata);
+      if (contentType) {
+        const imageFields = contentType.fields.filter((field) => field.type === "image");
+        for (const field of imageFields) {
+          const staticPath = join(wsFolder.fsPath, staticFolder || "", updatedMetadata[field.name]);
+          const contentFolderPath = filePath ? join(dirname(filePath), updatedMetadata[field.name]) : null;
 
-      if (previewUri) {
-        const preview = this.panel?.webview.asWebviewUri(previewUri);
-        updatedMetadata.preview = preview?.toString() || "";
-      } else {
-        updatedMetadata.preview = "";
+          let previewUri = null;
+          if (existsSync(staticPath)) {
+            previewUri = Uri.file(staticPath);
+          } else if (contentFolderPath && existsSync(contentFolderPath)) {
+            previewUri = Uri.file(contentFolderPath);
+          }
+
+          if (previewUri) {
+            const preview = this.panel?.webview.asWebviewUri(previewUri);
+            updatedMetadata[field.name]= preview?.toString() || "";
+          } else {
+            updatedMetadata[field.name] = "";
+          }
+        }
       }
     }
     
     this.postWebviewMessage({ command: Command.metadata, data: {
-      filePath,
       ...updatedMetadata
     }});
   }
@@ -285,10 +294,6 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * Update the metadata of the article
    */
   public async updateMetadata({field, value}: { field: string, value: string }) {
-    const config = SettingsHelper.getConfig();
-    const pubDate = config.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
-    const modDate = config.get(SETTING_MODIFIED_FIELD) as string || DefaultFields.LastModified;
-
     if (!field) {
       return;
     }
@@ -303,11 +308,17 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       return;
     }
 
-    if ((field === pubDate || field === modDate) && value) {
-      article.data[field] = Article.formatDate(new Date(value));
-    } else {
-      article.data[field] = value;
+    const contentType = ArticleHelper.getContentType(article.data);
+    const dateFields = contentType.fields.filter((field) => field.type === "datetime");
+
+    for (const dateField of dateFields) {
+      if ((field === dateField.name) && value) {
+        article.data[field] = Article.formatDate(new Date(value));
+      } else {
+        article.data[field] = value;
+      }
     }
+    
     ArticleHelper.update(editor, article);
     this.pushMetadata(article.data);
   }
@@ -375,9 +386,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
           updateFileName: !!config.get<boolean>(SETTING_SLUG_UPDATE_FILE_NAME),
         },
         date: {
-          format: config.get(SETTING_DATE_FORMAT),
-          pubDate: config.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate,
-          modDate: config.get(SETTING_MODIFIED_FIELD) as string || DefaultFields.LastModified
+          format: config.get(SETTING_DATE_FORMAT)
         },
         tags: config.get(SETTING_TAXONOMY_TAGS) || [],
         categories: config.get(SETTING_TAXONOMY_CATEGORIES) || [],
@@ -389,6 +398,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         fmHighlighting: config.get(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT),
         preview: Preview.getSettings(),
         commaSeparatedFields: config.get(SETTING_COMMA_SEPARATED_FIELDS) || [],
+        contentTypes: config.get(SETTING_TAXONOMY_CONTENT_TYPES) || [],
       } as PanelSettings
     });
   }

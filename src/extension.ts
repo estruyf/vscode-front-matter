@@ -78,8 +78,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	let remap = vscode.commands.registerCommand(COMMAND_NAME.remap, Settings.remap);
 
-	let setDate = vscode.commands.registerCommand(COMMAND_NAME.setDate, Article.setDate);
-
 	let setLastModifiedDate = vscode.commands.registerCommand(COMMAND_NAME.setLastModifiedDate, Article.setLastModifiedDate);
 
 	let generateSlug = vscode.commands.registerCommand(COMMAND_NAME.generateSlug, Article.generateSlug);
@@ -170,7 +168,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		createCategory,
 		exportTaxonomy,
 		remap,
-		setDate,
 		setLastModifiedDate,
 		generateSlug,
 		createFromTemplate,
