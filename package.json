@@ -93,27 +93,66 @@
 				"frontMatter.content.autoUpdateDate": {
 					"type": "boolean",
 					"default": false,
-					"markdownDescription": "Specify if you want to automatically update the modified date of your article/page. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.autoupdatedate)"
+					"markdownDescription": "Specify if you want to automatically update the modified date of your article/page. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.autoupdatedate)",
+					"scope": "Content"
 				},
 				"frontMatter.content.fmHighlight": {
 					"type": "boolean",
 					"default": true,
-					"markdownDescription": "Specify if you want to highlight the Front Matter in the Markdown file. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.fmhighlight)"
+					"markdownDescription": "Specify if you want to highlight the Front Matter in the Markdown file. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.fmhighlight)",
+					"scope": "Content"
 				},
 				"frontMatter.content.pageFolders": {
 					"type": "array",
 					"default": [],
-					"markdownDescription": "This array of folders defines where the extension can retrieve or create new pages. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.pagefolders)"
+					"markdownDescription": "This array of folders defines where the extension can retrieve or create new pages. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.pagefolders)",
+					"items": {
+						"type": "object",
+						"properties": {
+							"title": {
+								"type": "string",
+								"description": "Name of the folder"
+							},
+							"path": {
+								"type": "string",
+								"description": "Path of the folder"
+							}
+						},
+						"additionalProperties": false,
+						"required": ["title", "path"]
+					},
+					"scope": "Content"
 				},
 				"frontMatter.content.publicFolder": {
 					"type": "string",
 					"default": "",
-					"markdownDescription": "Specify the folder name where all your assets are located. For instance in Hugo this is the `static` folder. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.publicfolder)"
+					"markdownDescription": "Specify the folder name where all your assets are located. For instance in Hugo this is the `static` folder. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.publicfolder)",
+					"scope": "Content"
 				},
 				"frontMatter.custom.scripts": {
 					"type": "array",
 					"default": [],
-					"markdownDescription": "Specify the path to a Node.js script to execute. The current file path will be provided as an argument. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.custom.scripts)"
+					"markdownDescription": "Specify the path to a Node.js script to execute. The current file path will be provided as an argument. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.custom.scripts)",
+					"items": {
+						"type": "object",
+						"properties": {
+							"title": {
+								"type": "string",
+								"description": "Title you want to give to your script. Will be shown as the title of the button."
+							},
+							"script": {
+								"type": "string",
+								"description": "Path to the script to execute"
+							},
+							"nodeBin": {
+								"type": "string",
+								"description": "Path to the node executable. This is required when using NVM, so that there is no confusion of which node version to use."
+							}
+						},
+						"additionalProperties": false,
+						"required": ["title", "script"]
+					},
+					"scope": "Custom scripts"
 				},
 				"frontMatter.dashboard.openOnStart": {
 					"type": [
@@ -121,71 +160,100 @@
 						"null"
 					],
 					"default": null,
-					"markdownDescription": "Specify if you want to open the dashboard when you start VS Code.  [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.openonstart)"
+					"markdownDescription": "Specify if you want to open the dashboard when you start VS Code.  [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.openonstart)",
+					"scope": "Dashboard"
 				},
 				"frontMatter.panel.freeform": {
 					"type": "boolean",
 					"default": true,
-					"markdownDescription": "Specifies if you want to allow yourself from entering unknown tags/categories in the tag picker (when enabled, you will have the option to store them afterwards). Default: true. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.panel.freeform)"
+					"markdownDescription": "Specifies if you want to allow yourself from entering unknown tags/categories in the tag picker (when enabled, you will have the option to store them afterwards). Default: true. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.panel.freeform)",
+					"scope": "Panel"
 				},
 				"frontMatter.preview.host": {
 					"type": "string",
 					"default": "",
-					"markdownDescription": "Specify the host URL (example: http://localhost:1313) to be used when opening the preview. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.preview.host)"
+					"markdownDescription": "Specify the host URL (example: http://localhost:1313) to be used when opening the preview. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.preview.host)",
+					"scope": "Site preview"
 				},
 				"frontMatter.preview.pathName": {
 					"type": "string",
 					"default": "",
-					"markdownDescription": "Specify the path you want to add after the host and before your slug. This can be used for instance to include the year/month like: `yyyy/MM`. The date will be generated based on the article its date field value. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.preview.pathname)"
+					"markdownDescription": "Specify the path you want to add after the host and before your slug. This can be used for instance to include the year/month like: `yyyy/MM`. The date will be generated based on the article its date field value. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.preview.pathname)",
+					"scope": "Site preview"
 				},
 				"frontMatter.taxonomy.dateField": {
 					"type": "string",
 					"default": "date",
-					"markdownDescription": "Specifies the date field name to use in your Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.datefield)"
+					"markdownDescription": "Specifies the date field name to use in your Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.datefield)",
+					"scope": "Taxonomy"
 				},
 				"frontMatter.taxonomy.modifiedField": {
 					"type": "string",
 					"default": "lastmod",
-					"markdownDescription": "Specifies the modified date field name to use in your Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.modifiedfield)"
+					"markdownDescription": "Specifies the modified date field name to use in your Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.modifiedfield)",
+					"scope": "Taxonomy"
 				},
 				"frontMatter.taxonomy.tags": {
 					"type": "array",
-					"markdownDescription": "Specifies the tags which can be used in the Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.tags)"
+					"markdownDescription": "Specifies the tags which can be used in the Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.tags)",
+					"items": {
+						"type": "string"
+					},
+					"scope": "Taxonomy"
 				},
 				"frontMatter.taxonomy.categories": {
 					"type": "array",
-					"markdownDescription": "Specifies the categories which can be used in the Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.categories)"
+					"markdownDescription": "Specifies the categories which can be used in the Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.categories)",
+					"items": {
+						"type": "string"
+					},
+					"scope": "Taxonomy"
 				},
 				"frontMatter.taxonomy.commaSeparatedFields": {
 					"type": "array",
-					"markdownDescription": "Specify the fields names that Front Matter should treat as a comma-separated array. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.taxonomy.commaSeparatedFields)"
+					"markdownDescription": "Specify the fields names that Front Matter should treat as a comma-separated array. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.taxonomy.commaSeparatedFields)",
+					"items": {
+						"type": "string",
+						"description": "Name of the fields you want to use as comma-separated arrays."
+					},
+					"scope": "Taxonomy"
 				},
 				"frontMatter.taxonomy.dateFormat": {
 					"type": "string",
-					"markdownDescription": "Specify the date format for your articles. Check [date-fns formating](https://date-fns.org/v2.0.1/docs/format) for more information. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.dateformat)"
+					"markdownDescription": "Specify the date format for your articles. Check [date-fns formating](https://date-fns.org/v2.0.1/docs/format) for more information. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.dateformat)",
+					"scope": "Taxonomy"
 				},
 				"frontMatter.taxonomy.slugPrefix": {
 					"type": "string",
-					"markdownDescription": "Specify a prefix for the slug. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.slugprefix)"
+					"markdownDescription": "Specify a prefix for the slug. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.slugprefix)",
+					"scope": "Taxonomy"
 				},
 				"frontMatter.taxonomy.slugSuffix": {
 					"type": "string",
-					"markdownDescription": "Specify a suffix for the slug. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.slugsuffix)"
+					"markdownDescription": "Specify a suffix for the slug. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.slugsuffix)",
+					"scope": "Taxonomy"
 				},
 				"frontMatter.taxonomy.alignFilename": {
 					"type": "boolean",
 					"default": false,
-					"markdownDescription": "Align the filename with the new slug when it gets generated. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.alignfilename)"
+					"markdownDescription": "Align the filename with the new slug when it gets generated. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.alignfilename)",
+					"scope": "Taxonomy"
 				},
 				"frontMatter.taxonomy.indentArrays": {
 					"type": "boolean",
 					"default": true,
-					"markdownDescription": "Specify if arrays in front matter are indented. Default: true. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.indentarrays)"
+					"markdownDescription": "Specify if arrays in front matter are indented. Default: true. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.indentarrays)",
+					"scope": "Taxonomy"
 				},
 				"frontMatter.taxonomy.noPropertyValueQuotes": {
 					"type": "array",
 					"default": [],
-					"markdownDescription": "Specify the properties from which quotes need to be removed. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.nopropertyvaluequotes)"
+					"markdownDescription": "Specify the properties from which quotes need to be removed. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.nopropertyvaluequotes)",
+					"items": {
+						"type": "string",
+						"description": "Name of the properties you want to remove quotes from."
+					},
+					"scope": "Taxonomy"
 				},
 				"frontMatter.taxonomy.frontMatterType": {
 					"type": "string",
@@ -198,37 +266,117 @@
 					"enumDescriptions": [
 						"Specifies you want to use YAML markup for the front matter (default)",
 						"Specifies you want to use TOML markup for the front matter"
-					]
+					],
+					"scope": "Taxonomy"
 				},
 				"frontMatter.taxonomy.seoTitleLength": {
 					"type": "number",
 					"default": 60,
-					"markdownDescription": "Specifies the optimal title length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seotitlelength)"
+					"markdownDescription": "Specifies the optimal title length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seotitlelength)",
+					"scope": "Taxonomy"
 				},
 				"frontMatter.taxonomy.seoDescriptionLength": {
 					"type": "number",
 					"default": 160,
-					"markdownDescription": "Specifies the optimal description length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seodescriptionlength)"
+					"markdownDescription": "Specifies the optimal description length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seodescriptionlength)",
+					"scope": "Taxonomy"
 				},
 				"frontMatter.taxonomy.seoContentLengh": {
 					"type": "number",
 					"default": 1760,
-					"markdownDescription": "Specifies the optimal minimum length for your articles. Between 1,760 words – 2,400 is the absolute ideal article length for SEO in 2021. (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seocontentlengh)"
+					"markdownDescription": "Specifies the optimal minimum length for your articles. Between 1,760 words – 2,400 is the absolute ideal article length for SEO in 2021. (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seocontentlengh)",
+					"scope": "Taxonomy"
 				},
 				"frontMatter.taxonomy.seoDescriptionField": {
 					"type": "string",
 					"default": "description",
-					"markdownDescription": "Specifies the name of the SEO description field for your page. Default is 'description'. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seodescriptionfield)"
+					"markdownDescription": "Specifies the name of the SEO description field for your page. Default is 'description'. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seodescriptionfield)",
+					"scope": "Taxonomy"
 				},
 				"frontMatter.templates.folder": {
 					"type": "string",
 					"default": ".templates",
-					"markdownDescription": "Specify the folder to use for your article templates. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.folder)"
+					"markdownDescription": "Specify the folder to use for your article templates. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.folder)",
+					"scope": "Templates"
 				},
 				"frontMatter.templates.prefix": {
 					"type": "string",
 					"default": "yyyy-MM-dd",
-					"markdownDescription": "Specify the prefix you want to add for your new article filenames. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.prefix)"
+					"markdownDescription": "Specify the prefix you want to add for your new article filenames. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.prefix)",
+					"scope": "Templates"
+				},
+				"frontMatter.taxonomy.contentTypes": {
+					"type": ["array", "null"],
+					"markdownDescription": "Specify the type of contents you want to use for your articles/pages/etc. Make sure the `type` is correctly set in your front matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.taxonomy.contentTypes)",
+					"items": {
+						"type": "object",
+						"description": "Define the content types you want to use in Front Matter.",
+						"properties": {
+							"name": {
+								"type": "string",
+								"description": "Define the type of field"
+							},
+							"fields": {
+								"type": "array",
+								"description": "Define the fields of the content type",
+								"items": {
+									"type": "object",
+									"description": "Define the content types you want to use in Front Matter.",
+									"properties": {
+										"type": {
+											"type": "string",
+											"enum": ["string", "datetime", "boolean", "image", "tags", "categories"],
+											"description": "Define the type of field"
+										},
+										"name": {
+											"type": "string",
+											"description": "Name of the field to use"
+										}
+									},
+									"additionalProperties": false,
+									"required": ["type", "name"]
+								}
+							}
+						},
+						"additionalProperties": false,
+						"required": ["name", "fields"]
+					},
+					"default": [
+						{
+							"name": "default",
+							"fields": [
+								{
+									"name": "title",
+									"type": "string"
+								},
+								{
+									"name": "description",
+									"type": "string"
+								},
+								{
+									"name": "date",
+									"type": "datetime"
+								},
+								{
+									"name": "preview",
+									"type": "image"
+								},
+								{
+									"name": "draft",
+									"type": "boolean"
+								},
+								{
+									"name": "tags",
+									"type": "tags"
+								},
+								{
+									"name": "categories",
+									"type": "categories"
+								}
+							]
+						}
+					],
+					"scope": "Taxonomy"
 				}
 			}
 		},
