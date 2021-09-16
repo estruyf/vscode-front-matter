@@ -4,7 +4,7 @@ import { ClockIcon } from '@heroicons/react/outline';
 import DatePicker from 'react-datepicker';
 import { forwardRef } from 'react';
 
-export interface IDateTimeProps {
+export interface IDateTimeFieldProps {
   label: string;
   date: Date | null;
   format?: string;
@@ -21,7 +21,7 @@ const CustomInput = forwardRef<HTMLInputElement, InputProps>(({ value, onClick }
   )
 });
 
-export const DateTime: React.FunctionComponent<IDateTimeProps> = ({label, date, format, onChange}: React.PropsWithChildren<IDateTimeProps>) => {
+export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({label, date, format, onChange}: React.PropsWithChildren<IDateTimeFieldProps>) => {
   const [ dateValue, setDateValue ] = React.useState<Date | null>(date);
   
   const onDateChange = (date: Date) => {
@@ -43,14 +43,20 @@ export const DateTime: React.FunctionComponent<IDateTimeProps> = ({label, date, 
         </div>
       </VsLabel>
       
-      <DatePicker
-        selected={dateValue as Date}
-        onChange={onDateChange}
-        timeInputLabel="Time:"
-        dateFormat={format || "MM/dd/yyyy HH:mm"}
-        customInput={(<CustomInput />)}
-        showTimeInput
-         />
+      <div className={`metadata_field__datetime`}>
+        <DatePicker
+          selected={dateValue as Date}
+          onChange={onDateChange}
+          timeInputLabel="Time:"
+          dateFormat={format || "MM/dd/yyyy HH:mm"}
+          customInput={(<CustomInput />)}
+          showTimeInput
+          />
+
+        <button className={`metadata_field__datetime__now`} onClick={() => onDateChange(new Date())}>
+          now
+        </button>
+      </div>
     </div>
   );
 };

@@ -11,14 +11,12 @@ import { SymbolKeywordIcon } from './Icons/SymbolKeywordIcon';
 import { TagIcon } from './Icons/TagIcon';
 import { TagPicker } from './TagPicker';
 import { VsLabel } from './VscodeComponents';
-import { useState } from 'react';
-
-import "react-datepicker/dist/react-datepicker.css";
 import { parseJSON } from 'date-fns';
-import { DateTime } from './Fields/DateTime';
+import { DateTimeField } from './Fields/DateTimeField';
 import { TextField } from './Fields/TextField';
 import { DefaultFields } from '../../constants';
 
+import "react-datepicker/dist/react-datepicker.css";
 export interface IMetadataProps {
   settings: PanelSettings | undefined;
   metadata: { [prop: string]: string[] | string | null };
@@ -73,18 +71,18 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
         onChange={(value) => sendUpdate(descriptionField, value)}
         value={metadata[descriptionField] as string || null} />
 
-      <DateTime
+      <DateTimeField
         label={`Article date`}
         date={publishing}
-        format={settings?.date?.format}
+        dateFormat={settings?.date?.format}
         onChange={(date => sendUpdate(settings?.date?.pubDate, date))} />
 
       {
         modifying && (
-          <DateTime
+          <DateTimeField
             label={`Modified date`}
             date={modifying}
-            format={settings?.date?.format}
+            dateFormat={settings?.date?.format}
             onChange={(date => sendUpdate(settings?.date?.modDate, date))} />
         )
       }

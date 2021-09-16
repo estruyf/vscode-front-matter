@@ -437,6 +437,23 @@ input:checked + .field__toggle__slider:before {
   margin-top: .25rem;
 }
 
+.metadata_field__datetime {
+  display: flex;
+  justify-content: space-between;
+}
+
+.metadata_field__datetime > .react-datepicker-wrapper {
+  margin-right: 1rem;
+}
+
+.metadata_field__datetime > button {
+  color: var(--vscode-button-secondaryForeground);
+  background-color: var(--vscode-button-secondaryBackground);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  width: auto;
+}
+
 /* File list */
 .file_list vscode-label {
   border-bottom: 1px solid var(--vscode-foreground);

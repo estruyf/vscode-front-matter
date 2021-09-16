@@ -4,6 +4,7 @@
 
 - [#101](https://github.com/estruyf/vscode-front-matter/issues/101): Date picker available on the metadata section
 - [#102](https://github.com/estruyf/vscode-front-matter/issues/102): Support comma separated arrays in front matter
+- [#103](https://github.com/estruyf/vscode-front-matter/issues/103): Added title and description field to the metadata section
 
 ## [3.1.0] - 2021-09-10
 
