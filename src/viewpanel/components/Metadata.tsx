@@ -10,13 +10,13 @@ import { RocketIcon } from './Icons/RocketIcon';
 import { SymbolKeywordIcon } from './Icons/SymbolKeywordIcon';
 import { TagIcon } from './Icons/TagIcon';
 import { TagPicker } from './TagPicker';
-import { VsLabel } from './VscodeComponents';
 import { parseJSON } from 'date-fns';
 import { DateTimeField } from './Fields/DateTimeField';
 import { TextField } from './Fields/TextField';
 import { DefaultFields } from '../../constants';
 
 import "react-datepicker/dist/react-datepicker.css";
+import { PreviewImageField } from './Fields/PreviewImageField';
 export interface IMetadataProps {
   settings: PanelSettings | undefined;
   metadata: { [prop: string]: string[] | string | null };
@@ -74,7 +74,7 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
       <DateTimeField
         label={`Article date`}
         date={publishing}
-        dateFormat={settings?.date?.format}
+        format={settings?.date?.format}
         onChange={(date => sendUpdate(settings?.date?.pubDate, date))} />
 
       {
@@ -82,22 +82,21 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
           <DateTimeField
             label={`Modified date`}
             date={modifying}
-            dateFormat={settings?.date?.format}
+            format={settings?.date?.format}
             onChange={(date => sendUpdate(settings?.date?.modDate, date))} />
         )
       }
 
-      <div className={`metadata_field`}>
-        <VsLabel>
-          <div className={`metadata_field__label`}>
-            <RocketIcon /> <span style={{ lineHeight: "16px"}}>Published</span>
-          </div>
-        </VsLabel>
+      <Toggle 
+        label={`Published`}
+        checked={!metadata.draft as any} 
+        onChanged={(checked) => sendUpdate("draft", !checked)} />
 
-        <Toggle 
-          checked={!metadata.draft as any} 
-          onChanged={(checked) => sendUpdate("draft", !checked)} />
-      </div>
+      <PreviewImageField 
+        label={`Preview`}
+        filePath={metadata.filePath as string}
+        value={metadata.preview as string}
+        onChange={(value => sendUpdate('preview', value))} />
 
       {
         <TagPicker type={TagType.keywords} 

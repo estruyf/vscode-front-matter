@@ -1,4 +1,5 @@
 export enum DashboardMessage {
+  getViewType = 'getViewType',
   getData = 'getData',
   openFile = 'openFile',
   getTheme = 'getTheme',
@@ -12,4 +13,5 @@ export enum DashboardMessage {
   refreshMedia = 'refreshMedia',
   uploadMedia = 'uploadMedia',
   deleteMedia = 'deleteMedia',
+  insertPreviewImage = 'insertPreviewImage',
 }

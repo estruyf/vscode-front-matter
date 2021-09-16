@@ -1,5 +1,6 @@
+import { DashboardData } from './../models/DashboardData';
 import { Template } from './../commands/Template';
-import { SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, SETTING_COMMA_SEPARATED_FIELDS } from './../constants/settings';
+import { SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, SETTING_COMMA_SEPARATED_FIELDS, SETTINGS_CONTENT_STATIC_FOLDERS } from './../constants/settings';
 import * as os from 'os';
 import { PanelSettings, CustomScript } from './../models/PanelSettings';
 import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv } from "vscode";
@@ -21,6 +22,8 @@ import { Preview } from '../commands/Preview';
 import { openFileInEditor } from '../helpers/openFileInEditor';
 import { WebviewHelper } from '@estruyf/vscode';
 import { Extension } from '../helpers/Extension';
+import { dirname, join } from 'path';
+import { existsSync } from 'fs';
 
 const FILE_LIMIT = 10;
 
@@ -73,8 +76,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
     webviewView.webview.options = {
       enableScripts: true,
-      enableCommandUris: true,
-      localResourceRoots: [this.extPath]
+      enableCommandUris: true
     };
 
     webviewView.webview.html = this.getWebviewContent(webviewView.webview);
@@ -182,6 +184,12 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         case CommandToCode.updateMetadata:
           this.updateMetadata(msg.data);
           break;
+        case CommandToCode.selectImage:
+          await commands.executeCommand(`frontMatter.dashboard`, {
+            type: "media",
+            data: msg.data
+          } as DashboardData);
+          break;
       }
     });
 
@@ -208,8 +216,11 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * @param metadata 
    */
   public pushMetadata(metadata: any) {
+    const wsFolder = Folders.getWorkspaceFolder();
+    const filePath = window.activeTextEditor?.document.uri.fsPath;
     const config = SettingsHelper.getConfig();
     const commaSeparated = config.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
+    const staticFolder = config.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
     
     const articleDetails = this.getArticleDetails();
 
@@ -225,8 +236,28 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         }
       }
     }
+
+    if (updatedMetadata.preview && wsFolder) {
+      const staticPath = join(wsFolder.fsPath, staticFolder || "", updatedMetadata.preview);
+      const contentFolderPath = filePath ? join(dirname(filePath), updatedMetadata.preview) : null;
+
+      let previewUri = null;
+      if (existsSync(staticPath)) {
+        previewUri = Uri.file(staticPath);
+      } else if (contentFolderPath && existsSync(contentFolderPath)) {
+        previewUri = Uri.file(contentFolderPath);
+      }
+
+      if (previewUri) {
+        const preview = this.panel?.webview.asWebviewUri(previewUri);
+        updatedMetadata.preview = preview?.toString() || "";
+      } else {
+        updatedMetadata.preview = "";
+      }
+    }
     
     this.postWebviewMessage({ command: Command.metadata, data: {
+      filePath,
       ...updatedMetadata
     }});
   }
@@ -253,7 +284,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   /**
    * Update the metadata of the article
    */
-  private updateMetadata({field, value}: { field: string, value: string }) {
+  public async updateMetadata({field, value}: { field: string, value: string }) {
     const config = SettingsHelper.getConfig();
     const pubDate = config.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
     const modDate = config.get(SETTING_MODIFIED_FIELD) as string || DefaultFields.LastModified;
@@ -277,7 +308,8 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     } else {
       article.data[field] = value;
     }
-    ArticleHelper.update(editor, article); 
+    ArticleHelper.update(editor, article);
+    this.pushMetadata(article.data);
   }
 
   /**
@@ -567,7 +599,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       <!DOCTYPE html>
       <html lang="en">
       <head>
-        <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${webView.cspSource} https://api.visitorbadge.io 'self' 'unsafe-inline'; script-src 'nonce-${nonce}'; style-src ${webView.cspSource} 'self' 'unsafe-inline'; font-src ${webView.cspSource}">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${`vscode-file://vscode-app`} ${webView.cspSource} https://api.visitorbadge.io 'self' 'unsafe-inline'; script-src 'nonce-${nonce}'; style-src ${webView.cspSource} 'self' 'unsafe-inline'; font-src ${webView.cspSource}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="${styleResetUri}" rel="stylesheet">
         <link href="${styleVSCodeUri}" rel="stylesheet">

@@ -5,14 +5,13 @@ import { Folders } from './commands/Folders';
 import { Preview } from './commands/Preview';
 import { Project } from './commands/Project';
 import { Template } from './commands/Template';
-import { COMMAND_NAME, EXTENSION_BETA_ID, EXTENSION_ID } from './constants/Extension';
+import { COMMAND_NAME } from './constants/Extension';
 import { TaxonomyType } from './models';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
 import { TagType } from './viewpanel/TagType';
 import { ExplorerView } from './webview/ExplorerView';
 import { Extension } from './helpers/Extension';
-import { basename } from 'path';
-import { Notifications } from './helpers/Notifications';
+import { DashboardData } from './models/DashboardData';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
@@ -36,8 +35,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// Pages dashboard
 	Dashboard.init();
-	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboard, () => {
-		Dashboard.open();
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboard, (data?: DashboardData) => {
+		Dashboard.open(data);
 	}));
 
 	if (!extension.getVersion().usedVersion) {

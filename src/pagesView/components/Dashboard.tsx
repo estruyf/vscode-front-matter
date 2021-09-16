@@ -5,7 +5,7 @@ import useDarkMode from '../../hooks/useDarkMode';
 import usePages from '../hooks/usePages';
 import { WelcomeScreen } from './WelcomeScreen';
 import { useRecoilValue } from 'recoil';
-import { DashboardViewSelector } from '../state';
+import { DashboardViewSelector, ViewDataAtom } from '../state';
 import { Contents } from './Contents/Contents';
 import { Media } from './Media/Media';
 
@@ -31,13 +31,9 @@ export const Dashboard: React.FunctionComponent<IDashboardProps> = ({showWelcome
     return <WelcomeScreen settings={settings} />;
   }
 
-  if (view === "contents") {
-    return (
-      <Contents pages={pageItems} loading={loading} />
-    );
-  } else {
-    return (
-      <Media />
-    );
+  if (view === 'media') {
+    return <Media />;
   }
+
+  return <Contents pages={pageItems} loading={loading} />;
 };

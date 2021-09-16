@@ -14,3 +14,4 @@ export * from './SortingAtom';
 export * from './TabAtom';
 export * from './TagAtom';
 export * from './ViewAtom';
+export * from './ViewDataAtom';

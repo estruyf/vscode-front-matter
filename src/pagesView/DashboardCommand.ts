@@ -3,4 +3,5 @@ export enum DashboardCommand {
   pages = "pages",
   settings = "settings",
   media = "media",
+  viewData = "viewData",
 }

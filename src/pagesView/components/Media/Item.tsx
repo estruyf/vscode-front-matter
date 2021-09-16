@@ -1,11 +1,11 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { ClipboardCopyIcon, PhotographIcon, TrashIcon } from '@heroicons/react/outline';
+import { CheckCircleIcon, ClipboardCopyIcon, PhotographIcon, TrashIcon } from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { MediaInfo } from '../../../models/MediaPaths';
 import { DashboardMessage } from '../../DashboardMessage';
-import { LightboxAtom, SelectedMediaFolderSelector, SettingsSelector } from '../../state';
+import { LightboxAtom, SelectedMediaFolderSelector, SettingsSelector, ViewDataSelector } from '../../state';
 import { Alert } from '../Modals/Alert';
 
 export interface IItemProps {
@@ -17,6 +17,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const [ , setLightbox ] = useRecoilState(LightboxAtom);
   const [ showAlert, setShowAlert ] = React.useState(false);
+  const viewData = useRecoilValue(ViewDataSelector);
 
   const parseWinPath = (path: string | undefined) => {
     return path?.split(`\\`).join(`/`);
@@ -35,7 +36,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     return "";
   };
 
-  const copyToClipboard = () => {
+  const getRelPath = () => {
     let relPath: string | undefined = "";
     if (settings?.wsFolder && media.fsPath) {
       relPath = media.fsPath.split(settings.wsFolder).pop();
@@ -44,8 +45,20 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
         relPath = relPath.split(settings.staticFolder).pop();
       }
     }
+    return relPath;
+  };
 
+  const copyToClipboard = () => {
+    const relPath = getRelPath();
     Messenger.send(DashboardMessage.copyToClipboard, parseWinPath(relPath) || "");
+  };
+
+  const insertToArticle = () => {
+    const relPath = getRelPath();
+    Messenger.send(DashboardMessage.insertPreviewImage, {
+      image: parseWinPath(relPath) || "",
+      file: viewData?.data?.filePath
+    });
   };
 
   const deleteMedia = () => {
@@ -87,18 +100,32 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
         </button>
         <div className={`relative py-4 pl-4 pr-10`}>
           <div className={`absolute top-4 right-4 flex flex-col space-y-2`}>
-            <button title={`Copy media path`} 
+            {
+              viewData?.data?.filePath ? (
+                <button 
+                    title={`Insert into your article`} 
                     className={`hover:text-teal-900 focus:outline-none`} 
-                    onClick={copyToClipboard}>
-              <ClipboardCopyIcon className={`h-5 w-5`} />
-              <span className={`sr-only`}>Copy media path</span>
-            </button>
-            <button title={`Delete media`} 
-                    className={`hover:text-teal-900 focus:outline-none`} 
-                    onClick={deleteMedia}>
-              <TrashIcon className={`h-5 w-5`} />
-              <span className={`sr-only`}>Delete media</span>
-            </button>
+                    onClick={insertToArticle}>
+                  <CheckCircleIcon className={`h-5 w-5`} />
+                  <span className={`sr-only`}>Insert into your article</span>
+                </button>
+              ) : (
+                <>
+                  <button title={`Copy media path`} 
+                          className={`hover:text-teal-900 focus:outline-none`} 
+                          onClick={copyToClipboard}>
+                    <ClipboardCopyIcon className={`h-5 w-5`} />
+                    <span className={`sr-only`}>Copy media path</span>
+                  </button>
+                  <button title={`Delete media`} 
+                          className={`hover:text-teal-900 focus:outline-none`} 
+                          onClick={deleteMedia}>
+                    <TrashIcon className={`h-5 w-5`} />
+                    <span className={`sr-only`}>Delete media</span>
+                  </button>
+                </>
+              )
+            }
           </div>
           <p className="text-sm dark:text-whisper-900 font-bold pointer-events-none flex items-center">
             {basename(parseWinPath(media.fsPath) || "")}

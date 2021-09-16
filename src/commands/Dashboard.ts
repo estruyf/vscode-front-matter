@@ -17,10 +17,12 @@ import { Settings } from '../pagesView/models/Settings';
 import { Extension } from '../helpers/Extension';
 import { parseJSON } from 'date-fns';
 import { ViewType } from '../pagesView/state';
-import { WebviewHelper } from '@estruyf/vscode';
+import { EditorHelper, WebviewHelper } from '@estruyf/vscode';
 import { MediaInfo, MediaPaths } from './../models/MediaPaths';
 import { decodeBase64Image } from '../helpers/decodeBase64Image';
 import { DefaultFields } from '../constants';
+import { DashboardData } from '../models/DashboardData';
+import { ExplorerView } from '../webview/ExplorerView';
 
 
 export class Dashboard {
@@ -28,6 +30,7 @@ export class Dashboard {
   private static isDisposed: boolean = true;
   private static media: MediaInfo[] = [];
   private static timers: { [folder: string]: any } = {};
+  private static viewData: DashboardData | undefined;
 
   /** 
    * Init the dashboard
@@ -43,7 +46,9 @@ export class Dashboard {
   /**
    * Open or reveal the dashboard
    */
-  public static async open() {
+  public static async open(data?: DashboardData) {
+    Dashboard.viewData = data;
+
     if (Dashboard.isOpen) {
 			Dashboard.reveal();
 		} else {
@@ -93,8 +98,8 @@ export class Dashboard {
     Dashboard.webview.webview.html = Dashboard.getWebviewContent(Dashboard.webview.webview, extensionUri);
 
     Dashboard.webview.onDidChangeViewState(() => {
-      if (this.webview?.visible) {
-        console.log(`Dashboard opened`);
+      if (!this.webview?.visible) {
+        Dashboard.viewData = undefined;
       }
     });
 
@@ -108,6 +113,11 @@ export class Dashboard {
 
     Dashboard.webview.webview.onDidReceiveMessage(async (msg) => {
       switch(msg.command) {
+        case DashboardMessage.getViewType:
+          if (Dashboard.viewData) {
+            Dashboard.postWebviewMessage({ command: DashboardCommand.viewData, data: Dashboard.viewData });
+          }
+          break;
         case DashboardMessage.getData:
           Dashboard.getSettings();
           Dashboard.getPages();
@@ -150,6 +160,13 @@ export class Dashboard {
           break;
         case DashboardMessage.deleteMedia:
           Dashboard.deleteFile(msg?.data);
+          break;
+        case DashboardMessage.insertPreviewImage:
+          if (msg.data?.file && msg.data?.image) {
+            await commands.executeCommand(`workbench.view.extension.frontmatter-explorer`);
+            await EditorHelper.showFile(msg.data.file);
+            ExplorerView.getInstance(extensionUri).updateMetadata({field: `preview`, value: msg.data.image});
+          }
           break;
       }
     });

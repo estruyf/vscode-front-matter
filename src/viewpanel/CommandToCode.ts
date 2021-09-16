@@ -25,4 +25,5 @@ export enum CommandToCode {
   openInEditor = "open-in-editor",
   updateMetadata = "update-metadata",
   openDashboard = "open-dashboard",
+  selectImage = "select-image",
 }

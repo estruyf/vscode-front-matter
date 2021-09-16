@@ -5,7 +5,7 @@ import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { MediaInfo, MediaPaths } from '../../../models/MediaPaths';
 import { DashboardCommand } from '../../DashboardCommand';
-import { LoadingAtom, MediaFoldersAtom, MediaTotalAtom, SelectedMediaFolderSelector, SettingsSelector } from '../../state';
+import { LoadingAtom, MediaFoldersAtom, MediaTotalAtom, SelectedMediaFolderSelector, SettingsSelector, ViewDataSelector } from '../../state';
 import { Header } from '../Header';
 import { Spinner } from '../Spinner';
 import { SponsorMsg } from '../SponsorMsg';
@@ -27,6 +27,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
   const [ , setTotal ] = useRecoilState(MediaTotalAtom);
   const [ , setFolders ] = useRecoilState(MediaFoldersAtom);
   const [ loading, setLoading ] = useRecoilState(LoadingAtom);
+  const viewData = useRecoilValue(ViewDataSelector);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.forEach((file) => {
@@ -73,6 +74,15 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
         <Header settings={settings} />
 
         <div className="w-full flex-grow max-w-7xl mx-auto py-6 px-4" {...getRootProps()}>
+
+          {
+            viewData?.data?.filePath && (
+              <div className={`text-lg text-center mb-6`}>
+                <p>Select the image you want to use for your article.</p>
+                <p className={`opacity-80 text-base`}>You can also drag and drop images from your desktop and select that once uploaded.</p>
+              </div>
+            )
+          }
           
           {
             isDragActive && (

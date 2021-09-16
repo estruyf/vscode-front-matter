@@ -11,4 +11,5 @@ export * from './SettingsSelector';
 export * from './SortingSelector';
 export * from './TabSelector';
 export * from './TagSelector';
+export * from './ViewDataSelector';
 export * from './ViewSelector';
