@@ -11,6 +11,7 @@ import { MessageHelper } from '../../helpers/MessageHelper';
 export interface ITagPickerProps {
   type: string;
   icon: JSX.Element;
+  label?: string;
   crntSelected: string[];
   options: string[];
   freeform: boolean;
@@ -20,7 +21,7 @@ export interface ITagPickerProps {
 }
 
 export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsWithChildren<ITagPickerProps>) => {
-  const { icon, type, crntSelected, options, freeform, focussed, unsetFocus, disableConfigurable } = props;
+  const { label, icon, type, crntSelected, options, freeform, focussed, unsetFocus, disableConfigurable } = props;
   const [ selected, setSelected ] = React.useState<string[]>([]);
   const [ inputValue, setInputValue ] = React.useState<string>("");
   const prevSelected = usePrevious(crntSelected);
@@ -130,7 +131,7 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
     <div className={`article__tags`}>      
       <VsLabel>
         <div className={`metadata_field__label`}>
-          {icon} <span style={{ lineHeight: "16px"}}>{type}</span>
+          {icon} <span style={{ lineHeight: "16px"}}>{label || type}</span>
         </div>
       </VsLabel>
 
@@ -157,7 +158,7 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
                             }
                           })
                        }
-                       placeholder={`Pick your ${type.toLowerCase()}`} />
+                       placeholder={`Pick your ${label || type.toLowerCase()}`} />
                 
                 {
                   freeform && (

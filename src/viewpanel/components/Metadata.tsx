@@ -117,6 +117,7 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
           <TagPicker 
             key={field.name}
             type={TagType.tags} 
+            label={field.title || field.name}
             icon={<TagIcon />}
             crntSelected={metadata[field.name] as string[] || []} 
             options={settings?.tags || []} 
@@ -129,6 +130,7 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
           <TagPicker 
             key={field.name}
             type={TagType.categories}
+            label={field.title || field.name}
             icon={<ListUnorderedIcon />}
             crntSelected={metadata.categories as string[] || []} 
             options={settings.categories} 

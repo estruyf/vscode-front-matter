@@ -118,7 +118,10 @@
 							}
 						},
 						"additionalProperties": false,
-						"required": ["title", "path"]
+						"required": [
+							"title",
+							"path"
+						]
 					},
 					"scope": "Content"
 				},
@@ -149,7 +152,10 @@
 							}
 						},
 						"additionalProperties": false,
-						"required": ["title", "script"]
+						"required": [
+							"title",
+							"script"
+						]
 					},
 					"scope": "Custom scripts"
 				},
@@ -293,7 +299,10 @@
 					"scope": "Templates"
 				},
 				"frontMatter.taxonomy.contentTypes": {
-					"type": ["array", "null"],
+					"type": [
+						"array",
+						"null"
+					],
 					"markdownDescription": "Specify the type of contents you want to use for your articles/pages/etc. Make sure the `type` is correctly set in your front matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.taxonomy.contentTypes)",
 					"items": {
 						"type": "object",
@@ -312,7 +321,14 @@
 									"properties": {
 										"type": {
 											"type": "string",
-											"enum": ["string", "datetime", "boolean", "image", "tags", "categories"],
+											"enum": [
+												"string",
+												"datetime",
+												"boolean",
+												"image",
+												"tags",
+												"categories"
+											],
 											"description": "Define the type of field"
 										},
 										"name": {
@@ -325,12 +341,18 @@
 										}
 									},
 									"additionalProperties": false,
-									"required": ["type", "name"]
+									"required": [
+										"type",
+										"name"
+									]
 								}
 							}
 						},
 						"additionalProperties": false,
-						"required": ["name", "fields"]
+						"required": [
+							"name",
+							"fields"
+						]
 					},
 					"default": [
 						{
