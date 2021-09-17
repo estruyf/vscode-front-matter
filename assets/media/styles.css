@@ -446,6 +446,11 @@ input:checked + .field__toggle__slider:before {
   margin-top: .25rem;
 }
 
+.metadata_field__number {
+  border: 1px solid var(--vscode-inputValidation-infoBorder) !important;
+  outline: none !important;
+}
+
 .metadata_field__datetime {
   display: flex;
   justify-content: space-between;

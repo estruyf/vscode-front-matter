@@ -9,6 +9,8 @@ weight: 6
 
 # Markdown features
 
+## Overview
+
 The Front Matter extension tries to make it easy to manage your Markdown pages/content. Within a Markdown page, we allow you to fold the file's Front Matter to be less distracting when writing. Also, do we highlight the Front Matter content to create a visual difference between content and metadata.
 
 ## Front Matter folding

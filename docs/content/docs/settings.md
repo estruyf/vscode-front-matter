@@ -3,11 +3,13 @@ title: Settings
 slug: settings
 description: null
 date: '2021-08-30T16:13:00.546Z'
-lastmod: '2021-09-08T07:08:17.747Z'
+lastmod: '2021-09-17T07:08:17.747Z'
 weight: 7
 ---
 
 # Settings
+
+## Overview
 
 Most of the actions are configurable to your needs. In this part of the documentation all settings are explained.
 
@@ -112,17 +114,21 @@ Specify the path you want to add after the host and before your slug. This can b
 
 ### frontMatter.taxonomy.dateField
 
-Specifies the date field name to use in your Front Matter.
+This setting is used to define the publishing date field of your articles.
 
 - Type: `string`
 - Default: `date`
 
+> **Important**: if you would use another field in your content types, be sure to remap this setting.
+
 ### frontMatter.taxonomy.modifiedField
 
-Specifies the modified date field name to use in your Front Matter.
+This setting is used to define the modified date field of your articles.
 
 - Type: `string`
 - Default: `lastmod`
+
+> **Important**: if you would use another field in your content types, be sure to remap this setting.
 
 ### frontMatter.taxonomy.dateFormat
 
@@ -131,7 +137,7 @@ Specify the date format for your articles. Check [date-fns formating](https://da
 - Type: `string`
 - Default: `iso`
 
-## frontMatter.taxonomy.commaSeparatedFields
+### frontMatter.taxonomy.commaSeparatedFields
 
 Specify the fields names that Front Matter should treat as a comma-separated array.
 
@@ -230,6 +236,8 @@ Specifies the name of the SEO description field for your page.
 - Type: `string`
 - Default: `description`
 
+> **Important**: if you would use another field in your content types, be sure to remap this setting.
+
 ### frontMatter.templates.folder
 
 Specify the folder to use for your article templates.
@@ -245,7 +253,7 @@ Specify the prefix you want to add for your new article filenames.
 - Default: `yyyy-MM-dd`
 
 
-## Deprecated settings
+## Removed settings
 
 ### frontMatter.content.folders
 

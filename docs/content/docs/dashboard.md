@@ -9,6 +9,8 @@ weight: 3
 
 # Dashboard
 
+## Overview
+
 Managing your Markdown pages/media has never been easier in VS Code. With the Front Matter dashboard, you will be able to view all your pages and media.
 
 On the contents view, you can **search**, **filter**, **sort** your pages and much more.

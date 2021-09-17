@@ -36,23 +36,23 @@ export const strings = {
   features_cta_button: "Tell us what you need",
 
   // Feature
-  feature_title_1: "Offline management",
-  feature_description_1: "A Content Management System built to run within Visual Studio Code. No dependencies on any website or API. Write wherever you are, commit when you are online.",
+  feature_title_1: "Content Types",
+  feature_description_1: "A Content Management System wouldn't be a CMS if you cannot define your type of content to use. Front Matter provides a default content mapping, but you can extend it or change it to your needs. It is your content, and Front Matter will change its behavior to your needs.",
 
-  feature_title_2: "Full site/page preview",
-  feature_description_2: "Allow showing your site and page previews within Visual Studio Code without the need of opening a browser.",
+  feature_title_2: "Offline management",
+  feature_description_2: "A Content Management System built to run within Visual Studio Code. You do not require an account or any dependencies on a website or API. Write wherever you are, commit when you are online.",
 
-  feature_title_3: "Content dashboard",
-  feature_description_3: "Our page dashboard allows you to search, filter, sort, and group all your static site pages.",
+  feature_title_3: "Full site/page preview",
+  feature_description_3: "Allow showing your site and page previews within Visual Studio Code without the need of opening a browser.",
 
-  feature_title_4: "SEO Checks",
-  feature_description_4: "Our search engine optimization checks allow you to write better articles. We show you more information about your title, description, content, keywords, and more.",
+  feature_title_4: "Content/media dashboard",
+  feature_description_4: "One of the most powerful features is our dashboard, from where you get an overview of all your content and media files. We tightly integrate with our editor panel so that you can use it, for example, to insert media files into your articles.",
 
-  feature_title_5: "Use it the way you want it",
-  feature_description_5: "All of the functionalities are configurable to your needs. You can define how you want to use Front Matter in your editor experience.",
+  feature_title_5: "SEO Checks",
+  feature_description_5: "Our search engine optimization checks allow you to write better articles. We show you more information about your title, description, content, keywords, and more.",
 
-  feature_title_6: "Extensibility",
-  feature_description_6: "Add your actions with our custom scripting capability. For instance, you can use a script and hook it up to the extension if you want to generate preview images. If we do not support it, you can build it and share it with us.",
+  feature_title_6: "Use it the way you want it",
+  feature_description_6: "All of the functionalities are configurable to your needs. You can define how you want to use Front Matter in your editor experience, but it doesn't stop there. If you are missing something or want to automate. We allow you to add your own actions with the custom scripting capability. For instance, you can use a script and hook it up to the extension to generate preview images.",
 
   // Sponsors
   sponsors_title: "Special thanks to our sponsor",

@@ -186,6 +186,16 @@
 					"markdownDescription": "Specify the path you want to add after the host and before your slug. This can be used for instance to include the year/month like: `yyyy/MM`. The date will be generated based on the article its date field value. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.preview.pathname)",
 					"scope": "Site preview"
 				},
+				"frontMatter.taxonomy.dateField": {
+					"type": "string",
+					"default": "date",
+					"markdownDescription": "This setting is used to define the publishing date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.datefield)"
+				},
+				"frontMatter.taxonomy.modifiedField": {
+					"type": "string",
+					"default": "lastmod",
+					"markdownDescription": "This setting is used to define the modified date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.modifiedfield)"
+				},
 				"frontMatter.taxonomy.tags": {
 					"type": "array",
 					"markdownDescription": "Specifies the tags which can be used in the Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.tags)",
@@ -323,6 +333,7 @@
 											"type": "string",
 											"enum": [
 												"string",
+												"number",
 												"datetime",
 												"boolean",
 												"image",

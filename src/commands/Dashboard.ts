@@ -111,6 +111,9 @@ export class Dashboard {
 
     Dashboard.webview.onDidDispose(() => {
       Dashboard.isDisposed = true;
+      Dashboard._viewData = undefined;
+      const panel = ExplorerView.getInstance(extensionUri);
+      panel.getMediaSelection();
     });
 
     workspace.onDidChangeConfiguration(() => {

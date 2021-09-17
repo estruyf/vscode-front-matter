@@ -13,7 +13,7 @@ export const PageInfo: React.FunctionComponent<IPageInfoProps> = ({page}: React.
     return null;
   }
 
-  const date = parseJSON(page.date);
+  const date = parseJSON(page.lastmod);
 
   return (
     <div className={`mt-16`}>

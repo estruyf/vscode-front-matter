@@ -1,13 +1,15 @@
 ---
-title: Panel
+title: Editor panel
 slug: panel
-description: 
+description: null
 date: '2021-08-30T16:13:00.546Z'
-lastmod: '2021-08-30T16:13:01.763Z'
+lastmod: '2021-09-17T16:13:01.763Z'
 weight: 4
 ---
 
-# Panel
+# Editor panel
+
+## Overview
 
 The Front Matter panel allows you to perform most of the extension actions by just a click on the button, and it shows the SEO statuses of your title, description, and more.
 
@@ -63,6 +65,8 @@ When writing articles, there are always a couple of actions you need/want to per
 ![Actions](/assets/actions.png)
 
 > **Important**: You are able to add your own actions, more information about this you can read in our [custom actions](/docs/custom-actions) section.
+
+> **Info**: In version `3.2.0` a couple of actions were moved to the metadata section like changing the draft state and date time properties.
 
 ### Settings
 

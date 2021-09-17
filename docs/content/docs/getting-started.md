@@ -9,6 +9,8 @@ weight: 2
 
 # Getting started
 
+## Overview
+
 To get you started, you first need to install the extension in Visual Studio Code. 
 
 ## Installation

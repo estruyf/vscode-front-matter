@@ -16,6 +16,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { PreviewImageField } from './Fields/PreviewImageField';
 import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from '../../constants/ContentType';
 import { ListUnorderedIcon } from './Icons/ListUnorderedIcon';
+import { NumberField } from './Fields/NumberField';
 export interface IMetadataProps {
   settings: PanelSettings | undefined;
   metadata: { [prop: string]: string[] | string | null };
@@ -101,6 +102,20 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
             rows={3}
             onChange={(value) => sendUpdate(field.name, value)}
             value={textValue as string || null} />
+        );
+      } else if (field.type === 'number') {
+        const fieldValue = metadata[field.name];
+        let nrValue: number | null = parseInt(fieldValue as string);
+        if (isNaN(nrValue)) {
+          nrValue = null;
+        }
+
+        return (
+          <NumberField 
+            key={field.name}
+            label={field.title || field.name}
+            onChange={(value) => sendUpdate(field.name, value)}
+            value={nrValue} />
         );
       } else if (field.type === 'image') {
         return (

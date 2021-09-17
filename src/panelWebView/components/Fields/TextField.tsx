@@ -24,6 +24,11 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({limit, labe
     }
   }, [ value ]);
 
+  let isValid = true;
+  if (limit && limit !== -1) {
+    isValid = ((text || "").length < limit);
+  }
+
   return (
     <div className={`metadata_field`}>
       <VsLabel>
@@ -37,7 +42,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({limit, labe
         rows={rows || 2}
         value={text || ""}  
         onChange={(e) => onTextChange(e.currentTarget.value)} style={{
-        border: !limit || ((text || "").length < limit) ? "1px solid var(--vscode-inputValidation-infoBorder)" : "1px solid var(--vscode-inputValidation-warningBorder)"
+        border: isValid ? "1px solid var(--vscode-inputValidation-infoBorder)" : "1px solid var(--vscode-inputValidation-warningBorder)"
       }} />
 
       {

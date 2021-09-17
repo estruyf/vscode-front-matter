@@ -9,6 +9,8 @@ weight: 5
 
 # Custom actions
 
+## Overview
+
 Not every website is the same. That is why we want to give you the ability to extend Front Matter and you can do this by adding your custom actions to the Front Matter panel. A custom action is nothing more than a Node.js script which is referenced from within your project.
 
 ![Custom action](/assets/custom-action.png)
