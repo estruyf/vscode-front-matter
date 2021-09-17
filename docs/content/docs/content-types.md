@@ -175,8 +175,18 @@ Front Matter its metadata section supports the following fields:
 - `datetime`
 - `boolean`
 - `image`
+- `choice`
 - `tags`: mapped to the tags defined in your settings.
 - `categories`: mapped to the categories defined in your settings.
+
+### Field properties
+
+A field consists out of the following properties:
+
+- `title`: The title to show in the metadata section (optional);
+- `name`: The name of your field, will be used to set in the front matter of your Markdown file;
+- `type`: One of the above supported types;
+- `choices`: When you picked the `choice` field type, you need to return an array of choices: `["Choice 1", "Choice 2", "Choice 3"]`.
 
 ## Creating a template
 

@@ -451,6 +451,19 @@ input:checked + .field__toggle__slider:before {
   outline: none !important;
 }
 
+.metadata_field__choice {
+  border: 1px solid var(--vscode-inputValidation-infoBorder) !important;
+  outline: none !important;
+  width: 100%;
+  padding: var(--input-padding-vertical) var(--input-padding-horizontal);
+  color: var(--vscode-input-foreground);
+  background-color: var(--vscode-input-background);
+}
+
+.metadata_field__choice::placeholde {
+	color: var(--vscode-input-placeholderForeground);
+}
+
 .metadata_field__datetime {
   display: flex;
   justify-content: space-between;

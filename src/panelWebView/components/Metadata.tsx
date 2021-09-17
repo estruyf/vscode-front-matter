@@ -11,12 +11,13 @@ import { TagPicker } from './TagPicker';
 import { parseJSON } from 'date-fns';
 import { DateTimeField } from './Fields/DateTimeField';
 import { TextField } from './Fields/TextField';
-
 import "react-datepicker/dist/react-datepicker.css";
 import { PreviewImageField } from './Fields/PreviewImageField';
 import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from '../../constants/ContentType';
 import { ListUnorderedIcon } from './Icons/ListUnorderedIcon';
 import { NumberField } from './Fields/NumberField';
+import { ChoiceField } from './Fields/ChoiceField';
+
 export interface IMetadataProps {
   settings: PanelSettings | undefined;
   metadata: { [prop: string]: string[] | string | null };
@@ -125,6 +126,18 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
             fieldName={field.name}
             filePath={metadata.filePath as string}
             value={metadata[field.name] as string}
+            onChange={(value => sendUpdate(field.name, value))} />
+        );
+      } else if (field.type === 'choice') {
+        const choices = field.choices || [];
+        const choiceValue = metadata[field.name];
+
+        return (
+          <ChoiceField
+            key={field.name}
+            label={field.title || field.name}
+            selected={choiceValue as string}
+            choices={choices}
             onChange={(value => sendUpdate(field.name, value))} />
         );
       } else if (field.type === 'tags') {

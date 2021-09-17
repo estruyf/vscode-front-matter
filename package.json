@@ -337,6 +337,7 @@
 												"datetime",
 												"boolean",
 												"image",
+												"choice",
 												"tags",
 												"categories"
 											],
@@ -349,6 +350,13 @@
 										"title": {
 											"type": "string",
 											"description": "Title to show in the UI"
+										},
+										"choices": {
+											"type": "array",
+											"description": "Define your choices",
+											"items": {
+												"type": "string"
+											}
 										}
 									},
 									"additionalProperties": false,

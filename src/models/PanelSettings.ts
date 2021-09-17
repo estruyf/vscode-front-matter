@@ -26,7 +26,8 @@ export interface ContentType {
 export interface Field {
   title?: string;
   name: string;
-  type: "string" | "number" | "datetime" | "boolean" | "image" | "tags" | "categories";
+  type: "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories";
+  choices?: string[];
 }
 
 export interface DateInfo {
