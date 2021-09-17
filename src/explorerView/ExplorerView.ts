@@ -1,15 +1,14 @@
-import { DashboardData } from './../models/DashboardData';
-import { Template } from './../commands/Template';
-import { SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, SETTING_COMMA_SEPARATED_FIELDS, SETTINGS_CONTENT_STATIC_FOLDERS, SETTING_TAXONOMY_CONTENT_TYPES } from './../constants/settings';
+import { DashboardData } from '../models/DashboardData';
+import { Template } from '../commands/Template';
+import { DefaultFields, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_COMMA_SEPARATED_FIELDS, SETTINGS_CONTENT_STATIC_FOLDERS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from '../constants';
 import * as os from 'os';
-import { PanelSettings, CustomScript } from './../models/PanelSettings';
+import { PanelSettings, CustomScript } from '../models/PanelSettings';
 import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv } from "vscode";
-import { DefaultFields, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from "../constants";
 import { ArticleHelper, SettingsHelper } from "../helpers";
-import { Command } from "../viewpanel/Command";
-import { CommandToCode } from '../viewpanel/CommandToCode';
+import { Command } from "../panelWebView/Command";
+import { CommandToCode } from '../panelWebView/CommandToCode';
 import { Article } from '../commands';
-import { TagType } from '../viewpanel/TagType';
+import { TagType } from '../panelWebView/TagType';
 import { TaxonomyType } from '../models';
 import { exec } from 'child_process';
 import * as path from 'path';
@@ -24,6 +23,7 @@ import { WebviewHelper } from '@estruyf/vscode';
 import { Extension } from '../helpers/Extension';
 import { dirname, join } from 'path';
 import { existsSync } from 'fs';
+import { Dashboard } from '../commands/Dashboard';
 
 const FILE_LIMIT = 10;
 
@@ -182,10 +182,11 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
           this.updateMetadata(msg.data);
           break;
         case CommandToCode.selectImage:
-          await commands.executeCommand(`frontMatter.dashboard`, {
+          await commands.executeCommand(COMMAND_NAME.dashboard, {
             type: "media",
             data: msg.data
           } as DashboardData);
+          this.getMediaSelection();
           break;
       }
     });
@@ -246,22 +247,24 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       if (contentType) {
         const imageFields = contentType.fields.filter((field) => field.type === "image");
         for (const field of imageFields) {
-          const staticPath = join(wsFolder.fsPath, staticFolder || "", updatedMetadata[field.name]);
-          const contentFolderPath = filePath ? join(dirname(filePath), updatedMetadata[field.name]) : null;
+          if (updatedMetadata[field.name]) {
+            const staticPath = join(wsFolder.fsPath, staticFolder || "", updatedMetadata[field.name]);
+            const contentFolderPath = filePath ? join(dirname(filePath), updatedMetadata[field.name]) : null;
 
-          let previewUri = null;
-          if (existsSync(staticPath)) {
-            previewUri = Uri.file(staticPath);
-          } else if (contentFolderPath && existsSync(contentFolderPath)) {
-            previewUri = Uri.file(contentFolderPath);
-          }
+            let previewUri = null;
+            if (existsSync(staticPath)) {
+              previewUri = Uri.file(staticPath);
+            } else if (contentFolderPath && existsSync(contentFolderPath)) {
+              previewUri = Uri.file(contentFolderPath);
+            }
 
-          if (previewUri) {
-            const preview = this.panel?.webview.asWebviewUri(previewUri);
-            updatedMetadata[field.name]= preview?.toString() || "";
-          } else {
-            updatedMetadata[field.name] = "";
-          }
+            if (previewUri) {
+              const preview = this.panel?.webview.asWebviewUri(previewUri);
+              updatedMetadata[field.name]= preview?.toString() || "";
+            } else {
+              updatedMetadata[field.name] = "";
+            }
+          }          
         }
       }
     }
@@ -366,6 +369,16 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   }
 
   /**
+   * Return the media selection
+   */
+  public async getMediaSelection() {
+    this.postWebviewMessage({
+      command: Command.mediaSelectionData,
+      data: Dashboard.viewData
+    });
+  }
+
+  /**
    * Retrieve the extension settings
    */
   public async getSettings() {
@@ -399,6 +412,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         preview: Preview.getSettings(),
         commaSeparatedFields: config.get(SETTING_COMMA_SEPARATED_FIELDS) || [],
         contentTypes: config.get(SETTING_TAXONOMY_CONTENT_TYPES) || [],
+        dashboardViewData: Dashboard.viewData
       } as PanelSettings
     });
   }

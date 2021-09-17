@@ -50,6 +50,15 @@
   height: 100%;
 }
 
+.frontmatter.media_selection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.8;
+  text-align: center;
+	padding: 1rem 1.25rem;
+}
+
 .spinner,
 .spinner:before,
 .spinner:after {

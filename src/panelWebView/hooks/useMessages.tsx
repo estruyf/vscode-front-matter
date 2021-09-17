@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { MessageHelper } from '../../helpers/MessageHelper';
+import { DashboardData } from '../../models/DashboardData';
 import { FolderInfo, PanelSettings } from '../../models/PanelSettings';
 import { Command } from '../Command';
 import { CommandToCode } from '../CommandToCode';
@@ -13,6 +14,7 @@ export default function useMessages() {
   const [loading, setLoading] = useState<boolean>(false);
   const [focusElm, setFocus] = useState<TagType | null>(null);
   const [folderAndFiles, setFolderAndFiles] = useState<FolderInfo[] | undefined>(undefined);
+  const [mediaSelecting, setMediaSelecting] = useState<DashboardData | undefined>(undefined);
 
   window.addEventListener('message', event => {
     const message = event.data;
@@ -38,6 +40,9 @@ export default function useMessages() {
       case Command.focusOnCategories:
         setFocus(TagType.categories);
         break;
+      case Command.mediaSelectionData:
+        setMediaSelecting(message.data);
+        break;
     }
   });
 
@@ -52,6 +57,7 @@ export default function useMessages() {
     folderAndFiles,
     focusElm,
     loading,
+    mediaSelecting,
     unsetFocus: () => { setFocus(null) }
   };
 }

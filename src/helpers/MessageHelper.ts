@@ -1,5 +1,5 @@
-import { DashboardMessage } from './../pagesView/DashboardMessage';
-import { CommandToCode } from "../viewpanel/CommandToCode";
+import { DashboardMessage } from '../dashboardWebView/DashboardMessage';
+import { CommandToCode } from "../panelWebView/CommandToCode";
 
 
 interface ClientVsCode<T> {

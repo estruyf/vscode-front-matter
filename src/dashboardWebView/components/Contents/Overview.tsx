@@ -3,7 +3,7 @@ import { ChevronRightIcon } from '@heroicons/react/solid';
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 import { groupBy } from '../../../helpers/GroupBy';
-import { FrontMatterIcon } from '../../../viewpanel/components/Icons/FrontMatterIcon';
+import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMatterIcon';
 import { GroupOption } from '../../constants/GroupOption';
 import { Page } from '../../models/Page';
 import { Settings } from '../../models/Settings';

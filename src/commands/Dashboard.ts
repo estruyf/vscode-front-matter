@@ -6,23 +6,23 @@ import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, en
 import { SettingsHelper } from '../helpers';
 import { TaxonomyType } from '../models';
 import { Folders } from './Folders';
-import { DashboardCommand } from '../pagesView/DashboardCommand';
-import { DashboardMessage } from '../pagesView/DashboardMessage';
-import { Page } from '../pagesView/models/Page';
+import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
+import { DashboardMessage } from '../dashboardWebView/DashboardMessage';
+import { Page } from '../dashboardWebView/models/Page';
 import { openFileInEditor } from '../helpers/openFileInEditor';
 import { COMMAND_NAME, EXTENSION_STATE_PAGES_VIEW } from '../constants/Extension';
 import { Template } from './Template';
 import { Notifications } from '../helpers/Notifications';
-import { Settings } from '../pagesView/models/Settings';
+import { Settings } from '../dashboardWebView/models/Settings';
 import { Extension } from '../helpers/Extension';
 import { parseJSON } from 'date-fns';
-import { ViewType } from '../pagesView/state';
+import { ViewType } from '../dashboardWebView/state';
 import { EditorHelper, WebviewHelper } from '@estruyf/vscode';
 import { MediaInfo, MediaPaths } from './../models/MediaPaths';
 import { decodeBase64Image } from '../helpers/decodeBase64Image';
 import { DefaultFields } from '../constants';
 import { DashboardData } from '../models/DashboardData';
-import { ExplorerView } from '../webview/ExplorerView';
+import { ExplorerView } from '../explorerView/ExplorerView';
 
 
 export class Dashboard {
@@ -30,7 +30,11 @@ export class Dashboard {
   private static isDisposed: boolean = true;
   private static media: MediaInfo[] = [];
   private static timers: { [folder: string]: any } = {};
-  private static viewData: DashboardData | undefined;
+  private static _viewData: DashboardData | undefined;
+
+  public static get viewData(): DashboardData | undefined {
+    return Dashboard._viewData;
+  }
 
   /** 
    * Init the dashboard
@@ -47,7 +51,7 @@ export class Dashboard {
    * Open or reveal the dashboard
    */
   public static async open(data?: DashboardData) {
-    Dashboard.viewData = data;
+    Dashboard._viewData = data;
 
     if (Dashboard.isOpen) {
 			Dashboard.reveal();
@@ -99,7 +103,9 @@ export class Dashboard {
 
     Dashboard.webview.onDidChangeViewState(() => {
       if (!this.webview?.visible) {
-        Dashboard.viewData = undefined;
+        Dashboard._viewData = undefined;
+        const panel = ExplorerView.getInstance(extensionUri);
+        panel.getMediaSelection();
       }
     });
 
@@ -114,8 +120,8 @@ export class Dashboard {
     Dashboard.webview.webview.onDidReceiveMessage(async (msg) => {
       switch(msg.command) {
         case DashboardMessage.getViewType:
-          if (Dashboard.viewData) {
-            Dashboard.postWebviewMessage({ command: DashboardCommand.viewData, data: Dashboard.viewData });
+          if (Dashboard._viewData) {
+            Dashboard.postWebviewMessage({ command: DashboardCommand.viewData, data: Dashboard._viewData });
           }
           break;
         case DashboardMessage.getData:
@@ -165,7 +171,10 @@ export class Dashboard {
           if (msg.data?.file && msg.data?.image) {
             await commands.executeCommand(`workbench.view.extension.frontmatter-explorer`);
             await EditorHelper.showFile(msg.data.file);
-            ExplorerView.getInstance(extensionUri).updateMetadata({field: msg.data.fieldName, value: msg.data.image});
+            Dashboard._viewData = undefined;
+            const panel = ExplorerView.getInstance(extensionUri);
+            panel.getMediaSelection();
+            panel.updateMetadata({field: msg.data.fieldName, value: msg.data.image});
           }
           break;
       }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
-import { MarkdownIcon } from '../../../viewpanel/components/Icons/MarkdownIcon';
+import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIcon';
 import { DashboardMessage } from '../../DashboardMessage';
 import { Page } from '../../models/Page';
 import { ViewSelector, ViewType } from '../../state';

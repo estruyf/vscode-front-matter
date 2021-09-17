@@ -8,8 +8,8 @@ import { Template } from './commands/Template';
 import { COMMAND_NAME } from './constants/Extension';
 import { TaxonomyType } from './models';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
-import { TagType } from './viewpanel/TagType';
-import { ExplorerView } from './webview/ExplorerView';
+import { TagType } from './panelWebView/TagType';
+import { ExplorerView } from './explorerView/ExplorerView';
 import { Extension } from './helpers/Extension';
 import { DashboardData } from './models/DashboardData';
 

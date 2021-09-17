@@ -14,7 +14,7 @@ import { useRecoilState } from 'recoil';
 import { CategoryAtom, DashboardViewAtom, TagAtom } from '../../state';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { ClearFilters } from './ClearFilters';
-import { MarkdownIcon } from '../../../viewpanel/components/Icons/MarkdownIcon';
+import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIcon';
 import { PhotographIcon } from '@heroicons/react/outline';
 import { Pagination } from '../Media/Pagination';
 

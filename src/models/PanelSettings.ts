@@ -1,4 +1,5 @@
 import { FileType } from "vscode";
+import { DashboardData } from "./DashboardData";
 
 export interface PanelSettings {
   seo: SEO;
@@ -14,6 +15,7 @@ export interface PanelSettings {
   fmHighlighting: boolean;
   preview: PreviewSettings;
   contentTypes: ContentType[];
+  dashboardViewData: DashboardData | undefined;
 }
 
 export interface ContentType {

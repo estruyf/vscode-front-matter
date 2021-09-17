@@ -29,7 +29,6 @@ export const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings, fol
     MessageHelper.sendMessage(CommandToCode.createContent);
   };
 
-
   return (
     <div className="frontmatter">
       <div className={`ext_actions`}>

@@ -89,6 +89,7 @@ export class Extension {
     const contentTypes = config.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
 
     if (contentTypes) {
+      let needsUpdate = false;
       let defaultContentType = contentTypes.find(ct => ct.name === DEFAULT_CONTENT_TYPE_NAME);
 
       if (defaultContentType) {
@@ -98,6 +99,7 @@ export class Extension {
             name: dateField,
             type: "datetime"
           });
+          needsUpdate = true;
         }
   
         if (lastModField && lastModField !== "lastmod") {
@@ -106,6 +108,7 @@ export class Extension {
             name: lastModField,
             type: "datetime"
           });
+          needsUpdate = true;
         }
   
         if (description && description !== "description") {
@@ -114,9 +117,12 @@ export class Extension {
             name: description,
             type: "string"
           });
+          needsUpdate = true;
         }
   
-        await config.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes);
+        if (needsUpdate) {
+          await config.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes);
+        }
       }
     }
   }

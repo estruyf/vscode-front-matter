@@ -1,6 +1,6 @@
 import { VersionInfo } from '../../models/VersionInfo';
 import { ViewType } from '../state';
-import { ContentFolder } from './../../models/ContentFolder';
+import { ContentFolder } from '../../models/ContentFolder';
 
 export interface Settings { 
   beta: boolean;

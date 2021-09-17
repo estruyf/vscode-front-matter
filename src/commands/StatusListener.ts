@@ -1,7 +1,7 @@
 import { SETTING_SEO_DESCRIPTION_FIELD, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH } from './../constants/settings';
 import * as vscode from 'vscode';
 import { ArticleHelper, SeoHelper, SettingsHelper } from '../helpers';
-import { ExplorerView } from '../webview/ExplorerView';
+import { ExplorerView } from '../explorerView/ExplorerView';
 import { DefaultFields } from '../constants';
 
 export class StatusListener {

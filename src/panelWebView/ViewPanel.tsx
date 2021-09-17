@@ -14,7 +14,15 @@ export interface IViewPanelProps {
 }
 
 export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React.PropsWithChildren<IViewPanelProps>) => {
-  const { loading, metadata, settings, folderAndFiles, focusElm, unsetFocus } = useMessages();
+  const { loading, mediaSelecting, metadata, settings, folderAndFiles, focusElm, unsetFocus } = useMessages();
+
+  if (mediaSelecting) {
+    return (
+      <div className="frontmatter media_selection">
+        <h1>Continue in the media dashboard to select the image you want to insert.</h1>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
