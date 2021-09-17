@@ -4,7 +4,7 @@ import { DefaultFields, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPD
 import * as os from 'os';
 import { PanelSettings, CustomScript } from '../models/PanelSettings';
 import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv } from "vscode";
-import { ArticleHelper, SettingsHelper } from "../helpers";
+import { ArticleHelper, Settings } from "../helpers";
 import { Command } from "../panelWebView/Command";
 import { CommandToCode } from '../panelWebView/CommandToCode';
 import { Article } from '../commands';
@@ -207,6 +207,13 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     workspace.onDidChangeConfiguration(() => {
       this.getSettings();
     });
+
+    workspace.onDidChangeTextDocument((e) => {
+      console.log(e.document.fileName);
+      if (e.document.fileName === "frontmatter.json") {
+        console.log("frontmatter.json changed");
+      }
+    });
   }
 
   /**
@@ -216,7 +223,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   public pushMetadata(metadata: any) {
     const wsFolder = Folders.getWorkspaceFolder();
     const filePath = window.activeTextEditor?.document.uri.fsPath;
-    const config = SettingsHelper.getConfig();
+    const config = Settings.getConfig();
     const commaSeparated = config.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
     const staticFolder = config.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
     const contentTypes = config.get<string>(SETTING_TAXONOMY_CONTENT_TYPES);
@@ -331,7 +338,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * @param msg 
    */
   private runCustomScript(msg: { command: string, data: any}) {
-    const config = SettingsHelper.getConfig();
+    const config = Settings.getConfig();
     const scripts: CustomScript[] | undefined = config.get(SETTING_CUSTOM_SCRIPTS);
 
     if (msg?.data?.title && msg?.data?.script && scripts) {
@@ -382,7 +389,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * Retrieve the extension settings
    */
   public async getSettings() {
-    const config = SettingsHelper.getConfig();
+    const config = Settings.getConfig();
 
     this.postWebviewMessage({
       command: Command.settings,
@@ -466,7 +473,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    */
   private async addTags(tagType: TagType, value: string) {
     if (value) {
-      const config = SettingsHelper.getConfig();
+      const config = Settings.getConfig();
       let options = tagType === TagType.tags ? config.get<string[]>(SETTING_TAXONOMY_TAGS) : config.get<string[]>(SETTING_TAXONOMY_CATEGORIES);
 
       if (!options) {
@@ -475,7 +482,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
       options.push(value);
       const taxType = tagType === TagType.tags ? TaxonomyType.Tag : TaxonomyType.Category;
-      await SettingsHelper.update(taxType, options);
+      await Settings.update(taxType, options);
     }
   }
 
@@ -574,7 +581,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * Update the preview URL
    */
   private async updatePreviewUrl(previewUrl: string) {
-    const config = SettingsHelper.getConfig();
+    const config = Settings.getConfig();
     await config.update(SETTING_PREVIEW_HOST, previewUrl);
     this.getSettings();
   }
@@ -583,7 +590,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * Toggle the Front Matter highlighting
    */
   private async updateFmHighlight(autoUpdate: boolean) {
-    const config = SettingsHelper.getConfig();
+    const config = Settings.getConfig();
     await config.update(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, autoUpdate);
     this.getSettings();
   }
@@ -592,7 +599,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * Toggle the modified auto-update setting
    */
   private async updateModifiedUpdating(autoUpdate: boolean) {
-    const config = SettingsHelper.getConfig();
+    const config = Settings.getConfig();
     await config.update(SETTING_AUTO_UPDATE_DATE, autoUpdate);
     this.getSettings();
   }

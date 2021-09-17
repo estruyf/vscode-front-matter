@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { TaxonomyType } from "../models";
 import { CONFIG_KEY, SETTING_DATE_FORMAT, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX } from "../constants/settings";
 import { format } from "date-fns";
-import { ArticleHelper, SettingsHelper, SlugHelper } from '../helpers';
+import { ArticleHelper, Settings, SlugHelper } from '../helpers';
 import matter = require('gray-matter');
 import { Notifications } from '../helpers/Notifications';
 import { extname, basename } from 'path';
@@ -45,7 +45,7 @@ export class Article {
     }
 
     // Add all the known options to the selection list
-    const crntOptions = SettingsHelper.getTaxonomy(type);
+    const crntOptions = Settings.getTaxonomy(type);
     if (crntOptions && crntOptions.length > 0) {
       for (const crntOpt of crntOptions) {
         if (!options.find(o => o.label === crntOpt)) {
@@ -109,7 +109,7 @@ export class Article {
    * Sets the article lastmod date
    */
   public static async setLastModifiedDate() {
-    const config = SettingsHelper.getConfig();
+    const config = Settings.getConfig();
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;
@@ -135,7 +135,7 @@ export class Article {
    * Generate the slug based on the article title
    */
 	public static async generateSlug() {
-    const config = SettingsHelper.getConfig();
+    const config = Settings.getConfig();
     const prefix = config.get(SETTING_SLUG_PREFIX) as string;
     const suffix = config.get(SETTING_SLUG_SUFFIX) as string;
     const updateFileName = config.get(SETTING_SLUG_UPDATE_FILE_NAME) as string;
@@ -217,7 +217,7 @@ export class Article {
     const editor = vscode.window.activeTextEditor;
 
 		if (txtChanges.length > 0 && editor && ArticleHelper.isMarkdownFile()) {
-      const config = SettingsHelper.getConfig();
+      const config = Settings.getConfig();
 			const autoUpdate = config.get(SETTING_AUTO_UPDATE_DATE);
 
 			if (autoUpdate) {  
@@ -241,7 +241,7 @@ export class Article {
    * Format the date to the defined format
    */
   public static formatDate(dateValue: Date) {
-    const config = SettingsHelper.getConfig();
+    const config = Settings.getConfig();
     const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
 
     if (dateFormat && typeof dateFormat === "string") {

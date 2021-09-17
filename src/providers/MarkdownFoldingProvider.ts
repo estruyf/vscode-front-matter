@@ -1,7 +1,7 @@
 import { TextEditorDecorationType } from 'vscode';
 import { CancellationToken, FoldingContext, FoldingRange, FoldingRangeKind, FoldingRangeProvider, Range, TextDocument, window, Position } from 'vscode';
 import { SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT } from '../constants';
-import { SettingsHelper } from '../helpers';
+import { Settings } from '../helpers';
 import { FrontMatterDecorationProvider } from './FrontMatterDecorationProvider';
 
 export class MarkdownFoldingProvider implements FoldingRangeProvider {
@@ -44,8 +44,7 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
   }
 
   public static triggerHighlighting() {
-    const config = SettingsHelper.getConfig();
-    const fmHighlight = config.get<boolean>(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT);
+    const fmHighlight = Settings.get<boolean>(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT);
 
     if (MarkdownFoldingProvider.start !== null && MarkdownFoldingProvider.end !== null && MarkdownFoldingProvider.endLine !== null) {
       const range = new Range(new Position(MarkdownFoldingProvider.start, 0), new Position(MarkdownFoldingProvider.end, MarkdownFoldingProvider.endLine));

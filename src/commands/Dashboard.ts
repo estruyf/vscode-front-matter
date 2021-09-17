@@ -3,7 +3,7 @@ import { ArticleHelper } from './../helpers/ArticleHelper';
 import { basename, dirname, extname, join } from "path";
 import { existsSync, statSync, unlinkSync, writeFileSync } from "fs";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env } from "vscode";
-import { SettingsHelper } from '../helpers';
+import { Settings as SettingsHelper } from '../helpers';
 import { TaxonomyType } from '../models';
 import { Folders } from './Folders';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
@@ -118,6 +118,12 @@ export class Dashboard {
 
     workspace.onDidChangeConfiguration(() => {
       Dashboard.getSettings();
+    });
+
+    workspace.onDidChangeTextDocument((e) => {
+      if (e.document.fileName === "frontmatter.json") {
+        console.log("frontmatter.json changed");
+      }
     });
 
     Dashboard.webview.webview.onDidReceiveMessage(async (msg) => {

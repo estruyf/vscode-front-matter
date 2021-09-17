@@ -124,7 +124,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		Template.init();
 		Preview.init();
 
-		const exView = ExplorerView.getInstance();	
+		const exView = ExplorerView.getInstance();
 		exView.getSettings();
 		exView.getFoldersAndFiles();	
 		MarkdownFoldingProvider.triggerHighlighting();

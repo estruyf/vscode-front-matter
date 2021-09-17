@@ -6,7 +6,7 @@ import * as fs from "fs";
 import { DefaultFields, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_TAXONOMY_CONTENT_TYPES } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { TomlEngine, getFmLanguage, getFormatOpts } from './TomlEngine';
-import { SettingsHelper } from '.';
+import { Settings } from '.';
 import { parse } from 'date-fns';
 import { Notifications } from './Notifications';
 import { Article } from '../commands';
@@ -39,7 +39,7 @@ export class ArticleHelper {
    * @param article 
    */
   public static async update(editor: vscode.TextEditor, article: matter.GrayMatterFile<string>) {
-    const config = SettingsHelper.getConfig();
+    const config = Settings.getConfig();
     const removeQuotes = config.get(SETTING_REMOVE_QUOTES) as string[];
     const commaSeparated = config.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
     
@@ -72,7 +72,7 @@ export class ArticleHelper {
    * @param data 
    */
   public static stringifyFrontMatter(content: string, data: any) {
-    const config = SettingsHelper.getConfig();
+    const config = Settings.getConfig();
     const indentArray = config.get(SETTING_INDENT_ARRAY) as boolean;
     const commaSeparated = config.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
 
@@ -114,7 +114,7 @@ export class ArticleHelper {
       return;
     }
 
-    const config = SettingsHelper.getConfig();
+    const config = Settings.getConfig();
     const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
     const dateField = config.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
 
@@ -135,7 +135,7 @@ export class ArticleHelper {
    * @param updatedMetadata 
    */
   public static getContentType(metadata: { [field: string]: string; }): ContentType {
-    const config = SettingsHelper.getConfig();
+    const config = Settings.getConfig();
     const contentTypes = config.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
 
     if (!contentTypes || !metadata) {
@@ -173,7 +173,7 @@ export class ArticleHelper {
    */
   private static parseFile(fileContents: string): matter.GrayMatterFile<string> | null {
     try {
-      const config = SettingsHelper.getConfig();
+      const config = Settings.getConfig();
       const commaSeparated = config.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
       
       if (fileContents) {

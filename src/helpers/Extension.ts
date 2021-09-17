@@ -6,7 +6,7 @@ import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
 import { EXTENSION_BETA_ID, EXTENSION_ID, EXTENSION_STATE_VERSION } from "../constants/Extension";
 import { ContentType } from "../models";
 import { Notifications } from "./Notifications";
-import { SettingsHelper } from "./SettingsHelper";
+import { Settings } from "./SettingsHelper";
 
 
 export class Extension {
@@ -66,7 +66,7 @@ export class Extension {
    * Migrate old settings to new settings
    */
   public async migrateSettings(): Promise<void> {
-    const config = SettingsHelper.getConfig();
+    const config = Settings.getConfig();
 
     // Migration to version 3.1.0
     const folders = config.get<any>(SETTINGS_CONTENT_FOLDERS);
