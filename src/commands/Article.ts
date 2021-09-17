@@ -109,7 +109,6 @@ export class Article {
    * Sets the article lastmod date
    */
   public static async setLastModifiedDate() {
-    const config = Settings.getConfig();
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;
@@ -121,7 +120,7 @@ export class Article {
     }
 
     const cloneArticle = Object.assign({}, article);
-    const dateField = config.get(SETTING_MODIFIED_FIELD) as string || DefaultFields.LastModified;
+    const dateField = Settings.get(SETTING_MODIFIED_FIELD) as string || DefaultFields.LastModified;
     try {
       cloneArticle.data[dateField] = Article.formatDate(new Date());
 
@@ -135,11 +134,10 @@ export class Article {
    * Generate the slug based on the article title
    */
 	public static async generateSlug() {
-    const config = Settings.getConfig();
-    const prefix = config.get(SETTING_SLUG_PREFIX) as string;
-    const suffix = config.get(SETTING_SLUG_SUFFIX) as string;
-    const updateFileName = config.get(SETTING_SLUG_UPDATE_FILE_NAME) as string;
-    const filePrefix = config.get<string>(SETTING_TEMPLATES_PREFIX);
+    const prefix = Settings.get(SETTING_SLUG_PREFIX) as string;
+    const suffix = Settings.get(SETTING_SLUG_SUFFIX) as string;
+    const updateFileName = Settings.get(SETTING_SLUG_UPDATE_FILE_NAME) as string;
+    const filePrefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
     const editor = vscode.window.activeTextEditor;
 
     if (!editor) {
@@ -217,8 +215,7 @@ export class Article {
     const editor = vscode.window.activeTextEditor;
 
 		if (txtChanges.length > 0 && editor && ArticleHelper.isMarkdownFile()) {
-      const config = Settings.getConfig();
-			const autoUpdate = config.get(SETTING_AUTO_UPDATE_DATE);
+			const autoUpdate = Settings.get(SETTING_AUTO_UPDATE_DATE);
 
 			if (autoUpdate) {  
         const article = ArticleHelper.getFrontMatter(editor);
@@ -241,8 +238,7 @@ export class Article {
    * Format the date to the defined format
    */
   public static formatDate(dateValue: Date) {
-    const config = Settings.getConfig();
-    const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
+    const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
 
     if (dateFormat && typeof dateFormat === "string") {
       return format(dateValue, dateFormat);

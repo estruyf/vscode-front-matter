@@ -124,10 +124,8 @@ export class Preview {
    * Retrieve all settings related to the preview command
    */
   public static getSettings(): PreviewSettings {
-
-    const config = Settings.getConfig();
-    const host = config.get<string>(SETTING_PREVIEW_HOST);
-    const pathname = config.get<string>(SETTING_PREVIEW_PATHNAME);
+    const host = Settings.get<string>(SETTING_PREVIEW_HOST);
+    const pathname = Settings.get<string>(SETTING_PREVIEW_PATHNAME);
 
     return {
       host,

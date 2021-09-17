@@ -40,8 +40,7 @@ export class Dashboard {
    * Init the dashboard
    */
   public static async init() {
-    const config = SettingsHelper.getConfig();
-    const openOnStartup = config.get(SETTINGS_DASHBOARD_OPENONSTART);
+    const openOnStartup = SettingsHelper.get(SETTINGS_DASHBOARD_OPENONSTART);
     if (openOnStartup) {
       Dashboard.open();
     }
@@ -116,14 +115,8 @@ export class Dashboard {
       panel.getMediaSelection();
     });
 
-    workspace.onDidChangeConfiguration(() => {
+    SettingsHelper.onConfigChange((global?: any) => {
       Dashboard.getSettings();
-    });
-
-    workspace.onDidChangeTextDocument((e) => {
-      if (e.document.fileName === "frontmatter.json") {
-        console.log("frontmatter.json changed");
-      }
     });
 
     Dashboard.webview.webview.onDidReceiveMessage(async (msg) => {
@@ -195,7 +188,6 @@ export class Dashboard {
    */
   private static async getSettings() { 
     const ext = Extension.getInstance();
-    const config = SettingsHelper.getConfig();
     const wsFolder = Folders.getWorkspaceFolder();
     
     Dashboard.postWebviewMessage({
@@ -203,12 +195,12 @@ export class Dashboard {
       data: {
         beta: ext.isBetaVersion(),
         wsFolder: wsFolder ? wsFolder.fsPath : '',
-        staticFolder: config.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS),
+        staticFolder: SettingsHelper.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS),
         folders: Folders.get(),
         initialized: await Template.isInitialized(),
         tags: SettingsHelper.getTaxonomy(TaxonomyType.Tag),
         categories: SettingsHelper.getTaxonomy(TaxonomyType.Category),
-        openOnStart: config.get(SETTINGS_DASHBOARD_OPENONSTART),
+        openOnStart: SettingsHelper.get(SETTINGS_DASHBOARD_OPENONSTART),
         versionInfo: ext.getVersion(),
         pageViewType: await ext.getState<ViewType | undefined>(EXTENSION_STATE_PAGES_VIEW)
       } as Settings
@@ -219,7 +211,7 @@ export class Dashboard {
    * Update a setting from the dashboard
    */
   private static async updateSetting(data: { name: string, value: any }) {
-    await SettingsHelper.updateSetting(data.name, data.value);
+    await SettingsHelper.update(data.name, data.value);
     Dashboard.getSettings();
   }
 
@@ -228,8 +220,7 @@ export class Dashboard {
    */
   private static async getMedia(page: number = 0, folder: string = '') {
     const wsFolder = Folders.getWorkspaceFolder();
-    const config = SettingsHelper.getConfig();
-    const staticFolder = config.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
+    const staticFolder = SettingsHelper.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
 
     if (Dashboard.media.length === 0) {
       const contentFolder = Folders.get();
@@ -313,12 +304,11 @@ export class Dashboard {
    * Retrieve all the markdown pages
    */
   private static async getPages() {
-    const config = SettingsHelper.getConfig();
     const wsFolder = Folders.getWorkspaceFolder();
 
-    const descriptionField = config.get(SETTING_SEO_DESCRIPTION_FIELD) as string || DefaultFields.Description;
-    const dateField = config.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
-    const staticFolder = config.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
+    const descriptionField = SettingsHelper.get(SETTING_SEO_DESCRIPTION_FIELD) as string || DefaultFields.Description;
+    const dateField = SettingsHelper.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
+    const staticFolder = SettingsHelper.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
 
     const folderInfo = await Folders.getInfo();
     const pages: Page[] = [];
@@ -404,8 +394,7 @@ export class Dashboard {
   private static async saveFile({fileName, contents, folder}: { fileName: string; contents: string; folder: string | null }) {
     if (fileName && contents) {
       const wsFolder = Folders.getWorkspaceFolder();
-      const config = SettingsHelper.getConfig();
-      const staticFolder = config.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
+      const staticFolder = SettingsHelper.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
       const wsPath = wsFolder ? wsFolder.fsPath : "";
       let absFolderPath = join(wsPath, staticFolder || "", folder || "");
 

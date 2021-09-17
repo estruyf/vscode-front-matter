@@ -39,9 +39,8 @@ export class ArticleHelper {
    * @param article 
    */
   public static async update(editor: vscode.TextEditor, article: matter.GrayMatterFile<string>) {
-    const config = Settings.getConfig();
-    const removeQuotes = config.get(SETTING_REMOVE_QUOTES) as string[];
-    const commaSeparated = config.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
+    const removeQuotes = Settings.get(SETTING_REMOVE_QUOTES) as string[];
+    const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
     
     let newMarkdown = this.stringifyFrontMatter(article.content, Object.assign({}, article.data));
 
@@ -72,9 +71,8 @@ export class ArticleHelper {
    * @param data 
    */
   public static stringifyFrontMatter(content: string, data: any) {
-    const config = Settings.getConfig();
-    const indentArray = config.get(SETTING_INDENT_ARRAY) as boolean;
-    const commaSeparated = config.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
+    const indentArray = Settings.get(SETTING_INDENT_ARRAY) as boolean;
+    const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
 
     const language = getFmLanguage();
     const langOpts = getFormatOpts(language);
@@ -114,9 +112,8 @@ export class ArticleHelper {
       return;
     }
 
-    const config = Settings.getConfig();
-    const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
-    const dateField = config.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
+    const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
+    const dateField = Settings.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
 
     if (typeof article.data[dateField] !== "undefined") {
       if (dateFormat && typeof dateFormat === "string") {
@@ -135,8 +132,7 @@ export class ArticleHelper {
    * @param updatedMetadata 
    */
   public static getContentType(metadata: { [field: string]: string; }): ContentType {
-    const config = Settings.getConfig();
-    const contentTypes = config.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
+    const contentTypes = Settings.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
 
     if (!contentTypes || !metadata) {
       return DEFAULT_CONTENT_TYPE;
@@ -173,8 +169,7 @@ export class ArticleHelper {
    */
   private static parseFile(fileContents: string): matter.GrayMatterFile<string> | null {
     try {
-      const config = Settings.getConfig();
-      const commaSeparated = config.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
+      const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
       
       if (fileContents) {
         const language: string = getFmLanguage(); 

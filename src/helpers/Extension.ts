@@ -66,10 +66,8 @@ export class Extension {
    * Migrate old settings to new settings
    */
   public async migrateSettings(): Promise<void> {
-    const config = Settings.getConfig();
-
     // Migration to version 3.1.0
-    const folders = config.get<any>(SETTINGS_CONTENT_FOLDERS);
+    const folders = Settings.get<any>(SETTINGS_CONTENT_FOLDERS);
     if (folders && folders.length > 0) {
       const workspace = Folders.getWorkspaceFolder();
       const projectFolder = basename(workspace?.fsPath || "");
@@ -79,14 +77,14 @@ export class Extension {
         path: `${WORKSPACE_PLACEHOLDER}${folder.fsPath.split(projectFolder).slice(1).join('')}`.split('\\').join('/')
       }));
 
-      await config.update(`${SETTINGS_CONTENT_PAGE_FOLDERS}`, paths);
+      await Settings.update(SETTINGS_CONTENT_PAGE_FOLDERS, paths);
     }
 
     // Migration to version 3.2.0
-    const dateField = config.get<string>(SETTING_DATE_FIELD);
-    const lastModField = config.get<string>(SETTING_MODIFIED_FIELD);
-    const description = config.get<string>(SETTING_SEO_DESCRIPTION_FIELD);
-    const contentTypes = config.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
+    const dateField = Settings.get<string>(SETTING_DATE_FIELD);
+    const lastModField = Settings.get<string>(SETTING_MODIFIED_FIELD);
+    const description = Settings.get<string>(SETTING_SEO_DESCRIPTION_FIELD);
+    const contentTypes = Settings.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
 
     if (contentTypes) {
       let needsUpdate = false;
@@ -121,7 +119,7 @@ export class Extension {
         }
   
         if (needsUpdate) {
-          await config.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes);
+          await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes);
         }
       }
     }

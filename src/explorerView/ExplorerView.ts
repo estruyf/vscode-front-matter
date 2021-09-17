@@ -204,15 +204,8 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       }
     }, this);
 
-    workspace.onDidChangeConfiguration(() => {
+    Settings.onConfigChange((global?: any) => {
       this.getSettings();
-    });
-
-    workspace.onDidChangeTextDocument((e) => {
-      console.log(e.document.fileName);
-      if (e.document.fileName === "frontmatter.json") {
-        console.log("frontmatter.json changed");
-      }
     });
   }
 
@@ -223,10 +216,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   public pushMetadata(metadata: any) {
     const wsFolder = Folders.getWorkspaceFolder();
     const filePath = window.activeTextEditor?.document.uri.fsPath;
-    const config = Settings.getConfig();
-    const commaSeparated = config.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
-    const staticFolder = config.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
-    const contentTypes = config.get<string>(SETTING_TAXONOMY_CONTENT_TYPES);
+    const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
+    const staticFolder = Settings.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
+    const contentTypes = Settings.get<string>(SETTING_TAXONOMY_CONTENT_TYPES);
     
     const articleDetails = this.getArticleDetails();
 
@@ -338,8 +330,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * @param msg 
    */
   private runCustomScript(msg: { command: string, data: any}) {
-    const config = Settings.getConfig();
-    const scripts: CustomScript[] | undefined = config.get(SETTING_CUSTOM_SCRIPTS);
+    const scripts: CustomScript[] | undefined = Settings.get(SETTING_CUSTOM_SCRIPTS);
 
     if (msg?.data?.title && msg?.data?.script && scripts) {
       const customScript = scripts.find((s: CustomScript) => s.title === msg.data.title);
@@ -389,36 +380,34 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * Retrieve the extension settings
    */
   public async getSettings() {
-    const config = Settings.getConfig();
-
     this.postWebviewMessage({
       command: Command.settings,
       data: {
         seo: {
-          title: config.get(SETTING_SEO_TITLE_LENGTH) as number || -1,
-          description: config.get(SETTING_SEO_DESCRIPTION_LENGTH) as number || -1,
-          content: config.get(SETTING_SEO_CONTENT_MIN_LENGTH) as number || -1,
-          descriptionField: config.get(SETTING_SEO_DESCRIPTION_FIELD) as string || DefaultFields.Description
+          title: Settings.get(SETTING_SEO_TITLE_LENGTH) as number || -1,
+          description: Settings.get(SETTING_SEO_DESCRIPTION_LENGTH) as number || -1,
+          content: Settings.get(SETTING_SEO_CONTENT_MIN_LENGTH) as number || -1,
+          descriptionField: Settings.get(SETTING_SEO_DESCRIPTION_FIELD) as string || DefaultFields.Description
         },
         slug: {
-          prefix: config.get(SETTING_SLUG_PREFIX) || "",
-          suffix: config.get(SETTING_SLUG_SUFFIX) || "",
-          updateFileName: !!config.get<boolean>(SETTING_SLUG_UPDATE_FILE_NAME),
+          prefix: Settings.get(SETTING_SLUG_PREFIX) || "",
+          suffix: Settings.get(SETTING_SLUG_SUFFIX) || "",
+          updateFileName: !!Settings.get<boolean>(SETTING_SLUG_UPDATE_FILE_NAME),
         },
         date: {
-          format: config.get(SETTING_DATE_FORMAT)
+          format: Settings.get(SETTING_DATE_FORMAT)
         },
-        tags: config.get(SETTING_TAXONOMY_TAGS) || [],
-        categories: config.get(SETTING_TAXONOMY_CATEGORIES) || [],
-        freeform: config.get(SETTING_PANEL_FREEFORM),
-        scripts: config.get(SETTING_CUSTOM_SCRIPTS),
+        tags: Settings.get(SETTING_TAXONOMY_TAGS) || [],
+        categories: Settings.get(SETTING_TAXONOMY_CATEGORIES) || [],
+        freeform: Settings.get(SETTING_PANEL_FREEFORM),
+        scripts: Settings.get(SETTING_CUSTOM_SCRIPTS),
         isInitialized: await Template.isInitialized(),
-        modifiedDateUpdate: config.get(SETTING_AUTO_UPDATE_DATE) || false,
+        modifiedDateUpdate: Settings.get(SETTING_AUTO_UPDATE_DATE) || false,
         writingSettingsEnabled: this.isWritingSettingsEnabled() || false,
-        fmHighlighting: config.get(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT),
+        fmHighlighting: Settings.get(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT),
         preview: Preview.getSettings(),
-        commaSeparatedFields: config.get(SETTING_COMMA_SEPARATED_FIELDS) || [],
-        contentTypes: config.get(SETTING_TAXONOMY_CONTENT_TYPES) || [],
+        commaSeparatedFields: Settings.get(SETTING_COMMA_SEPARATED_FIELDS) || [],
+        contentTypes: Settings.get(SETTING_TAXONOMY_CONTENT_TYPES) || [],
         dashboardViewData: Dashboard.viewData
       } as PanelSettings
     });
@@ -473,8 +462,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    */
   private async addTags(tagType: TagType, value: string) {
     if (value) {
-      const config = Settings.getConfig();
-      let options = tagType === TagType.tags ? config.get<string[]>(SETTING_TAXONOMY_TAGS) : config.get<string[]>(SETTING_TAXONOMY_CATEGORIES);
+      let options = tagType === TagType.tags ? Settings.get<string[]>(SETTING_TAXONOMY_TAGS) : Settings.get<string[]>(SETTING_TAXONOMY_CATEGORIES);
 
       if (!options) {
         options = [];
@@ -482,7 +470,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
       options.push(value);
       const taxType = tagType === TagType.tags ? TaxonomyType.Tag : TaxonomyType.Category;
-      await Settings.update(taxType, options);
+      await Settings.updateTaxonomy(taxType, options);
     }
   }
 
@@ -581,8 +569,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * Update the preview URL
    */
   private async updatePreviewUrl(previewUrl: string) {
-    const config = Settings.getConfig();
-    await config.update(SETTING_PREVIEW_HOST, previewUrl);
+    await Settings.update(SETTING_PREVIEW_HOST, previewUrl);
     this.getSettings();
   }
 
@@ -590,8 +577,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * Toggle the Front Matter highlighting
    */
   private async updateFmHighlight(autoUpdate: boolean) {
-    const config = Settings.getConfig();
-    await config.update(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, autoUpdate);
+    await Settings.update(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, autoUpdate);
     this.getSettings();
   }
 
@@ -599,8 +585,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * Toggle the modified auto-update setting
    */
   private async updateModifiedUpdating(autoUpdate: boolean) {
-    const config = Settings.getConfig();
-    await config.update(SETTING_AUTO_UPDATE_DATE, autoUpdate);
+    await Settings.update(SETTING_AUTO_UPDATE_DATE, autoUpdate);
     this.getSettings();
   }
 

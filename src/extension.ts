@@ -12,6 +12,7 @@ import { TagType } from './panelWebView/TagType';
 import { ExplorerView } from './explorerView/ExplorerView';
 import { Extension } from './helpers/Extension';
 import { DashboardData } from './models/DashboardData';
+import { Settings as SettingsHelper } from './helpers';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
@@ -23,6 +24,7 @@ const mdSelector: vscode.DocumentSelector = { language: 'markdown', scheme: 'fil
 export async function activate(context: vscode.ExtensionContext) {
 	const { subscriptions, extensionUri, extensionPath } = context;
 
+	SettingsHelper.init();
 	const extension = Extension.getInstance(context);
 
 	if (!extension.checkIfExtensionCanRun()) {
@@ -120,7 +122,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	// Things to do when configuration changes
-	vscode.workspace.onDidChangeConfiguration(() => {
+	SettingsHelper.onConfigChange((global?: any) => {
 		Template.init();
 		Preview.init();
 

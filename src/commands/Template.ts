@@ -93,9 +93,8 @@ export class Template {
    * Create from a template
    */
   public static async create(folderPath: string) {
-    const config = Settings.getConfig();
-    const folder = config.get<string>(SETTING_TEMPLATES_FOLDER);
-    const prefix = config.get<string>(SETTING_TEMPLATES_PREFIX);
+    const folder = Settings.get<string>(SETTING_TEMPLATES_FOLDER);
+    const prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
 
     if (!folderPath) {
       Notifications.warning(`Incorrect project folder path retrieved.`);
@@ -188,8 +187,7 @@ export class Template {
    * Get the folder settings
    */
   public static getSettings() {
-    const config = Settings.getConfig();
-    const folder = config.get<string>(SETTING_TEMPLATES_FOLDER);
+    const folder = Settings.get<string>(SETTING_TEMPLATES_FOLDER);
     return folder;
   }
 }
