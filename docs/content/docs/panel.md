@@ -82,9 +82,11 @@ The following settings are related to these actions:
 
 ## Metadata
 
-In the metadata section, you can 
+In the metadata section, you can manage the front matter of your Markdown file. This section is fully customizable to your needs with our `content type` support.
 
 ![Metadata section](/assets/metadata.png)
+
+> **Info**: More information about content types can be read at [content type section](/docs/content-types).
 
 The tags and categories inputs allow you to insert known and unknown tags/categories. When an unknown tag/category gets added, it will show a `+` sign that allows you to add it to your configuration so that it will appear in the known tags/categories next time.
 

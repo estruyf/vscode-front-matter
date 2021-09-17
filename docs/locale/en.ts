@@ -21,8 +21,8 @@ export const strings = {
   hero_button_primary: "Get started",
 
   // Hero media
-  hero_media_title: "Checking your media was never easier",
-  hero_media_description: "Quickly glance all your media files straight from within VS Code. You will be able to filter by your content folders, and perform quick media actions.",
+  hero_media_title: "Managing your media was never easier",
+  hero_media_description: "Quickly glance all your media files straight from within VS Code, or insert media into your content. We got your back with our media dashboard. You will be able to filter by your content folders and perform quick media actions.",
   hero_media_button_primary: "See what it can do",
 
   // Testimonials

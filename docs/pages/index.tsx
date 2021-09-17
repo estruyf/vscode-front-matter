@@ -42,7 +42,7 @@ const Home: NextPage = () => {
           view={"right"}
           title={strings(`hero_media_title`)}
           description={strings(`hero_media_description`)}
-          imgSrc={"https://res.cloudinary.com/estruyf/image/upload/w_1256/v1631520508/frontmatter/media.png"}
+          imgSrc={"https://res.cloudinary.com/estruyf/image/upload/w_1256/v1631871287/frontmatter/insert_media-3.2.0.png"}
           imgAlt={"Front Matter CMS - media management was never easier in VS Code"}
           link={`/docs/dashboard`}
           linkText={strings(`hero_media_button_primary`)}

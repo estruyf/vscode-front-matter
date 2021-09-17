@@ -40,7 +40,7 @@ export const CTA: React.FunctionComponent<ICTAProps> = (props: React.PropsWithCh
           <div className={`relative sm:mx-auto sm:max-w-3xl sm:px-0 lg:-mr-40 lg:max-w-none lg:h-full lg:pl-12`}>
             <img 
               className={`w-full lg:h-full lg:w-auto lg:max-w-none`} 
-              src={`https://res.cloudinary.com/estruyf/image/upload/w_1256/v1631520508/frontmatter/preview.png`} 
+              src={`https://res.cloudinary.com/estruyf/image/upload/w_1256/v1631871148/frontmatter/preview-3.2.0.png`}
               alt={`Front Matter - Headless CMS - Live page preview`}
               loading={`lazy`} />
           </div>
