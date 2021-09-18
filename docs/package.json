@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "npm run changelog && next dev",
-    "build": "npm run changelog && npm run sitemap && next build",
+    "build": "npm run changelog && npm run sitemap && npm run schema && next build",
     "start": "next start",
     "lint": "next lint",
     "changelog": "node scripts/copy-changelog.js",
-    "sitemap": "node scripts/generate-sitemap.js"
+    "sitemap": "node scripts/generate-sitemap.js",
+    "schema": "node scripts/generate-schema.js"
   },
   "dependencies": {
     "@docsearch/js": "^3.0.0-alpha.40",
