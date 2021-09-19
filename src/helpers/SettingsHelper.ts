@@ -10,15 +10,17 @@ export class Settings {
   private static config: vscode.WorkspaceConfiguration;
   private static globalFile = "frontmatter.json";
   private static globalConfig: any;
+  private static initialConfig = {
+    "$schema": "https://frontmatter.codes/frontmatter.schema.json"
+  };
 
   public static init() {
-    const wsFolder = Folders.getWorkspaceFolder();
-    if (wsFolder) {
-      const fmConfig = join(wsFolder.fsPath, Settings.globalFile);
-      if (existsSync(fmConfig)) {
-        const localConfig = readFileSync(fmConfig, 'utf8');
-        Settings.globalConfig = JSON.parse(localConfig);
-      }
+    const fmConfig = Settings.projectConfigPath;
+    if (fmConfig && existsSync(fmConfig)) {
+      const localConfig = readFileSync(fmConfig, 'utf8');
+      Settings.globalConfig = JSON.parse(localConfig);
+    } else {
+      Settings.globalConfig = undefined;
     }
 
     Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
@@ -43,13 +45,20 @@ export class Settings {
 
     workspace.onDidSaveTextDocument(async (e) => {
       const filename = e.uri.fsPath;
-      if (filename && basename(filename).toLowerCase() === Settings.globalFile.toLowerCase()) {
+      if (Settings.checkProjectConfig(filename)) {
         const file = await workspace.openTextDocument(e.uri);
         if (file) {
           const fileContents = file.getText();
           const json = JSON.parse(fileContents);
           callback(json);
         }
+      }
+    });
+
+    workspace.onDidDeleteFiles((e) => {
+      const needCallback = e?.files.find(f => Settings.checkProjectConfig(f.fsPath));
+      if (needCallback) {
+        callback();
       }
     });
   }
@@ -63,7 +72,7 @@ export class Settings {
     let setting = undefined;
     const settingKey = `${CONFIG_KEY}.${name}`;
 
-    if (typeof Settings.globalConfig[settingKey] !== "undefined") {
+    if (Settings.globalConfig && typeof Settings.globalConfig[settingKey] !== "undefined") {
       setting = Settings.globalConfig[settingKey];
     }
 
@@ -85,18 +94,15 @@ export class Settings {
    * @param value 
    */
   public static async update<T>(name: string, value: T, updateGlobal: boolean = false) {
-    const wsFolder = Folders.getWorkspaceFolder();
+    const fmConfig = Settings.projectConfigPath;
 
     if (updateGlobal) {
-      if (wsFolder) {
-        const fmConfig = join(wsFolder.fsPath, Settings.globalFile);
-        if (existsSync(fmConfig)) {
-          const localConfig = readFileSync(fmConfig, 'utf8');
-          Settings.globalConfig = JSON.parse(localConfig);
-          Settings.globalConfig[`${CONFIG_KEY}.${name}`] = value;
-          writeFileSync(fmConfig, JSON.stringify(Settings.globalConfig, null, 2), 'utf8');
-          return;
-        }
+      if (fmConfig && existsSync(fmConfig)) {
+        const localConfig = readFileSync(fmConfig, 'utf8');
+        Settings.globalConfig = JSON.parse(localConfig);
+        Settings.globalConfig[`${CONFIG_KEY}.${name}`] = value;
+        writeFileSync(fmConfig, JSON.stringify(Settings.globalConfig, null, 2), 'utf8');
+        return;
       }
     } else {
       await Settings.config.update(name, value);
@@ -108,11 +114,16 @@ export class Settings {
   }
 
   /**
-   * Retrieves the config
-   * @returns 
+   * Create team settings
    */
-  public static getConfig(): vscode.WorkspaceConfiguration {
-    return Settings.config;
+  public static createTeamSettings() {
+    const wsFolder = Folders.getWorkspaceFolder();
+    if (wsFolder) {
+      const configPath = join(wsFolder.fsPath, Settings.globalFile);
+      if (!existsSync(configPath)) {
+        writeFileSync(configPath, JSON.stringify(Settings.initialConfig, null, 2), 'utf8');
+      }
+    }
   }
 
   /**
@@ -138,11 +149,40 @@ export class Settings {
    * @param type 
    * @param options 
    */
-  static async updateTaxonomy(type: TaxonomyType, options: string[]) {
+  public static async updateTaxonomy(type: TaxonomyType, options: string[]) {
     const config = vscode.workspace.getConfiguration(CONFIG_KEY);
     const configSetting = type === TaxonomyType.Tag ? SETTING_TAXONOMY_TAGS : SETTING_TAXONOMY_CATEGORIES;
     options = [...new Set(options)];
     options = options.sort().filter(o => !!o);
     await config.update(configSetting, options);
+  }
+
+  /**
+   * Check if its the project config
+   * @param filePath 
+   * @returns 
+   */
+  private static checkProjectConfig(filePath: string) {
+    const fmConfig = Settings.projectConfigPath;
+    if (fmConfig && existsSync(fmConfig)) {
+      return filePath && 
+             basename(filePath).toLowerCase() === Settings.globalFile.toLowerCase() &&
+             fmConfig.toLowerCase() === filePath.toLowerCase();
+    }
+
+    return false;
+  }
+
+  /**
+   * Get the project config path
+   * @returns 
+   */
+  private static get projectConfigPath() {
+    const wsFolder = Folders.getWorkspaceFolder();
+    if (wsFolder) {
+      const fmConfig = join(wsFolder.fsPath, Settings.globalFile);
+      return fmConfig;
+    }
+    return undefined;
   }
 }

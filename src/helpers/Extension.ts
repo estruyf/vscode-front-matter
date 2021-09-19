@@ -80,6 +80,9 @@ export class Extension {
       await Settings.update(SETTINGS_CONTENT_PAGE_FOLDERS, paths);
     }
 
+    // Create team settings
+    Settings.createTeamSettings();
+
     // Migration to version 3.2.0
     const dateField = Settings.get<string>(SETTING_DATE_FIELD);
     const lastModField = Settings.get<string>(SETTING_MODIFIED_FIELD);
