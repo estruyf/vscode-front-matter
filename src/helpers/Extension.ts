@@ -39,7 +39,7 @@ export class Extension {
     }
 
     if (usedVersion !== installedVersion) {
-      Notifications.info(`Find out what is new at [v${installedVersion} release notes](https://${this.isBetaVersion() ? 'beta.' : ''}frontmatter.codes/updates/v${installedVersion.split('.').join('_')})`);
+      Notifications.info(`Find out what is new at [v${installedVersion} release notes](https://${this.isBetaVersion() ? 'beta.' : ''}frontmatter.codes/updates)`);
       this.setVersion(installedVersion);
     }
 
