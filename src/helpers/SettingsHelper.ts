@@ -5,13 +5,14 @@ import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY } from '
 import { Folders } from '../commands/Folders';
 import { join, basename } from 'path';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { Extension } from './Extension';
 
 export class Settings {
   private static config: vscode.WorkspaceConfiguration;
   private static globalFile = "frontmatter.json";
   private static globalConfig: any;
   private static initialConfig = {
-    "$schema": "https://frontmatter.codes/frontmatter.schema.json"
+    "$schema": `https://${Extension.getInstance().isBetaVersion() ? `beta.` : ``}frontmatter.codes/frontmatter.schema.json`
   };
 
   public static init() {

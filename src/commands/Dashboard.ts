@@ -455,7 +455,13 @@ export class Dashboard {
    * @param msg 
    */
   private static postWebviewMessage(msg: { command: DashboardCommand, data?: any }) {
-    Dashboard.webview?.webview.postMessage(msg);
+    if (Dashboard.isDisposed) {
+      return;
+    }
+
+    if (Dashboard.webview) {
+      Dashboard.webview?.webview.postMessage(msg);
+    }
   }
   
   /**
