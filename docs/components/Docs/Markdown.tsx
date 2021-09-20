@@ -1,3 +1,4 @@
+import { LinkIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
 import * as React from 'react';
 import { useEffect } from 'react';
@@ -18,6 +19,14 @@ export const Markdown: React.FunctionComponent<IMarkdownProps> = ({content}: Rea
   const generateId = (props: any) => {
     const title = getTitle(props);
     return title.toLowerCase().replace(/\s/g, '-');
+  };
+
+  const generateLink = (props: any) => {
+    return (
+      <a href={`#${generateId(props)}`} aria-hidden="true" title={getTitle(props)} className={`hidden group-hover:inline-block`}>
+        <LinkIcon className={`ml-4 h-6 inline-block`} />
+      </a>
+    );
   };
 
   useEffect(() => {
@@ -48,9 +57,9 @@ export const Markdown: React.FunctionComponent<IMarkdownProps> = ({content}: Rea
             }
             return <Link key={url as string} href={url as string}><a title={title}>{title}</a></Link>;
           },
-          h1: ({node, ...props}) => (<h1 id={generateId(props)}>{getTitle(props)}</h1>),
-          h2: ({node, ...props}) => (<h2 id={generateId(props)}>{getTitle(props)}</h2>),
-          h3: ({node, ...props}) => (<h3 id={generateId(props)}>{getTitle(props)}</h3>),
+          h1: ({node, ...props}) => (<h1 id={generateId(props)} className={`header__offset group`}>{getTitle(props)}{generateLink(props)}</h1>),
+          h2: ({node, ...props}) => (<h2 id={generateId(props)} className={`header__offset group`}>{getTitle(props)}{generateLink(props)}</h2>),
+          h3: ({node, ...props}) => (<h3 id={generateId(props)} className={`header__offset group`}>{getTitle(props)}{generateLink(props)}</h3>),
         }}
         rehypePlugins={[rehypeRaw]} 
         children={content} />

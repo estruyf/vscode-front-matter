@@ -20,7 +20,7 @@ export const PageInfo: React.FunctionComponent<IPageInfoProps> = ({page}: React.
       {
         date && (
           <div className="text-base">
-            <span>Last updated on</span>{` `}<span>{format(date, `MMM dd, yyyy`)}</span>
+            <span>Last updated on</span>{` `}<span><time dateTime={format(date, 'yyyy-MM-dd')}>{format(date, `MMM dd, yyyy`)}</time></span>
           </div>
         )
       }

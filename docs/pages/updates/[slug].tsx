@@ -1,11 +1,13 @@
+import { format, parseJSON } from 'date-fns';
 import React from 'react';
 import { Markdown } from '../../components/Docs/Markdown';
 import { Description, OtherMeta, Title } from '../../components/Meta';
 import { Layout } from '../../components/Page/Layout';
 import { getAllPosts, getPostByFilename } from '../../lib/api';
 
-export default function Home({ title, content, description }: any) {
-  
+export default function Home({ title, content, description, date }: any) {
+  const pubDate = date ? parseJSON(date) : '';
+
   return (
     <>
       <Title value={title} />
@@ -18,6 +20,8 @@ export default function Home({ title, content, description }: any) {
             <h1 className="text-5xl tracking-tight font-extrabold sm:leading-none lg:text-5xl xl:text-6xl">{title}</h1>
             
             <p className="mt-3 text-base text-whisper-700 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">{description}</p>
+
+            { pubDate && <p className="mt-3 text-whisper-900">Published: <time dateTime={format(pubDate, 'yyyy-MM-dd')}>{format(pubDate, 'MMM dd, yyyy')}</time></p> }
           </div>
 
           <div className={`changelog`}>
@@ -30,7 +34,7 @@ export default function Home({ title, content, description }: any) {
 }
 
 export const getStaticProps = async ({ params }: any) => {
-  const changes = getPostByFilename('changelog', `${params.slug}.md`, ['title', 'content', 'description']);
+  const changes = getPostByFilename('changelog', `${params.slug}.md`, ['title', 'content', 'description', 'date']);
 
   return {
     props: { ...changes }

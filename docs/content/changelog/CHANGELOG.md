@@ -1,6 +1,6 @@
 # Change Log
 
-## [4.0.0] - (upcoming release)
+## [4.0.0] - (upcoming release) - [Release Notes](https://beta.frontmatter.codes/updates/v4_0_0)
 
 - [#101](https://github.com/estruyf/vscode-front-matter/issues/101): Date picker available on the metadata section
 - [#102](https://github.com/estruyf/vscode-front-matter/issues/102): Support comma separated arrays in front matter

@@ -6,6 +6,13 @@
 
 html, body {height: 100%;}
 
+.header__offset:before {
+  content: "";
+  display: block;
+  height: 100px;
+  margin: -100px 0 0;
+}
+
 .changelog {
   @apply py-8 space-y-4;
 

@@ -9,13 +9,15 @@ export interface IPageProps {
 }
 
 export const Page: React.FunctionComponent<IPageProps> = ({items, page, children}: React.PropsWithChildren<IPageProps>) => {
+  
+  
   return (
     <div className={`mb-6 py-8 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8`}>
       <div className={`lg:flex`}>
 
-        <div className={`h-screen top-16 lg:block hidden lg:w-60 xl:w-72`}>
+        <aside className={`h-screen top-16 lg:block hidden lg:w-80 xl:w-96`}>
           <Sidebar items={items} />
-        </div>
+        </aside>
 
         <div className={`min-w-0 w-full flex-auto lg:static lg:max-h-full lg:overflow-visible`}>
           {children}
