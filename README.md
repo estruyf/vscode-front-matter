@@ -39,10 +39,14 @@ Our main extension features are:
 - and many more
 
 <p align="center">
-  <img src="./assets/v2.5.0/site-preview.png" alt="Site preview" style="display: inline-block" />
+  <img src="./assets/v4.0.0/preview.png" alt="Site preview" style="display: inline-block" />
 </p>
 
 > If you see something missing in your article creation flow, please feel free to reach out.
+
+**Version 4**
+
+Support for Team level settings, content-types, and image support. Get to know more at: [v4.0.0 release notes](https://frontmatter.codes/updates/v4_0_0).
 
 **Version 3**
 
