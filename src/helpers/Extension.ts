@@ -33,12 +33,16 @@ export class Extension {
     const frontMatter = extensions.getExtension(this.isBetaVersion() ? EXTENSION_BETA_ID : EXTENSION_ID)!;
     let installedVersion = frontMatter.packageJSON.version;
     const usedVersion = this.ctx.globalState.get<string>(EXTENSION_STATE_VERSION);
+
+    if (usedVersion !== installedVersion) {
+      Notifications.info(`Check out the v${installedVersion} release notes at [v${installedVersion} release notes](https://beta.frontmatter.codes/updates/v${installedVersion.split('.').join('_')})`);
+    }
     
     if (this.isBetaVersion()) {
       installedVersion = `${installedVersion}-beta`;
     }
 
-    if (!usedVersion) {
+    if (installedVersion) {
       this.setVersion(installedVersion);
     };
 
@@ -83,7 +87,7 @@ export class Extension {
     // Create team settings
     Settings.createTeamSettings();
 
-    // Migration to version 3.2.0
+    // Migration to version 4.0.0
     const dateField = Settings.get<string>(SETTING_DATE_FIELD);
     const lastModField = Settings.get<string>(SETTING_MODIFIED_FIELD);
     const description = Settings.get<string>(SETTING_SEO_DESCRIPTION_FIELD);
