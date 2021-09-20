@@ -28,7 +28,7 @@
   </a>
 </h2>
 
-![](./assets/v4.0.0/banner.png)
+![](./assets/v4.0.0/banner-v2.png)
 
 ## What is Front Matter?
 
