@@ -1,14 +1,16 @@
 # Change Log
 
-## [3.2.0] - (upcoming release)
+## [4.0.0] - (upcoming release)
 
 - [#101](https://github.com/estruyf/vscode-front-matter/issues/101): Date picker available on the metadata section
 - [#102](https://github.com/estruyf/vscode-front-matter/issues/102): Support comma separated arrays in front matter
 - [#103](https://github.com/estruyf/vscode-front-matter/issues/103): Added title and description field to the metadata section
 - [#104](https://github.com/estruyf/vscode-front-matter/issues/104): Allow to set images in front matter from the metadata panel section
 - [#105](https://github.com/estruyf/vscode-front-matter/issues/105): Content Type support with backwards compatibility
+- [#106](https://github.com/estruyf/vscode-front-matter/issues/106): Introduction of team level settings for Front Matter
 - [#107](https://github.com/estruyf/vscode-front-matter/issues/107): Number field support added in content type fields
 - [#108](https://github.com/estruyf/vscode-front-matter/issues/108): Choice field support added in content type fields
+- [#109](https://github.com/estruyf/vscode-front-matter/issues/109): JSON Config script added to automate the JSON schema
 
 ## [3.1.0] - 2021-09-10
 

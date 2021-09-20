@@ -86,6 +86,10 @@ html, body {height: 100%;}
   }
 }
 
+.changelog .markdown h2:first-child {
+    @apply mt-0 !important;
+}
+
 /* DocSearch */
 html[data-theme=dark] {
   --docsearch-text-color: #f3eff5;

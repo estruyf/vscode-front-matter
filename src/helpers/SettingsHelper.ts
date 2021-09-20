@@ -1,3 +1,4 @@
+import { Notifications } from './Notifications';
 import { workspace } from 'vscode';
 import * as vscode from 'vscode';
 import { TaxonomyType } from '../models';
@@ -179,6 +180,8 @@ export class Settings {
         }
       }
     }
+
+    Notifications.info(`All settings promoted to team level.`);
   }
 
 

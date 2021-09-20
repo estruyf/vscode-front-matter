@@ -66,8 +66,8 @@ export const strings = {
   showcase_description: "Check out our showcase of sites using Front Matter.",
 
   // Changelog
-  changelog_title: "Changelog",
-  changelog_description: "Check out our changelog for Front Matter.",
+  changelog_title: "Updates",
+  changelog_description: "Check out the updates for Front Matter.",
   changelog_page_title: `Latest updates`,
   changelog_page_description: `An overview of all updates from the ${Extension.name} extension`,
 };

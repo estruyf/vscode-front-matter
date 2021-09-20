@@ -6,7 +6,7 @@ export const navigation = {
   main: [
     { name: 'Documentation', title: '', href: '/docs' },
     { name: 'Showcase', href: '/showcase' },
-    { name: 'Changelog', href: '/changelog' },
+    { name: 'Updates', href: '/updates' },
   ],
   social: [
     { 
