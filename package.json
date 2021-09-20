@@ -187,22 +187,10 @@
           "markdownDescription": "Specify the path you want to add after the host and before your slug. This can be used for instance to include the year/month like: `yyyy/MM`. The date will be generated based on the article its date field value. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.preview.pathname)",
           "scope": "Site preview"
         },
-        "frontMatter.taxonomy.dateField": {
-          "type": "string",
-          "default": "date",
-          "markdownDescription": "This setting is used to define the publishing date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.datefield)"
-        },
-        "frontMatter.taxonomy.modifiedField": {
-          "type": "string",
-          "default": "lastmod",
-          "markdownDescription": "This setting is used to define the modified date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.modifiedfield)"
-        },
-        "frontMatter.taxonomy.tags": {
-          "type": "array",
-          "markdownDescription": "Specifies the tags which can be used in the Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.tags)",
-          "items": {
-            "type": "string"
-          },
+        "frontMatter.taxonomy.alignFilename": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Align the filename with the new slug when it gets generated. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.alignfilename)",
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.categories": {
@@ -221,93 +209,6 @@
             "description": "Name of the fields you want to use as comma-separated arrays."
           },
           "scope": "Taxonomy"
-        },
-        "frontMatter.taxonomy.dateFormat": {
-          "type": "string",
-          "markdownDescription": "Specify the date format for your articles. Check [date-fns formating](https://date-fns.org/v2.0.1/docs/format) for more information. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.dateformat)",
-          "scope": "Taxonomy"
-        },
-        "frontMatter.taxonomy.slugPrefix": {
-          "type": "string",
-          "markdownDescription": "Specify a prefix for the slug. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.slugprefix)",
-          "scope": "Taxonomy"
-        },
-        "frontMatter.taxonomy.slugSuffix": {
-          "type": "string",
-          "markdownDescription": "Specify a suffix for the slug. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.slugsuffix)",
-          "scope": "Taxonomy"
-        },
-        "frontMatter.taxonomy.alignFilename": {
-          "type": "boolean",
-          "default": false,
-          "markdownDescription": "Align the filename with the new slug when it gets generated. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.alignfilename)",
-          "scope": "Taxonomy"
-        },
-        "frontMatter.taxonomy.indentArrays": {
-          "type": "boolean",
-          "default": true,
-          "markdownDescription": "Specify if arrays in front matter are indented. Default: true. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.indentarrays)",
-          "scope": "Taxonomy"
-        },
-        "frontMatter.taxonomy.noPropertyValueQuotes": {
-          "type": "array",
-          "default": [],
-          "markdownDescription": "Specify the properties from which quotes need to be removed. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.nopropertyvaluequotes)",
-          "items": {
-            "type": "string",
-            "description": "Name of the properties you want to remove quotes from."
-          },
-          "scope": "Taxonomy"
-        },
-        "frontMatter.taxonomy.frontMatterType": {
-          "type": "string",
-          "default": "YAML",
-          "enum": [
-            "YAML",
-            "TOML"
-          ],
-          "markdownDescription": "Specify the type of Front Matter to use. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.frontmattertype)",
-          "enumDescriptions": [
-            "Specifies you want to use YAML markup for the front matter (default)",
-            "Specifies you want to use TOML markup for the front matter"
-          ],
-          "scope": "Taxonomy"
-        },
-        "frontMatter.taxonomy.seoTitleLength": {
-          "type": "number",
-          "default": 60,
-          "markdownDescription": "Specifies the optimal title length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seotitlelength)",
-          "scope": "Taxonomy"
-        },
-        "frontMatter.taxonomy.seoDescriptionLength": {
-          "type": "number",
-          "default": 160,
-          "markdownDescription": "Specifies the optimal description length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seodescriptionlength)",
-          "scope": "Taxonomy"
-        },
-        "frontMatter.taxonomy.seoContentLengh": {
-          "type": "number",
-          "default": 1760,
-          "markdownDescription": "Specifies the optimal minimum length for your articles. Between 1,760 words – 2,400 is the absolute ideal article length for SEO in 2021. (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seocontentlengh)",
-          "scope": "Taxonomy"
-        },
-        "frontMatter.taxonomy.seoDescriptionField": {
-          "type": "string",
-          "default": "description",
-          "markdownDescription": "Specifies the name of the SEO description field for your page. Default is 'description'. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seodescriptionfield)",
-          "scope": "Taxonomy"
-        },
-        "frontMatter.templates.folder": {
-          "type": "string",
-          "default": ".templates",
-          "markdownDescription": "Specify the folder to use for your article templates. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.folder)",
-          "scope": "Templates"
-        },
-        "frontMatter.templates.prefix": {
-          "type": "string",
-          "default": "yyyy-MM-dd",
-          "markdownDescription": "Specify the prefix you want to add for your new article filenames. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.prefix)",
-          "scope": "Templates"
         },
         "frontMatter.taxonomy.contentTypes": {
           "type": [
@@ -417,6 +318,105 @@
             }
           ],
           "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.dateField": {
+          "type": "string",
+          "default": "date",
+          "markdownDescription": "This setting is used to define the publishing date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.datefield)"
+        },
+        "frontMatter.taxonomy.dateFormat": {
+          "type": "string",
+          "markdownDescription": "Specify the date format for your articles. Check [date-fns formating](https://date-fns.org/v2.0.1/docs/format) for more information. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.dateformat)",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.frontMatterType": {
+          "type": "string",
+          "default": "YAML",
+          "enum": [
+            "YAML",
+            "TOML"
+          ],
+          "markdownDescription": "Specify the type of Front Matter to use. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.frontmattertype)",
+          "enumDescriptions": [
+            "Specifies you want to use YAML markup for the front matter (default)",
+            "Specifies you want to use TOML markup for the front matter"
+          ],
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.indentArrays": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Specify if arrays in front matter are indented. Default: true. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.indentarrays)",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.modifiedField": {
+          "type": "string",
+          "default": "lastmod",
+          "markdownDescription": "This setting is used to define the modified date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.modifiedfield)"
+        },
+        "frontMatter.taxonomy.noPropertyValueQuotes": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "Specify the properties from which quotes need to be removed. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.nopropertyvaluequotes)",
+          "items": {
+            "type": "string",
+            "description": "Name of the properties you want to remove quotes from."
+          },
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.seoContentLengh": {
+          "type": "number",
+          "default": 1760,
+          "markdownDescription": "Specifies the optimal minimum length for your articles. Between 1,760 words – 2,400 is the absolute ideal article length for SEO in 2021. (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seocontentlengh)",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.seoDescriptionField": {
+          "type": "string",
+          "default": "description",
+          "markdownDescription": "Specifies the name of the SEO description field for your page. Default is 'description'. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seodescriptionfield)",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.seoDescriptionLength": {
+          "type": "number",
+          "default": 160,
+          "markdownDescription": "Specifies the optimal description length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seodescriptionlength)",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.seoTitleLength": {
+          "type": "number",
+          "default": 60,
+          "markdownDescription": "Specifies the optimal title length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seotitlelength)",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.slugPrefix": {
+          "type": "string",
+          "markdownDescription": "Specify a prefix for the slug. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.slugprefix)",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.slugSuffix": {
+          "type": "string",
+          "markdownDescription": "Specify a suffix for the slug. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.slugsuffix)",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.tags": {
+          "type": "array",
+          "markdownDescription": "Specifies the tags which can be used in the Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.tags)",
+          "items": {
+            "type": "string"
+          },
+          "scope": "Taxonomy"
+        },
+        "frontMatter.templates.folder": {
+          "type": "string",
+          "default": ".templates",
+          "markdownDescription": "Specify the folder to use for your article templates. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.folder)",
+          "scope": "Templates"
+        },
+        "frontMatter.templates.prefix": {
+          "type": "string",
+          "default": "yyyy-MM-dd",
+          "markdownDescription": "Specify the prefix you want to add for your new article filenames. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.prefix)",
+          "scope": "Templates"
         }
       }
     },
