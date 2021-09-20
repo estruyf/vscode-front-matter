@@ -33,18 +33,15 @@ export class Extension {
     const frontMatter = extensions.getExtension(this.isBetaVersion() ? EXTENSION_BETA_ID : EXTENSION_ID)!;
     let installedVersion = frontMatter.packageJSON.version;
     const usedVersion = this.ctx.globalState.get<string>(EXTENSION_STATE_VERSION);
-
-    if (usedVersion !== installedVersion) {
-      Notifications.info(`Check out the v${installedVersion} release notes at [v${installedVersion} release notes](https://beta.frontmatter.codes/updates/v${installedVersion.split('.').join('_')})`);
-    }
     
     if (this.isBetaVersion()) {
       installedVersion = `${installedVersion}-beta`;
     }
 
-    if (installedVersion) {
+    if (usedVersion !== installedVersion) {
+      Notifications.info(`Find out what is new at [v${installedVersion} release notes](https://${this.isBetaVersion() ? 'beta.' : ''}frontmatter.codes/updates/v${installedVersion.split('.').join('_')})`);
       this.setVersion(installedVersion);
-    };
+    }
 
     return {
       usedVersion,
