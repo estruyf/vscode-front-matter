@@ -41,6 +41,7 @@ export const Navigation: React.FunctionComponent<INavigationProps> = (props: Rea
                   {link.name}
                 </a>
               ))}
+
               {navigation.social.map((link) => (
                 <a key={link.name} href={link.href} title={link.title} className={`text-base font-medium text-whisper-500 hover:text-whisper-900`} rel={`noopener noreferrer`}>
                   <span className="sr-only">{link.name}</span>
@@ -49,6 +50,8 @@ export const Navigation: React.FunctionComponent<INavigationProps> = (props: Rea
               ))}
 
               <Searchbox />
+
+              <iframe src="https://ghbtns.com/github-btn.html?user=estruyf&repo=vscode-front-matter&type=star&count=true" frameBorder="0" scrolling="0" width="85" height="20" title="GitHub"></iframe>
             </div>
           </div>
         </div>
@@ -59,13 +62,15 @@ export const Navigation: React.FunctionComponent<INavigationProps> = (props: Rea
             </a>
           ))}
         </div>
-        <div className="py-4 flex flex-wrap justify-center space-x-6 lg:hidden">
+        <div className="py-4 flex flex-wrap justify-center items-center space-x-6 lg:hidden">
           {navigation.social.map((link) => (
             <a key={link.name} href={link.href} title={link.title} className={`text-base font-medium text-whisper-500 hover:text-whisper-900`} rel={`noopener noreferrer`}>
               <span className="sr-only">{link.name}</span>
               <link.icon className="inline-block h-6 w-6" aria-hidden="true" />
             </a>
           ))}
+
+          <iframe src="https://ghbtns.com/github-btn.html?user=estruyf&repo=vscode-front-matter&type=star&count=true" frameBorder="0" scrolling="0" width="85" height="20" title="GitHub"></iframe>
         </div>
       </nav>
     </>
