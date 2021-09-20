@@ -397,8 +397,8 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         date: {
           format: Settings.get(SETTING_DATE_FORMAT)
         },
-        tags: Settings.get(SETTING_TAXONOMY_TAGS) || [],
-        categories: Settings.get(SETTING_TAXONOMY_CATEGORIES) || [],
+        tags: Settings.get(SETTING_TAXONOMY_TAGS, true) || [],
+        categories: Settings.get(SETTING_TAXONOMY_CATEGORIES, true) || [],
         freeform: Settings.get(SETTING_PANEL_FREEFORM),
         scripts: Settings.get(SETTING_CUSTOM_SCRIPTS),
         isInitialized: await Template.isInitialized(),
@@ -462,7 +462,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    */
   private async addTags(tagType: TagType, value: string) {
     if (value) {
-      let options = tagType === TagType.tags ? Settings.get<string[]>(SETTING_TAXONOMY_TAGS) : Settings.get<string[]>(SETTING_TAXONOMY_CATEGORIES);
+      let options = tagType === TagType.tags ? Settings.get<string[]>(SETTING_TAXONOMY_TAGS, true) : Settings.get<string[]>(SETTING_TAXONOMY_CATEGORIES, true);
 
       if (!options) {
         options = [];

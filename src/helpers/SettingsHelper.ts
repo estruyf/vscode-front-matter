@@ -11,10 +11,7 @@ export class Settings {
   private static config: vscode.WorkspaceConfiguration;
   private static globalFile = "frontmatter.json";
   private static globalConfig: any;
-  private static initialConfig = {
-    "$schema": `https://${Extension.getInstance().isBetaVersion() ? `beta.` : ``}frontmatter.codes/frontmatter.schema.json`
-  };
-
+  
   public static init() {
     const fmConfig = Settings.projectConfigPath;
     if (fmConfig && existsSync(fmConfig)) {
@@ -67,7 +64,7 @@ export class Settings {
   /**
    * Retrieve a setting from global and local config
    */
-  public static get<T>(name: string): T | undefined{
+  public static get<T>(name: string, merging: boolean = false): T | undefined{
     const configInpection = Settings.config.inspect<T>(name);
 
     let setting = undefined;
@@ -79,7 +76,11 @@ export class Settings {
 
     // Local overrides global
     if (configInpection && typeof configInpection.workspaceValue !== "undefined") {
-      setting = configInpection.workspaceValue;
+      if (merging && setting && typeof setting === "object") {
+        setting = Object.assign([], setting, configInpection.workspaceValue);
+      } else {
+        setting = configInpection.workspaceValue;
+      }
     }
 
     if (setting === undefined) {
@@ -119,10 +120,15 @@ export class Settings {
    */
   public static createTeamSettings() {
     const wsFolder = Folders.getWorkspaceFolder();
+
+    const initialConfig = {
+      "$schema": `https://${Extension.getInstance().isBetaVersion() ? `beta.` : ``}frontmatter.codes/frontmatter.schema.json`
+    };
+
     if (wsFolder) {
       const configPath = join(wsFolder.fsPath, Settings.globalFile);
       if (!existsSync(configPath)) {
-        writeFileSync(configPath, JSON.stringify(Settings.initialConfig, null, 2), 'utf8');
+        writeFileSync(configPath, JSON.stringify(initialConfig, null, 2), 'utf8');
       }
     }
   }
@@ -133,10 +139,9 @@ export class Settings {
    * @param type 
    */
   public static getTaxonomy(type: TaxonomyType): string[] {
-    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
     // Add all the known options to the selection list
     const configSetting = type === TaxonomyType.Tag ? SETTING_TAXONOMY_TAGS : SETTING_TAXONOMY_CATEGORIES;
-    const crntOptions = config.get(configSetting) as string[];
+    const crntOptions = Settings.get(configSetting, true) as string[];
     if (crntOptions && crntOptions.length > 0) {
       return crntOptions;
     }
@@ -151,12 +156,31 @@ export class Settings {
    * @param options 
    */
   public static async updateTaxonomy(type: TaxonomyType, options: string[]) {
-    const config = vscode.workspace.getConfiguration(CONFIG_KEY);
     const configSetting = type === TaxonomyType.Tag ? SETTING_TAXONOMY_TAGS : SETTING_TAXONOMY_CATEGORIES;
     options = [...new Set(options)];
     options = options.sort().filter(o => !!o);
-    await config.update(configSetting, options);
+    await Settings.update(configSetting, options, true);
   }
+
+  /**
+   * Promote settings from local to team level
+   */
+  public static async promote() {
+    const pkg = Extension.getInstance().packageJson;
+    if (pkg?.contributes?.configuration?.properties) {
+      const settingNames = Object.keys(pkg.contributes.configuration.properties);
+
+      for (const name of settingNames) {
+        const setting = Settings.config.inspect(name.replace(`frontMatter.`, ''));
+
+        if (setting && typeof setting.workspaceValue !== "undefined") {
+          await Settings.update(name, setting.workspaceValue, true);
+          await Settings.update(name.replace(`frontMatter.`, ''), undefined);
+        }
+      }
+    }
+  }
+
 
   /**
    * Check if its the project config

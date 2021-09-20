@@ -17,7 +17,7 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({label, 
     onChange(txtValue);
   };
 
-  const containsSelected = selected && choices.indexOf(selected) !== -1;
+  const containsSelected = crntSelected && choices.indexOf(crntSelected) !== -1;
   
   return (
     <div className={`metadata_field`}>
@@ -34,7 +34,7 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({label, 
         onChange={(e) => onValueChange(e.currentTarget.value)}>
         { !containsSelected && <option value='' disabled hidden></option> }
         {choices.map((choice, index) => (
-          <option key={index} value={choice} selected={crntSelected === selected}>{choice}</option>
+          <option key={index} value={choice}>{choice}</option>
         ))}
       </select>
     </div>

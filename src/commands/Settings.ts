@@ -23,7 +23,7 @@ export class Settings {
     
     if (newOption) {
       const configSetting = type === TaxonomyType.Tag ? SETTING_TAXONOMY_TAGS : SETTING_TAXONOMY_CATEGORIES;
-      let options = SettingsHelper.get(configSetting) as string[];
+      let options = SettingsHelper.get(configSetting, true) as string[];
       if (!options) {
         options = [];
       }
@@ -125,22 +125,22 @@ export class Settings {
       }
 
       // Retrieve the currently known tags, and add the new ones
-      let crntTags: string[] = SettingsHelper.get(SETTING_TAXONOMY_TAGS) as string[];
+      let crntTags: string[] = SettingsHelper.get(SETTING_TAXONOMY_TAGS, true) as string[];
       if (!crntTags) { crntTags = []; }
       crntTags = [...crntTags, ...tags];
       // Update the tags and filter out the duplicates
       crntTags = [...new Set(crntTags)];
       crntTags = crntTags.sort().filter(t => !!t);
-      await SettingsHelper.update(SETTING_TAXONOMY_TAGS, crntTags);
+      await SettingsHelper.update(SETTING_TAXONOMY_TAGS, crntTags, true);
 
       // Retrieve the currently known tags, and add the new ones
-      let crntCategories: string[] = SettingsHelper.get(SETTING_TAXONOMY_CATEGORIES) as string[];
+      let crntCategories: string[] = SettingsHelper.get(SETTING_TAXONOMY_CATEGORIES, true) as string[];
       if (!crntCategories) { crntCategories = []; }
       crntCategories = [...crntCategories, ...categories];
       // Update the categories and filter out the duplicates
       crntCategories = [...new Set(crntCategories)];
       crntCategories = crntCategories.sort().filter(c => !!c);
-      await SettingsHelper.update(SETTING_TAXONOMY_CATEGORIES, crntCategories);
+      await SettingsHelper.update(SETTING_TAXONOMY_CATEGORIES, crntCategories, true);
 
       // Done
       Notifications.info(`Export completed. Tags: ${crntTags.length} - Categories: ${crntCategories.length}.`);

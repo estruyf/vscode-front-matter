@@ -24,14 +24,15 @@ const mdSelector: vscode.DocumentSelector = { language: 'markdown', scheme: 'fil
 export async function activate(context: vscode.ExtensionContext) {
 	const { subscriptions, extensionUri, extensionPath } = context;
 
-	SettingsHelper.init();
 	const extension = Extension.getInstance(context);
 
 	if (!extension.checkIfExtensionCanRun()) {
 		return undefined;
 	}
-
-	extension.migrateSettings()
+	
+	SettingsHelper.init();
+	extension.migrateSettings();
+	
 
 	collection = vscode.languages.createDiagnosticCollection('frontMatter');
 
@@ -115,6 +116,9 @@ export async function activate(context: vscode.ExtensionContext) {
 			cb();
 		}
 	});
+
+	// Settings promotion command
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.promote, () => { console.log('promote'); SettingsHelper.promote(); }));
 
 	// Collapse all sections in the webview
 	const collapseAll = vscode.commands.registerCommand(COMMAND_NAME.collapseSections, () => {

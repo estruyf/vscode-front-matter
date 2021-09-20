@@ -29,4 +29,5 @@ export const COMMAND_NAME = {
   collapseSections: getCommandName("collapseSections"),
   preview: getCommandName("preview"),
   dashboard: getCommandName("dashboard"),
+  promote: getCommandName("promoteSettings"),
 };

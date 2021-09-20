@@ -152,4 +152,9 @@ export class Extension {
 
     return true;
   }
+
+  public get packageJson() {
+    const frontMatter = extensions.getExtension(this.isBetaVersion() ? EXTENSION_BETA_ID : EXTENSION_ID)!;
+    return frontMatter.packageJSON;
+  }
 }

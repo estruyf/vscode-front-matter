@@ -123,6 +123,12 @@ Open the site preview of your article in VS Code.
 
 ID: `frontMatter.preview`
 
+## Promote settings from local to team level
+
+This command allows you to promote all local settings from within your `.vscode/settings.json` file to be promoted to the projects team configuration `frontmatter.json` file.
+
+ID: `frontMatter.promoteSettings`
+
 ## Removed commands
 
 ### Set current date

@@ -50,6 +50,11 @@
                     "type": "datetime"
                 },
                 {
+                    "title": "Last modified date",
+                    "name": "lastmod",
+                    "type": "datetime"
+                },
+                {
                     "title": "Article preview",
                     "name": "preview",
                     "type": "image"

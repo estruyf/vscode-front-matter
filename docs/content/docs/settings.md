@@ -11,11 +11,20 @@ weight: 7
 
 ## Overview
 
-Most of the actions are configurable to your needs. In this part of the documentation all settings are explained.
+Most of Front Matter is configurable to your needs. In this part of the documentation all settings are explained.
 
-## Where is the data stored?
+## Team settings and local settings
 
-The extension stores all settings in the VS Code user settings file located in your project under `.vscode/settings.json`.
+
+Since version 4 of Front Matter, Team settings got introduced. Teams settings allow you to have all settings on the project/solution level. You will be able to override them on user/local level (`.vscode/settings.json`).
+
+The purpose of team settings is to share the global configuration of your CMS configuration. This way, your whole team can use the same tags/categories but apply their changes locally.
+
+As you do not typically share your `.vscode/settings.json` configuration, we went for a `frontmatter.json` file on the root of your project/solution. The settings you provide in this JSON file are the same as you can configure on a local level. This allows you to easily copy, move settings from team to local level and vice versa.
+
+## Migrate local settings to team settings
+
+To allow you to easily migrate already defined settings, you can run the `Promote settings from local to team level` command.
 
 ## Available settings
 
