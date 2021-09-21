@@ -23,5 +23,11 @@
     "exportall.config.folderListener": [
         "/src/pagesView/state/atom",
         "/src/pagesView/state/selectors"
+    ],
+    "frontMatter.content.pageFolders": [
+        {
+            "title": "documentation",
+            "path": "[[workspace]]/docs/content/docs"
+        }
     ]
 }
