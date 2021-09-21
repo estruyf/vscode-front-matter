@@ -82,7 +82,9 @@ export class Extension {
     }
 
     // Create team settings
-    Settings.createTeamSettings();
+    if (Settings.hasSettings()) {
+      Settings.createTeamSettings();
+    }
 
     // Migration to version 4.0.0
     const dateField = Settings.get<string>(SETTING_DATE_FIELD);

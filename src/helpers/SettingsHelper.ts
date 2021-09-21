@@ -172,16 +172,41 @@ export class Settings {
       const settingNames = Object.keys(pkg.contributes.configuration.properties);
 
       for (const name of settingNames) {
-        const setting = Settings.config.inspect(name.replace(`frontMatter.`, ''));
+        const settingName = name.replace(`${CONFIG_KEY}.`, '');
+        const setting = Settings.config.inspect(settingName);
 
         if (setting && typeof setting.workspaceValue !== "undefined") {
-          await Settings.update(name, setting.workspaceValue, true);
-          await Settings.update(name.replace(`frontMatter.`, ''), undefined);
+          await Settings.update(settingName, setting.workspaceValue, true);
+          await Settings.update(settingName, undefined);
         }
       }
     }
 
     Notifications.info(`All settings promoted to team level.`);
+  }
+
+  /**
+   * Check if there are any Front Matter settings in the workspace
+   * @returns 
+   */
+  public static hasSettings() {
+    let hasSetting = false;
+
+    const pkg = Extension.getInstance().packageJson;
+    if (pkg?.contributes?.configuration?.properties) {
+      const settingNames = Object.keys(pkg.contributes.configuration.properties);
+
+      for (const name of settingNames) {
+        const settingName = name.replace(`${CONFIG_KEY}.`, '');
+        const setting = Settings.config.inspect(settingName);
+
+        if (setting && typeof setting.workspaceValue !== "undefined") {
+          hasSetting = true;
+        }
+      }
+    }
+
+    return hasSetting;
   }
 
 
