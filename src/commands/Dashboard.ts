@@ -2,7 +2,7 @@ import { SETTINGS_CONTENT_STATIC_FOLDERS, SETTING_DATE_FIELD, SETTING_SEO_DESCRI
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { basename, dirname, extname, join } from "path";
 import { existsSync, statSync, unlinkSync, writeFileSync } from "fs";
-import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env } from "vscode";
+import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env, Position } from "vscode";
 import { Settings as SettingsHelper } from '../helpers';
 import { TaxonomyType } from '../models';
 import { Folders } from './Folders';
@@ -170,17 +170,41 @@ export class Dashboard {
           Dashboard.deleteFile(msg?.data);
           break;
         case DashboardMessage.insertPreviewImage:
-          if (msg.data?.file && msg.data?.image) {
-            await commands.executeCommand(`workbench.view.extension.frontmatter-explorer`);
-            await EditorHelper.showFile(msg.data.file);
-            Dashboard._viewData = undefined;
-            const panel = ExplorerView.getInstance(extensionUri);
-            panel.getMediaSelection();
-            panel.updateMetadata({field: msg.data.fieldName, value: msg.data.image});
-          }
+          Dashboard.insertImage(msg?.data);
           break;
       }
     });
+  }
+  
+  /**
+   * Insert an image into the front matter or contents
+   * @param data 
+   */
+  private static async insertImage(data: any) {
+    if (data?.file && data?.image) {
+      if (!data?.position) {
+        await commands.executeCommand(`workbench.view.extension.frontmatter-explorer`);
+      }
+
+      await EditorHelper.showFile(data.file);
+      Dashboard._viewData = undefined;
+      
+      const extensionUri = Extension.getInstance().extensionPath;
+      const panel = ExplorerView.getInstance(extensionUri);
+
+      if (data?.position) {
+        const editor = window.activeTextEditor;
+        const line = data.position.line;
+        const character = data.position.character;
+        if (line) {
+          await editor?.edit(builder => builder.insert(new Position(line, character), data.image));
+        }
+        panel.getMediaSelection();
+      } else {
+        panel.getMediaSelection();
+        panel.updateMetadata({field: data.fieldName, value: data.image});
+      }
+    }
   }
 
   /**

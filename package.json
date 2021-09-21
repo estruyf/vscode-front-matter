@@ -63,6 +63,7 @@
     "onCommand:frontMatter.preview",
     "onCommand:frontMatter.dashboard",
     "onCommand:frontMatter.promoteSettings",
+    "onCommand:frontMatter.insertImage",
     "onView:frontMatter.explorer"
   ],
   "main": "./dist/extension",
@@ -478,6 +479,12 @@
         "category": "Front matter"
       },
       {
+        "command": "frontMatter.insertImage",
+        "title": "Insert image into article",
+        "category": "Front matter",
+        "icon": "$(device-camera)"
+      },
+      {
         "command": "frontMatter.insertTags",
         "title": "Insert tags",
         "category": "Front matter"
@@ -514,6 +521,13 @@
       }
     ],
     "menus": {
+      "editor/title": [
+        {
+          "when": "resourceLangId == markdown",
+          "command": "frontMatter.insertImage",
+          "group": "navigation"
+        }
+      ],
       "explorer/context": [
         {
           "command": "frontMatter.createFromTemplate",

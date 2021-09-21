@@ -7,10 +7,13 @@ import { ArticleHelper, Settings, SlugHelper } from '../helpers';
 import matter = require('gray-matter');
 import { Notifications } from '../helpers/Notifications';
 import { extname, basename } from 'path';
-import { DefaultFields } from '../constants';
+import { COMMAND_NAME, DefaultFields } from '../constants';
+import { DashboardData } from '../models/DashboardData';
+import { ExplorerView } from '../explorerView/ExplorerView';
 
 
 export class Article {
+	
   private static prevContent = "";
 
   /**
@@ -246,6 +249,30 @@ export class Article {
       return dateValue.toISOString();
     }
   }
+
+  /**
+   * Insert an image from the media dashboard into the article
+   */
+  public static async insertImage() {
+		let editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+
+    const position = editor.selection.active;
+
+    await vscode.commands.executeCommand(COMMAND_NAME.dashboard, {
+      type: "media",
+      data: {
+        filePath: editor.document.uri.fsPath,
+        fieldName: basename(editor.document.uri.fsPath),
+        position
+      }
+    } as DashboardData);
+
+    // Let the editor panel know you are selecting an image
+    ExplorerView.getInstance().getMediaSelection();
+	}
 
   /**
    * Get the current article

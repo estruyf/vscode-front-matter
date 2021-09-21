@@ -32,7 +32,6 @@ export async function activate(context: vscode.ExtensionContext) {
 	
 	SettingsHelper.init();
 	extension.migrateSettings();
-	
 
 	collection = vscode.languages.createDiagnosticCollection('frontMatter');
 
@@ -164,6 +163,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Webview for preview
 	Preview.init();
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.preview, () => Preview.open(extensionPath) ));
+
+	// Inserting an image in Markdown
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.insertImage, Article.insertImage));
 
 	// Subscribe all commands
 	subscriptions.push(
