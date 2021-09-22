@@ -164,7 +164,7 @@
         "frontMatter.dashboard.mediaSnippet": {
           "type": "array",
           "default": [],
-          "markdownDescription": "Specify the prefix you want to add for your new article filenames. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.dashboard.mediaSnippet)",
+          "markdownDescription": "Specify the a snippet for your custom media insert markup. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.dashboard.mediaSnippet)",
           "items": {
             "type": "string",
             "description": "The parts of your snippet. Use `{mediaUrl}` as placeholder where the path of the image needs to be inserted."
