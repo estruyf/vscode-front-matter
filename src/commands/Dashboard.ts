@@ -1,4 +1,4 @@
-import { SETTINGS_CONTENT_STATIC_FOLDERS, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART } from './../constants/settings';
+import { SETTINGS_CONTENT_STATIC_FOLDERS, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET } from './../constants/settings';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { basename, dirname, extname, join } from "path";
 import { existsSync, statSync, unlinkSync, writeFileSync } from "fs";
@@ -197,7 +197,7 @@ export class Dashboard {
         const line = data.position.line;
         const character = data.position.character;
         if (line) {
-          await editor?.edit(builder => builder.insert(new Position(line, character), data.image));
+          await editor?.edit(builder => builder.insert(new Position(line, character), data.snippet || `![](${data.image})`));
         }
         panel.getMediaSelection();
       } else {
@@ -226,7 +226,8 @@ export class Dashboard {
         categories: SettingsHelper.getTaxonomy(TaxonomyType.Category),
         openOnStart: SettingsHelper.get(SETTINGS_DASHBOARD_OPENONSTART),
         versionInfo: ext.getVersion(),
-        pageViewType: await ext.getState<ViewType | undefined>(EXTENSION_STATE_PAGES_VIEW)
+        pageViewType: await ext.getState<ViewType | undefined>(EXTENSION_STATE_PAGES_VIEW),
+        mediaSnippet: SettingsHelper.get<string[]>(SETTINGS_DASHBOARD_MEDIA_SNIPPET) || [],
       } as Settings
     });
   }

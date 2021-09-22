@@ -13,4 +13,5 @@ export interface Settings {
   openOnStart: boolean | null;
   versionInfo: VersionInfo;
   pageViewType: ViewType | undefined;
+  mediaSnippet: string[];
 }

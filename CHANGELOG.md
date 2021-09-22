@@ -11,6 +11,8 @@
 - [#107](https://github.com/estruyf/vscode-front-matter/issues/107): Number field support added in content type fields
 - [#108](https://github.com/estruyf/vscode-front-matter/issues/108): Choice field support added in content type fields
 - [#109](https://github.com/estruyf/vscode-front-matter/issues/109): JSON Config script added to automate the JSON schema
+- [#111](https://github.com/estruyf/vscode-front-matter/issues/111): Insert media into the markdown contents
+- [#112](https://github.com/estruyf/vscode-front-matter/issues/112): Add snippet support for media insertion
 
 ## [3.1.0] - 2021-09-10
 

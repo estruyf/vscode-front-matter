@@ -1,5 +1,5 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { CheckCircleIcon, ClipboardCopyIcon, PhotographIcon, TrashIcon } from '@heroicons/react/outline';
+import { CheckCircleIcon, ClipboardCopyIcon, CodeIcon, PhotographIcon, TrashIcon } from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -63,6 +63,17 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     });
   };
 
+  const insertSnippet = () => {
+    const relPath = getRelPath();
+    Messenger.send(DashboardMessage.insertPreviewImage, {
+      image: parseWinPath(relPath) || "",
+      file: viewData?.data?.filePath,
+      fieldName: viewData?.data?.fieldName,
+      position: viewData?.data?.position || null,
+      snippet: settings?.mediaSnippet.join("\n").replace("{mediaUrl}", parseWinPath(relPath) || "")
+    });
+  };
+
   const deleteMedia = () => {
     setShowAlert(true);
   };
@@ -104,13 +115,26 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
           <div className={`absolute top-4 right-4 flex flex-col space-y-2`}>
             {
               viewData?.data?.filePath ? (
-                <button 
+                <>
+                  <button 
                     title={`Insert into your article`} 
                     className={`hover:text-teal-900 focus:outline-none`} 
                     onClick={insertToArticle}>
-                  <CheckCircleIcon className={`h-5 w-5`} />
-                  <span className={`sr-only`}>Insert into your article</span>
-                </button>
+                    <CheckCircleIcon className={`h-5 w-5`} />
+                    <span className={`sr-only`}>Insert into your article</span>
+                  </button>
+                  {
+                    (viewData?.data?.position && settings?.mediaSnippet && settings?.mediaSnippet.length > 0) && (
+                      <button 
+                        title={`Insert your media snippet`} 
+                        className={`hover:text-teal-900 focus:outline-none`} 
+                        onClick={insertSnippet}>
+                        <CodeIcon className={`h-5 w-5`} />
+                        <span className={`sr-only`}>Insert your media snippet</span>
+                      </button>
+                    )
+                  }
+                </>
               ) : (
                 <>
                   <button title={`Copy media path`} 

@@ -161,6 +161,16 @@
           },
           "scope": "Custom scripts"
         },
+        "frontMatter.dashboard.mediaSnippet": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "Specify the prefix you want to add for your new article filenames. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.dashboard.mediaSnippet)",
+          "items": {
+            "type": "string",
+            "description": "The parts of your snippet. Use `{mediaUrl}` as placeholder where the path of the image needs to be inserted."
+          },
+          "scope": "dashboard"
+        },
         "frontMatter.dashboard.openOnStart": {
           "type": [
             "boolean",
