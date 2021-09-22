@@ -1,443 +1,661 @@
 {
-	"name": "vscode-front-matter-beta",
-	"displayName": "Front Matter",
-	"description": "An essential Visual Studio Code extension when you want to manage the markdown pages of your static site like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
-	"icon": "assets/frontmatter-teal-128x128.png",
-	"version": "3.1.0",
-	"preview": false,
-	"publisher": "eliostruyf",
-	"galleryBanner": {
-		"color": "#0e131f",
-		"theme": "dark"
-	},
-	"badges": [
-		{
-			"description": "version",
-			"url": "https://img.shields.io/github/package-json/v/estruyf/vscode-front-matter?color=green&label=vscode-front-matter&style=flat-square",
-			"href": "https://github.com/estruyf/vscode-front-matter"
-		},
-		{
-			"description": "Buy me a coffee",
-			"url": "https://img.shields.io/badge/Buy%20me%20a%20coffee-€%203-blue?logo=buy-me-a-coffee&style=flat-square",
-			"href": "https://www.buymeacoffee.com/zMeFRy9"
-		}
-	],
-	"engines": {
-		"vscode": "^1.51.0"
-	},
-	"categories": [
-		"Other"
-	],
-	"keywords": [
-		"Front Matter",
-		"CMS",
-		"Markdown",
-		"Taxonomy"
-	],
-	"license": "MIT",
-	"author": "Elio Struyf <elio@struyfconsulting.be> (https://www.eliostruyf.com)",
-	"homepage": "https://frontmatter.codes",
-	"bugs": {
-		"url": "https://github.com/estruyf/vscode-front-matter/issues"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/estruyf/vscode-front-matter"
-	},
-	"activationEvents": [
-		"*",
-		"onCommand:frontMatter.insertTags",
-		"onCommand:frontMatter.insertCategories",
-		"onCommand:frontMatter.createTag",
-		"onCommand:frontMatter.createCategory",
-		"onCommand:frontMatter.exportTaxonomy",
-		"onCommand:frontMatter.remap",
-		"onCommand:frontMatter.setDate",
-		"onCommand:frontMatter.setLastModifiedDate",
-		"onCommand:frontMatter.generateSlug",
-		"onCommand:frontMatter.createFromTemplate",
-		"onCommand:frontMatter.registerFolder",
-		"onCommand:frontMatter.unregisterFolder",
-		"onCommand:frontMatter.createContent",
-		"onCommand:frontMatter.init",
-		"onCommand:frontMatter.collapseSections",
-		"onCommand:frontMatter.preview",
-		"onCommand:frontMatter.dashboard",
-		"onView:frontMatter.explorer"
-	],
-	"main": "./dist/extension",
-	"contributes": {
-		"viewsContainers": {
-			"activitybar": [
-				{
-					"id": "frontmatter-explorer",
-					"title": "FrontMatter",
-					"icon": "assets/frontmatter.svg"
-				}
-			]
-		},
-		"views": {
-			"frontmatter-explorer": [
-				{
-					"id": "frontMatter.explorer",
-					"name": "FrontMatter",
-					"icon": "assets/frontmatter.svg",
-					"contextualTitle": "FrontMatter",
-					"type": "webview"
-				}
-			]
-		},
-		"configuration": {
-			"title": "Front Matter: Configuration",
-			"properties": {
-				"frontMatter.content.autoUpdateDate": {
-					"type": "boolean",
-					"default": false,
-					"markdownDescription": "Specify if you want to automatically update the modified date of your article/page. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.autoupdatedate)"
-				},
-				"frontMatter.content.fmHighlight": {
-					"type": "boolean",
-					"default": true,
-					"markdownDescription": "Specify if you want to highlight the Front Matter in the Markdown file. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.fmhighlight)"
-				},
-				"frontMatter.content.pageFolders": {
-					"type": "array",
-					"default": [],
-					"markdownDescription": "This array of folders defines where the extension can retrieve or create new pages. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.pagefolders)"
-				},
-				"frontMatter.content.publicFolder": {
-					"type": "string",
-					"default": "",
-					"markdownDescription": "Specify the folder name where all your assets are located. For instance in Hugo this is the `static` folder. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.publicfolder)"
-				},
-				"frontMatter.custom.scripts": {
-					"type": "array",
-					"default": [],
-					"markdownDescription": "Specify the path to a Node.js script to execute. The current file path will be provided as an argument. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.custom.scripts)"
-				},
-				"frontMatter.dashboard.openOnStart": {
-					"type": [
-						"boolean",
-						"null"
-					],
-					"default": null,
-					"markdownDescription": "Specify if you want to open the dashboard when you start VS Code.  [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.openonstart)"
-				},
-				"frontMatter.panel.freeform": {
-					"type": "boolean",
-					"default": true,
-					"markdownDescription": "Specifies if you want to allow yourself from entering unknown tags/categories in the tag picker (when enabled, you will have the option to store them afterwards). Default: true. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.panel.freeform)"
-				},
-				"frontMatter.preview.host": {
-					"type": "string",
-					"default": "",
-					"markdownDescription": "Specify the host URL (example: http://localhost:1313) to be used when opening the preview. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.preview.host)"
-				},
-				"frontMatter.preview.pathName": {
-					"type": "string",
-					"default": "",
-					"markdownDescription": "Specify the path you want to add after the host and before your slug. This can be used for instance to include the year/month like: `yyyy/MM`. The date will be generated based on the article its date field value. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.preview.pathname)"
-				},
-				"frontMatter.taxonomy.dateField": {
-					"type": "string",
-					"default": "date",
-					"markdownDescription": "Specifies the date field name to use in your Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.datefield)"
-				},
-				"frontMatter.taxonomy.modifiedField": {
-					"type": "string",
-					"default": "lastmod",
-					"markdownDescription": "Specifies the modified date field name to use in your Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.modifiedfield)"
-				},
-				"frontMatter.taxonomy.tags": {
-					"type": "array",
-					"markdownDescription": "Specifies the tags which can be used in the Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.tags)"
-				},
-				"frontMatter.taxonomy.categories": {
-					"type": "array",
-					"markdownDescription": "Specifies the categories which can be used in the Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.categories)"
-				},
-				"frontMatter.taxonomy.dateFormat": {
-					"type": "string",
-					"markdownDescription": "Specify the date format for your articles. Check [date-fns formating](https://date-fns.org/v2.0.1/docs/format) for more information. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.dateformat)"
-				},
-				"frontMatter.taxonomy.slugPrefix": {
-					"type": "string",
-					"markdownDescription": "Specify a prefix for the slug. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.slugprefix)"
-				},
-				"frontMatter.taxonomy.slugSuffix": {
-					"type": "string",
-					"markdownDescription": "Specify a suffix for the slug. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.slugsuffix)"
-				},
-				"frontMatter.taxonomy.alignFilename": {
-					"type": "boolean",
-					"default": false,
-					"markdownDescription": "Align the filename with the new slug when it gets generated. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.alignfilename)"
-				},
-				"frontMatter.taxonomy.indentArrays": {
-					"type": "boolean",
-					"default": true,
-					"markdownDescription": "Specify if arrays in front matter are indented. Default: true. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.indentarrays)"
-				},
-				"frontMatter.taxonomy.noPropertyValueQuotes": {
-					"type": "array",
-					"default": [],
-					"markdownDescription": "Specify the properties from which quotes need to be removed. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.nopropertyvaluequotes)"
-				},
-				"frontMatter.taxonomy.frontMatterType": {
-					"type": "string",
-					"default": "YAML",
-					"enum": [
-						"YAML",
-						"TOML"
-					],
-					"markdownDescription": "Specify the type of Front Matter to use. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.frontmattertype)",
-					"enumDescriptions": [
-						"Specifies you want to use YAML markup for the front matter (default)",
-						"Specifies you want to use TOML markup for the front matter"
-					]
-				},
-				"frontMatter.taxonomy.seoTitleLength": {
-					"type": "number",
-					"default": 60,
-					"markdownDescription": "Specifies the optimal title length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seotitlelength)"
-				},
-				"frontMatter.taxonomy.seoDescriptionLength": {
-					"type": "number",
-					"default": 160,
-					"markdownDescription": "Specifies the optimal description length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seodescriptionlength)"
-				},
-				"frontMatter.taxonomy.seoContentLengh": {
-					"type": "number",
-					"default": 1760,
-					"markdownDescription": "Specifies the optimal minimum length for your articles. Between 1,760 words – 2,400 is the absolute ideal article length for SEO in 2021. (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seocontentlengh)"
-				},
-				"frontMatter.taxonomy.seoDescriptionField": {
-					"type": "string",
-					"default": "description",
-					"markdownDescription": "Specifies the name of the SEO description field for your page. Default is 'description'. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seodescriptionfield)"
-				},
-				"frontMatter.templates.folder": {
-					"type": "string",
-					"default": ".templates",
-					"markdownDescription": "Specify the folder to use for your article templates. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.folder)"
-				},
-				"frontMatter.templates.prefix": {
-					"type": "string",
-					"default": "yyyy-MM-dd",
-					"markdownDescription": "Specify the prefix you want to add for your new article filenames. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.prefix)"
-				}
-			}
-		},
-		"commands": [
-			{
-				"command": "frontMatter.insertTags",
-				"title": "Insert tags",
-				"category": "Front matter"
-			},
-			{
-				"command": "frontMatter.insertCategories",
-				"title": "Insert categories",
-				"category": "Front matter"
-			},
-			{
-				"command": "frontMatter.createTag",
-				"title": "Create tag",
-				"category": "Front matter"
-			},
-			{
-				"command": "frontMatter.createCategory",
-				"title": "Create category",
-				"category": "Front matter"
-			},
-			{
-				"command": "frontMatter.exportTaxonomy",
-				"title": "Export all tags & categories to your settings",
-				"category": "Front matter"
-			},
-			{
-				"command": "frontMatter.remap",
-				"title": "Remap or remove tag/category in all articles",
-				"category": "Front matter"
-			},
-			{
-				"command": "frontMatter.setDate",
-				"title": "Set current date",
-				"category": "Front matter"
-			},
-			{
-				"command": "frontMatter.setLastModifiedDate",
-				"title": "Set lastmod date",
-				"category": "Front matter"
-			},
-			{
-				"command": "frontMatter.generateSlug",
-				"title": "Generate slug based on article title",
-				"category": "Front matter"
-			},
-			{
-				"command": "frontMatter.createFromTemplate",
-				"title": "Front Matter: New article from template"
-			},
-			{
-				"command": "frontMatter.registerFolder",
-				"title": "Front Matter: Register folder"
-			},
-			{
-				"command": "frontMatter.unregisterFolder",
-				"title": "Front Matter: Unregister folder"
-			},
-			{
-				"command": "frontMatter.createContent",
-				"title": "New article from template",
-				"category": "Front matter"
-			},
-			{
-				"command": "frontMatter.init",
-				"title": "Initialize project",
-				"category": "Front matter"
-			},
-			{
-				"command": "frontMatter.createTemplate",
-				"title": "Create a template from current file",
-				"category": "Front matter"
-			},
-			{
-				"command": "frontMatter.collapseSections",
-				"title": "Collapse sections",
-				"category": "Front matter",
-				"icon": {
-					"light": "assets/icons/close-light.svg",
-					"dark": "assets/icons/close-dark.svg"
-				}
-			},
-			{
-				"command": "frontMatter.preview",
-				"title": "Preview article",
-				"category": "Front matter"
-			},
-			{
-				"command": "frontMatter.dashboard",
-				"title": "Open dashboard",
-				"category": "Front matter"
-			}
-		],
-		"menus": {
-			"explorer/context": [
-				{
-					"command": "frontMatter.createFromTemplate",
-					"when": "explorerResourceIsFolder",
-					"group": "Front Matter@1"
-				},
-				{
-					"command": "frontMatter.registerFolder",
-					"when": "explorerResourceIsFolder",
-					"group": "Front Matter@2"
-				},
-				{
-					"command": "frontMatter.unregisterFolder",
-					"when": "explorerResourceIsFolder",
-					"group": "Front Matter@3"
-				}
-			],
-			"commandPalette": [
-				{
-					"command": "frontMatter.init",
-					"when": "frontMatterCanInit"
-				},
-				{
-					"command": "frontMatter.createTemplate",
-					"when": "!frontMatterCanInit"
-				},
-				{
-					"command": "frontMatter.preview",
-					"when": "frontMatterCanOpenPreview"
-				},
-				{
-					"command": "frontMatter.collapseSections",
-					"when": "false"
-				},
-				{
-					"command": "frontMatter.registerFolder",
-					"when": "false"
-				},
-				{
-					"command": "frontMatter.unregisterFolder",
-					"when": "false"
-				},
-				{
-					"command": "frontMatter.createFromTemplate",
-					"when": "false"
-				}
-			],
-			"view/title": [
-				{
-					"command": "frontMatter.collapseSections",
-					"group": "navigation"
-				}
-			]
-		},
-		"grammars": [
-			{
-				"path": "./syntaxes/hugo.tmLanguage.json",
-				"scopeName": "frontmatter.markdown.hugo",
-				"injectTo": [
-					"text.html.markdown"
-				]
-			}
-		]
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run clean && webpack --mode production",
-		"build:ext": "npm run clean && webpack --mode development",
-		"dev:ext": "npm run clean && webpack --mode development --watch",
-		"test-compile": "tsc -p ./",
-		"clean": "rimraf dist",
-		"start:site": "cd ./docs && npm run dev"
-	},
-	"devDependencies": {
-		"@bendera/vscode-webview-elements": "0.6.2",
-		"@estruyf/vscode": "0.0.2",
-		"@headlessui/react": "^1.4.1",
-		"@heroicons/react": "1.0.4",
-		"@iarna/toml": "2.2.3",
-		"@tailwindcss/forms": "^0.3.3",
-		"@types/glob": "7.1.3",
-		"@types/js-yaml": "3.12.1",
-		"@types/lodash.uniqby": "4.7.6",
-		"@types/mocha": "^5.2.6",
-		"@types/node": "10.17.48",
-		"@types/react": "17.0.0",
-		"@types/react-dom": "17.0.0",
-		"@types/vscode": "1.51.0",
-		"@vscode/codicons": "0.0.20",
-		"autoprefixer": "^10.3.2",
-		"css-loader": "5.2.7",
-		"date-fns": "2.23.0",
-		"downshift": "6.0.6",
-		"fuse.js": "6.4.6",
-		"glob": "7.1.6",
-		"gray-matter": "4.0.2",
-		"html-loader": "1.3.2",
-		"html-webpack-plugin": "4.5.0",
-		"lodash.uniqby": "4.7.0",
-		"mdast-util-from-markdown": "1.0.0",
-		"postcss": "^8.3.6",
-		"postcss-loader": "4.3.0",
-		"react": "17.0.1",
-		"react-dom": "17.0.1",
-		"react-dropzone": "^11.3.4",
-		"recoil": "^0.4.1",
-		"rimraf": "^3.0.2",
-		"style-loader": "2.0.0",
-		"tailwindcss": "^2.2.7",
-		"ts-loader": "8.0.3",
-		"tslint": "6.1.3",
-		"typescript": "4.0.2",
-		"wc-react": "github:estruyf/wc-react",
-		"webpack": "4.44.2",
-		"webpack-cli": "3.3.12"
-	},
-	"dependencies": {
-		"@docsearch/js": "^3.0.0-alpha.40"
-	}
+  "name": "vscode-front-matter-beta",
+  "displayName": "Front Matter",
+  "description": "An essential Visual Studio Code extension when you want to manage the markdown pages of your static site like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
+  "icon": "assets/frontmatter-teal-128x128.png",
+  "version": "4.0.0",
+  "preview": false,
+  "publisher": "eliostruyf",
+  "galleryBanner": {
+    "color": "#0e131f",
+    "theme": "dark"
+  },
+  "badges": [
+    {
+      "description": "version",
+      "url": "https://img.shields.io/github/package-json/v/estruyf/vscode-front-matter?color=green&label=vscode-front-matter&style=flat-square",
+      "href": "https://github.com/estruyf/vscode-front-matter"
+    },
+    {
+      "description": "Buy me a coffee",
+      "url": "https://img.shields.io/badge/Buy%20me%20a%20coffee-€%203-blue?logo=buy-me-a-coffee&style=flat-square",
+      "href": "https://www.buymeacoffee.com/zMeFRy9"
+    }
+  ],
+  "engines": {
+    "vscode": "^1.51.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "Front Matter",
+    "CMS",
+    "Markdown",
+    "Taxonomy"
+  ],
+  "license": "MIT",
+  "author": "Elio Struyf <elio@struyfconsulting.be> (https://www.eliostruyf.com)",
+  "homepage": "https://frontmatter.codes",
+  "bugs": {
+    "url": "https://github.com/estruyf/vscode-front-matter/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/estruyf/vscode-front-matter"
+  },
+  "activationEvents": [
+    "*",
+    "onCommand:frontMatter.insertTags",
+    "onCommand:frontMatter.insertCategories",
+    "onCommand:frontMatter.createTag",
+    "onCommand:frontMatter.createCategory",
+    "onCommand:frontMatter.exportTaxonomy",
+    "onCommand:frontMatter.remap",
+    "onCommand:frontMatter.setLastModifiedDate",
+    "onCommand:frontMatter.generateSlug",
+    "onCommand:frontMatter.createFromTemplate",
+    "onCommand:frontMatter.registerFolder",
+    "onCommand:frontMatter.unregisterFolder",
+    "onCommand:frontMatter.createContent",
+    "onCommand:frontMatter.init",
+    "onCommand:frontMatter.collapseSections",
+    "onCommand:frontMatter.preview",
+    "onCommand:frontMatter.dashboard",
+    "onCommand:frontMatter.promoteSettings",
+    "onCommand:frontMatter.insertImage",
+    "onView:frontMatter.explorer"
+  ],
+  "main": "./dist/extension",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "frontmatter-explorer",
+          "title": "FrontMatter",
+          "icon": "assets/frontmatter.svg"
+        }
+      ]
+    },
+    "views": {
+      "frontmatter-explorer": [
+        {
+          "id": "frontMatter.explorer",
+          "name": "FrontMatter",
+          "icon": "assets/frontmatter.svg",
+          "contextualTitle": "FrontMatter",
+          "type": "webview"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Front Matter: use frontmatter.json for shared team settings",
+      "properties": {
+        "frontMatter.content.autoUpdateDate": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Specify if you want to automatically update the modified date of your article/page. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.autoupdatedate)",
+          "scope": "Content"
+        },
+        "frontMatter.content.fmHighlight": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Specify if you want to highlight the Front Matter in the Markdown file. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.fmhighlight)",
+          "scope": "Content"
+        },
+        "frontMatter.content.pageFolders": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "This array of folders defines where the extension can retrieve or create new pages. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.pagefolders)",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Name of the folder"
+              },
+              "path": {
+                "type": "string",
+                "description": "Path of the folder"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "title",
+              "path"
+            ]
+          },
+          "scope": "Content"
+        },
+        "frontMatter.content.publicFolder": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Specify the folder name where all your assets are located. For instance in Hugo this is the `static` folder. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.publicfolder)",
+          "scope": "Content"
+        },
+        "frontMatter.custom.scripts": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "Specify the path to a Node.js script to execute. The current file path will be provided as an argument. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.custom.scripts)",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Title you want to give to your script. Will be shown as the title of the button."
+              },
+              "script": {
+                "type": "string",
+                "description": "Path to the script to execute"
+              },
+              "nodeBin": {
+                "type": "string",
+                "description": "Path to the node executable. This is required when using NVM, so that there is no confusion of which node version to use."
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "title",
+              "script"
+            ]
+          },
+          "scope": "Custom scripts"
+        },
+        "frontMatter.dashboard.mediaSnippet": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "Specify the a snippet for your custom media insert markup. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.dashboard.mediaSnippet)",
+          "items": {
+            "type": "string",
+            "description": "The parts of your snippet. Use `{mediaUrl}` as placeholder where the path of the image needs to be inserted."
+          },
+          "scope": "dashboard"
+        },
+        "frontMatter.dashboard.openOnStart": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "default": null,
+          "markdownDescription": "Specify if you want to open the dashboard when you start VS Code.  [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.openonstart)",
+          "scope": "Dashboard"
+        },
+        "frontMatter.panel.freeform": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Specifies if you want to allow yourself from entering unknown tags/categories in the tag picker (when enabled, you will have the option to store them afterwards). Default: true. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.panel.freeform)",
+          "scope": "Panel"
+        },
+        "frontMatter.preview.host": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Specify the host URL (example: http://localhost:1313) to be used when opening the preview. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.preview.host)",
+          "scope": "Site preview"
+        },
+        "frontMatter.preview.pathName": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Specify the path you want to add after the host and before your slug. This can be used for instance to include the year/month like: `yyyy/MM`. The date will be generated based on the article its date field value. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.preview.pathname)",
+          "scope": "Site preview"
+        },
+        "frontMatter.taxonomy.alignFilename": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Align the filename with the new slug when it gets generated. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.alignfilename)",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.categories": {
+          "type": "array",
+          "markdownDescription": "Specifies the categories which can be used in the Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.categories)",
+          "items": {
+            "type": "string"
+          },
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.commaSeparatedFields": {
+          "type": "array",
+          "markdownDescription": "Specify the fields names that Front Matter should treat as a comma-separated array. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.taxonomy.commaSeparatedFields)",
+          "items": {
+            "type": "string",
+            "description": "Name of the fields you want to use as comma-separated arrays."
+          },
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.contentTypes": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "markdownDescription": "Specify the type of contents you want to use for your articles/pages/etc. Make sure the `type` is correctly set in your front matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.taxonomy.contentTypes)",
+          "items": {
+            "type": "object",
+            "description": "Define the content types you want to use in Front Matter.",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Define the type of field"
+              },
+              "fields": {
+                "type": "array",
+                "description": "Define the fields of the content type",
+                "items": {
+                  "type": "object",
+                  "description": "Define the content types you want to use in Front Matter.",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "string",
+                        "number",
+                        "datetime",
+                        "boolean",
+                        "image",
+                        "choice",
+                        "tags",
+                        "categories"
+                      ],
+                      "description": "Define the type of field"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Name of the field to use"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "Title to show in the UI"
+                    },
+                    "choices": {
+                      "type": "array",
+                      "description": "Define your choices",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "type",
+                    "name"
+                  ]
+                }
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "fields"
+            ]
+          },
+          "default": [
+            {
+              "name": "default",
+              "fields": [
+                {
+                  "title": "Title",
+                  "name": "title",
+                  "type": "string"
+                },
+                {
+                  "title": "Description",
+                  "name": "description",
+                  "type": "string"
+                },
+                {
+                  "title": "Publishing date",
+                  "name": "date",
+                  "type": "datetime"
+                },
+                {
+                  "title": "Article preview",
+                  "name": "preview",
+                  "type": "image"
+                },
+                {
+                  "title": "Is in draft",
+                  "name": "draft",
+                  "type": "boolean"
+                },
+                {
+                  "title": "Tags",
+                  "name": "tags",
+                  "type": "tags"
+                },
+                {
+                  "title": "Categories",
+                  "name": "categories",
+                  "type": "categories"
+                }
+              ]
+            }
+          ],
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.dateField": {
+          "type": "string",
+          "default": "date",
+          "markdownDescription": "This setting is used to define the publishing date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.datefield)"
+        },
+        "frontMatter.taxonomy.dateFormat": {
+          "type": "string",
+          "markdownDescription": "Specify the date format for your articles. Check [date-fns formating](https://date-fns.org/v2.0.1/docs/format) for more information. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.dateformat)",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.frontMatterType": {
+          "type": "string",
+          "default": "YAML",
+          "enum": [
+            "YAML",
+            "TOML"
+          ],
+          "markdownDescription": "Specify the type of Front Matter to use. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.frontmattertype)",
+          "enumDescriptions": [
+            "Specifies you want to use YAML markup for the front matter (default)",
+            "Specifies you want to use TOML markup for the front matter"
+          ],
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.indentArrays": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Specify if arrays in front matter are indented. Default: true. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.indentarrays)",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.modifiedField": {
+          "type": "string",
+          "default": "lastmod",
+          "markdownDescription": "This setting is used to define the modified date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.modifiedfield)"
+        },
+        "frontMatter.taxonomy.noPropertyValueQuotes": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "Specify the properties from which quotes need to be removed. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.nopropertyvaluequotes)",
+          "items": {
+            "type": "string",
+            "description": "Name of the properties you want to remove quotes from."
+          },
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.seoContentLengh": {
+          "type": "number",
+          "default": 1760,
+          "markdownDescription": "Specifies the optimal minimum length for your articles. Between 1,760 words – 2,400 is the absolute ideal article length for SEO in 2021. (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seocontentlengh)",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.seoDescriptionField": {
+          "type": "string",
+          "default": "description",
+          "markdownDescription": "Specifies the name of the SEO description field for your page. Default is 'description'. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seodescriptionfield)",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.seoDescriptionLength": {
+          "type": "number",
+          "default": 160,
+          "markdownDescription": "Specifies the optimal description length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seodescriptionlength)",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.seoTitleLength": {
+          "type": "number",
+          "default": 60,
+          "markdownDescription": "Specifies the optimal title length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seotitlelength)",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.slugPrefix": {
+          "type": "string",
+          "markdownDescription": "Specify a prefix for the slug. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.slugprefix)",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.slugSuffix": {
+          "type": "string",
+          "markdownDescription": "Specify a suffix for the slug. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.slugsuffix)",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.tags": {
+          "type": "array",
+          "markdownDescription": "Specifies the tags which can be used in the Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.tags)",
+          "items": {
+            "type": "string"
+          },
+          "scope": "Taxonomy"
+        },
+        "frontMatter.templates.folder": {
+          "type": "string",
+          "default": ".templates",
+          "markdownDescription": "Specify the folder to use for your article templates. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.folder)",
+          "scope": "Templates"
+        },
+        "frontMatter.templates.prefix": {
+          "type": "string",
+          "default": "yyyy-MM-dd",
+          "markdownDescription": "Specify the prefix you want to add for your new article filenames. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.prefix)",
+          "scope": "Templates"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "frontMatter.collapseSections",
+        "title": "Collapse sections",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/close-light.svg",
+          "dark": "assets/icons/close-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.createTemplate",
+        "title": "Create a template from current file",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.createCategory",
+        "title": "Create category",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.createTag",
+        "title": "Create tag",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.exportTaxonomy",
+        "title": "Export all tags & categories to your settings",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.createFromTemplate",
+        "title": "Front Matter: New article from template"
+      },
+      {
+        "command": "frontMatter.registerFolder",
+        "title": "Front Matter: Register folder"
+      },
+      {
+        "command": "frontMatter.unregisterFolder",
+        "title": "Front Matter: Unregister folder"
+      },
+      {
+        "command": "frontMatter.generateSlug",
+        "title": "Generate slug based on article title",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.init",
+        "title": "Initialize project",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.insertCategories",
+        "title": "Insert categories",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.insertImage",
+        "title": "Insert image into article",
+        "category": "Front matter",
+        "icon": "$(device-camera)"
+      },
+      {
+        "command": "frontMatter.insertTags",
+        "title": "Insert tags",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.createContent",
+        "title": "New article from template",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.dashboard",
+        "title": "Open dashboard",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.preview",
+        "title": "Preview article",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.promoteSettings",
+        "title": "Promote settings from local to team level",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.remap",
+        "title": "Remap or remove tag/category in all articles",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.setLastModifiedDate",
+        "title": "Set lastmod date",
+        "category": "Front matter"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "when": "resourceLangId == markdown",
+          "command": "frontMatter.insertImage",
+          "group": "navigation"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "frontMatter.createFromTemplate",
+          "when": "explorerResourceIsFolder",
+          "group": "Front Matter@1"
+        },
+        {
+          "command": "frontMatter.registerFolder",
+          "when": "explorerResourceIsFolder",
+          "group": "Front Matter@2"
+        },
+        {
+          "command": "frontMatter.unregisterFolder",
+          "when": "explorerResourceIsFolder",
+          "group": "Front Matter@3"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "frontMatter.init",
+          "when": "frontMatterCanInit"
+        },
+        {
+          "command": "frontMatter.createTemplate",
+          "when": "!frontMatterCanInit"
+        },
+        {
+          "command": "frontMatter.preview",
+          "when": "frontMatterCanOpenPreview"
+        },
+        {
+          "command": "frontMatter.collapseSections",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.registerFolder",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.unregisterFolder",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.createFromTemplate",
+          "when": "false"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "frontMatter.collapseSections",
+          "group": "navigation"
+        }
+      ]
+    },
+    "grammars": [
+      {
+        "path": "./syntaxes/hugo.tmLanguage.json",
+        "scopeName": "frontmatter.markdown.hugo",
+        "injectTo": [
+          "text.html.markdown"
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run clean && webpack --mode production",
+    "build:ext": "npm run clean && webpack --mode development",
+    "dev:ext": "npm run clean && webpack --mode development --watch",
+    "test-compile": "tsc -p ./",
+    "clean": "rimraf dist",
+    "start:site": "cd ./docs && npm run dev"
+  },
+  "devDependencies": {
+    "@bendera/vscode-webview-elements": "0.6.2",
+    "@estruyf/vscode": "0.0.2",
+    "@headlessui/react": "^1.4.1",
+    "@heroicons/react": "1.0.4",
+    "@iarna/toml": "2.2.3",
+    "@tailwindcss/forms": "^0.3.3",
+    "@types/glob": "7.1.3",
+    "@types/js-yaml": "3.12.1",
+    "@types/lodash.uniqby": "4.7.6",
+    "@types/mocha": "^5.2.6",
+    "@types/node": "10.17.48",
+    "@types/react": "17.0.0",
+    "@types/react-datepicker": "^4.1.7",
+    "@types/react-dom": "17.0.0",
+    "@types/vscode": "1.51.0",
+    "@vscode/codicons": "0.0.20",
+    "autoprefixer": "^10.3.2",
+    "css-loader": "5.2.7",
+    "date-fns": "2.23.0",
+    "downshift": "6.0.6",
+    "fuse.js": "6.4.6",
+    "glob": "7.1.6",
+    "gray-matter": "4.0.2",
+    "html-loader": "1.3.2",
+    "html-webpack-plugin": "4.5.0",
+    "lodash.uniqby": "4.7.0",
+    "mdast-util-from-markdown": "1.0.0",
+    "postcss": "^8.3.6",
+    "postcss-loader": "4.3.0",
+    "react": "17.0.1",
+    "react-datepicker": "4.2.1",
+    "react-dom": "17.0.1",
+    "react-dropzone": "^11.3.4",
+    "recoil": "^0.4.1",
+    "rimraf": "^3.0.2",
+    "style-loader": "2.0.0",
+    "tailwindcss": "^2.2.7",
+    "ts-loader": "8.0.3",
+    "tslint": "6.1.3",
+    "typescript": "4.0.2",
+    "wc-react": "github:estruyf/wc-react",
+    "webpack": "4.44.2",
+    "webpack-cli": "3.3.12"
+  },
+  "dependencies": {
+    "@docsearch/js": "^3.0.0-alpha.40"
+  }
 }

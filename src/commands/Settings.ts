@@ -2,8 +2,8 @@ import * as vscode from 'vscode';
 import * as matter from 'gray-matter';
 import * as fs from 'fs';
 import { TaxonomyType } from "../models";
-import { CONFIG_KEY, SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, EXTENSION_NAME } from '../constants';
-import { ArticleHelper, SettingsHelper, FilesHelper } from '../helpers';
+import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, EXTENSION_NAME } from '../constants';
+import { ArticleHelper, Settings as SettingsHelper, FilesHelper } from '../helpers';
 import { TomlEngine, getFmLanguage, getFormatOpts } from '../helpers/TomlEngine';
 import { DumpOptions } from 'js-yaml';
 import { Notifications } from '../helpers/Notifications';
@@ -22,9 +22,8 @@ export class Settings {
     });
     
     if (newOption) {
-      const config = SettingsHelper.getConfig();
       const configSetting = type === TaxonomyType.Tag ? SETTING_TAXONOMY_TAGS : SETTING_TAXONOMY_CATEGORIES;
-      let options = config.get(configSetting) as string[];
+      let options = SettingsHelper.get(configSetting, true) as string[];
       if (!options) {
         options = [];
       }
@@ -35,7 +34,7 @@ export class Settings {
       }
 
       options.push(newOption);
-      await SettingsHelper.update(type, options);
+      await SettingsHelper.updateTaxonomy(type, options);
 
       // Ask if the new term needs to be added to the page
       const addToPage = await vscode.window.showQuickPick(["yes", "no"], { canPickMany: false, placeHolder: `Do you want to add the new ${type === TaxonomyType.Tag ? "tag" : "category"} to the page?` });
@@ -72,8 +71,6 @@ export class Settings {
    * Export the tags/categories front matter to the user settings
    */
   public static async export() {
-    const config = SettingsHelper.getConfig();
-
     // Retrieve all the Markdown files
     const allMdFiles = await FilesHelper.getMdFiles();
     if (!allMdFiles) {
@@ -128,22 +125,22 @@ export class Settings {
       }
 
       // Retrieve the currently known tags, and add the new ones
-      let crntTags: string[] = config.get(SETTING_TAXONOMY_TAGS) as string[];
+      let crntTags: string[] = SettingsHelper.get(SETTING_TAXONOMY_TAGS, true) as string[];
       if (!crntTags) { crntTags = []; }
       crntTags = [...crntTags, ...tags];
       // Update the tags and filter out the duplicates
       crntTags = [...new Set(crntTags)];
       crntTags = crntTags.sort().filter(t => !!t);
-      await config.update(SETTING_TAXONOMY_TAGS, crntTags);
+      await SettingsHelper.update(SETTING_TAXONOMY_TAGS, crntTags, true);
 
       // Retrieve the currently known tags, and add the new ones
-      let crntCategories: string[] = config.get(SETTING_TAXONOMY_CATEGORIES) as string[];
+      let crntCategories: string[] = SettingsHelper.get(SETTING_TAXONOMY_CATEGORIES, true) as string[];
       if (!crntCategories) { crntCategories = []; }
       crntCategories = [...crntCategories, ...categories];
       // Update the categories and filter out the duplicates
       crntCategories = [...new Set(crntCategories)];
       crntCategories = crntCategories.sort().filter(c => !!c);
-      await config.update(SETTING_TAXONOMY_CATEGORIES, crntCategories);
+      await SettingsHelper.update(SETTING_TAXONOMY_CATEGORIES, crntCategories, true);
 
       // Done
       Notifications.info(`Export completed. Tags: ${crntTags.length} - Categories: ${crntCategories.length}.`);
@@ -269,7 +266,7 @@ export class Settings {
         // Remove the selected option
         options = options.filter(o => o !== selectedOption);
       }
-      await SettingsHelper.update(type, options);
+      await SettingsHelper.updateTaxonomy(type, options);
 
       Notifications.info(`${newOptionValue ? "Remapping" : "Deleation"} of the ${selectedOption} ${type === TaxonomyType.Tag ? "tag" : "category"} completed.`);
     });

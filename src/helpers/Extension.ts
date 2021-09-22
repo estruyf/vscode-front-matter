@@ -1,10 +1,12 @@
 import { basename } from "path";
 import { extensions, Uri, ExtensionContext } from "vscode";
 import { Folders, WORKSPACE_PLACEHOLDER } from "../commands/Folders";
-import { SETTINGS_CONTENT_FOLDERS, SETTINGS_CONTENT_PAGE_FOLDERS } from "../constants";
+import { SETTINGS_CONTENT_FOLDERS, SETTINGS_CONTENT_PAGE_FOLDERS, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTING_TAXONOMY_CONTENT_TYPES } from "../constants";
+import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
 import { EXTENSION_BETA_ID, EXTENSION_ID, EXTENSION_STATE_VERSION } from "../constants/Extension";
+import { ContentType } from "../models";
 import { Notifications } from "./Notifications";
-import { SettingsHelper } from "./SettingsHelper";
+import { Settings } from "./SettingsHelper";
 
 
 export class Extension {
@@ -36,9 +38,10 @@ export class Extension {
       installedVersion = `${installedVersion}-beta`;
     }
 
-    if (!usedVersion) {
+    if (usedVersion !== installedVersion) {
+      Notifications.info(`Find out what is new at [v${installedVersion} release notes](https://${this.isBetaVersion() ? 'beta.' : ''}frontmatter.codes/updates)`);
       this.setVersion(installedVersion);
-    };
+    }
 
     return {
       usedVersion,
@@ -64,8 +67,8 @@ export class Extension {
    * Migrate old settings to new settings
    */
   public async migrateSettings(): Promise<void> {
-    const config = SettingsHelper.getConfig();
-    const folders = config.get<any>(SETTINGS_CONTENT_FOLDERS);
+    // Migration to version 3.1.0
+    const folders = Settings.get<any>(SETTINGS_CONTENT_FOLDERS);
     if (folders && folders.length > 0) {
       const workspace = Folders.getWorkspaceFolder();
       const projectFolder = basename(workspace?.fsPath || "");
@@ -75,7 +78,56 @@ export class Extension {
         path: `${WORKSPACE_PLACEHOLDER}${folder.fsPath.split(projectFolder).slice(1).join('')}`.split('\\').join('/')
       }));
 
-      await config.update(`${SETTINGS_CONTENT_PAGE_FOLDERS}`, paths);
+      await Settings.update(SETTINGS_CONTENT_PAGE_FOLDERS, paths);
+    }
+
+    // Create team settings
+    if (Settings.hasSettings()) {
+      Settings.createTeamSettings();
+    }
+
+    // Migration to version 4.0.0
+    const dateField = Settings.get<string>(SETTING_DATE_FIELD);
+    const lastModField = Settings.get<string>(SETTING_MODIFIED_FIELD);
+    const description = Settings.get<string>(SETTING_SEO_DESCRIPTION_FIELD);
+    const contentTypes = Settings.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
+
+    if (contentTypes) {
+      let needsUpdate = false;
+      let defaultContentType = contentTypes.find(ct => ct.name === DEFAULT_CONTENT_TYPE_NAME);
+
+      if (defaultContentType) {
+        if (dateField && dateField !== "date") {
+          defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== "date");
+          defaultContentType.fields.push({
+            name: dateField,
+            type: "datetime"
+          });
+          needsUpdate = true;
+        }
+  
+        if (lastModField && lastModField !== "lastmod") {
+          defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== "lastmod");
+          defaultContentType.fields.push({
+            name: lastModField,
+            type: "datetime"
+          });
+          needsUpdate = true;
+        }
+  
+        if (description && description !== "description") {
+          defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== "lastmod");
+          defaultContentType.fields.push({
+            name: description,
+            type: "string"
+          });
+          needsUpdate = true;
+        }
+  
+        if (needsUpdate) {
+          await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes);
+        }
+      }
     }
   }
 
@@ -102,5 +154,10 @@ export class Extension {
     }
 
     return true;
+  }
+
+  public get packageJson() {
+    const frontMatter = extensions.getExtension(this.isBetaVersion() ? EXTENSION_BETA_ID : EXTENSION_ID)!;
+    return frontMatter.packageJSON;
   }
 }

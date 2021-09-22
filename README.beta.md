@@ -4,7 +4,7 @@
   </a>
 </h1>
 
-<h2 align="center">Front Matter BETA is an essential Visual Studio Code extension when you want to manage the markdown pages of your static sites.</h2>
+<h2 align="center">Front Matter a CMS running straight in Visual Studio Code</h2>
 
 <h2 align="center">This is the BETA version of Front Matter. If you were looking for the main version, check it out at <a href="https://frontmatter.codes">frontmatter.codes</a></h2>
 
@@ -28,6 +28,10 @@
   </a>
 </h2>
 
+![](./assets/v4.0.0/banner-v2.png)
+
+## What is Front Matter?
+
 Front Matter BETA is an essential Visual Studio Code extension that simplifies working and managing your markdown articles. We created the extension to support many static-site generators like Hugo, Jekyll, Hexo, NextJs, Gatsby, and more. 
 
 The extension brings Content Management System (CMS) capabilities straight within Visual Studio Code. For example, you can keep a list of the used tags, categories, create content, and so much more.
@@ -41,10 +45,14 @@ Our main extension features are:
 - and many more
 
 <p align="center">
-  <img src="./assets/v2.5.0/site-preview.png" alt="Site preview" style="display: inline-block" />
+  <img src="./assets/v4.0.0/preview.png" alt="Site preview" style="display: inline-block" />
 </p>
 
 > If you see something missing in your article creation flow, please feel free to reach out.
+
+**Version 4**
+
+Support for Team level settings, content-types, and image support. Get to know more at: [v4.0.0 release notes](https://frontmatter.codes/updates/v4_0_0).
 
 **Version 3**
 
@@ -59,6 +67,28 @@ In version v2 we released the re-designed sidebar panel with improved SEO suppor
     <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.png?post_id=309033&theme=dark" alt="Front Matter BETA - Managing your static sites straight from within VS Code | Product Hunt" style="width: 250px; height: 40px;" />
   </a>
 </p>
+
+## Installation
+
+You can get the extension via:
+
+- The VS Code marketplace: [VS Code Marketplace - Front Matter](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter).
+- The extension CLI: `ext install eliostruyf.vscode-front-matter`
+- Or by clicking on the following link: <a href="" title="open extension in VS Code" data-vscode="vscode:extension/eliostruyf.vscode-front-matter">open extension in VS Code</a>
+
+> **Info**: The docs can be found on [frontmatter.codes](https://frontmatter.codes).
+
+### Beta version
+
+If you have the courage to test out the beta features, we made available a beta version as well. You can install this via:
+
+- The VS Code marketplace: [VS Code Marketplace - Front Matter BETA](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter-beta).
+- The extension CLI: `ext install eliostruyf.vscode-front-matter-beta`
+- Or by clicking on the following link: <a href="" title="open extension in VS Code" data-vscode="vscode:extension/eliostruyf.vscode-front-matter-beta">open extension in VS Code</a>
+
+> **Info**: The BETA docs can be found on [beta.frontmatter.codes](https://beta.frontmatter.codes).
+
+## Documentation
 
 <h2 align="center">
   <a href="https://beta.frontmatter.codes" title="Documentation @ beta.frontmatter.codes">

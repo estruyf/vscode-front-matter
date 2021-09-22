@@ -1,15 +1,19 @@
 import { SETTING_AUTO_UPDATE_DATE, SETTING_MODIFIED_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TEMPLATES_PREFIX } from './../constants/settings';
 import * as vscode from 'vscode';
 import { TaxonomyType } from "../models";
-import { CONFIG_KEY, SETTING_DATE_FORMAT, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_DATE_FIELD } from "../constants/settings";
+import { CONFIG_KEY, SETTING_DATE_FORMAT, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX } from "../constants/settings";
 import { format } from "date-fns";
-import { ArticleHelper, SettingsHelper, SlugHelper } from '../helpers';
+import { ArticleHelper, Settings, SlugHelper } from '../helpers';
 import matter = require('gray-matter');
 import { Notifications } from '../helpers/Notifications';
 import { extname, basename } from 'path';
+import { COMMAND_NAME, DefaultFields } from '../constants';
+import { DashboardData } from '../models/DashboardData';
+import { ExplorerView } from '../explorerView/ExplorerView';
 
 
 export class Article {
+	
   private static prevContent = "";
 
   /**
@@ -44,7 +48,7 @@ export class Article {
     }
 
     // Add all the known options to the selection list
-    const crntOptions = SettingsHelper.getTaxonomy(type);
+    const crntOptions = Settings.getTaxonomy(type);
     if (crntOptions && crntOptions.length > 0) {
       for (const crntOpt of crntOptions) {
         if (!options.find(o => o.label === crntOpt)) {
@@ -92,7 +96,6 @@ export class Article {
       ArticleHelper.update(editor, article);
     } catch (e) {
       Notifications.error(`Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`);
-      console.log(e.message);
     }
   }
 
@@ -101,14 +104,7 @@ export class Article {
    * @param article 
    */
   public static updateDate(article: matter.GrayMatterFile<string>, forceCreate: boolean = false) {
-    const config = SettingsHelper.getConfig();
-    const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
-    const dateField = config.get(SETTING_DATE_FIELD) as string || "date";
-    const modField = config.get(SETTING_MODIFIED_FIELD) as string || "date";
-
-    article = this.articleDate(article, dateFormat, dateField, forceCreate);
-    article = this.articleDate(article, dateFormat, modField, false);   
-
+    article.data = ArticleHelper.updateDates(article.data);   
     return article;
   }
 
@@ -116,7 +112,6 @@ export class Article {
    * Sets the article lastmod date
    */
   public static async setLastModifiedDate() {
-    const config = SettingsHelper.getConfig();
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;
@@ -128,19 +123,13 @@ export class Article {
     }
 
     const cloneArticle = Object.assign({}, article);
-    const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
-    const dateField = config.get(SETTING_MODIFIED_FIELD) as string || "lastmod";
+    const dateField = Settings.get(SETTING_MODIFIED_FIELD) as string || DefaultFields.LastModified;
     try {
-      if (dateFormat && typeof dateFormat === "string") {
-        cloneArticle.data[dateField] = format(new Date(), dateFormat);
-      } else {
-        cloneArticle.data[dateField] = new Date().toISOString();
-      }
+      cloneArticle.data[dateField] = Article.formatDate(new Date());
 
       ArticleHelper.update(editor, cloneArticle);
-    } catch (e) {
+    } catch (e: any) {
       Notifications.error(`Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`);
-      console.log(e.message);
     }
   }
 
@@ -148,11 +137,10 @@ export class Article {
    * Generate the slug based on the article title
    */
 	public static async generateSlug() {
-    const config = SettingsHelper.getConfig();
-    const prefix = config.get(SETTING_SLUG_PREFIX) as string;
-    const suffix = config.get(SETTING_SLUG_SUFFIX) as string;
-    const updateFileName = config.get(SETTING_SLUG_UPDATE_FILE_NAME) as string;
-    const filePrefix = config.get<string>(SETTING_TEMPLATES_PREFIX);
+    const prefix = Settings.get(SETTING_SLUG_PREFIX) as string;
+    const suffix = Settings.get(SETTING_SLUG_SUFFIX) as string;
+    const updateFileName = Settings.get(SETTING_SLUG_UPDATE_FILE_NAME) as string;
+    const filePrefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
     const editor = vscode.window.activeTextEditor;
 
     if (!editor) {
@@ -230,8 +218,7 @@ export class Article {
     const editor = vscode.window.activeTextEditor;
 
 		if (txtChanges.length > 0 && editor && ArticleHelper.isMarkdownFile()) {
-      const config = SettingsHelper.getConfig();
-			const autoUpdate = config.get(SETTING_AUTO_UPDATE_DATE);
+			const autoUpdate = Settings.get(SETTING_AUTO_UPDATE_DATE);
 
 			if (autoUpdate) {  
         const article = ArticleHelper.getFrontMatter(editor);
@@ -249,6 +236,43 @@ export class Article {
       }
 		}
   }
+
+  /**
+   * Format the date to the defined format
+   */
+  public static formatDate(dateValue: Date) {
+    const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
+
+    if (dateFormat && typeof dateFormat === "string") {
+      return format(dateValue, dateFormat);
+    } else {
+      return dateValue.toISOString();
+    }
+  }
+
+  /**
+   * Insert an image from the media dashboard into the article
+   */
+  public static async insertImage() {
+		let editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+
+    const position = editor.selection.active;
+
+    await vscode.commands.executeCommand(COMMAND_NAME.dashboard, {
+      type: "media",
+      data: {
+        filePath: editor.document.uri.fsPath,
+        fieldName: basename(editor.document.uri.fsPath),
+        position
+      }
+    } as DashboardData);
+
+    // Let the editor panel know you are selecting an image
+    ExplorerView.getInstance().getMediaSelection();
+	}
 
   /**
    * Get the current article
@@ -274,13 +298,9 @@ export class Article {
    * @param field 
    * @param forceCreate 
    */
-  private static articleDate(article: matter.GrayMatterFile<string>, dateFormat: string, field: string, forceCreate: boolean) {
+  private static articleDate(article: matter.GrayMatterFile<string>, field: string, forceCreate: boolean) {
     if (typeof article.data[field] !== "undefined" || forceCreate) {
-      if (dateFormat && typeof dateFormat === "string") {
-        article.data[field] = format(new Date(), dateFormat);
-      } else {
-        article.data[field] = new Date().toISOString();
-      }
+      article.data[field] = Article.formatDate(new Date());
     }
     return article;
   }

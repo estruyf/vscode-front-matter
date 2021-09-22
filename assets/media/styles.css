@@ -50,6 +50,15 @@
   height: 100%;
 }
 
+.frontmatter.media_selection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.8;
+  text-align: center;
+	padding: 1rem 1.25rem;
+}
+
 .spinner,
 .spinner:before,
 .spinner:after {
@@ -428,6 +437,67 @@ input:checked + .field__toggle__slider:before {
   margin-right: .5rem;
 }
 
+.metadata_field__textarea, .metadata_field__textarea:focus {
+  outline: none;
+}
+
+.metadata_field__limit {
+  color: var(--vscode-inputValidation-warningBorder);
+  margin-top: .25rem;
+}
+
+.metadata_field__number {
+  border: 1px solid var(--vscode-inputValidation-infoBorder) !important;
+  outline: none !important;
+}
+
+.metadata_field__choice {
+  border: 1px solid var(--vscode-inputValidation-infoBorder) !important;
+  outline: none !important;
+  width: 100%;
+  padding: var(--input-padding-vertical) var(--input-padding-horizontal);
+  color: var(--vscode-input-foreground);
+  background-color: var(--vscode-input-background);
+}
+
+.metadata_field__choice::placeholde {
+	color: var(--vscode-input-placeholderForeground);
+}
+
+.metadata_field__datetime {
+  display: flex;
+  justify-content: space-between;
+}
+
+.metadata_field__datetime > .react-datepicker-wrapper {
+  margin-right: 1rem;
+}
+
+.metadata_field__datetime > button {
+  color: var(--vscode-button-secondaryForeground);
+  background-color: var(--vscode-button-secondaryBackground);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  width: auto;
+}
+
+.metadata_field__preview_image img {
+  display: block;
+  margin: 0 auto;
+  max-height: 16rem;
+}
+
+.metadata_field__preview_image__remove {
+  background-color: var(--vscode-inputValidation-errorBackground);
+  color: var(--vscode-inputValidation-errorForeground);
+}
+
+.metadata_field__preview_image__remove:hover {
+  background-color: var(--vscode-inputValidation-errorBackground);
+  color: var(--vscode-inputValidation-errorForeground);
+  opacity: .9;
+}
+
 /* File list */
 .file_list vscode-label {
   border-bottom: 1px solid var(--vscode-foreground);
@@ -506,4 +576,22 @@ input:checked + .field__toggle__slider:before {
 
 .sponsor a > span {
   margin-right: .25rem;
+}
+
+/* Timepicker */
+.react-datepicker button:hover {
+  background-color: none !important;
+}
+
+.react-datepicker__triangle {
+  transform: translate3d(15px, 0px, 0px) !important;
+}
+
+.react-datepicker-time__input {
+  background: transparent !important;
+  color: #000 !important;
+}
+
+.react-datepicker-time__input input {
+  border: 1px solid #aeaeae !important;
 }

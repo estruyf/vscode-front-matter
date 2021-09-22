@@ -5,14 +5,14 @@ import { Folders } from './commands/Folders';
 import { Preview } from './commands/Preview';
 import { Project } from './commands/Project';
 import { Template } from './commands/Template';
-import { COMMAND_NAME, EXTENSION_BETA_ID, EXTENSION_ID } from './constants/Extension';
+import { COMMAND_NAME } from './constants/Extension';
 import { TaxonomyType } from './models';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
-import { TagType } from './viewpanel/TagType';
-import { ExplorerView } from './webview/ExplorerView';
+import { TagType } from './panelWebView/TagType';
+import { ExplorerView } from './explorerView/ExplorerView';
 import { Extension } from './helpers/Extension';
-import { basename } from 'path';
-import { Notifications } from './helpers/Notifications';
+import { DashboardData } from './models/DashboardData';
+import { Settings as SettingsHelper } from './helpers';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
@@ -29,15 +29,16 @@ export async function activate(context: vscode.ExtensionContext) {
 	if (!extension.checkIfExtensionCanRun()) {
 		return undefined;
 	}
-
-	extension.migrateSettings()
+	
+	SettingsHelper.init();
+	extension.migrateSettings();
 
 	collection = vscode.languages.createDiagnosticCollection('frontMatter');
 
 	// Pages dashboard
 	Dashboard.init();
-	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboard, () => {
-		Dashboard.open();
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboard, (data?: DashboardData) => {
+		Dashboard.open(data);
 	}));
 
 	if (!extension.getVersion().usedVersion) {
@@ -79,8 +80,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	let remap = vscode.commands.registerCommand(COMMAND_NAME.remap, Settings.remap);
 
-	let setDate = vscode.commands.registerCommand(COMMAND_NAME.setDate, Article.setDate);
-
 	let setLastModifiedDate = vscode.commands.registerCommand(COMMAND_NAME.setLastModifiedDate, Article.setLastModifiedDate);
 
 	let generateSlug = vscode.commands.registerCommand(COMMAND_NAME.generateSlug, Article.generateSlug);
@@ -117,17 +116,20 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 	});
 
+	// Settings promotion command
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.promote, () => { console.log('promote'); SettingsHelper.promote(); }));
+
 	// Collapse all sections in the webview
 	const collapseAll = vscode.commands.registerCommand(COMMAND_NAME.collapseSections, () => {
 		ExplorerView.getInstance()?.collapseAll();
 	});
 
 	// Things to do when configuration changes
-	vscode.workspace.onDidChangeConfiguration(() => {
+	SettingsHelper.onConfigChange((global?: any) => {
 		Template.init();
 		Preview.init();
 
-		const exView = ExplorerView.getInstance();	
+		const exView = ExplorerView.getInstance();
 		exView.getSettings();
 		exView.getFoldersAndFiles();	
 		MarkdownFoldingProvider.triggerHighlighting();
@@ -162,6 +164,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	Preview.init();
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.preview, () => Preview.open(extensionPath) ));
 
+	// Inserting an image in Markdown
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.insertImage, Article.insertImage));
+
 	// Subscribe all commands
 	subscriptions.push(
 		insertTags,
@@ -171,7 +176,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		createCategory,
 		exportTaxonomy,
 		remap,
-		setDate,
 		setLastModifiedDate,
 		generateSlug,
 		createFromTemplate,

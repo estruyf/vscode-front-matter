@@ -18,7 +18,6 @@ export const COMMAND_NAME = {
   createCategory: getCommandName("createCategory"),
   exportTaxonomy: getCommandName("exportTaxonomy"),
   remap: getCommandName("remap"),
-  setDate: getCommandName("setDate"),
   setLastModifiedDate: getCommandName("setLastModifiedDate"),
   generateSlug: getCommandName("generateSlug"),
   createFromTemplate: getCommandName("createFromTemplate"),
@@ -30,4 +29,6 @@ export const COMMAND_NAME = {
   collapseSections: getCommandName("collapseSections"),
   preview: getCommandName("preview"),
   dashboard: getCommandName("dashboard"),
+  promote: getCommandName("promoteSettings"),
+  insertImage: getCommandName("insertImage"),
 };

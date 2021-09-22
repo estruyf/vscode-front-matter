@@ -1,7 +1,8 @@
 import { SETTING_SEO_DESCRIPTION_FIELD, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH } from './../constants/settings';
 import * as vscode from 'vscode';
-import { ArticleHelper, SeoHelper, SettingsHelper } from '../helpers';
-import { ExplorerView } from '../webview/ExplorerView';
+import { ArticleHelper, SeoHelper, Settings } from '../helpers';
+import { ExplorerView } from '../explorerView/ExplorerView';
+import { DefaultFields } from '../constants';
 
 export class StatusListener {
   
@@ -36,10 +37,9 @@ export class StatusListener {
           collection.clear();
 
           // Retrieve the SEO config properties
-          const config = SettingsHelper.getConfig();
-          const titleLength = config.get(SETTING_SEO_TITLE_LENGTH) as number || -1;
-          const descLength = config.get(SETTING_SEO_DESCRIPTION_LENGTH) as number || -1;
-          const fieldName = config.get(SETTING_SEO_DESCRIPTION_FIELD) as string || "description";
+          const titleLength = Settings.get(SETTING_SEO_TITLE_LENGTH) as number || -1;
+          const descLength = Settings.get(SETTING_SEO_DESCRIPTION_LENGTH) as number || -1;
+          const fieldName = Settings.get(SETTING_SEO_DESCRIPTION_FIELD) as string || DefaultFields.Description;
           
           if (article.data.title && titleLength > -1) {
             SeoHelper.checkLength(editor, collection, article, "title", titleLength);

@@ -1,11 +1,15 @@
+import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from './../constants/ContentType';
+import { ContentType } from './../models/PanelSettings';
 import * as vscode from 'vscode';
 import * as matter from "gray-matter";
 import * as fs from "fs";
-import { CONFIG_KEY, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES } from '../constants';
+import { DefaultFields, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_TAXONOMY_CONTENT_TYPES } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { TomlEngine, getFmLanguage, getFormatOpts } from './TomlEngine';
-import { SettingsHelper } from '.';
+import { Settings } from '.';
 import { parse } from 'date-fns';
+import { Notifications } from './Notifications';
+import { Article } from '../commands';
 
 export class ArticleHelper {
   
@@ -14,18 +18,9 @@ export class ArticleHelper {
    * 
    * @param editor 
    */
-  public static getFrontMatter(editor: vscode.TextEditor) {   
-    const language: string = getFmLanguage(); 
-    const langOpts = getFormatOpts(language);
-    let article: matter.GrayMatterFile<string> | null = matter(editor.document.getText(), {
-      ...TomlEngine,
-      ...langOpts
-    });
-
-    if (article && article.data) {
-      return article;
-    }
-    return null;
+  public static getFrontMatter(editor: vscode.TextEditor) {
+    const fileContents = editor.document.getText();  
+    return ArticleHelper.parseFile(fileContents);
   }
 
   /**
@@ -34,19 +29,7 @@ export class ArticleHelper {
    */
   public static getFrontMatterByPath(filePath: string) {   
     const file = fs.readFileSync(filePath, { encoding: "utf-8" });
-    if (file) {
-      const language: string = getFmLanguage(); 
-      const langOpts = getFormatOpts(language);
-      let article: matter.GrayMatterFile<string> | null = matter(file, {
-        ...TomlEngine,
-        ...langOpts
-      });
-  
-      if (article && article.data) {
-        return article;
-      }
-    }
-    return null;
+    return ArticleHelper.parseFile(file);
   }
 
   /**
@@ -56,17 +39,23 @@ export class ArticleHelper {
    * @param article 
    */
   public static async update(editor: vscode.TextEditor, article: matter.GrayMatterFile<string>) {
-    const config = SettingsHelper.getConfig();
-    const removeQuotes = config.get(SETTING_REMOVE_QUOTES) as string[];
+    const removeQuotes = Settings.get(SETTING_REMOVE_QUOTES) as string[];
+    const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
     
-    let newMarkdown = this.stringifyFrontMatter(article.content, article.data);
+    let newMarkdown = this.stringifyFrontMatter(article.content, Object.assign({}, article.data));
 
     // Check for field where quotes need to be removed
     if (removeQuotes && removeQuotes.length) {
       for (const toRemove of removeQuotes) {
         if (article && article.data && article.data[toRemove]) {
-          newMarkdown = newMarkdown.replace(`'${article.data[toRemove]}'`, article.data[toRemove]);
-          newMarkdown = newMarkdown.replace(`"${article.data[toRemove]}"`, article.data[toRemove]);
+          if (commaSeparated?.includes(toRemove)) {
+            const textToReplace = article.data[toRemove].join(", ");
+            newMarkdown = newMarkdown.replace(`'${textToReplace}'`, textToReplace);
+            newMarkdown = newMarkdown.replace(`"${textToReplace}"`, textToReplace);
+          } else {
+            newMarkdown = newMarkdown.replace(`'${article.data[toRemove]}'`, article.data[toRemove]);
+            newMarkdown = newMarkdown.replace(`"${article.data[toRemove]}"`, article.data[toRemove]);
+          }
         }
       }
     }
@@ -82,13 +71,21 @@ export class ArticleHelper {
    * @param data 
    */
   public static stringifyFrontMatter(content: string, data: any) {
-    const config = SettingsHelper.getConfig();
-    const indentArray = config.get(SETTING_INDENT_ARRAY) as boolean;
+    const indentArray = Settings.get(SETTING_INDENT_ARRAY) as boolean;
+    const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
 
     const language = getFmLanguage();
     const langOpts = getFormatOpts(language);
 
     const spaces = vscode.window.activeTextEditor?.options?.tabSize;
+
+    if (commaSeparated) {
+      for (const key of commaSeparated) {
+        if (data[key] && typeof data[key] === "object") {
+          data[key] = data[key].join(", ");
+        }
+      }
+    }
 
     return matter.stringify(content, data, ({
       ...TomlEngine,
@@ -115,9 +112,8 @@ export class ArticleHelper {
       return;
     }
 
-    const config = SettingsHelper.getConfig();
-    const dateFormat = config.get(SETTING_DATE_FORMAT) as string;
-    const dateField = config.get(SETTING_DATE_FIELD) as string || "date";
+    const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
+    const dateField = Settings.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
 
     if (typeof article.data[dateField] !== "undefined") {
       if (dateFormat && typeof dateFormat === "string") {
@@ -129,5 +125,75 @@ export class ArticleHelper {
       }
     }
     return;
+  }
+
+  /**
+   * Retrieve the content type of the current file
+   * @param updatedMetadata 
+   */
+  public static getContentType(metadata: { [field: string]: string; }): ContentType {
+    const contentTypes = Settings.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
+
+    if (!contentTypes || !metadata) {
+      return DEFAULT_CONTENT_TYPE;
+    }
+
+    let contentType = contentTypes.find(ct => ct.name === (metadata.type || DEFAULT_CONTENT_TYPE_NAME));
+    if (!contentType) {
+      contentType = contentTypes.find(ct => ct.name === DEFAULT_CONTENT_TYPE_NAME);
+    }
+    return contentType || DEFAULT_CONTENT_TYPE;
+  }
+
+  /**
+   * Update all dates in the metadata
+   * @param metadata 
+   */
+  public static updateDates(metadata: { [field: string]: string; }) {
+    const contentType = ArticleHelper.getContentType(metadata);
+    const dateFields = contentType.fields.filter((field) => field.type === "datetime");
+
+    for (const dateField of dateFields) {
+      if (typeof metadata[dateField.name] !== "undefined") {
+        metadata[dateField.name] = Article.formatDate(new Date());
+      }
+    }
+
+    return metadata;
+  }
+
+  /**
+   * Parse a markdown file and its front matter
+   * @param fileContents 
+   * @returns 
+   */
+  private static parseFile(fileContents: string): matter.GrayMatterFile<string> | null {
+    try {
+      const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
+      
+      if (fileContents) {
+        const language: string = getFmLanguage(); 
+        const langOpts = getFormatOpts(language);
+        let article: matter.GrayMatterFile<string> | null = matter(fileContents, {
+          ...TomlEngine,
+          ...langOpts
+        });
+  
+        if (article?.data) {
+          if (commaSeparated) {
+            for (const key of commaSeparated) {
+              if (article?.data[key] && typeof article.data[key] === "string") {
+                article.data[key] = article.data[key].split(",").map((s: string) => s.trim());
+              }
+            }
+          }
+
+          return article;
+        }
+      }
+    } catch (error: any) {
+      Notifications.error(`There seems to be an issue parsing your Front Matter. ERROR: ${error.message || error}`);
+    }
+    return null;
   }
 }

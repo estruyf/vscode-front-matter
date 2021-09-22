@@ -1,9 +1,11 @@
 import { FileType } from "vscode";
+import { DashboardData } from "./DashboardData";
 
 export interface PanelSettings {
   seo: SEO;
   slug: Slug;
   tags: string[];
+  date: DateInfo;
   categories: string[];
   freeform: boolean;
   scripts: CustomScript[];
@@ -12,6 +14,24 @@ export interface PanelSettings {
   writingSettingsEnabled: boolean;
   fmHighlighting: boolean;
   preview: PreviewSettings;
+  contentTypes: ContentType[];
+  dashboardViewData: DashboardData | undefined;
+}
+
+export interface ContentType {
+  name: string;
+  fields: Field[];
+}
+
+export interface Field {
+  title?: string;
+  name: string;
+  type: "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories";
+  choices?: string[];
+}
+
+export interface DateInfo {
+  format: string;
 }
 
 export interface SEO {

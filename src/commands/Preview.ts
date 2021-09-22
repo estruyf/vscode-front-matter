@@ -2,7 +2,7 @@ import { SETTING_PREVIEW_HOST, SETTING_PREVIEW_PATHNAME } from './../constants/s
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { join } from "path";
 import { commands, env, Uri, ViewColumn, window } from "vscode";
-import { SettingsHelper } from '../helpers';
+import { Settings } from '../helpers';
 import { PreviewSettings } from '../models';
 import { format } from 'date-fns';
 import { CONTEXT } from '../constants/context';
@@ -124,10 +124,8 @@ export class Preview {
    * Retrieve all settings related to the preview command
    */
   public static getSettings(): PreviewSettings {
-
-    const config = SettingsHelper.getConfig();
-    const host = config.get<string>(SETTING_PREVIEW_HOST);
-    const pathname = config.get<string>(SETTING_PREVIEW_PATHNAME);
+    const host = Settings.get<string>(SETTING_PREVIEW_HOST);
+    const pathname = Settings.get<string>(SETTING_PREVIEW_PATHNAME);
 
     return {
       host,

@@ -6,7 +6,7 @@ import uniqBy = require("lodash.uniqby");
 import { Template } from "./Template";
 import { Notifications } from "../helpers/Notifications";
 import { CONTEXT } from "../constants/context";
-import { SettingsHelper } from "../helpers";
+import { Settings } from "../helpers";
 
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
@@ -197,9 +197,8 @@ export class Folders {
    * @returns 
    */
   public static get(): ContentFolder[] {
-    const config = SettingsHelper.getConfig();
     const wsFolder = Folders.getWorkspaceFolder();
-    const folders: ContentFolder[] = config.get(SETTINGS_CONTENT_PAGE_FOLDERS) as ContentFolder[];
+    const folders: ContentFolder[] = Settings.get(SETTINGS_CONTENT_PAGE_FOLDERS) as ContentFolder[];
     
     return folders.map(folder => ({
       title: folder.title,
@@ -212,9 +211,8 @@ export class Folders {
    * @param folders 
    */
   private static async update(folders: ContentFolder[]) {
-    const config = SettingsHelper.getConfig();
     const wsFolder = Folders.getWorkspaceFolder();
-    await config.update(SETTINGS_CONTENT_PAGE_FOLDERS, folders.map(folder => ({ title: folder.title, path: Folders.relWsFolder(folder, wsFolder) })));
+    await Settings.update(SETTINGS_CONTENT_PAGE_FOLDERS, folders.map(folder => ({ title: folder.title, path: Folders.relWsFolder(folder, wsFolder) })));
   }
 
   /**

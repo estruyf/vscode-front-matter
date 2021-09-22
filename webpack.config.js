@@ -37,9 +37,9 @@ const config = [
     }
   },
   {
-    name: 'viewpanel',
+    name: 'panelWebView',
     target: 'web',
-    entry: './src/viewpanel/index.tsx',
+    entry: './src/panelWebView/index.tsx',
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: 'viewpanel.js'
@@ -56,6 +56,10 @@ const config = [
           use: [{
             loader: 'ts-loader'
           }]
+        },
+        {
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader']
         }
       ]
     },
@@ -65,9 +69,9 @@ const config = [
     }
   },
   {
-    name: 'pagesView',
+    name: 'dashboardWebView',
     target: 'web',
-    entry: './src/pagesView/index.tsx',
+    entry: './src/dashboardWebView/index.tsx',
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: 'pages.js'

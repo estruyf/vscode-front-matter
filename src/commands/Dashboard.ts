@@ -1,25 +1,28 @@
-import { SETTINGS_CONTENT_STATIC_FOLDERS, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART } from './../constants/settings';
+import { SETTINGS_CONTENT_STATIC_FOLDERS, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET } from './../constants/settings';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { basename, dirname, extname, join } from "path";
 import { existsSync, statSync, unlinkSync, writeFileSync } from "fs";
-import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env } from "vscode";
-import { SettingsHelper } from '../helpers';
+import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env, Position } from "vscode";
+import { Settings as SettingsHelper } from '../helpers';
 import { TaxonomyType } from '../models';
 import { Folders } from './Folders';
-import { DashboardCommand } from '../pagesView/DashboardCommand';
-import { DashboardMessage } from '../pagesView/DashboardMessage';
-import { Page } from '../pagesView/models/Page';
+import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
+import { DashboardMessage } from '../dashboardWebView/DashboardMessage';
+import { Page } from '../dashboardWebView/models/Page';
 import { openFileInEditor } from '../helpers/openFileInEditor';
 import { COMMAND_NAME, EXTENSION_STATE_PAGES_VIEW } from '../constants/Extension';
 import { Template } from './Template';
 import { Notifications } from '../helpers/Notifications';
-import { Settings } from '../pagesView/models/Settings';
+import { Settings } from '../dashboardWebView/models/Settings';
 import { Extension } from '../helpers/Extension';
 import { parseJSON } from 'date-fns';
-import { ViewType } from '../pagesView/state';
-import { WebviewHelper } from '@estruyf/vscode';
+import { ViewType } from '../dashboardWebView/state';
+import { EditorHelper, WebviewHelper } from '@estruyf/vscode';
 import { MediaInfo, MediaPaths } from './../models/MediaPaths';
 import { decodeBase64Image } from '../helpers/decodeBase64Image';
+import { DefaultFields } from '../constants';
+import { DashboardData } from '../models/DashboardData';
+import { ExplorerView } from '../explorerView/ExplorerView';
 
 
 export class Dashboard {
@@ -27,13 +30,17 @@ export class Dashboard {
   private static isDisposed: boolean = true;
   private static media: MediaInfo[] = [];
   private static timers: { [folder: string]: any } = {};
+  private static _viewData: DashboardData | undefined;
+
+  public static get viewData(): DashboardData | undefined {
+    return Dashboard._viewData;
+  }
 
   /** 
    * Init the dashboard
    */
   public static async init() {
-    const config = SettingsHelper.getConfig();
-    const openOnStartup = config.get(SETTINGS_DASHBOARD_OPENONSTART);
+    const openOnStartup = SettingsHelper.get(SETTINGS_DASHBOARD_OPENONSTART);
     if (openOnStartup) {
       Dashboard.open();
     }
@@ -42,7 +49,9 @@ export class Dashboard {
   /**
    * Open or reveal the dashboard
    */
-  public static async open() {
+  public static async open(data?: DashboardData) {
+    Dashboard._viewData = data;
+
     if (Dashboard.isOpen) {
 			Dashboard.reveal();
 		} else {
@@ -92,21 +101,31 @@ export class Dashboard {
     Dashboard.webview.webview.html = Dashboard.getWebviewContent(Dashboard.webview.webview, extensionUri);
 
     Dashboard.webview.onDidChangeViewState(() => {
-      if (this.webview?.visible) {
-        console.log(`Dashboard opened`);
+      if (!this.webview?.visible) {
+        Dashboard._viewData = undefined;
+        const panel = ExplorerView.getInstance(extensionUri);
+        panel.getMediaSelection();
       }
     });
 
     Dashboard.webview.onDidDispose(() => {
       Dashboard.isDisposed = true;
+      Dashboard._viewData = undefined;
+      const panel = ExplorerView.getInstance(extensionUri);
+      panel.getMediaSelection();
     });
 
-    workspace.onDidChangeConfiguration(() => {
+    SettingsHelper.onConfigChange((global?: any) => {
       Dashboard.getSettings();
     });
 
     Dashboard.webview.webview.onDidReceiveMessage(async (msg) => {
       switch(msg.command) {
+        case DashboardMessage.getViewType:
+          if (Dashboard._viewData) {
+            Dashboard.postWebviewMessage({ command: DashboardCommand.viewData, data: Dashboard._viewData });
+          }
+          break;
         case DashboardMessage.getData:
           Dashboard.getSettings();
           Dashboard.getPages();
@@ -150,8 +169,42 @@ export class Dashboard {
         case DashboardMessage.deleteMedia:
           Dashboard.deleteFile(msg?.data);
           break;
+        case DashboardMessage.insertPreviewImage:
+          Dashboard.insertImage(msg?.data);
+          break;
       }
     });
+  }
+  
+  /**
+   * Insert an image into the front matter or contents
+   * @param data 
+   */
+  private static async insertImage(data: any) {
+    if (data?.file && data?.image) {
+      if (!data?.position) {
+        await commands.executeCommand(`workbench.view.extension.frontmatter-explorer`);
+      }
+
+      await EditorHelper.showFile(data.file);
+      Dashboard._viewData = undefined;
+      
+      const extensionUri = Extension.getInstance().extensionPath;
+      const panel = ExplorerView.getInstance(extensionUri);
+
+      if (data?.position) {
+        const editor = window.activeTextEditor;
+        const line = data.position.line;
+        const character = data.position.character;
+        if (line) {
+          await editor?.edit(builder => builder.insert(new Position(line, character), data.snippet || `![](${data.image})`));
+        }
+        panel.getMediaSelection();
+      } else {
+        panel.getMediaSelection();
+        panel.updateMetadata({field: data.fieldName, value: data.image});
+      }
+    }
   }
 
   /**
@@ -159,7 +212,6 @@ export class Dashboard {
    */
   private static async getSettings() { 
     const ext = Extension.getInstance();
-    const config = SettingsHelper.getConfig();
     const wsFolder = Folders.getWorkspaceFolder();
     
     Dashboard.postWebviewMessage({
@@ -167,14 +219,15 @@ export class Dashboard {
       data: {
         beta: ext.isBetaVersion(),
         wsFolder: wsFolder ? wsFolder.fsPath : '',
-        staticFolder: config.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS),
+        staticFolder: SettingsHelper.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS),
         folders: Folders.get(),
         initialized: await Template.isInitialized(),
         tags: SettingsHelper.getTaxonomy(TaxonomyType.Tag),
         categories: SettingsHelper.getTaxonomy(TaxonomyType.Category),
-        openOnStart: config.get(SETTINGS_DASHBOARD_OPENONSTART),
+        openOnStart: SettingsHelper.get(SETTINGS_DASHBOARD_OPENONSTART),
         versionInfo: ext.getVersion(),
-        pageViewType: await ext.getState<ViewType | undefined>(EXTENSION_STATE_PAGES_VIEW)
+        pageViewType: await ext.getState<ViewType | undefined>(EXTENSION_STATE_PAGES_VIEW),
+        mediaSnippet: SettingsHelper.get<string[]>(SETTINGS_DASHBOARD_MEDIA_SNIPPET) || [],
       } as Settings
     });
   }
@@ -183,7 +236,7 @@ export class Dashboard {
    * Update a setting from the dashboard
    */
   private static async updateSetting(data: { name: string, value: any }) {
-    await SettingsHelper.updateSetting(data.name, data.value);
+    await SettingsHelper.update(data.name, data.value);
     Dashboard.getSettings();
   }
 
@@ -192,8 +245,7 @@ export class Dashboard {
    */
   private static async getMedia(page: number = 0, folder: string = '') {
     const wsFolder = Folders.getWorkspaceFolder();
-    const config = SettingsHelper.getConfig();
-    const staticFolder = config.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
+    const staticFolder = SettingsHelper.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
 
     if (Dashboard.media.length === 0) {
       const contentFolder = Folders.get();
@@ -277,12 +329,11 @@ export class Dashboard {
    * Retrieve all the markdown pages
    */
   private static async getPages() {
-    const config = SettingsHelper.getConfig();
     const wsFolder = Folders.getWorkspaceFolder();
 
-    const descriptionField = config.get(SETTING_SEO_DESCRIPTION_FIELD) as string || "description";
-    const dateField = config.get(SETTING_DATE_FIELD) as string || "date";
-    const staticFolder = config.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
+    const descriptionField = SettingsHelper.get(SETTING_SEO_DESCRIPTION_FIELD) as string || DefaultFields.Description;
+    const dateField = SettingsHelper.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
+    const staticFolder = SettingsHelper.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
 
     const folderInfo = await Folders.getInfo();
     const pages: Page[] = [];
@@ -368,8 +419,7 @@ export class Dashboard {
   private static async saveFile({fileName, contents, folder}: { fileName: string; contents: string; folder: string | null }) {
     if (fileName && contents) {
       const wsFolder = Folders.getWorkspaceFolder();
-      const config = SettingsHelper.getConfig();
-      const staticFolder = config.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
+      const staticFolder = SettingsHelper.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
       const wsPath = wsFolder ? wsFolder.fsPath : "";
       let absFolderPath = join(wsPath, staticFolder || "", folder || "");
 
@@ -430,7 +480,13 @@ export class Dashboard {
    * @param msg 
    */
   private static postWebviewMessage(msg: { command: DashboardCommand, data?: any }) {
-    Dashboard.webview?.webview.postMessage(msg);
+    if (Dashboard.isDisposed) {
+      return;
+    }
+
+    if (Dashboard.webview) {
+      Dashboard.webview?.webview.postMessage(msg);
+    }
   }
   
   /**

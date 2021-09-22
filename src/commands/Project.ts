@@ -5,6 +5,7 @@ import * as fs from "fs";
 import { Notifications } from "../helpers/Notifications";
 import { Template } from "./Template";
 import { Folders } from "./Folders";
+import { Settings } from "../helpers";
 
 export class Project {
 
@@ -26,6 +27,8 @@ categories: []
    */
   public static async init(sampleTemplate: boolean = true) {
     try {
+      Settings.createTeamSettings();
+
       const folder = Template.getSettings();
       const templatePath = Project.templatePath();
 
@@ -43,7 +46,7 @@ categories: []
         fs.writeFileSync(article.fsPath, Project.content, { encoding: "utf-8" });
         Notifications.info("Project initialized successfully.");
       }
-    } catch (err) {
+    } catch (err: any) {
       Notifications.error(`Sorry, something went wrong - ${err?.message || err}`);
     }
   }
