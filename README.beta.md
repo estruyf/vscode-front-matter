@@ -1,6 +1,6 @@
 <h1 align="center">
-  <a href="https://beta.frontmatter.codes">
-    <img alt="Front Matter BETA" src="./assets/frontmatter-beta.png">
+  <a href="https://frontmatter.codes">
+    <img alt="Front Matter" src="https://frontmatter.codes/assets/frontmatter-social.png">
   </a>
 </h1>
 
@@ -27,8 +27,6 @@
     Check out the extension documentation at beta.frontmatter.codes
   </a>
 </h2>
-
-![](./assets/v4.0.0/banner-v2.png)
 
 ## What is Front Matter?
 
