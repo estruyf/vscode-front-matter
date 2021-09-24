@@ -123,7 +123,7 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
   
   React.useEffect(() => {
     if (prevSelected !== crntSelected) {
-      setSelected(crntSelected);
+      setSelected(typeof crntSelected === "string" ? [crntSelected] : crntSelected);
     }
   }, [crntSelected]);
   
