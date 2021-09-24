@@ -38,7 +38,7 @@ export class Extension {
       installedVersion = `${installedVersion}-beta`;
     }
 
-    if (usedVersion !== installedVersion + 1) {
+    if (usedVersion !== installedVersion) {
       const whatIsNewTitle = `Check the changelog`;
       const githubTitle = `Give it a ⭐️`;
 
