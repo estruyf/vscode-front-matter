@@ -433,7 +433,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     }
 
     const article = ArticleHelper.getFrontMatter(editor);
-    this.pushMetadata(article!.data);
+    if (article?.data) {
+      this.pushMetadata(article!.data);
+    }
   }
 
   /**
