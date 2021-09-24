@@ -3,6 +3,7 @@
 ## [4.0.1] - 2021-09-24
 
 - [#114](https://github.com/estruyf/vscode-front-matter/issues/114): Fix for categories/tags provided as string in YAML
+- [#115](https://github.com/estruyf/vscode-front-matter/issues/115): Fix for updating added categories/tags
 
 ## [4.0.0] - 2021-09-22 - [Release Notes](https://beta.frontmatter.codes/updates/v4_0_0)
 

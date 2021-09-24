@@ -5,7 +5,7 @@ import { TaxonomyType } from '../models';
 import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY } from '../constants';
 import { Folders } from '../commands/Folders';
 import { join, basename } from 'path';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, watch, writeFileSync } from 'fs';
 import { Extension } from './Extension';
 
 export class Settings {
@@ -38,12 +38,22 @@ export class Settings {
    * @param callback 
    */
   public static onConfigChange(callback: (global?: any) => void) {
+    const projectConfig = Settings.projectConfigPath;
+
     workspace.onDidChangeConfiguration(() => {
       callback();
     });
 
+    // Background listener for when it is not a user interaction
+    if (projectConfig && existsSync(projectConfig)) {
+      watch(projectConfig, () => {
+        callback();
+      });
+    }
+
     workspace.onDidSaveTextDocument(async (e) => {
       const filename = e.uri.fsPath;
+
       if (Settings.checkProjectConfig(filename)) {
         const file = await workspace.openTextDocument(e.uri);
         if (file) {
