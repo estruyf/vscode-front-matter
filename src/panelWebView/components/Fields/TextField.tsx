@@ -26,7 +26,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({limit, labe
 
   let isValid = true;
   if (limit && limit !== -1) {
-    isValid = ((text || "").length < limit);
+    isValid = ((text || "").length <= limit);
   }
 
   return (
@@ -46,7 +46,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({limit, labe
       }} />
 
       {
-        limit && (text || "").length >= limit && (
+        limit && limit > 0 && (text || "").length > limit && (
           <div className={`metadata_field__limit`}>
             Field limit reached {(text || "").length}/{limit}
           </div>
