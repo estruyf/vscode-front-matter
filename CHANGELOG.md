@@ -1,5 +1,9 @@
 # Change Log
 
+## [4.0.1] - 2021-09-24
+
+- [#114](https://github.com/estruyf/vscode-front-matter/issues/114): Fix for categories/tags provided as string in YAML
+
 ## [4.0.0] - 2021-09-22 - [Release Notes](https://beta.frontmatter.codes/updates/v4_0_0)
 
 - [#101](https://github.com/estruyf/vscode-front-matter/issues/101): Date picker available on the metadata section
