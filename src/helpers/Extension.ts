@@ -1,7 +1,7 @@
 import { basename } from "path";
-import { extensions, Uri, ExtensionContext } from "vscode";
+import { extensions, Uri, ExtensionContext, window, workspace, commands } from "vscode";
 import { Folders, WORKSPACE_PLACEHOLDER } from "../commands/Folders";
-import { SETTINGS_CONTENT_FOLDERS, SETTINGS_CONTENT_PAGE_FOLDERS, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTING_TAXONOMY_CONTENT_TYPES } from "../constants";
+import { EXTENSION_NAME, GITHUB_LINK, SETTINGS_CONTENT_FOLDERS, SETTINGS_CONTENT_PAGE_FOLDERS, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTING_TAXONOMY_CONTENT_TYPES } from "../constants";
 import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
 import { EXTENSION_BETA_ID, EXTENSION_ID, EXTENSION_STATE_VERSION } from "../constants/Extension";
 import { ContentType } from "../models";
@@ -39,7 +39,32 @@ export class Extension {
     }
 
     if (usedVersion !== installedVersion) {
-      Notifications.info(`Find out what is new at [v${installedVersion} release notes](https://${this.isBetaVersion() ? 'beta.' : ''}frontmatter.codes/updates)`);
+      const whatIsNewTitle = `Check the changelog`;
+      const githubTitle = `Give it a ⭐️`;
+
+      const whatIsNew = {
+        title: whatIsNewTitle,
+        run: () => {
+          const uri = Uri.file(`${Extension.getInstance().extensionPath.fsPath}/CHANGELOG.md`);
+          workspace.openTextDocument(uri).then((() => {
+            commands.executeCommand("markdown.showPreview", uri)
+          }));
+        }
+      };
+
+      const starGitHub = {
+        title: githubTitle,
+        run: () => {
+          commands.executeCommand('vscode.open', Uri.parse(GITHUB_LINK));
+        }
+      };
+
+      window.showInformationMessage(`${EXTENSION_NAME} has been updated to v${installedVersion} — check out what's new!`, starGitHub, whatIsNew).then((selection => {
+        if (selection?.title === whatIsNewTitle || selection?.title === githubTitle) {
+          selection.run();
+        }
+      }));
+
       this.setVersion(installedVersion);
     }
 

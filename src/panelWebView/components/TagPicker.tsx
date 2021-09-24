@@ -123,7 +123,7 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
   
   React.useEffect(() => {
     if (prevSelected !== crntSelected) {
-      setSelected(crntSelected);
+      setSelected(typeof crntSelected === "string" ? [crntSelected] : crntSelected);
     }
   }, [crntSelected]);
   
@@ -186,7 +186,12 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
         }
       </Downshift>
 
-      <Tags values={selected.sort((a: string, b: string) => a.toLowerCase() < b.toLowerCase() ? -1 : 1 )} onRemove={onRemove} onCreate={onCreate} options={options} disableConfigurable={!!disableConfigurable} />
+      <Tags 
+        values={(selected || []).sort((a: string, b: string) => a.toLowerCase() < b.toLowerCase() ? -1 : 1 )} 
+        onRemove={onRemove} 
+        onCreate={onCreate} 
+        options={options} 
+        disableConfigurable={!!disableConfigurable} />
     </div>
   );
 };
