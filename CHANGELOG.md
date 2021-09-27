@@ -1,5 +1,10 @@
 # Change Log
 
+## [4.1.0] - 2021-XX-XX
+
+- [#113](https://github.com/estruyf/vscode-front-matter/issues/113): Integrating a local DB for media metadata (description, alt)
+- [#117](https://github.com/estruyf/vscode-front-matter/issues/117): Allow to specify a singleline of text in the metadata fields
+
 ## [4.0.1] - 2021-09-24
 
 - [#114](https://github.com/estruyf/vscode-front-matter/issues/114): Fix for categories/tags provided as string in YAML
