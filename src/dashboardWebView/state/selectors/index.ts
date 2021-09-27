@@ -5,6 +5,7 @@ export * from './GroupingSelector';
 export * from './LoadingSelector';
 export * from './MediaFoldersSelector';
 export * from './MediaTotalSelector';
+export * from './PageSelector';
 export * from './SearchSelector';
 export * from './SelectedMediaFolderSelector';
 export * from './SettingsSelector';

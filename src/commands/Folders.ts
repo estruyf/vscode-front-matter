@@ -5,7 +5,6 @@ import { ContentFolder, FileInfo, FolderInfo } from "../models";
 import uniqBy = require("lodash.uniqby");
 import { Template } from "./Template";
 import { Notifications } from "../helpers/Notifications";
-import { CONTEXT } from "../constants/context";
 import { Settings } from "../helpers";
 
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;

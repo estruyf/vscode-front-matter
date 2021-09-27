@@ -14,4 +14,5 @@ export enum DashboardMessage {
   uploadMedia = 'uploadMedia',
   deleteMedia = 'deleteMedia',
   insertPreviewImage = 'insertPreviewImage',
+  updateMediaMetadata = 'updateMediaMetadata',
 }

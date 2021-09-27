@@ -1,12 +1,14 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { CheckCircleIcon, ClipboardCopyIcon, CodeIcon, PhotographIcon, TrashIcon } from '@heroicons/react/outline';
+import { CheckCircleIcon, ClipboardCopyIcon, CodeIcon, PencilIcon, PhotographIcon, TrashIcon } from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
+import { useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { MediaInfo } from '../../../models/MediaPaths';
 import { DashboardMessage } from '../../DashboardMessage';
-import { LightboxAtom, SelectedMediaFolderSelector, SettingsSelector, ViewDataSelector } from '../../state';
+import { LightboxAtom, PageSelector, SelectedMediaFolderSelector, SettingsSelector, ViewDataSelector } from '../../state';
 import { Alert } from '../Modals/Alert';
+import { Metadata } from '../Modals/Metadata';
 
 export interface IItemProps {
   media: MediaInfo;
@@ -17,7 +19,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const [ , setLightbox ] = useRecoilState(LightboxAtom);
   const [ showAlert, setShowAlert ] = React.useState(false);
+  const [ showForm, setShowForm ] = React.useState(false);
   const viewData = useRecoilValue(ViewDataSelector);
+  const [ description, setDescription ] = React.useState(media.description);
+  const [ alt, setAlt ] = React.useState(media.alt);
+  const page = useRecoilValue(PageSelector);
 
   const parseWinPath = (path: string | undefined) => {
     return path?.split(`\\`).join(`/`);
@@ -59,18 +65,25 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
       image: parseWinPath(relPath) || "",
       file: viewData?.data?.filePath,
       fieldName: viewData?.data?.fieldName,
-      position: viewData?.data?.position || null
+      position: viewData?.data?.position || null,
+      alt: alt || "",
+      description: description || ""
     });
   };
 
   const insertSnippet = () => {
     const relPath = getRelPath();
+    let snippet = settings?.mediaSnippet.join("\n");
+    snippet = snippet?.replace("{mediaUrl}", parseWinPath(relPath) || "");
+    snippet = snippet?.replace("{alt}", alt || "");
+    snippet = snippet?.replace("{description}", description || "");
+
     Messenger.send(DashboardMessage.insertPreviewImage, {
       image: parseWinPath(relPath) || "",
       file: viewData?.data?.filePath,
       fieldName: viewData?.data?.fieldName,
       position: viewData?.data?.position || null,
-      snippet: settings?.mediaSnippet.join("\n").replace("{mediaUrl}", parseWinPath(relPath) || "")
+      snippet
     });
   };
 
@@ -100,6 +113,33 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     setLightbox(media.vsPath || "");
   };
 
+  const updateMetadata = () => {
+    setShowForm(true);
+  };
+
+  const submitMetadata = () => {
+    Messenger.send(DashboardMessage.updateMediaMetadata, {
+      file: media.fsPath,
+      description,
+      alt,
+      folder: selectedFolder,
+      page
+    });
+    setShowForm(false);
+  };
+
+  useEffect(() => {
+    if (media.alt !== description) {
+      setAlt(media.alt);
+    }
+  }, [media.alt]);
+  
+  useEffect(() => {
+    if (media.description !== description) {
+      setDescription(media.description);
+    }
+  }, [media.description]);
+
   return (
     <>
       <li className="group relative bg-gray-50 dark:bg-vulcan-200 hover:shadow-xl dark:hover:bg-vulcan-100">
@@ -112,7 +152,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
           </div>
         </button>
         <div className={`relative py-4 pl-4 pr-10`}>
-          <div className={`absolute top-4 right-4 flex flex-col space-y-2`}>
+          <div className={`absolute top-4 right-4 flex flex-col space-y-4`}>
             {
               viewData?.data?.filePath ? (
                 <>
@@ -137,6 +177,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
                 </>
               ) : (
                 <>
+                  <button title={`Edit metadata`} 
+                          className={`hover:text-teal-900 focus:outline-none`} 
+                          onClick={updateMetadata}>
+                    <PencilIcon className={`h-5 w-5`} />
+                    <span className={`sr-only`}>Edit metadata</span>
+                  </button>
                   <button title={`Copy media path`} 
                           className={`hover:text-teal-900 focus:outline-none`} 
                           onClick={copyToClipboard}>
@@ -156,18 +202,76 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
           <p className="text-sm dark:text-whisper-900 font-bold pointer-events-none flex items-center">
             {basename(parseWinPath(media.fsPath) || "")}
           </p>
-          <p className="mt-2 text-sm dark:text-whisper-900 font-medium pointer-events-none flex items-center">
-            <b className={`mr-2`}>Folder:</b> {getFolder()}
+          {
+            media.description && (
+              <p className="mt-2 text-xs dark:text-whisper-900 font-medium pointer-events-none flex flex-col items-start">
+                <b className={`mr-2`}>Description:</b>
+                <span className={`block mt-1 dark:text-whisper-500 text-xs`}>{media.description}</span>
+              </p>
+            )
+          }
+          {
+            media.alt && (
+              <p className="mt-2 text-xs dark:text-whisper-900 font-medium pointer-events-none  flex flex-col items-start">
+                <b className={`mr-2`}>Alt:</b>
+                <span className={`block mt-1 dark:text-whisper-500 text-xs`}>{media.alt}</span>
+              </p>
+            )
+          }
+          <p className="mt-2 text-xs dark:text-whisper-900 font-medium pointer-events-none flex flex-col items-start">
+            <b className={`mr-2`}>Folder:</b> 
+            <span className={`block mt-1 dark:text-whisper-500 text-xs`}>{getFolder()}</span>
           </p>
           {
             media?.stats?.size && (
-              <p className="mt-2 text-sm dark:text-whisper-900 font-medium pointer-events-none flex items-center">
-                <b className={`mr-1`}>Size:</b> {calculateSize()}
+              <p className="mt-2 text-xs dark:text-whisper-900 font-medium pointer-events-none flex flex-col items-start">
+                <b className={`mr-1`}>Size:</b>
+                <span className={`block mt-1 dark:text-whisper-500 text-xs`}>{calculateSize()}</span>
               </p>
             )
           }
         </div>
       </li>
+
+      {
+        showForm && (
+          <Metadata 
+            title={`Set metadata for: ${basename(parseWinPath(media.fsPath) || "")}`}
+            description={`Please specify the metadata you want to set for the file.`}
+            okBtnText={`Save`}
+            cancelBtnText={`Cancel`}
+            dismiss={() => setShowForm(false)}
+            trigger={submitMetadata}>
+            <div className="flex flex-col space-y-2">
+              <div>
+                <label htmlFor="about" className="block text-sm font-medium text-gray-700 dark:text-whisper-900">
+                  Description
+                </label>
+                <div className="mt-1">
+                  <textarea
+                    rows={3}
+                    className="py-1 px-2 sm:text-sm bg-white dark:bg-vulcan-300 border border-gray-300 dark:border-vulcan-100 text-vulcan-500 dark:text-whisper-500 placeholder-gray-400 dark:placeholder-whisper-800 focus:outline-none w-full"
+                    value={description || ''}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div>
+                <label htmlFor="about" className="block text-sm font-medium text-gray-700 dark:text-whisper-900">
+                  Alt tag value
+                </label>
+                <div className="mt-1">
+                  <input
+                    className="py-1 px-2 sm:text-sm bg-white dark:bg-vulcan-300 border border-gray-300 dark:border-vulcan-100 text-vulcan-500 dark:text-whisper-500 placeholder-gray-400 dark:placeholder-whisper-800 focus:outline-none w-full"
+                    value={alt || ''}
+                    onChange={(e) => setAlt(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+          </Metadata>
+        )
+      }
 
       {
         showAlert && (

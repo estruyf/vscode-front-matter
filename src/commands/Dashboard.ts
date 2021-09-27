@@ -23,6 +23,7 @@ import { decodeBase64Image } from '../helpers/decodeBase64Image';
 import { DefaultFields } from '../constants';
 import { DashboardData } from '../models/DashboardData';
 import { ExplorerView } from '../explorerView/ExplorerView';
+import { MediaLibrary } from '../helpers/MediaLibrary';
 
 
 export class Dashboard {
@@ -31,6 +32,7 @@ export class Dashboard {
   private static media: MediaInfo[] = [];
   private static timers: { [folder: string]: any } = {};
   private static _viewData: DashboardData | undefined;
+  private static mediaLib: MediaLibrary;
 
   public static get viewData(): DashboardData | undefined {
     return Dashboard._viewData;
@@ -40,6 +42,8 @@ export class Dashboard {
    * Init the dashboard
    */
   public static async init() {
+    this.mediaLib = MediaLibrary.getInstance();
+
     const openOnStartup = SettingsHelper.get(SETTINGS_DASHBOARD_OPENONSTART);
     if (openOnStartup) {
       Dashboard.open();
@@ -160,7 +164,7 @@ export class Dashboard {
           env.clipboard.writeText(msg.data);
           break;
         case DashboardMessage.refreshMedia:
-          Dashboard.media = [];
+          Dashboard.resetMedia();
           Dashboard.getMedia(0, msg?.data?.folder);
           break;
         case DashboardMessage.uploadMedia:
@@ -172,8 +176,15 @@ export class Dashboard {
         case DashboardMessage.insertPreviewImage:
           Dashboard.insertImage(msg?.data);
           break;
+        case DashboardMessage.updateMediaMetadata:
+          Dashboard.updateMediaMetadata(msg?.data);
+          break;
       }
     });
+  }
+
+  public static resetMedia() {
+    Dashboard.media = [];
   }
   
   /**
@@ -197,7 +208,7 @@ export class Dashboard {
         const line = data.position.line;
         const character = data.position.character;
         if (line) {
-          await editor?.edit(builder => builder.insert(new Position(line, character), data.snippet || `![](${data.image})`));
+          await editor?.edit(builder => builder.insert(new Position(line, character), data.snippet || `![${data.alt || data.description || ""}](${data.image})`));
         }
         panel.getMediaSelection();
       } else {
@@ -295,14 +306,18 @@ export class Dashboard {
     files = files.slice(page * 16, ((page + 1) * 16));
     files = files.map((file) => {
       try {
+        const metadata = Dashboard.mediaLib.get(file.fsPath);
+
         return {
           ...file,
-          stats: statSync(file.fsPath)
+          stats: statSync(file.fsPath),
+          ...metadata
         };
       } catch (e) {
         return {...file, stats: undefined};
       }
-    }).filter(f => f.stats !== undefined);
+    });
+    files = files.filter(f => f.stats !== undefined);
 
     const folders = [...new Set(Dashboard.media.map((file) => {
       let relFolderPath = wsFolder ? file.fsPath.substring(wsFolder.fsPath.length + 1) : file.fsPath;
@@ -473,6 +488,14 @@ export class Dashboard {
     } catch(err) {
       Notifications.error(`Something went wrong deleting ${basename(file)}`);
     }
+  }
+
+  /**
+   * Update the metadata of the selected file
+   */
+  private static async updateMediaMetadata({ file, page, folder, description = null, alt = null }: { file:string; page: number; folder: string | null; description: string | null; alt: string | null; }) {
+    Dashboard.mediaLib.set(file, description, alt);
+    Dashboard.getMedia(page || 0, folder || "");
   }
 
   /**
