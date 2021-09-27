@@ -437,6 +437,7 @@ input:checked + .field__toggle__slider:before {
   margin-right: .5rem;
 }
 
+.metadata_field__input, .metadata_field__input:focus,
 .metadata_field__textarea, .metadata_field__textarea:focus {
   outline: none;
 }

@@ -167,6 +167,12 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Inserting an image in Markdown
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.insertImage, Article.insertImage));
 
+	vscode.workspace.onDidRenameFiles(async (e) => {
+		if (e.files.length > 0) {
+			console.log('Renamed files: ', e.files);
+		}
+	});
+
 	// Subscribe all commands
 	subscriptions.push(
 		insertTags,

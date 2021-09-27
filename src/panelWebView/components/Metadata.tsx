@@ -99,6 +99,7 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
           <TextField 
             key={field.name}
             label={field.title || field.name}
+            singleLine={field.single}
             limit={limit}
             rows={3}
             onChange={(value) => sendUpdate(field.name, value)}

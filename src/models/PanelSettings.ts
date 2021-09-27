@@ -28,6 +28,7 @@ export interface Field {
   name: string;
   type: "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories";
   choices?: string[];
+  single?: boolean;
 }
 
 export interface DateInfo {

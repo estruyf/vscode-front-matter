@@ -270,6 +270,10 @@
                       "items": {
                         "type": "string"
                       }
+                    },
+                    "single": {
+                      "type": "string",
+                      "description": "Is a single line field"
                     }
                   },
                   "additionalProperties": false,
