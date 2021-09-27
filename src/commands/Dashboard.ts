@@ -42,8 +42,6 @@ export class Dashboard {
    * Init the dashboard
    */
   public static async init() {
-    this.mediaLib = MediaLibrary.getInstance();
-
     const openOnStartup = SettingsHelper.get(SETTINGS_DASHBOARD_OPENONSTART);
     if (openOnStartup) {
       Dashboard.open();
@@ -54,6 +52,8 @@ export class Dashboard {
    * Open or reveal the dashboard
    */
   public static async open(data?: DashboardData) {
+    this.mediaLib = MediaLibrary.getInstance();
+    
     Dashboard._viewData = data;
 
     if (Dashboard.isOpen) {
