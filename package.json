@@ -272,7 +272,7 @@
                       }
                     },
                     "single": {
-                      "type": "string",
+                      "type": "boolean",
                       "description": "Is a single line field"
                     }
                   },
