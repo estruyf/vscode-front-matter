@@ -94,18 +94,25 @@ If you have the courage to test out the beta features, we made available a beta 
 
 ## 👉 Contributors 🤘
 
-<a href="https://github.com/estruyf/vscode-front-matter/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=estruyf/vscode-front-matter" />
-</a>
+<p align="center">
+  <a href="https://github.com/estruyf/vscode-front-matter/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=estruyf/vscode-front-matter" />
+  </a>
+</p>
+
+## 🖤 Sponsors 👇 🤘
+
+<p align="center">
+  <a href="https://github.com/timschps" title="Tim Schaeps">
+    <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/13098307" />
+   </a>
+</p>
 
 <br />
-<br />
-
-## 🖤 Sponsors
 
 <p align="center">
   <a href="https://vercel.com/?utm_source=vscode-frontmatter&utm_campaign=oss">
-      <img src="assets/sponsors/powered-by-vercel.png" />
+    <img src="assets/sponsors/powered-by-vercel.png" />
    </a>
 </p>
 
