@@ -453,11 +453,11 @@ input:checked + .field__toggle__slider:before {
 }
 
 .metadata_field__choice__toggle {
+  color: var(--vscode-input-placeholderForeground);
   border: 1px solid var(--vscode-inputValidation-infoBorder) !important;
   outline: none !important;
   width: 100%;
   padding: var(--input-padding-vertical) var(--input-padding-horizontal);
-  color: var(--vscode-input-foreground);
   background-color: var(--vscode-input-background);
 
   display: flex;
