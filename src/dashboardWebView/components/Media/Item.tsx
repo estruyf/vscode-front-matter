@@ -21,7 +21,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   const [ showAlert, setShowAlert ] = React.useState(false);
   const [ showForm, setShowForm ] = React.useState(false);
   const viewData = useRecoilValue(ViewDataSelector);
-  const [ description, setDescription ] = React.useState(media.description);
+  const [ caption, setCaption ] = React.useState(media.caption);
   const [ alt, setAlt ] = React.useState(media.alt);
   const page = useRecoilValue(PageSelector);
 
@@ -67,7 +67,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
       fieldName: viewData?.data?.fieldName,
       position: viewData?.data?.position || null,
       alt: alt || "",
-      description: description || ""
+      caption: caption || ""
     });
   };
 
@@ -76,7 +76,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     let snippet = settings?.mediaSnippet.join("\n");
     snippet = snippet?.replace("{mediaUrl}", parseWinPath(relPath) || "");
     snippet = snippet?.replace("{alt}", alt || "");
-    snippet = snippet?.replace("{description}", description || "");
+    snippet = snippet?.replace("{caption}", caption || "");
 
     Messenger.send(DashboardMessage.insertPreviewImage, {
       image: parseWinPath(relPath) || "",
@@ -120,7 +120,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   const submitMetadata = () => {
     Messenger.send(DashboardMessage.updateMediaMetadata, {
       file: media.fsPath,
-      description,
+      caption,
       alt,
       folder: selectedFolder,
       page
@@ -129,16 +129,16 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   };
 
   useEffect(() => {
-    if (media.alt !== description) {
+    if (media.alt !== alt) {
       setAlt(media.alt);
     }
   }, [media.alt]);
   
   useEffect(() => {
-    if (media.description !== description) {
-      setDescription(media.description);
+    if (media.caption !== caption) {
+      setCaption(media.caption);
     }
-  }, [media.description]);
+  }, [media.caption]);
 
   return (
     <>
@@ -203,10 +203,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
             {basename(parseWinPath(media.fsPath) || "")}
           </p>
           {
-            media.description && (
+            media.caption && (
               <p className="mt-2 text-xs dark:text-whisper-900 font-medium pointer-events-none flex flex-col items-start">
-                <b className={`mr-2`}>Description:</b>
-                <span className={`block mt-1 dark:text-whisper-500 text-xs`}>{media.description}</span>
+                <b className={`mr-2`}>Caption:</b>
+                <span className={`block mt-1 dark:text-whisper-500 text-xs`}>{media.caption}</span>
               </p>
             )
           }
@@ -245,14 +245,14 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
             <div className="flex flex-col space-y-2">
               <div>
                 <label htmlFor="about" className="block text-sm font-medium text-gray-700 dark:text-whisper-900">
-                  Description
+                  Caption
                 </label>
                 <div className="mt-1">
                   <textarea
                     rows={3}
                     className="py-1 px-2 sm:text-sm bg-white dark:bg-vulcan-300 border border-gray-300 dark:border-vulcan-100 text-vulcan-500 dark:text-whisper-500 placeholder-gray-400 dark:placeholder-whisper-800 focus:outline-none w-full"
-                    value={description || ''}
-                    onChange={(e) => setDescription(e.target.value)}
+                    value={caption || ''}
+                    onChange={(e) => setCaption(e.target.value)}
                   />
                 </div>
               </div>

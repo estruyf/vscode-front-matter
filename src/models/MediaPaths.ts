@@ -10,6 +10,6 @@ export interface MediaInfo {
   fsPath: string; 
   vsPath: string | undefined;
   stats: Stats | undefined;
-  description?: string | undefined;
+  caption?: string | undefined;
   alt?: string | undefined;
 }

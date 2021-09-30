@@ -51,9 +51,9 @@ export class MediaLibrary {
     }
   }
 
-  public set(id: string, description: string | null = null, alt: string | null = null): void {
+  public set(id: string, metadata: any): void {
     const fileId = this.parsePath(id);
-    this.db.push(fileId, { description, alt }, true);
+    this.db.push(fileId, metadata, true);
   }
 
   public rename(oldId: string, newId: string): void {

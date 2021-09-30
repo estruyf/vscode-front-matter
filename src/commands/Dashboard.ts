@@ -208,7 +208,7 @@ export class Dashboard {
         const line = data.position.line;
         const character = data.position.character;
         if (line) {
-          await editor?.edit(builder => builder.insert(new Position(line, character), data.snippet || `![${data.alt || data.description || ""}](${data.image})`));
+          await editor?.edit(builder => builder.insert(new Position(line, character), data.snippet || `![${data.alt || data.caption || ""}](${data.image})`));
         }
         panel.getMediaSelection();
       } else {
@@ -307,6 +307,8 @@ export class Dashboard {
     files = files.map((file) => {
       try {
         const metadata = Dashboard.mediaLib.get(file.fsPath);
+
+        console.log(metadata);
 
         return {
           ...file,
@@ -493,8 +495,8 @@ export class Dashboard {
   /**
    * Update the metadata of the selected file
    */
-  private static async updateMediaMetadata({ file, page, folder, description = null, alt = null }: { file:string; page: number; folder: string | null; description: string | null; alt: string | null; }) {
-    Dashboard.mediaLib.set(file, description, alt);
+  private static async updateMediaMetadata({ file, page, folder, ...metadata }: { file:string; page: number; folder: string | null; metadata: any; }) {
+    Dashboard.mediaLib.set(file, metadata);
     Dashboard.getMedia(page || 0, folder || "");
   }
 

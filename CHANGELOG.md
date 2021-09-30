@@ -4,7 +4,7 @@
 
 ### ✨ New features
 
-- [#113](https://github.com/estruyf/vscode-front-matter/issues/113): Integrating a local DB for media metadata (description, alt)
+- [#113](https://github.com/estruyf/vscode-front-matter/issues/113): Integrating a local DB for media metadata (caption, alt)
 
 ### 🎨 Enhancements
 
