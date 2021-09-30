@@ -12,6 +12,7 @@
 - [#119](https://github.com/estruyf/vscode-front-matter/issues/119): Multi-select support for choice fields
 - [#121](https://github.com/estruyf/vscode-front-matter/issues/121): Choice fields support ID/title objects as well as a regular string
 - [#122](https://github.com/estruyf/vscode-front-matter/issues/122): Update the filenames of your media
+- [#124](https://github.com/estruyf/vscode-front-matter/issues/124): Add new `isPreviewImage` property to the content type field to specify custom preview images
 
 ### 🐞 Fixes
 
