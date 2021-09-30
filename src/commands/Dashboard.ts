@@ -1,7 +1,7 @@
 import { SETTINGS_CONTENT_STATIC_FOLDERS, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET } from './../constants/settings';
 import { ArticleHelper } from './../helpers/ArticleHelper';
-import { basename, dirname, extname, join } from "path";
-import { existsSync, statSync, unlinkSync, writeFileSync } from "fs";
+import { basename, dirname, extname, join, parse } from "path";
+import { existsSync, renameSync, statSync, unlinkSync, writeFileSync } from "fs";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env, Position } from "vscode";
 import { Settings as SettingsHelper } from '../helpers';
 import { TaxonomyType } from '../models';
@@ -24,7 +24,7 @@ import { DefaultFields } from '../constants';
 import { DashboardData } from '../models/DashboardData';
 import { ExplorerView } from '../explorerView/ExplorerView';
 import { MediaLibrary } from '../helpers/MediaLibrary';
-
+import imageSize from 'image-size';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -307,10 +307,11 @@ export class Dashboard {
     files = files.map((file) => {
       try {
         const metadata = Dashboard.mediaLib.get(file.fsPath);
-        
+
         return {
           ...file,
           stats: statSync(file.fsPath),
+          dimensions: imageSize(file.fsPath),
           ...metadata
         };
       } catch (e) {
@@ -493,8 +494,25 @@ export class Dashboard {
   /**
    * Update the metadata of the selected file
    */
-  private static async updateMediaMetadata({ file, page, folder, ...metadata }: { file:string; page: number; folder: string | null; metadata: any; }) {
+  private static async updateMediaMetadata({ file, filename, page, folder, ...metadata }: { file:string; filename:string; page: number; folder: string | null; metadata: any; }) {
+    const name = basename(file);
+
     Dashboard.mediaLib.set(file, metadata);
+
+    // Check if filename needs to be updated
+    if (name !== filename && filename) {
+      try {
+        const oldFileInfo = parse(file);
+        const newFileInfo = parse(filename);
+        const newPath = join(dirname(file), `${newFileInfo.name}${oldFileInfo.ext}`);
+        renameSync(file, newPath);
+        Dashboard.mediaLib.rename(file, newPath);
+        Dashboard.resetMedia();
+      } catch(err) {
+        Notifications.error(`Something went wrong updating ${name}`);
+      }
+    }
+
     Dashboard.getMedia(page || 0, folder || "");
   }
 

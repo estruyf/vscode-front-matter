@@ -11,6 +11,7 @@
 - [#117](https://github.com/estruyf/vscode-front-matter/issues/117): Allow to specify a singleline of text in the metadata fields
 - [#119](https://github.com/estruyf/vscode-front-matter/issues/119): Multi-select support for choice fields
 - [#121](https://github.com/estruyf/vscode-front-matter/issues/121): Choice fields support ID/title objects as well as a regular string
+- [#122](https://github.com/estruyf/vscode-front-matter/issues/122): Update the filenames of your media
 
 ### 🐞 Fixes
 
