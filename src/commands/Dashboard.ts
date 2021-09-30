@@ -307,9 +307,7 @@ export class Dashboard {
     files = files.map((file) => {
       try {
         const metadata = Dashboard.mediaLib.get(file.fsPath);
-
-        console.log(metadata);
-
+        
         return {
           ...file,
           stats: statSync(file.fsPath),
