@@ -1,4 +1,4 @@
-import { SETTINGS_CONTENT_STATIC_FOLDERS, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET } from './../constants/settings';
+import { SETTINGS_CONTENT_STATIC_FOLDERS, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTING_TAXONOMY_CONTENT_TYPES } from './../constants/settings';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { basename, dirname, extname, join, parse } from "path";
 import { existsSync, renameSync, statSync, unlinkSync, writeFileSync } from "fs";
@@ -239,6 +239,7 @@ export class Dashboard {
         versionInfo: ext.getVersion(),
         pageViewType: await ext.getState<ViewType | undefined>(EXTENSION_STATE_PAGES_VIEW),
         mediaSnippet: SettingsHelper.get<string[]>(SETTINGS_DASHBOARD_MEDIA_SNIPPET) || [],
+        contentTypes: SettingsHelper.get(SETTING_TAXONOMY_CONTENT_TYPES) || [],
       } as Settings
     });
   }

@@ -31,6 +31,7 @@ export interface Field {
   choices?: string[] | Choice[];
   single?: boolean;
   multiSelect?: boolean;
+  isPreviewImage?: boolean;
 }
 
 export interface DateInfo {

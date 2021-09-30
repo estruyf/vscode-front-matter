@@ -294,6 +294,10 @@
                     "multiSelect": {
                       "type": "boolean",
                       "description": "Do you allow to select multiple values?"
+                    },
+                    "isPreviewImage": {
+                      "type": "boolean",
+                      "description": "Specify if the image field can be used as preview. Be aware, you can only have one preview image per content type."
                     }
                   },
                   "additionalProperties": false,

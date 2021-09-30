@@ -1,6 +1,7 @@
 import { VersionInfo } from '../../models/VersionInfo';
 import { ViewType } from '../state';
 import { ContentFolder } from '../../models/ContentFolder';
+import { ContentType } from '../../models';
 
 export interface Settings { 
   beta: boolean;
@@ -14,4 +15,5 @@ export interface Settings {
   versionInfo: VersionInfo;
   pageViewType: ViewType | undefined;
   mediaSnippet: string[];
+  contentTypes: ContentType[];
 }
