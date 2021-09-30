@@ -15,15 +15,15 @@ export interface IItemProps {
 }
 
 export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWithChildren<IItemProps>) => {
-  const settings = useRecoilValue(SettingsSelector);
-  const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const [ , setLightbox ] = useRecoilState(LightboxAtom);
   const [ showAlert, setShowAlert ] = React.useState(false);
   const [ showForm, setShowForm ] = React.useState(false);
-  const viewData = useRecoilValue(ViewDataSelector);
   const [ caption, setCaption ] = React.useState(media.caption);
   const [ alt, setAlt ] = React.useState(media.alt);
   const [ filename, setFilename ] = React.useState<string | null>(null);
+  const settings = useRecoilValue(SettingsSelector);
+  const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
+  const viewData = useRecoilValue(ViewDataSelector);
   const page = useRecoilValue(PageSelector);
 
   const parseWinPath = (path: string | undefined) => {
@@ -53,6 +53,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
       }
     }
     return relPath;
+  };
+
+  const getFileName = () => {
+    return basename(parseWinPath(media.fsPath) || "");
   };
 
   const copyToClipboard = () => {
@@ -137,7 +141,13 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
       folder: selectedFolder,
       page
     });
+    
     setShowForm(false);
+
+    // Reset the values
+    setAlt(media.alt);
+    setCaption(media.caption);
+    setFilename(getFileName());
   };
 
   useEffect(() => {
@@ -155,7 +165,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   useEffect(() => {
     const name = basename(parseWinPath(media.fsPath) || "");
     if (name !== filename) {
-      setFilename(name);
+      setFilename(getFileName());
     }
   }, [media.fsPath]);
 

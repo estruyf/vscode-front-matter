@@ -495,23 +495,10 @@ export class Dashboard {
    * Update the metadata of the selected file
    */
   private static async updateMediaMetadata({ file, filename, page, folder, ...metadata }: { file:string; filename:string; page: number; folder: string | null; metadata: any; }) {
-    const name = basename(file);
-
     Dashboard.mediaLib.set(file, metadata);
 
     // Check if filename needs to be updated
-    if (name !== filename && filename) {
-      try {
-        const oldFileInfo = parse(file);
-        const newFileInfo = parse(filename);
-        const newPath = join(dirname(file), `${newFileInfo.name}${oldFileInfo.ext}`);
-        renameSync(file, newPath);
-        Dashboard.mediaLib.rename(file, newPath);
-        Dashboard.resetMedia();
-      } catch(err) {
-        Notifications.error(`Something went wrong updating ${name}`);
-      }
-    }
+    Dashboard.mediaLib.updateFilename(file, filename);
 
     Dashboard.getMedia(page || 0, folder || "");
   }

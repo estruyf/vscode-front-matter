@@ -1,8 +1,10 @@
 import { Dashboard } from '../commands/Dashboard';
 import { workspace } from 'vscode';
 import { JsonDB } from 'node-json-db/dist/JsonDB';
-import { join } from 'path';
+import { basename, dirname, join, parse } from 'path';
 import { Folders, WORKSPACE_PLACEHOLDER } from '../commands/Folders';
+import { existsSync, renameSync } from 'fs';
+import { Notifications } from './Notifications';
 
 interface MediaRecord {
   description: string;
@@ -63,6 +65,28 @@ export class MediaLibrary {
     if (data) {
       this.db.delete(fileId);
       this.db.push(newFileId, data, true);
+    }
+  }
+
+  public updateFilename(filePath: string, filename: string) {
+    const name = basename(filePath);
+    
+    if (name !== filename && filename) {
+      try {
+        const oldFileInfo = parse(filePath);
+        const newFileInfo = parse(filename);
+        const newPath = join(dirname(filePath), `${newFileInfo.name}${oldFileInfo.ext}`);
+
+        if (existsSync(newPath)) {
+          Notifications.warning(`The name "${filename}" already exists at the file location.`);
+        } else {
+          renameSync(filePath, newPath);
+          this.rename(filePath, newPath);
+          Dashboard.resetMedia();
+        }
+      } catch(err) {
+        Notifications.error(`Something went wrong updating "${name}" to "${filename}".`);
+      }
     }
   }
 
