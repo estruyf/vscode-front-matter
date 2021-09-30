@@ -139,6 +139,7 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
             label={field.title || field.name}
             selected={choiceValue as string}
             choices={choices}
+            multiSelect={field.multiSelect}
             onChange={(value => sendUpdate(field.name, value))} />
         );
       } else if (field.type === 'tags') {

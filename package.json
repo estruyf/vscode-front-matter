@@ -268,12 +268,29 @@
                       "type": "array",
                       "description": "Define your choices",
                       "items": {
-                        "type": "string"
+                        "type": [
+                          "object",
+                          "string"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": ["null", "string"],
+                            "description": "The choice ID"
+                          },
+                          "title": {
+                            "type": "string",
+                            "description": "The choice title"
+                          }
+                        }
                       }
                     },
                     "single": {
                       "type": "boolean",
                       "description": "Is a single line field"
+                    },
+                    "multiSelect": {
+                      "type": "boolean",
+                      "description": "Do you allow to select multiple values?"
                     }
                   },
                   "additionalProperties": false,

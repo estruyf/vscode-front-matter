@@ -9,6 +9,12 @@
 ### 🎨 Enhancements
 
 - [#117](https://github.com/estruyf/vscode-front-matter/issues/117): Allow to specify a singleline of text in the metadata fields
+- [#119](https://github.com/estruyf/vscode-front-matter/issues/119): Multi-select support for choice fields
+- [#121](https://github.com/estruyf/vscode-front-matter/issues/121): Choice fields support ID/title objects as well as a regular string
+
+### 🐞 Fixes
+
+- [#120](https://github.com/estruyf/vscode-front-matter/issues/120): Choice and number field not updating when set manually in front matter of the file
 
 ## [4.0.1] - 2021-09-24
 
