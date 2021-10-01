@@ -4,9 +4,8 @@ import { RecoilRoot } from "recoil";
 import { Dashboard } from "./components/Dashboard";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
-
-import './styles.css';
 import { SENTRY_LINK } from "../constants";
+import './styles.css';
 
 Sentry.init({
   dsn: SENTRY_LINK,
