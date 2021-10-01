@@ -1,6 +1,14 @@
 import * as React from "react";
 import { render } from "react-dom";
 import { ViewPanel } from "./ViewPanel";
+import * as Sentry from "@sentry/react";
+import { Integrations } from "@sentry/tracing";
+
+Sentry.init({
+  dsn: SENTRY_LINK,
+  integrations: [new Integrations.BrowserTracing()],
+  tracesSampleRate: 0, // No performance tracing required
+});
 
 // require('@vscode/codicons/dist/codicon.css');
 import '@bendera/vscode-webview-elements/dist/vscode-table';
@@ -12,6 +20,7 @@ import '@bendera/vscode-webview-elements/dist/vscode-table-cell';
 import '@bendera/vscode-webview-elements/dist/vscode-collapsible';
 import '@bendera/vscode-webview-elements/dist/vscode-checkbox';
 import '@bendera/vscode-webview-elements/dist/vscode-label';
+import { SENTRY_LINK } from "../constants";
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
