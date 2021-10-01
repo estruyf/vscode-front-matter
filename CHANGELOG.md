@@ -1,6 +1,6 @@
 # Change Log
 
-## [4.1.0] - 2021-XX-XX
+## [4.1.0] - 2021-XX-XX - [Release Notes](https://beta.frontmatter.codes/updates/v4.1.0)
 
 ### ✨ New features
 
@@ -8,6 +8,7 @@
 
 ### 🎨 Enhancements
 
+- [#110](https://github.com/estruyf/vscode-front-matter/issues/110): Add support for workspaces with multiple folders
 - [#117](https://github.com/estruyf/vscode-front-matter/issues/117): Allow to specify a singleline of text in the metadata fields
 - [#119](https://github.com/estruyf/vscode-front-matter/issues/119): Multi-select support for choice fields
 - [#121](https://github.com/estruyf/vscode-front-matter/issues/121): Choice fields support ID/title objects as well as a regular string

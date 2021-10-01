@@ -1,5 +1,4 @@
 import { workspace, Uri } from "vscode";
-import { CONFIG_KEY, SETTING_TEMPLATES_FOLDER } from "../constants";
 import { join } from "path";
 import * as fs from "fs";
 import { Notifications } from "../helpers/Notifications";

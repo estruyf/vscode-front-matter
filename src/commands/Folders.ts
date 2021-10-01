@@ -6,6 +6,7 @@ import uniqBy = require("lodash.uniqby");
 import { Template } from "./Template";
 import { Notifications } from "../helpers/Notifications";
 import { Settings } from "../helpers";
+import { existsSync } from 'fs';
 
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
@@ -114,8 +115,31 @@ export class Folders {
    */
   public static getWorkspaceFolder(): Uri | undefined {
     const folders = workspace.workspaceFolders;
-    if (folders && folders.length > 0) {
+    
+    if (folders && folders.length === 1) {
       return folders[0].uri;
+    } else if (folders && folders.length > 1) {
+      let projectFolder = undefined; 
+      
+      for (const folder of folders) {
+        if (!projectFolder && existsSync(join(folder.uri.fsPath, Settings.globalFile))) {
+          projectFolder = folder.uri;
+        }
+      }
+
+      if (!projectFolder) {
+        window.showWorkspaceFolderPick({
+          placeHolder: `Please select the main workspace folder for Front Matter to use.`
+        }).then(selectedFolder => {
+          if (selectedFolder) {
+            Settings.createGlobalFile(selectedFolder.uri);
+            // Full reload to make sure the whole extension is reloaded correctly
+            commands.executeCommand(`workbench.action.reloadWindow`);
+          }
+        });
+      }
+
+      return projectFolder;
     }
     return undefined;
   }
@@ -126,7 +150,6 @@ export class Folders {
   public static getProjectFolderName(): string {
     const wsFolder = Folders.getWorkspaceFolder();
     if (wsFolder) {
-      // const projectFolder = wsFolder?.fsPath.split('\\').join('/').split('/').pop();
       return basename(wsFolder.fsPath);
     }
     return "";

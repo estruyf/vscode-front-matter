@@ -1,5 +1,5 @@
 import { Notifications } from './Notifications';
-import { workspace } from 'vscode';
+import { Uri, workspace } from 'vscode';
 import * as vscode from 'vscode';
 import { TaxonomyType } from '../models';
 import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY } from '../constants';
@@ -9,8 +9,8 @@ import { existsSync, readFileSync, watch, writeFileSync } from 'fs';
 import { Extension } from './Extension';
 
 export class Settings {
+  public static globalFile = "frontmatter.json";
   private static config: vscode.WorkspaceConfiguration;
-  private static globalFile = "frontmatter.json";
   private static globalConfig: any;
   
   public static init() {
@@ -131,7 +131,10 @@ export class Settings {
    */
   public static createTeamSettings() {
     const wsFolder = Folders.getWorkspaceFolder();
+    this.createGlobalFile(wsFolder);
+  }
 
+  public static createGlobalFile(wsFolder: Uri | undefined | null) {
     const initialConfig = {
       "$schema": `https://${Extension.getInstance().isBetaVersion() ? `beta.` : ``}frontmatter.codes/frontmatter.schema.json`
     };
