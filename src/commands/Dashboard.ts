@@ -379,10 +379,14 @@ export class Dashboard {
                   draft: article?.data.draft,
                   description: article?.data[descriptionField] || "",
                 };
+
+                const contentType = ArticleHelper.getContentType(article.data);
+                const previewField = contentType.fields.find(field => field.isPreviewImage && field.type === "image")?.name || "preview";
       
-                if (article?.data.preview && wsFolder) {
-                  const staticPath = join(wsFolder.fsPath, staticFolder || "", article?.data.preview);
-                  const contentFolderPath = join(dirname(file.filePath), article?.data.preview);
+                if (article?.data[previewField] && wsFolder) {
+
+                  const staticPath = join(wsFolder.fsPath, staticFolder || "", article?.data[previewField]);
+                  const contentFolderPath = join(dirname(file.filePath), article?.data[previewField]);
 
                   let previewUri = null;
                   if (existsSync(staticPath)) {
@@ -393,9 +397,9 @@ export class Dashboard {
 
                   if (previewUri) {
                     const preview = Dashboard.webview?.webview.asWebviewUri(previewUri);
-                    page.preview = preview?.toString() || "";
+                    page[previewField] = preview?.toString() || "";
                   } else {
-                    page.preview = "";
+                    page[previewField] = "";
                   }
                 }
       
