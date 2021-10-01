@@ -1,7 +1,7 @@
 import { SETTINGS_CONTENT_STATIC_FOLDERS, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTING_TAXONOMY_CONTENT_TYPES } from './../constants/settings';
 import { ArticleHelper } from './../helpers/ArticleHelper';
-import { basename, dirname, extname, join, parse } from "path";
-import { existsSync, renameSync, statSync, unlinkSync, writeFileSync } from "fs";
+import { basename, dirname, extname, join } from "path";
+import { existsSync, statSync, unlinkSync, writeFileSync } from "fs";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env, Position } from "vscode";
 import { Settings as SettingsHelper } from '../helpers';
 import { TaxonomyType } from '../models';
