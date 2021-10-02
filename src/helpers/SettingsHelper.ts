@@ -1,8 +1,8 @@
 import { Notifications } from './Notifications';
-import { Uri, workspace } from 'vscode';
+import { commands, Uri, workspace } from 'vscode';
 import * as vscode from 'vscode';
 import { TaxonomyType } from '../models';
-import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY } from '../constants';
+import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT } from '../constants';
 import { Folders } from '../commands/Folders';
 import { join, basename } from 'path';
 import { existsSync, readFileSync, watch, writeFileSync } from 'fs';
@@ -18,6 +18,7 @@ export class Settings {
     if (fmConfig && existsSync(fmConfig)) {
       const localConfig = readFileSync(fmConfig, 'utf8');
       Settings.globalConfig = JSON.parse(localConfig);
+      commands.executeCommand('setContext', CONTEXT.isEnabled, true);
     } else {
       Settings.globalConfig = undefined;
     }

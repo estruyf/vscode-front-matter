@@ -535,7 +535,8 @@
       {
         "command": "frontMatter.dashboard",
         "title": "Open dashboard",
-        "category": "Front matter"
+        "category": "Front matter",
+        "icon":  "$(preview)"
       },
       {
         "command": "frontMatter.preview",
@@ -561,9 +562,14 @@
     "menus": {
       "editor/title": [
         {
-          "when": "resourceLangId == markdown",
           "command": "frontMatter.insertImage",
-          "group": "navigation"
+          "group": "navigation@-99",
+          "when": "resourceLangId == markdown"
+        },
+        {
+          "command": "frontMatter.dashboard",
+          "group": "navigation@-98",
+          "when": "frontMatter:enabled == true"
         }
       ],
       "explorer/context": [
