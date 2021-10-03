@@ -1,3 +1,4 @@
+import { ContentType } from './helpers/ContentType';
 import { Dashboard } from './commands/Dashboard';
 import * as vscode from 'vscode';
 import { Article, Settings, StatusListener } from './commands';
@@ -13,6 +14,7 @@ import { ExplorerView } from './explorerView/ExplorerView';
 import { Extension } from './helpers/Extension';
 import { DashboardData } from './models/DashboardData';
 import { Settings as SettingsHelper } from './helpers';
+import { Content } from './commands/Content';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
@@ -104,7 +106,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const unregisterFolder = vscode.commands.registerCommand(COMMAND_NAME.unregisterFolder, Folders.unregister);
 
-	const createContent = vscode.commands.registerCommand(COMMAND_NAME.createContent, Folders.create);
+	const createByContentType = vscode.commands.registerCommand(COMMAND_NAME.createByContentType, ContentType.createContent);
+	const createByTemplate = vscode.commands.registerCommand(COMMAND_NAME.createByTemplate, Folders.create);
+	const createContent = vscode.commands.registerCommand(COMMAND_NAME.createContent, Content.create);
 
 	// Initialize command
 	Template.init();
@@ -184,6 +188,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		registerFolder,
 		unregisterFolder,
 		createContent,
+		createByContentType,
+		createByTemplate,
 		projectInit,
 		collapseAll
 	);

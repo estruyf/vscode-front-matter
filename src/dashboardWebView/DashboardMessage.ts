@@ -4,6 +4,8 @@ export enum DashboardMessage {
   openFile = 'openFile',
   getTheme = 'getTheme',
   createContent = 'createContent',
+  createByContentType = 'createByContentType',
+  createByTemplate = 'createByTemplate',
   updateSetting = 'updateSetting',
   initializeProject = 'initializeProject',
   reload = 'reload',

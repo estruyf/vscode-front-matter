@@ -140,6 +140,12 @@ export class Dashboard {
         case DashboardMessage.createContent:
           await commands.executeCommand(COMMAND_NAME.createContent);
           break;
+        case DashboardMessage.createByContentType:
+          await commands.executeCommand(COMMAND_NAME.createByContentType);
+          break;
+        case DashboardMessage.createByTemplate:
+          await commands.executeCommand(COMMAND_NAME.createByTemplate);
+          break;
         case DashboardMessage.updateSetting:
           Dashboard.updateSetting(msg.data);
           break;

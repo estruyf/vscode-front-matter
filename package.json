@@ -334,7 +334,7 @@
                   "type": "datetime"
                 },
                 {
-                  "title": "Article preview",
+                  "title": "Content preview",
                   "name": "preview",
                   "type": "image"
                 },
@@ -503,7 +503,7 @@
       },
       {
         "command": "frontMatter.generateSlug",
-        "title": "Generate slug based on article title",
+        "title": "Generate slug based on content title",
         "category": "Front matter"
       },
       {
@@ -518,7 +518,7 @@
       },
       {
         "command": "frontMatter.insertImage",
-        "title": "Insert image into article",
+        "title": "Insert image into your content",
         "category": "Front matter",
         "icon": "$(device-camera)"
       },
@@ -529,7 +529,7 @@
       },
       {
         "command": "frontMatter.createContent",
-        "title": "New article from template",
+        "title": "Create new content from defined content type or template",
         "category": "Front matter"
       },
       {
@@ -540,7 +540,7 @@
       },
       {
         "command": "frontMatter.preview",
-        "title": "Preview article",
+        "title": "Preview content",
         "category": "Front matter"
       },
       {

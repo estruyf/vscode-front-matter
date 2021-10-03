@@ -6,7 +6,6 @@ import { Folders } from './Folders';
 import { Settings } from '../../models';
 import { DashboardMessage } from '../../DashboardMessage';
 import { Startup } from '../Startup';
-import { Button } from '../Button';
 import { Navigation } from '../Navigation';
 import { Grouping } from '.';
 import { ViewSwitch } from './ViewSwitch';
@@ -17,6 +16,7 @@ import { ClearFilters } from './ClearFilters';
 import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIcon';
 import { PhotographIcon } from '@heroicons/react/outline';
 import { Pagination } from '../Media/Pagination';
+import { ChoiceButton } from '../ChoiceButton';
 
 export interface IHeaderProps {
   settings: Settings | null;
@@ -35,6 +35,14 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
 
   const createContent = () => {
     Messenger.send(DashboardMessage.createContent);
+  };
+
+  const createByContentType = () => {
+    Messenger.send(DashboardMessage.createByContentType);
+  };
+
+  const createByTemplate = () => {
+    Messenger.send(DashboardMessage.createByTemplate);
   };
 
   return (
@@ -60,7 +68,19 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
               <div className={`flex items-center space-x-4`}>
                 <Startup settings={settings} />
                 
-                <Button onClick={createContent} disabled={!settings?.initialized}>Create content</Button>
+                <ChoiceButton 
+                  title={`Create content`} 
+                  choices={[{
+                    title: `Create by content type`,
+                    onClick: createByContentType,
+                    disabled: !settings?.initialized
+                  }, {
+                    title: `Create by template`,
+                    onClick: createByTemplate,
+                    disabled: !settings?.initialized
+                  }]} 
+                  onClick={createContent} 
+                  disabled={!settings?.initialized} />
               </div>
             </div>
 

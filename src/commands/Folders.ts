@@ -1,3 +1,4 @@
+import { Questions } from './../helpers/Questions';
 import { SETTINGS_CONTENT_PAGE_FOLDERS } from './../constants/settings';
 import { commands, Uri, workspace, window } from "vscode";
 import { basename, join } from "path";
@@ -17,27 +18,12 @@ export class Folders {
    * @returns 
    */
   public static async create() {
-    const folders = Folders.get();
-
-    if (!folders || folders.length === 0) {
-      Notifications.warning(`There are no known content locations defined in this project.`);
-      return;
-    }
-
-    let selectedFolder: string | undefined;
-    if (folders.length > 1) {
-      selectedFolder = await window.showQuickPick(folders.map(f => f.title), {
-        placeHolder: `Select where you want to create your content`
-      });
-    } else {
-      selectedFolder = folders[0].title;
-    }
-
+    const selectedFolder = await Questions.SelectContentFolder();
     if (!selectedFolder) {
-      Notifications.warning(`You didn't select a place where you wanted to create your content.`);
       return;
     }
 
+    const folders = Folders.get();
     const location = folders.find(f => f.title === selectedFolder);
     if (location) {
       const folderPath = Folders.getFolderPath(Uri.file(location.path));
