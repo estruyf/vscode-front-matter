@@ -106,6 +106,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const unregisterFolder = vscode.commands.registerCommand(COMMAND_NAME.unregisterFolder, Folders.unregister);
 
+	const createFolder = vscode.commands.registerCommand(COMMAND_NAME.createFolder, Folders.addMediaFolder);
+
 	const createByContentType = vscode.commands.registerCommand(COMMAND_NAME.createByContentType, ContentType.createContent);
 	const createByTemplate = vscode.commands.registerCommand(COMMAND_NAME.createByTemplate, Folders.create);
 	const createContent = vscode.commands.registerCommand(COMMAND_NAME.createContent, Content.create);
@@ -191,7 +193,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		createByContentType,
 		createByTemplate,
 		projectInit,
-		collapseAll
+		collapseAll,
+		createFolder
 	);
 }
 

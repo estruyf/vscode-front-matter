@@ -5,6 +5,7 @@ export interface MediaPaths {
   media: MediaInfo[];
   total: number;
   folders: string[];
+  selectedFolder: string;
 }
 
 export interface MediaInfo {

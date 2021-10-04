@@ -5,6 +5,7 @@
 ### ✨ New features
 
 - [#113](https://github.com/estruyf/vscode-front-matter/issues/113): Integrating a local DB for media metadata (caption, alt)
+- [#132](https://github.com/estruyf/vscode-front-matter/issues/132): Major changes to the media dashboard which allows you to navigate through all folders
 
 ### 🎨 Enhancements
 
@@ -17,6 +18,7 @@
 - [#126](https://github.com/estruyf/vscode-front-matter/issues/126): Create new content from the available content types
 - [#127](https://github.com/estruyf/vscode-front-matter/issues/127): Title bar action added to open the dashboard
 - [#128](https://github.com/estruyf/vscode-front-matter/issues/128): Support for multi-select on image fields added
+- [#131](https://github.com/estruyf/vscode-front-matter/issues/131): Folder creation support added on media dashboard
 
 ### 🐞 Fixes
 

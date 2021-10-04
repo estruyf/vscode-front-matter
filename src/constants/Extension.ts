@@ -33,4 +33,5 @@ export const COMMAND_NAME = {
   dashboard: getCommandName("dashboard"),
   promote: getCommandName("promoteSettings"),
   insertImage: getCommandName("insertImage"),
+  createFolder: getCommandName("createFolder"),
 };

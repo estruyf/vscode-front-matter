@@ -5,7 +5,7 @@ import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { MediaInfo, MediaPaths } from '../../../models/MediaPaths';
 import { DashboardCommand } from '../../DashboardCommand';
-import { LoadingAtom, MediaFoldersAtom, MediaTotalAtom, SelectedMediaFolderSelector, SettingsSelector, ViewDataSelector } from '../../state';
+import { LoadingAtom, MediaFoldersAtom, MediaTotalAtom, SelectedMediaFolderAtom, SettingsSelector, ViewDataSelector } from '../../state';
 import { Header } from '../Header';
 import { Spinner } from '../Spinner';
 import { SponsorMsg } from '../SponsorMsg';
@@ -15,6 +15,10 @@ import { List } from './List';
 import { useDropzone } from 'react-dropzone'
 import { useCallback } from 'react';
 import { DashboardMessage } from '../../DashboardMessage';
+import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMatterIcon';
+import { FolderIcon } from '@heroicons/react/solid';
+import { basename } from 'path';
+import { FolderItem } from './FolderItem';
 
 export interface IMediaProps {}
 
@@ -22,10 +26,10 @@ export const LIMIT = 16;
 
 export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWithChildren<IMediaProps>) => {
   const settings = useRecoilValue(SettingsSelector);
-  const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
+  const [ selectedFolder, setSelectedFolder ] = useRecoilState(SelectedMediaFolderAtom);
   const [ media, setMedia ] = React.useState<MediaInfo[]>([]);
   const [ , setTotal ] = useRecoilState(MediaTotalAtom);
-  const [ , setFolders ] = useRecoilState(MediaFoldersAtom);
+  const [ folders, setFolders ] = useRecoilState(MediaFoldersAtom);
   const [ loading, setLoading ] = useRecoilState(LoadingAtom);
   const viewData = useRecoilValue(ViewDataSelector);
 
@@ -57,6 +61,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
       setMedia(message.data.data.media);
       setTotal(message.data.data.total);
       setFolders(message.data.data.folders);
+      setSelectedFolder(message.data.data.selectedFolder);
     }
   };
 
@@ -91,6 +96,32 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
                 <p className={`text-xl max-w-md text-center`}>
                   {selectedFolder ? `Upload to ${selectedFolder}` : `No folder selected, files you drop will be added to the ${settings?.staticFolder || "public"} folder.`}
                 </p>
+              </div>
+            )
+          }
+
+          {
+            (media.length === 0 && folders.length === 0 && !loading) && (
+              <div className={`flex items-center justify-center h-full`}>
+                <div className={`max-w-xl text-center`}>
+                  <FrontMatterIcon className={`text-vulcan-300 dark:text-whisper-800 h-32 mx-auto opacity-90 mb-8`} />
+                  
+                  <p className={`text-xl font-medium`}>No media files to show. You can drag &amp; drop new files.</p>
+                </div>
+              </div>
+            )
+          }
+
+          {
+            folders && folders.length > 0 && (
+              <div className={`mb-8`}>
+                <List>
+                  {
+                    folders && folders.map((folder) => (
+                      <FolderItem key={folder} folder={folder} staticFolder={settings?.staticFolder} wsFolder={settings?.wsFolder} />
+                    ))
+                  }
+                </List>
               </div>
             )
           }

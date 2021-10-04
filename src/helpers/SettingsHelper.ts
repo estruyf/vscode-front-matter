@@ -2,7 +2,7 @@ import { Notifications } from './Notifications';
 import { commands, Uri, workspace } from 'vscode';
 import * as vscode from 'vscode';
 import { TaxonomyType } from '../models';
-import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT } from '../constants';
+import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, SETTINGS_CONTENT_STATIC_FOLDER } from '../constants';
 import { Folders } from '../commands/Folders';
 import { join, basename } from 'path';
 import { existsSync, readFileSync, watch, writeFileSync } from 'fs';
@@ -222,7 +222,6 @@ export class Settings {
 
     return hasSetting;
   }
-
 
   /**
    * Check if its the project config

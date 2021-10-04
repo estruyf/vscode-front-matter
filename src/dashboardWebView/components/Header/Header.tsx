@@ -17,6 +17,7 @@ import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIco
 import { PhotographIcon } from '@heroicons/react/outline';
 import { Pagination } from '../Media/Pagination';
 import { ChoiceButton } from '../ChoiceButton';
+import { Breadcrumb } from './Breadcrumb';
 
 export interface IHeaderProps {
   settings: Settings | null;
@@ -113,7 +114,10 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
 
       {
         view === "media" && (
-          <Pagination />
+          <>
+            <Pagination />
+            <Breadcrumb />
+          </>
         )
       }
     </div>

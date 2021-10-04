@@ -16,4 +16,5 @@ export interface Settings {
   pageViewType: ViewType | undefined;
   mediaSnippet: string[];
   contentTypes: ContentType[];
+  contentFolders: string[];
 }

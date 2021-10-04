@@ -5,8 +5,6 @@ import { MessageHelper } from '../../helpers/MessageHelper';
 import { Collapsible } from './Collapsible';
 import { GlobalSettings } from './GlobalSettings';
 import { OtherActions } from './OtherActions';
-import { FileList } from './FileList';
-import { VsLabel } from './VscodeComponents';
 import { FolderAndFiles } from './FolderAndFiles';
 import { SponsorMsg } from './SponsorMsg';
 

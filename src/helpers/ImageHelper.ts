@@ -4,7 +4,7 @@ import { Field } from '../models';
 import { existsSync } from 'fs';
 import { Folders } from '../commands/Folders';
 import { Settings } from './SettingsHelper';
-import { SETTINGS_CONTENT_STATIC_FOLDERS } from '../constants';
+import { SETTINGS_CONTENT_STATIC_FOLDER } from '../constants';
 
 export class ImageHelper {
 
@@ -49,7 +49,7 @@ export class ImageHelper {
    */
    public static relToAbs(filePath: string, value: string) {
     const wsFolder = Folders.getWorkspaceFolder();
-    const staticFolder = Settings.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
+    const staticFolder = Settings.get<string>(SETTINGS_CONTENT_STATIC_FOLDER);
 
     const staticPath = join(wsFolder?.fsPath || "", staticFolder || "", value);
     const contentFolderPath = filePath ? join(dirname(filePath), value) : null;
@@ -68,7 +68,7 @@ export class ImageHelper {
    */
   public static absToRel(imgValue: string) {
     const wsFolder = Folders.getWorkspaceFolder();
-    const staticFolder = Settings.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
+    const staticFolder = Settings.get<string>(SETTINGS_CONTENT_STATIC_FOLDER);
 
     let relPath = imgValue || "";
     if (imgValue) {

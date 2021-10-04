@@ -1,6 +1,6 @@
 import { DashboardData } from '../models/DashboardData';
 import { Template } from '../commands/Template';
-import { DefaultFields, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_COMMA_SEPARATED_FIELDS, SETTINGS_CONTENT_STATIC_FOLDERS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from '../constants';
+import { DefaultFields, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_COMMA_SEPARATED_FIELDS, SETTINGS_CONTENT_STATIC_FOLDER, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from '../constants';
 import * as os from 'os';
 import { PanelSettings, CustomScript } from '../models/PanelSettings';
 import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv } from "vscode";
@@ -216,7 +216,6 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     const wsFolder = Folders.getWorkspaceFolder();
     const filePath = window.activeTextEditor?.document.uri.fsPath;
     const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
-    const staticFolder = Settings.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
     const contentTypes = Settings.get<string>(SETTING_TAXONOMY_CONTENT_TYPES);
     
     const articleDetails = this.getArticleDetails();

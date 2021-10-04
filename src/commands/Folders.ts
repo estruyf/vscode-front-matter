@@ -1,5 +1,5 @@
 import { Questions } from './../helpers/Questions';
-import { SETTINGS_CONTENT_PAGE_FOLDERS } from './../constants/settings';
+import { SETTINGS_CONTENT_PAGE_FOLDERS, SETTINGS_CONTENT_STATIC_FOLDER } from './../constants/settings';
 import { commands, Uri, workspace, window } from "vscode";
 import { basename, join } from "path";
 import { ContentFolder, FileInfo, FolderInfo } from "../models";
@@ -7,11 +7,63 @@ import uniqBy = require("lodash.uniqby");
 import { Template } from "./Template";
 import { Notifications } from "../helpers/Notifications";
 import { Settings } from "../helpers";
-import { existsSync } from 'fs';
+import { existsSync, mkdirSync } from 'fs';
+import { format } from 'date-fns';
+import { Dashboard } from './Dashboard';
 
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
 export class Folders {
+
+  /**
+   * Add a media folder
+   * @returns 
+   */
+  public static async addMediaFolder(data?: {selectedFolder?: string}) {
+    let wsFolder = Folders.getWorkspaceFolder();
+    const staticFolder = Settings.get<string>(SETTINGS_CONTENT_STATIC_FOLDER);
+
+    let startPath = "";
+
+    if (data?.selectedFolder) {
+      startPath = data.selectedFolder.replace((wsFolder?.fsPath || ""), "");
+    } else if (staticFolder) {
+      startPath = `/${staticFolder}`;
+    }
+
+    if (startPath && !startPath.endsWith("/")) {
+      startPath += "/";
+    }
+
+    const folderName = await window.showInputBox({  
+      prompt: `Which name would you like to give to your folder (use "/" to create multi-level folders)?`,
+      value: startPath,
+      ignoreFocusOut: true,
+      placeHolder: `${format(new Date(), `yyyy/MM`)}`
+    });
+
+    if (!folderName) {
+      Notifications.warning(`No folder name was specified.`);
+      return;
+    }
+    
+    const folders = folderName.split("/").filter(f => f);
+    let parentFolders: string[] = [];
+
+    for (const folder of folders) {
+      const folderPath = join(wsFolder?.fsPath || "", parentFolders.join("/"), folder);
+
+      parentFolders.push(folder);
+      
+      if (!existsSync(folderPath)) {
+        mkdirSync(folderPath);
+      }
+    }
+
+    if (Dashboard.isOpen) {
+      Dashboard.switchFolder(folderName);
+    }
+  }
 
   /**
    * Create content in a registered folder
