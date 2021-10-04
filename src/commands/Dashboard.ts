@@ -390,22 +390,33 @@ export class Dashboard {
                 const previewField = contentType.fields.find(field => field.isPreviewImage && field.type === "image")?.name || "preview";
       
                 if (article?.data[previewField] && wsFolder) {
-
-                  const staticPath = join(wsFolder.fsPath, staticFolder || "", article?.data[previewField]);
-                  const contentFolderPath = join(dirname(file.filePath), article?.data[previewField]);
-
-                  let previewUri = null;
-                  if (existsSync(staticPath)) {
-                    previewUri = Uri.file(staticPath);
-                  } else if (existsSync(contentFolderPath)) {
-                    previewUri = Uri.file(contentFolderPath);
+                  let fieldValue = article?.data[previewField];
+                  if (fieldValue && Array.isArray(fieldValue)) {
+                    if (fieldValue.length > 0) {
+                      fieldValue = fieldValue[0];
+                    } else {
+                      fieldValue = undefined;
+                    }
                   }
 
-                  if (previewUri) {
-                    const preview = Dashboard.webview?.webview.asWebviewUri(previewUri);
-                    page[previewField] = preview?.toString() || "";
-                  } else {
-                    page[previewField] = "";
+                  // Revalidate as the array could have been empty
+                  if (fieldValue) {
+                    const staticPath = join(wsFolder.fsPath, staticFolder || "", fieldValue);
+                    const contentFolderPath = join(dirname(file.filePath), fieldValue);
+
+                    let previewUri = null;
+                    if (existsSync(staticPath)) {
+                      previewUri = Uri.file(staticPath);
+                    } else if (existsSync(contentFolderPath)) {
+                      previewUri = Uri.file(contentFolderPath);
+                    }
+
+                    if (previewUri) {
+                      const preview = Dashboard.webview?.webview.asWebviewUri(previewUri);
+                      page[previewField] = preview?.toString() || "";
+                    } else {
+                      page[previewField] = "";
+                    }
                   }
                 }
       
