@@ -12,7 +12,7 @@ import { parseJSON } from 'date-fns';
 import { DateTimeField } from './Fields/DateTimeField';
 import { TextField } from './Fields/TextField';
 import "react-datepicker/dist/react-datepicker.css";
-import { PreviewImageField } from './Fields/PreviewImageField';
+import { PreviewImageField, PreviewImageValue } from './Fields/PreviewImageField';
 import { ListUnorderedIcon } from './Icons/ListUnorderedIcon';
 import { NumberField } from './Fields/NumberField';
 import { ChoiceField } from './Fields/ChoiceField';
@@ -116,7 +116,8 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
             label={field.title || field.name}
             fieldName={field.name}
             filePath={metadata.filePath as string}
-            value={metadata[field.name] as string}
+            value={metadata[field.name] as PreviewImageValue | PreviewImageValue[] | null}
+            multiple={field.multiple}
             onChange={(value => sendUpdate(field.name, value))} />
         );
       } else if (field.type === 'choice') {
@@ -129,7 +130,7 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
             label={field.title || field.name}
             selected={choiceValue as string}
             choices={choices}
-            multiSelect={field.multiSelect}
+            multiSelect={field.multiple}
             onChange={(value => sendUpdate(field.name, value))} />
         );
       } else if (field.type === 'tags') {

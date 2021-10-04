@@ -21,9 +21,8 @@ import { Preview } from '../commands/Preview';
 import { openFileInEditor } from '../helpers/openFileInEditor';
 import { WebviewHelper } from '@estruyf/vscode';
 import { Extension } from '../helpers/Extension';
-import { dirname, join } from 'path';
-import { existsSync } from 'fs';
 import { Dashboard } from '../commands/Dashboard';
+import { ImageHelper } from '../helpers/ImageHelper';
 
 const FILE_LIMIT = 10;
 
@@ -245,23 +244,28 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       const contentType = ArticleHelper.getContentType(updatedMetadata);
       if (contentType) {
         const imageFields = contentType.fields.filter((field) => field.type === "image");
+
         for (const field of imageFields) {
           if (updatedMetadata[field.name]) {
-            const staticPath = join(wsFolder.fsPath, staticFolder || "", updatedMetadata[field.name]);
-            const contentFolderPath = filePath ? join(dirname(filePath), updatedMetadata[field.name]) : null;
+            const imageData = ImageHelper.allRelToAbs(field, updatedMetadata[field.name])
 
-            let previewUri = null;
-            if (existsSync(staticPath)) {
-              previewUri = Uri.file(staticPath);
-            } else if (contentFolderPath && existsSync(contentFolderPath)) {
-              previewUri = Uri.file(contentFolderPath);
-            }
+            if (imageData) {
+              if (field.multiple && imageData instanceof Array) {
+                const preview = imageData.map(preview => preview && preview.absPath ? ({ 
+                  ...preview,
+                  webviewUrl: this.panel?.webview.asWebviewUri(preview.absPath).toString()
+                }) : null);
 
-            if (previewUri) {
-              const preview = this.panel?.webview.asWebviewUri(previewUri);
-              updatedMetadata[field.name]= preview?.toString() || "";
+                updatedMetadata[field.name] = preview || [];
+              } else if (!field.multiple && !Array.isArray(imageData) && imageData.absPath) {
+                const preview = this.panel?.webview.asWebviewUri(imageData.absPath);
+                updatedMetadata[field.name] = {
+                  ...imageData,
+                  webviewUrl: preview ? preview.toString() : null
+                };
+              }
             } else {
-              updatedMetadata[field.name] = "";
+              updatedMetadata[field.name] = field.multiple ? [] : "";
             }
           }          
         }
@@ -295,7 +299,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   /**
    * Update the metadata of the article
    */
-  public async updateMetadata({field, value}: { field: string, value: string }) {
+  public async updateMetadata({field, value }: { field: string, value: any, fieldData?: { multiple: boolean, value: string[] } }) {
     if (!field) {
       return;
     }
@@ -312,12 +316,31 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
     const contentType = ArticleHelper.getContentType(article.data);
     const dateFields = contentType.fields.filter((field) => field.type === "datetime");
+    const imageFields = contentType.fields.filter((field) => field.type === "image" && field.multiple);
 
     for (const dateField of dateFields) {
       if ((field === dateField.name) && value) {
         article.data[field] = Article.formatDate(new Date(value));
-      } else {
+      } else if (!imageFields.find(f => f.name === field)) {
+        // Only override the field data if it is not an multiselect image field
         article.data[field] = value;
+      }
+    }
+
+    for (const imageField of imageFields) {
+      if (field === imageField.name) {
+        // If value is an array, it means it comes from the explorer view itself (deletion)
+        if (Array.isArray(value)) {
+          article.data[field] = value || [];
+        } else { // Otherwise it is coming from the media dashboard (addition)
+          let fieldValue = article.data[field];
+          if (fieldValue && !Array.isArray(fieldValue)) {
+            fieldValue = [fieldValue];
+          }
+          const crntData = Object.assign([], fieldValue);
+          const allRelPaths = [...(crntData || []), value];
+          article.data[field] = [...new Set(allRelPaths)].filter(f => f);
+        }
       }
     }
     

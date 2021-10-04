@@ -30,7 +30,7 @@ export interface Field {
   type: "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories";
   choices?: string[] | Choice[];
   single?: boolean;
-  multiSelect?: boolean;
+  multiple?: boolean;
   isPreviewImage?: boolean;
 }
 

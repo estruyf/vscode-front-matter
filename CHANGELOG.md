@@ -16,6 +16,7 @@
 - [#124](https://github.com/estruyf/vscode-front-matter/issues/124): Add new `isPreviewImage` property to the content type field to specify custom preview images
 - [#126](https://github.com/estruyf/vscode-front-matter/issues/126): Create new content from the available content types
 - [#127](https://github.com/estruyf/vscode-front-matter/issues/127): Title bar action added to open the dashboard
+- [#128](https://github.com/estruyf/vscode-front-matter/issues/128): Support for multi-select on image fields added
 
 ### 🐞 Fixes
 

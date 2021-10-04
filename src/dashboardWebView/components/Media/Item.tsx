@@ -1,6 +1,6 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { CheckCircleIcon, ClipboardCopyIcon, CodeIcon, PencilIcon, PhotographIcon, TrashIcon } from '@heroicons/react/outline';
-import { basename, dirname, parse } from 'path';
+import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -70,6 +70,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
       image: parseWinPath(relPath) || "",
       file: viewData?.data?.filePath,
       fieldName: viewData?.data?.fieldName,
+      multiple: viewData?.data?.multiple,
+      value: viewData?.data?.value,
       position: viewData?.data?.position || null,
       alt: alt || "",
       caption: caption || ""
@@ -197,11 +199,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
               viewData?.data?.filePath ? (
                 <>
                   <button 
-                    title={`Insert into your article`} 
+                    title={`Insert into your content`} 
                     className={`hover:text-teal-900 focus:outline-none`} 
                     onClick={insertToArticle}>
                     <CheckCircleIcon className={`h-5 w-5`} />
-                    <span className={`sr-only`}>Insert into your article</span>
+                    <span className={`sr-only`}>Insert into your content</span>
                   </button>
                   {
                     (viewData?.data?.position && settings?.mediaSnippet && settings?.mediaSnippet.length > 0) && (

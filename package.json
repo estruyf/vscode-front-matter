@@ -291,7 +291,7 @@
                       "type": "boolean",
                       "description": "Is a single line field"
                     },
-                    "multiSelect": {
+                    "multiple": {
                       "type": "boolean",
                       "description": "Do you allow to select multiple values?"
                     },

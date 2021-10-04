@@ -219,7 +219,7 @@ export class Dashboard {
         panel.getMediaSelection();
       } else {
         panel.getMediaSelection();
-        panel.updateMetadata({field: data.fieldName, value: data.image});
+        panel.updateMetadata({field: data.fieldName, value: data.image });
       }
     }
   }

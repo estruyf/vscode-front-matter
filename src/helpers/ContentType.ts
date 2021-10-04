@@ -14,7 +14,10 @@ import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
 
 export class ContentType {
 
-
+  /**
+   * Create content based on content types
+   * @returns 
+   */
   public static async createContent() {
     const selectedContentType = await Questions.SelectContentType();
     if (!selectedContentType) {
