@@ -34,6 +34,8 @@ export async function activate(context: vscode.ExtensionContext) {
 	
 	SettingsHelper.init();
 	extension.migrateSettings();
+	
+	SettingsHelper.checkToPromote();
 
 	collection = vscode.languages.createDiagnosticCollection('frontMatter');
 

@@ -1,8 +1,8 @@
 import { Notifications } from './Notifications';
-import { commands, Uri, workspace } from 'vscode';
+import { commands, Uri, workspace, window } from 'vscode';
 import * as vscode from 'vscode';
-import { TaxonomyType } from '../models';
-import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, SETTINGS_CONTENT_STATIC_FOLDER } from '../constants';
+import { ContentType, TaxonomyType } from '../models';
+import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, SETTINGS_CONTENT_STATIC_FOLDER, ExtensionState } from '../constants';
 import { Folders } from '../commands/Folders';
 import { join, basename } from 'path';
 import { existsSync, readFileSync, watch, writeFileSync } from 'fs';
@@ -32,6 +32,26 @@ export class Settings {
         Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
       }
     });
+  }
+
+  /**
+   * Check if the setting is present in the workspace and ask to promote them to the global settings
+   */
+  public static async checkToPromote() {
+    const isPromoted = await Extension.getInstance().getState<boolean | undefined>(ExtensionState.SettingPromoted);
+    if (!isPromoted) {
+      if (Settings.hasSettings()) {
+        window.showInformationMessage(`You have local settings. Would you like to promote them to the global settings ("frontmatter.json")?`, 'Yes', 'No').then(async (result) => {
+          if (result === "Yes") {
+            Settings.promote();
+          }
+
+          if (result === "No" || result === "Yes") {
+            Extension.getInstance().setState(ExtensionState.SettingPromoted, true);
+          }
+        });
+      }
+    }
   }
 
   /**
@@ -116,6 +136,12 @@ export class Settings {
         Settings.globalConfig = JSON.parse(localConfig);
         Settings.globalConfig[`${CONFIG_KEY}.${name}`] = value;
         writeFileSync(fmConfig, JSON.stringify(Settings.globalConfig, null, 2), 'utf8');
+
+        const workspaceSettingValue = Settings.hasWorkspaceSettings<ContentType[]>(name);
+        if (workspaceSettingValue) {
+          await Settings.update(name, undefined);
+        }
+
         return;
       }
     } else {
@@ -197,6 +223,16 @@ export class Settings {
     }
 
     Notifications.info(`All settings promoted to team level.`);
+  }
+
+  /**
+   * Check if the setting is present in the workspace
+   * @param name 
+   * @returns 
+   */
+  public static hasWorkspaceSettings<T>(name: string): T | undefined {
+    const setting = Settings.config.inspect<T>(name);
+    return (setting && typeof setting.workspaceValue !== "undefined") ? setting.workspaceValue : undefined;
   }
 
   /**

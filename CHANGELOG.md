@@ -19,6 +19,7 @@
 - [#127](https://github.com/estruyf/vscode-front-matter/issues/127): Title bar action added to open the dashboard
 - [#128](https://github.com/estruyf/vscode-front-matter/issues/128): Support for multi-select on image fields added
 - [#131](https://github.com/estruyf/vscode-front-matter/issues/131): Folder creation support added on media dashboard
+- [#134](https://github.com/estruyf/vscode-front-matter/issues/134): On startup, the extension checks if local settings can be promoted
 
 ### 🐞 Fixes
 
