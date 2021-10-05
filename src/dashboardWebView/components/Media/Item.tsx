@@ -4,6 +4,7 @@ import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
+import { parseWinPath } from '../../../helpers/parseWinPath';
 import { MediaInfo } from '../../../models/MediaPaths';
 import { DashboardMessage } from '../../DashboardMessage';
 import { LightboxAtom, PageSelector, SelectedMediaFolderSelector, SettingsSelector, ViewDataSelector } from '../../state';
@@ -25,10 +26,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const viewData = useRecoilValue(ViewDataSelector);
   const page = useRecoilValue(PageSelector);
-
-  const parseWinPath = (path: string | undefined) => {
-    return path?.split(`\\`).join(`/`);
-  }
 
   const getFolder = () => {
     if (settings?.wsFolder && media.fsPath) {

@@ -23,6 +23,7 @@ import { DashboardData } from '../models/DashboardData';
 import { ExplorerView } from '../explorerView/ExplorerView';
 import { MediaLibrary } from '../helpers/MediaLibrary';
 import imageSize from 'image-size';
+import { parseWinPath } from '../helpers/parseWinPath';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -331,12 +332,7 @@ export class Dashboard {
 
     Dashboard.media = Object.assign([], allMedia);
 
-    // Filter the media
     let files: MediaInfo[] = Dashboard.media;
-    if (relSelectedFolderPath) {
-      const folderPath = `${relSelectedFolderPath.startsWith("/") ? "" : "/"}${relSelectedFolderPath}${relSelectedFolderPath.endsWith("/") ? "" : "/"}`
-      files = files.filter(f => f.fsPath.includes(folderPath));
-    }
 
     // Retrieve the total after filtering and before the slicing happens
     const total = files.length;
@@ -365,20 +361,20 @@ export class Dashboard {
 
     if (selectedFolder) {
       if (existsSync(selectedFolder)) {
-        allFolders = readdirSync(selectedFolder, { withFileTypes: true }).filter(dir => dir.isDirectory()).map(dir => join(selectedFolder, dir.name));
+        allFolders = readdirSync(selectedFolder, { withFileTypes: true }).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(selectedFolder, dir.name)) as string);
       }
     } else {
       for (const contentFolder of contentFolders) {
         const contentPath = contentFolder.path;
         if (contentPath && existsSync(contentPath)) {
-          const subFolders = readdirSync(contentPath, { withFileTypes: true }).filter(dir => dir.isDirectory()).map(dir => join(contentPath, dir.name));
+          const subFolders = readdirSync(contentPath, { withFileTypes: true }).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(contentPath, dir.name)) as string);
           allContentFolders = [...allContentFolders, ...subFolders];
         }
       }
   
       const staticPath = join(wsFolder?.fsPath || "", staticFolder || "");
       if (staticPath && existsSync(staticPath)) {
-        allFolders = readdirSync(staticPath, { withFileTypes: true }).filter(dir => dir.isDirectory()).map(dir => join(staticPath, dir.name));
+        allFolders = readdirSync(staticPath, { withFileTypes: true }).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(staticPath, dir.name)) as string);
       }
     }
 

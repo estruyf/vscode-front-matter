@@ -10,6 +10,8 @@ import { Settings } from '.';
 import { parse } from 'date-fns';
 import { Notifications } from './Notifications';
 import { Article } from '../commands';
+import { basename } from 'path';
+import { EditorHelper } from '@estruyf/vscode';
 
 export class ArticleHelper {
   
@@ -20,7 +22,7 @@ export class ArticleHelper {
    */
   public static getFrontMatter(editor: vscode.TextEditor) {
     const fileContents = editor.document.getText();  
-    return ArticleHelper.parseFile(fileContents);
+    return ArticleHelper.parseFile(fileContents, editor.document.fileName);
   }
 
   /**
@@ -29,7 +31,7 @@ export class ArticleHelper {
    */
   public static getFrontMatterByPath(filePath: string) {   
     const file = fs.readFileSync(filePath, { encoding: "utf-8" });
-    return ArticleHelper.parseFile(file);
+    return ArticleHelper.parseFile(file, filePath);
   }
 
   /**
@@ -167,7 +169,7 @@ export class ArticleHelper {
    * @param fileContents 
    * @returns 
    */
-  private static parseFile(fileContents: string): matter.GrayMatterFile<string> | null {
+  private static parseFile(fileContents: string, fileName: string): matter.GrayMatterFile<string> | null {
     try {
       const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
       
@@ -192,7 +194,21 @@ export class ArticleHelper {
         }
       }
     } catch (error: any) {
-      Notifications.error(`There seems to be an issue parsing your Front Matter. ERROR: ${error.message || error}`);
+      const items = [{ 
+        title: "Check file", 
+        action: async () => {
+          console.log(fileName);
+          await EditorHelper.showFile(fileName)
+        } 
+      }];
+      Notifications.error(`There seems to be an issue parsing the content its front matter. FileName: ${basename(fileName)}. ERROR: ${error.message || error}`, ...items).then((result: any) => {
+        if (result?.title) {
+          const item = items.find(i => i.title === result.title);
+          if (item) {
+            item.action();
+          }
+        }
+      });
     }
     return null;
   }
