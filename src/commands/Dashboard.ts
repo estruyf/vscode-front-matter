@@ -507,7 +507,11 @@ export class Dashboard {
       const wsFolder = Folders.getWorkspaceFolder();
       const staticFolder = SettingsHelper.get<string>(SETTINGS_CONTENT_STATIC_FOLDER);
       const wsPath = wsFolder ? wsFolder.fsPath : "";
-      let absFolderPath = join(wsPath, staticFolder || "", folder || "");
+      let absFolderPath = join(wsPath, staticFolder || "");
+
+      if (folder) {
+        absFolderPath = folder;
+      }
 
       if (!existsSync(absFolderPath)) {
         absFolderPath = join(wsPath, folder || "");

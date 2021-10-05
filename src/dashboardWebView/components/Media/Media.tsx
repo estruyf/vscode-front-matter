@@ -16,8 +16,6 @@ import { useDropzone } from 'react-dropzone'
 import { useCallback } from 'react';
 import { DashboardMessage } from '../../DashboardMessage';
 import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMatterIcon';
-import { FolderIcon } from '@heroicons/react/solid';
-import { basename } from 'path';
 import { FolderItem } from './FolderItem';
 
 export interface IMediaProps {}
