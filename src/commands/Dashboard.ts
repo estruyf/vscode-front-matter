@@ -279,7 +279,7 @@ export class Dashboard {
     // If the static folder is not set, retreive the last opened location
     if (!selectedFolder) {
       const stateValue = await Extension.getInstance().getState<string | undefined>(ExtensionState.SelectedFolder);
-      if (stateValue) {
+      if (stateValue && existsSync(stateValue)) {
         selectedFolder = stateValue;
       }
     }
