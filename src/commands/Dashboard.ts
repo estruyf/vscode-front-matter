@@ -1,4 +1,4 @@
-import { SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTING_TAXONOMY_CONTENT_TYPES } from './../constants/settings';
+import { SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTING_TAXONOMY_CONTENT_TYPES, DefaultFields, HOME_PAGE_NAVIGATION_ID, ExtensionState, COMMAND_NAME } from '../constants';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { basename, dirname, extname, join } from "path";
 import { existsSync, readdirSync, statSync, unlinkSync, writeFileSync } from "fs";
@@ -10,7 +10,6 @@ import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../dashboardWebView/DashboardMessage';
 import { Page } from '../dashboardWebView/models/Page';
 import { openFileInEditor } from '../helpers/openFileInEditor';
-import { COMMAND_NAME, EXTENSION_STATE_PAGES_VIEW } from '../constants/Extension';
 import { Template } from './Template';
 import { Notifications } from '../helpers/Notifications';
 import { Settings } from '../dashboardWebView/models/Settings';
@@ -20,7 +19,6 @@ import { ViewType } from '../dashboardWebView/state';
 import { EditorHelper, WebviewHelper } from '@estruyf/vscode';
 import { MediaInfo, MediaPaths } from './../models/MediaPaths';
 import { decodeBase64Image } from '../helpers/decodeBase64Image';
-import { DefaultFields } from '../constants';
 import { DashboardData } from '../models/DashboardData';
 import { ExplorerView } from '../explorerView/ExplorerView';
 import { MediaLibrary } from '../helpers/MediaLibrary';
@@ -161,7 +159,7 @@ export class Dashboard {
           }
           break;
         case DashboardMessage.setPageViewType:
-          Extension.getInstance().setState(EXTENSION_STATE_PAGES_VIEW, msg.data);
+          Extension.getInstance().setState(ExtensionState.PagesView, msg.data);
           break;
         case DashboardMessage.getMedia:
           Dashboard.getMedia(msg?.data?.page, msg?.data?.folder);
@@ -254,7 +252,7 @@ export class Dashboard {
         categories: SettingsHelper.getTaxonomy(TaxonomyType.Category),
         openOnStart: SettingsHelper.get(SETTINGS_DASHBOARD_OPENONSTART),
         versionInfo: ext.getVersion(),
-        pageViewType: await ext.getState<ViewType | undefined>(EXTENSION_STATE_PAGES_VIEW),
+        pageViewType: await ext.getState<ViewType | undefined>(ExtensionState.PagesView),
         mediaSnippet: SettingsHelper.get<string[]>(SETTINGS_DASHBOARD_MEDIA_SNIPPET) || [],
         contentTypes: SettingsHelper.get(SETTING_TAXONOMY_CONTENT_TYPES) || [],
         contentFolders: Folders.get().map(f => f.path),
@@ -277,6 +275,19 @@ export class Dashboard {
     const wsFolder = Folders.getWorkspaceFolder();
     const staticFolder = SettingsHelper.get<string>(SETTINGS_CONTENT_STATIC_FOLDER);
     const contentFolders = Folders.get();
+
+    // If the static folder is not set, retreive the last opened location
+    if (!selectedFolder) {
+      const stateValue = await Extension.getInstance().getState<string | undefined>(ExtensionState.SelectedFolder);
+      if (stateValue) {
+        selectedFolder = stateValue;
+      }
+    }
+
+    // Go to the home folder
+    if (selectedFolder === HOME_PAGE_NAVIGATION_ID) {
+      selectedFolder = '';
+    }
 
     const relSelectedFolderPath = selectedFolder ? selectedFolder.substring((wsFolder?.fsPath || "").length + 1) : '';
 
@@ -370,6 +381,9 @@ export class Dashboard {
         allFolders = readdirSync(staticPath, { withFileTypes: true }).filter(dir => dir.isDirectory()).map(dir => join(staticPath, dir.name));
       }
     }
+
+    // Store the last opened folder
+    await Extension.getInstance().setState(ExtensionState.SelectedFolder, selectedFolder);
 
     Dashboard.postWebviewMessage({
       command: DashboardCommand.media,

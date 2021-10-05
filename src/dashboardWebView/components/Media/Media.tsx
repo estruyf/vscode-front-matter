@@ -55,13 +55,14 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
     accept: 'image/*'
   });
 
-  const messageListener = (message: MessageEvent<EventData<MediaPaths>>) => {
+  const messageListener = (message: MessageEvent<EventData<MediaPaths | { key: string, value: any }>>) => {
     if (message.data.command === DashboardCommand.media) {
+      const data: MediaPaths = message.data.data as MediaPaths;
       setLoading(false);
-      setMedia(message.data.data.media);
-      setTotal(message.data.data.total);
-      setFolders(message.data.data.folders);
-      setSelectedFolder(message.data.data.selectedFolder);
+      setMedia(data.media);
+      setTotal(data.total);
+      setFolders(data.folders);
+      setSelectedFolder(data.selectedFolder);
     }
   };
 

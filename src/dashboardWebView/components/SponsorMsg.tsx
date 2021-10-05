@@ -1,6 +1,6 @@
 import { HeartIcon, StarIcon } from '@heroicons/react/outline';
 import * as React from 'react';
-import { REVIEW_LINK, SPONSOR_LINK } from '../../constants/Links';
+import { REVIEW_LINK, SPONSOR_LINK } from '../../constants';
 import { VersionInfo } from '../../models';
 
 export interface ISponsorMsgProps {

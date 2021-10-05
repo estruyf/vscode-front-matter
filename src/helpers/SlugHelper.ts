@@ -1,5 +1,4 @@
-import { stopWords } from '../constants/stopwords-en';
-import { charMap } from '../constants/charMap';
+import { stopWords, charMap } from '../constants';
 
 export class SlugHelper {
   

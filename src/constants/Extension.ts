@@ -3,9 +3,6 @@ const extensionName = "frontMatter";
 export const EXTENSION_ID = 'eliostruyf.vscode-front-matter';
 export const EXTENSION_BETA_ID = 'eliostruyf.vscode-front-matter-beta';
 
-export const EXTENSION_STATE_VERSION = 'frontMatter:Version';
-export const EXTENSION_STATE_PAGES_VIEW = 'frontMatter:Pages:ViewType';
-
 export const getCommandName = (command: string) => {
   return `${extensionName}.${command}`;
 };

@@ -1,9 +1,7 @@
 import { basename } from "path";
 import { extensions, Uri, ExtensionContext, window, workspace, commands } from "vscode";
 import { Folders, WORKSPACE_PLACEHOLDER } from "../commands/Folders";
-import { EXTENSION_NAME, GITHUB_LINK, SETTINGS_CONTENT_FOLDERS, SETTINGS_CONTENT_PAGE_FOLDERS, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTING_TAXONOMY_CONTENT_TYPES } from "../constants";
-import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
-import { EXTENSION_BETA_ID, EXTENSION_ID, EXTENSION_STATE_VERSION } from "../constants/Extension";
+import { EXTENSION_NAME, GITHUB_LINK, SETTINGS_CONTENT_FOLDERS, SETTINGS_CONTENT_PAGE_FOLDERS, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTING_TAXONOMY_CONTENT_TYPES, DEFAULT_CONTENT_TYPE_NAME, EXTENSION_BETA_ID, EXTENSION_ID, ExtensionState } from "../constants";
 import { ContentType } from "../models";
 import { Notifications } from "./Notifications";
 import { Settings } from "./SettingsHelper";
@@ -32,7 +30,7 @@ export class Extension {
   public getVersion(): { usedVersion: string | undefined, installedVersion: string } {
     const frontMatter = extensions.getExtension(this.isBetaVersion() ? EXTENSION_BETA_ID : EXTENSION_ID)!;
     let installedVersion = frontMatter.packageJSON.version;
-    const usedVersion = this.ctx.globalState.get<string>(EXTENSION_STATE_VERSION);
+    const usedVersion = this.ctx.globalState.get<string>(ExtensionState.Version);
     
     if (this.isBetaVersion()) {
       installedVersion = `${installedVersion}-beta`;
@@ -78,7 +76,7 @@ export class Extension {
    * Set the current version information for the extension
    */
   public setVersion(installedVersion: string): void {
-    this.ctx.globalState.update(EXTENSION_STATE_VERSION, installedVersion);
+    this.ctx.globalState.update(ExtensionState.Version, installedVersion);
   }
 
   /**
@@ -156,12 +154,20 @@ export class Extension {
     }
   }
 
-  public async setState(propKey: string, propValue: string): Promise<void> {
-    await this.ctx.globalState.update(propKey, propValue);
+  public async setState(propKey: string, propValue: string, type: "workspace" | "global" = "global"): Promise<void> {
+    if (type === "global") {
+      await this.ctx.globalState.update(propKey, propValue);
+    } else {
+      await this.ctx.workspaceState.update(propKey, propValue);
+    }
   }
 
-  public async getState<T>(propKey: string): Promise<T | undefined> {
-    return await this.ctx.globalState.get(propKey);
+  public async getState<T>(propKey: string, type: "workspace" | "global" = "global"): Promise<T | undefined> {
+    if (type === "global") {
+      return await this.ctx.globalState.get(propKey);
+    } else {
+      return await this.ctx.workspaceState.get(propKey);
+    }
   }
 
   public isBetaVersion() {

@@ -1,11 +1,10 @@
-import { SETTING_PREVIEW_HOST, SETTING_PREVIEW_PATHNAME } from './../constants/settings';
+import { SETTING_PREVIEW_HOST, SETTING_PREVIEW_PATHNAME, CONTEXT } from './../constants';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { join } from "path";
 import { commands, env, Uri, ViewColumn, window } from "vscode";
 import { Settings } from '../helpers';
 import { PreviewSettings } from '../models';
 import { format } from 'date-fns';
-import { CONTEXT } from '../constants/context';
 
 
 export class Preview {

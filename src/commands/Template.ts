@@ -8,7 +8,7 @@ import sanitize from '../helpers/Sanitize';
 import { ArticleHelper, Settings } from '../helpers';
 import { Article } from '.';
 import { Notifications } from '../helpers/Notifications';
-import { CONTEXT } from '../constants/context';
+import { CONTEXT } from '../constants';
 import { Project } from './Project';
 import { Folders } from './Folders';
 

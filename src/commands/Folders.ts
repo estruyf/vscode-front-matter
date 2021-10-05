@@ -1,5 +1,5 @@
 import { Questions } from './../helpers/Questions';
-import { SETTINGS_CONTENT_PAGE_FOLDERS, SETTINGS_CONTENT_STATIC_FOLDER } from './../constants/settings';
+import { SETTINGS_CONTENT_PAGE_FOLDERS, SETTINGS_CONTENT_STATIC_FOLDER } from './../constants';
 import { commands, Uri, workspace, window } from "vscode";
 import { basename, join } from "path";
 import { ContentFolder, FileInfo, FolderInfo } from "../models";
