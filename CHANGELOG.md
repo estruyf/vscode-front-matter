@@ -23,6 +23,7 @@
 ### 🐞 Fixes
 
 - [#120](https://github.com/estruyf/vscode-front-matter/issues/120): Choice and number field not updating when set manually in front matter of the file
+- [#133](https://github.com/estruyf/vscode-front-matter/issues/133): Fix for overriding default content type settings
 
 ## [4.0.1] - 2021-09-24
 

@@ -1,7 +1,7 @@
 import { basename } from "path";
 import { extensions, Uri, ExtensionContext, window, workspace, commands } from "vscode";
 import { Folders, WORKSPACE_PLACEHOLDER } from "../commands/Folders";
-import { EXTENSION_NAME, GITHUB_LINK, SETTINGS_CONTENT_FOLDERS, SETTINGS_CONTENT_PAGE_FOLDERS, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTING_TAXONOMY_CONTENT_TYPES, DEFAULT_CONTENT_TYPE_NAME, EXTENSION_BETA_ID, EXTENSION_ID, ExtensionState } from "../constants";
+import { EXTENSION_NAME, GITHUB_LINK, SETTINGS_CONTENT_FOLDERS, SETTINGS_CONTENT_PAGE_FOLDERS, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTING_TAXONOMY_CONTENT_TYPES, DEFAULT_CONTENT_TYPE_NAME, EXTENSION_BETA_ID, EXTENSION_ID, ExtensionState, DefaultFields } from "../constants";
 import { ContentType } from "../models";
 import { Notifications } from "./Notifications";
 import { Settings } from "./SettingsHelper";
@@ -119,42 +119,58 @@ export class Extension {
       let needsUpdate = false;
       let defaultContentType = contentTypes.find(ct => ct.name === DEFAULT_CONTENT_TYPE_NAME);
 
+      // Check if fields need to be changed for the default content type
       if (defaultContentType) {
-        if (dateField && dateField !== "date") {
-          defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== "date");
-          defaultContentType.fields.push({
-            name: dateField,
-            type: "datetime"
-          });
-          needsUpdate = true;
+        if (dateField && dateField !== DefaultFields.PublishingDate) {
+          const newDateField = defaultContentType.fields.find(f => f.name === dateField);
+
+          if (!newDateField) {
+            defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== DefaultFields.PublishingDate);
+            defaultContentType.fields.push({
+              title: dateField,
+              name: dateField,
+              type: "datetime"
+            });
+            needsUpdate = true;
+          }
         }
   
-        if (lastModField && lastModField !== "lastmod") {
-          defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== "lastmod");
-          defaultContentType.fields.push({
-            name: lastModField,
-            type: "datetime"
-          });
-          needsUpdate = true;
+        if (lastModField && lastModField !== DefaultFields.LastModified) {
+          const newModField = defaultContentType.fields.find(f => f.name === lastModField);
+
+          if (!newModField) {
+            defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== DefaultFields.LastModified);
+            defaultContentType.fields.push({
+              title: lastModField,
+              name: lastModField,
+              type: "datetime"
+            });
+            needsUpdate = true;
+          }
         }
   
-        if (description && description !== "description") {
-          defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== "lastmod");
-          defaultContentType.fields.push({
-            name: description,
-            type: "string"
-          });
-          needsUpdate = true;
+        if (description && description !== DefaultFields.Description) {
+          const newDescField = defaultContentType.fields.find(f => f.name === description);
+
+          if (!newDescField) {
+            defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== DefaultFields.Description);
+            defaultContentType.fields.push({
+              title: description,
+              name: description,
+              type: "string"
+            });
+            needsUpdate = true;
+          }
         }
   
         if (needsUpdate) {
-          await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes);
+          await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
         }
       }
     }
   }
 
-  public async setState(propKey: string, propValue: string, type: "workspace" | "global" = "global"): Promise<void> {
+  public async setState<T>(propKey: string, propValue: T, type: "workspace" | "global" = "global"): Promise<void> {
     if (type === "global") {
       await this.ctx.globalState.update(propKey, propValue);
     } else {
