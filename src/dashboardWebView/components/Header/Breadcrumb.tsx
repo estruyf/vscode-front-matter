@@ -3,6 +3,7 @@ import { basename, join } from 'path';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { HOME_PAGE_NAVIGATION_ID } from '../../../constants';
+import { parseWinPath } from '../../../helpers/parseWinPath';
 import { SelectedMediaFolderAtom, SettingsAtom } from '../../state';
 
 export interface IBreadcrumbProps {}
@@ -19,10 +20,11 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (props: Rea
   React.useEffect(() => {
     const { wsFolder, staticFolder, contentFolders } = settings;
 
-    const isValid = (folderPath: string) => {
+    const isValid = (folderPath: string) => {      
       if (staticFolder) {
-        const staticPath = join(wsFolder, staticFolder);
-        const relPath = folderPath.replace(staticPath, '');
+        const staticPath = parseWinPath(join(wsFolder, staticFolder)) as string;
+        const relPath = folderPath.replace(staticPath, '') as string;
+
         if (relPath.length > 1 && folderPath.startsWith(staticPath)) {
           return true;
         } else if (relPath.length === 0) {
@@ -31,7 +33,7 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (props: Rea
       }
 
       for (let i = 0; i < contentFolders.length; i++) {
-        const contentFolder = contentFolders[i];
+        const contentFolder = parseWinPath(contentFolders[i]) as string;
         const relContentPath = folderPath.replace(contentFolder, '');
         return relContentPath.length > 1 && folderPath.startsWith(contentFolder);
       }
@@ -42,10 +44,10 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (props: Rea
     if (!selectedFolder) {
       setFolders([]);
     } else {
-      const relPath = selectedFolder.replace(settings.wsFolder, '');
+      const relPath = parseWinPath(selectedFolder.replace(parseWinPath(settings.wsFolder) as string, '')) as string;
       const folderParts = relPath.split('/').filter(f => f);
       const allFolders: string[] = [];
-      let previousFolder = settings.wsFolder;
+      let previousFolder = parseWinPath(settings.wsFolder) as string;
 
       for (const part of folderParts) {
         const folder = join(previousFolder, part);

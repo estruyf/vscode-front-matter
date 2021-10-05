@@ -5,6 +5,7 @@ import { existsSync } from 'fs';
 import { Folders } from '../commands/Folders';
 import { Settings } from './SettingsHelper';
 import { SETTINGS_CONTENT_STATIC_FOLDER } from '../constants';
+import { parseWinPath } from './parseWinPath';
 
 export class ImageHelper {
 
@@ -51,7 +52,7 @@ export class ImageHelper {
     const wsFolder = Folders.getWorkspaceFolder();
     const staticFolder = Settings.get<string>(SETTINGS_CONTENT_STATIC_FOLDER);
 
-    const staticPath = join(wsFolder?.fsPath || "", staticFolder || "", value);
+    const staticPath = join(parseWinPath(wsFolder?.fsPath || ""), staticFolder || "", value);
     const contentFolderPath = filePath ? join(dirname(filePath), value) : null;
 
     if (existsSync(staticPath)) {
@@ -72,7 +73,7 @@ export class ImageHelper {
 
     let relPath = imgValue || "";
     if (imgValue) {
-      relPath = imgValue.split(wsFolder?.fsPath || "").pop() || "";
+      relPath = imgValue.split(parseWinPath(wsFolder?.fsPath || "")).pop() || "";
       relPath = imgValue.split(staticFolder || "").pop() || "";
     }
     return relPath;

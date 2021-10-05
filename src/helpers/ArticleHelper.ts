@@ -201,6 +201,7 @@ export class ArticleHelper {
           await EditorHelper.showFile(fileName)
         } 
       }];
+      
       Notifications.error(`There seems to be an issue parsing the content its front matter. FileName: ${basename(fileName)}. ERROR: ${error.message || error}`, ...items).then((result: any) => {
         if (result?.title) {
           const item = items.find(i => i.title === result.title);

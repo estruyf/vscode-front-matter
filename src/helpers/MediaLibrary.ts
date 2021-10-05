@@ -5,6 +5,7 @@ import { basename, dirname, join, parse } from 'path';
 import { Folders, WORKSPACE_PLACEHOLDER } from '../commands/Folders';
 import { existsSync, renameSync } from 'fs';
 import { Notifications } from './Notifications';
+import { parseWinPath } from './parseWinPath';
 
 interface MediaRecord {
   description: string;
@@ -17,7 +18,7 @@ export class MediaLibrary {
 
   private constructor() {
     const wsFolder = Folders.getWorkspaceFolder();
-    this.db = new JsonDB(join(wsFolder?.fsPath || "", '.frontmatter/mediaDb.json'), true, false, '/');
+    this.db = new JsonDB(join(parseWinPath(wsFolder?.fsPath || ""), '.frontmatter/mediaDb.json'), true, false, '/');
 
     workspace.onDidRenameFiles(e => {
       e.files.forEach(f => {
@@ -93,7 +94,7 @@ export class MediaLibrary {
   private parsePath(path: string) {
     const wsFolder = Folders.getWorkspaceFolder();
     const isWindows = process.platform === 'win32';
-    let absPath = path.replace(wsFolder?.fsPath || "", WORKSPACE_PLACEHOLDER);
+    let absPath = path.replace(parseWinPath(wsFolder?.fsPath || ""), WORKSPACE_PLACEHOLDER);
     absPath = isWindows ? absPath.split('\\').join('/') : absPath;
     return absPath.toLowerCase();
   }

@@ -290,7 +290,7 @@ export class Dashboard {
       selectedFolder = '';
     }
 
-    const relSelectedFolderPath = selectedFolder ? selectedFolder.substring((wsFolder?.fsPath || "").length + 1) : '';
+    const relSelectedFolderPath = selectedFolder ? selectedFolder.substring((parseWinPath(wsFolder?.fsPath || "")).length + 1) : '';
 
     let allMedia: MediaInfo[] = [];
 
@@ -361,20 +361,20 @@ export class Dashboard {
 
     if (selectedFolder) {
       if (existsSync(selectedFolder)) {
-        allFolders = readdirSync(selectedFolder, { withFileTypes: true }).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(selectedFolder, dir.name)) as string);
+        allFolders = readdirSync(selectedFolder, { withFileTypes: true }).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(selectedFolder, dir.name)));
       }
     } else {
       for (const contentFolder of contentFolders) {
         const contentPath = contentFolder.path;
         if (contentPath && existsSync(contentPath)) {
-          const subFolders = readdirSync(contentPath, { withFileTypes: true }).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(contentPath, dir.name)) as string);
+          const subFolders = readdirSync(contentPath, { withFileTypes: true }).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(contentPath, dir.name)));
           allContentFolders = [...allContentFolders, ...subFolders];
         }
       }
   
-      const staticPath = join(wsFolder?.fsPath || "", staticFolder || "");
+      const staticPath = join(parseWinPath(wsFolder?.fsPath || ""), staticFolder || "");
       if (staticPath && existsSync(staticPath)) {
-        allFolders = readdirSync(staticPath, { withFileTypes: true }).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(staticPath, dir.name)) as string);
+        allFolders = readdirSync(staticPath, { withFileTypes: true }).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(staticPath, dir.name)));
       }
     }
 

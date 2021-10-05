@@ -1,3 +1,3 @@
-export const parseWinPath = (path: string | undefined) => {
-    return path?.split(`\\`).join(`/`);
+export const parseWinPath = (path: string | undefined): string => {
+    return path?.split(`\\`).join(`/`) || '';
   }

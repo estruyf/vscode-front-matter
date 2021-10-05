@@ -10,6 +10,7 @@ import { Settings } from "../helpers";
 import { existsSync, mkdirSync } from 'fs';
 import { format } from 'date-fns';
 import { Dashboard } from './Dashboard';
+import { parseWinPath } from '../helpers/parseWinPath';
 
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
@@ -26,7 +27,7 @@ export class Folders {
     let startPath = "";
 
     if (data?.selectedFolder) {
-      startPath = data.selectedFolder.replace((wsFolder?.fsPath || ""), "");
+      startPath = data.selectedFolder.replace(parseWinPath(wsFolder?.fsPath || ""), "");
     } else if (staticFolder) {
       startPath = `/${staticFolder}`;
     }
@@ -51,7 +52,7 @@ export class Folders {
     let parentFolders: string[] = [];
 
     for (const folder of folders) {
-      const folderPath = join(wsFolder?.fsPath || "", parentFolders.join("/"), folder);
+      const folderPath = join(parseWinPath(wsFolder?.fsPath || ""), parentFolders.join("/"), folder);
 
       parentFolders.push(folder);
       
@@ -179,6 +180,7 @@ export class Folders {
 
       return projectFolder;
     }
+    
     return undefined;
   }
 
@@ -283,7 +285,7 @@ export class Folders {
    */
   private static absWsFolder(folder: ContentFolder, wsFolder?: Uri) {
     const isWindows = process.platform === 'win32';
-    let absPath =  folder.path.replace(WORKSPACE_PLACEHOLDER, wsFolder?.fsPath || "");
+    let absPath =  folder.path.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ""));
     absPath = isWindows ? absPath.split('/').join('\\') : absPath;
     return absPath;
   }
@@ -296,7 +298,7 @@ export class Folders {
    */
   private static relWsFolder(folder: ContentFolder, wsFolder?: Uri) {
     const isWindows = process.platform === 'win32';
-    let absPath =  folder.path.replace(wsFolder?.fsPath || "", WORKSPACE_PLACEHOLDER);
+    let absPath =  folder.path.replace(parseWinPath(wsFolder?.fsPath || ""), WORKSPACE_PLACEHOLDER);
     absPath = isWindows ? absPath.split('\\').join('/') : absPath;
     return absPath;
   }
