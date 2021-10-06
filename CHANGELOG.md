@@ -20,6 +20,7 @@
 - [#128](https://github.com/estruyf/vscode-front-matter/issues/128): Support for multi-select on image fields added
 - [#131](https://github.com/estruyf/vscode-front-matter/issues/131): Folder creation support added on media dashboard
 - [#134](https://github.com/estruyf/vscode-front-matter/issues/134): On startup, the extension checks if local settings can be promoted
+- [#135](https://github.com/estruyf/vscode-front-matter/issues/135): `Hidden` property added for field configuration
 
 ### 🐞 Fixes
 
