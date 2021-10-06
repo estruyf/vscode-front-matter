@@ -90,18 +90,31 @@ export class Extension {
    * Migrate old settings to new settings
    */
   public async migrateSettings(): Promise<void> {
+    const versionInfo = this.getVersion();
+    if (versionInfo.usedVersion === undefined) {
+      return;
+    }
+
+    // Split semantic version
+    const version = versionInfo.usedVersion.split('.');
+    const major = parseInt(version[0]);
+    const minor = parseInt(version[1]);
+    const patch = parseInt(version[2]);
+
     // Migration to version 3.1.0
-    const folders = Settings.get<any>(SETTINGS_CONTENT_FOLDERS);
-    if (folders && folders.length > 0) {
-      const workspace = Folders.getWorkspaceFolder();
-      const projectFolder = basename(workspace?.fsPath || "");
+    if (major < 3 || (major === 3 && minor < 1)) {
+      const folders = Settings.get<any>(SETTINGS_CONTENT_FOLDERS);
+      if (folders && folders.length > 0) {
+        const workspace = Folders.getWorkspaceFolder();
+        const projectFolder = basename(workspace?.fsPath || "");
 
-      const paths = folders.map((folder: any) => ({
-        title: folder.title,
-        path: `${WORKSPACE_PLACEHOLDER}${folder.fsPath.split(projectFolder).slice(1).join('')}`.split('\\').join('/')
-      }));
+        const paths = folders.map((folder: any) => ({
+          title: folder.title,
+          path: `${WORKSPACE_PLACEHOLDER}${folder.fsPath.split(projectFolder).slice(1).join('')}`.split('\\').join('/')
+        }));
 
-      await Settings.update(SETTINGS_CONTENT_PAGE_FOLDERS, paths);
+        await Settings.update(SETTINGS_CONTENT_PAGE_FOLDERS, paths);
+      }
     }
 
     // Create team settings
@@ -110,61 +123,63 @@ export class Extension {
     }
 
     // Migration to version 4.0.0
-    const dateField = Settings.get<string>(SETTING_DATE_FIELD);
-    const lastModField = Settings.get<string>(SETTING_MODIFIED_FIELD);
-    const description = Settings.get<string>(SETTING_SEO_DESCRIPTION_FIELD);
-    const contentTypes = Settings.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
+    if (major < 4) {
+      const dateField = Settings.get<string>(SETTING_DATE_FIELD);
+      const lastModField = Settings.get<string>(SETTING_MODIFIED_FIELD);
+      const description = Settings.get<string>(SETTING_SEO_DESCRIPTION_FIELD);
+      const contentTypes = Settings.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
 
-    if (contentTypes) {
-      let needsUpdate = false;
-      let defaultContentType = contentTypes.find(ct => ct.name === DEFAULT_CONTENT_TYPE_NAME);
+      if (contentTypes) {
+        let needsUpdate = false;
+        let defaultContentType = contentTypes.find(ct => ct.name === DEFAULT_CONTENT_TYPE_NAME);
 
-      // Check if fields need to be changed for the default content type
-      if (defaultContentType) {
-        if (dateField && dateField !== DefaultFields.PublishingDate) {
-          const newDateField = defaultContentType.fields.find(f => f.name === dateField);
+        // Check if fields need to be changed for the default content type
+        if (defaultContentType) {
+          if (dateField && dateField !== DefaultFields.PublishingDate) {
+            const newDateField = defaultContentType.fields.find(f => f.name === dateField);
 
-          if (!newDateField) {
-            defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== DefaultFields.PublishingDate);
-            defaultContentType.fields.push({
-              title: dateField,
-              name: dateField,
-              type: "datetime"
-            });
-            needsUpdate = true;
+            if (!newDateField) {
+              defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== DefaultFields.PublishingDate);
+              defaultContentType.fields.push({
+                title: dateField,
+                name: dateField,
+                type: "datetime"
+              });
+              needsUpdate = true;
+            }
           }
-        }
-  
-        if (lastModField && lastModField !== DefaultFields.LastModified) {
-          const newModField = defaultContentType.fields.find(f => f.name === lastModField);
+    
+          if (lastModField && lastModField !== DefaultFields.LastModified) {
+            const newModField = defaultContentType.fields.find(f => f.name === lastModField);
 
-          if (!newModField) {
-            defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== DefaultFields.LastModified);
-            defaultContentType.fields.push({
-              title: lastModField,
-              name: lastModField,
-              type: "datetime"
-            });
-            needsUpdate = true;
+            if (!newModField) {
+              defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== DefaultFields.LastModified);
+              defaultContentType.fields.push({
+                title: lastModField,
+                name: lastModField,
+                type: "datetime"
+              });
+              needsUpdate = true;
+            }
           }
-        }
-  
-        if (description && description !== DefaultFields.Description) {
-          const newDescField = defaultContentType.fields.find(f => f.name === description);
+    
+          if (description && description !== DefaultFields.Description) {
+            const newDescField = defaultContentType.fields.find(f => f.name === description);
 
-          if (!newDescField) {
-            defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== DefaultFields.Description);
-            defaultContentType.fields.push({
-              title: description,
-              name: description,
-              type: "string"
-            });
-            needsUpdate = true;
+            if (!newDescField) {
+              defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== DefaultFields.Description);
+              defaultContentType.fields.push({
+                title: description,
+                name: description,
+                type: "string"
+              });
+              needsUpdate = true;
+            }
           }
-        }
-  
-        if (needsUpdate) {
-          await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
+    
+          if (needsUpdate) {
+            await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
+          }
         }
       }
     }
