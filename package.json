@@ -455,7 +455,7 @@
         },
         "frontMatter.templates.folder": {
           "type": "string",
-          "default": ".templates",
+          "default": ".frontmatter/templates",
           "markdownDescription": "Specify the folder to use for your article templates. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.folder)",
           "scope": "Templates"
         },

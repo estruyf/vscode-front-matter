@@ -6,6 +6,7 @@ import { Folders, WORKSPACE_PLACEHOLDER } from '../commands/Folders';
 import { existsSync, renameSync } from 'fs';
 import { Notifications } from './Notifications';
 import { parseWinPath } from './parseWinPath';
+import { LocalStore } from '../constants';
 
 interface MediaRecord {
   description: string;
@@ -18,7 +19,7 @@ export class MediaLibrary {
 
   private constructor() {
     const wsFolder = Folders.getWorkspaceFolder();
-    this.db = new JsonDB(join(parseWinPath(wsFolder?.fsPath || ""), '.frontmatter/mediaDb.json'), true, false, '/');
+    this.db = new JsonDB(join(parseWinPath(wsFolder?.fsPath || ""), LocalStore.rootFolder, LocalStore.contentFolder, LocalStore.mediaDatabaseFile), true, false, '/');
 
     workspace.onDidRenameFiles(e => {
       e.files.forEach(f => {

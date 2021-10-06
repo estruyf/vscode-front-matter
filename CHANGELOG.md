@@ -21,6 +21,7 @@
 - [#131](https://github.com/estruyf/vscode-front-matter/issues/131): Folder creation support added on media dashboard
 - [#134](https://github.com/estruyf/vscode-front-matter/issues/134): On startup, the extension checks if local settings can be promoted
 - [#135](https://github.com/estruyf/vscode-front-matter/issues/135): `Hidden` property added for field configuration
+- [#137](https://github.com/estruyf/vscode-front-matter/issues/137): Ask to move the `.templates` folder to the new `.frontmatter` folder
 
 ### 🐞 Fixes
 

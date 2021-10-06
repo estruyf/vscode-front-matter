@@ -1,9 +1,11 @@
-import { basename } from "path";
+import { existsSync, renameSync } from "fs";
+import { basename, join } from "path";
 import { extensions, Uri, ExtensionContext, window, workspace, commands } from "vscode";
 import { Folders, WORKSPACE_PLACEHOLDER } from "../commands/Folders";
-import { EXTENSION_NAME, GITHUB_LINK, SETTINGS_CONTENT_FOLDERS, SETTINGS_CONTENT_PAGE_FOLDERS, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTING_TAXONOMY_CONTENT_TYPES, DEFAULT_CONTENT_TYPE_NAME, EXTENSION_BETA_ID, EXTENSION_ID, ExtensionState, DefaultFields } from "../constants";
+import { EXTENSION_NAME, GITHUB_LINK, SETTINGS_CONTENT_FOLDERS, SETTINGS_CONTENT_PAGE_FOLDERS, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTING_TAXONOMY_CONTENT_TYPES, DEFAULT_CONTENT_TYPE_NAME, EXTENSION_BETA_ID, EXTENSION_ID, ExtensionState, DefaultFields, LocalStore, SETTING_TEMPLATES_FOLDER } from "../constants";
 import { ContentType } from "../models";
 import { Notifications } from "./Notifications";
+import { parseWinPath } from "./parseWinPath";
 import { Settings } from "./SettingsHelper";
 
 
@@ -179,6 +181,34 @@ export class Extension {
     
           if (needsUpdate) {
             await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
+          }
+        }
+      }
+    }
+
+    // Migration to version 5
+    if (major <= 5) {
+      const isMoved = await Extension.getInstance().getState<boolean | undefined>(ExtensionState.MoveTemplatesFolder);
+      if (!isMoved) {
+        const wsFolder= Folders.getWorkspaceFolder();
+        if (wsFolder) {
+          const templateFolder = join(parseWinPath(wsFolder.fsPath), `.templates`);
+          if (existsSync(templateFolder)) {
+            window.showInformationMessage(`Would you like to move your ".templates" folder to the new ".frontmatter" folder?`, 'Yes', 'No').then(async (result) => {
+              if (result === "Yes") {
+                const newFolderPath = join(parseWinPath(wsFolder.fsPath), LocalStore.rootFolder, LocalStore.templatesFolder);
+                renameSync(templateFolder, newFolderPath);
+                commands.executeCommand(`workbench.action.reloadWindow`);
+                Settings.update(SETTING_TEMPLATES_FOLDER, undefined, true);
+                Settings.update(SETTING_TEMPLATES_FOLDER, undefined);
+              } else if (result === "No") {
+                Settings.update(SETTING_TEMPLATES_FOLDER, `.templates`, true);
+              }
+    
+              if (result === "No" || result === "Yes") {
+                Extension.getInstance().setState(ExtensionState.MoveTemplatesFolder, true);
+              }
+            });
           }
         }
       }
