@@ -602,6 +602,9 @@ input:checked + .field__toggle__slider:before {
 
 .metadata_field__preview_image__preview {
   background-color: var(--vscode-button-secondaryBackground);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .metadata_field__preview_image__remove {
