@@ -289,15 +289,23 @@
                     },
                     "single": {
                       "type": "boolean",
+                      "default": false,
                       "description": "Is a single line field"
                     },
                     "multiple": {
                       "type": "boolean",
+                      "default": false,
                       "description": "Do you allow to select multiple values?"
                     },
                     "isPreviewImage": {
                       "type": "boolean",
+                      "default": false,
                       "description": "Specify if the image field can be used as preview. Be aware, you can only have one preview image per content type."
+                    },
+                    "hidden": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "Do you want to hide the field from the metadata section?"
                     }
                   },
                   "additionalProperties": false,

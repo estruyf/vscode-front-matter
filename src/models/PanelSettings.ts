@@ -32,6 +32,7 @@ export interface Field {
   single?: boolean;
   multiple?: boolean;
   isPreviewImage?: boolean;
+  hidden?: boolean;
 }
 
 export interface DateInfo {

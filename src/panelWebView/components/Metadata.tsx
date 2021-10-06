@@ -56,6 +56,10 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
     }
 
     return ctFields.map(field => {
+      if (field.hidden) {
+        return null;
+      }
+
       if (field.type === 'datetime') {
         const dateValue = metadata[field.name] ? getDate(metadata[field.name] as string) : null;
 
@@ -159,6 +163,8 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
             focussed={focusElm === TagType.categories}
             unsetFocus={unsetFocus} />
         );
+      } else {
+        return null;
       }
     });
   };
