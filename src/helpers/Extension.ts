@@ -1,11 +1,11 @@
-import { basename } from "path";
+import { existsSync, renameSync } from "fs";
+import { basename, join } from "path";
 import { extensions, Uri, ExtensionContext, window, workspace, commands } from "vscode";
 import { Folders, WORKSPACE_PLACEHOLDER } from "../commands/Folders";
-import { EXTENSION_NAME, GITHUB_LINK, SETTINGS_CONTENT_FOLDERS, SETTINGS_CONTENT_PAGE_FOLDERS, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTING_TAXONOMY_CONTENT_TYPES } from "../constants";
-import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
-import { EXTENSION_BETA_ID, EXTENSION_ID, EXTENSION_STATE_VERSION } from "../constants/Extension";
+import { EXTENSION_NAME, GITHUB_LINK, SETTINGS_CONTENT_FOLDERS, SETTINGS_CONTENT_PAGE_FOLDERS, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTING_TAXONOMY_CONTENT_TYPES, DEFAULT_CONTENT_TYPE_NAME, EXTENSION_BETA_ID, EXTENSION_ID, ExtensionState, DefaultFields, LocalStore, SETTING_TEMPLATES_FOLDER } from "../constants";
 import { ContentType } from "../models";
 import { Notifications } from "./Notifications";
+import { parseWinPath } from "./parseWinPath";
 import { Settings } from "./SettingsHelper";
 
 
@@ -32,7 +32,7 @@ export class Extension {
   public getVersion(): { usedVersion: string | undefined, installedVersion: string } {
     const frontMatter = extensions.getExtension(this.isBetaVersion() ? EXTENSION_BETA_ID : EXTENSION_ID)!;
     let installedVersion = frontMatter.packageJSON.version;
-    const usedVersion = this.ctx.globalState.get<string>(EXTENSION_STATE_VERSION);
+    const usedVersion = this.ctx.globalState.get<string>(ExtensionState.Version);
     
     if (this.isBetaVersion()) {
       installedVersion = `${installedVersion}-beta`;
@@ -78,7 +78,7 @@ export class Extension {
    * Set the current version information for the extension
    */
   public setVersion(installedVersion: string): void {
-    this.ctx.globalState.update(EXTENSION_STATE_VERSION, installedVersion);
+    this.ctx.globalState.update(ExtensionState.Version, installedVersion);
   }
 
   /**
@@ -92,18 +92,31 @@ export class Extension {
    * Migrate old settings to new settings
    */
   public async migrateSettings(): Promise<void> {
+    const versionInfo = this.getVersion();
+    if (versionInfo.usedVersion === undefined) {
+      return;
+    }
+
+    // Split semantic version
+    const version = versionInfo.usedVersion.split('.');
+    const major = parseInt(version[0]);
+    const minor = parseInt(version[1]);
+    const patch = parseInt(version[2]);
+
     // Migration to version 3.1.0
-    const folders = Settings.get<any>(SETTINGS_CONTENT_FOLDERS);
-    if (folders && folders.length > 0) {
-      const workspace = Folders.getWorkspaceFolder();
-      const projectFolder = basename(workspace?.fsPath || "");
+    if (major < 3 || (major === 3 && minor < 1)) {
+      const folders = Settings.get<any>(SETTINGS_CONTENT_FOLDERS);
+      if (folders && folders.length > 0) {
+        const workspace = Folders.getWorkspaceFolder();
+        const projectFolder = basename(workspace?.fsPath || "");
 
-      const paths = folders.map((folder: any) => ({
-        title: folder.title,
-        path: `${WORKSPACE_PLACEHOLDER}${folder.fsPath.split(projectFolder).slice(1).join('')}`.split('\\').join('/')
-      }));
+        const paths = folders.map((folder: any) => ({
+          title: folder.title,
+          path: `${WORKSPACE_PLACEHOLDER}${folder.fsPath.split(projectFolder).slice(1).join('')}`.split('\\').join('/')
+        }));
 
-      await Settings.update(SETTINGS_CONTENT_PAGE_FOLDERS, paths);
+        await Settings.update(SETTINGS_CONTENT_PAGE_FOLDERS, paths);
+      }
     }
 
     // Create team settings
@@ -112,56 +125,110 @@ export class Extension {
     }
 
     // Migration to version 4.0.0
-    const dateField = Settings.get<string>(SETTING_DATE_FIELD);
-    const lastModField = Settings.get<string>(SETTING_MODIFIED_FIELD);
-    const description = Settings.get<string>(SETTING_SEO_DESCRIPTION_FIELD);
-    const contentTypes = Settings.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
+    if (major < 4) {
+      const dateField = Settings.get<string>(SETTING_DATE_FIELD);
+      const lastModField = Settings.get<string>(SETTING_MODIFIED_FIELD);
+      const description = Settings.get<string>(SETTING_SEO_DESCRIPTION_FIELD);
+      const contentTypes = Settings.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
 
-    if (contentTypes) {
-      let needsUpdate = false;
-      let defaultContentType = contentTypes.find(ct => ct.name === DEFAULT_CONTENT_TYPE_NAME);
+      if (contentTypes) {
+        let needsUpdate = false;
+        let defaultContentType = contentTypes.find(ct => ct.name === DEFAULT_CONTENT_TYPE_NAME);
 
-      if (defaultContentType) {
-        if (dateField && dateField !== "date") {
-          defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== "date");
-          defaultContentType.fields.push({
-            name: dateField,
-            type: "datetime"
-          });
-          needsUpdate = true;
+        // Check if fields need to be changed for the default content type
+        if (defaultContentType) {
+          if (dateField && dateField !== DefaultFields.PublishingDate) {
+            const newDateField = defaultContentType.fields.find(f => f.name === dateField);
+
+            if (!newDateField) {
+              defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== DefaultFields.PublishingDate);
+              defaultContentType.fields.push({
+                title: dateField,
+                name: dateField,
+                type: "datetime"
+              });
+              needsUpdate = true;
+            }
+          }
+    
+          if (lastModField && lastModField !== DefaultFields.LastModified) {
+            const newModField = defaultContentType.fields.find(f => f.name === lastModField);
+
+            if (!newModField) {
+              defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== DefaultFields.LastModified);
+              defaultContentType.fields.push({
+                title: lastModField,
+                name: lastModField,
+                type: "datetime"
+              });
+              needsUpdate = true;
+            }
+          }
+    
+          if (description && description !== DefaultFields.Description) {
+            const newDescField = defaultContentType.fields.find(f => f.name === description);
+
+            if (!newDescField) {
+              defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== DefaultFields.Description);
+              defaultContentType.fields.push({
+                title: description,
+                name: description,
+                type: "string"
+              });
+              needsUpdate = true;
+            }
+          }
+    
+          if (needsUpdate) {
+            await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
+          }
         }
-  
-        if (lastModField && lastModField !== "lastmod") {
-          defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== "lastmod");
-          defaultContentType.fields.push({
-            name: lastModField,
-            type: "datetime"
-          });
-          needsUpdate = true;
-        }
-  
-        if (description && description !== "description") {
-          defaultContentType.fields = defaultContentType.fields.filter(f => f.name !== "lastmod");
-          defaultContentType.fields.push({
-            name: description,
-            type: "string"
-          });
-          needsUpdate = true;
-        }
-  
-        if (needsUpdate) {
-          await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes);
+      }
+    }
+
+    // Migration to version 5
+    if (major <= 5) {
+      const isMoved = await Extension.getInstance().getState<boolean | undefined>(ExtensionState.MoveTemplatesFolder);
+      if (!isMoved) {
+        const wsFolder= Folders.getWorkspaceFolder();
+        if (wsFolder) {
+          const templateFolder = join(parseWinPath(wsFolder.fsPath), `.templates`);
+          if (existsSync(templateFolder)) {
+            window.showInformationMessage(`Would you like to move your ".templates" folder to the new ".frontmatter" folder?`, 'Yes', 'No').then(async (result) => {
+              if (result === "Yes") {
+                const newFolderPath = join(parseWinPath(wsFolder.fsPath), LocalStore.rootFolder, LocalStore.templatesFolder);
+                renameSync(templateFolder, newFolderPath);
+                commands.executeCommand(`workbench.action.reloadWindow`);
+                Settings.update(SETTING_TEMPLATES_FOLDER, undefined, true);
+                Settings.update(SETTING_TEMPLATES_FOLDER, undefined);
+              } else if (result === "No") {
+                Settings.update(SETTING_TEMPLATES_FOLDER, `.templates`, true);
+              }
+    
+              if (result === "No" || result === "Yes") {
+                Extension.getInstance().setState(ExtensionState.MoveTemplatesFolder, true);
+              }
+            });
+          }
         }
       }
     }
   }
 
-  public async setState(propKey: string, propValue: string): Promise<void> {
-    await this.ctx.globalState.update(propKey, propValue);
+  public async setState<T>(propKey: string, propValue: T, type: "workspace" | "global" = "global"): Promise<void> {
+    if (type === "global") {
+      await this.ctx.globalState.update(propKey, propValue);
+    } else {
+      await this.ctx.workspaceState.update(propKey, propValue);
+    }
   }
 
-  public async getState<T>(propKey: string): Promise<T | undefined> {
-    return await this.ctx.globalState.get(propKey);
+  public async getState<T>(propKey: string, type: "workspace" | "global" = "global"): Promise<T | undefined> {
+    if (type === "global") {
+      return await this.ctx.globalState.get(propKey);
+    } else {
+      return await this.ctx.workspaceState.get(propKey);
+    }
   }
 
   public isBetaVersion() {

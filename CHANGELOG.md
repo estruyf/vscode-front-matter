@@ -1,5 +1,33 @@
 # Change Log
 
+## [5.0.0] - 2021-10-07 - [Release Notes](https://beta.frontmatter.codes/updates/v5.0.0)
+
+### ✨ New features
+
+- [#113](https://github.com/estruyf/vscode-front-matter/issues/113): Integrating a local DB for media metadata (caption, alt)
+- [#132](https://github.com/estruyf/vscode-front-matter/issues/132): Major changes to the media dashboard which allows you to navigate through all folders
+
+### 🎨 Enhancements
+
+- [#110](https://github.com/estruyf/vscode-front-matter/issues/110): Add support for workspaces with multiple folders
+- [#117](https://github.com/estruyf/vscode-front-matter/issues/117): Allow to specify a singleline of text in the metadata fields
+- [#119](https://github.com/estruyf/vscode-front-matter/issues/119): Multi-select support for choice fields
+- [#121](https://github.com/estruyf/vscode-front-matter/issues/121): Choice fields support ID/title objects as well as a regular string
+- [#122](https://github.com/estruyf/vscode-front-matter/issues/122): Update the filenames of your media
+- [#124](https://github.com/estruyf/vscode-front-matter/issues/124): Add new `isPreviewImage` property to the content type field to specify custom preview images
+- [#126](https://github.com/estruyf/vscode-front-matter/issues/126): Create new content from the available content types
+- [#127](https://github.com/estruyf/vscode-front-matter/issues/127): Title bar action added to open the dashboard
+- [#128](https://github.com/estruyf/vscode-front-matter/issues/128): Support for multi-select on image fields added
+- [#131](https://github.com/estruyf/vscode-front-matter/issues/131): Folder creation support added on media dashboard
+- [#134](https://github.com/estruyf/vscode-front-matter/issues/134): On startup, the extension checks if local settings can be promoted
+- [#135](https://github.com/estruyf/vscode-front-matter/issues/135): `Hidden` property added for field configuration
+- [#137](https://github.com/estruyf/vscode-front-matter/issues/137): Ask to move the `.templates` folder to the new `.frontmatter` folder
+
+### 🐞 Fixes
+
+- [#120](https://github.com/estruyf/vscode-front-matter/issues/120): Choice and number field not updating when set manually in front matter of the file
+- [#133](https://github.com/estruyf/vscode-front-matter/issues/133): Fix for overriding default content type settings
+
 ## [4.0.1] - 2021-09-24
 
 - [#114](https://github.com/estruyf/vscode-front-matter/issues/114): Fix for categories/tags provided as string in YAML

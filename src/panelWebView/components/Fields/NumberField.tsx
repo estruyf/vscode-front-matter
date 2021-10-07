@@ -1,5 +1,6 @@
 import { CalculatorIcon } from '@heroicons/react/outline';
 import * as React from 'react';
+import { useEffect } from 'react';
 import { VsLabel } from '../VscodeComponents';
 
 export interface INumberFieldProps {
@@ -20,6 +21,12 @@ export const NumberField: React.FunctionComponent<INumberFieldProps> = ({label, 
     setNrValue(newValue);
     onChange(newValue);
   };
+
+  useEffect(() => {
+    if (nrValue !== value) {
+      setNrValue(value);
+    }
+  }, [value]);
 
   return (
     <div className={`metadata_field`}>

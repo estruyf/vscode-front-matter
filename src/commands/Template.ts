@@ -1,3 +1,4 @@
+import { Questions } from './../helpers/Questions';
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -7,7 +8,7 @@ import sanitize from '../helpers/Sanitize';
 import { ArticleHelper, Settings } from '../helpers';
 import { Article } from '.';
 import { Notifications } from '../helpers/Notifications';
-import { CONTEXT } from '../constants/context';
+import { CONTEXT } from '../constants';
 import { Project } from './Project';
 import { Folders } from './Folders';
 
@@ -67,7 +68,7 @@ export class Template {
         ["yes", "no"], 
         { 
           canPickMany: false, 
-          placeHolder: `Do you want to keep the article its contents for the template?`,
+          placeHolder: `Do you want to keep the contents for the template?`,
         }
       );
 
@@ -113,26 +114,22 @@ export class Template {
     }
 
     const selectedTemplate = await vscode.window.showQuickPick(templates.map(t => path.basename(t.fsPath)), {
-      placeHolder: `Select the article template to use`
+      placeHolder: `Select the content template to use`
     });
     if (!selectedTemplate) {
       Notifications.warning(`No template selected.`);
       return;
     }
 
-    const titleValue = await vscode.window.showInputBox({  
-      prompt: `What would you like to use as a title for the new article?`,
-      placeHolder: `Article title`
-    });
+    const titleValue = await Questions.ContentTitle();
     if (!titleValue) {
-      Notifications.warning(`You did not specify an article title.`);
       return;
     }
 
     // Start the template read
     const template = templates.find(t => t.fsPath.endsWith(selectedTemplate));
     if (!template) {
-      Notifications.warning(`Article template could not be found.`);
+      Notifications.warning(`Content template could not be found.`);
       return;
     }
 
@@ -180,7 +177,7 @@ export class Template {
       vscode.window.showTextDocument(txtDoc);
     }
 
-    Notifications.info(`Your new article has been created.`);
+    Notifications.info(`Your new content has been created.`);
   }
 
   /**

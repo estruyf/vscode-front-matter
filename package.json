@@ -3,7 +3,7 @@
   "displayName": "Front Matter",
   "description": "An essential Visual Studio Code extension when you want to manage the markdown pages of your static site like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -268,8 +268,44 @@
                       "type": "array",
                       "description": "Define your choices",
                       "items": {
-                        "type": "string"
+                        "type": [
+                          "object",
+                          "string"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "description": "The choice ID"
+                          },
+                          "title": {
+                            "type": "string",
+                            "description": "The choice title"
+                          }
+                        }
                       }
+                    },
+                    "single": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "Is a single line field"
+                    },
+                    "multiple": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "Do you allow to select multiple values?"
+                    },
+                    "isPreviewImage": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "Specify if the image field can be used as preview. Be aware, you can only have one preview image per content type."
+                    },
+                    "hidden": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "Do you want to hide the field from the metadata section?"
                     }
                   },
                   "additionalProperties": false,
@@ -306,7 +342,7 @@
                   "type": "datetime"
                 },
                 {
-                  "title": "Article preview",
+                  "title": "Content preview",
                   "name": "preview",
                   "type": "image"
                 },
@@ -419,7 +455,7 @@
         },
         "frontMatter.templates.folder": {
           "type": "string",
-          "default": ".templates",
+          "default": ".frontmatter/templates",
           "markdownDescription": "Specify the folder to use for your article templates. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.folder)",
           "scope": "Templates"
         },
@@ -475,7 +511,7 @@
       },
       {
         "command": "frontMatter.generateSlug",
-        "title": "Generate slug based on article title",
+        "title": "Generate slug based on content title",
         "category": "Front matter"
       },
       {
@@ -490,7 +526,7 @@
       },
       {
         "command": "frontMatter.insertImage",
-        "title": "Insert image into article",
+        "title": "Insert image into your content",
         "category": "Front matter",
         "icon": "$(device-camera)"
       },
@@ -501,17 +537,18 @@
       },
       {
         "command": "frontMatter.createContent",
-        "title": "New article from template",
+        "title": "Create new content from defined content type or template",
         "category": "Front matter"
       },
       {
         "command": "frontMatter.dashboard",
         "title": "Open dashboard",
-        "category": "Front matter"
+        "category": "Front matter",
+        "icon": "$(preview)"
       },
       {
         "command": "frontMatter.preview",
-        "title": "Preview article",
+        "title": "Preview content",
         "category": "Front matter"
       },
       {
@@ -533,9 +570,14 @@
     "menus": {
       "editor/title": [
         {
-          "when": "resourceLangId == markdown",
           "command": "frontMatter.insertImage",
-          "group": "navigation"
+          "group": "navigation@-99",
+          "when": "resourceLangId == markdown"
+        },
+        {
+          "command": "frontMatter.dashboard",
+          "group": "navigation@-98",
+          "when": "frontMatter:enabled == true"
         }
       ],
       "explorer/context": [
@@ -616,6 +658,8 @@
     "@headlessui/react": "^1.4.1",
     "@heroicons/react": "1.0.4",
     "@iarna/toml": "2.2.3",
+    "@sentry/react": "^6.13.2",
+    "@sentry/tracing": "^6.13.2",
     "@tailwindcss/forms": "^0.3.3",
     "@types/glob": "7.1.3",
     "@types/js-yaml": "3.12.1",
@@ -636,8 +680,10 @@
     "gray-matter": "4.0.2",
     "html-loader": "1.3.2",
     "html-webpack-plugin": "4.5.0",
+    "image-size": "^1.0.0",
     "lodash.uniqby": "4.7.0",
     "mdast-util-from-markdown": "1.0.0",
+    "node-json-db": "^1.3.0",
     "postcss": "^8.3.6",
     "postcss-loader": "4.3.0",
     "react": "17.0.1",

@@ -5,12 +5,13 @@ import { VsLabel } from '../VscodeComponents';
 export interface ITextFieldProps {
   label: string;
   value: string | null;
+  singleLine: boolean | undefined;
   limit: number | undefined;
   rows?: number;
   onChange: (txtValue: string) => void;
 }
 
-export const TextField: React.FunctionComponent<ITextFieldProps> = ({limit, label, value, rows, onChange}: React.PropsWithChildren<ITextFieldProps>) => {
+export const TextField: React.FunctionComponent<ITextFieldProps> = ({singleLine, limit, label, value, rows, onChange}: React.PropsWithChildren<ITextFieldProps>) => {
   const [ text, setText ] = React.useState<string | null>(value);
   
   const onTextChange = (txtValue: string) => {
@@ -37,13 +38,28 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({limit, labe
         </div>
       </VsLabel>
       
-      <textarea
-        className={`metadata_field__textarea`}
-        rows={rows || 2}
-        value={text || ""}  
-        onChange={(e) => onTextChange(e.currentTarget.value)} style={{
-        border: isValid ? "1px solid var(--vscode-inputValidation-infoBorder)" : "1px solid var(--vscode-inputValidation-warningBorder)"
-      }} />
+      {
+        singleLine ? (
+          <input 
+            className={`metadata_field__input`}
+            value={text || ""}
+            onChange={(e) => onTextChange(e.currentTarget.value)} 
+            style={{
+              border: isValid ? "1px solid var(--vscode-inputValidation-infoBorder)" : "1px solid var(--vscode-inputValidation-warningBorder)"
+            }} />
+        ) : (
+          <textarea
+            className={`metadata_field__textarea`}
+            rows={rows || 2}
+            value={text || ""}  
+            onChange={(e) => onTextChange(e.currentTarget.value)} 
+            style={{
+              border: isValid ? "1px solid var(--vscode-inputValidation-infoBorder)" : "1px solid var(--vscode-inputValidation-warningBorder)"
+            }} />
+        )
+      }
+
+      
 
       {
         limit && limit > 0 && (text || "").length > limit && (

@@ -3,8 +3,8 @@ import { RefreshIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { DashboardMessage } from '../../DashboardMessage';
-import { LoadingAtom, MediaTotalSelector, SelectedMediaFolderSelector } from '../../state';
-import { FolderSelection } from './FolderSelection';
+import { LoadingAtom, MediaTotalSelector, PageAtom, SelectedMediaFolderSelector } from '../../state';
+import { FolderCreation } from './FolderCreation';
 import { LIMIT } from './Media';
 import { PaginationButton } from './PaginationButton';
 
@@ -14,7 +14,7 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({}: React.
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const totalMedia = useRecoilValue(MediaTotalSelector);
   const [ , setLoading ] = useRecoilState(LoadingAtom);
-  const [ page, setPage ] = React.useState<number>(0);
+  const [ page, setPage ] = useRecoilState(PageAtom);
   
   const totalPages = Math.ceil(totalMedia / LIMIT) - 1;
 
@@ -82,7 +82,7 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({}: React.
         </p>
       </div>
 
-      <FolderSelection />
+      <FolderCreation />
 
       <div className="flex justify-between sm:justify-end space-x-2 text-sm">
         <PaginationButton

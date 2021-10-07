@@ -12,11 +12,11 @@ import { parseJSON } from 'date-fns';
 import { DateTimeField } from './Fields/DateTimeField';
 import { TextField } from './Fields/TextField';
 import "react-datepicker/dist/react-datepicker.css";
-import { PreviewImageField } from './Fields/PreviewImageField';
-import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from '../../constants/ContentType';
+import { PreviewImageField, PreviewImageValue } from './Fields/PreviewImageField';
 import { ListUnorderedIcon } from './Icons/ListUnorderedIcon';
 import { NumberField } from './Fields/NumberField';
 import { ChoiceField } from './Fields/ChoiceField';
+import useContentType from '../../hooks/useContentType';
 
 export interface IMetadataProps {
   settings: PanelSettings | undefined;
@@ -26,6 +26,7 @@ export interface IMetadataProps {
 }
 
 export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, focusElm, unsetFocus}: React.PropsWithChildren<IMetadataProps>) => {
+  const contentType = useContentType(settings, metadata);
 
   const sendUpdate = (field: string | undefined, value: any) => {
     if (!field) {
@@ -49,23 +50,16 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
     return null;
   }
 
-  const contentTypeName = metadata.type as string || DEFAULT_CONTENT_TYPE_NAME;
-  let contentType = settings.contentTypes.find(ct => ct.name === contentTypeName);
-
-  if (!contentType) {
-    contentType = settings.contentTypes.find(ct => ct.name === DEFAULT_CONTENT_TYPE_NAME);
-  }
-
-  if (!contentType || !contentType.fields) {
-    contentType = DEFAULT_CONTENT_TYPE;
-  }
-
   const renderFields = (ctFields: Field[]) => {
     if (!ctFields) {
       return;
     }
 
     return ctFields.map(field => {
+      if (field.hidden) {
+        return null;
+      }
+
       if (field.type === 'datetime') {
         const dateValue = metadata[field.name] ? getDate(metadata[field.name] as string) : null;
 
@@ -99,6 +93,7 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
           <TextField 
             key={field.name}
             label={field.title || field.name}
+            singleLine={field.single}
             limit={limit}
             rows={3}
             onChange={(value) => sendUpdate(field.name, value)}
@@ -125,7 +120,8 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
             label={field.title || field.name}
             fieldName={field.name}
             filePath={metadata.filePath as string}
-            value={metadata[field.name] as string}
+            value={metadata[field.name] as PreviewImageValue | PreviewImageValue[] | null}
+            multiple={field.multiple}
             onChange={(value => sendUpdate(field.name, value))} />
         );
       } else if (field.type === 'choice') {
@@ -138,6 +134,7 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
             label={field.title || field.name}
             selected={choiceValue as string}
             choices={choices}
+            multiSelect={field.multiple}
             onChange={(value => sendUpdate(field.name, value))} />
         );
       } else if (field.type === 'tags') {
@@ -166,6 +163,8 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
             focussed={focusElm === TagType.categories}
             unsetFocus={unsetFocus} />
         );
+      } else {
+        return null;
       }
     });
   };

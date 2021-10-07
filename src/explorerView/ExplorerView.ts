@@ -1,6 +1,6 @@
 import { DashboardData } from '../models/DashboardData';
 import { Template } from '../commands/Template';
-import { DefaultFields, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_COMMA_SEPARATED_FIELDS, SETTINGS_CONTENT_STATIC_FOLDERS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from '../constants';
+import { DefaultFields, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_COMMA_SEPARATED_FIELDS, SETTINGS_CONTENT_STATIC_FOLDER, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from '../constants';
 import * as os from 'os';
 import { PanelSettings, CustomScript } from '../models/PanelSettings';
 import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv } from "vscode";
@@ -21,9 +21,8 @@ import { Preview } from '../commands/Preview';
 import { openFileInEditor } from '../helpers/openFileInEditor';
 import { WebviewHelper } from '@estruyf/vscode';
 import { Extension } from '../helpers/Extension';
-import { dirname, join } from 'path';
-import { existsSync } from 'fs';
 import { Dashboard } from '../commands/Dashboard';
+import { ImageHelper } from '../helpers/ImageHelper';
 
 const FILE_LIMIT = 10;
 
@@ -217,7 +216,6 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     const wsFolder = Folders.getWorkspaceFolder();
     const filePath = window.activeTextEditor?.document.uri.fsPath;
     const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
-    const staticFolder = Settings.get<string>(SETTINGS_CONTENT_STATIC_FOLDERS);
     const contentTypes = Settings.get<string>(SETTING_TAXONOMY_CONTENT_TYPES);
     
     const articleDetails = this.getArticleDetails();
@@ -245,23 +243,28 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       const contentType = ArticleHelper.getContentType(updatedMetadata);
       if (contentType) {
         const imageFields = contentType.fields.filter((field) => field.type === "image");
+
         for (const field of imageFields) {
           if (updatedMetadata[field.name]) {
-            const staticPath = join(wsFolder.fsPath, staticFolder || "", updatedMetadata[field.name]);
-            const contentFolderPath = filePath ? join(dirname(filePath), updatedMetadata[field.name]) : null;
+            const imageData = ImageHelper.allRelToAbs(field, updatedMetadata[field.name])
 
-            let previewUri = null;
-            if (existsSync(staticPath)) {
-              previewUri = Uri.file(staticPath);
-            } else if (contentFolderPath && existsSync(contentFolderPath)) {
-              previewUri = Uri.file(contentFolderPath);
-            }
+            if (imageData) {
+              if (field.multiple && imageData instanceof Array) {
+                const preview = imageData.map(preview => preview && preview.absPath ? ({ 
+                  ...preview,
+                  webviewUrl: this.panel?.webview.asWebviewUri(preview.absPath).toString()
+                }) : null);
 
-            if (previewUri) {
-              const preview = this.panel?.webview.asWebviewUri(previewUri);
-              updatedMetadata[field.name]= preview?.toString() || "";
+                updatedMetadata[field.name] = preview || [];
+              } else if (!field.multiple && !Array.isArray(imageData) && imageData.absPath) {
+                const preview = this.panel?.webview.asWebviewUri(imageData.absPath);
+                updatedMetadata[field.name] = {
+                  ...imageData,
+                  webviewUrl: preview ? preview.toString() : null
+                };
+              }
             } else {
-              updatedMetadata[field.name] = "";
+              updatedMetadata[field.name] = field.multiple ? [] : "";
             }
           }          
         }
@@ -295,7 +298,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   /**
    * Update the metadata of the article
    */
-  public async updateMetadata({field, value}: { field: string, value: string }) {
+  public async updateMetadata({field, value }: { field: string, value: any, fieldData?: { multiple: boolean, value: string[] } }) {
     if (!field) {
       return;
     }
@@ -312,12 +315,31 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
     const contentType = ArticleHelper.getContentType(article.data);
     const dateFields = contentType.fields.filter((field) => field.type === "datetime");
+    const imageFields = contentType.fields.filter((field) => field.type === "image" && field.multiple);
 
     for (const dateField of dateFields) {
       if ((field === dateField.name) && value) {
         article.data[field] = Article.formatDate(new Date(value));
-      } else {
+      } else if (!imageFields.find(f => f.name === field)) {
+        // Only override the field data if it is not an multiselect image field
         article.data[field] = value;
+      }
+    }
+
+    for (const imageField of imageFields) {
+      if (field === imageField.name) {
+        // If value is an array, it means it comes from the explorer view itself (deletion)
+        if (Array.isArray(value)) {
+          article.data[field] = value || [];
+        } else { // Otherwise it is coming from the media dashboard (addition)
+          let fieldValue = article.data[field];
+          if (fieldValue && !Array.isArray(fieldValue)) {
+            fieldValue = [fieldValue];
+          }
+          const crntData = Object.assign([], fieldValue);
+          const allRelPaths = [...(crntData || []), value];
+          article.data[field] = [...new Set(allRelPaths)].filter(f => f);
+        }
       }
     }
     
@@ -617,7 +639,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       <!DOCTYPE html>
       <html lang="en">
       <head>
-        <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${`vscode-file://vscode-app`} ${webView.cspSource} https://api.visitorbadge.io 'self' 'unsafe-inline'; script-src 'nonce-${nonce}'; style-src ${webView.cspSource} 'self' 'unsafe-inline'; font-src ${webView.cspSource}">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${`vscode-file://vscode-app`} ${webView.cspSource} https://api.visitorbadge.io 'self' 'unsafe-inline'; script-src 'nonce-${nonce}'; style-src ${webView.cspSource} 'self' 'unsafe-inline'; font-src ${webView.cspSource}; connect-src https://o1022172.ingest.sentry.io">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="${styleResetUri}" rel="stylesheet">
         <link href="${styleVSCodeUri}" rel="stylesheet">

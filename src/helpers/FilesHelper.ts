@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import { EXTENSION_NAME } from '../constants';
 import { Notifications } from './Notifications';
 
 export class FilesHelper {

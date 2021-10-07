@@ -5,7 +5,7 @@ import useDarkMode from '../../hooks/useDarkMode';
 import usePages from '../hooks/usePages';
 import { WelcomeScreen } from './WelcomeScreen';
 import { useRecoilValue } from 'recoil';
-import { DashboardViewSelector, ViewDataAtom } from '../state';
+import { DashboardViewSelector } from '../state';
 import { Contents } from './Contents/Contents';
 import { Media } from './Media/Media';
 

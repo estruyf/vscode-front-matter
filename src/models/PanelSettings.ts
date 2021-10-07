@@ -1,4 +1,5 @@
 import { FileType } from "vscode";
+import { Choice } from "./Choice";
 import { DashboardData } from "./DashboardData";
 
 export interface PanelSettings {
@@ -27,7 +28,11 @@ export interface Field {
   title?: string;
   name: string;
   type: "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories";
-  choices?: string[];
+  choices?: string[] | Choice[];
+  single?: boolean;
+  multiple?: boolean;
+  isPreviewImage?: boolean;
+  hidden?: boolean;
 }
 
 export interface DateInfo {

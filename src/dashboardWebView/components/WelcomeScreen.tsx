@@ -1,6 +1,6 @@
 import { HeartIcon, StarIcon } from '@heroicons/react/outline';
 import * as React from 'react';
-import { GITHUB_LINK, REVIEW_LINK, SPONSOR_LINK } from '../../constants/Links';
+import { GITHUB_LINK, REVIEW_LINK, SPONSOR_LINK } from '../../constants';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { FrontMatterIcon } from '../../panelWebView/components/Icons/FrontMatterIcon';
 import { GitHubIcon } from '../../panelWebView/components/Icons/GitHubIcon';

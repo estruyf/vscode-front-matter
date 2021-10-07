@@ -1,4 +1,4 @@
-import { SETTING_SEO_DESCRIPTION_FIELD, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH } from './../constants/settings';
+import { SETTING_SEO_DESCRIPTION_FIELD, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH } from './../constants';
 import * as vscode from 'vscode';
 import { ArticleHelper, SeoHelper, Settings } from '../helpers';
 import { ExplorerView } from '../explorerView/ExplorerView';

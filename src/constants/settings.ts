@@ -36,7 +36,7 @@ export const SETTING_CUSTOM_SCRIPTS = "custom.scripts";
 
 export const SETTING_AUTO_UPDATE_DATE = "content.autoUpdateDate";
 export const SETTINGS_CONTENT_PAGE_FOLDERS = "content.pageFolders";
-export const SETTINGS_CONTENT_STATIC_FOLDERS = "content.publicFolder";
+export const SETTINGS_CONTENT_STATIC_FOLDER = "content.publicFolder";
 export const SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT = "content.fmHighlight";
 
 export const SETTINGS_DASHBOARD_OPENONSTART = "dashboard.openOnStart";
