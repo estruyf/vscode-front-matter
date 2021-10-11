@@ -48,7 +48,7 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({lab
       
       <div className={`metadata_field__datetime`}>
         <DatePicker
-          selected={dateValue as Date || null}
+          selected={dateValue as Date || new Date()}
           onChange={onDateChange}
           timeInputLabel="Time:"
           dateFormat={format || "MM/dd/yyyy HH:mm"}
