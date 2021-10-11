@@ -90,7 +90,7 @@ export class ContentType {
       return;
     }
 
-    const data: any = {};
+    let data: any = {};
 
     for (const field of contentType.fields) {
       if (field.name === "title") {
@@ -99,6 +99,8 @@ export class ContentType {
         data[field.name] = null;
       }
     }
+
+    data = ArticleHelper.updateDates(Object.assign({}, data));
 
     if (contentType.name !== DEFAULT_CONTENT_TYPE_NAME) {
       data['type'] = contentType.name;

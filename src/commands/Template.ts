@@ -11,6 +11,9 @@ import { Notifications } from '../helpers/Notifications';
 import { CONTEXT } from '../constants';
 import { Project } from './Project';
 import { Folders } from './Folders';
+import { ContentType } from '../helpers/ContentType';
+import { join } from 'path';
+import { existsSync, mkdirSync } from 'fs';
 
 export class Template {
 
@@ -96,6 +99,7 @@ export class Template {
   public static async create(folderPath: string) {
     const folder = Settings.get<string>(SETTING_TEMPLATES_FOLDER);
     const prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
+    const contentTypes = ContentType.getAll();
 
     if (!folderPath) {
       Notifications.warning(`Incorrect project folder path retrieved.`);
@@ -133,16 +137,40 @@ export class Template {
       return;
     }
 
-    const fileExt = path.parse(selectedTemplate).ext;
+    // Name of the file or folder to create
     const sanitizedName = sanitize(titleValue.toLowerCase().replace(/ /g, "-"));
-    let newFileName = `${sanitizedName}${fileExt}`;
-    if (prefix && typeof prefix === "string") {
-      newFileName = `${format(new Date(), prefix)}-${newFileName}`;
+    let newFilePath: string | undefined;
+
+    const templateData = ArticleHelper.getFrontMatterByPath(template.fsPath);
+    if (templateData && templateData.data && templateData.data.type) {
+      const type = contentTypes?.find(t => t.name === templateData.data.type);
+      if (type && type.pageBundle) {
+        const newFolder = join(folderPath, sanitizedName);
+        if (existsSync(newFolder)) {
+          Notifications.error(`A page bundle with the name ${sanitizedName} already exists in ${folderPath}`);
+          return;
+        } else {
+          mkdirSync(newFolder);
+          newFilePath = join(newFolder, `index.md`);
+        }
+      } else {
+        const fileExt = path.parse(selectedTemplate).ext;
+        let newFileName = `${sanitizedName}${fileExt}`;
+
+        if (prefix && typeof prefix === "string") {
+          newFileName = `${format(new Date(), prefix)}-${newFileName}`;
+        }
+
+        newFilePath = path.join(folderPath, newFileName);
+
+        if (fs.existsSync(newFilePath)) {
+          Notifications.warning(`File already exists, please remove it before creating a new one with the same title.`);
+          return;
+        }
+      }
     }
 
-    const newFilePath = path.join(folderPath, newFileName);
-    if (fs.existsSync(newFilePath)) {
-      Notifications.warning(`File already exists, please remove it before creating a new one with the same title.`);
+    if (!newFilePath) {
       return;
     }
     

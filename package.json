@@ -330,6 +330,7 @@
           "default": [
             {
               "name": "default",
+              "pageBundle": false,
               "fields": [
                 {
                   "title": "Title",
