@@ -97,8 +97,8 @@ export class Dashboard {
     Dashboard.isDisposed = false;
 
     Dashboard.webview.iconPath = {
-      dark: Uri.file(join(extensionUri.fsPath, 'assets/frontmatter-dark.svg')),
-      light: Uri.file(join(extensionUri.fsPath, 'assets/frontmatter.svg'))
+      dark: Uri.file(join(extensionUri.fsPath, 'assets/icons/frontmatter-short-dark.svg')),
+      light: Uri.file(join(extensionUri.fsPath, 'assets/icons/frontmatter-short-light.svg'))
     };
 
     Dashboard.webview.webview.html = Dashboard.getWebviewContent(Dashboard.webview.webview, extensionUri);
