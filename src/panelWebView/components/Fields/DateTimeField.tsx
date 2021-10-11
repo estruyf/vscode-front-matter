@@ -30,7 +30,10 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({lab
   };
 
   React.useEffect(() => {
-    if (dateValue?.toISOString() !== date?.toISOString()) {
+    const crntValue = typeof date?.toISOString === 'function' ? date.toISOString() : date;
+    const stateValue = typeof dateValue?.toISOString === 'function' ? dateValue.toISOString() : dateValue;
+
+    if (crntValue !== stateValue) {
       setDateValue(date);
     }
   }, [ date ]);
@@ -45,7 +48,7 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({lab
       
       <div className={`metadata_field__datetime`}>
         <DatePicker
-          selected={dateValue as Date}
+          selected={dateValue as Date || null}
           onChange={onDateChange}
           timeInputLabel="Time:"
           dateFormat={format || "MM/dd/yyyy HH:mm"}

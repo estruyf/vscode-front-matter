@@ -245,7 +245,7 @@ export class Article {
     if (dateFormat && typeof dateFormat === "string") {
       return format(dateValue, dateFormat);
     } else {
-      return dateValue.toISOString();
+      return typeof dateValue.toISOString === 'function' ? dateValue.toISOString() : dateValue;
     }
   }
 
