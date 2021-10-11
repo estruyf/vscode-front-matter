@@ -458,7 +458,7 @@ export class Dashboard {
 
                 const contentType = ArticleHelper.getContentType(article.data);
                 const previewField = contentType.fields.find(field => field.isPreviewImage && field.type === "image")?.name || "preview";
-      
+
                 if (article?.data[previewField] && wsFolder) {
                   let fieldValue = article?.data[previewField];
                   if (fieldValue && Array.isArray(fieldValue)) {
