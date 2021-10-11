@@ -1,6 +1,6 @@
 import { SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTING_TAXONOMY_CONTENT_TYPES, DefaultFields, HOME_PAGE_NAVIGATION_ID, ExtensionState, COMMAND_NAME } from '../constants';
 import { ArticleHelper } from './../helpers/ArticleHelper';
-import { basename, dirname, extname, join } from "path";
+import { basename, dirname, extname, join, parse } from "path";
 import { existsSync, readdirSync, statSync, unlinkSync, writeFileSync } from "fs";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env, Position } from "vscode";
 import { Settings as SettingsHelper } from '../helpers';
@@ -220,11 +220,28 @@ export class Dashboard {
       const panel = ExplorerView.getInstance(extensionUri);
 
       if (data?.position) {
+        const wsFolder = Folders.getWorkspaceFolder();
         const editor = window.activeTextEditor;
         const line = data.position.line;
         const character = data.position.character;
         if (line) {
-          await editor?.edit(builder => builder.insert(new Position(line, character), data.snippet || `![${data.alt || data.caption || ""}](${data.image})`));
+          let imgPath = data.image;
+          const filePath = data.file;
+          const absImgPath = join(parseWinPath(wsFolder?.fsPath || ""), imgPath);
+
+          const imgDir = dirname(absImgPath);
+          const fileDir = dirname(filePath);
+
+          if (imgDir === fileDir) {
+            imgPath = join('/', basename(imgPath));
+
+            // Snippets are already parsed, so update the URL of the image
+            if (data.snippet) {
+              data.snippet = data.snippet.replace(data.image, imgPath);
+            }
+          }
+
+          await editor?.edit(builder => builder.insert(new Position(line, character), data.snippet || `![${data.alt || data.caption || ""}](${imgPath})`));
         }
         panel.getMediaSelection();
       } else {
@@ -272,16 +289,25 @@ export class Dashboard {
   /**
    * Retrieve all media files
    */
-  private static async getMedia(page: number = 0, selectedFolder: string = '') {
+  private static async getMedia(page: number = 0, requestedFolder: string = '') {
     const wsFolder = Folders.getWorkspaceFolder();
     const staticFolder = SettingsHelper.get<string>(SETTINGS_CONTENT_STATIC_FOLDER);
     const contentFolders = Folders.get();
+    const viewData = Dashboard.viewData;
+    let selectedFolder = requestedFolder;
 
     // If the static folder is not set, retreive the last opened location
     if (!selectedFolder) {
       const stateValue = await Extension.getInstance().getState<string | undefined>(ExtensionState.SelectedFolder);
-      if (stateValue && existsSync(stateValue)) {
-        selectedFolder = stateValue;
+
+      if (stateValue !== HOME_PAGE_NAVIGATION_ID) {
+        // Support for page bundles
+        if (viewData?.data?.filePath && viewData?.data?.filePath.endsWith('index.md')) {
+          const folderPath = parse(viewData.data.filePath).dir;
+          selectedFolder = folderPath;
+        } else if (stateValue && existsSync(stateValue)) {
+          selectedFolder = stateValue;
+        }
       }
     }
 
@@ -379,7 +405,7 @@ export class Dashboard {
     }
 
     // Store the last opened folder
-    await Extension.getInstance().setState(ExtensionState.SelectedFolder, selectedFolder);
+    await Extension.getInstance().setState(ExtensionState.SelectedFolder, requestedFolder === HOME_PAGE_NAVIGATION_ID ? HOME_PAGE_NAVIGATION_ID : selectedFolder);
 
     Dashboard.postWebviewMessage({
       command: DashboardCommand.media,
