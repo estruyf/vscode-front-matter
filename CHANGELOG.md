@@ -1,6 +1,10 @@
 # Change Log
 
-## [5.0.1] - 2021-XX-XX
+## [5.1.0] - 2021-XX-XX
+
+### 🎨 Enhancements
+
+- [#141](https://github.com/estruyf/vscode-front-matter/issues/141): Allow content creation for page bundles or single files
 
 ### 🐞 Fixes
 
