@@ -7,7 +7,7 @@ import { Questions } from "./Questions";
 import sanitize from '../helpers/Sanitize';
 import { format } from "date-fns";
 import { join } from "path";
-import { existsSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { Notifications } from "./Notifications";
 import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
 
@@ -58,16 +58,35 @@ export class ContentType {
       return;
     }
 
+    // Name of the file or folder to create
     const sanitizedName = sanitize(titleValue.toLowerCase().replace(/ /g, "-"));
-    let newFileName = `${sanitizedName}.md`;
+    let newFilePath: string | undefined;
 
-    if (prefix && typeof prefix === "string") {
-      newFileName = `${format(new Date(), prefix)}-${newFileName}`;
+    // Create a folder with the `index.md` file
+    if (contentType.pageBundle) {
+      const newFolder = join(folderPath, sanitizedName);
+      if (existsSync(newFolder)) {
+        Notifications.error(`A page bundle with the name ${sanitizedName} already exists in ${folderPath}`);
+        return;
+      } else {
+        mkdirSync(newFolder);
+        newFilePath = join(newFolder, `index.md`);
+      }
+    } else {
+      let newFileName = `${sanitizedName}.md`;
+
+      if (prefix && typeof prefix === "string") {
+        newFileName = `${format(new Date(), prefix)}-${newFileName}`;
+      }
+      
+      newFilePath = join(folderPath, newFileName);
+      if (existsSync(newFilePath)) {
+        Notifications.warning(`Content with the title already exists. Please specify a new title.`);
+        return;
+      }
     }
 
-    const newFilePath = join(folderPath, newFileName);
-    if (existsSync(newFilePath)) {
-      Notifications.warning(`Content with the title already exists. Please specify a new title.`);
+    if (!newFilePath) {
       return;
     }
 

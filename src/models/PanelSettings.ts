@@ -22,6 +22,8 @@ export interface PanelSettings {
 export interface ContentType {
   name: string;
   fields: Field[];
+
+  pageBundle?: boolean;
 }
 
 export interface Field {

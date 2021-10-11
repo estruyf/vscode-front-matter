@@ -314,6 +314,11 @@
                     "name"
                   ]
                 }
+              },
+              "pageBundle": {
+                "type": "boolean",
+                "default": false,
+                "description": "Specify if you want to create a folder when creating new content."
               }
             },
             "additionalProperties": false,
