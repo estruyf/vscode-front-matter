@@ -1,5 +1,6 @@
-import { format, parseJSON } from 'date-fns';
+import { format } from 'date-fns';
 import * as React from 'react';
+import { DateHelper } from '../../helpers/DateHelper';
 
 export interface IDateFieldProps {
   value: Date | string;
@@ -10,9 +11,9 @@ export const DateField: React.FunctionComponent<IDateFieldProps> = ({value}: Rea
 
   React.useEffect(() => {
     try {
-      const parsedValue = typeof value === 'string' ? parseJSON(value) : value;
-      const dateString = format(parsedValue, 'yyyy-MM-dd');
-      setDateValue(dateString);
+      const parsedValue = typeof value === 'string' ? DateHelper.tryParse(value) : value;
+      const dateString = parsedValue ? format(parsedValue, 'yyyy-MM-dd') : parsedValue;
+      setDateValue(dateString || "");
     } catch (e) {
       // Date is invalid
     }

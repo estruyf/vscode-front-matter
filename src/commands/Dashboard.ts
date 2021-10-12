@@ -14,7 +14,6 @@ import { Template } from './Template';
 import { Notifications } from '../helpers/Notifications';
 import { Settings } from '../dashboardWebView/models/Settings';
 import { Extension } from '../helpers/Extension';
-import { parseJSON } from 'date-fns';
 import { ViewType } from '../dashboardWebView/state';
 import { EditorHelper, WebviewHelper } from '@estruyf/vscode';
 import { MediaInfo, MediaPaths } from './../models/MediaPaths';
@@ -24,6 +23,7 @@ import { ExplorerView } from '../explorerView/ExplorerView';
 import { MediaLibrary } from '../helpers/MediaLibrary';
 import imageSize from 'image-size';
 import { parseWinPath } from '../helpers/parseWinPath';
+import { DateHelper } from '../helpers/DateHelper';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -447,7 +447,7 @@ export class Dashboard {
                   fmFilePath: file.filePath,
                   fmFileName: file.fileName,
                   fmDraft: article?.data.draft ? "Draft" : "Published",
-                  fmYear: article?.data[dateField] ? parseJSON(article?.data[dateField]).getFullYear() : null,
+                  fmYear: article?.data[dateField] ? DateHelper.tryParse(article?.data[dateField])?.getFullYear() : null,
                   // Make sure these are always set
                   title: article?.data.title,
                   slug: article?.data.slug,

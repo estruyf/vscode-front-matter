@@ -8,7 +8,6 @@ import { Toggle } from './Fields/Toggle';
 import { SymbolKeywordIcon } from './Icons/SymbolKeywordIcon';
 import { TagIcon } from './Icons/TagIcon';
 import { TagPicker } from './TagPicker';
-import { parseJSON } from 'date-fns';
 import { DateTimeField } from './Fields/DateTimeField';
 import { TextField } from './Fields/TextField';
 import "react-datepicker/dist/react-datepicker.css";
@@ -17,6 +16,7 @@ import { ListUnorderedIcon } from './Icons/ListUnorderedIcon';
 import { NumberField } from './Fields/NumberField';
 import { ChoiceField } from './Fields/ChoiceField';
 import useContentType from '../../hooks/useContentType';
+import { DateHelper } from '../../helpers/DateHelper';
 
 export interface IMetadataProps {
   settings: PanelSettings | undefined;
@@ -39,11 +39,9 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
     });
   };
 
-  const getDate = (date: string | Date) => {
-    if (typeof date === 'string') {
-      return parseJSON(date);
-    }
-    return date;
+  const getDate = (date: string | Date): Date | null => {
+    const parsedDate = DateHelper.tryParse(date, settings?.date?.format);
+    return parsedDate || date as Date | null;
   }
 
   if (!settings) {
