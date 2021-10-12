@@ -50,7 +50,6 @@ export class ContentType {
   }
 
   private static async create(contentType: IContentType, folderPath: string) {
-    const prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
 
     const titleValue = await Questions.ContentTitle();
     if (!titleValue) {

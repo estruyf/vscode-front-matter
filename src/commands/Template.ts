@@ -95,7 +95,6 @@ export class Template {
    */
   public static async create(folderPath: string) {
     const folder = Settings.get<string>(SETTING_TEMPLATES_FOLDER);
-    const prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
     const contentTypes = ContentType.getAll();
 
     if (!folderPath) {
