@@ -6,6 +6,16 @@ import { Notifications } from './Notifications';
 export class Questions {
 
   /**
+   * Yes/No question
+   * @param placeholder 
+   * @returns 
+   */
+  public static async yesOrNo(placeholder: string) {
+    const answer = await window.showQuickPick(["yes", "no"], {  canPickMany: false, placeHolder: placeholder, ignoreFocusOut: false });
+    return answer === "yes";
+  }
+
+  /**
    * Specify the name of the content to create
    * @param showWarning 
    * @returns 

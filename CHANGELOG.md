@@ -5,6 +5,7 @@
 ### 🎨 Enhancements
 
 - [#141](https://github.com/estruyf/vscode-front-matter/issues/141): Allow content creation for page bundles or single files
+- [#145](https://github.com/estruyf/vscode-front-matter/issues/145): Moved folder registration settings to `frontmatter.json` file
 
 ### 🐞 Fixes
 

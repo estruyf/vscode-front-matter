@@ -274,7 +274,11 @@ export class Folders {
    */
   private static async update(folders: ContentFolder[]) {
     const wsFolder = Folders.getWorkspaceFolder();
-    await Settings.update(SETTINGS_CONTENT_PAGE_FOLDERS, folders.map(folder => ({ title: folder.title, path: Folders.relWsFolder(folder, wsFolder) })));
+    let folderDetails = folders.map(folder => ({ 
+      title: folder.title, 
+      path: Folders.relWsFolder(folder, wsFolder) 
+    }));
+    await Settings.update(SETTINGS_CONTENT_PAGE_FOLDERS, folderDetails, true);
   }
 
   /**

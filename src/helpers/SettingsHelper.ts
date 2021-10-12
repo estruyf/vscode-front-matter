@@ -136,7 +136,7 @@ export class Settings {
         Settings.globalConfig = JSON.parse(localConfig);
         Settings.globalConfig[`${CONFIG_KEY}.${name}`] = value;
         writeFileSync(fmConfig, JSON.stringify(Settings.globalConfig, null, 2), 'utf8');
-
+        
         const workspaceSettingValue = Settings.hasWorkspaceSettings<ContentType[]>(name);
         if (workspaceSettingValue) {
           await Settings.update(name, undefined);
