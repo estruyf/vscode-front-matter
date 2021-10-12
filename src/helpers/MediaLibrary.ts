@@ -14,11 +14,15 @@ interface MediaRecord {
 }
 
 export class MediaLibrary {
-  private db: JsonDB;
+  private db: JsonDB | undefined;
   private static instance: MediaLibrary;
 
   private constructor() {
     const wsFolder = Folders.getWorkspaceFolder();
+    if (!wsFolder) {
+      return;
+    }
+
     this.db = new JsonDB(join(parseWinPath(wsFolder?.fsPath || ""), LocalStore.rootFolder, LocalStore.contentFolder, LocalStore.mediaDatabaseFile), true, false, '/');
 
     workspace.onDidRenameFiles(e => {
@@ -46,7 +50,7 @@ export class MediaLibrary {
   public get(id: string): MediaRecord | undefined {
     try {
       const fileId = this.parsePath(id);
-      if (this.db.exists(fileId)) {
+      if (this.db?.exists(fileId)) {
         return this.db.getData(fileId);
       } 
       return undefined;
@@ -57,16 +61,16 @@ export class MediaLibrary {
 
   public set(id: string, metadata: any): void {
     const fileId = this.parsePath(id);
-    this.db.push(fileId, metadata, true);
+    this.db?.push(fileId, metadata, true);
   }
 
   public rename(oldId: string, newId: string): void {
     const fileId = this.parsePath(oldId);
     const newFileId = this.parsePath(newId);
-    const data = this.db.getData(fileId);
+    const data = this.db?.getData(fileId);
     if (data) {
-      this.db.delete(fileId);
-      this.db.push(newFileId, data, true);
+      this.db?.delete(fileId);
+      this.db?.push(newFileId, data, true);
     }
   }
 
