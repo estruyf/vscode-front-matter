@@ -17,10 +17,16 @@ import '@bendera/vscode-webview-elements/dist/vscode-label';
 
 import '@vscode/webview-ui-toolkit/dist/esm/checkbox';
 
+const elm = document.querySelector("#app");
+const version = elm?.getAttribute("data-version");
+const environment = elm?.getAttribute("data-environment");
+
 Sentry.init({
   dsn: SENTRY_LINK,
   integrations: [new Integrations.BrowserTracing()],
   tracesSampleRate: 0, // No performance tracing required
+  release: version || "",
+  environment: environment || ""
 });
 
 declare const acquireVsCodeApi: <T = unknown>() => {
@@ -29,5 +35,4 @@ declare const acquireVsCodeApi: <T = unknown>() => {
   postMessage: (msg: unknown) => void;
 };
 
-const elm = document.querySelector("#app");
 render(<ViewPanel />, elm);
