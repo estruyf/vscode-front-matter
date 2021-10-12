@@ -48,11 +48,11 @@ export const GlobalSettings: React.FunctionComponent<IGlobalSettingsProps> = ({s
       <Collapsible id={`${isBase ? "base_" : ""}settings`} className={`base__actions`} title="Global settings">
         <div className={`base__action`}>
           <VsLabel>Modified date</VsLabel>
-          <VsCheckbox label="Auto-update modified date" checked={modifiedDateUpdate} onClick={onDateCheck} />
+          <VsCheckbox checked={modifiedDateUpdate} onClick={onDateCheck}>Auto-update modified date</VsCheckbox>
         </div>
         <div className={`base__action`}>
           <VsLabel>Front Matter highlight</VsLabel>
-          <VsCheckbox label="Highlight Front Matter" checked={fmHighlighting} onClick={onHighlightCheck} />
+          <VsCheckbox checked={fmHighlighting} onClick={onHighlightCheck}>Highlight Front Matter</VsCheckbox>
         </div>
         <div className={`base__action`}>
           <VsLabel>Local preview</VsLabel>
