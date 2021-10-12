@@ -1,17 +1,19 @@
 import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from './../constants/ContentType';
-import { ContentType } from './../models/PanelSettings';
 import * as vscode from 'vscode';
 import * as matter from "gray-matter";
 import * as fs from "fs";
-import { DefaultFields, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_TAXONOMY_CONTENT_TYPES } from '../constants';
+import { DefaultFields, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { TomlEngine, getFmLanguage, getFormatOpts } from './TomlEngine';
 import { Settings } from '.';
-import { parse } from 'date-fns';
+import { format, parse } from 'date-fns';
 import { Notifications } from './Notifications';
 import { Article } from '../commands';
-import { basename } from 'path';
+import { basename, join } from 'path';
 import { EditorHelper } from '@estruyf/vscode';
+import sanitize from '../helpers/Sanitize';
+import { existsSync, mkdirSync } from 'fs';
+import { ContentType } from '../models';
 
 export class ArticleHelper {
   
@@ -162,6 +164,57 @@ export class ArticleHelper {
     }
 
     return metadata;
+  }
+
+  /**
+   * Sanitize the value
+   * @param value 
+   * @returns 
+   */
+  public static sanitize(value: string): string {
+    return sanitize(value.toLowerCase().replace(/ /g, "-"));
+  }
+
+  /**
+   * Create the file or folder for the new content
+   * @param contentType 
+   * @param folderPath 
+   * @param titleValue 
+   * @returns The new file path
+   */
+  public static createContent(contentType: ContentType | undefined, folderPath: string, titleValue: string): string | undefined {
+    const prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
+    
+    // Name of the file or folder to create
+    const sanitizedName = ArticleHelper.sanitize(titleValue);
+    let newFilePath: string | undefined;
+
+    // Create a folder with the `index.md` file
+    if (contentType?.pageBundle) {
+      const newFolder = join(folderPath, sanitizedName);
+      if (existsSync(newFolder)) {
+        Notifications.error(`A page bundle with the name ${sanitizedName} already exists in ${folderPath}`);
+        return;
+      } else {
+        mkdirSync(newFolder);
+        newFilePath = join(newFolder, `index.md`);
+      }
+    } else {
+      let newFileName = `${sanitizedName}.md`;
+
+      if (prefix && typeof prefix === "string") {
+        newFileName = `${format(new Date(), prefix)}-${newFileName}`;
+      }
+      
+      newFilePath = join(folderPath, newFileName);
+
+      if (existsSync(newFilePath)) {
+        Notifications.warning(`Content with the title already exists. Please specify a new title.`);
+        return;
+      }
+    }
+
+    return newFilePath;
   }
 
   /**

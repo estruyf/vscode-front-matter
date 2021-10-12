@@ -4,7 +4,6 @@ import { ContentType as IContentType } from '../models';
 import { Uri, workspace, window } from 'vscode'; 
 import { Folders } from "../commands/Folders";
 import { Questions } from "./Questions";
-import sanitize from '../helpers/Sanitize';
 import { format } from "date-fns";
 import { join } from "path";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
@@ -58,34 +57,7 @@ export class ContentType {
       return;
     }
 
-    // Name of the file or folder to create
-    const sanitizedName = sanitize(titleValue.toLowerCase().replace(/ /g, "-"));
-    let newFilePath: string | undefined;
-
-    // Create a folder with the `index.md` file
-    if (contentType.pageBundle) {
-      const newFolder = join(folderPath, sanitizedName);
-      if (existsSync(newFolder)) {
-        Notifications.error(`A page bundle with the name ${sanitizedName} already exists in ${folderPath}`);
-        return;
-      } else {
-        mkdirSync(newFolder);
-        newFilePath = join(newFolder, `index.md`);
-      }
-    } else {
-      let newFileName = `${sanitizedName}.md`;
-
-      if (prefix && typeof prefix === "string") {
-        newFileName = `${format(new Date(), prefix)}-${newFileName}`;
-      }
-      
-      newFilePath = join(folderPath, newFileName);
-      if (existsSync(newFilePath)) {
-        Notifications.warning(`Content with the title already exists. Please specify a new title.`);
-        return;
-      }
-    }
-
+    let newFilePath: string | undefined = ArticleHelper.createContent(contentType, folderPath, titleValue);
     if (!newFilePath) {
       return;
     }
