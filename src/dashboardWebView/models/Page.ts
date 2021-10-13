@@ -6,7 +6,7 @@ export interface Page {
   fmFileName: string;
   fmModified: number;
   fmDraft: "Draft" | "Published",
-  fmYear: number | null;
+  fmYear: number | null | undefined;
 
   title: string;
   slug: string;

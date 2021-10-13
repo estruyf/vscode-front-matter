@@ -13,6 +13,7 @@
 - [#142](https://github.com/estruyf/vscode-front-matter/issues/142): Fix for unknown tags where it throws an error
 - [#143](https://github.com/estruyf/vscode-front-matter/issues/143): Fix for duplicate values in the file list
 - [#144](https://github.com/estruyf/vscode-front-matter/issues/144): Fix for `toISOString` does not exist on object
+- [#146](https://github.com/estruyf/vscode-front-matter/issues/146): Date parsing logic added with fallbacks
 
 ## [5.0.0] - 2021-10-07 - [Release Notes](https://beta.frontmatter.codes/updates/v5.0.0)
 

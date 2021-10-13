@@ -633,7 +633,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
     const nonce = WebviewHelper.getNonce();
 
-    const version = Extension.getInstance().getVersion();
+    const ext = Extension.getInstance();
+    const version = ext.getVersion();
+    const isBeta = ext.isBetaVersion();
 
     return `
       <!DOCTYPE html>
@@ -648,7 +650,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         <title>Front Matter</title>
       </head>
       <body>
-        <div id="app"></div>
+        <div id="app" data-environment="${isBeta ? "BETA" : "main"}" data-version="${version.usedVersion}" ></div>
 
         <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759&slug=${`panel-${version.installedVersion}`}" alt="Daily usage" />
 
