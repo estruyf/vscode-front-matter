@@ -16,17 +16,24 @@ export const Tags: React.FunctionComponent<ITagsProps> = (props: React.PropsWith
 
   const knownTags = values.filter(v => options.includes(v));
   const unknownTags = values.filter(v => !options.includes(v));
+
+  const generateKey = (tag: string, idx: number) => {
+    if (tag) {
+      return `${tag.replace(/ /g, "_")}-${idx}`;
+    }
+    return `tag-${idx}`;
+  };
   
   return (
     <div className={`article__tags__items`}>
       {
-        knownTags.map(t => (
-          <Tag key={t.replace(/ /g, "_")} value={t} className={`article__tags__items__pill_exists`} onRemove={onRemove} title={`Remove ${t}`} />
+        knownTags.map((t, idx) => (
+          <Tag key={generateKey(t, idx)} value={t} className={`article__tags__items__pill_exists`} onRemove={onRemove} title={`Remove ${t}`} />
         ))
       }
       {
-        unknownTags.map(t => (
-          <Tag key={t.replace(/ /g, "_")} value={t} className={`article__tags__items__pill_notexists`} onRemove={onRemove} onCreate={onCreate} title={`Be aware, this tag "${t}" is not saved in your settings. Once removed, it will be gone forever.`} disableConfigurable={disableConfigurable} />
+        unknownTags.map((t, idx) => (
+          <Tag key={generateKey(t, idx)} value={t} className={`article__tags__items__pill_notexists`} onRemove={onRemove} onCreate={onCreate} title={`Be aware, this tag "${t}" is not saved in your settings. Once removed, it will be gone forever.`} disableConfigurable={disableConfigurable} />
         ))
       }
     </div>

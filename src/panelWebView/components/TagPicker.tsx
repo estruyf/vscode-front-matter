@@ -83,7 +83,7 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
     if (selectedItem) {
       let value = selectedItem || "";
 
-      const item = options.find(o => o.toLowerCase() === selectedItem.toLowerCase());
+      const item = options.find(o => o?.toLowerCase() === selectedItem?.toLowerCase());
       if (item) {
         value = item;
       }
@@ -187,7 +187,7 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
       </Downshift>
 
       <Tags 
-        values={(selected || []).sort((a: string, b: string) => a.toLowerCase() < b.toLowerCase() ? -1 : 1 )} 
+        values={(selected || []).sort((a: string, b: string) => a?.toLowerCase() < b?.toLowerCase() ? -1 : 1 )} 
         onRemove={onRemove} 
         onCreate={onCreate} 
         options={options} 

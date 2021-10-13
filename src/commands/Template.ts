@@ -3,14 +3,14 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import { SETTING_TEMPLATES_FOLDER, SETTING_TEMPLATES_PREFIX } from '../constants';
-import { format } from 'date-fns';
-import sanitize from '../helpers/Sanitize';
 import { ArticleHelper, Settings } from '../helpers';
 import { Article } from '.';
 import { Notifications } from '../helpers/Notifications';
 import { CONTEXT } from '../constants';
 import { Project } from './Project';
 import { Folders } from './Folders';
+import { ContentType } from '../helpers/ContentType';
+import { ContentType as IContentType } from '../models';
 
 export class Template {
 
@@ -95,7 +95,7 @@ export class Template {
    */
   public static async create(folderPath: string) {
     const folder = Settings.get<string>(SETTING_TEMPLATES_FOLDER);
-    const prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
+    const contentTypes = ContentType.getAll();
 
     if (!folderPath) {
       Notifications.warning(`Incorrect project folder path retrieved.`);
@@ -133,16 +133,14 @@ export class Template {
       return;
     }
 
-    const fileExt = path.parse(selectedTemplate).ext;
-    const sanitizedName = sanitize(titleValue.toLowerCase().replace(/ /g, "-"));
-    let newFileName = `${sanitizedName}${fileExt}`;
-    if (prefix && typeof prefix === "string") {
-      newFileName = `${format(new Date(), prefix)}-${newFileName}`;
+    const templateData = ArticleHelper.getFrontMatterByPath(template.fsPath);
+    let contentType: IContentType | undefined;
+    if (templateData && templateData.data && templateData.data.type) {
+      contentType = contentTypes?.find(t => t.name === templateData.data.type);
     }
 
-    const newFilePath = path.join(folderPath, newFileName);
-    if (fs.existsSync(newFilePath)) {
-      Notifications.warning(`File already exists, please remove it before creating a new one with the same title.`);
+    let newFilePath: string | undefined = ArticleHelper.createContent(contentType, folderPath, titleValue);
+    if (!newFilePath) {
       return;
     }
     
@@ -162,7 +160,7 @@ export class Template {
         fmData.title = titleValue;
       }
       if (typeof fmData.slug !== "undefined") {
-        fmData.slug = sanitizedName;
+        fmData.slug = ArticleHelper.sanitize(titleValue);
       }
 
       frontMatter = Article.updateDate(frontMatter);

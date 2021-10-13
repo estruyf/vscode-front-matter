@@ -437,6 +437,25 @@ input:checked + .field__toggle__slider:before {
   margin-right: .5rem;
 }
 
+.metadata_field__error {
+  color: var(--vscode-errorForeground);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.metadata_field__error button {
+  color: var(--vscode-button-secondaryForeground);
+  background-color: var(--vscode-button-secondaryBackground);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  width: auto;
+}
+
+.metadata_field__error button:hover {
+  background-color: var(--vscode-button-secondaryHoverBackground);
+}
+
 .metadata_field__input, .metadata_field__input:focus,
 .metadata_field__textarea, .metadata_field__textarea:focus {
   outline: none;

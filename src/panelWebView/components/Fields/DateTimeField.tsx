@@ -3,6 +3,7 @@ import { VsLabel } from '../VscodeComponents';
 import { ClockIcon } from '@heroicons/react/outline';
 import DatePicker from 'react-datepicker';
 import { forwardRef } from 'react';
+import { DateHelper } from '../../../helpers/DateHelper';
 
 export interface IDateTimeFieldProps {
   label: string;
@@ -22,7 +23,7 @@ const CustomInput = forwardRef<HTMLInputElement, InputProps>(({ value, onClick }
 });
 
 export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({label, date, format, onChange}: React.PropsWithChildren<IDateTimeFieldProps>) => {
-  const [ dateValue, setDateValue ] = React.useState<Date | null>(date);
+  const [ dateValue, setDateValue ] = React.useState<Date | null>(null);
   
   const onDateChange = (date: Date) => {
     setDateValue(date);
@@ -30,7 +31,10 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({lab
   };
 
   React.useEffect(() => {
-    if (dateValue?.toISOString() !== date?.toISOString()) {
+    const crntValue = DateHelper.tryParse(date, format);
+    const stateValue = DateHelper.tryParse(dateValue, format);
+
+    if (crntValue?.toISOString() !== stateValue?.toISOString()) {
       setDateValue(date);
     }
   }, [ date ]);
@@ -45,7 +49,7 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({lab
       
       <div className={`metadata_field__datetime`}>
         <DatePicker
-          selected={dateValue as Date}
+          selected={dateValue as Date || new Date()}
           onChange={onDateChange}
           timeInputLabel="Time:"
           dateFormat={format || "MM/dd/yyyy HH:mm"}

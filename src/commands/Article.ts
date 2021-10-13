@@ -239,13 +239,13 @@ export class Article {
   /**
    * Format the date to the defined format
    */
-  public static formatDate(dateValue: Date) {
+  public static formatDate(dateValue: Date): string {
     const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
 
     if (dateFormat && typeof dateFormat === "string") {
       return format(dateValue, dateFormat);
     } else {
-      return dateValue.toISOString();
+      return typeof dateValue.toISOString === 'function' ? dateValue.toISOString() : dateValue?.toString();
     }
   }
 

@@ -4,10 +4,9 @@ import { ContentType as IContentType } from '../models';
 import { Uri, workspace, window } from 'vscode'; 
 import { Folders } from "../commands/Folders";
 import { Questions } from "./Questions";
-import sanitize from '../helpers/Sanitize';
 import { format } from "date-fns";
 import { join } from "path";
-import { existsSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { Notifications } from "./Notifications";
 import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
 
@@ -51,27 +50,18 @@ export class ContentType {
   }
 
   private static async create(contentType: IContentType, folderPath: string) {
-    const prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
 
     const titleValue = await Questions.ContentTitle();
     if (!titleValue) {
       return;
     }
 
-    const sanitizedName = sanitize(titleValue.toLowerCase().replace(/ /g, "-"));
-    let newFileName = `${sanitizedName}.md`;
-
-    if (prefix && typeof prefix === "string") {
-      newFileName = `${format(new Date(), prefix)}-${newFileName}`;
-    }
-
-    const newFilePath = join(folderPath, newFileName);
-    if (existsSync(newFilePath)) {
-      Notifications.warning(`Content with the title already exists. Please specify a new title.`);
+    let newFilePath: string | undefined = ArticleHelper.createContent(contentType, folderPath, titleValue);
+    if (!newFilePath) {
       return;
     }
 
-    const data: any = {};
+    let data: any = {};
 
     for (const field of contentType.fields) {
       if (field.name === "title") {
@@ -80,6 +70,8 @@ export class ContentType {
         data[field.name] = null;
       }
     }
+
+    data = ArticleHelper.updateDates(Object.assign({}, data));
 
     if (contentType.name !== DEFAULT_CONTENT_TYPE_NAME) {
       data['type'] = contentType.name;

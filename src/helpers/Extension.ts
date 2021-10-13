@@ -97,6 +97,10 @@ export class Extension {
       return;
     }
 
+    if (!versionInfo.usedVersion) {
+      return;
+    }
+
     // Split semantic version
     const version = versionInfo.usedVersion.split('.');
     const major = parseInt(version[0]);
