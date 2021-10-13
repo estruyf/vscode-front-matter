@@ -17,6 +17,7 @@ import { NumberField } from './Fields/NumberField';
 import { ChoiceField } from './Fields/ChoiceField';
 import useContentType from '../../hooks/useContentType';
 import { DateHelper } from '../../helpers/DateHelper';
+import FieldBoundary from './ErrorBoundary/FieldBoundary';
 
 export interface IMetadataProps {
   settings: PanelSettings | undefined;
@@ -62,20 +63,23 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
         const dateValue = metadata[field.name] ? getDate(metadata[field.name] as string) : null;
 
         return (
-          <DateTimeField
-            key={field.name}
-            label={field.title || field.name}
-            date={dateValue}
-            format={settings?.date?.format}
-            onChange={(date => sendUpdate(field.name, date))} />
+          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+            <DateTimeField
+              label={field.title || field.name}
+              date={dateValue}
+              format={settings?.date?.format}
+              onChange={(date => sendUpdate(field.name, date))} />
+          </FieldBoundary>
         );
       } else if (field.type === 'boolean') {
         return (
-          <Toggle 
-            key={field.name}
-            label={field.title || field.name}
-            checked={!!metadata[field.name] as any} 
-            onChanged={(checked) => sendUpdate(field.name, checked)} />
+          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+            <Toggle 
+              key={field.name}
+              label={field.title || field.name}
+              checked={!!metadata[field.name] as any} 
+              onChanged={(checked) => sendUpdate(field.name, checked)} />
+          </FieldBoundary>
         );
       } else if (field.type === 'string') {
         const textValue = metadata[field.name];
@@ -88,14 +92,15 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
         }
 
         return (
-          <TextField 
-            key={field.name}
-            label={field.title || field.name}
-            singleLine={field.single}
-            limit={limit}
-            rows={3}
-            onChange={(value) => sendUpdate(field.name, value)}
-            value={textValue as string || null} />
+          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+            <TextField 
+              label={field.title || field.name}
+              singleLine={field.single}
+              limit={limit}
+              rows={3}
+              onChange={(value) => sendUpdate(field.name, value)}
+              value={textValue as string || null} />
+          </FieldBoundary>
         );
       } else if (field.type === 'number') {
         const fieldValue = metadata[field.name];
@@ -105,61 +110,67 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
         }
 
         return (
-          <NumberField 
-            key={field.name}
-            label={field.title || field.name}
-            onChange={(value) => sendUpdate(field.name, value)}
-            value={nrValue} />
+          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+            <NumberField 
+              key={field.name}
+              label={field.title || field.name}
+              onChange={(value) => sendUpdate(field.name, value)}
+              value={nrValue} />
+          </FieldBoundary>
         );
       } else if (field.type === 'image') {
         return (
-          <PreviewImageField 
-            key={field.name}
-            label={field.title || field.name}
-            fieldName={field.name}
-            filePath={metadata.filePath as string}
-            value={metadata[field.name] as PreviewImageValue | PreviewImageValue[] | null}
-            multiple={field.multiple}
-            onChange={(value => sendUpdate(field.name, value))} />
+          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+            <PreviewImageField 
+              label={field.title || field.name}
+              fieldName={field.name}
+              filePath={metadata.filePath as string}
+              value={metadata[field.name] as PreviewImageValue | PreviewImageValue[] | null}
+              multiple={field.multiple}
+              onChange={(value => sendUpdate(field.name, value))} />
+          </FieldBoundary>
         );
       } else if (field.type === 'choice') {
         const choices = field.choices || [];
         const choiceValue = metadata[field.name];
 
         return (
-          <ChoiceField
-            key={field.name}
-            label={field.title || field.name}
-            selected={choiceValue as string}
-            choices={choices}
-            multiSelect={field.multiple}
-            onChange={(value => sendUpdate(field.name, value))} />
+          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+            <ChoiceField
+              label={field.title || field.name}
+              selected={choiceValue as string}
+              choices={choices}
+              multiSelect={field.multiple}
+              onChange={(value => sendUpdate(field.name, value))} />
+          </FieldBoundary>
         );
       } else if (field.type === 'tags') {
         return (
-          <TagPicker 
-            key={field.name}
-            type={TagType.tags} 
-            label={field.title || field.name}
-            icon={<TagIcon />}
-            crntSelected={metadata[field.name] as string[] || []} 
-            options={settings?.tags || []} 
-            freeform={settings.freeform} 
-            focussed={focusElm === TagType.tags}
-            unsetFocus={unsetFocus} />
+          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+            <TagPicker 
+              type={TagType.tags} 
+              label={field.title || field.name}
+              icon={<TagIcon />}
+              crntSelected={metadata[field.name] as string[] || []} 
+              options={settings?.tags || []} 
+              freeform={settings.freeform} 
+              focussed={focusElm === TagType.tags}
+              unsetFocus={unsetFocus} />
+          </FieldBoundary>
         );
       } else if (field.type === 'categories') {
         return (
-          <TagPicker 
-            key={field.name}
-            type={TagType.categories}
-            label={field.title || field.name}
-            icon={<ListUnorderedIcon />}
-            crntSelected={metadata.categories as string[] || []} 
-            options={settings.categories} 
-            freeform={settings.freeform} 
-            focussed={focusElm === TagType.categories}
-            unsetFocus={unsetFocus} />
+          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+            <TagPicker 
+              type={TagType.categories}
+              label={field.title || field.name}
+              icon={<ListUnorderedIcon />}
+              crntSelected={metadata.categories as string[] || []} 
+              options={settings.categories} 
+              freeform={settings.freeform} 
+              focussed={focusElm === TagType.categories}
+              unsetFocus={unsetFocus} />
+          </FieldBoundary>
         );
       } else {
         return null;
