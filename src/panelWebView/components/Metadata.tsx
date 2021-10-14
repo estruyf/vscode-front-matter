@@ -186,14 +186,17 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
       }
 
       {
-        <TagPicker type={TagType.keywords} 
-                   icon={<SymbolKeywordIcon />}
-                   crntSelected={metadata.keywords as string[] || []} 
-                   options={[]} 
-                   freeform={true} 
-                   focussed={focusElm === TagType.keywords}
-                   unsetFocus={unsetFocus}
-                   disableConfigurable />
+        <FieldBoundary fieldName={`Keywords`}>
+          <TagPicker 
+            type={TagType.keywords} 
+            icon={<SymbolKeywordIcon />}
+            crntSelected={metadata.keywords as string[] || []} 
+            options={[]} 
+            freeform={true} 
+            focussed={focusElm === TagType.keywords}
+            unsetFocus={unsetFocus}
+            disableConfigurable />
+        </FieldBoundary>
       }
     </Collapsible>
   );

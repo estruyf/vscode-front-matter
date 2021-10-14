@@ -13,6 +13,22 @@ export interface ISeoKeywordsProps {
 
 export const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({keywords, ...data}: React.PropsWithChildren<ISeoKeywordsProps>) => {
 
+  const validateKeywords = () => {
+    if (!keywords) {
+      return [];
+    }
+
+    if (typeof keywords === 'string') {
+      return [keywords];
+    }
+
+    if (Array.isArray(keywords)) {
+      return keywords;
+    }
+
+    return [];
+  }
+
   if (!keywords || keywords.length === 0) {
     return null;
   }
@@ -31,7 +47,7 @@ export const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({keyword
         </VsTableHeader>
         <VsTableBody slot="body">
           {
-            keywords.map((keyword, index) => {
+            validateKeywords().map((keyword, index) => {
               return (
                 <SeoKeywordInfo key={index} keyword={keyword} {...data} />
               );
