@@ -1,5 +1,9 @@
 # Change Log
 
+## [5.1.1] - 2021-10-14
+
+- [#149](https://github.com/estruyf/vscode-front-matter/issues/149): Fix panel rendering when incorrect type for keywords is provided
+
 ## [5.1.0] - 2021-10-13
 
 ### 🎨 Enhancements
