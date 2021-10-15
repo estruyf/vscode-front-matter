@@ -17,5 +17,6 @@ export enum DashboardMessage {
   deleteMedia = 'deleteMedia',
   insertPreviewImage = 'insertPreviewImage',
   updateMediaMetadata = 'updateMediaMetadata',
-  createMediaFolder = 'createMediaFolder'
+  createMediaFolder = 'createMediaFolder',
+  setFramework = 'setFramework',
 }

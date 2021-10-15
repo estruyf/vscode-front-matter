@@ -33,11 +33,11 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({set
                 </h1>
 
                 <p className="mt-3 text-base text-vulcan-300 dark:text-whisper-700 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
-                  Thank you for taking the time to test out Front Matter!
+                  Thank you for using Front Matter!
                 </p>
 
                 <p className="mt-3 text-base text-vulcan-300 dark:text-whisper-700 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
-                  We try to aim to make Front Matter as easy to use as possible, but if you have any questions, please don't hesitate to reach out to us on GitHub.
+                  We try to aim to make Front Matter as easy to use as possible, but if you have any questions or suggestions. Please don't hesitate to reach out to us on GitHub.
                 </p>
 
                 <div className="mt-5 w-full sm:mx-auto sm:max-w-lg lg:ml-0">

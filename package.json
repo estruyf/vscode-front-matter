@@ -180,6 +180,11 @@
           "markdownDescription": "Specify if you want to open the dashboard when you start VS Code.  [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.openonstart)",
           "scope": "Dashboard"
         },
+        "frontMatter.framework.id": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Specify the ID of your static site generator or framework you are using for your website. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.framework.id)"
+        },
         "frontMatter.panel.freeform": {
           "type": "boolean",
           "default": true,

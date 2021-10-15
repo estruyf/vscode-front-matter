@@ -1,7 +1,7 @@
 import { VersionInfo } from '../../models/VersionInfo';
 import { ViewType } from '../state';
 import { ContentFolder } from '../../models/ContentFolder';
-import { ContentType } from '../../models';
+import { ContentType, Framework } from '../../models';
 
 export interface Settings { 
   beta: boolean;
@@ -17,4 +17,6 @@ export interface Settings {
   mediaSnippet: string[];
   contentTypes: ContentType[];
   contentFolders: string[];
+  crntFramework: string;
+  framework: Framework | null | undefined;
 }

@@ -42,6 +42,8 @@ export const SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT = "content.fmHighlight";
 export const SETTINGS_DASHBOARD_OPENONSTART = "dashboard.openOnStart";
 export const SETTINGS_DASHBOARD_MEDIA_SNIPPET = "dashboard.mediaSnippet";
 
+export const SETTINGS_FRAMEWORK_ID = "framework.id";
+
 /**
  * @deprecated
  */
