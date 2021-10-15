@@ -261,8 +261,7 @@ export class Dashboard {
   private static async getSettings() { 
     const ext = Extension.getInstance();
     const wsFolder = Folders.getWorkspaceFolder();
-    // const isInitialized = await Template.isInitialized();
-    const isInitialized = false;
+    const isInitialized = await Template.isInitialized();
     
     Dashboard.postWebviewMessage({
       command: DashboardCommand.settings,

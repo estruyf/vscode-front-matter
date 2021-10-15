@@ -1,6 +1,15 @@
 # Change Log
 
+## [5.2.0] - 2021-XX-XX
+
+### 🎨 Enhancements
+
+- [#151](https://github.com/estruyf/vscode-front-matter/issues/151): Detect which site-generator or framework is used
+- [#152](https://github.com/estruyf/vscode-front-matter/issues/152): Automatically set setting based on the used site-generator or framework
+
 ## [5.1.1] - 2021-10-14
+
+### 🐞 Fixes
 
 - [#149](https://github.com/estruyf/vscode-front-matter/issues/149): Fix panel rendering when incorrect type for keywords is provided
 
