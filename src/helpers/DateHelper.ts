@@ -41,7 +41,7 @@ export class DateHelper {
   }
 
   public static isValid(date: any): boolean {
-    return !isNaN(date.getTime());
+    return date instanceof Date && !isNaN(date?.getTime());
   }
 
   public static tryFormatParse(date: string, format: string): Date | null {
