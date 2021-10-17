@@ -30,9 +30,9 @@ export class SlugHelper {
    * @param value 
    */
   private static removePunctuation(value: string): string {
-    const punctuationless = value.replace(/[\.,-\/#!$@%\^&\*;:{}=\-_`'"~()+\?<>]/g, " ");
+    const punctuationless = value?.replace(/[\.,-\/#!$@%\^&\*;:{}=\-_`'"~()+\?<>]/g, " ");
     // Remove double spaces
-    return punctuationless.replace(/\s{2,}/g," ");
+    return punctuationless?.replace(/\s{2,}/g," ");
   }
 
   /**
