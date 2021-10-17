@@ -14,6 +14,7 @@ import { EditorHelper } from '@estruyf/vscode';
 import sanitize from '../helpers/Sanitize';
 import { existsSync, mkdirSync } from 'fs';
 import { ContentType } from '../models';
+import { DateHelper } from './DateHelper';
 
 export class ArticleHelper {
   
@@ -203,7 +204,7 @@ export class ArticleHelper {
       let newFileName = `${sanitizedName}.md`;
 
       if (prefix && typeof prefix === "string") {
-        newFileName = `${format(new Date(), prefix)}-${newFileName}`;
+        newFileName = `${format(new Date(), DateHelper.formatUpdate(prefix))}-${newFileName}`;
       }
       
       newFilePath = join(folderPath, newFileName);

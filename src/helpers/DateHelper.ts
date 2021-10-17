@@ -3,6 +3,12 @@ import { parse, parseISO, parseJSON } from "date-fns";
 
 export class DateHelper {
  
+  public static formatUpdate(value: string) {
+    value = value.replace(/YYYY/g, 'yyyy');
+    value = value.replace(/DD/g, 'dd');
+    return value;
+  }
+
   public static tryParse(date: any, format?: string): Date | null {
     if (!date) {
       return null;
