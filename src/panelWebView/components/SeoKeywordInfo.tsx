@@ -12,6 +12,10 @@ export interface ISeoKeywordInfoProps {
 
 export const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({keyword, title, description, slug, content}: React.PropsWithChildren<ISeoKeywordInfoProps>) => {
 
+  if (!keyword) {
+    return null;
+  }
+
   return (
     <VsTableRow>
       <VsTableCell className={`table__cell`}>{keyword}</VsTableCell>
