@@ -7,6 +7,10 @@
 - [#151](https://github.com/estruyf/vscode-front-matter/issues/151): Detect which site-generator or framework is used
 - [#152](https://github.com/estruyf/vscode-front-matter/issues/152): Automatically set setting based on the used site-generator or framework
 
+### 🐞 Fixes
+
+- [#153](https://github.com/estruyf/vscode-front-matter/issues/153): Support old date formatting for date-fns
+
 ## [5.1.1] - 2021-10-14
 
 ### 🐞 Fixes
