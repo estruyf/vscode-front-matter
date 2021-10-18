@@ -15,6 +15,7 @@ import { Extension } from './helpers/Extension';
 import { DashboardData } from './models/DashboardData';
 import { Settings as SettingsHelper } from './helpers';
 import { Content } from './commands/Content';
+import ContentProvider from './providers/ContentProvider';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
@@ -174,6 +175,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// Inserting an image in Markdown
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.insertImage, Article.insertImage));
+
+	// Create the editor experience for bulk scripts
+	subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(ContentProvider.scheme, new ContentProvider()));
 
 	// Subscribe all commands
 	subscriptions.push(

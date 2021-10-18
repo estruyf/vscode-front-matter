@@ -1,8 +1,8 @@
 import { DashboardData } from '../models/DashboardData';
 import { Template } from '../commands/Template';
-import { DefaultFields, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_COMMA_SEPARATED_FIELDS, SETTINGS_CONTENT_STATIC_FOLDER, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from '../constants';
+import { DefaultFields, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_COMMA_SEPARATED_FIELDS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from '../constants';
 import * as os from 'os';
-import { PanelSettings, CustomScript } from '../models/PanelSettings';
+import { PanelSettings, CustomScript as ICustomScript } from '../models/PanelSettings';
 import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv } from "vscode";
 import { ArticleHelper, Settings } from "../helpers";
 import { Command } from "../panelWebView/Command";
@@ -11,10 +11,8 @@ import { Article } from '../commands';
 import { TagType } from '../panelWebView/TagType';
 import { TaxonomyType } from '../models';
 import { exec } from 'child_process';
-import * as path from 'path';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { Content } from 'mdast';
-import { Notifications } from '../helpers/Notifications';
 import { COMMAND_NAME } from '../constants/Extension';
 import { Folders } from '../commands/Folders';
 import { Preview } from '../commands/Preview';
@@ -23,6 +21,7 @@ import { WebviewHelper } from '@estruyf/vscode';
 import { Extension } from '../helpers/Extension';
 import { Dashboard } from '../commands/Dashboard';
 import { ImageHelper } from '../helpers/ImageHelper';
+import { CustomScript } from '../helpers/CustomScript';
 
 const FILE_LIMIT = 10;
 
@@ -352,38 +351,12 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * @param msg 
    */
   private runCustomScript(msg: { command: string, data: any}) {
-    const scripts: CustomScript[] | undefined = Settings.get(SETTING_CUSTOM_SCRIPTS);
+    const scripts: ICustomScript[] | undefined = Settings.get(SETTING_CUSTOM_SCRIPTS);
 
     if (msg?.data?.title && msg?.data?.script && scripts) {
-      const customScript = scripts.find((s: CustomScript) => s.title === msg.data.title);
+      const customScript = scripts.find((s: ICustomScript) => s.title === msg.data.title);
       if (customScript?.script && customScript?.title) {
-        const editor = window.activeTextEditor;
-        if (!editor) return;
-
-        const article = ArticleHelper.getFrontMatter(editor);
-
-        const wsFolder = Folders.getWorkspaceFolder();
-        if (wsFolder) {
-          const wsPath = wsFolder.fsPath;
-
-          let articleData = `'${JSON.stringify(article?.data)}'`;
-          if (os.type() === "Windows_NT") {
-            articleData = `"${JSON.stringify(article?.data).replace(/"/g, `""`)}"`;
-          }
-
-          exec(`${customScript.nodeBin || "node"} ${path.join(wsPath, msg.data.script)} "${wsPath}" "${editor?.document.uri.fsPath}" ${articleData}`, (error, stdout) => {
-            if (error) {
-              Notifications.error(`${msg?.data?.title}: ${error.message}`);
-              return;
-            }
-
-            window.showInformationMessage(`${msg?.data?.title}: ${stdout || "Executed your custom script."}`, 'Copy output').then(value => {
-              if (value === 'Copy output') {
-                vscodeEnv.clipboard.writeText(stdout);
-              }
-            });
-          });
-        }
+        CustomScript.run(customScript);
       }
     }
   }

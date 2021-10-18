@@ -151,6 +151,22 @@
               "nodeBin": {
                 "type": "string",
                 "description": "Path to the node executable. This is required when using NVM, so that there is no confusion of which node version to use."
+              },
+              "bulk": {
+                "type": "boolean",
+                "description": "Run the script for all content files"
+              },
+              "output": {
+                "type": "string",
+                "enum": [
+                  "editor",
+                  "notification"
+                ],
+                "description": "Define where you want to output your script output. Default is a notification, but you can specify to show it in an editor panel."
+              },
+              "outputType": {
+                "type": "string",
+                "description": "The type of output for the editor panel. Can be used to change it to 'markdown' for example"
               }
             },
             "additionalProperties": false,
