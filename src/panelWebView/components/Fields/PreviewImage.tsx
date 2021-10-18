@@ -8,7 +8,6 @@ export interface IPreviewImageProps {
 }
 
 export const PreviewImage: React.FunctionComponent<IPreviewImageProps> = ({ value, onRemove }: React.PropsWithChildren<IPreviewImageProps>) => {
-  console.log(value);
 
   return (
     <div className={`metadata_field__preview_image__preview`}>
