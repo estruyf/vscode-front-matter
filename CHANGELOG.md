@@ -7,6 +7,7 @@
 - [#151](https://github.com/estruyf/vscode-front-matter/issues/151): Detect which site-generator or framework is used
 - [#152](https://github.com/estruyf/vscode-front-matter/issues/152): Automatically set setting based on the used site-generator or framework
 - [#154](https://github.com/estruyf/vscode-front-matter/issues/154): Bulk script support added
+- [#155](https://github.com/estruyf/vscode-front-matter/issues/155): Fallback image added for the images shown in the editor panel
 
 ### 🐞 Fixes
 
