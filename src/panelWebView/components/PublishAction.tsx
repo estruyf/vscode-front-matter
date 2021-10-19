@@ -9,7 +9,7 @@ export interface IPublishActionProps {
   draft: boolean;
 }
 
-export const PublishAction: React.FunctionComponent<IPublishActionProps> = (props: React.PropsWithChildren<IPublishActionProps>) => {
+const PublishAction: React.FunctionComponent<IPublishActionProps> = (props: React.PropsWithChildren<IPublishActionProps>) => {
   const { draft } = props;
 
   const publish = () => {
@@ -20,3 +20,6 @@ export const PublishAction: React.FunctionComponent<IPublishActionProps> = (prop
     <ActionButton onClick={publish} className={`${draft ? "" : "secondary"}`} title={draft ? "Publish" : "Revert to draft"} />
   );
 };
+
+PublishAction.displayName = 'PublishAction';
+export { PublishAction };

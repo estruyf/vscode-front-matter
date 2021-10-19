@@ -9,7 +9,7 @@ export interface IFolderAndFilesProps {
   isBase?: boolean;
 }
 
-export const FolderAndFiles: React.FunctionComponent<IFolderAndFilesProps> = ({data, isBase}: React.PropsWithChildren<IFolderAndFilesProps>) => {
+const FolderAndFiles: React.FunctionComponent<IFolderAndFilesProps> = ({data, isBase}: React.PropsWithChildren<IFolderAndFilesProps>) => {
 
   if (!data) {
     return null;
@@ -43,3 +43,6 @@ export const FolderAndFiles: React.FunctionComponent<IFolderAndFilesProps> = ({d
     </>
   );
 };
+
+FolderAndFiles.displayName = 'FolderAndFiles';
+export { FolderAndFiles };

@@ -19,7 +19,7 @@ export interface IOtherActionsProps {
   isBase?: boolean;
 }
 
-export const OtherActions: React.FunctionComponent<IOtherActionsProps> = ({isFile, settings, isBase}: React.PropsWithChildren<IOtherActionsProps>) => {
+const OtherActions: React.FunctionComponent<IOtherActionsProps> = ({isFile, settings, isBase}: React.PropsWithChildren<IOtherActionsProps>) => {
 
   const openSettings = () => {
     MessageHelper.sendMessage(CommandToCode.openSettings);
@@ -65,3 +65,6 @@ export const OtherActions: React.FunctionComponent<IOtherActionsProps> = ({isFil
     </>
   );
 };
+
+OtherActions.displayName = 'OtherActions';
+export { OtherActions };

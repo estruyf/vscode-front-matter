@@ -10,7 +10,7 @@ export interface ISeoKeywordInfoProps {
   content: string;
 }
 
-export const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({keyword, title, description, slug, content}: React.PropsWithChildren<ISeoKeywordInfoProps>) => {
+const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({keyword, title, description, slug, content}: React.PropsWithChildren<ISeoKeywordInfoProps>) => {
 
   if (!keyword) {
     return null;
@@ -34,3 +34,6 @@ export const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({k
     </VsTableRow>
   );
 };
+
+SeoKeywordInfo.displayName = 'SeoKeywordInfo';
+export { SeoKeywordInfo };

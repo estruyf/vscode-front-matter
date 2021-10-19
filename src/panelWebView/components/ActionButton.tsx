@@ -7,10 +7,13 @@ export interface IActionButtonProps {
   onClick: (e: React.SyntheticEvent<HTMLButtonElement>) => void;
 }
 
-export const ActionButton: React.FunctionComponent<IActionButtonProps> = ({className, onClick, disabled,title}: React.PropsWithChildren<IActionButtonProps>) => {
+const ActionButton: React.FunctionComponent<IActionButtonProps> = ({className, onClick, disabled,title}: React.PropsWithChildren<IActionButtonProps>) => {
   return (
     <div className={`article__action`}>
       <button onClick={onClick} className={className || ""} disabled={disabled}>{title}</button>
     </div>
   );
 };
+
+ActionButton.displayName = 'ActionButton';
+export { ActionButton };

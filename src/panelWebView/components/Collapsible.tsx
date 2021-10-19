@@ -10,7 +10,7 @@ export interface ICollapsibleProps {
   sendUpdate?: (open: boolean) => void;
 }
 
-export const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({id, children, title, sendUpdate, className}: React.PropsWithChildren<ICollapsibleProps>) => {
+const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({id, children, title, sendUpdate, className}: React.PropsWithChildren<ICollapsibleProps>) => {
   const [ isOpen, setIsOpen ] = React.useState(false);
   const collapseKey = `collapse-${id}`;
 
@@ -56,3 +56,6 @@ export const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({id, chi
     </VsCollapsible>
   );
 };
+
+Collapsible.displayName = 'Collapsible';
+export { Collapsible };

@@ -4,7 +4,7 @@ import { HeartIcon } from './Icons/HeartIcon';
 
 export interface ISponsorMsgProps {}
 
-export const SponsorMsg: React.FunctionComponent<ISponsorMsgProps> = (props: React.PropsWithChildren<ISponsorMsgProps>) => {
+const SponsorMsg: React.FunctionComponent<ISponsorMsgProps> = (props: React.PropsWithChildren<ISponsorMsgProps>) => {
   return (
     <p className={`sponsor`}>
       <a href={SPONSOR_LINK} title="Sponsor Front Matter">
@@ -13,3 +13,6 @@ export const SponsorMsg: React.FunctionComponent<ISponsorMsgProps> = (props: Rea
     </p>
   );
 };
+
+SponsorMsg.displayName = 'SponsorMsg';
+export { SponsorMsg };

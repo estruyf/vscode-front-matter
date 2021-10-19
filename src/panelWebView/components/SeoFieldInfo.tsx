@@ -9,7 +9,7 @@ export interface ISeoFieldInfoProps {
   isValid?: boolean;
 }
 
-export const SeoFieldInfo: React.FunctionComponent<ISeoFieldInfoProps> = ({ title, value, recommendation, isValid }: React.PropsWithChildren<ISeoFieldInfoProps>) => {
+const SeoFieldInfo: React.FunctionComponent<ISeoFieldInfoProps> = ({ title, value, recommendation, isValid }: React.PropsWithChildren<ISeoFieldInfoProps>) => {
   return (
     <VsTableRow>
       <VsTableCell className={`table__cell table__title`}>{title}</VsTableCell>
@@ -20,3 +20,6 @@ export const SeoFieldInfo: React.FunctionComponent<ISeoFieldInfoProps> = ({ titl
     </VsTableRow>
   );
 };
+
+SeoFieldInfo.displayName = 'SeoFieldInfo';
+export { SeoFieldInfo };

@@ -59,8 +59,6 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({singleLine,
         )
       }
 
-      
-
       {
         limit && limit > 0 && (text || "").length > limit && (
           <div className={`metadata_field__limit`}>

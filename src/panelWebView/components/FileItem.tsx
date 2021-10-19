@@ -9,7 +9,7 @@ export interface IFileItemProps {
   path: string;
 }
 
-export const FileItem: React.FunctionComponent<IFileItemProps> = ({ name, path }: React.PropsWithChildren<IFileItemProps>) => {
+const FileItem: React.FunctionComponent<IFileItemProps> = ({ name, path }: React.PropsWithChildren<IFileItemProps>) => {
   
   const openFile = () => {
     MessageHelper.sendMessage(CommandToCode.openInEditor, path);
@@ -30,3 +30,6 @@ export const FileItem: React.FunctionComponent<IFileItemProps> = ({ name, path }
     </li>
   );
 };
+
+FileItem.displayName = 'FileItem';
+export { FileItem };

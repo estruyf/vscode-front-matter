@@ -11,7 +11,7 @@ export interface IGlobalSettingsProps {
   isBase?: boolean;
 }
 
-export const GlobalSettings: React.FunctionComponent<IGlobalSettingsProps> = ({settings, isBase}: React.PropsWithChildren<IGlobalSettingsProps>) => {
+const GlobalSettings: React.FunctionComponent<IGlobalSettingsProps> = ({settings, isBase}: React.PropsWithChildren<IGlobalSettingsProps>) => {
   const { modifiedDateUpdate, fmHighlighting } = settings || {};
   const [ previewUrl, setPreviewUrl ] = React.useState<string>("");
   const [ isDirty, setIsDirty ] = React.useState<boolean>(false);
@@ -66,3 +66,6 @@ export const GlobalSettings: React.FunctionComponent<IGlobalSettingsProps> = ({s
     </>
   );
 };
+
+GlobalSettings.displayName = 'GlobalSettings';
+export { GlobalSettings };

@@ -11,13 +11,33 @@ export interface ISeoStatusProps {
   data: any;
 }
 
-export const SeoStatus: React.FunctionComponent<ISeoStatusProps> = (props: React.PropsWithChildren<ISeoStatusProps>) => {
+const SeoStatus: React.FunctionComponent<ISeoStatusProps> = (props: React.PropsWithChildren<ISeoStatusProps>) => {
   const { data, seo } = props;
   const { title } = data;
   const [ isOpen, setIsOpen ] = React.useState(true);
   const tableRef = React.useRef<HTMLElement>();
+  const pushUpdate = React.useRef((value: boolean) => {
+    setTimeout(() => {
+      setIsOpen(value);
+    }, 10);
+  }).current;
 
   const { descriptionField } = seo;
+
+  // Workaround for lit components not updating render
+  React.useEffect(() => {
+    setTimeout(() => {
+      let height = 0;
+
+      tableRef.current?.childNodes.forEach((elm: any) => {
+        height += elm.clientHeight;
+      });
+
+      if (height > 0 && tableRef.current) {
+        tableRef.current.style.height = `${height}px`;
+      }
+    }, 10);
+  }, [title, data[descriptionField], data?.articleDetails?.wordCount]);
 
   if (!title && !data[descriptionField]) {
     return null;
@@ -72,24 +92,14 @@ export const SeoStatus: React.FunctionComponent<ISeoStatusProps> = (props: React
     );
   };
 
-  // Workaround for lit components not updating render
-  React.useEffect(() => {
-    setTimeout(() => {
-      let height = 0;
-
-      tableRef.current?.childNodes.forEach((elm: any) => {
-        height += elm.clientHeight;
-      });
-
-      if (height > 0 && tableRef.current) {
-        tableRef.current.style.height = `${height}px`;
-      }
-    }, 10);
-  }, [title, data[descriptionField], data?.articleDetails?.wordCount]);
+  
 
   return (
-    <Collapsible id={`seo`} title="SEO Status" sendUpdate={(value) => setIsOpen(value)}>
+    <Collapsible id={`seo`} title="SEO Status" sendUpdate={pushUpdate}>
       { renderContent() }
     </Collapsible>
   );
 };
+
+SeoStatus.displayName = 'SeoStatus';
+export { SeoStatus };

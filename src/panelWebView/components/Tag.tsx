@@ -13,7 +13,7 @@ export interface ITagProps {
   onRemove: (tags: string) => void;
 }
 
-export const Tag: React.FunctionComponent<ITagProps> = (props: React.PropsWithChildren<ITagProps>) => {
+const Tag: React.FunctionComponent<ITagProps> = (props: React.PropsWithChildren<ITagProps>) => {
   const { value, className, title, onRemove, onCreate, disableConfigurable } = props;
 
   return (
@@ -26,3 +26,6 @@ export const Tag: React.FunctionComponent<ITagProps> = (props: React.PropsWithCh
     </div>
   );
 };
+
+Tag.displayName = 'Tag';
+export { Tag };

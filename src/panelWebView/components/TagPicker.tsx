@@ -20,7 +20,7 @@ export interface ITagPickerProps {
   disableConfigurable?: boolean;
 }
 
-export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsWithChildren<ITagPickerProps>) => {
+const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsWithChildren<ITagPickerProps>) => {
   const { label, icon, type, crntSelected, options, freeform, focussed, unsetFocus, disableConfigurable } = props;
   const [ selected, setSelected ] = React.useState<string[]>([]);
   const [ inputValue, setInputValue ] = React.useState<string>("");
@@ -195,3 +195,6 @@ export const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React
     </div>
   );
 };
+
+TagPicker.displayName = 'TagPicker';
+export { TagPicker };
