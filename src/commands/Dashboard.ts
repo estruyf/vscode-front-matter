@@ -341,7 +341,15 @@ export class Dashboard {
       selectedFolder = '';
     }
 
-    const relSelectedFolderPath = selectedFolder ? selectedFolder.substring((parseWinPath(wsFolder?.fsPath || "")).length + 1) : '';
+    let relSelectedFolderPath = selectedFolder;
+    const parsedPath = parseWinPath(wsFolder?.fsPath || "");
+    if (selectedFolder && selectedFolder.startsWith(parsedPath)) {
+      relSelectedFolderPath = selectedFolder.replace(parsedPath, '');
+    }
+
+    if (relSelectedFolderPath.startsWith('/')) {
+      relSelectedFolderPath = relSelectedFolderPath.substring(1);
+    }
 
     let allMedia: MediaInfo[] = [];
 
@@ -574,9 +582,9 @@ export class Dashboard {
 
       if (imgData) {
         writeFileSync(staticPath, imgData.data);
-        Notifications.info(`File ${fileName} uploaded to: ${staticFolder}/${folder}`);
+        Notifications.info(`File ${fileName} uploaded to: ${folder}`);
         
-        const folderPath = `${staticFolder}/${folder}`;
+        const folderPath = `${folder}`;
         if (Dashboard.timers[folderPath]) {
           clearTimeout(Dashboard.timers[folderPath]);
           delete Dashboard.timers[folderPath];

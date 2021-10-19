@@ -12,6 +12,7 @@
 ### 🐞 Fixes
 
 - [#153](https://github.com/estruyf/vscode-front-matter/issues/153): Support old date formatting for date-fns
+- [#156](https://github.com/estruyf/vscode-front-matter/issues/156): Fix for uploading media files into a new folder
 
 ## [5.1.1] - 2021-10-14
 
