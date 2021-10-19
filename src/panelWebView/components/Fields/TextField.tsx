@@ -13,17 +13,17 @@ export interface ITextFieldProps {
 
 export const TextField: React.FunctionComponent<ITextFieldProps> = ({singleLine, limit, label, value, rows, onChange}: React.PropsWithChildren<ITextFieldProps>) => {
   const [ text, setText ] = React.useState<string | null>(value);
-  
-  const onTextChange = (txtValue: string) => {
-    setText(txtValue);
-    onChange(txtValue);
-  };
 
   React.useEffect(() => {
     if (text !== value) {
       setText(value);
     }
   }, [ value ]);
+  
+  const onTextChange = (txtValue: string) => {
+    setText(txtValue);
+    onChange(txtValue);
+  };
 
   let isValid = true;
   if (limit && limit !== -1) {
@@ -58,8 +58,6 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({singleLine,
             }} />
         )
       }
-
-      
 
       {
         limit && limit > 0 && (text || "").length > limit && (

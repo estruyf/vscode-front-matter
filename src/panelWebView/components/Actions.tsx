@@ -10,7 +10,7 @@ export interface IActionsProps {
   settings: PanelSettings;
 }
 
-export const Actions: React.FunctionComponent<IActionsProps> = (props: React.PropsWithChildren<IActionsProps>) => {
+const Actions: React.FunctionComponent<IActionsProps> = (props: React.PropsWithChildren<IActionsProps>) => {
   const { metadata, settings } = props;
 
   if (!metadata || Object.keys(metadata).length === 0 || !settings) {
@@ -36,3 +36,6 @@ export const Actions: React.FunctionComponent<IActionsProps> = (props: React.Pro
     </Collapsible>
   );
 };
+
+Actions.displayName = 'Actions';
+export { Actions };

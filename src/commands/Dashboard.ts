@@ -1,10 +1,10 @@
-import { SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTING_TAXONOMY_CONTENT_TYPES, DefaultFields, HOME_PAGE_NAVIGATION_ID, ExtensionState, COMMAND_NAME } from '../constants';
+import { SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTING_TAXONOMY_CONTENT_TYPES, DefaultFields, HOME_PAGE_NAVIGATION_ID, ExtensionState, COMMAND_NAME, SETTINGS_FRAMEWORK_ID } from '../constants';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { basename, dirname, extname, join, parse } from "path";
 import { existsSync, readdirSync, statSync, unlinkSync, writeFileSync } from "fs";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env, Position } from "vscode";
 import { Settings as SettingsHelper } from '../helpers';
-import { TaxonomyType } from '../models';
+import { Framework, TaxonomyType } from '../models';
 import { Folders } from './Folders';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../dashboardWebView/DashboardMessage';
@@ -24,6 +24,7 @@ import { MediaLibrary } from '../helpers/MediaLibrary';
 import imageSize from 'image-size';
 import { parseWinPath } from '../helpers/parseWinPath';
 import { DateHelper } from '../helpers/DateHelper';
+import { FrameworkDetector } from '../helpers/FrameworkDetector';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -187,6 +188,9 @@ export class Dashboard {
         case DashboardMessage.createMediaFolder:
           await commands.executeCommand(COMMAND_NAME.createFolder, msg?.data);
           break;
+        case DashboardMessage.setFramework:
+          Dashboard.setFramework(msg?.data);
+          break;
       }
     });
   }
@@ -257,6 +261,7 @@ export class Dashboard {
   private static async getSettings() { 
     const ext = Extension.getInstance();
     const wsFolder = Folders.getWorkspaceFolder();
+    const isInitialized = await Template.isInitialized();
     
     Dashboard.postWebviewMessage({
       command: DashboardCommand.settings,
@@ -265,7 +270,7 @@ export class Dashboard {
         wsFolder: wsFolder ? wsFolder.fsPath : '',
         staticFolder: SettingsHelper.get<string>(SETTINGS_CONTENT_STATIC_FOLDER),
         folders: Folders.get(),
-        initialized: await Template.isInitialized(),
+        initialized: isInitialized,
         tags: SettingsHelper.getTaxonomy(TaxonomyType.Tag),
         categories: SettingsHelper.getTaxonomy(TaxonomyType.Category),
         openOnStart: SettingsHelper.get(SETTINGS_DASHBOARD_OPENONSTART),
@@ -274,8 +279,28 @@ export class Dashboard {
         mediaSnippet: SettingsHelper.get<string[]>(SETTINGS_DASHBOARD_MEDIA_SNIPPET) || [],
         contentTypes: SettingsHelper.get(SETTING_TAXONOMY_CONTENT_TYPES) || [],
         contentFolders: Folders.get().map(f => f.path),
+        crntFramework: SettingsHelper.get<string>(SETTINGS_FRAMEWORK_ID),
+        framework: (!isInitialized && wsFolder) ? FrameworkDetector.get(wsFolder.fsPath) : null,
       } as Settings
     });
+  }
+
+  /**
+   * Set the current site-generator or framework + related settings
+   * @param frameworkId 
+   */
+  private static setFramework(frameworkId: string | null) {
+    SettingsHelper.update(SETTINGS_FRAMEWORK_ID, frameworkId, true);
+
+    if (frameworkId) {
+      const allFrameworks = FrameworkDetector.getAll();
+      const framework = allFrameworks.find((f: Framework) => f.name === frameworkId);
+      if (framework) {
+        SettingsHelper.update(SETTINGS_CONTENT_STATIC_FOLDER, framework.static, true);
+      } else {
+        SettingsHelper.update(SETTINGS_CONTENT_STATIC_FOLDER, "", true);
+      }
+    }
   }
 
   /**
@@ -316,7 +341,15 @@ export class Dashboard {
       selectedFolder = '';
     }
 
-    const relSelectedFolderPath = selectedFolder ? selectedFolder.substring((parseWinPath(wsFolder?.fsPath || "")).length + 1) : '';
+    let relSelectedFolderPath = selectedFolder;
+    const parsedPath = parseWinPath(wsFolder?.fsPath || "");
+    if (selectedFolder && selectedFolder.startsWith(parsedPath)) {
+      relSelectedFolderPath = selectedFolder.replace(parsedPath, '');
+    }
+
+    if (relSelectedFolderPath.startsWith('/')) {
+      relSelectedFolderPath = relSelectedFolderPath.substring(1);
+    }
 
     let allMedia: MediaInfo[] = [];
 
@@ -549,9 +582,9 @@ export class Dashboard {
 
       if (imgData) {
         writeFileSync(staticPath, imgData.data);
-        Notifications.info(`File ${fileName} uploaded to: ${staticFolder}/${folder}`);
+        Notifications.info(`File ${fileName} uploaded to: ${folder}`);
         
-        const folderPath = `${staticFolder}/${folder}`;
+        const folderPath = `${folder}`;
         if (Dashboard.timers[folderPath]) {
           clearTimeout(Dashboard.timers[folderPath]);
           delete Dashboard.timers[folderPath];

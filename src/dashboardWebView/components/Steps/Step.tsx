@@ -4,22 +4,17 @@ import { Status } from '../../models/Status';
 
 export interface IStepProps {
   name: string;
-  description: string;
+  description: JSX.Element;
   status: Status;
   showLine: boolean;
-  onClick?: () => void;
+  onClick?: () => void | undefined;
 }
 
 export const Step: React.FunctionComponent<IStepProps> = ({name, description, status, showLine, onClick}: React.PropsWithChildren<IStepProps>) => {
-  return (
-    <>
-      {
-        showLine ? (
-          <div className={`-ml-px absolute mt-0.5 top-4 left-4 w-0.5 h-full ${status === Status.Completed ? "bg-teal-600" : "bg-gray-300"}`} aria-hidden="true" />
-        ) : null
-      }
 
-      <button className={`relative flex items-start group text-left ${onClick ? "" : "cursor-default"}`} onClick={() => { if (onClick) { onClick(); } }} disabled={!onClick}>
+  const renderChildren = () => {
+    return (
+      <>
         {
           status === Status.NotStarted && (
             <span className="h-9 flex items-center" aria-hidden="true">
@@ -52,9 +47,31 @@ export const Step: React.FunctionComponent<IStepProps> = ({name, description, st
 
         <span className="ml-4 min-w-0 flex flex-col">
           <span className="text-xs font-semibold tracking-wide uppercase text-vulcan-500 dark:text-whisper-500">{name}</span>
-          <span className="text-sm text-vulcan-400 dark:text-whisper-600" dangerouslySetInnerHTML={{__html: description}} />
+          <div className="text-sm text-vulcan-400 dark:text-whisper-600">{description}</div>
         </span>
-      </button>
+      </>
+    );
+  };
+
+  return (
+    <>
+      {
+        showLine ? (
+          <div className={`-ml-px absolute mt-0.5 top-4 left-4 w-0.5 h-full ${status === Status.Completed ? "bg-teal-600" : "bg-gray-300"}`} aria-hidden="true" />
+        ) : null
+      }
+
+      {
+        onClick ? (
+          <button className={`relative flex items-start group text-left`} onClick={() => { if (onClick) { onClick(); } }} disabled={!onClick}>
+            {renderChildren()}
+          </button>
+        ) : (
+          <div className="relative flex items-start group text-left">
+            {renderChildren()}
+          </div>
+        )
+      }
     </>
   );
 };

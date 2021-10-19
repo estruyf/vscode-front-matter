@@ -8,7 +8,7 @@ export interface ICustomScriptProps {
   script: string;
 }
 
-export const CustomScript: React.FunctionComponent<ICustomScriptProps> = ({title, script}: React.PropsWithChildren<ICustomScriptProps>) => {
+const CustomScript: React.FunctionComponent<ICustomScriptProps> = ({title, script}: React.PropsWithChildren<ICustomScriptProps>) => {
 
   const runCustomScript = () => {
     MessageHelper.sendMessage(CommandToCode.runCustomScript, { title, script });
@@ -18,3 +18,6 @@ export const CustomScript: React.FunctionComponent<ICustomScriptProps> = ({title
     <ActionButton onClick={runCustomScript} title={title} />
   );
 };
+
+CustomScript.displayName = 'CustomScript';
+export { CustomScript };

@@ -26,7 +26,7 @@ export interface IMetadataProps {
   unsetFocus: () => void;
 }
 
-export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, focusElm, unsetFocus}: React.PropsWithChildren<IMetadataProps>) => {
+const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, focusElm, unsetFocus}: React.PropsWithChildren<IMetadataProps>) => {
   const contentType = useContentType(settings, metadata);
 
   const sendUpdate = (field: string | undefined, value: any) => {
@@ -201,3 +201,6 @@ export const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, met
     </Collapsible>
   );
 };
+
+Metadata.displayName = 'Metadata';
+export { Metadata };

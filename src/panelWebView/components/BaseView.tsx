@@ -13,7 +13,7 @@ export interface IBaseViewProps {
   folderAndFiles: FolderInfo[] | undefined;
 }
 
-export const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings, folderAndFiles}: React.PropsWithChildren<IBaseViewProps>) => {
+const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings, folderAndFiles}: React.PropsWithChildren<IBaseViewProps>) => {
   
   const openDashboard = () => {
     MessageHelper.sendMessage(CommandToCode.openDashboard);
@@ -49,3 +49,6 @@ export const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings, fol
     </div>
   );
 };
+
+BaseView.displayName = 'BaseView';
+export { BaseView };

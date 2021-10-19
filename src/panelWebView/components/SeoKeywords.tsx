@@ -11,7 +11,7 @@ export interface ISeoKeywordsProps {
   content: string;
 }
 
-export const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({keywords, ...data}: React.PropsWithChildren<ISeoKeywordsProps>) => {
+const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({keywords, ...data}: React.PropsWithChildren<ISeoKeywordsProps>) => {
 
   const validateKeywords = () => {
     if (!keywords) {
@@ -55,8 +55,9 @@ export const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({keyword
           }
         </VsTableBody>
       </VsTable>
-      
-      
     </div>
   );
 };
+
+SeoKeywords.displayName = 'SeoKeywords';
+export { SeoKeywords };

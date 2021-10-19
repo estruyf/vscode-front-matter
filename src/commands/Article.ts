@@ -9,6 +9,7 @@ import { extname, basename } from 'path';
 import { COMMAND_NAME, DefaultFields } from '../constants';
 import { DashboardData } from '../models/DashboardData';
 import { ExplorerView } from '../explorerView/ExplorerView';
+import { DateHelper } from '../helpers/DateHelper';
 
 
 export class Article {
@@ -171,7 +172,7 @@ export class Article {
 
           let newFileName = `${slugName}${ext}`;
           if (filePrefix && typeof filePrefix === "string") {
-            newFileName = `${format(new Date(), filePrefix)}-${newFileName}`;
+            newFileName = `${format(new Date(), DateHelper.formatUpdate(filePrefix))}-${newFileName}`;
           }
 
           const newPath = editor.document.uri.fsPath.replace(fileName, newFileName);
@@ -243,7 +244,7 @@ export class Article {
     const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
 
     if (dateFormat && typeof dateFormat === "string") {
-      return format(dateValue, dateFormat);
+      return format(dateValue, DateHelper.formatUpdate(dateFormat));
     } else {
       return typeof dateValue.toISOString === 'function' ? dateValue.toISOString() : dateValue?.toString();
     }

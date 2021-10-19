@@ -14,6 +14,7 @@ import { EditorHelper } from '@estruyf/vscode';
 import sanitize from '../helpers/Sanitize';
 import { existsSync, mkdirSync } from 'fs';
 import { ContentType } from '../models';
+import { DateHelper } from './DateHelper';
 
 export class ArticleHelper {
   
@@ -31,9 +32,9 @@ export class ArticleHelper {
    * Retrieve the file's front matter by its path
    * @param filePath 
    */
-  public static getFrontMatterByPath(filePath: string) {   
+  public static getFrontMatterByPath(filePath: string, surpressNotification: boolean = false) {   
     const file = fs.readFileSync(filePath, { encoding: "utf-8" });
-    return ArticleHelper.parseFile(file, filePath);
+    return ArticleHelper.parseFile(file, filePath, surpressNotification);
   }
 
   /**
@@ -203,7 +204,7 @@ export class ArticleHelper {
       let newFileName = `${sanitizedName}.md`;
 
       if (prefix && typeof prefix === "string") {
-        newFileName = `${format(new Date(), prefix)}-${newFileName}`;
+        newFileName = `${format(new Date(), DateHelper.formatUpdate(prefix))}-${newFileName}`;
       }
       
       newFilePath = join(folderPath, newFileName);
@@ -222,7 +223,7 @@ export class ArticleHelper {
    * @param fileContents 
    * @returns 
    */
-  private static parseFile(fileContents: string, fileName: string): matter.GrayMatterFile<string> | null {
+  private static parseFile(fileContents: string, fileName: string, surpressNotification: boolean = false): matter.GrayMatterFile<string> | null {
     try {
       const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
       
@@ -254,15 +255,17 @@ export class ArticleHelper {
           await EditorHelper.showFile(fileName)
         } 
       }];
-      
-      Notifications.error(`There seems to be an issue parsing the content its front matter. FileName: ${basename(fileName)}. ERROR: ${error.message || error}`, ...items).then((result: any) => {
-        if (result?.title) {
-          const item = items.find(i => i.title === result.title);
-          if (item) {
-            item.action();
+
+      if (!surpressNotification) {
+        Notifications.error(`There seems to be an issue parsing the content its front matter. FileName: ${basename(fileName)}. ERROR: ${error.message || error}`, ...items).then((result: any) => {
+          if (result?.title) {
+            const item = items.find(i => i.title === result.title);
+            if (item) {
+              item.action();
+            }
           }
-        }
-      });
+        });
+      }
     }
     return null;
   }

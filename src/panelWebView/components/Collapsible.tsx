@@ -10,9 +10,25 @@ export interface ICollapsibleProps {
   sendUpdate?: (open: boolean) => void;
 }
 
-export const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({id, children, title, sendUpdate, className}: React.PropsWithChildren<ICollapsibleProps>) => {
+const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({id, children, title, sendUpdate, className}: React.PropsWithChildren<ICollapsibleProps>) => {
   const [ isOpen, setIsOpen ] = React.useState(false);
   const collapseKey = `collapse-${id}`;
+
+  useEffect(() => {
+    const collapsed = window.localStorage.getItem(collapseKey);
+    if (collapsed === null || collapsed === 'true') {
+      setIsOpen(true);
+      updateStorage(true);
+    }
+
+    window.addEventListener('message', event => {
+      const message = event.data;
+      if (message.command === Command.closeSections) {
+        setIsOpen(false);
+        updateStorage(false);
+      }
+    });
+  }, ['']);
 
   const updateStorage = (value: boolean) => {
     window.localStorage.setItem(collapseKey, value.toString());
@@ -32,22 +48,6 @@ export const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({id, chi
     }
   }
 
-  useEffect(() => {
-    const collapsed = window.localStorage.getItem(collapseKey);
-    if (collapsed === null || collapsed === 'true') {
-      setIsOpen(true);
-      updateStorage(true);
-    }
-
-    window.addEventListener('message', event => {
-      const message = event.data;
-      if (message.command === Command.closeSections) {
-        setIsOpen(false);
-        updateStorage(false);
-      }
-    });
-  }, ['']);
-
   return (
     <VsCollapsible title={title} onClick={triggerClick} open={isOpen}>
       <div className={`section collapsible__body ${className || ""}`} slot="body">
@@ -56,3 +56,6 @@ export const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({id, chi
     </VsCollapsible>
   );
 };
+
+Collapsible.displayName = 'Collapsible';
+export { Collapsible };

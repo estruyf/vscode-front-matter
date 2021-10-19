@@ -72,6 +72,9 @@ export interface CustomScript {
   title: string;
   script: string;
   nodeBin?: string;
+  bulk?: boolean;
+  output?: "notification" | "editor";
+  outputType?: string;
 }
 
 export interface PreviewSettings {

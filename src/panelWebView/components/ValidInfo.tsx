@@ -6,7 +6,7 @@ export interface IValidInfoProps {
   isValid: boolean;
 }
 
-export const ValidInfo: React.FunctionComponent<IValidInfoProps> = ({isValid}: React.PropsWithChildren<IValidInfoProps>) => {
+const ValidInfo: React.FunctionComponent<IValidInfoProps> = ({isValid}: React.PropsWithChildren<IValidInfoProps>) => {
   return (
     <>
       {
@@ -19,3 +19,6 @@ export const ValidInfo: React.FunctionComponent<IValidInfoProps> = ({isValid}: R
     </>
   );
 };
+
+ValidInfo.displayName = 'ValidInfo';
+export { ValidInfo };

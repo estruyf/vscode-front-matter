@@ -1,6 +1,22 @@
 # Change Log
 
+## [5.2.0] - 2021-10-19
+
+### 🎨 Enhancements
+
+- [#151](https://github.com/estruyf/vscode-front-matter/issues/151): Detect which site-generator or framework is used
+- [#152](https://github.com/estruyf/vscode-front-matter/issues/152): Automatically set setting based on the used site-generator or framework
+- [#154](https://github.com/estruyf/vscode-front-matter/issues/154): Bulk script support added
+- [#155](https://github.com/estruyf/vscode-front-matter/issues/155): Fallback image added for the images shown in the editor panel
+
+### 🐞 Fixes
+
+- [#153](https://github.com/estruyf/vscode-front-matter/issues/153): Support old date formatting for date-fns
+- [#156](https://github.com/estruyf/vscode-front-matter/issues/156): Fix for uploading media files into a new folder
+
 ## [5.1.1] - 2021-10-14
+
+### 🐞 Fixes
 
 - [#149](https://github.com/estruyf/vscode-front-matter/issues/149): Fix panel rendering when incorrect type for keywords is provided
 

@@ -5,6 +5,7 @@ import { commands, env, Uri, ViewColumn, window } from "vscode";
 import { Settings } from '../helpers';
 import { PreviewSettings } from '../models';
 import { format } from 'date-fns';
+import { DateHelper } from '../helpers/DateHelper';
 
 
 export class Preview {
@@ -34,7 +35,7 @@ export class Preview {
     if (settings.pathname) {
       const articleDate = ArticleHelper.getDate(article);
       try {
-        slug = join(format(articleDate || new Date(), settings.pathname), slug);
+        slug = join(format(articleDate || new Date(), DateHelper.formatUpdate(settings.pathname)), slug);
       } catch (error) {
         slug = join(settings.pathname, slug);
       }

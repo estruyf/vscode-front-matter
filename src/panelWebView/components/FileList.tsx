@@ -9,7 +9,7 @@ export interface IFileListProps {
   totalFiles: number;
 }
 
-export const FileList: React.FunctionComponent<IFileListProps> = ({files, folderName, totalFiles}: React.PropsWithChildren<IFileListProps>) => {
+const FileList: React.FunctionComponent<IFileListProps> = ({files, folderName, totalFiles}: React.PropsWithChildren<IFileListProps>) => {
 
   if (!files || files.length === 0) {
     return null;
@@ -29,3 +29,6 @@ export const FileList: React.FunctionComponent<IFileListProps> = ({files, folder
     </div>
   );
 };
+
+FileList.displayName = 'FileList';
+export { FileList };

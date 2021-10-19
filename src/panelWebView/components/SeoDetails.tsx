@@ -9,7 +9,7 @@ export interface ISeoDetailsProps {
   noValidation?: boolean;
 }
 
-export const SeoDetails: React.FunctionComponent<ISeoDetailsProps> = (props: React.PropsWithChildren<ISeoDetailsProps>) => {
+const SeoDetails: React.FunctionComponent<ISeoDetailsProps> = (props: React.PropsWithChildren<ISeoDetailsProps>) => {
   const { allowedLength, title, value, valueTitle, noValidation } = props;
 
   const validate = () => {
@@ -39,3 +39,6 @@ export const SeoDetails: React.FunctionComponent<ISeoDetailsProps> = (props: Rea
     </div>
   );
 };
+
+SeoDetails.displayName = 'SeoDetails';
+export { SeoDetails };

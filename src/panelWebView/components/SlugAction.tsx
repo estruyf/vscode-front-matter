@@ -11,7 +11,7 @@ export interface ISlugActionProps {
   slugOpts: Slug;
 }
 
-export const SlugAction: React.FunctionComponent<ISlugActionProps> = (props: React.PropsWithChildren<ISlugActionProps>) => {
+const SlugAction: React.FunctionComponent<ISlugActionProps> = (props: React.PropsWithChildren<ISlugActionProps>) => {
   const { value, crntValue, slugOpts } = props;
 
   let slug = SlugHelper.createSlug(value);
@@ -25,3 +25,6 @@ export const SlugAction: React.FunctionComponent<ISlugActionProps> = (props: Rea
     <ActionButton onClick={optimize} disabled={crntValue === slug} title={`Optimize slug`} />
   );
 };
+
+SlugAction.displayName = 'SlugAction';
+export { SlugAction };

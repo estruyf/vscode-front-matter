@@ -9,7 +9,7 @@ export interface IArticleDetailsProps {
   }
 }
 
-export const ArticleDetails: React.FunctionComponent<IArticleDetailsProps> = ({details}: React.PropsWithChildren<IArticleDetailsProps>) => {
+const ArticleDetails: React.FunctionComponent<IArticleDetailsProps> = ({details}: React.PropsWithChildren<IArticleDetailsProps>) => {
   
   if (!details || (details.headings === undefined && details.paragraphs === undefined)) {
     return null;
@@ -47,3 +47,6 @@ export const ArticleDetails: React.FunctionComponent<IArticleDetailsProps> = ({d
     </div>
   );
 };
+
+ArticleDetails.displayName = 'ArticleDetails';
+export { ArticleDetails };
