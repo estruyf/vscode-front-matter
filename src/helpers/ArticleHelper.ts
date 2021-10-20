@@ -251,7 +251,6 @@ export class ArticleHelper {
       const items = [{ 
         title: "Check file", 
         action: async () => {
-          console.log(fileName);
           await EditorHelper.showFile(fileName)
         } 
       }];

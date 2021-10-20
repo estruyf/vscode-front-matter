@@ -1,5 +1,11 @@
 # Change Log
 
+## [5.x.x] - 2021-xx-xx
+
+### 🐞 Fixes
+
+- Value check when generating slug from title
+
 ## [5.2.0] - 2021-10-19
 
 ### 🎨 Enhancements

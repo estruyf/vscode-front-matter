@@ -14,14 +14,18 @@ export class SlugHelper {
 
     // Remove punctuation from input string, and split it into words.
     let cleanTitle = this.removePunctuation(articleTitle);
-    cleanTitle = cleanTitle.toLowerCase();
-    // Split into words
-    let words = cleanTitle.split(/\s/);
-    // Removing stop words
-    words = this.removeStopWords(words);
-    cleanTitle = words.join("-");
-    cleanTitle = this.replaceCharacters(cleanTitle);
-    return cleanTitle;
+    if (cleanTitle) {
+      cleanTitle = cleanTitle.toLowerCase();
+      // Split into words
+      let words = cleanTitle.split(/\s/);
+      // Removing stop words
+      words = this.removeStopWords(words);
+      cleanTitle = words.join("-");
+      cleanTitle = this.replaceCharacters(cleanTitle);
+      return cleanTitle;
+    }
+
+    return null;
   }
 
   /**
@@ -30,6 +34,10 @@ export class SlugHelper {
    * @param value 
    */
   private static removePunctuation(value: string): string {
+    if (typeof value !== "string") {
+      return "";
+    }
+
     const punctuationless = value?.replace(/[\.,-\/#!$@%\^&\*;:{}=\-_`'"~()+\?<>]/g, " ");
     // Remove double spaces
     return punctuationless?.replace(/\s{2,}/g," ");
