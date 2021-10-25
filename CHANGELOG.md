@@ -1,10 +1,12 @@
 # Change Log
 
-## [5.x.x] - 2021-xx-xx
+## [5.2.1] - 2021-10-25
 
 ### 🐞 Fixes
 
 - Value check when generating slug from title
+- Fix for date time formatting with `DD` and `YYYY` tokens
+- Fix in tag space replacing when object is passed
 
 ## [5.2.0] - 2021-10-19
 

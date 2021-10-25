@@ -18,7 +18,7 @@ const Tags: React.FunctionComponent<ITagsProps> = (props: React.PropsWithChildre
   const unknownTags = values.filter(v => !options.includes(v));
 
   const generateKey = (tag: string, idx: number) => {
-    if (tag) {
+    if (tag && typeof tag === 'string') {
       return `${tag.replace(/ /g, "_")}-${idx}`;
     }
     return `tag-${idx}`;
