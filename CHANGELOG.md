@@ -1,6 +1,10 @@
 # Change Log
 
-## [5.2.1] - 2021-10-25
+## [5.3.0] - 2021-10-XX
+
+### 🎨 Enhancements
+
+- [#158](https://github.com/estruyf/vscode-front-matter/issues/158): Add support for non-boolean draft/publish status fields
 
 ### 🐞 Fixes
 
