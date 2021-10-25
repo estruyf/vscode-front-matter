@@ -18,6 +18,7 @@ import { ChoiceField } from './Fields/ChoiceField';
 import useContentType from '../../hooks/useContentType';
 import { DateHelper } from '../../helpers/DateHelper';
 import FieldBoundary from './ErrorBoundary/FieldBoundary';
+import { DraftField } from './Fields/DraftField';
 
 export interface IMetadataProps {
   settings: PanelSettings | undefined;
@@ -170,6 +171,20 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               freeform={settings.freeform} 
               focussed={focusElm === TagType.categories}
               unsetFocus={unsetFocus} />
+          </FieldBoundary>
+        );
+      } else if (field.type === 'draft') {
+        const draftField = settings?.draftField;
+        const value = metadata[field.name];
+
+        return (
+          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+            <DraftField
+              label={field.title || field.name}
+              type={draftField.type}
+              choices={draftField.choices || []}
+              value={value as boolean | string | null | undefined}
+              onChanged={(value: boolean | string) => sendUpdate(field.name, value)} />
           </FieldBoundary>
         );
       } else {

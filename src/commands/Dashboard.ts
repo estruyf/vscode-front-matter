@@ -1,10 +1,10 @@
-import { SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTING_TAXONOMY_CONTENT_TYPES, DefaultFields, HOME_PAGE_NAVIGATION_ID, ExtensionState, COMMAND_NAME, SETTINGS_FRAMEWORK_ID } from '../constants';
+import { SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTING_TAXONOMY_CONTENT_TYPES, DefaultFields, HOME_PAGE_NAVIGATION_ID, ExtensionState, COMMAND_NAME, SETTINGS_FRAMEWORK_ID, SETTINGS_CONTENT_DRAFT_FIELD } from '../constants';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { basename, dirname, extname, join, parse } from "path";
 import { existsSync, readdirSync, statSync, unlinkSync, writeFileSync } from "fs";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env, Position } from "vscode";
 import { Settings as SettingsHelper } from '../helpers';
-import { Framework, TaxonomyType } from '../models';
+import { DraftField, Framework, TaxonomyType } from '../models';
 import { Folders } from './Folders';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../dashboardWebView/DashboardMessage';
@@ -25,6 +25,7 @@ import imageSize from 'image-size';
 import { parseWinPath } from '../helpers/parseWinPath';
 import { DateHelper } from '../helpers/DateHelper';
 import { FrameworkDetector } from '../helpers/FrameworkDetector';
+import { ContentType } from '../helpers/ContentType';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -278,6 +279,7 @@ export class Dashboard {
         pageViewType: await ext.getState<ViewType | undefined>(ExtensionState.PagesView),
         mediaSnippet: SettingsHelper.get<string[]>(SETTINGS_DASHBOARD_MEDIA_SNIPPET) || [],
         contentTypes: SettingsHelper.get(SETTING_TAXONOMY_CONTENT_TYPES) || [],
+        draftField: SettingsHelper.get<DraftField>(SETTINGS_CONTENT_DRAFT_FIELD),
         contentFolders: Folders.get().map(f => f.path),
         crntFramework: SettingsHelper.get<string>(SETTINGS_FRAMEWORK_ID),
         framework: (!isInitialized && wsFolder) ? FrameworkDetector.get(wsFolder.fsPath) : null,
@@ -479,7 +481,7 @@ export class Dashboard {
                   fmModified: file.mtime,
                   fmFilePath: file.filePath,
                   fmFileName: file.fileName,
-                  fmDraft: article?.data.draft ? "Draft" : "Published",
+                  fmDraft: ContentType.getDraftStatus(article?.data),
                   fmYear: article?.data[dateField] ? DateHelper.tryParse(article?.data[dateField])?.getFullYear() : null,
                   // Make sure these are always set
                   title: article?.data.title,

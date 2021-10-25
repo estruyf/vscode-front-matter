@@ -1,7 +1,7 @@
 import { VersionInfo } from '../../models/VersionInfo';
 import { ViewType } from '../state';
 import { ContentFolder } from '../../models/ContentFolder';
-import { ContentType, Framework } from '../../models';
+import { ContentType, DraftField, Framework } from '../../models';
 
 export interface Settings { 
   beta: boolean;
@@ -19,4 +19,5 @@ export interface Settings {
   contentFolders: string[];
   crntFramework: string;
   framework: Framework | null | undefined;
+  draftField: DraftField | null | undefined;
 }

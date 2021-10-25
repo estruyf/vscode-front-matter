@@ -4,7 +4,7 @@ import { Tab } from '../constants/Tab';
 import { Page } from '../models/Page';
 import Fuse from 'fuse.js';
 import { useRecoilValue } from 'recoil';
-import { CategorySelector, FolderSelector, SearchSelector, SortingSelector, TabSelector, TagSelector } from '../state';
+import { CategorySelector, FolderSelector, SearchSelector, SettingsSelector, SortingSelector, TabSelector, TagSelector } from '../state';
 
 const fuseOptions: Fuse.IFuseOptions<Page> = {
   keys: [
@@ -16,6 +16,7 @@ const fuseOptions: Fuse.IFuseOptions<Page> = {
 
 export default function usePages(pages: Page[]) {
   const [ pageItems, setPageItems ] = useState<Page[]>([]);
+  const settings = useRecoilValue(SettingsSelector);
   const tab = useRecoilValue(TabSelector);
   const sorting = useRecoilValue(SortingSelector);
   const folder = useRecoilValue(FolderSelector);
@@ -24,6 +25,8 @@ export default function usePages(pages: Page[]) {
   const category = useRecoilValue(CategorySelector);
 
   useEffect(() => {
+    const draftField = settings?.draftField;
+
     // Check if search needs to be performed
     let searchedPages = pages;
     if (search) {
@@ -34,12 +37,22 @@ export default function usePages(pages: Page[]) {
 
     // Filter the pages
     let pagesToShow: Page[] = Object.assign([], searchedPages);
-    if (tab === Tab.Published) {
-      pagesToShow = searchedPages.filter(page => !page.draft);
-    } else if (tab === Tab.Draft) {
-      pagesToShow = searchedPages.filter(page => !!page.draft);
+
+    if (draftField && draftField.type === 'choice') {
+      if (tab !== Tab.All) {
+        pagesToShow = pagesToShow.filter(page => page.fmDraft === tab);
+      } else {
+        pagesToShow = searchedPages;
+      }
     } else {
-      pagesToShow = searchedPages;
+      const draftFieldName = draftField?.name || "draft";
+      if (tab === Tab.Published) {
+        pagesToShow = searchedPages.filter(page => !page[draftFieldName]);
+      } else if (tab === Tab.Draft) {
+        pagesToShow = searchedPages.filter(page => !!page[draftFieldName]);
+      } else {
+        pagesToShow = searchedPages;
+      }
     }
 
     // Sort the pages
@@ -69,7 +82,7 @@ export default function usePages(pages: Page[]) {
     }
 
     setPageItems(pagesSorted);
-  }, [ pages, tab, sorting, folder, search, tag, category ]);
+  }, [ settings?.draftField, pages, tab, sorting, folder, search, tag, category ]);
 
   return {
     pageItems

@@ -1,17 +1,47 @@
 import { ArticleHelper, Settings } from ".";
-import { SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from "../constants";
-import { ContentType as IContentType } from '../models';
+import { SETTINGS_CONTENT_DRAFT_FIELD, SETTING_TAXONOMY_CONTENT_TYPES } from "../constants";
+import { ContentType as IContentType, DraftField } from '../models';
 import { Uri, workspace, window } from 'vscode'; 
 import { Folders } from "../commands/Folders";
 import { Questions } from "./Questions";
-import { format } from "date-fns";
-import { join } from "path";
-import { existsSync, mkdirSync, writeFileSync } from "fs";
+import { writeFileSync } from "fs";
 import { Notifications } from "./Notifications";
 import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
+import { GrayMatterFile } from "gray-matter";
 
 
 export class ContentType {
+
+  /**
+   * Retrieve the draft field
+   * @returns 
+   */
+  public static getDraftField() {
+    const draftField = Settings.get<DraftField | null | undefined>(SETTINGS_CONTENT_DRAFT_FIELD);
+    if (draftField) {
+      return draftField;
+    }
+
+    return null;
+  }
+
+  /**
+   * Retrieve the field its status
+   * @param data 
+   * @returns 
+   */
+  public static getDraftStatus(data: { [field: string]: any }) {
+    const draftField = ContentType.getDraftField();
+    if (draftField && data && data[draftField.name]) {
+      const fieldValue = data[draftField.name];
+      if (draftField.type === "boolean") {
+        return fieldValue ? "Draft" : "Published";
+      } else {
+        return fieldValue;
+      }
+    }
+    return null;
+  }
 
   /**
    * Create content based on content types

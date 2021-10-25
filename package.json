@@ -97,6 +97,43 @@
           "markdownDescription": "Specify if you want to automatically update the modified date of your article/page. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.autoupdatedate)",
           "scope": "Content"
         },
+        "frontMatter.content.draftField": {
+          "type": "object",
+          "markdownDescription": "Define the draft field you want to use to manage your content. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.draftField)",
+          "default": {
+            "name": "draft",
+            "type": "boolean"
+          },
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "boolean",
+                "choice"
+              ],
+              "description": "Define the type of field"
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of the field to use"
+            },
+            "choices": {
+              "type": "array",
+              "description": "List of choices for the field",
+              "items": {
+                "type": [
+                  "string"
+                ]
+              }
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "name"
+          ],
+          "scope": "Content"
+        },
         "frontMatter.content.fmHighlight": {
           "type": "boolean",
           "default": true,
@@ -273,7 +310,8 @@
                         "image",
                         "choice",
                         "tags",
-                        "categories"
+                        "categories",
+                        "draft"
                       ],
                       "description": "Define the type of field"
                     },

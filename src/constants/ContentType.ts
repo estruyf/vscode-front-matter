@@ -29,7 +29,7 @@ export const DEFAULT_CONTENT_TYPE: ContentType = {
     {
       "title": "Is in draft",
       "name": "draft",
-      "type": "boolean"
+      "type": "draft"
     },
     {
       "title": "Tags",
