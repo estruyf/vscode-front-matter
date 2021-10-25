@@ -172,7 +172,7 @@ export class Article {
 
           let newFileName = `${slugName}${ext}`;
           if (filePrefix && typeof filePrefix === "string") {
-            newFileName = `${format(new Date(), DateHelper.formatUpdate(filePrefix))}-${newFileName}`;
+            newFileName = `${format(new Date(), DateHelper.formatUpdate(filePrefix) as string)}-${newFileName}`;
           }
 
           const newPath = editor.document.uri.fsPath.replace(fileName, newFileName);
@@ -244,7 +244,7 @@ export class Article {
     const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
 
     if (dateFormat && typeof dateFormat === "string") {
-      return format(dateValue, DateHelper.formatUpdate(dateFormat));
+      return format(dateValue, DateHelper.formatUpdate(dateFormat) as string);
     } else {
       return typeof dateValue.toISOString === 'function' ? dateValue.toISOString() : dateValue?.toString();
     }

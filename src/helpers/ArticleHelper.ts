@@ -204,7 +204,7 @@ export class ArticleHelper {
       let newFileName = `${sanitizedName}.md`;
 
       if (prefix && typeof prefix === "string") {
-        newFileName = `${format(new Date(), DateHelper.formatUpdate(prefix))}-${newFileName}`;
+        newFileName = `${format(new Date(), DateHelper.formatUpdate(prefix) as string)}-${newFileName}`;
       }
       
       newFilePath = join(folderPath, newFileName);

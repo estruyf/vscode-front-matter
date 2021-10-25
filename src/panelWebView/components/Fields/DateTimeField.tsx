@@ -52,7 +52,7 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({lab
           selected={dateValue as Date || new Date()}
           onChange={onDateChange}
           timeInputLabel="Time:"
-          dateFormat={format || "MM/dd/yyyy HH:mm"}
+          dateFormat={DateHelper.formatUpdate(format) || "MM/dd/yyyy HH:mm"}
           customInput={(<CustomInput />)}
           showTimeInput
           />
