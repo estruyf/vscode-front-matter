@@ -45,6 +45,7 @@ export interface DateInfo {
 
 export interface SEO {
   title: number;
+  slug: number;
   description: number;
   content: number;
   descriptionField: string;

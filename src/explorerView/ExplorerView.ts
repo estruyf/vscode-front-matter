@@ -1,6 +1,6 @@
 import { DashboardData } from '../models/DashboardData';
 import { Template } from '../commands/Template';
-import { DefaultFields, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_COMMA_SEPARATED_FIELDS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS, SETTINGS_CONTENT_DRAFT_FIELD } from '../constants';
+import { DefaultFields, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_COMMA_SEPARATED_FIELDS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS, SETTINGS_CONTENT_DRAFT_FIELD, SETTING_SEO_SLUG_LENGTH, SETTING_SITE_BASEURL } from '../constants';
 import * as os from 'os';
 import { PanelSettings, CustomScript as ICustomScript } from '../models/PanelSettings';
 import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv } from "vscode";
@@ -12,7 +12,7 @@ import { TagType } from '../panelWebView/TagType';
 import { DraftField, TaxonomyType } from '../models';
 import { exec } from 'child_process';
 import { fromMarkdown } from 'mdast-util-from-markdown';
-import { Content } from 'mdast';
+import { Content, Root } from 'mdast';
 import { COMMAND_NAME } from '../constants/Extension';
 import { Folders } from '../commands/Folders';
 import { Preview } from '../commands/Preview';
@@ -22,6 +22,7 @@ import { Extension } from '../helpers/Extension';
 import { Dashboard } from '../commands/Dashboard';
 import { ImageHelper } from '../helpers/ImageHelper';
 import { CustomScript } from '../helpers/CustomScript';
+import { Link, Parent, Text } from 'mdast-util-from-markdown/lib';
 
 const FILE_LIMIT = 10;
 
@@ -380,6 +381,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       data: {
         seo: {
           title: Settings.get(SETTING_SEO_TITLE_LENGTH) as number || -1,
+          slug: Settings.get(SETTING_SEO_SLUG_LENGTH) as number || -1,
           description: Settings.get(SETTING_SEO_DESCRIPTION_LENGTH) as number || -1,
           content: Settings.get(SETTING_SEO_CONTENT_MIN_LENGTH) as number || -1,
           descriptionField: Settings.get(SETTING_SEO_DESCRIPTION_FIELD) as string || DefaultFields.Description
@@ -476,6 +478,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * Get article details
    */
   private getArticleDetails() {
+    const baseUrl = Settings.get<string>(SETTING_SITE_BASEURL);
     const editor = window.activeTextEditor;
     if (!editor) {
       return null;
@@ -492,19 +495,57 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       content = content.replace(/({{(.*?)}})/g, ''); // remove hugo shortcodes
       
       const mdTree = fromMarkdown(content);
-      const headings = mdTree.children.filter(node => node.type === 'heading').length;
-      const paragraphs = mdTree.children.filter(node => node.type === 'paragraph').length;
+      const elms: Parent[] | Link[] = this.getAllElms(mdTree);
+
+      const headings = elms.filter(node => node.type === 'heading');
+      const paragraphs = elms.filter(node => node.type === 'paragraph').length;
+      const images = elms.filter(node => node.type === 'image').length;
+      const links: string[] = elms.filter(node => node.type === 'link').map(node => (node as Link).url);
+
+      const internalLinks = links.filter(link => !link.startsWith('http') || (baseUrl && link.toLowerCase().includes((baseUrl || "").toLowerCase()))).length;
+      let externalLinks = links.filter(link => link.startsWith('http'));
+      if (baseUrl) {
+        externalLinks = externalLinks.filter(link => !link.toLowerCase().includes(baseUrl.toLowerCase()));
+      }
+
+      const headers = [];
+      for (const header of headings) { 
+        const text = header?.children?.filter((node: any) => node.type === 'text').map((node: any) => node.value).join(" ");
+        if (text) {
+          headers.push(text);
+        }
+      }
+      
       const wordCount = this.wordCount(0, mdTree);
 
       return {
-        headings,
+        headings: headings.length,
+        headingsText: headers,
         paragraphs,
+        images,
+        internalLinks,
+        externalLinks: externalLinks.length,
         wordCount,
         content: article.content
       };
     }
 
     return null;
+  }
+
+  private getAllElms(node: Content | any, allElms?: any[]): any[] {
+    if (!allElms) {
+      allElms = [];
+    }
+
+    if (node.children?.length > 0) {
+      for (const child of node.children) {
+        allElms.push(Object.assign({}, child));
+        this.getAllElms(child, allElms);
+      }
+    }
+
+    return allElms;
   }
 
   private counts(acc: any, node: any) {

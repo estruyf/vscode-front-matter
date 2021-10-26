@@ -89,8 +89,6 @@ export class CustomScript {
         articleData = `'${articleData}'`;
       }
 
-      console.log(articleData);
-
       exec(`${script.nodeBin || "node"} ${join(wsPath, script.script)} "${wsPath}" "${contentPath}" ${articleData}`, (error, stdout) => {
         if (error) {
           Notifications.error(`${script.title}: ${error.message}`);

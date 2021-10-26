@@ -5,6 +5,7 @@
 ### 🎨 Enhancements
 
 - [#158](https://github.com/estruyf/vscode-front-matter/issues/158): Add support for non-boolean draft/publish status fields
+- [#159](https://github.com/estruyf/vscode-front-matter/issues/159): Enhancements to SEO checks: Slug check, keyword details, more article information
 
 ### 🐞 Fixes
 

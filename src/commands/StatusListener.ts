@@ -20,7 +20,6 @@ export class StatusListener {
     const draft = ContentType.getDraftField();
     if (!draft || draft.type !== "boolean") {
       frontMatterSB.hide();
-      return;
     }
     
     let editor = vscode.window.activeTextEditor;

@@ -91,6 +91,12 @@
     "configuration": {
       "title": "Front Matter: use frontmatter.json for shared team settings",
       "properties": {
+        "frontMatter.site.baseURL": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Specify the base URL of your site, this will be used for SEO checks. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.site.baseURL)",
+          "scope": "Site"
+        },
         "frontMatter.content.autoUpdateDate": {
           "type": "boolean",
           "default": false,
@@ -492,6 +498,12 @@
           "type": "number",
           "default": 160,
           "markdownDescription": "Specifies the optimal description length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seodescriptionlength)",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.seoSlugLength": {
+          "type": "number",
+          "default": 75,
+          "markdownDescription": "Specifies the optimal slug length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seoSlugLength)",
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.seoTitleLength": {

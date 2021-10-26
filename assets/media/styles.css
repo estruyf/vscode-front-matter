@@ -356,8 +356,18 @@
   text-transform: capitalize;
 }
 
+.table__cell__seo_details {
+  padding: 10px;
+}
+
 .table__cell__validation {
-  text-align: center;
+  text-align: left;
+}
+
+.table__cell__validation div {
+  display: flex;
+  align-items: center;
+  padding: 2px 0;
 }
 
 .table__cell__validation .valid {
@@ -366,6 +376,15 @@
 
 .table__cell__validation .warning {
   color: #E6AF2E;
+}
+
+.table__cell__validation div span + span {
+  margin-left: .5rem;
+}
+
+.seo__status__note {
+  font-size: 10px;
+  padding: 3px 0;
 }
 
 /* Fields */
