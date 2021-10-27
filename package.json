@@ -91,12 +91,6 @@
     "configuration": {
       "title": "Front Matter: use frontmatter.json for shared team settings",
       "properties": {
-        "frontMatter.site.baseURL": {
-          "type": "string",
-          "default": "",
-          "markdownDescription": "Specify the base URL of your site, this will be used for SEO checks. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.site.baseURL)",
-          "scope": "Site"
-        },
         "frontMatter.content.autoUpdateDate": {
           "type": "boolean",
           "default": false,
@@ -117,7 +111,7 @@
                 "boolean",
                 "choice"
               ],
-              "description": "Define the type of field"
+              "description": ""
             },
             "name": {
               "type": "string",
@@ -261,6 +255,12 @@
           "default": "",
           "markdownDescription": "Specify the path you want to add after the host and before your slug. This can be used for instance to include the year/month like: `yyyy/MM`. The date will be generated based on the article its date field value. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.preview.pathname)",
           "scope": "Site preview"
+        },
+        "frontMatter.site.baseURL": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Specify the base URL of your site, this will be used for SEO checks. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.site.baseURL)",
+          "scope": "Site"
         },
         "frontMatter.taxonomy.alignFilename": {
           "type": "boolean",

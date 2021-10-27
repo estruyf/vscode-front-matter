@@ -7,7 +7,6 @@ import { Questions } from "./Questions";
 import { writeFileSync } from "fs";
 import { Notifications } from "./Notifications";
 import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
-import { GrayMatterFile } from "gray-matter";
 
 
 export class ContentType {
@@ -31,15 +30,27 @@ export class ContentType {
    * @returns 
    */
   public static getDraftStatus(data: { [field: string]: any }) {
-    const draftField = ContentType.getDraftField();
-    if (draftField && data && data[draftField.name]) {
-      const fieldValue = data[draftField.name];
-      if (draftField.type === "boolean") {
+    const contentType = ArticleHelper.getContentType(data);
+    const draftSetting = ContentType.getDraftField();
+
+    const draftField = contentType.fields.find(f => f.type === "draft");
+
+    let fieldValue = null;
+
+    if (draftField) {
+      fieldValue = data[draftField.name];
+    } else if (draftSetting && data && data[draftSetting.name]) {
+      fieldValue = data[draftSetting.name];
+    }
+
+    if (draftSetting && fieldValue) {
+      if (draftSetting.type === "boolean") {
         return fieldValue ? "Draft" : "Published";
       } else {
         return fieldValue;
       }
     }
+
     return null;
   }
 
