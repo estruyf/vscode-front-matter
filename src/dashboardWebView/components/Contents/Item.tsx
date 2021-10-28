@@ -41,7 +41,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
 
           <div className="p-4 w-full">
             <div className={`flex justify-between items-center`}>
-              <Status draft={!!draft} />
+              <Status draft={draft} />
 
               <DateField value={date} />
             </div>
@@ -64,7 +64,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
             <DateField value={date} />
           </div>
           <div className="col-span-2">
-            <Status draft={!!draft} />
+            <Status draft={draft} />
           </div>
         </button>
       </li>

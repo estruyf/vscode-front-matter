@@ -126,7 +126,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	// Settings promotion command
-	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.promote, () => { console.log('promote'); SettingsHelper.promote(); }));
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.promote, SettingsHelper.promote ));
 
 	// Collapse all sections in the webview
 	const collapseAll = vscode.commands.registerCommand(COMMAND_NAME.collapseSections, () => {

@@ -3,10 +3,11 @@ import { CheckIcon } from './Icons/CheckIcon';
 import { WarningIcon } from './Icons/WarningIcon';
 
 export interface IValidInfoProps {
+  label?: string;
   isValid: boolean;
 }
 
-const ValidInfo: React.FunctionComponent<IValidInfoProps> = ({isValid}: React.PropsWithChildren<IValidInfoProps>) => {
+const ValidInfo: React.FunctionComponent<IValidInfoProps> = ({label, isValid}: React.PropsWithChildren<IValidInfoProps>) => {
   return (
     <>
       {
@@ -16,6 +17,7 @@ const ValidInfo: React.FunctionComponent<IValidInfoProps> = ({isValid}: React.Pr
           <span className="warning"><WarningIcon /></span>
         )
       }
+      { label && <span>{label}</span> }
     </>
   );
 };

@@ -20,6 +20,7 @@ export const SETTING_REMOVE_QUOTES = "taxonomy.noPropertyValueQuotes";
 export const SETTING_FRONTMATTER_TYPE = "taxonomy.frontMatterType";
 
 export const SETTING_SEO_TITLE_LENGTH = "taxonomy.seoTitleLength";
+export const SETTING_SEO_SLUG_LENGTH = "taxonomy.seoSlugLength";
 export const SETTING_SEO_DESCRIPTION_LENGTH = "taxonomy.seoDescriptionLength";
 export const SETTING_SEO_CONTENT_MIN_LENGTH = "taxonomy.seoContentLengh";
 export const SETTING_SEO_DESCRIPTION_FIELD = "taxonomy.seoDescriptionField";
@@ -38,11 +39,14 @@ export const SETTING_AUTO_UPDATE_DATE = "content.autoUpdateDate";
 export const SETTINGS_CONTENT_PAGE_FOLDERS = "content.pageFolders";
 export const SETTINGS_CONTENT_STATIC_FOLDER = "content.publicFolder";
 export const SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT = "content.fmHighlight";
+export const SETTINGS_CONTENT_DRAFT_FIELD = "content.draftField";
 
 export const SETTINGS_DASHBOARD_OPENONSTART = "dashboard.openOnStart";
 export const SETTINGS_DASHBOARD_MEDIA_SNIPPET = "dashboard.mediaSnippet";
 
 export const SETTINGS_FRAMEWORK_ID = "framework.id";
+
+export const SETTING_SITE_BASEURL = "site.baseURL";
 
 /**
  * @deprecated

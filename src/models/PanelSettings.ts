@@ -1,4 +1,5 @@
 import { FileType } from "vscode";
+import { DraftField } from ".";
 import { Choice } from "./Choice";
 import { DashboardData } from "./DashboardData";
 
@@ -17,6 +18,7 @@ export interface PanelSettings {
   preview: PreviewSettings;
   contentTypes: ContentType[];
   dashboardViewData: DashboardData | undefined;
+  draftField: DraftField;
 }
 
 export interface ContentType {
@@ -29,7 +31,7 @@ export interface ContentType {
 export interface Field {
   title?: string;
   name: string;
-  type: "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories";
+  type: "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft";
   choices?: string[] | Choice[];
   single?: boolean;
   multiple?: boolean;
@@ -43,6 +45,7 @@ export interface DateInfo {
 
 export interface SEO {
   title: number;
+  slug: number;
   description: number;
   content: number;
   descriptionField: string;

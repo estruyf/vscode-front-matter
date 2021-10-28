@@ -35,7 +35,7 @@ export class Preview {
     if (settings.pathname) {
       const articleDate = ArticleHelper.getDate(article);
       try {
-        slug = join(format(articleDate || new Date(), DateHelper.formatUpdate(settings.pathname)), slug);
+        slug = join(format(articleDate || new Date(), DateHelper.formatUpdate(settings.pathname) as string), slug);
       } catch (error) {
         slug = join(settings.pathname, slug);
       }

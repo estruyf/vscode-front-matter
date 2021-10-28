@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { SeoKeywordInfo } from './SeoKeywordInfo';
-import { VsTable, VsTableBody, VsTableCell, VsTableHeader, VsTableHeaderCell, VsTableRow } from './VscodeComponents';
+import { VsTable, VsTableBody, VsTableHeader, VsTableHeaderCell } from './VscodeComponents';
 
 export interface ISeoKeywordsProps {
   keywords: string[] | null;
@@ -9,6 +9,8 @@ export interface ISeoKeywordsProps {
   description: string;
   slug: string;
   content: string;
+  headings?: string[];
+  wordCount?: number;
 }
 
 const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({keywords, ...data}: React.PropsWithChildren<ISeoKeywordsProps>) => {
@@ -37,13 +39,10 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({keywords, ...d
     <div className={`seo__status__keywords`}>
       <h4>Keywords</h4>
 
-      <VsTable bordered>
+      <VsTable bordered columns={["30%", "auto"]}>
         <VsTableHeader slot="header">
           <VsTableHeaderCell className={`table__cell`}>Keyword</VsTableHeaderCell>
-          <VsTableHeaderCell className={`table__cell`}>Title</VsTableHeaderCell>
-          <VsTableHeaderCell className={`table__cell`}>Description</VsTableHeaderCell>
-          <VsTableHeaderCell className={`table__cell`}>Slug</VsTableHeaderCell>
-          <VsTableHeaderCell className={`table__cell`}>Content</VsTableHeaderCell>
+          <VsTableHeaderCell className={`table__cell`}>Details</VsTableHeaderCell>
         </VsTableHeader>
         <VsTableBody slot="body">
           {
@@ -55,6 +54,14 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({keywords, ...d
           }
         </VsTableBody>
       </VsTable>
+
+      {
+        data.wordCount && (
+          <div className={`seo__status__note`}>
+            * A keyword density of 1-1.5% is sufficient in most cases.
+          </div>
+        )
+      }
     </div>
   );
 };

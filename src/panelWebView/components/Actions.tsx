@@ -27,8 +27,8 @@ const Actions: React.FunctionComponent<IActionsProps> = (props: React.PropsWithC
 
         {
           (settings && settings.scripts && settings.scripts.length > 0) && (
-            settings.scripts.map((value) => (
-              <CustomScript key={value.title.replace(/ /g, '')} {...value} />
+            settings.scripts.map((value, idx) => (
+              <CustomScript key={value?.title?.replace(/ /g, '') || idx} {...value} />
             ))
           )
         }

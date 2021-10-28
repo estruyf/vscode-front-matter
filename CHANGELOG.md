@@ -1,5 +1,18 @@
 # Change Log
 
+## [5.3.0] - 2021-10-28 - [Release Notes](https://beta.frontmatter.codes/updates/v5.3.0)
+
+### 🎨 Enhancements
+
+- [#158](https://github.com/estruyf/vscode-front-matter/issues/158): Add support for non-boolean draft/publish status fields
+- [#159](https://github.com/estruyf/vscode-front-matter/issues/159): Enhancements to SEO checks: Slug check, keyword details, more article information
+
+### 🐞 Fixes
+
+- Value check when generating slug from title
+- Fix for date time formatting with `DD` and `YYYY` tokens
+- Fix in tag space replacing when object is passed
+
 ## [5.2.0] - 2021-10-19
 
 ### 🎨 Enhancements

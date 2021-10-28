@@ -13,7 +13,7 @@ export interface ISeoStatusProps {
 
 const SeoStatus: React.FunctionComponent<ISeoStatusProps> = (props: React.PropsWithChildren<ISeoStatusProps>) => {
   const { data, seo } = props;
-  const { title } = data;
+  const { title, slug } = data;
   const [ isOpen, setIsOpen ] = React.useState(true);
   const tableRef = React.useRef<HTMLElement>();
   const pushUpdate = React.useRef((value: boolean) => {
@@ -65,6 +65,11 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = (props: React.PropsW
                   <SeoFieldInfo title={`title`} value={title.length} recommendation={`${seo.title} chars`} isValid={title.length <= seo.title} />
                 )
               }
+              { 
+                (slug && seo.slug > 0) && (
+                  <SeoFieldInfo title={`slug`} value={slug.length} recommendation={`${seo.slug} chars`} isValid={slug.length <= seo.slug} />
+                )
+              }
 
               {
                 (data[descriptionField] && seo.description > 0) && (
@@ -85,6 +90,8 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = (props: React.PropsW
                      title={title} 
                      description={data[descriptionField]} 
                      slug={data.slug}
+                     headings={data?.articleDetails?.headingsText}
+                     wordCount={data?.articleDetails?.wordCount}
                      content={data?.articleDetails?.content} />
 
         <ArticleDetails details={data.articleDetails} />

@@ -6,6 +6,9 @@ export interface IArticleDetailsProps {
     headings: number;
     paragraphs: number;
     wordCount: number;
+    internalLinks: number;
+    externalLinks: number;
+    images: number;
   }
 }
 
@@ -39,6 +42,33 @@ const ArticleDetails: React.FunctionComponent<IArticleDetailsProps> = ({details}
               <VsTableRow>
                 <VsTableCell>Paragraphs</VsTableCell>
                 <VsTableCell>{details.paragraphs}</VsTableCell>
+              </VsTableRow>
+            )
+          }
+
+          {
+            details?.internalLinks !== undefined && (
+              <VsTableRow>
+                <VsTableCell>Internal links</VsTableCell>
+                <VsTableCell>{details.internalLinks}</VsTableCell>
+              </VsTableRow>
+            )
+          }
+
+          {
+            details?.externalLinks !== undefined && (
+              <VsTableRow>
+                <VsTableCell>External links</VsTableCell>
+                <VsTableCell>{details.externalLinks}</VsTableCell>
+              </VsTableRow>
+            )
+          }
+
+          {
+            details?.images !== undefined && (
+              <VsTableRow>
+                <VsTableCell>Images</VsTableCell>
+                <VsTableCell>{details.images}</VsTableCell>
               </VsTableRow>
             )
           }

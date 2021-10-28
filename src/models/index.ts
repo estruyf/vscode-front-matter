@@ -1,6 +1,7 @@
 export * from './Choice';
 export * from './ContentFolder';
 export * from './DashboardData';
+export * from './DraftField';
 export * from './Framework';
 export * from './MediaPaths';
 export * from './PanelSettings';

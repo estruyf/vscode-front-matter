@@ -3,7 +3,7 @@
   "displayName": "Front Matter",
   "description": "An essential Visual Studio Code extension when you want to manage the markdown pages of your static site like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "5.2.0",
+  "version": "5.3.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -95,6 +95,43 @@
           "type": "boolean",
           "default": false,
           "markdownDescription": "Specify if you want to automatically update the modified date of your article/page. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.autoupdatedate)",
+          "scope": "Content"
+        },
+        "frontMatter.content.draftField": {
+          "type": "object",
+          "markdownDescription": "Define the draft field you want to use to manage your content. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.draftField)",
+          "default": {
+            "name": "draft",
+            "type": "boolean"
+          },
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "boolean",
+                "choice"
+              ],
+              "description": ""
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of the field to use"
+            },
+            "choices": {
+              "type": "array",
+              "description": "List of choices for the field",
+              "items": {
+                "type": [
+                  "string"
+                ]
+              }
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "name"
+          ],
           "scope": "Content"
         },
         "frontMatter.content.fmHighlight": {
@@ -219,6 +256,12 @@
           "markdownDescription": "Specify the path you want to add after the host and before your slug. This can be used for instance to include the year/month like: `yyyy/MM`. The date will be generated based on the article its date field value. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.preview.pathname)",
           "scope": "Site preview"
         },
+        "frontMatter.site.baseURL": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Specify the base URL of your site, this will be used for SEO checks. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.site.baseURL)",
+          "scope": "Site"
+        },
         "frontMatter.taxonomy.alignFilename": {
           "type": "boolean",
           "default": false,
@@ -273,7 +316,8 @@
                         "image",
                         "choice",
                         "tags",
-                        "categories"
+                        "categories",
+                        "draft"
                       ],
                       "description": "Define the type of field"
                     },
@@ -454,6 +498,12 @@
           "type": "number",
           "default": 160,
           "markdownDescription": "Specifies the optimal description length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seodescriptionlength)",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.seoSlugLength": {
+          "type": "number",
+          "default": 75,
+          "markdownDescription": "Specifies the optimal slug length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seoSlugLength)",
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.seoTitleLength": {

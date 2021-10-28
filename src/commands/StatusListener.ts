@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import { ArticleHelper, SeoHelper, Settings } from '../helpers';
 import { ExplorerView } from '../explorerView/ExplorerView';
 import { DefaultFields } from '../constants';
+import { ContentType } from '../helpers/ContentType';
 
 export class StatusListener {
   
@@ -15,6 +16,11 @@ export class StatusListener {
   public static async verify(frontMatterSB: vscode.StatusBarItem, collection: vscode.DiagnosticCollection) {
     const draftMsg = "in draft";
     const publishMsg = "to publish";
+
+    const draft = ContentType.getDraftField();
+    if (!draft || draft.type !== "boolean") {
+      frontMatterSB.hide();
+    }
     
     let editor = vscode.window.activeTextEditor;
     if (editor && ArticleHelper.isMarkdownFile()) {

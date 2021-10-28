@@ -48,6 +48,10 @@ Our main extension features are:
 
 > If you see something missing in your article creation flow, please feel free to reach out.
 
+**Version 5**
+
+The new media dashboard redesign got introduced + support for setting metadata on media files [v5.0.0 release notes](https://frontmatter.codes/updates/v5.0.0).
+
 **Version 4**
 
 Support for Team level settings, content-types, and image support. Get to know more at: [v4.0.0 release notes](https://frontmatter.codes/updates/v4_0_0).
