@@ -1,6 +1,6 @@
 # Change Log
 
-## [5.3.0] - 2021-10-XX
+## [5.3.0] - 2021-10-28 - [Release Notes](https://beta.frontmatter.codes/updates/v5.3.0)
 
 ### 🎨 Enhancements
 
