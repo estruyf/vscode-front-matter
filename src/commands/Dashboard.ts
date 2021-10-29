@@ -162,7 +162,7 @@ export class Dashboard {
           }
           break;
         case DashboardMessage.setPageViewType:
-          Extension.getInstance().setState(ExtensionState.PagesView, msg.data);
+          Extension.getInstance().setState(ExtensionState.PagesView, msg.data, "workspace");
           break;
         case DashboardMessage.getMedia:
           Dashboard.getMedia(msg?.data?.page, msg?.data?.folder);
@@ -276,7 +276,7 @@ export class Dashboard {
         categories: SettingsHelper.getTaxonomy(TaxonomyType.Category),
         openOnStart: SettingsHelper.get(SETTINGS_DASHBOARD_OPENONSTART),
         versionInfo: ext.getVersion(),
-        pageViewType: await ext.getState<ViewType | undefined>(ExtensionState.PagesView),
+        pageViewType: await ext.getState<ViewType | undefined>(ExtensionState.PagesView, "workspace"),
         mediaSnippet: SettingsHelper.get<string[]>(SETTINGS_DASHBOARD_MEDIA_SNIPPET) || [],
         contentTypes: SettingsHelper.get(SETTING_TAXONOMY_CONTENT_TYPES) || [],
         draftField: SettingsHelper.get<DraftField>(SETTINGS_CONTENT_DRAFT_FIELD),
@@ -325,7 +325,7 @@ export class Dashboard {
 
     // If the static folder is not set, retreive the last opened location
     if (!selectedFolder) {
-      const stateValue = await Extension.getInstance().getState<string | undefined>(ExtensionState.SelectedFolder);
+      const stateValue = await Extension.getInstance().getState<string | undefined>(ExtensionState.SelectedFolder, "workspace");
 
       if (stateValue !== HOME_PAGE_NAVIGATION_ID) {
         // Support for page bundles
@@ -440,7 +440,7 @@ export class Dashboard {
     }
 
     // Store the last opened folder
-    await Extension.getInstance().setState(ExtensionState.SelectedFolder, requestedFolder === HOME_PAGE_NAVIGATION_ID ? HOME_PAGE_NAVIGATION_ID : selectedFolder);
+    await Extension.getInstance().setState(ExtensionState.SelectedFolder, requestedFolder === HOME_PAGE_NAVIGATION_ID ? HOME_PAGE_NAVIGATION_ID : selectedFolder, "workspace");
 
     Dashboard.postWebviewMessage({
       command: DashboardCommand.media,

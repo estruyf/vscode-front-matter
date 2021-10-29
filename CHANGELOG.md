@@ -1,5 +1,11 @@
 # Change Log
 
+## [5.3.1] - 2021-10-29
+
+### 🐞 Fixes
+
+- [#163](https://github.com/estruyf/vscode-front-matter/issues/163): Setting workspace state instead of global state for the media view
+
 ## [5.3.0] - 2021-10-28 - [Release Notes](https://beta.frontmatter.codes/updates/v5.3.0)
 
 ### 🎨 Enhancements

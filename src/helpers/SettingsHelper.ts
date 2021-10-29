@@ -38,7 +38,7 @@ export class Settings {
    * Check if the setting is present in the workspace and ask to promote them to the global settings
    */
   public static async checkToPromote() {
-    const isPromoted = await Extension.getInstance().getState<boolean | undefined>(ExtensionState.SettingPromoted);
+    const isPromoted = await Extension.getInstance().getState<boolean | undefined>(ExtensionState.SettingPromoted, "workspace");
     if (!isPromoted) {
       if (Settings.hasSettings()) {
         window.showInformationMessage(`You have local settings. Would you like to promote them to the global settings ("frontmatter.json")?`, 'Yes', 'No').then(async (result) => {
@@ -47,7 +47,7 @@ export class Settings {
           }
 
           if (result === "No" || result === "Yes") {
-            Extension.getInstance().setState(ExtensionState.SettingPromoted, true);
+            Extension.getInstance().setState(ExtensionState.SettingPromoted, true, "workspace");
           }
         });
       }
