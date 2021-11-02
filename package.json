@@ -776,6 +776,7 @@
     "ts-loader": "8.0.3",
     "tslint": "6.1.3",
     "typescript": "4.0.2",
+    "url-join-ts": "^1.0.5",
     "wc-react": "github:estruyf/wc-react",
     "webpack": "4.44.2",
     "webpack-cli": "3.3.12"

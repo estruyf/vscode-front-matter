@@ -7,6 +7,7 @@ import { PreviewSettings } from '../models';
 import { format } from 'date-fns';
 import { DateHelper } from '../helpers/DateHelper';
 import { Article } from '.';
+import { urlJoin } from 'url-join-ts';
 
 
 export class Preview {
@@ -118,9 +119,9 @@ export class Preview {
   </head>
   <body>
     <div class="slug">
-      <input type="text" value="${join(localhostUrl.toString(), slug || '')}" disabled />
+      <input type="text" value="${urlJoin(localhostUrl.toString(), slug || '')}" disabled />
     </div>
-    <iframe src="${join(localhostUrl.toString(), slug || '')}" >
+    <iframe src="${urlJoin(localhostUrl.toString(), slug || '')}" >
   </body>
 </html>`;
   }
