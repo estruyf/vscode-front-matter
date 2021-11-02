@@ -5,11 +5,12 @@ import { format } from "date-fns";
 import { ArticleHelper, Settings, SlugHelper } from '../helpers';
 import matter = require('gray-matter');
 import { Notifications } from '../helpers/Notifications';
-import { extname, basename } from 'path';
+import { extname, basename, parse, dirname } from 'path';
 import { COMMAND_NAME, DefaultFields } from '../constants';
 import { DashboardData } from '../models/DashboardData';
 import { ExplorerView } from '../explorerView/ExplorerView';
 import { DateHelper } from '../helpers/DateHelper';
+import { parseWinPath } from '../helpers/parseWinPath';
 
 
 export class Article {
@@ -183,13 +184,38 @@ export class Article {
             await vscode.workspace.fs.rename(editor.document.uri, vscode.Uri.file(newPath), {
               overwrite: false
             });
-          } catch (e) {
+          } catch (e: any) {
             Notifications.error(`Failed to rename file: ${e?.message || e}`);
           }
         }
       }
     }
 	}
+
+  /**
+   * Retrieve the slug from the front matter
+   */
+  public static getSlug() {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+
+    const file = parseWinPath(editor.document.fileName);
+
+    if (!file.endsWith(`.md`) && !file.endsWith(`.mdx`)) {
+      return;
+    }
+
+    const parsedFile = parse(file);
+
+    if (parsedFile.name.toLowerCase() !== "index") {
+      return parsedFile.name;
+    }
+
+    const folderName = basename(dirname(file));
+    return folderName;
+  }
 
   /**
    * Toggle the page its draft mode

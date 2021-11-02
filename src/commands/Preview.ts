@@ -6,6 +6,7 @@ import { Settings } from '../helpers';
 import { PreviewSettings } from '../models';
 import { format } from 'date-fns';
 import { DateHelper } from '../helpers/DateHelper';
+import { Article } from '.';
 
 
 export class Preview {
@@ -31,6 +32,10 @@ export class Preview {
     const editor = window.activeTextEditor;
     const article = editor ? ArticleHelper.getFrontMatter(editor) : null;
     let slug = article?.data ? article.data.slug : "";
+
+    if (!slug) {
+      slug = Article.getSlug();
+    }
 
     if (settings.pathname) {
       const articleDate = ArticleHelper.getDate(article);
@@ -113,9 +118,9 @@ export class Preview {
   </head>
   <body>
     <div class="slug">
-      <input type="text" value="${join(localhostUrl.toString(), slug)}" disabled />
+      <input type="text" value="${join(localhostUrl.toString(), slug || '')}" disabled />
     </div>
-    <iframe src="${join(localhostUrl.toString(), slug)}" >
+    <iframe src="${join(localhostUrl.toString(), slug || '')}" >
   </body>
 </html>`;
   }
