@@ -1,10 +1,11 @@
 # Change Log
 
-## [X.X.X] - 2021-11-XX
+## [5.4.0] - 2021-11-XX
 
 ### 🎨 Enhancements
 
 - [#166](https://github.com/estruyf/vscode-front-matter/issues/166): Added preview button to the panel base view
+- [#167](https://github.com/estruyf/vscode-front-matter/issues/167): Allow to set the preview path per content type
 
 ## [5.3.1] - 2021-10-29
 

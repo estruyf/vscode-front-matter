@@ -34,16 +34,25 @@ export class Preview {
     const article = editor ? ArticleHelper.getFrontMatter(editor) : null;
     let slug = article?.data ? article.data.slug : "";
 
+    let pathname = settings.pathname;
+    if (article?.data) {
+      const contentType = ArticleHelper.getContentType(article.data);
+      if (contentType && contentType.previewPath) {
+        pathname = contentType.previewPath;
+      }
+    }
+
     if (!slug) {
       slug = Article.getSlug();
     }
 
-    if (settings.pathname) {
+    if (pathname) {
       const articleDate = ArticleHelper.getDate(article);
+
       try {
-        slug = join(format(articleDate || new Date(), DateHelper.formatUpdate(settings.pathname) as string), slug);
+        slug = join(format(articleDate || new Date(), DateHelper.formatUpdate(pathname) as string), slug);
       } catch (error) {
-        slug = join(settings.pathname, slug);
+        slug = join(pathname, slug);
       }
     }
 
