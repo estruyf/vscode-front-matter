@@ -5,6 +5,7 @@ export const DEFAULT_CONTENT_TYPE_NAME = 'default';
 export const DEFAULT_CONTENT_TYPE: ContentType = {
   "name": "default",
   "pageBundle": false,
+  "previewPath": null,
   "fields": [
     {
       "title": "Title",

@@ -2,5 +2,6 @@
 export const DefaultFields = {
   PublishingDate: `date`,
   LastModified: `lastmod`,
-  Description: `description`
+  Description: `description`,
+  Slug: `slug`
 };

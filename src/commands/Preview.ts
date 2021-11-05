@@ -6,6 +6,8 @@ import { Settings } from '../helpers';
 import { PreviewSettings } from '../models';
 import { format } from 'date-fns';
 import { DateHelper } from '../helpers/DateHelper';
+import { Article } from '.';
+import { urlJoin } from 'url-join-ts';
 
 
 export class Preview {
@@ -32,12 +34,25 @@ export class Preview {
     const article = editor ? ArticleHelper.getFrontMatter(editor) : null;
     let slug = article?.data ? article.data.slug : "";
 
-    if (settings.pathname) {
+    let pathname = settings.pathname;
+    if (article?.data) {
+      const contentType = ArticleHelper.getContentType(article.data);
+      if (contentType && contentType.previewPath) {
+        pathname = contentType.previewPath;
+      }
+    }
+
+    if (!slug) {
+      slug = Article.getSlug();
+    }
+
+    if (pathname) {
       const articleDate = ArticleHelper.getDate(article);
+
       try {
-        slug = join(format(articleDate || new Date(), DateHelper.formatUpdate(settings.pathname) as string), slug);
+        slug = join(format(articleDate || new Date(), DateHelper.formatUpdate(pathname) as string), slug);
       } catch (error) {
-        slug = join(settings.pathname, slug);
+        slug = join(pathname, slug);
       }
     }
 
@@ -113,9 +128,9 @@ export class Preview {
   </head>
   <body>
     <div class="slug">
-      <input type="text" value="${join(localhostUrl.toString(), slug)}" disabled />
+      <input type="text" value="${urlJoin(localhostUrl.toString(), slug || '')}" disabled />
     </div>
-    <iframe src="${join(localhostUrl.toString(), slug)}" >
+    <iframe src="${urlJoin(localhostUrl.toString(), slug || '')}" >
   </body>
 </html>`;
   }

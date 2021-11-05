@@ -25,6 +25,7 @@ export interface ContentType {
   name: string;
   fields: Field[];
 
+  previewPath?: string | null;
   pageBundle?: boolean;
 }
 

@@ -270,6 +270,15 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         }
       }
     }
+
+    // Check slug
+    if (!updatedMetadata[DefaultFields.Slug]) {
+      const slug = Article.getSlug();
+
+      if (slug) {
+        updatedMetadata[DefaultFields.Slug] = slug;
+      }
+    }
     
     this.postWebviewMessage({ command: Command.metadata, data: {
       ...updatedMetadata

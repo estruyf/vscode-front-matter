@@ -27,6 +27,10 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings, folderAndF
     MessageHelper.sendMessage(CommandToCode.createContent);
   };
 
+  const openPreview = () => {
+    MessageHelper.sendMessage(CommandToCode.openPreview);
+  };
+
   return (
     <div className="frontmatter">
       <div className={`ext_actions`}>
@@ -37,6 +41,7 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings, folderAndF
             <button onClick={openDashboard}>Open dashboard</button>
             <button onClick={initProject} disabled={settings?.isInitialized}>Initialize project</button>
             <button onClick={createContent} disabled={!settings?.isInitialized}>Create new content</button>
+            <button onClick={openPreview} disabled={!settings?.preview?.host}>Open site preview</button>
           </div>
         </Collapsible>
         
