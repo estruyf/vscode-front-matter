@@ -175,6 +175,48 @@
           "markdownDescription": "Specify the folder name where all your assets are located. For instance in Hugo this is the `static` folder. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.publicfolder)",
           "scope": "Content"
         },
+        "frontMatter.content.sorting": {
+          "type": "object",
+          "default": [],
+          "markdownDescription": "Define the sorting options for your dashboard content. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.sorting)",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Name of the sorting label"
+              },
+              "name": {
+                "type": "string",
+                "description": "Name of the metadata field to sort by"
+              },
+              "order": {
+                "type": "string",
+                "enum": [
+                  "asc",
+                  "desc"
+                ],
+                "description": "Order of the sorting"
+              },
+              "type": {
+                "type": "string",
+                "default": "string",
+                "enum": [
+                  "string",
+                  "date"
+                ],
+                "description": "Type of the field value"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "title",
+              "name",
+              "order"
+            ]
+          },
+          "scope": "Content"
+        },
         "frontMatter.custom.scripts": {
           "type": "array",
           "default": [],

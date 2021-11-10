@@ -1,7 +1,7 @@
 import { VersionInfo } from '../../models/VersionInfo';
 import { ViewType } from '../state';
 import { ContentFolder } from '../../models/ContentFolder';
-import { ContentType, DraftField, Framework } from '../../models';
+import { ContentType, DraftField, Framework, SortingSetting } from '../../models';
 
 export interface Settings { 
   beta: boolean;
@@ -20,4 +20,5 @@ export interface Settings {
   crntFramework: string;
   framework: Framework | null | undefined;
   draftField: DraftField | null | undefined;
+  customSorting: SortingSetting[] | undefined;
 }

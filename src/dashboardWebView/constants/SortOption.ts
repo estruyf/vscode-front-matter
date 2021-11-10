@@ -1,5 +1,5 @@
 export enum SortOption {
-  LastModified = 1,
-  FileNameAsc,
-  FileNameDesc
+  LastModified = "LastModified",
+  FileNameAsc = "FileNameAsc",
+  FileNameDesc = "FileNameDesc"
 }

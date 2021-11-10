@@ -36,7 +36,7 @@ export const ClearFilters: React.FunctionComponent<IClearFiltersProps> = (props:
   };
 
   React.useEffect(() => {
-    if (sorting !== DEFAULT_SORTING_OPTION || folder !== DEFAULT_FOLDER_STATE || tag !== DEFAULT_TAG_STATE || category !== DEFAULT_CATEGORY_STATE) {
+    if (sorting.id !== DEFAULT_SORTING_OPTION || folder !== DEFAULT_FOLDER_STATE || tag !== DEFAULT_TAG_STATE || category !== DEFAULT_CATEGORY_STATE) {
       setShow(true);
     } else {
       setShow(false);
