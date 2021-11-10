@@ -154,6 +154,11 @@
               "path": {
                 "type": "string",
                 "description": "Path of the folder"
+              },
+              "excludeSubdir": {
+                "type": "boolean",
+                "default": false,
+                "description": "Exclude sub-directories"
               }
             },
             "additionalProperties": false,

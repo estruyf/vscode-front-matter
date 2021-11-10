@@ -1,19 +1,19 @@
 import { Menu } from '@headlessui/react';
 import * as React from 'react';
-import { useRecoilState } from 'recoil';
-import { FolderAtom } from '../../state';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { FolderAtom, SettingsSelector } from '../../state';
 import { MenuButton, MenuItem, MenuItems } from '../Menu';
 
-export interface IFoldersProps {
-  folders: string[];
-}
+export interface IFoldersProps {}
 
 const DEFAULT_TYPE = "All types";
 
-export const Folders: React.FunctionComponent<IFoldersProps> = ({folders}: React.PropsWithChildren<IFoldersProps>) => {
+export const Folders: React.FunctionComponent<IFoldersProps> = ({}: React.PropsWithChildren<IFoldersProps>) => {
   const [ crntFolder, setCrntFolder ] = useRecoilState(FolderAtom);
+  const settings = useRecoilValue(SettingsSelector);
+  const contentFolders = settings?.contentFolders || [];
 
-  if (folders.length <= 1) {
+  if (contentFolders.length <= 1) {
     return null;
   }
   
@@ -29,12 +29,12 @@ export const Folders: React.FunctionComponent<IFoldersProps> = ({folders}: React
             isCurrent={!crntFolder}
             onClick={(value) => setCrntFolder(value)} />
 
-          {folders.map((option) => (
+          {contentFolders.map((option) => (
             <MenuItem 
-              key={option}
-              title={option}
-              value={option}
-              isCurrent={option === crntFolder}
+              key={option.title}
+              title={option.title}
+              value={option.title}
+              isCurrent={option.title === crntFolder}
               onClick={(value) => setCrntFolder(value)} />
           ))}
         </MenuItems>

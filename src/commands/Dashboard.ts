@@ -280,7 +280,7 @@ export class Dashboard {
         mediaSnippet: SettingsHelper.get<string[]>(SETTINGS_DASHBOARD_MEDIA_SNIPPET) || [],
         contentTypes: SettingsHelper.get(SETTING_TAXONOMY_CONTENT_TYPES) || [],
         draftField: SettingsHelper.get<DraftField>(SETTINGS_CONTENT_DRAFT_FIELD),
-        contentFolders: Folders.get().map(f => f.path),
+        contentFolders: Folders.get(),
         crntFramework: SettingsHelper.get<string>(SETTINGS_FRAMEWORK_ID),
         framework: (!isInitialized && wsFolder) ? FrameworkDetector.get(wsFolder.fsPath) : null,
       } as Settings

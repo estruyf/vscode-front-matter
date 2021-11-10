@@ -210,8 +210,8 @@ export class Folders {
           if (projectStart) {
             projectStart = projectStart.replace(/\\/g, '/');
             projectStart = projectStart.startsWith('/') ? projectStart.substr(1) : projectStart;
-            const mdFiles = await workspace.findFiles(join(projectStart, '**/*.md'));
-            const mdxFiles = await workspace.findFiles(join(projectStart, '**/*.mdx'));
+            const mdFiles = await workspace.findFiles(join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.md'));
+            const mdxFiles = await workspace.findFiles(join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.mdx'));
             let files = [...mdFiles, ...mdxFiles];
             if (files) {
               let fileStats: FileInfo[] = [];
@@ -263,7 +263,7 @@ export class Folders {
     const folders: ContentFolder[] = Settings.get(SETTINGS_CONTENT_PAGE_FOLDERS) as ContentFolder[];
     
     return folders.map(folder => ({
-      title: folder.title,
+      ...folder,
       path: Folders.absWsFolder(folder, wsFolder)
     }));
   }
@@ -274,10 +274,12 @@ export class Folders {
    */
   private static async update(folders: ContentFolder[]) {
     const wsFolder = Folders.getWorkspaceFolder();
+
     let folderDetails = folders.map(folder => ({ 
-      title: folder.title, 
+      ...folder,
       path: Folders.relWsFolder(folder, wsFolder) 
     }));
+
     await Settings.update(SETTINGS_CONTENT_PAGE_FOLDERS, folderDetails, true);
   }
 
