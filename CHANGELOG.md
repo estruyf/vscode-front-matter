@@ -1,5 +1,11 @@
 # Change Log
 
+## [5.5.0] - 2021-11-xx
+
+### 🎨 Enhancements
+
+- [#174](https://github.com/estruyf/vscode-front-matter/issues/174): Added option to exclude sub-directories from page/markdown content retrieval 
+
 ## [5.4.0] - 2021-11-05
 
 ### 🎨 Enhancements
