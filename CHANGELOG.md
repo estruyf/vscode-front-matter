@@ -4,6 +4,7 @@
 
 ### 🎨 Enhancements
 
+- [#173](https://github.com/estruyf/vscode-front-matter/issues/173): Allow to specify your own sorting for the content dashboard
 - [#174](https://github.com/estruyf/vscode-front-matter/issues/174): Added option to exclude sub-directories from page/markdown content retrieval 
 
 ## [5.4.0] - 2021-11-05
