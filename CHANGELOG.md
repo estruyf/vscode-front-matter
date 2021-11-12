@@ -2,6 +2,8 @@
 
 ## [5.5.0] - 2021-11-xx
 
+As from this version onwards, the extension will be published to [open-vsx.org](https://open-vsx.org/).
+
 ### 🎨 Enhancements
 
 - [#173](https://github.com/estruyf/vscode-front-matter/issues/173): Allow to specify your own sorting for the content dashboard
