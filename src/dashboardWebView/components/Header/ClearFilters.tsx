@@ -1,7 +1,7 @@
 import { XCircleIcon } from '@heroicons/react/solid';
 import * as React from 'react';
 import { useRecoilValue, useResetRecoilState } from 'recoil';
-import { SortingSelector, FolderSelector, TagSelector, CategorySelector, SortingAtom, DEFAULT_SORTING_OPTION, FolderAtom, DEFAULT_FOLDER_STATE, TagAtom, CategoryAtom, DEFAULT_TAG_STATE, DEFAULT_CATEGORY_STATE } from '../../state';
+import { FolderSelector, TagSelector, CategorySelector, SortingAtom, FolderAtom, DEFAULT_FOLDER_STATE, TagAtom, CategoryAtom, DEFAULT_TAG_STATE, DEFAULT_CATEGORY_STATE } from '../../state';
 
 import { DefaultValue } from 'recoil';
 
@@ -17,7 +17,6 @@ export interface IClearFiltersProps {}
 export const ClearFilters: React.FunctionComponent<IClearFiltersProps> = (props: React.PropsWithChildren<IClearFiltersProps>) => {
   const [ show, setShow ] = React.useState(false);
 
-  const sorting = useRecoilValue(SortingSelector);
   const folder = useRecoilValue(FolderSelector);
   const tag = useRecoilValue(TagSelector);
   const category = useRecoilValue(CategorySelector);
@@ -36,19 +35,19 @@ export const ClearFilters: React.FunctionComponent<IClearFiltersProps> = (props:
   };
 
   React.useEffect(() => {
-    if (sorting.id !== DEFAULT_SORTING_OPTION || folder !== DEFAULT_FOLDER_STATE || tag !== DEFAULT_TAG_STATE || category !== DEFAULT_CATEGORY_STATE) {
+    if (folder !== DEFAULT_FOLDER_STATE || tag !== DEFAULT_TAG_STATE || category !== DEFAULT_CATEGORY_STATE) {
       setShow(true);
     } else {
       setShow(false);
     }
-  }, [sorting, folder, tag, category]);
+  }, [folder, tag, category]);
 
   if (!show) return null;
   
   return (
     <button className="flex items-center hover:text-teal-600" onClick={reset} title={`Clear filters, grouping, and sorting`}>
       <XCircleIcon className={`inline-block w-5 h-5 mr-1`} /><span>Clear</span>
-      <span className={`sr-only`}> filters, grouping, and sorting</span>
+      <span className={`sr-only`}> filters and grouping</span>
     </button>
   );
 };

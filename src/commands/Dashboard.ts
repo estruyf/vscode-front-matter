@@ -192,6 +192,11 @@ export class Dashboard {
         case DashboardMessage.setFramework:
           Dashboard.setFramework(msg?.data);
           break;
+        case DashboardMessage.setState:
+          if (msg?.data?.key && msg?.data?.value) {
+            Extension.getInstance().setState(msg?.data?.key, msg?.data?.value, "workspace");
+          }
+          break;
       }
     });
   }
@@ -284,6 +289,9 @@ export class Dashboard {
         contentFolders: Folders.get(),
         crntFramework: SettingsHelper.get<string>(SETTINGS_FRAMEWORK_ID),
         framework: (!isInitialized && wsFolder) ? FrameworkDetector.get(wsFolder.fsPath) : null,
+        dashboardState: {
+          sorting: await ext.getState<ViewType | undefined>(ExtensionState.Dashboard.Sorting, "workspace")
+        }
       } as Settings
     });
   }

@@ -5,4 +5,8 @@ export const ExtensionState = {
   Version: `frontMatter:Version`,
   SettingPromoted: `frontMatter:Settings:Promoted`,
   MoveTemplatesFolder: `frontMatter:Templates:Move`,
+
+  Dashboard: {
+    Sorting: `frontMatter:Dashboard:Sorting`,
+  }
 };

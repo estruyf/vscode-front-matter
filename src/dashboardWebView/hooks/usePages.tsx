@@ -3,8 +3,8 @@ import { SortOption } from '../constants/SortOption';
 import { Tab } from '../constants/Tab';
 import { Page } from '../models/Page';
 import Fuse from 'fuse.js';
-import { useRecoilValue } from 'recoil';
-import { CategorySelector, FolderSelector, SearchSelector, SettingsSelector, SortingSelector, TabSelector, TagSelector } from '../state';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { CategorySelector, FolderSelector, SearchSelector, SettingsSelector, SortingAtom, TabSelector, TagSelector } from '../state';
 import { SortOrder, SortType } from '../../models';
 import { DateHelper } from '../../helpers/DateHelper';
 
@@ -18,9 +18,9 @@ const fuseOptions: Fuse.IFuseOptions<Page> = {
 
 export default function usePages(pages: Page[]) {
   const [ pageItems, setPageItems ] = useState<Page[]>([]);
+  const [ sorting, setSorting ] = useRecoilState(SortingAtom);
   const settings = useRecoilValue(SettingsSelector);
   const tab = useRecoilValue(TabSelector);
-  const sorting = useRecoilValue(SortingSelector);
   const folder = useRecoilValue(FolderSelector);
   const search = useRecoilValue(SearchSelector);
   const tag = useRecoilValue(TagSelector);
@@ -51,6 +51,15 @@ export default function usePages(pages: Page[]) {
 
   useEffect(() => {
     const draftField = settings?.draftField;
+    let usedSorting = sorting;
+
+    if (!usedSorting) {
+      const lastSort = settings?.dashboardState.sorting;      
+      if (lastSort) {
+        setSorting(lastSort);
+        return;
+      }
+    }
 
     // Check if search needs to be performed
     let searchedPages = pages;
@@ -83,13 +92,13 @@ export default function usePages(pages: Page[]) {
     // Sort the pages
     let pagesSorted: Page[] = Object.assign([], pagesToShow);
     if (!search) {
-      if (sorting.id === SortOption.FileNameAsc) {
+      if (sorting && sorting.id === SortOption.FileNameAsc) {
         pagesSorted = pagesSorted.sort(sortAlphabetically("fmFileName"));
-      } else if (sorting.id === SortOption.FileNameDesc) {
+      } else if (sorting && sorting.id === SortOption.FileNameDesc) {
         pagesSorted = pagesSorted.sort(sortAlphabetically("fmFileName")).reverse();
-      } else if (sorting.id === SortOption.LastModified) {
+      } else if (sorting && sorting.id === SortOption.LastModified) {
         pagesSorted = pagesSorted.sort((a, b) => b.fmModified - a.fmModified);
-      } else if (sorting.id && sorting.name) {
+      } else if (sorting && sorting.id && sorting.name) {
         const { order, name, type } = sorting;
 
         if (type === SortType.string) {

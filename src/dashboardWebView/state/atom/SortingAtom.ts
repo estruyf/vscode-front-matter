@@ -1,15 +1,10 @@
 import { atom } from 'recoil';
-import { SortOrder, SortType } from '../../../models';
 import { SortOption } from '../../constants/SortOption';
+import { SortingOption } from '../../models/SortingOption';
 
 export const DEFAULT_SORTING_OPTION = SortOption.LastModified;
 
-export const SortingAtom = atom<{ id: SortOption, name: string, order: SortOrder, type: SortType }>({
+export const SortingAtom = atom<SortingOption | null>({
   key: 'SortingAtom',
-  default: {
-    id: DEFAULT_SORTING_OPTION,
-    name: "",
-    type: SortType.string,
-    order: SortOrder.desc
-  }
+  default: null
 });
