@@ -39,7 +39,7 @@ export class Dashboard {
     return Dashboard._viewData;
   }
 
-  /** 
+  /**
    * Init the dashboard
    */
   public static async init() {
