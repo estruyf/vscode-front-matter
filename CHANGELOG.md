@@ -1,6 +1,6 @@
 # Change Log
 
-## [5.5.0] - 2021-11-xx
+## [5.5.0] - 2021-11-15
 
 As from this version onwards, the extension will be published to [open-vsx.org](https://open-vsx.org/).
 
