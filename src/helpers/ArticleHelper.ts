@@ -91,11 +91,13 @@ export class ArticleHelper {
         }
       }
     }
-
+    
     return matter.stringify(content, data, ({
       ...TomlEngine,
       ...langOpts,
       noArrayIndent: !indentArray,
+      skipInvalid: true,
+      noCompatMode: true,
       lineWidth: 500,
       indent: spaces || 2
     } as DumpOptions as any));

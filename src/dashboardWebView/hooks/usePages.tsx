@@ -3,8 +3,10 @@ import { SortOption } from '../constants/SortOption';
 import { Tab } from '../constants/Tab';
 import { Page } from '../models/Page';
 import Fuse from 'fuse.js';
-import { useRecoilValue } from 'recoil';
-import { CategorySelector, FolderSelector, SearchSelector, SettingsSelector, SortingSelector, TabSelector, TagSelector } from '../state';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { CategorySelector, FolderSelector, SearchSelector, SettingsSelector, SortingAtom, TabSelector, TagSelector } from '../state';
+import { SortOrder, SortType } from '../../models';
+import { DateHelper } from '../../helpers/DateHelper';
 
 const fuseOptions: Fuse.IFuseOptions<Page> = {
   keys: [
@@ -16,16 +18,48 @@ const fuseOptions: Fuse.IFuseOptions<Page> = {
 
 export default function usePages(pages: Page[]) {
   const [ pageItems, setPageItems ] = useState<Page[]>([]);
+  const [ sorting, setSorting ] = useRecoilState(SortingAtom);
   const settings = useRecoilValue(SettingsSelector);
   const tab = useRecoilValue(TabSelector);
-  const sorting = useRecoilValue(SortingSelector);
   const folder = useRecoilValue(FolderSelector);
   const search = useRecoilValue(SearchSelector);
   const tag = useRecoilValue(TagSelector);
   const category = useRecoilValue(CategorySelector);
 
+  // Sort field value alphabetically
+  const sortAlphabetically = (property: string) => {
+    return (a: Page, b: Page) => {
+      if (a[property] < b[property]) {
+        return -1;
+      }
+      if (a[property] > b[property]) {
+        return 1;
+      }
+      return 0;
+    };
+  };
+
+  // Sort by date
+  const sortByDate = (property: string) => {
+    return (a: Page, b: Page) => {
+      const dateA = DateHelper.tryParse(a[property]);
+      const dateB = DateHelper.tryParse(b[property]);
+
+      return (dateA || new Date(0)).getTime() - (dateB || new Date(0)).getTime();
+    };
+  };
+
   useEffect(() => {
     const draftField = settings?.draftField;
+    let usedSorting = sorting;
+
+    if (!usedSorting) {
+      const lastSort = settings?.dashboardState.sorting;      
+      if (lastSort) {
+        setSorting(lastSort);
+        return;
+      }
+    }
 
     // Check if search needs to be performed
     let searchedPages = pages;
@@ -58,12 +92,26 @@ export default function usePages(pages: Page[]) {
     // Sort the pages
     let pagesSorted: Page[] = Object.assign([], pagesToShow);
     if (!search) {
-      if (sorting === SortOption.FileNameAsc) {
-        pagesSorted = pagesToShow.sort((a, b) => a.fmFileName.toLowerCase().localeCompare(b.fmFileName.toLowerCase()));
-      } else if (sorting === SortOption.FileNameDesc) {
-        pagesSorted = pagesToShow.sort((a, b) => b.fmFileName.toLowerCase().localeCompare(a.fmFileName.toLowerCase()));
+      if (sorting && sorting.id === SortOption.FileNameAsc) {
+        pagesSorted = pagesSorted.sort(sortAlphabetically("fmFileName"));
+      } else if (sorting && sorting.id === SortOption.FileNameDesc) {
+        pagesSorted = pagesSorted.sort(sortAlphabetically("fmFileName")).reverse();
+      } else if (sorting && sorting.id === SortOption.LastModified) {
+        pagesSorted = pagesSorted.sort((a, b) => b.fmModified - a.fmModified);
+      } else if (sorting && sorting.id && sorting.name) {
+        const { order, name, type } = sorting;
+
+        if (type === SortType.string) {
+          pagesSorted = pagesSorted.sort(sortAlphabetically(name));
+        } else if (type === SortType.date) {
+          pagesSorted = pagesSorted.sort(sortByDate(name));
+        }
+
+        if (order === SortOrder.desc) {
+          pagesSorted = pagesSorted.reverse();
+        }
       } else {
-        pagesSorted = pagesToShow.sort((a, b) => b.fmModified - a.fmModified);
+        pagesSorted = pagesSorted.sort((a, b) => b.fmModified - a.fmModified);
       }
     }
 

@@ -3,7 +3,7 @@
   "displayName": "Front Matter",
   "description": "An essential Visual Studio Code extension when you want to manage the markdown pages of your static site like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "5.4.0",
+  "version": "5.5.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -154,6 +154,11 @@
               "path": {
                 "type": "string",
                 "description": "Path of the folder"
+              },
+              "excludeSubdir": {
+                "type": "boolean",
+                "default": false,
+                "description": "Exclude sub-directories"
               }
             },
             "additionalProperties": false,
@@ -168,6 +173,48 @@
           "type": "string",
           "default": "",
           "markdownDescription": "Specify the folder name where all your assets are located. For instance in Hugo this is the `static` folder. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.publicfolder)",
+          "scope": "Content"
+        },
+        "frontMatter.content.sorting": {
+          "type": "object",
+          "default": [],
+          "markdownDescription": "Define the sorting options for your dashboard content. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.sorting)",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Name of the sorting label"
+              },
+              "name": {
+                "type": "string",
+                "description": "Name of the metadata field to sort by"
+              },
+              "order": {
+                "type": "string",
+                "enum": [
+                  "asc",
+                  "desc"
+                ],
+                "description": "Order of the sorting"
+              },
+              "type": {
+                "type": "string",
+                "default": "string",
+                "enum": [
+                  "string",
+                  "date"
+                ],
+                "description": "Type of the field value"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "title",
+              "name",
+              "order"
+            ]
+          },
           "scope": "Content"
         },
         "frontMatter.custom.scripts": {

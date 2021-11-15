@@ -115,7 +115,7 @@ export class Extension {
         const projectFolder = basename(workspace?.fsPath || "");
 
         const paths = folders.map((folder: any) => ({
-          title: folder.title,
+          ...folder,
           path: `${WORKSPACE_PLACEHOLDER}${folder.fsPath.split(projectFolder).slice(1).join('')}`.split('\\').join('/')
         }));
 

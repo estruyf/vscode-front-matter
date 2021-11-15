@@ -19,4 +19,5 @@ export enum DashboardMessage {
   updateMediaMetadata = 'updateMediaMetadata',
   createMediaFolder = 'createMediaFolder',
   setFramework = 'setFramework',
+  setState = 'setState',
 }

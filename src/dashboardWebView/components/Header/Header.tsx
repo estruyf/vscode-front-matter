@@ -98,7 +98,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
             <div className={`py-4 px-5 w-full flex items-center justify-between lg:justify-end space-x-4 lg:space-x-6 xl:space-x-8 bg-gray-200 border-b border-gray-300 dark:bg-vulcan-400  dark:border-vulcan-100`}>
               <ClearFilters />
 
-              <Folders folders={folders || []} />
+              <Folders />
 
               <Filter label={`Tag`} activeItem={crntTag} items={settings?.tags || []} onClick={(value) => setCrntTag(value)} />
 

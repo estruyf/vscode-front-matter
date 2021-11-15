@@ -1,7 +1,8 @@
 import { VersionInfo } from '../../models/VersionInfo';
 import { ViewType } from '../state';
 import { ContentFolder } from '../../models/ContentFolder';
-import { ContentType, DraftField, Framework } from '../../models';
+import { ContentType, DraftField, Framework, SortingSetting } from '../../models';
+import { SortingOption } from './SortingOption';
 
 export interface Settings { 
   beta: boolean;
@@ -16,8 +17,14 @@ export interface Settings {
   pageViewType: ViewType | undefined;
   mediaSnippet: string[];
   contentTypes: ContentType[];
-  contentFolders: string[];
+  contentFolders: ContentFolder[];
   crntFramework: string;
   framework: Framework | null | undefined;
   draftField: DraftField | null | undefined;
+  customSorting: SortingSetting[] | undefined;
+  dashboardState: DashboardState;
+}
+
+export interface DashboardState {
+  sorting: SortingOption | null | undefined;
 }

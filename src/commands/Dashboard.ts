@@ -1,10 +1,10 @@
-import { SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTING_TAXONOMY_CONTENT_TYPES, DefaultFields, HOME_PAGE_NAVIGATION_ID, ExtensionState, COMMAND_NAME, SETTINGS_FRAMEWORK_ID, SETTINGS_CONTENT_DRAFT_FIELD } from '../constants';
+import { SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTING_TAXONOMY_CONTENT_TYPES, DefaultFields, HOME_PAGE_NAVIGATION_ID, ExtensionState, COMMAND_NAME, SETTINGS_FRAMEWORK_ID, SETTINGS_CONTENT_DRAFT_FIELD, SETTINGS_CONTENT_SORTING } from '../constants';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { basename, dirname, extname, join, parse } from "path";
 import { existsSync, readdirSync, statSync, unlinkSync, writeFileSync } from "fs";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env, Position } from "vscode";
 import { Settings as SettingsHelper } from '../helpers';
-import { DraftField, Framework, TaxonomyType } from '../models';
+import { DraftField, Framework, SortingSetting, TaxonomyType } from '../models';
 import { Folders } from './Folders';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../dashboardWebView/DashboardMessage';
@@ -39,7 +39,7 @@ export class Dashboard {
     return Dashboard._viewData;
   }
 
-  /** 
+  /**
    * Init the dashboard
    */
   public static async init() {
@@ -192,6 +192,11 @@ export class Dashboard {
         case DashboardMessage.setFramework:
           Dashboard.setFramework(msg?.data);
           break;
+        case DashboardMessage.setState:
+          if (msg?.data?.key && msg?.data?.value) {
+            Extension.getInstance().setState(msg?.data?.key, msg?.data?.value, "workspace");
+          }
+          break;
       }
     });
   }
@@ -280,9 +285,13 @@ export class Dashboard {
         mediaSnippet: SettingsHelper.get<string[]>(SETTINGS_DASHBOARD_MEDIA_SNIPPET) || [],
         contentTypes: SettingsHelper.get(SETTING_TAXONOMY_CONTENT_TYPES) || [],
         draftField: SettingsHelper.get<DraftField>(SETTINGS_CONTENT_DRAFT_FIELD),
-        contentFolders: Folders.get().map(f => f.path),
+        customSorting: SettingsHelper.get<SortingSetting[]>(SETTINGS_CONTENT_SORTING),
+        contentFolders: Folders.get(),
         crntFramework: SettingsHelper.get<string>(SETTINGS_FRAMEWORK_ID),
         framework: (!isInitialized && wsFolder) ? FrameworkDetector.get(wsFolder.fsPath) : null,
+        dashboardState: {
+          sorting: await ext.getState<ViewType | undefined>(ExtensionState.Dashboard.Sorting, "workspace")
+        }
       } as Settings
     });
   }
