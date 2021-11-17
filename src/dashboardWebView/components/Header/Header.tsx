@@ -3,14 +3,14 @@ import { Sorting } from './Sorting';
 import { Searchbox } from './Searchbox';
 import { Filter } from './Filter';
 import { Folders } from './Folders';
-import { Settings } from '../../models';
+import { Settings, ViewType } from '../../models';
 import { DashboardMessage } from '../../DashboardMessage';
 import { Startup } from '../Startup';
 import { Navigation } from '../Navigation';
 import { Grouping } from '.';
 import { ViewSwitch } from './ViewSwitch';
-import { useRecoilState } from 'recoil';
-import { CategoryAtom, DashboardViewAtom, TagAtom } from '../../state';
+import { useRecoilState, useResetRecoilState } from 'recoil';
+import { CategoryAtom, DashboardViewAtom, SortingAtom, TagAtom } from '../../state';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { ClearFilters } from './ClearFilters';
 import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIcon';
@@ -33,6 +33,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
   const [ crntTag, setCrntTag ] = useRecoilState(TagAtom);
   const [ crntCategory, setCrntCategory ] = useRecoilState(CategoryAtom);
   const [ view, setView ] = useRecoilState(DashboardViewAtom);
+  const resetSorting = useResetRecoilState(SortingAtom)
 
   const createContent = () => {
     Messenger.send(DashboardMessage.createContent);
@@ -46,22 +47,27 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
     Messenger.send(DashboardMessage.createByTemplate);
   };
 
+  const updateView = (view: ViewType) => {
+    setView(view);
+    resetSorting();
+  }
+
   return (
     <div className={`w-full sticky top-0 z-40 bg-gray-100 dark:bg-vulcan-500`}>
       
       <div className={`px-4 bg-gray-50 dark:bg-vulcan-50 border-b-2 border-gray-200 dark:border-vulcan-200`}>
         <div className={`flex items-center justify-start`}>
-          <button className={`p-2 flex items-center ${view === "contents" ? "bg-gray-200 dark:bg-vulcan-200" : ""} hover:bg-gray-100 dark:hover:bg-vulcan-100`} onClick={() => setView("contents")}>
+          <button className={`p-2 flex items-center ${view === "contents" ? "bg-gray-200 dark:bg-vulcan-200" : ""} hover:bg-gray-100 dark:hover:bg-vulcan-100`} onClick={() => updateView(ViewType.Contents)}>
             <MarkdownIcon className={`h-6 w-auto mr-2`} /><span>Contents</span>
           </button>
-          <button className={`p-2 flex items-center ${view === "media" ? "bg-gray-200 dark:bg-vulcan-200" : ""} hover:bg-gray-100 dark:hover:bg-vulcan-100`} onClick={() => setView("media")}>
+          <button className={`p-2 flex items-center ${view === "media" ? "bg-gray-200 dark:bg-vulcan-200" : ""} hover:bg-gray-100 dark:hover:bg-vulcan-100`} onClick={() => updateView(ViewType.Media)}>
             <PhotographIcon className={`h-6 w-auto mr-2`} /><span>Media</span>
           </button>
         </div>
       </div>
 
       {
-        view === "contents" && (
+        view === ViewType.Contents && (
           <>
             <div className={`px-4 mt-3 mb-2 flex items-center justify-between`}>
               <Searchbox />
@@ -106,14 +112,14 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
 
               <Grouping />
 
-              <Sorting />
+              <Sorting view={ViewType.Contents} />
             </div>
           </>
         )
       }
 
       {
-        view === "media" && (
+        view === ViewType.Media && (
           <>
             <Pagination />
             <Breadcrumb />

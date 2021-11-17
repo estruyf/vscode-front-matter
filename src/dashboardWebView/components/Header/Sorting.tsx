@@ -6,11 +6,15 @@ import { ExtensionState } from '../../../constants';
 import { SortOrder, SortType } from '../../../models';
 import { SortOption } from '../../constants/SortOption';
 import { DashboardMessage } from '../../DashboardMessage';
+import { ViewType } from '../../models';
 import { SortingOption } from '../../models/SortingOption';
 import { SearchSelector, SettingsSelector, SortingAtom } from '../../state';
 import { MenuButton, MenuItem, MenuItems } from '../Menu';
 
-export interface ISortingProps {}
+export interface ISortingProps {
+  disableCustomSorting?: boolean;
+  view: ViewType;
+}
 
 export const sortOptions: SortingOption[] = [
   { name: "Last modified", id: SortOption.LastModified, order: SortOrder.desc, type: SortType.string },
@@ -18,23 +22,22 @@ export const sortOptions: SortingOption[] = [
   { name: "By filename (desc)", id: SortOption.FileNameDesc, order: SortOrder.desc, type: SortType.string },
 ];
 
-export const Sorting: React.FunctionComponent<ISortingProps> = ({}: React.PropsWithChildren<ISortingProps>) => {
+export const Sorting: React.FunctionComponent<ISortingProps> = ({disableCustomSorting, view}: React.PropsWithChildren<ISortingProps>) => {
   const [ crntSorting, setCrntSorting ] = useRecoilState(SortingAtom);
   const searchValue = useRecoilValue(SearchSelector);
   const settings = useRecoilValue(SettingsSelector);
 
   const updateSorting = (value: SortingOption) => {
-
     Messenger.send(DashboardMessage.setState, {
-      key: ExtensionState.Dashboard.Sorting,
+      key: `${view === ViewType.Contents ? ExtensionState.Dashboard.Contents.Sorting : ExtensionState.Dashboard.Media.Sorting}`,
       value: value
-    })
+    });
 
     setCrntSorting(value)
   };
 
-  let allOptions = [...sortOptions];
-  if (settings?.customSorting) {
+  let allOptions = view === ViewType.Contents ? [...sortOptions] : [...sortOptions.slice(1)];
+  if (settings?.customSorting && !disableCustomSorting) {
     allOptions = [...allOptions, ...settings.customSorting.map((s) => ({ 
       title: s.title || s.name, 
       name: s.name, 
@@ -44,7 +47,16 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({}: React.PropsW
     }))];
   }
 
-  let crntSort = allOptions.find(x => x.id === crntSorting?.id) || sortOptions[0];
+  let crntSortingOption = crntSorting;
+  if (!crntSortingOption) {
+    if (view === ViewType.Contents) {
+      crntSortingOption = settings?.dashboardState?.contents?.sorting || null;
+    } else if (view === ViewType.Media) {
+      crntSortingOption = settings?.dashboardState?.media?.sorting || null;
+    }
+  }
+
+  let crntSort = allOptions.find(x => x.id === crntSortingOption?.id) || sortOptions[0];
 
   return (
     <div className="flex items-center">

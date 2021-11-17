@@ -2,12 +2,12 @@ import * as React from 'react';
 import { Spinner } from './Spinner';
 import useMessages from '../hooks/useMessages';
 import useDarkMode from '../../hooks/useDarkMode';
-import usePages from '../hooks/usePages';
 import { WelcomeScreen } from './WelcomeScreen';
 import { useRecoilValue } from 'recoil';
 import { DashboardViewSelector } from '../state';
 import { Contents } from './Contents/Contents';
 import { Media } from './Media/Media';
+import { ViewType } from '../models';
 
 export interface IDashboardProps {
   showWelcome: boolean;
@@ -15,7 +15,6 @@ export interface IDashboardProps {
 
 export const Dashboard: React.FunctionComponent<IDashboardProps> = ({showWelcome}: React.PropsWithChildren<IDashboardProps>) => {
   const { loading, pages, settings } = useMessages();
-  const { pageItems } = usePages(pages);
   const view = useRecoilValue(DashboardViewSelector);
   useDarkMode();
 
@@ -31,9 +30,9 @@ export const Dashboard: React.FunctionComponent<IDashboardProps> = ({showWelcome
     return <WelcomeScreen settings={settings} />;
   }
 
-  if (view === 'media') {
+  if (view === ViewType.Media) {
     return <Media />;
   }
 
-  return <Contents pages={pageItems} loading={loading} />;
+  return <Contents pages={pages} loading={loading} />;
 };

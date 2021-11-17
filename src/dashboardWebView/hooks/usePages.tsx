@@ -54,7 +54,7 @@ export default function usePages(pages: Page[]) {
     let usedSorting = sorting;
 
     if (!usedSorting) {
-      const lastSort = settings?.dashboardState.sorting;      
+      const lastSort = settings?.dashboardState.contents.sorting;      
       if (lastSort) {
         setSorting(lastSort);
         return;

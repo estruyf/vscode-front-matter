@@ -3,7 +3,7 @@ import { RefreshIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { DashboardMessage } from '../../DashboardMessage';
-import { LoadingAtom, MediaTotalSelector, PageAtom, SelectedMediaFolderSelector } from '../../state';
+import { LoadingAtom, MediaTotalSelector, PageAtom, SelectedMediaFolderSelector, SortingSelector } from '../../state';
 import { FolderCreation } from './FolderCreation';
 import { LIMIT } from './Media';
 import { PaginationButton } from './PaginationButton';
@@ -12,6 +12,7 @@ export interface IPaginationProps {}
 
 export const Pagination: React.FunctionComponent<IPaginationProps> = ({}: React.PropsWithChildren<IPaginationProps>) => {
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
+  const crntSorting = useRecoilValue(SortingSelector);
   const totalMedia = useRecoilValue(MediaTotalSelector);
   const [ , setLoading ] = useRecoilState(LoadingAtom);
   const [ page, setPage ] = useRecoilState(PageAtom);
@@ -50,7 +51,8 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({}: React.
     setLoading(true);
     Messenger.send(DashboardMessage.getMedia, {
       page,
-      folder: selectedFolder || ''
+      folder: selectedFolder || '',
+      sorting: crntSorting
     });
   }, [page]);
 
@@ -58,10 +60,20 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({}: React.
     setLoading(true);
     Messenger.send(DashboardMessage.getMedia, {
       page: 0,
-      folder: selectedFolder || ''
+      folder: selectedFolder || '',
+      sorting: crntSorting
     });
     setPage(0);
   }, [selectedFolder]);
+
+  React.useEffect(() => {
+    setLoading(true);
+    Messenger.send(DashboardMessage.getMedia, {
+      page,
+      folder: selectedFolder || '',
+      sorting: crntSorting
+    });
+  }, [crntSorting]);
 
   return (
     <nav

@@ -26,5 +26,10 @@ export interface Settings {
 }
 
 export interface DashboardState {
+  contents: ViewState;
+  media: ViewState;
+}
+
+export interface ViewState {
   sorting: SortingOption | null | undefined;
 }

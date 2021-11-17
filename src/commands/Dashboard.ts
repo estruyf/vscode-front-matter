@@ -4,7 +4,7 @@ import { basename, dirname, extname, join, parse } from "path";
 import { existsSync, readdirSync, statSync, unlinkSync, writeFileSync } from "fs";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env, Position } from "vscode";
 import { Settings as SettingsHelper } from '../helpers';
-import { DraftField, Framework, SortingSetting, TaxonomyType } from '../models';
+import { DraftField, Framework, SortingSetting, SortOrder, TaxonomyType } from '../models';
 import { Folders } from './Folders';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../dashboardWebView/DashboardMessage';
@@ -26,6 +26,7 @@ import { parseWinPath } from '../helpers/parseWinPath';
 import { DateHelper } from '../helpers/DateHelper';
 import { FrameworkDetector } from '../helpers/FrameworkDetector';
 import { ContentType } from '../helpers/ContentType';
+import { SortingOption } from '../dashboardWebView/models';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -174,7 +175,7 @@ export class Dashboard {
           Extension.getInstance().setState(ExtensionState.PagesView, msg.data, "workspace");
           break;
         case DashboardMessage.getMedia:
-          Dashboard.getMedia(msg?.data?.page, msg?.data?.folder);
+          Dashboard.getMedia(msg?.data?.page, msg?.data?.folder, msg?.data?.sorting);
           break;
         case DashboardMessage.copyToClipboard:
           env.clipboard.writeText(msg.data);
@@ -299,7 +300,12 @@ export class Dashboard {
         crntFramework: SettingsHelper.get<string>(SETTINGS_FRAMEWORK_ID),
         framework: (!isInitialized && wsFolder) ? FrameworkDetector.get(wsFolder.fsPath) : null,
         dashboardState: {
-          sorting: await ext.getState<ViewType | undefined>(ExtensionState.Dashboard.Sorting, "workspace")
+          contents: {
+            sorting: await ext.getState<SortingOption | undefined>(ExtensionState.Dashboard.Contents.Sorting, "workspace")
+          },
+          media: {
+            sorting: await ext.getState<SortingOption | undefined>(ExtensionState.Dashboard.Media.Sorting, "workspace")
+          }
         }
       } as Settings
     });
@@ -334,16 +340,19 @@ export class Dashboard {
   /**
    * Retrieve all media files
    */
-  private static async getMedia(page: number = 0, requestedFolder: string = '') {
+  private static async getMedia(page: number = 0, requestedFolder: string = '', sort: SortingOption | null = null) {
     const wsFolder = Folders.getWorkspaceFolder();
     const staticFolder = SettingsHelper.get<string>(SETTINGS_CONTENT_STATIC_FOLDER);
     const contentFolders = Folders.get();
     const viewData = Dashboard.viewData;
     let selectedFolder = requestedFolder;
 
+    const ext = Extension.getInstance();
+    const crntSort = sort === null ? await ext.getState<SortingOption | undefined>(ExtensionState.Dashboard.Media.Sorting, "workspace") : sort;
+
     // If the static folder is not set, retreive the last opened location
     if (!selectedFolder) {
-      const stateValue = await Extension.getInstance().getState<string | undefined>(ExtensionState.SelectedFolder, "workspace");
+      const stateValue = await ext.getState<string | undefined>(ExtensionState.SelectedFolder, "workspace");
 
       if (stateValue !== HOME_PAGE_NAVIGATION_ID) {
         // Support for page bundles
@@ -400,14 +409,18 @@ export class Dashboard {
     }
 
     allMedia = allMedia.sort((a, b) => {
-      if (b.fsPath < a.fsPath) {
+      if (a.fsPath.toLowerCase() < b.fsPath.toLowerCase()) {
         return -1;
       }
-      if (b.fsPath > a.fsPath) {
+      if (a.fsPath.toLowerCase() > b.fsPath.toLowerCase()) {
         return 1;
       }
       return 0;
     });
+
+    if (crntSort?.order === SortOrder.desc) {
+      allMedia = allMedia.reverse();
+    }
 
     Dashboard.media = Object.assign([], allMedia);
 
@@ -459,13 +472,28 @@ export class Dashboard {
 
     // Store the last opened folder
     await Extension.getInstance().setState(ExtensionState.SelectedFolder, requestedFolder === HOME_PAGE_NAVIGATION_ID ? HOME_PAGE_NAVIGATION_ID : selectedFolder, "workspace");
+    
+    let sortedFolders = [...allContentFolders, ...allFolders];
+    sortedFolders = sortedFolders.sort((a, b) => {
+      if (a.toLowerCase() < b.toLowerCase()) {
+        return -1;
+      }
+      if (a.toLowerCase() > b.toLowerCase()) {
+        return 1;
+      }
+      return 0;
+    });
+
+    if (crntSort?.order === SortOrder.desc) {
+      sortedFolders = sortedFolders.reverse();
+    }
 
     Dashboard.postWebviewMessage({
       command: DashboardCommand.media,
       data: {
         media: files,
         total: total,
-        folders: [...allContentFolders, ...allFolders],
+        folders: sortedFolders,
         selectedFolder
       } as MediaPaths
     });

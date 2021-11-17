@@ -2,8 +2,10 @@ import { CollectionIcon } from '@heroicons/react/outline';
 import { basename, join } from 'path';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
+import { Sorting } from '.';
 import { HOME_PAGE_NAVIGATION_ID } from '../../../constants';
 import { parseWinPath } from '../../../helpers/parseWinPath';
+import { ViewType } from '../../models';
 import { SelectedMediaFolderAtom, SettingsAtom } from '../../state';
 
 export interface IBreadcrumbProps {}
@@ -63,8 +65,8 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (props: Rea
   }, [selectedFolder]);
 
   return (
-    <nav className="bg-gray-200 text-vulcan-300 dark:bg-vulcan-400 dark:text-whisper-600 border-b border-gray-300 dark:border-vulcan-100 flex py-2" aria-label="Breadcrumb">
-      <ol role="list" className="w-full mx-auto flex space-x-4 px-5">
+    <nav className="w-full bg-gray-200 text-vulcan-300 dark:bg-vulcan-400 dark:text-whisper-600 border-b border-gray-300 dark:border-vulcan-100 flex justify-between py-2" aria-label="Breadcrumb">
+      <ol role="list" className="flex space-x-4 px-5">
         <li className="flex">
           <div className="flex items-center">
             <button onClick={() => setSelectedFolder(HOME_PAGE_NAVIGATION_ID)} className="text-gray-500 hover:text-gray-600 dark:text-whisper-900 dark:hover:text-whisper-500">
@@ -95,6 +97,10 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (props: Rea
           </li>
         ))}
       </ol>
+
+      <div className={`flex px-5`}>
+        <Sorting view={ViewType.Media} disableCustomSorting />
+      </div>
     </nav>
   );
 };
