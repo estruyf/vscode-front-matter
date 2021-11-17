@@ -1,5 +1,13 @@
 # Change Log
 
+## [5.6.0] - 2021-11-xx
+
+### 🎨 Enhancements
+
+- Updated camera icon from VS Code to media icon
+- Updated `check` icon on media inserts to `plus` icon
+- [#179](https://github.com/estruyf/vscode-front-matter/issues/179): Updated the `open dashboard` icon to make it easier to spot it
+
 ## [5.5.0] - 2021-11-15
 
 As from this version onwards, the extension will be published to [open-vsx.org](https://open-vsx.org/).

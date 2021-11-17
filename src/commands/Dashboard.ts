@@ -1,4 +1,4 @@
-import { SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTING_TAXONOMY_CONTENT_TYPES, DefaultFields, HOME_PAGE_NAVIGATION_ID, ExtensionState, COMMAND_NAME, SETTINGS_FRAMEWORK_ID, SETTINGS_CONTENT_DRAFT_FIELD, SETTINGS_CONTENT_SORTING } from '../constants';
+import { SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTING_TAXONOMY_CONTENT_TYPES, DefaultFields, HOME_PAGE_NAVIGATION_ID, ExtensionState, COMMAND_NAME, SETTINGS_FRAMEWORK_ID, SETTINGS_CONTENT_DRAFT_FIELD, SETTINGS_CONTENT_SORTING, CONTEXT } from '../constants';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { basename, dirname, extname, join, parse } from "path";
 import { existsSync, readdirSync, statSync, unlinkSync, writeFileSync } from "fs";
@@ -62,6 +62,8 @@ export class Dashboard {
 		} else {
 			Dashboard.create();
 		}
+
+    await commands.executeCommand('setContext', CONTEXT.isDashboardOpen, true);
   }
 
   /**
@@ -78,6 +80,10 @@ export class Dashboard {
     if (Dashboard.webview) {
       Dashboard.webview.reveal();
     }
+  }
+
+  public static close() {
+    Dashboard.webview?.dispose();
   }
   
   /**
@@ -105,19 +111,22 @@ export class Dashboard {
 
     Dashboard.webview.webview.html = Dashboard.getWebviewContent(Dashboard.webview.webview, extensionUri);
 
-    Dashboard.webview.onDidChangeViewState(() => {
+    Dashboard.webview.onDidChangeViewState(async () => {
       if (!this.webview?.visible) {
         Dashboard._viewData = undefined;
         const panel = ExplorerView.getInstance(extensionUri);
         panel.getMediaSelection();
       }
+
+      await commands.executeCommand('setContext', CONTEXT.isDashboardOpen, this.webview?.visible);
     });
 
-    Dashboard.webview.onDidDispose(() => {
+    Dashboard.webview.onDidDispose(async () => {
       Dashboard.isDisposed = true;
       Dashboard._viewData = undefined;
       const panel = ExplorerView.getInstance(extensionUri);
       panel.getMediaSelection();
+      await commands.executeCommand('setContext', CONTEXT.isDashboardOpen, false);
     });
 
     SettingsHelper.onConfigChange((global?: any) => {

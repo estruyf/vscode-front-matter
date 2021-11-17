@@ -1,5 +1,5 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { CheckCircleIcon, ClipboardCopyIcon, CodeIcon, PencilIcon, PhotographIcon, TrashIcon } from '@heroicons/react/outline';
+import { ClipboardCopyIcon, CodeIcon, PencilIcon, PhotographIcon, PlusCircleIcon, TrashIcon } from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useEffect } from 'react';
@@ -199,7 +199,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
                     title={`Insert into your content`} 
                     className={`hover:text-teal-900 focus:outline-none`} 
                     onClick={insertToArticle}>
-                    <CheckCircleIcon className={`h-5 w-5`} />
+                    <PlusCircleIcon className={`h-5 w-5`} />
                     <span className={`sr-only`}>Insert into your content</span>
                   </button>
                   {

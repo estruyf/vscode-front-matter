@@ -660,7 +660,10 @@
         "command": "frontMatter.insertImage",
         "title": "Insert image into your content",
         "category": "Front matter",
-        "icon": "$(device-camera)"
+        "icon": {
+          "dark": "/assets/icons/media-dark.svg",
+          "light": "/assets/icons/media-light.svg"
+        }
       },
       {
         "command": "frontMatter.insertTags",
@@ -676,7 +679,19 @@
         "command": "frontMatter.dashboard",
         "title": "Open dashboard",
         "category": "Front matter",
-        "icon": "$(preview)"
+        "icon": {
+          "dark": "/assets/icons/frontmatter-small-dark.svg",
+          "light": "/assets/icons/frontmatter-small-light.svg"
+        }
+      },
+      {
+        "command": "frontMatter.dashboard.close",
+        "title": "Close dashboard",
+        "category": "Front matter",
+        "icon": {
+          "dark": "/assets/icons/frontmatter-small-teal.svg",
+          "light": "/assets/icons/frontmatter-small-teal.svg"
+        }
       },
       {
         "command": "frontMatter.preview",
@@ -709,7 +724,12 @@
         {
           "command": "frontMatter.dashboard",
           "group": "navigation@-98",
-          "when": "frontMatter:enabled == true"
+          "when": "frontMatter:enabled == true && frontMatter:dashboard:open == false"
+        },
+        {
+          "command": "frontMatter.dashboard.close",
+          "group": "navigation@-98",
+          "when": "frontMatter:enabled == true && frontMatter:dashboard:open == true"
         }
       ],
       "explorer/context": [
@@ -756,6 +776,10 @@
         },
         {
           "command": "frontMatter.createFromTemplate",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.dashboard.close",
           "when": "false"
         }
       ],
