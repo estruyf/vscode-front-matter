@@ -437,15 +437,14 @@ export class Dashboard {
 
         return {
           ...file,
-          stats: statSync(file.fsPath),
           dimensions: imageSize(file.fsPath),
           ...metadata
         };
       } catch (e) {
-        return {...file, stats: undefined};
+        return {...file};
       }
     });
-    files = files.filter(f => f.stats !== undefined);
+    files = files.filter(f => f.mtime !== undefined);
 
     // Retrieve all the folders
     let allContentFolders: string[] = [];

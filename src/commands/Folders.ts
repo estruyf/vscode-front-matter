@@ -245,8 +245,6 @@ export class Folders {
               });
             }
           }
-
-          console.timeEnd("Check files with fs.stats");
         } catch (e) {
           // Skip the current folder
         }
