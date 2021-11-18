@@ -21,13 +21,13 @@ import { decodeBase64Image } from '../helpers/decodeBase64Image';
 import { DashboardData } from '../models/DashboardData';
 import { ExplorerView } from '../explorerView/ExplorerView';
 import { MediaLibrary } from '../helpers/MediaLibrary';
-import imageSize from 'image-size';
 import { parseWinPath } from '../helpers/parseWinPath';
 import { DateHelper } from '../helpers/DateHelper';
 import { FrameworkDetector } from '../helpers/FrameworkDetector';
 import { ContentType } from '../helpers/ContentType';
 import { SortingOption } from '../dashboardWebView/models';
 import { Sorting } from '../helpers/Sorting';
+import imageSize from 'image-size';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;

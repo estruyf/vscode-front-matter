@@ -8,6 +8,7 @@
 - Updated `check` icon on media inserts to `plus` icon
 - [#178](https://github.com/estruyf/vscode-front-matter/issues/178): Sorting added to the media dashboard
 - [#179](https://github.com/estruyf/vscode-front-matter/issues/179): Updated the `open dashboard` icon to make it easier to spot it
+- [#180](https://github.com/estruyf/vscode-front-matter/issues/180): Added `{filename}` as placeholder for media snippets
 
 ## [5.5.0] - 2021-11-15
 

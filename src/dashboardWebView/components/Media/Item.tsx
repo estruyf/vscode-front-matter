@@ -78,9 +78,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   const insertSnippet = () => {
     const relPath = getRelPath();
     let snippet = settings?.mediaSnippet.join("\n");
+
     snippet = snippet?.replace("{mediaUrl}", parseWinPath(relPath) || "");
     snippet = snippet?.replace("{alt}", alt || "");
     snippet = snippet?.replace("{caption}", caption || "");
+    snippet = snippet?.replace("{filename}", basename(relPath || ""));
 
     Messenger.send(DashboardMessage.insertPreviewImage, {
       image: parseWinPath(relPath) || "",
