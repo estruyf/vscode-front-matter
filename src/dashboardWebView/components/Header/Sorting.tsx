@@ -17,7 +17,8 @@ export interface ISortingProps {
 }
 
 export const sortOptions: SortingOption[] = [
-  { name: "Last modified", id: SortOption.LastModified, order: SortOrder.desc, type: SortType.string },
+  { name: "Last modified (asc)", id: SortOption.LastModifiedAsc, order: SortOrder.asc, type: SortType.date },
+  { name: "Last modified (desc)", id: SortOption.LastModifiedDesc, order: SortOrder.desc, type: SortType.date },
   { name: "By filename (asc)", id: SortOption.FileNameAsc, order: SortOrder.asc, type: SortType.string },
   { name: "By filename (desc)", id: SortOption.FileNameDesc, order: SortOrder.desc, type: SortType.string },
 ];
@@ -36,7 +37,7 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({disableCustomSo
     setCrntSorting(value)
   };
 
-  let allOptions = view === ViewType.Contents ? [...sortOptions] : [...sortOptions.slice(1)];
+  let allOptions = [...sortOptions];
   if (settings?.customSorting && !disableCustomSorting) {
     allOptions = [...allOptions, ...settings.customSorting.map((s) => ({ 
       title: s.title || s.name, 

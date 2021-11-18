@@ -4,7 +4,7 @@ import { basename, dirname, extname, join, parse } from "path";
 import { existsSync, readdirSync, statSync, unlinkSync, writeFileSync } from "fs";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env, Position } from "vscode";
 import { Settings as SettingsHelper } from '../helpers';
-import { DraftField, Framework, SortingSetting, SortOrder, TaxonomyType } from '../models';
+import { DraftField, Framework, SortingSetting, SortOrder, SortType, TaxonomyType } from '../models';
 import { Folders } from './Folders';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../dashboardWebView/DashboardMessage';
@@ -27,6 +27,7 @@ import { DateHelper } from '../helpers/DateHelper';
 import { FrameworkDetector } from '../helpers/FrameworkDetector';
 import { ContentType } from '../helpers/ContentType';
 import { SortingOption } from '../dashboardWebView/models';
+import { Sorting } from '../helpers/Sorting';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -384,13 +385,16 @@ export class Dashboard {
 
     if (relSelectedFolderPath) {
       const files = await workspace.findFiles(join(relSelectedFolderPath, '/*'));
-      const media = Dashboard.filterMedia(files);
+      const media = await Dashboard.updateMediaData(selectedFolder, Dashboard.filterMedia(files));
+
       allMedia = [...media];
     } else {
       if (staticFolder) {
         const folderSearch = join(staticFolder || "", '/*');
+        const absFolderSearch = join(wsFolder?.fsPath || "", folderSearch);
+        
         const files = await workspace.findFiles(folderSearch);
-        const media = Dashboard.filterMedia(files);
+        const media = await Dashboard.updateMediaData(absFolderSearch, Dashboard.filterMedia(files));
 
         allMedia = [...media];
       }
@@ -401,22 +405,20 @@ export class Dashboard {
           const relFolderPath = contentFolder.path.substring(wsFolder.fsPath.length + 1);
           const folderSearch = relSelectedFolderPath ? join(relSelectedFolderPath, '/*') : join(relFolderPath, '/*');
           const files = await workspace.findFiles(folderSearch);
-          const media = Dashboard.filterMedia(files);
+          const media = await Dashboard.updateMediaData(join(wsFolder.fsPath || "", folderSearch), Dashboard.filterMedia(files));
     
           allMedia = [...allMedia, ...media];
         }
       }
     }
 
-    allMedia = allMedia.sort((a, b) => {
-      if (a.fsPath.toLowerCase() < b.fsPath.toLowerCase()) {
-        return -1;
-      }
-      if (a.fsPath.toLowerCase() > b.fsPath.toLowerCase()) {
-        return 1;
-      }
-      return 0;
-    });
+    if (crntSort?.type === SortType.string) {
+      allMedia = allMedia.sort(Sorting.alphabetically("fsPath"));
+    } else if (crntSort?.type === SortType.date) {
+      allMedia = allMedia.sort(Sorting.date("modified"));
+    } else {
+      allMedia = allMedia.sort(Sorting.alphabetically("fsPath"));
+    }
 
     if (crntSort?.order === SortOrder.desc) {
       allMedia = allMedia.reverse();
@@ -497,6 +499,27 @@ export class Dashboard {
         selectedFolder
       } as MediaPaths
     });
+  }
+
+  /**
+   * Update the metadata of the retrieved files
+   * @param folder 
+   * @param files 
+   */
+  private static async updateMediaData(folder: string, files: MediaInfo[]) {
+    const fileMetadata = await MediaLibrary.getMetadata(folder);
+
+    if (fileMetadata && fileMetadata.length > 0) {
+      files = files.map((m: MediaInfo) => {
+        const metadata = fileMetadata.find((f) => m.fsPath.endsWith(f.fileName));
+        if (metadata) {
+          m.modified = metadata.date;
+        }
+        return m;
+      });
+    }
+
+    return Object.assign([], files);
   }
 
   /**

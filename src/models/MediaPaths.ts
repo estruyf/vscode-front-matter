@@ -15,4 +15,5 @@ export interface MediaInfo {
   dimensions: ISizeCalculationResult | undefined;
   caption?: string | undefined;
   alt?: string | undefined;
+  modified?: Date | undefined;
 }

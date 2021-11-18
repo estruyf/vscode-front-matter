@@ -6,7 +6,7 @@ import Fuse from 'fuse.js';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { CategorySelector, FolderSelector, SearchSelector, SettingsSelector, SortingAtom, TabSelector, TagSelector } from '../state';
 import { SortOrder, SortType } from '../../models';
-import { DateHelper } from '../../helpers/DateHelper';
+import { Sorting } from '../../helpers/Sorting';
 
 const fuseOptions: Fuse.IFuseOptions<Page> = {
   keys: [
@@ -25,29 +25,6 @@ export default function usePages(pages: Page[]) {
   const search = useRecoilValue(SearchSelector);
   const tag = useRecoilValue(TagSelector);
   const category = useRecoilValue(CategorySelector);
-
-  // Sort field value alphabetically
-  const sortAlphabetically = (property: string) => {
-    return (a: Page, b: Page) => {
-      if (a[property] < b[property]) {
-        return -1;
-      }
-      if (a[property] > b[property]) {
-        return 1;
-      }
-      return 0;
-    };
-  };
-
-  // Sort by date
-  const sortByDate = (property: string) => {
-    return (a: Page, b: Page) => {
-      const dateA = DateHelper.tryParse(a[property]);
-      const dateB = DateHelper.tryParse(b[property]);
-
-      return (dateA || new Date(0)).getTime() - (dateB || new Date(0)).getTime();
-    };
-  };
 
   useEffect(() => {
     const draftField = settings?.draftField;
@@ -91,27 +68,30 @@ export default function usePages(pages: Page[]) {
 
     // Sort the pages
     let pagesSorted: Page[] = Object.assign([], pagesToShow);
+    debugger;
     if (!search) {
       if (sorting && sorting.id === SortOption.FileNameAsc) {
-        pagesSorted = pagesSorted.sort(sortAlphabetically("fmFileName"));
+        pagesSorted = pagesSorted.sort(Sorting.alphabetically("fmFileName"));
       } else if (sorting && sorting.id === SortOption.FileNameDesc) {
-        pagesSorted = pagesSorted.sort(sortAlphabetically("fmFileName")).reverse();
-      } else if (sorting && sorting.id === SortOption.LastModified) {
-        pagesSorted = pagesSorted.sort((a, b) => b.fmModified - a.fmModified);
+        pagesSorted = pagesSorted.sort(Sorting.alphabetically("fmFileName")).reverse();
+      } else if (sorting && sorting.id === SortOption.LastModifiedAsc) {
+        pagesSorted = pagesSorted.sort(Sorting.number("fmModified"));
+      } else if (sorting && sorting.id === SortOption.LastModifiedDesc) {
+        pagesSorted = pagesSorted.sort(Sorting.number("fmModified")).reverse();
       } else if (sorting && sorting.id && sorting.name) {
         const { order, name, type } = sorting;
 
         if (type === SortType.string) {
-          pagesSorted = pagesSorted.sort(sortAlphabetically(name));
+          pagesSorted = pagesSorted.sort(Sorting.alphabetically(name));
         } else if (type === SortType.date) {
-          pagesSorted = pagesSorted.sort(sortByDate(name));
+          pagesSorted = pagesSorted.sort(Sorting.date(name));
         }
 
         if (order === SortOrder.desc) {
           pagesSorted = pagesSorted.reverse();
         }
       } else {
-        pagesSorted = pagesSorted.sort((a, b) => b.fmModified - a.fmModified);
+        pagesSorted = pagesSorted.sort(Sorting.number("fmModified")).reverse();
       }
     }
 
