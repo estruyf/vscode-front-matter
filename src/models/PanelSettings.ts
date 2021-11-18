@@ -1,4 +1,3 @@
-import { FileType } from "vscode";
 import { DraftField } from ".";
 import { Choice } from "./Choice";
 import { DashboardData } from "./DashboardData";
@@ -64,10 +63,7 @@ export interface FolderInfo {
 }
 
 export interface FileInfo {
-  type: FileType;
-  ctime: number;
   mtime: number;
-  size: number;
   filePath: string;
   fileName: string;
 };

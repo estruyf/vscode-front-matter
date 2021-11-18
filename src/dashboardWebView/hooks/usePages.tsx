@@ -68,7 +68,6 @@ export default function usePages(pages: Page[]) {
 
     // Sort the pages
     let pagesSorted: Page[] = Object.assign([], pagesToShow);
-    debugger;
     if (!search) {
       if (sorting && sorting.id === SortOption.FileNameAsc) {
         pagesSorted = pagesSorted.sort(Sorting.alphabetically("fmFileName"));

@@ -1,7 +1,6 @@
-import * as os from 'os';
-import { DateHelper } from './DateHelper';
+
 import { Dashboard } from '../commands/Dashboard';
-import { workspace, env as vscodeEnv } from 'vscode';
+import { workspace } from 'vscode';
 import { JsonDB } from 'node-json-db/dist/JsonDB';
 import { basename, dirname, join, parse } from 'path';
 import { Folders, WORKSPACE_PLACEHOLDER } from '../commands/Folders';
@@ -9,7 +8,6 @@ import { existsSync, renameSync } from 'fs';
 import { Notifications } from './Notifications';
 import { parseWinPath } from './parseWinPath';
 import { LocalStore } from '../constants';
-import { exec } from 'child_process';
 
 interface MediaRecord {
   description: string;
@@ -48,54 +46,6 @@ export class MediaLibrary {
     }
 
     return MediaLibrary.instance;
-  }
-
-  public static async getMetadata(path: string): Promise<{ date: Date, fileName: string }[] | null> {
-    return new Promise((resolve) => {
-      let command: string = "";
-
-      // Run bash scripts to retrieve metadata faster
-      if (os.type() === "Darwin") {
-        command = `for file in *; do 
-  fdate=$(stat -f "%Sm" -t "%Y-%m-%d %H:%M" "$file")
-  echo "$file,$fdate"
-done`;
-      } else if (os.type() === "Windows_NT") {
-        resolve(null);
-        return;
-      } else if (os.type() === "Linux" && vscodeEnv.remoteName?.toLowerCase() === "wsl") {
-        command = `for file in *; do 
-  fdate=$(stat -c "%y" "$file")
-  echo "$file,$fdate"
-done`;
-      } else {
-        resolve(null);
-        return;
-      }
-      
-      exec(`cd ${path} && ${command}`, (error, stdout, stderr) => {
-        if (error) {
-          resolve(null);
-          return;
-        }
-
-        const lines = stdout.split('\n');
-        const metadata: any[] = [];
-
-        let lineData: any = {};
-
-        for (let i = 0; i < lines.length; i++) {
-          const line = lines[i];
-          const parts = line.split(',');
-          metadata.push({
-            fileName: parts[0],
-            date: DateHelper.tryParse(parts[1])
-          });
-        }
-
-        resolve(metadata);
-      });
-    });
   }
 
   public get(id: string): MediaRecord | undefined {

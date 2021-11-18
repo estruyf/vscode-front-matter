@@ -6,7 +6,7 @@ import { ContentFolder, FileInfo, FolderInfo } from "../models";
 import uniqBy = require("lodash.uniqby");
 import { Template } from "./Template";
 import { Notifications } from "../helpers/Notifications";
-import { Settings } from "../helpers";
+import { FilesHelper, Settings } from "../helpers";
 import { existsSync, mkdirSync } from 'fs';
 import { format } from 'date-fns';
 import { Dashboard } from './Dashboard';
@@ -205,6 +205,8 @@ export class Folders {
       
       for (const folder of folders) {
         try {
+          const filesMetadata = await FilesHelper.getMetadata(folder.path);
+
           const projectName = Folders.getProjectFolderName();
           let projectStart = folder.path.split(projectName).pop();
           if (projectStart) {
@@ -219,11 +221,22 @@ export class Folders {
               for (const file of files) {
                 try {
                   const fileName = basename(file.fsPath);
-                  const stats = await workspace.fs.stat(file);
+                  
+                  let stats: { mtime: number } | null = null;
+                  const foundFile = filesMetadata?.find(f => f.fileName.endsWith(fileName));
+
+                  if (foundFile) {
+                    stats = {
+                      mtime: foundFile.date.getTime()
+                    }
+                  } else {
+                    stats = await workspace.fs.stat(file);
+                  }
+
                   fileStats.push({
                     filePath: file.fsPath,
                     fileName,
-                    ...stats
+                    mtime: stats.mtime
                   });
                 } catch (error) {
                   // Skip the file

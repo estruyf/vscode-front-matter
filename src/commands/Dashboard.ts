@@ -3,7 +3,7 @@ import { ArticleHelper } from './../helpers/ArticleHelper';
 import { basename, dirname, extname, join, parse } from "path";
 import { existsSync, readdirSync, statSync, unlinkSync, writeFileSync } from "fs";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env, Position } from "vscode";
-import { Settings as SettingsHelper } from '../helpers';
+import { FilesHelper, Settings as SettingsHelper } from '../helpers';
 import { DraftField, Framework, SortingSetting, SortOrder, SortType, TaxonomyType } from '../models';
 import { Folders } from './Folders';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
@@ -507,7 +507,7 @@ export class Dashboard {
    * @param files 
    */
   private static async updateMediaData(folder: string, files: MediaInfo[]) {
-    const fileMetadata = await MediaLibrary.getMetadata(folder);
+    const fileMetadata = await FilesHelper.getMetadata(folder);
 
     if (fileMetadata && fileMetadata.length > 0) {
       files = files.map((m: MediaInfo) => {
