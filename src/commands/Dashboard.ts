@@ -385,16 +385,14 @@ export class Dashboard {
 
     if (relSelectedFolderPath) {
       const files = await workspace.findFiles(join(relSelectedFolderPath, '/*'));
-      const media = await Dashboard.updateMediaData(selectedFolder, Dashboard.filterMedia(files));
+      const media = await Dashboard.updateMediaData(Dashboard.filterMedia(files));
 
       allMedia = [...media];
     } else {
       if (staticFolder) {
         const folderSearch = join(staticFolder || "", '/*');
-        const absFolderSearch = join(wsFolder?.fsPath || "", folderSearch);
-        
         const files = await workspace.findFiles(folderSearch);
-        const media = await Dashboard.updateMediaData(absFolderSearch, Dashboard.filterMedia(files));
+        const media = await Dashboard.updateMediaData(Dashboard.filterMedia(files));
 
         allMedia = [...media];
       }
@@ -405,7 +403,7 @@ export class Dashboard {
           const relFolderPath = contentFolder.path.substring(wsFolder.fsPath.length + 1);
           const folderSearch = relSelectedFolderPath ? join(relSelectedFolderPath, '/*') : join(relFolderPath, '/*');
           const files = await workspace.findFiles(folderSearch);
-          const media = await Dashboard.updateMediaData(join(wsFolder.fsPath || "", folderSearch), Dashboard.filterMedia(files));
+          const media = await Dashboard.updateMediaData(Dashboard.filterMedia(files));
     
           allMedia = [...allMedia, ...media];
         }
@@ -415,7 +413,7 @@ export class Dashboard {
     if (crntSort?.type === SortType.string) {
       allMedia = allMedia.sort(Sorting.alphabetically("fsPath"));
     } else if (crntSort?.type === SortType.date) {
-      allMedia = allMedia.sort(Sorting.date("modified"));
+      allMedia = allMedia.sort(Sorting.date("mtime"));
     } else {
       allMedia = allMedia.sort(Sorting.alphabetically("fsPath"));
     }
@@ -503,21 +501,13 @@ export class Dashboard {
 
   /**
    * Update the metadata of the retrieved files
-   * @param folder 
    * @param files 
    */
-  private static async updateMediaData(folder: string, files: MediaInfo[]) {
-    const fileMetadata = await FilesHelper.getMetadata(folder);
-
-    if (fileMetadata && fileMetadata.length > 0) {
-      files = files.map((m: MediaInfo) => {
-        const metadata = fileMetadata.find((f) => m.fsPath.endsWith(f.fileName));
-        if (metadata) {
-          m.modified = metadata.date;
-        }
-        return m;
-      });
-    }
+  private static async updateMediaData(files: MediaInfo[]) {
+    files = files.map((m: MediaInfo) => {
+      const stats = statSync(m.fsPath);
+      return Object.assign({}, m, stats);
+    });
 
     return Object.assign([], files);
   }

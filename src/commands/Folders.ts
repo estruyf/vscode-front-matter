@@ -205,8 +205,6 @@ export class Folders {
       
       for (const folder of folders) {
         try {
-          const filesMetadata = await FilesHelper.getMetadata(folder.path);
-
           const projectName = Folders.getProjectFolderName();
           let projectStart = folder.path.split(projectName).pop();
           if (projectStart) {
@@ -222,21 +220,12 @@ export class Folders {
                 try {
                   const fileName = basename(file.fsPath);
                   
-                  let stats: { mtime: number } | null = null;
-                  const foundFile = filesMetadata?.find(f => f.fileName.endsWith(fileName));
-
-                  if (foundFile) {
-                    stats = {
-                      mtime: foundFile.date.getTime()
-                    }
-                  } else {
-                    stats = await workspace.fs.stat(file);
-                  }
+                  const stats = await workspace.fs.stat(file);
 
                   fileStats.push({
                     filePath: file.fsPath,
                     fileName,
-                    mtime: stats.mtime
+                    ...stats
                   });
                 } catch (error) {
                   // Skip the file
@@ -256,6 +245,8 @@ export class Folders {
               });
             }
           }
+
+          console.timeEnd("Check files with fs.stats");
         } catch (e) {
           // Skip the current folder
         }

@@ -1,3 +1,4 @@
+import { FileStat } from "vscode";
 import { DraftField } from ".";
 import { Choice } from "./Choice";
 import { DashboardData } from "./DashboardData";
@@ -62,8 +63,7 @@ export interface FolderInfo {
   lastModified: FileInfo[];
 }
 
-export interface FileInfo {
-  mtime: number;
+export interface FileInfo extends FileStat {
   filePath: string;
   fileName: string;
 };

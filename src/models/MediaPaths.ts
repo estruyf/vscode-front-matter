@@ -1,5 +1,6 @@
 import { Stats } from "fs";
 import { ISizeCalculationResult } from "image-size/dist/types/interface";
+import { FileStat } from "vscode";
 
 export interface MediaPaths { 
   media: MediaInfo[];
@@ -8,7 +9,7 @@ export interface MediaPaths {
   selectedFolder: string;
 }
 
-export interface MediaInfo {
+export interface MediaInfo extends FileStat {
   fsPath: string; 
   vsPath: string | undefined;
   stats: Stats | undefined;
