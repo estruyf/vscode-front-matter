@@ -15,4 +15,5 @@ export interface MediaInfo {
   alt?: string | undefined;
   mtime?: Date;
   ctime?: Date;
+  size?: number;
 }

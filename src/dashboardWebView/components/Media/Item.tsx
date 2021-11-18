@@ -113,8 +113,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
       }
     }
 
-    if (media?.stats?.size) {
-      const size = media.stats.size / (1024*1024);
+    if (media?.size) {
+      const size = media.size / (1024*1024);
       if (size > 1) {
         sizeDetails.push(`${size.toFixed(2)} MB`);
       } else {
@@ -258,7 +258,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
             <span className={`block mt-1 dark:text-whisper-500 text-xs`}>{getFolder()}</span>
           </p>
           {
-            (media?.stats?.size || media?.dimensions) && (
+            (media?.size || media?.dimensions) && (
               <p className="mt-2 text-xs dark:text-whisper-900 font-medium pointer-events-none flex flex-col items-start">
                 <b className={`mr-1`}>Size:</b>
                 <span className={`block mt-1 dark:text-whisper-500 text-xs`}>{calculateSize()}</span>
