@@ -3,7 +3,7 @@ import { ArticleHelper } from './../helpers/ArticleHelper';
 import { basename, dirname, extname, join, parse } from "path";
 import { existsSync, readdirSync, statSync, unlinkSync, writeFileSync } from "fs";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env, Position } from "vscode";
-import { FilesHelper, Settings as SettingsHelper } from '../helpers';
+import { Settings as SettingsHelper } from '../helpers';
 import { DraftField, Framework, SortingSetting, SortOrder, SortType, TaxonomyType } from '../models';
 import { Folders } from './Folders';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
@@ -28,6 +28,7 @@ import { ContentType } from '../helpers/ContentType';
 import { SortingOption } from '../dashboardWebView/models';
 import { Sorting } from '../helpers/Sorting';
 import imageSize from 'image-size';
+import { Media } from '../helpers/Media';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -202,6 +203,9 @@ export class Dashboard {
           break;
         case DashboardMessage.setFramework:
           Dashboard.setFramework(msg?.data);
+          break;
+        case DashboardMessage.compressImage:
+          Media.optimize(msg?.data);
           break;
         case DashboardMessage.setState:
           if (msg?.data?.key && msg?.data?.value) {

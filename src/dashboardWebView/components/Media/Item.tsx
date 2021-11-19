@@ -4,6 +4,7 @@ import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
+import { CompressIcon } from '../../../components/icons/CompressIcon';
 import { parseWinPath } from '../../../helpers/parseWinPath';
 import { MediaInfo } from '../../../models/MediaPaths';
 import { DashboardMessage } from '../../DashboardMessage';
@@ -59,6 +60,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   const copyToClipboard = () => {
     const relPath = getRelPath();
     Messenger.send(DashboardMessage.copyToClipboard, parseWinPath(relPath) || "");
+  };
+
+  const compressImage = () => {
+    const relPath = getRelPath();
+    Messenger.send(DashboardMessage.compressImage, parseWinPath(relPath) || "");
   };
 
   const insertToArticle = () => {
@@ -223,6 +229,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
                           onClick={copyToClipboard}>
                     <ClipboardCopyIcon className={`h-5 w-5`} />
                     <span className={`sr-only`}>Copy media path</span>
+                  </button>
+                  <button title={`Compress image`} 
+                          className={`hover:text-teal-900 focus:outline-none`} 
+                          onClick={compressImage}>
+                    <CompressIcon className={`h-5 w-5`} />
+                    <span className={`sr-only`}>Compress image</span>
                   </button>
                   <button title={`Delete media`} 
                           className={`hover:text-teal-900 focus:outline-none`} 
