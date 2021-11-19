@@ -20,5 +20,4 @@ export enum DashboardMessage {
   createMediaFolder = 'createMediaFolder',
   setFramework = 'setFramework',
   setState = 'setState',
-  compressImage = 'compressImage',
 }

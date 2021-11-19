@@ -860,7 +860,5 @@
     "webpack": "4.44.2",
     "webpack-cli": "3.3.12"
   },
-  "dependencies": {
-    "imagemin-cli": "^7.0.0"
-  }
+  "dependencies": {}
 }

@@ -62,11 +62,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     Messenger.send(DashboardMessage.copyToClipboard, parseWinPath(relPath) || "");
   };
 
-  const compressImage = () => {
-    const relPath = getRelPath();
-    Messenger.send(DashboardMessage.compressImage, parseWinPath(relPath) || "");
-  };
-
   const insertToArticle = () => {
     const relPath = getRelPath();
     Messenger.send(DashboardMessage.insertPreviewImage, {
@@ -229,12 +224,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
                           onClick={copyToClipboard}>
                     <ClipboardCopyIcon className={`h-5 w-5`} />
                     <span className={`sr-only`}>Copy media path</span>
-                  </button>
-                  <button title={`Compress image`} 
-                          className={`hover:text-teal-900 focus:outline-none`} 
-                          onClick={compressImage}>
-                    <CompressIcon className={`h-5 w-5`} />
-                    <span className={`sr-only`}>Compress image</span>
                   </button>
                   <button title={`Delete media`} 
                           className={`hover:text-teal-900 focus:outline-none`} 

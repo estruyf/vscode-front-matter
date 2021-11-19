@@ -28,7 +28,6 @@ import { ContentType } from '../helpers/ContentType';
 import { SortingOption } from '../dashboardWebView/models';
 import { Sorting } from '../helpers/Sorting';
 import imageSize from 'image-size';
-import { Media } from '../helpers/Media';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -203,9 +202,6 @@ export class Dashboard {
           break;
         case DashboardMessage.setFramework:
           Dashboard.setFramework(msg?.data);
-          break;
-        case DashboardMessage.compressImage:
-          Media.optimize(msg?.data);
           break;
         case DashboardMessage.setState:
           if (msg?.data?.key && msg?.data?.value) {
