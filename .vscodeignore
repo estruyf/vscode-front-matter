@@ -18,3 +18,7 @@ postcss.config.js
 .github
 scripts
 .all-contributorsrc
+assets/v2.*
+assets/v3.*
+assets/v4.*
+assets/sponsors

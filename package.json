@@ -806,7 +806,8 @@
     "dev:ext": "npm run clean && webpack --mode development --watch",
     "test-compile": "tsc -p ./",
     "clean": "rimraf dist",
-    "start:site": "cd ./docs && npm run dev"
+    "start:site": "cd ./docs && npm run dev",
+    "postinstall": "npm i imagemin imagemin-jpegtran imagemin-pngquant"
   },
   "devDependencies": {
     "@bendera/vscode-webview-elements": "0.6.2",
@@ -860,7 +861,5 @@
     "webpack": "4.44.2",
     "webpack-cli": "3.3.12"
   },
-  "dependencies": {
-    "@docsearch/js": "^3.0.0-alpha.40"
-  }
+  "dependencies": {}
 }
