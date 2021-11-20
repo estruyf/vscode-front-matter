@@ -251,6 +251,16 @@
               "outputType": {
                 "type": "string",
                 "description": "The type of output for the editor panel. Can be used to change it to 'markdown' for example"
+              },
+              "type": {
+                "type": "string",
+                "default": "article",
+                "enum": [
+                  "article",
+                  "mediaFolder",
+                  "mediaFile"
+                ],
+                "description": "The type for which the script will be used."
               }
             },
             "additionalProperties": false,

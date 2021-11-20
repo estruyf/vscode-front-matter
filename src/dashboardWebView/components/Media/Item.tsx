@@ -1,11 +1,13 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { ClipboardCopyIcon, CodeIcon, PencilIcon, PhotographIcon, PlusCircleIcon, TrashIcon } from '@heroicons/react/outline';
+import { ClipboardCopyIcon, CodeIcon, PencilIcon, PhotographIcon, PlayIcon, PlusCircleIcon, TrashIcon } from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { CompressIcon } from '../../../components/icons/CompressIcon';
+import { CustomScript } from '../../../helpers/CustomScript';
 import { parseWinPath } from '../../../helpers/parseWinPath';
+import { ScriptType } from '../../../models';
 import { MediaInfo } from '../../../models/MediaPaths';
 import { DashboardMessage } from '../../DashboardMessage';
 import { LightboxAtom, PageSelector, SelectedMediaFolderSelector, SettingsSelector, ViewDataSelector } from '../../state';
@@ -60,6 +62,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   const copyToClipboard = () => {
     const relPath = getRelPath();
     Messenger.send(DashboardMessage.copyToClipboard, parseWinPath(relPath) || "");
+  };
+
+  const runCustomScript = (script: CustomScript) => {
+    const relPath = getRelPath();
+    Messenger.send(DashboardMessage.runCustomScript, {script, path: relPath});
   };
 
   const insertToArticle = () => {
@@ -225,6 +232,19 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
                     <ClipboardCopyIcon className={`h-5 w-5`} />
                     <span className={`sr-only`}>Copy media path</span>
                   </button>
+
+                  {
+                    (settings?.scripts || []).filter(script => script.type === ScriptType.MediaFile).map(script => (
+                      <button 
+                          title={script.title} 
+                          className={`hover:text-teal-900 focus:outline-none`} 
+                          onClick={() => runCustomScript(script)}>
+                        <PlayIcon className={`h-5 w-5`} />
+                        <span className={`sr-only`}>{script.title}</span>
+                      </button>
+                    ))
+                  }
+
                   <button title={`Delete media`} 
                           className={`hover:text-teal-900 focus:outline-none`} 
                           onClick={deleteMedia}>

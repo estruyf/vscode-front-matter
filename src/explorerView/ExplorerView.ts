@@ -406,7 +406,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         tags: Settings.get(SETTING_TAXONOMY_TAGS, true) || [],
         categories: Settings.get(SETTING_TAXONOMY_CATEGORIES, true) || [],
         freeform: Settings.get(SETTING_PANEL_FREEFORM),
-        scripts: Settings.get(SETTING_CUSTOM_SCRIPTS),
+        scripts: (Settings.get<ICustomScript[]>(SETTING_CUSTOM_SCRIPTS) || []).filter(s => s.type === "article" || !s.type),
         isInitialized: await Template.isInitialized(),
         modifiedDateUpdate: Settings.get(SETTING_AUTO_UPDATE_DATE) || false,
         writingSettingsEnabled: this.isWritingSettingsEnabled() || false,

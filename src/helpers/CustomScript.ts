@@ -1,4 +1,4 @@
-import { CustomScript as ICustomScript } from '../models/PanelSettings';
+import { CustomScript as ICustomScript, ScriptType } from '../models/PanelSettings';
 import { window, env as vscodeEnv, ProgressLocation } from 'vscode';
 import { ArticleHelper } from '.';
 import { Folders } from '../commands/Folders';
@@ -11,18 +11,24 @@ import ContentProvider from '../providers/ContentProvider';
 
 export class CustomScript {
 
-  public static async run(script: ICustomScript): Promise<void> {
+  public static async run(script: ICustomScript, path: string | null = null): Promise<void> {
     const wsFolder = Folders.getWorkspaceFolder();
 
     if (wsFolder) {
       const wsPath = wsFolder.fsPath;
 
-      if (script.bulk) {
-        // Run script on all files
-        CustomScript.bulkRun(wsPath, script);
+      if (script.type === ScriptType.MediaFile) {
+        console.log(path);
+      } else if (script.type === ScriptType.MediaFolder) { 
+        console.log(path);
       } else {
-        // Run script on current file.
-        CustomScript.singleRun(wsPath, script);
+        if (script.bulk) {
+          // Run script on all files
+          CustomScript.bulkRun(wsPath, script);
+        } else {
+          // Run script on current file.
+          CustomScript.singleRun(wsPath, script);
+        }
       }
     }
   }

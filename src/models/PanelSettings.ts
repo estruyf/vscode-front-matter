@@ -75,9 +75,16 @@ export interface CustomScript {
   bulk?: boolean;
   output?: "notification" | "editor";
   outputType?: string;
+  type?: ScriptType;
 }
 
 export interface PreviewSettings {
   host: string | undefined;
   pathname: string | undefined;
+}
+
+export enum ScriptType {
+  Article = "article",
+  MediaFolder = "mediaFolder",
+  MediaFile = "mediaFile"
 }

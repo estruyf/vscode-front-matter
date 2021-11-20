@@ -1,10 +1,10 @@
-import { SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTING_TAXONOMY_CONTENT_TYPES, DefaultFields, HOME_PAGE_NAVIGATION_ID, ExtensionState, COMMAND_NAME, SETTINGS_FRAMEWORK_ID, SETTINGS_CONTENT_DRAFT_FIELD, SETTINGS_CONTENT_SORTING, CONTEXT } from '../constants';
+import { SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTING_TAXONOMY_CONTENT_TYPES, DefaultFields, HOME_PAGE_NAVIGATION_ID, ExtensionState, COMMAND_NAME, SETTINGS_FRAMEWORK_ID, SETTINGS_CONTENT_DRAFT_FIELD, SETTINGS_CONTENT_SORTING, CONTEXT, SETTING_CUSTOM_SCRIPTS } from '../constants';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { basename, dirname, extname, join, parse } from "path";
 import { existsSync, readdirSync, statSync, unlinkSync, writeFileSync } from "fs";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env, Position } from "vscode";
 import { Settings as SettingsHelper } from '../helpers';
-import { DraftField, Framework, SortingSetting, SortOrder, SortType, TaxonomyType } from '../models';
+import { CustomScript as ICustomScript, DraftField, Framework, ScriptType, SortingSetting, SortOrder, SortType, TaxonomyType } from '../models';
 import { Folders } from './Folders';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../dashboardWebView/DashboardMessage';
@@ -28,6 +28,7 @@ import { ContentType } from '../helpers/ContentType';
 import { SortingOption } from '../dashboardWebView/models';
 import { Sorting } from '../helpers/Sorting';
 import imageSize from 'image-size';
+import { CustomScript } from '../helpers/CustomScript';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -203,6 +204,9 @@ export class Dashboard {
         case DashboardMessage.setFramework:
           Dashboard.setFramework(msg?.data);
           break;
+        case DashboardMessage.runCustomScript:
+          CustomScript.run(msg?.data?.script, msg?.data?.path);
+          break;
         case DashboardMessage.setState:
           if (msg?.data?.key && msg?.data?.value) {
             Extension.getInstance().setState(msg?.data?.key, msg?.data?.value, "workspace");
@@ -300,6 +304,7 @@ export class Dashboard {
         contentFolders: Folders.get(),
         crntFramework: SettingsHelper.get<string>(SETTINGS_FRAMEWORK_ID),
         framework: (!isInitialized && wsFolder) ? FrameworkDetector.get(wsFolder.fsPath) : null,
+        scripts: (SettingsHelper.get<ICustomScript[]>(SETTING_CUSTOM_SCRIPTS) || []).filter(s => s.type && s.type !== ScriptType.Article),
         dashboardState: {
           contents: {
             sorting: await ext.getState<SortingOption | undefined>(ExtensionState.Dashboard.Contents.Sorting, "workspace")
