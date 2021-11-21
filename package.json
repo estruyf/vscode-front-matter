@@ -176,7 +176,7 @@
           "scope": "Content"
         },
         "frontMatter.content.sorting": {
-          "type": "object",
+          "type": "array",
           "default": [],
           "markdownDescription": "Define the sorting options for your dashboard content. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.sorting)",
           "items": {
