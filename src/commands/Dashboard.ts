@@ -227,6 +227,20 @@ export class Dashboard {
     Dashboard.resetMedia();
     Dashboard.getMedia(0, folderPath);
   }
+
+  /**
+   * Post data to the dashboard
+   * @param msg 
+   */
+  public static postWebviewMessage(msg: { command: DashboardCommand, data?: any }) {
+    if (Dashboard.isDisposed) {
+      return;
+    }
+
+    if (Dashboard.webview) {
+      Dashboard.webview?.webview.postMessage(msg);
+    }
+  }
   
   /**
    * Insert an image into the front matter or contents
@@ -695,20 +709,6 @@ export class Dashboard {
     Dashboard.mediaLib.updateFilename(file, filename);
 
     Dashboard.getMedia(page || 0, folder || "");
-  }
-
-  /**
-   * Post data to the dashboard
-   * @param msg 
-   */
-  private static postWebviewMessage(msg: { command: DashboardCommand, data?: any }) {
-    if (Dashboard.isDisposed) {
-      return;
-    }
-
-    if (Dashboard.webview) {
-      Dashboard.webview?.webview.postMessage(msg);
-    }
   }
   
   /**

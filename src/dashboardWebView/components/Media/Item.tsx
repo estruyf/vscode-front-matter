@@ -1,18 +1,20 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { ClipboardCopyIcon, CodeIcon, PencilIcon, PhotographIcon, PlayIcon, PlusCircleIcon, TrashIcon } from '@heroicons/react/outline';
+import { Menu } from '@headlessui/react';
+import { PhotographIcon } from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { CompressIcon } from '../../../components/icons/CompressIcon';
 import { CustomScript } from '../../../helpers/CustomScript';
 import { parseWinPath } from '../../../helpers/parseWinPath';
 import { ScriptType } from '../../../models';
 import { MediaInfo } from '../../../models/MediaPaths';
 import { DashboardMessage } from '../../DashboardMessage';
 import { LightboxAtom, PageSelector, SelectedMediaFolderSelector, SettingsSelector, ViewDataSelector } from '../../state';
+import { MenuItem, MenuItems } from '../Menu';
 import { Alert } from '../Modals/Alert';
 import { Metadata } from '../Modals/Metadata';
+import { MenuButton } from './MenuButton'
 
 export interface IItemProps {
   media: MediaInfo;
@@ -65,8 +67,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   };
 
   const runCustomScript = (script: CustomScript) => {
-    const relPath = getRelPath();
-    Messenger.send(DashboardMessage.runCustomScript, {script, path: relPath});
+    Messenger.send(DashboardMessage.runCustomScript, {script, path: media.fsPath});
   };
 
   const insertToArticle = () => {
@@ -159,6 +160,15 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     setFilename(getFileName());
   };
 
+  const customScriptActions = () => {
+    return (settings?.scripts || []).filter(script => script.type === ScriptType.MediaFile).map(script => (
+      <MenuItem 
+        key={script.title}
+        title={script.title} 
+        onClick={() => runCustomScript(script)} />
+    ))
+  }
+
   useEffect(() => {
     if (media.alt !== alt) {
       setAlt(media.alt);
@@ -195,65 +205,52 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
         </button>
         <div className={`relative py-4 pl-4 pr-12`}>
           <div className={`absolute top-4 right-4 flex flex-col space-y-4`}>
-            <button title={`Edit metadata`} 
-                    className={`hover:text-teal-900 focus:outline-none`} 
-                    onClick={updateMetadata}>
-              <PencilIcon className={`h-5 w-5`} />
-              <span className={`sr-only`}>Edit metadata</span>
-            </button>
 
-            {
-              viewData?.data?.filePath ? (
-                <>
-                  <button 
-                    title={`Insert into your content`} 
-                    className={`hover:text-teal-900 focus:outline-none`} 
-                    onClick={insertToArticle}>
-                    <PlusCircleIcon className={`h-5 w-5`} />
-                    <span className={`sr-only`}>Insert into your content</span>
-                  </button>
+            <div className="flex items-center">
+              <Menu as="div" className="relative z-10 inline-block text-left">
+                <MenuButton title={`Menu`} />
+
+                <MenuItems>
+                  <MenuItem 
+                    title={`Edit metadata`}
+                    onClick={updateMetadata}
+                    />
+
                   {
-                    (viewData?.data?.position && settings?.mediaSnippet && settings?.mediaSnippet.length > 0) && (
-                      <button 
-                        title={`Insert your media snippet`} 
-                        className={`hover:text-teal-900 focus:outline-none`} 
-                        onClick={insertSnippet}>
-                        <CodeIcon className={`h-5 w-5`} />
-                        <span className={`sr-only`}>Insert your media snippet</span>
-                      </button>
+                    viewData?.data?.filePath ? (
+                      <>
+                        <MenuItem 
+                          title={`Insert image markdown`}
+                          onClick={insertToArticle} />
+
+                        {
+                          (viewData?.data?.position && settings?.mediaSnippet && settings?.mediaSnippet.length > 0) && (
+                            <MenuItem 
+                              title={`Insert snippet`}
+                              onClick={insertSnippet} />
+                          )
+                        }
+
+                        { customScriptActions() }
+                      </>
+                    ) : (
+                      <>
+                        <MenuItem 
+                          title={`Copy media path`}
+                          onClick={copyToClipboard} />
+
+                        { customScriptActions() }
+
+                        <MenuItem 
+                          title={`Delete`}
+                          onClick={deleteMedia} />
+                      </>
                     )
                   }
-                </>
-              ) : (
-                <>
-                  <button title={`Copy media path`} 
-                          className={`hover:text-teal-900 focus:outline-none`} 
-                          onClick={copyToClipboard}>
-                    <ClipboardCopyIcon className={`h-5 w-5`} />
-                    <span className={`sr-only`}>Copy media path</span>
-                  </button>
+                </MenuItems>
+              </Menu>
+            </div>
 
-                  {
-                    (settings?.scripts || []).filter(script => script.type === ScriptType.MediaFile).map(script => (
-                      <button 
-                          title={script.title} 
-                          className={`hover:text-teal-900 focus:outline-none`} 
-                          onClick={() => runCustomScript(script)}>
-                        <PlayIcon className={`h-5 w-5`} />
-                        <span className={`sr-only`}>{script.title}</span>
-                      </button>
-                    ))
-                  }
-
-                  <button title={`Delete media`} 
-                          className={`hover:text-teal-900 focus:outline-none`} 
-                          onClick={deleteMedia}>
-                    <TrashIcon className={`h-5 w-5`} />
-                    <span className={`sr-only`}>Delete media</span>
-                  </button>
-                </>
-              )
-            }
           </div>
           <p className="text-sm dark:text-whisper-900 font-bold pointer-events-none flex items-center">
             {basename(parseWinPath(media.fsPath) || "")}

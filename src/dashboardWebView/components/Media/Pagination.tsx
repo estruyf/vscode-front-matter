@@ -1,7 +1,9 @@
+import { EventData } from '@estruyf/vscode';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { RefreshIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
+import { DashboardCommand } from '../../DashboardCommand';
 import { DashboardMessage } from '../../DashboardMessage';
 import { LoadingAtom, MediaTotalSelector, PageAtom, SelectedMediaFolderSelector, SortingSelector } from '../../state';
 import { FolderCreation } from './FolderCreation';
@@ -47,6 +49,17 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({}: React.
     Messenger.send(DashboardMessage.refreshMedia, { folder: selectedFolder });
   }
 
+  const mediaUpdate = (message: MessageEvent<EventData<{ key: string, value: any }>>) => {
+    if (message.data.command === DashboardCommand.mediaUpdate) {
+      setLoading(true);
+      Messenger.send(DashboardMessage.getMedia, {
+        page,
+        folder: selectedFolder || '',
+        sorting: crntSorting
+      });
+    }
+  }
+
   React.useEffect(() => {
     setLoading(true);
     Messenger.send(DashboardMessage.getMedia, {
@@ -74,6 +87,10 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({}: React.
       sorting: crntSorting
     });
   }, [crntSorting]);
+
+  React.useEffect(() => {
+    Messenger.listen(mediaUpdate);
+  }, []);
 
   return (
     <nav

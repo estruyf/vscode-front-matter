@@ -8,6 +8,8 @@ import * as os from 'os';
 import { join } from 'path';
 import { Notifications } from './Notifications';
 import ContentProvider from '../providers/ContentProvider';
+import { Dashboard } from '../commands/Dashboard';
+import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 
 export class CustomScript {
 
@@ -17,10 +19,8 @@ export class CustomScript {
     if (wsFolder) {
       const wsPath = wsFolder.fsPath;
 
-      if (script.type === ScriptType.MediaFile) {
-        console.log(path);
-      } else if (script.type === ScriptType.MediaFolder) { 
-        console.log(path);
+      if (script.type === ScriptType.MediaFile || script.type === ScriptType.MediaFolder) {
+        CustomScript.runMediaScript(wsPath, path, script);
       } else {
         if (script.bulk) {
           // Run script on all files
@@ -85,6 +85,31 @@ export class CustomScript {
     });
   }
 
+  private static async runMediaScript(wsPath: string, path: string | null, script: ICustomScript): Promise<void>  {
+    if (!path) {
+      Notifications.error(`${script.title}: There was no folder or media path specified.`);
+      return;
+    }
+
+    return new Promise((resolve, reject) => {
+      exec(`${script.nodeBin || "node"} ${join(wsPath, script.script)} "${wsPath}" "${path}"`, (error, stdout) => {
+        if (error) {
+          Notifications.error(`${script.title}: ${error.message}`);
+          resolve();
+          return;
+        }
+
+        CustomScript.showOutput(stdout, script);
+
+        Dashboard.postWebviewMessage({ 
+          command: DashboardCommand.mediaUpdate
+        });
+
+        resolve();
+      });
+    });
+  }
+
   private static async runScript(wsPath: string, article: matter.GrayMatterFile<string> | null, contentPath: string, script: ICustomScript): Promise<string | null> {
     return new Promise((resolve, reject) => {
       let articleData = "";
@@ -112,7 +137,7 @@ export class CustomScript {
       if (script.output === "editor") {
         ContentProvider.show(output, script.title, script.outputType || "text");
       } else {
-        window.showInformationMessage(`${script.title}: ${output}}`, 'Copy output').then(value => {
+        window.showInformationMessage(`${script.title}: ${output}`, 'Copy output').then(value => {
           if (value === 'Copy output') {
             vscodeEnv.clipboard.writeText(output);
           }
