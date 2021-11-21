@@ -6,6 +6,7 @@
 
 - Updated camera icon from VS Code to media icon
 - Updated `check` icon on media inserts to `plus` icon
+- [#97](https://github.com/estruyf/vscode-front-matter/issues/97): Custom Script support for media files and folders
 - [#178](https://github.com/estruyf/vscode-front-matter/issues/178): Sorting added to the media dashboard
 - [#179](https://github.com/estruyf/vscode-front-matter/issues/179): Updated the `open dashboard` icon to make it easier to spot it
 - [#180](https://github.com/estruyf/vscode-front-matter/issues/180): Added `{filename}` as placeholder for media snippets
