@@ -5,4 +5,5 @@ export interface SortingSetting {
   name: string;
   order: SortOrder;
   type: SortType;
+  id?: string;
 }

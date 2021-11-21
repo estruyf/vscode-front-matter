@@ -42,7 +42,7 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({disableCustomSo
     allOptions = [...allOptions, ...settings.customSorting.map((s) => ({ 
       title: s.title || s.name, 
       name: s.name, 
-      id: `${s.name}-${s.order}`, 
+      id: s.id || `${s.name}-${s.order}`, 
       order: s.order, 
       type: s.type 
     }))];
@@ -54,6 +54,14 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({disableCustomSo
       crntSortingOption = settings?.dashboardState?.contents?.sorting || null;
     } else if (view === ViewType.Media) {
       crntSortingOption = settings?.dashboardState?.media?.sorting || null;
+    }
+
+    if (crntSortingOption === null) {
+      if (view === ViewType.Contents && settings?.dashboardState.contents.defaultSorting) {
+        crntSortingOption = allOptions.find(f => f.id === settings?.dashboardState.contents.defaultSorting) || null;
+      } else if (view === ViewType.Media && settings?.dashboardState.contents.defaultSorting) {
+        crntSortingOption = allOptions.find(f => f.id === settings?.dashboardState.contents.defaultSorting) || null;
+      }
     }
   }
 

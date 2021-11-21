@@ -33,4 +33,5 @@ export interface DashboardState {
 
 export interface ViewState {
   sorting: SortingOption | null | undefined;
+  defaultSorting: string | null | undefined;
 }

@@ -182,6 +182,10 @@
           "items": {
             "type": "object",
             "properties": {
+              "id": {
+                "type": "string",
+                "description": "The ID of the sorting option. This will be used for the storing the last used sorting option or the default option."
+              },
               "title": {
                 "type": "string",
                 "description": "Name of the sorting label"
@@ -215,6 +219,18 @@
               "order"
             ]
           },
+          "scope": "Content"
+        },
+        "frontMatter.content.defaultSorting": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Specify the default sorting option for the content dashboard. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.sorting.default)",
+          "scope": "Content"
+        },
+        "frontMatter.media.defaultSorting": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Specify the default sorting option for the media dashboard. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.media.sorting.default)",
           "scope": "Content"
         },
         "frontMatter.custom.scripts": {
