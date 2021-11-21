@@ -224,12 +224,24 @@
         "frontMatter.content.defaultSorting": {
           "type": "string",
           "default": "",
-          "markdownDescription": "Specify the default sorting option for the content dashboard. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.sorting.default)",
+          "enum": [
+            "LastModifiedAsc",
+            "LastModifiedDesc",
+            "FileNameAsc",
+            "FileNameDesc"
+          ],
+          "markdownDescription": "Specify the default sorting option for the content dashboard. You can use one of the values from the ENUM or define your own ID. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.sorting.default)",
           "scope": "Content"
         },
         "frontMatter.media.defaultSorting": {
           "type": "string",
           "default": "",
+          "enum": [
+            "LastModifiedAsc",
+            "LastModifiedDesc",
+            "FileNameAsc",
+            "FileNameDesc"
+          ],
           "markdownDescription": "Specify the default sorting option for the media dashboard. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.media.sorting.default)",
           "scope": "Content"
         },
