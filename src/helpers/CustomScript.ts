@@ -92,20 +92,27 @@ export class CustomScript {
     }
 
     return new Promise((resolve, reject) => {
-      exec(`${script.nodeBin || "node"} ${join(wsPath, script.script)} "${wsPath}" "${path}"`, (error, stdout) => {
-        if (error) {
-          Notifications.error(`${script.title}: ${error.message}`);
+      window.withProgress({
+        location: ProgressLocation.Notification,
+        title: `Executing: ${script.title}`,
+        cancellable: false
+      }, async () => {
+        exec(`${script.nodeBin || "node"} ${join(wsPath, script.script)} "${wsPath}" "${path}"`, (error, stdout) => {
+          if (error) {
+            Notifications.error(`${script.title}: ${error.message}`);
+            resolve();
+            return;
+          }
+  
+          CustomScript.showOutput(stdout, script);
+  
+          Dashboard.postWebviewMessage({ 
+            command: DashboardCommand.mediaUpdate
+          });
+  
           resolve();
           return;
-        }
-
-        CustomScript.showOutput(stdout, script);
-
-        Dashboard.postWebviewMessage({ 
-          command: DashboardCommand.mediaUpdate
         });
-
-        resolve();
       });
     });
   }
