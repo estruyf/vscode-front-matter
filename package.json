@@ -479,22 +479,30 @@
                   "allOf": [
                     {
                       "if": {
-                        "properties": { 
-                          "type": { "const": "taxonomy" } 
+                        "properties": {
+                          "type": {
+                            "const": "taxonomy"
+                          }
                         }
                       },
                       "then": {
-                        "required": ["taxonomyId"]
+                        "required": [
+                          "taxonomyId"
+                        ]
                       }
                     },
                     {
                       "if": {
-                        "properties": { 
-                          "type": { "const": "choice" } 
+                        "properties": {
+                          "type": {
+                            "const": "choice"
+                          }
                         }
                       },
                       "then": {
-                        "required": ["choices"]
+                        "required": [
+                          "choices"
+                        ]
                       }
                     }
                   ]
@@ -563,6 +571,32 @@
               ]
             }
           ],
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.customTaxonomy": {
+          "type": "array",
+          "markdownDescription": "Specify the custom taxonomy field data. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.tags)",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "ID for your taxonomy field"
+              },
+              "options": {
+                "type": "array",
+                "description": "Options from which you can pick",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "options"
+            ]
+          },
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.dateField": {
@@ -655,32 +689,6 @@
           "markdownDescription": "Specifies the tags which can be used in the Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.tags)",
           "items": {
             "type": "string"
-          },
-          "scope": "Taxonomy"
-        },
-        "frontMatter.taxonomy.customTaxonomy": {
-          "type": "array",
-          "markdownDescription": "Specify the custom taxonomy field values. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.tags)",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "description": "ID for your taxonomy field"
-              },
-              "options": {
-                "type": "array",
-                "description": "Options from which you can pick",
-                "items": {
-                  "type": "string"
-                }
-              }
-            },
-            "additionalProperties": false,
-            "required": [
-              "id",
-              "options"
-            ]
           },
           "scope": "Taxonomy"
         },
