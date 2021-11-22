@@ -11,6 +11,10 @@
 - [#179](https://github.com/estruyf/vscode-front-matter/issues/179): Updated the `open dashboard` icon to make it easier to spot it
 - [#180](https://github.com/estruyf/vscode-front-matter/issues/180): Added `{filename}` as placeholder for media snippets
 
+### 🐞 Fixes
+
+- [#183](https://github.com/estruyf/vscode-front-matter/issues/183): Fix type error on the `frontMatter.content.sorting` setting
+
 ## [5.5.0] - 2021-11-15
 
 As from this version onwards, the extension will be published to [open-vsx.org](https://open-vsx.org/).
