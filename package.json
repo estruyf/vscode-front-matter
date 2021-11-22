@@ -97,6 +97,25 @@
           "markdownDescription": "Specify if you want to automatically update the modified date of your article/page. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.autoupdatedate)",
           "scope": "Content"
         },
+        "frontMatter.content.defaultSorting": {
+          "type": "string",
+          "default": "",
+          "oneOf": [
+            {
+              "enum": [
+                "LastModifiedAsc",
+                "LastModifiedDesc",
+                "FileNameAsc",
+                "FileNameDesc"
+              ]
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "markdownDescription": "Specify the default sorting option for the content dashboard. You can use one of the values from the enum or define your own ID. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.sorting.default)",
+          "scope": "Content"
+        },
         "frontMatter.content.draftField": {
           "type": "object",
           "markdownDescription": "Define the draft field you want to use to manage your content. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.draftField)",
@@ -221,30 +240,6 @@
           },
           "scope": "Content"
         },
-        "frontMatter.content.defaultSorting": {
-          "type": "string",
-          "default": "",
-          "enum": [
-            "LastModifiedAsc",
-            "LastModifiedDesc",
-            "FileNameAsc",
-            "FileNameDesc"
-          ],
-          "markdownDescription": "Specify the default sorting option for the content dashboard. You can use one of the values from the ENUM or define your own ID. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.sorting.default)",
-          "scope": "Content"
-        },
-        "frontMatter.media.defaultSorting": {
-          "type": "string",
-          "default": "",
-          "enum": [
-            "LastModifiedAsc",
-            "LastModifiedDesc",
-            "FileNameAsc",
-            "FileNameDesc"
-          ],
-          "markdownDescription": "Specify the default sorting option for the media dashboard. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.media.sorting.default)",
-          "scope": "Content"
-        },
         "frontMatter.custom.scripts": {
           "type": "array",
           "default": [],
@@ -282,9 +277,9 @@
               },
               "type": {
                 "type": "string",
-                "default": "article",
+                "default": "content",
                 "enum": [
-                  "article",
+                  "content",
                   "mediaFolder",
                   "mediaFile"
                 ],
@@ -322,6 +317,18 @@
           "type": "string",
           "default": "",
           "markdownDescription": "Specify the ID of your static site generator or framework you are using for your website. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.framework.id)"
+        },
+        "frontMatter.media.defaultSorting": {
+          "type": "string",
+          "default": "",
+          "enum": [
+            "LastModifiedAsc",
+            "LastModifiedDesc",
+            "FileNameAsc",
+            "FileNameDesc"
+          ],
+          "markdownDescription": "Specify the default sorting option for the media dashboard. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.media.sorting.default)",
+          "scope": "Content"
         },
         "frontMatter.panel.freeform": {
           "type": "boolean",
@@ -400,6 +407,7 @@
                         "boolean",
                         "image",
                         "choice",
+                        "taxonomy",
                         "tags",
                         "categories",
                         "draft"
@@ -456,12 +464,39 @@
                       "type": "boolean",
                       "default": false,
                       "description": "Do you want to hide the field from the metadata section?"
+                    },
+                    "taxonomyId": {
+                      "type": "string",
+                      "default": "",
+                      "description": "The ID of your taxonomy field"
                     }
                   },
                   "additionalProperties": false,
                   "required": [
                     "type",
                     "name"
+                  ],
+                  "allOf": [
+                    {
+                      "if": {
+                        "properties": { 
+                          "type": { "const": "taxonomy" } 
+                        }
+                      },
+                      "then": {
+                        "required": ["taxonomyId"]
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": { 
+                          "type": { "const": "choice" } 
+                        }
+                      },
+                      "then": {
+                        "required": ["choices"]
+                      }
+                    }
                   ]
                 }
               },
@@ -620,6 +655,32 @@
           "markdownDescription": "Specifies the tags which can be used in the Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.tags)",
           "items": {
             "type": "string"
+          },
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.customTaxonomy": {
+          "type": "array",
+          "markdownDescription": "Specify the custom taxonomy field values. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.tags)",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "ID for your taxonomy field"
+              },
+              "options": {
+                "type": "array",
+                "description": "Options from which you can pick",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "options"
+            ]
           },
           "scope": "Taxonomy"
         },

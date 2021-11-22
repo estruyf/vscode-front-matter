@@ -318,7 +318,7 @@ export class Dashboard {
         contentFolders: Folders.get(),
         crntFramework: SettingsHelper.get<string>(SETTINGS_FRAMEWORK_ID),
         framework: (!isInitialized && wsFolder) ? FrameworkDetector.get(wsFolder.fsPath) : null,
-        scripts: (SettingsHelper.get<ICustomScript[]>(SETTING_CUSTOM_SCRIPTS) || []).filter(s => s.type && s.type !== ScriptType.Article),
+        scripts: (SettingsHelper.get<ICustomScript[]>(SETTING_CUSTOM_SCRIPTS) || []).filter(s => s.type && s.type !== ScriptType.Content),
         dashboardState: {
           contents: {
             sorting: await ext.getState<SortingOption | undefined>(ExtensionState.Dashboard.Contents.Sorting, "workspace"),

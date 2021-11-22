@@ -9,6 +9,7 @@ export interface PanelSettings {
   tags: string[];
   date: DateInfo;
   categories: string[];
+  customTaxonomy: CustomTaxonomy[];
   freeform: boolean;
   scripts: CustomScript[];
   isInitialized: boolean;
@@ -32,12 +33,13 @@ export interface ContentType {
 export interface Field {
   title?: string;
   name: string;
-  type: "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft";
+  type: "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft" | "taxonomy";
   choices?: string[] | Choice[];
   single?: boolean;
   multiple?: boolean;
   isPreviewImage?: boolean;
   hidden?: boolean;
+  taxonomyId?: string;
 }
 
 export interface DateInfo {
@@ -83,8 +85,13 @@ export interface PreviewSettings {
   pathname: string | undefined;
 }
 
+export interface CustomTaxonomy {
+  id: string;
+  options: string[];
+}
+
 export enum ScriptType {
-  Article = "article",
+  Content = "content",
   MediaFolder = "mediaFolder",
   MediaFile = "mediaFile"
 }

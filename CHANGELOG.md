@@ -10,6 +10,7 @@
 - [#178](https://github.com/estruyf/vscode-front-matter/issues/178): Sorting added to the media dashboard
 - [#179](https://github.com/estruyf/vscode-front-matter/issues/179): Updated the `open dashboard` icon to make it easier to spot it
 - [#180](https://github.com/estruyf/vscode-front-matter/issues/180): Added `{filename}` as placeholder for media snippets
+- [#181](https://github.com/estruyf/vscode-front-matter/issues/181): Support for custom taxonomy fields added
 
 ### 🐞 Fixes
 

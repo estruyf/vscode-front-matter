@@ -1,5 +1,6 @@
 export enum TagType {
   tags = "Tags",
   categories = "Categories",
-  keywords = "Keywords"
+  keywords = "Keywords",
+  custom = "Custom"
 }
