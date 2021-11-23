@@ -4,6 +4,8 @@ export const CONFIG_KEY = "frontMatter";
 
 export const SETTING_TAXONOMY_TAGS = "taxonomy.tags";
 export const SETTING_TAXONOMY_CATEGORIES = "taxonomy.categories";
+export const SETTING_TAXONOMY_CUSTOM = "taxonomy.customTaxonomy";
+
 export const SETTING_DATE_FORMAT = "taxonomy.dateFormat";
 export const SETTING_COMMA_SEPARATED_FIELDS = "taxonomy.commaSeparatedFields";
 export const SETTING_TAXONOMY_CONTENT_TYPES = "taxonomy.contentTypes";
@@ -41,6 +43,9 @@ export const SETTINGS_CONTENT_STATIC_FOLDER = "content.publicFolder";
 export const SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT = "content.fmHighlight";
 export const SETTINGS_CONTENT_DRAFT_FIELD = "content.draftField";
 export const SETTINGS_CONTENT_SORTING = "content.sorting";
+
+export const SETTINGS_CONTENT_SORTING_DEFAULT = "content.defaultSorting";
+export const SETTINGS_MEDIA_SORTING_DEFAULT = "content.defaultSorting";
 
 export const SETTINGS_DASHBOARD_OPENONSTART = "dashboard.openOnStart";
 export const SETTINGS_DASHBOARD_MEDIA_SNIPPET = "dashboard.mediaSnippet";

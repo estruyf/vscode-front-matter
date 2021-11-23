@@ -7,6 +7,11 @@ export const ExtensionState = {
   MoveTemplatesFolder: `frontMatter:Templates:Move`,
 
   Dashboard: {
-    Sorting: `frontMatter:Dashboard:Sorting`,
+    Contents: {
+      Sorting: `frontMatter:Dashboard:Contents:Sorting`,
+    },
+    Media: {
+      Sorting: `frontMatter:Dashboard:Media:Sorting`,
+    }
   }
 };

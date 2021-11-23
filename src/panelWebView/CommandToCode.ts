@@ -26,4 +26,6 @@ export enum CommandToCode {
   updateMetadata = "update-metadata",
   openDashboard = "open-dashboard",
   selectImage = "select-image",
+  updateCustomTaxonomy = "updateCustomTaxonomy",
+  addToCustomTaxonomy = "addToCustomTaxonomy",
 }

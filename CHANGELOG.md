@@ -1,5 +1,21 @@
 # Change Log
 
+## [5.6.0] - 2021-11-23
+
+### 🎨 Enhancements
+
+- Updated camera icon from VS Code to media icon
+- Updated the media card actions to show it within a menu. This will give a better experience with custom scripts.
+- [#97](https://github.com/estruyf/vscode-front-matter/issues/97): Custom Script support for media files and folders
+- [#178](https://github.com/estruyf/vscode-front-matter/issues/178): Sorting added to the media dashboard
+- [#179](https://github.com/estruyf/vscode-front-matter/issues/179): Updated the `open dashboard` icon to make it easier to spot it
+- [#180](https://github.com/estruyf/vscode-front-matter/issues/180): Added `{filename}` as placeholder for media snippets
+- [#181](https://github.com/estruyf/vscode-front-matter/issues/181): Support for custom taxonomy fields added
+
+### 🐞 Fixes
+
+- [#183](https://github.com/estruyf/vscode-front-matter/issues/183): Fix type error on the `frontMatter.content.sorting` setting
+
 ## [5.5.0] - 2021-11-15
 
 As from this version onwards, the extension will be published to [open-vsx.org](https://open-vsx.org/).

@@ -1,8 +1,8 @@
 import { Notifications } from './Notifications';
 import { commands, Uri, workspace, window } from 'vscode';
 import * as vscode from 'vscode';
-import { ContentType, TaxonomyType } from '../models';
-import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, SETTINGS_CONTENT_STATIC_FOLDER, ExtensionState } from '../constants';
+import { ContentType, CustomTaxonomy, TaxonomyType } from '../models';
+import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM } from '../constants';
 import { Folders } from '../commands/Folders';
 import { join, basename } from 'path';
 import { existsSync, readFileSync, watch, writeFileSync } from 'fs';
@@ -201,6 +201,32 @@ export class Settings {
     options = [...new Set(options)];
     options = options.sort().filter(o => !!o);
     await Settings.update(configSetting, options, true);
+  }
+
+  /**
+   * Update the custom taxonomy settings
+   * 
+   * @param config 
+   * @param type 
+   * @param options 
+   */
+  public static async updateCustomTaxonomy(id: string, option: string) {
+    const customTaxonomies = Settings.get<CustomTaxonomy[]>(SETTING_TAXONOMY_CUSTOM, true) || [];
+    let taxIdx = customTaxonomies?.findIndex(o => o.id === id);
+
+    if (taxIdx === -1) {
+      customTaxonomies.push({
+        id,
+        options: []
+      } as CustomTaxonomy);
+
+      taxIdx = customTaxonomies?.findIndex(o => o.id === id);
+    }
+
+    customTaxonomies[taxIdx].options.push(option);
+    customTaxonomies[taxIdx].options = [...new Set(customTaxonomies[taxIdx].options)];
+    customTaxonomies[taxIdx].options = customTaxonomies[taxIdx].options.sort().filter(o => !!o);
+    await Settings.update(SETTING_TAXONOMY_CUSTOM, customTaxonomies, true);
   }
 
   /**

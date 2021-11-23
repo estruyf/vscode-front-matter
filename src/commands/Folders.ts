@@ -6,7 +6,7 @@ import { ContentFolder, FileInfo, FolderInfo } from "../models";
 import uniqBy = require("lodash.uniqby");
 import { Template } from "./Template";
 import { Notifications } from "../helpers/Notifications";
-import { Settings } from "../helpers";
+import { FilesHelper, Settings } from "../helpers";
 import { existsSync, mkdirSync } from 'fs';
 import { format } from 'date-fns';
 import { Dashboard } from './Dashboard';
@@ -219,7 +219,9 @@ export class Folders {
               for (const file of files) {
                 try {
                   const fileName = basename(file.fsPath);
+                  
                   const stats = await workspace.fs.stat(file);
+
                   fileStats.push({
                     filePath: file.fsPath,
                     fileName,

@@ -28,7 +28,7 @@ export const ChoiceButton: React.FunctionComponent<IChoiceButtonProps> = ({onCli
 
       <Menu as="span" className="-ml-px relative block">
         <Menu.Button 
-          className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium text-white dark:text-vulcan-500 bg-teal-700 hover:bg-teal-800 focus:outline-none disabled:bg-gray-500"
+          className="h-full inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium text-white dark:text-vulcan-500 bg-teal-700 hover:bg-teal-800 focus:outline-none disabled:bg-gray-500"
           disabled={disabled}>
           <span className="sr-only">Open options</span>
           <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />

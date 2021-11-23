@@ -2,5 +2,6 @@ export const CONTEXT = {
   canInit: "frontMatterCanInit",
   canOpenPreview: "frontMatterCanOpenPreview",
   canOpenDashboard: "frontMatterCanOpenDashboard",
-  isEnabled: "frontMatter:enabled"
+  isEnabled: "frontMatter:enabled",
+  isDashboardOpen: "frontMatter:dashboard:open",
 };

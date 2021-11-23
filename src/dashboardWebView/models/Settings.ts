@@ -1,7 +1,7 @@
 import { VersionInfo } from '../../models/VersionInfo';
 import { ViewType } from '../state';
 import { ContentFolder } from '../../models/ContentFolder';
-import { ContentType, DraftField, Framework, SortingSetting } from '../../models';
+import { ContentType, CustomScript, DraftField, Framework, SortingSetting } from '../../models';
 import { SortingOption } from './SortingOption';
 
 export interface Settings { 
@@ -23,8 +23,15 @@ export interface Settings {
   draftField: DraftField | null | undefined;
   customSorting: SortingSetting[] | undefined;
   dashboardState: DashboardState;
+  scripts: CustomScript[];
 }
 
 export interface DashboardState {
+  contents: ViewState;
+  media: ViewState;
+}
+
+export interface ViewState {
   sorting: SortingOption | null | undefined;
+  defaultSorting: string | null | undefined;
 }

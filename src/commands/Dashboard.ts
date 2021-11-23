@@ -1,10 +1,10 @@
-import { SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTING_TAXONOMY_CONTENT_TYPES, DefaultFields, HOME_PAGE_NAVIGATION_ID, ExtensionState, COMMAND_NAME, SETTINGS_FRAMEWORK_ID, SETTINGS_CONTENT_DRAFT_FIELD, SETTINGS_CONTENT_SORTING } from '../constants';
+import { SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTING_TAXONOMY_CONTENT_TYPES, DefaultFields, HOME_PAGE_NAVIGATION_ID, ExtensionState, COMMAND_NAME, SETTINGS_FRAMEWORK_ID, SETTINGS_CONTENT_DRAFT_FIELD, SETTINGS_CONTENT_SORTING, CONTEXT, SETTING_CUSTOM_SCRIPTS, SETTINGS_CONTENT_SORTING_DEFAULT, SETTINGS_MEDIA_SORTING_DEFAULT } from '../constants';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { basename, dirname, extname, join, parse } from "path";
 import { existsSync, readdirSync, statSync, unlinkSync, writeFileSync } from "fs";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env, Position } from "vscode";
 import { Settings as SettingsHelper } from '../helpers';
-import { DraftField, Framework, SortingSetting, TaxonomyType } from '../models';
+import { CustomScript as ICustomScript, DraftField, Framework, ScriptType, SortingSetting, SortOrder, SortType, TaxonomyType } from '../models';
 import { Folders } from './Folders';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../dashboardWebView/DashboardMessage';
@@ -21,11 +21,14 @@ import { decodeBase64Image } from '../helpers/decodeBase64Image';
 import { DashboardData } from '../models/DashboardData';
 import { ExplorerView } from '../explorerView/ExplorerView';
 import { MediaLibrary } from '../helpers/MediaLibrary';
-import imageSize from 'image-size';
 import { parseWinPath } from '../helpers/parseWinPath';
 import { DateHelper } from '../helpers/DateHelper';
 import { FrameworkDetector } from '../helpers/FrameworkDetector';
 import { ContentType } from '../helpers/ContentType';
+import { SortingOption } from '../dashboardWebView/models';
+import { Sorting } from '../helpers/Sorting';
+import imageSize from 'image-size';
+import { CustomScript } from '../helpers/CustomScript';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -62,6 +65,8 @@ export class Dashboard {
 		} else {
 			Dashboard.create();
 		}
+
+    await commands.executeCommand('setContext', CONTEXT.isDashboardOpen, true);
   }
 
   /**
@@ -78,6 +83,10 @@ export class Dashboard {
     if (Dashboard.webview) {
       Dashboard.webview.reveal();
     }
+  }
+
+  public static close() {
+    Dashboard.webview?.dispose();
   }
   
   /**
@@ -105,19 +114,22 @@ export class Dashboard {
 
     Dashboard.webview.webview.html = Dashboard.getWebviewContent(Dashboard.webview.webview, extensionUri);
 
-    Dashboard.webview.onDidChangeViewState(() => {
+    Dashboard.webview.onDidChangeViewState(async () => {
       if (!this.webview?.visible) {
         Dashboard._viewData = undefined;
         const panel = ExplorerView.getInstance(extensionUri);
         panel.getMediaSelection();
       }
+
+      await commands.executeCommand('setContext', CONTEXT.isDashboardOpen, this.webview?.visible);
     });
 
-    Dashboard.webview.onDidDispose(() => {
+    Dashboard.webview.onDidDispose(async () => {
       Dashboard.isDisposed = true;
       Dashboard._viewData = undefined;
       const panel = ExplorerView.getInstance(extensionUri);
       panel.getMediaSelection();
+      await commands.executeCommand('setContext', CONTEXT.isDashboardOpen, false);
     });
 
     SettingsHelper.onConfigChange((global?: any) => {
@@ -165,7 +177,7 @@ export class Dashboard {
           Extension.getInstance().setState(ExtensionState.PagesView, msg.data, "workspace");
           break;
         case DashboardMessage.getMedia:
-          Dashboard.getMedia(msg?.data?.page, msg?.data?.folder);
+          Dashboard.getMedia(msg?.data?.page, msg?.data?.folder, msg?.data?.sorting);
           break;
         case DashboardMessage.copyToClipboard:
           env.clipboard.writeText(msg.data);
@@ -192,6 +204,9 @@ export class Dashboard {
         case DashboardMessage.setFramework:
           Dashboard.setFramework(msg?.data);
           break;
+        case DashboardMessage.runCustomScript:
+          CustomScript.run(msg?.data?.script, msg?.data?.path);
+          break;
         case DashboardMessage.setState:
           if (msg?.data?.key && msg?.data?.value) {
             Extension.getInstance().setState(msg?.data?.key, msg?.data?.value, "workspace");
@@ -211,6 +226,20 @@ export class Dashboard {
   public static switchFolder(folderPath: string) {
     Dashboard.resetMedia();
     Dashboard.getMedia(0, folderPath);
+  }
+
+  /**
+   * Post data to the dashboard
+   * @param msg 
+   */
+  public static postWebviewMessage(msg: { command: DashboardCommand, data?: any }) {
+    if (Dashboard.isDisposed) {
+      return;
+    }
+
+    if (Dashboard.webview) {
+      Dashboard.webview?.webview.postMessage(msg);
+    }
   }
   
   /**
@@ -289,8 +318,16 @@ export class Dashboard {
         contentFolders: Folders.get(),
         crntFramework: SettingsHelper.get<string>(SETTINGS_FRAMEWORK_ID),
         framework: (!isInitialized && wsFolder) ? FrameworkDetector.get(wsFolder.fsPath) : null,
+        scripts: (SettingsHelper.get<ICustomScript[]>(SETTING_CUSTOM_SCRIPTS) || []).filter(s => s.type && s.type !== ScriptType.Content),
         dashboardState: {
-          sorting: await ext.getState<ViewType | undefined>(ExtensionState.Dashboard.Sorting, "workspace")
+          contents: {
+            sorting: await ext.getState<SortingOption | undefined>(ExtensionState.Dashboard.Contents.Sorting, "workspace"),
+            defaultSorting: SettingsHelper.get<string>(SETTINGS_CONTENT_SORTING_DEFAULT)
+          },
+          media: {
+            sorting: await ext.getState<SortingOption | undefined>(ExtensionState.Dashboard.Media.Sorting, "workspace"),
+            defaultSorting: SettingsHelper.get<string>(SETTINGS_MEDIA_SORTING_DEFAULT)
+          }
         }
       } as Settings
     });
@@ -325,16 +362,19 @@ export class Dashboard {
   /**
    * Retrieve all media files
    */
-  private static async getMedia(page: number = 0, requestedFolder: string = '') {
+  private static async getMedia(page: number = 0, requestedFolder: string = '', sort: SortingOption | null = null) {
     const wsFolder = Folders.getWorkspaceFolder();
     const staticFolder = SettingsHelper.get<string>(SETTINGS_CONTENT_STATIC_FOLDER);
     const contentFolders = Folders.get();
     const viewData = Dashboard.viewData;
     let selectedFolder = requestedFolder;
 
+    const ext = Extension.getInstance();
+    const crntSort = sort === null ? await ext.getState<SortingOption | undefined>(ExtensionState.Dashboard.Media.Sorting, "workspace") : sort;
+
     // If the static folder is not set, retreive the last opened location
     if (!selectedFolder) {
-      const stateValue = await Extension.getInstance().getState<string | undefined>(ExtensionState.SelectedFolder, "workspace");
+      const stateValue = await ext.getState<string | undefined>(ExtensionState.SelectedFolder, "workspace");
 
       if (stateValue !== HOME_PAGE_NAVIGATION_ID) {
         // Support for page bundles
@@ -366,13 +406,14 @@ export class Dashboard {
 
     if (relSelectedFolderPath) {
       const files = await workspace.findFiles(join(relSelectedFolderPath, '/*'));
-      const media = Dashboard.filterMedia(files);
+      const media = await Dashboard.updateMediaData(Dashboard.filterMedia(files));
+
       allMedia = [...media];
     } else {
       if (staticFolder) {
         const folderSearch = join(staticFolder || "", '/*');
         const files = await workspace.findFiles(folderSearch);
-        const media = Dashboard.filterMedia(files);
+        const media = await Dashboard.updateMediaData(Dashboard.filterMedia(files));
 
         allMedia = [...media];
       }
@@ -383,22 +424,24 @@ export class Dashboard {
           const relFolderPath = contentFolder.path.substring(wsFolder.fsPath.length + 1);
           const folderSearch = relSelectedFolderPath ? join(relSelectedFolderPath, '/*') : join(relFolderPath, '/*');
           const files = await workspace.findFiles(folderSearch);
-          const media = Dashboard.filterMedia(files);
+          const media = await Dashboard.updateMediaData(Dashboard.filterMedia(files));
     
           allMedia = [...allMedia, ...media];
         }
       }
     }
 
-    allMedia = allMedia.sort((a, b) => {
-      if (b.fsPath < a.fsPath) {
-        return -1;
-      }
-      if (b.fsPath > a.fsPath) {
-        return 1;
-      }
-      return 0;
-    });
+    if (crntSort?.type === SortType.string) {
+      allMedia = allMedia.sort(Sorting.alphabetically("fsPath"));
+    } else if (crntSort?.type === SortType.date) {
+      allMedia = allMedia.sort(Sorting.date("mtime"));
+    } else {
+      allMedia = allMedia.sort(Sorting.alphabetically("fsPath"));
+    }
+
+    if (crntSort?.order === SortOrder.desc) {
+      allMedia = allMedia.reverse();
+    }
 
     Dashboard.media = Object.assign([], allMedia);
 
@@ -415,15 +458,14 @@ export class Dashboard {
 
         return {
           ...file,
-          stats: statSync(file.fsPath),
           dimensions: imageSize(file.fsPath),
           ...metadata
         };
       } catch (e) {
-        return {...file, stats: undefined};
+        return {...file};
       }
     });
-    files = files.filter(f => f.stats !== undefined);
+    files = files.filter(f => f.mtime !== undefined);
 
     // Retrieve all the folders
     let allContentFolders: string[] = [];
@@ -450,16 +492,44 @@ export class Dashboard {
 
     // Store the last opened folder
     await Extension.getInstance().setState(ExtensionState.SelectedFolder, requestedFolder === HOME_PAGE_NAVIGATION_ID ? HOME_PAGE_NAVIGATION_ID : selectedFolder, "workspace");
+    
+    let sortedFolders = [...allContentFolders, ...allFolders];
+    sortedFolders = sortedFolders.sort((a, b) => {
+      if (a.toLowerCase() < b.toLowerCase()) {
+        return -1;
+      }
+      if (a.toLowerCase() > b.toLowerCase()) {
+        return 1;
+      }
+      return 0;
+    });
+
+    if (crntSort?.order === SortOrder.desc) {
+      sortedFolders = sortedFolders.reverse();
+    }
 
     Dashboard.postWebviewMessage({
       command: DashboardCommand.media,
       data: {
         media: files,
         total: total,
-        folders: [...allContentFolders, ...allFolders],
+        folders: sortedFolders,
         selectedFolder
       } as MediaPaths
     });
+  }
+
+  /**
+   * Update the metadata of the retrieved files
+   * @param files 
+   */
+  private static async updateMediaData(files: MediaInfo[]) {
+    files = files.map((m: MediaInfo) => {
+      const stats = statSync(m.fsPath);
+      return Object.assign({}, m, stats);
+    });
+
+    return Object.assign([], files);
   }
 
   /**
@@ -641,20 +711,6 @@ export class Dashboard {
     Dashboard.mediaLib.updateFilename(file, filename);
 
     Dashboard.getMedia(page || 0, folder || "");
-  }
-
-  /**
-   * Post data to the dashboard
-   * @param msg 
-   */
-  private static postWebviewMessage(msg: { command: DashboardCommand, data?: any }) {
-    if (Dashboard.isDisposed) {
-      return;
-    }
-
-    if (Dashboard.webview) {
-      Dashboard.webview?.webview.postMessage(msg);
-    }
   }
   
   /**

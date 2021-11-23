@@ -1,4 +1,3 @@
-import { Stats } from "fs";
 import { ISizeCalculationResult } from "image-size/dist/types/interface";
 
 export interface MediaPaths { 
@@ -11,8 +10,10 @@ export interface MediaPaths {
 export interface MediaInfo {
   fsPath: string; 
   vsPath: string | undefined;
-  stats: Stats | undefined;
-  dimensions: ISizeCalculationResult | undefined;
+  dimensions?: ISizeCalculationResult | undefined;
   caption?: string | undefined;
   alt?: string | undefined;
+  mtime?: Date;
+  ctime?: Date;
+  size?: number;
 }

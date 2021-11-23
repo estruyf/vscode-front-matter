@@ -3,7 +3,7 @@ import * as React from 'react';
 
 export interface IMenuItemProps {
   title: string;
-  value: any;
+  value?: any;
   isCurrent?: boolean;
   disabled?: boolean;
   onClick: (value: any) => void;

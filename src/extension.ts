@@ -45,6 +45,10 @@ export async function activate(context: vscode.ExtensionContext) {
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboard, (data?: DashboardData) => {
 		Dashboard.open(data);
 	}));
+	
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardClose, (data?: DashboardData) => {
+		Dashboard.close();
+	}));
 
 	if (!extension.getVersion().usedVersion) {
 		vscode.commands.executeCommand(COMMAND_NAME.dashboard);

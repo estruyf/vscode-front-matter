@@ -23,7 +23,7 @@ export const DEFAULT_CONTENT_TYPE: ContentType = {
       "type": "datetime"
     },
     {
-      "title": "Article preview",
+      "title": "Content preview",
       "name": "preview",
       "type": "image"
     },
