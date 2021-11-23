@@ -1,6 +1,6 @@
 import { DashboardData } from '../models/DashboardData';
 import { Template } from '../commands/Template';
-import { DefaultFields, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_COMMA_SEPARATED_FIELDS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS, SETTINGS_CONTENT_DRAFT_FIELD, SETTING_SEO_SLUG_LENGTH, SETTING_SITE_BASEURL } from '../constants';
+import { DefaultFields, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_COMMA_SEPARATED_FIELDS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS, SETTINGS_CONTENT_DRAFT_FIELD, SETTING_SEO_SLUG_LENGTH, SETTING_SITE_BASEURL, SETTING_TAXONOMY_CUSTOM } from '../constants';
 import * as os from 'os';
 import { PanelSettings, CustomScript as ICustomScript } from '../models/PanelSettings';
 import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv } from "vscode";
@@ -9,7 +9,7 @@ import { Command } from "../panelWebView/Command";
 import { CommandToCode } from '../panelWebView/CommandToCode';
 import { Article } from '../commands';
 import { TagType } from '../panelWebView/TagType';
-import { DraftField, TaxonomyType } from '../models';
+import { CustomTaxonomyData, DraftField, ScriptType, TaxonomyType } from '../models';
 import { exec } from 'child_process';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { Content } from 'mdast';
@@ -109,11 +109,17 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         case CommandToCode.updateKeywords:
           this.updateTags(TagType.keywords, msg.data || []);
           break;
+        case CommandToCode.updateCustomTaxonomy:
+          this.updateCustomTaxonomy(msg.data);
+          break;
         case CommandToCode.addTagToSettings:
           this.addTags(TagType.tags, msg.data);
           break;
         case CommandToCode.addCategoryToSettings:
           this.addTags(TagType.categories, msg.data);
+          break;
+        case CommandToCode.addToCustomTaxonomy:
+          this.addCustomTaxonomy(msg.data);
           break;
         case CommandToCode.openSettings:
           commands.executeCommand('workbench.action.openSettings', '@ext:eliostruyf.vscode-front-matter');
@@ -405,8 +411,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         },
         tags: Settings.get(SETTING_TAXONOMY_TAGS, true) || [],
         categories: Settings.get(SETTING_TAXONOMY_CATEGORIES, true) || [],
+        customTaxonomy: Settings.get(SETTING_TAXONOMY_CUSTOM, true) || [],
         freeform: Settings.get(SETTING_PANEL_FREEFORM),
-        scripts: (Settings.get<ICustomScript[]>(SETTING_CUSTOM_SCRIPTS) || []).filter(s => s.type === "article" || !s.type),
+        scripts: (Settings.get<ICustomScript[]>(SETTING_CUSTOM_SCRIPTS) || []).filter(s => s.type === ScriptType.Content || !s.type),
         isInitialized: await Template.isInitialized(),
         modifiedDateUpdate: Settings.get(SETTING_AUTO_UPDATE_DATE) || false,
         writingSettingsEnabled: this.isWritingSettingsEnabled() || false,
@@ -462,6 +469,40 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       ArticleHelper.update(editor, article);
       this.pushMetadata(article!.data);
     }
+  }
+
+  /**
+   * Update the tags in the current document
+   * @param data 
+   */
+  private updateCustomTaxonomy(data: CustomTaxonomyData) {
+    if (!data?.id || !data?.name) {
+      return;
+    }
+
+    const editor = window.activeTextEditor;
+    if (!editor) {
+      return "";
+    }
+
+    const article = ArticleHelper.getFrontMatter(editor);
+    if (article && article.data) {
+      article.data[data.name] = data.options || [];
+      ArticleHelper.update(editor, article);
+      this.pushMetadata(article!.data);
+    }
+  }
+
+  /**
+   * Add tag to the settings
+   * @param data 
+   */
+  private async addCustomTaxonomy(data: CustomTaxonomyData) {
+    if (!data?.id || !data?.option) {
+      return;
+    }
+
+    await Settings.updateCustomTaxonomy(data.id, data.option);
   }
 
   /**

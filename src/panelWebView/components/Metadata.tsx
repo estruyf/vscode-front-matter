@@ -159,6 +159,25 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               unsetFocus={unsetFocus} />
           </FieldBoundary>
         );
+      } else if (field.type === 'taxonomy') {
+        const taxonomyData = settings.customTaxonomy.find(ct => ct.id === field.taxonomyId);
+        const selectedValues = metadata[field.name] || [];
+
+        return (
+          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+            <TagPicker 
+              type={TagType.custom}
+              label={field.title || field.name}
+              icon={<ListUnorderedIcon />}
+              crntSelected={selectedValues as string[] || []} 
+              options={taxonomyData?.options || []} 
+              freeform={settings.freeform} 
+              focussed={focusElm === TagType.custom}
+              unsetFocus={unsetFocus}
+              fieldName={field.name}
+              taxonomyId={field.taxonomyId} />
+          </FieldBoundary>
+        );
       } else if (field.type === 'categories') {
         return (
           <FieldBoundary key={field.name} fieldName={field.title || field.name}>
