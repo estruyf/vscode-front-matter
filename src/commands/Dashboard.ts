@@ -548,7 +548,7 @@ export class Dashboard {
     if (folderInfo) {
       for (const folder of folderInfo) {
         for (const file of folder.lastModified) {
-          if (file.fileName.endsWith(`.md`) || file.fileName.endsWith(`.mdx`)) {
+          if (file.fileName.endsWith(`.md`) || file.fileName.endsWith(`.markdown`) || file.fileName.endsWith(`.mdx`)) {
             try {
               const article = ArticleHelper.getFrontMatterByPath(file.filePath);
 

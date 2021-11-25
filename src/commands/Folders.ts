@@ -212,8 +212,9 @@ export class Folders {
             projectStart = projectStart.replace(/\\/g, '/');
             projectStart = projectStart.startsWith('/') ? projectStart.substr(1) : projectStart;
             const mdFiles = await workspace.findFiles(join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.md'));
+            const markdownFiles = await workspace.findFiles(join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.markdown'));
             const mdxFiles = await workspace.findFiles(join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.mdx'));
-            let files = [...mdFiles, ...mdxFiles];
+            let files = [...mdFiles, ...markdownFiles, ...mdxFiles];
             if (files) {
               let fileStats: FileInfo[] = [];
 

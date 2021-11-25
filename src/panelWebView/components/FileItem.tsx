@@ -19,7 +19,7 @@ const FileItem: React.FunctionComponent<IFileItemProps> = ({ name, path }: React
     <li className={`file_list__items__item`}
         onClick={openFile}>
       {
-        (name.endsWith('.md') || name.endsWith('.mdx')) ? (
+        (name.endsWith('.md') || name.endsWith('.markdown') || name.endsWith('.mdx')) ? (
           <MarkdownIcon />
         ) : (
           <FileIcon />

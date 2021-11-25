@@ -56,7 +56,8 @@ ${folderData.join("\n")}
 
     const mdFiles = await workspace.findFiles(join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.md'));
     const mdxFiles = await workspace.findFiles(join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.mdx'));
+    const markdownFiles = await workspace.findFiles(join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.markdown'));
 
-    return `- Project start length: ${projectStart.length} | Search in: "${join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.*')}" | mdFiles: ${mdFiles.length} | mdxFiles: ${mdxFiles.length}`;
+    return `- Project start length: ${projectStart.length} | Search in: "${join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.*')}" | mdFiles: ${mdFiles.length} | mdxFiles: ${mdxFiles.length} | markdownFiles: ${markdownFiles.length}`;
   }
 }
