@@ -6,7 +6,7 @@ import { ContentFolder, FileInfo, FolderInfo } from "../models";
 import uniqBy = require("lodash.uniqby");
 import { Template } from "./Template";
 import { Notifications } from "../helpers/Notifications";
-import { FilesHelper, Settings } from "../helpers";
+import { Settings } from "../helpers";
 import { existsSync, mkdirSync } from 'fs';
 import { format } from 'date-fns';
 import { Dashboard } from './Dashboard';
