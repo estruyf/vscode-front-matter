@@ -1,6 +1,16 @@
 # Change Log
 
-## [5.6.0] - 2021-11-xx
+## [5.7.0] - 2021-11-xx
+
+### 🎨 Enhancements
+
+- [#190](https://github.com/estruyf/vscode-front-matter/issues/190): Diagnostic output for the extension
+
+### 🐞 Fixes
+
+- [#188](https://github.com/estruyf/vscode-front-matter/issues/188): Markdown file extension support added
+
+## [5.6.0] - 2021-11-23
 
 ### 🎨 Enhancements
 
