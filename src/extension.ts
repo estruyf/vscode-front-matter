@@ -16,6 +16,7 @@ import { DashboardData } from './models/DashboardData';
 import { Settings as SettingsHelper } from './helpers';
 import { Content } from './commands/Content';
 import ContentProvider from './providers/ContentProvider';
+import { Diagnostics } from './commands/Diagnostics';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
@@ -182,6 +183,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// Create the editor experience for bulk scripts
 	subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(ContentProvider.scheme, new ContentProvider()));
+
+	// Diagnostics
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.diagnostics, Diagnostics.show));
 
 	// Subscribe all commands
 	subscriptions.push(

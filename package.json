@@ -819,6 +819,11 @@
         "command": "frontMatter.setLastModifiedDate",
         "title": "Set lastmod date",
         "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.diagnostics",
+        "title": "Diagnostic logging",
+        "category": "Front matter"
       }
     ],
     "menus": {

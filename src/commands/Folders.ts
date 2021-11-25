@@ -207,6 +207,7 @@ export class Folders {
         try {
           const projectName = Folders.getProjectFolderName();
           let projectStart = folder.path.split(projectName).pop();
+          
           if (projectStart) {
             projectStart = projectStart.replace(/\\/g, '/');
             projectStart = projectStart.startsWith('/') ? projectStart.substr(1) : projectStart;
