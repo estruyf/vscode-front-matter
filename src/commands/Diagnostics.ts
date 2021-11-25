@@ -17,6 +17,8 @@ export class Diagnostics {
       folderData.push(await Diagnostics.processFolder(folder, projectName));
     }
 
+    const all = await Diagnostics.allProjectFiles();
+
     const logging = `# Project name
 
 ${projectName}
@@ -29,12 +31,21 @@ ${folders.map(f => `- ${f.title}: "${f.path}"`).join("\n")}
 
 ${wsFolder ? wsFolder.fsPath : "No workspace folder"}
 
+# Total files
+
+${all}
+
 # Folders to search files
 
 ${folderData.join("\n")}
     `;
 
     ContentProvider.show(logging, `${projectName} diagnostics`, "markdown", ViewColumn.One);
+  }
+
+  private static async allProjectFiles() {
+    const allFiles = await workspace.findFiles(`**/*.*`);
+    return `Total files found: ${allFiles.length}`;
   }
 
   private static async processFolder(folder: ContentFolder, projectName: string) {
