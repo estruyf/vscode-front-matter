@@ -9,6 +9,7 @@
 ### 🐞 Fixes
 
 - [#188](https://github.com/estruyf/vscode-front-matter/issues/188): Markdown file extension support added
+- [#191](https://github.com/estruyf/vscode-front-matter/issues/191): Fix beta settings
 
 ## [5.6.0] - 2021-11-23
 
