@@ -240,6 +240,12 @@
           },
           "scope": "Content"
         },
+        "frontMatter.content.wysiwyg": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Specifies if you want to enable/disable the What You See, Is What You Get (WYSIWYG) markdown controls. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.wysiwyg)",
+          "scope": "Content"
+        },
         "frontMatter.custom.scripts": {
           "type": "array",
           "default": [],
@@ -819,6 +825,51 @@
         "command": "frontMatter.setLastModifiedDate",
         "title": "Set lastmod date",
         "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.content.bold",
+        "title": "Bold",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/bold-light.svg",
+          "dark": "assets/icons/bold-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.content.italic",
+        "title": "Italic",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/italic-light.svg",
+          "dark": "assets/icons/italic-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.content.strikethrough",
+        "title": "Strikethrough",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/strikethrough-light.svg",
+          "dark": "assets/icons/strikethrough-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.content.code",
+        "title": "Code",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/code-light.svg",
+          "dark": "assets/icons/code-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.content.codeblock",
+        "title": "Codeblock",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/codeblock-light.svg",
+          "dark": "assets/icons/codeblock-dark.svg"
+        }
       }
     ],
     "menus": {
@@ -827,6 +878,31 @@
           "command": "frontMatter.insertImage",
           "group": "navigation@-99",
           "when": "resourceLangId == markdown"
+        },
+        {
+          "command": "frontMatter.content.bold",
+          "group": "navigation@-130",
+          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+        },
+        {
+          "command": "frontMatter.content.italic",
+          "group": "navigation@-129",
+          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+        },
+        {
+          "command": "frontMatter.content.strikethrough",
+          "group": "navigation@-128",
+          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+        },
+        {
+          "command": "frontMatter.content.code",
+          "group": "navigation@-127",
+          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+        },
+        {
+          "command": "frontMatter.content.codeblock",
+          "group": "navigation@-126",
+          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.dashboard",
@@ -887,6 +963,14 @@
         },
         {
           "command": "frontMatter.dashboard.close",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.content.bold",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.content.italic",
           "when": "false"
         }
       ],
