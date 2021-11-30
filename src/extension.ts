@@ -16,6 +16,7 @@ import { DashboardData } from './models/DashboardData';
 import { Settings as SettingsHelper } from './helpers';
 import { Content } from './commands/Content';
 import ContentProvider from './providers/ContentProvider';
+import { Wysiwyg } from './commands/Wysiwyg';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
@@ -182,6 +183,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// Create the editor experience for bulk scripts
 	subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(ContentProvider.scheme, new ContentProvider()));
+
+	// What you see, is what you get
+	Wysiwyg.registerCommands(subscriptions);
 
 	// Subscribe all commands
 	subscriptions.push(

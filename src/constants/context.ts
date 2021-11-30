@@ -4,4 +4,5 @@ export const CONTEXT = {
   canOpenDashboard: "frontMatterCanOpenDashboard",
   isEnabled: "frontMatter:enabled",
   isDashboardOpen: "frontMatter:dashboard:open",
+  wysiwyg: "frontMatter:markdown:wysiwyg",
 };

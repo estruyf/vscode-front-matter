@@ -32,4 +32,11 @@ export const COMMAND_NAME = {
   promote: getCommandName("promoteSettings"),
   insertImage: getCommandName("insertImage"),
   createFolder: getCommandName("createFolder"),
+
+  // WYSIWYG
+  bold: getCommandName("content.bold"),
+  italic: getCommandName("content.italic"),
+  strikethrough: getCommandName("content.strikethrough"),
+  code: getCommandName("content.code"),
+  codeblock: getCommandName("content.codeblock"),
 };
