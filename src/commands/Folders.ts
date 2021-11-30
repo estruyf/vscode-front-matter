@@ -6,7 +6,7 @@ import { ContentFolder, FileInfo, FolderInfo } from "../models";
 import uniqBy = require("lodash.uniqby");
 import { Template } from "./Template";
 import { Notifications } from "../helpers/Notifications";
-import { FilesHelper, Settings } from "../helpers";
+import { Settings } from "../helpers";
 import { existsSync, mkdirSync } from 'fs';
 import { format } from 'date-fns';
 import { Dashboard } from './Dashboard';
@@ -207,12 +207,14 @@ export class Folders {
         try {
           const projectName = Folders.getProjectFolderName();
           let projectStart = folder.path.split(projectName).pop();
+          
           if (projectStart) {
             projectStart = projectStart.replace(/\\/g, '/');
             projectStart = projectStart.startsWith('/') ? projectStart.substr(1) : projectStart;
             const mdFiles = await workspace.findFiles(join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.md'));
+            const markdownFiles = await workspace.findFiles(join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.markdown'));
             const mdxFiles = await workspace.findFiles(join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.mdx'));
-            let files = [...mdFiles, ...mdxFiles];
+            let files = [...mdFiles, ...markdownFiles, ...mdxFiles];
             if (files) {
               let fileStats: FileInfo[] = [];
 

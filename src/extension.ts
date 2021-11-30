@@ -17,6 +17,7 @@ import { Settings as SettingsHelper } from './helpers';
 import { Content } from './commands/Content';
 import ContentProvider from './providers/ContentProvider';
 import { Wysiwyg } from './commands/Wysiwyg';
+import { Diagnostics } from './commands/Diagnostics';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
@@ -57,7 +58,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// Register the explorer view
 	const explorerSidebar = ExplorerView.getInstance(extensionUri);
-	let explorerView = vscode.window.registerWebviewViewProvider(ExplorerView.viewType, explorerSidebar, {
+	const explorerView = vscode.window.registerWebviewViewProvider(ExplorerView.viewType, explorerSidebar, {
 		webviewOptions: {
 			retainContextWhenHidden: true
 		}
@@ -66,35 +67,35 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Folding the front matter of markdown files
 	vscode.languages.registerFoldingRangeProvider(mdSelector, new MarkdownFoldingProvider());
 
-	let insertTags = vscode.commands.registerCommand(COMMAND_NAME.insertTags, async () => {
+	const insertTags = vscode.commands.registerCommand(COMMAND_NAME.insertTags, async () => {
 		await vscode.commands.executeCommand('workbench.view.extension.frontmatter-explorer');
 		await vscode.commands.executeCommand('workbench.action.focusSideBar');
 		explorerSidebar.triggerInputFocus(TagType.tags);
 	});
 
-	let insertCategories = vscode.commands.registerCommand(COMMAND_NAME.insertCategories, async () => {
+	const insertCategories = vscode.commands.registerCommand(COMMAND_NAME.insertCategories, async () => {
 		await vscode.commands.executeCommand('workbench.view.extension.frontmatter-explorer');
 		await vscode.commands.executeCommand('workbench.action.focusSideBar');
 		explorerSidebar.triggerInputFocus(TagType.categories);
 	});
 
-	let createTag = vscode.commands.registerCommand(COMMAND_NAME.createTag, () => {
+	const createTag = vscode.commands.registerCommand(COMMAND_NAME.createTag, () => {
 		Settings.create(TaxonomyType.Tag);
 	});
 
-	let createCategory = vscode.commands.registerCommand(COMMAND_NAME.createCategory, () => {
+	const createCategory = vscode.commands.registerCommand(COMMAND_NAME.createCategory, () => {
 		Settings.create(TaxonomyType.Category);
 	});
 
-	let exportTaxonomy = vscode.commands.registerCommand(COMMAND_NAME.exportTaxonomy, Settings.export);
+	const exportTaxonomy = vscode.commands.registerCommand(COMMAND_NAME.exportTaxonomy, Settings.export);
 
-	let remap = vscode.commands.registerCommand(COMMAND_NAME.remap, Settings.remap);
+	const remap = vscode.commands.registerCommand(COMMAND_NAME.remap, Settings.remap);
 
-	let setLastModifiedDate = vscode.commands.registerCommand(COMMAND_NAME.setLastModifiedDate, Article.setLastModifiedDate);
+	const setLastModifiedDate = vscode.commands.registerCommand(COMMAND_NAME.setLastModifiedDate, Article.setLastModifiedDate);
 
-	let generateSlug = vscode.commands.registerCommand(COMMAND_NAME.generateSlug, Article.generateSlug);
+	const generateSlug = vscode.commands.registerCommand(COMMAND_NAME.generateSlug, Article.generateSlug);
 
-	let createFromTemplate = vscode.commands.registerCommand(COMMAND_NAME.createFromTemplate, (folder: vscode.Uri) => {
+	const createFromTemplate = vscode.commands.registerCommand(COMMAND_NAME.createFromTemplate, (folder: vscode.Uri) => {
 		const folderPath = Folders.getFolderPath(folder);
     if (folderPath) {
       Template.create(folderPath);
@@ -186,6 +187,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// What you see, is what you get
 	Wysiwyg.registerCommands(subscriptions);
+	
+	// Diagnostics
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.diagnostics, Diagnostics.show));
 
 	// Subscribe all commands
 	subscriptions.push(

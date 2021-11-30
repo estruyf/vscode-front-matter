@@ -32,6 +32,7 @@ export const COMMAND_NAME = {
   promote: getCommandName("promoteSettings"),
   insertImage: getCommandName("insertImage"),
   createFolder: getCommandName("createFolder"),
+  diagnostics: getCommandName("diagnostics"),
 
   // WYSIWYG
   bold: getCommandName("content.bold"),

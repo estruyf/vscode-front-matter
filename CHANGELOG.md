@@ -5,6 +5,7 @@
 ### 🎨 Enhancements
 
 - [#188](https://github.com/estruyf/vscode-front-matter/issues/188): Support for `.markdown` files added to the dashboard
+- [#190](https://github.com/estruyf/vscode-front-matter/issues/190): Diagnostic output for the extension
 - [#194](https://github.com/estruyf/vscode-front-matter/issues/194): WYSIWYG controls added for markdown files + configuration to enable/disable the functionality
 
 ### 🐞 Fixes

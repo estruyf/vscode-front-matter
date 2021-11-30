@@ -109,7 +109,10 @@ If you have the courage to test out the beta features, we made available a beta 
 <p align="center">
   <a href="https://github.com/timschps" title="Tim Schaeps">
     <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/13098307" />
-   </a>
+  </a>
+  <a href="https://github.com/zivbk1" title="Bryan Klein">
+    <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/6154767" />
+  </a>
   <a href="https://github.com/flikteoh" title="FlikTeoh">
     <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/1472065" />
   </a>
