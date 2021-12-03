@@ -872,6 +872,24 @@
         }
       },
       {
+        "command": "frontMatter.content.blockquote",
+        "title": "Codeblock",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/blockquote-light.svg",
+          "dark": "assets/icons/blockquote-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.content.heading",
+        "title": "Codeblock",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/heading-light.svg",
+          "dark": "assets/icons/heading-dark.svg"
+        }
+      },
+      {
         "command": "frontMatter.diagnostics",
         "title": "Diagnostic logging",
         "category": "Front matter"
@@ -885,17 +903,27 @@
           "when": "resourceLangId == markdown"
         },
         {
+          "command": "frontMatter.content.heading",
+          "group": "navigation@-132",
+          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+        },
+        {
           "command": "frontMatter.content.bold",
-          "group": "navigation@-130",
+          "group": "navigation@-131",
           "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.content.italic",
-          "group": "navigation@-129",
+          "group": "navigation@-130",
           "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.content.strikethrough",
+          "group": "navigation@-129",
+          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+        },
+        {
+          "command": "frontMatter.content.blockquote",
           "group": "navigation@-128",
           "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
         },

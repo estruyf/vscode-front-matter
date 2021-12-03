@@ -40,4 +40,6 @@ export const COMMAND_NAME = {
   strikethrough: getCommandName("content.strikethrough"),
   code: getCommandName("content.code"),
   codeblock: getCommandName("content.codeblock"),
+  heading: getCommandName("content.heading"),
+  blockquote: getCommandName("content.blockquote"),
 };

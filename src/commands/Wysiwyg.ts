@@ -7,7 +7,9 @@ enum MarkupType {
   italic,
   strikethrough,
   code,
-  codeblock
+  codeblock,
+  blockquote,
+  heading
 }
 
 export class Wysiwyg {
@@ -32,6 +34,8 @@ export class Wysiwyg {
     subscriptions.push(commands.registerCommand(COMMAND_NAME.strikethrough, () => this.addMarkup(MarkupType.strikethrough)));
     subscriptions.push(commands.registerCommand(COMMAND_NAME.code, () => this.addMarkup(MarkupType.code)));
     subscriptions.push(commands.registerCommand(COMMAND_NAME.codeblock, () => this.addMarkup(MarkupType.codeblock)));
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.heading, () => this.addMarkup(MarkupType.heading)));
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.blockquote, () => this.addMarkup(MarkupType.blockquote)));
   }
 
   /**
@@ -58,16 +62,20 @@ export class Wysiwyg {
     if (hasTextSelection) {
       // Replace the selection and surround with the markup
       const selectionText = editor.document.getText(selection);
+      const txt = await this.insertText(markers, type, selectionText);
       
       editor.edit(builder => {
-        builder.replace(selection, markers + selectionText + markers);
+        builder.replace(selection, txt);
       });
     } else {
+      const txt = await this.insertText(markers, type);
+        
       // Insert the markers where cursor is located.
-      let newPosition = crntSelection.with(crntSelection.line, crntSelection.character + markers.length);
+      const markerLength = this.isMarkupWrapping(type) ? txt.length + 1 : markers.length;
+      let newPosition = crntSelection.with(crntSelection.line, crntSelection.character + markerLength);
 
       await editor.edit(builder => {
-        builder.insert(newPosition, markers + this.lineBreak(type) + markers)
+        builder.insert(newPosition, txt);
       });
 
       if (type === MarkupType.codeblock) {
@@ -75,6 +83,44 @@ export class Wysiwyg {
       }
 
       editor.selection = new Selection(newPosition, newPosition);
+    }
+  }
+
+  /**
+   * Check if the text will be wrapped
+   * @param type 
+   * @returns 
+   */
+  private static isMarkupWrapping(type: MarkupType) { 
+    return type === MarkupType.blockquote || type === MarkupType.heading;
+  }
+
+  /**
+   * Insert text at the current cursor position
+   */
+  private static async insertText(marker: string | undefined, type: MarkupType, text: string | null = null) {
+    const crntText = text || this.lineBreak(type);
+
+    if (this.isMarkupWrapping(type)) {
+      if (type === MarkupType.heading) {
+        const headingLvl = await window.showQuickPick([
+          "Heading 1", 
+          "Heading 2", 
+          "Heading 3", 
+          "Heading 4", 
+          "Heading 5", 
+          "Heading 6"
+        ], {  canPickMany: false, placeHolder: "Which heading level do you want to insert?", ignoreFocusOut: false });
+
+        if (headingLvl) {
+          const headingNr = parseInt(headingLvl.replace("Heading ", ""));
+          return `${Array(headingNr + 1).join(marker)} ${crntText}`;
+        }
+      }
+
+      return `${marker} ${crntText}`;
+    } else {
+      return `${marker}${crntText}${marker}`;
     }
   }
 
@@ -107,6 +153,10 @@ export class Wysiwyg {
         return "`";
       case MarkupType.codeblock:
         return "```";
+      case MarkupType.blockquote:
+        return ">";
+      case MarkupType.heading:
+        return "#";
       default:
         return;
     }
