@@ -252,7 +252,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
             </div>
 
           </div>
-          <p className="text-sm dark:text-whisper-900 font-bold pointer-events-none flex items-center">
+          <p className="text-sm dark:text-whisper-900 font-bold pointer-events-none flex items-center break-all">
             {basename(parseWinPath(media.fsPath) || "")}
           </p>
           {
