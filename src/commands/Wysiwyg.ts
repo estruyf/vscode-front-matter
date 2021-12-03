@@ -1,4 +1,4 @@
-import { commands, window, Selection } from "vscode";
+import { commands, window, Selection, QuickPickItem } from "vscode";
 import { COMMAND_NAME, CONTEXT, SETTINGS_CONTENT_WYSIWYG } from "../constants";
 import { Settings } from "../helpers";
 
@@ -9,7 +9,10 @@ enum MarkupType {
   code,
   codeblock,
   blockquote,
-  heading
+  heading,
+  unorderedList,
+  orderedList,
+  taskList
 }
 
 export class Wysiwyg {
@@ -29,13 +32,49 @@ export class Wysiwyg {
 
     await commands.executeCommand('setContext', CONTEXT.wysiwyg, true);
 
+    // Surrounding markup
     subscriptions.push(commands.registerCommand(COMMAND_NAME.bold, () => this.addMarkup(MarkupType.bold)));
     subscriptions.push(commands.registerCommand(COMMAND_NAME.italic, () => this.addMarkup(MarkupType.italic)));
     subscriptions.push(commands.registerCommand(COMMAND_NAME.strikethrough, () => this.addMarkup(MarkupType.strikethrough)));
     subscriptions.push(commands.registerCommand(COMMAND_NAME.code, () => this.addMarkup(MarkupType.code)));
     subscriptions.push(commands.registerCommand(COMMAND_NAME.codeblock, () => this.addMarkup(MarkupType.codeblock)));
+
+    // Prefix markup
     subscriptions.push(commands.registerCommand(COMMAND_NAME.heading, () => this.addMarkup(MarkupType.heading)));
     subscriptions.push(commands.registerCommand(COMMAND_NAME.blockquote, () => this.addMarkup(MarkupType.blockquote)));
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.unorderedlist, () => this.addMarkup(MarkupType.blockquote)));
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.orderedlist, () => this.addMarkup(MarkupType.blockquote)));
+
+    // Options
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.options, async () => {
+      const qpItems: QuickPickItem[] = [
+        { label: "$(list-unordered) Unordered list", detail: "Add an unordered list", alwaysShow: true,  },
+        { label: "$(list-ordered) Ordered list", detail: "Add an ordered list", alwaysShow: true },
+        { label: "$(tasklist) Task list", detail: "Add a task list", alwaysShow: true },
+        { label: "$(code) Code", detail: "Add inline code snippet", alwaysShow: true },
+        { label: "$(symbol-namespace) Code block", detail: "Add a code block", alwaysShow: true },
+      ]
+
+      const option = await window.showQuickPick([ ...qpItems ], {  
+        placeHolder: "Which type of markup would you like to insert?", 
+        canPickMany: false, 
+        ignoreFocusOut: false,
+      });
+
+      if (option) {
+        if (option.label === qpItems[0].label) {
+          await this.addMarkup(MarkupType.unorderedList);
+        } else if (option.label === qpItems[1].label) {
+          await this.addMarkup(MarkupType.orderedList);
+        } else if (option.label === qpItems[2].label) {
+          await this.addMarkup(MarkupType.taskList);
+        } else if (option.label === qpItems[3].label) {
+          await this.addMarkup(MarkupType.code);
+        } else if (option.label === qpItems[4].label) {
+          await this.addMarkup(MarkupType.codeblock);
+        }
+      }
+    }));
   }
 
   /**
@@ -92,7 +131,13 @@ export class Wysiwyg {
    * @returns 
    */
   private static isMarkupWrapping(type: MarkupType) { 
-    return type === MarkupType.blockquote || type === MarkupType.heading;
+    return (
+      type === MarkupType.blockquote || 
+      type === MarkupType.heading ||
+      type === MarkupType.unorderedList ||
+      type === MarkupType.orderedList ||
+      type === MarkupType.taskList
+    );
   }
 
   /**
@@ -110,12 +155,26 @@ export class Wysiwyg {
           "Heading 4", 
           "Heading 5", 
           "Heading 6"
-        ], {  canPickMany: false, placeHolder: "Which heading level do you want to insert?", ignoreFocusOut: false });
+        ], {  
+          canPickMany: false, 
+          placeHolder: "Which heading level do you want to insert?", 
+          ignoreFocusOut: false 
+        });
 
         if (headingLvl) {
           const headingNr = parseInt(headingLvl.replace("Heading ", ""));
           return `${Array(headingNr + 1).join(marker)} ${crntText}`;
         }
+      }
+
+      if (type === MarkupType.unorderedList || type === MarkupType.taskList) {
+        const lines = crntText.split("\n").map(line => `${marker} ${line}`);
+        return lines.join("\n");
+      }
+
+      if (type === MarkupType.orderedList) {
+        const lines = crntText.split("\n").map((line, idx) => `${idx+1}. ${line}`);
+        return lines.join("\n");
       }
 
       return `${marker} ${crntText}`;
@@ -157,6 +216,12 @@ export class Wysiwyg {
         return ">";
       case MarkupType.heading:
         return "#";
+      case MarkupType.unorderedList:
+        return "-";
+      case MarkupType.orderedList:
+        return "1.";
+      case MarkupType.taskList:
+        return "- [ ]";
       default:
         return;
     }

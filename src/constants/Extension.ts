@@ -35,11 +35,14 @@ export const COMMAND_NAME = {
   diagnostics: getCommandName("diagnostics"),
 
   // WYSIWYG
-  bold: getCommandName("content.bold"),
-  italic: getCommandName("content.italic"),
-  strikethrough: getCommandName("content.strikethrough"),
-  code: getCommandName("content.code"),
-  codeblock: getCommandName("content.codeblock"),
-  heading: getCommandName("content.heading"),
-  blockquote: getCommandName("content.blockquote"),
+  bold: getCommandName("markup.bold"),
+  italic: getCommandName("markup.italic"),
+  strikethrough: getCommandName("markup.strikethrough"),
+  code: getCommandName("markup.code"),
+  codeblock: getCommandName("markup.codeblock"),
+  heading: getCommandName("markup.heading"),
+  blockquote: getCommandName("markup.blockquote"),
+  unorderedlist: getCommandName("markup.unorderedlist"),
+  orderedlist: getCommandName("markup.orderedlist"),
+  options: getCommandName("markup.options"),
 };
