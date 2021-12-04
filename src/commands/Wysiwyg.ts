@@ -42,8 +42,9 @@ export class Wysiwyg {
     // Prefix markup
     subscriptions.push(commands.registerCommand(COMMAND_NAME.heading, () => this.addMarkup(MarkupType.heading)));
     subscriptions.push(commands.registerCommand(COMMAND_NAME.blockquote, () => this.addMarkup(MarkupType.blockquote)));
-    subscriptions.push(commands.registerCommand(COMMAND_NAME.unorderedlist, () => this.addMarkup(MarkupType.blockquote)));
-    subscriptions.push(commands.registerCommand(COMMAND_NAME.orderedlist, () => this.addMarkup(MarkupType.blockquote)));
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.unorderedlist, () => this.addMarkup(MarkupType.unorderedList)));
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.orderedlist, () => this.addMarkup(MarkupType.orderedList)));
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.taskList, () => this.addMarkup(MarkupType.taskList)));
 
     // Options
     subscriptions.push(commands.registerCommand(COMMAND_NAME.options, async () => {

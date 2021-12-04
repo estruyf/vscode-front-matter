@@ -11,7 +11,7 @@
 ### 🐞 Fixes
 
 - [#191](https://github.com/estruyf/vscode-front-matter/issues/191): Fix beta settings page
-- [#201](https://github.com/estruyf/vscode-front-matter/issues/201): Overflow issue with the media filename
+- [#201](https://github.com/estruyf/vscode-front-matter/issues/201): Fix overflow issue with the media filename
 - [#202](https://github.com/estruyf/vscode-front-matter/issues/202): Fix checkbox label color for light themes
 
 ## [5.6.0] - 2021-11-23

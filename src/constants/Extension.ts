@@ -44,5 +44,6 @@ export const COMMAND_NAME = {
   blockquote: getCommandName("markup.blockquote"),
   unorderedlist: getCommandName("markup.unorderedlist"),
   orderedlist: getCommandName("markup.orderedlist"),
+  taskList: getCommandName("markup.tasklist"),
   options: getCommandName("markup.options"),
 };
