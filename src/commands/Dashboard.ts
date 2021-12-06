@@ -434,7 +434,7 @@ export class Dashboard {
     if (crntSort?.type === SortType.string) {
       allMedia = allMedia.sort(Sorting.alphabetically("fsPath"));
     } else if (crntSort?.type === SortType.date) {
-      allMedia = allMedia.sort(Sorting.date("mtime"));
+      allMedia = allMedia.sort(Sorting.dateWithFallback("mtime", "fsPath"));
     } else {
       allMedia = allMedia.sort(Sorting.alphabetically("fsPath"));
     }
