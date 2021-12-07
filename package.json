@@ -3,7 +3,7 @@
   "displayName": "Front Matter",
   "description": "An essential Visual Studio Code extension when you want to manage the markdown pages of your static site like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "5.6.0",
+  "version": "5.7.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -238,6 +238,12 @@
               "order"
             ]
           },
+          "scope": "Content"
+        },
+        "frontMatter.content.wysiwyg": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Specifies if you want to enable/disable the What You See, Is What You Get (WYSIWYG) markdown controls. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.wysiwyg)",
           "scope": "Content"
         },
         "frontMatter.custom.scripts": {
@@ -819,14 +825,169 @@
         "command": "frontMatter.setLastModifiedDate",
         "title": "Set lastmod date",
         "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.markup.bold",
+        "title": "Bold",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/bold-light.svg",
+          "dark": "assets/icons/bold-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.markup.italic",
+        "title": "Italic",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/italic-light.svg",
+          "dark": "assets/icons/italic-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.markup.strikethrough",
+        "title": "Strikethrough",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/strikethrough-light.svg",
+          "dark": "assets/icons/strikethrough-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.markup.code",
+        "title": "Code",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/code-light.svg",
+          "dark": "assets/icons/code-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.markup.codeblock",
+        "title": "Codeblock",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/codeblock-light.svg",
+          "dark": "assets/icons/codeblock-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.markup.blockquote",
+        "title": "Codeblock",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/blockquote-light.svg",
+          "dark": "assets/icons/blockquote-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.markup.heading",
+        "title": "Heading",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/heading-light.svg",
+          "dark": "assets/icons/heading-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.markup.unorderedlist",
+        "title": "Unordered list",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/unordered-list-light.svg",
+          "dark": "assets/icons/unordered-list-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.markup.orderedlist",
+        "title": "Ordered list",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/ordered-list-light.svg",
+          "dark": "assets/icons/ordered-list-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.markup.tasklist",
+        "title": "Task list",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.markup.options",
+        "title": "Other markup options",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/options-light.svg",
+          "dark": "assets/icons/options-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.diagnostics",
+        "title": "Diagnostic logging",
+        "category": "Front matter"
       }
     ],
     "menus": {
       "editor/title": [
         {
+          "command": "frontMatter.markup.heading",
+          "group": "navigation@-132",
+          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+        },
+        {
+          "command": "frontMatter.markup.bold",
+          "group": "navigation@-131",
+          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+        },
+        {
+          "command": "frontMatter.markup.italic",
+          "group": "navigation@-130",
+          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+        },
+        {
+          "command": "frontMatter.markup.strikethrough",
+          "group": "navigation@-129",
+          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+        },
+        {
+          "command": "frontMatter.markup.blockquote",
+          "group": "navigation@-128",
+          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+        },
+        {
           "command": "frontMatter.insertImage",
-          "group": "navigation@-99",
+          "group": "navigation@-127",
           "when": "resourceLangId == markdown"
+        },
+        {
+          "command": "frontMatter.markup.options",
+          "group": "navigation@-126",
+          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+        },
+        {
+          "command": "frontMatter.markup.orderedlist",
+          "group": "1_markup@1",
+          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+        },
+        {
+          "command": "frontMatter.markup.unorderedlist",
+          "group": "1_markup@2",
+          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+        },
+        {
+          "command": "frontMatter.markup.tasklist",
+          "group": "1_markup@3",
+          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+        },
+        {
+          "command": "frontMatter.markup.code",
+          "group": "1_markup@4",
+          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+        },
+        {
+          "command": "frontMatter.markup.codeblock",
+          "group": "1_markup@5",
+          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.dashboard",
@@ -887,6 +1048,50 @@
         },
         {
           "command": "frontMatter.dashboard.close",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.markup.bold",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.markup.italic",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.markup.strikethrough",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.markup.code",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.markup.codeblock",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.markup.blockquote",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.markup.heading",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.markup.unorderedlist",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.markup.orderedlist",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.markup.tasklist",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.markup.options",
           "when": "false"
         }
       ],

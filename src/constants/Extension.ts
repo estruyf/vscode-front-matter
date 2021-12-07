@@ -32,4 +32,18 @@ export const COMMAND_NAME = {
   promote: getCommandName("promoteSettings"),
   insertImage: getCommandName("insertImage"),
   createFolder: getCommandName("createFolder"),
+  diagnostics: getCommandName("diagnostics"),
+
+  // WYSIWYG
+  bold: getCommandName("markup.bold"),
+  italic: getCommandName("markup.italic"),
+  strikethrough: getCommandName("markup.strikethrough"),
+  code: getCommandName("markup.code"),
+  codeblock: getCommandName("markup.codeblock"),
+  heading: getCommandName("markup.heading"),
+  blockquote: getCommandName("markup.blockquote"),
+  unorderedlist: getCommandName("markup.unorderedlist"),
+  orderedlist: getCommandName("markup.orderedlist"),
+  taskList: getCommandName("markup.tasklist"),
+  options: getCommandName("markup.options"),
 };

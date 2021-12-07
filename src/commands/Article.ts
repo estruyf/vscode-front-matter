@@ -203,7 +203,7 @@ export class Article {
 
     const file = parseWinPath(editor.document.fileName);
 
-    if (!file.endsWith(`.md`) && !file.endsWith(`.mdx`)) {
+    if (!file.endsWith(`.md`) && !file.endsWith(`.markdown`) && !file.endsWith(`.mdx`)) {
       return;
     }
 

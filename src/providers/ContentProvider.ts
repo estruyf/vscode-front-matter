@@ -9,14 +9,14 @@ export default class ContentProvider implements TextDocumentContentProvider {
 		return uri.query;
 	}
 
-	public static async show(data: string, title: string, outputType?: string) {
+	public static async show(data: string, title: string, outputType?: string, column: ViewColumn = ViewColumn.Beside) {
 		const apiData = JSON.stringify(data, null, 2);
 
     const uri = Uri.parse(`${ContentProvider.scheme}:${title} output`);
 
 		const doc = await workspace.openTextDocument(uri);
 
-    await window.showTextDocument(doc, { preview: true, viewColumn: ViewColumn.Beside, preserveFocus: true });
+    await window.showTextDocument(doc, { preview: true, viewColumn: column, preserveFocus: true });
 
     const workEdits = new WorkspaceEdit();
     workEdits.replace(doc.uri, new Range(new Position(0, 0), new Position(doc.lineCount, 0)), data);

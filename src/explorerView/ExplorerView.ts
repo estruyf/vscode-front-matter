@@ -13,7 +13,7 @@ import { CustomTaxonomyData, DraftField, ScriptType, TaxonomyType } from '../mod
 import { exec } from 'child_process';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { Content } from 'mdast';
-import { COMMAND_NAME } from '../constants/Extension';
+import { COMMAND_NAME, EXTENSION_BETA_ID, EXTENSION_ID } from '../constants/Extension';
 import { Folders } from '../commands/Folders';
 import { Preview } from '../commands/Preview';
 import { openFileInEditor } from '../helpers/openFileInEditor';
@@ -122,7 +122,8 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
           this.addCustomTaxonomy(msg.data);
           break;
         case CommandToCode.openSettings:
-          commands.executeCommand('workbench.action.openSettings', '@ext:eliostruyf.vscode-front-matter');
+          const isBeta = Extension.getInstance().isBetaVersion();
+          commands.executeCommand('workbench.action.openSettings', `@ext:${isBeta ? EXTENSION_BETA_ID : EXTENSION_ID}`);
           break;
         case CommandToCode.openFile:
           if (os.type() === "Linux" && vscodeEnv.remoteName?.toLowerCase() === "wsl") {

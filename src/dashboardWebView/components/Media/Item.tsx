@@ -15,7 +15,7 @@ import { MenuItem, MenuItems } from '../Menu';
 import { Alert } from '../Modals/Alert';
 import { Metadata } from '../Modals/Metadata';
 import { MenuButton } from './MenuButton'
-
+ 
 export interface IItemProps {
   media: MediaInfo;
 }
@@ -252,7 +252,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
             </div>
 
           </div>
-          <p className="text-sm dark:text-whisper-900 font-bold pointer-events-none flex items-center">
+          <p className="text-sm dark:text-whisper-900 font-bold pointer-events-none flex items-center break-all">
             {basename(parseWinPath(media.fsPath) || "")}
           </p>
           {

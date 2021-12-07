@@ -1,5 +1,20 @@
 # Change Log
 
+## [5.7.0] - 2021-12-07 - [Release Notes](https://beta.frontmatter.codes/updates/v5.7.0)
+
+### 🎨 Enhancements
+
+- [#188](https://github.com/estruyf/vscode-front-matter/issues/188): Support for `.markdown` files added to the dashboard
+- [#190](https://github.com/estruyf/vscode-front-matter/issues/190): Diagnostic output for the extension
+- [#194](https://github.com/estruyf/vscode-front-matter/issues/194): WYSIWYG controls added for markdown files + configuration to enable/disable the functionality
+
+### 🐞 Fixes
+
+- [#191](https://github.com/estruyf/vscode-front-matter/issues/191): Fix beta settings page
+- [#200](https://github.com/estruyf/vscode-front-matter/issues/200): Fix last modified date sorting for media files
+- [#201](https://github.com/estruyf/vscode-front-matter/issues/201): Fix overflow issue with the media filename
+- [#202](https://github.com/estruyf/vscode-front-matter/issues/202): Fix checkbox label color for light themes
+
 ## [5.6.0] - 2021-11-23
 
 ### 🎨 Enhancements

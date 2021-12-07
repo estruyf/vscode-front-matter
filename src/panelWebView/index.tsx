@@ -14,8 +14,9 @@ import '@bendera/vscode-webview-elements/dist/vscode-table-row';
 import '@bendera/vscode-webview-elements/dist/vscode-table-cell';
 import '@bendera/vscode-webview-elements/dist/vscode-collapsible';
 import '@bendera/vscode-webview-elements/dist/vscode-label';
+import '@bendera/vscode-webview-elements/dist/vscode-checkbox';
 
-import '@vscode/webview-ui-toolkit/dist/esm/checkbox';
+// import '@vscode/webview-ui-toolkit/dist/esm/checkbox';
 
 const elm = document.querySelector("#app");
 const version = elm?.getAttribute("data-version");
