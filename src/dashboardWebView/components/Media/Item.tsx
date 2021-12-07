@@ -15,7 +15,7 @@ import { MenuItem, MenuItems } from '../Menu';
 import { Alert } from '../Modals/Alert';
 import { Metadata } from '../Modals/Metadata';
 import { MenuButton } from './MenuButton'
-
+ 
 export interface IItemProps {
   media: MediaInfo;
 }
