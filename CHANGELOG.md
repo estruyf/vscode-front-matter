@@ -6,6 +6,7 @@
 
 - Refactoring of the WebView logic to new message handlers
 - Optimized the `getMedia` call from the webview
+- Keep the dashboard its context when switching tabs
 - [#205](https://github.com/estruyf/vscode-front-matter/issues/205): Define a logging level setting
 
 ## [5.7.0] - 2021-12-07 - [Release Notes](https://beta.frontmatter.codes/updates/v5.7.0)
