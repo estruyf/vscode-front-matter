@@ -7,7 +7,7 @@ import { useRecoilValue } from 'recoil';
 import { DashboardViewSelector } from '../state';
 import { Contents } from './Contents/Contents';
 import { Media } from './Media/Media';
-import { ViewType } from '../models';
+import { NavigationType } from '../models';
 
 export interface IDashboardProps {
   showWelcome: boolean;
@@ -30,9 +30,15 @@ export const Dashboard: React.FunctionComponent<IDashboardProps> = ({showWelcome
     return <WelcomeScreen settings={settings} />;
   }
 
-  if (view === ViewType.Media) {
-    return <Media />;
-  }
-
-  return <Contents pages={pages} loading={loading} />;
+  return (
+    <main className={`h-full w-full`}>
+      {
+        view === NavigationType.Media ? (
+          <Media />
+        ) : (
+          <Contents pages={pages} loading={loading} />
+        )
+      }
+    </main>
+  );
 };

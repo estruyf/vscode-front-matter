@@ -1,8 +1,8 @@
 import { VersionInfo } from '../../models/VersionInfo';
-import { ViewType } from '../state';
 import { ContentFolder } from '../../models/ContentFolder';
 import { ContentType, CustomScript, DraftField, Framework, SortingSetting } from '../../models';
 import { SortingOption } from './SortingOption';
+import { DashboardViewType } from '.';
 
 export interface Settings { 
   beta: boolean;
@@ -14,7 +14,7 @@ export interface Settings {
   categories: string[];
   openOnStart: boolean | null;
   versionInfo: VersionInfo;
-  pageViewType: ViewType | undefined;
+  pageViewType: DashboardViewType | undefined;
   mediaSnippet: string[];
   contentTypes: ContentType[];
   contentFolders: ContentFolder[];
@@ -28,10 +28,14 @@ export interface Settings {
 
 export interface DashboardState {
   contents: ViewState;
-  media: ViewState;
+  media: MediaViewState;
 }
 
 export interface ViewState {
   sorting: SortingOption | null | undefined;
   defaultSorting: string | null | undefined;
+}
+
+export interface MediaViewState extends ViewState {
+  selectedFolder: string | null | undefined;
 }

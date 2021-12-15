@@ -3,7 +3,7 @@
   "displayName": "Front Matter",
   "description": "An essential Visual Studio Code extension when you want to manage the markdown pages of your static site like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "5.7.0",
+  "version": "5.8.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -798,6 +798,15 @@
         }
       },
       {
+        "command": "frontMatter.dashboard.media",
+        "title": "Open media dashboard",
+        "category": "Front matter",
+        "icon": {
+          "dark": "/assets/icons/frontmatter-small-dark.svg",
+          "light": "/assets/icons/frontmatter-small-light.svg"
+        }
+      },
+      {
         "command": "frontMatter.dashboard.close",
         "title": "Close dashboard",
         "category": "Front matter",
@@ -1137,7 +1146,7 @@
     "@types/react": "17.0.0",
     "@types/react-datepicker": "^4.1.7",
     "@types/react-dom": "17.0.0",
-    "@types/vscode": "1.51.0",
+    "@types/vscode": "^1.63.0",
     "@vscode/codicons": "0.0.20",
     "@vscode/webview-ui-toolkit": "^0.8.1",
     "autoprefixer": "^10.3.2",
@@ -1171,6 +1180,5 @@
     "wc-react": "github:estruyf/wc-react",
     "webpack": "4.44.2",
     "webpack-cli": "3.3.12"
-  },
-  "dependencies": {}
+  }
 }

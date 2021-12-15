@@ -1,4 +1,4 @@
-export enum ViewType {
+export enum NavigationType {
   Contents = "contents",
   Media = "media"
 }

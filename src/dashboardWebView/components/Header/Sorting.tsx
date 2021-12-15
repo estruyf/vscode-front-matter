@@ -6,14 +6,14 @@ import { ExtensionState } from '../../../constants';
 import { SortOrder, SortType } from '../../../models';
 import { SortOption } from '../../constants/SortOption';
 import { DashboardMessage } from '../../DashboardMessage';
-import { ViewType } from '../../models';
+import { NavigationType } from '../../models';
 import { SortingOption } from '../../models/SortingOption';
 import { SearchSelector, SettingsSelector, SortingAtom } from '../../state';
 import { MenuButton, MenuItem, MenuItems } from '../Menu';
 
 export interface ISortingProps {
   disableCustomSorting?: boolean;
-  view: ViewType;
+  view: NavigationType;
 }
 
 export const sortOptions: SortingOption[] = [
@@ -30,7 +30,7 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({disableCustomSo
 
   const updateSorting = (value: SortingOption) => {
     Messenger.send(DashboardMessage.setState, {
-      key: `${view === ViewType.Contents ? ExtensionState.Dashboard.Contents.Sorting : ExtensionState.Dashboard.Media.Sorting}`,
+      key: `${view === NavigationType.Contents ? ExtensionState.Dashboard.Contents.Sorting : ExtensionState.Dashboard.Media.Sorting}`,
       value: value
     });
 
@@ -50,16 +50,16 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({disableCustomSo
 
   let crntSortingOption = crntSorting;
   if (!crntSortingOption) {
-    if (view === ViewType.Contents) {
+    if (view === NavigationType.Contents) {
       crntSortingOption = settings?.dashboardState?.contents?.sorting || null;
-    } else if (view === ViewType.Media) {
+    } else if (view === NavigationType.Media) {
       crntSortingOption = settings?.dashboardState?.media?.sorting || null;
     }
 
     if (crntSortingOption === null) {
-      if (view === ViewType.Contents && settings?.dashboardState.contents.defaultSorting) {
+      if (view === NavigationType.Contents && settings?.dashboardState.contents.defaultSorting) {
         crntSortingOption = allOptions.find(f => f.id === settings?.dashboardState.contents.defaultSorting) || null;
-      } else if (view === ViewType.Media && settings?.dashboardState.contents.defaultSorting) {
+      } else if (view === NavigationType.Media && settings?.dashboardState.contents.defaultSorting) {
         crntSortingOption = allOptions.find(f => f.id === settings?.dashboardState.contents.defaultSorting) || null;
       }
     }

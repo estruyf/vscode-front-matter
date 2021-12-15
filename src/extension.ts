@@ -45,7 +45,15 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Pages dashboard
 	Dashboard.init();
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboard, (data?: DashboardData) => {
-		Dashboard.open(data);
+		if (!data) {
+			Dashboard.open({ type: "contents" });
+		} else {
+			Dashboard.open(data);
+		}
+	}));
+	
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardMedia, (data?: DashboardData) => {
+		Dashboard.open({ type: "media" });
 	}));
 	
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardClose, (data?: DashboardData) => {

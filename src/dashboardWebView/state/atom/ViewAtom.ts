@@ -1,11 +1,7 @@
 import { atom } from 'recoil';
+import { DashboardViewType } from '../../models';
 
-export enum ViewType {
-  Grid = 1,
-  List
-}
-
-export const ViewAtom = atom<ViewType>({
+export const ViewAtom = atom<DashboardViewType>({
   key: 'ViewAtom',
-  default: ViewType.Grid
+  default: DashboardViewType.Grid
 });

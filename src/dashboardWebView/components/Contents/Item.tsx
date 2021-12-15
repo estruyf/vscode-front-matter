@@ -3,11 +3,12 @@ import { useRecoilValue } from 'recoil';
 import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIcon';
 import { DashboardMessage } from '../../DashboardMessage';
 import { Page } from '../../models/Page';
-import { SettingsSelector, ViewSelector, ViewType } from '../../state';
+import { SettingsSelector, ViewSelector } from '../../state';
 import { DateField } from '../DateField';
 import { Status } from '../Status';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import useContentType from '../../../hooks/useContentType';
+import { DashboardViewType } from '../../models';
 
 export interface IItemProps extends Page {}
 
@@ -22,7 +23,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
     Messenger.send(DashboardMessage.openFile, fmFilePath);
   };
 
-  if (view === ViewType.Grid) {
+  if (view === DashboardViewType.Grid) {
     return (
       <li className="relative">
         <button className={`group cursor-pointer flex flex-wrap items-start content-start h-full w-full bg-gray-50 dark:bg-vulcan-200 text-vulcan-500 dark:text-whisper-500 text-left overflow-hidden shadow-md hover:shadow-xl dark:hover:bg-vulcan-100`}
@@ -53,7 +54,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
         </button>
       </li>
     );
-  } else if (view === ViewType.List) {
+  } else if (view === DashboardViewType.List) {
     return (
       <li className="relative">
         <button className={`px-5 cursor-pointer w-full text-left grid grid-cols-12 gap-x-4 sm:gap-x-6 xl:gap-x-8 py-2 border-b border-gray-300 hover:bg-gray-200 dark:border-vulcan-50 dark:hover:bg-vulcan-50 hover:bg-opacity-70`} onClick={openFile}>
