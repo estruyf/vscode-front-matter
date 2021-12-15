@@ -1,6 +1,6 @@
 import { existsSync, renameSync } from "fs";
 import { basename, join } from "path";
-import { extensions, Uri, ExtensionContext, window, workspace, commands } from "vscode";
+import { extensions, Uri, ExtensionContext, window, workspace, commands, ExtensionMode } from "vscode";
 import { Folders, WORKSPACE_PLACEHOLDER } from "../commands/Folders";
 import { EXTENSION_NAME, GITHUB_LINK, SETTINGS_CONTENT_FOLDERS, SETTINGS_CONTENT_PAGE_FOLDERS, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTING_TAXONOMY_CONTENT_TYPES, DEFAULT_CONTENT_TYPE_NAME, EXTENSION_BETA_ID, EXTENSION_ID, ExtensionState, DefaultFields, LocalStore, SETTING_TEMPLATES_FOLDER } from "../constants";
 import { ContentType } from "../models";
@@ -72,6 +72,20 @@ export class Extension {
       usedVersion,
       installedVersion
     };
+  }
+
+  /**
+   * Get the title of the extension
+   */
+   public get title(): string {
+    return this.ctx.extension.packageJSON.name;
+  }
+
+  /**
+   * Check if the extension is in production/development mode
+   */
+   public get isProductionMode(): boolean {
+    return this.ctx.extensionMode === ExtensionMode.Production;
   }
 
   /**
