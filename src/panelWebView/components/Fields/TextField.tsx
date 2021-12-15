@@ -1,4 +1,4 @@
-import { PencilIcon } from '@heroicons/react/outline';
+import PencilIcon from '@heroicons/react/outline/PencilIcon';
 import * as React from 'react';
 import { VsLabel } from '../VscodeComponents';
 

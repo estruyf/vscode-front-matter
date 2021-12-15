@@ -1,6 +1,6 @@
 import { EventData } from '@estruyf/vscode';
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { RefreshIcon } from '@heroicons/react/outline';
+import RefreshIcon from '@heroicons/react/outline/RefreshIcon';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useDebounce } from '../../../hooks/useDebounce';

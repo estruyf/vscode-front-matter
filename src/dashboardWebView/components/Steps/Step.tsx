@@ -1,4 +1,4 @@
-import { CheckIcon } from '@heroicons/react/outline';
+import CheckIcon from '@heroicons/react/outline/CheckIcon';
 import * as React from 'react';
 import { Status } from '../../models/Status';
 

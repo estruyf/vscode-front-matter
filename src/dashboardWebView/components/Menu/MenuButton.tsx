@@ -1,5 +1,5 @@
 import { Menu } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/solid';
+import ChevronDownIcon from '@heroicons/react/solid/ChevronDownIcon';
 import * as React from 'react';
 
 export interface IMenuButtonProps {

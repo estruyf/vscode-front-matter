@@ -1,6 +1,6 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
-import { UploadIcon } from '@heroicons/react/outline';
+import UploadIcon from '@heroicons/react/outline/UploadIcon';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { MediaInfo, MediaPaths } from '../../../models/MediaPaths';

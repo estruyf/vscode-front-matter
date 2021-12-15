@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { ViewAtom, SettingsSelector } from '../../state';
-import { ViewGridIcon, ViewListIcon } from '@heroicons/react/solid';
+import ViewListIcon from '@heroicons/react/solid/ViewListIcon';
+import ViewGridIcon from '@heroicons/react/solid/ViewGridIcon';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
 import { DashboardViewType } from '../../models';

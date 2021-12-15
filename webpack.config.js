@@ -3,6 +3,7 @@
 'use strict';
 
 const path = require('path');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const config = [
   {
@@ -34,7 +35,19 @@ const config = [
     performance: {
       maxEntrypointSize: 400000,
       maxAssetSize: 400000
-    }
+    },
+    optimization: {
+      splitChunks: {
+        chunks: 'all'
+      }
+    },
+    plugins: [
+      new BundleAnalyzerPlugin({
+        analyzerMode: 'static',
+        reportFilename: "extension.html",
+        openAnalyzer: false
+      })
+    ]
   },
   {
     name: 'panelWebView',
@@ -66,7 +79,19 @@ const config = [
     performance: {
       maxEntrypointSize: 400000,
       maxAssetSize: 400000
-    }
+    },
+    optimization: {
+      splitChunks: {
+        chunks: 'all'
+      }
+    },
+    plugins: [
+      new BundleAnalyzerPlugin({
+        analyzerMode: 'static',
+        reportFilename: "viewpanel.html",
+        openAnalyzer: false
+      })
+    ]
   },
   {
     name: 'dashboardWebView',
@@ -98,7 +123,19 @@ const config = [
     performance: {
       maxEntrypointSize: 400000,
       maxAssetSize: 400000
-    }
+    },
+    optimization: {
+      splitChunks: {
+        chunks: 'all'
+      }
+    },
+    plugins: [
+      new BundleAnalyzerPlugin({
+        analyzerMode: 'static',
+        reportFilename: "dashboard.html",
+        openAnalyzer: false
+      })
+    ]
   }
 ];
 

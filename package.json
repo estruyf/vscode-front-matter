@@ -720,7 +720,11 @@
               "error"
             ]
           },
-          "default": ["info", "warning", "error"],
+          "default": [
+            "info",
+            "warning",
+            "error"
+          ],
           "markdownDescription": "Specifies the notifications you want to see. By default, all notifications types will be shown. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.global.notifications)",
           "scope": "Templates"
         }
@@ -1193,6 +1197,7 @@
     "url-join-ts": "^1.0.5",
     "wc-react": "github:estruyf/wc-react",
     "webpack": "4.44.2",
+    "webpack-bundle-analyzer": "^4.5.0",
     "webpack-cli": "3.3.12"
   }
 }
