@@ -4,9 +4,9 @@ import { Folders } from "../commands/Folders";
 import { ExtensionState, HOME_PAGE_NAVIGATION_ID, SETTINGS_CONTENT_STATIC_FOLDER } from "../constants";
 import { SortingOption } from "../dashboardWebView/models";
 import { MediaInfo, MediaPaths, SortOrder, SortType } from "../models";
-import { basename, extname, join, parse } from "path";
+import { basename, extname, join, parse, dirname } from "path";
 import { existsSync, readdirSync, statSync, unlinkSync, writeFileSync } from "fs";
-import { commands, Uri, workspace } from "vscode";
+import { commands, Uri, workspace, window, Position } from "vscode";
 import imageSize from "image-size";
 import { EditorHelper } from "@estruyf/vscode";
 import { ExplorerView } from "../explorerView/ExplorerView";
@@ -291,6 +291,20 @@ export class MediaHelpers {
         panel.updateMetadata({field: data.fieldName, value: data.image });
       }
     }
+  }
+
+  /**
+   * Update the metadata of a media file
+   * @param data 
+   */
+  public static updateMetadata(data: any) {
+    const { file, filename, page, folder, ...metadata }: { file:string; filename:string; page: number; folder: string | null; metadata: any; } = data;
+    
+    const mediaLib = MediaLibrary.getInstance();
+    mediaLib.set(file, metadata);
+
+    // Check if filename needs to be updated
+    mediaLib.updateFilename(file, filename);
   }
 
   /**

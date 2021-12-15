@@ -798,6 +798,15 @@
         }
       },
       {
+        "command": "frontMatter.dashboard.media",
+        "title": "Open media dashboard",
+        "category": "Front matter",
+        "icon": {
+          "dark": "/assets/icons/frontmatter-small-dark.svg",
+          "light": "/assets/icons/frontmatter-small-light.svg"
+        }
+      },
+      {
         "command": "frontMatter.dashboard.close",
         "title": "Close dashboard",
         "category": "Front matter",

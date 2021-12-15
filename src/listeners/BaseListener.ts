@@ -6,9 +6,7 @@ import { Logger } from "../helpers/Logger";
 
 export abstract class BaseListener {
 
-  public static process(msg: { command: DashboardMessage, data: any }) {
-    Logger.info(`Receiving message from webview: ${msg.command}`);
-  }
+  public static process(msg: { command: DashboardMessage, data: any }) {}
   
   /**
    * Send a message to the webview

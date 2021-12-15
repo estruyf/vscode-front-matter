@@ -3,6 +3,8 @@ import { DashboardMessage } from "../dashboardWebView/DashboardMessage";
 import { BaseListener } from "./BaseListener";
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { SortingOption } from '../dashboardWebView/models';
+import { commands } from 'vscode';
+import { COMMAND_NAME } from '../constants';
 
 
 export class MediaListener extends BaseListener {
@@ -27,7 +29,14 @@ export class MediaListener extends BaseListener {
         this.delete(msg?.data);
         break;
       case DashboardMessage.insertPreviewImage:
-        
+        MediaHelpers.insertMediaToMarkdown(msg?.data);
+        break;
+      case DashboardMessage.updateMediaMetadata:
+        this.update(msg.data);
+        break;
+      case DashboardMessage.createMediaFolder:
+        await commands.executeCommand(COMMAND_NAME.createFolder, msg?.data);
+        break;
     }
   }
 
@@ -37,7 +46,7 @@ export class MediaListener extends BaseListener {
    * @param folder 
    * @param sorting 
    */
-  private static async sendMediaFiles(page: number = 0, folder: string = '', sorting: SortingOption | null = null) {
+  public static async sendMediaFiles(page: number = 0, folder: string = '', sorting: SortingOption | null = null) {
     const files = await MediaHelpers.getMedia(page, folder, sorting);
     this.sendMsg(DashboardCommand.media, files);
   }
@@ -73,6 +82,20 @@ export class MediaListener extends BaseListener {
     try {
       MediaHelpers.deleteFile(data);
       this.sendMediaFiles(data.page || 0, data.folder || "");
+    } catch {}
+  }
+
+  /**
+   * Update media metadata
+   * @param data 
+   */
+  private static update(data: any) {
+    try {
+      const { page, folder } = data;
+        
+      MediaHelpers.updateMetadata(data);
+
+      this.sendMediaFiles(page || 0, folder || "");
     } catch {}
   }
 }

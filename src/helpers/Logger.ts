@@ -1,5 +1,6 @@
 import { Extension } from './Extension';
 import { OutputChannel, window } from 'vscode';
+import { format } from 'date-fns';
 
 export class Logger {
   private static instance: Logger;
@@ -17,11 +18,11 @@ export class Logger {
     return Logger.instance;
   }
 
-  public static info(message: string): void {
+  public static info(message: string, type: "INFO" | "WARNING" | "ERROR" = "INFO"): void {
     if (!Logger.channel) {
       Logger.getInstance();
     }
 
-    Logger.channel?.appendLine(message);
+    Logger.channel?.appendLine(`["${type}" - ${format(new Date(), "HH:MM:ss")}]  ${message}`);
   }
 }

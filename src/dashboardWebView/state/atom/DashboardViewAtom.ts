@@ -1,7 +1,7 @@
 import { atom } from 'recoil';
-import { ViewType } from '../../models';
+import { NavigationType } from '../../models';
 
-export const DashboardViewAtom = atom<ViewType>({
+export const DashboardViewAtom = atom<NavigationType>({
   key: 'DashboardViewAtom',
-  default: ViewType.Contents
+  default: NavigationType.Contents
 });

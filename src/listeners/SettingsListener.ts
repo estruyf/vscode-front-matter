@@ -1,13 +1,9 @@
-import { Folders } from "../commands/Folders";
-import { Template } from "../commands/Template";
-import { ExtensionState, SETTINGS_CONTENT_DRAFT_FIELD, SETTINGS_CONTENT_SORTING, SETTINGS_CONTENT_SORTING_DEFAULT, SETTINGS_CONTENT_STATIC_FOLDER, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_FRAMEWORK_ID, SETTINGS_MEDIA_SORTING_DEFAULT, SETTING_CUSTOM_SCRIPTS, SETTING_TAXONOMY_CONTENT_TYPES } from "../constants";
+import { SETTINGS_CONTENT_STATIC_FOLDER, SETTINGS_FRAMEWORK_ID } from "../constants";
 import { DashboardCommand } from "../dashboardWebView/DashboardCommand";
 import { DashboardMessage } from "../dashboardWebView/DashboardMessage";
-import { DashboardViewType, SortingOption } from "../dashboardWebView/models";
 import { DashboardSettings, Settings } from "../helpers";
-import { Extension } from "../helpers/Extension";
 import { FrameworkDetector } from "../helpers/FrameworkDetector";
-import { CustomScript, DraftField, ScriptType, SortingSetting, TaxonomyType } from "../models";
+import { Framework } from "../models";
 import { BaseListener } from "./BaseListener";
 
 
@@ -26,6 +22,9 @@ export class SettingsListener extends BaseListener {
         break;
       case DashboardMessage.updateSetting:
         this.update(msg.data);
+        break;
+      case DashboardMessage.setFramework:
+        this.setFramework(msg?.data);
         break;
     }
   }
@@ -48,5 +47,23 @@ export class SettingsListener extends BaseListener {
     const settings = await DashboardSettings.get();
     
     this.sendMsg(DashboardCommand.settings, settings);
+  }
+
+  /**
+   * Set the current site-generator or framework + related settings
+   * @param frameworkId 
+   */
+  private static setFramework(frameworkId: string | null) {
+    Settings.update(SETTINGS_FRAMEWORK_ID, frameworkId, true);
+
+    if (frameworkId) {
+      const allFrameworks = FrameworkDetector.getAll();
+      const framework = allFrameworks.find((f: Framework) => f.name === frameworkId);
+      if (framework) {
+        Settings.update(SETTINGS_CONTENT_STATIC_FOLDER, framework.static, true);
+      } else {
+        Settings.update(SETTINGS_CONTENT_STATIC_FOLDER, "", true);
+      }
+    }
   }
 }

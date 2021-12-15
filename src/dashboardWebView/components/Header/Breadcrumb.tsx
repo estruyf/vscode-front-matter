@@ -5,7 +5,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { Sorting } from '.';
 import { HOME_PAGE_NAVIGATION_ID } from '../../../constants';
 import { parseWinPath } from '../../../helpers/parseWinPath';
-import { ViewType } from '../../models';
+import { NavigationType } from '../../models';
 import { SelectedMediaFolderAtom, SettingsAtom } from '../../state';
 
 export interface IBreadcrumbProps {}
@@ -99,7 +99,7 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (props: Rea
       </ol>
 
       <div className={`flex px-5`}>
-        <Sorting view={ViewType.Media} disableCustomSorting />
+        <Sorting view={NavigationType.Media} disableCustomSorting />
       </div>
     </nav>
   );

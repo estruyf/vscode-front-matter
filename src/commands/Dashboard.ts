@@ -1,37 +1,19 @@
-import { SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTING_TAXONOMY_CONTENT_TYPES, DefaultFields, HOME_PAGE_NAVIGATION_ID, ExtensionState, COMMAND_NAME, SETTINGS_FRAMEWORK_ID, SETTINGS_CONTENT_DRAFT_FIELD, SETTINGS_CONTENT_SORTING, CONTEXT, SETTING_CUSTOM_SCRIPTS, SETTINGS_CONTENT_SORTING_DEFAULT, SETTINGS_MEDIA_SORTING_DEFAULT } from '../constants';
-import { ArticleHelper } from './../helpers/ArticleHelper';
-import { basename, dirname, extname, join, parse } from "path";
-import { existsSync, readdirSync, statSync, unlinkSync, writeFileSync } from "fs";
-import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace, env, Position } from "vscode";
-import { Settings as SettingsHelper } from '../helpers';
-import { CustomScript as ICustomScript, DraftField, Framework, ScriptType, SortingSetting, SortOrder, SortType, TaxonomyType } from '../models';
-import { Folders } from './Folders';
+import { PagesListener } from './../listeners/PagesListener';
+import { ExtensionListener } from './../listeners/ExtensionListener';
+import { SETTINGS_DASHBOARD_OPENONSTART, CONTEXT } from '../constants';
+import { join } from "path";
+import { commands, Uri, ViewColumn, Webview, WebviewPanel, window } from "vscode";
+import { Logger, Settings as SettingsHelper } from '../helpers';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
-import { DashboardMessage } from '../dashboardWebView/DashboardMessage';
-import { Page } from '../dashboardWebView/models/Page';
-import { openFileInEditor } from '../helpers/openFileInEditor';
-import { Template } from './Template';
-import { Notifications } from '../helpers/Notifications';
 import { Extension } from '../helpers/Extension';
-import { EditorHelper, WebviewHelper } from '@estruyf/vscode';
-import { MediaInfo, MediaPaths } from './../models/MediaPaths';
-import { decodeBase64Image } from '../helpers/decodeBase64Image';
+import { WebviewHelper } from '@estruyf/vscode';
 import { DashboardData } from '../models/DashboardData';
 import { ExplorerView } from '../explorerView/ExplorerView';
 import { MediaLibrary } from '../helpers/MediaLibrary';
-import { parseWinPath } from '../helpers/parseWinPath';
-import { DateHelper } from '../helpers/DateHelper';
-import { FrameworkDetector } from '../helpers/FrameworkDetector';
-import { ContentType } from '../helpers/ContentType';
-import { SortingOption } from '../dashboardWebView/models';
-import { Sorting } from '../helpers/Sorting';
-import imageSize from 'image-size';
-import { CustomScript } from '../helpers/CustomScript';
-import { DashboardListener, SettingsListener } from '../listeners';
+import { DashboardListener, MediaListener, SettingsListener } from '../listeners';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
-  private static mediaLib: MediaLibrary;
   private static _viewData: DashboardData | undefined;
   private static isDisposed: boolean = true;
 
@@ -53,12 +35,12 @@ export class Dashboard {
    * Open or reveal the dashboard
    */
   public static async open(data?: DashboardData) {
-    this.mediaLib = MediaLibrary.getInstance();
+    MediaLibrary.getInstance();
     
     Dashboard._viewData = data;
 
     if (Dashboard.isOpen) {
-			Dashboard.reveal();
+			Dashboard.reveal(!!data);
 		} else {
 			Dashboard.create();
 		}
@@ -76,9 +58,13 @@ export class Dashboard {
   /**
    * Reveal the dashboard if it is open
    */
-  public static reveal() {
+  public static reveal(hasData: boolean = false) {
     if (Dashboard.webview) {
       Dashboard.webview.reveal();
+
+      if (hasData) {
+        Dashboard.postWebviewMessage({ command: DashboardCommand.viewData, data: Dashboard.viewData });
+      }
     }
   }
 
@@ -112,7 +98,8 @@ export class Dashboard {
       'FrontMatter Dashboard',
       ViewColumn.One,
       {
-        enableScripts: true
+        enableScripts: true,
+        retainContextWhenHidden: true
       }
     );
 
@@ -130,6 +117,8 @@ export class Dashboard {
         Dashboard._viewData = undefined;
         const panel = ExplorerView.getInstance(extensionUri);
         panel.getMediaSelection();
+
+        Dashboard.postWebviewMessage({ command: DashboardCommand.viewData, data: null });
       }
 
       await commands.executeCommand('setContext', CONTEXT.isDashboardOpen, this.webview?.visible);
@@ -148,37 +137,13 @@ export class Dashboard {
     });
 
     Dashboard.webview.webview.onDidReceiveMessage(async (msg) => {
+      Logger.info(`Receiving message from webview: ${msg.command}`);
+      
       DashboardListener.process(msg);
-
-
-
-      switch(msg.command) {
-        
-        
-        
-        
-        
-        case DashboardMessage.insertPreviewImage:
-          Dashboard.insertImage(msg?.data);
-          break;
-        case DashboardMessage.updateMediaMetadata:
-          Dashboard.updateMediaMetadata(msg?.data);
-          break;
-        case DashboardMessage.createMediaFolder:
-          await commands.executeCommand(COMMAND_NAME.createFolder, msg?.data);
-          break;
-        case DashboardMessage.setFramework:
-          Dashboard.setFramework(msg?.data);
-          break;
-        case DashboardMessage.runCustomScript:
-          CustomScript.run(msg?.data?.script, msg?.data?.path);
-          break;
-        case DashboardMessage.setState:
-          if (msg?.data?.key && msg?.data?.value) {
-            Extension.getInstance().setState(msg?.data?.key, msg?.data?.value, "workspace");
-          }
-          break;
-      }
+      ExtensionListener.process(msg);
+      MediaListener.process(msg);
+      PagesListener.process(msg);
+      SettingsListener.process(msg);
     });
   }
 
@@ -188,11 +153,6 @@ export class Dashboard {
    */
   public static getWebview() {
     return Dashboard.webview?.webview;
-  }
-
-  public static switchFolder(folderPath: string) {
-    Dashboard.resetMedia();
-    Dashboard.getMedia(0, folderPath);
   }
 
   /**
@@ -207,36 +167,6 @@ export class Dashboard {
     if (Dashboard.webview) {
       Dashboard.webview?.webview.postMessage(msg);
     }
-  }
-
-  /**
-   * Set the current site-generator or framework + related settings
-   * @param frameworkId 
-   */
-  private static setFramework(frameworkId: string | null) {
-    SettingsHelper.update(SETTINGS_FRAMEWORK_ID, frameworkId, true);
-
-    if (frameworkId) {
-      const allFrameworks = FrameworkDetector.getAll();
-      const framework = allFrameworks.find((f: Framework) => f.name === frameworkId);
-      if (framework) {
-        SettingsHelper.update(SETTINGS_CONTENT_STATIC_FOLDER, framework.static, true);
-      } else {
-        SettingsHelper.update(SETTINGS_CONTENT_STATIC_FOLDER, "", true);
-      }
-    }
-  }
-
-  /**
-   * Update the metadata of the selected file
-   */
-  private static async updateMediaMetadata({ file, filename, page, folder, ...metadata }: { file:string; filename:string; page: number; folder: string | null; metadata: any; }) {
-    Dashboard.mediaLib.set(file, metadata);
-
-    // Check if filename needs to be updated
-    Dashboard.mediaLib.updateFilename(file, filename);
-
-    Dashboard.getMedia(page || 0, folder || "");
   }
   
   /**

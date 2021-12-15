@@ -1,7 +1,7 @@
 import { Folders } from "../commands/Folders";
 import { Template } from "../commands/Template";
 import { ExtensionState, SETTINGS_CONTENT_DRAFT_FIELD, SETTINGS_CONTENT_SORTING, SETTINGS_CONTENT_SORTING_DEFAULT, SETTINGS_CONTENT_STATIC_FOLDER, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_FRAMEWORK_ID, SETTINGS_MEDIA_SORTING_DEFAULT, SETTING_CUSTOM_SCRIPTS, SETTING_TAXONOMY_CONTENT_TYPES } from "../constants";
-import { DashboardViewType, SortingOption } from "../dashboardWebView/models";
+import { DashboardViewType, SortingOption, Settings as ISettings } from "../dashboardWebView/models";
 import { CustomScript, DraftField, ScriptType, SortingSetting, TaxonomyType } from "../models";
 import { Extension } from "./Extension";
 import { FrameworkDetector } from "./FrameworkDetector";
@@ -41,9 +41,10 @@ export class DashboardSettings {
         },
         media: {
           sorting: await ext.getState<SortingOption | undefined>(ExtensionState.Dashboard.Media.Sorting, "workspace"),
-          defaultSorting: Settings.get<string>(SETTINGS_MEDIA_SORTING_DEFAULT)
+          defaultSorting: Settings.get<string>(SETTINGS_MEDIA_SORTING_DEFAULT),
+          selectedFolder: await ext.getState<string | undefined>(ExtensionState.SelectedFolder, "workspace")
         }
       }
-    } as Settings
+    } as ISettings
   }
 }

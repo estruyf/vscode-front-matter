@@ -18,7 +18,7 @@ export class DashboardListener extends BaseListener {
     switch(msg.command) {
       case DashboardMessage.getViewType:
         if (Dashboard.viewData) {
-          Dashboard.postWebviewMessage({ command: DashboardCommand.viewData, data: Dashboard.viewData });
+          this.sendMsg(DashboardCommand.viewData, Dashboard.viewData);
         }
         break;
       case DashboardMessage.reload:
