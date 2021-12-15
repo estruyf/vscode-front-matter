@@ -130,7 +130,7 @@
                 "boolean",
                 "choice"
               ],
-              "description": ""
+              "description": "Type of the draft field you want to use"
             },
             "name": {
               "type": "string",
@@ -708,6 +708,20 @@
           "type": "string",
           "default": "yyyy-MM-dd",
           "markdownDescription": "Specify the prefix you want to add for your new article filenames. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.prefix)",
+          "scope": "Templates"
+        },
+        "frontMatter.global.notifications": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "info",
+              "warning",
+              "error"
+            ]
+          },
+          "default": ["info", "warning", "error"],
+          "markdownDescription": "Specifies the notifications you want to see. By default, all notifications types will be shown. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.global.notifications)",
           "scope": "Templates"
         }
       }

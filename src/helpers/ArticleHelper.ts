@@ -17,6 +17,7 @@ import { ContentType } from '../models';
 import { DateHelper } from './DateHelper';
 
 export class ArticleHelper {
+  private static notifiedFiles: string[] = [];
   
   /**
    * Get the contents of the current article
@@ -246,6 +247,8 @@ export class ArticleHelper {
             }
           }
 
+          this.notifiedFiles = this.notifiedFiles.filter(n => n !== fileName);
+
           return article;
         }
       }
@@ -258,14 +261,18 @@ export class ArticleHelper {
       }];
 
       if (!surpressNotification) {
-        Notifications.error(`There seems to be an issue parsing the content its front matter. FileName: ${basename(fileName)}. ERROR: ${error.message || error}`, ...items).then((result: any) => {
-          if (result?.title) {
-            const item = items.find(i => i.title === result.title);
-            if (item) {
-              item.action();
+        if (this.notifiedFiles.indexOf(fileName) === -1) {
+          Notifications.error(`There seems to be an issue parsing the content its front matter. FileName: ${basename(fileName)}. ERROR: ${error.message || error}`, ...items).then((result: any) => {
+            if (result?.title) {
+              const item = items.find(i => i.title === result.title);
+              if (item) {
+                item.action();
+              }
             }
-          }
-        });
+          });
+
+          this.notifiedFiles.push(fileName);
+        }
       }
     }
     return null;
