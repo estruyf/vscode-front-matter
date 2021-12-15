@@ -1137,7 +1137,7 @@
     "@types/react": "17.0.0",
     "@types/react-datepicker": "^4.1.7",
     "@types/react-dom": "17.0.0",
-    "@types/vscode": "1.51.0",
+    "@types/vscode": "^1.63.0",
     "@vscode/codicons": "0.0.20",
     "@vscode/webview-ui-toolkit": "^0.8.1",
     "autoprefixer": "^10.3.2",
@@ -1171,6 +1171,5 @@
     "wc-react": "github:estruyf/wc-react",
     "webpack": "4.44.2",
     "webpack-cli": "3.3.12"
-  },
-  "dependencies": {}
+  }
 }
