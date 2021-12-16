@@ -1,6 +1,6 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { Menu } from '@headlessui/react';
-import PhotographIcon from '@heroicons/react/outline/PhotographIcon';
+import {PhotographIcon} from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useEffect } from 'react';

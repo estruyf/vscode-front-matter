@@ -14,7 +14,7 @@ import { CategoryAtom, DashboardViewAtom, SortingAtom, TagAtom } from '../../sta
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { ClearFilters } from './ClearFilters';
 import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIcon';
-import PhotographIcon from '@heroicons/react/outline/PhotographIcon';
+import {PhotographIcon} from '@heroicons/react/outline';
 import { Pagination } from '../Media/Pagination';
 import { ChoiceButton } from '../ChoiceButton';
 import { Breadcrumb } from './Breadcrumb';

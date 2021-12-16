@@ -1,4 +1,4 @@
-import SearchIcon from '@heroicons/react/solid/SearchIcon';
+import {SearchIcon} from '@heroicons/react/solid';
 import * as React from 'react';
 import { useRecoilState } from 'recoil';
 import { useDebounce } from '../../../hooks/useDebounce';

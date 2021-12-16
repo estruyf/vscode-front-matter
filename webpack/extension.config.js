@@ -11,12 +11,12 @@ const config = [
     target: 'node',
     entry: './src/extension.ts',
     output: {
-      path: path.resolve(__dirname, 'dist'),
-      filename: 'extension.js',
+      path: path.resolve(__dirname, '../dist'),
       libraryTarget: 'commonjs2',
+      filename: 'extension.js',
       devtoolModuleFilenameTemplate: '../[resource-path]'
     },
-    devtool: 'source-map',
+    devtool: 'nosources-source-map',
     externals: {
       vscode: 'commonjs vscode'
     },
@@ -30,6 +30,12 @@ const config = [
         use: [{
           loader: 'ts-loader'
         }]
+      },
+      {
+        test: /\.m?js/,
+        resolve: {
+          fullySpecified: false
+        }
       }]
     },
     performance: {
@@ -38,7 +44,16 @@ const config = [
     },
     optimization: {
       splitChunks: {
-        chunks: 'all'
+        cacheGroups: {
+          vendors: {
+            test: /node_modules/,
+            chunks: 'initial',
+            filename: 'vendors.[contenthash].js',
+            priority: 1,
+            maxInitialRequests: 2, // create only one vendor file
+            minChunks: 1,
+          }
+        }
       }
     },
     plugins: [
@@ -54,8 +69,8 @@ const config = [
     target: 'web',
     entry: './src/panelWebView/index.tsx',
     output: {
-      path: path.resolve(__dirname, 'dist'),
-      filename: 'viewpanel.js'
+      filename: 'panelWebView.js',
+      path: path.resolve(__dirname, '../dist')
     },
     devtool: 'source-map',
     resolve: {
@@ -73,6 +88,12 @@ const config = [
         {
           test: /\.css$/,
           use: ['style-loader', 'css-loader']
+        },
+        {
+          test: /\.m?js/,
+          resolve: {
+            fullySpecified: false
+          }
         }
       ]
     },
@@ -80,59 +101,24 @@ const config = [
       maxEntrypointSize: 400000,
       maxAssetSize: 400000
     },
-    optimization: {
-      splitChunks: {
-        chunks: 'all'
-      }
-    },
+    // optimization: {
+    //   splitChunks: {
+    //     cacheGroups: {
+    //       vendors: {
+    //         test: /node_modules/,
+    //         chunks: 'initial',
+    //         filename: 'vendors.[contenthash].js',
+    //         priority: 1,
+    //         maxInitialRequests: 2, // create only one vendor file
+    //         minChunks: 1,
+    //       }
+    //     }
+    //   }
+    // },
     plugins: [
       new BundleAnalyzerPlugin({
         analyzerMode: 'static',
         reportFilename: "viewpanel.html",
-        openAnalyzer: false
-      })
-    ]
-  },
-  {
-    name: 'dashboardWebView',
-    target: 'web',
-    entry: './src/dashboardWebView/index.tsx',
-    output: {
-      path: path.resolve(__dirname, 'dist'),
-      filename: 'pages.js'
-    },
-    devtool: 'source-map',
-    resolve: {
-      extensions: ['.ts', '.js', '.tsx', '.jsx']
-    },
-    module: {
-      rules: [
-        {
-          test: /\.(ts|tsx)$/,
-          exclude: /node_modules/,
-          use: [{
-            loader: 'ts-loader'
-          }]
-        },
-        {
-          test: /\.css$/,
-          use: ['style-loader', 'css-loader', 'postcss-loader']
-        }
-      ]
-    },
-    performance: {
-      maxEntrypointSize: 400000,
-      maxAssetSize: 400000
-    },
-    optimization: {
-      splitChunks: {
-        chunks: 'all'
-      }
-    },
-    plugins: [
-      new BundleAnalyzerPlugin({
-        analyzerMode: 'static',
-        reportFilename: "dashboard.html",
         openAnalyzer: false
       })
     ]

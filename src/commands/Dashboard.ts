@@ -174,7 +174,16 @@ export class Dashboard {
    * @param webView 
    */
   private static getWebviewContent(webView: Webview, extensionPath: Uri): string {
-    const scriptUri = webView.asWebviewUri(Uri.joinPath(extensionPath, 'dist', 'pages.js'));
+    const dashboardFile = "dashboardWebView.js";
+    const localServerUrl = "http://localhost:9000";
+
+    let scriptUri = "";
+    const isProd = Extension.getInstance().isProductionMode;
+    if (isProd) {
+      scriptUri = webView.asWebviewUri(Uri.joinPath(extensionPath, 'dist', dashboardFile)).toString();
+    } else {
+      scriptUri = `${localServerUrl}/${dashboardFile}`; 
+    }
 
     const nonce = WebviewHelper.getNonce();
 
@@ -182,21 +191,30 @@ export class Dashboard {
     const version = ext.getVersion();
     const isBeta = ext.isBetaVersion();
 
+    const csp = [
+      `default-src 'none';`,
+      `img-src ${`vscode-file://vscode-app`} ${webView.cspSource} https://api.visitorbadge.io 'self' 'unsafe-inline'`,
+      `script-src ${isProd ? `'nonce-${nonce}'` : "http://localhost:9000 http://0.0.0.0:9000"}`,
+      `style-src ${webView.cspSource} 'self' 'unsafe-inline'`,
+      `font-src ${webView.cspSource}`,
+      `connect-src https://o1022172.ingest.sentry.io ${isProd ? `` : "ws://localhost:9000 ws://0.0.0.0:9000 http://localhost:9000 http://0.0.0.0:9000"}`
+    ];
+
     return `
       <!DOCTYPE html>
       <html lang="en" style="width:100%;height:100%;margin:0;padding:0;">
       <head>
-        <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${`vscode-file://vscode-app`} ${webView.cspSource} https://api.visitorbadge.io 'self' 'unsafe-inline'; script-src 'nonce-${nonce}'; style-src ${webView.cspSource} 'self' 'unsafe-inline'; font-src ${webView.cspSource}; connect-src https://o1022172.ingest.sentry.io">
+        <meta http-equiv="Content-Security-Policy" content="${csp.join('; ')}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <title>Front Matter Dashboard</title>
       </head>
       <body style="width:100%;height:100%;margin:0;padding:0;overflow:hidden" class="bg-gray-100 text-vulcan-500 dark:bg-vulcan-500 dark:text-whisper-500">
-        <div id="app" data-environment="${isBeta ? "BETA" : "main"}" data-version="${version.usedVersion}" style="width:100%;height:100%;margin:0;padding:0;" ${version.usedVersion ? "" : `data-showWelcome="true"`}></div>
+        <div id="app" data-isProd="${isProd}" data-environment="${isBeta ? "BETA" : "main"}" data-version="${version.usedVersion}" style="width:100%;height:100%;margin:0;padding:0;" ${version.usedVersion ? "" : `data-showWelcome="true"`}></div>
 
         <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759&slug=${`dashboard-${version.installedVersion}`}" alt="Daily usage" />
 
-        <script nonce="${nonce}" src="${scriptUri}"></script>
+        <script ${isProd ? `nonce="${nonce}"` : ""} src="${scriptUri}"></script>
       </body>
       </html>
     `;

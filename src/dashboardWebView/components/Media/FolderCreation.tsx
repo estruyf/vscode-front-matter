@@ -1,5 +1,5 @@
 import * as React from 'react';
-import FolderAddIcon from '@heroicons/react/outline/FolderAddIcon';
+import {FolderAddIcon} from '@heroicons/react/outline';
 import { useRecoilValue } from 'recoil';
 import { DashboardMessage } from '../../DashboardMessage';
 import { SelectedMediaFolderAtom, SettingsSelector } from '../../state';

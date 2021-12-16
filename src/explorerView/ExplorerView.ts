@@ -695,7 +695,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     const styleVSCodeUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'assets/media', 'vscode.css'));
     const styleResetUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'assets/media', 'reset.css'));
     const stylesUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'assets/media', 'styles.css'));
-    const scriptUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'dist', 'viewpanel.js'));
+    const scriptUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'dist', 'panelWebView.js'));
 
     const nonce = WebviewHelper.getNonce();
 

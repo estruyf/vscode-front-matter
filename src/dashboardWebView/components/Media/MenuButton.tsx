@@ -1,5 +1,5 @@
 import { Menu } from '@headlessui/react';
-import DotsVerticalIcon from '@heroicons/react/outline/DotsVerticalIcon';
+import {DotsVerticalIcon} from '@heroicons/react/outline';
 import * as React from 'react';
 
 export interface IMenuButtonProps {

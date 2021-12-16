@@ -1,4 +1,4 @@
-import CalculatorIcon from '@heroicons/react/outline/CalculatorIcon';
+import {CalculatorIcon} from '@heroicons/react/outline';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { VsLabel } from '../VscodeComponents';

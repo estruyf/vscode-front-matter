@@ -1,4 +1,4 @@
-import XIcon from '@heroicons/react/outline/XIcon';
+import {XIcon} from '@heroicons/react/outline';
 import * as React from 'react';
 
 export interface IChoiceButtonProps {

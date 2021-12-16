@@ -1,5 +1,5 @@
 import { Dialog, Transition, } from '@headlessui/react';
-import ExclamationIcon from '@heroicons/react/outline/ExclamationIcon';
+import {ExclamationIcon} from '@heroicons/react/outline';
 import * as React from 'react';
 import { Fragment, useRef } from 'react';
 

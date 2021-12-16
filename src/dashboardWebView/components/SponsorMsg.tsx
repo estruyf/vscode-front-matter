@@ -1,5 +1,4 @@
-import HeartIcon from '@heroicons/react/outline/HeartIcon';
-import StarIcon from '@heroicons/react/outline/StarIcon';
+import { HeartIcon, StarIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { REVIEW_LINK, SPONSOR_LINK } from '../../constants';
 import { VersionInfo } from '../../models';

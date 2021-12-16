@@ -1,4 +1,4 @@
-import XCircleIcon from '@heroicons/react/solid/XCircleIcon';
+import {XCircleIcon} from '@heroicons/react/solid';
 import * as React from 'react';
 import { useRecoilValue, useResetRecoilState } from 'recoil';
 import { FolderSelector, TagSelector, CategorySelector, SortingAtom, FolderAtom, DEFAULT_FOLDER_STATE, TagAtom, CategoryAtom, DEFAULT_TAG_STATE, DEFAULT_CATEGORY_STATE } from '../../state';

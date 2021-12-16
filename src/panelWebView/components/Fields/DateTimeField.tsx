@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { VsLabel } from '../VscodeComponents';
-import ClockIcon from '@heroicons/react/outline/ClockIcon';
+import {ClockIcon} from '@heroicons/react/outline';
 import DatePicker from 'react-datepicker';
 import { forwardRef } from 'react';
 import { DateHelper } from '../../../helpers/DateHelper';

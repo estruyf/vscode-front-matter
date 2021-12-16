@@ -1,4 +1,4 @@
-import XCircleIcon from '@heroicons/react/solid/XCircleIcon';
+import {XCircleIcon} from '@heroicons/react/solid';
 import * as React from 'react';
 
 export interface IImageFallbackProps {

@@ -1,4 +1,4 @@
-import CollectionIcon from '@heroicons/react/outline/CollectionIcon';
+import {CollectionIcon} from '@heroicons/react/outline';
 import { basename, join } from 'path';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';

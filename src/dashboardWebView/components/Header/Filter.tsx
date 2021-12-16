@@ -1,5 +1,5 @@
 import { Menu } from '@headlessui/react';
-import FilterIcon from '@heroicons/react/solid/FilterIcon';
+import {FilterIcon} from '@heroicons/react/solid';
 import * as React from 'react';
 import { MenuButton, MenuItem, MenuItems } from '../Menu';
 

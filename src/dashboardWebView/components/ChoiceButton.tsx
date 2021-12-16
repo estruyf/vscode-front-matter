@@ -1,5 +1,5 @@
 import { Menu } from '@headlessui/react';
-import ChevronDownIcon from '@heroicons/react/outline/ChevronDownIcon';
+import {ChevronDownIcon} from '@heroicons/react/outline';
 import * as React from 'react';
 import { MenuItem, MenuItems } from './Menu';
 

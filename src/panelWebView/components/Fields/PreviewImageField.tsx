@@ -1,4 +1,4 @@
-import PhotographIcon from '@heroicons/react/outline/PhotographIcon';
+import {PhotographIcon} from '@heroicons/react/outline';
 import * as React from 'react';
 import { MessageHelper } from '../../../helpers/MessageHelper';
 import { CommandToCode } from '../../CommandToCode';
