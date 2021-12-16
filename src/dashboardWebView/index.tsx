@@ -26,7 +26,8 @@ if (elm) {
       integrations: [new Integrations.BrowserTracing()],
       tracesSampleRate: 0, // No performance tracing required
       release: version || "",
-      environment: environment || ""
+      environment: environment || "",
+      ignoreErrors: ['ResizeObserver loop limit exceeded']
     });
   }
   
