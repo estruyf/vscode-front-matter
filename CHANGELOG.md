@@ -10,6 +10,10 @@
 - [#205](https://github.com/estruyf/vscode-front-matter/issues/205): Define a logging level setting
 - [#206](https://github.com/estruyf/vscode-front-matter/issues/206): Add front matter issues to the diagnostic tab
 
+### 🐞 Fixes
+
+- [#207](https://github.com/estruyf/vscode-front-matter/issues/207): Fix the quick picks for content creation
+
 ## [5.7.0] - 2021-12-07 - [Release Notes](https://beta.frontmatter.codes/updates/v5.7.0)
 
 ### 🎨 Enhancements
