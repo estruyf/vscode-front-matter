@@ -8,6 +8,7 @@
 - Optimized the `getMedia` call from the webview
 - Keep the dashboard its context when switching tabs
 - [#205](https://github.com/estruyf/vscode-front-matter/issues/205): Define a logging level setting
+- [#206](https://github.com/estruyf/vscode-front-matter/issues/206): Add front matter issues to the diagnostic tab
 
 ## [5.7.0] - 2021-12-07 - [Release Notes](https://beta.frontmatter.codes/updates/v5.7.0)
 

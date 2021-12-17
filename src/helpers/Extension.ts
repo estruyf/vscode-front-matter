@@ -1,6 +1,6 @@
 import { existsSync, renameSync } from "fs";
 import { basename, join } from "path";
-import { extensions, Uri, ExtensionContext, window, workspace, commands, ExtensionMode } from "vscode";
+import { extensions, Uri, ExtensionContext, window, workspace, commands, ExtensionMode, DiagnosticCollection, languages } from "vscode";
 import { Folders, WORKSPACE_PLACEHOLDER } from "../commands/Folders";
 import { EXTENSION_NAME, GITHUB_LINK, SETTINGS_CONTENT_FOLDERS, SETTINGS_CONTENT_PAGE_FOLDERS, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, SETTING_SEO_DESCRIPTION_FIELD, SETTING_TAXONOMY_CONTENT_TYPES, DEFAULT_CONTENT_TYPE_NAME, EXTENSION_BETA_ID, EXTENSION_ID, ExtensionState, DefaultFields, LocalStore, SETTING_TEMPLATES_FOLDER } from "../constants";
 import { ContentType } from "../models";
@@ -11,8 +11,11 @@ import { Settings } from "./SettingsHelper";
 
 export class Extension {
   private static instance: Extension;
+  private _collection: DiagnosticCollection;
   
-  private constructor(private ctx: ExtensionContext) {}
+  private constructor(private ctx: ExtensionContext) {
+    this._collection = languages.createDiagnosticCollection(this.title);
+  }
 
   /**
    * Creates the singleton instance for the panel
@@ -86,6 +89,10 @@ export class Extension {
    */
    public get isProductionMode(): boolean {
     return this.ctx.extensionMode === ExtensionMode.Production;
+  }
+
+  public get diagnosticCollection(): DiagnosticCollection {
+    return this._collection;
   }
 
   /**

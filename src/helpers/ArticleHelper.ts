@@ -1,3 +1,4 @@
+import { MarkdownFoldingProvider } from './../providers/MarkdownFoldingProvider';
 import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from './../constants/ContentType';
 import * as vscode from 'vscode';
 import * as matter from "gray-matter";
@@ -5,7 +6,7 @@ import * as fs from "fs";
 import { DefaultFields, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { TomlEngine, getFmLanguage, getFormatOpts } from './TomlEngine';
-import { Settings } from '.';
+import { Extension, Settings } from '.';
 import { format, parse } from 'date-fns';
 import { Notifications } from './Notifications';
 import { Article } from '../commands';
@@ -15,6 +16,7 @@ import sanitize from '../helpers/Sanitize';
 import { existsSync, mkdirSync } from 'fs';
 import { ContentType } from '../models';
 import { DateHelper } from './DateHelper';
+import { Diagnostic, DiagnosticSeverity, Position, window, Range } from 'vscode';
 
 export class ArticleHelper {
   private static notifiedFiles: string[] = [];
@@ -229,6 +231,7 @@ export class ArticleHelper {
   private static parseFile(fileContents: string, fileName: string, surpressNotification: boolean = false): matter.GrayMatterFile<string> | null {
     try {
       const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
+      const diagnostics: Diagnostic[] = [];
       
       if (fileContents) {
         const language: string = getFmLanguage(); 
@@ -249,6 +252,10 @@ export class ArticleHelper {
 
           this.notifiedFiles = this.notifiedFiles.filter(n => n !== fileName);
 
+          if (window.activeTextEditor?.document.uri) {
+            Extension.getInstance().diagnosticCollection.delete(window.activeTextEditor.document.uri);
+          }
+
           return article;
         }
       }
@@ -259,6 +266,28 @@ export class ArticleHelper {
           await EditorHelper.showFile(fileName)
         } 
       }];
+
+      const editor = window.activeTextEditor;
+      if (editor?.document.uri) {
+        let fmRange = null;
+
+        if (error?.mark && typeof error.mark.line !== "undefined") {
+          const curLineText = editor.document.lineAt(error.mark.line - 1);
+          const lastCharPos = new Position(error.mark.line - 1, Math.max(curLineText.text.length, 0));
+          fmRange = new Range(new Position(error.mark.line - 1, 0), lastCharPos);
+        } else {
+          fmRange = MarkdownFoldingProvider.getFrontMatterRange(editor.document);
+        }
+
+
+        if (fmRange) {
+          Extension.getInstance().diagnosticCollection.set(editor.document.uri, [{
+            severity: DiagnosticSeverity.Error,
+            message: `${error.name ? `${error.name}: ` : ""}Error parsing the front matter of ${fileName}`,
+            range: fmRange
+          }]);
+        }
+      }
 
       if (!surpressNotification) {
         if (this.notifiedFiles.indexOf(fileName) === -1) {
