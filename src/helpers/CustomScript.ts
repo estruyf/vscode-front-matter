@@ -67,7 +67,7 @@ export class CustomScript {
         if (folder.lastModified.length > 0) {
           for await (const file of folder.lastModified) {
             try {
-              const article = ArticleHelper.getFrontMatterByPath(file.filePath, true);
+              const article = ArticleHelper.getFrontMatterByPath(file.filePath);
               if (article) {
                 const crntOutput = await CustomScript.runScript(wsPath, article, file.filePath, script);
                 if (crntOutput) {

@@ -35,9 +35,9 @@ export class ArticleHelper {
    * Retrieve the file's front matter by its path
    * @param filePath 
    */
-  public static getFrontMatterByPath(filePath: string, surpressNotification: boolean = false) {   
+  public static getFrontMatterByPath(filePath: string) {   
     const file = fs.readFileSync(filePath, { encoding: "utf-8" });
-    return ArticleHelper.parseFile(file, filePath, surpressNotification);
+    return ArticleHelper.parseFile(file, filePath);
   }
 
   /**
@@ -228,10 +228,9 @@ export class ArticleHelper {
    * @param fileContents 
    * @returns 
    */
-  private static parseFile(fileContents: string, fileName: string, surpressNotification: boolean = false): matter.GrayMatterFile<string> | null {
+  private static parseFile(fileContents: string, fileName: string): matter.GrayMatterFile<string> | null {
     try {
       const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
-      const diagnostics: Diagnostic[] = [];
       
       if (fileContents) {
         const language: string = getFmLanguage(); 
@@ -286,21 +285,6 @@ export class ArticleHelper {
             message: `${error.name ? `${error.name}: ` : ""}Error parsing the front matter of ${fileName}`,
             range: fmRange
           }]);
-        }
-      }
-
-      if (!surpressNotification) {
-        if (this.notifiedFiles.indexOf(fileName) === -1) {
-          Notifications.error(`There seems to be an issue parsing the content its front matter. FileName: ${basename(fileName)}. ERROR: ${error.message || error}`, ...items).then((result: any) => {
-            if (result?.title) {
-              const item = items.find(i => i.title === result.title);
-              if (item) {
-                item.action();
-              }
-            }
-          });
-
-          this.notifiedFiles.push(fileName);
         }
       }
     }
