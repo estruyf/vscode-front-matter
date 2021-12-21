@@ -1125,7 +1125,7 @@
       "view/title": [
         {
           "command": "frontMatter.collapseSections",
-          "group": "navigation"
+          "group": "frontmatter-explorer"
         }
       ]
     },

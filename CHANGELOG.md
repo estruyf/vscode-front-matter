@@ -13,6 +13,7 @@
 ### 🐞 Fixes
 
 - [#207](https://github.com/estruyf/vscode-front-matter/issues/207): Fix the quick picks for content creation
+- [#208](https://github.com/estruyf/vscode-front-matter/issues/208): Fix for the collapse sections action so that it is not available everywhere, but only on the Front Matter panel
 
 ## [5.7.0] - 2021-12-07 - [Release Notes](https://beta.frontmatter.codes/updates/v5.7.0)
 
