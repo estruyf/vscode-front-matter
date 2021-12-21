@@ -204,6 +204,7 @@ export class Dashboard {
       <!DOCTYPE html>
       <html lang="en" style="width:100%;height:100%;margin:0;padding:0;">
       <head>
+			  <meta charset="UTF-8">
         <meta http-equiv="Content-Security-Policy" content="${csp.join('; ')}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
