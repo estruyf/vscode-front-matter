@@ -2,6 +2,8 @@ export const EXTENSION_NAME = "Front Matter";
 
 export const CONFIG_KEY = "frontMatter";
 
+export const SETTING_GLOBAL_NOTIFICATIONS = "global.notifications";
+
 export const SETTING_TAXONOMY_TAGS = "taxonomy.tags";
 export const SETTING_TAXONOMY_CATEGORIES = "taxonomy.categories";
 export const SETTING_TAXONOMY_CUSTOM = "taxonomy.customTaxonomy";

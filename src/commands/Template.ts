@@ -11,6 +11,7 @@ import { Project } from './Project';
 import { Folders } from './Folders';
 import { ContentType } from '../helpers/ContentType';
 import { ContentType as IContentType } from '../models';
+import { PagesListener } from '../listeners';
 
 export class Template {
 
@@ -176,6 +177,9 @@ export class Template {
     }
 
     Notifications.info(`Your new content has been created.`);
+
+    // Trigger a refresh for the dashboard
+    PagesListener.refresh();
   }
 
   /**

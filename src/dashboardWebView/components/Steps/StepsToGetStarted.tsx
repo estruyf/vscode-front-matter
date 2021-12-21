@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { Menu } from '@headlessui/react';
 import { MenuItem } from '../Menu';
 import { Framework } from '../../../models';
-import { ChevronDownIcon } from '@heroicons/react/outline';
+import {ChevronDownIcon} from '@heroicons/react/outline';
 import { FrameworkDetectors } from '../../../constants/FrameworkDetectors';
 
 export interface IStepsToGetStartedProps {

@@ -106,7 +106,7 @@ If you have the courage to test out the beta features, we made available a beta 
   </a>
 </p>
 
-## 🖤 Sponsors 👇 🤘
+## 🖤 Backers & Sponsors 👇 🤘
 
 <p align="center">
   <a href="https://github.com/timschps" title="Tim Schaeps">

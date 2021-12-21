@@ -20,19 +20,17 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({pages, loadin
   const pageFolders = [...new Set(pageItems.map(page => page.fmFolder))];
 
   return (
-    <main className={`h-full w-full`}>
-      <div className="flex flex-col h-full overflow-auto">
-        <Header 
-          folders={pageFolders}
-          totalPages={pageItems.length}
-          settings={settings} />
+    <div className="flex flex-col h-full overflow-auto">
+      <Header 
+        folders={pageFolders}
+        totalPages={pageItems.length}
+        settings={settings} />
 
-        <div className="w-full flex-grow max-w-7xl mx-auto py-6 px-4">
-          { loading ? <Spinner /> : <Overview pages={pageItems} settings={settings} /> }
-        </div>
-
-        <SponsorMsg beta={settings?.beta} version={settings?.versionInfo} />
+      <div className="w-full flex-grow max-w-7xl mx-auto py-6 px-4">
+        { loading ? <Spinner /> : <Overview pages={pageItems} settings={settings} /> }
       </div>
-    </main>
+
+      <SponsorMsg beta={settings?.beta} version={settings?.versionInfo} />
+    </div>
   );
 };

@@ -3,7 +3,7 @@
   "displayName": "Front Matter",
   "description": "An essential Visual Studio Code extension when you want to manage the markdown pages of your static site like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "5.7.0",
+  "version": "5.8.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -23,7 +23,7 @@
     }
   ],
   "engines": {
-    "vscode": "^1.51.0"
+    "vscode": "^1.63.0"
   },
   "categories": [
     "Other"
@@ -130,7 +130,7 @@
                 "boolean",
                 "choice"
               ],
-              "description": ""
+              "description": "Type of the draft field you want to use"
             },
             "name": {
               "type": "string",
@@ -709,6 +709,24 @@
           "default": "yyyy-MM-dd",
           "markdownDescription": "Specify the prefix you want to add for your new article filenames. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.prefix)",
           "scope": "Templates"
+        },
+        "frontMatter.global.notifications": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "info",
+              "warning",
+              "error"
+            ]
+          },
+          "default": [
+            "info",
+            "warning",
+            "error"
+          ],
+          "markdownDescription": "Specifies the notifications you want to see. By default, all notifications types will be shown. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.global.notifications)",
+          "scope": "Templates"
         }
       }
     },
@@ -791,6 +809,15 @@
       {
         "command": "frontMatter.dashboard",
         "title": "Open dashboard",
+        "category": "Front matter",
+        "icon": {
+          "dark": "/assets/icons/frontmatter-small-dark.svg",
+          "light": "/assets/icons/frontmatter-small-light.svg"
+        }
+      },
+      {
+        "command": "frontMatter.dashboard.media",
+        "title": "Open media dashboard",
         "category": "Front matter",
         "icon": {
           "dark": "/assets/icons/frontmatter-small-dark.svg",
@@ -1098,7 +1125,7 @@
       "view/title": [
         {
           "command": "frontMatter.collapseSections",
-          "group": "navigation"
+          "group": "frontmatter-explorer"
         }
       ]
     },
@@ -1113,9 +1140,15 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run clean && webpack --mode production",
-    "build:ext": "npm run clean && webpack --mode development",
-    "dev:ext": "npm run clean && webpack --mode development --watch",
+    "dev:ext": "npm run clean && npm-run-all --parallel watch:*",
+    "vscode:prepublish": "npm run clean && npm-run-all --parallel prod:*",
+    "build:ext": "npm run clean && npm-run-all --parallel dev:build:*",
+    "watch:ext": "webpack --mode development --watch --config ./webpack/extension.config.js",
+    "watch:dashboard": "webpack serve --mode development --config ./webpack/dashboard.config.js",
+    "dev:build:ext": "webpack --mode development --config ./webpack/extension.config.js",
+    "dev:build:dashboard": "webpack --mode development --config ./webpack/dashboard.config.js",
+    "prod:ext": "webpack --mode production --config ./webpack/extension.config.js",
+    "prod:dashboard": "webpack --mode production --config ./webpack/dashboard.config.js",
     "test-compile": "tsc -p ./",
     "clean": "rimraf dist",
     "start:site": "cd ./docs && npm run dev"
@@ -1137,9 +1170,10 @@
     "@types/react": "17.0.0",
     "@types/react-datepicker": "^4.1.7",
     "@types/react-dom": "17.0.0",
-    "@types/vscode": "1.51.0",
+    "@types/vscode": "^1.63.0",
     "@vscode/codicons": "0.0.20",
     "@vscode/webview-ui-toolkit": "^0.8.1",
+    "@webpack-cli/serve": "^1.6.0",
     "autoprefixer": "^10.3.2",
     "css-loader": "5.2.7",
     "date-fns": "2.23.0",
@@ -1154,6 +1188,8 @@
     "lodash.uniqby": "4.7.0",
     "mdast-util-from-markdown": "1.0.0",
     "node-json-db": "^1.3.0",
+    "npm-run-all": "^4.1.5",
+    "path-browserify": "^1.0.1",
     "postcss": "^8.3.6",
     "postcss-loader": "4.3.0",
     "react": "17.0.1",
@@ -1169,8 +1205,9 @@
     "typescript": "4.0.2",
     "url-join-ts": "^1.0.5",
     "wc-react": "github:estruyf/wc-react",
-    "webpack": "4.44.2",
-    "webpack-cli": "3.3.12"
-  },
-  "dependencies": {}
+    "webpack": "^5.65.0",
+    "webpack-bundle-analyzer": "^4.5.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.6.0"
+  }
 }

@@ -1,4 +1,4 @@
-import { CheckIcon, ChevronDownIcon } from '@heroicons/react/outline';
+import {CheckIcon, ChevronDownIcon} from '@heroicons/react/outline';
 import Downshift from 'downshift';
 import * as React from 'react';
 import { useEffect } from 'react';

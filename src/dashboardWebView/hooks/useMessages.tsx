@@ -6,7 +6,7 @@ import { Page } from '../models/Page';
 import { DashboardViewAtom, SettingsAtom, ViewDataAtom } from '../state';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
-import { ViewType } from '../models';
+import { NavigationType } from '../models';
 
 export default function useMessages() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -22,8 +22,10 @@ export default function useMessages() {
         break;
       case DashboardCommand.viewData:
         setViewData(message.data.data);
-        if (message.data.data?.type === ViewType.Media) {
-          setView(ViewType.Media);
+        if (message.data.data?.type === NavigationType.Media) {
+          setView(NavigationType.Media);
+        } else if (message.data.data?.type === NavigationType.Contents) {
+          setView(NavigationType.Contents);
         }
         break;
       case DashboardCommand.settings:

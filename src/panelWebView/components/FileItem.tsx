@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { isValidFile } from '../../helpers/isValidFile';
 import { MessageHelper } from '../../helpers/MessageHelper';
 import { CommandToCode } from '../CommandToCode';
 import { FileIcon } from './Icons/FileIcon';
@@ -19,7 +20,7 @@ const FileItem: React.FunctionComponent<IFileItemProps> = ({ name, path }: React
     <li className={`file_list__items__item`}
         onClick={openFile}>
       {
-        (name.endsWith('.md') || name.endsWith('.markdown') || name.endsWith('.mdx')) ? (
+        (isValidFile(name)) ? (
           <MarkdownIcon />
         ) : (
           <FileIcon />

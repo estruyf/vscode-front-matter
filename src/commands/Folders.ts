@@ -11,6 +11,8 @@ import { existsSync, mkdirSync } from 'fs';
 import { format } from 'date-fns';
 import { Dashboard } from './Dashboard';
 import { parseWinPath } from '../helpers/parseWinPath';
+import { MediaHelpers } from '../helpers/MediaHelpers';
+import { MediaListener } from '../listeners';
 
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
@@ -62,7 +64,8 @@ export class Folders {
     }
 
     if (Dashboard.isOpen) {
-      Dashboard.switchFolder(folderName);
+      MediaHelpers.resetMedia();
+      MediaListener.sendMediaFiles(0, folderName);
     }
   }
 

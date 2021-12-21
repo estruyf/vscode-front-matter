@@ -1,3 +1,4 @@
+import { isValidFile } from './../helpers/isValidFile';
 import { SETTING_AUTO_UPDATE_DATE, SETTING_MODIFIED_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TEMPLATES_PREFIX, CONFIG_KEY, SETTING_DATE_FORMAT, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX } from './../constants';
 import * as vscode from 'vscode';
 import { TaxonomyType } from "../models";
@@ -203,7 +204,7 @@ export class Article {
 
     const file = parseWinPath(editor.document.fileName);
 
-    if (!file.endsWith(`.md`) && !file.endsWith(`.markdown`) && !file.endsWith(`.mdx`)) {
+    if (!isValidFile(file)) {
       return;
     }
 

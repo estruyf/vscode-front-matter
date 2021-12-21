@@ -1,5 +1,5 @@
 import { Disclosure } from '@headlessui/react';
-import { ChevronRightIcon } from '@heroicons/react/solid';
+import {ChevronRightIcon} from '@heroicons/react/solid';
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 import { groupBy } from '../../../helpers/GroupBy';

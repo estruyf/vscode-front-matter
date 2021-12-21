@@ -1,4 +1,4 @@
-import { HeartIcon, StarIcon } from '@heroicons/react/outline';
+import {HeartIcon, StarIcon} from '@heroicons/react/outline';
 import * as React from 'react';
 import { GITHUB_LINK, REVIEW_LINK, SPONSOR_LINK } from '../../constants';
 import { Messenger } from '@estruyf/vscode/dist/client';

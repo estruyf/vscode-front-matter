@@ -1,3 +1,4 @@
+import { PagesListener } from './../listeners/PagesListener';
 import { ArticleHelper, Settings } from ".";
 import { SETTINGS_CONTENT_DRAFT_FIELD, SETTING_TAXONOMY_CONTENT_TYPES } from "../constants";
 import { ContentType as IContentType, DraftField } from '../models';
@@ -128,5 +129,8 @@ export class ContentType {
     }
 
     Notifications.info(`Your new content has been created.`);
+
+    // Trigger a refresh for the dashboard
+    PagesListener.refresh();
   }
 }

@@ -1,4 +1,4 @@
-import { FolderIcon } from '@heroicons/react/solid';
+import {FolderIcon} from '@heroicons/react/solid';
 import { basename } from 'path';
 import * as React from 'react';
 import { useRecoilState } from 'recoil';

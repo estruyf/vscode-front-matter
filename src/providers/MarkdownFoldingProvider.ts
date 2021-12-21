@@ -13,31 +13,15 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
   public async provideFoldingRanges(document: TextDocument, context: FoldingContext, token: CancellationToken): Promise<FoldingRange[]> {
     const ranges: FoldingRange[] = [];
 
-    const lines = document.getText().split('\n');
-    let start: number | null = null;
-    let end: number | null = null;
+    const range = MarkdownFoldingProvider.getFrontMatterRange(document);
+    if (range) {
+      MarkdownFoldingProvider.start = null;
+      MarkdownFoldingProvider.end = null;
+      MarkdownFoldingProvider.endLine = null;
 
-    MarkdownFoldingProvider.start = null;
-    MarkdownFoldingProvider.end = null;
-    MarkdownFoldingProvider.endLine = null;
+      MarkdownFoldingProvider.triggerHighlighting();
 
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      if (line.startsWith('---')) {
-        if (i === 0 && start === null) {
-          start = i;
-          MarkdownFoldingProvider.start = start;
-        } else if (start !== null && end === null) {
-          end = i;
-          MarkdownFoldingProvider.end = end;
-          MarkdownFoldingProvider.endLine = line.length;
-
-          MarkdownFoldingProvider.triggerHighlighting();
-
-          ranges.push(new FoldingRange(start, end, FoldingRangeKind.Region));
-          return ranges;
-        }
-      }
+      ranges.push(new FoldingRange(range.start.line, range.end.line, FoldingRangeKind.Region));
     }
 
     return ranges;
@@ -46,9 +30,9 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
   public static triggerHighlighting() {
     const fmHighlight = Settings.get<boolean>(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT);
 
-    if (MarkdownFoldingProvider.start !== null && MarkdownFoldingProvider.end !== null && MarkdownFoldingProvider.endLine !== null) {
-      const range = new Range(new Position(MarkdownFoldingProvider.start, 0), new Position(MarkdownFoldingProvider.end, MarkdownFoldingProvider.endLine));
+    const range = this.getFrontMatterRange();
 
+    if (range) {
       if (MarkdownFoldingProvider.decType !== null) {
         MarkdownFoldingProvider.decType.dispose();
       }
@@ -58,5 +42,44 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
         window.activeTextEditor?.setDecorations(MarkdownFoldingProvider.decType, [range]);
       }
     }
+  }
+
+  /**
+   * Retrieve the range of the current Front Matter page
+   * @param document 
+   * @returns 
+   */
+  public static getFrontMatterRange(document?: TextDocument) {
+    if (document) {
+      const lines = document.getText().split('\n');
+
+      let start = null;
+      let end = null;
+      let endLine = null;
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (line.startsWith('---')) {
+          if (i === 0 && start === null) {
+            start = i;
+          } else if (start !== null && end === null) {
+            end = i;
+            endLine = line.length;
+
+            MarkdownFoldingProvider.triggerHighlighting();
+
+            return new Range(new Position(start, 0), new Position(end, endLine));
+          }
+        }
+      }
+    }
+
+    if (MarkdownFoldingProvider.start !== null && MarkdownFoldingProvider.end !== null && MarkdownFoldingProvider.endLine !== null) {
+      const range = new Range(new Position(MarkdownFoldingProvider.start, 0), new Position(MarkdownFoldingProvider.end, MarkdownFoldingProvider.endLine));
+
+      return range;
+    }
+
+    return null;
   }
 }

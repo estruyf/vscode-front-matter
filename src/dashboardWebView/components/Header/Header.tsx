@@ -3,7 +3,7 @@ import { Sorting } from './Sorting';
 import { Searchbox } from './Searchbox';
 import { Filter } from './Filter';
 import { Folders } from './Folders';
-import { Settings, ViewType } from '../../models';
+import { Settings, NavigationType } from '../../models';
 import { DashboardMessage } from '../../DashboardMessage';
 import { Startup } from '../Startup';
 import { Navigation } from '../Navigation';
@@ -14,7 +14,7 @@ import { CategoryAtom, DashboardViewAtom, SortingAtom, TagAtom } from '../../sta
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { ClearFilters } from './ClearFilters';
 import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIcon';
-import { PhotographIcon } from '@heroicons/react/outline';
+import {PhotographIcon} from '@heroicons/react/outline';
 import { Pagination } from '../Media/Pagination';
 import { ChoiceButton } from '../ChoiceButton';
 import { Breadcrumb } from './Breadcrumb';
@@ -47,7 +47,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
     Messenger.send(DashboardMessage.createByTemplate);
   };
 
-  const updateView = (view: ViewType) => {
+  const updateView = (view: NavigationType) => {
     setView(view);
     resetSorting();
   }
@@ -57,17 +57,17 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
       
       <div className={`px-4 bg-gray-50 dark:bg-vulcan-50 border-b-2 border-gray-200 dark:border-vulcan-200`}>
         <div className={`flex items-center justify-start`}>
-          <button className={`p-2 flex items-center ${view === "contents" ? "bg-gray-200 dark:bg-vulcan-200" : ""} hover:bg-gray-100 dark:hover:bg-vulcan-100`} onClick={() => updateView(ViewType.Contents)}>
+          <button className={`p-2 flex items-center ${view === "contents" ? "bg-gray-200 dark:bg-vulcan-200" : ""} hover:bg-gray-100 dark:hover:bg-vulcan-100`} onClick={() => updateView(NavigationType.Contents)}>
             <MarkdownIcon className={`h-6 w-auto mr-2`} /><span>Contents</span>
           </button>
-          <button className={`p-2 flex items-center ${view === "media" ? "bg-gray-200 dark:bg-vulcan-200" : ""} hover:bg-gray-100 dark:hover:bg-vulcan-100`} onClick={() => updateView(ViewType.Media)}>
+          <button className={`p-2 flex items-center ${view === "media" ? "bg-gray-200 dark:bg-vulcan-200" : ""} hover:bg-gray-100 dark:hover:bg-vulcan-100`} onClick={() => updateView(NavigationType.Media)}>
             <PhotographIcon className={`h-6 w-auto mr-2`} /><span>Media</span>
           </button>
         </div>
       </div>
 
       {
-        view === ViewType.Contents && (
+        view === NavigationType.Contents && (
           <>
             <div className={`px-4 mt-3 mb-2 flex items-center justify-between`}>
               <Searchbox />
@@ -112,14 +112,14 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
 
               <Grouping />
 
-              <Sorting view={ViewType.Contents} />
+              <Sorting view={NavigationType.Contents} />
             </div>
           </>
         )
       }
 
       {
-        view === ViewType.Media && (
+        view === NavigationType.Media && (
           <>
             <Pagination />
             <Breadcrumb />

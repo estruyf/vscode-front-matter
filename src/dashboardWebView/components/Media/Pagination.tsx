@@ -1,11 +1,13 @@
 import { EventData } from '@estruyf/vscode';
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { RefreshIcon } from '@heroicons/react/outline';
+import {RefreshIcon} from '@heroicons/react/outline';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
+import { useDebounce } from '../../../hooks/useDebounce';
+import { usePrevious } from '../../../panelWebView/hooks/usePrevious';
 import { DashboardCommand } from '../../DashboardCommand';
 import { DashboardMessage } from '../../DashboardMessage';
-import { LoadingAtom, MediaTotalSelector, PageAtom, SelectedMediaFolderSelector, SortingSelector } from '../../state';
+import { LoadingAtom, MediaTotalSelector, PageAtom, SelectedMediaFolderSelector, SettingsSelector, SortingSelector } from '../../state';
 import { FolderCreation } from './FolderCreation';
 import { LIMIT } from './Media';
 import { PaginationButton } from './PaginationButton';
@@ -13,12 +15,16 @@ import { PaginationButton } from './PaginationButton';
 export interface IPaginationProps {}
 
 export const Pagination: React.FunctionComponent<IPaginationProps> = ({}: React.PropsWithChildren<IPaginationProps>) => {
+  const [ lastUpdated, setLastUpdated ] = React.useState<string | null>(null);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const crntSorting = useRecoilValue(SortingSelector);
   const totalMedia = useRecoilValue(MediaTotalSelector);
   const [ , setLoading ] = useRecoilState(LoadingAtom);
   const [ page, setPage ] = useRecoilState(PageAtom);
-  
+  const settings = useRecoilValue(SettingsSelector);
+  const debounceGetMedia = useDebounce<string | null>(lastUpdated, 200);
+  const prevSelectedFolder = usePrevious<string | null>(selectedFolder);
+
   const totalPages = Math.ceil(totalMedia / LIMIT) - 1;
 
   const getTotalPage = () => {
@@ -61,35 +67,39 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({}: React.
   }
 
   React.useEffect(() => {
-    setLoading(true);
-    Messenger.send(DashboardMessage.getMedia, {
-      page,
-      folder: selectedFolder || '',
-      sorting: crntSorting
-    });
+    setLastUpdated(new Date().getTime().toString());
   }, [page]);
 
   React.useEffect(() => {
-    setLoading(true);
-    Messenger.send(DashboardMessage.getMedia, {
-      page: 0,
-      folder: selectedFolder || '',
-      sorting: crntSorting
-    });
-    setPage(0);
+    if (prevSelectedFolder !== null || settings?.dashboardState?.media.selectedFolder !== selectedFolder) {
+      setLoading(true);
+      setPage(0);
+      setLastUpdated(new Date().getTime().toString());
+    }
   }, [selectedFolder]);
 
   React.useEffect(() => {
-    setLoading(true);
-    Messenger.send(DashboardMessage.getMedia, {
-      page,
-      folder: selectedFolder || '',
-      sorting: crntSorting
-    });
+    setLastUpdated(new Date().getTime().toString());
   }, [crntSorting]);
 
   React.useEffect(() => {
+    if (debounceGetMedia) {
+      setLoading(true);
+
+      Messenger.send(DashboardMessage.getMedia, {
+        page,
+        folder: selectedFolder || '',
+        sorting: crntSorting
+      });
+    }
+  }, [debounceGetMedia]);
+
+  React.useEffect(() => {
     Messenger.listen(mediaUpdate);
+
+    return () => {
+      Messenger.unlisten(mediaUpdate);
+    }
   }, []);
 
   return (

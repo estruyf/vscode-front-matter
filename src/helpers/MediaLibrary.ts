@@ -1,5 +1,4 @@
-
-import { Dashboard } from '../commands/Dashboard';
+import { MediaHelpers } from './MediaHelpers';
 import { workspace } from 'vscode';
 import { JsonDB } from 'node-json-db/dist/JsonDB';
 import { basename, dirname, join, parse } from 'path';
@@ -34,7 +33,7 @@ export class MediaLibrary {
             f.oldUri.path.endsWith('.png') || 
             f.oldUri.path.endsWith('.gif')) {
           this.rename(f.oldUri.fsPath, f.newUri.fsPath);
-          Dashboard.resetMedia();
+          MediaHelpers.resetMedia();
         }
       });
     });
@@ -89,7 +88,7 @@ export class MediaLibrary {
         } else {
           renameSync(filePath, newPath);
           this.rename(filePath, newPath);
-          Dashboard.resetMedia();
+          MediaHelpers.resetMedia();
         }
       } catch(err) {
         Notifications.error(`Something went wrong updating "${name}" to "${filename}".`);

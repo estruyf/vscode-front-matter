@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
-import { ViewSelector, ViewType } from '../../state';
+import { DashboardViewType } from '../../models';
+import { ViewSelector } from '../../state';
 
 export interface IListProps {}
 
@@ -8,15 +9,15 @@ export const List: React.FunctionComponent<IListProps> = ({children}: React.Prop
   const view = useRecoilValue(ViewSelector);
 
   let className = '';
-  if (view === ViewType.Grid) {
+  if (view === DashboardViewType.Grid) {
     className = `grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8`;
-  } else if (view === ViewType.List) {
+  } else if (view === DashboardViewType.List) {
     className = `-mx-4`;
   }
 
   return (
     <ul role="list" className={className}>
-      {view === ViewType.List && (
+      {view === DashboardViewType.List && (
         <li className="px-5 relative uppercase text-vulcan-100 dark:text-whisper-900 py-2 border-b border-vulcan-50">
           <div className={`grid grid-cols-12 gap-x-4 sm:gap-x-6 xl:gap-x-8`}>
             <div className="col-span-8">
