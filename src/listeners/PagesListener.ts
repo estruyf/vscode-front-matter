@@ -124,4 +124,8 @@ export class PagesListener extends BaseListener {
 
     this.sendMsg(DashboardCommand.pages, pages);
   }
+
+  public static refresh() {
+    this.getPagesData();
+  }
 }

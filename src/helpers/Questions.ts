@@ -45,7 +45,8 @@ export class Questions {
     let selectedFolder: string | undefined;
     if (folders.length > 1) {
       selectedFolder = await window.showQuickPick(folders.map(f => f.title), {
-        placeHolder: `Select where you want to create your content`
+        placeHolder: `Select where you want to create your content`,
+        ignoreFocusOut: true
       });
     } else {
       selectedFolder = folders[0].title;
