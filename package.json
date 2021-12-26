@@ -3,7 +3,7 @@
   "displayName": "Front Matter",
   "description": "An essential Visual Studio Code extension when you want to manage the markdown pages of your static site like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "5.8.0",
+  "version": "5.9.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
