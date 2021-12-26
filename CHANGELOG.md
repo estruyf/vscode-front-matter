@@ -5,6 +5,7 @@
 ### 🎨 Enhancements
 
 - [#211](https://github.com/estruyf/vscode-front-matter/issues/211): Replace text selection on media inserts
+- [#213](https://github.com/estruyf/vscode-front-matter/issues/213): New media folder overview design
 
 ### 🐞 Fixes
 

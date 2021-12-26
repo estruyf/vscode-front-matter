@@ -113,7 +113,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
         {
           folders && folders.length > 0 && (
             <div className={`mb-8`}>
-              <List>
+              <List gap={0}>
                 {
                   folders && folders.map((folder) => (
                     <FolderItem key={folder} folder={folder} staticFolder={settings?.staticFolder} wsFolder={settings?.wsFolder} />

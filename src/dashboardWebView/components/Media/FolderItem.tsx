@@ -16,11 +16,13 @@ export const FolderItem: React.FunctionComponent<IFolderItemProps> = ({ folder, 
   const relFolderPath = wsFolder ? folder.replace(wsFolder, '') : folder;
   
   return (
-    <li className={`group relative bg-gray-200 dark:bg-vulcan-300 hover:shadow-xl dark:hover:bg-vulcan-100 text-gray-600 hover:text-gray-700 dark:text-whisper-900 dark:hover:text-whisper-800 p-4`}>
-      <button className={`w-full flex flex-col items-center`} onClick={() => setSelectedFolder(folder)}>
-        <FolderIcon className={`h-auto w-1/2`} />
+    <li className={`group relative hover:shadow-xl dark:hover:bg-vulcan-100 text-gray-600 hover:text-gray-700 dark:text-whisper-900 dark:hover:text-whisper-800 p-4`}>
+      <button className={`w-full flex flex-row items-center h-full`} onClick={() => setSelectedFolder(folder)}>
+        <div>
+          <FolderIcon className={`h-12 w-12 mr-4`} />
+        </div>
 
-        <p className="text-sm font-bold pointer-events-none flex items-center">
+        <p className="text-sm font-bold pointer-events-none flex items-center text-left overflow-hidden break-words">
           {basename(relFolderPath)}
         </p>
       </button>
