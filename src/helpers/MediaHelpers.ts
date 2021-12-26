@@ -283,7 +283,15 @@ export class MediaHelpers {
             }
           }
 
-          await editor?.edit(builder => builder.insert(new Position(line, character), data.snippet || `![${data.alt || data.caption || ""}](${imgPath})`));
+          const selection = editor?.selection;
+          await editor?.edit(builder => {
+            const snippet = data.snippet || `![${data.alt || data.caption || ""}](${imgPath})`;
+            if (selection !== undefined) {
+              builder.replace(selection, snippet);
+            } else {
+              builder.insert(new Position(line, character), snippet);
+            }            
+          });
         }
         panel.getMediaSelection();
       } else {

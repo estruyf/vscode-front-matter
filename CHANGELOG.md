@@ -4,10 +4,11 @@
 
 ### 🎨 Enhancements
 
+- [#211](https://github.com/estruyf/vscode-front-matter/issues/211): Replace text selection on media inserts
+
 ### 🐞 Fixes
 
 - [#210](https://github.com/estruyf/vscode-front-matter/issues/210): Fix for adding media files with uppercase file extensions
-
 
 ## [5.8.0] - 2021-12-21 - 🎄
 
