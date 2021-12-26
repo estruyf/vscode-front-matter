@@ -41,6 +41,7 @@ export class PagesListener extends BaseListener {
       const folderUri = Uri.parse(folder.path);
       let watcher = workspace.createFileSystemWatcher(new RelativePattern(folderUri, "*"));
       watcher.onDidCreate(async (uri: Uri) => this.getPagesData);
+      watcher.onDidDelete(async (uri: Uri) => this.getPagesData);
       this.watchers[folderUri.fsPath] = watcher;
     }
   }
