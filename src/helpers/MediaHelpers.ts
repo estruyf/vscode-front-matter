@@ -313,7 +313,7 @@ export class MediaHelpers {
   private static filterMedia(files: Uri[]) {
     return files.filter(file => {
       const ext = extname(file.fsPath);
-      return ['.jpg', '.jpeg', '.png', '.gif', '.svg'].includes(ext);
+      return ['.jpg', '.jpeg', '.png', '.gif', '.svg'].includes(ext.toLowerCase());
     }).map((file) => ({
       fsPath: file.fsPath,
       vsPath: Dashboard.getWebview()?.asWebviewUri(file).toString(),

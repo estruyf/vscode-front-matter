@@ -1,5 +1,14 @@
 # Change Log
 
+## [5.9.0] - 2021-01-XX
+
+### 🎨 Enhancements
+
+### 🐞 Fixes
+
+- [#210](https://github.com/estruyf/vscode-front-matter/issues/210): Fix for adding media files with uppercase file extensions
+
+
 ## [5.8.0] - 2021-12-21 - 🎄
 
 ### 🎨 Enhancements
