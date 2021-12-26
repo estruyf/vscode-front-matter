@@ -5,6 +5,7 @@
 ### 🎨 Enhancements
 
 - [#211](https://github.com/estruyf/vscode-front-matter/issues/211): Replace text selection on media inserts
+- [#212](https://github.com/estruyf/vscode-front-matter/issues/212): Create folder watchers for content folders. When new content gets created, the dashboard updates.
 - [#213](https://github.com/estruyf/vscode-front-matter/issues/213): New media folder overview design
 
 ### 🐞 Fixes
