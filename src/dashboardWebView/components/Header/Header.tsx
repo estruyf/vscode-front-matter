@@ -55,8 +55,8 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
   return (
     <div className={`w-full sticky top-0 z-40 bg-gray-100 dark:bg-vulcan-500`}>
 
-      <div className="mb-0 border-b bg-gray-100 dark:bg-vulcan-500 border-gray-200 dark:border-vulcan-300">
-        <ul className="flex items-center justify-start -mb-px" id="myTab" data-tabs-toggle="#myTabContent" role="tablist">
+      <div className="mb-0 border-b bg-gray-100 dark:bg-vulcan-500 border-gray-200 dark:border-vulcan-300 h-12">
+        <ul className="flex items-center justify-start h-full -mb-px" data-tabs-toggle="#myTabContent" role="tablist">
           <li className="mr-2" role="presentation">
             <button className={`flex items-center py-2 px-4 text-sm font-medium text-center border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300  dark:hover:text-gray-300 ${view === NavigationType.Contents ? "border-vulcan-500 text-vulcan-500  dark:border-whisper-500 dark:text-whisper-500" : "text-gray-500 dark:text-gray-400"}`} type="button" role="tab" aria-controls="profile" aria-selected="false" onClick={() => updateView(NavigationType.Contents)}>
               <MarkdownIcon className={`h-6 w-auto mr-2`} /><span>Contents</span>
