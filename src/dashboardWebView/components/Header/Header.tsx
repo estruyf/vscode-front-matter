@@ -15,9 +15,9 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import { ClearFilters } from './ClearFilters';
 import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIcon';
 import {PhotographIcon} from '@heroicons/react/outline';
-import { Pagination } from '../Media/Pagination';
+import { MediaHeaderTop } from '../Media/MediaHeaderTop';
 import { ChoiceButton } from '../ChoiceButton';
-import { Breadcrumb } from './Breadcrumb';
+import { MediaHeaderBottom } from '../Media/MediaHeaderBottom';
 
 export interface IHeaderProps {
   settings: Settings | null;
@@ -125,8 +125,9 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
       {
         view === NavigationType.Media && (
           <>
-            <Pagination />
-            <Breadcrumb />
+            <MediaHeaderTop />
+            
+            <MediaHeaderBottom />
           </>
         )
       }

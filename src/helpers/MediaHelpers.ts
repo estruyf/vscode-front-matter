@@ -111,7 +111,6 @@ export class MediaHelpers {
     const total = files.length;
 
     // Get media set
-    files = files.slice(page * 16, ((page + 1) * 16));
     files = files.map((file) => {
       try {
         const metadata = MediaLibrary.getInstance().get(file.fsPath);
@@ -323,6 +322,7 @@ export class MediaHelpers {
       const ext = extname(file.fsPath);
       return ['.jpg', '.jpeg', '.png', '.gif', '.svg'].includes(ext.toLowerCase());
     }).map((file) => ({
+      filename: basename(file.fsPath),
       fsPath: file.fsPath,
       vsPath: Dashboard.getWebview()?.asWebviewUri(file).toString(),
       stats: undefined

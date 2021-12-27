@@ -26,24 +26,28 @@ export const FolderCreation: React.FunctionComponent<IFolderCreationProps> = (pr
   const scripts = (settings?.scripts || []).filter(script => script.type === ScriptType.MediaFolder);
   if (scripts.length > 0) {
     return (
-      <ChoiceButton 
-        title={`Create new folder`} 
-        choices={scripts.map(s => ({
-          title: s.title,
-          onClick: () => runCustomScript(s)
-        }))} 
-        onClick={onFolderCreation} 
-        disabled={!settings?.initialized} />
+      <div className="flex flex-1 justify-end">
+        <ChoiceButton 
+          title={`Create new folder`} 
+          choices={scripts.map(s => ({
+            title: s.title,
+            onClick: () => runCustomScript(s)
+          }))} 
+          onClick={onFolderCreation} 
+          disabled={!settings?.initialized} />
+      </div>
     )
   }
 
   return (
-    <button 
-      className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 focus:outline-none disabled:bg-gray-500`}
-      title={`Create new folder`}
-      onClick={onFolderCreation}>
-      <FolderAddIcon className={`mr-2 h-6 w-6`} />
-      <span className={``}>Create new folder</span>
-    </button>
+    <div className="flex flex-1 justify-end">
+      <button 
+        className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 focus:outline-none disabled:bg-gray-500`}
+        title={`Create new folder`}
+        onClick={onFolderCreation}>
+        <FolderAddIcon className={`mr-2 h-6 w-6`} />
+        <span className={``}>Create new folder</span>
+      </button>
+    </div>
   );
 };

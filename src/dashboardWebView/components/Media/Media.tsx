@@ -17,19 +17,17 @@ import { useCallback } from 'react';
 import { DashboardMessage } from '../../DashboardMessage';
 import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMatterIcon';
 import { FolderItem } from './FolderItem';
+import useMedia from '../../hooks/useMedia';
 
 export interface IMediaProps {}
 
-export const LIMIT = 16;
-
 export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWithChildren<IMediaProps>) => {
+  const { media } = useMedia();
   const settings = useRecoilValue(SettingsSelector);
-  const [ selectedFolder, setSelectedFolder ] = useRecoilState(SelectedMediaFolderAtom);
-  const [ media, setMedia ] = React.useState<MediaInfo[]>([]);
-  const [ , setTotal ] = useRecoilState(MediaTotalAtom);
-  const [ folders, setFolders ] = useRecoilState(MediaFoldersAtom);
-  const [ loading, setLoading ] = useRecoilState(LoadingAtom);
   const viewData = useRecoilValue(ViewDataSelector);
+  const selectedFolder = useRecoilValue(SelectedMediaFolderAtom);
+  const folders = useRecoilValue(MediaFoldersAtom);
+  const loading = useRecoilValue(LoadingAtom);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.forEach((file) => {
@@ -52,25 +50,6 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
     onDrop,
     accept: 'image/*'
   });
-
-  const messageListener = (message: MessageEvent<EventData<MediaPaths | { key: string, value: any }>>) => {
-    if (message.data.command === DashboardCommand.media) {
-      const data: MediaPaths = message.data.data as MediaPaths;
-      setLoading(false);
-      setMedia(data.media);
-      setTotal(data.total);
-      setFolders(data.folders);
-      setSelectedFolder(data.selectedFolder);
-    }
-  };
-
-  React.useEffect(() => {
-    Messenger.listen<MediaPaths>(messageListener);
-
-    return () => {
-      Messenger.unlisten(messageListener);
-    }
-  }, ['']);
   
   return (
     <div className="flex flex-col h-full overflow-auto">
