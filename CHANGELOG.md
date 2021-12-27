@@ -4,6 +4,7 @@
 
 ### 🎨 Enhancements
 
+- Fixing the spinner which overlaps the global navigation bar
 - [#199](https://github.com/estruyf/vscode-front-matter/issues/199): Search media files in the currently selected folder
 - [#211](https://github.com/estruyf/vscode-front-matter/issues/211): Replace text selection on media inserts
 - [#212](https://github.com/estruyf/vscode-front-matter/issues/212): Create folder watchers for content folders. When new content gets created, the dashboard updates.
