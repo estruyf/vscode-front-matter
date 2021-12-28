@@ -1,6 +1,6 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { Menu } from '@headlessui/react';
-import {ArchiveIcon, ClipboardIcon, CodeIcon, PhotographIcon, PlusIcon} from '@heroicons/react/outline';
+import { ClipboardIcon, CodeIcon, PhotographIcon, PlusIcon, TrashIcon } from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useEffect } from 'react';
@@ -240,7 +240,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
                       <QuickAction 
                         title='Delete media file'
                         onClick={deleteMedia}>
-                        <ArchiveIcon className={`h-5 w-5`} aria-hidden="true" />
+                        <TrashIcon className={`h-5 w-5`} aria-hidden="true" />
                       </QuickAction>
                     </>
                   )
