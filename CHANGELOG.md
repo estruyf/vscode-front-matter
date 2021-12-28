@@ -14,6 +14,7 @@
 ### 🐞 Fixes
 
 - [#210](https://github.com/estruyf/vscode-front-matter/issues/210): Fix for adding media files with uppercase file extensions
+- [#214](https://github.com/estruyf/vscode-front-matter/issues/214): Fix for opening markdown file after creating it for the specified content type
 
 ## [5.8.0] - 2021-12-21 - 🎄
 
