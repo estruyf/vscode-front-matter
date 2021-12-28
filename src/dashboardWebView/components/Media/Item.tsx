@@ -1,6 +1,6 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { Menu } from '@headlessui/react';
-import { ClipboardIcon, CodeIcon, PhotographIcon, PlusIcon, TrashIcon } from '@heroicons/react/outline';
+import { ClipboardIcon, CodeIcon, PencilIcon, PhotographIcon, PlusIcon, TrashIcon } from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useEffect } from 'react';
@@ -210,6 +210,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
             <div className="flex items-center border border-transparent group-hover:bg-gray-50 dark:group-hover:bg-vulcan-200 group-hover:border-gray-100 dark:group-hover:border-vulcan-50 rounded-full p-2 -mr-2 -mt-2">
 
               <div className='hidden group-hover:inline-block h-5'>
+                <QuickAction 
+                  title='Edit metadata'
+                  onClick={updateMetadata}>
+                  <PencilIcon className={`h-5 w-5`} aria-hidden="true" />
+                </QuickAction>
+
                 {
                   viewData?.data?.filePath ? (
                     <>
