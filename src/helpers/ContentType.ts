@@ -2,7 +2,7 @@ import { PagesListener } from './../listeners/PagesListener';
 import { ArticleHelper, Settings } from ".";
 import { SETTINGS_CONTENT_DRAFT_FIELD, SETTING_TAXONOMY_CONTENT_TYPES } from "../constants";
 import { ContentType as IContentType, DraftField } from '../models';
-import { Uri, workspace, window } from 'vscode'; 
+import { Uri, workspace, window, commands } from 'vscode'; 
 import { Folders } from "../commands/Folders";
 import { Questions } from "./Questions";
 import { writeFileSync } from "fs";
@@ -123,10 +123,7 @@ export class ContentType {
 
     writeFileSync(newFilePath, content, { encoding: "utf8" });
 
-    const txtDoc = await workspace.openTextDocument(Uri.parse(newFilePath));
-    if (txtDoc) {
-      window.showTextDocument(txtDoc);
-    }
+    await commands.executeCommand('vscode.open', Uri.file(newFilePath));
 
     Notifications.info(`Your new content has been created.`);
 
