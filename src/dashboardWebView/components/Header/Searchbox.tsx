@@ -4,9 +4,11 @@ import { useRecoilState } from 'recoil';
 import { useDebounce } from '../../../hooks/useDebounce';
 import { SearchAtom } from '../../state';
 
-export interface ISearchboxProps {}
+export interface ISearchboxProps {
+  placeholder?: string;
+}
 
-export const Searchbox: React.FunctionComponent<ISearchboxProps> = ({}: React.PropsWithChildren<ISearchboxProps>) => {
+export const Searchbox: React.FunctionComponent<ISearchboxProps> = ({placeholder}: React.PropsWithChildren<ISearchboxProps>) => {
   const [ value, setValue ] = React.useState('');
   const [ debounceSearchValue, setDebounceValue ] = useRecoilState(SearchAtom);
   const debounceSearch = useDebounce<string>(value, 500);
@@ -38,7 +40,7 @@ export const Searchbox: React.FunctionComponent<ISearchboxProps> = ({}: React.Pr
             type="search"
             name="search"
             className={`block w-full py-2 pl-10 pr-3 sm:text-sm bg-white dark:bg-vulcan-300 border border-gray-300 dark:border-vulcan-100 text-vulcan-500 dark:text-whisper-500 placeholder-gray-400 dark:placeholder-whisper-800 focus:outline-none`}
-            placeholder="Search"
+            placeholder={placeholder || "Search"}
             value={value}
             onChange={handleChange}
           />

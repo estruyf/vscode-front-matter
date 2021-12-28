@@ -68,10 +68,10 @@ export const MediaHeaderTop: React.FunctionComponent<IMediaHeaderTopProps> = ({}
 
   return (
     <nav
-      className="py-4 px-5 flex items-center justify-between border-b border-gray-300 dark:border-vulcan-100"
+      className="py-3 px-4 flex items-center justify-between border-b border-gray-300 dark:border-vulcan-100"
       aria-label="Pagination"
     >
-      <Searchbox />
+      <Searchbox placeholder={`Search in folder`} />
 
       <PaginationStatus />
 

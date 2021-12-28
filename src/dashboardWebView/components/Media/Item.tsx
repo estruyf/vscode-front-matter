@@ -1,6 +1,6 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { Menu } from '@headlessui/react';
-import {PhotographIcon} from '@heroicons/react/outline';
+import {ArchiveIcon, ClipboardIcon, CodeIcon, PhotographIcon, PlusIcon} from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useEffect } from 'react';
@@ -15,6 +15,7 @@ import { MenuItem, MenuItems } from '../Menu';
 import { Alert } from '../Modals/Alert';
 import { Metadata } from '../Modals/Metadata';
 import { MenuButton } from './MenuButton'
+import { QuickAction } from './QuickAction';
  
 export interface IItemProps {
   media: MediaInfo;
@@ -206,11 +207,50 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
         <div className={`relative py-4 pl-4 pr-12`}>
           <div className={`absolute top-4 right-4 flex flex-col space-y-4`}>
 
-            <div className="flex items-center">
-              <Menu as="div" className="relative z-10 inline-block text-left">
+            <div className="flex items-center border border-transparent group-hover:bg-gray-50 dark:group-hover:bg-vulcan-200 group-hover:border-gray-100 dark:group-hover:border-vulcan-50 rounded-full p-2 -mr-2 -mt-2">
+
+              <div className='hidden group-hover:inline-block h-5'>
+                {
+                  viewData?.data?.filePath ? (
+                    <>
+                      <QuickAction 
+                        title='Insert image with markdown markup'
+                        onClick={insertToArticle}>
+                        <PlusIcon className={`h-5 w-5`} aria-hidden="true" />
+                      </QuickAction>
+
+                      {
+                        (viewData?.data?.position && settings?.mediaSnippet && settings?.mediaSnippet.length > 0) && (
+                          <QuickAction 
+                            title='Insert snippet'
+                            onClick={insertSnippet}>
+                            <CodeIcon className={`h-5 w-5`} aria-hidden="true" />
+                          </QuickAction>
+                        )
+                      }
+                    </>
+                  ) : (
+                    <>
+                      <QuickAction 
+                        title='Copy media path'
+                        onClick={copyToClipboard}>
+                        <ClipboardIcon className={`h-5 w-5`} aria-hidden="true" />
+                      </QuickAction>
+
+                      <QuickAction 
+                        title='Delete media file'
+                        onClick={deleteMedia}>
+                        <ArchiveIcon className={`h-5 w-5`} aria-hidden="true" />
+                      </QuickAction>
+                    </>
+                  )
+                }
+              </div>
+
+              <Menu as="div" className="relative z-10 inline-block text-left  h-5">
                 <MenuButton title={`Menu`} />
 
-                <MenuItems>
+                <MenuItems widthClass='w-40'>
                   <MenuItem 
                     title={`Edit metadata`}
                     onClick={updateMetadata}
