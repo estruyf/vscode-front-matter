@@ -113,12 +113,12 @@
               "type": "string"
             }
           ],
-          "markdownDescription": "Specify the default sorting option for the content dashboard. You can use one of the values from the enum or define your own ID. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.sorting.default)",
+          "markdownDescription": "Specify the default sorting option for the content dashboard. You can use one of the values from the enum or define your own ID. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.sorting.default)",
           "scope": "Content"
         },
         "frontMatter.content.draftField": {
           "type": "object",
-          "markdownDescription": "Define the draft field you want to use to manage your content. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.draftField)",
+          "markdownDescription": "Define the draft field you want to use to manage your content. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.draftfield)",
           "default": {
             "name": "draft",
             "type": "boolean"
@@ -156,7 +156,7 @@
         "frontMatter.content.fmHighlight": {
           "type": "boolean",
           "default": true,
-          "markdownDescription": "Specify if you want to highlight the Front Matter in the Markdown file. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.fmhighlight)",
+          "markdownDescription": "Specify if you want to highlight the Front Matter in the Markdown file. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.fmhighlight)",
           "scope": "Content"
         },
         "frontMatter.content.pageFolders": {
@@ -197,7 +197,7 @@
         "frontMatter.content.sorting": {
           "type": "array",
           "default": [],
-          "markdownDescription": "Define the sorting options for your dashboard content. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.sorting)",
+          "markdownDescription": "Define the sorting options for your dashboard content. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.sorting)",
           "items": {
             "type": "object",
             "properties": {
@@ -243,7 +243,7 @@
         "frontMatter.content.wysiwyg": {
           "type": "boolean",
           "default": true,
-          "markdownDescription": "Specifies if you want to enable/disable the What You See, Is What You Get (WYSIWYG) markdown controls. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.content.wysiwyg)",
+          "markdownDescription": "Specifies if you want to enable/disable the What You See, Is What You Get (WYSIWYG) markdown controls. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.wysiwyg)",
           "scope": "Content"
         },
         "frontMatter.custom.scripts": {
@@ -303,7 +303,7 @@
         "frontMatter.dashboard.mediaSnippet": {
           "type": "array",
           "default": [],
-          "markdownDescription": "Specify the a snippet for your custom media insert markup. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.dashboard.mediaSnippet)",
+          "markdownDescription": "Specify the a snippet for your custom media insert markup. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.mediasnippet)",
           "items": {
             "type": "string",
             "description": "The parts of your snippet. Use `{mediaUrl}` as placeholder where the path of the image needs to be inserted."
@@ -322,7 +322,7 @@
         "frontMatter.framework.id": {
           "type": "string",
           "default": "",
-          "markdownDescription": "Specify the ID of your static site generator or framework you are using for your website. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.framework.id)"
+          "markdownDescription": "Specify the ID of your static site generator or framework you are using for your website. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.framework.id)"
         },
         "frontMatter.media.defaultSorting": {
           "type": "string",
@@ -333,7 +333,7 @@
             "FileNameAsc",
             "FileNameDesc"
           ],
-          "markdownDescription": "Specify the default sorting option for the media dashboard. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.media.sorting.default)",
+          "markdownDescription": "Specify the default sorting option for the media dashboard. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.media.defaultsorting)",
           "scope": "Content"
         },
         "frontMatter.panel.freeform": {
@@ -357,7 +357,7 @@
         "frontMatter.site.baseURL": {
           "type": "string",
           "default": "",
-          "markdownDescription": "Specify the base URL of your site, this will be used for SEO checks. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.site.baseURL)",
+          "markdownDescription": "Specify the base URL of your site, this will be used for SEO checks. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.site.baseurl)",
           "scope": "Site"
         },
         "frontMatter.taxonomy.alignFilename": {
@@ -376,7 +376,7 @@
         },
         "frontMatter.taxonomy.commaSeparatedFields": {
           "type": "array",
-          "markdownDescription": "Specify the fields names that Front Matter should treat as a comma-separated array. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.taxonomy.commaSeparatedFields)",
+          "markdownDescription": "Specify the fields names that Front Matter should treat as a comma-separated array. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.commaSeparatedFields)",
           "items": {
             "type": "string",
             "description": "Name of the fields you want to use as comma-separated arrays."
@@ -388,7 +388,7 @@
             "array",
             "null"
           ],
-          "markdownDescription": "Specify the type of contents you want to use for your articles/pages/etc. Make sure the `type` is correctly set in your front matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.taxonomy.contentTypes)",
+          "markdownDescription": "Specify the type of contents you want to use for your articles/pages/etc. Make sure the `type` is correctly set in your front matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.contentTypes)",
           "items": {
             "type": "object",
             "description": "Define the content types you want to use in Front Matter.",
@@ -725,7 +725,7 @@
             "warning",
             "error"
           ],
-          "markdownDescription": "Specifies the notifications you want to see. By default, all notifications types will be shown. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.global.notifications)",
+          "markdownDescription": "Specifies the notifications you want to see. By default, all notifications types will be shown. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.global.notifications)",
           "scope": "Templates"
         }
       }
