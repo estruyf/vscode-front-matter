@@ -113,7 +113,7 @@
               "type": "string"
             }
           ],
-          "markdownDescription": "Specify the default sorting option for the content dashboard. You can use one of the values from the enum or define your own ID. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.sorting.default)",
+          "markdownDescription": "Specify the default sorting option for the content dashboard. You can use one of the values from the enum or define your own ID. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.defaultSorting)",
           "scope": "Content"
         },
         "frontMatter.content.draftField": {
