@@ -18,6 +18,7 @@ import { Content } from './commands/Content';
 import ContentProvider from './providers/ContentProvider';
 import { Wysiwyg } from './commands/Wysiwyg';
 import { Diagnostics } from './commands/Diagnostics';
+import { PagesListener } from './listeners';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
@@ -39,6 +40,10 @@ export async function activate(context: vscode.ExtensionContext) {
 	extension.migrateSettings();
 	
 	SettingsHelper.checkToPromote();
+
+	// Start listening to the folders for content changes.
+	// This will make sure the dashboard is up to date
+	PagesListener.startWatchers();
 
 	collection = vscode.languages.createDiagnosticCollection('frontMatter');
 

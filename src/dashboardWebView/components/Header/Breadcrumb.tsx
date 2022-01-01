@@ -1,28 +1,32 @@
-import {CollectionIcon} from '@heroicons/react/outline';
+import { CollectionIcon } from '@heroicons/react/outline';
 import { basename, join } from 'path';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { Sorting } from '.';
 import { HOME_PAGE_NAVIGATION_ID } from '../../../constants';
 import { parseWinPath } from '../../../helpers/parseWinPath';
-import { NavigationType } from '../../models';
-import { SelectedMediaFolderAtom, SettingsAtom } from '../../state';
+import { SearchAtom, SelectedMediaFolderAtom, SettingsAtom } from '../../state';
 
 export interface IBreadcrumbProps {}
 
 export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (props: React.PropsWithChildren<IBreadcrumbProps>) => {
   const [ selectedFolder, setSelectedFolder ] = useRecoilState(SelectedMediaFolderAtom);
-  const settings = useRecoilValue(SettingsAtom);
+  const [ , setSearchValue ] = useRecoilState(SearchAtom);
   const [ folders, setFolders ] = React.useState<string[]>([]);
+  const settings = useRecoilValue(SettingsAtom);
 
-  if (!settings?.wsFolder) {
-    return null;
+  const updateFolder = (folder: string) => {
+    setSearchValue('');
+    setSelectedFolder(folder);
   }
 
   React.useEffect(() => {
+    if (!settings) {
+      return;
+    }
+
     const { wsFolder, staticFolder, contentFolders } = settings;
 
-    const isValid = (folderPath: string) => {      
+    const isValid = (folderPath: string) => {
       if (staticFolder) {
         const staticPath = parseWinPath(join(wsFolder, staticFolder)) as string;
         const relPath = folderPath.replace(staticPath, '') as string;
@@ -33,7 +37,7 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (props: Rea
           return false;
         }
       }
-1
+
       for (let i = 0; i < contentFolders.length; i++) {
         const folder = contentFolders[i];
         const contentFolder = parseWinPath(folder.path) as string;
@@ -62,45 +66,40 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (props: Rea
   
       setFolders(allFolders);
     }
-  }, [selectedFolder]);
-
+  }, [selectedFolder, settings]);
+  
   return (
-    <nav className="w-full bg-gray-200 text-vulcan-300 dark:bg-vulcan-400 dark:text-whisper-600 border-b border-gray-300 dark:border-vulcan-100 flex justify-between py-2" aria-label="Breadcrumb">
-      <ol role="list" className="flex space-x-4 px-5">
-        <li className="flex">
+    <ol role="list" className="flex space-x-4 px-5 flex-1">
+      <li className="flex">
+        <div className="flex items-center">
+          <button onClick={() => setSelectedFolder(HOME_PAGE_NAVIGATION_ID)} className="text-gray-500 hover:text-gray-600 dark:text-whisper-900 dark:hover:text-whisper-500">
+            <CollectionIcon className="flex-shrink-0 h-5 w-5" aria-hidden="true" />
+            <span className="sr-only">Home</span>
+          </button>
+        </div>
+      </li>
+
+      {folders.map((folder) => (
+        <li key={folder} className="flex">
           <div className="flex items-center">
-            <button onClick={() => setSelectedFolder(HOME_PAGE_NAVIGATION_ID)} className="text-gray-500 hover:text-gray-600 dark:text-whisper-900 dark:hover:text-whisper-500">
-              <CollectionIcon className="flex-shrink-0 h-5 w-5" aria-hidden="true" />
-              <span className="sr-only">Home</span>
+            <svg
+              className="flex-shrink-0 h-5 w-5 text-gray-300 dark:text-whisper-900"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              aria-hidden="true"
+            >
+              <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
+            </svg>
+            <button
+              onClick={() => updateFolder(folder)}
+              className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-600 dark:text-whisper-900 dark:hover:text-whisper-500"
+            >
+              {basename(folder)}
             </button>
           </div>
         </li>
-        {folders.map((folder) => (
-          <li key={folder} className="flex">
-            <div className="flex items-center">
-              <svg
-                className="flex-shrink-0 h-5 w-5 text-gray-300 dark:text-whisper-900"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                aria-hidden="true"
-              >
-                <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
-              </svg>
-              <button
-                onClick={() => setSelectedFolder(folder)}
-                className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-600 dark:text-whisper-900 dark:hover:text-whisper-500"
-              >
-                {basename(folder)}
-              </button>
-            </div>
-          </li>
-        ))}
-      </ol>
-
-      <div className={`flex px-5`}>
-        <Sorting view={NavigationType.Media} disableCustomSorting />
-      </div>
-    </nav>
+      ))}
+    </ol>
   );
 };

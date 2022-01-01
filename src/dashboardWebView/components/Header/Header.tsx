@@ -15,9 +15,9 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import { ClearFilters } from './ClearFilters';
 import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIcon';
 import {PhotographIcon} from '@heroicons/react/outline';
-import { Pagination } from '../Media/Pagination';
+import { MediaHeaderTop } from '../Media/MediaHeaderTop';
 import { ChoiceButton } from '../ChoiceButton';
-import { Breadcrumb } from './Breadcrumb';
+import { MediaHeaderBottom } from '../Media/MediaHeaderBottom';
 
 export interface IHeaderProps {
   settings: Settings | null;
@@ -54,16 +54,20 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
 
   return (
     <div className={`w-full sticky top-0 z-40 bg-gray-100 dark:bg-vulcan-500`}>
-      
-      <div className={`px-4 bg-gray-50 dark:bg-vulcan-50 border-b-2 border-gray-200 dark:border-vulcan-200`}>
-        <div className={`flex items-center justify-start`}>
-          <button className={`p-2 flex items-center ${view === "contents" ? "bg-gray-200 dark:bg-vulcan-200" : ""} hover:bg-gray-100 dark:hover:bg-vulcan-100`} onClick={() => updateView(NavigationType.Contents)}>
-            <MarkdownIcon className={`h-6 w-auto mr-2`} /><span>Contents</span>
-          </button>
-          <button className={`p-2 flex items-center ${view === "media" ? "bg-gray-200 dark:bg-vulcan-200" : ""} hover:bg-gray-100 dark:hover:bg-vulcan-100`} onClick={() => updateView(NavigationType.Media)}>
-            <PhotographIcon className={`h-6 w-auto mr-2`} /><span>Media</span>
-          </button>
-        </div>
+
+      <div className="mb-0 border-b bg-gray-100 dark:bg-vulcan-500 border-gray-200 dark:border-vulcan-300 h-12">
+        <ul className="flex items-center justify-start h-full -mb-px" data-tabs-toggle="#myTabContent" role="tablist">
+          <li className="mr-2" role="presentation">
+            <button className={`flex items-center py-2 px-4 text-sm font-medium text-center border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300  dark:hover:text-gray-300 ${view === NavigationType.Contents ? "border-vulcan-500 text-vulcan-500  dark:border-whisper-500 dark:text-whisper-500" : "text-gray-500 dark:text-gray-400"}`} type="button" role="tab" aria-controls="profile" aria-selected="false" onClick={() => updateView(NavigationType.Contents)}>
+              <MarkdownIcon className={`h-6 w-auto mr-2`} /><span>Contents</span>
+            </button>
+          </li>
+          <li className="mr-2" role="presentation">
+            <button className={`flex items-center py-2 px-4 text-sm font-medium text-center text-gray-500 border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${view === NavigationType.Media ? "border-vulcan-500 text-vulcan-500 dark:border-whisper-500 dark:text-whisper-500" : "text-gray-500 dark:text-gray-400"}`} type="button" role="tab" aria-controls="dashboard" aria-selected="true" onClick={() => updateView(NavigationType.Media)}>
+              <PhotographIcon className={`h-6 w-auto mr-2`} /><span>Media</span>
+            </button>
+          </li>
+        </ul>
       </div>
 
       {
@@ -101,7 +105,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
               </div>
             </div>
 
-            <div className={`py-4 px-5 w-full flex items-center justify-between lg:justify-end space-x-4 lg:space-x-6 xl:space-x-8 bg-gray-200 border-b border-gray-300 dark:bg-vulcan-400  dark:border-vulcan-100`}>
+            <div className={`py-4 px-5 w-full flex items-center justify-between lg:justify-end bg-gray-200 border-b border-gray-300 dark:bg-vulcan-400  dark:border-vulcan-100 space-x-4 lg:space-x-6 xl:space-x-8`}>
               <ClearFilters />
 
               <Folders />
@@ -121,8 +125,9 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
       {
         view === NavigationType.Media && (
           <>
-            <Pagination />
-            <Breadcrumb />
+            <MediaHeaderTop />
+            
+            <MediaHeaderBottom />
           </>
         )
       }

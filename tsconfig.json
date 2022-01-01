@@ -7,6 +7,9 @@
 			"es6",
 			"DOM"
 		],
+		"typeRoots": [
+			"node_modules/@types"
+		],
 		"sourceMap": true,
 		"rootDir": "src",
 		"strict": true,

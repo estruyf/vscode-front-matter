@@ -12,7 +12,7 @@ import { format } from 'date-fns';
 import { Dashboard } from './Dashboard';
 import { parseWinPath } from '../helpers/parseWinPath';
 import { MediaHelpers } from '../helpers/MediaHelpers';
-import { MediaListener } from '../listeners';
+import { MediaListener, PagesListener } from '../listeners';
 
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
@@ -288,6 +288,9 @@ export class Folders {
     }));
 
     await Settings.update(SETTINGS_CONTENT_PAGE_FOLDERS, folderDetails, true);
+
+    // Reinitialize the folder listeners
+    PagesListener.startWatchers();
   }
 
   /**

@@ -1,7 +1,7 @@
 import { isValidFile } from './../helpers/isValidFile';
 import { existsSync } from "fs";
 import { dirname, join } from "path";
-import { commands, Uri } from "vscode";
+import { commands, FileSystemWatcher, RelativePattern, Uri, workspace } from "vscode";
 import { Dashboard } from "../commands/Dashboard";
 import { Folders } from "../commands/Folders";
 import { COMMAND_NAME, DefaultFields, SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD } from "../constants";
@@ -16,6 +16,35 @@ import { BaseListener } from "./BaseListener";
 
 
 export class PagesListener extends BaseListener {
+  private static watchers: { [path: string]: FileSystemWatcher } = {};
+
+  /**
+   * Start watching the folders in the current workspace for content changes
+   */
+  public static async startWatchers() {
+    const folders = Folders.get();
+
+    if (!folders || folders.length === 0) {
+      return;
+    }
+
+    // Dispose all the current watchers
+    const paths = Object.keys(this.watchers);
+    for (const path of paths) {
+      const watcher = this.watchers[path];
+      watcher.dispose();
+      delete this.watchers[path];
+    }
+
+    // Recreate all the watchers
+    for (const folder of folders) {
+      const folderUri = Uri.parse(folder.path);
+      let watcher = workspace.createFileSystemWatcher(new RelativePattern(folderUri, "*"));
+      watcher.onDidCreate(async (uri: Uri) => this.getPagesData);
+      watcher.onDidDelete(async (uri: Uri) => this.getPagesData);
+      this.watchers[folderUri.fsPath] = watcher;
+    }
+  }
 
   /**
    * Process the messages for the dashboard views

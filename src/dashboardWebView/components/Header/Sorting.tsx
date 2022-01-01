@@ -78,7 +78,7 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({disableCustomSo
               key={option.id}
               title={option.title || option.name}
               value={option}
-              isCurrent={option.id === crntSorting?.id}
+              isCurrent={option.id === crntSort.id}
               onClick={(value) => updateSorting(value)} />
           ))}
         </MenuItems>

@@ -8,6 +8,7 @@ export interface MediaPaths {
 }
 
 export interface MediaInfo {
+  filename: string; 
   fsPath: string; 
   vsPath: string | undefined;
   dimensions?: ISizeCalculationResult | undefined;

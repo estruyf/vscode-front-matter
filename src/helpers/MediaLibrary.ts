@@ -27,11 +27,12 @@ export class MediaLibrary {
 
     workspace.onDidRenameFiles(e => {
       e.files.forEach(f => {
+        const path = f.oldUri.path.toLowerCase();
         // Check if file is an image
-        if (f.oldUri.path.endsWith('.jpeg') || 
-            f.oldUri.path.endsWith('.jpg') || 
-            f.oldUri.path.endsWith('.png') || 
-            f.oldUri.path.endsWith('.gif')) {
+        if (path.endsWith('.jpeg') || 
+            path.endsWith('.jpg') || 
+            path.endsWith('.png') || 
+            path.endsWith('.gif')) {
           this.rename(f.oldUri.fsPath, f.newUri.fsPath);
           MediaHelpers.resetMedia();
         }

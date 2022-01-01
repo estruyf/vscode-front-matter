@@ -1,5 +1,21 @@
 # Change Log
 
+## [5.9.0] - 2022-01-01 - 🎇🎆
+
+### 🎨 Enhancements
+
+- Fixing the spinner which overlaps the global navigation bar
+- Quick actions added for media files (edit, delete, insert markdown, insert snippet)
+- [#199](https://github.com/estruyf/vscode-front-matter/issues/199): Search media files in the currently selected folder
+- [#211](https://github.com/estruyf/vscode-front-matter/issues/211): Replace text selection on media inserts
+- [#212](https://github.com/estruyf/vscode-front-matter/issues/212): Create folder watchers for content folders. When new content gets created, the dashboard updates.
+- [#213](https://github.com/estruyf/vscode-front-matter/issues/213): New media folder overview design
+
+### 🐞 Fixes
+
+- [#210](https://github.com/estruyf/vscode-front-matter/issues/210): Fix for adding media files with uppercase file extensions
+- [#214](https://github.com/estruyf/vscode-front-matter/issues/214): Fix for opening markdown file after creating it for the specified content type
+
 ## [5.8.0] - 2021-12-21 - 🎄
 
 ### 🎨 Enhancements

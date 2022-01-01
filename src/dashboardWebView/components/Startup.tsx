@@ -21,7 +21,7 @@ export const Startup: React.FunctionComponent<IStartupProps> = ({settings}: Reac
   }, [settings?.openOnStart]);
 
   return (
-    <div className={`relative flex items-start`}>
+    <div className={`relative flex items-start ml-4`}>
       <div className="flex items-center h-5">
         <input
           id="startup"

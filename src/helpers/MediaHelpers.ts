@@ -111,7 +111,6 @@ export class MediaHelpers {
     const total = files.length;
 
     // Get media set
-    files = files.slice(page * 16, ((page + 1) * 16));
     files = files.map((file) => {
       try {
         const metadata = MediaLibrary.getInstance().get(file.fsPath);
@@ -283,7 +282,15 @@ export class MediaHelpers {
             }
           }
 
-          await editor?.edit(builder => builder.insert(new Position(line, character), data.snippet || `![${data.alt || data.caption || ""}](${imgPath})`));
+          const selection = editor?.selection;
+          await editor?.edit(builder => {
+            const snippet = data.snippet || `![${data.alt || data.caption || ""}](${imgPath})`;
+            if (selection !== undefined) {
+              builder.replace(selection, snippet);
+            } else {
+              builder.insert(new Position(line, character), snippet);
+            }            
+          });
         }
         panel.getMediaSelection();
       } else {
@@ -313,8 +320,9 @@ export class MediaHelpers {
   private static filterMedia(files: Uri[]) {
     return files.filter(file => {
       const ext = extname(file.fsPath);
-      return ['.jpg', '.jpeg', '.png', '.gif', '.svg'].includes(ext);
+      return ['.jpg', '.jpeg', '.png', '.gif', '.svg'].includes(ext.toLowerCase());
     }).map((file) => ({
+      filename: basename(file.fsPath),
       fsPath: file.fsPath,
       vsPath: Dashboard.getWebview()?.asWebviewUri(file).toString(),
       stats: undefined
