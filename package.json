@@ -440,12 +440,12 @@
                     },
                     "fileType": {
                       "type": "string",
-                      "default": "md",
+                      "default": "",
                       "enum": [
                         "md",
                         "mdx"
                       ],
-                      "description": "Specifies the type of content you want to create. Default: `md`"
+                      "description": "Specifies the type of content you want to create."
                     },
                     "choices": {
                       "type": "array",
