@@ -1,5 +1,9 @@
 # Change Log
 
+## [5.10.0] - 2022-01-xx
+
+- [#218](https://github.com/estruyf/vscode-front-matter/issues/218): Add support for creating `mdx` files from templates and content types. This introduced a new setting: `frontMatter.content.defaultFileType`.
+
 ## [5.9.0] - 2022-01-01 - 🎇🎆
 
 ### 🎨 Enhancements

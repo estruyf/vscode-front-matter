@@ -26,6 +26,7 @@ export interface ContentType {
   name: string;
   fields: Field[];
 
+  fileType?: "md" | "mdx";
   previewPath?: string | null;
   pageBundle?: boolean;
 }

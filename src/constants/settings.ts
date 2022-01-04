@@ -50,6 +50,8 @@ export const SETTINGS_CONTENT_WYSIWYG = "content.wysiwyg";
 export const SETTINGS_CONTENT_SORTING_DEFAULT = "content.defaultSorting";
 export const SETTINGS_MEDIA_SORTING_DEFAULT = "content.defaultSorting";
 
+export const SETTINGS_CONTENT_DEFAULT_FILETYPE = "content.defaultFileType";
+
 export const SETTINGS_DASHBOARD_OPENONSTART = "dashboard.openOnStart";
 export const SETTINGS_DASHBOARD_MEDIA_SNIPPET = "dashboard.mediaSnippet";
 

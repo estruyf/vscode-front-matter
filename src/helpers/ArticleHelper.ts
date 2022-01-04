@@ -3,7 +3,7 @@ import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from './../constants/
 import * as vscode from 'vscode';
 import * as matter from "gray-matter";
 import * as fs from "fs";
-import { DefaultFields, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from '../constants';
+import { DefaultFields, SETTINGS_CONTENT_DEFAULT_FILETYPE, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { TomlEngine, getFmLanguage, getFormatOpts } from './TomlEngine';
 import { Extension, Settings } from '.';
@@ -188,8 +188,9 @@ export class ArticleHelper {
    * @param titleValue 
    * @returns The new file path
    */
-  public static createContent(contentType: ContentType | undefined, folderPath: string, titleValue: string): string | undefined {
+  public static createContent(contentType: ContentType | undefined, folderPath: string, titleValue: string, fileExtension?: string): string | undefined {
     const prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
+    const fileType = Settings.get<string>(SETTINGS_CONTENT_DEFAULT_FILETYPE);
     
     // Name of the file or folder to create
     const sanitizedName = ArticleHelper.sanitize(titleValue);
@@ -203,10 +204,10 @@ export class ArticleHelper {
         return;
       } else {
         mkdirSync(newFolder);
-        newFilePath = join(newFolder, `index.md`);
+        newFilePath = join(newFolder, `index.${fileExtension || contentType.fileType || fileType}`);
       }
     } else {
-      let newFileName = `${sanitizedName}.md`;
+      let newFileName = `${sanitizedName}.${fileExtension || contentType?.fileType || fileType}`;
 
       if (prefix && typeof prefix === "string") {
         newFileName = `${format(new Date(), DateHelper.formatUpdate(prefix) as string)}-${newFileName}`;

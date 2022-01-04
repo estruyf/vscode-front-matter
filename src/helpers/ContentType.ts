@@ -91,6 +91,12 @@ export class ContentType {
     return Settings.get<IContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
   }
 
+  /**
+   * Create a new file with the specified content type
+   * @param contentType 
+   * @param folderPath 
+   * @returns 
+   */
   private static async create(contentType: IContentType, folderPath: string) {
 
     const titleValue = await Questions.ContentTitle();

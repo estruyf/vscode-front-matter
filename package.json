@@ -97,6 +97,16 @@
           "markdownDescription": "Specify if you want to automatically update the modified date of your article/page. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.autoupdatedate)",
           "scope": "Content"
         },
+        "frontMatter.content.defaultFileType": {
+          "type": "string",
+          "default": "md",
+          "enum": [
+            "md",
+            "mdx"
+          ],
+          "markdownDescription": "Specify the default file type for the content to create. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.defaultfiletype)",
+          "scope": "Content"
+        },
         "frontMatter.content.defaultSorting": {
           "type": "string",
           "default": "",
@@ -427,6 +437,15 @@
                     "title": {
                       "type": "string",
                       "description": "Title to show in the UI"
+                    },
+                    "fileType": {
+                      "type": "string",
+                      "default": "md",
+                      "enum": [
+                        "md",
+                        "mdx"
+                      ],
+                      "description": "Specifies the type of content you want to create. Default: `md`"
                     },
                     "choices": {
                       "type": "array",
