@@ -407,6 +407,15 @@
                 "type": "string",
                 "description": "Define the type of field"
               },
+              "fileType": {
+                "type": "string",
+                "default": "",
+                "enum": [
+                  "md",
+                  "mdx"
+                ],
+                "description": "Specifies the type of content you want to create."
+              },
               "fields": {
                 "type": "array",
                 "description": "Define the fields of the content type",
@@ -437,15 +446,6 @@
                     "title": {
                       "type": "string",
                       "description": "Title to show in the UI"
-                    },
-                    "fileType": {
-                      "type": "string",
-                      "default": "",
-                      "enum": [
-                        "md",
-                        "mdx"
-                      ],
-                      "description": "Specifies the type of content you want to create."
                     },
                     "choices": {
                       "type": "array",
