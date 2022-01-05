@@ -110,8 +110,24 @@ export class ArticleHelper {
    * Checks if the current file is a markdown file
    */ 
   public static isMarkdownFile() {
-    const editor = vscode.window.activeTextEditor;
-    return (editor && editor.document && (editor.document.languageId.toLowerCase() === "markdown" || editor.document.languageId.toLowerCase() === "mdx"));
+    const supportedLanguages = ["markdown", "mdx"];
+    const supportedFileExtensions = [".md", ".mdx"];
+    const document = vscode.window.activeTextEditor?.document;
+    const languageId = document?.languageId?.toLowerCase();
+    const isSupportedLanguage =  languageId && supportedLanguages.includes(languageId);
+
+    /**
+     * It's possible that the file is a file type we support but the user hasn't installed
+     * language support for. In that case, we'll manually check the extension as a proxy
+     * for whether or not we support the file.
+     */
+    if (!isSupportedLanguage) {
+      const fileName = document?.fileName?.toLowerCase();
+
+      return fileName && supportedFileExtensions.findIndex(fileExtension => fileName.endsWith(fileExtension)) > -1;
+    }
+    
+    return isSupportedLanguage;
   }
 
   /**
