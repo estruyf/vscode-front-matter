@@ -15,9 +15,6 @@ import { parseWinPath } from '../helpers/parseWinPath';
 
 
 export class Article {
-	
-  private static prevContent = "";
-
   /**
   * Insert taxonomy
   *
@@ -119,7 +116,37 @@ export class Article {
       return;
     }
 
-    const article = ArticleHelper.getFrontMatter(editor);
+    const updatedArticle = this.setLastModifiedDateInner(editor.document);
+
+    if (typeof updatedArticle === "undefined") {
+      return;
+    }
+
+    ArticleHelper.update(
+      editor,
+      updatedArticle as matter.GrayMatterFile<string>
+    );
+  }
+
+  public static async setLastModifiedDateOnSave(
+    document: vscode.TextDocument
+  ): Promise<vscode.TextEdit[]> {
+    const updatedArticle = this.setLastModifiedDateInner(document);
+
+    if (typeof updatedArticle === "undefined") {
+      return [];
+    }
+
+    const update = ArticleHelper.generateUpdate(document, updatedArticle);
+
+    return [update];
+  }
+
+  private static setLastModifiedDateInner(
+    document: vscode.TextDocument
+  ): matter.GrayMatterFile<string> | undefined {
+    const article = ArticleHelper.getFrontMatterFromDocument(document);
+
     if (!article) {
       return;
     }
@@ -128,8 +155,7 @@ export class Article {
     const dateField = Settings.get(SETTING_MODIFIED_FIELD) as string || DefaultFields.LastModified;
     try {
       cloneArticle.data[dateField] = Article.formatDate(new Date());
-
-      ArticleHelper.update(editor, cloneArticle);
+      return cloneArticle;
     } catch (e: any) {
       Notifications.error(`Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`);
     }
@@ -238,30 +264,17 @@ export class Article {
 
   /**
    * Article auto updater
-   * @param fileChanges
+   * @param event
    */
-  public static async autoUpdate(fileChanges: vscode.TextDocumentChangeEvent) {
-    const txtChanges = fileChanges.contentChanges.map(c => c.text);
-    const editor = vscode.window.activeTextEditor;
+  public static async autoUpdate(event: vscode.TextDocumentWillSaveEvent) {
+    const document = event.document;
+    if (document && ArticleHelper.isMarkdownFile(document)) {
+      const autoUpdate = Settings.get(SETTING_AUTO_UPDATE_DATE);
 
-		if (txtChanges.length > 0 && editor && ArticleHelper.isMarkdownFile()) {
-			const autoUpdate = Settings.get(SETTING_AUTO_UPDATE_DATE);
-
-			if (autoUpdate) {  
-        const article = ArticleHelper.getFrontMatter(editor);
-        if (!article) {
-          return;
-        }
-
-        if (article.content === Article.prevContent) {
-          return;
-        }
-
-        Article.prevContent = article.content;
-
-        Article.setLastModifiedDate();
+      if (autoUpdate) {
+        event.waitUntil(Article.setLastModifiedDateOnSave(document));
       }
-		}
+    }
   }
 
   /**
