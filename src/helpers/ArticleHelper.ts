@@ -49,8 +49,22 @@ export class ArticleHelper {
   public static async update(editor: vscode.TextEditor, article: matter.GrayMatterFile<string>) {
     const removeQuotes = Settings.get(SETTING_REMOVE_QUOTES) as string[];
     const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
+
+    // Check if there is a line ending
+    const lines = article.content.split("\n");
+    const lastLine = lines.pop();
+    const endsWithNewLine = lastLine !== undefined && lastLine.trim() === "";
     
     let newMarkdown = this.stringifyFrontMatter(article.content, Object.assign({}, article.data));
+
+    // Logic to not include a new line at the end of the file
+    if (!endsWithNewLine) {
+      const lines = newMarkdown.split("\n");
+      const lastLine = lines.pop();
+      if (lastLine !== undefined && lastLine?.trim() === "") {
+        newMarkdown = lines.join("\n");
+      }
+    }
 
     // Check for field where quotes need to be removed
     if (removeQuotes && removeQuotes.length) {
