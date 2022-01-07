@@ -27,8 +27,17 @@ export class ArticleHelper {
    * @param editor 
    */
   public static getFrontMatter(editor: vscode.TextEditor) {
-    const fileContents = editor.document.getText();  
-    return ArticleHelper.parseFile(fileContents, editor.document.fileName);
+    return ArticleHelper.getFrontMatterFromDocument(editor.document);
+  }
+
+  /**
+   * Get the contents of the specified document
+   * 
+   * @param document The document to parse.
+   */
+  public static getFrontMatterFromDocument(document: vscode.TextDocument) {
+    const fileContents = document.getText();
+    return ArticleHelper.parseFile(fileContents, document.fileName);
   }
 
   /**
@@ -47,6 +56,18 @@ export class ArticleHelper {
    * @param article 
    */
   public static async update(editor: vscode.TextEditor, article: matter.GrayMatterFile<string>) {
+    const update = this.generateUpdate(editor.document, article);
+
+    await editor.edit(builder => builder.replace(update.range, update.newText));
+  }
+
+  /**
+   * Generate the update to be applied to the article.
+   * @param article 
+   */
+  public static generateUpdate(document: vscode.TextDocument, article: matter.GrayMatterFile<string>): vscode.TextEdit {
+    const nrOfLines = document.lineCount as number;
+    const range = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(nrOfLines, 0));
     const removeQuotes = Settings.get(SETTING_REMOVE_QUOTES) as string[];
     const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
 
@@ -82,8 +103,7 @@ export class ArticleHelper {
       }
     }
 
-    const nrOfLines = editor.document.lineCount as number;
-    await editor.edit(builder => builder.replace(new vscode.Range(new vscode.Position(0, 0), new vscode.Position(nrOfLines, 0)), newMarkdown));
+    return vscode.TextEdit.replace(range, newMarkdown);
   }
 
   /**
@@ -123,12 +143,12 @@ export class ArticleHelper {
   /**
    * Checks if the current file is a markdown file
    */ 
-  public static isMarkdownFile() {
+  public static isMarkdownFile(document: vscode.TextDocument | undefined | null = null) {
     const supportedLanguages = ["markdown", "mdx"];
     const supportedFileExtensions = [".md", ".mdx"];
-    const document = vscode.window.activeTextEditor?.document;
     const languageId = document?.languageId?.toLowerCase();
     const isSupportedLanguage =  languageId && supportedLanguages.includes(languageId);
+    document ??= vscode.window.activeTextEditor?.document;
 
     /**
      * It's possible that the file is a file type we support but the user hasn't installed
