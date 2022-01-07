@@ -2,8 +2,14 @@
 
 ## [5.10.0] - 2022-01-xx
 
+### 🎨 Enhancements
+
 - [#218](https://github.com/estruyf/vscode-front-matter/issues/218): Add support for creating `mdx` files from templates and content types. This introduced a new setting: `frontMatter.content.defaultFileType`.
 - [#220](https://github.com/estruyf/vscode-front-matter/issues/220): Add support DateTime updates in `mdx` files when the `mdx extension` is not installed.
+
+### 🐞 Fixes
+
+- [#221](https://github.com/estruyf/vscode-front-matter/issues/221): Automatic DateTime switch from on text change to on save to prevent multiple updates.
 
 ## [5.9.0] - 2022-01-01 - 🎇🎆
 
