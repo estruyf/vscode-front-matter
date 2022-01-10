@@ -38,7 +38,7 @@ export class MediaHelpers {
 
       if (stateValue !== HOME_PAGE_NAVIGATION_ID) {
         // Support for page bundles
-        if (viewData?.data?.filePath && viewData?.data?.filePath.endsWith('index.md')) {
+        if (viewData?.data?.filePath && (viewData?.data?.filePath.endsWith('index.md') || viewData?.data?.filePath.endsWith('index.mdx'))) {
           const folderPath = parse(viewData.data.filePath).dir;
           selectedFolder = folderPath;
         } else if (stateValue && existsSync(stateValue)) {

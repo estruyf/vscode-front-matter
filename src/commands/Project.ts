@@ -5,6 +5,7 @@ import { Notifications } from "../helpers/Notifications";
 import { Template } from "./Template";
 import { Folders } from "./Folders";
 import { Settings } from "../helpers";
+import { SETTINGS_CONTENT_DEFAULT_FILETYPE } from "../constants";
 
 export class Project {
 
@@ -27,6 +28,7 @@ categories: []
   public static async init(sampleTemplate: boolean = true) {
     try {
       Settings.createTeamSettings();
+      const fileType = Settings.get<string>(SETTINGS_CONTENT_DEFAULT_FILETYPE);
 
       const folder = Template.getSettings();
       const templatePath = Project.templatePath();
@@ -35,7 +37,7 @@ categories: []
         return;
       }
       
-      const article = Uri.file(join(templatePath.fsPath, "article.md"));
+      const article = Uri.file(join(templatePath.fsPath, `article.${fileType}`));
 
       if (!fs.existsSync(templatePath.fsPath)) {
         await workspace.fs.createDirectory(templatePath);

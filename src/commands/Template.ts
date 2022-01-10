@@ -2,7 +2,7 @@ import { Questions } from './../helpers/Questions';
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import { SETTING_TEMPLATES_FOLDER, SETTING_TEMPLATES_PREFIX } from '../constants';
+import { SETTINGS_CONTENT_DEFAULT_FILETYPE, SETTING_TEMPLATES_FOLDER, SETTING_TEMPLATES_PREFIX } from '../constants';
 import { ArticleHelper, Settings } from '../helpers';
 import { Article } from '.';
 import { Notifications } from '../helpers/Notifications';
@@ -12,6 +12,7 @@ import { Folders } from './Folders';
 import { ContentType } from '../helpers/ContentType';
 import { ContentType as IContentType } from '../models';
 import { PagesListener } from '../listeners';
+import { extname } from 'path';
 
 export class Template {
 
@@ -50,6 +51,7 @@ export class Template {
   public static async generate() {
     const folder = Template.getSettings();
     const editor = vscode.window.activeTextEditor;
+    const fileType = Settings.get<string>(SETTINGS_CONTENT_DEFAULT_FILETYPE);
 
     if (folder && editor && ArticleHelper.isMarkdownFile()) {
       const article = ArticleHelper.getFrontMatter(editor);
@@ -83,7 +85,7 @@ export class Template {
       if (templatePath) {
         let fileContents = ArticleHelper.stringifyFrontMatter(keepContents === "no" ? "" : clonedArticle.content, clonedArticle.data);
 
-        const templateFile = path.join(templatePath.fsPath, `${titleValue}.md`);
+        const templateFile = path.join(templatePath.fsPath, `${titleValue}.${fileType}`);
         fs.writeFileSync(templateFile, fileContents, { encoding: "utf-8" });
 
         Notifications.info(`Template created and is now available in your ${folder} folder.`);
@@ -140,7 +142,8 @@ export class Template {
       contentType = contentTypes?.find(t => t.name === templateData.data.type);
     }
 
-    let newFilePath: string | undefined = ArticleHelper.createContent(contentType, folderPath, titleValue);
+    const fileExtension = extname(template.fsPath).replace(".", "");
+    let newFilePath: string | undefined = ArticleHelper.createContent(contentType, folderPath, titleValue, fileExtension);
     if (!newFilePath) {
       return;
     }

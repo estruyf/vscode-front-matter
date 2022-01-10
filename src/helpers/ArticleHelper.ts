@@ -3,7 +3,7 @@ import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from './../constants/
 import * as vscode from 'vscode';
 import * as matter from "gray-matter";
 import * as fs from "fs";
-import { DefaultFields, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from '../constants';
+import { DefaultFields, SETTINGS_CONTENT_DEFAULT_FILETYPE, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { TomlEngine, getFmLanguage, getFormatOpts } from './TomlEngine';
 import { Extension, Settings } from '.';
@@ -27,8 +27,17 @@ export class ArticleHelper {
    * @param editor 
    */
   public static getFrontMatter(editor: vscode.TextEditor) {
-    const fileContents = editor.document.getText();  
-    return ArticleHelper.parseFile(fileContents, editor.document.fileName);
+    return ArticleHelper.getFrontMatterFromDocument(editor.document);
+  }
+
+  /**
+   * Get the contents of the specified document
+   * 
+   * @param document The document to parse.
+   */
+  public static getFrontMatterFromDocument(document: vscode.TextDocument) {
+    const fileContents = document.getText();
+    return ArticleHelper.parseFile(fileContents, document.fileName);
   }
 
   /**
@@ -47,10 +56,36 @@ export class ArticleHelper {
    * @param article 
    */
   public static async update(editor: vscode.TextEditor, article: matter.GrayMatterFile<string>) {
+    const update = this.generateUpdate(editor.document, article);
+
+    await editor.edit(builder => builder.replace(update.range, update.newText));
+  }
+
+  /**
+   * Generate the update to be applied to the article.
+   * @param article 
+   */
+  public static generateUpdate(document: vscode.TextDocument, article: matter.GrayMatterFile<string>): vscode.TextEdit {
+    const nrOfLines = document.lineCount as number;
+    const range = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(nrOfLines, 0));
     const removeQuotes = Settings.get(SETTING_REMOVE_QUOTES) as string[];
     const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
+
+    // Check if there is a line ending
+    const lines = article.content.split("\n");
+    const lastLine = lines.pop();
+    const endsWithNewLine = lastLine !== undefined && lastLine.trim() === "";
     
     let newMarkdown = this.stringifyFrontMatter(article.content, Object.assign({}, article.data));
+
+    // Logic to not include a new line at the end of the file
+    if (!endsWithNewLine) {
+      const lines = newMarkdown.split("\n");
+      const lastLine = lines.pop();
+      if (lastLine !== undefined && lastLine?.trim() === "") {
+        newMarkdown = lines.join("\n");
+      }
+    }
 
     // Check for field where quotes need to be removed
     if (removeQuotes && removeQuotes.length) {
@@ -68,8 +103,7 @@ export class ArticleHelper {
       }
     }
 
-    const nrOfLines = editor.document.lineCount as number;
-    await editor.edit(builder => builder.replace(new vscode.Range(new vscode.Position(0, 0), new vscode.Position(nrOfLines, 0)), newMarkdown));
+    return vscode.TextEdit.replace(range, newMarkdown);
   }
 
   /**
@@ -109,9 +143,25 @@ export class ArticleHelper {
   /**
    * Checks if the current file is a markdown file
    */ 
-  public static isMarkdownFile() {
-    const editor = vscode.window.activeTextEditor;
-    return (editor && editor.document && (editor.document.languageId.toLowerCase() === "markdown" || editor.document.languageId.toLowerCase() === "mdx"));
+  public static isMarkdownFile(document: vscode.TextDocument | undefined | null = null) {
+    const supportedLanguages = ["markdown", "mdx"];
+    const supportedFileExtensions = [".md", ".mdx"];
+    const languageId = document?.languageId?.toLowerCase();
+    const isSupportedLanguage =  languageId && supportedLanguages.includes(languageId);
+    document ??= vscode.window.activeTextEditor?.document;
+
+    /**
+     * It's possible that the file is a file type we support but the user hasn't installed
+     * language support for. In that case, we'll manually check the extension as a proxy
+     * for whether or not we support the file.
+     */
+    if (!isSupportedLanguage) {
+      const fileName = document?.fileName?.toLowerCase();
+
+      return fileName && supportedFileExtensions.findIndex(fileExtension => fileName.endsWith(fileExtension)) > -1;
+    }
+    
+    return isSupportedLanguage;
   }
 
   /**
@@ -188,8 +238,9 @@ export class ArticleHelper {
    * @param titleValue 
    * @returns The new file path
    */
-  public static createContent(contentType: ContentType | undefined, folderPath: string, titleValue: string): string | undefined {
+  public static createContent(contentType: ContentType | undefined, folderPath: string, titleValue: string, fileExtension?: string): string | undefined {
     const prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
+    const fileType = Settings.get<string>(SETTINGS_CONTENT_DEFAULT_FILETYPE);
     
     // Name of the file or folder to create
     const sanitizedName = ArticleHelper.sanitize(titleValue);
@@ -203,10 +254,10 @@ export class ArticleHelper {
         return;
       } else {
         mkdirSync(newFolder);
-        newFilePath = join(newFolder, `index.md`);
+        newFilePath = join(newFolder, `index.${fileExtension || contentType.fileType || fileType}`);
       }
     } else {
-      let newFileName = `${sanitizedName}.md`;
+      let newFileName = `${sanitizedName}.${fileExtension || contentType?.fileType || fileType}`;
 
       if (prefix && typeof prefix === "string") {
         newFileName = `${format(new Date(), DateHelper.formatUpdate(prefix) as string)}-${newFileName}`;

@@ -177,8 +177,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	triggerShowDraftStatus();
 
 	// Listener for file edit changes
-	editDebounce = debounceCallback();
-	subscriptions.push(vscode.workspace.onDidChangeTextDocument(triggerFileChange));
+	subscriptions.push(vscode.workspace.onWillSaveTextDocument(handleAutoDateUpdate));
 
 	// Listener for file saves
 	subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc: vscode.TextDocument) => {
@@ -231,8 +230,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
 export function deactivate() {}
 
-const triggerFileChange = (e: vscode.TextDocumentChangeEvent) => {
-	editDebounce(() => Article.autoUpdate(e), 1000);
+const handleAutoDateUpdate = (e: vscode.TextDocumentWillSaveEvent) => {
+	Article.autoUpdate(e);
 };
 
 const triggerShowDraftStatus = () => {
