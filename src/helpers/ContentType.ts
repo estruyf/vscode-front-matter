@@ -1,7 +1,7 @@
 import { PagesListener } from './../listeners/PagesListener';
 import { ArticleHelper, Settings } from ".";
 import { SETTINGS_CONTENT_DRAFT_FIELD, SETTING_TAXONOMY_CONTENT_TYPES } from "../constants";
-import { ContentType as IContentType, DraftField } from '../models';
+import { ContentType as IContentType, DraftField, Field } from '../models';
 import { Uri, workspace, window, commands } from 'vscode'; 
 import { Folders } from "../commands/Folders";
 import { Questions } from "./Questions";
@@ -109,15 +109,7 @@ export class ContentType {
       return;
     }
 
-    let data: any = {};
-
-    for (const field of contentType.fields) {
-      if (field.name === "title") {
-        data[field.name] = titleValue;
-      } else {
-        data[field.name] = null;
-      }
-    }
+    let data: any = this.processFields(contentType, titleValue, {});
 
     data = ArticleHelper.updateDates(Object.assign({}, data));
 
@@ -135,5 +127,28 @@ export class ContentType {
 
     // Trigger a refresh for the dashboard
     PagesListener.refresh();
+  }
+
+  /**
+   * Process all content type fields
+   * @param contentType 
+   * @param data 
+   */
+  private static processFields(obj: IContentType | Field, titleValue: string, data: any) {
+    if (obj.fields) {
+      for (const field of obj.fields) {
+        if (field.name === "title") {
+          data[field.name] = titleValue;
+        } else {
+          if (field.type === "object") {
+            data[field.name] = this.processFields(field, titleValue, {});
+          } else {
+            data[field.name] = field.default || "";
+          }
+        }
+      }
+    }
+
+    return data;
   }
 }

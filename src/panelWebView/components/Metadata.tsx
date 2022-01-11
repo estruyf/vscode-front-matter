@@ -19,10 +19,15 @@ import useContentType from '../../hooks/useContentType';
 import { DateHelper } from '../../helpers/DateHelper';
 import FieldBoundary from './ErrorBoundary/FieldBoundary';
 import { DraftField } from './Fields/DraftField';
+import { VsLabel } from './VscodeComponents';
+import { CogIcon } from '@heroicons/react/outline';
 
+export interface IMetadata {
+  [prop: string]: string[] | string | null | IMetadata;
+}
 export interface IMetadataProps {
   settings: PanelSettings | undefined;
-  metadata: { [prop: string]: string[] | string | null };
+  metadata: IMetadata;
   focusElm: TagType | null;
   unsetFocus: () => void;
 }
@@ -30,13 +35,14 @@ export interface IMetadataProps {
 const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, focusElm, unsetFocus}: React.PropsWithChildren<IMetadataProps>) => {
   const contentType = useContentType(settings, metadata);
 
-  const sendUpdate = (field: string | undefined, value: any) => {
+  const sendUpdate = (field: string | undefined, value: any, parents: string[]) => {
     if (!field) {
       return;
     }
 
     MessageHelper.sendMessage(CommandToCode.updateMetadata, {
       field,
+      parents,
       value
     });
   };
@@ -50,7 +56,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
     return null;
   }
 
-  const renderFields = (ctFields: Field[]) => {
+  const renderFields = (ctFields: Field[], parent: IMetadata, parentFields: string[] = []) => {
     if (!ctFields) {
       return;
     }
@@ -61,7 +67,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
       }
 
       if (field.type === 'datetime') {
-        const dateValue = metadata[field.name] ? getDate(metadata[field.name] as string) : null;
+        const dateValue = parent[field.name] ? getDate(parent[field.name] as string) : null;
 
         return (
           <FieldBoundary key={field.name} fieldName={field.title || field.name}>
@@ -69,7 +75,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               label={field.title || field.name}
               date={dateValue}
               format={settings?.date?.format}
-              onChange={(date => sendUpdate(field.name, date))} />
+              onChange={(date => sendUpdate(field.name, date, parentFields))} />
           </FieldBoundary>
         );
       } else if (field.type === 'boolean') {
@@ -78,12 +84,12 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
             <Toggle 
               key={field.name}
               label={field.title || field.name}
-              checked={!!metadata[field.name] as any} 
-              onChanged={(checked) => sendUpdate(field.name, checked)} />
+              checked={!!parent[field.name] as any} 
+              onChanged={(checked) => sendUpdate(field.name, checked, parentFields)} />
           </FieldBoundary>
         );
       } else if (field.type === 'string') {
-        const textValue = metadata[field.name];
+        const textValue = parent[field.name];
 
         let limit = -1;
         if (field.name === 'title') {
@@ -99,12 +105,12 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               singleLine={field.single}
               limit={limit}
               rows={3}
-              onChange={(value) => sendUpdate(field.name, value)}
+              onChange={(value) => sendUpdate(field.name, value, parentFields)}
               value={textValue as string || null} />
           </FieldBoundary>
         );
       } else if (field.type === 'number') {
-        const fieldValue = metadata[field.name];
+        const fieldValue = parent[field.name];
         let nrValue: number | null = parseInt(fieldValue as string);
         if (isNaN(nrValue)) {
           nrValue = null;
@@ -115,7 +121,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
             <NumberField 
               key={field.name}
               label={field.title || field.name}
-              onChange={(value) => sendUpdate(field.name, value)}
+              onChange={(value) => sendUpdate(field.name, value, parentFields)}
               value={nrValue} />
           </FieldBoundary>
         );
@@ -125,15 +131,15 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
             <PreviewImageField 
               label={field.title || field.name}
               fieldName={field.name}
-              filePath={metadata.filePath as string}
-              value={metadata[field.name] as PreviewImageValue | PreviewImageValue[] | null}
+              filePath={parent.filePath as string}
+              value={parent[field.name] as PreviewImageValue | PreviewImageValue[] | null}
               multiple={field.multiple}
-              onChange={(value => sendUpdate(field.name, value))} />
+              onChange={(value => sendUpdate(field.name, value, parentFields))} />
           </FieldBoundary>
         );
       } else if (field.type === 'choice') {
         const choices = field.choices || [];
-        const choiceValue = metadata[field.name];
+        const choiceValue = parent[field.name];
 
         return (
           <FieldBoundary key={field.name} fieldName={field.title || field.name}>
@@ -142,7 +148,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               selected={choiceValue as string}
               choices={choices}
               multiSelect={field.multiple}
-              onChange={(value => sendUpdate(field.name, value))} />
+              onChange={(value => sendUpdate(field.name, value, parentFields))} />
           </FieldBoundary>
         );
       } else if (field.type === 'tags') {
@@ -152,7 +158,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               type={TagType.tags} 
               label={field.title || field.name}
               icon={<TagIcon />}
-              crntSelected={metadata[field.name] as string[] || []} 
+              crntSelected={parent[field.name] as string[] || []} 
               options={settings?.tags || []} 
               freeform={settings.freeform} 
               focussed={focusElm === TagType.tags}
@@ -161,7 +167,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
         );
       } else if (field.type === 'taxonomy') {
         const taxonomyData = settings.customTaxonomy.find(ct => ct.id === field.taxonomyId);
-        const selectedValues = metadata[field.name] || [];
+        const selectedValues = parent[field.name] || [];
 
         return (
           <FieldBoundary key={field.name} fieldName={field.title || field.name}>
@@ -185,7 +191,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               type={TagType.categories}
               label={field.title || field.name}
               icon={<ListUnorderedIcon />}
-              crntSelected={metadata.categories as string[] || []} 
+              crntSelected={parent.categories as string[] || []} 
               options={settings.categories} 
               freeform={settings.freeform} 
               focussed={focusElm === TagType.categories}
@@ -194,7 +200,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
         );
       } else if (field.type === 'draft') {
         const draftField = settings?.draftField;
-        const value = metadata[field.name];
+        const value = parent[field.name];
 
         return (
           <FieldBoundary key={field.name} fieldName={field.title || field.name}>
@@ -203,9 +209,28 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               type={draftField.type}
               choices={draftField.choices || []}
               value={value as boolean | string | null | undefined}
-              onChanged={(value: boolean | string) => sendUpdate(field.name, value)} />
+              onChanged={(value: boolean | string) => sendUpdate(field.name, value, parentFields)} />
           </FieldBoundary>
         );
+      } else if (field.type === 'object') { 
+        if (field.fields && parent && parent[field.name]) {
+          const subMetadata = parent[field.name] as IMetadata;
+          return (
+            <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+              <div className={`metadata_field__box`}>
+                <VsLabel>
+                  <div className={`metadata_field__label metadata_field__label_parent`}>
+                    <span style={{ lineHeight: "16px"}}>{field.title || field.name}</span>
+                  </div>
+                </VsLabel>
+
+                { renderFields(field.fields, subMetadata, [...parentFields, field.name]) }
+              </div>
+            </FieldBoundary>
+          );
+        }
+
+        return null;
       } else {
         return null;
       }
@@ -216,7 +241,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
     <Collapsible id={`tags`} title="Metadata" className={`inherit z-20`}>
 
       {
-        renderFields(contentType?.fields)
+        renderFields(contentType?.fields, metadata)
       }
 
       {

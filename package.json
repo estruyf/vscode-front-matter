@@ -417,6 +417,7 @@
                 "description": "Specifies the type of content you want to create."
               },
               "fields": {
+                "$id": "#contenttypefield",
                 "type": "array",
                 "description": "Define the fields of the content type",
                 "items": {
@@ -435,7 +436,8 @@
                         "taxonomy",
                         "tags",
                         "categories",
-                        "draft"
+                        "draft",
+                        "object"
                       ],
                       "description": "Define the type of field"
                     },
@@ -446,6 +448,10 @@
                     "title": {
                       "type": "string",
                       "description": "Title to show in the UI"
+                    },
+                    "default": {
+                      "type": "string",
+                      "description": "Default value"
                     },
                     "choices": {
                       "type": "array",
@@ -494,7 +500,8 @@
                       "type": "string",
                       "default": "",
                       "description": "The ID of your taxonomy field"
-                    }
+                    },
+                    "fields": { "$ref": "#contenttypefield" }
                   },
                   "additionalProperties": false,
                   "required": [
@@ -527,6 +534,20 @@
                       "then": {
                         "required": [
                           "choices"
+                        ]
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "object"
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "fields"
                         ]
                       }
                     }

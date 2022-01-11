@@ -314,7 +314,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   /**
    * Update the metadata of the article
    */
-  public async updateMetadata({field, value }: { field: string, value: any, fieldData?: { multiple: boolean, value: string[] } }) {
+  public async updateMetadata({field, parents, value }: { field: string, value: any, parents?: string[], fieldData?: { multiple: boolean, value: string[] } }) {
     if (!field) {
       return;
     }
@@ -333,12 +333,18 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     const dateFields = contentType.fields.filter((field) => field.type === "datetime");
     const imageFields = contentType.fields.filter((field) => field.type === "image" && field.multiple);
 
+    // Support multi-level fields
+    let parentObj = article.data;
+    for (const parent of parents || []) {
+      parentObj = parentObj[parent];
+    }
+
     for (const dateField of dateFields) {
       if ((field === dateField.name) && value) {
-        article.data[field] = Article.formatDate(new Date(value));
+        parentObj[field] = Article.formatDate(new Date(value));
       } else if (!imageFields.find(f => f.name === field)) {
         // Only override the field data if it is not an multiselect image field
-        article.data[field] = value;
+        parentObj[field] = value;
       }
     }
 
@@ -346,15 +352,15 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       if (field === imageField.name) {
         // If value is an array, it means it comes from the explorer view itself (deletion)
         if (Array.isArray(value)) {
-          article.data[field] = value || [];
+          parentObj[field] = value || [];
         } else { // Otherwise it is coming from the media dashboard (addition)
-          let fieldValue = article.data[field];
+          let fieldValue = parentObj[field];
           if (fieldValue && !Array.isArray(fieldValue)) {
             fieldValue = [fieldValue];
           }
           const crntData = Object.assign([], fieldValue);
           const allRelPaths = [...(crntData || []), value];
-          article.data[field] = [...new Set(allRelPaths)].filter(f => f);
+          parentObj[field] = [...new Set(allRelPaths)].filter(f => f);
         }
       }
     }

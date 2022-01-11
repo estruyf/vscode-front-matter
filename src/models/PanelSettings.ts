@@ -34,13 +34,15 @@ export interface ContentType {
 export interface Field {
   title?: string;
   name: string;
-  type: "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft" | "taxonomy";
+  type: "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft" | "taxonomy" | "object";
   choices?: string[] | Choice[];
   single?: boolean;
   multiple?: boolean;
   isPreviewImage?: boolean;
   hidden?: boolean;
   taxonomyId?: string;
+  default?: string;
+  fields?: Field[];
 }
 
 export interface DateInfo {

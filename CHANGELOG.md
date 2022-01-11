@@ -1,5 +1,11 @@
 # Change Log
 
+## [6.0.0] - 2022-01-xx
+
+### 🎨 Enhancements
+
+- [#197](https://github.com/estruyf/vscode-front-matter/issues/197): Support for multi-dimensional content type fields on content creation and editing.
+
 ## [5.10.0] - 2022-01-10
 
 ### 🎨 Enhancements
