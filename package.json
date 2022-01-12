@@ -437,7 +437,7 @@
                         "tags",
                         "categories",
                         "draft",
-                        "object"
+                        "fields"
                       ],
                       "description": "Define the type of field"
                     },
@@ -541,7 +541,7 @@
                       "if": {
                         "properties": {
                           "type": {
-                            "const": "object"
+                            "const": "fields"
                           }
                         }
                       },

@@ -131,10 +131,11 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
             <PreviewImageField 
               label={field.title || field.name}
               fieldName={field.name}
-              filePath={parent.filePath as string}
+              filePath={metadata.filePath as string}
+              parents={parentFields}
               value={parent[field.name] as PreviewImageValue | PreviewImageValue[] | null}
               multiple={field.multiple}
-              onChange={(value => sendUpdate(field.name, value, parentFields))} />
+              onChange={(value) => sendUpdate(field.name, value, parentFields)} />
           </FieldBoundary>
         );
       } else if (field.type === 'choice') {
@@ -162,7 +163,8 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               options={settings?.tags || []} 
               freeform={settings.freeform} 
               focussed={focusElm === TagType.tags}
-              unsetFocus={unsetFocus} />
+              unsetFocus={unsetFocus}
+              parents={parentFields} />
           </FieldBoundary>
         );
       } else if (field.type === 'taxonomy') {
@@ -181,7 +183,8 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               focussed={focusElm === TagType.custom}
               unsetFocus={unsetFocus}
               fieldName={field.name}
-              taxonomyId={field.taxonomyId} />
+              taxonomyId={field.taxonomyId}
+              parents={parentFields} />
           </FieldBoundary>
         );
       } else if (field.type === 'categories') {
@@ -195,7 +198,8 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               options={settings.categories} 
               freeform={settings.freeform} 
               focussed={focusElm === TagType.categories}
-              unsetFocus={unsetFocus} />
+              unsetFocus={unsetFocus}
+              parents={parentFields} />
           </FieldBoundary>
         );
       } else if (field.type === 'draft') {
@@ -212,7 +216,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               onChanged={(value: boolean | string) => sendUpdate(field.name, value, parentFields)} />
           </FieldBoundary>
         );
-      } else if (field.type === 'object') { 
+      } else if (field.type === 'fields') { 
         if (field.fields && parent && parent[field.name]) {
           const subMetadata = parent[field.name] as IMetadata;
           return (

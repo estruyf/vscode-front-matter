@@ -9,7 +9,7 @@ import { Command } from "../panelWebView/Command";
 import { CommandToCode } from '../panelWebView/CommandToCode';
 import { Article } from '../commands';
 import { TagType } from '../panelWebView/TagType';
-import { CustomTaxonomyData, DraftField, ScriptType, TaxonomyType } from '../models';
+import { ContentType, CustomTaxonomyData, DraftField, Field, ScriptType, TaxonomyType } from '../models';
 import { exec } from 'child_process';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { Content } from 'mdast';
@@ -101,13 +101,13 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
           Article.toggleDraft();
           break;
         case CommandToCode.updateTags:
-          this.updateTags(TagType.tags, msg.data || []);
+          this.updateTags(TagType.tags, msg.data?.values || [], msg.data?.parents || []);
           break;
         case CommandToCode.updateCategories:
-          this.updateTags(TagType.categories, msg.data || []);
+          this.updateTags(TagType.categories, msg.data?.values || [], msg.data?.parents || []);
           break;
         case CommandToCode.updateKeywords:
-          this.updateTags(TagType.keywords, msg.data || []);
+          this.updateTags(TagType.keywords, msg.data?.values || [], msg.data?.parents || []);
           break;
         case CommandToCode.updateCustomTaxonomy:
           this.updateCustomTaxonomy(msg.data);
@@ -249,32 +249,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       // Get the current content type
       const contentType = ArticleHelper.getContentType(updatedMetadata);
       if (contentType) {
-        const imageFields = contentType.fields.filter((field) => field.type === "image");
-
-        for (const field of imageFields) {
-          if (updatedMetadata[field.name]) {
-            const imageData = ImageHelper.allRelToAbs(field, updatedMetadata[field.name])
-
-            if (imageData) {
-              if (field.multiple && imageData instanceof Array) {
-                const preview = imageData.map(preview => preview && preview.absPath ? ({ 
-                  ...preview,
-                  webviewUrl: this.panel?.webview.asWebviewUri(preview.absPath).toString()
-                }) : null);
-
-                updatedMetadata[field.name] = preview || [];
-              } else if (!field.multiple && !Array.isArray(imageData) && imageData.absPath) {
-                const preview = this.panel?.webview.asWebviewUri(imageData.absPath);
-                updatedMetadata[field.name] = {
-                  ...imageData,
-                  webviewUrl: preview ? preview.toString() : null
-                };
-              }
-            } else {
-              updatedMetadata[field.name] = field.multiple ? [] : "";
-            }
-          }          
-        }
+        this.processImageFields(updatedMetadata, contentType.fields)
       }
     }
 
@@ -445,6 +420,56 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   }
 
   /**
+   * Process the image fields in the content type
+   * @param updatedMetadata 
+   * @param fields 
+   * @param parents 
+   */
+  private processImageFields(updatedMetadata: any, fields: Field[], parents: string[] = []) {
+    const imageFields = fields.filter((field) => field.type === "image");
+    
+    // Support multi-level fields
+    let parentObj = updatedMetadata;
+    for (const parent of parents || []) {
+      parentObj = parentObj[parent];
+    }
+
+    // Process image fields
+    for (const field of imageFields) {
+      if (parentObj[field.name]) {
+        const imageData = ImageHelper.allRelToAbs(field, parentObj[field.name])
+
+        if (imageData) {
+          if (field.multiple && imageData instanceof Array) {
+            const preview = imageData.map(preview => preview && preview.absPath ? ({ 
+              ...preview,
+              webviewUrl: this.panel?.webview.asWebviewUri(preview.absPath).toString()
+            }) : null);
+
+            parentObj[field.name] = preview || [];
+          } else if (!field.multiple && !Array.isArray(imageData) && imageData.absPath) {
+            const preview = this.panel?.webview.asWebviewUri(imageData.absPath);
+            parentObj[field.name] = {
+              ...imageData,
+              webviewUrl: preview ? preview.toString() : null
+            };
+          }
+        } else {
+          parentObj[field.name] = field.multiple ? [] : "";
+        }
+      }          
+    }
+
+    // Check if there are sub-fields to process
+    const subFields = fields.filter((field) => field.type === "fields");
+    if (subFields?.length > 0) {
+      for (const field of subFields) {
+        this.processImageFields(updatedMetadata, field.fields || [], [...parents, field.name]);
+      }
+    }
+  }
+
+  /**
    * Retrieve the file its front matter
    */
   private getFileData() {
@@ -464,7 +489,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * @param tagType 
    * @param values 
    */
-  private updateTags(tagType: TagType, values: string[]) {
+  private updateTags(tagType: TagType, values: string[], parents: string[]) {
     const editor = window.activeTextEditor;
     if (!editor) {
       return "";
@@ -472,7 +497,14 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
     const article = ArticleHelper.getFrontMatter(editor);
     if (article && article.data) {
-      article.data[tagType.toLowerCase()] = values || [];
+
+      // Support multi-level fields
+      let parentObj = article.data;
+      for (const parent of parents || []) {
+        parentObj = parentObj[parent];
+      }
+
+      parentObj[tagType.toLowerCase()] = values || [];
       ArticleHelper.update(editor, article);
       this.pushMetadata(article!.data);
     }
@@ -494,7 +526,14 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
     const article = ArticleHelper.getFrontMatter(editor);
     if (article && article.data) {
-      article.data[data.name] = data.options || [];
+
+      // Support multi-level fields
+      let parentObj = article.data;
+      for (const parent of data.parents || []) {
+        parentObj = parentObj[parent];
+      }
+
+      parentObj[data.name] = data.options || [];
       ArticleHelper.update(editor, article);
       this.pushMetadata(article!.data);
     }

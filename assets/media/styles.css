@@ -659,6 +659,14 @@ input:checked + .field__toggle__slider:before {
   margin-top: .5rem;
 }
 
+.vscode-light .metadata_field__preview_image__preview {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.vscode-dark .metadata_field__preview_image__preview {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 .metadata_field__preview_image__preview {
   background-color: var(--vscode-button-secondaryBackground);
   display: flex;

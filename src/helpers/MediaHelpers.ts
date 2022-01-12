@@ -295,7 +295,7 @@ export class MediaHelpers {
         panel.getMediaSelection();
       } else {
         panel.getMediaSelection();
-        panel.updateMetadata({field: data.fieldName, value: data.image });
+        panel.updateMetadata({field: data.fieldName, value: data.image, parents: data.parents });
       }
     }
   }

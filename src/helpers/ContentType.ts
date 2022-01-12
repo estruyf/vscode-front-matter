@@ -140,7 +140,7 @@ export class ContentType {
         if (field.name === "title") {
           data[field.name] = titleValue;
         } else {
-          if (field.type === "object") {
+          if (field.type === "fields") {
             data[field.name] = this.processFields(field, titleValue, {});
           } else {
             data[field.name] = field.default || "";

@@ -77,6 +77,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
       image: parseWinPath(relPath) || "",
       file: viewData?.data?.filePath,
       fieldName: viewData?.data?.fieldName,
+      parents: viewData?.data?.parents,
       multiple: viewData?.data?.multiple,
       value: viewData?.data?.value,
       position: viewData?.data?.position || null,
@@ -193,6 +194,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   const extension = fileInfo?.pop();
   const name = fileInfo?.join('.');
 
+  console.log(viewData?.data)
+
   return (
     <>
       <li className="group relative bg-gray-50 dark:bg-vulcan-200 hover:shadow-xl dark:hover:bg-vulcan-100 border border-gray-100 dark:border-vulcan-50">
@@ -220,7 +223,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
                   viewData?.data?.filePath ? (
                     <>
                       <QuickAction 
-                        title='Insert image with markdown markup'
+                        title={(viewData.data.metadataInsert && viewData.data.fieldName) ? `Insert image for your "${viewData.data.fieldName}" field` : `Insert image with markdown markup`}
                         onClick={insertToArticle}>
                         <PlusIcon className={`h-5 w-5`} aria-hidden="true" />
                       </QuickAction>
