@@ -18,23 +18,32 @@ import '@bendera/vscode-webview-elements/dist/vscode-checkbox.js';
 
 // import '@vscode/webview-ui-toolkit/dist/esm/checkbox';
 
-const elm = document.querySelector("#app");
-const version = elm?.getAttribute("data-version");
-const environment = elm?.getAttribute("data-environment");
-
-Sentry.init({
-  dsn: SENTRY_LINK,
-  integrations: [new Integrations.BrowserTracing()],
-  tracesSampleRate: 0, // No performance tracing required
-  release: version || "",
-  environment: environment || "",
-  ignoreErrors: ['ResizeObserver loop limit exceeded']
-});
-
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
   setState: (data: T) => void;
   postMessage: (msg: unknown) => void;
 };
 
-render(<ViewPanel />, elm);
+const elm = document.querySelector("#app");
+
+if (elm) {
+  const version = elm?.getAttribute("data-version");
+  const environment = elm?.getAttribute("data-environment");
+  const isProd = elm?.getAttribute("data-isProd");
+
+  if (isProd === "true") {
+    Sentry.init({
+      dsn: SENTRY_LINK,
+      integrations: [new Integrations.BrowserTracing()],
+      tracesSampleRate: 0, // No performance tracing required
+      release: version || "",
+      environment: environment || "",
+      ignoreErrors: ['ResizeObserver loop limit exceeded']
+    });
+  }
+
+  render(<ViewPanel />, elm);
+}
+
+// Webpack HMR
+if ((module as any).hot) (module as any).hot.accept();

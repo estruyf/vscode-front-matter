@@ -194,8 +194,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   const extension = fileInfo?.pop();
   const name = fileInfo?.join('.');
 
-  console.log(viewData?.data)
-
   return (
     <>
       <li className="group relative bg-gray-50 dark:bg-vulcan-200 hover:shadow-xl dark:hover:bg-vulcan-100 border border-gray-100 dark:border-vulcan-50">

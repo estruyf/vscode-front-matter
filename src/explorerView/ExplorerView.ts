@@ -9,7 +9,7 @@ import { Command } from "../panelWebView/Command";
 import { CommandToCode } from '../panelWebView/CommandToCode';
 import { Article } from '../commands';
 import { TagType } from '../panelWebView/TagType';
-import { ContentType, CustomTaxonomyData, DraftField, Field, ScriptType, TaxonomyType } from '../models';
+import { CustomTaxonomyData, DraftField, Field, ScriptType, TaxonomyType } from '../models';
 import { exec } from 'child_process';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { Content } from 'mdast';
@@ -737,35 +737,56 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * @param webView 
    */
   private getWebviewContent(webView: Webview): string {
+    const ext = Extension.getInstance();
+    const dashboardFile = "panelWebView.js";
+    const localPort = `9001`;
+    const localServerUrl = `localhost:${localPort}`;
+    const extensionPath = ext.extensionPath;
+
     const styleVSCodeUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'assets/media', 'vscode.css'));
     const styleResetUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'assets/media', 'reset.css'));
     const stylesUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'assets/media', 'styles.css'));
-    const scriptUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'dist', 'panelWebView.js'));
 
     const nonce = WebviewHelper.getNonce();
 
-    const ext = Extension.getInstance();
     const version = ext.getVersion();
     const isBeta = ext.isBetaVersion();
+
+    let scriptUri = "";
+    const isProd = Extension.getInstance().isProductionMode;
+    if (isProd) {
+      scriptUri = webView.asWebviewUri(Uri.joinPath(extensionPath, 'dist', dashboardFile)).toString();
+    } else {
+      scriptUri = `http://${localServerUrl}/${dashboardFile}`; 
+    }
+
+    const csp = [
+      `default-src 'none';`,
+      `img-src ${`vscode-file://vscode-app`} ${webView.cspSource} https://api.visitorbadge.io 'self' 'unsafe-inline'`,
+      `script-src ${isProd ? `'nonce-${nonce}'` : `http://${localServerUrl} http://0.0.0.0:${localPort}`}`,
+      `style-src ${webView.cspSource} 'self' 'unsafe-inline'`,
+      `font-src ${webView.cspSource}`,
+      `connect-src https://o1022172.ingest.sentry.io ${isProd ? `` : `ws://${localServerUrl} ws://0.0.0.0:${localPort} http://${localServerUrl} http://0.0.0.0:${localPort}`}`
+    ];
 
     return `
       <!DOCTYPE html>
       <html lang="en">
       <head>
-        <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${`vscode-file://vscode-app`} ${webView.cspSource} https://api.visitorbadge.io 'self' 'unsafe-inline'; script-src 'nonce-${nonce}'; style-src ${webView.cspSource} 'self' 'unsafe-inline'; font-src ${webView.cspSource}; connect-src https://o1022172.ingest.sentry.io">
+        <meta http-equiv="Content-Security-Policy" content="${csp.join('; ')}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="${styleResetUri}" rel="stylesheet">
         <link href="${styleVSCodeUri}" rel="stylesheet">
         <link href="${stylesUri}" rel="stylesheet">
 
-        <title>Front Matter</title>
+        <title>Front Matter Panel</title>
       </head>
       <body>
-        <div id="app" data-environment="${isBeta ? "BETA" : "main"}" data-version="${version.usedVersion}" ></div>
+        <div id="app" data-isProd="${isProd}" data-environment="${isBeta ? "BETA" : "main"}" data-version="${version.usedVersion}" ></div>
 
         <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759&slug=${`panel-${version.installedVersion}`}" alt="Daily usage" />
 
-        <script nonce="${nonce}" src="${scriptUri}"></script>
+        <script ${isProd ? `nonce="${nonce}"` : ""} src="${scriptUri}"></script>
       </body>
       </html>
     `;

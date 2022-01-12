@@ -1185,10 +1185,13 @@
     "build:ext": "npm run clean && npm-run-all --parallel dev:build:*",
     "watch:ext": "webpack --mode development --watch --config ./webpack/extension.config.js",
     "watch:dashboard": "webpack serve --mode development --config ./webpack/dashboard.config.js",
+    "watch:panel": "webpack serve --mode development --config ./webpack/panel.config.js",
     "dev:build:ext": "webpack --mode development --config ./webpack/extension.config.js",
     "dev:build:dashboard": "webpack --mode development --config ./webpack/dashboard.config.js",
+    "dev:build:panel": "webpack --mode development --config ./webpack/panel.config.js",
     "prod:ext": "webpack --mode production --config ./webpack/extension.config.js",
     "prod:dashboard": "webpack --mode production --config ./webpack/dashboard.config.js",
+    "prod:panel": "webpack --mode production --config ./webpack/panel.config.js",
     "test-compile": "tsc -p ./",
     "clean": "rimraf dist",
     "start:site": "cd ./docs && npm run dev"

@@ -5,6 +5,7 @@
 ### 🎨 Enhancements
 
 - Added default field value for content type fields
+- HMR support for panel webview development
 - [#197](https://github.com/estruyf/vscode-front-matter/issues/197): Support for multi-dimensional content type fields on content creation and editing.
 
 ## [5.10.0] - 2022-01-10

@@ -175,14 +175,15 @@ export class Dashboard {
    */
   private static getWebviewContent(webView: Webview, extensionPath: Uri): string {
     const dashboardFile = "dashboardWebView.js";
-    const localServerUrl = "http://localhost:9000";
+    const localPort = `9000`;
+    const localServerUrl = `localhost:${localPort}`;
 
     let scriptUri = "";
     const isProd = Extension.getInstance().isProductionMode;
     if (isProd) {
       scriptUri = webView.asWebviewUri(Uri.joinPath(extensionPath, 'dist', dashboardFile)).toString();
     } else {
-      scriptUri = `${localServerUrl}/${dashboardFile}`; 
+      scriptUri = `http://${localServerUrl}/${dashboardFile}`; 
     }
 
     const nonce = WebviewHelper.getNonce();
@@ -194,10 +195,10 @@ export class Dashboard {
     const csp = [
       `default-src 'none';`,
       `img-src ${`vscode-file://vscode-app`} ${webView.cspSource} https://api.visitorbadge.io 'self' 'unsafe-inline'`,
-      `script-src ${isProd ? `'nonce-${nonce}'` : "http://localhost:9000 http://0.0.0.0:9000"}`,
+      `script-src ${isProd ? `'nonce-${nonce}'` : `http://${localServerUrl} http://0.0.0.0:${localPort}`}`,
       `style-src ${webView.cspSource} 'self' 'unsafe-inline'`,
       `font-src ${webView.cspSource}`,
-      `connect-src https://o1022172.ingest.sentry.io ${isProd ? `` : "ws://localhost:9000 ws://0.0.0.0:9000 http://localhost:9000 http://0.0.0.0:9000"}`
+      `connect-src https://o1022172.ingest.sentry.io ${isProd ? `` : `ws://${localServerUrl} ws://0.0.0.0:${localPort} http://${localServerUrl} http://0.0.0.0:${localPort}`}`
     ];
 
     return `

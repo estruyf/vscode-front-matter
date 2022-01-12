@@ -243,7 +243,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
 
   return (
     <Collapsible id={`tags`} title="Metadata" className={`inherit z-20`}>
-
+      
       {
         renderFields(contentType?.fields, metadata)
       }

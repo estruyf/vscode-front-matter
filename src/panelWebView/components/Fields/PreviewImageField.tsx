@@ -38,8 +38,6 @@ export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps>
     onChange(newValue);
   }
 
-  console.log(fieldName, value, filePath, parents)
-
   return (
     <div className={`metadata_field`}>
       <VsLabel>
