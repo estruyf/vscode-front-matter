@@ -10,6 +10,7 @@ import { NavigationType } from '../../models';
 import { SortingOption } from '../../models/SortingOption';
 import { SearchSelector, SettingsSelector, SortingAtom } from '../../state';
 import { MenuButton, MenuItem, MenuItems } from '../Menu';
+import { Sorting as SortingHelpers } from '../../../helpers/Sorting';
 
 export interface ISortingProps {
   disableCustomSorting?: boolean;
@@ -21,6 +22,15 @@ export const sortOptions: SortingOption[] = [
   { name: "Last modified (desc)", id: SortOption.LastModifiedDesc, order: SortOrder.desc, type: SortType.date },
   { name: "By filename (asc)", id: SortOption.FileNameAsc, order: SortOrder.asc, type: SortType.string },
   { name: "By filename (desc)", id: SortOption.FileNameDesc, order: SortOrder.desc, type: SortType.string },
+];
+
+const mediaSortOptions: SortingOption[] = [
+  { name: "Size (asc)", id: SortOption.SizeAsc, order: SortOrder.asc, type: SortType.number },
+  { name: "Size (desc)", id: SortOption.SizeDesc, order: SortOrder.desc, type: SortType.number },
+  { name: "Caption (asc)", id: SortOption.CaptionAsc, order: SortOrder.asc, type: SortType.string },
+  { name: "Caption (desc)", id: SortOption.CaptionDesc, order: SortOrder.desc, type: SortType.string },
+  { name: "Alt (asc)", id: SortOption.AltAsc, order: SortOrder.asc, type: SortType.string },
+  { name: "Alt (desc)", id: SortOption.AltDesc, order: SortOrder.desc, type: SortType.string },
 ];
 
 export const Sorting: React.FunctionComponent<ISortingProps> = ({disableCustomSorting, view}: React.PropsWithChildren<ISortingProps>) => {
@@ -38,6 +48,13 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({disableCustomSo
   };
 
   let allOptions = [...sortOptions];
+
+  if (view === NavigationType.Media) {
+    allOptions = [...allOptions, ...mediaSortOptions];
+  }
+
+  allOptions = allOptions.sort(SortingHelpers.alphabetically("name"))
+
   if (settings?.customSorting && !disableCustomSorting) {
     allOptions = [...allOptions, ...settings.customSorting.map((s) => ({ 
       title: s.title || s.name, 
@@ -72,7 +89,7 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({disableCustomSo
       <Menu as="div" className="relative z-10 inline-block text-left">
         <MenuButton label={`Sort by`} title={crntSort?.title || crntSort?.name || ""} disabled={!!searchValue} />
 
-        <MenuItems>
+        <MenuItems widthClass="w-48">
           {allOptions.map((option) => (
             <MenuItem 
               key={option.id}
