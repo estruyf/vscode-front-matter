@@ -274,6 +274,19 @@ export class Folders {
       path: Folders.absWsFolder(folder, wsFolder)
     }));
   }
+
+  /**
+   * Retrieve the absolute file path
+   * @param filePath 
+   * @returns 
+   */
+  public static getAbsFilePath(filePath: string): string {
+    const wsFolder = Folders.getWorkspaceFolder();
+    const isWindows = process.platform === 'win32';
+    let absPath = filePath.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ""));
+    absPath = isWindows ? absPath.split('/').join('\\') : absPath;
+    return absPath;
+  }
   
   /**
    * Update the folder settings

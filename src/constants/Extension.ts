@@ -29,6 +29,7 @@ export const COMMAND_NAME = {
   preview: getCommandName("preview"),
   dashboard: getCommandName("dashboard"),
   dashboardMedia: getCommandName("dashboard.media"),
+  dashboardData: getCommandName("dashboard.data"),
   dashboardClose: getCommandName("dashboard.close"),
   promote: getCommandName("promoteSettings"),
   insertImage: getCommandName("insertImage"),

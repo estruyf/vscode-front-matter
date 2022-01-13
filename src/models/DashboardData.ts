@@ -1,4 +1,4 @@
 export interface DashboardData {
-  type: "contents" | "media";
+  type: "contents" | "media" | "data";
   data?: any;
 }

@@ -3,6 +3,7 @@ import { ContentFolder } from '../../models/ContentFolder';
 import { ContentType, CustomScript, DraftField, Framework, SortingSetting } from '../../models';
 import { SortingOption } from './SortingOption';
 import { DashboardViewType } from '.';
+import { DataFile } from '../../models/DataFile';
 
 export interface Settings { 
   beta: boolean;
@@ -24,6 +25,7 @@ export interface Settings {
   customSorting: SortingSetting[] | undefined;
   dashboardState: DashboardState;
   scripts: CustomScript[];
+  dataFiles: DataFile[] | undefined;
 }
 
 export interface DashboardState {

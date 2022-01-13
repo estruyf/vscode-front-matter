@@ -2,11 +2,15 @@
 
 ## [6.0.0] - 2022-01-xx
 
+### ✨ New features
+
+- [#193](https://github.com/estruyf/vscode-front-matter/issues/193): Support added for editing data files.
+- [#197](https://github.com/estruyf/vscode-front-matter/issues/197): Support for multi-dimensional content type fields on content creation and editing.
+
 ### 🎨 Enhancements
 
 - Added default field value for content type fields
 - HMR support for panel webview development
-- [#197](https://github.com/estruyf/vscode-front-matter/issues/197): Support for multi-dimensional content type fields on content creation and editing.
 - [#198](https://github.com/estruyf/vscode-front-matter/issues/198): Additional media sort options (alt, caption, and size).
 
 ## [5.10.0] - 2022-01-10

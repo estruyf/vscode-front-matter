@@ -329,6 +329,48 @@
           "markdownDescription": "Specify if you want to open the dashboard when you start VS Code.  [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.openonstart)",
           "scope": "Dashboard"
         },
+        "frontMatter.data.files": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "Specify the data files you want to use for your website. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.data.files)",
+          "items": {
+            "type": "object",
+            "default": {},
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Your unique ID you want to use for your data file."
+              },
+              "title": {
+                "type": "string",
+                "description": "Title you want to give to your data file."
+              },
+              "labelField": {
+                "type": "string",
+                "description": "The field you want to use as label for your data entries."
+              },
+              "file": {
+                "type": "string",
+                "description": "Path to the file to load. Only JSON files are supported."
+              },
+              "schema": {
+                "type": "object",
+                "default": {},
+                "description": "The JSON schema for your data which will be used to render the data form.",
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "title",
+              "file",
+              "schema",
+              "labelField"
+            ]
+          },
+          "scope": "Data"
+        },
         "frontMatter.framework.id": {
           "type": "string",
           "default": "",
@@ -501,7 +543,9 @@
                       "default": "",
                       "description": "The ID of your taxonomy field"
                     },
-                    "fields": { "$ref": "#contenttypefield" }
+                    "fields": {
+                      "$ref": "#contenttypefield"
+                    }
                   },
                   "additionalProperties": false,
                   "required": [
@@ -865,6 +909,15 @@
         }
       },
       {
+        "command": "frontMatter.dashboard.data",
+        "title": "Open data dashboard",
+        "category": "Front matter",
+        "icon": {
+          "dark": "/assets/icons/frontmatter-small-dark.svg",
+          "light": "/assets/icons/frontmatter-small-light.svg"
+        }
+      },
+      {
         "command": "frontMatter.dashboard.close",
         "title": "Close dashboard",
         "category": "Front matter",
@@ -1217,6 +1270,8 @@
     "@vscode/codicons": "0.0.20",
     "@vscode/webview-ui-toolkit": "^0.8.1",
     "@webpack-cli/serve": "^1.6.0",
+    "ajv": "^8.8.2",
+    "array-move": "^4.0.0",
     "autoprefixer": "^10.3.2",
     "css-loader": "5.2.7",
     "date-fns": "2.23.0",
@@ -1235,17 +1290,22 @@
     "path-browserify": "^1.0.1",
     "postcss": "^8.3.6",
     "postcss-loader": "4.3.0",
+    "postcss-nested": "^5.0.6",
     "react": "17.0.1",
     "react-datepicker": "4.2.1",
     "react-dom": "17.0.1",
     "react-dropzone": "^11.3.4",
+    "react-sortable-hoc": "^2.0.0",
     "recoil": "^0.4.1",
     "rimraf": "^3.0.2",
     "style-loader": "2.0.0",
     "tailwindcss": "^2.2.7",
     "ts-loader": "8.0.3",
     "tslint": "6.1.3",
-    "typescript": "4.0.2",
+    "typescript": "^4.5.4",
+    "uniforms": "^3.7.0",
+    "uniforms-bridge-json-schema": "^3.7.0",
+    "uniforms-unstyled": "^3.7.0",
     "url-join-ts": "^1.0.5",
     "wc-react": "github:estruyf/wc-react",
     "webpack": "^5.65.0",

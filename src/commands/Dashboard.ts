@@ -11,6 +11,7 @@ import { DashboardData } from '../models/DashboardData';
 import { ExplorerView } from '../explorerView/ExplorerView';
 import { MediaLibrary } from '../helpers/MediaLibrary';
 import { DashboardListener, MediaListener, SettingsListener } from '../listeners';
+import { DataListener } from '../listeners/DataListener';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -144,6 +145,7 @@ export class Dashboard {
       MediaListener.process(msg);
       PagesListener.process(msg);
       SettingsListener.process(msg);
+      DataListener.process(msg);
     });
   }
 
@@ -195,7 +197,7 @@ export class Dashboard {
     const csp = [
       `default-src 'none';`,
       `img-src ${`vscode-file://vscode-app`} ${webView.cspSource} https://api.visitorbadge.io 'self' 'unsafe-inline'`,
-      `script-src ${isProd ? `'nonce-${nonce}'` : `http://${localServerUrl} http://0.0.0.0:${localPort}`}`,
+      `script-src ${isProd ? `'nonce-${nonce}'` : `http://${localServerUrl} http://0.0.0.0:${localPort}`} 'unsafe-eval'`,
       `style-src ${webView.cspSource} 'self' 'unsafe-inline'`,
       `font-src ${webView.cspSource}`,
       `connect-src https://o1022172.ingest.sentry.io ${isProd ? `` : `ws://${localServerUrl} ws://0.0.0.0:${localPort} http://${localServerUrl} http://0.0.0.0:${localPort}`}`

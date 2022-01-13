@@ -21,4 +21,6 @@ export enum DashboardMessage {
   setFramework = 'setFramework',
   setState = 'setState',
   runCustomScript = 'runCustomScript',
+  getDataEntries = 'getDataEntries',
+  putDataEntries = 'putDataEntries',
 }

@@ -55,6 +55,8 @@ export const SETTINGS_CONTENT_DEFAULT_FILETYPE = "content.defaultFileType";
 export const SETTINGS_DASHBOARD_OPENONSTART = "dashboard.openOnStart";
 export const SETTINGS_DASHBOARD_MEDIA_SNIPPET = "dashboard.mediaSnippet";
 
+export const SETTINGS_DATA_FILES = "data.files";
+
 export const SETTINGS_FRAMEWORK_ID = "framework.id";
 
 export const SETTING_SITE_BASEURL = "site.baseURL";

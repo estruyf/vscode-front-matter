@@ -1,4 +1,5 @@
 export enum NavigationType {
   Contents = "contents",
-  Media = "media"
+  Media = "media",
+  Data = "data",
 }

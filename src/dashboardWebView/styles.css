@@ -30,3 +30,71 @@
   left: 2px;
   color: white;
 }
+
+.autoform {
+  @apply py-4;
+
+  h2 {
+    @apply text-sm mb-2;
+  }
+
+  form {
+    label {
+      @apply block;
+      @apply text-gray-500;
+      @apply my-2;
+    }
+
+    input {
+      @apply w-full text-vulcan-500;
+
+      &::placeholder {
+        @apply text-gray-500;
+      }
+    }
+
+    .errors {
+      ul {
+        @apply list-disc mt-4 pl-6 pr-4 py-4 border border-red-300 bg-red-50 bg-opacity-50 text-vulcan-500;
+      }
+
+      li {
+        @apply capitalize text-gray-900;
+      }
+    }
+
+    input[type="submit"] {
+      @apply w-auto mt-4 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium text-white bg-teal-600 cursor-pointer;
+
+      &:hover {
+        @apply bg-teal-700;
+      }
+
+      &:focus {
+        @apply outline-none;
+      }
+
+      &:disabled {
+        @apply bg-gray-500 opacity-50;
+      }
+    }
+  }
+}
+
+.vscode-dark .autoform {
+  form {
+    label {
+      @apply text-whisper-900;
+    }
+
+    input[type="submit"] {
+      @apply text-vulcan-500
+    }
+
+    .errors {
+      li {
+        @apply text-white;
+      }
+    }
+  }
+}
