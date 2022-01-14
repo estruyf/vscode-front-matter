@@ -358,6 +358,11 @@
                 "default": {},
                 "description": "The JSON schema for your data which will be used to render the data form.",
                 "additionalProperties": true
+              },
+              "type": {
+                "type": "string",
+                "default": "content",
+                "description": "If you are using data types, you can specify your type ID."
               }
             },
             "additionalProperties": false,
@@ -365,8 +370,45 @@
               "id",
               "title",
               "file",
-              "schema",
               "labelField"
+            ],
+            "anyOf": [
+              {
+                "required": [
+                  "schema"
+                ]
+              },
+              {
+                "required": [
+                  "type"
+                ]
+              }
+            ]
+          },
+          "scope": "Data"
+        },
+        "frontMatter.data.types": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "Specify the data types. These types can be used in for your data files. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.data.types)",
+          "items": {
+            "type": "object",
+            "default": {},
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Your unique ID you want to use for your data type."
+              },
+              "schema": {
+                "type": "object",
+                "default": {},
+                "description": "The JSON schema for your data which will be used to render the data form.",
+                "additionalProperties": true
+              }
+            },
+            "required": [
+              "id",
+              "schema"
             ]
           },
           "scope": "Data"

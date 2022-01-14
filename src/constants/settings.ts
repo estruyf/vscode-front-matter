@@ -56,6 +56,7 @@ export const SETTINGS_DASHBOARD_OPENONSTART = "dashboard.openOnStart";
 export const SETTINGS_DASHBOARD_MEDIA_SNIPPET = "dashboard.mediaSnippet";
 
 export const SETTINGS_DATA_FILES = "data.files";
+export const SETTINGS_DATA_TYPES = "data.types";
 
 export const SETTINGS_FRAMEWORK_ID = "framework.id";
 

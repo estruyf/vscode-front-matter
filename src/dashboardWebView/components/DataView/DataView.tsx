@@ -18,6 +18,7 @@ import { SortableItem } from './SortableItem';
 import { ChevronRightIcon } from '@heroicons/react/outline';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { DataType } from '../../../models/DataType';
 
 export interface IDataViewProps {}
 
@@ -75,7 +76,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
     });
 
     // Show toast message
-    toast.success("Wow so easy!", {
+    toast.success("Your entry was submitted", {
       position: "top-right",
       autoClose: 2000,
       hideProgressBar: true,
@@ -115,6 +116,25 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
       Messenger.unlisten(messageListener);
     }
   }, []);
+
+  // Retrieve the data files, check if they have a schema or ID, if not, they shouldn't be shown
+  const dataFiles = (settings?.dataFiles || []).map((dataFile: DataFile) => {
+    if (!dataFile.schema && !dataFile.id) {
+      return null;
+    }
+
+    const clonedFile = Object.assign({}, dataFile);
+
+    if (clonedFile.type) {
+      const dataType = settings?.dataTypes?.find((dataType: DataType) => dataType.id === clonedFile.type);
+      if (!dataType) {
+        return null;
+      }
+      clonedFile.schema = Object.assign({}, dataType.schema);
+    }
+
+    return clonedFile;
+  }).filter(d => d !== null) as DataFile[];
   
   return (
     <div className="flex flex-col h-full overflow-auto  inset-y-0">
@@ -130,8 +150,8 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
             <nav className={`flex-1 py-4 -mx-4 `}>
               <div className={`divide-y divide-gray-200 dark:divide-vulcan-300 border-t border-b border-gray-200 dark:border-vulcan-300`}>
                 {
-                  (settings?.dataFiles && settings.dataFiles.length > 0) && (
-                    settings.dataFiles.map((dataFile) => (
+                  (dataFiles && dataFiles.length > 0) && (
+                    dataFiles.map((dataFile) => (
                       <button
                         key={dataFile.id}
                         type='button'

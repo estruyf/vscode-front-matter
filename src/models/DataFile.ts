@@ -3,5 +3,6 @@ export interface DataFile {
   title: string;
   file: string;
   labelField: string;
-  schema: any;
+  schema?: any;
+  type?: string;
 }

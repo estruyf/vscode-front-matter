@@ -1,4 +1,4 @@
-import { PencilIcon, SelectorIcon, XIcon } from '@heroicons/react/outline';
+import { PencilIcon, SelectorIcon, TrashIcon, XIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { SortableHandle, SortableElement } from 'react-sortable-hoc';
 import { Alert } from '../Modals/Alert';
@@ -43,7 +43,7 @@ export const SortableItem = SortableElement(({ value, selectedIndex, crntIndex, 
             className={`text-gray-500 dark:text-whisper-900 hover:text-gray-600 dark:hover:text-whisper-500`}
             title={`Delete "${value}"`}
             onClick={() => deleteItemConfirm()}>
-            <XIcon className='w-4 h-4' />
+            <TrashIcon className='w-4 h-4' />
             <span className='sr-only'>Delete</span>
           </button>
         </div>
@@ -57,7 +57,10 @@ export const SortableItem = SortableElement(({ value, selectedIndex, crntIndex, 
             okBtnText={`Delete`}
             cancelBtnText={`Cancel`}
             dismiss={() => setShowAlert(false)}
-            trigger={() => onDeleteItem(crntIndex)} />
+            trigger={() => {
+              setShowAlert(false);
+              onDeleteItem(crntIndex);
+            }} />
         )
       }
     </>

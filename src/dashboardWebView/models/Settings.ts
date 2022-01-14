@@ -1,3 +1,4 @@
+import { DataType } from './../../models/DataType';
 import { VersionInfo } from '../../models/VersionInfo';
 import { ContentFolder } from '../../models/ContentFolder';
 import { ContentType, CustomScript, DraftField, Framework, SortingSetting } from '../../models';
@@ -26,6 +27,7 @@ export interface Settings {
   dashboardState: DashboardState;
   scripts: CustomScript[];
   dataFiles: DataFile[] | undefined;
+  dataTypes: DataType[] | undefined;
 }
 
 export interface DashboardState {

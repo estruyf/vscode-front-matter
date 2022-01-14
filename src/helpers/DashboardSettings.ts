@@ -1,9 +1,10 @@
 import { Folders } from "../commands/Folders";
 import { Template } from "../commands/Template";
-import { ExtensionState, SETTINGS_CONTENT_DRAFT_FIELD, SETTINGS_CONTENT_SORTING, SETTINGS_CONTENT_SORTING_DEFAULT, SETTINGS_CONTENT_STATIC_FOLDER, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DATA_FILES, SETTINGS_FRAMEWORK_ID, SETTINGS_MEDIA_SORTING_DEFAULT, SETTING_CUSTOM_SCRIPTS, SETTING_TAXONOMY_CONTENT_TYPES } from "../constants";
+import { ExtensionState, SETTINGS_CONTENT_DRAFT_FIELD, SETTINGS_CONTENT_SORTING, SETTINGS_CONTENT_SORTING_DEFAULT, SETTINGS_CONTENT_STATIC_FOLDER, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DATA_FILES, SETTINGS_DATA_TYPES, SETTINGS_FRAMEWORK_ID, SETTINGS_MEDIA_SORTING_DEFAULT, SETTING_CUSTOM_SCRIPTS, SETTING_TAXONOMY_CONTENT_TYPES } from "../constants";
 import { DashboardViewType, SortingOption, Settings as ISettings } from "../dashboardWebView/models";
 import { CustomScript, DraftField, ScriptType, SortingSetting, TaxonomyType } from "../models";
 import { DataFile } from "../models/DataFile";
+import { DataType } from "../models/DataType";
 import { Extension } from "./Extension";
 import { FrameworkDetector } from "./FrameworkDetector";
 import { Settings } from "./SettingsHelper";
@@ -46,7 +47,8 @@ export class DashboardSettings {
           selectedFolder: await ext.getState<string | undefined>(ExtensionState.SelectedFolder, "workspace")
         }
       },
-      dataFiles: Settings.get<DataFile[]>(SETTINGS_DATA_FILES)
+      dataFiles: Settings.get<DataFile[]>(SETTINGS_DATA_FILES),
+      dataTypes: Settings.get<DataType[]>(SETTINGS_DATA_TYPES)
     } as ISettings
   }
 }
