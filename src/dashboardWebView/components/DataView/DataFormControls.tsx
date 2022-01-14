@@ -12,7 +12,7 @@ export const DataFormControls: React.FunctionComponent<IDataFormControlsProps> =
   const { formRef } = useForm();
   
   return (
-    <div className='text-right'>
+    <div className='text-right border-t border-gray-200 dark:border-vulcan-300'>
       <SubmitField value={model ? `Update` : `Add`} />
       <Button className='ml-4' secondary onClick={() => {
         if (onClear) {

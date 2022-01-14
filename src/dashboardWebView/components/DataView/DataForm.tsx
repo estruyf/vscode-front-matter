@@ -2,7 +2,7 @@ import * as React from 'react';
 import Ajv from 'ajv';
 import { useEffect, useState } from 'react';
 import { JSONSchemaBridge } from 'uniforms-bridge-json-schema';
-import { AutoFields, AutoForm, ErrorsField, SubmitField } from 'uniforms-unstyled';
+import { AutoFields, AutoForm, ErrorsField } from 'uniforms-antd';
 import { ErrorBoundary } from '@sentry/react';
 import { DataFormControls } from './DataFormControls';
 
@@ -53,7 +53,9 @@ export const DataForm: React.FunctionComponent<IDataFormProps> = ({ schema, mode
           model={model || {}}
           onSubmit={onSubmit}
           ref={form => form?.reset()}>
-          <AutoFields />
+          <div className={`fields`}>
+            <AutoFields />
+          </div>
           
           <div className={`errors`}>
             <ErrorsField />

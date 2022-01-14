@@ -53,9 +53,29 @@
       }
     }
 
+    .ant-form-item-has-error .ant-form-item-control-input {
+      @apply relative;
+    }
+    
+    .ant-form-item-has-error input {
+      @apply border border-red-400;
+    }
+
+    .ant-form-item-has-error .ant-form-item-children-icon {
+      @apply text-red-400 absolute right-1 top-2;
+
+      svg {
+        @apply w-4 h-4;
+      }
+    }
+
     .errors {
+      > div {
+        @apply border border-red-400 !important;
+      }
+      
       ul {
-        @apply list-disc mt-4 pl-6 pr-4 py-4 border border-red-300 bg-red-50 bg-opacity-50 text-vulcan-500;
+        @apply list-disc pl-6 pr-4 py-4 bg-opacity-50 text-vulcan-500;
       }
 
       li {
@@ -79,6 +99,12 @@
       }
     }
   }
+
+  .fields {}
+
+  .ant-list.ant-list-bordered {
+    @apply border-t border-gray-300;
+  }
 }
 
 .vscode-dark .autoform {
@@ -96,5 +122,9 @@
         @apply text-white;
       }
     }
+  }
+
+  .ant-list.ant-list-bordered {
+    @apply border-vulcan-100;
   }
 }

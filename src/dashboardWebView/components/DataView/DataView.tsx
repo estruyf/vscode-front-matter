@@ -16,6 +16,8 @@ import { EmptyView } from './EmptyView';
 import { Container } from './SortableContainer';
 import { SortableItem } from './SortableItem';
 import { ChevronRightIcon } from '@heroicons/react/outline';
+import { ToastContainer, toast, Slide } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export interface IDataViewProps {}
 
@@ -54,6 +56,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
     });
   }, [selectedData, dataEntries]);
 
+  
   const onSubmit = useCallback((data: any) => {
     const dataClone: any[] = Object.assign([], dataEntries);
     if (selectedIndex !== null && selectedIndex !== undefined) {
@@ -70,7 +73,18 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
       file: selectedData.file,
       entries: dataClone
     });
+
+    // Show toast message
+    toast.success("Wow so easy!", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      transition: Slide
+    });
   }, [selectedData, dataEntries, selectedIndex]);
+
 
   const onSortEnd = useCallback(({ oldIndex, newIndex }: any) => {
     if (!dataEntries || dataEntries.length === 0) {
@@ -93,6 +107,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
     });
   }, [selectedData, dataEntries, selectedIndex]);
 
+
   useEffect(() => {
     Messenger.listen(messageListener);
 
@@ -105,7 +120,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
     <div className="flex flex-col h-full overflow-auto  inset-y-0">
       <Header settings={settings} />
 
-      <div className="relative w-full flex-grow max-w-7xl mx-auto border-b border-gray-200 dark:border-vulcan-300">
+      <div className="relative w-full flex-grow mx-auto border-b border-gray-200 dark:border-vulcan-300">
 
         <div className={`flex w-64 flex-col absolute inset-y-0`}>
 
@@ -149,8 +164,8 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
                             {
                               (dataEntries || []).map((dataEntry, idx) => (
                                 <SortableItem 
-                                  key={dataEntry[selectedData.labelField]}
-                                  value={dataEntry[selectedData.labelField]}
+                                  key={dataEntry[selectedData.labelField] || `entry-${idx}`}
+                                  value={dataEntry[selectedData.labelField] || `Entry ${idx+1}`}
                                   index={idx}
                                   crntIndex={idx}
                                   selectedIndex={selectedIndex}
@@ -197,6 +212,8 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
       </div>
 
       <SponsorMsg beta={settings?.beta} version={settings?.versionInfo} />
+
+      <ToastContainer />
     </div>
   );
 };
