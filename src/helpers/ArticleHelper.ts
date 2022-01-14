@@ -10,13 +10,13 @@ import { Extension, Settings } from '.';
 import { format, parse } from 'date-fns';
 import { Notifications } from './Notifications';
 import { Article } from '../commands';
-import { basename, join } from 'path';
+import { join } from 'path';
 import { EditorHelper } from '@estruyf/vscode';
 import sanitize from '../helpers/Sanitize';
 import { existsSync, mkdirSync } from 'fs';
 import { ContentType } from '../models';
 import { DateHelper } from './DateHelper';
-import { Diagnostic, DiagnosticSeverity, Position, window, Range } from 'vscode';
+import { DiagnosticSeverity, Position, window, Range } from 'vscode';
 
 export class ArticleHelper {
   private static notifiedFiles: string[] = [];
