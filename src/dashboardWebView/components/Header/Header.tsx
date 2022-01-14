@@ -57,9 +57,9 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
     Messenger.send(DashboardMessage.runCustomScript, { script });
   };
 
-  const customActions: any[] = (settings?.scripts || []).filter(s => s.bulk && (s.type === "content" || !s.type)).map(s => ({
+  const customActions: any[] = (settings?.scripts || []).filter(s => s.bulk && (s.type === "content" || !s.type)).map((s, idx) => ({
     title: (
-      <div className="flex items-center">
+      <div key={idx} className="flex items-center">
         <LightningBoltIcon className="w-4 h-4 mr-2" />
         <span>{s.title}</span>
       </div>

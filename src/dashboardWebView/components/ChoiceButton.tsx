@@ -37,9 +37,9 @@ export const ChoiceButton: React.FunctionComponent<IChoiceButtonProps> = ({onCli
 
         <MenuItems widthClass={`w-56`}>
           <div className="py-1">
-            {choices.map((choice) => (
+            {choices.map((choice, idx) => (
               <MenuItem 
-                key={choice.title}
+                key={idx}
                 title={(
                   choice.icon ? (
                     <div className="flex items-center">
