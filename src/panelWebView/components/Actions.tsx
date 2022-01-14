@@ -10,8 +10,7 @@ export interface IActionsProps {
   settings: PanelSettings;
 }
 
-const Actions: React.FunctionComponent<IActionsProps> = (props: React.PropsWithChildren<IActionsProps>) => {
-  const { metadata, settings } = props;
+const Actions: React.FunctionComponent<IActionsProps> = ({ metadata, settings }: React.PropsWithChildren<IActionsProps>) => {
 
   if (!metadata || Object.keys(metadata).length === 0 || !settings) {
     return null;

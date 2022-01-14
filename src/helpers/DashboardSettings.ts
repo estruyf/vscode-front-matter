@@ -35,7 +35,7 @@ export class DashboardSettings {
       contentFolders: Folders.get(),
       crntFramework: Settings.get<string>(SETTINGS_FRAMEWORK_ID),
       framework: (!isInitialized && wsFolder) ? FrameworkDetector.get(wsFolder.fsPath) : null,
-      scripts: (Settings.get<CustomScript[]>(SETTING_CUSTOM_SCRIPTS) || []).filter(s => s.type && s.type !== ScriptType.Content),
+      scripts: (Settings.get<CustomScript[]>(SETTING_CUSTOM_SCRIPTS) || []),
       dashboardState: {
         contents: {
           sorting: await ext.getState<SortingOption | undefined>(ExtensionState.Dashboard.Contents.Sorting, "workspace"),

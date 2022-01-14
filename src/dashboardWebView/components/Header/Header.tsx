@@ -17,6 +17,8 @@ import { MediaHeaderTop } from '../Media/MediaHeaderTop';
 import { ChoiceButton } from '../ChoiceButton';
 import { MediaHeaderBottom } from '../Media/MediaHeaderBottom';
 import { Tabs } from './Tabs';
+import { CustomScript } from '../../../models';
+import { LightningBoltIcon, PlusIcon } from '@heroicons/react/outline';
 
 export interface IHeaderProps {
   settings: Settings | null;
@@ -51,6 +53,20 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
     resetSorting();
   }
 
+  const runBulkScript = (script: CustomScript) => {
+    Messenger.send(DashboardMessage.runCustomScript, { script });
+  };
+
+  const customActions: any[] = (settings?.scripts || []).filter(s => s.bulk && (s.type === "content" || !s.type)).map(s => ({
+    title: (
+      <div className="flex items-center">
+        <LightningBoltIcon className="w-4 h-4 mr-2" />
+        <span>{s.title}</span>
+      </div>
+    ),
+    onClick: () => runBulkScript(s)
+  }));
+
   return (
     <div className={`w-full sticky top-0 z-40 bg-gray-100 dark:bg-vulcan-500`}>
 
@@ -69,15 +85,28 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
                 
                 <ChoiceButton 
                   title={`Create content`} 
-                  choices={[{
-                    title: `Create by content type`,
-                    onClick: createByContentType,
-                    disabled: !settings?.initialized
-                  }, {
-                    title: `Create by template`,
-                    onClick: createByTemplate,
-                    disabled: !settings?.initialized
-                  }]} 
+                  choices={[
+                    {
+                      title: (
+                        <div className='flex items-center'>
+                          <PlusIcon className="w-4 h-4 mr-2" />
+                          <span>Create by content type</span>
+                        </div>
+                      ),
+                      onClick: createByContentType,
+                      disabled: !settings?.initialized
+                    }, {
+                      title: (
+                        <div className='flex items-center'>
+                          <PlusIcon className="w-4 h-4 mr-2" />
+                          <span>Create by template</span>
+                        </div>
+                      ),
+                      onClick: createByTemplate,
+                      disabled: !settings?.initialized
+                    },
+                    ...customActions
+                  ]} 
                   onClick={createContent} 
                   disabled={!settings?.initialized} />
               </div>

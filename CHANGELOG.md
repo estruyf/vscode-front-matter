@@ -6,6 +6,7 @@
 
 - [#193](https://github.com/estruyf/vscode-front-matter/issues/193): Support added for editing data files.
 - [#197](https://github.com/estruyf/vscode-front-matter/issues/197): Support for multi-dimensional content type fields on content creation and editing.
+- [#228](https://github.com/estruyf/vscode-front-matter/issues/228): Show bulk button actions in panel and dashboard view.
 
 ### 🎨 Enhancements
 
