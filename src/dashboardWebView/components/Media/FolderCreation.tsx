@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {FolderAddIcon} from '@heroicons/react/outline';
+import {FolderAddIcon, LightningBoltIcon} from '@heroicons/react/outline';
 import { useRecoilValue } from 'recoil';
 import { DashboardMessage } from '../../DashboardMessage';
 import { SelectedMediaFolderAtom, SettingsSelector } from '../../state';
@@ -31,6 +31,7 @@ export const FolderCreation: React.FunctionComponent<IFolderCreationProps> = (pr
           title={`Create new folder`} 
           choices={scripts.map(s => ({
             title: s.title,
+            icon: <LightningBoltIcon className="w-4 h-4 mr-2" />,
             onClick: () => runCustomScript(s)
           }))} 
           onClick={onFolderCreation} 
