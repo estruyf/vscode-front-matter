@@ -353,6 +353,15 @@
                 "type": "string",
                 "description": "Path to the file to load. Only JSON files are supported."
               },
+              "fileType": {
+                "type": "string",
+                "default": "json",
+                "enum": [
+                  "json",
+                  "yaml"
+                ],
+                "description": "Defines how you want to parse the file. JSON is the default."
+              },
               "schema": {
                 "type": "object",
                 "default": {},

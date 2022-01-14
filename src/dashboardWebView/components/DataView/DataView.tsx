@@ -50,11 +50,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
     }
 
     dataClone.splice(index, 1);
-
-    Messenger.send(DashboardMessage.putDataEntries, {
-      file: selectedData.file,
-      entries: dataClone
-    });
+    updateData(dataClone);
   }, [selectedData, dataEntries]);
 
   
@@ -65,25 +61,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
     } else {
       dataClone.push(data);
     }
-
-    if (!selectedData) {
-      return;
-    }
-
-    Messenger.send(DashboardMessage.putDataEntries, {
-      file: selectedData.file,
-      entries: dataClone
-    });
-
-    // Show toast message
-    toast.success("Your entry was submitted", {
-      position: "top-right",
-      autoClose: 2000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      transition: Slide
-    });
+    updateData(dataClone);
   }, [selectedData, dataEntries, selectedIndex]);
 
 
@@ -96,18 +74,31 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
       setSelectedIndex(newIndex);
     }
 
+    const newEntries = arrayMoveImmutable(dataEntries, oldIndex, newIndex);
+    updateData(newEntries);
+  }, [selectedData, dataEntries, selectedIndex]);
+
+  const updateData = useCallback((data: any) => {
     if (!selectedData) {
       return;
     }
 
-    const newEntries = arrayMoveImmutable(dataEntries, oldIndex, newIndex);
-
     Messenger.send(DashboardMessage.putDataEntries, {
       file: selectedData.file,
-      entries: newEntries
+      fileType: selectedData.fileType,
+      entries: data
     });
-  }, [selectedData, dataEntries, selectedIndex]);
 
+    // Show toast message
+    toast.success("Updated your data entries", {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      transition: Slide
+    });
+  }, [selectedData]);
 
   useEffect(() => {
     Messenger.listen(messageListener);
