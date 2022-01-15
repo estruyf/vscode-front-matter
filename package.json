@@ -198,6 +198,30 @@
           },
           "scope": "Content"
         },
+        "frontMatter.content.placeholders": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "This array of placeholders defines the placeholders that you can use in your content types and templates for automatically populating your content its front matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.placeholders)",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "ID of the placeholder, in your content type or template, use it as follows: {{placeholder}}"
+              },
+              "value": {
+                "type": "string",
+                "description": "The placeholder its value"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "value"
+            ]
+          },
+          "scope": "Content"
+        },
         "frontMatter.content.publicFolder": {
           "type": "string",
           "default": "",

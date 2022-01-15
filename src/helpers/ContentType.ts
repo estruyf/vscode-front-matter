@@ -135,15 +135,22 @@ export class ContentType {
    * @param data 
    */
   private static processFields(obj: IContentType | Field, titleValue: string, data: any) {
+    
     if (obj.fields) {
       for (const field of obj.fields) {
         if (field.name === "title") {
-          data[field.name] = titleValue;
+          if (field.default) {
+            data[field.name] = ArticleHelper.processKnownPlaceholders(field.default, titleValue);
+            data[field.name] = ArticleHelper.processCustomPlaceholders(data[field.name], titleValue);
+          } else {
+            data[field.name] = titleValue;
+          }
         } else {
           if (field.type === "fields") {
             data[field.name] = this.processFields(field, titleValue, {});
           } else {
-            data[field.name] = field.default || "";
+            data[field.name] = field.default ? ArticleHelper.processKnownPlaceholders(field.default, titleValue) : "";
+            data[field.name] = field.default ? ArticleHelper.processCustomPlaceholders(data[field.name], titleValue) : "";
           }
         }
       }

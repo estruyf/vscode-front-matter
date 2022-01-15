@@ -46,6 +46,7 @@ export const SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT = "content.fmHighlight";
 export const SETTINGS_CONTENT_DRAFT_FIELD = "content.draftField";
 export const SETTINGS_CONTENT_SORTING = "content.sorting";
 export const SETTINGS_CONTENT_WYSIWYG = "content.wysiwyg";
+export const SETTINGS_CONTENT_PLACEHOLDERS = "content.placeholders";
 
 export const SETTINGS_CONTENT_SORTING_DEFAULT = "content.defaultSorting";
 export const SETTINGS_MEDIA_SORTING_DEFAULT = "content.defaultSorting";

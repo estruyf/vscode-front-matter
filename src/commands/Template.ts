@@ -159,13 +159,7 @@ export class Template {
     }
 
     if (frontMatter.data) {
-      const fmData = frontMatter.data;
-      if (typeof fmData.title !== "undefined") {
-        fmData.title = titleValue;
-      }
-      if (typeof fmData.slug !== "undefined") {
-        fmData.slug = ArticleHelper.sanitize(titleValue);
-      }
+      frontMatter.data = ArticleHelper.updatePlaceholders(frontMatter.data, titleValue);
 
       frontMatter = Article.updateDate(frontMatter);
 

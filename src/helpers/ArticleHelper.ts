@@ -3,7 +3,7 @@ import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from './../constants/
 import * as vscode from 'vscode';
 import * as matter from "gray-matter";
 import * as fs from "fs";
-import { DefaultFields, SETTINGS_CONTENT_DEFAULT_FILETYPE, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from '../constants';
+import { DefaultFields, SETTINGS_CONTENT_DEFAULT_FILETYPE, SETTINGS_CONTENT_PLACEHOLDERS, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { TomlEngine, getFmLanguage, getFormatOpts } from './TomlEngine';
 import { Extension, Settings } from '.';
@@ -272,6 +272,78 @@ export class ArticleHelper {
     }
 
     return newFilePath;
+  }
+
+  /**
+   * Update placeholder values in the front matter content
+   * @param data 
+   * @param title 
+   * @returns 
+   */
+  public static updatePlaceholders(data: any, title: string) {
+    const fmData = Object.assign({}, data);
+
+    for (const fieldName of Object.keys(fmData)) {
+      const fieldValue = fmData[fieldName];
+
+      if (fieldName === "title" && (fieldValue === null || fieldValue === "")) {
+        fmData[fieldName] = title;
+      }
+  
+      if (fieldName === "slug" && (fieldValue === null || fieldValue === "")) {
+        fmData[fieldName] = ArticleHelper.sanitize(title);
+      }
+
+      fmData[fieldName] = this.processKnownPlaceholders(fmData[fieldName], title);
+      fmData[fieldName] = this.processCustomPlaceholders(fmData[fieldName], title);
+    }
+
+    return fmData;
+  }
+
+  /**
+   * Replace the known placeholders
+   * @param value 
+   * @param title 
+   * @returns 
+   */
+  public static processKnownPlaceholders(value: string, title: string) {
+    if (value && typeof value === "string") {
+      if (value.includes("{{title}}")) {
+        const regex = new RegExp("{{title}}", "g");
+        value = value.replace(regex, title);
+      }
+      
+      if (value.includes("{{slug}}")) {
+        const regex = new RegExp("{{slug}}", "g");
+        value = value.replace(regex, ArticleHelper.sanitize(title));
+      }
+    }
+
+    return value;
+  }
+
+  /**
+   * Replace the custom placeholders
+   * @param value 
+   * @param title 
+   * @returns 
+   */
+  public static processCustomPlaceholders(value: string, title: string) {
+    if (value && typeof value === "string") {
+      const placeholders = Settings.get<{id: string, value: string}[]>(SETTINGS_CONTENT_PLACEHOLDERS);
+      if (placeholders && placeholders.length > 0) {
+        for (const placeholder of placeholders) {
+          if (value.includes(`{{${placeholder.id}}}`)) {
+            const regex = new RegExp(`{{${placeholder.id}}}`, "g");
+            const updatedValue = this.processKnownPlaceholders(placeholder.value, title);
+            value = value.replace(regex, updatedValue);
+          }
+        }
+      }
+    }
+
+    return value;
   }
 
   /**
