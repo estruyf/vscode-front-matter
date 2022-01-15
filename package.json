@@ -351,7 +351,7 @@
               },
               "file": {
                 "type": "string",
-                "description": "Path to the file to load. Only JSON files are supported."
+                "description": "Path to the file to load. Only JSON or YAML files are supported."
               },
               "fileType": {
                 "type": "string",
@@ -378,8 +378,59 @@
             "required": [
               "id",
               "title",
-              "file",
-              "labelField"
+              "file"
+            ],
+            "anyOf": [
+              {
+                "required": [
+                  "schema"
+                ]
+              },
+              {
+                "required": [
+                  "type"
+                ]
+              }
+            ]
+          },
+          "scope": "Data"
+        },
+        "frontMatter.data.folders": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "Specify the data files you want to use for your website. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.data.files)",
+          "items": {
+            "type": "object",
+            "default": {},
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Your unique ID you want to use for your data folder."
+              },
+              "labelField": {
+                "type": "string",
+                "description": "The field you want to use as label for your data entries."
+              },
+              "path": {
+                "type": "string",
+                "description": "Path to the folder to load files."
+              },
+              "schema": {
+                "type": "object",
+                "default": {},
+                "description": "The JSON schema for your data which will be used to render the data form.",
+                "additionalProperties": true
+              },
+              "type": {
+                "type": "string",
+                "default": "content",
+                "description": "If you are using data types, you can specify your type ID."
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "path"
             ],
             "anyOf": [
               {
