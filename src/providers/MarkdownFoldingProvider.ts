@@ -1,6 +1,6 @@
 import { TextEditorDecorationType } from 'vscode';
 import { CancellationToken, FoldingContext, FoldingRange, FoldingRangeKind, FoldingRangeProvider, Range, TextDocument, window, Position } from 'vscode';
-import { SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT } from '../constants';
+import { SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_FRONTMATTER_TYPE } from '../constants';
 import { Settings } from '../helpers';
 import { FrontMatterDecorationProvider } from './FrontMatterDecorationProvider';
 
@@ -50,6 +50,15 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
    * @returns 
    */
   public static getFrontMatterRange(document?: TextDocument) {
+    const language = Settings.get(SETTING_FRONTMATTER_TYPE) as string || "YAML";
+
+    let lineStart = "---";
+    let lineEnd = "---";
+    if (language === "TOML") {
+      lineStart = "+++";
+      lineEnd = lineStart;
+    }
+
     if (document) {
       const lines = document.getText().split('\n');
 
@@ -59,7 +68,7 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
 
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
-        if (line.startsWith('---')) {
+        if (line.startsWith(lineStart) || line.startsWith(lineEnd)) {
           if (i === 0 && start === null) {
             start = i;
           } else if (start !== null && end === null) {

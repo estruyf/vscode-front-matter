@@ -6,7 +6,7 @@ import * as fs from "fs";
 import { DefaultFields, SETTINGS_CONTENT_DEFAULT_FILETYPE, SETTINGS_CONTENT_PLACEHOLDERS, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { TomlEngine, getFmLanguage, getFormatOpts } from './TomlEngine';
-import { Extension, Settings } from '.';
+import { Extension, Logger, Settings } from '.';
 import { format, parse } from 'date-fns';
 import { Notifications } from './Notifications';
 import { Article } from '../commands';
@@ -388,6 +388,8 @@ export class ArticleHelper {
           await EditorHelper.showFile(fileName)
         } 
       }];
+      
+      Logger.error(error.message);
 
       const editor = window.activeTextEditor;
       if (editor?.document.uri) {
@@ -400,7 +402,6 @@ export class ArticleHelper {
         } else {
           fmRange = MarkdownFoldingProvider.getFrontMatterRange(editor.document);
         }
-
 
         if (fmRange) {
           Extension.getInstance().diagnosticCollection.set(editor.document.uri, [{

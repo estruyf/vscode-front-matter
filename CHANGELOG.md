@@ -14,6 +14,7 @@
 - Added default field value for content type fields
 - HMR support for panel webview development
 - [#198](https://github.com/estruyf/vscode-front-matter/issues/198): Additional media sort options (alt, caption, and size).
+- [#230](https://github.com/estruyf/vscode-front-matter/issues/230): JSON front matter support added.
 
 ## [5.10.0] - 2022-01-10
 

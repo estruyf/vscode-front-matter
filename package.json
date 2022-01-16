@@ -830,12 +830,14 @@
           "default": "YAML",
           "enum": [
             "YAML",
-            "TOML"
+            "TOML",
+            "JSON"
           ],
           "markdownDescription": "Specify the type of Front Matter to use. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.frontmattertype)",
           "enumDescriptions": [
             "Specifies you want to use YAML markup for the front matter (default)",
-            "Specifies you want to use TOML markup for the front matter"
+            "Specifies you want to use TOML markup for the front matter",
+            "Specifies you want to use JSON markup for the front matter"
           ],
           "scope": "Taxonomy"
         },
