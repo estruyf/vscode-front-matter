@@ -5,4 +5,5 @@ export const CONTEXT = {
   isEnabled: "frontMatter:enabled",
   isDashboardOpen: "frontMatter:dashboard:open",
   wysiwyg: "frontMatter:markdown:wysiwyg",
+  backer: "frontMatter:backers:supporter",
 };

@@ -20,6 +20,7 @@ export interface PanelSettings {
   contentTypes: ContentType[];
   dashboardViewData: DashboardData | undefined;
   draftField: DraftField;
+  isBacker: boolean | undefined;
 }
 
 export interface ContentType {

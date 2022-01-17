@@ -944,6 +944,11 @@
     },
     "commands": [
       {
+        "command": "frontMatter.authenticate",
+        "title": "Authenticate",
+        "category": "Front matter"
+      },
+      {
         "command": "frontMatter.collapseSections",
         "title": "Collapse sections",
         "category": "Front matter",
@@ -1383,6 +1388,7 @@
     "@headlessui/react": "^1.4.1",
     "@heroicons/react": "1.0.4",
     "@iarna/toml": "2.2.3",
+    "@octokit/rest": "^18.12.0",
     "@sentry/react": "^6.13.3",
     "@sentry/tracing": "^6.13.3",
     "@tailwindcss/forms": "^0.3.3",
@@ -1391,6 +1397,7 @@
     "@types/lodash.uniqby": "4.7.6",
     "@types/mocha": "^5.2.6",
     "@types/node": "10.17.48",
+    "@types/node-fetch": "^2.5.12",
     "@types/react": "17.0.0",
     "@types/react-datepicker": "^4.1.7",
     "@types/react-dom": "17.0.0",
@@ -1442,5 +1449,8 @@
     "webpack-bundle-analyzer": "^4.5.0",
     "webpack-cli": "^4.9.1",
     "webpack-dev-server": "^4.6.0"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7"
   }
 }

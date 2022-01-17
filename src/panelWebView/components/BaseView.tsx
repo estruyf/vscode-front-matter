@@ -61,7 +61,7 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings, folderAndF
         <OtherActions settings={settings} isFile={false} isBase />
       </div>
 
-      <SponsorMsg />
+      <SponsorMsg isBacker={settings?.isBacker} />
     </div>
   );
 };

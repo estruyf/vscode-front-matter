@@ -2,7 +2,7 @@ import { basename, join } from "path";
 import { workspace } from "vscode";
 import { Folders } from "../commands/Folders";
 import { Template } from "../commands/Template";
-import { ExtensionState, SETTINGS_CONTENT_DRAFT_FIELD, SETTINGS_CONTENT_SORTING, SETTINGS_CONTENT_SORTING_DEFAULT, SETTINGS_CONTENT_STATIC_FOLDER, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DATA_FILES, SETTINGS_DATA_FOLDERS, SETTINGS_DATA_TYPES, SETTINGS_FRAMEWORK_ID, SETTINGS_MEDIA_SORTING_DEFAULT, SETTING_CUSTOM_SCRIPTS, SETTING_TAXONOMY_CONTENT_TYPES } from "../constants";
+import { CONTEXT, ExtensionState, SETTINGS_CONTENT_DRAFT_FIELD, SETTINGS_CONTENT_SORTING, SETTINGS_CONTENT_SORTING_DEFAULT, SETTINGS_CONTENT_STATIC_FOLDER, SETTINGS_DASHBOARD_MEDIA_SNIPPET, SETTINGS_DASHBOARD_OPENONSTART, SETTINGS_DATA_FILES, SETTINGS_DATA_FOLDERS, SETTINGS_DATA_TYPES, SETTINGS_FRAMEWORK_ID, SETTINGS_MEDIA_SORTING_DEFAULT, SETTING_CUSTOM_SCRIPTS, SETTING_TAXONOMY_CONTENT_TYPES } from "../constants";
 import { DashboardViewType, SortingOption, Settings as ISettings } from "../dashboardWebView/models";
 import { CustomScript, DraftField, ScriptType, SortingSetting, TaxonomyType } from "../models";
 import { DataFile } from "../models/DataFile";
@@ -51,7 +51,8 @@ export class DashboardSettings {
         }
       },
       dataFiles: await this.getDataFiles(),
-      dataTypes: Settings.get<DataType[]>(SETTINGS_DATA_TYPES)
+      dataTypes: Settings.get<DataType[]>(SETTINGS_DATA_TYPES),
+      isBacker: await ext.getState<boolean | undefined>(CONTEXT.backer, 'global')
     } as ISettings
   }
 

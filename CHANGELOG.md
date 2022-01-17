@@ -8,6 +8,7 @@
 - [#197](https://github.com/estruyf/vscode-front-matter/issues/197): Support for multi-dimensional content type fields on content creation and editing.
 - [#225](https://github.com/estruyf/vscode-front-matter/issues/225): Placeholder support for front matter field values (template and content type).
 - [#228](https://github.com/estruyf/vscode-front-matter/issues/228): Show bulk button actions in panel and dashboard view.
+- [#231](https://github.com/estruyf/vscode-front-matter/issues/231): Once you authenticate via GitHub as a supporter, the support links will be hidden from the UI.
 
 ### 🎨 Enhancements
 

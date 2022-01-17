@@ -222,7 +222,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
         </section>
       </div>
 
-      <SponsorMsg beta={settings?.beta} version={settings?.versionInfo} />
+      <SponsorMsg beta={settings?.beta} version={settings?.versionInfo} isBacker={settings?.isBacker} />
 
       <ToastContainer />
     </div>

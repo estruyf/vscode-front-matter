@@ -30,7 +30,7 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({pages, loadin
         { loading ? <Spinner /> : <Overview pages={pageItems} settings={settings} /> }
       </div>
 
-      <SponsorMsg beta={settings?.beta} version={settings?.versionInfo} />
+      <SponsorMsg beta={settings?.beta} version={settings?.versionInfo} isBacker={settings?.isBacker} />
     </div>
   );
 };

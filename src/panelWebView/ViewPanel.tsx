@@ -59,7 +59,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
         <OtherActions settings={settings} isFile={true} />
       </div>
 
-      <SponsorMsg />
+      <SponsorMsg isBacker={settings?.isBacker} />
     </div>
   );
 };

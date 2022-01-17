@@ -28,6 +28,7 @@ export interface Settings {
   scripts: CustomScript[];
   dataFiles: DataFile[] | undefined;
   dataTypes: DataType[] | undefined;
+  isBacker: boolean | undefined;
 }
 
 export interface DashboardState {

@@ -118,7 +118,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
 
       <Lightbox />
 
-      <SponsorMsg beta={settings?.beta} version={settings?.versionInfo} />
+      <SponsorMsg beta={settings?.beta} version={settings?.versionInfo} isBacker={settings?.isBacker} />
     </div>
   );
 };

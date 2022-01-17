@@ -19,6 +19,7 @@ import ContentProvider from './providers/ContentProvider';
 import { Wysiwyg } from './commands/Wysiwyg';
 import { Diagnostics } from './commands/Diagnostics';
 import { PagesListener } from './listeners';
+import { Backers } from './commands/Backers';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
@@ -31,6 +32,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const { subscriptions, extensionUri, extensionPath } = context;
 
 	const extension = Extension.getInstance(context);
+	Backers.init(context);
 
 	if (!extension.checkIfExtensionCanRun()) {
 		return undefined;
