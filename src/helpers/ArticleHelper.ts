@@ -3,7 +3,7 @@ import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from './../constants/
 import * as vscode from 'vscode';
 import * as matter from "gray-matter";
 import * as fs from "fs";
-import { DefaultFields, SETTINGS_CONTENT_DEFAULT_FILETYPE, SETTINGS_CONTENT_PLACEHOLDERS, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from '../constants';
+import { DefaultFields, SETTINGS_CONTENT_DEFAULT_FILETYPE, SETTINGS_CONTENT_PLACEHOLDERS, SETTINGS_CONTENT_SUPPORTED_FILETYPES, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { TomlEngine, getFmLanguage, getFormatOpts } from './TomlEngine';
 import { Extension, Logger, Settings } from '.';
@@ -145,7 +145,8 @@ export class ArticleHelper {
    */ 
   public static isMarkdownFile(document: vscode.TextDocument | undefined | null = null) {
     const supportedLanguages = ["markdown", "mdx"];
-    const supportedFileExtensions = [".md", ".mdx"];
+    const fileTypes = Settings.get<string[]>(SETTINGS_CONTENT_SUPPORTED_FILETYPES);
+    const supportedFileExtensions = fileTypes ? fileTypes.map(f => f.startsWith(`.`) ? f : `.${f}`) : [".md", ".mdx"];
     const languageId = document?.languageId?.toLowerCase();
     const isSupportedLanguage =  languageId && supportedLanguages.includes(languageId);
     document ??= vscode.window.activeTextEditor?.document;
