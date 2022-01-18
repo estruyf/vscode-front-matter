@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { isValidFile } from '../../helpers/isValidFile';
+import { DEFAULT_FILE_TYPES } from '../../constants/DefaultFileTypes';
 import { MessageHelper } from '../../helpers/MessageHelper';
 import { CommandToCode } from '../CommandToCode';
 import { FileIcon } from './Icons/FileIcon';
@@ -16,11 +16,14 @@ const FileItem: React.FunctionComponent<IFileItemProps> = ({ name, path }: React
     MessageHelper.sendMessage(CommandToCode.openInEditor, path);
   };
 
+  // File extension
+  const fileExtension = `.${name.split('.').pop()}`;
+
   return (
     <li className={`file_list__items__item`}
         onClick={openFile}>
       {
-        (isValidFile(name)) ? (
+        (DEFAULT_FILE_TYPES.includes(fileExtension)) ? (
           <MarkdownIcon />
         ) : (
           <FileIcon />

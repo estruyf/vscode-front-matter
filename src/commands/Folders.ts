@@ -1,5 +1,5 @@
 import { Questions } from './../helpers/Questions';
-import { SETTINGS_CONTENT_PAGE_FOLDERS, SETTINGS_CONTENT_STATIC_FOLDER } from './../constants';
+import { SETTINGS_CONTENT_PAGE_FOLDERS, SETTINGS_CONTENT_STATIC_FOLDER, SETTINGS_CONTENT_SUPPORTED_FILETYPES } from './../constants';
 import { commands, Uri, workspace, window } from "vscode";
 import { basename, join } from "path";
 import { ContentFolder, FileInfo, FolderInfo } from "../models";
@@ -13,6 +13,7 @@ import { Dashboard } from './Dashboard';
 import { parseWinPath } from '../helpers/parseWinPath';
 import { MediaHelpers } from '../helpers/MediaHelpers';
 import { MediaListener, PagesListener } from '../listeners';
+import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
 
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
@@ -202,6 +203,7 @@ export class Folders {
    * Get the registered folders information
    */
   public static async getInfo(limit?: number): Promise<FolderInfo[] | null> {
+    const supportedFiles = Settings.get<string[]>(SETTINGS_CONTENT_SUPPORTED_FILETYPES);
     const folders = Folders.get();
     if (folders && folders.length > 0) {
       let folderInfo: FolderInfo[] = [];
@@ -214,10 +216,15 @@ export class Folders {
           if (projectStart) {
             projectStart = projectStart.replace(/\\/g, '/');
             projectStart = projectStart.startsWith('/') ? projectStart.substr(1) : projectStart;
-            const mdFiles = await workspace.findFiles(join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.md'));
-            const markdownFiles = await workspace.findFiles(join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.markdown'));
-            const mdxFiles = await workspace.findFiles(join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.mdx'));
-            let files = [...mdFiles, ...markdownFiles, ...mdxFiles];
+
+            let files: Uri[] = [];
+            
+            for (const fileType of (supportedFiles || DEFAULT_FILE_TYPES)) {
+              const filePath = join(projectStart, folder.excludeSubdir ? '/' : '**', `*${fileType.startsWith('.') ? '' : '.'}${fileType}`);
+              const foundFiles = await workspace.findFiles(filePath, '**/node_modules/**');
+              files = [...files, ...foundFiles];
+            }
+            
             if (files) {
               let fileStats: FileInfo[] = [];
 
@@ -331,4 +338,8 @@ export class Folders {
     absPath = isWindows ? absPath.split('\\').join('/') : absPath;
     return absPath;
   }
+}
+
+function SETTINGS_CONTENT_SUPPORTED_FILES<T>(SETTINGS_CONTENT_SUPPORTED_FILES: any) {
+  throw new Error('Function not implemented.');
 }

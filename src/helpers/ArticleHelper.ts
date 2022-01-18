@@ -17,6 +17,7 @@ import { existsSync, mkdirSync } from 'fs';
 import { ContentType } from '../models';
 import { DateHelper } from './DateHelper';
 import { DiagnosticSeverity, Position, window, Range } from 'vscode';
+import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
 
 export class ArticleHelper {
   private static notifiedFiles: string[] = [];
@@ -146,7 +147,7 @@ export class ArticleHelper {
   public static isMarkdownFile(document: vscode.TextDocument | undefined | null = null) {
     const supportedLanguages = ["markdown", "mdx"];
     const fileTypes = Settings.get<string[]>(SETTINGS_CONTENT_SUPPORTED_FILETYPES);
-    const supportedFileExtensions = fileTypes ? fileTypes.map(f => f.startsWith(`.`) ? f : `.${f}`) : [".md", ".mdx"];
+    const supportedFileExtensions = fileTypes ? fileTypes.map(f => f.startsWith(`.`) ? f : `.${f}`) : DEFAULT_FILE_TYPES;
     const languageId = document?.languageId?.toLowerCase();
     const isSupportedLanguage =  languageId && supportedLanguages.includes(languageId);
     document ??= vscode.window.activeTextEditor?.document;
