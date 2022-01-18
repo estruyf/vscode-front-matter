@@ -128,10 +128,10 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
   }).filter(d => d !== null) as DataFile[];
   
   return (
-    <div className="flex flex-col h-full overflow-auto  inset-y-0">
+    <div className="flex flex-col h-full overflow-auto inset-y-0">
       <Header settings={settings} />
 
-      <div className="relative w-full flex-grow mx-auto border-b border-gray-200 dark:border-vulcan-300">
+      <div className="relative w-full flex-grow mx-auto">
 
         <div className={`flex w-64 flex-col absolute inset-y-0`}>
 
