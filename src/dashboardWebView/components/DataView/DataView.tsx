@@ -131,11 +131,11 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
     <div className="flex flex-col h-full overflow-auto inset-y-0">
       <Header settings={settings} />
 
-      <div className="relative w-full flex-grow mx-auto">
+      <div className="relative w-full flex-grow mx-auto overflow-hidden">
 
         <div className={`flex w-64 flex-col absolute inset-y-0`}>
 
-          <aside className={`flex flex-col flex-grow overflow-y-auto border-r border-gray-200 dark:border-vulcan-300  py-6 px-4`}>
+          <aside className={`flex flex-col flex-grow overflow-y-auto border-r border-gray-200 dark:border-vulcan-300  py-6 px-4 overflow-auto`}>
             <h2 className={`text-lg text-gray-500 dark:text-whisper-900`}>Select your data type</h2>
 
             <nav className={`flex-1 py-4 -mx-4 `}>
@@ -164,7 +164,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
           {
             selectedData ? (
               <>
-                <div className={`w-1/3 py-6 px-4 flex-1 border-r border-gray-200 dark:border-vulcan-300`}>
+                <div className={`w-1/3 py-6 px-4 flex-1 border-r border-gray-200 dark:border-vulcan-300 overflow-auto`}>
                   <h2 className={`text-lg text-gray-500 dark:text-whisper-900`}>Your {selectedData.title.toLowerCase()} data items</h2>
 
                   <div className='py-4'>
@@ -200,7 +200,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
                     }
                   </div>
                 </div>
-                <div className={`w-2/3 py-6 px-4`}>
+                <div className={`w-2/3 py-6 px-4 overflow-auto`}>
                   <h2 className={`text-lg text-gray-500 dark:text-whisper-900`}>Create or modify your {selectedData.title.toLowerCase()} data</h2>
                   {
                     selectedData ? (
