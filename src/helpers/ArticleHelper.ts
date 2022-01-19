@@ -6,7 +6,7 @@ import * as fs from "fs";
 import { DefaultFields, SETTINGS_CONTENT_DEFAULT_FILETYPE, SETTINGS_CONTENT_PLACEHOLDERS, SETTINGS_CONTENT_SUPPORTED_FILETYPES, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { TomlEngine, getFmLanguage, getFormatOpts } from './TomlEngine';
-import { Extension, Logger, Settings } from '.';
+import { Extension, Logger, Settings, SlugHelper } from '.';
 import { format, parse } from 'date-fns';
 import { Notifications } from './Notifications';
 import { Article } from '../commands';
@@ -293,7 +293,7 @@ export class ArticleHelper {
       }
   
       if (fieldName === "slug" && (fieldValue === null || fieldValue === "")) {
-        fmData[fieldName] = ArticleHelper.sanitize(title);
+        fmData[fieldName] = SlugHelper.createSlug(title);
       }
 
       fmData[fieldName] = this.processKnownPlaceholders(fmData[fieldName], title);
@@ -318,7 +318,12 @@ export class ArticleHelper {
       
       if (value.includes("{{slug}}")) {
         const regex = new RegExp("{{slug}}", "g");
-        value = value.replace(regex, ArticleHelper.sanitize(title));
+        value = value.replace(regex, SlugHelper.createSlug(title) || "");
+      }
+
+      if (value.includes("{{now}}")) {
+        const regex = new RegExp("{{now}}", "g");
+        value = value.replace(regex, Article.formatDate(new Date()));
       }
     }
 
