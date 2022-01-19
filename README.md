@@ -82,19 +82,48 @@ You can get the extension via:
 
 If you have the courage to test out the beta features, we made available a beta version as well. You can install this via:
 
-- The VS Code marketplace: [VS Code Marketplace - Front Matter BETA](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter-beta).
-- The extension CLI: `ext install eliostruyf.vscode-front-matter-beta`
-- Or by clicking on the following link: <a href="" title="open extension in VS Code" data-vscode="vscode:extension/eliostruyf.vscode-front-matter-beta">open extension in VS Code</a>
+- Uninstall the main Front Matter version
+- Install the beta version 
+  - VS Code marketplace: [VS Code Marketplace - Front Matter BETA](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter-beta).
+  - The extension CLI: `ext install eliostruyf.vscode-front-matter-beta`
+  - Or by clicking on the following link: <a href="" title="open extension in VS Code" data-vscode="vscode:extension/eliostruyf.vscode-front-matter-beta">open extension in VS Code</a>
 
 > **Info**: The BETA docs can be found on [beta.frontmatter.codes](https://beta.frontmatter.codes).
 
 ## Documentation
 
-<h2 align="center">
-  <a href="https://frontmatter.codes" title="Documentation @ frontmatter.codes">
-    Check out the extension documentation at frontmatter.codes
-  </a>
-</h2>
+All documentation can be found on [frontmatter.codes](https://frontmatter.codes).
+
+## Contributing
+
+Pull requests are welcome. Please open an issue first to discuss what you would like to change, or which problem you would like to fix. This makes it easier for us to follow-up and plan for future releases.
+
+You can always help us improve the extension in varous ways like:
+
+- Testing out the extension and providing feedback
+- Reporting issues and bugs
+- Suggesting new features
+- Fixing an issue
+- Updating documentation
+- UI improvements
+- Tutorials
+- etc.
+
+Eager to start contributing? Great 🤩, you can contribute to the following projects:
+
+- [Extension](https://github.com/estruyf/vscode-front-matter)
+- [Documentation](https://github.com/FrontMatter/web-documentation-nextjs)
+- [Sample Projects](https://github.com/FrontMatter/project-samples)
+
+## Show the work you are using Front Matter
+
+Are you using Front Matter and are you interested in showing for which websites you use it? You can show your work by opening a [showcase issue](https://github.com/estruyf/vscode-front-matter/issues/new?assignees=&labels=&template=showcase.md&title=Showcase%3A+).
+
+You can open showcase issues for the following things:
+
+- Show the website for which you use Front Matter;
+- Share an article/video/webcast/... that explains how you use Front Matter;
+- Got something else to share? Open an issue and we can see where it fits on our website.
 
 ## 👉 Contributors 🤘
 
@@ -125,6 +154,10 @@ If you have the courage to test out the beta features, we made available a beta 
     <img src="assets/sponsors/powered-by-vercel.png" />
    </a>
 </p>
+
+## 🔑 License
+
+[MIT](./LICENSE)
 
 <br />
 <br />
