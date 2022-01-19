@@ -7,6 +7,7 @@
 - [#193](https://github.com/estruyf/vscode-front-matter/issues/193): Support added for editing data files.
 - [#197](https://github.com/estruyf/vscode-front-matter/issues/197): Support for multi-dimensional content type fields on content creation and editing.
 - [#225](https://github.com/estruyf/vscode-front-matter/issues/225): Placeholder support for front matter field values (template and content type).
+- [#226](https://github.com/estruyf/vscode-front-matter/issues/226): Ability to specify the local server start command and trigger it from the UI.
 - [#227](https://github.com/estruyf/vscode-front-matter/issues/227): Specify the file types to support with the new `frontMatter.content.supportedFileTypes` setting.
 - [#228](https://github.com/estruyf/vscode-front-matter/issues/228): Show bulk button actions in panel and dashboard view.
 - [#231](https://github.com/estruyf/vscode-front-matter/issues/231): Once you authenticate via GitHub as a supporter, the support links will be hidden from the UI.
@@ -15,6 +16,7 @@
 
 - Added default field value for content type fields
 - HMR support for panel webview development
+- [#187](https://github.com/estruyf/vscode-front-matter/issues/187): Svelte support with the [#227](https://github.com/estruyf/vscode-front-matter/issues/227) features has been added.
 - [#198](https://github.com/estruyf/vscode-front-matter/issues/198): Additional media sort options (alt, caption, and size).
 - [#230](https://github.com/estruyf/vscode-front-matter/issues/230): JSON front matter support added.
 

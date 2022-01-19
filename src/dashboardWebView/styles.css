@@ -46,7 +46,7 @@
     }
 
     input {
-      @apply w-full text-vulcan-500;
+      @apply w-full text-vulcan-500 px-2 py-1;
 
       &::placeholder {
         @apply text-gray-500;
@@ -56,13 +56,22 @@
     .ant-form-item-has-error .ant-form-item-control-input {
       @apply relative;
     }
+
+    .ant-form-item-has-error {
+      label {
+        &::after {
+          content: ' *';
+          @apply text-red-400;
+        }
+      }
+    }
     
     .ant-form-item-has-error input {
       @apply border border-red-400;
     }
 
     .ant-form-item-has-error .ant-form-item-children-icon {
-      @apply text-red-400 absolute right-1 top-2;
+      @apply text-red-400 absolute right-1 top-1;
 
       svg {
         @apply w-4 h-4;
@@ -103,7 +112,158 @@
   .fields {}
 
   .ant-list.ant-list-bordered {
-    @apply border-t border-gray-300;
+    @apply border border-gray-300;
+  }
+
+  .ant-btn-dashed {
+    @apply border border-gray-300 border-dashed flex items-center justify-center py-1 mt-2;
+
+    &:hover {
+      @apply text-teal-900 border-teal-900;
+    }
+  }
+
+  .ant-input:hover, .ant-input-focused, .ant-input:focus {
+    @apply border-teal-600;
+  }
+
+  .ant-btn-ghost:focus, .ant-btn-ghost:hover {
+    @apply text-teal-600 border-teal-700;
+  }
+
+  .ant-switch-checked {
+    @apply bg-teal-500;
+  }
+
+  .ant-switch {
+    @apply bg-gray-400;
+
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    font-variant: tabular-nums;
+    line-height: 1.5715;
+    list-style: none;
+    font-feature-settings: "tnum";
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    min-width: 44px;
+    height: 22px;
+    line-height: 22px;
+    vertical-align: middle;
+    border: 0;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all .2s;
+    user-select: none;
+
+    &.ant-switch-checked {
+      @apply bg-teal-500;
+
+      .ant-switch-handle {
+        left: calc(100% - 20px);
+      }
+    }
+
+    .ant-switch-handle {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      transition: all .2s ease-in-out;
+
+      &::before {
+        position: absolute;
+        inset: 0;
+        background-color: #fff;
+        border-radius: 9px;
+        box-shadow: 0 2px 4px #00230b33;
+        transition: all .2s ease-in-out;
+        content: "";
+      }
+    }
+
+    .ant-switch-inner {
+      display: block;
+      margin: 0 7px 0 25px;
+      color: #fff;
+      font-size: 12px;
+      transition: margin .2s;
+
+      svg {
+        display: none;
+      }
+    }
+  }
+
+  .ant-input-number {
+    @apply border;
+    
+    box-sizing: border-box;
+    font-variant: tabular-nums;
+    list-style: none;
+    font-feature-settings: "tnum";
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    color: #000000d9;
+    font-size: 14px;
+    line-height: 1.5715;
+    background-color: #fff;
+    background-image: none;
+    transition: all .3s;
+    display: inline-block;
+    width: 90px;
+    margin: 0;
+    padding: 0;
+
+    &.ant-input-number-focused {
+      @apply border-teal-600;
+    }
+  }
+
+  .ant-input-number-handler {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 50%;
+    overflow: hidden;
+    color: #00000073;
+    font-weight: 700;
+    line-height: 0;
+    text-align: center;
+    border-left: 1px solid #d9d9d9;
+    transition: all .1s linear;
+  }
+
+  .ant-input-number-handler-wrap {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 22px;
+    height: 100%;
+    background: #fff;
+    opacity: 0;
+    transition: opacity .24s linear .1s;
+  }
+
+  .ant-input-number-input {
+    @apply px-2 py-1;
+
+    width: 100%;
+    height: 30px;
+    text-align: left;
+    background-color: transparent;
+    border: 0;
+    outline: 0;
+    transition: all .3s linear;
+    appearance: textfield !important;
+  }
+
+  .ant-input-number:hover .ant-input-number-handler-wrap, .ant-input-number-focused .ant-input-number-handler-wrap {
+    opacity: 1;
   }
 }
 
@@ -126,5 +286,13 @@
 
   .ant-list.ant-list-bordered {
     @apply border-vulcan-100;
+  }
+
+  .ant-btn-dashed {
+    @apply border-vulcan-50;
+
+    &:hover {
+      @apply text-teal-400 border-teal-900;
+    }
   }
 }
