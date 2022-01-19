@@ -4,6 +4,7 @@ import { Collapsible } from './Collapsible';
 import { CustomScript } from './CustomScript';
 import { Preview } from './Preview';
 import { SlugAction } from './SlugAction';
+import { StartServerButton } from './StartServerButton';
 
 export interface IActionsProps {
   metadata: any;
@@ -23,6 +24,8 @@ const Actions: React.FunctionComponent<IActionsProps> = ({ metadata, settings }:
         { metadata && metadata.title && <SlugAction value={metadata.title} crntValue={metadata.slug} slugOpts={settings.slug} /> }
 
         { settings?.preview?.host && <Preview slug={metadata.slug} /> }
+
+        <StartServerButton settings={settings} />
 
         {
           (settings && settings.scripts && settings.scripts.length > 0) && (

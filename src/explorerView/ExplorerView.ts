@@ -1,9 +1,9 @@
 import { DashboardData } from '../models/DashboardData';
 import { Template } from '../commands/Template';
-import { DefaultFields, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_COMMA_SEPARATED_FIELDS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS, SETTINGS_CONTENT_DRAFT_FIELD, SETTING_SEO_SLUG_LENGTH, SETTING_SITE_BASEURL, SETTING_TAXONOMY_CUSTOM, CONTEXT } from '../constants';
+import { DefaultFields, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_COMMA_SEPARATED_FIELDS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS, SETTINGS_CONTENT_DRAFT_FIELD, SETTING_SEO_SLUG_LENGTH, SETTING_SITE_BASEURL, SETTING_TAXONOMY_CUSTOM, CONTEXT, SETTINGS_FRAMEWORK_ID, SETTINGS_FRAMEWORK_START } from '../constants';
 import * as os from 'os';
 import { PanelSettings, CustomScript as ICustomScript } from '../models/PanelSettings';
-import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv } from "vscode";
+import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv, ThemeIcon } from "vscode";
 import { ArticleHelper, Settings } from "../helpers";
 import { Command } from "../panelWebView/Command";
 import { CommandToCode } from '../panelWebView/CommandToCode';
@@ -161,13 +161,13 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
           await commands.executeCommand(COMMAND_NAME.createTemplate);
           break;
         case CommandToCode.updateModifiedUpdating:
-          this.updateModifiedUpdating(msg.data || false);
+          this.updateSetting(SETTING_AUTO_UPDATE_DATE, msg.data || false);
           break;
         case CommandToCode.toggleWritingSettings:
           this.toggleWritingSettings();
           break;
         case CommandToCode.updateFmHighlight:
-          this.updateFmHighlight((msg.data !== null && msg.data !== undefined) ? msg.data : false);
+          this.updateSetting(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, (msg.data !== null && msg.data !== undefined) ? msg.data : false);
           break;
         case CommandToCode.toggleCenterMode:
           await commands.executeCommand(`workbench.action.toggleCenteredLayout`);
@@ -179,7 +179,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
           await commands.executeCommand(COMMAND_NAME.dashboard);
           break;
         case CommandToCode.updatePreviewUrl:
-          this.updatePreviewUrl(msg.data || "");
+          this.updateSetting(SETTING_PREVIEW_HOST, msg.data || "");
           break;
         case CommandToCode.openInEditor:
           openFileInEditor(msg.data);
@@ -193,6 +193,12 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
             data: msg.data
           } as DashboardData);
           this.getMediaSelection();
+          break;
+        case CommandToCode.frameworkCommand:
+          this.openTerminalWithCommand(msg.data.command);
+          break;
+        case CommandToCode.updateStartCommand:
+          await this.updateSetting(SETTINGS_FRAMEWORK_START, msg.data || "");
           break;
       }
     });
@@ -345,6 +351,29 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   }
 
   /**
+   * Open a terminal and run the passed command
+   * @param command 
+   */
+  private openTerminalWithCommand(command: string) {
+    if (command) {
+      let terminal = window.activeTerminal;
+  
+      if (!terminal || (terminal && terminal.state.isInteractedWith === true)) {
+        terminal = window.createTerminal({
+          name: `Starting local server: ${command}`,
+          iconPath: new ThemeIcon('server-environment'),
+          message: `Starting local server: ${command}`,
+        });
+      }
+  
+      if (terminal) {
+        terminal.sendText(command);
+        terminal.show(false);
+      }
+    }
+  }
+
+  /**
    * Run a custom script
    * @param msg 
    */
@@ -405,7 +434,11 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         contentTypes: Settings.get(SETTING_TAXONOMY_CONTENT_TYPES) || [],
         dashboardViewData: Dashboard.viewData,
         draftField: Settings.get<DraftField>(SETTINGS_CONTENT_DRAFT_FIELD),
-        isBacker: await Extension.getInstance().getState<boolean | undefined>(CONTEXT.backer, 'global')
+        isBacker: await Extension.getInstance().getState<boolean | undefined>(CONTEXT.backer, 'global'),
+        framework: Settings.get<string>(SETTINGS_FRAMEWORK_ID),
+        commands: {
+          start: Settings.get<string>(SETTINGS_FRAMEWORK_START)
+        }
       } as PanelSettings
     });
   }
@@ -702,26 +735,12 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   }
 
   /**
-   * Update the preview URL
+   * Updates a setting and refreshes the retrieved settings
+   * @param setting 
+   * @param value 
    */
-  private async updatePreviewUrl(previewUrl: string) {
-    await Settings.update(SETTING_PREVIEW_HOST, previewUrl);
-    this.getSettings();
-  }
-
-  /**
-   * Toggle the Front Matter highlighting
-   */
-  private async updateFmHighlight(autoUpdate: boolean) {
-    await Settings.update(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, autoUpdate);
-    this.getSettings();
-  }
-
-  /**
-   * Toggle the modified auto-update setting
-   */
-  private async updateModifiedUpdating(autoUpdate: boolean) {
-    await Settings.update(SETTING_AUTO_UPDATE_DATE, autoUpdate);
+  private async updateSetting(setting: string, value: any) {
+    await Settings.update(setting, value);
     this.getSettings();
   }
 

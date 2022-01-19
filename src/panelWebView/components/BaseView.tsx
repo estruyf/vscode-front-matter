@@ -7,6 +7,7 @@ import { GlobalSettings } from './GlobalSettings';
 import { OtherActions } from './OtherActions';
 import { FolderAndFiles } from './FolderAndFiles';
 import { SponsorMsg } from './SponsorMsg';
+import { StartServerButton } from './StartServerButton';
 
 export interface IBaseViewProps {
   settings: PanelSettings | undefined;
@@ -45,6 +46,7 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings, folderAndF
         <Collapsible id={`base_actions`} title="Actions">
           <div className={`base__actions`}>
             <button onClick={openDashboard}>Open dashboard</button>
+            <StartServerButton settings={settings} />
             <button onClick={initProject} disabled={settings?.isInitialized}>Initialize project</button>
             <button onClick={createContent} disabled={!settings?.isInitialized}>Create new content</button>
             <button onClick={openPreview} disabled={!settings?.preview?.host}>Open site preview</button>

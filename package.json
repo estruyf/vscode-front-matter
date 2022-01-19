@@ -522,6 +522,11 @@
           "default": "",
           "markdownDescription": "Specify the ID of your static site generator or framework you are using for your website. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.framework.id)"
         },
+        "frontMatter.framework.startCommand": {
+          "type": ["string", "null"],
+          "default": null,
+          "markdownDescription": "Specify the command you want to use to start your static site generator or framework. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.framework.startcommand)"
+        },
         "frontMatter.media.defaultSorting": {
           "type": "string",
           "default": "",

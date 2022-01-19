@@ -21,6 +21,12 @@ export interface PanelSettings {
   dashboardViewData: DashboardData | undefined;
   draftField: DraftField;
   isBacker: boolean | undefined;
+  framework: string | undefined;
+  commands: FrameworkCommands;
+}
+
+export interface FrameworkCommands {
+  start: string | undefined;
 }
 
 export interface ContentType {
