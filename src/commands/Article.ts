@@ -190,11 +190,13 @@ export class Article {
       article.data["slug"] = slugFieldValue;
 
       if (contentType) {
+        // Update the fields containing the slug placeholder
         let fieldsToUpdate: Field[] = contentType.fields.filter(f => f.default === "{{slug}}");
         for (const field of fieldsToUpdate) {
           article.data[field.name] = slug;
         }
 
+        // Update the fields containing a custom placeholder that depends on slug
         const placeholders = Settings.get<{id: string, value: string}[]>(SETTINGS_CONTENT_PLACEHOLDERS);
         const customPlaceholders = placeholders?.filter(p => p.value.includes("{{slug}}"));
         for (const customPlaceholder of (customPlaceholders || [])) {
