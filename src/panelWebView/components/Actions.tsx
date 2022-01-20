@@ -21,7 +21,7 @@ const Actions: React.FunctionComponent<IActionsProps> = ({ metadata, settings }:
     <Collapsible id={`actions`} title="Actions">
       <div className={`article__actions`}>
 
-        { metadata && metadata.title && <SlugAction value={metadata.title} crntValue={metadata.slug} slugOpts={settings.slug} /> }
+        { metadata && metadata.title && <SlugAction /> }
 
         { settings?.preview?.host && <Preview slug={metadata.slug} /> }
 
