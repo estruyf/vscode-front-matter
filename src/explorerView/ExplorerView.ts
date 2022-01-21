@@ -469,36 +469,38 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     }
 
     // Process image fields
-    for (const field of imageFields) {
-      if (parentObj[field.name]) {
-        const imageData = ImageHelper.allRelToAbs(field, parentObj[field.name])
-
-        if (imageData) {
-          if (field.multiple && imageData instanceof Array) {
-            const preview = imageData.map(preview => preview && preview.absPath ? ({ 
-              ...preview,
-              webviewUrl: this.panel?.webview.asWebviewUri(preview.absPath).toString()
-            }) : null);
-
-            parentObj[field.name] = preview || [];
-          } else if (!field.multiple && !Array.isArray(imageData) && imageData.absPath) {
-            const preview = this.panel?.webview.asWebviewUri(imageData.absPath);
-            parentObj[field.name] = {
-              ...imageData,
-              webviewUrl: preview ? preview.toString() : null
-            };
+    if (parentObj) {
+      for (const field of imageFields) {
+        if (parentObj[field.name]) {
+          const imageData = ImageHelper.allRelToAbs(field, parentObj[field.name])
+  
+          if (imageData) {
+            if (field.multiple && imageData instanceof Array) {
+              const preview = imageData.map(preview => preview && preview.absPath ? ({ 
+                ...preview,
+                webviewUrl: this.panel?.webview.asWebviewUri(preview.absPath).toString()
+              }) : null);
+  
+              parentObj[field.name] = preview || [];
+            } else if (!field.multiple && !Array.isArray(imageData) && imageData.absPath) {
+              const preview = this.panel?.webview.asWebviewUri(imageData.absPath);
+              parentObj[field.name] = {
+                ...imageData,
+                webviewUrl: preview ? preview.toString() : null
+              };
+            }
+          } else {
+            parentObj[field.name] = field.multiple ? [] : "";
           }
-        } else {
-          parentObj[field.name] = field.multiple ? [] : "";
+        }          
+      }
+  
+      // Check if there are sub-fields to process
+      const subFields = fields.filter((field) => field.type === "fields");
+      if (subFields?.length > 0) {
+        for (const field of subFields) {
+          this.processImageFields(updatedMetadata, field.fields || [], [...parents, field.name]);
         }
-      }          
-    }
-
-    // Check if there are sub-fields to process
-    const subFields = fields.filter((field) => field.type === "fields");
-    if (subFields?.length > 0) {
-      for (const field of subFields) {
-        this.processImageFields(updatedMetadata, field.fields || [], [...parents, field.name]);
       }
     }
   }

@@ -9,8 +9,8 @@ const SCOPES = ['user:email'];
 export class Credentials {
 	private octokit: Octokit.Octokit | undefined;
 
-	async initialize(context: ExtensionContext): Promise<void> {
-		this.registerListeners(context);
+	async initialize(context: ExtensionContext, callback: () => void): Promise<void> {
+		this.registerListeners(context, callback);
 		this.setOctokit();
 	}
 
@@ -33,15 +33,21 @@ export class Credentials {
 		this.octokit = undefined;
 	}
 
-	registerListeners(context: ExtensionContext): void {
+	registerListeners(context: ExtensionContext, callback: () => void): void {
 		/**
 		 * Sessions are changed when a user logs in or logs out.
 		 */
-		context.subscriptions.push(authentication.onDidChangeSessions(async e => {
-			if (e.provider.id === GITHUB_AUTH_PROVIDER_ID) {
-				await this.setOctokit();
-			}
-		}));
+		context.subscriptions.push(
+			authentication.onDidChangeSessions(async e => {
+				if (e.provider.id === GITHUB_AUTH_PROVIDER_ID) {
+					await this.setOctokit();
+	
+					if (callback) {
+						callback();
+					}
+				}
+			})
+		);
 	}
 
 	async getOctokit(): Promise<Octokit.Octokit> {

@@ -97,19 +97,6 @@
           "markdownDescription": "Specify if you want to automatically update the modified date of your article/page. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.autoupdatedate)",
           "scope": "Content"
         },
-        "frontMatter.content.supportedFileTypes": {
-          "type": "array",
-          "default": [
-            "md",
-            "mdx",
-            "markdown"
-          ],
-          "markdownDescription": "Specify the file types that you want to use in Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.supportedfiletypes)",
-          "items": {
-            "type": "string"
-          },
-          "scope": "Content"
-        },
         "frontMatter.content.defaultFileType": {
           "type": "string",
           "default": "md",
@@ -291,6 +278,19 @@
               "name",
               "order"
             ]
+          },
+          "scope": "Content"
+        },
+        "frontMatter.content.supportedFileTypes": {
+          "type": "array",
+          "default": [
+            "md",
+            "mdx",
+            "markdown"
+          ],
+          "markdownDescription": "Specify the file types that you want to use in Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.supportedfiletypes)",
+          "items": {
+            "type": "string"
           },
           "scope": "Content"
         },
@@ -529,6 +529,24 @@
           ],
           "default": null,
           "markdownDescription": "Specify the command you want to use to start your static site generator or framework. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.framework.startcommand)"
+        },
+        "frontMatter.global.notifications": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "info",
+              "warning",
+              "error"
+            ]
+          },
+          "default": [
+            "info",
+            "warning",
+            "error"
+          ],
+          "markdownDescription": "Specifies the notifications you want to see. By default, all notifications types will be shown. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.global.notifications)",
+          "scope": "Templates"
         },
         "frontMatter.media.defaultSorting": {
           "type": "string",
@@ -949,24 +967,6 @@
           "default": "yyyy-MM-dd",
           "markdownDescription": "Specify the prefix you want to add for your new article filenames. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.prefix)",
           "scope": "Templates"
-        },
-        "frontMatter.global.notifications": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "enum": [
-              "info",
-              "warning",
-              "error"
-            ]
-          },
-          "default": [
-            "info",
-            "warning",
-            "error"
-          ],
-          "markdownDescription": "Specifies the notifications you want to see. By default, all notifications types will be shown. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.global.notifications)",
-          "scope": "Templates"
         }
       }
     },
@@ -974,137 +974,6 @@
       {
         "command": "frontMatter.authenticate",
         "title": "Authenticate",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.collapseSections",
-        "title": "Collapse sections",
-        "category": "Front matter",
-        "icon": {
-          "light": "assets/icons/close-light.svg",
-          "dark": "assets/icons/close-dark.svg"
-        }
-      },
-      {
-        "command": "frontMatter.createTemplate",
-        "title": "Create a template from current file",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.createCategory",
-        "title": "Create category",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.createTag",
-        "title": "Create tag",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.exportTaxonomy",
-        "title": "Export all tags & categories to your settings",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.createFromTemplate",
-        "title": "Front Matter: New article from template"
-      },
-      {
-        "command": "frontMatter.registerFolder",
-        "title": "Front Matter: Register folder"
-      },
-      {
-        "command": "frontMatter.unregisterFolder",
-        "title": "Front Matter: Unregister folder"
-      },
-      {
-        "command": "frontMatter.generateSlug",
-        "title": "Generate slug based on content title",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.init",
-        "title": "Initialize project",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.insertCategories",
-        "title": "Insert categories",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.insertImage",
-        "title": "Insert image into your content",
-        "category": "Front matter",
-        "icon": {
-          "dark": "/assets/icons/media-dark.svg",
-          "light": "/assets/icons/media-light.svg"
-        }
-      },
-      {
-        "command": "frontMatter.insertTags",
-        "title": "Insert tags",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.createContent",
-        "title": "Create new content from defined content type or template",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.dashboard",
-        "title": "Open dashboard",
-        "category": "Front matter",
-        "icon": {
-          "dark": "/assets/icons/frontmatter-small-dark.svg",
-          "light": "/assets/icons/frontmatter-small-light.svg"
-        }
-      },
-      {
-        "command": "frontMatter.dashboard.media",
-        "title": "Open media dashboard",
-        "category": "Front matter",
-        "icon": {
-          "dark": "/assets/icons/frontmatter-small-dark.svg",
-          "light": "/assets/icons/frontmatter-small-light.svg"
-        }
-      },
-      {
-        "command": "frontMatter.dashboard.data",
-        "title": "Open data dashboard",
-        "category": "Front matter",
-        "icon": {
-          "dark": "/assets/icons/frontmatter-small-dark.svg",
-          "light": "/assets/icons/frontmatter-small-light.svg"
-        }
-      },
-      {
-        "command": "frontMatter.dashboard.close",
-        "title": "Close dashboard",
-        "category": "Front matter",
-        "icon": {
-          "dark": "/assets/icons/frontmatter-small-teal.svg",
-          "light": "/assets/icons/frontmatter-small-teal.svg"
-        }
-      },
-      {
-        "command": "frontMatter.preview",
-        "title": "Preview content",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.promoteSettings",
-        "title": "Promote settings from local to team level",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.remap",
-        "title": "Remap or remove tag/category in all articles",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.setLastModifiedDate",
-        "title": "Set lastmod date",
         "category": "Front matter"
       },
       {
@@ -1117,21 +986,12 @@
         }
       },
       {
-        "command": "frontMatter.markup.italic",
-        "title": "Italic",
+        "command": "frontMatter.dashboard.close",
+        "title": "Close dashboard",
         "category": "Front matter",
         "icon": {
-          "light": "assets/icons/italic-light.svg",
-          "dark": "assets/icons/italic-dark.svg"
-        }
-      },
-      {
-        "command": "frontMatter.markup.strikethrough",
-        "title": "Strikethrough",
-        "category": "Front matter",
-        "icon": {
-          "light": "assets/icons/strikethrough-light.svg",
-          "dark": "assets/icons/strikethrough-dark.svg"
+          "dark": "/assets/icons/frontmatter-small-teal.svg",
+          "light": "/assets/icons/frontmatter-small-teal.svg"
         }
       },
       {
@@ -1162,6 +1022,62 @@
         }
       },
       {
+        "command": "frontMatter.collapseSections",
+        "title": "Collapse sections",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/close-light.svg",
+          "dark": "assets/icons/close-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.createTemplate",
+        "title": "Create a template from current file",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.createCategory",
+        "title": "Create category",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.createContent",
+        "title": "Create new content from defined content type or template",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.createTag",
+        "title": "Create tag",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.diagnostics",
+        "title": "Diagnostic logging",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.exportTaxonomy",
+        "title": "Export all tags & categories to your settings",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.createFromTemplate",
+        "title": "Front Matter: New article from template"
+      },
+      {
+        "command": "frontMatter.registerFolder",
+        "title": "Front Matter: Register folder"
+      },
+      {
+        "command": "frontMatter.unregisterFolder",
+        "title": "Front Matter: Unregister folder"
+      },
+      {
+        "command": "frontMatter.generateSlug",
+        "title": "Generate slug based on content title",
+        "category": "Front matter"
+      },
+      {
         "command": "frontMatter.markup.heading",
         "title": "Heading",
         "category": "Front matter",
@@ -1171,12 +1087,63 @@
         }
       },
       {
-        "command": "frontMatter.markup.unorderedlist",
-        "title": "Unordered list",
+        "command": "frontMatter.init",
+        "title": "Initialize project",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.insertCategories",
+        "title": "Insert categories",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.insertImage",
+        "title": "Insert image into your content",
         "category": "Front matter",
         "icon": {
-          "light": "assets/icons/unordered-list-light.svg",
-          "dark": "assets/icons/unordered-list-dark.svg"
+          "dark": "/assets/icons/media-dark.svg",
+          "light": "/assets/icons/media-light.svg"
+        }
+      },
+      {
+        "command": "frontMatter.insertTags",
+        "title": "Insert tags",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.markup.italic",
+        "title": "Italic",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/italic-light.svg",
+          "dark": "assets/icons/italic-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.dashboard",
+        "title": "Open dashboard",
+        "category": "Front matter",
+        "icon": {
+          "dark": "/assets/icons/frontmatter-small-dark.svg",
+          "light": "/assets/icons/frontmatter-small-light.svg"
+        }
+      },
+      {
+        "command": "frontMatter.dashboard.data",
+        "title": "Open data dashboard",
+        "category": "Front matter",
+        "icon": {
+          "dark": "/assets/icons/frontmatter-small-dark.svg",
+          "light": "/assets/icons/frontmatter-small-light.svg"
+        }
+      },
+      {
+        "command": "frontMatter.dashboard.media",
+        "title": "Open media dashboard",
+        "category": "Front matter",
+        "icon": {
+          "dark": "/assets/icons/frontmatter-small-dark.svg",
+          "light": "/assets/icons/frontmatter-small-light.svg"
         }
       },
       {
@@ -1189,11 +1156,6 @@
         }
       },
       {
-        "command": "frontMatter.markup.tasklist",
-        "title": "Task list",
-        "category": "Front matter"
-      },
-      {
         "command": "frontMatter.markup.options",
         "title": "Other markup options",
         "category": "Front matter",
@@ -1203,9 +1165,47 @@
         }
       },
       {
-        "command": "frontMatter.diagnostics",
-        "title": "Diagnostic logging",
+        "command": "frontMatter.preview",
+        "title": "Preview content",
         "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.promoteSettings",
+        "title": "Promote settings from local to team level",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.remap",
+        "title": "Remap or remove tag/category in all articles",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.setLastModifiedDate",
+        "title": "Set lastmod date",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.markup.strikethrough",
+        "title": "Strikethrough",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/strikethrough-light.svg",
+          "dark": "assets/icons/strikethrough-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.markup.tasklist",
+        "title": "Task list",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.markup.unorderedlist",
+        "title": "Unordered list",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/unordered-list-light.svg",
+          "dark": "assets/icons/unordered-list-dark.svg"
+        }
       }
     ],
     "menus": {

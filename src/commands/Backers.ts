@@ -11,21 +11,24 @@ export class Backers {
 
   public static async init(context: ExtensionContext) {
     Backers.creds = new Credentials();
-    await Backers.creds.initialize(context);
+    await Backers.creds.initialize(context, Backers.tryUsernameCheck);
 
+    Backers.tryUsernameCheck();
+
+    context.subscriptions.push(
+      commands.registerCommand('frontMatter.authenticate', async () => {
+        Backers.tryUsernameCheck();
+      })
+    );
+  }
+
+  public static async tryUsernameCheck() {
     try {
       const username = await Backers.getUsername();
       Backers.validate(username || "");
     } catch (e) {
       Backers.validate("");
     }
-
-    context.subscriptions.push(
-      commands.registerCommand('frontMatter.authenticate', async () => {
-        const username = await Backers.getUsername();
-        Backers.validate(username || "");
-      })
-    );
   }
 
   public static async getUsername() {
