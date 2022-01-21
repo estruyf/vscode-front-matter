@@ -19,6 +19,7 @@
 - [#187](https://github.com/estruyf/vscode-front-matter/issues/187): Svelte support with the [#227](https://github.com/estruyf/vscode-front-matter/issues/227) features has been added.
 - [#198](https://github.com/estruyf/vscode-front-matter/issues/198): Additional media sort options (alt, caption, and size).
 - [#230](https://github.com/estruyf/vscode-front-matter/issues/230): JSON front matter support added.
+- [#233](https://github.com/estruyf/vscode-front-matter/issues/233): Partial update when a page is updated.
 
 ## [5.10.0] - 2022-01-10
 
