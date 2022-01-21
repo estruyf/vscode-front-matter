@@ -360,9 +360,9 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   
       if (!terminal || (terminal && terminal.state.isInteractedWith === true)) {
         terminal = window.createTerminal({
-          name: `Starting local server: ${command}`,
+          name: `Starting local server`,
           iconPath: new ThemeIcon('server-environment'),
-          message: `Starting local server: ${command}`,
+          message: `Starting local server`,
         });
       }
   
