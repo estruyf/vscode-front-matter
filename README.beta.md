@@ -160,6 +160,9 @@ You can open showcase issues for the following things:
 ## 🖤 Backers & Sponsors 👇 🤘
 
 <p align="center">
+  <a href="https://github.com/apowell656" title="Andre Powell">
+    <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/1969515" />
+  </a>
   <a href="https://github.com/timschps" title="Tim Schaeps">
     <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/13098307" />
   </a>
