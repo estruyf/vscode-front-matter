@@ -68,6 +68,10 @@ In this version, we introduced the new data files/folders dashboard. You can fin
 
 The new media dashboard redesign got introduced + support for setting metadata on media files [v5.0.0 release notes](https://frontmatter.codes/updates/v5.0.0).
 
+<p align="center">
+  <img src="./assets/v5.9.0/media-dashboard.png" alt="Data dashboard" style="display: inline-block" />
+</p>
+
 **Version 4**
 
 Support for Team level settings, content-types, and image support. Get to know more at: [v4.0.0 release notes](https://frontmatter.codes/updates/v4_0_0).
