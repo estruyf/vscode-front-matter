@@ -21,6 +21,10 @@
 - [#230](https://github.com/estruyf/vscode-front-matter/issues/230): JSON front matter support added.
 - [#233](https://github.com/estruyf/vscode-front-matter/issues/233): Partial update when a page is updated.
 
+### 🐞 Fixes
+
+- [#234](https://github.com/estruyf/vscode-front-matter/issues/234): Fix for multi-word keywords
+
 ## [5.10.0] - 2022-01-10
 
 ### 🎨 Enhancements
