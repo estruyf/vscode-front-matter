@@ -16,6 +16,7 @@
 
 - Added default field value for content type fields
 - HMR support for panel webview development
+- Added reveal media file action
 - [#187](https://github.com/estruyf/vscode-front-matter/issues/187): Svelte support with the [#227](https://github.com/estruyf/vscode-front-matter/issues/227) features has been added.
 - [#198](https://github.com/estruyf/vscode-front-matter/issues/198): Additional media sort options (alt, caption, and size).
 - [#230](https://github.com/estruyf/vscode-front-matter/issues/230): JSON front matter support added.
