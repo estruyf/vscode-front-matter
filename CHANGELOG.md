@@ -24,6 +24,7 @@
 ### 🐞 Fixes
 
 - [#234](https://github.com/estruyf/vscode-front-matter/issues/234): Fix for multi-word keywords
+- [#235](https://github.com/estruyf/vscode-front-matter/issues/235): Fix for reselecting the previously removed value from a choice field
 
 ## [5.10.0] - 2022-01-10
 
