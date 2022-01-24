@@ -83,7 +83,7 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({label, 
 
       <Downshift 
         ref={dsRef}
-        onChange={(selected) => onValueChange(selected || "")}
+        onSelect={(selected) => onValueChange(selected || "")}
         itemToString={item => (item ? item : '')}>
         {({ getToggleButtonProps, getItemProps, getMenuProps, isOpen, getRootProps }) => (
           <div {...getRootProps(undefined, {suppressRefError: true})} className={`metadata_field__choice`}>

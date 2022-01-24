@@ -20,7 +20,6 @@ import { DateHelper } from '../../helpers/DateHelper';
 import FieldBoundary from './ErrorBoundary/FieldBoundary';
 import { DraftField } from './Fields/DraftField';
 import { VsLabel } from './VscodeComponents';
-import { CogIcon } from '@heroicons/react/outline';
 
 export interface IMetadata {
   [prop: string]: string[] | string | null | IMetadata;
