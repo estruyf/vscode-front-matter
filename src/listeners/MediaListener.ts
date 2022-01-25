@@ -3,8 +3,9 @@ import { DashboardMessage } from "../dashboardWebView/DashboardMessage";
 import { BaseListener } from "./BaseListener";
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { SortingOption } from '../dashboardWebView/models';
-import { commands } from 'vscode';
+import { commands, env, Uri } from 'vscode';
 import { COMMAND_NAME } from '../constants';
+import * as os from 'os';
 
 
 export class MediaListener extends BaseListener {
@@ -28,6 +29,9 @@ export class MediaListener extends BaseListener {
       case DashboardMessage.deleteMedia:
         this.delete(msg?.data);
         break;
+      case DashboardMessage.revealMedia:
+        this.openFileInFinder(msg?.data?.file);
+        break;
       case DashboardMessage.insertPreviewImage:
         MediaHelpers.insertMediaToMarkdown(msg?.data);
         break;
@@ -49,6 +53,16 @@ export class MediaListener extends BaseListener {
   public static async sendMediaFiles(page: number = 0, folder: string = '', sorting: SortingOption | null = null) {
     const files = await MediaHelpers.getMedia(page, folder, sorting);
     this.sendMsg(DashboardCommand.media, files);
+  }
+
+  private static openFileInFinder(file: string) {
+    if (file) {
+      if (os.type() === "Linux" && env.remoteName?.toLowerCase() === "wsl") {
+        commands.executeCommand('remote-wsl.revealInExplorer', Uri.parse(file));
+      } else {
+        commands.executeCommand('revealFileInOS', Uri.parse(file));
+      }
+    }
   }
 
   /**

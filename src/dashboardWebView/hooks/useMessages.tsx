@@ -26,6 +26,8 @@ export default function useMessages() {
           setView(NavigationType.Media);
         } else if (message.data.data?.type === NavigationType.Contents) {
           setView(NavigationType.Contents);
+        } else if (message.data.data?.type === NavigationType.Data) {
+          setView(NavigationType.Data);
         }
         break;
       case DashboardCommand.settings:

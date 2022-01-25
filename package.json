@@ -3,7 +3,7 @@
   "displayName": "Front Matter",
   "description": "Front Matter is a CMS that runs within Visual Studio Code. It gives you the power and control of a full-blown CMS while also providing you the flexibility and speed of the static site generator of your choice like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "5.10.0",
+  "version": "6.0.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -100,9 +100,16 @@
         "frontMatter.content.defaultFileType": {
           "type": "string",
           "default": "md",
-          "enum": [
-            "md",
-            "mdx"
+          "oneOf": [
+            {
+              "enum": [
+                "md",
+                "mdx"
+              ]
+            },
+            {
+              "type": "string"
+            }
           ],
           "markdownDescription": "Specify the default file type for the content to create. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.defaultfiletype)",
           "scope": "Content"
@@ -198,6 +205,30 @@
           },
           "scope": "Content"
         },
+        "frontMatter.content.placeholders": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "This array of placeholders defines the placeholders that you can use in your content types and templates for automatically populating your content its front matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.placeholders)",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "ID of the placeholder, in your content type or template, use it as follows: {{placeholder}}"
+              },
+              "value": {
+                "type": "string",
+                "description": "The placeholder its value"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "value"
+            ]
+          },
+          "scope": "Content"
+        },
         "frontMatter.content.publicFolder": {
           "type": "string",
           "default": "",
@@ -247,6 +278,19 @@
               "name",
               "order"
             ]
+          },
+          "scope": "Content"
+        },
+        "frontMatter.content.supportedFileTypes": {
+          "type": "array",
+          "default": [
+            "md",
+            "mdx",
+            "markdown"
+          ],
+          "markdownDescription": "Specify the file types that you want to use in Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.supportedfiletypes)",
+          "items": {
+            "type": "string"
           },
           "scope": "Content"
         },
@@ -329,10 +373,180 @@
           "markdownDescription": "Specify if you want to open the dashboard when you start VS Code.  [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.openonstart)",
           "scope": "Dashboard"
         },
+        "frontMatter.data.files": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "Specify the data files you want to use for your website. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.data.files)",
+          "items": {
+            "type": "object",
+            "default": {},
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Your unique ID you want to use for your data file."
+              },
+              "title": {
+                "type": "string",
+                "description": "Title you want to give to your data file."
+              },
+              "labelField": {
+                "type": "string",
+                "description": "The field you want to use as label for your data entries."
+              },
+              "file": {
+                "type": "string",
+                "description": "Path to the file to load. Only JSON or YAML files are supported."
+              },
+              "fileType": {
+                "type": "string",
+                "default": "json",
+                "enum": [
+                  "json",
+                  "yaml"
+                ],
+                "description": "Defines how you want to parse the file. JSON is the default."
+              },
+              "schema": {
+                "type": "object",
+                "default": {},
+                "description": "The JSON schema for your data which will be used to render the data form.",
+                "additionalProperties": true
+              },
+              "type": {
+                "type": "string",
+                "default": "content",
+                "description": "If you are using data types, you can specify your type ID."
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "title",
+              "file"
+            ],
+            "anyOf": [
+              {
+                "required": [
+                  "schema"
+                ]
+              },
+              {
+                "required": [
+                  "type"
+                ]
+              }
+            ]
+          },
+          "scope": "Data"
+        },
+        "frontMatter.data.folders": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "Specify the data files you want to use for your website. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.data.files)",
+          "items": {
+            "type": "object",
+            "default": {},
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Your unique ID you want to use for your data folder."
+              },
+              "labelField": {
+                "type": "string",
+                "description": "The field you want to use as label for your data entries."
+              },
+              "path": {
+                "type": "string",
+                "description": "Path to the folder to load files."
+              },
+              "schema": {
+                "type": "object",
+                "default": {},
+                "description": "The JSON schema for your data which will be used to render the data form.",
+                "additionalProperties": true
+              },
+              "type": {
+                "type": "string",
+                "default": "content",
+                "description": "If you are using data types, you can specify your type ID."
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "path"
+            ],
+            "anyOf": [
+              {
+                "required": [
+                  "schema"
+                ]
+              },
+              {
+                "required": [
+                  "type"
+                ]
+              }
+            ]
+          },
+          "scope": "Data"
+        },
+        "frontMatter.data.types": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "Specify the data types. These types can be used in for your data files. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.data.types)",
+          "items": {
+            "type": "object",
+            "default": {},
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Your unique ID you want to use for your data type."
+              },
+              "schema": {
+                "type": "object",
+                "default": {},
+                "description": "The JSON schema for your data which will be used to render the data form.",
+                "additionalProperties": true
+              }
+            },
+            "required": [
+              "id",
+              "schema"
+            ]
+          },
+          "scope": "Data"
+        },
         "frontMatter.framework.id": {
           "type": "string",
           "default": "",
           "markdownDescription": "Specify the ID of your static site generator or framework you are using for your website. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.framework.id)"
+        },
+        "frontMatter.framework.startCommand": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "markdownDescription": "Specify the command you want to use to start your static site generator or framework. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.framework.startcommand)"
+        },
+        "frontMatter.global.notifications": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "info",
+              "warning",
+              "error"
+            ]
+          },
+          "default": [
+            "info",
+            "warning",
+            "error"
+          ],
+          "markdownDescription": "Specifies the notifications you want to see. By default, all notifications types will be shown. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.global.notifications)",
+          "scope": "Templates"
         },
         "frontMatter.media.defaultSorting": {
           "type": "string",
@@ -417,6 +631,7 @@
                 "description": "Specifies the type of content you want to create."
               },
               "fields": {
+                "$id": "#contenttypefield",
                 "type": "array",
                 "description": "Define the fields of the content type",
                 "items": {
@@ -435,7 +650,8 @@
                         "taxonomy",
                         "tags",
                         "categories",
-                        "draft"
+                        "draft",
+                        "fields"
                       ],
                       "description": "Define the type of field"
                     },
@@ -446,6 +662,10 @@
                     "title": {
                       "type": "string",
                       "description": "Title to show in the UI"
+                    },
+                    "default": {
+                      "type": "string",
+                      "description": "Default value"
                     },
                     "choices": {
                       "type": "array",
@@ -494,6 +714,9 @@
                       "type": "string",
                       "default": "",
                       "description": "The ID of your taxonomy field"
+                    },
+                    "fields": {
+                      "$ref": "#contenttypefield"
                     }
                   },
                   "additionalProperties": false,
@@ -527,6 +750,20 @@
                       "then": {
                         "required": [
                           "choices"
+                        ]
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "fields"
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "fields"
                         ]
                       }
                     }
@@ -639,12 +876,14 @@
           "default": "YAML",
           "enum": [
             "YAML",
-            "TOML"
+            "TOML",
+            "JSON"
           ],
           "markdownDescription": "Specify the type of Front Matter to use. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.frontmattertype)",
           "enumDescriptions": [
             "Specifies you want to use YAML markup for the front matter (default)",
-            "Specifies you want to use TOML markup for the front matter"
+            "Specifies you want to use TOML markup for the front matter",
+            "Specifies you want to use JSON markup for the front matter"
           ],
           "scope": "Taxonomy"
         },
@@ -728,148 +967,13 @@
           "default": "yyyy-MM-dd",
           "markdownDescription": "Specify the prefix you want to add for your new article filenames. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.prefix)",
           "scope": "Templates"
-        },
-        "frontMatter.global.notifications": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "enum": [
-              "info",
-              "warning",
-              "error"
-            ]
-          },
-          "default": [
-            "info",
-            "warning",
-            "error"
-          ],
-          "markdownDescription": "Specifies the notifications you want to see. By default, all notifications types will be shown. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.global.notifications)",
-          "scope": "Templates"
         }
       }
     },
     "commands": [
       {
-        "command": "frontMatter.collapseSections",
-        "title": "Collapse sections",
-        "category": "Front matter",
-        "icon": {
-          "light": "assets/icons/close-light.svg",
-          "dark": "assets/icons/close-dark.svg"
-        }
-      },
-      {
-        "command": "frontMatter.createTemplate",
-        "title": "Create a template from current file",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.createCategory",
-        "title": "Create category",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.createTag",
-        "title": "Create tag",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.exportTaxonomy",
-        "title": "Export all tags & categories to your settings",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.createFromTemplate",
-        "title": "Front Matter: New article from template"
-      },
-      {
-        "command": "frontMatter.registerFolder",
-        "title": "Front Matter: Register folder"
-      },
-      {
-        "command": "frontMatter.unregisterFolder",
-        "title": "Front Matter: Unregister folder"
-      },
-      {
-        "command": "frontMatter.generateSlug",
-        "title": "Generate slug based on content title",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.init",
-        "title": "Initialize project",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.insertCategories",
-        "title": "Insert categories",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.insertImage",
-        "title": "Insert image into your content",
-        "category": "Front matter",
-        "icon": {
-          "dark": "/assets/icons/media-dark.svg",
-          "light": "/assets/icons/media-light.svg"
-        }
-      },
-      {
-        "command": "frontMatter.insertTags",
-        "title": "Insert tags",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.createContent",
-        "title": "Create new content from defined content type or template",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.dashboard",
-        "title": "Open dashboard",
-        "category": "Front matter",
-        "icon": {
-          "dark": "/assets/icons/frontmatter-small-dark.svg",
-          "light": "/assets/icons/frontmatter-small-light.svg"
-        }
-      },
-      {
-        "command": "frontMatter.dashboard.media",
-        "title": "Open media dashboard",
-        "category": "Front matter",
-        "icon": {
-          "dark": "/assets/icons/frontmatter-small-dark.svg",
-          "light": "/assets/icons/frontmatter-small-light.svg"
-        }
-      },
-      {
-        "command": "frontMatter.dashboard.close",
-        "title": "Close dashboard",
-        "category": "Front matter",
-        "icon": {
-          "dark": "/assets/icons/frontmatter-small-teal.svg",
-          "light": "/assets/icons/frontmatter-small-teal.svg"
-        }
-      },
-      {
-        "command": "frontMatter.preview",
-        "title": "Preview content",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.promoteSettings",
-        "title": "Promote settings from local to team level",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.remap",
-        "title": "Remap or remove tag/category in all articles",
-        "category": "Front matter"
-      },
-      {
-        "command": "frontMatter.setLastModifiedDate",
-        "title": "Set lastmod date",
+        "command": "frontMatter.authenticate",
+        "title": "Authenticate",
         "category": "Front matter"
       },
       {
@@ -882,21 +986,12 @@
         }
       },
       {
-        "command": "frontMatter.markup.italic",
-        "title": "Italic",
+        "command": "frontMatter.dashboard.close",
+        "title": "Close dashboard",
         "category": "Front matter",
         "icon": {
-          "light": "assets/icons/italic-light.svg",
-          "dark": "assets/icons/italic-dark.svg"
-        }
-      },
-      {
-        "command": "frontMatter.markup.strikethrough",
-        "title": "Strikethrough",
-        "category": "Front matter",
-        "icon": {
-          "light": "assets/icons/strikethrough-light.svg",
-          "dark": "assets/icons/strikethrough-dark.svg"
+          "dark": "/assets/icons/frontmatter-small-teal.svg",
+          "light": "/assets/icons/frontmatter-small-teal.svg"
         }
       },
       {
@@ -927,6 +1022,62 @@
         }
       },
       {
+        "command": "frontMatter.collapseSections",
+        "title": "Collapse sections",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/close-light.svg",
+          "dark": "assets/icons/close-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.createTemplate",
+        "title": "Create a template from current file",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.createCategory",
+        "title": "Create category",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.createContent",
+        "title": "Create new content from defined content type or template",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.createTag",
+        "title": "Create tag",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.diagnostics",
+        "title": "Diagnostic logging",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.exportTaxonomy",
+        "title": "Export all tags & categories to your settings",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.createFromTemplate",
+        "title": "Front Matter: New article from template"
+      },
+      {
+        "command": "frontMatter.registerFolder",
+        "title": "Front Matter: Register folder"
+      },
+      {
+        "command": "frontMatter.unregisterFolder",
+        "title": "Front Matter: Unregister folder"
+      },
+      {
+        "command": "frontMatter.generateSlug",
+        "title": "Generate slug based on content title",
+        "category": "Front matter"
+      },
+      {
         "command": "frontMatter.markup.heading",
         "title": "Heading",
         "category": "Front matter",
@@ -936,12 +1087,63 @@
         }
       },
       {
-        "command": "frontMatter.markup.unorderedlist",
-        "title": "Unordered list",
+        "command": "frontMatter.init",
+        "title": "Initialize project",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.insertCategories",
+        "title": "Insert categories",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.insertImage",
+        "title": "Insert image into your content",
         "category": "Front matter",
         "icon": {
-          "light": "assets/icons/unordered-list-light.svg",
-          "dark": "assets/icons/unordered-list-dark.svg"
+          "dark": "/assets/icons/media-dark.svg",
+          "light": "/assets/icons/media-light.svg"
+        }
+      },
+      {
+        "command": "frontMatter.insertTags",
+        "title": "Insert tags",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.markup.italic",
+        "title": "Italic",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/italic-light.svg",
+          "dark": "assets/icons/italic-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.dashboard",
+        "title": "Open dashboard",
+        "category": "Front matter",
+        "icon": {
+          "dark": "/assets/icons/frontmatter-small-dark.svg",
+          "light": "/assets/icons/frontmatter-small-light.svg"
+        }
+      },
+      {
+        "command": "frontMatter.dashboard.data",
+        "title": "Open data dashboard",
+        "category": "Front matter",
+        "icon": {
+          "dark": "/assets/icons/frontmatter-small-dark.svg",
+          "light": "/assets/icons/frontmatter-small-light.svg"
+        }
+      },
+      {
+        "command": "frontMatter.dashboard.media",
+        "title": "Open media dashboard",
+        "category": "Front matter",
+        "icon": {
+          "dark": "/assets/icons/frontmatter-small-dark.svg",
+          "light": "/assets/icons/frontmatter-small-light.svg"
         }
       },
       {
@@ -954,11 +1156,6 @@
         }
       },
       {
-        "command": "frontMatter.markup.tasklist",
-        "title": "Task list",
-        "category": "Front matter"
-      },
-      {
         "command": "frontMatter.markup.options",
         "title": "Other markup options",
         "category": "Front matter",
@@ -968,9 +1165,47 @@
         }
       },
       {
-        "command": "frontMatter.diagnostics",
-        "title": "Diagnostic logging",
+        "command": "frontMatter.preview",
+        "title": "Preview content",
         "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.promoteSettings",
+        "title": "Promote settings from local to team level",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.remap",
+        "title": "Remap or remove tag/category in all articles",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.setLastModifiedDate",
+        "title": "Set lastmod date",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.markup.strikethrough",
+        "title": "Strikethrough",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/strikethrough-light.svg",
+          "dark": "assets/icons/strikethrough-dark.svg"
+        }
+      },
+      {
+        "command": "frontMatter.markup.tasklist",
+        "title": "Task list",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.markup.unorderedlist",
+        "title": "Unordered list",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/unordered-list-light.svg",
+          "dark": "assets/icons/unordered-list-dark.svg"
+        }
       }
     ],
     "menus": {
@@ -1164,10 +1399,13 @@
     "build:ext": "npm run clean && npm-run-all --parallel dev:build:*",
     "watch:ext": "webpack --mode development --watch --config ./webpack/extension.config.js",
     "watch:dashboard": "webpack serve --mode development --config ./webpack/dashboard.config.js",
+    "watch:panel": "webpack serve --mode development --config ./webpack/panel.config.js",
     "dev:build:ext": "webpack --mode development --config ./webpack/extension.config.js",
     "dev:build:dashboard": "webpack --mode development --config ./webpack/dashboard.config.js",
+    "dev:build:panel": "webpack --mode development --config ./webpack/panel.config.js",
     "prod:ext": "webpack --mode production --config ./webpack/extension.config.js",
     "prod:dashboard": "webpack --mode production --config ./webpack/dashboard.config.js",
+    "prod:panel": "webpack --mode production --config ./webpack/panel.config.js",
     "test-compile": "tsc -p ./",
     "clean": "rimraf dist",
     "start:site": "cd ./docs && npm run dev"
@@ -1178,6 +1416,7 @@
     "@headlessui/react": "^1.4.1",
     "@heroicons/react": "1.0.4",
     "@iarna/toml": "2.2.3",
+    "@octokit/rest": "^18.12.0",
     "@sentry/react": "^6.13.3",
     "@sentry/tracing": "^6.13.3",
     "@tailwindcss/forms": "^0.3.3",
@@ -1186,6 +1425,7 @@
     "@types/lodash.uniqby": "4.7.6",
     "@types/mocha": "^5.2.6",
     "@types/node": "10.17.48",
+    "@types/node-fetch": "^2.5.12",
     "@types/react": "17.0.0",
     "@types/react-datepicker": "^4.1.7",
     "@types/react-dom": "17.0.0",
@@ -1193,6 +1433,8 @@
     "@vscode/codicons": "0.0.20",
     "@vscode/webview-ui-toolkit": "^0.8.1",
     "@webpack-cli/serve": "^1.6.0",
+    "ajv": "^8.8.2",
+    "array-move": "^4.0.0",
     "autoprefixer": "^10.3.2",
     "css-loader": "5.2.7",
     "date-fns": "2.23.0",
@@ -1211,22 +1453,32 @@
     "path-browserify": "^1.0.1",
     "postcss": "^8.3.6",
     "postcss-loader": "4.3.0",
+    "postcss-nested": "^5.0.6",
     "react": "17.0.1",
     "react-datepicker": "4.2.1",
     "react-dom": "17.0.1",
     "react-dropzone": "^11.3.4",
+    "react-sortable-hoc": "^2.0.0",
+    "react-toastify": "^8.1.0",
     "recoil": "^0.4.1",
     "rimraf": "^3.0.2",
     "style-loader": "2.0.0",
     "tailwindcss": "^2.2.7",
     "ts-loader": "8.0.3",
     "tslint": "6.1.3",
-    "typescript": "4.0.2",
+    "typescript": "^4.5.4",
+    "uniforms": "^3.7.0",
+    "uniforms-antd": "^3.7.0",
+    "uniforms-bridge-json-schema": "^3.7.0",
+    "uniforms-unstyled": "^3.7.0",
     "url-join-ts": "^1.0.5",
     "wc-react": "github:estruyf/wc-react",
     "webpack": "^5.65.0",
     "webpack-bundle-analyzer": "^4.5.0",
     "webpack-cli": "^4.9.1",
     "webpack-dev-server": "^4.6.0"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7"
   }
 }

@@ -1,15 +1,15 @@
 import { DashboardData } from '../models/DashboardData';
 import { Template } from '../commands/Template';
-import { DefaultFields, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_COMMA_SEPARATED_FIELDS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS, SETTINGS_CONTENT_DRAFT_FIELD, SETTING_SEO_SLUG_LENGTH, SETTING_SITE_BASEURL, SETTING_TAXONOMY_CUSTOM } from '../constants';
+import { DefaultFields, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_COMMA_SEPARATED_FIELDS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS, SETTINGS_CONTENT_DRAFT_FIELD, SETTING_SEO_SLUG_LENGTH, SETTING_SITE_BASEURL, SETTING_TAXONOMY_CUSTOM, CONTEXT, SETTINGS_FRAMEWORK_ID, SETTINGS_FRAMEWORK_START } from '../constants';
 import * as os from 'os';
 import { PanelSettings, CustomScript as ICustomScript } from '../models/PanelSettings';
-import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv } from "vscode";
+import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv, ThemeIcon } from "vscode";
 import { ArticleHelper, Settings } from "../helpers";
 import { Command } from "../panelWebView/Command";
 import { CommandToCode } from '../panelWebView/CommandToCode';
 import { Article } from '../commands';
 import { TagType } from '../panelWebView/TagType';
-import { CustomTaxonomyData, DraftField, ScriptType, TaxonomyType } from '../models';
+import { CustomTaxonomyData, DraftField, Field, ScriptType, TaxonomyType } from '../models';
 import { exec } from 'child_process';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { Content } from 'mdast';
@@ -101,13 +101,13 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
           Article.toggleDraft();
           break;
         case CommandToCode.updateTags:
-          this.updateTags(TagType.tags, msg.data || []);
+          this.updateTags(TagType.tags, msg.data?.values || [], msg.data?.parents || []);
           break;
         case CommandToCode.updateCategories:
-          this.updateTags(TagType.categories, msg.data || []);
+          this.updateTags(TagType.categories, msg.data?.values || [], msg.data?.parents || []);
           break;
         case CommandToCode.updateKeywords:
-          this.updateTags(TagType.keywords, msg.data || []);
+          this.updateTags(TagType.keywords, msg.data?.values || [], msg.data?.parents || []);
           break;
         case CommandToCode.updateCustomTaxonomy:
           this.updateCustomTaxonomy(msg.data);
@@ -161,13 +161,13 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
           await commands.executeCommand(COMMAND_NAME.createTemplate);
           break;
         case CommandToCode.updateModifiedUpdating:
-          this.updateModifiedUpdating(msg.data || false);
+          this.updateSetting(SETTING_AUTO_UPDATE_DATE, msg.data || false);
           break;
         case CommandToCode.toggleWritingSettings:
           this.toggleWritingSettings();
           break;
         case CommandToCode.updateFmHighlight:
-          this.updateFmHighlight((msg.data !== null && msg.data !== undefined) ? msg.data : false);
+          this.updateSetting(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, (msg.data !== null && msg.data !== undefined) ? msg.data : false);
           break;
         case CommandToCode.toggleCenterMode:
           await commands.executeCommand(`workbench.action.toggleCenteredLayout`);
@@ -179,7 +179,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
           await commands.executeCommand(COMMAND_NAME.dashboard);
           break;
         case CommandToCode.updatePreviewUrl:
-          this.updatePreviewUrl(msg.data || "");
+          this.updateSetting(SETTING_PREVIEW_HOST, msg.data || "");
           break;
         case CommandToCode.openInEditor:
           openFileInEditor(msg.data);
@@ -193,6 +193,12 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
             data: msg.data
           } as DashboardData);
           this.getMediaSelection();
+          break;
+        case CommandToCode.frameworkCommand:
+          this.openTerminalWithCommand(msg.data.command);
+          break;
+        case CommandToCode.updateStartCommand:
+          await this.updateSetting(SETTINGS_FRAMEWORK_START, msg.data || "");
           break;
       }
     });
@@ -249,32 +255,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       // Get the current content type
       const contentType = ArticleHelper.getContentType(updatedMetadata);
       if (contentType) {
-        const imageFields = contentType.fields.filter((field) => field.type === "image");
-
-        for (const field of imageFields) {
-          if (updatedMetadata[field.name]) {
-            const imageData = ImageHelper.allRelToAbs(field, updatedMetadata[field.name])
-
-            if (imageData) {
-              if (field.multiple && imageData instanceof Array) {
-                const preview = imageData.map(preview => preview && preview.absPath ? ({ 
-                  ...preview,
-                  webviewUrl: this.panel?.webview.asWebviewUri(preview.absPath).toString()
-                }) : null);
-
-                updatedMetadata[field.name] = preview || [];
-              } else if (!field.multiple && !Array.isArray(imageData) && imageData.absPath) {
-                const preview = this.panel?.webview.asWebviewUri(imageData.absPath);
-                updatedMetadata[field.name] = {
-                  ...imageData,
-                  webviewUrl: preview ? preview.toString() : null
-                };
-              }
-            } else {
-              updatedMetadata[field.name] = field.multiple ? [] : "";
-            }
-          }          
-        }
+        this.processImageFields(updatedMetadata, contentType.fields)
       }
     }
 
@@ -314,7 +295,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   /**
    * Update the metadata of the article
    */
-  public async updateMetadata({field, value }: { field: string, value: any, fieldData?: { multiple: boolean, value: string[] } }) {
+  public async updateMetadata({field, parents, value }: { field: string, value: any, parents?: string[], fieldData?: { multiple: boolean, value: string[] } }) {
     if (!field) {
       return;
     }
@@ -333,12 +314,18 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     const dateFields = contentType.fields.filter((field) => field.type === "datetime");
     const imageFields = contentType.fields.filter((field) => field.type === "image" && field.multiple);
 
+    // Support multi-level fields
+    let parentObj = article.data;
+    for (const parent of parents || []) {
+      parentObj = parentObj[parent];
+    }
+
     for (const dateField of dateFields) {
       if ((field === dateField.name) && value) {
-        article.data[field] = Article.formatDate(new Date(value));
+        parentObj[field] = Article.formatDate(new Date(value));
       } else if (!imageFields.find(f => f.name === field)) {
         // Only override the field data if it is not an multiselect image field
-        article.data[field] = value;
+        parentObj[field] = value;
       }
     }
 
@@ -346,21 +333,44 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       if (field === imageField.name) {
         // If value is an array, it means it comes from the explorer view itself (deletion)
         if (Array.isArray(value)) {
-          article.data[field] = value || [];
+          parentObj[field] = value || [];
         } else { // Otherwise it is coming from the media dashboard (addition)
-          let fieldValue = article.data[field];
+          let fieldValue = parentObj[field];
           if (fieldValue && !Array.isArray(fieldValue)) {
             fieldValue = [fieldValue];
           }
           const crntData = Object.assign([], fieldValue);
           const allRelPaths = [...(crntData || []), value];
-          article.data[field] = [...new Set(allRelPaths)].filter(f => f);
+          parentObj[field] = [...new Set(allRelPaths)].filter(f => f);
         }
       }
     }
     
     ArticleHelper.update(editor, article);
     this.pushMetadata(article.data);
+  }
+
+  /**
+   * Open a terminal and run the passed command
+   * @param command 
+   */
+  private openTerminalWithCommand(command: string) {
+    if (command) {
+      let terminal = window.activeTerminal;
+  
+      if (!terminal || (terminal && terminal.state.isInteractedWith === true)) {
+        terminal = window.createTerminal({
+          name: `Starting local server`,
+          iconPath: new ThemeIcon('server-environment'),
+          message: `Starting local server`,
+        });
+      }
+  
+      if (terminal) {
+        terminal.sendText(command);
+        terminal.show(false);
+      }
+    }
   }
 
   /**
@@ -423,7 +433,12 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         commaSeparatedFields: Settings.get(SETTING_COMMA_SEPARATED_FIELDS) || [],
         contentTypes: Settings.get(SETTING_TAXONOMY_CONTENT_TYPES) || [],
         dashboardViewData: Dashboard.viewData,
-        draftField: Settings.get<DraftField>(SETTINGS_CONTENT_DRAFT_FIELD)
+        draftField: Settings.get<DraftField>(SETTINGS_CONTENT_DRAFT_FIELD),
+        isBacker: await Extension.getInstance().getState<boolean | undefined>(CONTEXT.backer, 'global'),
+        framework: Settings.get<string>(SETTINGS_FRAMEWORK_ID),
+        commands: {
+          start: Settings.get<string>(SETTINGS_FRAMEWORK_START)
+        }
       } as PanelSettings
     });
   }
@@ -436,6 +451,58 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       command: Command.folderInfo,
       data: await Folders.getInfo(FILE_LIMIT) || null
     });
+  }
+
+  /**
+   * Process the image fields in the content type
+   * @param updatedMetadata 
+   * @param fields 
+   * @param parents 
+   */
+  private processImageFields(updatedMetadata: any, fields: Field[], parents: string[] = []) {
+    const imageFields = fields.filter((field) => field.type === "image");
+    
+    // Support multi-level fields
+    let parentObj = updatedMetadata;
+    for (const parent of parents || []) {
+      parentObj = parentObj[parent];
+    }
+
+    // Process image fields
+    if (parentObj) {
+      for (const field of imageFields) {
+        if (parentObj[field.name]) {
+          const imageData = ImageHelper.allRelToAbs(field, parentObj[field.name])
+  
+          if (imageData) {
+            if (field.multiple && imageData instanceof Array) {
+              const preview = imageData.map(preview => preview && preview.absPath ? ({ 
+                ...preview,
+                webviewUrl: this.panel?.webview.asWebviewUri(preview.absPath).toString()
+              }) : null);
+  
+              parentObj[field.name] = preview || [];
+            } else if (!field.multiple && !Array.isArray(imageData) && imageData.absPath) {
+              const preview = this.panel?.webview.asWebviewUri(imageData.absPath);
+              parentObj[field.name] = {
+                ...imageData,
+                webviewUrl: preview ? preview.toString() : null
+              };
+            }
+          } else {
+            parentObj[field.name] = field.multiple ? [] : "";
+          }
+        }          
+      }
+  
+      // Check if there are sub-fields to process
+      const subFields = fields.filter((field) => field.type === "fields");
+      if (subFields?.length > 0) {
+        for (const field of subFields) {
+          this.processImageFields(updatedMetadata, field.fields || [], [...parents, field.name]);
+        }
+      }
+    }
   }
 
   /**
@@ -458,7 +525,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * @param tagType 
    * @param values 
    */
-  private updateTags(tagType: TagType, values: string[]) {
+  private updateTags(tagType: TagType, values: string[], parents: string[]) {
     const editor = window.activeTextEditor;
     if (!editor) {
       return "";
@@ -466,7 +533,14 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
     const article = ArticleHelper.getFrontMatter(editor);
     if (article && article.data) {
-      article.data[tagType.toLowerCase()] = values || [];
+
+      // Support multi-level fields
+      let parentObj = article.data;
+      for (const parent of parents || []) {
+        parentObj = parentObj[parent];
+      }
+
+      parentObj[tagType.toLowerCase()] = values || [];
       ArticleHelper.update(editor, article);
       this.pushMetadata(article!.data);
     }
@@ -488,7 +562,14 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
     const article = ArticleHelper.getFrontMatter(editor);
     if (article && article.data) {
-      article.data[data.name] = data.options || [];
+
+      // Support multi-level fields
+      let parentObj = article.data;
+      for (const parent of data.parents || []) {
+        parentObj = parentObj[parent];
+      }
+
+      parentObj[data.name] = data.options || [];
       ArticleHelper.update(editor, article);
       this.pushMetadata(article!.data);
     }
@@ -656,26 +737,12 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
   }
 
   /**
-   * Update the preview URL
+   * Updates a setting and refreshes the retrieved settings
+   * @param setting 
+   * @param value 
    */
-  private async updatePreviewUrl(previewUrl: string) {
-    await Settings.update(SETTING_PREVIEW_HOST, previewUrl);
-    this.getSettings();
-  }
-
-  /**
-   * Toggle the Front Matter highlighting
-   */
-  private async updateFmHighlight(autoUpdate: boolean) {
-    await Settings.update(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, autoUpdate);
-    this.getSettings();
-  }
-
-  /**
-   * Toggle the modified auto-update setting
-   */
-  private async updateModifiedUpdating(autoUpdate: boolean) {
-    await Settings.update(SETTING_AUTO_UPDATE_DATE, autoUpdate);
+  private async updateSetting(setting: string, value: any) {
+    await Settings.update(setting, value);
     this.getSettings();
   }
 
@@ -692,35 +759,56 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * @param webView 
    */
   private getWebviewContent(webView: Webview): string {
+    const ext = Extension.getInstance();
+    const dashboardFile = "panelWebView.js";
+    const localPort = `9001`;
+    const localServerUrl = `localhost:${localPort}`;
+    const extensionPath = ext.extensionPath;
+
     const styleVSCodeUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'assets/media', 'vscode.css'));
     const styleResetUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'assets/media', 'reset.css'));
     const stylesUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'assets/media', 'styles.css'));
-    const scriptUri = webView.asWebviewUri(Uri.joinPath(this.extPath, 'dist', 'panelWebView.js'));
 
     const nonce = WebviewHelper.getNonce();
 
-    const ext = Extension.getInstance();
     const version = ext.getVersion();
     const isBeta = ext.isBetaVersion();
+
+    let scriptUri = "";
+    const isProd = Extension.getInstance().isProductionMode;
+    if (isProd) {
+      scriptUri = webView.asWebviewUri(Uri.joinPath(extensionPath, 'dist', dashboardFile)).toString();
+    } else {
+      scriptUri = `http://${localServerUrl}/${dashboardFile}`; 
+    }
+
+    const csp = [
+      `default-src 'none';`,
+      `img-src ${`vscode-file://vscode-app`} ${webView.cspSource} https://api.visitorbadge.io 'self' 'unsafe-inline'`,
+      `script-src ${isProd ? `'nonce-${nonce}'` : `http://${localServerUrl} http://0.0.0.0:${localPort}`}`,
+      `style-src ${webView.cspSource} 'self' 'unsafe-inline'`,
+      `font-src ${webView.cspSource}`,
+      `connect-src https://o1022172.ingest.sentry.io ${isProd ? `` : `ws://${localServerUrl} ws://0.0.0.0:${localPort} http://${localServerUrl} http://0.0.0.0:${localPort}`}`
+    ];
 
     return `
       <!DOCTYPE html>
       <html lang="en">
       <head>
-        <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${`vscode-file://vscode-app`} ${webView.cspSource} https://api.visitorbadge.io 'self' 'unsafe-inline'; script-src 'nonce-${nonce}'; style-src ${webView.cspSource} 'self' 'unsafe-inline'; font-src ${webView.cspSource}; connect-src https://o1022172.ingest.sentry.io">
+        <meta http-equiv="Content-Security-Policy" content="${csp.join('; ')}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="${styleResetUri}" rel="stylesheet">
         <link href="${styleVSCodeUri}" rel="stylesheet">
         <link href="${stylesUri}" rel="stylesheet">
 
-        <title>Front Matter</title>
+        <title>Front Matter Panel</title>
       </head>
       <body>
-        <div id="app" data-environment="${isBeta ? "BETA" : "main"}" data-version="${version.usedVersion}" ></div>
+        <div id="app" data-isProd="${isProd}" data-environment="${isBeta ? "BETA" : "main"}" data-version="${version.usedVersion}" ></div>
 
         <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759&slug=${`panel-${version.installedVersion}`}" alt="Daily usage" />
 
-        <script nonce="${nonce}" src="${scriptUri}"></script>
+        <script ${isProd ? `nonce="${nonce}"` : ""} src="${scriptUri}"></script>
       </body>
       </html>
     `;

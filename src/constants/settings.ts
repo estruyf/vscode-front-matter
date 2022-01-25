@@ -46,16 +46,23 @@ export const SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT = "content.fmHighlight";
 export const SETTINGS_CONTENT_DRAFT_FIELD = "content.draftField";
 export const SETTINGS_CONTENT_SORTING = "content.sorting";
 export const SETTINGS_CONTENT_WYSIWYG = "content.wysiwyg";
+export const SETTINGS_CONTENT_PLACEHOLDERS = "content.placeholders";
 
 export const SETTINGS_CONTENT_SORTING_DEFAULT = "content.defaultSorting";
 export const SETTINGS_MEDIA_SORTING_DEFAULT = "content.defaultSorting";
 
 export const SETTINGS_CONTENT_DEFAULT_FILETYPE = "content.defaultFileType";
+export const SETTINGS_CONTENT_SUPPORTED_FILETYPES = "content.supportedFileTypes";
 
 export const SETTINGS_DASHBOARD_OPENONSTART = "dashboard.openOnStart";
 export const SETTINGS_DASHBOARD_MEDIA_SNIPPET = "dashboard.mediaSnippet";
 
+export const SETTINGS_DATA_FILES = "data.files";
+export const SETTINGS_DATA_FOLDERS = "data.folders";
+export const SETTINGS_DATA_TYPES = "data.types";
+
 export const SETTINGS_FRAMEWORK_ID = "framework.id";
+export const SETTINGS_FRAMEWORK_START = "framework.startCommand";
 
 export const SETTING_SITE_BASEURL = "site.baseURL";
 

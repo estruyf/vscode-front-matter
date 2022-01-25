@@ -446,10 +446,31 @@ input:checked + .field__toggle__slider:before {
   margin-bottom: 1rem;
 }
 
+.vscode-dark .metadata_field__box {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+}
+
+.vscode-light .metadata_field__box {
+  background: rgba(0, 0, 0, 0.1);
+  border: 2px dashed rgba(0, 0, 0, 0.2);
+}
+
+.metadata_field__box {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  margin-bottom: .5rem;
+  padding: .5rem 1rem;
+}
+
 .metadata_field__label {
   display: flex;
   align-items: center;
   margin-bottom: .5rem;
+}
+
+.metadata_field__label.metadata_field__label_parent {
+  justify-content: center;
 }
 
 .metadata_field__label svg {
@@ -636,6 +657,14 @@ input:checked + .field__toggle__slider:before {
   display: inline-block;
   margin: 0 auto;
   margin-top: .5rem;
+}
+
+.vscode-light .metadata_field__preview_image__preview {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.vscode-dark .metadata_field__preview_image__preview {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .metadata_field__preview_image__preview {

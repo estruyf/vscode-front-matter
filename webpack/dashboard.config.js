@@ -38,13 +38,7 @@ const config = [
       maxEntrypointSize: 400000,
       maxAssetSize: 400000
     },
-    plugins: [
-      new BundleAnalyzerPlugin({
-        analyzerMode: 'static',
-        reportFilename: "dashboard.html",
-        openAnalyzer: false
-      })
-    ],
+    plugins: [],
     devServer: {
       compress: true,
       port: 9000,
@@ -60,6 +54,14 @@ const config = [
 module.exports = (env, argv) => {
   for (const configItem of config) {
     configItem.mode = argv.mode;
+
+    if (argv.mode === 'production') {
+      configItem.plugins.push(new BundleAnalyzerPlugin({
+        analyzerMode: 'static',
+        reportFilename: "dashboard.html",
+        openAnalyzer: false
+      }));
+    }
   }
 
   return config;

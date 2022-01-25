@@ -15,10 +15,13 @@ export enum DashboardMessage {
   refreshMedia = 'refreshMedia',
   uploadMedia = 'uploadMedia',
   deleteMedia = 'deleteMedia',
+  revealMedia = 'revealMedia',
   insertPreviewImage = 'insertPreviewImage',
   updateMediaMetadata = 'updateMediaMetadata',
   createMediaFolder = 'createMediaFolder',
   setFramework = 'setFramework',
   setState = 'setState',
   runCustomScript = 'runCustomScript',
+  getDataEntries = 'getDataEntries',
+  putDataEntries = 'putDataEntries',
 }

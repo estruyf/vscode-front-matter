@@ -20,13 +20,20 @@ export interface PanelSettings {
   contentTypes: ContentType[];
   dashboardViewData: DashboardData | undefined;
   draftField: DraftField;
+  isBacker: boolean | undefined;
+  framework: string | undefined;
+  commands: FrameworkCommands;
+}
+
+export interface FrameworkCommands {
+  start: string | undefined;
 }
 
 export interface ContentType {
   name: string;
   fields: Field[];
 
-  fileType?: "md" | "mdx";
+  fileType?: "md" | "mdx" | string;
   previewPath?: string | null;
   pageBundle?: boolean;
 }
@@ -34,13 +41,15 @@ export interface ContentType {
 export interface Field {
   title?: string;
   name: string;
-  type: "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft" | "taxonomy";
+  type: "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft" | "taxonomy" | "fields";
   choices?: string[] | Choice[];
   single?: boolean;
   multiple?: boolean;
   isPreviewImage?: boolean;
   hidden?: boolean;
   taxonomyId?: string;
+  default?: string;
+  fields?: Field[];
 }
 
 export interface DateInfo {

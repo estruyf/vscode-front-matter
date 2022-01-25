@@ -25,4 +25,12 @@ export class Logger {
 
     Logger.channel?.appendLine(`["${type}" - ${format(new Date(), "HH:MM:ss")}]  ${message}`);
   }
+
+  public static warning(message: string): void {
+    Logger.info(message, "WARNING");
+  }
+
+  public static error(message: string): void {
+    Logger.info(message, "ERROR");
+  }
 }

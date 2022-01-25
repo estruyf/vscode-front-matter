@@ -21,6 +21,17 @@ export class Sorting {
   };
 
   /**
+   * Sort field value numerically
+   * @param property 
+   * @returns 
+   */
+  public static numerically = (property: string) => {
+    return (a: any, b: any) => {
+      return a[property] - b[property];
+    };
+  }
+
+  /**
    * Sort by date
    * @param property 
    * @returns 

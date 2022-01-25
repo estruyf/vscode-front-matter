@@ -4,5 +4,6 @@ export enum DashboardCommand {
   settings = "settings",
   media = "media",
   viewData = "viewData",
-  mediaUpdate = "mediaUpdate"
+  mediaUpdate = "mediaUpdate",
+  dataFileEntries = "dataFileEntries"
 }

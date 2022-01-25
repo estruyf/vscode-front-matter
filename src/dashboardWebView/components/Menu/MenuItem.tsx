@@ -2,7 +2,7 @@ import { Menu } from '@headlessui/react';
 import * as React from 'react';
 
 export interface IMenuItemProps {
-  title: string;
+  title: JSX.Element | string;
   value?: any;
   isCurrent?: boolean;
   disabled?: boolean;

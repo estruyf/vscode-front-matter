@@ -1,6 +1,6 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { Menu } from '@headlessui/react';
-import { ClipboardIcon, CodeIcon, PencilIcon, PhotographIcon, PlusIcon, TrashIcon } from '@heroicons/react/outline';
+import { ClipboardIcon, CodeIcon, EyeIcon, PencilIcon, PhotographIcon, PlusIcon, TrashIcon } from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useEffect } from 'react';
@@ -77,6 +77,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
       image: parseWinPath(relPath) || "",
       file: viewData?.data?.filePath,
       fieldName: viewData?.data?.fieldName,
+      parents: viewData?.data?.parents,
       multiple: viewData?.data?.multiple,
       value: viewData?.data?.value,
       position: viewData?.data?.position || null,
@@ -105,6 +106,13 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
 
   const deleteMedia = () => {
     setShowAlert(true);
+  };
+
+  const revealMedia = () => {
+    Messenger.send(DashboardMessage.revealMedia, {
+      file: media.fsPath,
+      folder: selectedFolder
+    });
   };
 
   const confirmDeletion = () => {
@@ -220,7 +228,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
                   viewData?.data?.filePath ? (
                     <>
                       <QuickAction 
-                        title='Insert image with markdown markup'
+                        title={(viewData.data.metadataInsert && viewData.data.fieldName) ? `Insert image for your "${viewData.data.fieldName}" field` : `Insert image with markdown markup`}
                         onClick={insertToArticle}>
                         <PlusIcon className={`h-5 w-5`} aria-hidden="true" />
                       </QuickAction>
@@ -242,15 +250,15 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
                         onClick={copyToClipboard}>
                         <ClipboardIcon className={`h-5 w-5`} aria-hidden="true" />
                       </QuickAction>
-
-                      <QuickAction 
-                        title='Delete media file'
-                        onClick={deleteMedia}>
-                        <TrashIcon className={`h-5 w-5`} aria-hidden="true" />
-                      </QuickAction>
                     </>
                   )
                 }
+
+                <QuickAction 
+                  title='Delete media file'
+                  onClick={deleteMedia}>
+                  <TrashIcon className={`h-5 w-5`} aria-hidden="true" />
+                </QuickAction>
               </div>
 
               <Menu as="div" className="relative z-10 inline-block text-left  h-5">
@@ -286,13 +294,17 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
                           onClick={copyToClipboard} />
 
                         { customScriptActions() }
-
-                        <MenuItem 
-                          title={`Delete`}
-                          onClick={deleteMedia} />
                       </>
                     )
                   }
+
+                  <MenuItem 
+                    title={`Reveal media`}
+                    onClick={revealMedia} />
+
+                  <MenuItem 
+                    title={`Delete`}
+                    onClick={deleteMedia} />
                 </MenuItems>
               </Menu>
             </div>

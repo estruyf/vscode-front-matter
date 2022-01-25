@@ -26,29 +26,49 @@
   </a>
 </h2>
 
-## What is Front Matter?
+## ❓ What is Front Matter?
 
-Front Matter is an essential Visual Studio Code extension that simplifies working and managing your markdown articles. We created the extension to support many static-site generators like Hugo, Jekyll, Hexo, NextJs, Gatsby, and more. 
+Front Matter is a CMS that runs within Visual Studio Code. It gives you the power and control of a full-blown CMS while also providing you the flexibility and speed of the static site generator of your choice. Jump right into editing and creating content with Front Matter and be able to preview it straight in VS Code.
 
-The extension brings Content Management System (CMS) capabilities straight within Visual Studio Code. For example, you can keep a list of the used tags, categories, create content, and so much more.
+The extension supports various static-site generators and frameworks like Hugo, Jekyll, Hexo, NextJs, Gatsby, and more.
 
-Our main extension features are:
+A couple of our extension highlights that hopefully get you interested in giving Front Matter a try:
 
-- Page dashboard where you can get an overview of all your markdown pages. You can use it to search, filter, sort your contents.
-- Site preview within Visual Studio Code
+- Content, data, and media management
+  - Search, filter, sort, etc. all your content
+  - Create new content
+  - Supporting tools to edit content and media
+- Preview your site/content straight in Visual Studio Code
 - SEO checks for title, description, and keywords
-- Support for custom actions/scripts
-- and many more
+- Extensibility
+  - As we know, we cannot support all use cases. We provide a way to extend the functionality of the extension to your needs
+- and many more features ...
+
+> Missing something? Let us know by opening an issue on the [GitHub repository](https://github.com/estruyf/vscode-front-matter/issues/new/choose)
 
 <p align="center">
-  <img src="./assets/v4.0.0/preview.png" alt="Site preview" style="display: inline-block" />
+  <img src="./assets/v6.0.0/content-preview.png" alt="Site preview" style="display: inline-block" />
 </p>
 
 > If you see something missing in your article creation flow, please feel free to reach out.
 
+**Version 6**
+
+In this version, we introduced the new data files/folders dashboard. You can find more information about the release in our [v6.0.0 release notes](https://frontmatter.codes/updates/v6.0.0).
+
+<p align="center">
+  <img src="./assets/v6.0.0/data-dashboard.png" alt="Data dashboard" style="display: inline-block" />
+</p>
+
+> Data files/folders are pieces of content that do not belong to any markdown content, but live on their own. Most of the time, these data files are used to store additional information about your project/blog/website that will be used to render the content.
+
 **Version 5**
 
 The new media dashboard redesign got introduced + support for setting metadata on media files [v5.0.0 release notes](https://frontmatter.codes/updates/v5.0.0).
+
+<p align="center">
+  <img src="./assets/v5.9.0/media-dashboard.png" alt="Data dashboard" style="display: inline-block" />
+</p>
 
 **Version 4**
 
@@ -68,7 +88,7 @@ In version v2 we released the re-designed sidebar panel with improved SEO suppor
   </a>
 </p>
 
-## Installation
+## ⚙️ Installation
 
 You can get the extension via:
 
@@ -78,23 +98,54 @@ You can get the extension via:
 
 > **Info**: The docs can be found on [frontmatter.codes](https://frontmatter.codes).
 
-### Beta version
+### 🧪 Beta version
 
 If you have the courage to test out the beta features, we made available a beta version as well. You can install this via:
 
-- The VS Code marketplace: [VS Code Marketplace - Front Matter BETA](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter-beta).
-- The extension CLI: `ext install eliostruyf.vscode-front-matter-beta`
-- Or by clicking on the following link: <a href="" title="open extension in VS Code" data-vscode="vscode:extension/eliostruyf.vscode-front-matter-beta">open extension in VS Code</a>
+- Uninstall the main Front Matter version
+- Install the beta version 
+  - VS Code marketplace: [VS Code Marketplace - Front Matter BETA](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter-beta).
+  - The extension CLI: `ext install eliostruyf.vscode-front-matter-beta`
+  - Or by clicking on the following link: <a href="" title="open extension in VS Code" data-vscode="vscode:extension/eliostruyf.vscode-front-matter-beta">open extension in VS Code</a>
 
 > **Info**: The BETA docs can be found on [beta.frontmatter.codes](https://beta.frontmatter.codes).
 
-## Documentation
+## 📖 Documentation
 
-<h2 align="center">
-  <a href="https://frontmatter.codes" title="Documentation @ frontmatter.codes">
-    Check out the extension documentation at frontmatter.codes
-  </a>
-</h2>
+All documentation can be found on [frontmatter.codes](https://frontmatter.codes).
+
+Documentation repository: [GitHub - Front Matter DOCs](https://github.com/FrontMatter/web-documentation-nextjs)
+
+## 💪 Contributing
+
+Pull requests are welcome. Please open an issue first to discuss what you would like to change, or which problem you would like to fix. This makes it easier for us to follow-up and plan for future releases.
+
+You can always help us improve the extension in varous ways like:
+
+- Testing out the extension and providing feedback
+- Reporting issues and bugs
+- Suggesting new features
+- Fixing an issue
+- Updating documentation
+- UI improvements
+- Tutorials
+- etc.
+
+Eager to start contributing? Great 🤩, you can contribute to the following projects:
+
+- [Extension](https://github.com/estruyf/vscode-front-matter)
+- [Documentation](https://github.com/FrontMatter/web-documentation-nextjs)
+- [Sample Projects](https://github.com/FrontMatter/project-samples)
+
+## 👀 Show the work you are using Front Matter
+
+Are you using Front Matter and are you interested in showing for which websites you use it? You can show your work by opening a [showcase issue](https://github.com/estruyf/vscode-front-matter/issues/new?assignees=&labels=&template=showcase.md&title=Showcase%3A+).
+
+You can open showcase issues for the following things:
+
+- Show the website for which you use Front Matter;
+- Share an article/video/webcast/... that explains how you use Front Matter;
+- Got something else to share? Open an issue and we can see where it fits on our website.
 
 ## 👉 Contributors 🤘
 
@@ -107,6 +158,9 @@ If you have the courage to test out the beta features, we made available a beta 
 ## 🖤 Backers & Sponsors 👇 🤘
 
 <p align="center">
+  <a href="https://github.com/apowell656" title="Andre Powell">
+    <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/1969515" />
+  </a>
   <a href="https://github.com/timschps" title="Tim Schaeps">
     <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/13098307" />
   </a>
@@ -125,6 +179,10 @@ If you have the courage to test out the beta features, we made available a beta 
     <img src="assets/sponsors/powered-by-vercel.png" />
    </a>
 </p>
+
+## 🔑 License
+
+[MIT](./LICENSE)
 
 <br />
 <br />

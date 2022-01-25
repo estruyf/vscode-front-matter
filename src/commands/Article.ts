@@ -1,7 +1,7 @@
 import { isValidFile } from './../helpers/isValidFile';
-import { SETTING_AUTO_UPDATE_DATE, SETTING_MODIFIED_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TEMPLATES_PREFIX, CONFIG_KEY, SETTING_DATE_FORMAT, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX } from './../constants';
+import { SETTING_AUTO_UPDATE_DATE, SETTING_MODIFIED_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TEMPLATES_PREFIX, CONFIG_KEY, SETTING_DATE_FORMAT, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTINGS_CONTENT_PLACEHOLDERS } from './../constants';
 import * as vscode from 'vscode';
-import { TaxonomyType } from "../models";
+import { Field, TaxonomyType } from "../models";
 import { format } from "date-fns";
 import { ArticleHelper, Settings, SlugHelper } from '../helpers';
 import matter = require('gray-matter');
@@ -180,11 +180,34 @@ export class Article {
       return;
     }
 
-    const articleTitle: string = article.data["title"];
-    let slug = SlugHelper.createSlug(articleTitle);
+    const contentType = ArticleHelper.getContentType(article.data);
+    const titleField = "title";
+    const articleTitle: string = article.data[titleField];
+    
+    const slug = SlugHelper.createSlug(articleTitle);
     if (slug) {
-      slug = `${prefix}${slug}${suffix}`;
-      article.data["slug"] = slug;
+      let slugFieldValue = `${prefix}${slug}${suffix}`;
+      article.data["slug"] = slugFieldValue;
+
+      if (contentType) {
+        // Update the fields containing the slug placeholder
+        let fieldsToUpdate: Field[] = contentType.fields.filter(f => f.default === "{{slug}}");
+        for (const field of fieldsToUpdate) {
+          article.data[field.name] = slug;
+        }
+
+        // Update the fields containing a custom placeholder that depends on slug
+        const placeholders = Settings.get<{id: string, value: string}[]>(SETTINGS_CONTENT_PLACEHOLDERS);
+        const customPlaceholders = placeholders?.filter(p => p.value.includes("{{slug}}"));
+        for (const customPlaceholder of (customPlaceholders || [])) {
+          const customPlaceholderFields = contentType.fields.filter(f => f.default === `{{${customPlaceholder.id}}}`);
+          for (const pField of customPlaceholderFields) {
+            article.data[pField.name] = customPlaceholder.value;
+            article.data[pField.name] = ArticleHelper.processKnownPlaceholders(article.data[pField.name], articleTitle);
+          }
+        }
+      }
+
       ArticleHelper.update(editor, article);
 
       // Check if the file name should be updated by the slug

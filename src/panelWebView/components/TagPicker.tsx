@@ -12,19 +12,21 @@ import { CustomTaxonomyData } from '../../models';
 export interface ITagPickerProps {
   type: TagType;
   icon: JSX.Element;
-  label?: string;
   crntSelected: string[];
   options: string[];
   freeform: boolean;
   focussed: boolean;
   unsetFocus: () => void;
+
+  parents?: string[];
+  label?: string;
   disableConfigurable?: boolean;
   fieldName?: string;
   taxonomyId?: string;
 }
 
 const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsWithChildren<ITagPickerProps>) => {
-  const { label, icon, type, crntSelected, options, freeform, focussed, unsetFocus, disableConfigurable, fieldName, taxonomyId } = props;
+  const { label, icon, type, crntSelected, options, freeform, focussed, unsetFocus, disableConfigurable, fieldName, taxonomyId, parents } = props;
   const [ selected, setSelected ] = React.useState<string[]>([]);
   const [ inputValue, setInputValue ] = React.useState<string>("");
   const prevSelected = usePrevious(crntSelected);
@@ -65,16 +67,26 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
    */
   const sendUpdate = (values: string[]) => {    
     if (type === TagType.tags) {
-      MessageHelper.sendMessage(CommandToCode.updateTags, values);
+      MessageHelper.sendMessage(CommandToCode.updateTags, {
+        values,
+        parents
+      });
     } else if (type === TagType.categories) {
-      MessageHelper.sendMessage(CommandToCode.updateCategories, values);
+      MessageHelper.sendMessage(CommandToCode.updateCategories, {
+        values,
+        parents
+      });
     } else if (type === TagType.keywords) {
-      MessageHelper.sendMessage(CommandToCode.updateKeywords, values);
+      MessageHelper.sendMessage(CommandToCode.updateKeywords, {
+        values,
+        parents
+      });
     } else if (type === TagType.custom) {
       MessageHelper.sendMessage(CommandToCode.updateCustomTaxonomy, {
         id: taxonomyId,
         name: fieldName,
-        options: values
+        options: values,
+        parents
       } as CustomTaxonomyData);
     }
   };

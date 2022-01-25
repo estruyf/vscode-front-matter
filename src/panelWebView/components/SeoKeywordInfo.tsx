@@ -33,12 +33,22 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({keyword,
     }
   };
 
+  const validateKeywords = (heading: string, keyword: string) => {
+    const keywords = keyword.toLowerCase().split(' ');
+    
+    if (keywords.length > 1) {
+      return heading.toLowerCase().includes(keyword.toLowerCase());
+    } else {
+      return heading.toLowerCase().split(' ').findIndex(word => word.toLowerCase() === keyword.toLowerCase()) !== -1;
+    }
+  };
+
   const checkHeadings = () => {    
     if (!headings || headings.length === 0) {
       return null;
     }
-
-    const exists = headings.filter(heading => heading.split(' ').findIndex(word => word.toLowerCase() === keyword.toLowerCase()) !== -1);
+    
+    const exists = headings.filter(heading => validateKeywords(heading, keyword));
     return <ValidInfo label={`Used in heading(s)`} isValid={exists.length > 0} />;
   }; 
 

@@ -13,7 +13,7 @@ export class SlugHelper {
     }
 
     // Remove punctuation from input string, and split it into words.
-    let cleanTitle = this.removePunctuation(articleTitle);
+    let cleanTitle = this.removePunctuation(articleTitle).trim();
     if (cleanTitle) {
       cleanTitle = cleanTitle.toLowerCase();
       // Split into words

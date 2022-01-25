@@ -3,20 +3,21 @@ import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from './../constants/
 import * as vscode from 'vscode';
 import * as matter from "gray-matter";
 import * as fs from "fs";
-import { DefaultFields, SETTINGS_CONTENT_DEFAULT_FILETYPE, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from '../constants';
+import { DefaultFields, SETTINGS_CONTENT_DEFAULT_FILETYPE, SETTINGS_CONTENT_PLACEHOLDERS, SETTINGS_CONTENT_SUPPORTED_FILETYPES, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { TomlEngine, getFmLanguage, getFormatOpts } from './TomlEngine';
-import { Extension, Settings } from '.';
+import { Extension, Logger, Settings, SlugHelper } from '.';
 import { format, parse } from 'date-fns';
 import { Notifications } from './Notifications';
 import { Article } from '../commands';
-import { basename, join } from 'path';
+import { join } from 'path';
 import { EditorHelper } from '@estruyf/vscode';
 import sanitize from '../helpers/Sanitize';
 import { existsSync, mkdirSync } from 'fs';
 import { ContentType } from '../models';
 import { DateHelper } from './DateHelper';
-import { Diagnostic, DiagnosticSeverity, Position, window, Range } from 'vscode';
+import { DiagnosticSeverity, Position, window, Range } from 'vscode';
+import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
 
 export class ArticleHelper {
   private static notifiedFiles: string[] = [];
@@ -145,7 +146,8 @@ export class ArticleHelper {
    */ 
   public static isMarkdownFile(document: vscode.TextDocument | undefined | null = null) {
     const supportedLanguages = ["markdown", "mdx"];
-    const supportedFileExtensions = [".md", ".mdx"];
+    const fileTypes = Settings.get<string[]>(SETTINGS_CONTENT_SUPPORTED_FILETYPES);
+    const supportedFileExtensions = fileTypes ? fileTypes.map(f => f.startsWith(`.`) ? f : `.${f}`) : DEFAULT_FILE_TYPES;
     const languageId = document?.languageId?.toLowerCase();
     const isSupportedLanguage =  languageId && supportedLanguages.includes(languageId);
     document ??= vscode.window.activeTextEditor?.document;
@@ -275,6 +277,83 @@ export class ArticleHelper {
   }
 
   /**
+   * Update placeholder values in the front matter content
+   * @param data 
+   * @param title 
+   * @returns 
+   */
+  public static updatePlaceholders(data: any, title: string) {
+    const fmData = Object.assign({}, data);
+
+    for (const fieldName of Object.keys(fmData)) {
+      const fieldValue = fmData[fieldName];
+
+      if (fieldName === "title" && (fieldValue === null || fieldValue === "")) {
+        fmData[fieldName] = title;
+      }
+  
+      if (fieldName === "slug" && (fieldValue === null || fieldValue === "")) {
+        fmData[fieldName] = SlugHelper.createSlug(title);
+      }
+
+      fmData[fieldName] = this.processKnownPlaceholders(fmData[fieldName], title);
+      fmData[fieldName] = this.processCustomPlaceholders(fmData[fieldName], title);
+    }
+
+    return fmData;
+  }
+
+  /**
+   * Replace the known placeholders
+   * @param value 
+   * @param title 
+   * @returns 
+   */
+  public static processKnownPlaceholders(value: string, title: string) {
+    if (value && typeof value === "string") {
+      if (value.includes("{{title}}")) {
+        const regex = new RegExp("{{title}}", "g");
+        value = value.replace(regex, title);
+      }
+      
+      if (value.includes("{{slug}}")) {
+        const regex = new RegExp("{{slug}}", "g");
+        value = value.replace(regex, SlugHelper.createSlug(title) || "");
+      }
+
+      if (value.includes("{{now}}")) {
+        const regex = new RegExp("{{now}}", "g");
+        value = value.replace(regex, Article.formatDate(new Date()));
+      }
+    }
+
+    return value;
+  }
+
+  /**
+   * Replace the custom placeholders
+   * @param value 
+   * @param title 
+   * @returns 
+   */
+  public static processCustomPlaceholders(value: string, title: string) {
+    if (value && typeof value === "string") {
+      const placeholders = Settings.get<{id: string, value: string}[]>(SETTINGS_CONTENT_PLACEHOLDERS);
+      if (placeholders && placeholders.length > 0) {
+        for (const placeholder of placeholders) {
+          if (value.includes(`{{${placeholder.id}}}`)) {
+            const regex = new RegExp(`{{${placeholder.id}}}`, "g");
+            const updatedValue = this.processKnownPlaceholders(placeholder.value, title);
+            value = value.replace(regex, updatedValue);
+          }
+        }
+      }
+    }
+
+    return value;
+  }
+
+  /**
    * Parse a markdown file and its front matter
    * @param fileContents 
    * @returns 
@@ -316,6 +395,8 @@ export class ArticleHelper {
           await EditorHelper.showFile(fileName)
         } 
       }];
+      
+      Logger.error(error.message);
 
       const editor = window.activeTextEditor;
       if (editor?.document.uri) {
@@ -328,7 +409,6 @@ export class ArticleHelper {
         } else {
           fmRange = MarkdownFoldingProvider.getFrontMatterRange(editor.document);
         }
-
 
         if (fmRange) {
           Extension.getInstance().diagnosticCollection.set(editor.document.uri, [{

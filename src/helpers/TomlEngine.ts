@@ -11,7 +11,7 @@ export const getFormatOpts = (format: string): { language: string, delimiters: s
   const formats: { [prop: string]: { language: string, delimiters: string | [string, string] | undefined }} = {
     yaml: { language: 'yaml', delimiters: '---' },
     toml: { language: 'toml', delimiters: '+++' },
-    json: { language: 'json', delimiters: ['{', '}'] },
+    json: { language: 'json', delimiters: '---' },
   };
 
   return formats[format];

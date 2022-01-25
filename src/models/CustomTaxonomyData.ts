@@ -4,4 +4,5 @@ export interface CustomTaxonomyData {
   name: string | undefined;
   options?: string[] | undefined;
   option?: string | undefined;
+  parents?: string[];
 }

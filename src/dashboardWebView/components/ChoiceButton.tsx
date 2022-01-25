@@ -6,6 +6,7 @@ import { MenuItem, MenuItems } from './Menu';
 export interface IChoiceButtonProps {
   title: string;
   choices: { 
+    icon?: JSX.Element;
     title: string;
     disabled?: boolean;
     onClick: () => void;
@@ -36,10 +37,19 @@ export const ChoiceButton: React.FunctionComponent<IChoiceButtonProps> = ({onCli
 
         <MenuItems widthClass={`w-56`}>
           <div className="py-1">
-            {choices.map((choice) => (
+            {choices.map((choice, idx) => (
               <MenuItem 
-                key={choice.title}
-                title={choice.title} 
+                key={idx}
+                title={(
+                  choice.icon ? (
+                    <div className="flex items-center">
+                      {choice.icon}
+                      <span>{choice.title}</span>
+                    </div>
+                  ) : (
+                    choice.title
+                  )
+                )} 
                 value={null}
                 onClick={choice.onClick}
                 disabled={choice.disabled} />

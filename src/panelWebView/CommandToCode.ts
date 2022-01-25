@@ -28,4 +28,6 @@ export enum CommandToCode {
   selectImage = "select-image",
   updateCustomTaxonomy = "updateCustomTaxonomy",
   addToCustomTaxonomy = "addToCustomTaxonomy",
+  frameworkCommand = "framework-command",
+  updateStartCommand = "update-start-command",
 }

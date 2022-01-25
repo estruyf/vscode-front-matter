@@ -10,6 +10,7 @@ import { commands, Uri, workspace, window, Position } from "vscode";
 import imageSize from "image-size";
 import { EditorHelper } from "@estruyf/vscode";
 import { ExplorerView } from "../explorerView/ExplorerView";
+import { SortOption } from "../dashboardWebView/constants/SortOption";
 
 
 export class MediaHelpers {
@@ -91,20 +92,7 @@ export class MediaHelpers {
       }
     }
 
-    if (crntSort?.type === SortType.string) {
-      allMedia = allMedia.sort(Sorting.alphabetically("fsPath"));
-    } else if (crntSort?.type === SortType.date) {
-      allMedia = allMedia.sort(Sorting.dateWithFallback("mtime", "fsPath"));
-    } else {
-      allMedia = allMedia.sort(Sorting.alphabetically("fsPath"));
-    }
-
-    if (crntSort?.order === SortOrder.desc) {
-      allMedia = allMedia.reverse();
-    }
-
     MediaHelpers.media = Object.assign([], allMedia);
-
     let files: MediaInfo[] = MediaHelpers.media;
 
     // Retrieve the total after filtering and before the slicing happens
@@ -125,6 +113,27 @@ export class MediaHelpers {
       }
     });
     files = files.filter(f => f.mtime !== undefined);
+
+    // Sort the files
+    if (crntSort?.type === SortType.string) {
+      if (crntSort.id === SortOption.AltAsc || crntSort.id === SortOption.AltDesc) {
+        files = files.sort(Sorting.alphabetically("alt"));
+      } else if (crntSort.id === SortOption.CaptionAsc || crntSort.id === SortOption.CaptionDesc) {
+        files = files.sort(Sorting.alphabetically("caption"));
+      } else {
+        files = files.sort(Sorting.alphabetically("fsPath"));
+      }
+    } else if (crntSort?.type === SortType.number && (crntSort?.id === SortOption.SizeAsc || crntSort?.id === SortOption.SizeDesc)) {
+      files = files.sort(Sorting.numerically("size"));
+    } else if (crntSort?.type === SortType.date) {
+      files = files.sort(Sorting.dateWithFallback("mtime", "fsPath"));
+    } else {
+      files = files.sort(Sorting.alphabetically("fsPath"));
+    }
+
+    if (crntSort?.order === SortOrder.desc) {
+      files = files.reverse();
+    }
 
     // Retrieve all the folders
     let allContentFolders: string[] = [];
@@ -295,7 +304,7 @@ export class MediaHelpers {
         panel.getMediaSelection();
       } else {
         panel.getMediaSelection();
-        panel.updateMetadata({field: data.fieldName, value: data.image });
+        panel.updateMetadata({field: data.fieldName, value: data.image, parents: data.parents });
       }
     }
   }

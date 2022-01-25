@@ -13,11 +13,12 @@ import { useRecoilState, useResetRecoilState } from 'recoil';
 import { CategoryAtom, DashboardViewAtom, SortingAtom, TagAtom } from '../../state';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { ClearFilters } from './ClearFilters';
-import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIcon';
-import {PhotographIcon} from '@heroicons/react/outline';
 import { MediaHeaderTop } from '../Media/MediaHeaderTop';
 import { ChoiceButton } from '../ChoiceButton';
 import { MediaHeaderBottom } from '../Media/MediaHeaderBottom';
+import { Tabs } from './Tabs';
+import { CustomScript } from '../../../models';
+import { LightningBoltIcon, PlusIcon } from '@heroicons/react/outline';
 
 export interface IHeaderProps {
   settings: Settings | null;
@@ -52,22 +53,25 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
     resetSorting();
   }
 
+  const runBulkScript = (script: CustomScript) => {
+    Messenger.send(DashboardMessage.runCustomScript, { script });
+  };
+
+  const customActions: any[] = (settings?.scripts || []).filter(s => s.bulk && (s.type === "content" || !s.type)).map((s, idx) => ({
+    title: (
+      <div key={idx} className="flex items-center">
+        <LightningBoltIcon className="w-4 h-4 mr-2" />
+        <span>{s.title}</span>
+      </div>
+    ),
+    onClick: () => runBulkScript(s)
+  }));
+
   return (
     <div className={`w-full sticky top-0 z-40 bg-gray-100 dark:bg-vulcan-500`}>
 
-      <div className="mb-0 border-b bg-gray-100 dark:bg-vulcan-500 border-gray-200 dark:border-vulcan-300 h-12">
-        <ul className="flex items-center justify-start h-full -mb-px" data-tabs-toggle="#myTabContent" role="tablist">
-          <li className="mr-2" role="presentation">
-            <button className={`flex items-center py-2 px-4 text-sm font-medium text-center border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300  dark:hover:text-gray-300 ${view === NavigationType.Contents ? "border-vulcan-500 text-vulcan-500  dark:border-whisper-500 dark:text-whisper-500" : "text-gray-500 dark:text-gray-400"}`} type="button" role="tab" aria-controls="profile" aria-selected="false" onClick={() => updateView(NavigationType.Contents)}>
-              <MarkdownIcon className={`h-6 w-auto mr-2`} /><span>Contents</span>
-            </button>
-          </li>
-          <li className="mr-2" role="presentation">
-            <button className={`flex items-center py-2 px-4 text-sm font-medium text-center text-gray-500 border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${view === NavigationType.Media ? "border-vulcan-500 text-vulcan-500 dark:border-whisper-500 dark:text-whisper-500" : "text-gray-500 dark:text-gray-400"}`} type="button" role="tab" aria-controls="dashboard" aria-selected="true" onClick={() => updateView(NavigationType.Media)}>
-              <PhotographIcon className={`h-6 w-auto mr-2`} /><span>Media</span>
-            </button>
-          </li>
-        </ul>
+      <div className="mb-0 border-b bg-gray-100 dark:bg-vulcan-500 border-gray-200 dark:border-vulcan-300">
+        <Tabs onNavigate={updateView} />
       </div>
 
       {
@@ -81,15 +85,28 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
                 
                 <ChoiceButton 
                   title={`Create content`} 
-                  choices={[{
-                    title: `Create by content type`,
-                    onClick: createByContentType,
-                    disabled: !settings?.initialized
-                  }, {
-                    title: `Create by template`,
-                    onClick: createByTemplate,
-                    disabled: !settings?.initialized
-                  }]} 
+                  choices={[
+                    {
+                      title: (
+                        <div className='flex items-center'>
+                          <PlusIcon className="w-4 h-4 mr-2" />
+                          <span>Create by content type</span>
+                        </div>
+                      ),
+                      onClick: createByContentType,
+                      disabled: !settings?.initialized
+                    }, {
+                      title: (
+                        <div className='flex items-center'>
+                          <PlusIcon className="w-4 h-4 mr-2" />
+                          <span>Create by template</span>
+                        </div>
+                      ),
+                      onClick: createByTemplate,
+                      disabled: !settings?.initialized
+                    },
+                    ...customActions
+                  ]} 
                   onClick={createContent} 
                   disabled={!settings?.initialized} />
               </div>

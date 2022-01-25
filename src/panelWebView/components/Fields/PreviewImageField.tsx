@@ -15,18 +15,21 @@ export interface IPreviewImageFieldProps {
   fieldName: string;
   value: PreviewImageValue | PreviewImageValue[] | null;
   filePath: string | null;
+  parents?: string[];
   multiple?: boolean;
   onChange: (value: string | string[] | null) => void;
 }
 
-export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps> = ({label, fieldName, onChange, value, filePath, multiple}: React.PropsWithChildren<IPreviewImageFieldProps>) => {
+export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps> = ({label, fieldName, onChange, value, filePath, multiple, parents}: React.PropsWithChildren<IPreviewImageFieldProps>) => {
 
   const selectImage = () => {
     MessageHelper.sendMessage(CommandToCode.selectImage, { 
       filePath: filePath,
       fieldName,
       value,
-      multiple
+      multiple,
+      metadataInsert: true,
+      parents
     });
   };
 

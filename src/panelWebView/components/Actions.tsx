@@ -4,14 +4,14 @@ import { Collapsible } from './Collapsible';
 import { CustomScript } from './CustomScript';
 import { Preview } from './Preview';
 import { SlugAction } from './SlugAction';
+import { StartServerButton } from './StartServerButton';
 
 export interface IActionsProps {
   metadata: any;
   settings: PanelSettings;
 }
 
-const Actions: React.FunctionComponent<IActionsProps> = (props: React.PropsWithChildren<IActionsProps>) => {
-  const { metadata, settings } = props;
+const Actions: React.FunctionComponent<IActionsProps> = ({ metadata, settings }: React.PropsWithChildren<IActionsProps>) => {
 
   if (!metadata || Object.keys(metadata).length === 0 || !settings) {
     return null;
@@ -21,9 +21,11 @@ const Actions: React.FunctionComponent<IActionsProps> = (props: React.PropsWithC
     <Collapsible id={`actions`} title="Actions">
       <div className={`article__actions`}>
 
-        { metadata && metadata.title && <SlugAction value={metadata.title} crntValue={metadata.slug} slugOpts={settings.slug} /> }
+        { metadata && metadata.title && <SlugAction /> }
 
         { settings?.preview?.host && <Preview slug={metadata.slug} /> }
+
+        <StartServerButton settings={settings} />
 
         {
           (settings && settings.scripts && settings.scripts.length > 0) && (

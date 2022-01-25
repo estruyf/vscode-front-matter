@@ -10,8 +10,8 @@ import { SETTINGS_CONTENT_DEFAULT_FILETYPE } from "../constants";
 export class Project {
 
   private static content = `---
-title: "{{name}}"
-slug: "/{{kebabCase name}}/"
+title:
+slug:
 description:
 author: 
 date: 2019-08-22T15:20:28.000Z

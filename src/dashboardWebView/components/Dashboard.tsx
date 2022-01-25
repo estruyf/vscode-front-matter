@@ -8,6 +8,7 @@ import { DashboardViewSelector } from '../state';
 import { Contents } from './Contents/Contents';
 import { Media } from './Media/Media';
 import { NavigationType } from '../models';
+import { DataView } from './DataView';
 
 export interface IDashboardProps {
   showWelcome: boolean;
@@ -30,15 +31,25 @@ export const Dashboard: React.FunctionComponent<IDashboardProps> = ({showWelcome
     return <WelcomeScreen settings={settings} />;
   }
 
+  if (view === NavigationType.Media) {
+    return (
+      <main className={`h-full w-full`}>
+        <Media />
+      </main>
+    );
+  }
+
+  if (view === NavigationType.Data) {
+    return (
+      <main className={`h-full w-full`}>
+        <DataView />
+      </main>
+    );
+  }
+
   return (
     <main className={`h-full w-full`}>
-      {
-        view === NavigationType.Media ? (
-          <Media />
-        ) : (
-          <Contents pages={pages} loading={loading} />
-        )
-      }
+      <Contents pages={pages} loading={loading} />
     </main>
   );
 };
