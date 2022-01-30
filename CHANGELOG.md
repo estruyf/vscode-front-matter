@@ -1,5 +1,12 @@
 # Change Log
 
+## [6.1.0] - 2022-02-xx
+
+### 🎨 Enhancements
+
+### 🐞 Fixes
+
+
 ## [6.0.0] - 2022-01-25 - [Release Notes](https://beta.frontmatter.codes/updates/v6.0.0)
 
 ### ✨ New features

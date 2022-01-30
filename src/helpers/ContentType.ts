@@ -8,6 +8,7 @@ import { Questions } from "./Questions";
 import { writeFileSync } from "fs";
 import { Notifications } from "./Notifications";
 import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
+import { Telemetry, TelemetryEvent } from './Telemetry';
 
 
 export class ContentType {
@@ -124,6 +125,8 @@ export class ContentType {
     await commands.executeCommand('vscode.open', Uri.file(newFilePath));
 
     Notifications.info(`Your new content has been created.`);
+
+    Telemetry.send(TelemetryEvent.createContentFromContentType);
 
     // Trigger a refresh for the dashboard
     PagesListener.refresh();

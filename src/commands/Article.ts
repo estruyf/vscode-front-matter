@@ -12,6 +12,7 @@ import { DashboardData } from '../models/DashboardData';
 import { ExplorerView } from '../explorerView/ExplorerView';
 import { DateHelper } from '../helpers/DateHelper';
 import { parseWinPath } from '../helpers/parseWinPath';
+import { Telemetry, TelemetryEvent } from '../helpers/Telemetry';
 
 
 export class Article {
@@ -165,6 +166,8 @@ export class Article {
    * Generate the slug based on the article title
    */
 	public static async generateSlug() {
+		Telemetry.send(TelemetryEvent.generateSlug);
+    
     const prefix = Settings.get(SETTING_SLUG_PREFIX) as string;
     const suffix = Settings.get(SETTING_SLUG_SUFFIX) as string;
     const updateFileName = Settings.get(SETTING_SLUG_UPDATE_FILE_NAME) as string;

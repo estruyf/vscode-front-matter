@@ -1,3 +1,4 @@
+import { Telemetry, TelemetryEvent } from './../helpers/Telemetry';
 import { SETTING_PREVIEW_HOST, SETTING_PREVIEW_PATHNAME, CONTEXT } from './../constants';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { join } from "path";
@@ -133,6 +134,8 @@ export class Preview {
     <iframe src="${urlJoin(localhostUrl.toString(), slug || '')}" >
   </body>
 </html>`;
+
+    Telemetry.send(TelemetryEvent.openPreview);
   }
 
   /**

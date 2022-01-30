@@ -1,3 +1,4 @@
+import { Telemetry, TelemetryEvent } from './../helpers/Telemetry';
 import { workspace, Uri } from "vscode";
 import { join } from "path";
 import * as fs from "fs";
@@ -47,6 +48,8 @@ categories: []
         fs.writeFileSync(article.fsPath, Project.content, { encoding: "utf-8" });
         Notifications.info("Project initialized successfully.");
       }
+
+      Telemetry.send(TelemetryEvent.initialization)
     } catch (err: any) {
       Notifications.error(`Sorry, something went wrong - ${err?.message || err}`);
     }

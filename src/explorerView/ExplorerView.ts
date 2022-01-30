@@ -23,6 +23,7 @@ import { Dashboard } from '../commands/Dashboard';
 import { ImageHelper } from '../helpers/ImageHelper';
 import { CustomScript } from '../helpers/CustomScript';
 import { Link, Parent } from 'mdast-util-from-markdown/lib';
+import { Telemetry, TelemetryEvent } from '../helpers/Telemetry';
 
 const FILE_LIMIT = 10;
 
@@ -205,6 +206,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
     webviewView.onDidChangeVisibility(() => {
       if (this.visible) {
+        Telemetry.send(TelemetryEvent.openExplorerView);
         // this.getFileData();
       }
     });

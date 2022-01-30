@@ -1,3 +1,4 @@
+import { Telemetry, TelemetryEvent } from './Telemetry';
 import { Notifications } from './Notifications';
 import { commands, Uri, workspace, window } from 'vscode';
 import * as vscode from 'vscode';
@@ -249,6 +250,8 @@ export class Settings {
     }
 
     Notifications.info(`All settings promoted to team level.`);
+
+    Telemetry.send(TelemetryEvent.promoteSettings);
   }
 
   /**

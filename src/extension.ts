@@ -1,3 +1,4 @@
+import { Telemetry, TelemetryEvent } from './helpers/Telemetry';
 import { ContentType } from './helpers/ContentType';
 import { Dashboard } from './commands/Dashboard';
 import * as vscode from 'vscode';
@@ -43,6 +44,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	
 	SettingsHelper.checkToPromote();
 
+	// Sends the activation event
+	Telemetry.send(TelemetryEvent.activate);
+
 	// Start listening to the folders for content changes.
 	// This will make sure the dashboard is up to date
 	PagesListener.startWatchers();
@@ -52,6 +56,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Pages dashboard
 	Dashboard.init();
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboard, (data?: DashboardData) => {
+		Telemetry.send(TelemetryEvent.openContentDashboard);
 		if (!data) {
 			Dashboard.open({ type: "contents" });
 		} else {
@@ -60,14 +65,17 @@ export async function activate(context: vscode.ExtensionContext) {
 	}));
 	
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardMedia, (data?: DashboardData) => {
+		Telemetry.send(TelemetryEvent.openMediaDashboard);
 		Dashboard.open({ type: "media" });
 	}));
 	
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardData, (data?: DashboardData) => {
+		Telemetry.send(TelemetryEvent.openDataDashboard);
 		Dashboard.open({ type: "data" });
 	}));
 	
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardClose, (data?: DashboardData) => {
+		Telemetry.send(TelemetryEvent.closeDashboard);
 		Dashboard.close();
 	}));
 
@@ -151,7 +159,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	// Settings promotion command
-	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.promote, SettingsHelper.promote ));
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.promote, SettingsHelper.promote));
 
 	// Collapse all sections in the webview
 	const collapseAll = vscode.commands.registerCommand(COMMAND_NAME.collapseSections, () => {
@@ -234,7 +242,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	);
 }
 
-export function deactivate() {}
+export function deactivate() {
+	Telemetry.dispose();
+}
 
 const handleAutoDateUpdate = (e: vscode.TextDocumentWillSaveEvent) => {
 	Article.autoUpdate(e);

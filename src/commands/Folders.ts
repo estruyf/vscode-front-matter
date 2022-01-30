@@ -14,6 +14,7 @@ import { parseWinPath } from '../helpers/parseWinPath';
 import { MediaHelpers } from '../helpers/MediaHelpers';
 import { MediaListener, PagesListener } from '../listeners';
 import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
+import { Telemetry, TelemetryEvent } from '../helpers/Telemetry';
 
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
@@ -68,6 +69,8 @@ export class Folders {
       MediaHelpers.resetMedia();
       MediaListener.sendMediaFiles(0, folderName);
     }
+
+    Telemetry.send(TelemetryEvent.addMediaFolder);
   }
 
   /**
@@ -122,6 +125,8 @@ export class Folders {
       await Folders.update(folders);
 
       Notifications.info(`Folder registered`);
+
+		  Telemetry.send(TelemetryEvent.registerFolder);
     }
   }
 
@@ -134,6 +139,8 @@ export class Folders {
       let folders = Folders.get();
       folders = folders.filter(f => f.path !== folder.fsPath);
       await Folders.update(folders);
+
+		  Telemetry.send(TelemetryEvent.unregisterFolder);
     }
   }
 

@@ -13,6 +13,7 @@ import { ContentType } from '../helpers/ContentType';
 import { ContentType as IContentType } from '../models';
 import { PagesListener } from '../listeners';
 import { extname } from 'path';
+import { Telemetry, TelemetryEvent } from '../helpers/Telemetry';
 
 export class Template {
 
@@ -174,6 +175,8 @@ export class Template {
     }
 
     Notifications.info(`Your new content has been created.`);
+
+    Telemetry.send(TelemetryEvent.createContentFromTemplate);
 
     // Trigger a refresh for the dashboard
     PagesListener.refresh();

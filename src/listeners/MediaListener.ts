@@ -1,3 +1,4 @@
+import { Telemetry, TelemetryEvent } from './../helpers/Telemetry';
 import { MediaHelpers } from './../helpers/MediaHelpers';
 import { DashboardMessage } from "../dashboardWebView/DashboardMessage";
 import { BaseListener } from "./BaseListener";
@@ -20,22 +21,27 @@ export class MediaListener extends BaseListener {
         this.sendMediaFiles(page, folder, sorting);
         break;
       case DashboardMessage.refreshMedia:
+        Telemetry.send(TelemetryEvent.refreshMedia);
         MediaHelpers.resetMedia();
         this.sendMediaFiles(0, msg?.data?.folder);
         break;
       case DashboardMessage.uploadMedia:
+        Telemetry.send(TelemetryEvent.uploadMedia);
         this.store(msg?.data);
         break;
       case DashboardMessage.deleteMedia:
+        Telemetry.send(TelemetryEvent.deleteMedia);
         this.delete(msg?.data);
         break;
       case DashboardMessage.revealMedia:
         this.openFileInFinder(msg?.data?.file);
         break;
       case DashboardMessage.insertPreviewImage:
+        Telemetry.send(TelemetryEvent.insertMediaToContent);
         MediaHelpers.insertMediaToMarkdown(msg?.data);
         break;
       case DashboardMessage.updateMediaMetadata:
+        Telemetry.send(TelemetryEvent.updateMediaMetadata);
         this.update(msg.data);
         break;
       case DashboardMessage.createMediaFolder:
