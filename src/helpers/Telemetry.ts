@@ -2,29 +2,6 @@ import TelemetryReporter, { TelemetryEventMeasurements, TelemetryEventProperties
 import { Extension } from '.';
 import { EXTENSION_BETA_ID, EXTENSION_ID } from '../constants';
 
-export const TelemetryEvent = {
-  activate: 'activate',
-  initialization: 'initialization',
-  openContentDashboard: 'openContentDashboard',
-  openMediaDashboard: 'openMediaDashboard',
-  openDataDashboard: 'openDataDashboard',
-  closeDashboard: 'closeDashboard',
-  generateSlug: 'generateSlug',
-  createContentFromTemplate: 'createContentFromTemplate',
-  createContentFromContentType: 'createContentFromContentType',
-  registerFolder: 'registerFolder',
-  unregisterFolder: 'unregisterFolder',
-  addMediaFolder: 'addMediaFolder',
-  promoteSettings: 'promoteSettings',
-  openPreview: 'openPreview',
-  uploadMedia: 'uploadMedia',
-  refreshMedia: 'refreshMedia',
-  deleteMedia: 'deleteMedia',
-  insertMediaToContent: 'insertMediaToContent',
-  updateMediaMetadata: 'updateMediaMetadata',
-  openExplorerView: 'openExplorerView',
-};
-
 export class Telemetry {
   private static instance: Telemetry;
   private static reporter: TelemetryReporter | null = null;

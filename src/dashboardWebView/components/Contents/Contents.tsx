@@ -7,6 +7,10 @@ import { Overview } from './Overview';
 import { Spinner } from '../Spinner';
 import { SponsorMsg } from '../SponsorMsg';
 import usePages from '../../hooks/usePages';
+import { useEffect } from 'react';
+import { Messenger } from '@estruyf/vscode/dist/client';
+import { DashboardMessage } from '../../DashboardMessage';
+import { TelemetryEvent } from '../../../constants';
 
 export interface IContentsProps {
   pages: Page[];
@@ -18,6 +22,12 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({pages, loadin
   const { pageItems } = usePages(pages);
 
   const pageFolders = [...new Set(pageItems.map(page => page.fmFolder))];
+
+  useEffect(() => {
+    Messenger.send(DashboardMessage.sendTelemetry, {
+      event: TelemetryEvent.webviewContentsView
+    });
+  }, []);
 
   return (
     <div className="flex flex-col h-full overflow-auto">

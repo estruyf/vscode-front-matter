@@ -18,7 +18,8 @@ const config = [
     },
     devtool: 'nosources-source-map',
     externals: {
-      vscode: 'commonjs vscode'
+      vscode: 'commonjs vscode',
+      'applicationinsights-native-metrics': 'commonjs applicationinsights-native-metrics'
     },
     resolve: {
       extensions: ['.ts', '.js']

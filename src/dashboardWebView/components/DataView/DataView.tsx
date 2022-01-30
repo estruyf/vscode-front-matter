@@ -19,6 +19,7 @@ import { ChevronRightIcon } from '@heroicons/react/outline';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { DataType } from '../../../models/DataType';
+import { TelemetryEvent } from '../../../constants';
 
 export interface IDataViewProps {}
 
@@ -102,6 +103,10 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
 
   useEffect(() => {
     Messenger.listen(messageListener);
+    
+    Messenger.send(DashboardMessage.sendTelemetry, {
+      event: TelemetryEvent.webviewDataView
+    });
 
     return () => {
       Messenger.unlisten(messageListener);

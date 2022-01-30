@@ -1,4 +1,4 @@
-import { Telemetry, TelemetryEvent } from './../helpers/Telemetry';
+import { Telemetry } from './../helpers/Telemetry';
 import { workspace, Uri } from "vscode";
 import { join } from "path";
 import * as fs from "fs";
@@ -6,7 +6,7 @@ import { Notifications } from "../helpers/Notifications";
 import { Template } from "./Template";
 import { Folders } from "./Folders";
 import { Settings } from "../helpers";
-import { SETTINGS_CONTENT_DEFAULT_FILETYPE } from "../constants";
+import { SETTINGS_CONTENT_DEFAULT_FILETYPE, TelemetryEvent } from "../constants";
 
 export class Project {
 

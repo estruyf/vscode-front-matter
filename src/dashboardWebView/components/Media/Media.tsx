@@ -13,11 +13,12 @@ import { Item } from './Item';
 import { Lightbox } from './Lightbox';
 import { List } from './List';
 import { useDropzone } from 'react-dropzone'
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { DashboardMessage } from '../../DashboardMessage';
 import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMatterIcon';
 import { FolderItem } from './FolderItem';
 import useMedia from '../../hooks/useMedia';
+import { TelemetryEvent } from '../../../constants';
 
 export interface IMediaProps {}
 
@@ -45,6 +46,12 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
       reader.readAsDataURL(file)
     });
   }, [selectedFolder]);
+
+  useEffect(() => {
+    Messenger.send(DashboardMessage.sendTelemetry, {
+      event: TelemetryEvent.webviewMediaView
+    });
+  }, []);
 
   const {getRootProps, isDragActive} = useDropzone({
     onDrop,

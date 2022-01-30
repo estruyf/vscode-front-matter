@@ -1,14 +1,14 @@
 import { PagesListener } from './../listeners/PagesListener';
 import { ArticleHelper, Settings } from ".";
-import { SETTINGS_CONTENT_DRAFT_FIELD, SETTING_TAXONOMY_CONTENT_TYPES } from "../constants";
+import { SETTINGS_CONTENT_DRAFT_FIELD, SETTING_TAXONOMY_CONTENT_TYPES, TelemetryEvent } from "../constants";
 import { ContentType as IContentType, DraftField, Field } from '../models';
-import { Uri, workspace, window, commands } from 'vscode'; 
+import { Uri, commands } from 'vscode'; 
 import { Folders } from "../commands/Folders";
 import { Questions } from "./Questions";
 import { writeFileSync } from "fs";
 import { Notifications } from "./Notifications";
 import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
-import { Telemetry, TelemetryEvent } from './Telemetry';
+import { Telemetry } from './Telemetry';
 
 
 export class ContentType {

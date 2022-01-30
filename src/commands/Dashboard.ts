@@ -10,8 +10,7 @@ import { WebviewHelper } from '@estruyf/vscode';
 import { DashboardData } from '../models/DashboardData';
 import { ExplorerView } from '../explorerView/ExplorerView';
 import { MediaLibrary } from '../helpers/MediaLibrary';
-import { DashboardListener, MediaListener, SettingsListener } from '../listeners';
-import { DataListener } from '../listeners/DataListener';
+import { DashboardListener, MediaListener, SettingsListener, TelemetryListener, DataListener } from '../listeners';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -146,6 +145,7 @@ export class Dashboard {
       PagesListener.process(msg);
       SettingsListener.process(msg);
       DataListener.process(msg);
+      TelemetryListener.process(msg);
     });
   }
 

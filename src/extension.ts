@@ -1,4 +1,4 @@
-import { Telemetry, TelemetryEvent } from './helpers/Telemetry';
+import { Telemetry } from './helpers/Telemetry';
 import { ContentType } from './helpers/ContentType';
 import { Dashboard } from './commands/Dashboard';
 import * as vscode from 'vscode';
@@ -7,7 +7,7 @@ import { Folders } from './commands/Folders';
 import { Preview } from './commands/Preview';
 import { Project } from './commands/Project';
 import { Template } from './commands/Template';
-import { COMMAND_NAME } from './constants';
+import { COMMAND_NAME, TelemetryEvent } from './constants';
 import { TaxonomyType } from './models';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
 import { TagType } from './panelWebView/TagType';

@@ -1,5 +1,5 @@
 import { Questions } from './../helpers/Questions';
-import { SETTINGS_CONTENT_PAGE_FOLDERS, SETTINGS_CONTENT_STATIC_FOLDER, SETTINGS_CONTENT_SUPPORTED_FILETYPES } from './../constants';
+import { SETTINGS_CONTENT_PAGE_FOLDERS, SETTINGS_CONTENT_STATIC_FOLDER, SETTINGS_CONTENT_SUPPORTED_FILETYPES, TelemetryEvent } from './../constants';
 import { commands, Uri, workspace, window } from "vscode";
 import { basename, join } from "path";
 import { ContentFolder, FileInfo, FolderInfo } from "../models";
@@ -14,7 +14,7 @@ import { parseWinPath } from '../helpers/parseWinPath';
 import { MediaHelpers } from '../helpers/MediaHelpers';
 import { MediaListener, PagesListener } from '../listeners';
 import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
-import { Telemetry, TelemetryEvent } from '../helpers/Telemetry';
+import { Telemetry } from '../helpers/Telemetry';
 
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
