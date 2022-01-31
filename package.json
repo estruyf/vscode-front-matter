@@ -45,26 +45,7 @@
     "url": "https://github.com/estruyf/vscode-front-matter"
   },
   "activationEvents": [
-    "*",
-    "onCommand:frontMatter.insertTags",
-    "onCommand:frontMatter.insertCategories",
-    "onCommand:frontMatter.createTag",
-    "onCommand:frontMatter.createCategory",
-    "onCommand:frontMatter.exportTaxonomy",
-    "onCommand:frontMatter.remap",
-    "onCommand:frontMatter.setLastModifiedDate",
-    "onCommand:frontMatter.generateSlug",
-    "onCommand:frontMatter.createFromTemplate",
-    "onCommand:frontMatter.registerFolder",
-    "onCommand:frontMatter.unregisterFolder",
-    "onCommand:frontMatter.createContent",
-    "onCommand:frontMatter.init",
-    "onCommand:frontMatter.collapseSections",
-    "onCommand:frontMatter.preview",
-    "onCommand:frontMatter.dashboard",
-    "onCommand:frontMatter.promoteSettings",
-    "onCommand:frontMatter.insertImage",
-    "onView:frontMatter.explorer"
+    "*"
   ],
   "main": "./dist/extension.js",
   "contributes": {
