@@ -32,6 +32,8 @@ export const SETTING_SEO_DESCRIPTION_FIELD = "taxonomy.seoDescriptionField";
 export const SETTING_TEMPLATES_FOLDER = "templates.folder";
 export const SETTING_TEMPLATES_PREFIX = "templates.prefix";
 
+export const SETTING_TELEMETRY_DISABLE = "telemetry.disable";
+
 export const SETTING_PANEL_FREEFORM = "panel.freeform";
 
 export const SETTING_PREVIEW_HOST = "preview.host";
