@@ -1,6 +1,5 @@
-import { Settings } from './SettingsHelper';
 import TelemetryReporter, { TelemetryEventMeasurements, TelemetryEventProperties } from '@vscode/extension-telemetry';
-import { Extension } from '.';
+import { Extension, Settings } from '.';
 import { EXTENSION_BETA_ID, EXTENSION_ID, SETTING_TELEMETRY_DISABLE } from '../constants';
 
 export class Telemetry {
@@ -28,7 +27,7 @@ export class Telemetry {
       Telemetry.getInstance();
     }
 
-    const isDisabled = Settings.get(SETTING_TELEMETRY_DISABLE);
+    const isDisabled = Settings.get<boolean>(SETTING_TELEMETRY_DISABLE);
     if (isDisabled) {
       return;
     }
