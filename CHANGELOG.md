@@ -4,6 +4,8 @@
 
 ### 🎨 Enhancements
 
+- Updated the activity bar icon for better visibility
+
 ### 🐞 Fixes
 
 

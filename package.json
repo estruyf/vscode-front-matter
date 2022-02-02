@@ -54,7 +54,7 @@
         {
           "id": "frontmatter-explorer",
           "title": "FrontMatter",
-          "icon": "assets/frontmatter.svg"
+          "icon": "assets/frontmatter-short-min.svg"
         }
       ]
     },
@@ -63,7 +63,7 @@
         {
           "id": "frontMatter.explorer",
           "name": "FrontMatter",
-          "icon": "assets/frontmatter.svg",
+          "icon": "assets/frontmatter-short-min.svg",
           "contextualTitle": "FrontMatter",
           "type": "webview"
         }
