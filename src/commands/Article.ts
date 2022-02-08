@@ -4,7 +4,6 @@ import * as vscode from 'vscode';
 import { Field, TaxonomyType } from "../models";
 import { format } from "date-fns";
 import { ArticleHelper, Settings, SlugHelper } from '../helpers';
-import matter = require('gray-matter');
 import { Notifications } from '../helpers/Notifications';
 import { extname, basename, parse, dirname } from 'path';
 import { COMMAND_NAME, DefaultFields } from '../constants';
@@ -13,6 +12,7 @@ import { ExplorerView } from '../explorerView/ExplorerView';
 import { DateHelper } from '../helpers/DateHelper';
 import { parseWinPath } from '../helpers/parseWinPath';
 import { Telemetry } from '../helpers/Telemetry';
+import { ParsedFrontMatter } from '../parsers';
 
 
 export class Article {
@@ -103,7 +103,7 @@ export class Article {
    * Update the date in the front matter
    * @param article 
    */
-  public static updateDate(article: matter.GrayMatterFile<string>, forceCreate: boolean = false) {
+  public static updateDate(article: ParsedFrontMatter, forceCreate: boolean = false) {
     article.data = ArticleHelper.updateDates(article.data);   
     return article;
   }
@@ -125,7 +125,7 @@ export class Article {
 
     ArticleHelper.update(
       editor,
-      updatedArticle as matter.GrayMatterFile<string>
+      updatedArticle as ParsedFrontMatter
     );
   }
 
@@ -145,7 +145,7 @@ export class Article {
 
   private static setLastModifiedDateInner(
     document: vscode.TextDocument
-  ): matter.GrayMatterFile<string> | undefined {
+  ): ParsedFrontMatter | undefined {
     const article = ArticleHelper.getFrontMatterFromDocument(document);
 
     if (!article) {
@@ -343,7 +343,7 @@ export class Article {
   /**
    * Get the current article
    */
-  private static getCurrent(): matter.GrayMatterFile<string> | undefined {
+  private static getCurrent(): ParsedFrontMatter | undefined {
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;
@@ -364,7 +364,7 @@ export class Article {
    * @param field 
    * @param forceCreate 
    */
-  private static articleDate(article: matter.GrayMatterFile<string>, field: string, forceCreate: boolean) {
+  private static articleDate(article: ParsedFrontMatter, field: string, forceCreate: boolean) {
     if (typeof article.data[field] !== "undefined" || forceCreate) {
       article.data[field] = Article.formatDate(new Date());
     }

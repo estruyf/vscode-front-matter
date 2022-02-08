@@ -3,13 +3,13 @@ import { window, env as vscodeEnv, ProgressLocation } from 'vscode';
 import { ArticleHelper } from '.';
 import { Folders } from '../commands/Folders';
 import { exec } from 'child_process';
-import matter = require('gray-matter');
 import * as os from 'os';
 import { join } from 'path';
 import { Notifications } from './Notifications';
 import ContentProvider from '../providers/ContentProvider';
 import { Dashboard } from '../commands/Dashboard';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
+import { ParsedFrontMatter } from '../parsers';
 
 export class CustomScript {
 
@@ -117,7 +117,7 @@ export class CustomScript {
     });
   }
 
-  private static async runScript(wsPath: string, article: matter.GrayMatterFile<string> | null, contentPath: string, script: ICustomScript): Promise<string | null> {
+  private static async runScript(wsPath: string, article: ParsedFrontMatter | null, contentPath: string, script: ICustomScript): Promise<string | null> {
     return new Promise((resolve, reject) => {
       let articleData = "";
       if (os.type() === "Windows_NT") {

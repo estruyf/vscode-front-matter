@@ -6,6 +6,10 @@
 
 - Updated the activity bar icon for better visibility
 
+### ⚡️ Optimizations
+
+- [#243](https://github.com/estruyf/vscode-front-matter/issues/243): Refactoring front matter parsing
+
 ### 🐞 Fixes
 
 

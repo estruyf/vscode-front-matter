@@ -1,10 +1,9 @@
 import * as vscode from 'vscode';
-import * as matter from 'gray-matter';
 import * as fs from 'fs';
 import { TaxonomyType } from "../models";
 import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, EXTENSION_NAME } from '../constants';
 import { ArticleHelper, Settings as SettingsHelper, FilesHelper } from '../helpers';
-import { TomlEngine, getFmLanguage, getFormatOpts } from '../helpers/TomlEngine';
+import { FrontMatterParser } from '../parsers';
 import { DumpOptions } from 'js-yaml';
 import { Notifications } from '../helpers/Notifications';
 
@@ -90,10 +89,6 @@ export class Settings {
       const progressNr = allMdFiles.length/100;
       progress.report({ increment: 0});
 
-      // Get language options
-      const language = getFmLanguage();
-      const langOpts = getFormatOpts(language);
-
       let i = 0;
       for (const file of allMdFiles) {
         progress.report({ increment: (++i/progressNr) });
@@ -102,10 +97,7 @@ export class Settings {
           const txtData = mdFile.getText();
           if (txtData) {
             try {
-              const article = matter(txtData, {
-                ...TomlEngine,
-                ...langOpts
-              });
+              const article = FrontMatterParser.fromFile(txtData);
               if (article && article.data) {
                 const { data } = article;
                 const mdTags = data["tags"];
@@ -218,13 +210,8 @@ export class Settings {
         progress.report({ increment: (++i/progressNr) });
         const mdFile = fs.readFileSync(file.path, { encoding: "utf8" });
         if (mdFile) {
-          const language = getFmLanguage();
-          const langOpts = getFormatOpts(language);
           try {
-            const article = matter(mdFile, {
-              ...TomlEngine,
-              ...langOpts
-            });
+            const article = FrontMatterParser.fromFile(mdFile);
             if (article && article.data) {
               const { data } = article;
               let taxonomies: string[] = data[matterProp];
@@ -239,9 +226,7 @@ export class Settings {
                   data[matterProp] = [...new Set(taxonomies)].sort();
                   const spaces = vscode.window.activeTextEditor?.options?.tabSize;
                   // Update the file
-                  fs.writeFileSync(file.path, matter.stringify(article.content, article.data, {
-                    ...TomlEngine,
-                    ...langOpts,
+                  fs.writeFileSync(file.path, FrontMatterParser.toFile(article.content, article.data, {
                     indent: spaces || 2
                   } as DumpOptions as any), { encoding: "utf8" });
                 }
