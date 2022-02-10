@@ -18,7 +18,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--vscode-button-secondaryBackground);
+  background-color: var(--frontmatter-toggle-secondaryBackground, var(--vscode-button-secondaryBackground));
   -webkit-transition: .4s;
   transition: .4s;
   border-radius: 34px;
@@ -38,11 +38,11 @@
 }
 
 input:checked + .field__toggle__slider {
-  background-color: var(--vscode-button-background);
+  background-color: var(--frontmatter-toggle-background, var(--vscode-button-background));
 }
 
 input:focus + .field__toggle__slider {
-  box-shadow: 0 0 1px var(--vscode-button-background);
+  box-shadow: 0 0 1px var(--frontmatter-toggle-background, var(--vscode-button-background));
 }
 
 input:checked + .field__toggle__slider:before {

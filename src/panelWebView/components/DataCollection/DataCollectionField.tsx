@@ -6,15 +6,17 @@ import { JSONSchemaBridge } from 'uniforms-bridge-json-schema';
 import { Field, PanelSettings } from '../../../models';
 import { DataCollectionControls } from './DataCollectionControls';
 import { PencilIcon, TrashIcon } from '@heroicons/react/outline';
+import { VsLabel } from '../VscodeComponents';
 
 export interface IDataCollectionFieldProps {
+  label: string;
   settings: PanelSettings;
   field: Field;
   value: any;
   onSubmit: (data: any) => void;
 }
 
-export const DataCollectionField: React.FunctionComponent<IDataCollectionFieldProps> = ({ settings, field, value, onSubmit }: React.PropsWithChildren<IDataCollectionFieldProps>) => {
+export const DataCollectionField: React.FunctionComponent<IDataCollectionFieldProps> = ({ label, settings, field, value, onSubmit }: React.PropsWithChildren<IDataCollectionFieldProps>) => {
   const [ schema, setSchema ] = useState<JSONSchemaBridge | null>(null);
   const [ bridge, setBridge ] = useState<JSONSchemaBridge | null>(null);
   const [ selectedIndex, setSelectedIndex ] = useState<number | null>(null);
@@ -76,6 +78,12 @@ export const DataCollectionField: React.FunctionComponent<IDataCollectionFieldPr
   
   return (
     <div className='data_collection__field'>
+
+      <VsLabel>
+        <div className={`metadata_field__label`}>
+          <PencilIcon style={{ width: "16px", height: "16px" }} /> <span style={{ lineHeight: "16px"}}>{label}</span>
+        </div>
+      </VsLabel>
 
       <div className='autoform'>
         <AutoForm 

@@ -3,14 +3,14 @@
 .autoform__list_add_field {
   display: flex;
   padding: 5px;
-  border: 1px dashed var(--vscode-editor-foreground);
+  border: 1px dashed var(--frontmatter-field-border, var(--vscode-editor-foreground));
   width: 100%;
   justify-content: center;
   margin-top: .5rem;
 
   &:hover {
-    border-color: var(--vscode-button-background);
-    color: var(--vscode-button-background);
+    border-color: var(--frontmatter-field-borderActive, var(--vscode-button-background));
+    color: var(--frontmatter-field-borderActive, var(--vscode-button-background));
     cursor: pointer;
   }
 

@@ -1,7 +1,8 @@
 
 
 .autoform__list_field {
-  margin-bottom: 5px;
-  margin-top: 5px;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
   padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }

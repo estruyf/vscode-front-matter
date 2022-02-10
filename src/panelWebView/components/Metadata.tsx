@@ -240,19 +240,12 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
 
         return (
           <FieldBoundary key={field.name} fieldName={field.title || field.name}>
-            <div className={`metadata_field__box`}>
-              <VsLabel>
-                <div className={`metadata_field__label metadata_field__label_parent`}>
-                  <span style={{ lineHeight: "16px"}}>{field.title || field.name}</span>
-                </div>
-              </VsLabel>
-
-              <DataCollectionField
-                settings={settings}
-                field={field}
-                value={collectionData}
-                onSubmit={(value) => sendUpdate(field.name, value, parentFields)} />
-            </div>
+            <DataCollectionField
+              label={field.title || field.name}
+              settings={settings}
+              field={field}
+              value={collectionData}
+              onSubmit={(value) => sendUpdate(field.name, value, parentFields)} />
           </FieldBoundary>
         );
       } else {
