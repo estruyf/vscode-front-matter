@@ -1,0 +1,94 @@
+
+.data_collection__field {
+
+  .autoform {
+    background-color: transparent;
+    border: 2px dashed var(--vscode-button-background);
+    padding: 1.5rem;
+    filter: brightness(85%);
+  }
+
+  .fields > div {
+    margin-bottom: .5rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.data_controls__buttons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top:1rem;
+
+  button, input {
+    display: inline;
+    width: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  input {
+    background: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    margin-right: 1rem;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--vscode-button-hoverBackground);
+    }
+  }
+
+  button {
+    background: var(--vscode-button-secondaryBackground);
+    color: var(--vscode-button-secondaryForeground);
+
+    &:hover {
+      background: var(--vscode-button-secondaryHoverBackground);
+    }
+  }
+}
+
+.data_collection__list {
+  margin-top: 1rem;
+
+  label {
+    display: block;
+    margin-bottom: .5rem;
+    font-weight: bold;
+  }
+
+  li {
+    margin-bottom: .5rem;
+
+    span {
+      margin-right: .5rem;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.data_collection__list__button {
+  width: auto;
+  background: none;
+  color: var(--vscode-editor-foreground);
+
+  &:hover {
+    color: var(--vscode-button-secondaryForeground);
+    background: var(--vscode-button-secondaryHoverBackground);
+  }
+}
+
+.data_collection__list__button_icon {
+  height: 1rem;
+  width: 1rem;
+}
+
+.sr-only {
+  display: none;
+}

@@ -1,0 +1,27 @@
+
+
+.autoform__list_del_field {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin-top: .5rem;
+
+  &:hover {
+    border-color: var(--vscode-button-background);
+    color: var(--vscode-button-background);
+    cursor: pointer;
+  }
+
+  .line {
+    height: 1px;
+    background: var(--vscode-editor-foreground);
+    width: 100%;
+    margin-right: .5rem;
+    margin-top: .5rem;
+  }
+
+  svg {
+    height: 1.25rem;
+    width: 1.25rem;
+  }
+}

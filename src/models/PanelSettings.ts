@@ -2,6 +2,7 @@ import { FileStat } from "vscode";
 import { DraftField } from ".";
 import { Choice } from "./Choice";
 import { DashboardData } from "./DashboardData";
+import { DataType } from "./DataType";
 
 export interface PanelSettings {
   seo: SEO;
@@ -23,6 +24,7 @@ export interface PanelSettings {
   isBacker: boolean | undefined;
   framework: string | undefined;
   commands: FrameworkCommands;
+  dataTypes: DataType[] | undefined;
 }
 
 export interface FrameworkCommands {
@@ -38,10 +40,12 @@ export interface ContentType {
   pageBundle?: boolean;
 }
 
+export type FieldType = "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft" | "taxonomy" | "fields" | "data-collection";
+
 export interface Field {
   title?: string;
   name: string;
-  type: "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft" | "taxonomy" | "fields";
+  type: FieldType;
   choices?: string[] | Choice[];
   single?: boolean;
   multiple?: boolean;
@@ -50,6 +54,7 @@ export interface Field {
   taxonomyId?: string;
   default?: string;
   fields?: Field[];
+  dataType?: string;
 }
 
 export interface DateInfo {

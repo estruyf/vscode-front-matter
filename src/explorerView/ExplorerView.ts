@@ -1,6 +1,6 @@
 import { DashboardData } from '../models/DashboardData';
 import { Template } from '../commands/Template';
-import { DefaultFields, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_COMMA_SEPARATED_FIELDS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS, SETTINGS_CONTENT_DRAFT_FIELD, SETTING_SEO_SLUG_LENGTH, SETTING_SITE_BASEURL, SETTING_TAXONOMY_CUSTOM, CONTEXT, SETTINGS_FRAMEWORK_ID, SETTINGS_FRAMEWORK_START, TelemetryEvent } from '../constants';
+import { DefaultFields, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_AUTO_UPDATE_DATE, SETTING_CUSTOM_SCRIPTS, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_PREVIEW_HOST, SETTING_DATE_FORMAT, SETTING_COMMA_SEPARATED_FIELDS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_PANEL_FREEFORM, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS, SETTINGS_CONTENT_DRAFT_FIELD, SETTING_SEO_SLUG_LENGTH, SETTING_SITE_BASEURL, SETTING_TAXONOMY_CUSTOM, CONTEXT, SETTINGS_FRAMEWORK_ID, SETTINGS_FRAMEWORK_START, TelemetryEvent, SETTINGS_DATA_TYPES } from '../constants';
 import * as os from 'os';
 import { PanelSettings, CustomScript as ICustomScript } from '../models/PanelSettings';
 import { CancellationToken, Disposable, Uri, Webview, WebviewView, WebviewViewProvider, WebviewViewResolveContext, window, workspace, commands, env as vscodeEnv, ThemeIcon } from "vscode";
@@ -24,6 +24,7 @@ import { ImageHelper } from '../helpers/ImageHelper';
 import { CustomScript } from '../helpers/CustomScript';
 import { Link, Parent } from 'mdast-util-from-markdown/lib';
 import { Telemetry } from '../helpers/Telemetry';
+import { DataType } from '../models/DataType';
 
 const FILE_LIMIT = 10;
 
@@ -440,7 +441,8 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
         framework: Settings.get<string>(SETTINGS_FRAMEWORK_ID),
         commands: {
           start: Settings.get<string>(SETTINGS_FRAMEWORK_START)
-        }
+        },
+        dataTypes: Settings.get<DataType[]>(SETTINGS_DATA_TYPES),
       } as PanelSettings
     });
   }
@@ -787,7 +789,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     const csp = [
       `default-src 'none';`,
       `img-src ${`vscode-file://vscode-app`} ${webView.cspSource} https://api.visitorbadge.io 'self' 'unsafe-inline'`,
-      `script-src ${isProd ? `'nonce-${nonce}'` : `http://${localServerUrl} http://0.0.0.0:${localPort}`}`,
+      `script-src 'unsafe-eval' ${isProd ? `'nonce-${nonce}'` : `http://${localServerUrl} http://0.0.0.0:${localPort}`}`,
       `style-src ${webView.cspSource} 'self' 'unsafe-inline'`,
       `font-src ${webView.cspSource}`,
       `connect-src https://o1022172.ingest.sentry.io ${isProd ? `` : `ws://${localServerUrl} ws://0.0.0.0:${localPort} http://${localServerUrl} http://0.0.0.0:${localPort}`}`

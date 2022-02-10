@@ -20,6 +20,7 @@ import { DateHelper } from '../../helpers/DateHelper';
 import FieldBoundary from './ErrorBoundary/FieldBoundary';
 import { DraftField } from './Fields/DraftField';
 import { VsLabel } from './VscodeComponents';
+import { DataCollectionField } from './DataCollection/DataCollectionField';
 
 export interface IMetadata {
   [prop: string]: string[] | string | null | IMetadata;
@@ -234,7 +235,28 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
         }
 
         return null;
+      } else if (field.type === 'data-collection') {
+        const collectionData = parent[field.name];
+
+        return (
+          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+            <div className={`metadata_field__box`}>
+              <VsLabel>
+                <div className={`metadata_field__label metadata_field__label_parent`}>
+                  <span style={{ lineHeight: "16px"}}>{field.title || field.name}</span>
+                </div>
+              </VsLabel>
+
+              <DataCollectionField
+                settings={settings}
+                field={field}
+                value={collectionData}
+                onSubmit={(value) => sendUpdate(field.name, value, parentFields)} />
+            </div>
+          </FieldBoundary>
+        );
       } else {
+        console.warn(`Unknown field type: ${field.type}`);
         return null;
       }
     });

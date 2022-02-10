@@ -4,6 +4,7 @@ import { ViewPanel } from "./ViewPanel";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import { SENTRY_LINK } from "../constants";
+import './styles.css';
 
 // require('@vscode/codicons/dist/codicon.css');
 import '@bendera/vscode-webview-elements/dist/vscode-table.js';
