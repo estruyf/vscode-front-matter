@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Children, cloneElement, isValidElement } from 'react';
 import { HTMLFieldProps, connectField, filterDOMProps } from 'uniforms';
-import { LabelStyles } from './component-styles';
 
 import ListAddField from './ListAddField';
 import ListItemField from './ListItemField';
 
 import './ListField.css';
+import { LabelField } from './LabelField';
 
 export type ListFieldProps = HTMLFieldProps<
   unknown[],
@@ -24,11 +24,7 @@ function List({
 }: ListFieldProps) {
   return (
     <div className="autoform__list_field" {...filterDOMProps(props)}>
-      {label && (
-        <div style={LabelStyles}>
-          {label}
-        </div>
-      )}
+      <LabelField label={label} id={props.id} required={props.required} />
 
       {value?.map((item, itemIndex) =>
         Children.map(children, (child, childIndex) =>

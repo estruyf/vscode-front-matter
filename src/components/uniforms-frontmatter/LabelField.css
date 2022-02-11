@@ -1,0 +1,14 @@
+
+
+.autoform__label {
+  display: block;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  line-height: 16px;
+  font-weight: bold;
+
+  .autoform__label__required {
+    color: var(--vscode-inputValidation-errorBorder);
+    margin-left: 0.25rem;
+  }
+}

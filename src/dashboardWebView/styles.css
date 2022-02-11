@@ -4,8 +4,8 @@
 
 :root {
   /* Bool field */
-  --frontmatter-toggle-background: #fafafa;
-  --frontmatter-toggle-secondaryBackground: #f5f5f5;
+  --frontmatter-toggle-background: #15c2cb;
+  --frontmatter-toggle-secondaryBackground: #ADADAD;
 
   /* Errors field */
   --frontmatter-error-background: rgba(255, 85, 0, 0.2);
@@ -25,7 +25,15 @@
     --frontmatter-field-borderActive: #009aa3;
   }
 
-  /* List delete field */
+  /* List field */
+  --frontmatter-list-border: #ADADAD;
+
+  .vscode-dark {
+    --frontmatter-list-border: #404551;
+  }
+
+  /* Select field */
+  --frontmatter-select-foreground: #0e131f;
 }
 
 

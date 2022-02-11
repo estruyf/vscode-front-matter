@@ -1,7 +1,7 @@
 import { Ref } from 'react';
 import * as React from 'react';
 import { HTMLFieldProps, connectField, filterDOMProps } from 'uniforms';
-import { LabelStyles } from './component-styles';
+import { LabelField } from './LabelField';
 
 export type TextFieldProps = HTMLFieldProps<
   string,
@@ -23,9 +23,12 @@ function Text({
   value,
   ...props
 }: TextFieldProps) {
+
+  console.log('TextFieldProps', props);
+
   return (
     <div {...filterDOMProps(props)}>
-      {label && <label htmlFor={id} style={LabelStyles}>{label}</label>}
+      <LabelField label={label} id={id} required={props.required} />
 
       <input
         autoComplete={autoComplete}

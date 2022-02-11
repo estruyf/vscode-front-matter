@@ -5,8 +5,10 @@ import { AutoFields, AutoForm, ErrorsField } from '../../../components/uniforms-
 import { JSONSchemaBridge } from 'uniforms-bridge-json-schema';
 import { Field, PanelSettings } from '../../../models';
 import { DataCollectionControls } from './DataCollectionControls';
-import { PencilIcon, TrashIcon } from '@heroicons/react/outline';
+import { CollectionIcon, PencilIcon, TrashIcon } from '@heroicons/react/outline';
 import { VsLabel } from '../VscodeComponents';
+import { DataCollectionRecord } from './DataCollectionRecord';
+import { DataCollectionRecords } from './DataCollectionRecords';
 
 export interface IDataCollectionFieldProps {
   label: string;
@@ -92,8 +94,10 @@ export const DataCollectionField: React.FunctionComponent<IDataCollectionFieldPr
           onSubmit={onUpdate}
           ref={form => form?.reset()}>
           {
-            (model && selectedIndex !== null) && (
+            (model && selectedIndex !== null) ? (
               <h3>Editing: Record {selectedIndex + 1}</h3>
+            ) : (
+              <h3>Create a new record</h3>
             )
           }
 
@@ -109,31 +113,11 @@ export const DataCollectionField: React.FunctionComponent<IDataCollectionFieldPr
         </AutoForm>
       </div>
 
-      {
-        value && (
-          <div className='data_collection__list'>
-            <label>Data</label>
-            <ul>
-            {
-              value.map((v: any, i: number) => (
-                <li key={i}>
-                  <span>Record {i+1}</span>
-
-                  <button className='data_collection__list__button data_collection__list__button_edit' onClick={() => setSelectedIndex(i)}>
-                    <PencilIcon className='data_collection__list__button_icon' />
-                    <span className='sr-only'>Edit</span>
-                  </button>
-                  <button className='data_collection__list__button data_collection__list__button_delete' onClick={() => deleteItem(i)}>
-                    <TrashIcon className='data_collection__list__button_icon' />
-                    <span className='sr-only'>Delete</span>
-                  </button>
-                </li>
-              ))
-            }
-            </ul>
-          </div>
-        )
-      }
+      <DataCollectionRecords
+        records={value}
+        onAdd={() => setSelectedIndex(null)}
+        onEdit={(index: number) => setSelectedIndex(index)}
+        onDelete={deleteItem} />
     </div>
   );
 };

@@ -1,6 +1,7 @@
 
 .data_collection__field {
-  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border: 1px dashed var(--vscode-button-secondaryBackground);
+  color: var(--vscode--settings-headerForeground);
   padding: .5rem 1rem;
   margin-bottom: .5rem;
 
@@ -9,6 +10,12 @@
     border: 1px dashed var(--vscode-button-background);
     padding: 1rem;
     filter: brightness(85%);
+
+    h3 {
+      font-size: 1rem;
+      font-weight: bold;
+      text-align: center;
+    }
   }
 
   .fields > div {
@@ -63,27 +70,65 @@
     font-weight: bold;
   }
 
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
   li {
-    margin-bottom: .5rem;
+    border-bottom: 1px solid var(--vscode-button-secondaryBackground);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .5rem 0;
 
     span {
       margin-right: .5rem;
     }
 
+    > div {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      button:last-child {
+        margin-left: .5rem;
+      }
+    }
+
     &:last-child {
       margin-bottom: 0;
+      border-bottom: 0;
     }
+  }
+}
+
+.data_collection__list .metadata_field__label {
+  justify-content: space-between;
+
+  > div {
+    display: flex;
+    align-items: center;
+  }
+
+  button svg {
+    margin-right: 0;
   }
 }
 
 .data_collection__list__button {
   width: auto;
   background: none;
-  color: var(--vscode-editor-foreground);
+  color: inherit;
+  outline: none !important;
+  outline-offset: inherit !important;
+  padding: 0;
+  margin: 0;
 
   &:hover {
-    color: var(--vscode-button-secondaryForeground);
-    background: var(--vscode-button-secondaryHoverBackground);
+    color: var(--vscode-editor-foreground);
+    background: none;
   }
 }
 

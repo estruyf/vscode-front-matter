@@ -4,5 +4,5 @@
   margin-bottom: 1rem;
   margin-top: 1rem;
   padding: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--frontmatter-list-border, rgba(255, 255, 255, 0.2));
 }

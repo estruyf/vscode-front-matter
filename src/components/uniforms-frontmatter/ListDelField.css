@@ -14,7 +14,7 @@
 
   .line {
     height: 1px;
-    background: var(--vscode-editor-foreground);
+    background: var(--frontmatter-list-border, var(--vscode-editor-foreground));
     width: 100%;
     margin-right: .5rem;
     margin-top: .5rem;

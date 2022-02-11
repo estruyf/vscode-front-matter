@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Ref } from 'react';
 import { HTMLFieldProps, connectField, filterDOMProps } from 'uniforms';
-import { LabelStyles } from './component-styles';
+import { LabelField } from './LabelField';
 
 export type NumFieldProps = HTMLFieldProps<
   number,
@@ -27,7 +27,7 @@ function Num({
 }: NumFieldProps) {
   return (
     <div {...filterDOMProps(props)}>
-      {label && <label htmlFor={id} style={LabelStyles}>{label}</label>}
+      <LabelField label={label} id={id} required={props.required} />
 
       <input
         disabled={disabled}

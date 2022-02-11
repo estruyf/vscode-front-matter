@@ -2,7 +2,8 @@ import xor = require('lodash.xor');
 import * as React from 'react';
 import { Ref } from 'react';
 import { HTMLFieldProps, connectField, filterDOMProps } from 'uniforms';
-import { LabelStyles } from './component-styles';
+import { LabelField } from './LabelField';
+import './SelectField.css';
 
 const base64: typeof btoa =
   typeof btoa === 'undefined'
@@ -42,8 +43,8 @@ function Select({
 }: SelectFieldProps) {
   const multiple = fieldType === Array;
   return (
-    <div {...filterDOMProps(props)}>
-      {label && <label htmlFor={id} style={LabelStyles}>{label}</label>}
+    <div className='autoform__select_field' {...filterDOMProps(props)}>
+      <LabelField label={label} id={id} required={required} />
       
       {checkboxes ? (
         allowedValues!.map(item => (

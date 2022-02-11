@@ -1,7 +1,7 @@
 import omit = require('lodash.omit');
 import * as React from 'react';
 import { HTMLFieldProps, connectField, filterDOMProps } from 'uniforms';
-import { LabelStyles } from './component-styles';
+import { LabelField } from './LabelField';
 
 const base64: typeof btoa =
   typeof btoa === 'undefined'
@@ -33,7 +33,7 @@ function Radio({
 }: RadioFieldProps) {
   return (
     <div {...omit(filterDOMProps(props), ['checkboxes'])}>
-      {label && <label style={LabelStyles}>{label}</label>}
+      <LabelField label={label} id={id} required={props.required} />
 
       {allowedValues?.map(item => (
         <div key={item}>

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Ref } from 'react';
 import { HTMLFieldProps, connectField, filterDOMProps } from 'uniforms';
-import { LabelStyles } from './component-styles';
 import './BoolField.css';
+import { LabelField } from './LabelField';
 
 export type BoolFieldProps = HTMLFieldProps<
   boolean,
@@ -23,7 +23,7 @@ function Bool({
 }: BoolFieldProps) {
   return (
     <div {...filterDOMProps(props)}>
-      {label && <label htmlFor={id} style={LabelStyles}>{label}</label>}
+      <LabelField label={label} id={id} required={props.required} />
       
       <label className="field__toggle">
         <input
