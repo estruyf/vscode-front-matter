@@ -24,8 +24,6 @@ function Text({
   ...props
 }: TextFieldProps) {
 
-  console.log('TextFieldProps', props);
-
   return (
     <div {...filterDOMProps(props)}>
       <LabelField label={label} id={id} required={props.required} />
