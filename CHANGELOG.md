@@ -2,6 +2,10 @@
 
 ## [6.1.0] - 2022-02-xx
 
+### ✨ New features
+
+- [#176](https://github.com/estruyf/vscode-front-matter/issues/176): New `data collection` field type
+
 ### 🎨 Enhancements
 
 - Updated the activity bar icon for better visibility
