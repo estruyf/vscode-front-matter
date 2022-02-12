@@ -19,8 +19,9 @@ import { Content } from './commands/Content';
 import ContentProvider from './providers/ContentProvider';
 import { Wysiwyg } from './commands/Wysiwyg';
 import { Diagnostics } from './commands/Diagnostics';
-import { PagesListener } from './listeners';
+import { PagesListener } from './listeners/dashboard';
 import { Backers } from './commands/Backers';
+import { DataListener, SettingsListener } from './listeners/panel';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
@@ -171,9 +172,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		Template.init();
 		Preview.init();
 
-		const exView = ExplorerView.getInstance();
-		exView.getSettings();
-		exView.getFoldersAndFiles();	
+		SettingsListener.getSettings();
+		DataListener.getFoldersAndFiles();	
 		MarkdownFoldingProvider.triggerHighlighting();
 	});
 
@@ -197,7 +197,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc: vscode.TextDocument) => {
 		if (doc.languageId === 'markdown') {
 			// Optimize the list of recently changed files
-			ExplorerView.getInstance().getFoldersAndFiles();
+			DataListener.getFoldersAndFiles();
 		}
 	}));
 

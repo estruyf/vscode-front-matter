@@ -1,5 +1,5 @@
-import { DashboardMessage } from "../dashboardWebView/DashboardMessage";
-import { Telemetry } from "../helpers/Telemetry";
+import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
+import { Telemetry } from "../../helpers/Telemetry";
 import { BaseListener } from "./BaseListener";
 
 

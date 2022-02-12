@@ -12,7 +12,7 @@ import { format } from 'date-fns';
 import { Dashboard } from './Dashboard';
 import { parseWinPath } from '../helpers/parseWinPath';
 import { MediaHelpers } from '../helpers/MediaHelpers';
-import { MediaListener, PagesListener } from '../listeners';
+import { MediaListener, PagesListener } from '../listeners/dashboard';
 import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
 import { Telemetry } from '../helpers/Telemetry';
 

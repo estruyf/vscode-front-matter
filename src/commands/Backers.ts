@@ -5,6 +5,7 @@ import { Credentials } from "../services/Credentials";
 import fetch from "node-fetch";
 import { ExplorerView } from '../explorerView/ExplorerView';
 import { Dashboard } from './Dashboard';
+import { SettingsListener } from '../listeners/panel';
 
 export class Backers {
   private static creds: Credentials | null = null;
@@ -60,7 +61,7 @@ export class Backers {
       if (!prevData) {
         const explorerView = ExplorerView.getInstance();
         if (explorerView.visible) {
-          explorerView.getSettings();
+          SettingsListener.getSettings();
         }
     
         if (Dashboard.isOpen) {

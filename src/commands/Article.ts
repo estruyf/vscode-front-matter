@@ -13,6 +13,7 @@ import { DateHelper } from '../helpers/DateHelper';
 import { parseWinPath } from '../helpers/parseWinPath';
 import { Telemetry } from '../helpers/Telemetry';
 import { ParsedFrontMatter } from '../parsers';
+import { MediaListener } from '../listeners/panel';
 
 
 export class Article {
@@ -337,7 +338,7 @@ export class Article {
     } as DashboardData);
 
     // Let the editor panel know you are selecting an image
-    ExplorerView.getInstance().getMediaSelection();
+    MediaListener.getMediaSelection();
 	}
 
   /**

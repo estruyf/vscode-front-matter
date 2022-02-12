@@ -4,6 +4,7 @@ import { ArticleHelper, SeoHelper, Settings } from '../helpers';
 import { ExplorerView } from '../explorerView/ExplorerView';
 import { DefaultFields } from '../constants';
 import { ContentType } from '../helpers/ContentType';
+import { DataListener } from '../listeners/panel';
 
 export class StatusListener {
   
@@ -58,7 +59,7 @@ export class StatusListener {
         
         const panel = ExplorerView.getInstance();
         if (panel && panel.visible) {
-          panel.pushMetadata(article!.data);
+          DataListener.pushMetadata(article!.data);
         }
 
         return;
@@ -68,7 +69,7 @@ export class StatusListener {
     } else {
       const panel = ExplorerView.getInstance();
       if (panel && panel.visible) {
-        panel.pushMetadata(null);
+        DataListener.pushMetadata(null);
       }
     }
 

@@ -1,5 +1,3 @@
-import { PagesListener } from './../listeners/PagesListener';
-import { ExtensionListener } from './../listeners/ExtensionListener';
 import { SETTINGS_DASHBOARD_OPENONSTART, CONTEXT } from '../constants';
 import { join } from "path";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window } from "vscode";
@@ -10,7 +8,8 @@ import { WebviewHelper } from '@estruyf/vscode';
 import { DashboardData } from '../models/DashboardData';
 import { ExplorerView } from '../explorerView/ExplorerView';
 import { MediaLibrary } from '../helpers/MediaLibrary';
-import { DashboardListener, MediaListener, SettingsListener, TelemetryListener, DataListener } from '../listeners';
+import { DashboardListener, MediaListener, SettingsListener, TelemetryListener, DataListener, PagesListener, ExtensionListener } from '../listeners/dashboard';
+import { MediaListener as PanelMediaListener } from '../listeners/panel'
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -115,8 +114,7 @@ export class Dashboard {
     Dashboard.webview.onDidChangeViewState(async () => {
       if (!this.webview?.visible) {
         Dashboard._viewData = undefined;
-        const panel = ExplorerView.getInstance(extensionUri);
-        panel.getMediaSelection();
+        PanelMediaListener.getMediaSelection();
 
         Dashboard.postWebviewMessage({ command: DashboardCommand.viewData, data: null });
       }
@@ -127,8 +125,7 @@ export class Dashboard {
     Dashboard.webview.onDidDispose(async () => {
       Dashboard.isDisposed = true;
       Dashboard._viewData = undefined;
-      const panel = ExplorerView.getInstance(extensionUri);
-      panel.getMediaSelection();
+      PanelMediaListener.getMediaSelection();
       await commands.executeCommand('setContext', CONTEXT.isDashboardOpen, false);
     });
 

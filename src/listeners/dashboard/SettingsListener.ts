@@ -1,9 +1,9 @@
-import { SETTINGS_CONTENT_STATIC_FOLDER, SETTINGS_FRAMEWORK_ID } from "../constants";
-import { DashboardCommand } from "../dashboardWebView/DashboardCommand";
-import { DashboardMessage } from "../dashboardWebView/DashboardMessage";
-import { DashboardSettings, Settings } from "../helpers";
-import { FrameworkDetector } from "../helpers/FrameworkDetector";
-import { Framework } from "../models";
+import { SETTINGS_CONTENT_STATIC_FOLDER, SETTINGS_FRAMEWORK_ID } from "../../constants";
+import { DashboardCommand } from "../../dashboardWebView/DashboardCommand";
+import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
+import { DashboardSettings, Settings } from "../../helpers";
+import { FrameworkDetector } from "../../helpers/FrameworkDetector";
+import { Framework } from "../../models";
 import { BaseListener } from "./BaseListener";
 
 

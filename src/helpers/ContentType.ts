@@ -1,4 +1,4 @@
-import { PagesListener } from './../listeners/PagesListener';
+import { PagesListener } from './../listeners/dashboard';
 import { ArticleHelper, Settings } from ".";
 import { SETTINGS_CONTENT_DRAFT_FIELD, SETTING_TAXONOMY_CONTENT_TYPES, TelemetryEvent } from "../constants";
 import { ContentType as IContentType, DraftField, Field } from '../models';

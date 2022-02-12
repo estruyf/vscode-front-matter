@@ -11,6 +11,7 @@ import imageSize from "image-size";
 import { EditorHelper } from "@estruyf/vscode";
 import { ExplorerView } from "../explorerView/ExplorerView";
 import { SortOption } from "../dashboardWebView/constants/SortOption";
+import { DataListener, MediaListener } from "../listeners/panel";
 
 
 export class MediaHelpers {
@@ -301,10 +302,10 @@ export class MediaHelpers {
             }            
           });
         }
-        panel.getMediaSelection();
+        MediaListener.getMediaSelection();
       } else {
-        panel.getMediaSelection();
-        panel.updateMetadata({field: data.fieldName, value: data.image, parents: data.parents });
+        MediaListener.getMediaSelection();
+        DataListener.updateMetadata({field: data.fieldName, value: data.image, parents: data.parents });
       }
     }
   }

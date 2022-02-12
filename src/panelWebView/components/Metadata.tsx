@@ -161,7 +161,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               icon={<TagIcon />}
               crntSelected={parent[field.name] as string[] || []} 
               options={settings?.tags || []} 
-              freeform={settings.freeform} 
+              freeform={settings.freeform || false} 
               focussed={focusElm === TagType.tags}
               unsetFocus={unsetFocus}
               parents={parentFields} />
@@ -179,7 +179,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               icon={<ListUnorderedIcon />}
               crntSelected={selectedValues as string[] || []} 
               options={taxonomyData?.options || []} 
-              freeform={settings.freeform} 
+              freeform={settings.freeform || false} 
               focussed={focusElm === TagType.custom}
               unsetFocus={unsetFocus}
               fieldName={field.name}
@@ -196,7 +196,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               icon={<ListUnorderedIcon />}
               crntSelected={parent.categories as string[] || []} 
               options={settings.categories} 
-              freeform={settings.freeform} 
+              freeform={settings.freeform || false} 
               focussed={focusElm === TagType.categories}
               unsetFocus={unsetFocus}
               parents={parentFields} />
@@ -210,8 +210,8 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
           <FieldBoundary key={field.name} fieldName={field.title || field.name}>
             <DraftField
               label={field.title || field.name}
-              type={draftField.type}
-              choices={draftField.choices || []}
+              type={draftField?.type || "boolean"}
+              choices={draftField?.choices || []}
               value={value as boolean | string | null | undefined}
               onChanged={(value: boolean | string) => sendUpdate(field.name, value, parentFields)} />
           </FieldBoundary>

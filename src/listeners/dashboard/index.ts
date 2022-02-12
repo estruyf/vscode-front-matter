@@ -1,4 +1,3 @@
-export * from './BaseListener';
 export * from './DashboardListener';
 export * from './DataListener';
 export * from './ExtensionListener';

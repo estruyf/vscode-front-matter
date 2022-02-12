@@ -11,7 +11,7 @@ import { Project } from './Project';
 import { Folders } from './Folders';
 import { ContentType } from '../helpers/ContentType';
 import { ContentType as IContentType } from '../models';
-import { PagesListener } from '../listeners';
+import { PagesListener } from '../listeners/dashboard';
 import { extname } from 'path';
 import { Telemetry } from '../helpers/Telemetry';
 

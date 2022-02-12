@@ -11,20 +11,21 @@ export interface PanelSettings {
   date: DateInfo;
   categories: string[];
   customTaxonomy: CustomTaxonomy[];
-  freeform: boolean;
+  freeform: boolean | undefined;
   scripts: CustomScript[];
   isInitialized: boolean;
   modifiedDateUpdate: boolean;
   writingSettingsEnabled: boolean;
-  fmHighlighting: boolean;
+  fmHighlighting: boolean | undefined;
   preview: PreviewSettings;
   contentTypes: ContentType[];
   dashboardViewData: DashboardData | undefined;
-  draftField: DraftField;
+  draftField: DraftField | undefined;
   isBacker: boolean | undefined;
   framework: string | undefined;
   commands: FrameworkCommands;
   dataTypes: DataType[] | undefined;
+  commaSeparatedFields: string[];
 }
 
 export interface FrameworkCommands {
@@ -70,8 +71,9 @@ export interface SEO {
 }
 
 export interface Slug {
-  prefix: number;
-  suffix: number;
+  prefix: number | string;
+  suffix: number | string;
+  updateFileName?: boolean;
 }
 
 export interface FolderInfo {

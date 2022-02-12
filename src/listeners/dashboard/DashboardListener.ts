@@ -1,8 +1,8 @@
-import { Dashboard } from "../commands/Dashboard";
-import { ExtensionState } from "../constants";
-import { DashboardCommand } from "../dashboardWebView/DashboardCommand";
-import { DashboardMessage } from "../dashboardWebView/DashboardMessage";
-import { Extension } from "../helpers";
+import { Dashboard } from "../../commands/Dashboard";
+import { ExtensionState } from "../../constants";
+import { DashboardCommand } from "../../dashboardWebView/DashboardCommand";
+import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
+import { Extension } from "../../helpers";
 import { BaseListener } from "./BaseListener";
 
 

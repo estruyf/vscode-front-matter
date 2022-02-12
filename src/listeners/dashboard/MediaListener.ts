@@ -1,11 +1,11 @@
-import { Telemetry } from './../helpers/Telemetry';
-import { MediaHelpers } from './../helpers/MediaHelpers';
-import { DashboardMessage } from "../dashboardWebView/DashboardMessage";
+import { Telemetry } from '../../helpers/Telemetry';
+import { MediaHelpers } from '../../helpers/MediaHelpers';
+import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { BaseListener } from "./BaseListener";
-import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
-import { SortingOption } from '../dashboardWebView/models';
+import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
+import { SortingOption } from '../../dashboardWebView/models';
 import { commands, env, Uri } from 'vscode';
-import { COMMAND_NAME, TelemetryEvent } from '../constants';
+import { COMMAND_NAME, TelemetryEvent } from '../../constants';
 import * as os from 'os';
 
 

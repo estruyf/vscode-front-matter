@@ -1,17 +1,17 @@
-import { isValidFile } from './../helpers/isValidFile';
+import { isValidFile } from '../../helpers/isValidFile';
 import { existsSync } from "fs";
 import { basename, dirname, join } from "path";
 import { commands, FileSystemWatcher, RelativePattern, Uri, workspace } from "vscode";
-import { Dashboard } from "../commands/Dashboard";
-import { Folders } from "../commands/Folders";
-import { COMMAND_NAME, DefaultFields, SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD } from "../constants";
-import { DashboardCommand } from "../dashboardWebView/DashboardCommand";
-import { DashboardMessage } from "../dashboardWebView/DashboardMessage";
-import { Page } from "../dashboardWebView/models";
-import { ArticleHelper, Logger, Settings } from "../helpers";
-import { ContentType } from "../helpers/ContentType";
-import { DateHelper } from "../helpers/DateHelper";
-import { Notifications } from "../helpers/Notifications";
+import { Dashboard } from "../../commands/Dashboard";
+import { Folders } from "../../commands/Folders";
+import { COMMAND_NAME, DefaultFields, SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD } from "../../constants";
+import { DashboardCommand } from "../../dashboardWebView/DashboardCommand";
+import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
+import { Page } from "../../dashboardWebView/models";
+import { ArticleHelper, Logger, Settings } from "../../helpers";
+import { ContentType } from "../../helpers/ContentType";
+import { DateHelper } from "../../helpers/DateHelper";
+import { Notifications } from "../../helpers/Notifications";
 import { BaseListener } from "./BaseListener";
 
 

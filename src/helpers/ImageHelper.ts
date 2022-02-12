@@ -1,3 +1,4 @@
+import { ExplorerView } from './../explorerView/ExplorerView';
 import { Uri, window } from 'vscode'; 
 import { dirname, join } from "path";
 import { Field } from '../models';
@@ -77,5 +78,58 @@ export class ImageHelper {
       relPath = imgValue.split(staticFolder || "").pop() || "";
     }
     return relPath;
+  }
+
+  /**
+   * Process the image fields in the content type
+   * @param updatedMetadata 
+   * @param fields 
+   * @param parents 
+   */
+  public static processImageFields(updatedMetadata: any, fields: Field[], parents: string[] = []) {
+    const imageFields = fields.filter((field) => field.type === "image");
+    const panel = ExplorerView.getInstance();
+    
+    // Support multi-level fields
+    let parentObj = updatedMetadata;
+    for (const parent of parents || []) {
+      parentObj = parentObj[parent];
+    }
+
+    // Process image fields
+    if (parentObj) {
+      for (const field of imageFields) {
+        if (parentObj[field.name]) {
+          const imageData = ImageHelper.allRelToAbs(field, parentObj[field.name])
+  
+          if (imageData) {
+            if (field.multiple && imageData instanceof Array) {
+              const preview = imageData.map(preview => preview && preview.absPath ? ({ 
+                ...preview,
+                webviewUrl: panel.getWebview()?.asWebviewUri(preview.absPath).toString()
+              }) : null);
+  
+              parentObj[field.name] = preview || [];
+            } else if (!field.multiple && !Array.isArray(imageData) && imageData.absPath) {
+              const preview = panel.getWebview()?.asWebviewUri(imageData.absPath);
+              parentObj[field.name] = {
+                ...imageData,
+                webviewUrl: preview ? preview.toString() : null
+              };
+            }
+          } else {
+            parentObj[field.name] = field.multiple ? [] : "";
+          }
+        }          
+      }
+  
+      // Check if there are sub-fields to process
+      const subFields = fields.filter((field) => field.type === "fields");
+      if (subFields?.length > 0) {
+        for (const field of subFields) {
+          this.processImageFields(updatedMetadata, field.fields || [], [...parents, field.name]);
+        }
+      }
+    }
   }
 }
