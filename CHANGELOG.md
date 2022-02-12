@@ -9,6 +9,7 @@
 ### 🎨 Enhancements
 
 - Updated the activity bar icon for better visibility
+- Storing the panel collapse section states
 
 ### ⚡️ Optimizations
 

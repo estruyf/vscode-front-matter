@@ -37,7 +37,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
   }
 
   return (
-    <div className="frontmatter">
+    <div className="frontmatter">      
       <div className={`ext_actions`}>
         <GlobalSettings settings={settings} />
 
