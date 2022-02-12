@@ -20,7 +20,7 @@ import { DateHelper } from '../../helpers/DateHelper';
 import FieldBoundary from './ErrorBoundary/FieldBoundary';
 import { DraftField } from './Fields/DraftField';
 import { VsLabel } from './VscodeComponents';
-import { DataCollectionField } from './DataCollection/DataCollectionField';
+import { DataBlockField } from './DataBlock';
 
 export interface IMetadata {
   [prop: string]: string[] | string | null | IMetadata;
@@ -235,12 +235,12 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
         }
 
         return null;
-      } else if (field.type === 'data-collection') {
+      } else if (field.type === 'block') {
         const collectionData = parent[field.name];
 
         return (
           <FieldBoundary key={field.name} fieldName={field.title || field.name}>
-            <DataCollectionField
+            <DataBlockField
               label={field.title || field.name}
               settings={settings}
               field={field}

@@ -17,7 +17,6 @@ const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({id, children, 
 
   useEffect(() => {
     const prevState = MessageHelper.getState();
-    console.log('prevState', prevState);
     if (!prevState || !prevState[collapseKey] || prevState[collapseKey] === null || prevState[collapseKey] === 'true') {
       setIsOpen(true);
       updateStorage(true);

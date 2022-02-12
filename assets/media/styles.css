@@ -30,7 +30,7 @@
 }
 
 .inherit {
-  position: inherit !important;
+  position: relative !important;
 }
 
 .z-10 { z-index: 10 !important; }

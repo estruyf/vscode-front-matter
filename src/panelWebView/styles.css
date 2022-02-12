@@ -1,5 +1,5 @@
 
-.data_collection__field {
+.data_block__field {
   border: 1px dashed var(--vscode-button-secondaryBackground);
   color: var(--vscode--settings-headerForeground);
   padding: .5rem 1rem;
@@ -22,12 +22,30 @@
     margin-bottom: .5rem;
 
     &:last-child {
+      .data_block__selector h3 {
+        font-size: 1rem;
+        font-weight: bold;
+        text-align: center;
+      }
+      
       margin-bottom: 0;
     }
   }
 }
 
-.data_controls__buttons {
+.data_block__selector {
+  h3 {
+    font-size: var(--vscode-font-size);
+    font-weight: bold;
+    text-align: left;
+  }
+
+  select {
+    padding: .5rem;
+  }
+}
+
+.data_block__buttons {
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -61,7 +79,7 @@
   }
 }
 
-.data_collection__list {
+.data_block__list {
   margin-top: 1rem;
 
   label {
@@ -76,7 +94,7 @@
     margin: 0;
   }
 
-  li {
+  li, .sortable_item {
     border-bottom: 1px solid var(--vscode-button-secondaryBackground);
     display: flex;
     justify-content: space-between;
@@ -89,8 +107,11 @@
 
     > div {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+
+      svg {
+        margin-right: .5rem;
+      }
       
       button:last-child {
         margin-left: .5rem;
@@ -104,7 +125,7 @@
   }
 }
 
-.data_collection__list .metadata_field__label {
+.data_block__list .metadata_field__label {
   justify-content: space-between;
 
   > div {
@@ -117,7 +138,57 @@
   }
 }
 
-.data_collection__list__button {
+.data_block__record {
+  border-bottom: 1px solid var(--vscode-button-secondaryBackground);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .5rem 0;
+
+  &.data_block__record_selected {
+    background-color: rgba(255, 255, 255, .1);
+    filter: brightness(100%);
+  }
+
+  span {
+    margin-right: .5rem;
+  }
+
+  > div {
+    display: flex;
+    align-items: center;
+
+    svg {
+      margin-right: .5rem;
+    }
+    
+    button:last-child {
+      margin-left: .5rem;
+    }
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+    border-bottom: 0;
+  }
+
+  svg {
+    height: 1.25rem;
+    width: 1.25rem;
+  }
+}
+
+.drag_handler {
+
+  svg {
+    height: 1.25rem;
+    width: 1.25rem;
+    cursor: move;
+  }
+}
+
+.sortable_item button,
+.data_block__list__button {
   width: auto;
   background: none;
   color: inherit;
@@ -132,7 +203,7 @@
   }
 }
 
-.data_collection__list__button_icon {
+.data_block__list__button_icon {
   height: 1rem;
   width: 1rem;
 }

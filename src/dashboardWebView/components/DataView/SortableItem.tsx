@@ -23,7 +23,7 @@ export const SortableItem = SortableElement(({ value, selectedIndex, crntIndex, 
   
   return (
     <>
-      <li data-test={`${selectedIndex}-${crntIndex}`} className={`py-2 px-2 w-full flex justify-between content-center hover:bg-gray-200 dark:hover:bg-vulcan-400 ${selectedIndex === crntIndex ? `bg-gray-300 dark:bg-vulcan-300` : ``}`}>
+      <li data-test={`${selectedIndex}-${crntIndex}`} className={`sortable_item py-2 px-2 w-full flex justify-between content-center hover:bg-gray-200 dark:hover:bg-vulcan-400 ${selectedIndex === crntIndex ? `bg-gray-300 dark:bg-vulcan-300` : ``}`}>
         <div 
           className='flex items-center w-full'
           onClick={() => onSelectedIndexChange(crntIndex)}>

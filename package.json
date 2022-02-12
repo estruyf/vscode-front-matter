@@ -633,7 +633,7 @@
                         "categories",
                         "draft",
                         "fields",
-                        "data-collection"
+                        "block"
                       ],
                       "description": "Define the type of field"
                     },
@@ -700,10 +700,13 @@
                     "fields": {
                       "$ref": "#contenttypefield"
                     },
-                    "dataType": {
-                      "type": "string",
+                    "blockType": {
+                      "type": ["string", "array"],
                       "default": "",
-                      "description": "The ID of your data type defined in the `frontMatter.data.types` setting"
+                      "description": "The ID(s) of your data type(s) defined in the `frontMatter.data.types` setting",
+                      "items": {
+                        "type": "string"
+                      }
                     }
                   },
                   "additionalProperties": false,
@@ -758,13 +761,13 @@
                       "if": {
                         "properties": {
                           "type": {
-                            "const": "data-collection"
+                            "const": "block"
                           }
                         }
                       },
                       "then": {
                         "required": [
-                          "dataType"
+                          "blockType"
                         ]
                       }
                     }
