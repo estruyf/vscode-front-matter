@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Field } from '../../../models';
 import { DataType } from '../../../models/DataType';
 
@@ -16,11 +16,21 @@ const EMPTY_OPTION = "EMPTY_OPTION";
 export const DataBlockSelector: React.FunctionComponent<IDataBlockSelectorProps> = ({ field, dataTypes, selectedDataType, onSetDataType, onSchemaUpdate }: React.PropsWithChildren<IDataBlockSelectorProps>) => {
   const [ options, setOptions ] = useState<string[]>([]);
 
+  const onSchemaSet = useCallback((blockType: string) => {
+    if (dataTypes && blockType !== EMPTY_OPTION) {
+      const schema = dataTypes.find(dataType => dataType.id === blockType);
+      onSchemaUpdate(schema);
+    } else {
+      onSchemaUpdate(null);
+    }
+  }, []);
+
   useEffect(() => {
     if (field.blockType && dataTypes) {
       if (typeof field.blockType === "string") {
-        const schema = dataTypes.find(dataType => dataType.id === field.blockType);
-        onSchemaUpdate(schema);
+        onSchemaSet(field.blockType);
+      } else if (field.blockType instanceof Array && field.blockType.length === 1) {
+        onSchemaSet(field.blockType[0]);
       } else {
         setOptions([...field.blockType]);
       }
@@ -30,8 +40,7 @@ export const DataBlockSelector: React.FunctionComponent<IDataBlockSelectorProps>
   useEffect(() => {
     if (dataTypes && selectedDataType) {
       if (selectedDataType !== EMPTY_OPTION) {
-        const schema = dataTypes.find(dataType => dataType.id === selectedDataType);
-        onSchemaUpdate(schema);
+        onSchemaSet(selectedDataType);
       } else {
         onSchemaUpdate(null);
       }
