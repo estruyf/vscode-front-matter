@@ -14,6 +14,7 @@
 ### ⚡️ Optimizations
 
 - Show the data item its details when clicking on the record
+- Refactoring of the explorer view panel listeners
 - [#243](https://github.com/estruyf/vscode-front-matter/issues/243): Refactoring front matter parsing
 
 ### 🐞 Fixes
