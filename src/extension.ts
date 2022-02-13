@@ -28,8 +28,6 @@ let statusDebouncer: { (fnc: any, time: number): void; };
 let editDebounce: { (fnc: any, time: number): void; };
 let collection: vscode.DiagnosticCollection;
 
-const mdSelector: vscode.DocumentSelector = { language: 'markdown', scheme: 'file' };
-
 export async function activate(context: vscode.ExtensionContext) {
 	const { subscriptions, extensionUri, extensionPath } = context;
 
@@ -93,7 +91,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	// Folding the front matter of markdown files
-	vscode.languages.registerFoldingRangeProvider(mdSelector, new MarkdownFoldingProvider());
+	MarkdownFoldingProvider.register();
 
 	const insertTags = vscode.commands.registerCommand(COMMAND_NAME.insertTags, async () => {
 		await vscode.commands.executeCommand('workbench.view.extension.frontmatter-explorer');

@@ -1,6 +1,7 @@
-import { TextEditorDecorationType } from 'vscode';
+import { ArticleHelper } from '../helpers';
+import { languages, TextEditorDecorationType } from 'vscode';
 import { CancellationToken, FoldingContext, FoldingRange, FoldingRangeKind, FoldingRangeProvider, Range, TextDocument, window, Position } from 'vscode';
-import { SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_FRONTMATTER_TYPE } from '../constants';
+import { SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTINGS_CONTENT_SUPPORTED_FILETYPES, SETTING_FRONTMATTER_TYPE } from '../constants';
 import { Settings } from '../helpers';
 import { FrontMatterDecorationProvider } from './FrontMatterDecorationProvider';
 
@@ -9,6 +10,18 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
   private static end: number | null = null;
   private static endLine: number | null = null;
   private static decType: TextEditorDecorationType | null = null;
+
+  public static register() {
+    const supportedFiles = Settings.get<string[]>(SETTINGS_CONTENT_SUPPORTED_FILETYPES);
+
+    languages.registerFoldingRangeProvider({ language: 'markdown', scheme: 'file' }, new MarkdownFoldingProvider());
+
+    for (const fileExt of (supportedFiles || [])) {
+      if (fileExt !== "md" && fileExt !== "markdown") {
+        languages.registerFoldingRangeProvider({ pattern: `**/*.${fileExt}`, scheme: 'file' }, new MarkdownFoldingProvider());
+      }
+    }
+  }
 
   public async provideFoldingRanges(document: TextDocument, context: FoldingContext, token: CancellationToken): Promise<FoldingRange[]> {
     const ranges: FoldingRange[] = [];
@@ -24,18 +37,23 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
   }
 
   public static triggerHighlighting() {
-    const fmHighlight = Settings.get<boolean>(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT);
+    const activeDoc = window.activeTextEditor?.document;
 
-    const range = this.getFrontMatterRange();
+    const isSupported = ArticleHelper.isMarkdownFile(activeDoc);
+    if (isSupported) {
+      const fmHighlight = Settings.get<boolean>(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT);
 
-    if (range) {
-      if (MarkdownFoldingProvider.decType !== null) {
-        MarkdownFoldingProvider.decType.dispose();
-      }
+      const range = this.getFrontMatterRange();
 
-      if (fmHighlight) {
-        MarkdownFoldingProvider.decType = new FrontMatterDecorationProvider().get();
-        window.activeTextEditor?.setDecorations(MarkdownFoldingProvider.decType, [range]);
+      if (range) {
+        if (MarkdownFoldingProvider.decType !== null) {
+          MarkdownFoldingProvider.decType.dispose();
+        }
+
+        if (fmHighlight) {
+          MarkdownFoldingProvider.decType = new FrontMatterDecorationProvider().get();
+          window.activeTextEditor?.setDecorations(MarkdownFoldingProvider.decType, [range]);
+        }
       }
     }
   }
@@ -61,7 +79,7 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
       let start = null;
       let end = null;
       let endLine = null;
-      
+
       MarkdownFoldingProvider.start = null;
       MarkdownFoldingProvider.end = null;
       MarkdownFoldingProvider.endLine = null;
