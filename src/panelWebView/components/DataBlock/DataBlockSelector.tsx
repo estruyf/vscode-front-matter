@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { Field } from '../../../models';
 import { DataType } from '../../../models/DataType';
+import { VSCodeDropdown, VSCodeOption } from '@vscode/webview-ui-toolkit/react';
 
 export interface IDataBlockSelectorProps {
   field: Field;
@@ -54,20 +55,20 @@ export const DataBlockSelector: React.FunctionComponent<IDataBlockSelectorProps>
   return (
     <div className='data_block__selector'>
       <h3>Block type</h3>
-      <select
+      <VSCodeDropdown
         value={selectedDataType ?? EMPTY_OPTION}
-        onChange={event => onSetDataType(event.currentTarget.value === EMPTY_OPTION ? null : event.currentTarget.value)}
+        onChange={(event: any) => onSetDataType(event.currentTarget.value === EMPTY_OPTION ? null : event.currentTarget.value)}
         style={{
           width: "100%",
           marginBottom: "1rem"
         }}>
-        <option value={EMPTY_OPTION}></option>
+        <VSCodeOption value={EMPTY_OPTION}>&nbsp;</VSCodeOption>
         {
           options.map((o) => (
-            <option key={o} value={o}>{o}</option>
+            <VSCodeOption key={o} value={o}>{o}</VSCodeOption>
           ))
         }
-      </select>
+      </VSCodeDropdown>
     </div>
   );
 };
