@@ -15,10 +15,6 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
 
     const range = MarkdownFoldingProvider.getFrontMatterRange(document);
     if (range) {
-      MarkdownFoldingProvider.start = null;
-      MarkdownFoldingProvider.end = null;
-      MarkdownFoldingProvider.endLine = null;
-
       MarkdownFoldingProvider.triggerHighlighting();
 
       ranges.push(new FoldingRange(range.start.line, range.end.line, FoldingRangeKind.Region));
@@ -65,15 +61,23 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
       let start = null;
       let end = null;
       let endLine = null;
+      
+      MarkdownFoldingProvider.start = null;
+      MarkdownFoldingProvider.end = null;
+      MarkdownFoldingProvider.endLine = null;
 
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
         if (line.startsWith(lineStart) || line.startsWith(lineEnd)) {
           if (i === 0 && start === null) {
             start = i;
+            MarkdownFoldingProvider.start = start;
           } else if (start !== null && end === null) {
             end = i;
             endLine = line.length;
+
+            MarkdownFoldingProvider.end = end;
+            MarkdownFoldingProvider.endLine = endLine;  
 
             MarkdownFoldingProvider.triggerHighlighting();
 
