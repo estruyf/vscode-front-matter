@@ -1,12 +1,13 @@
 import * as React from 'react';
-import { useState, useCallback } from 'react';
-import { Field, FieldGroup, PanelSettings } from '../../../models';
+import { useState, useCallback, useEffect, useMemo } from 'react';
+import { BlockFieldData, Field, FieldGroup, PanelSettings } from '../../../models';
 import { PencilIcon } from '@heroicons/react/outline';
 import { VsLabel } from '../VscodeComponents';
 import { DataBlockRecords, DataBlockSelector } from '.';
 import { SortEnd } from 'react-sortable-hoc';
 import { arrayMoveImmutable } from 'array-move';
 import { IMetadata } from '../Metadata';
+import { MessageHelper } from '../../../helpers/MessageHelper';
 
 export interface IDataBlockFieldProps {
   label: string;
@@ -14,14 +15,23 @@ export interface IDataBlockFieldProps {
   field: Field;
   parentFields: string[];
   value: any;
-  fieldsRenderer: (ctFields: Field[], parent: IMetadata, parentFields?: string[], onFieldUpdate?: (field: string | undefined, value: any, parents: string[]) => void) => (JSX.Element | null)[] | undefined
+  filePath: string;
+  fieldsRenderer: (
+    ctFields: Field[], 
+    parent: IMetadata, 
+    parentFields?: string[], 
+    blockData?: BlockFieldData,
+    onFieldUpdate?: (field: string | undefined, value: any, parents: string[]) => void
+  ) => (JSX.Element | null)[] | undefined
   onSubmit: (data: any) => void;
 }
 
-export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ label, settings, field, parentFields = [], value, fieldsRenderer, onSubmit }: React.PropsWithChildren<IDataBlockFieldProps>) => {
+export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ label, filePath, settings, field, parentFields = [], value, fieldsRenderer, onSubmit }: React.PropsWithChildren<IDataBlockFieldProps>) => {
   const [ selectedIndex, setSelectedIndex ] = useState<number | null>(null);
   const [ selectedGroup, setSelectedGroup ] = useState<FieldGroup | undefined | null>(null);
   const [ selectedBlockData, setSelectedBlockData ] = useState<any | null>(null);
+
+  const stateKey = useMemo(() => `${filePath}-data_block-${field.name}`, [filePath, field.name]);
 
   const onFieldUpdate = useCallback((crntField: string | undefined, crntValue: any, parents: string[]) => {
     const dataClone: any[] = Object.assign([], value);
@@ -29,7 +39,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
     if (!crntField) {
       return;
     }
-    
+
     if (selectedIndex !== null && selectedIndex !== undefined) {
       const data = Object.assign({}, dataClone[selectedIndex]);
 
@@ -71,6 +81,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
 
       const newIndex = dataClone.length - 1;
       setSelectedIndex(newIndex);
+      updateState(newIndex);
     }
 
     onSubmit(dataClone);
@@ -91,7 +102,8 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
     setSelectedGroup(group);
 
     if (!group) {
-      setSelectedIndex(null);
+      // Clear the selected index
+      onAdd();
     }
   }
 
@@ -99,9 +111,13 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
     setSelectedIndex(null);
     setSelectedGroup(null);
     setSelectedBlockData({});
+
+    updateState(undefined);
   }, [setSelectedIndex, setSelectedGroup, setSelectedBlockData]); 
   
   const onEdit = useCallback((index: number) => {
+    updateState(index);
+
     setSelectedIndex(index);
 
     const fieldData = value[index];
@@ -125,6 +141,31 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
     const newEntries = arrayMoveImmutable(value, oldIndex, newIndex);
     onSubmit(newEntries);
   }, [value, selectedIndex]);
+
+  // Retrieving the state from local storage (does not need to be persistent)
+  const retrieveState = useCallback(() => {
+    const prevState = localStorage.getItem(stateKey);
+    return prevState ? parseInt(prevState) : undefined;
+  }, [stateKey]);
+
+  // Storing the state to local storage (does not need to be persistent)
+  const updateState = useCallback((value: number | undefined) => {
+    localStorage.setItem(stateKey, value as any);
+  }, [stateKey]);
+
+  useEffect(() => {
+    if (selectedIndex !== null) {
+      const fieldData = value[selectedIndex];
+      setSelectedBlockData(fieldData);
+    }
+  } , [selectedIndex, value, setSelectedBlockData]);
+
+  useEffect(() => {
+    const stateIdx = retrieveState();
+    if (stateIdx !== undefined) {
+      onEdit(stateIdx);
+    }
+  }, []);
   
   return (
     <div className='json_data__field'>
@@ -144,7 +185,23 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
       {
         selectedGroup?.fields && (
           <div className='block_field__form'>
-            { fieldsRenderer(selectedGroup?.fields, selectedBlockData || {}, [...parentFields, field.name], onFieldUpdate) }
+            <h3>
+              {selectedIndex !== null ? `Editing: ${selectedGroup.id} ${selectedIndex + 1}` : `Create a new ${selectedGroup?.id}`}
+            </h3>
+
+            { 
+              fieldsRenderer(
+                selectedGroup?.fields, 
+                selectedBlockData || {}, 
+                [...parentFields, field.name], 
+                {
+                  parentFields: [...parentFields, field.name],
+                  blockType: selectedGroup?.id || undefined,
+                  selectedIndex: selectedIndex === null ? undefined : selectedIndex
+                }, 
+                onFieldUpdate
+              ) 
+            }
           </div>
         )
       }

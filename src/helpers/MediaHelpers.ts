@@ -305,7 +305,12 @@ export class MediaHelpers {
         MediaListener.getMediaSelection();
       } else {
         MediaListener.getMediaSelection();
-        DataListener.updateMetadata({field: data.fieldName, value: data.image, parents: data.parents });
+        DataListener.updateMetadata({
+          field: data.fieldName, 
+          value: data.image, 
+          parents: data.parents,
+          blockData: data.blockData
+        });
       }
     }
   }

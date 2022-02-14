@@ -1,3 +1,4 @@
+import { BlockFieldData } from './../../models/BlockFieldData';
 import { ImageHelper } from './../../helpers/ImageHelper';
 import { Folders } from "../../commands/Folders";
 import { Command } from "../../panelWebView/Command";
@@ -101,7 +102,18 @@ export class DataListener extends BaseListener {
   /**
    * Update the metadata of the article
    */
-  public static async updateMetadata({field, parents, value }: { field: string, value: any, parents?: string[], fieldData?: { multiple: boolean, value: string[] } }) {
+  public static async updateMetadata({
+    field, 
+    parents, 
+    value, 
+    blockData 
+  }: { 
+    field: string, 
+    value: any, 
+    parents?: string[], 
+    blockData?: BlockFieldData,
+    fieldData?: { multiple: boolean, value: string[] } 
+  }) {
     if (!field) {
       return;
     }
@@ -117,18 +129,63 @@ export class DataListener extends BaseListener {
     }
 
     const contentType = ArticleHelper.getContentType(article.data);
-    const dateFields = contentType.fields.filter((field) => field.type === "datetime");
-    const imageFields = contentType.fields.filter((field) => field.type === "image" && field.multiple);
+    const dateFields = contentType.fields.filter((f) => f.type === "datetime");
+    const imageFields = contentType.fields.filter((f) => f.type === "image" && f.multiple);
 
     // Support multi-level fields
     let parentObj = article.data;
-    for (const parent of parents || []) {
-      // If parent doesn't yet exists, it needs to be created
-      if (!parentObj[parent]) {
-        parentObj[parent] = {};
+    let allParents = Object.assign([], parents);
+
+    // Add support for block fields
+    if (blockData?.parentFields) {
+      let crntField = null;
+      parentObj = article.data;
+
+      // Loop through the parents of the block field
+      for (const parent of blockData?.parentFields) {
+        if (!parentObj[parent]) {
+          parentObj[parent] = {};
+        }
+
+        if (allParents[0] && allParents[0] === parent) {
+          allParents.shift();
+        }
+        
+        parentObj = parentObj[parent];
+        crntField = contentType.fields.find(f => f.name === parent);
       }
 
-      parentObj = parentObj[parent];
+      // Fetches the current block
+      if (blockData && crntField && crntField.type === 'block') {
+        if (typeof blockData.selectedIndex !== 'undefined') {
+          parentObj = parentObj[blockData.selectedIndex];
+        } else {
+          parentObj.push({
+            fieldGroup: blockData.blockType
+          });
+          parentObj = parentObj[parentObj.length - 1];
+        }
+      }
+
+      // Check if there are parents left
+      if (allParents.length > 0) {
+        for (const parent of allParents) {
+          if (!parentObj[parent]) {
+            parentObj[parent] = {};
+          }
+
+          parentObj = parentObj[parent];
+        }
+      }
+    } else {
+      for (const parent of parents || []) {
+        // If parent doesn't yet exists, it needs to be created
+        if (!parentObj[parent]) {
+          parentObj[parent] = {};
+        }
+
+        parentObj = parentObj[parent];
+      }
     }
 
     for (const dateField of dateFields) {

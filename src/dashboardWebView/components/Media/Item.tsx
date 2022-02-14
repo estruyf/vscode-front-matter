@@ -81,6 +81,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
       multiple: viewData?.data?.multiple,
       value: viewData?.data?.value,
       position: viewData?.data?.position || null,
+      blockData: typeof viewData?.data?.blockData !== "undefined" ? viewData?.data?.blockData : undefined,
       alt: alt || "",
       caption: caption || ""
     });

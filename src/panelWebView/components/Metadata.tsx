@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Field, PanelSettings } from '../../models';
+import { BlockFieldData, Field, PanelSettings } from '../../models';
 import { CommandToCode } from '../CommandToCode';
 import { MessageHelper } from '../../helpers/MessageHelper';
 import { TagType } from '../TagType';
@@ -57,7 +57,13 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
     return null;
   }
 
-  const renderFields = (ctFields: Field[], parent: IMetadata, parentFields: string[] = [], onFieldUpdate?: (field: string | undefined, value: any, parents: string[]) => void) => {
+  const renderFields = (
+    ctFields: Field[], 
+    parent: IMetadata, 
+    parentFields: string[] = [], 
+    blockData?: BlockFieldData,
+    onFieldUpdate?: (field: string | undefined, value: any, parents: string[]) => void,
+  ) => {
     if (!ctFields) {
       return;
     }
@@ -144,6 +150,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               parents={parentFields}
               value={parent[field.name] as PreviewImageValue | PreviewImageValue[] | null}
               multiple={field.multiple}
+              blockData={blockData}
               onChange={(value) => onSendUpdate(field.name, value, parentFields)} />
           </FieldBoundary>
         );
@@ -241,7 +248,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
                   </div>
                 </VsLabel>
 
-                { renderFields(field.fields, subMetadata, [...parentFields, field.name], onFieldUpdate) }
+                { renderFields(field.fields, subMetadata, [...parentFields, field.name], blockData, onFieldUpdate) }
               </div>
             </FieldBoundary>
           );
@@ -262,8 +269,8 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
           </FieldBoundary>
         );
       } else if (field.type === 'block') {
-        const blockData = parent[field.name];
-
+        const blockData = Object.assign([], parent[field.name]);
+        
         return (
           <FieldBoundary key={field.name} fieldName={field.title || field.name}>
             <DataBlockField
@@ -273,6 +280,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               value={blockData}
               fieldsRenderer={renderFields}
               parentFields={parentFields}
+              filePath={metadata.filePath as string}
               onSubmit={(value) => onSendUpdate(field.name, value, parentFields)} />
           </FieldBoundary>
         );
