@@ -3,7 +3,6 @@
   background-color: transparent;
   border: 1px dashed var(--vscode-button-background);
   padding: 1rem;
-  filter: brightness(85%);
 }
 
 .json_data__field {
@@ -16,7 +15,6 @@
     background-color: transparent;
     border: 1px dashed var(--vscode-button-background);
     padding: 1rem;
-    filter: brightness(85%);
 
     h3 {
       font-size: 1rem;
