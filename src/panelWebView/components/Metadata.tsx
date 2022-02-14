@@ -21,6 +21,7 @@ import FieldBoundary from './ErrorBoundary/FieldBoundary';
 import { DraftField } from './Fields/DraftField';
 import { VsLabel } from './VscodeComponents';
 import { DataBlockField } from './DataBlock';
+import { JsonFieldField } from './JsonField';
 
 export interface IMetadata {
   [prop: string]: string[] | string | null | IMetadata;
@@ -235,12 +236,12 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
         }
 
         return null;
-      } else if (field.type === 'block') {
+      } else if (field.type === 'json') {
         const collectionData = parent[field.name];
 
         return (
           <FieldBoundary key={field.name} fieldName={field.title || field.name}>
-            <DataBlockField
+            <JsonFieldField
               label={field.title || field.name}
               settings={settings}
               field={field}

@@ -633,6 +633,7 @@
                         "categories",
                         "draft",
                         "fields",
+                        "json",
                         "block"
                       ],
                       "description": "Define the type of field"
@@ -768,6 +769,20 @@
                       "then": {
                         "required": [
                           "blockType"
+                        ]
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "json"
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "dataType"
                         ]
                       }
                     }

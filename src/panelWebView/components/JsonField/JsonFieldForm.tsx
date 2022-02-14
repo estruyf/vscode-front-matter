@@ -2,12 +2,12 @@ import * as React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import JSONSchemaBridge from 'uniforms-bridge-json-schema';
 import { AutoFields, AutoForm, ErrorsField } from '../../../components/uniforms-frontmatter';
-import { DataBlockControls } from './DataBlockControls';
-import { DataBlockRecord } from './DataBlockRecord';
+import { JsonFieldControls } from './JsonFieldControls';
+import { JsonFieldRecord } from './JsonFieldRecord';
 import { CollectionIcon, PencilIcon, TrashIcon } from '@heroicons/react/outline';
 import Ajv from 'ajv';
 
-export interface IDataBlockFormProps {
+export interface IJsonFieldFormProps {
   label: string;
   schema: any | null;
   model: any | null;
@@ -15,7 +15,7 @@ export interface IDataBlockFormProps {
   onClear: () => void;
 }
 
-export const DataBlockForm: React.FunctionComponent<IDataBlockFormProps> = ({ label, schema, model, onUpdate, onClear }: React.PropsWithChildren<IDataBlockFormProps>) => {
+export const JsonFieldForm: React.FunctionComponent<IJsonFieldFormProps> = ({ label, schema, model, onUpdate, onClear }: React.PropsWithChildren<IJsonFieldFormProps>) => {
   const [ bridge, setBridge ] = useState<JSONSchemaBridge | null>(null);
 
   const ajv = new Ajv({ allErrors: true, useDefaults: true, strict: false });
@@ -67,7 +67,7 @@ export const DataBlockForm: React.FunctionComponent<IDataBlockFormProps> = ({ la
           <ErrorsField />
         </div>
 
-        <DataBlockControls model={model} onClear={onClear} />
+        <JsonFieldControls model={model} onClear={onClear} />
       </AutoForm>
     </div>
   );

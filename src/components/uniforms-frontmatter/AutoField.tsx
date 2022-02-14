@@ -1,5 +1,6 @@
 import * as invariant from 'invariant';
 import { createAutoField } from 'uniforms';
+import { PreviewImageField } from '../../panelWebView/components/Fields/PreviewImageField';
 export { AutoFieldProps } from 'uniforms';
 
 import BoolField from './BoolField';
@@ -12,6 +13,7 @@ import SelectField from './SelectField';
 import TextField from './TextField';
 
 const AutoField = createAutoField(props => {
+
   if (props.allowedValues) {
     return props.checkboxes && props.fieldType !== Array
       ? RadioField
@@ -31,6 +33,9 @@ const AutoField = createAutoField(props => {
       return NestField;
     case String:
       return TextField;
+    case "image":
+      console.log(`You selected the image type`)
+      return PreviewImageField;
   }
 
   return invariant(false, 'Unsupported field type: %s', props.fieldType);

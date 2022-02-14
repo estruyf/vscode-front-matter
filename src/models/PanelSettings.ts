@@ -41,7 +41,7 @@ export interface ContentType {
   pageBundle?: boolean;
 }
 
-export type FieldType = "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft" | "taxonomy" | "fields" | "block";
+export type FieldType = "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft" | "taxonomy" | "fields" | "json" | "block";
 
 export interface Field {
   title?: string;
@@ -56,6 +56,7 @@ export interface Field {
   default?: string;
   fields?: Field[];
   blockType?: string | string[];
+  dataType?: string | string[];
 }
 
 export interface DateInfo {
