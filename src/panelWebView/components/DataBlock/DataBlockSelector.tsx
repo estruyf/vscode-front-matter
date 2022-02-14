@@ -1,63 +1,71 @@
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { Field } from '../../../models';
-import { DataType } from '../../../models/DataType';
+import { Field, FieldGroup } from '../../../models';
 import { VSCodeDropdown, VSCodeOption } from '@vscode/webview-ui-toolkit/react';
 
 export interface IDataBlockSelectorProps {
   field: Field;
-  dataTypes: DataType[] | undefined;
-  selectedDataType: string | null;
-  onSetDataType: (dataType: string | null) => void;
-  onSchemaUpdate: (schema: any) => void;
+  fieldGroups: FieldGroup[] | undefined;
+  selectedGroup: string | undefined;
+  onGroupChange: (group: FieldGroup | undefined | null) => void;
 }
 
 const EMPTY_OPTION = "EMPTY_OPTION";
 
-export const DataBlockSelector: React.FunctionComponent<IDataBlockSelectorProps> = ({ field, dataTypes, selectedDataType, onSetDataType, onSchemaUpdate }: React.PropsWithChildren<IDataBlockSelectorProps>) => {
+export const DataBlockSelector: React.FunctionComponent<IDataBlockSelectorProps> = ({ field, fieldGroups, selectedGroup, onGroupChange }: React.PropsWithChildren<IDataBlockSelectorProps>) => {
   const [ options, setOptions ] = useState<string[]>([]);
 
-  const onSchemaSet = useCallback((blockType: string) => {
-    if (dataTypes && blockType !== EMPTY_OPTION) {
-      const schema = dataTypes.find(dataType => dataType.id === blockType);
-      onSchemaUpdate(schema);
+  const onGroupSet = useCallback((fieldGroup: string) => {
+    if (fieldGroups && fieldGroup !== EMPTY_OPTION) {
+      const group = fieldGroups.find(group => group.id === fieldGroup);
+      onGroupChange(group);
     } else {
-      onSchemaUpdate(null);
+      onGroupChange(null);
     }
   }, []);
 
-  useEffect(() => {
-    if (field.blockType && dataTypes) {
-      if (typeof field.blockType === "string") {
-        onSchemaSet(field.blockType);
-      } else if (field.blockType instanceof Array && field.blockType.length === 1) {
-        onSchemaSet(field.blockType[0]);
-      } else {
-        setOptions([...field.blockType]);
-      }
+  const onGroupSelect = useCallback((event: any) => {
+    const group = event.currentTarget.value === EMPTY_OPTION ? null : event.currentTarget.value;
+
+    if (group) {
+      onGroupSet(group);
+    } else {
+      onGroupChange(null);
     }
-  }, [field.blockType, dataTypes, onSchemaUpdate]);
+  } , [onGroupSet]);
 
   useEffect(() => {
-    if (dataTypes && selectedDataType) {
-      if (selectedDataType !== EMPTY_OPTION) {
-        onSchemaSet(selectedDataType);
+    if (field.fieldGroup && fieldGroups) {
+      if (typeof field.fieldGroup === "string") {
+        onGroupSet(field.fieldGroup);
+      } else if (field.fieldGroup instanceof Array && field.fieldGroup.length === 1) {
+        onGroupSet(field.fieldGroup[0]);
       } else {
-        onSchemaUpdate(null);
+        setOptions([...field.fieldGroup]);
       }
     }
-  }, [selectedDataType, dataTypes, onSchemaUpdate])
+  }, [field.fieldGroup, fieldGroups, onGroupChange]);
+
+  useEffect(() => {
+    if (fieldGroups && selectedGroup) {
+      if (selectedGroup !== EMPTY_OPTION) {
+        onGroupSet(selectedGroup);
+      } else {
+        onGroupChange(null);
+      }
+    }
+  }, [selectedGroup, fieldGroups, onGroupChange])
 
   if (options.length === 0) {
     return null;
   }
 
   return (
-    <div className='data_block__selector'>
+    <div className='json_data__selector'>
       <h3>Block type</h3>
       <VSCodeDropdown
-        value={selectedDataType ?? EMPTY_OPTION}
-        onChange={(event: any) => onSetDataType(event.currentTarget.value === EMPTY_OPTION ? null : event.currentTarget.value)}
+        value={selectedGroup ?? EMPTY_OPTION}
+        onChange={onGroupSelect}
         style={{
           width: "100%",
           marginBottom: "1rem"

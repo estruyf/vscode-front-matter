@@ -123,6 +123,11 @@ export class DataListener extends BaseListener {
     // Support multi-level fields
     let parentObj = article.data;
     for (const parent of parents || []) {
+      // If parent doesn't yet exists, it needs to be created
+      if (!parentObj[parent]) {
+        parentObj[parent] = {};
+      }
+
       parentObj = parentObj[parent];
     }
 

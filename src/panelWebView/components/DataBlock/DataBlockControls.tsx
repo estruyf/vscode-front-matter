@@ -11,7 +11,7 @@ export const DataBlockControls: React.FunctionComponent<IDataBlockControlsProps>
   const { formRef } = useForm();
   
   return (
-    <div className='data_block__buttons'>
+    <div className='json_data__buttons'>
       <SubmitField value={model ? `Update` : `Add`} />
       
       <button className='ml-4' onClick={() => {

@@ -19,14 +19,6 @@ export const JsonFieldForm: React.FunctionComponent<IJsonFieldFormProps> = ({ la
   const [ bridge, setBridge ] = useState<JSONSchemaBridge | null>(null);
 
   const ajv = new Ajv({ allErrors: true, useDefaults: true, strict: false });
-  ajv.addKeyword({
-    keyword: 'fieldType',
-    type: "string",
-    validate: (schema: any, data: any) => {
-      console.log(`ajv`);
-      return true;
-    }
-  });
 
   const jsonValidator = (crntSchema: object) => {
     const validator = ajv.compile(crntSchema);

@@ -7,6 +7,7 @@ export const SETTING_GLOBAL_NOTIFICATIONS = "global.notifications";
 export const SETTING_TAXONOMY_TAGS = "taxonomy.tags";
 export const SETTING_TAXONOMY_CATEGORIES = "taxonomy.categories";
 export const SETTING_TAXONOMY_CUSTOM = "taxonomy.customTaxonomy";
+export const SETTING_TAXONOMY_FIELD_GROUPS = "taxonomy.fieldGroups";
 
 export const SETTING_DATE_FORMAT = "taxonomy.dateFormat";
 export const SETTING_COMMA_SEPARATED_FIELDS = "taxonomy.commaSeparatedFields";

@@ -53,7 +53,7 @@ export const JsonFieldSelector: React.FunctionComponent<IJsonFieldSelectorProps>
   }
 
   return (
-    <div className='data_block__selector'>
+    <div className='json_data__selector'>
       <h3>Block type</h3>
       <VSCodeDropdown
         value={selectedDataType ?? EMPTY_OPTION}

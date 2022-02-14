@@ -1,40 +1,54 @@
 import * as React from 'react';
-import { useState, useMemo, useCallback, useEffect } from 'react';
-import { Field, PanelSettings } from '../../../models';
+import { useState, useCallback } from 'react';
+import { Field, FieldGroup, PanelSettings } from '../../../models';
 import { PencilIcon } from '@heroicons/react/outline';
 import { VsLabel } from '../VscodeComponents';
-import { DataBlockRecords, DataBlockForm, DataBlockSelector } from '.';
+import { DataBlockRecords, DataBlockSelector } from '.';
 import { SortEnd } from 'react-sortable-hoc';
 import { arrayMoveImmutable } from 'array-move';
+import { IMetadata } from '../Metadata';
 
 export interface IDataBlockFieldProps {
   label: string;
   settings: PanelSettings;
   field: Field;
+  parentFields: string[];
   value: any;
+  fieldsRenderer: (ctFields: Field[], parent: IMetadata, parentFields?: string[], onFieldUpdate?: (field: string | undefined, value: any, parents: string[]) => void) => (JSX.Element | null)[] | undefined
   onSubmit: (data: any) => void;
 }
 
-export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ label, settings, field, value, onSubmit }: React.PropsWithChildren<IDataBlockFieldProps>) => {
+export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ label, settings, field, parentFields = [], value, fieldsRenderer, onSubmit }: React.PropsWithChildren<IDataBlockFieldProps>) => {
   const [ selectedIndex, setSelectedIndex ] = useState<number | null>(null);
-  const [ selectedDataType, setSelectedDataType ] = useState<string | null>(null);
-  const [ selectedSchema, setSelectedSchema ] = useState<any | null>(null);
+  const [ selectedGroup, setSelectedGroup ] = useState<FieldGroup | undefined | null>(null);
+  const [ selectedBlockData, setSelectedBlockData ] = useState<any | null>(null);
 
-  const onUpdate = useCallback((data: any) => {
+  const onFieldUpdate = useCallback((crntField: string | undefined, crntValue: any) => {
     const dataClone: any[] = Object.assign([], value);
+
+    if (!crntField) {
+      return;
+    }
+    
     if (selectedIndex !== null && selectedIndex !== undefined) {
+      const data = Object.assign({}, dataClone[selectedIndex]);
       dataClone[selectedIndex] = {
         ...data,
-        blockType: selectedSchema?.id
+        [crntField]: crntValue,
+        fieldGroup: selectedGroup?.id
       };
     } else {
       dataClone.push({
-        ...data,
-        blockType: selectedSchema?.id
+        [crntField]: crntValue,
+        fieldGroup: selectedGroup?.id
       });
+
+      const newIndex = dataClone.length - 1;
+      setSelectedIndex(newIndex);
     }
+
     onSubmit(dataClone);
-  }, [value, selectedIndex, onSubmit, selectedSchema]);
+  }, [selectedGroup?.id, selectedIndex, value, onSubmit]);
 
   const deleteItem = useCallback((index: number) => {
     const dataClone: any[] = Object.assign([], value);
@@ -47,14 +61,31 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
     onSubmit(dataClone);
   }, [value, selectedIndex, onSubmit]);
 
-  const onSetDataType = (dataType: string | null) => {
-    setSelectedDataType(dataType);
+  const onGroupChange = (group: FieldGroup | null | undefined) => {
+    setSelectedGroup(group);
 
-    if (!dataType) {
+    if (!group) {
       setSelectedIndex(null);
-      setSelectedSchema(null);
     }
   }
+
+  const onAdd = useCallback(() => {
+    setSelectedIndex(null);
+    setSelectedGroup(null);
+    setSelectedBlockData({});
+  }, [setSelectedIndex, setSelectedGroup, setSelectedBlockData]); 
+  
+  const onEdit = useCallback((index: number) => {
+    setSelectedIndex(index);
+
+    const fieldData = value[index];
+    if (index !== null && settings?.fieldGroups) {
+      const fieldGroup = fieldData?.fieldGroup;
+      const group = settings?.fieldGroups.find(group => group.id === fieldGroup);
+      setSelectedGroup(group);
+      setSelectedBlockData(fieldData);
+    }
+  }, [setSelectedIndex, setSelectedBlockData, value]);
 
   const onSort = useCallback(({ oldIndex, newIndex }: SortEnd) => {
     if (!value || value.length === 0) {
@@ -68,20 +99,9 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
     const newEntries = arrayMoveImmutable(value, oldIndex, newIndex);
     onSubmit(newEntries);
   }, [value, selectedIndex]);
-
-  const model = useMemo(() => (value && selectedIndex !== null && selectedIndex !== undefined) ? value[selectedIndex] : null, [value, selectedIndex]);
-
-  useEffect(() => {
-    if (selectedIndex !== null && settings?.dataTypes) {
-      const blockType = model["blockType"];
-      const schema = settings?.dataTypes.find(dataType => dataType.id === blockType);
-      setSelectedSchema(schema);
-      setSelectedDataType(blockType);
-    }
-  }, [selectedIndex, model, settings?.dataTypes]);
   
   return (
-    <div className='data_block__field'>
+    <div className='json_data__field'>
 
       <VsLabel>
         <div className={`metadata_field__label`}>
@@ -91,24 +111,24 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
 
       <DataBlockSelector
         field={field}
-        selectedDataType={selectedDataType}
-        dataTypes={settings.dataTypes}
-        onSetDataType={onSetDataType}
-        onSchemaUpdate={setSelectedSchema} />
+        selectedGroup={selectedGroup?.id}
+        fieldGroups={settings.fieldGroups}
+        onGroupChange={onGroupChange} />
 
-      <DataBlockForm
-        label={(model && selectedIndex !== null) ? `Editing: Record ${selectedIndex + 1}` : `Create a new ${selectedSchema?.id}`}
-        model={model}
-        schema={selectedSchema?.schema}
-        onUpdate={onUpdate}
-        onClear={() => setSelectedIndex(null)} />
+      {
+        selectedGroup?.fields && (
+          <div className='block_field__form'>
+            { fieldsRenderer(selectedGroup?.fields, selectedBlockData || {}, [...parentFields, field.name], onFieldUpdate) }
+          </div>
+        )
+      }
 
       <DataBlockRecords
         records={value}
         selectedIndex={selectedIndex}
-        onAdd={() => setSelectedIndex(null)}
+        onAdd={onAdd}
         onSort={onSort}
-        onEdit={(index: number) => setSelectedIndex(index)}
+        onEdit={onEdit}
         onDelete={deleteItem} />
     </div>
   );

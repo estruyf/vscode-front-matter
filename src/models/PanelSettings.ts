@@ -25,7 +25,13 @@ export interface PanelSettings {
   framework: string | undefined;
   commands: FrameworkCommands;
   dataTypes: DataType[] | undefined;
+  fieldGroups: FieldGroup[] | undefined;
   commaSeparatedFields: string[];
+}
+
+export interface FieldGroup { 
+  id: string;
+  fields: Field[];
 }
 
 export interface FrameworkCommands {
@@ -55,7 +61,7 @@ export interface Field {
   taxonomyId?: string;
   default?: string;
   fields?: Field[];
-  blockType?: string | string[];
+  fieldGroup?: string | string[];
   dataType?: string | string[];
 }
 

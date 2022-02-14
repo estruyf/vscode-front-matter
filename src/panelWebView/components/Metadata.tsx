@@ -21,7 +21,7 @@ import FieldBoundary from './ErrorBoundary/FieldBoundary';
 import { DraftField } from './Fields/DraftField';
 import { VsLabel } from './VscodeComponents';
 import { DataBlockField } from './DataBlock';
-import { JsonFieldField } from './JsonField';
+import { JsonField } from './JsonField';
 
 export interface IMetadata {
   [prop: string]: string[] | string | null | IMetadata;
@@ -57,10 +57,18 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
     return null;
   }
 
-  const renderFields = (ctFields: Field[], parent: IMetadata, parentFields: string[] = []) => {
+  const renderFields = (ctFields: Field[], parent: IMetadata, parentFields: string[] = [], onFieldUpdate?: (field: string | undefined, value: any, parents: string[]) => void) => {
     if (!ctFields) {
       return;
     }
+
+    const onSendUpdate = (field: string | undefined, value: any, parents: string[]) => {
+      if (onFieldUpdate) {
+        onFieldUpdate(field, value, parents);
+      } else {
+        sendUpdate(field, value, parents);
+      }
+    };
 
     return ctFields.map(field => {
       if (field.hidden) {
@@ -76,7 +84,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               label={field.title || field.name}
               date={dateValue}
               format={settings?.date?.format}
-              onChange={(date => sendUpdate(field.name, date, parentFields))} />
+              onChange={(date => onSendUpdate(field.name, date, parentFields))} />
           </FieldBoundary>
         );
       } else if (field.type === 'boolean') {
@@ -86,7 +94,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               key={field.name}
               label={field.title || field.name}
               checked={!!parent[field.name] as any} 
-              onChanged={(checked) => sendUpdate(field.name, checked, parentFields)} />
+              onChanged={(checked) => onSendUpdate(field.name, checked, parentFields)} />
           </FieldBoundary>
         );
       } else if (field.type === 'string') {
@@ -106,7 +114,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               singleLine={field.single}
               limit={limit}
               rows={3}
-              onChange={(value) => sendUpdate(field.name, value, parentFields)}
+              onChange={(value) => onSendUpdate(field.name, value, parentFields)}
               value={textValue as string || null} />
           </FieldBoundary>
         );
@@ -122,7 +130,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
             <NumberField 
               key={field.name}
               label={field.title || field.name}
-              onChange={(value) => sendUpdate(field.name, value, parentFields)}
+              onChange={(value) => onSendUpdate(field.name, value, parentFields)}
               value={nrValue} />
           </FieldBoundary>
         );
@@ -136,7 +144,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               parents={parentFields}
               value={parent[field.name] as PreviewImageValue | PreviewImageValue[] | null}
               multiple={field.multiple}
-              onChange={(value) => sendUpdate(field.name, value, parentFields)} />
+              onChange={(value) => onSendUpdate(field.name, value, parentFields)} />
           </FieldBoundary>
         );
       } else if (field.type === 'choice') {
@@ -150,7 +158,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               selected={choiceValue as string}
               choices={choices}
               multiSelect={field.multiple}
-              onChange={(value => sendUpdate(field.name, value, parentFields))} />
+              onChange={(value => onSendUpdate(field.name, value, parentFields))} />
           </FieldBoundary>
         );
       } else if (field.type === 'tags') {
@@ -214,7 +222,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               type={draftField?.type || "boolean"}
               choices={draftField?.choices || []}
               value={value as boolean | string | null | undefined}
-              onChanged={(value: boolean | string) => sendUpdate(field.name, value, parentFields)} />
+              onChanged={(value: boolean | string) => onSendUpdate(field.name, value, parentFields)} />
           </FieldBoundary>
         );
       } else if (field.type === 'fields') { 
@@ -241,12 +249,27 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
 
         return (
           <FieldBoundary key={field.name} fieldName={field.title || field.name}>
-            <JsonFieldField
+            <JsonField
               label={field.title || field.name}
               settings={settings}
               field={field}
               value={collectionData}
-              onSubmit={(value) => sendUpdate(field.name, value, parentFields)} />
+              onSubmit={(value) => onSendUpdate(field.name, value, parentFields)} />
+          </FieldBoundary>
+        );
+      } else if (field.type === 'block') {
+        const blockData = parent[field.name];
+
+        return (
+          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+            <DataBlockField
+              label={field.title || field.name}
+              settings={settings}
+              field={field}
+              value={blockData}
+              fieldsRenderer={renderFields}
+              parentFields={parentFields}
+              onSubmit={(value) => onSendUpdate(field.name, value, parentFields)} />
           </FieldBoundary>
         );
       } else {

@@ -33,9 +33,6 @@ const AutoField = createAutoField(props => {
       return NestField;
     case String:
       return TextField;
-    case "image":
-      console.log(`You selected the image type`)
-      return PreviewImageField;
   }
 
   return invariant(false, 'Unsupported field type: %s', props.fieldType);

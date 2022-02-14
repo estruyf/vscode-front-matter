@@ -23,7 +23,7 @@ export const JsonFieldRecords = ({ records, selectedIndex, onSort, onAdd, onEdit
   }
 
   return (
-    <div className='data_block__list'>
+    <div className='json_data__list'>
       <VsLabel>
         <div className={`metadata_field__label`} >
           <div>
@@ -31,7 +31,7 @@ export const JsonFieldRecords = ({ records, selectedIndex, onSort, onAdd, onEdit
             <span style={{ lineHeight: "16px"}}>Records</span>
           </div>
 
-          <button title='Add new record' className='data_block__list__button' onClick={onAdd}>
+          <button title='Add new record' className='json_data__list__button' onClick={onAdd}>
             <PlusIcon style={{ width: "16px", height: "16px" }} /> 
           </button>
         </div>

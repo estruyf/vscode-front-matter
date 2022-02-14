@@ -14,7 +14,7 @@ const DragHandle = SortableHandle(() => <span className='drag_handler'><Selector
 
 export const JsonFieldRecord = SortableElement(({ label, id, onEdit, onDelete, isSelected }: React.PropsWithChildren<IJsonFieldRecordProps>) => {
   return (
-    <li className={`data_block__record ${isSelected ? `data_block__record_selected` : ``}`}>
+    <li className={`json_data__record ${isSelected ? `json_data__record_selected` : ``}`}>
       <div>
         <DragHandle />
 
@@ -22,12 +22,12 @@ export const JsonFieldRecord = SortableElement(({ label, id, onEdit, onDelete, i
       </div>
 
       <div>
-        <button title='Edit record' className='data_block__list__button data_block__list__button_edit' onClick={() => onEdit(id)}>
-          <PencilIcon className='data_block__list__button_icon' />
+        <button title='Edit record' className='json_data__list__button json_data__list__button_edit' onClick={() => onEdit(id)}>
+          <PencilIcon className='json_data__list__button_icon' />
           <span className='sr-only'>Edit</span>
         </button>
-        <button title='Delete record' className='data_block__list__button data_block__list__button_delete' onClick={() => onDelete(id)}>
-          <TrashIcon className='data_block__list__button_icon' />
+        <button title='Delete record' className='json_data__list__button json_data__list__button_delete' onClick={() => onDelete(id)}>
+          <TrashIcon className='json_data__list__button_icon' />
           <span className='sr-only'>Delete</span>
         </button>
       </div>

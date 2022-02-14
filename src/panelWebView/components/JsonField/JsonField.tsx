@@ -7,7 +7,7 @@ import { JsonFieldRecords, JsonFieldForm, JsonFieldSelector } from '.';
 import { SortEnd } from 'react-sortable-hoc';
 import { arrayMoveImmutable } from 'array-move';
 
-export interface IJsonFieldFieldProps {
+export interface IJsonFieldProps {
   label: string;
   settings: PanelSettings;
   field: Field;
@@ -15,7 +15,7 @@ export interface IJsonFieldFieldProps {
   onSubmit: (data: any) => void;
 }
 
-export const JsonFieldField: React.FunctionComponent<IJsonFieldFieldProps> = ({ label, settings, field, value, onSubmit }: React.PropsWithChildren<IJsonFieldFieldProps>) => {
+export const JsonField: React.FunctionComponent<IJsonFieldProps> = ({ label, settings, field, value, onSubmit }: React.PropsWithChildren<IJsonFieldProps>) => {
   const [ selectedIndex, setSelectedIndex ] = useState<number | null>(null);
   const [ selectedDataType, setSelectedDataType ] = useState<string | null>(null);
   const [ selectedSchema, setSelectedSchema ] = useState<any | null>(null);
@@ -81,7 +81,7 @@ export const JsonFieldField: React.FunctionComponent<IJsonFieldFieldProps> = ({ 
   }, [selectedIndex, model, settings?.dataTypes]);
   
   return (
-    <div className='data_block__field'>
+    <div className='json_data__field'>
 
       <VsLabel>
         <div className={`metadata_field__label`}>

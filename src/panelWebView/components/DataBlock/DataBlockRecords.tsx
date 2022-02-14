@@ -23,7 +23,7 @@ export const DataBlockRecords = ({ records, selectedIndex, onSort, onAdd, onEdit
   }
 
   return (
-    <div className='data_block__list'>
+    <div className='json_data__list'>
       <VsLabel>
         <div className={`metadata_field__label`} >
           <div>
@@ -31,7 +31,7 @@ export const DataBlockRecords = ({ records, selectedIndex, onSort, onAdd, onEdit
             <span style={{ lineHeight: "16px"}}>Records</span>
           </div>
 
-          <button title='Add new record' className='data_block__list__button' onClick={onAdd}>
+          <button title='Add new record' className='json_data__list__button' onClick={onAdd}>
             <PlusIcon style={{ width: "16px", height: "16px" }} /> 
           </button>
         </div>
@@ -44,7 +44,7 @@ export const DataBlockRecords = ({ records, selectedIndex, onSort, onAdd, onEdit
             key={idx} 
             id={idx}
             index={idx}
-            label={v?.blockType ?? 'Record'}
+            label={v?.fieldGroup ?? 'Block'}
             isSelected={idx === selectedIndex}
             onEdit={onEdit}
             onDelete={onDelete}  /> 
