@@ -225,8 +225,12 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               onChanged={(value: boolean | string) => onSendUpdate(field.name, value, parentFields)} />
           </FieldBoundary>
         );
-      } else if (field.type === 'fields') { 
-        if (field.fields && parent && parent[field.name]) {
+      } else if (field.type === 'fields') {
+        if (field.fields && parent) {
+          if (!parent[field.name]) {
+            parent[field.name] = {};
+          }
+
           const subMetadata = parent[field.name] as IMetadata;
           return (
             <FieldBoundary key={field.name} fieldName={field.title || field.name}>
@@ -237,7 +241,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
                   </div>
                 </VsLabel>
 
-                { renderFields(field.fields, subMetadata, [...parentFields, field.name]) }
+                { renderFields(field.fields, subMetadata, [...parentFields, field.name], onFieldUpdate) }
               </div>
             </FieldBoundary>
           );

@@ -23,7 +23,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
   const [ selectedGroup, setSelectedGroup ] = useState<FieldGroup | undefined | null>(null);
   const [ selectedBlockData, setSelectedBlockData ] = useState<any | null>(null);
 
-  const onFieldUpdate = useCallback((crntField: string | undefined, crntValue: any) => {
+  const onFieldUpdate = useCallback((crntField: string | undefined, crntValue: any, parents: string[]) => {
     const dataClone: any[] = Object.assign([], value);
 
     if (!crntField) {
@@ -32,14 +32,40 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
     
     if (selectedIndex !== null && selectedIndex !== undefined) {
       const data = Object.assign({}, dataClone[selectedIndex]);
+
+      let parentObj: any = data;
+      if (parents.length > 1) {
+        parents.shift();
+        for (const parent of parents) {
+          if (!data[parent]) {
+            data[parent] = {};
+          }
+
+          parentObj = data[parent];
+        }
+      }
+
+      parentObj[crntField] = crntValue;
+
       dataClone[selectedIndex] = {
         ...data,
-        [crntField]: crntValue,
         fieldGroup: selectedGroup?.id
       };
     } else {
+      const data: any = {};
+      let parentObj: any = data;
+      if (parents.length > 1) {
+        parents.shift();
+        for (const parent of parents) {
+          data[parent] = {};
+          parentObj = data[parent];
+        }
+      }
+
+      parentObj[crntField] = crntValue;
+
       dataClone.push({
-        [crntField]: crntValue,
+        ...data,
         fieldGroup: selectedGroup?.id
       });
 
