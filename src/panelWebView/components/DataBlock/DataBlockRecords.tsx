@@ -3,7 +3,10 @@ import * as React from 'react';
 import { VsLabel } from '../VscodeComponents';
 import { DataBlockRecord } from '.';
 import { SortableContainer, SortEnd } from 'react-sortable-hoc';
+import { useCallback } from 'react';
+import { FieldGroup } from '../../../models';
 export interface IDataBlockRecordsProps {
+  fieldGroups?: FieldGroup[];
   records: any[];
   selectedIndex: number | null;
   onAdd: () => void;
@@ -16,7 +19,22 @@ const Container = SortableContainer(({children}: React.PropsWithChildren<any>) =
   return <ul>{children}</ul>;
 });
 
-export const DataBlockRecords = ({ records, selectedIndex, onSort, onAdd, onEdit, onDelete }: React.PropsWithChildren<IDataBlockRecordsProps>) => {
+export const DataBlockRecords = ({ fieldGroups, records, selectedIndex, onSort, onAdd, onEdit, onDelete }: React.PropsWithChildren<IDataBlockRecordsProps>) => {
+
+  const getLabel = useCallback((record: any) => {
+    if (record.fieldGroup) {
+      if (fieldGroups) {
+        const fieldGroup = fieldGroups.find(f => f.id === record.fieldGroup);
+        if (fieldGroup && fieldGroup.labelField && record[fieldGroup.labelField]) {
+          return record[fieldGroup.labelField];
+        }
+      }
+
+      return record.fieldGroup;
+    }
+    
+    return 'Block';
+  }, []);
 
   if (!records || !records.length) {
     return null;
@@ -44,7 +62,7 @@ export const DataBlockRecords = ({ records, selectedIndex, onSort, onAdd, onEdit
             key={idx} 
             id={idx}
             index={idx}
-            label={v?.fieldGroup ?? 'Block'}
+            label={getLabel(v)}
             isSelected={idx === selectedIndex}
             onEdit={onEdit}
             onDelete={onDelete}  /> 

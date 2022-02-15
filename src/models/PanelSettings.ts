@@ -31,6 +31,7 @@ export interface PanelSettings {
 
 export interface FieldGroup { 
   id: string;
+  labelField?: string;
   fields: Field[];
 }
 

@@ -259,6 +259,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
       }
 
       <DataBlockRecords
+        fieldGroups={settings.fieldGroups}
         records={value}
         selectedIndex={selectedIndex}
         onAdd={onAdd}
