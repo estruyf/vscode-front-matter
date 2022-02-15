@@ -7,7 +7,6 @@ import { DataBlockRecords, DataBlockSelector } from '.';
 import { SortEnd } from 'react-sortable-hoc';
 import { arrayMoveImmutable } from 'array-move';
 import { IMetadata } from '../Metadata';
-import { MessageHelper } from '../../../helpers/MessageHelper';
 
 export interface IDataBlockFieldProps {
   label: string;
@@ -21,17 +20,21 @@ export interface IDataBlockFieldProps {
     parent: IMetadata, 
     parentFields?: string[], 
     blockData?: BlockFieldData,
-    onFieldUpdate?: (field: string | undefined, value: any, parents: string[]) => void
+    onFieldUpdate?: (field: string | undefined, value: any, parents: string[]) => void,
+    parentBlock?: string | null
   ) => (JSX.Element | null)[] | undefined
   onSubmit: (data: any) => void;
+  parentBlock: string | null | undefined;
 }
 
-export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ label, filePath, settings, field, parentFields = [], value, fieldsRenderer, onSubmit }: React.PropsWithChildren<IDataBlockFieldProps>) => {
+export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ label, filePath, settings, field, parentFields = [], value, fieldsRenderer, onSubmit, parentBlock }: React.PropsWithChildren<IDataBlockFieldProps>) => {
   const [ selectedIndex, setSelectedIndex ] = useState<number | null>(null);
   const [ selectedGroup, setSelectedGroup ] = useState<FieldGroup | undefined | null>(null);
   const [ selectedBlockData, setSelectedBlockData ] = useState<any | null>(null);
+  const [ hideSubBlock, setHideSubBlock ] = useState<boolean>(true);
 
-  const stateKey = useMemo(() => `${filePath}-data_block-${field.name}`, [filePath, field.name]);
+  const SELECTION_STATE_KEY = useMemo(() => `${filePath}-data-selection-${field.name}`, [filePath, field.name]);
+  const DATA_STATE_KEY = useMemo(() => `${filePath}-data-state-${field.name}`, [filePath, field.name]);
 
   const onFieldUpdate = useCallback((crntField: string | undefined, crntValue: any, parents: string[]) => {
     const dataClone: any[] = Object.assign([], value);
@@ -40,40 +43,21 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
       return;
     }
 
+    let data: any = {};
     if (selectedIndex !== null && selectedIndex !== undefined) {
-      const data = Object.assign({}, dataClone[selectedIndex]);
+      data = Object.assign({}, dataClone[selectedIndex]);
+    }
 
-      let parentObj: any = data;
-      if (parents.length > 1) {
-        parents.shift();
-        for (const parent of parents) {
-          if (!data[parent]) {
-            data[parent] = {};
-          }
+    let parentObj: any = data;
+    parentObj[crntField] = crntValue;
 
-          parentObj = data[parent];
-        }
-      }
 
-      parentObj[crntField] = crntValue;
-
+    if (selectedIndex !== null && selectedIndex !== undefined) {
       dataClone[selectedIndex] = {
         ...data,
         fieldGroup: selectedGroup?.id
       };
     } else {
-      const data: any = {};
-      let parentObj: any = data;
-      if (parents.length > 1) {
-        parents.shift();
-        for (const parent of parents) {
-          data[parent] = {};
-          parentObj = data[parent];
-        }
-      }
-
-      parentObj[crntField] = crntValue;
-
       dataClone.push({
         ...data,
         fieldGroup: selectedGroup?.id
@@ -81,7 +65,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
 
       const newIndex = dataClone.length - 1;
       setSelectedIndex(newIndex);
-      updateState(newIndex);
+      updateSelectionState(newIndex);
     }
 
     onSubmit(dataClone);
@@ -96,6 +80,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
 
     dataClone.splice(index, 1);
     onSubmit(dataClone);
+    onAdd();
   }, [value, selectedIndex, onSubmit]);
 
   const onGroupChange = (group: FieldGroup | null | undefined) => {
@@ -107,18 +92,52 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
     }
   }
 
+  /**
+   * Store the current state + show the form
+   */
+  const onShowForm = () => {
+    const dataClone = Object.assign([], value);
+    localStorage.setItem(DATA_STATE_KEY, JSON.stringify(dataClone));
+    setHideSubBlock(false);
+  };
+
+  /**
+   * Reset the state back to the state before editing
+   */
+  const onCancelForm = () => {
+    const prevState = localStorage.getItem(DATA_STATE_KEY);
+    if (prevState) {
+      const dataClone = JSON.parse(prevState);
+      onSubmit(dataClone);
+    }
+    setHideSubBlock(true);
+    onAdd();
+  };
+
+  /**
+   * Remove the previous state and hide the form
+   */
+  const onSaveForm = () => {
+    localStorage.removeItem(DATA_STATE_KEY);
+    setHideSubBlock(true);
+    onAdd();
+  };
+
+
   const onAdd = useCallback(() => {
     setSelectedIndex(null);
     setSelectedGroup(null);
     setSelectedBlockData({});
 
-    updateState(undefined);
+    updateSelectionState(undefined);
   }, [setSelectedIndex, setSelectedGroup, setSelectedBlockData]); 
   
   const onEdit = useCallback((index: number) => {
-    updateState(index);
-
+    updateSelectionState(index);
     setSelectedIndex(index);
+
+    // Show the form
+    onShowForm();
 
     const fieldData = value[index];
     if (index !== null && settings?.fieldGroups) {
@@ -143,15 +162,16 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
   }, [value, selectedIndex]);
 
   // Retrieving the state from local storage (does not need to be persistent)
-  const retrieveState = useCallback(() => {
-    const prevState = localStorage.getItem(stateKey);
-    return prevState ? parseInt(prevState) : undefined;
-  }, [stateKey]);
+  const retrieveSelectionState = useCallback(() => {
+    const prevState = localStorage.getItem(SELECTION_STATE_KEY);
+    const prevStateValue = prevState ? parseInt(prevState) : null;
+    return prevStateValue === null || isNaN(prevStateValue) ? undefined : prevStateValue;
+  }, [SELECTION_STATE_KEY]);
 
   // Storing the state to local storage (does not need to be persistent)
-  const updateState = useCallback((value: number | undefined) => {
-    localStorage.setItem(stateKey, value as any);
-  }, [stateKey]);
+  const updateSelectionState = useCallback((value: number | undefined) => {
+    localStorage.setItem(SELECTION_STATE_KEY, value as any);
+  }, [SELECTION_STATE_KEY]);
 
   useEffect(() => {
     if (selectedIndex !== null) {
@@ -161,11 +181,21 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
   } , [selectedIndex, value, setSelectedBlockData]);
 
   useEffect(() => {
-    const stateIdx = retrieveState();
+    if (parentBlock) {
+      onAdd();
+    }
+  }, [parentBlock]);
+  
+  useEffect(() => {
+    const stateIdx = retrieveSelectionState();
     if (stateIdx !== undefined) {
       onEdit(stateIdx);
     }
   }, []);
+
+  if (parentBlock === null) {
+    return null;
+  }
   
   return (
     <div className='json_data__field'>
@@ -176,33 +206,55 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
         </div>
       </VsLabel>
 
-      <DataBlockSelector
-        field={field}
-        selectedGroup={selectedGroup?.id}
-        fieldGroups={settings.fieldGroups}
-        onGroupChange={onGroupChange} />
-
       {
-        selectedGroup?.fields && (
+        (!hideSubBlock) ? (
           <div className='block_field__form'>
             <h3>
-              {selectedIndex !== null ? `Editing: ${selectedGroup.id} ${selectedIndex + 1}` : `Create a new ${selectedGroup?.id}`}
+              {
+                selectedGroup?.id ? (
+                  selectedIndex !== null ? `Editing: ${selectedGroup.id} ${selectedIndex + 1}` : `Create a new ${selectedGroup?.id}`
+                ) : (
+                  `Select a group`
+                )
+              }
             </h3>
 
+            <DataBlockSelector
+              field={field}
+              selectedGroup={selectedGroup?.id}
+              fieldGroups={settings.fieldGroups}
+              onGroupChange={onGroupChange} />
+
             { 
-              fieldsRenderer(
-                selectedGroup?.fields, 
-                selectedBlockData || {}, 
-                [...parentFields, field.name], 
-                {
-                  parentFields: [...parentFields, field.name],
-                  blockType: selectedGroup?.id || undefined,
-                  selectedIndex: selectedIndex === null ? undefined : selectedIndex
-                }, 
-                onFieldUpdate
-              ) 
+              selectedGroup?.fields && (
+                fieldsRenderer(
+                  selectedGroup?.fields, 
+                  selectedBlockData || {}, 
+                  [...parentFields, field.name], 
+                  {
+                    parentFields: [...parentFields, field.name],
+                    blockType: selectedGroup?.id || undefined,
+                    selectedIndex: selectedIndex === null ? undefined : selectedIndex
+                  }, 
+                  onFieldUpdate,
+                  selectedIndex === null ? null : `${field.name}-${selectedGroup?.id}-${selectedIndex}`
+                ) 
+              )
             }
+
+            <div className={`block_field__form__buttons`}>
+              <button 
+                className={`block_field__form__button__save`} 
+                title={`Save`} 
+                onClick={onSaveForm}>Save</button>
+              <button 
+                className={`block_field__form__button__cancel`} 
+                title={`Cancel`} 
+                onClick={onCancelForm}>Cancel</button>
+            </div>
           </div>
+        ) : (
+          <button onClick={onShowForm}>Add {field.name}</button>
         )
       }
 

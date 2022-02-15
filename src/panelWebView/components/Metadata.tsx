@@ -63,6 +63,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
     parentFields: string[] = [], 
     blockData?: BlockFieldData,
     onFieldUpdate?: (field: string | undefined, value: any, parents: string[]) => void,
+    parentBlock?: string | null
   ) => {
     if (!ctFields) {
       return;
@@ -105,6 +106,8 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
         );
       } else if (field.type === 'string') {
         const textValue = parent[field.name];
+
+        console.log(textValue, parent, field)
 
         let limit = -1;
         if (field.name === 'title') {
@@ -284,6 +287,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               fieldsRenderer={renderFields}
               parentFields={parentFields}
               filePath={metadata.filePath as string}
+              parentBlock={parentBlock}
               onSubmit={(value) => onSendUpdate(field.name, value, parentFields)} />
           </FieldBoundary>
         );

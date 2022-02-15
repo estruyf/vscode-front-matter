@@ -5,6 +5,42 @@
   padding: 1rem;
 }
 
+.block_field__form__buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+
+  button {
+    margin: 0 1rem;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.block_field__form__button__save {
+  background-color: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+
+  &:hover {
+    background-color: var(--vscode-button-hoverBackground);
+  }
+}
+
+.block_field__form__button__cancel {
+  background-color: var(--vscode-button-secondaryBackground);
+  color: var(--vscode-button-secondaryForeground);
+
+  &:hover {
+    background-color: var(--vscode-button-secondaryHoverBackground);
+  }
+}
+
 .json_data__field {
   border: 1px dashed var(--vscode-button-secondaryBackground);
   color: var(--vscode--settings-headerForeground);
