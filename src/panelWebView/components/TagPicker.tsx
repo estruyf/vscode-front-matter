@@ -7,7 +7,7 @@ import Downshift from 'downshift';
 import { AddIcon } from './Icons/AddIcon';
 import { VsLabel } from './VscodeComponents';
 import { MessageHelper } from '../../helpers/MessageHelper';
-import { CustomTaxonomyData } from '../../models';
+import { BlockFieldData, CustomTaxonomyData } from '../../models';
 
 export interface ITagPickerProps {
   type: TagType;
@@ -19,6 +19,7 @@ export interface ITagPickerProps {
   unsetFocus: () => void;
 
   parents?: string[];
+  blockData?: BlockFieldData;
   label?: string;
   disableConfigurable?: boolean;
   fieldName?: string;
@@ -26,7 +27,7 @@ export interface ITagPickerProps {
 }
 
 const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsWithChildren<ITagPickerProps>) => {
-  const { label, icon, type, crntSelected, options, freeform, focussed, unsetFocus, disableConfigurable, fieldName, taxonomyId, parents } = props;
+  const { label, icon, type, crntSelected, options, freeform, focussed, unsetFocus, disableConfigurable, fieldName, taxonomyId, parents, blockData } = props;
   const [ selected, setSelected ] = React.useState<string[]>([]);
   const [ inputValue, setInputValue ] = React.useState<string>("");
   const prevSelected = usePrevious(crntSelected);
@@ -69,12 +70,14 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
     if (type === TagType.tags) {
       MessageHelper.sendMessage(CommandToCode.updateTags, {
         values,
-        parents
+        parents,
+        blockData
       });
     } else if (type === TagType.categories) {
       MessageHelper.sendMessage(CommandToCode.updateCategories, {
         values,
-        parents
+        parents,
+        blockData
       });
     } else if (type === TagType.keywords) {
       MessageHelper.sendMessage(CommandToCode.updateKeywords, {
@@ -86,7 +89,8 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
         id: taxonomyId,
         name: fieldName,
         options: values,
-        parents
+        parents,
+        blockData
       } as CustomTaxonomyData);
     }
   };

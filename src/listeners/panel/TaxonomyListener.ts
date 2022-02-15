@@ -3,7 +3,7 @@ import { TagType } from "../../panelWebView/TagType";
 import { BaseListener } from "./BaseListener";
 import { window } from "vscode";
 import { ArticleHelper, Settings } from "../../helpers";
-import { CustomTaxonomyData, TaxonomyType } from "../../models";
+import { BlockFieldData, CustomTaxonomyData, TaxonomyType } from "../../models";
 import { DataListener } from ".";
 import { SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from "../../constants";
 
@@ -19,13 +19,13 @@ export class TaxonomyListener extends BaseListener {
 
     switch(msg.command) {
       case CommandToCode.updateTags:
-        this.updateTags(TagType.tags, msg.data?.values || [], msg.data?.parents || []);
+        this.updateTags(TagType.tags, msg.data?.values || [], msg.data?.parents || [], msg.data?.blockData);
         break;
       case CommandToCode.updateCategories:
-        this.updateTags(TagType.categories, msg.data?.values || [], msg.data?.parents || []);
+        this.updateTags(TagType.categories, msg.data?.values || [], msg.data?.parents || [], msg.data?.blockData);
         break;
       case CommandToCode.updateKeywords:
-        this.updateTags(TagType.keywords, msg.data?.values || [], msg.data?.parents || []);
+        this.updateTags(TagType.keywords, msg.data?.values || [], msg.data?.parents || [], msg.data?.blockData);
         break;
       case CommandToCode.updateCustomTaxonomy:
         this.updateCustomTaxonomy(msg.data);
@@ -47,7 +47,7 @@ export class TaxonomyListener extends BaseListener {
    * @param tagType 
    * @param values 
    */
-   private static updateTags(tagType: TagType, values: string[], parents: string[]) {
+   private static updateTags(tagType: TagType, values: string[], parents: string[], blockData?: BlockFieldData) {
     const editor = window.activeTextEditor;
     if (!editor) {
       return "";
@@ -56,11 +56,7 @@ export class TaxonomyListener extends BaseListener {
     const article = ArticleHelper.getFrontMatter(editor);
     if (article && article.data) {
 
-      // Support multi-level fields
-      let parentObj = article.data;
-      for (const parent of parents || []) {
-        parentObj = parentObj[parent];
-      }
+      const parentObj = DataListener.getParentObject(article.data, article, parents, blockData);
 
       parentObj[tagType.toLowerCase()] = values || [];
       ArticleHelper.update(editor, article);
@@ -85,11 +81,7 @@ export class TaxonomyListener extends BaseListener {
     const article = ArticleHelper.getFrontMatter(editor);
     if (article && article.data) {
 
-      // Support multi-level fields
-      let parentObj = article.data;
-      for (const parent of data.parents || []) {
-        parentObj = parentObj[parent];
-      }
+      const parentObj = DataListener.getParentObject(article.data, article, data.parents, data.blockData);
 
       parentObj[data.name] = data.options || [];
       ArticleHelper.update(editor, article);

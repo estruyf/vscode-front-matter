@@ -8,6 +8,7 @@ import { commands, ThemeIcon, window } from 'vscode';
 import { ArticleHelper, Settings } from "../../helpers";
 import { COMMAND_NAME, DefaultFields, SETTING_COMMA_SEPARATED_FIELDS, SETTING_TAXONOMY_CONTENT_TYPES } from "../../constants";
 import { Article } from '../../commands';
+import { ParsedFrontMatter } from '../../parsers';
 
 const FILE_LIMIT = 10;
 
@@ -133,8 +134,50 @@ export class DataListener extends BaseListener {
     const imageFields = contentType.fields.filter((f) => f.type === "image" && f.multiple);
 
     // Support multi-level fields
-    let parentObj = article.data;
+    const parentObj = DataListener.getParentObject(article.data, article, parents, blockData);
+
+    for (const dateField of dateFields) {
+      if ((field === dateField.name) && value) {
+        parentObj[field] = Article.formatDate(new Date(value));
+      } else if (!imageFields.find(f => f.name === field)) {
+        // Only override the field data if it is not an multiselect image field
+        parentObj[field] = value;
+      }
+    }
+
+    for (const imageField of imageFields) {
+      if (field === imageField.name) {
+        // If value is an array, it means it comes from the explorer view itself (deletion)
+        if (Array.isArray(value)) {
+          parentObj[field] = value || [];
+        } else { // Otherwise it is coming from the media dashboard (addition)
+          let fieldValue = parentObj[field];
+          if (fieldValue && !Array.isArray(fieldValue)) {
+            fieldValue = [fieldValue];
+          }
+          const crntData = Object.assign([], fieldValue);
+          const allRelPaths = [...(crntData || []), value];
+          parentObj[field] = [...new Set(allRelPaths)].filter(f => f);
+        }
+      }
+    }
+    
+    ArticleHelper.update(editor, article);
+    this.pushMetadata(article.data);
+  }
+
+  /**
+   * Retrieve the parent object to update
+   * @param data 
+   * @param article 
+   * @param parents 
+   * @param blockData 
+   * @returns 
+   */
+  public static getParentObject(data: any, article: ParsedFrontMatter, parents: string[] | undefined, blockData?: BlockFieldData) {
+    let parentObj = data;
     let allParents = Object.assign([], parents);
+    const contentType = ArticleHelper.getContentType(article.data);
 
     // Add support for block fields
     if (blockData?.parentFields) {
@@ -188,34 +231,7 @@ export class DataListener extends BaseListener {
       }
     }
 
-    for (const dateField of dateFields) {
-      if ((field === dateField.name) && value) {
-        parentObj[field] = Article.formatDate(new Date(value));
-      } else if (!imageFields.find(f => f.name === field)) {
-        // Only override the field data if it is not an multiselect image field
-        parentObj[field] = value;
-      }
-    }
-
-    for (const imageField of imageFields) {
-      if (field === imageField.name) {
-        // If value is an array, it means it comes from the explorer view itself (deletion)
-        if (Array.isArray(value)) {
-          parentObj[field] = value || [];
-        } else { // Otherwise it is coming from the media dashboard (addition)
-          let fieldValue = parentObj[field];
-          if (fieldValue && !Array.isArray(fieldValue)) {
-            fieldValue = [fieldValue];
-          }
-          const crntData = Object.assign([], fieldValue);
-          const allRelPaths = [...(crntData || []), value];
-          parentObj[field] = [...new Set(allRelPaths)].filter(f => f);
-        }
-      }
-    }
-    
-    ArticleHelper.update(editor, article);
-    this.pushMetadata(article.data);
+    return parentObj;
   }
 
   /**

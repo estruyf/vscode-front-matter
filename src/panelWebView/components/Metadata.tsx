@@ -180,7 +180,8 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               freeform={settings.freeform || false} 
               focussed={focusElm === TagType.tags}
               unsetFocus={unsetFocus}
-              parents={parentFields} />
+              parents={parentFields}
+              blockData={blockData} />
           </FieldBoundary>
         );
       } else if (field.type === 'taxonomy') {
@@ -200,7 +201,8 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               unsetFocus={unsetFocus}
               fieldName={field.name}
               taxonomyId={field.taxonomyId}
-              parents={parentFields} />
+              parents={parentFields}
+              blockData={blockData} />
           </FieldBoundary>
         );
       } else if (field.type === 'categories') {
@@ -215,7 +217,8 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               freeform={settings.freeform || false} 
               focussed={focusElm === TagType.categories}
               unsetFocus={unsetFocus}
-              parents={parentFields} />
+              parents={parentFields}
+              blockData={blockData} />
           </FieldBoundary>
         );
       } else if (field.type === 'draft') {
