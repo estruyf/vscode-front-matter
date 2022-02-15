@@ -55,11 +55,14 @@ export class ImageHelper {
 
     const staticPath = join(parseWinPath(wsFolder?.fsPath || ""), staticFolder || "", value);
     const contentFolderPath = filePath ? join(dirname(filePath), value) : null;
+    const workspaceFolderPath = wsFolder ? join(wsFolder.fsPath, value) : null;
 
     if (existsSync(staticPath)) {
       return Uri.file(staticPath);
     } else if (contentFolderPath && existsSync(contentFolderPath)) {
       return Uri.file(contentFolderPath);
+    } else if (workspaceFolderPath && existsSync(workspaceFolderPath)) {
+      return Uri.file(workspaceFolderPath);
     }
   }
 
@@ -100,7 +103,7 @@ export class ImageHelper {
     if (parentObj) {
       for (const field of imageFields) {
         if (parentObj[field.name]) {
-          const imageData = ImageHelper.allRelToAbs(field, parentObj[field.name])
+          const imageData = ImageHelper.allRelToAbs(field, parentObj[field.name]);
   
           if (imageData) {
             if (field.multiple && imageData instanceof Array) {

@@ -1,6 +1,8 @@
-import { commands } from "vscode";
+import { ExplorerView } from './../../explorerView/ExplorerView';
+import { commands, window } from "vscode";
 import { Dashboard } from "../../commands/Dashboard";
 import { COMMAND_NAME } from "../../constants";
+import { ImageHelper } from "../../helpers";
 import { DashboardData } from "../../models";
 import { Command } from "../../panelWebView/Command";
 import { CommandToCode } from "../../panelWebView/CommandToCode";
@@ -20,6 +22,24 @@ export class MediaListener extends BaseListener {
       case CommandToCode.selectImage:
         this.selectMedia(msg);
         break;
+      case CommandToCode.getImageUrl:
+        this.generateUrl(msg.data);
+        break;
+    }
+  }
+
+  private static generateUrl(data: string) {
+    const filePath = window.activeTextEditor?.document.uri.fsPath;
+
+    const imgUrl = ImageHelper.relToAbs(filePath || "", data);
+    if (imgUrl) {
+      const viewUrl = ExplorerView.getInstance().getWebview()?.asWebviewUri(imgUrl);
+      if (viewUrl) {
+        this.sendMsg(Command.sendMediaUrl, {
+          original: data,
+          url: viewUrl.toString()
+        });
+      }
     }
   }
 

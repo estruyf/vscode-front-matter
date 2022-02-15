@@ -30,4 +30,5 @@ export enum CommandToCode {
   addToCustomTaxonomy = "addToCustomTaxonomy",
   frameworkCommand = "framework-command",
   updateStartCommand = "update-start-command",
+  getImageUrl = "get-image-url",
 }

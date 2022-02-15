@@ -6,5 +6,6 @@ export enum Command {
   focusOnCategories = "focusOnCategories",
   closeSections = "closeSections",
   folderInfo = "folderInfo",
-  mediaSelectionData = "mediaSelectionData"
+  mediaSelectionData = "mediaSelectionData",
+  sendMediaUrl = "sendMediaUrl",
 }
