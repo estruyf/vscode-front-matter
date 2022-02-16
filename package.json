@@ -827,7 +827,8 @@
                 {
                   "title": "Publishing date",
                   "name": "date",
-                  "type": "datetime"
+                  "type": "datetime",
+                  "default": "{{now}}"
                 },
                 {
                   "title": "Content preview",

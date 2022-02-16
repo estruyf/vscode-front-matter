@@ -16,6 +16,7 @@
 
 - Show the data item its details when clicking on the record
 - Refactoring of the explorer view panel listeners
+- Added `{{now}}` placeholder to the publishing date for content creation
 - [#243](https://github.com/estruyf/vscode-front-matter/issues/243): Refactoring front matter parsing
 
 ### 🐞 Fixes
