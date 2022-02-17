@@ -14,9 +14,11 @@ export interface ParsedFrontMatter {
 }
 
 export class FrontMatterParser {
+  public static currentContent: string | null = null;
 
   public static fromFile(content: string): ParsedFrontMatter {
     const format = getFormatOpts(this.getLanguage());
+    FrontMatterParser.currentContent = content;
     const result = matter(content, { ...Engines, ...format });
     // in the absent of a body when serializing an entry we use an empty one
     // when calling `toFile`, so we don't want to add it when parsing.

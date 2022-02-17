@@ -107,8 +107,6 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
       } else if (field.type === 'string') {
         const textValue = parent[field.name];
 
-        console.log(textValue, parent, field)
-
         let limit = -1;
         if (field.name === 'title') {
           limit = settings?.seo.title;

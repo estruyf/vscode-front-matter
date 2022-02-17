@@ -702,7 +702,10 @@
                       "$ref": "#contenttypefield"
                     },
                     "blockType": {
-                      "type": ["string", "array"],
+                      "type": [
+                        "string",
+                        "array"
+                      ],
                       "default": "",
                       "description": "The ID(s) of your data type(s) defined in the `frontMatter.data.types` setting",
                       "items": {
@@ -1508,7 +1511,9 @@
     "webpack": "^5.65.0",
     "webpack-bundle-analyzer": "^4.5.0",
     "webpack-cli": "^4.9.1",
-    "webpack-dev-server": "^4.6.0"
+    "webpack-dev-server": "^4.6.0",
+    "yaml": "^1.10.2",
+    "yawn-yaml": "^1.5.0"
   },
   "dependencies": {
     "node-fetch": "^2.6.7"
