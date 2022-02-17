@@ -141,7 +141,7 @@ export class ContentType {
     
     if (obj.fields) {
       for (const field of obj.fields) {
-      if (field.name === "title") {
+        if (field.name === "title") {
           if (field.default) {
             data[field.name] = ArticleHelper.processKnownPlaceholders(field.default, titleValue);
             data[field.name] = ArticleHelper.processCustomPlaceholders(data[field.name], titleValue);
