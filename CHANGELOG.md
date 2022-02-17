@@ -10,6 +10,7 @@
 
 - Updated the activity bar icon for better visibility
 - Storing the panel collapse section states
+- [#242](https://github.com/estruyf/vscode-front-matter/issues/242): Keep comments at the root of the front matter
 - [#248](https://github.com/estruyf/vscode-front-matter/issues/248): Added support for front matter highlighting to all file types specified in `frontMatter.content.supportedFileTypes`
 
 ### ⚡️ Optimizations
