@@ -83,7 +83,11 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
       }
 
       if (field.type === 'datetime') {
-        const dateValue = parent[field.name] ? getDate(parent[field.name] as string) : null;
+        let dateValue = parent[field.name] ? getDate(parent[field.name] as string) : null;
+        if (!dateValue && typeof parent[field.name] === "undefined" && field.default) {
+          dateValue = getDate(field.default);
+          onSendUpdate(field.name, dateValue, parentFields);
+        }
 
         return (
           <FieldBoundary key={field.name} fieldName={field.title || field.name}>
@@ -95,17 +99,28 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
           </FieldBoundary>
         );
       } else if (field.type === 'boolean') {
+        let toggleValue = parent[field.name];
+        if (!toggleValue && typeof parent[field.name] === "undefined" && parent[field.name]) {
+          toggleValue = field.default as any;
+          onSendUpdate(field.name, toggleValue, parentFields);
+        }
+
         return (
           <FieldBoundary key={field.name} fieldName={field.title || field.name}>
             <Toggle 
               key={field.name}
               label={field.title || field.name}
-              checked={!!parent[field.name] as any} 
+              checked={!!toggleValue} 
               onChanged={(checked) => onSendUpdate(field.name, checked, parentFields)} />
           </FieldBoundary>
         );
       } else if (field.type === 'string') {
-        const textValue = parent[field.name];
+        let textValue = parent[field.name];
+        
+        if (!textValue && typeof parent[field.name] === "undefined" && field.default) {
+          textValue = field.default;
+          onSendUpdate(field.name, textValue, parentFields);
+        }
 
         let limit = -1;
         if (field.name === 'title') {
@@ -126,7 +141,12 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
           </FieldBoundary>
         );
       } else if (field.type === 'number') {
-        const fieldValue = parent[field.name];
+        let fieldValue = parent[field.name];
+        if (!fieldValue && typeof parent[field.name] === "undefined" && field.default) {
+          fieldValue = field.default;
+          onSendUpdate(field.name, fieldValue, parentFields);
+        }
+
         let nrValue: number | null = parseInt(fieldValue as string);
         if (isNaN(nrValue)) {
           nrValue = null;
@@ -142,6 +162,12 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
           </FieldBoundary>
         );
       } else if (field.type === 'image') {
+        let imageValue = parent[field.name];
+        if (!imageValue && typeof parent[field.name] === "undefined" && field.default) {
+          imageValue = field.default;
+          onSendUpdate(field.name, imageValue, parentFields);
+        }
+        
         return (
           <FieldBoundary key={field.name} fieldName={field.title || field.name}>
             <PreviewImageField 
@@ -149,7 +175,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               fieldName={field.name}
               filePath={metadata.filePath as string}
               parents={parentFields}
-              value={parent[field.name] as PreviewImageValue | PreviewImageValue[] | null}
+              value={imageValue as PreviewImageValue | PreviewImageValue[] | null}
               multiple={field.multiple}
               blockData={blockData}
               onChange={(value) => onSendUpdate(field.name, value, parentFields)} />
@@ -157,7 +183,12 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
         );
       } else if (field.type === 'choice') {
         const choices = field.choices || [];
-        const choiceValue = parent[field.name];
+        let choiceValue = parent[field.name];
+
+        if (!choiceValue && typeof parent[field.name] === "undefined" && field.default) {
+          choiceValue = field.default;
+          onSendUpdate(field.name, choiceValue, parentFields);
+        }
 
         return (
           <FieldBoundary key={field.name} fieldName={field.title || field.name}>
@@ -170,6 +201,14 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
           </FieldBoundary>
         );
       } else if (field.type === 'tags') {
+        let tagsValue = parent[field.name];
+        if (!tagsValue && typeof parent[field.name] === "undefined" && field.default) {
+          tagsValue = field.default;
+          onSendUpdate(field.name, tagsValue, parentFields);
+        } else {
+          tagsValue = [];
+        }
+
         return (
           <FieldBoundary key={field.name} fieldName={field.title || field.name}>
             <TagPicker 
@@ -187,7 +226,13 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
         );
       } else if (field.type === 'taxonomy') {
         const taxonomyData = settings.customTaxonomy.find(ct => ct.id === field.taxonomyId);
-        const selectedValues = parent[field.name] || [];
+        let selectedValues = parent[field.name];
+        if (!selectedValues && typeof parent[field.name] === "undefined" && field.default) {
+          selectedValues = field.default;
+          onSendUpdate(field.name, selectedValues, parentFields);
+        } else {
+          selectedValues = [];
+        }
 
         return (
           <FieldBoundary key={field.name} fieldName={field.title || field.name}>
@@ -207,13 +252,21 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
           </FieldBoundary>
         );
       } else if (field.type === 'categories') {
+        let selectedValues = parent[field.name];
+        if (!selectedValues && typeof parent[field.name] === "undefined" && field.default) {
+          selectedValues = field.default;
+          onSendUpdate(field.name, selectedValues, parentFields);
+        } else {
+          selectedValues = [];
+        }
+
         return (
           <FieldBoundary key={field.name} fieldName={field.title || field.name}>
             <TagPicker 
               type={TagType.categories}
               label={field.title || field.name}
               icon={<ListUnorderedIcon />}
-              crntSelected={parent.categories as string[] || []} 
+              crntSelected={selectedValues as string[] || []} 
               options={settings.categories} 
               freeform={settings.freeform || false} 
               focussed={focusElm === TagType.categories}
@@ -224,7 +277,12 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
         );
       } else if (field.type === 'draft') {
         const draftField = settings?.draftField;
-        const value = parent[field.name];
+        let draftValue = parent[field.name];
+
+        if (!draftValue && typeof parent[field.name] === "undefined" && field.default) {
+          draftValue = field.default;
+          onSendUpdate(field.name, draftValue, parentFields);
+        }
 
         return (
           <FieldBoundary key={field.name} fieldName={field.title || field.name}>
@@ -232,7 +290,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
               label={field.title || field.name}
               type={draftField?.type || "boolean"}
               choices={draftField?.choices || []}
-              value={value as boolean | string | null | undefined}
+              value={draftValue as boolean | string | null | undefined}
               onChanged={(value: boolean | string) => onSendUpdate(field.name, value, parentFields)} />
           </FieldBoundary>
         );
