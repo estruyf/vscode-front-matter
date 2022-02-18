@@ -860,7 +860,7 @@
         },
         "frontMatter.taxonomy.fieldGroups": {
           "type": "array",
-          "markdownDescription": "Define the field groups you want to use for your block fields.",
+          "markdownDescription": "Define the field groups you want to use for your block fields. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.taxonomy.fieldgroups)",
           "default": [],
           "items": {
             "type": "object",
