@@ -70,6 +70,11 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
 
   useEffect(() => {
     let value: any = parent[field.name];
+
+    if (field.type === "tags" || field.type === "categories" || field.type === "taxonomy") {
+      setFieldValue(value);
+      return;
+    };
     
     if (field.type === 'datetime') {
       value = getDate(value) || undefined;
@@ -83,10 +88,6 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       }
 
       onSendUpdate(field.name, value, parentFields);
-    } else {
-      if (field.type === "tags" || field.type === "categories" || field.type === "taxonomy") {
-        value = [];
-      }
     }
 
     // Check if the field value contains a placeholder
