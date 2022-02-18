@@ -13,6 +13,7 @@ import { ContentType } from "../../helpers/ContentType";
 import { DateHelper } from "../../helpers/DateHelper";
 import { Notifications } from "../../helpers/Notifications";
 import { BaseListener } from "./BaseListener";
+import { Field } from '../../models';
 
 
 export class PagesListener extends BaseListener {
@@ -150,6 +151,7 @@ export class PagesListener extends BaseListener {
         fmFileName: fileName,
         fmDraft: ContentType.getDraftStatus(article?.data),
         fmYear: article?.data[dateField] ? DateHelper.tryParse(article?.data[dateField])?.getFullYear() : null,
+        fmPreviewImage: "",
         // Make sure these are always set
         title: article?.data.title,
         slug: article?.data.slug,
@@ -159,35 +161,59 @@ export class PagesListener extends BaseListener {
       };
 
       const contentType = ArticleHelper.getContentType(article.data);
-      const previewField = contentType.fields.find(field => field.isPreviewImage && field.type === "image")?.name || "preview";
 
-      if (article?.data[previewField] && wsFolder) {
-        let fieldValue = article?.data[previewField];
-        if (fieldValue && Array.isArray(fieldValue)) {
-          if (fieldValue.length > 0) {
-            fieldValue = fieldValue[0];
+      let previewFieldParents = this.findPreviewField(contentType.fields);
+      if (previewFieldParents.length === 0) {
+        const previewField = contentType.fields.find(field => field.type === "image" && field.name === "preview");
+        if (previewField) {
+          previewFieldParents = ["preview"];
+        }
+      }
+
+      // Check if parent fields were retrieved, if not there was no image present
+      if (previewFieldParents.length > 0) {
+        let fieldValue = null;
+        let crntPageData = article?.data;
+
+        for (let i = 0; i < previewFieldParents.length; i++) {
+          const previewField = previewFieldParents[i];
+
+          if (i === previewFieldParents.length - 1) {
+            fieldValue = crntPageData[previewField];
           } else {
-            fieldValue = undefined;
+            if (!crntPageData[previewField]) {
+              continue;
+            }
+
+            crntPageData = crntPageData[previewField];
           }
         }
 
-        // Revalidate as the array could have been empty
-        if (fieldValue) {
-          const staticPath = join(wsFolder.fsPath, staticFolder || "", fieldValue);
-          const contentFolderPath = join(dirname(filePath), fieldValue);
-
-          let previewUri = null;
-          if (existsSync(staticPath)) {
-            previewUri = Uri.file(staticPath);
-          } else if (existsSync(contentFolderPath)) {
-            previewUri = Uri.file(contentFolderPath);
+        if (fieldValue && wsFolder) {
+          if (fieldValue && Array.isArray(fieldValue)) {
+            if (fieldValue.length > 0) {
+              fieldValue = fieldValue[0];
+            } else {
+              fieldValue = undefined;
+            }
           }
-
-          if (previewUri) {
-            const preview = Dashboard.getWebview()?.asWebviewUri(previewUri);
-            page[previewField] = preview?.toString() || "";
-          } else {
-            page[previewField] = "";
+  
+          // Revalidate as the array could have been empty
+          if (fieldValue) {
+            const staticPath = join(wsFolder.fsPath, staticFolder || "", fieldValue);
+            const contentFolderPath = join(dirname(filePath), fieldValue);
+  
+            let previewUri = null;
+            if (existsSync(staticPath)) {
+              previewUri = Uri.file(staticPath);
+            } else if (existsSync(contentFolderPath)) {
+              previewUri = Uri.file(contentFolderPath);
+            }
+  
+            if (previewUri) {
+              const preview = Dashboard.getWebview()?.asWebviewUri(previewUri);
+              page["fmPreviewImage"] = preview?.toString() || "";
+            }
           }
         }
       }
@@ -196,5 +222,27 @@ export class PagesListener extends BaseListener {
     }
 
     return;
+  }
+
+  /**
+   * Find the preview field in the fields
+   * @param ctFields 
+   * @param parents 
+   * @returns 
+   */
+  private static findPreviewField(ctFields: Field[], parents: string[] = []): string[] {
+    for (const field of ctFields) {
+      if (field.isPreviewImage && field.type === "image") {
+        parents = [...parents, field.name];
+        return parents;
+      } else if (field.type === "fields" && field.fields) {
+        const subFields = this.findPreviewField(field.fields);
+        if (subFields.length > 0) {
+          return [...parents, field.name, ...subFields];
+        }
+      }
+    }
+
+    return parents;
   }
 }

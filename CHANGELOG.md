@@ -14,6 +14,7 @@
 - [#242](https://github.com/estruyf/vscode-front-matter/issues/242): Keep comments at the root of the front matter
 - [#248](https://github.com/estruyf/vscode-front-matter/issues/248): Added support for front matter highlighting to all file types specified in `frontMatter.content.supportedFileTypes`
 - [#255](https://github.com/estruyf/vscode-front-matter/issues/255): Added support for default values on block fields / data creation
+- [#257](https://github.com/estruyf/vscode-front-matter/issues/257): Allow preview images to be used in multi-dimensional fields
 
 ### ⚡️ Optimizations
 
