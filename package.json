@@ -706,7 +706,7 @@
                         "string",
                         "array"
                       ],
-                      "default": "",
+                      "default": [],
                       "description": "The ID(s) of your data type(s) defined in the `frontMatter.data.types` setting",
                       "items": {
                         "type": "string"
@@ -857,6 +857,28 @@
             }
           ],
           "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.fieldGroups": {
+          "type": "array",
+          "markdownDescription": "Define the field groups you want to use for your block fields.",
+          "default": [],
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "The name of the field group"
+              },
+              "fields": {
+                "$ref": "#contenttypefield"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "fields"
+            ]
+          }
         },
         "frontMatter.taxonomy.customTaxonomy": {
           "type": "array",
