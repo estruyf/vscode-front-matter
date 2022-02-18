@@ -10,6 +10,7 @@
 
 - Updated the activity bar icon for better visibility
 - Storing the panel collapse section states
+- [#241](https://github.com/estruyf/vscode-front-matter/issues/241): Added taxonomy limit field property which allows you to limit the number of selections
 - [#242](https://github.com/estruyf/vscode-front-matter/issues/242): Keep comments at the root of the front matter
 - [#248](https://github.com/estruyf/vscode-front-matter/issues/248): Added support for front matter highlighting to all file types specified in `frontMatter.content.supportedFileTypes`
 - [#255](https://github.com/estruyf/vscode-front-matter/issues/255): Added support for default values on block fields / data creation
