@@ -701,7 +701,18 @@
                     "fields": {
                       "$ref": "#contenttypefield"
                     },
-                    "blockType": {
+                    "fieldGroup": {
+                      "type": [
+                        "string",
+                        "array"
+                      ],
+                      "default": [],
+                      "description": "The ID(s) of your field group(s) defined in the `frontMatter.taxonomy.fieldGroups` setting",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "dataType": {
                       "type": [
                         "string",
                         "array"
@@ -711,6 +722,11 @@
                       "items": {
                         "type": "string"
                       }
+                    },
+                    "taxonomyLimit": {
+                      "type": "number",
+                      "default": 0,
+                      "description": "Limit the number of taxonomies to select. Set to 0 to allow unlimited."
                     }
                   },
                   "additionalProperties": false,
@@ -771,7 +787,7 @@
                       },
                       "then": {
                         "required": [
-                          "blockType"
+                          "fieldGroup"
                         ]
                       }
                     },

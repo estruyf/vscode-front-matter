@@ -70,7 +70,6 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
 
   useEffect(() => {
     let value: any = parent[field.name];
-    let shouldSetField = false;
     
     if (field.type === 'datetime') {
       value = getDate(value) || undefined;
@@ -88,8 +87,6 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       if (field.type === "tags" || field.type === "categories" || field.type === "taxonomy") {
         value = [];
       }
-
-      shouldSetField = true;
     }
 
     // Check if the field value contains a placeholder
@@ -211,7 +208,8 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           focussed={focusElm === TagType.tags}
           unsetFocus={unsetFocus}
           parents={parentFields}
-          blockData={blockData} />
+          blockData={blockData}
+          limit={field.taxonomyLimit} />
       </FieldBoundary>
     );
   } else if (field.type === 'taxonomy') {
@@ -231,31 +229,25 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           fieldName={field.name}
           taxonomyId={field.taxonomyId}
           parents={parentFields}
-          blockData={blockData} />
+          blockData={blockData}
+          limit={field.taxonomyLimit} />
       </FieldBoundary>
     );
   } else if (field.type === 'categories') {
-    let selectedValues = parent[field.name];
-    if (!selectedValues && typeof parent[field.name] === "undefined" && field.default) {
-      selectedValues = field.default;
-      onSendUpdate(field.name, selectedValues, parentFields);
-    } else {
-      selectedValues = [];
-    }
-
     return (
       <FieldBoundary key={field.name} fieldName={field.title || field.name}>
         <TagPicker 
           type={TagType.categories}
           label={field.title || field.name}
           icon={<ListUnorderedIcon />}
-          crntSelected={selectedValues as string[] || []} 
+          crntSelected={fieldValue as string[] || []} 
           options={settings.categories} 
           freeform={settings.freeform || false} 
           focussed={focusElm === TagType.categories}
           unsetFocus={unsetFocus}
           parents={parentFields}
-          blockData={blockData} />
+          blockData={blockData}
+          limit={field.taxonomyLimit} />
       </FieldBoundary>
     );
   } else if (field.type === 'draft') {
