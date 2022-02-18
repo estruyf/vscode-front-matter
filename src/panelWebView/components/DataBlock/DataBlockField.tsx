@@ -18,11 +18,11 @@ export interface IDataBlockFieldProps {
   fieldsRenderer: (
     ctFields: Field[], 
     parent: IMetadata, 
-    parentFields?: string[], 
+    parentFields: string[], 
     blockData?: BlockFieldData,
     onFieldUpdate?: (field: string | undefined, value: any, parents: string[]) => void,
     parentBlock?: string | null
-  ) => (JSX.Element | null)[] | undefined
+  ) => (JSX.Element | null)[] | undefined;
   onSubmit: (data: any) => void;
   parentBlock: string | null | undefined;
 }

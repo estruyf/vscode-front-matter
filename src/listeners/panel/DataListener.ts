@@ -38,6 +38,9 @@ export class DataListener extends BaseListener {
       case CommandToCode.frameworkCommand:
         this.openTerminalWithCommand(msg.data.command);
         break;
+      case CommandToCode.updatePlaceholder:
+        this.updatePlaceholder(msg?.data?.field, msg?.data?.value, msg?.data?.title);
+        break;
     }
   }
 
@@ -270,5 +273,14 @@ export class DataListener extends BaseListener {
         terminal.show(false);
       }
     }
+  }
+
+  private static updatePlaceholder(field: string, value: string, title: string) {
+    if (field && value) {
+      value = ArticleHelper.processKnownPlaceholders(value, title || "");
+      value = ArticleHelper.processCustomPlaceholders(value, title || "");
+    }
+    
+    this.sendMsg(Command.updatePlaceholder, { field, value });
   }
 }

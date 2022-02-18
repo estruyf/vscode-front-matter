@@ -8,4 +8,5 @@ export enum Command {
   folderInfo = "folderInfo",
   mediaSelectionData = "mediaSelectionData",
   sendMediaUrl = "sendMediaUrl",
+  updatePlaceholder = "updatePlaceholder",
 }

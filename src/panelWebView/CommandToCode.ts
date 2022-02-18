@@ -31,4 +31,5 @@ export enum CommandToCode {
   frameworkCommand = "framework-command",
   updateStartCommand = "update-start-command",
   getImageUrl = "get-image-url",
+  updatePlaceholder = "update-placeholder",
 }

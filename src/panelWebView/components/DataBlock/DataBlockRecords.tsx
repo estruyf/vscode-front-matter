@@ -48,10 +48,6 @@ export const DataBlockRecords = ({ fieldGroups, records, selectedIndex, onSort, 
             <CollectionIcon style={{ width: "16px", height: "16px" }} />
             <span style={{ lineHeight: "16px"}}>Records</span>
           </div>
-
-          <button title='Add new record' className='json_data__list__button' onClick={onAdd}>
-            <PlusIcon style={{ width: "16px", height: "16px" }} /> 
-          </button>
         </div>
       </VsLabel>
 
