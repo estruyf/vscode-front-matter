@@ -858,28 +858,6 @@
           ],
           "scope": "Taxonomy"
         },
-        "frontMatter.taxonomy.fieldGroups": {
-          "type": "array",
-          "markdownDescription": "Define the field groups you want to use for your block fields. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.taxonomy.fieldgroups)",
-          "default": [],
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "description": "The name of the field group"
-              },
-              "fields": {
-                "$ref": "#contenttypefield"
-              }
-            },
-            "additionalProperties": false,
-            "required": [
-              "name",
-              "fields"
-            ]
-          }
-        },
         "frontMatter.taxonomy.customTaxonomy": {
           "type": "array",
           "markdownDescription": "Specify the custom taxonomy field data. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.tags)",
@@ -915,6 +893,28 @@
           "type": "string",
           "markdownDescription": "Specify the date format for your articles. Check [date-fns formating](https://date-fns.org/v2.0.1/docs/format) for more information. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.dateformat)",
           "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.fieldGroups": {
+          "type": "array",
+          "markdownDescription": "Define the field groups you want to use for your block fields. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.taxonomy.fieldgroups)",
+          "default": [],
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "The name of the field group"
+              },
+              "fields": {
+                "$ref": "#contenttypefield"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "fields"
+            ]
+          }
         },
         "frontMatter.taxonomy.frontMatterType": {
           "type": "string",
@@ -1001,6 +1001,11 @@
           },
           "scope": "Taxonomy"
         },
+        "frontMatter.telemetry.disable": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Specify if you want to disable the telemetry. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.telemetry.disable)"
+        },
         "frontMatter.templates.folder": {
           "type": "string",
           "default": ".frontmatter/templates",
@@ -1012,11 +1017,6 @@
           "default": "yyyy-MM-dd",
           "markdownDescription": "Specify the prefix you want to add for your new article filenames. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.prefix)",
           "scope": "Templates"
-        },
-        "frontMatter.telemetry.disable": {
-          "type": "boolean",
-          "default": false,
-          "markdownDescription": "Specify if you want to disable the telemetry. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.telemetry.disable)"
         }
       }
     },
