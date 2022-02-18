@@ -64,7 +64,7 @@ export interface Field {
   fields?: Field[];
   fieldGroup?: string | string[];
   dataType?: string | string[];
-  taxonomyLimit?: number | string[];
+  taxonomyLimit?: number;
 }
 
 export interface DateInfo {

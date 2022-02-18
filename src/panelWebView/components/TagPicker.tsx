@@ -8,6 +8,7 @@ import { AddIcon } from './Icons/AddIcon';
 import { VsLabel } from './VscodeComponents';
 import { MessageHelper } from '../../helpers/MessageHelper';
 import { BlockFieldData, CustomTaxonomyData } from '../../models';
+import { useCallback } from 'react';
 
 export interface ITagPickerProps {
   type: TagType;
@@ -24,10 +25,11 @@ export interface ITagPickerProps {
   disableConfigurable?: boolean;
   fieldName?: string;
   taxonomyId?: string;
+  limit?: number;
 }
 
 const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsWithChildren<ITagPickerProps>) => {
-  const { label, icon, type, crntSelected, options, freeform, focussed, unsetFocus, disableConfigurable, fieldName, taxonomyId, parents, blockData } = props;
+  const { label, icon, type, crntSelected, options, freeform, focussed, unsetFocus, disableConfigurable, fieldName, taxonomyId, parents, blockData, limit } = props;
   const [ selected, setSelected ] = React.useState<string[]>([]);
   const [ inputValue, setInputValue ] = React.useState<string>("");
   const prevSelected = usePrevious(crntSelected);
@@ -145,6 +147,14 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
     return !selected.includes(option) && option.toLowerCase().includes((inputValue || "").toLowerCase());
   };
 
+  const checkIsDisabled = useCallback(() => {
+    if (!limit) {
+      return false;
+    }
+
+    return selected.length >= limit;
+  }, [limit, selected]);
+
   React.useEffect(() => {
     setTimeout(() => {
       triggerFocus();
@@ -185,7 +195,8 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
                               if (!inputValue) {
                                 clearSelection();
                               }
-                            }
+                            },
+                            disabled: checkIsDisabled()
                           })
                        }
                        placeholder={`Pick your ${label || type.toLowerCase()}`} />
@@ -194,7 +205,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
                   freeform && (
                     <button className={`article__tags__input__button`}
                             title={`Add the unknown tag`}
-                            disabled={!inputValue} 
+                            disabled={!inputValue || checkIsDisabled()} 
                             onClick={() => insertUnkownTag(closeMenu)}>
                       <AddIcon />
                     </button>
