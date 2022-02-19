@@ -72,7 +72,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
     let value: any = parent[field.name];
 
     if (field.type === "tags" || field.type === "categories" || field.type === "taxonomy") {
-      setFieldValue(value);
+      setFieldValue(value || []);
       return;
     };
     
@@ -202,6 +202,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
         <TagPicker 
           type={TagType.tags} 
           label={field.title || field.name}
+          fieldName={field.name}
           icon={<TagIcon />}
           crntSelected={fieldValue as string[] || []} 
           options={settings?.tags || []} 
@@ -240,6 +241,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
         <TagPicker 
           type={TagType.categories}
           label={field.title || field.name}
+          fieldName={field.name}
           icon={<ListUnorderedIcon />}
           crntSelected={fieldValue as string[] || []} 
           options={settings.categories} 

@@ -71,12 +71,14 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
   const sendUpdate = (values: string[]) => {    
     if (type === TagType.tags) {
       MessageHelper.sendMessage(CommandToCode.updateTags, {
+        fieldName,
         values,
         parents,
         blockData
       });
     } else if (type === TagType.categories) {
       MessageHelper.sendMessage(CommandToCode.updateCategories, {
+        fieldName,
         values,
         parents,
         blockData

@@ -19,10 +19,10 @@ export class TaxonomyListener extends BaseListener {
 
     switch(msg.command) {
       case CommandToCode.updateTags:
-        this.updateTags(TagType.tags, msg.data?.values || [], msg.data?.parents || [], msg.data?.blockData);
+        this.updateTags(msg.data?.fieldName, msg.data?.values || [], msg.data?.parents || [], msg.data?.blockData);
         break;
       case CommandToCode.updateCategories:
-        this.updateTags(TagType.categories, msg.data?.values || [], msg.data?.parents || [], msg.data?.blockData);
+        this.updateTags(msg.data?.fieldName, msg.data?.values || [], msg.data?.parents || [], msg.data?.blockData);
         break;
       case CommandToCode.updateKeywords:
         this.updateTags(TagType.keywords, msg.data?.values || [], msg.data?.parents || [], msg.data?.blockData);
@@ -47,7 +47,7 @@ export class TaxonomyListener extends BaseListener {
    * @param tagType 
    * @param values 
    */
-   private static updateTags(tagType: TagType, values: string[], parents: string[], blockData?: BlockFieldData) {
+   private static updateTags(fieldName: string, values: string[], parents: string[], blockData?: BlockFieldData) {
     const editor = window.activeTextEditor;
     if (!editor) {
       return "";
@@ -58,7 +58,7 @@ export class TaxonomyListener extends BaseListener {
 
       const parentObj = DataListener.getParentObject(article.data, article, parents, blockData);
 
-      parentObj[tagType.toLowerCase()] = values || [];
+      parentObj[fieldName] = values || [];
       ArticleHelper.update(editor, article);
       DataListener.pushMetadata(article!.data);
     }

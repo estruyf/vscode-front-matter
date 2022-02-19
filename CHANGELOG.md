@@ -26,6 +26,7 @@
 ### 🐞 Fixes
 
 - [#247](https://github.com/estruyf/vscode-front-matter/issues/247): Fix the front matter highlighting in markdown documents
+- [#261](https://github.com/estruyf/vscode-front-matter/issues/261): Fix to allow that tag and category fields can be renamed
 
 ## [6.0.0] - 2022-01-25 - [Release Notes](https://beta.frontmatter.codes/updates/v6.0.0)
 

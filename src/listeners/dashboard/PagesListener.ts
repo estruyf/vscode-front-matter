@@ -13,7 +13,7 @@ import { ContentType } from "../../helpers/ContentType";
 import { DateHelper } from "../../helpers/DateHelper";
 import { Notifications } from "../../helpers/Notifications";
 import { BaseListener } from "./BaseListener";
-import { Field } from '../../models';
+import { Field, FieldType } from '../../models';
 
 
 export class PagesListener extends BaseListener {
@@ -152,6 +152,8 @@ export class PagesListener extends BaseListener {
         fmDraft: ContentType.getDraftStatus(article?.data),
         fmYear: article?.data[dateField] ? DateHelper.tryParse(article?.data[dateField])?.getFullYear() : null,
         fmPreviewImage: "",
+        fmTags: [],
+        fmCategories: [],
         // Make sure these are always set
         title: article?.data.title,
         slug: article?.data.slug,
@@ -168,6 +170,16 @@ export class PagesListener extends BaseListener {
         if (previewField) {
           previewFieldParents = ["preview"];
         }
+      }
+
+      let tagParents = this.findFieldByType(contentType.fields, "tags");
+      if (tagParents.length !== 0) {
+        page.fmTags = this.getFieldValue(article.data, tagParents);
+      }
+
+      let categoryParents = this.findFieldByType(contentType.fields, "categories");
+      if (categoryParents.length !== 0) {
+        page.fmCategories = this.getFieldValue(article.data, categoryParents);
       }
 
       // Check if parent fields were retrieved, if not there was no image present
@@ -222,6 +234,56 @@ export class PagesListener extends BaseListener {
     }
 
     return;
+  }
+
+  /**
+   * Retrieve the field value
+   * @param data 
+   * @param parents 
+   * @returns 
+   */
+  private static getFieldValue(data: any, parents: string[]): string[] {
+    let fieldValue = [];
+    let crntPageData = data;
+
+    for (let i = 0; i < parents.length; i++) {
+      const crntField = parents[i];
+
+      if (i === parents.length - 1) {
+        fieldValue = crntPageData[crntField];
+      } else {
+        if (!crntPageData[crntField]) {
+          continue;
+        }
+
+        crntPageData = crntPageData[crntField];
+      }
+    }
+
+    return fieldValue;
+  }
+
+  /**
+   * Find the field by its type
+   * @param fields 
+   * @param type 
+   * @param parents 
+   * @returns 
+   */
+  private static findFieldByType(fields: Field[], type: FieldType, parents: string[] = []) {
+    for (const field of fields) {
+      if (field.type === type) {
+        parents = [...parents, field.name];
+        return parents;
+      } else if (field.type === "fields" && field.fields) {
+        const subFields = this.findPreviewField(field.fields);
+        if (subFields.length > 0) {
+          return [...parents, field.name, ...subFields];
+        }
+      }
+    }
+
+    return parents;
   }
 
   /**
