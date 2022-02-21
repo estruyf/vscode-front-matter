@@ -43,7 +43,7 @@ export const Engines = {
 
             // Check if there are values to remove
             for (const key in docYaml.toJSON()) {
-              if (!obj[key]) {
+              if (typeof obj[key] === undefined) {
                 docYaml.delete(key);
               }
             }
