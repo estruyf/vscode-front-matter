@@ -498,6 +498,12 @@
           },
           "scope": "Data"
         },
+        "frontMatter.file.preserveCasing": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Specify if you want to preserve the casing of your file names from the title. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.file.preservecasing)",
+          "scope": "File"
+        },
         "frontMatter.framework.id": {
           "type": "string",
           "default": "",

@@ -8,7 +8,6 @@ import { Notifications } from '../helpers/Notifications';
 import { extname, basename, parse, dirname } from 'path';
 import { COMMAND_NAME, DefaultFields } from '../constants';
 import { DashboardData } from '../models/DashboardData';
-import { ExplorerView } from '../explorerView/ExplorerView';
 import { DateHelper } from '../helpers/DateHelper';
 import { parseWinPath } from '../helpers/parseWinPath';
 import { Telemetry } from '../helpers/Telemetry';

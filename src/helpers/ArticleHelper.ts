@@ -2,7 +2,7 @@ import { MarkdownFoldingProvider } from './../providers/MarkdownFoldingProvider'
 import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from './../constants/ContentType';
 import * as vscode from 'vscode';
 import * as fs from "fs";
-import { DefaultFields, SETTINGS_CONTENT_DEFAULT_FILETYPE, SETTINGS_CONTENT_PLACEHOLDERS, SETTINGS_CONTENT_SUPPORTED_FILETYPES, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_SITE_BASEURL, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from '../constants';
+import { DefaultFields, SETTINGS_CONTENT_DEFAULT_FILETYPE, SETTINGS_CONTENT_PLACEHOLDERS, SETTINGS_CONTENT_SUPPORTED_FILETYPES, SETTINGS_FILE_PRESERVE_CASING, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_SITE_BASEURL, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { FrontMatterParser, ParsedFrontMatter } from '../parsers';
 import { Extension, Logger, Settings, SlugHelper } from '.';
@@ -227,7 +227,8 @@ export class ArticleHelper {
    * @returns 
    */
   public static sanitize(value: string): string {
-    return sanitize(value.toLowerCase().replace(/ /g, "-"));
+    const preserveCasing = Settings.get(SETTINGS_FILE_PRESERVE_CASING) as boolean;
+    return sanitize((preserveCasing ? value : value.toLowerCase()).replace(/ /g, "-"));
   }
 
   /**

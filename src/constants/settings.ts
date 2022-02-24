@@ -64,6 +64,8 @@ export const SETTINGS_DATA_FILES = "data.files";
 export const SETTINGS_DATA_FOLDERS = "data.folders";
 export const SETTINGS_DATA_TYPES = "data.types";
 
+export const SETTINGS_FILE_PRESERVE_CASING = "file.preserveCasing";
+
 export const SETTINGS_FRAMEWORK_ID = "framework.id";
 export const SETTINGS_FRAMEWORK_START = "framework.startCommand";
 
