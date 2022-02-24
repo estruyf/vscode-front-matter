@@ -85,7 +85,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     webviewView.onDidChangeVisibility(() => {
       if (this.visible) {
         Telemetry.send(TelemetryEvent.openExplorerView);
-        // this.getFileData();
+        DataListener.getFileData();
       }
     });
 
