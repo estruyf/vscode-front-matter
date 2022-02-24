@@ -288,19 +288,6 @@ export class Folders {
       path: Folders.absWsFolder(folder, wsFolder)
     }));
   }
-
-  /**
-   * Retrieve the absolute file path
-   * @param filePath 
-   * @returns 
-   */
-  public static getAbsFilePath(filePath: string): string {
-    const wsFolder = Folders.getWorkspaceFolder();
-    const isWindows = process.platform === 'win32';
-    let absPath = filePath.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ""));
-    absPath = isWindows ? absPath.split('/').join('\\') : absPath;
-    return absPath;
-  }
   
   /**
    * Update the folder settings
@@ -321,6 +308,19 @@ export class Folders {
   }
 
   /**
+   * Retrieve the absolute file path
+   * @param filePath 
+   * @returns 
+   */
+  public static getAbsFilePath(filePath: string): string {
+    const wsFolder = Folders.getWorkspaceFolder();
+    const isWindows = process.platform === 'win32';
+    let absPath = filePath.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ""));
+    absPath = isWindows ? absPath.split('/').join('\\') : absPath;
+    return absPath;
+  }
+
+  /**
    * Generate the absolute URL for the workspace
    * @param folder 
    * @param wsFolder 
@@ -328,7 +328,7 @@ export class Folders {
    */
   private static absWsFolder(folder: ContentFolder, wsFolder?: Uri) {
     const isWindows = process.platform === 'win32';
-    let absPath =  folder.path.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ""));
+    let absPath = folder.path.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ""));
     absPath = isWindows ? absPath.split('/').join('\\') : absPath;
     return absPath;
   }
@@ -341,12 +341,8 @@ export class Folders {
    */
   private static relWsFolder(folder: ContentFolder, wsFolder?: Uri) {
     const isWindows = process.platform === 'win32';
-    let absPath =  folder.path.replace(parseWinPath(wsFolder?.fsPath || ""), WORKSPACE_PLACEHOLDER);
+    let absPath = parseWinPath(folder.path).replace(parseWinPath(wsFolder?.fsPath || ""), WORKSPACE_PLACEHOLDER);
     absPath = isWindows ? absPath.split('\\').join('/') : absPath;
     return absPath;
   }
-}
-
-function SETTINGS_CONTENT_SUPPORTED_FILES<T>(SETTINGS_CONTENT_SUPPORTED_FILES: any) {
-  throw new Error('Function not implemented.');
 }
