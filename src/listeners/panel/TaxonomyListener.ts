@@ -25,7 +25,7 @@ export class TaxonomyListener extends BaseListener {
         this.updateTags(msg.data?.fieldName, msg.data?.values || [], msg.data?.parents || [], msg.data?.blockData);
         break;
       case CommandToCode.updateKeywords:
-        this.updateTags(TagType.keywords, msg.data?.values || [], msg.data?.parents || [], msg.data?.blockData);
+        this.updateTags(TagType.keywords.toLowerCase(), msg.data?.values || [], msg.data?.parents || [], msg.data?.blockData);
         break;
       case CommandToCode.updateCustomTaxonomy:
         this.updateCustomTaxonomy(msg.data);
