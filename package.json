@@ -341,7 +341,7 @@
           "markdownDescription": "Specify the a snippet for your custom media insert markup. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.mediasnippet)",
           "items": {
             "type": "string",
-            "description": "The parts of your snippet. Use `{mediaUrl}` as placeholder where the path of the image needs to be inserted."
+            "description": "Use the `{mediaUrl}`, `{caption}`, `{alt}`, `{filename}`, `{mediaHeight}`, and `{mediaWidth}` placeholders in your snippet to automatically insert the media information."
           },
           "scope": "dashboard"
         },

@@ -4,7 +4,7 @@
 
 ### ✨ New features
 
-- [#176](https://github.com/estruyf/vscode-front-matter/issues/176): New `data collection` field type
+- [#176](https://github.com/estruyf/vscode-front-matter/issues/176): New `block` field type that allows you to you to define a group of fields which can be used to create a list of data
 
 ### 🎨 Enhancements
 
