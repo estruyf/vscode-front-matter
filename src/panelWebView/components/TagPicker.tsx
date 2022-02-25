@@ -8,7 +8,7 @@ import { AddIcon } from './Icons/AddIcon';
 import { VsLabel } from './VscodeComponents';
 import { MessageHelper } from '../../helpers/MessageHelper';
 import { BlockFieldData, CustomTaxonomyData } from '../../models';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 export interface ITagPickerProps {
   type: TagType;
@@ -157,6 +157,14 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
     return selected.length >= limit;
   }, [limit, selected]);
 
+  const inputPlaceholder = useMemo((): string => {
+    if (checkIsDisabled()) {
+      return `You have reached the limit of ${limit} ${label || type.toLowerCase()}`;
+    }
+
+    return `Pick your ${label || type.toLowerCase()}`;
+  }, [label, type, checkIsDisabled]); 
+
   React.useEffect(() => {
     setTimeout(() => {
       triggerFocus();
@@ -173,7 +181,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
     <div className={`article__tags`}>      
       <VsLabel>
         <div className={`metadata_field__label`}>
-          {icon} <span style={{ lineHeight: "16px"}}>{label || type}</span>
+          {icon} <span style={{ lineHeight: "16px"}}>{label || type}{(limit !== undefined && limit > 0) ? <>{` `}<span style={{fontWeight: "lighter"}}>(Max.: {limit})</span></> : ``}</span>
         </div>
       </VsLabel>
 
@@ -201,7 +209,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
                             disabled: checkIsDisabled()
                           })
                        }
-                       placeholder={`Pick your ${label || type.toLowerCase()}`} />
+                       placeholder={inputPlaceholder} />
                 
                 {
                   freeform && (
