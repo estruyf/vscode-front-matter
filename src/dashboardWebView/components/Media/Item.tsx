@@ -1,6 +1,6 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { Menu } from '@headlessui/react';
-import { ClipboardIcon, CodeIcon, EyeIcon, PencilIcon, PhotographIcon, PlusIcon, TrashIcon } from '@heroicons/react/outline';
+import { ClipboardIcon, CodeIcon, PencilIcon, PhotographIcon, PlusIcon, TrashIcon } from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useEffect } from 'react';
@@ -95,6 +95,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     snippet = snippet?.replace("{alt}", alt || "");
     snippet = snippet?.replace("{caption}", caption || "");
     snippet = snippet?.replace("{filename}", basename(relPath || ""));
+    snippet = snippet?.replace("{mediaWidth}", media?.dimensions?.width?.toString() || "");
+    snippet = snippet?.replace("{mediaHeight}", media?.dimensions?.height?.toString() || "");
 
     Messenger.send(DashboardMessage.insertPreviewImage, {
       image: parseWinPath(relPath) || "",
