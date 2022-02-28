@@ -45,7 +45,15 @@
     "url": "https://github.com/estruyf/vscode-front-matter"
   },
   "activationEvents": [
-    "*"
+    "workspaceContains:**/.frontmatter",
+    "workspaceContains:**/frontmatter.json",
+    "onCommand:frontMatter.init",
+    "onCommand:frontMatter.dashboard",
+    "onCommand:frontMatter.dashboard.data",
+    "onCommand:frontMatter.dashboard.media",
+    "onCommand:workbench.view.extension.frontmatter-explorer",
+    "onView:frontMatter.explorer",
+    "onStartupFinished"
   ],
   "main": "./dist/extension.js",
   "contributes": {
