@@ -1,6 +1,6 @@
 # Change Log
 
-## [6.1.0] - 2022-02-xx
+## [6.1.0] - 2022-02-xx - [Release notes](https://beta.frontmatter.codes/updates/v6.1.0)
 
 ### ✨ New features
 
