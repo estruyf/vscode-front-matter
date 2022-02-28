@@ -4,6 +4,7 @@ import { ViewPanel } from "./ViewPanel";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import { SENTRY_LINK } from "../constants";
+import './styles.css';
 
 // require('@vscode/codicons/dist/codicon.css');
 import '@bendera/vscode-webview-elements/dist/vscode-table.js';
@@ -14,7 +15,7 @@ import '@bendera/vscode-webview-elements/dist/vscode-table-row.js';
 import '@bendera/vscode-webview-elements/dist/vscode-table-cell.js';
 import '@bendera/vscode-webview-elements/dist/vscode-collapsible.js';
 import '@bendera/vscode-webview-elements/dist/vscode-label.js';
-import '@bendera/vscode-webview-elements/dist/vscode-checkbox.js';
+// import '@bendera/vscode-webview-elements/dist/vscode-checkbox.js';
 
 // import '@vscode/webview-ui-toolkit/dist/esm/checkbox';
 

@@ -7,6 +7,9 @@ export interface Page {
   fmModified: number;
   fmDraft: "Draft" | "Published",
   fmYear: number | null | undefined;
+  fmPreviewImage: string;
+  fmTags: string[];
+  fmCategories: string[];
 
   title: string;
   slug: string;

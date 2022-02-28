@@ -48,8 +48,14 @@ export default function useMessages() {
 
   useEffect(() => {    
     setLoading(true);
+
+    // Show what you got after 5 seconds
+    window.setTimeout(() => {
+      setLoading(false);
+    }, 5000);
+
     vscode.postMessage({ command: CommandToCode.getData });
-  }, ['']);
+  }, []);
 
   return {
     metadata,

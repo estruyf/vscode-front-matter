@@ -1,13 +1,14 @@
-import { PagesListener } from './../listeners/PagesListener';
+import { PagesListener } from './../listeners/dashboard';
 import { ArticleHelper, Settings } from ".";
-import { SETTINGS_CONTENT_DRAFT_FIELD, SETTING_TAXONOMY_CONTENT_TYPES } from "../constants";
+import { SETTINGS_CONTENT_DRAFT_FIELD, SETTING_TAXONOMY_CONTENT_TYPES, TelemetryEvent } from "../constants";
 import { ContentType as IContentType, DraftField, Field } from '../models';
-import { Uri, workspace, window, commands } from 'vscode'; 
+import { Uri, commands } from 'vscode'; 
 import { Folders } from "../commands/Folders";
 import { Questions } from "./Questions";
 import { writeFileSync } from "fs";
 import { Notifications } from "./Notifications";
 import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
+import { Telemetry } from './Telemetry';
 
 
 export class ContentType {
@@ -125,6 +126,8 @@ export class ContentType {
 
     Notifications.info(`Your new content has been created.`);
 
+    Telemetry.send(TelemetryEvent.createContentFromContentType);
+
     // Trigger a refresh for the dashboard
     PagesListener.refresh();
   }
@@ -138,7 +141,7 @@ export class ContentType {
     
     if (obj.fields) {
       for (const field of obj.fields) {
-      if (field.name === "title") {
+        if (field.name === "title") {
           if (field.default) {
             data[field.name] = ArticleHelper.processKnownPlaceholders(field.default, titleValue);
             data[field.name] = ArticleHelper.processCustomPlaceholders(data[field.name], titleValue);

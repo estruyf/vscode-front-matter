@@ -1,5 +1,36 @@
 # Change Log
 
+## [6.1.0] - 2022-02-28 - [Release notes](https://beta.frontmatter.codes/updates/v6.1.0)
+
+### ✨ New features
+
+- [#176](https://github.com/estruyf/vscode-front-matter/issues/176): New `block` field type that allows you to you to define a group of fields which can be used to create a list of data
+
+### 🎨 Enhancements
+
+- Updated the activity bar icon for better visibility
+- Storing the panel collapse section states
+- [#241](https://github.com/estruyf/vscode-front-matter/issues/241): Added taxonomy limit field property which allows you to limit the number of selections
+- [#242](https://github.com/estruyf/vscode-front-matter/issues/242): Keep comments at the root of the front matter
+- [#248](https://github.com/estruyf/vscode-front-matter/issues/248): Added support for front matter highlighting to all file types specified in `frontMatter.content.supportedFileTypes`
+- [#255](https://github.com/estruyf/vscode-front-matter/issues/255): Added support for default values on block fields / data creation
+- [#257](https://github.com/estruyf/vscode-front-matter/issues/257): Allow preview images to be used in multi-dimensional fields
+- [#271](https://github.com/estruyf/vscode-front-matter/issues/271): Added image size placeholders for media snippets
+
+### ⚡️ Optimizations
+
+- Show the data item its details when clicking on the record
+- Refactoring of the explorer view panel listeners
+- Added `{{now}}` placeholder to the publishing date for content creation
+- [#243](https://github.com/estruyf/vscode-front-matter/issues/243): Refactoring front matter parsing
+
+### 🐞 Fixes
+
+- [#247](https://github.com/estruyf/vscode-front-matter/issues/247): Fix the front matter highlighting in markdown documents
+- [#261](https://github.com/estruyf/vscode-front-matter/issues/261): Fix to allow that tag and category fields can be renamed
+- [#264](https://github.com/estruyf/vscode-front-matter/issues/264): Fix for Windows paths on content folder registration
+- [#268](https://github.com/estruyf/vscode-front-matter/issues/268): Fix for panel which only shows loading indicator
+
 ## [6.0.0] - 2022-01-25 - [Release Notes](https://beta.frontmatter.codes/updates/v6.0.0)
 
 ### ✨ New features

@@ -100,12 +100,12 @@ export default function usePages(pages: Page[]) {
 
     // Filter by tag
     if (tag) {
-      pagesSorted = pagesSorted.filter(page => page.tags && page.tags.includes(tag));
+      pagesSorted = pagesSorted.filter(page => page.fmTags && page.fmTags.includes(tag));
     }
 
     // Filter by category
     if (category) {
-      pagesSorted = pagesSorted.filter(page => page.categories && page.categories.includes(category));
+      pagesSorted = pagesSorted.filter(page => page.fmCategories && page.fmCategories.includes(category));
     }
 
     setPageItems(pagesSorted);

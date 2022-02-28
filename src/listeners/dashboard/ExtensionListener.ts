@@ -1,9 +1,9 @@
 import { commands, env } from "vscode";
 import { SettingsListener } from ".";
-import { COMMAND_NAME } from "../constants";
-import { DashboardMessage } from "../dashboardWebView/DashboardMessage";
-import { CustomScript, Extension } from "../helpers";
-import { openFileInEditor } from "../helpers/openFileInEditor";
+import { COMMAND_NAME } from "../../constants";
+import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
+import { CustomScript, Extension } from "../../helpers";
+import { openFileInEditor } from "../../helpers/openFileInEditor";
 import { BaseListener } from "./BaseListener";
 
 

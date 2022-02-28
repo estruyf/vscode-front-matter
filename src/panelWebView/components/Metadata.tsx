@@ -1,25 +1,15 @@
 import * as React from 'react';
-import { Field, PanelSettings } from '../../models';
+import { BlockFieldData, Field, PanelSettings } from '../../models';
 import { CommandToCode } from '../CommandToCode';
 import { MessageHelper } from '../../helpers/MessageHelper';
 import { TagType } from '../TagType';
 import { Collapsible } from './Collapsible';
-import { Toggle } from './Fields/Toggle';
 import { SymbolKeywordIcon } from './Icons/SymbolKeywordIcon';
-import { TagIcon } from './Icons/TagIcon';
 import { TagPicker } from './TagPicker';
-import { DateTimeField } from './Fields/DateTimeField';
-import { TextField } from './Fields/TextField';
 import "react-datepicker/dist/react-datepicker.css";
-import { PreviewImageField, PreviewImageValue } from './Fields/PreviewImageField';
-import { ListUnorderedIcon } from './Icons/ListUnorderedIcon';
-import { NumberField } from './Fields/NumberField';
-import { ChoiceField } from './Fields/ChoiceField';
 import useContentType from '../../hooks/useContentType';
-import { DateHelper } from '../../helpers/DateHelper';
 import FieldBoundary from './ErrorBoundary/FieldBoundary';
-import { DraftField } from './Fields/DraftField';
-import { VsLabel } from './VscodeComponents';
+import { WrapperField } from './Fields/WrapperField';
 
 export interface IMetadata {
   [prop: string]: string[] | string | null | IMetadata;
@@ -46,198 +36,46 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
     });
   };
 
-  const getDate = (date: string | Date): Date | null => {
-    const parsedDate = DateHelper.tryParse(date, settings?.date?.format);
-    return parsedDate || date as Date | null;
-  }
-
   if (!settings) {
     return null;
   }
 
-  const renderFields = (ctFields: Field[], parent: IMetadata, parentFields: string[] = []) => {
+  const renderFields = (
+    ctFields: Field[], 
+    parent: IMetadata, 
+    parentFields: string[] = [], 
+    blockData?: BlockFieldData,
+    onFieldUpdate?: (field: string | undefined, value: any, parents: string[]) => void,
+    parentBlock?: string | null
+  ) : (JSX.Element | null)[] | undefined => {
     if (!ctFields) {
       return;
     }
 
-    return ctFields.map(field => {
-      if (field.hidden) {
-        return null;
-      }
-
-      if (field.type === 'datetime') {
-        const dateValue = parent[field.name] ? getDate(parent[field.name] as string) : null;
-
-        return (
-          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
-            <DateTimeField
-              label={field.title || field.name}
-              date={dateValue}
-              format={settings?.date?.format}
-              onChange={(date => sendUpdate(field.name, date, parentFields))} />
-          </FieldBoundary>
-        );
-      } else if (field.type === 'boolean') {
-        return (
-          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
-            <Toggle 
-              key={field.name}
-              label={field.title || field.name}
-              checked={!!parent[field.name] as any} 
-              onChanged={(checked) => sendUpdate(field.name, checked, parentFields)} />
-          </FieldBoundary>
-        );
-      } else if (field.type === 'string') {
-        const textValue = parent[field.name];
-
-        let limit = -1;
-        if (field.name === 'title') {
-          limit = settings?.seo.title;
-        } else if (field.name === settings.seo.descriptionField) {
-          limit = settings?.seo.description;
-        }
-
-        return (
-          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
-            <TextField 
-              label={field.title || field.name}
-              singleLine={field.single}
-              limit={limit}
-              rows={3}
-              onChange={(value) => sendUpdate(field.name, value, parentFields)}
-              value={textValue as string || null} />
-          </FieldBoundary>
-        );
-      } else if (field.type === 'number') {
-        const fieldValue = parent[field.name];
-        let nrValue: number | null = parseInt(fieldValue as string);
-        if (isNaN(nrValue)) {
-          nrValue = null;
-        }
-
-        return (
-          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
-            <NumberField 
-              key={field.name}
-              label={field.title || field.name}
-              onChange={(value) => sendUpdate(field.name, value, parentFields)}
-              value={nrValue} />
-          </FieldBoundary>
-        );
-      } else if (field.type === 'image') {
-        return (
-          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
-            <PreviewImageField 
-              label={field.title || field.name}
-              fieldName={field.name}
-              filePath={metadata.filePath as string}
-              parents={parentFields}
-              value={parent[field.name] as PreviewImageValue | PreviewImageValue[] | null}
-              multiple={field.multiple}
-              onChange={(value) => sendUpdate(field.name, value, parentFields)} />
-          </FieldBoundary>
-        );
-      } else if (field.type === 'choice') {
-        const choices = field.choices || [];
-        const choiceValue = parent[field.name];
-
-        return (
-          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
-            <ChoiceField
-              label={field.title || field.name}
-              selected={choiceValue as string}
-              choices={choices}
-              multiSelect={field.multiple}
-              onChange={(value => sendUpdate(field.name, value, parentFields))} />
-          </FieldBoundary>
-        );
-      } else if (field.type === 'tags') {
-        return (
-          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
-            <TagPicker 
-              type={TagType.tags} 
-              label={field.title || field.name}
-              icon={<TagIcon />}
-              crntSelected={parent[field.name] as string[] || []} 
-              options={settings?.tags || []} 
-              freeform={settings.freeform} 
-              focussed={focusElm === TagType.tags}
-              unsetFocus={unsetFocus}
-              parents={parentFields} />
-          </FieldBoundary>
-        );
-      } else if (field.type === 'taxonomy') {
-        const taxonomyData = settings.customTaxonomy.find(ct => ct.id === field.taxonomyId);
-        const selectedValues = parent[field.name] || [];
-
-        return (
-          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
-            <TagPicker 
-              type={TagType.custom}
-              label={field.title || field.name}
-              icon={<ListUnorderedIcon />}
-              crntSelected={selectedValues as string[] || []} 
-              options={taxonomyData?.options || []} 
-              freeform={settings.freeform} 
-              focussed={focusElm === TagType.custom}
-              unsetFocus={unsetFocus}
-              fieldName={field.name}
-              taxonomyId={field.taxonomyId}
-              parents={parentFields} />
-          </FieldBoundary>
-        );
-      } else if (field.type === 'categories') {
-        return (
-          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
-            <TagPicker 
-              type={TagType.categories}
-              label={field.title || field.name}
-              icon={<ListUnorderedIcon />}
-              crntSelected={parent.categories as string[] || []} 
-              options={settings.categories} 
-              freeform={settings.freeform} 
-              focussed={focusElm === TagType.categories}
-              unsetFocus={unsetFocus}
-              parents={parentFields} />
-          </FieldBoundary>
-        );
-      } else if (field.type === 'draft') {
-        const draftField = settings?.draftField;
-        const value = parent[field.name];
-
-        return (
-          <FieldBoundary key={field.name} fieldName={field.title || field.name}>
-            <DraftField
-              label={field.title || field.name}
-              type={draftField.type}
-              choices={draftField.choices || []}
-              value={value as boolean | string | null | undefined}
-              onChanged={(value: boolean | string) => sendUpdate(field.name, value, parentFields)} />
-          </FieldBoundary>
-        );
-      } else if (field.type === 'fields') { 
-        if (field.fields && parent && parent[field.name]) {
-          const subMetadata = parent[field.name] as IMetadata;
-          return (
-            <FieldBoundary key={field.name} fieldName={field.title || field.name}>
-              <div className={`metadata_field__box`}>
-                <VsLabel>
-                  <div className={`metadata_field__label metadata_field__label_parent`}>
-                    <span style={{ lineHeight: "16px"}}>{field.title || field.name}</span>
-                  </div>
-                </VsLabel>
-
-                { renderFields(field.fields, subMetadata, [...parentFields, field.name]) }
-              </div>
-            </FieldBoundary>
-          );
-        }
-
-        return null;
+    const onSendUpdate = (field: string | undefined, value: any, parents: string[]) => {
+      if (onFieldUpdate) {
+        onFieldUpdate(field, value, parents);
       } else {
-        return null;
+        sendUpdate(field, value, parents);
       }
-    });
+    };
+
+    return ctFields.map(field => (
+      <WrapperField
+        key={field.name}
+        field={field}
+        parent={parent}
+        parentFields={parentFields}
+        metadata={metadata}
+        settings={settings}
+        blockData={blockData}
+        parentBlock={parentBlock}
+        focusElm={focusElm}
+        onSendUpdate={onSendUpdate}
+        unsetFocus={unsetFocus}
+        renderFields={renderFields}
+         />
+    ));
   };
 
   return (

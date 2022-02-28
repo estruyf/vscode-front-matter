@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
 import { ArticleHelper } from '.';
-import matter = require('gray-matter');
+import { ParsedFrontMatter } from '../parsers';
 
 export class SeoHelper {
 
-  public static checkLength(editor: vscode.TextEditor, collection: vscode.DiagnosticCollection, article: matter.GrayMatterFile<string>, fieldName: string, length: number) {
+  public static checkLength(editor: vscode.TextEditor, collection: vscode.DiagnosticCollection, article: ParsedFrontMatter, fieldName: string, length: number) {
     const value = article.data[fieldName];
     if (value.length > length) {
       const text = editor.document.getText();

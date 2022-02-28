@@ -1,8 +1,9 @@
+import { Telemetry } from './Telemetry';
 import { Notifications } from './Notifications';
 import { commands, Uri, workspace, window } from 'vscode';
 import * as vscode from 'vscode';
 import { ContentType, CustomTaxonomy, TaxonomyType } from '../models';
-import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM } from '../constants';
+import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM, TelemetryEvent } from '../constants';
 import { Folders } from '../commands/Folders';
 import { join, basename } from 'path';
 import { existsSync, readFileSync, watch, writeFileSync } from 'fs';
@@ -249,6 +250,8 @@ export class Settings {
     }
 
     Notifications.info(`All settings promoted to team level.`);
+
+    Telemetry.send(TelemetryEvent.promoteSettings);
   }
 
   /**

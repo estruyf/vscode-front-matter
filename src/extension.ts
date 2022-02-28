@@ -1,3 +1,4 @@
+import { Telemetry } from './helpers/Telemetry';
 import { ContentType } from './helpers/ContentType';
 import { Dashboard } from './commands/Dashboard';
 import * as vscode from 'vscode';
@@ -6,7 +7,7 @@ import { Folders } from './commands/Folders';
 import { Preview } from './commands/Preview';
 import { Project } from './commands/Project';
 import { Template } from './commands/Template';
-import { COMMAND_NAME } from './constants';
+import { COMMAND_NAME, TelemetryEvent } from './constants';
 import { TaxonomyType } from './models';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
 import { TagType } from './panelWebView/TagType';
@@ -18,15 +19,14 @@ import { Content } from './commands/Content';
 import ContentProvider from './providers/ContentProvider';
 import { Wysiwyg } from './commands/Wysiwyg';
 import { Diagnostics } from './commands/Diagnostics';
-import { PagesListener } from './listeners';
+import { PagesListener } from './listeners/dashboard';
 import { Backers } from './commands/Backers';
+import { DataListener, SettingsListener } from './listeners/panel';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
 let editDebounce: { (fnc: any, time: number): void; };
 let collection: vscode.DiagnosticCollection;
-
-const mdSelector: vscode.DocumentSelector = { language: 'markdown', scheme: 'file' };
 
 export async function activate(context: vscode.ExtensionContext) {
 	const { subscriptions, extensionUri, extensionPath } = context;
@@ -43,6 +43,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	
 	SettingsHelper.checkToPromote();
 
+	// Sends the activation event
+	Telemetry.send(TelemetryEvent.activate);
+
 	// Start listening to the folders for content changes.
 	// This will make sure the dashboard is up to date
 	PagesListener.startWatchers();
@@ -52,6 +55,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Pages dashboard
 	Dashboard.init();
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboard, (data?: DashboardData) => {
+		Telemetry.send(TelemetryEvent.openContentDashboard);
 		if (!data) {
 			Dashboard.open({ type: "contents" });
 		} else {
@@ -60,14 +64,17 @@ export async function activate(context: vscode.ExtensionContext) {
 	}));
 	
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardMedia, (data?: DashboardData) => {
+		Telemetry.send(TelemetryEvent.openMediaDashboard);
 		Dashboard.open({ type: "media" });
 	}));
 	
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardData, (data?: DashboardData) => {
+		Telemetry.send(TelemetryEvent.openDataDashboard);
 		Dashboard.open({ type: "data" });
 	}));
 	
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardClose, (data?: DashboardData) => {
+		Telemetry.send(TelemetryEvent.closeDashboard);
 		Dashboard.close();
 	}));
 
@@ -84,7 +91,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	// Folding the front matter of markdown files
-	vscode.languages.registerFoldingRangeProvider(mdSelector, new MarkdownFoldingProvider());
+	MarkdownFoldingProvider.register();
 
 	const insertTags = vscode.commands.registerCommand(COMMAND_NAME.insertTags, async () => {
 		await vscode.commands.executeCommand('workbench.view.extension.frontmatter-explorer');
@@ -151,7 +158,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	// Settings promotion command
-	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.promote, SettingsHelper.promote ));
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.promote, SettingsHelper.promote));
 
 	// Collapse all sections in the webview
 	const collapseAll = vscode.commands.registerCommand(COMMAND_NAME.collapseSections, () => {
@@ -163,9 +170,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		Template.init();
 		Preview.init();
 
-		const exView = ExplorerView.getInstance();
-		exView.getSettings();
-		exView.getFoldersAndFiles();	
+		SettingsListener.getSettings();
+		DataListener.getFoldersAndFiles();	
 		MarkdownFoldingProvider.triggerHighlighting();
 	});
 
@@ -189,7 +195,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc: vscode.TextDocument) => {
 		if (doc.languageId === 'markdown') {
 			// Optimize the list of recently changed files
-			ExplorerView.getInstance().getFoldersAndFiles();
+			DataListener.getFoldersAndFiles();
 		}
 	}));
 
@@ -234,7 +240,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	);
 }
 
-export function deactivate() {}
+export function deactivate() {
+	Telemetry.dispose();
+}
 
 const handleAutoDateUpdate = (e: vscode.TextDocumentWillSaveEvent) => {
 	Article.autoUpdate(e);

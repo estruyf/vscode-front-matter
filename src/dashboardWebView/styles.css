@@ -2,6 +2,40 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+:root {
+  /* Bool field */
+  --frontmatter-toggle-background: #15c2cb;
+  --frontmatter-toggle-secondaryBackground: #ADADAD;
+
+  /* Errors field */
+  --frontmatter-error-background: rgba(255, 85, 0, 0.2);
+  --frontmatter-error-border: #f50;
+  --frontmatter-error-foreground: #0e131f;
+  
+  .vscode-dark {
+    --frontmatter-error-foreground: #fff;
+  }
+
+  /* List add field */
+  --frontmatter-field-border: #222733;
+  --frontmatter-field-borderActive: #15c2cb;
+
+  .vscode-dark {
+    --frontmatter-field-border: rgba(255, 255, 255, 0.5);
+    --frontmatter-field-borderActive: #009aa3;
+  }
+
+  /* List field */
+  --frontmatter-list-border: #ADADAD;
+
+  .vscode-dark {
+    --frontmatter-list-border: #404551;
+  }
+
+  /* Select field */
+  --frontmatter-select-foreground: #0e131f;
+}
+
 
 .loader {
   border-top-color: #15c2cb;
@@ -80,15 +114,11 @@
 
     .errors {
       > div {
-        @apply border border-red-400 !important;
+        @apply border;
       }
       
       ul {
-        @apply list-disc pl-6 pr-4 py-4 bg-opacity-50 text-vulcan-500;
-      }
-
-      li {
-        @apply capitalize text-gray-900;
+        @apply list-disc pl-6 pr-4 py-4 bg-opacity-50;
       }
     }
 
@@ -275,12 +305,6 @@
 
     input[type="submit"] {
       @apply text-vulcan-500
-    }
-
-    .errors {
-      li {
-        @apply text-white;
-      }
     }
   }
 

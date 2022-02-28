@@ -14,15 +14,30 @@ export class MessageHelper {
   private static vscode: ClientVsCode<any>;
   
   public static getVsCodeAPI() {
-    MessageHelper.vscode = acquireVsCodeApi();
+    if (!MessageHelper.vscode) {
+      MessageHelper.vscode = acquireVsCodeApi();
+    }
     return MessageHelper.vscode;
   }
   
   public static sendMessage = (command: CommandToCode | DashboardMessage, data?: any) => {    
+    const vscode = MessageHelper.getVsCodeAPI();
     if (data) {
-      MessageHelper.vscode.postMessage({ command, data });
+      vscode.postMessage({ command, data });
     } else {
-      MessageHelper.vscode.postMessage({ command });
+      vscode.postMessage({ command });
     }
+  }
+
+  public static getState = () => {    
+    const vscode = MessageHelper.getVsCodeAPI();
+    return vscode.getState();
+  }
+
+  public static setState = (data: any) => {    
+    const vscode = MessageHelper.getVsCodeAPI();
+    vscode.setState({
+      ...data
+    });
   }
 }

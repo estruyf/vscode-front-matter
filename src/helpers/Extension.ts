@@ -85,6 +85,13 @@ export class Extension {
   }
 
   /**
+   * Returns the extension's version
+   */
+  public get version(): string {
+    return this.ctx.extension.packageJSON.version;
+  }
+
+  /**
    * Check if the extension is in production/development mode
    */
    public get isProductionMode(): boolean {

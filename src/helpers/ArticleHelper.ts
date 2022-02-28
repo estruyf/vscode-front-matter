@@ -1,11 +1,10 @@
 import { MarkdownFoldingProvider } from './../providers/MarkdownFoldingProvider';
 import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from './../constants/ContentType';
 import * as vscode from 'vscode';
-import * as matter from "gray-matter";
 import * as fs from "fs";
-import { DefaultFields, SETTINGS_CONTENT_DEFAULT_FILETYPE, SETTINGS_CONTENT_PLACEHOLDERS, SETTINGS_CONTENT_SUPPORTED_FILETYPES, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from '../constants';
+import { DefaultFields, SETTINGS_CONTENT_DEFAULT_FILETYPE, SETTINGS_CONTENT_PLACEHOLDERS, SETTINGS_CONTENT_SUPPORTED_FILETYPES, SETTINGS_FILE_PRESERVE_CASING, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_SITE_BASEURL, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from '../constants';
 import { DumpOptions } from 'js-yaml';
-import { TomlEngine, getFmLanguage, getFormatOpts } from './TomlEngine';
+import { FrontMatterParser, ParsedFrontMatter } from '../parsers';
 import { Extension, Logger, Settings, SlugHelper } from '.';
 import { format, parse } from 'date-fns';
 import { Notifications } from './Notifications';
@@ -18,6 +17,9 @@ import { ContentType } from '../models';
 import { DateHelper } from './DateHelper';
 import { DiagnosticSeverity, Position, window, Range } from 'vscode';
 import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
+import { fromMarkdown } from 'mdast-util-from-markdown';
+import { Link, Parent } from 'mdast-util-from-markdown/lib';
+import { Content } from 'mdast';
 
 export class ArticleHelper {
   private static notifiedFiles: string[] = [];
@@ -56,7 +58,7 @@ export class ArticleHelper {
    * @param editor 
    * @param article 
    */
-  public static async update(editor: vscode.TextEditor, article: matter.GrayMatterFile<string>) {
+  public static async update(editor: vscode.TextEditor, article: ParsedFrontMatter) {
     const update = this.generateUpdate(editor.document, article);
 
     await editor.edit(builder => builder.replace(update.range, update.newText));
@@ -66,7 +68,7 @@ export class ArticleHelper {
    * Generate the update to be applied to the article.
    * @param article 
    */
-  public static generateUpdate(document: vscode.TextDocument, article: matter.GrayMatterFile<string>): vscode.TextEdit {
+  public static generateUpdate(document: vscode.TextDocument, article: ParsedFrontMatter): vscode.TextEdit {
     const nrOfLines = document.lineCount as number;
     const range = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(nrOfLines, 0));
     const removeQuotes = Settings.get(SETTING_REMOVE_QUOTES) as string[];
@@ -117,9 +119,6 @@ export class ArticleHelper {
     const indentArray = Settings.get(SETTING_INDENT_ARRAY) as boolean;
     const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
 
-    const language = getFmLanguage();
-    const langOpts = getFormatOpts(language);
-
     const spaces = vscode.window.activeTextEditor?.options?.tabSize;
 
     if (commaSeparated) {
@@ -130,9 +129,7 @@ export class ArticleHelper {
       }
     }
     
-    return matter.stringify(content, data, ({
-      ...TomlEngine,
-      ...langOpts,
+    return FrontMatterParser.toFile(content, data, ({
       noArrayIndent: !indentArray,
       skipInvalid: true,
       noCompatMode: true,
@@ -169,7 +166,7 @@ export class ArticleHelper {
   /**
    * Get date from front matter
    */ 
-  public static getDate(article: matter.GrayMatterFile<string> | null) {
+  public static getDate(article: ParsedFrontMatter | null) {
     if (!article) {
       return;
     }
@@ -230,7 +227,8 @@ export class ArticleHelper {
    * @returns 
    */
   public static sanitize(value: string): string {
-    return sanitize(value.toLowerCase().replace(/ /g, "-"));
+    const preserveCasing = Settings.get(SETTINGS_FILE_PRESERVE_CASING) as boolean;
+    return sanitize((preserveCasing ? value : value.toLowerCase()).replace(/ /g, "-"));
   }
 
   /**
@@ -354,21 +352,108 @@ export class ArticleHelper {
   }
 
   /**
+   * Get the details of the current article
+   * @returns 
+   */
+  public static getDetails() {
+    const baseUrl = Settings.get<string>(SETTING_SITE_BASEURL);
+    const editor = window.activeTextEditor;
+    if (!editor) {
+      return null;
+    }
+
+    if (!ArticleHelper.isMarkdownFile()) {
+      return null;
+    }
+
+    const article = ArticleHelper.getFrontMatter(editor);
+
+    if (article && article.content) {
+      let content = article.content;
+      content = content.replace(/({{(.*?)}})/g, ''); // remove hugo shortcodes
+      
+      const mdTree = fromMarkdown(content);
+      const elms: Parent[] | Link[] = this.getAllElms(mdTree);
+
+      const headings = elms.filter(node => node.type === 'heading');
+      const paragraphs = elms.filter(node => node.type === 'paragraph').length;
+      const images = elms.filter(node => node.type === 'image').length;
+      const links: string[] = elms.filter(node => node.type === 'link').map(node => (node as Link).url);
+
+      const internalLinks = links.filter(link => !link.startsWith('http') || (baseUrl && link.toLowerCase().includes((baseUrl || "").toLowerCase()))).length;
+      let externalLinks = links.filter(link => link.startsWith('http'));
+      if (baseUrl) {
+        externalLinks = externalLinks.filter(link => !link.toLowerCase().includes(baseUrl.toLowerCase()));
+      }
+
+      const headers = [];
+      for (const header of headings) { 
+        const text = header?.children?.filter((node: any) => node.type === 'text').map((node: any) => node.value).join(" ");
+        if (text) {
+          headers.push(text);
+        }
+      }
+      
+      const wordCount = this.wordCount(0, mdTree);
+
+      return {
+        headings: headings.length,
+        headingsText: headers,
+        paragraphs,
+        images,
+        internalLinks,
+        externalLinks: externalLinks.length,
+        wordCount,
+        content: article.content
+      };
+    }
+
+    return null;
+  }
+
+  /**
+   * Retrieve all the elements from the markdown content
+   * @param node 
+   * @param allElms 
+   * @returns 
+   */
+  private static getAllElms(node: Content | any, allElms?: any[]): any[] {
+    if (!allElms) {
+      allElms = [];
+    }
+
+    if (node.children?.length > 0) {
+      for (const child of node.children) {
+        allElms.push(Object.assign({}, child));
+        this.getAllElms(child, allElms);
+      }
+    }
+
+    return allElms;
+  }
+
+  /**
+   * Get the word count for the current document
+   */
+  private static wordCount(count: number, node: Content | any) {
+    if (node.type === "text") {
+      return count + node.value.split(" ").length;
+    } else {
+      return (node.children || []).reduce((childCount: number, childNode: any) => this.wordCount(childCount, childNode), count);
+    }
+  }
+
+  /**
    * Parse a markdown file and its front matter
    * @param fileContents 
    * @returns 
    */
-  private static parseFile(fileContents: string, fileName: string): matter.GrayMatterFile<string> | null {
+  private static parseFile(fileContents: string, fileName: string): ParsedFrontMatter | null {
     try {
       const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
       
       if (fileContents) {
-        const language: string = getFmLanguage(); 
-        const langOpts = getFormatOpts(language);
-        let article: matter.GrayMatterFile<string> | null = matter(fileContents, {
-          ...TomlEngine,
-          ...langOpts
-        });
+        let article = FrontMatterParser.fromFile(fileContents);
   
         if (article?.data) {
           if (commaSeparated) {

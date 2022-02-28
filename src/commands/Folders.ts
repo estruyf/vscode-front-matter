@@ -1,5 +1,5 @@
 import { Questions } from './../helpers/Questions';
-import { SETTINGS_CONTENT_PAGE_FOLDERS, SETTINGS_CONTENT_STATIC_FOLDER, SETTINGS_CONTENT_SUPPORTED_FILETYPES } from './../constants';
+import { SETTINGS_CONTENT_PAGE_FOLDERS, SETTINGS_CONTENT_STATIC_FOLDER, SETTINGS_CONTENT_SUPPORTED_FILETYPES, TelemetryEvent } from './../constants';
 import { commands, Uri, workspace, window } from "vscode";
 import { basename, join } from "path";
 import { ContentFolder, FileInfo, FolderInfo } from "../models";
@@ -12,8 +12,9 @@ import { format } from 'date-fns';
 import { Dashboard } from './Dashboard';
 import { parseWinPath } from '../helpers/parseWinPath';
 import { MediaHelpers } from '../helpers/MediaHelpers';
-import { MediaListener, PagesListener } from '../listeners';
+import { MediaListener, PagesListener } from '../listeners/dashboard';
 import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
+import { Telemetry } from '../helpers/Telemetry';
 
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
@@ -68,6 +69,8 @@ export class Folders {
       MediaHelpers.resetMedia();
       MediaListener.sendMediaFiles(0, folderName);
     }
+
+    Telemetry.send(TelemetryEvent.addMediaFolder);
   }
 
   /**
@@ -122,6 +125,8 @@ export class Folders {
       await Folders.update(folders);
 
       Notifications.info(`Folder registered`);
+
+		  Telemetry.send(TelemetryEvent.registerFolder);
     }
   }
 
@@ -134,6 +139,8 @@ export class Folders {
       let folders = Folders.get();
       folders = folders.filter(f => f.path !== folder.fsPath);
       await Folders.update(folders);
+
+		  Telemetry.send(TelemetryEvent.unregisterFolder);
     }
   }
 
@@ -281,19 +288,6 @@ export class Folders {
       path: Folders.absWsFolder(folder, wsFolder)
     }));
   }
-
-  /**
-   * Retrieve the absolute file path
-   * @param filePath 
-   * @returns 
-   */
-  public static getAbsFilePath(filePath: string): string {
-    const wsFolder = Folders.getWorkspaceFolder();
-    const isWindows = process.platform === 'win32';
-    let absPath = filePath.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ""));
-    absPath = isWindows ? absPath.split('/').join('\\') : absPath;
-    return absPath;
-  }
   
   /**
    * Update the folder settings
@@ -314,6 +308,19 @@ export class Folders {
   }
 
   /**
+   * Retrieve the absolute file path
+   * @param filePath 
+   * @returns 
+   */
+  public static getAbsFilePath(filePath: string): string {
+    const wsFolder = Folders.getWorkspaceFolder();
+    const isWindows = process.platform === 'win32';
+    let absPath = filePath.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ""));
+    absPath = isWindows ? absPath.split('/').join('\\') : absPath;
+    return absPath;
+  }
+
+  /**
    * Generate the absolute URL for the workspace
    * @param folder 
    * @param wsFolder 
@@ -321,7 +328,7 @@ export class Folders {
    */
   private static absWsFolder(folder: ContentFolder, wsFolder?: Uri) {
     const isWindows = process.platform === 'win32';
-    let absPath =  folder.path.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ""));
+    let absPath = folder.path.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ""));
     absPath = isWindows ? absPath.split('/').join('\\') : absPath;
     return absPath;
   }
@@ -334,12 +341,8 @@ export class Folders {
    */
   private static relWsFolder(folder: ContentFolder, wsFolder?: Uri) {
     const isWindows = process.platform === 'win32';
-    let absPath =  folder.path.replace(parseWinPath(wsFolder?.fsPath || ""), WORKSPACE_PLACEHOLDER);
+    let absPath = parseWinPath(folder.path).replace(parseWinPath(wsFolder?.fsPath || ""), WORKSPACE_PLACEHOLDER);
     absPath = isWindows ? absPath.split('\\').join('/') : absPath;
     return absPath;
   }
-}
-
-function SETTINGS_CONTENT_SUPPORTED_FILES<T>(SETTINGS_CONTENT_SUPPORTED_FILES: any) {
-  throw new Error('Function not implemented.');
 }

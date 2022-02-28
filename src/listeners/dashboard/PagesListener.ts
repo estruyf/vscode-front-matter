@@ -1,18 +1,19 @@
-import { isValidFile } from './../helpers/isValidFile';
+import { isValidFile } from '../../helpers/isValidFile';
 import { existsSync } from "fs";
 import { basename, dirname, join } from "path";
 import { commands, FileSystemWatcher, RelativePattern, Uri, workspace } from "vscode";
-import { Dashboard } from "../commands/Dashboard";
-import { Folders } from "../commands/Folders";
-import { COMMAND_NAME, DefaultFields, SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD } from "../constants";
-import { DashboardCommand } from "../dashboardWebView/DashboardCommand";
-import { DashboardMessage } from "../dashboardWebView/DashboardMessage";
-import { Page } from "../dashboardWebView/models";
-import { ArticleHelper, Logger, Settings } from "../helpers";
-import { ContentType } from "../helpers/ContentType";
-import { DateHelper } from "../helpers/DateHelper";
-import { Notifications } from "../helpers/Notifications";
+import { Dashboard } from "../../commands/Dashboard";
+import { Folders } from "../../commands/Folders";
+import { COMMAND_NAME, DefaultFields, SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD } from "../../constants";
+import { DashboardCommand } from "../../dashboardWebView/DashboardCommand";
+import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
+import { Page } from "../../dashboardWebView/models";
+import { ArticleHelper, Logger, Settings } from "../../helpers";
+import { ContentType } from "../../helpers/ContentType";
+import { DateHelper } from "../../helpers/DateHelper";
+import { Notifications } from "../../helpers/Notifications";
 import { BaseListener } from "./BaseListener";
+import { Field, FieldType } from '../../models';
 
 
 export class PagesListener extends BaseListener {
@@ -150,6 +151,9 @@ export class PagesListener extends BaseListener {
         fmFileName: fileName,
         fmDraft: ContentType.getDraftStatus(article?.data),
         fmYear: article?.data[dateField] ? DateHelper.tryParse(article?.data[dateField])?.getFullYear() : null,
+        fmPreviewImage: "",
+        fmTags: [],
+        fmCategories: [],
         // Make sure these are always set
         title: article?.data.title,
         slug: article?.data.slug,
@@ -159,35 +163,69 @@ export class PagesListener extends BaseListener {
       };
 
       const contentType = ArticleHelper.getContentType(article.data);
-      const previewField = contentType.fields.find(field => field.isPreviewImage && field.type === "image")?.name || "preview";
 
-      if (article?.data[previewField] && wsFolder) {
-        let fieldValue = article?.data[previewField];
-        if (fieldValue && Array.isArray(fieldValue)) {
-          if (fieldValue.length > 0) {
-            fieldValue = fieldValue[0];
+      let previewFieldParents = this.findPreviewField(contentType.fields);
+      if (previewFieldParents.length === 0) {
+        const previewField = contentType.fields.find(field => field.type === "image" && field.name === "preview");
+        if (previewField) {
+          previewFieldParents = ["preview"];
+        }
+      }
+
+      let tagParents = this.findFieldByType(contentType.fields, "tags");
+      if (tagParents.length !== 0) {
+        page.fmTags = this.getFieldValue(article.data, tagParents);
+      }
+
+      let categoryParents = this.findFieldByType(contentType.fields, "categories");
+      if (categoryParents.length !== 0) {
+        page.fmCategories = this.getFieldValue(article.data, categoryParents);
+      }
+
+      // Check if parent fields were retrieved, if not there was no image present
+      if (previewFieldParents.length > 0) {
+        let fieldValue = null;
+        let crntPageData = article?.data;
+
+        for (let i = 0; i < previewFieldParents.length; i++) {
+          const previewField = previewFieldParents[i];
+
+          if (i === previewFieldParents.length - 1) {
+            fieldValue = crntPageData[previewField];
           } else {
-            fieldValue = undefined;
+            if (!crntPageData[previewField]) {
+              continue;
+            }
+
+            crntPageData = crntPageData[previewField];
           }
         }
 
-        // Revalidate as the array could have been empty
-        if (fieldValue) {
-          const staticPath = join(wsFolder.fsPath, staticFolder || "", fieldValue);
-          const contentFolderPath = join(dirname(filePath), fieldValue);
-
-          let previewUri = null;
-          if (existsSync(staticPath)) {
-            previewUri = Uri.file(staticPath);
-          } else if (existsSync(contentFolderPath)) {
-            previewUri = Uri.file(contentFolderPath);
+        if (fieldValue && wsFolder) {
+          if (fieldValue && Array.isArray(fieldValue)) {
+            if (fieldValue.length > 0) {
+              fieldValue = fieldValue[0];
+            } else {
+              fieldValue = undefined;
+            }
           }
-
-          if (previewUri) {
-            const preview = Dashboard.getWebview()?.asWebviewUri(previewUri);
-            page[previewField] = preview?.toString() || "";
-          } else {
-            page[previewField] = "";
+  
+          // Revalidate as the array could have been empty
+          if (fieldValue) {
+            const staticPath = join(wsFolder.fsPath, staticFolder || "", fieldValue);
+            const contentFolderPath = join(dirname(filePath), fieldValue);
+  
+            let previewUri = null;
+            if (existsSync(staticPath)) {
+              previewUri = Uri.file(staticPath);
+            } else if (existsSync(contentFolderPath)) {
+              previewUri = Uri.file(contentFolderPath);
+            }
+  
+            if (previewUri) {
+              const preview = Dashboard.getWebview()?.asWebviewUri(previewUri);
+              page["fmPreviewImage"] = preview?.toString() || "";
+            }
           }
         }
       }
@@ -196,5 +234,77 @@ export class PagesListener extends BaseListener {
     }
 
     return;
+  }
+
+  /**
+   * Retrieve the field value
+   * @param data 
+   * @param parents 
+   * @returns 
+   */
+  private static getFieldValue(data: any, parents: string[]): string[] {
+    let fieldValue = [];
+    let crntPageData = data;
+
+    for (let i = 0; i < parents.length; i++) {
+      const crntField = parents[i];
+
+      if (i === parents.length - 1) {
+        fieldValue = crntPageData[crntField];
+      } else {
+        if (!crntPageData[crntField]) {
+          continue;
+        }
+
+        crntPageData = crntPageData[crntField];
+      }
+    }
+
+    return fieldValue;
+  }
+
+  /**
+   * Find the field by its type
+   * @param fields 
+   * @param type 
+   * @param parents 
+   * @returns 
+   */
+  private static findFieldByType(fields: Field[], type: FieldType, parents: string[] = []) {
+    for (const field of fields) {
+      if (field.type === type) {
+        parents = [...parents, field.name];
+        return parents;
+      } else if (field.type === "fields" && field.fields) {
+        const subFields = this.findPreviewField(field.fields);
+        if (subFields.length > 0) {
+          return [...parents, field.name, ...subFields];
+        }
+      }
+    }
+
+    return parents;
+  }
+
+  /**
+   * Find the preview field in the fields
+   * @param ctFields 
+   * @param parents 
+   * @returns 
+   */
+  private static findPreviewField(ctFields: Field[], parents: string[] = []): string[] {
+    for (const field of ctFields) {
+      if (field.isPreviewImage && field.type === "image") {
+        parents = [...parents, field.name];
+        return parents;
+      } else if (field.type === "fields" && field.fields) {
+        const subFields = this.findPreviewField(field.fields);
+        if (subFields.length > 0) {
+          return [...parents, field.name, ...subFields];
+        }
+      }
+    }
+
+    return parents;
   }
 }

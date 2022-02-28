@@ -3,7 +3,7 @@
   "displayName": "Front Matter",
   "description": "Front Matter is a CMS that runs within Visual Studio Code. It gives you the power and control of a full-blown CMS while also providing you the flexibility and speed of the static site generator of your choice like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -45,26 +45,15 @@
     "url": "https://github.com/estruyf/vscode-front-matter"
   },
   "activationEvents": [
-    "*",
-    "onCommand:frontMatter.insertTags",
-    "onCommand:frontMatter.insertCategories",
-    "onCommand:frontMatter.createTag",
-    "onCommand:frontMatter.createCategory",
-    "onCommand:frontMatter.exportTaxonomy",
-    "onCommand:frontMatter.remap",
-    "onCommand:frontMatter.setLastModifiedDate",
-    "onCommand:frontMatter.generateSlug",
-    "onCommand:frontMatter.createFromTemplate",
-    "onCommand:frontMatter.registerFolder",
-    "onCommand:frontMatter.unregisterFolder",
-    "onCommand:frontMatter.createContent",
+    "workspaceContains:**/.frontmatter",
+    "workspaceContains:**/frontmatter.json",
     "onCommand:frontMatter.init",
-    "onCommand:frontMatter.collapseSections",
-    "onCommand:frontMatter.preview",
     "onCommand:frontMatter.dashboard",
-    "onCommand:frontMatter.promoteSettings",
-    "onCommand:frontMatter.insertImage",
-    "onView:frontMatter.explorer"
+    "onCommand:frontMatter.dashboard.data",
+    "onCommand:frontMatter.dashboard.media",
+    "onCommand:workbench.view.extension.frontmatter-explorer",
+    "onView:frontMatter.explorer",
+    "onStartupFinished"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -73,7 +62,7 @@
         {
           "id": "frontmatter-explorer",
           "title": "FrontMatter",
-          "icon": "assets/frontmatter.svg"
+          "icon": "assets/frontmatter-short-min.svg"
         }
       ]
     },
@@ -82,7 +71,7 @@
         {
           "id": "frontMatter.explorer",
           "name": "FrontMatter",
-          "icon": "assets/frontmatter.svg",
+          "icon": "assets/frontmatter-short-min.svg",
           "contextualTitle": "FrontMatter",
           "type": "webview"
         }
@@ -360,7 +349,7 @@
           "markdownDescription": "Specify the a snippet for your custom media insert markup. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.mediasnippet)",
           "items": {
             "type": "string",
-            "description": "The parts of your snippet. Use `{mediaUrl}` as placeholder where the path of the image needs to be inserted."
+            "description": "Use the `{mediaUrl}`, `{caption}`, `{alt}`, `{filename}`, `{mediaHeight}`, and `{mediaWidth}` placeholders in your snippet to automatically insert the media information."
           },
           "scope": "dashboard"
         },
@@ -517,6 +506,12 @@
           },
           "scope": "Data"
         },
+        "frontMatter.file.preserveCasing": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Specify if you want to preserve the casing of your file names from the title. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.file.preservecasing)",
+          "scope": "File"
+        },
         "frontMatter.framework.id": {
           "type": "string",
           "default": "",
@@ -651,7 +646,9 @@
                         "tags",
                         "categories",
                         "draft",
-                        "fields"
+                        "fields",
+                        "json",
+                        "block"
                       ],
                       "description": "Define the type of field"
                     },
@@ -717,6 +714,33 @@
                     },
                     "fields": {
                       "$ref": "#contenttypefield"
+                    },
+                    "fieldGroup": {
+                      "type": [
+                        "string",
+                        "array"
+                      ],
+                      "default": [],
+                      "description": "The ID(s) of your field group(s) defined in the `frontMatter.taxonomy.fieldGroups` setting",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "dataType": {
+                      "type": [
+                        "string",
+                        "array"
+                      ],
+                      "default": [],
+                      "description": "The ID(s) of your data type(s) defined in the `frontMatter.data.types` setting",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "taxonomyLimit": {
+                      "type": "number",
+                      "default": 0,
+                      "description": "Limit the number of taxonomies to select. Set to 0 to allow unlimited."
                     }
                   },
                   "additionalProperties": false,
@@ -766,6 +790,34 @@
                           "fields"
                         ]
                       }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "block"
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "fieldGroup"
+                        ]
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "json"
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "dataType"
+                        ]
+                      }
                     }
                   ]
                 }
@@ -808,7 +860,8 @@
                 {
                   "title": "Publishing date",
                   "name": "date",
-                  "type": "datetime"
+                  "type": "datetime",
+                  "default": "{{now}}"
                 },
                 {
                   "title": "Content preview",
@@ -870,6 +923,28 @@
           "type": "string",
           "markdownDescription": "Specify the date format for your articles. Check [date-fns formating](https://date-fns.org/v2.0.1/docs/format) for more information. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.dateformat)",
           "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.fieldGroups": {
+          "type": "array",
+          "markdownDescription": "Define the field groups you want to use for your block fields. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.taxonomy.fieldgroups)",
+          "default": [],
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "The name of the field group"
+              },
+              "fields": {
+                "$ref": "#contenttypefield"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "fields"
+            ]
+          }
         },
         "frontMatter.taxonomy.frontMatterType": {
           "type": "string",
@@ -955,6 +1030,11 @@
             "type": "string"
           },
           "scope": "Taxonomy"
+        },
+        "frontMatter.telemetry.disable": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Specify if you want to disable the telemetry. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.telemetry.disable)"
         },
         "frontMatter.templates.folder": {
           "type": "string",
@@ -1421,8 +1501,11 @@
     "@sentry/tracing": "^6.13.3",
     "@tailwindcss/forms": "^0.3.3",
     "@types/glob": "7.1.3",
+    "@types/invariant": "^2.2.35",
     "@types/js-yaml": "3.12.1",
+    "@types/lodash.omit": "^4.5.6",
     "@types/lodash.uniqby": "4.7.6",
+    "@types/lodash.xor": "^4.5.6",
     "@types/mocha": "^5.2.6",
     "@types/node": "10.17.48",
     "@types/node-fetch": "^2.5.12",
@@ -1431,7 +1514,8 @@
     "@types/react-dom": "17.0.0",
     "@types/vscode": "^1.63.0",
     "@vscode/codicons": "0.0.20",
-    "@vscode/webview-ui-toolkit": "^0.8.1",
+    "@vscode/extension-telemetry": "^0.4.7",
+    "@vscode/webview-ui-toolkit": "^0.9.1",
     "@webpack-cli/serve": "^1.6.0",
     "ajv": "^8.8.2",
     "array-move": "^4.0.0",
@@ -1445,8 +1529,11 @@
     "html-loader": "1.3.2",
     "html-webpack-plugin": "4.5.0",
     "image-size": "^1.0.0",
+    "invariant": "^2.2.4",
     "lodash-es": "^4.17.21",
+    "lodash.omit": "^4.5.0",
     "lodash.uniqby": "4.7.0",
+    "lodash.xor": "^4.5.0",
     "mdast-util-from-markdown": "1.0.0",
     "node-json-db": "^1.3.0",
     "npm-run-all": "^4.1.5",
@@ -1476,7 +1563,9 @@
     "webpack": "^5.65.0",
     "webpack-bundle-analyzer": "^4.5.0",
     "webpack-cli": "^4.9.1",
-    "webpack-dev-server": "^4.6.0"
+    "webpack-dev-server": "^4.6.0",
+    "yaml": "^1.10.2",
+    "yawn-yaml": "^1.5.0"
   },
   "dependencies": {
     "node-fetch": "^2.6.7"

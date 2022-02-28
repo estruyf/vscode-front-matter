@@ -1,3 +1,4 @@
+import { BlockFieldData } from './BlockFieldData';
 
 export interface CustomTaxonomyData {
   id: string | undefined;
@@ -5,4 +6,5 @@ export interface CustomTaxonomyData {
   options?: string[] | undefined;
   option?: string | undefined;
   parents?: string[];
+  blockData?: BlockFieldData;
 }

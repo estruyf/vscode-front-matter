@@ -1,6 +1,8 @@
 import {PhotographIcon} from '@heroicons/react/outline';
 import * as React from 'react';
+import { useCallback } from 'react';
 import { MessageHelper } from '../../../helpers/MessageHelper';
+import { BlockFieldData } from '../../../models';
 import { CommandToCode } from '../../CommandToCode';
 import { VsLabel } from '../VscodeComponents';
 import { PreviewImage } from './PreviewImage';
@@ -17,21 +19,32 @@ export interface IPreviewImageFieldProps {
   filePath: string | null;
   parents?: string[];
   multiple?: boolean;
+  blockData?: BlockFieldData;
   onChange: (value: string | string[] | null) => void;
 }
 
-export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps> = ({label, fieldName, onChange, value, filePath, multiple, parents}: React.PropsWithChildren<IPreviewImageFieldProps>) => {
+export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps> = ({
+  label, 
+  fieldName, 
+  blockData, 
+  onChange, 
+  value, 
+  filePath, 
+  multiple, 
+  parents
+}: React.PropsWithChildren<IPreviewImageFieldProps>) => {
 
-  const selectImage = () => {
+  const selectImage = useCallback(() => {
     MessageHelper.sendMessage(CommandToCode.selectImage, { 
       filePath: filePath,
       fieldName,
       value,
       multiple,
       metadataInsert: true,
-      parents
+      parents,
+      blockData
     });
-  };
+  }, [filePath, fieldName, value, multiple, parents]);
 
   const onImageRemove = (imageToRemove: string) => {
     const newValue = value && Array.isArray(value) ? value.filter(image => image.original !== imageToRemove).map(i => i.original) : null;

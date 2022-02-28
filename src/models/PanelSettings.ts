@@ -2,6 +2,7 @@ import { FileStat } from "vscode";
 import { DraftField } from ".";
 import { Choice } from "./Choice";
 import { DashboardData } from "./DashboardData";
+import { DataType } from "./DataType";
 
 export interface PanelSettings {
   seo: SEO;
@@ -10,19 +11,28 @@ export interface PanelSettings {
   date: DateInfo;
   categories: string[];
   customTaxonomy: CustomTaxonomy[];
-  freeform: boolean;
+  freeform: boolean | undefined;
   scripts: CustomScript[];
   isInitialized: boolean;
   modifiedDateUpdate: boolean;
   writingSettingsEnabled: boolean;
-  fmHighlighting: boolean;
+  fmHighlighting: boolean | undefined;
   preview: PreviewSettings;
   contentTypes: ContentType[];
   dashboardViewData: DashboardData | undefined;
-  draftField: DraftField;
+  draftField: DraftField | undefined;
   isBacker: boolean | undefined;
   framework: string | undefined;
   commands: FrameworkCommands;
+  dataTypes: DataType[] | undefined;
+  fieldGroups: FieldGroup[] | undefined;
+  commaSeparatedFields: string[];
+}
+
+export interface FieldGroup { 
+  id: string;
+  labelField?: string;
+  fields: Field[];
 }
 
 export interface FrameworkCommands {
@@ -38,10 +48,12 @@ export interface ContentType {
   pageBundle?: boolean;
 }
 
+export type FieldType = "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft" | "taxonomy" | "fields" | "json" | "block";
+
 export interface Field {
   title?: string;
   name: string;
-  type: "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft" | "taxonomy" | "fields";
+  type: FieldType;
   choices?: string[] | Choice[];
   single?: boolean;
   multiple?: boolean;
@@ -50,6 +62,9 @@ export interface Field {
   taxonomyId?: string;
   default?: string;
   fields?: Field[];
+  fieldGroup?: string | string[];
+  dataType?: string | string[];
+  taxonomyLimit?: number;
 }
 
 export interface DateInfo {
@@ -65,8 +80,9 @@ export interface SEO {
 }
 
 export interface Slug {
-  prefix: number;
-  suffix: number;
+  prefix: number | string;
+  suffix: number | string;
+  updateFileName?: boolean;
 }
 
 export interface FolderInfo {

@@ -1,6 +1,6 @@
 import {HeartIcon, StarIcon} from '@heroicons/react/outline';
 import * as React from 'react';
-import { GITHUB_LINK, REVIEW_LINK, SPONSOR_LINK } from '../../constants';
+import { GITHUB_LINK, REVIEW_LINK, SPONSOR_LINK, TelemetryEvent } from '../../constants';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { FrontMatterIcon } from '../../panelWebView/components/Icons/FrontMatterIcon';
 import { GitHubIcon } from '../../panelWebView/components/Icons/GitHubIcon';
@@ -15,10 +15,15 @@ export interface IWelcomeScreenProps {
 export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({settings}: React.PropsWithChildren<IWelcomeScreenProps>) => {
 
   React.useEffect(() => {
+
+    Messenger.send(DashboardMessage.sendTelemetry, {
+      event: TelemetryEvent.webviewWelcomeScreen
+    });
+
     return () => {
       Messenger.send(DashboardMessage.reload)
     };
-  }, ['']);
+  }, []);
   
   return (
     <div className={`h-full overflow-auto py-24`}>

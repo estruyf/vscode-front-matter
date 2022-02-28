@@ -7,7 +7,8 @@ import Downshift from 'downshift';
 import { AddIcon } from './Icons/AddIcon';
 import { VsLabel } from './VscodeComponents';
 import { MessageHelper } from '../../helpers/MessageHelper';
-import { CustomTaxonomyData } from '../../models';
+import { BlockFieldData, CustomTaxonomyData } from '../../models';
+import { useCallback, useMemo } from 'react';
 
 export interface ITagPickerProps {
   type: TagType;
@@ -19,14 +20,16 @@ export interface ITagPickerProps {
   unsetFocus: () => void;
 
   parents?: string[];
+  blockData?: BlockFieldData;
   label?: string;
   disableConfigurable?: boolean;
   fieldName?: string;
   taxonomyId?: string;
+  limit?: number;
 }
 
 const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsWithChildren<ITagPickerProps>) => {
-  const { label, icon, type, crntSelected, options, freeform, focussed, unsetFocus, disableConfigurable, fieldName, taxonomyId, parents } = props;
+  const { label, icon, type, crntSelected, options, freeform, focussed, unsetFocus, disableConfigurable, fieldName, taxonomyId, parents, blockData, limit } = props;
   const [ selected, setSelected ] = React.useState<string[]>([]);
   const [ inputValue, setInputValue ] = React.useState<string>("");
   const prevSelected = usePrevious(crntSelected);
@@ -68,13 +71,17 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
   const sendUpdate = (values: string[]) => {    
     if (type === TagType.tags) {
       MessageHelper.sendMessage(CommandToCode.updateTags, {
+        fieldName,
         values,
-        parents
+        parents,
+        blockData
       });
     } else if (type === TagType.categories) {
       MessageHelper.sendMessage(CommandToCode.updateCategories, {
+        fieldName,
         values,
-        parents
+        parents,
+        blockData
       });
     } else if (type === TagType.keywords) {
       MessageHelper.sendMessage(CommandToCode.updateKeywords, {
@@ -86,7 +93,8 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
         id: taxonomyId,
         name: fieldName,
         options: values,
-        parents
+        parents,
+        blockData
       } as CustomTaxonomyData);
     }
   };
@@ -141,6 +149,22 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
     return !selected.includes(option) && option.toLowerCase().includes((inputValue || "").toLowerCase());
   };
 
+  const checkIsDisabled = useCallback(() => {
+    if (!limit) {
+      return false;
+    }
+
+    return selected.length >= limit;
+  }, [limit, selected]);
+
+  const inputPlaceholder = useMemo((): string => {
+    if (checkIsDisabled()) {
+      return `You have reached the limit of ${limit} ${label || type.toLowerCase()}`;
+    }
+
+    return `Pick your ${label || type.toLowerCase()}`;
+  }, [label, type, checkIsDisabled]); 
+
   React.useEffect(() => {
     setTimeout(() => {
       triggerFocus();
@@ -157,7 +181,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
     <div className={`article__tags`}>      
       <VsLabel>
         <div className={`metadata_field__label`}>
-          {icon} <span style={{ lineHeight: "16px"}}>{label || type}</span>
+          {icon} <span style={{ lineHeight: "16px"}}>{label || type}{(limit !== undefined && limit > 0) ? <>{` `}<span style={{fontWeight: "lighter"}}>(Max.: {limit})</span></> : ``}</span>
         </div>
       </VsLabel>
 
@@ -181,16 +205,17 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
                               if (!inputValue) {
                                 clearSelection();
                               }
-                            }
+                            },
+                            disabled: checkIsDisabled()
                           })
                        }
-                       placeholder={`Pick your ${label || type.toLowerCase()}`} />
+                       placeholder={inputPlaceholder} />
                 
                 {
                   freeform && (
                     <button className={`article__tags__input__button`}
                             title={`Add the unknown tag`}
-                            disabled={!inputValue} 
+                            disabled={!inputValue || checkIsDisabled()} 
                             onClick={() => insertUnkownTag(closeMenu)}>
                       <AddIcon />
                     </button>

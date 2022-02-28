@@ -1,17 +1,18 @@
 import { isValidFile } from './../helpers/isValidFile';
-import { SETTING_AUTO_UPDATE_DATE, SETTING_MODIFIED_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TEMPLATES_PREFIX, CONFIG_KEY, SETTING_DATE_FORMAT, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTINGS_CONTENT_PLACEHOLDERS } from './../constants';
+import { SETTING_AUTO_UPDATE_DATE, SETTING_MODIFIED_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TEMPLATES_PREFIX, CONFIG_KEY, SETTING_DATE_FORMAT, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTINGS_CONTENT_PLACEHOLDERS, TelemetryEvent } from './../constants';
 import * as vscode from 'vscode';
 import { Field, TaxonomyType } from "../models";
 import { format } from "date-fns";
 import { ArticleHelper, Settings, SlugHelper } from '../helpers';
-import matter = require('gray-matter');
 import { Notifications } from '../helpers/Notifications';
 import { extname, basename, parse, dirname } from 'path';
 import { COMMAND_NAME, DefaultFields } from '../constants';
 import { DashboardData } from '../models/DashboardData';
-import { ExplorerView } from '../explorerView/ExplorerView';
 import { DateHelper } from '../helpers/DateHelper';
 import { parseWinPath } from '../helpers/parseWinPath';
+import { Telemetry } from '../helpers/Telemetry';
+import { ParsedFrontMatter } from '../parsers';
+import { MediaListener } from '../listeners/panel';
 
 
 export class Article {
@@ -102,7 +103,7 @@ export class Article {
    * Update the date in the front matter
    * @param article 
    */
-  public static updateDate(article: matter.GrayMatterFile<string>, forceCreate: boolean = false) {
+  public static updateDate(article: ParsedFrontMatter, forceCreate: boolean = false) {
     article.data = ArticleHelper.updateDates(article.data);   
     return article;
   }
@@ -124,7 +125,7 @@ export class Article {
 
     ArticleHelper.update(
       editor,
-      updatedArticle as matter.GrayMatterFile<string>
+      updatedArticle as ParsedFrontMatter
     );
   }
 
@@ -144,7 +145,7 @@ export class Article {
 
   private static setLastModifiedDateInner(
     document: vscode.TextDocument
-  ): matter.GrayMatterFile<string> | undefined {
+  ): ParsedFrontMatter | undefined {
     const article = ArticleHelper.getFrontMatterFromDocument(document);
 
     if (!article) {
@@ -165,6 +166,8 @@ export class Article {
    * Generate the slug based on the article title
    */
 	public static async generateSlug() {
+		Telemetry.send(TelemetryEvent.generateSlug);
+    
     const prefix = Settings.get(SETTING_SLUG_PREFIX) as string;
     const suffix = Settings.get(SETTING_SLUG_SUFFIX) as string;
     const updateFileName = Settings.get(SETTING_SLUG_UPDATE_FILE_NAME) as string;
@@ -334,13 +337,13 @@ export class Article {
     } as DashboardData);
 
     // Let the editor panel know you are selecting an image
-    ExplorerView.getInstance().getMediaSelection();
+    MediaListener.getMediaSelection();
 	}
 
   /**
    * Get the current article
    */
-  private static getCurrent(): matter.GrayMatterFile<string> | undefined {
+  private static getCurrent(): ParsedFrontMatter | undefined {
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;
@@ -361,7 +364,7 @@ export class Article {
    * @param field 
    * @param forceCreate 
    */
-  private static articleDate(article: matter.GrayMatterFile<string>, field: string, forceCreate: boolean) {
+  private static articleDate(article: ParsedFrontMatter, field: string, forceCreate: boolean) {
     if (typeof article.data[field] !== "undefined" || forceCreate) {
       article.data[field] = Article.formatDate(new Date());
     }

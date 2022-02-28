@@ -92,7 +92,7 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({label, 
                 className: `metadata_field__choice__toggle`,
                 disabled: availableChoices.length === 0 
               })}>
-              <span>{`Select your ${label} value`}</span>
+              <span>{`Select ${label}`}</span>
               <ChevronDownIcon className="icon" />
             </button>
 

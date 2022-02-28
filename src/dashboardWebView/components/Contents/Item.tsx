@@ -3,21 +3,18 @@ import { useRecoilValue } from 'recoil';
 import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIcon';
 import { DashboardMessage } from '../../DashboardMessage';
 import { Page } from '../../models/Page';
-import { SettingsSelector, ViewSelector } from '../../state';
+import { ViewSelector } from '../../state';
 import { DateField } from '../DateField';
 import { Status } from '../Status';
 import { Messenger } from '@estruyf/vscode/dist/client';
-import useContentType from '../../../hooks/useContentType';
 import { DashboardViewType } from '../../models';
 
 export interface IItemProps extends Page {}
 
+const PREVIEW_IMAGE_FIELD = 'fmPreviewImage';
+
 export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, title, draft, description, type, ...pageData }: React.PropsWithChildren<IItemProps>) => {
   const view = useRecoilValue(ViewSelector);
-  const settings = useRecoilValue(SettingsSelector);
-  const contentType = useContentType(settings, { type });
-
-  const previewField = contentType.fields.find(field => field.isPreviewImage && field.type === "image")?.name || "preview";
   
   const openFile = () => {
     Messenger.send(DashboardMessage.openFile, fmFilePath);
@@ -30,8 +27,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
                 onClick={openFile}>
           <div className="relative h-36 w-full overflow-hidden border-b border-gray-100 dark:border-vulcan-100 dark:group-hover:border-vulcan-200">
             {
-              previewField && pageData[previewField] ? (
-                <img src={`${pageData[previewField]}`} alt={title} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+              pageData[PREVIEW_IMAGE_FIELD] ? (
+                <img src={`${pageData[PREVIEW_IMAGE_FIELD]}`} alt={title} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
               ) : (
                 <div className={`flex items-center justify-center bg-whisper-500 dark:bg-vulcan-200 dark:group-hover:bg-vulcan-100`}>
                   <MarkdownIcon className={`h-32 text-vulcan-100 dark:text-whisper-100`} />

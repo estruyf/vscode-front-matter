@@ -1,11 +1,8 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { EventData } from '@estruyf/vscode/dist/models';
 import {UploadIcon} from '@heroicons/react/outline';
 import * as React from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { MediaInfo, MediaPaths } from '../../../models/MediaPaths';
-import { DashboardCommand } from '../../DashboardCommand';
-import { LoadingAtom, MediaFoldersAtom, MediaTotalAtom, SelectedMediaFolderAtom, SettingsSelector, ViewDataSelector } from '../../state';
+import { useRecoilValue } from 'recoil';
+import { LoadingAtom, MediaFoldersAtom, SelectedMediaFolderAtom, SettingsSelector, ViewDataSelector } from '../../state';
 import { Header } from '../Header';
 import { Spinner } from '../Spinner';
 import { SponsorMsg } from '../SponsorMsg';
@@ -13,11 +10,12 @@ import { Item } from './Item';
 import { Lightbox } from './Lightbox';
 import { List } from './List';
 import { useDropzone } from 'react-dropzone'
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { DashboardMessage } from '../../DashboardMessage';
 import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMatterIcon';
 import { FolderItem } from './FolderItem';
 import useMedia from '../../hooks/useMedia';
+import { TelemetryEvent } from '../../../constants';
 
 export interface IMediaProps {}
 
@@ -45,6 +43,12 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
       reader.readAsDataURL(file)
     });
   }, [selectedFolder]);
+
+  useEffect(() => {
+    Messenger.send(DashboardMessage.sendTelemetry, {
+      event: TelemetryEvent.webviewMediaView
+    });
+  }, []);
 
   const {getRootProps, isDragActive} = useDropzone({
     onDrop,

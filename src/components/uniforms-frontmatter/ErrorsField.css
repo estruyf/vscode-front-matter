@@ -1,0 +1,18 @@
+
+
+.autoform-error {
+  background-color: var(--frontmatter-error-background, var(--vscode-inputValidation-errorBackground));
+  border: 1px solid var(--frontmatter-error-border, var(--vscode-inputValidation-errorBorder));
+  border-radius: 2px;
+  margin: 20px 0px;
+  padding: 10px;
+  color: var(--frontmatter-error-foreground, var(--vscode-editor-foreground));
+
+  ul {
+    margin-bottom: 0;
+  }
+
+  li {
+    text-transform: capitalize;
+  }
+}

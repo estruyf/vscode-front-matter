@@ -2,7 +2,7 @@ import { Questions } from './../helpers/Questions';
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import { SETTINGS_CONTENT_DEFAULT_FILETYPE, SETTING_TEMPLATES_FOLDER, SETTING_TEMPLATES_PREFIX } from '../constants';
+import { SETTINGS_CONTENT_DEFAULT_FILETYPE, SETTING_TEMPLATES_FOLDER, TelemetryEvent } from '../constants';
 import { ArticleHelper, Settings } from '../helpers';
 import { Article } from '.';
 import { Notifications } from '../helpers/Notifications';
@@ -11,8 +11,9 @@ import { Project } from './Project';
 import { Folders } from './Folders';
 import { ContentType } from '../helpers/ContentType';
 import { ContentType as IContentType } from '../models';
-import { PagesListener } from '../listeners';
+import { PagesListener } from '../listeners/dashboard';
 import { extname } from 'path';
+import { Telemetry } from '../helpers/Telemetry';
 
 export class Template {
 
@@ -174,6 +175,8 @@ export class Template {
     }
 
     Notifications.info(`Your new content has been created.`);
+
+    Telemetry.send(TelemetryEvent.createContentFromTemplate);
 
     // Trigger a refresh for the dashboard
     PagesListener.refresh();

@@ -4,8 +4,9 @@ import { CommandToCode } from '../CommandToCode';
 import { MessageHelper } from '../../helpers/MessageHelper';
 import { useDebounce } from '../../hooks/useDebounce';
 import { Collapsible } from './Collapsible';
-import { VsCheckbox, VsLabel } from './VscodeComponents';
+import { VsLabel } from './VscodeComponents';
 import useStartCommand from '../hooks/useStartCommand';
+import { VSCodeCheckbox } from '@vscode/webview-ui-toolkit/react';
 
 export interface IGlobalSettingsProps {
   settings: PanelSettings | undefined;
@@ -69,11 +70,11 @@ const GlobalSettings: React.FunctionComponent<IGlobalSettingsProps> = ({settings
       <Collapsible id={`${isBase ? "base_" : ""}settings`} className={`base__actions`} title="Global settings">
         <div className={`base__action`}>
           <VsLabel>Modified date</VsLabel>
-          <VsCheckbox checked={modifiedDateUpdate} onClick={onDateCheck}>Auto-update modified date</VsCheckbox>
+          <VSCodeCheckbox checked={modifiedDateUpdate} onClick={onDateCheck}>Auto-update modified date</VSCodeCheckbox>
         </div>
         <div className={`base__action`}>
           <VsLabel>Front Matter highlight</VsLabel>
-          <VsCheckbox checked={fmHighlighting} onClick={onHighlightCheck}>Highlight Front Matter</VsCheckbox>
+          <VSCodeCheckbox checked={fmHighlighting} onClick={onHighlightCheck}>Highlight Front Matter</VSCodeCheckbox>
         </div>
         <div className={`base__action`}>
           <VsLabel>Local preview</VsLabel>

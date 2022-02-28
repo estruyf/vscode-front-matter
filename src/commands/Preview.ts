@@ -1,4 +1,5 @@
-import { SETTING_PREVIEW_HOST, SETTING_PREVIEW_PATHNAME, CONTEXT } from './../constants';
+import { Telemetry } from './../helpers/Telemetry';
+import { SETTING_PREVIEW_HOST, SETTING_PREVIEW_PATHNAME, CONTEXT, TelemetryEvent } from './../constants';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { join } from "path";
 import { commands, env, Uri, ViewColumn, window } from "vscode";
@@ -133,6 +134,8 @@ export class Preview {
     <iframe src="${urlJoin(localhostUrl.toString(), slug || '')}" >
   </body>
 </html>`;
+
+    Telemetry.send(TelemetryEvent.openPreview);
   }
 
   /**

@@ -1,12 +1,12 @@
-import { DataFile } from './../models/DataFile';
-import { DashboardMessage } from "../dashboardWebView/DashboardMessage";
+import { DataFile } from './../../models/DataFile';
+import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { BaseListener } from "./BaseListener";
-import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
-import { Folders } from '../commands/Folders';
+import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
+import { Folders } from '../../commands/Folders';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 import * as yaml from 'js-yaml';
-import { Logger, Notifications } from '../helpers';
+import { Logger, Notifications } from '../../helpers';
 import { commands } from 'vscode';
 
 

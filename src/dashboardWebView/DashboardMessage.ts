@@ -24,4 +24,5 @@ export enum DashboardMessage {
   runCustomScript = 'runCustomScript',
   getDataEntries = 'getDataEntries',
   putDataEntries = 'putDataEntries',
+  sendTelemetry = 'sendTelemetry',
 }

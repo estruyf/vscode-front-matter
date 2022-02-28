@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useEffect } from 'react';
+import { MessageHelper } from '../../helpers/MessageHelper';
 import { Command } from '../Command';
 import { VsCollapsible } from './VscodeComponents';
 
@@ -15,8 +16,8 @@ const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({id, children, 
   const collapseKey = `collapse-${id}`;
 
   useEffect(() => {
-    const collapsed = window.localStorage.getItem(collapseKey);
-    if (collapsed === null || collapsed === 'true') {
+    const prevState = MessageHelper.getState();
+    if (!prevState || !prevState[collapseKey] || prevState[collapseKey] === null || prevState[collapseKey] === 'true') {
       setIsOpen(true);
       updateStorage(true);
     }
@@ -31,7 +32,11 @@ const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({id, children, 
   }, ['']);
 
   const updateStorage = (value: boolean) => {
-    window.localStorage.setItem(collapseKey, value.toString());
+    const prevState = MessageHelper.getState();
+    MessageHelper.setState({
+      ...prevState,
+      [collapseKey]: value.toString()
+    });
   }
 
   // This is a work around for a lit-element issue of duplicate slot names

@@ -1,0 +1,5 @@
+
+
+.autoform__select_field {
+  color: var(--frontmatter-select-foreground, var(--vscode-editor-foreground));
+}
