@@ -31,7 +31,7 @@ function List({
           isValidElement(child)
             ? cloneElement(child, {
                 key: `${itemIndex}-${childIndex}`,
-                name: child.props.name?.replace('$', '' + itemIndex),
+                name: (child.props.name || "").replace('$', '' + itemIndex),
                 ...itemProps,
               })
             : child,
