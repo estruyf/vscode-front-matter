@@ -32,7 +32,7 @@ export class Telemetry {
       return;
     }
     
-    Telemetry.reporter?.sendTelemetryEvent(eventName, properties, measurements);
+    Telemetry.reporter?.sendTelemetryEvent(eventName, { version: Extension.getInstance().version, ...properties }, measurements);
   }
 
   public static dispose() {
