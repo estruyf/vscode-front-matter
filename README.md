@@ -15,8 +15,8 @@
   
   <img src="https://vsmarketplacebadge.apphb.com/rating/eliostruyf.vscode-front-matter.svg" alt="Ratings" style="display: inline-block;margin-left:10px" />
 
-  <a href="https://www.buymeacoffee.com/zMeFRy9" title="Buy me a coffee" style="margin-left:10px">
-    <img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-€%203-blue?logo=buy-me-a-coffee&style=flat" alt="Buy me a coffee" style="display: inline-block" />
+  <a href="https://github.com/sponsors/estruyf" title="Become a sponsor" style="margin-left:10px">
+    <img src="https://img.shields.io/github/sponsors/estruyf?color=%23CE2E7C&logo=github&style=flat" alt="Sponsor the project" style="display: inline-block" />
   </a>
 </p>
 
