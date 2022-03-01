@@ -16,7 +16,7 @@ export const FolderItem: React.FunctionComponent<IFolderItemProps> = ({ folder, 
   const relFolderPath = wsFolder ? folder.replace(wsFolder, '') : folder;
   
   return (
-    <li className={`group relative hover:shadow-xl dark:hover:bg-vulcan-100 text-gray-600 hover:text-gray-700 dark:text-whisper-900 dark:hover:text-whisper-800 p-4`}>
+    <li className={`group relative hover:bg-gray-200 dark:hover:bg-vulcan-100 text-gray-600 hover:text-gray-700 dark:text-whisper-900 dark:hover:text-whisper-800 p-4`}>
       <button className={`w-full flex flex-row items-center h-full`} onClick={() => setSelectedFolder(folder)}>
         <div>
           <FolderIcon className={`h-12 w-12 mr-4`} />
