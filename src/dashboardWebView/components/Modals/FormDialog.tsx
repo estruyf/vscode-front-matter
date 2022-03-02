@@ -2,7 +2,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import * as React from 'react';
 import { Fragment, useRef } from 'react';
 
-export interface IMetadataProps {
+export interface IFormDialogProps {
   title: string;
   description: string;
   okBtnText: string;
@@ -13,7 +13,7 @@ export interface IMetadataProps {
   trigger: () => void;
 }
 
-export const Metadata: React.FunctionComponent<IMetadataProps> = ({title, description, cancelBtnText, okBtnText, dismiss, isSaveDisabled, trigger, children}: React.PropsWithChildren<IMetadataProps>) => {
+export const FormDialog: React.FunctionComponent<IFormDialogProps> = ({title, description, cancelBtnText, okBtnText, dismiss, isSaveDisabled, trigger, children}: React.PropsWithChildren<IFormDialogProps>) => {
 
   const cancelButtonRef = useRef(null);
   

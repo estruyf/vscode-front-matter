@@ -1,7 +1,7 @@
 import { CodeIcon } from '@heroicons/react/outline';
 import * as React from 'react';
+import { useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
-import { AddIcon } from '../../../panelWebView/components/Icons/AddIcon';
 import { SettingsSelector, ViewDataSelector } from '../../state';
 import { PageLayout } from '../Layout/PageLayout';
 import { Item } from './Item';
@@ -12,7 +12,8 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (props: React.P
   const settings = useRecoilValue(SettingsSelector);
   const viewData = useRecoilValue(ViewDataSelector);
 
-  const snippets = settings?.snippets || [];
+  const snippetKeys = useMemo(() => Object.keys(settings?.snippets) || [], [settings?.snippets]);
+  const snippets = settings?.snippets || {};
   
   return (
     <PageLayout>
@@ -25,11 +26,14 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (props: React.P
       }
 
       {
-        snippets && snippets.length > 0 ? (
+        snippetKeys && snippetKeys.length > 0 ? (
           <ul role="list" className={`grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8`}>
             {
-              snippets.map((snippet: any, index: number) => (
-                <Item snippet={snippet} key={index} />
+              snippetKeys.map((snippetKey: any, index: number) => (
+                <Item 
+                  key={index}
+                  title={snippetKey}
+                  snippet={snippets[snippetKey]} />
               ))
             }
           </ul>

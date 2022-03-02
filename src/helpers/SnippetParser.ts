@@ -221,23 +221,8 @@ export abstract class TransformableMarker extends Marker {
 }
 
 export class Placeholder extends TransformableMarker {
-	static compareByIndex(a: Placeholder, b: Placeholder): number {
-		if (a.index === b.index) {
-			return 0;
-		} else if (a.isFinalTabstop) {
-			return 1;
-		} else if (b.isFinalTabstop) {
-			return -1;
-		} else if (a.index < b.index) {
-			return -1;
-		} else if (a.index > b.index) {
-			return 1;
-		} else {
-			return 0;
-		}
-	}
 
-	constructor(public index: number) {
+	constructor(public index: number | string) {
 		super();
 	}
 
@@ -629,7 +614,7 @@ export class SnippetParser {
 
 		// fill in values for placeholders. the first placeholder of an index
 		// that has a value defines the value for all placeholders with that index
-		const placeholderDefaultValues = new Map<number, Marker[] | undefined>();
+		const placeholderDefaultValues = new Map<number | string, Marker[] | undefined>();
 		const incompletePlaceholders: Placeholder[] = [];
 		let placeholderCount = 0;
 		snippet.walk(marker => {
@@ -876,7 +861,7 @@ export class SnippetParser {
 			return this._backTo(token);
 		}
 
-		const variable = new Variable(name!);
+		const placeholder = new Placeholder(String(name!));
 
 		if (this._accept(TokenType.Colon)) {
 			// ${foo:<children>}
@@ -884,24 +869,49 @@ export class SnippetParser {
 
 				// ...} -> done
 				if (this._accept(TokenType.CurlyClose)) {
-					parent.appendChild(variable);
+					parent.appendChild(placeholder);
 					return true;
 				}
 
-				if (this._parse(variable)) {
+				if (this._parse(placeholder)) {
 					continue;
 				}
 
 				// fallback
 				parent.appendChild(new Text('${' + name! + ':'));
-				variable.children.forEach(parent.appendChild, parent);
+				placeholder.children.forEach(parent.appendChild, parent);
 				return true;
 			}
 
+		} else if (this._accept(TokenType.Pipe)) {
+			const choice = new Choice();
+
+			while (true) {
+				if (this._parseChoiceElement(choice)) {
+
+					if (this._accept(TokenType.Comma)) {
+						// opt, -> more
+						continue;
+					}
+
+					if (this._accept(TokenType.Pipe)) {
+						placeholder.appendChild(choice);
+						if (this._accept(TokenType.CurlyClose)) {
+							// ..|} -> done
+							parent.appendChild(placeholder);
+							return true;
+						}
+					}
+				}
+
+				this._backTo(token);
+				return false;
+			}
+			
 		} else if (this._accept(TokenType.Forwardslash)) {
 			// ${foo/<regex>/<format>/<options>}
-			if (this._parseTransform(variable)) {
-				parent.appendChild(variable);
+			if (this._parseTransform(placeholder)) {
+				parent.appendChild(placeholder);
 				return true;
 			}
 
@@ -910,7 +920,7 @@ export class SnippetParser {
 
 		} else if (this._accept(TokenType.CurlyClose)) {
 			// ${foo}
-			parent.appendChild(variable);
+			parent.appendChild(placeholder);
 			return true;
 
 		} else {
