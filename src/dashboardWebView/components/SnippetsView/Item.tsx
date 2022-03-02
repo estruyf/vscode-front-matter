@@ -1,7 +1,9 @@
+import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import { Choice, Scanner, SnippetParser, TokenType, Variable, VariableResolver } from '../../../helpers/SnippetParser';
+import { DashboardMessage } from '../../DashboardMessage';
 import { ViewDataSelector } from '../../state';
 
 export interface IItemProps {
@@ -12,6 +14,13 @@ export const Item: React.FunctionComponent<IItemProps> = ({ snippet }: React.Pro
   const viewData = useRecoilValue(ViewDataSelector);
 
   // Todo: On add, show dialog to insert the placeholders and content
+
+  const insertToArticle = () => {
+    Messenger.send(DashboardMessage.insertSnippet, {
+      file: viewData?.data?.filePath,
+      snippet: snippet.body.join(`\n`)
+    });
+  };
 
   useEffect(() => {
     const snippetParser = new SnippetParser();
@@ -49,7 +58,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({ snippet }: React.Pro
       <div>
         {
           viewData?.data?.filePath ? (
-            <div>Add</div>
+            <button onClick={insertToArticle}>Add</button>
           ) : (
             <div>Edit</div>
           )

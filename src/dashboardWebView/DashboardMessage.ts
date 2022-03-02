@@ -25,4 +25,5 @@ export enum DashboardMessage {
   getDataEntries = 'getDataEntries',
   putDataEntries = 'putDataEntries',
   sendTelemetry = 'sendTelemetry',
+  insertSnippet = 'insertSnippet',
 }

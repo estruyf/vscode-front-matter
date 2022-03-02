@@ -8,7 +8,7 @@ import { WebviewHelper } from '@estruyf/vscode';
 import { DashboardData } from '../models/DashboardData';
 import { ExplorerView } from '../explorerView/ExplorerView';
 import { MediaLibrary } from '../helpers/MediaLibrary';
-import { DashboardListener, MediaListener, SettingsListener, TelemetryListener, DataListener, PagesListener, ExtensionListener } from '../listeners/dashboard';
+import { DashboardListener, MediaListener, SettingsListener, TelemetryListener, DataListener, PagesListener, ExtensionListener, SnippetListener } from '../listeners/dashboard';
 import { MediaListener as PanelMediaListener } from '../listeners/panel'
 
 export class Dashboard {
@@ -143,6 +143,7 @@ export class Dashboard {
       SettingsListener.process(msg);
       DataListener.process(msg);
       TelemetryListener.process(msg);
+      SnippetListener.process(msg);
     });
   }
 
