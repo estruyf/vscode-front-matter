@@ -61,8 +61,8 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
         {
           viewData?.data?.filePath && (
             <div className={`text-lg text-center mb-6`}>
-              <p>Select the image you want to use for your article.</p>
-              <p className={`opacity-80 text-base`}>You can also drag and drop images from your desktop and select that once uploaded.</p>
+              <p>Select the media file to add to your content.</p>
+              <p className={`opacity-80 text-base`}>You can also drag and drop images from your desktop and select them once uploaded.</p>
             </div>
           )
         }
