@@ -1,4 +1,4 @@
-import { SETTINGS_DASHBOARD_OPENONSTART, CONTEXT } from '../constants';
+import { SETTING_DASHBOARD_OPENONSTART, CONTEXT } from '../constants';
 import { join } from "path";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window } from "vscode";
 import { Logger, Settings as SettingsHelper } from '../helpers';
@@ -24,7 +24,7 @@ export class Dashboard {
    * Init the dashboard
    */
   public static async init() {
-    const openOnStartup = SettingsHelper.get(SETTINGS_DASHBOARD_OPENONSTART);
+    const openOnStartup = SettingsHelper.get(SETTING_DASHBOARD_OPENONSTART);
     if (openOnStartup) {
       Dashboard.open();
     }

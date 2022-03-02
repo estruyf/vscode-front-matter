@@ -1,5 +1,5 @@
 import { commands, window, Selection, QuickPickItem } from "vscode";
-import { COMMAND_NAME, CONTEXT, SETTINGS_CONTENT_WYSIWYG } from "../constants";
+import { COMMAND_NAME, CONTEXT, SETTING_CONTENT_WYSIWYG } from "../constants";
 import { Settings } from "../helpers";
 
 enum MarkupType {
@@ -24,7 +24,7 @@ export class Wysiwyg {
    */
   public static async registerCommands(subscriptions: any) {
 
-    const wysiwygEnabled = Settings.get(SETTINGS_CONTENT_WYSIWYG);
+    const wysiwygEnabled = Settings.get(SETTING_CONTENT_WYSIWYG);
 
     if (!wysiwygEnabled) {
       return;

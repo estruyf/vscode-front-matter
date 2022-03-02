@@ -29,6 +29,7 @@ export interface Settings {
   dataFiles: DataFile[] | undefined;
   dataTypes: DataType[] | undefined;
   isBacker: boolean | undefined;
+  snippets: any | undefined;
 }
 
 export interface DashboardState {

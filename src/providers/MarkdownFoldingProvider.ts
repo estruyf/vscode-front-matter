@@ -1,7 +1,7 @@
 import { ArticleHelper } from '../helpers';
 import { languages, TextEditorDecorationType } from 'vscode';
 import { CancellationToken, FoldingContext, FoldingRange, FoldingRangeKind, FoldingRangeProvider, Range, TextDocument, window, Position } from 'vscode';
-import { SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTINGS_CONTENT_SUPPORTED_FILETYPES, SETTING_FRONTMATTER_TYPE } from '../constants';
+import { SETTING_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_CONTENT_SUPPORTED_FILETYPES, SETTING_FRONTMATTER_TYPE } from '../constants';
 import { Settings } from '../helpers';
 import { FrontMatterDecorationProvider } from './FrontMatterDecorationProvider';
 
@@ -12,7 +12,7 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
   private static decType: TextEditorDecorationType | null = null;
 
   public static register() {
-    const supportedFiles = Settings.get<string[]>(SETTINGS_CONTENT_SUPPORTED_FILETYPES);
+    const supportedFiles = Settings.get<string[]>(SETTING_CONTENT_SUPPORTED_FILETYPES);
 
     languages.registerFoldingRangeProvider({ language: 'markdown', scheme: 'file' }, new MarkdownFoldingProvider());
 
@@ -41,7 +41,7 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
 
     const isSupported = ArticleHelper.isMarkdownFile(activeDoc);
     if (isSupported) {
-      const fmHighlight = Settings.get<boolean>(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT);
+      const fmHighlight = Settings.get<boolean>(SETTING_CONTENT_FRONTMATTER_HIGHLIGHT);
 
       const range = this.getFrontMatterRange();
 

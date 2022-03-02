@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 import { Page } from '../../models';
 import { SettingsSelector } from '../../state';
-import { Header } from '../Header';
 import { Overview } from './Overview';
 import { Spinner } from '../Spinner';
 import { SponsorMsg } from '../SponsorMsg';
@@ -11,6 +10,7 @@ import { useEffect } from 'react';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
 import { TelemetryEvent } from '../../../constants';
+import { PageLayout } from '../Layout/PageLayout';
 
 export interface IContentsProps {
   pages: Page[];
@@ -30,17 +30,14 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({pages, loadin
   }, []);
 
   return (
-    <div className="flex flex-col h-full overflow-auto">
-      <Header 
-        folders={pageFolders}
-        totalPages={pageItems.length}
-        settings={settings} />
-
+    <PageLayout
+      folders={pageFolders}
+      totalPages={pageItems.length}>
       <div className="w-full flex-grow max-w-7xl mx-auto py-6 px-4">
         { loading ? <Spinner /> : <Overview pages={pageItems} settings={settings} /> }
       </div>
 
       <SponsorMsg beta={settings?.beta} version={settings?.versionInfo} isBacker={settings?.isBacker} />
-    </div>
+    </PageLayout>
   );
 };

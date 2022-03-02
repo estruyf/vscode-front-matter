@@ -1,4 +1,4 @@
-import { SETTINGS_CONTENT_STATIC_FOLDER, SETTINGS_FRAMEWORK_ID } from "../../constants";
+import { SETTING_CONTENT_STATIC_FOLDER, SETTING_FRAMEWORK_ID } from "../../constants";
 import { DashboardCommand } from "../../dashboardWebView/DashboardCommand";
 import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { DashboardSettings, Settings } from "../../helpers";
@@ -54,15 +54,15 @@ export class SettingsListener extends BaseListener {
    * @param frameworkId 
    */
   private static setFramework(frameworkId: string | null) {
-    Settings.update(SETTINGS_FRAMEWORK_ID, frameworkId, true);
+    Settings.update(SETTING_FRAMEWORK_ID, frameworkId, true);
 
     if (frameworkId) {
       const allFrameworks = FrameworkDetector.getAll();
       const framework = allFrameworks.find((f: Framework) => f.name === frameworkId);
       if (framework) {
-        Settings.update(SETTINGS_CONTENT_STATIC_FOLDER, framework.static, true);
+        Settings.update(SETTING_CONTENT_STATIC_FOLDER, framework.static, true);
       } else {
-        Settings.update(SETTINGS_CONTENT_STATIC_FOLDER, "", true);
+        Settings.update(SETTING_CONTENT_STATIC_FOLDER, "", true);
       }
     }
   }

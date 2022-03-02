@@ -1,5 +1,5 @@
 import { Questions } from './../helpers/Questions';
-import { SETTINGS_CONTENT_PAGE_FOLDERS, SETTINGS_CONTENT_STATIC_FOLDER, SETTINGS_CONTENT_SUPPORTED_FILETYPES, TelemetryEvent } from './../constants';
+import { SETTING_CONTENT_PAGE_FOLDERS, SETTING_CONTENT_STATIC_FOLDER, SETTING_CONTENT_SUPPORTED_FILETYPES, TelemetryEvent } from './../constants';
 import { commands, Uri, workspace, window } from "vscode";
 import { basename, join } from "path";
 import { ContentFolder, FileInfo, FolderInfo } from "../models";
@@ -26,7 +26,7 @@ export class Folders {
    */
   public static async addMediaFolder(data?: {selectedFolder?: string}) {
     let wsFolder = Folders.getWorkspaceFolder();
-    const staticFolder = Settings.get<string>(SETTINGS_CONTENT_STATIC_FOLDER);
+    const staticFolder = Settings.get<string>(SETTING_CONTENT_STATIC_FOLDER);
 
     let startPath = "";
 
@@ -210,7 +210,7 @@ export class Folders {
    * Get the registered folders information
    */
   public static async getInfo(limit?: number): Promise<FolderInfo[] | null> {
-    const supportedFiles = Settings.get<string[]>(SETTINGS_CONTENT_SUPPORTED_FILETYPES);
+    const supportedFiles = Settings.get<string[]>(SETTING_CONTENT_SUPPORTED_FILETYPES);
     const folders = Folders.get();
     if (folders && folders.length > 0) {
       let folderInfo: FolderInfo[] = [];
@@ -281,7 +281,7 @@ export class Folders {
    */
   public static get(): ContentFolder[] {
     const wsFolder = Folders.getWorkspaceFolder();
-    const folders: ContentFolder[] = Settings.get(SETTINGS_CONTENT_PAGE_FOLDERS) as ContentFolder[];
+    const folders: ContentFolder[] = Settings.get(SETTING_CONTENT_PAGE_FOLDERS) as ContentFolder[];
     
     return folders.map(folder => ({
       ...folder,
@@ -301,7 +301,7 @@ export class Folders {
       path: Folders.relWsFolder(folder, wsFolder) 
     }));
 
-    await Settings.update(SETTINGS_CONTENT_PAGE_FOLDERS, folderDetails, true);
+    await Settings.update(SETTING_CONTENT_PAGE_FOLDERS, folderDetails, true);
 
     // Reinitialize the folder listeners
     PagesListener.startWatchers();
