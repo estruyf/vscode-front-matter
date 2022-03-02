@@ -5,7 +5,7 @@ import { Command } from "../../panelWebView/Command";
 import { CommandToCode } from "../../panelWebView/CommandToCode";
 import { BaseListener } from "./BaseListener";
 import { commands, ThemeIcon, window } from 'vscode';
-import { ArticleHelper, Settings } from "../../helpers";
+import { ArticleHelper, Logger, Settings } from "../../helpers";
 import { COMMAND_NAME, DefaultFields, SETTING_COMMA_SEPARATED_FIELDS, SETTING_TAXONOMY_CONTENT_TYPES } from "../../constants";
 import { Article } from '../../commands';
 import { ParsedFrontMatter } from '../../parsers';
@@ -63,7 +63,13 @@ export class DataListener extends BaseListener {
     const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
     const contentTypes = Settings.get<string>(SETTING_TAXONOMY_CONTENT_TYPES);
     
-    const articleDetails = ArticleHelper.getDetails();
+    let articleDetails = null;
+
+    try {
+      articleDetails = ArticleHelper.getDetails();
+    } catch (e) {
+      Logger.error(`DataListener::pushMetadata: ${(e as Error).message}`);
+    }
 
     if (articleDetails) {
       metadata.articleDetails = articleDetails;
