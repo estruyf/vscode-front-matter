@@ -22,6 +22,7 @@ import { Diagnostics } from './commands/Diagnostics';
 import { PagesListener } from './listeners/dashboard';
 import { Backers } from './commands/Backers';
 import { DataListener, SettingsListener } from './listeners/panel';
+import { NavigationType } from './dashboardWebView/models';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
@@ -57,7 +58,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboard, (data?: DashboardData) => {
 		Telemetry.send(TelemetryEvent.openContentDashboard);
 		if (!data) {
-			Dashboard.open({ type: "contents" });
+			Dashboard.open({ type: NavigationType.Contents });
 		} else {
 			Dashboard.open(data);
 		}
@@ -65,12 +66,17 @@ export async function activate(context: vscode.ExtensionContext) {
 	
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardMedia, (data?: DashboardData) => {
 		Telemetry.send(TelemetryEvent.openMediaDashboard);
-		Dashboard.open({ type: "media" });
+		Dashboard.open({ type: NavigationType.Media });
+	}));
+	
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardSnippets, (data?: DashboardData) => {
+		Telemetry.send(TelemetryEvent.openSnippetsDashboard);
+		Dashboard.open({ type: NavigationType.Snippets });
 	}));
 	
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardData, (data?: DashboardData) => {
 		Telemetry.send(TelemetryEvent.openDataDashboard);
-		Dashboard.open({ type: "data" });
+		Dashboard.open({ type: NavigationType.Data });
 	}));
 	
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardClose, (data?: DashboardData) => {
@@ -205,6 +211,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// Inserting an image in Markdown
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.insertImage, Article.insertImage));
+
+	// Inserting a snippet in Markdown
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.insertSnippet, Article.insertSnippet));
 
 	// Create the editor experience for bulk scripts
 	subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(ContentProvider.scheme, new ContentProvider()));

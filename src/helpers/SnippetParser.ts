@@ -238,11 +238,13 @@ export class Placeholder extends TransformableMarker {
 
 	toTextmateString(): string {
 		let transformString = '';
+
 		if (this.transform) {
 			transformString = this.transform.toTextmateString();
 		}
+
 		if (this.children.length === 0 && !this.transform) {
-			return `\$${this.index}`;
+			return `\${${this.index}}`;
 		} else if (this.children.length === 0) {
 			return `\${${this.index}${transformString}}`;
 		} else if (this.choice) {

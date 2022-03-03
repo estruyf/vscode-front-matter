@@ -16,8 +16,7 @@ export interface IFormDialogProps {
 export const FormDialog: React.FunctionComponent<IFormDialogProps> = ({title, description, cancelBtnText, okBtnText, dismiss, isSaveDisabled, trigger, children}: React.PropsWithChildren<IFormDialogProps>) => {
 
   const cancelButtonRef = useRef(null);
-  
-  
+
   return (
     <Transition.Root show={true} as={Fragment}>
       <Dialog className="fixed z-10 inset-0 overflow-y-auto" initialFocus={cancelButtonRef} onClose={() => dismiss()}>
@@ -67,7 +66,7 @@ export const FormDialog: React.FunctionComponent<IFormDialogProps> = ({title, de
                 <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                   <button
                     type="button"
-                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-teal-600 text-base font-medium text-white hover:bg-teal-700 dark:hover:bg-teal-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-30"
+                    className="w-full inline-flex justify-center border border-transparent shadow-sm px-4 py-2 bg-teal-600 text-base font-medium text-white hover:bg-teal-700 dark:hover:bg-teal-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-30"
                     onClick={() => trigger()}
                     disabled={isSaveDisabled}
                   >
@@ -75,7 +74,7 @@ export const FormDialog: React.FunctionComponent<IFormDialogProps> = ({title, de
                   </button>
                   <button
                     type="button"
-                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-200 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm"
+                    className="mt-3 w-full inline-flex justify-center border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-200 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm"
                     onClick={() => dismiss()}
                     ref={cancelButtonRef}
                   >

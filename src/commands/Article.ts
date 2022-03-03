@@ -13,6 +13,7 @@ import { parseWinPath } from '../helpers/parseWinPath';
 import { Telemetry } from '../helpers/Telemetry';
 import { ParsedFrontMatter } from '../parsers';
 import { MediaListener } from '../listeners/panel';
+import { NavigationType } from '../dashboardWebView/models';
 
 
 export class Article {
@@ -338,6 +339,29 @@ export class Article {
 
     // Let the editor panel know you are selecting an image
     MediaListener.getMediaSelection();
+	}
+
+  /**
+   * Insert a snippet into the article
+   */
+  public static async insertSnippet() {
+		let editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+
+    const position = editor.selection.active;
+    const selectionText = editor.document.getText(editor.selection);
+
+    await vscode.commands.executeCommand(COMMAND_NAME.dashboard, {
+      type: NavigationType.Snippets,
+      data: {
+        filePath: editor.document.uri.fsPath,
+        fieldName: basename(editor.document.uri.fsPath),
+        position,
+        selection: selectionText
+      }
+    } as DashboardData);
 	}
 
   /**

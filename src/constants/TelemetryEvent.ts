@@ -4,6 +4,7 @@ export const TelemetryEvent = {
   openContentDashboard: 'openContentDashboard',
   openMediaDashboard: 'openMediaDashboard',
   openDataDashboard: 'openDataDashboard',
+  openSnippetsDashboard: 'openSnippetsDashboard',
   closeDashboard: 'closeDashboard',
   generateSlug: 'generateSlug',
   createContentFromTemplate: 'createContentFromTemplate',
