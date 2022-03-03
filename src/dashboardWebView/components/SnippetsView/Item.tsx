@@ -43,7 +43,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({ title, snippet }: Re
   const onOpenEdit = useCallback(() => {
     setSnippetTitle(title);
     setSnippetDescription(snippet.description);
-    setSnippetOriginalBody(snippet.body.join(`\n`));
+    setSnippetOriginalBody(typeof snippet.body === "string" ? snippet.body : snippet.body.join(`\n`));
     setShowEditDialog(true);
   }, [snippet]);
   
@@ -54,9 +54,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({ title, snippet }: Re
     }
 
     const snippets = Object.assign({}, settings?.snippets || {});
+    const snippetLines = snippetOriginalBody.split("\n");
     const snippetContents = {
       description: snippetDescription || '',
-      body: snippetOriginalBody.split("\n")
+      body: snippetLines.length === 1 ? snippetLines[0] : snippetLines
     };
 
     if (title === snippetTitle) {

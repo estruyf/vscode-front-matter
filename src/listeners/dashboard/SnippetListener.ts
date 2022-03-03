@@ -39,9 +39,11 @@ export class SnippetListener extends BaseListener {
       return;
     }
 
+    const snippetLines = body.split("\n");
+
     snippets[title] = { 
       description, 
-      body: body.split("\n")
+      body: snippetLines.length === 1 ? snippetLines[0] : snippetLines
     };
     
     Settings.update(SETTING_CONTENT_SNIPPETS, snippets, true);

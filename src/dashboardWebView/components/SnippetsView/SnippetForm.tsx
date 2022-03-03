@@ -42,7 +42,7 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
   }, [selection]);
 
   const snippetBody = useMemo(() => {
-    let body = snippet.body.join(`\n`);
+    let body = typeof snippet.body === "string" ? snippet.body : snippet.body.join(`\n`);
 
     for (const field of fields) {
       body = body.replace(field.tmString, field.value);
@@ -50,6 +50,14 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
 
     return body;
   }, [fields, selection]);
+
+  const shouldShowField = (fieldName: string, idx: number, allFields: SnippetField[]) => {
+    const crntField = allFields.findIndex(f => f.name === fieldName);
+    if (crntField < idx) {
+      return false;
+    }
+    return true;
+  }
 
   useImperativeHandle(ref, () => ({
     onSave() {
@@ -66,7 +74,7 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
 
   useEffect(() => {
     const snippetParser = new SnippetParser();
-    const body = snippet.body.join(`\n`);
+    const body = typeof snippet.body === "string" ? snippet.body : snippet.body.join(`\n`);
 
     const parsed = snippetParser.parse(body);
     const placeholders = parsed.placeholderInfo.all;
@@ -75,6 +83,8 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
 
     for (const placeholder of placeholders) {
       const tmString = placeholder.toTextmateString();
+
+      console.log(tmString)
 
       if (placeholder.children.length === 0) {
         allFields.push({
@@ -118,40 +128,42 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
 
       <div className='space-y-4 mt-4'>
         {
-          fields.map((field: SnippetField, index: number) => (
-            <div key={index}>
-              <label htmlFor={field.name} className="block text-sm font-medium capitalize">
-                {field.name}
-              </label>
-              <div className="mt-1">
-                {
-                  field.type === 'select' ? (
-                    <div className='relative'>
-                      <select 
-                        name={field.name} 
-                        value={field.value || ""}
-                        className="focus:outline-none block w-full sm:text-sm border-gray-300 text-vulcan-500" 
-                        onChange={e => onTextChange(field, e.target.value)}>
-                        {
-                          field.options?.map((option: string, index: number) => (
-                            <option key={index} value={option}>{option}</option>
-                          ))
-                        }
-                      </select>
+          fields.map((field: SnippetField, index: number, allFields: SnippetField[]) => (
+            shouldShowField(field.name, index, allFields) && (
+              <div key={index}>
+                <label htmlFor={field.name} className="block text-sm font-medium capitalize">
+                  {field.name}
+                </label>
+                <div className="mt-1">
+                  {
+                    field.type === 'select' ? (
+                      <div className='relative'>
+                        <select 
+                          name={field.name} 
+                          value={field.value || ""}
+                          className="focus:outline-none block w-full sm:text-sm border-gray-300 text-vulcan-500" 
+                          onChange={e => onTextChange(field, e.target.value)}>
+                          {
+                            field.options?.map((option: string, index: number) => (
+                              <option key={index} value={option}>{option}</option>
+                            ))
+                          }
+                        </select>
 
-                      <ChevronDownIcon className="absolute top-3 right-2 w-4 h-4 text-gray-500" />
-                    </div>
-                  ) : (
-                    <textarea
-                      name={field.name}
-                      value={field.value || ""}
-                      className="focus:outline-none block w-full sm:text-sm border-gray-300 text-vulcan-500"
-                      onChange={(e) => onTextChange(field, e.currentTarget.value)}
-                    />
-                  )
-                }
+                        <ChevronDownIcon className="absolute top-3 right-2 w-4 h-4 text-gray-500" />
+                      </div>
+                    ) : (
+                      <textarea
+                        name={field.name}
+                        value={field.value || ""}
+                        className="focus:outline-none block w-full sm:text-sm border-gray-300 text-vulcan-500"
+                        onChange={(e) => onTextChange(field, e.currentTarget.value)}
+                      />
+                    )
+                  }
+                </div>
               </div>
-            </div>
+            )
           ))
         }
       </div>
