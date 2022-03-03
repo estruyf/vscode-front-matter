@@ -23,6 +23,10 @@ export class Template {
   public static async init() {
     const isInitialized = await Template.isInitialized();
     await vscode.commands.executeCommand('setContext', CONTEXT.canInit, !isInitialized);
+
+    if (isInitialized) {
+      await vscode.commands.executeCommand('setContext', CONTEXT.initialized, true);
+    }
   }
 
   /**

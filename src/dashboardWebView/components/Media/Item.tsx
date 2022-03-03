@@ -205,7 +205,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
 
   return (
     <>
-      <li className="group relative bg-gray-50 dark:bg-vulcan-200 shadow-md hover:shadow-xl dark:shadow-none dark:hover:bg-vulcan-100 border border-gray-100 dark:border-vulcan-50">
+      <li className="group relative bg-gray-50 dark:bg-vulcan-200 shadow-md hover:shadow-xl dark:shadow-none dark:hover:bg-vulcan-100 border border-gray-200 dark:border-vulcan-50">
         <button className="relative bg-gray-200 dark:bg-vulcan-300 block w-full aspect-w-10 aspect-h-7 overflow-hidden cursor-pointer h-48" onClick={openLightbox}>
           <div className={`absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center`}>
             <PhotographIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />

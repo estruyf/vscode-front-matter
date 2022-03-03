@@ -1089,7 +1089,7 @@
       },
       {
         "command": "frontMatter.markup.blockquote",
-        "title": "Codeblock",
+        "title": "Blockquote",
         "category": "Front matter",
         "icon": {
           "light": "assets/icons/blockquote-light.svg",
@@ -1181,6 +1181,15 @@
         }
       },
       {
+        "command": "frontMatter.insertSnippet",
+        "title": "Insert snippet into your content",
+        "category": "Front matter",
+        "icon": {
+          "dark": "/assets/icons/scissors-dark.svg",
+          "light": "/assets/icons/scissors-light.svg"
+        }
+      },
+      {
         "command": "frontMatter.insertTags",
         "title": "Insert tags",
         "category": "Front matter"
@@ -1206,6 +1215,15 @@
       {
         "command": "frontMatter.dashboard.data",
         "title": "Open data dashboard",
+        "category": "Front matter",
+        "icon": {
+          "dark": "/assets/icons/frontmatter-small-dark.svg",
+          "light": "/assets/icons/frontmatter-small-light.svg"
+        }
+      },
+      {
+        "command": "frontMatter.dashboard.snippets",
+        "title": "Open snippets dashboard",
         "category": "Front matter",
         "icon": {
           "dark": "/assets/icons/frontmatter-small-dark.svg",
@@ -1287,32 +1305,32 @@
       "editor/title": [
         {
           "command": "frontMatter.markup.heading",
-          "group": "navigation@-132",
+          "group": "navigation@-133",
           "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.markup.bold",
-          "group": "navigation@-131",
+          "group": "navigation@-132",
           "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.markup.italic",
-          "group": "navigation@-130",
+          "group": "navigation@-131",
           "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.markup.strikethrough",
-          "group": "navigation@-129",
+          "group": "navigation@-130",
           "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
         },
         {
-          "command": "frontMatter.markup.blockquote",
-          "group": "navigation@-128",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "command": "frontMatter.insertSnippet",
+          "group": "navigation@-129",
+          "when": "resourceLangId == markdown"
         },
         {
           "command": "frontMatter.insertImage",
-          "group": "navigation@-127",
+          "group": "navigation@-128",
           "when": "resourceLangId == markdown"
         },
         {
@@ -1343,6 +1361,11 @@
         {
           "command": "frontMatter.markup.codeblock",
           "group": "1_markup@5",
+          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+        },
+        {
+          "command": "frontMatter.markup.blockquote",
+          "group": "1_markup@6",
           "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
         },
         {
@@ -1464,6 +1487,42 @@
         "scopeName": "frontmatter.markdown.hugo",
         "injectTo": [
           "text.html.markdown"
+        ]
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "frontmatter.welcome",
+        "title": "Get started with Front Matter",
+        "description": "Discover the features of Front Matter and learn how to use the CMS for your SSG or static site.",
+        "steps": [
+          {
+						"id": "frontmatter.welcome.init",
+						"title": "Get started",
+						"description": "Initial steps to get started.\n[Open dashboard](command:frontMatter.dashboard)",
+            "media": {
+              "markdown": "assets/walkthrough/get-started.md"
+            },
+            "completionEvents": ["onContext:frontMatterInitialized"]
+					},
+          {
+						"id": "frontmatter.welcome.documentation",
+						"title": "Documentation",
+						"description": "Check out the documentation for Front Matter.\n[View our documentation](https://frontmatter.codes/docs)",
+            "media": {
+              "markdown": "assets/walkthrough/documentation.md"
+            },
+            "completionEvents": ["onLink:https://frontmatter.codes/docs"]
+					},
+          {
+						"id": "frontmatter.welcome.supporter",
+						"title": "Support the project",
+						"description": "Become a supporter.\n[Support the project](https://github.com/sponsors/estruyf)",
+            "media": {
+              "markdown": "assets/walkthrough/support-the-project.md"
+            },
+            "completionEvents": ["onLink:https://github.com/sponsors/estruyf"]
+					}
         ]
       }
     ]

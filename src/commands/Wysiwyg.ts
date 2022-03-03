@@ -54,6 +54,7 @@ export class Wysiwyg {
         { label: "$(tasklist) Task list", detail: "Add a task list", alwaysShow: true },
         { label: "$(code) Code", detail: "Add inline code snippet", alwaysShow: true },
         { label: "$(symbol-namespace) Code block", detail: "Add a code block", alwaysShow: true },
+        { label: "$(quote) Blockquote", detail: "Add a blockquote", alwaysShow: true },
       ]
 
       const option = await window.showQuickPick([ ...qpItems ], {  
@@ -73,6 +74,8 @@ export class Wysiwyg {
           await this.addMarkup(MarkupType.code);
         } else if (option.label === qpItems[4].label) {
           await this.addMarkup(MarkupType.codeblock);
+        } else if (option.label === qpItems[5].label) {
+          await this.addMarkup(MarkupType.blockquote);
         }
       }
     }));

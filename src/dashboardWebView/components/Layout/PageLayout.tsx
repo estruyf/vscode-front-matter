@@ -4,16 +4,18 @@ import { SettingsSelector } from '../../state';
 import { Header } from '../Header';
 
 export interface IPageLayoutProps {
+  header?: React.ReactNode;
   folders?: string[] | undefined
   totalPages?: number | undefined
 }
 
-export const PageLayout: React.FunctionComponent<IPageLayoutProps> = ({ folders, totalPages, children }: React.PropsWithChildren<IPageLayoutProps>) => {
+export const PageLayout: React.FunctionComponent<IPageLayoutProps> = ({ header, folders, totalPages, children }: React.PropsWithChildren<IPageLayoutProps>) => {
   const settings = useRecoilValue(SettingsSelector);
   
   return (
     <div className="flex flex-col h-full overflow-auto">
       <Header 
+        header={header}
         folders={folders}
         totalPages={totalPages}
         settings={settings} />
