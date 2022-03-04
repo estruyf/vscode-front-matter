@@ -3,7 +3,7 @@
   "displayName": "Front Matter",
   "description": "Front Matter is a CMS that runs within Visual Studio Code. It gives you the power and control of a full-blown CMS while also providing you the flexibility and speed of the static site generator of your choice like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "6.2.0",
+  "version": "7.0.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -1524,32 +1524,38 @@
         "description": "Discover the features of Front Matter and learn how to use the CMS for your SSG or static site.",
         "steps": [
           {
-						"id": "frontmatter.welcome.init",
-						"title": "Get started",
-						"description": "Initial steps to get started.\n[Open dashboard](command:frontMatter.dashboard)",
+            "id": "frontmatter.welcome.init",
+            "title": "Get started",
+            "description": "Initial steps to get started.\n[Open dashboard](command:frontMatter.dashboard)",
             "media": {
               "markdown": "assets/walkthrough/get-started.md"
             },
-            "completionEvents": ["onContext:frontMatterInitialized"]
-					},
+            "completionEvents": [
+              "onContext:frontMatterInitialized"
+            ]
+          },
           {
-						"id": "frontmatter.welcome.documentation",
-						"title": "Documentation",
-						"description": "Check out the documentation for Front Matter.\n[View our documentation](https://frontmatter.codes/docs)",
+            "id": "frontmatter.welcome.documentation",
+            "title": "Documentation",
+            "description": "Check out the documentation for Front Matter.\n[View our documentation](https://frontmatter.codes/docs)",
             "media": {
               "markdown": "assets/walkthrough/documentation.md"
             },
-            "completionEvents": ["onLink:https://frontmatter.codes/docs"]
-					},
+            "completionEvents": [
+              "onLink:https://frontmatter.codes/docs"
+            ]
+          },
           {
-						"id": "frontmatter.welcome.supporter",
-						"title": "Support the project",
-						"description": "Become a supporter.\n[Support the project](https://github.com/sponsors/estruyf)",
+            "id": "frontmatter.welcome.supporter",
+            "title": "Support the project",
+            "description": "Become a supporter.\n[Support the project](https://github.com/sponsors/estruyf)",
             "media": {
               "markdown": "assets/walkthrough/support-the-project.md"
             },
-            "completionEvents": ["onLink:https://github.com/sponsors/estruyf"]
-					}
+            "completionEvents": [
+              "onLink:https://github.com/sponsors/estruyf"
+            ]
+          }
         ]
       }
     ]
