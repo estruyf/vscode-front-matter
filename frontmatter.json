@@ -1,0 +1,11 @@
+{
+  "$schema": "https://beta.frontmatter.codes/frontmatter.schema.json",
+  "frontMatter.framework.id": "other",
+  "frontMatter.content.publicFolder": "",
+  "frontMatter.content.pageFolders": [
+    {
+      "title": ".vscode",
+      "path": "[[workspace]]/.vscode"
+    }
+  ]
+}

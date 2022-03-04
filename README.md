@@ -52,6 +52,12 @@ A couple of our extension highlights that hopefully get you interested in giving
 
 > If you see something missing in your article creation flow, please feel free to reach out.
 
+**Version 7**
+
+Snippets support for Front Matter has been added!
+
+![Snippets dashboard](/assets/v7.0.0/snippets-dashboard.png)
+
 **Version 6**
 
 In this version, we introduced the new data files/folders dashboard. You can find more information about the release in our [v6.0.0 release notes](https://frontmatter.codes/updates/v6.0.0).

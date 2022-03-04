@@ -23,3 +23,5 @@ assets/v3.*
 assets/v4.*
 assets/sponsors
 dist/*.html
+frontmatter.json
+.frontmatter
