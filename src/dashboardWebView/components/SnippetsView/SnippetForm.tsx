@@ -1,11 +1,13 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { ChevronDownIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
+import { SnippetVariables } from '../../../constants';
 import { Choice, SnippetParser, Variable, VariableResolver } from '../../../helpers/SnippetParser';
+import { SnippetField } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
 import { ViewDataSelector } from '../../state';
+import { SnippetInputField } from './SnippetInputField';
 
 
 export interface ISnippetFormProps {
@@ -17,14 +19,6 @@ export interface SnippetFormHandle {
   onSave: () => void;
 }
 
-interface SnippetField {
-  name: string;
-  value: string;
-  type: 'text' | 'select';
-  tmString: string;
-  options?: string[];
-}
-
 const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFormProps> = ({ snippet, selection }, ref) => {
   const viewData = useRecoilValue(ViewDataSelector);
   const [ fields, setFields ] = useState<SnippetField[]>([]);
@@ -33,8 +27,8 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
     setFields(prevFields => prevFields.map(f => f.name === field.name ? { ...f, value } : f));
   }, [setFields]);
 
-  const insertSelectionValue = useCallback((fieldName: string) => {
-    if (selection && fieldName === 'selection') {
+  const insertSelectionValue = useCallback((value: string) => {
+    if (selection && value === SnippetVariables.FM_SELECTED_TEXT) {
       return selection;
     }
 
@@ -59,6 +53,22 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
     return true;
   }
 
+  const fieldNameRender = (fieldName: string) => {
+    if (fieldName === SnippetVariables.FM_SELECTED_TEXT) {
+      return 'Selected Text';
+    }
+
+    if (fieldName.startsWith(SnippetVariables.FM_TEXT)) {
+      return fieldName.replace(SnippetVariables.FM_TEXT, '');
+    }
+
+    if (fieldName.startsWith(SnippetVariables.FM_MULTILINE)) {
+      return fieldName.replace(SnippetVariables.FM_MULTILINE, '');
+    }
+
+    return fieldName;
+  }
+
   useImperativeHandle(ref, () => ({
     onSave() {
       if (!snippetBody) {
@@ -73,6 +83,16 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
   }));
 
   useEffect(() => {
+    // Defines the type of field that needs to be rendered
+    const getFieldType = (fieldName: string) => {
+      if (fieldName.startsWith(SnippetVariables.FM_MULTILINE)) {
+        return 'textarea';
+      }
+
+      return 'text';
+    }
+
+    // Get all placeholder variables from the snippet
     const snippetParser = new SnippetParser();
     const body = typeof snippet.body === "string" ? snippet.body : snippet.body.join(`\n`);
 
@@ -84,16 +104,16 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
     for (const placeholder of placeholders) {
       const tmString = placeholder.toTextmateString();
 
-      console.log(tmString)
-
+      // If only a variable is defined, it will not contain children
       if (placeholder.children.length === 0) {
         allFields.push({
-          type: 'text',
+          type: getFieldType(placeholder.index as string),
           name: placeholder.index,
           value: insertSelectionValue(placeholder.index as string) || '',
           tmString
         });
       } else {
+        // Children are defined, so it means it is a choice field or the variable has a default value
         for (const child of placeholder.children as any[]) {
           if (child instanceof Choice) {
             const options = child.options.map(o => o.value);
@@ -107,9 +127,9 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
             });
           } else {
             allFields.push({
-              type: 'text',
+              type: getFieldType(placeholder.index as string),
               name: placeholder.index,
-              value: insertSelectionValue(placeholder.index as string) || (child as any).value || "",
+              value: insertSelectionValue((child as any).value as string) || insertSelectionValue(placeholder.index as string) || (child as any).value || "",
               tmString
             });
           }
@@ -132,35 +152,12 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
             shouldShowField(field.name, index, allFields) && (
               <div key={index}>
                 <label htmlFor={field.name} className="block text-sm font-medium capitalize">
-                  {field.name}
+                  {fieldNameRender(field.name)}
                 </label>
                 <div className="mt-1">
-                  {
-                    field.type === 'select' ? (
-                      <div className='relative'>
-                        <select 
-                          name={field.name} 
-                          value={field.value || ""}
-                          className="focus:outline-none block w-full sm:text-sm border-gray-300 text-vulcan-500" 
-                          onChange={e => onTextChange(field, e.target.value)}>
-                          {
-                            field.options?.map((option: string, index: number) => (
-                              <option key={index} value={option}>{option}</option>
-                            ))
-                          }
-                        </select>
-
-                        <ChevronDownIcon className="absolute top-3 right-2 w-4 h-4 text-gray-500" />
-                      </div>
-                    ) : (
-                      <textarea
-                        name={field.name}
-                        value={field.value || ""}
-                        className="focus:outline-none block w-full sm:text-sm border-gray-300 text-vulcan-500"
-                        onChange={(e) => onTextChange(field, e.currentTarget.value)}
-                      />
-                    )
-                  }
+                  <SnippetInputField
+                    field={field}
+                    onValueChange={onTextChange} />
                 </div>
               </div>
             )

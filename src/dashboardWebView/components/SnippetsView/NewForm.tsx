@@ -1,5 +1,6 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/outline';
 import * as React from 'react';
+import { SnippetVariables } from '../../../constants';
 
 export interface INewFormProps {
   title: string;
@@ -84,7 +85,7 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({ title, descrip
         <dl className="divide-y divide-gray-200 dark:divide-vulcan-200" style={{ zIndex: -1 }}>
           <div className="py-2 flex justify-between text-xs font-medium">
             <dt className="text-vulcan-100 dark:text-whisper-900">Insert selected text (can still be updated)</dt>
-            <dd className="text-vulcan-300 dark:text-whisper-500 text-right">{`\${selection}`}</dd>
+            <dd className="text-vulcan-300 dark:text-whisper-500 text-right">{`\${${SnippetVariables.FM_SELECTED_TEXT}}`}</dd>
           </div>
 
           <div className="py-2 flex justify-between text-xs font-medium">
