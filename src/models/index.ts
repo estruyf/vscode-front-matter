@@ -10,6 +10,7 @@ export * from './DraftField';
 export * from './Framework';
 export * from './MediaPaths';
 export * from './PanelSettings';
+export * from './SnippetField';
 export * from './SortOrder';
 export * from './SortType';
 export * from './SortingSetting';

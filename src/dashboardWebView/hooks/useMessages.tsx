@@ -28,6 +28,8 @@ export default function useMessages() {
           setView(NavigationType.Contents);
         } else if (message.data.data?.type === NavigationType.Data) {
           setView(NavigationType.Data);
+        } else if (message.data.data?.type === NavigationType.Snippets) {
+          setView(NavigationType.Snippets);
         }
         break;
       case DashboardCommand.settings:

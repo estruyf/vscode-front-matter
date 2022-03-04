@@ -3,7 +3,6 @@ import {UploadIcon} from '@heroicons/react/outline';
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 import { LoadingAtom, MediaFoldersAtom, SelectedMediaFolderAtom, SettingsSelector, ViewDataSelector } from '../../state';
-import { Header } from '../Header';
 import { Spinner } from '../Spinner';
 import { SponsorMsg } from '../SponsorMsg';
 import { Item } from './Item';
@@ -16,6 +15,7 @@ import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMat
 import { FolderItem } from './FolderItem';
 import useMedia from '../../hooks/useMedia';
 import { TelemetryEvent } from '../../../constants';
+import { PageLayout } from '../Layout/PageLayout';
 
 export interface IMediaProps {}
 
@@ -56,16 +56,13 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
   });
   
   return (
-    <div className="flex flex-col h-full overflow-auto">
-      <Header settings={settings} />
-
-      <div className="w-full flex-grow max-w-7xl mx-auto py-6 px-4" {...getRootProps()}>
-
+    <PageLayout>
+      <div className="w-full h-full" {...getRootProps()}>
         {
           viewData?.data?.filePath && (
             <div className={`text-lg text-center mb-6`}>
-              <p>Select the image you want to use for your article.</p>
-              <p className={`opacity-80 text-base`}>You can also drag and drop images from your desktop and select that once uploaded.</p>
+              <p>Select the media file to add to your content.</p>
+              <p className={`opacity-80 text-base`}>You can also drag and drop images from your desktop and select them once uploaded.</p>
             </div>
           )
         }
@@ -123,6 +120,6 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
       <Lightbox />
 
       <SponsorMsg beta={settings?.beta} version={settings?.versionInfo} isBacker={settings?.isBacker} />
-    </div>
+    </PageLayout>
   );
 };

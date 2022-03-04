@@ -1,4 +1,4 @@
-import { DatabaseIcon, PhotographIcon } from '@heroicons/react/outline';
+import { DatabaseIcon, PhotographIcon, ScissorsIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIcon';
@@ -27,6 +27,13 @@ export const Tabs: React.FunctionComponent<ITabsProps> = ({ onNavigate }: React.
           navigationType={NavigationType.Media} 
           onNavigate={onNavigate}>
           <PhotographIcon className={`h-6 w-auto mr-2`} /><span>Media</span>
+        </Tab>
+      </li>
+      <li className="mr-2" role="presentation">
+        <Tab
+          navigationType={NavigationType.Snippets} 
+          onNavigate={onNavigate}>
+          <ScissorsIcon className={`h-6 w-auto mr-2`} /><span>Snippets</span>
         </Tab>
       </li>
       {

@@ -1,4 +1,6 @@
+import { NavigationType } from '../dashboardWebView/models';
+
 export interface DashboardData {
-  type: "contents" | "media" | "data";
+  type: NavigationType;
   data?: any;
 }

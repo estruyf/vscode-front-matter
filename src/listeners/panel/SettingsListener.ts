@@ -1,5 +1,5 @@
 import { commands, workspace } from "vscode";
-import { EXTENSION_BETA_ID, EXTENSION_ID, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTINGS_FRAMEWORK_START, SETTING_AUTO_UPDATE_DATE, SETTING_PREVIEW_HOST } from "../../constants";
+import { EXTENSION_BETA_ID, EXTENSION_ID, SETTING_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_FRAMEWORK_START, SETTING_AUTO_UPDATE_DATE, SETTING_PREVIEW_HOST } from "../../constants";
 import { Extension, Settings } from "../../helpers";
 import { PanelSettings } from "../../helpers/PanelSettings";
 import { Command } from "../../panelWebView/Command";
@@ -30,13 +30,13 @@ export class SettingsListener extends BaseListener {
         this.updateSetting(SETTING_AUTO_UPDATE_DATE, msg.data || false);
         break;
       case CommandToCode.updateFmHighlight:
-        this.updateSetting(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, (msg.data !== null && msg.data !== undefined) ? msg.data : false);
+        this.updateSetting(SETTING_CONTENT_FRONTMATTER_HIGHLIGHT, (msg.data !== null && msg.data !== undefined) ? msg.data : false);
         break;
       case CommandToCode.updatePreviewUrl:
         this.updateSetting(SETTING_PREVIEW_HOST, msg.data || "");
         break;
       case CommandToCode.updateStartCommand:
-        this.updateSetting(SETTINGS_FRAMEWORK_START, msg.data || "");
+        this.updateSetting(SETTING_FRAMEWORK_START, msg.data || "");
         break;
     }
   }

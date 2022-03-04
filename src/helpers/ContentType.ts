@@ -1,6 +1,6 @@
 import { PagesListener } from './../listeners/dashboard';
 import { ArticleHelper, Settings } from ".";
-import { SETTINGS_CONTENT_DRAFT_FIELD, SETTING_TAXONOMY_CONTENT_TYPES, TelemetryEvent } from "../constants";
+import { SETTING_CONTENT_DRAFT_FIELD, SETTING_TAXONOMY_CONTENT_TYPES, TelemetryEvent } from "../constants";
 import { ContentType as IContentType, DraftField, Field } from '../models';
 import { Uri, commands } from 'vscode'; 
 import { Folders } from "../commands/Folders";
@@ -18,7 +18,7 @@ export class ContentType {
    * @returns 
    */
   public static getDraftField() {
-    const draftField = Settings.get<DraftField | null | undefined>(SETTINGS_CONTENT_DRAFT_FIELD);
+    const draftField = Settings.get<DraftField | null | undefined>(SETTING_CONTENT_DRAFT_FIELD);
     if (draftField) {
       return draftField;
     }
