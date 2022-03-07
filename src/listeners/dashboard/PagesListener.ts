@@ -139,7 +139,7 @@ export class PagesListener extends BaseListener {
     if (article?.data.title) {
       const wsFolder = Folders.getWorkspaceFolder();
       const descriptionField = Settings.get(SETTING_SEO_DESCRIPTION_FIELD) as string || DefaultFields.Description;
-      const dateField = Settings.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
+      const dateField = ArticleHelper.getPublishDateField(article) || DefaultFields.PublishingDate;
       const staticFolder = Settings.get<string>(SETTING_CONTENT_STATIC_FOLDER);
 
       const page: Page = {

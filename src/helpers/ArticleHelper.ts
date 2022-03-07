@@ -2,7 +2,7 @@ import { MarkdownFoldingProvider } from './../providers/MarkdownFoldingProvider'
 import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from './../constants/ContentType';
 import * as vscode from 'vscode';
 import * as fs from "fs";
-import { DefaultFields, SETTING_CONTENT_DEFAULT_FILETYPE, SETTING_CONTENT_PLACEHOLDERS, SETTING_CONTENT_SUPPORTED_FILETYPES, SETTING_FILE_PRESERVE_CASING, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_SITE_BASEURL, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from '../constants';
+import { DefaultFields, SETTING_CONTENT_DEFAULT_FILETYPE, SETTING_CONTENT_PLACEHOLDERS, SETTING_CONTENT_SUPPORTED_FILETYPES, SETTING_FILE_PRESERVE_CASING, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_SITE_BASEURL, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX, SETTING_MODIFIED_FIELD } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { FrontMatterParser, ParsedFrontMatter } from '../parsers';
 import { Extension, Logger, Settings, SlugHelper } from '.';
@@ -167,12 +167,12 @@ export class ArticleHelper {
    * Get date from front matter
    */ 
   public static getDate(article: ParsedFrontMatter | null) {
-    if (!article) {
+    if (!article || !article.data) {
       return;
     }
 
     const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
-    const dateField = Settings.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
+    const dateField = ArticleHelper.getPublishDateField(article) || DefaultFields.PublishingDate;
 
     if (typeof article.data[dateField] !== "undefined") {
       if (dateFormat && typeof dateFormat === "string") {
@@ -184,6 +184,38 @@ export class ArticleHelper {
       }
     }
     return;
+  }
+
+  /**
+   * Retrieve the publishing date field name
+   * @param article 
+   * @returns 
+   */
+  public static getPublishDateField(article: ParsedFrontMatter | null) {
+    if (!article || !article.data) {
+      return;
+    }
+
+    const articleCt = ArticleHelper.getContentType(article.data);
+    const pubDateField = articleCt.fields.find(f => f.isPublishDate);
+
+    return pubDateField?.name || Settings.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
+  }
+
+  /**
+   * Retrieve the publishing date field name
+   * @param article 
+   * @returns 
+   */
+  public static getModifiedDateField(article: ParsedFrontMatter | null) {
+    if (!article || !article.data) {
+      return;
+    }
+
+    const articleCt = ArticleHelper.getContentType(article.data);
+    const modDateField = articleCt.fields.find(f => f.isModifiedDate);
+
+    return modDateField?.name || Settings.get(SETTING_MODIFIED_FIELD) as string || DefaultFields.PublishingDate;
   }
 
   /**

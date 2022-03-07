@@ -12,8 +12,6 @@ export const SETTING_TAXONOMY_FIELD_GROUPS = "taxonomy.fieldGroups";
 export const SETTING_DATE_FORMAT = "taxonomy.dateFormat";
 export const SETTING_COMMA_SEPARATED_FIELDS = "taxonomy.commaSeparatedFields";
 export const SETTING_TAXONOMY_CONTENT_TYPES = "taxonomy.contentTypes";
-export const SETTING_DATE_FIELD = "taxonomy.dateField";
-export const SETTING_MODIFIED_FIELD = "taxonomy.modifiedField";
 
 export const SETTING_SLUG_PREFIX = "taxonomy.slugPrefix";
 export const SETTING_SLUG_SUFFIX = "taxonomy.slugSuffix";
@@ -76,3 +74,13 @@ export const SETTING_SITE_BASEURL = "site.baseURL";
  * @deprecated
  */
 export const SETTING_CONTENT_FOLDERS = "content.folders";
+/**
+ * @deprecated
+ * Use the `isPublishDate` property on the content type datetime field instead
+ */
+export const SETTING_DATE_FIELD = "taxonomy.dateField";
+/**
+ * @deprecated
+ * Use the `isModifiedDate` property on the content type datetime field instead
+ */
+export const SETTING_MODIFIED_FIELD = "taxonomy.modifiedField";

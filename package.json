@@ -763,6 +763,16 @@
                       "type": "number",
                       "default": 0,
                       "description": "Limit the number of taxonomies to select. Set to 0 to allow unlimited."
+                    },
+                    "isPublishDate": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "Specify if the field is the publish date field"
+                    },
+                    "isModifiedDate": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "Specify if the field is the modified date field"
                     }
                   },
                   "additionalProperties": false,
@@ -883,7 +893,8 @@
                   "title": "Publishing date",
                   "name": "date",
                   "type": "datetime",
-                  "default": "{{now}}"
+                  "default": "{{now}}",
+                  "isPublishDate": true
                 },
                 {
                   "title": "Content preview",
@@ -939,7 +950,8 @@
         "frontMatter.taxonomy.dateField": {
           "type": "string",
           "default": "date",
-          "markdownDescription": "This setting is used to define the publishing date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.datefield)"
+          "markdownDescription": "This setting is used to define the publishing date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.datefield)",
+          "deprecationMessage": "This setting is deprecated and will be removed in the next major version. Please use the new `isPublishDate` settings instead in your content types date fields."
         },
         "frontMatter.taxonomy.dateFormat": {
           "type": "string",
@@ -993,7 +1005,8 @@
         "frontMatter.taxonomy.modifiedField": {
           "type": "string",
           "default": "lastmod",
-          "markdownDescription": "This setting is used to define the modified date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.modifiedfield)"
+          "markdownDescription": "This setting is used to define the modified date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.modifiedfield)",
+          "deprecationMessage": "This setting is deprecated and will be removed in the next major version. Please use the new `isModifiedDate` settings instead in your content types date fields."
         },
         "frontMatter.taxonomy.noPropertyValueQuotes": {
           "type": "array",

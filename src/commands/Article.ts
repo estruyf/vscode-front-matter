@@ -154,7 +154,7 @@ export class Article {
     }
 
     const cloneArticle = Object.assign({}, article);
-    const dateField = Settings.get(SETTING_MODIFIED_FIELD) as string || DefaultFields.LastModified;
+    const dateField = ArticleHelper.getModifiedDateField(article) || DefaultFields.LastModified;
     try {
       cloneArticle.data[dateField] = Article.formatDate(new Date());
       return cloneArticle;

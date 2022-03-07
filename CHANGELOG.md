@@ -5,6 +5,7 @@
 ### ✨ Features
 
 - [#175](https://github.com/estruyf/vscode-front-matter/issues/175): New snippet support + dashboard
+- [#281](https://github.com/estruyf/vscode-front-matter/issues/281): New `isPublishDate` and `isModifiedDate` datetime field properties
 
 ### 🎨 Enhancements
 

@@ -95,6 +95,21 @@ export class Settings {
   }
 
   /**
+   * Inspect a setting
+   * @param name 
+   * @returns 
+   */
+  public static inspect<T>(name: string): any {
+    const configInpection = Settings.config.inspect<T>(name);
+    const settingKey = `${CONFIG_KEY}.${name}`;
+
+    return {
+      ...configInpection,
+      teamValue: Settings.globalConfig[settingKey]
+    }
+  }
+
+  /**
    * Retrieve a setting from global and local config
    */
   public static get<T>(name: string, merging: boolean = false): T | undefined{
@@ -162,6 +177,10 @@ export class Settings {
     this.createGlobalFile(wsFolder);
   }
 
+  /**
+   * Create the frontmatter.json file
+   * @param wsFolder 
+   */
   public static createGlobalFile(wsFolder: Uri | undefined | null) {
     const initialConfig = {
       "$schema": `https://${Extension.getInstance().isBetaVersion() ? `beta.` : ``}frontmatter.codes/frontmatter.schema.json`
