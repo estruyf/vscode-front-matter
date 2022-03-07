@@ -219,11 +219,19 @@ export class ArticleHelper {
   }
 
   /**
+   * Retrieve all the content types
+   * @returns 
+   */
+  public static getContentTypes() {
+    return Settings.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES) || [DEFAULT_CONTENT_TYPE];
+  }
+
+  /**
    * Retrieve the content type of the current file
    * @param updatedMetadata 
    */
   public static getContentType(metadata: { [field: string]: string; }): ContentType {
-    const contentTypes = Settings.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
+    const contentTypes = ArticleHelper.getContentTypes();
 
     if (!contentTypes || !metadata) {
       return DEFAULT_CONTENT_TYPE;

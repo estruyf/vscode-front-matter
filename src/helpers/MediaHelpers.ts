@@ -1,10 +1,10 @@
 import { decodeBase64Image, Extension, MediaLibrary, Notifications, parseWinPath, Settings, Sorting } from ".";
 import { Dashboard } from "../commands/Dashboard";
 import { Folders } from "../commands/Folders";
-import { ExtensionState, HOME_PAGE_NAVIGATION_ID, SETTING_CONTENT_STATIC_FOLDER } from "../constants";
+import { DEFAULT_CONTENT_TYPE, ExtensionState, HOME_PAGE_NAVIGATION_ID, SETTING_CONTENT_STATIC_FOLDER } from "../constants";
 import { SortingOption } from "../dashboardWebView/models";
 import { MediaInfo, MediaPaths, SortOrder, SortType } from "../models";
-import { basename, extname, join, parse, dirname } from "path";
+import { basename, extname, join, parse, dirname, relative } from "path";
 import { existsSync, readdirSync, statSync, unlinkSync, writeFileSync } from "fs";
 import { commands, Uri, workspace, window, Position } from "vscode";
 import imageSize from "image-size";
@@ -12,6 +12,7 @@ import { EditorHelper } from "@estruyf/vscode";
 import { ExplorerView } from "../explorerView/ExplorerView";
 import { SortOption } from "../dashboardWebView/constants/SortOption";
 import { DataListener, MediaListener } from "../listeners/panel";
+import { ArticleHelper } from "./ArticleHelper";
 
 
 export class MediaHelpers {
@@ -30,6 +31,10 @@ export class MediaHelpers {
     const contentFolders = Folders.get();
     const viewData = Dashboard.viewData;
     let selectedFolder = requestedFolder;
+
+    // Check if there are any content types that are set to use page bundles
+    const contentTypes = ArticleHelper.getContentTypes();
+    const pageBundleContentTypes = contentTypes.filter(ct => ct.pageBundle);
 
     const ext = Extension.getInstance();
     const crntSort = sort === null ? await ext.getState<SortingOption | undefined>(ExtensionState.Dashboard.Media.Sorting, "workspace") : sort;
@@ -80,15 +85,17 @@ export class MediaHelpers {
         allMedia = [...media];
       }
 
-      if (contentFolders && wsFolder) {
-        for (let i = 0; i < contentFolders.length; i++) {
-          const contentFolder = contentFolders[i];
-          const relFolderPath = contentFolder.path.substring(wsFolder.fsPath.length + 1);
-          const folderSearch = relSelectedFolderPath ? join(relSelectedFolderPath, '/*') : join(relFolderPath, '/*');
-          const files = await workspace.findFiles(folderSearch);
-          const media = await MediaHelpers.updateMediaData(MediaHelpers.filterMedia(files));
-    
-          allMedia = [...allMedia, ...media];
+      if (pageBundleContentTypes.length > 0) {
+        if (contentFolders && wsFolder) {
+          for (let i = 0; i < contentFolders.length; i++) {
+            const contentFolder = contentFolders[i];
+            const relFolderPath = contentFolder.path.substring(wsFolder.fsPath.length + 1);
+            const folderSearch = relSelectedFolderPath ? join(relSelectedFolderPath, '/*') : join(relFolderPath, '/*');
+            const files = await workspace.findFiles(folderSearch);
+            const media = await MediaHelpers.updateMediaData(MediaHelpers.filterMedia(files));
+      
+            allMedia = [...allMedia, ...media];
+          }
         }
       }
     }
@@ -145,11 +152,13 @@ export class MediaHelpers {
         allFolders = readdirSync(selectedFolder, { withFileTypes: true }).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(selectedFolder, dir.name)));
       }
     } else {
-      for (const contentFolder of contentFolders) {
-        const contentPath = contentFolder.path;
-        if (contentPath && existsSync(contentPath)) {
-          const subFolders = readdirSync(contentPath, { withFileTypes: true }).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(contentPath, dir.name)));
-          allContentFolders = [...allContentFolders, ...subFolders];
+      if (pageBundleContentTypes.length > 0) {
+        for (const contentFolder of contentFolders) {
+          const contentPath = contentFolder.path;
+          if (contentPath && existsSync(contentPath)) {
+            const subFolders = readdirSync(contentPath, { withFileTypes: true }).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(contentPath, dir.name)));
+            allContentFolders = [...allContentFolders, ...subFolders];
+          }
         }
       }
   
@@ -280,15 +289,27 @@ export class MediaHelpers {
           const filePath = data.file;
           const absImgPath = join(parseWinPath(wsFolder?.fsPath || ""), imgPath);
 
-          const imgDir = dirname(absImgPath);
-          const fileDir = dirname(filePath);
+          const article = editor ? ArticleHelper.getFrontMatter(editor) : null;
+          const articleCt = article && article.data ? ArticleHelper.getContentType(article.data) : DEFAULT_CONTENT_TYPE;
 
-          if (imgDir === fileDir) {
-            imgPath = join('/', basename(imgPath));
+          // Check if relative paths need to be created for the media files
+          if (articleCt.pageBundle) {
+            const fileDir = parseWinPath(dirname(filePath));
+            const imgDir = parseWinPath(dirname(absImgPath));
 
-            // Snippets are already parsed, so update the URL of the image
-            if (data.snippet) {
-              data.snippet = data.snippet.replace(data.image, imgPath);
+            if (imgDir.toLowerCase().indexOf(fileDir.toLowerCase()) !== -1) {
+              const relImgPath = relative(fileDir, imgDir);
+
+              imgPath = join(relImgPath, basename(imgPath));
+
+              if (!imgPath.startsWith("/")) {
+                imgPath = `./${imgPath}`;
+              }
+
+              // Snippets are already parsed, so update the URL of the image
+              if (data.snippet) {
+                data.snippet = data.snippet.replace(data.image, imgPath);
+              }
             }
           }
 

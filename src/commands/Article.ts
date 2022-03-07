@@ -1,3 +1,4 @@
+import { DEFAULT_CONTENT_TYPE } from './../constants/ContentType';
 import { isValidFile } from './../helpers/isValidFile';
 import { SETTING_AUTO_UPDATE_DATE, SETTING_MODIFIED_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TEMPLATES_PREFIX, CONFIG_KEY, SETTING_DATE_FORMAT, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_CONTENT_PLACEHOLDERS, TelemetryEvent } from './../constants';
 import * as vscode from 'vscode';
@@ -326,11 +327,15 @@ export class Article {
       return;
     }
 
+    const article = ArticleHelper.getFrontMatter(editor);
+    const contentType = article && article.data ? ArticleHelper.getContentType(article.data) : DEFAULT_CONTENT_TYPE;
+
     const position = editor.selection.active;
 
     await vscode.commands.executeCommand(COMMAND_NAME.dashboard, {
       type: "media",
       data: {
+        pageBundle: !!contentType.pageBundle,
         filePath: editor.document.uri.fsPath,
         fieldName: basename(editor.document.uri.fsPath),
         position

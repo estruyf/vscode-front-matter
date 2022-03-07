@@ -20,7 +20,9 @@ export const DEFAULT_CONTENT_TYPE: ContentType = {
     {
       "title": "Publishing date",
       "name": "date",
-      "type": "datetime"
+      "type": "datetime",
+      "default": "{{now}}",
+      "isPublishDate": true
     },
     {
       "title": "Content preview",
