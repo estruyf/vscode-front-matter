@@ -13,6 +13,10 @@
 - [#272](https://github.com/estruyf/vscode-front-matter/issues/272): New slide over panel for showing details of media files
 - [#276](https://github.com/estruyf/vscode-front-matter/issues/276): Add a Front Matter walkthrough for VS Code
 
+### 🐞 Fixes
+
+- [#279](https://github.com/estruyf/vscode-front-matter/issues/279): Fix for content dashboard updates for all registered types
+
 ## [6.1.1] - 2022-03-02
 
 ### 🐞 Fixes

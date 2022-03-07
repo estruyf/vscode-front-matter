@@ -14,7 +14,7 @@ import { TagType } from './panelWebView/TagType';
 import { ExplorerView } from './explorerView/ExplorerView';
 import { Extension } from './helpers/Extension';
 import { DashboardData } from './models/DashboardData';
-import { Settings as SettingsHelper } from './helpers';
+import { ArticleHelper, Settings as SettingsHelper } from './helpers';
 import { Content } from './commands/Content';
 import ContentProvider from './providers/ContentProvider';
 import { Wysiwyg } from './commands/Wysiwyg';
@@ -199,7 +199,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// Listener for file saves
 	subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc: vscode.TextDocument) => {
-		if (doc.languageId === 'markdown') {
+		if (ArticleHelper.isMarkdownFile(doc)) {
 			// Optimize the list of recently changed files
 			DataListener.getFoldersAndFiles();
 		}
