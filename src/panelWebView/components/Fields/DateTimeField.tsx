@@ -24,6 +24,11 @@ const CustomInput = forwardRef<HTMLInputElement, InputProps>(({ value, onClick }
 
 export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({label, date, format, onChange}: React.PropsWithChildren<IDateTimeFieldProps>) => {
   const [ dateValue, setDateValue ] = React.useState<Date | null>(null);
+  
+  const onDateChange = (date: Date) => {
+    setDateValue(date);
+    onChange(date);
+  };
 
   React.useEffect(() => {
     const crntValue = DateHelper.tryParse(date, format);
@@ -33,11 +38,6 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({lab
       setDateValue(date);
     }
   }, [ date ]);
-  
-  const onDateChange = (date: Date) => {
-    setDateValue(date);
-    onChange(date);
-  };
 
   return (
     <div className={`metadata_field`}>
@@ -49,7 +49,7 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({lab
       
       <div className={`metadata_field__datetime`}>
         <DatePicker
-          selected={dateValue as Date || new Date()}
+          selected={DateHelper.tryParse(dateValue) as Date || new Date()}
           onChange={onDateChange}
           timeInputLabel="Time:"
           dateFormat={DateHelper.formatUpdate(format) || "MM/dd/yyyy HH:mm"}
