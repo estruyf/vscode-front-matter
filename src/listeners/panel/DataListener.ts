@@ -134,7 +134,7 @@ export class DataListener extends BaseListener {
     }
 
     const article = ArticleHelper.getFrontMatter(editor);
-    if (!article) {
+    if (!article || !article.data || Object.keys(article.data).length === 0) {
       return;
     }
 
