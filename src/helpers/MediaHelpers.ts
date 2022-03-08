@@ -286,17 +286,21 @@ export class MediaHelpers {
       const absImgPath = join(parseWinPath(wsFolder?.fsPath || ""), imgPath);
       const fileDir = parseWinPath(dirname(filePath));
       const imgDir = parseWinPath(dirname(absImgPath));
+      const contentFolders = Folders.get();
 
       // Check if relative paths need to be created for the media files
       if (articleCt.pageBundle) {
-        if (imgDir.toLowerCase().indexOf(fileDir.toLowerCase()) !== -1) {
+        // Check if image exists in one of the content folders
+        const existsInContent = contentFolders.some(contentFolder => {
+          const contentPath = contentFolder.path;
+          return imgDir.toLowerCase().indexOf(contentPath.toLowerCase()) !== -1
+        });
+
+        // If the image exists in a content folder, the relative path needs to be used
+        if (existsInContent) {
           const relImgPath = relative(fileDir, imgDir);
 
           imgPath = join(relImgPath, basename(imgPath));
-
-          if (!imgPath.startsWith("/")) {
-            imgPath = `./${imgPath}`;
-          }
 
           // Snippets are already parsed, so update the URL of the image
           if (data.snippet) {
