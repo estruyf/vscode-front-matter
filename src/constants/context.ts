@@ -7,4 +7,5 @@ export const CONTEXT = {
   isDashboardOpen: "frontMatter:dashboard:open",
   wysiwyg: "frontMatter:markdown:wysiwyg",
   backer: "frontMatter:backers:supporter",
+  isValidFile: "frontMatter:file:isValid",
 };

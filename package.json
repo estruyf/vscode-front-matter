@@ -1346,67 +1346,67 @@
         {
           "command": "frontMatter.markup.heading",
           "group": "navigation@-133",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.markup.bold",
           "group": "navigation@-132",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.markup.italic",
           "group": "navigation@-131",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.markup.strikethrough",
           "group": "navigation@-130",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.insertSnippet",
           "group": "navigation@-129",
-          "when": "resourceLangId == markdown"
+          "when": "frontMatter:file:isValid == true"
         },
         {
           "command": "frontMatter.insertImage",
           "group": "navigation@-128",
-          "when": "resourceLangId == markdown"
+          "when": "frontMatter:file:isValid == true"
         },
         {
           "command": "frontMatter.markup.options",
           "group": "navigation@-126",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.markup.orderedlist",
           "group": "1_markup@1",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.markup.unorderedlist",
           "group": "1_markup@2",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.markup.tasklist",
           "group": "1_markup@3",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.markup.code",
           "group": "1_markup@4",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.markup.codeblock",
           "group": "1_markup@5",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.markup.blockquote",
           "group": "1_markup@6",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.dashboard",
