@@ -215,7 +215,7 @@ export class ArticleHelper {
     const articleCt = ArticleHelper.getContentType(article.data);
     const modDateField = articleCt.fields.find(f => f.isModifiedDate);
 
-    return modDateField?.name || Settings.get(SETTING_MODIFIED_FIELD) as string || DefaultFields.PublishingDate;
+    return modDateField?.name || Settings.get(SETTING_MODIFIED_FIELD) as string || DefaultFields.LastModified;
   }
 
   /**

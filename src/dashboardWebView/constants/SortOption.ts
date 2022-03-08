@@ -1,4 +1,6 @@
 export enum SortOption {
+  PublishedAsc = "PublishedAsc",
+  PublishedDesc = "PublishedDesc",
   LastModifiedAsc = "LastModifiedAsc",
   LastModifiedDesc = "LastModifiedDesc",
   FileNameAsc = "FileNameAsc",

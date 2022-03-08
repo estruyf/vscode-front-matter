@@ -139,18 +139,25 @@ export class PagesListener extends BaseListener {
     if (article?.data.title) {
       const wsFolder = Folders.getWorkspaceFolder();
       const descriptionField = Settings.get(SETTING_SEO_DESCRIPTION_FIELD) as string || DefaultFields.Description;
+
       const dateField = ArticleHelper.getPublishDateField(article) || DefaultFields.PublishingDate;
+      const dateFieldValue = article?.data[dateField] ? DateHelper.tryParse(article?.data[dateField]) : undefined;
+
+      const modifiedField = ArticleHelper.getModifiedDateField(article) || null;
+      const modifiedFieldValue = modifiedField && article?.data[modifiedField] ? DateHelper.tryParse(article?.data[modifiedField])?.getTime() : undefined;
+
       const staticFolder = Settings.get<string>(SETTING_CONTENT_STATIC_FOLDER);
 
       const page: Page = {
         ...article.data,
         // FrontMatter properties
         fmFolder: folderTitle,
-        fmModified: fileMtime,
         fmFilePath: filePath,
         fmFileName: fileName,
         fmDraft: ContentType.getDraftStatus(article?.data),
-        fmYear: article?.data[dateField] ? DateHelper.tryParse(article?.data[dateField])?.getFullYear() : null,
+        fmModified: modifiedFieldValue ? modifiedFieldValue : fileMtime,
+        fmPublished: dateFieldValue ? dateFieldValue.getTime() : null,
+        fmYear: dateFieldValue ? dateFieldValue.getFullYear() : null,
         fmPreviewImage: "",
         fmTags: [],
         fmCategories: [],
