@@ -1517,7 +1517,13 @@
       "view/title": [
         {
           "command": "frontMatter.collapseSections",
-          "group": "frontmatter-explorer"
+          "group": "navigation@0",
+          "when": "view == frontMatter.explorer"
+        },
+        {
+          "command": "frontMatter.dashboard",
+          "group": "navigation@1",
+          "when": "view == frontMatter.explorer"
         }
       ]
     },

@@ -11,6 +11,7 @@
 
 - Light color theme enhancements to media cards
 - Light color theme enhancements to folder cards
+- Added collapse and dashboard button to the view title of the FM Panel
 - [#272](https://github.com/estruyf/vscode-front-matter/issues/272): New slide over panel for showing details of media files
 - [#276](https://github.com/estruyf/vscode-front-matter/issues/276): Add a Front Matter walkthrough for VS Code
 - [#270](https://github.com/estruyf/vscode-front-matter/issues/270): Only show media files from public folder if `pageBundle` is not enabled on any of the content types
