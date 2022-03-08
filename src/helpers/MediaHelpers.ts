@@ -9,7 +9,6 @@ import { existsSync, readdirSync, statSync, unlinkSync, writeFileSync } from "fs
 import { commands, Uri, workspace, window, Position } from "vscode";
 import imageSize from "image-size";
 import { EditorHelper } from "@estruyf/vscode";
-import { ExplorerView } from "../explorerView/ExplorerView";
 import { SortOption } from "../dashboardWebView/constants/SortOption";
 import { DataListener, MediaListener } from "../listeners/panel";
 import { ArticleHelper } from "./ArticleHelper";
@@ -275,44 +274,42 @@ export class MediaHelpers {
 
       await EditorHelper.showFile(data.file);
       Dashboard.resetViewData();
-      
-      const extensionUri = Extension.getInstance().extensionPath;
-      const panel = ExplorerView.getInstance(extensionUri);
 
+      const editor = window.activeTextEditor;
+      const wsFolder = Folders.getWorkspaceFolder();
+      const filePath = data.file;
+      let imgPath = data.image;
+
+      const article = editor ? ArticleHelper.getFrontMatter(editor) : null;
+      const articleCt = article && article.data ? ArticleHelper.getContentType(article.data) : DEFAULT_CONTENT_TYPE;
+
+      const absImgPath = join(parseWinPath(wsFolder?.fsPath || ""), imgPath);
+      const fileDir = parseWinPath(dirname(filePath));
+      const imgDir = parseWinPath(dirname(absImgPath));
+
+      // Check if relative paths need to be created for the media files
+      if (articleCt.pageBundle) {
+        if (imgDir.toLowerCase().indexOf(fileDir.toLowerCase()) !== -1) {
+          const relImgPath = relative(fileDir, imgDir);
+
+          imgPath = join(relImgPath, basename(imgPath));
+
+          if (!imgPath.startsWith("/")) {
+            imgPath = `./${imgPath}`;
+          }
+
+          // Snippets are already parsed, so update the URL of the image
+          if (data.snippet) {
+            data.snippet = data.snippet.replace(data.image, imgPath);
+          }
+        }
+      }
+
+      // Check if the image needs to be inserted in the content or front matter of the article
       if (data?.position) {
-        const wsFolder = Folders.getWorkspaceFolder();
-        const editor = window.activeTextEditor;
         const line = data.position.line;
         const character = data.position.character;
         if (line) {
-          let imgPath = data.image;
-          const filePath = data.file;
-          const absImgPath = join(parseWinPath(wsFolder?.fsPath || ""), imgPath);
-
-          const article = editor ? ArticleHelper.getFrontMatter(editor) : null;
-          const articleCt = article && article.data ? ArticleHelper.getContentType(article.data) : DEFAULT_CONTENT_TYPE;
-
-          // Check if relative paths need to be created for the media files
-          if (articleCt.pageBundle) {
-            const fileDir = parseWinPath(dirname(filePath));
-            const imgDir = parseWinPath(dirname(absImgPath));
-
-            if (imgDir.toLowerCase().indexOf(fileDir.toLowerCase()) !== -1) {
-              const relImgPath = relative(fileDir, imgDir);
-
-              imgPath = join(relImgPath, basename(imgPath));
-
-              if (!imgPath.startsWith("/")) {
-                imgPath = `./${imgPath}`;
-              }
-
-              // Snippets are already parsed, so update the URL of the image
-              if (data.snippet) {
-                data.snippet = data.snippet.replace(data.image, imgPath);
-              }
-            }
-          }
-
           const selection = editor?.selection;
           await editor?.edit(builder => {
             const snippet = data.snippet || `![${data.alt || data.caption || ""}](${imgPath})`;
@@ -326,9 +323,10 @@ export class MediaHelpers {
         MediaListener.getMediaSelection();
       } else {
         MediaListener.getMediaSelection();
+        
         DataListener.updateMetadata({
           field: data.fieldName, 
-          value: data.image, 
+          value: imgPath, 
           parents: data.parents,
           blockData: data.blockData
         });
