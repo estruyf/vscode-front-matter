@@ -150,7 +150,8 @@ export class Article {
   ): ParsedFrontMatter | undefined {
     const article = ArticleHelper.getFrontMatterFromDocument(document);
 
-    if (!article) {
+    // Only set the date, if there is already front matter set
+    if (!article || !article.data || Object.keys(article.data).length === 0) {
       return;
     }
 

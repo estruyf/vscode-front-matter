@@ -82,7 +82,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
     <Collapsible id={`tags`} title="Metadata" className={`inherit z-20`}>
       
       {
-        renderFields(contentType?.fields, metadata)
+        renderFields(contentType?.fields || [], metadata)
       }
 
       {
