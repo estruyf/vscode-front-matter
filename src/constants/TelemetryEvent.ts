@@ -26,4 +26,5 @@ export const TelemetryEvent = {
   webviewMediaView: 'webviewMediaView',
   webviewDataView: 'webviewDataView',
   webviewContentsView: 'webviewContentsView',
+  webviewSnippetsView: 'webviewSnippetsView',
 };

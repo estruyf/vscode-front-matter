@@ -1,8 +1,9 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { CodeIcon, PlusSmIcon } from '@heroicons/react/outline';
 import * as React from 'react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
+import { TelemetryEvent } from '../../../constants/TelemetryEvent';
 import { DashboardMessage } from '../../DashboardMessage';
 import { SettingsSelector, ViewDataSelector } from '../../state';
 import { PageLayout } from '../Layout/PageLayout';
@@ -44,6 +45,12 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (props: React.P
     setSnippetDescription('');
     setSnippetBody('');
   };
+
+  useEffect(() => {
+    Messenger.send(DashboardMessage.sendTelemetry, {
+      event: TelemetryEvent.webviewSnippetsView
+    });
+  }, []);
   
   return (
     <PageLayout
