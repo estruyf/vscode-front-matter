@@ -1581,7 +1581,7 @@
   },
   "scripts": {
     "dev:ext": "npm run clean && npm-run-all --parallel watch:*",
-    "vscode:prepublish": "npm run clean && npm-run-all --parallel prod:*",
+    "--vscode:prepublish": "npm run clean && npm-run-all --parallel prod:*",
     "build:ext": "npm run clean && npm-run-all --parallel dev:build:*",
     "watch:ext": "webpack --mode development --watch --config ./webpack/extension.config.js",
     "watch:dashboard": "webpack serve --mode development --config ./webpack/dashboard.config.js",
