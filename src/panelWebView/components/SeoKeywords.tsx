@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { SeoKeywordInfo } from './SeoKeywordInfo';
 import { VsTable, VsTableBody, VsTableHeader, VsTableHeaderCell } from './VscodeComponents';
+import { ErrorBoundary } from '@sentry/react';
 
 export interface ISeoKeywordsProps {
   keywords: string[] | null;
@@ -48,7 +49,9 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({keywords, ...d
           {
             validateKeywords().map((keyword, index) => {
               return (
-                <SeoKeywordInfo key={index} keyword={keyword} {...data} />
+                <ErrorBoundary fallback={<div />}>
+                  <SeoKeywordInfo key={index} keyword={keyword} {...data} />
+                </ErrorBoundary>
               );
             })
           }
