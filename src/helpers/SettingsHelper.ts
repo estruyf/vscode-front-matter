@@ -102,11 +102,12 @@ export class Settings {
   public static inspect<T>(name: string): any {
     const configInpection = Settings.config.inspect<T>(name);
     const settingKey = `${CONFIG_KEY}.${name}`;
+    const teamValue = Settings.globalConfig && typeof Settings.globalConfig[settingKey] !== "undefined" ? Settings.globalConfig[settingKey] : undefined;
 
     return {
       ...configInpection,
-      teamValue: Settings.globalConfig[settingKey]
-    }
+      teamValue
+    };
   }
 
   /**
