@@ -25,3 +25,5 @@ assets/sponsors
 dist/*.html
 frontmatter.json
 .frontmatter
+webpack
+README.beta.md
