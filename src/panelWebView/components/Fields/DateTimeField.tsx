@@ -37,7 +37,7 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({lab
     if (crntValue?.toISOString() !== stateValue?.toISOString()) {
       setDateValue(date);
     }
-  }, [ date ]);
+  }, [ date, dateValue ]);
 
   return (
     <div className={`metadata_field`}>

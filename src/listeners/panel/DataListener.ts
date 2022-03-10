@@ -145,30 +145,34 @@ export class DataListener extends BaseListener {
     // Support multi-level fields
     const parentObj = DataListener.getParentObject(article.data, article, parents, blockData);
 
-    for (const dateField of dateFields) {
-      if ((field === dateField.name) && value) {
-        parentObj[field] = Article.formatDate(new Date(value));
-      } else if (!imageFields.find(f => f.name === field)) {
-        // Only override the field data if it is not an multiselect image field
-        parentObj[field] = value;
-      }
-    }
+    const isDateField = dateFields.some(f => f.name === field);
+    const isMultiImageField = imageFields.some(f => f.name === field);
 
-    for (const imageField of imageFields) {
-      if (field === imageField.name) {
-        // If value is an array, it means it comes from the explorer view itself (deletion)
-        if (Array.isArray(value)) {
-          parentObj[field] = value || [];
-        } else { // Otherwise it is coming from the media dashboard (addition)
-          let fieldValue = parentObj[field];
-          if (fieldValue && !Array.isArray(fieldValue)) {
-            fieldValue = [fieldValue];
-          }
-          const crntData = Object.assign([], fieldValue);
-          const allRelPaths = [...(crntData || []), value];
-          parentObj[field] = [...new Set(allRelPaths)].filter(f => f);
+    if (isDateField) {
+      for (const dateField of dateFields) {
+        if ((field === dateField.name) && value) {
+          parentObj[field] = Article.formatDate(new Date(value));
         }
       }
+    } else if (isMultiImageField) {
+      for (const imageField of imageFields) {
+        if (field === imageField.name) {
+          // If value is an array, it means it comes from the explorer view itself (deletion)
+          if (Array.isArray(value)) {
+            parentObj[field] = value || [];
+          } else { // Otherwise it is coming from the media dashboard (addition)
+            let fieldValue = parentObj[field];
+            if (fieldValue && !Array.isArray(fieldValue)) {
+              fieldValue = [fieldValue];
+            }
+            const crntData = Object.assign([], fieldValue);
+            const allRelPaths = [...(crntData || []), value];
+            parentObj[field] = [...new Set(allRelPaths)].filter(f => f);
+          }
+        }
+      }
+    } else {
+      parentObj[field] = value;
     }
     
     ArticleHelper.update(editor, article);
