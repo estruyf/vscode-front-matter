@@ -1,7 +1,7 @@
 import { Questions } from './../helpers/Questions';
 import { SETTING_CONTENT_PAGE_FOLDERS, SETTING_CONTENT_STATIC_FOLDER, SETTING_CONTENT_SUPPORTED_FILETYPES, TelemetryEvent } from './../constants';
 import { commands, Uri, workspace, window } from "vscode";
-import { basename, join } from "path";
+import { basename, dirname, join, sep } from "path";
 import { ContentFolder, FileInfo, FolderInfo } from "../models";
 import uniqBy = require("lodash.uniqby");
 import { Template } from "./Template";
@@ -238,12 +238,14 @@ export class Folders {
               for (const file of files) {
                 try {
                   const fileName = basename(file.fsPath);
+                  const folderName = dirname(file.fsPath).split(sep).pop();
                   
                   const stats = await workspace.fs.stat(file);
 
                   fileStats.push({
                     filePath: file.fsPath,
                     fileName,
+                    folderName,
                     ...stats
                   });
                 } catch (error) {

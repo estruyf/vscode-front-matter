@@ -98,6 +98,7 @@ export interface FolderInfo {
 export interface FileInfo extends FileStat {
   filePath: string;
   fileName: string;
+  folderName: string | undefined;
 };
 
 export interface CustomScript {
