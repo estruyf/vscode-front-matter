@@ -26,7 +26,7 @@ export class SnippetListener extends BaseListener {
   }
 
   private static async addSnippet(data: any) {
-    const { title, description, body } = data;
+    const { title, description, body, fields } = data;
 
     if (!title || !body) {
       Notifications.warning("Snippet missing title or body");
@@ -43,7 +43,8 @@ export class SnippetListener extends BaseListener {
 
     snippets[title] = { 
       description, 
-      body: snippetLines.length === 1 ? snippetLines[0] : snippetLines
+      body: snippetLines.length === 1 ? snippetLines[0] : snippetLines,
+      fields: fields || []
     };
     
     Settings.update(SETTING_CONTENT_SNIPPETS, snippets, true);

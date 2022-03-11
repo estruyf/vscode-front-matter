@@ -4,7 +4,7 @@ import { Folders } from "../commands/Folders";
 import { Template } from "../commands/Template";
 import { CONTEXT, ExtensionState, SETTING_CONTENT_DRAFT_FIELD, SETTING_CONTENT_SORTING, SETTING_CONTENT_SORTING_DEFAULT, SETTING_CONTENT_STATIC_FOLDER, SETTING_DASHBOARD_MEDIA_SNIPPET, SETTING_DASHBOARD_OPENONSTART, SETTING_DATA_FILES, SETTING_DATA_FOLDERS, SETTING_DATA_TYPES, SETTING_FRAMEWORK_ID, SETTING_MEDIA_SORTING_DEFAULT, SETTING_CUSTOM_SCRIPTS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_SNIPPETS } from "../constants";
 import { DashboardViewType, SortingOption, Settings as ISettings } from "../dashboardWebView/models";
-import { CustomScript, DraftField, ScriptType, SortingSetting, TaxonomyType } from "../models";
+import { CustomScript, DraftField, ScriptType, Snippets, SortingSetting, TaxonomyType } from "../models";
 import { DataFile } from "../models/DataFile";
 import { DataFolder } from "../models/DataFolder";
 import { DataType } from "../models/DataType";
@@ -52,7 +52,7 @@ export class DashboardSettings {
       },
       dataFiles: await this.getDataFiles(),
       dataTypes: Settings.get<DataType[]>(SETTING_DATA_TYPES),
-      snippets: Settings.get<DataType[]>(SETTING_CONTENT_SNIPPETS),
+      snippets: Settings.get<Snippets>(SETTING_CONTENT_SNIPPETS),
       isBacker: await ext.getState<boolean | undefined>(CONTEXT.backer, 'global')
     } as ISettings
   }

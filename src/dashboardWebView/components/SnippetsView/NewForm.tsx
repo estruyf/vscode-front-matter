@@ -1,6 +1,4 @@
-import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/outline';
 import * as React from 'react';
-import { SnippetVariables } from '../../../constants';
 
 export interface INewFormProps {
   title: string;
@@ -13,7 +11,6 @@ export interface INewFormProps {
 }
 
 export const NewForm: React.FunctionComponent<INewFormProps> = ({ title, description, body, onTitleUpdate, onDescriptionUpdate, onBodyUpdate }: React.PropsWithChildren<INewFormProps>) => {
-  const [ showDetails, setShowDetails ] = React.useState(false);
 
   return (
     <div className='space-y-4'>
@@ -62,47 +59,6 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({ title, descrip
             onChange={(e) => onBodyUpdate(e.currentTarget.value)}
           />
         </div>
-      </div>
-      
-      <div>
-        <h3 className="text-base text-vulcan-300 dark:text-whisper-500 flex items-center">
-          <span>Placeholders guidelines</span>
-
-          {
-            showDetails ? (
-              <button onClick={() => setShowDetails(false)}>
-                <ChevronUpIcon className="w-4 h-4 text-gray-500" />
-              </button>
-            ) : (
-              <button onClick={() => setShowDetails(true)}>
-                <ChevronDownIcon className="w-4 h-4 text-gray-500" />
-              </button>
-            )
-          }
-        </h3>
-        
-        
-        <dl className="divide-y divide-gray-200 dark:divide-vulcan-200" style={{ zIndex: -1 }}>
-          <div className="py-2 flex justify-between text-xs font-medium">
-            <dt className="text-vulcan-100 dark:text-whisper-900">Insert selected text (can still be updated)</dt>
-            <dd className="text-vulcan-300 dark:text-whisper-500 text-right">{`\${${SnippetVariables.FM_SELECTED_TEXT}}`}</dd>
-          </div>
-
-          <div className="py-2 flex justify-between text-xs font-medium">
-            <dt className="text-vulcan-100 dark:text-whisper-900">Variable without default</dt>
-            <dd className="text-vulcan-300 dark:text-whisper-500 text-right">{`\${variable}`}</dd>
-          </div>
-
-          <div className="py-2 flex justify-between text-xs font-medium">
-            <dt className="text-vulcan-100 dark:text-whisper-900">Variable with default</dt>
-            <dd className="text-vulcan-300 dark:text-whisper-500 text-right">{`\${variable:default}`}</dd>
-          </div>
-
-          <div className="py-2 flex justify-between text-xs font-medium">
-            <dt className="text-vulcan-100 dark:text-whisper-900">Variable with choices</dt>
-            <dd className="text-vulcan-300 dark:text-whisper-500 text-right">{`\${variable|choice 1,choice 2,choice 3|}`}</dd>
-          </div>
-        </dl>
       </div>
     </div>
   );

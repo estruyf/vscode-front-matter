@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { TelemetryEvent } from '../../../constants/TelemetryEvent';
+import { SnippetParser } from '../../../helpers/SnippetParser';
 import { DashboardMessage } from '../../DashboardMessage';
 import { SettingsSelector, ViewDataSelector } from '../../state';
 import { PageLayout } from '../Layout/PageLayout';
@@ -21,8 +22,8 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (props: React.P
   const [ snippetBody, setSnippetBody ] = useState<string>('');
   const [ showCreateDialog, setShowCreateDialog ] = useState(false);
 
-  const snippetKeys = useMemo(() => Object.keys(settings?.snippets) || [], [settings?.snippets]);
   const snippets = settings?.snippets || {};
+  const snippetKeys = useMemo(() => Object.keys(snippets) || [], [settings?.snippets]);
 
   const onSnippetAdd = useCallback(() => {
     if (!snippetTitle || !snippetBody) {
@@ -30,10 +31,13 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (props: React.P
       return;
     }
 
+    const fields = SnippetParser.getFields(snippetBody, []);
+
     Messenger.send(DashboardMessage.addSnippet, {
       title: snippetTitle,
       description: snippetDescription || '',
-      body: snippetBody
+      body: snippetBody,
+      fields
     });
 
     reset();

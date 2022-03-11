@@ -3,6 +3,8 @@ import { CodeIcon, DotsHorizontalIcon, PencilIcon, PlusIcon, TrashIcon } from '@
 import * as React from 'react';
 import { useCallback, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
+import { SnippetParser } from '../../../helpers/SnippetParser';
+import { Snippet, SnippetField, Snippets } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
 import { SettingsSelector, ViewDataSelector } from '../../state';
 import { Alert } from '../Modals/Alert';
@@ -12,7 +14,7 @@ import SnippetForm, { SnippetFormHandle } from './SnippetForm';
 
 export interface IItemProps {
   title: string;
-  snippet: any;
+  snippet: Snippet;
 }
 
 export const Item: React.FunctionComponent<IItemProps> = ({ title, snippet }: React.PropsWithChildren<IItemProps>) => {
@@ -53,13 +55,21 @@ export const Item: React.FunctionComponent<IItemProps> = ({ title, snippet }: Re
       return;
     }
 
-    const snippets = Object.assign({}, settings?.snippets || {});
+    const snippets: Snippets = Object.assign({}, settings?.snippets || {});
     const snippetLines = snippetOriginalBody.split("\n");
-    const snippetContents = {
+
+    const crntSnippet = Object.assign({}, snippets[title]);
+    
+    const fields = SnippetParser.getFields(snippetLines, crntSnippet.fields || [], crntSnippet?.openingTags, crntSnippet?.closingTags);
+
+    const snippetContents: Snippet = {
+      ...crntSnippet,
+      fields,
       description: snippetDescription || '',
       body: snippetLines.length === 1 ? snippetLines[0] : snippetLines
     };
 
+    // Check if new or update
     if (title === snippetTitle) {
       snippets[title] = snippetContents;
     } else {

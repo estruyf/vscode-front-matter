@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { ChevronDownIcon } from '@heroicons/react/outline';
-import { SnippetField } from '../../../models';
-import { SnippetVariables } from '../../../constants';
+import { Choice, SnippetField } from '../../../models';
 
 export interface ISnippetInputFieldProps {
   field: SnippetField;
@@ -10,17 +9,19 @@ export interface ISnippetInputFieldProps {
 
 export const SnippetInputField: React.FunctionComponent<ISnippetInputFieldProps> = ({ field, onValueChange }: React.PropsWithChildren<ISnippetInputFieldProps>) => {
 
-  if (field.type === 'select') {
+  if (field.type === 'choice') {
     return (
       <div className='relative'>
         <select 
           name={field.name} 
           value={field.value || ""}
-          className="focus:outline-none block w-full sm:text-sm border-gray-300 text-vulcan-500" 
+          className="focus:outline-none block w-full sm:text-sm border-gray-300 text-vulcan-500"
           onChange={e => onValueChange(field, e.target.value)}>
           {
-            field.options?.map((option: string, index: number) => (
-              <option key={index} value={option}>{option}</option>
+            (field.choices || [])?.map((option: string | Choice, index: number) => (
+              typeof option === 'string' ?
+                <option key={index} value={option}>{option}</option> :
+                <option key={index} value={option.id}>{option.title}</option>
             ))
           }
         </select>
@@ -30,7 +31,7 @@ export const SnippetInputField: React.FunctionComponent<ISnippetInputFieldProps>
     )
   }
   
-  if (field.type === 'textarea') {
+  if (field.type === 'string' && !field.single) {
     return (
       <textarea
         name={field.name}

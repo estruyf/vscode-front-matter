@@ -1,7 +1,7 @@
 import { DataType } from './../../models/DataType';
 import { VersionInfo } from '../../models/VersionInfo';
 import { ContentFolder } from '../../models/ContentFolder';
-import { ContentType, CustomScript, DraftField, Framework, SortingSetting } from '../../models';
+import { ContentType, CustomScript, DraftField, Framework, Snippets, SortingSetting } from '../../models';
 import { SortingOption } from './SortingOption';
 import { DashboardViewType } from '.';
 import { DataFile } from '../../models/DataFile';
@@ -29,7 +29,7 @@ export interface Settings {
   dataFiles: DataFile[] | undefined;
   dataTypes: DataType[] | undefined;
   isBacker: boolean | undefined;
-  snippets: any | undefined;
+  snippets: Snippets | undefined;
 }
 
 export interface DashboardState {

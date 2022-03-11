@@ -2,16 +2,15 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import { SnippetVariables } from '../../../constants';
-import { Choice, SnippetParser, Variable, VariableResolver } from '../../../helpers/SnippetParser';
-import { SnippetField } from '../../../models';
+import { SnippetParser } from '../../../helpers/SnippetParser';
+import { Snippet, SnippetField, SnippetSpecialPlaceholders } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
 import { ViewDataSelector } from '../../state';
 import { SnippetInputField } from './SnippetInputField';
 
 
 export interface ISnippetFormProps {
-  snippet: any;
+  snippet: Snippet;
   selection: string | undefined;
 }
 
@@ -27,23 +26,24 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
     setFields(prevFields => prevFields.map(f => f.name === field.name ? { ...f, value } : f));
   }, [setFields]);
 
-  const insertSelectionValue = useCallback((value: string) => {
-    if (selection && value === SnippetVariables.FM_SELECTED_TEXT) {
-      return selection;
+  const insertSelectionValue = useCallback((value: SnippetSpecialPlaceholders) => {
+    if (value === "FM_SELECTED_TEXT") {
+      return selection || "";
     }
 
-    return;
+    return value;
   }, [selection]);
 
   const snippetBody = useMemo(() => {
     let body = typeof snippet.body === "string" ? snippet.body : snippet.body.join(`\n`);
-
+    
+    const obj: any = {};
     for (const field of fields) {
-      body = body.replace(field.tmString, field.value);
+      obj[field.name] = field.value;
     }
 
-    return body;
-  }, [fields, selection]);
+    return SnippetParser.render(body, obj, snippet.openingTags, snippet.closingTags);
+  }, [fields, snippet]);
 
   const shouldShowField = (fieldName: string, idx: number, allFields: SnippetField[]) => {
     const crntField = allFields.findIndex(f => f.name === fieldName);
@@ -51,22 +51,6 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
       return false;
     }
     return true;
-  }
-
-  const fieldNameRender = (fieldName: string) => {
-    if (fieldName === SnippetVariables.FM_SELECTED_TEXT) {
-      return 'Selected Text';
-    }
-
-    if (fieldName.startsWith(SnippetVariables.FM_TEXT)) {
-      return fieldName.replace(SnippetVariables.FM_TEXT, '');
-    }
-
-    if (fieldName.startsWith(SnippetVariables.FM_MULTILINE)) {
-      return fieldName.replace(SnippetVariables.FM_MULTILINE, '');
-    }
-
-    return fieldName;
   }
 
   useImperativeHandle(ref, () => ({
@@ -83,62 +67,35 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
   }));
 
   useEffect(() => {
-    // Defines the type of field that needs to be rendered
-    const getFieldType = (fieldName: string) => {
-      if (fieldName.startsWith(SnippetVariables.FM_MULTILINE)) {
-        return 'textarea';
-      }
-
-      return 'text';
-    }
-
     // Get all placeholder variables from the snippet
-    const snippetParser = new SnippetParser();
     const body = typeof snippet.body === "string" ? snippet.body : snippet.body.join(`\n`);
 
-    const parsed = snippetParser.parse(body);
-    const placeholders = parsed.placeholderInfo.all;
+    const placeholders = SnippetParser.getPlaceholders(body, snippet.openingTags, snippet.closingTags);
 
-    const allFields: any[] = [];
+    const allFields: SnippetField[] = [];
+    const snippetFields = snippet.fields || [];
 
-    for (const placeholder of placeholders) {
-      const tmString = placeholder.toTextmateString();
+    for (const fieldName of placeholders) {
+      const field = snippetFields.find(f => f.name === fieldName);
 
-      // If only a variable is defined, it will not contain children
-      if (placeholder.children.length === 0) {
+      if (field) {
         allFields.push({
-          type: getFieldType(placeholder.index as string),
-          name: placeholder.index,
-          value: insertSelectionValue(placeholder.index as string) || '',
-          tmString
+          ...field,
+          value: insertSelectionValue(field.default || "")
         });
       } else {
-        // Children are defined, so it means it is a choice field or the variable has a default value
-        for (const child of placeholder.children as any[]) {
-          if (child instanceof Choice) {
-            const options = child.options.map(o => o.value);
-
-            allFields.push({
-              type: 'select',
-              name: placeholder.index,
-              value: (child as any).value || options[0] || "",
-              options,
-              tmString
-            });
-          } else {
-            allFields.push({
-              type: getFieldType(placeholder.index as string),
-              name: placeholder.index,
-              value: insertSelectionValue((child as any).value as string) || insertSelectionValue(placeholder.index as string) || (child as any).value || "",
-              tmString
-            });
-          }
-        }
+        allFields.push({
+          name: fieldName,
+          title: fieldName,
+          type: "string",
+          single: true,
+          value: ""
+        });
       }
     }
 
     setFields(allFields);
-  }, []);
+  }, [snippet]);
 
   return (
     <div>
@@ -152,7 +109,7 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
             shouldShowField(field.name, index, allFields) && (
               <div key={index}>
                 <label htmlFor={field.name} className="block text-sm font-medium capitalize">
-                  {fieldNameRender(field.name)}
+                  {field.title || field.name}
                 </label>
                 <div className="mt-1">
                   <SnippetInputField
