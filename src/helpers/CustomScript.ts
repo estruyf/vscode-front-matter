@@ -1,6 +1,6 @@
 import { CustomScript as ICustomScript, ScriptType } from '../models/PanelSettings';
 import { window, env as vscodeEnv, ProgressLocation } from 'vscode';
-import { ArticleHelper } from '.';
+import { ArticleHelper, Telemetry } from '.';
 import { Folders } from '../commands/Folders';
 import { exec } from 'child_process';
 import * as os from 'os';
@@ -10,6 +10,7 @@ import ContentProvider from '../providers/ContentProvider';
 import { Dashboard } from '../commands/Dashboard';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { ParsedFrontMatter } from '../parsers';
+import { TelemetryEvent } from '../constants/TelemetryEvent';
 
 export class CustomScript {
 
@@ -20,8 +21,12 @@ export class CustomScript {
       const wsPath = wsFolder.fsPath;
 
       if (script.type === ScriptType.MediaFile || script.type === ScriptType.MediaFolder) {
+        Telemetry.send(TelemetryEvent.runMediaScript);
+        
         CustomScript.runMediaScript(wsPath, path, script);
       } else {
+        Telemetry.send(TelemetryEvent.runCustomScript);
+
         if (script.bulk) {
           // Run script on all files
           CustomScript.bulkRun(wsPath, script);
