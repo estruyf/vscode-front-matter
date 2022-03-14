@@ -49,7 +49,7 @@ A couple of our extension highlights that hopefully get you interested in giving
 > Missing something? Let us know by opening an issue on the [GitHub repository](https://github.com/estruyf/vscode-front-matter/issues/new/choose)
 
 <p align="center">
-  <img src="./assets/v6.0.0/content-preview.png" alt="Site preview" style="display: inline-block" />
+  <img src="https://frontmatter.codes/assets/marketplace/v6.0.0/content-preview.png" alt="Site preview" style="display: inline-block" />
 </p>
 
 > If you see something missing in your article creation flow, please feel free to reach out.
@@ -58,14 +58,14 @@ A couple of our extension highlights that hopefully get you interested in giving
 
 Snippets support for Front Matter has been added!
 
-![Snippets dashboard](/assets/v7.0.0/snippets-dashboard.png)
+![Snippets dashboard](https://frontmatter.codes/assets/marketplace/v7.0.0/snippets-dashboard.png)
 
 **Version 6**
 
 In this version, we introduced the new data files/folders dashboard. You can find more information about the release in our [v6.0.0 release notes](https://frontmatter.codes/updates/v6.0.0).
 
 <p align="center">
-  <img src="./assets/v6.0.0/data-dashboard.png" alt="Data dashboard" style="display: inline-block" />
+  <img src="https://frontmatter.codes/assets/marketplace/v6.0.0/data-dashboard.png" alt="Data dashboard" style="display: inline-block" />
 </p>
 
 > Data files/folders are pieces of content that do not belong to any markdown content, but live on their own. Most of the time, these data files are used to store additional information about your project/blog/website that will be used to render the content.
@@ -75,7 +75,7 @@ In this version, we introduced the new data files/folders dashboard. You can fin
 The new media dashboard redesign got introduced + support for setting metadata on media files [v5.0.0 release notes](https://frontmatter.codes/updates/v5.0.0).
 
 <p align="center">
-  <img src="./assets/v5.9.0/media-dashboard.png" alt="Data dashboard" style="display: inline-block" />
+  <img src="https://frontmatter.codes/assets/marketplace/v5.9.0/media-dashboard.png" alt="Data dashboard" style="display: inline-block" />
 </p>
 
 **Version 4**
@@ -190,8 +190,8 @@ You can open showcase issues for the following things:
 
 <p align="center">
   <a href="https://vercel.com/?utm_source=vscode-frontmatter&utm_campaign=oss">
-    <img src="assets/sponsors/powered-by-vercel.png" />
-   </a>
+    <img src="https://frontmatter.codes/assets/sponsors/powered-by-vercel.png" />
+  </a>
 </p>
 
 ## 🔑 License
@@ -202,6 +202,6 @@ You can open showcase issues for the following things:
 
 <p align="center">
   <a href="https://visitorbadge.io">
-      <img src="https://estruyf-github.azurewebsites.net/api/VisitorHit?user=estruyf&repo=vscode-front-matter&countColor=%23F05450&labelColor=%230E131F" height="25px" />
+    <img src="https://estruyf-github.azurewebsites.net/api/VisitorHit?user=estruyf&repo=vscode-front-matter&countColor=%23F05450&labelColor=%230E131F" height="25px" />
    </a>
 </p>
