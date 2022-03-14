@@ -1,6 +1,6 @@
 import { basename } from "path";
 import { extensions, Uri, ExtensionContext, window, workspace, commands, ExtensionMode, DiagnosticCollection, languages } from "vscode";
-import { EXTENSION_NAME, GITHUB_LINK, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, EXTENSION_BETA_ID, EXTENSION_ID, ExtensionState } from "../constants";
+import { EXTENSION_NAME, GITHUB_LINK, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, EXTENSION_BETA_ID, EXTENSION_ID, ExtensionState, CONFIG_KEY } from "../constants";
 import { Notifications } from "./Notifications";
 import { Settings } from "./SettingsHelper";
 
@@ -137,23 +137,29 @@ export class Extension {
       Settings.createTeamSettings();
     }
 
-    // Migration scripts can be written here
-    const publishField = Settings.inspect(SETTING_DATE_FIELD);
-    const modifiedField = Settings.inspect(SETTING_MODIFIED_FIELD);
+    const hideDateDeprecation = await Extension.getInstance().getState<boolean>(ExtensionState.Updates.v7_0_0.dateFields, "workspace");
+    if (!hideDateDeprecation) {
+      // Migration scripts can be written here
+      const publishField = Settings.inspect(SETTING_DATE_FIELD);
+      const modifiedField = Settings.inspect(SETTING_MODIFIED_FIELD);
 
-    // Check for deprecation
-    if (publishField?.workspaceValue ||
-        publishField?.globalValue ||
-        publishField?.teamValue ||
-        modifiedField?.workspaceValue ||
-        modifiedField?.globalValue ||
-        modifiedField?.teamValue) {
-      Notifications.warning(`The "${SETTING_DATE_FIELD}" and "${SETTING_MODIFIED_FIELD}" settings have been deprecated. Please use the "isPublishDate" and "isModifiedDate" datetime field properties instead.`, "See migration guide").then(value => {
-        if (value === "See migration guide") {
-          const isProd = this.isProductionMode;
-          commands.executeCommand("vscode.open", Uri.parse(`https://${isProd ? '' : 'beta.'}frontmatter.codes/docs/troubleshooting#publish-and-modified-date-migration`));
-        }
-      });
+      // Check for deprecation
+      if (publishField?.workspaceValue ||
+          publishField?.globalValue ||
+          publishField?.teamValue ||
+          modifiedField?.workspaceValue ||
+          modifiedField?.globalValue ||
+          modifiedField?.teamValue) {
+        Notifications.warning(`The "${CONFIG_KEY}.${SETTING_DATE_FIELD}" and "${CONFIG_KEY}.${SETTING_MODIFIED_FIELD}" settings have been deprecated. Please use the "isPublishDate" and "isModifiedDate" datetime field properties instead.`, "Hide", "See migration guide").then(async (value) => {
+          if (value === "See migration guide") {
+            const isProd = this.isProductionMode;
+            commands.executeCommand("vscode.open", Uri.parse(`https://${isProd ? '' : 'beta.'}frontmatter.codes/docs/troubleshooting#publish-and-modified-date-migration`));
+            await Extension.getInstance().setState<boolean>(ExtensionState.Updates.v7_0_0.dateFields, true, "workspace");
+          } else if (value === "Hide") {
+            await Extension.getInstance().setState<boolean>(ExtensionState.Updates.v7_0_0.dateFields, true, "workspace");
+          }
+        });
+      }
     }
 
     if (major < 7) {

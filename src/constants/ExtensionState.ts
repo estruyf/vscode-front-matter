@@ -13,5 +13,11 @@ export const ExtensionState = {
     Media: {
       Sorting: `frontMatter:Dashboard:Media:Sorting`,
     }
+  },
+
+  Updates: {
+    v7_0_0: {
+      dateFields: `frontMatter:Updates:v7.0.0:dateFields`
+    }
   }
 };

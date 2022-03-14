@@ -6,31 +6,31 @@ import { Settings } from "./SettingsHelper";
 
 export class Notifications {
 
-  public static info(message: string, items?: any): Thenable<string | undefined> {
+  public static info(message: string, ...items: any): Thenable<string | undefined> {
     Logger.info(`${EXTENSION_NAME}: ${message}`, "INFO");
 
     if (this.shouldShow("INFO")) {
-      return window.showInformationMessage(`${EXTENSION_NAME}: ${message}`, items);
+      return window.showInformationMessage(`${EXTENSION_NAME}: ${message}`, ...items);
     }
 
     return Promise.resolve(undefined);
   }
 
-  public static warning(message: string, items?: any): Thenable<string | undefined> {
+  public static warning(message: string, ...items: any): Thenable<string | undefined> {
     Logger.info(`${EXTENSION_NAME}: ${message}`, "WARNING");
 
     if (this.shouldShow("WARNING")) {
-      return window.showWarningMessage(`${EXTENSION_NAME}: ${message}`, items);
+      return window.showWarningMessage(`${EXTENSION_NAME}: ${message}`, ...items);
     }
 
     return Promise.resolve(undefined);
   }
 
-  public static error(message: string, items?: any): Thenable<string | undefined> {
+  public static error(message: string, ...items: any): Thenable<string | undefined> {
     Logger.info(`${EXTENSION_NAME}: ${message}`, "ERROR");
 
     if (this.shouldShow("ERROR")) {
-      return window.showErrorMessage(`${EXTENSION_NAME}: ${message}`, items);
+      return window.showErrorMessage(`${EXTENSION_NAME}: ${message}`, ...items);
     }
 
     return Promise.resolve(undefined);
