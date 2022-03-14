@@ -6,7 +6,6 @@ import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { Extension } from '../helpers/Extension';
 import { WebviewHelper } from '@estruyf/vscode';
 import { DashboardData } from '../models/DashboardData';
-import { ExplorerView } from '../explorerView/ExplorerView';
 import { MediaLibrary } from '../helpers/MediaLibrary';
 import { DashboardListener, MediaListener, SettingsListener, TelemetryListener, DataListener, PagesListener, ExtensionListener, SnippetListener } from '../listeners/dashboard';
 import { MediaListener as PanelMediaListener } from '../listeners/panel'

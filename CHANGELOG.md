@@ -1,8 +1,8 @@
 # Change Log
 
-## [7.0.0] - 2022-03-xx
+## [7.0.0] - 2022-03-xx - [Release notes](https://beta.frontmatter.codes/updates/v7.0.0)
 
-### ✨ Features
+### ✨ New Features
 
 - [#175](https://github.com/estruyf/vscode-front-matter/issues/175): New snippet support + dashboard
 - [#281](https://github.com/estruyf/vscode-front-matter/issues/281): New `isPublishDate` and `isModifiedDate` datetime field properties
@@ -12,6 +12,7 @@
 - Light color theme enhancements to media cards
 - Light color theme enhancements to folder cards
 - Added collapse and dashboard button to the view title of the FM Panel
+- Show content commands only when a supported file type is active
 - [#272](https://github.com/estruyf/vscode-front-matter/issues/272): New slide over panel for showing details of media files
 - [#276](https://github.com/estruyf/vscode-front-matter/issues/276): Add a Front Matter walkthrough for VS Code
 - [#270](https://github.com/estruyf/vscode-front-matter/issues/270): Only show media files from public folder if `pageBundle` is not enabled on any of the content types

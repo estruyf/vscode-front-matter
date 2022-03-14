@@ -7,5 +7,49 @@
       "title": ".vscode",
       "path": "[[workspace]]/.vscode"
     }
-  ]
+  ],
+  "frontMatter.content.snippets": {
+    "New version": {
+      "description": "Insert a new version to the changelog",
+      "body": [
+        "## [{{version}}] - {{year}}-{{month}}-{{day}}",
+        "",
+        "### ✨ New features",
+        "",
+        "### 🎨 Enhancements",
+        "",
+        "### ⚡️ Optimizations",
+        "",
+        "### 🐞 Fixes"
+      ],
+      "fields": [
+        {
+          "type": "string",
+          "name": "version",
+          "title": "Version",
+          "single": true
+        },
+        {
+          "type": "string",
+          "name": "year",
+          "title": "Year",
+          "default": "2022"
+        },
+        {
+          "type": "string",
+          "name": "month",
+          "title": "Month",
+          "default": "xx"
+        },
+        {
+          "type": "string",
+          "name": "day",
+          "title": "Day",
+          "default": "xx"
+        }
+      ],
+      "openingTags": "{{",
+      "closingTags": "}}"
+    }
+  }
 }

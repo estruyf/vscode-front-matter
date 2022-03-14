@@ -245,6 +245,16 @@
               },
               "fields": {
                 "$ref": "#contenttypefield"
+              },
+              "openingTags": {
+                "description": "The snippet opening tags.",
+                "type": "string",
+                "default": "[["
+              },
+              "closingTags": {
+                "description": "The snippet closing tags.",
+                "type": "string",
+                "default": "]]"
               }
             },
             "additionalProperties": false
@@ -1516,6 +1526,46 @@
         {
           "command": "frontMatter.markup.options",
           "when": "false"
+        },
+        {
+          "command": "frontMatter.insertSnippet",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.insertImage",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.createCategory",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.createTag",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.insertCategories",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.insertTags",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.createTemplate",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.preview",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.setLastModifiedDate",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.generateSlug",
+          "when": "frontMatter:file:isValid == true"
         }
       ],
       "view/title": [
