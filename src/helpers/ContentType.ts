@@ -1,6 +1,6 @@
 import { PagesListener } from './../listeners/dashboard';
 import { ArticleHelper, Settings } from ".";
-import { SETTING_CONTENT_DRAFT_FIELD, SETTING_TAXONOMY_CONTENT_TYPES, TelemetryEvent } from "../constants";
+import { SETTING_CONTENT_DRAFT_FIELD, SETTING_DATE_FORMAT, SETTING_TAXONOMY_CONTENT_TYPES, TelemetryEvent } from "../constants";
 import { ContentType as IContentType, DraftField, Field } from '../models';
 import { Uri, commands } from 'vscode'; 
 import { Folders } from "../commands/Folders";
@@ -9,6 +9,7 @@ import { writeFileSync } from "fs";
 import { Notifications } from "./Notifications";
 import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
 import { Telemetry } from './Telemetry';
+import { processKnownPlaceholders } from './PlaceholderHelper';
 
 
 export class ContentType {
@@ -140,10 +141,11 @@ export class ContentType {
   private static processFields(obj: IContentType | Field, titleValue: string, data: any) {
     
     if (obj.fields) {
+      const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
       for (const field of obj.fields) {
         if (field.name === "title") {
           if (field.default) {
-            data[field.name] = ArticleHelper.processKnownPlaceholders(field.default, titleValue);
+            data[field.name] = processKnownPlaceholders(field.default, titleValue, dateFormat);
             data[field.name] = ArticleHelper.processCustomPlaceholders(data[field.name], titleValue);
           } else {
             data[field.name] = titleValue;
@@ -152,7 +154,7 @@ export class ContentType {
           if (field.type === "fields") {
             data[field.name] = this.processFields(field, titleValue, {});
           } else {
-            data[field.name] = field.default ? ArticleHelper.processKnownPlaceholders(field.default, titleValue) : "";
+            data[field.name] = field.default ? processKnownPlaceholders(field.default, titleValue, dateFormat) : "";
             data[field.name] = field.default ? ArticleHelper.processCustomPlaceholders(data[field.name], titleValue) : "";
           }
         }

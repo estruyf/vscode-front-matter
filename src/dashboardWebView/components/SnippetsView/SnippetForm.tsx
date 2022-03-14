@@ -2,10 +2,11 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
+import { processKnownPlaceholders } from '../../../helpers/PlaceholderHelper';
 import { SnippetParser } from '../../../helpers/SnippetParser';
 import { Snippet, SnippetField, SnippetSpecialPlaceholders } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
-import { ViewDataSelector } from '../../state';
+import { SettingsAtom, ViewDataSelector } from '../../state';
 import { SnippetInputField } from './SnippetInputField';
 
 
@@ -21,15 +22,18 @@ export interface SnippetFormHandle {
 const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFormProps> = ({ snippet, selection }, ref) => {
   const viewData = useRecoilValue(ViewDataSelector);
   const [ fields, setFields ] = useState<SnippetField[]>([]);
+  const settings = useRecoilValue(SettingsAtom);
 
   const onTextChange = useCallback((field: SnippetField, value: string) => {
     setFields(prevFields => prevFields.map(f => f.name === field.name ? { ...f, value } : f));
   }, [setFields]);
 
-  const insertSelectionValue = useCallback((value: SnippetSpecialPlaceholders) => {
+  const insertPlaceholderValues = useCallback((value: SnippetSpecialPlaceholders) => {
     if (value === "FM_SELECTED_TEXT") {
       return selection || "";
     }
+
+    value = processKnownPlaceholders(value, viewData?.data?.fileTitle || "", settings?.date.format || "");
 
     return value;
   }, [selection]);
@@ -81,7 +85,7 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
       if (field) {
         allFields.push({
           ...field,
-          value: insertSelectionValue(field.default || "")
+          value: insertPlaceholderValues(field.default || "")
         });
       } else {
         allFields.push({

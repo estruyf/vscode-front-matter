@@ -30,6 +30,7 @@ export interface Settings {
   dataTypes: DataType[] | undefined;
   isBacker: boolean | undefined;
   snippets: Snippets | undefined;
+  date: { format: string };
 }
 
 export interface DashboardState {

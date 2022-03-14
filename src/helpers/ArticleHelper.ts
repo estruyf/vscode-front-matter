@@ -20,6 +20,7 @@ import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { Link, Parent } from 'mdast-util-from-markdown/lib';
 import { Content } from 'mdast';
+import { processKnownPlaceholders } from './PlaceholderHelper';
 
 export class ArticleHelper {
   private static notifiedFiles: string[] = [];
@@ -321,6 +322,7 @@ export class ArticleHelper {
    * @returns 
    */
   public static updatePlaceholders(data: any, title: string) {
+    const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
     const fmData = Object.assign({}, data);
 
     for (const fieldName of Object.keys(fmData)) {
@@ -334,38 +336,11 @@ export class ArticleHelper {
         fmData[fieldName] = SlugHelper.createSlug(title);
       }
 
-      fmData[fieldName] = this.processKnownPlaceholders(fmData[fieldName], title);
+      fmData[fieldName] = processKnownPlaceholders(fmData[fieldName], title, dateFormat);
       fmData[fieldName] = this.processCustomPlaceholders(fmData[fieldName], title);
     }
 
     return fmData;
-  }
-
-  /**
-   * Replace the known placeholders
-   * @param value 
-   * @param title 
-   * @returns 
-   */
-  public static processKnownPlaceholders(value: string, title: string) {
-    if (value && typeof value === "string") {
-      if (value.includes("{{title}}")) {
-        const regex = new RegExp("{{title}}", "g");
-        value = value.replace(regex, title);
-      }
-      
-      if (value.includes("{{slug}}")) {
-        const regex = new RegExp("{{slug}}", "g");
-        value = value.replace(regex, SlugHelper.createSlug(title) || "");
-      }
-
-      if (value.includes("{{now}}")) {
-        const regex = new RegExp("{{now}}", "g");
-        value = value.replace(regex, Article.formatDate(new Date()));
-      }
-    }
-
-    return value;
   }
 
   /**
@@ -376,12 +351,13 @@ export class ArticleHelper {
    */
   public static processCustomPlaceholders(value: string, title: string) {
     if (value && typeof value === "string") {
+      const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
       const placeholders = Settings.get<{id: string, value: string}[]>(SETTING_CONTENT_PLACEHOLDERS);
       if (placeholders && placeholders.length > 0) {
         for (const placeholder of placeholders) {
           if (value.includes(`{{${placeholder.id}}}`)) {
             const regex = new RegExp(`{{${placeholder.id}}}`, "g");
-            const updatedValue = this.processKnownPlaceholders(placeholder.value, title);
+            const updatedValue = processKnownPlaceholders(placeholder.value, title, dateFormat);
             value = value.replace(regex, updatedValue);
           }
         }

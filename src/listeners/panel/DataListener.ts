@@ -6,9 +6,10 @@ import { CommandToCode } from "../../panelWebView/CommandToCode";
 import { BaseListener } from "./BaseListener";
 import { commands, ThemeIcon, window } from 'vscode';
 import { ArticleHelper, Logger, Settings } from "../../helpers";
-import { COMMAND_NAME, DefaultFields, SETTING_COMMA_SEPARATED_FIELDS, SETTING_TAXONOMY_CONTENT_TYPES } from "../../constants";
+import { COMMAND_NAME, DefaultFields, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FORMAT, SETTING_TAXONOMY_CONTENT_TYPES } from "../../constants";
 import { Article } from '../../commands';
 import { ParsedFrontMatter } from '../../parsers';
+import { processKnownPlaceholders } from '../../helpers/PlaceholderHelper';
 
 const FILE_LIMIT = 10;
 
@@ -287,7 +288,8 @@ export class DataListener extends BaseListener {
 
   private static updatePlaceholder(field: string, value: string, title: string) {
     if (field && value) {
-      value = ArticleHelper.processKnownPlaceholders(value, title || "");
+      const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
+      value = processKnownPlaceholders(value, title || "", dateFormat);
       value = ArticleHelper.processCustomPlaceholders(value, title || "");
     }
     

@@ -15,6 +15,7 @@ import { Telemetry } from '../helpers/Telemetry';
 import { ParsedFrontMatter } from '../parsers';
 import { MediaListener } from '../listeners/panel';
 import { NavigationType } from '../dashboardWebView/models';
+import { processKnownPlaceholders } from '../helpers/PlaceholderHelper';
 
 
 export class Article {
@@ -205,11 +206,12 @@ export class Article {
         // Update the fields containing a custom placeholder that depends on slug
         const placeholders = Settings.get<{id: string, value: string}[]>(SETTING_CONTENT_PLACEHOLDERS);
         const customPlaceholders = placeholders?.filter(p => p.value.includes("{{slug}}"));
+        const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
         for (const customPlaceholder of (customPlaceholders || [])) {
           const customPlaceholderFields = contentType.fields.filter(f => f.default === `{{${customPlaceholder.id}}}`);
           for (const pField of customPlaceholderFields) {
             article.data[pField.name] = customPlaceholder.value;
-            article.data[pField.name] = ArticleHelper.processKnownPlaceholders(article.data[pField.name], articleTitle);
+            article.data[pField.name] = processKnownPlaceholders(article.data[pField.name], articleTitle, dateFormat);
           }
         }
       }
@@ -359,9 +361,12 @@ export class Article {
     const position = editor.selection.active;
     const selectionText = editor.document.getText(editor.selection);
 
+    const article = ArticleHelper.getFrontMatter(editor);
+
     await vscode.commands.executeCommand(COMMAND_NAME.dashboard, {
       type: NavigationType.Snippets,
       data: {
+        fileTitle: article?.data.title || "",
         filePath: editor.document.uri.fsPath,
         fieldName: basename(editor.document.uri.fsPath),
         position,
