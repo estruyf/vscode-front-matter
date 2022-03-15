@@ -299,7 +299,7 @@ export class Article {
    */
   public static async autoUpdate(event: vscode.TextDocumentWillSaveEvent) {
     const document = event.document;
-    if (document && ArticleHelper.isMarkdownFile(document)) {
+    if (document && ArticleHelper.isSupportedFile(document)) {
       const autoUpdate = Settings.get(SETTING_AUTO_UPDATE_DATE);
 
       if (autoUpdate) {

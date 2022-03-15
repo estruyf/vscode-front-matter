@@ -14,6 +14,7 @@ import { processKnownPlaceholders } from '../../helpers/PlaceholderHelper';
 const FILE_LIMIT = 10;
 
 export class DataListener extends BaseListener {
+  private static lastMetadataUpdate: any = {};
 
   /**
    * Process the messages for the dashboard views
@@ -107,7 +108,11 @@ export class DataListener extends BaseListener {
       }
     }
 
-    this.sendMsg(Command.metadata, updatedMetadata);
+    if (JSON.stringify(DataListener.lastMetadataUpdate) !== JSON.stringify(updatedMetadata)) {
+      this.sendMsg(Command.metadata, updatedMetadata);
+    }
+
+    DataListener.lastMetadataUpdate = updatedMetadata;
   }
 
   /**

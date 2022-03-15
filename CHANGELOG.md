@@ -26,6 +26,7 @@
 - [#279](https://github.com/estruyf/vscode-front-matter/issues/279): Fix for content dashboard updates for all registered types
 - [#280](https://github.com/estruyf/vscode-front-matter/issues/280): Fix to not automatically set dates on new files that do not contain front matter
 - [#284](https://github.com/estruyf/vscode-front-matter/issues/284): Show the WYSIWYG controls on all supported file types
+- [#290](https://github.com/estruyf/vscode-front-matter/issues/290): Fix for onDidChangeTextEditorSelection listener sending metadata updates
 
 ## [6.1.1] - 2022-03-02
 

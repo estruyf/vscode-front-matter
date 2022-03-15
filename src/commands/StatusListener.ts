@@ -25,7 +25,7 @@ export class StatusListener {
     }
     
     let editor = vscode.window.activeTextEditor;
-    if (editor && ArticleHelper.isMarkdownFile()) {
+    if (editor && ArticleHelper.isSupportedFile()) {
       try {
         commands.executeCommand('setContext', CONTEXT.isValidFile, true);
 

@@ -1,7 +1,7 @@
 import { isValidFile } from '../../helpers/isValidFile';
 import { existsSync } from "fs";
 import { basename, dirname, join } from "path";
-import { commands, FileSystemWatcher, RelativePattern, Uri, workspace } from "vscode";
+import { commands, FileSystemWatcher, RelativePattern, TextDocument, Uri, workspace } from "vscode";
 import { Dashboard } from "../../commands/Dashboard";
 import { Folders } from "../../commands/Folders";
 import { COMMAND_NAME, DefaultFields, SETTING_CONTENT_STATIC_FOLDER, SETTING_SEO_DESCRIPTION_FIELD } from "../../constants";
@@ -14,11 +14,24 @@ import { DateHelper } from "../../helpers/DateHelper";
 import { Notifications } from "../../helpers/Notifications";
 import { BaseListener } from "./BaseListener";
 import { Field, FieldType } from '../../models';
+import { DataListener } from '../panel';
 
 
 export class PagesListener extends BaseListener {
   private static watchers: { [path: string]: FileSystemWatcher } = {};
   private static lastPages: Page[] = [];
+
+  public static saveFileWatcher() {
+    return workspace.onDidSaveTextDocument((doc: TextDocument) => {
+      if (ArticleHelper.isSupportedFile(doc)) {
+        Logger.info(`File saved ${doc.uri.fsPath}`);
+        // Optimize the list of recently changed files
+        DataListener.getFoldersAndFiles();
+        // Trigger the metadata update
+        this.watcherExec(doc.uri);
+      }
+    })
+  }
 
   /**
    * Start watching the folders in the current workspace for content changes

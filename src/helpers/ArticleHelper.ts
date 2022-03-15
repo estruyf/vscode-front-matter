@@ -142,7 +142,7 @@ export class ArticleHelper {
   /**
    * Checks if the current file is a markdown file
    */ 
-  public static isMarkdownFile(document: vscode.TextDocument | undefined | null = null) {
+  public static isSupportedFile(document: vscode.TextDocument | undefined | null = null) {
     const supportedLanguages = ["markdown", "mdx"];
     const fileTypes = Settings.get<string[]>(SETTING_CONTENT_SUPPORTED_FILETYPES);
     const supportedFileExtensions = fileTypes ? fileTypes.map(f => f.startsWith(`.`) ? f : `.${f}`) : DEFAULT_FILE_TYPES;
@@ -378,7 +378,7 @@ export class ArticleHelper {
       return null;
     }
 
-    if (!ArticleHelper.isMarkdownFile()) {
+    if (!ArticleHelper.isSupportedFile()) {
       return null;
     }
 

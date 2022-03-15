@@ -58,7 +58,7 @@ export class Template {
     const editor = vscode.window.activeTextEditor;
     const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
 
-    if (folder && editor && ArticleHelper.isMarkdownFile()) {
+    if (folder && editor && ArticleHelper.isSupportedFile()) {
       const article = ArticleHelper.getFrontMatter(editor);
       const clonedArticle = Object.assign({}, article);
 

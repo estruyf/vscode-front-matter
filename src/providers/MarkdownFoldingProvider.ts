@@ -39,7 +39,7 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
   public static triggerHighlighting() {
     const activeDoc = window.activeTextEditor?.document;
 
-    const isSupported = ArticleHelper.isMarkdownFile(activeDoc);
+    const isSupported = ArticleHelper.isSupportedFile(activeDoc);
     if (isSupported) {
       const fmHighlight = Settings.get<boolean>(SETTING_CONTENT_FRONTMATTER_HIGHLIGHT);
 

@@ -1,7 +1,7 @@
+import * as vscode from 'vscode';
 import { Telemetry } from './helpers/Telemetry';
 import { ContentType } from './helpers/ContentType';
 import { Dashboard } from './commands/Dashboard';
-import * as vscode from 'vscode';
 import { Article, Settings, StatusListener } from './commands';
 import { Folders } from './commands/Folders';
 import { Preview } from './commands/Preview';
@@ -14,7 +14,7 @@ import { TagType } from './panelWebView/TagType';
 import { ExplorerView } from './explorerView/ExplorerView';
 import { Extension } from './helpers/Extension';
 import { DashboardData } from './models/DashboardData';
-import { ArticleHelper, Settings as SettingsHelper } from './helpers';
+import { Logger, Settings as SettingsHelper } from './helpers';
 import { Content } from './commands/Content';
 import ContentProvider from './providers/ContentProvider';
 import { Wysiwyg } from './commands/Wysiwyg';
@@ -139,7 +139,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const toggleDraftCommand = COMMAND_NAME.toggleDraft;
 	const toggleDraft = vscode.commands.registerCommand(toggleDraftCommand, async () => {
 		await Article.toggleDraft();
-		triggerShowDraftStatus();
+		triggerShowDraftStatus(`toggleDraft`);
 	});
 
 	// Register project folders
@@ -188,22 +188,21 @@ export async function activate(context: vscode.ExtensionContext) {
 	statusDebouncer = debounceCallback();
 	
 	// Register listeners that make sure the status bar updates
-	subscriptions.push(vscode.window.onDidChangeActiveTextEditor(triggerShowDraftStatus));
-	subscriptions.push(vscode.window.onDidChangeTextEditorSelection(triggerShowDraftStatus));
+	subscriptions.push(vscode.window.onDidChangeActiveTextEditor(() => triggerShowDraftStatus(`onDidChangeActiveTextEditor`)));
+	subscriptions.push(vscode.window.onDidChangeTextEditorSelection((e) => {
+		if (e.kind === vscode.TextEditorSelectionChangeKind.Mouse) {
+			triggerShowDraftStatus(`onDidChangeTextEditorSelection`);
+		}
+	}));
 	
 	// Automatically run the command
-	triggerShowDraftStatus();
+	triggerShowDraftStatus(`triggerShowDraftStatus`);
 
 	// Listener for file edit changes
 	subscriptions.push(vscode.workspace.onWillSaveTextDocument(handleAutoDateUpdate));
 
 	// Listener for file saves
-	subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc: vscode.TextDocument) => {
-		if (ArticleHelper.isMarkdownFile(doc)) {
-			// Optimize the list of recently changed files
-			DataListener.getFoldersAndFiles();
-		}
-	}));
+	subscriptions.push(PagesListener.saveFileWatcher());
 
 	// Webview for preview
 	Preview.init();
@@ -257,7 +256,8 @@ const handleAutoDateUpdate = (e: vscode.TextDocumentWillSaveEvent) => {
 	Article.autoUpdate(e);
 };
 
-const triggerShowDraftStatus = () => {
+const triggerShowDraftStatus = (location: string) => {
+	Logger.info(`Triggering draft status update: ${location}`);
 	statusDebouncer(() => { StatusListener.verify(frontMatterStatusBar, collection); }, 1000);
 };
 
