@@ -19,6 +19,7 @@
 - [#270](https://github.com/estruyf/vscode-front-matter/issues/270): Only show media files from public folder if `pageBundle` is not enabled on any of the content types
 - [#282](https://github.com/estruyf/vscode-front-matter/issues/282): Insert relative paths for media files located in a page bundle (also sub-folders)
 - [#283](https://github.com/estruyf/vscode-front-matter/issues/283): Added published date sorting options for the content dashboard
+- [#286](https://github.com/estruyf/vscode-front-matter/issues/286): Refresh button added for the content page
 - [#287](https://github.com/estruyf/vscode-front-matter/issues/287): Show folder name on `index.md` files for recently modified files
 
 ### 🐞 Fixes

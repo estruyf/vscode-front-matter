@@ -81,7 +81,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPage
             <div className={`px-4 mt-3 mb-2 flex items-center justify-between`}>
               <Searchbox />
 
-              <div className={`flex items-center space-x-4`}>
+              <div className={`flex items-center justify-end space-x-4 flex-1`}>
                 <Startup settings={settings} />
                 
                 <ChoiceButton 

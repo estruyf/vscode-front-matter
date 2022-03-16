@@ -13,6 +13,7 @@ export enum DashboardMessage {
   getMedia = 'getMedia',
   copyToClipboard = 'copyToClipboard',
   refreshMedia = 'refreshMedia',
+  refreshPages = 'refreshPages',
   uploadMedia = 'uploadMedia',
   deleteMedia = 'deleteMedia',
   revealMedia = 'revealMedia',
