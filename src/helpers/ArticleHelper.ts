@@ -242,7 +242,14 @@ export class ArticleHelper {
     if (!contentType) {
       contentType = contentTypes.find(ct => ct.name === DEFAULT_CONTENT_TYPE_NAME);
     }
-    return contentType || DEFAULT_CONTENT_TYPE;
+
+    if (contentType) {
+      if (!contentType.fields) {
+        contentType.fields = DEFAULT_CONTENT_TYPE.fields;
+      }
+    }
+
+    return DEFAULT_CONTENT_TYPE;
   }
 
   /**
