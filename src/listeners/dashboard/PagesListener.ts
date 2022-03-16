@@ -123,6 +123,7 @@ export class PagesListener extends BaseListener {
               }
               
             } catch (error: any) {
+              Logger.error(`PagesListener::getPagesData: ${file.filePath} - ${error.message}`);
               Notifications.error(`File error: ${file.filePath} - ${error?.message || error}`);
             }
           }
