@@ -497,7 +497,7 @@ export class ArticleHelper {
         } 
       }];
       
-      Logger.error(error.message);
+      Logger.error(`ArticleHelper::parseFile: ${fileName} - ${error.message}`);
 
       const editor = window.activeTextEditor;
       if (editor?.document.uri) {

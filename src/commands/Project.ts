@@ -5,7 +5,7 @@ import * as fs from "fs";
 import { Notifications } from "../helpers/Notifications";
 import { Template } from "./Template";
 import { Folders } from "./Folders";
-import { Settings } from "../helpers";
+import { Logger, Settings } from "../helpers";
 import { SETTING_CONTENT_DEFAULT_FILETYPE, TelemetryEvent } from "../constants";
 import { SettingsListener } from '../listeners/dashboard';
 
@@ -54,6 +54,7 @@ categories: []
 
       SettingsListener.getSettings();
     } catch (err: any) {
+      Logger.error(`Project::init: ${err?.message || err}`);
       Notifications.error(`Sorry, something went wrong - ${err?.message || err}`);
     }
   }
