@@ -295,7 +295,7 @@ export class Folders {
    * Update the folder settings
    * @param folders 
    */
-  private static async update(folders: ContentFolder[]) {
+  public static async update(folders: ContentFolder[]) {
     const wsFolder = Folders.getWorkspaceFolder();
 
     let folderDetails = folders.map(folder => ({ 
@@ -341,7 +341,7 @@ export class Folders {
    * @param wsFolder 
    * @returns 
    */
-  private static relWsFolder(folder: ContentFolder, wsFolder?: Uri) {
+  public static relWsFolder(folder: ContentFolder, wsFolder?: Uri) {
     const isWindows = process.platform === 'win32';
     let absPath = parseWinPath(folder.path).replace(parseWinPath(wsFolder?.fsPath || ""), WORKSPACE_PLACEHOLDER);
     absPath = isWindows ? absPath.split('\\').join('/') : absPath;

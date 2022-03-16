@@ -1,6 +1,8 @@
 import { basename } from "path";
 import { extensions, Uri, ExtensionContext, window, workspace, commands, ExtensionMode, DiagnosticCollection, languages } from "vscode";
-import { EXTENSION_NAME, GITHUB_LINK, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, EXTENSION_BETA_ID, EXTENSION_ID, ExtensionState, CONFIG_KEY } from "../constants";
+import { Folders } from "../commands/Folders";
+import { EXTENSION_NAME, GITHUB_LINK, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, EXTENSION_BETA_ID, EXTENSION_ID, ExtensionState, CONFIG_KEY, SETTING_CONTENT_PAGE_FOLDERS } from "../constants";
+import { ContentFolder } from "../models";
 import { Notifications } from "./Notifications";
 import { Settings } from "./SettingsHelper";
 
@@ -143,7 +145,7 @@ export class Extension {
       const publishField = Settings.inspect(SETTING_DATE_FIELD);
       const modifiedField = Settings.inspect(SETTING_MODIFIED_FIELD);
 
-      // Check for deprecation
+      // Check for extension deprecations
       if (publishField?.workspaceValue ||
           publishField?.globalValue ||
           publishField?.teamValue ||
@@ -163,7 +165,22 @@ export class Extension {
     }
 
     if (major < 7) {
-      // No migration needed
+      const contentFolders: ContentFolder[] = Settings.get(SETTING_CONTENT_PAGE_FOLDERS) as ContentFolder[];
+      const wsFolder = Folders.getWorkspaceFolder();
+      if (wsFolder) {
+        let update = false;
+
+        for (const cFolder of contentFolders) {
+          if (cFolder.path.indexOf(wsFolder.fsPath) !== -1) {
+            update = true;
+            cFolder.path = Folders.relWsFolder(cFolder, wsFolder);
+          }
+        }
+
+        if (update) {
+          Folders.update(contentFolders);
+        }
+      }
     }
   }
 
