@@ -247,6 +247,8 @@ export class ArticleHelper {
       if (!contentType.fields) {
         contentType.fields = DEFAULT_CONTENT_TYPE.fields;
       }
+
+      return contentType;
     }
 
     return DEFAULT_CONTENT_TYPE;
