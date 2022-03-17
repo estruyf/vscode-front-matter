@@ -9,6 +9,7 @@ import { DashboardMessage } from '../../DashboardMessage';
 import { SettingsSelector, ViewDataSelector } from '../../state';
 import { PageLayout } from '../Layout/PageLayout';
 import { FormDialog } from '../Modals/FormDialog';
+import { SponsorMsg } from '../SponsorMsg';
 import { Item } from './Item';
 import { NewForm } from './NewForm';
 
@@ -97,7 +98,7 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (props: React.P
           </ul>
         ) : (
           <div className='w-full h-full flex items-center justify-center'>
-            <div className='flex flex-col items-center'>
+            <div className='flex flex-col items-center text-gray-500 dark:text-whisper-900'>
               <CodeIcon className='w-32 h-32' />
               <p className='text-3xl'>No snippets found</p>
             </div>
@@ -127,6 +128,8 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (props: React.P
           </FormDialog>
         )
       }
+
+      <SponsorMsg beta={settings?.beta} version={settings?.versionInfo} isBacker={settings?.isBacker} />
     </PageLayout>
   );
 };

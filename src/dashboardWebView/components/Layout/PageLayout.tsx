@@ -20,7 +20,7 @@ export const PageLayout: React.FunctionComponent<IPageLayoutProps> = ({ header, 
         totalPages={totalPages}
         settings={settings} />
 
-      <div className="w-full flex-grow max-w-7xl mx-auto py-6 px-4">
+      <div className="w-full flex justify-between flex-col flex-grow max-w-7xl mx-auto pt-6 px-4">
         { children }
       </div>
     </div>
