@@ -1,6 +1,6 @@
 # Change Log
 
-## [7.0.0] - 2022-03-xx - [Release notes](https://beta.frontmatter.codes/updates/v7.0.0)
+## [7.0.0] - 2022-03-21 - [Release notes](https://beta.frontmatter.codes/updates/v7.0.0)
 
 ### ✨ New Features
 
