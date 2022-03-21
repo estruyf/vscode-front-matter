@@ -13,7 +13,9 @@ const fuseOptions: Fuse.IFuseOptions<Page> = {
     { name: 'title', weight: 0.8 },
     { name: 'slug', weight: 0.8 },
     { name: 'description', weight: 0.5 }
-  ]
+  ],
+  includeScore: true,
+  threshold: 0.1
 };
 
 export default function usePages(pages: Page[]) {

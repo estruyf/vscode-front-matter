@@ -21,6 +21,7 @@
 - [#283](https://github.com/estruyf/vscode-front-matter/issues/283): Added published date sorting options for the content dashboard
 - [#286](https://github.com/estruyf/vscode-front-matter/issues/286): Refresh button added for the content page
 - [#287](https://github.com/estruyf/vscode-front-matter/issues/287): Show folder name on `index.md` files for recently modified files
+- [#292](https://github.com/estruyf/vscode-front-matter/issues/292): Lower fuzzy search threshold for the content dashboard
 
 ### 🐞 Fixes
 
