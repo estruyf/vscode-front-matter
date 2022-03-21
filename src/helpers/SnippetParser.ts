@@ -5,9 +5,6 @@ export class SnippetParser {
 
 	public static getPlaceholders(value: string[] | string, openingTags: string = '[[', closingTags: string = ']]'): string[] {
 		const template = SnippetParser.template(value);
-    console.log(template);
-    console.log(Mustache.parse(template, [openingTags, closingTags]));
-
 		return Mustache.parse(template, [openingTags, closingTags])
                    .filter((v) => v[0] === 'name' || v[0] === '&')
                    .map((v) => { return v[1]; });
