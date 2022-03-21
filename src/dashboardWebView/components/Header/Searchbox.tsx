@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useRecoilState } from 'recoil';
 import { useDebounce } from '../../../hooks/useDebounce';
 import { SearchAtom } from '../../state';
+import { RefreshPages } from './RefreshPages';
 
 export interface ISearchboxProps {
   placeholder?: string;
@@ -28,7 +29,7 @@ export const Searchbox: React.FunctionComponent<ISearchboxProps> = ({placeholder
   }, [debounceSearch]);
 
   return (
-    <div className="flex space-x-4  flex-1">
+    <div className="flex space-x-4 flex-1">
       <div className="min-w-0">
         <label htmlFor="search" className="sr-only">Search</label>
         <div className="relative flex justify-center">
@@ -46,6 +47,8 @@ export const Searchbox: React.FunctionComponent<ISearchboxProps> = ({placeholder
           />
         </div>
       </div>
+
+      <RefreshPages />
     </div>
   );
 };

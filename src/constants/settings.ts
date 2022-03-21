@@ -12,8 +12,6 @@ export const SETTING_TAXONOMY_FIELD_GROUPS = "taxonomy.fieldGroups";
 export const SETTING_DATE_FORMAT = "taxonomy.dateFormat";
 export const SETTING_COMMA_SEPARATED_FIELDS = "taxonomy.commaSeparatedFields";
 export const SETTING_TAXONOMY_CONTENT_TYPES = "taxonomy.contentTypes";
-export const SETTING_DATE_FIELD = "taxonomy.dateField";
-export const SETTING_MODIFIED_FIELD = "taxonomy.modifiedField";
 
 export const SETTING_SLUG_PREFIX = "taxonomy.slugPrefix";
 export const SETTING_SLUG_SUFFIX = "taxonomy.slugSuffix";
@@ -43,35 +41,46 @@ export const SETTING_PREVIEW_PATHNAME = "preview.pathName";
 export const SETTING_CUSTOM_SCRIPTS = "custom.scripts";
 
 export const SETTING_AUTO_UPDATE_DATE = "content.autoUpdateDate";
-export const SETTINGS_CONTENT_PAGE_FOLDERS = "content.pageFolders";
-export const SETTINGS_CONTENT_STATIC_FOLDER = "content.publicFolder";
-export const SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT = "content.fmHighlight";
-export const SETTINGS_CONTENT_DRAFT_FIELD = "content.draftField";
-export const SETTINGS_CONTENT_SORTING = "content.sorting";
-export const SETTINGS_CONTENT_WYSIWYG = "content.wysiwyg";
-export const SETTINGS_CONTENT_PLACEHOLDERS = "content.placeholders";
+export const SETTING_CONTENT_PAGE_FOLDERS = "content.pageFolders";
+export const SETTING_CONTENT_STATIC_FOLDER = "content.publicFolder";
+export const SETTING_CONTENT_FRONTMATTER_HIGHLIGHT = "content.fmHighlight";
+export const SETTING_CONTENT_DRAFT_FIELD = "content.draftField";
+export const SETTING_CONTENT_SORTING = "content.sorting";
+export const SETTING_CONTENT_WYSIWYG = "content.wysiwyg";
+export const SETTING_CONTENT_PLACEHOLDERS = "content.placeholders";
+export const SETTING_CONTENT_SNIPPETS = "content.snippets";
 
-export const SETTINGS_CONTENT_SORTING_DEFAULT = "content.defaultSorting";
-export const SETTINGS_MEDIA_SORTING_DEFAULT = "content.defaultSorting";
+export const SETTING_CONTENT_SORTING_DEFAULT = "content.defaultSorting";
+export const SETTING_MEDIA_SORTING_DEFAULT = "content.defaultSorting";
 
-export const SETTINGS_CONTENT_DEFAULT_FILETYPE = "content.defaultFileType";
-export const SETTINGS_CONTENT_SUPPORTED_FILETYPES = "content.supportedFileTypes";
+export const SETTING_CONTENT_DEFAULT_FILETYPE = "content.defaultFileType";
+export const SETTING_CONTENT_SUPPORTED_FILETYPES = "content.supportedFileTypes";
 
-export const SETTINGS_DASHBOARD_OPENONSTART = "dashboard.openOnStart";
-export const SETTINGS_DASHBOARD_MEDIA_SNIPPET = "dashboard.mediaSnippet";
+export const SETTING_DASHBOARD_OPENONSTART = "dashboard.openOnStart";
+export const SETTING_DASHBOARD_MEDIA_SNIPPET = "dashboard.mediaSnippet";
 
-export const SETTINGS_DATA_FILES = "data.files";
-export const SETTINGS_DATA_FOLDERS = "data.folders";
-export const SETTINGS_DATA_TYPES = "data.types";
+export const SETTING_DATA_FILES = "data.files";
+export const SETTING_DATA_FOLDERS = "data.folders";
+export const SETTING_DATA_TYPES = "data.types";
 
-export const SETTINGS_FILE_PRESERVE_CASING = "file.preserveCasing";
+export const SETTING_FILE_PRESERVE_CASING = "file.preserveCasing";
 
-export const SETTINGS_FRAMEWORK_ID = "framework.id";
-export const SETTINGS_FRAMEWORK_START = "framework.startCommand";
+export const SETTING_FRAMEWORK_ID = "framework.id";
+export const SETTING_FRAMEWORK_START = "framework.startCommand";
 
 export const SETTING_SITE_BASEURL = "site.baseURL";
 
 /**
  * @deprecated
  */
-export const SETTINGS_CONTENT_FOLDERS = "content.folders";
+export const SETTING_CONTENT_FOLDERS = "content.folders";
+/**
+ * @deprecated
+ * Use the `isPublishDate` property on the content type datetime field instead
+ */
+export const SETTING_DATE_FIELD = "taxonomy.dateField";
+/**
+ * @deprecated
+ * Use the `isModifiedDate` property on the content type datetime field instead
+ */
+export const SETTING_MODIFIED_FIELD = "taxonomy.modifiedField";

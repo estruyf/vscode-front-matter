@@ -13,6 +13,7 @@ export enum DashboardMessage {
   getMedia = 'getMedia',
   copyToClipboard = 'copyToClipboard',
   refreshMedia = 'refreshMedia',
+  refreshPages = 'refreshPages',
   uploadMedia = 'uploadMedia',
   deleteMedia = 'deleteMedia',
   revealMedia = 'revealMedia',
@@ -25,4 +26,7 @@ export enum DashboardMessage {
   getDataEntries = 'getDataEntries',
   putDataEntries = 'putDataEntries',
   sendTelemetry = 'sendTelemetry',
+  insertSnippet = 'insertSnippet',
+  addSnippet = 'addSnippet',
+  updateSnippet = 'updateSnippet',
 }

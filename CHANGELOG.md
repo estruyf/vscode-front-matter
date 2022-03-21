@@ -1,5 +1,35 @@
 # Change Log
 
+## [7.0.0] - 2022-03-21 - [Release notes](https://beta.frontmatter.codes/updates/v7.0.0)
+
+### ✨ New Features
+
+- [#175](https://github.com/estruyf/vscode-front-matter/issues/175): New snippet support + dashboard
+- [#281](https://github.com/estruyf/vscode-front-matter/issues/281): New `isPublishDate` and `isModifiedDate` datetime field properties
+
+### 🎨 Enhancements
+
+- Light color theme enhancements to media cards
+- Light color theme enhancements to folder cards
+- Added collapse and dashboard button to the view title of the FM Panel
+- Show content commands only when a supported file type is active
+- Added `{{year}}`, `{{month}}`, and `{{day}}` placeholders for fields
+- [#272](https://github.com/estruyf/vscode-front-matter/issues/272): New slide over panel for showing details of media files
+- [#276](https://github.com/estruyf/vscode-front-matter/issues/276): Add a Front Matter walkthrough for VS Code
+- [#270](https://github.com/estruyf/vscode-front-matter/issues/270): Only show media files from public folder if `pageBundle` is not enabled on any of the content types
+- [#282](https://github.com/estruyf/vscode-front-matter/issues/282): Insert relative paths for media files located in a page bundle (also sub-folders)
+- [#283](https://github.com/estruyf/vscode-front-matter/issues/283): Added published date sorting options for the content dashboard
+- [#286](https://github.com/estruyf/vscode-front-matter/issues/286): Refresh button added for the content page
+- [#287](https://github.com/estruyf/vscode-front-matter/issues/287): Show folder name on `index.md` files for recently modified files
+- [#292](https://github.com/estruyf/vscode-front-matter/issues/292): Lower fuzzy search threshold for the content dashboard
+
+### 🐞 Fixes
+
+- [#279](https://github.com/estruyf/vscode-front-matter/issues/279): Fix for content dashboard updates for all registered types
+- [#280](https://github.com/estruyf/vscode-front-matter/issues/280): Fix to not automatically set dates on new files that do not contain front matter
+- [#284](https://github.com/estruyf/vscode-front-matter/issues/284): Show the WYSIWYG controls on all supported file types
+- [#290](https://github.com/estruyf/vscode-front-matter/issues/290): Fix for onDidChangeTextEditorSelection listener sending metadata updates
+
 ## [6.1.1] - 2022-03-02
 
 ### 🐞 Fixes

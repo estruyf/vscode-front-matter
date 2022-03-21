@@ -2,7 +2,7 @@ import { MarkdownFoldingProvider } from './../providers/MarkdownFoldingProvider'
 import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from './../constants/ContentType';
 import * as vscode from 'vscode';
 import * as fs from "fs";
-import { DefaultFields, SETTINGS_CONTENT_DEFAULT_FILETYPE, SETTINGS_CONTENT_PLACEHOLDERS, SETTINGS_CONTENT_SUPPORTED_FILETYPES, SETTINGS_FILE_PRESERVE_CASING, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_SITE_BASEURL, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX } from '../constants';
+import { DefaultFields, SETTING_CONTENT_DEFAULT_FILETYPE, SETTING_CONTENT_PLACEHOLDERS, SETTING_CONTENT_SUPPORTED_FILETYPES, SETTING_FILE_PRESERVE_CASING, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_SITE_BASEURL, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX, SETTING_MODIFIED_FIELD } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { FrontMatterParser, ParsedFrontMatter } from '../parsers';
 import { Extension, Logger, Settings, SlugHelper } from '.';
@@ -20,6 +20,7 @@ import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { Link, Parent } from 'mdast-util-from-markdown/lib';
 import { Content } from 'mdast';
+import { processKnownPlaceholders } from './PlaceholderHelper';
 
 export class ArticleHelper {
   private static notifiedFiles: string[] = [];
@@ -141,9 +142,9 @@ export class ArticleHelper {
   /**
    * Checks if the current file is a markdown file
    */ 
-  public static isMarkdownFile(document: vscode.TextDocument | undefined | null = null) {
+  public static isSupportedFile(document: vscode.TextDocument | undefined | null = null) {
     const supportedLanguages = ["markdown", "mdx"];
-    const fileTypes = Settings.get<string[]>(SETTINGS_CONTENT_SUPPORTED_FILETYPES);
+    const fileTypes = Settings.get<string[]>(SETTING_CONTENT_SUPPORTED_FILETYPES);
     const supportedFileExtensions = fileTypes ? fileTypes.map(f => f.startsWith(`.`) ? f : `.${f}`) : DEFAULT_FILE_TYPES;
     const languageId = document?.languageId?.toLowerCase();
     const isSupportedLanguage =  languageId && supportedLanguages.includes(languageId);
@@ -167,12 +168,12 @@ export class ArticleHelper {
    * Get date from front matter
    */ 
   public static getDate(article: ParsedFrontMatter | null) {
-    if (!article) {
+    if (!article || !article.data) {
       return;
     }
 
     const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
-    const dateField = Settings.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
+    const dateField = ArticleHelper.getPublishDateField(article) || DefaultFields.PublishingDate;
 
     if (typeof article.data[dateField] !== "undefined") {
       if (dateFormat && typeof dateFormat === "string") {
@@ -187,11 +188,51 @@ export class ArticleHelper {
   }
 
   /**
+   * Retrieve the publishing date field name
+   * @param article 
+   * @returns 
+   */
+  public static getPublishDateField(article: ParsedFrontMatter | null) {
+    if (!article || !article.data) {
+      return;
+    }
+
+    const articleCt = ArticleHelper.getContentType(article.data);
+    const pubDateField = articleCt.fields.find(f => f.isPublishDate);
+
+    return pubDateField?.name || Settings.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
+  }
+
+  /**
+   * Retrieve the publishing date field name
+   * @param article 
+   * @returns 
+   */
+  public static getModifiedDateField(article: ParsedFrontMatter | null) {
+    if (!article || !article.data) {
+      return;
+    }
+
+    const articleCt = ArticleHelper.getContentType(article.data);
+    const modDateField = articleCt.fields.find(f => f.isModifiedDate);
+
+    return modDateField?.name || Settings.get(SETTING_MODIFIED_FIELD) as string || DefaultFields.LastModified;
+  }
+
+  /**
+   * Retrieve all the content types
+   * @returns 
+   */
+  public static getContentTypes() {
+    return Settings.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES) || [DEFAULT_CONTENT_TYPE];
+  }
+
+  /**
    * Retrieve the content type of the current file
    * @param updatedMetadata 
    */
   public static getContentType(metadata: { [field: string]: string; }): ContentType {
-    const contentTypes = Settings.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
+    const contentTypes = ArticleHelper.getContentTypes();
 
     if (!contentTypes || !metadata) {
       return DEFAULT_CONTENT_TYPE;
@@ -201,7 +242,16 @@ export class ArticleHelper {
     if (!contentType) {
       contentType = contentTypes.find(ct => ct.name === DEFAULT_CONTENT_TYPE_NAME);
     }
-    return contentType || DEFAULT_CONTENT_TYPE;
+
+    if (contentType) {
+      if (!contentType.fields) {
+        contentType.fields = DEFAULT_CONTENT_TYPE.fields;
+      }
+
+      return contentType;
+    }
+
+    return DEFAULT_CONTENT_TYPE;
   }
 
   /**
@@ -227,7 +277,7 @@ export class ArticleHelper {
    * @returns 
    */
   public static sanitize(value: string): string {
-    const preserveCasing = Settings.get(SETTINGS_FILE_PRESERVE_CASING) as boolean;
+    const preserveCasing = Settings.get(SETTING_FILE_PRESERVE_CASING) as boolean;
     return sanitize((preserveCasing ? value : value.toLowerCase()).replace(/ /g, "-"));
   }
 
@@ -240,7 +290,7 @@ export class ArticleHelper {
    */
   public static createContent(contentType: ContentType | undefined, folderPath: string, titleValue: string, fileExtension?: string): string | undefined {
     const prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
-    const fileType = Settings.get<string>(SETTINGS_CONTENT_DEFAULT_FILETYPE);
+    const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
     
     // Name of the file or folder to create
     const sanitizedName = ArticleHelper.sanitize(titleValue);
@@ -281,6 +331,7 @@ export class ArticleHelper {
    * @returns 
    */
   public static updatePlaceholders(data: any, title: string) {
+    const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
     const fmData = Object.assign({}, data);
 
     for (const fieldName of Object.keys(fmData)) {
@@ -294,38 +345,11 @@ export class ArticleHelper {
         fmData[fieldName] = SlugHelper.createSlug(title);
       }
 
-      fmData[fieldName] = this.processKnownPlaceholders(fmData[fieldName], title);
+      fmData[fieldName] = processKnownPlaceholders(fmData[fieldName], title, dateFormat);
       fmData[fieldName] = this.processCustomPlaceholders(fmData[fieldName], title);
     }
 
     return fmData;
-  }
-
-  /**
-   * Replace the known placeholders
-   * @param value 
-   * @param title 
-   * @returns 
-   */
-  public static processKnownPlaceholders(value: string, title: string) {
-    if (value && typeof value === "string") {
-      if (value.includes("{{title}}")) {
-        const regex = new RegExp("{{title}}", "g");
-        value = value.replace(regex, title);
-      }
-      
-      if (value.includes("{{slug}}")) {
-        const regex = new RegExp("{{slug}}", "g");
-        value = value.replace(regex, SlugHelper.createSlug(title) || "");
-      }
-
-      if (value.includes("{{now}}")) {
-        const regex = new RegExp("{{now}}", "g");
-        value = value.replace(regex, Article.formatDate(new Date()));
-      }
-    }
-
-    return value;
   }
 
   /**
@@ -336,12 +360,13 @@ export class ArticleHelper {
    */
   public static processCustomPlaceholders(value: string, title: string) {
     if (value && typeof value === "string") {
-      const placeholders = Settings.get<{id: string, value: string}[]>(SETTINGS_CONTENT_PLACEHOLDERS);
+      const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
+      const placeholders = Settings.get<{id: string, value: string}[]>(SETTING_CONTENT_PLACEHOLDERS);
       if (placeholders && placeholders.length > 0) {
         for (const placeholder of placeholders) {
           if (value.includes(`{{${placeholder.id}}}`)) {
             const regex = new RegExp(`{{${placeholder.id}}}`, "g");
-            const updatedValue = this.processKnownPlaceholders(placeholder.value, title);
+            const updatedValue = processKnownPlaceholders(placeholder.value, title, dateFormat);
             value = value.replace(regex, updatedValue);
           }
         }
@@ -362,7 +387,7 @@ export class ArticleHelper {
       return null;
     }
 
-    if (!ArticleHelper.isMarkdownFile()) {
+    if (!ArticleHelper.isSupportedFile()) {
       return null;
     }
 
@@ -481,7 +506,7 @@ export class ArticleHelper {
         } 
       }];
       
-      Logger.error(error.message);
+      Logger.error(`ArticleHelper::parseFile: ${fileName} - ${error.message}`);
 
       const editor = window.activeTextEditor;
       if (editor?.document.uri) {

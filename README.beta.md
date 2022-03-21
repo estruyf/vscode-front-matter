@@ -17,8 +17,8 @@
   
   <img src="https://vsmarketplacebadge.apphb.com/rating/eliostruyf.vscode-front-matter.svg" alt="Ratings" style="display: inline-block;margin-left:10px" />
 
-  <a href="https://www.buymeacoffee.com/zMeFRy9" title="Buy me a coffee" style="margin-left:10px">
-    <img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-€%203-blue?logo=buy-me-a-coffee&style=flat" alt="Buy me a coffee" style="display: inline-block" />
+  <a href="https://github.com/sponsors/estruyf" title="Become a sponsor" style="margin-left:10px">
+    <img src="https://img.shields.io/github/sponsors/estruyf?color=%23CE2E7C&logo=github&style=flat" alt="Sponsor the project" style="display: inline-block" />
   </a>
 </p>
 
@@ -49,17 +49,23 @@ A couple of our extension highlights that hopefully get you interested in giving
 > Missing something? Let us know by opening an issue on the [GitHub repository](https://github.com/estruyf/vscode-front-matter/issues/new/choose)
 
 <p align="center">
-  <img src="./assets/v6.0.0/content-preview.png" alt="Site preview" style="display: inline-block" />
+  <img src="https://frontmatter.codes/assets/marketplace/v6.0.0/content-preview.png" alt="Site preview" style="display: inline-block" />
 </p>
 
 > If you see something missing in your article creation flow, please feel free to reach out.
+
+**Version 7**
+
+Snippets support for Front Matter has been added!
+
+![Snippets dashboard](https://frontmatter.codes/assets/marketplace/v7.0.0/snippets-dashboard.png)
 
 **Version 6**
 
 In this version, we introduced the new data files/folders dashboard. You can find more information about the release in our [v6.0.0 release notes](https://frontmatter.codes/updates/v6.0.0).
 
 <p align="center">
-  <img src="./assets/v6.0.0/data-dashboard.png" alt="Data dashboard" style="display: inline-block" />
+  <img src="https://frontmatter.codes/assets/marketplace/v6.0.0/data-dashboard.png" alt="Data dashboard" style="display: inline-block" />
 </p>
 
 > Data files/folders are pieces of content that do not belong to any markdown content, but live on their own. Most of the time, these data files are used to store additional information about your project/blog/website that will be used to render the content.
@@ -69,7 +75,7 @@ In this version, we introduced the new data files/folders dashboard. You can fin
 The new media dashboard redesign got introduced + support for setting metadata on media files [v5.0.0 release notes](https://frontmatter.codes/updates/v5.0.0).
 
 <p align="center">
-  <img src="./assets/v5.9.0/media-dashboard.png" alt="Data dashboard" style="display: inline-block" />
+  <img src="https://frontmatter.codes/assets/marketplace/v5.9.0/media-dashboard.png" alt="Data dashboard" style="display: inline-block" />
 </p>
 
 **Version 4**
@@ -160,11 +166,17 @@ You can open showcase issues for the following things:
 ## 🖤 Backers & Sponsors 👇 🤘
 
 <p align="center">
+  <a href="https://github.com/jmatthewpryor" title="Andre Powell">
+    <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/850570" />
+  </a>
   <a href="https://github.com/apowell656" title="Andre Powell">
     <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/1969515" />
   </a>
   <a href="https://github.com/timschps" title="Tim Schaeps">
     <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/13098307" />
+  </a>
+  <a href="https://github.com/grahampcharles" title="Graham Charles">
+    <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/3606679?v=4" />
   </a>
   <a href="https://github.com/zivbk1" title="Bryan Klein">
     <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/6154767" />
@@ -178,8 +190,8 @@ You can open showcase issues for the following things:
 
 <p align="center">
   <a href="https://vercel.com/?utm_source=vscode-frontmatter&utm_campaign=oss">
-    <img src="assets/sponsors/powered-by-vercel.png" />
-   </a>
+    <img src="https://frontmatter.codes/assets/sponsors/powered-by-vercel.png" />
+  </a>
 </p>
 
 ## 🔑 License
@@ -190,6 +202,6 @@ You can open showcase issues for the following things:
 
 <p align="center">
   <a href="https://visitorbadge.io">
-      <img src="https://estruyf-github.azurewebsites.net/api/VisitorHit?user=estruyf&repo=vscode-front-matter&countColor=%23F05450&labelColor=%230E131F" height="25px" />
+    <img src="https://estruyf-github.azurewebsites.net/api/VisitorHit?user=estruyf&repo=vscode-front-matter&countColor=%23F05450&labelColor=%230E131F" height="25px" />
    </a>
 </p>

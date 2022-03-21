@@ -1,6 +1,6 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { Menu } from '@headlessui/react';
-import { ClipboardIcon, CodeIcon, PencilIcon, PhotographIcon, PlusIcon, TrashIcon } from '@heroicons/react/outline';
+import { ClipboardIcon, CodeIcon, EyeIcon, PencilIcon, PhotographIcon, PlusIcon, TrashIcon } from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useEffect } from 'react';
@@ -10,10 +10,10 @@ import { parseWinPath } from '../../../helpers/parseWinPath';
 import { ScriptType } from '../../../models';
 import { MediaInfo } from '../../../models/MediaPaths';
 import { DashboardMessage } from '../../DashboardMessage';
-import { LightboxAtom, PageSelector, SelectedMediaFolderSelector, SettingsSelector, ViewDataSelector } from '../../state';
+import { LightboxAtom, SelectedMediaFolderSelector, SettingsSelector, ViewDataSelector } from '../../state';
 import { MenuItem, MenuItems } from '../Menu';
 import { Alert } from '../Modals/Alert';
-import { Metadata } from '../Modals/Metadata';
+import { DetailsSlideOver } from './DetailsSlideOver';
 import { MenuButton } from './MenuButton'
 import { QuickAction } from './QuickAction';
  
@@ -25,13 +25,13 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   const [ , setLightbox ] = useRecoilState(LightboxAtom);
   const [ showAlert, setShowAlert ] = React.useState(false);
   const [ showForm, setShowForm ] = React.useState(false);
+  const [ showDetails, setShowDetails ] = React.useState(false);
   const [ caption, setCaption ] = React.useState(media.caption);
   const [ alt, setAlt ] = React.useState(media.alt);
   const [ filename, setFilename ] = React.useState<string | null>(null);
   const settings = useRecoilValue(SettingsSelector);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const viewData = useRecoilValue(ViewDataSelector);
-  const page = useRecoilValue(PageSelector);
 
   const getFolder = () => {
     if (settings?.wsFolder && media.fsPath) {
@@ -125,25 +125,45 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     });
   };
 
-  const calculateSize = () => {
-    let sizeDetails = [];
-
-    if (media?.dimensions) {
-      if (media.dimensions.width && media.dimensions.height) {
-        sizeDetails.push(`${media.dimensions.width}x${media.dimensions.height}`);
-      }
+  const getDimensions = () => {
+    if (media.dimensions) {
+      return `${media.dimensions.width} x ${media.dimensions.height}`;
     }
+    return "";
+  };
+
+  const getSize = () => {
 
     if (media?.size) {
       const size = media.size / (1024*1024);
       if (size > 1) {
-        sizeDetails.push(`${size.toFixed(2)} MB`);
+        return `${size.toFixed(2)} MB`;
       } else {
-        sizeDetails.push(`${(size * 1024).toFixed(2)} KB`);
+        return `${(size * 1024).toFixed(2)} KB`;
       }
     }
 
-    return sizeDetails.join(" — ");
+    return '';
+  };
+
+  const getMediaDetails = () => {
+    let sizeDetails = [];
+
+    const dimensions = getDimensions();
+    if (dimensions) {
+      sizeDetails.push(dimensions);
+    }
+
+    const size = getSize();
+    if (size) {
+      sizeDetails.push(size);
+    }
+
+    return sizeDetails.join(" - ");
+  };
+
+  const viewMediaDetails = () => {
+    setShowDetails(true);
   };
 
   const openLightbox = () => {
@@ -152,24 +172,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
 
   const updateMetadata = () => {
     setShowForm(true);
-  };
-
-  const submitMetadata = () => {
-    Messenger.send(DashboardMessage.updateMediaMetadata, {
-      file: media.fsPath,
-      filename,
-      caption,
-      alt,
-      folder: selectedFolder,
-      page
-    });
-    
-    setShowForm(false);
-
-    // Reset the values
-    setAlt(media.alt);
-    setCaption(media.caption);
-    setFilename(getFileName());
+    setShowDetails(true);
   };
 
   const customScriptActions = () => {
@@ -200,13 +203,9 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     }
   }, [media.fsPath]);
 
-  const fileInfo = filename ? basename(filename).split('.') : null;
-  const extension = fileInfo?.pop();
-  const name = fileInfo?.join('.');
-
   return (
     <>
-      <li className="group relative bg-gray-50 dark:bg-vulcan-200 hover:shadow-xl dark:hover:bg-vulcan-100 border border-gray-100 dark:border-vulcan-50">
+      <li className="group relative bg-gray-50 dark:bg-vulcan-200 shadow-md hover:shadow-xl dark:shadow-none dark:hover:bg-vulcan-100 border border-gray-200 dark:border-vulcan-50">
         <button className="relative bg-gray-200 dark:bg-vulcan-300 block w-full aspect-w-10 aspect-h-7 overflow-hidden cursor-pointer h-48" onClick={openLightbox}>
           <div className={`absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center`}>
             <PhotographIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />
@@ -218,9 +217,15 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
         <div className={`relative py-4 pl-4 pr-12`}>
           <div className={`absolute top-4 right-4 flex flex-col space-y-4`}>
 
-            <div className="flex items-center border border-transparent group-hover:bg-gray-50 dark:group-hover:bg-vulcan-200 group-hover:border-gray-100 dark:group-hover:border-vulcan-50 rounded-full p-2 -mr-2 -mt-2">
+            <div className="flex items-center border border-transparent group-hover:bg-gray-200 dark:group-hover:bg-vulcan-200 group-hover:border-gray-100 dark:group-hover:border-vulcan-50 rounded-full p-2 -mr-2 -mt-2">
 
               <div className='hidden group-hover:inline-block h-5'>
+                <QuickAction 
+                  title='View media details'
+                  onClick={viewMediaDetails}>
+                  <EyeIcon className={`h-5 w-5`} aria-hidden="true" />
+                </QuickAction>
+
                 <QuickAction 
                   title='Edit metadata'
                   onClick={updateMetadata}>
@@ -325,22 +330,18 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
             )
           }
           {
-            media.alt && (
+            (!media.caption && media.alt) && (
               <p className="mt-2 text-xs dark:text-whisper-900 font-medium pointer-events-none  flex flex-col items-start">
                 <b className={`mr-2`}>Alt:</b>
                 <span className={`block mt-1 dark:text-whisper-500 text-xs`}>{media.alt}</span>
               </p>
             )
           }
-          <p className="mt-2 text-xs dark:text-whisper-900 font-medium pointer-events-none flex flex-col items-start">
-            <b className={`mr-2`}>Folder:</b> 
-            <span className={`block mt-1 dark:text-whisper-500 text-xs`}>{getFolder()}</span>
-          </p>
           {
             (media?.size || media?.dimensions) && (
               <p className="mt-2 text-xs dark:text-whisper-900 font-medium pointer-events-none flex flex-col items-start">
                 <b className={`mr-1`}>Size:</b>
-                <span className={`block mt-1 dark:text-whisper-500 text-xs`}>{calculateSize()}</span>
+                <span className={`block mt-1 dark:text-whisper-500 text-xs`}>{getMediaDetails()}</span>
               </p>
             )
           }
@@ -348,60 +349,17 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
       </li>
 
       {
-        showForm && (
-          <Metadata 
-            title={`Set metadata for: ${basename(parseWinPath(media.fsPath) || "")}`}
-            description={`Please specify the metadata you want to set for the file.`}
-            okBtnText={`Save`}
-            cancelBtnText={`Cancel`}
-            dismiss={() => setShowForm(false)}
-            trigger={submitMetadata}
-            isSaveDisabled={!filename}>
-            <div className="flex flex-col space-y-2">
-              <div>
-                <label htmlFor="about" className="block text-sm font-medium text-gray-700 dark:text-whisper-900">
-                  Filename
-                </label>
-                <div className="relative mt-1">
-                  <input
-                    className="py-1 px-2 sm:text-sm bg-white dark:bg-vulcan-300 border border-gray-300 dark:border-vulcan-100 text-vulcan-500 dark:text-whisper-500 placeholder-gray-400 dark:placeholder-whisper-800 focus:outline-none w-full"
-                    value={name}
-                    onChange={(e) => setFilename(`${e.target.value}.${extension}`)} />
-
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <span className="text-gray-500 sm:text-sm">
-                      .{extension}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <label htmlFor="about" className="block text-sm font-medium text-gray-700 dark:text-whisper-900">
-                  Caption
-                </label>
-                <div className="mt-1">
-                  <textarea
-                    rows={3}
-                    className="py-1 px-2 sm:text-sm bg-white dark:bg-vulcan-300 border border-gray-300 dark:border-vulcan-100 text-vulcan-500 dark:text-whisper-500 placeholder-gray-400 dark:placeholder-whisper-800 focus:outline-none w-full"
-                    value={caption || ''}
-                    onChange={(e) => setCaption(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div>
-                <label htmlFor="about" className="block text-sm font-medium text-gray-700 dark:text-whisper-900">
-                  Alt tag value
-                </label>
-                <div className="mt-1">
-                  <input
-                    className="py-1 px-2 sm:text-sm bg-white dark:bg-vulcan-300 border border-gray-300 dark:border-vulcan-100 text-vulcan-500 dark:text-whisper-500 placeholder-gray-400 dark:placeholder-whisper-800 focus:outline-none w-full"
-                    value={alt || ''}
-                    onChange={(e) => setAlt(e.target.value)}
-                  />
-                </div>
-              </div>
-            </div>
-          </Metadata>
+        showDetails && (
+          <DetailsSlideOver
+            imgSrc={media.vsPath || ""}
+            size={getSize()}
+            dimensions={getDimensions()}
+            folder={getFolder()}
+            media={media}
+            showForm={showForm}
+            onEdit={() => setShowForm(true)}
+            onEditClose={() => setShowForm(false)}
+            onDismiss={() => { setShowDetails(false); setShowForm(false); }} />
         )
       }
 

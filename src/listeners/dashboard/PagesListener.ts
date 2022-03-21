@@ -1,10 +1,10 @@
 import { isValidFile } from '../../helpers/isValidFile';
 import { existsSync } from "fs";
 import { basename, dirname, join } from "path";
-import { commands, FileSystemWatcher, RelativePattern, Uri, workspace } from "vscode";
+import { commands, FileSystemWatcher, RelativePattern, TextDocument, Uri, workspace } from "vscode";
 import { Dashboard } from "../../commands/Dashboard";
 import { Folders } from "../../commands/Folders";
-import { COMMAND_NAME, DefaultFields, SETTINGS_CONTENT_STATIC_FOLDER, SETTING_DATE_FIELD, SETTING_SEO_DESCRIPTION_FIELD } from "../../constants";
+import { COMMAND_NAME, DefaultFields, SETTING_CONTENT_STATIC_FOLDER, SETTING_SEO_DESCRIPTION_FIELD } from "../../constants";
 import { DashboardCommand } from "../../dashboardWebView/DashboardCommand";
 import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { Page } from "../../dashboardWebView/models";
@@ -14,11 +14,24 @@ import { DateHelper } from "../../helpers/DateHelper";
 import { Notifications } from "../../helpers/Notifications";
 import { BaseListener } from "./BaseListener";
 import { Field, FieldType } from '../../models';
+import { DataListener } from '../panel';
 
 
 export class PagesListener extends BaseListener {
   private static watchers: { [path: string]: FileSystemWatcher } = {};
   private static lastPages: Page[] = [];
+
+  public static saveFileWatcher() {
+    return workspace.onDidSaveTextDocument((doc: TextDocument) => {
+      if (ArticleHelper.isSupportedFile(doc)) {
+        Logger.info(`File saved ${doc.uri.fsPath}`);
+        // Optimize the list of recently changed files
+        DataListener.getFoldersAndFiles();
+        // Trigger the metadata update
+        this.watcherExec(doc.uri);
+      }
+    })
+  }
 
   /**
    * Start watching the folders in the current workspace for content changes
@@ -69,6 +82,9 @@ export class PagesListener extends BaseListener {
       case DashboardMessage.createByTemplate:
         await commands.executeCommand(COMMAND_NAME.createByTemplate);
         break;
+      case DashboardMessage.refreshPages:
+        this.getPagesData();
+        break;
     }
   }
 
@@ -110,6 +126,7 @@ export class PagesListener extends BaseListener {
               }
               
             } catch (error: any) {
+              Logger.error(`PagesListener::getPagesData: ${file.filePath} - ${error.message}`);
               Notifications.error(`File error: ${file.filePath} - ${error?.message || error}`);
             }
           }
@@ -139,18 +156,25 @@ export class PagesListener extends BaseListener {
     if (article?.data.title) {
       const wsFolder = Folders.getWorkspaceFolder();
       const descriptionField = Settings.get(SETTING_SEO_DESCRIPTION_FIELD) as string || DefaultFields.Description;
-      const dateField = Settings.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
-      const staticFolder = Settings.get<string>(SETTINGS_CONTENT_STATIC_FOLDER);
+
+      const dateField = ArticleHelper.getPublishDateField(article) || DefaultFields.PublishingDate;
+      const dateFieldValue = article?.data[dateField] ? DateHelper.tryParse(article?.data[dateField]) : undefined;
+
+      const modifiedField = ArticleHelper.getModifiedDateField(article) || null;
+      const modifiedFieldValue = modifiedField && article?.data[modifiedField] ? DateHelper.tryParse(article?.data[modifiedField])?.getTime() : undefined;
+
+      const staticFolder = Settings.get<string>(SETTING_CONTENT_STATIC_FOLDER);
 
       const page: Page = {
         ...article.data,
         // FrontMatter properties
         fmFolder: folderTitle,
-        fmModified: fileMtime,
         fmFilePath: filePath,
         fmFileName: fileName,
         fmDraft: ContentType.getDraftStatus(article?.data),
-        fmYear: article?.data[dateField] ? DateHelper.tryParse(article?.data[dateField])?.getFullYear() : null,
+        fmModified: modifiedFieldValue ? modifiedFieldValue : fileMtime,
+        fmPublished: dateFieldValue ? dateFieldValue.getTime() : null,
+        fmYear: dateFieldValue ? dateFieldValue.getFullYear() : null,
         fmPreviewImage: "",
         fmTags: [],
         fmCategories: [],

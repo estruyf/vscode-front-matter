@@ -3,13 +3,13 @@ import { useRecoilState } from 'recoil';
 import { DashboardCommand } from '../DashboardCommand';
 import { DashboardMessage } from '../DashboardMessage';
 import { Page } from '../models/Page';
-import { DashboardViewAtom, SettingsAtom, ViewDataAtom } from '../state';
+import { DashboardViewAtom, LoadingAtom, SettingsAtom, ViewDataAtom } from '../state';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
 import { NavigationType } from '../models';
 
 export default function useMessages() {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useRecoilState(LoadingAtom);
   const [pages, setPages] = useState<Page[]>([]);
   const [settings, setSettings] = useRecoilState(SettingsAtom);
   const [viewData, setViewData] = useRecoilState(ViewDataAtom);
@@ -28,6 +28,8 @@ export default function useMessages() {
           setView(NavigationType.Contents);
         } else if (message.data.data?.type === NavigationType.Data) {
           setView(NavigationType.Data);
+        } else if (message.data.data?.type === NavigationType.Snippets) {
+          setView(NavigationType.Snippets);
         }
         break;
       case DashboardCommand.settings:

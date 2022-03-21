@@ -3,7 +3,6 @@ import {UploadIcon} from '@heroicons/react/outline';
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 import { LoadingAtom, MediaFoldersAtom, SelectedMediaFolderAtom, SettingsSelector, ViewDataSelector } from '../../state';
-import { Header } from '../Header';
 import { Spinner } from '../Spinner';
 import { SponsorMsg } from '../SponsorMsg';
 import { Item } from './Item';
@@ -16,6 +15,9 @@ import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMat
 import { FolderItem } from './FolderItem';
 import useMedia from '../../hooks/useMedia';
 import { TelemetryEvent } from '../../../constants';
+import { PageLayout } from '../Layout/PageLayout';
+import { parseWinPath } from '../../../helpers/parseWinPath';
+import { join } from 'path';
 
 export interface IMediaProps {}
 
@@ -26,6 +28,25 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
   const selectedFolder = useRecoilValue(SelectedMediaFolderAtom);
   const folders = useRecoilValue(MediaFoldersAtom);
   const loading = useRecoilValue(LoadingAtom);
+
+
+  const allFolders = React.useMemo(() => {
+    // Check if content allows page bundle
+    if (viewData && viewData.data && typeof viewData.data.pageBundle !== "undefined" && !viewData.data.pageBundle) {
+      return folders.filter(f => parseWinPath(f).includes(join('/', settings?.staticFolder || '', '/')));
+    }
+
+    return folders;
+  }, [folders, viewData, settings?.staticFolder]);
+
+  const allMedia = React.useMemo(() => {
+    // Check if content allows page bundle
+    if (viewData && viewData.data && typeof viewData.data.pageBundle !== "undefined" && !viewData.data.pageBundle) {
+      return media.filter(m => parseWinPath(m.fsPath).includes(join('/', settings?.staticFolder || '', '/')));
+    }
+
+    return media;
+  }, [media, viewData, settings?.staticFolder]); 
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.forEach((file) => {
@@ -56,16 +77,13 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
   });
   
   return (
-    <div className="flex flex-col h-full overflow-auto">
-      <Header settings={settings} />
-
-      <div className="w-full flex-grow max-w-7xl mx-auto py-6 px-4" {...getRootProps()}>
-
+    <PageLayout>
+      <div className="w-full h-full" {...getRootProps()}>
         {
           viewData?.data?.filePath && (
             <div className={`text-lg text-center mb-6`}>
-              <p>Select the image you want to use for your article.</p>
-              <p className={`opacity-80 text-base`}>You can also drag and drop images from your desktop and select that once uploaded.</p>
+              <p>Select the media file to add to your content.</p>
+              <p className={`opacity-80 text-base`}>You can also drag and drop images from your desktop and select them once uploaded.</p>
             </div>
           )
         }
@@ -82,7 +100,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
         }
 
         {
-          (media.length === 0 && folders.length === 0 && !loading) && (
+          (allMedia.length === 0 && folders.length === 0 && !loading) && (
             <div className={`flex items-center justify-center h-full`}>
               <div className={`max-w-xl text-center`}>
                 <FrontMatterIcon className={`text-vulcan-300 dark:text-whisper-800 h-32 mx-auto opacity-90 mb-8`} />
@@ -94,11 +112,11 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
         }
 
         {
-          folders && folders.length > 0 && (
+          allFolders && allFolders.length > 0 && (
             <div className={`mb-8`}>
               <List gap={0}>
                 {
-                  folders && folders.map((folder) => (
+                  allFolders.map((folder) => (
                     <FolderItem key={folder} folder={folder} staticFolder={settings?.staticFolder} wsFolder={settings?.wsFolder} />
                   ))
                 }
@@ -109,7 +127,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
 
         <List>
           {
-            media.map((file) => (
+            allMedia.map((file) => (
               <Item key={file.fsPath} media={file} />
             ))
           }
@@ -123,6 +141,6 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
       <Lightbox />
 
       <SponsorMsg beta={settings?.beta} version={settings?.versionInfo} isBacker={settings?.isBacker} />
-    </div>
+    </PageLayout>
   );
 };

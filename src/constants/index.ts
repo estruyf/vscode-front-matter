@@ -8,6 +8,7 @@ export * from './Links';
 export * from './LocalStore';
 export * from './Navigation';
 export * from './TelemetryEvent';
+export * from './charCode';
 export * from './charMap';
 export * from './context';
 export * from './settings';

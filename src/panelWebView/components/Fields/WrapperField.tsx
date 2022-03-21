@@ -84,10 +84,14 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       value = field.default;
 
       if (field.type === 'datetime') {
+        if (value === "{{now}}") {
+          value = new Date();
+        }
+
         value = getDate(value) || null;
       }
 
-      onSendUpdate(field.name, value, parentFields);
+      //onSendUpdate(field.name, value, parentFields);
     }
 
     // Check if the field value contains a placeholder

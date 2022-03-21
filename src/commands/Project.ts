@@ -5,8 +5,9 @@ import * as fs from "fs";
 import { Notifications } from "../helpers/Notifications";
 import { Template } from "./Template";
 import { Folders } from "./Folders";
-import { Settings } from "../helpers";
-import { SETTINGS_CONTENT_DEFAULT_FILETYPE, TelemetryEvent } from "../constants";
+import { Logger, Settings } from "../helpers";
+import { SETTING_CONTENT_DEFAULT_FILETYPE, TelemetryEvent } from "../constants";
+import { SettingsListener } from '../listeners/dashboard';
 
 export class Project {
 
@@ -29,7 +30,7 @@ categories: []
   public static async init(sampleTemplate: boolean = true) {
     try {
       Settings.createTeamSettings();
-      const fileType = Settings.get<string>(SETTINGS_CONTENT_DEFAULT_FILETYPE);
+      const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
 
       const folder = Template.getSettings();
       const templatePath = Project.templatePath();
@@ -50,7 +51,10 @@ categories: []
       }
 
       Telemetry.send(TelemetryEvent.initialization)
+
+      SettingsListener.getSettings();
     } catch (err: any) {
+      Logger.error(`Project::init: ${err?.message || err}`);
       Notifications.error(`Sorry, something went wrong - ${err?.message || err}`);
     }
   }

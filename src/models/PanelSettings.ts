@@ -65,6 +65,10 @@ export interface Field {
   fieldGroup?: string | string[];
   dataType?: string | string[];
   taxonomyLimit?: number;
+
+  // Date fields
+  isPublishDate?: boolean;
+  isModifiedDate?: boolean;
 }
 
 export interface DateInfo {
@@ -94,6 +98,7 @@ export interface FolderInfo {
 export interface FileInfo extends FileStat {
   filePath: string;
   fileName: string;
+  folderName: string | undefined;
 };
 
 export interface CustomScript {

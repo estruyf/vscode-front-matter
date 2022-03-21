@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useMemo } from 'react';
 import { DEFAULT_FILE_TYPES } from '../../constants/DefaultFileTypes';
 import { MessageHelper } from '../../helpers/MessageHelper';
 import { CommandToCode } from '../CommandToCode';
@@ -8,16 +9,25 @@ import { MarkdownIcon } from './Icons/MarkdownIcon';
 export interface IFileItemProps {
   name: string;
   path: string;
+  folderName: string | undefined;
 }
 
-const FileItem: React.FunctionComponent<IFileItemProps> = ({ name, path }: React.PropsWithChildren<IFileItemProps>) => {
-  
+const FileItem: React.FunctionComponent<IFileItemProps> = ({ name, folderName, path }: React.PropsWithChildren<IFileItemProps>) => {
+
   const openFile = () => {
     MessageHelper.sendMessage(CommandToCode.openInEditor, path);
   };
 
+  const itemName = useMemo(() => {
+    if (folderName && name === 'index.md') {
+      return folderName;
+    }
+
+    return name;
+  }, [name, folderName]);
+
   // File extension
-  const fileExtension = `.${name.split('.').pop()}`;
+  const fileExtension = useMemo(() => `.${name.split('.').pop()}`, [name]);
 
   return (
     <li className={`file_list__items__item`}
@@ -30,7 +40,7 @@ const FileItem: React.FunctionComponent<IFileItemProps> = ({ name, path }: React
         )
       }
 
-      <span>{name}</span>
+      <span>{itemName}</span>
     </li>
   );
 };

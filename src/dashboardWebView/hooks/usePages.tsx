@@ -13,7 +13,9 @@ const fuseOptions: Fuse.IFuseOptions<Page> = {
     { name: 'title', weight: 0.8 },
     { name: 'slug', weight: 0.8 },
     { name: 'description', weight: 0.5 }
-  ]
+  ],
+  includeScore: true,
+  threshold: 0.1
 };
 
 export default function usePages(pages: Page[]) {
@@ -73,8 +75,12 @@ export default function usePages(pages: Page[]) {
         pagesSorted = pagesSorted.sort(Sorting.alphabetically("fmFileName"));
       } else if (sorting && sorting.id === SortOption.FileNameDesc) {
         pagesSorted = pagesSorted.sort(Sorting.alphabetically("fmFileName")).reverse();
+      } else if (sorting && sorting.id === SortOption.PublishedAsc) {
+        pagesSorted = pagesSorted.sort(Sorting.number("fmPublished"));
       } else if (sorting && sorting.id === SortOption.LastModifiedAsc) {
         pagesSorted = pagesSorted.sort(Sorting.number("fmModified"));
+      } else if (sorting && sorting.id === SortOption.PublishedDesc) {
+        pagesSorted = pagesSorted.sort(Sorting.number("fmPublished")).reverse();
       } else if (sorting && sorting.id === SortOption.LastModifiedDesc) {
         pagesSorted = pagesSorted.sort(Sorting.number("fmModified")).reverse();
       } else if (sorting && sorting.id && sorting.name) {

@@ -1,4 +1,4 @@
-import { SETTINGS_DASHBOARD_OPENONSTART, CONTEXT } from '../constants';
+import { SETTING_DASHBOARD_OPENONSTART, CONTEXT } from '../constants';
 import { join } from "path";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window } from "vscode";
 import { Logger, Settings as SettingsHelper } from '../helpers';
@@ -6,9 +6,8 @@ import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { Extension } from '../helpers/Extension';
 import { WebviewHelper } from '@estruyf/vscode';
 import { DashboardData } from '../models/DashboardData';
-import { ExplorerView } from '../explorerView/ExplorerView';
 import { MediaLibrary } from '../helpers/MediaLibrary';
-import { DashboardListener, MediaListener, SettingsListener, TelemetryListener, DataListener, PagesListener, ExtensionListener } from '../listeners/dashboard';
+import { DashboardListener, MediaListener, SettingsListener, TelemetryListener, DataListener, PagesListener, ExtensionListener, SnippetListener } from '../listeners/dashboard';
 import { MediaListener as PanelMediaListener } from '../listeners/panel'
 
 export class Dashboard {
@@ -24,7 +23,7 @@ export class Dashboard {
    * Init the dashboard
    */
   public static async init() {
-    const openOnStartup = SettingsHelper.get(SETTINGS_DASHBOARD_OPENONSTART);
+    const openOnStartup = SettingsHelper.get(SETTING_DASHBOARD_OPENONSTART);
     if (openOnStartup) {
       Dashboard.open();
     }
@@ -143,6 +142,7 @@ export class Dashboard {
       SettingsListener.process(msg);
       DataListener.process(msg);
       TelemetryListener.process(msg);
+      SnippetListener.process(msg);
     });
   }
 

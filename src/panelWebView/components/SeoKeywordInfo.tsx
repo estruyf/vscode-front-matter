@@ -52,7 +52,7 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({keyword,
     return <ValidInfo label={`Used in heading(s)`} isValid={exists.length > 0} />;
   }; 
 
-  if (!keyword) {
+  if (!keyword || typeof keyword !== "string") {
     return null;
   }
 

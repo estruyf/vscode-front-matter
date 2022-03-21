@@ -21,6 +21,7 @@ import { CustomScript } from '../../../models';
 import { LightningBoltIcon, PlusIcon } from '@heroicons/react/outline';
 
 export interface IHeaderProps {
+  header?: React.ReactNode;
   settings: Settings | null;
   
   // Navigation
@@ -30,7 +31,7 @@ export interface IHeaderProps {
   folders?: string[];
 }
 
-export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folders, settings }: React.PropsWithChildren<IHeaderProps>) => {
+export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPages, folders, settings }: React.PropsWithChildren<IHeaderProps>) => {
   const [ crntTag, setCrntTag ] = useRecoilState(TagAtom);
   const [ crntCategory, setCrntCategory ] = useRecoilState(CategoryAtom);
   const [ view, setView ] = useRecoilState(DashboardViewAtom);
@@ -80,7 +81,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
             <div className={`px-4 mt-3 mb-2 flex items-center justify-between`}>
               <Searchbox />
 
-              <div className={`flex items-center space-x-4`}>
+              <div className={`flex items-center justify-end space-x-4 flex-1`}>
                 <Startup settings={settings} />
                 
                 <ChoiceButton 
@@ -147,6 +148,10 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({totalPages, folde
             <MediaHeaderBottom />
           </>
         )
+      }
+
+      {
+        header
       }
     </div>
   );

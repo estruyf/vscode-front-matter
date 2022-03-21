@@ -1,7 +1,7 @@
+import * as vscode from 'vscode';
 import { Telemetry } from './helpers/Telemetry';
 import { ContentType } from './helpers/ContentType';
 import { Dashboard } from './commands/Dashboard';
-import * as vscode from 'vscode';
 import { Article, Settings, StatusListener } from './commands';
 import { Folders } from './commands/Folders';
 import { Preview } from './commands/Preview';
@@ -14,7 +14,7 @@ import { TagType } from './panelWebView/TagType';
 import { ExplorerView } from './explorerView/ExplorerView';
 import { Extension } from './helpers/Extension';
 import { DashboardData } from './models/DashboardData';
-import { Settings as SettingsHelper } from './helpers';
+import { Logger, Settings as SettingsHelper } from './helpers';
 import { Content } from './commands/Content';
 import ContentProvider from './providers/ContentProvider';
 import { Wysiwyg } from './commands/Wysiwyg';
@@ -22,6 +22,7 @@ import { Diagnostics } from './commands/Diagnostics';
 import { PagesListener } from './listeners/dashboard';
 import { Backers } from './commands/Backers';
 import { DataListener, SettingsListener } from './listeners/panel';
+import { NavigationType } from './dashboardWebView/models';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
@@ -57,7 +58,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboard, (data?: DashboardData) => {
 		Telemetry.send(TelemetryEvent.openContentDashboard);
 		if (!data) {
-			Dashboard.open({ type: "contents" });
+			Dashboard.open({ type: NavigationType.Contents });
 		} else {
 			Dashboard.open(data);
 		}
@@ -65,12 +66,17 @@ export async function activate(context: vscode.ExtensionContext) {
 	
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardMedia, (data?: DashboardData) => {
 		Telemetry.send(TelemetryEvent.openMediaDashboard);
-		Dashboard.open({ type: "media" });
+		Dashboard.open({ type: NavigationType.Media });
+	}));
+	
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardSnippets, (data?: DashboardData) => {
+		Telemetry.send(TelemetryEvent.openSnippetsDashboard);
+		Dashboard.open({ type: NavigationType.Snippets });
 	}));
 	
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardData, (data?: DashboardData) => {
 		Telemetry.send(TelemetryEvent.openDataDashboard);
-		Dashboard.open({ type: "data" });
+		Dashboard.open({ type: NavigationType.Data });
 	}));
 	
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardClose, (data?: DashboardData) => {
@@ -133,7 +139,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const toggleDraftCommand = COMMAND_NAME.toggleDraft;
 	const toggleDraft = vscode.commands.registerCommand(toggleDraftCommand, async () => {
 		await Article.toggleDraft();
-		triggerShowDraftStatus();
+		triggerShowDraftStatus(`toggleDraft`);
 	});
 
 	// Register project folders
@@ -182,22 +188,21 @@ export async function activate(context: vscode.ExtensionContext) {
 	statusDebouncer = debounceCallback();
 	
 	// Register listeners that make sure the status bar updates
-	subscriptions.push(vscode.window.onDidChangeActiveTextEditor(triggerShowDraftStatus));
-	subscriptions.push(vscode.window.onDidChangeTextEditorSelection(triggerShowDraftStatus));
+	subscriptions.push(vscode.window.onDidChangeActiveTextEditor(() => triggerShowDraftStatus(`onDidChangeActiveTextEditor`)));
+	subscriptions.push(vscode.window.onDidChangeTextEditorSelection((e) => {
+		if (e.kind === vscode.TextEditorSelectionChangeKind.Mouse) {
+			triggerShowDraftStatus(`onDidChangeTextEditorSelection`);
+		}
+	}));
 	
 	// Automatically run the command
-	triggerShowDraftStatus();
+	triggerShowDraftStatus(`triggerShowDraftStatus`);
 
 	// Listener for file edit changes
 	subscriptions.push(vscode.workspace.onWillSaveTextDocument(handleAutoDateUpdate));
 
 	// Listener for file saves
-	subscriptions.push(vscode.workspace.onDidSaveTextDocument((doc: vscode.TextDocument) => {
-		if (doc.languageId === 'markdown') {
-			// Optimize the list of recently changed files
-			DataListener.getFoldersAndFiles();
-		}
-	}));
+	subscriptions.push(PagesListener.saveFileWatcher());
 
 	// Webview for preview
 	Preview.init();
@@ -205,6 +210,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// Inserting an image in Markdown
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.insertImage, Article.insertImage));
+
+	// Inserting a snippet in Markdown
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.insertSnippet, Article.insertSnippet));
 
 	// Create the editor experience for bulk scripts
 	subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(ContentProvider.scheme, new ContentProvider()));
@@ -248,7 +256,8 @@ const handleAutoDateUpdate = (e: vscode.TextDocumentWillSaveEvent) => {
 	Article.autoUpdate(e);
 };
 
-const triggerShowDraftStatus = () => {
+const triggerShowDraftStatus = (location: string) => {
+	Logger.info(`Triggering draft status update: ${location}`);
 	statusDebouncer(() => { StatusListener.verify(frontMatterStatusBar, collection); }, 1000);
 };
 

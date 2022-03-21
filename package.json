@@ -3,7 +3,7 @@
   "displayName": "Front Matter",
   "description": "Front Matter is a CMS that runs within Visual Studio Code. It gives you the power and control of a full-blown CMS while also providing you the flexibility and speed of the static site generator of your choice like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "6.1.1",
+  "version": "7.0.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -47,11 +47,6 @@
   "activationEvents": [
     "workspaceContains:**/.frontmatter",
     "workspaceContains:**/frontmatter.json",
-    "onCommand:frontMatter.init",
-    "onCommand:frontMatter.dashboard",
-    "onCommand:frontMatter.dashboard.data",
-    "onCommand:frontMatter.dashboard.media",
-    "onCommand:workbench.view.extension.frontmatter-explorer",
     "onView:frontMatter.explorer",
     "onStartupFinished"
   ],
@@ -223,6 +218,47 @@
           "default": "",
           "markdownDescription": "Specify the folder name where all your assets are located. For instance in Hugo this is the `static` folder. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.publicfolder)",
           "scope": "Content"
+        },
+        "frontMatter.content.snippets": {
+          "type": "object",
+          "markdownDescription": "Define the snippets you want to use in your content. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.snippets)",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "body",
+              "fields"
+            ],
+            "properties": {
+              "body": {
+                "markdownDescription": "The snippet content.",
+                "type": [
+                  "string",
+                  "array"
+                ],
+                "items": {
+                  "type": "string"
+                }
+              },
+              "description": {
+                "description": "The snippet description.",
+                "type": "string"
+              },
+              "fields": {
+                "$ref": "#contenttypefield"
+              },
+              "openingTags": {
+                "description": "The snippet opening tags.",
+                "type": "string",
+                "default": "[["
+              },
+              "closingTags": {
+                "description": "The snippet closing tags.",
+                "type": "string",
+                "default": "]]"
+              }
+            },
+            "additionalProperties": false
+          }
         },
         "frontMatter.content.sorting": {
           "type": "array",
@@ -741,6 +777,16 @@
                       "type": "number",
                       "default": 0,
                       "description": "Limit the number of taxonomies to select. Set to 0 to allow unlimited."
+                    },
+                    "isPublishDate": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "Specify if the field is the publish date field"
+                    },
+                    "isModifiedDate": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "Specify if the field is the modified date field"
                     }
                   },
                   "additionalProperties": false,
@@ -861,7 +907,8 @@
                   "title": "Publishing date",
                   "name": "date",
                   "type": "datetime",
-                  "default": "{{now}}"
+                  "default": "{{now}}",
+                  "isPublishDate": true
                 },
                 {
                   "title": "Content preview",
@@ -917,7 +964,8 @@
         "frontMatter.taxonomy.dateField": {
           "type": "string",
           "default": "date",
-          "markdownDescription": "This setting is used to define the publishing date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.datefield)"
+          "markdownDescription": "This setting is used to define the publishing date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.datefield)",
+          "deprecationMessage": "This setting is deprecated and will be removed in the next major version. Please use the new `isPublishDate` settings instead in your content types date fields."
         },
         "frontMatter.taxonomy.dateFormat": {
           "type": "string",
@@ -971,7 +1019,8 @@
         "frontMatter.taxonomy.modifiedField": {
           "type": "string",
           "default": "lastmod",
-          "markdownDescription": "This setting is used to define the modified date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.modifiedfield)"
+          "markdownDescription": "This setting is used to define the modified date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.modifiedfield)",
+          "deprecationMessage": "This setting is deprecated and will be removed in the next major version. Please use the new `isModifiedDate` settings instead in your content types date fields."
         },
         "frontMatter.taxonomy.noPropertyValueQuotes": {
           "type": "array",
@@ -1094,7 +1143,7 @@
       },
       {
         "command": "frontMatter.markup.blockquote",
-        "title": "Codeblock",
+        "title": "Blockquote",
         "category": "Front matter",
         "icon": {
           "light": "assets/icons/blockquote-light.svg",
@@ -1186,6 +1235,15 @@
         }
       },
       {
+        "command": "frontMatter.insertSnippet",
+        "title": "Insert snippet into your content",
+        "category": "Front matter",
+        "icon": {
+          "dark": "/assets/icons/scissors-dark.svg",
+          "light": "/assets/icons/scissors-light.svg"
+        }
+      },
+      {
         "command": "frontMatter.insertTags",
         "title": "Insert tags",
         "category": "Front matter"
@@ -1211,6 +1269,15 @@
       {
         "command": "frontMatter.dashboard.data",
         "title": "Open data dashboard",
+        "category": "Front matter",
+        "icon": {
+          "dark": "/assets/icons/frontmatter-small-dark.svg",
+          "light": "/assets/icons/frontmatter-small-light.svg"
+        }
+      },
+      {
+        "command": "frontMatter.dashboard.snippets",
+        "title": "Open snippets dashboard",
         "category": "Front matter",
         "icon": {
           "dark": "/assets/icons/frontmatter-small-dark.svg",
@@ -1292,63 +1359,68 @@
       "editor/title": [
         {
           "command": "frontMatter.markup.heading",
-          "group": "navigation@-132",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "group": "navigation@-133",
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.markup.bold",
-          "group": "navigation@-131",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "group": "navigation@-132",
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.markup.italic",
-          "group": "navigation@-130",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "group": "navigation@-131",
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.markup.strikethrough",
-          "group": "navigation@-129",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "group": "navigation@-130",
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
-          "command": "frontMatter.markup.blockquote",
-          "group": "navigation@-128",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "command": "frontMatter.insertSnippet",
+          "group": "navigation@-129",
+          "when": "frontMatter:file:isValid == true"
         },
         {
           "command": "frontMatter.insertImage",
-          "group": "navigation@-127",
-          "when": "resourceLangId == markdown"
+          "group": "navigation@-128",
+          "when": "frontMatter:file:isValid == true"
         },
         {
           "command": "frontMatter.markup.options",
           "group": "navigation@-126",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.markup.orderedlist",
           "group": "1_markup@1",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.markup.unorderedlist",
           "group": "1_markup@2",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.markup.tasklist",
           "group": "1_markup@3",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.markup.code",
           "group": "1_markup@4",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.markup.codeblock",
           "group": "1_markup@5",
-          "when": "resourceLangId == markdown && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
+        },
+        {
+          "command": "frontMatter.markup.blockquote",
+          "group": "1_markup@6",
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
           "command": "frontMatter.dashboard",
@@ -1454,12 +1526,58 @@
         {
           "command": "frontMatter.markup.options",
           "when": "false"
+        },
+        {
+          "command": "frontMatter.insertSnippet",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.insertImage",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.createCategory",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.createTag",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.insertCategories",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.insertTags",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.createTemplate",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.preview",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.setLastModifiedDate",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.generateSlug",
+          "when": "frontMatter:file:isValid == true"
         }
       ],
       "view/title": [
         {
           "command": "frontMatter.collapseSections",
-          "group": "frontmatter-explorer"
+          "group": "navigation@0",
+          "when": "view == frontMatter.explorer"
+        },
+        {
+          "command": "frontMatter.dashboard",
+          "group": "navigation@1",
+          "when": "view == frontMatter.explorer"
         }
       ]
     },
@@ -1469,6 +1587,48 @@
         "scopeName": "frontmatter.markdown.hugo",
         "injectTo": [
           "text.html.markdown"
+        ]
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "frontmatter.welcome",
+        "title": "Get started with Front Matter",
+        "description": "Discover the features of Front Matter and learn how to use the CMS for your SSG or static site.",
+        "steps": [
+          {
+            "id": "frontmatter.welcome.init",
+            "title": "Get started",
+            "description": "Initial steps to get started.\n[Open dashboard](command:frontMatter.dashboard)",
+            "media": {
+              "markdown": "assets/walkthrough/get-started.md"
+            },
+            "completionEvents": [
+              "onContext:frontMatterInitialized"
+            ]
+          },
+          {
+            "id": "frontmatter.welcome.documentation",
+            "title": "Documentation",
+            "description": "Check out the documentation for Front Matter.\n[View our documentation](https://frontmatter.codes/docs)",
+            "media": {
+              "markdown": "assets/walkthrough/documentation.md"
+            },
+            "completionEvents": [
+              "onLink:https://frontmatter.codes/docs"
+            ]
+          },
+          {
+            "id": "frontmatter.welcome.supporter",
+            "title": "Support the project",
+            "description": "Become a supporter.\n[Support the project](https://github.com/sponsors/estruyf)",
+            "media": {
+              "markdown": "assets/walkthrough/support-the-project.md"
+            },
+            "completionEvents": [
+              "onLink:https://github.com/sponsors/estruyf"
+            ]
+          }
         ]
       }
     ]
@@ -1493,7 +1653,7 @@
   "devDependencies": {
     "@bendera/vscode-webview-elements": "0.6.2",
     "@estruyf/vscode": "0.0.2",
-    "@headlessui/react": "^1.4.1",
+    "@headlessui/react": "^1.5.0",
     "@heroicons/react": "1.0.4",
     "@iarna/toml": "2.2.3",
     "@octokit/rest": "^18.12.0",
@@ -1507,6 +1667,7 @@
     "@types/lodash.uniqby": "4.7.6",
     "@types/lodash.xor": "^4.5.6",
     "@types/mocha": "^5.2.6",
+    "@types/mustache": "^4.1.2",
     "@types/node": "10.17.48",
     "@types/node-fetch": "^2.5.12",
     "@types/react": "17.0.0",
@@ -1523,7 +1684,7 @@
     "css-loader": "5.2.7",
     "date-fns": "2.23.0",
     "downshift": "6.0.6",
-    "fuse.js": "6.4.6",
+    "fuse.js": "6.5.3",
     "glob": "7.1.6",
     "gray-matter": "4.0.2",
     "html-loader": "1.3.2",
@@ -1535,6 +1696,7 @@
     "lodash.uniqby": "4.7.0",
     "lodash.xor": "^4.5.0",
     "mdast-util-from-markdown": "1.0.0",
+    "mustache": "^4.2.0",
     "node-json-db": "^1.3.0",
     "npm-run-all": "^4.1.5",
     "path-browserify": "^1.0.1",

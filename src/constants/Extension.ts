@@ -29,12 +29,16 @@ export const COMMAND_NAME = {
   preview: getCommandName("preview"),
   dashboard: getCommandName("dashboard"),
   dashboardMedia: getCommandName("dashboard.media"),
+  dashboardSnippets: getCommandName("dashboard.snippets"),
   dashboardData: getCommandName("dashboard.data"),
   dashboardClose: getCommandName("dashboard.close"),
   promote: getCommandName("promoteSettings"),
-  insertImage: getCommandName("insertImage"),
   createFolder: getCommandName("createFolder"),
   diagnostics: getCommandName("diagnostics"),
+
+  // Insert dashboards
+  insertImage: getCommandName("insertImage"),
+  insertSnippet: getCommandName("insertSnippet"),
 
   // WYSIWYG
   bold: getCommandName("markup.bold"),

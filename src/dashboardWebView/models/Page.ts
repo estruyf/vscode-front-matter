@@ -5,6 +5,7 @@ export interface Page {
   fmFilePath: string;
   fmFileName: string;
   fmModified: number;
+  fmPublished: number | null | undefined;
   fmDraft: "Draft" | "Published",
   fmYear: number | null | undefined;
   fmPreviewImage: string;

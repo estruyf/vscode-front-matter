@@ -1,17 +1,22 @@
 export const TelemetryEvent = {
   activate: 'activate',
   initialization: 'initialization',
+  registerFolder: 'registerFolder',
+  unregisterFolder: 'unregisterFolder',
+  promoteSettings: 'promoteSettings',
+
+  // Commands
   openContentDashboard: 'openContentDashboard',
   openMediaDashboard: 'openMediaDashboard',
   openDataDashboard: 'openDataDashboard',
+  openSnippetsDashboard: 'openSnippetsDashboard',
   closeDashboard: 'closeDashboard',
+
+  // Other actions
   generateSlug: 'generateSlug',
   createContentFromTemplate: 'createContentFromTemplate',
   createContentFromContentType: 'createContentFromContentType',
-  registerFolder: 'registerFolder',
-  unregisterFolder: 'unregisterFolder',
   addMediaFolder: 'addMediaFolder',
-  promoteSettings: 'promoteSettings',
   openPreview: 'openPreview',
   uploadMedia: 'uploadMedia',
   refreshMedia: 'refreshMedia',
@@ -20,9 +25,14 @@ export const TelemetryEvent = {
   updateMediaMetadata: 'updateMediaMetadata',
   openExplorerView: 'openExplorerView',
 
+  // Custom scripts
+  runCustomScript: 'runCustomScript',
+  runMediaScript: 'runMediaScript',
+
   // Webviews
   webviewWelcomeScreen: 'webviewWelcomeScreen',
   webviewMediaView: 'webviewMediaView',
   webviewDataView: 'webviewDataView',
   webviewContentsView: 'webviewContentsView',
+  webviewSnippetsView: 'webviewSnippetsView',
 };

@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from '../constants/ContentType';
 import { Settings } from '../dashboardWebView/models';
-import { ContentType, Field, PanelSettings } from '../models';
+import { ContentType, PanelSettings } from '../models';
 
 export default function useContentType(settings: PanelSettings | Settings | undefined | null, metadata: any) {
-  const [contentType, setContentType] = useState<ContentType>(DEFAULT_CONTENT_TYPE);
+  const [contentType, setContentType] = useState<ContentType | null>(null);
 
   useEffect(() => {
     if (settings) {

@@ -3,7 +3,7 @@ import { Extension, Settings } from "."
 import { Dashboard } from "../commands/Dashboard"
 import { Preview } from "../commands/Preview"
 import { Template } from "../commands/Template"
-import { CONTEXT, DefaultFields, SETTINGS_CONTENT_DRAFT_FIELD, SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT, SETTINGS_DATA_TYPES, SETTINGS_FRAMEWORK_ID, SETTINGS_FRAMEWORK_START, SETTING_AUTO_UPDATE_DATE, SETTING_COMMA_SEPARATED_FIELDS, SETTING_CUSTOM_SCRIPTS, SETTING_DATE_FORMAT, SETTING_PANEL_FREEFORM, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_SLUG_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TAXONOMY_CUSTOM, SETTING_TAXONOMY_FIELD_GROUPS, SETTING_TAXONOMY_TAGS } from "../constants"
+import { CONTEXT, DefaultFields, SETTING_CONTENT_DRAFT_FIELD, SETTING_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_DATA_TYPES, SETTING_FRAMEWORK_ID, SETTING_FRAMEWORK_START, SETTING_AUTO_UPDATE_DATE, SETTING_COMMA_SEPARATED_FIELDS, SETTING_CUSTOM_SCRIPTS, SETTING_DATE_FORMAT, SETTING_PANEL_FREEFORM, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_SLUG_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TAXONOMY_CUSTOM, SETTING_TAXONOMY_FIELD_GROUPS, SETTING_TAXONOMY_TAGS } from "../constants"
 import { CustomScript, DataType, DraftField, FieldGroup, PanelSettings as IPanelSettings, ScriptType } from "../models"
 
 export class PanelSettings {
@@ -33,18 +33,18 @@ export class PanelSettings {
       isInitialized: await Template.isInitialized(),
       modifiedDateUpdate: Settings.get(SETTING_AUTO_UPDATE_DATE) || false,
       writingSettingsEnabled: this.isWritingSettingsEnabled() || false,
-      fmHighlighting: Settings.get(SETTINGS_CONTENT_FRONTMATTER_HIGHLIGHT),
+      fmHighlighting: Settings.get(SETTING_CONTENT_FRONTMATTER_HIGHLIGHT),
       preview: Preview.getSettings(),
       commaSeparatedFields: Settings.get(SETTING_COMMA_SEPARATED_FIELDS) || [],
       contentTypes: Settings.get(SETTING_TAXONOMY_CONTENT_TYPES) || [],
       dashboardViewData: Dashboard.viewData,
-      draftField: Settings.get<DraftField>(SETTINGS_CONTENT_DRAFT_FIELD),
+      draftField: Settings.get<DraftField>(SETTING_CONTENT_DRAFT_FIELD),
       isBacker: await Extension.getInstance().getState<boolean | undefined>(CONTEXT.backer, 'global'),
-      framework: Settings.get<string>(SETTINGS_FRAMEWORK_ID),
+      framework: Settings.get<string>(SETTING_FRAMEWORK_ID),
       commands: {
-        start: Settings.get<string>(SETTINGS_FRAMEWORK_START)
+        start: Settings.get<string>(SETTING_FRAMEWORK_START)
       },
-      dataTypes: Settings.get<DataType[]>(SETTINGS_DATA_TYPES),
+      dataTypes: Settings.get<DataType[]>(SETTING_DATA_TYPES),
       fieldGroups: Settings.get<FieldGroup[]>(SETTING_TAXONOMY_FIELD_GROUPS),
     }
   }

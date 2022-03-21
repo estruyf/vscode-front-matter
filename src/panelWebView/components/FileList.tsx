@@ -22,7 +22,7 @@ const FileList: React.FunctionComponent<IFileListProps> = ({files, folderName, t
       <ul className="file_list__items">
         {
           (files && files.length > 0) && files.map(file => (
-            <FileItem key={file.filePath} name={file.fileName} path={file.filePath} />
+            <FileItem key={file.filePath} name={file.fileName} path={file.filePath} folderName={file.folderName} />
           ))
         }
       </ul>

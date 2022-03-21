@@ -1,5 +1,6 @@
+import { DEFAULT_CONTENT_TYPE } from './../constants/ContentType';
 import { isValidFile } from './../helpers/isValidFile';
-import { SETTING_AUTO_UPDATE_DATE, SETTING_MODIFIED_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TEMPLATES_PREFIX, CONFIG_KEY, SETTING_DATE_FORMAT, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTINGS_CONTENT_PLACEHOLDERS, TelemetryEvent } from './../constants';
+import { SETTING_AUTO_UPDATE_DATE, SETTING_MODIFIED_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TEMPLATES_PREFIX, CONFIG_KEY, SETTING_DATE_FORMAT, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_CONTENT_PLACEHOLDERS, TelemetryEvent } from './../constants';
 import * as vscode from 'vscode';
 import { Field, TaxonomyType } from "../models";
 import { format } from "date-fns";
@@ -13,6 +14,8 @@ import { parseWinPath } from '../helpers/parseWinPath';
 import { Telemetry } from '../helpers/Telemetry';
 import { ParsedFrontMatter } from '../parsers';
 import { MediaListener } from '../listeners/panel';
+import { NavigationType } from '../dashboardWebView/models';
+import { processKnownPlaceholders } from '../helpers/PlaceholderHelper';
 
 
 export class Article {
@@ -148,12 +151,13 @@ export class Article {
   ): ParsedFrontMatter | undefined {
     const article = ArticleHelper.getFrontMatterFromDocument(document);
 
-    if (!article) {
+    // Only set the date, if there is already front matter set
+    if (!article || !article.data || Object.keys(article.data).length === 0) {
       return;
     }
 
     const cloneArticle = Object.assign({}, article);
-    const dateField = Settings.get(SETTING_MODIFIED_FIELD) as string || DefaultFields.LastModified;
+    const dateField = ArticleHelper.getModifiedDateField(article) || DefaultFields.LastModified;
     try {
       cloneArticle.data[dateField] = Article.formatDate(new Date());
       return cloneArticle;
@@ -200,13 +204,14 @@ export class Article {
         }
 
         // Update the fields containing a custom placeholder that depends on slug
-        const placeholders = Settings.get<{id: string, value: string}[]>(SETTINGS_CONTENT_PLACEHOLDERS);
+        const placeholders = Settings.get<{id: string, value: string}[]>(SETTING_CONTENT_PLACEHOLDERS);
         const customPlaceholders = placeholders?.filter(p => p.value.includes("{{slug}}"));
+        const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
         for (const customPlaceholder of (customPlaceholders || [])) {
           const customPlaceholderFields = contentType.fields.filter(f => f.default === `{{${customPlaceholder.id}}}`);
           for (const pField of customPlaceholderFields) {
             article.data[pField.name] = customPlaceholder.value;
-            article.data[pField.name] = ArticleHelper.processKnownPlaceholders(article.data[pField.name], articleTitle);
+            article.data[pField.name] = processKnownPlaceholders(article.data[pField.name], articleTitle, dateFormat);
           }
         }
       }
@@ -294,7 +299,7 @@ export class Article {
    */
   public static async autoUpdate(event: vscode.TextDocumentWillSaveEvent) {
     const document = event.document;
-    if (document && ArticleHelper.isMarkdownFile(document)) {
+    if (document && ArticleHelper.isSupportedFile(document)) {
       const autoUpdate = Settings.get(SETTING_AUTO_UPDATE_DATE);
 
       if (autoUpdate) {
@@ -325,11 +330,15 @@ export class Article {
       return;
     }
 
+    const article = ArticleHelper.getFrontMatter(editor);
+    const contentType = article && article.data ? ArticleHelper.getContentType(article.data) : DEFAULT_CONTENT_TYPE;
+
     const position = editor.selection.active;
 
     await vscode.commands.executeCommand(COMMAND_NAME.dashboard, {
       type: "media",
       data: {
+        pageBundle: !!contentType.pageBundle,
         filePath: editor.document.uri.fsPath,
         fieldName: basename(editor.document.uri.fsPath),
         position
@@ -338,6 +347,32 @@ export class Article {
 
     // Let the editor panel know you are selecting an image
     MediaListener.getMediaSelection();
+	}
+
+  /**
+   * Insert a snippet into the article
+   */
+  public static async insertSnippet() {
+		let editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+
+    const position = editor.selection.active;
+    const selectionText = editor.document.getText(editor.selection);
+
+    const article = ArticleHelper.getFrontMatter(editor);
+
+    await vscode.commands.executeCommand(COMMAND_NAME.dashboard, {
+      type: NavigationType.Snippets,
+      data: {
+        fileTitle: article?.data.title || "",
+        filePath: editor.document.uri.fsPath,
+        fieldName: basename(editor.document.uri.fsPath),
+        position,
+        selection: selectionText
+      }
+    } as DashboardData);
 	}
 
   /**

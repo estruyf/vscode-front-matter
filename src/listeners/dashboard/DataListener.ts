@@ -69,7 +69,7 @@ export class DataListener extends BaseListener {
         this.sendMsg(DashboardCommand.dataFileEntries, jsonData);
       }
     } catch (ex) {
-      Logger.error((ex as Error).message);
+      Logger.error(`DataListener::processDataFile: ${(ex as Error).message}`);
       const btnClick = await Notifications.error(`Something went wrong while processing the data file. Check your file and output log for more information.`, 'Open output');
 
       if (btnClick && btnClick === 'Open output') {

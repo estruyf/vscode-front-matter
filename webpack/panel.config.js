@@ -42,8 +42,7 @@ const config = [{
     ]
   },
   performance: {
-    maxEntrypointSize: 400000,
-    maxAssetSize: 400000
+    hints: false
   },
   plugins: [],
   devServer: {
@@ -62,6 +61,8 @@ module.exports = (env, argv) => {
     configItem.mode = argv.mode;
 
     if (argv.mode === 'production') {
+      configItem.devtool = "hidden-source-map";
+      
       configItem.plugins.push(new BundleAnalyzerPlugin({
         analyzerMode: 'static',
         reportFilename: "viewpanel.html",

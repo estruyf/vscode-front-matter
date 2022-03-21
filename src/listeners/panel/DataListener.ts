@@ -6,13 +6,15 @@ import { CommandToCode } from "../../panelWebView/CommandToCode";
 import { BaseListener } from "./BaseListener";
 import { commands, ThemeIcon, window } from 'vscode';
 import { ArticleHelper, Logger, Settings } from "../../helpers";
-import { COMMAND_NAME, DefaultFields, SETTING_COMMA_SEPARATED_FIELDS, SETTING_TAXONOMY_CONTENT_TYPES } from "../../constants";
+import { COMMAND_NAME, DefaultFields, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FORMAT, SETTING_TAXONOMY_CONTENT_TYPES } from "../../constants";
 import { Article } from '../../commands';
 import { ParsedFrontMatter } from '../../parsers';
+import { processKnownPlaceholders } from '../../helpers/PlaceholderHelper';
 
 const FILE_LIMIT = 10;
 
 export class DataListener extends BaseListener {
+  private static lastMetadataUpdate: any = {};
 
   /**
    * Process the messages for the dashboard views
@@ -106,7 +108,11 @@ export class DataListener extends BaseListener {
       }
     }
 
-    this.sendMsg(Command.metadata, updatedMetadata);
+    if (JSON.stringify(DataListener.lastMetadataUpdate) !== JSON.stringify(updatedMetadata)) {
+      this.sendMsg(Command.metadata, updatedMetadata);
+    }
+
+    DataListener.lastMetadataUpdate = updatedMetadata;
   }
 
   /**
@@ -145,30 +151,34 @@ export class DataListener extends BaseListener {
     // Support multi-level fields
     const parentObj = DataListener.getParentObject(article.data, article, parents, blockData);
 
-    for (const dateField of dateFields) {
-      if ((field === dateField.name) && value) {
-        parentObj[field] = Article.formatDate(new Date(value));
-      } else if (!imageFields.find(f => f.name === field)) {
-        // Only override the field data if it is not an multiselect image field
-        parentObj[field] = value;
-      }
-    }
+    const isDateField = dateFields.some(f => f.name === field);
+    const isMultiImageField = imageFields.some(f => f.name === field);
 
-    for (const imageField of imageFields) {
-      if (field === imageField.name) {
-        // If value is an array, it means it comes from the explorer view itself (deletion)
-        if (Array.isArray(value)) {
-          parentObj[field] = value || [];
-        } else { // Otherwise it is coming from the media dashboard (addition)
-          let fieldValue = parentObj[field];
-          if (fieldValue && !Array.isArray(fieldValue)) {
-            fieldValue = [fieldValue];
-          }
-          const crntData = Object.assign([], fieldValue);
-          const allRelPaths = [...(crntData || []), value];
-          parentObj[field] = [...new Set(allRelPaths)].filter(f => f);
+    if (isDateField) {
+      for (const dateField of dateFields) {
+        if ((field === dateField.name) && value) {
+          parentObj[field] = Article.formatDate(new Date(value));
         }
       }
+    } else if (isMultiImageField) {
+      for (const imageField of imageFields) {
+        if (field === imageField.name) {
+          // If value is an array, it means it comes from the explorer view itself (deletion)
+          if (Array.isArray(value)) {
+            parentObj[field] = value || [];
+          } else { // Otherwise it is coming from the media dashboard (addition)
+            let fieldValue = parentObj[field];
+            if (fieldValue && !Array.isArray(fieldValue)) {
+              fieldValue = [fieldValue];
+            }
+            const crntData = Object.assign([], fieldValue);
+            const allRelPaths = [...(crntData || []), value];
+            parentObj[field] = [...new Set(allRelPaths)].filter(f => f);
+          }
+        }
+      }
+    } else {
+      parentObj[field] = value;
     }
     
     ArticleHelper.update(editor, article);
@@ -283,7 +293,8 @@ export class DataListener extends BaseListener {
 
   private static updatePlaceholder(field: string, value: string, title: string) {
     if (field && value) {
-      value = ArticleHelper.processKnownPlaceholders(value, title || "");
+      const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
+      value = processKnownPlaceholders(value, title || "", dateFormat);
       value = ArticleHelper.processCustomPlaceholders(value, title || "");
     }
     

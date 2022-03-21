@@ -1,10 +1,11 @@
-import { SETTING_SEO_DESCRIPTION_FIELD, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH } from './../constants';
+import { CONTEXT, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH } from './../constants';
 import * as vscode from 'vscode';
 import { ArticleHelper, SeoHelper, Settings } from '../helpers';
 import { ExplorerView } from '../explorerView/ExplorerView';
 import { DefaultFields } from '../constants';
 import { ContentType } from '../helpers/ContentType';
 import { DataListener } from '../listeners/panel';
+import { commands } from 'vscode';
 
 export class StatusListener {
   
@@ -24,8 +25,10 @@ export class StatusListener {
     }
     
     let editor = vscode.window.activeTextEditor;
-    if (editor && ArticleHelper.isMarkdownFile()) {
+    if (editor && ArticleHelper.isSupportedFile()) {
       try {
+        commands.executeCommand('setContext', CONTEXT.isValidFile, true);
+
         const article = ArticleHelper.getFrontMatter(editor);
 
         // Update the StatusBar based on the article draft state
@@ -67,6 +70,8 @@ export class StatusListener {
         // Nothing to do
       }
     } else {
+      commands.executeCommand('setContext', CONTEXT.isValidFile, false);
+
       const panel = ExplorerView.getInstance();
       if (panel && panel.visible) {
         DataListener.pushMetadata(null);
