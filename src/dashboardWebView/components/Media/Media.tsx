@@ -78,7 +78,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
   
   return (
     <PageLayout>
-      <div className="w-full h-full" {...getRootProps()}>
+      <div className="w-full h-full pb-6" {...getRootProps()}>
         {
           viewData?.data?.filePath && (
             <div className={`text-lg text-center mb-6`}>
