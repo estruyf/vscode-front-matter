@@ -4,11 +4,11 @@ import { basename, dirname, join } from "path";
 import { commands, FileSystemWatcher, RelativePattern, TextDocument, Uri, workspace } from "vscode";
 import { Dashboard } from "../../commands/Dashboard";
 import { Folders } from "../../commands/Folders";
-import { COMMAND_NAME, DefaultFields, SETTING_CONTENT_STATIC_FOLDER, SETTING_SEO_DESCRIPTION_FIELD } from "../../constants";
+import { COMMAND_NAME, DefaultFields, ExtensionState, SETTING_CONTENT_STATIC_FOLDER, SETTING_SEO_DESCRIPTION_FIELD } from "../../constants";
 import { DashboardCommand } from "../../dashboardWebView/DashboardCommand";
 import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { Page } from "../../dashboardWebView/models";
-import { ArticleHelper, Logger, Settings } from "../../helpers";
+import { ArticleHelper, Extension, Logger, Settings } from "../../helpers";
 import { ContentType } from "../../helpers/ContentType";
 import { DateHelper } from "../../helpers/DateHelper";
 import { Notifications } from "../../helpers/Notifications";
@@ -21,6 +21,36 @@ export class PagesListener extends BaseListener {
   private static watchers: { [path: string]: FileSystemWatcher } = {};
   private static lastPages: Page[] = [];
 
+  /**
+   * Process the messages for the dashboard views
+   * @param msg 
+   */
+  public static async process(msg: { command: DashboardMessage, data: any }) {
+    super.process(msg);
+
+    switch(msg.command) {
+      case DashboardMessage.getData:
+        this.getPagesData();
+        break;
+      case DashboardMessage.createContent:
+        await commands.executeCommand(COMMAND_NAME.createContent);
+        break;
+      case DashboardMessage.createByContentType:
+        await commands.executeCommand(COMMAND_NAME.createByContentType);
+        break;
+      case DashboardMessage.createByTemplate:
+        await commands.executeCommand(COMMAND_NAME.createByTemplate);
+        break;
+      case DashboardMessage.refreshPages:
+        this.getPagesData(true);
+        break;
+    }
+  }
+
+  /**
+   * Saved file watcher
+   * @returns 
+   */
   public static saveFileWatcher() {
     return workspace.onDidSaveTextDocument((doc: TextDocument) => {
       if (ArticleHelper.isSupportedFile(doc)) {
@@ -63,33 +93,12 @@ export class PagesListener extends BaseListener {
   }
 
   /**
-   * Process the messages for the dashboard views
-   * @param msg 
+   * Watcher for processing page updates
+   * @param file 
    */
-  public static async process(msg: { command: DashboardMessage, data: any }) {
-    super.process(msg);
-
-    switch(msg.command) {
-      case DashboardMessage.getData:
-        this.getPagesData();
-        break;
-      case DashboardMessage.createContent:
-        await commands.executeCommand(COMMAND_NAME.createContent);
-        break;
-      case DashboardMessage.createByContentType:
-        await commands.executeCommand(COMMAND_NAME.createByContentType);
-        break;
-      case DashboardMessage.createByTemplate:
-        await commands.executeCommand(COMMAND_NAME.createByTemplate);
-        break;
-      case DashboardMessage.refreshPages:
-        this.getPagesData();
-        break;
-    }
-  }
-
   private static async watcherExec(file: Uri) {
     if (Dashboard.isOpen) {
+      const ext = Extension.getInstance();
       Logger.info(`File watcher execution for: ${file.fsPath}`)
       
       const pageIdx = this.lastPages.findIndex(p => p.fmFilePath === file.fsPath);
@@ -100,9 +109,10 @@ export class PagesListener extends BaseListener {
         if (updatedPage) {
           this.lastPages[pageIdx] = updatedPage;
           this.sendMsg(DashboardCommand.pages, this.lastPages);
+          await ext.setState(ExtensionState.Dashboard.Pages.Cache, this.lastPages, "workspace");
         }
       } else {
-        this.getPagesData();
+        this.getPagesData(true);
       }
     }
   }
@@ -110,7 +120,18 @@ export class PagesListener extends BaseListener {
   /**
    * Retrieve all the markdown pages
    */
-  private static async getPagesData() {
+  private static async getPagesData(clear: boolean = false) {
+    const ext = Extension.getInstance();
+
+    // Get data from the cache
+    if (!clear) {
+      const cachedPages = await ext.getState<Page[]>(ExtensionState.Dashboard.Pages.Cache, "workspace");
+      if (cachedPages) {
+        this.sendMsg(DashboardCommand.pages, cachedPages);
+      }
+    }
+
+    // Update the dashboard with the fresh data
     const folderInfo = await Folders.getInfo();
     const pages: Page[] = [];
 
@@ -136,10 +157,15 @@ export class PagesListener extends BaseListener {
 
     this.lastPages = pages;
     this.sendMsg(DashboardCommand.pages, pages);
+
+    await ext.setState(ExtensionState.Dashboard.Pages.Cache, pages, "workspace");
   }
 
+  /**
+   * Get fresh page data
+   */
   public static refresh() {
-    this.getPagesData();
+    this.getPagesData(true);
   }
 
   /**
