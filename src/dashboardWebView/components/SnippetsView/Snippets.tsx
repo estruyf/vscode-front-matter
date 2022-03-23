@@ -76,58 +76,60 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (props: React.P
         </div>
       )}>      
 
-      {
-        viewData?.data?.filePath && (
-          <div className={`text-xl text-center mb-6`}>
-            <p>Select the snippet to add to your content.</p>
-          </div>
-        )
-      }
-
-      {
-        snippetKeys && snippetKeys.length > 0 ? (
-          <ul role="list" className={`grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8`}>
-            {
-              snippetKeys.map((snippetKey: any, index: number) => (
-                <Item 
-                  key={index}
-                  title={snippetKey}
-                  snippet={snippets[snippetKey]} />
-              ))
-            }
-          </ul>
-        ) : (
-          <div className='w-full h-full flex items-center justify-center'>
-            <div className='flex flex-col items-center text-gray-500 dark:text-whisper-900'>
-              <CodeIcon className='w-32 h-32' />
-              <p className='text-3xl'>No snippets found</p>
+      <div className="flex flex-col">
+        {
+          viewData?.data?.filePath && (
+            <div className={`text-xl text-center mb-6`}>
+              <p>Select the snippet to add to your content.</p>
             </div>
-          </div>
-        )
-      }
+          )
+        }
 
-      {
-        showCreateDialog && (
-          <FormDialog 
-            title={`Create a snippet`}
-            description={``}
-            isSaveDisabled={!snippetTitle || !snippetBody}
-            trigger={onSnippetAdd}
-            dismiss={reset}
-            okBtnText='Save'
-            cancelBtnText='Cancel'>
+        {
+          snippetKeys && snippetKeys.length > 0 ? (
+            <ul role="list" className={`grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8`}>
+              {
+                snippetKeys.map((snippetKey: any, index: number) => (
+                  <Item 
+                    key={index}
+                    title={snippetKey}
+                    snippet={snippets[snippetKey]} />
+                ))
+              }
+            </ul>
+          ) : (
+            <div className='w-full h-full flex items-center justify-center'>
+              <div className='flex flex-col items-center text-gray-500 dark:text-whisper-900'>
+                <CodeIcon className='w-32 h-32' />
+                <p className='text-3xl'>No snippets found</p>
+              </div>
+            </div>
+          )
+        }
 
-            <NewForm 
-              title={snippetTitle}
-              description={snippetDescription}
-              body={snippetBody}
-              onTitleUpdate={(value: string) => setSnippetTitle(value)}
-              onDescriptionUpdate={(value: string) => setSnippetDescription(value)}
-              onBodyUpdate={(value: string) => setSnippetBody(value)} />
-            
-          </FormDialog>
-        )
-      }
+        {
+          showCreateDialog && (
+            <FormDialog 
+              title={`Create a snippet`}
+              description={``}
+              isSaveDisabled={!snippetTitle || !snippetBody}
+              trigger={onSnippetAdd}
+              dismiss={reset}
+              okBtnText='Save'
+              cancelBtnText='Cancel'>
+
+              <NewForm 
+                title={snippetTitle}
+                description={snippetDescription}
+                body={snippetBody}
+                onTitleUpdate={(value: string) => setSnippetTitle(value)}
+                onDescriptionUpdate={(value: string) => setSnippetDescription(value)}
+                onBodyUpdate={(value: string) => setSnippetBody(value)} />
+              
+            </FormDialog>
+          )
+        }
+      </div>
 
       <SponsorMsg beta={settings?.beta} version={settings?.versionInfo} isBacker={settings?.isBacker} />
     </PageLayout>
