@@ -15,6 +15,7 @@ export const ExtensionState = {
     },
     Pages: {
       Cache: `frontMatter:Dashboard:Pages:Cache`,
+      Index: `frontMatter:Dashboard:Pages:Index`,
     }
   },
 

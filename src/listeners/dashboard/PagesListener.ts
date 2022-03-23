@@ -15,6 +15,7 @@ import { Notifications } from "../../helpers/Notifications";
 import { BaseListener } from "./BaseListener";
 import { Field, FieldType } from '../../models';
 import { DataListener } from '../panel';
+import Fuse from 'fuse.js';
 
 
 export class PagesListener extends BaseListener {
@@ -43,6 +44,9 @@ export class PagesListener extends BaseListener {
         break;
       case DashboardMessage.refreshPages:
         this.getPagesData(true);
+        break;
+      case DashboardMessage.searchPages:
+        this.searchPages(msg.data);
         break;
     }
   }
@@ -108,7 +112,7 @@ export class PagesListener extends BaseListener {
         const updatedPage = this.processPageContent(file.fsPath, stats.mtime, basename(file.fsPath), crntPage.fmFolder);
         if (updatedPage) {
           this.lastPages[pageIdx] = updatedPage;
-          this.sendMsg(DashboardCommand.pages, this.lastPages);
+          this.sendPageData(this.lastPages);
           await ext.setState(ExtensionState.Dashboard.Pages.Cache, this.lastPages, "workspace");
         }
       } else {
@@ -127,7 +131,7 @@ export class PagesListener extends BaseListener {
     if (!clear) {
       const cachedPages = await ext.getState<Page[]>(ExtensionState.Dashboard.Pages.Cache, "workspace");
       if (cachedPages) {
-        this.sendMsg(DashboardCommand.pages, cachedPages);
+        this.sendPageData(cachedPages);
       }
     }
 
@@ -156,9 +160,56 @@ export class PagesListener extends BaseListener {
     }
 
     this.lastPages = pages;
-    this.sendMsg(DashboardCommand.pages, pages);
+    this.sendPageData(pages);
+
+    this.sendMsg(DashboardCommand.searchReady, true);
 
     await ext.setState(ExtensionState.Dashboard.Pages.Cache, pages, "workspace");
+    await this.createSearchIndex(pages);
+  }
+
+  /**
+   * Send the page data without the body
+   */
+  private static sendPageData(pages: Page[]) {
+    // Omit the body content
+    this.sendMsg(DashboardCommand.pages, pages.map(p => {
+      const { fmBody, ...rest } = p;
+      return rest;
+    }));
+  }
+
+  /**
+   * Create the search index for the pages
+   * @param pages 
+   */
+  private static async createSearchIndex(pages: Page[]) {
+    const pagesIndex = Fuse.createIndex([ 'title', 'slug', 'description', 'fmBody' ], pages);
+    await Extension.getInstance().setState(ExtensionState.Dashboard.Pages.Index, pagesIndex, "workspace");
+  }
+
+  /**
+   * Search the pages
+   */
+  private static async searchPages(data: { query: string }) {
+    const fuseOptions: Fuse.IFuseOptions<Page> = {
+      keys: [
+        { name: 'title', weight: 1 },
+        { name: 'fmBody', weight: 1,  },
+        { name: 'slug', weight: 0.5 },
+        { name: 'description', weight: 0.5 },
+      ],
+      includeScore: true,
+      ignoreLocation: true,
+      threshold: 0.1
+    };
+
+    const pagesIndex = await Extension.getInstance().getState<Fuse.FuseIndex<Page>>(ExtensionState.Dashboard.Pages.Index, "workspace");
+    const fuse = new Fuse(this.lastPages, fuseOptions, pagesIndex);
+    const results = fuse.search(data.query || "");
+    const pageResults = results.map(page => page.item);
+
+    this.sendMsg(DashboardCommand.searchPages, pageResults);
   }
 
   /**
@@ -204,6 +255,7 @@ export class PagesListener extends BaseListener {
         fmPreviewImage: "",
         fmTags: [],
         fmCategories: [],
+        fmBody: article?.content || "",
         // Make sure these are always set
         title: article?.data.title,
         slug: article?.data.slug,

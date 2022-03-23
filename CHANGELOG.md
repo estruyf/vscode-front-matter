@@ -1,5 +1,17 @@
 # Change Log
 
+## [7.1.0] - 2022-xx-xx
+
+### 🎨 Enhancements
+
+- [#294](https://github.com/estruyf/vscode-front-matter/issues/294): Full-text search allows you to search through all your page content
+
+### ⚡️ Optimizations
+
+- [#296](https://github.com/estruyf/vscode-front-matter/issues/296): Loading optimization of the content dashboard
+
+### 🐞 Fixes
+
 ## [7.0.0] - 2022-03-21 - [Release notes](https://beta.frontmatter.codes/updates/v7.0.0)
 
 ### ✨ New Features

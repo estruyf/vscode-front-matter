@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { SortOption } from '../constants/SortOption';
 import { Tab } from '../constants/Tab';
 import { Page } from '../models/Page';
@@ -7,6 +7,9 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { CategorySelector, FolderSelector, SearchSelector, SettingsSelector, SortingAtom, TabSelector, TagSelector } from '../state';
 import { SortOrder, SortType } from '../../models';
 import { Sorting } from '../../helpers/Sorting';
+import { Messenger } from '@estruyf/vscode/dist/client';
+import { DashboardMessage } from '../DashboardMessage';
+import { EventData } from '@estruyf/vscode/dist/models';
 
 const fuseOptions: Fuse.IFuseOptions<Page> = {
   keys: [
@@ -28,25 +31,8 @@ export default function usePages(pages: Page[]) {
   const tag = useRecoilValue(TagSelector);
   const category = useRecoilValue(CategorySelector);
 
-  useEffect(() => {
+  const processPages = useCallback((searchedPages: Page[]) => {
     const draftField = settings?.draftField;
-    let usedSorting = sorting;
-
-    if (!usedSorting) {
-      const lastSort = settings?.dashboardState.contents.sorting;      
-      if (lastSort) {
-        setSorting(lastSort);
-        return;
-      }
-    }
-
-    // Check if search needs to be performed
-    let searchedPages = pages;
-    if (search) {
-      const fuse = new Fuse(pages, fuseOptions);
-      const results = fuse.search(search);
-      searchedPages = results.map(page => page.item);
-    }
 
     // Filter the pages
     let pagesToShow: Page[] = Object.assign([], searchedPages);
@@ -115,7 +101,48 @@ export default function usePages(pages: Page[]) {
     }
 
     setPageItems(pagesSorted);
-  }, [ settings?.draftField, pages, tab, sorting, folder, search, tag, category ]);
+  }, [ settings, tab, folder, search, tag, category, sorting ]);
+
+
+  const searchListener = (message: MessageEvent<EventData<any>>) => {
+    switch (message.data.command) {
+      case DashboardMessage.searchPages:
+        processPages(message.data.data);
+        break;
+    }
+  };
+
+  useEffect(() => {
+    let usedSorting = sorting;
+
+    if (!usedSorting) {
+      const lastSort = settings?.dashboardState.contents.sorting;      
+      if (lastSort) {
+        setSorting(lastSort);
+        return;
+      }
+    }
+
+    // Check if search needs to be performed
+    let searchedPages = pages;
+    if (search) {
+      // const fuse = new Fuse(pages, fuseOptions);
+      // const results = fuse.search(search);
+      // searchedPages = results.map(page => page.item);
+      
+      Messenger.send(DashboardMessage.searchPages, { query: search });
+    } else {
+      processPages(searchedPages);
+    }
+  }, [ settings?.draftField, pages, sorting, search ]);
+
+  useEffect(() => {
+    Messenger.listen(searchListener);
+
+    return () => {
+      Messenger.unlisten(searchListener);
+    }
+  }, []);
 
   return {
     pageItems
