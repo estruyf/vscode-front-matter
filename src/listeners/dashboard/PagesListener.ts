@@ -4,7 +4,7 @@ import { basename, dirname, join } from "path";
 import { commands, FileSystemWatcher, RelativePattern, TextDocument, Uri, workspace } from "vscode";
 import { Dashboard } from "../../commands/Dashboard";
 import { Folders } from "../../commands/Folders";
-import { COMMAND_NAME, DefaultFields, ExtensionState, SETTING_CONTENT_STATIC_FOLDER, SETTING_SEO_DESCRIPTION_FIELD } from "../../constants";
+import { COMMAND_NAME, DefaultFields, ExtensionState, SETTING_CONTENT_STATIC_FOLDER, SETTING_SEO_DESCRIPTION_FIELD, SETTING_TAXONOMY_FIELD_GROUPS } from "../../constants";
 import { DashboardCommand } from "../../dashboardWebView/DashboardCommand";
 import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { Page } from "../../dashboardWebView/models";
@@ -13,7 +13,7 @@ import { ContentType } from "../../helpers/ContentType";
 import { DateHelper } from "../../helpers/DateHelper";
 import { Notifications } from "../../helpers/Notifications";
 import { BaseListener } from "./BaseListener";
-import { Field, FieldType } from '../../models';
+import { Field, FieldGroup, FieldType } from '../../models';
 import { DataListener } from '../panel';
 import Fuse from 'fuse.js';
 
@@ -300,6 +300,17 @@ export class PagesListener extends BaseListener {
             }
 
             crntPageData = crntPageData[previewField];
+
+            // Check for preview image in block data
+            if (crntPageData instanceof Array && crntPageData.length > 0) {
+              // Get the first field block that contains the next field data
+              const fieldData = crntPageData.find(item => item[previewFieldParents[i + 1]]);
+              if (fieldData) {
+                crntPageData = fieldData;
+              } else {
+                continue;
+              }
+            }
           }
         }
 
@@ -404,9 +415,52 @@ export class PagesListener extends BaseListener {
         if (subFields.length > 0) {
           return [...parents, field.name, ...subFields];
         }
+      } else if (field.type === "block") {
+        const subFields = this.findPreviewInBlockField(field);
+        if (subFields.length > 0) {
+          return [...parents, field.name, ...subFields];
+        }
       }
     }
 
     return parents;
+  }
+
+  /**
+   * Look for the preview image in the block field
+   * @param field 
+   * @param parents 
+   * @returns 
+   */
+  private static findPreviewInBlockField(field: Field) {
+    const groups = field.fieldGroup && Array.isArray(field.fieldGroup) ? field.fieldGroup : [field.fieldGroup];
+    if (!groups) {
+      return [];
+    }
+
+    const blocks = Settings.get<FieldGroup[]>(SETTING_TAXONOMY_FIELD_GROUPS);
+    if (!blocks) {
+      return [];
+    }
+
+    let found = false;
+    for (const group of groups) {
+      const block = blocks.find(block => block.id === group);
+      if (!block) {
+        continue;
+      }
+
+      let newParents: string[] = [];
+      if (!found) {
+        newParents = this.findPreviewField(block?.fields, []);
+      }
+
+      if (newParents.length > 0) {
+        found = true;
+        return newParents;
+      }
+    }
+
+    return [];
   }
 }
