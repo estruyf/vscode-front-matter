@@ -49,7 +49,7 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({keywords, ...d
           {
             validateKeywords().map((keyword, index) => {
               return (
-                <ErrorBoundary fallback={<div />}>
+                <ErrorBoundary key={keyword} fallback={<div />}>
                   <SeoKeywordInfo key={index} keyword={keyword} {...data} />
                 </ErrorBoundary>
               );
