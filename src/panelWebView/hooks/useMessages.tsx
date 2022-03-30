@@ -46,6 +46,14 @@ export default function useMessages() {
     }
   });
 
+  useEffect(() => {
+    if (loading) {
+      window.setTimeout(() => {
+        setLoading(false);
+      }, 5000);
+    }
+  }, [loading])
+
   useEffect(() => {    
     setLoading(true);
 
