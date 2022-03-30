@@ -10,9 +10,10 @@ export enum DashboardMessage {
   createByTemplate = 'createByTemplate',
   refreshPages = 'refreshPages',
   searchPages = 'searchPages',
+  openFile = 'openFile',
+  deleteFile = 'deleteFile',
 
   // Media Dashboard
-  openFile = 'openFile',
   getMedia = 'getMedia',
   copyToClipboard = 'copyToClipboard',
   refreshMedia = 'refreshMedia',

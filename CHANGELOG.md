@@ -8,6 +8,7 @@
 - [#293](https://github.com/estruyf/vscode-front-matter/issues/293): Support added for setting preview images in block fields
 - [#294](https://github.com/estruyf/vscode-front-matter/issues/294): Full-text search allows you to search through all your page content
 - [#301](https://github.com/estruyf/vscode-front-matter/issues/301): Show tags on the content cards
+- [#303](https://github.com/estruyf/vscode-front-matter/issues/303): Content card actions to quickly view, delete, or run custom scripts
 
 ### ⚡️ Optimizations
 

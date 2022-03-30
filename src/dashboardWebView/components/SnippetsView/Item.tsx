@@ -4,9 +4,10 @@ import * as React from 'react';
 import { useCallback, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { SnippetParser } from '../../../helpers/SnippetParser';
-import { Snippet, SnippetField, Snippets } from '../../../models';
+import { Snippet, Snippets } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
 import { SettingsSelector, ViewDataSelector } from '../../state';
+import { QuickAction } from '../Menu';
 import { Alert } from '../Modals/Alert';
 import { FormDialog } from '../Modals/FormDialog';
 import { NewForm } from './NewForm';
@@ -106,27 +107,30 @@ export const Item: React.FunctionComponent<IItemProps> = ({ title, snippet }: Re
               <DotsHorizontalIcon className="w-4 h-4" />
             </div>
 
-            <div className='hidden group-hover:flex space-x-2'>
+            <div className='hidden group-hover:flex'>
               {
                 viewData?.data?.filePath && (
                   <>
-                    <button onClick={() => setShowInsertDialog(true)}>
-                      <PlusIcon className='w-4 h-4' />
-                      <span className='sr-only'>Insert snippet</span>
-                    </button>
+                    <QuickAction 
+                      title={`Insert snippet`}
+                      onClick={() => setShowInsertDialog(true)}>
+                      <PlusIcon className={`w-4 h-4`} aria-hidden="true" />
+                    </QuickAction>
                   </>
                 )
               }
 
-              <button onClick={onOpenEdit}>
-                <PencilIcon className='w-4 h-4' />
-                <span className='sr-only'>Edit snippet</span>
-              </button>
+              <QuickAction 
+                title={`Edit snippet`}
+                onClick={onOpenEdit}>
+                <PencilIcon className={`w-4 h-4`} aria-hidden="true" />
+              </QuickAction>
 
-              <button onClick={() => setShowAlert(true)}>
-                <TrashIcon className='w-4 h-4' />
-                <span className='sr-only'>Delete snippet</span>
-              </button>
+              <QuickAction 
+                title={`Delete snippet`}
+                onClick={() => setShowAlert(true)}>
+                <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
+              </QuickAction>
             </div>
           </div>
         </div>

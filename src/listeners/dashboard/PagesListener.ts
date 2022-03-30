@@ -1,5 +1,5 @@
 import { isValidFile } from '../../helpers/isValidFile';
-import { existsSync } from "fs";
+import { existsSync, unlinkSync } from "fs";
 import { basename, dirname, join } from "path";
 import { commands, FileSystemWatcher, RelativePattern, TextDocument, Uri, workspace } from "vscode";
 import { Dashboard } from "../../commands/Dashboard";
@@ -48,6 +48,9 @@ export class PagesListener extends BaseListener {
       case DashboardMessage.searchPages:
         this.searchPages(msg.data);
         break;
+      case DashboardMessage.deleteFile:
+        this.deletePage(msg.data);
+        break;
     }
   }
 
@@ -94,6 +97,26 @@ export class PagesListener extends BaseListener {
       watcher.onDidDelete(async (uri: Uri) => this.watcherExec(uri));
       this.watchers[folderUri.fsPath] = watcher;
     }
+  }
+
+  /**
+   * Delete a page
+   * @param path 
+   */
+  private static async deletePage(path: string) {
+    if (!path) {
+      return;
+    }
+
+    Logger.info(`Deleting file: ${path}`)
+    
+    unlinkSync(path);
+      
+    this.lastPages = this.lastPages.filter(p => p.fmFilePath !== path);
+    this.sendPageData(this.lastPages);
+
+    const ext = Extension.getInstance();
+    await ext.setState(ExtensionState.Dashboard.Pages.Cache, this.lastPages, "workspace");
   }
 
   /**

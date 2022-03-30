@@ -12,10 +12,10 @@ import { MediaInfo } from '../../../models/MediaPaths';
 import { DashboardMessage } from '../../DashboardMessage';
 import { LightboxAtom, SelectedMediaFolderSelector, SettingsSelector, ViewDataSelector } from '../../state';
 import { MenuItem, MenuItems } from '../Menu';
+import { ActionMenuButton } from '../Menu/ActionMenuButton';
+import { QuickAction } from '../Menu/QuickAction';
 import { Alert } from '../Modals/Alert';
 import { DetailsSlideOver } from './DetailsSlideOver';
-import { MenuButton } from './MenuButton'
-import { QuickAction } from './QuickAction';
  
 export interface IItemProps {
   media: MediaInfo;
@@ -219,17 +219,17 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
 
             <div className="flex items-center border border-transparent group-hover:bg-gray-200 dark:group-hover:bg-vulcan-200 group-hover:border-gray-100 dark:group-hover:border-vulcan-50 rounded-full p-2 -mr-2 -mt-2">
 
-              <div className='hidden group-hover:inline-block h-5'>
+              <div className='hidden group-hover:flex'>
                 <QuickAction 
                   title='View media details'
                   onClick={viewMediaDetails}>
-                  <EyeIcon className={`h-5 w-5`} aria-hidden="true" />
+                  <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
                 </QuickAction>
 
                 <QuickAction 
                   title='Edit metadata'
                   onClick={updateMetadata}>
-                  <PencilIcon className={`h-5 w-5`} aria-hidden="true" />
+                  <PencilIcon className={`w-4 h-4`} aria-hidden="true" />
                 </QuickAction>
 
                 {
@@ -238,7 +238,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
                       <QuickAction 
                         title={(viewData.data.metadataInsert && viewData.data.fieldName) ? `Insert image for your "${viewData.data.fieldName}" field` : `Insert image with markdown markup`}
                         onClick={insertToArticle}>
-                        <PlusIcon className={`h-5 w-5`} aria-hidden="true" />
+                        <PlusIcon className={`w-4 h-4`} aria-hidden="true" />
                       </QuickAction>
 
                       {
@@ -246,7 +246,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
                           <QuickAction 
                             title='Insert snippet'
                             onClick={insertSnippet}>
-                            <CodeIcon className={`h-5 w-5`} aria-hidden="true" />
+                            <CodeIcon className={`w-4 h-4`} aria-hidden="true" />
                           </QuickAction>
                         )
                       }
@@ -256,7 +256,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
                       <QuickAction 
                         title='Copy media path'
                         onClick={copyToClipboard}>
-                        <ClipboardIcon className={`h-5 w-5`} aria-hidden="true" />
+                        <ClipboardIcon className={`w-4 h-4`} aria-hidden="true" />
                       </QuickAction>
                     </>
                   )
@@ -265,12 +265,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
                 <QuickAction 
                   title='Delete media file'
                   onClick={deleteMedia}>
-                  <TrashIcon className={`h-5 w-5`} aria-hidden="true" />
+                  <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
                 </QuickAction>
               </div>
 
-              <Menu as="div" className="relative z-10 inline-block text-left  h-5">
-                <MenuButton title={`Menu`} />
+              <Menu as="div" className="relative z-10 flex text-left">
+                <ActionMenuButton title={`Menu`} />
 
                 <MenuItems widthClass='w-40'>
                   <MenuItem 
