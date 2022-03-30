@@ -49,23 +49,24 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({ 
   
   return (
     <>
-      <div className={`absolute top-4 right-4 flex flex-col space-y-4`}>       
-        <div className="flex items-center border border-transparent group-hover:bg-gray-200 dark:group-hover:bg-vulcan-200 group-hover:border-gray-100 dark:group-hover:border-vulcan-50 rounded-full p-2 -mr-2 -mt-2">
-          <div className='hidden group-hover:flex'>
-            <QuickAction 
-              title={`View content`}
-              onClick={onView}>
-              <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
-            </QuickAction>
-            
-            <QuickAction 
-              title={`Delete content`}
-              onClick={onDelete}>
-              <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
-            </QuickAction>
-          </div>
-
+      <div className={`group-scope absolute top-6 right-0 flex flex-col space-y-4`}>       
+        <div className="flex items-center border border-transparent group-scope-hover:bg-gray-200 dark:group-scope-hover:bg-vulcan-200 group-scope-hover:border-gray-100 dark:group-scope-hover:border-vulcan-50 rounded-full p-2 -mt-4">
+          
           <Menu as="div" className="relative z-10 flex text-left">
+            <div className='hidden group-scope-hover:flex'>
+              <QuickAction 
+                title={`View content`}
+                onClick={onView}>
+                <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
+              </QuickAction>
+              
+              <QuickAction 
+                title={`Delete content`}
+                onClick={onDelete}>
+                <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
+              </QuickAction>
+            </div>
+
             <ActionMenuButton title={`Menu`} />
 
             <MenuItems widthClass='w-40'>

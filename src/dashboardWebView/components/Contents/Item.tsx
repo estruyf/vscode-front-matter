@@ -34,7 +34,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
   if (view === DashboardViewType.Grid) {
     return (
       <li className="relative">
-        <button className={`group cursor-pointer flex flex-wrap items-start content-start h-full w-full bg-gray-50 dark:bg-vulcan-200 text-vulcan-500 dark:text-whisper-500 text-left overflow-hidden shadow-md dark:shadow-none hover:shadow-xl dark:hover:bg-vulcan-100 border border-gray-200 dark:border-vulcan-50`}
+        <button className={`group cursor-pointer flex flex-wrap items-start content-start h-full w-full bg-gray-50 dark:bg-vulcan-200 text-vulcan-500 dark:text-whisper-500 text-left shadow-md dark:shadow-none hover:shadow-xl dark:hover:bg-vulcan-100 border border-gray-200 dark:border-vulcan-50`}
                 onClick={openFile}>
 
           <div className="relative h-36 w-full overflow-hidden border-b border-gray-100 dark:border-vulcan-100 dark:group-hover:border-vulcan-200">
@@ -49,17 +49,17 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
             }
           </div>
 
-          <ContentActions 
-            title={title}
-            path={fmFilePath}
-            scripts={settings?.scripts}
-            onOpen={openFile} />
-
-          <div className="p-4 w-full">
+          <div className="relative p-4 w-full">
             <div className={`flex justify-between items-center`}>
               <Status draft={draft} />
 
-              <DateField value={date} />
+              <DateField className={`mr-4`} value={date} />
+
+              <ContentActions 
+                title={title}
+                path={fmFilePath}
+                scripts={settings?.scripts}
+                onOpen={openFile} />
             </div>
 
             <h2 className="mt-2 mb-2 font-bold">{title}</h2>

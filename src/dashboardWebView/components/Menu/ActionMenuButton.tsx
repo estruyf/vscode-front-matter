@@ -3,8 +3,8 @@ import {DotsVerticalIcon} from '@heroicons/react/outline';
 import * as React from 'react';
 
 export interface IActionMenuButtonProps {
-    title: string;
-    disabled?: boolean;
+  title: string;
+  disabled?: boolean;
 }
 
 export const ActionMenuButton: React.FunctionComponent<IActionMenuButtonProps> = ({ title, disabled }: React.PropsWithChildren<IActionMenuButtonProps>) => {
