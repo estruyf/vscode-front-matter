@@ -58,6 +58,7 @@ export const SETTING_CONTENT_SUPPORTED_FILETYPES = "content.supportedFileTypes";
 
 export const SETTING_DASHBOARD_OPENONSTART = "dashboard.openOnStart";
 export const SETTING_DASHBOARD_MEDIA_SNIPPET = "dashboard.mediaSnippet";
+export const SETTING_DASHBOARD_CONTENT_TAGS = "dashboard.contentTags";
 
 export const SETTING_DATA_FILES = "data.files";
 export const SETTING_DATA_FOLDERS = "data.folders";

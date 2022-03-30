@@ -7,8 +7,8 @@ export class Logger {
   private static channel: OutputChannel | null = null; 
 
   private constructor() {
-    const title = Extension.getInstance().title;
-    Logger.channel = window.createOutputChannel(title);
+    const displayName = Extension.getInstance().displayName;
+    Logger.channel = window.createOutputChannel(displayName);
   }
 
   public static getInstance(): Logger {

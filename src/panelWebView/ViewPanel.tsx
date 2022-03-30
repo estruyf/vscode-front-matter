@@ -24,6 +24,8 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
     );
   }
 
+  console.log(loading)
+
   if (loading) {
     return (
       <Spinner />
