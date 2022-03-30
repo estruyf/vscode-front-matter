@@ -7,12 +7,15 @@
 - [#246](https://github.com/estruyf/vscode-front-matter/issues/246): Support to add multiple tags/keywords/taxonomy via comma separated values
 - [#293](https://github.com/estruyf/vscode-front-matter/issues/293): Support added for setting preview images in block fields
 - [#294](https://github.com/estruyf/vscode-front-matter/issues/294): Full-text search allows you to search through all your page content
+- [#301](https://github.com/estruyf/vscode-front-matter/issues/301): Show tags on the content cards
 
 ### ⚡️ Optimizations
 
 - [#296](https://github.com/estruyf/vscode-front-matter/issues/296): Loading optimization of the content dashboard
 
 ### 🐞 Fixes
+
+- [#302](https://github.com/estruyf/vscode-front-matter/issues/302): Fix for spinner when navigating between tabs
 
 ## [7.0.0] - 2022-03-21 - [Release notes](https://beta.frontmatter.codes/updates/v7.0.0)
 
