@@ -4,6 +4,7 @@
 
 ### 🎨 Enhancements
 
+- [#240](https://github.com/estruyf/vscode-front-matter/issues/240): Capability added to define display modes
 - [#246](https://github.com/estruyf/vscode-front-matter/issues/246): Support to add multiple tags/keywords/taxonomy via comma separated values
 - [#293](https://github.com/estruyf/vscode-front-matter/issues/293): Support added for setting preview images in block fields
 - [#294](https://github.com/estruyf/vscode-front-matter/issues/294): Full-text search allows you to search through all your page content

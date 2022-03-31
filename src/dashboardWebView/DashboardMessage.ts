@@ -2,6 +2,7 @@ export enum DashboardMessage {
   getViewType = 'getViewType',
   reload = 'reload',
   setPageViewType = 'setPageViewType',
+  getMode = 'getMode',
 
   // Content dashboard
   getData = 'getData',

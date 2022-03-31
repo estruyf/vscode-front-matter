@@ -3,10 +3,12 @@ import { CodeIcon, PlusSmIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
+import { FeatureFlag } from '../../../components/features/FeatureFlag';
+import { FEATURE_FLAG } from '../../../constants';
 import { TelemetryEvent } from '../../../constants/TelemetryEvent';
 import { SnippetParser } from '../../../helpers/SnippetParser';
 import { DashboardMessage } from '../../DashboardMessage';
-import { SettingsSelector, ViewDataSelector } from '../../state';
+import { ModeAtom, SettingsSelector, ViewDataSelector } from '../../state';
 import { PageLayout } from '../Layout/PageLayout';
 import { FormDialog } from '../Modals/FormDialog';
 import { SponsorMsg } from '../SponsorMsg';
@@ -18,6 +20,7 @@ export interface ISnippetsProps {}
 export const Snippets: React.FunctionComponent<ISnippetsProps> = (props: React.PropsWithChildren<ISnippetsProps>) => {
   const settings = useRecoilValue(SettingsSelector);
   const viewData = useRecoilValue(ViewDataSelector);
+  const mode = useRecoilValue(ModeAtom);
   const [ snippetTitle, setSnippetTitle ] = useState<string>('');
   const [ snippetDescription, setSnippetDescription ] = useState<string>('');
   const [ snippetBody, setSnippetBody ] = useState<string>('');
@@ -60,20 +63,22 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (props: React.P
   return (
     <PageLayout
       header={(
-        <div
-          className="py-3 px-4 flex items-center justify-between border-b border-gray-300 dark:border-vulcan-100"
-          aria-label="Pagination"
-        >
-          <div className="flex flex-1 justify-end">
-            <button 
-              className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 focus:outline-none disabled:bg-gray-500`}
-              title={`Create new snippet`}
-              onClick={() => setShowCreateDialog(true)}>
-              <PlusSmIcon className={`mr-2 h-6 w-6`} />
-              <span className={`text-sm`}>Create new snippet</span>
-            </button>
+        <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.dashboard.snippets.manage}>
+          <div
+            className="py-3 px-4 flex items-center justify-between border-b border-gray-300 dark:border-vulcan-100"
+            aria-label="snippets header"
+          >
+            <div className="flex flex-1 justify-end">
+              <button 
+                className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 focus:outline-none disabled:bg-gray-500`}
+                title={`Create new snippet`}
+                onClick={() => setShowCreateDialog(true)}>
+                <PlusSmIcon className={`mr-2 h-6 w-6`} />
+                <span className={`text-sm`}>Create new snippet</span>
+              </button>
+            </div>
           </div>
-        </div>
+        </FeatureFlag>
       )}>      
 
       <div className="flex flex-col">

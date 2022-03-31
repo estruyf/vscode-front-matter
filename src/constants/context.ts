@@ -8,4 +8,7 @@ export const CONTEXT = {
   wysiwyg: "frontMatter:markdown:wysiwyg",
   backer: "frontMatter:backers:supporter",
   isValidFile: "frontMatter:file:isValid",
+
+  isSnippetsDashboardEnabled: "frontMatter:dashboard:snippets:enabled",
+  isDataDashboardEnabled: "frontMatter:dashboard:data:enabled",
 };

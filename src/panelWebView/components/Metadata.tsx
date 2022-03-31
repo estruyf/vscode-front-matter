@@ -80,23 +80,8 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
 
   return (
     <Collapsible id={`tags`} title="Metadata" className={`inherit z-20`}>
-      
       {
         renderFields(contentType?.fields || [], metadata)
-      }
-
-      {
-        <FieldBoundary fieldName={`Keywords`}>
-          <TagPicker 
-            type={TagType.keywords} 
-            icon={<SymbolKeywordIcon />}
-            crntSelected={metadata.keywords as string[] || []} 
-            options={[]} 
-            freeform={true} 
-            focussed={focusElm === TagType.keywords}
-            unsetFocus={unsetFocus}
-            disableConfigurable />
-        </FieldBoundary>
       }
     </Collapsible>
   );

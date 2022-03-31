@@ -108,9 +108,9 @@ export class DataListener extends BaseListener {
       }
     }
 
-    if (JSON.stringify(DataListener.lastMetadataUpdate) !== JSON.stringify(updatedMetadata)) {
+    // if (JSON.stringify(DataListener.lastMetadataUpdate) !== JSON.stringify(updatedMetadata)) {
       this.sendMsg(Command.metadata, updatedMetadata);
-    }
+    // }
 
     DataListener.lastMetadataUpdate = updatedMetadata;
   }

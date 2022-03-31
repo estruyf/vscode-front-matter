@@ -9,6 +9,7 @@ export * from './DataType';
 export * from './DraftField';
 export * from './Framework';
 export * from './MediaPaths';
+export * from './Mode';
 export * from './PanelSettings';
 export * from './Snippets';
 export * from './SortOrder';

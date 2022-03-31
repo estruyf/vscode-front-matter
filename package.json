@@ -567,6 +567,51 @@
           "default": null,
           "markdownDescription": "Specify the command you want to use to start your static site generator or framework. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.framework.startcommand)"
         },
+        "frontMatter.global.activeMode": {
+          "type": ["string", "null"],
+          "default": "",
+          "markdownDescription": "Specify the activated mode of Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.global.activemode)",
+          "scope": "Global"
+        },
+        "frontMatter.global.modes": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "Specify the modes you want to use for Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.global.modes)",
+          "items": {
+            "type": "object",
+            "default": {},
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "The ID of your mode."
+              },
+              "features": {
+                "type": "array",
+                "default": [],
+                "description": "The features you want to use for your mode.",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "panel.globalSettings", 
+                    "panel.seo",
+                    "panel.actions", 
+                    "panel.metadata", 
+                    "panel.recentlyModified", 
+                    "panel.otherActions",
+                    "dashboard.snippets.view",
+                    "dashboard.snippets.manage", 
+                    "dashboard.data.view"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "features"
+            ] 
+          },
+          "scope": "Global"
+        },
         "frontMatter.global.notifications": {
           "type": "array",
           "items": {
@@ -1318,6 +1363,12 @@
         }
       },
       {
+        "command": "frontMatter.mode.switch",
+        "title": "Switch mode",
+        "category": "Front matter",
+        "icon": "$(preview)"
+      },
+      {
         "command": "frontMatter.preview",
         "title": "Preview content",
         "category": "Front matter"
@@ -1386,7 +1437,7 @@
         {
           "command": "frontMatter.insertSnippet",
           "group": "navigation@-129",
-          "when": "frontMatter:file:isValid == true"
+          "when": "frontMatter:file:isValid == true && frontMatter:dashboard:snippets:enabled"
         },
         {
           "command": "frontMatter.insertImage",
@@ -1468,6 +1519,18 @@
         {
           "command": "frontMatter.preview",
           "when": "frontMatterCanOpenPreview"
+        },
+        {
+          "command": "frontMatter.dashboard.data",
+          "when": "frontMatter:dashboard:data:enabled"
+        },
+        {
+          "command": "frontMatter.dashboard.snippets",
+          "when": "frontMatter:dashboard:snippets:enabled"
+        },
+        {
+          "command": "frontMatter.insertSnippet",
+          "when": "frontMatter:dashboard:snippets:enabled"
         },
         {
           "command": "frontMatter.collapseSections",
@@ -1581,8 +1644,13 @@
           "when": "view == frontMatter.explorer"
         },
         {
-          "command": "frontMatter.dashboard",
+          "command": "frontMatter.mode.switch",
           "group": "navigation@1",
+          "when": "view == frontMatter.explorer"
+        },
+        {
+          "command": "frontMatter.dashboard",
+          "group": "navigation@2",
           "when": "view == frontMatter.explorer"
         }
       ]

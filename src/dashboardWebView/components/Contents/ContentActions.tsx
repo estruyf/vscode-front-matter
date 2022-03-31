@@ -69,7 +69,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({ 
 
             <ActionMenuButton title={`Menu`} />
 
-            <MenuItems widthClass='w-40'>
+            <MenuItems widthClass='w-40' marginTopClass='mt-6'>
               <MenuItem 
                 title={`View`}
                 onClick={onView} />

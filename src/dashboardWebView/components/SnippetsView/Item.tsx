@@ -3,10 +3,12 @@ import { CodeIcon, DotsHorizontalIcon, PencilIcon, PlusIcon, TrashIcon } from '@
 import * as React from 'react';
 import { useCallback, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
+import { FeatureFlag } from '../../../components/features/FeatureFlag';
+import { FEATURE_FLAG } from '../../../constants';
 import { SnippetParser } from '../../../helpers/SnippetParser';
 import { Snippet, Snippets } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
-import { SettingsSelector, ViewDataSelector } from '../../state';
+import { ModeAtom, SettingsSelector, ViewDataSelector } from '../../state';
 import { QuickAction } from '../Menu';
 import { Alert } from '../Modals/Alert';
 import { FormDialog } from '../Modals/FormDialog';
@@ -21,6 +23,7 @@ export interface IItemProps {
 export const Item: React.FunctionComponent<IItemProps> = ({ title, snippet }: React.PropsWithChildren<IItemProps>) => {
   const viewData = useRecoilValue(ViewDataSelector);
   const settings = useRecoilValue(SettingsSelector);
+  const mode = useRecoilValue(ModeAtom);
   const [ showInsertDialog, setShowInsertDialog ] = useState(false);
   const [ showEditDialog, setShowEditDialog ] = useState(false);
   const [ showAlert, setShowAlert ] = React.useState(false);
@@ -101,39 +104,63 @@ export const Item: React.FunctionComponent<IItemProps> = ({ title, snippet }: Re
 
         <h2 className="mt-2 mb-2 font-bold">{title}</h2>
 
-        <div className={`absolute top-4 right-4 flex flex-col space-y-4`}>
-          <div className="flex items-center border border-transparent group-hover:bg-gray-200 dark:group-hover:bg-vulcan-200 group-hover:border-gray-100 dark:group-hover:border-vulcan-50 rounded-full p-2 -mr-2 -mt-2">
-            <div className='group-hover:hidden'>
-              <DotsHorizontalIcon className="w-4 h-4" />
-            </div>
+        <FeatureFlag 
+          features={mode?.features || []} 
+          flag={FEATURE_FLAG.dashboard.snippets.manage}
+          alternative={(
+            viewData?.data?.filePath ? (
+              <div className={`absolute top-4 right-4 flex flex-col space-y-4`}>
+                <div className="flex items-center border border-transparent group-hover:bg-gray-200 dark:group-hover:bg-vulcan-200 group-hover:border-gray-100 dark:group-hover:border-vulcan-50 rounded-full p-2 -mr-2 -mt-2">
+                  <div className='group-hover:hidden'>
+                    <DotsHorizontalIcon className="w-4 h-4" />
+                  </div>
 
-            <div className='hidden group-hover:flex'>
-              {
-                viewData?.data?.filePath && (
-                  <>
+                  <div className='hidden group-hover:flex'>
                     <QuickAction 
                       title={`Insert snippet`}
                       onClick={() => setShowInsertDialog(true)}>
                       <PlusIcon className={`w-4 h-4`} aria-hidden="true" />
                     </QuickAction>
-                  </>
-                )
-              }
+                  </div>
+                </div>
+              </div>
+            ) : undefined
+          )}
+        >
+          <div className={`absolute top-4 right-4 flex flex-col space-y-4`}>
+            <div className="flex items-center border border-transparent group-hover:bg-gray-200 dark:group-hover:bg-vulcan-200 group-hover:border-gray-100 dark:group-hover:border-vulcan-50 rounded-full p-2 -mr-2 -mt-2">
+              <div className='group-hover:hidden'>
+                <DotsHorizontalIcon className="w-4 h-4" />
+              </div>
 
-              <QuickAction 
-                title={`Edit snippet`}
-                onClick={onOpenEdit}>
-                <PencilIcon className={`w-4 h-4`} aria-hidden="true" />
-              </QuickAction>
+              <div className='hidden group-hover:flex'>
+                {
+                  viewData?.data?.filePath && (
+                    <>
+                      <QuickAction 
+                        title={`Insert snippet`}
+                        onClick={() => setShowInsertDialog(true)}>
+                        <PlusIcon className={`w-4 h-4`} aria-hidden="true" />
+                      </QuickAction>
+                    </>
+                  )
+                }
 
-              <QuickAction 
-                title={`Delete snippet`}
-                onClick={() => setShowAlert(true)}>
-                <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
-              </QuickAction>
+                <QuickAction 
+                  title={`Edit snippet`}
+                  onClick={onOpenEdit}>
+                  <PencilIcon className={`w-4 h-4`} aria-hidden="true" />
+                </QuickAction>
+
+                <QuickAction 
+                  title={`Delete snippet`}
+                  onClick={() => setShowAlert(true)}>
+                  <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
+                </QuickAction>
+              </div>
             </div>
           </div>
-        </div>
+        </FeatureFlag>
 
         <p className="text-xs text-vulcan-200 dark:text-whisper-800">{snippet.description}</p>
       </li>

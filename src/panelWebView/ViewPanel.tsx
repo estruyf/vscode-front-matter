@@ -9,13 +9,15 @@ import { FolderAndFiles } from './components/FolderAndFiles';
 import { Metadata } from './components/Metadata';
 import { SponsorMsg } from './components/SponsorMsg';
 import useMessages from './hooks/useMessages';
+import { FeatureFlag } from '../components/features/FeatureFlag';
+import { FEATURE_FLAG } from '../constants/Features';
 
 export interface IViewPanelProps {
 }
 
 export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React.PropsWithChildren<IViewPanelProps>) => {
-  const { loading, mediaSelecting, metadata, settings, folderAndFiles, focusElm, unsetFocus } = useMessages();
-
+  const { loading, mediaSelecting, metadata, settings, folderAndFiles, focusElm, unsetFocus, mode } = useMessages();
+  
   if (mediaSelecting) {
     return (
       <div className="frontmatter media_selection">
@@ -32,31 +34,52 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
 
   if (!metadata || Object.keys(metadata || {}).length === 0) {
     return (
-      <BaseView settings={settings} folderAndFiles={folderAndFiles} />
+      <BaseView mode={mode} settings={settings} folderAndFiles={folderAndFiles} />
     );
   }
 
   return (
     <div className="frontmatter">      
       <div className={`ext_actions`}>
-        <GlobalSettings settings={settings} />
+        <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.globalSettings}>
+          <GlobalSettings settings={settings} />
+        </FeatureFlag>
 
         {
-          settings && settings.seo && <SeoStatus seo={settings.seo} data={metadata} />
+          settings && settings.seo && (
+            <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.seo}>
+              <SeoStatus 
+                seo={settings.seo} 
+                data={metadata}
+                focusElm={focusElm}
+                unsetFocus={unsetFocus} />
+            </FeatureFlag>
+          )
         }
         {
-          settings && metadata && <Actions metadata={metadata} settings={settings} />
+          settings && metadata && (
+            <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.actions}>
+              <Actions metadata={metadata} settings={settings} />
+            </FeatureFlag>
+          )
         }
 
-        <Metadata
-          settings={settings}
-          metadata={metadata}
-          focusElm={focusElm}
-          unsetFocus={unsetFocus} />
 
-        <FolderAndFiles data={folderAndFiles} />
+        <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.metadata}>
+          <Metadata
+            settings={settings}
+            metadata={metadata}
+            focusElm={focusElm}
+            unsetFocus={unsetFocus} />
+        </FeatureFlag>
 
-        <OtherActions settings={settings} isFile={true} />
+        <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.recentlyModified}>
+          <FolderAndFiles data={folderAndFiles} />
+        </FeatureFlag>
+
+        <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.otherActions}>
+          <OtherActions settings={settings} isFile={true} />
+        </FeatureFlag>
       </div>
 
       <SponsorMsg isBacker={settings?.isBacker} />

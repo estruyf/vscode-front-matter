@@ -23,6 +23,7 @@ import { PagesListener } from './listeners/dashboard';
 import { Backers } from './commands/Backers';
 import { DataListener, SettingsListener } from './listeners/panel';
 import { NavigationType } from './dashboardWebView/models';
+import { ModeSwitch } from './services/ModeSwitch';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
@@ -179,6 +180,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		SettingsListener.getSettings();
 		DataListener.getFoldersAndFiles();	
 		MarkdownFoldingProvider.triggerHighlighting();
+		ModeSwitch.register();
 	});
 
 	// Create the status bar
@@ -220,6 +222,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	// What you see, is what you get
 	Wysiwyg.registerCommands(subscriptions);
 	
+	// Mode switching
+	ModeSwitch.register();
+
 	// Diagnostics
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.diagnostics, Diagnostics.show));
 

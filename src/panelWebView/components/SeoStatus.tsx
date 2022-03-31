@@ -1,18 +1,23 @@
 import * as React from 'react';
 import { SEO } from '../../models/PanelSettings';
+import { TagType } from '../TagType';
 import { ArticleDetails } from './ArticleDetails';
 import { Collapsible } from './Collapsible';
+import FieldBoundary from './ErrorBoundary/FieldBoundary';
+import { SymbolKeywordIcon } from './Icons/SymbolKeywordIcon';
 import { SeoFieldInfo } from './SeoFieldInfo';
 import { SeoKeywords } from './SeoKeywords';
+import { TagPicker } from './TagPicker';
 import { VsTable, VsTableBody, VsTableHeader, VsTableHeaderCell } from './VscodeComponents';
 
 export interface ISeoStatusProps {
   seo: SEO;
   data: any;
+  focusElm: TagType | null;
+  unsetFocus: () => void;
 }
 
-const SeoStatus: React.FunctionComponent<ISeoStatusProps> = (props: React.PropsWithChildren<ISeoStatusProps>) => {
-  const { data, seo } = props;
+const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({ data, seo, focusElm, unsetFocus }: React.PropsWithChildren<ISeoStatusProps>) => {
   const { title, slug } = data;
   const [ isOpen, setIsOpen ] = React.useState(true);
   const tableRef = React.useRef<HTMLElement>();
@@ -93,6 +98,18 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = (props: React.PropsW
                      headings={data?.articleDetails?.headingsText}
                      wordCount={data?.articleDetails?.wordCount}
                      content={data?.articleDetails?.content} />
+        
+        <FieldBoundary fieldName={`Keywords`}>
+          <TagPicker 
+            type={TagType.keywords} 
+            icon={<SymbolKeywordIcon />}
+            crntSelected={data.keywords as string[] || []} 
+            options={[]} 
+            freeform={true} 
+            focussed={focusElm === TagType.keywords}
+            unsetFocus={unsetFocus}
+            disableConfigurable />
+        </FieldBoundary>
 
         <ArticleDetails details={data.articleDetails} />
       </div>
