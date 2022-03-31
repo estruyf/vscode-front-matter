@@ -215,61 +215,61 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
           </div>
         </button>
         <div className={`relative py-4 pl-4 pr-12`}>
-          <div className={`absolute top-4 right-4 flex flex-col space-y-4`}>
+          <div className={`group-scope absolute top-4 right-4 flex flex-col space-y-4`}>
 
-            <div className="flex items-center border border-transparent group-hover:bg-gray-200 dark:group-hover:bg-vulcan-200 group-hover:border-gray-100 dark:group-hover:border-vulcan-50 rounded-full p-2 -mr-2 -mt-2">
-
-              <div className='hidden group-hover:flex'>
-                <QuickAction 
-                  title='View media details'
-                  onClick={viewMediaDetails}>
-                  <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
-                </QuickAction>
-
-                <QuickAction 
-                  title='Edit metadata'
-                  onClick={updateMetadata}>
-                  <PencilIcon className={`w-4 h-4`} aria-hidden="true" />
-                </QuickAction>
-
-                {
-                  viewData?.data?.filePath ? (
-                    <>
-                      <QuickAction 
-                        title={(viewData.data.metadataInsert && viewData.data.fieldName) ? `Insert image for your "${viewData.data.fieldName}" field` : `Insert image with markdown markup`}
-                        onClick={insertToArticle}>
-                        <PlusIcon className={`w-4 h-4`} aria-hidden="true" />
-                      </QuickAction>
-
-                      {
-                        (viewData?.data?.position && settings?.mediaSnippet && settings?.mediaSnippet.length > 0) && (
-                          <QuickAction 
-                            title='Insert snippet'
-                            onClick={insertSnippet}>
-                            <CodeIcon className={`w-4 h-4`} aria-hidden="true" />
-                          </QuickAction>
-                        )
-                      }
-                    </>
-                  ) : (
-                    <>
-                      <QuickAction 
-                        title='Copy media path'
-                        onClick={copyToClipboard}>
-                        <ClipboardIcon className={`w-4 h-4`} aria-hidden="true" />
-                      </QuickAction>
-                    </>
-                  )
-                }
-
-                <QuickAction 
-                  title='Delete media file'
-                  onClick={deleteMedia}>
-                  <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
-                </QuickAction>
-              </div>
+            <div className="flex items-center border border-transparent group-scope-hover:bg-gray-200 dark:group-scope-hover:bg-vulcan-200 group-scope-hover:border-gray-100 dark:group-scope-hover:border-vulcan-50 rounded-full p-2 -mr-2 -mt-2">
 
               <Menu as="div" className="relative z-10 flex text-left">
+                <div className='hidden group-scope-hover:flex'>
+                  <QuickAction 
+                    title='View media details'
+                    onClick={viewMediaDetails}>
+                    <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
+                  </QuickAction>
+
+                  <QuickAction 
+                    title='Edit metadata'
+                    onClick={updateMetadata}>
+                    <PencilIcon className={`w-4 h-4`} aria-hidden="true" />
+                  </QuickAction>
+
+                  {
+                    viewData?.data?.filePath ? (
+                      <>
+                        <QuickAction 
+                          title={(viewData.data.metadataInsert && viewData.data.fieldName) ? `Insert image for your "${viewData.data.fieldName}" field` : `Insert image with markdown markup`}
+                          onClick={insertToArticle}>
+                          <PlusIcon className={`w-4 h-4`} aria-hidden="true" />
+                        </QuickAction>
+
+                        {
+                          (viewData?.data?.position && settings?.mediaSnippet && settings?.mediaSnippet.length > 0) && (
+                            <QuickAction 
+                              title='Insert snippet'
+                              onClick={insertSnippet}>
+                              <CodeIcon className={`w-4 h-4`} aria-hidden="true" />
+                            </QuickAction>
+                          )
+                        }
+                      </>
+                    ) : (
+                      <>
+                        <QuickAction 
+                          title='Copy media path'
+                          onClick={copyToClipboard}>
+                          <ClipboardIcon className={`w-4 h-4`} aria-hidden="true" />
+                        </QuickAction>
+                      </>
+                    )
+                  }
+
+                  <QuickAction 
+                    title='Delete media file'
+                    onClick={deleteMedia}>
+                    <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
+                  </QuickAction>
+                </div>
+
                 <ActionMenuButton title={`Menu`} />
 
                 <MenuItems widthClass='w-40'>
