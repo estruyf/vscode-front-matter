@@ -1529,10 +1529,6 @@
           "when": "frontMatter:dashboard:snippets:enabled"
         },
         {
-          "command": "frontMatter.insertSnippet",
-          "when": "frontMatter:dashboard:snippets:enabled"
-        },
-        {
           "command": "frontMatter.collapseSections",
           "when": "false"
         },
@@ -1598,7 +1594,7 @@
         },
         {
           "command": "frontMatter.insertSnippet",
-          "when": "frontMatter:file:isValid == true"
+          "when": "frontMatter:file:isValid == true && frontMatter:dashboard:snippets:enabled"
         },
         {
           "command": "frontMatter.insertImage",
