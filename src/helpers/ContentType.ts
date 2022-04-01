@@ -11,7 +11,6 @@ import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
 import { Telemetry } from './Telemetry';
 import { processKnownPlaceholders } from './PlaceholderHelper';
 
-
 export class ContentType {
 
   /**
@@ -100,7 +99,6 @@ export class ContentType {
    * @returns 
    */
   private static async create(contentType: IContentType, folderPath: string) {
-
     const titleValue = await Questions.ContentTitle();
     if (!titleValue) {
       return;
