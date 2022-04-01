@@ -31,6 +31,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({ 
     if (path) {
       Messenger.send(DashboardMessage.deleteFile, path);
     }
+    setShowDeletionAlert(false);
   }
 
   const runCustomScript = React.useCallback((e: React.MouseEvent<HTMLButtonElement>, script: CustomScript) => {
