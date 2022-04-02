@@ -30,7 +30,7 @@
 }
 
 .inherit {
-  position: relative !important;
+  position: inherit !important;
 }
 
 .z-10 { z-index: 10 !important; }
@@ -143,12 +143,13 @@
 }
 
 .article__tags {
-  position: relative;
+  /* position: relative; */
   margin-bottom: 1rem;
 }
 
 .article__tags__dropbox {
-  width: 90%;
+  /* Minus the twice the padding */
+  width: calc(100% - 2.5rem);
   margin: 0;
   padding: 0;
   z-index: 1;
