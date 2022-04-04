@@ -73,7 +73,10 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
 
   const {getRootProps, isDragActive} = useDropzone({
     onDrop,
-    accept: 'image/*'
+    accept: settings?.dashboardState.media.mimeTypes || ['image/*', 'video/*', 'audio/*'],
+    onDropRejected: () => {
+      Messenger.send(DashboardMessage.showWarning, 'Unsupported file type');
+    }
   });
   
   return (

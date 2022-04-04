@@ -46,4 +46,5 @@ export interface ContentsViewState {
 
 export interface MediaViewState extends ContentsViewState {
   selectedFolder: string | null | undefined;
+  mimeTypes: string[] | null | undefined;
 }

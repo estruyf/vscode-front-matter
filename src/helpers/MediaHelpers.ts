@@ -1,7 +1,7 @@
 import { decodeBase64Image, Extension, MediaLibrary, Notifications, parseWinPath, Settings, Sorting } from ".";
 import { Dashboard } from "../commands/Dashboard";
 import { Folders } from "../commands/Folders";
-import { DEFAULT_CONTENT_TYPE, ExtensionState, HOME_PAGE_NAVIGATION_ID, SETTING_CONTENT_STATIC_FOLDER } from "../constants";
+import { DEFAULT_CONTENT_TYPE, ExtensionState, HOME_PAGE_NAVIGATION_ID, SETTING_CONTENT_STATIC_FOLDER, SETTING_MEDIA_SUPPORTED_MIMETYPES } from "../constants";
 import { SortingOption } from "../dashboardWebView/models";
 import { MediaInfo, MediaPaths, SortOrder, SortType } from "../models";
 import { basename, extname, join, parse, dirname, relative } from "path";
@@ -12,6 +12,7 @@ import { EditorHelper } from "@estruyf/vscode";
 import { SortOption } from "../dashboardWebView/constants/SortOption";
 import { DataListener, MediaListener } from "../listeners/panel";
 import { ArticleHelper } from "./ArticleHelper";
+import { lookup } from "mime-types";
 
 
 export class MediaHelpers {
@@ -109,10 +110,12 @@ export class MediaHelpers {
     files = files.map((file) => {
       try {
         const metadata = MediaLibrary.getInstance().get(file.fsPath);
+        const mimeType = lookup(file.fsPath);
 
         return {
           ...file,
-          dimensions: imageSize(file.fsPath),
+          dimensions: mimeType && mimeType.startsWith('image/') ? imageSize(file.fsPath) : undefined,
+          mimeType: lookup(file.fsPath) || '',
           ...metadata
         };
       } catch (e) {
@@ -356,9 +359,16 @@ export class MediaHelpers {
    * Filter the media files
    */
   private static filterMedia(files: Uri[]) {
+    let mimeTypes = Settings.get<string[]>(SETTING_MEDIA_SUPPORTED_MIMETYPES) || ["image/*", "video/*", "audio/*"];
+    mimeTypes = mimeTypes.map(type => type.toLowerCase());
+
     return files.filter(file => {
-      const ext = extname(file.fsPath);
-      return ['.jpg', '.jpeg', '.png', '.gif', '.svg'].includes(ext.toLowerCase());
+      const type = lookup(file.fsPath);
+      if (type) {
+        const isValid = this.acceptMimeType(type, mimeTypes);
+        return isValid;
+      } 
+      return false;
     }).map((file) => ({
       filename: basename(file.fsPath),
       fsPath: file.fsPath,
@@ -378,5 +388,28 @@ export class MediaHelpers {
     });
 
     return Object.assign([], files);
+  }
+
+  /**
+   * Validate mimetype of the selected file
+   * @param crntType 
+   * @param supportedTypes 
+   * @returns 
+   */
+  private static acceptMimeType(crntType: string, supportedTypes: string[]) {
+    if (crntType && supportedTypes) {
+      const mimeType = crntType.toLowerCase();
+      const baseMimeType = mimeType.replace(/\/.*$/, '')
+  
+      return supportedTypes.some(type => {
+        const validType = type.trim().toLowerCase()
+        if (validType.endsWith('/*')) {
+          // This is something like a image/* mime type
+          return baseMimeType === validType.replace(/\/.*$/, '')
+        }
+        return mimeType === validType
+      })
+    }
+    return true
   }
 }

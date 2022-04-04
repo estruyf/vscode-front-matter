@@ -58,6 +58,8 @@ export const SETTING_MEDIA_SORTING_DEFAULT = "content.defaultSorting";
 export const SETTING_CONTENT_DEFAULT_FILETYPE = "content.defaultFileType";
 export const SETTING_CONTENT_SUPPORTED_FILETYPES = "content.supportedFileTypes";
 
+export const SETTING_MEDIA_SUPPORTED_MIMETYPES = "media.supportedMimeTypes";
+
 export const SETTING_DASHBOARD_OPENONSTART = "dashboard.openOnStart";
 export const SETTING_DASHBOARD_MEDIA_SNIPPET = "dashboard.mediaSnippet";
 export const SETTING_DASHBOARD_CONTENT_TAGS = "dashboard.contentTags";

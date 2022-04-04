@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useDebounce } from '../../../hooks/useDebounce';
 import { SearchAtom, SearchReadyAtom } from '../../state';
-import { RefreshPages } from './RefreshPages';
+import { RefreshDashboardData } from './RefreshDashboardData';
 
 export interface ISearchboxProps {
   placeholder?: string;
@@ -63,7 +63,7 @@ export const Searchbox: React.FunctionComponent<ISearchboxProps> = ({placeholder
         </div>
       </div>
 
-      <RefreshPages />
+      <RefreshDashboardData />
     </div>
   );
 };

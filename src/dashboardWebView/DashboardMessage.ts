@@ -3,6 +3,7 @@ export enum DashboardMessage {
   reload = 'reload',
   setPageViewType = 'setPageViewType',
   getMode = 'getMode',
+  showWarning = 'showWarning',
 
   // Content dashboard
   getData = 'getData',
