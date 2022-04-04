@@ -748,7 +748,7 @@
                       "description": "Title to show in the UI"
                     },
                     "default": {
-                      "type": "string",
+                      "type": ["string", "number", "boolean", "array", "object", "null"],
                       "description": "Default value"
                     },
                     "choices": {

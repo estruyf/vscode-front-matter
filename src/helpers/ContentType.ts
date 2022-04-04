@@ -152,8 +152,14 @@ export class ContentType {
           if (field.type === "fields") {
             data[field.name] = this.processFields(field, titleValue, {});
           } else {
-            data[field.name] = field.default ? processKnownPlaceholders(field.default, titleValue, dateFormat) : "";
-            data[field.name] = field.default ? ArticleHelper.processCustomPlaceholders(data[field.name], titleValue) : "";
+            const defaultValue = field.default;
+
+            if (typeof defaultValue === "string") {
+              data[field.name] = processKnownPlaceholders(defaultValue, titleValue, dateFormat);
+              data[field.name] = ArticleHelper.processCustomPlaceholders(data[field.name], titleValue);
+            } else {
+              data[field.name] = typeof defaultValue !== "undefined" ? defaultValue : "";
+            }
           }
         }
       }
