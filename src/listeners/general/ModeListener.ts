@@ -28,6 +28,7 @@ export class ModeListener extends BaseListener {
   public static async getMode() {
     const modes = Settings.get<Mode[]>(SETTING_GLOBAL_MODES);
     if (!modes || modes.length === 0) {
+      await this.resetEnablement();
       return;
     }
 
@@ -46,8 +47,12 @@ export class ModeListener extends BaseListener {
       this.sendMsg(GeneralCommands.setMode as any, undefined);
 
       // Enable dashboards
-      await commands.executeCommand('setContext', CONTEXT.isSnippetsDashboardEnabled, true);
-      await commands.executeCommand('setContext', CONTEXT.isDataDashboardEnabled, true);
+      await this.resetEnablement();
     }
+  }
+
+  public static async resetEnablement() {
+    await commands.executeCommand('setContext', CONTEXT.isSnippetsDashboardEnabled, true);
+    await commands.executeCommand('setContext', CONTEXT.isDataDashboardEnabled, true);
   }
 }

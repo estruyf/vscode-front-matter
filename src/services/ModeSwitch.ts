@@ -30,6 +30,8 @@ export class ModeSwitch {
       
       ModeSwitch.isInit = true;
     }
+    
+    ModeListener.getMode();
 
     const modes = Settings.get<string | null>(SETTING_GLOBAL_MODES);
     if (!modes || modes.length === 0) {
@@ -38,7 +40,6 @@ export class ModeSwitch {
     }
 
     ModeSwitch.setText();
-    ModeListener.getMode();
   }
 
   public static getMode(): string {
