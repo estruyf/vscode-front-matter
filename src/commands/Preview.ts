@@ -71,8 +71,8 @@ export class Preview {
     );
 
     webView.iconPath = {
-      dark: Uri.file(join(extensionPath, 'assets/frontmatter-dark.svg')),
-      light: Uri.file(join(extensionPath, 'assets/frontmatter.svg'))
+      dark: Uri.file(join(extensionPath, 'assets/icons/frontmatter-short-dark.svg')),
+      light: Uri.file(join(extensionPath, 'assets/icons/frontmatter-short-light.svg'))
     }
 
     const localhostUrl = await env.asExternalUri(
