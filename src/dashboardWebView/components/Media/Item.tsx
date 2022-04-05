@@ -1,6 +1,6 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { Menu } from '@headlessui/react';
-import { ClipboardIcon, CodeIcon, EyeIcon, MusicNoteIcon, PencilIcon, PhotographIcon, PlusIcon, TrashIcon, VideoCameraIcon } from '@heroicons/react/outline';
+import { ClipboardIcon, CodeIcon, DocumentIcon, EyeIcon, MusicNoteIcon, PencilIcon, PhotographIcon, PlusIcon, TrashIcon, VideoCameraIcon } from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo } from 'react';
@@ -9,6 +9,7 @@ import { CustomScript } from '../../../helpers/CustomScript';
 import { parseWinPath } from '../../../helpers/parseWinPath';
 import { ScriptType } from '../../../models';
 import { MediaInfo } from '../../../models/MediaPaths';
+import { FileIcon } from '../../../panelWebView/components/Icons/FileIcon';
 import { DashboardMessage } from '../../DashboardMessage';
 import { LightboxAtom, SelectedMediaFolderSelector, SettingsSelector, ViewDataSelector } from '../../state';
 import { MenuItem, MenuItems } from '../Menu';
@@ -200,12 +201,39 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     return false;
   }, [media]);
 
+  const isImageFile = useCallback(() => {
+    if (media.mimeType?.startsWith("image/")) {
+      return true;
+    }
+    return false;
+  }, [media]);
+
+  const renderMediaIcon = useMemo(() => {
+    if (isVideoFile()) {
+      return <VideoCameraIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />;
+    }
+    
+    if (isAudioFile()) {
+      return <MusicNoteIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />;
+    }
+
+    if (isImageFile()) {
+      return <PhotographIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />;
+    }
+
+    return <DocumentIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />;
+  }, [media]);
+  
   const renderMedia = useMemo(() => {
     if (isVideoFile() || isAudioFile()) {
       return null;
     }
 
-    return <img src={media.vsPath} alt={basename(media.fsPath)} className="mx-auto object-cover" />;
+    if (isImageFile()) {
+      return <img src={media.vsPath} alt={basename(media.fsPath)} className="mx-auto object-cover" />;
+    }
+
+    return null;
   }, [media]);
 
   useEffect(() => {
@@ -233,15 +261,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
         <button className="relative bg-gray-200 dark:bg-vulcan-300 block w-full aspect-w-10 aspect-h-7 overflow-hidden cursor-pointer h-48" onClick={openLightbox}>
           <div className={`absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center`}>
             {
-              isVideoFile() ? (
-                <VideoCameraIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />
-              ) : (
-                isAudioFile() ? (
-                  <MusicNoteIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />
-                ) : (
-                  <PhotographIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />
-                )
-              )
+              renderMediaIcon
             }
           </div>
           <div className={`absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center`}>
