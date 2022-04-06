@@ -398,7 +398,7 @@
           "markdownDescription": "Specify if you want to open the dashboard when you start VS Code.  [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.openonstart)",
           "scope": "Dashboard"
         },
-        "frontMatter.dashboard.contentTags": {
+        "frontMatter.dashboard.content.cardTags": {
           "type": "string",
           "default": "tags",
           "markdownDescription": "Specify the name of the metadata field that will be used to show the tags on the content card. When empty or null, it will hide the tags from the card. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.contenttags)",
