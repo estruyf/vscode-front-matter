@@ -11,7 +11,7 @@
 - [#297](https://github.com/estruyf/vscode-front-matter/issues/297): SEO Keywords input got moved to the SEO section
 - [#301](https://github.com/estruyf/vscode-front-matter/issues/301): Show tags on the content cards
 - [#303](https://github.com/estruyf/vscode-front-matter/issues/303): Content card actions to quickly view, delete, or run custom scripts
-- [#308](https://github.com/estruyf/vscode-front-matter/issues/308): Supported mime types for media dashboard
+- [#310](https://github.com/estruyf/vscode-front-matter/issues/310): Supported mime types for media dashboard
 
 ### ⚡️ Optimizations
 
