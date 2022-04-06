@@ -379,6 +379,12 @@
           },
           "scope": "Custom scripts"
         },
+        "frontMatter.dashboard.content.cardTags": {
+          "type": "string",
+          "default": "tags",
+          "markdownDescription": "Specify the name of the metadata field that will be used to show the tags on the content card. When empty or null, it will hide the tags from the card. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.dashboard.content.cardTags)",
+          "scope": "Dashboard"
+        },
         "frontMatter.dashboard.mediaSnippet": {
           "type": "array",
           "default": [],
@@ -396,12 +402,6 @@
           ],
           "default": null,
           "markdownDescription": "Specify if you want to open the dashboard when you start VS Code.  [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.openonstart)",
-          "scope": "Dashboard"
-        },
-        "frontMatter.dashboard.content.cardTags": {
-          "type": "string",
-          "default": "tags",
-          "markdownDescription": "Specify the name of the metadata field that will be used to show the tags on the content card. When empty or null, it will hide the tags from the card. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.contenttags)",
           "scope": "Dashboard"
         },
         "frontMatter.data.files": {
@@ -633,6 +633,18 @@
           "markdownDescription": "Specifies the notifications you want to see. By default, all notifications types will be shown. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.global.notifications)",
           "scope": "Templates"
         },
+        "frontMatter.media.defaultSorting": {
+          "type": "string",
+          "default": "",
+          "enum": [
+            "LastModifiedAsc",
+            "LastModifiedDesc",
+            "FileNameAsc",
+            "FileNameDesc"
+          ],
+          "markdownDescription": "Specify the default sorting option for the media dashboard. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.media.defaultsorting)",
+          "scope": "Content"
+        },
         "frontMatter.media.supportedMimeTypes": {
           "type": "array",
           "default": [
@@ -645,18 +657,6 @@
             "type": "string"
           },
           "scope": "Media"
-        },
-        "frontMatter.media.defaultSorting": {
-          "type": "string",
-          "default": "",
-          "enum": [
-            "LastModifiedAsc",
-            "LastModifiedDesc",
-            "FileNameAsc",
-            "FileNameDesc"
-          ],
-          "markdownDescription": "Specify the default sorting option for the media dashboard. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.media.defaultsorting)",
-          "scope": "Content"
         },
         "frontMatter.panel.freeform": {
           "type": "boolean",
@@ -1180,6 +1180,15 @@
         "category": "Front matter"
       },
       {
+        "command": "frontMatter.markup.blockquote",
+        "title": "Blockquote",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/blockquote-light.svg",
+          "dark": "assets/icons/blockquote-dark.svg"
+        }
+      },
+      {
         "command": "frontMatter.markup.bold",
         "title": "Bold",
         "category": "Front matter",
@@ -1213,15 +1222,6 @@
         "icon": {
           "light": "assets/icons/codeblock-light.svg",
           "dark": "assets/icons/codeblock-dark.svg"
-        }
-      },
-      {
-        "command": "frontMatter.markup.blockquote",
-        "title": "Blockquote",
-        "category": "Front matter",
-        "icon": {
-          "light": "assets/icons/blockquote-light.svg",
-          "dark": "assets/icons/blockquote-dark.svg"
         }
       },
       {
@@ -1350,8 +1350,8 @@
         }
       },
       {
-        "command": "frontMatter.dashboard.snippets",
-        "title": "Open snippets dashboard",
+        "command": "frontMatter.dashboard.media",
+        "title": "Open media dashboard",
         "category": "Front matter",
         "icon": {
           "dark": "/assets/icons/frontmatter-small-dark.svg",
@@ -1359,8 +1359,8 @@
         }
       },
       {
-        "command": "frontMatter.dashboard.media",
-        "title": "Open media dashboard",
+        "command": "frontMatter.dashboard.snippets",
+        "title": "Open snippets dashboard",
         "category": "Front matter",
         "icon": {
           "dark": "/assets/icons/frontmatter-small-dark.svg",
@@ -1384,12 +1384,6 @@
           "light": "assets/icons/options-light.svg",
           "dark": "assets/icons/options-dark.svg"
         }
-      },
-      {
-        "command": "frontMatter.mode.switch",
-        "title": "Switch mode",
-        "category": "Front matter",
-        "icon": "$(preview)"
       },
       {
         "command": "frontMatter.preview",
@@ -1419,6 +1413,12 @@
           "light": "assets/icons/strikethrough-light.svg",
           "dark": "assets/icons/strikethrough-dark.svg"
         }
+      },
+      {
+        "command": "frontMatter.mode.switch",
+        "title": "Switch mode",
+        "category": "Front matter",
+        "icon": "$(preview)"
       },
       {
         "command": "frontMatter.markup.tasklist",
