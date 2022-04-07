@@ -5,6 +5,7 @@ import { SETTING_CONTENT_SNIPPETS } from "../../constants";
 import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { Notifications, Settings } from "../../helpers";
 import { BaseListener } from "./BaseListener";
+import { SettingsListener } from "./SettingsListener";
 
 
 export class SnippetListener extends BaseListener {
@@ -47,7 +48,8 @@ export class SnippetListener extends BaseListener {
       fields: fields || []
     };
     
-    Settings.update(SETTING_CONTENT_SNIPPETS, snippets, true);
+    await Settings.update(SETTING_CONTENT_SNIPPETS, snippets, true);
+    SettingsListener.getSettings();
   }
 
   private static async updateSnippet(data: any) {
@@ -58,7 +60,8 @@ export class SnippetListener extends BaseListener {
       return;
     }
 
-    Settings.update(SETTING_CONTENT_SNIPPETS, snippets, true);
+    await Settings.update(SETTING_CONTENT_SNIPPETS, snippets, true);
+    SettingsListener.getSettings();
   }
 
   private static async insertSnippet(data: any) {
