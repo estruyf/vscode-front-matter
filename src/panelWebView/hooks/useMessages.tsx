@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
+import { GeneralCommands } from '../../constants';
 import { MessageHelper } from '../../helpers/MessageHelper';
+import { Mode } from '../../models/Mode';
 import { DashboardData } from '../../models/DashboardData';
 import { FolderInfo, PanelSettings } from '../../models/PanelSettings';
 import { Command } from '../Command';
@@ -15,6 +17,7 @@ export default function useMessages() {
   const [focusElm, setFocus] = useState<TagType | null>(null);
   const [folderAndFiles, setFolderAndFiles] = useState<FolderInfo[] | undefined>(undefined);
   const [mediaSelecting, setMediaSelecting] = useState<DashboardData | undefined>(undefined);
+  const [mode, setMode] = useState<Mode | undefined>(undefined);
 
   window.addEventListener('message', event => {
     const message = event.data;
@@ -43,8 +46,19 @@ export default function useMessages() {
       case Command.mediaSelectionData:
         setMediaSelecting(message.data);
         break;
+      case GeneralCommands.setMode:
+        setMode(message.data);
+        break;
     }
   });
+
+  useEffect(() => {
+    if (loading) {
+      window.setTimeout(() => {
+        setLoading(false);
+      }, 5000);
+    }
+  }, [loading])
 
   useEffect(() => {    
     setLoading(true);
@@ -55,6 +69,7 @@ export default function useMessages() {
     }, 5000);
 
     vscode.postMessage({ command: CommandToCode.getData });
+    vscode.postMessage({ command: CommandToCode.getMode });
   }, []);
 
   return {
@@ -64,6 +79,7 @@ export default function useMessages() {
     focusElm,
     loading,
     mediaSelecting,
+    mode,
     unsetFocus: () => { setFocus(null) }
   };
 }

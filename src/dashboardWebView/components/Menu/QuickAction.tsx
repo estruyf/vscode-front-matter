@@ -2,7 +2,7 @@ import * as React from 'react';
 
 export interface IQuickActionProps {
   title: string;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export const QuickAction: React.FunctionComponent<IQuickActionProps> = ({title, onClick, children}: React.PropsWithChildren<IQuickActionProps>) => {

@@ -3,7 +3,7 @@
   "displayName": "Front Matter",
   "description": "Front Matter is a CMS that runs within Visual Studio Code. It gives you the power and control of a full-blown CMS while also providing you the flexibility and speed of the static site generator of your choice like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "7.0.0",
+  "version": "7.1.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -379,6 +379,12 @@
           },
           "scope": "Custom scripts"
         },
+        "frontMatter.dashboard.content.cardTags": {
+          "type": "string",
+          "default": "tags",
+          "markdownDescription": "Specify the name of the metadata field that will be used to show the tags on the content card. When empty or null, it will hide the tags from the card. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.dashboard.content.cardTags)",
+          "scope": "Dashboard"
+        },
         "frontMatter.dashboard.mediaSnippet": {
           "type": "array",
           "default": [],
@@ -561,6 +567,54 @@
           "default": null,
           "markdownDescription": "Specify the command you want to use to start your static site generator or framework. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.framework.startcommand)"
         },
+        "frontMatter.global.activeMode": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": "",
+          "markdownDescription": "Specify the activated mode of Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.global.activemode)",
+          "scope": "Global"
+        },
+        "frontMatter.global.modes": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "Specify the modes you want to use for Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.global.modes)",
+          "items": {
+            "type": "object",
+            "default": {},
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "The ID of your mode."
+              },
+              "features": {
+                "type": "array",
+                "default": [],
+                "description": "The features you want to use for your mode.",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "panel.globalSettings",
+                    "panel.seo",
+                    "panel.actions",
+                    "panel.metadata",
+                    "panel.recentlyModified",
+                    "panel.otherActions",
+                    "dashboard.snippets.view",
+                    "dashboard.snippets.manage",
+                    "dashboard.data.view"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "id",
+              "features"
+            ]
+          },
+          "scope": "Global"
+        },
         "frontMatter.global.notifications": {
           "type": "array",
           "items": {
@@ -590,6 +644,19 @@
           ],
           "markdownDescription": "Specify the default sorting option for the media dashboard. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.media.defaultsorting)",
           "scope": "Content"
+        },
+        "frontMatter.media.supportedMimeTypes": {
+          "type": "array",
+          "default": [
+            "image/*",
+            "video/*",
+            "audio/*"
+          ],
+          "markdownDescription": "Specify the mime types to support for the media files. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.media.supportedMimeTypes)",
+          "items": {
+            "type": "string"
+          },
+          "scope": "Media"
         },
         "frontMatter.panel.freeform": {
           "type": "boolean",
@@ -697,7 +764,14 @@
                       "description": "Title to show in the UI"
                     },
                     "default": {
-                      "type": "string",
+                      "type": [
+                        "string",
+                        "number",
+                        "boolean",
+                        "array",
+                        "object",
+                        "null"
+                      ],
                       "description": "Default value"
                     },
                     "choices": {
@@ -1106,6 +1180,15 @@
         "category": "Front matter"
       },
       {
+        "command": "frontMatter.markup.blockquote",
+        "title": "Blockquote",
+        "category": "Front matter",
+        "icon": {
+          "light": "assets/icons/blockquote-light.svg",
+          "dark": "assets/icons/blockquote-dark.svg"
+        }
+      },
+      {
         "command": "frontMatter.markup.bold",
         "title": "Bold",
         "category": "Front matter",
@@ -1139,15 +1222,6 @@
         "icon": {
           "light": "assets/icons/codeblock-light.svg",
           "dark": "assets/icons/codeblock-dark.svg"
-        }
-      },
-      {
-        "command": "frontMatter.markup.blockquote",
-        "title": "Blockquote",
-        "category": "Front matter",
-        "icon": {
-          "light": "assets/icons/blockquote-light.svg",
-          "dark": "assets/icons/blockquote-dark.svg"
         }
       },
       {
@@ -1276,8 +1350,8 @@
         }
       },
       {
-        "command": "frontMatter.dashboard.snippets",
-        "title": "Open snippets dashboard",
+        "command": "frontMatter.dashboard.media",
+        "title": "Open media dashboard",
         "category": "Front matter",
         "icon": {
           "dark": "/assets/icons/frontmatter-small-dark.svg",
@@ -1285,8 +1359,8 @@
         }
       },
       {
-        "command": "frontMatter.dashboard.media",
-        "title": "Open media dashboard",
+        "command": "frontMatter.dashboard.snippets",
+        "title": "Open snippets dashboard",
         "category": "Front matter",
         "icon": {
           "dark": "/assets/icons/frontmatter-small-dark.svg",
@@ -1341,6 +1415,12 @@
         }
       },
       {
+        "command": "frontMatter.mode.switch",
+        "title": "Switch mode",
+        "category": "Front matter",
+        "icon": "$(preview)"
+      },
+      {
         "command": "frontMatter.markup.tasklist",
         "title": "Task list",
         "category": "Front matter"
@@ -1380,7 +1460,7 @@
         {
           "command": "frontMatter.insertSnippet",
           "group": "navigation@-129",
-          "when": "frontMatter:file:isValid == true"
+          "when": "frontMatter:file:isValid == true && frontMatter:dashboard:snippets:enabled"
         },
         {
           "command": "frontMatter.insertImage",
@@ -1464,6 +1544,14 @@
           "when": "frontMatterCanOpenPreview"
         },
         {
+          "command": "frontMatter.dashboard.data",
+          "when": "frontMatter:dashboard:data:enabled"
+        },
+        {
+          "command": "frontMatter.dashboard.snippets",
+          "when": "frontMatter:dashboard:snippets:enabled"
+        },
+        {
           "command": "frontMatter.collapseSections",
           "when": "false"
         },
@@ -1529,7 +1617,7 @@
         },
         {
           "command": "frontMatter.insertSnippet",
-          "when": "frontMatter:file:isValid == true"
+          "when": "frontMatter:file:isValid == true && frontMatter:dashboard:snippets:enabled"
         },
         {
           "command": "frontMatter.insertImage",
@@ -1575,8 +1663,13 @@
           "when": "view == frontMatter.explorer"
         },
         {
-          "command": "frontMatter.dashboard",
+          "command": "frontMatter.mode.switch",
           "group": "navigation@1",
+          "when": "view == frontMatter.explorer"
+        },
+        {
+          "command": "frontMatter.dashboard",
+          "group": "navigation@2",
           "when": "view == frontMatter.explorer"
         }
       ]
@@ -1652,7 +1745,7 @@
   },
   "devDependencies": {
     "@bendera/vscode-webview-elements": "0.6.2",
-    "@estruyf/vscode": "0.0.2",
+    "@estruyf/vscode": "0.0.3",
     "@headlessui/react": "^1.5.0",
     "@heroicons/react": "1.0.4",
     "@iarna/toml": "2.2.3",
@@ -1666,6 +1759,7 @@
     "@types/lodash.omit": "^4.5.6",
     "@types/lodash.uniqby": "4.7.6",
     "@types/lodash.xor": "^4.5.6",
+    "@types/mime-types": "^2.1.1",
     "@types/mocha": "^5.2.6",
     "@types/mustache": "^4.1.2",
     "@types/node": "10.17.48",
@@ -1696,6 +1790,7 @@
     "lodash.uniqby": "4.7.0",
     "lodash.xor": "^4.5.0",
     "mdast-util-from-markdown": "1.0.0",
+    "mime-types": "^2.1.35",
     "mustache": "^4.2.0",
     "node-json-db": "^1.3.0",
     "npm-run-all": "^4.1.5",
@@ -1713,6 +1808,7 @@
     "rimraf": "^3.0.2",
     "style-loader": "2.0.0",
     "tailwindcss": "^2.2.7",
+    "tailwindcss-nested-groups": "^1.2.4",
     "ts-loader": "8.0.3",
     "tslint": "6.1.3",
     "typescript": "^4.5.4",

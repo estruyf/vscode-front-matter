@@ -6,7 +6,7 @@ export interface IMenuItemProps {
   value?: any;
   isCurrent?: boolean;
   disabled?: boolean;
-  onClick: (value: any) => void;
+  onClick: (value: any, e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export const MenuItem: React.FunctionComponent<IMenuItemProps> = ({title, value, isCurrent, disabled, onClick}: React.PropsWithChildren<IMenuItemProps>) => {
@@ -14,7 +14,7 @@ export const MenuItem: React.FunctionComponent<IMenuItemProps> = ({title, value,
     <Menu.Item>
       <button
         disabled={disabled}
-        onClick={() => onClick(value)}
+        onClick={(e) => onClick(value, e)}
         className={`${!isCurrent ? `font-normal` : `font-bold`} text-gray-500 dark:text-whisper-900 block px-4 py-2 text-sm w-full text-left hover:bg-gray-100 hover:text-gray-700 dark:hover:text-whisper-600 dark:hover:bg-vulcan-100 disabled:bg-gray-500`}
       >
         {title}

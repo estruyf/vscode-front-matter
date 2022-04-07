@@ -1,32 +1,46 @@
 export enum DashboardMessage {
   getViewType = 'getViewType',
+  reload = 'reload',
+  setPageViewType = 'setPageViewType',
+  getMode = 'getMode',
+  showWarning = 'showWarning',
+
+  // Content dashboard
   getData = 'getData',
-  openFile = 'openFile',
-  getTheme = 'getTheme',
   createContent = 'createContent',
   createByContentType = 'createByContentType',
   createByTemplate = 'createByTemplate',
-  updateSetting = 'updateSetting',
-  initializeProject = 'initializeProject',
-  reload = 'reload',
-  setPageViewType = 'setPageViewType',
+  refreshPages = 'refreshPages',
+  searchPages = 'searchPages',
+  openFile = 'openFile',
+  deleteFile = 'deleteFile',
+
+  // Media Dashboard
   getMedia = 'getMedia',
   copyToClipboard = 'copyToClipboard',
   refreshMedia = 'refreshMedia',
-  refreshPages = 'refreshPages',
   uploadMedia = 'uploadMedia',
   deleteMedia = 'deleteMedia',
   revealMedia = 'revealMedia',
   insertPreviewImage = 'insertPreviewImage',
   updateMediaMetadata = 'updateMediaMetadata',
   createMediaFolder = 'createMediaFolder',
-  setFramework = 'setFramework',
-  setState = 'setState',
-  runCustomScript = 'runCustomScript',
+
+  // Data dashboard
   getDataEntries = 'getDataEntries',
   putDataEntries = 'putDataEntries',
-  sendTelemetry = 'sendTelemetry',
+
+  // Snippets dashboard
   insertSnippet = 'insertSnippet',
   addSnippet = 'addSnippet',
   updateSnippet = 'updateSnippet',
+
+  // Other
+  getTheme = 'getTheme',
+  updateSetting = 'updateSetting',
+  initializeProject = 'initializeProject',
+  setFramework = 'setFramework',
+  setState = 'setState',
+  runCustomScript = 'runCustomScript',
+  sendTelemetry = 'sendTelemetry',
 }

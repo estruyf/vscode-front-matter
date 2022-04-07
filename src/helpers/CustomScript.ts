@@ -30,6 +30,9 @@ export class CustomScript {
         if (script.bulk) {
           // Run script on all files
           CustomScript.bulkRun(wsPath, script);
+        } else if (path) {
+          // Run script for provided path
+          CustomScript.singleRun(wsPath, script, path);
         } else {
           // Run script on current file.
           CustomScript.singleRun(wsPath, script);
@@ -38,18 +41,31 @@ export class CustomScript {
     }
   }
 
-  private static async singleRun(wsPath: string, script: ICustomScript): Promise<void> {
-    const editor = window.activeTextEditor;
-    if (!editor) return;
+  private static async singleRun(wsPath: string, script: ICustomScript, path: string | null = null): Promise<void> {
+    let articlePath: string | null = path;
+    let article: ParsedFrontMatter | null = null;
 
-    const article = ArticleHelper.getFrontMatter(editor);
+    if (!path) {
+      const editor = window.activeTextEditor;
+      if (!editor) return;
 
-    if (article) {
-      const output = await CustomScript.runScript(wsPath, article, editor.document.uri.fsPath, script);
-
-      CustomScript.showOutput(output, script);
+      articlePath = editor.document.uri.fsPath;
+      article = ArticleHelper.getFrontMatter(editor);
     } else {
-      Notifications.warning(`${script.title}: Current article couldn't be retrieved.`);
+      article = ArticleHelper.getFrontMatterByPath(path);
+    }
+
+    if (articlePath && article) {
+      window.withProgress({
+        location: ProgressLocation.Notification,
+        title: `Executing: ${script.title}`,
+        cancellable: false
+      }, async () => {
+        const output = await CustomScript.runScript(wsPath, article, articlePath as string, script);
+        CustomScript.showOutput(output, script);
+      });
+    } else {
+      Notifications.warning(`${script.title}: Article couldn't be retrieved.`);
     }
   }
 

@@ -3,6 +3,8 @@ export const EXTENSION_NAME = "Front Matter";
 export const CONFIG_KEY = "frontMatter";
 
 export const SETTING_GLOBAL_NOTIFICATIONS = "global.notifications";
+export const SETTING_GLOBAL_MODES = "global.modes";
+export const SETTING_GLOBAL_ACTIVE_MODE = "global.activeMode";
 
 export const SETTING_TAXONOMY_TAGS = "taxonomy.tags";
 export const SETTING_TAXONOMY_CATEGORIES = "taxonomy.categories";
@@ -56,8 +58,11 @@ export const SETTING_MEDIA_SORTING_DEFAULT = "content.defaultSorting";
 export const SETTING_CONTENT_DEFAULT_FILETYPE = "content.defaultFileType";
 export const SETTING_CONTENT_SUPPORTED_FILETYPES = "content.supportedFileTypes";
 
+export const SETTING_MEDIA_SUPPORTED_MIMETYPES = "media.supportedMimeTypes";
+
 export const SETTING_DASHBOARD_OPENONSTART = "dashboard.openOnStart";
 export const SETTING_DASHBOARD_MEDIA_SNIPPET = "dashboard.mediaSnippet";
+export const SETTING_DASHBOARD_CONTENT_TAGS = "dashboard.content.cardTags";
 
 export const SETTING_DATA_FILES = "data.files";
 export const SETTING_DATA_FOLDERS = "data.folders";

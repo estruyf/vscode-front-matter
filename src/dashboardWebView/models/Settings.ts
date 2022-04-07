@@ -34,15 +34,17 @@ export interface Settings {
 }
 
 export interface DashboardState {
-  contents: ViewState;
+  contents: ContentsViewState;
   media: MediaViewState;
 }
 
-export interface ViewState {
+export interface ContentsViewState {
   sorting: SortingOption | null | undefined;
   defaultSorting: string | null | undefined;
+  tags: string | null | undefined;
 }
 
-export interface MediaViewState extends ViewState {
+export interface MediaViewState extends ContentsViewState {
   selectedFolder: string | null | undefined;
+  mimeTypes: string[] | null | undefined;
 }

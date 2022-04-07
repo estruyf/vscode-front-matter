@@ -1,21 +1,22 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { Menu } from '@headlessui/react';
-import { ClipboardIcon, CodeIcon, EyeIcon, PencilIcon, PhotographIcon, PlusIcon, TrashIcon } from '@heroicons/react/outline';
+import { ClipboardIcon, CodeIcon, DocumentIcon, EyeIcon, MusicNoteIcon, PencilIcon, PhotographIcon, PlusIcon, TrashIcon, VideoCameraIcon } from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { CustomScript } from '../../../helpers/CustomScript';
 import { parseWinPath } from '../../../helpers/parseWinPath';
 import { ScriptType } from '../../../models';
 import { MediaInfo } from '../../../models/MediaPaths';
+import { FileIcon } from '../../../panelWebView/components/Icons/FileIcon';
 import { DashboardMessage } from '../../DashboardMessage';
 import { LightboxAtom, SelectedMediaFolderSelector, SettingsSelector, ViewDataSelector } from '../../state';
 import { MenuItem, MenuItems } from '../Menu';
+import { ActionMenuButton } from '../Menu/ActionMenuButton';
+import { QuickAction } from '../Menu/QuickAction';
 import { Alert } from '../Modals/Alert';
 import { DetailsSlideOver } from './DetailsSlideOver';
-import { MenuButton } from './MenuButton'
-import { QuickAction } from './QuickAction';
  
 export interface IItemProps {
   media: MediaInfo;
@@ -166,9 +167,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     setShowDetails(true);
   };
 
-  const openLightbox = () => {
-    setLightbox(media.vsPath || "");
-  };
+  const openLightbox = useCallback(() => {
+    if (!isVideoFile() && !isAudioFile()) {
+      setLightbox(media.vsPath || "");
+    }
+  }, [media.vsPath]);
 
   const updateMetadata = () => {
     setShowForm(true);
@@ -183,6 +186,55 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
         onClick={() => runCustomScript(script)} />
     ))
   }
+
+  const isVideoFile = useCallback(() => {
+    if (media.mimeType?.startsWith("video/")) {
+      return true;
+    }
+    return false;
+  }, [media]);
+
+  const isAudioFile = useCallback(() => {
+    if (media.mimeType?.startsWith("audio/")) {
+      return true;
+    }
+    return false;
+  }, [media]);
+
+  const isImageFile = useCallback(() => {
+    if (media.mimeType?.startsWith("image/")) {
+      return true;
+    }
+    return false;
+  }, [media]);
+
+  const renderMediaIcon = useMemo(() => {
+    if (isVideoFile()) {
+      return <VideoCameraIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />;
+    }
+    
+    if (isAudioFile()) {
+      return <MusicNoteIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />;
+    }
+
+    if (isImageFile()) {
+      return <PhotographIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />;
+    }
+
+    return <DocumentIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />;
+  }, [media]);
+  
+  const renderMedia = useMemo(() => {
+    if (isVideoFile() || isAudioFile()) {
+      return null;
+    }
+
+    if (isImageFile()) {
+      return <img src={media.vsPath} alt={basename(media.fsPath)} className="mx-auto object-cover" />;
+    }
+
+    return null;
+  }, [media]);
 
   useEffect(() => {
     if (media.alt !== alt) {
@@ -208,69 +260,71 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
       <li className="group relative bg-gray-50 dark:bg-vulcan-200 shadow-md hover:shadow-xl dark:shadow-none dark:hover:bg-vulcan-100 border border-gray-200 dark:border-vulcan-50">
         <button className="relative bg-gray-200 dark:bg-vulcan-300 block w-full aspect-w-10 aspect-h-7 overflow-hidden cursor-pointer h-48" onClick={openLightbox}>
           <div className={`absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center`}>
-            <PhotographIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />
+            {
+              renderMediaIcon
+            }
           </div>
           <div className={`absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center`}>
-            <img src={media.vsPath} alt={basename(media.fsPath)} className="mx-auto object-cover" />
+            { renderMedia }
           </div>
         </button>
         <div className={`relative py-4 pl-4 pr-12`}>
-          <div className={`absolute top-4 right-4 flex flex-col space-y-4`}>
+          <div className={`group-scope absolute top-4 right-4 flex flex-col space-y-4`}>
 
-            <div className="flex items-center border border-transparent group-hover:bg-gray-200 dark:group-hover:bg-vulcan-200 group-hover:border-gray-100 dark:group-hover:border-vulcan-50 rounded-full p-2 -mr-2 -mt-2">
+            <div className="flex items-center border border-transparent group-scope-hover:bg-gray-200 dark:group-scope-hover:bg-vulcan-200 group-scope-hover:border-gray-100 dark:group-scope-hover:border-vulcan-50 rounded-full p-2 -mr-2 -mt-2">
 
-              <div className='hidden group-hover:inline-block h-5'>
-                <QuickAction 
-                  title='View media details'
-                  onClick={viewMediaDetails}>
-                  <EyeIcon className={`h-5 w-5`} aria-hidden="true" />
-                </QuickAction>
+              <Menu as="div" className="relative z-10 flex text-left">
+                <div className='hidden group-scope-hover:flex'>
+                  <QuickAction 
+                    title='View media details'
+                    onClick={viewMediaDetails}>
+                    <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
+                  </QuickAction>
 
-                <QuickAction 
-                  title='Edit metadata'
-                  onClick={updateMetadata}>
-                  <PencilIcon className={`h-5 w-5`} aria-hidden="true" />
-                </QuickAction>
+                  <QuickAction 
+                    title='Edit metadata'
+                    onClick={updateMetadata}>
+                    <PencilIcon className={`w-4 h-4`} aria-hidden="true" />
+                  </QuickAction>
 
-                {
-                  viewData?.data?.filePath ? (
-                    <>
-                      <QuickAction 
-                        title={(viewData.data.metadataInsert && viewData.data.fieldName) ? `Insert image for your "${viewData.data.fieldName}" field` : `Insert image with markdown markup`}
-                        onClick={insertToArticle}>
-                        <PlusIcon className={`h-5 w-5`} aria-hidden="true" />
-                      </QuickAction>
+                  {
+                    viewData?.data?.filePath ? (
+                      <>
+                        <QuickAction 
+                          title={(viewData.data.metadataInsert && viewData.data.fieldName) ? `Insert image for your "${viewData.data.fieldName}" field` : `Insert image with markdown markup`}
+                          onClick={insertToArticle}>
+                          <PlusIcon className={`w-4 h-4`} aria-hidden="true" />
+                        </QuickAction>
 
-                      {
-                        (viewData?.data?.position && settings?.mediaSnippet && settings?.mediaSnippet.length > 0) && (
-                          <QuickAction 
-                            title='Insert snippet'
-                            onClick={insertSnippet}>
-                            <CodeIcon className={`h-5 w-5`} aria-hidden="true" />
-                          </QuickAction>
-                        )
-                      }
-                    </>
-                  ) : (
-                    <>
-                      <QuickAction 
-                        title='Copy media path'
-                        onClick={copyToClipboard}>
-                        <ClipboardIcon className={`h-5 w-5`} aria-hidden="true" />
-                      </QuickAction>
-                    </>
-                  )
-                }
+                        {
+                          (viewData?.data?.position && settings?.mediaSnippet && settings?.mediaSnippet.length > 0) && (
+                            <QuickAction 
+                              title='Insert snippet'
+                              onClick={insertSnippet}>
+                              <CodeIcon className={`w-4 h-4`} aria-hidden="true" />
+                            </QuickAction>
+                          )
+                        }
+                      </>
+                    ) : (
+                      <>
+                        <QuickAction 
+                          title='Copy media path'
+                          onClick={copyToClipboard}>
+                          <ClipboardIcon className={`w-4 h-4`} aria-hidden="true" />
+                        </QuickAction>
+                      </>
+                    )
+                  }
 
-                <QuickAction 
-                  title='Delete media file'
-                  onClick={deleteMedia}>
-                  <TrashIcon className={`h-5 w-5`} aria-hidden="true" />
-                </QuickAction>
-              </div>
+                  <QuickAction 
+                    title='Delete media file'
+                    onClick={deleteMedia}>
+                    <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
+                  </QuickAction>
+                </div>
 
-              <Menu as="div" className="relative z-10 inline-block text-left  h-5">
-                <MenuButton title={`Menu`} />
+                <ActionMenuButton title={`Menu`} />
 
                 <MenuItems widthClass='w-40'>
                   <MenuItem 

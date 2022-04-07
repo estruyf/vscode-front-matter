@@ -4,12 +4,14 @@ import useMessages from '../hooks/useMessages';
 import useDarkMode from '../../hooks/useDarkMode';
 import { WelcomeScreen } from './WelcomeScreen';
 import { useRecoilValue } from 'recoil';
-import { DashboardViewSelector } from '../state';
+import { DashboardViewSelector, ModeAtom } from '../state';
 import { Contents } from './Contents/Contents';
 import { Media } from './Media/Media';
 import { NavigationType } from '../models';
 import { DataView } from './DataView';
 import { Snippets } from './SnippetsView/Snippets';
+import { FeatureFlag } from '../../components/features/FeatureFlag';
+import { FEATURE_FLAG } from '../../constants';
 
 export interface IDashboardProps {
   showWelcome: boolean;
@@ -18,6 +20,7 @@ export interface IDashboardProps {
 export const Dashboard: React.FunctionComponent<IDashboardProps> = ({showWelcome}: React.PropsWithChildren<IDashboardProps>) => {
   const { loading, pages, settings } = useMessages();
   const view = useRecoilValue(DashboardViewSelector);
+  const mode = useRecoilValue(ModeAtom);
   useDarkMode();
 
   if (!settings) {
@@ -50,9 +53,11 @@ export const Dashboard: React.FunctionComponent<IDashboardProps> = ({showWelcome
 
   if (view === NavigationType.Data) {
     return (
-      <main className={`h-full w-full`}>
-        <DataView />
-      </main>
+      <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.dashboard.data.view}>
+        <main className={`h-full w-full`}>
+          <DataView />
+        </main>
+      </FeatureFlag>
     );
   }
 

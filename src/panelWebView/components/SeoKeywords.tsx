@@ -15,6 +15,7 @@ export interface ISeoKeywordsProps {
 }
 
 const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({keywords, ...data}: React.PropsWithChildren<ISeoKeywordsProps>) => {
+  const [ isReady, setIsReady ] = React.useState(false);
 
   const validateKeywords = () => {
     if (!keywords) {
@@ -32,7 +33,15 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({keywords, ...d
     return [];
   }
 
-  if (!keywords || keywords.length === 0) {
+  // Workaround for lit components not updating render
+  React.useEffect(() => {
+    setIsReady(false);
+    setTimeout(() => {
+      setIsReady(true);
+    }, 0);
+  }, [keywords]);
+
+  if (!isReady || !keywords || keywords.length === 0) {
     return null;
   }
 
@@ -49,7 +58,7 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({keywords, ...d
           {
             validateKeywords().map((keyword, index) => {
               return (
-                <ErrorBoundary fallback={<div />}>
+                <ErrorBoundary key={keyword} fallback={<div />}>
                   <SeoKeywordInfo key={index} keyword={keyword} {...data} />
                 </ErrorBoundary>
               );

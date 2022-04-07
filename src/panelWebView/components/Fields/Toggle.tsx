@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { RocketIcon } from '../Icons/RocketIcon';
+import { ToggleIcon } from '../Icons/ToggleIcon';
 import { VsLabel } from '../VscodeComponents';
 
 export interface IToggleProps {
@@ -26,7 +27,7 @@ export const Toggle: React.FunctionComponent<IToggleProps> = ({label, checked, o
     <div className={`metadata_field`}>
       <VsLabel>
         <div className={`metadata_field__label`}>
-          <RocketIcon /> <span style={{ lineHeight: "16px"}}>{label}</span>
+          <ToggleIcon /> <span style={{ lineHeight: "16px"}}>{label}</span>
         </div>
       </VsLabel>
 

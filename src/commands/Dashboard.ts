@@ -9,6 +9,7 @@ import { DashboardData } from '../models/DashboardData';
 import { MediaLibrary } from '../helpers/MediaLibrary';
 import { DashboardListener, MediaListener, SettingsListener, TelemetryListener, DataListener, PagesListener, ExtensionListener, SnippetListener } from '../listeners/dashboard';
 import { MediaListener as PanelMediaListener } from '../listeners/panel'
+import { ModeListener } from '../listeners/general';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -143,6 +144,7 @@ export class Dashboard {
       DataListener.process(msg);
       TelemetryListener.process(msg);
       SnippetListener.process(msg);
+      ModeListener.process(msg);
     });
   }
 

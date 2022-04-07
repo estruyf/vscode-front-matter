@@ -12,6 +12,10 @@ export const ExtensionState = {
     },
     Media: {
       Sorting: `frontMatter:Dashboard:Media:Sorting`,
+    },
+    Pages: {
+      Cache: `frontMatter:Dashboard:Pages:Cache`,
+      Index: `frontMatter:Dashboard:Pages:Index`,
     }
   },
 

@@ -289,6 +289,8 @@ export class ArticleHelper {
    * @returns The new file path
    */
   public static createContent(contentType: ContentType | undefined, folderPath: string, titleValue: string, fileExtension?: string): string | undefined {
+    FrontMatterParser.currentContent = null;
+    
     const prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
     const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
     

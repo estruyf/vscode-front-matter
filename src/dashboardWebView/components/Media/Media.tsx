@@ -73,12 +73,15 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
 
   const {getRootProps, isDragActive} = useDropzone({
     onDrop,
-    accept: 'image/*'
+    accept: settings?.dashboardState.media.mimeTypes || ['image/*', 'video/*', 'audio/*'],
+    onDropRejected: () => {
+      Messenger.send(DashboardMessage.showWarning, 'Unsupported file type');
+    }
   });
   
   return (
     <PageLayout>
-      <div className="w-full h-full" {...getRootProps()}>
+      <div className="w-full h-full pb-6" {...getRootProps()}>
         {
           viewData?.data?.filePath && (
             <div className={`text-lg text-center mb-6`}>

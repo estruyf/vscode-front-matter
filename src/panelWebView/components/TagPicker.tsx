@@ -149,6 +149,43 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
     return !selected.includes(option) && option.toLowerCase().includes((inputValue || "").toLowerCase());
   };
 
+  /**
+   * Add the new item to the data
+   * @param e 
+   */
+  const onEnterData = useCallback((e: React.KeyboardEvent<HTMLInputElement>, closeMenu: Function, highlightedIndex: any) => {
+    if (e.key === "Enter" && e.type === "keydown" && (highlightedIndex === null || highlightedIndex === undefined)) {
+      const value = inputRef.current?.value.trim();
+      if (!value) {
+        return;
+      }
+
+      // Split the value by comma
+      const newValues: string[] = [];
+      const values = value.split(",");
+      for (let crntValue of values) {
+        crntValue = crntValue.trim();
+        if (crntValue) {
+          const item = options.find(o => o?.toLowerCase() === crntValue?.toLowerCase());
+          if (item) {
+            newValues.push(item);
+          } else if (freeform) {
+            newValues.push(crntValue);
+          }
+        }
+      }
+
+      const uniqValues = Array.from(new Set([...selected, ...newValues]));
+      setSelected(uniqValues);
+      sendUpdate(uniqValues);
+      setInputValue("");
+      closeMenu();
+    }
+  }, [options, inputRef, selected, freeform]);
+
+  /**
+   * Check if the input is disabled
+   */
   const checkIsDisabled = useCallback(() => {
     if (!limit) {
       return false;
@@ -191,7 +228,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
                  inputValue={inputValue}
                  onInputValueChange={(value) => setInputValue(value)}>
         {
-          ({ getInputProps, getItemProps, getMenuProps, isOpen, inputValue, getRootProps, openMenu, closeMenu, clearSelection }) => (
+          ({ getInputProps, getItemProps, getMenuProps, isOpen, inputValue, getRootProps, openMenu, closeMenu, clearSelection, highlightedIndex }) => (
             <>
               <div {...getRootProps(undefined, {suppressRefError: true})} className={`article__tags__input ${freeform ? 'freeform' : ''}`}>
                 <input {
@@ -199,6 +236,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
                             ref: inputRef, 
                             onFocus: openMenu as any, 
                             onClick: openMenu as any,
+                            onKeyDown: (e) => onEnterData(e, closeMenu, highlightedIndex),
                             onBlur: () => { 
                               closeMenu(); 
                               unsetFocus(); 

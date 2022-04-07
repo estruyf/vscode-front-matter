@@ -3,10 +3,11 @@ import * as React from 'react';
 import { DateHelper } from '../../helpers/DateHelper';
 
 export interface IDateFieldProps {
+  className?: string;
   value: Date | string;
 }
 
-export const DateField: React.FunctionComponent<IDateFieldProps> = ({value}: React.PropsWithChildren<IDateFieldProps>) => {
+export const DateField: React.FunctionComponent<IDateFieldProps> = ({className, value}: React.PropsWithChildren<IDateFieldProps>) => {
   const [ dateValue, setDateValue ] = React.useState<string>("");
 
   React.useEffect(() => {
@@ -24,6 +25,6 @@ export const DateField: React.FunctionComponent<IDateFieldProps> = ({value}: Rea
   }
 
   return (
-    <span className={`text-vulcan-100 dark:text-whisper-900 text-xs`}>{dateValue}</span>
+    <span className={`${className || ""} text-vulcan-100 dark:text-whisper-900 text-xs`}>{dateValue}</span>
   );
 };

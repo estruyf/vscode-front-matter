@@ -2,7 +2,7 @@ import { Dashboard } from "../../commands/Dashboard";
 import { ExtensionState } from "../../constants";
 import { DashboardCommand } from "../../dashboardWebView/DashboardCommand";
 import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
-import { Extension } from "../../helpers";
+import { Extension, Notifications } from "../../helpers";
 import { BaseListener } from "./BaseListener";
 
 
@@ -26,6 +26,9 @@ export class DashboardListener extends BaseListener {
         break;
       case DashboardMessage.setPageViewType:
         Extension.getInstance().setState(ExtensionState.PagesView, msg.data, "workspace");
+        break;
+      case DashboardMessage.showWarning:
+        Notifications.warning(msg.data);
         break;
     }
   }

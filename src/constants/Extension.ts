@@ -35,6 +35,7 @@ export const COMMAND_NAME = {
   promote: getCommandName("promoteSettings"),
   createFolder: getCommandName("createFolder"),
   diagnostics: getCommandName("diagnostics"),
+  modeSwitch: getCommandName("mode.switch"),
 
   // Insert dashboards
   insertImage: getCommandName("insertImage"),

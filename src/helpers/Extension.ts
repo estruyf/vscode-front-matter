@@ -83,6 +83,13 @@ export class Extension {
   }
 
   /**
+   * Get the displayName of the extension
+   */
+  public get displayName(): string {
+   return this.ctx.extension.packageJSON.displayName;
+ }
+
+  /**
    * Returns the extension's version
    */
   public get version(): string {

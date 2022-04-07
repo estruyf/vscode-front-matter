@@ -1,26 +1,63 @@
 import { isValidFile } from '../../helpers/isValidFile';
-import { existsSync } from "fs";
+import { existsSync, unlinkSync } from "fs";
 import { basename, dirname, join } from "path";
 import { commands, FileSystemWatcher, RelativePattern, TextDocument, Uri, workspace } from "vscode";
 import { Dashboard } from "../../commands/Dashboard";
 import { Folders } from "../../commands/Folders";
-import { COMMAND_NAME, DefaultFields, SETTING_CONTENT_STATIC_FOLDER, SETTING_SEO_DESCRIPTION_FIELD } from "../../constants";
+import { COMMAND_NAME, DefaultFields, ExtensionState, SETTING_CONTENT_STATIC_FOLDER, SETTING_SEO_DESCRIPTION_FIELD, SETTING_TAXONOMY_FIELD_GROUPS } from "../../constants";
 import { DashboardCommand } from "../../dashboardWebView/DashboardCommand";
 import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { Page } from "../../dashboardWebView/models";
-import { ArticleHelper, Logger, Settings } from "../../helpers";
+import { ArticleHelper, Extension, Logger, Settings } from "../../helpers";
 import { ContentType } from "../../helpers/ContentType";
 import { DateHelper } from "../../helpers/DateHelper";
 import { Notifications } from "../../helpers/Notifications";
 import { BaseListener } from "./BaseListener";
-import { Field, FieldType } from '../../models';
+import { Field, FieldGroup, FieldType } from '../../models';
 import { DataListener } from '../panel';
+import Fuse from 'fuse.js';
 
 
 export class PagesListener extends BaseListener {
   private static watchers: { [path: string]: FileSystemWatcher } = {};
   private static lastPages: Page[] = [];
 
+  /**
+   * Process the messages for the dashboard views
+   * @param msg 
+   */
+  public static async process(msg: { command: DashboardMessage, data: any }) {
+    super.process(msg);
+
+    switch(msg.command) {
+      case DashboardMessage.getData:
+        this.getPagesData();
+        break;
+      case DashboardMessage.createContent:
+        await commands.executeCommand(COMMAND_NAME.createContent);
+        break;
+      case DashboardMessage.createByContentType:
+        await commands.executeCommand(COMMAND_NAME.createByContentType);
+        break;
+      case DashboardMessage.createByTemplate:
+        await commands.executeCommand(COMMAND_NAME.createByTemplate);
+        break;
+      case DashboardMessage.refreshPages:
+        this.getPagesData(true);
+        break;
+      case DashboardMessage.searchPages:
+        this.searchPages(msg.data);
+        break;
+      case DashboardMessage.deleteFile:
+        this.deletePage(msg.data);
+        break;
+    }
+  }
+
+  /**
+   * Saved file watcher
+   * @returns 
+   */
   public static saveFileWatcher() {
     return workspace.onDidSaveTextDocument((doc: TextDocument) => {
       if (ArticleHelper.isSupportedFile(doc)) {
@@ -63,33 +100,32 @@ export class PagesListener extends BaseListener {
   }
 
   /**
-   * Process the messages for the dashboard views
-   * @param msg 
+   * Delete a page
+   * @param path 
    */
-  public static async process(msg: { command: DashboardMessage, data: any }) {
-    super.process(msg);
-
-    switch(msg.command) {
-      case DashboardMessage.getData:
-        this.getPagesData();
-        break;
-      case DashboardMessage.createContent:
-        await commands.executeCommand(COMMAND_NAME.createContent);
-        break;
-      case DashboardMessage.createByContentType:
-        await commands.executeCommand(COMMAND_NAME.createByContentType);
-        break;
-      case DashboardMessage.createByTemplate:
-        await commands.executeCommand(COMMAND_NAME.createByTemplate);
-        break;
-      case DashboardMessage.refreshPages:
-        this.getPagesData();
-        break;
+  private static async deletePage(path: string) {
+    if (!path) {
+      return;
     }
+
+    Logger.info(`Deleting file: ${path}`)
+    
+    unlinkSync(path);
+      
+    this.lastPages = this.lastPages.filter(p => p.fmFilePath !== path);
+    this.sendPageData(this.lastPages);
+
+    const ext = Extension.getInstance();
+    await ext.setState(ExtensionState.Dashboard.Pages.Cache, this.lastPages, "workspace");
   }
 
+  /**
+   * Watcher for processing page updates
+   * @param file 
+   */
   private static async watcherExec(file: Uri) {
     if (Dashboard.isOpen) {
+      const ext = Extension.getInstance();
       Logger.info(`File watcher execution for: ${file.fsPath}`)
       
       const pageIdx = this.lastPages.findIndex(p => p.fmFilePath === file.fsPath);
@@ -99,10 +135,11 @@ export class PagesListener extends BaseListener {
         const updatedPage = this.processPageContent(file.fsPath, stats.mtime, basename(file.fsPath), crntPage.fmFolder);
         if (updatedPage) {
           this.lastPages[pageIdx] = updatedPage;
-          this.sendMsg(DashboardCommand.pages, this.lastPages);
+          this.sendPageData(this.lastPages);
+          await ext.setState(ExtensionState.Dashboard.Pages.Cache, this.lastPages, "workspace");
         }
       } else {
-        this.getPagesData();
+        this.getPagesData(true);
       }
     }
   }
@@ -110,7 +147,18 @@ export class PagesListener extends BaseListener {
   /**
    * Retrieve all the markdown pages
    */
-  private static async getPagesData() {
+  private static async getPagesData(clear: boolean = false) {
+    const ext = Extension.getInstance();
+
+    // Get data from the cache
+    if (!clear) {
+      const cachedPages = await ext.getState<Page[]>(ExtensionState.Dashboard.Pages.Cache, "workspace");
+      if (cachedPages) {
+        this.sendPageData(cachedPages);
+      }
+    }
+
+    // Update the dashboard with the fresh data
     const folderInfo = await Folders.getInfo();
     const pages: Page[] = [];
 
@@ -135,11 +183,63 @@ export class PagesListener extends BaseListener {
     }
 
     this.lastPages = pages;
-    this.sendMsg(DashboardCommand.pages, pages);
+    this.sendPageData(pages);
+
+    this.sendMsg(DashboardCommand.searchReady, true);
+
+    await ext.setState(ExtensionState.Dashboard.Pages.Cache, pages, "workspace");
+    await this.createSearchIndex(pages);
   }
 
+  /**
+   * Send the page data without the body
+   */
+  private static sendPageData(pages: Page[]) {
+    // Omit the body content
+    this.sendMsg(DashboardCommand.pages, pages.map(p => {
+      const { fmBody, ...rest } = p;
+      return rest;
+    }));
+  }
+
+  /**
+   * Create the search index for the pages
+   * @param pages 
+   */
+  private static async createSearchIndex(pages: Page[]) {
+    const pagesIndex = Fuse.createIndex([ 'title', 'slug', 'description', 'fmBody' ], pages);
+    await Extension.getInstance().setState(ExtensionState.Dashboard.Pages.Index, pagesIndex, "workspace");
+  }
+
+  /**
+   * Search the pages
+   */
+  private static async searchPages(data: { query: string }) {
+    const fuseOptions: Fuse.IFuseOptions<Page> = {
+      keys: [
+        { name: 'title', weight: 1 },
+        { name: 'fmBody', weight: 1,  },
+        { name: 'slug', weight: 0.5 },
+        { name: 'description', weight: 0.5 },
+      ],
+      includeScore: true,
+      ignoreLocation: true,
+      threshold: 0.1
+    };
+
+    const pagesIndex = await Extension.getInstance().getState<Fuse.FuseIndex<Page>>(ExtensionState.Dashboard.Pages.Index, "workspace");
+    const fuse = new Fuse(this.lastPages, fuseOptions, pagesIndex);
+    const results = fuse.search(data.query || "");
+    const pageResults = results.map(page => page.item);
+
+    this.sendMsg(DashboardCommand.searchPages, pageResults);
+  }
+
+  /**
+   * Get fresh page data
+   */
   public static refresh() {
-    this.getPagesData();
+    this.getPagesData(true);
   }
 
   /**
@@ -178,6 +278,7 @@ export class PagesListener extends BaseListener {
         fmPreviewImage: "",
         fmTags: [],
         fmCategories: [],
+        fmBody: article?.content || "",
         // Make sure these are always set
         title: article?.data.title,
         slug: article?.data.slug,
@@ -222,6 +323,17 @@ export class PagesListener extends BaseListener {
             }
 
             crntPageData = crntPageData[previewField];
+
+            // Check for preview image in block data
+            if (crntPageData instanceof Array && crntPageData.length > 0) {
+              // Get the first field block that contains the next field data
+              const fieldData = crntPageData.find(item => item[previewFieldParents[i + 1]]);
+              if (fieldData) {
+                crntPageData = fieldData;
+              } else {
+                continue;
+              }
+            }
           }
         }
 
@@ -326,9 +438,52 @@ export class PagesListener extends BaseListener {
         if (subFields.length > 0) {
           return [...parents, field.name, ...subFields];
         }
+      } else if (field.type === "block") {
+        const subFields = this.findPreviewInBlockField(field);
+        if (subFields.length > 0) {
+          return [...parents, field.name, ...subFields];
+        }
       }
     }
 
     return parents;
+  }
+
+  /**
+   * Look for the preview image in the block field
+   * @param field 
+   * @param parents 
+   * @returns 
+   */
+  private static findPreviewInBlockField(field: Field) {
+    const groups = field.fieldGroup && Array.isArray(field.fieldGroup) ? field.fieldGroup : [field.fieldGroup];
+    if (!groups) {
+      return [];
+    }
+
+    const blocks = Settings.get<FieldGroup[]>(SETTING_TAXONOMY_FIELD_GROUPS);
+    if (!blocks) {
+      return [];
+    }
+
+    let found = false;
+    for (const group of groups) {
+      const block = blocks.find(block => block.id === group);
+      if (!block) {
+        continue;
+      }
+
+      let newParents: string[] = [];
+      if (!found) {
+        newParents = this.findPreviewField(block?.fields, []);
+      }
+
+      if (newParents.length > 0) {
+        found = true;
+        return newParents;
+      }
+    }
+
+    return [];
   }
 }

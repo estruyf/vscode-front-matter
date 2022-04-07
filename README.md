@@ -182,6 +182,9 @@ You can open showcase issues for the following things:
   <a href="https://github.com/flikteoh" title="FlikTeoh">
     <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/1472065" />
   </a>
+  <a href="https://github.com/themefisher" title="FlikTeoh">
+    <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/10640964" />
+  </a>
 </p>
 
 <br />
