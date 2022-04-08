@@ -73,7 +73,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({ 
             <MenuItems widthClass='w-40' marginTopClass='mt-6'>
               <MenuItem 
                 title={`View`}
-                onClick={onView} />
+                onClick={(value, e) => onView(e)} />
 
               { customScriptActions }
 

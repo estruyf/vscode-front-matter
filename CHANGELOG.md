@@ -1,5 +1,9 @@
 # Change Log
 
+## [7.1.1] - 2022-04-08
+
+- Fix in menu item with `stopPropagation` not defined.
+
 ## [7.1.0] - 2022-04-07 - [Release notes](https://beta.frontmatter.codes/updates/v7.1.0)
 
 ### 🎨 Enhancements
