@@ -4,7 +4,7 @@
 
 ### 🐞 Fixes
 
-- [#316](https://github.com/estruyf/vscode-front-matter/issues/316): Fix draft tab navigation
+- [#315](https://github.com/estruyf/vscode-front-matter/issues/315): Fix draft tab navigation
 
 ## [7.1.1] - 2022-04-08
 
