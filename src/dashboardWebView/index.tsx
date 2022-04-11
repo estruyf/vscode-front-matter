@@ -6,6 +6,7 @@ import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import { SENTRY_LINK } from "../constants";
 import './styles.css';
+import { Preview } from "./components/Preview";
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -19,6 +20,8 @@ if (elm) {
   const version = elm?.getAttribute("data-version");
   const environment = elm?.getAttribute("data-environment");
   const isProd = elm?.getAttribute("data-isProd");
+  const type = elm?.getAttribute("data-type");
+  const url = elm?.getAttribute("data-url");
 
   if (isProd === "true") {
     Sentry.init({
@@ -31,7 +34,11 @@ if (elm) {
     });
   }
   
-  render(<RecoilRoot><Dashboard showWelcome={!!welcome} /></RecoilRoot>, elm);
+  if (type === "preview") {
+    render(<Preview url={url} />, elm);
+  } else {
+    render(<RecoilRoot><Dashboard showWelcome={!!welcome} /></RecoilRoot>, elm);
+  }
 }
 
 // Webpack HMR
