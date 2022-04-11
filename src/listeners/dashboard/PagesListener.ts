@@ -174,6 +174,10 @@ export class PagesListener extends BaseListener {
               }
               
             } catch (error: any) {
+              if ((error as Error)?.message.toLowerCase() === "webview is disposed") {
+                continue;
+              }
+
               Logger.error(`PagesListener::getPagesData: ${file.filePath} - ${error.message}`);
               Notifications.error(`File error: ${file.filePath} - ${error?.message || error}`);
             }
