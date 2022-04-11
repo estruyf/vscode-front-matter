@@ -4,7 +4,7 @@ import { Tab } from '../constants/Tab';
 import { Page } from '../models/Page';
 import Fuse from 'fuse.js';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { CategorySelector, FolderSelector, SearchSelector, SettingsSelector, SortingAtom, TabSelector, TagSelector } from '../state';
+import { CategorySelector, FolderSelector, SearchSelector, SettingsSelector, SortingAtom, TabInfoAtom, TabSelector, TagSelector } from '../state';
 import { SortOrder, SortType } from '../../models';
 import { Sorting } from '../../helpers/Sorting';
 import { Messenger } from '@estruyf/vscode/dist/client';
@@ -14,6 +14,7 @@ import { EventData } from '@estruyf/vscode/dist/models';
 export default function usePages(pages: Page[]) {
   const [ pageItems, setPageItems ] = useState<Page[]>([]);
   const [ sorting, setSorting ] = useRecoilState(SortingAtom);
+  const [ tabInfo , setTabInfo ] = useRecoilState(TabInfoAtom);
   const settings = useRecoilValue(SettingsSelector);
   const tab = useRecoilValue(TabSelector);
   const folder = useRecoilValue(FolderSelector);
@@ -27,7 +28,18 @@ export default function usePages(pages: Page[]) {
     // Filter the pages
     let pagesToShow: Page[] = Object.assign([], searchedPages);
 
+    const draftTypes = Object.assign({}, tabInfo);
+    draftTypes[Tab.All] = pagesToShow.length;
+
+    // Filter by draft status
     if (draftField && draftField.type === 'choice') {
+      const draftChoices = settings?.draftField?.choices;
+      for (const choice of (draftChoices || [])) {
+        if (choice) {
+          draftTypes[choice] = pagesToShow.filter(page => page.fmDraft === choice).length;
+        }
+      }
+
       if (tab !== Tab.All) {
         pagesToShow = pagesToShow.filter(page => page.fmDraft === tab);
       } else {
@@ -35,6 +47,10 @@ export default function usePages(pages: Page[]) {
       }
     } else {
       const draftFieldName = draftField?.name || "draft";
+      
+      draftTypes[Tab.Draft] = pagesToShow.filter(page => !!page[draftFieldName]).length;
+      draftTypes[Tab.Published] = pagesToShow.filter(page => !page[draftFieldName]).length;
+
       if (tab === Tab.Published) {
         pagesToShow = searchedPages.filter(page => !page[draftFieldName]);
       } else if (tab === Tab.Draft) {
@@ -43,6 +59,9 @@ export default function usePages(pages: Page[]) {
         pagesToShow = searchedPages;
       }
     }
+
+    // Set the tab information
+    setTabInfo(draftTypes);
 
     // Sort the pages
     let pagesSorted: Page[] = Object.assign([], pagesToShow);
@@ -91,7 +110,7 @@ export default function usePages(pages: Page[]) {
     }
 
     setPageItems(pagesSorted);
-  }, [ settings, tab, folder, search, tag, category, sorting ]);
+  }, [ settings, tab, folder, search, tag, category, sorting, tabInfo ]);
 
 
   const searchListener = (message: MessageEvent<EventData<any>>) => {
@@ -124,7 +143,7 @@ export default function usePages(pages: Page[]) {
     } else {
       processPages(searchedPages);
     }
-  }, [ settings?.draftField, pages, sorting, search ]);
+  }, [ settings?.draftField, pages, sorting, search, tab ]);
 
   useEffect(() => {
     Messenger.listen(searchListener);

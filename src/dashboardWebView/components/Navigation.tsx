@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { Tab } from '../constants/Tab';
-import { SettingsAtom, TabAtom } from '../state';
+import { SettingsAtom, TabAtom, TabInfoAtom } from '../state';
 
 export interface INavigationProps {
   totalPages: number;
@@ -15,8 +15,9 @@ export const tabs = [
 
 export const Navigation: React.FunctionComponent<INavigationProps> = ({totalPages}: React.PropsWithChildren<INavigationProps>) => {
   const [ crntTab, setCrntTab ] = useRecoilState(TabAtom);
+  const tabInfo = useRecoilValue(TabInfoAtom);
   const settings = useRecoilValue(SettingsAtom);
-
+  
   return (
     <nav className="flex-1 -mb-px flex space-x-6 xl:space-x-8" aria-label="Tabs">
       {
@@ -28,7 +29,7 @@ export const Navigation: React.FunctionComponent<INavigationProps> = ({totalPage
               aria-current={tab.id === crntTab ? 'page' : undefined}
               onClick={() => setCrntTab(tab.id)}
             >
-              {tab.name}{(tab.id === crntTab && totalPages) ? ` (${totalPages})` : ''}
+              {tab.name}{(tabInfo && tabInfo[tab.id]) ? ` (${tabInfo[tab.id]})` : ''}
             </button>
           ))
         ) : (
@@ -38,7 +39,7 @@ export const Navigation: React.FunctionComponent<INavigationProps> = ({totalPage
               aria-current={tabs[0].id === crntTab ? 'page' : undefined}
               onClick={() => setCrntTab(tabs[0].id)}
             >
-              {tabs[0].name}{(tabs[0].id === crntTab && totalPages) ? ` (${totalPages})` : ''}
+              {tabs[0].name}{(tabInfo && tabInfo[tabs[0].id]) ? ` (${tabInfo[tabs[0].id]})` : ''}
             </button>
 
             {
@@ -49,7 +50,7 @@ export const Navigation: React.FunctionComponent<INavigationProps> = ({totalPage
                   aria-current={value === crntTab ? 'page' : undefined}
                   onClick={() => setCrntTab(value)}
                 >
-                  {value}{(value === crntTab && totalPages) ? ` (${totalPages})` : ''}
+                  {value}{(tabInfo && tabInfo[value]) ? ` (${tabInfo[value]})` : ''}
                 </button>
               ))
             }
