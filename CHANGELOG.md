@@ -1,5 +1,11 @@
 # Change Log
 
+## [7.1.2] - 2022-04-11
+
+### 🐞 Fixes
+
+- [#316](https://github.com/estruyf/vscode-front-matter/issues/316): Fix draft tab navigation
+
 ## [7.1.1] - 2022-04-08
 
 ### 🐞 Fixes

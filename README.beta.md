@@ -166,27 +166,7 @@ You can open showcase issues for the following things:
 ## 🖤 Backers & Sponsors 👇 🤘
 
 <p align="center">
-  <a href="https://github.com/jmatthewpryor" title="Andre Powell">
-    <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/850570" />
-  </a>
-  <a href="https://github.com/apowell656" title="Andre Powell">
-    <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/1969515" />
-  </a>
-  <a href="https://github.com/timschps" title="Tim Schaeps">
-    <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/13098307" />
-  </a>
-  <a href="https://github.com/grahampcharles" title="Graham Charles">
-    <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/3606679?v=4" />
-  </a>
-  <a href="https://github.com/zivbk1" title="Bryan Klein">
-    <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/6154767" />
-  </a>
-  <a href="https://github.com/flikteoh" title="FlikTeoh">
-    <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/1472065" />
-  </a>
-  <a href="https://github.com/themefisher" title="FlikTeoh">
-    <img height="64px" style="border-radius:50%" src="https://avatars.githubusercontent.com/u/10640964" />
-  </a>
+  <img src="https://frontmatter.codes/api/img-sponsors" />
 </p>
 
 <br />

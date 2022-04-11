@@ -14,6 +14,7 @@ export * from './SelectedMediaFolderAtom';
 export * from './SettingsAtom';
 export * from './SortingAtom';
 export * from './TabAtom';
+export * from './TabInfoAtom';
 export * from './TagAtom';
 export * from './ViewAtom';
 export * from './ViewDataAtom';
