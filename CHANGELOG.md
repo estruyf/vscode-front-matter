@@ -1,5 +1,17 @@
 # Change Log
 
+## [7.2.0] - 2022-04-xx
+
+### 🎨 Enhancements
+
+- [#263](https://github.com/estruyf/vscode-front-matter/issues/263): WYSIWYG string field option
+- [#314](https://github.com/estruyf/vscode-front-matter/issues/314): New preview actions to open the page in the browser and refresh the preview
+- [#322](https://github.com/estruyf/vscode-front-matter/issues/322): Show parent folder name when file is an index page (`index.md` / `_index.md`)
+
+### ⚡️ Optimizations
+
+- [#316](https://github.com/estruyf/vscode-front-matter/issues/316): Surpress file parsing errors when closing the dashboard
+
 ## [7.1.2] - 2022-04-11
 
 ### 🐞 Fixes

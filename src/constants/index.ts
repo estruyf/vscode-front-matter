@@ -9,6 +9,7 @@ export * from './GeneralCommands';
 export * from './Links';
 export * from './LocalStore';
 export * from './Navigation';
+export * from './PreviewCommands';
 export * from './TelemetryEvent';
 export * from './charCode';
 export * from './charMap';

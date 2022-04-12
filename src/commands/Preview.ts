@@ -1,14 +1,15 @@
 import { Telemetry } from './../helpers/Telemetry';
-import { SETTING_PREVIEW_HOST, SETTING_PREVIEW_PATHNAME, CONTEXT, TelemetryEvent } from './../constants';
+import { SETTING_PREVIEW_HOST, SETTING_PREVIEW_PATHNAME, CONTEXT, TelemetryEvent, PreviewCommands } from './../constants';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { join } from "path";
 import { commands, env, Uri, ViewColumn, window } from "vscode";
-import { Settings } from '../helpers';
+import { Extension, Settings } from '../helpers';
 import { PreviewSettings } from '../models';
 import { format } from 'date-fns';
 import { DateHelper } from '../helpers/DateHelper';
 import { Article } from '.';
 import { urlJoin } from 'url-join-ts';
+import { WebviewHelper } from '@estruyf/vscode';
 
 
 export class Preview {
@@ -81,59 +82,62 @@ export class Preview {
 
     const cspSource = webView.webview.cspSource;
 
-    webView.webview.html = `<!DOCTYPE html>
-  <head>
-    <meta
-        http-equiv="Content-Security-Policy"
-        content="default-src 'none'; frame-src ${localhostUrl} ${cspSource} http: https:; img-src ${localhostUrl} ${cspSource} http: https:; script-src ${localhostUrl} ${cspSource} 'unsafe-inline'; style-src ${localhostUrl} ${cspSource} 'self' 'unsafe-inline' http: https:;"
-    />
-    <style>
-      html,body { 
-        margin: 0;
-        padding: 0;
-        background: white;
-        height: 100%;
-        width: 100%;
+    webView.webview.onDidReceiveMessage(message => {
+      switch (message.command) {
+        case PreviewCommands.toVSCode.open:
+          if (message.data) {
+            commands.executeCommand('vscode.open', message.data);
+          }
+          return;
       }
-      
-      body {
-        margin: 0;
-        padding: 0;
-      }
+    });
 
-      iframe {
-        width: 100%;
-        height: calc(100% - 30px);
-        border: 0;
-        margin-top: 30px;
-      }
 
-      .slug {
-        width: 100%;
-        position: fixed;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        background-color: var(--vscode-editor-background);
-        border-bottom: 1px solid var(--vscode-focusBorder);
-      }
+    const dashboardFile = "dashboardWebView.js";
+    const localPort = `9000`;
+    const localServerUrl = `localhost:${localPort}`;
 
-      input {
-        color: var(--vscode-editor-foreground);
-        padding: 0.25rem 0.5rem;
-        background: none;
-        border: 0;
-        width: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="slug">
-      <input type="text" value="${urlJoin(localhostUrl.toString(), slug || '')}" disabled />
-    </div>
-    <iframe src="${urlJoin(localhostUrl.toString(), slug || '')}" >
-  </body>
-</html>`;
+    const nonce = WebviewHelper.getNonce();
+
+    const ext = Extension.getInstance();
+    const isProd = ext.isProductionMode;
+    const version = ext.getVersion();
+    const isBeta = ext.isBetaVersion();
+    const extensionUri = ext.extensionPath;
+    
+    const csp = [
+      `default-src 'none';`,
+      `img-src ${localhostUrl} ${cspSource} http: https:;`,
+      `script-src ${isProd ? `'nonce-${nonce}'` : `http://${localServerUrl} http://0.0.0.0:${localPort}`} 'unsafe-eval'`,
+      `style-src ${cspSource} 'self' 'unsafe-inline' http: https:`,
+      `connect-src https://o1022172.ingest.sentry.io ${isProd ? `` : `ws://${localServerUrl} ws://0.0.0.0:${localPort} http://${localServerUrl} http://0.0.0.0:${localPort}`}`,
+      `frame-src ${localhostUrl} ${cspSource} http: https:;`,
+    ];
+
+    let scriptUri = "";
+    if (isProd) {
+      scriptUri = webView.webview.asWebviewUri(Uri.joinPath(extensionUri, 'dist', dashboardFile)).toString();
+    } else {
+      scriptUri = `http://${localServerUrl}/${dashboardFile}`; 
+    }
+
+    webView.webview.html = `
+      <!DOCTYPE html>
+      <html lang="en" style="width:100%;height:100%;margin:0;padding:0;">
+        <head>
+          <meta charset="UTF-8">
+          <meta http-equiv="Content-Security-Policy" content="${csp.join('; ')}">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+          <title>Front Matter Preview</title>
+        </head>
+        <body style="width:100%;height:100%;margin:0;padding:0;overflow:hidden">
+          <div id="app" data-type="preview" data-url="${urlJoin(localhostUrl.toString(), slug || '')}" data-isProd="${isProd}" data-environment="${isBeta ? "BETA" : "main"}" data-version="${version.usedVersion}" style="width:100%;height:100%;margin:0;padding:0;"></div>
+
+          <script ${isProd ? `nonce="${nonce}"` : ""} src="${scriptUri}"></script>
+        </body>
+      </html>
+    `;
 
     Telemetry.send(TelemetryEvent.openPreview);
   }

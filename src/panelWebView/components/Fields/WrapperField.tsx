@@ -153,6 +153,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           label={field.title || field.name}
           singleLine={field.single}
           limit={limit}
+          wysiwyg={field.wysiwyg}
           rows={3}
           onChange={(value) => onSendUpdate(field.name, value, parentFields)}
           value={fieldValue as string || null} />

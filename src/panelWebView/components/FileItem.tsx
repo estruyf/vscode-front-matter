@@ -19,7 +19,7 @@ const FileItem: React.FunctionComponent<IFileItemProps> = ({ name, folderName, p
   };
 
   const itemName = useMemo(() => {
-    if (folderName && name === 'index.md') {
+    if (folderName && name.includes("index.")) {
       return folderName;
     }
 
