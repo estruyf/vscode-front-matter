@@ -270,7 +270,7 @@ export class MediaHelpers {
    * @param data 
    */
   public static async insertMediaToMarkdown(data: any) {
-    if (data?.file && data?.image) {
+    if (data?.file && data?.relPath) {
       if (!data?.position) {
         await commands.executeCommand(`workbench.view.extension.frontmatter-explorer`);
       }
@@ -281,12 +281,12 @@ export class MediaHelpers {
       const editor = window.activeTextEditor;
       const wsFolder = Folders.getWorkspaceFolder();
       const filePath = data.file;
-      let imgPath = data.image;
+      let relPath = data.relPath;
 
       const article = editor ? ArticleHelper.getFrontMatter(editor) : null;
       const articleCt = article && article.data ? ArticleHelper.getContentType(article.data) : DEFAULT_CONTENT_TYPE;
 
-      const absImgPath = join(parseWinPath(wsFolder?.fsPath || ""), imgPath);
+      const absImgPath = join(parseWinPath(wsFolder?.fsPath || ""), relPath);
       const fileDir = parseWinPath(dirname(filePath));
       const imgDir = parseWinPath(dirname(absImgPath));
       const contentFolders = Folders.get();
@@ -303,11 +303,11 @@ export class MediaHelpers {
         if (existsInContent) {
           const relImgPath = relative(fileDir, imgDir);
 
-          imgPath = join(relImgPath, basename(imgPath));
+          relPath = join(relImgPath, basename(relPath));
 
           // Snippets are already parsed, so update the URL of the image
           if (data.snippet) {
-            data.snippet = data.snippet.replace(data.image, imgPath);
+            data.snippet = data.snippet.replace(data.relPath, relPath);
           }
         }
       }
@@ -319,7 +319,14 @@ export class MediaHelpers {
         if (line) {
           const selection = editor?.selection;
           await editor?.edit(builder => {
-            const snippet = data.snippet || `![${data.alt || data.caption || ""}](${imgPath})`;
+            const mimeType = lookup(relPath)
+            
+            let isFile = true;
+            if (mimeType) {
+              isFile = !mimeType.startsWith('image');
+            }
+
+            const snippet = data.snippet || `${isFile ? "" : "!"}[${data.alt || data.caption || ""}](${relPath})`;
             if (selection !== undefined) {
               builder.replace(selection, snippet);
             } else {
@@ -333,7 +340,7 @@ export class MediaHelpers {
         
         DataListener.updateMetadata({
           field: data.fieldName, 
-          value: imgPath, 
+          value: relPath, 
           parents: data.parents,
           blockData: data.blockData
         });

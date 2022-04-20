@@ -324,7 +324,7 @@ export class Article {
   /**
    * Insert an image from the media dashboard into the article
    */
-  public static async insertImage() {
+  public static async insertMedia() {
 		let editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;

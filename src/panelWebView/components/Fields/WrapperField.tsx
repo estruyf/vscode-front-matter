@@ -19,6 +19,7 @@ import { VsLabel } from '../VscodeComponents';
 import { ChoiceField } from './ChoiceField';
 import { DateTimeField } from './DateTimeField';
 import { DraftField } from './DraftField';
+import { FileField } from './FileField';
 import { NumberField } from './NumberField';
 import { PreviewImageField, PreviewImageValue } from './PreviewImageField';
 import { TextField } from './TextField';
@@ -184,6 +185,21 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           parents={parentFields}
           value={fieldValue as PreviewImageValue | PreviewImageValue[] | null}
           multiple={field.multiple}
+          blockData={blockData}
+          onChange={(value) => onSendUpdate(field.name, value, parentFields)} />
+      </FieldBoundary>
+    );
+  } else if (field.type === 'file') {
+    return (
+      <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+        <FileField 
+          label={field.title || field.name}
+          fieldName={field.name}
+          multiple={field.multiple}
+          fileExtensions={field.fileExtensions}
+          filePath={metadata.filePath as string}
+          value={fieldValue as string | string[] | null}
+          parents={parentFields} 
           blockData={blockData}
           onChange={(value) => onSendUpdate(field.name, value, parentFields)} />
       </FieldBoundary>

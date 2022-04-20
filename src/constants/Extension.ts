@@ -38,7 +38,7 @@ export const COMMAND_NAME = {
   modeSwitch: getCommandName("mode.switch"),
 
   // Insert dashboards
-  insertImage: getCommandName("insertImage"),
+  insertMedia: getCommandName("insertMedia"),
   insertSnippet: getCommandName("insertSnippet"),
 
   // WYSIWYG

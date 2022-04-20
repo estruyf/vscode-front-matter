@@ -22,6 +22,9 @@ export class MediaListener extends BaseListener {
       case CommandToCode.selectImage:
         this.selectMedia(msg);
         break;
+      case CommandToCode.selectFile:
+        this.selectMedia(msg);
+        break;
       case CommandToCode.getImageUrl:
         this.generateUrl(msg.data);
         break;

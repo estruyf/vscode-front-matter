@@ -22,6 +22,7 @@ export const TelemetryEvent = {
   refreshMedia: 'refreshMedia',
   deleteMedia: 'deleteMedia',
   insertMediaToContent: 'insertMediaToContent',
+  insertFileToContent: 'insertFileToContent',
   updateMediaMetadata: 'updateMediaMetadata',
   openExplorerView: 'openExplorerView',
 

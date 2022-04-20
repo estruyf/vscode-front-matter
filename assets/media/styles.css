@@ -639,6 +639,7 @@ input:checked + .field__toggle__slider:before {
   max-height: 16rem;
 }
 
+.metadata_field__file__button,
 .metadata_field__preview_image__button {
   background-color: transparent;
   border: 1px dashed var(--vscode-button-background);
@@ -646,11 +647,13 @@ input:checked + .field__toggle__slider:before {
   filter: brightness(85%);
 }
 
+.metadata_field__file__button:hover,
 .metadata_field__preview_image__button:hover {
   background-color: rgba(255, 255, 255, .1);
   filter: brightness(100%);
 }
 
+.metadata_field__file__button svg,
 .metadata_field__preview_image__button svg {
   color: var(--vscode-foreground);
   display: block;
@@ -659,6 +662,7 @@ input:checked + .field__toggle__slider:before {
   margin: 0 auto;
 }
 
+.metadata_field__file__button span,
 .metadata_field__preview_image__button span {
   color: var(--vscode-foreground);
   display: inline-block;

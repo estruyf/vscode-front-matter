@@ -744,6 +744,7 @@
                         "datetime",
                         "boolean",
                         "image",
+                        "file",
                         "choice",
                         "taxonomy",
                         "tags",
@@ -827,6 +828,13 @@
                       "default": "",
                       "description": "The ID of your taxonomy field"
                     },
+                    "fileExtensions": {
+                      "type": "array",
+                      "description": "Specify the file extensions to allow for the file picker",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
                     "fields": {
                       "$ref": "#contenttypefield"
                     },
@@ -874,6 +882,20 @@
                     "name"
                   ],
                   "allOf": [
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "file"
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "fileExtensions"
+                        ]
+                      }
+                    },
                     {
                       "if": {
                         "properties": {
@@ -1305,8 +1327,8 @@
         "category": "Front matter"
       },
       {
-        "command": "frontMatter.insertImage",
-        "title": "Insert image into your content",
+        "command": "frontMatter.insertMedia",
+        "title": "Insert media into your content",
         "category": "Front matter",
         "icon": {
           "dark": "/assets/icons/media-dark.svg",
@@ -1468,7 +1490,7 @@
           "when": "frontMatter:file:isValid == true && frontMatter:dashboard:snippets:enabled"
         },
         {
-          "command": "frontMatter.insertImage",
+          "command": "frontMatter.insertMedia",
           "group": "navigation@-128",
           "when": "frontMatter:file:isValid == true"
         },
@@ -1625,7 +1647,7 @@
           "when": "frontMatter:file:isValid == true && frontMatter:dashboard:snippets:enabled"
         },
         {
-          "command": "frontMatter.insertImage",
+          "command": "frontMatter.insertMedia",
           "when": "frontMatter:file:isValid == true"
         },
         {

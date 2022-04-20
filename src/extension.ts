@@ -211,7 +211,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.preview, () => Preview.open(extensionPath) ));
 
 	// Inserting an image in Markdown
-	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.insertImage, Article.insertImage));
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.insertMedia, Article.insertMedia));
 
 	// Inserting a snippet in Markdown
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.insertSnippet, Article.insertSnippet));

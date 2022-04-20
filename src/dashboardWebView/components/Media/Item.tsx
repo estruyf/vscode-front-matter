@@ -9,7 +9,6 @@ import { CustomScript } from '../../../helpers/CustomScript';
 import { parseWinPath } from '../../../helpers/parseWinPath';
 import { ScriptType } from '../../../models';
 import { MediaInfo } from '../../../models/MediaPaths';
-import { FileIcon } from '../../../panelWebView/components/Icons/FileIcon';
 import { DashboardMessage } from '../../DashboardMessage';
 import { LightboxAtom, SelectedMediaFolderSelector, SettingsSelector, ViewDataSelector } from '../../state';
 import { MenuItem, MenuItems } from '../Menu';
@@ -74,18 +73,32 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
 
   const insertToArticle = () => {
     const relPath = getRelPath();
-    Messenger.send(DashboardMessage.insertPreviewImage, {
-      image: parseWinPath(relPath) || "",
-      file: viewData?.data?.filePath,
-      fieldName: viewData?.data?.fieldName,
-      parents: viewData?.data?.parents,
-      multiple: viewData?.data?.multiple,
-      value: viewData?.data?.value,
-      position: viewData?.data?.position || null,
-      blockData: typeof viewData?.data?.blockData !== "undefined" ? viewData?.data?.blockData : undefined,
-      alt: alt || "",
-      caption: caption || ""
-    });
+
+    if (viewData?.data?.type === "file") {
+      Messenger.send(DashboardMessage.insertFile, {
+        relPath: parseWinPath(relPath) || "",
+        file: viewData?.data?.filePath,
+        fieldName: viewData?.data?.fieldName,
+        parents: viewData?.data?.parents,
+        multiple: viewData?.data?.multiple,
+        value: viewData?.data?.value,
+        position: viewData?.data?.position || null,
+        blockData: typeof viewData?.data?.blockData !== "undefined" ? viewData?.data?.blockData : undefined
+      });
+    } else {
+      Messenger.send(DashboardMessage.insertPreviewImage, {
+        relPath: parseWinPath(relPath) || "",
+        file: viewData?.data?.filePath,
+        fieldName: viewData?.data?.fieldName,
+        parents: viewData?.data?.parents,
+        multiple: viewData?.data?.multiple,
+        value: viewData?.data?.value,
+        position: viewData?.data?.position || null,
+        blockData: typeof viewData?.data?.blockData !== "undefined" ? viewData?.data?.blockData : undefined,
+        alt: alt || "",
+        caption: caption || ""
+      });
+    }
   };
 
   const insertSnippet = () => {
@@ -100,7 +113,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     snippet = snippet?.replace("{mediaHeight}", media?.dimensions?.height?.toString() || "");
 
     Messenger.send(DashboardMessage.insertPreviewImage, {
-      image: parseWinPath(relPath) || "",
+      relPath: parseWinPath(relPath) || "",
       file: viewData?.data?.filePath,
       fieldName: viewData?.data?.fieldName,
       position: viewData?.data?.position || null,

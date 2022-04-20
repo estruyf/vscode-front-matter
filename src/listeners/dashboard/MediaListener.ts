@@ -40,6 +40,10 @@ export class MediaListener extends BaseListener {
         Telemetry.send(TelemetryEvent.insertMediaToContent);
         MediaHelpers.insertMediaToMarkdown(msg?.data);
         break;
+      case DashboardMessage.insertFile:
+        Telemetry.send(TelemetryEvent.insertFileToContent);
+        MediaHelpers.insertMediaToMarkdown(msg?.data);
+        break;
       case DashboardMessage.updateMediaMetadata:
         Telemetry.send(TelemetryEvent.updateMediaMetadata);
         this.update(msg.data);

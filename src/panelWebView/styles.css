@@ -253,6 +253,80 @@
   display: none;
 }
 
+/* File field */
+.metadata_field__file__button.not_empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.metadata_field__file__button.not_empty svg {
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+  margin: inherit;
+}
+
+.metadata_field__file__button.not_empty span {
+  margin-top: 0;
+  display: inline-block;
+  margin: inherit;
+  margin-left: .5rem;
+}
+
+.metadata_field__file__list.multiple {
+  margin-top: 1rem;
+}
+
+.metadata_field__file__list__item {
+  display: flex;
+  align-items: center;
+  padding: .5rem .25rem;
+  overflow: hidden;
+}
+
+.metadata_field__file__list__item:nth-child(odd) {
+  background-color: rgba(255, 255, 255, .05);
+  filter: brightness(100%);
+}
+
+.metadata_field__file__list__item:hover {
+  background-color: rgba(255, 255, 255, .1);
+  filter: brightness(100%);
+}
+
+.metadata_field__file__item__icon {
+  margin-right: .5rem;
+  display: flex;
+  align-items: center;
+}
+
+.metadata_field__file__item__text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1;
+}
+
+.metadata_field__file__item__remove {
+  display: none;
+  background: none;
+  width: auto;
+  color: var(--vscode-inputValidation-errorForeground);
+  padding: 0;
+  align-items: center;
+}
+
+.metadata_field__file__item__remove:hover {
+  background: var(--vscode-inputValidation-errorBackground);
+}
+
+.metadata_field__file__list__item:hover .metadata_field__file__item__remove {
+  display: flex;
+  margin: -.5rem -.25rem -.5rem 0;
+  padding: .5rem;
+}
+
 /* Quill changes */
 .ql-toolbar.ql-snow,
 .ql-container.ql-snow {

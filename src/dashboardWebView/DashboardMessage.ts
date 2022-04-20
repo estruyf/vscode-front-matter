@@ -25,6 +25,7 @@ export enum DashboardMessage {
   insertPreviewImage = 'insertPreviewImage',
   updateMediaMetadata = 'updateMediaMetadata',
   createMediaFolder = 'createMediaFolder',
+  insertFile = 'insertFile',
 
   // Data dashboard
   getDataEntries = 'getDataEntries',
