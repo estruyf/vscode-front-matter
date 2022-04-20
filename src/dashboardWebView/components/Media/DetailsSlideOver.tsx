@@ -18,12 +18,13 @@ export interface IDetailsSlideOverProps {
   folder: string;
   media: MediaInfo;
   showForm: boolean;
+  isImageFile: boolean;
   onEdit: () => void;
   onEditClose: () => void;
   onDismiss: () => void;
 }
 
-export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> = ({ imgSrc, size, dimensions, media, folder, showForm, onEdit, onEditClose, onDismiss }: React.PropsWithChildren<IDetailsSlideOverProps>) => {
+export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> = ({ imgSrc, size, dimensions, media, folder, showForm, onEdit, onEditClose, onDismiss, isImageFile }: React.PropsWithChildren<IDetailsSlideOverProps>) => {
   const [ filename, setFilename ] = React.useState<string>(media.filename);
   const [ caption, setCaption ] = React.useState<string | undefined>(media.caption);
   const [ alt, setAlt ] = React.useState(media.alt);
@@ -93,9 +94,13 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                   <div className="relative mt-6 flex-1 px-4 sm:px-6">
                     <div className="absolute inset-0 px-4 sm:px-6 space-y-8">
                       <div>
-                        <div className="block w-full aspect-w-10 aspect-h-7 overflow-hidden border-gray-200 dark:border-vulcan-200 border">
-                          <img src={imgSrc} alt={media.filename} className="object-cover" />
-                        </div>
+                        {
+                          isImageFile && (
+                            <div className="block w-full aspect-w-10 aspect-h-7 overflow-hidden border-gray-200 dark:border-vulcan-200 border">
+                              <img src={imgSrc} alt={media.filename} className="object-cover" />
+                            </div>
+                          )
+                        }
                         <div className="mt-4 flex items-start justify-between">
                           <div>
                             <h2 className="text-lg font-medium text-vulcan-300 dark:text-whisper-500"><span className="sr-only">Details for </span>{media.filename}</h2>

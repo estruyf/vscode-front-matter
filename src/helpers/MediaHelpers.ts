@@ -1,4 +1,4 @@
-import { decodeBase64Image, Extension, MediaLibrary, Notifications, parseWinPath, Settings, Sorting } from ".";
+import { decodeBase64, Extension, MediaLibrary, Notifications, parseWinPath, Settings, Sorting } from ".";
 import { Dashboard } from "../commands/Dashboard";
 import { Folders } from "../commands/Folders";
 import { DEFAULT_CONTENT_TYPE, ExtensionState, HOME_PAGE_NAVIGATION_ID, SETTING_CONTENT_STATIC_FOLDER, SETTING_MEDIA_SUPPORTED_MIMETYPES } from "../constants";
@@ -228,7 +228,7 @@ export class MediaHelpers {
       }
 
       const staticPath = join(absFolderPath, fileName);
-      const imgData = decodeBase64Image(contents);
+      const imgData = decodeBase64(contents);
 
       if (imgData) {
         writeFileSync(staticPath, imgData.data);

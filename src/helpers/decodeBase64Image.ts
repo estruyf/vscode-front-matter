@@ -1,13 +1,17 @@
-export const decodeBase64Image = (dataString: string) => {
-  const matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-  let response: any = {};
+export const decodeBase64 = (dataString: string) => {
+  const dataParts = dataString.split(';base64,');
 
-  if (matches?.length !== 3) {
+  if (dataParts?.length < 2) {
     return null;
   }
 
-  response.type = matches[1];
-  response.data = Buffer.from(matches[2], 'base64');
+  const typePart = dataParts[0].split(':').pop() as string;
+  const dataPart = dataParts.pop() as string;
+
+  let response: any = {};
+
+  response.type = typePart;
+  response.data = Buffer.from(dataPart, 'base64');
 
   return response;
 }

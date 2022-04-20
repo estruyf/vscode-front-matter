@@ -11,11 +11,14 @@
 
 ### ⚡️ Optimizations
 
-- [#316](https://github.com/estruyf/vscode-front-matter/issues/316): Surpress file parsing errors when closing the dashboard
+- [#316](https://github.com/estruyf/vscode-front-matter/issues/316): Suppress file parsing errors when closing the dashboard
 
 ### 🐞 Fixes
 
 - Hide the view mode action from the Front Matter panel if no custom modes are defined
+- Fix in decode base64 uploaded video files
+- Fix for a lightbox on other types of documents (pdf, etc.)
+- Fix for hiding the image preview on slide-over for none image documents
 
 ## [7.1.2] - 2022-04-11
 
