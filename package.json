@@ -1692,7 +1692,7 @@
         {
           "command": "frontMatter.mode.switch",
           "group": "navigation@1",
-          "when": "view == frontMatter.explorer"
+          "when": "view == frontMatter.explorer && frontMatter:has:modes == true"
         },
         {
           "command": "frontMatter.dashboard",

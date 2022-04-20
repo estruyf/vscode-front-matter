@@ -2,7 +2,7 @@ import { ModeListener } from './../listeners/general/ModeListener';
 import { SETTING_GLOBAL_ACTIVE_MODE, SETTING_GLOBAL_MODES } from './../constants/settings';
 import { commands, StatusBarAlignment, StatusBarItem, ThemeColor, window } from "vscode";
 import { Settings } from "../helpers/SettingsHelper";
-import { COMMAND_NAME } from '../constants';
+import { COMMAND_NAME, CONTEXT } from '../constants';
 import { Mode } from '../models';
 
 
@@ -36,9 +36,11 @@ export class ModeSwitch {
     const modes = Settings.get<string | null>(SETTING_GLOBAL_MODES);
     if (!modes || modes.length === 0) {
       ModeSwitch.statusBarElm.hide();
+      commands.executeCommand('setContext', CONTEXT.hasViewModes, false);
       return;
     }
 
+    commands.executeCommand('setContext', CONTEXT.hasViewModes, true);
     ModeSwitch.setText();
   }
 
