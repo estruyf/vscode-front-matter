@@ -45,6 +45,23 @@ export class ArticleHelper {
   }
 
   /**
+   * Get the current article
+   */
+   public static getCurrent(): ParsedFrontMatter | undefined {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+
+    const article = ArticleHelper.getFrontMatter(editor);
+    if (!article) {
+      return;
+    }
+
+    return article;
+  }
+
+  /**
    * Retrieve the file's front matter by its path
    * @param filePath 
    */

@@ -2,7 +2,7 @@ import { PagesListener } from './../listeners/dashboard';
 import { ArticleHelper, Settings } from ".";
 import { SETTING_CONTENT_DRAFT_FIELD, SETTING_DATE_FORMAT, SETTING_TAXONOMY_CONTENT_TYPES, TelemetryEvent } from "../constants";
 import { ContentType as IContentType, DraftField, Field } from '../models';
-import { Uri, commands } from 'vscode'; 
+import { Uri, commands, window } from 'vscode'; 
 import { Folders } from "../commands/Folders";
 import { Questions } from "./Questions";
 import { writeFileSync } from "fs";
@@ -90,6 +90,128 @@ export class ContentType {
    */
   public static getAll() {
     return Settings.get<IContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
+  }
+
+  /**
+   * Generate a content type
+   */
+  public static async generate() {
+    const content = ArticleHelper.getCurrent();
+
+    if (!content || !content.data) {
+      Notifications.warning(`No front matter data found to generate a content type.`);
+      return;
+    }
+
+    const answer = await window.showInputBox({
+      ignoreFocusOut: true,
+      placeHolder: "Enter the name of the content type to generate",
+      prompt: "Enter the name of the content type to generate",
+      title: "Generate Content Type",
+      validateInput: (value: string) => {
+        if (!value) {
+          return "Please enter a name for the content type";
+        }
+
+        const contentTypes = ContentType.getAll();
+        if (contentTypes && contentTypes.find(ct => ct.name.toLowerCase() === value.toLowerCase())) {
+          return "A content type with this name already exists";
+        }
+
+        return null;
+      }
+    });
+
+    if (!answer) {
+      Notifications.warning(`You didn't specify a name for the content type.`);
+      return;
+    }
+
+    const fields = ContentType.generateFields(content.data);
+    
+    const newContentType: IContentType = {
+      name: answer,
+      fields
+    };
+
+    const contentTypes = ContentType.getAll() || [];
+    contentTypes.push(newContentType);
+
+    Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
+    Notifications.info(`Content type ${answer} has been generated.`);
+  }
+
+  /**
+   * Generate the fields from the data
+   * @param data 
+   * @param fields 
+   * @returns 
+   */
+  private static generateFields(data: any, fields: any[] = []) {
+    for (const field in data) {
+      const fieldData = data[field];
+
+      if (fieldData && fieldData instanceof Array && fieldData.length > 0 && typeof fieldData[0] === "string") {
+        if (field.toLowerCase() === "tag" || field.toLowerCase() === "tags") {
+          fields.push({
+            title: field,
+            name: field,
+            type: "tags",
+          } as Field);
+        } else if (field.toLowerCase() === "category" || field.toLowerCase() === "categories") {
+          fields.push({
+            title: field,
+            name: field,
+            type: "categories",
+          } as Field);
+        } else {
+          fields.push({
+            title: field,
+            name: field,
+            type: "choice",
+            choices: fieldData
+          } as Field);
+        }
+      } else if (fieldData && fieldData instanceof Array && fieldData.length > 0 && typeof fieldData[0] === "object") {
+        const newFields = ContentType.generateFields(fieldData);
+        fields.push({
+          title: field,
+          name: field,
+          type: "block",
+          fields: newFields
+        } as Field);
+      } else if (fieldData && fieldData instanceof Object) {
+        const newFields = ContentType.generateFields(fieldData);
+        fields.push({
+          title: field,
+          name: field,
+          type: "fields",
+          fields: newFields
+        } as Field);
+      } else {
+        if (!isNaN(new Date(fieldData).getDate())) {
+          fields.push({
+            title: field,
+            name: field,
+            type: "datetime"
+          } as Field);
+        } else if (field.toLowerCase() === "draft") {
+          fields.push({
+            title: field,
+            name: field,
+            type: "draft"
+          } as Field);
+        } else {
+          fields.push({
+            title: field,
+            name: field,
+            type: typeof fieldData
+          } as Field);
+        }
+      }
+    }
+
+    return fields;
   }
 
   /**

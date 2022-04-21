@@ -154,6 +154,10 @@ export async function activate(context: vscode.ExtensionContext) {
 	const createByTemplate = vscode.commands.registerCommand(COMMAND_NAME.createByTemplate, Folders.create);
 	const createContent = vscode.commands.registerCommand(COMMAND_NAME.createContent, Content.create);
 
+	subscriptions.push(
+		vscode.commands.registerCommand(COMMAND_NAME.generateContentType, ContentType.generate)
+	);
+
 	// Initialize command
 	Template.init();
 	const projectInit = vscode.commands.registerCommand(COMMAND_NAME.init, async (cb: Function) => {

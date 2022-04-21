@@ -53,4 +53,7 @@ export const COMMAND_NAME = {
   orderedlist: getCommandName("markup.orderedlist"),
   taskList: getCommandName("markup.tasklist"),
   options: getCommandName("markup.options"),
+
+  // Content types
+  generateContentType: getCommandName("generate.contenttype"),
 };

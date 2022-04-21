@@ -1207,6 +1207,11 @@
         "category": "Front matter"
       },
       {
+        "command": "frontMatter.generate.contenttype",
+        "title": "Generate content type from current file",
+        "category": "Front matter"
+      },
+      {
         "command": "frontMatter.markup.blockquote",
         "title": "Blockquote",
         "category": "Front matter",
@@ -1680,6 +1685,10 @@
         },
         {
           "command": "frontMatter.generateSlug",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.generate.contenttype",
           "when": "frontMatter:file:isValid == true"
         }
       ],
