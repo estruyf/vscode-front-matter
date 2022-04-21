@@ -5,6 +5,11 @@ export enum DashboardMessage {
   getMode = 'getMode',
   showWarning = 'showWarning',
 
+  // Welcome view
+  initializeProject = 'initializeProject',
+  setFramework = 'setFramework',
+  addFolder = 'addFolder',
+
   // Content dashboard
   getData = 'getData',
   createContent = 'createContent',
@@ -39,8 +44,6 @@ export enum DashboardMessage {
   // Other
   getTheme = 'getTheme',
   updateSetting = 'updateSetting',
-  initializeProject = 'initializeProject',
-  setFramework = 'setFramework',
   setState = 'setState',
   runCustomScript = 'runCustomScript',
   sendTelemetry = 'sendTelemetry',

@@ -12,6 +12,7 @@ import { DataView } from './DataView';
 import { Snippets } from './SnippetsView/Snippets';
 import { FeatureFlag } from '../../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../../constants';
+import { Messenger } from '@estruyf/vscode/dist/client';
 
 export interface IDashboardProps {
   showWelcome: boolean;
@@ -23,15 +24,17 @@ export const Dashboard: React.FunctionComponent<IDashboardProps> = ({showWelcome
   const mode = useRecoilValue(ModeAtom);
   useDarkMode();
 
+  const viewState: any = Messenger.getState() || {};
+
   if (!settings) {
     return <Spinner />;
   }
 
-  if (showWelcome) {
+  if (showWelcome || viewState.isWelcomeConfiguring) {
     return <WelcomeScreen settings={settings} />;
   }
 
-  if (!settings.initialized || settings.folders?.length === 0) {
+  if (!settings.initialized || settings.contentFolders?.length === 0) {
     return <WelcomeScreen settings={settings} />;
   }
 

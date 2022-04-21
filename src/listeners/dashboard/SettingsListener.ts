@@ -1,4 +1,7 @@
-import { SETTING_CONTENT_STATIC_FOLDER, SETTING_FRAMEWORK_ID } from "../../constants";
+import { join } from "path";
+import { commands, Uri } from "vscode";
+import { Folders } from "../../commands/Folders";
+import { COMMAND_NAME, SETTING_CONTENT_STATIC_FOLDER, SETTING_FRAMEWORK_ID } from "../../constants";
 import { DashboardCommand } from "../../dashboardWebView/DashboardCommand";
 import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { DashboardSettings, Settings } from "../../helpers";
@@ -25,6 +28,9 @@ export class SettingsListener extends BaseListener {
         break;
       case DashboardMessage.setFramework:
         this.setFramework(msg?.data);
+        break;
+      case DashboardMessage.addFolder:
+        this.addFolder(msg?.data);
         break;
     }
   }
@@ -67,5 +73,13 @@ export class SettingsListener extends BaseListener {
     }
 
     SettingsListener.getSettings();
+  }
+
+  private static addFolder(folder: string) {
+    if (folder) {
+      const wsFolder = Folders.getWorkspaceFolder();
+      const folderUri = Uri.file(join(wsFolder?.fsPath || "", folder));
+      commands.executeCommand(COMMAND_NAME.registerFolder, folderUri);
+    }
   }
 }

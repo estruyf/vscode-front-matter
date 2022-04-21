@@ -25,7 +25,7 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({pages, settin
         <div className={`max-w-xl text-center`}>
           <FrontMatterIcon className={`text-vulcan-300 dark:text-whisper-800 h-32 mx-auto opacity-90 mb-8`} />
           {
-            settings && settings?.folders?.length > 0 ? (
+            settings && settings?.contentFolders?.length > 0 ? (
               <p className={`text-xl font-medium`}>No Markdown to show</p>
             ) : (
               <>

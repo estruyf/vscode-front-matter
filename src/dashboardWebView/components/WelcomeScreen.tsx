@@ -15,9 +15,14 @@ export interface IWelcomeScreenProps {
 export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({settings}: React.PropsWithChildren<IWelcomeScreenProps>) => {
 
   React.useEffect(() => {
-
     Messenger.send(DashboardMessage.sendTelemetry, {
       event: TelemetryEvent.webviewWelcomeScreen
+    });
+
+    const crntState: any = Messenger.getState() || {};
+    Messenger.setState({
+      ...crntState,
+      isWelcomeConfiguring: true
     });
 
     return () => {
@@ -26,7 +31,7 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({set
   }, []);
   
   return (
-    <div className={`h-full overflow-auto py-24`}>
+    <div className={`h-full overflow-auto py-8`}>
       <main>
         <div className="mx-auto max-w-7xl">
           <div className="grid grid-cols-12 gap-8">
@@ -82,7 +87,7 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({set
               <StepsToGetStarted settings={settings} />
 
               <p className="mt-5 text-sm text-vulcan-300 dark:text-whisper-700">
-                Once you completed both actions, the dashboard will show its full potential. You can also use the extension from the <b>Front Matter</b> side panel. There you will find the actions you can perform specifically for your pages.
+                You can also use the extension from the <b>Front Matter</b> side panel. There you will find the actions you can perform specifically for your pages.
               </p>
             </div>
           </div>

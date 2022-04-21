@@ -1,7 +1,7 @@
 import { Questions } from './../helpers/Questions';
 import { SETTING_CONTENT_PAGE_FOLDERS, SETTING_CONTENT_STATIC_FOLDER, SETTING_CONTENT_SUPPORTED_FILETYPES, TelemetryEvent } from './../constants';
 import { commands, Uri, workspace, window } from "vscode";
-import { basename, dirname, join, sep } from "path";
+import { basename, dirname, join, relative, sep } from "path";
 import { ContentFolder, FileInfo, FolderInfo } from "../models";
 import uniqBy = require("lodash.uniqby");
 import { Template } from "./Template";
@@ -15,6 +15,7 @@ import { MediaHelpers } from '../helpers/MediaHelpers';
 import { MediaListener, PagesListener, SettingsListener } from '../listeners/dashboard';
 import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
 import { Telemetry } from '../helpers/Telemetry';
+import { glob } from 'glob';
 
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
@@ -348,5 +349,43 @@ export class Folders {
     let absPath = parseWinPath(folder.path).replace(parseWinPath(wsFolder?.fsPath || ""), WORKSPACE_PLACEHOLDER);
     absPath = isWindows ? absPath.split('\\').join('/') : absPath;
     return absPath;
+  }
+
+  /**
+   * Find the content folders
+   */
+  public static async getContentFolders() {
+    // Find folders that contain files
+    const wsFolder = Folders.getWorkspaceFolder();
+    const supportedFiles = Settings.get<string[]>(SETTING_CONTENT_SUPPORTED_FILETYPES) || DEFAULT_FILE_TYPES;
+    const patterns = supportedFiles.map(fileType => `${join(wsFolder?.fsPath || "", "**", `*${fileType.startsWith('.') ? '' : '.'}${fileType}`)}`);
+    let folders: string[] = [];
+
+    for (const pattern of patterns) {
+      folders = [...folders, ...(await this.findFolders(pattern))];
+    }
+    
+    // Filter out the workspace folder
+    if (wsFolder) {
+      folders = folders.filter(folder => folder !== wsFolder.fsPath);
+    }
+
+    const uniqueFolders = [...new Set(folders)];
+    return uniqueFolders.map(folder => relative(wsFolder?.path || "", folder));
+  }
+
+  /**
+   * Retrieve all content folders
+   * @param pattern 
+   * @returns 
+   */
+  private static findFolders(pattern: string): Promise<string[]> {
+    return new Promise(resolve => {
+      glob(pattern, { ignore: "**/node_modules/**" }, (err, files) => {
+        const allFolders = files.map(file => dirname(file));
+        const uniqueFolders = [...new Set(allFolders)];
+        resolve(uniqueFolders);
+      });
+    });
   }
 }

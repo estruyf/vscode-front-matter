@@ -47,7 +47,7 @@ export const Step: React.FunctionComponent<IStepProps> = ({name, description, st
 
         <span className="ml-4 min-w-0 flex flex-col">
           <span className="text-xs font-semibold tracking-wide uppercase text-vulcan-500 dark:text-whisper-500">{name}</span>
-          <div className="text-sm text-vulcan-400 dark:text-whisper-600">{description}</div>
+          <div className="mt-1 text-sm text-vulcan-400 dark:text-whisper-600">{description}</div>
         </span>
       </>
     );

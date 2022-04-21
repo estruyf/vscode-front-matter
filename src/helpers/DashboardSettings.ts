@@ -19,12 +19,13 @@ export class DashboardSettings {
     const ext = Extension.getInstance();
     const wsFolder = Folders.getWorkspaceFolder();
     const isInitialized = await Template.isInitialized();
+
+    const contentFolders = await Folders.getContentFolders();
     
     return {
       beta: ext.isBetaVersion(),
       wsFolder: wsFolder ? wsFolder.fsPath : '',
       staticFolder: Settings.get<string>(SETTING_CONTENT_STATIC_FOLDER),
-      folders: Folders.get(),
       initialized: isInitialized,
       tags: Settings.getTaxonomy(TaxonomyType.Tag),
       categories: Settings.getTaxonomy(TaxonomyType.Category),
@@ -53,6 +54,9 @@ export class DashboardSettings {
           defaultSorting: Settings.get<string>(SETTING_MEDIA_SORTING_DEFAULT),
           selectedFolder: await ext.getState<string | undefined>(ExtensionState.SelectedFolder, "workspace"),
           mimeTypes: Settings.get<string[]>(SETTING_MEDIA_SUPPORTED_MIMETYPES)
+        },
+        welcome: {
+          contentFolders
         }
       },
       dataFiles: await this.getDataFiles(),

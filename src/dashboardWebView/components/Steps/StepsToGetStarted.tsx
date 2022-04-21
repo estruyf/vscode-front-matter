@@ -4,15 +4,31 @@ import { DashboardMessage } from '../../DashboardMessage';
 import { Settings } from '../../models/Settings';
 import { Status } from '../../models/Status';
 import { Step } from './Step';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Menu } from '@headlessui/react';
 import { MenuItem } from '../Menu';
-import { Framework } from '../../../models';
-import {ChevronDownIcon} from '@heroicons/react/outline';
+import { ContentFolder, Framework } from '../../../models';
+import {CheckCircleIcon, ChevronDownIcon} from '@heroicons/react/outline';
+import {CheckCircleIcon as CheckCircleIconSolid} from '@heroicons/react/solid';
 import { FrameworkDetectors } from '../../../constants/FrameworkDetectors';
+import { join } from 'path';
 
 export interface IStepsToGetStartedProps {
   settings: Settings;
+}
+
+const Folder = ({ wsFolder, folder, folders, addFolder }: { wsFolder: string, folder: string, folders: ContentFolder[], addFolder: (folder: string) => void}) => {
+
+  const isAdded = useMemo(() => folders.find(f => f.path.toLowerCase() === join(wsFolder, folder).toLowerCase()), [folder, folders, wsFolder]);
+
+  return (
+    <div className={`text-sm flex items-center ${isAdded ? "text-teal-800" : "text-vulcan-300 dark:text-whisper-800" }`}>
+      <button onClick={() => addFolder(folder)} className='mr-2 hover:text-teal-500' title={`Add as a content folder to Front Matter`}>
+        { isAdded ? <CheckCircleIconSolid className={`h-4 w-4`} /> : <CheckCircleIcon className={`h-4 w-4`} /> }
+      </button>
+      <span>{folder}</span>
+    </div>
+  )
 }
 
 export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps> = ({settings}: React.PropsWithChildren<IStepsToGetStartedProps>) => {
@@ -23,7 +39,21 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
   const setFrameworkAndSendMessage = (framework: string) => {
     setFramework(framework);
     Messenger.send(DashboardMessage.setFramework, framework);
-  }
+  };
+
+  const addFolder = (folder: string) => {
+    Messenger.send(DashboardMessage.addFolder, folder);
+  };
+
+  const reload = () => {
+    const crntState: any = Messenger.getState() || {};
+    Messenger.setState({
+      ...crntState,
+      isWelcomeConfiguring: false
+    });
+
+    Messenger.send(DashboardMessage.reload);
+  };
 
   const steps = [
     { 
@@ -76,15 +106,41 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
       onClick: undefined 
     },
     {
-      name: 'Register content folders (manual action)',
-      description: <>Register your content folder(s). You can perform this action by right-clicking on the folder in the explorer view, and selecting <b>register folder</b>. Once a folder is set, Front Matter can be used to list all contents and allow you to create content.</>,
-      status: settings.folders && settings.folders.length > 0 ? Status.Completed : Status.NotStarted
+      name: 'Register content folder(s)',
+      description: (
+        <>          
+          <p>Add one of the folders we found in your project as a content folder. Once a folder is set, Front Matter can be used to list all contents and allow you to create content.</p>
+
+          {
+            settings?.dashboardState?.welcome?.contentFolders?.length > 0 && (
+              <div className="mt-4">
+                <div className="text-sm">
+                  Folders containing content:
+                </div>
+                <div className="mt-1 space-y-1">
+                  {settings?.dashboardState?.welcome?.contentFolders?.map((folder) => (
+                    <Folder 
+                      key={folder}
+                      folder={folder}
+                      addFolder={addFolder}
+                      wsFolder={settings.wsFolder}
+                      folders={settings.contentFolders} />
+                  ))}
+                </div>
+              </div>
+            )
+          }
+
+          <p className='mt-4 text-vulcan-300 dark:text-gray-400'><b>IMPORTANT</b>: You can perform this action by <b>right-clicking on the folder in the explorer view</b>, and selecting <b>register folder</b>.</p>
+        </>
+      ),
+      status: settings.contentFolders && settings.contentFolders.length > 0 ? Status.Completed : Status.NotStarted
     },
     {
       name: 'Show the dashboard',
-      description: <>Once both actions are completed, click on this action to load the dashboard.</>,
-      status: (settings.initialized && settings.folders && settings.folders.length > 0) ? Status.Active : Status.NotStarted,
-      onClick: (settings.initialized && settings.folders && settings.folders.length > 0) ? () => { Messenger.send(DashboardMessage.reload); } : undefined
+      description: <>Once all actions are completed, the dashboard can be loaded.</>,
+      status: (settings.initialized && settings.contentFolders && settings.contentFolders.length > 0) ? Status.Active : Status.NotStarted,
+      onClick: (settings.initialized && settings.contentFolders && settings.contentFolders.length > 0) ? reload : undefined
     }
   ];
   

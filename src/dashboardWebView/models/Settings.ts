@@ -10,8 +10,7 @@ export interface Settings {
   beta: boolean;
   initialized: boolean;
   wsFolder: string; 
-  staticFolder: string; 
-  folders: ContentFolder[]; 
+  staticFolder: string;
   tags: string[];
   categories: string[];
   openOnStart: boolean | null;
@@ -36,6 +35,7 @@ export interface Settings {
 export interface DashboardState {
   contents: ContentsViewState;
   media: MediaViewState;
+  welcome: WelcomeViewState;
 }
 
 export interface ContentsViewState {
@@ -47,4 +47,8 @@ export interface ContentsViewState {
 export interface MediaViewState extends ContentsViewState {
   selectedFolder: string | null | undefined;
   mimeTypes: string[] | null | undefined;
+}
+
+export interface WelcomeViewState {
+  contentFolders: string[];
 }
