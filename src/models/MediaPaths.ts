@@ -12,6 +12,7 @@ export interface MediaInfo {
   fsPath: string; 
   vsPath: string | undefined;
   dimensions?: ISizeCalculationResult | undefined;
+  title?: string | undefined;
   caption?: string | undefined;
   alt?: string | undefined;
   mimeType?: string | undefined;

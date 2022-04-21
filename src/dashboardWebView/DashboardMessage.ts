@@ -22,7 +22,7 @@ export enum DashboardMessage {
   uploadMedia = 'uploadMedia',
   deleteMedia = 'deleteMedia',
   revealMedia = 'revealMedia',
-  insertPreviewImage = 'insertPreviewImage',
+  insertMedia = 'insertMedia',
   updateMediaMetadata = 'updateMediaMetadata',
   createMediaFolder = 'createMediaFolder',
   insertFile = 'insertFile',

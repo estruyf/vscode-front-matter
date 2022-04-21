@@ -326,7 +326,9 @@ export class MediaHelpers {
               isFile = !mimeType.startsWith('image');
             }
 
-            const snippet = data.snippet || `${isFile ? "" : "!"}[${data.alt || data.caption || ""}](${relPath})`;
+            const caption = isFile ? `${data.title || ""}` : `${data.alt || data.caption || ""}`;
+
+            const snippet = data.snippet || `${isFile ? "" : "!"}[${caption}](${relPath})`;
             if (selection !== undefined) {
               builder.replace(selection, snippet);
             } else {

@@ -3,7 +3,7 @@ import { PencilAltIcon, XIcon } from '@heroicons/react/outline';
 import { format } from 'date-fns';
 import { basename } from 'path';
 import * as React from 'react';
-import { Fragment, useMemo } from 'react';
+import { Fragment, useCallback, useMemo } from 'react';
 import { DateHelper } from '../../../helpers/DateHelper';
 import { MediaInfo } from '../../../models';
 import { Messenger } from '@estruyf/vscode/dist/client';
@@ -27,6 +27,7 @@ export interface IDetailsSlideOverProps {
 export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> = ({ imgSrc, size, dimensions, media, folder, showForm, onEdit, onEditClose, onDismiss, isImageFile }: React.PropsWithChildren<IDetailsSlideOverProps>) => {
   const [ filename, setFilename ] = React.useState<string>(media.filename);
   const [ caption, setCaption ] = React.useState<string | undefined>(media.caption);
+  const [ title, setTitle ] = React.useState<string | undefined>(media.title);
   const [ alt, setAlt ] = React.useState(media.alt);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const page = useRecoilValue(PageSelector);
@@ -38,20 +39,22 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
   const extension = fileInfo?.pop();
   const name = fileInfo?.join('.');
 
-  const onSubmitMetadata = () => {
+  const onSubmitMetadata = useCallback(() => {
     Messenger.send(DashboardMessage.updateMediaMetadata, {
       file: media.fsPath,
       filename,
       caption,
       alt,
+      title,
       folder: selectedFolder,
       page
     });
     
     onEditClose();
-  };
+  }, [media, filename, caption, alt, title, selectedFolder, page])
 
   React.useEffect(() => {
+    setTitle(media.title);
     setAlt(media.alt);
     setCaption(media.caption);
     setFilename(media.filename);
@@ -133,31 +136,51 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                                     </div>
                                   </div>
                                 </div>
+
                                 <div>
                                   <label className="block text-sm font-medium text-gray-700 dark:text-whisper-900">
-                                    Caption
-                                  </label>
-                                  <div className="mt-1">
-                                    <textarea
-                                      rows={3}
-                                      className="py-1 px-2 sm:text-sm bg-white dark:bg-vulcan-300 border border-gray-300 dark:border-vulcan-100 text-vulcan-500 dark:text-whisper-500 placeholder-gray-400 dark:placeholder-whisper-800 focus:outline-none w-full"
-                                      value={caption || ''}
-                                      onChange={(e) => setCaption(e.target.value)}
-                                    />
-                                  </div>
-                                </div>
-                                <div>
-                                  <label className="block text-sm font-medium text-gray-700 dark:text-whisper-900">
-                                    Alt tag value
+                                    Title
                                   </label>
                                   <div className="mt-1">
                                     <input
                                       className="py-1 px-2 sm:text-sm bg-white dark:bg-vulcan-300 border border-gray-300 dark:border-vulcan-100 text-vulcan-500 dark:text-whisper-500 placeholder-gray-400 dark:placeholder-whisper-800 focus:outline-none w-full"
-                                      value={alt || ''}
-                                      onChange={(e) => setAlt(e.target.value)}
+                                      value={title || ''}
+                                      onChange={(e) => setTitle(e.target.value)}
                                     />
                                   </div>
                                 </div>
+
+                                {
+                                  isImageFile && (
+                                    <>
+                                      <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-whisper-900">
+                                          Caption
+                                        </label>
+                                        <div className="mt-1">
+                                          <textarea
+                                            rows={3}
+                                            className="py-1 px-2 sm:text-sm bg-white dark:bg-vulcan-300 border border-gray-300 dark:border-vulcan-100 text-vulcan-500 dark:text-whisper-500 placeholder-gray-400 dark:placeholder-whisper-800 focus:outline-none w-full"
+                                            value={caption || ''}
+                                            onChange={(e) => setCaption(e.target.value)}
+                                          />
+                                        </div>
+                                      </div>
+                                      <div>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-whisper-900">
+                                          Alt tag value
+                                        </label>
+                                        <div className="mt-1">
+                                          <input
+                                            className="py-1 px-2 sm:text-sm bg-white dark:bg-vulcan-300 border border-gray-300 dark:border-vulcan-100 text-vulcan-500 dark:text-whisper-500 placeholder-gray-400 dark:placeholder-whisper-800 focus:outline-none w-full"
+                                            value={alt || ''}
+                                            onChange={(e) => setAlt(e.target.value)}
+                                          />
+                                        </div>
+                                      </div>
+                                    </>
+                                  )
+                                }
                               </div>
 
                               <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
@@ -197,16 +220,27 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                                   <dt className="text-vulcan-100 dark:text-whisper-900">Filename</dt>
                                   <dd className="text-vulcan-300 dark:text-whisper-500 text-right">{media.filename}</dd>
                                 </div>
-                                
+
                                 <div className="py-3 flex justify-between text-sm font-medium">
-                                  <dt className="text-vulcan-100 dark:text-whisper-900">Caption</dt>
-                                  <dd className="text-vulcan-300 dark:text-whisper-500 text-right">{media.caption || ""}</dd>
+                                  <dt className="text-vulcan-100 dark:text-whisper-900">Title</dt>
+                                  <dd className="text-vulcan-300 dark:text-whisper-500 text-right">{media.title}</dd>
                                 </div>
                                 
-                                <div className="py-3 flex justify-between text-sm font-medium">
-                                  <dt className="text-vulcan-100 dark:text-whisper-900">Alternate text</dt>
-                                  <dd className="text-vulcan-300 dark:text-whisper-500 text-right">{media.alt || ""}</dd>
-                                </div>
+                                {
+                                  isImageFile && (
+                                    <>
+                                      <div className="py-3 flex justify-between text-sm font-medium">
+                                        <dt className="text-vulcan-100 dark:text-whisper-900">Caption</dt>
+                                        <dd className="text-vulcan-300 dark:text-whisper-500 text-right">{media.caption || ""}</dd>
+                                      </div>
+                                      
+                                      <div className="py-3 flex justify-between text-sm font-medium">
+                                        <dt className="text-vulcan-100 dark:text-whisper-900">Alternate text</dt>
+                                        <dd className="text-vulcan-300 dark:text-whisper-500 text-right">{media.alt || ""}</dd>
+                                      </div>
+                                    </>
+                                  )
+                                }
                               </dl>
                             </>
                           )

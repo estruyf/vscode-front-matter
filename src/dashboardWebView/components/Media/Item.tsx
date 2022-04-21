@@ -83,10 +83,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
         multiple: viewData?.data?.multiple,
         value: viewData?.data?.value,
         position: viewData?.data?.position || null,
-        blockData: typeof viewData?.data?.blockData !== "undefined" ? viewData?.data?.blockData : undefined
+        blockData: typeof viewData?.data?.blockData !== "undefined" ? viewData?.data?.blockData : undefined,
+        title: media.title
       });
     } else {
-      Messenger.send(DashboardMessage.insertPreviewImage, {
+      Messenger.send(DashboardMessage.insertMedia, {
         relPath: parseWinPath(relPath) || "",
         file: viewData?.data?.filePath,
         fieldName: viewData?.data?.fieldName,
@@ -96,30 +97,32 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
         position: viewData?.data?.position || null,
         blockData: typeof viewData?.data?.blockData !== "undefined" ? viewData?.data?.blockData : undefined,
         alt: alt || "",
-        caption: caption || ""
+        caption: caption || "",
+        title: media.title || ""
       });
     }
   };
 
-  const insertSnippet = () => {
+  const insertSnippet = useCallback(() => {
     const relPath = getRelPath();
     let snippet = settings?.mediaSnippet.join("\n");
 
     snippet = snippet?.replace("{mediaUrl}", parseWinPath(relPath) || "");
     snippet = snippet?.replace("{alt}", alt || "");
     snippet = snippet?.replace("{caption}", caption || "");
+    snippet = snippet?.replace("{title}", media.title || "");
     snippet = snippet?.replace("{filename}", basename(relPath || ""));
     snippet = snippet?.replace("{mediaWidth}", media?.dimensions?.width?.toString() || "");
     snippet = snippet?.replace("{mediaHeight}", media?.dimensions?.height?.toString() || "");
 
-    Messenger.send(DashboardMessage.insertPreviewImage, {
+    Messenger.send(DashboardMessage.insertMedia, {
       relPath: parseWinPath(relPath) || "",
       file: viewData?.data?.filePath,
       fieldName: viewData?.data?.fieldName,
       position: viewData?.data?.position || null,
       snippet
     });
-  };
+  }, [alt, caption, media, settings, viewData]);
 
   const deleteMedia = () => {
     setShowAlert(true);
@@ -398,6 +401,14 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
           <p className="text-sm dark:text-whisper-900 font-bold pointer-events-none flex items-center break-all">
             {basename(parseWinPath(media.fsPath) || "")}
           </p>
+          {
+            !isImageFile && media.title && (
+              <p className="mt-2 text-xs dark:text-whisper-900 font-medium pointer-events-none flex flex-col items-start">
+                <b className={`mr-2`}>Title:</b>
+                <span className={`block mt-1 dark:text-whisper-500 text-xs`}>{media.title}</span>
+              </p>
+            )
+          }
           {
             media.caption && (
               <p className="mt-2 text-xs dark:text-whisper-900 font-medium pointer-events-none flex flex-col items-start">

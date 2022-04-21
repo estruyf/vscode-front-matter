@@ -36,7 +36,7 @@ export class MediaListener extends BaseListener {
       case DashboardMessage.revealMedia:
         this.openFileInFinder(msg?.data?.file);
         break;
-      case DashboardMessage.insertPreviewImage:
+      case DashboardMessage.insertMedia:
         Telemetry.send(TelemetryEvent.insertMediaToContent);
         MediaHelpers.insertMediaToMarkdown(msg?.data);
         break;
