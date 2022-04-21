@@ -53,7 +53,7 @@ export class SettingsListener extends BaseListener {
    * Set the current site-generator or framework + related settings
    * @param frameworkId 
    */
-  private static setFramework(frameworkId: string | null) {
+  public static setFramework(frameworkId: string | null) {
     Settings.update(SETTING_FRAMEWORK_ID, frameworkId, true);
 
     if (frameworkId) {

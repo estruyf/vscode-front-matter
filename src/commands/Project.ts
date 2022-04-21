@@ -5,7 +5,7 @@ import * as fs from "fs";
 import { Notifications } from "../helpers/Notifications";
 import { Template } from "./Template";
 import { Folders } from "./Folders";
-import { Logger, Settings } from "../helpers";
+import { FrameworkDetector, Logger, Settings } from "../helpers";
 import { SETTING_CONTENT_DEFAULT_FILETYPE, TelemetryEvent } from "../constants";
 import { SettingsListener } from '../listeners/dashboard';
 
@@ -50,7 +50,16 @@ categories: []
         Notifications.info("Project initialized successfully.");
       }
 
-      Telemetry.send(TelemetryEvent.initialization)
+      Telemetry.send(TelemetryEvent.initialization);
+
+
+      // Check if you can find the framework
+      const wsFolder = Folders.getWorkspaceFolder();
+      const framework = FrameworkDetector.get(wsFolder?.fsPath || "");
+
+      if (framework) {
+        SettingsListener.setFramework(framework.name);
+      }
 
       SettingsListener.getSettings();
     } catch (err: any) {

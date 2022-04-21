@@ -1,7 +1,6 @@
 import { existsSync, readFileSync } from "fs";
 import { join, resolve } from "path";
 import { FrameworkDetectors } from "../constants/FrameworkDetectors";
-import { Extension } from "./Extension";
 
 export class FrameworkDetector {
 
