@@ -8,6 +8,7 @@
 - [#308](https://github.com/estruyf/vscode-front-matter/issues/308): New `File` field
 - [#314](https://github.com/estruyf/vscode-front-matter/issues/314): New preview actions to open the page in the browser and refresh the preview
 - [#322](https://github.com/estruyf/vscode-front-matter/issues/322): Show parent folder name when file is an index page (`index.md` / `_index.md`)
+- [#323](https://github.com/estruyf/vscode-front-matter/issues/323): Added 11ty, jekyll, and docusaurus to the framework selection list
 
 ### ⚡️ Optimizations
 
