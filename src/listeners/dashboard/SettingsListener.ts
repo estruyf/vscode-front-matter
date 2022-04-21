@@ -65,5 +65,7 @@ export class SettingsListener extends BaseListener {
         Settings.update(SETTING_CONTENT_STATIC_FOLDER, "", true);
       }
     }
+
+    SettingsListener.getSettings();
   }
 }

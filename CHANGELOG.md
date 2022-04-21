@@ -19,6 +19,7 @@
 - Fix in decode base64 uploaded video files
 - Fix for a lightbox on other types of documents (pdf, etc.)
 - Fix for hiding the image preview on slide-over for none image documents
+- [#324](https://github.com/estruyf/vscode-front-matter/issues/324): Fix for the framework selection on the welcome screen
 
 ## [7.1.2] - 2022-04-11
 
