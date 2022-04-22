@@ -5,7 +5,7 @@ import { ContentType as IContentType, DraftField, Field } from '../models';
 import { Uri, commands, window } from 'vscode'; 
 import { Folders } from "../commands/Folders";
 import { Questions } from "./Questions";
-import { writeFileSync } from "fs";
+import { existsSync, writeFileSync } from "fs";
 import { Notifications } from "./Notifications";
 import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
 import { Telemetry } from './Telemetry';
@@ -103,42 +103,64 @@ export class ContentType {
       return;
     }
 
-    const answer = await window.showInputBox({
+    const override = await window.showQuickPick(["Yes", "No"], {
+      placeHolder: "Do you want to override the default content type?",
       ignoreFocusOut: true,
-      placeHolder: "Enter the name of the content type to generate",
-      prompt: "Enter the name of the content type to generate",
-      title: "Generate Content Type",
-      validateInput: (value: string) => {
-        if (!value) {
-          return "Please enter a name for the content type";
-        }
-
-        const contentTypes = ContentType.getAll();
-        if (contentTypes && contentTypes.find(ct => ct.name.toLowerCase() === value.toLowerCase())) {
-          return "A content type with this name already exists";
-        }
-
-        return null;
-      }
+      title: "Override default content type"
     });
 
-    if (!answer) {
-      Notifications.warning(`You didn't specify a name for the content type.`);
-      return;
+    let contentTypeName: string | undefined = `default`;
+
+    if (override === "No") {
+      contentTypeName = await window.showInputBox({
+        ignoreFocusOut: true,
+        placeHolder: "Enter the name of the content type to generate",
+        prompt: "Enter the name of the content type to generate",
+        title: "Generate Content Type",
+        validateInput: (value: string) => {
+          if (!value) {
+            return "Please enter a name for the content type";
+          }
+  
+          const contentTypes = ContentType.getAll();
+          if (contentTypes && contentTypes.find(ct => ct.name.toLowerCase() === value.toLowerCase())) {
+            return "A content type with this name already exists";
+          }
+  
+          return null;
+        }
+      });
+  
+      if (!contentTypeName) {
+        Notifications.warning(`You didn't specify a name for the content type.`);
+        return;
+      }
     }
 
     const fields = ContentType.generateFields(content.data);
     
     const newContentType: IContentType = {
-      name: answer,
+      name: contentTypeName,
       fields
     };
 
     const contentTypes = ContentType.getAll() || [];
-    contentTypes.push(newContentType);
+    
+    if (override === "Yes") {
+      const index = contentTypes.findIndex(ct => ct.name === contentTypeName);
+      contentTypes[index].fields = fields;
+    } else {
+      contentTypes.push(newContentType);
+    }
 
     Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
-    Notifications.info(`Content type ${answer} has been generated.`);
+
+    const configPath = Settings.projectConfigPath;
+    const notificationAction = await Notifications.info(`Content type ${contentTypeName} has been ${override === "Yes" ? `updated` : `generated`}.`, configPath && existsSync(configPath) ?  `Open settings` : undefined);
+
+    if (notificationAction === "Open settings" && configPath && existsSync(configPath)) {
+      commands.executeCommand('vscode.open', Uri.file(configPath));
+    } 
   }
 
   /**
@@ -201,6 +223,8 @@ export class ContentType {
             name: field,
             type: "draft"
           } as Field);
+        } else if (field.toLowerCase() === "slug") {
+          // Do nothing
         } else {
           fields.push({
             title: field,
