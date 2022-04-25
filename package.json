@@ -1207,8 +1207,18 @@
         "category": "Front matter"
       },
       {
-        "command": "frontMatter.generate.contenttype",
+        "command": "frontMatter.contenttype.generate",
         "title": "Generate content type from current file",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.contenttype.addMissingFields",
+        "title": "Add missing fields from front matter to content type",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.contenttype.setContentType",
+        "title": "Set the content type to use for the current file",
         "category": "Front matter"
       },
       {
@@ -1688,7 +1698,15 @@
           "when": "frontMatter:file:isValid == true"
         },
         {
-          "command": "frontMatter.generate.contenttype",
+          "command": "frontMatter.contenttype.generate",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.contenttype.addMissingFields",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.contenttype.setContentType",
           "when": "frontMatter:file:isValid == true"
         }
       ],

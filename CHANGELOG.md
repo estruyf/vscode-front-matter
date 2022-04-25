@@ -17,6 +17,7 @@
 
 ### 🐞 Fixes
 
+- Updated JSON schema link to supported version by VS Code (draft-07)
 - Hide the view mode action from the Front Matter panel if no custom modes are defined
 - Fix in decode base64 uploaded video files
 - Fix for a lightbox on other types of documents (pdf, etc.)

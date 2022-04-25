@@ -4,12 +4,10 @@ import { CommandToCode } from '../CommandToCode';
 import { MessageHelper } from '../../helpers/MessageHelper';
 import { TagType } from '../TagType';
 import { Collapsible } from './Collapsible';
-import { SymbolKeywordIcon } from './Icons/SymbolKeywordIcon';
-import { TagPicker } from './TagPicker';
 import "react-datepicker/dist/react-datepicker.css";
 import useContentType from '../../hooks/useContentType';
-import FieldBoundary from './ErrorBoundary/FieldBoundary';
 import { WrapperField } from './Fields/WrapperField';
+import { ContentTypeValidator } from './ContentType/ContentTypeValidator';
 
 export interface IMetadata {
   [prop: string]: string[] | string | null | IMetadata;
@@ -80,6 +78,10 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
 
   return (
     <Collapsible id={`tags`} title="Metadata" className={`inherit z-20`}>
+      <ContentTypeValidator
+        fields={contentType?.fields || []}
+        metadata={metadata} />
+
       {
         renderFields(contentType?.fields || [], metadata)
       }

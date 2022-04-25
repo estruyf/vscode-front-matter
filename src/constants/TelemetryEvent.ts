@@ -26,6 +26,11 @@ export const TelemetryEvent = {
   updateMediaMetadata: 'updateMediaMetadata',
   openExplorerView: 'openExplorerView',
 
+  // Content types
+  generateContentType: 'generateContentType',
+  addMissingFields: 'addMissingFields',
+  setContentType: 'setContentType',
+
   // Custom scripts
   runCustomScript: 'runCustomScript',
   runMediaScript: 'runMediaScript',

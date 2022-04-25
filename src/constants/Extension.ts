@@ -55,5 +55,7 @@ export const COMMAND_NAME = {
   options: getCommandName("markup.options"),
 
   // Content types
-  generateContentType: getCommandName("generate.contenttype"),
+  generateContentType: getCommandName("contenttype.generate"),
+  addMissingFields: getCommandName("contenttype.addMissingFields"),
+  setContentType: getCommandName("contenttype.setContentType"),
 };

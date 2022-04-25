@@ -158,6 +158,14 @@ export async function activate(context: vscode.ExtensionContext) {
 		vscode.commands.registerCommand(COMMAND_NAME.generateContentType, ContentType.generate)
 	);
 
+	subscriptions.push(
+		vscode.commands.registerCommand(COMMAND_NAME.addMissingFields, ContentType.addMissingFields)
+	);
+
+	subscriptions.push(
+		vscode.commands.registerCommand(COMMAND_NAME.setContentType, ContentType.setContentType)
+	);
+
 	// Initialize command
 	Template.init();
 	const projectInit = vscode.commands.registerCommand(COMMAND_NAME.init, async (cb: Function) => {
@@ -197,7 +205,13 @@ export async function activate(context: vscode.ExtensionContext) {
 	subscriptions.push(vscode.window.onDidChangeActiveTextEditor(() => triggerShowDraftStatus(`onDidChangeActiveTextEditor`)));
 	subscriptions.push(vscode.window.onDidChangeTextEditorSelection((e) => {
 		if (e.kind === vscode.TextEditorSelectionChangeKind.Mouse) {
-			triggerShowDraftStatus(`onDidChangeTextEditorSelection`);
+			statusDebouncer(() => triggerShowDraftStatus(`onDidChangeTextEditorSelection`), 200);
+		}
+	}));
+	subscriptions.push(vscode.workspace.onDidChangeTextDocument((TextDocumentChangeEvent) => {
+		const filePath = TextDocumentChangeEvent.document.uri.fsPath;
+		if (filePath && !filePath.toLowerCase().startsWith(`extension-output`)) {
+			statusDebouncer(() => triggerShowDraftStatus(`onDidChangeTextEditorSelection`), 200);
 		}
 	}));
 	

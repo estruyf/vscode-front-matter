@@ -43,6 +43,12 @@ export class DataListener extends BaseListener {
       case CommandToCode.updatePlaceholder:
         this.updatePlaceholder(msg?.data?.field, msg?.data?.value, msg?.data?.title);
         break;
+      case CommandToCode.generateContentType:
+        commands.executeCommand(COMMAND_NAME.generateContentType);
+      case CommandToCode.addMissingFields:
+        commands.executeCommand(COMMAND_NAME.addMissingFields);
+      case CommandToCode.setContentType:
+        commands.executeCommand(COMMAND_NAME.setContentType);
     }
   }
 

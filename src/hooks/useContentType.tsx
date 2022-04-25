@@ -21,7 +21,7 @@ export default function useContentType(settings: PanelSettings | Settings | unde
 
       setContentType(ct || DEFAULT_CONTENT_TYPE)
     }
-  }, [settings?.contentTypes, metadata?.data]);
+  }, [settings?.contentTypes, metadata?.type]);
 
   return contentType;
 }
