@@ -51,6 +51,30 @@ export class ModeListener extends BaseListener {
     }
   }
 
+  /**
+   * Check if the mode has the feature enabled
+   * @param feature 
+   * @returns 
+   */
+  public static async hasFeature(feature: string) {
+    const modes = Settings.get<Mode[]>(SETTING_GLOBAL_MODES);
+    
+    if (!modes || modes.length === 0) {
+      return true;
+    }
+
+    const activeMode = ModeSwitch.getMode();
+    if (activeMode) {
+      const mode = modes.find(m => m.id === activeMode);
+      return mode?.features.find(f => f === feature);
+    }
+
+    return true;
+  }
+
+  /**
+   * Reset the context
+   */
   public static async resetEnablement() {
     await commands.executeCommand('setContext', CONTEXT.isSnippetsDashboardEnabled, true);
     await commands.executeCommand('setContext', CONTEXT.isDataDashboardEnabled, true);

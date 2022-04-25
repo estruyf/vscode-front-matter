@@ -598,6 +598,7 @@
                     "panel.globalSettings",
                     "panel.seo",
                     "panel.actions",
+                    "panel.contentType",
                     "panel.metadata",
                     "panel.recentlyModified",
                     "panel.otherActions",

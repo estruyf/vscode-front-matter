@@ -8,6 +8,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import useContentType from '../../hooks/useContentType';
 import { WrapperField } from './Fields/WrapperField';
 import { ContentTypeValidator } from './ContentType/ContentTypeValidator';
+import { FeatureFlag } from '../../components/features/FeatureFlag';
+import { FEATURE_FLAG } from '../../constants';
 
 export interface IMetadata {
   [prop: string]: string[] | string | null | IMetadata;
@@ -16,10 +18,11 @@ export interface IMetadataProps {
   settings: PanelSettings | undefined;
   metadata: IMetadata;
   focusElm: TagType | null;
+  features: string[];
   unsetFocus: () => void;
 }
 
-const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, focusElm, unsetFocus}: React.PropsWithChildren<IMetadataProps>) => {
+const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, features, metadata, focusElm, unsetFocus}: React.PropsWithChildren<IMetadataProps>) => {
   const contentType = useContentType(settings, metadata);
 
   const sendUpdate = (field: string | undefined, value: any, parents: string[]) => {
@@ -78,9 +81,11 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, metadata, 
 
   return (
     <Collapsible id={`tags`} title="Metadata" className={`inherit z-20`}>
-      <ContentTypeValidator
-        fields={contentType?.fields || []}
-        metadata={metadata} />
+      <FeatureFlag features={features || []} flag={FEATURE_FLAG.panel.contentType}>
+        <ContentTypeValidator
+          fields={contentType?.fields || []}
+          metadata={metadata} />
+      </FeatureFlag>
 
       {
         renderFields(contentType?.fields || [], metadata)

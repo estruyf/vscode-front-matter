@@ -1,6 +1,7 @@
+import { ModeListener } from './../listeners/general/ModeListener';
 import { PagesListener } from './../listeners/dashboard';
 import { ArticleHelper, Settings } from ".";
-import { SETTING_CONTENT_DRAFT_FIELD, SETTING_DATE_FORMAT, SETTING_TAXONOMY_CONTENT_TYPES, TelemetryEvent } from "../constants";
+import { FEATURE_FLAG, SETTING_CONTENT_DRAFT_FIELD, SETTING_DATE_FORMAT, SETTING_TAXONOMY_CONTENT_TYPES, TelemetryEvent } from "../constants";
 import { ContentType as IContentType, DraftField, Field } from '../models';
 import { Uri, commands, window } from 'vscode'; 
 import { Folders } from "../commands/Folders";
@@ -97,6 +98,10 @@ export class ContentType {
    * Generate a content type
    */
   public static async generate() {
+    if (!(await ContentType.verify())) {
+      return;
+    }
+
     Telemetry.send(TelemetryEvent.generateContentType);
 
     const content = ArticleHelper.getCurrent();
@@ -202,6 +207,10 @@ export class ContentType {
    * Add missing fields to the content type
    */
   public static async addMissingFields() {
+    if (!(await ContentType.verify())) {
+      return;
+    }
+
     Telemetry.send(TelemetryEvent.addMissingFields);
 
     const content = ArticleHelper.getCurrent();
@@ -232,6 +241,10 @@ export class ContentType {
    * Set the content type to be used for the current file
    */
   public static async setContentType() {
+    if (!(await ContentType.verify())) {
+      return;
+    }
+
     Telemetry.send(TelemetryEvent.setContentType);
 
     const content = ArticleHelper.getCurrent();
@@ -411,5 +424,19 @@ export class ContentType {
     }
 
     return data;
+  }
+
+  /**
+   * Verify if the content type feature is enabled
+   * @returns 
+   */
+  private static async verify() {
+    const hasFeature = await ModeListener.hasFeature(FEATURE_FLAG.panel.contentType);
+    if (!hasFeature) {
+      Notifications.warning(`The content type actions are not available in this mode.`);
+      return false;
+    }
+
+    return true;
   }
 }
