@@ -277,7 +277,7 @@ vscode-divider {
 }
 
 .inline_hint {
-  color: var(--vscode-editorInlayHint-foreground);
+  color: var(--vscode-sideBar-foreground);
 }
 
 /* File field */

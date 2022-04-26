@@ -355,6 +355,11 @@
   color: var(--vscode-button-secondaryForeground);
 }
 
+.ext_link_block a:hover,
+.ext_link_block button:hover {
+  background-color: var(--vscode-button-secondaryHoverBackground);
+}
+
 .table__cell {
   overflow: hidden;
 }

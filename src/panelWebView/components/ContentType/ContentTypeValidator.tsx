@@ -58,10 +58,10 @@ export const ContentTypeValidator: React.FunctionComponent<IContentTypeValidator
 
       <p className='inline_hint'>We noticed field differences between the content type and the front matter data.</p>
 
-      <p className='inline_hint'>Would you like to generate or update the content type for this page?</p>
+      <p className='inline_hint'>Would you like to create, update, or set the content type for this content?</p>
 
       <div className='hint__buttons'>
-        <VSCodeButton appearance={`secondary`} onClick={generateContentType}>Generate content type</VSCodeButton>
+        <VSCodeButton appearance={`secondary`} onClick={generateContentType}>Create content type</VSCodeButton>
 
         <VSCodeButton appearance={`secondary`} onClick={addMissingFields}>Add missing fields</VSCodeButton>
 
