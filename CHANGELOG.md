@@ -4,6 +4,7 @@
 
 ### 🎨 Enhancements
 
+- New tag design for the tags, category, and taxonomy fields
 - [#263](https://github.com/estruyf/vscode-front-matter/issues/263): WYSIWYG string field option
 - [#308](https://github.com/estruyf/vscode-front-matter/issues/308): New `File` field
 - [#314](https://github.com/estruyf/vscode-front-matter/issues/314): New preview actions to open the page in the browser and refresh the preview

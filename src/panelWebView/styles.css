@@ -354,6 +354,73 @@ vscode-divider {
   padding: .5rem;
 }
 
+/* Tags */
+.article__tags__items {
+  display: flex;
+  flex-flow: row wrap;
+  margin-top: 1rem;
+}
+
+.tag {
+  align-items: center;
+  background-color: var(--vscode-button-background);
+  border: 1px solid var(--vscode-button-border);
+  border-radius: 2px;
+  color: var(--vscode-button-foreground);
+  display: inline-flex;
+  font-size: 11px;
+  line-height: 16px;
+  padding: .25rem .25rem;
+  margin-bottom: .5rem;
+  margin-right: .5rem;
+}
+
+.tag button {
+  background: none;
+  border: none;
+  color: inherit;
+  outline: none !important;
+  outline-offset: inherit !important;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: .25rem;
+}
+
+.tag .tag__create {
+  margin-right: .25rem;
+}
+
+.tag .tag__create:hover {
+  color: var(--vscode-inputValidation-infoForeground, #000);
+  background-color: var(--vscode-inputValidation-infoBackground);
+  border-radius: 2px;
+}
+
+.vscode-dark .tag .tag__create:hover {
+  color: var(--vscode-inputValidation-infoForeground, #fff);
+}
+
+.tag .tag__delete {
+  margin-left: .25rem;
+}
+
+.tag .tag__delete:hover {
+  background-color: var(--vscode-inputValidation-errorBackground);
+  color: var(--vscode-inputValidation-errorForeground, #000);
+  border-radius: 2px;
+}
+
+.vscode-dark .tag .tag__delete:hover {
+  color: var(--vscode-inputValidation-infoForeground, #fff);
+}
+
+.tag .tag__value {
+  flex-grow: 1;
+  white-space: nowrap;
+}
+
+
 /* Quill changes */
 .ql-toolbar.ql-snow,
 .ql-container.ql-snow {
