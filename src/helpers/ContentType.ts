@@ -1,15 +1,17 @@
+import { ModeListener } from './../listeners/general/ModeListener';
 import { PagesListener } from './../listeners/dashboard';
 import { ArticleHelper, Settings } from ".";
-import { SETTING_CONTENT_DRAFT_FIELD, SETTING_DATE_FORMAT, SETTING_TAXONOMY_CONTENT_TYPES, TelemetryEvent } from "../constants";
+import { FEATURE_FLAG, SETTING_CONTENT_DRAFT_FIELD, SETTING_DATE_FORMAT, SETTING_TAXONOMY_CONTENT_TYPES, TelemetryEvent } from "../constants";
 import { ContentType as IContentType, DraftField, Field } from '../models';
-import { Uri, commands } from 'vscode'; 
+import { Uri, commands, window } from 'vscode'; 
 import { Folders } from "../commands/Folders";
 import { Questions } from "./Questions";
-import { writeFileSync } from "fs";
+import { existsSync, writeFileSync } from "fs";
 import { Notifications } from "./Notifications";
 import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
 import { Telemetry } from './Telemetry';
 import { processKnownPlaceholders } from './PlaceholderHelper';
+import { basename } from 'path';
 
 export class ContentType {
 
@@ -93,6 +95,262 @@ export class ContentType {
   }
 
   /**
+   * Generate a content type
+   */
+  public static async generate() {
+    if (!(await ContentType.verify())) {
+      return;
+    }
+
+    Telemetry.send(TelemetryEvent.generateContentType);
+
+    const content = ArticleHelper.getCurrent();
+
+    const editor = window.activeTextEditor;
+    const filePath = editor?.document.uri.fsPath;
+
+    if (!content || !content.data) {
+      Notifications.warning(`No front matter data found to generate a content type.`);
+      return;
+    }
+
+    const override = await window.showQuickPick(["Yes", "No"], {
+      placeHolder: "Do you want to override the default content type?",
+      ignoreFocusOut: true,
+      title: "Override default content type"
+    });
+    const overrideBool = override === "Yes";
+
+    let contentTypeName: string | undefined = `default`;
+
+    // Ask for the new content type name
+    if (!overrideBool) {
+      contentTypeName = await window.showInputBox({
+        ignoreFocusOut: true,
+        placeHolder: "Enter the name of the content type to generate",
+        prompt: "Enter the name of the content type to generate",
+        title: "Generate Content Type",
+        validateInput: (value: string) => {
+          if (!value) {
+            return "Please enter a name for the content type";
+          }
+  
+          const contentTypes = ContentType.getAll();
+          if (contentTypes && contentTypes.find(ct => ct.name.toLowerCase() === value.toLowerCase())) {
+            return "A content type with this name already exists";
+          }
+  
+          return null;
+        }
+      });
+  
+      if (!contentTypeName) {
+        Notifications.warning(`You didn't specify a name for the content type.`);
+        return;
+      }
+    }
+
+    // Ask if the content type needs to be used as a page bundle
+    let pageBundle = false;
+    const fileName = filePath ? basename(filePath) : undefined;
+    if (fileName?.startsWith(`index.`)) {
+      const pageBundleAnswer = await window.showQuickPick(["Yes", "No"], {
+        placeHolder: "Do you want to use this content type as a page bundle?",
+        ignoreFocusOut: true,
+        title: "Use as page bundle"
+      });
+      pageBundle = pageBundleAnswer === "Yes";
+    }
+
+    const fields = ContentType.generateFields(content.data);
+    if (!overrideBool && !fields.some(f => f.name === "type")) {
+      fields.push({
+        name: "type",
+        type: "string",
+        default: contentTypeName,
+        hidden: true
+      } as Field);
+    }
+
+    // Update the type field in the page
+    if (!overrideBool && editor) {
+      content.data["type"] = contentTypeName;
+      ArticleHelper.update(editor, content);
+    }
+    
+    const newContentType: IContentType = {
+      name: contentTypeName,
+      pageBundle,
+      fields
+    };
+
+    const contentTypes = ContentType.getAll() || [];
+    
+    if (overrideBool) {
+      const index = contentTypes.findIndex(ct => ct.name === contentTypeName);
+      contentTypes[index].fields = fields;
+    } else {
+      contentTypes.push(newContentType);
+    }
+
+    Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
+
+    const configPath = Settings.projectConfigPath;
+    const notificationAction = await Notifications.info(`Content type ${contentTypeName} has been ${overrideBool ? `updated` : `generated`}.`, configPath && existsSync(configPath) ?  `Open settings` : undefined);
+
+    if (notificationAction === "Open settings" && configPath && existsSync(configPath)) {
+      commands.executeCommand('vscode.open', Uri.file(configPath));
+    }
+  }
+
+  /**
+   * Add missing fields to the content type
+   */
+  public static async addMissingFields() {
+    if (!(await ContentType.verify())) {
+      return;
+    }
+
+    Telemetry.send(TelemetryEvent.addMissingFields);
+
+    const content = ArticleHelper.getCurrent();
+
+    if (!content || !content.data) {
+      Notifications.warning(`No front matter data found to add missing fields.`);
+      return;
+    }
+
+    const contentType = ArticleHelper.getContentType(content?.data);
+    const updatedFields = ContentType.generateFields(content.data, contentType.fields);
+
+    const contentTypes = ContentType.getAll() || [];
+    const index = contentTypes.findIndex(ct => ct.name === contentType.name);
+    contentTypes[index].fields = updatedFields;
+
+    Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
+
+    const configPath = Settings.projectConfigPath;
+    const notificationAction = await Notifications.info(`Content type ${contentType.name} has been updated.`, configPath && existsSync(configPath) ?  `Open settings` : undefined);
+
+    if (notificationAction === "Open settings" && configPath && existsSync(configPath)) {
+      commands.executeCommand('vscode.open', Uri.file(configPath));
+    }
+  }
+
+  /**
+   * Set the content type to be used for the current file
+   */
+  public static async setContentType() {
+    if (!(await ContentType.verify())) {
+      return;
+    }
+
+    Telemetry.send(TelemetryEvent.setContentType);
+
+    const content = ArticleHelper.getCurrent();
+    const contentTypes = ContentType.getAll() || [];
+
+    if (!content || !content.data) {
+      Notifications.warning(`No front matter data found to set the content type.`);
+      return;
+    }
+    
+    const ctAnswer = await window.showQuickPick(contentTypes.map(ct => ct.name), {
+      title: "Select the content type",
+      ignoreFocusOut: true,
+      placeHolder: "Which content type would you like to use?"
+    });
+
+    if (!ctAnswer) {
+      return;
+    }
+    
+    content.data.type = ctAnswer;
+
+    const editor = window.activeTextEditor;
+    ArticleHelper.update(editor!, content);
+  }
+
+  /**
+   * Generate the fields from the data
+   * @param data 
+   * @param fields 
+   * @returns 
+   */
+  private static generateFields(data: any, fields: any[] = []) {
+    for (const field in data) {
+      const fieldData = data[field];
+
+      if (fields.some(f => f.name === field)) {
+        continue;
+      }
+
+      if (fieldData && fieldData instanceof Array && fieldData.length > 0 && typeof fieldData[0] === "string") {
+        if (field.toLowerCase() === "tag" || field.toLowerCase() === "tags") {
+          fields.push({
+            title: field,
+            name: field,
+            type: "tags",
+          } as Field);
+        } else if (field.toLowerCase() === "category" || field.toLowerCase() === "categories") {
+          fields.push({
+            title: field,
+            name: field,
+            type: "categories",
+          } as Field);
+        } else {
+          fields.push({
+            title: field,
+            name: field,
+            type: "choice",
+            choices: fieldData
+          } as Field);
+        }
+      } else if (fieldData && fieldData instanceof Array && fieldData.length > 0 && typeof fieldData[0] === "object") {
+        const newFields = ContentType.generateFields(fieldData);
+        fields.push({
+          title: field,
+          name: field,
+          type: "block",
+          fields: newFields
+        } as Field);
+      } else if (fieldData && fieldData instanceof Object) {
+        const newFields = ContentType.generateFields(fieldData);
+        fields.push({
+          title: field,
+          name: field,
+          type: "fields",
+          fields: newFields
+        } as Field);
+      } else {
+        if (!isNaN(new Date(fieldData).getDate())) {
+          fields.push({
+            title: field,
+            name: field,
+            type: "datetime"
+          } as Field);
+        } else if (field.toLowerCase() === "draft") {
+          fields.push({
+            title: field,
+            name: field,
+            type: "draft"
+          } as Field);
+        } else if (field.toLowerCase() === "slug") {
+          // Do nothing
+        } else {
+          fields.push({
+            title: field,
+            name: field,
+            type: typeof fieldData
+          } as Field);
+        }
+      }
+    }
+
+    return fields;
+  }
+
+  /**
    * Create a new file with the specified content type
    * @param contentType 
    * @param folderPath 
@@ -166,5 +424,19 @@ export class ContentType {
     }
 
     return data;
+  }
+
+  /**
+   * Verify if the content type feature is enabled
+   * @returns 
+   */
+  private static async verify() {
+    const hasFeature = await ModeListener.hasFeature(FEATURE_FLAG.panel.contentType);
+    if (!hasFeature) {
+      Notifications.warning(`The content type actions are not available in this mode.`);
+      return false;
+    }
+
+    return true;
   }
 }

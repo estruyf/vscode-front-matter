@@ -253,6 +253,33 @@
   display: none;
 }
 
+/* Metadata section - Content type */
+.metadata_field__alert svg {
+  color: var(--vscode-editorWarning-foreground)
+}
+
+.hint {
+  margin-bottom: 1rem;
+}
+
+.hint__buttons vscode-button {
+  display: block;
+  margin-bottom: .5rem;
+  text-align: center;
+}
+
+.hint__buttons vscode-button:last-child {
+  margin-bottom: 0;
+}
+
+vscode-divider {
+  margin-top: 1rem;
+}
+
+.inline_hint {
+  color: var(--vscode-sideBar-foreground);
+}
+
 /* File field */
 .metadata_field__file__button.not_empty {
   display: flex;

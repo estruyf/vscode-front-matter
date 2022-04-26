@@ -53,4 +53,9 @@ export const COMMAND_NAME = {
   orderedlist: getCommandName("markup.orderedlist"),
   taskList: getCommandName("markup.tasklist"),
   options: getCommandName("markup.options"),
+
+  // Content types
+  generateContentType: getCommandName("contenttype.generate"),
+  addMissingFields: getCommandName("contenttype.addMissingFields"),
+  setContentType: getCommandName("contenttype.setContentType"),
 };

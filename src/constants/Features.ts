@@ -8,6 +8,7 @@ export const FEATURE_FLAG = {
     metadata: "panel.metadata",
     recentlyModified: "panel.recentlyModified",
     otherActions: "panel.otherActions",
+    contentType: "panel.contentType",
   },
   dashboard: {
     snippets: {

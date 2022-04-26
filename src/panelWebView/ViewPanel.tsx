@@ -70,7 +70,8 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
             settings={settings}
             metadata={metadata}
             focusElm={focusElm}
-            unsetFocus={unsetFocus} />
+            unsetFocus={unsetFocus}
+            features={mode?.features || []} />
         </FeatureFlag>
 
         <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.recentlyModified}>

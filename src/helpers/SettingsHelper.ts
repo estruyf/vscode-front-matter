@@ -328,7 +328,7 @@ export class Settings {
    * Get the project config path
    * @returns 
    */
-  private static get projectConfigPath() {
+  public static get projectConfigPath() {
     const wsFolder = Folders.getWorkspaceFolder();
     if (wsFolder) {
       const fmConfig = join(wsFolder.fsPath, Settings.globalFile);
