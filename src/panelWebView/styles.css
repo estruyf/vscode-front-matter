@@ -368,7 +368,7 @@ vscode-divider {
   border-radius: 2px;
   color: var(--vscode-button-foreground);
   display: inline-flex;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 16px;
   padding: .25rem .25rem;
   margin-bottom: .5rem;
