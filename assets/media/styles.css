@@ -728,8 +728,12 @@ input:checked + .field__toggle__slider:before {
 }
 
 /* Timepicker */
+.react-datepicker button {
+  outline: 0;
+}
+
 .react-datepicker button:hover {
-  background-color: none !important;
+  background: none !important;
 }
 
 .react-datepicker__triangle {
