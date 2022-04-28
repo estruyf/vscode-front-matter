@@ -103,7 +103,7 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
 
   return (
     <div>
-      <pre className='border border-opacity-40 p-2 whitespace-pre-wrap break-words'>
+      <pre className='border border-opacity-40 p-2 whitespace-pre-wrap break-words max-h-64 overflow-auto'>
         {snippetBody}
       </pre>
 

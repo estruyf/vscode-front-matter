@@ -36,8 +36,9 @@ export const SnippetInputField: React.FunctionComponent<ISnippetInputFieldProps>
       <textarea
         name={field.name}
         value={field.value || ""}
-        className="focus:outline-none block w-full sm:text-sm border-gray-300 text-vulcan-500"
+        className="focus:outline-none block w-full sm:text-sm border-gray-300 text-vulcan-500 h-auto"
         onChange={(e) => onValueChange(field, e.currentTarget.value)}
+        rows={4}
       />
     )
   }
