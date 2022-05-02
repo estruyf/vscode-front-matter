@@ -1,6 +1,6 @@
 # Change Log
 
-## [7.2.0] - 2022-04-xx
+## [7.2.0] - 2022-05-02 - [Release notes](https://beta.frontmatter.codes/updates/v7.2.0)
 
 ### 🎨 Enhancements
 
