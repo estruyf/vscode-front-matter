@@ -42,7 +42,8 @@ export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps>
       multiple,
       metadataInsert: true,
       parents,
-      blockData
+      blockData,
+      type: "media"
     });
   }, [filePath, fieldName, value, multiple, parents]);
 
@@ -64,7 +65,7 @@ export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps>
           (!value || multiple) && (
             <button className={`metadata_field__preview_image__button`} title={`Add your ${label?.toLowerCase() || "image"}`} type="button" onClick={selectImage}>
               <PhotographIcon />
-              <span className="mt-2 block text-sm font-medium text-gray-900">Add your {label?.toLowerCase() || "image"}</span>
+              <span>Add your {label?.toLowerCase() || "image"}</span>
             </button>
           )
         }

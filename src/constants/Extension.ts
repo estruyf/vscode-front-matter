@@ -38,7 +38,7 @@ export const COMMAND_NAME = {
   modeSwitch: getCommandName("mode.switch"),
 
   // Insert dashboards
-  insertImage: getCommandName("insertImage"),
+  insertMedia: getCommandName("insertMedia"),
   insertSnippet: getCommandName("insertSnippet"),
 
   // WYSIWYG
@@ -53,4 +53,9 @@ export const COMMAND_NAME = {
   orderedlist: getCommandName("markup.orderedlist"),
   taskList: getCommandName("markup.tasklist"),
   options: getCommandName("markup.options"),
+
+  // Content types
+  generateContentType: getCommandName("contenttype.generate"),
+  addMissingFields: getCommandName("contenttype.addMissingFields"),
+  setContentType: getCommandName("contenttype.setContentType"),
 };

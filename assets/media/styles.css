@@ -221,60 +221,6 @@
   margin-top: 1rem;
 }
 
-.article__tags__items__item {
-  display: inline-flex;
-  margin-bottom: .5rem;
-  margin-right: .5rem;
-}
-
-.article__tags__items__item {
-  display: inline-block;
-  margin-bottom: .5rem;
-  margin-right: .5rem;
-}
-
-.article__tags__items__item_add,
-.article__tags__items__item_delete {
-  display: inline-block;
-  width: auto;
-}
-
-.article__tags__items__item svg {
-  display: inline;
-  vertical-align: bottom;
-}
-
-.article__tags__items__item_delete span {
-  margin-left: .5rem;
-}
-
-.article__tags__items__pill_notexists {
-  color: var(--vscode-inputValidation-errorForeground);
-  background-color: var(--vscode-inputValidation-errorBackground);
-  padding-left: .5rem;
-}
-
-.article__tags__items__pill_notexists:hover {
-  color: var(--vscode-inputValidation-errorForeground);
-  background-color: var(--vscode-inputValidation-errorBackground);
-
-  filter: contrast(60%);
-}
-
-.article__tags__items__item_add {
-  color: var(--vscode-inputValidation-infoForeground);
-  background-color: var(--vscode-inputValidation-infoBackground);
-  border-right: 1px solid var(--vscode-inputValidation-infoBorder);
-}
-
-.article__tags__items__item_add:hover {
-  color: var(--vscode-inputValidation-infoForeground);
-  background-color: var(--vscode-inputValidation-infoBackground);
-  border-right: 1px solid var(--vscode-inputValidation-infoBorder);
-
-  filter: contrast(60%);
-}
-
 .article__actions > * + *,
 .other_actions > * + *,
 .base__actions > * + *,
@@ -353,6 +299,11 @@
 .ext_link_block a:focus,
 .ext_link_block a:visited {
   color: var(--vscode-button-secondaryForeground);
+}
+
+.ext_link_block a:hover,
+.ext_link_block button:hover {
+  background-color: var(--vscode-button-secondaryHoverBackground);
 }
 
 .table__cell {
@@ -639,6 +590,7 @@ input:checked + .field__toggle__slider:before {
   max-height: 16rem;
 }
 
+.metadata_field__file__button,
 .metadata_field__preview_image__button {
   background-color: transparent;
   border: 1px dashed var(--vscode-button-background);
@@ -646,11 +598,13 @@ input:checked + .field__toggle__slider:before {
   filter: brightness(85%);
 }
 
+.metadata_field__file__button:hover,
 .metadata_field__preview_image__button:hover {
   background-color: rgba(255, 255, 255, .1);
   filter: brightness(100%);
 }
 
+.metadata_field__file__button svg,
 .metadata_field__preview_image__button svg {
   color: var(--vscode-foreground);
   display: block;
@@ -659,6 +613,7 @@ input:checked + .field__toggle__slider:before {
   margin: 0 auto;
 }
 
+.metadata_field__file__button span,
 .metadata_field__preview_image__button span {
   color: var(--vscode-foreground);
   display: inline-block;
@@ -773,8 +728,12 @@ input:checked + .field__toggle__slider:before {
 }
 
 /* Timepicker */
+.react-datepicker button {
+  outline: 0;
+}
+
 .react-datepicker button:hover {
-  background-color: none !important;
+  background: none !important;
 }
 
 .react-datepicker__triangle {

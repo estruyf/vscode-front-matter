@@ -1,6 +1,5 @@
+import { PlusIcon, XIcon } from '@heroicons/react/outline';
 import * as React from 'react';
-import { AddIcon } from './Icons/AddIcon';
-import { ArchiveIcon } from './Icons/ArchiveIcon';
 
 export interface ITagProps {
   className: string;
@@ -17,13 +16,29 @@ const Tag: React.FunctionComponent<ITagProps> = (props: React.PropsWithChildren<
   const { value, className, title, onRemove, onCreate, disableConfigurable } = props;
 
   return (
-    <div className={`article__tags__items__item`}>
-      {
-        !disableConfigurable && onCreate && 
-        <button title={`Add ${value} to your settings`} className={`article__tags__items__item_add`} onClick={() => onCreate(value)}><AddIcon /></button>
-      }
-      <button title={title} className={`article__tags__items__item_delete ${className}`} onClick={() => onRemove(value)}>{value} <span><ArchiveIcon /></span></button>
-    </div>
+    <>
+      <div className={`tag`}>
+        { 
+          !disableConfigurable && onCreate && (
+            <button 
+              className={`tag__create`}
+              title={`Add ${value} to your settings`} 
+              onClick={() => onCreate(value)}>
+              <PlusIcon style={{ width: `1rem`, height: `1rem` }} />
+            </button>
+          ) 
+        }
+        
+        <div className={`tag__value`}>{value}</div>
+
+        <button 
+          title={title} 
+          className={`tag__delete`} 
+          onClick={() => onRemove(value)}>
+          <XIcon style={{ width: `1rem`, height: `1rem` }} />
+        </button>
+      </div>
+    </>
   );
 };
 

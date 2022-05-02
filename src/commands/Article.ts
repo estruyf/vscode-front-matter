@@ -30,7 +30,7 @@ export class Article {
       return;
     }
 
-    const article = Article.getCurrent();
+    const article = ArticleHelper.getCurrent();
 
     if (!article) {
       return;
@@ -324,7 +324,7 @@ export class Article {
   /**
    * Insert an image from the media dashboard into the article
    */
-  public static async insertImage() {
+  public static async insertMedia() {
 		let editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;
@@ -374,23 +374,6 @@ export class Article {
       }
     } as DashboardData);
 	}
-
-  /**
-   * Get the current article
-   */
-  private static getCurrent(): ParsedFrontMatter | undefined {
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) {
-      return;
-    }
-
-    const article = ArticleHelper.getFrontMatter(editor);
-    if (!article) {
-      return;
-    }
-
-    return article;
-  }
 
   /**
    * Update the article date and return it

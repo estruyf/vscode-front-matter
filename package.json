@@ -3,7 +3,7 @@
   "displayName": "Front Matter",
   "description": "Front Matter is a CMS that runs within Visual Studio Code. It gives you the power and control of a full-blown CMS while also providing you the flexibility and speed of the static site generator of your choice like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "7.1.2",
+  "version": "7.2.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -598,6 +598,7 @@
                     "panel.globalSettings",
                     "panel.seo",
                     "panel.actions",
+                    "panel.contentType",
                     "panel.metadata",
                     "panel.recentlyModified",
                     "panel.otherActions",
@@ -744,6 +745,7 @@
                         "datetime",
                         "boolean",
                         "image",
+                        "file",
                         "choice",
                         "taxonomy",
                         "tags",
@@ -802,6 +804,11 @@
                       "default": false,
                       "description": "Is a single line field"
                     },
+                    "wysiwyg": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "Is a WYSIWYG field (HTML output)"
+                    },
                     "multiple": {
                       "type": "boolean",
                       "default": false,
@@ -821,6 +828,13 @@
                       "type": "string",
                       "default": "",
                       "description": "The ID of your taxonomy field"
+                    },
+                    "fileExtensions": {
+                      "type": "array",
+                      "description": "Specify the file extensions to allow for the file picker",
+                      "items": {
+                        "type": "string"
+                      }
                     },
                     "fields": {
                       "$ref": "#contenttypefield"
@@ -869,6 +883,20 @@
                     "name"
                   ],
                   "allOf": [
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "file"
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "fileExtensions"
+                        ]
+                      }
+                    },
                     {
                       "if": {
                         "properties": {
@@ -1180,6 +1208,21 @@
         "category": "Front matter"
       },
       {
+        "command": "frontMatter.contenttype.generate",
+        "title": "Generate content type from current file",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.contenttype.addMissingFields",
+        "title": "Add missing fields from front matter to content type",
+        "category": "Front matter"
+      },
+      {
+        "command": "frontMatter.contenttype.setContentType",
+        "title": "Set the content type to use for the current file",
+        "category": "Front matter"
+      },
+      {
         "command": "frontMatter.markup.blockquote",
         "title": "Blockquote",
         "category": "Front matter",
@@ -1300,8 +1343,8 @@
         "category": "Front matter"
       },
       {
-        "command": "frontMatter.insertImage",
-        "title": "Insert image into your content",
+        "command": "frontMatter.insertMedia",
+        "title": "Insert media into your content",
         "category": "Front matter",
         "icon": {
           "dark": "/assets/icons/media-dark.svg",
@@ -1463,7 +1506,7 @@
           "when": "frontMatter:file:isValid == true && frontMatter:dashboard:snippets:enabled"
         },
         {
-          "command": "frontMatter.insertImage",
+          "command": "frontMatter.insertMedia",
           "group": "navigation@-128",
           "when": "frontMatter:file:isValid == true"
         },
@@ -1620,7 +1663,7 @@
           "when": "frontMatter:file:isValid == true && frontMatter:dashboard:snippets:enabled"
         },
         {
-          "command": "frontMatter.insertImage",
+          "command": "frontMatter.insertMedia",
           "when": "frontMatter:file:isValid == true"
         },
         {
@@ -1654,6 +1697,18 @@
         {
           "command": "frontMatter.generateSlug",
           "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.contenttype.generate",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.contenttype.addMissingFields",
+          "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.contenttype.setContentType",
+          "when": "frontMatter:file:isValid == true"
         }
       ],
       "view/title": [
@@ -1665,7 +1720,7 @@
         {
           "command": "frontMatter.mode.switch",
           "group": "navigation@1",
-          "when": "view == frontMatter.explorer"
+          "when": "view == frontMatter.explorer && frontMatter:has:modes == true"
         },
         {
           "command": "frontMatter.dashboard",
@@ -1802,6 +1857,7 @@
     "react-datepicker": "4.2.1",
     "react-dom": "17.0.1",
     "react-dropzone": "^11.3.4",
+    "react-quill": "^2.0.0-beta.4",
     "react-sortable-hoc": "^2.0.0",
     "react-toastify": "^8.1.0",
     "recoil": "^0.4.1",

@@ -17,7 +17,7 @@ import useMedia from '../../hooks/useMedia';
 import { TelemetryEvent } from '../../../constants';
 import { PageLayout } from '../Layout/PageLayout';
 import { parseWinPath } from '../../../helpers/parseWinPath';
-import { join } from 'path';
+import { extname, join } from 'path';
 
 export interface IMediaProps {}
 
@@ -40,12 +40,23 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
   }, [folders, viewData, settings?.staticFolder]);
 
   const allMedia = React.useMemo(() => {
+    let mediaFiles = media;
     // Check if content allows page bundle
     if (viewData && viewData.data && typeof viewData.data.pageBundle !== "undefined" && !viewData.data.pageBundle) {
-      return media.filter(m => parseWinPath(m.fsPath).includes(join('/', settings?.staticFolder || '', '/')));
+      mediaFiles = media.filter(m => parseWinPath(m.fsPath).includes(join('/', settings?.staticFolder || '', '/')));
     }
 
-    return media;
+    if (viewData && viewData.data && viewData.data.type === "file" && viewData.data.fileExtensions && viewData.data.fileExtensions.length > 0) {
+      const supportedExtensions = viewData.data.fileExtensions;
+      mediaFiles = mediaFiles.filter(m => {
+        const ext = extname(m.fsPath);
+        // Remove the dot from the extension
+        const extWithoutDot = ext.substring(1);
+        return supportedExtensions.includes(extWithoutDot);
+      });
+    }
+
+    return mediaFiles;
   }, [media, viewData, settings?.staticFolder]); 
 
   const onDrop = useCallback((acceptedFiles: File[]) => {

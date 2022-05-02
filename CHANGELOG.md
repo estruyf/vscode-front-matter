@@ -1,10 +1,36 @@
 # Change Log
 
+## [7.2.0] - 2022-05-02 - [Release notes](https://beta.frontmatter.codes/updates/v7.2.0)
+
+### 🎨 Enhancements
+
+- New tag design for the tags, category, and taxonomy fields
+- [#263](https://github.com/estruyf/vscode-front-matter/issues/263): WYSIWYG string field option
+- [#308](https://github.com/estruyf/vscode-front-matter/issues/308): New `File` field
+- [#314](https://github.com/estruyf/vscode-front-matter/issues/314): New preview actions to open the page in the browser and refresh the preview
+- [#322](https://github.com/estruyf/vscode-front-matter/issues/322): Show parent folder name when file is an index page (`index.md` / `_index.md`)
+- [#323](https://github.com/estruyf/vscode-front-matter/issues/323): Added 11ty, jekyll, and docusaurus to the framework selection list
+- [#325](https://github.com/estruyf/vscode-front-matter/issues/325): Better welcome experience that allows you to add content folders straight from the welcome view
+- [#326](https://github.com/estruyf/vscode-front-matter/issues/326): Content type actions to create, update, or set according to the current file
+
+### ⚡️ Optimizations
+
+- [#316](https://github.com/estruyf/vscode-front-matter/issues/316): Suppress file parsing errors when closing the dashboard
+
+### 🐞 Fixes
+
+- Updated JSON schema link to supported version by VS Code (draft-07)
+- Hide the view mode action from the Front Matter panel if no custom modes are defined
+- Fix in decode base64 uploaded video files
+- Fix for a lightbox on other types of documents (pdf, etc.)
+- Fix for hiding the image preview on slide-over for none image documents
+- [#324](https://github.com/estruyf/vscode-front-matter/issues/324): Fix for the framework selection on the welcome screen
+
 ## [7.1.2] - 2022-04-11
 
 ### 🐞 Fixes
 
-- [#316](https://github.com/estruyf/vscode-front-matter/issues/316): Fix draft tab navigation
+- [#315](https://github.com/estruyf/vscode-front-matter/issues/315): Fix draft tab navigation
 
 ## [7.1.1] - 2022-04-08
 

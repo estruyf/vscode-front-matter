@@ -5,6 +5,11 @@ export enum DashboardMessage {
   getMode = 'getMode',
   showWarning = 'showWarning',
 
+  // Welcome view
+  initializeProject = 'initializeProject',
+  setFramework = 'setFramework',
+  addFolder = 'addFolder',
+
   // Content dashboard
   getData = 'getData',
   createContent = 'createContent',
@@ -22,9 +27,10 @@ export enum DashboardMessage {
   uploadMedia = 'uploadMedia',
   deleteMedia = 'deleteMedia',
   revealMedia = 'revealMedia',
-  insertPreviewImage = 'insertPreviewImage',
+  insertMedia = 'insertMedia',
   updateMediaMetadata = 'updateMediaMetadata',
   createMediaFolder = 'createMediaFolder',
+  insertFile = 'insertFile',
 
   // Data dashboard
   getDataEntries = 'getDataEntries',
@@ -38,8 +44,6 @@ export enum DashboardMessage {
   // Other
   getTheme = 'getTheme',
   updateSetting = 'updateSetting',
-  initializeProject = 'initializeProject',
-  setFramework = 'setFramework',
   setState = 'setState',
   runCustomScript = 'runCustomScript',
   sendTelemetry = 'sendTelemetry',

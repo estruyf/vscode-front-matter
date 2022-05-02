@@ -19,4 +19,8 @@ export interface ViewData {
   parents?: string[];
   multiple?: string[];
   value?: string;
+
+  // File fields
+  type: "file" | "media";
+  fileExtensions?: string[];
 }

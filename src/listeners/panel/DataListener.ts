@@ -43,6 +43,12 @@ export class DataListener extends BaseListener {
       case CommandToCode.updatePlaceholder:
         this.updatePlaceholder(msg?.data?.field, msg?.data?.value, msg?.data?.title);
         break;
+      case CommandToCode.generateContentType:
+        commands.executeCommand(COMMAND_NAME.generateContentType);
+      case CommandToCode.addMissingFields:
+        commands.executeCommand(COMMAND_NAME.addMissingFields);
+      case CommandToCode.setContentType:
+        commands.executeCommand(COMMAND_NAME.setContentType);
     }
   }
 
@@ -147,12 +153,14 @@ export class DataListener extends BaseListener {
     const contentType = ArticleHelper.getContentType(article.data);
     const dateFields = contentType.fields.filter((f) => f.type === "datetime");
     const imageFields = contentType.fields.filter((f) => f.type === "image" && f.multiple);
+    const fileFields = contentType.fields.filter((f) => f.type === "file" && f.multiple);
 
     // Support multi-level fields
     const parentObj = DataListener.getParentObject(article.data, article, parents, blockData);
 
     const isDateField = dateFields.some(f => f.name === field);
     const isMultiImageField = imageFields.some(f => f.name === field);
+    const isMultiFileField = fileFields.some(f => f.name === field);
 
     if (isDateField) {
       for (const dateField of dateFields) {
@@ -160,9 +168,11 @@ export class DataListener extends BaseListener {
           parentObj[field] = Article.formatDate(new Date(value));
         }
       }
-    } else if (isMultiImageField) {
-      for (const imageField of imageFields) {
-        if (field === imageField.name) {
+    } else if (isMultiImageField || isMultiFileField) {
+      const fields = isMultiImageField ? imageFields : fileFields;
+
+      for (const crntField of fields) {
+        if (field === crntField.name) {
           // If value is an array, it means it comes from the explorer view itself (deletion)
           if (Array.isArray(value)) {
             parentObj[field] = value || [];

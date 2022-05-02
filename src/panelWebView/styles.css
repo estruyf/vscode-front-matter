@@ -252,3 +252,233 @@
 .sr-only {
   display: none;
 }
+
+/* Metadata section - Content type */
+.metadata_field__alert svg {
+  color: var(--vscode-editorWarning-foreground)
+}
+
+.hint {
+  margin-bottom: 1rem;
+}
+
+.hint__buttons vscode-button {
+  display: block;
+  margin-bottom: .5rem;
+  text-align: center;
+}
+
+.hint__buttons vscode-button:last-child {
+  margin-bottom: 0;
+}
+
+vscode-divider {
+  margin-top: 1rem;
+}
+
+.inline_hint {
+  color: var(--vscode-sideBar-foreground);
+}
+
+/* File field */
+.metadata_field__file__button.not_empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.metadata_field__file__button.not_empty svg {
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+  margin: inherit;
+}
+
+.metadata_field__file__button.not_empty span {
+  margin-top: 0;
+  display: inline-block;
+  margin: inherit;
+  margin-left: .5rem;
+}
+
+.metadata_field__file__list.multiple {
+  margin-top: 1rem;
+}
+
+.metadata_field__file__list__item {
+  display: flex;
+  align-items: center;
+  padding: .5rem .25rem;
+  overflow: hidden;
+}
+
+.metadata_field__file__list__item:nth-child(odd) {
+  background-color: rgba(255, 255, 255, .05);
+  filter: brightness(100%);
+}
+
+.metadata_field__file__list__item:hover {
+  background-color: rgba(255, 255, 255, .1);
+  filter: brightness(100%);
+}
+
+.metadata_field__file__item__icon {
+  margin-right: .5rem;
+  display: flex;
+  align-items: center;
+}
+
+.metadata_field__file__item__text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1;
+}
+
+.metadata_field__file__item__remove {
+  display: none;
+  background: none;
+  width: auto;
+  color: var(--vscode-inputValidation-errorForeground);
+  padding: 0;
+  align-items: center;
+}
+
+.metadata_field__file__item__remove:hover {
+  background: var(--vscode-inputValidation-errorBackground);
+}
+
+.metadata_field__file__list__item:hover .metadata_field__file__item__remove {
+  display: flex;
+  margin: -.5rem -.25rem -.5rem 0;
+  padding: .5rem;
+}
+
+/* Tags */
+.article__tags__items {
+  display: flex;
+  flex-flow: row wrap;
+  margin-top: 1rem;
+}
+
+.tag {
+  align-items: center;
+  background-color: var(--vscode-button-background);
+  border: 1px solid var(--vscode-button-border);
+  border-radius: 2px;
+  color: var(--vscode-button-foreground);
+  display: inline-flex;
+  font-size: 12px;
+  line-height: 16px;
+  padding: .25rem .25rem;
+  margin-bottom: .5rem;
+  margin-right: .5rem;
+}
+
+.tag button {
+  background: none;
+  border: none;
+  color: inherit;
+  outline: none !important;
+  outline-offset: inherit !important;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: .25rem;
+}
+
+.tag .tag__create {
+  margin-right: .25rem;
+}
+
+.tag .tag__create:hover {
+  color: var(--vscode-inputValidation-infoForeground, #000);
+  background-color: var(--vscode-inputValidation-infoBackground);
+  border-radius: 2px;
+}
+
+.vscode-dark .tag .tag__create:hover {
+  color: var(--vscode-inputValidation-infoForeground, #fff);
+}
+
+.tag .tag__delete {
+  margin-left: .25rem;
+}
+
+.tag .tag__delete:hover {
+  background-color: var(--vscode-inputValidation-errorBackground);
+  color: var(--vscode-inputValidation-errorForeground, #000);
+  border-radius: 2px;
+}
+
+.vscode-dark .tag .tag__delete:hover {
+  color: var(--vscode-inputValidation-infoForeground, #fff);
+}
+
+.tag .tag__value {
+  flex-grow: 1;
+  white-space: nowrap;
+}
+
+
+/* Quill changes */
+.ql-toolbar.ql-snow,
+.ql-container.ql-snow {
+  border-color: var(--vscode-inputValidation-infoBorder) !important;
+}
+
+.ql-toolbar.ql-snow {
+  padding: var(--input-padding-vertical) var(--input-padding-horizontal) !important;
+}
+
+.ql-snow .ql-picker {
+  color: var(--vscode-settings-headerForeground) !important;
+}
+
+.ql-snow .ql-fill {
+  fill: var(--vscode-settings-headerForeground) !important;
+}
+
+.ql-snow .ql-stroke {
+  stroke: var(--vscode-settings-headerForeground) !important;
+}
+
+.ql-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-label {
+  border-color: var(--vscode-inputValidation-infoBorder) !important;
+}
+
+.ql-snow .ql-picker-options {
+  background: var(--vscode-input-background) !important;
+  color: var(--vscode-input-foreground) !important;
+  border-color: var(--vscode-inputValidation-infoBorder) !important;
+}
+
+.ql-editor {
+  background-color: var(--vscode-input-background) !important;
+  padding: var(--input-padding-vertical) var(--input-padding-horizontal) !important;
+}
+
+.ql-snow.ql-toolbar button:hover, 
+.ql-snow .ql-toolbar button:hover, 
+.ql-snow.ql-toolbar button:focus, 
+.ql-snow .ql-toolbar button:focus, 
+.ql-snow.ql-toolbar button.ql-active, 
+.ql-snow .ql-toolbar button.ql-active, 
+.ql-snow.ql-toolbar .ql-picker-label:hover, 
+.ql-snow .ql-toolbar .ql-picker-label:hover, 
+.ql-snow.ql-toolbar .ql-picker-label.ql-active, 
+.ql-snow .ql-toolbar .ql-picker-label.ql-active, 
+.ql-snow.ql-toolbar .ql-picker-item:hover, 
+.ql-snow .ql-toolbar .ql-picker-item:hover, 
+.ql-snow.ql-toolbar .ql-picker-item.ql-selected, 
+.ql-snow .ql-toolbar .ql-picker-item.ql-selected {
+  color: var(--vscode-button-background) !important;
+}
+
+.ql-snow.ql-toolbar button:hover .ql-stroke, .ql-snow .ql-toolbar button:hover .ql-stroke, .ql-snow.ql-toolbar button:focus .ql-stroke, .ql-snow .ql-toolbar button:focus .ql-stroke, .ql-snow.ql-toolbar button.ql-active .ql-stroke, .ql-snow .ql-toolbar button.ql-active .ql-stroke, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke, .ql-snow.ql-toolbar button:hover .ql-stroke-miter, .ql-snow .ql-toolbar button:hover .ql-stroke-miter, .ql-snow.ql-toolbar button:focus .ql-stroke-miter, .ql-snow .ql-toolbar button:focus .ql-stroke-miter, .ql-snow.ql-toolbar button.ql-active .ql-stroke-miter, .ql-snow .ql-toolbar button.ql-active .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter {
+  stroke: var(--vscode-button-background) !important;
+}
+
+.ql-snow.ql-toolbar button:hover .ql-fill, .ql-snow .ql-toolbar button:hover .ql-fill, .ql-snow.ql-toolbar button:focus .ql-fill, .ql-snow .ql-toolbar button:focus .ql-fill, .ql-snow.ql-toolbar button.ql-active .ql-fill, .ql-snow .ql-toolbar button.ql-active .ql-fill, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-fill, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-fill, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-fill, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-fill, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-fill, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-fill, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-fill, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-fill, .ql-snow.ql-toolbar button:hover .ql-stroke.ql-fill, .ql-snow .ql-toolbar button:hover .ql-stroke.ql-fill, .ql-snow.ql-toolbar button:focus .ql-stroke.ql-fill, .ql-snow .ql-toolbar button:focus .ql-stroke.ql-fill, .ql-snow.ql-toolbar button.ql-active .ql-stroke.ql-fill, .ql-snow .ql-toolbar button.ql-active .ql-stroke.ql-fill, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke.ql-fill, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke.ql-fill, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke.ql-fill, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke.ql-fill, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke.ql-fill, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke.ql-fill, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke.ql-fill, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke.ql-fill {
+  fill: var(--vscode-button-background) !important;
+}

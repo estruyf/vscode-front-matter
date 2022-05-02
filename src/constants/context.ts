@@ -9,6 +9,8 @@ export const CONTEXT = {
   backer: "frontMatter:backers:supporter",
   isValidFile: "frontMatter:file:isValid",
 
+  hasViewModes: "frontMatter:has:modes",
+
   isSnippetsDashboardEnabled: "frontMatter:dashboard:snippets:enabled",
   isDataDashboardEnabled: "frontMatter:dashboard:data:enabled",
 };

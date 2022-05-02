@@ -9,7 +9,6 @@ import { CustomScript } from '../../../helpers/CustomScript';
 import { parseWinPath } from '../../../helpers/parseWinPath';
 import { ScriptType } from '../../../models';
 import { MediaInfo } from '../../../models/MediaPaths';
-import { FileIcon } from '../../../panelWebView/components/Icons/FileIcon';
 import { DashboardMessage } from '../../DashboardMessage';
 import { LightboxAtom, SelectedMediaFolderSelector, SettingsSelector, ViewDataSelector } from '../../state';
 import { MenuItem, MenuItems } from '../Menu';
@@ -74,39 +73,56 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
 
   const insertToArticle = () => {
     const relPath = getRelPath();
-    Messenger.send(DashboardMessage.insertPreviewImage, {
-      image: parseWinPath(relPath) || "",
-      file: viewData?.data?.filePath,
-      fieldName: viewData?.data?.fieldName,
-      parents: viewData?.data?.parents,
-      multiple: viewData?.data?.multiple,
-      value: viewData?.data?.value,
-      position: viewData?.data?.position || null,
-      blockData: typeof viewData?.data?.blockData !== "undefined" ? viewData?.data?.blockData : undefined,
-      alt: alt || "",
-      caption: caption || ""
-    });
+
+    if (viewData?.data?.type === "file") {
+      Messenger.send(DashboardMessage.insertFile, {
+        relPath: parseWinPath(relPath) || "",
+        file: viewData?.data?.filePath,
+        fieldName: viewData?.data?.fieldName,
+        parents: viewData?.data?.parents,
+        multiple: viewData?.data?.multiple,
+        value: viewData?.data?.value,
+        position: viewData?.data?.position || null,
+        blockData: typeof viewData?.data?.blockData !== "undefined" ? viewData?.data?.blockData : undefined,
+        title: media.title
+      });
+    } else {
+      Messenger.send(DashboardMessage.insertMedia, {
+        relPath: parseWinPath(relPath) || "",
+        file: viewData?.data?.filePath,
+        fieldName: viewData?.data?.fieldName,
+        parents: viewData?.data?.parents,
+        multiple: viewData?.data?.multiple,
+        value: viewData?.data?.value,
+        position: viewData?.data?.position || null,
+        blockData: typeof viewData?.data?.blockData !== "undefined" ? viewData?.data?.blockData : undefined,
+        alt: alt || "",
+        caption: caption || "",
+        title: media.title || ""
+      });
+    }
   };
 
-  const insertSnippet = () => {
+  const insertSnippet = useCallback(() => {
     const relPath = getRelPath();
     let snippet = settings?.mediaSnippet.join("\n");
 
     snippet = snippet?.replace("{mediaUrl}", parseWinPath(relPath) || "");
     snippet = snippet?.replace("{alt}", alt || "");
     snippet = snippet?.replace("{caption}", caption || "");
+    snippet = snippet?.replace("{title}", media.title || "");
     snippet = snippet?.replace("{filename}", basename(relPath || ""));
     snippet = snippet?.replace("{mediaWidth}", media?.dimensions?.width?.toString() || "");
     snippet = snippet?.replace("{mediaHeight}", media?.dimensions?.height?.toString() || "");
 
-    Messenger.send(DashboardMessage.insertPreviewImage, {
-      image: parseWinPath(relPath) || "",
+    Messenger.send(DashboardMessage.insertMedia, {
+      relPath: parseWinPath(relPath) || "",
       file: viewData?.data?.filePath,
       fieldName: viewData?.data?.fieldName,
       position: viewData?.data?.position || null,
       snippet
     });
-  };
+  }, [alt, caption, media, settings, viewData]);
 
   const deleteMedia = () => {
     setShowAlert(true);
@@ -168,7 +184,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   };
 
   const openLightbox = useCallback(() => {
-    if (!isVideoFile() && !isAudioFile()) {
+    if (isImageFile) {
       setLightbox(media.vsPath || "");
     }
   }, [media.vsPath]);
@@ -187,21 +203,21 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     ))
   }
 
-  const isVideoFile = useCallback(() => {
+  const isVideoFile = useMemo(() => {
     if (media.mimeType?.startsWith("video/")) {
       return true;
     }
     return false;
   }, [media]);
 
-  const isAudioFile = useCallback(() => {
+  const isAudioFile = useMemo(() => {
     if (media.mimeType?.startsWith("audio/")) {
       return true;
     }
     return false;
   }, [media]);
 
-  const isImageFile = useCallback(() => {
+  const isImageFile = useMemo(() => {
     if (media.mimeType?.startsWith("image/")) {
       return true;
     }
@@ -209,27 +225,37 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   }, [media]);
 
   const renderMediaIcon = useMemo(() => {
-    if (isVideoFile()) {
-      return <VideoCameraIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />;
-    }
-    
-    if (isAudioFile()) {
-      return <MusicNoteIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />;
-    }
+    const path = media.fsPath;
+    const extension = path.split('.').pop();
 
-    if (isImageFile()) {
+    if (isImageFile) {
       return <PhotographIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />;
     }
 
-    return <DocumentIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />;
-  }, [media]);
+    let icon = <DocumentIcon className={`h-4/6 text-gray-300 dark:text-vulcan-200`} />;
+
+    if (isVideoFile) {
+      icon = <VideoCameraIcon className={`h-4/6 text-gray-300 dark:text-vulcan-200`} />;
+    }
+    
+    if (isAudioFile) {
+      icon = <MusicNoteIcon className={`h-4/6 text-gray-300 dark:text-vulcan-200`} />;
+    }
+
+    return (
+      <div className='w-full h-full flex justify-center items-center'>
+        {icon}
+        <span className='text-2xl font-bold absolute top-0 right-0 bottom-0 left-0 flex justify-center items-center'>{extension}</span>
+      </div>
+    );
+  }, [media, isImageFile, isVideoFile, isAudioFile]);
   
   const renderMedia = useMemo(() => {
-    if (isVideoFile() || isAudioFile()) {
+    if (isVideoFile || isAudioFile) {
       return null;
     }
 
-    if (isImageFile()) {
+    if (isImageFile) {
       return <img src={media.vsPath} alt={basename(media.fsPath)} className="mx-auto object-cover" />;
     }
 
@@ -258,7 +284,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   return (
     <>
       <li className="group relative bg-gray-50 dark:bg-vulcan-200 shadow-md hover:shadow-xl dark:shadow-none dark:hover:bg-vulcan-100 border border-gray-200 dark:border-vulcan-50">
-        <button className="relative bg-gray-200 dark:bg-vulcan-300 block w-full aspect-w-10 aspect-h-7 overflow-hidden cursor-pointer h-48" onClick={openLightbox}>
+        <button className={`relative bg-gray-200 dark:bg-vulcan-300 block w-full aspect-w-10 aspect-h-7 overflow-hidden  h-48 ${isImageFile ? "cursor-pointer" : "cursor-default"}`} onClick={openLightbox}>
           <div className={`absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center`}>
             {
               renderMediaIcon
@@ -376,6 +402,14 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
             {basename(parseWinPath(media.fsPath) || "")}
           </p>
           {
+            !isImageFile && media.title && (
+              <p className="mt-2 text-xs dark:text-whisper-900 font-medium pointer-events-none flex flex-col items-start">
+                <b className={`mr-2`}>Title:</b>
+                <span className={`block mt-1 dark:text-whisper-500 text-xs`}>{media.title}</span>
+              </p>
+            )
+          }
+          {
             media.caption && (
               <p className="mt-2 text-xs dark:text-whisper-900 font-medium pointer-events-none flex flex-col items-start">
                 <b className={`mr-2`}>Caption:</b>
@@ -411,6 +445,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
             folder={getFolder()}
             media={media}
             showForm={showForm}
+            isImageFile={isImageFile}
             onEdit={() => setShowForm(true)}
             onEditClose={() => setShowForm(false)}
             onDismiss={() => { setShowDetails(false); setShowForm(false); }} />

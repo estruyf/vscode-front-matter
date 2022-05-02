@@ -26,6 +26,7 @@ export enum CommandToCode {
   updateMetadata = "update-metadata",
   openDashboard = "open-dashboard",
   selectImage = "select-image",
+  selectFile = "select-file",
   updateCustomTaxonomy = "updateCustomTaxonomy",
   addToCustomTaxonomy = "addToCustomTaxonomy",
   frameworkCommand = "framework-command",
@@ -33,4 +34,7 @@ export enum CommandToCode {
   getImageUrl = "get-image-url",
   updatePlaceholder = "update-placeholder",
   getMode = "get-mode",
+  generateContentType = "generate-content-type",
+  addMissingFields = "add-missing-fields",
+  setContentType = "set-content-type",
 }
