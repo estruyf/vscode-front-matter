@@ -1,5 +1,15 @@
 # Change Log
 
+## [7.3.x] - 2022-05-xx
+
+### 🎨 Enhancements
+
+- [#330](https://github.com/estruyf/vscode-front-matter/issues/330): Allow custom scripts to easily update front matter
+
+### ⚡️ Optimizations
+
+### 🐞 Fixes
+
 ## [7.2.0] - 2022-05-02 - [Release notes](https://beta.frontmatter.codes/updates/v7.2.0)
 
 ### 🎨 Enhancements

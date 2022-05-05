@@ -41,6 +41,13 @@ export class CustomScript {
     }
   }
 
+  /**
+   * Run the script on the current file
+   * @param wsPath 
+   * @param script 
+   * @param path 
+   * @returns 
+   */
   private static async singleRun(wsPath: string, script: ICustomScript, path: string | null = null): Promise<void> {
     let articlePath: string | null = path;
     let article: ParsedFrontMatter | null = null;
@@ -62,13 +69,19 @@ export class CustomScript {
         cancellable: false
       }, async () => {
         const output = await CustomScript.runScript(wsPath, article, articlePath as string, script);
-        CustomScript.showOutput(output, script);
+        CustomScript.showOutput(output, script, articlePath);
       });
     } else {
       Notifications.warning(`${script.title}: Article couldn't be retrieved.`);
     }
   }
 
+  /**
+   * Run the script on multiple files
+   * @param wsPath 
+   * @param script 
+   * @returns 
+   */
   private static async bulkRun(wsPath: string, script: ICustomScript): Promise<void> {
     const folders = await Folders.getInfo();
 
@@ -106,6 +119,13 @@ export class CustomScript {
     });
   }
 
+  /**
+   * Run a script for a media file
+   * @param wsPath 
+   * @param path 
+   * @param script 
+   * @returns 
+   */
   private static async runMediaScript(wsPath: string, path: string | null, script: ICustomScript): Promise<void>  {
     if (!path) {
       Notifications.error(`${script.title}: There was no folder or media path specified.`);
@@ -138,6 +158,14 @@ export class CustomScript {
     });
   }
 
+  /**
+   * Script runner
+   * @param wsPath 
+   * @param article 
+   * @param contentPath 
+   * @param script 
+   * @returns 
+   */
   private static async runScript(wsPath: string, article: ParsedFrontMatter | null, contentPath: string, script: ICustomScript): Promise<string | null> {
     return new Promise((resolve, reject) => {
       let articleData = "";
@@ -160,16 +188,56 @@ export class CustomScript {
     });
   }
 
-  private static showOutput(output: string | null, script: ICustomScript): void {
+  /**
+   * Show/process the output of the script
+   * @param output 
+   * @param script 
+   */
+  private static showOutput(output: string | null, script: ICustomScript, articlePath?: string | null): void {
     if (output) {
-      if (script.output === "editor") {
-        ContentProvider.show(output, script.title, script.outputType || "text");
-      } else {
-        window.showInformationMessage(`${script.title}: ${output}`, 'Copy output').then(value => {
-          if (value === 'Copy output') {
-            vscodeEnv.clipboard.writeText(output);
+      try {
+        const data = JSON.parse(output);
+
+        if (data.frontmatter) {
+          let article = null;
+          const editor = window.activeTextEditor;
+
+          if (!articlePath) {
+            if (!editor) return;
+      
+            articlePath = editor.document.uri.fsPath;
+            article = ArticleHelper.getFrontMatter(editor);
+          } else {
+            article = ArticleHelper.getFrontMatterByPath(articlePath);
           }
-        });
+
+          if (article && article.data) {
+            for (const key in data.frontmatter) {
+              article.data[key] = data.frontmatter[key];
+            }
+
+            if (articlePath) {
+              ArticleHelper.updateByPath(articlePath, article);
+            } else if (editor) {
+              ArticleHelper.update(editor, article);
+            } else {
+              throw new Error(`Couldn't update article.`);
+            }
+            Notifications.info(`${script.title}: front matter updated.`);
+          }
+        } else {
+          throw new Error(`No frontmatter found.`);
+        }
+      } catch (error) {
+        if (script.output === "editor") {
+          ContentProvider.show(output, script.title, script.outputType || "text");
+        } else {
+          window.showInformationMessage(`${script.title}: ${output}`, 'Copy output').then(value => {
+            if (value === 'Copy output') {
+              vscodeEnv.clipboard.writeText(output);
+            }
+          });
+        }
       }
     } else {
       Notifications.info(`${script.title}: Executed your custom script.`);

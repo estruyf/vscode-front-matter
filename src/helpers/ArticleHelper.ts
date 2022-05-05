@@ -1,3 +1,4 @@
+import { Uri, workspace } from 'vscode';
 import { MarkdownFoldingProvider } from './../providers/MarkdownFoldingProvider';
 import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from './../constants/ContentType';
 import * as vscode from 'vscode';
@@ -80,6 +81,23 @@ export class ArticleHelper {
     const update = this.generateUpdate(editor.document, article);
 
     await editor.edit(builder => builder.replace(update.range, update.newText));
+  }
+
+  /**
+   * Store the new information for the article path
+   * 
+   * @param path 
+   * @param article 
+   */
+  public static async updateByPath(path: string, article: ParsedFrontMatter) {
+    const file = await workspace.openTextDocument(Uri.parse(path));
+    const editor = await window.showTextDocument(file);
+
+    if (file && editor) {
+      const update = this.generateUpdate(file, article);
+      
+      await editor.edit(builder => builder.replace(update.range, update.newText));
+    }
   }
 
   /**
