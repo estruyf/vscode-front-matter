@@ -14,6 +14,15 @@ packageJson.homepage = "https://beta.frontmatter.codes";
 
 console.log(packageJson.version);
 
+const scripts = packageJson.scripts;
+for (const key in scripts) {
+  if (key.startsWith(`prod:`)) {
+    scripts[key] = scripts[key].replace("production", "development");
+  }
+}
+
+console.log(JSON.stringify(packageJson.scripts, null, 2));
+
 fs.writeFileSync(path.join(path.resolve('.'), 'package.json'), JSON.stringify(packageJson, null, 2));
 
 let readme = fs.readFileSync(path.join(__dirname, '../README.beta.md'), 'utf8');
