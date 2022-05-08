@@ -31,5 +31,5 @@ fs.writeFileSync(path.join(__dirname, '../README.md'), readme);
 // Update the .vscodeignore file
 const ignoreFilePath = path.join(path.resolve('.'), '.vscodeignore');
 let vscodeignore = fs.readFileSync(ignoreFilePath, 'utf8');
-vscodeignore.replace(`**/*.map`, '');
+vscodeignore = vscodeignore.replace(`**/*.map`, '');
 fs.writeFileSync(ignoreFilePath, vscodeignore);
