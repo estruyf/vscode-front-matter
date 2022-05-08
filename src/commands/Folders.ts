@@ -358,7 +358,7 @@ export class Folders {
     // Find folders that contain files
     const wsFolder = Folders.getWorkspaceFolder();
     const supportedFiles = Settings.get<string[]>(SETTING_CONTENT_SUPPORTED_FILETYPES) || DEFAULT_FILE_TYPES;
-    const patterns = supportedFiles.map(fileType => `${join(wsFolder?.fsPath || "", "**", `*${fileType.startsWith('.') ? '' : '.'}${fileType}`)}`);
+    const patterns = supportedFiles.map(fileType => `${join(parseWinPath(wsFolder?.fsPath || ""), "**", `*${fileType.startsWith('.') ? '' : '.'}${fileType}`)}`);
     let folders: string[] = [];
 
     for (const pattern of patterns) {
