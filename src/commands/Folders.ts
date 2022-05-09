@@ -6,7 +6,7 @@ import { ContentFolder, FileInfo, FolderInfo } from "../models";
 import uniqBy = require("lodash.uniqby");
 import { Template } from "./Template";
 import { Notifications } from "../helpers/Notifications";
-import { Settings } from "../helpers";
+import { Logger, Settings } from "../helpers";
 import { existsSync, mkdirSync } from 'fs';
 import { format } from 'date-fns';
 import { Dashboard } from './Dashboard';
@@ -362,7 +362,11 @@ export class Folders {
     let folders: string[] = [];
 
     for (const pattern of patterns) {
-      folders = [...folders, ...(await this.findFolders(pattern))];
+      try {
+        folders = [...folders, ...(await this.findFolders(pattern))];
+      } catch (e) {
+        Logger.error(`Something went wrong while searching for folders with pattern "${pattern}": ${(e as Error).message}`);
+      }
     }
     
     // Filter out the workspace folder

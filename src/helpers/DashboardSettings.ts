@@ -19,8 +19,6 @@ export class DashboardSettings {
     const ext = Extension.getInstance();
     const wsFolder = Folders.getWorkspaceFolder();
     const isInitialized = await Template.isInitialized();
-
-    const contentFolders = await Folders.getContentFolders();
     
     return {
       beta: ext.isBetaVersion(),
@@ -56,7 +54,7 @@ export class DashboardSettings {
           mimeTypes: Settings.get<string[]>(SETTING_MEDIA_SUPPORTED_MIMETYPES)
         },
         welcome: {
-          contentFolders
+          contentFolders: !isInitialized ? await Folders.getContentFolders() : []
         }
       },
       dataFiles: await this.getDataFiles(),

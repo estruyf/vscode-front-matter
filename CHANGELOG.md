@@ -10,6 +10,9 @@
 
 ### 🐞 Fixes
 
+- [#334](https://github.com/estruyf/vscode-front-matter/issues/334): Fix for locked content folders retrieval
+
+
 ## [7.2.0] - 2022-05-02 - [Release notes](https://beta.frontmatter.codes/updates/v7.2.0)
 
 ### 🎨 Enhancements
