@@ -1,6 +1,7 @@
+import { CommandType } from './../models/PanelSettings';
 import { CustomScript as ICustomScript, ScriptType } from '../models/PanelSettings';
 import { window, env as vscodeEnv, ProgressLocation } from 'vscode';
-import { ArticleHelper, Telemetry } from '.';
+import { ArticleHelper, Logger, Telemetry } from '.';
 import { Folders } from '../commands/Folders';
 import { exec } from 'child_process';
 import * as os from 'os';
@@ -138,22 +139,20 @@ export class CustomScript {
         title: `Executing: ${script.title}`,
         cancellable: false
       }, async () => {
-        exec(`${script.nodeBin || "node"} ${join(wsPath, script.script)} "${wsPath}" "${path}"`, (error, stdout) => {
-          if (error) {
-            Notifications.error(`${script.title}: ${error.message}`);
-            resolve();
-            return;
-          }
-  
-          CustomScript.showOutput(stdout, script);
+        try {
+          const output = await CustomScript.executeScript(script, wsPath, `"${wsPath}" "${path}"`);
+
+          CustomScript.showOutput(output, script);
   
           Dashboard.postWebviewMessage({ 
             command: DashboardCommand.mediaUpdate
           });
-  
-          resolve();
+
           return;
-        });
+        } catch (e) {
+          Notifications.error(`${script.title}: ${(e as Error).message}`);
+          return;
+        }
       });
     });
   }
@@ -167,7 +166,7 @@ export class CustomScript {
    * @returns 
    */
   private static async runScript(wsPath: string, article: ParsedFrontMatter | null, contentPath: string, script: ICustomScript): Promise<string | null> {
-    return new Promise((resolve, reject) => {
+    try {
       let articleData = "";
       if (os.type() === "Windows_NT") {
         articleData = `"${JSON.stringify(article?.data).replace(/"/g, `""`)}"`;
@@ -176,16 +175,12 @@ export class CustomScript {
         articleData = `'${articleData}'`;
       }
 
-      exec(`${script.nodeBin || "node"} ${join(wsPath, script.script)} "${wsPath}" "${contentPath}" ${articleData}`, (error, stdout) => {
-        if (error) {
-          Notifications.error(`${script.title}: ${error.message}`);
-          resolve(null);
-          return;
-        }
-
-        resolve(stdout);
-      });
-    });
+      const output = await CustomScript.executeScript(script, wsPath, `"${wsPath}" "${contentPath}" ${articleData}`);
+      return output;
+    } catch (e) {
+      Notifications.error(`${script.title}: ${(e as Error).message}`);
+      return null;
+    }
   }
 
   /**
@@ -242,5 +237,35 @@ export class CustomScript {
     } else {
       Notifications.info(`${script.title}: Executed your custom script.`);
     }
+  }
+
+  /**
+   * Execute script
+   * @param script 
+   * @param wsPath 
+   * @param args 
+   * @returns 
+   */
+  private static async executeScript(script: ICustomScript, wsPath: string, args: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      
+      // Check the command to use
+      let command = script.nodeBin || "node";
+      if (script.command && script.command !== CommandType.Node) {
+        command = script.command;
+      }
+
+      const scriptPath = join(wsPath, script.script);
+      const fullScript = `${command} ${scriptPath} ${args}`;
+      Logger.info(`Executing: ${fullScript}`);
+
+      exec(fullScript, (error, stdout) => {
+        if (error) {
+          reject(error.message);
+        }
+
+        resolve(stdout);
+      });
+    });
   }
 }

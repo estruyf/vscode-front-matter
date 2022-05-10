@@ -111,6 +111,7 @@ export interface CustomScript {
   output?: "notification" | "editor";
   outputType?: string;
   type?: ScriptType;
+  command?: CommandType;
 }
 
 export interface PreviewSettings {
@@ -127,4 +128,12 @@ export enum ScriptType {
   Content = "content",
   MediaFolder = "mediaFolder",
   MediaFile = "mediaFile"
+}
+
+export enum CommandType {
+  Node = "node",
+  Shell = "shell",
+  PowerShell = "powershell",
+  Python = "python",
+  Python3 = "python3"
 }

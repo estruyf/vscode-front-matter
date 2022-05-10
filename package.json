@@ -342,7 +342,7 @@
               },
               "nodeBin": {
                 "type": "string",
-                "description": "Path to the node executable. This is required when using NVM, so that there is no confusion of which node version to use."
+                "description": "Path to the node executable. This is required when using NVM, so that there is no confusion of which node version to use. (deprecated: use the command property instead)"
               },
               "bulk": {
                 "type": "boolean",
@@ -369,6 +369,25 @@
                   "mediaFile"
                 ],
                 "description": "The type for which the script will be used."
+              },
+              "command": {
+                "type": "string",
+                "oneOf": [
+                  {
+                    "enum": [
+                      "node",
+                      "bash",
+                      "powershell",
+                      "python",
+                      "python3"
+                    ]
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "description": "The type of script you want to execute.",
+                "default": "node"
               }
             },
             "additionalProperties": false,

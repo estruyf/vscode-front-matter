@@ -2,6 +2,7 @@
 	// See http://go.microsoft.com/fwlink/?LinkId=827846
 	// for the documentation about the extensions.json format
 	"recommendations": [
-		"ms-vscode.vscode-typescript-tslint-plugin"
+		"ms-vscode.vscode-typescript-tslint-plugin",
+		"eliostruyf.vscode-typescript-exportallmodules"
 	]
 }

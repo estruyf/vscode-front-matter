@@ -1,14 +1,16 @@
 import { Extension } from './Extension';
-import { OutputChannel, window } from 'vscode';
+import { commands, OutputChannel, window } from 'vscode';
 import { format } from 'date-fns';
+import { COMMAND_NAME } from '../constants';
 
 export class Logger {
   private static instance: Logger;
-  private static channel: OutputChannel | null = null; 
+  public static channel: OutputChannel | null = null; 
 
   private constructor() {
     const displayName = Extension.getInstance().displayName;
     Logger.channel = window.createOutputChannel(displayName);
+    commands.registerCommand(COMMAND_NAME.showOutputChannel, () => { Logger.channel?.show(); });
   }
 
   public static getInstance(): Logger {

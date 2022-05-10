@@ -5,6 +5,7 @@
 ### 🎨 Enhancements
 
 - [#330](https://github.com/estruyf/vscode-front-matter/issues/330): Allow custom scripts to easily update front matter
+- [#331](https://github.com/estruyf/vscode-front-matter/issues/331): Added functionality to run other type of scripts
 
 ### ⚡️ Optimizations
 

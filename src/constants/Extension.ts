@@ -37,6 +37,8 @@ export const COMMAND_NAME = {
   diagnostics: getCommandName("diagnostics"),
   modeSwitch: getCommandName("mode.switch"),
 
+  showOutputChannel: getCommandName("showOutputChannel"),
+
   // Insert dashboards
   insertMedia: getCommandName("insertMedia"),
   insertSnippet: getCommandName("insertSnippet"),
