@@ -53,7 +53,7 @@ export class DashboardSettings {
           mimeTypes: Settings.get<string[]>(SETTING_MEDIA_SUPPORTED_MIMETYPES)
         },
         welcome: {
-          contentFolders: !isInitialized ? await Folders.getContentFolders() : []
+          contentFolders: await Folders.getContentFolders()
         }
       },
       dataFiles: await this.getDataFiles(),

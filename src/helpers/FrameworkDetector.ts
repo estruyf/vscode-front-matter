@@ -1,6 +1,10 @@
 import { existsSync, readFileSync } from "fs";
 import { join, resolve } from "path";
+import { commands, Uri } from "vscode";
+import { Folders } from "../commands/Folders";
+import { COMMAND_NAME } from "../constants";
 import { FrameworkDetectors } from "../constants/FrameworkDetectors";
+import { Framework } from "../models";
 
 export class FrameworkDetector {
 
@@ -72,5 +76,30 @@ export class FrameworkDetector {
     }
 
     return undefined;
+  }
+
+  public static checkDefaultSettings(framework: Framework) {
+    const wsFolder = Folders.getWorkspaceFolder();
+    
+    if (framework.name.toLowerCase() === "jekyll") {
+      const draftsPath = join(wsFolder?.fsPath || "", "_drafts");
+      const postsPath = join(wsFolder?.fsPath || "", "_posts");
+
+      if (existsSync(draftsPath)) {
+        const folderUri = Uri.file(draftsPath);
+        commands.executeCommand(COMMAND_NAME.registerFolder, {
+          title: "drafts",
+          path: folderUri
+        });
+      }
+
+      if (existsSync(postsPath)) {
+        const folderUri = Uri.file(postsPath);
+        commands.executeCommand(COMMAND_NAME.registerFolder, {
+          title: "posts",
+          path: folderUri
+        });
+      }
+    }
   }
 }

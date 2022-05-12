@@ -10,6 +10,7 @@ import { Sorting } from '../../helpers/Sorting';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../DashboardMessage';
 import { EventData } from '@estruyf/vscode/dist/models';
+import { parseWinPath } from '../../helpers/parseWinPath';
 
 export default function usePages(pages: Page[]) {
   const [ pageItems, setPageItems ] = useState<Page[]>([]);
@@ -24,9 +25,19 @@ export default function usePages(pages: Page[]) {
 
   const processPages = useCallback((searchedPages: Page[]) => {
     const draftField = settings?.draftField;
+    const framework = settings?.crntFramework;
 
     // Filter the pages
     let pagesToShow: Page[] = Object.assign([], searchedPages);
+
+    // Framework specific actions
+    if (framework?.toLowerCase() === "jekyll") {
+      pagesToShow = pagesToShow.map(page => {
+        const filePath = parseWinPath(page.fmFilePath);
+        page.draft = filePath.indexOf(`/_drafts/`) > -1;
+        return page;
+      });
+    }
 
     const draftTypes = Object.assign({}, tabInfo);
     draftTypes[Tab.All] = pagesToShow.length;
@@ -48,8 +59,8 @@ export default function usePages(pages: Page[]) {
     } else {
       const draftFieldName = draftField?.name || "draft";
       
-      draftTypes[Tab.Draft] = pagesToShow.filter(page => !!page[draftFieldName]).length;
-      draftTypes[Tab.Published] = pagesToShow.filter(page => !page[draftFieldName]).length;
+      draftTypes[Tab.Draft] = pagesToShow.filter(page => page[draftFieldName] === true || page[draftFieldName] === "true").length;
+      draftTypes[Tab.Published] = pagesToShow.filter(page => page[draftFieldName] === false || page[draftFieldName] === "false").length;
 
       if (tab === Tab.Published) {
         pagesToShow = searchedPages.filter(page => !page[draftFieldName]);

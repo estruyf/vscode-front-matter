@@ -98,7 +98,10 @@ export class Folders {
    * Register the new folder path
    * @param folder 
    */
-  public static async register(folder: Uri) {
+  public static async register(folderInfo: { title: string, path: Uri } | Uri) {
+    let folderName = folderInfo instanceof Uri ? undefined : folderInfo.title;
+    const folder = folderInfo instanceof Uri ? folderInfo : folderInfo.path;
+
     if (folder && folder.fsPath) {
       const wslPath = folder.fsPath.replace(/\//g, '\\');
 
@@ -111,11 +114,13 @@ export class Folders {
         return;
       }
 
-      const folderName = await window.showInputBox({  
-        prompt: `Which name would you like to specify for this folder?`,
-        placeHolder: `Folder name`,
-        value: basename(folder.fsPath)
-      });
+      if (!folderName) {
+        folderName = await window.showInputBox({  
+          prompt: `Which name would you like to specify for this folder?`,
+          placeHolder: `Folder name`,
+          value: basename(folder.fsPath)
+        });
+      }
 
       folders.push({
         title: folderName,
