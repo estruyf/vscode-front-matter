@@ -46,7 +46,7 @@ export default function useMessages() {
       case Command.mediaSelectionData:
         setMediaSelecting(message.data);
         break;
-      case GeneralCommands.setMode:
+      case GeneralCommands.toWebview.setMode:
         setMode(message.data);
         break;
     }

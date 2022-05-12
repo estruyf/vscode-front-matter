@@ -1,13 +1,14 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { Menu } from '@headlessui/react';
-import { ClipboardIcon, CodeIcon, DocumentIcon, EyeIcon, MusicNoteIcon, PencilIcon, PhotographIcon, PlusIcon, TrashIcon, VideoCameraIcon } from '@heroicons/react/outline';
+import { ClipboardIcon, CodeIcon, DocumentIcon, EyeIcon, MusicNoteIcon, PencilIcon, PhotographIcon, PlusIcon, TerminalIcon, TrashIcon, VideoCameraIcon } from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { CustomScript } from '../../../helpers/CustomScript';
 import { parseWinPath } from '../../../helpers/parseWinPath';
-import { ScriptType } from '../../../models';
+import { SnippetParser } from '../../../helpers/SnippetParser';
+import { ScriptType, Snippet } from '../../../models';
 import { MediaInfo } from '../../../models/MediaPaths';
 import { DashboardMessage } from '../../DashboardMessage';
 import { LightboxAtom, SelectedMediaFolderSelector, SettingsSelector, ViewDataSelector } from '../../state';
@@ -15,6 +16,7 @@ import { MenuItem, MenuItems } from '../Menu';
 import { ActionMenuButton } from '../Menu/ActionMenuButton';
 import { QuickAction } from '../Menu/QuickAction';
 import { Alert } from '../Modals/Alert';
+import { InfoDialog } from '../Modals/InfoDialog';
 import { DetailsSlideOver } from './DetailsSlideOver';
  
 export interface IItemProps {
@@ -25,6 +27,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   const [ , setLightbox ] = useRecoilState(LightboxAtom);
   const [ showAlert, setShowAlert ] = React.useState(false);
   const [ showForm, setShowForm ] = React.useState(false);
+  const [ showSnippetSelection, setShowSnippetSelection ] = React.useState(false);
   const [ showDetails, setShowDetails ] = React.useState(false);
   const [ caption, setCaption ] = React.useState(media.caption);
   const [ alt, setAlt ] = React.useState(media.alt);
@@ -32,6 +35,15 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   const settings = useRecoilValue(SettingsSelector);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const viewData = useRecoilValue(ViewDataSelector);
+
+  const mediaSnippets = useMemo(() => {
+    if (!settings?.snippets) {
+      return [];
+    }
+
+    const keys = Object.keys(settings.snippets);
+    return keys.filter(key => (settings.snippets || {})[key].isMediaSnippet).map(key => ({ title: key, ...(settings.snippets || {})[key]}));
+  }, [settings]);
 
   const getFolder = () => {
     if (settings?.wsFolder && media.fsPath) {
@@ -104,25 +116,39 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   };
 
   const insertSnippet = useCallback(() => {
-    const relPath = getRelPath();
-    let snippet = settings?.mediaSnippet.join("\n");
+    if (mediaSnippets.length === 1) {
+      processSnippet(mediaSnippets[0]);
+    } else {
+      // Show dialog to select
+      setShowSnippetSelection(true);
+    }
+  }, [mediaSnippets]);
 
-    snippet = snippet?.replace("{mediaUrl}", parseWinPath(relPath) || "");
-    snippet = snippet?.replace("{alt}", alt || "");
-    snippet = snippet?.replace("{caption}", caption || "");
-    snippet = snippet?.replace("{title}", media.title || "");
-    snippet = snippet?.replace("{filename}", basename(relPath || ""));
-    snippet = snippet?.replace("{mediaWidth}", media?.dimensions?.width?.toString() || "");
-    snippet = snippet?.replace("{mediaHeight}", media?.dimensions?.height?.toString() || "");
+  const processSnippet = useCallback((snippet: Snippet) => {
+    setShowSnippetSelection(false);
+
+    const relPath = getRelPath();
+
+    const fieldData = {
+      mediaUrl: parseWinPath(relPath) || "",
+      alt: alt || "",
+      caption: caption || "",
+      title: media.title || "",
+      filename: basename(relPath || ""),
+      mediaWidth: media?.dimensions?.width?.toString() || "",
+      mediaHeight: media?.dimensions?.height?.toString() || "",
+    };
+
+    const output = SnippetParser.render(snippet.body, fieldData, snippet?.openingTags, snippet?.closingTags);
 
     Messenger.send(DashboardMessage.insertMedia, {
       relPath: parseWinPath(relPath) || "",
       file: viewData?.data?.filePath,
       fieldName: viewData?.data?.fieldName,
       position: viewData?.data?.position || null,
-      snippet
+      snippet: output
     });
-  }, [alt, caption, media, settings, viewData]);
+  }, [alt, caption, media, settings, viewData, mediaSnippets]);
 
   const deleteMedia = () => {
     setShowAlert(true);
@@ -198,7 +224,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     return (settings?.scripts || []).filter(script => script.type === ScriptType.MediaFile).map(script => (
       <MenuItem 
         key={script.title}
-        title={script.title} 
+        title={<div className='flex items-center'><TerminalIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>{script.title}</span></div>} 
         onClick={() => runCustomScript(script)} />
     ))
   }
@@ -323,7 +349,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
                         </QuickAction>
 
                         {
-                          (viewData?.data?.position && settings?.mediaSnippet && settings?.mediaSnippet.length > 0) && (
+                          (viewData?.data?.position && mediaSnippets.length > 0) && (
                             <QuickAction 
                               title='Insert snippet'
                               onClick={insertSnippet}>
@@ -354,7 +380,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
 
                 <MenuItems widthClass='w-40'>
                   <MenuItem 
-                    title={`Edit metadata`}
+                    title={<div className='flex items-center'><PencilIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>Edit metadata</span></div>}
                     onClick={updateMetadata}
                     />
 
@@ -362,15 +388,16 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
                     viewData?.data?.filePath ? (
                       <>
                         <MenuItem 
-                          title={`Insert image markdown`}
+                          title={<div className='flex items-center'><PlusIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>Insert image markdown</span></div>}
                           onClick={insertToArticle} />
 
                         {
-                          (viewData?.data?.position && settings?.mediaSnippet && settings?.mediaSnippet.length > 0) && (
+                          (viewData?.data?.position && mediaSnippets.length > 0) && mediaSnippets.map((snippet, idx) => (
                             <MenuItem 
-                              title={`Insert snippet`}
-                              onClick={insertSnippet} />
-                          )
+                              key={idx}
+                              title={<div className='flex items-center'><CodeIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>{snippet.title}</span></div>}
+                              onClick={() => processSnippet(snippet)} />
+                          ))
                         }
 
                         { customScriptActions() }
@@ -387,11 +414,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
                   }
 
                   <MenuItem 
-                    title={`Reveal media`}
+                    title={<div className='flex items-center'><EyeIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>Reveal media</span></div>}
                     onClick={revealMedia} />
 
                   <MenuItem 
-                    title={`Delete`}
+                    title={<div className='flex items-center'><TrashIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>Delete</span></div>}
                     onClick={deleteMedia} />
                 </MenuItems>
               </Menu>
@@ -435,6 +462,32 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
           }
         </div>
       </li>
+
+      {
+        showSnippetSelection && (
+          <InfoDialog 
+            icon={<CodeIcon className="h-6 w-6" aria-hidden="true" />}
+            title='Insert snippet'
+            description='Select the media snippet to use for the current media file.'
+            dismiss={() => setShowSnippetSelection(false)}>
+            
+            <ul className='flex justify-center'>
+              {
+                mediaSnippets.map((snippet, idx) => (
+                  <li key={idx} className="inline-flex items-center pb-2 mr-2">
+                    <button
+                      className="w-full inline-flex justify-center border border-transparent shadow-sm px-4 py-2 bg-teal-600 text-base font-medium text-white hover:bg-teal-700 dark:hover:bg-teal-900 focus:outline-none sm:w-auto sm:text-sm disabled:opacity-30"
+                      onClick={() => processSnippet(snippet)}>
+                      {snippet.title}
+                    </button>
+                  </li>
+                ))
+              }
+            </ul>
+
+          </InfoDialog>
+        )
+      }
 
       {
         showDetails && (

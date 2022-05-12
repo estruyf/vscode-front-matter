@@ -35,7 +35,7 @@ export class ModeListener extends BaseListener {
     const activeMode = ModeSwitch.getMode();
     if (activeMode) {
       const mode = modes.find(m => m.id === activeMode);
-      this.sendMsg(GeneralCommands.setMode as any, mode);
+      this.sendMsg(GeneralCommands.toWebview.setMode as any, mode);
 
       // Check the commands that need to be enabled/disabled
       const snippetsView = mode?.features.find(f => f === FEATURE_FLAG.dashboard.snippets.view);
@@ -44,7 +44,7 @@ export class ModeListener extends BaseListener {
       await commands.executeCommand('setContext', CONTEXT.isSnippetsDashboardEnabled, !!snippetsView);
       await commands.executeCommand('setContext', CONTEXT.isDataDashboardEnabled, !!dataView);
     } else {
-      this.sendMsg(GeneralCommands.setMode as any, undefined);
+      this.sendMsg(GeneralCommands.toWebview.setMode as any, undefined);
 
       // Enable dashboards
       await this.resetEnablement();

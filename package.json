@@ -225,8 +225,7 @@
           "additionalProperties": {
             "type": "object",
             "required": [
-              "body",
-              "fields"
+              "body"
             ],
             "properties": {
               "body": {
@@ -255,6 +254,11 @@
                 "description": "The snippet closing tags.",
                 "type": "string",
                 "default": "]]"
+              },
+              "isMediaSnippet": {
+                "description": "Specify if the snippet is to be used for media files.",
+                "type": "boolean",
+                "default": false
               }
             },
             "additionalProperties": false
@@ -408,6 +412,7 @@
           "type": "array",
           "default": [],
           "markdownDescription": "Specify the a snippet for your custom media insert markup. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.mediasnippet)",
+          "deprecationMessage": "This setting is deprecated and will be removed in the next major version. Please define your media snippet in the `frontMatter.content.snippet` setting.",
           "items": {
             "type": "string",
             "description": "Use the `{mediaUrl}`, `{caption}`, `{alt}`, `{filename}`, `{mediaHeight}`, and `{mediaWidth}` placeholders in your snippet to automatically insert the media information."
@@ -1820,7 +1825,7 @@
   "devDependencies": {
     "@bendera/vscode-webview-elements": "0.6.2",
     "@estruyf/vscode": "0.0.3",
-    "@headlessui/react": "^1.5.0",
+    "@headlessui/react": "1.5.0",
     "@heroicons/react": "1.0.4",
     "@iarna/toml": "2.2.3",
     "@octokit/rest": "^18.12.0",

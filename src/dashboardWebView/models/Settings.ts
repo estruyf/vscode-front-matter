@@ -16,7 +16,6 @@ export interface Settings {
   openOnStart: boolean | null;
   versionInfo: VersionInfo;
   pageViewType: DashboardViewType | undefined;
-  mediaSnippet: string[];
   contentTypes: ContentType[];
   contentFolders: ContentFolder[];
   crntFramework: string;

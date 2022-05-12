@@ -4,6 +4,7 @@ import { Dashboard } from "../../commands/Dashboard";
 import { SETTING_CONTENT_SNIPPETS } from "../../constants";
 import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { Notifications, Settings } from "../../helpers";
+import { Snippet } from "../../models";
 import { BaseListener } from "./BaseListener";
 import { SettingsListener } from "./SettingsListener";
 
@@ -27,7 +28,7 @@ export class SnippetListener extends BaseListener {
   }
 
   private static async addSnippet(data: any) {
-    const { title, description, body, fields } = data;
+    const { title, description, body, fields, isMediaSnippet } = data;
 
     if (!title || !body) {
       Notifications.warning("Snippet missing title or body");
@@ -42,11 +43,18 @@ export class SnippetListener extends BaseListener {
 
     const snippetLines = body.split("\n");
 
-    snippets[title] = { 
+    const snippetContent: any = { 
       description, 
-      body: snippetLines.length === 1 ? snippetLines[0] : snippetLines,
-      fields: fields || []
+      body: snippetLines.length === 1 ? snippetLines[0] : snippetLines
     };
+
+    if (isMediaSnippet) {
+      snippetContent.isMediaSnippet = true;
+    } else {
+      snippetContent.fields = fields || []
+    }
+
+    snippets[title] = snippetContent;
     
     await Settings.update(SETTING_CONTENT_SNIPPETS, snippets, true);
     SettingsListener.getSettings();

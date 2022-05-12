@@ -25,6 +25,7 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (props: React.P
   const [ snippetDescription, setSnippetDescription ] = useState<string>('');
   const [ snippetBody, setSnippetBody ] = useState<string>('');
   const [ showCreateDialog, setShowCreateDialog ] = useState(false);
+  const [ mediaSnippet, setMediaSnippet ] = useState(false);
 
   const snippets = settings?.snippets || {};
   const snippetKeys = useMemo(() => Object.keys(snippets) || [], [settings?.snippets]);
@@ -41,11 +42,12 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (props: React.P
       title: snippetTitle,
       description: snippetDescription || '',
       body: snippetBody,
-      fields
+      fields,
+      isMediaSnippet: mediaSnippet
     });
 
     reset();
-  }, [snippetTitle, snippetDescription, snippetBody]);
+  }, [snippetTitle, snippetDescription, snippetBody, mediaSnippet]);
 
   const reset = () => {
     setShowCreateDialog(false);
@@ -127,6 +129,8 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (props: React.P
                 title={snippetTitle}
                 description={snippetDescription}
                 body={snippetBody}
+                isMediaSnippet={mediaSnippet}
+                onMediaSnippetUpdate={(value: boolean) => setMediaSnippet(value)}
                 onTitleUpdate={(value: string) => setSnippetTitle(value)}
                 onDescriptionUpdate={(value: string) => setSnippetDescription(value)}
                 onBodyUpdate={(value: string) => setSnippetBody(value)} />

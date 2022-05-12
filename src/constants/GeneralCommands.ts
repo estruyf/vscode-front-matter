@@ -1,5 +1,10 @@
 
 
-export enum GeneralCommands{
-  setMode = "setMode"
+export const GeneralCommands = {
+  toWebview: {
+    setMode: "setMode",
+  },
+  toVSCode: {
+    openLink: "openLink",
+  }
 };
