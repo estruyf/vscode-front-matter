@@ -1,5 +1,5 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { CodeIcon, DotsHorizontalIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/outline';
+import { CodeIcon, DocumentTextIcon, DotsHorizontalIcon, PencilIcon, PhotographIcon, PlusIcon, TrashIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
@@ -7,6 +7,7 @@ import { FeatureFlag } from '../../../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../../../constants';
 import { SnippetParser } from '../../../helpers/SnippetParser';
 import { Snippet, Snippets } from '../../../models';
+import { FileIcon } from '../../../panelWebView/components/Icons/FileIcon';
 import { DashboardMessage } from '../../DashboardMessage';
 import { ModeAtom, SettingsSelector, ViewDataSelector } from '../../state';
 import { QuickAction } from '../Menu';
@@ -112,7 +113,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({ title, snippet }: Re
           <CodeIcon className='w-64 h-64 opacity-5 text-vulcan-200 dark:text-gray-400' />
         </div>
 
-        <h2 className="mt-2 mb-2 font-bold">{title}</h2>
+        <h2 className="mt-2 mb-2 font-bold flex items-center" title={snippet.isMediaSnippet ? "Media snippet" : "Content snippet"}>
+          { snippet.isMediaSnippet ? <PhotographIcon className='w-5 h-5 mr-1' aria-hidden={true} /> : <DocumentTextIcon className='w-5 h-5 mr-1' aria-hidden={true} /> }
+          
+          {title}
+        </h2>
 
         <FeatureFlag 
           features={mode?.features || []} 
