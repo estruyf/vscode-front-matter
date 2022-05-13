@@ -33,8 +33,15 @@ export default function usePages(pages: Page[]) {
     // Framework specific actions
     if (framework?.toLowerCase() === "jekyll") {
       pagesToShow = pagesToShow.map(page => {
+        // https://jekyllrb.com/docs/posts/#drafts
         const filePath = parseWinPath(page.fmFilePath);
         page.draft = filePath.indexOf(`/_drafts/`) > -1;
+
+        // Published field: https://jekyllrb.com/docs/front-matter/#predefined-global-variables
+        if (typeof page.published !== "undefined") {
+          page.draft = !page.published;
+        }
+
         return page;
       });
     }
