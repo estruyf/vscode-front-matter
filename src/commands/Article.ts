@@ -69,7 +69,8 @@ export class Article {
 
     const selectedOptions = await vscode.window.showQuickPick(options, {
       placeHolder: `Select your ${type === TaxonomyType.Tag ? "tags" : "categories"} to insert`,
-      canPickMany: true
+      canPickMany: true,
+      ignoreFocusOut: true
     });
 
     if (selectedOptions) {

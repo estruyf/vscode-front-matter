@@ -59,8 +59,8 @@ export class Wysiwyg {
 
       const option = await window.showQuickPick([ ...qpItems ], {  
         placeHolder: "Which type of markup would you like to insert?", 
-        canPickMany: false, 
-        ignoreFocusOut: false,
+        canPickMany: false,
+        ignoreFocusOut: true
       });
 
       if (option) {
@@ -161,8 +161,8 @@ export class Wysiwyg {
           "Heading 6"
         ], {  
           canPickMany: false, 
-          placeHolder: "Which heading level do you want to insert?", 
-          ignoreFocusOut: false 
+          placeHolder: "Which heading level do you want to insert?",
+          ignoreFocusOut: true
         });
 
         if (headingLvl) {

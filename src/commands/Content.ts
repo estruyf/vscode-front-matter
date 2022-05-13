@@ -15,7 +15,8 @@ export class Content {
 
     const selectedOption = await window.showQuickPick(options, {
       placeHolder: `Select how you want to create your new content`,
-      canPickMany: false
+      canPickMany: false,
+      ignoreFocusOut: true
     });
 
     if (selectedOption) {

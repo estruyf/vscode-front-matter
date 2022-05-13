@@ -11,7 +11,7 @@ export class Questions {
    * @returns 
    */
   public static async yesOrNo(placeholder: string) {
-    const answer = await window.showQuickPick(["yes", "no"], {  canPickMany: false, placeHolder: placeholder, ignoreFocusOut: false });
+    const answer = await window.showQuickPick(["yes", "no"], { canPickMany: false, placeHolder: placeholder, ignoreFocusOut: true });
     return answer === "yes";
   }
 
@@ -23,7 +23,8 @@ export class Questions {
   public static async ContentTitle(showWarning: boolean = true): Promise<string | undefined> {
     const title = await window.showInputBox({  
       prompt: `What would you like to use as a title for the content to create?`,
-      placeHolder: `Content title`
+      placeHolder: `Content title`,
+      ignoreFocusOut: true
     });
 
     if (!title && showWarning) {
@@ -82,7 +83,8 @@ export class Questions {
 
     const selectedOption = await window.showQuickPick(options, {
       placeHolder: `Select the content type to create your new content`,
-      canPickMany: false
+      canPickMany: false,
+      ignoreFocusOut: true
     });
 
     if (!selectedOption && showWarning) {

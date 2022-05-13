@@ -118,7 +118,8 @@ export class Folders {
         folderName = await window.showInputBox({  
           prompt: `Which name would you like to specify for this folder?`,
           placeHolder: `Folder name`,
-          value: basename(folder.fsPath)
+          value: basename(folder.fsPath),
+          ignoreFocusOut: true
         });
       }
 
