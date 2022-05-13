@@ -64,15 +64,19 @@ export default function usePages(pages: Page[]) {
         pagesToShow = searchedPages;
       }
     } else {
+      // Draft field is a boolean field
       const draftFieldName = draftField?.name || "draft";
+
+      const drafts = pagesToShow.filter(page => page[draftFieldName] == true || page[draftFieldName] === "true");
+      const published = pagesToShow.filter(page => page[draftFieldName] == false || page[draftFieldName] === "false" || typeof page[draftFieldName] === "undefined");
       
-      draftTypes[Tab.Draft] = pagesToShow.filter(page => page[draftFieldName] === true || page[draftFieldName] === "true").length;
-      draftTypes[Tab.Published] = pagesToShow.filter(page => page[draftFieldName] === false || page[draftFieldName] === "false").length;
+      draftTypes[Tab.Draft] = draftField?.invert ? published.length : drafts.length;
+      draftTypes[Tab.Published] = draftField?.invert ? drafts.length : published.length;
 
       if (tab === Tab.Published) {
-        pagesToShow = searchedPages.filter(page => !page[draftFieldName]);
+        pagesToShow = draftField?.invert ? drafts : published;
       } else if (tab === Tab.Draft) {
-        pagesToShow = searchedPages.filter(page => !!page[draftFieldName]);
+        pagesToShow = draftField?.invert ? published : drafts;
       } else {
         pagesToShow = searchedPages;
       }

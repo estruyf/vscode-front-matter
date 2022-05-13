@@ -9,14 +9,16 @@ import { Status } from '../Status';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardViewType } from '../../models';
 import { ContentActions } from './ContentActions';
+import { useMemo } from 'react';
 
 export interface IItemProps extends Page {}
 
 const PREVIEW_IMAGE_FIELD = 'fmPreviewImage';
 
-export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, title, draft, description, type, ...pageData }: React.PropsWithChildren<IItemProps>) => {
+export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, title, description, type, ...pageData }: React.PropsWithChildren<IItemProps>) => {
   const view = useRecoilValue(ViewSelector);
   const settings = useRecoilValue(SettingsSelector);
+  const draftField = useMemo(() => settings?.draftField, [settings]);
   
   const openFile = () => {
     Messenger.send(DashboardMessage.openFile, fmFilePath);
@@ -51,7 +53,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
 
           <div className="relative p-4 w-full">
             <div className={`flex justify-between items-center`}>
-              <Status draft={draft} />
+              {  draftField && draftField.name && <Status draft={pageData[draftField.name]} /> }
 
               <DateField className={`mr-4`} value={date} />
 
@@ -96,7 +98,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
             <DateField value={date} />
           </div>
           <div className="col-span-2">
-            <Status draft={draft} />
+            { draftField && draftField.name && <Status draft={pageData[draftField.name]} /> }
           </div>
         </button>
       </li>

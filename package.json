@@ -137,6 +137,10 @@
               "type": "string",
               "description": "Name of the field to use"
             },
+            "invert": {
+              "type": "boolean",
+              "description": "By default the draft field is set to true when the content is a draft. Set this to true to set it to false."
+            },
             "choices": {
               "type": "array",
               "description": "List of choices for the field",
