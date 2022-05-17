@@ -238,7 +238,7 @@ export class Settings {
                   data[matterProp] = [...new Set(taxonomies)].sort();
                   const spaces = vscode.window.activeTextEditor?.options?.tabSize;
                   // Update the file
-                  fs.writeFileSync(file.path, FrontMatterParser.toFile(article.content, article.data, {
+                  fs.writeFileSync(file.path, FrontMatterParser.toFile(article.content, article.data, mdFile, {
                     indent: spaces || 2
                   } as DumpOptions as any), { encoding: "utf8" });
                 }

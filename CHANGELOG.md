@@ -9,6 +9,7 @@
 - [#333](https://github.com/estruyf/vscode-front-matter/issues/333): Automatically mark Jekyll posts in `_drafts` folder as draft
 - [#335](https://github.com/estruyf/vscode-front-matter/issues/335): Merge media snippets with content snippets to allow you to define multiple media snippets and use these in your content
 - [#336](https://github.com/estruyf/vscode-front-matter/issues/336): Support added for inverting the draft field so that SSGs/authors can use a published field instead
+- [#337](https://github.com/estruyf/vscode-front-matter/issues/337): Allow multiple front matter types to be used.
 
 ### ⚡️ Optimizations
 
