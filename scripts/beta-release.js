@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const core = require('@actions/core');
 
 const packageJson = require('../package.json');
 const version = packageJson.version.split('.');
@@ -13,6 +14,8 @@ packageJson.icon = "assets/frontmatter-beta.png";
 packageJson.homepage = "https://beta.frontmatter.codes";
 
 console.log(packageJson.version);
+
+core.summary.addHeading(`Version info`).addDetails(`${packageJson.version}`);
 
 const scripts = packageJson.scripts;
 for (const key in scripts) {

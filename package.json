@@ -1877,6 +1877,7 @@
     "start:site": "cd ./docs && npm run dev"
   },
   "devDependencies": {
+    "@actions/core": "^1.8.2",
     "@bendera/vscode-webview-elements": "0.6.2",
     "@estruyf/vscode": "0.0.3",
     "@headlessui/react": "1.5.0",
