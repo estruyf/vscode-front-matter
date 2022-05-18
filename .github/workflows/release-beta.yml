@@ -29,6 +29,3 @@ jobs:
       - name: Publish to open-vsx.org
         run: npx ovsx publish -p ${{ secrets.OPEN_VSX_PAT }}
 
-      - name: Write version to summary
-        run: echo "{{ env.GITHUB_RUN_ID }}" > .summary
-
