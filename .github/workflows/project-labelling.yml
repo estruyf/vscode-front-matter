@@ -1,0 +1,27 @@
+name: Project labelling
+
+on:
+  project_card:
+    types: [created, moved, deleted]
+
+jobs:
+  automate-issues-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch project data
+        run: |
+          echo 'PROJECT_DATA<<EOF' >> $GITHUB_ENV
+          curl --request GET --url '${{ github.event.project_card.project_url }}' --header 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+
+      - name: Add the project label
+        uses: andymckay/labeler@master
+        if: ${{ contains(github.event.action, 'created') || contains(github.event.action, 'moved') }}
+        with:
+          add-labels: "Project: ${{ fromJSON(env.PROJECT_DATA).name }}"
+
+      - name: Remove the project label
+        uses: andymckay/labeler@master
+        if: ${{ contains(github.event.action, 'deleted') }}
+        with:
+          remove-labels: "Project: ${{ fromJSON(env.PROJECT_DATA).name }}"
