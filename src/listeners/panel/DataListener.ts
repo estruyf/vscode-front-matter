@@ -1,3 +1,4 @@
+import { DataFileHelper } from './../../helpers/DataFileHelper';
 import { BlockFieldData } from './../../models/BlockFieldData';
 import { ImageHelper } from './../../helpers/ImageHelper';
 import { Folders } from "../../commands/Folders";
@@ -45,10 +46,16 @@ export class DataListener extends BaseListener {
         break;
       case CommandToCode.generateContentType:
         commands.executeCommand(COMMAND_NAME.generateContentType);
+        break;
       case CommandToCode.addMissingFields:
         commands.executeCommand(COMMAND_NAME.addMissingFields);
+        break;
       case CommandToCode.setContentType:
         commands.executeCommand(COMMAND_NAME.setContentType);
+        break;
+      case CommandToCode.getDataEntries:
+        this.getDataFileEntries(msg.data);
+        break;
     }
   }
 
@@ -101,7 +108,7 @@ export class DataListener extends BaseListener {
       // Get the current content type
       const contentType = ArticleHelper.getContentType(updatedMetadata);
       if (contentType) {
-        ImageHelper.processImageFields(updatedMetadata, contentType.fields)
+        ImageHelper.processImageFields(updatedMetadata, contentType.fields);
       }
     }
 
@@ -275,6 +282,17 @@ export class DataListener extends BaseListener {
     const article = ArticleHelper.getFrontMatter(editor);
     if (article?.data) {
       this.pushMetadata(article!.data);
+    }
+  }
+
+  /**
+   * Retrieve the data entries from local data files
+   * @param data 
+   */
+  private static async getDataFileEntries(data: any) {
+    const entries = await DataFileHelper.getById(data);
+    if (entries) {
+      this.sendMsg(Command.dataFileEntries, entries);
     }
   }
 

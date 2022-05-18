@@ -1,9 +1,9 @@
 
 
+import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { DateHelper } from '../../../helpers/DateHelper';
-import { MessageHelper } from '../../../helpers/MessageHelper';
 import { BlockFieldData, Field, PanelSettings } from '../../../models';
 import { Command } from '../../Command';
 import { CommandToCode } from '../../CommandToCode';
@@ -17,6 +17,7 @@ import { IMetadata } from '../Metadata';
 import { TagPicker } from '../TagPicker';
 import { VsLabel } from '../VscodeComponents';
 import { ChoiceField } from './ChoiceField';
+import { DataFileField } from './DataFileField';
 import { DateTimeField } from './DateTimeField';
 import { DraftField } from './DraftField';
 import { FileField } from './FileField';
@@ -98,7 +99,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
     // Check if the field value contains a placeholder
     if (value && typeof value === "string" && value.includes(`{{`) && value.includes(`}}`)) {
       window.addEventListener('message', listener);
-      MessageHelper.sendMessage(CommandToCode.updatePlaceholder, {
+      Messenger.send(CommandToCode.updatePlaceholder, {
         field: field.name,
         title: metadata["title"],
         value
@@ -344,6 +345,19 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           filePath={metadata.filePath as string}
           parentBlock={parentBlock}
           onSubmit={(value) => onSendUpdate(field.name, value, parentFields)} />
+      </FieldBoundary>
+    );
+  } else if (field.type === 'dataFile') {
+    return (
+      <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+        <DataFileField
+          label={field.title || field.name}
+          dataFileId={field.dataFileId}
+          dataFileKey={field.dataFileKey}
+          dataFileValue={field.dataFileValue}
+          selected={fieldValue as string}
+          multiSelect={field.multiple}
+          onChange={(value => onSendUpdate(field.name, value, parentFields))} />
       </FieldBoundary>
     );
   } else {

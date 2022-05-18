@@ -454,7 +454,8 @@
               },
               "file": {
                 "type": "string",
-                "description": "Path to the file to load. Only JSON or YAML files are supported."
+                "description": "Path to the file to load. Only JSON or YAML files are supported.",
+                "default": "[[workspace]]/"
               },
               "fileType": {
                 "type": "string",
@@ -466,10 +467,38 @@
                 "description": "Defines how you want to parse the file. JSON is the default."
               },
               "schema": {
+                "$id": "#dataFileSchema",
                 "type": "object",
                 "default": {},
                 "description": "The JSON schema for your data which will be used to render the data form.",
-                "additionalProperties": true
+                "additionalProperties": true,
+                "required": [
+                  "type",
+                  "properties"
+                ],
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "Title of the form."
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "Defines the type of the form. Default is 'object'.",
+                    "default": "object"
+                  },
+                  "required": {
+                    "type": "array",
+                    "description": "Defines the required fields for the form.",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "description": "Defines the fields of the form.",
+                    "additionalProperties": true
+                  }
+                }
               },
               "type": {
                 "type": "string",
@@ -516,13 +545,11 @@
               },
               "path": {
                 "type": "string",
-                "description": "Path to the folder to load files."
+                "description": "Path to the folder to load files.",
+                "default": "[[workspace]]/"
               },
               "schema": {
-                "type": "object",
-                "default": {},
-                "description": "The JSON schema for your data which will be used to render the data form.",
-                "additionalProperties": true
+                "$ref": "#dataFileSchema"
               },
               "type": {
                 "type": "string",
@@ -563,10 +590,7 @@
                 "description": "Your unique ID you want to use for your data type."
               },
               "schema": {
-                "type": "object",
-                "default": {},
-                "description": "The JSON schema for your data which will be used to render the data form.",
-                "additionalProperties": true
+                "$ref": "#dataFileSchema"
               }
             },
             "required": [
@@ -781,7 +805,8 @@
                         "draft",
                         "fields",
                         "json",
-                        "block"
+                        "block",
+                        "dataFile"
                       ],
                       "description": "Define the type of field"
                     },
@@ -903,6 +928,16 @@
                       "type": "boolean",
                       "default": false,
                       "description": "Specify if the field is the modified date field"
+                    },
+                    "dataFileId": {
+                      "type": "string",
+                      "default": "",
+                      "description": "Specify the ID of the data file to use for this field"
+                    },
+                    "dataFileKey": {
+                      "type": "string",
+                      "default": "",
+                      "description": "Specify the key of the data file to use for this field"
                     }
                   },
                   "additionalProperties": false,
@@ -911,6 +946,21 @@
                     "name"
                   ],
                   "allOf": [
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "dataFile"
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "dataFileId",
+                          "dataFileKey"
+                        ]
+                      }
+                    },
                     {
                       "if": {
                         "properties": {
