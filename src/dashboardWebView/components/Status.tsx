@@ -20,8 +20,6 @@ export const Status: React.FunctionComponent<IStatusProps> = ({draft}: React.Pro
     }
   }, [draftField]);
 
-  console.log('draftField', draftField, draft, draftValue);
-
   if (settings?.draftField && settings.draftField.type === "choice") {
     if (draftValue) {
       return <span className={`inline-block px-2 py-1 leading-none rounded-sm font-semibold uppercase tracking-wide text-xs text-whisper-200 dark:text-vulcan-500 bg-teal-500`}>{draftValue}</span>;
