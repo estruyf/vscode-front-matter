@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { PanelSettings } from '../../models';
 import { CommandToCode } from '../CommandToCode';
-import { MessageHelper } from '../../helpers/MessageHelper';
 import { Collapsible } from './Collapsible';
 import { BugIcon } from './Icons/BugIcon';
 import { CenterIcon } from './Icons/CenterIcon';
@@ -12,6 +11,7 @@ import { TemplateIcon } from './Icons/TemplateIcon';
 import { WritingIcon } from './Icons/WritingIcon';
 import { OtherActionButton } from './OtherActionButton';
 import { ISSUE_LINK } from '../../constants/Links';
+import { Messenger } from '@estruyf/vscode/dist/client';
 
 export interface IOtherActionsProps {
   isFile: boolean;
@@ -22,23 +22,23 @@ export interface IOtherActionsProps {
 const OtherActions: React.FunctionComponent<IOtherActionsProps> = ({isFile, settings, isBase}: React.PropsWithChildren<IOtherActionsProps>) => {
 
   const openSettings = () => {
-    MessageHelper.sendMessage(CommandToCode.openSettings);
+    Messenger.send(CommandToCode.openSettings);
   };
   
   const openFile = () => {
-    MessageHelper.sendMessage(CommandToCode.openFile);
+    Messenger.send(CommandToCode.openFile);
   };
   
   const openProject = () => {
-    MessageHelper.sendMessage(CommandToCode.openProject);
+    Messenger.send(CommandToCode.openProject);
   };
   
   const createAsTemplate = () => {
-    MessageHelper.sendMessage(CommandToCode.createTemplate);
+    Messenger.send(CommandToCode.createTemplate);
   };
   
   const toggleWritingSettings = () => {
-    MessageHelper.sendMessage(CommandToCode.toggleWritingSettings);
+    Messenger.send(CommandToCode.toggleWritingSettings);
   };
   
   return (
@@ -46,7 +46,7 @@ const OtherActions: React.FunctionComponent<IOtherActionsProps> = ({isFile, sett
       <Collapsible id={`${isBase ? "base_" : ""}other_actions`} title="Other actions" className={`other_actions`}>
         <OtherActionButton className={settings?.writingSettingsEnabled ? "active" : ""} onClick={toggleWritingSettings} disabled={typeof settings?.writingSettingsEnabled === "undefined"}><WritingIcon /> <span>{settings?.writingSettingsEnabled ? "Writing settings enabled" : "Enable writing settings"}</span></OtherActionButton>
 
-        <OtherActionButton onClick={() => MessageHelper.sendMessage(CommandToCode.toggleCenterMode)}>
+        <OtherActionButton onClick={() => Messenger.send(CommandToCode.toggleCenterMode)}>
           <CenterIcon /> <span>Toggle center mode</span>
         </OtherActionButton>
 

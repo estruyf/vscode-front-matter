@@ -1,7 +1,7 @@
+import { Messenger } from '@estruyf/vscode/dist/client';
 import { VSCodeButton, VSCodeDivider } from '@vscode/webview-ui-toolkit/react';
 import * as React from 'react';
 import { useMemo } from 'react';
-import { MessageHelper } from '../../../helpers/MessageHelper';
 import { Field } from '../../../models';
 import { CommandToCode } from '../../CommandToCode';
 import { IMetadata } from '../Metadata';
@@ -30,15 +30,15 @@ export const ContentTypeValidator: React.FunctionComponent<IContentTypeValidator
 
 
   const generateContentType = () => {
-    MessageHelper.sendMessage(CommandToCode.generateContentType);
+    Messenger.send(CommandToCode.generateContentType);
   };
 
   const addMissingFields = () => {
-    MessageHelper.sendMessage(CommandToCode.addMissingFields);
+    Messenger.send(CommandToCode.addMissingFields);
   };
 
   const setContentType = () => {
-    MessageHelper.sendMessage(CommandToCode.setContentType);
+    Messenger.send(CommandToCode.setContentType);
   };
 
 

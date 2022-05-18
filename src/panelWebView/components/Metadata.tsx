@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { BlockFieldData, Field, PanelSettings } from '../../models';
 import { CommandToCode } from '../CommandToCode';
-import { MessageHelper } from '../../helpers/MessageHelper';
 import { TagType } from '../TagType';
 import { Collapsible } from './Collapsible';
 import "react-datepicker/dist/react-datepicker.css";
@@ -10,6 +9,7 @@ import { WrapperField } from './Fields/WrapperField';
 import { ContentTypeValidator } from './ContentType/ContentTypeValidator';
 import { FeatureFlag } from '../../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../../constants';
+import { Messenger } from '@estruyf/vscode/dist/client';
 
 export interface IMetadata {
   [prop: string]: string[] | string | null | IMetadata;
@@ -30,7 +30,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, features, 
       return;
     }
 
-    MessageHelper.sendMessage(CommandToCode.updateMetadata, {
+    Messenger.send(CommandToCode.updateMetadata, {
       field,
       parents,
       value

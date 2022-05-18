@@ -1,7 +1,7 @@
+import { Messenger } from '@estruyf/vscode/dist/client';
 import {PhotographIcon} from '@heroicons/react/outline';
 import * as React from 'react';
 import { useCallback } from 'react';
-import { MessageHelper } from '../../../helpers/MessageHelper';
 import { BlockFieldData } from '../../../models';
 import { CommandToCode } from '../../CommandToCode';
 import { VsLabel } from '../VscodeComponents';
@@ -35,7 +35,7 @@ export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps>
 }: React.PropsWithChildren<IPreviewImageFieldProps>) => {
 
   const selectImage = useCallback(() => {
-    MessageHelper.sendMessage(CommandToCode.selectImage, { 
+    Messenger.send(CommandToCode.selectImage, { 
       filePath: filePath,
       fieldName,
       value,

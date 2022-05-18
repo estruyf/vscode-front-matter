@@ -1,5 +1,5 @@
+import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
-import { MessageHelper } from '../../helpers/MessageHelper';
 import { CommandToCode } from '../CommandToCode';
 import { ActionButton } from './ActionButton';
 
@@ -8,7 +8,7 @@ export interface ISlugActionProps {}
 const SlugAction: React.FunctionComponent<ISlugActionProps> = ({}: React.PropsWithChildren<ISlugActionProps>) => {
 
   const optimize = () => {
-    MessageHelper.sendMessage(CommandToCode.updateSlug);
+    Messenger.send(CommandToCode.updateSlug);
   };
 
   return (

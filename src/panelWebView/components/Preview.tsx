@@ -1,5 +1,5 @@
+import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
-import { MessageHelper } from '../../helpers/MessageHelper';
 import { CommandToCode } from '../CommandToCode';
 import { ActionButton } from './ActionButton';
 
@@ -10,7 +10,7 @@ export interface IPreviewProps {
 const Preview: React.FunctionComponent<IPreviewProps> = ({slug}: React.PropsWithChildren<IPreviewProps>) => {
 
   const open = () => {
-    MessageHelper.sendMessage(CommandToCode.openPreview);
+    Messenger.send(CommandToCode.openPreview);
   };
 
   if (!slug) {

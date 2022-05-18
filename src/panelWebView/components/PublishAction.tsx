@@ -1,7 +1,7 @@
 
 
+import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
-import { MessageHelper } from '../../helpers/MessageHelper';
 import { CommandToCode } from '../CommandToCode';
 import { ActionButton } from './ActionButton';
 
@@ -13,7 +13,7 @@ const PublishAction: React.FunctionComponent<IPublishActionProps> = (props: Reac
   const { draft } = props;
 
   const publish = () => {
-    MessageHelper.sendMessage(CommandToCode.publish);
+    Messenger.send(CommandToCode.publish);
   };
 
   return (

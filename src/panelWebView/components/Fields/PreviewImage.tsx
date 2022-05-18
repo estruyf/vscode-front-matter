@@ -1,6 +1,6 @@
+import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { MessageHelper } from '../../../helpers/MessageHelper';
 import { Command } from '../../Command';
 import { CommandToCode } from '../../CommandToCode';
 import { ImageFallback } from './ImageFallback';
@@ -29,7 +29,7 @@ export const PreviewImage: React.FunctionComponent<IPreviewImageProps> = ({ valu
     if (value?.webviewUrl) {
       setImgUrl(value.webviewUrl);
     } else {
-      MessageHelper.sendMessage(CommandToCode.getImageUrl, value)
+      Messenger.send(CommandToCode.getImageUrl, value)
     }
   }, [value]);
 

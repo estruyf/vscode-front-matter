@@ -1,7 +1,7 @@
+import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { useMemo } from 'react';
 import { DEFAULT_FILE_TYPES } from '../../constants/DefaultFileTypes';
-import { MessageHelper } from '../../helpers/MessageHelper';
 import { CommandToCode } from '../CommandToCode';
 import { FileIcon } from './Icons/FileIcon';
 import { MarkdownIcon } from './Icons/MarkdownIcon';
@@ -15,7 +15,7 @@ export interface IFileItemProps {
 const FileItem: React.FunctionComponent<IFileItemProps> = ({ name, folderName, path }: React.PropsWithChildren<IFileItemProps>) => {
 
   const openFile = () => {
-    MessageHelper.sendMessage(CommandToCode.openInEditor, path);
+    Messenger.send(CommandToCode.openInEditor, path);
   };
 
   const itemName = useMemo(() => {
