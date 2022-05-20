@@ -11,11 +11,13 @@
 - [#333](https://github.com/estruyf/vscode-front-matter/issues/333): Automatically mark Jekyll posts in `_drafts` folder as draft
 - [#335](https://github.com/estruyf/vscode-front-matter/issues/335): Merge media snippets with content snippets to allow you to define multiple media snippets and use these in your content
 - [#336](https://github.com/estruyf/vscode-front-matter/issues/336): Support added for inverting the draft field so that SSGs/authors can use a published field instead
-- [#337](https://github.com/estruyf/vscode-front-matter/issues/337): Allow multiple front matter types to be used.
+- [#337](https://github.com/estruyf/vscode-front-matter/issues/337): Allow multiple front matter types to be used
+- [#338](https://github.com/estruyf/vscode-front-matter/issues/338): Ability to disable the templates functionality (default is disabled)
 
 ### 🐞 Fixes
 
 - [#334](https://github.com/estruyf/vscode-front-matter/issues/334): Fix for locked content folders retrieval
+- [#339](https://github.com/estruyf/vscode-front-matter/issues/339): Fix for content folders without a title
 
 
 ## [7.2.0] - 2022-05-02 - [Release notes](https://beta.frontmatter.codes/updates/v7.2.0)

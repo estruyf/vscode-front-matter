@@ -293,11 +293,17 @@ export class Folders {
   public static get(): ContentFolder[] {
     const wsFolder = Folders.getWorkspaceFolder();
     const folders: ContentFolder[] = Settings.get(SETTING_CONTENT_PAGE_FOLDERS) as ContentFolder[];
-    
-    return folders.map(folder => ({
-      ...folder,
-      path: Folders.absWsFolder(folder, wsFolder)
-    }));
+
+    return folders.map(folder => {
+      if (!folder.title) {
+        folder.title = basename(folder.path);
+      }
+
+      return {
+        ...folder,
+        path: Folders.absWsFolder(folder, wsFolder)
+      }
+    });
   }
   
   /**
