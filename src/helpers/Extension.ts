@@ -1,7 +1,8 @@
 import { basename } from "path";
 import { extensions, Uri, ExtensionContext, window, workspace, commands, ExtensionMode, DiagnosticCollection, languages } from "vscode";
 import { Folders } from "../commands/Folders";
-import { EXTENSION_NAME, GITHUB_LINK, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, EXTENSION_BETA_ID, EXTENSION_ID, ExtensionState, CONFIG_KEY, SETTING_CONTENT_PAGE_FOLDERS, SETTING_DASHBOARD_MEDIA_SNIPPET, SETTING_CONTENT_SNIPPETS } from "../constants";
+import { Template } from "../commands/Template";
+import { EXTENSION_NAME, GITHUB_LINK, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, EXTENSION_BETA_ID, EXTENSION_ID, ExtensionState, CONFIG_KEY, SETTING_CONTENT_PAGE_FOLDERS, SETTING_DASHBOARD_MEDIA_SNIPPET, SETTING_CONTENT_SNIPPETS, SETTING_TEMPLATES_ENABLED } from "../constants";
 import { ContentFolder, Snippet } from "../models";
 import { Notifications } from "./Notifications";
 import { Settings } from "./SettingsHelper";
@@ -211,6 +212,17 @@ export class Extension {
         }
 
         await Settings.update(SETTING_CONTENT_SNIPPETS, snippets, true);
+      }
+
+      const templates = await Template.getTemplates();
+      if (templates && templates.length > 0) {
+        const answer = await window.showQuickPick(["Yes", "No"], {
+          title: "Front Matter - Templates",
+          placeHolder: "Do you want to keep on using the template functionality?",
+          ignoreFocusOut: true
+        });
+
+        Settings.update(SETTING_TEMPLATES_ENABLED, answer?.toLocaleLowerCase() === "yes", true);
       }
     }
   }

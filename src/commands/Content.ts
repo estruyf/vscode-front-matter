@@ -1,9 +1,14 @@
 import { commands, QuickPickItem, window } from 'vscode'; 
-import { COMMAND_NAME } from '../constants';
+import { COMMAND_NAME, SETTING_TEMPLATES_ENABLED } from '../constants';
+import { Settings } from '../helpers';
 
 export class Content {
 
   public static async create() {
+    const templatesEnabled = await Settings.get(SETTING_TEMPLATES_ENABLED);
+    if (!templatesEnabled) {
+      commands.executeCommand(COMMAND_NAME.createByContentType);
+    }
 
     const options: QuickPickItem[] = [{
       label: "Create content by content type",
