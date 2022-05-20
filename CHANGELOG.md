@@ -13,6 +13,7 @@
 - [#336](https://github.com/estruyf/vscode-front-matter/issues/336): Support added for inverting the draft field so that SSGs/authors can use a published field instead
 - [#337](https://github.com/estruyf/vscode-front-matter/issues/337): Allow multiple front matter types to be used
 - [#338](https://github.com/estruyf/vscode-front-matter/issues/338): Ability to disable the templates functionality (default is disabled)
+- [#340](https://github.com/estruyf/vscode-front-matter/issues/340): Show an error message when there is a content folder registered that does not exist in the project
 
 ### 🐞 Fixes
 

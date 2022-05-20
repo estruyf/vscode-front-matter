@@ -294,16 +294,29 @@ export class Folders {
     const wsFolder = Folders.getWorkspaceFolder();
     const folders: ContentFolder[] = Settings.get(SETTING_CONTENT_PAGE_FOLDERS) as ContentFolder[];
 
-    return folders.map(folder => {
+    const contentFolders = folders.map(folder => {
       if (!folder.title) {
         folder.title = basename(folder.path);
       }
 
+      let folderPath = Folders.absWsFolder(folder, wsFolder);
+      if (!existsSync(folderPath)) {
+        Notifications.errorShowOnce(`Folder "${folder.title} (${folder.path})" does not exist. Please remove it from the settings.`, "Remove folder").then(answer => {
+          if (answer === "Remove folder") {
+            let folders = Folders.get();
+            Folders.update(folders.filter(f => f.path !== folder.path));
+          }
+        });
+        return null;
+      }
+
       return {
         ...folder,
-        path: Folders.absWsFolder(folder, wsFolder)
+        path: folderPath
       }
-    });
+    })
+    
+    return contentFolders.filter(folder => folder !== null) as ContentFolder[];
   }
   
   /**
