@@ -5,7 +5,6 @@
 ### 🎨 Enhancements
 
 - JSON schema enhancements for working with data files
-- Remove template creation from project initialization
 - [#330](https://github.com/estruyf/vscode-front-matter/issues/330): Allow custom scripts to easily update front matter
 - [#331](https://github.com/estruyf/vscode-front-matter/issues/331): Added functionality to run other type of scripts
 - [#332](https://github.com/estruyf/vscode-front-matter/issues/332): New `dataFile` field which allows you to create data file references

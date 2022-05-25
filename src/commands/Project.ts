@@ -36,25 +36,7 @@ categories: []
       Settings.createTeamSettings();
 
       if (sampleTemplate !== undefined) {
-        const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
-
-        const folder = Template.getSettings();
-        const templatePath = Project.templatePath();
-
-        if (!folder || !templatePath) {
-          return;
-        }
-        
-        const article = Uri.file(join(templatePath.fsPath, `article.${fileType}`));
-
-        if (!fs.existsSync(templatePath.fsPath)) {
-          await workspace.fs.createDirectory(templatePath);
-        }
-
-        if (sampleTemplate) {
-          fs.writeFileSync(article.fsPath, Project.content, { encoding: "utf-8" });
-          Notifications.info("Project initialized successfully.");
-        }
+        await Project.createSampleTemplate();
       } else {
         Notifications.info("Project initialized successfully.");
       }
@@ -73,6 +55,33 @@ categories: []
     } catch (err: any) {
       Logger.error(`Project::init: ${err?.message || err}`);
       Notifications.error(`Sorry, something went wrong - ${err?.message || err}`);
+    }
+  }
+
+  /**
+   * Creates the templates folder + sample if needed
+   * @param sampleTemplate 
+   * @returns 
+   */
+  public static async createSampleTemplate(sampleTemplate?: boolean) {
+    const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
+
+    const folder = Template.getSettings();
+    const templatePath = Project.templatePath();
+
+    if (!folder || !templatePath) {
+      return;
+    }
+    
+    const article = Uri.file(join(templatePath.fsPath, `article.${fileType}`));
+
+    if (!fs.existsSync(templatePath.fsPath)) {
+      await workspace.fs.createDirectory(templatePath);
+    }
+
+    if (sampleTemplate) {
+      fs.writeFileSync(article.fsPath, Project.content, { encoding: "utf-8" });
+      Notifications.info("Sample template created.");
     }
   }
 

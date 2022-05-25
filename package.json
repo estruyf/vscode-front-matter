@@ -1366,8 +1366,13 @@
         }
       },
       {
+        "command": "frontMatter.initTemplate",
+        "title": "Initialize the template folder",
+        "category": "Front matter"
+      },
+      {
         "command": "frontMatter.createTemplate",
-        "title": "Create a template from current file",
+        "title": "Create template from current file",
         "category": "Front matter"
       },
       {

@@ -25,6 +25,7 @@ export const COMMAND_NAME = {
   createByContentType: getCommandName("createByContentType"),
   createByTemplate: getCommandName("createByTemplate"),
   createTemplate: getCommandName("createTemplate"),
+  initTemplate: getCommandName("initTemplate"),
   collapseSections: getCommandName("collapseSections"),
   preview: getCommandName("preview"),
   dashboard: getCommandName("dashboard"),

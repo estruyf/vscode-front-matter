@@ -136,6 +136,10 @@ export async function activate(context: vscode.ExtensionContext) {
 	}); 
 
 	let createTemplate = vscode.commands.registerCommand(COMMAND_NAME.createTemplate, Template.generate);
+	
+	subscriptions.push(
+		vscode.commands.registerCommand(COMMAND_NAME.initTemplate, () => Project.createSampleTemplate(true))
+	);
 
 	const toggleDraftCommand = COMMAND_NAME.toggleDraft;
 	const toggleDraft = vscode.commands.registerCommand(toggleDraftCommand, async () => {
