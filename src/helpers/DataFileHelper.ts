@@ -58,7 +58,7 @@ export class DataFileHelper {
       if (fileType === "yaml") {
         return yaml.safeLoad(dataFile || "");
       } else {
-        return dataFile ? JSON.parse(dataFile) : [];
+        return dataFile ? JSON.parse(dataFile) : undefined;
       }
     } catch (ex) {
       Logger.error(`DataFileHelper::process: ${(ex as Error).message}`);

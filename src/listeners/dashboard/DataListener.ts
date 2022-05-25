@@ -56,7 +56,7 @@ export class DataListener extends BaseListener {
    * @param msgData 
    */
   private static async processDataFile(msgData: DataFile) {
-    const entries = DataFileHelper.process(msgData);
+    const entries = await DataFileHelper.process(msgData);
     this.sendMsg(DashboardCommand.dataFileEntries, entries);
   }
 }
