@@ -15,7 +15,7 @@ export interface Page {
   title: string;
   slug: string;
   date: string | Date;
-  draft: string;
+  draft: boolean | string;
   description: string;
 
   preview?: string;

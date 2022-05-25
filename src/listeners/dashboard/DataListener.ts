@@ -3,11 +3,10 @@ import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { BaseListener } from "./BaseListener";
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { Folders } from '../../commands/Folders';
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { existsSync, writeFileSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 import * as yaml from 'js-yaml';
-import { Logger, Notifications } from '../../helpers';
-import { commands } from 'vscode';
+import { DataFileHelper } from '../../helpers';
 
 
 export class DataListener extends BaseListener {
@@ -57,38 +56,7 @@ export class DataListener extends BaseListener {
    * @param msgData 
    */
   private static async processDataFile(msgData: DataFile) {
-    try {
-      const { file } = msgData;
-      const dataFile = this.getDataFile(file);
-
-      if (msgData.fileType === "yaml") {
-        const entries = yaml.safeLoad(dataFile || "");
-        this.sendMsg(DashboardCommand.dataFileEntries, entries);
-      } else {
-        const jsonData = dataFile ? JSON.parse(dataFile) : [];
-        this.sendMsg(DashboardCommand.dataFileEntries, jsonData);
-      }
-    } catch (ex) {
-      Logger.error(`DataListener::processDataFile: ${(ex as Error).message}`);
-      const btnClick = await Notifications.error(`Something went wrong while processing the data file. Check your file and output log for more information.`, 'Open output');
-
-      if (btnClick && btnClick === 'Open output') {
-        commands.executeCommand(`workbench.panel.output.focus`);
-      }
-    }
-  }
-
-  /**
-   * Retrieve the file data
-   * @param file 
-   * @returns 
-   */
-  private static getDataFile(file: string) {
-    const absPath = Folders.getAbsFilePath(file);
-    if (existsSync(absPath)) {
-      return readFileSync(absPath, 'utf8');
-    }
-
-    return null;
+    const entries = await DataFileHelper.process(msgData);
+    this.sendMsg(DashboardCommand.dataFileEntries, entries);
   }
 }

@@ -1,6 +1,5 @@
+import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
-import { FrameworkDetectors } from '../../constants/FrameworkDetectors';
-import { MessageHelper } from '../../helpers/MessageHelper';
 import { PanelSettings } from '../../models';
 import { CommandToCode } from '../CommandToCode';
 import useStartCommand from '../hooks/useStartCommand';
@@ -13,7 +12,7 @@ export const StartServerButton: React.FunctionComponent<IStartServerButtonProps>
   const { startCommand } = useStartCommand(settings);
 
   const startLocalServer = (command: string) => {
-    MessageHelper.sendMessage(CommandToCode.frameworkCommand, { command });
+    Messenger.send(CommandToCode.frameworkCommand, { command });
   };
   
   return (

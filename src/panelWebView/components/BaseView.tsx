@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { CustomScript, FolderInfo, Mode, PanelSettings } from '../../models';
 import { CommandToCode } from '../CommandToCode';
-import { MessageHelper } from '../../helpers/MessageHelper';
 import { Collapsible } from './Collapsible';
 import { GlobalSettings } from './GlobalSettings';
 import { OtherActions } from './OtherActions';
@@ -10,6 +9,7 @@ import { SponsorMsg } from './SponsorMsg';
 import { StartServerButton } from './StartServerButton';
 import { FeatureFlag } from '../../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../../constants/Features';
+import { Messenger } from '@estruyf/vscode/dist/client';
 
 export interface IBaseViewProps {
   settings: PanelSettings | undefined;
@@ -20,23 +20,23 @@ export interface IBaseViewProps {
 const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings, folderAndFiles, mode}: React.PropsWithChildren<IBaseViewProps>) => {
   
   const openDashboard = () => {
-    MessageHelper.sendMessage(CommandToCode.openDashboard);
+    Messenger.send(CommandToCode.openDashboard);
   };
   
   const initProject = () => {
-    MessageHelper.sendMessage(CommandToCode.initProject);
+    Messenger.send(CommandToCode.initProject);
   };
   
   const createContent = () => {
-    MessageHelper.sendMessage(CommandToCode.createContent);
+    Messenger.send(CommandToCode.createContent);
   };
 
   const openPreview = () => {
-    MessageHelper.sendMessage(CommandToCode.openPreview);
+    Messenger.send(CommandToCode.openPreview);
   };
 
   const runBulkScript = (script: CustomScript) => {
-    MessageHelper.sendMessage(CommandToCode.runCustomScript, { title: script.title, script });
+    Messenger.send(CommandToCode.runCustomScript, { title: script.title, script });
   };
 
   const customActions: any[] = (settings?.scripts || []).filter(s => s.bulk && (s.type === "content" || !s.type));

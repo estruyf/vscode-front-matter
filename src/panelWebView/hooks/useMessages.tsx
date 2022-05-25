@@ -1,14 +1,12 @@
 import { useState, useEffect } from 'react';
 import { GeneralCommands } from '../../constants';
-import { MessageHelper } from '../../helpers/MessageHelper';
 import { Mode } from '../../models/Mode';
 import { DashboardData } from '../../models/DashboardData';
 import { FolderInfo, PanelSettings } from '../../models/PanelSettings';
 import { Command } from '../Command';
 import { CommandToCode } from '../CommandToCode';
 import { TagType } from '../TagType';
-
-const vscode = MessageHelper.getVsCodeAPI();
+import { Messenger } from '@estruyf/vscode/dist/client';
 
 export default function useMessages() {
   const [metadata, setMetadata] = useState<any>({});
@@ -46,7 +44,7 @@ export default function useMessages() {
       case Command.mediaSelectionData:
         setMediaSelecting(message.data);
         break;
-      case GeneralCommands.setMode:
+      case GeneralCommands.toWebview.setMode:
         setMode(message.data);
         break;
     }
@@ -68,8 +66,8 @@ export default function useMessages() {
       setLoading(false);
     }, 5000);
 
-    vscode.postMessage({ command: CommandToCode.getData });
-    vscode.postMessage({ command: CommandToCode.getMode });
+    Messenger.send(CommandToCode.getData);
+    Messenger.send(CommandToCode.getMode);
   }, []);
 
   return {

@@ -32,6 +32,7 @@ export const SETTING_SEO_DESCRIPTION_FIELD = "taxonomy.seoDescriptionField";
 
 export const SETTING_TEMPLATES_FOLDER = "templates.folder";
 export const SETTING_TEMPLATES_PREFIX = "templates.prefix";
+export const SETTING_TEMPLATES_ENABLED = "templates.enabled";
 
 export const SETTING_TELEMETRY_DISABLE = "telemetry.disable";
 
@@ -61,7 +62,6 @@ export const SETTING_CONTENT_SUPPORTED_FILETYPES = "content.supportedFileTypes";
 export const SETTING_MEDIA_SUPPORTED_MIMETYPES = "media.supportedMimeTypes";
 
 export const SETTING_DASHBOARD_OPENONSTART = "dashboard.openOnStart";
-export const SETTING_DASHBOARD_MEDIA_SNIPPET = "dashboard.mediaSnippet";
 export const SETTING_DASHBOARD_CONTENT_TAGS = "dashboard.content.cardTags";
 
 export const SETTING_DATA_FILES = "data.files";
@@ -89,3 +89,8 @@ export const SETTING_DATE_FIELD = "taxonomy.dateField";
  * Use the `isModifiedDate` property on the content type datetime field instead
  */
 export const SETTING_MODIFIED_FIELD = "taxonomy.modifiedField";
+/**
+ * @deprecated
+ * Use the `frontMatter.content.snippets` setting instead
+ */
+export const SETTING_DASHBOARD_MEDIA_SNIPPET = "dashboard.mediaSnippet";

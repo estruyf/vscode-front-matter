@@ -149,9 +149,9 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
                   <div className={`divide-y divide-gray-200 dark:divide-vulcan-300 border-t border-b border-gray-200 dark:border-vulcan-300`}>
                     {
                       (dataFiles && dataFiles.length > 0) && (
-                        dataFiles.map((dataFile) => (
+                        dataFiles.map((dataFile, idx) => (
                           <button
-                            key={dataFile.id}
+                            key={`${dataFile.id}-${idx}`}
                             type='button'
                             className={`px-4 py-2 flex items-center text-sm font-medium w-full text-left hover:bg-gray-200 dark:hover:bg-vulcan-400 hover:text-vulcan-500 dark:hover:text-whisper-500 ${selectedData?.id === dataFile.id ? 'bg-gray-300 dark:bg-vulcan-300 text-vulcan-500 dark:text-whisper-500' : 'text-gray-500 dark:text-whisper-900'}`}
                             onClick={() => setSchema(dataFile)}>

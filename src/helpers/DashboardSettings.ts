@@ -1,10 +1,11 @@
 import { basename, join } from "path";
 import { workspace } from "vscode";
 import { Folders } from "../commands/Folders";
+import { Project } from "../commands/Project";
 import { Template } from "../commands/Template";
-import { CONTEXT, ExtensionState, SETTING_CONTENT_DRAFT_FIELD, SETTING_CONTENT_SORTING, SETTING_CONTENT_SORTING_DEFAULT, SETTING_CONTENT_STATIC_FOLDER, SETTING_DASHBOARD_MEDIA_SNIPPET, SETTING_DASHBOARD_OPENONSTART, SETTING_DATA_FILES, SETTING_DATA_FOLDERS, SETTING_DATA_TYPES, SETTING_FRAMEWORK_ID, SETTING_MEDIA_SORTING_DEFAULT, SETTING_CUSTOM_SCRIPTS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_SNIPPETS, SETTING_DATE_FORMAT, SETTING_DASHBOARD_CONTENT_TAGS, SETTING_MEDIA_SUPPORTED_MIMETYPES } from "../constants";
+import { CONTEXT, ExtensionState, SETTING_CONTENT_DRAFT_FIELD, SETTING_CONTENT_SORTING, SETTING_CONTENT_SORTING_DEFAULT, SETTING_CONTENT_STATIC_FOLDER, SETTING_DASHBOARD_OPENONSTART, SETTING_DATA_FILES, SETTING_DATA_FOLDERS, SETTING_DATA_TYPES, SETTING_FRAMEWORK_ID, SETTING_MEDIA_SORTING_DEFAULT, SETTING_CUSTOM_SCRIPTS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_SNIPPETS, SETTING_DATE_FORMAT, SETTING_DASHBOARD_CONTENT_TAGS, SETTING_MEDIA_SUPPORTED_MIMETYPES } from "../constants";
 import { DashboardViewType, SortingOption, Settings as ISettings } from "../dashboardWebView/models";
-import { CustomScript, DraftField, ScriptType, Snippets, SortingSetting, TaxonomyType } from "../models";
+import { CustomScript, DraftField, Snippets, SortingSetting, TaxonomyType } from "../models";
 import { DataFile } from "../models/DataFile";
 import { DataFolder } from "../models/DataFolder";
 import { DataType } from "../models/DataType";
@@ -18,9 +19,7 @@ export class DashboardSettings {
   public static async get() {
     const ext = Extension.getInstance();
     const wsFolder = Folders.getWorkspaceFolder();
-    const isInitialized = await Template.isInitialized();
-
-    const contentFolders = await Folders.getContentFolders();
+    const isInitialized = Project.isInitialized();
     
     return {
       beta: ext.isBetaVersion(),
@@ -32,7 +31,6 @@ export class DashboardSettings {
       openOnStart: Settings.get(SETTING_DASHBOARD_OPENONSTART),
       versionInfo: ext.getVersion(),
       pageViewType: await ext.getState<DashboardViewType | undefined>(ExtensionState.PagesView, "workspace"),
-      mediaSnippet: Settings.get<string[]>(SETTING_DASHBOARD_MEDIA_SNIPPET) || [],
       contentTypes: Settings.get(SETTING_TAXONOMY_CONTENT_TYPES) || [],
       draftField: Settings.get<DraftField>(SETTING_CONTENT_DRAFT_FIELD),
       customSorting: Settings.get<SortingSetting[]>(SETTING_CONTENT_SORTING),
@@ -56,7 +54,7 @@ export class DashboardSettings {
           mimeTypes: Settings.get<string[]>(SETTING_MEDIA_SUPPORTED_MIMETYPES)
         },
         welcome: {
-          contentFolders
+          contentFolders: await Folders.getContentFolders()
         }
       },
       dataFiles: await this.getDataFiles(),

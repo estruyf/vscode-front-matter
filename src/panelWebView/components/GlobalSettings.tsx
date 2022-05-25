@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { PanelSettings } from '../../models';
 import { CommandToCode } from '../CommandToCode';
-import { MessageHelper } from '../../helpers/MessageHelper';
 import { useDebounce } from '../../hooks/useDebounce';
 import { Collapsible } from './Collapsible';
 import { VsLabel } from './VscodeComponents';
 import useStartCommand from '../hooks/useStartCommand';
 import { VSCodeCheckbox } from '@vscode/webview-ui-toolkit/react';
+import { Messenger } from '@estruyf/vscode/dist/client';
 
 export interface IGlobalSettingsProps {
   settings: PanelSettings | undefined;
@@ -24,11 +24,11 @@ const GlobalSettings: React.FunctionComponent<IGlobalSettingsProps> = ({settings
   const debouncePreviewUrl = useDebounce(previewUrl, 1000);
 
   const onDateCheck = () => {
-    MessageHelper.sendMessage(CommandToCode.updateModifiedUpdating, !modifiedDateUpdate);
+    Messenger.send(CommandToCode.updateModifiedUpdating, !modifiedDateUpdate);
   };
   
   const onHighlightCheck = () => {
-    MessageHelper.sendMessage(CommandToCode.updateFmHighlight, !fmHighlighting);
+    Messenger.send(CommandToCode.updateFmHighlight, !fmHighlighting);
   };
 
   const previewChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,14 +54,14 @@ const GlobalSettings: React.FunctionComponent<IGlobalSettingsProps> = ({settings
   React.useEffect(() => {
     if (isDirty) {
       setIsDirty(false);
-      MessageHelper.sendMessage(CommandToCode.updatePreviewUrl, debouncePreviewUrl);
+      Messenger.send(CommandToCode.updatePreviewUrl, debouncePreviewUrl);
     }
   }, [debouncePreviewUrl]);
 
   React.useEffect(() => {
     if (isDirty) {
       setIsDirty(false);
-      MessageHelper.sendMessage(CommandToCode.updateStartCommand, debounceStartCommand);
+      Messenger.send(CommandToCode.updateStartCommand, debounceStartCommand);
     }
   }, [debounceStartCommand]);
 

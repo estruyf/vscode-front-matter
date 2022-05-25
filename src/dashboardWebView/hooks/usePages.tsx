@@ -10,6 +10,7 @@ import { Sorting } from '../../helpers/Sorting';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../DashboardMessage';
 import { EventData } from '@estruyf/vscode/dist/models';
+import { parseWinPath } from '../../helpers/parseWinPath';
 
 export default function usePages(pages: Page[]) {
   const [ pageItems, setPageItems ] = useState<Page[]>([]);
@@ -24,9 +25,26 @@ export default function usePages(pages: Page[]) {
 
   const processPages = useCallback((searchedPages: Page[]) => {
     const draftField = settings?.draftField;
+    const framework = settings?.crntFramework;
 
     // Filter the pages
     let pagesToShow: Page[] = Object.assign([], searchedPages);
+
+    // Framework specific actions
+    if (framework?.toLowerCase() === "jekyll") {
+      pagesToShow = pagesToShow.map(page => {
+        // https://jekyllrb.com/docs/posts/#drafts
+        const filePath = parseWinPath(page.fmFilePath);
+        page.draft = filePath.indexOf(`/_drafts/`) > -1;
+
+        // Published field: https://jekyllrb.com/docs/front-matter/#predefined-global-variables
+        if (typeof page.published !== "undefined") {
+          page.draft = !page.published;
+        }
+
+        return page;
+      });
+    }
 
     const draftTypes = Object.assign({}, tabInfo);
     draftTypes[Tab.All] = pagesToShow.length;
@@ -46,15 +64,19 @@ export default function usePages(pages: Page[]) {
         pagesToShow = searchedPages;
       }
     } else {
+      // Draft field is a boolean field
       const draftFieldName = draftField?.name || "draft";
+
+      const drafts = pagesToShow.filter(page => page[draftFieldName] == true || page[draftFieldName] === "true");
+      const published = pagesToShow.filter(page => page[draftFieldName] == false || page[draftFieldName] === "false" || typeof page[draftFieldName] === "undefined");
       
-      draftTypes[Tab.Draft] = pagesToShow.filter(page => !!page[draftFieldName]).length;
-      draftTypes[Tab.Published] = pagesToShow.filter(page => !page[draftFieldName]).length;
+      draftTypes[Tab.Draft] = draftField?.invert ? published.length : drafts.length;
+      draftTypes[Tab.Published] = draftField?.invert ? drafts.length : published.length;
 
       if (tab === Tab.Published) {
-        pagesToShow = searchedPages.filter(page => !page[draftFieldName]);
+        pagesToShow = draftField?.invert ? drafts : published;
       } else if (tab === Tab.Draft) {
-        pagesToShow = searchedPages.filter(page => !!page[draftFieldName]);
+        pagesToShow = draftField?.invert ? published : drafts;
       } else {
         pagesToShow = searchedPages;
       }

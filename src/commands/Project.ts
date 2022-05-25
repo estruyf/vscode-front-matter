@@ -24,34 +24,24 @@ categories: []
 ---
 `;
 
+  public static isInitialized() {
+    return Settings.hasProjectFile();
+  }
+
   /**
    * Initialize a new "Project" instance.
    */
-  public static async init(sampleTemplate: boolean = true) {
+  public static async init(sampleTemplate?: boolean) {
     try {
       Settings.createTeamSettings();
-      const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
 
-      const folder = Template.getSettings();
-      const templatePath = Project.templatePath();
-
-      if (!folder || !templatePath) {
-        return;
-      }
-      
-      const article = Uri.file(join(templatePath.fsPath, `article.${fileType}`));
-
-      if (!fs.existsSync(templatePath.fsPath)) {
-        await workspace.fs.createDirectory(templatePath);
-      }
-
-      if (sampleTemplate) {
-        fs.writeFileSync(article.fsPath, Project.content, { encoding: "utf-8" });
+      if (sampleTemplate !== undefined) {
+        await Project.createSampleTemplate();
+      } else {
         Notifications.info("Project initialized successfully.");
       }
-
+      
       Telemetry.send(TelemetryEvent.initialization);
-
 
       // Check if you can find the framework
       const wsFolder = Folders.getWorkspaceFolder();
@@ -65,6 +55,33 @@ categories: []
     } catch (err: any) {
       Logger.error(`Project::init: ${err?.message || err}`);
       Notifications.error(`Sorry, something went wrong - ${err?.message || err}`);
+    }
+  }
+
+  /**
+   * Creates the templates folder + sample if needed
+   * @param sampleTemplate 
+   * @returns 
+   */
+  public static async createSampleTemplate(sampleTemplate?: boolean) {
+    const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
+
+    const folder = Template.getSettings();
+    const templatePath = Project.templatePath();
+
+    if (!folder || !templatePath) {
+      return;
+    }
+    
+    const article = Uri.file(join(templatePath.fsPath, `article.${fileType}`));
+
+    if (!fs.existsSync(templatePath.fsPath)) {
+      await workspace.fs.createDirectory(templatePath);
+    }
+
+    if (sampleTemplate) {
+      fs.writeFileSync(article.fsPath, Project.content, { encoding: "utf-8" });
+      Notifications.info("Sample template created.");
     }
   }
 

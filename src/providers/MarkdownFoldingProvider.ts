@@ -4,6 +4,7 @@ import { CancellationToken, FoldingContext, FoldingRange, FoldingRangeKind, Fold
 import { SETTING_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_CONTENT_SUPPORTED_FILETYPES, SETTING_FRONTMATTER_TYPE } from '../constants';
 import { Settings } from '../helpers';
 import { FrontMatterDecorationProvider } from './FrontMatterDecorationProvider';
+import { FrontMatterParser } from '../parsers';
 
 export class MarkdownFoldingProvider implements FoldingRangeProvider {
   private static start: number | null = null;
@@ -43,7 +44,7 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
     if (isSupported) {
       const fmHighlight = Settings.get<boolean>(SETTING_CONTENT_FRONTMATTER_HIGHLIGHT);
 
-      const range = this.getFrontMatterRange();
+      const range = MarkdownFoldingProvider.getFrontMatterRange();
 
       if (range) {
         if (MarkdownFoldingProvider.decType !== null) {
@@ -64,17 +65,22 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
    * @returns 
    */
   public static getFrontMatterRange(document?: TextDocument) {
-    const language = Settings.get(SETTING_FRONTMATTER_TYPE) as string || "YAML";
+    const content = document?.getText();
+    const language = FrontMatterParser.getLanguageFromContent(content);
 
     let lineStart = "---";
-    let lineEnd = "---";
-    if (language === "TOML") {
+    let lineEnd = lineStart;
+
+    if (language.toLowerCase() === "toml") {
       lineStart = "+++";
       lineEnd = lineStart;
+    } else if (language.toLowerCase() === "json") {
+      lineStart = "{";
+      lineEnd = "}";
     }
 
-    if (document) {
-      const lines = document.getText().split('\n');
+    if (content) {
+      const lines = content.split('\n');
 
       let start = null;
       let end = null;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { CommandToCode } from '../CommandToCode';
-import { MessageHelper } from '../../helpers/MessageHelper';
 import { ActionButton } from './ActionButton';
+import { Messenger } from '@estruyf/vscode/dist/client';
 
 export interface ICustomScriptProps {
   title: string;
@@ -11,7 +11,7 @@ export interface ICustomScriptProps {
 const CustomScript: React.FunctionComponent<ICustomScriptProps> = ({title, script}: React.PropsWithChildren<ICustomScriptProps>) => {
 
   const runCustomScript = () => {
-    MessageHelper.sendMessage(CommandToCode.runCustomScript, { title, script });
+    Messenger.send(CommandToCode.runCustomScript, { title, script });
   };
 
   return (

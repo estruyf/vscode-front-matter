@@ -1,3 +1,4 @@
+import { Uri, workspace } from 'vscode';
 import { MarkdownFoldingProvider } from './../providers/MarkdownFoldingProvider';
 import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from './../constants/ContentType';
 import * as vscode from 'vscode';
@@ -83,6 +84,23 @@ export class ArticleHelper {
   }
 
   /**
+   * Store the new information for the article path
+   * 
+   * @param path 
+   * @param article 
+   */
+  public static async updateByPath(path: string, article: ParsedFrontMatter) {
+    const file = await workspace.openTextDocument(Uri.parse(path));
+    const editor = await window.showTextDocument(file);
+
+    if (file && editor) {
+      const update = this.generateUpdate(file, article);
+      
+      await editor.edit(builder => builder.replace(update.range, update.newText));
+    }
+  }
+
+  /**
    * Generate the update to be applied to the article.
    * @param article 
    */
@@ -97,7 +115,7 @@ export class ArticleHelper {
     const lastLine = lines.pop();
     const endsWithNewLine = lastLine !== undefined && lastLine.trim() === "";
     
-    let newMarkdown = this.stringifyFrontMatter(article.content, Object.assign({}, article.data));
+    let newMarkdown = this.stringifyFrontMatter(article.content, Object.assign({}, article.data), document?.getText());
 
     // Logic to not include a new line at the end of the file
     if (!endsWithNewLine) {
@@ -132,8 +150,9 @@ export class ArticleHelper {
    * 
    * @param content 
    * @param data 
+   * @param originalContent 
    */
-  public static stringifyFrontMatter(content: string, data: any) {
+  public static stringifyFrontMatter(content: string, data: any, originalContent?: string) {
     const indentArray = Settings.get(SETTING_INDENT_ARRAY) as boolean;
     const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
 
@@ -147,7 +166,7 @@ export class ArticleHelper {
       }
     }
     
-    return FrontMatterParser.toFile(content, data, ({
+    return FrontMatterParser.toFile(content, data, originalContent, ({
       noArrayIndent: !indentArray,
       skipInvalid: true,
       noCompatMode: true,

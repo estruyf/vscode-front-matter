@@ -1,5 +1,26 @@
 # Change Log
 
+## [7.3.0] - 2022-05-25 - [Release notes](https://beta.frontmatter.codes/updates/v7.3.0)
+
+### 🎨 Enhancements
+
+- JSON schema enhancements for working with data files
+- [#330](https://github.com/estruyf/vscode-front-matter/issues/330): Allow custom scripts to easily update front matter
+- [#331](https://github.com/estruyf/vscode-front-matter/issues/331): Added functionality to run other type of scripts
+- [#332](https://github.com/estruyf/vscode-front-matter/issues/332): New `dataFile` field which allows you to create data file references
+- [#333](https://github.com/estruyf/vscode-front-matter/issues/333): Automatically mark Jekyll posts in `_drafts` folder as draft
+- [#335](https://github.com/estruyf/vscode-front-matter/issues/335): Merge media snippets with content snippets to allow you to define multiple media snippets and use these in your content
+- [#336](https://github.com/estruyf/vscode-front-matter/issues/336): Support added for inverting the draft field so that SSGs/authors can use a published field instead
+- [#337](https://github.com/estruyf/vscode-front-matter/issues/337): Allow multiple front matter types to be used
+- [#338](https://github.com/estruyf/vscode-front-matter/issues/338): Ability to disable the templates functionality (default is disabled)
+- [#340](https://github.com/estruyf/vscode-front-matter/issues/340): Show an error message when there is a content folder registered that does not exist in the project
+
+### 🐞 Fixes
+
+- [#334](https://github.com/estruyf/vscode-front-matter/issues/334): Fix for locked content folders retrieval
+- [#339](https://github.com/estruyf/vscode-front-matter/issues/339): Fix for content folders without a title
+
+
 ## [7.2.0] - 2022-05-02 - [Release notes](https://beta.frontmatter.codes/updates/v7.2.0)
 
 ### 🎨 Enhancements

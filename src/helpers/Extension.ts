@@ -1,8 +1,9 @@
 import { basename } from "path";
 import { extensions, Uri, ExtensionContext, window, workspace, commands, ExtensionMode, DiagnosticCollection, languages } from "vscode";
 import { Folders } from "../commands/Folders";
-import { EXTENSION_NAME, GITHUB_LINK, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, EXTENSION_BETA_ID, EXTENSION_ID, ExtensionState, CONFIG_KEY, SETTING_CONTENT_PAGE_FOLDERS } from "../constants";
-import { ContentFolder } from "../models";
+import { Template } from "../commands/Template";
+import { EXTENSION_NAME, GITHUB_LINK, SETTING_DATE_FIELD, SETTING_MODIFIED_FIELD, EXTENSION_BETA_ID, EXTENSION_ID, ExtensionState, CONFIG_KEY, SETTING_CONTENT_PAGE_FOLDERS, SETTING_DASHBOARD_MEDIA_SNIPPET, SETTING_CONTENT_SNIPPETS, SETTING_TEMPLATES_ENABLED } from "../constants";
+import { ContentFolder, Snippet } from "../models";
 import { Notifications } from "./Notifications";
 import { Settings } from "./SettingsHelper";
 
@@ -187,6 +188,41 @@ export class Extension {
         if (update) {
           Folders.update(contentFolders);
         }
+      }
+    }
+
+    if (major <= 7 && minor < 3) {
+      const mediaSnippet = Settings.get<string[]>(SETTING_DASHBOARD_MEDIA_SNIPPET);
+      if (mediaSnippet && mediaSnippet.length > 0) {
+        let snippet = mediaSnippet.join(`\n`);
+
+        snippet = snippet.replace(`{mediaUrl}`, `[[&mediaUrl]]`);
+        snippet = snippet.replace(`{mediaHeight}`, `[[mediaHeight]]`);
+        snippet = snippet.replace(`{mediaWidth}`, `[[mediaWidth]]`);
+        snippet = snippet.replace(`{caption}`, `[[&caption]]`);
+        snippet = snippet.replace(`{alt}`, `[[alt]]`);
+        snippet = snippet.replace(`{filename}`, `[[filename]]`);
+        snippet = snippet.replace(`{title}`, `[[title]]`);
+
+        const snippets = Settings.get<Snippet[]>(SETTING_CONTENT_SNIPPETS) || {} as any;
+        snippets[`Media snippet (migrated)`] = {
+          body: snippet.split(`\n`),
+          isMediaSnippet: true,
+          description: `Migrated media snippet from frontMatter.dashboard.mediaSnippet setting`
+        }
+
+        await Settings.update(SETTING_CONTENT_SNIPPETS, snippets, true);
+      }
+
+      const templates = await Template.getTemplates();
+      if (templates && templates.length > 0) {
+        const answer = await window.showQuickPick(["Yes", "No"], {
+          title: "Front Matter - Templates",
+          placeHolder: "Do you want to keep on using the template functionality?",
+          ignoreFocusOut: true
+        });
+
+        Settings.update(SETTING_TEMPLATES_ENABLED, answer?.toLocaleLowerCase() === "yes", true);
       }
     }
   }

@@ -47,7 +47,7 @@ export default function useMessages() {
       case DashboardCommand.searchReady:
         setSearchReady(true);
         break;
-      case GeneralCommands.setMode:
+      case GeneralCommands.toWebview.setMode:
         setMode(message.data);
         break;
     }

@@ -1,6 +1,6 @@
+import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { useEffect } from 'react';
-import { MessageHelper } from '../../helpers/MessageHelper';
 import { Command } from '../Command';
 import { VsCollapsible } from './VscodeComponents';
 
@@ -16,7 +16,7 @@ const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({id, children, 
   const collapseKey = `collapse-${id}`;
 
   useEffect(() => {
-    const prevState = MessageHelper.getState();
+    const prevState: any = Messenger.getState();
     if (!prevState || !prevState[collapseKey] || prevState[collapseKey] === null || prevState[collapseKey] === 'true') {
       setIsOpen(true);
       updateStorage(true);
@@ -32,8 +32,8 @@ const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({id, children, 
   }, ['']);
 
   const updateStorage = (value: boolean) => {
-    const prevState = MessageHelper.getState();
-    MessageHelper.setState({
+    const prevState: any = Messenger.getState();
+    Messenger.setState({
       ...prevState,
       [collapseKey]: value.toString()
     });

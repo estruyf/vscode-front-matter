@@ -10,6 +10,7 @@ export interface Snippet {
   fields: SnippetField[];
   openingTags?: string;
   closingTags?: string;
+  isMediaSnippet?: boolean;
 }
 
 export type SnippetSpecialPlaceholders = "FM_SELECTED_TEXT" | string;

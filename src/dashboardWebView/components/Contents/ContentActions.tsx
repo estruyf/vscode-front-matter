@@ -1,6 +1,6 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { Menu } from '@headlessui/react';
-import { EyeIcon, TrashIcon } from '@heroicons/react/outline';
+import { EyeIcon, TerminalIcon, TrashIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { CustomScript, ScriptType } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
@@ -43,7 +43,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({ 
     return (scripts || []).filter(script => (script.type === undefined || script.type === ScriptType.Content) && !script.bulk).map(script => (
       <MenuItem 
         key={script.title}
-        title={script.title} 
+        title={<div className='flex items-center'><TerminalIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>{script.title}</span></div>} 
         onClick={(value, e) => runCustomScript(e, script)} />
     ))
   }, [scripts]);
@@ -70,15 +70,15 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({ 
 
             <ActionMenuButton title={`Menu`} />
 
-            <MenuItems widthClass='w-40' marginTopClass='mt-6'>
+            <MenuItems widthClass='w-44' marginTopClass='mt-6'>
               <MenuItem 
-                title={`View`}
+                title={<div className='flex items-center'><EyeIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>View</span></div>}
                 onClick={(value, e) => onView(e)} />
 
               { customScriptActions }
 
               <MenuItem 
-                title={`Delete`}
+                title={<div className='flex items-center'><TrashIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>Delete</span></div>}
                 onClick={(value, e) => onDelete(e)} />
             </MenuItems>
           </Menu>

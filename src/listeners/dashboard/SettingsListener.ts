@@ -67,6 +67,8 @@ export class SettingsListener extends BaseListener {
       const framework = allFrameworks.find((f: Framework) => f.name === frameworkId);
       if (framework) {
         Settings.update(SETTING_CONTENT_STATIC_FOLDER, framework.static, true);
+
+        FrameworkDetector.checkDefaultSettings(framework);
       } else {
         Settings.update(SETTING_CONTENT_STATIC_FOLDER, "", true);
       }

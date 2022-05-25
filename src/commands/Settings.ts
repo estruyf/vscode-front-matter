@@ -17,7 +17,8 @@ export class Settings {
   public static async create(type: TaxonomyType) {
     const newOption = await vscode.window.showInputBox({  
       prompt: `Insert the value of the ${type === TaxonomyType.Tag ? "tag" : "category"} that you want to add to your configuration.`,
-      placeHolder: `Name of the ${type === TaxonomyType.Tag ? "tag" : "category"}`
+      placeHolder: `Name of the ${type === TaxonomyType.Tag ? "tag" : "category"}`,
+      ignoreFocusOut: true
     });
     
     if (newOption) {
@@ -36,7 +37,11 @@ export class Settings {
       await SettingsHelper.updateTaxonomy(type, options);
 
       // Ask if the new term needs to be added to the page
-      const addToPage = await vscode.window.showQuickPick(["yes", "no"], { canPickMany: false, placeHolder: `Do you want to add the new ${type === TaxonomyType.Tag ? "tag" : "category"} to the page?` });
+      const addToPage = await vscode.window.showQuickPick(["yes", "no"], { 
+        canPickMany: false, 
+        placeHolder: `Do you want to add the new ${type === TaxonomyType.Tag ? "tag" : "category"} to the page?`,
+        ignoreFocusOut: true
+      });
 
       if (addToPage && addToPage === "yes") {
         const editor = vscode.window.activeTextEditor;
@@ -149,7 +154,8 @@ export class Settings {
       "Category"
     ], { 
       placeHolder: `What do you want to remap?`,
-      canPickMany: false 
+      canPickMany: false,
+      ignoreFocusOut: true
     });
     if (!taxType) {
       return;
@@ -165,7 +171,8 @@ export class Settings {
 
     const selectedOption = await vscode.window.showQuickPick(options, { 
       placeHolder: `Select your ${type === TaxonomyType.Tag ? "tags" : "categories"} to insert`,
-      canPickMany: false 
+      canPickMany: false,
+      ignoreFocusOut: true
     });
 
     if (!selectedOption) {
@@ -174,11 +181,16 @@ export class Settings {
 
     const newOptionValue = await vscode.window.showInputBox({  
       prompt: `Specify the value of the ${type === TaxonomyType.Tag ? "tag" : "category"} with which you want to remap "${selectedOption}". Leave the input <blank> if you want to remove the ${type === TaxonomyType.Tag ? "tag" : "category"} from all articles.`,
-      placeHolder: `Name of the ${type === TaxonomyType.Tag ? "tag" : "category"}`
+      placeHolder: `Name of the ${type === TaxonomyType.Tag ? "tag" : "category"}`,
+      ignoreFocusOut: true
     });
 
     if (!newOptionValue) {
-      const deleteAnswer = await vscode.window.showQuickPick(["yes", "no"], { canPickMany: false, placeHolder: `Delete ${selectedOption} ${type === TaxonomyType.Tag ? "tag" : "category"}?` });
+      const deleteAnswer = await vscode.window.showQuickPick(["yes", "no"], { 
+        canPickMany: false, 
+        placeHolder: `Delete ${selectedOption} ${type === TaxonomyType.Tag ? "tag" : "category"}?`,
+        ignoreFocusOut: true
+      });
       if (deleteAnswer === "no") {
         return;
       }
@@ -226,7 +238,7 @@ export class Settings {
                   data[matterProp] = [...new Set(taxonomies)].sort();
                   const spaces = vscode.window.activeTextEditor?.options?.tabSize;
                   // Update the file
-                  fs.writeFileSync(file.path, FrontMatterParser.toFile(article.content, article.data, {
+                  fs.writeFileSync(file.path, FrontMatterParser.toFile(article.content, article.data, mdFile, {
                     indent: spaces || 2
                   } as DumpOptions as any), { encoding: "utf8" });
                 }

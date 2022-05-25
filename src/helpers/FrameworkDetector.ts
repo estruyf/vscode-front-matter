@@ -1,6 +1,12 @@
 import { existsSync, readFileSync } from "fs";
+import jsyaml = require("js-yaml");
 import { join, resolve } from "path";
+import { commands, Uri } from "vscode";
+import { Folders } from "../commands/Folders";
+import { COMMAND_NAME } from "../constants";
 import { FrameworkDetectors } from "../constants/FrameworkDetectors";
+import { Framework } from "../models";
+import { Logger } from "./Logger";
 
 export class FrameworkDetector {
 
@@ -72,5 +78,51 @@ export class FrameworkDetector {
     }
 
     return undefined;
+  }
+
+  public static checkDefaultSettings(framework: Framework) {    
+    if (framework.name.toLowerCase() === "jekyll") {
+      FrameworkDetector.jekyll();
+    }
+  }
+
+
+  private static jekyll() {
+    try {
+      const wsFolder = Folders.getWorkspaceFolder();
+      const jekyllConfig = join(wsFolder?.fsPath || "", '_config.yml');
+      let collectionDir = "";
+
+      if (existsSync(jekyllConfig)) {
+        const content = readFileSync(jekyllConfig, "utf8");
+        // Convert YAML to JSON
+        const config = jsyaml.safeLoad(content);
+
+        if (config.collections_dir) {
+          collectionDir = config.collections_dir;
+        }
+      }
+
+      const draftsPath = join(wsFolder?.fsPath || "", collectionDir, "_drafts");
+      const postsPath = join(wsFolder?.fsPath || "", collectionDir, "_posts");
+  
+      if (existsSync(draftsPath)) {
+        const folderUri = Uri.file(draftsPath);
+        commands.executeCommand(COMMAND_NAME.registerFolder, {
+          title: "drafts",
+          path: folderUri
+        });
+      }
+  
+      if (existsSync(postsPath)) {
+        const folderUri = Uri.file(postsPath);
+        commands.executeCommand(COMMAND_NAME.registerFolder, {
+          title: "posts",
+          path: folderUri
+        });
+      }
+    } catch (e) {
+      Logger.error(`Something failed while processing your Jekyll configuration. ${(e as Error).message}`);
+    }
   }
 }

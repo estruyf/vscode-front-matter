@@ -3,7 +3,7 @@
   "displayName": "Front Matter",
   "description": "Front Matter is a CMS that runs within Visual Studio Code. It gives you the power and control of a full-blown CMS while also providing you the flexibility and speed of the static site generator of your choice like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "7.2.0",
+  "version": "7.3.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -137,6 +137,10 @@
               "type": "string",
               "description": "Name of the field to use"
             },
+            "invert": {
+              "type": "boolean",
+              "description": "By default the draft field is set to true when the content is a draft. Set this to true to set it to false."
+            },
             "choices": {
               "type": "array",
               "description": "List of choices for the field",
@@ -225,8 +229,7 @@
           "additionalProperties": {
             "type": "object",
             "required": [
-              "body",
-              "fields"
+              "body"
             ],
             "properties": {
               "body": {
@@ -255,6 +258,11 @@
                 "description": "The snippet closing tags.",
                 "type": "string",
                 "default": "]]"
+              },
+              "isMediaSnippet": {
+                "description": "Specify if the snippet is to be used for media files.",
+                "type": "boolean",
+                "default": false
               }
             },
             "additionalProperties": false
@@ -342,7 +350,7 @@
               },
               "nodeBin": {
                 "type": "string",
-                "description": "Path to the node executable. This is required when using NVM, so that there is no confusion of which node version to use."
+                "description": "Path to the node executable. This is required when using NVM, so that there is no confusion of which node version to use. (deprecated: use the command property instead)"
               },
               "bulk": {
                 "type": "boolean",
@@ -369,6 +377,25 @@
                   "mediaFile"
                 ],
                 "description": "The type for which the script will be used."
+              },
+              "command": {
+                "type": "string",
+                "oneOf": [
+                  {
+                    "enum": [
+                      "node",
+                      "bash",
+                      "powershell",
+                      "python",
+                      "python3"
+                    ]
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "description": "The type of script you want to execute.",
+                "default": "node"
               }
             },
             "additionalProperties": false,
@@ -389,6 +416,7 @@
           "type": "array",
           "default": [],
           "markdownDescription": "Specify the a snippet for your custom media insert markup. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.mediasnippet)",
+          "deprecationMessage": "This setting is deprecated and will be removed in the next major version. Please define your media snippet in the `frontMatter.content.snippet` setting.",
           "items": {
             "type": "string",
             "description": "Use the `{mediaUrl}`, `{caption}`, `{alt}`, `{filename}`, `{mediaHeight}`, and `{mediaWidth}` placeholders in your snippet to automatically insert the media information."
@@ -426,7 +454,8 @@
               },
               "file": {
                 "type": "string",
-                "description": "Path to the file to load. Only JSON or YAML files are supported."
+                "description": "Path to the file to load. Only JSON or YAML files are supported.",
+                "default": "[[workspace]]/"
               },
               "fileType": {
                 "type": "string",
@@ -438,10 +467,38 @@
                 "description": "Defines how you want to parse the file. JSON is the default."
               },
               "schema": {
+                "$id": "#dataFileSchema",
                 "type": "object",
                 "default": {},
                 "description": "The JSON schema for your data which will be used to render the data form.",
-                "additionalProperties": true
+                "additionalProperties": true,
+                "required": [
+                  "type",
+                  "properties"
+                ],
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "Title of the form."
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "Defines the type of the form. Default is 'object'.",
+                    "default": "object"
+                  },
+                  "required": {
+                    "type": "array",
+                    "description": "Defines the required fields for the form.",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "description": "Defines the fields of the form.",
+                    "additionalProperties": true
+                  }
+                }
               },
               "type": {
                 "type": "string",
@@ -488,13 +545,11 @@
               },
               "path": {
                 "type": "string",
-                "description": "Path to the folder to load files."
+                "description": "Path to the folder to load files.",
+                "default": "[[workspace]]/"
               },
               "schema": {
-                "type": "object",
-                "default": {},
-                "description": "The JSON schema for your data which will be used to render the data form.",
-                "additionalProperties": true
+                "$ref": "#dataFileSchema"
               },
               "type": {
                 "type": "string",
@@ -535,10 +590,7 @@
                 "description": "Your unique ID you want to use for your data type."
               },
               "schema": {
-                "type": "object",
-                "default": {},
-                "description": "The JSON schema for your data which will be used to render the data form.",
-                "additionalProperties": true
+                "$ref": "#dataFileSchema"
               }
             },
             "required": [
@@ -753,7 +805,8 @@
                         "draft",
                         "fields",
                         "json",
-                        "block"
+                        "block",
+                        "dataFile"
                       ],
                       "description": "Define the type of field"
                     },
@@ -875,6 +928,21 @@
                       "type": "boolean",
                       "default": false,
                       "description": "Specify if the field is the modified date field"
+                    },
+                    "dataFileId": {
+                      "type": "string",
+                      "default": "",
+                      "description": "Specify the ID of the data file to use for this field"
+                    },
+                    "dataFileKey": {
+                      "type": "string",
+                      "default": "",
+                      "description": "Specify the key of the data file to use for this field"
+                    },
+                    "dataFileValue": {
+                      "type": "string",
+                      "default": "",
+                      "description": "Specify the property name that will be used to show the value for the field"
                     }
                   },
                   "additionalProperties": false,
@@ -883,6 +951,21 @@
                     "name"
                   ],
                   "allOf": [
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "dataFile"
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "dataFileId",
+                          "dataFileKey"
+                        ]
+                      }
+                    },
                     {
                       "if": {
                         "properties": {
@@ -1198,6 +1281,12 @@
           "default": "yyyy-MM-dd",
           "markdownDescription": "Specify the prefix you want to add for your new article filenames. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.prefix)",
           "scope": "Templates"
+        },
+        "frontMatter.templates.enabled": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Specify if you want to use templates. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.enabled)",
+          "scope": "Templates"
         }
       }
     },
@@ -1277,8 +1366,13 @@
         }
       },
       {
+        "command": "frontMatter.initTemplate",
+        "title": "Initialize the template folder",
+        "category": "Front matter"
+      },
+      {
         "command": "frontMatter.createTemplate",
-        "title": "Create a template from current file",
+        "title": "Create template from current file",
         "category": "Front matter"
       },
       {
@@ -1799,9 +1893,10 @@
     "start:site": "cd ./docs && npm run dev"
   },
   "devDependencies": {
+    "@actions/core": "^1.8.2",
     "@bendera/vscode-webview-elements": "0.6.2",
     "@estruyf/vscode": "0.0.3",
-    "@headlessui/react": "^1.5.0",
+    "@headlessui/react": "1.5.0",
     "@heroicons/react": "1.0.4",
     "@iarna/toml": "2.2.3",
     "@octokit/rest": "^18.12.0",
@@ -1835,7 +1930,7 @@
     "downshift": "6.0.6",
     "fuse.js": "6.5.3",
     "glob": "7.1.6",
-    "gray-matter": "4.0.2",
+    "gray-matter": "4.0.3",
     "html-loader": "1.3.2",
     "html-webpack-plugin": "4.5.0",
     "image-size": "^1.0.0",

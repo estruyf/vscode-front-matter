@@ -1,7 +1,7 @@
 import { ModeListener } from './../listeners/general/ModeListener';
 import { PagesListener } from './../listeners/dashboard';
 import { ArticleHelper, Settings } from ".";
-import { FEATURE_FLAG, SETTING_CONTENT_DRAFT_FIELD, SETTING_DATE_FORMAT, SETTING_TAXONOMY_CONTENT_TYPES, TelemetryEvent } from "../constants";
+import { FEATURE_FLAG, SETTING_CONTENT_DRAFT_FIELD, SETTING_DATE_FORMAT, SETTING_FRAMEWORK_ID, SETTING_TAXONOMY_CONTENT_TYPES, TelemetryEvent } from "../constants";
 import { ContentType as IContentType, DraftField, Field } from '../models';
 import { Uri, commands, window } from 'vscode'; 
 import { Folders } from "../commands/Folders";
@@ -365,6 +365,16 @@ export class ContentType {
     let newFilePath: string | undefined = ArticleHelper.createContent(contentType, folderPath, titleValue);
     if (!newFilePath) {
       return;
+    }
+
+    if (contentType.name === "default") {
+      const crntFramework = Settings.get<string>(SETTING_FRAMEWORK_ID);
+      if (crntFramework?.toLowerCase() === "jekyll") {
+        const idx = contentType.fields.findIndex(f => f.name === "draft");
+        if (idx > -1) {
+          contentType.fields.splice(idx, 1);
+        }
+      }
     }
 
     let data: any = this.processFields(contentType, titleValue, {});

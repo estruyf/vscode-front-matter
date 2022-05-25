@@ -9,4 +9,5 @@ export enum Command {
   mediaSelectionData = "mediaSelectionData",
   sendMediaUrl = "sendMediaUrl",
   updatePlaceholder = "updatePlaceholder",
+  dataFileEntries = "dataFileEntries",
 }

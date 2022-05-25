@@ -6,9 +6,9 @@ import { TagType } from '../TagType';
 import Downshift from 'downshift';
 import { AddIcon } from './Icons/AddIcon';
 import { VsLabel } from './VscodeComponents';
-import { MessageHelper } from '../../helpers/MessageHelper';
 import { BlockFieldData, CustomTaxonomyData } from '../../models';
 import { useCallback, useMemo } from 'react';
+import { Messenger } from '@estruyf/vscode/dist/client';
 
 export interface ITagPickerProps {
   type: TagType;
@@ -52,11 +52,11 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
    */
   const onCreate = (tag: string) => {
     if (type === TagType.tags) {
-      MessageHelper.sendMessage(CommandToCode.addTagToSettings, tag);
+      Messenger.send(CommandToCode.addTagToSettings, tag);
     } else if (type === TagType.categories) {
-      MessageHelper.sendMessage(CommandToCode.addCategoryToSettings, tag);
+      Messenger.send(CommandToCode.addCategoryToSettings, tag);
     } else if (type === TagType.custom) {
-      MessageHelper.sendMessage(CommandToCode.addToCustomTaxonomy, {
+      Messenger.send(CommandToCode.addToCustomTaxonomy, {
         id: taxonomyId,
         name: fieldName,
         option: tag
@@ -70,26 +70,26 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
    */
   const sendUpdate = (values: string[]) => {    
     if (type === TagType.tags) {
-      MessageHelper.sendMessage(CommandToCode.updateTags, {
+      Messenger.send(CommandToCode.updateTags, {
         fieldName,
         values,
         parents,
         blockData
       });
     } else if (type === TagType.categories) {
-      MessageHelper.sendMessage(CommandToCode.updateCategories, {
+      Messenger.send(CommandToCode.updateCategories, {
         fieldName,
         values,
         parents,
         blockData
       });
     } else if (type === TagType.keywords) {
-      MessageHelper.sendMessage(CommandToCode.updateKeywords, {
+      Messenger.send(CommandToCode.updateKeywords, {
         values,
         parents
       });
     } else if (type === TagType.custom) {
-      MessageHelper.sendMessage(CommandToCode.updateCustomTaxonomy, {
+      Messenger.send(CommandToCode.updateCustomTaxonomy, {
         id: taxonomyId,
         name: fieldName,
         options: values,

@@ -50,6 +50,28 @@
       ],
       "openingTags": "{{",
       "closingTags": "}}"
+    },
+    "Issue link": {
+      "description": "Link to a GitHub issue",
+      "body": "- [#{{id}}](https://github.com/estruyf/vscode-front-matter/issues/{{id}}): {{title}}",
+      "fields": [
+        {
+          "name": "id",
+          "title": "Issue ID",
+          "type": "string",
+          "single": true,
+          "default": ""
+        },
+        {
+          "name": "title",
+          "title": "Title",
+          "type": "string",
+          "single": true,
+          "default": ""
+        }
+      ],
+      "openingTags": "{{",
+      "closingTags": "}}"
     }
   }
 }

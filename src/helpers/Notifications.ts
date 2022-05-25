@@ -5,6 +5,7 @@ import { Settings } from "./SettingsHelper";
 
 
 export class Notifications {
+  private static notifications: string[] = [];
 
   public static info(message: string, ...items: any): Thenable<string | undefined> {
     Logger.info(`${EXTENSION_NAME}: ${message}`, "INFO");
@@ -34,6 +35,16 @@ export class Notifications {
     }
 
     return Promise.resolve(undefined);
+  }
+
+  public static async errorShowOnce(message: string, ...items: any): Promise<string | undefined> {
+    if (this.notifications.includes(message)) {
+      return;
+    }
+
+    this.notifications.push(message);
+
+    return this.error(message, ...items);
   }
 
   private static shouldShow(level: "INFO" | "WARNING" | "ERROR"): boolean {

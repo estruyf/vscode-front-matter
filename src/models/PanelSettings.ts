@@ -48,7 +48,7 @@ export interface ContentType {
   pageBundle?: boolean;
 }
 
-export type FieldType = "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft" | "taxonomy" | "fields" | "json" | "block" | "file";
+export type FieldType = "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft" | "taxonomy" | "fields" | "json" | "block" | "file" | "dataFile";
 
 export interface Field {
   title?: string;
@@ -71,6 +71,11 @@ export interface Field {
   // Date fields
   isPublishDate?: boolean;
   isModifiedDate?: boolean;
+
+  // Data file
+  dataFileId?: string;
+  dataFileKey?: string;
+  dataFileValue?: string;
 }
 
 export interface DateInfo {
@@ -111,6 +116,7 @@ export interface CustomScript {
   output?: "notification" | "editor";
   outputType?: string;
   type?: ScriptType;
+  command?: CommandType;
 }
 
 export interface PreviewSettings {
@@ -127,4 +133,12 @@ export enum ScriptType {
   Content = "content",
   MediaFolder = "mediaFolder",
   MediaFile = "mediaFile"
+}
+
+export enum CommandType {
+  Node = "node",
+  Shell = "shell",
+  PowerShell = "powershell",
+  Python = "python",
+  Python3 = "python3"
 }

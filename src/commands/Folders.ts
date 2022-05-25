@@ -6,7 +6,7 @@ import { ContentFolder, FileInfo, FolderInfo } from "../models";
 import uniqBy = require("lodash.uniqby");
 import { Template } from "./Template";
 import { Notifications } from "../helpers/Notifications";
-import { Settings } from "../helpers";
+import { Logger, Settings } from "../helpers";
 import { existsSync, mkdirSync } from 'fs';
 import { format } from 'date-fns';
 import { Dashboard } from './Dashboard';
@@ -98,7 +98,10 @@ export class Folders {
    * Register the new folder path
    * @param folder 
    */
-  public static async register(folder: Uri) {
+  public static async register(folderInfo: { title: string, path: Uri } | Uri) {
+    let folderName = folderInfo instanceof Uri ? undefined : folderInfo.title;
+    const folder = folderInfo instanceof Uri ? folderInfo : folderInfo.path;
+
     if (folder && folder.fsPath) {
       const wslPath = folder.fsPath.replace(/\//g, '\\');
 
@@ -111,11 +114,14 @@ export class Folders {
         return;
       }
 
-      const folderName = await window.showInputBox({  
-        prompt: `Which name would you like to specify for this folder?`,
-        placeHolder: `Folder name`,
-        value: basename(folder.fsPath)
-      });
+      if (!folderName) {
+        folderName = await window.showInputBox({  
+          prompt: `Which name would you like to specify for this folder?`,
+          placeHolder: `Folder name`,
+          value: basename(folder.fsPath),
+          ignoreFocusOut: true
+        });
+      }
 
       folders.push({
         title: folderName,
@@ -287,11 +293,30 @@ export class Folders {
   public static get(): ContentFolder[] {
     const wsFolder = Folders.getWorkspaceFolder();
     const folders: ContentFolder[] = Settings.get(SETTING_CONTENT_PAGE_FOLDERS) as ContentFolder[];
+
+    const contentFolders = folders.map(folder => {
+      if (!folder.title) {
+        folder.title = basename(folder.path);
+      }
+
+      let folderPath = Folders.absWsFolder(folder, wsFolder);
+      if (!existsSync(folderPath)) {
+        Notifications.errorShowOnce(`Folder "${folder.title} (${folder.path})" does not exist. Please remove it from the settings.`, "Remove folder").then(answer => {
+          if (answer === "Remove folder") {
+            let folders = Folders.get();
+            Folders.update(folders.filter(f => f.path !== folder.path));
+          }
+        });
+        return null;
+      }
+
+      return {
+        ...folder,
+        path: folderPath
+      }
+    })
     
-    return folders.map(folder => ({
-      ...folder,
-      path: Folders.absWsFolder(folder, wsFolder)
-    }));
+    return contentFolders.filter(folder => folder !== null) as ContentFolder[];
   }
   
   /**
@@ -358,11 +383,15 @@ export class Folders {
     // Find folders that contain files
     const wsFolder = Folders.getWorkspaceFolder();
     const supportedFiles = Settings.get<string[]>(SETTING_CONTENT_SUPPORTED_FILETYPES) || DEFAULT_FILE_TYPES;
-    const patterns = supportedFiles.map(fileType => `${join(wsFolder?.fsPath || "", "**", `*${fileType.startsWith('.') ? '' : '.'}${fileType}`)}`);
+    const patterns = supportedFiles.map(fileType => `${join(parseWinPath(wsFolder?.fsPath || ""), "**", `*${fileType.startsWith('.') ? '' : '.'}${fileType}`)}`);
     let folders: string[] = [];
 
     for (const pattern of patterns) {
-      folders = [...folders, ...(await this.findFolders(pattern))];
+      try {
+        folders = [...folders, ...(await this.findFolders(pattern))];
+      } catch (e) {
+        Logger.error(`Something went wrong while searching for folders with pattern "${pattern}": ${(e as Error).message}`);
+      }
     }
     
     // Filter out the workspace folder

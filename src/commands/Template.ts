@@ -64,7 +64,8 @@ export class Template {
 
       const titleValue = await vscode.window.showInputBox({  
         prompt: `What name would you like to give your template?`,
-        placeHolder: `article`
+        placeHolder: `article`,
+        ignoreFocusOut: true
       });
 
       if (!titleValue) {
@@ -77,6 +78,7 @@ export class Template {
         { 
           canPickMany: false, 
           placeHolder: `Do you want to keep the contents for the template?`,
+          ignoreFocusOut: true
         }
       );
 
@@ -99,10 +101,23 @@ export class Template {
   }
 
   /**
+   * Retrieve all templates
+   */
+  public static async getTemplates() {
+    const folder = Settings.get<string>(SETTING_TEMPLATES_FOLDER);
+
+    if (!folder) {
+      Notifications.warning(`No templates found.`);
+      return;
+    }
+
+    return await vscode.workspace.findFiles(`${folder}/**/*`, "**/node_modules/**,**/archetypes/**");
+  }
+
+  /**
    * Create from a template
    */
   public static async create(folderPath: string) {
-    const folder = Settings.get<string>(SETTING_TEMPLATES_FOLDER);
     const contentTypes = ContentType.getAll();
 
     if (!folderPath) {
@@ -110,19 +125,15 @@ export class Template {
       return;
     }
 
-    if (!folder) {
-      Notifications.warning(`No templates found.`);
-      return;
-    }
-
-    const templates = await vscode.workspace.findFiles(`${folder}/**/*`, "**/node_modules/**,**/archetypes/**");
+    const templates = await Template.getTemplates();
     if (!templates || templates.length === 0) {
       Notifications.warning(`No templates found.`);
       return;
     }
 
     const selectedTemplate = await vscode.window.showQuickPick(templates.map(t => path.basename(t.fsPath)), {
-      placeHolder: `Select the content template to use`
+      placeHolder: `Select the content template to use`,
+      ignoreFocusOut: true
     });
     if (!selectedTemplate) {
       Notifications.warning(`No template selected.`);

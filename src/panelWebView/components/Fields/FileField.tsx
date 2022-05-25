@@ -1,8 +1,8 @@
+import { Messenger } from '@estruyf/vscode/dist/client';
 import { DocumentIcon, PaperClipIcon, TrashIcon } from '@heroicons/react/outline';
 import { basename } from 'path';
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
-import { MessageHelper } from '../../../helpers/MessageHelper';
 import { BlockFieldData } from '../../../models';
 import { CommandToCode } from '../../CommandToCode';
 import { VsLabel } from '../VscodeComponents';
@@ -38,7 +38,7 @@ const File = ({ value, onRemove }: { value: string, onRemove: (value: string) =>
 export const FileField: React.FunctionComponent<IFileFieldProps> = ({ label, multiple, filePath, fileExtensions, fieldName, value, parents, blockData, onChange }: React.PropsWithChildren<IFileFieldProps>) => {
 
   const selectFile = useCallback(() => {
-    MessageHelper.sendMessage(CommandToCode.selectFile, { 
+    Messenger.send(CommandToCode.selectFile, { 
       filePath,
       fieldName,
       value,
