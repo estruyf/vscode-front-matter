@@ -171,6 +171,15 @@ export class Settings {
   }
 
   /**
+   * Checks if the project contains the frontmatter.json file
+   */
+  public static hasProjectFile() {
+    const wsFolder = Folders.getWorkspaceFolder();
+    const configPath = join(wsFolder?.fsPath || "", Settings.globalFile);
+    return existsSync(configPath);
+  }
+
+  /**
    * Create team settings
    */
   public static createTeamSettings() {

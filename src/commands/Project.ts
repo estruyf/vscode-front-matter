@@ -24,34 +24,42 @@ categories: []
 ---
 `;
 
+  public static isInitialized() {
+    return Settings.hasProjectFile();
+  }
+
   /**
    * Initialize a new "Project" instance.
    */
-  public static async init(sampleTemplate: boolean = true) {
+  public static async init(sampleTemplate?: boolean) {
     try {
       Settings.createTeamSettings();
-      const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
 
-      const folder = Template.getSettings();
-      const templatePath = Project.templatePath();
+      if (sampleTemplate !== undefined) {
+        const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
 
-      if (!folder || !templatePath) {
-        return;
-      }
-      
-      const article = Uri.file(join(templatePath.fsPath, `article.${fileType}`));
+        const folder = Template.getSettings();
+        const templatePath = Project.templatePath();
 
-      if (!fs.existsSync(templatePath.fsPath)) {
-        await workspace.fs.createDirectory(templatePath);
-      }
+        if (!folder || !templatePath) {
+          return;
+        }
+        
+        const article = Uri.file(join(templatePath.fsPath, `article.${fileType}`));
 
-      if (sampleTemplate) {
-        fs.writeFileSync(article.fsPath, Project.content, { encoding: "utf-8" });
+        if (!fs.existsSync(templatePath.fsPath)) {
+          await workspace.fs.createDirectory(templatePath);
+        }
+
+        if (sampleTemplate) {
+          fs.writeFileSync(article.fsPath, Project.content, { encoding: "utf-8" });
+          Notifications.info("Project initialized successfully.");
+        }
+      } else {
         Notifications.info("Project initialized successfully.");
       }
-
+      
       Telemetry.send(TelemetryEvent.initialization);
-
 
       // Check if you can find the framework
       const wsFolder = Folders.getWorkspaceFolder();
