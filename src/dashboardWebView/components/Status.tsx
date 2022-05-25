@@ -9,7 +9,9 @@ export interface IStatusProps {
 
 export const Status: React.FunctionComponent<IStatusProps> = ({draft}: React.PropsWithChildren<IStatusProps>) => {
   const settings = useRecoilValue(SettingsAtom);
+
   const draftField = useMemo(() => settings?.draftField, [settings]);
+
   const draftValue = useMemo(() => {
     if (draftField && draftField.type === 'choice') {
       return draft;
@@ -18,7 +20,7 @@ export const Status: React.FunctionComponent<IStatusProps> = ({draft}: React.Pro
     } else {
       return draft;
     }
-  }, [draftField]);
+  }, [draftField, draft]);
 
   if (settings?.draftField && settings.draftField.type === "choice") {
     if (draftValue) {
