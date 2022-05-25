@@ -938,6 +938,11 @@
                       "type": "string",
                       "default": "",
                       "description": "Specify the key of the data file to use for this field"
+                    },
+                    "dataFileValue": {
+                      "type": "string",
+                      "default": "",
+                      "description": "Specify the property name that will be used to show the value for the field"
                     }
                   },
                   "additionalProperties": false,
