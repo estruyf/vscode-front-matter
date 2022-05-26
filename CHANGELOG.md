@@ -1,5 +1,11 @@
 # Change Log
 
+## [7.3.1] - 2022-05-26
+
+### 🐞 Fixes
+
+- [#343](https://github.com/estruyf/vscode-front-matter/issues/343): Fix in the schema for the `frontMatter.taxonomy.fieldGroups` setting
+
 ## [7.3.0] - 2022-05-25 - [Release notes](https://beta.frontmatter.codes/updates/v7.3.0)
 
 ### 🎨 Enhancements
