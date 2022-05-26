@@ -1174,7 +1174,7 @@
             },
             "additionalProperties": false,
             "required": [
-              "name",
+              "id",
               "fields"
             ]
           }
