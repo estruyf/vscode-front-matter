@@ -17,7 +17,7 @@ import useMedia from '../../hooks/useMedia';
 import { TelemetryEvent } from '../../../constants';
 import { PageLayout } from '../Layout/PageLayout';
 import { parseWinPath } from '../../../helpers/parseWinPath';
-import { extname, join } from 'path';
+import { basename, extname, join } from 'path';
 
 export interface IMediaProps {}
 
@@ -29,14 +29,27 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
   const folders = useRecoilValue(MediaFoldersAtom);
   const loading = useRecoilValue(LoadingAtom);
 
-
-  const allFolders = React.useMemo(() => {
+  const contentFolders = React.useMemo(() => {
     // Check if content allows page bundle
     if (viewData && viewData.data && typeof viewData.data.pageBundle !== "undefined" && !viewData.data.pageBundle) {
-      return folders.filter(f => parseWinPath(f).includes(join('/', settings?.staticFolder || '', '/')));
+      return [];
     }
 
-    return folders;
+    let groupedFolders = [];
+
+    for (const cFolder of (settings?.contentFolders || [])) {
+      const foldersPath = parseWinPath(cFolder.path);
+      groupedFolders.push({
+        title: cFolder.title || basename(cFolder.path),
+        folders: folders.filter(f => parseWinPath(f).startsWith(foldersPath))
+      });
+    }
+
+    return groupedFolders;
+  }, [folders, viewData, settings?.contentFolders]);
+
+  const publicFolders = React.useMemo(() => {
+    return folders.filter(f => parseWinPath(f).includes(join('/', settings?.staticFolder || '', '/')));
   }, [folders, viewData, settings?.staticFolder]);
 
   const allMedia = React.useMemo(() => {
@@ -126,11 +139,33 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
         }
 
         {
-          allFolders && allFolders.length > 0 && (
+          contentFolders && contentFolders.length > 0 && contentFolders.map(group => (
+            group.folders && group.folders.length > 0 && (
+              <div className={`mb-8`}>
+                <h2 className='text-lg mb-8 first-letter:uppercase'>Content folder: <b>{group.title}</b></h2>
+
+                <List gap={0}>
+                  {
+                    group.folders.map((folder) => (
+                      <FolderItem key={folder} folder={folder} staticFolder={settings?.staticFolder} wsFolder={settings?.wsFolder} />
+                    ))
+                  }
+                </List>
+              </div>
+            )
+          ))
+        }
+
+        {
+          publicFolders && publicFolders.length > 0 && (
             <div className={`mb-8`}>
+              {
+                contentFolders && contentFolders.length > 0 && (<h2 className='text-lg mb-8'>Public folder{settings?.staticFolder && (<span>: <b>{settings?.staticFolder}</b></span>)}</h2>)
+              }
+
               <List gap={0}>
                 {
-                  allFolders.map((folder) => (
+                  publicFolders.map((folder) => (
                     <FolderItem key={folder} folder={folder} staticFolder={settings?.staticFolder} wsFolder={settings?.wsFolder} />
                   ))
                 }

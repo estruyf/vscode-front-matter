@@ -1,5 +1,15 @@
 # Change Log
 
+## [7.4.0] - 2022-06-xx
+
+### 🎨 Enhancements
+
+- [#345](https://github.com/estruyf/vscode-front-matter/issues/345): Media dashboard UI improvements to visualize the content and public folders
+
+### 🐞 Fixes
+
+- [#348](https://github.com/estruyf/vscode-front-matter/issues/348): Fix media dashboard breadcrumb when multiple page folders are in use
+
 ## [7.3.2] - 2022-06-01
 
 ### 🐞 Fixes
