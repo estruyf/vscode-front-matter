@@ -65,7 +65,7 @@ export class MediaHelpers {
       relSelectedFolderPath = selectedFolder.replace(parsedPath, '');
     }
 
-    if (relSelectedFolderPath.startsWith('/')) {
+    if (relSelectedFolderPath && relSelectedFolderPath.startsWith('/')) {
       relSelectedFolderPath = relSelectedFolderPath.substring(1);
     }
 

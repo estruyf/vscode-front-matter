@@ -1,5 +1,12 @@
 # Change Log
 
+## [7.3.2] - 2022-06-01
+
+### 🐞 Fixes
+
+- [#346](https://github.com/estruyf/vscode-front-matter/issues/346): Fix media dashboard refresh action
+
+
 ## [7.3.1] - 2022-05-26
 
 ### 🐞 Fixes
