@@ -38,14 +38,18 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (props: Rea
         }
       }
 
+      let valid = false;
       for (let i = 0; i < contentFolders.length; i++) {
         const folder = contentFolders[i];
         const contentFolder = parseWinPath(folder.path) as string;
         const relContentPath = folderPath.replace(contentFolder, '');
-        return relContentPath.length > 1 && folderPath.startsWith(contentFolder);
+
+        if (!valid) {
+          valid = relContentPath.length > 1 && folderPath.startsWith(contentFolder);
+        }
       }
 
-      return false;
+      return valid;
     };
 
     if (!selectedFolder) {
