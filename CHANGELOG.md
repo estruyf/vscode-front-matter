@@ -4,6 +4,7 @@
 
 ### 🎨 Enhancements
 
+- [#307](https://github.com/estruyf/vscode-front-matter/issues/307): New `list` field which allows to create a list of items
 - [#345](https://github.com/estruyf/vscode-front-matter/issues/345): Media dashboard UI improvements to visualize the content and public folders
 
 ### 🐞 Fixes

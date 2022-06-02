@@ -1,11 +1,13 @@
 
-.block_field__form {
+.block_field__form,
+.list_field__form {
   background-color: transparent;
   border: 1px dashed var(--vscode-button-background);
   padding: 1rem;
 }
 
-.block_field__form__buttons {
+.block_field__form__buttons,
+.list_field__form__buttons {
   display: flex;
   justify-content: space-between;
   margin-top: 1rem;
@@ -23,7 +25,8 @@
   }
 }
 
-.block_field__form__button__save {
+.block_field__form__button__save,
+.list_field__form__button__save {
   background-color: var(--vscode-button-background);
   color: var(--vscode-button-foreground);
 
@@ -32,7 +35,8 @@
   }
 }
 
-.block_field__form__button__cancel {
+.block_field__form__button__cancel,
+.list_field__form__button__cancel {
   background-color: var(--vscode-button-secondaryBackground);
   color: var(--vscode-button-secondaryForeground);
 
@@ -41,7 +45,9 @@
   }
 }
 
-.json_data__field {
+.json_data__field,
+.block_field,
+.list_field {
   border: 1px dashed var(--vscode-button-secondaryBackground);
   color: var(--vscode--settings-headerForeground);
   padding: .5rem 1rem;
@@ -120,7 +126,12 @@
   }
 }
 
-.json_data__list {
+.list_field__list {
+  padding-left: 0;
+}
+
+.json_data__list,
+.list_field__list {
   margin-top: 1rem;
 
   label {
@@ -229,7 +240,8 @@
 }
 
 .sortable_item button,
-.json_data__list__button {
+.json_data__list__button,
+.list_field__list__button {
   width: auto;
   background: none;
   color: inherit;
@@ -244,7 +256,8 @@
   }
 }
 
-.json_data__list__button_icon {
+.json_data__list__button_icon,
+.list_field__list__button_icon {
   height: 1rem;
   width: 1rem;
 }

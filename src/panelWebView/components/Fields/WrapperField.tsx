@@ -21,6 +21,7 @@ import { DataFileField } from './DataFileField';
 import { DateTimeField } from './DateTimeField';
 import { DraftField } from './DraftField';
 import { FileField } from './FileField';
+import { ListField } from './ListField';
 import { NumberField } from './NumberField';
 import { PreviewImageField, PreviewImageValue } from './PreviewImageField';
 import { TextField } from './TextField';
@@ -357,6 +358,15 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           dataFileValue={field.dataFileValue}
           selected={fieldValue as string}
           multiSelect={field.multiple}
+          onChange={(value => onSendUpdate(field.name, value, parentFields))} />
+      </FieldBoundary>
+    );
+  } else if (field.type === 'list') {
+    return (
+      <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+        <ListField
+          label={field.title || field.name}
+          value={fieldValue}
           onChange={(value => onSendUpdate(field.name, value, parentFields))} />
       </FieldBoundary>
     );

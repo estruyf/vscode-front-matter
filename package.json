@@ -806,6 +806,7 @@
                         "fields",
                         "json",
                         "block",
+                        "list",
                         "dataFile"
                       ],
                       "description": "Define the type of field"

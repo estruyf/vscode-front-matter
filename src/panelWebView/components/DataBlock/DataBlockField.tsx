@@ -198,7 +198,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
   }
   
   return (
-    <div className='json_data__field'>
+    <div className='block_field'>
 
       <VsLabel>
         <div className={`metadata_field__label`}>
