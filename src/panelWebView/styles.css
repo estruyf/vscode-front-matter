@@ -368,6 +368,29 @@ vscode-divider {
 }
 
 /* Tags */
+.article__tags__input button {
+  margin: 1px 0;
+  padding: 0 .5rem;
+  border-left: 1px solid var(--vscode-inputValidation-infoBorder);
+	background: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+
+  display: flex;
+  align-items: center;
+
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+
+  &:disabled {
+    background: none;
+    filter: brightness(100%);
+    color: var(--vscode-disabledForeground);
+  }
+}
+
 .article__tags__items {
   display: flex;
   flex-flow: row wrap;
@@ -433,6 +456,57 @@ vscode-divider {
   white-space: nowrap;
 }
 
+/* Slug field */
+.metadata_field__slug {
+  position: relative;
+  width: 100%;
+}
+
+.metadata_field__slug input {
+  padding-right: 2.5rem;
+  border: 1px solid var(--vscode-inputValidation-infoBorder);
+  outline: none;
+
+  &:disabled {
+    color: var(--vscode-disabledForeground);
+  }
+}
+
+.metadata_field__slug button {
+  background: var(--vscode-input-background);
+  border: none;
+  border-left: 1px solid var(--vscode-inputValidation-infoBorder);
+  color: inherit;
+  outline: none !important;
+  outline-offset: inherit !important;
+  margin: 1px;
+  padding: 0 .5rem;
+
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+
+  display: flex;
+  align-items: center;
+
+  span {
+    margin-right: .5rem;
+    font-size: .8rem;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &.metadata_field__slug__button_update {
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    margin: 0;
+  }
+}
 
 /* Quill changes */
 .ql-toolbar.ql-snow,

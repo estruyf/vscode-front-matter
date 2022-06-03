@@ -1,6 +1,6 @@
 import { PencilIcon, TrashIcon, ViewListIcon } from '@heroicons/react/outline';
 import * as React from 'react';
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { VsLabel } from '../VscodeComponents';
 
 export interface IListFieldProps {
@@ -11,13 +11,12 @@ export interface IListFieldProps {
 
 export const ListField: React.FunctionComponent<IListFieldProps> = ({ label, value, onChange }: React.PropsWithChildren<IListFieldProps>) => {
   const [ text, setText ] = React.useState<string | null>("");
-  const [ list, setList ] = React.useState<string[] | null>(value);
+  const [ list, setList ] = React.useState<string[] | null>(null);
   const [ itemToEdit, setItemToEdit ] = React.useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   
   const onTextChange = (txtValue: string) => {
     setText(txtValue);
-    // onChange(txtValue);
   };
 
   const onSaveForm = useCallback(() => {
@@ -59,6 +58,16 @@ export const ListField: React.FunctionComponent<IListFieldProps> = ({ label, val
     }
   }, [list]);
 
+  useEffect(() => {
+    if (value) {
+      if (typeof value === "string") {
+        setList([value]);
+      } else {
+        setList(value);
+      }
+    }
+  }, [value]);
+
   let isValid = true;
 
   return (
@@ -80,7 +89,7 @@ export const ListField: React.FunctionComponent<IListFieldProps> = ({ label, val
           }
         }}
         style={{
-          border: isValid ? "1px solid var(--vscode-inputValidation-infoBorder)" : "1px solid var(--vscode-inputValidation-warningBorder)"
+          border: "1px solid var(--vscode-inputValidation-infoBorder)"
         }} />
 
       <div className={`list_field__form__buttons`}>
@@ -101,7 +110,7 @@ export const ListField: React.FunctionComponent<IListFieldProps> = ({ label, val
 
       <ul className='list_field__list'>
         {
-          list && list.map((item, index) => (
+          list && list.length > 0 && list.map((item, index) => (
             <li className='list_field__list__item' key={index}>
               <div>
                 {item}

@@ -24,6 +24,7 @@ import { FileField } from './FileField';
 import { ListField } from './ListField';
 import { NumberField } from './NumberField';
 import { PreviewImageField, PreviewImageValue } from './PreviewImageField';
+import { SlugField } from './SlugField';
 import { TextField } from './TextField';
 import { Toggle } from './Toggle';
 
@@ -367,6 +368,17 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
         <ListField
           label={field.title || field.name}
           value={fieldValue}
+          onChange={(value => onSendUpdate(field.name, value, parentFields))} />
+      </FieldBoundary>
+    );
+  } else if (field.type === 'slug') {
+    return (
+      <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+        <SlugField
+          label={field.title || field.name}
+          titleValue={metadata.title as string}
+          value={fieldValue}
+          editable={field.editable}
           onChange={(value => onSendUpdate(field.name, value, parentFields))} />
       </FieldBoundary>
     );

@@ -126,7 +126,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const setLastModifiedDate = vscode.commands.registerCommand(COMMAND_NAME.setLastModifiedDate, Article.setLastModifiedDate);
 
-	const generateSlug = vscode.commands.registerCommand(COMMAND_NAME.generateSlug, Article.generateSlug);
+	const generateSlug = vscode.commands.registerCommand(COMMAND_NAME.generateSlug, Article.updateSlug);
 
 	const createFromTemplate = vscode.commands.registerCommand(COMMAND_NAME.createFromTemplate, (folder: vscode.Uri) => {
 		const folderPath = Folders.getFolderPath(folder);

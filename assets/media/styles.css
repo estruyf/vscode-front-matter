@@ -163,14 +163,6 @@
   border: 1px solid rgba(0, 0, 0, .9);
 }
 
-.article__tags__input input {
-  border: 1px solid var(--vscode-inputValidation-infoBorder);
-}
-
-.article__tags__input input:disabled {
-  border-color: transparent;
-}
-
 .article__tags__input.freeform {
   position: relative;
   outline: 1px solid var(--vscode-inputValidation-infoBorder);
@@ -180,17 +172,6 @@
 .article__tags__input.freeform input {
   padding-right: 35px;
   border: 0;
-}
-
-.article__tags__input button {
-  position: absolute;
-  bottom: 0;
-  top: 0;
-  right: 0;
-  width: 30px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .article__tags ul {

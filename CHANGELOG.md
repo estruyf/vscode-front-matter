@@ -6,6 +6,7 @@
 
 - [#307](https://github.com/estruyf/vscode-front-matter/issues/307): New `list` field which allows to create a list of items
 - [#345](https://github.com/estruyf/vscode-front-matter/issues/345): Media dashboard UI improvements to visualize the content and public folders
+- [#349](https://github.com/estruyf/vscode-front-matter/issues/349): New `slug` field which allows you to manage the slug of your post from the Front Matter panel
 
 ### 🐞 Fixes
 

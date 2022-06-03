@@ -168,13 +168,34 @@ export class Article {
   }
 
   /**
-   * Generate the slug based on the article title
+   * Generate the new slug
    */
-	public static async generateSlug() {
-		Telemetry.send(TelemetryEvent.generateSlug);
-    
+  public static generateSlug(title: string) {
+    if (!title) {
+      return;
+    }
+
     const prefix = Settings.get(SETTING_SLUG_PREFIX) as string;
     const suffix = Settings.get(SETTING_SLUG_SUFFIX) as string;
+
+    const slug = SlugHelper.createSlug(title);
+
+    if (slug) {
+      return {
+        slug,
+        slugWithPrefixAndSuffix: `${prefix}${slug}${suffix}`
+      };
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Generate the slug based on the article title
+   */
+	public static async updateSlug() {
+		Telemetry.send(TelemetryEvent.generateSlug);
+    
     const updateFileName = Settings.get(SETTING_SLUG_UPDATE_FILE_NAME) as string;
     const filePrefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
     const editor = vscode.window.activeTextEditor;
@@ -191,17 +212,16 @@ export class Article {
     const contentType = ArticleHelper.getContentType(article.data);
     const titleField = "title";
     const articleTitle: string = article.data[titleField];
+    const slugInfo = Article.generateSlug(articleTitle);
     
-    const slug = SlugHelper.createSlug(articleTitle);
-    if (slug) {
-      let slugFieldValue = `${prefix}${slug}${suffix}`;
-      article.data["slug"] = slugFieldValue;
+    if (slugInfo && slugInfo.slug && slugInfo.slugWithPrefixAndSuffix) {
+      article.data["slug"] = slugInfo.slugWithPrefixAndSuffix;
 
       if (contentType) {
         // Update the fields containing the slug placeholder
         let fieldsToUpdate: Field[] = contentType.fields.filter(f => f.default === "{{slug}}");
         for (const field of fieldsToUpdate) {
-          article.data[field.name] = slug;
+          article.data[field.name] = slugInfo.slug;
         }
 
         // Update the fields containing a custom placeholder that depends on slug
@@ -227,7 +247,7 @@ export class Article {
           const ext = extname(editor.document.fileName);
           const fileName = basename(editor.document.fileName);
           
-          let slugName = slug.startsWith("/") ? slug.substring(1) : slug;
+          let slugName = slugInfo.slug.startsWith("/") ? slugInfo.slug.substring(1) : slugInfo.slug;
           slugName = slugName.endsWith("/") ? slugName.substring(0, slugName.length - 1) : slugName;
 
           let newFileName = `${slugName}${ext}`;

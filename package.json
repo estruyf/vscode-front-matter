@@ -807,7 +807,8 @@
                         "json",
                         "block",
                         "list",
-                        "dataFile"
+                        "dataFile",
+                        "slug"
                       ],
                       "description": "Define the type of field"
                     },
@@ -944,6 +945,11 @@
                       "type": "string",
                       "default": "",
                       "description": "Specify the property name that will be used to show the value for the field"
+                    },
+                    "editable": {
+                      "type": "boolean",
+                      "default": true,
+                      "description": "Specify if the field is editable"
                     }
                   },
                   "additionalProperties": false,
@@ -1820,7 +1826,7 @@
         {
           "command": "frontMatter.dashboard",
           "group": "navigation@2",
-          "when": "view == frontMatter.explorer"
+          "when": "view == frontMatter.explorer || view == explorer"
         }
       ]
     },
