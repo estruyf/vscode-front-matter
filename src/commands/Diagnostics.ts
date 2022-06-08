@@ -52,7 +52,7 @@ ${folderData.join("\n")}
     let projectStart = folder.path.split(projectName).pop();
     projectStart = projectStart || "";
     projectStart = projectStart?.replace(/\\/g, '/');
-    projectStart = projectStart?.startsWith('/') ? projectStart.substr(1) : projectStart;
+    projectStart = projectStart?.startsWith('/') ? projectStart.substring(1) : projectStart;
 
     const mdFiles = await workspace.findFiles(join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.md'));
     const mdxFiles = await workspace.findFiles(join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.mdx'));

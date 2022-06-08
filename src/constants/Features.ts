@@ -17,6 +17,9 @@ export const FEATURE_FLAG = {
     },
     data: {
       view: "dashboard.data.view",
+    },
+    taxonomy: {
+      view: "dashboard.taxonomy.view"
     }
   }
 };

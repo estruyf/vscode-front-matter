@@ -79,6 +79,11 @@ export async function activate(context: vscode.ExtensionContext) {
 		Telemetry.send(TelemetryEvent.openDataDashboard);
 		Dashboard.open({ type: NavigationType.Data });
 	}));
+
+	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardTaxonomy, (data?: DashboardData) => {
+		Telemetry.send(TelemetryEvent.openTaxonomyDashboard);
+		Dashboard.open({ type: NavigationType.Taxonomy });
+	}));
 	
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardClose, (data?: DashboardData) => {
 		Telemetry.send(TelemetryEvent.closeDashboard);

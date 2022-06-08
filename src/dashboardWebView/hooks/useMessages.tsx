@@ -33,6 +33,8 @@ export default function useMessages() {
           setView(NavigationType.Contents);
         } else if (message.data?.type === NavigationType.Data) {
           setView(NavigationType.Data);
+        } else if (message.data?.type === NavigationType.Taxonomy) {
+          setView(NavigationType.Taxonomy);
         } else if (message.data?.type === NavigationType.Snippets) {
           setView(NavigationType.Snippets);
         }

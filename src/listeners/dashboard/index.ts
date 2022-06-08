@@ -7,3 +7,4 @@ export * from './PagesListener';
 export * from './SettingsListener';
 export * from './SnippetListener';
 export * from './TelemetryListener';
+export * from './TaxonomyListener';

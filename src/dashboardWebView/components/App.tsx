@@ -13,12 +13,13 @@ import { Snippets } from './SnippetsView/Snippets';
 import { FeatureFlag } from '../../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../../constants';
 import { Messenger } from '@estruyf/vscode/dist/client';
+import { TaxonomyView } from './TaxonomyView';
 
-export interface IDashboardProps {
+export interface IAppProps {
   showWelcome: boolean;
 }
 
-export const Dashboard: React.FunctionComponent<IDashboardProps> = ({showWelcome}: React.PropsWithChildren<IDashboardProps>) => {
+export const App: React.FunctionComponent<IAppProps> = ({showWelcome}: React.PropsWithChildren<IAppProps>) => {
   const { loading, pages, settings } = useMessages();
   const view = useRecoilValue(DashboardViewSelector);
   const mode = useRecoilValue(ModeAtom);
@@ -59,6 +60,16 @@ export const Dashboard: React.FunctionComponent<IDashboardProps> = ({showWelcome
       <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.dashboard.data.view}>
         <main className={`h-full w-full`}>
           <DataView />
+        </main>
+      </FeatureFlag>
+    );
+  }
+
+  if (view === NavigationType.Taxonomy) {
+    return (
+      <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.dashboard.taxonomy.view}>
+        <main className={`h-full w-full`}>
+          <TaxonomyView pages={pages} />
         </main>
       </FeatureFlag>
     );

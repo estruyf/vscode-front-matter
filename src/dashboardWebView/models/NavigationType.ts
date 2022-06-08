@@ -3,4 +3,5 @@ export enum NavigationType {
   Media = "media",
   Data = "data",
   Snippets = "snippets",
+  Taxonomy = "taxonomy",
 }

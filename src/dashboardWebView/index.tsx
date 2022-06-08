@@ -1,7 +1,7 @@
 import * as React from "react";
 import { render } from "react-dom";
 import { RecoilRoot } from "recoil";
-import { Dashboard } from "./components/Dashboard";
+import { App } from "./components/App";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import { SENTRY_LINK } from "../constants";
@@ -37,7 +37,11 @@ if (elm) {
   if (type === "preview") {
     render(<Preview url={url} />, elm);
   } else {
-    render(<RecoilRoot><Dashboard showWelcome={!!welcome} /></RecoilRoot>, elm);
+    render((
+      <RecoilRoot>
+        <App showWelcome={!!welcome} />
+      </RecoilRoot>
+    ), elm);
   }
 }
 

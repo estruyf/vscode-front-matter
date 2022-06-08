@@ -231,7 +231,7 @@ export class Folders {
           
           if (projectStart) {
             projectStart = projectStart.replace(/\\/g, '/');
-            projectStart = projectStart.startsWith('/') ? projectStart.substr(1) : projectStart;
+            projectStart = projectStart.startsWith('/') ? projectStart.substring(1) : projectStart;
 
             let files: Uri[] = [];
             
@@ -259,6 +259,7 @@ export class Folders {
                   });
                 } catch (error) {
                   // Skip the file
+                  console.log((error as Error).message)
                 }
               }
 
