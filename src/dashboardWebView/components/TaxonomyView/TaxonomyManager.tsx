@@ -7,7 +7,7 @@ import { TaxonomyData } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
 import { Page } from '../../models';
 import { SettingsSelector } from '../../state';
-import { getTaxonomyField } from '../../utils';
+import { getTaxonomyField } from '../../../helpers/getTaxonomyField';
 import { TaxonomyActions } from './TaxonomyActions';
 import { TaxonomyLookup } from './TaxonomyLookup';
 

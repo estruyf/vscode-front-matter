@@ -27,6 +27,7 @@ export * from './TaxonomyHelper';
 export * from './Telemetry';
 export * from './decodeBase64Image';
 export * from './getNonce';
+export * from './getTaxonomyField';
 export * from './isValidFile';
 export * from './openFileInEditor';
 export * from './parseWinPath';

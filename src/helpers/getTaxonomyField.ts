@@ -1,4 +1,4 @@
-import { ContentType } from '../../models';
+import { ContentType } from '../models';
 
 
 export const getTaxonomyField = (taxonomyType: string, contentType: ContentType): string | undefined => {

@@ -1,5 +1,6 @@
-import { EXTENSION_NAME } from "../constants";
-import { TaxonomyType } from "../models";
+import { getTaxonomyField } from './getTaxonomyField';
+import { EXTENSION_NAME, SETTING_TAXONOMY_CUSTOM } from "../constants";
+import { CustomTaxonomy, TaxonomyType } from "../models";
 import { FilesHelper } from "./FilesHelper";
 import { ProgressLocation, window } from "vscode";
 import { parseWinPath } from "./parseWinPath";
@@ -239,6 +240,101 @@ export class TaxonomyHelper {
       } else if (type === "delete") {
         Notifications.info(`Deletion completed.`);
       }
+    });
+  }
+
+  /**
+   * Move a taxonomy value to another taxonomy type
+   * @param data 
+   * @returns 
+   */
+  public static async move(data: { type: string, value: string }) {
+    const { type, value } = data;
+
+    const customTaxs = Settings.get<CustomTaxonomy[]>(SETTING_TAXONOMY_CUSTOM, true) || [];
+
+    let options = [
+      "tags",
+      "categories",
+      ...customTaxs.map(t => t.id)
+    ];
+
+    options = options.filter(o => o !== type);
+
+    const answer = await window.showQuickPick(options, {
+      title: `Move the "${value}" to another type`,
+      placeHolder: `Select the type to move to`,
+      ignoreFocusOut: true
+    });
+
+    if (!answer) {
+      return;
+    }
+    
+    const oldType = this.getTypeFromString(type);
+    const newType = this.getTypeFromString(answer);
+
+    window.withProgress({
+      location: ProgressLocation.Notification,
+      title: `${EXTENSION_NAME}: Moving "${value}" from ${type} to "${answer}".`,
+      cancellable: false
+    }, async (progress) => {
+      // Retrieve all the markdown files
+      const allFiles = await FilesHelper.getAllFiles();
+      if (!allFiles) {
+        return;
+      }
+
+      // Set the initial progress
+      const progressNr = allFiles.length/100;
+      progress.report({ increment: 0});
+
+      let i = 0;
+      for (const file of allFiles) {
+        progress.report({ increment: (++i/progressNr) });
+        
+        const mdFile = readFileSync(parseWinPath(file.fsPath), { encoding: "utf8" });
+
+        if (mdFile) {
+          try {
+            const article = FrontMatterParser.fromFile(mdFile);
+            const contentType = ArticleHelper.getContentType(article.data);
+
+            let oldFieldName: string | undefined = getTaxonomyField(type, contentType);
+            let newFieldName: string | undefined = getTaxonomyField(answer, contentType);
+
+            if (oldFieldName && newFieldName && article && article.data) {
+              const { data } = article;
+              let oldTaxonomies: string[] = data[oldFieldName];
+              let newTaxonomies: string[] = data[newFieldName] || [];
+
+              if (oldTaxonomies && oldTaxonomies.length > 0) {
+                const idx = oldTaxonomies.findIndex(o => o === value);
+
+                if (idx !== -1) {
+                  newTaxonomies.push(value);
+
+                  data[newFieldName] = [...new Set(newTaxonomies)].sort();
+
+                  const spaces = window.activeTextEditor?.options?.tabSize;
+                  // Update the file
+                  writeFileSync(parseWinPath(file.fsPath), FrontMatterParser.toFile(article.content, article.data, mdFile, {
+                    indent: spaces || 2
+                  } as DumpOptions as any), { encoding: "utf8" });
+                }
+              }
+            } 
+          } catch (e) {
+            // Continue with the next file
+          }
+        }
+      }
+      
+      await this.addToSettings(newType, value, value);
+
+      await this.process("delete", oldType, value);
+
+      Notifications.info(`Move completed.`);
     });
   }
 

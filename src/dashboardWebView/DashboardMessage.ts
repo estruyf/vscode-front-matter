@@ -49,6 +49,7 @@ export enum DashboardMessage {
   addToTaxonomy = "addToTaxonomy",
   createTaxonomy = "createTaxonomy",
   importTaxonomy = "importTaxonomy",
+  moveTaxonomy = "moveTaxonomy",
 
   // Other
   getTheme = 'getTheme',

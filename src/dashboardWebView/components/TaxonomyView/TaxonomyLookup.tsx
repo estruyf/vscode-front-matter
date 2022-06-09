@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { Page } from '../../models';
 import { SettingsSelector } from '../../state';
 import { useRecoilValue } from 'recoil';
-import { getTaxonomyField } from '../../utils';
+import { getTaxonomyField } from '../../../helpers/getTaxonomyField';
 
 export interface ITaxonomyLookupProps {
   taxonomy: string | null;

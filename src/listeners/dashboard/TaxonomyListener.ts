@@ -29,6 +29,9 @@ export class TaxonomyListener extends BaseListener {
       case DashboardMessage.deleteTaxonomy:
         TaxonomyHelper.delete(msg.data);
         break;
+      case DashboardMessage.moveTaxonomy:
+        TaxonomyHelper.move(msg.data);
+        break;
       case DashboardMessage.addToTaxonomy:
         TaxonomyHelper.addTaxonomy(msg.data);
         break;
