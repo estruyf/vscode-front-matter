@@ -11,6 +11,7 @@ export interface Page {
   fmPreviewImage: string;
   fmTags: string[];
   fmCategories: string[];
+  fmContentType: string;
 
   title: string;
   slug: string;

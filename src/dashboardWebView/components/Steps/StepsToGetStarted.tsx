@@ -33,6 +33,7 @@ const Folder = ({ wsFolder, folder, folders, addFolder }: { wsFolder: string, fo
 
 export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps> = ({settings}: React.PropsWithChildren<IStepsToGetStartedProps>) => {
   const [framework, setFramework] = useState<string | null>(null);
+  const [taxImported, setTaxImported] = useState<boolean>(false);
 
   const frameworks: Framework[] = FrameworkDetectors.map((detector: any) => detector.framework);
 
@@ -54,6 +55,11 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
 
     Messenger.send(DashboardMessage.reload);
   };
+
+  const importTaxonomy = () => {
+    Messenger.send(DashboardMessage.importTaxonomy);
+    setTaxImported(true);
+  }
 
   const steps = [
     { 
@@ -135,6 +141,12 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
         </>
       ),
       status: settings.contentFolders && settings.contentFolders.length > 0 ? Status.Completed : Status.NotStarted
+    },
+    { 
+      name: 'Import all tags and categories (optional)', 
+      description: <>Now that Front Matter knows all the content folders. Would you like to import all tags and categories from the available content?</>,
+      status: taxImported ? Status.Completed : Status.NotStarted,
+      onClick: settings.contentFolders && settings.contentFolders.length > 0 ? importTaxonomy : undefined  
     },
     {
       name: 'Show the dashboard',

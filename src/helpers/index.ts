@@ -23,6 +23,7 @@ export * from './SlugHelper';
 export * from './SnippetParser';
 export * from './Sorting';
 export * from './StringHelpers';
+export * from './TaxonomyHelper';
 export * from './Telemetry';
 export * from './decodeBase64Image';
 export * from './getNonce';

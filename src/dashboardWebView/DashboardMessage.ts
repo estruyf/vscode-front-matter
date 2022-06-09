@@ -43,6 +43,12 @@ export enum DashboardMessage {
 
   // Taxonomy dashboard
   getTaxonomyData = 'getTaxonomyData',
+  editTaxonomy = "editTaxonomy",
+  mergeTaxonomy = "mergeTaxonomy",
+  deleteTaxonomy = "deleteTaxonomy",
+  addToTaxonomy = "addToTaxonomy",
+  createTaxonomy = "createTaxonomy",
+  importTaxonomy = "importTaxonomy",
 
   // Other
   getTheme = 'getTheme',

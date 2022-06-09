@@ -83,7 +83,7 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (props: React.P
         </FeatureFlag>
       )}>      
 
-      <div className="flex flex-col">
+      <div className="flex flex-col h-full">
         {
           viewData?.data?.filePath && (
             <div className={`text-xl text-center mb-6`}>

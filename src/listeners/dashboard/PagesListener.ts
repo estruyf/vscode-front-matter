@@ -1,3 +1,4 @@
+import { DEFAULT_CONTENT_TYPE_NAME } from './../../constants/ContentType';
 import { isValidFile } from '../../helpers/isValidFile';
 import { existsSync, unlinkSync } from "fs";
 import { basename, dirname, join } from "path";
@@ -91,7 +92,7 @@ export class PagesListener extends BaseListener {
     // Recreate all the watchers
     for (const folder of folders) {
       const folderUri = Uri.parse(folder.path);
-      let watcher = workspace.createFileSystemWatcher(new RelativePattern(folderUri, "*"), false, false, false);
+      let watcher = workspace.createFileSystemWatcher(new RelativePattern(folderUri, "**/*"), false, false, false);
       watcher.onDidCreate(async (uri: Uri) => this.watcherExec(uri));
       watcher.onDidChange(async (uri: Uri) => this.watcherExec(uri));
       watcher.onDidDelete(async (uri: Uri) => this.watcherExec(uri));
@@ -282,6 +283,7 @@ export class PagesListener extends BaseListener {
         fmPreviewImage: "",
         fmTags: [],
         fmCategories: [],
+        fmContentType: DEFAULT_CONTENT_TYPE_NAME,
         fmBody: article?.content || "",
         // Make sure these are always set
         title: article?.data.title,
@@ -292,6 +294,9 @@ export class PagesListener extends BaseListener {
       };
 
       const contentType = ArticleHelper.getContentType(article.data);
+      if (contentType) {
+        page.fmContentType = contentType.name;
+      }
 
       let previewFieldParents = this.findPreviewField(contentType.fields);
       if (previewFieldParents.length === 0) {

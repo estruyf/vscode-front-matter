@@ -1,21 +1,32 @@
 import { Notifications } from './Notifications';
 import { Uri, workspace } from 'vscode';
+import { Folders } from '../commands/Folders';
+import { isValidFile } from './isValidFile';
 
 export class FilesHelper {
 
   /**
    * Retrieve all markdown files from the current project
    */
-  public static async getMdFiles(): Promise<Uri[] | null> {
-    const mdFiles = await workspace.findFiles('**/*.md', "**/node_modules/**,**/archetypes/**");
-    const markdownFiles = await workspace.findFiles('**/*.markdown', "**/node_modules/**,**/archetypes/**");
-    const mdxFiles = await workspace.findFiles('**/*.mdx', "**/node_modules/**,**/archetypes/**");
-    if (!mdFiles && !markdownFiles) {
-      Notifications.info(`No MD files found.`);
+  public static async getAllFiles(): Promise<Uri[] | null> {
+    const folderInfo = await Folders.getInfo();
+    const pages: Uri[] = [];
+
+    if (folderInfo) {
+      for (const folder of folderInfo) {
+        for (const file of folder.lastModified) {
+          if (isValidFile(file.fileName)) {
+            pages.push(Uri.file(file.filePath));
+          }
+        }
+      }
+    }
+
+    if (pages.length === 0) {
+      Notifications.warning(`No files found.`);
       return null;
     }
 
-    const allMdFiles = [...mdFiles, ...markdownFiles, ...mdxFiles];
-    return allMdFiles;
+    return pages;
   }
 }

@@ -259,7 +259,6 @@ export class Folders {
                   });
                 } catch (error) {
                   // Skip the file
-                  console.log((error as Error).message)
                 }
               }
 

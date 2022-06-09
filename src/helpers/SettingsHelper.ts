@@ -220,9 +220,21 @@ export class Settings {
   }
 
   /**
+   * Return the taxonomy settings
+   * 
+   * @param type 
+   */
+  public static getCustomTaxonomy(type: string): string[] {
+    const customTaxs = Settings.get<CustomTaxonomy[]>(SETTING_TAXONOMY_CUSTOM, true);
+    if (customTaxs && customTaxs.length > 0) {
+      return customTaxs.find(t => t.id === type)?.options || [];
+    }
+    return [];
+  }
+
+  /**
    * Update the taxonomy settings
    * 
-   * @param config 
    * @param type 
    * @param options 
    */
@@ -256,6 +268,23 @@ export class Settings {
     customTaxonomies[taxIdx].options.push(option);
     customTaxonomies[taxIdx].options = [...new Set(customTaxonomies[taxIdx].options)];
     customTaxonomies[taxIdx].options = customTaxonomies[taxIdx].options.sort().filter(o => !!o);
+    await Settings.update(SETTING_TAXONOMY_CUSTOM, customTaxonomies, true);
+  }
+
+  /**
+   * Update the taxonomy settings
+   * 
+   * @param type 
+   * @param options 
+   */
+  public static async updateCustomTaxonomyOptions(id: string, options: string[]) {
+    const customTaxonomies = Settings.get<CustomTaxonomy[]>(SETTING_TAXONOMY_CUSTOM, true) || [];
+    let taxIdx = customTaxonomies?.findIndex(o => o.id === id);
+
+    if (taxIdx !== -1) {
+      customTaxonomies[taxIdx].options = options;
+    }
+    
     await Settings.update(SETTING_TAXONOMY_CUSTOM, customTaxonomies, true);
   }
 
