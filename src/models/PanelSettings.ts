@@ -46,6 +46,7 @@ export interface ContentType {
   fileType?: "md" | "mdx" | string;
   previewPath?: string | null;
   pageBundle?: boolean;
+  template?: string;
 }
 
 export type FieldType = "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft" | "taxonomy" | "fields" | "json" | "block" | "file" | "dataFile" | "list" | "slug";

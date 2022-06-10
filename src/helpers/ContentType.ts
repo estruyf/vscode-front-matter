@@ -12,6 +12,7 @@ import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
 import { Telemetry } from './Telemetry';
 import { processKnownPlaceholders } from './PlaceholderHelper';
 import { basename } from 'path';
+import { ParsedFrontMatter } from '../parsers';
 
 export class ContentType {
 
@@ -362,6 +363,13 @@ export class ContentType {
       return;
     }
 
+    let templatePath = contentType.template;
+    let templateData: ParsedFrontMatter | null = null;
+    if (templatePath) {
+      templatePath = Folders.getAbsFilePath(templatePath);
+      templateData = ArticleHelper.getFrontMatterByPath(templatePath);
+    }
+
     let newFilePath: string | undefined = ArticleHelper.createContent(contentType, folderPath, titleValue);
     if (!newFilePath) {
       return;
@@ -377,7 +385,7 @@ export class ContentType {
       }
     }
 
-    let data: any = this.processFields(contentType, titleValue, {});
+    let data: any = this.processFields(contentType, titleValue, templateData?.data || {});
 
     data = ArticleHelper.updateDates(Object.assign({}, data));
 
@@ -385,7 +393,7 @@ export class ContentType {
       data['type'] = contentType.name;
     }
 
-    const content = ArticleHelper.stringifyFrontMatter(``, data);
+    const content = ArticleHelper.stringifyFrontMatter(templateData?.content || ``, data);
 
     writeFileSync(newFilePath, content, { encoding: "utf8" });
 

@@ -1072,6 +1072,11 @@
                 ],
                 "default": null,
                 "description": "Defines a custom preview path for the content type."
+              },
+              "template": {
+                "type": "string",
+                "default": "",
+                "description": "An optional template that can be used for creating new content."
               }
             },
             "additionalProperties": false,

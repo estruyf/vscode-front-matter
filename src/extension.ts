@@ -132,15 +132,6 @@ export async function activate(context: vscode.ExtensionContext) {
 	const setLastModifiedDate = vscode.commands.registerCommand(COMMAND_NAME.setLastModifiedDate, Article.setLastModifiedDate);
 
 	const generateSlug = vscode.commands.registerCommand(COMMAND_NAME.generateSlug, Article.updateSlug);
-
-	const createFromTemplate = vscode.commands.registerCommand(COMMAND_NAME.createFromTemplate, (folder: vscode.Uri) => {
-		const folderPath = Folders.getFolderPath(folder);
-    if (folderPath) {
-      Template.create(folderPath);
-    }
-	}); 
-
-	let createTemplate = vscode.commands.registerCommand(COMMAND_NAME.createTemplate, Template.generate);
 	
 	subscriptions.push(
 		vscode.commands.registerCommand(COMMAND_NAME.initTemplate, () => Project.createSampleTemplate(true))
@@ -159,6 +150,20 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const createFolder = vscode.commands.registerCommand(COMMAND_NAME.createFolder, Folders.addMediaFolder);
 
+	/**
+	 * Template creation
+	 */
+	const createTemplate = vscode.commands.registerCommand(COMMAND_NAME.createTemplate, Template.generate);
+	const createFromTemplate = vscode.commands.registerCommand(COMMAND_NAME.createFromTemplate, (folder: vscode.Uri) => {
+		const folderPath = Folders.getFolderPath(folder);
+    if (folderPath) {
+      Template.create(folderPath);
+    }
+	}); 
+
+	/**
+	 * Content creation
+	 */
 	const createByContentType = vscode.commands.registerCommand(COMMAND_NAME.createByContentType, ContentType.createContent);
 	const createByTemplate = vscode.commands.registerCommand(COMMAND_NAME.createByTemplate, Folders.create);
 	const createContent = vscode.commands.registerCommand(COMMAND_NAME.createContent, Content.create);
