@@ -16,7 +16,7 @@ export const TaxonomyLookup: React.FunctionComponent<ITaxonomyLookupProps> = ({ 
 
   const total = useMemo(() => {
     if (!taxonomy || !value || !pages || !settings?.contentTypes) {
-      return 0;
+      return <>-</>;
     }
 
     return pages.filter(page => {
