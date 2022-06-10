@@ -4,6 +4,8 @@ import { useRecoilValue, useResetRecoilState } from 'recoil';
 import { FolderSelector, TagSelector, CategorySelector, SortingAtom, FolderAtom, DEFAULT_FOLDER_STATE, TagAtom, CategoryAtom, DEFAULT_TAG_STATE, DEFAULT_CATEGORY_STATE } from '../../state';
 
 import { DefaultValue } from 'recoil';
+import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 
 export const guardRecoilDefaultValue = (
   candidate: any
@@ -34,7 +36,7 @@ export const ClearFilters: React.FunctionComponent<IClearFiltersProps> = (props:
     resetCategory();
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (folder !== DEFAULT_FOLDER_STATE || tag !== DEFAULT_TAG_STATE || category !== DEFAULT_CATEGORY_STATE) {
       setShow(true);
     } else {

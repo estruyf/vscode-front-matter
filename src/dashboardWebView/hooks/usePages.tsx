@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { SortOption } from '../constants/SortOption';
 import { Tab } from '../constants/Tab';
 import { Page } from '../models/Page';
-import Fuse from 'fuse.js';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { CategorySelector, FolderSelector, SearchSelector, SettingsSelector, SortingAtom, TabInfoAtom, TabSelector, TagSelector } from '../state';
 import { SortOrder, SortType } from '../../models';
@@ -45,45 +44,6 @@ export default function usePages(pages: Page[]) {
         return page;
       });
     }
-
-    const draftTypes = Object.assign({}, tabInfo);
-    draftTypes[Tab.All] = pagesToShow.length;
-
-    // Filter by draft status
-    if (draftField && draftField.type === 'choice') {
-      const draftChoices = settings?.draftField?.choices;
-      for (const choice of (draftChoices || [])) {
-        if (choice) {
-          draftTypes[choice] = pagesToShow.filter(page => page.fmDraft === choice).length;
-        }
-      }
-
-      if (tab !== Tab.All) {
-        pagesToShow = pagesToShow.filter(page => page.fmDraft === tab);
-      } else {
-        pagesToShow = searchedPages;
-      }
-    } else {
-      // Draft field is a boolean field
-      const draftFieldName = draftField?.name || "draft";
-
-      const drafts = pagesToShow.filter(page => page[draftFieldName] == true || page[draftFieldName] === "true");
-      const published = pagesToShow.filter(page => page[draftFieldName] == false || page[draftFieldName] === "false" || typeof page[draftFieldName] === "undefined");
-      
-      draftTypes[Tab.Draft] = draftField?.invert ? published.length : drafts.length;
-      draftTypes[Tab.Published] = draftField?.invert ? drafts.length : published.length;
-
-      if (tab === Tab.Published) {
-        pagesToShow = draftField?.invert ? drafts : published;
-      } else if (tab === Tab.Draft) {
-        pagesToShow = draftField?.invert ? published : drafts;
-      } else {
-        pagesToShow = searchedPages;
-      }
-    }
-
-    // Set the tab information
-    setTabInfo(draftTypes);
 
     // Sort the pages
     let pagesSorted: Page[] = Object.assign([], pagesToShow);
@@ -131,6 +91,47 @@ export default function usePages(pages: Page[]) {
       pagesSorted = pagesSorted.filter(page => page.fmCategories && page.fmCategories.includes(category));
     }
 
+    // Process the tab data
+    const draftTypes = Object.assign({}, tabInfo);
+    draftTypes[Tab.All] = pagesSorted.length;
+
+    // Filter by draft status
+    if (draftField && draftField.type === 'choice') {
+      const draftChoices = settings?.draftField?.choices;
+      for (const choice of (draftChoices || [])) {
+        if (choice) {
+          draftTypes[choice] = pagesSorted.filter(page => page.fmDraft === choice).length;
+        }
+      }
+
+      if (tab !== Tab.All) {
+        pagesSorted = pagesSorted.filter(page => page.fmDraft === tab);
+      } else {
+        pagesSorted = pagesSorted;
+      }
+    } else {
+      // Draft field is a boolean field
+      const draftFieldName = draftField?.name || "draft";
+
+      const drafts = pagesSorted.filter(page => page[draftFieldName] == true || page[draftFieldName] === "true");
+      const published = pagesSorted.filter(page => page[draftFieldName] == false || page[draftFieldName] === "false" || typeof page[draftFieldName] === "undefined");
+      
+      draftTypes[Tab.Draft] = draftField?.invert ? published.length : drafts.length;
+      draftTypes[Tab.Published] = draftField?.invert ? drafts.length : published.length;
+
+      if (tab === Tab.Published) {
+        pagesSorted = draftField?.invert ? drafts : published;
+      } else if (tab === Tab.Draft) {
+        pagesSorted = draftField?.invert ? published : drafts;
+      } else {
+        pagesSorted = pagesSorted;
+      }
+    }
+
+    // Set the tab information
+    setTabInfo(draftTypes);
+
+    // Set the pages
     setPageItems(pagesSorted);
   }, [ settings, tab, folder, search, tag, category, sorting, tabInfo ]);
 
@@ -165,7 +166,7 @@ export default function usePages(pages: Page[]) {
     } else {
       processPages(searchedPages);
     }
-  }, [ settings?.draftField, pages, sorting, search, tab ]);
+  }, [ settings?.draftField, pages, sorting, search, tab, tag, category, folder ]);
 
   useEffect(() => {
     Messenger.listen(searchListener);

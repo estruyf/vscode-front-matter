@@ -307,14 +307,10 @@ export class PagesListener extends BaseListener {
       }
 
       let tagParents = this.findFieldByType(contentType.fields, "tags");
-      if (tagParents.length !== 0) {
-        page.fmTags = this.getFieldValue(article.data, tagParents);
-      }
+      page.fmTags = this.getFieldValue(article.data, tagParents.length !== 0 ? tagParents : ["tags"]);
 
       let categoryParents = this.findFieldByType(contentType.fields, "categories");
-      if (categoryParents.length !== 0) {
-        page.fmCategories = this.getFieldValue(article.data, categoryParents);
-      }
+      page.fmCategories = this.getFieldValue(article.data, categoryParents.length !== 0 ? categoryParents : ["categories"]);
 
       // Check if parent fields were retrieved, if not there was no image present
       if (previewFieldParents.length > 0) {

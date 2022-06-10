@@ -63,21 +63,29 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
     }
 
     for (const page of pages) {
-      const contentType = settings.contentTypes.find(ct => ct.name === page.fmContentType);
+      let values: string[] = [];
 
-      if (!contentType) {
-        return false;
+      if (taxonomy === "tags") {
+        values = page.fmTags || [];
+      } else if (taxonomy === "categories") {
+        values = page.fmCategories || [];
+      } else {
+        const contentType = settings.contentTypes.find(ct => ct.name === page.fmContentType);
+
+        if (!contentType) {
+          return false;
+        }
+        
+        let fieldName = getTaxonomyField(taxonomy, contentType);
+        
+        if (fieldName && page[fieldName]) {
+          values = page[fieldName];
+        }
       }
-      
-      let fieldName = getTaxonomyField(taxonomy, contentType);
-      
-      if (fieldName && page[fieldName]) {
-        const values = page[fieldName];
 
-        for (const value of values) {
-          if (!items.includes(value)) {
-            unmapped.push(value);
-          }
+      for (const value of values) {
+        if (!items.includes(value)) {
+          unmapped.push(value);
         }
       }
     }
@@ -108,7 +116,7 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
           <thead>
             <tr>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-whisper-900 uppercase">Name</th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-whisper-900 uppercase">Times used</th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-whisper-900 uppercase">Count</th>
               <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-whisper-900 uppercase">Action</th>
             </tr>
           </thead>

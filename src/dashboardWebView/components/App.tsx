@@ -7,13 +7,15 @@ import { useRecoilValue } from 'recoil';
 import { DashboardViewSelector, ModeAtom } from '../state';
 import { Contents } from './Contents/Contents';
 import { Media } from './Media/Media';
-import { NavigationType } from '../models';
 import { DataView } from './DataView';
 import { Snippets } from './SnippetsView/Snippets';
-import { FeatureFlag } from '../../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../../constants';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { TaxonomyView } from './TaxonomyView';
+import { Route, Routes, useNavigate } from 'react-router-dom';
+import { routePaths } from '..';
+import { useEffect, useMemo } from 'react';
+import { UnknownView } from './UnknownView';
 
 export interface IAppProps {
   showWelcome: boolean;
@@ -23,9 +25,35 @@ export const App: React.FunctionComponent<IAppProps> = ({showWelcome}: React.Pro
   const { loading, pages, settings } = useMessages();
   const view = useRecoilValue(DashboardViewSelector);
   const mode = useRecoilValue(ModeAtom);
+  const navigate = useNavigate();
   useDarkMode();
 
   const viewState: any = Messenger.getState() || {};
+
+  const isAllowed = (features: string[], flag: string) => {
+    if (!features ||( features.length > 0 && !features.includes(flag))) {
+      return false;
+    }
+
+    return true;
+  }
+
+  const allowDataView = useMemo(() => {
+    return isAllowed(mode?.features || [], FEATURE_FLAG.dashboard.data.view)
+  }, [mode?.features]);
+
+  const allowTaxonomyView = useMemo(() => {
+    return isAllowed(mode?.features || [], FEATURE_FLAG.dashboard.taxonomy.view)
+  }, [mode?.features]);
+
+  useEffect(() => {
+    if (view && routePaths[view]) {
+      navigate(routePaths[view]);
+      return;
+    }
+
+    navigate(routePaths[view]);
+  }, [view]);
 
   if (!settings) {
     return <Spinner />;
@@ -39,45 +67,24 @@ export const App: React.FunctionComponent<IAppProps> = ({showWelcome}: React.Pro
     return <WelcomeScreen settings={settings} />;
   }
 
-  if (view === NavigationType.Snippets) {
-    return (
-      <main className={`h-full w-full`}>
-        <Snippets />
-      </main>
-    );
-  } 
-  
-  if (view === NavigationType.Media) {
-    return (
-      <main className={`h-full w-full`}>
-        <Media />
-      </main>
-    );
-  }
-
-  if (view === NavigationType.Data) {
-    return (
-      <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.dashboard.data.view}>
-        <main className={`h-full w-full`}>
-          <DataView />
-        </main>
-      </FeatureFlag>
-    );
-  }
-
-  if (view === NavigationType.Taxonomy) {
-    return (
-      <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.dashboard.taxonomy.view}>
-        <main className={`h-full w-full`}>
-          <TaxonomyView pages={pages} />
-        </main>
-      </FeatureFlag>
-    );
-  }
-
   return (
     <main className={`h-full w-full`}>
-      <Contents pages={pages} loading={loading} />
+      <Routes>
+        <Route path={routePaths.welcome} element={<WelcomeScreen settings={settings} />} />
+        <Route path={routePaths.contents} element={<Contents pages={pages} loading={loading} />} />
+        <Route path={routePaths.media} element={<Media />} />
+        <Route path={routePaths.snippets} element={<Snippets />} />
+        
+        {
+          allowDataView && <Route path={routePaths.data} element={<DataView />} />
+        }
+
+        {
+          allowTaxonomyView && <Route path={routePaths.taxonomy} element={<TaxonomyView pages={pages} />} />
+        }
+
+        <Route path={`*`} element={<UnknownView />} />
+      </Routes>
     </main>
   );
 };
