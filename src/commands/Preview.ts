@@ -3,13 +3,14 @@ import { SETTING_PREVIEW_HOST, SETTING_PREVIEW_PATHNAME, CONTEXT, TelemetryEvent
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { join } from "path";
 import { commands, env, Uri, ViewColumn, window } from "vscode";
-import { Extension, Settings } from '../helpers';
-import { PreviewSettings } from '../models';
+import { Extension, parseWinPath, Settings } from '../helpers';
+import { ContentFolder, PreviewSettings } from '../models';
 import { format } from 'date-fns';
 import { DateHelper } from '../helpers/DateHelper';
 import { Article } from '.';
 import { urlJoin } from 'url-join-ts';
 import { WebviewHelper } from '@estruyf/vscode';
+import { Folders } from './Folders';
 
 
 export class Preview {
@@ -37,6 +38,28 @@ export class Preview {
     let slug = article?.data ? article.data.slug : "";
 
     let pathname = settings.pathname;
+
+    // Check if there is a pathname defined on content folder level
+    const folders = Folders.get();
+    if (folders.length > 0) {
+      const foldersWithPath = folders.filter(folder => folder.previewPath);
+      const filePath = parseWinPath(editor?.document.uri.fsPath);
+
+      let selectedFolder: ContentFolder | null = null;
+      for (const folder of foldersWithPath) {
+        if (filePath.startsWith(folder.path)) {
+          if (!selectedFolder || selectedFolder.path.length < folder.path.length) {
+            selectedFolder = folder;
+          }
+        }
+      }
+
+      if (selectedFolder) {
+        pathname = selectedFolder.previewPath;
+      }
+    }
+
+    // Check if there is a pathname defined on content type level
     if (article?.data) {
       const contentType = ArticleHelper.getContentType(article.data);
       if (contentType && contentType.previewPath) {

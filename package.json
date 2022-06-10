@@ -183,6 +183,14 @@
                 "type": "boolean",
                 "default": false,
                 "description": "Exclude sub-directories"
+              },
+              "previewPath": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "default": null,
+                "description": "Defines a custom preview path for the folder."
               }
             },
             "additionalProperties": false,

@@ -11,6 +11,7 @@
 - [#307](https://github.com/estruyf/vscode-front-matter/issues/307): New `list` field which allows to create a list of items
 - [#345](https://github.com/estruyf/vscode-front-matter/issues/345): Media dashboard UI improvements to visualize the content and public folders
 - [#349](https://github.com/estruyf/vscode-front-matter/issues/349): New `slug` field which allows you to manage the slug of your post from the Front Matter panel
+- [#350](https://github.com/estruyf/vscode-front-matter/issues/350): New `previewPath` property for the `frontMatter.content.pageFolders` setting. This allows you to specify a section prefix for all content created in that directory.
 - [#351](https://github.com/estruyf/vscode-front-matter/issues/351): New `template` property for content types which allows you to combine templates and content types for content creation
 
 ### 🐞 Fixes
