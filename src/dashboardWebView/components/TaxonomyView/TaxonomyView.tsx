@@ -83,7 +83,7 @@ export const TaxonomyView: React.FunctionComponent<ITaxonomyViewProps> = ({ page
           }
         </NavigationBar>
         
-        <div className={`w-10/12`}>
+        <div className={`w-10/12 h-full overflow-hidden`}>
           <TaxonomyManager
             data={taxonomySettings}
             taxonomy={selectedTaxonomy}

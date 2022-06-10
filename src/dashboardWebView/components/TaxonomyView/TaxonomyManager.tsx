@@ -86,8 +86,8 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
   }, [items, taxonomy, pages, settings?.contentTypes]);
 
   return (
-    <div className={`py-6 px-4`}>
-      <div className={`flex w-full justify-between`}>
+    <div className={`py-6 px-4 flex flex-col h-full overflow-hidden`}>
+      <div className={`flex w-full justify-between flex-shrink-0`}>
         <div>
           <h2 className={`text-lg text-gray-500 dark:text-whisper-900 first-letter:uppercase`}>{taxonomy}</h2>
           <p className={`mt-2 text-sm text-gray-500 dark:text-whisper-900 first-letter:uppercase`}>Create, edit, and manage the {taxonomy} of your site</p>
@@ -103,76 +103,70 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
         </div>
       </div>
 
-      <div className="mt-6 flex flex-col">
-        <div className="-m-1.5 overflow-x-auto">
-          <div className="p-1.5 min-w-full inline-block align-middle">
-            <div className="overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-vulcan-300">
-                <thead>
-                  <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-whisper-900 uppercase">Name</th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-whisper-900 uppercase">Times used</th>
-                    <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-whisper-900 uppercase">Action</th>
+      <div className="mt-6 pb-6 -mr-4 pr-4 flex flex-col flex-grow overflow-auto">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-vulcan-300">
+          <thead>
+            <tr>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-whisper-900 uppercase">Name</th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-whisper-900 uppercase">Times used</th>
+              <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-whisper-900 uppercase">Action</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200 dark:divide-vulcan-300">
+            {
+              items && items.length > 0 ? 
+                items.map((item, index) => (
+                  <tr key={index}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
+                      <TagIcon className="inline-block h-4 w-4 mr-2" />
+                      <span>{item}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
+                      <TaxonomyLookup 
+                        taxonomy={taxonomy}
+                        value={item}
+                        pages={pages} />
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <TaxonomyActions
+                        field={taxonomy}
+                        value={item} />
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-vulcan-300">
-                  {
-                    items && items.length > 0 ? 
-                      items.map((item, index) => (
-                        <tr key={index}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                            <TagIcon className="inline-block h-4 w-4 mr-2" />
-                            <span>{item}</span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                            <TaxonomyLookup 
-                              taxonomy={taxonomy}
-                              value={item}
-                              pages={pages} />
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <TaxonomyActions
-                              field={taxonomy}
-                              value={item} />
-                          </td>
-                        </tr>
-                      )) : (
-                        !unmappedItems || unmappedItems.length === 0 && (
-                          <tr>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200" colSpan={4}>No {taxonomy} found</td>
-                          </tr>
-                        )
-                      )
-                  }
-                  
-                  {
-                    unmappedItems && unmappedItems.length > 0 && 
-                      unmappedItems.map((item, index) => (
-                        <tr key={index}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200" title='Missing in your settings'>
-                            <ExclamationIcon className="inline-block h-4 w-4 mr-2" />
-                            <span>{item}</span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                            <TaxonomyLookup 
-                              taxonomy={taxonomy}
-                              value={item}
-                              pages={pages} />
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <TaxonomyActions
-                              field={taxonomy}
-                              value={item}
-                              unmapped />
-                          </td>
-                        </tr>
-                      ))
-                  }
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+                )) : (
+                  !unmappedItems || unmappedItems.length === 0 && (
+                    <tr>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200" colSpan={4}>No {taxonomy} found</td>
+                    </tr>
+                  )
+                )
+            }
+            
+            {
+              unmappedItems && unmappedItems.length > 0 && 
+                unmappedItems.map((item, index) => (
+                  <tr key={index}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200" title='Missing in your settings'>
+                      <ExclamationIcon className="inline-block h-4 w-4 mr-2" />
+                      <span>{item}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
+                      <TaxonomyLookup 
+                        taxonomy={taxonomy}
+                        value={item}
+                        pages={pages} />
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <TaxonomyActions
+                        field={taxonomy}
+                        value={item}
+                        unmapped />
+                    </td>
+                  </tr>
+                ))
+            }
+          </tbody>
+        </table>
       </div>
     </div>
   );
