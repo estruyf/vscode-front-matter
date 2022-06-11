@@ -1,5 +1,11 @@
 # Change Log
 
+## [7.3.3] - 2022-06-11
+
+### 🐞 Fixes
+
+- Card render when taxonomy is not an array value
+
 ## [7.3.2] - 2022-06-01
 
 ### 🐞 Fixes
