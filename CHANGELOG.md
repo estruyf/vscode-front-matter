@@ -5,6 +5,7 @@
 ### 🐞 Fixes
 
 - Card render when taxonomy is not an array value
+- Double pages on contents dashboard
 
 ## [7.3.2] - 2022-06-01
 

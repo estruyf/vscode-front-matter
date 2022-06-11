@@ -169,7 +169,7 @@ export class PagesListener extends BaseListener {
             try {
               const page = this.processPageContent(file.filePath, file.mtime, file.fileName, folder.title);
 
-              if (page) {
+              if (page && !pages.find(p => p.fmFilePath === page.fmFilePath)) {
                 pages.push(page);
               }
               
