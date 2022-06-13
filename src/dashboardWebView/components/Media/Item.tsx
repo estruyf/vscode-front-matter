@@ -61,10 +61,14 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   const getRelPath = () => {
     let relPath: string | undefined = "";
     if (settings?.wsFolder && media.fsPath) {
-      relPath = media.fsPath.split(settings.wsFolder).pop();
+      const wsFolderParsed = parseWinPath(settings.wsFolder);
+      const mediaParsed = parseWinPath(media.fsPath);
+
+      relPath = mediaParsed.split(wsFolderParsed).pop();
 
       if (settings.staticFolder && relPath) {
-        relPath = relPath.split(settings.staticFolder).pop();
+        const staticFolderParsed = parseWinPath(settings.staticFolder);
+        relPath = relPath.split(staticFolderParsed).pop();
       }
     }
     return relPath;
