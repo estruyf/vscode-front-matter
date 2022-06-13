@@ -1,5 +1,11 @@
 # Change Log
 
+## [7.3.3] - 2022-06-13
+
+### 🐞 Fixes
+
+- [#354](https://github.com/estruyf/vscode-front-matter/issues/354): Fix Windows file path parsing for inserting media files
+
 ## [7.3.3] - 2022-06-11
 
 ### 🐞 Fixes
