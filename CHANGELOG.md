@@ -18,6 +18,12 @@
 
 - [#348](https://github.com/estruyf/vscode-front-matter/issues/348): Fix media dashboard breadcrumb when multiple page folders are in use
 
+## [7.3.4] - 2022-06-13
+
+### 🐞 Fixes
+
+- [#354](https://github.com/estruyf/vscode-front-matter/issues/354): Fix Windows file path parsing for inserting media files
+
 ## [7.3.3] - 2022-06-11
 
 ### 🐞 Fixes
