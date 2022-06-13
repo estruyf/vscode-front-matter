@@ -18,6 +18,13 @@
 
 - [#348](https://github.com/estruyf/vscode-front-matter/issues/348): Fix media dashboard breadcrumb when multiple page folders are in use
 
+## [7.3.3] - 2022-06-11
+
+### 🐞 Fixes
+
+- Card render when taxonomy is not an array value
+- Double pages on contents dashboard
+
 ## [7.3.2] - 2022-06-01
 
 ### 🐞 Fixes
