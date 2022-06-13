@@ -271,10 +271,6 @@ export class MediaHelpers {
    */
   public static async insertMediaToMarkdown(data: any) {
     if (data?.file && data?.relPath) {
-      if (!data?.position) {
-        await commands.executeCommand(`workbench.view.extension.frontmatter-explorer`);
-      }
-
       await EditorHelper.showFile(data.file);
       Dashboard.resetViewData();
 
