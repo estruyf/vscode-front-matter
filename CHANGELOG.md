@@ -17,6 +17,7 @@
 ### 🐞 Fixes
 
 - [#348](https://github.com/estruyf/vscode-front-matter/issues/348): Fix media dashboard breadcrumb when multiple page folders are in use
+- [#358](https://github.com/estruyf/vscode-front-matter/issues/358): FIx for relative path of the public folder
 
 ## [7.3.4] - 2022-06-13
 

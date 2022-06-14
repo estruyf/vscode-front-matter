@@ -1,7 +1,7 @@
 import { decodeBase64, Extension, MediaLibrary, Notifications, parseWinPath, Settings, Sorting } from ".";
 import { Dashboard } from "../commands/Dashboard";
 import { Folders } from "../commands/Folders";
-import { DEFAULT_CONTENT_TYPE, ExtensionState, HOME_PAGE_NAVIGATION_ID, SETTING_CONTENT_STATIC_FOLDER, SETTING_MEDIA_SUPPORTED_MIMETYPES } from "../constants";
+import { DEFAULT_CONTENT_TYPE, ExtensionState, HOME_PAGE_NAVIGATION_ID, SETTING_MEDIA_SUPPORTED_MIMETYPES } from "../constants";
 import { SortingOption } from "../dashboardWebView/models";
 import { MediaInfo, MediaPaths, SortOrder, SortType } from "../models";
 import { basename, extname, join, parse, dirname, relative } from "path";
@@ -27,7 +27,7 @@ export class MediaHelpers {
    */
   public static async getMedia(page: number = 0, requestedFolder: string = '', sort: SortingOption | null = null) {
     const wsFolder = Folders.getWorkspaceFolder();
-    const staticFolder = Settings.get<string>(SETTING_CONTENT_STATIC_FOLDER);
+    const staticFolder = Folders.getStaticFolderRelativePath();
     const contentFolders = Folders.get();
     const viewData = Dashboard.viewData;
     let selectedFolder = requestedFolder;
@@ -210,7 +210,7 @@ export class MediaHelpers {
    public static async saveFile({fileName, contents, folder}: { fileName: string; contents: string; folder: string | null }) {
     if (fileName && contents) {
       const wsFolder = Folders.getWorkspaceFolder();
-      const staticFolder = Settings.get<string>(SETTING_CONTENT_STATIC_FOLDER);
+      const staticFolder = Folders.getStaticFolderRelativePath();
       const wsPath = wsFolder ? wsFolder.fsPath : "";
       let absFolderPath = join(wsPath, staticFolder || "");
 

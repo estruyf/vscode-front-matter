@@ -5,7 +5,7 @@ import { basename, dirname, join } from "path";
 import { commands, FileSystemWatcher, RelativePattern, TextDocument, Uri, workspace } from "vscode";
 import { Dashboard } from "../../commands/Dashboard";
 import { Folders } from "../../commands/Folders";
-import { COMMAND_NAME, DefaultFields, ExtensionState, SETTING_CONTENT_STATIC_FOLDER, SETTING_SEO_DESCRIPTION_FIELD } from "../../constants";
+import { COMMAND_NAME, DefaultFields, ExtensionState, SETTING_SEO_DESCRIPTION_FIELD } from "../../constants";
 import { DashboardCommand } from "../../dashboardWebView/DashboardCommand";
 import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { Page } from "../../dashboardWebView/models";
@@ -267,7 +267,7 @@ export class PagesListener extends BaseListener {
       const modifiedField = ArticleHelper.getModifiedDateField(article) || null;
       const modifiedFieldValue = modifiedField && article?.data[modifiedField] ? DateHelper.tryParse(article?.data[modifiedField])?.getTime() : undefined;
 
-      const staticFolder = Settings.get<string>(SETTING_CONTENT_STATIC_FOLDER);
+      const staticFolder = Folders.getStaticFolderRelativePath();
 
       const page: Page = {
         ...article.data,

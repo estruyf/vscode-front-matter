@@ -27,7 +27,7 @@ export class Folders {
    */
   public static async addMediaFolder(data?: {selectedFolder?: string}) {
     let wsFolder = Folders.getWorkspaceFolder();
-    const staticFolder = Settings.get<string>(SETTING_CONTENT_STATIC_FOLDER);
+    let staticFolder = Folders.getStaticFolderRelativePath();
 
     let startPath = "";
 
@@ -151,6 +151,25 @@ export class Folders {
 
 		  Telemetry.send(TelemetryEvent.unregisterFolder);
     }
+  }
+
+  /**
+   * Get the static folder its relative path
+   * @returns 
+   */
+  public static getStaticFolderRelativePath(): string | undefined {
+    let staticFolder = Settings.get<string>(SETTING_CONTENT_STATIC_FOLDER);
+
+    if (staticFolder && staticFolder.includes(WORKSPACE_PLACEHOLDER)) {
+      staticFolder = Folders.getAbsFilePath(staticFolder);
+      const wsFolder = Folders.getWorkspaceFolder();
+      if (wsFolder) {
+        const relativePath = relative(parseWinPath(wsFolder.fsPath), parseWinPath(staticFolder));
+        return relativePath;
+      }
+    }
+
+    return staticFolder;
   }
 
   /**
