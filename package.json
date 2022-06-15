@@ -1188,6 +1188,10 @@
                 "type": "string",
                 "description": "The name of the field group"
               },
+              "labelField": {
+                "type": "string",
+                "description": "The name of the field to be used as display value"
+              },
               "fields": {
                 "$ref": "#contenttypefield"
               }
