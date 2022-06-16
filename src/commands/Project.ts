@@ -1,3 +1,4 @@
+import { DEFAULT_CONTENT_TYPE } from './../constants/ContentType';
 import { Telemetry } from './../helpers/Telemetry';
 import { workspace, Uri } from "vscode";
 import { join } from "path";
@@ -6,7 +7,7 @@ import { Notifications } from "../helpers/Notifications";
 import { Template } from "./Template";
 import { Folders } from "./Folders";
 import { FrameworkDetector, Logger, Settings } from "../helpers";
-import { SETTING_CONTENT_DEFAULT_FILETYPE, TelemetryEvent } from "../constants";
+import { SETTING_CONTENT_DEFAULT_FILETYPE, SETTING_TAXONOMY_CONTENT_TYPES, TelemetryEvent } from "../constants";
 import { SettingsListener } from '../listeners/dashboard';
 
 export class Project {
@@ -34,6 +35,9 @@ categories: []
   public static async init(sampleTemplate?: boolean) {
     try {
       Settings.createTeamSettings();
+
+      // Add the default content type
+      Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, [DEFAULT_CONTENT_TYPE], true);
 
       if (sampleTemplate !== undefined) {
         await Project.createSampleTemplate();
