@@ -1,6 +1,6 @@
 import { getTaxonomyField } from './getTaxonomyField';
 import { EXTENSION_NAME, SETTING_TAXONOMY_CUSTOM } from "../constants";
-import { CustomTaxonomy, TaxonomyType } from "../models";
+import { CustomTaxonomy, TaxonomyType, ContentType as IContentType } from "../models";
 import { FilesHelper } from "./FilesHelper";
 import { ProgressLocation, window } from "vscode";
 import { parseWinPath } from "./parseWinPath";
@@ -10,6 +10,7 @@ import { DumpOptions } from "js-yaml";
 import { Settings } from "./SettingsHelper";
 import { Notifications } from "./Notifications";
 import { ArticleHelper } from './ArticleHelper';
+import { ContentType } from './ContentType';
 
 
 export class TaxonomyHelper {
@@ -191,19 +192,12 @@ export class TaxonomyHelper {
           try {
             const article = FrontMatterParser.fromFile(mdFile);
             const contentType = ArticleHelper.getContentType(article.data);
-            let fieldName: string | undefined;
 
-            if (taxonomyName === "tags") {
-              fieldName = contentType.fields.find(f => f.type === "tags")?.name || "tags";
-            } else if (taxonomyName === "categories") {
-              fieldName = contentType.fields.find(f => f.type === "categories")?.name || "categories";
-            } else {
-              fieldName = contentType.fields.find(f => f.type === "taxonomy" && f.taxonomyId === taxonomyName)?.name;
-            }
+            let fieldNames: string[] = this.getFieldsHierarchy(taxonomyType, contentType);
 
-            if (fieldName && article && article.data) {
+            if (fieldNames.length > 0 && article && article.data) {
               const { data } = article;
-              let taxonomies: string[] = data[fieldName];
+              let taxonomies: string[] = ContentType.getFieldValue(data, fieldNames);
 
               if (taxonomies && taxonomies.length > 0) {
                 const idx = taxonomies.findIndex(o => o === oldValue);
@@ -215,7 +209,8 @@ export class TaxonomyHelper {
                     taxonomies = taxonomies.filter(o => o !== oldValue);
                   }
 
-                  data[fieldName] = [...new Set(taxonomies)].sort();
+                  const newTaxValue = [...new Set(taxonomies)].sort();
+                  ContentType.setFieldValue(data, fieldNames, newTaxValue);
 
                   const spaces = window.activeTextEditor?.options?.tabSize;
                   // Update the file
@@ -300,13 +295,13 @@ export class TaxonomyHelper {
             const article = FrontMatterParser.fromFile(mdFile);
             const contentType = ArticleHelper.getContentType(article.data);
 
-            let oldFieldName: string | undefined = getTaxonomyField(type, contentType);
-            let newFieldName: string | undefined = getTaxonomyField(answer, contentType);
+            let oldFieldNames: string[] = this.getFieldsHierarchy(oldType, contentType);
+            let newFieldNames: string[] = this.getFieldsHierarchy(newType, contentType, true);
 
-            if (oldFieldName && newFieldName && article && article.data) {
+            if (oldFieldNames.length > 0 && newFieldNames.length > 0 && article && article.data) {
               const { data } = article;
-              let oldTaxonomies: string[] = data[oldFieldName];
-              let newTaxonomies: string[] = data[newFieldName] || [];
+              let oldTaxonomies: string[] = ContentType.getFieldValue(data, oldFieldNames) || [];
+              let newTaxonomies: string[] = ContentType.getFieldValue(data, newFieldNames) || [];
 
               if (oldTaxonomies && oldTaxonomies.length > 0) {
                 const idx = oldTaxonomies.findIndex(o => o === value);
@@ -314,7 +309,8 @@ export class TaxonomyHelper {
                 if (idx !== -1) {
                   newTaxonomies.push(value);
 
-                  data[newFieldName] = [...new Set(newTaxonomies)].sort();
+                  const newTaxonomiesValues = [...new Set(newTaxonomies)].sort();
+                  ContentType.setFieldValue(data, newFieldNames, newTaxonomiesValues);
 
                   const spaces = window.activeTextEditor?.options?.tabSize;
                   // Update the file
@@ -336,6 +332,38 @@ export class TaxonomyHelper {
 
       Notifications.info(`Move completed.`);
     });
+  }
+
+
+  /**
+   * Retrieve the fields for the taxonomy field
+   * @returns 
+   */
+  private static getFieldsHierarchy(taxonomyType: TaxonomyType | string, contentType: IContentType, fallback: boolean = false): string[] {
+    let fieldNames: string[] = [];
+    if (taxonomyType === TaxonomyType.Tag) {
+      fieldNames = ContentType.findFieldByType(contentType.fields, "tags");
+    } else if (taxonomyType === TaxonomyType.Category) {
+      fieldNames = ContentType.findFieldByType(contentType.fields, "categories");
+    } else {
+      const taxFieldName = getTaxonomyField(taxonomyType, contentType);
+      fieldNames = taxFieldName ? [taxFieldName] : [];
+    }
+
+    if (fallback && fieldNames.length === 0) {
+      let taxFieldName;
+      if (taxonomyType === TaxonomyType.Tag) {
+        taxFieldName = getTaxonomyField("tags", contentType);
+      } else if (taxonomyType === TaxonomyType.Category) {
+        taxFieldName = getTaxonomyField("categories", contentType);
+      }
+
+      if (taxFieldName) {
+        fieldNames = [taxFieldName];
+      }
+    }
+
+    return fieldNames;
   }
 
   /**

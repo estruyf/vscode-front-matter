@@ -51,7 +51,7 @@ export const TaxonomyLookup: React.FunctionComponent<ITaxonomyLookupProps> = ({ 
   if (taxonomy === "tags" || taxonomy === "categories") {
     return (
       <button 
-        className={total ? `text-teal-900 hover:text-teal-600` : ``}
+        className={total ? `text-teal-900 hover:text-teal-600 font-bold` : ``}
         title={total ? `Show contents with ${value} in ${taxonomy}` : ``}
         onClick={onNavigate}>
         {total || `-`}

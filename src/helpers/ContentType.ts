@@ -298,6 +298,32 @@ export class ContentType {
 
     return fieldValue;
   }
+  
+  /**
+   * Set the field value
+   * @param data 
+   * @param parents 
+   * @returns 
+   */
+  public static setFieldValue(data: any, parents: string[], value: any) {
+    let crntPageData = data;
+
+    for (let i = 0; i < parents.length; i++) {
+      const crntField = parents[i];
+
+      if (i === parents.length - 1) {
+        crntPageData[crntField] = value;
+      } else {
+        if (!crntPageData[crntField]) {
+          continue;
+        }
+
+        crntPageData = crntPageData[crntField];
+      }
+    }
+
+    return data;
+  }
 
   /**
    * Find the field by its type
@@ -306,13 +332,13 @@ export class ContentType {
    * @param parents 
    * @returns 
    */
-  public static findFieldByType(fields: Field[], type: FieldType, parents: string[] = []) {
+  public static findFieldByType(fields: Field[], type: FieldType, parents: string[] = []): string[] {
     for (const field of fields) {
       if (field.type === type) {
         parents = [...parents, field.name];
         return parents;
       } else if (field.type === "fields" && field.fields) {
-        const subFields = this.findPreviewField(field.fields);
+        const subFields = this.findFieldByType(field.fields, type, parents);
         if (subFields.length > 0) {
           return [...parents, field.name, ...subFields];
         }

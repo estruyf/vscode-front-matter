@@ -30,6 +30,13 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
     }
 
     const tagField = settings.dashboardState.contents.tags;
+
+    if (tagField === "tags") {
+      return pageData.fmTags;
+    } else if (tagField === "categories") {
+      return pageData.fmCategories;
+    }
+
     const tagsValue = pageData[tagField] || [];
 
     if (Array.isArray(tagsValue)) {
