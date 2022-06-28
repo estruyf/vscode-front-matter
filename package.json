@@ -22,6 +22,9 @@
       "href": "https://www.buymeacoffee.com/zMeFRy9"
     }
   ],
+  "sponsor": {
+    "url": "https://github.com/sponsors/estruyf"
+  },
   "engines": {
     "vscode": "^1.63.0"
   },
