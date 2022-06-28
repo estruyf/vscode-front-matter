@@ -1,3 +1,4 @@
+import { workspace } from 'vscode';
 import { DataFile } from './../../models/DataFile';
 import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { BaseListener } from "./BaseListener";
@@ -30,6 +31,10 @@ export class DataListener extends BaseListener {
     }
   }
 
+  /**
+   * Process the data update
+   * @param msgData 
+   */
   private static processDataUpdate(msgData: any) {
     const { file, fileType, entries } = msgData as { file: string, fileType: string, entries: any[] };
 
@@ -41,11 +46,14 @@ export class DataListener extends BaseListener {
       }
     }
 
+    const insertFinalNewLine = workspace.getConfiguration().get('files.insertFinalNewline');
+
     if (fileType === 'yaml') {
       const yamlData = yaml.safeDump(entries);
-      writeFileSync(absPath, yamlData, 'utf8');
+      writeFileSync(absPath, insertFinalNewLine ? `${yamlData}\n` : yamlData, 'utf8');
     } else {
-      writeFileSync(absPath, JSON.stringify(entries, null, 2));
+      const jsonData = JSON.stringify(entries, null, 2);
+      writeFileSync(absPath, insertFinalNewLine ? `${jsonData}\n` : jsonData, 'utf8');
     } 
 
     this.processDataFile(msgData);
