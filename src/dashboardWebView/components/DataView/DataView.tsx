@@ -172,7 +172,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
                 selectedData ? (
                   <>
                     <div className={`w-1/3 py-6 px-4 flex-1 border-r border-gray-200 dark:border-vulcan-300 overflow-auto`}>
-                      <h2 className={`text-lg text-gray-500 dark:text-whisper-900`}>Your {selectedData.title.toLowerCase()} data items</h2>
+                      <h2 className={`text-lg text-gray-500 dark:text-whisper-900`}>Your {selectedData?.title?.toLowerCase() || ""} data items</h2>
 
                       <div className='py-4'>
                         {
