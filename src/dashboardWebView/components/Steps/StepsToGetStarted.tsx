@@ -48,6 +48,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
 
   const reload = () => {
     const crntState: any = Messenger.getState() || {};
+    
     Messenger.setState({
       ...crntState,
       isWelcomeConfiguring: false

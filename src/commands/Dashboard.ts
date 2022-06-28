@@ -1,4 +1,4 @@
-import { SETTING_DASHBOARD_OPENONSTART, CONTEXT } from '../constants';
+import { SETTING_DASHBOARD_OPENONSTART, CONTEXT, ExtensionState } from '../constants';
 import { join } from "path";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window } from "vscode";
 import { Logger, Settings as SettingsHelper } from '../helpers';
@@ -74,6 +74,7 @@ export class Dashboard {
   public static reload() {
     if (Dashboard.isOpen) {
       Dashboard.webview?.dispose();
+      Extension.getInstance().setState(ExtensionState.Dashboard.Pages.Cache, undefined, "workspace")
 
       setTimeout(() => {
         Dashboard.open();

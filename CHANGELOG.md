@@ -22,6 +22,7 @@
 - [#356](https://github.com/estruyf/vscode-front-matter/issues/356): Re-introduce the `labelField` to the `frontMatter.taxonomy.fieldGroups` setting
 - [#358](https://github.com/estruyf/vscode-front-matter/issues/358): Fix for relative path of the public folder
 - [#364](https://github.com/estruyf/vscode-front-matter/issues/364): Honour file ending rules in data files
+- [#365](https://github.com/estruyf/vscode-front-matter/issues/365): Show spinner on the initial load of the content dashboard
 
 ## [7.3.4] - 2022-06-13
 
