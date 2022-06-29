@@ -15,6 +15,7 @@
 - [#350](https://github.com/estruyf/vscode-front-matter/issues/350): New `previewPath` property for the `frontMatter.content.pageFolders` setting. This allows you to specify a section prefix for all content created in that directory.
 - [#351](https://github.com/estruyf/vscode-front-matter/issues/351): New `template` property for content types which allows you to combine templates and content types for content creation
 - [#353](https://github.com/estruyf/vscode-front-matter/issues/353): Add the default content type on project initialization
+- [#366](https://github.com/estruyf/vscode-front-matter/issues/366): Better support for using block fields in another block field
 
 ### 🐞 Fixes
 

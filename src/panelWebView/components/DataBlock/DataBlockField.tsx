@@ -49,8 +49,26 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
     }
 
     let parentObj: any = data;
+    
+    if (parents.length > 1) {
+      // Get last parent
+      const lastParent = parents[parents.length - 1];
+
+      // Check if the last parent is not the same as the field. 
+      // If it is, then we need to skip it.
+      if (lastParent !== field.name) {
+        if (!parentObj[lastParent]) {
+          parentObj[lastParent] = {};
+        }
+        parentObj = parentObj[lastParent];
+      }
+    }
+
+    // Set the current field to the data object
     parentObj[crntField] = crntValue;
 
+    // Delete the field group to have it added at the end
+    delete data["fieldGroup"];
 
     if (selectedIndex !== null && selectedIndex !== undefined) {
       dataClone[selectedIndex] = {
@@ -83,6 +101,10 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
     onAdd();
   }, [value, selectedIndex, onSubmit]);
 
+  /**
+   * On group change
+   * @param group 
+   */
   const onGroupChange = (group: FieldGroup | null | undefined) => {
     setSelectedGroup(group);
 
@@ -90,7 +112,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
       // Clear the selected index
       onAdd();
     }
-  }
+  };
 
   /**
    * Store the current state + show the form
@@ -123,7 +145,9 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
     onAdd();
   };
 
-
+  /**
+   * Add a new item to the list
+   */
   const onAdd = useCallback(() => {
     setSelectedIndex(null);
     setSelectedGroup(null);
@@ -132,6 +156,9 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
     updateSelectionState(undefined);
   }, [setSelectedIndex, setSelectedGroup, setSelectedBlockData]); 
   
+  /**
+   * Update an item from the list
+   */
   const onEdit = useCallback((index: number) => {
     updateSelectionState(index);
     setSelectedIndex(index);
@@ -148,6 +175,9 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
     }
   }, [setSelectedIndex, setSelectedBlockData, value]);
 
+  /**
+   * On sort of an item
+   */
   const onSort = useCallback(({ oldIndex, newIndex }: SortEnd) => {
     if (!value || value.length === 0) {
       return null;
@@ -193,7 +223,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
     }
   }, []);
 
-  if (parentBlock === null) {
+  if (parentBlock === null && field.type !== "block") {
     return null;
   }
   
@@ -237,7 +267,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
                     selectedIndex: selectedIndex === null ? undefined : selectedIndex
                   }, 
                   onFieldUpdate,
-                  selectedIndex === null ? null : `${field.name}-${selectedGroup?.id}-${selectedIndex}`
+                  `${field.name}-${selectedGroup?.id}-${selectedIndex || 0}`
                 ) 
               )
             }
