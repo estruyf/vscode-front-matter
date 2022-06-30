@@ -1927,7 +1927,8 @@
     "test-compile": "tsc -p ./",
     "clean": "rimraf dist",
     "start:site": "cd ./docs && npm run dev",
-    "test": "tsc -p tsconfig.e2e.json && node ./e2e/out/runTests.js"
+    "clean:test": "rm ./e2e/sample/frontmatter.json || exit 0 && rm -rf ./e2e/sample/.frontmatter || exit 0",
+    "test": "tsc -p tsconfig.e2e.json && npm run clean:test && node ./e2e/out/runTests.js"
   },
   "devDependencies": {
     "@actions/core": "^1.8.2",

@@ -4,7 +4,7 @@ import { ExTester, ReleaseQuality } from "vscode-extension-tester";
 
 
 async function main(): Promise<void> {
-  const vsCodeVersion: semver.SemVer = new semver.SemVer(`1.65.0`);
+  const vsCodeVersion: semver.SemVer = new semver.SemVer(`1.66.0`);
   const version = vsCodeVersion.version;
 
   const storageFolder = path.join(__dirname, "..", "storage");

@@ -1,4 +1,4 @@
-import { By, VSBrowser, EditorView, WebView, Workbench, Notification } from "vscode-extension-tester";
+import { By, VSBrowser, EditorView, WebView, Workbench, Notification, StatusBar, NotificationType } from "vscode-extension-tester";
 import { expect } from "chai";
 import { sleep } from "./utils";
 import { join } from "path";
@@ -12,7 +12,7 @@ describe("Initialization testing", function() {
   let workbench: Workbench;
   let view: WebView;
 
-  this.beforeAll(async function() {
+  before(async function() {
     await VSBrowser.instance.openResources(join(__dirname, '../sample'));
     await sleep(3000);
     workbench = new Workbench();
@@ -42,14 +42,21 @@ describe("Initialization testing", function() {
 
     await sleep(1000);
 
+    await VSBrowser.instance.driver.wait(() => { 
+      return notificationExists(workbench, 'Front Matter:'); 
+    }, 2000) as Notification;
+
     const notifications = await workbench.getNotifications();
 
     let notification!: Notification;
     for (const not of notifications) {
-      const message = await not.getMessage();
-      if (message.includes('Front Matter:')) {
-        notification = not;
-      }
+      console.log(not);
+
+      // const message = await not.get;
+      // console.log(message);
+      // if (message.includes('Front Matter:')) {
+      //   notification = not;
+      // }
     }
 
     expect(await notification.getMessage()).has.string(`Project initialized successfully.`);
@@ -57,3 +64,17 @@ describe("Initialization testing", function() {
 
   it("3. Check if project file is created", async function() {});
 });
+
+
+async function notificationExists(workbench: Workbench, text: string): Promise<Notification | undefined> {
+  const notifications = await (await (new StatusBar()).openNotificationsCenter()).getNotifications(NotificationType.Info);
+  console.log(`Notifications:`, notifications.length);
+
+  for (const notification of notifications) {
+    const message = await notification.getMessage();
+    console.log(message)
+    if (message.indexOf(text) >= 0) {
+      return notification;
+    }
+  }
+}
