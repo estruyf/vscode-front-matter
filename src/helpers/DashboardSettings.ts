@@ -2,7 +2,7 @@ import { basename, join } from "path";
 import { workspace } from "vscode";
 import { Folders } from "../commands/Folders";
 import { Project } from "../commands/Project";
-import { CONTEXT, ExtensionState, SETTING_CONTENT_DRAFT_FIELD, SETTING_CONTENT_SORTING, SETTING_CONTENT_SORTING_DEFAULT, SETTING_DASHBOARD_OPENONSTART, SETTING_DATA_FILES, SETTING_DATA_FOLDERS, SETTING_DATA_TYPES, SETTING_FRAMEWORK_ID, SETTING_MEDIA_SORTING_DEFAULT, SETTING_CUSTOM_SCRIPTS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_SNIPPETS, SETTING_DATE_FORMAT, SETTING_DASHBOARD_CONTENT_TAGS, SETTING_MEDIA_SUPPORTED_MIMETYPES, SETTING_TAXONOMY_CUSTOM } from "../constants";
+import { CONTEXT, ExtensionState, SETTING_CONTENT_DRAFT_FIELD, SETTING_CONTENT_SORTING, SETTING_CONTENT_SORTING_DEFAULT, SETTING_DASHBOARD_OPENONSTART, SETTING_DATA_FILES, SETTING_DATA_FOLDERS, SETTING_DATA_TYPES, SETTING_FRAMEWORK_ID, SETTING_MEDIA_SORTING_DEFAULT, SETTING_CUSTOM_SCRIPTS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_SNIPPETS, SETTING_DATE_FORMAT, SETTING_DASHBOARD_CONTENT_TAGS, SETTING_MEDIA_SUPPORTED_MIMETYPES, SETTING_TAXONOMY_CUSTOM, SETTING_TEMPLATES_ENABLED } from "../constants";
 import { DashboardViewType, SortingOption, Settings as ISettings } from "../dashboardWebView/models";
 import { CustomScript, DraftField, Snippets, SortingSetting, TaxonomyType } from "../models";
 import { DataFile } from "../models/DataFile";
@@ -46,6 +46,7 @@ export class DashboardSettings {
           sorting: await ext.getState<SortingOption | undefined>(ExtensionState.Dashboard.Contents.Sorting, "workspace"),
           defaultSorting: Settings.get<string>(SETTING_CONTENT_SORTING_DEFAULT),
           tags: Settings.get<string>(SETTING_DASHBOARD_CONTENT_TAGS),
+          templatesEnabled: Settings.get<boolean>(SETTING_TEMPLATES_ENABLED)
         },
         media: {
           sorting: await ext.getState<SortingOption | undefined>(ExtensionState.Dashboard.Media.Sorting, "workspace"),

@@ -134,6 +134,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPage
                     ...customActions
                   ]} 
                   onClick={createContent} 
+                  isTemplatesEnabled={settings?.dashboardState?.contents?.templatesEnabled || undefined}
                   disabled={!settings?.initialized} />
               </div>
             </div>

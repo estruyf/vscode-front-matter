@@ -21,8 +21,6 @@ export default function useMessages() {
   Messenger.listen((event: MessageEvent<EventData<any>>) => {
     const message = event.data;
 
-    console.log(`Received message:`, message);
-
     switch (message.command) {
       case DashboardCommand.loading:
         setLoading(message.data);
