@@ -1,6 +1,6 @@
 # Change Log
 
-## [8.0.0] - 2022-06-xx
+## [8.0.0] - 2022-07-11 - [Release notes](https://beta.frontmatter.codes/updates/v8.0.0) 
 
 ### ✨ New Features
 
