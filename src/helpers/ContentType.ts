@@ -1,8 +1,8 @@
 import { ModeListener } from './../listeners/general/ModeListener';
 import { PagesListener } from './../listeners/dashboard';
 import { ArticleHelper, Settings } from ".";
-import { FEATURE_FLAG, SETTING_CONTENT_DRAFT_FIELD, SETTING_DATE_FORMAT, SETTING_FRAMEWORK_ID, SETTING_TAXONOMY_CONTENT_TYPES, TelemetryEvent } from "../constants";
-import { ContentType as IContentType, DraftField, Field } from '../models';
+import { FEATURE_FLAG, SETTING_CONTENT_DRAFT_FIELD, SETTING_DATE_FORMAT, SETTING_FRAMEWORK_ID, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TAXONOMY_FIELD_GROUPS, TelemetryEvent } from "../constants";
+import { ContentType as IContentType, DraftField, Field, FieldGroup, FieldType } from '../models';
 import { Uri, commands, window } from 'vscode'; 
 import { Folders } from "../commands/Folders";
 import { Questions } from "./Questions";
@@ -12,6 +12,7 @@ import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
 import { Telemetry } from './Telemetry';
 import { processKnownPlaceholders } from './PlaceholderHelper';
 import { basename } from 'path';
+import { ParsedFrontMatter } from '../parsers';
 
 export class ContentType {
 
@@ -272,6 +273,147 @@ export class ContentType {
   }
 
   /**
+   * Retrieve the field value
+   * @param data 
+   * @param parents 
+   * @returns 
+   */
+  public static getFieldValue(data: any, parents: string[]): string[] {
+    let fieldValue = [];
+    let crntPageData = data;
+
+    for (let i = 0; i < parents.length; i++) {
+      const crntField = parents[i];
+
+      if (i === parents.length - 1) {
+        fieldValue = crntPageData[crntField];
+      } else {
+        if (!crntPageData[crntField]) {
+          continue;
+        }
+
+        crntPageData = crntPageData[crntField];
+      }
+    }
+
+    return fieldValue;
+  }
+  
+  /**
+   * Set the field value
+   * @param data 
+   * @param parents 
+   * @returns 
+   */
+  public static setFieldValue(data: any, parents: string[], value: any) {
+    let crntPageData = data;
+
+    for (let i = 0; i < parents.length; i++) {
+      const crntField = parents[i];
+
+      if (i === parents.length - 1) {
+        crntPageData[crntField] = value;
+      } else {
+        if (!crntPageData[crntField]) {
+          continue;
+        }
+
+        crntPageData = crntPageData[crntField];
+      }
+    }
+
+    return data;
+  }
+
+  /**
+   * Find the field by its type
+   * @param fields 
+   * @param type 
+   * @param parents 
+   * @returns 
+   */
+  public static findFieldByType(fields: Field[], type: FieldType, parents: string[] = []): string[] {
+    for (const field of fields) {
+      if (field.type === type) {
+        parents = [...parents, field.name];
+        return parents;
+      } else if (field.type === "fields" && field.fields) {
+        const subFields = this.findFieldByType(field.fields, type, parents);
+        if (subFields.length > 0) {
+          return [...parents, field.name, ...subFields];
+        }
+      }
+    }
+
+    return parents;
+  }
+
+  /**
+   * Find the preview field in the fields
+   * @param ctFields 
+   * @param parents 
+   * @returns 
+   */
+  public static findPreviewField(ctFields: Field[], parents: string[] = []): string[] {
+    for (const field of ctFields) {
+      if (field.isPreviewImage && field.type === "image") {
+        parents = [...parents, field.name];
+        return parents;
+      } else if (field.type === "fields" && field.fields) {
+        const subFields = this.findPreviewField(field.fields);
+        if (subFields.length > 0) {
+          return [...parents, field.name, ...subFields];
+        }
+      } else if (field.type === "block") {
+        const subFields = this.findPreviewInBlockField(field);
+        if (subFields.length > 0) {
+          return [...parents, field.name, ...subFields];
+        }
+      }
+    }
+
+    return parents;
+  }
+
+  /**
+   * Look for the preview image in the block field
+   * @param field 
+   * @param parents 
+   * @returns 
+   */
+  private static findPreviewInBlockField(field: Field) {
+    const groups = field.fieldGroup && Array.isArray(field.fieldGroup) ? field.fieldGroup : [field.fieldGroup];
+    if (!groups) {
+      return [];
+    }
+
+    const blocks = Settings.get<FieldGroup[]>(SETTING_TAXONOMY_FIELD_GROUPS);
+    if (!blocks) {
+      return [];
+    }
+
+    let found = false;
+    for (const group of groups) {
+      const block = blocks.find(block => block.id === group);
+      if (!block) {
+        continue;
+      }
+
+      let newParents: string[] = [];
+      if (!found) {
+        newParents = this.findPreviewField(block?.fields, []);
+      }
+
+      if (newParents.length > 0) {
+        found = true;
+        return newParents;
+      }
+    }
+
+    return [];
+  }
+
+  /**
    * Generate the fields from the data
    * @param data 
    * @param fields 
@@ -362,6 +504,13 @@ export class ContentType {
       return;
     }
 
+    let templatePath = contentType.template;
+    let templateData: ParsedFrontMatter | null = null;
+    if (templatePath) {
+      templatePath = Folders.getAbsFilePath(templatePath);
+      templateData = ArticleHelper.getFrontMatterByPath(templatePath);
+    }
+
     let newFilePath: string | undefined = ArticleHelper.createContent(contentType, folderPath, titleValue);
     if (!newFilePath) {
       return;
@@ -377,7 +526,7 @@ export class ContentType {
       }
     }
 
-    let data: any = this.processFields(contentType, titleValue, {});
+    let data: any = this.processFields(contentType, titleValue, templateData?.data || {});
 
     data = ArticleHelper.updateDates(Object.assign({}, data));
 
@@ -385,7 +534,7 @@ export class ContentType {
       data['type'] = contentType.name;
     }
 
-    const content = ArticleHelper.stringifyFrontMatter(``, data);
+    const content = ArticleHelper.stringifyFrontMatter(templateData?.content || ``, data);
 
     writeFileSync(newFilePath, content, { encoding: "utf8" });
 

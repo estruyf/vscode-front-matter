@@ -32,6 +32,7 @@ export const COMMAND_NAME = {
   dashboardMedia: getCommandName("dashboard.media"),
   dashboardSnippets: getCommandName("dashboard.snippets"),
   dashboardData: getCommandName("dashboard.data"),
+  dashboardTaxonomy: getCommandName("dashboard.taxonomy"),
   dashboardClose: getCommandName("dashboard.close"),
   promote: getCommandName("promoteSettings"),
   createFolder: getCommandName("createFolder"),

@@ -1,4 +1,4 @@
-import { DatabaseIcon, PhotographIcon, ScissorsIcon } from '@heroicons/react/outline';
+import { DatabaseIcon, PhotographIcon, ScissorsIcon, TagIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 import { FeatureFlag } from '../../../components/features/FeatureFlag';
@@ -46,6 +46,15 @@ export const Tabs: React.FunctionComponent<ITabsProps> = ({ onNavigate }: React.
             navigationType={NavigationType.Data} 
             onNavigate={onNavigate}>
             <DatabaseIcon className={`h-6 w-auto mr-2`} /><span>Data</span>
+          </Tab>
+        </li>
+      </FeatureFlag>
+      <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.dashboard.taxonomy.view}>
+        <li className="mr-2" role="presentation">
+          <Tab
+            navigationType={NavigationType.Taxonomy} 
+            onNavigate={onNavigate}>
+            <TagIcon className={`h-6 w-auto mr-2`} /><span>Taxonomy</span>
           </Tab>
         </li>
       </FeatureFlag>

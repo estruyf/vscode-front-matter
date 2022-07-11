@@ -107,17 +107,20 @@ export class DataListener extends BaseListener {
     if (keys.length > 0 && contentTypes && wsFolder) {
       // Get the current content type
       const contentType = ArticleHelper.getContentType(updatedMetadata);
+      let slugField;
       if (contentType) {
         ImageHelper.processImageFields(updatedMetadata, contentType.fields);
+
+        slugField = contentType.fields.find((f) => f.type === "slug");
       }
-    }
+      
+      // Check slug
+      if (!slugField && !updatedMetadata[DefaultFields.Slug]) {
+        const slug = Article.getSlug();
 
-    // Check slug
-    if (!updatedMetadata[DefaultFields.Slug]) {
-      const slug = Article.getSlug();
-
-      if (slug) {
-        updatedMetadata[DefaultFields.Slug] = slug;
+        if (slug) {
+          updatedMetadata[DefaultFields.Slug] = slug;
+        }
       }
     }
 

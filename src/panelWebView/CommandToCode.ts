@@ -38,4 +38,5 @@ export enum CommandToCode {
   addMissingFields = "add-missing-fields",
   setContentType = "set-content-type",
   getDataEntries = "get-data-entries",
+  generateSlug = "generate-slug",
 }

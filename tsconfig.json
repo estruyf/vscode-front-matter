@@ -19,6 +19,7 @@
 	"exclude": [
 		"node_modules",
 		".vscode-test",
-		"docs"
+		"docs",
+		"e2e"
 	]
 }

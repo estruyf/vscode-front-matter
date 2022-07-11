@@ -10,6 +10,7 @@ export const TelemetryEvent = {
   openMediaDashboard: 'openMediaDashboard',
   openDataDashboard: 'openDataDashboard',
   openSnippetsDashboard: 'openSnippetsDashboard',
+  openTaxonomyDashboard: 'openTaxonomyDashboard',
   closeDashboard: 'closeDashboard',
 
   // Other actions
@@ -41,4 +42,5 @@ export const TelemetryEvent = {
   webviewDataView: 'webviewDataView',
   webviewContentsView: 'webviewContentsView',
   webviewSnippetsView: 'webviewSnippetsView',
+  webviewTaxonomyDashboard: 'webviewTaxonomyDashboard',
 };

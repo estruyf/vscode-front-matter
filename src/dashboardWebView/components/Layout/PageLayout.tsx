@@ -5,11 +5,12 @@ import { Header } from '../Header';
 
 export interface IPageLayoutProps {
   header?: React.ReactNode;
-  folders?: string[] | undefined
-  totalPages?: number | undefined
+  folders?: string[] | undefined;
+  totalPages?: number | undefined;
+  contentClass?: string;
 }
 
-export const PageLayout: React.FunctionComponent<IPageLayoutProps> = ({ header, folders, totalPages, children }: React.PropsWithChildren<IPageLayoutProps>) => {
+export const PageLayout: React.FunctionComponent<IPageLayoutProps> = ({ header, folders, totalPages, contentClass, children }: React.PropsWithChildren<IPageLayoutProps>) => {
   const settings = useRecoilValue(SettingsSelector);
   
   return (
@@ -20,7 +21,7 @@ export const PageLayout: React.FunctionComponent<IPageLayoutProps> = ({ header, 
         totalPages={totalPages}
         settings={settings} />
 
-      <div className="w-full flex justify-between flex-col flex-grow max-w-7xl mx-auto pt-6 px-4">
+      <div className={contentClass || "w-full flex justify-between flex-col flex-grow max-w-7xl mx-auto pt-6 px-4"}>
         { children }
       </div>
     </div>

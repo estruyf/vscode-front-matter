@@ -1,4 +1,4 @@
-import { SETTING_DASHBOARD_OPENONSTART, CONTEXT } from '../constants';
+import { SETTING_DASHBOARD_OPENONSTART, CONTEXT, ExtensionState } from '../constants';
 import { join } from "path";
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window } from "vscode";
 import { Logger, Settings as SettingsHelper } from '../helpers';
@@ -7,7 +7,7 @@ import { Extension } from '../helpers/Extension';
 import { WebviewHelper } from '@estruyf/vscode';
 import { DashboardData } from '../models/DashboardData';
 import { MediaLibrary } from '../helpers/MediaLibrary';
-import { DashboardListener, MediaListener, SettingsListener, TelemetryListener, DataListener, PagesListener, ExtensionListener, SnippetListener } from '../listeners/dashboard';
+import { DashboardListener, MediaListener, SettingsListener, TelemetryListener, DataListener, PagesListener, ExtensionListener, SnippetListener, TaxonomyListener } from '../listeners/dashboard';
 import { MediaListener as PanelMediaListener } from '../listeners/panel'
 import { ModeListener } from '../listeners/general';
 
@@ -74,6 +74,7 @@ export class Dashboard {
   public static reload() {
     if (Dashboard.isOpen) {
       Dashboard.webview?.dispose();
+      Extension.getInstance().setState(ExtensionState.Dashboard.Pages.Cache, undefined, "workspace")
 
       setTimeout(() => {
         Dashboard.open();
@@ -145,6 +146,7 @@ export class Dashboard {
       TelemetryListener.process(msg);
       SnippetListener.process(msg);
       ModeListener.process(msg);
+      TaxonomyListener.process(msg);
     });
   }
 

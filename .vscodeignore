@@ -27,3 +27,5 @@ frontmatter.json
 .frontmatter
 webpack
 README.beta.md
+e2e
+storage

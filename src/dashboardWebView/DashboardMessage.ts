@@ -41,6 +41,16 @@ export enum DashboardMessage {
   addSnippet = 'addSnippet',
   updateSnippet = 'updateSnippet',
 
+  // Taxonomy dashboard
+  getTaxonomyData = 'getTaxonomyData',
+  editTaxonomy = "editTaxonomy",
+  mergeTaxonomy = "mergeTaxonomy",
+  deleteTaxonomy = "deleteTaxonomy",
+  addToTaxonomy = "addToTaxonomy",
+  createTaxonomy = "createTaxonomy",
+  importTaxonomy = "importTaxonomy",
+  moveTaxonomy = "moveTaxonomy",
+
   // Other
   getTheme = 'getTheme',
   updateSetting = 'updateSetting',

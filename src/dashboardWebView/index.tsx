@@ -1,10 +1,11 @@
 import * as React from "react";
 import { render } from "react-dom";
 import { RecoilRoot } from "recoil";
-import { Dashboard } from "./components/Dashboard";
+import { App } from "./components/App";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import { SENTRY_LINK } from "../constants";
+import { MemoryRouter } from "react-router-dom";
 import './styles.css';
 import { Preview } from "./components/Preview";
 
@@ -12,6 +13,15 @@ declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
   setState: (data: T) => void;
   postMessage: (msg: unknown) => void;
+};
+
+export const routePaths: { [name: string]: string } = {
+  welcome: "/welcome",
+  contents: "/contents",
+  media: "/media",
+  snippets: "/snippets",
+  data: "/data",
+  taxonomy: "/taxonomy",
 };
 
 const elm = document.querySelector("#app");
@@ -37,7 +47,15 @@ if (elm) {
   if (type === "preview") {
     render(<Preview url={url} />, elm);
   } else {
-    render(<RecoilRoot><Dashboard showWelcome={!!welcome} /></RecoilRoot>, elm);
+    render((
+      <RecoilRoot>
+        <MemoryRouter 
+          initialEntries={Object.keys(routePaths).map((key: string) => routePaths[key]) as string[]}
+          initialIndex={1}>
+          <App showWelcome={!!welcome} />
+        </MemoryRouter>
+      </RecoilRoot>
+    ), elm);
   }
 }
 

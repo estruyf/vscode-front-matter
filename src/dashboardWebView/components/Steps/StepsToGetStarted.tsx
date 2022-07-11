@@ -33,6 +33,7 @@ const Folder = ({ wsFolder, folder, folders, addFolder }: { wsFolder: string, fo
 
 export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps> = ({settings}: React.PropsWithChildren<IStepsToGetStartedProps>) => {
   const [framework, setFramework] = useState<string | null>(null);
+  const [taxImported, setTaxImported] = useState<boolean>(false);
 
   const frameworks: Framework[] = FrameworkDetectors.map((detector: any) => detector.framework);
 
@@ -47,6 +48,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
 
   const reload = () => {
     const crntState: any = Messenger.getState() || {};
+    
     Messenger.setState({
       ...crntState,
       isWelcomeConfiguring: false
@@ -55,14 +57,21 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
     Messenger.send(DashboardMessage.reload);
   };
 
+  const importTaxonomy = () => {
+    Messenger.send(DashboardMessage.importTaxonomy);
+    setTaxImported(true);
+  }
+
   const steps = [
     { 
+      id: `welcome-init`,
       name: 'Initialize project', 
       description: <>Initialize the project with a template folder and sample markdown file. The template folder can be used to define your own templates. <b>Start by clicking on this action</b>.</>,
       status: settings.initialized ? Status.Completed : Status.NotStarted,
       onClick: settings.initialized ? undefined : () => { Messenger.send(DashboardMessage.initializeProject); }  
     },
     { 
+      id: `welcome-framework`,
       name: 'Framework presets', 
       description: (
         <div>
@@ -106,6 +115,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
       onClick: undefined 
     },
     {
+      id: `welcome-content-folders`,
       name: 'Register content folder(s)',
       description: (
         <>          
@@ -136,7 +146,15 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
       ),
       status: settings.contentFolders && settings.contentFolders.length > 0 ? Status.Completed : Status.NotStarted
     },
+    { 
+      id: `welcome-import`,
+      name: 'Import all tags and categories (optional)', 
+      description: <>Now that Front Matter knows all the content folders. Would you like to import all tags and categories from the available content?</>,
+      status: taxImported ? Status.Completed : Status.NotStarted,
+      onClick: settings.contentFolders && settings.contentFolders.length > 0 ? importTaxonomy : undefined  
+    },
     {
+      id: `welcome-show-dashboard`,
       name: 'Show the dashboard',
       description: <>Once all actions are completed, the dashboard can be loaded.</>,
       status: (settings.initialized && settings.contentFolders && settings.contentFolders.length > 0) ? Status.Active : Status.NotStarted,
@@ -154,7 +172,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
     <nav aria-label="Progress">
       <ol role="list">
         {steps.map((step, stepIdx) => (
-          <li key={step.name} className={`${stepIdx !== steps.length - 1 ? 'pb-10' : ''} relative`}>
+          <li key={step.id} className={`${stepIdx !== steps.length - 1 ? 'pb-10' : ''} relative`} data-test={step.id}>
             <Step name={step.name} description={step.description} status={step.status} showLine={stepIdx !== steps.length - 1} onClick={step.onClick} />
           </li>
         ))}

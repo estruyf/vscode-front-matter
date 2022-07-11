@@ -1,4 +1,5 @@
 import { Article } from "../../commands";
+import { Command } from "../../panelWebView/Command";
 import { CommandToCode } from "../../panelWebView/CommandToCode";
 import { BaseListener } from "./BaseListener";
 
@@ -14,7 +15,10 @@ export class ArticleListener extends BaseListener {
 
     switch(msg.command) {
       case CommandToCode.updateSlug:
-        Article.generateSlug();
+        Article.updateSlug();
+        break;
+      case CommandToCode.generateSlug:
+        this.generateSlug(msg.data);
         break;
       case CommandToCode.updateLastMod:
         Article.setLastModifiedDate();
@@ -22,6 +26,17 @@ export class ArticleListener extends BaseListener {
       case CommandToCode.publish:
         Article.toggleDraft();
         break;
+    }
+  }
+
+  /**
+   * Generate a slug
+   * @param title 
+   */
+  private static generateSlug(title: string) {
+    const slug = Article.generateSlug(title);
+    if (slug) {
+      this.sendMsg(Command.updatedSlug, slug)
     }
   }
 }

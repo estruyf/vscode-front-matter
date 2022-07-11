@@ -3,7 +3,7 @@
   "displayName": "Front Matter",
   "description": "Front Matter is a CMS that runs within Visual Studio Code. It gives you the power and control of a full-blown CMS while also providing you the flexibility and speed of the static site generator of your choice like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "7.3.4",
+  "version": "8.0.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -22,6 +22,9 @@
       "href": "https://www.buymeacoffee.com/zMeFRy9"
     }
   ],
+  "sponsor": {
+    "url": "https://github.com/sponsors/estruyf"
+  },
   "engines": {
     "vscode": "^1.63.0"
   },
@@ -183,6 +186,14 @@
                 "type": "boolean",
                 "default": false,
                 "description": "Exclude sub-directories"
+              },
+              "previewPath": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "default": null,
+                "description": "Defines a custom preview path for the folder."
               }
             },
             "additionalProperties": false,
@@ -806,7 +817,9 @@
                         "fields",
                         "json",
                         "block",
-                        "dataFile"
+                        "list",
+                        "dataFile",
+                        "slug"
                       ],
                       "description": "Define the type of field"
                     },
@@ -943,6 +956,11 @@
                       "type": "string",
                       "default": "",
                       "description": "Specify the property name that will be used to show the value for the field"
+                    },
+                    "editable": {
+                      "type": "boolean",
+                      "default": true,
+                      "description": "Specify if the field is editable"
                     }
                   },
                   "additionalProperties": false,
@@ -1065,6 +1083,11 @@
                 ],
                 "default": null,
                 "description": "Defines a custom preview path for the content type."
+              },
+              "template": {
+                "type": "string",
+                "default": "",
+                "description": "An optional template that can be used for creating new content."
               }
             },
             "additionalProperties": false,
@@ -1167,6 +1190,10 @@
               "id": {
                 "type": "string",
                 "description": "The name of the field group"
+              },
+              "labelField": {
+                "type": "string",
+                "description": "The name of the field to be used as display value"
               },
               "fields": {
                 "$ref": "#contenttypefield"
@@ -1505,6 +1532,15 @@
         }
       },
       {
+        "command": "frontMatter.dashboard.taxonomy",
+        "title": "Open taxonomy dashboard",
+        "category": "Front matter",
+        "icon": {
+          "dark": "/assets/icons/frontmatter-small-dark.svg",
+          "light": "/assets/icons/frontmatter-small-light.svg"
+        }
+      },
+      {
         "command": "frontMatter.markup.orderedlist",
         "title": "Ordered list",
         "category": "Front matter",
@@ -1819,7 +1855,7 @@
         {
           "command": "frontMatter.dashboard",
           "group": "navigation@2",
-          "when": "view == frontMatter.explorer"
+          "when": "view == frontMatter.explorer || view == explorer"
         }
       ]
     },
@@ -1890,7 +1926,9 @@
     "prod:panel": "webpack --mode production --config ./webpack/panel.config.js",
     "test-compile": "tsc -p ./",
     "clean": "rimraf dist",
-    "start:site": "cd ./docs && npm run dev"
+    "start:site": "cd ./docs && npm run dev",
+    "clean:test": "rm ./e2e/sample/frontmatter.json || exit 0 && rm -rf ./e2e/sample/.frontmatter || exit 0",
+    "test": "tsc -p tsconfig.e2e.json && npm run clean:test && node ./e2e/out/runTests.js"
   },
   "devDependencies": {
     "@actions/core": "^1.8.2",
@@ -1903,6 +1941,7 @@
     "@sentry/react": "^6.13.3",
     "@sentry/tracing": "^6.13.3",
     "@tailwindcss/forms": "^0.3.3",
+    "@types/chai": "^4.3.1",
     "@types/glob": "7.1.3",
     "@types/invariant": "^2.2.35",
     "@types/js-yaml": "3.12.1",
@@ -1910,7 +1949,7 @@
     "@types/lodash.uniqby": "4.7.6",
     "@types/lodash.xor": "^4.5.6",
     "@types/mime-types": "^2.1.1",
-    "@types/mocha": "^5.2.6",
+    "@types/mocha": "^5.2.7",
     "@types/mustache": "^4.1.2",
     "@types/node": "10.17.48",
     "@types/node-fetch": "^2.5.12",
@@ -1925,6 +1964,7 @@
     "ajv": "^8.8.2",
     "array-move": "^4.0.0",
     "autoprefixer": "^10.3.2",
+    "chai": "^4.3.6",
     "css-loader": "5.2.7",
     "date-fns": "2.23.0",
     "downshift": "6.0.6",
@@ -1941,6 +1981,7 @@
     "lodash.xor": "^4.5.0",
     "mdast-util-from-markdown": "1.0.0",
     "mime-types": "^2.1.35",
+    "mocha": "^10.0.0",
     "mustache": "^4.2.0",
     "node-json-db": "^1.3.0",
     "npm-run-all": "^4.1.5",
@@ -1953,10 +1994,12 @@
     "react-dom": "17.0.1",
     "react-dropzone": "^11.3.4",
     "react-quill": "^2.0.0-beta.4",
+    "react-router-dom": "^6.3.0",
     "react-sortable-hoc": "^2.0.0",
     "react-toastify": "^8.1.0",
     "recoil": "^0.4.1",
     "rimraf": "^3.0.2",
+    "semver": "^7.3.7",
     "style-loader": "2.0.0",
     "tailwindcss": "^2.2.7",
     "tailwindcss-nested-groups": "^1.2.4",
@@ -1968,6 +2011,7 @@
     "uniforms-bridge-json-schema": "^3.7.0",
     "uniforms-unstyled": "^3.7.0",
     "url-join-ts": "^1.0.5",
+    "vscode-extension-tester": "^4.2.5",
     "wc-react": "github:estruyf/wc-react",
     "webpack": "^5.65.0",
     "webpack-bundle-analyzer": "^4.5.0",

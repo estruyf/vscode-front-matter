@@ -20,6 +20,7 @@ import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { DataType } from '../../../models/DataType';
 import { TelemetryEvent } from '../../../constants';
+import { NavigationItem } from '../Layout';
 
 export interface IDataViewProps {}
 
@@ -150,14 +151,13 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
                     {
                       (dataFiles && dataFiles.length > 0) && (
                         dataFiles.map((dataFile, idx) => (
-                          <button
+                          <NavigationItem
                             key={`${dataFile.id}-${idx}`}
-                            type='button'
-                            className={`px-4 py-2 flex items-center text-sm font-medium w-full text-left hover:bg-gray-200 dark:hover:bg-vulcan-400 hover:text-vulcan-500 dark:hover:text-whisper-500 ${selectedData?.id === dataFile.id ? 'bg-gray-300 dark:bg-vulcan-300 text-vulcan-500 dark:text-whisper-500' : 'text-gray-500 dark:text-whisper-900'}`}
+                            isSelected={selectedData?.id === dataFile.id}
                             onClick={() => setSchema(dataFile)}>
                             <ChevronRightIcon className='-ml-1 w-5 mr-2' />
                             <span>{dataFile.title}</span>
-                          </button>
+                          </NavigationItem>
                         )
                       ))
                     }
@@ -172,7 +172,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
                 selectedData ? (
                   <>
                     <div className={`w-1/3 py-6 px-4 flex-1 border-r border-gray-200 dark:border-vulcan-300 overflow-auto`}>
-                      <h2 className={`text-lg text-gray-500 dark:text-whisper-900`}>Your {selectedData.title.toLowerCase()} data items</h2>
+                      <h2 className={`text-lg text-gray-500 dark:text-whisper-900`}>Your {selectedData?.title?.toLowerCase() || ""} data items</h2>
 
                       <div className='py-4'>
                         {

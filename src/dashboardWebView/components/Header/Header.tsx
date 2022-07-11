@@ -10,7 +10,7 @@ import { Navigation } from '../Navigation';
 import { Grouping } from '.';
 import { ViewSwitch } from './ViewSwitch';
 import { useRecoilState, useResetRecoilState } from 'recoil';
-import { CategoryAtom, DashboardViewAtom, SortingAtom, TagAtom } from '../../state';
+import { CategoryAtom, SortingAtom, TagAtom } from '../../state';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { ClearFilters } from './ClearFilters';
 import { MediaHeaderTop } from '../Media/MediaHeaderTop';
@@ -19,6 +19,9 @@ import { MediaHeaderBottom } from '../Media/MediaHeaderBottom';
 import { Tabs } from './Tabs';
 import { CustomScript } from '../../../models';
 import { LightningBoltIcon, PlusIcon } from '@heroicons/react/outline';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { routePaths } from '../..';
+import { useEffect } from 'react';
 
 export interface IHeaderProps {
   header?: React.ReactNode;
@@ -34,8 +37,9 @@ export interface IHeaderProps {
 export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPages, folders, settings }: React.PropsWithChildren<IHeaderProps>) => {
   const [ crntTag, setCrntTag ] = useRecoilState(TagAtom);
   const [ crntCategory, setCrntCategory ] = useRecoilState(CategoryAtom);
-  const [ view, setView ] = useRecoilState(DashboardViewAtom);
-  const resetSorting = useResetRecoilState(SortingAtom)
+  const resetSorting = useResetRecoilState(SortingAtom);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const createContent = () => {
     Messenger.send(DashboardMessage.createContent);
@@ -50,7 +54,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPage
   };
 
   const updateView = (view: NavigationType) => {
-    setView(view);
+    navigate(routePaths[view]);
     resetSorting();
   }
 
@@ -68,6 +72,27 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPage
     onClick: () => runBulkScript(s)
   }));
 
+  useEffect(() => {
+    if (location.search) {
+      const searchParams = new URLSearchParams(location.search);
+      const taxonomy = searchParams.get("taxonomy");
+      const value = searchParams.get("value");
+
+      if (taxonomy && value) {
+        if (taxonomy === "tags") {
+          setCrntTag(value);
+        } else if (taxonomy === "categories") {
+          setCrntCategory(value);
+        }
+      }
+
+      return;
+    }
+
+    setCrntTag("");
+    setCrntCategory("");
+  }, [location.search]);
+
   return (
     <div className={`w-full sticky top-0 z-40 bg-gray-100 dark:bg-vulcan-500`}>
 
@@ -76,7 +101,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPage
       </div>
 
       {
-        view === NavigationType.Contents && (
+        location.pathname === routePaths.contents && (
           <>
             <div className={`px-4 mt-3 mb-2 flex items-center justify-between`}>
               <Searchbox />
@@ -109,6 +134,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPage
                     ...customActions
                   ]} 
                   onClick={createContent} 
+                  isTemplatesEnabled={settings?.dashboardState?.contents?.templatesEnabled || undefined}
                   disabled={!settings?.initialized} />
               </div>
             </div>
@@ -141,7 +167,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPage
       }
 
       {
-        view === NavigationType.Media && (
+        location.pathname === routePaths.media && (
           <>
             <MediaHeaderTop />
             

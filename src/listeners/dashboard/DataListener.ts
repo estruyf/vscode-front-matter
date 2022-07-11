@@ -1,9 +1,10 @@
+import { workspace } from 'vscode';
 import { DataFile } from './../../models/DataFile';
 import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { BaseListener } from "./BaseListener";
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { Folders } from '../../commands/Folders';
-import { existsSync, writeFileSync, mkdirSync } from 'fs';
+import { existsSync, writeFileSync, mkdirSync, readFileSync } from 'fs';
 import { dirname } from 'path';
 import * as yaml from 'js-yaml';
 import { DataFileHelper } from '../../helpers';
@@ -30,6 +31,10 @@ export class DataListener extends BaseListener {
     }
   }
 
+  /**
+   * Process the data update
+   * @param msgData 
+   */
   private static processDataUpdate(msgData: any) {
     const { file, fileType, entries } = msgData as { file: string, fileType: string, entries: any[] };
 
@@ -41,11 +46,17 @@ export class DataListener extends BaseListener {
       }
     }
 
+    const fileContent = readFileSync(absPath, 'utf8');
+    // check if file content ends with newline
+    const newFileContent = fileContent.endsWith('\n');
+    const insertFinalNewLine = newFileContent || workspace.getConfiguration().get('files.insertFinalNewline');
+
     if (fileType === 'yaml') {
       const yamlData = yaml.safeDump(entries);
-      writeFileSync(absPath, yamlData, 'utf8');
+      writeFileSync(absPath, insertFinalNewLine ? `${yamlData}\n` : yamlData, 'utf8');
     } else {
-      writeFileSync(absPath, JSON.stringify(entries, null, 2));
+      const jsonData = JSON.stringify(entries, null, 2);
+      writeFileSync(absPath, insertFinalNewLine ? `${jsonData}\n` : jsonData, 'utf8');
     } 
 
     this.processDataFile(msgData);

@@ -8,6 +8,7 @@ export class Content {
     const templatesEnabled = await Settings.get(SETTING_TEMPLATES_ENABLED);
     if (!templatesEnabled) {
       commands.executeCommand(COMMAND_NAME.createByContentType);
+      return;
     }
 
     const options: QuickPickItem[] = [{

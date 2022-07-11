@@ -12,7 +12,7 @@ export interface ISponsorMsgProps {
 export const SponsorMsg: React.FunctionComponent<ISponsorMsgProps> = ({beta, isBacker, version}: React.PropsWithChildren<ISponsorMsgProps>) => {
   
   return (
-    <p className={`bg-gray-100 dark:bg-vulcan-500 w-full px-4 text-vulcan-50 dark:text-whisper-900 py-2 text-center space-x-8 flex items-center border-t border-gray-200 dark:border-vulcan-300 ${isBacker ? 'justify-center' : 'justify-between'}`}>
+    <footer className={`bg-gray-100 dark:bg-vulcan-500 w-full px-4 text-vulcan-50 dark:text-whisper-900 py-2 text-center space-x-8 flex items-center border-t border-gray-200 dark:border-vulcan-300 ${isBacker ? 'justify-center' : 'justify-between'}`}>
       {
         isBacker ? (
           <span>Front Matter{version ? ` (v${version.installedVersion}${!!beta ? ` BETA` : ''})` : ''}</span>
@@ -28,6 +28,6 @@ export const SponsorMsg: React.FunctionComponent<ISponsorMsgProps> = ({beta, isB
           </>
         )
       }
-    </p>
+    </footer>
   );
 };

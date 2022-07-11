@@ -3,4 +3,5 @@ export interface ContentFolder {
   path: string;
   
   excludeSubdir?: boolean;
+  previewPath?: string;
 }

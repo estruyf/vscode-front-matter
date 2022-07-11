@@ -46,9 +46,10 @@ export interface ContentType {
   fileType?: "md" | "mdx" | string;
   previewPath?: string | null;
   pageBundle?: boolean;
+  template?: string;
 }
 
-export type FieldType = "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft" | "taxonomy" | "fields" | "json" | "block" | "file" | "dataFile";
+export type FieldType = "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft" | "taxonomy" | "fields" | "json" | "block" | "file" | "dataFile" | "list" | "slug";
 
 export interface Field {
   title?: string;
@@ -67,6 +68,7 @@ export interface Field {
   dataType?: string | string[];
   taxonomyLimit?: number;
   fileExtensions?: string[];
+  editable?: boolean;
 
   // Date fields
   isPublishDate?: boolean;

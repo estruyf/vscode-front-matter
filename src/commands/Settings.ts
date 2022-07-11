@@ -1,10 +1,9 @@
+import { TaxonomyHelper } from './../helpers/TaxonomyHelper';
 import * as vscode from 'vscode';
-import * as fs from 'fs';
 import { TaxonomyType } from "../models";
 import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, EXTENSION_NAME } from '../constants';
 import { ArticleHelper, Settings as SettingsHelper, FilesHelper } from '../helpers';
 import { FrontMatterParser } from '../parsers';
-import { DumpOptions } from 'js-yaml';
 import { Notifications } from '../helpers/Notifications';
 
 export class Settings {
@@ -76,7 +75,7 @@ export class Settings {
    */
   public static async export() {
     // Retrieve all the Markdown files
-    const allMdFiles = await FilesHelper.getMdFiles();
+    const allMdFiles = await FilesHelper.getAllFiles();
     if (!allMdFiles) {
       return;
     }
@@ -157,6 +156,7 @@ export class Settings {
       canPickMany: false,
       ignoreFocusOut: true
     });
+
     if (!taxType) {
       return;
     }
@@ -196,76 +196,10 @@ export class Settings {
       }
     }
 
-    // Retrieve all the markdown files
-    const allMdFiles = await FilesHelper.getMdFiles();
-    if (!allMdFiles) {
-      return;
+    if (newOptionValue) {
+      TaxonomyHelper.process("edit", type, selectedOption, newOptionValue);
+    } else {
+      TaxonomyHelper.process("delete", type, selectedOption, undefined);
     }
-
-    let progressText = `${EXTENSION_NAME}: Remapping "${selectedOption}" ${type === TaxonomyType.Tag ? "tag" : "category"} to "${newOptionValue}".`;
-    if (!newOptionValue) {
-      progressText = `${EXTENSION_NAME}: Deleting "${selectedOption}" ${type === TaxonomyType.Tag ? "tag" : "category"}.`;
-    }
-    vscode.window.withProgress({
-      location: vscode.ProgressLocation.Notification,
-      title: progressText,
-      cancellable: false
-    }, async (progress) => {
-      // Set the initial progress
-      const progressNr = allMdFiles.length/100;
-      progress.report({ increment: 0});
-
-      const matterProp: string = type === TaxonomyType.Tag ? "tags" : "categories";
-
-      let i = 0;
-      for (const file of allMdFiles) {
-        progress.report({ increment: (++i/progressNr) });
-        const mdFile = fs.readFileSync(file.path, { encoding: "utf8" });
-        if (mdFile) {
-          try {
-            const article = FrontMatterParser.fromFile(mdFile);
-            if (article && article.data) {
-              const { data } = article;
-              let taxonomies: string[] = data[matterProp];
-              if (taxonomies && taxonomies.length > 0) {
-                const idx = taxonomies.findIndex(o => o === selectedOption);
-                if (idx !== -1) {
-                  if (newOptionValue) {
-                    taxonomies[idx] = newOptionValue;
-                  } else {
-                    taxonomies = taxonomies.filter(o => o !== selectedOption);
-                  }
-                  data[matterProp] = [...new Set(taxonomies)].sort();
-                  const spaces = vscode.window.activeTextEditor?.options?.tabSize;
-                  // Update the file
-                  fs.writeFileSync(file.path, FrontMatterParser.toFile(article.content, article.data, mdFile, {
-                    indent: spaces || 2
-                  } as DumpOptions as any), { encoding: "utf8" });
-                }
-              }
-            } 
-          } catch (e) {
-            // Continue with the next file
-          }
-        }
-      }
-      
-      // Update the settings
-      const idx = options.findIndex(o => o === selectedOption);
-      if (newOptionValue) {
-        // Add or update the new option
-        if (idx !== -1) {
-          options[idx] = newOptionValue;
-        } else {
-          options.push(newOptionValue);
-        }
-      } else {
-        // Remove the selected option
-        options = options.filter(o => o !== selectedOption);
-      }
-      await SettingsHelper.updateTaxonomy(type, options);
-
-      Notifications.info(`${newOptionValue ? "Remapping" : "Deleation"} of the ${selectedOption} ${type === TaxonomyType.Tag ? "tag" : "category"} completed.`);
-    });
   }
 }

@@ -8,4 +8,7 @@ export enum DashboardCommand {
   mediaUpdate = "mediaUpdate",
   dataFileEntries = "dataFileEntries",
   searchReady = "searchReady",
+
+  // Taxonomy dashboard
+  setTaxonomyData = "setTaxonomyData",
 }

@@ -5,3 +5,7 @@ node_modules
 .DS_Store
 dist
 todo.md
+
+e2e/storage
+e2e/extensions
+e2e/sample

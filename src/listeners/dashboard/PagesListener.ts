@@ -1,10 +1,11 @@
+import { DEFAULT_CONTENT_TYPE_NAME } from './../../constants/ContentType';
 import { isValidFile } from '../../helpers/isValidFile';
 import { existsSync, unlinkSync } from "fs";
 import { basename, dirname, join } from "path";
 import { commands, FileSystemWatcher, RelativePattern, TextDocument, Uri, workspace } from "vscode";
 import { Dashboard } from "../../commands/Dashboard";
 import { Folders } from "../../commands/Folders";
-import { COMMAND_NAME, DefaultFields, ExtensionState, SETTING_CONTENT_STATIC_FOLDER, SETTING_SEO_DESCRIPTION_FIELD, SETTING_TAXONOMY_FIELD_GROUPS } from "../../constants";
+import { COMMAND_NAME, DefaultFields, ExtensionState, SETTING_SEO_DESCRIPTION_FIELD } from "../../constants";
 import { DashboardCommand } from "../../dashboardWebView/DashboardCommand";
 import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { Page } from "../../dashboardWebView/models";
@@ -13,7 +14,6 @@ import { ContentType } from "../../helpers/ContentType";
 import { DateHelper } from "../../helpers/DateHelper";
 import { Notifications } from "../../helpers/Notifications";
 import { BaseListener } from "./BaseListener";
-import { Field, FieldGroup, FieldType } from '../../models';
 import { DataListener } from '../panel';
 import Fuse from 'fuse.js';
 
@@ -91,7 +91,7 @@ export class PagesListener extends BaseListener {
     // Recreate all the watchers
     for (const folder of folders) {
       const folderUri = Uri.parse(folder.path);
-      let watcher = workspace.createFileSystemWatcher(new RelativePattern(folderUri, "*"), false, false, false);
+      let watcher = workspace.createFileSystemWatcher(new RelativePattern(folderUri, "**/*"), false, false, false);
       watcher.onDidCreate(async (uri: Uri) => this.watcherExec(uri));
       watcher.onDidChange(async (uri: Uri) => this.watcherExec(uri));
       watcher.onDidDelete(async (uri: Uri) => this.watcherExec(uri));
@@ -267,7 +267,7 @@ export class PagesListener extends BaseListener {
       const modifiedField = ArticleHelper.getModifiedDateField(article) || null;
       const modifiedFieldValue = modifiedField && article?.data[modifiedField] ? DateHelper.tryParse(article?.data[modifiedField])?.getTime() : undefined;
 
-      const staticFolder = Settings.get<string>(SETTING_CONTENT_STATIC_FOLDER);
+      const staticFolder = Folders.getStaticFolderRelativePath();
 
       const page: Page = {
         ...article.data,
@@ -282,6 +282,7 @@ export class PagesListener extends BaseListener {
         fmPreviewImage: "",
         fmTags: [],
         fmCategories: [],
+        fmContentType: DEFAULT_CONTENT_TYPE_NAME,
         fmBody: article?.content || "",
         // Make sure these are always set
         title: article?.data.title,
@@ -292,8 +293,11 @@ export class PagesListener extends BaseListener {
       };
 
       const contentType = ArticleHelper.getContentType(article.data);
+      if (contentType) {
+        page.fmContentType = contentType.name;
+      }
 
-      let previewFieldParents = this.findPreviewField(contentType.fields);
+      let previewFieldParents = ContentType.findPreviewField(contentType.fields);
       if (previewFieldParents.length === 0) {
         const previewField = contentType.fields.find(field => field.type === "image" && field.name === "preview");
         if (previewField) {
@@ -301,15 +305,11 @@ export class PagesListener extends BaseListener {
         }
       }
 
-      let tagParents = this.findFieldByType(contentType.fields, "tags");
-      if (tagParents.length !== 0) {
-        page.fmTags = this.getFieldValue(article.data, tagParents);
-      }
+      let tagParents = ContentType.findFieldByType(contentType.fields, "tags");
+      page.fmTags = ContentType.getFieldValue(article.data, tagParents.length !== 0 ? tagParents : ["tags"]);
 
-      let categoryParents = this.findFieldByType(contentType.fields, "categories");
-      if (categoryParents.length !== 0) {
-        page.fmCategories = this.getFieldValue(article.data, categoryParents);
-      }
+      let categoryParents = ContentType.findFieldByType(contentType.fields, "categories");
+      page.fmCategories = ContentType.getFieldValue(article.data, categoryParents.length !== 0 ? categoryParents : ["categories"]);
 
       // Check if parent fields were retrieved, if not there was no image present
       if (previewFieldParents.length > 0) {
@@ -374,120 +374,5 @@ export class PagesListener extends BaseListener {
     }
 
     return;
-  }
-
-  /**
-   * Retrieve the field value
-   * @param data 
-   * @param parents 
-   * @returns 
-   */
-  private static getFieldValue(data: any, parents: string[]): string[] {
-    let fieldValue = [];
-    let crntPageData = data;
-
-    for (let i = 0; i < parents.length; i++) {
-      const crntField = parents[i];
-
-      if (i === parents.length - 1) {
-        fieldValue = crntPageData[crntField];
-      } else {
-        if (!crntPageData[crntField]) {
-          continue;
-        }
-
-        crntPageData = crntPageData[crntField];
-      }
-    }
-
-    return fieldValue;
-  }
-
-  /**
-   * Find the field by its type
-   * @param fields 
-   * @param type 
-   * @param parents 
-   * @returns 
-   */
-  private static findFieldByType(fields: Field[], type: FieldType, parents: string[] = []) {
-    for (const field of fields) {
-      if (field.type === type) {
-        parents = [...parents, field.name];
-        return parents;
-      } else if (field.type === "fields" && field.fields) {
-        const subFields = this.findPreviewField(field.fields);
-        if (subFields.length > 0) {
-          return [...parents, field.name, ...subFields];
-        }
-      }
-    }
-
-    return parents;
-  }
-
-  /**
-   * Find the preview field in the fields
-   * @param ctFields 
-   * @param parents 
-   * @returns 
-   */
-  private static findPreviewField(ctFields: Field[], parents: string[] = []): string[] {
-    for (const field of ctFields) {
-      if (field.isPreviewImage && field.type === "image") {
-        parents = [...parents, field.name];
-        return parents;
-      } else if (field.type === "fields" && field.fields) {
-        const subFields = this.findPreviewField(field.fields);
-        if (subFields.length > 0) {
-          return [...parents, field.name, ...subFields];
-        }
-      } else if (field.type === "block") {
-        const subFields = this.findPreviewInBlockField(field);
-        if (subFields.length > 0) {
-          return [...parents, field.name, ...subFields];
-        }
-      }
-    }
-
-    return parents;
-  }
-
-  /**
-   * Look for the preview image in the block field
-   * @param field 
-   * @param parents 
-   * @returns 
-   */
-  private static findPreviewInBlockField(field: Field) {
-    const groups = field.fieldGroup && Array.isArray(field.fieldGroup) ? field.fieldGroup : [field.fieldGroup];
-    if (!groups) {
-      return [];
-    }
-
-    const blocks = Settings.get<FieldGroup[]>(SETTING_TAXONOMY_FIELD_GROUPS);
-    if (!blocks) {
-      return [];
-    }
-
-    let found = false;
-    for (const group of groups) {
-      const block = blocks.find(block => block.id === group);
-      if (!block) {
-        continue;
-      }
-
-      let newParents: string[] = [];
-      if (!found) {
-        newParents = this.findPreviewField(block?.fields, []);
-      }
-
-      if (newParents.length > 0) {
-        found = true;
-        return newParents;
-      }
-    }
-
-    return [];
   }
 }
