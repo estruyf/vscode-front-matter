@@ -4,7 +4,7 @@ import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { BaseListener } from "./BaseListener";
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { Folders } from '../../commands/Folders';
-import { existsSync, writeFileSync, mkdirSync } from 'fs';
+import { existsSync, writeFileSync, mkdirSync, readFileSync } from 'fs';
 import { dirname } from 'path';
 import * as yaml from 'js-yaml';
 import { DataFileHelper } from '../../helpers';
@@ -46,7 +46,10 @@ export class DataListener extends BaseListener {
       }
     }
 
-    const insertFinalNewLine = workspace.getConfiguration().get('files.insertFinalNewline');
+    const fileContent = readFileSync(absPath, 'utf8');
+    // check if file content ends with newline
+    const newFileContent = fileContent.endsWith('\n');
+    const insertFinalNewLine = newFileContent || workspace.getConfiguration().get('files.insertFinalNewline');
 
     if (fileType === 'yaml') {
       const yamlData = yaml.safeDump(entries);
