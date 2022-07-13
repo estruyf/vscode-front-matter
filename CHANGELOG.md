@@ -1,5 +1,19 @@
 # Change Log
 
+## [8.1.0] - 2022-xx-xx
+
+### ✨ New features
+
+### 🎨 Enhancements
+
+- Fix `PSD` media card icon image
+
+### ⚡️ Optimizations
+
+### 🐞 Fixes
+
+- Fix missing clipboard icon for the media card action
+
 ## [8.0.0] - 2022-07-11 - [Release notes](https://beta.frontmatter.codes/updates/v8.0.0) 
 
 ### ✨ New Features
