@@ -248,7 +248,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   }, [media]);
 
   const isImageFile = useMemo(() => {
-    if (media.mimeType?.startsWith("image/")) {
+    if (media.mimeType?.startsWith("image/") && !media.mimeType?.startsWith("image/vnd.adobe.photoshop")) {
       return true;
     }
     return false;
@@ -258,11 +258,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     const path = media.fsPath;
     const extension = path.split('.').pop();
 
+    let icon = <DocumentIcon className={`h-4/6 text-gray-300 dark:text-vulcan-200`} />;
+    console.log(media);
+
     if (isImageFile) {
       return <PhotographIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />;
     }
-
-    let icon = <DocumentIcon className={`h-4/6 text-gray-300 dark:text-vulcan-200`} />;
 
     if (isVideoFile) {
       icon = <VideoCameraIcon className={`h-4/6 text-gray-300 dark:text-vulcan-200`} />;
@@ -384,7 +385,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
 
                 <MenuItems widthClass='w-40'>
                   <MenuItem 
-                    title={<div className='flex items-center'><PencilIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>Edit metadata</span></div>}
+                    title={(
+                      <div className='flex items-center'>
+                        <PencilIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>Edit metadata</span>  
+                      </div>
+                    )}
                     onClick={updateMetadata}
                     />
 
@@ -409,7 +414,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
                     ) : (
                       <>
                         <MenuItem 
-                          title={`Copy media path`}
+                          title={(
+                            <div className='flex items-center'>
+                              <ClipboardIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>Copy media path</span>
+                            </div>
+                          )}
                           onClick={copyToClipboard} />
 
                         { customScriptActions() }

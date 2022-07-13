@@ -139,9 +139,9 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
         }
 
         {
-          contentFolders && contentFolders.length > 0 && contentFolders.map(group => (
+          contentFolders && contentFolders.length > 0 && contentFolders.map((group, idx) => (
             group.folders && group.folders.length > 0 && (
-              <div className={`mb-8`}>
+              <div key={`group-${idx}`} className={`mb-8`}>
                 <h2 className='text-lg mb-8 first-letter:uppercase'>Content folder: <b>{group.title}</b></h2>
 
                 <List gap={0}>
