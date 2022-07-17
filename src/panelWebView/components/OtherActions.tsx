@@ -6,7 +6,6 @@ import { BugIcon } from './Icons/BugIcon';
 import { CenterIcon } from './Icons/CenterIcon';
 import { FileIcon } from './Icons/FileIcon';
 import { FolderOpenedIcon } from './Icons/FolderOpenedIcon';
-import { SettingsIcon } from './Icons/SettingsIcon';
 import { TemplateIcon } from './Icons/TemplateIcon';
 import { WritingIcon } from './Icons/WritingIcon';
 import { OtherActionButton } from './OtherActionButton';
