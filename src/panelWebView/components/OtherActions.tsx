@@ -10,8 +10,9 @@ import { SettingsIcon } from './Icons/SettingsIcon';
 import { TemplateIcon } from './Icons/TemplateIcon';
 import { WritingIcon } from './Icons/WritingIcon';
 import { OtherActionButton } from './OtherActionButton';
-import { ISSUE_LINK } from '../../constants/Links';
+import { DOCUMENTATION_LINK, DOCUMENTATION_SETTINGS_LINK, ISSUE_LINK } from '../../constants/Links';
 import { Messenger } from '@estruyf/vscode/dist/client';
+import { BookOpenIcon } from '@heroicons/react/outline';
 
 export interface IOtherActionsProps {
   isFile: boolean;
@@ -50,13 +51,21 @@ const OtherActions: React.FunctionComponent<IOtherActionsProps> = ({isFile, sett
           <CenterIcon /> <span>Toggle center mode</span>
         </OtherActionButton>
 
-        <OtherActionButton onClick={createAsTemplate} disabled={!isFile}><TemplateIcon /> <span>Create as template</span></OtherActionButton>
+        <OtherActionButton onClick={createAsTemplate} disabled={!isFile}><TemplateIcon /> <span>Create template</span></OtherActionButton>
 
-        <OtherActionButton onClick={openSettings}><SettingsIcon /> <span>Open settings</span></OtherActionButton>
+        {/* <OtherActionButton onClick={openSettings}><SettingsIcon /> <span>Open settings</span></OtherActionButton> */}
 
         <OtherActionButton onClick={openFile} disabled={!isFile}><FileIcon /> <span>Reveal file in folder</span></OtherActionButton>
 
         <OtherActionButton onClick={openProject}><FolderOpenedIcon /> <span>Reveal project folder</span></OtherActionButton>
+
+        <div className="ext_link_block">
+          <a href={DOCUMENTATION_LINK} title="Open documentation"><BookOpenIcon /> <span>Documentation</span></a>
+        </div>
+
+        <div className="ext_link_block">
+          <a href={DOCUMENTATION_SETTINGS_LINK} title="Open settings documentation"><BookOpenIcon /> <span>Settings overview</span></a>
+        </div>
 
         <div className="ext_link_block">
           <a href={ISSUE_LINK} title="Open an issue on GitHub"><BugIcon /> <span>Report an issue</span></a>
