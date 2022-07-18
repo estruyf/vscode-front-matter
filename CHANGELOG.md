@@ -1,5 +1,15 @@
 # Change Log
 
+## [8.1.0] - 2022-xx-xx
+
+### 🎨 Enhancements
+
+- [#372](https://github.com/estruyf/vscode-front-matter/issues/372): Rename Taxonomy tab to Taxonomies
+
+### ⚡️ Optimizations
+
+### 🐞 Fixes
+
 ## [8.0.1] - 2022-07-13
 
 ### 🐞 Fixes

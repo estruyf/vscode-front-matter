@@ -1533,7 +1533,7 @@
       },
       {
         "command": "frontMatter.dashboard.taxonomy",
-        "title": "Open taxonomy dashboard",
+        "title": "Open taxonomies dashboard",
         "category": "Front matter",
         "icon": {
           "dark": "/assets/icons/frontmatter-small-dark.svg",
