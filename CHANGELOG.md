@@ -4,6 +4,7 @@
 
 ### 🎨 Enhancements
 
+- [#370](https://github.com/estruyf/vscode-front-matter/issues/370): Define the tags and categories as reserved keywords for custom taxonomy
 - [#372](https://github.com/estruyf/vscode-front-matter/issues/372): Rename Taxonomy tab to Taxonomies
 
 ### ⚡️ Optimizations

@@ -893,7 +893,20 @@
                     "taxonomyId": {
                       "type": "string",
                       "default": "",
-                      "description": "The ID of your taxonomy field"
+                      "description": "The ID of your taxonomy field. It cannot contain the \"tags\" or \"categories\" value.",
+                      "not": {
+                        "anyOf": [
+                          {
+                            "const": ""
+                          },
+                          {
+                            "const": "tags"
+                          },
+                          {
+                            "const": "categories"
+                          }
+                        ]
+                      }
                     },
                     "fileExtensions": {
                       "type": "array",
@@ -1151,11 +1164,24 @@
             "properties": {
               "id": {
                 "type": "string",
-                "description": "ID for your taxonomy field"
+                "description": "ID for your taxonomy field. It cannot contain the \"tags\" or \"categories\" value.",
+                "not": {
+                  "anyOf": [
+                    {
+                      "const": ""
+                    },
+                    {
+                      "const": "tags"
+                    },
+                    {
+                      "const": "categories"
+                    }
+                  ]
+                }
               },
               "options": {
                 "type": "array",
-                "description": "Options from which you can pick",
+                "description": "Options from which you can pick.",
                 "items": {
                   "type": "string"
                 }

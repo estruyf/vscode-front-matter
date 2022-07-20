@@ -116,7 +116,7 @@ export class TaxonomyHelper {
     const options = this.getTaxonomyOptions(taxonomyType);
 
     const newOption = await window.showInputBox({
-      title: `Create a new ${taxonomyType} value`,
+      title: `Create a new ${type} value`,
       placeHolder: `The value you want to add`,
       ignoreFocusOut: true,
       validateInput: (text) => {
