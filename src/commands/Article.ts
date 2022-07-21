@@ -2,7 +2,7 @@ import { DEFAULT_CONTENT_TYPE } from './../constants/ContentType';
 import { isValidFile } from './../helpers/isValidFile';
 import { SETTING_AUTO_UPDATE_DATE, SETTING_MODIFIED_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TEMPLATES_PREFIX, CONFIG_KEY, SETTING_DATE_FORMAT, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_CONTENT_PLACEHOLDERS, TelemetryEvent } from './../constants';
 import * as vscode from 'vscode';
-import { Field, TaxonomyType } from "../models";
+import { CustomPlaceholder, Field, TaxonomyType } from "../models";
 import { format } from "date-fns";
 import { ArticleHelper, Settings, SlugHelper } from '../helpers';
 import { Notifications } from '../helpers/Notifications';
@@ -225,8 +225,8 @@ export class Article {
         }
 
         // Update the fields containing a custom placeholder that depends on slug
-        const placeholders = Settings.get<{id: string, value: string}[]>(SETTING_CONTENT_PLACEHOLDERS);
-        const customPlaceholders = placeholders?.filter(p => p.value.includes("{{slug}}"));
+        const placeholders = Settings.get<CustomPlaceholder[]>(SETTING_CONTENT_PLACEHOLDERS);
+        const customPlaceholders = placeholders?.filter(p => p.value && p.value.includes("{{slug}}"));
         const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
         for (const customPlaceholder of (customPlaceholders || [])) {
           const customPlaceholderFields = contentType.fields.filter(f => f.default === `{{${customPlaceholder.id}}}`);

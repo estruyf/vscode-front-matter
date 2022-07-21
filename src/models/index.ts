@@ -1,6 +1,7 @@
 export * from './BlockFieldData';
 export * from './Choice';
 export * from './ContentFolder';
+export * from './CustomPlaceholder';
 export * from './CustomTaxonomyData';
 export * from './DashboardData';
 export * from './DataFile';

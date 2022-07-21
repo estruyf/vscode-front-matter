@@ -322,11 +322,18 @@ export class DataListener extends BaseListener {
     }
   }
 
-  private static updatePlaceholder(field: string, value: string, title: string) {
+  /**
+   * Update the placeholder
+   * @param field 
+   * @param value 
+   * @param title 
+   */
+  private static async updatePlaceholder(field: string, value: string, title: string) {
     if (field && value) {
+      const crntFile = window.activeTextEditor?.document;
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
       value = processKnownPlaceholders(value, title || "", dateFormat);
-      value = ArticleHelper.processCustomPlaceholders(value, title || "");
+      value = await ArticleHelper.processCustomPlaceholders(value, title || "", crntFile?.uri.fsPath || "");
     }
     
     this.sendMsg(Command.updatePlaceholder, { field, value });

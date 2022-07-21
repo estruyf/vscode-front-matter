@@ -526,7 +526,7 @@ export class ContentType {
       }
     }
 
-    let data: any = this.processFields(contentType, titleValue, templateData?.data || {});
+    let data: any = await this.processFields(contentType, titleValue, templateData?.data || {}, newFilePath);
 
     data = ArticleHelper.updateDates(Object.assign({}, data));
 
@@ -553,7 +553,7 @@ export class ContentType {
    * @param contentType 
    * @param data 
    */
-  private static processFields(obj: IContentType | Field, titleValue: string, data: any) {
+  private static async processFields(obj: IContentType | Field, titleValue: string, data: any, filePath: string) {
     
     if (obj.fields) {
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
@@ -561,19 +561,19 @@ export class ContentType {
         if (field.name === "title") {
           if (field.default) {
             data[field.name] = processKnownPlaceholders(field.default, titleValue, dateFormat);
-            data[field.name] = ArticleHelper.processCustomPlaceholders(data[field.name], titleValue);
+            data[field.name] = await ArticleHelper.processCustomPlaceholders(data[field.name], titleValue, filePath);
           } else {
             data[field.name] = titleValue;
           }
         } else {
           if (field.type === "fields") {
-            data[field.name] = this.processFields(field, titleValue, {});
+            data[field.name] = await this.processFields(field, titleValue, {}, filePath);
           } else {
             const defaultValue = field.default;
 
             if (typeof defaultValue === "string") {
               data[field.name] = processKnownPlaceholders(defaultValue, titleValue, dateFormat);
-              data[field.name] = ArticleHelper.processCustomPlaceholders(data[field.name], titleValue);
+              data[field.name] = await ArticleHelper.processCustomPlaceholders(data[field.name], titleValue, filePath);
             } else {
               data[field.name] = typeof defaultValue !== "undefined" ? defaultValue : "";
             }

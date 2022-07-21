@@ -175,7 +175,7 @@ export class Template {
     }
 
     if (frontMatter.data) {
-      frontMatter.data = ArticleHelper.updatePlaceholders(frontMatter.data, titleValue);
+      frontMatter.data = await ArticleHelper.updatePlaceholders(frontMatter.data, titleValue, newFilePath);
 
       frontMatter = Article.updateDate(frontMatter);
 

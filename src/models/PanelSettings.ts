@@ -118,7 +118,7 @@ export interface CustomScript {
   output?: "notification" | "editor";
   outputType?: string;
   type?: ScriptType;
-  command?: CommandType;
+  command?: CommandType | string;
 }
 
 export interface PreviewSettings {

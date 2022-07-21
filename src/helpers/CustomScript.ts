@@ -246,7 +246,7 @@ export class CustomScript {
    * @param args 
    * @returns 
    */
-  private static async executeScript(script: ICustomScript, wsPath: string, args: string): Promise<string> {
+  public static async executeScript(script: ICustomScript, wsPath: string, args: string): Promise<string> {
     return new Promise((resolve, reject) => {
       
       // Check the command to use
@@ -262,6 +262,11 @@ export class CustomScript {
       exec(fullScript, (error, stdout) => {
         if (error) {
           reject(error.message);
+        }
+
+        if (stdout && stdout.endsWith(`\n`)) {
+          // Remove empty line at the end of the string
+          stdout = stdout.slice(0, -1);
         }
 
         resolve(stdout);
