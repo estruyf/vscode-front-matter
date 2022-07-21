@@ -6,6 +6,7 @@
 
 - [#370](https://github.com/estruyf/vscode-front-matter/issues/370): Define the tags and categories as reserved keywords for custom taxonomy
 - [#372](https://github.com/estruyf/vscode-front-matter/issues/372): Rename Taxonomy tab to Taxonomies
+- [#374](https://github.com/estruyf/vscode-front-matter/issues/374): Hide the front matter section to use the panel instead
 
 ### ⚡️ Optimizations
 

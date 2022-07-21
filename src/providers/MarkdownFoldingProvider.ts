@@ -1,5 +1,7 @@
+import { SETTING_CONTENT_HIDE_FRONTMATTER, SETTING_CONTENT_HIDE_FRONTMATTER_MESSAGE } from './../constants/settings';
+import { ThemeColor } from 'vscode';
 import { ArticleHelper } from '../helpers';
-import { languages, TextEditorDecorationType } from 'vscode';
+import { commands, DecorationOptions, languages, TextEditorDecorationType } from 'vscode';
 import { CancellationToken, FoldingContext, FoldingRange, FoldingRangeKind, FoldingRangeProvider, Range, TextDocument, window, Position } from 'vscode';
 import { SETTING_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_CONTENT_SUPPORTED_FILETYPES, SETTING_FRONTMATTER_TYPE } from '../constants';
 import { Settings } from '../helpers';
@@ -11,6 +13,7 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
   private static end: number | null = null;
   private static endLine: number | null = null;
   private static decType: TextEditorDecorationType | null = null;
+  private static crntDecoration: TextEditorDecorationType | null = null;
 
   public static register() {
     const supportedFiles = Settings.get<string[]>(SETTING_CONTENT_SUPPORTED_FILETYPES);
@@ -37,15 +40,19 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
     return ranges;
   }
 
-  public static triggerHighlighting() {
+  public static triggerHighlighting(configChange: boolean = false) {
     const activeDoc = window.activeTextEditor?.document;
+
+    if (configChange && this.crntDecoration) {
+      this.resetDecoration();
+    }
 
     const isSupported = ArticleHelper.isSupportedFile(activeDoc);
     if (isSupported) {
       const fmHighlight = Settings.get<boolean>(SETTING_CONTENT_FRONTMATTER_HIGHLIGHT);
 
       const range = MarkdownFoldingProvider.getFrontMatterRange();
-
+      
       if (range) {
         if (MarkdownFoldingProvider.decType !== null) {
           MarkdownFoldingProvider.decType.dispose();
@@ -55,6 +62,11 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
           MarkdownFoldingProvider.decType = new FrontMatterDecorationProvider().get();
           window.activeTextEditor?.setDecorations(MarkdownFoldingProvider.decType, [range]);
         }
+      }
+
+      const hideFrontMatter = Settings.get<boolean>(SETTING_CONTENT_HIDE_FRONTMATTER);
+      if (hideFrontMatter) {
+        this.hideFrontMatterFromDocument(range);
       }
     }
   }
@@ -118,5 +130,76 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
     }
 
     return null;
+  }
+
+  /**
+   * Hide the front matter on the page
+   * @param range 
+   * @returns 
+   */
+  private static hideFrontMatterFromDocument = async (range: Range| null) => {
+  
+    const editor = window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+  
+    const decorators: DecorationOptions[] = [];
+    
+    if (range) {
+      decorators.push({
+        range: range
+      });
+    }
+
+    if (!this.crntDecoration) {
+      this.crntDecoration = this.getHiddenDecoration();
+    }
+
+    editor.setDecorations(
+      this.crntDecoration,
+      decorators
+    );
+  
+    commands.executeCommand('editor.fold', {selectionLines: [range?.start.line],direction: "up"});
+  }
+
+  /**
+   * Resets the decoration in the document
+   * @returns 
+   */
+  private static resetDecoration() {
+    if (!this.crntDecoration) {
+      return;
+    }
+
+    const editor = window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+
+    editor.setDecorations(
+      this.crntDecoration,
+      []
+    );
+
+    this.crntDecoration = null;
+  }
+
+  /**
+   * Retrieve the hidden decoration for the text to hide
+   * @returns 
+   */
+  private static getHiddenDecoration(): TextEditorDecorationType {
+    const contentText = Settings.get<string>(SETTING_CONTENT_HIDE_FRONTMATTER_MESSAGE);
+
+    return window.createTextEditorDecorationType({
+      after: {
+        contentText,
+        fontStyle: 'italic',
+        color: new ThemeColor('editorInfo.foreground'),
+      },
+      textDecoration: "none; display: none;"
+    });
   }
 }

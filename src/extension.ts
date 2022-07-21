@@ -205,7 +205,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		SettingsListener.getSettings();
 		DataListener.getFoldersAndFiles();	
-		MarkdownFoldingProvider.triggerHighlighting();
+		MarkdownFoldingProvider.triggerHighlighting(true);
 		ModeSwitch.register();
 	});
 

@@ -167,6 +167,17 @@
           "markdownDescription": "Specify if you want to highlight the Front Matter in the Markdown file. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.fmhighlight)",
           "scope": "Content"
         },
+        "frontMatter.content.hideFm": {
+          "type": "boolean",
+          "markdownDescription": "Specify if you want to hide the Front Matter in the Markdown file. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.hidefrontmatter)",
+          "scope": "Content"
+        },
+        "frontMatter.content.hideFmMessage": {
+          "type": "string",
+          "default": "Use the editor panel to make front matter changes",
+          "markdownDescription": "Specify the message to display when the Front Matter is hidden. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.hidefrontmatter.message)",
+          "scope": "Content"
+        },
         "frontMatter.content.pageFolders": {
           "type": "array",
           "default": [],
@@ -1323,6 +1334,12 @@
           "default": false,
           "markdownDescription": "Specify if you want to disable the telemetry. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.telemetry.disable)"
         },
+        "frontMatter.templates.enabled": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Specify if you want to use templates. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.enabled)",
+          "scope": "Templates"
+        },
         "frontMatter.templates.folder": {
           "type": "string",
           "default": ".frontmatter/templates",
@@ -1333,12 +1350,6 @@
           "type": "string",
           "default": "yyyy-MM-dd",
           "markdownDescription": "Specify the prefix you want to add for your new article filenames. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.prefix)",
-          "scope": "Templates"
-        },
-        "frontMatter.templates.enabled": {
-          "type": "boolean",
-          "default": false,
-          "markdownDescription": "Specify if you want to use templates. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.enabled)",
           "scope": "Templates"
         }
       }

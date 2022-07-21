@@ -260,6 +260,10 @@ export class Extension {
     return true;
   }
 
+  public asAbsolutePath(path: string) {
+    return this.ctx.asAbsolutePath(path);
+  }
+
   public get packageJson() {
     const frontMatter = extensions.getExtension(this.isBetaVersion() ? EXTENSION_BETA_ID : EXTENSION_ID)!;
     return frontMatter.packageJSON;
