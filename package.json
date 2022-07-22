@@ -25,6 +25,7 @@
   "sponsor": {
     "url": "https://github.com/sponsors/estruyf"
   },
+  "qna": "https://github.com/estruyf/vscode-front-matter/discussions",
   "engines": {
     "vscode": "^1.63.0"
   },
