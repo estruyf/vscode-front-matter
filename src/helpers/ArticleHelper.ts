@@ -407,36 +407,42 @@ export class ArticleHelper {
         for (const placeholder of placeholders) {
           if (value.includes(`{{${placeholder.id}}}`)) {
 
-            let placeHolderValue = placeholder.value || "";
-            if (placeholder.script) {
-              const wsFolder = Folders.getWorkspaceFolder();
-              const script = { title: placeholder.id, script: placeholder.script, command: placeholder.command };
-              let output: string | any = await CustomScript.executeScript(script, wsFolder?.fsPath || "", `'${filePath}' '${title}'`);
+            try {
+              let placeHolderValue = placeholder.value || "";
+              if (placeholder.script) {
+                const wsFolder = Folders.getWorkspaceFolder();
+                const script = { title: placeholder.id, script: placeholder.script, command: placeholder.command };
+                let output: string | any = await CustomScript.executeScript(script, wsFolder?.fsPath || "", `'${wsFolder?.fsPath}' '${filePath}' '${title}'`);
 
-              if (output) {
-                // Check if the output needs to be parsed
-                if (output.includes("{") && output.includes("}")) {
-                  try {
-                    output = JSON.parse(output);
-                  } catch (e) {
-                    // Do nothing
+                if (output) {
+                  // Check if the output needs to be parsed
+                  if (output.includes("{") && output.includes("}")) {
+                    try {
+                      output = JSON.parse(output);
+                    } catch (e) {
+                      // Do nothing
+                    }
+                  } else {
+                    output = output.split("\n");
                   }
-                } else {
-                  output = output.split("\n");
+
+                  placeHolderValue = output;
                 }
-
-                placeHolderValue = output;
               }
-            }
 
-            const regex = new RegExp(`{{${placeholder.id}}}`, "g");
-            const updatedValue = processKnownPlaceholders(placeHolderValue, title, dateFormat);
+              const regex = new RegExp(`{{${placeholder.id}}}`, "g");
+              const updatedValue = processKnownPlaceholders(placeHolderValue, title, dateFormat);
 
-            if (value === `{{${placeholder.id}}}`) {
-              value = updatedValue;
-            } else {
-              value = value.replace(regex, updatedValue);
+              if (value === `{{${placeholder.id}}}`) {
+                value = updatedValue;
+              } else {
+                value = value.replace(regex, updatedValue);
+              }
+            } catch (e) {
+              Notifications.error(`Error while processing the ${placeholder.id} placeholder`);
+              Logger.error((e as Error).message);
             }
+            
           }
         }
       }

@@ -3,7 +3,7 @@ import { PagesListener } from './../listeners/dashboard';
 import { ArticleHelper, Settings } from ".";
 import { FEATURE_FLAG, SETTING_CONTENT_DRAFT_FIELD, SETTING_DATE_FORMAT, SETTING_FRAMEWORK_ID, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TAXONOMY_FIELD_GROUPS, TelemetryEvent } from "../constants";
 import { ContentType as IContentType, DraftField, Field, FieldGroup, FieldType } from '../models';
-import { Uri, commands, window } from 'vscode'; 
+import { Uri, commands, window, ProgressLocation } from 'vscode'; 
 import { Folders } from "../commands/Folders";
 import { Questions } from "./Questions";
 import { existsSync, writeFileSync } from "fs";
@@ -499,53 +499,59 @@ export class ContentType {
    * @returns 
    */
   private static async create(contentType: IContentType, folderPath: string) {
-    const titleValue = await Questions.ContentTitle();
-    if (!titleValue) {
-      return;
-    }
+    window.withProgress({
+      location: ProgressLocation.Notification,
+      title: "Front Matter: Creating content...",
+      cancellable: false
+    }, async () => {
+      const titleValue = await Questions.ContentTitle();
+      if (!titleValue) {
+        return;
+      }
 
-    let templatePath = contentType.template;
-    let templateData: ParsedFrontMatter | null = null;
-    if (templatePath) {
-      templatePath = Folders.getAbsFilePath(templatePath);
-      templateData = ArticleHelper.getFrontMatterByPath(templatePath);
-    }
+      let templatePath = contentType.template;
+      let templateData: ParsedFrontMatter | null = null;
+      if (templatePath) {
+        templatePath = Folders.getAbsFilePath(templatePath);
+        templateData = ArticleHelper.getFrontMatterByPath(templatePath);
+      }
 
-    let newFilePath: string | undefined = ArticleHelper.createContent(contentType, folderPath, titleValue);
-    if (!newFilePath) {
-      return;
-    }
+      let newFilePath: string | undefined = ArticleHelper.createContent(contentType, folderPath, titleValue);
+      if (!newFilePath) {
+        return;
+      }
 
-    if (contentType.name === "default") {
-      const crntFramework = Settings.get<string>(SETTING_FRAMEWORK_ID);
-      if (crntFramework?.toLowerCase() === "jekyll") {
-        const idx = contentType.fields.findIndex(f => f.name === "draft");
-        if (idx > -1) {
-          contentType.fields.splice(idx, 1);
+      if (contentType.name === "default") {
+        const crntFramework = Settings.get<string>(SETTING_FRAMEWORK_ID);
+        if (crntFramework?.toLowerCase() === "jekyll") {
+          const idx = contentType.fields.findIndex(f => f.name === "draft");
+          if (idx > -1) {
+            contentType.fields.splice(idx, 1);
+          }
         }
       }
-    }
 
-    let data: any = await this.processFields(contentType, titleValue, templateData?.data || {}, newFilePath);
+      let data: any = await this.processFields(contentType, titleValue, templateData?.data || {}, newFilePath);
 
-    data = ArticleHelper.updateDates(Object.assign({}, data));
+      data = ArticleHelper.updateDates(Object.assign({}, data));
 
-    if (contentType.name !== DEFAULT_CONTENT_TYPE_NAME) {
-      data['type'] = contentType.name;
-    }
+      if (contentType.name !== DEFAULT_CONTENT_TYPE_NAME) {
+        data['type'] = contentType.name;
+      }
 
-    const content = ArticleHelper.stringifyFrontMatter(templateData?.content || ``, data);
+      const content = ArticleHelper.stringifyFrontMatter(templateData?.content || ``, data);
 
-    writeFileSync(newFilePath, content, { encoding: "utf8" });
+      writeFileSync(newFilePath, content, { encoding: "utf8" });
 
-    await commands.executeCommand('vscode.open', Uri.file(newFilePath));
+      await commands.executeCommand('vscode.open', Uri.file(newFilePath));
 
-    Notifications.info(`Your new content has been created.`);
+      Notifications.info(`Your new content has been created.`);
 
-    Telemetry.send(TelemetryEvent.createContentFromContentType);
+      Telemetry.send(TelemetryEvent.createContentFromContentType);
 
-    // Trigger a refresh for the dashboard
-    PagesListener.refresh();
+      // Trigger a refresh for the dashboard
+      PagesListener.refresh();
+    })
   }
 
   /**
