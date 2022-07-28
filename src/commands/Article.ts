@@ -1,3 +1,4 @@
+import { Folders } from './Folders';
 import { DEFAULT_CONTENT_TYPE } from './../constants/ContentType';
 import { isValidFile } from './../helpers/isValidFile';
 import { SETTING_AUTO_UPDATE_DATE, SETTING_MODIFIED_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TEMPLATES_PREFIX, CONFIG_KEY, SETTING_DATE_FORMAT, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_CONTENT_PLACEHOLDERS, TelemetryEvent } from './../constants';
@@ -322,6 +323,14 @@ export class Article {
     const document = event.document;
     if (document && ArticleHelper.isSupportedFile(document)) {
       const autoUpdate = Settings.get(SETTING_AUTO_UPDATE_DATE);
+
+      // Is article located in one of the content folders
+      const folders = Folders.get();
+      const documentPath = parseWinPath(document.fileName);
+      const folder = folders.find(f => documentPath.startsWith(f.path));
+      if (!folder) {
+        return;
+      }
 
       if (autoUpdate) {
         event.waitUntil(Article.setLastModifiedDateOnSave(document));

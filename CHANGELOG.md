@@ -13,6 +13,8 @@
 
 ### 🐞 Fixes
 
+- [#378](https://github.com/estruyf/vscode-front-matter/issues/378): Fix last modified update only to content in content folders
+
 ## [8.0.1] - 2022-07-13
 
 ### 🐞 Fixes

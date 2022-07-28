@@ -82,7 +82,7 @@
         "frontMatter.content.autoUpdateDate": {
           "type": "boolean",
           "default": false,
-          "markdownDescription": "Specify if you want to automatically update the modified date of your article/page. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.autoupdatedate)",
+          "markdownDescription": "Specify if you want to automatically update the modified date of your article/page (only content located in your content folder). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.autoupdatedate)",
           "scope": "Content"
         },
         "frontMatter.content.defaultFileType": {
