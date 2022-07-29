@@ -9,6 +9,7 @@ export * from './DataFolder';
 export * from './DataType';
 export * from './DraftField';
 export * from './Framework';
+export * from './GitSettings';
 export * from './MediaPaths';
 export * from './Mode';
 export * from './PanelSettings';

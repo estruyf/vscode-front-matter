@@ -14,7 +14,7 @@ import { TagType } from './panelWebView/TagType';
 import { ExplorerView } from './explorerView/ExplorerView';
 import { Extension } from './helpers/Extension';
 import { DashboardData } from './models/DashboardData';
-import { Logger, Settings as SettingsHelper } from './helpers';
+import { debounceCallback, Logger, Settings as SettingsHelper } from './helpers';
 import { Content } from './commands/Content';
 import ContentProvider from './providers/ContentProvider';
 import { Wysiwyg } from './commands/Wysiwyg';
@@ -297,14 +297,4 @@ const handleAutoDateUpdate = (e: vscode.TextDocumentWillSaveEvent) => {
 const triggerShowDraftStatus = (location: string) => {
 	Logger.info(`Triggering draft status update: ${location}`);
 	statusDebouncer(() => { StatusListener.verify(frontMatterStatusBar, collection); }, 1000);
-};
-
-const debounceCallback = () => {
-  let timeout: NodeJS.Timeout;
-
-  return (fnc: any, time: number) => {
-    const functionCall = (...args: any[]) => fnc.apply(args);
-    clearTimeout(timeout);
-    timeout = setTimeout(functionCall, time) as any;
-  };
 };

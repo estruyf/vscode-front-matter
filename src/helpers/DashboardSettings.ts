@@ -1,8 +1,9 @@
+import { GitListener } from './../listeners/general/GitListener';
 import { basename, join } from "path";
 import { workspace } from "vscode";
 import { Folders } from "../commands/Folders";
 import { Project } from "../commands/Project";
-import { CONTEXT, ExtensionState, SETTING_CONTENT_DRAFT_FIELD, SETTING_CONTENT_SORTING, SETTING_CONTENT_SORTING_DEFAULT, SETTING_DASHBOARD_OPENONSTART, SETTING_DATA_FILES, SETTING_DATA_FOLDERS, SETTING_DATA_TYPES, SETTING_FRAMEWORK_ID, SETTING_MEDIA_SORTING_DEFAULT, SETTING_CUSTOM_SCRIPTS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_SNIPPETS, SETTING_DATE_FORMAT, SETTING_DASHBOARD_CONTENT_TAGS, SETTING_MEDIA_SUPPORTED_MIMETYPES, SETTING_TAXONOMY_CUSTOM, SETTING_TEMPLATES_ENABLED } from "../constants";
+import { CONTEXT, ExtensionState, SETTING_CONTENT_DRAFT_FIELD, SETTING_CONTENT_SORTING, SETTING_CONTENT_SORTING_DEFAULT, SETTING_DASHBOARD_OPENONSTART, SETTING_DATA_FILES, SETTING_DATA_FOLDERS, SETTING_DATA_TYPES, SETTING_FRAMEWORK_ID, SETTING_MEDIA_SORTING_DEFAULT, SETTING_CUSTOM_SCRIPTS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_SNIPPETS, SETTING_DATE_FORMAT, SETTING_DASHBOARD_CONTENT_TAGS, SETTING_MEDIA_SUPPORTED_MIMETYPES, SETTING_TAXONOMY_CUSTOM, SETTING_TEMPLATES_ENABLED, SETTING_GIT_ACTIONS } from "../constants";
 import { DashboardViewType, SortingOption, Settings as ISettings } from "../dashboardWebView/models";
 import { CustomScript, DraftField, Snippets, SortingSetting, TaxonomyType } from "../models";
 import { DataFile } from "../models/DataFile";
@@ -19,8 +20,13 @@ export class DashboardSettings {
     const ext = Extension.getInstance();
     const wsFolder = Folders.getWorkspaceFolder();
     const isInitialized = Project.isInitialized();
+    const gitActions = Settings.get<boolean>(SETTING_GIT_ACTIONS);
     
     return {
+      git: {
+        isGitRepo: gitActions ? await GitListener.isGitRepository() : false,
+        actions: gitActions || false
+      },
       beta: ext.isBetaVersion(),
       wsFolder: wsFolder ? wsFolder.fsPath : '',
       staticFolder: Folders.getStaticFolderRelativePath(),

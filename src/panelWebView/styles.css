@@ -1,4 +1,14 @@
+/* Animations */
+@keyframes spin {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
 
+/* CSS */
 .block_field__form,
 .list_field__form {
   background-color: transparent;
@@ -506,6 +516,23 @@ vscode-divider {
     color: var(--vscode-button-foreground);
     margin: 0;
   }
+}
+
+/* Git actions */
+.git_actions__sync {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.git_actions__sync svg {
+  height: 1.25rem;
+  width: 1.25rem;
+  margin-right: .5rem;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
 }
 
 /* Quill changes */

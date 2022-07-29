@@ -2,6 +2,10 @@
 
 ## [8.1.0] - 2022-xx-xx
 
+### ✨ New features
+
+- [#377](https://github.com/estruyf/vscode-front-matter/issues/377): Git sync actions added on panel and content dashboard (pull and push your changes to remote)
+
 ### 🎨 Enhancements
 
 - [#352](https://github.com/estruyf/vscode-front-matter/issues/352): Custom placeholders now support scripting
@@ -10,6 +14,8 @@
 - [#374](https://github.com/estruyf/vscode-front-matter/issues/374): Hide the front matter section to use the panel instead
 
 ### ⚡️ Optimizations
+
+- Internal post message optimizations to the webviews
 
 ### 🐞 Fixes
 

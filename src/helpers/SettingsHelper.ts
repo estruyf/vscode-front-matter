@@ -8,30 +8,22 @@ import { Folders } from '../commands/Folders';
 import { join, basename } from 'path';
 import { existsSync, readFileSync, watch, writeFileSync } from 'fs';
 import { Extension } from './Extension';
+import { debounceCallback } from './DebounceCallback';
 
 export class Settings {
   public static globalFile = "frontmatter.json";
   private static config: vscode.WorkspaceConfiguration;
   private static globalConfig: any;
   
+  
   public static init() {
-    const fmConfig = Settings.projectConfigPath;
-    if (fmConfig && existsSync(fmConfig)) {
-      const localConfig = readFileSync(fmConfig, 'utf8');
-      Settings.globalConfig = JSON.parse(localConfig);
-      commands.executeCommand('setContext', CONTEXT.isEnabled, true);
-    } else {
-      Settings.globalConfig = undefined;
-    }
+    Settings.readConfig();
 
     Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
 
     Settings.onConfigChange((global?: any) => {
-      if (global) {
-        Settings.globalConfig = Object.assign({}, global);
-      } else {
-        Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
-      }
+      Settings.readConfig();
+      Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
     });
   }
 
@@ -61,6 +53,7 @@ export class Settings {
    */
   public static onConfigChange(callback: (global?: any) => void) {
     const projectConfig = Settings.projectConfigPath;
+    const configDebouncer = debounceCallback();
 
     workspace.onDidChangeConfiguration(() => {
       callback();
@@ -68,8 +61,10 @@ export class Settings {
 
     // Background listener for when it is not a user interaction
     if (projectConfig && existsSync(projectConfig)) {
-      watch(projectConfig, () => {
-        callback();
+      let watcher = workspace.createFileSystemWatcher(projectConfig, true, false, true);
+      watcher.onDidChange(async (uri: Uri) => {
+        configDebouncer(() => callback(), 200);
+        // callback()
       });
     }
 
@@ -81,7 +76,8 @@ export class Settings {
         if (file) {
           const fileContents = file.getText();
           const json = JSON.parse(fileContents);
-          callback(json);
+          configDebouncer(() => callback(json), 200);
+          // callback(json)
         }
       }
     });
@@ -347,6 +343,19 @@ export class Settings {
   }
 
   /**
+   * Get the project config path
+   * @returns 
+   */
+  public static get projectConfigPath() {
+    const wsFolder = Folders.getWorkspaceFolder();
+    if (wsFolder) {
+      const fmConfig = join(wsFolder.fsPath, Settings.globalFile);
+      return fmConfig;
+    }
+    return undefined;
+  }
+
+  /**
    * Check if its the project config
    * @param filePath 
    * @returns 
@@ -363,15 +372,16 @@ export class Settings {
   }
 
   /**
-   * Get the project config path
-   * @returns 
+   * Read the global config file
    */
-  public static get projectConfigPath() {
-    const wsFolder = Folders.getWorkspaceFolder();
-    if (wsFolder) {
-      const fmConfig = join(wsFolder.fsPath, Settings.globalFile);
-      return fmConfig;
+  private static readConfig() {
+    const fmConfig = Settings.projectConfigPath;
+    if (fmConfig && existsSync(fmConfig)) {
+      const localConfig = readFileSync(fmConfig, 'utf8');
+      Settings.globalConfig = JSON.parse(localConfig);
+      commands.executeCommand('setContext', CONTEXT.isEnabled, true);
+    } else {
+      Settings.globalConfig = undefined;
     }
-    return undefined;
   }
 }

@@ -11,6 +11,7 @@ import { SponsorMsg } from './components/SponsorMsg';
 import useMessages from './hooks/useMessages';
 import { FeatureFlag } from '../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../constants/Features';
+import { GitAction } from './components/Git/GitAction';
 
 export interface IViewPanelProps {
 }
@@ -41,6 +42,8 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
   return (
     <div className="frontmatter">      
       <div className={`ext_actions`}>
+        <GitAction settings={settings} />
+
         <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.globalSettings}>
           <GlobalSettings settings={settings} />
         </FeatureFlag>

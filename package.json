@@ -642,6 +642,16 @@
           "default": null,
           "markdownDescription": "Specify the command you want to use to start your static site generator or framework. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.framework.startcommand)"
         },
+        "frontMatter.git.actions": {
+          "type": "boolean",
+          "markdownDescription": "Specify if you want to use the Git actions for your website. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.git.actions)",
+          "default": false
+        },
+        "frontMatter.git.commitMsg": {
+          "type": "string",
+          "markdownDescription": "Specify the commit message you want to use for the sync. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.git.commitmsg)",
+          "default": "Synced by Front Matter"
+        },
         "frontMatter.global.activeMode": {
           "type": [
             "string",
@@ -2038,6 +2048,7 @@
     "recoil": "^0.4.1",
     "rimraf": "^3.0.2",
     "semver": "^7.3.7",
+    "simple-git": "^3.10.0",
     "style-loader": "2.0.0",
     "tailwindcss": "^2.2.7",
     "tailwindcss-nested-groups": "^1.2.4",

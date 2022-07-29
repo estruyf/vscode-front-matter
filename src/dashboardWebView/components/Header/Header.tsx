@@ -22,6 +22,7 @@ import { LightningBoltIcon, PlusIcon } from '@heroicons/react/outline';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { routePaths } from '../..';
 import { useEffect } from 'react';
+import { SyncButton } from './SyncButton';
 
 export interface IHeaderProps {
   header?: React.ReactNode;
@@ -108,6 +109,8 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPage
 
               <div className={`flex items-center justify-end space-x-4 flex-1`}>
                 <Startup settings={settings} />
+
+                <SyncButton />
                 
                 <ChoiceButton 
                   title={`Create content`} 

@@ -1,10 +1,11 @@
 import { FileStat } from "vscode";
-import { DraftField } from ".";
+import { DraftField, GitSettings } from ".";
 import { Choice } from "./Choice";
 import { DashboardData } from "./DashboardData";
 import { DataType } from "./DataType";
 
 export interface PanelSettings {
+  git: GitSettings;
   seo: SEO;
   slug: Slug;
   tags: string[];

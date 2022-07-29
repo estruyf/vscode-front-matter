@@ -10,6 +10,7 @@ import { StartServerButton } from './StartServerButton';
 import { FeatureFlag } from '../../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../../constants/Features';
 import { Messenger } from '@estruyf/vscode/dist/client';
+import { GitAction } from './Git/GitAction';
 
 export interface IBaseViewProps {
   settings: PanelSettings | undefined;
@@ -44,6 +45,8 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings, folderAndF
   return (
     <div className="frontmatter">
       <div className={`ext_actions`}>
+        <GitAction settings={settings} />
+        
         <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.globalSettings}>
           <GlobalSettings settings={settings} isBase />
         </FeatureFlag>
