@@ -642,9 +642,9 @@
           "default": null,
           "markdownDescription": "Specify the command you want to use to start your static site generator or framework. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.framework.startcommand)"
         },
-        "frontMatter.git.actions": {
+        "frontMatter.git.enabled": {
           "type": "boolean",
-          "markdownDescription": "Specify if you want to use the Git actions for your website. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.git.actions)",
+          "markdownDescription": "Specify if you want to use the Git actions for your website. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.git.enabled)",
           "default": false
         },
         "frontMatter.git.commitMsg": {
