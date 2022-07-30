@@ -1,3 +1,4 @@
+import { GitListener } from './listeners/general/GitListener';
 import * as vscode from 'vscode';
 import { Telemetry } from './helpers/Telemetry';
 import { ContentType } from './helpers/ContentType';
@@ -202,6 +203,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	SettingsHelper.onConfigChange((global?: any) => {
 		Template.init();
 		Preview.init();
+		GitListener.init();
 
 		SettingsListener.getSettings();
 		DataListener.getFoldersAndFiles();	
@@ -260,6 +262,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// Diagnostics
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.diagnostics, Diagnostics.show));
+
+	// Git
+	GitListener.init();
 
 	// Subscribe all commands
 	subscriptions.push(

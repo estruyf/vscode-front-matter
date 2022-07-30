@@ -60,7 +60,7 @@
       "activitybar": [
         {
           "id": "frontmatter-explorer",
-          "title": "FrontMatter",
+          "title": "Front Matter",
           "icon": "assets/frontmatter-short-min.svg"
         }
       ]
@@ -69,9 +69,9 @@
       "frontmatter-explorer": [
         {
           "id": "frontMatter.explorer",
-          "name": "FrontMatter",
+          "name": "Front Matter",
           "icon": "assets/frontmatter-short-min.svg",
-          "contextualTitle": "FrontMatter",
+          "contextualTitle": "Front Matter",
           "type": "webview"
         }
       ]
@@ -1369,27 +1369,27 @@
       {
         "command": "frontMatter.authenticate",
         "title": "Authenticate",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.contenttype.generate",
         "title": "Generate content type from current file",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.contenttype.addMissingFields",
         "title": "Add missing fields from front matter to content type",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.contenttype.setContentType",
         "title": "Set the content type to use for the current file",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.markup.blockquote",
         "title": "Blockquote",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/blockquote-light.svg",
           "dark": "assets/icons/blockquote-dark.svg"
@@ -1398,7 +1398,7 @@
       {
         "command": "frontMatter.markup.bold",
         "title": "Bold",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/bold-light.svg",
           "dark": "assets/icons/bold-dark.svg"
@@ -1407,7 +1407,7 @@
       {
         "command": "frontMatter.dashboard.close",
         "title": "Close dashboard",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "dark": "/assets/icons/frontmatter-small-teal.svg",
           "light": "/assets/icons/frontmatter-small-teal.svg"
@@ -1416,7 +1416,7 @@
       {
         "command": "frontMatter.markup.code",
         "title": "Code",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/code-light.svg",
           "dark": "assets/icons/code-dark.svg"
@@ -1425,7 +1425,7 @@
       {
         "command": "frontMatter.markup.codeblock",
         "title": "Codeblock",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/codeblock-light.svg",
           "dark": "assets/icons/codeblock-dark.svg"
@@ -1434,7 +1434,7 @@
       {
         "command": "frontMatter.collapseSections",
         "title": "Collapse sections",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/close-light.svg",
           "dark": "assets/icons/close-dark.svg"
@@ -1443,37 +1443,37 @@
       {
         "command": "frontMatter.initTemplate",
         "title": "Initialize the template folder",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.createTemplate",
         "title": "Create template from current file",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.createCategory",
         "title": "Create category",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.createContent",
         "title": "Create new content from defined content type or template",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.createTag",
         "title": "Create tag",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.diagnostics",
         "title": "Diagnostic logging",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.exportTaxonomy",
         "title": "Export all tags & categories to your settings",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.createFromTemplate",
@@ -1490,12 +1490,12 @@
       {
         "command": "frontMatter.generateSlug",
         "title": "Generate slug based on content title",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.markup.heading",
         "title": "Heading",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/heading-light.svg",
           "dark": "assets/icons/heading-dark.svg"
@@ -1504,17 +1504,17 @@
       {
         "command": "frontMatter.init",
         "title": "Initialize project",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.insertCategories",
         "title": "Insert categories",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.insertMedia",
         "title": "Insert media into your content",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "dark": "/assets/icons/media-dark.svg",
           "light": "/assets/icons/media-light.svg"
@@ -1523,7 +1523,7 @@
       {
         "command": "frontMatter.insertSnippet",
         "title": "Insert snippet into your content",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "dark": "/assets/icons/scissors-dark.svg",
           "light": "/assets/icons/scissors-light.svg"
@@ -1532,12 +1532,12 @@
       {
         "command": "frontMatter.insertTags",
         "title": "Insert tags",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.markup.italic",
         "title": "Italic",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/italic-light.svg",
           "dark": "assets/icons/italic-dark.svg"
@@ -1546,7 +1546,7 @@
       {
         "command": "frontMatter.dashboard",
         "title": "Open dashboard",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "dark": "/assets/icons/frontmatter-small-dark.svg",
           "light": "/assets/icons/frontmatter-small-light.svg"
@@ -1555,7 +1555,7 @@
       {
         "command": "frontMatter.dashboard.data",
         "title": "Open data dashboard",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "dark": "/assets/icons/frontmatter-small-dark.svg",
           "light": "/assets/icons/frontmatter-small-light.svg"
@@ -1564,7 +1564,7 @@
       {
         "command": "frontMatter.dashboard.media",
         "title": "Open media dashboard",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "dark": "/assets/icons/frontmatter-small-dark.svg",
           "light": "/assets/icons/frontmatter-small-light.svg"
@@ -1573,7 +1573,7 @@
       {
         "command": "frontMatter.dashboard.snippets",
         "title": "Open snippets dashboard",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "dark": "/assets/icons/frontmatter-small-dark.svg",
           "light": "/assets/icons/frontmatter-small-light.svg"
@@ -1582,7 +1582,7 @@
       {
         "command": "frontMatter.dashboard.taxonomy",
         "title": "Open taxonomies dashboard",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "dark": "/assets/icons/frontmatter-small-dark.svg",
           "light": "/assets/icons/frontmatter-small-light.svg"
@@ -1591,7 +1591,7 @@
       {
         "command": "frontMatter.markup.orderedlist",
         "title": "Ordered list",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/ordered-list-light.svg",
           "dark": "assets/icons/ordered-list-dark.svg"
@@ -1600,7 +1600,7 @@
       {
         "command": "frontMatter.markup.options",
         "title": "Other markup options",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/options-light.svg",
           "dark": "assets/icons/options-dark.svg"
@@ -1609,27 +1609,27 @@
       {
         "command": "frontMatter.preview",
         "title": "Preview content",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.promoteSettings",
         "title": "Promote settings from local to team level",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.remap",
         "title": "Remap or remove tag/category in all articles",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.setLastModifiedDate",
         "title": "Set lastmod date",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.markup.strikethrough",
         "title": "Strikethrough",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/strikethrough-light.svg",
           "dark": "assets/icons/strikethrough-dark.svg"
@@ -1638,22 +1638,27 @@
       {
         "command": "frontMatter.mode.switch",
         "title": "Switch mode",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": "$(preview)"
       },
       {
         "command": "frontMatter.markup.tasklist",
         "title": "Task list",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.markup.unorderedlist",
         "title": "Unordered list",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/unordered-list-light.svg",
           "dark": "assets/icons/unordered-list-dark.svg"
         }
+      },
+      {
+        "command": "frontMatter.git.sync",
+        "title": "Sync",
+        "category": "Front Matter"
       }
     ],
     "menus": {
@@ -1771,6 +1776,10 @@
         {
           "command": "frontMatter.dashboard.snippets",
           "when": "frontMatter:dashboard:snippets:enabled"
+        },
+        {
+          "command": "frontMatter.git.sync",
+          "when": "frontMatter:git:enabled"
         },
         {
           "command": "frontMatter.collapseSections",
