@@ -23,6 +23,8 @@ export class Settings {
   public static init() {
     Settings.readConfig();
 
+    Settings.listeners = [];
+
     if (!Settings.isInitialized) {
       Settings.isInitialized = true;
 
@@ -68,7 +70,7 @@ export class Settings {
     workspace.onDidChangeConfiguration(() => {
       callback();
     });
-    
+
     // Keep track of the listeners
     Settings.listeners.push(callback);
 
