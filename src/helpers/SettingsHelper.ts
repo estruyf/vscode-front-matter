@@ -1,23 +1,33 @@
+import { parseWinPath } from './parseWinPath';
 import { Telemetry } from './Telemetry';
 import { Notifications } from './Notifications';
 import { commands, Uri, workspace, window } from 'vscode';
 import * as vscode from 'vscode';
 import { ContentType, CustomTaxonomy, TaxonomyType } from '../models';
-import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM, TelemetryEvent } from '../constants';
+import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM, TelemetryEvent, COMMAND_NAME } from '../constants';
 import { Folders } from '../commands/Folders';
 import { join, basename } from 'path';
 import { existsSync, readFileSync, watch, writeFileSync } from 'fs';
 import { Extension } from './Extension';
 import { debounceCallback } from './DebounceCallback';
+import { Logger } from './Logger';
 
 export class Settings {
   public static globalFile = "frontmatter.json";
   private static config: vscode.WorkspaceConfiguration;
   private static globalConfig: any;
-  
+  private static isInitialized: boolean = false;
+  private static listeners: any[] = [];
+  private static fileCreationWatcher: vscode.FileSystemWatcher | undefined;
   
   public static init() {
     Settings.readConfig();
+
+    if (!Settings.isInitialized) {
+      Settings.isInitialized = true;
+
+      commands.registerCommand(COMMAND_NAME.reloadConfig, Settings.rebindWatchers)
+    }
 
     Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
 
@@ -59,10 +69,19 @@ export class Settings {
       callback();
     });
 
+    if (projectConfig && !existsSync(projectConfig)) {
+      // Keep track of the listeners
+      Settings.listeners.push(callback);
+      // No config file, no need to watch
+      Settings.createFileCreationWatcher();
+      return;
+    }
+
     // Background listener for when it is not a user interaction
     if (projectConfig && existsSync(projectConfig)) {
       let watcher = workspace.createFileSystemWatcher(projectConfig, true, false, true);
       watcher.onDidChange(async (uri: Uri) => {
+        Logger.info(`Config change detected - ${projectConfig} changed`);
         configDebouncer(() => callback(), 200);
         // callback()
       });
@@ -72,6 +91,8 @@ export class Settings {
       const filename = e.uri.fsPath;
 
       if (Settings.checkProjectConfig(filename)) {
+        Logger.info(`Config change detected - ${projectConfig} saved`);
+
         const file = await workspace.openTextDocument(e.uri);
         if (file) {
           const fileContents = file.getText();
@@ -383,5 +404,36 @@ export class Settings {
     } else {
       Settings.globalConfig = undefined;
     }
+  }
+
+  /**
+   * Create a file creation watcher
+   */
+  private static createFileCreationWatcher() {
+    const ext = Extension.getInstance();
+
+    if (!Settings.fileCreationWatcher) {
+      Settings.fileCreationWatcher = workspace.createFileSystemWatcher(`**/*.json`, false, true, true);
+      Settings.fileCreationWatcher.onDidCreate(uri => {
+        if (parseWinPath(uri.fsPath) === parseWinPath(Settings.projectConfigPath)) {
+          Settings.rebindWatchers();
+          // Stop listening to file creation events
+          Settings.fileCreationWatcher?.dispose();
+          Settings.fileCreationWatcher = undefined;
+        }
+      }, null, ext.subscriptions);
+    }
+  }
+
+  /**
+   * Rebind the configuration watchers
+   */
+  private static rebindWatchers() {
+    Logger.info(`Rebinding ${this.listeners.length} listeners`);
+    
+    this.listeners.forEach(l => {
+      Settings.onConfigChange(l);
+      l();
+    });
   }
 }

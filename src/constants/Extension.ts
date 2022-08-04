@@ -68,4 +68,7 @@ export const COMMAND_NAME = {
 
   // Authenticate
   authenticate: getCommandName("authenticate"),
+
+  // Config
+  reloadConfig: getCommandName("config.reload"),
 };
