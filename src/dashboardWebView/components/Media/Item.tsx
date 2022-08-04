@@ -225,7 +225,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   };
 
   const customScriptActions = () => {
-    return (settings?.scripts || []).filter(script => script.type === ScriptType.MediaFile).map(script => (
+    return (settings?.scripts || []).filter(script => script.type === ScriptType.MediaFile && !script.hidden).map(script => (
       <MenuItem 
         key={script.title}
         title={<div className='flex items-center'><TerminalIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>{script.title}</span></div>} 
@@ -259,7 +259,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     const extension = path.split('.').pop();
 
     let icon = <DocumentIcon className={`h-4/6 text-gray-300 dark:text-vulcan-200`} />;
-    console.log(media);
 
     if (isImageFile) {
       return <PhotographIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />;

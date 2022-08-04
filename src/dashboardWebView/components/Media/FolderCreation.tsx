@@ -23,7 +23,8 @@ export const FolderCreation: React.FunctionComponent<IFolderCreationProps> = (pr
     Messenger.send(DashboardMessage.runCustomScript, {script, path: selectedFolder});
   };
 
-  const scripts = (settings?.scripts || []).filter(script => script.type === ScriptType.MediaFolder);
+  const scripts = (settings?.scripts || []).filter(script => script.type === ScriptType.MediaFolder && !script.hidden);
+
   if (scripts.length > 0) {
     return (
       <div className="flex flex-1 justify-end">

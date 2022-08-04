@@ -40,7 +40,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({ 
   }, [path]);
 
   const customScriptActions = React.useMemo(() => {
-    return (scripts || []).filter(script => (script.type === undefined || script.type === ScriptType.Content) && !script.bulk).map(script => (
+    return (scripts || []).filter(script => (script.type === undefined || script.type === ScriptType.Content) && !script.bulk && !script.hidden).map(script => (
       <MenuItem 
         key={script.title}
         title={<div className='flex items-center'><TerminalIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>{script.title}</span></div>} 

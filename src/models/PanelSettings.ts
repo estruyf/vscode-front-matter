@@ -48,6 +48,7 @@ export interface ContentType {
   previewPath?: string | null;
   pageBundle?: boolean;
   template?: string;
+  postScript?: string;
 }
 
 export type FieldType = "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft" | "taxonomy" | "fields" | "json" | "block" | "file" | "dataFile" | "list" | "slug";
@@ -112,6 +113,7 @@ export interface FileInfo extends FileStat {
 };
 
 export interface CustomScript {
+  id?: string;
   title: string;
   script: string;
   nodeBin?: string;
@@ -120,6 +122,7 @@ export interface CustomScript {
   outputType?: string;
   type?: ScriptType;
   command?: CommandType | string;
+  hidden?: boolean;
 }
 
 export interface PreviewSettings {
@@ -135,7 +138,7 @@ export interface CustomTaxonomy {
 export enum ScriptType {
   Content = "content",
   MediaFolder = "mediaFolder",
-  MediaFile = "mediaFile"
+  MediaFile = "mediaFile",
 }
 
 export enum CommandType {

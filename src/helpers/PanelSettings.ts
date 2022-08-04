@@ -36,7 +36,7 @@ export class PanelSettings {
       categories: Settings.get(SETTING_TAXONOMY_CATEGORIES, true) || [],
       customTaxonomy: Settings.get(SETTING_TAXONOMY_CUSTOM, true) || [],
       freeform: Settings.get(SETTING_PANEL_FREEFORM),
-      scripts: (Settings.get<CustomScript[]>(SETTING_CUSTOM_SCRIPTS) || []).filter(s => s.type === ScriptType.Content || !s.type),
+      scripts: (Settings.get<CustomScript[]>(SETTING_CUSTOM_SCRIPTS) || []).filter(s => (s.type === ScriptType.Content || !s.type) && !s.hidden),
       isInitialized: await Template.isInitialized(),
       modifiedDateUpdate: Settings.get(SETTING_AUTO_UPDATE_DATE) || false,
       writingSettingsEnabled: this.isWritingSettingsEnabled() || false,

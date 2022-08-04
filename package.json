@@ -363,6 +363,10 @@
           "items": {
             "type": "object",
             "properties": {
+              "id": {
+                "type": "string",
+                "description": "ID of the script."
+              },
               "title": {
                 "type": "string",
                 "description": "Title you want to give to your script. Will be shown as the title of the button."
@@ -419,6 +423,11 @@
                 ],
                 "description": "The type of script you want to execute.",
                 "default": "node"
+              },
+              "hidden": {
+                "type": "boolean",
+                "description": "Hide the action from the UI",
+                "default": false
               }
             },
             "additionalProperties": false,
@@ -1123,6 +1132,11 @@
                 "type": "string",
                 "default": "",
                 "description": "An optional template that can be used for creating new content."
+              },
+              "postScript": {
+                "type": "string",
+                "default": "",
+                "description": "An optional post script that can be used after new content creation."
               }
             },
             "additionalProperties": false,

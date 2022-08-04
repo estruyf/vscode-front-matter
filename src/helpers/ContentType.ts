@@ -1,9 +1,9 @@
 import { ModeListener } from './../listeners/general/ModeListener';
 import { PagesListener } from './../listeners/dashboard';
-import { ArticleHelper, Settings } from ".";
+import { ArticleHelper, CustomScript, Settings } from ".";
 import { FEATURE_FLAG, SETTING_CONTENT_DRAFT_FIELD, SETTING_DATE_FORMAT, SETTING_FRAMEWORK_ID, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TAXONOMY_FIELD_GROUPS, TelemetryEvent } from "../constants";
-import { ContentType as IContentType, DraftField, Field, FieldGroup, FieldType } from '../models';
-import { Uri, commands, window, ProgressLocation } from 'vscode'; 
+import { ContentType as IContentType, DraftField, Field, FieldGroup, FieldType, ScriptType } from '../models';
+import { Uri, commands, window, ProgressLocation, workspace } from 'vscode'; 
 import { Folders } from "../commands/Folders";
 import { Questions } from "./Questions";
 import { existsSync, writeFileSync } from "fs";
@@ -542,6 +542,19 @@ export class ContentType {
       const content = ArticleHelper.stringifyFrontMatter(templateData?.content || ``, data);
 
       writeFileSync(newFilePath, content, { encoding: "utf8" });
+
+      // Check if the content type has a post script to execute
+      if (contentType.postScript) {
+        const scripts = await CustomScript.getScripts();
+        const script = scripts.find(s => s.id === contentType.postScript);
+        
+        if (script && (script.type === ScriptType.Content || !script?.type)) {
+          await CustomScript.run(script, newFilePath);
+
+          const doc = await workspace.openTextDocument(Uri.file(newFilePath));
+          await doc.save();
+        }
+      }
 
       await commands.executeCommand('vscode.open', Uri.file(newFilePath));
 

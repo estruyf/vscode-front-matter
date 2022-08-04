@@ -4,6 +4,7 @@
 
 ### ✨ New features
 
+- [#376](https://github.com/estruyf/vscode-front-matter/issues/376): Ability to run scripts after content was created
 - [#377](https://github.com/estruyf/vscode-front-matter/issues/377): Git sync actions added on panel and content dashboard (pull and push your changes to remote)
 
 ### 🎨 Enhancements
