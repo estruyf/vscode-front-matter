@@ -68,10 +68,11 @@ export class Settings {
     workspace.onDidChangeConfiguration(() => {
       callback();
     });
+    
+    // Keep track of the listeners
+    Settings.listeners.push(callback);
 
     if (projectConfig && !existsSync(projectConfig)) {
-      // Keep track of the listeners
-      Settings.listeners.push(callback);
       // No config file, no need to watch
       Settings.createFileCreationWatcher();
       return;
