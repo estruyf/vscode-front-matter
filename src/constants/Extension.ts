@@ -62,4 +62,7 @@ export const COMMAND_NAME = {
   generateContentType: getCommandName("contenttype.generate"),
   addMissingFields: getCommandName("contenttype.addMissingFields"),
   setContentType: getCommandName("contenttype.setContentType"),
+
+  // Git
+  gitSync: getCommandName("git.sync"),
 };

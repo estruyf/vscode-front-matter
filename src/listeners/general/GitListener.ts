@@ -1,14 +1,38 @@
 import { Settings } from './../../helpers/SettingsHelper';
 import { Dashboard } from '../../commands/Dashboard';
 import { ExplorerView } from '../../explorerView/ExplorerView';
-import { Extension, Logger } from '../../helpers';
+import { Extension, Logger, Telemetry } from '../../helpers';
 import { GeneralCommands } from './../../constants/GeneralCommands';
 import simpleGit, { SimpleGit } from 'simple-git';
-import { SETTING_GIT_COMMIT_MSG } from '../../constants';
+import { COMMAND_NAME, CONTEXT, SETTING_GIT_COMMIT_MSG, SETTING_GIT_ENABLED, TelemetryEvent } from '../../constants';
 import { Folders } from '../../commands/Folders';
+import { commands } from 'vscode';
 
 export class GitListener {
+  private static isRegistered: boolean = false;
   private static client: SimpleGit | null = null;
+
+  public static async init() {
+    let isEnabled = false;
+    const gitEnabled = Settings.get<boolean>(SETTING_GIT_ENABLED);
+    if (gitEnabled) {
+      const isRepo = await GitListener.isGitRepository();
+      if (isRepo) {
+        isEnabled = true;
+      }
+    }
+
+    await commands.executeCommand('setContext', CONTEXT.isGitEnabled, isEnabled);
+
+    if (!this.isRegistered) {
+      const ext = Extension.getInstance();
+      ext.subscriptions.push(
+        commands.registerCommand(COMMAND_NAME.gitSync, GitListener.sync)
+      );
+
+      this.isRegistered = true;
+    }
+  }
 
   /**
    * Process the messages
@@ -25,6 +49,8 @@ export class GitListener {
   public static async sync() {
     try {
       this.sendMsg(GeneralCommands.toWebview.gitSyncingStart, {});
+
+      Telemetry.send(TelemetryEvent.gitSync);
 
       await this.pull();
       await this.push();
@@ -86,6 +112,10 @@ export class GitListener {
   }
 
   private static getClient() {
+    if (this.client) {
+      return this.client;
+    }
+
     const wsFolder = Folders.getWorkspaceFolder();
 
     const options = {
@@ -94,7 +124,8 @@ export class GitListener {
       maxConcurrentProcesses: 6,
     }
 
-    return simpleGit(options);
+    this.client = simpleGit(options);
+    return this.client;
   }
 
   private static sendMsg(command: string, data: any) {
