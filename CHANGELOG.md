@@ -21,6 +21,7 @@
 ### 🐞 Fixes
 
 - [#378](https://github.com/estruyf/vscode-front-matter/issues/378): Fix last modified update only to content in content folders
+- [#384](https://github.com/estruyf/vscode-front-matter/issues/384): Fix issue `title` field in sub-fields
 
 ## [8.0.1] - 2022-07-13
 
