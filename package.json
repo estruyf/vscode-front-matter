@@ -1381,6 +1381,11 @@
     },
     "commands": [
       {
+        "command": "frontMatter.config.reload",
+        "title": "Reload config",
+        "category": "Front Matter"
+      },
+      {
         "command": "frontMatter.authenticate",
         "title": "Authenticate",
         "category": "Front Matter"

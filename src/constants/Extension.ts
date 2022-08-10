@@ -65,4 +65,10 @@ export const COMMAND_NAME = {
 
   // Git
   gitSync: getCommandName("git.sync"),
+
+  // Authenticate
+  authenticate: getCommandName("authenticate"),
+
+  // Config
+  reloadConfig: getCommandName("config.reload"),
 };

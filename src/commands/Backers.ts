@@ -1,5 +1,5 @@
 import { commands, ExtensionContext } from 'vscode';
-import { CONTEXT } from '../constants';
+import { COMMAND_NAME, CONTEXT } from '../constants';
 import { Extension } from '../helpers';
 import { Credentials } from "../services/Credentials";
 import fetch from "node-fetch";
@@ -17,7 +17,7 @@ export class Backers {
     Backers.tryUsernameCheck();
 
     context.subscriptions.push(
-      commands.registerCommand('frontMatter.authenticate', async () => {
+      commands.registerCommand(COMMAND_NAME.authenticate, async () => {
         Backers.tryUsernameCheck();
       })
     );
