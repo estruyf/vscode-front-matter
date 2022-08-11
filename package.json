@@ -2014,6 +2014,7 @@
     "@heroicons/react": "1.0.4",
     "@iarna/toml": "2.2.3",
     "@octokit/rest": "^18.12.0",
+    "@popperjs/core": "^2.11.6",
     "@sentry/react": "^6.13.3",
     "@sentry/tracing": "^6.13.3",
     "@tailwindcss/forms": "^0.3.3",

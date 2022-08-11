@@ -52,10 +52,9 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
   if (view === DashboardViewType.Grid) {
     return (
       <li className="relative">
-        <button className={`group cursor-pointer flex flex-wrap items-start content-start h-full w-full bg-gray-50 dark:bg-vulcan-200 text-vulcan-500 dark:text-whisper-500 text-left shadow-md dark:shadow-none hover:shadow-xl dark:hover:bg-vulcan-100 border border-gray-200 dark:border-vulcan-50`}
-                onClick={openFile}>
-
-          <div className="relative h-36 w-full overflow-hidden border-b border-gray-100 dark:border-vulcan-100 dark:group-hover:border-vulcan-200">
+        <div className={`group flex flex-wrap items-start content-start h-full w-full bg-gray-50 dark:bg-vulcan-200 text-vulcan-500 dark:text-whisper-500 text-left shadow-md dark:shadow-none hover:shadow-xl dark:hover:bg-vulcan-100 border border-gray-200 dark:border-vulcan-50`}>
+          
+          <button onClick={openFile} className="relative h-36 w-full overflow-hidden border-b border-gray-100 dark:border-vulcan-100 dark:group-hover:border-vulcan-200 cursor-pointer">
             {
               pageData[PREVIEW_IMAGE_FIELD] ? (
                 <img src={`${pageData[PREVIEW_IMAGE_FIELD]}`} alt={title} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
@@ -65,7 +64,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
                 </div>
               )
             }
-          </div>
+          </button>
 
           <div className="relative p-4 w-full">
             <div className={`flex justify-between items-center`}>
@@ -80,9 +79,9 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
                 onOpen={openFile} />
             </div>
 
-            <h2 className="mt-2 mb-2 font-bold">{title}</h2>
+            <button onClick={openFile} className={`text-left`}><h2 className="mt-2 mb-2 font-bold">{title}</h2></button>
 
-            <p className="text-xs text-vulcan-200 dark:text-whisper-800">{description}</p>
+            <button onClick={openFile} className={`text-left`}><p className="text-xs text-vulcan-200 dark:text-whisper-800">{description}</p></button>
 
             {
               tags && tags.length > 0 && (
@@ -100,15 +99,26 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
               )
             }
           </div>
-        </button>
+        </div>
       </li>
     );
   } else if (view === DashboardViewType.List) {
     return (
       <li className="relative">
-        <button className={`px-5 cursor-pointer w-full text-left grid grid-cols-12 gap-x-4 sm:gap-x-6 xl:gap-x-8 py-2 border-b border-gray-300 hover:bg-gray-200 dark:border-vulcan-50 dark:hover:bg-vulcan-50 hover:bg-opacity-70`} onClick={openFile}>
-          <div className="col-span-8 font-bold truncate">
-            {title}
+        <div className={`px-5 cursor-pointer w-full text-left grid grid-cols-12 gap-x-4 sm:gap-x-6 xl:gap-x-8 py-2 border-b border-gray-300 hover:bg-gray-200 dark:border-vulcan-50 dark:hover:bg-vulcan-50 hover:bg-opacity-70`}>
+          <div className="col-span-8 font-bold truncate flex items-center space-x-4">
+            <button 
+              title={`Open: ${title}`} 
+              onClick={openFile}>
+              {title}
+            </button>
+
+            <ContentActions 
+              title={title}
+              path={fmFilePath}
+              scripts={settings?.scripts}
+              onOpen={openFile}
+              listView />
           </div>
           <div className="col-span-2">
             <DateField value={date} />
@@ -116,7 +126,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
           <div className="col-span-2">
             { draftField && draftField.name && <Status draft={pageData[draftField.name]} /> }
           </div>
-        </button>
+        </div>
       </li>
     );
   }
