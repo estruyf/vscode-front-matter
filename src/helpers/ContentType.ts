@@ -572,29 +572,40 @@ export class ContentType {
    * @param contentType 
    * @param data 
    */
-  private static async processFields(obj: IContentType | Field, titleValue: string, data: any, filePath: string) {
+  private static async processFields(obj: IContentType | Field, titleValue: string, data: any, filePath: string, isRoot: boolean = true): Promise<any> {
     
     if (obj.fields) {
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
+      
       for (const field of obj.fields) {
         if (field.name === "title") {
           if (field.default) {
             data[field.name] = processKnownPlaceholders(field.default, titleValue, dateFormat);
             data[field.name] = await ArticleHelper.processCustomPlaceholders(data[field.name], titleValue, filePath);
-          } else {
+          } else if (isRoot) {
             data[field.name] = titleValue;
+          } else {
+            data[field.name] = ""
           }
         } else {
           if (field.type === "fields") {
-            data[field.name] = await this.processFields(field, titleValue, {}, filePath);
+            data[field.name] = await this.processFields(field, titleValue, {}, filePath, false);
           } else {
             const defaultValue = field.default;
 
             if (typeof defaultValue === "string") {
               data[field.name] = processKnownPlaceholders(defaultValue, titleValue, dateFormat);
               data[field.name] = await ArticleHelper.processCustomPlaceholders(data[field.name], titleValue, filePath);
+            } else if (typeof defaultValue !== "undefined") {
+              data[field.name] = defaultValue;
             } else {
-              data[field.name] = typeof defaultValue !== "undefined" ? defaultValue : "";
+              const draftField = ContentType.getDraftField();
+
+              if (field.type === "draft" && (draftField?.type === "boolean" || draftField?.type === undefined)) {
+                data[field.name] = true;
+              } else {
+                data[field.name] = "";
+              }
             }
           }
         }

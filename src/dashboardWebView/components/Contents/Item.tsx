@@ -88,11 +88,13 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
                 <div className="mt-2">
                   {
                     tags.map((tag, index) => (
-                      <span 
-                        key={index} 
-                        className="inline-block mr-1 mt-1 text-[#5D561D] dark:text-[#F0ECD0] text-xs">
-                        #{tag}
-                      </span>
+                      tag && (
+                        <span 
+                          key={index} 
+                          className="inline-block mr-1 mt-1 text-[#5D561D] dark:text-[#F0ECD0] text-xs">
+                          #{tag}
+                        </span>
+                      )
                     ))
                   }
                 </div>

@@ -40,7 +40,10 @@ if (elm) {
       tracesSampleRate: 0, // No performance tracing required
       release: version || "",
       environment: environment || "",
-      ignoreErrors: ['ResizeObserver loop limit exceeded']
+      ignoreErrors: [
+        'ResizeObserver loop limit exceeded',
+        "Cannot read properties of undefined (reading 'unobserve')"
+      ]
     });
   }
   

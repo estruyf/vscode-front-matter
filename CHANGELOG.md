@@ -15,6 +15,7 @@
 - [#372](https://github.com/estruyf/vscode-front-matter/issues/372): Rename Taxonomy tab to Taxonomies
 - [#374](https://github.com/estruyf/vscode-front-matter/issues/374): Hide the front matter section to use the panel instead
 - [#383](https://github.com/estruyf/vscode-front-matter/issues/383): Add the item menu to the content list view
+- [#385](https://github.com/estruyf/vscode-front-matter/issues/385): If no default value for the draft field is defined, the field value will be set to `true`
 
 ### ⚡️ Optimizations
 
@@ -23,6 +24,7 @@
 ### 🐞 Fixes
 
 - [#378](https://github.com/estruyf/vscode-front-matter/issues/378): Fix last modified update only to content in content folders
+- [#384](https://github.com/estruyf/vscode-front-matter/issues/384): Fix issue `title` field in sub-fields
 
 ## [8.0.1] - 2022-07-13
 
