@@ -576,6 +576,7 @@ export class ContentType {
     
     if (obj.fields) {
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
+      
       for (const field of obj.fields) {
         if (field.name === "title") {
           if (field.default) {
@@ -595,8 +596,16 @@ export class ContentType {
             if (typeof defaultValue === "string") {
               data[field.name] = processKnownPlaceholders(defaultValue, titleValue, dateFormat);
               data[field.name] = await ArticleHelper.processCustomPlaceholders(data[field.name], titleValue, filePath);
+            } else if (typeof defaultValue !== "undefined") {
+              data[field.name] = defaultValue;
             } else {
-              data[field.name] = typeof defaultValue !== "undefined" ? defaultValue : "";
+              const draftField = ContentType.getDraftField();
+
+              if (field.type === "draft" && (draftField?.type === "boolean" || draftField?.type === undefined)) {
+                data[field.name] = true;
+              } else {
+                data[field.name] = "";
+              }
             }
           }
         }
