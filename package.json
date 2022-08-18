@@ -1931,7 +1931,7 @@
     "test": "tsc -p tsconfig.e2e.json && npm run clean:test && node ./e2e/out/runTests.js"
   },
   "devDependencies": {
-    "@actions/core": "^1.8.2",
+    "@actions/core": "^1.9.1",
     "@bendera/vscode-webview-elements": "0.6.2",
     "@estruyf/vscode": "0.0.3",
     "@headlessui/react": "1.5.0",
