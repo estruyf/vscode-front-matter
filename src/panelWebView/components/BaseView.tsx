@@ -56,7 +56,9 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings, folderAndF
             <div className={`base__actions`}>
               <button onClick={openDashboard}>Open dashboard</button>
               <StartServerButton settings={settings} />
-              <button onClick={initProject} disabled={settings?.isInitialized}>Initialize project</button>
+              {
+                !settings?.isInitialized && <button onClick={initProject}>Initialize project</button>
+              }
               <button onClick={createContent} disabled={!settings?.isInitialized}>Create new content</button>
               <button onClick={openPreview} disabled={!settings?.preview?.host}>Open site preview</button>
               {
