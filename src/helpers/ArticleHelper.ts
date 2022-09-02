@@ -441,6 +441,8 @@ export class ArticleHelper {
             } catch (e) {
               Notifications.error(`Error while processing the ${placeholder.id} placeholder`);
               Logger.error((e as Error).message);
+
+              value = "<Failed to process>";
             }
             
           }
