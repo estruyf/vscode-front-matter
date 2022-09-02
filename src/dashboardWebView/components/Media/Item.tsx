@@ -3,7 +3,7 @@ import { Menu } from '@headlessui/react';
 import { ClipboardIcon, CodeIcon, DocumentIcon, EyeIcon, MusicNoteIcon, PencilIcon, PhotographIcon, PlusIcon, TerminalIcon, TrashIcon, VideoCameraIcon } from '@heroicons/react/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { CustomScript } from '../../../helpers/CustomScript';
 import { parseWinPath } from '../../../helpers/parseWinPath';
@@ -18,6 +18,7 @@ import { QuickAction } from '../Menu/QuickAction';
 import { Alert } from '../Modals/Alert';
 import { InfoDialog } from '../Modals/InfoDialog';
 import { DetailsSlideOver } from './DetailsSlideOver';
+import { usePopper } from 'react-popper';
  
 export interface IItemProps {
   media: MediaInfo;
@@ -25,16 +26,23 @@ export interface IItemProps {
 
 export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWithChildren<IItemProps>) => {
   const [ , setLightbox ] = useRecoilState(LightboxAtom);
-  const [ showAlert, setShowAlert ] = React.useState(false);
-  const [ showForm, setShowForm ] = React.useState(false);
-  const [ showSnippetSelection, setShowSnippetSelection ] = React.useState(false);
-  const [ showDetails, setShowDetails ] = React.useState(false);
-  const [ caption, setCaption ] = React.useState(media.caption);
-  const [ alt, setAlt ] = React.useState(media.alt);
-  const [ filename, setFilename ] = React.useState<string | null>(null);
+  const [ showAlert, setShowAlert ] = useState(false);
+  const [ showForm, setShowForm ] = useState(false);
+  const [ showSnippetSelection, setShowSnippetSelection ] = useState(false);
+  const [ showDetails, setShowDetails ] = useState(false);
+  const [ caption, setCaption ] = useState(media.caption);
+  const [ alt, setAlt ] = useState(media.alt);
+  const [ filename, setFilename ] = useState<string | null>(null);
   const settings = useRecoilValue(SettingsSelector);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const viewData = useRecoilValue(ViewDataSelector);
+
+  const [referenceElement, setReferenceElement] = useState<any>(null);
+  const [popperElement, setPopperElement] = useState<any>(null);
+  const { styles, attributes, forceUpdate } = usePopper(referenceElement, popperElement, {
+    placement: 'bottom-end',
+    strategy: 'fixed'
+  })
 
   const mediaSnippets = useMemo(() => {
     if (!settings?.snippets) {
@@ -380,59 +388,63 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
                   </QuickAction>
                 </div>
 
-                <ActionMenuButton title={`Menu`} />
+                <div ref={setReferenceElement} className={`flex`}>
+                  <ActionMenuButton title={`Menu`} />
+                </div>
 
-                <MenuItems widthClass='w-40'>
-                  <MenuItem 
-                    title={(
-                      <div className='flex items-center'>
-                        <PencilIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>Edit metadata</span>  
-                      </div>
-                    )}
-                    onClick={updateMetadata}
-                    />
+                <div className='menu_items__wrapper z-20' ref={setPopperElement} style={styles.popper} {...attributes.popper}>
+                  <MenuItems widthClass='w-40'>
+                    <MenuItem 
+                      title={(
+                        <div className='flex items-center'>
+                          <PencilIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>Edit metadata</span>  
+                        </div>
+                      )}
+                      onClick={updateMetadata}
+                      />
 
-                  {
-                    viewData?.data?.filePath ? (
-                      <>
-                        <MenuItem 
-                          title={<div className='flex items-center'><PlusIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>Insert image markdown</span></div>}
-                          onClick={insertToArticle} />
+                    {
+                      viewData?.data?.filePath ? (
+                        <>
+                          <MenuItem 
+                            title={<div className='flex items-center'><PlusIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>Insert image markdown</span></div>}
+                            onClick={insertToArticle} />
 
-                        {
-                          (viewData?.data?.position && mediaSnippets.length > 0) && mediaSnippets.map((snippet, idx) => (
-                            <MenuItem 
-                              key={idx}
-                              title={<div className='flex items-center'><CodeIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>{snippet.title}</span></div>}
-                              onClick={() => processSnippet(snippet)} />
-                          ))
-                        }
+                          {
+                            (viewData?.data?.position && mediaSnippets.length > 0) && mediaSnippets.map((snippet, idx) => (
+                              <MenuItem 
+                                key={idx}
+                                title={<div className='flex items-center'><CodeIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>{snippet.title}</span></div>}
+                                onClick={() => processSnippet(snippet)} />
+                            ))
+                          }
 
-                        { customScriptActions() }
-                      </>
-                    ) : (
-                      <>
-                        <MenuItem 
-                          title={(
-                            <div className='flex items-center'>
-                              <ClipboardIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>Copy media path</span>
-                            </div>
-                          )}
-                          onClick={copyToClipboard} />
+                          { customScriptActions() }
+                        </>
+                      ) : (
+                        <>
+                          <MenuItem 
+                            title={(
+                              <div className='flex items-center'>
+                                <ClipboardIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>Copy media path</span>
+                              </div>
+                            )}
+                            onClick={copyToClipboard} />
 
-                        { customScriptActions() }
-                      </>
-                    )
-                  }
+                          { customScriptActions() }
+                        </>
+                      )
+                    }
 
-                  <MenuItem 
-                    title={<div className='flex items-center'><EyeIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>Reveal media</span></div>}
-                    onClick={revealMedia} />
+                    <MenuItem 
+                      title={<div className='flex items-center'><EyeIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>Reveal media</span></div>}
+                      onClick={revealMedia} />
 
-                  <MenuItem 
-                    title={<div className='flex items-center'><TrashIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>Delete</span></div>}
-                    onClick={deleteMedia} />
-                </MenuItems>
+                    <MenuItem 
+                      title={<div className='flex items-center'><TrashIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>Delete</span></div>}
+                      onClick={deleteMedia} />
+                  </MenuItems>
+                </div>
               </Menu>
             </div>
 
