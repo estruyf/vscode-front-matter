@@ -2052,6 +2052,7 @@
     "html-webpack-plugin": "4.5.0",
     "image-size": "^1.0.0",
     "invariant": "^2.2.4",
+    "jsonc-parser": "^3.2.0",
     "lodash-es": "^4.17.21",
     "lodash.omit": "^4.5.0",
     "lodash.uniqby": "4.7.0",

@@ -16,6 +16,7 @@
 - [#374](https://github.com/estruyf/vscode-front-matter/issues/374): Hide the front matter section to use the panel instead
 - [#383](https://github.com/estruyf/vscode-front-matter/issues/383): Add the item menu to the content list view
 - [#385](https://github.com/estruyf/vscode-front-matter/issues/385): If no default value for the draft field is defined, the field value will be set to `true`
+- [#390](https://github.com/estruyf/vscode-front-matter/issues/390): Implement another JSON parser in order to be able to parse the `frontmatter.json` file better
 
 ### ⚡️ Optimizations
 

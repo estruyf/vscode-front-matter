@@ -10,4 +10,19 @@
     "typescript.tsc.autoDetect": "off",
     "eliostruyf.writingstyleguide.terms.isDisabled": true,
     "eliostruyf.writingstyleguide.biasFree.isDisabled": true,
+    "squarl.groups": [
+        {
+            "id": "dashboard",
+            "name": "Dashboard"
+        }
+    ],
+    "squarl.bookmarks": [
+        {
+            "name": "App.tsx",
+            "path": "src/dashboardWebView/components/App.tsx",
+            "description": "Start of dashboard",
+            "type": "file",
+            "groupId": "dashboard"
+        }
+    ],
 }

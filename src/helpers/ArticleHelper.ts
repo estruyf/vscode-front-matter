@@ -1,3 +1,4 @@
+import * as jsoncParser from 'jsonc-parser';
 import { CustomPlaceholder } from './../models/CustomPlaceholder';
 import { Uri, workspace } from 'vscode';
 import { MarkdownFoldingProvider } from './../providers/MarkdownFoldingProvider';
@@ -418,7 +419,7 @@ export class ArticleHelper {
                   // Check if the output needs to be parsed
                   if (output.includes("{") && output.includes("}")) {
                     try {
-                      output = JSON.parse(output);
+                      output = jsoncParser.parse(output);
                     } catch (e) {
                       // Do nothing
                     }

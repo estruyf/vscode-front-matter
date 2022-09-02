@@ -11,6 +11,7 @@ import { existsSync, readFileSync, watch, writeFileSync } from 'fs';
 import { Extension } from './Extension';
 import { debounceCallback } from './DebounceCallback';
 import { Logger } from './Logger';
+import * as jsoncParser from 'jsonc-parser';
 
 export class Settings {
   public static globalFile = "frontmatter.json";
@@ -99,7 +100,7 @@ export class Settings {
         const file = await workspace.openTextDocument(e.uri);
         if (file) {
           const fileContents = file.getText();
-          const json = JSON.parse(fileContents);
+          const json = jsoncParser.parse(fileContents);
           configDebouncer(() => callback(json), 200);
           // callback(json)
         }
@@ -133,7 +134,11 @@ export class Settings {
   /**
    * Retrieve a setting from global and local config
    */
-  public static get<T>(name: string, merging: boolean = false): T | undefined{
+  public static get<T>(name: string, merging: boolean = false): T | undefined {
+    if (!Settings.config) {
+      return;
+    }
+
     const configInpection = Settings.config.inspect<T>(name);
 
     let setting = undefined;
@@ -170,7 +175,7 @@ export class Settings {
     if (updateGlobal) {
       if (fmConfig && existsSync(fmConfig)) {
         const localConfig = readFileSync(fmConfig, 'utf8');
-        Settings.globalConfig = JSON.parse(localConfig);
+        Settings.globalConfig = jsoncParser.parse(localConfig);
         Settings.globalConfig[`${CONFIG_KEY}.${name}`] = value;
         writeFileSync(fmConfig, JSON.stringify(Settings.globalConfig, null, 2), 'utf8');
         
@@ -399,13 +404,19 @@ export class Settings {
    * Read the global config file
    */
   private static readConfig() {
-    const fmConfig = Settings.projectConfigPath;
-    if (fmConfig && existsSync(fmConfig)) {
-      const localConfig = readFileSync(fmConfig, 'utf8');
-      Settings.globalConfig = JSON.parse(localConfig);
-      commands.executeCommand('setContext', CONTEXT.isEnabled, true);
-    } else {
+    try {
+      const fmConfig = Settings.projectConfigPath;
+      if (fmConfig && existsSync(fmConfig)) {
+        const localConfig = readFileSync(fmConfig, 'utf8');
+        Settings.globalConfig = jsoncParser.parse(localConfig);
+        commands.executeCommand('setContext', CONTEXT.isEnabled, true);
+      } else {
+        Settings.globalConfig = undefined;
+      }
+    } catch (e) {
       Settings.globalConfig = undefined;
+      Notifications.error(`Error reading "frontmatter.json" config file. Check [output window](command:${COMMAND_NAME.showOutputChannel}) for more details.`);
+      Logger.error((e as Error).message);
     }
   }
 
