@@ -230,12 +230,18 @@
               "value": {
                 "type": "string",
                 "description": "The placeholder its value"
+              },
+              "script": {
+                "type": "string",
+                "description": "The script to execute to get the value of the placeholder"
+              },
+              "command": {
+                "$ref": "#scriptCommand"
               }
             },
             "additionalProperties": false,
             "required": [
-              "id",
-              "value"
+              "id"
             ]
           },
           "scope": "Content"
@@ -406,6 +412,7 @@
                 "description": "The type for which the script will be used."
               },
               "command": {
+                "$id": "#scriptCommand",
                 "type": "string",
                 "oneOf": [
                   {
