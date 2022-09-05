@@ -104,8 +104,18 @@ export class Extension {
     return this.ctx.extensionMode === ExtensionMode.Production;
   }
 
+  /**
+   * Get the diagnostic collection for the extension
+   */
   public get diagnosticCollection(): DiagnosticCollection {
     return this._collection;
+  }
+
+  /**
+   * Get extension subscriptions
+   */
+  public get subscriptions() {
+    return this.ctx.subscriptions;
   }
 
   /**
@@ -258,6 +268,10 @@ export class Extension {
     }
 
     return true;
+  }
+
+  public asAbsolutePath(path: string) {
+    return this.ctx.asAbsolutePath(path);
   }
 
   public get packageJson() {

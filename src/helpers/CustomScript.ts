@@ -1,3 +1,4 @@
+import { Settings } from './SettingsHelper';
 import { CommandType } from './../models/PanelSettings';
 import { CustomScript as ICustomScript, ScriptType } from '../models/PanelSettings';
 import { window, env as vscodeEnv, ProgressLocation } from 'vscode';
@@ -12,9 +13,24 @@ import { Dashboard } from '../commands/Dashboard';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { ParsedFrontMatter } from '../parsers';
 import { TelemetryEvent } from '../constants/TelemetryEvent';
+import { SETTING_CUSTOM_SCRIPTS } from '../constants';
 
 export class CustomScript {
 
+  /**
+   * Retrieve all scripts
+   * @returns 
+   */
+  public static async getScripts(): Promise<ICustomScript[]> {
+    const scripts = Settings.get<ICustomScript[]>(SETTING_CUSTOM_SCRIPTS) || [];
+    return scripts;
+  }
+
+  /**
+   * Run a script
+   * @param script 
+   * @param path 
+   */
   public static async run(script: ICustomScript, path: string | null = null): Promise<void> {
     const wsFolder = Folders.getWorkspaceFolder();
 
@@ -24,19 +40,19 @@ export class CustomScript {
       if (script.type === ScriptType.MediaFile || script.type === ScriptType.MediaFolder) {
         Telemetry.send(TelemetryEvent.runMediaScript);
         
-        CustomScript.runMediaScript(wsPath, path, script);
+        await CustomScript.runMediaScript(wsPath, path, script);
       } else {
         Telemetry.send(TelemetryEvent.runCustomScript);
 
         if (script.bulk) {
           // Run script on all files
-          CustomScript.bulkRun(wsPath, script);
+          await CustomScript.bulkRun(wsPath, script);
         } else if (path) {
           // Run script for provided path
-          CustomScript.singleRun(wsPath, script, path);
+          await CustomScript.singleRun(wsPath, script, path);
         } else {
           // Run script on current file.
-          CustomScript.singleRun(wsPath, script);
+          await CustomScript.singleRun(wsPath, script);
         }
       }
     }
@@ -64,13 +80,13 @@ export class CustomScript {
     }
 
     if (articlePath && article) {
-      window.withProgress({
+      return window.withProgress({
         location: ProgressLocation.Notification,
         title: `Executing: ${script.title}`,
         cancellable: false
       }, async () => {
         const output = await CustomScript.runScript(wsPath, article, articlePath as string, script);
-        CustomScript.showOutput(output, script, articlePath);
+        await CustomScript.showOutput(output, script, articlePath);
       });
     } else {
       Notifications.warning(`${script.title}: Article couldn't be retrieved.`);
@@ -116,7 +132,7 @@ export class CustomScript {
         }
       }
   
-      CustomScript.showOutput(output.join(`\n`), script);
+      await CustomScript.showOutput(output.join(`\n`), script);
     });
   }
 
@@ -142,7 +158,7 @@ export class CustomScript {
         try {
           const output = await CustomScript.executeScript(script, wsPath, `"${wsPath}" "${path}"`);
 
-          CustomScript.showOutput(output, script);
+          await CustomScript.showOutput(output, script);
   
           Dashboard.postWebviewMessage({ 
             command: DashboardCommand.mediaUpdate
@@ -188,7 +204,7 @@ export class CustomScript {
    * @param output 
    * @param script 
    */
-  private static showOutput(output: string | null, script: ICustomScript, articlePath?: string | null): void {
+  private static async showOutput(output: string | null, script: ICustomScript, articlePath?: string | null): Promise<void> {
     if (output) {
       try {
         const data = JSON.parse(output);
@@ -212,9 +228,9 @@ export class CustomScript {
             }
 
             if (articlePath) {
-              ArticleHelper.updateByPath(articlePath, article);
+              await ArticleHelper.updateByPath(articlePath, article);
             } else if (editor) {
-              ArticleHelper.update(editor, article);
+              await ArticleHelper.update(editor, article);
             } else {
               throw new Error(`Couldn't update article.`);
             }
@@ -246,7 +262,7 @@ export class CustomScript {
    * @param args 
    * @returns 
    */
-  private static async executeScript(script: ICustomScript, wsPath: string, args: string): Promise<string> {
+  public static async executeScript(script: ICustomScript, wsPath: string, args: string): Promise<string> {
     return new Promise((resolve, reject) => {
       
       // Check the command to use
@@ -262,6 +278,11 @@ export class CustomScript {
       exec(fullScript, (error, stdout) => {
         if (error) {
           reject(error.message);
+        }
+
+        if (stdout && stdout.endsWith(`\n`)) {
+          // Remove empty line at the end of the string
+          stdout = stdout.slice(0, -1);
         }
 
         resolve(stdout);

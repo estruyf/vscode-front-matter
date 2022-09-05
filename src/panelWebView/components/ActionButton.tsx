@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 export interface IActionButtonProps {
-  title: string;
+  title: JSX.Element | string;
   className?: string;
   disabled?: boolean;
   onClick: (e: React.SyntheticEvent<HTMLButtonElement>) => void;
@@ -10,7 +10,9 @@ export interface IActionButtonProps {
 const ActionButton: React.FunctionComponent<IActionButtonProps> = ({className, onClick, disabled,title}: React.PropsWithChildren<IActionButtonProps>) => {
   return (
     <div className={`article__action`}>
-      <button onClick={onClick} className={className || ""} disabled={disabled}>{title}</button>
+      <button onClick={onClick} className={className || ""} disabled={disabled}>
+        {title}
+      </button>
     </div>
   );
 };

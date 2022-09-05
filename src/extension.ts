@@ -1,3 +1,4 @@
+import { GitListener } from './listeners/general/GitListener';
 import * as vscode from 'vscode';
 import { Telemetry } from './helpers/Telemetry';
 import { ContentType } from './helpers/ContentType';
@@ -14,7 +15,7 @@ import { TagType } from './panelWebView/TagType';
 import { ExplorerView } from './explorerView/ExplorerView';
 import { Extension } from './helpers/Extension';
 import { DashboardData } from './models/DashboardData';
-import { Logger, Settings as SettingsHelper } from './helpers';
+import { debounceCallback, Logger, Settings as SettingsHelper } from './helpers';
 import { Content } from './commands/Content';
 import ContentProvider from './providers/ContentProvider';
 import { Wysiwyg } from './commands/Wysiwyg';
@@ -202,10 +203,11 @@ export async function activate(context: vscode.ExtensionContext) {
 	SettingsHelper.onConfigChange((global?: any) => {
 		Template.init();
 		Preview.init();
+		GitListener.init();
 
 		SettingsListener.getSettings();
 		DataListener.getFoldersAndFiles();	
-		MarkdownFoldingProvider.triggerHighlighting();
+		MarkdownFoldingProvider.triggerHighlighting(true);
 		ModeSwitch.register();
 	});
 
@@ -261,6 +263,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Diagnostics
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.diagnostics, Diagnostics.show));
 
+	// Git
+	GitListener.init();
+
 	// Subscribe all commands
 	subscriptions.push(
 		insertTags,
@@ -297,14 +302,4 @@ const handleAutoDateUpdate = (e: vscode.TextDocumentWillSaveEvent) => {
 const triggerShowDraftStatus = (location: string) => {
 	Logger.info(`Triggering draft status update: ${location}`);
 	statusDebouncer(() => { StatusListener.verify(frontMatterStatusBar, collection); }, 1000);
-};
-
-const debounceCallback = () => {
-  let timeout: NodeJS.Timeout;
-
-  return (fnc: any, time: number) => {
-    const functionCall = (...args: any[]) => fnc.apply(args);
-    clearTimeout(timeout);
-    timeout = setTimeout(functionCall, time) as any;
-  };
 };

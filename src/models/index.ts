@@ -1,6 +1,7 @@
 export * from './BlockFieldData';
 export * from './Choice';
 export * from './ContentFolder';
+export * from './CustomPlaceholder';
 export * from './CustomTaxonomyData';
 export * from './DashboardData';
 export * from './DataFile';
@@ -8,6 +9,7 @@ export * from './DataFolder';
 export * from './DataType';
 export * from './DraftField';
 export * from './Framework';
+export * from './GitSettings';
 export * from './MediaPaths';
 export * from './Mode';
 export * from './PanelSettings';

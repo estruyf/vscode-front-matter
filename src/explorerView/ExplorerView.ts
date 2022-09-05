@@ -7,7 +7,7 @@ import { TagType } from '../panelWebView/TagType';
 import { WebviewHelper } from '@estruyf/vscode';
 import { Extension } from '../helpers/Extension';
 import { Telemetry } from '../helpers/Telemetry';
-import { ModeListener } from '../listeners/general';
+import { GitListener, ModeListener } from '../listeners/general';
 
 export class ExplorerView implements WebviewViewProvider, Disposable {
   public static readonly viewType = "frontMatter.explorer";
@@ -82,6 +82,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       SettingsListener.process(msg);
       TaxonomyListener.process(msg);
       ModeListener.process(msg);
+      GitListener.process(msg);
     });
 
     webviewView.onDidChangeVisibility(() => {

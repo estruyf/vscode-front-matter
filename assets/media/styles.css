@@ -41,7 +41,8 @@
 }
 
 .collapsible__body,
-.ext_settings {
+.ext_settings,
+.git_actions {
 	padding: 1rem 1.25rem;
   box-sizing: border-box;
 }

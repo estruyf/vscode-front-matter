@@ -18,7 +18,7 @@ export default function useMessages() {
   const [, setView] = useRecoilState(DashboardViewAtom);
   const [, setSearchReady] = useRecoilState(SearchReadyAtom);
 
-  Messenger.listen((event: MessageEvent<EventData<any>>) => {
+  const messageListener = (event: MessageEvent<EventData<any>>) => {
     const message = event.data;
 
     switch (message.command) {
@@ -53,14 +53,20 @@ export default function useMessages() {
         setMode(message.data);
         break;
     }
-  });
+  };
 
   useEffect(() => {
+    Messenger.listen(messageListener);
+
     setLoading(true);
     Messenger.send(DashboardMessage.getViewType);
     Messenger.send(DashboardMessage.getTheme);
     Messenger.send(DashboardMessage.getData);
     Messenger.send(DashboardMessage.getMode);
+
+    return () => {
+      Messenger.unlisten(messageListener);
+    }
   }, ['']);
 
   return {

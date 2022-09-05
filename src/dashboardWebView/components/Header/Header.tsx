@@ -21,7 +21,8 @@ import { CustomScript } from '../../../models';
 import { LightningBoltIcon, PlusIcon } from '@heroicons/react/outline';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { routePaths } from '../..';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
+import { SyncButton } from './SyncButton';
 
 export interface IHeaderProps {
   header?: React.ReactNode;
@@ -72,6 +73,38 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPage
     onClick: () => runBulkScript(s)
   }));
 
+  const choiceOptions = useMemo(() => {
+    const isEnabled = settings?.dashboardState?.contents?.templatesEnabled || false;
+    
+    if (isEnabled) {
+      return [
+        {
+          title: (
+            <div className='flex items-center'>
+              <PlusIcon className="w-4 h-4 mr-2" />
+              <span>Create by content type</span>
+            </div>
+          ),
+          onClick: createByContentType,
+          disabled: !settings?.initialized
+        }, {
+          title: (
+            <div className='flex items-center'>
+              <PlusIcon className="w-4 h-4 mr-2" />
+              <span>Create by template</span>
+            </div>
+          ),
+          onClick: createByTemplate,
+          disabled: !settings?.initialized
+        },
+        ...customActions
+      ];
+    }
+
+    return [];
+
+  }, [settings?.dashboardState?.contents?.templatesEnabled]);
+
   useEffect(() => {
     if (location.search) {
       const searchParams = new URLSearchParams(location.search);
@@ -108,33 +141,13 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPage
 
               <div className={`flex items-center justify-end space-x-4 flex-1`}>
                 <Startup settings={settings} />
+
+                <SyncButton />
                 
                 <ChoiceButton 
                   title={`Create content`} 
-                  choices={[
-                    {
-                      title: (
-                        <div className='flex items-center'>
-                          <PlusIcon className="w-4 h-4 mr-2" />
-                          <span>Create by content type</span>
-                        </div>
-                      ),
-                      onClick: createByContentType,
-                      disabled: !settings?.initialized
-                    }, {
-                      title: (
-                        <div className='flex items-center'>
-                          <PlusIcon className="w-4 h-4 mr-2" />
-                          <span>Create by template</span>
-                        </div>
-                      ),
-                      onClick: createByTemplate,
-                      disabled: !settings?.initialized
-                    },
-                    ...customActions
-                  ]} 
-                  onClick={createContent} 
-                  isTemplatesEnabled={settings?.dashboardState?.contents?.templatesEnabled || undefined}
+                  choices={choiceOptions} 
+                  onClick={createContent}
                   disabled={!settings?.initialized} />
               </div>
             </div>

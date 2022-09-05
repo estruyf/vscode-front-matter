@@ -14,8 +14,17 @@ export const StartServerButton: React.FunctionComponent<IStartServerButtonProps>
   const startLocalServer = (command: string) => {
     Messenger.send(CommandToCode.frameworkCommand, { command });
   };
+
+  const stopLocalServer = () => {
+    Messenger.send(CommandToCode.stopServer);
+  };
   
   return (
-    startCommand ? <button onClick={() => startLocalServer(startCommand)}>Start server</button> : null
+    startCommand ? (
+      <>
+        <button onClick={() => startLocalServer(startCommand)}>Start server</button>
+        <button onClick={() => stopLocalServer()}>Stop server</button>
+      </>
+    ) : null
   );
 };

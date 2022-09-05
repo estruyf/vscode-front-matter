@@ -1,37 +1,42 @@
+import { parseWinPath } from './parseWinPath';
 import { Telemetry } from './Telemetry';
 import { Notifications } from './Notifications';
 import { commands, Uri, workspace, window } from 'vscode';
 import * as vscode from 'vscode';
 import { ContentType, CustomTaxonomy, TaxonomyType } from '../models';
-import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM, TelemetryEvent } from '../constants';
+import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM, TelemetryEvent, COMMAND_NAME } from '../constants';
 import { Folders } from '../commands/Folders';
 import { join, basename } from 'path';
 import { existsSync, readFileSync, watch, writeFileSync } from 'fs';
 import { Extension } from './Extension';
+import { debounceCallback } from './DebounceCallback';
+import { Logger } from './Logger';
+import * as jsoncParser from 'jsonc-parser';
 
 export class Settings {
   public static globalFile = "frontmatter.json";
   private static config: vscode.WorkspaceConfiguration;
   private static globalConfig: any;
+  private static isInitialized: boolean = false;
+  private static listeners: any[] = [];
+  private static fileCreationWatcher: vscode.FileSystemWatcher | undefined;
   
   public static init() {
-    const fmConfig = Settings.projectConfigPath;
-    if (fmConfig && existsSync(fmConfig)) {
-      const localConfig = readFileSync(fmConfig, 'utf8');
-      Settings.globalConfig = JSON.parse(localConfig);
-      commands.executeCommand('setContext', CONTEXT.isEnabled, true);
-    } else {
-      Settings.globalConfig = undefined;
+    Settings.readConfig();
+
+    Settings.listeners = [];
+
+    if (!Settings.isInitialized) {
+      Settings.isInitialized = true;
+
+      commands.registerCommand(COMMAND_NAME.reloadConfig, Settings.rebindWatchers)
     }
 
     Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
 
     Settings.onConfigChange((global?: any) => {
-      if (global) {
-        Settings.globalConfig = Object.assign({}, global);
-      } else {
-        Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
-      }
+      Settings.readConfig();
+      Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
     });
   }
 
@@ -61,15 +66,28 @@ export class Settings {
    */
   public static onConfigChange(callback: (global?: any) => void) {
     const projectConfig = Settings.projectConfigPath;
+    const configDebouncer = debounceCallback();
 
     workspace.onDidChangeConfiguration(() => {
       callback();
     });
 
+    // Keep track of the listeners
+    Settings.listeners.push(callback);
+
+    if (projectConfig && !existsSync(projectConfig)) {
+      // No config file, no need to watch
+      Settings.createFileCreationWatcher();
+      return;
+    }
+
     // Background listener for when it is not a user interaction
     if (projectConfig && existsSync(projectConfig)) {
-      watch(projectConfig, () => {
-        callback();
+      let watcher = workspace.createFileSystemWatcher(projectConfig, true, false, true);
+      watcher.onDidChange(async (uri: Uri) => {
+        Logger.info(`Config change detected - ${projectConfig} changed`);
+        configDebouncer(() => callback(), 200);
+        // callback()
       });
     }
 
@@ -77,11 +95,14 @@ export class Settings {
       const filename = e.uri.fsPath;
 
       if (Settings.checkProjectConfig(filename)) {
+        Logger.info(`Config change detected - ${projectConfig} saved`);
+
         const file = await workspace.openTextDocument(e.uri);
         if (file) {
           const fileContents = file.getText();
-          const json = JSON.parse(fileContents);
-          callback(json);
+          const json = jsoncParser.parse(fileContents);
+          configDebouncer(() => callback(json), 200);
+          // callback(json)
         }
       }
     });
@@ -113,7 +134,11 @@ export class Settings {
   /**
    * Retrieve a setting from global and local config
    */
-  public static get<T>(name: string, merging: boolean = false): T | undefined{
+  public static get<T>(name: string, merging: boolean = false): T | undefined {
+    if (!Settings.config) {
+      return;
+    }
+
     const configInpection = Settings.config.inspect<T>(name);
 
     let setting = undefined;
@@ -150,7 +175,7 @@ export class Settings {
     if (updateGlobal) {
       if (fmConfig && existsSync(fmConfig)) {
         const localConfig = readFileSync(fmConfig, 'utf8');
-        Settings.globalConfig = JSON.parse(localConfig);
+        Settings.globalConfig = jsoncParser.parse(localConfig);
         Settings.globalConfig[`${CONFIG_KEY}.${name}`] = value;
         writeFileSync(fmConfig, JSON.stringify(Settings.globalConfig, null, 2), 'utf8');
         
@@ -347,6 +372,19 @@ export class Settings {
   }
 
   /**
+   * Get the project config path
+   * @returns 
+   */
+  public static get projectConfigPath() {
+    const wsFolder = Folders.getWorkspaceFolder();
+    if (wsFolder) {
+      const fmConfig = join(wsFolder.fsPath, Settings.globalFile);
+      return fmConfig;
+    }
+    return undefined;
+  }
+
+  /**
    * Check if its the project config
    * @param filePath 
    * @returns 
@@ -363,15 +401,53 @@ export class Settings {
   }
 
   /**
-   * Get the project config path
-   * @returns 
+   * Read the global config file
    */
-  public static get projectConfigPath() {
-    const wsFolder = Folders.getWorkspaceFolder();
-    if (wsFolder) {
-      const fmConfig = join(wsFolder.fsPath, Settings.globalFile);
-      return fmConfig;
+  private static readConfig() {
+    try {
+      const fmConfig = Settings.projectConfigPath;
+      if (fmConfig && existsSync(fmConfig)) {
+        const localConfig = readFileSync(fmConfig, 'utf8');
+        Settings.globalConfig = jsoncParser.parse(localConfig);
+        commands.executeCommand('setContext', CONTEXT.isEnabled, true);
+      } else {
+        Settings.globalConfig = undefined;
+      }
+    } catch (e) {
+      Settings.globalConfig = undefined;
+      Notifications.error(`Error reading "frontmatter.json" config file. Check [output window](command:${COMMAND_NAME.showOutputChannel}) for more details.`);
+      Logger.error((e as Error).message);
     }
-    return undefined;
+  }
+
+  /**
+   * Create a file creation watcher
+   */
+  private static createFileCreationWatcher() {
+    const ext = Extension.getInstance();
+
+    if (!Settings.fileCreationWatcher) {
+      Settings.fileCreationWatcher = workspace.createFileSystemWatcher(`**/*.json`, false, true, true);
+      Settings.fileCreationWatcher.onDidCreate(uri => {
+        if (parseWinPath(uri.fsPath) === parseWinPath(Settings.projectConfigPath)) {
+          Settings.rebindWatchers();
+          // Stop listening to file creation events
+          Settings.fileCreationWatcher?.dispose();
+          Settings.fileCreationWatcher = undefined;
+        }
+      }, null, ext.subscriptions);
+    }
+  }
+
+  /**
+   * Rebind the configuration watchers
+   */
+  private static rebindWatchers() {
+    Logger.info(`Rebinding ${this.listeners.length} listeners`);
+    
+    this.listeners.forEach(l => {
+      Settings.onConfigChange(l);
+      l();
+    });
   }
 }

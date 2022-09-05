@@ -54,7 +54,7 @@ export const Tabs: React.FunctionComponent<ITabsProps> = ({ onNavigate }: React.
           <Tab
             navigationType={NavigationType.Taxonomy} 
             onNavigate={onNavigate}>
-            <TagIcon className={`h-6 w-auto mr-2`} /><span>Taxonomy</span>
+            <TagIcon className={`h-6 w-auto mr-2`} /><span>Taxonomies</span>
           </Tab>
         </li>
       </FeatureFlag>

@@ -1,5 +1,34 @@
 # Change Log
 
+## [8.1.0] - 2022-xx-xx
+
+### ✨ New features
+
+- [#376](https://github.com/estruyf/vscode-front-matter/issues/376): Ability to run scripts after content was created
+- [#377](https://github.com/estruyf/vscode-front-matter/issues/377): Git sync actions added on panel and content dashboard (pull and push your changes to remote)
+- [#379](https://github.com/estruyf/vscode-front-matter/issues/377): New `frontMatter.config.reload` command to reload the configuration file + reinitialize its listeners
+
+### 🎨 Enhancements
+
+- [#352](https://github.com/estruyf/vscode-front-matter/issues/352): Custom placeholders now support scripting
+- [#370](https://github.com/estruyf/vscode-front-matter/issues/370): Define the tags and categories as reserved keywords for custom taxonomy
+- [#372](https://github.com/estruyf/vscode-front-matter/issues/372): Rename Taxonomy tab to Taxonomies
+- [#374](https://github.com/estruyf/vscode-front-matter/issues/374): Hide the front matter section to use the panel instead
+- [#383](https://github.com/estruyf/vscode-front-matter/issues/383): Add the item menu to the content list view
+- [#385](https://github.com/estruyf/vscode-front-matter/issues/385): If no default value for the draft field is defined, the field value will be set to `true`
+- [#388](https://github.com/estruyf/vscode-front-matter/issues/388): New stop server action has been added to the panel
+- [#390](https://github.com/estruyf/vscode-front-matter/issues/390): Implement another JSON parser in order to be able to parse the `frontmatter.json` file better
+- [#394](https://github.com/estruyf/vscode-front-matter/issues/394): Ordering of snippet fields is based on their field definition
+
+### ⚡️ Optimizations
+
+- Internal post message optimizations to the webviews
+
+### 🐞 Fixes
+
+- [#378](https://github.com/estruyf/vscode-front-matter/issues/378): Fix last modified update only to content in content folders
+- [#384](https://github.com/estruyf/vscode-front-matter/issues/384): Fix issue `title` field in sub-fields
+
 ## [8.0.1] - 2022-07-13
 
 ### 🐞 Fixes

@@ -4,6 +4,7 @@ export * from './CustomScript';
 export * from './DashboardSettings';
 export * from './DataFileHelper';
 export * from './DateHelper';
+export * from './DebounceCallback';
 export * from './Extension';
 export * from './FilesHelper';
 export * from './FrameworkDetector';

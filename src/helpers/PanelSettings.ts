@@ -3,13 +3,20 @@ import { Extension, Settings } from "."
 import { Dashboard } from "../commands/Dashboard"
 import { Preview } from "../commands/Preview"
 import { Template } from "../commands/Template"
-import { CONTEXT, DefaultFields, SETTING_CONTENT_DRAFT_FIELD, SETTING_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_DATA_TYPES, SETTING_FRAMEWORK_ID, SETTING_FRAMEWORK_START, SETTING_AUTO_UPDATE_DATE, SETTING_COMMA_SEPARATED_FIELDS, SETTING_CUSTOM_SCRIPTS, SETTING_DATE_FORMAT, SETTING_PANEL_FREEFORM, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_SLUG_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TAXONOMY_CUSTOM, SETTING_TAXONOMY_FIELD_GROUPS, SETTING_TAXONOMY_TAGS } from "../constants"
+import { CONTEXT, DefaultFields, SETTING_CONTENT_DRAFT_FIELD, SETTING_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_DATA_TYPES, SETTING_FRAMEWORK_ID, SETTING_FRAMEWORK_START, SETTING_AUTO_UPDATE_DATE, SETTING_COMMA_SEPARATED_FIELDS, SETTING_CUSTOM_SCRIPTS, SETTING_DATE_FORMAT, SETTING_PANEL_FREEFORM, SETTING_SEO_CONTENT_MIN_LENGTH, SETTING_SEO_DESCRIPTION_FIELD, SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_SLUG_LENGTH, SETTING_SEO_TITLE_LENGTH, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TAXONOMY_CUSTOM, SETTING_TAXONOMY_FIELD_GROUPS, SETTING_TAXONOMY_TAGS, SETTING_GIT_ENABLED } from "../constants"
+import { GitListener } from "../listeners/general"
 import { CustomScript, DataType, DraftField, FieldGroup, PanelSettings as IPanelSettings, ScriptType } from "../models"
 
 export class PanelSettings {
 
   public static async get(): Promise<IPanelSettings> {
+    const gitActions = Settings.get<boolean>(SETTING_GIT_ENABLED);
+
     return {
+      git: {
+        isGitRepo: gitActions ? await GitListener.isGitRepository() : false,
+        actions: gitActions || false
+      },
       seo: {
         title: Settings.get(SETTING_SEO_TITLE_LENGTH) as number || -1,
         slug: Settings.get(SETTING_SEO_SLUG_LENGTH) as number || -1,
@@ -29,7 +36,7 @@ export class PanelSettings {
       categories: Settings.get(SETTING_TAXONOMY_CATEGORIES, true) || [],
       customTaxonomy: Settings.get(SETTING_TAXONOMY_CUSTOM, true) || [],
       freeform: Settings.get(SETTING_PANEL_FREEFORM),
-      scripts: (Settings.get<CustomScript[]>(SETTING_CUSTOM_SCRIPTS) || []).filter(s => s.type === ScriptType.Content || !s.type),
+      scripts: (Settings.get<CustomScript[]>(SETTING_CUSTOM_SCRIPTS) || []).filter(s => (s.type === ScriptType.Content || !s.type) && !s.hidden),
       isInitialized: await Template.isInitialized(),
       modifiedDateUpdate: Settings.get(SETTING_AUTO_UPDATE_DATE) || false,
       writingSettingsEnabled: this.isWritingSettingsEnabled() || false,

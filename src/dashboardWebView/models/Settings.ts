@@ -1,12 +1,13 @@
 import { DataType } from './../../models/DataType';
 import { VersionInfo } from '../../models/VersionInfo';
 import { ContentFolder } from '../../models/ContentFolder';
-import { ContentType, CustomScript, CustomTaxonomy, DraftField, Framework, Snippets, SortingSetting } from '../../models';
+import { ContentType, CustomScript, CustomTaxonomy, DraftField, Framework, GitSettings, Snippets, SortingSetting } from '../../models';
 import { SortingOption } from './SortingOption';
 import { DashboardViewType } from '.';
 import { DataFile } from '../../models/DataFile';
 
 export interface Settings { 
+  git: GitSettings;
   beta: boolean;
   initialized: boolean;
   wsFolder: string; 
