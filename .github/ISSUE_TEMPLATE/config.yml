@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://frontmatter.codes/docs
+    about: See our documentation.
+  - name: Changelog
+    url: https://frontmatter.codes/updates
+    about: See our changelog.
+  - name: Front Matter website
+    url: https://frontmatter.codes
+    about: Our website.
+  - name: Support Front Matter
+    url: https://github.com/sponsors/estruyf
+    about: Support Front Matter development.
