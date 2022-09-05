@@ -47,8 +47,9 @@ export class Preview {
 
       let selectedFolder: ContentFolder | null = null;
       for (const folder of foldersWithPath) {
-        if (filePath.startsWith(folder.path)) {
-          if (!selectedFolder || selectedFolder.path.length < folder.path.length) {
+        const folderPath = parseWinPath(folder.path);
+        if (filePath.startsWith(folderPath)) {
+          if (!selectedFolder || selectedFolder.path.length < folderPath.length) {
             selectedFolder = folder;
           }
         }
@@ -79,6 +80,9 @@ export class Preview {
       } catch (error) {
         slug = join(pathname, slug);
       }
+
+      // Make sure there are no backslashes in the slug
+      slug = parseWinPath(slug);
     }
 
     // Create the preview webview
