@@ -18,6 +18,7 @@
 - [#385](https://github.com/estruyf/vscode-front-matter/issues/385): If no default value for the draft field is defined, the field value will be set to `true`
 - [#388](https://github.com/estruyf/vscode-front-matter/issues/388): New stop server action has been added to the panel
 - [#390](https://github.com/estruyf/vscode-front-matter/issues/390): Implement another JSON parser in order to be able to parse the `frontmatter.json` file better
+- [#394](https://github.com/estruyf/vscode-front-matter/issues/394): Ordering of snippet fields is based on their field definition
 
 ### ⚡️ Optimizations
 
