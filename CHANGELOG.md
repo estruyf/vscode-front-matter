@@ -38,6 +38,7 @@
 ### 🐞 Fixes
 
 - [#354](https://github.com/estruyf/vscode-front-matter/issues/354): Fix Windows file path parsing for inserting media files
+- [#393](https://github.com/estruyf/vscode-front-matter/issues/393): Fix Windows file path for retrieving the preview path
 
 ## [7.3.3] - 2022-06-11
 
