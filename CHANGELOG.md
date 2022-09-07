@@ -29,6 +29,7 @@
 - [#378](https://github.com/estruyf/vscode-front-matter/issues/378): Fix last modified update only to content in content folders
 - [#384](https://github.com/estruyf/vscode-front-matter/issues/384): Fix issue `title` field in sub-fields
 - [#393](https://github.com/estruyf/vscode-front-matter/issues/393): Fix Windows file path for retrieving the preview path
+- [#396](https://github.com/estruyf/vscode-front-matter/issues/396): Fix for `index` and `_index` page previews
 
 ## [8.0.1] - 2022-07-13
 

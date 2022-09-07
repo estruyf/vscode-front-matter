@@ -15,7 +15,7 @@ import { Folders } from './Folders';
 
 export class Preview {
 
-  /** 
+  /**
    * Init the preview
    */
   public static async init() {
@@ -80,9 +80,14 @@ export class Preview {
       } catch (error) {
         slug = join(pathname, slug);
       }
+    }
 
-      // Make sure there are no backslashes in the slug
-      slug = parseWinPath(slug);
+    // Make sure there are no backslashes in the slug
+    slug = parseWinPath(slug);
+
+    // Verify if the slug doesn't end with _index or index
+    if (slug.endsWith('_index') || slug.endsWith('index')) {
+      slug = slug.substring(0, slug.endsWith('_index') ? slug.length - 6 : slug.length - 5);
     }
 
     // Create the preview webview
