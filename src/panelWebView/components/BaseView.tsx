@@ -55,12 +55,14 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings, folderAndF
           <Collapsible id={`base_actions`} title="Actions">
             <div className={`base__actions`}>
               <button onClick={openDashboard}>Open dashboard</button>
+              <button onClick={openPreview} disabled={!settings?.preview?.host}>Open preview</button>
               <StartServerButton settings={settings} />
               {
                 !settings?.isInitialized && <button onClick={initProject}>Initialize project</button>
               }
+              
               <button onClick={createContent} disabled={!settings?.isInitialized}>Create new content</button>
-              <button onClick={openPreview} disabled={!settings?.preview?.host}>Open site preview</button>
+
               {
                 customActions.map((script) => (
                   <button key={script.title} onClick={() => runBulkScript(script)}>{ script.title }</button>

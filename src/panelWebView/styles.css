@@ -518,6 +518,11 @@ vscode-divider {
   }
 }
 
+/* Divider */
+.divider {
+  background: var(--divider-background);
+}
+
 /* Git actions */
 .git_actions__sync {
   display: flex;

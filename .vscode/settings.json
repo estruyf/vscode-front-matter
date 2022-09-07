@@ -14,6 +14,10 @@
         {
             "id": "dashboard",
             "name": "Dashboard"
+        },
+        {
+            "id": "panel",
+            "name": "Panel"
         }
     ],
     "squarl.bookmarks": [
@@ -23,6 +27,20 @@
             "description": "Start of dashboard",
             "type": "file",
             "groupId": "dashboard"
+        },
+        {
+            "name": "ViewPanel.tsx",
+            "path": "src/panelWebView/ViewPanel.tsx",
+            "description": "Start of panel",
+            "type": "file",
+            "groupId": "panel"
+        },
+        {
+            "name": "styles.css",
+            "path": "src/panelWebView/styles.css",
+            "description": "Panel styles",
+            "type": "file",
+            "groupId": "panel"
         }
     ],
 }
