@@ -93,7 +93,7 @@ export class Preview {
     // Create the preview webview
     const webView = window.createWebviewPanel(
       'frontMatterPreview',
-      'FrontMatter Preview',
+      article?.data?.title ? `Preview: ${article?.data?.title}` : 'FrontMatter Preview',
       {
         viewColumn: ViewColumn.Beside,
         preserveFocus: true

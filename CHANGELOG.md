@@ -23,6 +23,7 @@
 ### ⚡️ Optimizations
 
 - Internal post message optimizations to the webviews
+- Preview tab now shows the title of the page/content if present
 
 ### 🐞 Fixes
 
