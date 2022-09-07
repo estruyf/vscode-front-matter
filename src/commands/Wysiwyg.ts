@@ -57,7 +57,8 @@ export class Wysiwyg {
         { label: "$(quote) Blockquote", detail: "Add a blockquote", alwaysShow: true },
       ]
 
-      const option = await window.showQuickPick([ ...qpItems ], {  
+      const option = await window.showQuickPick([ ...qpItems ], {
+        title: "WYSIWYG Options", 
         placeHolder: "Which type of markup would you like to insert?", 
         canPickMany: false,
         ignoreFocusOut: true
@@ -159,7 +160,8 @@ export class Wysiwyg {
           "Heading 4", 
           "Heading 5", 
           "Heading 6"
-        ], {  
+        ], {
+          title: "Heading Level",
           canPickMany: false, 
           placeHolder: "Which heading level do you want to insert?",
           ignoreFocusOut: true

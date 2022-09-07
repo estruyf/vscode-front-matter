@@ -20,6 +20,7 @@ export class Content {
     } as QuickPickItem];
 
     const selectedOption = await window.showQuickPick(options, {
+      title: "Create content",
       placeHolder: `Select how you want to create your new content`,
       canPickMany: false,
       ignoreFocusOut: true

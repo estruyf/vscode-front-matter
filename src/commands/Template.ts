@@ -62,7 +62,8 @@ export class Template {
       const article = ArticleHelper.getFrontMatter(editor);
       const clonedArticle = Object.assign({}, article);
 
-      const titleValue = await vscode.window.showInputBox({  
+      const titleValue = await vscode.window.showInputBox({
+        title: `Template title`,
         prompt: `What name would you like to give your template?`,
         placeHolder: `article`,
         ignoreFocusOut: true
@@ -76,6 +77,7 @@ export class Template {
       const keepContents = await vscode.window.showQuickPick(
         ["yes", "no"], 
         { 
+          title: `Keep contents`,
           canPickMany: false, 
           placeHolder: `Do you want to keep the contents for the template?`,
           ignoreFocusOut: true
@@ -132,6 +134,7 @@ export class Template {
     }
 
     const selectedTemplate = await vscode.window.showQuickPick(templates.map(t => path.basename(t.fsPath)), {
+      title: `Select a template`,
       placeHolder: `Select the content template to use`,
       ignoreFocusOut: true
     });

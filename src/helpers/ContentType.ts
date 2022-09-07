@@ -116,9 +116,9 @@ export class ContentType {
     }
 
     const override = await window.showQuickPick(["Yes", "No"], {
+      title: "Override default content type",
       placeHolder: "Do you want to override the default content type?",
-      ignoreFocusOut: true,
-      title: "Override default content type"
+      ignoreFocusOut: true
     });
     const overrideBool = override === "Yes";
 
@@ -127,10 +127,10 @@ export class ContentType {
     // Ask for the new content type name
     if (!overrideBool) {
       contentTypeName = await window.showInputBox({
-        ignoreFocusOut: true,
+        title: "Generate Content Type",
         placeHolder: "Enter the name of the content type to generate",
         prompt: "Enter the name of the content type to generate",
-        title: "Generate Content Type",
+        ignoreFocusOut: true,
         validateInput: (value: string) => {
           if (!value) {
             return "Please enter a name for the content type";
@@ -156,9 +156,9 @@ export class ContentType {
     const fileName = filePath ? basename(filePath) : undefined;
     if (fileName?.startsWith(`index.`)) {
       const pageBundleAnswer = await window.showQuickPick(["Yes", "No"], {
+        title: "Use as page bundle",
         placeHolder: "Do you want to use this content type as a page bundle?",
-        ignoreFocusOut: true,
-        title: "Use as page bundle"
+        ignoreFocusOut: true
       });
       pageBundle = pageBundleAnswer === "Yes";
     }

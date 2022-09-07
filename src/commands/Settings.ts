@@ -14,7 +14,7 @@ export class Settings {
    * @param type 
    */
   public static async create(type: TaxonomyType) {
-    const newOption = await vscode.window.showInputBox({  
+    const newOption = await vscode.window.showInputBox({
       prompt: `Insert the value of the ${type === TaxonomyType.Tag ? "tag" : "category"} that you want to add to your configuration.`,
       placeHolder: `Name of the ${type === TaxonomyType.Tag ? "tag" : "category"}`,
       ignoreFocusOut: true
@@ -151,7 +151,8 @@ export class Settings {
     const taxType = await vscode.window.showQuickPick([
       "Tag",
       "Category"
-    ], { 
+    ], {
+      title: `Remap`,
       placeHolder: `What do you want to remap?`,
       canPickMany: false,
       ignoreFocusOut: true
