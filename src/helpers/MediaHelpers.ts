@@ -324,7 +324,7 @@ export class MediaHelpers {
 
             const caption = isFile ? `${data.title || ""}` : `${data.alt || data.caption || ""}`;
 
-            const snippet = data.snippet || `${isFile ? "" : "!"}[${caption}](${relPath})`;
+            const snippet = data.snippet || `${isFile ? "" : "!"}[${caption}](${relPath.replace(/ /g, "%20")})`;
             if (selection !== undefined) {
               builder.replace(selection, snippet);
             } else {

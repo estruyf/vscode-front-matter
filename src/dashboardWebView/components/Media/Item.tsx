@@ -142,7 +142,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     const relPath = getRelPath();
 
     const fieldData = {
-      mediaUrl: parseWinPath(relPath) || "",
+      mediaUrl: (parseWinPath(relPath) || "").replace(/ /g, "%20"),
       alt: alt || "",
       caption: caption || "",
       title: media.title || "",
