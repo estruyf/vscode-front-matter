@@ -12,6 +12,7 @@ import { DataType } from "../models/DataType";
 import { Extension } from "./Extension";
 import { FrameworkDetector } from "./FrameworkDetector";
 import { Settings } from "./SettingsHelper";
+import { parseWinPath } from './parseWinPath';
 
 
 export class DashboardSettings {
@@ -76,7 +77,7 @@ export class DashboardSettings {
    * @returns 
    */
   private static async getDataFiles(): Promise<DataFile[]> {
-    const wsPath = Folders.getWorkspaceFolder()?.fsPath;
+    const wsPath = parseWinPath(Folders.getWorkspaceFolder()?.fsPath);
     const files = Settings.get<DataFile[]>(SETTING_DATA_FILES);
     const folders = Settings.get<DataFolder[]>(SETTING_DATA_FOLDERS);
 
@@ -92,14 +93,14 @@ export class DashboardSettings {
           continue;
         }
 
-        let dataFolderPath = join(folderPath.replace((wsPath || ''), ''));
+        let dataFolderPath = parseWinPath(join(folderPath.replace((wsPath || ''), '')));
         if (dataFolderPath.startsWith('/')) {
           dataFolderPath = dataFolderPath.substring(1);
         }
 
-        const dataJsonFiles = await workspace.findFiles(join(dataFolderPath, '*.json'));
-        const dataYmlFiles = await workspace.findFiles(join(dataFolderPath, '*.yml'));
-        const dataYamlFiles = await workspace.findFiles(join(dataFolderPath, '*.yaml'));
+        const dataJsonFiles = await workspace.findFiles(parseWinPath(join(dataFolderPath, '*.json')));
+        const dataYmlFiles = await workspace.findFiles(parseWinPath(join(dataFolderPath, '*.yml')));
+        const dataYamlFiles = await workspace.findFiles(parseWinPath(join(dataFolderPath, '*.yaml')));
 
         const dataFiles = [...dataJsonFiles, ...dataYmlFiles, ...dataYamlFiles];
         for (let dataFile of dataFiles) {

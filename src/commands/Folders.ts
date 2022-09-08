@@ -368,7 +368,7 @@ export class Folders {
     const isWindows = process.platform === 'win32';
     let absPath = filePath.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ""));
     absPath = isWindows ? absPath.split('/').join('\\') : absPath;
-    return absPath;
+    return parseWinPath(absPath);
   }
 
   /**
@@ -381,7 +381,7 @@ export class Folders {
     const isWindows = process.platform === 'win32';
     let absPath = folder.path.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ""));
     absPath = isWindows ? absPath.split('/').join('\\') : absPath;
-    return absPath;
+    return parseWinPath(absPath);
   }
 
   /**
