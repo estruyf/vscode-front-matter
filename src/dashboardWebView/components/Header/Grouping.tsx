@@ -23,7 +23,7 @@ export const Grouping: React.FunctionComponent<IGroupingProps> = ({}: React.Prop
       <Menu as="div" className="relative z-10 inline-block text-left">
         <MenuButton label={`Group by`} title={crntGroup?.name || ""} />
 
-        <MenuItems>
+        <MenuItems disablePopper>
           {groupOptions.map((option) => (
             <MenuItem 
               key={option.id}

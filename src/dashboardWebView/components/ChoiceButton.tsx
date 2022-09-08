@@ -37,7 +37,7 @@ export const ChoiceButton: React.FunctionComponent<IChoiceButtonProps> = ({onCli
               <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
             </Menu.Button>
 
-            <MenuItems widthClass={`w-56`}>
+            <MenuItems widthClass={`w-56`} disablePopper>
               <div className="py-1">
                 {choices.map((choice, idx) => (
                   <MenuItem 

@@ -22,7 +22,7 @@ export const Folders: React.FunctionComponent<IFoldersProps> = ({}: React.PropsW
       <Menu as="div" className="relative z-10 inline-block text-left">
         <MenuButton label={`Showing`} title={crntFolder || DEFAULT_TYPE} />
 
-        <MenuItems>
+        <MenuItems disablePopper>
           <MenuItem 
             title={DEFAULT_TYPE}
             value={null}

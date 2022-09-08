@@ -91,7 +91,7 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({disableCustomSo
       <Menu as="div" className="relative z-10 inline-block text-left">
         <MenuButton label={`Sort by`} title={crntSort?.title || crntSort?.name || ""} disabled={!!searchValue} />
 
-        <MenuItems widthClass="w-48">
+        <MenuItems widthClass="w-48" disablePopper>
           {allOptions.map((option) => (
             <MenuItem 
               key={option.id}

@@ -29,7 +29,7 @@ export const Filter: React.FunctionComponent<IFilterProps> = ({label, activeItem
           )} 
           title={activeItem || DEFAULT_VALUE} />
 
-        <MenuItems>
+        <MenuItems disablePopper>
           <MenuItem 
               title={DEFAULT_VALUE}
               value={null}
