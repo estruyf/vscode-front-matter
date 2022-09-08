@@ -445,6 +445,12 @@
           },
           "scope": "Custom scripts"
         },
+        "frontMatter.dashboard.content.pagination": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Specify if you want to enable/disable pagination for your content. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.content.pagination)",
+          "scope": "Dashboard"
+        },
         "frontMatter.dashboard.content.cardTags": {
           "type": "string",
           "default": "tags",

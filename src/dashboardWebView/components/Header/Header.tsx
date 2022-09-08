@@ -9,8 +9,8 @@ import { Startup } from '../Startup';
 import { Navigation } from '../Navigation';
 import { Grouping } from '.';
 import { ViewSwitch } from './ViewSwitch';
-import { useRecoilState, useResetRecoilState } from 'recoil';
-import { CategoryAtom, SortingAtom, TagAtom } from '../../state';
+import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
+import { CategoryAtom, GroupingSelector, SortingAtom, TagAtom } from '../../state';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { ClearFilters } from './ClearFilters';
 import { MediaHeaderTop } from '../Media/MediaHeaderTop';
@@ -23,6 +23,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { routePaths } from '../..';
 import { useEffect, useMemo } from 'react';
 import { SyncButton } from './SyncButton';
+import { PAGE_LIMIT, Pagination } from './Pagination';
+import { GroupOption } from '../../constants/GroupOption';
 
 export interface IHeaderProps {
   header?: React.ReactNode;
@@ -38,6 +40,7 @@ export interface IHeaderProps {
 export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPages, folders, settings }: React.PropsWithChildren<IHeaderProps>) => {
   const [ crntTag, setCrntTag ] = useRecoilState(TagAtom);
   const [ crntCategory, setCrntCategory ] = useRecoilState(CategoryAtom);
+  const grouping = useRecoilValue(GroupingSelector);
   const resetSorting = useResetRecoilState(SortingAtom);
   const location = useLocation();
   const navigate = useNavigate();
@@ -175,6 +178,14 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPage
 
               <Sorting view={NavigationType.Contents} />
             </div>
+
+            {
+              (settings?.dashboardState.contents.pagination) && (totalPages || 0) > PAGE_LIMIT && (!grouping || grouping === GroupOption.none) && (
+                <div className={`flex justify-center py-2 border-b border-gray-300 dark:border-vulcan-100`}>
+                  <Pagination totalPages={totalPages || 0} />
+                </div>
+              )
+            }
           </>
         )
       }

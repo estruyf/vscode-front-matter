@@ -1,14 +1,15 @@
 import { Disclosure } from '@headlessui/react';
 import {ChevronRightIcon} from '@heroicons/react/solid';
 import * as React from 'react';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
 import { groupBy } from '../../../helpers/GroupBy';
 import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMatterIcon';
 import { GroupOption } from '../../constants/GroupOption';
 import { Page } from '../../models/Page';
 import { Settings } from '../../models/Settings';
-import { GroupingSelector } from '../../state';
+import { GroupingSelector, PageAtom } from '../../state';
+import { PAGE_LIMIT } from '../Header/Pagination';
 import { Item } from './Item';
 import { List } from './List';
 
@@ -19,6 +20,15 @@ export interface IOverviewProps {
 
 export const Overview: React.FunctionComponent<IOverviewProps> = ({pages, settings}: React.PropsWithChildren<IOverviewProps>) => {
   const grouping = useRecoilValue(GroupingSelector);
+  const page = useRecoilValue(PageAtom);
+
+  const pagedPages = useMemo(() => {
+    if (settings?.dashboardState.contents.pagination) {
+      return pages.slice(page * PAGE_LIMIT, ((page + 1) * PAGE_LIMIT));
+    }
+
+    return pages;
+  }, [pages, page, settings]);
 
   const groupName = useCallback((groupId, groupedPages) => {
     if (grouping === GroupOption.Draft) {
@@ -89,7 +99,7 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({pages, settin
 
   return (
     <List>
-      {pages.map((page, idx) => (
+      {pagedPages.map((page, idx) => (
         <Item key={`${page.slug}-${idx}`} {...page} />
       ))}
     </List>

@@ -41,6 +41,12 @@
             "description": "Panel styles",
             "type": "file",
             "groupId": "panel"
+        },
+        {
+            "name": "settings.ts",
+            "path": "src/constants/settings.ts",
+            "description": "Settings names",
+            "type": "file"
         }
     ],
 }

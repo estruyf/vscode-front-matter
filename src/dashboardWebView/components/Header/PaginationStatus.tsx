@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 import { MediaTotalSelector, PageAtom } from '../../state';
-import { LIMIT } from '../../hooks/useMedia';
+import { PAGE_LIMIT } from './Pagination';
 
 export interface IPaginationStatusProps {}
 
@@ -10,7 +10,7 @@ export const PaginationStatus: React.FunctionComponent<IPaginationStatusProps> =
   const page = useRecoilValue(PageAtom);
 
   const getTotalPage = () => {
-    const mediaItems = ((page + 1) * LIMIT);
+    const mediaItems = ((page + 1) * PAGE_LIMIT);
     if (totalMedia < mediaItems) {
       return totalMedia;
     }
@@ -20,7 +20,7 @@ export const PaginationStatus: React.FunctionComponent<IPaginationStatusProps> =
   return (
     <div className="hidden sm:flex">      
       <p className="text-sm text-gray-500 dark:text-whisper-900">
-        Showing <span className="font-medium">{(page * LIMIT) + 1}</span> to <span className="font-medium">{getTotalPage()}</span> of{' '}
+        Showing <span className="font-medium">{(page * PAGE_LIMIT) + 1}</span> to <span className="font-medium">{getTotalPage()}</span> of{' '}
         <span className="font-medium">{totalMedia}</span> results
       </p>
     </div>

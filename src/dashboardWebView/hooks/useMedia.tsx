@@ -4,8 +4,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { MediaInfo, MediaPaths } from '../../models';
 import { DashboardCommand } from '../DashboardCommand';
-import { LoadingAtom, MediaFoldersAtom, MediaTotalAtom, PageAtom, SearchAtom, SearchSelector, SelectedMediaFolderAtom } from '../state';
+import { LoadingAtom, MediaFoldersAtom, MediaTotalAtom, PageAtom, SearchAtom, SelectedMediaFolderAtom } from '../state';
 import Fuse from 'fuse.js';
+import { PAGE_LIMIT } from '../components/Header/Pagination';
 
 const fuseOptions: Fuse.IFuseOptions<MediaInfo> = {
   keys: [
@@ -18,11 +19,9 @@ const fuseOptions: Fuse.IFuseOptions<MediaInfo> = {
   includeScore: true
 };
 
-export const LIMIT = 16;
-
 export default function useMedia() {
   const [ media, setMedia ] = useState<MediaInfo[]>([]);
-  const [ page, setPage ] = useRecoilState(PageAtom);
+  const page = useRecoilValue(PageAtom);
   const [ searchedMedia, setSearchedMedia ] = useState<MediaInfo[]>([]);
   const [ , setSelectedFolder ] = useRecoilState(SelectedMediaFolderAtom);
   const [ , setTotal ] = useRecoilState(MediaTotalAtom);
@@ -31,7 +30,7 @@ export default function useMedia() {
   const search = useRecoilValue(SearchAtom);
 
   const getMedia = useCallback(() => {
-    return searchedMedia.slice(page * LIMIT, ((page + 1) * LIMIT));
+    return searchedMedia.slice(page * PAGE_LIMIT, ((page + 1) * PAGE_LIMIT));
   }, [searchedMedia, page]);
 
   const messageListener = (message: MessageEvent<EventData<MediaPaths | { key: string, value: any }>>) => {
