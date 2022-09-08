@@ -1,6 +1,7 @@
 import { Disclosure } from '@headlessui/react';
 import {ChevronRightIcon} from '@heroicons/react/solid';
 import * as React from 'react';
+import { useCallback } from 'react';
 import { useRecoilValue } from 'recoil';
 import { groupBy } from '../../../helpers/GroupBy';
 import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMatterIcon';
@@ -18,6 +19,14 @@ export interface IOverviewProps {
 
 export const Overview: React.FunctionComponent<IOverviewProps> = ({pages, settings}: React.PropsWithChildren<IOverviewProps>) => {
   const grouping = useRecoilValue(GroupingSelector);
+
+  const groupName = useCallback((groupId, groupedPages) => {
+    if (grouping === GroupOption.Draft) {
+      return `${groupId} (${groupedPages[groupId].length})`;
+    }
+
+    return `${GroupOption[grouping]}: ${groupId} (${groupedPages[groupId].length})`;
+  }, [grouping])
 
   if (!pages || !pages.length) {
     return (
@@ -58,7 +67,7 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({pages, settin
                       <ChevronRightIcon
                         className={`w-8 h-8 mr-1 ${open ? "transform rotate-90" : ""}`}
                       />
-                      {GroupOption[grouping]}: {groupId} ({groupedPages[groupId].length})
+                      { groupName(groupId, groupedPages) }
                     </h2>
                   </Disclosure.Button>
                   

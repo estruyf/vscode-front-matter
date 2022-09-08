@@ -32,6 +32,7 @@
 - [#393](https://github.com/estruyf/vscode-front-matter/issues/393): Fix Windows file path for retrieving the preview path
 - [#396](https://github.com/estruyf/vscode-front-matter/issues/396): Fix for `index` and `_index` page previews
 - [#398](https://github.com/estruyf/vscode-front-matter/issues/398): Fix Windows folder path parsing in data folder retrieval
+- [#400](https://github.com/estruyf/vscode-front-matter/issues/400): Fix for draft/published content grouping
 
 ## [8.0.1] - 2022-07-13
 

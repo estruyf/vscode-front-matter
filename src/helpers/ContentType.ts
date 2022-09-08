@@ -48,7 +48,7 @@ export class ContentType {
       fieldValue = data[draftSetting.name];
     }
 
-    if (draftSetting && fieldValue) {
+    if (draftSetting && fieldValue !== null) {
       if (draftSetting.type === "boolean") {
         return fieldValue ? "Draft" : "Published";
       } else {
