@@ -18,12 +18,15 @@ export interface ISortingProps {
 }
 
 export const sortOptions: SortingOption[] = [
-  { name: "Published (asc)", id: SortOption.PublishedAsc, order: SortOrder.asc, type: SortType.date },
-  { name: "Published (desc)", id: SortOption.PublishedDesc, order: SortOrder.desc, type: SortType.date },
   { name: "Last modified (asc)", id: SortOption.LastModifiedAsc, order: SortOrder.asc, type: SortType.date },
   { name: "Last modified (desc)", id: SortOption.LastModifiedDesc, order: SortOrder.desc, type: SortType.date },
   { name: "By filename (asc)", id: SortOption.FileNameAsc, order: SortOrder.asc, type: SortType.string },
   { name: "By filename (desc)", id: SortOption.FileNameDesc, order: SortOrder.desc, type: SortType.string },
+];
+
+const contentSortOptions: SortingOption[] = [
+  { name: "Published (asc)", id: SortOption.PublishedAsc, order: SortOrder.asc, type: SortType.date },
+  { name: "Published (desc)", id: SortOption.PublishedDesc, order: SortOrder.desc, type: SortType.date }
 ];
 
 const mediaSortOptions: SortingOption[] = [
@@ -53,6 +56,8 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({disableCustomSo
 
   if (view === NavigationType.Media) {
     allOptions = [...allOptions, ...mediaSortOptions];
+  } else if (view === NavigationType.Contents) {
+    allOptions = [...contentSortOptions, ...allOptions];
   }
 
   allOptions = allOptions.sort(SortingHelpers.alphabetically("name"))
