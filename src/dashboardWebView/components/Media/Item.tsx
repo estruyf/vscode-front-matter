@@ -19,6 +19,7 @@ import { Alert } from '../Modals/Alert';
 import { InfoDialog } from '../Modals/InfoDialog';
 import { DetailsSlideOver } from './DetailsSlideOver';
 import { usePopper } from 'react-popper';
+import { MediaSnippetForm } from './MediaSnippetForm';
  
 export interface IItemProps {
   media: MediaInfo;
@@ -29,7 +30,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   const [ showAlert, setShowAlert ] = useState(false);
   const [ showForm, setShowForm ] = useState(false);
   const [ showSnippetSelection, setShowSnippetSelection ] = useState(false);
+  const [ snippet, setSnippet ] = useState<Snippet | undefined>(undefined);
   const [ showDetails, setShowDetails ] = useState(false);
+  const [ showSnippetFormDialog, setShowSnippetFormDialog ] = useState(false);
+  const [ mediaData, setMediaData ] = useState<any | undefined>(undefined);
   const [ caption, setCaption ] = useState(media.caption);
   const [ alt, setAlt ] = useState(media.alt);
   const [ filename, setFilename ] = useState<string | null>(null);
@@ -136,6 +140,9 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     }
   }, [mediaSnippets]);
 
+  /**
+   * Process the snippet
+   */
   const processSnippet = useCallback((snippet: Snippet) => {
     setShowSnippetSelection(false);
 
@@ -151,7 +158,24 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
       mediaHeight: media?.dimensions?.height?.toString() || "",
     };
 
-    const output = SnippetParser.render(snippet.body, fieldData, snippet?.openingTags, snippet?.closingTags);
+    if (snippet.fields.length === 0) {
+      setShowSnippetFormDialog(false);
+      setMediaData(undefined);
+
+      const output = SnippetParser.render(snippet.body, fieldData, snippet?.openingTags, snippet?.closingTags);
+      insertMediaSnippetToArticle(output);
+    } else {
+      setSnippet(snippet);
+      setShowSnippetFormDialog(true);
+      setMediaData(fieldData);
+    }
+  }, [alt, caption, media, settings, viewData, mediaSnippets]);
+
+  /**
+   * Insert the media snippet
+   */
+  const insertMediaSnippetToArticle = useCallback((output: string) => {
+    const relPath = getRelPath();
 
     Messenger.send(DashboardMessage.insertMedia, {
       relPath: parseWinPath(relPath) || "",
@@ -160,7 +184,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
       position: viewData?.data?.position || null,
       snippet: output
     });
-  }, [alt, caption, media, settings, viewData, mediaSnippets]);
+  }, [viewData]);
 
   const deleteMedia = () => {
     setShowAlert(true);
@@ -300,6 +324,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     return null;
   }, [media]);
 
+  const clearFormData = () => {
+    setShowSnippetFormDialog(false); 
+    setSnippet(undefined); 
+    setMediaData(undefined);
+  }
+
   useEffect(() => {
     if (media.alt !== alt) {
       setAlt(media.alt);
@@ -318,6 +348,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
       setFilename(getFileName());
     }
   }, [media.fsPath]);
+
+  useEffect(() => {
+    if (!viewData?.data?.filePath) {
+      clearFormData();
+    }
+  }, [viewData]);
 
   return (
     <>
@@ -538,6 +574,18 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
             cancelBtnText={`Cancel`}
             dismiss={() => setShowAlert(false)}
             trigger={confirmDeletion} />
+        )
+      }
+
+      {
+        (showSnippetFormDialog && snippet && mediaData) && (
+          <MediaSnippetForm 
+            media={media}
+            mediaData={mediaData}
+            snippet={snippet}
+            onDismiss={clearFormData}
+            onInsert={insertMediaSnippetToArticle}
+            />
         )
       }
     </>

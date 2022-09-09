@@ -364,6 +364,7 @@ export class Article {
     const contentType = article && article.data ? ArticleHelper.getContentType(article.data) : DEFAULT_CONTENT_TYPE;
 
     const position = editor.selection.active;
+    const selectionText = editor.document.getText(editor.selection);
 
     await vscode.commands.executeCommand(COMMAND_NAME.dashboard, {
       type: "media",
@@ -371,7 +372,8 @@ export class Article {
         pageBundle: !!contentType.pageBundle,
         filePath: editor.document.uri.fsPath,
         fieldName: basename(editor.document.uri.fsPath),
-        position
+        position,
+        selection: selectionText
       }
     } as DashboardData);
 

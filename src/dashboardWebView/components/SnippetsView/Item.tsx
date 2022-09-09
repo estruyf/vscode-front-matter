@@ -7,7 +7,6 @@ import { FeatureFlag } from '../../../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../../../constants';
 import { SnippetParser } from '../../../helpers/SnippetParser';
 import { Snippet, Snippets } from '../../../models';
-import { FileIcon } from '../../../panelWebView/components/Icons/FileIcon';
 import { DashboardMessage } from '../../DashboardMessage';
 import { ModeAtom, SettingsSelector, ViewDataSelector } from '../../state';
 import { QuickAction } from '../Menu';

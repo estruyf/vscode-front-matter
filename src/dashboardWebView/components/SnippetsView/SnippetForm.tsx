@@ -13,13 +13,15 @@ import { SnippetInputField } from './SnippetInputField';
 export interface ISnippetFormProps {
   snippet: Snippet;
   selection: string | undefined;
+  mediaData?: any;
+  onInsert?: (mediaData: any) => void;
 }
 
 export interface SnippetFormHandle {
   onSave: () => void;
 }
 
-const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFormProps> = ({ snippet, selection }, ref) => {
+const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFormProps> = ({ snippet, selection, mediaData, onInsert }, ref) => {
   const viewData = useRecoilValue(ViewDataSelector);
   const [ fields, setFields ] = useState<SnippetField[]>([]);
   const settings = useRecoilValue(SettingsAtom);
@@ -37,6 +39,16 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
 
     return value;
   }, [selection]);
+
+  const insertValueFromMedia = useCallback((fieldName: string) => {
+    if (!mediaData) {
+      return "";
+    }
+
+    if (mediaData[fieldName]) {
+      return mediaData[fieldName];
+    }
+  }, [mediaData]);
 
   const snippetBody = useMemo(() => {
     let body = typeof snippet.body === "string" ? snippet.body : snippet.body.join(`\n`);
@@ -63,10 +75,14 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
         return;
       }
   
-      Messenger.send(DashboardMessage.insertSnippet, {
-        file: viewData?.data?.filePath,
-        snippet: snippetBody
-      });
+      if (!onInsert) {
+        Messenger.send(DashboardMessage.insertSnippet, {
+          file: viewData?.data?.filePath,
+          snippet: snippetBody
+        });
+      } else {
+        onInsert(snippetBody);
+      }
     }
   }));
 
@@ -99,7 +115,7 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
           title: fieldName,
           type: "string",
           single: true,
-          value: ""
+          value: insertValueFromMedia(fieldName)
         });
       }
     }
