@@ -67,6 +67,8 @@ export default function usePages(pages: Page[]) {
           pagesSorted = pagesSorted.sort(Sorting.alphabetically(name));
         } else if (type === SortType.date) {
           pagesSorted = pagesSorted.sort(Sorting.date(name));
+        } else if (type === SortType.number) {
+          pagesSorted = pagesSorted.sort(Sorting.number(name));
         }
 
         if (order === SortOrder.desc) {

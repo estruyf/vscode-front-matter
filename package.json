@@ -329,7 +329,8 @@
                 "default": "string",
                 "enum": [
                   "string",
-                  "date"
+                  "date",
+                  "number"
                 ],
                 "description": "Type of the field value"
               }
