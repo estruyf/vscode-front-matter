@@ -15,7 +15,7 @@ packageJson.homepage = "https://beta.frontmatter.codes";
 
 console.log(packageJson.version);
 
-core.summary.addHeading(`Version info`).addRaw(`Version: **${packageJson.version}**`).write();
+core.summary.addHeading(`Version info`).addRaw(`Version: ${packageJson.version}`).write();
 
 const scripts = packageJson.scripts;
 for (const key in scripts) {
