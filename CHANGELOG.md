@@ -38,6 +38,7 @@
 - [#400](https://github.com/estruyf/vscode-front-matter/issues/400): Fix for draft/published content grouping
 - [#403](https://github.com/estruyf/vscode-front-matter/issues/403): Fix for media files with spaces on importing in article content
 - [#404](https://github.com/estruyf/vscode-front-matter/issues/404): Fix for published sorting option in media dashboard
+- [#408](https://github.com/estruyf/vscode-front-matter/issues/408): Fix for missing `dashboard.taxonomy.view` view mode in the JSON schema
 
 ## [8.0.1] - 2022-07-13
 

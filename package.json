@@ -712,7 +712,8 @@
                     "panel.otherActions",
                     "dashboard.snippets.view",
                     "dashboard.snippets.manage",
-                    "dashboard.data.view"
+                    "dashboard.data.view",
+                    "dashboard.taxonomy.view"
                   ]
                 }
               }
