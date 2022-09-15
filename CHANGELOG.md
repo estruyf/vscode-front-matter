@@ -4,6 +4,7 @@
 
 ### ✨ New features
 
+- [#369](https://github.com/estruyf/vscode-front-matter/issues/369): New `required` property to specify if a content-type field is required
 - [#376](https://github.com/estruyf/vscode-front-matter/issues/376): Ability to run scripts after content was created
 - [#377](https://github.com/estruyf/vscode-front-matter/issues/377): Git sync actions added on panel and content dashboard (pull and push your changes to remote)
 - [#379](https://github.com/estruyf/vscode-front-matter/issues/377): New `frontMatter.config.reload` command to reload the configuration file + reinitialize its listeners

@@ -1,4 +1,5 @@
 export * from './ContentType';
+export * from './DefaultFieldValues';
 export * from './DefaultFields';
 export * from './DefaultFileTypes';
 export * from './Extension';
@@ -9,6 +10,7 @@ export * from './GeneralCommands';
 export * from './Links';
 export * from './LocalStore';
 export * from './Navigation';
+export * from './NotificationType';
 export * from './PreviewCommands';
 export * from './TelemetryEvent';
 export * from './charCode';

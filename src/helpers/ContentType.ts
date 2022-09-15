@@ -1,7 +1,7 @@
 import { ModeListener } from './../listeners/general/ModeListener';
 import { PagesListener } from './../listeners/dashboard';
 import { ArticleHelper, CustomScript, Settings } from ".";
-import { FEATURE_FLAG, SETTING_CONTENT_DRAFT_FIELD, SETTING_DATE_FORMAT, SETTING_FRAMEWORK_ID, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TAXONOMY_FIELD_GROUPS, TelemetryEvent } from "../constants";
+import { DefaultFieldValues, FEATURE_FLAG, SETTING_CONTENT_DRAFT_FIELD, SETTING_DATE_FORMAT, SETTING_FRAMEWORK_ID, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TAXONOMY_FIELD_GROUPS, TelemetryEvent } from "../constants";
 import { ContentType as IContentType, DraftField, Field, FieldGroup, FieldType, ScriptType } from '../models';
 import { Uri, commands, window, ProgressLocation, workspace } from 'vscode'; 
 import { Folders } from "../commands/Folders";
@@ -278,7 +278,7 @@ export class ContentType {
    * @param parents 
    * @returns 
    */
-  public static getFieldValue(data: any, parents: string[]): string[] {
+  public static getFieldValue(data: any, parents: string[]): string | string[] {
     let fieldValue = [];
     let crntPageData = data;
 
@@ -374,6 +374,51 @@ export class ContentType {
 
     return parents;
   }
+
+
+  /**
+   * Find the required fields
+   */
+  public static findEmptyRequiredFields(article: ParsedFrontMatter): Field[][] | undefined {
+    const contentType = ArticleHelper.getContentType(article.data);
+    if (!contentType) {
+      return;
+    }
+
+    const allRequiredFields = ContentType.findRequiredFieldsDeep(contentType.fields);
+
+    let emptyFields: Field[][] = [];
+
+    for (const fields of allRequiredFields) {
+      const fieldValue = this.getFieldValue(article.data, fields.map(f => f.name));
+      if ((fieldValue === null || fieldValue === undefined || fieldValue === "") || fieldValue.length === 0 || fieldValue === DefaultFieldValues.faultyCustomPlaceholder) {
+        emptyFields.push(fields);
+      }
+    }
+
+    return emptyFields || [];
+  }
+
+  /**
+   * Find all the required fields in the content type
+   * @param fields 
+   * @param parents 
+   * @returns 
+   */
+  private static findRequiredFieldsDeep(fields: Field[], parents: Field[][] = [], parentFields: Field[] = []): Field[][] {
+    for (const field of fields) {
+      if (field.required) {
+        parents.push([...parentFields, field]);
+      }
+      
+      if (field.type === "fields" && field.fields) {
+        this.findRequiredFieldsDeep(field.fields, parents, [...parentFields, field]);
+      }
+    }
+
+    return parents;
+  }
+
 
   /**
    * Look for the preview image in the block field

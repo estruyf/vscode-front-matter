@@ -1,15 +1,15 @@
 import {CalculatorIcon} from '@heroicons/react/outline';
 import * as React from 'react';
-import { useEffect } from 'react';
-import { VsLabel } from '../VscodeComponents';
+import { useEffect, useMemo } from 'react';
+import { BaseFieldProps } from '../../../models';
+import { FieldTitle } from './FieldTitle';
+import { RequiredMessage } from './RequiredMessage';
 
-export interface INumberFieldProps {
-  label: string;
-  value: number | null;
+export interface INumberFieldProps extends BaseFieldProps<number | null> {
   onChange: (nrValue: number | null) => void;
 }
 
-export const NumberField: React.FunctionComponent<INumberFieldProps> = ({label, value, onChange}: React.PropsWithChildren<INumberFieldProps>) => {
+export const NumberField: React.FunctionComponent<INumberFieldProps> = ({label, value, required, onChange}: React.PropsWithChildren<INumberFieldProps>) => {
   const [ nrValue, setNrValue ] = React.useState<number | null>(value);
 
   const onValueChange = (txtValue: string) => {
@@ -22,6 +22,10 @@ export const NumberField: React.FunctionComponent<INumberFieldProps> = ({label, 
     onChange(newValue);
   };
 
+  const showRequiredState = useMemo(() => {
+    return required && (nrValue === null || nrValue === undefined);
+  }, [required, nrValue]);
+
   useEffect(() => {
     if (nrValue !== value) {
       setNrValue(value);
@@ -29,14 +33,15 @@ export const NumberField: React.FunctionComponent<INumberFieldProps> = ({label, 
   }, [value]);
 
   return (
-    <div className={`metadata_field`}>
-      <VsLabel>
-        <div className={`metadata_field__label`}>
-          <CalculatorIcon style={{ width: "16px", height: "16px" }} /> <span style={{ lineHeight: "16px"}}>{label}</span>
-        </div>
-      </VsLabel>
+    <div className={`metadata_field ${showRequiredState ? "required" : ""}`}>
+      <FieldTitle 
+        label={label}
+        icon={<CalculatorIcon />}
+        required={required} />
       
       <input type={`number`} className={`metadata_field__number`} value={`${nrValue}`} onChange={(e) => onValueChange(e.target.value)} />
+      
+      <RequiredMessage name={label.toLowerCase()} show={showRequiredState} />
     </div>
   );
 };

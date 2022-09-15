@@ -71,6 +71,7 @@ export interface Field {
   taxonomyLimit?: number;
   fileExtensions?: string[];
   editable?: boolean;
+  required?: boolean;
 
   // Date fields
   isPublishDate?: boolean;

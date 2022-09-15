@@ -743,6 +743,14 @@
           "markdownDescription": "Specifies the notifications you want to see. By default, all notifications types will be shown. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.global.notifications)",
           "scope": "Templates"
         },
+        "frontMatter.global.notifications.disabled": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "This is an array with the notifications types that can be disabled for Front Matter CMS. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.global.notification.types)",
+          "enum": [
+            "requiredFieldValidation"
+          ]
+        },
         "frontMatter.media.defaultSorting": {
           "type": "string",
           "default": "",
@@ -1020,6 +1028,11 @@
                       "type": "boolean",
                       "default": true,
                       "description": "Specify if the field is editable"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "Specify if the field is required"
                     }
                   },
                   "additionalProperties": false,

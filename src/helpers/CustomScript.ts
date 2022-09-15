@@ -14,6 +14,7 @@ import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { ParsedFrontMatter } from '../parsers';
 import { TelemetryEvent } from '../constants/TelemetryEvent';
 import { SETTING_CUSTOM_SCRIPTS } from '../constants';
+import { existsSync } from 'fs';
 
 export class CustomScript {
 
@@ -272,6 +273,12 @@ export class CustomScript {
       }
 
       const scriptPath = join(wsPath, script.script);
+
+      if (!existsSync(scriptPath)) {
+        reject(new Error(`Script not found: ${scriptPath}`));
+        return;
+      }
+
       const fullScript = `${command} ${scriptPath} ${args}`;
       Logger.info(`Executing: ${fullScript}`);
 

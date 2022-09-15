@@ -5,9 +5,10 @@ import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Command } from '../../Command';
 import { CommandToCode } from '../../CommandToCode';
-import { VsLabel } from '../VscodeComponents';
 import Downshift from 'downshift';
 import { ChoiceButton } from './ChoiceButton';
+import { FieldTitle } from './FieldTitle';
+import { RequiredMessage } from './RequiredMessage';
 
 export interface IDataFileFieldProps {
   label: string;
@@ -16,10 +17,11 @@ export interface IDataFileFieldProps {
   dataFileValue?: string;
   selected: string | string[];
   multiSelect?: boolean;
+  required?: boolean;
   onChange: (value: string | string[]) => void;
 }
 
-export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({ label, dataFileId, dataFileKey, dataFileValue, selected, multiSelect, onChange }: React.PropsWithChildren<IDataFileFieldProps>) => {
+export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({ label, dataFileId, dataFileKey, dataFileValue, selected, multiSelect, onChange, required }: React.PropsWithChildren<IDataFileFieldProps>) => {
   const [ dataEntries, setDataEntries ] = useState<string[] | null>(null);
   const [ crntSelected, setCrntSelected ] = React.useState<string | string[] | null>();
   const dsRef = React.useRef<Downshift<string> | null>(null);
@@ -91,6 +93,10 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({ la
     return "";
   }, [allChoices]);
 
+  const showRequiredState = useMemo(() => {
+    return required && ((crntSelected instanceof Array && crntSelected.length === 0) || !crntSelected);
+  }, [required, crntSelected]);
+
   useEffect(() => {
     if (selected) {
       if (multiSelect) {
@@ -120,12 +126,11 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({ la
   }, []);
   
   return (
-    <div className={`metadata_field`}>
-      <VsLabel>
-        <div className={`metadata_field__label`}>
-          <DatabaseIcon style={{ width: "16px", height: "16px" }} /> <span style={{ lineHeight: "16px"}}>{label}</span>
-        </div>
-      </VsLabel>
+    <div className={`metadata_field ${showRequiredState ? "required" : ""}`}>
+      <FieldTitle 
+        label={label}
+        icon={<DatabaseIcon />}
+        required={required} />
 
       <Downshift 
         ref={dsRef}
@@ -158,6 +163,8 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({ la
           </div>
         )}
       </Downshift>
+      
+      <RequiredMessage name={label.toLowerCase()} show={showRequiredState} />
 
       {
         crntSelected instanceof Array ? crntSelected.map((value: string) => (

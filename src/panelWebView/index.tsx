@@ -4,6 +4,7 @@ import { ViewPanel } from "./ViewPanel";
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import { SENTRY_LINK } from "../constants";
+import { RecoilRoot } from "recoil";
 import './styles.css';
 
 // require('@vscode/codicons/dist/codicon.css');
@@ -43,7 +44,7 @@ if (elm) {
     });
   }
 
-  render(<ViewPanel />, elm);
+  render(<RecoilRoot><ViewPanel /></RecoilRoot>, elm);
 }
 
 // Webpack HMR

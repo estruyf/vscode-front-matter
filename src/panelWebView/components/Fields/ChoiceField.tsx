@@ -1,21 +1,21 @@
 import {CheckIcon, ChevronDownIcon} from '@heroicons/react/outline';
 import Downshift from 'downshift';
 import * as React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
+import { BaseFieldProps } from '../../../models';
 import { Choice } from '../../../models/Choice';
-import { VsLabel } from '../VscodeComponents';
 import { ChoiceButton } from './ChoiceButton';
+import { FieldTitle } from './FieldTitle';
+import { RequiredMessage } from './RequiredMessage';
 
-export interface IChoiceFieldProps {
-  label: string;
-  selected: string | string[];
+export interface IChoiceFieldProps extends BaseFieldProps<string | string[]> {
   choices: string[] | Choice[];
   multiSelect?: boolean;
   onChange: (value: string | string[]) => void;
 }
 
-export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({label, selected, choices, multiSelect, onChange}: React.PropsWithChildren<IChoiceFieldProps>) => {
-  const [ crntSelected, setCrntSelected ] = React.useState<string | string[] | null>(selected);
+export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({ label, value, choices, multiSelect, onChange, required }: React.PropsWithChildren<IChoiceFieldProps>) => {
+  const [ crntSelected, setCrntSelected ] = React.useState<string | string[] | null>(value);
   const dsRef = React.useRef<Downshift<string> | null>(null);
 
   const onValueChange = (txtValue: string) => {
@@ -54,12 +54,6 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({label, 
     }
     return "";
   };
-
-  useEffect(() => {
-    if (crntSelected !== selected) {
-      setCrntSelected(selected);
-    }
-  }, [selected]);
   
   const availableChoices = !multiSelect ? choices : (choices as Array<string | Choice>).filter((choice: string | Choice) => {
     const value = typeof choice === 'string' || typeof choice === 'number' ? choice : choice.id;
@@ -73,13 +67,22 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({label, 
     return true;
   });
 
+  const showRequiredState = useMemo(() => {
+    return required && ((crntSelected instanceof Array && crntSelected.length === 0) || !crntSelected);
+  }, [required, crntSelected]);
+
+  useEffect(() => {
+    if (crntSelected !== value) {
+      setCrntSelected(value);
+    }
+  }, [value]);
+
   return (
-    <div className={`metadata_field`}>
-      <VsLabel>
-        <div className={`metadata_field__label`}>
-          <CheckIcon style={{ width: "16px", height: "16px" }} /> <span style={{ lineHeight: "16px"}}>{label}</span>
-        </div>
-      </VsLabel>
+    <div className={`metadata_field ${showRequiredState ? "required" : ""}`}>
+      <FieldTitle 
+        label={label}
+        icon={<CheckIcon />}
+        required={required} />
 
       <Downshift 
         ref={dsRef}
@@ -112,6 +115,8 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({label, 
           </div>
         )}
       </Downshift>
+      
+      <RequiredMessage name={label.toLowerCase()} show={showRequiredState} />
 
       {
         crntSelected instanceof Array ? crntSelected.map((value: string) => (

@@ -5,10 +5,11 @@ import { CommandToCode } from '../CommandToCode';
 import { TagType } from '../TagType';
 import Downshift from 'downshift';
 import { AddIcon } from './Icons/AddIcon';
-import { VsLabel } from './VscodeComponents';
 import { BlockFieldData, CustomTaxonomyData } from '../../models';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { Messenger } from '@estruyf/vscode/dist/client';
+import { RequiredMessage } from './Fields/RequiredMessage';
+import { FieldTitle } from './Fields/FieldTitle';
 
 export interface ITagPickerProps {
   type: TagType;
@@ -26,10 +27,11 @@ export interface ITagPickerProps {
   fieldName?: string;
   taxonomyId?: string;
   limit?: number;
+  required?: boolean;
 }
 
 const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsWithChildren<ITagPickerProps>) => {
-  const { label, icon, type, crntSelected, options, freeform, focussed, unsetFocus, disableConfigurable, fieldName, taxonomyId, parents, blockData, limit } = props;
+  const { label, icon, type, crntSelected, options, freeform, focussed, unsetFocus, disableConfigurable, fieldName, taxonomyId, parents, blockData, limit, required } = props;
   const [ selected, setSelected ] = React.useState<string[]>([]);
   const [ inputValue, setInputValue ] = React.useState<string>("");
   const prevSelected = usePrevious(crntSelected);
@@ -200,27 +202,30 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
     }
 
     return `Pick your ${label || type.toLowerCase()}`;
-  }, [label, type, checkIsDisabled]); 
+  }, [label, type, checkIsDisabled]);
 
-  React.useEffect(() => {
+  const showRequiredState = useMemo(() => {
+    return required && (selected || []).length === 0;
+  }, [required, selected]);
+
+  useEffect(() => {
     setTimeout(() => {
       triggerFocus();
     }, 100);
   }, [focussed]);
   
-  React.useEffect(() => {
+  useEffect(() => {
     if (prevSelected !== crntSelected) {
       setSelected(typeof crntSelected === "string" ? [crntSelected] : crntSelected);
     }
   }, [crntSelected]);
   
   return (
-    <div className={`article__tags`}>      
-      <VsLabel>
-        <div className={`metadata_field__label`}>
-          {icon} <span style={{ lineHeight: "16px"}}>{label || type}{(limit !== undefined && limit > 0) ? <>{` `}<span style={{fontWeight: "lighter"}}>(Max.: {limit})</span></> : ``}</span>
-        </div>
-      </VsLabel>
+    <div className={`article__tags`}>
+      <FieldTitle 
+        label={(<>{label || type}{(limit !== undefined && limit > 0) ? <>{` `}<span style={{fontWeight: "lighter"}}>(Max.: {limit})</span></> : ``}</>)}
+        icon={icon}
+        required={required} />
 
       <Downshift ref={dsRef}
                  onChange={(selected) => onSelect(selected || "")}
@@ -230,7 +235,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
         {
           ({ getInputProps, getItemProps, getMenuProps, isOpen, inputValue, getRootProps, openMenu, closeMenu, clearSelection, highlightedIndex }) => (
             <>
-              <div {...getRootProps(undefined, {suppressRefError: true})} className={`article__tags__input ${freeform ? 'freeform' : ''}`}>
+              <div {...getRootProps(undefined, {suppressRefError: true})} className={`article__tags__input ${freeform ? 'freeform' : ''} ${showRequiredState ? 'required' : ''}`}>
                 <input {
                           ...getInputProps({ 
                             ref: inputRef, 
@@ -274,6 +279,8 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
           )
         }
       </Downshift>
+      
+      <RequiredMessage name={(label || type).toLowerCase()} show={showRequiredState} />
 
       <Tags 
         values={(selected || []).sort((a: string, b: string) => a?.toLowerCase() < b?.toLowerCase() ? -1 : 1 )} 

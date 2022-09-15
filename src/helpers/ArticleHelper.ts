@@ -5,7 +5,7 @@ import { MarkdownFoldingProvider } from './../providers/MarkdownFoldingProvider'
 import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from './../constants/ContentType';
 import * as vscode from 'vscode';
 import * as fs from "fs";
-import { DefaultFields, SETTING_CONTENT_DEFAULT_FILETYPE, SETTING_CONTENT_PLACEHOLDERS, SETTING_CONTENT_SUPPORTED_FILETYPES, SETTING_FILE_PRESERVE_CASING, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_SITE_BASEURL, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX, SETTING_MODIFIED_FIELD } from '../constants';
+import { DefaultFields, SETTING_CONTENT_DEFAULT_FILETYPE, SETTING_CONTENT_PLACEHOLDERS, SETTING_CONTENT_SUPPORTED_FILETYPES, SETTING_FILE_PRESERVE_CASING, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_SITE_BASEURL, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX, SETTING_MODIFIED_FIELD, DefaultFieldValues } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { FrontMatterParser, ParsedFrontMatter } from '../parsers';
 import { Extension, Logger, Settings, SlugHelper } from '.';
@@ -443,7 +443,7 @@ export class ArticleHelper {
               Notifications.error(`Error while processing the ${placeholder.id} placeholder`);
               Logger.error((e as Error).message);
 
-              value = "<Failed to process>";
+              value = DefaultFieldValues.faultyCustomPlaceholder;
             }
             
           }

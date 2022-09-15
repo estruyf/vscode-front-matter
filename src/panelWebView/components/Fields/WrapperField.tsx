@@ -15,18 +15,7 @@ import { TagIcon } from '../Icons/TagIcon';
 import { JsonField } from '../JsonField';
 import { IMetadata } from '../Metadata';
 import { TagPicker } from '../TagPicker';
-import { VsLabel } from '../VscodeComponents';
-import { ChoiceField } from './ChoiceField';
-import { DataFileField } from './DataFileField';
-import { DateTimeField } from './DateTimeField';
-import { DraftField } from './DraftField';
-import { FileField } from './FileField';
-import { ListField } from './ListField';
-import { NumberField } from './NumberField';
-import { PreviewImageField, PreviewImageValue } from './PreviewImageField';
-import { SlugField } from './SlugField';
-import { TextField } from './TextField';
-import { Toggle } from './Toggle';
+import { ChoiceField, DataFileField, DateTimeField, DraftField, FieldTitle, FileField, ListField, Toggle, TextField, SlugField, PreviewImageField, PreviewImageValue, NumberField } from '.';
 
 export interface IWrapperFieldProps {
   field: Field;
@@ -127,7 +116,8 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       <FieldBoundary key={field.name} fieldName={field.title || field.name}>
         <DateTimeField
           label={field.title || field.name}
-          date={fieldValue}
+          value={fieldValue}
+          required={!!field.required}
           format={settings?.date?.format}
           onChange={(date => onSendUpdate(field.name, date, parentFields))} />
       </FieldBoundary>
@@ -138,7 +128,8 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
         <Toggle 
           key={field.name}
           label={field.title || field.name}
-          checked={!!fieldValue} 
+          value={fieldValue}
+          required={!!field.required}
           onChanged={(checked) => onSendUpdate(field.name, checked, parentFields)} />
       </FieldBoundary>
     );
@@ -160,7 +151,8 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           wysiwyg={field.wysiwyg}
           rows={3}
           onChange={(value) => onSendUpdate(field.name, value, parentFields)}
-          value={fieldValue as string || null} />
+          value={fieldValue as string || null}
+          required={!!field.required} />
       </FieldBoundary>
     );
   } else if (field.type === 'number') {
@@ -175,7 +167,8 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           key={field.name}
           label={field.title || field.name}
           onChange={(value) => onSendUpdate(field.name, value, parentFields)}
-          value={nrValue} />
+          value={nrValue}
+          required={!!field.required} />
       </FieldBoundary>
     );
   } else if (field.type === 'image') {    
@@ -187,6 +180,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           filePath={metadata.filePath as string}
           parents={parentFields}
           value={fieldValue as PreviewImageValue | PreviewImageValue[] | null}
+          required={!!field.required}
           multiple={field.multiple}
           blockData={blockData}
           onChange={(value) => onSendUpdate(field.name, value, parentFields)} />
@@ -202,6 +196,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           fileExtensions={field.fileExtensions}
           filePath={metadata.filePath as string}
           value={fieldValue as string | string[] | null}
+          required={!!field.required}
           parents={parentFields} 
           blockData={blockData}
           onChange={(value) => onSendUpdate(field.name, value, parentFields)} />
@@ -214,7 +209,8 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       <FieldBoundary key={field.name} fieldName={field.title || field.name}>
         <ChoiceField
           label={field.title || field.name}
-          selected={fieldValue as string}
+          value={fieldValue as string}
+          required={!!field.required}
           choices={choices}
           multiSelect={field.multiple}
           onChange={(value => onSendUpdate(field.name, value, parentFields))} />
@@ -235,7 +231,8 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           unsetFocus={unsetFocus}
           parents={parentFields}
           blockData={blockData}
-          limit={field.taxonomyLimit} />
+          limit={field.taxonomyLimit}
+          required={!!field.required} />
       </FieldBoundary>
     );
   } else if (field.type === 'taxonomy') {
@@ -256,7 +253,8 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           taxonomyId={field.taxonomyId}
           parents={parentFields}
           blockData={blockData}
-          limit={field.taxonomyLimit} />
+          limit={field.taxonomyLimit}
+          required={!!field.required} />
       </FieldBoundary>
     );
   } else if (field.type === 'categories') {
@@ -274,7 +272,8 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           unsetFocus={unsetFocus}
           parents={parentFields}
           blockData={blockData}
-          limit={field.taxonomyLimit} />
+          limit={field.taxonomyLimit}
+          required={!!field.required} />
       </FieldBoundary>
     );
   } else if (field.type === 'draft') {
@@ -293,6 +292,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           type={draftField?.type || "boolean"}
           choices={draftField?.choices || []}
           value={draftValue as boolean | string | null | undefined}
+          required={!!field.required}
           onChanged={(value: boolean | string) => onSendUpdate(field.name, value, parentFields)} />
       </FieldBoundary>
     );
@@ -306,11 +306,11 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       return (
         <FieldBoundary key={field.name} fieldName={field.title || field.name}>
           <div className={`metadata_field__box`}>
-            <VsLabel>
-              <div className={`metadata_field__label metadata_field__label_parent`}>
-                <span style={{ lineHeight: "16px"}}>{field.title || field.name}</span>
-              </div>
-            </VsLabel>
+            <FieldTitle 
+              className={`metadata_field__label_parent`}
+              label={field.title || field.name}
+              icon={undefined}
+              required={field.required} />
 
             { renderFields(field.fields, subMetadata, [...parentFields, field.name], blockData, onSendUpdate) }
           </div>
@@ -346,6 +346,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           parentFields={parentFields}
           filePath={metadata.filePath as string}
           parentBlock={parentBlock}
+          required={!!field.required}
           onSubmit={(value) => onSendUpdate(field.name, value, parentFields)} />
       </FieldBoundary>
     );
@@ -358,6 +359,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           dataFileKey={field.dataFileKey}
           dataFileValue={field.dataFileValue}
           selected={fieldValue as string}
+          required={!!field.required}
           multiSelect={field.multiple}
           onChange={(value => onSendUpdate(field.name, value, parentFields))} />
       </FieldBoundary>
@@ -368,6 +370,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
         <ListField
           label={field.title || field.name}
           value={fieldValue}
+          required={!!field.required}
           onChange={(value => onSendUpdate(field.name, value, parentFields))} />
       </FieldBoundary>
     );
@@ -378,6 +381,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           label={field.title || field.name}
           titleValue={metadata.title as string}
           value={fieldValue}
+          required={!!field.required}
           editable={field.editable}
           onChange={(value => onSendUpdate(field.name, value, parentFields))} />
       </FieldBoundary>
