@@ -11,7 +11,7 @@ export * from './NumberField';
 export * from './PreviewImage';
 export * from './PreviewImageField';
 export * from './RequiredAsterix';
-export * from './RequiredMessage';
+export * from './FieldMessage';
 export * from './SlugField';
 export * from './TextField';
 export * from './Toggle';

@@ -3,13 +3,13 @@ import { useEffect, useMemo } from 'react';
 import { BaseFieldProps } from '../../../models';
 import { ToggleIcon } from '../Icons/ToggleIcon';
 import { FieldTitle } from './FieldTitle';
-import { RequiredMessage } from './RequiredMessage';
+import { FieldMessage } from './FieldMessage';
 
 export interface IToggleProps extends BaseFieldProps<boolean> {
   onChanged: (checked: boolean) => void;
 }
 
-export const Toggle: React.FunctionComponent<IToggleProps> = ({label, value, required, onChanged}: React.PropsWithChildren<IToggleProps>) => {
+export const Toggle: React.FunctionComponent<IToggleProps> = ({label, description, value, required, onChanged}: React.PropsWithChildren<IToggleProps>) => {
   const [ isChecked, setIsChecked ] = React.useState(value);
   
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,7 +40,7 @@ export const Toggle: React.FunctionComponent<IToggleProps> = ({label, value, req
         <span className="field__toggle__slider"></span>
       </label>
       
-      <RequiredMessage name={label.toLowerCase()} show={showRequiredState} />
+      <FieldMessage name={label.toLowerCase()} description={description} showRequired={showRequiredState} />
     </div>
   );
 };

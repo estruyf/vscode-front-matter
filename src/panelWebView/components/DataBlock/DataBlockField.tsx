@@ -10,6 +10,7 @@ import { FieldTitle } from '../Fields/FieldTitle';
 
 export interface IDataBlockFieldProps {
   label: string;
+  description?: string;
   settings: PanelSettings;
   field: Field;
   parentFields: string[];
@@ -28,7 +29,7 @@ export interface IDataBlockFieldProps {
   required?: boolean;
 }
 
-export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ label, filePath, settings, field, parentFields = [], value, fieldsRenderer, onSubmit, parentBlock, required }: React.PropsWithChildren<IDataBlockFieldProps>) => {
+export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ label, description, filePath, settings, field, parentFields = [], value, fieldsRenderer, onSubmit, parentBlock, required }: React.PropsWithChildren<IDataBlockFieldProps>) => {
   const [ selectedIndex, setSelectedIndex ] = useState<number | null>(null);
   const [ selectedGroup, setSelectedGroup ] = useState<FieldGroup | undefined | null>(null);
   const [ selectedBlockData, setSelectedBlockData ] = useState<any | null>(null);
@@ -234,6 +235,12 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
         label={label}
         icon={<PencilIcon />}
         required={required} />
+
+      { description && (
+        <div className={`metadata_field__description`}>
+          {description}
+        </div>
+      )}
 
       {
         (!hideSubBlock) ? (

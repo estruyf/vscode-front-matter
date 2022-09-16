@@ -61,7 +61,7 @@
   border: 1px dashed var(--vscode-button-secondaryBackground);
   color: var(--vscode--settings-headerForeground);
   padding: .5rem 1rem;
-  margin-bottom: .5rem;
+  margin-bottom: 1rem;
 
   .autoform {
     background-color: transparent;
@@ -319,6 +319,28 @@
   outline: none;
 }
 
+/* Description message */
+.metadata_field__description {
+  color: var(--vscode--settings-headerForeground);
+  opacity: .75;
+  margin-bottom: .5rem;
+}
+
+.metadata_field__description,
+.metadata_field__required__message {
+  padding-top: .5rem;
+  font-size: .9rem;
+  margin-left: .5rem;
+  margin-right: .5rem;
+}
+
+.block_field > .metadata_field__description,
+.metadata_field__box > .metadata_field__description {
+  margin-left: 0;
+  margin-top: -.5rem;
+  margin-bottom: 1rem;
+}
+
 /* Required field */
 .metadata_field__required__asterix {
   color: var(--vscode-inputValidation-errorBorder);
@@ -326,9 +348,9 @@
 }
 
 .metadata_field__required__message {
-  color: var(--vscode-inputValidation-errorBorder);
   padding-top: .5rem;
   font-size: .9rem;
+  margin-left: .5rem;
 }
 
 /* Text field */
@@ -377,7 +399,7 @@ vscode-divider {
 .metadata_field__box {
   background: rgba(255, 255, 255, 0.1);
   border: 1px dashed rgba(255, 255, 255, 0.2);
-  margin-bottom: .5rem;
+  margin-bottom: 1rem;
   padding: .5rem 1rem;
 }
 

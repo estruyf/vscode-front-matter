@@ -3,13 +3,13 @@ import * as React from 'react';
 import { useEffect, useMemo } from 'react';
 import { BaseFieldProps } from '../../../models';
 import { FieldTitle } from './FieldTitle';
-import { RequiredMessage } from './RequiredMessage';
+import { FieldMessage } from './FieldMessage';
 
 export interface INumberFieldProps extends BaseFieldProps<number | null> {
   onChange: (nrValue: number | null) => void;
 }
 
-export const NumberField: React.FunctionComponent<INumberFieldProps> = ({label, value, required, onChange}: React.PropsWithChildren<INumberFieldProps>) => {
+export const NumberField: React.FunctionComponent<INumberFieldProps> = ({label, description, value, required, onChange}: React.PropsWithChildren<INumberFieldProps>) => {
   const [ nrValue, setNrValue ] = React.useState<number | null>(value);
 
   const onValueChange = (txtValue: string) => {
@@ -41,7 +41,7 @@ export const NumberField: React.FunctionComponent<INumberFieldProps> = ({label, 
       
       <input type={`number`} className={`metadata_field__number`} value={`${nrValue}`} onChange={(e) => onValueChange(e.target.value)} />
       
-      <RequiredMessage name={label.toLowerCase()} show={showRequiredState} />
+      <FieldMessage name={label.toLowerCase()} description={description} showRequired={showRequiredState} />
     </div>
   );
 };

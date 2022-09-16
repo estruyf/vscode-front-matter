@@ -8,7 +8,7 @@ import { AddIcon } from './Icons/AddIcon';
 import { BlockFieldData, CustomTaxonomyData } from '../../models';
 import { useCallback, useEffect, useMemo } from 'react';
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { RequiredMessage } from './Fields/RequiredMessage';
+import { FieldMessage } from './Fields/FieldMessage';
 import { FieldTitle } from './Fields/FieldTitle';
 
 export interface ITagPickerProps {
@@ -23,6 +23,7 @@ export interface ITagPickerProps {
   parents?: string[];
   blockData?: BlockFieldData;
   label?: string;
+  description?: string;
   disableConfigurable?: boolean;
   fieldName?: string;
   taxonomyId?: string;
@@ -30,8 +31,7 @@ export interface ITagPickerProps {
   required?: boolean;
 }
 
-const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsWithChildren<ITagPickerProps>) => {
-  const { label, icon, type, crntSelected, options, freeform, focussed, unsetFocus, disableConfigurable, fieldName, taxonomyId, parents, blockData, limit, required } = props;
+const TagPicker: React.FunctionComponent<ITagPickerProps> = ({ label, description, icon, type, crntSelected, options, freeform, focussed, unsetFocus, disableConfigurable, fieldName, taxonomyId, parents, blockData, limit, required }: React.PropsWithChildren<ITagPickerProps>) => {
   const [ selected, setSelected ] = React.useState<string[]>([]);
   const [ inputValue, setInputValue ] = React.useState<string>("");
   const prevSelected = usePrevious(crntSelected);
@@ -280,7 +280,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = (props: React.PropsW
         }
       </Downshift>
       
-      <RequiredMessage name={(label || type).toLowerCase()} show={showRequiredState} />
+      <FieldMessage name={(label || type).toLowerCase()} description={description} showRequired={showRequiredState} />
 
       <Tags 
         values={(selected || []).sort((a: string, b: string) => a?.toLowerCase() < b?.toLowerCase() ? -1 : 1 )} 

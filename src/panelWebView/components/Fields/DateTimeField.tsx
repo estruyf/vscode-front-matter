@@ -4,7 +4,7 @@ import DatePicker from 'react-datepicker';
 import { forwardRef, useEffect, useMemo } from 'react';
 import { DateHelper } from '../../../helpers/DateHelper';
 import { BaseFieldProps } from '../../../models';
-import { RequiredMessage } from './RequiredMessage';
+import { FieldMessage } from './FieldMessage';
 import { FieldTitle } from './FieldTitle';
 
 export interface IDateTimeFieldProps extends BaseFieldProps<Date | null> {
@@ -22,7 +22,7 @@ const CustomInput = forwardRef<HTMLInputElement, InputProps>(({ value, onClick }
   )
 });
 
-export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({label, value, required, format, onChange}: React.PropsWithChildren<IDateTimeFieldProps>) => {
+export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({label, description, value, required, format, onChange}: React.PropsWithChildren<IDateTimeFieldProps>) => {
   const [ dateValue, setDateValue ] = React.useState<Date | null>(null);
   
   const onDateChange = (date: Date) => {
@@ -65,7 +65,7 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({lab
         </button>
       </div>
 
-      <RequiredMessage name={label.toLowerCase()} show={showRequiredState} />
+      <FieldMessage name={label.toLowerCase()} description={description} showRequired={showRequiredState} />
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { useCallback, useMemo } from 'react';
 import { BaseFieldProps, BlockFieldData } from '../../../models';
 import { CommandToCode } from '../../CommandToCode';
 import { FieldTitle } from './FieldTitle';
-import { RequiredMessage } from './RequiredMessage';
+import { FieldMessage } from './FieldMessage';
 
 export interface IFileFieldProps extends BaseFieldProps<string | string[] | null> {
   fieldName: string;
@@ -34,7 +34,7 @@ const File = ({ value, onRemove }: { value: string, onRemove: (value: string) =>
   )
 }
 
-export const FileField: React.FunctionComponent<IFileFieldProps> = ({ label, multiple, filePath, fileExtensions, fieldName, value, parents, blockData, onChange, required }: React.PropsWithChildren<IFileFieldProps>) => {
+export const FileField: React.FunctionComponent<IFileFieldProps> = ({ label, description, multiple, filePath, fileExtensions, fieldName, value, parents, blockData, onChange, required }: React.PropsWithChildren<IFileFieldProps>) => {
 
   const selectFile = useCallback(() => {
     Messenger.send(CommandToCode.selectFile, { 
@@ -79,7 +79,7 @@ export const FileField: React.FunctionComponent<IFileFieldProps> = ({ label, mul
           )
         }
       
-        <RequiredMessage name={label.toLowerCase()} show={showRequiredState} />
+        <FieldMessage name={label.toLowerCase()} description={description} showRequired={showRequiredState} />
 
         {
           value && !Array.isArray(value) && (

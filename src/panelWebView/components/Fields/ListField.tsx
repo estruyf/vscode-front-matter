@@ -3,13 +3,13 @@ import * as React from 'react';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { BaseFieldProps } from '../../../models';
 import { FieldTitle } from './FieldTitle';
-import { RequiredMessage } from './RequiredMessage';
+import { FieldMessage } from './FieldMessage';
 
 export interface IListFieldProps extends BaseFieldProps<string[] | null> {
   onChange: (value: string | string[]) => void;
 }
 
-export const ListField: React.FunctionComponent<IListFieldProps> = ({ label, value, required, onChange }: React.PropsWithChildren<IListFieldProps>) => {
+export const ListField: React.FunctionComponent<IListFieldProps> = ({ label, description, value, required, onChange }: React.PropsWithChildren<IListFieldProps>) => {
   const [ text, setText ] = React.useState<string | null>("");
   const [ list, setList ] = React.useState<string[] | null>(null);
   const [ itemToEdit, setItemToEdit ] = React.useState<number | null>(null);
@@ -90,7 +90,7 @@ export const ListField: React.FunctionComponent<IListFieldProps> = ({ label, val
           }
         }} />
 
-      <RequiredMessage name={label} show={showRequiredState} />
+      <FieldMessage name={label} description={description} showRequired={showRequiredState} />
 
       <div className={`list_field__form__buttons`}>
         <button 

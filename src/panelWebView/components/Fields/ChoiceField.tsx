@@ -6,7 +6,7 @@ import { BaseFieldProps } from '../../../models';
 import { Choice } from '../../../models/Choice';
 import { ChoiceButton } from './ChoiceButton';
 import { FieldTitle } from './FieldTitle';
-import { RequiredMessage } from './RequiredMessage';
+import { FieldMessage } from './FieldMessage';
 
 export interface IChoiceFieldProps extends BaseFieldProps<string | string[]> {
   choices: string[] | Choice[];
@@ -14,7 +14,7 @@ export interface IChoiceFieldProps extends BaseFieldProps<string | string[]> {
   onChange: (value: string | string[]) => void;
 }
 
-export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({ label, value, choices, multiSelect, onChange, required }: React.PropsWithChildren<IChoiceFieldProps>) => {
+export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({ label, description, value, choices, multiSelect, onChange, required }: React.PropsWithChildren<IChoiceFieldProps>) => {
   const [ crntSelected, setCrntSelected ] = React.useState<string | string[] | null>(value);
   const dsRef = React.useRef<Downshift<string> | null>(null);
 
@@ -116,7 +116,7 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({ label,
         )}
       </Downshift>
       
-      <RequiredMessage name={label.toLowerCase()} show={showRequiredState} />
+      <FieldMessage name={label.toLowerCase()} description={description} showRequired={showRequiredState} />
 
       {
         crntSelected instanceof Array ? crntSelected.map((value: string) => (

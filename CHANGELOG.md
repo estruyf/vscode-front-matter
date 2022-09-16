@@ -8,6 +8,7 @@
 - [#376](https://github.com/estruyf/vscode-front-matter/issues/376): Ability to run scripts after content was created
 - [#377](https://github.com/estruyf/vscode-front-matter/issues/377): Git sync actions added on panel and content dashboard (pull and push your changes to remote)
 - [#379](https://github.com/estruyf/vscode-front-matter/issues/377): New `frontMatter.config.reload` command to reload the configuration file + reinitialize its listeners
+- [#391](https://github.com/estruyf/vscode-front-matter/issues/391): New `description` property to show a message underneath the input field
 - [#401](https://github.com/estruyf/vscode-front-matter/issues/401): Content dashboard now has pagination enabled and can be disabled via the `frontMatter.dashboard.content.pagination` setting
 
 ### 🎨 Enhancements

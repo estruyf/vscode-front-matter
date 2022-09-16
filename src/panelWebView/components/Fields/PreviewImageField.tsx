@@ -7,7 +7,7 @@ import { BaseFieldProps, BlockFieldData } from '../../../models';
 import { CommandToCode } from '../../CommandToCode';
 import { FieldTitle } from './FieldTitle';
 import { PreviewImage } from './PreviewImage';
-import { RequiredMessage } from './RequiredMessage';
+import { FieldMessage } from './FieldMessage';
 
 export interface PreviewImageValue {
   original: string;
@@ -25,6 +25,7 @@ export interface IPreviewImageFieldProps extends BaseFieldProps<PreviewImageValu
 
 export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps> = ({
   label, 
+  description,
   fieldName, 
   blockData, 
   onChange, 
@@ -93,7 +94,7 @@ export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps>
         }
       </div>
       
-      <RequiredMessage name={label.toLowerCase()} show={showRequiredState} />
+      <FieldMessage name={label.toLowerCase()} description={description} showRequired={showRequiredState} />
     </div>
   );
 };

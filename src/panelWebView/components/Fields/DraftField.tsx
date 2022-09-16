@@ -11,12 +11,13 @@ export interface IDraftFieldProps extends BaseFieldProps<boolean | string | null
   onChanged: (value: string | boolean) => void;
 }
 
-export const DraftField: React.FunctionComponent<IDraftFieldProps> = ({ label, type, value, choices, onChanged, required }: React.PropsWithChildren<IDraftFieldProps>) => {
+export const DraftField: React.FunctionComponent<IDraftFieldProps> = ({ label, description, type, value, choices, onChanged, required }: React.PropsWithChildren<IDraftFieldProps>) => {
 
   if (type === "boolean") {
     return (
       <Toggle 
         label={label}
+        description={description}
         value={!!value}
         required={required}
         onChanged={(checked) => onChanged(checked)} />
@@ -27,6 +28,7 @@ export const DraftField: React.FunctionComponent<IDraftFieldProps> = ({ label, t
     return (
       <ChoiceField
         label={label}
+        description={description}
         value={value as string}
         choices={choices as string[]}
         multiSelect={false}

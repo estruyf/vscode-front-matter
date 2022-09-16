@@ -55,6 +55,7 @@ export type FieldType = "string" | "number" | "datetime" | "boolean" | "image" |
 
 export interface Field {
   title?: string;
+  description?: string;
   name: string;
   type: FieldType;
   choices?: string[] | Choice[];

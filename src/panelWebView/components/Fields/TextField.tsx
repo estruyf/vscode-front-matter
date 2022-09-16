@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 import { BaseFieldProps } from '../../../models';
 import { RequiredFieldsAtom } from '../../state';
 import { FieldTitle } from './FieldTitle';
-import { RequiredMessage } from './RequiredMessage';
+import { FieldMessage } from './FieldMessage';
 
 export interface ITextFieldProps extends BaseFieldProps<string> {
   singleLine: boolean | undefined;
@@ -17,7 +17,7 @@ export interface ITextFieldProps extends BaseFieldProps<string> {
 
 const WysiwygField = React.lazy(() => import('./WysiwygField'));
 
-export const TextField: React.FunctionComponent<ITextFieldProps> = ({singleLine, wysiwyg, limit, label, value, rows, onChange, required}: React.PropsWithChildren<ITextFieldProps>) => {
+export const TextField: React.FunctionComponent<ITextFieldProps> = ({singleLine, wysiwyg, limit, label, description, value, rows, onChange, required}: React.PropsWithChildren<ITextFieldProps>) => {
   const [ requiredFields, setRequiredFields ] = useRecoilState(RequiredFieldsAtom);
   const [ text, setText ] = React.useState<string | null>(value);
   
@@ -110,7 +110,10 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({singleLine,
         )
       }
       
-      <RequiredMessage name={label.toLowerCase()} show={showRequiredState} />
+      <FieldMessage 
+        description={description}
+        name={label.toLowerCase()} 
+        showRequired={showRequiredState} />
     </div>
   );
 };

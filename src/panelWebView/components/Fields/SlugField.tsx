@@ -7,7 +7,7 @@ import { BaseFieldProps } from '../../../models';
 import { Command } from '../../Command';
 import { CommandToCode } from '../../CommandToCode';
 import { FieldTitle } from './FieldTitle';
-import { RequiredMessage } from './RequiredMessage';
+import { FieldMessage } from './FieldMessage';
 
 export interface ISlugFieldProps extends BaseFieldProps<string> {
   titleValue: string | null;
@@ -15,7 +15,7 @@ export interface ISlugFieldProps extends BaseFieldProps<string> {
   onChange: (txtValue: string) => void;
 }
 
-export const SlugField: React.FunctionComponent<ISlugFieldProps> = ({ label, editable, value, titleValue, onChange, required }: React.PropsWithChildren<ISlugFieldProps>) => {
+export const SlugField: React.FunctionComponent<ISlugFieldProps> = ({ label, description, editable, value, titleValue, onChange, required }: React.PropsWithChildren<ISlugFieldProps>) => {
   const [ text, setText ] = React.useState<string | null>(value);
   const [ slug, setSlug ] = React.useState<string | null>(value);
   
@@ -84,7 +84,10 @@ export const SlugField: React.FunctionComponent<ISlugFieldProps> = ({ label, edi
         </button>
       </div>
       
-      <RequiredMessage name={label.toLowerCase()} show={showRequiredState} />
+      <FieldMessage 
+        name={label.toLowerCase()} 
+        description={description} 
+        showRequired={showRequiredState} />
     </div>
   );
 }

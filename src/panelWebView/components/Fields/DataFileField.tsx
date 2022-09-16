@@ -8,10 +8,11 @@ import { CommandToCode } from '../../CommandToCode';
 import Downshift from 'downshift';
 import { ChoiceButton } from './ChoiceButton';
 import { FieldTitle } from './FieldTitle';
-import { RequiredMessage } from './RequiredMessage';
+import { FieldMessage } from './FieldMessage';
 
 export interface IDataFileFieldProps {
   label: string;
+  description?: string;
   dataFileId?: string;
   dataFileKey?: string;
   dataFileValue?: string;
@@ -21,7 +22,7 @@ export interface IDataFileFieldProps {
   onChange: (value: string | string[]) => void;
 }
 
-export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({ label, dataFileId, dataFileKey, dataFileValue, selected, multiSelect, onChange, required }: React.PropsWithChildren<IDataFileFieldProps>) => {
+export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({ label, description, dataFileId, dataFileKey, dataFileValue, selected, multiSelect, onChange, required }: React.PropsWithChildren<IDataFileFieldProps>) => {
   const [ dataEntries, setDataEntries ] = useState<string[] | null>(null);
   const [ crntSelected, setCrntSelected ] = React.useState<string | string[] | null>();
   const dsRef = React.useRef<Downshift<string> | null>(null);
@@ -164,7 +165,7 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({ la
         )}
       </Downshift>
       
-      <RequiredMessage name={label.toLowerCase()} show={showRequiredState} />
+      <FieldMessage name={label.toLowerCase()} description={description} showRequired={showRequiredState} />
 
       {
         crntSelected instanceof Array ? crntSelected.map((value: string) => (
