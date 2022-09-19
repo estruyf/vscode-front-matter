@@ -1499,6 +1499,12 @@
         }
       },
       {
+        "command": "frontMatter.markup.hyperlink",
+        "title": "Hyperlink",
+        "category": "Front Matter",
+        "icon": "$(link)"
+      },
+      {
         "command": "frontMatter.collapseSections",
         "title": "Collapse sections",
         "category": "Front Matter",
@@ -1746,7 +1752,7 @@
           "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
-          "command": "frontMatter.markup.strikethrough",
+          "command": "frontMatter.markup.hyperlink",
           "group": "navigation@-130",
           "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },

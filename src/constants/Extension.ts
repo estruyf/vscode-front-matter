@@ -56,6 +56,7 @@ export const COMMAND_NAME = {
   unorderedlist: getCommandName("markup.unorderedlist"),
   orderedlist: getCommandName("markup.orderedlist"),
   taskList: getCommandName("markup.tasklist"),
+  hyperlink: getCommandName("markup.hyperlink"),
   options: getCommandName("markup.options"),
 
   // Content types

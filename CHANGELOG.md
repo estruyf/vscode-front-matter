@@ -24,6 +24,7 @@
 - [#394](https://github.com/estruyf/vscode-front-matter/issues/394): Ordering of snippet fields is based on their field definition
 - [#395](https://github.com/estruyf/vscode-front-matter/issues/395): Added support for custom snippet fields on media snippets
 - [#402](https://github.com/estruyf/vscode-front-matter/issues/402): Custom sorting of content now supports `number` fields
+- [#417](https://github.com/estruyf/vscode-front-matter/issues/417): New `hyperlink` wysiwyg option
 - [#418](https://github.com/estruyf/vscode-front-matter/issues/418): New `heading` and `divider` fields for your content-type definition
 
 ### ⚡️ Optimizations

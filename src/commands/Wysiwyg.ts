@@ -1,4 +1,4 @@
-import { commands, window, Selection, QuickPickItem } from "vscode";
+import { commands, window, Selection, QuickPickItem, TextEditor } from "vscode";
 import { COMMAND_NAME, CONTEXT, SETTING_CONTENT_WYSIWYG } from "../constants";
 import { Settings } from "../helpers";
 
@@ -12,7 +12,8 @@ enum MarkupType {
   heading,
   unorderedList,
   orderedList,
-  taskList
+  taskList,
+  hyperlink,
 }
 
 export class Wysiwyg {
@@ -46,6 +47,9 @@ export class Wysiwyg {
     subscriptions.push(commands.registerCommand(COMMAND_NAME.orderedlist, () => this.addMarkup(MarkupType.orderedList)));
     subscriptions.push(commands.registerCommand(COMMAND_NAME.taskList, () => this.addMarkup(MarkupType.taskList)));
 
+    // Other markup
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.hyperlink, () => this.addMarkup(MarkupType.hyperlink)));
+
     // Options
     subscriptions.push(commands.registerCommand(COMMAND_NAME.options, async () => {
       const qpItems: QuickPickItem[] = [
@@ -55,6 +59,7 @@ export class Wysiwyg {
         { label: "$(code) Code", detail: "Add inline code snippet", alwaysShow: true },
         { label: "$(symbol-namespace) Code block", detail: "Add a code block", alwaysShow: true },
         { label: "$(quote) Blockquote", detail: "Add a blockquote", alwaysShow: true },
+        { label: "$(symbol-text) Strikethrough", detail: "Add a strikethrough", alwaysShow: true },
       ]
 
       const option = await window.showQuickPick([ ...qpItems ], {
@@ -77,6 +82,8 @@ export class Wysiwyg {
           await this.addMarkup(MarkupType.codeblock);
         } else if (option.label === qpItems[5].label) {
           await this.addMarkup(MarkupType.blockquote);
+        } else if (option.label === qpItems[6].label) {
+          await this.addMarkup(MarkupType.strikethrough);
         }
       }
     }));
@@ -95,6 +102,10 @@ export class Wysiwyg {
 
     const selection = editor.selection;
     const hasTextSelection = !selection.isEmpty;
+
+    if (type === MarkupType.hyperlink) {
+      return this.addHyperlink(editor, selection);
+    }
 
     const markers = this.getMarkers(type);
     if (!markers) {
@@ -127,6 +138,51 @@ export class Wysiwyg {
       }
 
       editor.selection = new Selection(newPosition, newPosition);
+    }
+  }
+
+  /**
+   * Add a hyperlink to the content
+   * @returns void
+   */
+  private static async addHyperlink(editor: TextEditor, selection: Selection) {
+    const hasTextSelection = !selection.isEmpty;
+    const linkText = hasTextSelection ? editor.document.getText(selection) : "";
+
+    const link = await window.showInputBox({
+      title: "WYSIWYG Hyperlink", 
+      placeHolder: "Enter the URL", 
+      prompt: "Enter the URL",
+      value: linkText,
+      ignoreFocusOut: true
+    });
+
+    const text = await window.showInputBox({
+      title: "WYSIWYG Text",
+      prompt: "Enter the text for the hyperlink",
+      placeHolder: "Enter the text for the hyperlink",
+      value: linkText,
+      ignoreFocusOut: true
+    });
+
+    if (link) {
+      const txt = `[${text || link}](${link})`;
+
+      if (hasTextSelection) {
+        editor.edit(builder => {
+          builder.replace(selection, txt);
+        });
+      } else {
+        const crntSelection = selection.active;
+        const markerLength = txt.length;
+        const newPosition = crntSelection.with(crntSelection.line, crntSelection.character + markerLength);
+
+        await editor.edit(builder => {
+          builder.insert(newPosition, txt);
+        });
+
+        editor.selection = new Selection(newPosition, newPosition);
+      }
     }
   }
 
