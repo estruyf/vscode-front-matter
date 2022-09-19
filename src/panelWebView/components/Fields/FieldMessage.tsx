@@ -8,7 +8,6 @@ export interface IFieldMessageProps {
 
 export const FieldMessage: React.FunctionComponent<IFieldMessageProps> = ({ name, description, showRequired }: React.PropsWithChildren<IFieldMessageProps>) => {
 
-  console.log(description, showRequired);
   if (!showRequired && !description) {
     return null;
   }
