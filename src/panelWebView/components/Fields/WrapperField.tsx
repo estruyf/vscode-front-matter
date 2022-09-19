@@ -111,7 +111,18 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
     return null;
   }
 
-  if (field.type === 'datetime') {
+  if (field.type === 'divider') {
+    return (
+      <div key={field.name} className="metadata_field__divider" />
+    )
+  } else if (field.type === 'heading') {
+    return (
+      <div key={field.name} className="metadata_field__heading">
+        <h3>{field.title}</h3>
+        {field.description && <p className='metadata_field__description'>{field.description}</p>}
+      </div>
+    )
+  } else if (field.type === 'datetime') {
     return (
       <FieldBoundary key={field.name} fieldName={field.title || field.name}>
         <DateTimeField
@@ -324,9 +335,9 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
               required={field.required} />
             
             { field.description && (
-              <div className={`metadata_field__description`}>
+              <p className={`metadata_field__description`}>
                 {field.description}
-              </div>
+              </p>
             )}
 
             { renderFields(field.fields, subMetadata, [...parentFields, field.name], blockData, onSendUpdate) }

@@ -353,6 +353,22 @@
   margin-left: .5rem;
 }
 
+/* Divider field */
+.metadata_field__divider {
+  background: var(--vscode-button-secondaryBackground);
+  margin: 1rem 2.5rem;
+  height: 1px;
+}
+
+/* Heading field */
+.metadata_field__heading {
+  margin: 1rem 0;
+  
+  .metadata_field__description {
+    margin: -1rem 0 0 0;
+  }
+}
+
 /* Text field */
 .metadata_field__limit {
   color: var(--vscode-inputValidation-warningBorder);

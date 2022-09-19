@@ -873,7 +873,9 @@
                         "block",
                         "list",
                         "dataFile",
-                        "slug"
+                        "slug",
+                        "divider",
+                        "heading"
                       ],
                       "description": "Define the type of field"
                     },
@@ -1045,6 +1047,20 @@
                     "name"
                   ],
                   "allOf": [
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "divider"
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "type"
+                        ]
+                      }
+                    },
                     {
                       "if": {
                         "properties": {
