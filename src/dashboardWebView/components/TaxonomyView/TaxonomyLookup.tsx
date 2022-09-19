@@ -41,7 +41,6 @@ export const TaxonomyLookup: React.FunctionComponent<ITaxonomyLookupProps> = ({ 
     }).length;
   }, [taxonomy, value, pages, settings?.contentTypes]);
 
-
   const onNavigate = useCallback(() => {
     if (total) {
       navigate(`${routePaths.contents}?taxonomy=${taxonomy}&value=${value}`);

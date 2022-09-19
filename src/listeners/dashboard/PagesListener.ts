@@ -307,11 +307,11 @@ export class PagesListener extends BaseListener {
 
       let tagParents = ContentType.findFieldByType(contentType.fields, "tags");
       const tagsValue = ContentType.getFieldValue(article.data, tagParents.length !== 0 ? tagParents : ["tags"]);
-      page.fmTags = typeof tagsValue === "string" ? tagsValue.split(",") : [];
+      page.fmTags = typeof tagsValue === "string" ? tagsValue.split(",") : tagsValue;
 
       let categoryParents = ContentType.findFieldByType(contentType.fields, "categories");
       const categoriesValue = ContentType.getFieldValue(article.data, categoryParents.length !== 0 ? categoryParents : ["categories"]);
-      page.fmCategories = typeof categoriesValue === "string" ? categoriesValue.split(",") : [];
+      page.fmCategories = typeof categoriesValue === "string" ? categoriesValue.split(",") : categoriesValue;
 
       // Check if parent fields were retrieved, if not there was no image present
       if (previewFieldParents.length > 0) {
