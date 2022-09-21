@@ -59,7 +59,7 @@ export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps>
   }, [value])
 
   const showRequiredState = useMemo(() => {
-    return required && isFaultyImage || !value;
+    return required && (isFaultyImage || !value);
   }, [required, value, isFaultyImage]);
 
   return (
