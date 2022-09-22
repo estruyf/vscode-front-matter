@@ -170,13 +170,13 @@
         },
         "frontMatter.content.hideFm": {
           "type": "boolean",
-          "markdownDescription": "Specify if you want to hide the Front Matter in the Markdown file. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.hidefrontmatter)",
+          "markdownDescription": "Specify if you want to hide the Front Matter in the Markdown file. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.hidefm)",
           "scope": "Content"
         },
         "frontMatter.content.hideFmMessage": {
           "type": "string",
           "default": "Use the editor panel to make front matter changes",
-          "markdownDescription": "Specify the message to display when the Front Matter is hidden. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.hidefrontmatter.message)",
+          "markdownDescription": "Specify the message to display when the Front Matter is hidden. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.hidefmMessage)",
           "scope": "Content"
         },
         "frontMatter.content.pageFolders": {
@@ -670,9 +670,9 @@
           "markdownDescription": "Specify if you want to use the Git actions for your website. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.git.enabled)",
           "default": false
         },
-        "frontMatter.git.commitMsg": {
+        "frontMatter.git.commitMessage": {
           "type": "string",
-          "markdownDescription": "Specify the commit message you want to use for the sync. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.git.commitmsg)",
+          "markdownDescription": "Specify the commit message you want to use for the sync. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.git.commitmessage)",
           "default": "Synced by Front Matter"
         },
         "frontMatter.global.activeMode": {

@@ -81,7 +81,7 @@ export const SETTING_FRAMEWORK_START = "framework.startCommand";
 export const SETTING_SITE_BASEURL = "site.baseURL";
 
 export const SETTING_GIT_ENABLED = "git.enabled";
-export const SETTING_GIT_COMMIT_MSG = "git.commitMsg";
+export const SETTING_GIT_COMMIT_MSG = "git.commitMessage";
 
 /**
  * @deprecated
