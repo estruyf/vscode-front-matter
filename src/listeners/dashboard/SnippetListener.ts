@@ -1,10 +1,9 @@
 import { EditorHelper } from "@estruyf/vscode";
-import { Position, window } from "vscode";
+import { window } from "vscode";
 import { Dashboard } from "../../commands/Dashboard";
-import { SETTING_CONTENT_SNIPPETS } from "../../constants";
+import { SETTING_CONTENT_SNIPPETS, TelemetryEvent } from "../../constants";
 import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
-import { Notifications, Settings } from "../../helpers";
-import { Snippet } from "../../models";
+import { Notifications, Settings, Telemetry } from "../../helpers";
 import { BaseListener } from "./BaseListener";
 import { SettingsListener } from "./SettingsListener";
 
@@ -22,6 +21,7 @@ export class SnippetListener extends BaseListener {
         this.updateSnippet(msg.data);
         break;
       case DashboardMessage.insertSnippet:
+        Telemetry.send(TelemetryEvent.insertContentSnippet);
         this.insertSnippet(msg.data);
         break;
     }

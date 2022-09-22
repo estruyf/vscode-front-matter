@@ -27,7 +27,9 @@ export const ImageFallback: React.FunctionComponent<IImageFallbackProps> = ({ sr
         <p style={{
           marginBottom: '1rem',
           color: 'var(--button-secondary-foreground)',
-        }}>The image couldn't be loaded</p>
+        }}>
+          The image couldn't be loaded
+        </p>
       </div>
     );
   }

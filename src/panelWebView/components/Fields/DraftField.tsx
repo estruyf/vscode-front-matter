@@ -1,26 +1,25 @@
 import * as React from 'react';
-import { RocketIcon } from '../Icons/RocketIcon';
-import { VsLabel } from '../VscodeComponents';
+import { BaseFieldProps } from '../../../models';
 import { ChoiceField } from './ChoiceField';
 import { Toggle } from './Toggle';
 
-export interface IDraftFieldProps {
-  label: string;
+export interface IDraftFieldProps extends BaseFieldProps<boolean | string | null | undefined> {
   type: "boolean" | "choice";
-  value: boolean | string | null | undefined;
 
   choices?: string[];
 
   onChanged: (value: string | boolean) => void;
 }
 
-export const DraftField: React.FunctionComponent<IDraftFieldProps> = ({ label, type, value, choices, onChanged }: React.PropsWithChildren<IDraftFieldProps>) => {
+export const DraftField: React.FunctionComponent<IDraftFieldProps> = ({ label, description, type, value, choices, onChanged, required }: React.PropsWithChildren<IDraftFieldProps>) => {
 
   if (type === "boolean") {
     return (
       <Toggle 
         label={label}
-        checked={!!value} 
+        description={description}
+        value={!!value}
+        required={required}
         onChanged={(checked) => onChanged(checked)} />
     );
   }
@@ -29,9 +28,11 @@ export const DraftField: React.FunctionComponent<IDraftFieldProps> = ({ label, t
     return (
       <ChoiceField
         label={label}
-        selected={value as string}
+        description={description}
+        value={value as string}
         choices={choices as string[]}
         multiSelect={false}
+        required={required}
         onChange={value => onChanged(value as string)} />
     );
   }

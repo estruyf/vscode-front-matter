@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { VsLabel } from '../VscodeComponents';
 import {ClockIcon} from '@heroicons/react/outline';
 import DatePicker from 'react-datepicker';
-import { forwardRef } from 'react';
+import { forwardRef, useEffect, useMemo } from 'react';
 import { DateHelper } from '../../../helpers/DateHelper';
+import { BaseFieldProps } from '../../../models';
+import { FieldMessage } from './FieldMessage';
+import { FieldTitle } from './FieldTitle';
 
-export interface IDateTimeFieldProps {
-  label: string;
-  date: Date | null;
+export interface IDateTimeFieldProps extends BaseFieldProps<Date | null> {
   format?: string;
   onChange: (date: Date) => void;
 }
@@ -22,7 +22,7 @@ const CustomInput = forwardRef<HTMLInputElement, InputProps>(({ value, onClick }
   )
 });
 
-export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({label, date, format, onChange}: React.PropsWithChildren<IDateTimeFieldProps>) => {
+export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({label, description, value, required, format, onChange}: React.PropsWithChildren<IDateTimeFieldProps>) => {
   const [ dateValue, setDateValue ] = React.useState<Date | null>(null);
   
   const onDateChange = (date: Date) => {
@@ -30,23 +30,26 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({lab
     onChange(date);
   };
 
-  React.useEffect(() => {
-    const crntValue = DateHelper.tryParse(date, format);
+  const showRequiredState = useMemo(() => {
+    return required && !dateValue;
+  }, [required, dateValue]);
+
+  useEffect(() => {
+    const crntValue = DateHelper.tryParse(value, format);
     const stateValue = DateHelper.tryParse(dateValue, format);
 
     if (crntValue?.toISOString() !== stateValue?.toISOString()) {
-      setDateValue(date);
+      setDateValue(value);
     }
-  }, [ date, dateValue ]);
+  }, [ value, dateValue ]);
 
   return (
     <div className={`metadata_field`}>
-      <VsLabel>
-        <div className={`metadata_field__label`}>
-          <ClockIcon style={{ width: "16px", height: "16px" }} /> <span style={{ lineHeight: "16px"}}>{label}</span>
-        </div>
-      </VsLabel>
-      
+      <FieldTitle 
+        label={label}
+        icon={<ClockIcon />}
+        required={required} />
+
       <div className={`metadata_field__datetime`}>
         <DatePicker
           selected={DateHelper.tryParse(dateValue) as Date || new Date()}
@@ -61,6 +64,8 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({lab
           now
         </button>
       </div>
+
+      <FieldMessage name={label.toLowerCase()} description={description} showRequired={showRequiredState} />
     </div>
   );
 };

@@ -1,5 +1,49 @@
 # Change Log
 
+## [8.1.0] - 2022-09-22 - [Release notes](https://beta.frontmatter.codes/updates/v8.1.0) 
+
+### ✨ New features
+
+- [#369](https://github.com/estruyf/vscode-front-matter/issues/369): New `required` property to specify if a content-type field is required
+- [#376](https://github.com/estruyf/vscode-front-matter/issues/376): Ability to run scripts after content was created
+- [#377](https://github.com/estruyf/vscode-front-matter/issues/377): Git sync actions added on panel and content dashboard (pull and push your changes to remote)
+- [#379](https://github.com/estruyf/vscode-front-matter/issues/377): New `frontMatter.config.reload` command to reload the configuration file + reinitialize its listeners
+- [#391](https://github.com/estruyf/vscode-front-matter/issues/391): New `description` property to show a message underneath the input field
+- [#401](https://github.com/estruyf/vscode-front-matter/issues/401): Content dashboard now has pagination enabled and can be disabled via the `frontMatter.dashboard.content.pagination` setting
+
+### 🎨 Enhancements
+
+- [#352](https://github.com/estruyf/vscode-front-matter/issues/352): Custom placeholders now support scripting
+- [#370](https://github.com/estruyf/vscode-front-matter/issues/370): Define the tags and categories as reserved keywords for custom taxonomy
+- [#372](https://github.com/estruyf/vscode-front-matter/issues/372): Rename Taxonomy tab to Taxonomies
+- [#374](https://github.com/estruyf/vscode-front-matter/issues/374): Hide the front matter section to use the panel instead
+- [#383](https://github.com/estruyf/vscode-front-matter/issues/383): Add the item menu to the content list view
+- [#385](https://github.com/estruyf/vscode-front-matter/issues/385): If no default value for the draft field is defined, the field value will be set to `true`
+- [#388](https://github.com/estruyf/vscode-front-matter/issues/388): New stop server action has been added to the panel
+- [#390](https://github.com/estruyf/vscode-front-matter/issues/390): Implement another JSON parser in order to be able to parse the `frontmatter.json` file better
+- [#394](https://github.com/estruyf/vscode-front-matter/issues/394): Ordering of snippet fields is based on their field definition
+- [#395](https://github.com/estruyf/vscode-front-matter/issues/395): Added support for custom snippet fields on media snippets
+- [#402](https://github.com/estruyf/vscode-front-matter/issues/402): Custom sorting of content now supports `number` fields
+- [#417](https://github.com/estruyf/vscode-front-matter/issues/417): New `hyperlink` wysiwyg option
+- [#418](https://github.com/estruyf/vscode-front-matter/issues/418): New `heading` and `divider` fields for your content-type definition
+
+### ⚡️ Optimizations
+
+- Internal post message optimizations to the webviews
+- Preview tab now shows the title of the page/content if present
+
+### 🐞 Fixes
+
+- [#378](https://github.com/estruyf/vscode-front-matter/issues/378): Fix last modified update only to content in content folders
+- [#384](https://github.com/estruyf/vscode-front-matter/issues/384): Fix issue `title` field in sub-fields
+- [#393](https://github.com/estruyf/vscode-front-matter/issues/393): Fix Windows file path for retrieving the preview path
+- [#396](https://github.com/estruyf/vscode-front-matter/issues/396): Fix for `index` and `_index` page previews
+- [#398](https://github.com/estruyf/vscode-front-matter/issues/398): Fix Windows folder path parsing in data folder retrieval
+- [#400](https://github.com/estruyf/vscode-front-matter/issues/400): Fix for draft/published content grouping
+- [#403](https://github.com/estruyf/vscode-front-matter/issues/403): Fix for media files with spaces on importing in article content
+- [#404](https://github.com/estruyf/vscode-front-matter/issues/404): Fix for published sorting option in media dashboard
+- [#408](https://github.com/estruyf/vscode-front-matter/issues/408): Fix for missing `dashboard.taxonomy.view` view mode in the JSON schema
+
 ## [8.0.1] - 2022-07-13
 
 ### 🐞 Fixes
@@ -38,7 +82,6 @@
 ### 🐞 Fixes
 
 - [#354](https://github.com/estruyf/vscode-front-matter/issues/354): Fix Windows file path parsing for inserting media files
-- [#393](https://github.com/estruyf/vscode-front-matter/issues/393): Fix Windows file path for retrieving the preview path
 
 ## [7.3.3] - 2022-06-11
 

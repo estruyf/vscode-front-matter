@@ -2,14 +2,15 @@ import * as React from 'react';
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { BlockFieldData, Field, FieldGroup, PanelSettings } from '../../../models';
 import { PencilIcon } from '@heroicons/react/outline';
-import { VsLabel } from '../VscodeComponents';
 import { DataBlockRecords, DataBlockSelector } from '.';
 import { SortEnd } from 'react-sortable-hoc';
 import { arrayMoveImmutable } from 'array-move';
 import { IMetadata } from '../Metadata';
+import { FieldTitle } from '../Fields/FieldTitle';
 
 export interface IDataBlockFieldProps {
   label: string;
+  description?: string;
   settings: PanelSettings;
   field: Field;
   parentFields: string[];
@@ -25,9 +26,10 @@ export interface IDataBlockFieldProps {
   ) => (JSX.Element | null)[] | undefined;
   onSubmit: (data: any) => void;
   parentBlock: string | null | undefined;
+  required?: boolean;
 }
 
-export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ label, filePath, settings, field, parentFields = [], value, fieldsRenderer, onSubmit, parentBlock }: React.PropsWithChildren<IDataBlockFieldProps>) => {
+export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ label, description, filePath, settings, field, parentFields = [], value, fieldsRenderer, onSubmit, parentBlock, required }: React.PropsWithChildren<IDataBlockFieldProps>) => {
   const [ selectedIndex, setSelectedIndex ] = useState<number | null>(null);
   const [ selectedGroup, setSelectedGroup ] = useState<FieldGroup | undefined | null>(null);
   const [ selectedBlockData, setSelectedBlockData ] = useState<any | null>(null);
@@ -229,12 +231,16 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({ 
   
   return (
     <div className='block_field'>
+      <FieldTitle 
+        label={label}
+        icon={<PencilIcon />}
+        required={required} />
 
-      <VsLabel>
-        <div className={`metadata_field__label`}>
-          <PencilIcon style={{ width: "16px", height: "16px" }} /> <span style={{ lineHeight: "16px"}}>{label}</span>
+      { description && (
+        <div className={`metadata_field__description`}>
+          {description}
         </div>
-      </VsLabel>
+      )}
 
       {
         (!hideSubBlock) ? (

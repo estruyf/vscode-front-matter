@@ -2,28 +2,22 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
 import {LinkIcon, RefreshIcon} from '@heroicons/react/outline';
 import * as React from 'react';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
+import { BaseFieldProps } from '../../../models';
 import { Command } from '../../Command';
 import { CommandToCode } from '../../CommandToCode';
-import { VsLabel } from '../VscodeComponents';
+import { FieldTitle } from './FieldTitle';
+import { FieldMessage } from './FieldMessage';
 
-export interface ISlugFieldProps {
-  label: string;
-  value: string | null;
+export interface ISlugFieldProps extends BaseFieldProps<string> {
   titleValue: string | null;
   editable?: boolean;
   onChange: (txtValue: string) => void;
 }
 
-export const SlugField: React.FunctionComponent<ISlugFieldProps> = ({ label, editable, value, titleValue, onChange }: React.PropsWithChildren<ISlugFieldProps>) => {
+export const SlugField: React.FunctionComponent<ISlugFieldProps> = ({ label, description, editable, value, titleValue, onChange, required }: React.PropsWithChildren<ISlugFieldProps>) => {
   const [ text, setText ] = React.useState<string | null>(value);
   const [ slug, setSlug ] = React.useState<string | null>(value);
-
-  useEffect(() => {
-    if (text !== value) {
-      setText(value);
-    }
-  }, [ value ]);
   
   const onTextChange = (txtValue: string) => {
     setText(txtValue);
@@ -41,6 +35,16 @@ export const SlugField: React.FunctionComponent<ISlugFieldProps> = ({ label, edi
     }
   }, [text]);
 
+  const showRequiredState = useMemo(() => {
+    return required && !text;
+  }, [required, text]);
+
+  useEffect(() => {
+    if (text !== value) {
+      setText(value);
+    }
+  }, [ value ]);
+
   useEffect(() => {
     if (titleValue) {
       Messenger.send(CommandToCode.generateSlug, titleValue);
@@ -57,18 +61,20 @@ export const SlugField: React.FunctionComponent<ISlugFieldProps> = ({ label, edi
 
   return (
     <div className={`metadata_field`}>
-      <VsLabel>
-        <div className={`metadata_field__label`}>
-          <LinkIcon style={{ width: "16px", height: "16px" }} /> <span style={{ lineHeight: "16px"}}>{label}</span>
-        </div>
-      </VsLabel>
+      <FieldTitle 
+        label={label}
+        icon={<LinkIcon />}
+        required={required} />
 
       <div className='metadata_field__slug'>
         <input 
           className={`metadata_field__slug__input`}
           value={text || ""}
           disabled={editable !== undefined ? !editable : false}
-          onChange={(e) => onTextChange(e.currentTarget.value)} />
+          onChange={(e) => onTextChange(e.currentTarget.value)}
+          style={{
+            borderColor: showRequiredState ? "var(--vscode-inputValidation-errorBorder)" : undefined,
+          }} />
         
         <button 
           title={slug !== text ? "Update available" : "Generate slug"}
@@ -77,6 +83,11 @@ export const SlugField: React.FunctionComponent<ISlugFieldProps> = ({ label, edi
           <RefreshIcon aria-hidden={true} />
         </button>
       </div>
+      
+      <FieldMessage 
+        name={label.toLowerCase()} 
+        description={description} 
+        showRequired={showRequiredState} />
     </div>
   );
 }

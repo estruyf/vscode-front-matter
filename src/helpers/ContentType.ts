@@ -1,9 +1,9 @@
 import { ModeListener } from './../listeners/general/ModeListener';
 import { PagesListener } from './../listeners/dashboard';
-import { ArticleHelper, Settings } from ".";
-import { FEATURE_FLAG, SETTING_CONTENT_DRAFT_FIELD, SETTING_DATE_FORMAT, SETTING_FRAMEWORK_ID, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TAXONOMY_FIELD_GROUPS, TelemetryEvent } from "../constants";
-import { ContentType as IContentType, DraftField, Field, FieldGroup, FieldType } from '../models';
-import { Uri, commands, window } from 'vscode'; 
+import { ArticleHelper, CustomScript, Settings } from ".";
+import { DefaultFieldValues, FEATURE_FLAG, SETTING_CONTENT_DRAFT_FIELD, SETTING_DATE_FORMAT, SETTING_FRAMEWORK_ID, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TAXONOMY_FIELD_GROUPS, TelemetryEvent } from "../constants";
+import { ContentType as IContentType, DraftField, Field, FieldGroup, FieldType, ScriptType } from '../models';
+import { Uri, commands, window, ProgressLocation, workspace } from 'vscode'; 
 import { Folders } from "../commands/Folders";
 import { Questions } from "./Questions";
 import { existsSync, writeFileSync } from "fs";
@@ -48,7 +48,7 @@ export class ContentType {
       fieldValue = data[draftSetting.name];
     }
 
-    if (draftSetting && fieldValue) {
+    if (draftSetting && fieldValue !== null) {
       if (draftSetting.type === "boolean") {
         return fieldValue ? "Draft" : "Published";
       } else {
@@ -116,9 +116,9 @@ export class ContentType {
     }
 
     const override = await window.showQuickPick(["Yes", "No"], {
+      title: "Override default content type",
       placeHolder: "Do you want to override the default content type?",
-      ignoreFocusOut: true,
-      title: "Override default content type"
+      ignoreFocusOut: true
     });
     const overrideBool = override === "Yes";
 
@@ -127,10 +127,10 @@ export class ContentType {
     // Ask for the new content type name
     if (!overrideBool) {
       contentTypeName = await window.showInputBox({
-        ignoreFocusOut: true,
+        title: "Generate Content Type",
         placeHolder: "Enter the name of the content type to generate",
         prompt: "Enter the name of the content type to generate",
-        title: "Generate Content Type",
+        ignoreFocusOut: true,
         validateInput: (value: string) => {
           if (!value) {
             return "Please enter a name for the content type";
@@ -156,9 +156,9 @@ export class ContentType {
     const fileName = filePath ? basename(filePath) : undefined;
     if (fileName?.startsWith(`index.`)) {
       const pageBundleAnswer = await window.showQuickPick(["Yes", "No"], {
+        title: "Use as page bundle",
         placeHolder: "Do you want to use this content type as a page bundle?",
-        ignoreFocusOut: true,
-        title: "Use as page bundle"
+        ignoreFocusOut: true
       });
       pageBundle = pageBundleAnswer === "Yes";
     }
@@ -278,7 +278,7 @@ export class ContentType {
    * @param parents 
    * @returns 
    */
-  public static getFieldValue(data: any, parents: string[]): string[] {
+  public static getFieldValue(data: any, parents: string[]): string | string[] {
     let fieldValue = [];
     let crntPageData = data;
 
@@ -374,6 +374,51 @@ export class ContentType {
 
     return parents;
   }
+
+
+  /**
+   * Find the required fields
+   */
+  public static findEmptyRequiredFields(article: ParsedFrontMatter): Field[][] | undefined {
+    const contentType = ArticleHelper.getContentType(article.data);
+    if (!contentType) {
+      return;
+    }
+
+    const allRequiredFields = ContentType.findRequiredFieldsDeep(contentType.fields);
+
+    let emptyFields: Field[][] = [];
+
+    for (const fields of allRequiredFields) {
+      const fieldValue = this.getFieldValue(article.data, fields.map(f => f.name));
+      if ((fieldValue === null || fieldValue === undefined || fieldValue === "") || fieldValue.length === 0 || fieldValue === DefaultFieldValues.faultyCustomPlaceholder) {
+        emptyFields.push(fields);
+      }
+    }
+
+    return emptyFields || [];
+  }
+
+  /**
+   * Find all the required fields in the content type
+   * @param fields 
+   * @param parents 
+   * @returns 
+   */
+  private static findRequiredFieldsDeep(fields: Field[], parents: Field[][] = [], parentFields: Field[] = []): Field[][] {
+    for (const field of fields) {
+      if (field.required) {
+        parents.push([...parentFields, field]);
+      }
+      
+      if (field.type === "fields" && field.fields) {
+        this.findRequiredFieldsDeep(field.fields, parents, [...parentFields, field]);
+      }
+    }
+
+    return parents;
+  }
+
 
   /**
    * Look for the preview image in the block field
@@ -499,53 +544,72 @@ export class ContentType {
    * @returns 
    */
   private static async create(contentType: IContentType, folderPath: string) {
-    const titleValue = await Questions.ContentTitle();
-    if (!titleValue) {
-      return;
-    }
+    window.withProgress({
+      location: ProgressLocation.Notification,
+      title: "Front Matter: Creating content...",
+      cancellable: false
+    }, async () => {
+      const titleValue = await Questions.ContentTitle();
+      if (!titleValue) {
+        return;
+      }
 
-    let templatePath = contentType.template;
-    let templateData: ParsedFrontMatter | null = null;
-    if (templatePath) {
-      templatePath = Folders.getAbsFilePath(templatePath);
-      templateData = ArticleHelper.getFrontMatterByPath(templatePath);
-    }
+      let templatePath = contentType.template;
+      let templateData: ParsedFrontMatter | null = null;
+      if (templatePath) {
+        templatePath = Folders.getAbsFilePath(templatePath);
+        templateData = ArticleHelper.getFrontMatterByPath(templatePath);
+      }
 
-    let newFilePath: string | undefined = ArticleHelper.createContent(contentType, folderPath, titleValue);
-    if (!newFilePath) {
-      return;
-    }
+      let newFilePath: string | undefined = ArticleHelper.createContent(contentType, folderPath, titleValue);
+      if (!newFilePath) {
+        return;
+      }
 
-    if (contentType.name === "default") {
-      const crntFramework = Settings.get<string>(SETTING_FRAMEWORK_ID);
-      if (crntFramework?.toLowerCase() === "jekyll") {
-        const idx = contentType.fields.findIndex(f => f.name === "draft");
-        if (idx > -1) {
-          contentType.fields.splice(idx, 1);
+      if (contentType.name === "default") {
+        const crntFramework = Settings.get<string>(SETTING_FRAMEWORK_ID);
+        if (crntFramework?.toLowerCase() === "jekyll") {
+          const idx = contentType.fields.findIndex(f => f.name === "draft");
+          if (idx > -1) {
+            contentType.fields.splice(idx, 1);
+          }
         }
       }
-    }
 
-    let data: any = this.processFields(contentType, titleValue, templateData?.data || {});
+      let data: any = await this.processFields(contentType, titleValue, templateData?.data || {}, newFilePath);
 
-    data = ArticleHelper.updateDates(Object.assign({}, data));
+      data = ArticleHelper.updateDates(Object.assign({}, data));
 
-    if (contentType.name !== DEFAULT_CONTENT_TYPE_NAME) {
-      data['type'] = contentType.name;
-    }
+      if (contentType.name !== DEFAULT_CONTENT_TYPE_NAME) {
+        data['type'] = contentType.name;
+      }
 
-    const content = ArticleHelper.stringifyFrontMatter(templateData?.content || ``, data);
+      const content = ArticleHelper.stringifyFrontMatter(templateData?.content || ``, data);
 
-    writeFileSync(newFilePath, content, { encoding: "utf8" });
+      writeFileSync(newFilePath, content, { encoding: "utf8" });
 
-    await commands.executeCommand('vscode.open', Uri.file(newFilePath));
+      // Check if the content type has a post script to execute
+      if (contentType.postScript) {
+        const scripts = await CustomScript.getScripts();
+        const script = scripts.find(s => s.id === contentType.postScript);
+        
+        if (script && (script.type === ScriptType.Content || !script?.type)) {
+          await CustomScript.run(script, newFilePath);
 
-    Notifications.info(`Your new content has been created.`);
+          const doc = await workspace.openTextDocument(Uri.file(newFilePath));
+          await doc.save();
+        }
+      }
 
-    Telemetry.send(TelemetryEvent.createContentFromContentType);
+      await commands.executeCommand('vscode.open', Uri.file(newFilePath));
 
-    // Trigger a refresh for the dashboard
-    PagesListener.refresh();
+      Notifications.info(`Your new content has been created.`);
+
+      Telemetry.send(TelemetryEvent.createContentFromContentType);
+
+      // Trigger a refresh for the dashboard
+      PagesListener.refresh();
+    })
   }
 
   /**
@@ -553,29 +617,40 @@ export class ContentType {
    * @param contentType 
    * @param data 
    */
-  private static processFields(obj: IContentType | Field, titleValue: string, data: any) {
+  private static async processFields(obj: IContentType | Field, titleValue: string, data: any, filePath: string, isRoot: boolean = true): Promise<any> {
     
     if (obj.fields) {
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
+      
       for (const field of obj.fields) {
         if (field.name === "title") {
           if (field.default) {
             data[field.name] = processKnownPlaceholders(field.default, titleValue, dateFormat);
-            data[field.name] = ArticleHelper.processCustomPlaceholders(data[field.name], titleValue);
-          } else {
+            data[field.name] = await ArticleHelper.processCustomPlaceholders(data[field.name], titleValue, filePath);
+          } else if (isRoot) {
             data[field.name] = titleValue;
+          } else {
+            data[field.name] = ""
           }
         } else {
           if (field.type === "fields") {
-            data[field.name] = this.processFields(field, titleValue, {});
+            data[field.name] = await this.processFields(field, titleValue, {}, filePath, false);
           } else {
             const defaultValue = field.default;
 
             if (typeof defaultValue === "string") {
               data[field.name] = processKnownPlaceholders(defaultValue, titleValue, dateFormat);
-              data[field.name] = ArticleHelper.processCustomPlaceholders(data[field.name], titleValue);
+              data[field.name] = await ArticleHelper.processCustomPlaceholders(data[field.name], titleValue, filePath);
+            } else if (typeof defaultValue !== "undefined") {
+              data[field.name] = defaultValue;
             } else {
-              data[field.name] = typeof defaultValue !== "undefined" ? defaultValue : "";
+              const draftField = ContentType.getDraftField();
+
+              if (field.type === "draft" && (draftField?.type === "boolean" || draftField?.type === undefined)) {
+                data[field.name] = true;
+              } else {
+                data[field.name] = "";
+              }
             }
           }
         }

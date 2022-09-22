@@ -1,9 +1,11 @@
+import * as jsoncParser from 'jsonc-parser';
+import { CustomPlaceholder } from './../models/CustomPlaceholder';
 import { Uri, workspace } from 'vscode';
 import { MarkdownFoldingProvider } from './../providers/MarkdownFoldingProvider';
 import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from './../constants/ContentType';
 import * as vscode from 'vscode';
 import * as fs from "fs";
-import { DefaultFields, SETTING_CONTENT_DEFAULT_FILETYPE, SETTING_CONTENT_PLACEHOLDERS, SETTING_CONTENT_SUPPORTED_FILETYPES, SETTING_FILE_PRESERVE_CASING, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_SITE_BASEURL, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX, SETTING_MODIFIED_FIELD } from '../constants';
+import { DefaultFields, SETTING_CONTENT_DEFAULT_FILETYPE, SETTING_CONTENT_PLACEHOLDERS, SETTING_CONTENT_SUPPORTED_FILETYPES, SETTING_FILE_PRESERVE_CASING, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_SITE_BASEURL, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX, SETTING_MODIFIED_FIELD, DefaultFieldValues } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { FrontMatterParser, ParsedFrontMatter } from '../parsers';
 import { Extension, Logger, Settings, SlugHelper } from '.';
@@ -22,6 +24,8 @@ import { fromMarkdown } from 'mdast-util-from-markdown';
 import { Link, Parent } from 'mdast-util-from-markdown/lib';
 import { Content } from 'mdast';
 import { processKnownPlaceholders } from './PlaceholderHelper';
+import { CustomScript } from './CustomScript';
+import { Folders } from '../commands/Folders';
 
 export class ArticleHelper {
   private static notifiedFiles: string[] = [];
@@ -368,7 +372,7 @@ export class ArticleHelper {
    * @param title 
    * @returns 
    */
-  public static updatePlaceholders(data: any, title: string) {
+  public static async updatePlaceholders(data: any, title: string, filePath: string) {
     const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
     const fmData = Object.assign({}, data);
 
@@ -384,7 +388,7 @@ export class ArticleHelper {
       }
 
       fmData[fieldName] = processKnownPlaceholders(fmData[fieldName], title, dateFormat);
-      fmData[fieldName] = this.processCustomPlaceholders(fmData[fieldName], title);
+      fmData[fieldName] = await this.processCustomPlaceholders(fmData[fieldName], title, filePath);
     }
 
     return fmData;
@@ -396,16 +400,52 @@ export class ArticleHelper {
    * @param title 
    * @returns 
    */
-  public static processCustomPlaceholders(value: string, title: string) {
+  public static async processCustomPlaceholders(value: string, title: string, filePath: string) {
     if (value && typeof value === "string") {
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
-      const placeholders = Settings.get<{id: string, value: string}[]>(SETTING_CONTENT_PLACEHOLDERS);
+      const placeholders = Settings.get<CustomPlaceholder[]>(SETTING_CONTENT_PLACEHOLDERS);
       if (placeholders && placeholders.length > 0) {
         for (const placeholder of placeholders) {
           if (value.includes(`{{${placeholder.id}}}`)) {
-            const regex = new RegExp(`{{${placeholder.id}}}`, "g");
-            const updatedValue = processKnownPlaceholders(placeholder.value, title, dateFormat);
-            value = value.replace(regex, updatedValue);
+
+            try {
+              let placeHolderValue = placeholder.value || "";
+              if (placeholder.script) {
+                const wsFolder = Folders.getWorkspaceFolder();
+                const script = { title: placeholder.id, script: placeholder.script, command: placeholder.command };
+                let output: string | any = await CustomScript.executeScript(script, wsFolder?.fsPath || "", `'${wsFolder?.fsPath}' '${filePath}' '${title}'`);
+
+                if (output) {
+                  // Check if the output needs to be parsed
+                  if (output.includes("{") && output.includes("}")) {
+                    try {
+                      output = jsoncParser.parse(output);
+                    } catch (e) {
+                      // Do nothing
+                    }
+                  } else {
+                    output = output.split("\n");
+                  }
+
+                  placeHolderValue = output;
+                }
+              }
+
+              const regex = new RegExp(`{{${placeholder.id}}}`, "g");
+              const updatedValue = processKnownPlaceholders(placeHolderValue, title, dateFormat);
+
+              if (value === `{{${placeholder.id}}}`) {
+                value = updatedValue;
+              } else {
+                value = value.replace(regex, updatedValue);
+              }
+            } catch (e) {
+              Notifications.error(`Error while processing the ${placeholder.id} placeholder`);
+              Logger.error((e as Error).message);
+
+              value = DefaultFieldValues.faultyCustomPlaceholder;
+            }
+            
           }
         }
       }

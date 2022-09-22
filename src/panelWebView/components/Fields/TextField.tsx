@@ -1,10 +1,13 @@
 import {PencilIcon} from '@heroicons/react/outline';
 import * as React from 'react';
-import { VsLabel } from '../VscodeComponents';
+import { useCallback, useEffect, useMemo } from 'react';
+import { useRecoilState } from 'recoil';
+import { BaseFieldProps } from '../../../models';
+import { RequiredFieldsAtom } from '../../state';
+import { FieldTitle } from './FieldTitle';
+import { FieldMessage } from './FieldMessage';
 
-export interface ITextFieldProps {
-  label: string;
-  value: string | null;
+export interface ITextFieldProps extends BaseFieldProps<string> {
   singleLine: boolean | undefined;
   wysiwyg: boolean | undefined;
   limit: number | undefined;
@@ -14,14 +17,9 @@ export interface ITextFieldProps {
 
 const WysiwygField = React.lazy(() => import('./WysiwygField'));
 
-export const TextField: React.FunctionComponent<ITextFieldProps> = ({singleLine, wysiwyg, limit, label, value, rows, onChange}: React.PropsWithChildren<ITextFieldProps>) => {
+export const TextField: React.FunctionComponent<ITextFieldProps> = ({singleLine, wysiwyg, limit, label, description, value, rows, onChange, required}: React.PropsWithChildren<ITextFieldProps>) => {
+  const [ requiredFields, setRequiredFields ] = useRecoilState(RequiredFieldsAtom);
   const [ text, setText ] = React.useState<string | null>(value);
-
-  React.useEffect(() => {
-    if (text !== value) {
-      setText(value);
-    }
-  }, [ value ]);
   
   const onTextChange = (txtValue: string) => {
     setText(txtValue);
@@ -33,13 +31,49 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({singleLine,
     isValid = ((text || "").length <= limit);
   }
 
+  const updateRequired = useCallback((isValid: boolean) => {
+    setRequiredFields((prev) => {
+      let clone = Object.assign([], prev);
+
+      if (isValid) {
+        clone = clone.filter((item) => item !== label);
+      } else {
+        clone.push(label);
+      }
+
+      return clone;
+    });
+  }, [setRequiredFields])
+
+  const showRequiredState = useMemo(() => {
+    return required && !text;
+  }, [required, text]);
+
+  const border = useMemo(() => {
+    if (showRequiredState) {
+      updateRequired(false);
+      return "1px solid var(--vscode-inputValidation-errorBorder)";
+    } else if (!isValid) {
+      updateRequired(true);
+      return "1px solid var(--vscode-inputValidation-warningBorder)";
+    } else {
+      updateRequired(true);
+      return "1px solid var(--vscode-inputValidation-infoBorder)";
+    }
+  }, [showRequiredState, isValid]);
+
+  useEffect(() => {
+    if (text !== value) {
+      setText(value);
+    }
+  }, [ value ]);
+  
   return (
     <div className={`metadata_field`}>
-      <VsLabel>
-        <div className={`metadata_field__label`}>
-          <PencilIcon style={{ width: "16px", height: "16px" }} /> <span style={{ lineHeight: "16px"}}>{label}</span>
-        </div>
-      </VsLabel>
+      <FieldTitle 
+        label={label}
+        icon={<PencilIcon />}
+        required={required} />
 
       {
         wysiwyg ? (
@@ -53,7 +87,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({singleLine,
               value={text || ""}
               onChange={(e) => onTextChange(e.currentTarget.value)} 
               style={{
-                border: isValid ? "1px solid var(--vscode-inputValidation-infoBorder)" : "1px solid var(--vscode-inputValidation-warningBorder)"
+                border
               }} />
           ) : (
             <textarea
@@ -62,7 +96,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({singleLine,
               value={text || ""}  
               onChange={(e) => onTextChange(e.currentTarget.value)} 
               style={{
-                border: isValid ? "1px solid var(--vscode-inputValidation-infoBorder)" : "1px solid var(--vscode-inputValidation-warningBorder)"
+                border
               }} />
           )
         )
@@ -75,6 +109,11 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({singleLine,
           </div>
         )
       }
+      
+      <FieldMessage 
+        description={description}
+        name={label.toLowerCase()} 
+        showRequired={showRequiredState} />
     </div>
   );
 };

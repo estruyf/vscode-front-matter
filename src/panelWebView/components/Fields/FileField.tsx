@@ -3,16 +3,15 @@ import { DocumentIcon, PaperClipIcon, TrashIcon } from '@heroicons/react/outline
 import { basename } from 'path';
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
-import { BlockFieldData } from '../../../models';
+import { BaseFieldProps, BlockFieldData } from '../../../models';
 import { CommandToCode } from '../../CommandToCode';
-import { VsLabel } from '../VscodeComponents';
+import { FieldTitle } from './FieldTitle';
+import { FieldMessage } from './FieldMessage';
 
-export interface IFileFieldProps {
-  label: string;
+export interface IFileFieldProps extends BaseFieldProps<string | string[] | null> {
   fieldName: string;
   filePath: string;
   multiple?: boolean;
-  value: string | string[] | null;
   fileExtensions?: string[];
   parents?: string[];
   blockData?: BlockFieldData;
@@ -35,7 +34,7 @@ const File = ({ value, onRemove }: { value: string, onRemove: (value: string) =>
   )
 }
 
-export const FileField: React.FunctionComponent<IFileFieldProps> = ({ label, multiple, filePath, fileExtensions, fieldName, value, parents, blockData, onChange }: React.PropsWithChildren<IFileFieldProps>) => {
+export const FileField: React.FunctionComponent<IFileFieldProps> = ({ label, description, multiple, filePath, fileExtensions, fieldName, value, parents, blockData, onChange, required }: React.PropsWithChildren<IFileFieldProps>) => {
 
   const selectFile = useCallback(() => {
     Messenger.send(CommandToCode.selectFile, { 
@@ -59,15 +58,18 @@ export const FileField: React.FunctionComponent<IFileFieldProps> = ({ label, mul
     return !value || (Array.isArray(value) && value.length === 0);
   }, [value]);
 
+  const showRequiredState = useMemo(() => {
+    return required && isEmpty;
+  }, [required, isEmpty]);
+
   return (
     <div className={`metadata_field`}>
-      <VsLabel>
-        <div className={`metadata_field__label`}>
-          <DocumentIcon style={{ width: "16px", height: "16px" }} /> <span style={{ lineHeight: "16px"}}>{label}</span>
-        </div>
-      </VsLabel>
+      <FieldTitle 
+        label={label}
+        icon={<DocumentIcon />}
+        required={required} />
       
-      <div className={`metadata_field__file`}>
+      <div className={`metadata_field__file ${showRequiredState ? "required" : ""}`}>
         {
           (isEmpty || multiple) && (
             <button className={`metadata_field__file__button ${isEmpty ? "" : "not_empty"}`} title={`Add your ${label?.toLowerCase() || "file"}`} type="button" onClick={selectFile}>
@@ -76,6 +78,8 @@ export const FileField: React.FunctionComponent<IFileFieldProps> = ({ label, mul
             </button>
           )
         }
+      
+        <FieldMessage name={label.toLowerCase()} description={description} showRequired={showRequiredState} />
 
         {
           value && !Array.isArray(value) && (

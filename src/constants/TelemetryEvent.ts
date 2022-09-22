@@ -22,6 +22,7 @@ export const TelemetryEvent = {
   uploadMedia: 'uploadMedia',
   refreshMedia: 'refreshMedia',
   deleteMedia: 'deleteMedia',
+  insertContentSnippet: 'insertContentSnippet',
   insertMediaToContent: 'insertMediaToContent',
   insertFileToContent: 'insertFileToContent',
   updateMediaMetadata: 'updateMediaMetadata',
@@ -43,4 +44,7 @@ export const TelemetryEvent = {
   webviewContentsView: 'webviewContentsView',
   webviewSnippetsView: 'webviewSnippetsView',
   webviewTaxonomyDashboard: 'webviewTaxonomyDashboard',
+
+  // Git
+  gitSync: 'gitSync',
 };

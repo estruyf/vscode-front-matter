@@ -7,6 +7,7 @@ import { Command } from '../Command';
 import { CommandToCode } from '../CommandToCode';
 import { TagType } from '../TagType';
 import { Messenger } from '@estruyf/vscode/dist/client';
+import { EventData } from '@estruyf/vscode/dist/models';
 
 export default function useMessages() {
   const [metadata, setMetadata] = useState<any>({});
@@ -17,7 +18,7 @@ export default function useMessages() {
   const [mediaSelecting, setMediaSelecting] = useState<DashboardData | undefined>(undefined);
   const [mode, setMode] = useState<Mode | undefined>(undefined);
 
-  window.addEventListener('message', event => {
+  const messageListener = (event: MessageEvent<EventData<any>>) => {
     const message = event.data;
     
     switch (message.command) {
@@ -48,7 +49,7 @@ export default function useMessages() {
         setMode(message.data);
         break;
     }
-  });
+  };
 
   useEffect(() => {
     if (loading) {
@@ -59,6 +60,7 @@ export default function useMessages() {
   }, [loading])
 
   useEffect(() => {    
+    Messenger.listen(messageListener);
     setLoading(true);
 
     // Show what you got after 5 seconds
@@ -68,6 +70,10 @@ export default function useMessages() {
 
     Messenger.send(CommandToCode.getData);
     Messenger.send(CommandToCode.getMode);
+
+    return () => {
+      Messenger.unlisten(messageListener);
+    }
   }, []);
 
   return {

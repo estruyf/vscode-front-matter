@@ -1,15 +1,15 @@
 import { PencilIcon, TrashIcon, ViewListIcon } from '@heroicons/react/outline';
 import * as React from 'react';
-import { useCallback, useEffect, useRef } from 'react';
-import { VsLabel } from '../VscodeComponents';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { BaseFieldProps } from '../../../models';
+import { FieldTitle } from './FieldTitle';
+import { FieldMessage } from './FieldMessage';
 
-export interface IListFieldProps {
-  label: string;
-  value: string[] | null;
+export interface IListFieldProps extends BaseFieldProps<string[] | null> {
   onChange: (value: string | string[]) => void;
 }
 
-export const ListField: React.FunctionComponent<IListFieldProps> = ({ label, value, onChange }: React.PropsWithChildren<IListFieldProps>) => {
+export const ListField: React.FunctionComponent<IListFieldProps> = ({ label, description, value, required, onChange }: React.PropsWithChildren<IListFieldProps>) => {
   const [ text, setText ] = React.useState<string | null>("");
   const [ list, setList ] = React.useState<string[] | null>(null);
   const [ itemToEdit, setItemToEdit ] = React.useState<number | null>(null);
@@ -58,6 +58,10 @@ export const ListField: React.FunctionComponent<IListFieldProps> = ({ label, val
     }
   }, [list]);
 
+  const showRequiredState = useMemo(() => {
+    return required && (!list || list?.length === 0);
+  }, [required, list]);
+
   useEffect(() => {
     if (value) {
       if (typeof value === "string") {
@@ -68,15 +72,12 @@ export const ListField: React.FunctionComponent<IListFieldProps> = ({ label, val
     }
   }, [value]);
 
-  let isValid = true;
-
   return (
-    <div className={`list_field`}>
-      <VsLabel>
-        <div className={`metadata_field__label`}>
-          <ViewListIcon style={{ width: "16px", height: "16px" }} /> <span style={{ lineHeight: "16px"}}>{label}</span>
-        </div>
-      </VsLabel>
+    <div className={`list_field ${showRequiredState ? "required" : ""}`}>
+      <FieldTitle 
+        label={label}
+        icon={<ViewListIcon />}
+        required={required} />
 
       <input
         ref={inputRef}
@@ -87,10 +88,9 @@ export const ListField: React.FunctionComponent<IListFieldProps> = ({ label, val
           if (e.key === "Enter") {
             onSaveForm();
           }
-        }}
-        style={{
-          border: "1px solid var(--vscode-inputValidation-infoBorder)"
         }} />
+
+      <FieldMessage name={label} description={description} showRequired={showRequiredState} />
 
       <div className={`list_field__form__buttons`}>
         <button 

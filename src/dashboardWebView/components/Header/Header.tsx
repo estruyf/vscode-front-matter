@@ -9,8 +9,8 @@ import { Startup } from '../Startup';
 import { Navigation } from '../Navigation';
 import { Grouping } from '.';
 import { ViewSwitch } from './ViewSwitch';
-import { useRecoilState, useResetRecoilState } from 'recoil';
-import { CategoryAtom, SortingAtom, TagAtom } from '../../state';
+import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
+import { CategoryAtom, GroupingSelector, SortingAtom, TagAtom } from '../../state';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { ClearFilters } from './ClearFilters';
 import { MediaHeaderTop } from '../Media/MediaHeaderTop';
@@ -21,7 +21,10 @@ import { CustomScript } from '../../../models';
 import { LightningBoltIcon, PlusIcon } from '@heroicons/react/outline';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { routePaths } from '../..';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
+import { SyncButton } from './SyncButton';
+import { PAGE_LIMIT, Pagination } from './Pagination';
+import { GroupOption } from '../../constants/GroupOption';
 
 export interface IHeaderProps {
   header?: React.ReactNode;
@@ -37,6 +40,7 @@ export interface IHeaderProps {
 export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPages, folders, settings }: React.PropsWithChildren<IHeaderProps>) => {
   const [ crntTag, setCrntTag ] = useRecoilState(TagAtom);
   const [ crntCategory, setCrntCategory ] = useRecoilState(CategoryAtom);
+  const grouping = useRecoilValue(GroupingSelector);
   const resetSorting = useResetRecoilState(SortingAtom);
   const location = useLocation();
   const navigate = useNavigate();
@@ -71,6 +75,38 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPage
     ),
     onClick: () => runBulkScript(s)
   }));
+
+  const choiceOptions = useMemo(() => {
+    const isEnabled = settings?.dashboardState?.contents?.templatesEnabled || false;
+    
+    if (isEnabled) {
+      return [
+        {
+          title: (
+            <div className='flex items-center'>
+              <PlusIcon className="w-4 h-4 mr-2" />
+              <span>Create by content type</span>
+            </div>
+          ),
+          onClick: createByContentType,
+          disabled: !settings?.initialized
+        }, {
+          title: (
+            <div className='flex items-center'>
+              <PlusIcon className="w-4 h-4 mr-2" />
+              <span>Create by template</span>
+            </div>
+          ),
+          onClick: createByTemplate,
+          disabled: !settings?.initialized
+        },
+        ...customActions
+      ];
+    }
+
+    return [];
+
+  }, [settings?.dashboardState?.contents?.templatesEnabled]);
 
   useEffect(() => {
     if (location.search) {
@@ -108,33 +144,13 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPage
 
               <div className={`flex items-center justify-end space-x-4 flex-1`}>
                 <Startup settings={settings} />
+
+                <SyncButton />
                 
                 <ChoiceButton 
                   title={`Create content`} 
-                  choices={[
-                    {
-                      title: (
-                        <div className='flex items-center'>
-                          <PlusIcon className="w-4 h-4 mr-2" />
-                          <span>Create by content type</span>
-                        </div>
-                      ),
-                      onClick: createByContentType,
-                      disabled: !settings?.initialized
-                    }, {
-                      title: (
-                        <div className='flex items-center'>
-                          <PlusIcon className="w-4 h-4 mr-2" />
-                          <span>Create by template</span>
-                        </div>
-                      ),
-                      onClick: createByTemplate,
-                      disabled: !settings?.initialized
-                    },
-                    ...customActions
-                  ]} 
-                  onClick={createContent} 
-                  isTemplatesEnabled={settings?.dashboardState?.contents?.templatesEnabled || undefined}
+                  choices={choiceOptions} 
+                  onClick={createContent}
                   disabled={!settings?.initialized} />
               </div>
             </div>
@@ -162,6 +178,14 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPage
 
               <Sorting view={NavigationType.Contents} />
             </div>
+
+            {
+              (settings?.dashboardState.contents.pagination) && (totalPages || 0) > PAGE_LIMIT && (!grouping || grouping === GroupOption.none) && (
+                <div className={`flex justify-center py-2 border-b border-gray-300 dark:border-vulcan-100`}>
+                  <Pagination totalPages={totalPages || 0} />
+                </div>
+              )
+            }
           </>
         )
       }

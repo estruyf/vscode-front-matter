@@ -7,7 +7,7 @@ import { MenuButton, MenuItem, MenuItems } from '../Menu';
 
 export interface IGroupingProps {}
 
-export const groupOptions = [
+export const GROUP_OPTIONS = [
   { name: "None", id: GroupOption.none },
   { name: "Year", id: GroupOption.Year },
   { name: "Draft/Published", id: GroupOption.Draft },
@@ -16,15 +16,15 @@ export const groupOptions = [
 export const Grouping: React.FunctionComponent<IGroupingProps> = ({}: React.PropsWithChildren<IGroupingProps>) => {
   const [ group, setGroup ] = useRecoilState(GroupingAtom);
 
-  const crntGroup = groupOptions.find(x => x.id === group);
+  const crntGroup = GROUP_OPTIONS.find(x => x.id === group);
 
   return (
     <div className="flex items-center">
       <Menu as="div" className="relative z-10 inline-block text-left">
         <MenuButton label={`Group by`} title={crntGroup?.name || ""} />
 
-        <MenuItems>
-          {groupOptions.map((option) => (
+        <MenuItems disablePopper>
+          {GROUP_OPTIONS.map((option) => (
             <MenuItem 
               key={option.id}
               title={option.name}

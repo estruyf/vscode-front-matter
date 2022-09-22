@@ -3,7 +3,7 @@
   "displayName": "Front Matter",
   "description": "Front Matter is a CMS that runs within Visual Studio Code. It gives you the power and control of a full-blown CMS while also providing you the flexibility and speed of the static site generator of your choice like: Hugo, Jekyll, Hexo, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "8.0.1",
+  "version": "8.1.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -25,6 +25,7 @@
   "sponsor": {
     "url": "https://github.com/sponsors/estruyf"
   },
+  "qna": "https://github.com/estruyf/vscode-front-matter/discussions",
   "engines": {
     "vscode": "^1.63.0"
   },
@@ -59,7 +60,7 @@
       "activitybar": [
         {
           "id": "frontmatter-explorer",
-          "title": "FrontMatter",
+          "title": "Front Matter",
           "icon": "assets/frontmatter-short-min.svg"
         }
       ]
@@ -68,9 +69,9 @@
       "frontmatter-explorer": [
         {
           "id": "frontMatter.explorer",
-          "name": "FrontMatter",
+          "name": "Front Matter",
           "icon": "assets/frontmatter-short-min.svg",
-          "contextualTitle": "FrontMatter",
+          "contextualTitle": "Front Matter",
           "type": "webview"
         }
       ]
@@ -81,7 +82,7 @@
         "frontMatter.content.autoUpdateDate": {
           "type": "boolean",
           "default": false,
-          "markdownDescription": "Specify if you want to automatically update the modified date of your article/page. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.autoupdatedate)",
+          "markdownDescription": "Specify if you want to automatically update the modified date of your article/page (only content located in your content folder). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.autoupdatedate)",
           "scope": "Content"
         },
         "frontMatter.content.defaultFileType": {
@@ -167,6 +168,17 @@
           "markdownDescription": "Specify if you want to highlight the Front Matter in the Markdown file. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.fmhighlight)",
           "scope": "Content"
         },
+        "frontMatter.content.hideFm": {
+          "type": "boolean",
+          "markdownDescription": "Specify if you want to hide the Front Matter in the Markdown file. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.hidefm)",
+          "scope": "Content"
+        },
+        "frontMatter.content.hideFmMessage": {
+          "type": "string",
+          "default": "Use the editor panel to make front matter changes",
+          "markdownDescription": "Specify the message to display when the Front Matter is hidden. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.hidefmMessage)",
+          "scope": "Content"
+        },
         "frontMatter.content.pageFolders": {
           "type": "array",
           "default": [],
@@ -218,12 +230,18 @@
               "value": {
                 "type": "string",
                 "description": "The placeholder its value"
+              },
+              "script": {
+                "type": "string",
+                "description": "The script to execute to get the value of the placeholder"
+              },
+              "command": {
+                "$ref": "#scriptCommand"
               }
             },
             "additionalProperties": false,
             "required": [
-              "id",
-              "value"
+              "id"
             ]
           },
           "scope": "Content"
@@ -311,7 +329,8 @@
                 "default": "string",
                 "enum": [
                   "string",
-                  "date"
+                  "date",
+                  "number"
                 ],
                 "description": "Type of the field value"
               }
@@ -351,6 +370,10 @@
           "items": {
             "type": "object",
             "properties": {
+              "id": {
+                "type": "string",
+                "description": "ID of the script."
+              },
               "title": {
                 "type": "string",
                 "description": "Title you want to give to your script. Will be shown as the title of the button."
@@ -390,6 +413,7 @@
                 "description": "The type for which the script will be used."
               },
               "command": {
+                "$id": "#scriptCommand",
                 "type": "string",
                 "oneOf": [
                   {
@@ -407,6 +431,11 @@
                 ],
                 "description": "The type of script you want to execute.",
                 "default": "node"
+              },
+              "hidden": {
+                "type": "boolean",
+                "description": "Hide the action from the UI",
+                "default": false
               }
             },
             "additionalProperties": false,
@@ -416,6 +445,12 @@
             ]
           },
           "scope": "Custom scripts"
+        },
+        "frontMatter.dashboard.content.pagination": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Specify if you want to enable/disable pagination for your content. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.content.pagination)",
+          "scope": "Dashboard"
         },
         "frontMatter.dashboard.content.cardTags": {
           "type": "string",
@@ -630,6 +665,16 @@
           "default": null,
           "markdownDescription": "Specify the command you want to use to start your static site generator or framework. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.framework.startcommand)"
         },
+        "frontMatter.git.enabled": {
+          "type": "boolean",
+          "markdownDescription": "Specify if you want to use the Git actions for your website. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.git.enabled)",
+          "default": false
+        },
+        "frontMatter.git.commitMessage": {
+          "type": "string",
+          "markdownDescription": "Specify the commit message you want to use for the sync. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.git.commitmessage)",
+          "default": "Synced by Front Matter"
+        },
         "frontMatter.global.activeMode": {
           "type": [
             "string",
@@ -667,7 +712,8 @@
                     "panel.otherActions",
                     "dashboard.snippets.view",
                     "dashboard.snippets.manage",
-                    "dashboard.data.view"
+                    "dashboard.data.view",
+                    "dashboard.taxonomy.view"
                   ]
                 }
               }
@@ -696,6 +742,14 @@
           ],
           "markdownDescription": "Specifies the notifications you want to see. By default, all notifications types will be shown. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.global.notifications)",
           "scope": "Templates"
+        },
+        "frontMatter.global.disabledNotificaitons": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "This is an array with the notifications types that can be disabled for Front Matter CMS. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.global.disablednotifications)",
+          "enum": [
+            "requiredFieldValidation"
+          ]
         },
         "frontMatter.media.defaultSorting": {
           "type": "string",
@@ -819,7 +873,9 @@
                         "block",
                         "list",
                         "dataFile",
-                        "slug"
+                        "slug",
+                        "divider",
+                        "heading"
                       ],
                       "description": "Define the type of field"
                     },
@@ -830,6 +886,10 @@
                     "title": {
                       "type": "string",
                       "description": "Title to show in the UI"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Description to show in the UI"
                     },
                     "default": {
                       "type": [
@@ -893,7 +953,20 @@
                     "taxonomyId": {
                       "type": "string",
                       "default": "",
-                      "description": "The ID of your taxonomy field"
+                      "description": "The ID of your taxonomy field. It cannot contain the \"tags\" or \"categories\" value.",
+                      "not": {
+                        "anyOf": [
+                          {
+                            "const": ""
+                          },
+                          {
+                            "const": "tags"
+                          },
+                          {
+                            "const": "categories"
+                          }
+                        ]
+                      }
                     },
                     "fileExtensions": {
                       "type": "array",
@@ -961,6 +1034,11 @@
                       "type": "boolean",
                       "default": true,
                       "description": "Specify if the field is editable"
+                    },
+                    "required": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "Specify if the field is required"
                     }
                   },
                   "additionalProperties": false,
@@ -969,6 +1047,20 @@
                     "name"
                   ],
                   "allOf": [
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "divider"
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "type"
+                        ]
+                      }
+                    },
                     {
                       "if": {
                         "properties": {
@@ -1088,6 +1180,11 @@
                 "type": "string",
                 "default": "",
                 "description": "An optional template that can be used for creating new content."
+              },
+              "postScript": {
+                "type": "string",
+                "default": "",
+                "description": "An optional post script that can be used after new content creation."
               }
             },
             "additionalProperties": false,
@@ -1151,11 +1248,24 @@
             "properties": {
               "id": {
                 "type": "string",
-                "description": "ID for your taxonomy field"
+                "description": "ID for your taxonomy field. It cannot contain the \"tags\" or \"categories\" value.",
+                "not": {
+                  "anyOf": [
+                    {
+                      "const": ""
+                    },
+                    {
+                      "const": "tags"
+                    },
+                    {
+                      "const": "categories"
+                    }
+                  ]
+                }
               },
               "options": {
                 "type": "array",
-                "description": "Options from which you can pick",
+                "description": "Options from which you can pick.",
                 "items": {
                   "type": "string"
                 }
@@ -1297,6 +1407,12 @@
           "default": false,
           "markdownDescription": "Specify if you want to disable the telemetry. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.telemetry.disable)"
         },
+        "frontMatter.templates.enabled": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Specify if you want to use templates. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.enabled)",
+          "scope": "Templates"
+        },
         "frontMatter.templates.folder": {
           "type": "string",
           "default": ".frontmatter/templates",
@@ -1308,40 +1424,39 @@
           "default": "yyyy-MM-dd",
           "markdownDescription": "Specify the prefix you want to add for your new article filenames. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.prefix)",
           "scope": "Templates"
-        },
-        "frontMatter.templates.enabled": {
-          "type": "boolean",
-          "default": false,
-          "markdownDescription": "Specify if you want to use templates. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.enabled)",
-          "scope": "Templates"
         }
       }
     },
     "commands": [
       {
+        "command": "frontMatter.config.reload",
+        "title": "Reload config",
+        "category": "Front Matter"
+      },
+      {
         "command": "frontMatter.authenticate",
         "title": "Authenticate",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.contenttype.generate",
         "title": "Generate content type from current file",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.contenttype.addMissingFields",
         "title": "Add missing fields from front matter to content type",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.contenttype.setContentType",
         "title": "Set the content type to use for the current file",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.markup.blockquote",
         "title": "Blockquote",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/blockquote-light.svg",
           "dark": "assets/icons/blockquote-dark.svg"
@@ -1350,7 +1465,7 @@
       {
         "command": "frontMatter.markup.bold",
         "title": "Bold",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/bold-light.svg",
           "dark": "assets/icons/bold-dark.svg"
@@ -1359,7 +1474,7 @@
       {
         "command": "frontMatter.dashboard.close",
         "title": "Close dashboard",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "dark": "/assets/icons/frontmatter-small-teal.svg",
           "light": "/assets/icons/frontmatter-small-teal.svg"
@@ -1368,7 +1483,7 @@
       {
         "command": "frontMatter.markup.code",
         "title": "Code",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/code-light.svg",
           "dark": "assets/icons/code-dark.svg"
@@ -1377,16 +1492,22 @@
       {
         "command": "frontMatter.markup.codeblock",
         "title": "Codeblock",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/codeblock-light.svg",
           "dark": "assets/icons/codeblock-dark.svg"
         }
       },
       {
+        "command": "frontMatter.markup.hyperlink",
+        "title": "Hyperlink",
+        "category": "Front Matter",
+        "icon": "$(link)"
+      },
+      {
         "command": "frontMatter.collapseSections",
         "title": "Collapse sections",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/close-light.svg",
           "dark": "assets/icons/close-dark.svg"
@@ -1395,37 +1516,37 @@
       {
         "command": "frontMatter.initTemplate",
         "title": "Initialize the template folder",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.createTemplate",
         "title": "Create template from current file",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.createCategory",
         "title": "Create category",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.createContent",
         "title": "Create new content from defined content type or template",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.createTag",
         "title": "Create tag",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.diagnostics",
         "title": "Diagnostic logging",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.exportTaxonomy",
         "title": "Export all tags & categories to your settings",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.createFromTemplate",
@@ -1442,12 +1563,12 @@
       {
         "command": "frontMatter.generateSlug",
         "title": "Generate slug based on content title",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.markup.heading",
         "title": "Heading",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/heading-light.svg",
           "dark": "assets/icons/heading-dark.svg"
@@ -1456,17 +1577,17 @@
       {
         "command": "frontMatter.init",
         "title": "Initialize project",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.insertCategories",
         "title": "Insert categories",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.insertMedia",
         "title": "Insert media into your content",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "dark": "/assets/icons/media-dark.svg",
           "light": "/assets/icons/media-light.svg"
@@ -1475,7 +1596,7 @@
       {
         "command": "frontMatter.insertSnippet",
         "title": "Insert snippet into your content",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "dark": "/assets/icons/scissors-dark.svg",
           "light": "/assets/icons/scissors-light.svg"
@@ -1484,12 +1605,12 @@
       {
         "command": "frontMatter.insertTags",
         "title": "Insert tags",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.markup.italic",
         "title": "Italic",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/italic-light.svg",
           "dark": "assets/icons/italic-dark.svg"
@@ -1498,7 +1619,7 @@
       {
         "command": "frontMatter.dashboard",
         "title": "Open dashboard",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "dark": "/assets/icons/frontmatter-small-dark.svg",
           "light": "/assets/icons/frontmatter-small-light.svg"
@@ -1507,7 +1628,7 @@
       {
         "command": "frontMatter.dashboard.data",
         "title": "Open data dashboard",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "dark": "/assets/icons/frontmatter-small-dark.svg",
           "light": "/assets/icons/frontmatter-small-light.svg"
@@ -1516,7 +1637,7 @@
       {
         "command": "frontMatter.dashboard.media",
         "title": "Open media dashboard",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "dark": "/assets/icons/frontmatter-small-dark.svg",
           "light": "/assets/icons/frontmatter-small-light.svg"
@@ -1525,7 +1646,7 @@
       {
         "command": "frontMatter.dashboard.snippets",
         "title": "Open snippets dashboard",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "dark": "/assets/icons/frontmatter-small-dark.svg",
           "light": "/assets/icons/frontmatter-small-light.svg"
@@ -1533,8 +1654,8 @@
       },
       {
         "command": "frontMatter.dashboard.taxonomy",
-        "title": "Open taxonomy dashboard",
-        "category": "Front matter",
+        "title": "Open taxonomies dashboard",
+        "category": "Front Matter",
         "icon": {
           "dark": "/assets/icons/frontmatter-small-dark.svg",
           "light": "/assets/icons/frontmatter-small-light.svg"
@@ -1543,7 +1664,7 @@
       {
         "command": "frontMatter.markup.orderedlist",
         "title": "Ordered list",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/ordered-list-light.svg",
           "dark": "assets/icons/ordered-list-dark.svg"
@@ -1552,7 +1673,7 @@
       {
         "command": "frontMatter.markup.options",
         "title": "Other markup options",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/options-light.svg",
           "dark": "assets/icons/options-dark.svg"
@@ -1561,27 +1682,27 @@
       {
         "command": "frontMatter.preview",
         "title": "Preview content",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.promoteSettings",
         "title": "Promote settings from local to team level",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.remap",
         "title": "Remap or remove tag/category in all articles",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.setLastModifiedDate",
         "title": "Set lastmod date",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.markup.strikethrough",
         "title": "Strikethrough",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/strikethrough-light.svg",
           "dark": "assets/icons/strikethrough-dark.svg"
@@ -1590,22 +1711,27 @@
       {
         "command": "frontMatter.mode.switch",
         "title": "Switch mode",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": "$(preview)"
       },
       {
         "command": "frontMatter.markup.tasklist",
         "title": "Task list",
-        "category": "Front matter"
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.markup.unorderedlist",
         "title": "Unordered list",
-        "category": "Front matter",
+        "category": "Front Matter",
         "icon": {
           "light": "assets/icons/unordered-list-light.svg",
           "dark": "assets/icons/unordered-list-dark.svg"
         }
+      },
+      {
+        "command": "frontMatter.git.sync",
+        "title": "Sync",
+        "category": "Front Matter"
       }
     ],
     "menus": {
@@ -1626,7 +1752,7 @@
           "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
         {
-          "command": "frontMatter.markup.strikethrough",
+          "command": "frontMatter.markup.hyperlink",
           "group": "navigation@-130",
           "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
         },
@@ -1723,6 +1849,10 @@
         {
           "command": "frontMatter.dashboard.snippets",
           "when": "frontMatter:dashboard:snippets:enabled"
+        },
+        {
+          "command": "frontMatter.git.sync",
+          "when": "frontMatter:git:enabled"
         },
         {
           "command": "frontMatter.collapseSections",
@@ -1938,6 +2068,7 @@
     "@heroicons/react": "1.0.4",
     "@iarna/toml": "2.2.3",
     "@octokit/rest": "^18.12.0",
+    "@popperjs/core": "^2.11.6",
     "@sentry/react": "^6.13.3",
     "@sentry/tracing": "^6.13.3",
     "@tailwindcss/forms": "^0.3.3",
@@ -1975,6 +2106,7 @@
     "html-webpack-plugin": "4.5.0",
     "image-size": "^1.0.0",
     "invariant": "^2.2.4",
+    "jsonc-parser": "^3.2.0",
     "lodash-es": "^4.17.21",
     "lodash.omit": "^4.5.0",
     "lodash.uniqby": "4.7.0",
@@ -2000,6 +2132,7 @@
     "recoil": "^0.4.1",
     "rimraf": "^3.0.2",
     "semver": "^7.3.7",
+    "simple-git": "^3.10.0",
     "style-loader": "2.0.0",
     "tailwindcss": "^2.2.7",
     "tailwindcss-nested-groups": "^1.2.4",

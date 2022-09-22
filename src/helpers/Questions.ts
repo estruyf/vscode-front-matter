@@ -11,7 +11,11 @@ export class Questions {
    * @returns 
    */
   public static async yesOrNo(placeholder: string) {
-    const answer = await window.showQuickPick(["yes", "no"], { canPickMany: false, placeHolder: placeholder, ignoreFocusOut: true });
+    const answer = await window.showQuickPick(["yes", "no"], { 
+      placeHolder: placeholder, 
+      canPickMany: false, 
+      ignoreFocusOut: true 
+    });
     return answer === "yes";
   }
 
@@ -21,7 +25,8 @@ export class Questions {
    * @returns 
    */
   public static async ContentTitle(showWarning: boolean = true): Promise<string | undefined> {
-    const title = await window.showInputBox({  
+    const title = await window.showInputBox({
+      title: "Title",
       prompt: `What would you like to use as a title for the content to create?`,
       placeHolder: `Content title`,
       ignoreFocusOut: true
@@ -46,6 +51,7 @@ export class Questions {
     let selectedFolder: string | undefined;
     if (folders.length > 1) {
       selectedFolder = await window.showQuickPick(folders.map(f => f.title), {
+        title: `Select a folder`,
         placeHolder: `Select where you want to create your content`,
         ignoreFocusOut: true
       });
@@ -82,6 +88,7 @@ export class Questions {
     }));
 
     const selectedOption = await window.showQuickPick(options, {
+      title: `Content type`,
       placeHolder: `Select the content type to create your new content`,
       canPickMany: false,
       ignoreFocusOut: true

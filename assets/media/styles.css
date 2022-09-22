@@ -41,7 +41,8 @@
 }
 
 .collapsible__body,
-.ext_settings {
+.ext_settings,
+.git_actions {
 	padding: 1rem 1.25rem;
   box-sizing: border-box;
 }
@@ -161,17 +162,6 @@
 
 .article__tags__dropbox.open {
   border: 1px solid rgba(0, 0, 0, .9);
-}
-
-.article__tags__input.freeform {
-  position: relative;
-  outline: 1px solid var(--vscode-inputValidation-infoBorder);
-  outline-offset: -1px;
-}
-
-.article__tags__input.freeform input {
-  padding-right: 35px;
-  border: 0;
 }
 
 .article__tags ul {
@@ -381,162 +371,6 @@ input:checked + .field__toggle__slider:before {
 }
 
 /* Metadata */
-.metadata_field {
-  margin-bottom: 1rem;
-}
-
-.vscode-dark .metadata_field__box {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px dashed rgba(255, 255, 255, 0.2);
-}
-
-.vscode-light .metadata_field__box {
-  background: rgba(0, 0, 0, 0.1);
-  border: 1px dashed rgba(0, 0, 0, 0.2);
-}
-
-.metadata_field__box {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px dashed rgba(255, 255, 255, 0.2);
-  margin-bottom: .5rem;
-  padding: .5rem 1rem;
-}
-
-.metadata_field__label {
-  display: flex;
-  align-items: center;
-  margin-bottom: .5rem;
-}
-
-.metadata_field__label.metadata_field__label_parent {
-  justify-content: center;
-}
-
-.metadata_field__label svg {
-  margin-right: .5rem;
-}
-
-.metadata_field__error {
-  color: var(--vscode-errorForeground);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.metadata_field__error button {
-  color: var(--vscode-button-secondaryForeground);
-  background-color: var(--vscode-button-secondaryBackground);
-  padding-left: 1rem;
-  padding-right: 1rem;
-  width: auto;
-}
-
-.metadata_field__error button:hover {
-  background-color: var(--vscode-button-secondaryHoverBackground);
-}
-
-.metadata_field__input, .metadata_field__input:focus,
-.metadata_field__textarea, .metadata_field__textarea:focus {
-  outline: none;
-}
-
-.metadata_field__limit {
-  color: var(--vscode-inputValidation-warningBorder);
-  margin-top: .25rem;
-}
-
-.metadata_field__number {
-  border: 1px solid var(--vscode-inputValidation-infoBorder) !important;
-  outline: none !important;
-}
-
-.metadata_field__choice__toggle {
-  color: var(--vscode-input-placeholderForeground);
-  border: 1px solid var(--vscode-inputValidation-infoBorder) !important;
-  outline: none !important;
-  width: 100%;
-  padding: var(--input-padding-vertical) var(--input-padding-horizontal);
-  background-color: var(--vscode-input-background);
-
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-.metadata_field__choice__toggle:hover,
-.metadata_field__choice__toggle:focus,
-.metadata_field__choice__toggle:active,
-.metadata_field__choice__toggle:disabled {
-  background-color: var(--vscode-input-background);
-}
-
-.metadata_field__choice__toggle span {
-  margin-right: 1rem;
-}
-
-.metadata_field__choice__toggle svg.icon {
-  height: 1rem;
-  width: 1rem;
-  margin-left: .25rem;
-
-  position: absolute;
-  right: .25rem;
-}
-
-.metadata_field__choice_list {
-  width: 90%;
-  margin: 0;
-  padding: 0;
-  z-index: 1;
-  position: absolute;
-  list-style: none;
-  overflow: auto;
-  max-height: 200px;
-
-	color: var(--vscode-dropdown-foreground);
-  background-color: var(--vscode-dropdown-background);
-}
-
-.metadata_field__choice_list.open {
-  border: 1px solid rgba(0, 0, 0, .9);
-}
-
-.metadata_field__choice_list li {
-  padding: var(--input-padding-vertical) var(--input-padding-horizontal);
-  cursor: pointer;
-}
-
-.metadata_field__choice_list li:active {
-	color: var(--vscode-button-foreground);
-  background-color: var(--vscode-button-background);
-}
-
-.metadata_field__choice_list li[aria-selected="true"] {
-  color: var(--vscode-button-foreground);
-  background-color: var(--vscode-button-hoverBackground);
-}
-
-.metadata_field__choice_list li[aria-disabled="true"] {
-  display: none;
-}
-
-.metadata_field__choice_list__item {
-  opacity: 0.8;
-}
-
-.metadata_field__choice__button {
-  margin-top: .5rem;
-  display: inline-flex;
-  align-items: center;
-  width: auto;
-  margin-right: .5rem;
-}
-
-.metadata_field__choice__button_icon {
-  height: 1.25rem;
-  width: 1.25rem;
-  margin-left: .5rem;
-}
 
 .metadata_field__datetime {
   display: flex;
@@ -557,75 +391,6 @@ input:checked + .field__toggle__slider:before {
 
 .metadata_field__datetime > button:hover {
   background-color: var(--vscode-button-secondaryHoverBackground);
-}
-
-.metadata_field__multiple_images {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.metadata_field__preview_image img {
-  display: block;
-  margin: 0 auto;
-  max-height: 16rem;
-}
-
-.metadata_field__file__button,
-.metadata_field__preview_image__button {
-  background-color: transparent;
-  border: 1px dashed var(--vscode-button-background);
-  padding: 1.5rem;
-  filter: brightness(85%);
-}
-
-.metadata_field__file__button:hover,
-.metadata_field__preview_image__button:hover {
-  background-color: rgba(255, 255, 255, .1);
-  filter: brightness(100%);
-}
-
-.metadata_field__file__button svg,
-.metadata_field__preview_image__button svg {
-  color: var(--vscode-foreground);
-  display: block;
-  width: 3rem;
-  height: 3rem;
-  margin: 0 auto;
-}
-
-.metadata_field__file__button span,
-.metadata_field__preview_image__button span {
-  color: var(--vscode-foreground);
-  display: inline-block;
-  margin: 0 auto;
-  margin-top: .5rem;
-}
-
-.vscode-light .metadata_field__preview_image__preview {
-  background: rgba(0, 0, 0, 0.1);
-}
-
-.vscode-dark .metadata_field__preview_image__preview {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.metadata_field__preview_image__preview {
-  background-color: var(--vscode-button-secondaryBackground);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-}
-
-.metadata_field__preview_image__remove {
-  background-color: var(--vscode-inputValidation-errorBackground);
-  color: var(--vscode-inputValidation-errorForeground);
-}
-
-.metadata_field__preview_image__remove:hover {
-  background-color: var(--vscode-inputValidation-errorBackground);
-  color: var(--vscode-inputValidation-errorForeground);
-  opacity: .9;
 }
 
 /* File list */

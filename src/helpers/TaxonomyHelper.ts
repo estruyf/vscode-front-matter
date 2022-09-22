@@ -116,7 +116,7 @@ export class TaxonomyHelper {
     const options = this.getTaxonomyOptions(taxonomyType);
 
     const newOption = await window.showInputBox({
-      title: `Create a new ${taxonomyType} value`,
+      title: `Create a new ${type} value`,
       placeHolder: `The value you want to add`,
       ignoreFocusOut: true,
       validateInput: (text) => {
@@ -197,7 +197,10 @@ export class TaxonomyHelper {
 
             if (fieldNames.length > 0 && article && article.data) {
               const { data } = article;
-              let taxonomies: string[] = ContentType.getFieldValue(data, fieldNames);
+              let taxonomies: string| string[] = ContentType.getFieldValue(data, fieldNames);
+              if (typeof taxonomies === "string") {
+                taxonomies = taxonomies.split(`,`);
+              }
 
               if (taxonomies && taxonomies.length > 0) {
                 const idx = taxonomies.findIndex(o => o === oldValue);
@@ -300,8 +303,15 @@ export class TaxonomyHelper {
 
             if (oldFieldNames.length > 0 && newFieldNames.length > 0 && article && article.data) {
               const { data } = article;
-              let oldTaxonomies: string[] = ContentType.getFieldValue(data, oldFieldNames) || [];
-              let newTaxonomies: string[] = ContentType.getFieldValue(data, newFieldNames) || [];
+              let oldTaxonomies: string | string[] = ContentType.getFieldValue(data, oldFieldNames) || [];
+              let newTaxonomies: string | string[] = ContentType.getFieldValue(data, newFieldNames) || [];
+
+              if (typeof oldTaxonomies === "string") {
+                oldTaxonomies = oldTaxonomies.split(",");
+              }
+              if (typeof newTaxonomies === "string") {
+                newTaxonomies = newTaxonomies.split(",");
+              }
 
               if (oldTaxonomies && oldTaxonomies.length > 0) {
                 const idx = oldTaxonomies.findIndex(o => o === value);

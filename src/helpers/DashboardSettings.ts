@@ -1,8 +1,9 @@
+import { GitListener } from './../listeners/general/GitListener';
 import { basename, join } from "path";
 import { workspace } from "vscode";
 import { Folders } from "../commands/Folders";
 import { Project } from "../commands/Project";
-import { CONTEXT, ExtensionState, SETTING_CONTENT_DRAFT_FIELD, SETTING_CONTENT_SORTING, SETTING_CONTENT_SORTING_DEFAULT, SETTING_DASHBOARD_OPENONSTART, SETTING_DATA_FILES, SETTING_DATA_FOLDERS, SETTING_DATA_TYPES, SETTING_FRAMEWORK_ID, SETTING_MEDIA_SORTING_DEFAULT, SETTING_CUSTOM_SCRIPTS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_SNIPPETS, SETTING_DATE_FORMAT, SETTING_DASHBOARD_CONTENT_TAGS, SETTING_MEDIA_SUPPORTED_MIMETYPES, SETTING_TAXONOMY_CUSTOM, SETTING_TEMPLATES_ENABLED } from "../constants";
+import { CONTEXT, ExtensionState, SETTING_CONTENT_DRAFT_FIELD, SETTING_CONTENT_SORTING, SETTING_CONTENT_SORTING_DEFAULT, SETTING_DASHBOARD_OPENONSTART, SETTING_DATA_FILES, SETTING_DATA_FOLDERS, SETTING_DATA_TYPES, SETTING_FRAMEWORK_ID, SETTING_MEDIA_SORTING_DEFAULT, SETTING_CUSTOM_SCRIPTS, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_SNIPPETS, SETTING_DATE_FORMAT, SETTING_DASHBOARD_CONTENT_TAGS, SETTING_MEDIA_SUPPORTED_MIMETYPES, SETTING_TAXONOMY_CUSTOM, SETTING_TEMPLATES_ENABLED, SETTING_GIT_ENABLED, SETTING_DASHBOARD_CONTENT_PAGINATION } from "../constants";
 import { DashboardViewType, SortingOption, Settings as ISettings } from "../dashboardWebView/models";
 import { CustomScript, DraftField, Snippets, SortingSetting, TaxonomyType } from "../models";
 import { DataFile } from "../models/DataFile";
@@ -11,6 +12,7 @@ import { DataType } from "../models/DataType";
 import { Extension } from "./Extension";
 import { FrameworkDetector } from "./FrameworkDetector";
 import { Settings } from "./SettingsHelper";
+import { parseWinPath } from './parseWinPath';
 
 
 export class DashboardSettings {
@@ -19,8 +21,14 @@ export class DashboardSettings {
     const ext = Extension.getInstance();
     const wsFolder = Folders.getWorkspaceFolder();
     const isInitialized = Project.isInitialized();
+    const gitActions = Settings.get<boolean>(SETTING_GIT_ENABLED);
+    const pagination = Settings.get<boolean>(SETTING_DASHBOARD_CONTENT_PAGINATION)
     
     return {
+      git: {
+        isGitRepo: gitActions ? await GitListener.isGitRepository() : false,
+        actions: gitActions || false
+      },
       beta: ext.isBetaVersion(),
       wsFolder: wsFolder ? wsFolder.fsPath : '',
       staticFolder: Folders.getStaticFolderRelativePath(),
@@ -46,7 +54,8 @@ export class DashboardSettings {
           sorting: await ext.getState<SortingOption | undefined>(ExtensionState.Dashboard.Contents.Sorting, "workspace"),
           defaultSorting: Settings.get<string>(SETTING_CONTENT_SORTING_DEFAULT),
           tags: Settings.get<string>(SETTING_DASHBOARD_CONTENT_TAGS),
-          templatesEnabled: Settings.get<boolean>(SETTING_TEMPLATES_ENABLED)
+          templatesEnabled: Settings.get<boolean>(SETTING_TEMPLATES_ENABLED),
+          pagination: pagination !== undefined ? pagination : true
         },
         media: {
           sorting: await ext.getState<SortingOption | undefined>(ExtensionState.Dashboard.Media.Sorting, "workspace"),
@@ -70,7 +79,7 @@ export class DashboardSettings {
    * @returns 
    */
   private static async getDataFiles(): Promise<DataFile[]> {
-    const wsPath = Folders.getWorkspaceFolder()?.fsPath;
+    const wsPath = parseWinPath(Folders.getWorkspaceFolder()?.fsPath);
     const files = Settings.get<DataFile[]>(SETTING_DATA_FILES);
     const folders = Settings.get<DataFolder[]>(SETTING_DATA_FOLDERS);
 
@@ -86,14 +95,14 @@ export class DashboardSettings {
           continue;
         }
 
-        let dataFolderPath = join(folderPath.replace((wsPath || ''), ''));
+        let dataFolderPath = parseWinPath(join(folderPath.replace((wsPath || ''), '')));
         if (dataFolderPath.startsWith('/')) {
           dataFolderPath = dataFolderPath.substring(1);
         }
 
-        const dataJsonFiles = await workspace.findFiles(join(dataFolderPath, '*.json'));
-        const dataYmlFiles = await workspace.findFiles(join(dataFolderPath, '*.yml'));
-        const dataYamlFiles = await workspace.findFiles(join(dataFolderPath, '*.yaml'));
+        const dataJsonFiles = await workspace.findFiles(parseWinPath(join(dataFolderPath, '*.json')));
+        const dataYmlFiles = await workspace.findFiles(parseWinPath(join(dataFolderPath, '*.yml')));
+        const dataYamlFiles = await workspace.findFiles(parseWinPath(join(dataFolderPath, '*.yaml')));
 
         const dataFiles = [...dataJsonFiles, ...dataYmlFiles, ...dataYamlFiles];
         for (let dataFile of dataFiles) {

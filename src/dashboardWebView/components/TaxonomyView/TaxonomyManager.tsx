@@ -38,6 +38,9 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
 
       // Alphabetically sort the items
       crntItems = Object.assign([], crntItems).sort((a: string, b: string) => {
+        a = a || "";
+        b = b || "";
+
         if (a.toLowerCase() < b.toLowerCase()) {
           return -1;
         }

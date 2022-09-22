@@ -42,6 +42,7 @@ export class Folders {
     }
 
     const folderName = await window.showInputBox({  
+      title: `Add media folder`,
       prompt: `Which name would you like to give to your folder (use "/" to create multi-level folders)?`,
       value: startPath,
       ignoreFocusOut: true,
@@ -96,7 +97,7 @@ export class Folders {
 
   /**
    * Register the new folder path
-   * @param folder 
+   * @param folderInfo 
    */
   public static async register(folderInfo: { title: string, path: Uri } | Uri) {
     let folderName = folderInfo instanceof Uri ? undefined : folderInfo.title;
@@ -115,7 +116,8 @@ export class Folders {
       }
 
       if (!folderName) {
-        folderName = await window.showInputBox({  
+        folderName = await window.showInputBox({
+          title: `Register folder`, 
           prompt: `Which name would you like to specify for this folder?`,
           placeHolder: `Folder name`,
           value: basename(folder.fsPath),
@@ -366,7 +368,7 @@ export class Folders {
     const isWindows = process.platform === 'win32';
     let absPath = filePath.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ""));
     absPath = isWindows ? absPath.split('/').join('\\') : absPath;
-    return absPath;
+    return parseWinPath(absPath);
   }
 
   /**
@@ -379,7 +381,7 @@ export class Folders {
     const isWindows = process.platform === 'win32';
     let absPath = folder.path.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ""));
     absPath = isWindows ? absPath.split('/').join('\\') : absPath;
-    return absPath;
+    return parseWinPath(absPath);
   }
 
   /**

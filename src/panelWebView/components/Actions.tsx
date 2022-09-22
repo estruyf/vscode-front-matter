@@ -29,9 +29,15 @@ const Actions: React.FunctionComponent<IActionsProps> = ({ metadata, settings }:
 
         {
           (settings && settings.scripts && settings.scripts.length > 0) && (
-            settings.scripts.map((value, idx) => (
-              <CustomScript key={value?.title?.replace(/ /g, '') || idx} {...value} />
-            ))
+            <>
+              <div className="divider py-4 w-full" style={{height:`1px`}}></div>
+            
+              {
+                settings.scripts.map((value, idx) => (
+                  <CustomScript key={value?.title?.replace(/ /g, '') || idx} {...value} />
+                ))
+              }
+            </>
           )
         }
       </div>

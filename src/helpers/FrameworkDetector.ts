@@ -1,3 +1,4 @@
+import * as jsoncParser from 'jsonc-parser';
 import { existsSync, readFileSync } from "fs";
 import jsyaml = require("js-yaml");
 import { join, resolve } from "path";
@@ -29,7 +30,7 @@ export class FrameworkDetector {
       if (existsSync(pkgFile)) {
         let packageJson: any = readFileSync(pkgFile, "utf8");
         if (packageJson) {
-          packageJson = typeof packageJson === "string" ? JSON.parse(packageJson) : packageJson;
+          packageJson = typeof packageJson === "string" ? jsoncParser.parse(packageJson) : packageJson;
 
           dependencies = packageJson.dependencies || null;
           devDependencies = packageJson.devDependencies || null;

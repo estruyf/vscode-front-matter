@@ -16,6 +16,7 @@ const FILE_LIMIT = 10;
 
 export class DataListener extends BaseListener {
   private static lastMetadataUpdate: any = {};
+  private static readonly terminalName: string = 'Local server';
 
   /**
    * Process the messages for the dashboard views
@@ -40,6 +41,9 @@ export class DataListener extends BaseListener {
         break;
       case CommandToCode.frameworkCommand:
         this.openTerminalWithCommand(msg.data.command);
+        break;
+      case CommandToCode.stopServer:
+        this.stopServer();
         break;
       case CommandToCode.updatePlaceholder:
         this.updatePlaceholder(msg?.data?.field, msg?.data?.value, msg?.data?.title);
@@ -305,28 +309,60 @@ export class DataListener extends BaseListener {
    */
   private static openTerminalWithCommand(command: string) {
     if (command) {
-      let terminal = window.activeTerminal;
+      let localServerTerminal = DataListener.findServerTerminal();
+      if (localServerTerminal) {
+        localServerTerminal.dispose();
+      }
   
-      if (!terminal || (terminal && terminal.state.isInteractedWith === true)) {
-        terminal = window.createTerminal({
-          name: `Starting local server`,
+      if (!localServerTerminal || (localServerTerminal && localServerTerminal.state.isInteractedWith === true)) {
+        localServerTerminal = window.createTerminal({
+          name: this.terminalName,
           iconPath: new ThemeIcon('server-environment'),
           message: `Starting local server`,
         });
       }
   
-      if (terminal) {
-        terminal.sendText(command);
-        terminal.show(false);
+      if (localServerTerminal) {
+        localServerTerminal.sendText(command);
+        localServerTerminal.show(false);
       }
     }
   }
 
-  private static updatePlaceholder(field: string, value: string, title: string) {
+  /**
+   * Stop the local server
+   */
+  private static stopServer() {
+    const localServerTerminal = DataListener.findServerTerminal();
+    if (localServerTerminal) {
+      localServerTerminal.dispose();
+    }
+  }
+
+  /**
+   * Find the server terminal
+   * @returns 
+   */
+  private static findServerTerminal() {
+    let terminals = window.terminals;
+    if (terminals) {
+      const localServerTerminal = terminals.find(t => t.name === DataListener.terminalName);
+      return localServerTerminal;
+    }
+  }
+
+  /**
+   * Update the placeholder
+   * @param field 
+   * @param value 
+   * @param title 
+   */
+  private static async updatePlaceholder(field: string, value: string, title: string) {
     if (field && value) {
+      const crntFile = window.activeTextEditor?.document;
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
       value = processKnownPlaceholders(value, title || "", dateFormat);
-      value = ArticleHelper.processCustomPlaceholders(value, title || "");
+      value = await ArticleHelper.processCustomPlaceholders(value, title || "", crntFile?.uri.fsPath || "");
     }
     
     this.sendMsg(Command.updatePlaceholder, { field, value });
