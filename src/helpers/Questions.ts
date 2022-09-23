@@ -55,8 +55,11 @@ export class Questions {
         placeHolder: `Select where you want to create your content`,
         ignoreFocusOut: true
       });
-    } else {
+    } else if (folders.length === 1) {
       selectedFolder = folders[0].title;
+    } else {
+      Notifications.warning(`No page folders were configures.`);
+      return;
     }
 
     if (!selectedFolder && showWarning) {

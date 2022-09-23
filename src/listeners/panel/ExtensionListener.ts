@@ -47,8 +47,7 @@ export class ExtensionListener extends BaseListener {
    * Initialize project
    */
   private static async initialize() {
-    await commands.executeCommand(COMMAND_NAME.init);
-    SettingsListener.getSettings();
+    await commands.executeCommand(COMMAND_NAME.dashboard);
   }
 
   /**

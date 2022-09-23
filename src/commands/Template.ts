@@ -6,9 +6,7 @@ import { SETTING_CONTENT_DEFAULT_FILETYPE, SETTING_TEMPLATES_FOLDER, TelemetryEv
 import { ArticleHelper, Settings } from '../helpers';
 import { Article } from '.';
 import { Notifications } from '../helpers/Notifications';
-import { CONTEXT } from '../constants';
 import { Project } from './Project';
-import { Folders } from './Folders';
 import { ContentType } from '../helpers/ContentType';
 import { ContentType as IContentType } from '../models';
 import { PagesListener } from '../listeners/dashboard';
@@ -16,39 +14,6 @@ import { extname } from 'path';
 import { Telemetry } from '../helpers/Telemetry';
 
 export class Template {
-
-  /**
-   * Check if the template folder is available
-   */
-  public static async init() {
-    const isInitialized = await Template.isInitialized();
-    await vscode.commands.executeCommand('setContext', CONTEXT.canInit, !isInitialized);
-
-    if (isInitialized) {
-      await vscode.commands.executeCommand('setContext', CONTEXT.initialized, true);
-    }
-  }
-
-  /**
-   * Check if the project is already initialized
-   */
-  public static async isInitialized() {
-    const wsFolder = Folders.getWorkspaceFolder();
-    const folder = Template.getSettings();
-
-    if (!folder || !wsFolder) {
-      return false;
-    }
-
-    const templatePath = vscode.Uri.file(path.join(wsFolder.fsPath, folder));
-
-    try {
-      await vscode.workspace.fs.stat(templatePath);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
 
   /**
    * Generate a template

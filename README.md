@@ -52,6 +52,12 @@ A couple of our extension highlights that hopefully get you interested in giving
 
 > If you see something missing in your article creation flow, please feel free to reach out.
 
+**Version 8**
+
+The taxonomy dashboard got introduced on which you can manage your tags, categories, and custom taxonomy.
+
+![Taxonomy dashboard](https://frontmatter.codes/assets/marketplace/v8.1.0/taxonomy-dashboard.png)
+
 **Version 7**
 
 Snippets support for Front Matter has been added!

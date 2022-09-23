@@ -45,32 +45,43 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings, folderAndF
   return (
     <div className="frontmatter">
       <div className={`ext_actions`}>
-        <GitAction settings={settings} />
-        
-        <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.globalSettings}>
-          <GlobalSettings settings={settings} isBase />
-        </FeatureFlag>
-        
-        <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.actions}>
-          <Collapsible id={`base_actions`} title="Actions">
-            <div className={`base__actions`}>
-              <button onClick={openDashboard}>Open dashboard</button>
-              <button onClick={openPreview} disabled={!settings?.preview?.host}>Open preview</button>
-              <StartServerButton settings={settings} />
-              {
-                !settings?.isInitialized && <button onClick={initProject}>Initialize project</button>
-              }
-              
-              <button onClick={createContent} disabled={!settings?.isInitialized}>Create new content</button>
-
-              {
-                customActions.map((script) => (
-                  <button key={script.title} onClick={() => runBulkScript(script)}>{ script.title }</button>
-                ))
-              }
+        {
+          !settings?.isInitialized && (
+            <div className={`initialize_actions`}>
+              <button onClick={initProject}>Initialize project</button>
             </div>
-          </Collapsible>
-        </FeatureFlag>
+          )
+        }
+        
+        {
+          settings?.isInitialized && (
+            <>
+              <GitAction settings={settings} />
+
+              <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.globalSettings}>
+                <GlobalSettings settings={settings} isBase />
+              </FeatureFlag>
+
+              <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.actions}>
+                <Collapsible id={`base_actions`} title="Actions">
+                  <div className={`base__actions`}>
+                    <button onClick={openDashboard}>Open dashboard</button>
+                    <button onClick={openPreview} disabled={!settings?.preview?.host}>Open preview</button>
+                    <StartServerButton settings={settings} />
+
+                    <button onClick={createContent}>Create new content</button>
+
+                    {
+                      customActions.map((script) => (
+                        <button key={script.title} onClick={() => runBulkScript(script)}>{ script.title }</button>
+                      ))
+                    }
+                  </div>
+                </Collapsible>
+              </FeatureFlag>
+            </>
+          )
+        }
         
         <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.recentlyModified}>
           <FolderAndFiles data={folderAndFiles} isBase />
