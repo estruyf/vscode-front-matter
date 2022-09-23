@@ -182,14 +182,15 @@ export async function activate(context: vscode.ExtensionContext) {
 	);
 
 	// Initialize command
-	Template.init();
-	const projectInit = vscode.commands.registerCommand(COMMAND_NAME.init, async (cb: Function) => {
-		await Project.init();
+	subscriptions.push(
+		vscode.commands.registerCommand(COMMAND_NAME.init, async (cb: Function) => {
+			await Project.init();
 
-		if (cb) {
-			cb();
-		}
-	});
+			if (cb) {
+				cb();
+			}
+		})
+	);
 
 	// Settings promotion command
 	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.promote, SettingsHelper.promote));
@@ -201,7 +202,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// Things to do when configuration changes
 	SettingsHelper.onConfigChange((global?: any) => {
-		Template.init();
 		Preview.init();
 		GitListener.init();
 
@@ -285,7 +285,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		createContent,
 		createByContentType,
 		createByTemplate,
-		projectInit,
 		collapseAll,
 		createFolder
 	);
