@@ -6,4 +6,5 @@ export interface DataFolder {
   labelField: string;
   schema?: any;
   type?: string;
+  singleEntry?: boolean;
 }

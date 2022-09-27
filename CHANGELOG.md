@@ -1,5 +1,17 @@
 # Change Log
 
+## [8.2.0] - 2022-xx-xx
+
+### ✨ New features
+
+### 🎨 Enhancements
+
+- [#406](https://github.com/estruyf/vscode-front-matter/issues/406): Added support for single data entries in the data dashboard
+
+### ⚡️ Optimizations
+
+### 🐞 Fixes
+
 ## [8.1.1] - 2022-09-23
 
 ### 🐞 Fixes

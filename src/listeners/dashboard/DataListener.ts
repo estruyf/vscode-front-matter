@@ -36,7 +36,7 @@ export class DataListener extends BaseListener {
    * @param msgData 
    */
   private static processDataUpdate(msgData: any) {
-    const { file, fileType, entries } = msgData as { file: string, fileType: string, entries: any[] };
+    const { file, fileType, entries } = msgData as { file: string, fileType: string, entries: unknown | unknown[] };
 
     const absPath = Folders.getAbsFilePath(file);
     if (!existsSync(absPath)) {

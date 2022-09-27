@@ -550,6 +550,11 @@
                 "type": "string",
                 "default": "content",
                 "description": "If you are using data types, you can specify your type ID."
+              },
+              "singleEntry": {
+                "type": "boolean",
+                "description": "If you want to use a single entry for your data file.",
+                "default": false
               }
             },
             "additionalProperties": false,
@@ -601,6 +606,11 @@
                 "type": "string",
                 "default": "content",
                 "description": "If you are using data types, you can specify your type ID."
+              },
+              "singleEntry": {
+                "type": "boolean",
+                "description": "If you want to use a single entry for your data files in the folder.",
+                "default": false
               }
             },
             "additionalProperties": false,

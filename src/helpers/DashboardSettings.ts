@@ -113,7 +113,8 @@ export class DashboardSettings {
             fileType: dataFile.fsPath.endsWith('.json') ? 'json' : 'yaml',
             labelField: folder.labelField,
             schema: folder.schema,
-            type: folder.type
+            type: folder.type,
+            singleEntry: typeof folder.singleEntry === 'boolean' ? folder.singleEntry : false,
           } as DataFile)
         }
       }
