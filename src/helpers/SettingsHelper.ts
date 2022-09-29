@@ -4,10 +4,10 @@ import { Notifications } from './Notifications';
 import { commands, Uri, workspace, window } from 'vscode';
 import * as vscode from 'vscode';
 import { ContentType, CustomTaxonomy, TaxonomyType } from '../models';
-import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM, TelemetryEvent, COMMAND_NAME } from '../constants';
+import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM, TelemetryEvent, COMMAND_NAME, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_PAGE_FOLDERS, SETTING_CONTENT_SNIPPETS, SETTING_CONTENT_PLACEHOLDERS } from '../constants';
 import { Folders } from '../commands/Folders';
-import { join, basename } from 'path';
-import { existsSync, readFileSync, watch, writeFileSync } from 'fs';
+import { join, basename, dirname, parse } from 'path';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { Extension } from './Extension';
 import { debounceCallback } from './DebounceCallback';
 import { Logger } from './Logger';
@@ -15,14 +15,16 @@ import * as jsoncParser from 'jsonc-parser';
 
 export class Settings {
   public static globalFile = "frontmatter.json";
+  public static globalConfigFolder = ".frontmatter/config";
+  public static globalConfig: any;
   private static config: vscode.WorkspaceConfiguration;
-  private static globalConfig: any;
   private static isInitialized: boolean = false;
   private static listeners: any[] = [];
   private static fileCreationWatcher: vscode.FileSystemWatcher | undefined;
+  private static readConfigPromise: Promise<void> | undefined = undefined;
   
-  public static init() {
-    Settings.readConfig();
+  public static async init() {
+    await Settings.readConfig();
 
     Settings.listeners = [];
 
@@ -34,8 +36,7 @@ export class Settings {
 
     Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
 
-    Settings.onConfigChange((global?: any) => {
-      Settings.readConfig();
+    Settings.onConfigChange(async () => {
       Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
     });
   }
@@ -97,19 +98,26 @@ export class Settings {
       if (Settings.checkProjectConfig(filename)) {
         Logger.info(`Config change detected - ${projectConfig} saved`);
 
-        const file = await workspace.openTextDocument(e.uri);
-        if (file) {
-          const fileContents = file.getText();
-          const json = jsoncParser.parse(fileContents);
-          configDebouncer(() => callback(json), 200);
-          // callback(json)
+        Logger.info(`Reloading config...`);
+        if (Settings.readConfigPromise === undefined) {
+          Settings.readConfigPromise = Settings.readConfig();
         }
+        await Settings.readConfigPromise;
+
+        Logger.info(`Reloaded config...`);
+        configDebouncer(() => callback(), 200);
       }
     });
 
-    workspace.onDidDeleteFiles((e) => {
+    workspace.onDidDeleteFiles(async (e) => {
       const needCallback = e?.files.find(f => Settings.checkProjectConfig(f.fsPath));
       if (needCallback) {
+        Logger.info(`Reloading config...`);
+        if (Settings.readConfigPromise === undefined) {
+          Settings.readConfigPromise = Settings.readConfig();
+        }
+        await Settings.readConfigPromise;
+         
         callback();
       }
     });
@@ -391,7 +399,11 @@ export class Settings {
    */
   private static checkProjectConfig(filePath: string) {
     const fmConfig = Settings.projectConfigPath;
-    if (fmConfig && existsSync(fmConfig)) {
+    filePath = parseWinPath(filePath);
+
+    if (filePath.includes(Settings.globalConfigFolder)) {
+      return true;
+    } else if (fmConfig && existsSync(fmConfig)) {
       return filePath && 
              basename(filePath).toLowerCase() === Settings.globalFile.toLowerCase() &&
              fmConfig.toLowerCase() === filePath.toLowerCase();
@@ -403,7 +415,7 @@ export class Settings {
   /**
    * Read the global config file
    */
-  private static readConfig() {
+  private static async readConfig() {
     try {
       const fmConfig = Settings.projectConfigPath;
       if (fmConfig && existsSync(fmConfig)) {
@@ -413,9 +425,74 @@ export class Settings {
       } else {
         Settings.globalConfig = undefined;
       }
+
+      // Read the files from the config folder
+      let configFiles = await workspace.findFiles(`**/${Settings.globalConfigFolder}/**`);
+      if (configFiles.length === 0) {
+        Logger.info(`No ".frontmatter/config" config files found.`);
+      }
+
+      // Sort the files by fsPath
+      configFiles = configFiles.sort((a, b) => a.fsPath.localeCompare(b.fsPath));
+
+      for await (const configFile of configFiles) {
+        await Settings.processConfigFile(configFile);
+      }
     } catch (e) {
       Settings.globalConfig = undefined;
       Notifications.error(`Error reading "frontmatter.json" config file. Check [output window](command:${COMMAND_NAME.showOutputChannel}) for more details.`);
+      Logger.error((e as Error).message);
+    }
+
+    Settings.readConfigPromise = undefined;
+  }
+
+  /**
+   * Process the config file
+   * @param configFile 
+   * @returns 
+   */
+  private static async processConfigFile(configFile: Uri) {
+    try {
+      const config = await workspace.fs.readFile(configFile);
+      const configJson = jsoncParser.parse(config.toString());
+      
+      const filePath = parseWinPath(configFile.fsPath);
+      const configFilePath = filePath.split(Settings.globalConfigFolder).pop();
+      if (!configFilePath) {
+        return;
+      }
+      Logger.info(`Processing "${configFilePath}" config file.`);
+
+      // Get the path without the filename
+      const configFolder = parseWinPath(dirname(configFilePath));
+      let relSettingName = configFolder.split('/').join('.');
+      if (relSettingName.startsWith('.')) {
+        relSettingName = relSettingName.substring(1);
+      }
+
+      const settingName = `frontMatter${relSettingName.startsWith('.') ? '' : '.'}${relSettingName}`;
+
+      if (!Settings.globalConfig) {
+        Settings.globalConfig = {};
+      }
+
+      // Array settings
+      if (relSettingName === SETTING_TAXONOMY_CONTENT_TYPES ||
+          relSettingName === SETTING_CONTENT_PAGE_FOLDERS || 
+          relSettingName === SETTING_CONTENT_PLACEHOLDERS) {
+        const crntValue = Settings.globalConfig[settingName] || [];
+        Settings.globalConfig[settingName] = [...crntValue, configJson];
+      }
+      // Object settings
+      else if (relSettingName === SETTING_CONTENT_SNIPPETS) {
+        // Filename is the key
+        const fileName = parse(configFilePath).name;
+        const crntValue = Settings.globalConfig[settingName] || {};
+        Settings.globalConfig[settingName] = { ...crntValue, ...{ [fileName]: configJson } };
+      }
+    } catch (e) {
+      Logger.error(`Error reading config file: ${configFile.fsPath}`);
       Logger.error((e as Error).message);
     }
   }

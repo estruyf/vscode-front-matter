@@ -41,7 +41,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		return undefined;
 	}
 	
-	SettingsHelper.init();
+	await SettingsHelper.init();
 	extension.migrateSettings();
 	
 	SettingsHelper.checkToPromote();
@@ -201,7 +201,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	// Things to do when configuration changes
-	SettingsHelper.onConfigChange((global?: any) => {
+	SettingsHelper.onConfigChange(() => {
 		Preview.init();
 		GitListener.init();
 

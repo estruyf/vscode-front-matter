@@ -3,6 +3,7 @@ import { ViewColumn, workspace } from "vscode";
 import ContentProvider from "../providers/ContentProvider";
 import { join } from "path";
 import { ContentFolder } from "../models";
+import { Settings } from "../helpers/SettingsHelper";
 
 
 export class Diagnostics {
@@ -38,6 +39,12 @@ ${all}
 # Folders to search files
 
 ${folderData.join("\n")}
+
+# Complete frontmatter.json config
+
+\`\`\`json
+${JSON.stringify(Settings.globalConfig, null, 2)}
+\`\`\`
     `;
 
     ContentProvider.show(logging, `${projectName} diagnostics`, "markdown", ViewColumn.One);

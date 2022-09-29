@@ -4,6 +4,8 @@
 
 ### ✨ New features
 
+- [#412](https://github.com/estruyf/vscode-front-matter/issues/412): Allow `frontmatter.json` to be split in multiple files
+
 ### 🎨 Enhancements
 
 - [#406](https://github.com/estruyf/vscode-front-matter/issues/406): Added support for single data entries in the data dashboard

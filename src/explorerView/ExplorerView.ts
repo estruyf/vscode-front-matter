@@ -100,7 +100,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       }
     }, this);
 
-    Settings.onConfigChange((global?: any) => {
+    Settings.onConfigChange(() => {
       SettingsListener.getSettings();
     });
   }
