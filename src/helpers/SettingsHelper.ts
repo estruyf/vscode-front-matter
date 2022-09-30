@@ -471,8 +471,6 @@ export class Settings {
         relSettingName = relSettingName.substring(1);
       }
 
-      const settingName = `frontMatter${relSettingName.startsWith('.') ? '' : '.'}${relSettingName}`;
-
       if (!Settings.globalConfig) {
         Settings.globalConfig = {};
       }
@@ -482,15 +480,25 @@ export class Settings {
       if (relSettingName === SETTING_TAXONOMY_CONTENT_TYPES.toLowerCase() ||
           relSettingName === SETTING_CONTENT_PAGE_FOLDERS.toLowerCase() || 
           relSettingName === SETTING_CONTENT_PLACEHOLDERS.toLowerCase()) {
-        const crntValue = Settings.globalConfig[settingName] || [];
-        Settings.globalConfig[settingName] = [...crntValue, configJson];
+
+        let settingNameValue = ""
+        if (relSettingName === SETTING_TAXONOMY_CONTENT_TYPES.toLowerCase()) {
+          settingNameValue = SETTING_TAXONOMY_CONTENT_TYPES;
+        } else if (relSettingName === SETTING_CONTENT_PAGE_FOLDERS.toLowerCase()) {
+          settingNameValue = SETTING_CONTENT_PAGE_FOLDERS;
+        } else if (relSettingName === SETTING_CONTENT_PLACEHOLDERS.toLowerCase()) {
+          settingNameValue = SETTING_CONTENT_PLACEHOLDERS;
+        }
+
+        const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${settingNameValue}`] || [];
+        Settings.globalConfig[`${CONFIG_KEY}.${settingNameValue}`] = [...crntValue, configJson];
       }
       // Object settings
       else if (relSettingName === SETTING_CONTENT_SNIPPETS.toLowerCase()) {
         // Filename is the key
         const fileName = parse(configFilePath).name;
-        const crntValue = Settings.globalConfig[settingName] || {};
-        Settings.globalConfig[settingName] = { ...crntValue, ...{ [fileName]: configJson } };
+        const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CONTENT_SNIPPETS}`] || {};
+        Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CONTENT_SNIPPETS}`] = { ...crntValue, ...{ [fileName]: configJson } };
       }
     } catch (e) {
       Logger.error(`Error reading config file: ${configFile.fsPath}`);
