@@ -478,14 +478,15 @@ export class Settings {
       }
 
       // Array settings
-      if (relSettingName === SETTING_TAXONOMY_CONTENT_TYPES ||
-          relSettingName === SETTING_CONTENT_PAGE_FOLDERS || 
-          relSettingName === SETTING_CONTENT_PLACEHOLDERS) {
+      relSettingName = relSettingName.toLowerCase();
+      if (relSettingName === SETTING_TAXONOMY_CONTENT_TYPES.toLowerCase() ||
+          relSettingName === SETTING_CONTENT_PAGE_FOLDERS.toLowerCase() || 
+          relSettingName === SETTING_CONTENT_PLACEHOLDERS.toLowerCase()) {
         const crntValue = Settings.globalConfig[settingName] || [];
         Settings.globalConfig[settingName] = [...crntValue, configJson];
       }
       // Object settings
-      else if (relSettingName === SETTING_CONTENT_SNIPPETS) {
+      else if (relSettingName === SETTING_CONTENT_SNIPPETS.toLowerCase()) {
         // Filename is the key
         const fileName = parse(configFilePath).name;
         const crntValue = Settings.globalConfig[settingName] || {};
