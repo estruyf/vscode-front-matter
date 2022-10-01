@@ -68,11 +68,9 @@ describe("Initialization testing", function() {
 
 async function notificationExists(workbench: Workbench, text: string): Promise<Notification | undefined> {
   const notifications = await (await (new StatusBar()).openNotificationsCenter()).getNotifications(NotificationType.Info);
-  console.log(`Notifications:`, notifications.length);
 
   for (const notification of notifications) {
     const message = await notification.getMessage();
-    console.log(message)
     if (message.indexOf(text) >= 0) {
       return notification;
     }

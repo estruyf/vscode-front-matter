@@ -16,15 +16,24 @@ import { parseWinPath } from './parseWinPath';
 
 
 export class DashboardSettings {
+  private static cachedSettings: ISettings | undefined = undefined;
 
-  public static async get() {
+  public static async get(clear: boolean = false) {
+    if (!this.cachedSettings || clear) {
+      this.cachedSettings = await this.getSettings();
+    }
+
+    return this.cachedSettings;
+  }
+
+  public static async getSettings() {
     const ext = Extension.getInstance();
     const wsFolder = Folders.getWorkspaceFolder();
     const isInitialized = Project.isInitialized();
     const gitActions = Settings.get<boolean>(SETTING_GIT_ENABLED);
     const pagination = Settings.get<boolean>(SETTING_DASHBOARD_CONTENT_PAGINATION)
     
-    return {
+    const settings = {
       git: {
         isGitRepo: gitActions ? await GitListener.isGitRepository() : false,
         actions: gitActions || false
@@ -71,7 +80,9 @@ export class DashboardSettings {
       dataTypes: Settings.get<DataType[]>(SETTING_DATA_TYPES),
       snippets: Settings.get<Snippets>(SETTING_CONTENT_SNIPPETS),
       isBacker: await ext.getState<boolean | undefined>(CONTEXT.backer, 'global')
-    } as ISettings
+    } as ISettings;
+
+    return settings;
   }
 
   /**

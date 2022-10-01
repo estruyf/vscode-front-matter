@@ -57,7 +57,7 @@ export class SnippetListener extends BaseListener {
     snippets[title] = snippetContent;
     
     await Settings.update(SETTING_CONTENT_SNIPPETS, snippets, true);
-    SettingsListener.getSettings();
+    SettingsListener.getSettings(true);
   }
 
   private static async updateSnippet(data: any) {
@@ -69,7 +69,7 @@ export class SnippetListener extends BaseListener {
     }
 
     await Settings.update(SETTING_CONTENT_SNIPPETS, snippets, true);
-    SettingsListener.getSettings();
+    SettingsListener.getSettings(true);
   }
 
   private static async insertSnippet(data: any) {

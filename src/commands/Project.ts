@@ -55,7 +55,7 @@ categories: []
         SettingsListener.setFramework(framework.name);
       }
 
-      SettingsListener.getSettings();
+      SettingsListener.getSettings(true);
     } catch (err: any) {
       Logger.error(`Project::init: ${err?.message || err}`);
       Notifications.error(`Sorry, something went wrong - ${err?.message || err}`);

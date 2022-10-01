@@ -15,7 +15,7 @@ import { TagType } from './panelWebView/TagType';
 import { ExplorerView } from './explorerView/ExplorerView';
 import { Extension } from './helpers/Extension';
 import { DashboardData } from './models/DashboardData';
-import { debounceCallback, Logger, Settings as SettingsHelper } from './helpers';
+import { DashboardSettings, debounceCallback, Logger, Settings as SettingsHelper } from './helpers';
 import { Content } from './commands/Content';
 import ContentProvider from './providers/ContentProvider';
 import { Wysiwyg } from './commands/Wysiwyg';
@@ -25,6 +25,7 @@ import { Backers } from './commands/Backers';
 import { DataListener, SettingsListener } from './listeners/panel';
 import { NavigationType } from './dashboardWebView/models';
 import { ModeSwitch } from './services/ModeSwitch';
+import { PagesParser } from './services/PagesParser';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
@@ -265,6 +266,10 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// Git
 	GitListener.init();
+
+	// Once everything is registered, the page parsing can start in the background
+	DashboardSettings.get();
+	PagesParser.start();
 
 	// Subscribe all commands
 	subscriptions.push(
