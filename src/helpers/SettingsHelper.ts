@@ -4,7 +4,7 @@ import { Notifications } from './Notifications';
 import { commands, Uri, workspace, window } from 'vscode';
 import * as vscode from 'vscode';
 import { ContentType, CustomTaxonomy, TaxonomyType } from '../models';
-import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM, TelemetryEvent, COMMAND_NAME, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_PAGE_FOLDERS, SETTING_CONTENT_SNIPPETS, SETTING_CONTENT_PLACEHOLDERS } from '../constants';
+import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM, TelemetryEvent, COMMAND_NAME, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_PAGE_FOLDERS, SETTING_CONTENT_SNIPPETS, SETTING_CONTENT_PLACEHOLDERS, SETTING_CUSTOM_SCRIPTS, SETTING_DATA_FILES, SETTING_DATA_TYPES, SETTING_DATA_FOLDERS } from '../constants';
 import { Folders } from '../commands/Folders';
 import { join, basename, dirname, parse } from 'path';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
@@ -427,7 +427,7 @@ export class Settings {
       }
 
       // Read the files from the config folder
-      let configFiles = await workspace.findFiles(`**/${Settings.globalConfigFolder}/**`);
+      let configFiles = await workspace.findFiles(`**/${Settings.globalConfigFolder}/**/*.json`);
       if (configFiles.length === 0) {
         Logger.info(`No ".frontmatter/config" config files found.`);
       }
@@ -470,26 +470,48 @@ export class Settings {
       if (relSettingName.startsWith('.')) {
         relSettingName = relSettingName.substring(1);
       }
-
-      const settingName = `frontMatter${relSettingName.startsWith('.') ? '' : '.'}${relSettingName}`;
+      relSettingName = relSettingName.toLowerCase();
 
       if (!Settings.globalConfig) {
         Settings.globalConfig = {};
       }
 
       // Array settings
-      if (relSettingName === SETTING_TAXONOMY_CONTENT_TYPES ||
-          relSettingName === SETTING_CONTENT_PAGE_FOLDERS || 
-          relSettingName === SETTING_CONTENT_PLACEHOLDERS) {
-        const crntValue = Settings.globalConfig[settingName] || [];
-        Settings.globalConfig[settingName] = [...crntValue, configJson];
+      if (relSettingName === SETTING_TAXONOMY_CONTENT_TYPES.toLowerCase() ||
+          relSettingName === SETTING_CONTENT_PAGE_FOLDERS.toLowerCase() || 
+          relSettingName === SETTING_CONTENT_PLACEHOLDERS.toLowerCase() ||
+          relSettingName === SETTING_CUSTOM_SCRIPTS.toLowerCase() ||
+          relSettingName === SETTING_DATA_FILES.toLowerCase() ||
+          relSettingName === SETTING_DATA_FOLDERS.toLowerCase() ||
+          relSettingName === SETTING_DATA_TYPES.toLowerCase()) {
+
+        // Get the correct setting name
+        let settingNameValue = ""
+        if (relSettingName === SETTING_TAXONOMY_CONTENT_TYPES.toLowerCase()) {
+          settingNameValue = SETTING_TAXONOMY_CONTENT_TYPES;
+        } else if (relSettingName === SETTING_CONTENT_PAGE_FOLDERS.toLowerCase()) {
+          settingNameValue = SETTING_CONTENT_PAGE_FOLDERS;
+        } else if (relSettingName === SETTING_CONTENT_PLACEHOLDERS.toLowerCase()) {
+          settingNameValue = SETTING_CONTENT_PLACEHOLDERS;
+        } else if (relSettingName === SETTING_CUSTOM_SCRIPTS.toLowerCase()) {
+          settingNameValue = SETTING_CUSTOM_SCRIPTS;
+        } else if (relSettingName === SETTING_DATA_FILES.toLowerCase()) {
+          settingNameValue = SETTING_DATA_FILES;
+        } else if (relSettingName === SETTING_DATA_FOLDERS.toLowerCase()) {
+          settingNameValue = SETTING_DATA_FOLDERS;
+        } else if (relSettingName === SETTING_DATA_TYPES.toLowerCase()) {
+          settingNameValue = SETTING_DATA_TYPES;
+        }
+
+        const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${settingNameValue}`] || [];
+        Settings.globalConfig[`${CONFIG_KEY}.${settingNameValue}`] = [...crntValue, configJson];
       }
       // Object settings
-      else if (relSettingName === SETTING_CONTENT_SNIPPETS) {
+      else if (relSettingName === SETTING_CONTENT_SNIPPETS.toLowerCase()) {
         // Filename is the key
         const fileName = parse(configFilePath).name;
-        const crntValue = Settings.globalConfig[settingName] || {};
-        Settings.globalConfig[settingName] = { ...crntValue, ...{ [fileName]: configJson } };
+        const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CONTENT_SNIPPETS}`] || {};
+        Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CONTENT_SNIPPETS}`] = { ...crntValue, ...{ [fileName]: configJson } };
       }
     } catch (e) {
       Logger.error(`Error reading config file: ${configFile.fsPath}`);
