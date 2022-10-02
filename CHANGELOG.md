@@ -16,6 +16,8 @@
 
 ### 🐞 Fixes
 
+- [#433](https://github.com/estruyf/vscode-front-matter/issues/433): Fix issue with rendering an incorrect title value on the content dashboard
+
 ## [8.1.1] - 2022-09-23
 
 ### 🐞 Fixes
