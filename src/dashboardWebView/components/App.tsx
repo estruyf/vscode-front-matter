@@ -16,6 +16,9 @@ import { Route, Routes, useNavigate } from 'react-router-dom';
 import { routePaths } from '..';
 import { useEffect, useMemo } from 'react';
 import { UnknownView } from './UnknownView';
+import { ErrorBoundary } from '@sentry/react';
+import { ErrorView } from './ErrorView';
+import { DashboardMessage } from '../DashboardMessage';
 
 export interface IAppProps {
   showWelcome: boolean;
@@ -68,23 +71,32 @@ export const App: React.FunctionComponent<IAppProps> = ({showWelcome}: React.Pro
   }
 
   return (
-    <main className={`h-full w-full`}>
-      <Routes>
-        <Route path={routePaths.welcome} element={<WelcomeScreen settings={settings} />} />
-        <Route path={routePaths.contents} element={<Contents pages={pages} loading={loading} />} />
-        <Route path={routePaths.media} element={<Media />} />
-        <Route path={routePaths.snippets} element={<Snippets />} />
-        
-        {
-          allowDataView && <Route path={routePaths.data} element={<DataView />} />
-        }
+    <ErrorBoundary
+      fallback={(<ErrorView />)}
+      onError={(error: Error, componentStack: string, eventId: string) => {
+        Messenger.send(DashboardMessage.logError, `Event ID: ${eventId}
+Message: ${error.message}
 
-        {
-          allowTaxonomyView && <Route path={routePaths.taxonomy} element={<TaxonomyView pages={pages} />} />
-        }
+Stack: ${componentStack}`);
+      }}>
+      <main className={`h-full w-full`}>
+        <Routes>
+          <Route path={routePaths.welcome} element={<WelcomeScreen settings={settings} />} />
+          <Route path={routePaths.contents} element={<Contents pages={pages} loading={loading} />} />
+          <Route path={routePaths.media} element={<Media />} />
+          <Route path={routePaths.snippets} element={<Snippets />} />
+          
+          {
+            allowDataView && <Route path={routePaths.data} element={<DataView />} />
+          }
 
-        <Route path={`*`} element={<UnknownView />} />
-      </Routes>
-    </main>
+          {
+            allowTaxonomyView && <Route path={routePaths.taxonomy} element={<TaxonomyView pages={pages} />} />
+          }
+
+          <Route path={`*`} element={<UnknownView />} />
+        </Routes>
+      </main>
+    </ErrorBoundary>
   );
 };
