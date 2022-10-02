@@ -4,22 +4,30 @@ import { dirname, join } from "path";
 import { StatusBarAlignment, Uri, window } from "vscode";
 import { Dashboard } from "../commands/Dashboard";
 import { Folders } from "../commands/Folders";
-import { DefaultFields, DEFAULT_CONTENT_TYPE_NAME, SETTING_SEO_DESCRIPTION_FIELD } from "../constants";
+import { DefaultFields, DEFAULT_CONTENT_TYPE_NAME, ExtensionState, SETTING_SEO_DESCRIPTION_FIELD } from "../constants";
 import { Page } from "../dashboardWebView/models";
-import { ArticleHelper, ContentType, DateHelper, isValidFile, Logger, Notifications, Settings } from "../helpers";
+import { ArticleHelper, ContentType, DateHelper, Extension, isValidFile, Logger, Notifications, Settings } from "../helpers";
 
 
 export class PagesParser {
   public static allPages: Page[] = [];
+  public static cachedPages: Page[] | undefined = undefined;
   private static parser: Promise<void> | undefined;
   private static initialized: boolean = false;
 
+  /**
+   * Start the page parser
+   */
   public static start() {
     if (!this.parser) {
       this.parser = this.parsePages();
     }
   }
 
+  /**
+   * Retrieve the pages
+   * @param cb 
+   */
   public static getPages(cb: (pages: Page[]) => void) {
     if (this.parser) {
       this.parser.then(() => cb(PagesParser.allPages));
@@ -34,12 +42,20 @@ export class PagesParser {
     }
   }
 
+  /**
+   * Reset the cache
+   */
   public static async reset() {
     this.parser = undefined;
     PagesParser.allPages = [];
   }
 
+  /**
+   * Parse all pages in the workspace
+   */
   public static async parsePages() {
+    const ext = Extension.getInstance();
+
     // Update the dashboard with the fresh data
     const folderInfo = await Folders.getInfo();
     const pages: Page[] = [];
@@ -53,12 +69,15 @@ export class PagesParser {
         for (const file of folder.lastModified) {
           if (isValidFile(file.fileName)) {
             try {
-              const page = this.processPageContent(file.filePath, file.mtime, file.fileName, folder.title);
+              let page = await PagesParser.getCachedPage(file.filePath, file.mtime);
 
-              if (page && !pages.find(p => p.fmFilePath === page.fmFilePath)) {
+              if (!page) {
+                page = this.processPageContent(file.filePath, file.mtime, file.fileName, folder.title);
+              }
+
+              if (page && !pages.find(p => p.fmFilePath === page?.fmFilePath)) {
                 pages.push(page);
               }
-              
             } catch (error: any) {
               if ((error as Error)?.message.toLowerCase() === "webview is disposed") {
                 continue;
@@ -72,10 +91,28 @@ export class PagesParser {
       }
     }
 
+    await ext.setState(ExtensionState.Dashboard.Pages.Cache, pages, "workspace");
+    PagesParser.cachedPages = undefined;
+
     this.parser = undefined;
     this.initialized = true;
     PagesParser.allPages = [...pages];
     statusBar.hide();
+  }
+
+  /**
+   * Find the page in the cached data
+   * @param filePath 
+   * @param modifiedTime 
+   * @returns 
+   */
+  public static async getCachedPage(filePath: string, modifiedTime: number): Promise<Page | undefined> {
+    if (!PagesParser.cachedPages) {
+      const ext = Extension.getInstance();
+      PagesParser.cachedPages = await ext.getState<Page[]>(ExtensionState.Dashboard.Pages.Cache, "workspace") || [];
+    }
+
+    return PagesParser.cachedPages.find(p => p.fmCachePath === parseWinPath(filePath) && p.fmCacheModifiedTime === modifiedTime);
   }
 
   /**
@@ -103,6 +140,9 @@ export class PagesParser {
 
       const page: Page = {
         ...article.data,
+        // Cache properties
+        fmCachePath: parseWinPath(filePath),
+        fmCacheModifiedTime: fileMtime,
         // FrontMatter properties
         fmFolder: folderTitle,
         fmFilePath: filePath,

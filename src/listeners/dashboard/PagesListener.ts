@@ -161,8 +161,7 @@ export class PagesListener extends BaseListener {
       this.sendPageData(pages);
 
       this.sendMsg(DashboardCommand.searchReady, true);
-
-      await ext.setState(ExtensionState.Dashboard.Pages.Cache, pages, "workspace");
+      
       await this.createSearchIndex(pages);
     });
   }
