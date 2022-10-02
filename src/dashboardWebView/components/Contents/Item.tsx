@@ -19,6 +19,22 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
   const view = useRecoilValue(ViewSelector);
   const settings = useRecoilValue(SettingsSelector);
   const draftField = useMemo(() => settings?.draftField, [settings]);
+
+  const escapedTitle = useMemo(() => {
+    if (title && typeof title !== 'string') {
+      return '<invalid title>';
+    }
+
+    return title;
+  }, [title]);
+
+  const escapedDescription = useMemo(() => {
+    if (description && typeof description !== 'string') {
+      return '<invalid description>';
+    }
+
+    return description;
+  }, [description]);
   
   const openFile = () => {
     Messenger.send(DashboardMessage.openFile, fmFilePath);
@@ -57,7 +73,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
           <button onClick={openFile} className="relative h-36 w-full overflow-hidden border-b border-gray-100 dark:border-vulcan-100 dark:group-hover:border-vulcan-200 cursor-pointer">
             {
               pageData[PREVIEW_IMAGE_FIELD] ? (
-                <img src={`${pageData[PREVIEW_IMAGE_FIELD]}`} alt={title} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+                <img src={`${pageData[PREVIEW_IMAGE_FIELD]}`} alt={escapedTitle} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
               ) : (
                 <div className={`flex items-center justify-center bg-whisper-500 dark:bg-vulcan-200 dark:group-hover:bg-vulcan-100`}>
                   <MarkdownIcon className={`h-32 text-vulcan-100 dark:text-whisper-100`} />
@@ -79,9 +95,9 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
                 onOpen={openFile} />
             </div>
 
-            <button onClick={openFile} className={`text-left`}><h2 className="mt-2 mb-2 font-bold">{title}</h2></button>
+            <button onClick={openFile} className={`text-left`}><h2 className="mt-2 mb-2 font-bold">{escapedTitle}</h2></button>
 
-            <button onClick={openFile} className={`text-left`}><p className="text-xs text-vulcan-200 dark:text-whisper-800">{description}</p></button>
+            <button onClick={openFile} className={`text-left`}><p className="text-xs text-vulcan-200 dark:text-whisper-800">{escapedDescription}</p></button>
 
             {
               tags && tags.length > 0 && (
@@ -110,13 +126,13 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
         <div className={`px-5 cursor-pointer w-full text-left grid grid-cols-12 gap-x-4 sm:gap-x-6 xl:gap-x-8 py-2 border-b border-gray-300 hover:bg-gray-200 dark:border-vulcan-50 dark:hover:bg-vulcan-50 hover:bg-opacity-70`}>
           <div className="col-span-8 font-bold truncate flex items-center space-x-4">
             <button 
-              title={`Open: ${title}`} 
+              title={`Open: ${escapedTitle}`} 
               onClick={openFile}>
-              {title}
+              {escapedTitle}
             </button>
 
             <ContentActions 
-              title={title}
+              title={escapedTitle}
               path={fmFilePath}
               scripts={settings?.scripts}
               onOpen={openFile}
