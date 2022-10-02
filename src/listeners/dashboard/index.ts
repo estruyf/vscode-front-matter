@@ -8,3 +8,4 @@ export * from './SettingsListener';
 export * from './SnippetListener';
 export * from './TelemetryListener';
 export * from './TaxonomyListener';
+export * from './LogListener';
