@@ -3,7 +3,7 @@ import { Telemetry } from './Telemetry';
 import { Notifications } from './Notifications';
 import { commands, Uri, workspace, window } from 'vscode';
 import * as vscode from 'vscode';
-import { ContentType, CustomTaxonomy, TaxonomyType } from '../models';
+import { ContentFolder, ContentType, CustomPlaceholder, CustomTaxonomy, DataFile, DataFolder, DataType, TaxonomyType } from '../models';
 import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM, TelemetryEvent, COMMAND_NAME, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_PAGE_FOLDERS, SETTING_CONTENT_SNIPPETS, SETTING_CONTENT_PLACEHOLDERS, SETTING_CUSTOM_SCRIPTS, SETTING_DATA_FILES, SETTING_DATA_TYPES, SETTING_DATA_FOLDERS } from '../constants';
 import { Folders } from '../commands/Folders';
 import { join, basename, dirname, parse } from 'path';
@@ -477,34 +477,40 @@ export class Settings {
       }
 
       // Array settings
-      if (relSettingName === SETTING_TAXONOMY_CONTENT_TYPES.toLowerCase() ||
-          relSettingName === SETTING_CONTENT_PAGE_FOLDERS.toLowerCase() || 
-          relSettingName === SETTING_CONTENT_PLACEHOLDERS.toLowerCase() ||
-          relSettingName === SETTING_CUSTOM_SCRIPTS.toLowerCase() ||
-          relSettingName === SETTING_DATA_FILES.toLowerCase() ||
-          relSettingName === SETTING_DATA_FOLDERS.toLowerCase() ||
-          relSettingName === SETTING_DATA_TYPES.toLowerCase()) {
+      if (relSettingName === SETTING_CUSTOM_SCRIPTS.toLowerCase()) {
 
         // Get the correct setting name
         let settingNameValue = ""
-        if (relSettingName === SETTING_TAXONOMY_CONTENT_TYPES.toLowerCase()) {
-          settingNameValue = SETTING_TAXONOMY_CONTENT_TYPES;
-        } else if (relSettingName === SETTING_CONTENT_PAGE_FOLDERS.toLowerCase()) {
-          settingNameValue = SETTING_CONTENT_PAGE_FOLDERS;
-        } else if (relSettingName === SETTING_CONTENT_PLACEHOLDERS.toLowerCase()) {
-          settingNameValue = SETTING_CONTENT_PLACEHOLDERS;
-        } else if (relSettingName === SETTING_CUSTOM_SCRIPTS.toLowerCase()) {
+        if (relSettingName === SETTING_CUSTOM_SCRIPTS.toLowerCase()) {
           settingNameValue = SETTING_CUSTOM_SCRIPTS;
-        } else if (relSettingName === SETTING_DATA_FILES.toLowerCase()) {
-          settingNameValue = SETTING_DATA_FILES;
-        } else if (relSettingName === SETTING_DATA_FOLDERS.toLowerCase()) {
-          settingNameValue = SETTING_DATA_FOLDERS;
-        } else if (relSettingName === SETTING_DATA_TYPES.toLowerCase()) {
-          settingNameValue = SETTING_DATA_TYPES;
         }
 
         const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${settingNameValue}`] || [];
         Settings.globalConfig[`${CONFIG_KEY}.${settingNameValue}`] = [...crntValue, configJson];
+      }
+      // Content types
+      else if (relSettingName === SETTING_TAXONOMY_CONTENT_TYPES.toLowerCase()) {
+        Settings.updateGlobalConfigArraySetting(SETTING_TAXONOMY_CONTENT_TYPES, "name", configJson);
+      }
+      // Data files
+      else if (relSettingName === SETTING_DATA_FILES.toLowerCase()) {
+        Settings.updateGlobalConfigArraySetting(SETTING_DATA_FILES, "id", configJson);
+      }
+      // Data folders
+      else if (relSettingName === SETTING_DATA_FOLDERS.toLowerCase()) {
+        Settings.updateGlobalConfigArraySetting(SETTING_DATA_FOLDERS, "id", configJson);
+      }
+      // Data types
+      else if (relSettingName === SETTING_DATA_TYPES.toLowerCase()) {
+        Settings.updateGlobalConfigArraySetting(SETTING_DATA_TYPES, "id", configJson);
+      }
+      // Page folders
+      else if (relSettingName === SETTING_CONTENT_PAGE_FOLDERS.toLowerCase()) {
+        Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PAGE_FOLDERS, "path", configJson);
+      }
+      // Placeholders
+      else if (relSettingName === SETTING_CONTENT_PLACEHOLDERS.toLowerCase()) {
+        Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PLACEHOLDERS, "id", configJson);
       }
       // Object settings
       else if (relSettingName === SETTING_CONTENT_SNIPPETS.toLowerCase()) {
@@ -517,6 +523,26 @@ export class Settings {
       Logger.error(`Error reading config file: ${configFile.fsPath}`);
       Logger.error((e as Error).message);
     }
+  }
+
+  /**
+   * Update an array setting in the global config
+   * @param settingName 
+   * @param fieldName 
+   * @param configJson 
+   */
+  private static updateGlobalConfigArraySetting<T>(settingName: string, fieldName: string, configJson: any): void {
+    const crntValue: T[] = Settings.globalConfig[`${CONFIG_KEY}.${settingName}`] || [];
+
+    // Check if folder is already added
+    const itemIdx = crntValue.findIndex((item: any) => item[fieldName] === configJson[fieldName]);
+    if (itemIdx !== -1) {
+      crntValue[itemIdx] = configJson;
+    } else {
+      crntValue.push(configJson);
+    }
+
+    Settings.globalConfig[`${CONFIG_KEY}.${settingName}`] = [...crntValue];
   }
 
   /**

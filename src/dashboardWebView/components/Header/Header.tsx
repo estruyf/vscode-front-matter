@@ -180,7 +180,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPage
             </div>
 
             {
-              (settings?.dashboardState.contents.pagination) && (totalPages || 0) > PAGE_LIMIT && (!grouping || grouping === GroupOption.none) && (
+              (settings?.dashboardState?.contents?.pagination) && (totalPages || 0) > PAGE_LIMIT && (!grouping || grouping === GroupOption.none) && (
                 <div className={`flex justify-center py-2 border-b border-gray-300 dark:border-vulcan-100`}>
                   <Pagination totalPages={totalPages || 0} />
                 </div>
