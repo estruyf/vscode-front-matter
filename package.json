@@ -1742,6 +1742,11 @@
         "command": "frontMatter.git.sync",
         "title": "Sync",
         "category": "Front Matter"
+      },
+      {
+        "command": "frontMatter.cache.clear",
+        "title": "Clear cache",
+        "category": "Front Matter"
       }
     ],
     "menus": {

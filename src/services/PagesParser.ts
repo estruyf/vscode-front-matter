@@ -138,6 +138,16 @@ export class PagesParser {
 
       const staticFolder = Folders.getStaticFolderRelativePath();
 
+      let escapedTitle = article?.data.title;
+      if (escapedTitle && typeof escapedTitle !== "string") {
+        escapedTitle = "<invalid title>";
+      }
+
+      let escapedDescription = article?.data[descriptionField] || "";
+      if (escapedDescription && typeof escapedDescription !== "string") {
+        escapedDescription = "<invalid title>";
+      }
+
       const page: Page = {
         ...article.data,
         // Cache properties
@@ -157,11 +167,11 @@ export class PagesParser {
         fmContentType: DEFAULT_CONTENT_TYPE_NAME,
         fmBody: article?.content || "",
         // Make sure these are always set
-        title: article?.data.title,
+        title: escapedTitle,
         slug: article?.data.slug,
         date: article?.data[dateField] || "",
         draft: article?.data.draft,
-        description: article?.data[descriptionField] || "",
+        description: escapedDescription,
       };
 
       const contentType = ArticleHelper.getContentType(article.data);

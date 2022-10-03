@@ -8,6 +8,7 @@ import { Folders } from './commands/Folders';
 import { Preview } from './commands/Preview';
 import { Project } from './commands/Project';
 import { Template } from './commands/Template';
+import { Cache } from './commands/Cache';
 import { COMMAND_NAME, TelemetryEvent } from './constants';
 import { TaxonomyType } from './models';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
@@ -270,6 +271,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	// Once everything is registered, the page parsing can start in the background
 	DashboardSettings.get();
 	PagesParser.start();
+
+	// Cache commands
+	Cache.registerCommands();
 
 	// Subscribe all commands
 	subscriptions.push(

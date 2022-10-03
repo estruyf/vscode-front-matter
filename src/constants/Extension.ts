@@ -72,4 +72,7 @@ export const COMMAND_NAME = {
 
   // Config
   reloadConfig: getCommandName("config.reload"),
+
+  // Cache
+  clearCache: getCommandName("cache.clear"),
 };
