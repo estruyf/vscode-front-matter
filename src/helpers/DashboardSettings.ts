@@ -31,7 +31,7 @@ export class DashboardSettings {
     const wsFolder = Folders.getWorkspaceFolder();
     const isInitialized = Project.isInitialized();
     const gitActions = Settings.get<boolean>(SETTING_GIT_ENABLED);
-    const pagination = Settings.get<boolean>(SETTING_DASHBOARD_CONTENT_PAGINATION)
+    const pagination = Settings.get<boolean | number>(SETTING_DASHBOARD_CONTENT_PAGINATION)
     
     const settings = {
       git: {

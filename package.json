@@ -447,9 +447,9 @@
           "scope": "Custom scripts"
         },
         "frontMatter.dashboard.content.pagination": {
-          "type": "boolean",
+          "type": ["boolean", "number"],
           "default": true,
-          "markdownDescription": "Specify if you want to enable/disable pagination for your content. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.content.pagination)",
+          "markdownDescription": "Specify if you want to enable/disable pagination for your content. You can define your page number up to 52. Default items per page is `16`. Disabling the pagination can be done by setting it to `false`. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.content.pagination)",
           "scope": "Dashboard"
         },
         "frontMatter.dashboard.content.cardTags": {

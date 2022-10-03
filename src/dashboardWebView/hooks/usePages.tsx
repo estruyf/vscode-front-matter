@@ -188,7 +188,6 @@ export default function usePages(pages: Page[]) {
 
 
   useEffect(() => {
-    console.log("useEffect: tab", tab, sortedPages.length);
     if (sortedPages.length > 0) {
       processByTab(sortedPages);
     }

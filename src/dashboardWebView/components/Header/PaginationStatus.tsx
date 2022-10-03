@@ -1,27 +1,32 @@
 import * as React from 'react';
+import { useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
-import { MediaTotalSelector, PageAtom } from '../../state';
-import { PAGE_LIMIT } from './Pagination';
+import usePagination from '../../hooks/usePagination';
+import { MediaTotalSelector, PageAtom, SettingsAtom } from '../../state';
 
-export interface IPaginationStatusProps {}
+export interface IPaginationStatusProps {
+  totalPages?: number;
+}
 
-export const PaginationStatus: React.FunctionComponent<IPaginationStatusProps> = (props: React.PropsWithChildren<IPaginationStatusProps>) => {
+export const PaginationStatus: React.FunctionComponent<IPaginationStatusProps> = ({ totalPages }: React.PropsWithChildren<IPaginationStatusProps>) => {
   const totalMedia = useRecoilValue(MediaTotalSelector);
   const page = useRecoilValue(PageAtom);
+  const settings = useRecoilValue(SettingsAtom);
+  const { pageSetNr, totalItems } = usePagination(settings?.dashboardState.contents.pagination, totalPages || 0, totalMedia);
 
-  const getTotalPage = () => {
-    const mediaItems = ((page + 1) * PAGE_LIMIT);
-    if (totalMedia < mediaItems) {
-      return totalMedia;
+  const totelItemsOnPage = useMemo(() => {
+    const items = ((page + 1) * pageSetNr);
+    if (totalItems < items) {
+      return totalItems;
     }
-    return mediaItems;
-  };
+    return totalItems;
+  }, [page, totalMedia, pageSetNr]);
 
   return (
     <div className="hidden sm:flex">      
       <p className="text-sm text-gray-500 dark:text-whisper-900">
-        Showing <span className="font-medium">{(page * PAGE_LIMIT) + 1}</span> to <span className="font-medium">{getTotalPage()}</span> of{' '}
-        <span className="font-medium">{totalMedia}</span> results
+        Showing <span className="font-medium">{(page * pageSetNr) + 1}</span> to <span className="font-medium">{totelItemsOnPage}</span> of{' '}
+        <span className="font-medium">{totalItems}</span> results
       </p>
     </div>
   );
