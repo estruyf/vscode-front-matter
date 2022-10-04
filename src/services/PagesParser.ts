@@ -247,15 +247,13 @@ export class PagesParser {
             }
   
             if (previewUri) {
-              const previewPath = Dashboard.getWebview()?.asWebviewUri(previewUri);
-              let preview = previewPath?.toString();
+              let previewPath = Dashboard.getWebview()?.asWebviewUri(previewUri);
 
-              if (!preview) {
-                const fileUrl = parseWinPath(previewUri.fsPath);
-                preview = `https://file%2B.vscode-resource.vscode-cdn.net/${fileUrl.startsWith(`/`) ? fileUrl.substr(1) : fileUrl}`;
+              if (!previewPath) {
+                previewPath = PagesParser.getWebviewUri(previewUri);
               }
               
-              page["fmPreviewImage"] = preview?.toString() || "";
+              page["fmPreviewImage"] = previewPath?.toString() || "";
             }
           }
         }
@@ -265,5 +263,25 @@ export class PagesParser {
     }
 
     return;
+  }
+
+  /**
+   * Get the webview URI
+   * @param resource 
+   * @returns 
+   */
+  private static getWebviewUri(resource: Uri) {
+    // Logic from: https://github.com/microsoft/vscode/blob/main/src/vs/workbench/common/webview.ts
+    const webviewResourceBaseHost = 'vscode-cdn.net';
+    const webviewRootResourceAuthority = `vscode-resource.${webviewResourceBaseHost}`;
+
+    const authority = `${resource.scheme}+${encodeURI(resource.authority)}.${webviewRootResourceAuthority}`;
+    return Uri.from({
+      scheme: "https", 
+      authority, 
+      path: resource.path, 
+      query: resource.query, 
+      fragment: resource.fragment
+    });
   }
 }
