@@ -137,7 +137,7 @@ export class Folders {
 
 		  Telemetry.send(TelemetryEvent.registerFolder);
 
-      SettingsListener.getSettings();
+      SettingsListener.getSettings(true);
     }
   }
 

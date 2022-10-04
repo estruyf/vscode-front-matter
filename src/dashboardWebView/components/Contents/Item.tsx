@@ -95,9 +95,9 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
                 onOpen={openFile} />
             </div>
 
-            <button onClick={openFile} className={`text-left`}><h2 className="mt-2 mb-2 font-bold">{escapedTitle}</h2></button>
+            <button onClick={openFile} className={`text-left block`}><h2 className="mt-2 mb-2 font-bold">{escapedTitle}</h2></button>
 
-            <button onClick={openFile} className={`text-left`}><p className="text-xs text-vulcan-200 dark:text-whisper-800">{escapedDescription}</p></button>
+            <button onClick={openFile} className={`text-left block`}><p className="text-xs text-vulcan-200 dark:text-whisper-800">{escapedDescription}</p></button>
 
             {
               tags && tags.length > 0 && (

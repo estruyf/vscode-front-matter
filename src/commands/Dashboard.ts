@@ -131,7 +131,7 @@ export class Dashboard {
     });
 
     SettingsHelper.onConfigChange(() => {
-      SettingsListener.getSettings();
+      SettingsListener.getSettings(true);
     });
 
     Dashboard.webview.webview.onDidReceiveMessage(async (msg) => {

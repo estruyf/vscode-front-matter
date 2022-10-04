@@ -44,7 +44,7 @@ export interface ContentsViewState {
   defaultSorting: string | null | undefined;
   tags: string | null | undefined;
   templatesEnabled: boolean | null | undefined;
-  pagination: boolean | null | undefined;
+  pagination: boolean | number | null | undefined;
 }
 
 export interface MediaViewState extends ContentsViewState {

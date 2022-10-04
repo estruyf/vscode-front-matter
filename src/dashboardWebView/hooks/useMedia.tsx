@@ -4,9 +4,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { MediaInfo, MediaPaths } from '../../models';
 import { DashboardCommand } from '../DashboardCommand';
-import { LoadingAtom, MediaFoldersAtom, MediaTotalAtom, PageAtom, SearchAtom, SelectedMediaFolderAtom } from '../state';
+import { LoadingAtom, MediaFoldersAtom, MediaTotalAtom, PageAtom, SearchAtom, SelectedMediaFolderAtom, SettingsAtom } from '../state';
 import Fuse from 'fuse.js';
-import { PAGE_LIMIT } from '../components/Header/Pagination';
+import usePagination from './usePagination';
 
 const fuseOptions: Fuse.IFuseOptions<MediaInfo> = {
   keys: [
@@ -28,10 +28,12 @@ export default function useMedia() {
   const [ , setFolders ] = useRecoilState(MediaFoldersAtom);
   const [ , setLoading ] = useRecoilState(LoadingAtom);
   const search = useRecoilValue(SearchAtom);
+  const settings = useRecoilValue(SettingsAtom);
+  const { pageSetNr } = usePagination(settings?.dashboardState.contents.pagination);
 
   const getMedia = useCallback(() => {
-    return searchedMedia.slice(page * PAGE_LIMIT, ((page + 1) * PAGE_LIMIT));
-  }, [searchedMedia, page]);
+    return searchedMedia.slice(page * pageSetNr, ((page + 1) * pageSetNr));
+  }, [searchedMedia, page, pageSetNr]);
 
   const messageListener = (message: MessageEvent<EventData<MediaPaths | { key: string, value: any }>>) => {
     if (message.data.command === DashboardCommand.media) {
@@ -57,8 +59,9 @@ export default function useMedia() {
       return;
     }
     
+    setTotal(media.length);
     setSearchedMedia(media);
-  }, [search]);
+  }, [search, media]);
 
   useEffect(() => {
     Messenger.listen<MediaPaths>(messageListener);

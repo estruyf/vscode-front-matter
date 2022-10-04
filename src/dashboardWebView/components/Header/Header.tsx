@@ -23,8 +23,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { routePaths } from '../..';
 import { useEffect, useMemo } from 'react';
 import { SyncButton } from './SyncButton';
-import { PAGE_LIMIT, Pagination } from './Pagination';
+import { Pagination } from './Pagination';
 import { GroupOption } from '../../constants/GroupOption';
+import usePagination from '../../hooks/usePagination';
+import { PaginationStatus } from './PaginationStatus';
 
 export interface IHeaderProps {
   header?: React.ReactNode;
@@ -37,13 +39,14 @@ export interface IHeaderProps {
   folders?: string[];
 }
 
-export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPages, folders, settings }: React.PropsWithChildren<IHeaderProps>) => {
+export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPages, settings }: React.PropsWithChildren<IHeaderProps>) => {
   const [ crntTag, setCrntTag ] = useRecoilState(TagAtom);
   const [ crntCategory, setCrntCategory ] = useRecoilState(CategoryAtom);
   const grouping = useRecoilValue(GroupingSelector);
   const resetSorting = useResetRecoilState(SortingAtom);
   const location = useLocation();
   const navigate = useNavigate();
+  const { pageSetNr } = usePagination(settings?.dashboardState.contents.pagination);
 
   const createContent = () => {
     Messenger.send(DashboardMessage.createContent);
@@ -180,8 +183,10 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPage
             </div>
 
             {
-              (settings?.dashboardState?.contents?.pagination) && (totalPages || 0) > PAGE_LIMIT && (!grouping || grouping === GroupOption.none) && (
-                <div className={`flex justify-center py-2 border-b border-gray-300 dark:border-vulcan-100`}>
+              (pageSetNr > 0) && (totalPages || 0) > pageSetNr && (!grouping || grouping === GroupOption.none) && (
+                <div className={`px-4 flex justify-between py-2 border-b border-gray-300 dark:border-vulcan-100`}>
+                  <PaginationStatus totalPages={totalPages || 0} />
+
                   <Pagination totalPages={totalPages || 0} />
                 </div>
               )

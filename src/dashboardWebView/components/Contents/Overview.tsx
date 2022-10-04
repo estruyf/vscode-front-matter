@@ -9,9 +9,9 @@ import { GroupOption } from '../../constants/GroupOption';
 import { Page } from '../../models/Page';
 import { Settings } from '../../models/Settings';
 import { GroupingSelector, PageAtom } from '../../state';
-import { PAGE_LIMIT } from '../Header/Pagination';
 import { Item } from './Item';
 import { List } from './List';
+import usePagination from '../../hooks/usePagination';
 
 export interface IOverviewProps {
   pages: Page[];  
@@ -21,14 +21,15 @@ export interface IOverviewProps {
 export const Overview: React.FunctionComponent<IOverviewProps> = ({pages, settings}: React.PropsWithChildren<IOverviewProps>) => {
   const grouping = useRecoilValue(GroupingSelector);
   const page = useRecoilValue(PageAtom);
+  const { pageSetNr } = usePagination(settings?.dashboardState.contents.pagination);
 
   const pagedPages = useMemo(() => {
-    if (settings?.dashboardState.contents.pagination) {
-      return pages.slice(page * PAGE_LIMIT, ((page + 1) * PAGE_LIMIT));
+    if (pageSetNr) {
+      return pages.slice(page * pageSetNr, ((page + 1) * pageSetNr));
     }
 
     return pages;
-  }, [pages, page, settings]);
+  }, [pages, page, pageSetNr]);
 
   const groupName = useCallback((groupId, groupedPages) => {
     if (grouping === GroupOption.Draft) {
