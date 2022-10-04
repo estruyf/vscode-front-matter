@@ -14,6 +14,8 @@
 
 ### ⚡️ Optimizations
 
+- [#431](https://github.com/estruyf/vscode-front-matter/issues/431): Performance improvements for the content dashboard
+
 ### 🐞 Fixes
 
 - [#433](https://github.com/estruyf/vscode-front-matter/issues/433): Fix issue with rendering an incorrect title value on the content dashboard
