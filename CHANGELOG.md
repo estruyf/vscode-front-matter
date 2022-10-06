@@ -21,6 +21,13 @@
 - Fix field error message color
 - [#433](https://github.com/estruyf/vscode-front-matter/issues/433): Fix issue with rendering an incorrect title value on the content dashboard
 
+## [8.1.2] - 2022-10-06
+
+### 🐞 Fixes
+
+- [#435](https://github.com/estruyf/vscode-front-matter/issues/435): Fix required fields text color
+- [#436](https://github.com/estruyf/vscode-front-matter/issues/436): Fix inserting image/video snippets without defined fields
+
 ## [8.1.1] - 2022-09-23
 
 ### 🐞 Fixes

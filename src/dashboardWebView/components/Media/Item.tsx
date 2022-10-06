@@ -166,7 +166,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
       mediaHeight: media?.dimensions?.height?.toString() || "",
     };
 
-    if (snippet.fields.length === 0) {
+    if (!snippet.fields || snippet.fields.length === 0) {
       setShowSnippetFormDialog(false);
       setMediaData(undefined);
 
