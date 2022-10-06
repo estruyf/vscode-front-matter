@@ -348,6 +348,7 @@
 }
 
 .metadata_field__required__message {
+  color: var(--vscode-inputValidation-errorBorder);
   padding-top: .5rem;
   font-size: .9rem;
   margin-left: .5rem;
