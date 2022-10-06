@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "fs";
+import { existsSync } from "fs";
 import { Folders } from "../commands/Folders";
 import { DataFile } from "../models";
 import * as yaml from 'js-yaml';
@@ -7,6 +7,7 @@ import { Notifications } from "./Notifications";
 import { commands } from "vscode";
 import { COMMAND_NAME, SETTING_DATA_FILES } from "../constants";
 import { Settings } from "./SettingsHelper";
+import { readFileAsync } from "../utils";
 
 
 export class DataFileHelper {
@@ -16,10 +17,10 @@ export class DataFileHelper {
    * @param filePath 
    * @returns 
    */
-  public static get(filePath: string) {
+  public static async get(filePath: string) {
     const absPath = Folders.getAbsFilePath(filePath);
     if (existsSync(absPath)) {
-      return readFileSync(absPath, 'utf8');
+      return await readFileAsync(absPath, 'utf8');
     }
 
     return null;
@@ -53,7 +54,7 @@ export class DataFileHelper {
   public static async process(data: DataFile) {
     try {
       const { file, fileType } = data;
-      const dataFile = DataFileHelper.get(file);
+      const dataFile = await DataFileHelper.get(file);
 
       if (fileType === "yaml") {
         return yaml.safeLoad(dataFile || "");

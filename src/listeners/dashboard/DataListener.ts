@@ -4,10 +4,12 @@ import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { BaseListener } from "./BaseListener";
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { Folders } from '../../commands/Folders';
-import { existsSync, writeFileSync, mkdirSync, readFileSync } from 'fs';
+import { existsSync } from 'fs';
 import { dirname } from 'path';
 import * as yaml from 'js-yaml';
 import { DataFileHelper } from '../../helpers';
+import { readFileAsync, writeFileAsync } from '../../utils';
+import { mkdirAsync } from '../../utils/mkdirAsync';
 
 
 export class DataListener extends BaseListener {
@@ -35,28 +37,28 @@ export class DataListener extends BaseListener {
    * Process the data update
    * @param msgData 
    */
-  private static processDataUpdate(msgData: any) {
+  private static async processDataUpdate(msgData: any) {
     const { file, fileType, entries } = msgData as { file: string, fileType: string, entries: unknown | unknown[] };
 
     const absPath = Folders.getAbsFilePath(file);
     if (!existsSync(absPath)) {
       const dirPath = dirname(absPath);
       if (!existsSync(dirPath)) {
-        mkdirSync(dirPath, { recursive: true });
+        await mkdirAsync(dirPath, { recursive: true });
       }
     }
 
-    const fileContent = readFileSync(absPath, 'utf8');
+    const fileContent = await readFileAsync(absPath, 'utf8');
     // check if file content ends with newline
     const newFileContent = fileContent.endsWith('\n');
     const insertFinalNewLine = newFileContent || workspace.getConfiguration().get('files.insertFinalNewline');
 
     if (fileType === 'yaml') {
       const yamlData = yaml.safeDump(entries);
-      writeFileSync(absPath, insertFinalNewLine ? `${yamlData}\n` : yamlData, 'utf8');
+      await writeFileAsync(absPath, insertFinalNewLine ? `${yamlData}\n` : yamlData, 'utf8');
     } else {
       const jsonData = JSON.stringify(entries, null, 2);
-      writeFileSync(absPath, insertFinalNewLine ? `${jsonData}\n` : jsonData, 'utf8');
+      await writeFileAsync(absPath, insertFinalNewLine ? `${jsonData}\n` : jsonData, 'utf8');
     } 
 
     this.processDataFile(msgData);

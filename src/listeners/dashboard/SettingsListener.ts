@@ -59,7 +59,7 @@ export class SettingsListener extends BaseListener {
    * Set the current site-generator or framework + related settings
    * @param frameworkId 
    */
-  public static setFramework(frameworkId: string | null) {
+  public static async setFramework(frameworkId: string | null) {
     Settings.update(SETTING_FRAMEWORK_ID, frameworkId, true);
 
     if (frameworkId) {
@@ -68,7 +68,7 @@ export class SettingsListener extends BaseListener {
       if (framework) {
         Settings.update(SETTING_CONTENT_STATIC_FOLDER, framework.static, true);
 
-        FrameworkDetector.checkDefaultSettings(framework);
+        await FrameworkDetector.checkDefaultSettings(framework);
       } else {
         Settings.update(SETTING_CONTENT_STATIC_FOLDER, "", true);
       }

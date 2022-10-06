@@ -4,15 +4,16 @@ import { Folders } from "../commands/Folders";
 import { DEFAULT_CONTENT_TYPE, ExtensionState, HOME_PAGE_NAVIGATION_ID, SETTING_MEDIA_SUPPORTED_MIMETYPES } from "../constants";
 import { SortingOption } from "../dashboardWebView/models";
 import { MediaInfo, MediaPaths, SortOrder, SortType } from "../models";
-import { basename, extname, join, parse, dirname, relative } from "path";
-import { existsSync, readdirSync, statSync, unlinkSync, writeFileSync } from "fs";
-import { commands, Uri, workspace, window, Position } from "vscode";
+import { basename, join, parse, dirname, relative } from "path";
+import { existsSync, statSync } from "fs";
+import { Uri, workspace, window, Position } from "vscode";
 import imageSize from "image-size";
 import { EditorHelper } from "@estruyf/vscode";
 import { SortOption } from "../dashboardWebView/constants/SortOption";
 import { DataListener, MediaListener } from "../listeners/panel";
 import { ArticleHelper } from "./ArticleHelper";
 import { lookup } from "mime-types";
+import { readdirAsync, unlinkAsync, writeFileAsync } from "../utils";
 
 
 export class MediaHelpers {
@@ -151,14 +152,14 @@ export class MediaHelpers {
 
     if (selectedFolder) {
       if (existsSync(selectedFolder)) {
-        allFolders = readdirSync(selectedFolder, { withFileTypes: true }).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(selectedFolder, dir.name)));
+        allFolders = (await readdirAsync(selectedFolder, { withFileTypes: true })).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(selectedFolder, dir.name)));
       }
     } else {
       if (pageBundleContentTypes.length > 0) {
         for (const contentFolder of contentFolders) {
           const contentPath = contentFolder.path;
           if (contentPath && existsSync(contentPath)) {
-            const subFolders = readdirSync(contentPath, { withFileTypes: true }).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(contentPath, dir.name)));
+            const subFolders = (await readdirAsync(contentPath, { withFileTypes: true })).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(contentPath, dir.name)));
             allContentFolders = [...allContentFolders, ...subFolders];
           }
         }
@@ -166,7 +167,7 @@ export class MediaHelpers {
   
       const staticPath = join(parseWinPath(wsFolder?.fsPath || ""), staticFolder || "");
       if (staticPath && existsSync(staticPath)) {
-        allFolders = readdirSync(staticPath, { withFileTypes: true }).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(staticPath, dir.name)));
+        allFolders = (await readdirAsync(staticPath, { withFileTypes: true })).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(staticPath, dir.name)));
       }
     }
 
@@ -231,7 +232,7 @@ export class MediaHelpers {
       const imgData = decodeBase64(contents);
 
       if (imgData) {
-        writeFileSync(staticPath, imgData.data);
+        await writeFileAsync(staticPath, imgData.data);
         Notifications.info(`File ${fileName} uploaded to: ${folder}`);
         
         return true;
@@ -255,7 +256,7 @@ export class MediaHelpers {
     }
 
     try {
-      unlinkSync(file);
+      await unlinkAsync(file);
 
       MediaHelpers.media = [];
       return true;

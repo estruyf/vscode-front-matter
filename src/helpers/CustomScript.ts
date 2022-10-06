@@ -77,7 +77,7 @@ export class CustomScript {
       articlePath = editor.document.uri.fsPath;
       article = ArticleHelper.getFrontMatter(editor);
     } else {
-      article = ArticleHelper.getFrontMatterByPath(path);
+      article = await ArticleHelper.getFrontMatterByPath(path);
     }
 
     if (articlePath && article) {
@@ -119,7 +119,7 @@ export class CustomScript {
         if (folder.lastModified.length > 0) {
           for await (const file of folder.lastModified) {
             try {
-              const article = ArticleHelper.getFrontMatterByPath(file.filePath);
+              const article = await ArticleHelper.getFrontMatterByPath(file.filePath);
               if (article) {
                 const crntOutput = await CustomScript.runScript(wsPath, article, file.filePath, script);
                 if (crntOutput) {
@@ -220,7 +220,7 @@ export class CustomScript {
             articlePath = editor.document.uri.fsPath;
             article = ArticleHelper.getFrontMatter(editor);
           } else {
-            article = ArticleHelper.getFrontMatterByPath(articlePath);
+            article = await ArticleHelper.getFrontMatterByPath(articlePath);
           }
 
           if (article && article.data) {

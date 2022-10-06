@@ -72,7 +72,7 @@ export class PagesParser {
               let page = await PagesParser.getCachedPage(file.filePath, file.mtime);
 
               if (!page) {
-                page = this.processPageContent(file.filePath, file.mtime, file.fileName, folder.title);
+                page = await this.processPageContent(file.filePath, file.mtime, file.fileName, folder.title);
               }
 
               if (page && !pages.find(p => p.fmFilePath === page?.fmFilePath)) {
@@ -123,8 +123,8 @@ export class PagesParser {
    * @param folderTitle 
    * @returns 
    */
-  public static processPageContent(filePath: string, fileMtime: number, fileName: string, folderTitle: string): Page | undefined {
-    const article = ArticleHelper.getFrontMatterByPath(filePath);
+  public static async processPageContent(filePath: string, fileMtime: number, fileName: string, folderTitle: string): Promise<Page | undefined> {
+    const article = await ArticleHelper.getFrontMatterByPath(filePath);
 
     if (article?.data.title) {
       const wsFolder = Folders.getWorkspaceFolder();
