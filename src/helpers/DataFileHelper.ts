@@ -1,4 +1,3 @@
-import { existsSync } from "fs";
 import { Folders } from "../commands/Folders";
 import { DataFile } from "../models";
 import * as yaml from 'js-yaml';
@@ -7,7 +6,7 @@ import { Notifications } from "./Notifications";
 import { commands } from "vscode";
 import { COMMAND_NAME, SETTING_DATA_FILES } from "../constants";
 import { Settings } from "./SettingsHelper";
-import { readFileAsync } from "../utils";
+import { existsAsync, readFileAsync } from "../utils";
 
 
 export class DataFileHelper {
@@ -19,7 +18,7 @@ export class DataFileHelper {
    */
   public static async get(filePath: string) {
     const absPath = Folders.getAbsFilePath(filePath);
-    if (existsSync(absPath)) {
+    if (await existsAsync(absPath)) {
       return await readFileAsync(absPath, 'utf8');
     }
 

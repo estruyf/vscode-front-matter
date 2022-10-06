@@ -113,11 +113,11 @@ export class MediaListener extends BaseListener {
    * Update media metadata
    * @param data 
    */
-  private static update(data: any) {
+  private static async update(data: any) {
     try {
       const { page, folder } = data;
         
-      MediaHelpers.updateMetadata(data);
+      await MediaHelpers.updateMetadata(data);
 
       this.sendMediaFiles(page || 0, folder || "");
     } catch {}

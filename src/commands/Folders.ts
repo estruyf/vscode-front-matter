@@ -17,6 +17,7 @@ import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
 import { Telemetry } from '../helpers/Telemetry';
 import { glob } from 'glob';
 import { mkdirAsync } from '../utils/mkdirAsync';
+import { existsAsync } from '../utils';
 
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
@@ -63,7 +64,7 @@ export class Folders {
 
       parentFolders.push(folder);
       
-      if (!existsSync(folderPath)) {
+      if (!(await existsAsync(folderPath))) {
         await mkdirAsync(folderPath);
       }
     }

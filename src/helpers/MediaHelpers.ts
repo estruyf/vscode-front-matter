@@ -5,7 +5,7 @@ import { DEFAULT_CONTENT_TYPE, ExtensionState, HOME_PAGE_NAVIGATION_ID, SETTING_
 import { SortingOption } from "../dashboardWebView/models";
 import { MediaInfo, MediaPaths, SortOrder, SortType } from "../models";
 import { basename, join, parse, dirname, relative } from "path";
-import { existsSync, statSync } from "fs";
+import { statSync } from "fs";
 import { Uri, workspace, window, Position } from "vscode";
 import imageSize from "image-size";
 import { EditorHelper } from "@estruyf/vscode";
@@ -13,7 +13,7 @@ import { SortOption } from "../dashboardWebView/constants/SortOption";
 import { DataListener, MediaListener } from "../listeners/panel";
 import { ArticleHelper } from "./ArticleHelper";
 import { lookup } from "mime-types";
-import { readdirAsync, unlinkAsync, writeFileAsync } from "../utils";
+import { existsAsync, readdirAsync, unlinkAsync, writeFileAsync } from "../utils";
 
 
 export class MediaHelpers {
@@ -49,7 +49,7 @@ export class MediaHelpers {
         if (viewData?.data?.filePath && (viewData?.data?.filePath.endsWith('index.md') || viewData?.data?.filePath.endsWith('index.mdx'))) {
           const folderPath = parse(viewData.data.filePath).dir;
           selectedFolder = folderPath;
-        } else if (stateValue && existsSync(stateValue)) {
+        } else if (stateValue && await existsAsync(stateValue)) {
           selectedFolder = stateValue;
         }
       }
@@ -151,14 +151,14 @@ export class MediaHelpers {
     let allFolders: string[] = [];
 
     if (selectedFolder) {
-      if (existsSync(selectedFolder)) {
+      if (await existsAsync(selectedFolder)) {
         allFolders = (await readdirAsync(selectedFolder, { withFileTypes: true })).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(selectedFolder, dir.name)));
       }
     } else {
       if (pageBundleContentTypes.length > 0) {
         for (const contentFolder of contentFolders) {
           const contentPath = contentFolder.path;
-          if (contentPath && existsSync(contentPath)) {
+          if (contentPath && await existsAsync(contentPath)) {
             const subFolders = (await readdirAsync(contentPath, { withFileTypes: true })).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(contentPath, dir.name)));
             allContentFolders = [...allContentFolders, ...subFolders];
           }
@@ -166,7 +166,7 @@ export class MediaHelpers {
       }
   
       const staticPath = join(parseWinPath(wsFolder?.fsPath || ""), staticFolder || "");
-      if (staticPath && existsSync(staticPath)) {
+      if (staticPath && await existsAsync(staticPath)) {
         allFolders = (await readdirAsync(staticPath, { withFileTypes: true })).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(staticPath, dir.name)));
       }
     }
@@ -219,11 +219,11 @@ export class MediaHelpers {
         absFolderPath = folder;
       }
 
-      if (!existsSync(absFolderPath)) {
+      if (!(await existsAsync(absFolderPath))) {
         absFolderPath = join(wsPath, folder || "");
       }
 
-      if (!existsSync(absFolderPath)) {
+      if (!(await existsAsync(absFolderPath))) {
         Notifications.error(`We couldn't find your selected folder.`);
         return;
       }
@@ -351,14 +351,14 @@ export class MediaHelpers {
    * Update the metadata of a media file
    * @param data 
    */
-  public static updateMetadata(data: any) {
+  public static async updateMetadata(data: any) {
     const { file, filename, page, folder, ...metadata }: { file:string; filename:string; page: number; folder: string | null; metadata: any; } = data;
     
     const mediaLib = MediaLibrary.getInstance();
     mediaLib.set(file, metadata);
 
     // Check if filename needs to be updated
-    mediaLib.updateFilename(file, filename);
+    await mediaLib.updateFilename(file, filename);
   }
 
   /**

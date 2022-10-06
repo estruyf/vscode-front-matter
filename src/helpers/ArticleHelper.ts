@@ -14,7 +14,6 @@ import { Article } from '../commands';
 import { join } from 'path';
 import { EditorHelper } from '@estruyf/vscode';
 import sanitize from '../helpers/Sanitize';
-import { existsSync } from 'fs';
 import { ContentType } from '../models';
 import { DateHelper } from './DateHelper';
 import { DiagnosticSeverity, Position, window, Range } from 'vscode';
@@ -25,7 +24,7 @@ import { Content } from 'mdast';
 import { processKnownPlaceholders } from './PlaceholderHelper';
 import { CustomScript } from './CustomScript';
 import { Folders } from '../commands/Folders';
-import { readFileAsync } from '../utils';
+import { existsAsync, readFileAsync } from '../utils';
 import { mkdirAsync } from '../utils/mkdirAsync';
 
 export class ArticleHelper {
@@ -342,7 +341,7 @@ export class ArticleHelper {
     // Create a folder with the `index.md` file
     if (contentType?.pageBundle) {
       const newFolder = join(folderPath, sanitizedName);
-      if (existsSync(newFolder)) {
+      if (await existsAsync(newFolder)) {
         Notifications.error(`A page bundle with the name ${sanitizedName} already exists in ${folderPath}`);
         return;
       } else {
@@ -358,7 +357,7 @@ export class ArticleHelper {
       
       newFilePath = join(folderPath, newFileName);
 
-      if (existsSync(newFilePath)) {
+      if (await existsAsync(newFilePath)) {
         Notifications.warning(`Content with the title already exists. Please specify a new title.`);
         return;
       }

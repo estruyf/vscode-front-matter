@@ -1,5 +1,4 @@
 import { parseWinPath } from './../helpers/parseWinPath';
-import { existsSync } from "fs";
 import { dirname, join } from "path";
 import { StatusBarAlignment, Uri, window } from "vscode";
 import { Dashboard } from "../commands/Dashboard";
@@ -7,6 +6,7 @@ import { Folders } from "../commands/Folders";
 import { DefaultFields, DEFAULT_CONTENT_TYPE_NAME, ExtensionState, SETTING_SEO_DESCRIPTION_FIELD } from "../constants";
 import { Page } from "../dashboardWebView/models";
 import { ArticleHelper, ContentType, DateHelper, Extension, isValidFile, Logger, Notifications, Settings } from "../helpers";
+import { existsAsync } from '../utils';
 
 
 export class PagesParser {
@@ -240,9 +240,9 @@ export class PagesParser {
             const contentFolderPath = join(dirname(filePath), fieldValue);
   
             let previewUri = null;
-            if (existsSync(staticPath)) {
+            if (await existsAsync(staticPath)) {
               previewUri = Uri.file(staticPath);
-            } else if (existsSync(contentFolderPath)) {
+            } else if (await existsAsync(contentFolderPath)) {
               previewUri = Uri.file(contentFolderPath);
             }
   

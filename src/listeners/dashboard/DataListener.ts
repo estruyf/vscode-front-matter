@@ -4,11 +4,10 @@ import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { BaseListener } from "./BaseListener";
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { Folders } from '../../commands/Folders';
-import { existsSync } from 'fs';
 import { dirname } from 'path';
 import * as yaml from 'js-yaml';
 import { DataFileHelper } from '../../helpers';
-import { readFileAsync, writeFileAsync } from '../../utils';
+import { existsAsync, readFileAsync, writeFileAsync } from '../../utils';
 import { mkdirAsync } from '../../utils/mkdirAsync';
 
 
@@ -41,9 +40,9 @@ export class DataListener extends BaseListener {
     const { file, fileType, entries } = msgData as { file: string, fileType: string, entries: unknown | unknown[] };
 
     const absPath = Folders.getAbsFilePath(file);
-    if (!existsSync(absPath)) {
+    if (!await existsAsync(absPath)) {
       const dirPath = dirname(absPath);
-      if (!existsSync(dirPath)) {
+      if (!await existsAsync(dirPath)) {
         await mkdirAsync(dirPath, { recursive: true });
       }
     }

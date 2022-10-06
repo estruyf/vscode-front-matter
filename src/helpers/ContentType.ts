@@ -6,14 +6,13 @@ import { ContentType as IContentType, DraftField, Field, FieldGroup, FieldType, 
 import { Uri, commands, window, ProgressLocation, workspace } from 'vscode'; 
 import { Folders } from "../commands/Folders";
 import { Questions } from "./Questions";
-import { existsSync } from "fs";
 import { Notifications } from "./Notifications";
 import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
 import { Telemetry } from './Telemetry';
 import { processKnownPlaceholders } from './PlaceholderHelper';
 import { basename } from 'path';
 import { ParsedFrontMatter } from '../parsers';
-import { writeFileAsync } from '../utils';
+import { existsAsync, writeFileAsync } from '../utils';
 
 export class ContentType {
 
@@ -198,9 +197,9 @@ export class ContentType {
     Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
 
     const configPath = Settings.projectConfigPath;
-    const notificationAction = await Notifications.info(`Content type ${contentTypeName} has been ${overrideBool ? `updated` : `generated`}.`, configPath && existsSync(configPath) ?  `Open settings` : undefined);
+    const notificationAction = await Notifications.info(`Content type ${contentTypeName} has been ${overrideBool ? `updated` : `generated`}.`, configPath && await existsAsync(configPath) ?  `Open settings` : undefined);
 
-    if (notificationAction === "Open settings" && configPath && existsSync(configPath)) {
+    if (notificationAction === "Open settings" && configPath && await existsAsync(configPath)) {
       commands.executeCommand('vscode.open', Uri.file(configPath));
     }
   }
@@ -232,9 +231,9 @@ export class ContentType {
     Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
 
     const configPath = Settings.projectConfigPath;
-    const notificationAction = await Notifications.info(`Content type ${contentType.name} has been updated.`, configPath && existsSync(configPath) ?  `Open settings` : undefined);
+    const notificationAction = await Notifications.info(`Content type ${contentType.name} has been updated.`, configPath && await existsAsync(configPath) ?  `Open settings` : undefined);
 
-    if (notificationAction === "Open settings" && configPath && existsSync(configPath)) {
+    if (notificationAction === "Open settings" && configPath && await existsAsync(configPath)) {
       commands.executeCommand('vscode.open', Uri.file(configPath));
     }
   }

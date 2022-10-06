@@ -14,7 +14,7 @@ import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { ParsedFrontMatter } from '../parsers';
 import { TelemetryEvent } from '../constants/TelemetryEvent';
 import { SETTING_CUSTOM_SCRIPTS } from '../constants';
-import { existsSync } from 'fs';
+import { existsAsync } from '../utils';
 
 export class CustomScript {
 
@@ -264,7 +264,7 @@ export class CustomScript {
    * @returns 
    */
   public static async executeScript(script: ICustomScript, wsPath: string, args: string): Promise<string> {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       
       // Check the command to use
       let command = script.nodeBin || "node";
@@ -274,7 +274,7 @@ export class CustomScript {
 
       const scriptPath = join(wsPath, script.script);
 
-      if (!existsSync(scriptPath)) {
+      if (!await existsAsync(scriptPath)) {
         reject(new Error(`Script not found: ${scriptPath}`));
         return;
       }

@@ -8,8 +8,7 @@ import { Folders } from "./Folders";
 import { FrameworkDetector, Logger, Settings } from "../helpers";
 import { SETTING_CONTENT_DEFAULT_FILETYPE, SETTING_TAXONOMY_CONTENT_TYPES, TelemetryEvent } from "../constants";
 import { SettingsListener } from '../listeners/dashboard';
-import { writeFileAsync } from '../utils';
-import { existsSync } from 'fs';
+import { existsAsync, writeFileAsync } from '../utils';
 
 export class Project {
 
@@ -80,7 +79,7 @@ categories: []
     
     const article = Uri.file(join(templatePath.fsPath, `article.${fileType}`));
 
-    if (!existsSync(templatePath.fsPath)) {
+    if (!(await existsAsync(templatePath.fsPath))) {
       await workspace.fs.createDirectory(templatePath);
     }
 

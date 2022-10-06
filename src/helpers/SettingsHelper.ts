@@ -12,7 +12,7 @@ import { Extension } from './Extension';
 import { debounceCallback } from './DebounceCallback';
 import { Logger } from './Logger';
 import * as jsoncParser from 'jsonc-parser';
-import { readFileAsync, writeFileAsync } from '../utils';
+import { existsAsync, readFileAsync, writeFileAsync } from '../utils';
 
 export class Settings {
   public static globalFile = "frontmatter.json";
@@ -182,7 +182,7 @@ export class Settings {
     const fmConfig = Settings.projectConfigPath;
 
     if (updateGlobal) {
-      if (fmConfig && existsSync(fmConfig)) {
+      if (fmConfig && await existsAsync(fmConfig)) {
         const localConfig = await readFileAsync(fmConfig, 'utf8');
         Settings.globalConfig = jsoncParser.parse(localConfig);
         Settings.globalConfig[`${CONFIG_KEY}.${name}`] = value;
@@ -232,7 +232,7 @@ export class Settings {
 
     if (wsFolder) {
       const configPath = join(wsFolder.fsPath, Settings.globalFile);
-      if (!existsSync(configPath)) {
+      if (!(await existsAsync(configPath))) {
         await writeFileAsync(configPath, JSON.stringify(initialConfig, null, 2), 'utf8');
       }
     }
@@ -419,7 +419,7 @@ export class Settings {
   private static async readConfig() {
     try {
       const fmConfig = Settings.projectConfigPath;
-      if (fmConfig && existsSync(fmConfig)) {
+      if (fmConfig && await existsAsync(fmConfig)) {
         const localConfig = await readFileAsync(fmConfig, 'utf8');
         Settings.globalConfig = jsoncParser.parse(localConfig);
         commands.executeCommand('setContext', CONTEXT.isEnabled, true);
