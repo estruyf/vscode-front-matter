@@ -232,7 +232,7 @@ export class Extension {
           ignoreFocusOut: true
         });
 
-        Settings.update(SETTING_TEMPLATES_ENABLED, answer?.toLocaleLowerCase() === "yes", true);
+        await Settings.update(SETTING_TEMPLATES_ENABLED, answer?.toLocaleLowerCase() === "yes", true);
       }
     }
   }

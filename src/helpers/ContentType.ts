@@ -194,7 +194,7 @@ export class ContentType {
       contentTypes.push(newContentType);
     }
 
-    Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
+    await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
 
     const configPath = Settings.projectConfigPath;
     const notificationAction = await Notifications.info(`Content type ${contentTypeName} has been ${overrideBool ? `updated` : `generated`}.`, configPath && await existsAsync(configPath) ?  `Open settings` : undefined);
@@ -228,7 +228,7 @@ export class ContentType {
     const index = contentTypes.findIndex(ct => ct.name === contentType.name);
     contentTypes[index].fields = updatedFields;
 
-    Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
+    await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
 
     const configPath = Settings.projectConfigPath;
     const notificationAction = await Notifications.info(`Content type ${contentType.name} has been updated.`, configPath && await existsAsync(configPath) ?  `Open settings` : undefined);

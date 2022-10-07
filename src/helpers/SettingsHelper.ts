@@ -186,7 +186,9 @@ export class Settings {
         const localConfig = await readFileAsync(fmConfig, 'utf8');
         Settings.globalConfig = jsoncParser.parse(localConfig);
         Settings.globalConfig[`${CONFIG_KEY}.${name}`] = value;
-        await writeFileAsync(fmConfig, JSON.stringify(Settings.globalConfig, null, 2), 'utf8');
+
+        const content = JSON.stringify(Settings.globalConfig, null, 2);
+        await writeFileAsync(fmConfig, content, 'utf8');
         
         const workspaceSettingValue = Settings.hasWorkspaceSettings<ContentType[]>(name);
         if (workspaceSettingValue) {

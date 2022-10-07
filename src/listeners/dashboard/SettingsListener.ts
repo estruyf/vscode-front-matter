@@ -60,17 +60,17 @@ export class SettingsListener extends BaseListener {
    * @param frameworkId 
    */
   public static async setFramework(frameworkId: string | null) {
-    Settings.update(SETTING_FRAMEWORK_ID, frameworkId, true);
+    await Settings.update(SETTING_FRAMEWORK_ID, frameworkId, true);
 
     if (frameworkId) {
       const allFrameworks = FrameworkDetector.getAll();
       const framework = allFrameworks.find((f: Framework) => f.name === frameworkId);
       if (framework) {
-        Settings.update(SETTING_CONTENT_STATIC_FOLDER, framework.static, true);
+        await Settings.update(SETTING_CONTENT_STATIC_FOLDER, framework.static, true);
 
         await FrameworkDetector.checkDefaultSettings(framework);
       } else {
-        Settings.update(SETTING_CONTENT_STATIC_FOLDER, "", true);
+        await Settings.update(SETTING_CONTENT_STATIC_FOLDER, "", true);
       }
     }
 
