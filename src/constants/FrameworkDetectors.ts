@@ -85,5 +85,17 @@ export const FrameworkDetectors = [{
     commands: {
       start: "npx @11ty/eleventy --serve"
     }
+  },
+  {
+    framework: {
+      name: "hexo",
+      dist: "public",
+      build: "npx hexo-cli generate"
+    },
+    requiredFiles: ["_config.js"],
+    requiredDependencies: ["hexo"],
+    commands: {
+      start: "npx hexo-cli server"
+    }
   }
 ];
