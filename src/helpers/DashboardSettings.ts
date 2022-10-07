@@ -53,7 +53,7 @@ export class DashboardSettings {
       customSorting: Settings.get<SortingSetting[]>(SETTING_CONTENT_SORTING),
       contentFolders: Folders.get(),
       crntFramework: Settings.get<string>(SETTING_FRAMEWORK_ID),
-      framework: (!isInitialized && wsFolder) ? FrameworkDetector.get(wsFolder.fsPath) : null,
+      framework: (!isInitialized && wsFolder) ? await FrameworkDetector.get(wsFolder.fsPath) : null,
       scripts: (Settings.get<CustomScript[]>(SETTING_CUSTOM_SCRIPTS) || []),
       date: {
         format: Settings.get<string>(SETTING_DATE_FORMAT) || ""

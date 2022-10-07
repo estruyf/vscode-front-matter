@@ -1,5 +1,4 @@
 import { parseWinPath } from './../helpers/parseWinPath';
-import { existsSync } from "fs";
 import { dirname, join } from "path";
 import { StatusBarAlignment, Uri, window } from "vscode";
 import { Dashboard } from "../commands/Dashboard";
@@ -7,6 +6,7 @@ import { Folders } from "../commands/Folders";
 import { DefaultFields, DEFAULT_CONTENT_TYPE_NAME, ExtensionState, SETTING_SEO_DESCRIPTION_FIELD } from "../constants";
 import { Page } from "../dashboardWebView/models";
 import { ArticleHelper, ContentType, DateHelper, Extension, isValidFile, Logger, Notifications, Settings } from "../helpers";
+import { existsAsync } from '../utils';
 
 
 export class PagesParser {
@@ -72,7 +72,7 @@ export class PagesParser {
               let page = await PagesParser.getCachedPage(file.filePath, file.mtime);
 
               if (!page) {
-                page = this.processPageContent(file.filePath, file.mtime, file.fileName, folder.title);
+                page = await this.processPageContent(file.filePath, file.mtime, file.fileName, folder.title);
               }
 
               if (page && !pages.find(p => p.fmFilePath === page?.fmFilePath)) {
@@ -123,8 +123,8 @@ export class PagesParser {
    * @param folderTitle 
    * @returns 
    */
-  public static processPageContent(filePath: string, fileMtime: number, fileName: string, folderTitle: string): Page | undefined {
-    const article = ArticleHelper.getFrontMatterByPath(filePath);
+  public static async processPageContent(filePath: string, fileMtime: number, fileName: string, folderTitle: string): Promise<Page | undefined> {
+    const article = await ArticleHelper.getFrontMatterByPath(filePath);
 
     if (article?.data.title) {
       const wsFolder = Folders.getWorkspaceFolder();
@@ -240,9 +240,9 @@ export class PagesParser {
             const contentFolderPath = join(dirname(filePath), fieldValue);
   
             let previewUri = null;
-            if (existsSync(staticPath)) {
+            if (await existsAsync(staticPath)) {
               previewUri = Uri.file(staticPath);
-            } else if (existsSync(contentFolderPath)) {
+            } else if (await existsAsync(contentFolderPath)) {
               previewUri = Uri.file(contentFolderPath);
             }
   

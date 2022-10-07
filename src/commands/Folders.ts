@@ -7,7 +7,7 @@ import uniqBy = require("lodash.uniqby");
 import { Template } from "./Template";
 import { Notifications } from "../helpers/Notifications";
 import { Logger, Settings } from "../helpers";
-import { existsSync, mkdirSync } from 'fs';
+import { existsSync } from 'fs';
 import { format } from 'date-fns';
 import { Dashboard } from './Dashboard';
 import { parseWinPath } from '../helpers/parseWinPath';
@@ -16,6 +16,8 @@ import { MediaListener, PagesListener, SettingsListener } from '../listeners/das
 import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
 import { Telemetry } from '../helpers/Telemetry';
 import { glob } from 'glob';
+import { mkdirAsync } from '../utils/mkdirAsync';
+import { existsAsync } from '../utils';
 
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
@@ -62,8 +64,8 @@ export class Folders {
 
       parentFolders.push(folder);
       
-      if (!existsSync(folderPath)) {
-        mkdirSync(folderPath);
+      if (!(await existsAsync(folderPath))) {
+        await mkdirAsync(folderPath);
       }
     }
 
@@ -210,9 +212,9 @@ export class Folders {
       if (!projectFolder) {
         window.showWorkspaceFolderPick({
           placeHolder: `Please select the main workspace folder for Front Matter to use.`
-        }).then(selectedFolder => {
+        }).then(async (selectedFolder) => {
           if (selectedFolder) {
-            Settings.createGlobalFile(selectedFolder.uri);
+            await Settings.createGlobalFile(selectedFolder.uri);
             // Full reload to make sure the whole extension is reloaded correctly
             commands.executeCommand(`workbench.action.reloadWindow`);
           }

@@ -1,4 +1,3 @@
-import { unlinkSync } from "fs";
 import { basename } from "path";
 import { commands, FileSystemWatcher, RelativePattern, TextDocument, Uri, workspace } from "vscode";
 import { Dashboard } from "../../commands/Dashboard";
@@ -12,6 +11,7 @@ import { BaseListener } from "./BaseListener";
 import { DataListener } from '../panel';
 import Fuse from 'fuse.js';
 import { PagesParser } from '../../services/PagesParser';
+import { unlinkAsync } from "../../utils";
 
 
 export class PagesListener extends BaseListener {
@@ -106,7 +106,7 @@ export class PagesListener extends BaseListener {
 
     Logger.info(`Deleting file: ${path}`)
     
-    unlinkSync(path);
+    await unlinkAsync(path);
       
     this.lastPages = this.lastPages.filter(p => p.fmFilePath !== path);
     this.sendPageData(this.lastPages);
@@ -128,7 +128,7 @@ export class PagesListener extends BaseListener {
       if (pageIdx !== -1) {
         const stats = await workspace.fs.stat(file);
         const crntPage = this.lastPages[pageIdx];
-        const updatedPage = PagesParser.processPageContent(file.fsPath, stats.mtime, basename(file.fsPath), crntPage.fmFolder);
+        const updatedPage = await PagesParser.processPageContent(file.fsPath, stats.mtime, basename(file.fsPath), crntPage.fmFolder);
         if (updatedPage) {
           this.lastPages[pageIdx] = updatedPage;
           this.sendPageData(this.lastPages);

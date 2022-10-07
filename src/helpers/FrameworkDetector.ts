@@ -1,5 +1,4 @@
 import * as jsoncParser from 'jsonc-parser';
-import { existsSync, readFileSync } from "fs";
 import jsyaml = require("js-yaml");
 import { join, resolve } from "path";
 import { commands, Uri } from "vscode";
@@ -8,6 +7,7 @@ import { COMMAND_NAME } from "../constants";
 import { FrameworkDetectors } from "../constants/FrameworkDetectors";
 import { Framework } from "../models";
 import { Logger } from "./Logger";
+import { existsAsync, readFileAsync } from '../utils';
 
 export class FrameworkDetector {
 
@@ -19,7 +19,7 @@ export class FrameworkDetector {
     return FrameworkDetectors.map((detector: any) => detector.framework);
   }
 
-  private static check(folder: string) {
+  private static async check(folder: string) {
     let dependencies = null;
     let devDependencies = null;
     let gemContent = null;
@@ -27,8 +27,8 @@ export class FrameworkDetector {
     // Try fetching the package JSON file
     try {
       const pkgFile = join(folder, 'package.json');
-      if (existsSync(pkgFile)) {
-        let packageJson: any = readFileSync(pkgFile, "utf8");
+      if (await existsAsync(pkgFile)) {
+        let packageJson: any = await readFileAsync(pkgFile, "utf8");
         if (packageJson) {
           packageJson = typeof packageJson === "string" ? jsoncParser.parse(packageJson) : packageJson;
 
@@ -43,8 +43,8 @@ export class FrameworkDetector {
     // Try fetching the Gemfile
     try {
       const gemFile = join(folder, 'Gemfile');
-      if (existsSync(gemFile)) {
-        gemContent = readFileSync(gemFile, "utf8");
+      if (await existsAsync(gemFile)) {
+        gemContent = await readFileAsync(gemFile, "utf8");
       }
     } catch (e) {
       // do nothing
@@ -70,7 +70,7 @@ export class FrameworkDetector {
 
         // Verify by files
         for (const filename of detector.requiredFiles ?? []) {
-          const fileExists = existsSync(resolve(folder, filename));
+          const fileExists = await existsAsync(resolve(folder, filename));
           if (fileExists) {
             return detector.framework;
           }
@@ -81,21 +81,21 @@ export class FrameworkDetector {
     return undefined;
   }
 
-  public static checkDefaultSettings(framework: Framework) {    
+  public static async checkDefaultSettings(framework: Framework) {    
     if (framework.name.toLowerCase() === "jekyll") {
-      FrameworkDetector.jekyll();
+      await FrameworkDetector.jekyll();
     }
   }
 
 
-  private static jekyll() {
+  private static async jekyll() {
     try {
       const wsFolder = Folders.getWorkspaceFolder();
       const jekyllConfig = join(wsFolder?.fsPath || "", '_config.yml');
       let collectionDir = "";
 
-      if (existsSync(jekyllConfig)) {
-        const content = readFileSync(jekyllConfig, "utf8");
+      if (await existsAsync(jekyllConfig)) {
+        const content = await readFileAsync(jekyllConfig, "utf8");
         // Convert YAML to JSON
         const config = jsyaml.safeLoad(content);
 
@@ -107,7 +107,7 @@ export class FrameworkDetector {
       const draftsPath = join(wsFolder?.fsPath || "", collectionDir, "_drafts");
       const postsPath = join(wsFolder?.fsPath || "", collectionDir, "_posts");
   
-      if (existsSync(draftsPath)) {
+      if (await existsAsync(draftsPath)) {
         const folderUri = Uri.file(draftsPath);
         commands.executeCommand(COMMAND_NAME.registerFolder, {
           title: "drafts",
@@ -115,7 +115,7 @@ export class FrameworkDetector {
         });
       }
   
-      if (existsSync(postsPath)) {
+      if (await existsAsync(postsPath)) {
         const folderUri = Uri.file(postsPath);
         commands.executeCommand(COMMAND_NAME.registerFolder, {
           title: "posts",

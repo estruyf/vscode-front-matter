@@ -7,11 +7,12 @@ import { ContentFolder, ContentType, CustomPlaceholder, CustomTaxonomy, DataFile
 import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM, TelemetryEvent, COMMAND_NAME, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_PAGE_FOLDERS, SETTING_CONTENT_SNIPPETS, SETTING_CONTENT_PLACEHOLDERS, SETTING_CUSTOM_SCRIPTS, SETTING_DATA_FILES, SETTING_DATA_TYPES, SETTING_DATA_FOLDERS } from '../constants';
 import { Folders } from '../commands/Folders';
 import { join, basename, dirname, parse } from 'path';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync } from 'fs';
 import { Extension } from './Extension';
 import { debounceCallback } from './DebounceCallback';
 import { Logger } from './Logger';
 import * as jsoncParser from 'jsonc-parser';
+import { existsAsync, readFileAsync, writeFileAsync } from '../utils';
 
 export class Settings {
   public static globalFile = "frontmatter.json";
@@ -181,11 +182,11 @@ export class Settings {
     const fmConfig = Settings.projectConfigPath;
 
     if (updateGlobal) {
-      if (fmConfig && existsSync(fmConfig)) {
-        const localConfig = readFileSync(fmConfig, 'utf8');
+      if (fmConfig && await existsAsync(fmConfig)) {
+        const localConfig = await readFileAsync(fmConfig, 'utf8');
         Settings.globalConfig = jsoncParser.parse(localConfig);
         Settings.globalConfig[`${CONFIG_KEY}.${name}`] = value;
-        writeFileSync(fmConfig, JSON.stringify(Settings.globalConfig, null, 2), 'utf8');
+        await writeFileAsync(fmConfig, JSON.stringify(Settings.globalConfig, null, 2), 'utf8');
         
         const workspaceSettingValue = Settings.hasWorkspaceSettings<ContentType[]>(name);
         if (workspaceSettingValue) {
@@ -215,24 +216,24 @@ export class Settings {
   /**
    * Create team settings
    */
-  public static createTeamSettings() {
+  public static async createTeamSettings() {
     const wsFolder = Folders.getWorkspaceFolder();
-    this.createGlobalFile(wsFolder);
+    await this.createGlobalFile(wsFolder);
   }
 
   /**
    * Create the frontmatter.json file
    * @param wsFolder 
    */
-  public static createGlobalFile(wsFolder: Uri | undefined | null) {
+  public static async createGlobalFile(wsFolder: Uri | undefined | null) {
     const initialConfig = {
       "$schema": `https://${Extension.getInstance().isBetaVersion() ? `beta.` : ``}frontmatter.codes/frontmatter.schema.json`
     };
 
     if (wsFolder) {
       const configPath = join(wsFolder.fsPath, Settings.globalFile);
-      if (!existsSync(configPath)) {
-        writeFileSync(configPath, JSON.stringify(initialConfig, null, 2), 'utf8');
+      if (!(await existsAsync(configPath))) {
+        await writeFileAsync(configPath, JSON.stringify(initialConfig, null, 2), 'utf8');
       }
     }
   }
@@ -418,8 +419,8 @@ export class Settings {
   private static async readConfig() {
     try {
       const fmConfig = Settings.projectConfigPath;
-      if (fmConfig && existsSync(fmConfig)) {
-        const localConfig = readFileSync(fmConfig, 'utf8');
+      if (fmConfig && await existsAsync(fmConfig)) {
+        const localConfig = await readFileAsync(fmConfig, 'utf8');
         Settings.globalConfig = jsoncParser.parse(localConfig);
         commands.executeCommand('setContext', CONTEXT.isEnabled, true);
       } else {

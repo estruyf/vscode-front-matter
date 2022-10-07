@@ -14,7 +14,7 @@ import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { ParsedFrontMatter } from '../parsers';
 import { TelemetryEvent } from '../constants/TelemetryEvent';
 import { SETTING_CUSTOM_SCRIPTS } from '../constants';
-import { existsSync } from 'fs';
+import { existsAsync } from '../utils';
 
 export class CustomScript {
 
@@ -77,7 +77,7 @@ export class CustomScript {
       articlePath = editor.document.uri.fsPath;
       article = ArticleHelper.getFrontMatter(editor);
     } else {
-      article = ArticleHelper.getFrontMatterByPath(path);
+      article = await ArticleHelper.getFrontMatterByPath(path);
     }
 
     if (articlePath && article) {
@@ -119,7 +119,7 @@ export class CustomScript {
         if (folder.lastModified.length > 0) {
           for await (const file of folder.lastModified) {
             try {
-              const article = ArticleHelper.getFrontMatterByPath(file.filePath);
+              const article = await ArticleHelper.getFrontMatterByPath(file.filePath);
               if (article) {
                 const crntOutput = await CustomScript.runScript(wsPath, article, file.filePath, script);
                 if (crntOutput) {
@@ -220,7 +220,7 @@ export class CustomScript {
             articlePath = editor.document.uri.fsPath;
             article = ArticleHelper.getFrontMatter(editor);
           } else {
-            article = ArticleHelper.getFrontMatterByPath(articlePath);
+            article = await ArticleHelper.getFrontMatterByPath(articlePath);
           }
 
           if (article && article.data) {
@@ -264,7 +264,7 @@ export class CustomScript {
    * @returns 
    */
   public static async executeScript(script: ICustomScript, wsPath: string, args: string): Promise<string> {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       
       // Check the command to use
       let command = script.nodeBin || "node";
@@ -274,7 +274,7 @@ export class CustomScript {
 
       const scriptPath = join(wsPath, script.script);
 
-      if (!existsSync(scriptPath)) {
+      if (!await existsAsync(scriptPath)) {
         reject(new Error(`Script not found: ${scriptPath}`));
         return;
       }

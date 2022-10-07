@@ -154,7 +154,7 @@ export class Extension {
 
     // Create team settings
     if (Settings.hasSettings()) {
-      Settings.createTeamSettings();
+      await Settings.createTeamSettings();
     }
 
     const hideDateDeprecation = await Extension.getInstance().getState<boolean>(ExtensionState.Updates.v7_0_0.dateFields, "workspace");
