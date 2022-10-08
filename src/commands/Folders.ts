@@ -1,3 +1,4 @@
+import { STATIC_FOLDER_PLACEHOLDER } from './../constants/StaticFolderPlaceholder';
 import { Questions } from './../helpers/Questions';
 import { SETTING_CONTENT_PAGE_FOLDERS, SETTING_CONTENT_STATIC_FOLDER, SETTING_CONTENT_SUPPORTED_FILETYPES, TelemetryEvent } from './../constants';
 import { commands, Uri, workspace, window } from "vscode";
@@ -43,6 +44,10 @@ export class Folders {
       startPath += "/";
     }
 
+    if (startPath.includes(STATIC_FOLDER_PLACEHOLDER.hexo.placeholder)) {
+      startPath = startPath.replace(STATIC_FOLDER_PLACEHOLDER.hexo.placeholder, STATIC_FOLDER_PLACEHOLDER.hexo.postsFolder);
+    }
+
     const folderName = await window.showInputBox({  
       title: `Add media folder`,
       prompt: `Which name would you like to give to your folder (use "/" to create multi-level folders)?`,
@@ -56,22 +61,17 @@ export class Folders {
       return;
     }
     
-    const folders = folderName.split("/").filter(f => f);
-    let parentFolders: string[] = [];
+    await Folders.createFolder(join(parseWinPath(wsFolder?.fsPath || ""), folderName));
+  }
 
-    for (const folder of folders) {
-      const folderPath = join(parseWinPath(wsFolder?.fsPath || ""), parentFolders.join("/"), folder);
-
-      parentFolders.push(folder);
-      
-      if (!(await existsAsync(folderPath))) {
-        await mkdirAsync(folderPath);
-      }
+  public static async createFolder(folderPath: string) {
+    if (!(await existsAsync(folderPath))) {
+      await mkdirAsync(folderPath, { recursive: true });
     }
 
     if (Dashboard.isOpen) {
       MediaHelpers.resetMedia();
-      MediaListener.sendMediaFiles(0, folderName);
+      MediaListener.sendMediaFiles(0, folderPath);
     }
 
     Telemetry.send(TelemetryEvent.addMediaFolder);

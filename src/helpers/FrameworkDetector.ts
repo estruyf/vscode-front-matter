@@ -1,13 +1,16 @@
+import { parseWinPath } from './parseWinPath';
 import * as jsoncParser from 'jsonc-parser';
 import jsyaml = require("js-yaml");
 import { join, resolve } from "path";
 import { commands, Uri } from "vscode";
 import { Folders } from "../commands/Folders";
-import { COMMAND_NAME } from "../constants";
+import { COMMAND_NAME, SETTING_CONTENT_STATIC_FOLDER, SETTING_FRAMEWORK_ID, STATIC_FOLDER_PLACEHOLDER } from "../constants";
 import { FrameworkDetectors } from "../constants/FrameworkDetectors";
 import { Framework } from "../models";
 import { Logger } from "./Logger";
 import { existsAsync, readFileAsync } from '../utils';
+import { Settings } from '.';
+import { parse } from 'path';
 
 export class FrameworkDetector {
 
@@ -84,10 +87,76 @@ export class FrameworkDetector {
   public static async checkDefaultSettings(framework: Framework) {    
     if (framework.name.toLowerCase() === "jekyll") {
       await FrameworkDetector.jekyll();
+    } else if (framework.name.toLowerCase() === "hexo") {
+      await FrameworkDetector.hexo();
     }
   }
 
+  /**
+   * Check if there are any changes for the current framework that need to be applied
+   * @param relAssetPath 
+   * @param filePath 
+   */
+  public static relAssetPathUpdate(relAssetPath: string, filePath: string): string {
+    const staticFolder = Folders.getStaticFolderRelativePath();
+    const frameworkId = Settings.get(SETTING_FRAMEWORK_ID);
 
+    // Support for HEXO post asset folders
+    if (staticFolder === STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
+      relAssetPath = relAssetPath.replace(STATIC_FOLDER_PLACEHOLDER.hexo.postsFolder, "");
+
+      // Filename without the extension
+      const fileParsing = parse(filePath);
+      const name = fileParsing.name;
+      relAssetPath = relAssetPath.replace(name, "");
+      relAssetPath = join(relAssetPath);
+
+      // Remove remove the slash at the beginning
+      relAssetPath = parseWinPath(relAssetPath);
+      if (relAssetPath.startsWith("/")) {
+        relAssetPath = relAssetPath.substring(1);
+      }
+    } 
+    // Support for HEXO image folder
+    else if (frameworkId === "hexo") {
+      relAssetPath = parseWinPath(relAssetPath);
+      if (relAssetPath.startsWith("/")) {
+        relAssetPath = relAssetPath.substring(1);
+      }
+    }
+
+    return parseWinPath(relAssetPath);
+  }
+
+  /**
+   * Define the default settings for Hexo
+   */
+  private static async hexo() {
+    try {
+      const wsFolder = Folders.getWorkspaceFolder();
+      const hexoConfig = join(wsFolder?.fsPath || "", '_config.yml');
+      let assetFoler = "source/images";
+
+      if (await existsAsync(hexoConfig)) {
+        const content = await readFileAsync(hexoConfig, "utf8");
+        // Convert YAML to JSON
+        const config = jsyaml.safeLoad(content);
+
+        // Check if post assets are used: https://hexo.io/docs/asset-folders.html#Post-Asset-Folder
+        if (config.post_asset_folder) {
+          assetFoler = STATIC_FOLDER_PLACEHOLDER.hexo.placeholder;
+        }
+      }
+
+      await Settings.update(SETTING_CONTENT_STATIC_FOLDER, assetFoler, true);
+    } catch (e) {
+      Logger.error(`Something failed while processing your Hexo configuration. ${(e as Error).message}`);
+    }
+  }
+
+  /**
+   * Define the default settings for Jekyll
+   */
   private static async jekyll() {
     try {
       const wsFolder = Folders.getWorkspaceFolder();

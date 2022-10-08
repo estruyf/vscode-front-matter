@@ -65,6 +65,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({ fmFilePath, date, ti
     return [];
   }, [settings, pageData]);
 
+  console.log(pageData[PREVIEW_IMAGE_FIELD])
+
   if (view === DashboardViewType.Grid) {
     return (
       <li className="relative">

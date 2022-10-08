@@ -2,16 +2,34 @@ import * as React from 'react';
 import {FolderAddIcon, LightningBoltIcon} from '@heroicons/react/outline';
 import { useRecoilValue } from 'recoil';
 import { DashboardMessage } from '../../DashboardMessage';
-import { SelectedMediaFolderAtom, SettingsSelector } from '../../state';
+import { AllContentFoldersAtom, AllStaticFoldersAtom, SelectedMediaFolderAtom, SettingsSelector, ViewDataSelector } from '../../state';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { ChoiceButton } from '../ChoiceButton';
 import { CustomScript, ScriptType } from '../../../models';
+import { STATIC_FOLDER_PLACEHOLDER } from '../../../constants';
+import { useCallback, useMemo } from 'react';
+import { extname } from 'path';
+import { parseWinPath } from '../../../helpers/parseWinPath';
 
 export interface IFolderCreationProps {}
 
 export const FolderCreation: React.FunctionComponent<IFolderCreationProps> = (props: React.PropsWithChildren<IFolderCreationProps>) => {
   const selectedFolder = useRecoilValue(SelectedMediaFolderAtom);
   const settings = useRecoilValue(SettingsSelector);
+  const allStaticFolders = useRecoilValue(AllStaticFoldersAtom);
+  const allContentFolders = useRecoilValue(AllContentFoldersAtom);
+  const viewData = useRecoilValue(ViewDataSelector);
+
+  const hexoAssetFolderPath = useMemo(() => {
+    const path = viewData?.data?.filePath?.replace(extname(viewData.data.filePath), '');
+    return parseWinPath(path);
+  }, [viewData?.data?.filePath]);
+
+  const onAssetFolderCreation = useCallback(() => {
+    Messenger.send(DashboardMessage.createHexoAssetFolder, {
+      hexoAssetFolderPath
+    });
+  }, [hexoAssetFolderPath]);
 
   const onFolderCreation = () => {
     Messenger.send(DashboardMessage.createMediaFolder, {
@@ -23,11 +41,34 @@ export const FolderCreation: React.FunctionComponent<IFolderCreationProps> = (pr
     Messenger.send(DashboardMessage.runCustomScript, {script, path: selectedFolder});
   };
 
+  const isHexoPostAssetsEnabled = useMemo(() => {
+    if (allStaticFolders && allContentFolders && settings?.staticFolder === STATIC_FOLDER_PLACEHOLDER.hexo.placeholder && hexoAssetFolderPath) {
+      return ![...allStaticFolders, ...allContentFolders].some(f => f.startsWith(hexoAssetFolderPath));
+    }
+    return false;
+  }, [settings?.staticFolder, allStaticFolders, allContentFolders, hexoAssetFolderPath]);
+
   const scripts = (settings?.scripts || []).filter(script => script.type === ScriptType.MediaFolder && !script.hidden);
+
+  const renderPostAssetsButton = useMemo(() => {
+    if (isHexoPostAssetsEnabled) {
+      return (
+        <button 
+          className={`mr-2 inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 focus:outline-none disabled:bg-gray-500`}
+          title={`Create post asset folder`}
+          onClick={onAssetFolderCreation}>
+          <FolderAddIcon className={`mr-2 h-6 w-6`} />
+          <span className={``}>Create post asset folder</span>
+        </button>
+      );
+    }
+    return null;
+  }, [isHexoPostAssetsEnabled]);
 
   if (scripts.length > 0) {
     return (
       <div className="flex flex-1 justify-end">
+        { renderPostAssetsButton }
         <ChoiceButton 
           title={`Create new folder`} 
           choices={scripts.map(s => ({
@@ -43,6 +84,7 @@ export const FolderCreation: React.FunctionComponent<IFolderCreationProps> = (pr
 
   return (
     <div className="flex flex-1 justify-end">
+      { renderPostAssetsButton }
       <button 
         className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 focus:outline-none disabled:bg-gray-500`}
         title={`Create new folder`}

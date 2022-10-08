@@ -7,6 +7,7 @@ import { SortingOption } from '../../dashboardWebView/models';
 import { commands, env, Uri } from 'vscode';
 import { COMMAND_NAME, TelemetryEvent } from '../../constants';
 import * as os from 'os';
+import { Folders } from '../../commands';
 
 
 export class MediaListener extends BaseListener {
@@ -50,6 +51,11 @@ export class MediaListener extends BaseListener {
         break;
       case DashboardMessage.createMediaFolder:
         await commands.executeCommand(COMMAND_NAME.createFolder, msg?.data);
+        break;
+      case DashboardMessage.createHexoAssetFolder:
+        if (msg?.data.hexoAssetFolderPath) {
+          Folders.createFolder(msg?.data.hexoAssetFolderPath);
+        }
         break;
     }
   }

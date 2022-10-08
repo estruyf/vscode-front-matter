@@ -4,6 +4,8 @@ export interface MediaPaths {
   media: MediaInfo[];
   total: number;
   folders: string[];
+  allContentFolders: string[];
+  allStaticfolders: string[];
   selectedFolder: string;
 }
 

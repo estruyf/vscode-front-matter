@@ -12,6 +12,7 @@ export * from './LocalStore';
 export * from './Navigation';
 export * from './NotificationType';
 export * from './PreviewCommands';
+export * from './StaticFolderPlaceholder';
 export * from './TelemetryEvent';
 export * from './charCode';
 export * from './charMap';

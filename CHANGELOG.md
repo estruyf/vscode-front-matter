@@ -10,6 +10,7 @@
 
 - [#406](https://github.com/estruyf/vscode-front-matter/issues/406): Added support for single data entries in the data dashboard
 - [#428](https://github.com/estruyf/vscode-front-matter/issues/428): Improved UX for inserting images to your content
+- [#430](https://github.com/estruyf/vscode-front-matter/issues/430): Support for HEXO its `post_asset_folder` setting (image location)
 - [#434](https://github.com/estruyf/vscode-front-matter/issues/434): Webview errors are logged in the extension output
 
 ### ⚡️ Optimizations

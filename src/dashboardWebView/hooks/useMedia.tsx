@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { MediaInfo, MediaPaths } from '../../models';
 import { DashboardCommand } from '../DashboardCommand';
-import { LoadingAtom, MediaFoldersAtom, MediaTotalAtom, PageAtom, SearchAtom, SelectedMediaFolderAtom, SettingsAtom } from '../state';
+import { AllContentFoldersAtom, AllStaticFoldersAtom, LoadingAtom, MediaFoldersAtom, MediaTotalAtom, PageAtom, SearchAtom, SelectedMediaFolderAtom, SettingsAtom } from '../state';
 import Fuse from 'fuse.js';
 import usePagination from './usePagination';
 
@@ -26,6 +26,8 @@ export default function useMedia() {
   const [ , setSelectedFolder ] = useRecoilState(SelectedMediaFolderAtom);
   const [ , setTotal ] = useRecoilState(MediaTotalAtom);
   const [ , setFolders ] = useRecoilState(MediaFoldersAtom);
+  const [ , setAllContentFolders ] = useRecoilState(AllContentFoldersAtom);
+  const [ , setAllStaticFolders ] = useRecoilState(AllStaticFoldersAtom);
   const [ , setLoading ] = useRecoilState(LoadingAtom);
   const search = useRecoilValue(SearchAtom);
   const settings = useRecoilValue(SettingsAtom);
@@ -44,6 +46,8 @@ export default function useMedia() {
       setFolders(data.folders);
       setSelectedFolder(data.selectedFolder);
       setSearchedMedia(data.media);
+      setAllContentFolders(data.allContentFolders);
+      setAllStaticFolders(data.allStaticfolders);
     }
   };
 

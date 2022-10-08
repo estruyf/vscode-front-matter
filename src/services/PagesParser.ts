@@ -1,5 +1,6 @@
+import { STATIC_FOLDER_PLACEHOLDER } from './../constants/StaticFolderPlaceholder';
 import { parseWinPath } from './../helpers/parseWinPath';
-import { dirname, join } from "path";
+import { dirname, extname, join } from "path";
 import { StatusBarAlignment, Uri, window } from "vscode";
 import { Dashboard } from "../commands/Dashboard";
 import { Folders } from "../commands/Folders";
@@ -236,7 +237,14 @@ export class PagesParser {
   
           // Revalidate as the array could have been empty
           if (fieldValue) {
-            const staticPath = join(wsFolder.fsPath, staticFolder || "", fieldValue);
+            let staticPath = join(wsFolder.fsPath, staticFolder || "", fieldValue);
+
+            if (staticFolder === STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
+              const crntFilePath = parseWinPath(filePath)
+              const pathWithoutExtension = crntFilePath.replace(extname(crntFilePath), '');
+              staticPath = join(pathWithoutExtension, fieldValue);
+            }
+
             const contentFolderPath = join(dirname(filePath), fieldValue);
   
             let previewUri = null;

@@ -1,4 +1,5 @@
-import { decodeBase64, Extension, MediaLibrary, Notifications, parseWinPath, Settings, Sorting } from ".";
+import { STATIC_FOLDER_PLACEHOLDER } from './../constants/StaticFolderPlaceholder';
+import { decodeBase64, Extension, FrameworkDetector, MediaLibrary, Notifications, parseWinPath, Settings, Sorting } from ".";
 import { Dashboard } from "../commands/Dashboard";
 import { Folders } from "../commands/Folders";
 import { DEFAULT_CONTENT_TYPE, ExtensionState, HOME_PAGE_NAVIGATION_ID, SETTING_MEDIA_SUPPORTED_MIMETYPES } from "../constants";
@@ -78,8 +79,14 @@ export class MediaHelpers {
 
       allMedia = [...media];
     } else {
-      if (staticFolder) {
+      if (staticFolder && staticFolder !== STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
         const folderSearch = join(staticFolder || "", '/*');
+        const files = await workspace.findFiles(folderSearch);
+        const media = await MediaHelpers.updateMediaData(MediaHelpers.filterMedia(files));
+
+        allMedia = [...media];
+      } else if (staticFolder && staticFolder === STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
+        const folderSearch = join(STATIC_FOLDER_PLACEHOLDER.hexo.postsFolder, '/*');
         const files = await workspace.findFiles(folderSearch);
         const media = await MediaHelpers.updateMediaData(MediaHelpers.filterMedia(files));
 
@@ -150,31 +157,40 @@ export class MediaHelpers {
     let allContentFolders: string[] = [];
     let allFolders: string[] = [];
 
+    let foldersFromSelection: string[] = [];
+
     if (selectedFolder) {
       if (await existsAsync(selectedFolder)) {
-        allFolders = (await readdirAsync(selectedFolder, { withFileTypes: true })).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(selectedFolder, dir.name)));
+        foldersFromSelection = (await readdirAsync(selectedFolder, { withFileTypes: true })).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(selectedFolder, dir.name)));
       }
-    } else {
-      if (pageBundleContentTypes.length > 0) {
-        for (const contentFolder of contentFolders) {
-          const contentPath = contentFolder.path;
-          if (contentPath && await existsAsync(contentPath)) {
-            const subFolders = (await readdirAsync(contentPath, { withFileTypes: true })).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(contentPath, dir.name)));
-            allContentFolders = [...allContentFolders, ...subFolders];
-          }
+    }
+
+    // Retrieve all the content folders
+    if (pageBundleContentTypes.length > 0) {
+      for (const contentFolder of contentFolders) {
+        const contentPath = contentFolder.path;
+        if (contentPath && await existsAsync(contentPath)) {
+          const subFolders = (await readdirAsync(contentPath, { withFileTypes: true })).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(contentPath, dir.name)));
+          allContentFolders = [...allContentFolders, ...subFolders];
         }
       }
-  
-      const staticPath = join(parseWinPath(wsFolder?.fsPath || ""), staticFolder || "");
-      if (staticPath && await existsAsync(staticPath)) {
-        allFolders = (await readdirAsync(staticPath, { withFileTypes: true })).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(staticPath, dir.name)));
-      }
+    }
+
+    // Retrieve all the static folders
+    let staticPath = join(parseWinPath(wsFolder?.fsPath || ""), staticFolder || "");
+    if (staticFolder === STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
+      staticPath = join(parseWinPath(wsFolder?.fsPath || ""), STATIC_FOLDER_PLACEHOLDER.hexo.postsFolder);
+    }
+
+    if (staticPath && await existsAsync(staticPath)) {
+      allFolders = (await readdirAsync(staticPath, { withFileTypes: true })).filter(dir => dir.isDirectory()).map(dir => parseWinPath(join(staticPath, dir.name)));
     }
 
     // Store the last opened folder
     await Extension.getInstance().setState(ExtensionState.SelectedFolder, requestedFolder === HOME_PAGE_NAVIGATION_ID ? HOME_PAGE_NAVIGATION_ID : selectedFolder, "workspace");
     
-    let sortedFolders = [...allContentFolders, ...allFolders];
+    let sortedFolders = selectedFolder ? foldersFromSelection : [...allContentFolders, ...allFolders];
+
     sortedFolders = sortedFolders.sort((a, b) => {
       if (a.toLowerCase() < b.toLowerCase()) {
         return -1;
@@ -193,7 +209,9 @@ export class MediaHelpers {
       media: files,
       total: total,
       folders: sortedFolders,
-      selectedFolder
+      selectedFolder,
+      allContentFolders,
+      allStaticfolders: allFolders,
     } as MediaPaths
   }
 
@@ -276,6 +294,10 @@ export class MediaHelpers {
       Dashboard.resetViewData();
 
       const editor = window.activeTextEditor;
+      if (!editor) {
+        return;
+      }
+
       const wsFolder = Folders.getWorkspaceFolder();
       const filePath = data.file;
       let relPath = data.relPath;
@@ -304,7 +326,7 @@ export class MediaHelpers {
 
           // Snippets are already parsed, so update the URL of the image
           if (data.snippet) {
-            data.snippet = data.snippet.replace(data.relPath, relPath);
+            data.snippet = data.snippet.replace(data.relPath, FrameworkDetector.relAssetPathUpdate(relPath, editor.document.fileName));
           }
         }
       }
@@ -325,7 +347,7 @@ export class MediaHelpers {
 
             const caption = isFile ? `${data.title || ""}` : `${data.alt || data.caption || ""}`;
 
-            const snippet = data.snippet || `${isFile ? "" : "!"}[${caption}](${relPath.replace(/ /g, "%20")})`;
+            const snippet = data.snippet || `${isFile ? "" : "!"}[${caption}](${FrameworkDetector.relAssetPathUpdate(relPath, editor.document.fileName).replace(/ /g, "%20")})`;
             if (selection !== undefined) {
               builder.replace(selection, snippet);
             } else {
@@ -339,7 +361,7 @@ export class MediaHelpers {
         
         DataListener.updateMetadata({
           field: data.fieldName, 
-          value: relPath, 
+          value: FrameworkDetector.relAssetPathUpdate(relPath, editor.document.fileName), 
           parents: data.parents,
           blockData: data.blockData
         });

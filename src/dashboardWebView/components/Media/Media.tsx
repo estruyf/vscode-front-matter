@@ -9,15 +9,16 @@ import { Item } from './Item';
 import { Lightbox } from './Lightbox';
 import { List } from './List';
 import { useDropzone } from 'react-dropzone'
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { DashboardMessage } from '../../DashboardMessage';
 import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMatterIcon';
 import { FolderItem } from './FolderItem';
 import useMedia from '../../hooks/useMedia';
-import { TelemetryEvent } from '../../../constants';
+import { STATIC_FOLDER_PLACEHOLDER, TelemetryEvent } from '../../../constants';
 import { PageLayout } from '../Layout/PageLayout';
 import { parseWinPath } from '../../../helpers/parseWinPath';
 import { basename, extname, join } from 'path';
+import { MediaInfo } from '../../../models';
 
 export interface IMediaProps {}
 
@@ -29,9 +30,20 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
   const folders = useRecoilValue(MediaFoldersAtom);
   const loading = useRecoilValue(LoadingAtom);
 
-  const contentFolders = React.useMemo(() => {
-    // Check if content allows page bundle
-    if (viewData && viewData.data && typeof viewData.data.pageBundle !== "undefined" && !viewData.data.pageBundle) {
+  const currentStaticFolder = useMemo(() => {
+    if (settings?.staticFolder) {
+      let staticFolderPath = join('/', settings?.staticFolder || '', '/');
+      if (settings?.staticFolder === STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
+        staticFolderPath = join('/', STATIC_FOLDER_PLACEHOLDER.hexo.postsFolder, '/');
+      }
+      return staticFolderPath;
+    }
+    return;
+  }, [settings?.staticFolder])
+
+  const contentFolders = useMemo(() => {
+    // Check if content allows page bundle or if Hexo post assets are enabled
+    if (viewData && viewData.data && typeof viewData.data.pageBundle !== "undefined" && !viewData.data.pageBundle && settings?.staticFolder !== STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
       return [];
     }
 
@@ -46,17 +58,26 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
     }
 
     return groupedFolders;
-  }, [folders, viewData, settings?.contentFolders]);
+  }, [folders, viewData, settings?.contentFolders, settings?.staticFolder]);
 
-  const publicFolders = React.useMemo(() => {
-    return folders.filter(f => parseWinPath(f).includes(join('/', settings?.staticFolder || '', '/')));
-  }, [folders, viewData, settings?.staticFolder]);
+  const publicFolders = useMemo(() => {
+    if (currentStaticFolder && settings?.staticFolder !== STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
+      return folders.filter(f => parseWinPath(f).includes(currentStaticFolder));
+    }
 
-  const allMedia = React.useMemo(() => {
-    let mediaFiles = media;
+    return undefined;
+  }, [folders, viewData, currentStaticFolder, settings?.staticFolder]);
+
+  const allMedia = useMemo(() => {
+    let mediaFiles: MediaInfo[] = Object.assign([], media);
     // Check if content allows page bundle
-    if (viewData && viewData.data && typeof viewData.data.pageBundle !== "undefined" && !viewData.data.pageBundle) {
-      mediaFiles = media.filter(m => parseWinPath(m.fsPath).includes(join('/', settings?.staticFolder || '', '/')));
+    if (currentStaticFolder && viewData && viewData.data && typeof viewData.data.pageBundle !== "undefined" && !viewData.data.pageBundle) {
+      mediaFiles = media.filter(m => parseWinPath(m.fsPath).includes(currentStaticFolder));
+    }
+
+    // Filter if Hexo post folder
+    if (currentStaticFolder && settings?.staticFolder === STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
+      mediaFiles = mediaFiles.filter(m => parseWinPath(m.fsPath).includes(currentStaticFolder));
     }
 
     if (viewData && viewData.data && viewData.data.type === "file" && viewData.data.fileExtensions && viewData.data.fileExtensions.length > 0) {
@@ -70,7 +91,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
     }
 
     return mediaFiles;
-  }, [media, viewData, settings?.staticFolder]); 
+  }, [media, viewData, currentStaticFolder, settings?.staticFolder]); 
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.forEach((file) => {
@@ -120,7 +141,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
             <div className="absolute top-0 left-0 w-full h-full text-whisper-500 bg-gray-900 bg-opacity-70 flex flex-col justify-center items-center z-50">
               <UploadIcon className={`h-32`} />
               <p className={`text-xl max-w-md text-center`}>
-                {selectedFolder ? `Upload to ${selectedFolder}` : `No folder selected, files you drop will be added to the ${settings?.staticFolder || "public"} folder.`}
+                {selectedFolder ? `Upload to ${selectedFolder}` : `No folder selected, files you drop will be added to the ${currentStaticFolder || "public"} folder.`}
               </p>
             </div>
           )
@@ -132,7 +153,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
               <div className={`max-w-xl text-center`}>
                 <FrontMatterIcon className={`text-vulcan-300 dark:text-whisper-800 h-32 mx-auto opacity-90 mb-8`} />
                 
-                <p className={`text-xl font-medium`}>No media files to show. You can drag &amp; drop new files.</p>
+                <p className={`text-xl font-medium`}>No media files to show. You can drag &amp; drop new files by holding your [shift] key.</p>
               </div>
             </div>
           )
@@ -147,7 +168,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
                 <List gap={0}>
                   {
                     group.folders.map((folder) => (
-                      <FolderItem key={folder} folder={folder} staticFolder={settings?.staticFolder} wsFolder={settings?.wsFolder} />
+                      <FolderItem key={folder} folder={folder} staticFolder={currentStaticFolder} wsFolder={settings?.wsFolder} />
                     ))
                   }
                 </List>
@@ -160,13 +181,13 @@ export const Media: React.FunctionComponent<IMediaProps> = (props: React.PropsWi
           publicFolders && publicFolders.length > 0 && (
             <div className={`mb-8`}>
               {
-                contentFolders && contentFolders.length > 0 && (<h2 className='text-lg mb-8'>Public folder{settings?.staticFolder && (<span>: <b>{settings?.staticFolder}</b></span>)}</h2>)
+                contentFolders && contentFolders.length > 0 && (<h2 className='text-lg mb-8'>Public folder{currentStaticFolder && (<span>: <b>{currentStaticFolder}</b></span>)}</h2>)
               }
 
               <List gap={0}>
                 {
                   publicFolders.map((folder) => (
-                    <FolderItem key={folder} folder={folder} staticFolder={settings?.staticFolder} wsFolder={settings?.wsFolder} />
+                    <FolderItem key={folder} folder={folder} staticFolder={currentStaticFolder} wsFolder={settings?.wsFolder} />
                   ))
                 }
               </List>
