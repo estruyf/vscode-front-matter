@@ -480,8 +480,7 @@ export class Settings {
       }
 
       // Array settings
-      if (relSettingName === SETTING_CUSTOM_SCRIPTS.toLowerCase()) {
-
+      if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CUSTOM_SCRIPTS)) {
         // Get the correct setting name
         let settingNameValue = ""
         if (relSettingName === SETTING_CUSTOM_SCRIPTS.toLowerCase()) {
@@ -492,40 +491,50 @@ export class Settings {
         Settings.globalConfig[`${CONFIG_KEY}.${settingNameValue}`] = [...crntValue, configJson];
       }
       // Content types
-      else if (relSettingName === SETTING_TAXONOMY_CONTENT_TYPES.toLowerCase()) {
+      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_TAXONOMY_CONTENT_TYPES)) {
         Settings.updateGlobalConfigArraySetting(SETTING_TAXONOMY_CONTENT_TYPES, "name", configJson);
       }
       // Data files
-      else if (relSettingName === SETTING_DATA_FILES.toLowerCase()) {
+      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_FILES)) {
         Settings.updateGlobalConfigArraySetting(SETTING_DATA_FILES, "id", configJson);
       }
       // Data folders
-      else if (relSettingName === SETTING_DATA_FOLDERS.toLowerCase()) {
+      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_FOLDERS)) {
         Settings.updateGlobalConfigArraySetting(SETTING_DATA_FOLDERS, "id", configJson);
       }
       // Data types
-      else if (relSettingName === SETTING_DATA_TYPES.toLowerCase()) {
+      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_TYPES)) {
         Settings.updateGlobalConfigArraySetting(SETTING_DATA_TYPES, "id", configJson);
       }
       // Page folders
-      else if (relSettingName === SETTING_CONTENT_PAGE_FOLDERS.toLowerCase()) {
+      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_PAGE_FOLDERS)) {
         Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PAGE_FOLDERS, "path", configJson);
       }
       // Placeholders
-      else if (relSettingName === SETTING_CONTENT_PLACEHOLDERS.toLowerCase()) {
+      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_PLACEHOLDERS)) {
         Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PLACEHOLDERS, "id", configJson);
       }
       // Object settings
-      else if (relSettingName === SETTING_CONTENT_SNIPPETS.toLowerCase()) {
-        // Filename is the key
-        const fileName = parse(configFilePath).name;
-        const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CONTENT_SNIPPETS}`] || {};
-        Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CONTENT_SNIPPETS}`] = { ...crntValue, ...{ [fileName]: configJson } };
+      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_SNIPPETS)) {
+        Settings.updateGlobalConfigObjectByNameSetting(SETTING_CONTENT_SNIPPETS, configFilePath, configJson);
       }
     } catch (e) {
       Logger.error(`Error reading config file: ${configFile.fsPath}`);
       Logger.error((e as Error).message);
     }
+  }
+
+  /**
+   * Check if the setting name is equal or starts with the reference setting name
+   * @param value 
+   * @param startsWith 
+   * @returns 
+   */
+  private static isEqualOrStartsWith(value: string, startsWith: string) {
+    value = value.toLowerCase();
+    startsWith = startsWith.toLowerCase();
+
+    return value === startsWith || value.startsWith(`${startsWith}.`);
   }
 
   /**
@@ -539,13 +548,30 @@ export class Settings {
 
     // Check if folder is already added
     const itemIdx = crntValue.findIndex((item: any) => item[fieldName] === configJson[fieldName]);
-    if (itemIdx !== -1) {
-      crntValue[itemIdx] = configJson;
-    } else {
+    if (itemIdx === -1) {
       crntValue.push(configJson);
     }
 
     Settings.globalConfig[`${CONFIG_KEY}.${settingName}`] = [...crntValue];
+  }
+
+  /**
+   * Update an object by the file name in the global config
+   * @param settingName 
+   * @param fileNamepath 
+   * @param configJson 
+   */
+  private static updateGlobalConfigObjectByNameSetting<T>(settingName: string, fileNamepath: string, configJson: any): void {
+    const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${settingName}`] || {};
+
+    // Filename is the key
+    const fileName = parse(fileNamepath).name;
+
+    if (!crntValue[fileName]) {
+      crntValue[fileName] = configJson;
+
+      Settings.globalConfig[`${CONFIG_KEY}.${settingName}`] = { ...crntValue, ...{ [fileName]: configJson } };
+    }
   }
 
   /**

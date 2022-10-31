@@ -1,32 +1,19 @@
 import { GitListener } from './listeners/general/GitListener';
 import * as vscode from 'vscode';
-import { Telemetry } from './helpers/Telemetry';
-import { ContentType } from './helpers/ContentType';
-import { Dashboard } from './commands/Dashboard';
-import { Article, Settings, StatusListener } from './commands';
-import { Folders } from './commands/Folders';
-import { Preview } from './commands/Preview';
-import { Project } from './commands/Project';
-import { Template } from './commands/Template';
-import { Cache } from './commands/Cache';
 import { COMMAND_NAME, TelemetryEvent } from './constants';
-import { TaxonomyType } from './models';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
 import { TagType } from './panelWebView/TagType';
 import { ExplorerView } from './explorerView/ExplorerView';
-import { Extension } from './helpers/Extension';
-import { DashboardData } from './models/DashboardData';
 import { DashboardSettings, debounceCallback, Logger, Settings as SettingsHelper } from './helpers';
-import { Content } from './commands/Content';
 import ContentProvider from './providers/ContentProvider';
-import { Wysiwyg } from './commands/Wysiwyg';
-import { Diagnostics } from './commands/Diagnostics';
 import { PagesListener } from './listeners/dashboard';
-import { Backers } from './commands/Backers';
 import { DataListener, SettingsListener } from './listeners/panel';
 import { NavigationType } from './dashboardWebView/models';
 import { ModeSwitch } from './services/ModeSwitch';
 import { PagesParser } from './services/PagesParser';
+import { ContentType, Telemetry, Extension } from './helpers';
+import { TaxonomyType, DashboardData } from './models';
+import { Backers, Diagnostics, Wysiwyg, Content, Cache, Template, Project, Preview, Folders, Dashboard, Article, Settings, StatusListener } from './commands';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void; };
@@ -37,7 +24,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const { subscriptions, extensionUri, extensionPath } = context;
 
 	const extension = Extension.getInstance(context);
-	Backers.init(context);
+	Backers.init(context).then(() => {});
 
 	if (!extension.checkIfExtensionCanRun()) {
 		return undefined;
