@@ -14,6 +14,7 @@
 - [#434](https://github.com/estruyf/vscode-front-matter/issues/434): Webview errors are logged in the extension output
 - [#447](https://github.com/estruyf/vscode-front-matter/issues/447): Allow to use placeholders on git commit messages
 - [#449](https://github.com/estruyf/vscode-front-matter/issues/449): Show `filename` if the `title` is not set
+- [#450](https://github.com/estruyf/vscode-front-matter/issues/450): Additional time placeholders added `{{hour12}}`, `{{hour24}}`, `{{ampm}}`, and `{{minute}}`
 
 ### ⚡️ Optimizations
 
