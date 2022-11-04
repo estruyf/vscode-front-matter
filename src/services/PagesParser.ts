@@ -126,8 +126,9 @@ export class PagesParser {
    */
   public static async processPageContent(filePath: string, fileMtime: number, fileName: string, folderTitle: string): Promise<Page | undefined> {
     const article = await ArticleHelper.getFrontMatterByPath(filePath);
+    const articleTitle = article?.data.title || fileName;
 
-    if (article?.data.title) {
+    if (article?.data) {
       const wsFolder = Folders.getWorkspaceFolder();
       const descriptionField = Settings.get(SETTING_SEO_DESCRIPTION_FIELD) as string || DefaultFields.Description;
 
@@ -139,7 +140,7 @@ export class PagesParser {
 
       const staticFolder = Folders.getStaticFolderRelativePath();
 
-      let escapedTitle = article?.data.title;
+      let escapedTitle = articleTitle;
       if (escapedTitle && typeof escapedTitle !== "string") {
         escapedTitle = "<invalid title>";
       }
