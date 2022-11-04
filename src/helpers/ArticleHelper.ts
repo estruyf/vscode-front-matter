@@ -400,7 +400,7 @@ export class ArticleHelper {
    * @param title 
    * @returns 
    */
-  public static async processCustomPlaceholders(value: string, title: string, filePath: string) {
+  public static async processCustomPlaceholders(value: string, title: string | undefined, filePath: string | undefined) {
     if (value && typeof value === "string") {
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
       const placeholders = Settings.get<CustomPlaceholder[]>(SETTING_CONTENT_PLACEHOLDERS);

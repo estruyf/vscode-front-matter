@@ -1,10 +1,10 @@
 import { Settings } from './../../helpers/SettingsHelper';
 import { Dashboard } from '../../commands/Dashboard';
 import { ExplorerView } from '../../explorerView/ExplorerView';
-import { Extension, Logger, Telemetry } from '../../helpers';
+import { ArticleHelper, Extension, Logger, processKnownPlaceholders, Telemetry } from '../../helpers';
 import { GeneralCommands } from './../../constants/GeneralCommands';
 import simpleGit, { SimpleGit } from 'simple-git';
-import { COMMAND_NAME, CONTEXT, SETTING_GIT_COMMIT_MSG, SETTING_GIT_ENABLED, TelemetryEvent } from '../../constants';
+import { COMMAND_NAME, CONTEXT, SETTING_DATE_FORMAT, SETTING_GIT_COMMIT_MSG, SETTING_GIT_ENABLED, TelemetryEvent } from '../../constants';
 import { Folders } from '../../commands/Folders';
 import { commands } from 'vscode';
 
@@ -88,7 +88,13 @@ export class GitListener {
   }
 
   private static async push() {
-    const commitMsg = Settings.get<string>(SETTING_GIT_COMMIT_MSG);
+    let commitMsg = Settings.get<string>(SETTING_GIT_COMMIT_MSG);
+
+    if (commitMsg) {
+      const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
+      commitMsg = processKnownPlaceholders(commitMsg, undefined, dateFormat);
+      commitMsg = await ArticleHelper.processCustomPlaceholders(commitMsg, undefined, undefined);
+    }
 
     const git = this.getClient();
     if (!git) {

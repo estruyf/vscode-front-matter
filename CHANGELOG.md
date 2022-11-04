@@ -12,6 +12,7 @@
 - [#428](https://github.com/estruyf/vscode-front-matter/issues/428): Improved UX for inserting images to your content
 - [#430](https://github.com/estruyf/vscode-front-matter/issues/430): Support for HEXO its `post_asset_folder` setting (image location)
 - [#434](https://github.com/estruyf/vscode-front-matter/issues/434): Webview errors are logged in the extension output
+- [#447](https://github.com/estruyf/vscode-front-matter/issues/447): Allow to use placeholders on git commit messages
 - [#449](https://github.com/estruyf/vscode-front-matter/issues/449): Show `filename` if the `title` is not set
 
 ### ⚡️ Optimizations
