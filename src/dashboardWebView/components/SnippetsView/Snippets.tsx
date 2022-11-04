@@ -9,6 +9,7 @@ import { TelemetryEvent } from '../../../constants/TelemetryEvent';
 import { SnippetParser } from '../../../helpers/SnippetParser';
 import { DashboardMessage } from '../../DashboardMessage';
 import { ModeAtom, SettingsSelector, ViewDataSelector } from '../../state';
+import { FilterInput } from '../Header/FilterInput';
 import { PageLayout } from '../Layout/PageLayout';
 import { FormDialog } from '../Modals/FormDialog';
 import { SponsorMsg } from '../SponsorMsg';
@@ -26,9 +27,13 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (props: React.P
   const [ snippetBody, setSnippetBody ] = useState<string>('');
   const [ showCreateDialog, setShowCreateDialog ] = useState(false);
   const [ mediaSnippet, setMediaSnippet ] = useState(false);
+  const [ snippetFilter, setSnippetFilter ] = useState<string>('');
 
   const snippets = settings?.snippets || {};
-  const snippetKeys = useMemo(() => Object.keys(snippets) || [], [settings?.snippets]);
+  const snippetKeys = useMemo(() => {
+    const allSnippetKeys = Object.keys(snippets).sort((a, b) => a.localeCompare(b));
+    return allSnippetKeys.filter((key) => key.toLowerCase().includes(snippetFilter.toLowerCase()));
+  }, [settings?.snippets, snippetFilter]);
 
   const onSnippetAdd = useCallback(() => {
     if (!snippetTitle || !snippetBody) {
@@ -70,6 +75,15 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (props: React.P
             className="py-3 px-4 flex items-center justify-between border-b border-gray-300 dark:border-vulcan-100"
             aria-label="snippets header"
           >
+            <FilterInput
+              placeholder='Search'
+              isReady={true}
+              autoFocus={true}
+              value={snippetFilter}
+              onChange={(value: string) => setSnippetFilter(value)}
+              onReset={() => setSnippetFilter('')}
+            />
+            
             <div className="flex flex-1 justify-end">
               <button 
                 className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 focus:outline-none disabled:bg-gray-500`}
