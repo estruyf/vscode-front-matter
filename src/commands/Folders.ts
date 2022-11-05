@@ -250,7 +250,10 @@ export class Folders {
       for (const folder of folders) {
         try {
           const projectName = Folders.getProjectFolderName();
-          let projectStart = folder.path.split(projectName).pop();
+          const slashSplit = parseWinPath(folder.path).split(`/`);
+          const idx = slashSplit.findIndex(f => f === projectName);
+
+          let projectStart = `/${slashSplit.slice(idx + 1).join(`/`)}`;
           
           if (projectStart) {
             projectStart = projectStart.replace(/\\/g, '/');
