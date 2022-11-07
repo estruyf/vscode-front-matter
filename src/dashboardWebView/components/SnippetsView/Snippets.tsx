@@ -32,7 +32,14 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (props: React.P
   const snippets = settings?.snippets || {};
   const snippetKeys = useMemo(() => {
     const allSnippetKeys = Object.keys(snippets).sort((a, b) => a.localeCompare(b));
-    return allSnippetKeys.filter((key) => key.toLowerCase().includes(snippetFilter.toLowerCase()));
+    return allSnippetKeys.filter((key) => {
+      const value = snippetFilter.toLowerCase();
+      const keyValue = key.toLowerCase();
+      const descriptionValue = snippets[key].description?.toLowerCase() || '';
+
+      // Contains in key or description, values included in key are ranked higher (sort and fuzzy search)
+      return keyValue.includes(value) || descriptionValue.includes(value);
+    });
   }, [settings?.snippets, snippetFilter]);
 
   const onSnippetAdd = useCallback(() => {
