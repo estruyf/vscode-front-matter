@@ -4,6 +4,7 @@ import { Dashboard } from "../../commands/Dashboard";
 import { SETTING_CONTENT_SNIPPETS, TelemetryEvent } from "../../constants";
 import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { Notifications, Settings, Telemetry } from "../../helpers";
+import { Snippets } from "../../models";
 import { BaseListener } from "./BaseListener";
 import { SettingsListener } from "./SettingsListener";
 
@@ -68,7 +69,15 @@ export class SnippetListener extends BaseListener {
       return;
     }
 
-    await Settings.update(SETTING_CONTENT_SNIPPETS, snippets, true);
+    // Filter out external data snippets
+    const snippetsToStore = Object.keys(snippets).reduce((acc, key) => {
+      if (!snippets[key].sourcePath) {
+        acc[key] = snippets[key];
+      }
+      return acc;
+    }, {} as Snippets);
+
+    await Settings.update(SETTING_CONTENT_SNIPPETS, snippetsToStore, true);
     SettingsListener.getSettings(true);
   }
 

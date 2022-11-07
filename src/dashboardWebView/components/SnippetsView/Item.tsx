@@ -1,5 +1,5 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { CodeIcon, DocumentTextIcon, DotsHorizontalIcon, PencilIcon, PhotographIcon, PlusIcon, TrashIcon } from '@heroicons/react/outline';
+import { CodeIcon, DocumentTextIcon, DotsHorizontalIcon, EyeIcon, PencilIcon, PhotographIcon, PlusIcon, TrashIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
@@ -16,11 +16,11 @@ import { NewForm } from './NewForm';
 import SnippetForm, { SnippetFormHandle } from './SnippetForm';
 
 export interface IItemProps {
-  title: string;
+  snippetKey: string;
   snippet: Snippet;
 }
 
-export const Item: React.FunctionComponent<IItemProps> = ({ title, snippet }: React.PropsWithChildren<IItemProps>) => {
+export const Item: React.FunctionComponent<IItemProps> = ({ snippetKey, snippet }: React.PropsWithChildren<IItemProps>) => {
   const viewData = useRecoilValue(ViewDataSelector);
   const settings = useRecoilValue(SettingsSelector);
   const mode = useRecoilValue(ModeAtom);
@@ -50,13 +50,17 @@ export const Item: React.FunctionComponent<IItemProps> = ({ title, snippet }: Re
     setMediaSnippet(false);
   };
 
+  const showFile = useCallback(() => {
+    Messenger.send(DashboardMessage.openFile, snippet.sourcePath);
+  }, [ snippet ]);
+
   const onOpenEdit = useCallback(() => {
-    setSnippetTitle(title);
+    setSnippetTitle(snippet.title || snippetKey);
     setSnippetDescription(snippet.description);
     setSnippetOriginalBody(typeof snippet.body === "string" ? snippet.body : snippet.body.join(`\n`));
     setShowEditDialog(true);
     setMediaSnippet(!!snippet.isMediaSnippet);
-  }, [snippet]);
+  }, [snippet, snippetKey]);
   
   const onSnippetUpdate = useCallback(() => {
     if (!snippetTitle || !snippetOriginalBody) {
@@ -64,10 +68,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({ title, snippet }: Re
       return;
     }
 
-    const snippets: Snippets = Object.assign({}, settings?.snippets || {});
+    let snippets: Snippets = Object.assign({}, settings?.snippets || {});
     const snippetLines = snippetOriginalBody.split("\n");
 
-    const crntSnippet = Object.assign({}, snippets[title]);
+    const crntSnippet = Object.assign({}, snippets[snippetKey]);
     
     const fields = SnippetParser.getFields(snippetLines, crntSnippet.fields || [], crntSnippet?.openingTags, crntSnippet?.closingTags);
 
@@ -83,27 +87,33 @@ export const Item: React.FunctionComponent<IItemProps> = ({ title, snippet }: Re
       snippetContents.isMediaSnippet = true;
     }
 
-    // Check if new or update
-    if (title === snippetTitle) {
-      snippets[title] = snippetContents;
+    // Check if there is a title set in the snippet
+    if (snippet.title) {
+      snippetContents.title = snippetTitle;
+      snippets[snippetKey] = snippetContents;
     } else {
-      delete snippets[title];
-      snippets[snippetTitle] = snippetContents;
+      // Check if new or update
+      if (snippetKey === snippetTitle) {
+        snippets[snippetKey] = snippetContents;
+      } else {
+        delete snippets[snippetKey];
+        snippets[snippetTitle] = snippetContents;
+      }
     }
 
     Messenger.send(DashboardMessage.updateSnippet, { snippets });
 
     reset();
-  }, [settings?.snippets, title, snippetTitle, snippetDescription, snippetOriginalBody, mediaSnippet]);
+  }, [settings?.snippets, snippetKey, snippetTitle, snippetDescription, snippetOriginalBody, mediaSnippet]);
 
   const onDelete = useCallback(() => {
     const snippets = Object.assign({}, settings?.snippets || {});
-    delete snippets[title];
+    delete snippets[snippetKey];
 
     Messenger.send(DashboardMessage.updateSnippet, { snippets });
 
     setShowAlert(false);
-  }, [settings?.snippets, title]);
+  }, [settings?.snippets, snippetKey]);
   
   return (
     <>
@@ -115,7 +125,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({ title, snippet }: Re
         <h2 className="mt-2 mb-2 font-bold flex items-center" title={snippet.isMediaSnippet ? "Media snippet" : "Content snippet"}>
           { snippet.isMediaSnippet ? <PhotographIcon className='w-5 h-5 mr-1' aria-hidden={true} /> : <DocumentTextIcon className='w-5 h-5 mr-1' aria-hidden={true} /> }
           
-          {title}
+          {snippet.title || snippetKey}
         </h2>
 
         <FeatureFlag 
@@ -160,17 +170,29 @@ export const Item: React.FunctionComponent<IItemProps> = ({ title, snippet }: Re
                   )
                 }
 
-                <QuickAction 
-                  title={`Edit snippet`}
-                  onClick={onOpenEdit}>
-                  <PencilIcon className={`w-4 h-4`} aria-hidden="true" />
-                </QuickAction>
+                {
+                  !snippet.sourcePath ? (
+                    <>
+                      <QuickAction 
+                        title={`Edit snippet`}
+                        onClick={onOpenEdit}>
+                        <PencilIcon className={`w-4 h-4`} aria-hidden="true" />
+                      </QuickAction>
 
-                <QuickAction 
-                  title={`Delete snippet`}
-                  onClick={() => setShowAlert(true)}>
-                  <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
-                </QuickAction>
+                      <QuickAction 
+                        title={`Delete snippet`}
+                        onClick={() => setShowAlert(true)}>
+                        <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
+                      </QuickAction>
+                    </>
+                  ) : (
+                    <QuickAction
+                      title={`View snippet file`}
+                      onClick={showFile}>
+                      <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
+                    </QuickAction>
+                  )
+                }
               </div>
             </div>
           </div>
@@ -182,8 +204,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({ title, snippet }: Re
       {
         showInsertDialog && (
           <FormDialog 
-            title={`Insert snippet: ${title}`}
-            description={`Insert the ${title.toLowerCase()} snippet into the current article`}
+            title={`Insert snippet: ${(snippet.title || snippetKey)}`}
+            description={`Insert the ${(snippet.title || snippetKey).toLowerCase()} snippet into the current article`}
             isSaveDisabled={!insertToContent}
             trigger={insertToArticle}
             dismiss={() => setShowInsertDialog(false)}
@@ -202,8 +224,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({ title, snippet }: Re
       {
         showEditDialog && (
           <FormDialog 
-            title={`Edit snippet: ${title}`}
-            description={`Edit the ${title.toLowerCase()} snippet`}
+            title={`Edit snippet: ${(snippet.title || snippetKey)}`}
+            description={`Edit the ${(snippet.title || snippetKey).toLowerCase()} snippet`}
             isSaveDisabled={!snippetTitle || !snippetOriginalBody}
             trigger={onSnippetUpdate}
             dismiss={reset}
@@ -227,8 +249,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({ title, snippet }: Re
       {
         showAlert && (
           <Alert 
-            title={`Delete snippet: ${title}`}
-            description={`Are you sure you want to delete the ${title.toLowerCase()} snippet?`}
+            title={`Delete snippet: ${(snippet.title || snippetKey)}`}
+            description={`Are you sure you want to delete the ${(snippet.title || snippetKey).toLowerCase()} snippet?`}
             okBtnText={`Delete`}
             cancelBtnText={`Cancel`}
             dismiss={() => setShowAlert(false)}

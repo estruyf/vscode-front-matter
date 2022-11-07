@@ -195,6 +195,9 @@ export class Settings {
           await Settings.update(name, undefined);
         }
 
+        // Make sure to reload the whole config + all the data files
+        await Settings.readConfig();
+
         return;
       }
     } else {
@@ -516,7 +519,7 @@ export class Settings {
       }
       // Object settings
       else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_SNIPPETS)) {
-        Settings.updateGlobalConfigObjectByNameSetting(SETTING_CONTENT_SNIPPETS, configFilePath, configJson);
+        Settings.updateGlobalConfigObjectByNameSetting(SETTING_CONTENT_SNIPPETS, configFilePath, configJson, filePath);
       }
     } catch (e) {
       Logger.error(`Error reading config file: ${configFile.fsPath}`);
@@ -561,11 +564,16 @@ export class Settings {
    * @param fileNamepath 
    * @param configJson 
    */
-  private static updateGlobalConfigObjectByNameSetting<T>(settingName: string, fileNamepath: string, configJson: any): void {
+  private static updateGlobalConfigObjectByNameSetting<T>(settingName: string, fileNamepath: string, configJson: any, absPath: string): void {
     const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${settingName}`] || {};
 
     // Filename is the key
     const fileName = parse(fileNamepath).name;
+
+    configJson = {
+      ...configJson,
+      sourcePath: absPath
+    };
 
     if (!crntValue[fileName]) {
       crntValue[fileName] = configJson;

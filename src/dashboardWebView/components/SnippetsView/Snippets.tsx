@@ -120,7 +120,7 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (props: React.P
                 snippetKeys.map((snippetKey: any, index: number) => (
                   <Item 
                     key={index}
-                    title={snippetKey}
+                    snippetKey={snippetKey}
                     snippet={snippets[snippetKey]} />
                 ))
               }
