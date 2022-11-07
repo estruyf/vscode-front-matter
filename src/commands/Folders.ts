@@ -244,16 +244,14 @@ export class Folders {
   public static async getInfo(limit?: number): Promise<FolderInfo[] | null> {
     const supportedFiles = Settings.get<string[]>(SETTING_CONTENT_SUPPORTED_FILETYPES);
     const folders = Folders.get();
+    const wsFolder = parseWinPath(Folders.getWorkspaceFolder()?.fsPath || "");
+
     if (folders && folders.length > 0) {
       let folderInfo: FolderInfo[] = [];
       
       for (const folder of folders) {
         try {
-          const projectName = Folders.getProjectFolderName();
-          const slashSplit = parseWinPath(folder.path).split(`/`);
-          const idx = slashSplit.findIndex(f => f === projectName);
-
-          let projectStart = `/${slashSplit.slice(idx + 1).join(`/`)}`;
+          let projectStart = parseWinPath(folder.path).replace(wsFolder, "");
           
           if (projectStart) {
             projectStart = projectStart.replace(/\\/g, '/');
