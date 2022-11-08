@@ -21,6 +21,7 @@
 
 - [#431](https://github.com/estruyf/vscode-front-matter/issues/431): Performance improvements for the content dashboard
 - [#448](https://github.com/estruyf/vscode-front-matter/issues/448): Retrieving files fails when content folder name and workspace folder name are the same
+- [#455](https://github.com/estruyf/vscode-front-matter/issues/455): Show a description for the SEO section when title nor description is set
 
 ### 🐞 Fixes
 
