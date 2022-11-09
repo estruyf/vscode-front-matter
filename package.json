@@ -206,6 +206,10 @@
                 ],
                 "default": null,
                 "description": "Defines a custom preview path for the folder."
+              },
+              "filePrefix": {
+                "type": [ "null", "string" ],
+                "description": "Defines a prefix for the file name."
               }
             },
             "additionalProperties": false,

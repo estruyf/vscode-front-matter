@@ -331,8 +331,13 @@ export class ArticleHelper {
   public static async createContent(contentType: ContentType | undefined, folderPath: string, titleValue: string, fileExtension?: string): Promise<string | undefined> {
     FrontMatterParser.currentContent = null;
     
-    const prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
+    let prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
     const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
+
+    const filePrefixOnFolder = Folders.getFilePrefixByFolderPath(folderPath);
+    if (typeof filePrefixOnFolder !== "undefined") {
+      prefix = filePrefixOnFolder;
+    }
     
     // Name of the file or folder to create
     const sanitizedName = ArticleHelper.sanitize(titleValue);

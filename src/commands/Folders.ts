@@ -428,6 +428,51 @@ export class Folders {
   }
 
   /**
+   * Returns the file prefix for the given folder path
+   * @param folderPath 
+   * @returns 
+   */
+  public static getFilePrefixByFolderPath(folderPath: string) {
+    const folders = Folders.get();
+    const pageFolder = folders.find(f => parseWinPath(f.path) === parseWinPath(folderPath));
+
+    if (pageFolder && typeof pageFolder.filePrefix !== "undefined") {
+      return pageFolder.filePrefix;
+    }
+
+    return;
+  }
+
+
+  /**
+   * Returns the file prefix for the given file path
+   * @param filePath 
+   * @returns 
+   */
+  public static getFilePrefixBeFilePath(filePath: string) {
+    const folders = Folders.get();
+    if (folders.length > 0) {
+      filePath = parseWinPath(filePath);
+
+      let selectedFolder: ContentFolder | null = null;
+      for (const folder of folders) {
+        const folderPath = parseWinPath(folder.path);
+        if (filePath.startsWith(folderPath)) {
+          if (!selectedFolder || selectedFolder.path.length < folderPath.length) {
+            selectedFolder = folder;
+          }
+        }
+      }
+
+      if (selectedFolder && typeof selectedFolder.filePrefix !== "undefined") {
+        return selectedFolder.filePrefix;
+      }
+    }
+
+    return;
+  }
+
+  /**
    * Retrieve all content folders
    * @param pattern 
    * @returns 
