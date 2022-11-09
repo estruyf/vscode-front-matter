@@ -191,6 +191,6 @@ You can open showcase issues for the following things:
 
 <p align="center">
   <a href="https://visitorbadge.io">
-    <img src="https://estruyf-github.azurewebsites.net/api/VisitorHit?user=estruyf&repo=vscode-front-matter&countColor=%23F05450&labelColor=%230E131F" height="25px" />
-   </a>
+    <img src="https://api.visitorbadge.io/api/VisitorHit?user=estruyf&repo=vscode-front-matter&countColor=%23F05450&labelColor=%230E131F" height="25px" />
+  </a>
 </p>
