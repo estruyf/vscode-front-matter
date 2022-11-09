@@ -210,6 +210,13 @@
               "filePrefix": {
                 "type": [ "null", "string" ],
                 "description": "Defines a prefix for the file name."
+              },
+              "contentTypes": {
+                "type": "array",
+                "description": "Defines which content types can be used for the current location. If not defined, all content types will be available.",
+                "items": {
+                  "type": "string"
+                }
               }
             },
             "additionalProperties": false,

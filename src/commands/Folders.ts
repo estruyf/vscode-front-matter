@@ -81,7 +81,7 @@ export class Folders {
    * Create content in a registered folder
    * @returns 
    */
-  public static async create() {
+   public static async create() {
     const selectedFolder = await Questions.SelectContentFolder();
     if (!selectedFolder) {
       return;

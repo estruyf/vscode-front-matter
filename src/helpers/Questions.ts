@@ -46,7 +46,7 @@ export class Questions {
    * @returns 
    */
   public static async SelectContentFolder(showWarning: boolean = true): Promise<string | undefined> {
-    const folders = Folders.get();
+    let folders = Folders.get();
 
     let selectedFolder: string | undefined;
     if (folders.length > 1) {
@@ -72,14 +72,20 @@ export class Questions {
 
   /**
    * Select the content type to create new content
+   * @param allowedCts Allowed content types for the folder 
    * @param showWarning 
    * @returns 
    */
-  public static async SelectContentType(showWarning: boolean = true): Promise<string | undefined> {
-    const contentTypes = ContentType.getAll();
+  public static async SelectContentType(allowedCts: string[], showWarning: boolean = true): Promise<string | undefined> {
+    let contentTypes = ContentType.getAll();
     if (!contentTypes || contentTypes.length === 0) {
       Notifications.warning("No content types found. Please create a content type first.");
       return;
+    }
+
+    // Only allow content types that are allowed for the folder
+    if (allowedCts && allowedCts.length > 0) {
+      contentTypes = contentTypes.filter(ct => allowedCts.find(allowedCt => allowedCt === ct.name));
     }
 
     if (contentTypes.length === 1) {

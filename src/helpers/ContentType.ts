@@ -64,11 +64,6 @@ export class ContentType {
    * @returns 
    */
   public static async createContent() {
-    const selectedContentType = await Questions.SelectContentType();
-    if (!selectedContentType) {
-      return;
-    }
-
     const selectedFolder = await Questions.SelectContentFolder();
     if (!selectedFolder) {
       return;
@@ -76,10 +71,19 @@ export class ContentType {
 
     const contentTypes = ContentType.getAll();
     const folders = Folders.get();
+    const folder = folders.find(f => f.title === selectedFolder);
 
-    const location = folders.find(f => f.title === selectedFolder);
-    if (contentTypes && location) {
-      const folderPath = Folders.getFolderPath(Uri.file(location.path));
+    if (!folder) {
+      return;
+    }
+
+    const selectedContentType = await Questions.SelectContentType(folder.contentTypes || []);
+    if (!selectedContentType) {
+      return;
+    }
+    
+    if (contentTypes && folder) {
+      const folderPath = Folders.getFolderPath(Uri.file(folder.path));
       const contentType = contentTypes.find(ct => ct.name === selectedContentType);
       if (folderPath && contentType) {
         ContentType.create(contentType, folderPath);
