@@ -1,10 +1,8 @@
-
-
 import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { DateHelper } from '../../../helpers/DateHelper';
-import { BlockFieldData, Field, PanelSettings } from '../../../models';
+import { BlockFieldData, Field, PanelSettings, WhenOperator } from '../../../models';
 import { Command } from '../../Command';
 import { CommandToCode } from '../../CommandToCode';
 import { TagType } from '../../TagType';
@@ -110,6 +108,28 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
   if (field.hidden || fieldValue === undefined) {
     return null;
   }
+
+  // Conditional fields
+  if (typeof field.when !== "undefined") {
+    debugger
+    const when = field.when;
+    const whenValue = parent[when.fieldRef];
+
+    if (field.when.operator === WhenOperator.equals) {
+      if (whenValue !== when.value) {
+        return null;
+      }
+    } else if (field.when.operator === WhenOperator.notEquals) {
+      if (whenValue === when.value) {
+        return null;
+      }
+    } else if (field.when.operator === WhenOperator.contains) {
+      if ((typeof whenValue === "string" || whenValue instanceof Array) && !whenValue.includes(when.value)) {
+        return null;
+      }
+    }
+  }
+
 
   if (field.type === 'divider') {
     return (

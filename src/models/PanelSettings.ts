@@ -82,6 +82,28 @@ export interface Field {
   dataFileId?: string;
   dataFileKey?: string;
   dataFileValue?: string;
+
+  // When clause
+  when?: WhenClause;
+}
+
+export enum WhenOperator {
+  equals = "eq",
+  notEquals = "neq",
+  contains = "contains",
+  notContains = "notContains",
+  greaterThan = "gt",
+  greaterThanOrEqual = "gte",
+  lessThan = "lt",
+  lessThanOrEqual = "lte",
+  startsWith = "startsWith",
+  endsWith = "endsWith",
+}
+
+export interface WhenClause {
+  fieldRef: string;
+  operator: WhenOperator;
+  value: any;
 }
 
 export interface DateInfo {
