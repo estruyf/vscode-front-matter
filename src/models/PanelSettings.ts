@@ -92,18 +92,19 @@ export enum WhenOperator {
   notEquals = "neq",
   contains = "contains",
   notContains = "notContains",
+  startsWith = "startsWith",
+  endsWith = "endsWith",
   greaterThan = "gt",
   greaterThanOrEqual = "gte",
   lessThan = "lt",
   lessThanOrEqual = "lte",
-  startsWith = "startsWith",
-  endsWith = "endsWith",
 }
 
 export interface WhenClause {
   fieldRef: string;
   operator: WhenOperator;
   value: any;
+  caseSensitive?: boolean;
 }
 
 export interface DateInfo {

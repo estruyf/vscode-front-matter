@@ -14,6 +14,7 @@ import { JsonField } from '../JsonField';
 import { IMetadata } from '../Metadata';
 import { TagPicker } from '../TagPicker';
 import { ChoiceField, DataFileField, DateTimeField, DraftField, FieldTitle, FileField, ListField, Toggle, TextField, SlugField, PreviewImageField, PreviewImageValue, NumberField } from '.';
+import { fieldWhenClause } from '../../../utils/fieldWhenClause';
 
 export interface IWrapperFieldProps {
   field: Field;
@@ -111,22 +112,10 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
 
   // Conditional fields
   if (typeof field.when !== "undefined") {
-    debugger
-    const when = field.when;
-    const whenValue = parent[when.fieldRef];
+    const shouldRender = fieldWhenClause(field, parent);
 
-    if (field.when.operator === WhenOperator.equals) {
-      if (whenValue !== when.value) {
-        return null;
-      }
-    } else if (field.when.operator === WhenOperator.notEquals) {
-      if (whenValue === when.value) {
-        return null;
-      }
-    } else if (field.when.operator === WhenOperator.contains) {
-      if ((typeof whenValue === "string" || whenValue instanceof Array) && !whenValue.includes(when.value)) {
-        return null;
-      }
+    if (!shouldRender) {
+      return null;
     }
   }
 
