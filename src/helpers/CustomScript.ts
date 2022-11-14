@@ -195,7 +195,11 @@ export class CustomScript {
       const output = await CustomScript.executeScript(script, wsPath, `"${wsPath}" "${contentPath}" ${articleData}`);
       return output;
     } catch (e) {
-      Notifications.error(`${script.title}: ${(e as Error).message}`);
+      if (typeof e === "string") {
+        Notifications.error(`${script.title}: ${e}`);
+      } else {
+        Notifications.error(`${script.title}: ${(e as Error).message}`);
+      }
       return null;
     }
   }
@@ -285,6 +289,7 @@ export class CustomScript {
       exec(fullScript, (error, stdout) => {
         if (error) {
           reject(error.message);
+          return;
         }
 
         if (stdout && stdout.endsWith(`\n`)) {
