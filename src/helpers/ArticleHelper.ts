@@ -338,13 +338,21 @@ export class ArticleHelper {
     if (typeof filePrefixOnFolder !== "undefined") {
       prefix = filePrefixOnFolder;
     }
+
+    if (prefix && typeof prefix === "string") {
+      prefix = `${format(new Date(), DateHelper.formatUpdate(prefix) as string)}`;
+    }
     
     // Name of the file or folder to create
-    const sanitizedName = ArticleHelper.sanitize(titleValue);
+    let sanitizedName = ArticleHelper.sanitize(titleValue);
     let newFilePath: string | undefined;
 
     // Create a folder with the `index.md` file
     if (contentType?.pageBundle) {
+      if (prefix && typeof prefix === "string") {
+        sanitizedName = `${prefix}-${sanitizedName}`;
+      }
+
       const newFolder = join(folderPath, sanitizedName);
       if (await existsAsync(newFolder)) {
         Notifications.error(`A page bundle with the name ${sanitizedName} already exists in ${folderPath}`);
@@ -357,7 +365,7 @@ export class ArticleHelper {
       let newFileName = `${sanitizedName}.${fileExtension || contentType?.fileType || fileType}`;
 
       if (prefix && typeof prefix === "string") {
-        newFileName = `${format(new Date(), DateHelper.formatUpdate(prefix) as string)}-${newFileName}`;
+        newFileName = `${prefix}-${newFileName}`;
       }
       
       newFilePath = join(folderPath, newFileName);
