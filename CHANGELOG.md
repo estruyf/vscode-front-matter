@@ -4,6 +4,7 @@
 
 ### ✨ New features
 
+- [#362](https://github.com/estruyf/vscode-front-matter/issues/362): Support for conditional metadata
 - [#412](https://github.com/estruyf/vscode-front-matter/issues/412): Allow `frontmatter.json` to be split in multiple files
 
 ### 🎨 Enhancements
