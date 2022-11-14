@@ -484,14 +484,8 @@ export class Settings {
 
       // Array settings
       if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CUSTOM_SCRIPTS)) {
-        // Get the correct setting name
-        let settingNameValue = ""
-        if (relSettingName === SETTING_CUSTOM_SCRIPTS.toLowerCase()) {
-          settingNameValue = SETTING_CUSTOM_SCRIPTS;
-        }
-
-        const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${settingNameValue}`] || [];
-        Settings.globalConfig[`${CONFIG_KEY}.${settingNameValue}`] = [...crntValue, configJson];
+        const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CUSTOM_SCRIPTS}`] || [];
+        Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CUSTOM_SCRIPTS}`] = [...crntValue, configJson];
       }
       // Content types
       else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_TAXONOMY_CONTENT_TYPES)) {
