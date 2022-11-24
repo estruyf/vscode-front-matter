@@ -111,6 +111,9 @@ export class GitListener {
     for (const file of status.modified) {
       await git.add(file);
     }
+    for (const file of status.deleted) {
+      await git.add(file);
+    }
 
     await git.commit(commitMsg || "Synced by Front Matter")
 
