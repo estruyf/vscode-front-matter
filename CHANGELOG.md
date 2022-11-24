@@ -31,6 +31,7 @@
 - Fix field error message color
 - [#433](https://github.com/estruyf/vscode-front-matter/issues/433): Fix issue with rendering an incorrect title value on the content dashboard
 - [#462](https://github.com/estruyf/vscode-front-matter/issues/462): Fix issue in script error notification
+- [#465](https://github.com/estruyf/vscode-front-matter/issues/465): Deleted content does not get added in git when syncing
 
 ## [8.1.2] - 2022-10-06
 
