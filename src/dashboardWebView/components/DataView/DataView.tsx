@@ -252,7 +252,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (props: React.P
               <DatabaseIcon className='w-32 h-32' />
               <p className='text-3xl mt-2'>No data files found</p>
               <p className='text-xl mt-4'>
-                <a className={`text-teal-700 hover:text-teal-900`} href={`https://frontmatter.codes/docs/dashboard#data-files-view`} title={`Read read more to get started using data files`}>Read read more to get started using data files</a></p>
+                <a className={`text-teal-700 hover:text-teal-900`} href={`https://frontmatter.codes/docs/dashboard#data-files-view`} title={`Read more to get started using data files`}>Read more to get started using data files</a></p>
             </div>
           </div>
         )
