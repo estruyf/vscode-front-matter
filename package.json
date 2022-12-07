@@ -2132,7 +2132,7 @@
     "recoil": "^0.4.1",
     "rimraf": "^3.0.2",
     "semver": "^7.3.7",
-    "simple-git": "^3.10.0",
+    "simple-git": "^3.15.0",
     "style-loader": "2.0.0",
     "tailwindcss": "^2.2.7",
     "tailwindcss-nested-groups": "^1.2.4",
