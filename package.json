@@ -1064,6 +1064,50 @@
                       "type": "boolean",
                       "default": false,
                       "description": "Specify if the field is required"
+                    },
+                    "when": {
+                      "type": "object",
+                      "description": "Specify the conditions to show the field",
+                      "properties": {
+                        "fieldRef": {
+                          "type": "string",
+                          "description": "The field ID to use"
+                        },
+                        "operator": {
+                          "type": "string",
+                          "description": "The operator to use",
+                          "enum": [
+                            "eq",
+                            "neq",
+                            "contains",
+                            "notContains",
+                            "startsWith",
+                            "endsWith",
+                            "gt",
+                            "gte",
+                            "lt",
+                            "lte",
+                            "minimum",
+                            "maximum",
+                            "exlusiveMinimum",
+                            "exclusiveMaximum"
+                          ]
+                        },
+                        "value": {
+                          "type": [
+                            "string",
+                            "number",
+                            "boolean",
+                            "array"
+                          ],
+                          "description": "The value to compare"
+                        },
+                        "caseSensitive": {
+                          "type": "boolean",
+                          "default": true,
+                          "description": "Specify if the comparison is case sensitive. Default: true"
+                        }
+                      }
                     }
                   },
                   "additionalProperties": false,
