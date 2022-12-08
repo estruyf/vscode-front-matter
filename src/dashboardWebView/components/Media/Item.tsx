@@ -41,6 +41,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const viewData = useRecoilValue(ViewDataSelector);
 
+  const hasViewData = useMemo(() => {
+    return viewData?.data?.filePath !== undefined;
+  }, [viewData]);
+
   const [referenceElement, setReferenceElement] = useState<any>(null);
   const [popperElement, setPopperElement] = useState<any>(null);
   const { styles, attributes, forceUpdate } = usePopper(referenceElement, popperElement, {
@@ -56,6 +60,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
     const keys = Object.keys(settings.snippets);
     return keys.filter(key => (settings.snippets || {})[key].isMediaSnippet).map(key => ({ title: key, ...(settings.snippets || {})[key]}));
   }, [settings]);
+
+  const showMediaSnippet = useMemo(() => {
+    return viewData?.data?.position && mediaSnippets.length > 0;
+  }, [viewData, mediaSnippets]);
 
   const getFolder = () => {
     if (settings?.wsFolder && media.fsPath) {
@@ -350,15 +358,15 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   }, [media.fsPath]);
 
   useEffect(() => {
-    if (!viewData?.data?.filePath) {
+    if (!hasViewData) {
       clearFormData();
     }
-  }, [viewData]);
+  }, [viewData, hasViewData]);
 
   return (
     <>
       <li className="group relative bg-gray-50 dark:bg-vulcan-200 shadow-md hover:shadow-xl dark:shadow-none dark:hover:bg-vulcan-100 border border-gray-200 dark:border-vulcan-50">
-        <button className={`relative bg-gray-200 dark:bg-vulcan-300 block w-full aspect-w-10 aspect-h-7 overflow-hidden  h-48 ${isImageFile ? "cursor-pointer" : "cursor-default"}`} onClick={openLightbox}>
+        <button className={`group-scope relative bg-gray-200 dark:bg-vulcan-300 block w-full aspect-w-10 aspect-h-7 overflow-hidden  h-48 ${isImageFile ? "cursor-pointer" : "cursor-default"}`} onClick={hasViewData ? undefined : openLightbox}>
           <div className={`absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center`}>
             {
               renderMediaIcon
@@ -367,6 +375,32 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
           <div className={`absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center`}>
             { renderMedia }
           </div>
+          {
+            hasViewData && (
+              <div className={`hidden group-scope-hover:flex absolute top-0 right-0 bottom-0 left-0 items-center bg-vulcan-500 bg-opacity-70 justify-center`}>
+                <div className={`h-full ${showMediaSnippet ? 'w-1/3' : 'w-full'} flex items-center justify-center`}>
+                  <button
+                    title='Insert image'
+                    className={`text-gray-300 hover:text-teal-600 h-1/3`}
+                    onClick={insertToArticle}>
+                    <PlusIcon className={`w-full h-full hover:drop-shadow-md `} aria-hidden="true" />
+                  </button>
+                </div>
+                {
+                  (viewData?.data?.position && mediaSnippets.length > 0) && (
+                    <div className={`h-full w-1/3 flex items-center justify-center`}>
+                      <button
+                        title='Insert snippet'
+                        className={`text-gray-300 hover:text-teal-600 h-1/3`}
+                        onClick={insertSnippet}>
+                        <CodeIcon className={`w-full h-full hover:drop-shadow-md `} aria-hidden="true" />
+                      </button>
+                    </div>
+                  )
+                }
+              </div>
+            )
+          }
         </button>
         <div className={`relative py-4 pl-4 pr-12`}>
           <div className={`group-scope absolute top-4 right-4 flex flex-col space-y-4`}>
@@ -443,7 +477,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
                       viewData?.data?.filePath ? (
                         <>
                           <MenuItem 
-                            title={<div className='flex items-center'><PlusIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>Insert image markdown</span></div>}
+                            title={<div className='flex items-center'><PlusIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} /> <span>Insert image</span></div>}
                             onClick={insertToArticle} />
 
                           {

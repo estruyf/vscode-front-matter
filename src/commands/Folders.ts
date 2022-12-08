@@ -1,3 +1,4 @@
+import { STATIC_FOLDER_PLACEHOLDER } from './../constants/StaticFolderPlaceholder';
 import { Questions } from './../helpers/Questions';
 import { SETTING_CONTENT_PAGE_FOLDERS, SETTING_CONTENT_STATIC_FOLDER, SETTING_CONTENT_SUPPORTED_FILETYPES, TelemetryEvent } from './../constants';
 import { commands, Uri, workspace, window } from "vscode";
@@ -7,7 +8,7 @@ import uniqBy = require("lodash.uniqby");
 import { Template } from "./Template";
 import { Notifications } from "../helpers/Notifications";
 import { Logger, Settings } from "../helpers";
-import { existsSync, mkdirSync } from 'fs';
+import { existsSync } from 'fs';
 import { format } from 'date-fns';
 import { Dashboard } from './Dashboard';
 import { parseWinPath } from '../helpers/parseWinPath';
@@ -16,6 +17,8 @@ import { MediaListener, PagesListener, SettingsListener } from '../listeners/das
 import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
 import { Telemetry } from '../helpers/Telemetry';
 import { glob } from 'glob';
+import { mkdirAsync } from '../utils/mkdirAsync';
+import { existsAsync } from '../utils';
 
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
@@ -41,6 +44,10 @@ export class Folders {
       startPath += "/";
     }
 
+    if (startPath.includes(STATIC_FOLDER_PLACEHOLDER.hexo.placeholder)) {
+      startPath = startPath.replace(STATIC_FOLDER_PLACEHOLDER.hexo.placeholder, STATIC_FOLDER_PLACEHOLDER.hexo.postsFolder);
+    }
+
     const folderName = await window.showInputBox({  
       title: `Add media folder`,
       prompt: `Which name would you like to give to your folder (use "/" to create multi-level folders)?`,
@@ -54,22 +61,17 @@ export class Folders {
       return;
     }
     
-    const folders = folderName.split("/").filter(f => f);
-    let parentFolders: string[] = [];
+    await Folders.createFolder(join(parseWinPath(wsFolder?.fsPath || ""), folderName));
+  }
 
-    for (const folder of folders) {
-      const folderPath = join(parseWinPath(wsFolder?.fsPath || ""), parentFolders.join("/"), folder);
-
-      parentFolders.push(folder);
-      
-      if (!existsSync(folderPath)) {
-        mkdirSync(folderPath);
-      }
+  public static async createFolder(folderPath: string) {
+    if (!(await existsAsync(folderPath))) {
+      await mkdirAsync(folderPath, { recursive: true });
     }
 
     if (Dashboard.isOpen) {
       MediaHelpers.resetMedia();
-      MediaListener.sendMediaFiles(0, folderName);
+      MediaListener.sendMediaFiles(0, folderPath);
     }
 
     Telemetry.send(TelemetryEvent.addMediaFolder);
@@ -79,7 +81,7 @@ export class Folders {
    * Create content in a registered folder
    * @returns 
    */
-  public static async create() {
+   public static async create() {
     const selectedFolder = await Questions.SelectContentFolder();
     if (!selectedFolder) {
       return;
@@ -137,7 +139,7 @@ export class Folders {
 
 		  Telemetry.send(TelemetryEvent.registerFolder);
 
-      SettingsListener.getSettings();
+      SettingsListener.getSettings(true);
     }
   }
 
@@ -210,9 +212,9 @@ export class Folders {
       if (!projectFolder) {
         window.showWorkspaceFolderPick({
           placeHolder: `Please select the main workspace folder for Front Matter to use.`
-        }).then(selectedFolder => {
+        }).then(async (selectedFolder) => {
           if (selectedFolder) {
-            Settings.createGlobalFile(selectedFolder.uri);
+            await Settings.createGlobalFile(selectedFolder.uri);
             // Full reload to make sure the whole extension is reloaded correctly
             commands.executeCommand(`workbench.action.reloadWindow`);
           }
@@ -242,13 +244,14 @@ export class Folders {
   public static async getInfo(limit?: number): Promise<FolderInfo[] | null> {
     const supportedFiles = Settings.get<string[]>(SETTING_CONTENT_SUPPORTED_FILETYPES);
     const folders = Folders.get();
+    const wsFolder = parseWinPath(Folders.getWorkspaceFolder()?.fsPath || "");
+
     if (folders && folders.length > 0) {
       let folderInfo: FolderInfo[] = [];
       
       for (const folder of folders) {
         try {
-          const projectName = Folders.getProjectFolderName();
-          let projectStart = folder.path.split(projectName).pop();
+          let projectStart = parseWinPath(folder.path).replace(wsFolder, "");
           
           if (projectStart) {
             projectStart = projectStart.replace(/\\/g, '/');
@@ -422,6 +425,51 @@ export class Folders {
 
     const uniqueFolders = [...new Set(folders)];
     return uniqueFolders.map(folder => relative(wsFolder?.path || "", folder));
+  }
+
+  /**
+   * Returns the file prefix for the given folder path
+   * @param folderPath 
+   * @returns 
+   */
+  public static getFilePrefixByFolderPath(folderPath: string) {
+    const folders = Folders.get();
+    const pageFolder = folders.find(f => parseWinPath(f.path) === parseWinPath(folderPath));
+
+    if (pageFolder && typeof pageFolder.filePrefix !== "undefined") {
+      return pageFolder.filePrefix;
+    }
+
+    return;
+  }
+
+
+  /**
+   * Returns the file prefix for the given file path
+   * @param filePath 
+   * @returns 
+   */
+  public static getFilePrefixBeFilePath(filePath: string) {
+    const folders = Folders.get();
+    if (folders.length > 0) {
+      filePath = parseWinPath(filePath);
+
+      let selectedFolder: ContentFolder | null = null;
+      for (const folder of folders) {
+        const folderPath = parseWinPath(folder.path);
+        if (filePath.startsWith(folderPath)) {
+          if (!selectedFolder || selectedFolder.path.length < folderPath.length) {
+            selectedFolder = folder;
+          }
+        }
+      }
+
+      if (selectedFolder && typeof selectedFolder.filePrefix !== "undefined") {
+        return selectedFolder.filePrefix;
+      }
+    }
+
+    return;
   }
 
   /**

@@ -31,6 +31,7 @@ export enum DashboardMessage {
   updateMediaMetadata = 'updateMediaMetadata',
   createMediaFolder = 'createMediaFolder',
   insertFile = 'insertFile',
+  createHexoAssetFolder = 'createHexoAssetFolder',
 
   // Data dashboard
   getDataEntries = 'getDataEntries',
@@ -57,4 +58,5 @@ export enum DashboardMessage {
   setState = 'setState',
   runCustomScript = 'runCustomScript',
   sendTelemetry = 'sendTelemetry',
+  logError = 'logError',
 }

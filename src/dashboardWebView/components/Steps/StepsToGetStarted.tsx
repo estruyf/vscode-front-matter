@@ -163,10 +163,10 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
   ];
   
   React.useEffect(() => {
-    if (settings.crntFramework) {
-      setFramework(settings.crntFramework);
+    if (settings.crntFramework || settings.framework?.name) {
+      setFramework(settings.crntFramework || settings.framework?.name || null);
     }
-  }, [settings.crntFramework]);
+  }, [settings.crntFramework, settings.framework]);
 
   return (
     <nav aria-label="Progress">

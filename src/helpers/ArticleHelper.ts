@@ -4,7 +4,6 @@ import { Uri, workspace } from 'vscode';
 import { MarkdownFoldingProvider } from './../providers/MarkdownFoldingProvider';
 import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from './../constants/ContentType';
 import * as vscode from 'vscode';
-import * as fs from "fs";
 import { DefaultFields, SETTING_CONTENT_DEFAULT_FILETYPE, SETTING_CONTENT_PLACEHOLDERS, SETTING_CONTENT_SUPPORTED_FILETYPES, SETTING_FILE_PRESERVE_CASING, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_SITE_BASEURL, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX, SETTING_MODIFIED_FIELD, DefaultFieldValues } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { FrontMatterParser, ParsedFrontMatter } from '../parsers';
@@ -15,7 +14,6 @@ import { Article } from '../commands';
 import { join } from 'path';
 import { EditorHelper } from '@estruyf/vscode';
 import sanitize from '../helpers/Sanitize';
-import { existsSync, mkdirSync } from 'fs';
 import { ContentType } from '../models';
 import { DateHelper } from './DateHelper';
 import { DiagnosticSeverity, Position, window, Range } from 'vscode';
@@ -26,6 +24,8 @@ import { Content } from 'mdast';
 import { processKnownPlaceholders } from './PlaceholderHelper';
 import { CustomScript } from './CustomScript';
 import { Folders } from '../commands/Folders';
+import { existsAsync, readFileAsync } from '../utils';
+import { mkdirAsync } from '../utils/mkdirAsync';
 
 export class ArticleHelper {
   private static notifiedFiles: string[] = [];
@@ -70,8 +70,8 @@ export class ArticleHelper {
    * Retrieve the file's front matter by its path
    * @param filePath 
    */
-  public static getFrontMatterByPath(filePath: string) {   
-    const file = fs.readFileSync(filePath, { encoding: "utf-8" });
+  public static async getFrontMatterByPath(filePath: string) {   
+    const file = await readFileAsync(filePath, { encoding: "utf-8" });
     return ArticleHelper.parseFile(file, filePath);
   }
 
@@ -328,36 +328,49 @@ export class ArticleHelper {
    * @param titleValue 
    * @returns The new file path
    */
-  public static createContent(contentType: ContentType | undefined, folderPath: string, titleValue: string, fileExtension?: string): string | undefined {
+  public static async createContent(contentType: ContentType | undefined, folderPath: string, titleValue: string, fileExtension?: string): Promise<string | undefined> {
     FrontMatterParser.currentContent = null;
     
-    const prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
+    let prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
     const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
+
+    const filePrefixOnFolder = Folders.getFilePrefixByFolderPath(folderPath);
+    if (typeof filePrefixOnFolder !== "undefined") {
+      prefix = filePrefixOnFolder;
+    }
+
+    if (prefix && typeof prefix === "string") {
+      prefix = `${format(new Date(), DateHelper.formatUpdate(prefix) as string)}`;
+    }
     
     // Name of the file or folder to create
-    const sanitizedName = ArticleHelper.sanitize(titleValue);
+    let sanitizedName = ArticleHelper.sanitize(titleValue);
     let newFilePath: string | undefined;
 
     // Create a folder with the `index.md` file
     if (contentType?.pageBundle) {
+      if (prefix && typeof prefix === "string") {
+        sanitizedName = `${prefix}-${sanitizedName}`;
+      }
+
       const newFolder = join(folderPath, sanitizedName);
-      if (existsSync(newFolder)) {
+      if (await existsAsync(newFolder)) {
         Notifications.error(`A page bundle with the name ${sanitizedName} already exists in ${folderPath}`);
         return;
       } else {
-        mkdirSync(newFolder);
+        await mkdirAsync(newFolder);
         newFilePath = join(newFolder, `index.${fileExtension || contentType.fileType || fileType}`);
       }
     } else {
       let newFileName = `${sanitizedName}.${fileExtension || contentType?.fileType || fileType}`;
 
       if (prefix && typeof prefix === "string") {
-        newFileName = `${format(new Date(), DateHelper.formatUpdate(prefix) as string)}-${newFileName}`;
+        newFileName = `${prefix}-${newFileName}`;
       }
       
       newFilePath = join(folderPath, newFileName);
 
-      if (existsSync(newFilePath)) {
+      if (await existsAsync(newFilePath)) {
         Notifications.warning(`Content with the title already exists. Please specify a new title.`);
         return;
       }
@@ -400,7 +413,7 @@ export class ArticleHelper {
    * @param title 
    * @returns 
    */
-  public static async processCustomPlaceholders(value: string, title: string, filePath: string) {
+  public static async processCustomPlaceholders(value: string, title: string | undefined, filePath: string | undefined) {
     if (value && typeof value === "string") {
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
       const placeholders = Settings.get<CustomPlaceholder[]>(SETTING_CONTENT_PLACEHOLDERS);

@@ -2,13 +2,13 @@ import { DEFAULT_CONTENT_TYPE } from './../constants/ContentType';
 import { Telemetry } from './../helpers/Telemetry';
 import { workspace, Uri } from "vscode";
 import { join } from "path";
-import * as fs from "fs";
 import { Notifications } from "../helpers/Notifications";
 import { Template } from "./Template";
 import { Folders } from "./Folders";
 import { FrameworkDetector, Logger, Settings } from "../helpers";
 import { SETTING_CONTENT_DEFAULT_FILETYPE, SETTING_TAXONOMY_CONTENT_TYPES, TelemetryEvent } from "../constants";
 import { SettingsListener } from '../listeners/dashboard';
+import { existsAsync, writeFileAsync } from '../utils';
 
 export class Project {
 
@@ -34,10 +34,10 @@ categories: []
    */
   public static async init(sampleTemplate?: boolean) {
     try {
-      Settings.createTeamSettings();
+      await Settings.createTeamSettings();
 
       // Add the default content type
-      Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, [DEFAULT_CONTENT_TYPE], true);
+      await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, [DEFAULT_CONTENT_TYPE], true);
 
       if (sampleTemplate !== undefined) {
         await Project.createSampleTemplate();
@@ -49,13 +49,13 @@ categories: []
 
       // Check if you can find the framework
       const wsFolder = Folders.getWorkspaceFolder();
-      const framework = FrameworkDetector.get(wsFolder?.fsPath || "");
+      const framework = await FrameworkDetector.get(wsFolder?.fsPath || "");
 
       if (framework) {
-        SettingsListener.setFramework(framework.name);
+        await SettingsListener.setFramework(framework.name);
       }
 
-      SettingsListener.getSettings();
+      SettingsListener.getSettings(true);
     } catch (err: any) {
       Logger.error(`Project::init: ${err?.message || err}`);
       Notifications.error(`Sorry, something went wrong - ${err?.message || err}`);
@@ -79,12 +79,12 @@ categories: []
     
     const article = Uri.file(join(templatePath.fsPath, `article.${fileType}`));
 
-    if (!fs.existsSync(templatePath.fsPath)) {
+    if (!(await existsAsync(templatePath.fsPath))) {
       await workspace.fs.createDirectory(templatePath);
     }
 
     if (sampleTemplate) {
-      fs.writeFileSync(article.fsPath, Project.content, { encoding: "utf-8" });
+      await writeFileAsync(article.fsPath, Project.content, { encoding: "utf-8" });
       Notifications.info("Sample template created.");
     }
   }

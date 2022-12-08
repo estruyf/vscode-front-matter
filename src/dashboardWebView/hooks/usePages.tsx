@@ -13,6 +13,7 @@ import { parseWinPath } from '../../helpers/parseWinPath';
 
 export default function usePages(pages: Page[]) {
   const [ pageItems, setPageItems ] = useState<Page[]>([]);
+  const [ sortedPages, setSortedPages ] = useState<Page[]>([]);
   const [ sorting, setSorting ] = useRecoilState(SortingAtom);
   const [ tabInfo , setTabInfo ] = useRecoilState(TabInfoAtom);
   const settings = useRecoilValue(SettingsSelector);
@@ -22,8 +23,10 @@ export default function usePages(pages: Page[]) {
   const tag = useRecoilValue(TagSelector);
   const category = useRecoilValue(CategorySelector);
 
-  const processPages = useCallback((searchedPages: Page[]) => {
-    const draftField = settings?.draftField;
+  /**
+   * Process all the pages by applying the sorting, filtering and searching.
+   */
+  const processPages = useCallback((searchedPages: Page[], fullProcess: boolean = true) => {
     const framework = settings?.crntFramework;
 
     // Filter the pages
@@ -93,40 +96,52 @@ export default function usePages(pages: Page[]) {
       pagesSorted = pagesSorted.filter(page => page.fmCategories && page.fmCategories.includes(category));
     }
 
+    setSortedPages(pagesSorted);
+  }, [ settings, tab, folder, search, tag, category, sorting, tabInfo ]);
+
+
+  /**
+   * Process the pages when the tab changes
+   */
+  const processByTab = useCallback((pages: Page[]) => {
+    const draftField = settings?.draftField;
+
+    let crntPages: Page[] = Object.assign([], pages);
+
     // Process the tab data
     const draftTypes = Object.assign({}, tabInfo);
-    draftTypes[Tab.All] = pagesSorted.length;
+    draftTypes[Tab.All] = crntPages.length;
 
     // Filter by draft status
     if (draftField && draftField.type === 'choice') {
       const draftChoices = settings?.draftField?.choices;
       for (const choice of (draftChoices || [])) {
         if (choice) {
-          draftTypes[choice] = pagesSorted.filter(page => page.fmDraft === choice).length;
+          draftTypes[choice] = crntPages.filter(page => page.fmDraft === choice).length;
         }
       }
 
       if (tab !== Tab.All) {
-        pagesSorted = pagesSorted.filter(page => page.fmDraft === tab);
+        crntPages = crntPages.filter(page => page.fmDraft === tab);
       } else {
-        pagesSorted = pagesSorted;
+        crntPages = crntPages;
       }
     } else {
       // Draft field is a boolean field
       const draftFieldName = draftField?.name || "draft";
 
-      const drafts = pagesSorted.filter(page => page[draftFieldName] == true || page[draftFieldName] === "true");
-      const published = pagesSorted.filter(page => page[draftFieldName] == false || page[draftFieldName] === "false" || typeof page[draftFieldName] === "undefined");
+      const drafts = crntPages.filter(page => page[draftFieldName] == true || page[draftFieldName] === "true");
+      const published = crntPages.filter(page => page[draftFieldName] == false || page[draftFieldName] === "false" || typeof page[draftFieldName] === "undefined");
       
       draftTypes[Tab.Draft] = draftField?.invert ? published.length : drafts.length;
       draftTypes[Tab.Published] = draftField?.invert ? drafts.length : published.length;
 
       if (tab === Tab.Published) {
-        pagesSorted = draftField?.invert ? drafts : published;
+        crntPages = draftField?.invert ? drafts : published;
       } else if (tab === Tab.Draft) {
-        pagesSorted = draftField?.invert ? published : drafts;
+        crntPages = draftField?.invert ? published : drafts;
       } else {
-        pagesSorted = pagesSorted;
+        crntPages = crntPages;
       }
     }
 
@@ -134,10 +149,14 @@ export default function usePages(pages: Page[]) {
     setTabInfo(draftTypes);
 
     // Set the pages
-    setPageItems(pagesSorted);
-  }, [ settings, tab, folder, search, tag, category, sorting, tabInfo ]);
+    setPageItems(crntPages);
+  }, [ tab, tabInfo, settings ]);
 
-
+  
+  /**
+   * Search listener for filtered pages
+   * @param message 
+   */
   const searchListener = (message: MessageEvent<EventData<any>>) => {
     switch (message.data.command) {
       case DashboardMessage.searchPages:
@@ -145,6 +164,7 @@ export default function usePages(pages: Page[]) {
         break;
     }
   };
+
 
   useEffect(() => {
     let usedSorting = sorting;
@@ -160,15 +180,19 @@ export default function usePages(pages: Page[]) {
     // Check if search needs to be performed
     let searchedPages = pages;
     if (search) {
-      // const fuse = new Fuse(pages, fuseOptions);
-      // const results = fuse.search(search);
-      // searchedPages = results.map(page => page.item);
-      
       Messenger.send(DashboardMessage.searchPages, { query: search });
     } else {
       processPages(searchedPages);
     }
-  }, [ settings?.draftField, pages, sorting, search, tab, tag, category, folder ]);
+  }, [ settings?.draftField, pages, sorting, search, tag, category, folder ]);
+
+
+  useEffect(() => {
+    if (sortedPages.length > 0) {
+      processByTab(sortedPages);
+    }
+  }, [sortedPages, tab])
+
 
   useEffect(() => {
     Messenger.listen(searchListener);

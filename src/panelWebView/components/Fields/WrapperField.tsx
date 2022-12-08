@@ -1,10 +1,8 @@
-
-
 import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { DateHelper } from '../../../helpers/DateHelper';
-import { BlockFieldData, Field, PanelSettings } from '../../../models';
+import { BlockFieldData, Field, PanelSettings, WhenOperator } from '../../../models';
 import { Command } from '../../Command';
 import { CommandToCode } from '../../CommandToCode';
 import { TagType } from '../../TagType';
@@ -16,6 +14,7 @@ import { JsonField } from '../JsonField';
 import { IMetadata } from '../Metadata';
 import { TagPicker } from '../TagPicker';
 import { ChoiceField, DataFileField, DateTimeField, DraftField, FieldTitle, FileField, ListField, Toggle, TextField, SlugField, PreviewImageField, PreviewImageValue, NumberField } from '.';
+import { fieldWhenClause } from '../../../utils/fieldWhenClause';
 
 export interface IWrapperFieldProps {
   field: Field;
@@ -110,6 +109,16 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
   if (field.hidden || fieldValue === undefined) {
     return null;
   }
+
+  // Conditional fields
+  if (typeof field.when !== "undefined") {
+    const shouldRender = fieldWhenClause(field, parent);
+
+    if (!shouldRender) {
+      return null;
+    }
+  }
+
 
   if (field.type === 'divider') {
     return (

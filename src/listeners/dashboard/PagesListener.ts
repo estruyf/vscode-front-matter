@@ -1,21 +1,17 @@
-import { DEFAULT_CONTENT_TYPE_NAME } from './../../constants/ContentType';
-import { isValidFile } from '../../helpers/isValidFile';
-import { existsSync, unlinkSync } from "fs";
-import { basename, dirname, join } from "path";
+import { basename } from "path";
 import { commands, FileSystemWatcher, RelativePattern, TextDocument, Uri, workspace } from "vscode";
 import { Dashboard } from "../../commands/Dashboard";
 import { Folders } from "../../commands/Folders";
-import { COMMAND_NAME, DefaultFields, ExtensionState, SETTING_SEO_DESCRIPTION_FIELD } from "../../constants";
+import { COMMAND_NAME, ExtensionState } from "../../constants";
 import { DashboardCommand } from "../../dashboardWebView/DashboardCommand";
 import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { Page } from "../../dashboardWebView/models";
-import { ArticleHelper, Extension, Logger, Settings } from "../../helpers";
-import { ContentType } from "../../helpers/ContentType";
-import { DateHelper } from "../../helpers/DateHelper";
-import { Notifications } from "../../helpers/Notifications";
+import { ArticleHelper, Extension, Logger } from "../../helpers";
 import { BaseListener } from "./BaseListener";
 import { DataListener } from '../panel';
 import Fuse from 'fuse.js';
+import { PagesParser } from '../../services/PagesParser';
+import { unlinkAsync } from "../../utils";
 
 
 export class PagesListener extends BaseListener {
@@ -110,7 +106,7 @@ export class PagesListener extends BaseListener {
 
     Logger.info(`Deleting file: ${path}`)
     
-    unlinkSync(path);
+    await unlinkAsync(path);
       
     this.lastPages = this.lastPages.filter(p => p.fmFilePath !== path);
     this.sendPageData(this.lastPages);
@@ -132,7 +128,7 @@ export class PagesListener extends BaseListener {
       if (pageIdx !== -1) {
         const stats = await workspace.fs.stat(file);
         const crntPage = this.lastPages[pageIdx];
-        const updatedPage = this.processPageContent(file.fsPath, stats.mtime, basename(file.fsPath), crntPage.fmFolder);
+        const updatedPage = await PagesParser.processPageContent(file.fsPath, stats.mtime, basename(file.fsPath), crntPage.fmFolder);
         if (updatedPage) {
           this.lastPages[pageIdx] = updatedPage;
           this.sendPageData(this.lastPages);
@@ -156,43 +152,18 @@ export class PagesListener extends BaseListener {
       if (cachedPages) {
         this.sendPageData(cachedPages);
       }
+    } else {
+      PagesParser.reset();
     }
 
-    // Update the dashboard with the fresh data
-    const folderInfo = await Folders.getInfo();
-    const pages: Page[] = [];
+    PagesParser.getPages(async (pages: Page[]) => {
+      this.lastPages = pages;
+      this.sendPageData(pages);
 
-    if (folderInfo) {
-      for (const folder of folderInfo) {
-        for (const file of folder.lastModified) {
-          if (isValidFile(file.fileName)) {
-            try {
-              const page = this.processPageContent(file.filePath, file.mtime, file.fileName, folder.title);
-
-              if (page && !pages.find(p => p.fmFilePath === page.fmFilePath)) {
-                pages.push(page);
-              }
-              
-            } catch (error: any) {
-              if ((error as Error)?.message.toLowerCase() === "webview is disposed") {
-                continue;
-              }
-
-              Logger.error(`PagesListener::getPagesData: ${file.filePath} - ${error.message}`);
-              Notifications.error(`File error: ${file.filePath} - ${error?.message || error}`);
-            }
-          }
-        }
-      }
-    }
-
-    this.lastPages = pages;
-    this.sendPageData(pages);
-
-    this.sendMsg(DashboardCommand.searchReady, true);
-
-    await ext.setState(ExtensionState.Dashboard.Pages.Cache, pages, "workspace");
-    await this.createSearchIndex(pages);
+      this.sendMsg(DashboardCommand.searchReady, true);
+      
+      await this.createSearchIndex(pages);
+    });
   }
 
   /**
@@ -244,137 +215,5 @@ export class PagesListener extends BaseListener {
    */
   public static refresh() {
     this.getPagesData(true);
-  }
-
-  /**
-   * Process the page content
-   * @param filePath 
-   * @param fileMtime 
-   * @param fileName 
-   * @param folderTitle 
-   * @returns 
-   */
-  private static processPageContent(filePath: string, fileMtime: number, fileName: string, folderTitle: string): Page | undefined {
-    const article = ArticleHelper.getFrontMatterByPath(filePath);
-
-    if (article?.data.title) {
-      const wsFolder = Folders.getWorkspaceFolder();
-      const descriptionField = Settings.get(SETTING_SEO_DESCRIPTION_FIELD) as string || DefaultFields.Description;
-
-      const dateField = ArticleHelper.getPublishDateField(article) || DefaultFields.PublishingDate;
-      const dateFieldValue = article?.data[dateField] ? DateHelper.tryParse(article?.data[dateField]) : undefined;
-
-      const modifiedField = ArticleHelper.getModifiedDateField(article) || null;
-      const modifiedFieldValue = modifiedField && article?.data[modifiedField] ? DateHelper.tryParse(article?.data[modifiedField])?.getTime() : undefined;
-
-      const staticFolder = Folders.getStaticFolderRelativePath();
-
-      const page: Page = {
-        ...article.data,
-        // FrontMatter properties
-        fmFolder: folderTitle,
-        fmFilePath: filePath,
-        fmFileName: fileName,
-        fmDraft: ContentType.getDraftStatus(article?.data),
-        fmModified: modifiedFieldValue ? modifiedFieldValue : fileMtime,
-        fmPublished: dateFieldValue ? dateFieldValue.getTime() : null,
-        fmYear: dateFieldValue ? dateFieldValue.getFullYear() : null,
-        fmPreviewImage: "",
-        fmTags: [],
-        fmCategories: [],
-        fmContentType: DEFAULT_CONTENT_TYPE_NAME,
-        fmBody: article?.content || "",
-        // Make sure these are always set
-        title: article?.data.title,
-        slug: article?.data.slug,
-        date: article?.data[dateField] || "",
-        draft: article?.data.draft,
-        description: article?.data[descriptionField] || "",
-      };
-
-      const contentType = ArticleHelper.getContentType(article.data);
-      if (contentType) {
-        page.fmContentType = contentType.name;
-      }
-
-      let previewFieldParents = ContentType.findPreviewField(contentType.fields);
-      if (previewFieldParents.length === 0) {
-        const previewField = contentType.fields.find(field => field.type === "image" && field.name === "preview");
-        if (previewField) {
-          previewFieldParents = ["preview"];
-        }
-      }
-
-      let tagParents = ContentType.findFieldByType(contentType.fields, "tags");
-      const tagsValue = ContentType.getFieldValue(article.data, tagParents.length !== 0 ? tagParents : ["tags"]);
-      page.fmTags = typeof tagsValue === "string" ? tagsValue.split(",") : tagsValue;
-
-      let categoryParents = ContentType.findFieldByType(contentType.fields, "categories");
-      const categoriesValue = ContentType.getFieldValue(article.data, categoryParents.length !== 0 ? categoryParents : ["categories"]);
-      page.fmCategories = typeof categoriesValue === "string" ? categoriesValue.split(",") : categoriesValue;
-
-      // Check if parent fields were retrieved, if not there was no image present
-      if (previewFieldParents.length > 0) {
-        let fieldValue = null;
-        let crntPageData = article?.data;
-
-        for (let i = 0; i < previewFieldParents.length; i++) {
-          const previewField = previewFieldParents[i];
-
-          if (i === previewFieldParents.length - 1) {
-            fieldValue = crntPageData[previewField];
-          } else {
-            if (!crntPageData[previewField]) {
-              continue;
-            }
-
-            crntPageData = crntPageData[previewField];
-
-            // Check for preview image in block data
-            if (crntPageData instanceof Array && crntPageData.length > 0) {
-              // Get the first field block that contains the next field data
-              const fieldData = crntPageData.find(item => item[previewFieldParents[i + 1]]);
-              if (fieldData) {
-                crntPageData = fieldData;
-              } else {
-                continue;
-              }
-            }
-          }
-        }
-
-        if (fieldValue && wsFolder) {
-          if (fieldValue && Array.isArray(fieldValue)) {
-            if (fieldValue.length > 0) {
-              fieldValue = fieldValue[0];
-            } else {
-              fieldValue = undefined;
-            }
-          }
-  
-          // Revalidate as the array could have been empty
-          if (fieldValue) {
-            const staticPath = join(wsFolder.fsPath, staticFolder || "", fieldValue);
-            const contentFolderPath = join(dirname(filePath), fieldValue);
-  
-            let previewUri = null;
-            if (existsSync(staticPath)) {
-              previewUri = Uri.file(staticPath);
-            } else if (existsSync(contentFolderPath)) {
-              previewUri = Uri.file(contentFolderPath);
-            }
-  
-            if (previewUri) {
-              const preview = Dashboard.getWebview()?.asWebviewUri(previewUri);
-              page["fmPreviewImage"] = preview?.toString() || "";
-            }
-          }
-        }
-      }
-
-      return page;
-    }
-
-    return;
   }
 }

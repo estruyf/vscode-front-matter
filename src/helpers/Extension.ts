@@ -154,7 +154,7 @@ export class Extension {
 
     // Create team settings
     if (Settings.hasSettings()) {
-      Settings.createTeamSettings();
+      await Settings.createTeamSettings();
     }
 
     const hideDateDeprecation = await Extension.getInstance().getState<boolean>(ExtensionState.Updates.v7_0_0.dateFields, "workspace");
@@ -232,7 +232,7 @@ export class Extension {
           ignoreFocusOut: true
         });
 
-        Settings.update(SETTING_TEMPLATES_ENABLED, answer?.toLocaleLowerCase() === "yes", true);
+        await Settings.update(SETTING_TEMPLATES_ENABLED, answer?.toLocaleLowerCase() === "yes", true);
       }
     }
   }

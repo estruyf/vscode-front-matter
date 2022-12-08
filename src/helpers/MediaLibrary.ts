@@ -3,10 +3,10 @@ import { workspace } from 'vscode';
 import { JsonDB } from 'node-json-db/dist/JsonDB';
 import { basename, dirname, join, parse } from 'path';
 import { Folders, WORKSPACE_PLACEHOLDER } from '../commands/Folders';
-import { existsSync, renameSync } from 'fs';
 import { Notifications } from './Notifications';
 import { parseWinPath } from './parseWinPath';
 import { LocalStore } from '../constants';
+import { existsAsync, renameAsync } from '../utils';
 
 interface MediaRecord {
   description: string;
@@ -75,7 +75,7 @@ export class MediaLibrary {
     }
   }
 
-  public updateFilename(filePath: string, filename: string) {
+  public async updateFilename(filePath: string, filename: string) {
     const name = basename(filePath);
     
     if (name !== filename && filename) {
@@ -84,10 +84,10 @@ export class MediaLibrary {
         const newFileInfo = parse(filename);
         const newPath = join(dirname(filePath), `${newFileInfo.name}${oldFileInfo.ext}`);
 
-        if (existsSync(newPath)) {
+        if (await existsAsync(newPath)) {
           Notifications.warning(`The name "${filename}" already exists at the file location.`);
         } else {
-          renameSync(filePath, newPath);
+          await renameAsync(filePath, newPath);
           this.rename(filePath, newPath);
           MediaHelpers.resetMedia();
         }

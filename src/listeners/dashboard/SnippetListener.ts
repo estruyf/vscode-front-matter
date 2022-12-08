@@ -4,6 +4,7 @@ import { Dashboard } from "../../commands/Dashboard";
 import { SETTING_CONTENT_SNIPPETS, TelemetryEvent } from "../../constants";
 import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
 import { Notifications, Settings, Telemetry } from "../../helpers";
+import { Snippets } from "../../models";
 import { BaseListener } from "./BaseListener";
 import { SettingsListener } from "./SettingsListener";
 
@@ -57,7 +58,7 @@ export class SnippetListener extends BaseListener {
     snippets[title] = snippetContent;
     
     await Settings.update(SETTING_CONTENT_SNIPPETS, snippets, true);
-    SettingsListener.getSettings();
+    SettingsListener.getSettings(true);
   }
 
   private static async updateSnippet(data: any) {
@@ -68,8 +69,16 @@ export class SnippetListener extends BaseListener {
       return;
     }
 
-    await Settings.update(SETTING_CONTENT_SNIPPETS, snippets, true);
-    SettingsListener.getSettings();
+    // Filter out external data snippets
+    const snippetsToStore = Object.keys(snippets).reduce((acc, key) => {
+      if (!snippets[key].sourcePath) {
+        acc[key] = snippets[key];
+      }
+      return acc;
+    }, {} as Snippets);
+
+    await Settings.update(SETTING_CONTENT_SNIPPETS, snippetsToStore, true);
+    SettingsListener.getSettings(true);
   }
 
   private static async insertSnippet(data: any) {

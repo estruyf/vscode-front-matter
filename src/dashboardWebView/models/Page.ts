@@ -1,6 +1,10 @@
-import { Uri } from "vscode";
 
 export interface Page {
+  // Properties for caching
+  fmCachePath: string;
+  fmCacheModifiedTime: number;
+
+  // Front matter fields
   fmFolder: string;
   fmFilePath: string;
   fmFileName: string;

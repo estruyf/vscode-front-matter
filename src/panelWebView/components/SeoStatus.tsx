@@ -44,10 +44,6 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({ data, seo, focusE
     }, 10);
   }, [title, data[descriptionField], data?.articleDetails?.wordCount]);
 
-  if (!title && !data[descriptionField]) {
-    return null;
-  }
-
   const renderContent = () => {
     if (!isOpen) {
       return null;
@@ -120,7 +116,15 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({ data, seo, focusE
 
   return (
     <Collapsible id={`seo`} title="SEO Status" sendUpdate={pushUpdate}>
-      { renderContent() }
+      {
+        !title && !data[descriptionField] ? (
+          <div className={`seo__status__empty`}>
+            <p><b>Title</b> or <b>{descriptionField}</b> is needed.</p>
+          </div>
+        ) : (
+          renderContent() 
+        )
+      }
     </Collapsible>
   );
 };

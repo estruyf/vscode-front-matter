@@ -1,7 +1,6 @@
 import { Questions } from './../helpers/Questions';
 import * as vscode from 'vscode';
 import * as path from 'path';
-import * as fs from 'fs';
 import { SETTING_CONTENT_DEFAULT_FILETYPE, SETTING_TEMPLATES_FOLDER, TelemetryEvent } from '../constants';
 import { ArticleHelper, Settings } from '../helpers';
 import { Article } from '.';
@@ -12,6 +11,7 @@ import { ContentType as IContentType } from '../models';
 import { PagesListener } from '../listeners/dashboard';
 import { extname } from 'path';
 import { Telemetry } from '../helpers/Telemetry';
+import { writeFileAsync, copyFileAsync } from '../utils';
 
 export class Template {
 
@@ -60,7 +60,7 @@ export class Template {
         let fileContents = ArticleHelper.stringifyFrontMatter(keepContents === "no" ? "" : clonedArticle.content, clonedArticle.data);
 
         const templateFile = path.join(templatePath.fsPath, `${titleValue}.${fileType}`);
-        fs.writeFileSync(templateFile, fileContents, { encoding: "utf-8" });
+        await writeFileAsync(templateFile, fileContents, { encoding: "utf-8" });
 
         Notifications.info(`Template created and is now available in your ${folder} folder.`);
       }
@@ -120,23 +120,23 @@ export class Template {
       return;
     }
 
-    const templateData = ArticleHelper.getFrontMatterByPath(template.fsPath);
+    const templateData = await ArticleHelper.getFrontMatterByPath(template.fsPath);
     let contentType: IContentType | undefined;
     if (templateData && templateData.data && templateData.data.type) {
       contentType = contentTypes?.find(t => t.name === templateData.data.type);
     }
 
     const fileExtension = extname(template.fsPath).replace(".", "");
-    let newFilePath: string | undefined = ArticleHelper.createContent(contentType, folderPath, titleValue, fileExtension);
+    let newFilePath: string | undefined = await ArticleHelper.createContent(contentType, folderPath, titleValue, fileExtension);
     if (!newFilePath) {
       return;
     }
     
     // Start the new file creation
-    fs.copyFileSync(template.fsPath, newFilePath);
+    await copyFileAsync(template.fsPath, newFilePath);
 
     // Update the properties inside the template
-    let frontMatter = ArticleHelper.getFrontMatterByPath(newFilePath);
+    let frontMatter = await ArticleHelper.getFrontMatterByPath(newFilePath);
     if (!frontMatter) {
       Notifications.warning(`Something failed when retrieving the newly created file.`);
       return;
@@ -147,7 +147,7 @@ export class Template {
 
       frontMatter = Article.updateDate(frontMatter);
 
-      fs.writeFileSync(newFilePath, ArticleHelper.stringifyFrontMatter(frontMatter.content, frontMatter.data), { encoding: "utf8" });
+      await writeFileAsync(newFilePath, ArticleHelper.stringifyFrontMatter(frontMatter.content, frontMatter.data), { encoding: "utf8" });
 
       await vscode.commands.executeCommand('vscode.open', vscode.Uri.file(newFilePath));
     }

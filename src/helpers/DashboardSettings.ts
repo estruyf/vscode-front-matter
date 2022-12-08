@@ -16,15 +16,24 @@ import { parseWinPath } from './parseWinPath';
 
 
 export class DashboardSettings {
+  private static cachedSettings: ISettings | undefined = undefined;
 
-  public static async get() {
+  public static async get(clear: boolean = false) {
+    if (!this.cachedSettings || clear) {
+      this.cachedSettings = await this.getSettings();
+    }
+
+    return this.cachedSettings;
+  }
+
+  public static async getSettings() {
     const ext = Extension.getInstance();
     const wsFolder = Folders.getWorkspaceFolder();
     const isInitialized = Project.isInitialized();
     const gitActions = Settings.get<boolean>(SETTING_GIT_ENABLED);
-    const pagination = Settings.get<boolean>(SETTING_DASHBOARD_CONTENT_PAGINATION)
+    const pagination = Settings.get<boolean | number>(SETTING_DASHBOARD_CONTENT_PAGINATION)
     
-    return {
+    const settings = {
       git: {
         isGitRepo: gitActions ? await GitListener.isGitRepository() : false,
         actions: gitActions || false
@@ -44,7 +53,7 @@ export class DashboardSettings {
       customSorting: Settings.get<SortingSetting[]>(SETTING_CONTENT_SORTING),
       contentFolders: Folders.get(),
       crntFramework: Settings.get<string>(SETTING_FRAMEWORK_ID),
-      framework: (!isInitialized && wsFolder) ? FrameworkDetector.get(wsFolder.fsPath) : null,
+      framework: (!isInitialized && wsFolder) ? await FrameworkDetector.get(wsFolder.fsPath) : null,
       scripts: (Settings.get<CustomScript[]>(SETTING_CUSTOM_SCRIPTS) || []),
       date: {
         format: Settings.get<string>(SETTING_DATE_FORMAT) || ""
@@ -71,7 +80,9 @@ export class DashboardSettings {
       dataTypes: Settings.get<DataType[]>(SETTING_DATA_TYPES),
       snippets: Settings.get<Snippets>(SETTING_CONTENT_SNIPPETS),
       isBacker: await ext.getState<boolean | undefined>(CONTEXT.backer, 'global')
-    } as ISettings
+    } as ISettings;
+
+    return settings;
   }
 
   /**
@@ -113,7 +124,8 @@ export class DashboardSettings {
             fileType: dataFile.fsPath.endsWith('.json') ? 'json' : 'yaml',
             labelField: folder.labelField,
             schema: folder.schema,
-            type: folder.type
+            type: folder.type,
+            singleEntry: typeof folder.singleEntry === 'boolean' ? folder.singleEntry : false,
           } as DataFile)
         }
       }

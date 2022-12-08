@@ -6,13 +6,13 @@ import { ContentType as IContentType, DraftField, Field, FieldGroup, FieldType, 
 import { Uri, commands, window, ProgressLocation, workspace } from 'vscode'; 
 import { Folders } from "../commands/Folders";
 import { Questions } from "./Questions";
-import { existsSync, writeFileSync } from "fs";
 import { Notifications } from "./Notifications";
 import { DEFAULT_CONTENT_TYPE_NAME } from "../constants/ContentType";
 import { Telemetry } from './Telemetry';
 import { processKnownPlaceholders } from './PlaceholderHelper';
 import { basename } from 'path';
 import { ParsedFrontMatter } from '../parsers';
+import { existsAsync, writeFileAsync } from '../utils';
 
 export class ContentType {
 
@@ -64,11 +64,6 @@ export class ContentType {
    * @returns 
    */
   public static async createContent() {
-    const selectedContentType = await Questions.SelectContentType();
-    if (!selectedContentType) {
-      return;
-    }
-
     const selectedFolder = await Questions.SelectContentFolder();
     if (!selectedFolder) {
       return;
@@ -76,10 +71,19 @@ export class ContentType {
 
     const contentTypes = ContentType.getAll();
     const folders = Folders.get();
+    const folder = folders.find(f => f.title === selectedFolder);
 
-    const location = folders.find(f => f.title === selectedFolder);
-    if (contentTypes && location) {
-      const folderPath = Folders.getFolderPath(Uri.file(location.path));
+    if (!folder) {
+      return;
+    }
+
+    const selectedContentType = await Questions.SelectContentType(folder.contentTypes || []);
+    if (!selectedContentType) {
+      return;
+    }
+    
+    if (contentTypes && folder) {
+      const folderPath = Folders.getFolderPath(Uri.file(folder.path));
       const contentType = contentTypes.find(ct => ct.name === selectedContentType);
       if (folderPath && contentType) {
         ContentType.create(contentType, folderPath);
@@ -194,12 +198,12 @@ export class ContentType {
       contentTypes.push(newContentType);
     }
 
-    Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
+    await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
 
     const configPath = Settings.projectConfigPath;
-    const notificationAction = await Notifications.info(`Content type ${contentTypeName} has been ${overrideBool ? `updated` : `generated`}.`, configPath && existsSync(configPath) ?  `Open settings` : undefined);
+    const notificationAction = await Notifications.info(`Content type ${contentTypeName} has been ${overrideBool ? `updated` : `generated`}.`, configPath && await existsAsync(configPath) ?  `Open settings` : undefined);
 
-    if (notificationAction === "Open settings" && configPath && existsSync(configPath)) {
+    if (notificationAction === "Open settings" && configPath && await existsAsync(configPath)) {
       commands.executeCommand('vscode.open', Uri.file(configPath));
     }
   }
@@ -228,12 +232,12 @@ export class ContentType {
     const index = contentTypes.findIndex(ct => ct.name === contentType.name);
     contentTypes[index].fields = updatedFields;
 
-    Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
+    await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
 
     const configPath = Settings.projectConfigPath;
-    const notificationAction = await Notifications.info(`Content type ${contentType.name} has been updated.`, configPath && existsSync(configPath) ?  `Open settings` : undefined);
+    const notificationAction = await Notifications.info(`Content type ${contentType.name} has been updated.`, configPath && await existsAsync(configPath) ?  `Open settings` : undefined);
 
-    if (notificationAction === "Open settings" && configPath && existsSync(configPath)) {
+    if (notificationAction === "Open settings" && configPath && await existsAsync(configPath)) {
       commands.executeCommand('vscode.open', Uri.file(configPath));
     }
   }
@@ -558,10 +562,10 @@ export class ContentType {
       let templateData: ParsedFrontMatter | null = null;
       if (templatePath) {
         templatePath = Folders.getAbsFilePath(templatePath);
-        templateData = ArticleHelper.getFrontMatterByPath(templatePath);
+        templateData = await ArticleHelper.getFrontMatterByPath(templatePath);
       }
 
-      let newFilePath: string | undefined = ArticleHelper.createContent(contentType, folderPath, titleValue);
+      let newFilePath: string | undefined = await ArticleHelper.createContent(contentType, folderPath, titleValue);
       if (!newFilePath) {
         return;
       }
@@ -586,7 +590,7 @@ export class ContentType {
 
       const content = ArticleHelper.stringifyFrontMatter(templateData?.content || ``, data);
 
-      writeFileSync(newFilePath, content, { encoding: "utf8" });
+      await writeFileAsync(newFilePath, content, { encoding: "utf8" });
 
       // Check if the content type has a post script to execute
       if (contentType.postScript) {

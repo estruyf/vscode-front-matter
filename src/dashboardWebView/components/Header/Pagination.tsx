@@ -1,43 +1,37 @@
 import * as React from 'react';
-import { useEffect, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { routePaths } from '../..';
-import { MediaTotalSelector, PageAtom } from '../../state';
+import usePagination from '../../hooks/usePagination';
+import { MediaTotalSelector, PageAtom, SettingsAtom } from '../../state';
 import { PaginationButton } from './PaginationButton';
 
 export interface IPaginationProps {
   totalPages?: number;
 }
 
-export const PAGE_LIMIT = 16;
-
 export const Pagination: React.FunctionComponent<IPaginationProps> = ({ totalPages }: React.PropsWithChildren<IPaginationProps>) => {
   const [ page, setPage ] = useRecoilState(PageAtom);
   const totalMedia = useRecoilValue(MediaTotalSelector);
-  const location = useLocation();
+  const settings = useRecoilValue(SettingsAtom);
+  const { pageSetNr, totalPagesNr } = usePagination(settings?.dashboardState.contents.pagination, totalPages, totalMedia);
 
-  const totalItems: number = useMemo(() => {
-    if (location.pathname === routePaths.contents) {
-      return Math.ceil((totalPages || 0) / PAGE_LIMIT) - 1
-    } else {
-      return Math.ceil(totalMedia / PAGE_LIMIT) - 1;
-    }
-  }, [location.pathname, totalPages, totalMedia]);
-
-  const getButtons = (): number[] => {
+  const getButtons = useCallback((): number[] => {
     const maxButtons = 5;
     const buttons: number[] = [];
     const start = page - maxButtons;
     const end = page + maxButtons;
 
     for (let i = start; i <= end; i++) {
-      if (i >= 0 && i <= totalItems) {
+      if (i >= 0 && i <= totalPagesNr) {
         buttons.push(i);
       }
     }
     return buttons;
-  };
+  }, [page, totalPagesNr]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [pageSetNr]);
 
   useEffect(() => {
     setPage(0);
@@ -77,13 +71,13 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({ totalPag
 
       <PaginationButton
         title="Next"
-        disabled={page >= totalItems}
+        disabled={page >= totalPagesNr}
         onClick={() => setPage(page + 1)} />
 
       <PaginationButton
         title="Last"
-        disabled={page >= totalItems}
-        onClick={() => setPage(totalItems)} />
+        disabled={page >= totalPagesNr}
+        onClick={() => setPage(totalPagesNr)} />
     </div>
   );
 };

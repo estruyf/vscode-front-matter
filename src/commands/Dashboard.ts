@@ -7,7 +7,7 @@ import { Extension } from '../helpers/Extension';
 import { WebviewHelper } from '@estruyf/vscode';
 import { DashboardData } from '../models/DashboardData';
 import { MediaLibrary } from '../helpers/MediaLibrary';
-import { DashboardListener, MediaListener, SettingsListener, TelemetryListener, DataListener, PagesListener, ExtensionListener, SnippetListener, TaxonomyListener } from '../listeners/dashboard';
+import { DashboardListener, MediaListener, SettingsListener, TelemetryListener, DataListener, PagesListener, ExtensionListener, SnippetListener, TaxonomyListener, LogListener } from '../listeners/dashboard';
 import { MediaListener as PanelMediaListener } from '../listeners/panel'
 import { GitListener, ModeListener } from '../listeners/general';
 
@@ -130,8 +130,8 @@ export class Dashboard {
       await commands.executeCommand('setContext', CONTEXT.isDashboardOpen, false);
     });
 
-    SettingsHelper.onConfigChange((global?: any) => {
-      SettingsListener.getSettings();
+    SettingsHelper.onConfigChange(() => {
+      SettingsListener.getSettings(true);
     });
 
     Dashboard.webview.webview.onDidReceiveMessage(async (msg) => {
@@ -148,6 +148,7 @@ export class Dashboard {
       ModeListener.process(msg);
       GitListener.process(msg);
       TaxonomyListener.process(msg);
+      LogListener.process(msg);
     });
   }
 

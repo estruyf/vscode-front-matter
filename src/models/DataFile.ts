@@ -6,4 +6,5 @@ export interface DataFile {
   labelField: string;
   schema?: any;
   type?: string;
+  singleEntry?: boolean;
 }

@@ -4,13 +4,13 @@ import { CustomTaxonomy, TaxonomyType, ContentType as IContentType } from "../mo
 import { FilesHelper } from "./FilesHelper";
 import { ProgressLocation, window } from "vscode";
 import { parseWinPath } from "./parseWinPath";
-import { readFileSync, writeFileSync } from "fs";
 import { FrontMatterParser } from "../parsers";
 import { DumpOptions } from "js-yaml";
 import { Settings } from "./SettingsHelper";
 import { Notifications } from "./Notifications";
 import { ArticleHelper } from './ArticleHelper';
 import { ContentType } from './ContentType';
+import { readFileAsync, writeFileAsync } from '../utils';
 
 
 export class TaxonomyHelper {
@@ -186,7 +186,7 @@ export class TaxonomyHelper {
       for (const file of allFiles) {
         progress.report({ increment: (++i/progressNr) });
         
-        const mdFile = readFileSync(parseWinPath(file.fsPath), { encoding: "utf8" });
+        const mdFile = await readFileAsync(parseWinPath(file.fsPath), { encoding: "utf8" });
 
         if (mdFile) {
           try {
@@ -217,7 +217,7 @@ export class TaxonomyHelper {
 
                   const spaces = window.activeTextEditor?.options?.tabSize;
                   // Update the file
-                  writeFileSync(parseWinPath(file.fsPath), FrontMatterParser.toFile(article.content, article.data, mdFile, {
+                  await writeFileAsync(parseWinPath(file.fsPath), FrontMatterParser.toFile(article.content, article.data, mdFile, {
                     indent: spaces || 2
                   } as DumpOptions as any), { encoding: "utf8" });
                 }
@@ -291,7 +291,7 @@ export class TaxonomyHelper {
       for (const file of allFiles) {
         progress.report({ increment: (++i/progressNr) });
         
-        const mdFile = readFileSync(parseWinPath(file.fsPath), { encoding: "utf8" });
+        const mdFile = await readFileAsync(parseWinPath(file.fsPath), { encoding: "utf8" });
 
         if (mdFile) {
           try {
@@ -324,7 +324,7 @@ export class TaxonomyHelper {
 
                   const spaces = window.activeTextEditor?.options?.tabSize;
                   // Update the file
-                  writeFileSync(parseWinPath(file.fsPath), FrontMatterParser.toFile(article.content, article.data, mdFile, {
+                  await writeFileAsync(parseWinPath(file.fsPath), FrontMatterParser.toFile(article.content, article.data, mdFile, {
                     indent: spaces || 2
                   } as DumpOptions as any), { encoding: "utf8" });
                 }

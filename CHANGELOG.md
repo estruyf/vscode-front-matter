@@ -1,5 +1,39 @@
 # Change Log
 
+## [8.2.0] - 2022-12-08 - [Release notes](https://beta.frontmatter.codes/updates/v8.2.0) 
+
+### ✨ New features
+
+- [#362](https://github.com/estruyf/vscode-front-matter/issues/362): Support for conditional metadata
+- [#412](https://github.com/estruyf/vscode-front-matter/issues/412): Allow `frontmatter.json` to be split in multiple files
+
+### 🎨 Enhancements
+
+- [#360](https://github.com/estruyf/vscode-front-matter/issues/360): Define which content types can be used on your page folders
+- [#406](https://github.com/estruyf/vscode-front-matter/issues/406): Added support for single data entries in the data dashboard
+- [#428](https://github.com/estruyf/vscode-front-matter/issues/428): Improved UX for inserting images to your content
+- [#430](https://github.com/estruyf/vscode-front-matter/issues/430): Support for HEXO its `post_asset_folder` setting (image location)
+- [#434](https://github.com/estruyf/vscode-front-matter/issues/434): Webview errors are logged in the extension output
+- [#440](https://github.com/estruyf/vscode-front-matter/issues/440): Type to search/filter in the snippets dashboard
+- [#447](https://github.com/estruyf/vscode-front-matter/issues/447): Allow to use placeholders on git commit messages
+- [#449](https://github.com/estruyf/vscode-front-matter/issues/449): Show `filename` if the `title` is not set
+- [#450](https://github.com/estruyf/vscode-front-matter/issues/450): Additional time placeholders added `{{hour12}}`, `{{hour24}}`, `{{ampm}}`, and `{{minute}}`
+- [#458](https://github.com/estruyf/vscode-front-matter/issues/458): Ability to configure the file prefix on folder level
+
+### ⚡️ Optimizations
+
+- [#431](https://github.com/estruyf/vscode-front-matter/issues/431): Performance improvements for the content dashboard
+- [#448](https://github.com/estruyf/vscode-front-matter/issues/448): Retrieving files fails when content folder name and workspace folder name are the same
+- [#455](https://github.com/estruyf/vscode-front-matter/issues/455): Show a description for the SEO section when title nor description is set
+
+### 🐞 Fixes
+
+- Fix field error message color
+- [#433](https://github.com/estruyf/vscode-front-matter/issues/433): Fix issue with rendering an incorrect title value on the content dashboard
+- [#462](https://github.com/estruyf/vscode-front-matter/issues/462): Fix issue in script error notification
+- [#465](https://github.com/estruyf/vscode-front-matter/issues/465): Deleted content does not get added in git when syncing
+- [#471](https://github.com/estruyf/vscode-front-matter/issues/471): Fix typo on data dashboard
+
 ## [8.1.2] - 2022-10-06
 
 ### 🐞 Fixes

@@ -42,15 +42,15 @@ export class SettingsListener extends BaseListener {
   private static async update(data: { name: string, value: any }) {
     if (data.name) {
       await Settings.update(data.name, data.value);
-      this.getSettings();
+      this.getSettings(true);
     }
   }
 
   /**
    * Retrieve the settings for the dashboard
    */
-  public static async getSettings() {
-    const settings = await DashboardSettings.get();
+  public static async getSettings(clear: boolean = false) {
+    const settings = await DashboardSettings.get(clear);
     
     this.sendMsg(DashboardCommand.settings, settings);
   }
@@ -59,22 +59,24 @@ export class SettingsListener extends BaseListener {
    * Set the current site-generator or framework + related settings
    * @param frameworkId 
    */
-  public static setFramework(frameworkId: string | null) {
-    Settings.update(SETTING_FRAMEWORK_ID, frameworkId, true);
+  public static async setFramework(frameworkId: string | null) {
+    await Settings.update(SETTING_FRAMEWORK_ID, frameworkId, true);
 
     if (frameworkId) {
       const allFrameworks = FrameworkDetector.getAll();
       const framework = allFrameworks.find((f: Framework) => f.name === frameworkId);
       if (framework) {
-        Settings.update(SETTING_CONTENT_STATIC_FOLDER, framework.static, true);
+        if (framework.static) {
+          await Settings.update(SETTING_CONTENT_STATIC_FOLDER, framework.static, true);
+        }
 
-        FrameworkDetector.checkDefaultSettings(framework);
+        await FrameworkDetector.checkDefaultSettings(framework);
       } else {
-        Settings.update(SETTING_CONTENT_STATIC_FOLDER, "", true);
+        await Settings.update(SETTING_CONTENT_STATIC_FOLDER, "", true);
       }
     }
 
-    SettingsListener.getSettings();
+    SettingsListener.getSettings(true);
   }
 
   private static addFolder(folder: string) {

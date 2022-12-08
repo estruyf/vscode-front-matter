@@ -3,26 +3,29 @@ import { Telemetry } from './Telemetry';
 import { Notifications } from './Notifications';
 import { commands, Uri, workspace, window } from 'vscode';
 import * as vscode from 'vscode';
-import { ContentType, CustomTaxonomy, TaxonomyType } from '../models';
-import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM, TelemetryEvent, COMMAND_NAME } from '../constants';
+import { ContentFolder, ContentType, CustomPlaceholder, CustomTaxonomy, DataFile, DataFolder, DataType, TaxonomyType } from '../models';
+import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM, TelemetryEvent, COMMAND_NAME, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_PAGE_FOLDERS, SETTING_CONTENT_SNIPPETS, SETTING_CONTENT_PLACEHOLDERS, SETTING_CUSTOM_SCRIPTS, SETTING_DATA_FILES, SETTING_DATA_TYPES, SETTING_DATA_FOLDERS } from '../constants';
 import { Folders } from '../commands/Folders';
-import { join, basename } from 'path';
-import { existsSync, readFileSync, watch, writeFileSync } from 'fs';
+import { join, basename, dirname, parse } from 'path';
+import { existsSync } from 'fs';
 import { Extension } from './Extension';
 import { debounceCallback } from './DebounceCallback';
 import { Logger } from './Logger';
 import * as jsoncParser from 'jsonc-parser';
+import { existsAsync, readFileAsync, writeFileAsync } from '../utils';
 
 export class Settings {
   public static globalFile = "frontmatter.json";
+  public static globalConfigFolder = ".frontmatter/config";
+  public static globalConfig: any;
   private static config: vscode.WorkspaceConfiguration;
-  private static globalConfig: any;
   private static isInitialized: boolean = false;
   private static listeners: any[] = [];
   private static fileCreationWatcher: vscode.FileSystemWatcher | undefined;
+  private static readConfigPromise: Promise<void> | undefined = undefined;
   
-  public static init() {
-    Settings.readConfig();
+  public static async init() {
+    await Settings.readConfig();
 
     Settings.listeners = [];
 
@@ -34,8 +37,7 @@ export class Settings {
 
     Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
 
-    Settings.onConfigChange((global?: any) => {
-      Settings.readConfig();
+    Settings.onConfigChange(async () => {
       Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
     });
   }
@@ -97,19 +99,26 @@ export class Settings {
       if (Settings.checkProjectConfig(filename)) {
         Logger.info(`Config change detected - ${projectConfig} saved`);
 
-        const file = await workspace.openTextDocument(e.uri);
-        if (file) {
-          const fileContents = file.getText();
-          const json = jsoncParser.parse(fileContents);
-          configDebouncer(() => callback(json), 200);
-          // callback(json)
+        Logger.info(`Reloading config...`);
+        if (Settings.readConfigPromise === undefined) {
+          Settings.readConfigPromise = Settings.readConfig();
         }
+        await Settings.readConfigPromise;
+
+        Logger.info(`Reloaded config...`);
+        configDebouncer(() => callback(), 200);
       }
     });
 
-    workspace.onDidDeleteFiles((e) => {
+    workspace.onDidDeleteFiles(async (e) => {
       const needCallback = e?.files.find(f => Settings.checkProjectConfig(f.fsPath));
       if (needCallback) {
+        Logger.info(`Reloading config...`);
+        if (Settings.readConfigPromise === undefined) {
+          Settings.readConfigPromise = Settings.readConfig();
+        }
+        await Settings.readConfigPromise;
+         
         callback();
       }
     });
@@ -173,16 +182,21 @@ export class Settings {
     const fmConfig = Settings.projectConfigPath;
 
     if (updateGlobal) {
-      if (fmConfig && existsSync(fmConfig)) {
-        const localConfig = readFileSync(fmConfig, 'utf8');
+      if (fmConfig && await existsAsync(fmConfig)) {
+        const localConfig = await readFileAsync(fmConfig, 'utf8');
         Settings.globalConfig = jsoncParser.parse(localConfig);
         Settings.globalConfig[`${CONFIG_KEY}.${name}`] = value;
-        writeFileSync(fmConfig, JSON.stringify(Settings.globalConfig, null, 2), 'utf8');
+
+        const content = JSON.stringify(Settings.globalConfig, null, 2);
+        await writeFileAsync(fmConfig, content, 'utf8');
         
         const workspaceSettingValue = Settings.hasWorkspaceSettings<ContentType[]>(name);
         if (workspaceSettingValue) {
           await Settings.update(name, undefined);
         }
+
+        // Make sure to reload the whole config + all the data files
+        await Settings.readConfig();
 
         return;
       }
@@ -207,24 +221,24 @@ export class Settings {
   /**
    * Create team settings
    */
-  public static createTeamSettings() {
+  public static async createTeamSettings() {
     const wsFolder = Folders.getWorkspaceFolder();
-    this.createGlobalFile(wsFolder);
+    await this.createGlobalFile(wsFolder);
   }
 
   /**
    * Create the frontmatter.json file
    * @param wsFolder 
    */
-  public static createGlobalFile(wsFolder: Uri | undefined | null) {
+  public static async createGlobalFile(wsFolder: Uri | undefined | null) {
     const initialConfig = {
       "$schema": `https://${Extension.getInstance().isBetaVersion() ? `beta.` : ``}frontmatter.codes/frontmatter.schema.json`
     };
 
     if (wsFolder) {
       const configPath = join(wsFolder.fsPath, Settings.globalFile);
-      if (!existsSync(configPath)) {
-        writeFileSync(configPath, JSON.stringify(initialConfig, null, 2), 'utf8');
+      if (!(await existsAsync(configPath))) {
+        await writeFileAsync(configPath, JSON.stringify(initialConfig, null, 2), 'utf8');
       }
     }
   }
@@ -391,7 +405,11 @@ export class Settings {
    */
   private static checkProjectConfig(filePath: string) {
     const fmConfig = Settings.projectConfigPath;
-    if (fmConfig && existsSync(fmConfig)) {
+    filePath = parseWinPath(filePath);
+
+    if (filePath.includes(Settings.globalConfigFolder)) {
+      return true;
+    } else if (fmConfig && existsSync(fmConfig)) {
       return filePath && 
              basename(filePath).toLowerCase() === Settings.globalFile.toLowerCase() &&
              fmConfig.toLowerCase() === filePath.toLowerCase();
@@ -403,20 +421,158 @@ export class Settings {
   /**
    * Read the global config file
    */
-  private static readConfig() {
+  private static async readConfig() {
     try {
       const fmConfig = Settings.projectConfigPath;
-      if (fmConfig && existsSync(fmConfig)) {
-        const localConfig = readFileSync(fmConfig, 'utf8');
+      if (fmConfig && await existsAsync(fmConfig)) {
+        const localConfig = await readFileAsync(fmConfig, 'utf8');
         Settings.globalConfig = jsoncParser.parse(localConfig);
         commands.executeCommand('setContext', CONTEXT.isEnabled, true);
       } else {
         Settings.globalConfig = undefined;
       }
+
+      // Read the files from the config folder
+      let configFiles = await workspace.findFiles(`**/${Settings.globalConfigFolder}/**/*.json`);
+      if (configFiles.length === 0) {
+        Logger.info(`No ".frontmatter/config" config files found.`);
+      }
+
+      // Sort the files by fsPath
+      configFiles = configFiles.sort((a, b) => a.fsPath.localeCompare(b.fsPath));
+
+      for await (const configFile of configFiles) {
+        await Settings.processConfigFile(configFile);
+      }
     } catch (e) {
       Settings.globalConfig = undefined;
       Notifications.error(`Error reading "frontmatter.json" config file. Check [output window](command:${COMMAND_NAME.showOutputChannel}) for more details.`);
       Logger.error((e as Error).message);
+    }
+
+    Settings.readConfigPromise = undefined;
+  }
+
+  /**
+   * Process the config file
+   * @param configFile 
+   * @returns 
+   */
+  private static async processConfigFile(configFile: Uri) {
+    try {
+      const config = await workspace.fs.readFile(configFile);
+      const configJson = jsoncParser.parse(config.toString());
+      
+      const filePath = parseWinPath(configFile.fsPath);
+      const configFilePath = filePath.split(Settings.globalConfigFolder).pop();
+      if (!configFilePath) {
+        return;
+      }
+      Logger.info(`Processing "${configFilePath}" config file.`);
+
+      // Get the path without the filename
+      const configFolder = parseWinPath(dirname(configFilePath));
+      let relSettingName = configFolder.split('/').join('.');
+      if (relSettingName.startsWith('.')) {
+        relSettingName = relSettingName.substring(1);
+      }
+      relSettingName = relSettingName.toLowerCase();
+
+      if (!Settings.globalConfig) {
+        Settings.globalConfig = {};
+      }
+
+      // Array settings
+      if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CUSTOM_SCRIPTS)) {
+        const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CUSTOM_SCRIPTS}`] || [];
+        Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CUSTOM_SCRIPTS}`] = [...crntValue, configJson];
+      }
+      // Content types
+      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_TAXONOMY_CONTENT_TYPES)) {
+        Settings.updateGlobalConfigArraySetting(SETTING_TAXONOMY_CONTENT_TYPES, "name", configJson);
+      }
+      // Data files
+      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_FILES)) {
+        Settings.updateGlobalConfigArraySetting(SETTING_DATA_FILES, "id", configJson);
+      }
+      // Data folders
+      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_FOLDERS)) {
+        Settings.updateGlobalConfigArraySetting(SETTING_DATA_FOLDERS, "id", configJson);
+      }
+      // Data types
+      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_TYPES)) {
+        Settings.updateGlobalConfigArraySetting(SETTING_DATA_TYPES, "id", configJson);
+      }
+      // Page folders
+      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_PAGE_FOLDERS)) {
+        Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PAGE_FOLDERS, "path", configJson);
+      }
+      // Placeholders
+      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_PLACEHOLDERS)) {
+        Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PLACEHOLDERS, "id", configJson);
+      }
+      // Object settings
+      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_SNIPPETS)) {
+        Settings.updateGlobalConfigObjectByNameSetting(SETTING_CONTENT_SNIPPETS, configFilePath, configJson, filePath);
+      }
+    } catch (e) {
+      Logger.error(`Error reading config file: ${configFile.fsPath}`);
+      Logger.error((e as Error).message);
+    }
+  }
+
+  /**
+   * Check if the setting name is equal or starts with the reference setting name
+   * @param value 
+   * @param startsWith 
+   * @returns 
+   */
+  private static isEqualOrStartsWith(value: string, startsWith: string) {
+    value = value.toLowerCase();
+    startsWith = startsWith.toLowerCase();
+
+    return value === startsWith || value.startsWith(`${startsWith}.`);
+  }
+
+  /**
+   * Update an array setting in the global config
+   * @param settingName 
+   * @param fieldName 
+   * @param configJson 
+   */
+  private static updateGlobalConfigArraySetting<T>(settingName: string, fieldName: string, configJson: any): void {
+    const crntValue: T[] = Settings.globalConfig[`${CONFIG_KEY}.${settingName}`] || [];
+
+    // Check if folder is already added
+    const itemIdx = crntValue.findIndex((item: any) => item[fieldName] === configJson[fieldName]);
+    if (itemIdx === -1) {
+      crntValue.push(configJson);
+    }
+
+    Settings.globalConfig[`${CONFIG_KEY}.${settingName}`] = [...crntValue];
+  }
+
+  /**
+   * Update an object by the file name in the global config
+   * @param settingName 
+   * @param fileNamepath 
+   * @param configJson 
+   */
+  private static updateGlobalConfigObjectByNameSetting<T>(settingName: string, fileNamepath: string, configJson: any, absPath: string): void {
+    const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${settingName}`] || {};
+
+    // Filename is the key
+    const fileName = parse(fileNamepath).name;
+
+    configJson = {
+      ...configJson,
+      sourcePath: absPath
+    };
+
+    if (!crntValue[fileName]) {
+      crntValue[fileName] = configJson;
+
+      Settings.globalConfig[`${CONFIG_KEY}.${settingName}`] = { ...crntValue, ...{ [fileName]: configJson } };
     }
   }
 

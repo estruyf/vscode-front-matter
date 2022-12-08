@@ -1,6 +1,7 @@
+import { STATIC_FOLDER_PLACEHOLDER } from './../constants/StaticFolderPlaceholder';
 import { ExplorerView } from './../explorerView/ExplorerView';
 import { Uri, window } from 'vscode'; 
-import { dirname, join } from "path";
+import { dirname, extname, join } from "path";
 import { Field } from '../models';
 import { existsSync } from 'fs';
 import { Folders } from '../commands/Folders';
@@ -49,7 +50,21 @@ export class ImageHelper {
    */
    public static relToAbs(filePath: string, value: string) {
     const wsFolder = Folders.getWorkspaceFolder();
-    const staticFolder = Folders.getStaticFolderRelativePath();
+    let staticFolder = Folders.getStaticFolderRelativePath();
+
+    if (staticFolder === STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
+      const editor = window.activeTextEditor;
+      if (editor) {
+        const document = editor.document;
+        const filePath = parseWinPath(document.fileName);
+        const pathWithoutExtension = filePath.replace(extname(filePath), '');
+        const assetFilePath = join(pathWithoutExtension, value);
+
+        if (existsSync(assetFilePath)) {
+          return Uri.file(assetFilePath);
+        }
+      }
+    }
 
     const staticPath = join(parseWinPath(wsFolder?.fsPath || ""), staticFolder || "", value);
     const contentFolderPath = filePath ? join(dirname(filePath), value) : null;
