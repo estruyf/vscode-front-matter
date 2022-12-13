@@ -1,5 +1,5 @@
 import { Settings } from './SettingsHelper';
-import { CommandType } from './../models/PanelSettings';
+import { CommandType, EnvironmentType } from './../models/PanelSettings';
 import { CustomScript as ICustomScript, ScriptType } from '../models/PanelSettings';
 import { window, env as vscodeEnv, ProgressLocation } from 'vscode';
 import { ArticleHelper, Logger, Telemetry } from '.';
@@ -186,7 +186,8 @@ export class CustomScript {
     try {
       let articleData = "";
       if (os.type() === "Windows_NT") {
-        articleData = `"${JSON.stringify(article?.data).replace(/"/g, `""`)}"`;
+        const jsonData = JSON.stringify(article?.data)
+        articleData = `'${jsonData.replace(/"/g, `\"`)}'`;
       } else {
         articleData = JSON.stringify(article?.data).replace(/'/g, "%27");
         articleData = `'${articleData}'`;
@@ -269,14 +270,33 @@ export class CustomScript {
    */
   public static async executeScript(script: ICustomScript, wsPath: string, args: string): Promise<string> {
     return new Promise(async (resolve, reject) => {
-      
+      const osType = os.type();
+
       // Check the command to use
       let command = script.nodeBin || "node";
       if (script.command && script.command !== CommandType.Node) {
         command = script.command;
       }
 
-      const scriptPath = join(wsPath, script.script);
+      let scriptPath = join(wsPath, script.script);
+
+      // Check if there is an environments overwrite required
+      if (script.environments) {
+        let crntType: EnvironmentType | null = null;
+        if (osType === "Windows_NT") {
+          crntType = "windows"
+        } else if (osType === "Darwin") {
+          crntType = "macos"
+        } else {
+          crntType = "linux"
+        }
+
+        const environment = script.environments.find(e => e.type === crntType);
+        if (environment && environment.script && environment.command) {
+          command = environment.command;
+          scriptPath = join(wsPath, environment.script);
+        }
+      }
 
       if (!await existsAsync(scriptPath)) {
         reject(new Error(`Script not found: ${scriptPath}`));

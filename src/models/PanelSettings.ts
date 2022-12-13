@@ -148,6 +148,15 @@ export interface CustomScript {
   type?: ScriptType;
   command?: CommandType | string;
   hidden?: boolean;
+  environments?: EnvironmentScript[];
+}
+
+export type EnvironmentType = "windows" | "macos" | "linux";
+
+export interface EnvironmentScript {
+  type: EnvironmentType;
+  script: string;
+  command: CommandType | string;
 }
 
 export interface PreviewSettings {

@@ -451,6 +451,26 @@
                 "type": "boolean",
                 "description": "Hide the action from the UI",
                 "default": false
+              },
+              "environments": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["macos", "linux", "windows"],
+                      "description": "The environment type for which the script needs to be used"
+                    },
+                    "script": {
+                      "type": "string",
+                      "description": "Path to the script to execute"
+                    },
+                    "command": {
+                      "$ref": "#scriptCommand"
+                    }
+                  }
+                }
               }
             },
             "additionalProperties": false,

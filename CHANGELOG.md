@@ -1,5 +1,17 @@
 # Change Log
 
+## [8.3.0] - 2022-xx-xx
+
+### ✨ New features
+
+### 🎨 Enhancements
+
+- [#484](https://github.com/estruyf/vscode-front-matter/issues/484): Support for overriding scripts per environment type
+
+### ⚡️ Optimizations
+
+### 🐞 Fixes
+
 ## [8.2.0] - 2022-12-08 - [Release notes](https://beta.frontmatter.codes/updates/v8.2.0) 
 
 ### ✨ New features
