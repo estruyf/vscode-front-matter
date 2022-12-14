@@ -3,7 +3,7 @@ import { CommandType, EnvironmentType } from './../models/PanelSettings';
 import { CustomScript as ICustomScript, ScriptType } from '../models/PanelSettings';
 import { window, env as vscodeEnv, ProgressLocation } from 'vscode';
 import { ArticleHelper, Logger, Telemetry } from '.';
-import { Folders } from '../commands/Folders';
+import { Folders, WORKSPACE_PLACEHOLDER } from '../commands/Folders';
 import { exec, execSync } from 'child_process';
 import * as os from 'os';
 import { join } from 'path';
@@ -279,7 +279,10 @@ export class CustomScript {
       }
 
       let scriptPath = join(wsPath, script.script);
-
+      if (script.script.includes(WORKSPACE_PLACEHOLDER)) {
+        scriptPath = Folders.getAbsFilePath(script.script);
+      }
+      
       // Check if there is an environments overwrite required
       if (script.environments) {
         let crntType: EnvironmentType | null = null;
@@ -296,6 +299,9 @@ export class CustomScript {
           if (await CustomScript.validateCommand(environment.command)) {
             command = environment.command;
             scriptPath = join(wsPath, environment.script);
+            if (environment.script.includes(WORKSPACE_PLACEHOLDER)) {
+              scriptPath = Folders.getAbsFilePath(environment.script);
+            }
           }
         }
       }
@@ -331,18 +337,9 @@ export class CustomScript {
    */
   private static async validateCommand(command: string) {
     try {
-      return new Promise((resolve, reject) => {
-        exec(command, (error, stdout) => {
-          console.log(error, stdout);
+      execSync(command);
 
-          if (error) {
-            resolve(false);
-            return;
-          }
-
-          resolve(true);
-        });
-      });
+      return true;
     } catch (e) {
       Logger.error(`Invalid command: ${command}`);
       return false;
