@@ -3,7 +3,7 @@
   "displayName": "Front Matter CMS",
   "description": "Front Matter is a CMS that runs within Visual Studio Code. It gives you the power and control of a full-blown CMS while also providing you the flexibility and speed of the static site generator of your choice like: Hugo, Jekyll, Docusaurus, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "8.2.0",
+  "version": "8.3.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -208,7 +208,10 @@
                 "description": "Defines a custom preview path for the folder."
               },
               "filePrefix": {
-                "type": [ "null", "string" ],
+                "type": [
+                  "null",
+                  "string"
+                ],
                 "description": "Defines a prefix for the file name."
               },
               "contentTypes": {
@@ -459,7 +462,11 @@
                   "properties": {
                     "type": {
                       "type": "string",
-                      "enum": ["macos", "linux", "windows"],
+                      "enum": [
+                        "macos",
+                        "linux",
+                        "windows"
+                      ],
                       "description": "The environment type for which the script needs to be used"
                     },
                     "script": {
@@ -482,7 +489,10 @@
           "scope": "Custom scripts"
         },
         "frontMatter.dashboard.content.pagination": {
-          "type": ["boolean", "number"],
+          "type": [
+            "boolean",
+            "number"
+          ],
           "default": true,
           "markdownDescription": "Specify if you want to enable/disable pagination for your content. You can define your page number up to 52. Default items per page is `16`. Disabling the pagination can be done by setting it to `false`. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.content.pagination)",
           "scope": "Dashboard"
