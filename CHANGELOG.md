@@ -13,6 +13,7 @@
 ### 🐞 Fixes
 
 - [#470](https://github.com/estruyf/vscode-front-matter/issues/470): Fix `initialize project` dashboard description
+- [#482](https://github.com/estruyf/vscode-front-matter/issues/482): Update the description when you want to overwrite the default content type description
 
 ## [8.2.0] - 2022-12-08 - [Release notes](https://beta.frontmatter.codes/updates/v8.2.0) 
 
