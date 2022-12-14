@@ -4,7 +4,7 @@ import { CustomScript as ICustomScript, ScriptType } from '../models/PanelSettin
 import { window, env as vscodeEnv, ProgressLocation } from 'vscode';
 import { ArticleHelper, Logger, Telemetry } from '.';
 import { Folders } from '../commands/Folders';
-import { exec } from 'child_process';
+import { exec, execSync } from 'child_process';
 import * as os from 'os';
 import { join } from 'path';
 import { Notifications } from './Notifications';
@@ -293,8 +293,10 @@ export class CustomScript {
 
         const environment = script.environments.find(e => e.type === crntType);
         if (environment && environment.script && environment.command) {
-          command = environment.command;
-          scriptPath = join(wsPath, environment.script);
+          if (await CustomScript.validateCommand(environment.command)) {
+            command = environment.command;
+            scriptPath = join(wsPath, environment.script);
+          }
         }
       }
 
@@ -320,5 +322,30 @@ export class CustomScript {
         resolve(stdout);
       });
     });
+  }
+
+  /**
+   * Validate if the command is exists
+   * @param command 
+   * @returns 
+   */
+  private static async validateCommand(command: string) {
+    try {
+      return new Promise((resolve, reject) => {
+        exec(command, (error, stdout) => {
+          console.log(error, stdout);
+
+          if (error) {
+            resolve(false);
+            return;
+          }
+
+          resolve(true);
+        });
+      });
+    } catch (e) {
+      Logger.error(`Invalid command: ${command}`);
+      return false;
+    }
   }
 }
