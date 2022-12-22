@@ -2,6 +2,8 @@ export const EXTENSION_NAME = "Front Matter";
 
 export const CONFIG_KEY = "frontMatter";
 
+export const SETTING_EXTENDS = "extends";
+
 export const SETTING_GLOBAL_NOTIFICATIONS = "global.notifications";
 export const SETTING_GLOBAL_NOTIFICATIONS_DISABLED = "global.disabledNotifications";
 export const SETTING_GLOBAL_MODES = "global.modes";

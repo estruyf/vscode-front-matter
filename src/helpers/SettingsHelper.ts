@@ -3,8 +3,8 @@ import { Telemetry } from './Telemetry';
 import { Notifications } from './Notifications';
 import { commands, Uri, workspace, window } from 'vscode';
 import * as vscode from 'vscode';
-import { ContentFolder, ContentType, CustomPlaceholder, CustomTaxonomy, DataFile, DataFolder, DataType, TaxonomyType } from '../models';
-import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM, TelemetryEvent, COMMAND_NAME, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_PAGE_FOLDERS, SETTING_CONTENT_SNIPPETS, SETTING_CONTENT_PLACEHOLDERS, SETTING_CUSTOM_SCRIPTS, SETTING_DATA_FILES, SETTING_DATA_TYPES, SETTING_DATA_FOLDERS } from '../constants';
+import { ContentType, CustomTaxonomy, TaxonomyType } from '../models';
+import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM, TelemetryEvent, COMMAND_NAME, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_PAGE_FOLDERS, SETTING_CONTENT_SNIPPETS, SETTING_CONTENT_PLACEHOLDERS, SETTING_CUSTOM_SCRIPTS, SETTING_DATA_FILES, SETTING_DATA_TYPES, SETTING_DATA_FOLDERS, SETTING_EXTENDS } from '../constants';
 import { Folders } from '../commands/Folders';
 import { join, basename, dirname, parse } from 'path';
 import { existsSync } from 'fs';
@@ -13,6 +13,7 @@ import { debounceCallback } from './DebounceCallback';
 import { Logger } from './Logger';
 import * as jsoncParser from 'jsonc-parser';
 import { existsAsync, readFileAsync, writeFileAsync } from '../utils';
+import fetch from 'node-fetch';
 
 export class Settings {
   public static globalFile = "frontmatter.json";
@@ -432,6 +433,9 @@ export class Settings {
         Settings.globalConfig = undefined;
       }
 
+      // Check if the config got external configs
+      await Settings.processExternalConfig();
+
       // Read the files from the config folder
       let configFiles = await workspace.findFiles(`**/${Settings.globalConfigFolder}/**/*.json`);
       if (configFiles.length === 0) {
@@ -440,7 +444,6 @@ export class Settings {
 
       // Sort the files by fsPath
       configFiles = configFiles.sort((a, b) => a.fsPath.localeCompare(b.fsPath));
-
       for await (const configFile of configFiles) {
         await Settings.processConfigFile(configFile);
       }
@@ -451,6 +454,70 @@ export class Settings {
     }
 
     Settings.readConfigPromise = undefined;
+  }
+
+  /**
+   * Process the external configs
+   */
+  private static async processExternalConfig() {
+    const extendsConfigName = `${CONFIG_KEY}.${SETTING_EXTENDS}`;
+    if (!Settings.globalConfig || !Settings.globalConfig[extendsConfigName]) {
+      return;
+    }
+
+    const originalConfig = Object.assign({}, Settings.globalConfig);
+    const extendsConfig: string[] = Settings.globalConfig[extendsConfigName];
+    for (const externalConfig of extendsConfig) {
+      if (externalConfig.endsWith(`.json`)) {
+        let config: any = undefined;
+
+        if (externalConfig.startsWith('https://')) {
+          try {
+            const response = await fetch(externalConfig);
+            if (response.ok) {
+              config = await response.json();
+            }
+          } catch (e) {
+            Logger.error(`Error fetching external config "${externalConfig}".`);
+          }
+        } else {
+          const configPath = join(Folders.getWorkspaceFolder()?.fsPath || '', externalConfig);
+          if (await existsAsync(configPath)) {
+            const configTxt = await readFileAsync(configPath, 'utf8');
+            config = jsoncParser.parse(configTxt);
+          } else {
+            Logger.error(`External config "${externalConfig}" not found.`);
+          }
+        }
+
+        // Check if the config contains data and loop through it
+        if (config) {
+          // We need to loop through the config to make sure the objects and arrays are merged
+          for (const key in config) {
+            if (config.hasOwnProperty(key)) {
+              const value = config[key];
+
+              if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+                if (typeof originalConfig[key] === 'undefined') {
+                  Settings.globalConfig[key] = value;
+                }
+              } else if (typeof value === 'object' && value !== null) {
+                // Check if array
+                if (Array.isArray(value)) {
+                  for (const item of value) {
+                    Settings.updateGlobalConfigSetting(key.replace(`${CONFIG_KEY}.`, ''), item);
+                  }
+                } else {
+                  for (const itemKey in value) {
+                    // Process the object key/item
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -482,42 +549,51 @@ export class Settings {
         Settings.globalConfig = {};
       }
 
-      // Array settings
-      if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CUSTOM_SCRIPTS)) {
-        const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CUSTOM_SCRIPTS}`] || [];
-        Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CUSTOM_SCRIPTS}`] = [...crntValue, configJson];
-      }
-      // Content types
-      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_TAXONOMY_CONTENT_TYPES)) {
-        Settings.updateGlobalConfigArraySetting(SETTING_TAXONOMY_CONTENT_TYPES, "name", configJson);
-      }
-      // Data files
-      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_FILES)) {
-        Settings.updateGlobalConfigArraySetting(SETTING_DATA_FILES, "id", configJson);
-      }
-      // Data folders
-      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_FOLDERS)) {
-        Settings.updateGlobalConfigArraySetting(SETTING_DATA_FOLDERS, "id", configJson);
-      }
-      // Data types
-      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_TYPES)) {
-        Settings.updateGlobalConfigArraySetting(SETTING_DATA_TYPES, "id", configJson);
-      }
-      // Page folders
-      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_PAGE_FOLDERS)) {
-        Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PAGE_FOLDERS, "path", configJson);
-      }
-      // Placeholders
-      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_PLACEHOLDERS)) {
-        Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PLACEHOLDERS, "id", configJson);
-      }
-      // Object settings
-      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_SNIPPETS)) {
-        Settings.updateGlobalConfigObjectByNameSetting(SETTING_CONTENT_SNIPPETS, configFilePath, configJson, filePath);
-      }
+      Settings.updateGlobalConfigSetting(relSettingName, configJson, configFilePath, filePath);
     } catch (e) {
       Logger.error(`Error reading config file: ${configFile.fsPath}`);
       Logger.error((e as Error).message);
+    }
+  }
+
+  /**
+   * Update the global config array/object settings
+   * @param relSettingName 
+   * @param configJson 
+   */
+  private static updateGlobalConfigSetting<T>(relSettingName: string, configJson: any, configFilePath?: string, filePath?: string): void {
+    // Array settings
+    if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CUSTOM_SCRIPTS)) {
+      const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CUSTOM_SCRIPTS}`] || [];
+      Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CUSTOM_SCRIPTS}`] = [...crntValue, configJson];
+    }
+    // Content types
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_TAXONOMY_CONTENT_TYPES)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_TAXONOMY_CONTENT_TYPES, "name", configJson);
+    }
+    // Data files
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_FILES)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_DATA_FILES, "id", configJson);
+    }
+    // Data folders
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_FOLDERS)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_DATA_FOLDERS, "id", configJson);
+    }
+    // Data types
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_TYPES)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_DATA_TYPES, "id", configJson);
+    }
+    // Page folders
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_PAGE_FOLDERS)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PAGE_FOLDERS, "path", configJson);
+    }
+    // Placeholders
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_PLACEHOLDERS)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PLACEHOLDERS, "id", configJson);
+    }
+    // Snippets
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_SNIPPETS) && configFilePath && filePath) {
+      Settings.updateGlobalConfigObjectByNameSetting(SETTING_CONTENT_SNIPPETS, configFilePath, configJson, filePath);
     }
   }
 

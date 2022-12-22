@@ -79,6 +79,14 @@
     "configuration": {
       "title": "Front Matter: use frontmatter.json for shared team settings",
       "properties": {
+        "frontMatter.extends": {
+          "type": "array",
+          "markdownDescription": "Specify the list of paths/URLs to extend the Front Matter CMS config. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.extends)",
+          "default": [],
+          "items": {
+            "type": "string"
+          }
+        },
         "frontMatter.content.autoUpdateDate": {
           "type": "boolean",
           "default": false,
