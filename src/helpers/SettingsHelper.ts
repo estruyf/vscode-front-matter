@@ -4,7 +4,7 @@ import { Notifications } from './Notifications';
 import { commands, Uri, workspace, window } from 'vscode';
 import * as vscode from 'vscode';
 import { ContentType, CustomTaxonomy, TaxonomyType } from '../models';
-import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM, TelemetryEvent, COMMAND_NAME, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_PAGE_FOLDERS, SETTING_CONTENT_SNIPPETS, SETTING_CONTENT_PLACEHOLDERS, SETTING_CUSTOM_SCRIPTS, SETTING_DATA_FILES, SETTING_DATA_TYPES, SETTING_DATA_FOLDERS, SETTING_EXTENDS } from '../constants';
+import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM, TelemetryEvent, COMMAND_NAME, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_PAGE_FOLDERS, SETTING_CONTENT_SNIPPETS, SETTING_CONTENT_PLACEHOLDERS, SETTING_CUSTOM_SCRIPTS, SETTING_DATA_FILES, SETTING_DATA_TYPES, SETTING_DATA_FOLDERS, SETTING_EXTENDS, SETTING_CONTENT_SORTING, SETTING_GLOBAL_MODES, SETTING_TAXONOMY_FIELD_GROUPS, SETTING_CONTENT_DRAFT_FIELD, SETTING_CONTENT_SUPPORTED_FILETYPES, SETTING_GLOBAL_NOTIFICATIONS, SETTING_GLOBAL_NOTIFICATIONS_DISABLED, SETTING_MEDIA_SUPPORTED_MIMETYPES, SETTING_COMMA_SEPARATED_FIELDS, SETTING_REMOVE_QUOTES } from '../constants';
 import { Folders } from '../commands/Folders';
 import { join, basename, dirname, parse } from 'path';
 import { existsSync } from 'fs';
@@ -496,20 +496,50 @@ export class Settings {
           for (const key in config) {
             if (config.hasOwnProperty(key)) {
               const value = config[key];
+              const settingName = key.replace(`${CONFIG_KEY}.`, '');
 
-              if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+              if (typeof value === 'string' || 
+                  typeof value === 'number' || 
+                  typeof value === 'boolean') {
                 if (typeof originalConfig[key] === 'undefined') {
                   Settings.globalConfig[key] = value;
                 }
-              } else if (typeof value === 'object' && value !== null) {
+              } 
+              // Objects and arrays to override
+              else if (settingName === SETTING_CONTENT_DRAFT_FIELD ||
+                       settingName === SETTING_CONTENT_SUPPORTED_FILETYPES || 
+                       settingName === SETTING_GLOBAL_NOTIFICATIONS ||
+                       settingName === SETTING_GLOBAL_NOTIFICATIONS_DISABLED ||
+                       settingName === SETTING_MEDIA_SUPPORTED_MIMETYPES ||
+                       settingName === SETTING_COMMA_SEPARATED_FIELDS) {
+                if (typeof originalConfig[key] === 'undefined') {
+                  Settings.globalConfig[key] = value;
+                }
+              } 
+              else if (typeof value === 'object' && value !== null) {
                 // Check if array
                 if (Array.isArray(value)) {
-                  for (const item of value) {
-                    Settings.updateGlobalConfigSetting(key.replace(`${CONFIG_KEY}.`, ''), item);
+                  if (settingName === SETTING_TAXONOMY_CATEGORIES ||
+                      settingName === SETTING_TAXONOMY_TAGS ||
+                      settingName === SETTING_REMOVE_QUOTES) {
+                    // Merge the arrays
+                    Settings.globalConfig[key] = [...(Settings.globalConfig[key] || []), ...(originalConfig[key] || []), ...value];
+                    // Filter out the doubles
+                    Settings.globalConfig[key] = Settings.globalConfig[key].filter((item: any, index: number) => {
+                      return Settings.globalConfig[key].indexOf(item) === index;
+                    }, Settings.globalConfig[key]);
+                  } else {
+                    for (const item of value) {
+                      Settings.updateGlobalConfigSetting(settingName, item);
+                    }
                   }
-                } else {
+                } else if (settingName === SETTING_CONTENT_SNIPPETS) {
                   for (const itemKey in value) {
-                    // Process the object key/item
+                    const crntValue = Settings.globalConfig[key] || {};
+
+                    if (!crntValue[itemKey]) {
+                      Settings.globalConfig[key] = { ...crntValue, ...{ [itemKey]: value[itemKey] } };
+                    }
                   }
                 }
               }
@@ -562,10 +592,11 @@ export class Settings {
    * @param configJson 
    */
   private static updateGlobalConfigSetting<T>(relSettingName: string, configJson: any, configFilePath?: string, filePath?: string): void {
-    // Array settings
+    // Custom scripts
     if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CUSTOM_SCRIPTS)) {
-      const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CUSTOM_SCRIPTS}`] || [];
-      Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CUSTOM_SCRIPTS}`] = [...crntValue, configJson];
+      // const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CUSTOM_SCRIPTS}`] || [];
+      // Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CUSTOM_SCRIPTS}`] = [...crntValue, configJson];
+      Settings.updateGlobalConfigArraySetting(SETTING_CUSTOM_SCRIPTS, "id", configJson);
     }
     // Content types
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_TAXONOMY_CONTENT_TYPES)) {
@@ -590,6 +621,22 @@ export class Settings {
     // Placeholders
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_PLACEHOLDERS)) {
       Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PLACEHOLDERS, "id", configJson);
+    }
+    // Sorting
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_SORTING)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_SORTING, "id", configJson);
+    }
+    // Modes
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_GLOBAL_MODES)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_GLOBAL_MODES, "id", configJson);
+    }
+    // Field groups
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_TAXONOMY_FIELD_GROUPS)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_TAXONOMY_FIELD_GROUPS, "id", configJson);
+    }
+    // Custom taxonomy
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_TAXONOMY_CUSTOM)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_TAXONOMY_CUSTOM, "id", configJson);
     }
     // Snippets
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_SNIPPETS) && configFilePath && filePath) {
@@ -619,7 +666,6 @@ export class Settings {
   private static updateGlobalConfigArraySetting<T>(settingName: string, fieldName: string, configJson: any): void {
     const crntValue: T[] = Settings.globalConfig[`${CONFIG_KEY}.${settingName}`] || [];
 
-    // Check if folder is already added
     const itemIdx = crntValue.findIndex((item: any) => item[fieldName] === configJson[fieldName]);
     if (itemIdx === -1) {
       crntValue.push(configJson);

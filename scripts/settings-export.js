@@ -1,5 +1,3 @@
-
-
 const packageJson = require('../package.json');
 
 for (const key of Object.keys(packageJson.contributes.configuration.properties)) {
@@ -28,16 +26,18 @@ for (const key of Object.keys(packageJson.contributes.configuration.properties))
 // frontMatter.taxonomy.noPropertyValueQuotes - array
 
 // PROCESS ITEM BY ITEM
-// frontMatter.content.pageFolders - array - path
-// frontMatter.content.placeholders - array - id
-// frontMatter.content.sorting - array - id
 // frontMatter.custom.scripts - array - id
+// frontMatter.taxonomy.contentTypes - array,null - name
 // frontMatter.data.files - array - id
 // frontMatter.data.folders - array - id
 // frontMatter.data.types - array - id
+// frontMatter.content.pageFolders - array - path
+// frontMatter.content.placeholders - array - id
+// frontMatter.content.sorting - array - id
 // frontMatter.global.modes - array - id
 // frontMatter.taxonomy.fieldGroups - array - id
 // frontMatter.taxonomy.customTaxonomy - array - id
-// frontMatter.taxonomy.contentTypes - array,null - name
+
+
 
 // frontMatter.content.snippets - object
