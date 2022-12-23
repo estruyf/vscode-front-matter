@@ -12,8 +12,8 @@ import { Extension } from './Extension';
 import { debounceCallback } from './DebounceCallback';
 import { Logger } from './Logger';
 import * as jsoncParser from 'jsonc-parser';
-import { existsAsync, readFileAsync, writeFileAsync } from '../utils';
-import fetch from 'node-fetch';
+import { existsAsync, fetchWithTimeout, readFileAsync, writeFileAsync } from '../utils';
+import { Cache } from '../commands';
 
 export class Settings {
   public static globalFile = "frontmatter.json";
@@ -469,83 +469,8 @@ export class Settings {
     const extendsConfig: string[] = Settings.globalConfig[extendsConfigName];
     for (const externalConfig of extendsConfig) {
       if (externalConfig.endsWith(`.json`)) {
-        let config: any = undefined;
-
-        if (externalConfig.startsWith('https://')) {
-          try {
-            const response = await fetch(externalConfig);
-            if (response.ok) {
-              config = await response.json();
-            }
-          } catch (e) {
-            Logger.error(`Error fetching external config "${externalConfig}".`);
-          }
-        } else {
-          const configPath = join(Folders.getWorkspaceFolder()?.fsPath || '', externalConfig);
-          if (await existsAsync(configPath)) {
-            const configTxt = await readFileAsync(configPath, 'utf8');
-            config = jsoncParser.parse(configTxt);
-          } else {
-            Logger.error(`External config "${externalConfig}" not found.`);
-          }
-        }
-
-        // Check if the config contains data and loop through it
-        if (config) {
-          // We need to loop through the config to make sure the objects and arrays are merged
-          for (const key in config) {
-            if (config.hasOwnProperty(key)) {
-              const value = config[key];
-              const settingName = key.replace(`${CONFIG_KEY}.`, '');
-
-              if (typeof value === 'string' || 
-                  typeof value === 'number' || 
-                  typeof value === 'boolean') {
-                if (typeof originalConfig[key] === 'undefined') {
-                  Settings.globalConfig[key] = value;
-                }
-              } 
-              // Objects and arrays to override
-              else if (settingName === SETTING_CONTENT_DRAFT_FIELD ||
-                       settingName === SETTING_CONTENT_SUPPORTED_FILETYPES || 
-                       settingName === SETTING_GLOBAL_NOTIFICATIONS ||
-                       settingName === SETTING_GLOBAL_NOTIFICATIONS_DISABLED ||
-                       settingName === SETTING_MEDIA_SUPPORTED_MIMETYPES ||
-                       settingName === SETTING_COMMA_SEPARATED_FIELDS) {
-                if (typeof originalConfig[key] === 'undefined') {
-                  Settings.globalConfig[key] = value;
-                }
-              } 
-              else if (typeof value === 'object' && value !== null) {
-                // Check if array
-                if (Array.isArray(value)) {
-                  if (settingName === SETTING_TAXONOMY_CATEGORIES ||
-                      settingName === SETTING_TAXONOMY_TAGS ||
-                      settingName === SETTING_REMOVE_QUOTES) {
-                    // Merge the arrays
-                    Settings.globalConfig[key] = [...(Settings.globalConfig[key] || []), ...(originalConfig[key] || []), ...value];
-                    // Filter out the doubles
-                    Settings.globalConfig[key] = Settings.globalConfig[key].filter((item: any, index: number) => {
-                      return Settings.globalConfig[key].indexOf(item) === index;
-                    }, Settings.globalConfig[key]);
-                  } else {
-                    for (const item of value) {
-                      Settings.updateGlobalConfigSetting(settingName, item);
-                    }
-                  }
-                } else if (settingName === SETTING_CONTENT_SNIPPETS) {
-                  for (const itemKey in value) {
-                    const crntValue = Settings.globalConfig[key] || {};
-
-                    if (!crntValue[itemKey]) {
-                      Settings.globalConfig[key] = { ...crntValue, ...{ [itemKey]: value[itemKey] } };
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+        const config = await Settings.getExternalConfig(externalConfig);
+        await Settings.extendConfig(config, originalConfig);
       }
     }
   }
@@ -587,6 +512,72 @@ export class Settings {
   }
 
   /**
+   * Extend the config with external config data
+   * @param config 
+   * @param originalConfig The original config data is used to make sure we don't override settings coming from the fontmatter.json file.
+   * @returns 
+   */
+  private static async extendConfig(config: any, originalConfig: any) {
+    if (!config) {
+      return;
+    }
+
+    // We need to loop through the config to make sure the objects and arrays are merged
+    for (const key in config) {
+      if (config.hasOwnProperty(key)) {
+        const value = config[key];
+        const settingName = key.replace(`${CONFIG_KEY}.`, '');
+
+        if (typeof value === 'string' || 
+            typeof value === 'number' || 
+            typeof value === 'boolean') {
+          if (typeof originalConfig[key] === 'undefined') {
+            Settings.globalConfig[key] = value;
+          }
+        } 
+        // Objects and arrays to override
+        else if (settingName === SETTING_CONTENT_DRAFT_FIELD ||
+                 settingName === SETTING_CONTENT_SUPPORTED_FILETYPES || 
+                 settingName === SETTING_GLOBAL_NOTIFICATIONS ||
+                 settingName === SETTING_GLOBAL_NOTIFICATIONS_DISABLED ||
+                 settingName === SETTING_MEDIA_SUPPORTED_MIMETYPES ||
+                 settingName === SETTING_COMMA_SEPARATED_FIELDS) {
+          if (typeof originalConfig[key] === 'undefined') {
+            Settings.globalConfig[key] = value;
+          }
+        } 
+        else if (typeof value === 'object' && value !== null) {
+          // Check if array
+          if (Array.isArray(value)) {
+            if (settingName === SETTING_TAXONOMY_CATEGORIES ||
+                settingName === SETTING_TAXONOMY_TAGS ||
+                settingName === SETTING_REMOVE_QUOTES) {
+              // Merge the arrays
+              Settings.globalConfig[key] = [...(Settings.globalConfig[key] || []), ...(originalConfig[key] || []), ...value];
+              // Filter out the doubles
+              Settings.globalConfig[key] = Settings.globalConfig[key].filter((item: any, index: number) => {
+                return Settings.globalConfig[key].indexOf(item) === index;
+              }, Settings.globalConfig[key]);
+            } else {
+              for (const item of value) {
+                Settings.updateGlobalConfigSetting(settingName, item);
+              }
+            }
+          } else if (settingName === SETTING_CONTENT_SNIPPETS) {
+            for (const itemKey in value) {
+              const crntValue = Settings.globalConfig[key] || {};
+
+              if (!crntValue[itemKey]) {
+                Settings.globalConfig[key] = { ...crntValue, ...{ [itemKey]: value[itemKey] } };
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
    * Update the global config array/object settings
    * @param relSettingName 
    * @param configJson 
@@ -596,7 +587,7 @@ export class Settings {
     if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CUSTOM_SCRIPTS)) {
       // const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CUSTOM_SCRIPTS}`] || [];
       // Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CUSTOM_SCRIPTS}`] = [...crntValue, configJson];
-      Settings.updateGlobalConfigArraySetting(SETTING_CUSTOM_SCRIPTS, "id", configJson);
+      Settings.updateGlobalConfigArraySetting(SETTING_CUSTOM_SCRIPTS, "id", configJson, "script");
     }
     // Content types
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_TAXONOMY_CONTENT_TYPES)) {
@@ -663,10 +654,18 @@ export class Settings {
    * @param fieldName 
    * @param configJson 
    */
-  private static updateGlobalConfigArraySetting<T>(settingName: string, fieldName: string, configJson: any): void {
+  private static updateGlobalConfigArraySetting<T>(settingName: string, fieldName: string, configJson: any, fallbackFieldName?: string): void {
     const crntValue: T[] = Settings.globalConfig[`${CONFIG_KEY}.${settingName}`] || [];
 
-    const itemIdx = crntValue.findIndex((item: any) => item[fieldName] === configJson[fieldName]);
+    const itemIdx = crntValue.findIndex((item: any) => {
+      if (typeof item[fieldName] !== "undefined") {
+        return item[fieldName] === configJson[fieldName];
+      } else if (fallbackFieldName && typeof item[fallbackFieldName] !== "undefined") {
+        return item[fallbackFieldName] === configJson[fallbackFieldName];
+      } else {
+        return false;
+      }
+    });
     if (itemIdx === -1) {
       crntValue.push(configJson);
     }
@@ -727,5 +726,52 @@ export class Settings {
       Settings.onConfigChange(l);
       l();
     });
+  }
+
+  /**
+   * Retrieve the external configuration
+   * @param configPath 
+   * @returns 
+   */
+  private static async getExternalConfig(configPath: string): Promise<any> {
+    let config: any = undefined;
+
+    if (configPath.startsWith('https://')) {
+      try {
+        let cachedResponse = await Cache.get<{[config: string]: { expires: number, data: any }}>(ExtensionState.Settings.Extends, "workspace");
+        
+        if (cachedResponse && cachedResponse[configPath] && cachedResponse[configPath].expires > new Date().getTime()) {
+          config = cachedResponse[configPath].data;
+        } else {
+          const response = await fetchWithTimeout(configPath, { method: 'GET' });
+          if (response.ok) {
+            config = await response.json();
+
+            if (!cachedResponse) {
+              cachedResponse = {};
+            }
+
+            cachedResponse[configPath] = { 
+              expires: (new Date(new Date().getTime() + (1000 * 60 * 10))).getTime(), 
+              data: config 
+            };
+
+            await Cache.set(ExtensionState.Settings.Extends, cachedResponse, "workspace");
+          }
+        }
+      } catch (e) {
+        Logger.error(`Error fetching external config "${configPath}".`);
+      }
+    } else {
+      const absConfigPath = join(Folders.getWorkspaceFolder()?.fsPath || '', configPath);
+      if (await existsAsync(absConfigPath)) {
+        const configTxt = await readFileAsync(absConfigPath, 'utf8');
+        config = jsoncParser.parse(configTxt);
+      } else {
+        Logger.error(`External config "${configPath}" not found.`);
+      }
+    }
+
+    return config;
   }
 }
