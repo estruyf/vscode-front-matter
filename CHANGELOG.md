@@ -4,6 +4,8 @@
 
 ### ✨ New features
 
+- [#407](https://github.com/estruyf/vscode-front-matter/issues/407): External config support
+
 ### 🎨 Enhancements
 
 - [#484](https://github.com/estruyf/vscode-front-matter/issues/484): Support for overriding scripts per environment type
