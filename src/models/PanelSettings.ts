@@ -49,6 +49,7 @@ export interface ContentType {
   pageBundle?: boolean;
   template?: string;
   postScript?: string;
+  filePrefix?: string;
 }
 
 export type FieldType = "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft" | "taxonomy" | "fields" | "json" | "block" | "file" | "dataFile" | "list" | "slug" | "divider" | "heading";

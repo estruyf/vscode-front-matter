@@ -198,7 +198,6 @@ export class Article {
 		Telemetry.send(TelemetryEvent.generateSlug);
     
     const updateFileName = Settings.get(SETTING_SLUG_UPDATE_FILE_NAME) as string;
-    let filePrefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
     const editor = vscode.window.activeTextEditor;
 
     if (!editor) {
@@ -210,13 +209,10 @@ export class Article {
       return;
     }
 
-    // Retrieve the file prefix from the folder
-    const filePrefixOnFolder = Folders.getFilePrefixBeFilePath(editor.document.uri.fsPath);
-    if (typeof filePrefixOnFolder !== "undefined") {
-      filePrefix = filePrefixOnFolder;
-    }
-
+    let filePrefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
     const contentType = ArticleHelper.getContentType(article.data);
+    filePrefix = ArticleHelper.getFilePrefix(editor.document.uri.fsPath, contentType);
+    
     const titleField = "title";
     const articleTitle: string = article.data[titleField];
     const slugInfo = Article.generateSlug(articleTitle);
@@ -259,7 +255,7 @@ export class Article {
 
           let newFileName = `${slugName}${ext}`;
           if (filePrefix && typeof filePrefix === "string") {
-            newFileName = `${format(new Date(), DateHelper.formatUpdate(filePrefix) as string)}-${newFileName}`;
+            newFileName = `${filePrefix}-${newFileName}`;
           }
 
           const newPath = editor.document.uri.fsPath.replace(fileName, newFileName);

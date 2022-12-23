@@ -1292,6 +1292,13 @@
                 "type": "string",
                 "default": "",
                 "description": "An optional post script that can be used after new content creation."
+              },
+              "filePrefix": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "description": "Defines a prefix for the file name."
               }
             },
             "additionalProperties": false,

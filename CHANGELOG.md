@@ -8,6 +8,7 @@
 
 ### 🎨 Enhancements
 
+- [#474](https://github.com/estruyf/vscode-front-matter/issues/474): Allow to define the file prefix on content types
 - [#484](https://github.com/estruyf/vscode-front-matter/issues/484): Support for overriding scripts per environment type
 
 ### ⚡️ Optimizations

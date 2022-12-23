@@ -331,17 +331,10 @@ export class ArticleHelper {
   public static async createContent(contentType: ContentType | undefined, folderPath: string, titleValue: string, fileExtension?: string): Promise<string | undefined> {
     FrontMatterParser.currentContent = null;
     
-    let prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
     const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
 
-    const filePrefixOnFolder = Folders.getFilePrefixByFolderPath(folderPath);
-    if (typeof filePrefixOnFolder !== "undefined") {
-      prefix = filePrefixOnFolder;
-    }
-
-    if (prefix && typeof prefix === "string") {
-      prefix = `${format(new Date(), DateHelper.formatUpdate(prefix) as string)}`;
-    }
+    let prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
+    prefix = ArticleHelper.getFilePrefix(folderPath, contentType);
     
     // Name of the file or folder to create
     let sanitizedName = ArticleHelper.sanitize(titleValue);
@@ -377,6 +370,36 @@ export class ArticleHelper {
     }
 
     return newFilePath;
+  }
+
+  /**
+   * Retrieve the file prefix
+   * @param filePath 
+   * @param contentType 
+   * @returns 
+   */
+  public static getFilePrefix(filePath?: string, contentType?: ContentType): string | undefined {
+    let prefix = undefined;
+
+    // Retrieve the file prefix from the folder
+    if (filePath) {
+      const filePrefixOnFolder = Folders.getFilePrefixByFolderPath(filePath);
+      if (typeof filePrefixOnFolder !== "undefined") {
+        prefix = filePrefixOnFolder;
+      }
+    }
+
+    // Retrieve the file prefix from the content type
+    if (contentType && typeof contentType.filePrefix !== "undefined") {
+      prefix = contentType.filePrefix;
+    }
+
+    // Process the prefix date formatting
+    if (prefix && typeof prefix === "string") {
+      prefix = `${format(new Date(), DateHelper.formatUpdate(prefix) as string)}`;
+    }
+
+    return prefix;
   }
 
   /**
