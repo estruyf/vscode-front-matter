@@ -14,6 +14,7 @@
 
 ### 🐞 Fixes
 
+- [#469](https://github.com/estruyf/vscode-front-matter/issues/469): Fix for using the root folder as content folder
 - [#470](https://github.com/estruyf/vscode-front-matter/issues/470): Fix `initialize project` dashboard description
 - [#482](https://github.com/estruyf/vscode-front-matter/issues/482): Update the description when you want to overwrite the default content type description
 
