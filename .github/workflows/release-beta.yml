@@ -24,7 +24,7 @@ jobs:
         run: node scripts/beta-release.js $GITHUB_RUN_ID
 
       - name: Publish
-        run: npx vsce publish -p ${{ secrets.VSCE_PAT }} --baseImagesUrl https://raw.githubusercontent.com/estruyf/vscode-front-matter/dev
+        run: npx @vscode/vsce publish -p ${{ secrets.VSCE_PAT }} --baseImagesUrl https://raw.githubusercontent.com/estruyf/vscode-front-matter/dev
 
       - name: Publish to open-vsx.org
         run: npx ovsx publish -p ${{ secrets.OPEN_VSX_PAT }}
