@@ -5,7 +5,7 @@ on:
     types: [created, moved, deleted]
 
 jobs:
-  process-labels:
+  process-project:
     name: Add/remove the project label and set the matrix variable
     runs-on: ubuntu-latest
     outputs:
