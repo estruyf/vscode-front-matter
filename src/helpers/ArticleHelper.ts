@@ -460,7 +460,9 @@ export class ArticleHelper {
                       // Do nothing
                     }
                   } else {
-                    output = output.split("\n");
+                    if (output.includes("\n")) {
+                      output = output.split("\n");
+                    }
                   }
 
                   placeHolderValue = output;
