@@ -27,14 +27,14 @@ export class ImageHelper {
       if (Array.isArray(value)) {
         previewUri = value.map(v => ({
           original: v,
-          absPath: ImageHelper.relToAbs(filePath, v)
+          absPath: v.startsWith("http") ? v : ImageHelper.relToAbs(filePath, v)
         }));
       }
     } else {
       if (typeof value === "string") {
         return {
           original: value,
-          absPath: ImageHelper.relToAbs(filePath, value)
+          absPath: value.startsWith("http") ? value : ImageHelper.relToAbs(filePath, value)
         };
       }
     }
@@ -122,12 +122,12 @@ export class ImageHelper {
             if (field.multiple && imageData instanceof Array) {
               const preview = imageData.map(preview => preview && preview.absPath ? ({ 
                 ...preview,
-                webviewUrl: panel.getWebview()?.asWebviewUri(preview.absPath).toString()
+                webviewUrl: typeof preview.absPath === "string" ? preview.absPath : panel.getWebview()?.asWebviewUri(preview.absPath).toString()
               }) : null);
   
               parentObj[field.name] = preview || [];
             } else if (!field.multiple && !Array.isArray(imageData) && imageData.absPath) {
-              const preview = panel.getWebview()?.asWebviewUri(imageData.absPath);
+              const preview = typeof imageData.absPath === "string" ? imageData.absPath : panel.getWebview()?.asWebviewUri(imageData.absPath);
               parentObj[field.name] = {
                 ...imageData,
                 webviewUrl: preview ? preview.toString() : null

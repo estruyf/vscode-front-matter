@@ -238,31 +238,36 @@ export class PagesParser {
   
           // Revalidate as the array could have been empty
           if (fieldValue) {
-            let staticPath = join(wsFolder.fsPath, staticFolder || "", fieldValue);
+            // Check if the value already starts with https - if that is the case, it is an external image
+            if (fieldValue.startsWith("http")) {
+              page.fmPreviewImage = fieldValue;
+            } else {
+              let staticPath = join(wsFolder.fsPath, staticFolder || "", fieldValue);
 
-            if (staticFolder === STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
-              const crntFilePath = parseWinPath(filePath)
-              const pathWithoutExtension = crntFilePath.replace(extname(crntFilePath), '');
-              staticPath = join(pathWithoutExtension, fieldValue);
-            }
-
-            const contentFolderPath = join(dirname(filePath), fieldValue);
-  
-            let previewUri = null;
-            if (await existsAsync(staticPath)) {
-              previewUri = Uri.file(staticPath);
-            } else if (await existsAsync(contentFolderPath)) {
-              previewUri = Uri.file(contentFolderPath);
-            }
-  
-            if (previewUri) {
-              let previewPath = Dashboard.getWebview()?.asWebviewUri(previewUri);
-
-              if (!previewPath) {
-                previewPath = PagesParser.getWebviewUri(previewUri);
+              if (staticFolder === STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
+                const crntFilePath = parseWinPath(filePath)
+                const pathWithoutExtension = crntFilePath.replace(extname(crntFilePath), '');
+                staticPath = join(pathWithoutExtension, fieldValue);
               }
-              
-              page["fmPreviewImage"] = previewPath?.toString() || "";
+
+              const contentFolderPath = join(dirname(filePath), fieldValue);
+    
+              let previewUri = null;
+              if (await existsAsync(staticPath)) {
+                previewUri = Uri.file(staticPath);
+              } else if (await existsAsync(contentFolderPath)) {
+                previewUri = Uri.file(contentFolderPath);
+              }
+    
+              if (previewUri) {
+                let previewPath = Dashboard.getWebview()?.asWebviewUri(previewUri);
+
+                if (!previewPath) {
+                  previewPath = PagesParser.getWebviewUri(previewUri);
+                }
+                
+                page["fmPreviewImage"] = previewPath?.toString() || "";
+              }
             }
           }
         }

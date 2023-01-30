@@ -173,7 +173,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
     const csp = [
       `default-src 'none';`,
-      `img-src ${`vscode-file://vscode-app`} ${webView.cspSource} https://api.visitorbadge.io 'self' 'unsafe-inline'`,
+      `img-src ${`vscode-file://vscode-app`} ${webView.cspSource} https://api.visitorbadge.io 'self' 'unsafe-inline' https://*`,
       `script-src 'unsafe-eval' ${isProd ? `'nonce-${nonce}'` : `http://${localServerUrl} http://0.0.0.0:${localPort}`}`,
       `style-src ${webView.cspSource} 'self' 'unsafe-inline'`,
       `font-src ${webView.cspSource}`,

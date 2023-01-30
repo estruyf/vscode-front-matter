@@ -199,7 +199,7 @@ export class Dashboard {
 
     const csp = [
       `default-src 'none';`,
-      `img-src ${`vscode-file://vscode-app`} ${webView.cspSource} https://api.visitorbadge.io 'self' 'unsafe-inline'`,
+      `img-src ${`vscode-file://vscode-app`} ${webView.cspSource} https://api.visitorbadge.io 'self' 'unsafe-inline' https://*`,
       `script-src ${isProd ? `'nonce-${nonce}'` : `http://${localServerUrl} http://0.0.0.0:${localPort}`} 'unsafe-eval'`,
       `style-src ${webView.cspSource} 'self' 'unsafe-inline'`,
       `font-src ${webView.cspSource}`,
