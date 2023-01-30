@@ -321,8 +321,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({media}: React.PropsWi
   }, [media, isImageFile, isVideoFile, isAudioFile]);
   
   const renderMedia = useMemo(() => {
-    if (isVideoFile || isAudioFile) {
+    if (isAudioFile) {
       return null;
+    }
+
+    if (isVideoFile) {
+      return <video src={media.vsPath} className="mx-auto object-cover" controls muted />;
     }
 
     if (isImageFile) {
