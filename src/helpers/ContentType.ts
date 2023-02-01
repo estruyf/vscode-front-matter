@@ -121,7 +121,7 @@ export class ContentType {
 
     const override = await window.showQuickPick(["Yes", "No"], {
       title: "Override default content type",
-      placeHolder: "Do you want to override the default content type?",
+      placeHolder: "Do you want to overwrite the default content type configuration with the fields used in the current field?",
       ignoreFocusOut: true
     });
     const overrideBool = override === "Yes";

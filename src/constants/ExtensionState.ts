@@ -19,6 +19,10 @@ export const ExtensionState = {
     }
   },
 
+  Settings: {
+    Extends: `frontMatter:Settings:Extends`,
+  },
+
   Updates: {
     v7_0_0: {
       dateFields: `frontMatter:Updates:v7.0.0:dateFields`

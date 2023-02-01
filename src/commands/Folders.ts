@@ -253,14 +253,19 @@ export class Folders {
         try {
           let projectStart = parseWinPath(folder.path).replace(wsFolder, "");
 
-          if (projectStart) {
+          if (typeof projectStart === 'string') {
             projectStart = projectStart.replace(/\\/g, '/');
             projectStart = projectStart.startsWith('/') ? projectStart.substring(1) : projectStart;
 
             let files: Uri[] = [];
 
             for (const fileType of (supportedFiles || DEFAULT_FILE_TYPES)) {
-              const filePath = join(projectStart, folder.excludeSubdir ? '/' : '**', `*${fileType.startsWith('.') ? '' : '.'}${fileType}`);
+              let filePath = join(projectStart, folder.excludeSubdir ? '/' : '**', `*${fileType.startsWith('.') ? '' : '.'}${fileType}`);
+
+              if (projectStart === '' && folder.excludeSubdir) {
+                filePath = `*${fileType.startsWith('.') ? '' : '.'}${fileType}`;
+              }
+
               const foundFiles = await workspace.findFiles(filePath, '**/node_modules/**');
               files = [...files, ...foundFiles];
             }

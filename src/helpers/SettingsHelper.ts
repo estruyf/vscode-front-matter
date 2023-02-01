@@ -3,8 +3,8 @@ import { Telemetry } from './Telemetry';
 import { Notifications } from './Notifications';
 import { commands, Uri, workspace, window } from 'vscode';
 import * as vscode from 'vscode';
-import { ContentFolder, ContentType, CustomPlaceholder, CustomTaxonomy, DataFile, DataFolder, DataType, TaxonomyType } from '../models';
-import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM, TelemetryEvent, COMMAND_NAME, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_PAGE_FOLDERS, SETTING_CONTENT_SNIPPETS, SETTING_CONTENT_PLACEHOLDERS, SETTING_CUSTOM_SCRIPTS, SETTING_DATA_FILES, SETTING_DATA_TYPES, SETTING_DATA_FOLDERS } from '../constants';
+import { ContentType, CustomTaxonomy, TaxonomyType } from '../models';
+import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM, TelemetryEvent, COMMAND_NAME, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_PAGE_FOLDERS, SETTING_CONTENT_SNIPPETS, SETTING_CONTENT_PLACEHOLDERS, SETTING_CUSTOM_SCRIPTS, SETTING_DATA_FILES, SETTING_DATA_TYPES, SETTING_DATA_FOLDERS, SETTING_EXTENDS, SETTING_CONTENT_SORTING, SETTING_GLOBAL_MODES, SETTING_TAXONOMY_FIELD_GROUPS, SETTING_CONTENT_DRAFT_FIELD, SETTING_CONTENT_SUPPORTED_FILETYPES, SETTING_GLOBAL_NOTIFICATIONS, SETTING_GLOBAL_NOTIFICATIONS_DISABLED, SETTING_MEDIA_SUPPORTED_MIMETYPES, SETTING_COMMA_SEPARATED_FIELDS, SETTING_REMOVE_QUOTES } from '../constants';
 import { Folders } from '../commands/Folders';
 import { join, basename, dirname, parse } from 'path';
 import { existsSync } from 'fs';
@@ -12,7 +12,8 @@ import { Extension } from './Extension';
 import { debounceCallback } from './DebounceCallback';
 import { Logger } from './Logger';
 import * as jsoncParser from 'jsonc-parser';
-import { existsAsync, readFileAsync, writeFileAsync } from '../utils';
+import { existsAsync, fetchWithTimeout, readFileAsync, writeFileAsync } from '../utils';
+import { Cache } from '../commands';
 
 export class Settings {
   public static globalFile = "frontmatter.json";
@@ -432,6 +433,9 @@ export class Settings {
         Settings.globalConfig = undefined;
       }
 
+      // Check if the config got external configs
+      await Settings.processExternalConfig();
+
       // Read the files from the config folder
       let configFiles = await workspace.findFiles(`**/${Settings.globalConfigFolder}/**/*.json`);
       if (configFiles.length === 0) {
@@ -440,7 +444,6 @@ export class Settings {
 
       // Sort the files by fsPath
       configFiles = configFiles.sort((a, b) => a.fsPath.localeCompare(b.fsPath));
-
       for await (const configFile of configFiles) {
         await Settings.processConfigFile(configFile);
       }
@@ -451,6 +454,25 @@ export class Settings {
     }
 
     Settings.readConfigPromise = undefined;
+  }
+
+  /**
+   * Process the external configs
+   */
+  private static async processExternalConfig() {
+    const extendsConfigName = `${CONFIG_KEY}.${SETTING_EXTENDS}`;
+    if (!Settings.globalConfig || !Settings.globalConfig[extendsConfigName]) {
+      return;
+    }
+
+    const originalConfig = Object.assign({}, Settings.globalConfig);
+    const extendsConfig: string[] = Settings.globalConfig[extendsConfigName];
+    for (const externalConfig of extendsConfig) {
+      if (externalConfig.endsWith(`.json`)) {
+        const config = await Settings.getExternalConfig(externalConfig);
+        await Settings.extendConfig(config, originalConfig);
+      }
+    }
   }
 
   /**
@@ -482,42 +504,134 @@ export class Settings {
         Settings.globalConfig = {};
       }
 
-      // Array settings
-      if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CUSTOM_SCRIPTS)) {
-        const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CUSTOM_SCRIPTS}`] || [];
-        Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CUSTOM_SCRIPTS}`] = [...crntValue, configJson];
-      }
-      // Content types
-      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_TAXONOMY_CONTENT_TYPES)) {
-        Settings.updateGlobalConfigArraySetting(SETTING_TAXONOMY_CONTENT_TYPES, "name", configJson);
-      }
-      // Data files
-      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_FILES)) {
-        Settings.updateGlobalConfigArraySetting(SETTING_DATA_FILES, "id", configJson);
-      }
-      // Data folders
-      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_FOLDERS)) {
-        Settings.updateGlobalConfigArraySetting(SETTING_DATA_FOLDERS, "id", configJson);
-      }
-      // Data types
-      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_TYPES)) {
-        Settings.updateGlobalConfigArraySetting(SETTING_DATA_TYPES, "id", configJson);
-      }
-      // Page folders
-      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_PAGE_FOLDERS)) {
-        Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PAGE_FOLDERS, "path", configJson);
-      }
-      // Placeholders
-      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_PLACEHOLDERS)) {
-        Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PLACEHOLDERS, "id", configJson);
-      }
-      // Object settings
-      else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_SNIPPETS)) {
-        Settings.updateGlobalConfigObjectByNameSetting(SETTING_CONTENT_SNIPPETS, configFilePath, configJson, filePath);
-      }
+      Settings.updateGlobalConfigSetting(relSettingName, configJson, configFilePath, filePath);
     } catch (e) {
       Logger.error(`Error reading config file: ${configFile.fsPath}`);
       Logger.error((e as Error).message);
+    }
+  }
+
+  /**
+   * Extend the config with external config data
+   * @param config 
+   * @param originalConfig The original config data is used to make sure we don't override settings coming from the fontmatter.json file.
+   * @returns 
+   */
+  private static async extendConfig(config: any, originalConfig: any) {
+    if (!config) {
+      return;
+    }
+
+    // We need to loop through the config to make sure the objects and arrays are merged
+    for (const key in config) {
+      if (config.hasOwnProperty(key)) {
+        const value = config[key];
+        const settingName = key.replace(`${CONFIG_KEY}.`, '');
+
+        if (typeof value === 'string' || 
+            typeof value === 'number' || 
+            typeof value === 'boolean') {
+          if (typeof originalConfig[key] === 'undefined') {
+            Settings.globalConfig[key] = value;
+          }
+        } 
+        // Objects and arrays to override
+        else if (settingName === SETTING_CONTENT_DRAFT_FIELD ||
+                 settingName === SETTING_CONTENT_SUPPORTED_FILETYPES || 
+                 settingName === SETTING_GLOBAL_NOTIFICATIONS ||
+                 settingName === SETTING_GLOBAL_NOTIFICATIONS_DISABLED ||
+                 settingName === SETTING_MEDIA_SUPPORTED_MIMETYPES ||
+                 settingName === SETTING_COMMA_SEPARATED_FIELDS) {
+          if (typeof originalConfig[key] === 'undefined') {
+            Settings.globalConfig[key] = value;
+          }
+        } 
+        else if (typeof value === 'object' && value !== null) {
+          // Check if array
+          if (Array.isArray(value)) {
+            if (settingName === SETTING_TAXONOMY_CATEGORIES ||
+                settingName === SETTING_TAXONOMY_TAGS ||
+                settingName === SETTING_REMOVE_QUOTES) {
+              // Merge the arrays
+              Settings.globalConfig[key] = [...(Settings.globalConfig[key] || []), ...(originalConfig[key] || []), ...value];
+              // Filter out the doubles
+              Settings.globalConfig[key] = Settings.globalConfig[key].filter((item: any, index: number) => {
+                return Settings.globalConfig[key].indexOf(item) === index;
+              }, Settings.globalConfig[key]);
+            } else {
+              for (const item of value) {
+                Settings.updateGlobalConfigSetting(settingName, item);
+              }
+            }
+          } else if (settingName === SETTING_CONTENT_SNIPPETS) {
+            for (const itemKey in value) {
+              const crntValue = Settings.globalConfig[key] || {};
+
+              if (!crntValue[itemKey]) {
+                Settings.globalConfig[key] = { ...crntValue, ...{ [itemKey]: value[itemKey] } };
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Update the global config array/object settings
+   * @param relSettingName 
+   * @param configJson 
+   */
+  private static updateGlobalConfigSetting<T>(relSettingName: string, configJson: any, configFilePath?: string, filePath?: string): void {
+    // Custom scripts
+    if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CUSTOM_SCRIPTS)) {
+      // const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CUSTOM_SCRIPTS}`] || [];
+      // Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CUSTOM_SCRIPTS}`] = [...crntValue, configJson];
+      Settings.updateGlobalConfigArraySetting(SETTING_CUSTOM_SCRIPTS, "id", configJson, "script");
+    }
+    // Content types
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_TAXONOMY_CONTENT_TYPES)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_TAXONOMY_CONTENT_TYPES, "name", configJson);
+    }
+    // Data files
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_FILES)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_DATA_FILES, "id", configJson);
+    }
+    // Data folders
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_FOLDERS)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_DATA_FOLDERS, "id", configJson);
+    }
+    // Data types
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_TYPES)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_DATA_TYPES, "id", configJson);
+    }
+    // Page folders
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_PAGE_FOLDERS)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PAGE_FOLDERS, "path", configJson);
+    }
+    // Placeholders
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_PLACEHOLDERS)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PLACEHOLDERS, "id", configJson);
+    }
+    // Sorting
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_SORTING)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_SORTING, "id", configJson);
+    }
+    // Modes
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_GLOBAL_MODES)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_GLOBAL_MODES, "id", configJson);
+    }
+    // Field groups
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_TAXONOMY_FIELD_GROUPS)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_TAXONOMY_FIELD_GROUPS, "id", configJson);
+    }
+    // Custom taxonomy
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_TAXONOMY_CUSTOM)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_TAXONOMY_CUSTOM, "id", configJson);
+    }
+    // Snippets
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_SNIPPETS) && configFilePath && filePath) {
+      Settings.updateGlobalConfigObjectByNameSetting(SETTING_CONTENT_SNIPPETS, configFilePath, configJson, filePath);
     }
   }
 
@@ -540,11 +654,18 @@ export class Settings {
    * @param fieldName 
    * @param configJson 
    */
-  private static updateGlobalConfigArraySetting<T>(settingName: string, fieldName: string, configJson: any): void {
+  private static updateGlobalConfigArraySetting<T>(settingName: string, fieldName: string, configJson: any, fallbackFieldName?: string): void {
     const crntValue: T[] = Settings.globalConfig[`${CONFIG_KEY}.${settingName}`] || [];
 
-    // Check if folder is already added
-    const itemIdx = crntValue.findIndex((item: any) => item[fieldName] === configJson[fieldName]);
+    const itemIdx = crntValue.findIndex((item: any) => {
+      if (typeof item[fieldName] !== "undefined") {
+        return item[fieldName] === configJson[fieldName];
+      } else if (fallbackFieldName && typeof item[fallbackFieldName] !== "undefined") {
+        return item[fallbackFieldName] === configJson[fallbackFieldName];
+      } else {
+        return false;
+      }
+    });
     if (itemIdx === -1) {
       crntValue.push(configJson);
     }
@@ -605,5 +726,52 @@ export class Settings {
       Settings.onConfigChange(l);
       l();
     });
+  }
+
+  /**
+   * Retrieve the external configuration
+   * @param configPath 
+   * @returns 
+   */
+  private static async getExternalConfig(configPath: string): Promise<any> {
+    let config: any = undefined;
+
+    if (configPath.startsWith('https://')) {
+      try {
+        let cachedResponse = await Cache.get<{[config: string]: { expires: number, data: any }}>(ExtensionState.Settings.Extends, "workspace");
+        
+        if (cachedResponse && cachedResponse[configPath] && cachedResponse[configPath].expires > new Date().getTime()) {
+          config = cachedResponse[configPath].data;
+        } else {
+          const response = await fetchWithTimeout(configPath, { method: 'GET' });
+          if (response.ok) {
+            config = await response.json();
+
+            if (!cachedResponse) {
+              cachedResponse = {};
+            }
+
+            cachedResponse[configPath] = { 
+              expires: (new Date(new Date().getTime() + (1000 * 60 * 10))).getTime(), 
+              data: config 
+            };
+
+            await Cache.set(ExtensionState.Settings.Extends, cachedResponse, "workspace");
+          }
+        }
+      } catch (e) {
+        Logger.error(`Error fetching external config "${configPath}".`);
+      }
+    } else {
+      const absConfigPath = join(Folders.getWorkspaceFolder()?.fsPath || '', configPath);
+      if (await existsAsync(absConfigPath)) {
+        const configTxt = await readFileAsync(absConfigPath, 'utf8');
+        config = jsoncParser.parse(configTxt);
+      } else {
+        Logger.error(`External config "${configPath}" not found.`);
+      }
+    }
+
+    return config;
   }
 }

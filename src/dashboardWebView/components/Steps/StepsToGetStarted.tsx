@@ -66,7 +66,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
     { 
       id: `welcome-init`,
       name: 'Initialize project', 
-      description: <>Initialize the project with a template folder and sample markdown file. The template folder can be used to define your own templates. <b>Start by clicking on this action</b>.</>,
+      description: <>Initialize the project will create the required files and folders for using the Front Matter CMS. <b>Start by clicking on this action</b>.</>,
       status: settings.initialized ? Status.Completed : Status.NotStarted,
       onClick: settings.initialized ? undefined : () => { Messenger.send(DashboardMessage.initializeProject); }  
     },

@@ -3,7 +3,7 @@
   "displayName": "Front Matter CMS",
   "description": "Front Matter is a CMS that runs within Visual Studio Code. It gives you the power and control of a full-blown CMS while also providing you the flexibility and speed of the static site generator of your choice like: Hugo, Jekyll, Docusaurus, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "8.2.0",
+  "version": "8.3.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -79,6 +79,14 @@
     "configuration": {
       "title": "Front Matter: use frontmatter.json for shared team settings",
       "properties": {
+        "frontMatter.extends": {
+          "type": "array",
+          "markdownDescription": "Specify the list of paths/URLs to extend the Front Matter CMS config. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.extends)",
+          "default": [],
+          "items": {
+            "type": "string"
+          }
+        },
         "frontMatter.content.autoUpdateDate": {
           "type": "boolean",
           "default": false,
@@ -454,6 +462,30 @@
                 "type": "boolean",
                 "description": "Hide the action from the UI",
                 "default": false
+              },
+              "environments": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "macos",
+                        "linux",
+                        "windows"
+                      ],
+                      "description": "The environment type for which the script needs to be used"
+                    },
+                    "script": {
+                      "type": "string",
+                      "description": "Path to the script to execute"
+                    },
+                    "command": {
+                      "$ref": "#scriptCommand"
+                    }
+                  }
+                }
               }
             },
             "additionalProperties": false,
@@ -1260,6 +1292,13 @@
                 "type": "string",
                 "default": "",
                 "description": "An optional post script that can be used after new content creation."
+              },
+              "filePrefix": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "description": "Defines a prefix for the file name."
               }
             },
             "additionalProperties": false,

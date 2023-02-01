@@ -49,6 +49,7 @@ export interface ContentType {
   pageBundle?: boolean;
   template?: string;
   postScript?: string;
+  filePrefix?: string;
 }
 
 export type FieldType = "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft" | "taxonomy" | "fields" | "json" | "block" | "file" | "dataFile" | "list" | "slug" | "divider" | "heading";
@@ -148,6 +149,15 @@ export interface CustomScript {
   type?: ScriptType;
   command?: CommandType | string;
   hidden?: boolean;
+  environments?: EnvironmentScript[];
+}
+
+export type EnvironmentType = "windows" | "macos" | "linux";
+
+export interface EnvironmentScript {
+  type: EnvironmentType;
+  script: string;
+  command: CommandType | string;
 }
 
 export interface PreviewSettings {
