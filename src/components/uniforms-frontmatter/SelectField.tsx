@@ -24,7 +24,7 @@ export type SelectFieldProps = HTMLFieldProps<
 >;
 
 function Select({
-  allowedValues,
+  allowedValues = [],
   checkboxes,
   disabled,
   fieldType,
@@ -38,20 +38,20 @@ function Select({
   required,
   disableItem,
   transform,
-  value,
+  value = [],
   ...props
 }: SelectFieldProps) {
   const multiple = fieldType === Array;
   return (
     <div className='autoform__select_field' {...filterDOMProps(props)}>
       <LabelField label={label} id={id} required={required} />
-      
+
       {checkboxes ? (
-        allowedValues!.map(item => (
+        allowedValues.map(item => (
           <div key={item}>
             <input
               checked={
-                fieldType === Array ? value!.includes(item) : value === item
+                fieldType === Array ? value.includes(item) : value === item
               }
               disabled={disableItem?.(item) ?? disabled}
               id={`${id}-${escape(item)}`}

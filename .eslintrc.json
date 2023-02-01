@@ -1,0 +1,17 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "ignorePatterns": ["./**/*.js", "./webpack/*.config.js", "./e2e/*.ts"],
+  "rules": {
+    "no-throw-literal": "error",
+    "no-unused-expressions": "error",
+    "curly": "error",
+    "class-methods-use-this": "warn"
+  }
+}

@@ -20,10 +20,10 @@ export class Wysiwyg {
 
   /**
    * Registers the markup commands for the WYSIWYG controls
-   * @param subscriptions 
-   * @returns 
+   * @param subscriptions
+   * @returns
    */
-  public static async registerCommands(subscriptions: any) {
+  public static async registerCommands(subscriptions: unknown[]) {
 
     const wysiwygEnabled = Settings.get(SETTING_CONTENT_WYSIWYG);
 
@@ -63,8 +63,8 @@ export class Wysiwyg {
       ]
 
       const option = await window.showQuickPick([ ...qpItems ], {
-        title: "WYSIWYG Options", 
-        placeHolder: "Which type of markup would you like to insert?", 
+        title: "WYSIWYG Options",
+        placeHolder: "Which type of markup would you like to insert?",
         canPickMany: false,
         ignoreFocusOut: true
       });
@@ -91,8 +91,8 @@ export class Wysiwyg {
 
   /**
    * Add the markup to the content
-   * @param type 
-   * @returns 
+   * @param type
+   * @returns
    */
   private static async addMarkup(type: MarkupType) {
     const editor = window.activeTextEditor;
@@ -118,13 +118,13 @@ export class Wysiwyg {
       // Replace the selection and surround with the markup
       const selectionText = editor.document.getText(selection);
       const txt = await this.insertText(markers, type, selectionText);
-      
+
       editor.edit(builder => {
         builder.replace(selection, txt);
       });
     } else {
       const txt = await this.insertText(markers, type);
-        
+
       // Insert the markers where cursor is located.
       const markerLength = this.isMarkupWrapping(type) ? txt.length + 1 : markers.length;
       let newPosition = crntSelection.with(crntSelection.line, crntSelection.character + markerLength);
@@ -150,8 +150,8 @@ export class Wysiwyg {
     const linkText = hasTextSelection ? editor.document.getText(selection) : "";
 
     const link = await window.showInputBox({
-      title: "WYSIWYG Hyperlink", 
-      placeHolder: "Enter the URL", 
+      title: "WYSIWYG Hyperlink",
+      placeHolder: "Enter the URL",
       prompt: "Enter the URL",
       value: linkText,
       ignoreFocusOut: true
@@ -188,12 +188,12 @@ export class Wysiwyg {
 
   /**
    * Check if the text will be wrapped
-   * @param type 
-   * @returns 
+   * @param type
+   * @returns
    */
-  private static isMarkupWrapping(type: MarkupType) { 
+  private static isMarkupWrapping(type: MarkupType) {
     return (
-      type === MarkupType.blockquote || 
+      type === MarkupType.blockquote ||
       type === MarkupType.heading ||
       type === MarkupType.unorderedList ||
       type === MarkupType.orderedList ||
@@ -210,15 +210,15 @@ export class Wysiwyg {
     if (this.isMarkupWrapping(type)) {
       if (type === MarkupType.heading) {
         const headingLvl = await window.showQuickPick([
-          "Heading 1", 
-          "Heading 2", 
-          "Heading 3", 
-          "Heading 4", 
-          "Heading 5", 
+          "Heading 1",
+          "Heading 2",
+          "Heading 3",
+          "Heading 4",
+          "Heading 5",
           "Heading 6"
         ], {
           title: "Heading Level",
-          canPickMany: false, 
+          canPickMany: false,
           placeHolder: "Which heading level do you want to insert?",
           ignoreFocusOut: true
         });
@@ -247,8 +247,8 @@ export class Wysiwyg {
 
   /**
    * Check if linebreak needs to be added
-   * @param type 
-   * @returns 
+   * @param type
+   * @returns
    */
   private static lineBreak(type: MarkupType) {
     if (type === MarkupType.codeblock) {
@@ -259,8 +259,8 @@ export class Wysiwyg {
 
   /**
    * Retrieve the type of markers
-   * @param type 
-   * @returns 
+   * @param type
+   * @returns
    */
   private static getMarkers(type: MarkupType) {
     switch(type) {

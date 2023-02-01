@@ -57,7 +57,7 @@ export class Template {
       await Project.init(false);
       const templatePath = Project.templatePath();
       if (templatePath) {
-        let fileContents = ArticleHelper.stringifyFrontMatter(keepContents === "no" ? "" : clonedArticle.content, clonedArticle.data);
+        const fileContents = ArticleHelper.stringifyFrontMatter(keepContents === "no" ? "" : clonedArticle.content, clonedArticle.data);
 
         const templateFile = path.join(templatePath.fsPath, `${titleValue}.${fileType}`);
         await writeFileAsync(templateFile, fileContents, { encoding: "utf-8" });
@@ -127,7 +127,7 @@ export class Template {
     }
 
     const fileExtension = extname(template.fsPath).replace(".", "");
-    let newFilePath: string | undefined = await ArticleHelper.createContent(contentType, folderPath, titleValue, fileExtension);
+    const newFilePath: string | undefined = await ArticleHelper.createContent(contentType, folderPath, titleValue, fileExtension);
     if (!newFilePath) {
       return;
     }

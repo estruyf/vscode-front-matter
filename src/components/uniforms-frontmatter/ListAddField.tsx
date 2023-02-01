@@ -9,8 +9,11 @@ import {
 } from 'uniforms';
 import './ListAddField.css';
 
+type ParentFieldType = { initialCount?: number; maxCount?: number }
+type ValueType = string | readonly string[] | undefined
+
 export type ListAddFieldProps = HTMLFieldProps<
-  unknown,
+  ValueType,
   HTMLSpanElement,
   { initialCount?: number }
 >;
@@ -25,13 +28,14 @@ function ListAdd({
 }: ListAddFieldProps) {
   const nameParts = joinName(null, name);
   const parentName = joinName(nameParts.slice(0, -1));
-  const parent = useField<
-    { initialCount?: number; maxCount?: number },
-    unknown[]
-  >(parentName, { initialCount }, { absoluteName: true })[0];
+  const parent = {
+    maxCount: 0,
+    value: [] as ValueType[],
+    ...useField<ParentFieldType, ValueType[]>(parentName, { initialCount }, { absoluteName: true })[0]
+  };
 
   const limitNotReached =
-    !disabled && !(parent.maxCount! <= parent.value!.length);
+    !disabled && !(parent.maxCount <= parent.value.length);
 
   function onAction(event: React.KeyboardEvent | React.MouseEvent) {
     if (
@@ -39,13 +43,14 @@ function ListAdd({
       !readOnly &&
       (!('key' in event) || event.key === 'Enter')
     ) {
-      parent.onChange(parent.value!.concat([Object.assign({}, value)]));
+      parent.onChange(parent.value.concat([value]));
     }
   }
 
   return (
     <span
       className='autoform__list_add_field'
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       {...filterDOMProps(props as any)}
       onClick={onAction}
       onKeyDown={onAction}

@@ -15,7 +15,7 @@ async function main(): Promise<void> {
 
     const exTester = new ExTester(storageFolder, ReleaseQuality.Stable, extFolder);
     await exTester.downloadCode(version);
-    await exTester.installVsix();
+    await exTester.installVsix({ useYarn: false });
     // await exTester.installFromMarketplace("eliostruyf.vscode-front-matter");
     await exTester.downloadChromeDriver(version);
     // await exTester.setupRequirements({vscodeVersion: version});

@@ -10,12 +10,12 @@ import { commands } from 'vscode';
 import { Field } from '../models';
 
 export class StatusListener {
-  
+
   /**
    * Update the text of the status bar
-   * 
-   * @param frontMatterSB 
-   * @param collection  
+   *
+   * @param frontMatterSB
+   * @param collection
    */
   public static async verify(frontMatterSB: vscode.StatusBarItem, collection: vscode.DiagnosticCollection) {
     const draftMsg = "in draft";
@@ -25,8 +25,8 @@ export class StatusListener {
     if (!draft || draft.type !== "boolean") {
       frontMatterSB.hide();
     }
-    
-    let editor = vscode.window.activeTextEditor;
+
+    const editor = vscode.window.activeTextEditor;
     if (editor && ArticleHelper.isSupportedFile()) {
       try {
         commands.executeCommand('setContext', CONTEXT.isValidFile, true);
@@ -52,11 +52,11 @@ export class StatusListener {
           const titleLength = Settings.get(SETTING_SEO_TITLE_LENGTH) as number || -1;
           const descLength = Settings.get(SETTING_SEO_DESCRIPTION_LENGTH) as number || -1;
           const fieldName = Settings.get(SETTING_SEO_DESCRIPTION_FIELD) as string || DefaultFields.Description;
-          
+
           if (article.data.title && titleLength > -1) {
             SeoHelper.checkLength(editor, collection, article, "title", titleLength);
           }
-          
+
           if (article.data[fieldName] && descLength > -1) {
             SeoHelper.checkLength(editor, collection, article, fieldName, descLength);
           }
@@ -64,10 +64,10 @@ export class StatusListener {
           // Check the required fields
           StatusListener.verifyRequiredFields(editor, article, collection);
         }
-        
+
         const panel = ExplorerView.getInstance();
         if (panel && panel.visible) {
-          DataListener.pushMetadata(article!.data);
+          DataListener.pushMetadata(article?.data);
         }
 
         return;
@@ -88,8 +88,8 @@ export class StatusListener {
 
   /**
    * Verify the required fields
-   * @param article 
-   * @param collection 
+   * @param article
+   * @param collection
    */
   private static verifyRequiredFields(editor: vscode.TextEditor, article: ParsedFrontMatter, collection: vscode.DiagnosticCollection) {
     // Check for missing fields
@@ -110,13 +110,13 @@ export class StatusListener {
 
         for (const field of fields) {
           const totalSpaces = level * (typeof editorSpaces === "string" ? parseInt(editorSpaces) : editorSpaces || 2);
-          const crntIdx = StatusListener.findFieldLine(text, txtIdx, totalSpaces, field);        
+          const crntIdx = StatusListener.findFieldLine(text, txtIdx, totalSpaces, field);
 
           if (crntIdx && crntIdx > txtIdx) {
             txtIdx = crntIdx;
             fieldName = field.name;
           }
-          
+
           ++level;
         }
 
@@ -137,7 +137,7 @@ export class StatusListener {
           requiredDiagnostics.push(diagnostic);
         }
       }
-        
+
       if (collection.has(editor.document.uri)) {
         const otherDiag = collection.get(editor.document.uri) || [];
         collection.set(editor.document.uri, [...otherDiag, ...requiredDiagnostics]);
@@ -153,11 +153,11 @@ export class StatusListener {
 
   /**
    * Find the line of the field
-   * @param text 
-   * @param startIdx 
-   * @param totalSpaces 
-   * @param field 
-   * @returns 
+   * @param text
+   * @param startIdx
+   * @param totalSpaces
+   * @param field
+   * @returns
    */
   private static findFieldLine(text: string, startIdx: number, totalSpaces: number, field: Field): number | undefined {
     const crntIdx = text.indexOf(field.name, startIdx === -1 ? 0 : startIdx);

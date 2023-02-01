@@ -5,11 +5,12 @@ on:
     types: [created, moved, deleted]
 
 jobs:
-  process-labels:
+  process-project:
     name: Add/remove the project label and set the matrix variable
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.setVariables.outputs.matrix }}
+      matrix: ${{ steps.setMatrixData.outputs.matrix }}
+      statusLabel: ${{ steps.setStatusLabel.outputs.statusLabel }}
     steps:
       - name: Fetch project data
         run: |
@@ -37,42 +38,53 @@ jobs:
           curl --request GET --url '${{ fromJSON(env.PROJECT_DATA).columns_url }}' --header 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' | jq --compact-output '["Status: " + .[].name]' >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
 
-      - name: Set the matrix variable
-        id: setVariables
-        run: |
-          echo "matrix=${{ toJSON(env.ALL_COLUMNS_DATA) }}" >> $GITHUB_OUTPUT
-
-  remove-labels:
-    name: Remove the status label
-    runs-on: ubuntu-latest
-    needs: process-labels
-    strategy:
-      matrix:
-        label: ${{fromJson(needs.process-labels.outputs.matrix)}}
-    
-    steps:
-      # One by one, as there was an issue with removing multiple labels at once
-      - name: Remove the status label
-        uses: andymckay/labeler@master
-        if: ${{ contains(github.event.action, 'deleted') || contains(github.event.action, 'moved') }}
-        with:
-          remove-labels: ${{ matrix.label }}
-
-  add-labels:
-    name: Add the status label
-    runs-on: ubuntu-latest
-    needs: remove-labels    
-    steps:
-      # https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#project_card
       - name: Fetch column info
         run: |
           echo 'COLUMN_DATA<<EOF' >> $GITHUB_ENV
           curl --request GET --url '${{ github.event.project_card.column_url }}' --header 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
 
+      - uses: actions/github-script@v6
+        id: setMatrixData
+        with:
+          result-encoding: string
+          script: |
+            const columnData = JSON.parse(process.env.COLUMN_DATA)
+            const allColumnsData = JSON.parse(process.env.ALL_COLUMNS_DATA)
+
+            const matrix = allColumnsData.filter((label) => {
+              return label !== `Status: ${columnData.name}`
+            });
+
+            core.setOutput('matrix', matrix)
+
+      - name: Set the status label
+        id: setStatusLabel
+        run: |
+          echo "statusLabel=${{ fromJSON(env.COLUMN_DATA).name }}" >> $GITHUB_OUTPUT
+
+  remove-labels:
+    runs-on: ubuntu-latest
+    needs: process-project
+    if: ${{ contains(github.event.action, 'deleted') || contains(github.event.action, 'moved') }}
+    strategy:
+      matrix:
+        label: ${{fromJson(needs.process-project.outputs.matrix)}}
+    steps:
+      - name: Remove the status label
+        uses: andymckay/labeler@master
+        with:
+          remove-labels: ${{ matrix.label }}
+
+  add-labels:
+    runs-on: ubuntu-latest
+    needs: 
+      - process-project
+      - remove-labels
+    if: ${{ contains(github.event.action, 'created') || contains(github.event.action, 'moved') }}
+    steps:
       - name: Add the status label
         uses: andymckay/labeler@master
-        if: ${{ contains(github.event.action, 'created') || contains(github.event.action, 'moved') }}
         with:
-          add-labels: "Status: ${{ fromJSON(env.COLUMN_DATA).name }}"
+          add-labels: "Status: ${{ needs.process-project.outputs.statusLabel }}"
     
