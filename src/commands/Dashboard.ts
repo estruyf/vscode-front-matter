@@ -14,7 +14,7 @@ import { GitListener, ModeListener } from '../listeners/general';
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
   private static _viewData: DashboardData | undefined;
-  private static isDisposed: boolean = true;
+  private static isDisposed = true;
 
   public static get viewData(): DashboardData | undefined {
     return Dashboard._viewData;
@@ -35,7 +35,7 @@ export class Dashboard {
    */
   public static async open(data?: DashboardData) {
     MediaLibrary.getInstance();
-    
+
     Dashboard._viewData = data;
 
     if (Dashboard.isOpen) {
@@ -57,7 +57,7 @@ export class Dashboard {
   /**
    * Reveal the dashboard if it is open
    */
-  public static reveal(hasData: boolean = false) {
+  public static reveal(hasData = false) {
     if (Dashboard.webview) {
       Dashboard.webview.reveal();
 
@@ -85,7 +85,7 @@ export class Dashboard {
   public static resetViewData() {
     Dashboard._viewData = undefined;
   }
-  
+
   /**
    * Create the dashboard webview
    */
@@ -136,7 +136,7 @@ export class Dashboard {
 
     Dashboard.webview.webview.onDidReceiveMessage(async (msg) => {
       Logger.info(`Receiving message from webview: ${msg.command}`);
-      
+
       DashboardListener.process(msg);
       ExtensionListener.process(msg);
       MediaListener.process(msg);
@@ -162,9 +162,9 @@ export class Dashboard {
 
   /**
    * Post data to the dashboard
-   * @param msg 
+   * @param msg
    */
-  public static postWebviewMessage(msg: { command: DashboardCommand, data?: any }) {
+  public static postWebviewMessage(msg: { command: DashboardCommand, data?: unknown }) {
     if (Dashboard.isDisposed) {
       return;
     }
@@ -173,10 +173,10 @@ export class Dashboard {
       Dashboard.webview?.webview.postMessage(msg);
     }
   }
-  
+
   /**
    * Retrieve the webview HTML contents
-   * @param webView 
+   * @param webView
    */
   private static getWebviewContent(webView: Webview, extensionPath: Uri): string {
     const dashboardFile = "dashboardWebView.js";
@@ -188,7 +188,7 @@ export class Dashboard {
     if (isProd) {
       scriptUri = webView.asWebviewUri(Uri.joinPath(extensionPath, 'dist', dashboardFile)).toString();
     } else {
-      scriptUri = `http://${localServerUrl}/${dashboardFile}`; 
+      scriptUri = `http://${localServerUrl}/${dashboardFile}`;
     }
 
     const nonce = WebviewHelper.getNonce();

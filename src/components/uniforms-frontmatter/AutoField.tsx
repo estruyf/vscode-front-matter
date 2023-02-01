@@ -1,6 +1,5 @@
 import * as invariant from 'invariant';
 import { createAutoField } from 'uniforms';
-import { PreviewImageField } from '../../panelWebView/components/Fields/PreviewImageField';
 export { AutoFieldProps } from 'uniforms';
 
 import BoolField from './BoolField';

@@ -1,7 +1,7 @@
 {
-	"Recoil Atom": {
-		"prefix": "sq-atom",
-		"body": [
+  "Recoil Atom": {
+    "prefix": "sq-atom",
+    "body": [
       "import { atom } from 'recoil';",
       "",
       "export const ${1:CollectionId}Atom = atom({",
@@ -12,9 +12,9 @@
     "description": "Creates a new atom",
     "scope": "typescript"
   },
-	"Recoil Selector (sync)": {
-		"prefix": "sq-selector-sync",
-		"body": [
+  "Recoil Selector (sync)": {
+    "prefix": "sq-selector-sync",
+    "body": [
       "import { selector } from 'recoil';",
       "",
       "export const ${1:CollectionData}Selector = selector({",
@@ -27,9 +27,9 @@
     "description": "Creates a new synchronous selector",
     "scope": "typescript"
   },
-	"Recoil Selector (async)": {
-		"prefix": "sq-selector-async",
-		"body": [
+  "Recoil Selector (async)": {
+    "prefix": "sq-selector-async",
+    "body": [
       "import { selector } from 'recoil';",
       "",
       "export const ${1:CollectionData}Selector = selector({",
@@ -42,9 +42,9 @@
     "description": "Creates a new asynchronous selector",
     "scope": "typescript"
   },
-	"Recoil selectorFamily": {
-		"prefix": "sq-selector-fam",
-		"body": [
+  "Recoil selectorFamily": {
+    "prefix": "sq-selector-fam",
+    "body": [
       "import { selectorFamily } from 'recoil';",
       "",
       "export const ${1:CollectionData}Selector = selectorFamily({",

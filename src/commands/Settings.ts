@@ -163,7 +163,7 @@ export class Settings {
     }
 
     const type = taxType === "Tag" ? TaxonomyType.Tag : TaxonomyType.Category;
-    let options = SettingsHelper.getTaxonomy(type);
+    const options = SettingsHelper.getTaxonomy(type);
     
     if (!options || options.length === 0) {
       Notifications.info(`No ${type === TaxonomyType.Tag ? "tags" : "categories"} configured.`);

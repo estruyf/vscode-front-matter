@@ -1,7 +1,7 @@
 import { Folders } from './Folders';
 import { DEFAULT_CONTENT_TYPE } from './../constants/ContentType';
 import { isValidFile } from './../helpers/isValidFile';
-import { SETTING_AUTO_UPDATE_DATE, SETTING_MODIFIED_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TEMPLATES_PREFIX, CONFIG_KEY, SETTING_DATE_FORMAT, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_CONTENT_PLACEHOLDERS, TelemetryEvent } from './../constants';
+import { SETTING_AUTO_UPDATE_DATE, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TEMPLATES_PREFIX, CONFIG_KEY, SETTING_DATE_FORMAT, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_CONTENT_PLACEHOLDERS, TelemetryEvent } from './../constants';
 import * as vscode from 'vscode';
 import { CustomPlaceholder, Field, TaxonomyType } from "../models";
 import { format } from "date-fns";
@@ -95,7 +95,7 @@ export class Article {
       return;
     }
 
-    article = this.updateDate(article, true);
+    article = this.updateDate(article);
 
     try {
       ArticleHelper.update(editor, article);
@@ -106,10 +106,10 @@ export class Article {
 
   /**
    * Update the date in the front matter
-   * @param article 
+   * @param article
    */
-  public static updateDate(article: ParsedFrontMatter, forceCreate: boolean = false) {
-    article.data = ArticleHelper.updateDates(article.data);   
+  public static updateDate(article: ParsedFrontMatter) {
+    article.data = ArticleHelper.updateDates(article.data);
     return article;
   }
 
@@ -163,7 +163,7 @@ export class Article {
     try {
       cloneArticle.data[dateField] = Article.formatDate(new Date());
       return cloneArticle;
-    } catch (e: any) {
+    } catch (e: unknown) {
       Notifications.error(`Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`);
     }
   }
@@ -196,7 +196,7 @@ export class Article {
    */
 	public static async updateSlug() {
 		Telemetry.send(TelemetryEvent.generateSlug);
-    
+
     const updateFileName = Settings.get(SETTING_SLUG_UPDATE_FILE_NAME) as string;
     let filePrefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
     const editor = vscode.window.activeTextEditor;
@@ -220,13 +220,13 @@ export class Article {
     const titleField = "title";
     const articleTitle: string = article.data[titleField];
     const slugInfo = Article.generateSlug(articleTitle);
-    
+
     if (slugInfo && slugInfo.slug && slugInfo.slugWithPrefixAndSuffix) {
       article.data["slug"] = slugInfo.slugWithPrefixAndSuffix;
 
       if (contentType) {
         // Update the fields containing the slug placeholder
-        let fieldsToUpdate: Field[] = contentType.fields.filter(f => f.default === "{{slug}}");
+        const fieldsToUpdate: Field[] = contentType.fields.filter(f => f.default === "{{slug}}");
         for (const field of fieldsToUpdate) {
           article.data[field.name] = slugInfo.slug;
         }
@@ -253,7 +253,7 @@ export class Article {
         if (editor) {
           const ext = extname(editor.document.fileName);
           const fileName = basename(editor.document.fileName);
-          
+
           let slugName = slugInfo.slug.startsWith("/") ? slugInfo.slug.substring(1) : slugInfo.slug;
           slugName = slugName.endsWith("/") ? slugName.substring(0, slugName.length - 1) : slugName;
 
@@ -270,8 +270,8 @@ export class Article {
             await vscode.workspace.fs.rename(editor.document.uri, vscode.Uri.file(newPath), {
               overwrite: false
             });
-          } catch (e: any) {
-            Notifications.error(`Failed to rename file: ${e?.message || e}`);
+          } catch (e: unknown) {
+            Notifications.error(`Failed to rename file: ${(e as Error).message || e}`);
           }
         }
       }
@@ -361,7 +361,7 @@ export class Article {
    * Insert an image from the media dashboard into the article
    */
   public static async insertMedia() {
-		let editor = vscode.window.activeTextEditor;
+		const editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;
     }
@@ -391,7 +391,7 @@ export class Article {
    * Insert a snippet into the article
    */
   public static async insertSnippet() {
-		let editor = vscode.window.activeTextEditor;
+		const editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;
     }
@@ -415,10 +415,10 @@ export class Article {
 
   /**
    * Update the article date and return it
-   * @param article 
-   * @param dateFormat 
-   * @param field 
-   * @param forceCreate 
+   * @param article
+   * @param dateFormat
+   * @param field
+   * @param forceCreate
    */
   private static articleDate(article: ParsedFrontMatter, field: string, forceCreate: boolean) {
     if (typeof article.data[field] !== "undefined" || forceCreate) {

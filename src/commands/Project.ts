@@ -16,7 +16,7 @@ export class Project {
 title:
 slug:
 description:
-author: 
+author:
 date: 2019-08-22T15:20:28.000Z
 lastmod: 2019-08-22T15:20:28.000Z
 draft: true
@@ -44,7 +44,7 @@ categories: []
       } else {
         Notifications.info("Project initialized successfully.");
       }
-      
+
       Telemetry.send(TelemetryEvent.initialization);
 
       // Check if you can find the framework
@@ -56,7 +56,8 @@ categories: []
       }
 
       SettingsListener.getSettings(true);
-    } catch (err: any) {
+    } catch (error: unknown) {
+      const err = (error as Error)
       Logger.error(`Project::init: ${err?.message || err}`);
       Notifications.error(`Sorry, something went wrong - ${err?.message || err}`);
     }
@@ -64,8 +65,8 @@ categories: []
 
   /**
    * Creates the templates folder + sample if needed
-   * @param sampleTemplate 
-   * @returns 
+   * @param sampleTemplate
+   * @returns
    */
   public static async createSampleTemplate(sampleTemplate?: boolean) {
     const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
@@ -76,7 +77,7 @@ categories: []
     if (!folder || !templatePath) {
       return;
     }
-    
+
     const article = Uri.file(join(templatePath.fsPath, `article.${fileType}`));
 
     if (!(await existsAsync(templatePath.fsPath))) {

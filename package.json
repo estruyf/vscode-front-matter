@@ -208,7 +208,10 @@
                 "description": "Defines a custom preview path for the folder."
               },
               "filePrefix": {
-                "type": [ "null", "string" ],
+                "type": [
+                  "null",
+                  "string"
+                ],
                 "description": "Defines a prefix for the file name."
               },
               "contentTypes": {
@@ -462,7 +465,10 @@
           "scope": "Custom scripts"
         },
         "frontMatter.dashboard.content.pagination": {
-          "type": ["boolean", "number"],
+          "type": [
+            "boolean",
+            "number"
+          ],
           "default": true,
           "markdownDescription": "Specify if you want to enable/disable pagination for your content. You can define your page number up to 52. Default items per page is `16`. Disabling the pagination can be done by setting it to `false`. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.content.pagination)",
           "scope": "Dashboard"
@@ -2132,7 +2138,8 @@
     "clean": "rimraf dist",
     "start:site": "cd ./docs && npm run dev",
     "clean:test": "rm ./e2e/sample/frontmatter.json || exit 0 && rm -rf ./e2e/sample/.frontmatter || exit 0",
-    "test": "tsc -p tsconfig.e2e.json && npm run clean:test && node ./e2e/out/runTests.js"
+    "test": "tsc -p tsconfig.e2e.json && npm run clean:test && node ./e2e/out/runTests.js",
+    "lint": "eslint --max-warnings=0 ./src/{commands,components}"
   },
   "devDependencies": {
     "@actions/core": "^1.8.2",
@@ -2153,6 +2160,7 @@
     "@types/lodash.omit": "^4.5.6",
     "@types/lodash.uniqby": "4.7.6",
     "@types/lodash.xor": "^4.5.6",
+    "@types/mdast": "^3.0.10",
     "@types/mime-types": "^2.1.1",
     "@types/mocha": "^5.2.7",
     "@types/mustache": "^4.1.2",
@@ -2162,17 +2170,20 @@
     "@types/react-datepicker": "^4.1.7",
     "@types/react-dom": "17.0.0",
     "@types/vscode": "^1.63.0",
+    "@typescript-eslint/eslint-plugin": "^5.50.0",
+    "@typescript-eslint/parser": "^5.50.0",
     "@vscode/codicons": "0.0.20",
     "@vscode/extension-telemetry": "^0.4.7",
     "@vscode/webview-ui-toolkit": "^0.9.1",
     "@webpack-cli/serve": "^1.6.0",
     "ajv": "^8.8.2",
     "array-move": "^4.0.0",
-    "autoprefixer": "^10.3.2",
+    "autoprefixer": "10.3.3",
     "chai": "^4.3.6",
     "css-loader": "5.2.7",
     "date-fns": "2.23.0",
     "downshift": "6.0.6",
+    "eslint": "^8.33.0",
     "fuse.js": "6.5.3",
     "glob": "7.1.6",
     "gray-matter": "4.0.3",
@@ -2180,6 +2191,7 @@
     "html-webpack-plugin": "4.5.0",
     "image-size": "^1.0.0",
     "invariant": "^2.2.4",
+    "js-yaml": "^4.1.0",
     "jsonc-parser": "^3.2.0",
     "lodash-es": "^4.17.21",
     "lodash.omit": "^4.5.0",
@@ -2189,6 +2201,7 @@
     "mime-types": "^2.1.35",
     "mocha": "^10.0.0",
     "mustache": "^4.2.0",
+    "node-fetch": "^2.6.9",
     "node-json-db": "^1.3.0",
     "npm-run-all": "^4.1.5",
     "path-browserify": "^1.0.1",
@@ -2199,6 +2212,7 @@
     "react-datepicker": "4.2.1",
     "react-dom": "17.0.1",
     "react-dropzone": "^11.3.4",
+    "react-popper": "^2.3.0",
     "react-quill": "^2.0.0-beta.4",
     "react-router-dom": "^6.3.0",
     "react-sortable-hoc": "^2.0.0",
@@ -2211,14 +2225,13 @@
     "tailwindcss": "^2.2.7",
     "tailwindcss-nested-groups": "^1.2.4",
     "ts-loader": "8.0.3",
-    "tslint": "6.1.3",
-    "typescript": "^4.5.4",
+    "typescript": "4.5.5",
     "uniforms": "^3.7.0",
     "uniforms-antd": "^3.7.0",
     "uniforms-bridge-json-schema": "^3.7.0",
     "uniforms-unstyled": "^3.7.0",
     "url-join-ts": "^1.0.5",
-    "vscode-extension-tester": "^4.2.5",
+    "vscode-extension-tester": "4.2.5",
     "wc-react": "github:estruyf/wc-react",
     "webpack": "^5.65.0",
     "webpack-bundle-analyzer": "^4.5.0",
@@ -2227,7 +2240,7 @@
     "yaml": "^1.10.2",
     "yawn-yaml": "^1.5.0"
   },
-  "dependencies": {
-    "node-fetch": "^2.6.7"
+  "vsce": {
+    "dependencies": false
   }
 }
