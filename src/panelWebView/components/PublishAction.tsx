@@ -1,5 +1,3 @@
-
-
 import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { CommandToCode } from '../CommandToCode';
@@ -9,7 +7,9 @@ export interface IPublishActionProps {
   draft: boolean;
 }
 
-const PublishAction: React.FunctionComponent<IPublishActionProps> = (props: React.PropsWithChildren<IPublishActionProps>) => {
+const PublishAction: React.FunctionComponent<IPublishActionProps> = (
+  props: React.PropsWithChildren<IPublishActionProps>
+) => {
   const { draft } = props;
 
   const publish = () => {
@@ -17,7 +17,11 @@ const PublishAction: React.FunctionComponent<IPublishActionProps> = (props: Reac
   };
 
   return (
-    <ActionButton onClick={publish} className={`${draft ? "" : "secondary"}`} title={draft ? "Publish" : "Revert to draft"} />
+    <ActionButton
+      onClick={publish}
+      className={`${draft ? '' : 'secondary'}`}
+      title={draft ? 'Publish' : 'Revert to draft'}
+    />
   );
 };
 

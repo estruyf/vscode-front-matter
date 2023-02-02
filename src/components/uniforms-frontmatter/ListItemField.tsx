@@ -7,9 +7,7 @@ import ListDelField from './ListDelField';
 
 export type ListItemFieldProps = { children?: ReactNode; value?: unknown };
 
-function ListItem({
-  children = <AutoField label={null} name="" />,
-}: ListItemFieldProps) {
+function ListItem({ children = <AutoField label={null} name="" /> }: ListItemFieldProps) {
   return (
     <div>
       <ListDelField name="" />
@@ -19,5 +17,5 @@ function ListItem({
 }
 
 export default connectField<ListItemFieldProps>(ListItem, {
-  initialValue: false,
+  initialValue: false
 });

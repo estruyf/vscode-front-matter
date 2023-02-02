@@ -44,13 +44,13 @@ export enum DashboardMessage {
 
   // Taxonomy dashboard
   getTaxonomyData = 'getTaxonomyData',
-  editTaxonomy = "editTaxonomy",
-  mergeTaxonomy = "mergeTaxonomy",
-  deleteTaxonomy = "deleteTaxonomy",
-  addToTaxonomy = "addToTaxonomy",
-  createTaxonomy = "createTaxonomy",
-  importTaxonomy = "importTaxonomy",
-  moveTaxonomy = "moveTaxonomy",
+  editTaxonomy = 'editTaxonomy',
+  mergeTaxonomy = 'mergeTaxonomy',
+  deleteTaxonomy = 'deleteTaxonomy',
+  addToTaxonomy = 'addToTaxonomy',
+  createTaxonomy = 'createTaxonomy',
+  importTaxonomy = 'importTaxonomy',
+  moveTaxonomy = 'moveTaxonomy',
 
   // Other
   getTheme = 'getTheme',
@@ -58,5 +58,5 @@ export enum DashboardMessage {
   setState = 'setState',
   runCustomScript = 'runCustomScript',
   sendTelemetry = 'sendTelemetry',
-  logError = 'logError',
+  logError = 'logError'
 }

@@ -8,18 +8,27 @@ export interface IDataFormControlsProps {
   onClear: () => void;
 }
 
-export const DataFormControls: React.FunctionComponent<IDataFormControlsProps> = ({ model, onClear }: React.PropsWithChildren<IDataFormControlsProps>) => {
+export const DataFormControls: React.FunctionComponent<IDataFormControlsProps> = ({
+  model,
+  onClear
+}: React.PropsWithChildren<IDataFormControlsProps>) => {
   const { formRef } = useForm();
-  
+
   return (
-    <div className='text-right border-t border-gray-200 dark:border-vulcan-300'>
+    <div className="text-right border-t border-gray-200 dark:border-vulcan-300">
       <SubmitField value={model ? `Update` : `Add`} />
-      <Button className='ml-4' secondary onClick={() => {
-        if (onClear) {
-          onClear();
-        }
-        formRef.reset();
-      }}>Cancel</Button>
+      <Button
+        className="ml-4"
+        secondary
+        onClick={() => {
+          if (onClear) {
+            onClear();
+          }
+          formRef.reset();
+        }}
+      >
+        Cancel
+      </Button>
     </div>
   );
 };

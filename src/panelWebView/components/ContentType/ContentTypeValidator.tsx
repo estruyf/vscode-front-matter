@@ -9,25 +9,26 @@ import { VsLabel } from '../VscodeComponents';
 
 export interface IContentTypeValidatorProps {
   fields: Field[];
-  metadata: IMetadata
+  metadata: IMetadata;
 }
 
 const fieldsToIgnore = [`filePath`, `articleDetails`, `slug`, `keywords`];
 
-export const ContentTypeValidator: React.FunctionComponent<IContentTypeValidatorProps> = ({ fields, metadata}: React.PropsWithChildren<IContentTypeValidatorProps>) => {
-  
+export const ContentTypeValidator: React.FunctionComponent<IContentTypeValidatorProps> = ({
+  fields,
+  metadata
+}: React.PropsWithChildren<IContentTypeValidatorProps>) => {
   const isValid = useMemo(() => {
-    const metadataFields = Object.keys(metadata).filter(key => !fieldsToIgnore.includes(key));
+    const metadataFields = Object.keys(metadata).filter((key) => !fieldsToIgnore.includes(key));
 
     for (const mField of metadataFields) {
-      if (!fields.find(field => field.name === mField)) {
+      if (!fields.find((field) => field.name === mField)) {
         return false;
       }
     }
 
     return true;
   }, [fields, metadata]);
-
 
   const generateContentType = () => {
     Messenger.send(CommandToCode.generateContentType);
@@ -41,31 +42,52 @@ export const ContentTypeValidator: React.FunctionComponent<IContentTypeValidator
     Messenger.send(CommandToCode.setContentType);
   };
 
-
   if (isValid) {
     return null;
   }
 
   return (
-    <div className='hint'>
+    <div className="hint">
       <VsLabel>
         <div className={`metadata_field__label metadata_field__alert`}>
-          <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><path fillRule="evenodd" clipRule="evenodd" d="M7.56 1h.88l6.54 12.26-.44.74H1.44L1 13.26 7.56 1zM8 2.28L2.28 13H13.7L8 2.28zM8.625 12v-1h-1.25v1h1.25zm-1.25-2V6h1.25v4h-1.25z"/></svg>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M7.56 1h.88l6.54 12.26-.44.74H1.44L1 13.26 7.56 1zM8 2.28L2.28 13H13.7L8 2.28zM8.625 12v-1h-1.25v1h1.25zm-1.25-2V6h1.25v4h-1.25z"
+            />
+          </svg>
 
           <span>Content type</span>
         </div>
       </VsLabel>
 
-      <p className='inline_hint'>We noticed field differences between the content type and the front matter data.</p>
+      <p className="inline_hint">
+        We noticed field differences between the content type and the front matter data.
+      </p>
 
-      <p className='inline_hint'>Would you like to create, update, or set the content type for this content?</p>
+      <p className="inline_hint">
+        Would you like to create, update, or set the content type for this content?
+      </p>
 
-      <div className='hint__buttons'>
-        <VSCodeButton appearance={`secondary`} onClick={generateContentType}>Create content type</VSCodeButton>
+      <div className="hint__buttons">
+        <VSCodeButton appearance={`secondary`} onClick={generateContentType}>
+          Create content type
+        </VSCodeButton>
 
-        <VSCodeButton appearance={`secondary`} onClick={addMissingFields}>Add missing fields</VSCodeButton>
+        <VSCodeButton appearance={`secondary`} onClick={addMissingFields}>
+          Add missing fields
+        </VSCodeButton>
 
-        <VSCodeButton appearance={`secondary`} onClick={setContentType}>Set content type</VSCodeButton>
+        <VSCodeButton appearance={`secondary`} onClick={setContentType}>
+          Set content type
+        </VSCodeButton>
       </div>
 
       <VSCodeDivider />

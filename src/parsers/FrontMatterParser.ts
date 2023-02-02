@@ -1,7 +1,7 @@
-import { Engines, getFormatOpts } from ".";
-import * as matter from "gray-matter";
-import { Settings } from "../helpers";
-import { SETTING_FRONTMATTER_TYPE } from "../constants";
+import { Engines, getFormatOpts } from '.';
+import * as matter from 'gray-matter';
+import { Settings } from '../helpers';
+import { SETTING_FRONTMATTER_TYPE } from '../constants';
 
 export interface Format {
   language: string;
@@ -10,7 +10,7 @@ export interface Format {
 
 export interface ParsedFrontMatter {
   data: { [key: string]: any };
-  content: string
+  content: string;
 }
 
 export class FrontMatterParser {
@@ -18,8 +18,8 @@ export class FrontMatterParser {
 
   /**
    * Convert the current content to a Front Matter object
-   * @param content 
-   * @returns 
+   * @param content
+   * @returns
    */
   public static fromFile(content: string): ParsedFrontMatter {
     const format = getFormatOpts(this.getLanguageFromContent(content));
@@ -30,23 +30,18 @@ export class FrontMatterParser {
 
     return {
       data: { ...result.data },
-      content: (result.content.trim() && result.content)
+      content: result.content.trim() && result.content
     };
   }
 
   /**
    * Convert the Front Matter object to text
-   * @param content 
-   * @param metadata 
-   * @param options 
-   * @returns 
+   * @param content
+   * @param metadata
+   * @param options
+   * @returns
    */
-  public static toFile(
-    content: string,
-    metadata: Object,
-    originalContent?: string,
-    options?: any
-  ) {
+  public static toFile(content: string, metadata: Object, originalContent?: string, options?: any) {
     // Stringify to YAML if the format was not set
     const format = getFormatOpts(this.getLanguageFromContent(originalContent));
 
@@ -61,7 +56,7 @@ export class FrontMatterParser {
 
   /**
    * Validate the type of front matter language that is used
-   * @param contents 
+   * @param contents
    */
   public static getLanguageFromContent(contents: string | undefined) {
     if (!contents) {
@@ -69,22 +64,22 @@ export class FrontMatterParser {
     }
 
     if (contents.startsWith(`+++`)) {
-      return "toml";
+      return 'toml';
     } else if (contents.startsWith(`---`)) {
-      return "yaml";
+      return 'yaml';
     } else if (contents.startsWith(`{`)) {
-      return "json";
+      return 'json';
     } else {
-      return "yaml";
+      return 'yaml';
     }
   }
 
   /**
    * Get the front matter language type
-   * @returns 
+   * @returns
    */
   private static getLanguage() {
-    const language = Settings.get(SETTING_FRONTMATTER_TYPE) as string || "YAML";
+    const language = (Settings.get(SETTING_FRONTMATTER_TYPE) as string) || 'YAML';
     return language.toLowerCase();
   }
 }

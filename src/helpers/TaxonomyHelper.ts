@@ -1,26 +1,24 @@
 import { getTaxonomyField } from './getTaxonomyField';
-import { EXTENSION_NAME, SETTING_TAXONOMY_CUSTOM } from "../constants";
-import { CustomTaxonomy, TaxonomyType, ContentType as IContentType } from "../models";
-import { FilesHelper } from "./FilesHelper";
-import { ProgressLocation, window } from "vscode";
-import { parseWinPath } from "./parseWinPath";
-import { FrontMatterParser } from "../parsers";
-import { DumpOptions } from "js-yaml";
-import { Settings } from "./SettingsHelper";
-import { Notifications } from "./Notifications";
+import { EXTENSION_NAME, SETTING_TAXONOMY_CUSTOM } from '../constants';
+import { CustomTaxonomy, TaxonomyType, ContentType as IContentType } from '../models';
+import { FilesHelper } from './FilesHelper';
+import { ProgressLocation, window } from 'vscode';
+import { parseWinPath } from './parseWinPath';
+import { FrontMatterParser } from '../parsers';
+import { DumpOptions } from 'js-yaml';
+import { Settings } from './SettingsHelper';
+import { Notifications } from './Notifications';
 import { ArticleHelper } from './ArticleHelper';
 import { ContentType } from './ContentType';
 import { readFileAsync, writeFileAsync } from '../utils';
 
-
 export class TaxonomyHelper {
-
   /**
    * Rename an taxonomy value
-   * @param data 
-   * @returns 
+   * @param data
+   * @returns
    */
-  public static async rename(data: { type: string, value: string }) {
+  public static async rename(data: { type: string; value: string }) {
     const { type, value } = data;
 
     const answer = await window.showInputBox({
@@ -28,11 +26,11 @@ export class TaxonomyHelper {
       value,
       validateInput: (text) => {
         if (text === value) {
-          return "The new value must be different from the old one.";
+          return 'The new value must be different from the old one.';
         }
 
         if (!text) {
-          return "A new value must be provided.";
+          return 'A new value must be provided.';
         }
 
         return null;
@@ -44,70 +42,73 @@ export class TaxonomyHelper {
       return;
     }
 
-    this.process("edit", this.getTypeFromString(type), value, answer);
+    this.process('edit', this.getTypeFromString(type), value, answer);
   }
 
   /**
    * Merge a taxonomy value with another one
-   * @param data 
-   * @returns 
+   * @param data
+   * @returns
    */
-  public static async merge(data: { type: string, value: string }) {
+  public static async merge(data: { type: string; value: string }) {
     const { type, value } = data;
     const taxonomyType = this.getTypeFromString(type);
 
     let options = [];
-      if (taxonomyType === TaxonomyType.Tag || taxonomyType === TaxonomyType.Category) {
-        options = Settings.getTaxonomy(taxonomyType);
-      } else {
-        options = Settings.getCustomTaxonomy(taxonomyType);
-      }
+    if (taxonomyType === TaxonomyType.Tag || taxonomyType === TaxonomyType.Category) {
+      options = Settings.getTaxonomy(taxonomyType);
+    } else {
+      options = Settings.getCustomTaxonomy(taxonomyType);
+    }
 
-    const answer = await window.showQuickPick(options.filter(o => o !== value), {
-      title: `Merge the "${value}" with another ${type} value`,
-      placeHolder: `Select the ${type} value to merge with`,
-      ignoreFocusOut: true
-    });
+    const answer = await window.showQuickPick(
+      options.filter((o) => o !== value),
+      {
+        title: `Merge the "${value}" with another ${type} value`,
+        placeHolder: `Select the ${type} value to merge with`,
+        ignoreFocusOut: true
+      }
+    );
 
     if (!answer) {
       return;
     }
 
-    this.process("merge", taxonomyType, value, answer);
+    this.process('merge', taxonomyType, value, answer);
   }
 
   /**
    * Delete a taxonomy value
-   * @param data 
+   * @param data
    */
-  public static async delete(data: { type: string, value: string }) {
+  public static async delete(data: { type: string; value: string }) {
     const { type, value } = data;
 
-    const answer = await window.showQuickPick(["Yes", "No"], {
+    const answer = await window.showQuickPick(['Yes', 'No'], {
       title: `Delete the "${value}" ${type} value`,
       placeHolder: `Are you sure you want to delete the "${value}" ${type} value?`,
       ignoreFocusOut: true
     });
 
-    if (!answer || answer === "No") {
+    if (!answer || answer === 'No') {
       return;
     }
 
-    this.process("delete", this.getTypeFromString(type), value, undefined);
+    this.process('delete', this.getTypeFromString(type), value, undefined);
   }
 
   /**
    * Add the taxonomy value to the settings
-   * @param data 
+   * @param data
    */
-  public static addTaxonomy(data: { type: string, value: string }) {
+  public static addTaxonomy(data: { type: string; value: string }) {
     const { type, value } = data;
     this.addToSettings(this.getTypeFromString(type), value, value);
   }
 
   /**
    * Create new taxonomy value
-   * @param data 
+   * @param data
    */
   public static async createNew(data: { type: string }) {
     const { type } = data;
@@ -121,11 +122,11 @@ export class TaxonomyHelper {
       ignoreFocusOut: true,
       validateInput: (text) => {
         if (!text) {
-          return "A value must be provided.";
+          return 'A value must be provided.';
         }
 
         if (options.includes(text)) {
-          return "The value already exists.";
+          return 'The value already exists.';
         }
 
         return null;
@@ -141,13 +142,18 @@ export class TaxonomyHelper {
 
   /**
    * Process the taxonomy changes
-   * @param type 
-   * @param taxonomyType 
-   * @param oldValue 
-   * @param newValue 
-   * @returns 
+   * @param type
+   * @param taxonomyType
+   * @param oldValue
+   * @param newValue
+   * @returns
    */
-  public static async process(type: "edit" | "merge" | "delete", taxonomyType: TaxonomyType | string, oldValue: string, newValue?: string) {
+  public static async process(
+    type: 'edit' | 'merge' | 'delete',
+    taxonomyType: TaxonomyType | string,
+    oldValue: string,
+    newValue?: string
+  ) {
     // Retrieve all the markdown files
     const allFiles = await FilesHelper.getAllFiles();
     if (!allFiles) {
@@ -156,108 +162,113 @@ export class TaxonomyHelper {
 
     let taxonomyName: string;
     if (taxonomyType === TaxonomyType.Tag) {
-      taxonomyName = "tags";
+      taxonomyName = 'tags';
     } else if (taxonomyType === TaxonomyType.Category) {
-      taxonomyName = "categories";
+      taxonomyName = 'categories';
     } else {
       taxonomyName = taxonomyType;
     }
 
     let progressText = ``;
-    
-    if (type === "edit") {
+
+    if (type === 'edit') {
       progressText = `${EXTENSION_NAME}: Renaming "${oldValue}" from ${taxonomyName} to "${newValue}".`;
-    } else if (type === "merge") {
+    } else if (type === 'merge') {
       progressText = `${EXTENSION_NAME}: Merging "${oldValue}" from "${taxonomyName}" to "${newValue}".`;
-    } else if (type === "delete") {
+    } else if (type === 'delete') {
       progressText = `${EXTENSION_NAME}: Deleting "${oldValue}" from "${taxonomyName}".`;
     }
 
-    window.withProgress({
-      location: ProgressLocation.Notification,
-      title: progressText,
-      cancellable: false
-    }, async (progress) => {
-      // Set the initial progress
-      const progressNr = allFiles.length/100;
-      progress.report({ increment: 0});
+    window.withProgress(
+      {
+        location: ProgressLocation.Notification,
+        title: progressText,
+        cancellable: false
+      },
+      async (progress) => {
+        // Set the initial progress
+        const progressNr = allFiles.length / 100;
+        progress.report({ increment: 0 });
 
-      let i = 0;
-      for (const file of allFiles) {
-        progress.report({ increment: (++i/progressNr) });
-        
-        const mdFile = await readFileAsync(parseWinPath(file.fsPath), { encoding: "utf8" });
+        let i = 0;
+        for (const file of allFiles) {
+          progress.report({ increment: ++i / progressNr });
 
-        if (mdFile) {
-          try {
-            const article = FrontMatterParser.fromFile(mdFile);
-            const contentType = ArticleHelper.getContentType(article.data);
+          const mdFile = await readFileAsync(parseWinPath(file.fsPath), {
+            encoding: 'utf8'
+          });
 
-            let fieldNames: string[] = this.getFieldsHierarchy(taxonomyType, contentType);
+          if (mdFile) {
+            try {
+              const article = FrontMatterParser.fromFile(mdFile);
+              const contentType = ArticleHelper.getContentType(article.data);
 
-            if (fieldNames.length > 0 && article && article.data) {
-              const { data } = article;
-              let taxonomies: string| string[] = ContentType.getFieldValue(data, fieldNames);
-              if (typeof taxonomies === "string") {
-                taxonomies = taxonomies.split(`,`);
-              }
+              let fieldNames: string[] = this.getFieldsHierarchy(taxonomyType, contentType);
 
-              if (taxonomies && taxonomies.length > 0) {
-                const idx = taxonomies.findIndex(o => o === oldValue);
+              if (fieldNames.length > 0 && article && article.data) {
+                const { data } = article;
+                let taxonomies: string | string[] = ContentType.getFieldValue(data, fieldNames);
+                if (typeof taxonomies === 'string') {
+                  taxonomies = taxonomies.split(`,`);
+                }
 
-                if (idx !== -1) {
-                  if (newValue) {
-                    taxonomies[idx] = newValue;
-                  } else {
-                    taxonomies = taxonomies.filter(o => o !== oldValue);
+                if (taxonomies && taxonomies.length > 0) {
+                  const idx = taxonomies.findIndex((o) => o === oldValue);
+
+                  if (idx !== -1) {
+                    if (newValue) {
+                      taxonomies[idx] = newValue;
+                    } else {
+                      taxonomies = taxonomies.filter((o) => o !== oldValue);
+                    }
+
+                    const newTaxValue = [...new Set(taxonomies)].sort();
+                    ContentType.setFieldValue(data, fieldNames, newTaxValue);
+
+                    const spaces = window.activeTextEditor?.options?.tabSize;
+                    // Update the file
+                    await writeFileAsync(
+                      parseWinPath(file.fsPath),
+                      FrontMatterParser.toFile(article.content, article.data, mdFile, {
+                        indent: spaces || 2
+                      } as DumpOptions as any),
+                      { encoding: 'utf8' }
+                    );
                   }
-
-                  const newTaxValue = [...new Set(taxonomies)].sort();
-                  ContentType.setFieldValue(data, fieldNames, newTaxValue);
-
-                  const spaces = window.activeTextEditor?.options?.tabSize;
-                  // Update the file
-                  await writeFileAsync(parseWinPath(file.fsPath), FrontMatterParser.toFile(article.content, article.data, mdFile, {
-                    indent: spaces || 2
-                  } as DumpOptions as any), { encoding: "utf8" });
                 }
               }
-            } 
-          } catch (e) {
-            // Continue with the next file
+            } catch (e) {
+              // Continue with the next file
+            }
           }
         }
-      }
-      
-      await this.addToSettings(taxonomyType, oldValue, newValue);
 
-      if (type === "edit") {
-        Notifications.info(`Edit completed.`);
-      } else if (type === "merge") {
-        Notifications.info(`Merge completed.`);
-      } else if (type === "delete") {
-        Notifications.info(`Deletion completed.`);
+        await this.addToSettings(taxonomyType, oldValue, newValue);
+
+        if (type === 'edit') {
+          Notifications.info(`Edit completed.`);
+        } else if (type === 'merge') {
+          Notifications.info(`Merge completed.`);
+        } else if (type === 'delete') {
+          Notifications.info(`Deletion completed.`);
+        }
       }
-    });
+    );
   }
 
   /**
    * Move a taxonomy value to another taxonomy type
-   * @param data 
-   * @returns 
+   * @param data
+   * @returns
    */
-  public static async move(data: { type: string, value: string }) {
+  public static async move(data: { type: string; value: string }) {
     const { type, value } = data;
 
     const customTaxs = Settings.get<CustomTaxonomy[]>(SETTING_TAXONOMY_CUSTOM, true) || [];
 
-    let options = [
-      "tags",
-      "categories",
-      ...customTaxs.map(t => t.id)
-    ];
+    let options = ['tags', 'categories', ...customTaxs.map((t) => t.id)];
 
-    options = options.filter(o => o !== type);
+    options = options.filter((o) => o !== type);
 
     const answer = await window.showQuickPick(options, {
       title: `Move the "${value}" to another type`,
@@ -268,93 +279,107 @@ export class TaxonomyHelper {
     if (!answer) {
       return;
     }
-    
+
     const oldType = this.getTypeFromString(type);
     const newType = this.getTypeFromString(answer);
 
-    window.withProgress({
-      location: ProgressLocation.Notification,
-      title: `${EXTENSION_NAME}: Moving "${value}" from ${type} to "${answer}".`,
-      cancellable: false
-    }, async (progress) => {
-      // Retrieve all the markdown files
-      const allFiles = await FilesHelper.getAllFiles();
-      if (!allFiles) {
-        return;
-      }
+    window.withProgress(
+      {
+        location: ProgressLocation.Notification,
+        title: `${EXTENSION_NAME}: Moving "${value}" from ${type} to "${answer}".`,
+        cancellable: false
+      },
+      async (progress) => {
+        // Retrieve all the markdown files
+        const allFiles = await FilesHelper.getAllFiles();
+        if (!allFiles) {
+          return;
+        }
 
-      // Set the initial progress
-      const progressNr = allFiles.length/100;
-      progress.report({ increment: 0});
+        // Set the initial progress
+        const progressNr = allFiles.length / 100;
+        progress.report({ increment: 0 });
 
-      let i = 0;
-      for (const file of allFiles) {
-        progress.report({ increment: (++i/progressNr) });
-        
-        const mdFile = await readFileAsync(parseWinPath(file.fsPath), { encoding: "utf8" });
+        let i = 0;
+        for (const file of allFiles) {
+          progress.report({ increment: ++i / progressNr });
 
-        if (mdFile) {
-          try {
-            const article = FrontMatterParser.fromFile(mdFile);
-            const contentType = ArticleHelper.getContentType(article.data);
+          const mdFile = await readFileAsync(parseWinPath(file.fsPath), {
+            encoding: 'utf8'
+          });
 
-            let oldFieldNames: string[] = this.getFieldsHierarchy(oldType, contentType);
-            let newFieldNames: string[] = this.getFieldsHierarchy(newType, contentType, true);
+          if (mdFile) {
+            try {
+              const article = FrontMatterParser.fromFile(mdFile);
+              const contentType = ArticleHelper.getContentType(article.data);
 
-            if (oldFieldNames.length > 0 && newFieldNames.length > 0 && article && article.data) {
-              const { data } = article;
-              let oldTaxonomies: string | string[] = ContentType.getFieldValue(data, oldFieldNames) || [];
-              let newTaxonomies: string | string[] = ContentType.getFieldValue(data, newFieldNames) || [];
+              let oldFieldNames: string[] = this.getFieldsHierarchy(oldType, contentType);
+              let newFieldNames: string[] = this.getFieldsHierarchy(newType, contentType, true);
 
-              if (typeof oldTaxonomies === "string") {
-                oldTaxonomies = oldTaxonomies.split(",");
-              }
-              if (typeof newTaxonomies === "string") {
-                newTaxonomies = newTaxonomies.split(",");
-              }
+              if (oldFieldNames.length > 0 && newFieldNames.length > 0 && article && article.data) {
+                const { data } = article;
+                let oldTaxonomies: string | string[] =
+                  ContentType.getFieldValue(data, oldFieldNames) || [];
+                let newTaxonomies: string | string[] =
+                  ContentType.getFieldValue(data, newFieldNames) || [];
 
-              if (oldTaxonomies && oldTaxonomies.length > 0) {
-                const idx = oldTaxonomies.findIndex(o => o === value);
+                if (typeof oldTaxonomies === 'string') {
+                  oldTaxonomies = oldTaxonomies.split(',');
+                }
+                if (typeof newTaxonomies === 'string') {
+                  newTaxonomies = newTaxonomies.split(',');
+                }
 
-                if (idx !== -1) {
-                  newTaxonomies.push(value);
+                if (oldTaxonomies && oldTaxonomies.length > 0) {
+                  const idx = oldTaxonomies.findIndex((o) => o === value);
 
-                  const newTaxonomiesValues = [...new Set(newTaxonomies)].sort();
-                  ContentType.setFieldValue(data, newFieldNames, newTaxonomiesValues);
+                  if (idx !== -1) {
+                    newTaxonomies.push(value);
 
-                  const spaces = window.activeTextEditor?.options?.tabSize;
-                  // Update the file
-                  await writeFileAsync(parseWinPath(file.fsPath), FrontMatterParser.toFile(article.content, article.data, mdFile, {
-                    indent: spaces || 2
-                  } as DumpOptions as any), { encoding: "utf8" });
+                    const newTaxonomiesValues = [...new Set(newTaxonomies)].sort();
+                    ContentType.setFieldValue(data, newFieldNames, newTaxonomiesValues);
+
+                    const spaces = window.activeTextEditor?.options?.tabSize;
+                    // Update the file
+                    await writeFileAsync(
+                      parseWinPath(file.fsPath),
+                      FrontMatterParser.toFile(article.content, article.data, mdFile, {
+                        indent: spaces || 2
+                      } as DumpOptions as any),
+                      { encoding: 'utf8' }
+                    );
+                  }
                 }
               }
-            } 
-          } catch (e) {
-            // Continue with the next file
+            } catch (e) {
+              // Continue with the next file
+            }
           }
         }
+
+        await this.addToSettings(newType, value, value);
+
+        await this.process('delete', oldType, value);
+
+        Notifications.info(`Move completed.`);
       }
-      
-      await this.addToSettings(newType, value, value);
-
-      await this.process("delete", oldType, value);
-
-      Notifications.info(`Move completed.`);
-    });
+    );
   }
-
 
   /**
    * Retrieve the fields for the taxonomy field
-   * @returns 
+   * @returns
    */
-  private static getFieldsHierarchy(taxonomyType: TaxonomyType | string, contentType: IContentType, fallback: boolean = false): string[] {
+  private static getFieldsHierarchy(
+    taxonomyType: TaxonomyType | string,
+    contentType: IContentType,
+    fallback: boolean = false
+  ): string[] {
     let fieldNames: string[] = [];
     if (taxonomyType === TaxonomyType.Tag) {
-      fieldNames = ContentType.findFieldByType(contentType.fields, "tags");
+      fieldNames = ContentType.findFieldByType(contentType.fields, 'tags');
     } else if (taxonomyType === TaxonomyType.Category) {
-      fieldNames = ContentType.findFieldByType(contentType.fields, "categories");
+      fieldNames = ContentType.findFieldByType(contentType.fields, 'categories');
     } else {
       const taxFieldName = getTaxonomyField(taxonomyType, contentType);
       fieldNames = taxFieldName ? [taxFieldName] : [];
@@ -363,9 +388,9 @@ export class TaxonomyHelper {
     if (fallback && fieldNames.length === 0) {
       let taxFieldName;
       if (taxonomyType === TaxonomyType.Tag) {
-        taxFieldName = getTaxonomyField("tags", contentType);
+        taxFieldName = getTaxonomyField('tags', contentType);
       } else if (taxonomyType === TaxonomyType.Category) {
-        taxFieldName = getTaxonomyField("categories", contentType);
+        taxFieldName = getTaxonomyField('categories', contentType);
       }
 
       if (taxFieldName) {
@@ -378,15 +403,19 @@ export class TaxonomyHelper {
 
   /**
    * Add the taxonomy value to the settings
-   * @param taxonomyType 
-   * @param oldValue 
-   * @param newValue 
+   * @param taxonomyType
+   * @param oldValue
+   * @param newValue
    */
-  private static async addToSettings(taxonomyType: TaxonomyType | string, oldValue: string, newValue?: string) {
+  private static async addToSettings(
+    taxonomyType: TaxonomyType | string,
+    oldValue: string,
+    newValue?: string
+  ) {
     // Update the settings
     let options = this.getTaxonomyOptions(taxonomyType);
 
-    const idx = options.findIndex(o => o === oldValue);
+    const idx = options.findIndex((o) => o === oldValue);
     if (newValue) {
       // Add or update the new option
       if (idx !== -1) {
@@ -396,9 +425,9 @@ export class TaxonomyHelper {
       }
     } else {
       // Remove the selected option
-      options = options.filter(o => o !== oldValue);
+      options = options.filter((o) => o !== oldValue);
     }
-    
+
     if (taxonomyType === TaxonomyType.Tag || taxonomyType === TaxonomyType.Category) {
       await Settings.updateTaxonomy(taxonomyType, options);
     } else {
@@ -408,8 +437,8 @@ export class TaxonomyHelper {
 
   /**
    * Get the taxonomy options
-   * @param taxonomyType 
-   * @returns 
+   * @param taxonomyType
+   * @returns
    */
   private static getTaxonomyOptions(taxonomyType: TaxonomyType | string) {
     let options = [];
@@ -425,13 +454,13 @@ export class TaxonomyHelper {
 
   /**
    * Retrieve the taxonomy type based from the string
-   * @param taxonomyType 
-   * @returns 
+   * @param taxonomyType
+   * @returns
    */
   private static getTypeFromString(taxonomyType: string): TaxonomyType | string {
-    if (taxonomyType === "tags") {
+    if (taxonomyType === 'tags') {
       return TaxonomyType.Tag;
-    } else if (taxonomyType === "categories") {
+    } else if (taxonomyType === 'categories') {
       return TaxonomyType.Category;
     } else {
       return taxonomyType;

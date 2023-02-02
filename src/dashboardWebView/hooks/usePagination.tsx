@@ -4,9 +4,13 @@ import { routePaths } from '..';
 
 export const PAGE_LIMIT = 16;
 
-export default function usePagination(value: number | boolean | null | undefined, totalPages?: number, totalMedia?: number) {
+export default function usePagination(
+  value: number | boolean | null | undefined,
+  totalPages?: number,
+  totalMedia?: number
+) {
   const location = useLocation();
-  
+
   const pagination = useMemo(() => {
     if (location.pathname === routePaths.contents) {
       if (typeof value === 'number') {
@@ -19,15 +23,14 @@ export default function usePagination(value: number | boolean | null | undefined
         return value ? PAGE_LIMIT : 0;
       }
     }
-    
+
     return PAGE_LIMIT;
   }, [value, location.pathname]);
-
 
   const totalPagesNr: number = useMemo(() => {
     if (location.pathname === routePaths.contents) {
       if (totalPages) {
-        return Math.ceil((totalPages || 0) / pagination) - 1
+        return Math.ceil((totalPages || 0) / pagination) - 1;
       }
     } else {
       if (totalMedia) {
@@ -52,7 +55,6 @@ export default function usePagination(value: number | boolean | null | undefined
     }
     return 0;
   }, [location.pathname, totalPages, totalMedia, pagination]);
-
 
   return {
     pageSetNr: pagination,

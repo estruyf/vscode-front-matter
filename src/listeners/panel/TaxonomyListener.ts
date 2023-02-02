@@ -1,31 +1,44 @@
-import { CommandToCode } from "../../panelWebView/CommandToCode";
-import { TagType } from "../../panelWebView/TagType";
-import { BaseListener } from "./BaseListener";
-import { window } from "vscode";
-import { ArticleHelper, Settings } from "../../helpers";
-import { BlockFieldData, CustomTaxonomyData, TaxonomyType } from "../../models";
-import { DataListener } from ".";
-import { SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from "../../constants";
-
+import { CommandToCode } from '../../panelWebView/CommandToCode';
+import { TagType } from '../../panelWebView/TagType';
+import { BaseListener } from './BaseListener';
+import { window } from 'vscode';
+import { ArticleHelper, Settings } from '../../helpers';
+import { BlockFieldData, CustomTaxonomyData, TaxonomyType } from '../../models';
+import { DataListener } from '.';
+import { SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from '../../constants';
 
 export class TaxonomyListener extends BaseListener {
-
   /**
    * Process the messages for the dashboard views
-   * @param msg 
+   * @param msg
    */
-  public static process(msg: { command: any, data: any }) {
+  public static process(msg: { command: any; data: any }) {
     super.process(msg);
 
-    switch(msg.command) {
+    switch (msg.command) {
       case CommandToCode.updateTags:
-        this.updateTags(msg.data?.fieldName, msg.data?.values || [], msg.data?.parents || [], msg.data?.blockData);
+        this.updateTags(
+          msg.data?.fieldName,
+          msg.data?.values || [],
+          msg.data?.parents || [],
+          msg.data?.blockData
+        );
         break;
       case CommandToCode.updateCategories:
-        this.updateTags(msg.data?.fieldName, msg.data?.values || [], msg.data?.parents || [], msg.data?.blockData);
+        this.updateTags(
+          msg.data?.fieldName,
+          msg.data?.values || [],
+          msg.data?.parents || [],
+          msg.data?.blockData
+        );
         break;
       case CommandToCode.updateKeywords:
-        this.updateTags(TagType.keywords.toLowerCase(), msg.data?.values || [], msg.data?.parents || [], msg.data?.blockData);
+        this.updateTags(
+          TagType.keywords.toLowerCase(),
+          msg.data?.values || [],
+          msg.data?.parents || [],
+          msg.data?.blockData
+        );
         break;
       case CommandToCode.updateCustomTaxonomy:
         this.updateCustomTaxonomy(msg.data);
@@ -44,18 +57,22 @@ export class TaxonomyListener extends BaseListener {
 
   /**
    * Update the tags in the current document
-   * @param tagType 
-   * @param values 
+   * @param tagType
+   * @param values
    */
-   private static updateTags(fieldName: string, values: string[], parents: string[], blockData?: BlockFieldData) {
+  private static updateTags(
+    fieldName: string,
+    values: string[],
+    parents: string[],
+    blockData?: BlockFieldData
+  ) {
     const editor = window.activeTextEditor;
     if (!editor) {
-      return "";
+      return '';
     }
 
     const article = ArticleHelper.getFrontMatter(editor);
     if (article && article.data) {
-
       const parentObj = DataListener.getParentObject(article.data, article, parents, blockData);
 
       parentObj[fieldName] = values || [];
@@ -66,7 +83,7 @@ export class TaxonomyListener extends BaseListener {
 
   /**
    * Update the tags in the current document
-   * @param data 
+   * @param data
    */
   private static updateCustomTaxonomy(data: CustomTaxonomyData) {
     if (!data?.id || !data?.name) {
@@ -75,13 +92,17 @@ export class TaxonomyListener extends BaseListener {
 
     const editor = window.activeTextEditor;
     if (!editor) {
-      return "";
+      return '';
     }
 
     const article = ArticleHelper.getFrontMatter(editor);
     if (article && article.data) {
-
-      const parentObj = DataListener.getParentObject(article.data, article, data.parents, data.blockData);
+      const parentObj = DataListener.getParentObject(
+        article.data,
+        article,
+        data.parents,
+        data.blockData
+      );
 
       parentObj[data.name] = data.options || [];
       ArticleHelper.update(editor, article);
@@ -91,7 +112,7 @@ export class TaxonomyListener extends BaseListener {
 
   /**
    * Add tag to the settings
-   * @param data 
+   * @param data
    */
   private static async addCustomTaxonomy(data: CustomTaxonomyData) {
     if (!data?.id || !data?.option) {
@@ -103,12 +124,15 @@ export class TaxonomyListener extends BaseListener {
 
   /**
    * Add tag to the settings
-   * @param tagType 
-   * @param value 
+   * @param tagType
+   * @param value
    */
   private static async addTags(tagType: TagType, value: string) {
     if (value) {
-      let options = tagType === TagType.tags ? Settings.get<string[]>(SETTING_TAXONOMY_TAGS, true) : Settings.get<string[]>(SETTING_TAXONOMY_CATEGORIES, true);
+      let options =
+        tagType === TagType.tags
+          ? Settings.get<string[]>(SETTING_TAXONOMY_TAGS, true)
+          : Settings.get<string[]>(SETTING_TAXONOMY_CATEGORIES, true);
 
       if (!options) {
         options = [];

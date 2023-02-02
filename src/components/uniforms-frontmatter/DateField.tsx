@@ -36,7 +36,7 @@ function Date({
         max={dateFormat(max)}
         min={dateFormat(min)}
         name={name}
-        onChange={event => {
+        onChange={(event) => {
           const date = new DateConstructor(event.target.valueAsNumber);
           if (date.getFullYear() < 10000) {
             onChange(date);

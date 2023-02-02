@@ -8,15 +8,15 @@ export interface ICustomScriptProps {
   script: string;
 }
 
-const CustomScript: React.FunctionComponent<ICustomScriptProps> = ({title, script}: React.PropsWithChildren<ICustomScriptProps>) => {
-
+const CustomScript: React.FunctionComponent<ICustomScriptProps> = ({
+  title,
+  script
+}: React.PropsWithChildren<ICustomScriptProps>) => {
   const runCustomScript = () => {
     Messenger.send(CommandToCode.runCustomScript, { title, script });
   };
 
-  return (
-    <ActionButton onClick={runCustomScript} title={title} />
-  );
+  return <ActionButton onClick={runCustomScript} title={title} />;
 };
 
 CustomScript.displayName = 'CustomScript';

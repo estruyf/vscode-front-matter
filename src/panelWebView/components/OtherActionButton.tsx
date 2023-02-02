@@ -6,10 +6,17 @@ export interface IOtherActionButtonProps {
   onClick: (e: React.SyntheticEvent<HTMLButtonElement>) => void;
 }
 
-const OtherActionButton: React.FunctionComponent<IOtherActionButtonProps> = ({ className, disabled, onClick, children}: React.PropsWithChildren<IOtherActionButtonProps>) => {
+const OtherActionButton: React.FunctionComponent<IOtherActionButtonProps> = ({
+  className,
+  disabled,
+  onClick,
+  children
+}: React.PropsWithChildren<IOtherActionButtonProps>) => {
   return (
     <div className={`ext_link_block`}>
-      <button onClick={onClick} className={className || ""} disabled={disabled}>{children}</button>
+      <button onClick={onClick} className={className || ''} disabled={disabled}>
+        {children}
+      </button>
     </div>
   );
 };

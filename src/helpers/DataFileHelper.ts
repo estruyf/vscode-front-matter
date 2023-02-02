@@ -1,20 +1,18 @@
-import { Folders } from "../commands/Folders";
-import { DataFile } from "../models";
+import { Folders } from '../commands/Folders';
+import { DataFile } from '../models';
 import * as yaml from 'js-yaml';
-import { Logger } from "./Logger";
-import { Notifications } from "./Notifications";
-import { commands } from "vscode";
-import { COMMAND_NAME, SETTING_DATA_FILES } from "../constants";
-import { Settings } from "./SettingsHelper";
-import { existsAsync, readFileAsync } from "../utils";
-
+import { Logger } from './Logger';
+import { Notifications } from './Notifications';
+import { commands } from 'vscode';
+import { COMMAND_NAME, SETTING_DATA_FILES } from '../constants';
+import { Settings } from './SettingsHelper';
+import { existsAsync, readFileAsync } from '../utils';
 
 export class DataFileHelper {
-
   /**
    * Retrieve the file data
-   * @param filePath 
-   * @returns 
+   * @param filePath
+   * @returns
    */
   public static async get(filePath: string) {
     const absPath = Folders.getAbsFilePath(filePath);
@@ -27,7 +25,7 @@ export class DataFileHelper {
 
   /**
    * Get by the id of the data file
-   * @param id 
+   * @param id
    */
   public static getById(id: string) {
     const files = Settings.get<DataFile[]>(SETTING_DATA_FILES);
@@ -36,7 +34,7 @@ export class DataFileHelper {
       return;
     }
 
-    const file = files.find(f => f.id === id);
+    const file = files.find((f) => f.id === id);
 
     if (!file) {
       return;
@@ -47,22 +45,25 @@ export class DataFileHelper {
 
   /**
    * Process the data file
-   * @param data 
-   * @returns 
+   * @param data
+   * @returns
    */
   public static async process(data: DataFile) {
     try {
       const { file, fileType } = data;
       const dataFile = await DataFileHelper.get(file);
 
-      if (fileType === "yaml") {
-        return yaml.safeLoad(dataFile || "");
+      if (fileType === 'yaml') {
+        return yaml.safeLoad(dataFile || '');
       } else {
         return dataFile ? JSON.parse(dataFile) : undefined;
       }
     } catch (ex) {
       Logger.error(`DataFileHelper::process: ${(ex as Error).message}`);
-      const btnClick = await Notifications.error(`Something went wrong while processing the data file. Check your file and output log for more information.`, 'Open output');
+      const btnClick = await Notifications.error(
+        `Something went wrong while processing the data file. Check your file and output log for more information.`,
+        'Open output'
+      );
 
       if (btnClick && btnClick === 'Open output') {
         commands.executeCommand(COMMAND_NAME.showOutputChannel);

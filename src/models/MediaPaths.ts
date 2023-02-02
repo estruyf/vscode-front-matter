@@ -1,6 +1,6 @@
-import { ISizeCalculationResult } from "image-size/dist/types/interface";
+import { ISizeCalculationResult } from 'image-size/dist/types/interface';
 
-export interface MediaPaths { 
+export interface MediaPaths {
   media: MediaInfo[];
   total: number;
   folders: string[];
@@ -10,8 +10,8 @@ export interface MediaPaths {
 }
 
 export interface MediaInfo {
-  filename: string; 
-  fsPath: string; 
+  filename: string;
+  fsPath: string;
   vsPath: string | undefined;
   dimensions?: ISizeCalculationResult | undefined;
   title?: string | undefined;

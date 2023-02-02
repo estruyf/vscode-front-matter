@@ -1,6 +1,6 @@
-import { Uri, workspace, window } from "vscode";
-import { Logger } from "./Logger";
-import { Notifications } from "./Notifications";
+import { Uri, workspace, window } from 'vscode';
+import { Logger } from './Logger';
+import { Notifications } from './Notifications';
 
 export const openFileInEditor = async (filePath: string) => {
   if (filePath) {

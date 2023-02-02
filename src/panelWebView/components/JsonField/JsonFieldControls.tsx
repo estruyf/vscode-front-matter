@@ -7,19 +7,27 @@ export interface IJsonFieldControlsProps {
   onClear: () => void;
 }
 
-export const JsonFieldControls: React.FunctionComponent<IJsonFieldControlsProps> = ({ model, onClear }: React.PropsWithChildren<IJsonFieldControlsProps>) => {
+export const JsonFieldControls: React.FunctionComponent<IJsonFieldControlsProps> = ({
+  model,
+  onClear
+}: React.PropsWithChildren<IJsonFieldControlsProps>) => {
   const { formRef } = useForm();
-  
+
   return (
-    <div className='json_data__buttons'>
+    <div className="json_data__buttons">
       <SubmitField value={model ? `Update` : `Add`} />
-      
-      <button className='ml-4' onClick={() => {
-        if (onClear) {
-          onClear();
-        }
-        formRef.reset();
-      }}>Cancel</button>
+
+      <button
+        className="ml-4"
+        onClick={() => {
+          if (onClear) {
+            onClear();
+          }
+          formRef.reset();
+        }}
+      >
+        Cancel
+      </button>
     </div>
   );
 };

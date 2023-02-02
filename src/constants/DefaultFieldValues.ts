@@ -1,5 +1,3 @@
-
-
 export const DefaultFieldValues = {
-  faultyCustomPlaceholder: "<failed to process>"
-}
+  faultyCustomPlaceholder: '<failed to process>'
+};

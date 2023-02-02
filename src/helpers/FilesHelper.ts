@@ -4,7 +4,6 @@ import { Folders } from '../commands/Folders';
 import { isValidFile } from './isValidFile';
 
 export class FilesHelper {
-
   /**
    * Retrieve all markdown files from the current project
    */

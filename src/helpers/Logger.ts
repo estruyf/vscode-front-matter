@@ -5,12 +5,14 @@ import { COMMAND_NAME } from '../constants';
 
 export class Logger {
   private static instance: Logger;
-  public static channel: OutputChannel | null = null; 
+  public static channel: OutputChannel | null = null;
 
   private constructor() {
     const displayName = Extension.getInstance().displayName;
     Logger.channel = window.createOutputChannel(displayName);
-    commands.registerCommand(COMMAND_NAME.showOutputChannel, () => { Logger.channel?.show(); });
+    commands.registerCommand(COMMAND_NAME.showOutputChannel, () => {
+      Logger.channel?.show();
+    });
   }
 
   public static getInstance(): Logger {
@@ -20,19 +22,19 @@ export class Logger {
     return Logger.instance;
   }
 
-  public static info(message: string, type: "INFO" | "WARNING" | "ERROR" = "INFO"): void {
+  public static info(message: string, type: 'INFO' | 'WARNING' | 'ERROR' = 'INFO'): void {
     if (!Logger.channel) {
       Logger.getInstance();
     }
 
-    Logger.channel?.appendLine(`["${type}" - ${format(new Date(), "HH:MM:ss")}]  ${message}`);
+    Logger.channel?.appendLine(`["${type}" - ${format(new Date(), 'HH:MM:ss')}]  ${message}`);
   }
 
   public static warning(message: string): void {
-    Logger.info(message, "WARNING");
+    Logger.info(message, 'WARNING');
   }
 
   public static error(message: string): void {
-    Logger.info(message, "ERROR");
+    Logger.info(message, 'ERROR');
   }
 }

@@ -1,13 +1,11 @@
-import { Folders } from "./Folders";
-import { ViewColumn, workspace } from "vscode";
-import ContentProvider from "../providers/ContentProvider";
-import { join } from "path";
-import { ContentFolder } from "../models";
-import { Settings } from "../helpers/SettingsHelper";
-
+import { Folders } from './Folders';
+import { ViewColumn, workspace } from 'vscode';
+import ContentProvider from '../providers/ContentProvider';
+import { join } from 'path';
+import { ContentFolder } from '../models';
+import { Settings } from '../helpers/SettingsHelper';
 
 export class Diagnostics {
-
   public static async show() {
     const folders = Folders.get();
     const projectName = Folders.getProjectFolderName();
@@ -26,11 +24,11 @@ ${projectName}
 
 # Folders
 
-${folders.map(f => `- ${f.title}: "${f.path}"`).join("\n")}
+${folders.map((f) => `- ${f.title}: "${f.path}"`).join('\n')}
 
 # Workspace folder
 
-${wsFolder ? wsFolder.fsPath : "No workspace folder"}
+${wsFolder ? wsFolder.fsPath : 'No workspace folder'}
 
 # Total files
 
@@ -38,7 +36,7 @@ ${all}
 
 # Folders to search files
 
-${folderData.join("\n")}
+${folderData.join('\n')}
 
 # Complete frontmatter.json config
 
@@ -47,7 +45,7 @@ ${JSON.stringify(Settings.globalConfig, null, 2)}
 \`\`\`
     `;
 
-    ContentProvider.show(logging, `${projectName} diagnostics`, "markdown", ViewColumn.One);
+    ContentProvider.show(logging, `${projectName} diagnostics`, 'markdown', ViewColumn.One);
   }
 
   private static async allProjectFiles() {
@@ -57,14 +55,26 @@ ${JSON.stringify(Settings.globalConfig, null, 2)}
 
   private static async processFolder(folder: ContentFolder, projectName: string) {
     let projectStart = folder.path.split(projectName).pop();
-    projectStart = projectStart || "";
+    projectStart = projectStart || '';
     projectStart = projectStart?.replace(/\\/g, '/');
     projectStart = projectStart?.startsWith('/') ? projectStart.substring(1) : projectStart;
 
-    const mdFiles = await workspace.findFiles(join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.md'));
-    const mdxFiles = await workspace.findFiles(join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.mdx'));
-    const markdownFiles = await workspace.findFiles(join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.markdown'));
+    const mdFiles = await workspace.findFiles(
+      join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.md')
+    );
+    const mdxFiles = await workspace.findFiles(
+      join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.mdx')
+    );
+    const markdownFiles = await workspace.findFiles(
+      join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.markdown')
+    );
 
-    return `- Project start length: ${projectStart.length} | Search in: "${join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.*')}" | mdFiles: ${mdFiles.length} | mdxFiles: ${mdxFiles.length} | markdownFiles: ${markdownFiles.length}`;
+    return `- Project start length: ${projectStart.length} | Search in: "${join(
+      projectStart,
+      folder.excludeSubdir ? '/' : '**/',
+      '*.*'
+    )}" | mdFiles: ${mdFiles.length} | mdxFiles: ${mdxFiles.length} | markdownFiles: ${
+      markdownFiles.length
+    }`;
   }
 }

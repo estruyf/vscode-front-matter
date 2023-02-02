@@ -31,7 +31,7 @@ import { PaginationStatus } from './PaginationStatus';
 export interface IHeaderProps {
   header?: React.ReactNode;
   settings: Settings | null;
-  
+
   // Navigation
   totalPages?: number;
 
@@ -39,9 +39,13 @@ export interface IHeaderProps {
   folders?: string[];
 }
 
-export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPages, settings }: React.PropsWithChildren<IHeaderProps>) => {
-  const [ crntTag, setCrntTag ] = useRecoilState(TagAtom);
-  const [ crntCategory, setCrntCategory ] = useRecoilState(CategoryAtom);
+export const Header: React.FunctionComponent<IHeaderProps> = ({
+  header,
+  totalPages,
+  settings
+}: React.PropsWithChildren<IHeaderProps>) => {
+  const [crntTag, setCrntTag] = useRecoilState(TagAtom);
+  const [crntCategory, setCrntCategory] = useRecoilState(CategoryAtom);
   const grouping = useRecoilValue(GroupingSelector);
   const resetSorting = useResetRecoilState(SortingAtom);
   const location = useLocation();
@@ -63,39 +67,42 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPage
   const updateView = (view: NavigationType) => {
     navigate(routePaths[view]);
     resetSorting();
-  }
+  };
 
   const runBulkScript = (script: CustomScript) => {
     Messenger.send(DashboardMessage.runCustomScript, { script });
   };
 
-  const customActions: any[] = (settings?.scripts || []).filter(s => s.bulk && (s.type === "content" || !s.type)).map((s, idx) => ({
-    title: (
-      <div key={idx} className="flex items-center">
-        <LightningBoltIcon className="w-4 h-4 mr-2" />
-        <span>{s.title}</span>
-      </div>
-    ),
-    onClick: () => runBulkScript(s)
-  }));
+  const customActions: any[] = (settings?.scripts || [])
+    .filter((s) => s.bulk && (s.type === 'content' || !s.type))
+    .map((s, idx) => ({
+      title: (
+        <div key={idx} className="flex items-center">
+          <LightningBoltIcon className="w-4 h-4 mr-2" />
+          <span>{s.title}</span>
+        </div>
+      ),
+      onClick: () => runBulkScript(s)
+    }));
 
   const choiceOptions = useMemo(() => {
     const isEnabled = settings?.dashboardState?.contents?.templatesEnabled || false;
-    
+
     if (isEnabled) {
       return [
         {
           title: (
-            <div className='flex items-center'>
+            <div className="flex items-center">
               <PlusIcon className="w-4 h-4 mr-2" />
               <span>Create by content type</span>
             </div>
           ),
           onClick: createByContentType,
           disabled: !settings?.initialized
-        }, {
+        },
+        {
           title: (
-            <div className='flex items-center'>
+            <div className="flex items-center">
               <PlusIcon className="w-4 h-4 mr-2" />
               <span>Create by template</span>
             </div>
@@ -108,19 +115,18 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPage
     }
 
     return [];
-
   }, [settings?.dashboardState?.contents?.templatesEnabled]);
 
   useEffect(() => {
     if (location.search) {
       const searchParams = new URLSearchParams(location.search);
-      const taxonomy = searchParams.get("taxonomy");
-      const value = searchParams.get("value");
+      const taxonomy = searchParams.get('taxonomy');
+      const value = searchParams.get('value');
 
       if (taxonomy && value) {
-        if (taxonomy === "tags") {
+        if (taxonomy === 'tags') {
           setCrntTag(value);
-        } else if (taxonomy === "categories") {
+        } else if (taxonomy === 'categories') {
           setCrntCategory(value);
         }
       }
@@ -128,86 +134,94 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({header, totalPage
       return;
     }
 
-    setCrntTag("");
-    setCrntCategory("");
+    setCrntTag('');
+    setCrntCategory('');
   }, [location.search]);
 
   return (
     <div className={`w-full sticky top-0 z-40 bg-gray-100 dark:bg-vulcan-500`}>
-
       <div className="mb-0 border-b bg-gray-100 dark:bg-vulcan-500 border-gray-200 dark:border-vulcan-300">
         <Tabs onNavigate={updateView} />
       </div>
 
-      {
-        location.pathname === routePaths.contents && (
-          <>
-            <div className={`px-4 mt-3 mb-2 flex items-center justify-between`}>
-              <Searchbox />
+      {location.pathname === routePaths.contents && (
+        <>
+          <div className={`px-4 mt-3 mb-2 flex items-center justify-between`}>
+            <Searchbox />
 
-              <div className={`flex items-center justify-end space-x-4 flex-1`}>
-                <Startup settings={settings} />
+            <div className={`flex items-center justify-end space-x-4 flex-1`}>
+              <Startup settings={settings} />
 
-                <SyncButton />
-                
-                <ChoiceButton 
-                  title={`Create content`} 
-                  choices={choiceOptions} 
-                  onClick={createContent}
-                  disabled={!settings?.initialized} />
-              </div>
+              <SyncButton />
+
+              <ChoiceButton
+                title={`Create content`}
+                choices={choiceOptions}
+                onClick={createContent}
+                disabled={!settings?.initialized}
+              />
+            </div>
+          </div>
+
+          <div className="px-4 flex flex-row items-center border-b border-gray-200  dark:border-vulcan-100 justify-between">
+            <div>
+              <Navigation totalPages={totalPages || 0} />
             </div>
 
-            <div className="px-4 flex flex-row items-center border-b border-gray-200  dark:border-vulcan-100 justify-between">
-              <div>
-                <Navigation totalPages={totalPages || 0} />
-              </div>
-
-              <div>
-                <ViewSwitch />
-              </div>
+            <div>
+              <ViewSwitch />
             </div>
+          </div>
 
-            <div className={`py-4 px-5 w-full flex items-center justify-between lg:justify-end bg-gray-200 border-b border-gray-300 dark:bg-vulcan-400  dark:border-vulcan-100 space-x-4 lg:space-x-6 xl:space-x-8`}>
-              <ClearFilters />
+          <div
+            className={`py-4 px-5 w-full flex items-center justify-between lg:justify-end bg-gray-200 border-b border-gray-300 dark:bg-vulcan-400  dark:border-vulcan-100 space-x-4 lg:space-x-6 xl:space-x-8`}
+          >
+            <ClearFilters />
 
-              <Folders />
+            <Folders />
 
-              <Filter label={`Tag`} activeItem={crntTag} items={settings?.tags || []} onClick={(value) => setCrntTag(value)} />
+            <Filter
+              label={`Tag`}
+              activeItem={crntTag}
+              items={settings?.tags || []}
+              onClick={(value) => setCrntTag(value)}
+            />
 
-              <Filter label={`Category`} activeItem={crntCategory} items={settings?.categories || []} onClick={(value) => setCrntCategory(value)} />
+            <Filter
+              label={`Category`}
+              activeItem={crntCategory}
+              items={settings?.categories || []}
+              onClick={(value) => setCrntCategory(value)}
+            />
 
-              <Grouping />
+            <Grouping />
 
-              <Sorting view={NavigationType.Contents} />
-            </div>
+            <Sorting view={NavigationType.Contents} />
+          </div>
 
-            {
-              (pageSetNr > 0) && (totalPages || 0) > pageSetNr && (!grouping || grouping === GroupOption.none) && (
-                <div className={`px-4 flex justify-between py-2 border-b border-gray-300 dark:border-vulcan-100`}>
-                  <PaginationStatus totalPages={totalPages || 0} />
+          {pageSetNr > 0 &&
+            (totalPages || 0) > pageSetNr &&
+            (!grouping || grouping === GroupOption.none) && (
+              <div
+                className={`px-4 flex justify-between py-2 border-b border-gray-300 dark:border-vulcan-100`}
+              >
+                <PaginationStatus totalPages={totalPages || 0} />
 
-                  <Pagination totalPages={totalPages || 0} />
-                </div>
-              )
-            }
-          </>
-        )
-      }
+                <Pagination totalPages={totalPages || 0} />
+              </div>
+            )}
+        </>
+      )}
 
-      {
-        location.pathname === routePaths.media && (
-          <>
-            <MediaHeaderTop />
-            
-            <MediaHeaderBottom />
-          </>
-        )
-      }
+      {location.pathname === routePaths.media && (
+        <>
+          <MediaHeaderTop />
 
-      {
-        header
-      }
+          <MediaHeaderBottom />
+        </>
+      )}
+
+      {header}
     </div>
   );
 };

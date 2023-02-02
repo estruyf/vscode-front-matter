@@ -1,13 +1,19 @@
 import { DataFileHelper } from './../../helpers/DataFileHelper';
 import { BlockFieldData } from './../../models/BlockFieldData';
 import { ImageHelper } from './../../helpers/ImageHelper';
-import { Folders } from "../../commands/Folders";
-import { Command } from "../../panelWebView/Command";
-import { CommandToCode } from "../../panelWebView/CommandToCode";
-import { BaseListener } from "./BaseListener";
+import { Folders } from '../../commands/Folders';
+import { Command } from '../../panelWebView/Command';
+import { CommandToCode } from '../../panelWebView/CommandToCode';
+import { BaseListener } from './BaseListener';
 import { commands, ThemeIcon, window } from 'vscode';
-import { ArticleHelper, Logger, Settings } from "../../helpers";
-import { COMMAND_NAME, DefaultFields, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FORMAT, SETTING_TAXONOMY_CONTENT_TYPES } from "../../constants";
+import { ArticleHelper, Logger, Settings } from '../../helpers';
+import {
+  COMMAND_NAME,
+  DefaultFields,
+  SETTING_COMMA_SEPARATED_FIELDS,
+  SETTING_DATE_FORMAT,
+  SETTING_TAXONOMY_CONTENT_TYPES
+} from '../../constants';
 import { Article } from '../../commands';
 import { ParsedFrontMatter } from '../../parsers';
 import { processKnownPlaceholders } from '../../helpers/PlaceholderHelper';
@@ -20,12 +26,12 @@ export class DataListener extends BaseListener {
 
   /**
    * Process the messages for the dashboard views
-   * @param msg 
+   * @param msg
    */
-  public static process(msg: { command: CommandToCode, data: any }) {
+  public static process(msg: { command: CommandToCode; data: any }) {
     super.process(msg);
 
-    switch(msg.command) {
+    switch (msg.command) {
       case CommandToCode.getData:
         this.getFoldersAndFiles();
         this.getFileData();
@@ -67,21 +73,21 @@ export class DataListener extends BaseListener {
    * Retrieve the information about the registered folders and its files
    */
   public static async getFoldersAndFiles() {
-    const folders = await Folders.getInfo(FILE_LIMIT) || null;
+    const folders = (await Folders.getInfo(FILE_LIMIT)) || null;
 
     this.sendMsg(Command.folderInfo, folders);
   }
 
   /**
    * Triggers a metadata change in the panel
-   * @param metadata 
+   * @param metadata
    */
-   public static pushMetadata(metadata: any) {
+  public static pushMetadata(metadata: any) {
     const wsFolder = Folders.getWorkspaceFolder();
     const filePath = window.activeTextEditor?.document.uri.fsPath;
     const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
     const contentTypes = Settings.get<string>(SETTING_TAXONOMY_CONTENT_TYPES);
-    
+
     let articleDetails = null;
 
     try {
@@ -97,8 +103,8 @@ export class DataListener extends BaseListener {
     let updatedMetadata = Object.assign({}, metadata);
     if (commaSeparated) {
       for (const key of commaSeparated) {
-        if (updatedMetadata[key] && typeof updatedMetadata[key] === "string") {
-          updatedMetadata[key] = updatedMetadata[key].split(",").map((s: string) => s.trim());
+        if (updatedMetadata[key] && typeof updatedMetadata[key] === 'string') {
+          updatedMetadata[key] = updatedMetadata[key].split(',').map((s: string) => s.trim());
         }
       }
     }
@@ -115,9 +121,9 @@ export class DataListener extends BaseListener {
       if (contentType) {
         ImageHelper.processImageFields(updatedMetadata, contentType.fields);
 
-        slugField = contentType.fields.find((f) => f.type === "slug");
+        slugField = contentType.fields.find((f) => f.type === 'slug');
       }
-      
+
       // Check slug
       if (!slugField && !updatedMetadata[DefaultFields.Slug]) {
         const slug = Article.getSlug();
@@ -129,7 +135,7 @@ export class DataListener extends BaseListener {
     }
 
     // if (JSON.stringify(DataListener.lastMetadataUpdate) !== JSON.stringify(updatedMetadata)) {
-      this.sendMsg(Command.metadata, updatedMetadata);
+    this.sendMsg(Command.metadata, updatedMetadata);
     // }
 
     DataListener.lastMetadataUpdate = updatedMetadata;
@@ -139,16 +145,16 @@ export class DataListener extends BaseListener {
    * Update the metadata of the article
    */
   public static async updateMetadata({
-    field, 
-    parents, 
-    value, 
-    blockData 
-  }: { 
-    field: string, 
-    value: any, 
-    parents?: string[], 
-    blockData?: BlockFieldData,
-    fieldData?: { multiple: boolean, value: string[] } 
+    field,
+    parents,
+    value,
+    blockData
+  }: {
+    field: string;
+    value: any;
+    parents?: string[];
+    blockData?: BlockFieldData;
+    fieldData?: { multiple: boolean; value: string[] };
   }) {
     if (!field) {
       return;
@@ -165,20 +171,20 @@ export class DataListener extends BaseListener {
     }
 
     const contentType = ArticleHelper.getContentType(article.data);
-    const dateFields = contentType.fields.filter((f) => f.type === "datetime");
-    const imageFields = contentType.fields.filter((f) => f.type === "image" && f.multiple);
-    const fileFields = contentType.fields.filter((f) => f.type === "file" && f.multiple);
+    const dateFields = contentType.fields.filter((f) => f.type === 'datetime');
+    const imageFields = contentType.fields.filter((f) => f.type === 'image' && f.multiple);
+    const fileFields = contentType.fields.filter((f) => f.type === 'file' && f.multiple);
 
     // Support multi-level fields
     const parentObj = DataListener.getParentObject(article.data, article, parents, blockData);
 
-    const isDateField = dateFields.some(f => f.name === field);
-    const isMultiImageField = imageFields.some(f => f.name === field);
-    const isMultiFileField = fileFields.some(f => f.name === field);
+    const isDateField = dateFields.some((f) => f.name === field);
+    const isMultiImageField = imageFields.some((f) => f.name === field);
+    const isMultiFileField = fileFields.some((f) => f.name === field);
 
     if (isDateField) {
       for (const dateField of dateFields) {
-        if ((field === dateField.name) && value) {
+        if (field === dateField.name && value) {
           parentObj[field] = Article.formatDate(new Date(value));
         }
       }
@@ -190,34 +196,40 @@ export class DataListener extends BaseListener {
           // If value is an array, it means it comes from the explorer view itself (deletion)
           if (Array.isArray(value)) {
             parentObj[field] = value || [];
-          } else { // Otherwise it is coming from the media dashboard (addition)
+          } else {
+            // Otherwise it is coming from the media dashboard (addition)
             let fieldValue = parentObj[field];
             if (fieldValue && !Array.isArray(fieldValue)) {
               fieldValue = [fieldValue];
             }
             const crntData = Object.assign([], fieldValue);
             const allRelPaths = [...(crntData || []), value];
-            parentObj[field] = [...new Set(allRelPaths)].filter(f => f);
+            parentObj[field] = [...new Set(allRelPaths)].filter((f) => f);
           }
         }
       }
     } else {
       parentObj[field] = value;
     }
-    
+
     ArticleHelper.update(editor, article);
     this.pushMetadata(article.data);
   }
 
   /**
    * Retrieve the parent object to update
-   * @param data 
-   * @param article 
-   * @param parents 
-   * @param blockData 
-   * @returns 
+   * @param data
+   * @param article
+   * @param parents
+   * @param blockData
+   * @returns
    */
-  public static getParentObject(data: any, article: ParsedFrontMatter, parents: string[] | undefined, blockData?: BlockFieldData) {
+  public static getParentObject(
+    data: any,
+    article: ParsedFrontMatter,
+    parents: string[] | undefined,
+    blockData?: BlockFieldData
+  ) {
     let parentObj = data;
     let allParents = Object.assign([], parents);
     const contentType = ArticleHelper.getContentType(article.data);
@@ -236,9 +248,9 @@ export class DataListener extends BaseListener {
         if (allParents[0] && allParents[0] === parent) {
           allParents.shift();
         }
-        
+
         parentObj = parentObj[parent];
-        crntField = contentType.fields.find(f => f.name === parent);
+        crntField = contentType.fields.find((f) => f.name === parent);
       }
 
       // Fetches the current block
@@ -283,7 +295,7 @@ export class DataListener extends BaseListener {
   public static async getFileData() {
     const editor = window.activeTextEditor;
     if (!editor) {
-      return "";
+      return '';
     }
 
     const article = ArticleHelper.getFrontMatter(editor);
@@ -294,7 +306,7 @@ export class DataListener extends BaseListener {
 
   /**
    * Retrieve the data entries from local data files
-   * @param data 
+   * @param data
    */
   private static async getDataFileEntries(data: any) {
     const entries = await DataFileHelper.getById(data);
@@ -305,7 +317,7 @@ export class DataListener extends BaseListener {
 
   /**
    * Open a terminal and run the passed command
-   * @param command 
+   * @param command
    */
   private static openTerminalWithCommand(command: string) {
     if (command) {
@@ -313,15 +325,18 @@ export class DataListener extends BaseListener {
       if (localServerTerminal) {
         localServerTerminal.dispose();
       }
-  
-      if (!localServerTerminal || (localServerTerminal && localServerTerminal.state.isInteractedWith === true)) {
+
+      if (
+        !localServerTerminal ||
+        (localServerTerminal && localServerTerminal.state.isInteractedWith === true)
+      ) {
         localServerTerminal = window.createTerminal({
           name: this.terminalName,
           iconPath: new ThemeIcon('server-environment'),
-          message: `Starting local server`,
+          message: `Starting local server`
         });
       }
-  
+
       if (localServerTerminal) {
         localServerTerminal.sendText(command);
         localServerTerminal.show(false);
@@ -341,30 +356,34 @@ export class DataListener extends BaseListener {
 
   /**
    * Find the server terminal
-   * @returns 
+   * @returns
    */
   private static findServerTerminal() {
     let terminals = window.terminals;
     if (terminals) {
-      const localServerTerminal = terminals.find(t => t.name === DataListener.terminalName);
+      const localServerTerminal = terminals.find((t) => t.name === DataListener.terminalName);
       return localServerTerminal;
     }
   }
 
   /**
    * Update the placeholder
-   * @param field 
-   * @param value 
-   * @param title 
+   * @param field
+   * @param value
+   * @param title
    */
   private static async updatePlaceholder(field: string, value: string, title: string) {
     if (field && value) {
       const crntFile = window.activeTextEditor?.document;
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
-      value = processKnownPlaceholders(value, title || "", dateFormat);
-      value = await ArticleHelper.processCustomPlaceholders(value, title || "", crntFile?.uri.fsPath || "");
+      value = processKnownPlaceholders(value, title || '', dateFormat);
+      value = await ArticleHelper.processCustomPlaceholders(
+        value,
+        title || '',
+        crntFile?.uri.fsPath || ''
+      );
     }
-    
+
     this.sendMsg(Command.updatePlaceholder, { field, value });
   }
 }

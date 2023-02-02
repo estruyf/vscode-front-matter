@@ -3,7 +3,7 @@ import { LoadingAtom } from '..';
 
 export const LoadingSelector = selector({
   key: 'LoadingSelector',
-  get: ({get}) => {
+  get: ({ get }) => {
     return get(LoadingAtom);
   }
 });

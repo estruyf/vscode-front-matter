@@ -13,12 +13,22 @@ import { FeatureFlag } from '../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../constants/Features';
 import { GitAction } from './components/Git/GitAction';
 
-export interface IViewPanelProps {
-}
+export interface IViewPanelProps {}
 
-export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React.PropsWithChildren<IViewPanelProps>) => {
-  const { loading, mediaSelecting, metadata, settings, folderAndFiles, focusElm, unsetFocus, mode } = useMessages();
-  
+export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
+  props: React.PropsWithChildren<IViewPanelProps>
+) => {
+  const {
+    loading,
+    mediaSelecting,
+    metadata,
+    settings,
+    folderAndFiles,
+    focusElm,
+    unsetFocus,
+    mode
+  } = useMessages();
+
   if (mediaSelecting) {
     return (
       <div className="frontmatter media_selection">
@@ -28,19 +38,15 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
   }
 
   if (loading) {
-    return (
-      <Spinner />
-    );
+    return <Spinner />;
   }
 
   if (!metadata || Object.keys(metadata || {}).length === 0) {
-    return (
-      <BaseView mode={mode} settings={settings} folderAndFiles={folderAndFiles} />
-    );
+    return <BaseView mode={mode} settings={settings} folderAndFiles={folderAndFiles} />;
   }
 
   return (
-    <div className="frontmatter">      
+    <div className="frontmatter">
       <div className={`ext_actions`}>
         <GitAction settings={settings} />
 
@@ -48,25 +54,21 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
           <GlobalSettings settings={settings} />
         </FeatureFlag>
 
-        {
-          settings && settings.seo && (
-            <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.seo}>
-              <SeoStatus 
-                seo={settings.seo} 
-                data={metadata}
-                focusElm={focusElm}
-                unsetFocus={unsetFocus} />
-            </FeatureFlag>
-          )
-        }
-        {
-          settings && metadata && (
-            <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.actions}>
-              <Actions metadata={metadata} settings={settings} />
-            </FeatureFlag>
-          )
-        }
-
+        {settings && settings.seo && (
+          <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.seo}>
+            <SeoStatus
+              seo={settings.seo}
+              data={metadata}
+              focusElm={focusElm}
+              unsetFocus={unsetFocus}
+            />
+          </FeatureFlag>
+        )}
+        {settings && metadata && (
+          <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.actions}>
+            <Actions metadata={metadata} settings={settings} />
+          </FeatureFlag>
+        )}
 
         <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.metadata}>
           <Metadata
@@ -74,7 +76,8 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (props: React
             metadata={metadata}
             focusElm={focusElm}
             unsetFocus={unsetFocus}
-            features={mode?.features || []} />
+            features={mode?.features || []}
+          />
         </FeatureFlag>
 
         <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.recentlyModified}>

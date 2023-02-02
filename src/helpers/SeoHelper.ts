@@ -3,13 +3,18 @@ import { ArticleHelper } from '.';
 import { ParsedFrontMatter } from '../parsers';
 
 export class SeoHelper {
-
-  public static checkLength(editor: vscode.TextEditor, collection: vscode.DiagnosticCollection, article: ParsedFrontMatter, fieldName: string, length: number) {
+  public static checkLength(
+    editor: vscode.TextEditor,
+    collection: vscode.DiagnosticCollection,
+    article: ParsedFrontMatter,
+    fieldName: string,
+    length: number
+  ) {
     const value = article.data[fieldName];
     if (value.length > length) {
       const text = editor.document.getText();
-      
-      const markdown = ArticleHelper.stringifyFrontMatter("", article.data);
+
+      const markdown = ArticleHelper.stringifyFrontMatter('', article.data);
 
       const txtIdx = text.indexOf(value);
       if (txtIdx !== -1 && txtIdx < markdown.length) {
@@ -23,7 +28,7 @@ export class SeoHelper {
           severity: vscode.DiagnosticSeverity.Warning,
           source: 'Front Matter'
         };
-        
+
         if (collection.has(editor.document.uri)) {
           const otherDiag = collection.get(editor.document.uri) || [];
           collection.set(editor.document.uri, [...otherDiag, diagnostic]);

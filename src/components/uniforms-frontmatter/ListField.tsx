@@ -27,15 +27,16 @@ function List({
       <LabelField label={label} id={props.id} required={props.required} />
 
       {value?.map((item, itemIndex) =>
-        Children.map(children, (child, childIndex) =>
+        Children.map(children as React.ReactElement[], (child: React.ReactElement, childIndex) =>
           isValidElement(child)
             ? cloneElement(child, {
                 key: `${itemIndex}-${childIndex}`,
-                name: (child.props.name || "").replace('$', '' + itemIndex),
-                ...itemProps,
+                // name: '',
+                // name: (child.props.name || '').replace('$', '' + itemIndex),
+                ...itemProps
               })
-            : child,
-        ),
+            : child
+        )
       )}
 
       <ListAddField initialCount={initialCount} name="$" />

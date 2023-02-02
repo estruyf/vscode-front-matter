@@ -60,7 +60,7 @@
 .list_field {
   border: 1px dashed var(--vscode-button-secondaryBackground);
   color: var(--vscode--settings-headerForeground);
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
   margin-bottom: 1rem;
 
   .autoform {
@@ -76,7 +76,7 @@
   }
 
   .fields > div {
-    margin-bottom: .5rem;
+    margin-bottom: 0.5rem;
 
     &:last-child {
       .json_data__selector h3 {
@@ -84,7 +84,7 @@
         font-weight: bold;
         text-align: center;
       }
-      
+
       margin-bottom: 0;
     }
   }
@@ -98,7 +98,7 @@
   }
 
   select {
-    padding: .5rem;
+    padding: 0.5rem;
   }
 }
 
@@ -106,9 +106,10 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin-top:1rem;
+  margin-top: 1rem;
 
-  button, input {
+  button,
+  input {
     display: inline;
     width: auto;
     padding-left: 1rem;
@@ -146,7 +147,7 @@
 
   label {
     display: block;
-    margin-bottom: .5rem;
+    margin-bottom: 0.5rem;
     font-weight: bold;
   }
 
@@ -156,15 +157,16 @@
     margin: 0;
   }
 
-  li, .sortable_item {
+  li,
+  .sortable_item {
     border-bottom: 1px solid var(--vscode-button-secondaryBackground);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: .5rem 0;
+    padding: 0.5rem 0;
 
     span {
-      margin-right: .5rem;
+      margin-right: 0.5rem;
     }
 
     > div {
@@ -172,11 +174,11 @@
       align-items: center;
 
       svg {
-        margin-right: .5rem;
+        margin-right: 0.5rem;
       }
-      
+
       button:last-child {
-        margin-left: .5rem;
+        margin-left: 0.5rem;
       }
     }
 
@@ -205,15 +207,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: .5rem 0;
+  padding: 0.5rem 0;
 
   &.json_data__record_selected {
-    background-color: rgba(255, 255, 255, .1);
+    background-color: rgba(255, 255, 255, 0.1);
     filter: brightness(100%);
   }
 
   span {
-    margin-right: .5rem;
+    margin-right: 0.5rem;
   }
 
   > div {
@@ -221,11 +223,11 @@
     align-items: center;
 
     svg {
-      margin-right: .5rem;
+      margin-right: 0.5rem;
     }
-    
+
     button:last-child {
-      margin-left: .5rem;
+      margin-left: 0.5rem;
     }
   }
 
@@ -241,7 +243,6 @@
 }
 
 .drag_handler {
-
   svg {
     height: 1.25rem;
     width: 1.25rem;
@@ -284,7 +285,7 @@
 .metadata_field__label {
   display: flex;
   align-items: center;
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
 }
 
 .metadata_field__label.metadata_field__label_parent {
@@ -292,7 +293,7 @@
 }
 
 .metadata_field__label svg {
-  margin-right: .5rem;
+  margin-right: 0.5rem;
 }
 
 .metadata_field__error {
@@ -314,44 +315,46 @@
   background-color: var(--vscode-button-secondaryHoverBackground);
 }
 
-.metadata_field__input, .metadata_field__input:focus,
-.metadata_field__textarea, .metadata_field__textarea:focus {
+.metadata_field__input,
+.metadata_field__input:focus,
+.metadata_field__textarea,
+.metadata_field__textarea:focus {
   outline: none;
 }
 
 /* Description message */
 .metadata_field__description {
   color: var(--vscode--settings-headerForeground);
-  opacity: .75;
-  margin-bottom: .5rem;
+  opacity: 0.75;
+  margin-bottom: 0.5rem;
 }
 
 .metadata_field__description,
 .metadata_field__required__message {
-  padding-top: .5rem;
-  font-size: .9rem;
-  margin-left: .5rem;
-  margin-right: .5rem;
+  padding-top: 0.5rem;
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 .block_field > .metadata_field__description,
 .metadata_field__box > .metadata_field__description {
   margin-left: 0;
-  margin-top: -.5rem;
+  margin-top: -0.5rem;
   margin-bottom: 1rem;
 }
 
 /* Required field */
 .metadata_field__required__asterix {
   color: var(--vscode-inputValidation-errorBorder);
-  margin-left: .25rem;
+  margin-left: 0.25rem;
 }
 
 .metadata_field__required__message {
   color: var(--vscode-inputValidation-errorBorder);
-  padding-top: .5rem;
-  font-size: .9rem;
-  margin-left: .5rem;
+  padding-top: 0.5rem;
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
 }
 
 /* Divider field */
@@ -364,7 +367,7 @@
 /* Heading field */
 .metadata_field__heading {
   margin: 1rem 0;
-  
+
   .metadata_field__description {
     margin: -1rem 0 0 0;
   }
@@ -373,11 +376,11 @@
 /* Text field */
 .metadata_field__limit {
   color: var(--vscode-inputValidation-warningBorder);
-  margin-top: .25rem;
+  margin-top: 0.25rem;
 }
 
 .metadata_field__alert svg {
-  color: var(--vscode-editorWarning-foreground)
+  color: var(--vscode-editorWarning-foreground);
 }
 
 .hint {
@@ -386,7 +389,7 @@
 
 .hint__buttons vscode-button {
   display: block;
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
   text-align: center;
 }
 
@@ -417,7 +420,7 @@ vscode-divider {
   background: rgba(255, 255, 255, 0.1);
   border: 1px dashed rgba(255, 255, 255, 0.2);
   margin-bottom: 1rem;
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
 }
 
 /* List field */
@@ -464,7 +467,7 @@ vscode-divider {
 
 .metadata_field__file__button:hover,
 .metadata_field__preview_image__button:hover {
-  background-color: rgba(255, 255, 255, .1);
+  background-color: rgba(255, 255, 255, 0.1);
   filter: brightness(100%);
 }
 
@@ -482,7 +485,7 @@ vscode-divider {
   color: var(--vscode-foreground);
   display: inline-block;
   margin: 0 auto;
-  margin-top: .5rem;
+  margin-top: 0.5rem;
 }
 
 .vscode-light .metadata_field__preview_image__preview {
@@ -508,7 +511,7 @@ vscode-divider {
 .metadata_field__preview_image__remove:hover {
   background-color: var(--vscode-inputValidation-errorBackground);
   color: var(--vscode-inputValidation-errorForeground);
-  opacity: .9;
+  opacity: 0.9;
 }
 
 /* Number field */
@@ -561,10 +564,10 @@ vscode-divider {
 .metadata_field__choice__toggle svg.icon {
   height: 1rem;
   width: 1rem;
-  margin-left: .25rem;
+  margin-left: 0.25rem;
 
   position: absolute;
-  right: .25rem;
+  right: 0.25rem;
 }
 
 .metadata_field__choice_list {
@@ -577,12 +580,12 @@ vscode-divider {
   overflow: auto;
   max-height: 200px;
 
-	color: var(--vscode-dropdown-foreground);
+  color: var(--vscode-dropdown-foreground);
   background-color: var(--vscode-dropdown-background);
 }
 
 .metadata_field__choice_list.open {
-  border: 1px solid rgba(0, 0, 0, .9);
+  border: 1px solid rgba(0, 0, 0, 0.9);
 }
 
 .metadata_field__choice_list li {
@@ -591,16 +594,16 @@ vscode-divider {
 }
 
 .metadata_field__choice_list li:active {
-	color: var(--vscode-button-foreground);
+  color: var(--vscode-button-foreground);
   background-color: var(--vscode-button-background);
 }
 
-.metadata_field__choice_list li[aria-selected="true"] {
+.metadata_field__choice_list li[aria-selected='true'] {
   color: var(--vscode-button-foreground);
   background-color: var(--vscode-button-hoverBackground);
 }
 
-.metadata_field__choice_list li[aria-disabled="true"] {
+.metadata_field__choice_list li[aria-disabled='true'] {
   display: none;
 }
 
@@ -609,17 +612,17 @@ vscode-divider {
 }
 
 .metadata_field__choice__button {
-  margin-top: .5rem;
+  margin-top: 0.5rem;
   display: inline-flex;
   align-items: center;
   width: auto;
-  margin-right: .5rem;
+  margin-right: 0.5rem;
 }
 
 .metadata_field__choice__button_icon {
   height: 1.25rem;
   width: 1.25rem;
-  margin-left: .5rem;
+  margin-left: 0.5rem;
 }
 
 /* File field */
@@ -648,7 +651,7 @@ vscode-divider {
   margin-top: 0;
   display: inline-block;
   margin: inherit;
-  margin-left: .5rem;
+  margin-left: 0.5rem;
 }
 
 .metadata_field__file__list.multiple {
@@ -658,22 +661,22 @@ vscode-divider {
 .metadata_field__file__list__item {
   display: flex;
   align-items: center;
-  padding: .5rem .25rem;
+  padding: 0.5rem 0.25rem;
   overflow: hidden;
 }
 
 .metadata_field__file__list__item:nth-child(odd) {
-  background-color: rgba(255, 255, 255, .05);
+  background-color: rgba(255, 255, 255, 0.05);
   filter: brightness(100%);
 }
 
 .metadata_field__file__list__item:hover {
-  background-color: rgba(255, 255, 255, .1);
+  background-color: rgba(255, 255, 255, 0.1);
   filter: brightness(100%);
 }
 
 .metadata_field__file__item__icon {
-  margin-right: .5rem;
+  margin-right: 0.5rem;
   display: flex;
   align-items: center;
 }
@@ -700,8 +703,8 @@ vscode-divider {
 
 .metadata_field__file__list__item:hover .metadata_field__file__item__remove {
   display: flex;
-  margin: -.5rem -.25rem -.5rem 0;
-  padding: .5rem;
+  margin: -0.5rem -0.25rem -0.5rem 0;
+  padding: 0.5rem;
 }
 
 /* Tags */
@@ -726,9 +729,9 @@ vscode-divider {
 
 .article__tags__input button {
   margin: 1px 0;
-  padding: 0 .5rem;
+  padding: 0 0.5rem;
   border-left: 1px solid var(--vscode-inputValidation-infoBorder);
-	background: var(--vscode-button-background);
+  background: var(--vscode-button-background);
   color: var(--vscode-button-foreground);
 
   display: flex;
@@ -762,9 +765,9 @@ vscode-divider {
   display: inline-flex;
   font-size: 12px;
   line-height: 16px;
-  padding: .25rem .25rem;
-  margin-bottom: .5rem;
-  margin-right: .5rem;
+  padding: 0.25rem 0.25rem;
+  margin-bottom: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 .tag button {
@@ -776,11 +779,11 @@ vscode-divider {
   margin: 0;
   display: inline-flex;
   align-items: center;
-  padding: .25rem;
+  padding: 0.25rem;
 }
 
 .tag .tag__create {
-  margin-right: .25rem;
+  margin-right: 0.25rem;
 }
 
 .tag .tag__create:hover {
@@ -794,7 +797,7 @@ vscode-divider {
 }
 
 .tag .tag__delete {
-  margin-left: .25rem;
+  margin-left: 0.25rem;
 }
 
 .tag .tag__delete:hover {
@@ -836,7 +839,7 @@ vscode-divider {
   outline: none !important;
   outline-offset: inherit !important;
   margin: 1px;
-  padding: 0 .5rem;
+  padding: 0 0.5rem;
 
   position: absolute;
   top: 0;
@@ -848,8 +851,8 @@ vscode-divider {
   align-items: center;
 
   span {
-    margin-right: .5rem;
-    font-size: .8rem;
+    margin-right: 0.5rem;
+    font-size: 0.8rem;
   }
 
   svg {
@@ -879,7 +882,7 @@ vscode-divider {
 .git_actions__sync svg {
   height: 1.25rem;
   width: 1.25rem;
-  margin-right: .5rem;
+  margin-right: 0.5rem;
 }
 
 .animate-spin {
@@ -923,27 +926,81 @@ vscode-divider {
   padding: var(--input-padding-vertical) var(--input-padding-horizontal) !important;
 }
 
-.ql-snow.ql-toolbar button:hover, 
-.ql-snow .ql-toolbar button:hover, 
-.ql-snow.ql-toolbar button:focus, 
-.ql-snow .ql-toolbar button:focus, 
-.ql-snow.ql-toolbar button.ql-active, 
-.ql-snow .ql-toolbar button.ql-active, 
-.ql-snow.ql-toolbar .ql-picker-label:hover, 
-.ql-snow .ql-toolbar .ql-picker-label:hover, 
-.ql-snow.ql-toolbar .ql-picker-label.ql-active, 
-.ql-snow .ql-toolbar .ql-picker-label.ql-active, 
-.ql-snow.ql-toolbar .ql-picker-item:hover, 
-.ql-snow .ql-toolbar .ql-picker-item:hover, 
-.ql-snow.ql-toolbar .ql-picker-item.ql-selected, 
+.ql-snow.ql-toolbar button:hover,
+.ql-snow .ql-toolbar button:hover,
+.ql-snow.ql-toolbar button:focus,
+.ql-snow .ql-toolbar button:focus,
+.ql-snow.ql-toolbar button.ql-active,
+.ql-snow .ql-toolbar button.ql-active,
+.ql-snow.ql-toolbar .ql-picker-label:hover,
+.ql-snow .ql-toolbar .ql-picker-label:hover,
+.ql-snow.ql-toolbar .ql-picker-label.ql-active,
+.ql-snow .ql-toolbar .ql-picker-label.ql-active,
+.ql-snow.ql-toolbar .ql-picker-item:hover,
+.ql-snow .ql-toolbar .ql-picker-item:hover,
+.ql-snow.ql-toolbar .ql-picker-item.ql-selected,
 .ql-snow .ql-toolbar .ql-picker-item.ql-selected {
   color: var(--vscode-button-background) !important;
 }
 
-.ql-snow.ql-toolbar button:hover .ql-stroke, .ql-snow .ql-toolbar button:hover .ql-stroke, .ql-snow.ql-toolbar button:focus .ql-stroke, .ql-snow .ql-toolbar button:focus .ql-stroke, .ql-snow.ql-toolbar button.ql-active .ql-stroke, .ql-snow .ql-toolbar button.ql-active .ql-stroke, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke, .ql-snow.ql-toolbar button:hover .ql-stroke-miter, .ql-snow .ql-toolbar button:hover .ql-stroke-miter, .ql-snow.ql-toolbar button:focus .ql-stroke-miter, .ql-snow .ql-toolbar button:focus .ql-stroke-miter, .ql-snow.ql-toolbar button.ql-active .ql-stroke-miter, .ql-snow .ql-toolbar button.ql-active .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke-miter, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter {
+.ql-snow.ql-toolbar button:hover .ql-stroke,
+.ql-snow .ql-toolbar button:hover .ql-stroke,
+.ql-snow.ql-toolbar button:focus .ql-stroke,
+.ql-snow .ql-toolbar button:focus .ql-stroke,
+.ql-snow.ql-toolbar button.ql-active .ql-stroke,
+.ql-snow .ql-toolbar button.ql-active .ql-stroke,
+.ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke,
+.ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke,
+.ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke,
+.ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke,
+.ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke,
+.ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke,
+.ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke,
+.ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke,
+.ql-snow.ql-toolbar button:hover .ql-stroke-miter,
+.ql-snow .ql-toolbar button:hover .ql-stroke-miter,
+.ql-snow.ql-toolbar button:focus .ql-stroke-miter,
+.ql-snow .ql-toolbar button:focus .ql-stroke-miter,
+.ql-snow.ql-toolbar button.ql-active .ql-stroke-miter,
+.ql-snow .ql-toolbar button.ql-active .ql-stroke-miter,
+.ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke-miter,
+.ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke-miter,
+.ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter,
+.ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter,
+.ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke-miter,
+.ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke-miter,
+.ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter,
+.ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter {
   stroke: var(--vscode-button-background) !important;
 }
 
-.ql-snow.ql-toolbar button:hover .ql-fill, .ql-snow .ql-toolbar button:hover .ql-fill, .ql-snow.ql-toolbar button:focus .ql-fill, .ql-snow .ql-toolbar button:focus .ql-fill, .ql-snow.ql-toolbar button.ql-active .ql-fill, .ql-snow .ql-toolbar button.ql-active .ql-fill, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-fill, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-fill, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-fill, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-fill, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-fill, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-fill, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-fill, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-fill, .ql-snow.ql-toolbar button:hover .ql-stroke.ql-fill, .ql-snow .ql-toolbar button:hover .ql-stroke.ql-fill, .ql-snow.ql-toolbar button:focus .ql-stroke.ql-fill, .ql-snow .ql-toolbar button:focus .ql-stroke.ql-fill, .ql-snow.ql-toolbar button.ql-active .ql-stroke.ql-fill, .ql-snow .ql-toolbar button.ql-active .ql-stroke.ql-fill, .ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke.ql-fill, .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke.ql-fill, .ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke.ql-fill, .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke.ql-fill, .ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke.ql-fill, .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke.ql-fill, .ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke.ql-fill, .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke.ql-fill {
+.ql-snow.ql-toolbar button:hover .ql-fill,
+.ql-snow .ql-toolbar button:hover .ql-fill,
+.ql-snow.ql-toolbar button:focus .ql-fill,
+.ql-snow .ql-toolbar button:focus .ql-fill,
+.ql-snow.ql-toolbar button.ql-active .ql-fill,
+.ql-snow .ql-toolbar button.ql-active .ql-fill,
+.ql-snow.ql-toolbar .ql-picker-label:hover .ql-fill,
+.ql-snow .ql-toolbar .ql-picker-label:hover .ql-fill,
+.ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-fill,
+.ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-fill,
+.ql-snow.ql-toolbar .ql-picker-item:hover .ql-fill,
+.ql-snow .ql-toolbar .ql-picker-item:hover .ql-fill,
+.ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-fill,
+.ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-fill,
+.ql-snow.ql-toolbar button:hover .ql-stroke.ql-fill,
+.ql-snow .ql-toolbar button:hover .ql-stroke.ql-fill,
+.ql-snow.ql-toolbar button:focus .ql-stroke.ql-fill,
+.ql-snow .ql-toolbar button:focus .ql-stroke.ql-fill,
+.ql-snow.ql-toolbar button.ql-active .ql-stroke.ql-fill,
+.ql-snow .ql-toolbar button.ql-active .ql-stroke.ql-fill,
+.ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke.ql-fill,
+.ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke.ql-fill,
+.ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke.ql-fill,
+.ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke.ql-fill,
+.ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke.ql-fill,
+.ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke.ql-fill,
+.ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke.ql-fill,
+.ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke.ql-fill {
   fill: var(--vscode-button-background) !important;
 }

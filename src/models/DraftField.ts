@@ -1,6 +1,6 @@
 export interface DraftField {
   name: string;
-  type: "boolean" | "choice";
+  type: 'boolean' | 'choice';
   choices?: string[];
   invert?: boolean;
 }

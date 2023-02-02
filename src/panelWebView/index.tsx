@@ -1,10 +1,10 @@
-import * as React from "react";
-import { render } from "react-dom";
-import { ViewPanel } from "./ViewPanel";
-import * as Sentry from "@sentry/react";
-import { Integrations } from "@sentry/tracing";
-import { SENTRY_LINK } from "../constants";
-import { RecoilRoot } from "recoil";
+import * as React from 'react';
+import { render } from 'react-dom';
+import { ViewPanel } from './ViewPanel';
+import * as Sentry from '@sentry/react';
+import { Integrations } from '@sentry/tracing';
+import { SENTRY_LINK } from '../constants';
+import { RecoilRoot } from 'recoil';
 import './styles.css';
 
 // require('@vscode/codicons/dist/codicon.css');
@@ -26,25 +26,30 @@ declare const acquireVsCodeApi: <T = unknown>() => {
   postMessage: (msg: unknown) => void;
 };
 
-const elm = document.querySelector("#app");
+const elm = document.querySelector('#app');
 
 if (elm) {
-  const version = elm?.getAttribute("data-version");
-  const environment = elm?.getAttribute("data-environment");
-  const isProd = elm?.getAttribute("data-isProd");
+  const version = elm?.getAttribute('data-version');
+  const environment = elm?.getAttribute('data-environment');
+  const isProd = elm?.getAttribute('data-isProd');
 
-  if (isProd === "true") {
+  if (isProd === 'true') {
     Sentry.init({
       dsn: SENTRY_LINK,
       integrations: [new Integrations.BrowserTracing()],
       tracesSampleRate: 0, // No performance tracing required
-      release: version || "",
-      environment: environment || "",
+      release: version || '',
+      environment: environment || '',
       ignoreErrors: ['ResizeObserver loop limit exceeded']
     });
   }
 
-  render(<RecoilRoot><ViewPanel /></RecoilRoot>, elm);
+  render(
+    <RecoilRoot>
+      <ViewPanel />
+    </RecoilRoot>,
+    elm
+  );
 }
 
 // Webpack HMR

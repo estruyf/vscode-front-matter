@@ -21,6 +21,6 @@ export interface ViewData {
   value?: string;
 
   // File fields
-  type: "file" | "media";
+  type: 'file' | 'media';
   fileExtensions?: string[];
 }

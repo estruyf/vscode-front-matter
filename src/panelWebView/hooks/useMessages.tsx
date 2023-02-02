@@ -20,7 +20,7 @@ export default function useMessages() {
 
   const messageListener = (event: MessageEvent<EventData<any>>) => {
     const message = event.data;
-    
+
     switch (message.command) {
       case Command.metadata:
         setMetadata(message.data);
@@ -57,9 +57,9 @@ export default function useMessages() {
         setLoading(false);
       }, 5000);
     }
-  }, [loading])
+  }, [loading]);
 
-  useEffect(() => {    
+  useEffect(() => {
     Messenger.listen(messageListener);
     setLoading(true);
 
@@ -73,7 +73,7 @@ export default function useMessages() {
 
     return () => {
       Messenger.unlisten(messageListener);
-    }
+    };
   }, []);
 
   return {
@@ -84,6 +84,8 @@ export default function useMessages() {
     loading,
     mediaSelecting,
     mode,
-    unsetFocus: () => { setFocus(null) }
+    unsetFocus: () => {
+      setFocus(null);
+    }
   };
 }

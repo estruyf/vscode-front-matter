@@ -25,9 +25,9 @@ Eager to start contributing? Great 🤩, you can contribute to the following pro
 
 - Start by forking this project;
 - Clone your fork to your local machine;
-- Run `npm i`;
+- Run `pnpm i`;
 - Open the project in VS Code;
-- To start developing, run `npm run dev:ext` and press `f5` to start the debugging session.
+- To start developing, run `pnpm dev:ext` and press `f5` to start the debugging session.
 
 ### Tips
 

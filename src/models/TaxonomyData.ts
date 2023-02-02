@@ -1,5 +1,4 @@
-import { CustomTaxonomy } from ".";
-
+import { CustomTaxonomy } from '.';
 
 export interface TaxonomyData {
   tags: string[];

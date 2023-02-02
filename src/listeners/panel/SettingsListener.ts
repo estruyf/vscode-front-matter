@@ -1,22 +1,27 @@
-import { commands, workspace } from "vscode";
-import { EXTENSION_BETA_ID, EXTENSION_ID, SETTING_CONTENT_FRONTMATTER_HIGHLIGHT, SETTING_FRAMEWORK_START, SETTING_AUTO_UPDATE_DATE, SETTING_PREVIEW_HOST } from "../../constants";
-import { Extension, Settings } from "../../helpers";
-import { PanelSettings } from "../../helpers/PanelSettings";
-import { Command } from "../../panelWebView/Command";
-import { CommandToCode } from "../../panelWebView/CommandToCode";
-import { BaseListener } from "./BaseListener";
-
+import { commands, workspace } from 'vscode';
+import {
+  EXTENSION_BETA_ID,
+  EXTENSION_ID,
+  SETTING_CONTENT_FRONTMATTER_HIGHLIGHT,
+  SETTING_FRAMEWORK_START,
+  SETTING_AUTO_UPDATE_DATE,
+  SETTING_PREVIEW_HOST
+} from '../../constants';
+import { Extension, Settings } from '../../helpers';
+import { PanelSettings } from '../../helpers/PanelSettings';
+import { Command } from '../../panelWebView/Command';
+import { CommandToCode } from '../../panelWebView/CommandToCode';
+import { BaseListener } from './BaseListener';
 
 export class SettingsListener extends BaseListener {
-
   /**
    * Process the messages for the dashboard views
-   * @param msg 
+   * @param msg
    */
-  public static process(msg: { command: CommandToCode, data: any }) {
+  public static process(msg: { command: CommandToCode; data: any }) {
     super.process(msg);
 
-    switch(msg.command) {
+    switch (msg.command) {
       case CommandToCode.getData:
         this.getSettings();
         break;
@@ -30,13 +35,16 @@ export class SettingsListener extends BaseListener {
         this.updateSetting(SETTING_AUTO_UPDATE_DATE, msg.data || false);
         break;
       case CommandToCode.updateFmHighlight:
-        this.updateSetting(SETTING_CONTENT_FRONTMATTER_HIGHLIGHT, (msg.data !== null && msg.data !== undefined) ? msg.data : false);
+        this.updateSetting(
+          SETTING_CONTENT_FRONTMATTER_HIGHLIGHT,
+          msg.data !== null && msg.data !== undefined ? msg.data : false
+        );
         break;
       case CommandToCode.updatePreviewUrl:
-        this.updateSetting(SETTING_PREVIEW_HOST, msg.data || "");
+        this.updateSetting(SETTING_PREVIEW_HOST, msg.data || '');
         break;
       case CommandToCode.updateStartCommand:
-        this.updateSetting(SETTING_FRAMEWORK_START, msg.data || "");
+        this.updateSetting(SETTING_FRAMEWORK_START, msg.data || '');
         break;
     }
   }
@@ -54,15 +62,18 @@ export class SettingsListener extends BaseListener {
    */
   public static openVSCodeSettings() {
     const isBeta = Extension.getInstance().isBetaVersion();
-    commands.executeCommand('workbench.action.openSettings', `@ext:${isBeta ? EXTENSION_BETA_ID : EXTENSION_ID}`);
+    commands.executeCommand(
+      'workbench.action.openSettings',
+      `@ext:${isBeta ? EXTENSION_BETA_ID : EXTENSION_ID}`
+    );
   }
 
   /**
    * Updates a setting and refreshes the retrieved settings
-   * @param setting 
-   * @param value 
+   * @param setting
+   * @param value
    */
-   private static async updateSetting(setting: string, value: any) {
+  private static async updateSetting(setting: string, value: any) {
     await Settings.update(setting, value);
     this.getSettings();
   }
@@ -71,16 +82,16 @@ export class SettingsListener extends BaseListener {
    * Toggle the writing settings
    */
   private static async toggleWritingSettings() {
-    const config = workspace.getConfiguration("", { languageId: "markdown" });
+    const config = workspace.getConfiguration('', { languageId: 'markdown' });
     const enabled = PanelSettings.isWritingSettingsEnabled();
-    
-    await config.update("editor.fontSize", enabled ? undefined : 14, false, true);
-    await config.update("editor.lineHeight", enabled ? undefined : 26, false, true);
-    await config.update("editor.wordWrap", enabled ? undefined : "wordWrapColumn", false, true);
-    await config.update("editor.wordWrapColumn", enabled ? undefined : 64, false, true);
-    await config.update("editor.lineNumbers", enabled ? undefined : "off", false, true);
-    await config.update("editor.quickSuggestions", enabled ? undefined : false, false, true);
-    await config.update("editor.minimap.enabled", enabled ? undefined : false, false, true);
+
+    await config.update('editor.fontSize', enabled ? undefined : 14, false, true);
+    await config.update('editor.lineHeight', enabled ? undefined : 26, false, true);
+    await config.update('editor.wordWrap', enabled ? undefined : 'wordWrapColumn', false, true);
+    await config.update('editor.wordWrapColumn', enabled ? undefined : 64, false, true);
+    await config.update('editor.lineNumbers', enabled ? undefined : 'off', false, true);
+    await config.update('editor.quickSuggestions', enabled ? undefined : false, false, true);
+    await config.update('editor.minimap.enabled', enabled ? undefined : false, false, true);
 
     this.getSettings();
   }

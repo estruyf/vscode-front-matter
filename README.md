@@ -12,7 +12,7 @@
   </a>
 
   <img src="https://vsmarketplacebadges.dev/installs/eliostruyf.vscode-front-matter.svg" alt="Number of installs"  style="display: inline-block;margin-left:10px" />
-  
+
   <img src="https://vsmarketplacebadges.dev/rating/eliostruyf.vscode-front-matter.svg" alt="Ratings" style="display: inline-block;margin-left:10px" />
 
   <a href="https://github.com/sponsors/estruyf" title="Become a sponsor" style="margin-left:10px">
@@ -115,7 +115,7 @@ You can get the extension via:
 If you have the courage to test out the beta features, we made available a beta version as well. You can install this via:
 
 - Uninstall the main Front Matter version
-- Install the beta version 
+- Install the beta version
   - VS Code marketplace: [VS Code Marketplace - Front Matter BETA](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter-beta).
   - The extension CLI: `ext install eliostruyf.vscode-front-matter-beta`
   - Or by clicking on the following link: <a href="" title="open extension in VS Code" data-vscode="vscode:extension/eliostruyf.vscode-front-matter-beta">open extension in VS Code</a>

@@ -1,4 +1,4 @@
-import {HeartIcon, StarIcon} from '@heroicons/react/outline';
+import { HeartIcon, StarIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { GITHUB_LINK, REVIEW_LINK, SPONSOR_LINK, TelemetryEvent } from '../../constants';
 import { Messenger } from '@estruyf/vscode/dist/client';
@@ -12,8 +12,9 @@ export interface IWelcomeScreenProps {
   settings: Settings;
 }
 
-export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({settings}: React.PropsWithChildren<IWelcomeScreenProps>) => {
-
+export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({
+  settings
+}: React.PropsWithChildren<IWelcomeScreenProps>) => {
   React.useEffect(() => {
     Messenger.send(DashboardMessage.sendTelemetry, {
       event: TelemetryEvent.webviewWelcomeScreen
@@ -26,10 +27,10 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({set
     });
 
     return () => {
-      Messenger.send(DashboardMessage.reload)
+      Messenger.send(DashboardMessage.reload);
     };
   }, []);
-  
+
   return (
     <div className={`h-full overflow-auto py-8`}>
       <main>
@@ -47,22 +48,35 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({set
                 </p>
 
                 <p className="mt-3 text-base text-vulcan-300 dark:text-whisper-700 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
-                  We try to aim to make Front Matter as easy to use as possible, but if you have any questions or suggestions. Please don't hesitate to reach out to us on GitHub.
+                  We try to aim to make Front Matter as easy to use as possible, but if you have any
+                  questions or suggestions. Please don't hesitate to reach out to us on GitHub.
                 </p>
 
                 <div className="mt-5 w-full sm:mx-auto sm:max-w-lg lg:ml-0">
                   <div className="flex flex-wrap items-start justify-between">
-                    <a href={GITHUB_LINK} title={`GitHub`} className="flex items-center px-1 text-vulcan-300 hover:text-vulcan-500 dark:text-whisper-500 dark:hover:text-teal-500">
+                    <a
+                      href={GITHUB_LINK}
+                      title={`GitHub`}
+                      className="flex items-center px-1 text-vulcan-300 hover:text-vulcan-500 dark:text-whisper-500 dark:hover:text-teal-500"
+                    >
                       <GitHubIcon className="w-8 h-8" />
                       <span className={`text-lg ml-2`}>GitHub / Documentation</span>
                     </a>
-                    
-                    <a href={SPONSOR_LINK} title={`Become a sponsor`} className="flex items-center px-1 text-vulcan-300 hover:text-vulcan-500 dark:text-whisper-500 dark:hover:text-teal-500">
+
+                    <a
+                      href={SPONSOR_LINK}
+                      title={`Become a sponsor`}
+                      className="flex items-center px-1 text-vulcan-300 hover:text-vulcan-500 dark:text-whisper-500 dark:hover:text-teal-500"
+                    >
                       <HeartIcon className="w-8 h-8" />
                       <span className={`text-lg ml-2`}>Sponsor</span>
                     </a>
 
-                    <a href={REVIEW_LINK} title={`Write a quick review`} className="flex items-center px-1 text-vulcan-300 hover:text-vulcan-500 dark:text-whisper-500 dark:hover:text-teal-500">
+                    <a
+                      href={REVIEW_LINK}
+                      title={`Write a quick review`}
+                      className="flex items-center px-1 text-vulcan-300 hover:text-vulcan-500 dark:text-whisper-500 dark:hover:text-teal-500"
+                    >
                       <StarIcon className="w-8 h-8" />
                       <span className={`text-lg ml-2`}>Review</span>
                     </a>
@@ -87,7 +101,8 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({set
               <StepsToGetStarted settings={settings} />
 
               <p className="mt-5 text-sm text-vulcan-300 dark:text-whisper-700">
-                You can also use the extension from the <b>Front Matter</b> side panel. There you will find the actions you can perform specifically for your pages.
+                You can also use the extension from the <b>Front Matter</b> side panel. There you
+                will find the actions you can perform specifically for your pages.
               </p>
             </div>
           </div>

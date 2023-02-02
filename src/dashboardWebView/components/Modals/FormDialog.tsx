@@ -13,13 +13,25 @@ export interface IFormDialogProps {
   trigger: () => void;
 }
 
-export const FormDialog: React.FunctionComponent<IFormDialogProps> = ({title, description, cancelBtnText, okBtnText, dismiss, isSaveDisabled, trigger, children}: React.PropsWithChildren<IFormDialogProps>) => {
-
+export const FormDialog: React.FunctionComponent<IFormDialogProps> = ({
+  title,
+  description,
+  cancelBtnText,
+  okBtnText,
+  dismiss,
+  isSaveDisabled,
+  trigger,
+  children
+}: React.PropsWithChildren<IFormDialogProps>) => {
   const cancelButtonRef = useRef(null);
 
   return (
     <Transition.Root show={true} as={Fragment}>
-      <Dialog className="fixed z-10 inset-0 overflow-y-auto" initialFocus={cancelButtonRef} onClose={() => dismiss()}>
+      <Dialog
+        className="fixed z-10 inset-0 overflow-y-auto"
+        initialFocus={cancelButtonRef}
+        onClose={() => dismiss()}
+      >
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
             as={Fragment}
@@ -49,19 +61,18 @@ export const FormDialog: React.FunctionComponent<IFormDialogProps> = ({title, de
           >
             <div className="inline-block align-bottom bg-white dark:bg-vulcan-500 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 border-2 border-whisper-900">
               <div>
-                <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-vulcan-300 dark:text-whisper-900">
+                <Dialog.Title
+                  as="h3"
+                  className="text-lg leading-6 font-medium text-vulcan-300 dark:text-whisper-900"
+                >
                   {title}
                 </Dialog.Title>
 
                 <div className="mt-2">
-                  <p className="text-sm text-vulcan-500 dark:text-whisper-500">
-                    {description}
-                  </p>
+                  <p className="text-sm text-vulcan-500 dark:text-whisper-500">{description}</p>
                 </div>
 
-                <div className="mt-4">
-                  {children}
-                </div>
+                <div className="mt-4">{children}</div>
 
                 <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                   <button

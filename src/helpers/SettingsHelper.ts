@@ -4,7 +4,35 @@ import { Notifications } from './Notifications';
 import { commands, Uri, workspace, window } from 'vscode';
 import * as vscode from 'vscode';
 import { ContentType, CustomTaxonomy, TaxonomyType } from '../models';
-import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, CONFIG_KEY, CONTEXT, ExtensionState, SETTING_TAXONOMY_CUSTOM, TelemetryEvent, COMMAND_NAME, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_CONTENT_PAGE_FOLDERS, SETTING_CONTENT_SNIPPETS, SETTING_CONTENT_PLACEHOLDERS, SETTING_CUSTOM_SCRIPTS, SETTING_DATA_FILES, SETTING_DATA_TYPES, SETTING_DATA_FOLDERS, SETTING_EXTENDS, SETTING_CONTENT_SORTING, SETTING_GLOBAL_MODES, SETTING_TAXONOMY_FIELD_GROUPS, SETTING_CONTENT_DRAFT_FIELD, SETTING_CONTENT_SUPPORTED_FILETYPES, SETTING_GLOBAL_NOTIFICATIONS, SETTING_GLOBAL_NOTIFICATIONS_DISABLED, SETTING_MEDIA_SUPPORTED_MIMETYPES, SETTING_COMMA_SEPARATED_FIELDS, SETTING_REMOVE_QUOTES } from '../constants';
+import {
+  SETTING_TAXONOMY_TAGS,
+  SETTING_TAXONOMY_CATEGORIES,
+  CONFIG_KEY,
+  CONTEXT,
+  ExtensionState,
+  SETTING_TAXONOMY_CUSTOM,
+  TelemetryEvent,
+  COMMAND_NAME,
+  SETTING_TAXONOMY_CONTENT_TYPES,
+  SETTING_CONTENT_PAGE_FOLDERS,
+  SETTING_CONTENT_SNIPPETS,
+  SETTING_CONTENT_PLACEHOLDERS,
+  SETTING_CUSTOM_SCRIPTS,
+  SETTING_DATA_FILES,
+  SETTING_DATA_TYPES,
+  SETTING_DATA_FOLDERS,
+  SETTING_EXTENDS,
+  SETTING_CONTENT_SORTING,
+  SETTING_GLOBAL_MODES,
+  SETTING_TAXONOMY_FIELD_GROUPS,
+  SETTING_CONTENT_DRAFT_FIELD,
+  SETTING_CONTENT_SUPPORTED_FILETYPES,
+  SETTING_GLOBAL_NOTIFICATIONS,
+  SETTING_GLOBAL_NOTIFICATIONS_DISABLED,
+  SETTING_MEDIA_SUPPORTED_MIMETYPES,
+  SETTING_COMMA_SEPARATED_FIELDS,
+  SETTING_REMOVE_QUOTES
+} from '../constants';
 import { Folders } from '../commands/Folders';
 import { join, basename, dirname, parse } from 'path';
 import { existsSync } from 'fs';
@@ -16,15 +44,15 @@ import { existsAsync, fetchWithTimeout, readFileAsync, writeFileAsync } from '..
 import { Cache } from '../commands';
 
 export class Settings {
-  public static globalFile = "frontmatter.json";
-  public static globalConfigFolder = ".frontmatter/config";
+  public static globalFile = 'frontmatter.json';
+  public static globalConfigFolder = '.frontmatter/config';
   public static globalConfig: any;
   private static config: vscode.WorkspaceConfiguration;
   private static isInitialized: boolean = false;
   private static listeners: any[] = [];
   private static fileCreationWatcher: vscode.FileSystemWatcher | undefined;
   private static readConfigPromise: Promise<void> | undefined = undefined;
-  
+
   public static async init() {
     await Settings.readConfig();
 
@@ -33,7 +61,7 @@ export class Settings {
     if (!Settings.isInitialized) {
       Settings.isInitialized = true;
 
-      commands.registerCommand(COMMAND_NAME.reloadConfig, Settings.rebindWatchers)
+      commands.registerCommand(COMMAND_NAME.reloadConfig, Settings.rebindWatchers);
     }
 
     Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
@@ -47,25 +75,34 @@ export class Settings {
    * Check if the setting is present in the workspace and ask to promote them to the global settings
    */
   public static async checkToPromote() {
-    const isPromoted = await Extension.getInstance().getState<boolean | undefined>(ExtensionState.SettingPromoted, "workspace");
+    const isPromoted = await Extension.getInstance().getState<boolean | undefined>(
+      ExtensionState.SettingPromoted,
+      'workspace'
+    );
     if (!isPromoted) {
       if (Settings.hasSettings()) {
-        window.showInformationMessage(`You have local settings. Would you like to promote them to the global settings ("frontmatter.json")?`, 'Yes', 'No').then(async (result) => {
-          if (result === "Yes") {
-            Settings.promote();
-          }
+        window
+          .showInformationMessage(
+            `You have local settings. Would you like to promote them to the global settings ("frontmatter.json")?`,
+            'Yes',
+            'No'
+          )
+          .then(async (result) => {
+            if (result === 'Yes') {
+              Settings.promote();
+            }
 
-          if (result === "No" || result === "Yes") {
-            Extension.getInstance().setState(ExtensionState.SettingPromoted, true, "workspace");
-          }
-        });
+            if (result === 'No' || result === 'Yes') {
+              Extension.getInstance().setState(ExtensionState.SettingPromoted, true, 'workspace');
+            }
+          });
       }
     }
   }
 
   /**
    * Check for config changes on global and local settings
-   * @param callback 
+   * @param callback
    */
   public static onConfigChange(callback: (global?: any) => void) {
     const projectConfig = Settings.projectConfigPath;
@@ -112,14 +149,14 @@ export class Settings {
     });
 
     workspace.onDidDeleteFiles(async (e) => {
-      const needCallback = e?.files.find(f => Settings.checkProjectConfig(f.fsPath));
+      const needCallback = e?.files.find((f) => Settings.checkProjectConfig(f.fsPath));
       if (needCallback) {
         Logger.info(`Reloading config...`);
         if (Settings.readConfigPromise === undefined) {
           Settings.readConfigPromise = Settings.readConfig();
         }
         await Settings.readConfigPromise;
-         
+
         callback();
       }
     });
@@ -127,13 +164,16 @@ export class Settings {
 
   /**
    * Inspect a setting
-   * @param name 
-   * @returns 
+   * @param name
+   * @returns
    */
   public static inspect<T>(name: string): any {
     const configInpection = Settings.config.inspect<T>(name);
     const settingKey = `${CONFIG_KEY}.${name}`;
-    const teamValue = Settings.globalConfig && typeof Settings.globalConfig[settingKey] !== "undefined" ? Settings.globalConfig[settingKey] : undefined;
+    const teamValue =
+      Settings.globalConfig && typeof Settings.globalConfig[settingKey] !== 'undefined'
+        ? Settings.globalConfig[settingKey]
+        : undefined;
 
     return {
       ...configInpection,
@@ -154,13 +194,13 @@ export class Settings {
     let setting = undefined;
     const settingKey = `${CONFIG_KEY}.${name}`;
 
-    if (Settings.globalConfig && typeof Settings.globalConfig[settingKey] !== "undefined") {
+    if (Settings.globalConfig && typeof Settings.globalConfig[settingKey] !== 'undefined') {
       setting = Settings.globalConfig[settingKey];
     }
 
     // Local overrides global
-    if (configInpection && typeof configInpection.workspaceValue !== "undefined") {
-      if (merging && setting && typeof setting === "object") {
+    if (configInpection && typeof configInpection.workspaceValue !== 'undefined') {
+      if (merging && setting && typeof setting === 'object') {
         setting = Object.assign([], setting, configInpection.workspaceValue);
       } else {
         setting = configInpection.workspaceValue;
@@ -176,21 +216,21 @@ export class Settings {
 
   /**
    * String update config setting
-   * @param name 
-   * @param value 
+   * @param name
+   * @param value
    */
   public static async update<T>(name: string, value: T, updateGlobal: boolean = false) {
     const fmConfig = Settings.projectConfigPath;
 
     if (updateGlobal) {
-      if (fmConfig && await existsAsync(fmConfig)) {
+      if (fmConfig && (await existsAsync(fmConfig))) {
         const localConfig = await readFileAsync(fmConfig, 'utf8');
         Settings.globalConfig = jsoncParser.parse(localConfig);
         Settings.globalConfig[`${CONFIG_KEY}.${name}`] = value;
 
         const content = JSON.stringify(Settings.globalConfig, null, 2);
         await writeFileAsync(fmConfig, content, 'utf8');
-        
+
         const workspaceSettingValue = Settings.hasWorkspaceSettings<ContentType[]>(name);
         if (workspaceSettingValue) {
           await Settings.update(name, undefined);
@@ -215,7 +255,7 @@ export class Settings {
    */
   public static hasProjectFile() {
     const wsFolder = Folders.getWorkspaceFolder();
-    const configPath = join(wsFolder?.fsPath || "", Settings.globalFile);
+    const configPath = join(wsFolder?.fsPath || '', Settings.globalFile);
     return existsSync(configPath);
   }
 
@@ -229,11 +269,13 @@ export class Settings {
 
   /**
    * Create the frontmatter.json file
-   * @param wsFolder 
+   * @param wsFolder
    */
   public static async createGlobalFile(wsFolder: Uri | undefined | null) {
     const initialConfig = {
-      "$schema": `https://${Extension.getInstance().isBetaVersion() ? `beta.` : ``}frontmatter.codes/frontmatter.schema.json`
+      $schema: `https://${
+        Extension.getInstance().isBetaVersion() ? `beta.` : ``
+      }frontmatter.codes/frontmatter.schema.json`
     };
 
     if (wsFolder) {
@@ -246,12 +288,13 @@ export class Settings {
 
   /**
    * Return the taxonomy settings
-   * 
-   * @param type 
+   *
+   * @param type
    */
   public static getTaxonomy(type: TaxonomyType): string[] {
     // Add all the known options to the selection list
-    const configSetting = type === TaxonomyType.Tag ? SETTING_TAXONOMY_TAGS : SETTING_TAXONOMY_CATEGORIES;
+    const configSetting =
+      type === TaxonomyType.Tag ? SETTING_TAXONOMY_TAGS : SETTING_TAXONOMY_CATEGORIES;
     const crntOptions = Settings.get(configSetting, true) as string[];
     if (crntOptions && crntOptions.length > 0) {
       return crntOptions;
@@ -261,40 +304,41 @@ export class Settings {
 
   /**
    * Return the taxonomy settings
-   * 
-   * @param type 
+   *
+   * @param type
    */
   public static getCustomTaxonomy(type: string): string[] {
     const customTaxs = Settings.get<CustomTaxonomy[]>(SETTING_TAXONOMY_CUSTOM, true);
     if (customTaxs && customTaxs.length > 0) {
-      return customTaxs.find(t => t.id === type)?.options || [];
+      return customTaxs.find((t) => t.id === type)?.options || [];
     }
     return [];
   }
 
   /**
    * Update the taxonomy settings
-   * 
-   * @param type 
-   * @param options 
+   *
+   * @param type
+   * @param options
    */
   public static async updateTaxonomy(type: TaxonomyType, options: string[]) {
-    const configSetting = type === TaxonomyType.Tag ? SETTING_TAXONOMY_TAGS : SETTING_TAXONOMY_CATEGORIES;
+    const configSetting =
+      type === TaxonomyType.Tag ? SETTING_TAXONOMY_TAGS : SETTING_TAXONOMY_CATEGORIES;
     options = [...new Set(options)];
-    options = options.sort().filter(o => !!o);
+    options = options.sort().filter((o) => !!o);
     await Settings.update(configSetting, options, true);
   }
 
   /**
    * Update the custom taxonomy settings
-   * 
-   * @param config 
-   * @param type 
-   * @param options 
+   *
+   * @param config
+   * @param type
+   * @param options
    */
   public static async updateCustomTaxonomy(id: string, option: string) {
     const customTaxonomies = Settings.get<CustomTaxonomy[]>(SETTING_TAXONOMY_CUSTOM, true) || [];
-    let taxIdx = customTaxonomies?.findIndex(o => o.id === id);
+    let taxIdx = customTaxonomies?.findIndex((o) => o.id === id);
 
     if (taxIdx === -1) {
       customTaxonomies.push({
@@ -302,29 +346,29 @@ export class Settings {
         options: []
       } as CustomTaxonomy);
 
-      taxIdx = customTaxonomies?.findIndex(o => o.id === id);
+      taxIdx = customTaxonomies?.findIndex((o) => o.id === id);
     }
 
     customTaxonomies[taxIdx].options.push(option);
     customTaxonomies[taxIdx].options = [...new Set(customTaxonomies[taxIdx].options)];
-    customTaxonomies[taxIdx].options = customTaxonomies[taxIdx].options.sort().filter(o => !!o);
+    customTaxonomies[taxIdx].options = customTaxonomies[taxIdx].options.sort().filter((o) => !!o);
     await Settings.update(SETTING_TAXONOMY_CUSTOM, customTaxonomies, true);
   }
 
   /**
    * Update the taxonomy settings
-   * 
-   * @param type 
-   * @param options 
+   *
+   * @param type
+   * @param options
    */
   public static async updateCustomTaxonomyOptions(id: string, options: string[]) {
     const customTaxonomies = Settings.get<CustomTaxonomy[]>(SETTING_TAXONOMY_CUSTOM, true) || [];
-    let taxIdx = customTaxonomies?.findIndex(o => o.id === id);
+    let taxIdx = customTaxonomies?.findIndex((o) => o.id === id);
 
     if (taxIdx !== -1) {
       customTaxonomies[taxIdx].options = options;
     }
-    
+
     await Settings.update(SETTING_TAXONOMY_CUSTOM, customTaxonomies, true);
   }
 
@@ -340,7 +384,7 @@ export class Settings {
         const settingName = name.replace(`${CONFIG_KEY}.`, '');
         const setting = Settings.config.inspect(settingName);
 
-        if (setting && typeof setting.workspaceValue !== "undefined") {
+        if (setting && typeof setting.workspaceValue !== 'undefined') {
           await Settings.update(settingName, setting.workspaceValue, true);
           await Settings.update(settingName, undefined);
         }
@@ -354,17 +398,19 @@ export class Settings {
 
   /**
    * Check if the setting is present in the workspace
-   * @param name 
-   * @returns 
+   * @param name
+   * @returns
    */
   public static hasWorkspaceSettings<T>(name: string): T | undefined {
     const setting = Settings.config.inspect<T>(name);
-    return (setting && typeof setting.workspaceValue !== "undefined") ? setting.workspaceValue : undefined;
+    return setting && typeof setting.workspaceValue !== 'undefined'
+      ? setting.workspaceValue
+      : undefined;
   }
 
   /**
    * Check if there are any Front Matter settings in the workspace
-   * @returns 
+   * @returns
    */
   public static hasSettings() {
     let hasSetting = false;
@@ -377,7 +423,7 @@ export class Settings {
         const settingName = name.replace(`${CONFIG_KEY}.`, '');
         const setting = Settings.config.inspect(settingName);
 
-        if (setting && typeof setting.workspaceValue !== "undefined") {
+        if (setting && typeof setting.workspaceValue !== 'undefined') {
           hasSetting = true;
         }
       }
@@ -388,7 +434,7 @@ export class Settings {
 
   /**
    * Get the project config path
-   * @returns 
+   * @returns
    */
   public static get projectConfigPath() {
     const wsFolder = Folders.getWorkspaceFolder();
@@ -401,8 +447,8 @@ export class Settings {
 
   /**
    * Check if its the project config
-   * @param filePath 
-   * @returns 
+   * @param filePath
+   * @returns
    */
   private static checkProjectConfig(filePath: string) {
     const fmConfig = Settings.projectConfigPath;
@@ -411,9 +457,11 @@ export class Settings {
     if (filePath.includes(Settings.globalConfigFolder)) {
       return true;
     } else if (fmConfig && existsSync(fmConfig)) {
-      return filePath && 
-             basename(filePath).toLowerCase() === Settings.globalFile.toLowerCase() &&
-             fmConfig.toLowerCase() === filePath.toLowerCase();
+      return (
+        filePath &&
+        basename(filePath).toLowerCase() === Settings.globalFile.toLowerCase() &&
+        fmConfig.toLowerCase() === filePath.toLowerCase()
+      );
     }
 
     return false;
@@ -425,7 +473,7 @@ export class Settings {
   private static async readConfig() {
     try {
       const fmConfig = Settings.projectConfigPath;
-      if (fmConfig && await existsAsync(fmConfig)) {
+      if (fmConfig && (await existsAsync(fmConfig))) {
         const localConfig = await readFileAsync(fmConfig, 'utf8');
         Settings.globalConfig = jsoncParser.parse(localConfig);
         commands.executeCommand('setContext', CONTEXT.isEnabled, true);
@@ -449,7 +497,9 @@ export class Settings {
       }
     } catch (e) {
       Settings.globalConfig = undefined;
-      Notifications.error(`Error reading "frontmatter.json" config file. Check [output window](command:${COMMAND_NAME.showOutputChannel}) for more details.`);
+      Notifications.error(
+        `Error reading "frontmatter.json" config file. Check [output window](command:${COMMAND_NAME.showOutputChannel}) for more details.`
+      );
       Logger.error((e as Error).message);
     }
 
@@ -477,14 +527,14 @@ export class Settings {
 
   /**
    * Process the config file
-   * @param configFile 
-   * @returns 
+   * @param configFile
+   * @returns
    */
   private static async processConfigFile(configFile: Uri) {
     try {
       const config = await workspace.fs.readFile(configFile);
       const configJson = jsoncParser.parse(config.toString());
-      
+
       const filePath = parseWinPath(configFile.fsPath);
       const configFilePath = filePath.split(Settings.globalConfigFolder).pop();
       if (!configFilePath) {
@@ -513,9 +563,9 @@ export class Settings {
 
   /**
    * Extend the config with external config data
-   * @param config 
+   * @param config
    * @param originalConfig The original config data is used to make sure we don't override settings coming from the fontmatter.json file.
-   * @returns 
+   * @returns
    */
   private static async extendConfig(config: any, originalConfig: any) {
     if (!config) {
@@ -528,36 +578,44 @@ export class Settings {
         const value = config[key];
         const settingName = key.replace(`${CONFIG_KEY}.`, '');
 
-        if (typeof value === 'string' || 
-            typeof value === 'number' || 
-            typeof value === 'boolean') {
+        if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
           if (typeof originalConfig[key] === 'undefined') {
             Settings.globalConfig[key] = value;
           }
-        } 
+        }
         // Objects and arrays to override
-        else if (settingName === SETTING_CONTENT_DRAFT_FIELD ||
-                 settingName === SETTING_CONTENT_SUPPORTED_FILETYPES || 
-                 settingName === SETTING_GLOBAL_NOTIFICATIONS ||
-                 settingName === SETTING_GLOBAL_NOTIFICATIONS_DISABLED ||
-                 settingName === SETTING_MEDIA_SUPPORTED_MIMETYPES ||
-                 settingName === SETTING_COMMA_SEPARATED_FIELDS) {
+        else if (
+          settingName === SETTING_CONTENT_DRAFT_FIELD ||
+          settingName === SETTING_CONTENT_SUPPORTED_FILETYPES ||
+          settingName === SETTING_GLOBAL_NOTIFICATIONS ||
+          settingName === SETTING_GLOBAL_NOTIFICATIONS_DISABLED ||
+          settingName === SETTING_MEDIA_SUPPORTED_MIMETYPES ||
+          settingName === SETTING_COMMA_SEPARATED_FIELDS
+        ) {
           if (typeof originalConfig[key] === 'undefined') {
             Settings.globalConfig[key] = value;
           }
-        } 
-        else if (typeof value === 'object' && value !== null) {
+        } else if (typeof value === 'object' && value !== null) {
           // Check if array
           if (Array.isArray(value)) {
-            if (settingName === SETTING_TAXONOMY_CATEGORIES ||
-                settingName === SETTING_TAXONOMY_TAGS ||
-                settingName === SETTING_REMOVE_QUOTES) {
+            if (
+              settingName === SETTING_TAXONOMY_CATEGORIES ||
+              settingName === SETTING_TAXONOMY_TAGS ||
+              settingName === SETTING_REMOVE_QUOTES
+            ) {
               // Merge the arrays
-              Settings.globalConfig[key] = [...(Settings.globalConfig[key] || []), ...(originalConfig[key] || []), ...value];
+              Settings.globalConfig[key] = [
+                ...(Settings.globalConfig[key] || []),
+                ...(originalConfig[key] || []),
+                ...value
+              ];
               // Filter out the doubles
-              Settings.globalConfig[key] = Settings.globalConfig[key].filter((item: any, index: number) => {
-                return Settings.globalConfig[key].indexOf(item) === index;
-              }, Settings.globalConfig[key]);
+              Settings.globalConfig[key] = Settings.globalConfig[key].filter(
+                (item: any, index: number) => {
+                  return Settings.globalConfig[key].indexOf(item) === index;
+                },
+                Settings.globalConfig[key]
+              );
             } else {
               for (const item of value) {
                 Settings.updateGlobalConfigSetting(settingName, item);
@@ -568,7 +626,10 @@ export class Settings {
               const crntValue = Settings.globalConfig[key] || {};
 
               if (!crntValue[itemKey]) {
-                Settings.globalConfig[key] = { ...crntValue, ...{ [itemKey]: value[itemKey] } };
+                Settings.globalConfig[key] = {
+                  ...crntValue,
+                  ...{ [itemKey]: value[itemKey] }
+                };
               }
             }
           }
@@ -579,67 +640,81 @@ export class Settings {
 
   /**
    * Update the global config array/object settings
-   * @param relSettingName 
-   * @param configJson 
+   * @param relSettingName
+   * @param configJson
    */
-  private static updateGlobalConfigSetting<T>(relSettingName: string, configJson: any, configFilePath?: string, filePath?: string): void {
+  private static updateGlobalConfigSetting<T>(
+    relSettingName: string,
+    configJson: any,
+    configFilePath?: string,
+    filePath?: string
+  ): void {
     // Custom scripts
     if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CUSTOM_SCRIPTS)) {
       // const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CUSTOM_SCRIPTS}`] || [];
       // Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CUSTOM_SCRIPTS}`] = [...crntValue, configJson];
-      Settings.updateGlobalConfigArraySetting(SETTING_CUSTOM_SCRIPTS, "id", configJson, "script");
+      Settings.updateGlobalConfigArraySetting(SETTING_CUSTOM_SCRIPTS, 'id', configJson, 'script');
     }
     // Content types
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_TAXONOMY_CONTENT_TYPES)) {
-      Settings.updateGlobalConfigArraySetting(SETTING_TAXONOMY_CONTENT_TYPES, "name", configJson);
+      Settings.updateGlobalConfigArraySetting(SETTING_TAXONOMY_CONTENT_TYPES, 'name', configJson);
     }
     // Data files
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_FILES)) {
-      Settings.updateGlobalConfigArraySetting(SETTING_DATA_FILES, "id", configJson);
+      Settings.updateGlobalConfigArraySetting(SETTING_DATA_FILES, 'id', configJson);
     }
     // Data folders
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_FOLDERS)) {
-      Settings.updateGlobalConfigArraySetting(SETTING_DATA_FOLDERS, "id", configJson);
+      Settings.updateGlobalConfigArraySetting(SETTING_DATA_FOLDERS, 'id', configJson);
     }
     // Data types
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_TYPES)) {
-      Settings.updateGlobalConfigArraySetting(SETTING_DATA_TYPES, "id", configJson);
+      Settings.updateGlobalConfigArraySetting(SETTING_DATA_TYPES, 'id', configJson);
     }
     // Page folders
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_PAGE_FOLDERS)) {
-      Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PAGE_FOLDERS, "path", configJson);
+      Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PAGE_FOLDERS, 'path', configJson);
     }
     // Placeholders
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_PLACEHOLDERS)) {
-      Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PLACEHOLDERS, "id", configJson);
+      Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PLACEHOLDERS, 'id', configJson);
     }
     // Sorting
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_SORTING)) {
-      Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_SORTING, "id", configJson);
+      Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_SORTING, 'id', configJson);
     }
     // Modes
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_GLOBAL_MODES)) {
-      Settings.updateGlobalConfigArraySetting(SETTING_GLOBAL_MODES, "id", configJson);
+      Settings.updateGlobalConfigArraySetting(SETTING_GLOBAL_MODES, 'id', configJson);
     }
     // Field groups
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_TAXONOMY_FIELD_GROUPS)) {
-      Settings.updateGlobalConfigArraySetting(SETTING_TAXONOMY_FIELD_GROUPS, "id", configJson);
+      Settings.updateGlobalConfigArraySetting(SETTING_TAXONOMY_FIELD_GROUPS, 'id', configJson);
     }
     // Custom taxonomy
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_TAXONOMY_CUSTOM)) {
-      Settings.updateGlobalConfigArraySetting(SETTING_TAXONOMY_CUSTOM, "id", configJson);
+      Settings.updateGlobalConfigArraySetting(SETTING_TAXONOMY_CUSTOM, 'id', configJson);
     }
     // Snippets
-    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_SNIPPETS) && configFilePath && filePath) {
-      Settings.updateGlobalConfigObjectByNameSetting(SETTING_CONTENT_SNIPPETS, configFilePath, configJson, filePath);
+    else if (
+      Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_SNIPPETS) &&
+      configFilePath &&
+      filePath
+    ) {
+      Settings.updateGlobalConfigObjectByNameSetting(
+        SETTING_CONTENT_SNIPPETS,
+        configFilePath,
+        configJson,
+        filePath
+      );
     }
   }
 
   /**
    * Check if the setting name is equal or starts with the reference setting name
-   * @param value 
-   * @param startsWith 
-   * @returns 
+   * @param value
+   * @param startsWith
+   * @returns
    */
   private static isEqualOrStartsWith(value: string, startsWith: string) {
     value = value.toLowerCase();
@@ -650,17 +725,22 @@ export class Settings {
 
   /**
    * Update an array setting in the global config
-   * @param settingName 
-   * @param fieldName 
-   * @param configJson 
+   * @param settingName
+   * @param fieldName
+   * @param configJson
    */
-  private static updateGlobalConfigArraySetting<T>(settingName: string, fieldName: string, configJson: any, fallbackFieldName?: string): void {
+  private static updateGlobalConfigArraySetting<T>(
+    settingName: string,
+    fieldName: string,
+    configJson: any,
+    fallbackFieldName?: string
+  ): void {
     const crntValue: T[] = Settings.globalConfig[`${CONFIG_KEY}.${settingName}`] || [];
 
     const itemIdx = crntValue.findIndex((item: any) => {
-      if (typeof item[fieldName] !== "undefined") {
+      if (typeof item[fieldName] !== 'undefined') {
         return item[fieldName] === configJson[fieldName];
-      } else if (fallbackFieldName && typeof item[fallbackFieldName] !== "undefined") {
+      } else if (fallbackFieldName && typeof item[fallbackFieldName] !== 'undefined') {
         return item[fallbackFieldName] === configJson[fallbackFieldName];
       } else {
         return false;
@@ -675,11 +755,16 @@ export class Settings {
 
   /**
    * Update an object by the file name in the global config
-   * @param settingName 
-   * @param fileNamepath 
-   * @param configJson 
+   * @param settingName
+   * @param fileNamepath
+   * @param configJson
    */
-  private static updateGlobalConfigObjectByNameSetting<T>(settingName: string, fileNamepath: string, configJson: any, absPath: string): void {
+  private static updateGlobalConfigObjectByNameSetting<T>(
+    settingName: string,
+    fileNamepath: string,
+    configJson: any,
+    absPath: string
+  ): void {
     const crntValue = Settings.globalConfig[`${CONFIG_KEY}.${settingName}`] || {};
 
     // Filename is the key
@@ -693,7 +778,10 @@ export class Settings {
     if (!crntValue[fileName]) {
       crntValue[fileName] = configJson;
 
-      Settings.globalConfig[`${CONFIG_KEY}.${settingName}`] = { ...crntValue, ...{ [fileName]: configJson } };
+      Settings.globalConfig[`${CONFIG_KEY}.${settingName}`] = {
+        ...crntValue,
+        ...{ [fileName]: configJson }
+      };
     }
   }
 
@@ -704,15 +792,24 @@ export class Settings {
     const ext = Extension.getInstance();
 
     if (!Settings.fileCreationWatcher) {
-      Settings.fileCreationWatcher = workspace.createFileSystemWatcher(`**/*.json`, false, true, true);
-      Settings.fileCreationWatcher.onDidCreate(uri => {
-        if (parseWinPath(uri.fsPath) === parseWinPath(Settings.projectConfigPath)) {
-          Settings.rebindWatchers();
-          // Stop listening to file creation events
-          Settings.fileCreationWatcher?.dispose();
-          Settings.fileCreationWatcher = undefined;
-        }
-      }, null, ext.subscriptions);
+      Settings.fileCreationWatcher = workspace.createFileSystemWatcher(
+        `**/*.json`,
+        false,
+        true,
+        true
+      );
+      Settings.fileCreationWatcher.onDidCreate(
+        (uri) => {
+          if (parseWinPath(uri.fsPath) === parseWinPath(Settings.projectConfigPath)) {
+            Settings.rebindWatchers();
+            // Stop listening to file creation events
+            Settings.fileCreationWatcher?.dispose();
+            Settings.fileCreationWatcher = undefined;
+          }
+        },
+        null,
+        ext.subscriptions
+      );
     }
   }
 
@@ -721,8 +818,8 @@ export class Settings {
    */
   private static rebindWatchers() {
     Logger.info(`Rebinding ${this.listeners.length} listeners`);
-    
-    this.listeners.forEach(l => {
+
+    this.listeners.forEach((l) => {
       Settings.onConfigChange(l);
       l();
     });
@@ -730,17 +827,23 @@ export class Settings {
 
   /**
    * Retrieve the external configuration
-   * @param configPath 
-   * @returns 
+   * @param configPath
+   * @returns
    */
   private static async getExternalConfig(configPath: string): Promise<any> {
     let config: any = undefined;
 
     if (configPath.startsWith('https://')) {
       try {
-        let cachedResponse = await Cache.get<{[config: string]: { expires: number, data: any }}>(ExtensionState.Settings.Extends, "workspace");
-        
-        if (cachedResponse && cachedResponse[configPath] && cachedResponse[configPath].expires > new Date().getTime()) {
+        let cachedResponse = await Cache.get<{
+          [config: string]: { expires: number; data: any };
+        }>(ExtensionState.Settings.Extends, 'workspace');
+
+        if (
+          cachedResponse &&
+          cachedResponse[configPath] &&
+          cachedResponse[configPath].expires > new Date().getTime()
+        ) {
           config = cachedResponse[configPath].data;
         } else {
           const response = await fetchWithTimeout(configPath, { method: 'GET' });
@@ -751,12 +854,12 @@ export class Settings {
               cachedResponse = {};
             }
 
-            cachedResponse[configPath] = { 
-              expires: (new Date(new Date().getTime() + (1000 * 60 * 10))).getTime(), 
-              data: config 
+            cachedResponse[configPath] = {
+              expires: new Date(new Date().getTime() + 1000 * 60 * 10).getTime(),
+              data: config
             };
 
-            await Cache.set(ExtensionState.Settings.Extends, cachedResponse, "workspace");
+            await Cache.set(ExtensionState.Settings.Extends, cachedResponse, 'workspace');
           }
         }
       } catch (e) {

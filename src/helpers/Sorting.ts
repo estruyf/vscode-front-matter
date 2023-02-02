@@ -1,12 +1,10 @@
-import { DateHelper } from "./DateHelper";
-
+import { DateHelper } from './DateHelper';
 
 export class Sorting {
-  
   /**
    * Sort field value alphabetically
-   * @param property 
-   * @returns 
+   * @param property
+   * @returns
    */
   public static alphabetically = (property: string) => {
     return (a: any, b: any) => {
@@ -22,19 +20,19 @@ export class Sorting {
 
   /**
    * Sort field value numerically
-   * @param property 
-   * @returns 
+   * @param property
+   * @returns
    */
   public static numerically = (property: string) => {
     return (a: any, b: any) => {
       return a[property] - b[property];
     };
-  }
+  };
 
   /**
    * Sort by date
-   * @param property 
-   * @returns 
+   * @param property
+   * @returns
    */
   public static date = (property: string) => {
     return (a: any, b: any) => {
@@ -47,8 +45,8 @@ export class Sorting {
 
   /**
    * Sort by date with a fallback
-   * @param property 
-   * @returns 
+   * @param property
+   * @returns
    */
   public static dateWithFallback = (property: string, fallback: string) => {
     return (a: any, b: any) => {
@@ -57,7 +55,7 @@ export class Sorting {
 
       // Sort by date
       var dCount = (dateA || new Date(0)).getTime() - (dateB || new Date(0)).getTime();
-      if(dCount) return dCount;
+      if (dCount) return dCount;
 
       // If there is a tie, sort by fallback property
       if (a[fallback] < b[fallback]) {
@@ -72,8 +70,8 @@ export class Sorting {
 
   /**
    * Sort by number
-   * @param property 
-   * @returns 
+   * @param property
+   * @returns
    */
   public static number = (property: string) => {
     return (a: any, b: any) => {

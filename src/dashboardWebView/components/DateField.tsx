@@ -7,14 +7,17 @@ export interface IDateFieldProps {
   value: Date | string;
 }
 
-export const DateField: React.FunctionComponent<IDateFieldProps> = ({className, value}: React.PropsWithChildren<IDateFieldProps>) => {
-  const [ dateValue, setDateValue ] = React.useState<string>("");
+export const DateField: React.FunctionComponent<IDateFieldProps> = ({
+  className,
+  value
+}: React.PropsWithChildren<IDateFieldProps>) => {
+  const [dateValue, setDateValue] = React.useState<string>('');
 
   React.useEffect(() => {
     try {
       const parsedValue = typeof value === 'string' ? DateHelper.tryParse(value) : value;
       const dateString = parsedValue ? format(parsedValue, 'yyyy-MM-dd') : parsedValue;
-      setDateValue(dateString || "");
+      setDateValue(dateString || '');
     } catch (e) {
       // Date is invalid
     }
@@ -25,6 +28,8 @@ export const DateField: React.FunctionComponent<IDateFieldProps> = ({className, 
   }
 
   return (
-    <span className={`${className || ""} text-vulcan-100 dark:text-whisper-900 text-xs`}>{dateValue}</span>
+    <span className={`${className || ''} text-vulcan-100 dark:text-whisper-900 text-xs`}>
+      {dateValue}
+    </span>
   );
 };

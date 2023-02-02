@@ -24,7 +24,7 @@ function Bool({
   return (
     <div {...filterDOMProps(props)}>
       <LabelField label={label} id={id} required={props.required} />
-      
+
       <label className="field__toggle">
         <input
           checked={value || false}

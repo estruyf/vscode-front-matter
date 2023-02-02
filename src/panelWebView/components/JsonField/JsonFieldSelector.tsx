@@ -12,14 +12,20 @@ export interface IJsonFieldSelectorProps {
   onSchemaUpdate: (schema: any) => void;
 }
 
-const EMPTY_OPTION = "EMPTY_OPTION";
+const EMPTY_OPTION = 'EMPTY_OPTION';
 
-export const JsonFieldSelector: React.FunctionComponent<IJsonFieldSelectorProps> = ({ field, dataTypes, selectedDataType, onSetDataType, onSchemaUpdate }: React.PropsWithChildren<IJsonFieldSelectorProps>) => {
-  const [ options, setOptions ] = useState<string[]>([]);
+export const JsonFieldSelector: React.FunctionComponent<IJsonFieldSelectorProps> = ({
+  field,
+  dataTypes,
+  selectedDataType,
+  onSetDataType,
+  onSchemaUpdate
+}: React.PropsWithChildren<IJsonFieldSelectorProps>) => {
+  const [options, setOptions] = useState<string[]>([]);
 
   const onSchemaSet = useCallback((dataType: string) => {
     if (dataTypes && dataType !== EMPTY_OPTION) {
-      const schema = dataTypes.find(dt => dt.id === dataType);
+      const schema = dataTypes.find((dt) => dt.id === dataType);
       onSchemaUpdate(schema);
     } else {
       onSchemaUpdate(null);
@@ -28,7 +34,7 @@ export const JsonFieldSelector: React.FunctionComponent<IJsonFieldSelectorProps>
 
   useEffect(() => {
     if (field.dataType && dataTypes) {
-      if (typeof field.dataType === "string") {
+      if (typeof field.dataType === 'string') {
         onSchemaSet(field.dataType);
       } else if (field.dataType instanceof Array && field.dataType.length === 1) {
         onSchemaSet(field.dataType[0]);
@@ -46,28 +52,33 @@ export const JsonFieldSelector: React.FunctionComponent<IJsonFieldSelectorProps>
         onSchemaUpdate(null);
       }
     }
-  }, [selectedDataType, dataTypes, onSchemaUpdate])
+  }, [selectedDataType, dataTypes, onSchemaUpdate]);
 
   if (options.length === 0) {
     return null;
   }
 
   return (
-    <div className='json_data__selector'>
+    <div className="json_data__selector">
       <h3>Block type</h3>
       <VSCodeDropdown
         value={selectedDataType ?? EMPTY_OPTION}
-        onChange={(event: any) => onSetDataType(event.currentTarget.value === EMPTY_OPTION ? null : event.currentTarget.value)}
-        style={{
-          width: "100%",
-          marginBottom: "1rem"
-        }}>
-        <VSCodeOption value={EMPTY_OPTION}>&nbsp;</VSCodeOption>
-        {
-          options.map((o) => (
-            <VSCodeOption key={o} value={o}>{o}</VSCodeOption>
-          ))
+        onChange={(event: any) =>
+          onSetDataType(
+            event.currentTarget.value === EMPTY_OPTION ? null : event.currentTarget.value
+          )
         }
+        style={{
+          width: '100%',
+          marginBottom: '1rem'
+        }}
+      >
+        <VSCodeOption value={EMPTY_OPTION}>&nbsp;</VSCodeOption>
+        {options.map((o) => (
+          <VSCodeOption key={o} value={o}>
+            {o}
+          </VSCodeOption>
+        ))}
       </VSCodeDropdown>
     </div>
   );

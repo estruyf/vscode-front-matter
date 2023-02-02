@@ -1,8 +1,8 @@
-import { FileStat } from "vscode";
-import { DraftField, GitSettings } from ".";
-import { Choice } from "./Choice";
-import { DashboardData } from "./DashboardData";
-import { DataType } from "./DataType";
+import { FileStat } from 'vscode';
+import { DraftField, GitSettings } from '.';
+import { Choice } from './Choice';
+import { DashboardData } from './DashboardData';
+import { DataType } from './DataType';
 
 export interface PanelSettings {
   git: GitSettings;
@@ -30,7 +30,7 @@ export interface PanelSettings {
   commaSeparatedFields: string[];
 }
 
-export interface FieldGroup { 
+export interface FieldGroup {
   id: string;
   labelField?: string;
   fields: Field[];
@@ -44,7 +44,7 @@ export interface ContentType {
   name: string;
   fields: Field[];
 
-  fileType?: "md" | "mdx" | string;
+  fileType?: 'md' | 'mdx' | string;
   previewPath?: string | null;
   pageBundle?: boolean;
   template?: string;
@@ -52,7 +52,26 @@ export interface ContentType {
   filePrefix?: string;
 }
 
-export type FieldType = "string" | "number" | "datetime" | "boolean" | "image" | "choice" | "tags" | "categories" | "draft" | "taxonomy" | "fields" | "json" | "block" | "file" | "dataFile" | "list" | "slug" | "divider" | "heading";
+export type FieldType =
+  | 'string'
+  | 'number'
+  | 'datetime'
+  | 'boolean'
+  | 'image'
+  | 'choice'
+  | 'tags'
+  | 'categories'
+  | 'draft'
+  | 'taxonomy'
+  | 'fields'
+  | 'json'
+  | 'block'
+  | 'file'
+  | 'dataFile'
+  | 'list'
+  | 'slug'
+  | 'divider'
+  | 'heading';
 
 export interface Field {
   title?: string;
@@ -89,16 +108,16 @@ export interface Field {
 }
 
 export enum WhenOperator {
-  equals = "eq",
-  notEquals = "neq",
-  contains = "contains",
-  notContains = "notContains",
-  startsWith = "startsWith",
-  endsWith = "endsWith",
-  greaterThan = "gt",
-  greaterThanOrEqual = "gte",
-  lessThan = "lt",
-  lessThanOrEqual = "lte",
+  equals = 'eq',
+  notEquals = 'neq',
+  contains = 'contains',
+  notContains = 'notContains',
+  startsWith = 'startsWith',
+  endsWith = 'endsWith',
+  greaterThan = 'gt',
+  greaterThanOrEqual = 'gte',
+  lessThan = 'lt',
+  lessThanOrEqual = 'lte'
 }
 
 export interface WhenClause {
@@ -136,7 +155,7 @@ export interface FileInfo extends FileStat {
   filePath: string;
   fileName: string;
   folderName: string | undefined;
-};
+}
 
 export interface CustomScript {
   id?: string;
@@ -144,7 +163,7 @@ export interface CustomScript {
   script: string;
   nodeBin?: string;
   bulk?: boolean;
-  output?: "notification" | "editor";
+  output?: 'notification' | 'editor';
   outputType?: string;
   type?: ScriptType;
   command?: CommandType | string;
@@ -152,7 +171,7 @@ export interface CustomScript {
   environments?: EnvironmentScript[];
 }
 
-export type EnvironmentType = "windows" | "macos" | "linux";
+export type EnvironmentType = 'windows' | 'macos' | 'linux';
 
 export interface EnvironmentScript {
   type: EnvironmentType;
@@ -171,15 +190,15 @@ export interface CustomTaxonomy {
 }
 
 export enum ScriptType {
-  Content = "content",
-  MediaFolder = "mediaFolder",
-  MediaFile = "mediaFile",
+  Content = 'content',
+  MediaFolder = 'mediaFolder',
+  MediaFile = 'mediaFile'
 }
 
 export enum CommandType {
-  Node = "node",
-  Shell = "shell",
-  PowerShell = "powershell",
-  Python = "python",
-  Python3 = "python3"
+  Node = 'node',
+  Shell = 'shell',
+  PowerShell = 'powershell',
+  Python = 'python',
+  Python3 = 'python3'
 }

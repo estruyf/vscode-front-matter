@@ -10,4 +10,4 @@ export const fetchWithTimeout = async (url: string, options: any, timeout = 5000
   } catch (error) {
     throw new Error(`Request timed out: ${url}`);
   }
-}
+};

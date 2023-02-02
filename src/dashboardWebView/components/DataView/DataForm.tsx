@@ -14,8 +14,13 @@ export interface IDataFormProps {
   onClear: () => void;
 }
 
-export const DataForm: React.FunctionComponent<IDataFormProps> = ({ schema, model, onSubmit, onClear }: React.PropsWithChildren<IDataFormProps>) => {
-  const [ bridge, setBridge ] = useState<JSONSchemaBridge | null>(null);
+export const DataForm: React.FunctionComponent<IDataFormProps> = ({
+  schema,
+  model,
+  onSubmit,
+  onClear
+}: React.PropsWithChildren<IDataFormProps>) => {
+  const [bridge, setBridge] = useState<JSONSchemaBridge | null>(null);
 
   const ajv = new Ajv({ allErrors: true, useDefaults: true });
 
@@ -26,7 +31,7 @@ export const DataForm: React.FunctionComponent<IDataFormProps> = ({ schema, mode
       validator(crntModel);
       return validator.errors?.length ? { details: validator.errors } : null;
     };
-  }
+  };
 
   useEffect(() => {
     const schemaValidator = jsonValidator(schema);
@@ -40,24 +45,23 @@ export const DataForm: React.FunctionComponent<IDataFormProps> = ({ schema, mode
 
   return (
     <ErrorBoundary>
-      <div className='autoform'>
-        {
-          model ? (
-            <h2 className='text-gray-500 dark:text-whisper-900'>Modify the data</h2>
-          ) : (
-            <h2 className='text-gray-500 dark:text-whisper-900'>Add new data</h2>
-          )
-        }
+      <div className="autoform">
+        {model ? (
+          <h2 className="text-gray-500 dark:text-whisper-900">Modify the data</h2>
+        ) : (
+          <h2 className="text-gray-500 dark:text-whisper-900">Add new data</h2>
+        )}
 
-        <AutoForm 
-          schema={bridge} 
+        <AutoForm
+          schema={bridge}
           model={model || {}}
           onSubmit={onSubmit}
-          ref={(form: any) => form?.reset()}>
+          ref={(form: any) => form?.reset()}
+        >
           <div className={`fields`}>
             <AutoFields />
           </div>
-          
+
           <div className={`errors`}>
             <ErrorsField />
           </div>

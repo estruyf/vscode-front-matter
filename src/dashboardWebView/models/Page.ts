@@ -1,4 +1,3 @@
-
 export interface Page {
   // Properties for caching
   fmCachePath: string;
@@ -10,7 +9,7 @@ export interface Page {
   fmFileName: string;
   fmModified: number;
   fmPublished: number | null | undefined;
-  fmDraft: "Draft" | "Published",
+  fmDraft: 'Draft' | 'Published';
   fmYear: number | null | undefined;
   fmPreviewImage: string;
   fmTags: string[];

@@ -1,4 +1,4 @@
-import {PencilIcon} from '@heroicons/react/outline';
+import { PencilIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useRecoilState } from 'recoil';
@@ -17,10 +17,20 @@ export interface ITextFieldProps extends BaseFieldProps<string> {
 
 const WysiwygField = React.lazy(() => import('./WysiwygField'));
 
-export const TextField: React.FunctionComponent<ITextFieldProps> = ({singleLine, wysiwyg, limit, label, description, value, rows, onChange, required}: React.PropsWithChildren<ITextFieldProps>) => {
-  const [ requiredFields, setRequiredFields ] = useRecoilState(RequiredFieldsAtom);
-  const [ text, setText ] = React.useState<string | null>(value);
-  
+export const TextField: React.FunctionComponent<ITextFieldProps> = ({
+  singleLine,
+  wysiwyg,
+  limit,
+  label,
+  description,
+  value,
+  rows,
+  onChange,
+  required
+}: React.PropsWithChildren<ITextFieldProps>) => {
+  const [requiredFields, setRequiredFields] = useRecoilState(RequiredFieldsAtom);
+  const [text, setText] = React.useState<string | null>(value);
+
   const onTextChange = (txtValue: string) => {
     setText(txtValue);
     onChange(txtValue);
@@ -28,22 +38,25 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({singleLine,
 
   let isValid = true;
   if (limit && limit !== -1) {
-    isValid = ((text || "").length <= limit);
+    isValid = (text || '').length <= limit;
   }
 
-  const updateRequired = useCallback((isValid: boolean) => {
-    setRequiredFields((prev) => {
-      let clone = Object.assign([], prev);
+  const updateRequired = useCallback(
+    (isValid: boolean) => {
+      setRequiredFields((prev) => {
+        let clone = Object.assign([], prev);
 
-      if (isValid) {
-        clone = clone.filter((item) => item !== label);
-      } else {
-        clone.push(label);
-      }
+        if (isValid) {
+          clone = clone.filter((item) => item !== label);
+        } else {
+          clone.push(label);
+        }
 
-      return clone;
-    });
-  }, [setRequiredFields])
+        return clone;
+      });
+    },
+    [setRequiredFields]
+  );
 
   const showRequiredState = useMemo(() => {
     return required && !text;
@@ -52,13 +65,13 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({singleLine,
   const border = useMemo(() => {
     if (showRequiredState) {
       updateRequired(false);
-      return "1px solid var(--vscode-inputValidation-errorBorder)";
+      return '1px solid var(--vscode-inputValidation-errorBorder)';
     } else if (!isValid) {
       updateRequired(true);
-      return "1px solid var(--vscode-inputValidation-warningBorder)";
+      return '1px solid var(--vscode-inputValidation-warningBorder)';
     } else {
       updateRequired(true);
-      return "1px solid var(--vscode-inputValidation-infoBorder)";
+      return '1px solid var(--vscode-inputValidation-infoBorder)';
     }
   }, [showRequiredState, isValid]);
 
@@ -66,54 +79,48 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({singleLine,
     if (text !== value) {
       setText(value);
     }
-  }, [ value ]);
-  
+  }, [value]);
+
   return (
     <div className={`metadata_field`}>
-      <FieldTitle 
-        label={label}
-        icon={<PencilIcon />}
-        required={required} />
+      <FieldTitle label={label} icon={<PencilIcon />} required={required} />
 
-      {
-        wysiwyg ? (
-          <React.Suspense fallback={(<div>Loading field</div>)}>
-            <WysiwygField text={text || ""} onChange={onTextChange} />
-          </React.Suspense>
-        ) : (
-          singleLine ? (
-            <input 
-              className={`metadata_field__input`}
-              value={text || ""}
-              onChange={(e) => onTextChange(e.currentTarget.value)} 
-              style={{
-                border
-              }} />
-          ) : (
-            <textarea
-              className={`metadata_field__textarea`}
-              rows={rows || 2}
-              value={text || ""}  
-              onChange={(e) => onTextChange(e.currentTarget.value)} 
-              style={{
-                border
-              }} />
-          )
-        )
-      }
+      {wysiwyg ? (
+        <React.Suspense fallback={<div>Loading field</div>}>
+          <WysiwygField text={text || ''} onChange={onTextChange} />
+        </React.Suspense>
+      ) : singleLine ? (
+        <input
+          className={`metadata_field__input`}
+          value={text || ''}
+          onChange={(e) => onTextChange(e.currentTarget.value)}
+          style={{
+            border
+          }}
+        />
+      ) : (
+        <textarea
+          className={`metadata_field__textarea`}
+          rows={rows || 2}
+          value={text || ''}
+          onChange={(e) => onTextChange(e.currentTarget.value)}
+          style={{
+            border
+          }}
+        />
+      )}
 
-      {
-        limit && limit > 0 && (text || "").length > limit && (
-          <div className={`metadata_field__limit`}>
-            Field limit reached {(text || "").length}/{limit}
-          </div>
-        )
-      }
-      
-      <FieldMessage 
+      {limit && limit > 0 && (text || '').length > limit && (
+        <div className={`metadata_field__limit`}>
+          Field limit reached {(text || '').length}/{limit}
+        </div>
+      )}
+
+      <FieldMessage
         description={description}
-        name={label.toLowerCase()} 
-        showRequired={showRequiredState} />
+        name={label.toLowerCase()}
+        showRequired={showRequiredState}
+      />
     </div>
   );
 };

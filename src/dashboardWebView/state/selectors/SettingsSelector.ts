@@ -3,7 +3,7 @@ import { SettingsAtom } from '..';
 
 export const SettingsSelector = selector({
   key: 'SettingsSelector',
-  get: ({get}) => {
+  get: ({ get }) => {
     return get(SettingsAtom);
   }
 });

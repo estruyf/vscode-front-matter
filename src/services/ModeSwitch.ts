@@ -1,20 +1,19 @@
 import { ModeListener } from './../listeners/general/ModeListener';
 import { SETTING_GLOBAL_ACTIVE_MODE, SETTING_GLOBAL_MODES } from './../constants/settings';
-import { commands, StatusBarAlignment, StatusBarItem, ThemeColor, window } from "vscode";
-import { Settings } from "../helpers/SettingsHelper";
+import { commands, StatusBarAlignment, StatusBarItem, ThemeColor, window } from 'vscode';
+import { Settings } from '../helpers/SettingsHelper';
 import { COMMAND_NAME, CONTEXT } from '../constants';
 import { Mode } from '../models';
-
 
 export class ModeSwitch {
   private static isInit: boolean = false;
   private static statusBarElm: StatusBarItem;
   private static currentMode: string;
-  
+
   public static register() {
     if (!ModeSwitch.statusBarElm) {
       ModeSwitch.statusBarElm = window.createStatusBarItem(StatusBarAlignment.Left, 100);
-      ModeSwitch.statusBarElm.tooltip = "Switch between the different modes of Front Matter";
+      ModeSwitch.statusBarElm.tooltip = 'Switch between the different modes of Front Matter';
       ModeSwitch.statusBarElm.command = COMMAND_NAME.modeSwitch;
     }
 
@@ -25,12 +24,12 @@ export class ModeSwitch {
       if (mode) {
         ModeSwitch.currentMode = mode;
       } else {
-        ModeSwitch.currentMode = "";
+        ModeSwitch.currentMode = '';
       }
-      
+
       ModeSwitch.isInit = true;
     }
-    
+
     ModeListener.getMode();
 
     const modes = Settings.get<string | null>(SETTING_GLOBAL_MODES);
@@ -54,10 +53,7 @@ export class ModeSwitch {
       return;
     }
 
-    const modePicks = [
-      "Default",
-      ...modes.map(m => m.id)
-    ]
+    const modePicks = ['Default', ...modes.map((m) => m.id)];
 
     const mode = await window.showQuickPick(modePicks, {
       placeHolder: `Select the mode you want to use`,
@@ -66,7 +62,7 @@ export class ModeSwitch {
     });
 
     if (mode) {
-      ModeSwitch.currentMode = mode === "Default" ? "" : mode;
+      ModeSwitch.currentMode = mode === 'Default' ? '' : mode;
       ModeSwitch.setText();
 
       ModeListener.getMode();
@@ -74,7 +70,9 @@ export class ModeSwitch {
   }
 
   private static setText() {
-    ModeSwitch.statusBarElm.text = `$(preview) Mode: ${ModeSwitch.currentMode ? ModeSwitch.currentMode : "Default"}`;
+    ModeSwitch.statusBarElm.text = `$(preview) Mode: ${
+      ModeSwitch.currentMode ? ModeSwitch.currentMode : 'Default'
+    }`;
     ModeSwitch.statusBarElm.show();
   }
 }

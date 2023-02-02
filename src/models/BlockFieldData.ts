@@ -1,5 +1,3 @@
-
-
 export interface BlockFieldData {
   parentFields: string[] | undefined;
   blockType: string | undefined;

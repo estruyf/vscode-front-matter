@@ -15,8 +15,14 @@ export interface IJsonFieldFormProps {
   onClear: () => void;
 }
 
-export const JsonFieldForm: React.FunctionComponent<IJsonFieldFormProps> = ({ label, schema, model, onUpdate, onClear }: React.PropsWithChildren<IJsonFieldFormProps>) => {
-  const [ bridge, setBridge ] = useState<JSONSchemaBridge | null>(null);
+export const JsonFieldForm: React.FunctionComponent<IJsonFieldFormProps> = ({
+  label,
+  schema,
+  model,
+  onUpdate,
+  onClear
+}: React.PropsWithChildren<IJsonFieldFormProps>) => {
+  const [bridge, setBridge] = useState<JSONSchemaBridge | null>(null);
 
   const ajv = new Ajv({ allErrors: true, useDefaults: true, strict: false });
 
@@ -40,21 +46,21 @@ export const JsonFieldForm: React.FunctionComponent<IJsonFieldFormProps> = ({ la
   if (!bridge || !schema) {
     return null;
   }
-  
+
   return (
-    <div className='autoform'>
-      <AutoForm 
-        schema={bridge} 
+    <div className="autoform">
+      <AutoForm
+        schema={bridge}
         model={model || {}}
         onSubmit={onUpdate}
-        ref={form => form?.reset()}>
-
-        {  label && <h3>{label}</h3> }
+        ref={(form) => form?.reset()}
+      >
+        {label && <h3>{label}</h3>}
 
         <div className={`fields`}>
           <AutoFields />
         </div>
-        
+
         <div className={`errors`}>
           <ErrorsField />
         </div>

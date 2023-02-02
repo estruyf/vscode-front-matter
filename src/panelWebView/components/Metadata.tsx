@@ -3,7 +3,7 @@ import { BlockFieldData, Field, PanelSettings } from '../../models';
 import { CommandToCode } from '../CommandToCode';
 import { TagType } from '../TagType';
 import { Collapsible } from './Collapsible';
-import "react-datepicker/dist/react-datepicker.css";
+import 'react-datepicker/dist/react-datepicker.css';
 import useContentType from '../../hooks/useContentType';
 import { WrapperField } from './Fields/WrapperField';
 import { ContentTypeValidator } from './ContentType/ContentTypeValidator';
@@ -22,7 +22,13 @@ export interface IMetadataProps {
   unsetFocus: () => void;
 }
 
-const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, features, metadata, focusElm, unsetFocus}: React.PropsWithChildren<IMetadataProps>) => {
+const Metadata: React.FunctionComponent<IMetadataProps> = ({
+  settings,
+  features,
+  metadata,
+  focusElm,
+  unsetFocus
+}: React.PropsWithChildren<IMetadataProps>) => {
   const contentType = useContentType(settings, metadata);
 
   const sendUpdate = (field: string | undefined, value: any, parents: string[]) => {
@@ -42,13 +48,13 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, features, 
   }
 
   const renderFields = (
-    ctFields: Field[], 
-    parent: IMetadata, 
-    parentFields: string[] = [], 
+    ctFields: Field[],
+    parent: IMetadata,
+    parentFields: string[] = [],
     blockData?: BlockFieldData,
     onFieldUpdate?: (field: string | undefined, value: any, parents: string[]) => void,
     parentBlock?: string | null
-  ) : (JSX.Element | null)[] | undefined => {
+  ): (JSX.Element | null)[] | undefined => {
     if (!ctFields) {
       return;
     }
@@ -61,7 +67,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, features, 
       }
     };
 
-    return ctFields.map(field => (
+    return ctFields.map((field) => (
       <WrapperField
         key={field.name}
         field={field}
@@ -75,21 +81,17 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({settings, features, 
         onSendUpdate={onSendUpdate}
         unsetFocus={unsetFocus}
         renderFields={renderFields}
-         />
+      />
     ));
   };
 
   return (
     <Collapsible id={`tags`} title="Metadata" className={`inherit z-20`}>
       <FeatureFlag features={features || []} flag={FEATURE_FLAG.panel.contentType}>
-        <ContentTypeValidator
-          fields={contentType?.fields || []}
-          metadata={metadata} />
+        <ContentTypeValidator fields={contentType?.fields || []} metadata={metadata} />
       </FeatureFlag>
 
-      {
-        renderFields(contentType?.fields || [], metadata)
-      }
+      {renderFields(contentType?.fields || [], metadata)}
     </Collapsible>
   );
 };

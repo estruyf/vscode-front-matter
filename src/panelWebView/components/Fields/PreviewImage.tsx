@@ -11,8 +11,11 @@ export interface IPreviewImageProps {
   onRemove: (value: string) => void;
 }
 
-export const PreviewImage: React.FunctionComponent<IPreviewImageProps> = ({ value, onRemove }: React.PropsWithChildren<IPreviewImageProps>) => {
-  const [ imgUrl, setImgUrl ] = useState("");
+export const PreviewImage: React.FunctionComponent<IPreviewImageProps> = ({
+  value,
+  onRemove
+}: React.PropsWithChildren<IPreviewImageProps>) => {
+  const [imgUrl, setImgUrl] = useState('');
 
   const listener = (event: any) => {
     const message = event.data;
@@ -23,13 +26,13 @@ export const PreviewImage: React.FunctionComponent<IPreviewImageProps> = ({ valu
         setImgUrl(data.url);
       }
     }
-  }
+  };
 
   useEffect(() => {
     if (value?.webviewUrl) {
       setImgUrl(value.webviewUrl);
     } else {
-      Messenger.send(CommandToCode.getImageUrl, value)
+      Messenger.send(CommandToCode.getImageUrl, value);
     }
   }, [value]);
 
@@ -38,14 +41,20 @@ export const PreviewImage: React.FunctionComponent<IPreviewImageProps> = ({ valu
 
     return () => {
       window.removeEventListener('message', listener);
-    }
+    };
   }, []);
 
   return (
     <div className={`metadata_field__preview_image__preview`}>
       <ImageFallback src={imgUrl} />
 
-      <button type="button" onClick={() => onRemove(value.original)} className={`metadata_field__preview_image__remove`}>Remove image</button>
+      <button
+        type="button"
+        onClick={() => onRemove(value.original)}
+        className={`metadata_field__preview_image__remove`}
+      >
+        Remove image
+      </button>
     </div>
   );
 };

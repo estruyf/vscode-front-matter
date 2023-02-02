@@ -7,17 +7,22 @@ export interface IValidInfoProps {
   isValid: boolean;
 }
 
-const ValidInfo: React.FunctionComponent<IValidInfoProps> = ({label, isValid}: React.PropsWithChildren<IValidInfoProps>) => {
+const ValidInfo: React.FunctionComponent<IValidInfoProps> = ({
+  label,
+  isValid
+}: React.PropsWithChildren<IValidInfoProps>) => {
   return (
     <>
-      {
-        isValid ? (
-          <span className="valid"><CheckIcon /></span>
-        ) : (
-          <span className="warning"><WarningIcon /></span>
-        )
-      }
-      { label && <span>{label}</span> }
+      {isValid ? (
+        <span className="valid">
+          <CheckIcon />
+        </span>
+      ) : (
+        <span className="warning">
+          <WarningIcon />
+        </span>
+      )}
+      {label && <span>{label}</span>}
     </>
   );
 };

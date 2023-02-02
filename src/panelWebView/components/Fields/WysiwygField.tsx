@@ -7,22 +7,20 @@ export interface IWysiwygFieldProps {
   onChange: (txtValue: string) => void;
 }
 
-const WysiwygField: React.FunctionComponent<IWysiwygFieldProps> = ({ text, onChange }: React.PropsWithChildren<IWysiwygFieldProps>) => {
+const WysiwygField: React.FunctionComponent<IWysiwygFieldProps> = ({
+  text,
+  onChange
+}: React.PropsWithChildren<IWysiwygFieldProps>) => {
   const modules = {
     toolbar: [
-      [{ 'header': [1, 2, 3, false] }],
+      [{ header: [1, 2, 3, false] }],
       ['bold', 'italic', 'underline', 'strike'],
-      [{'list': 'ordered'}, {'list': 'bullet'}],
+      [{ list: 'ordered' }, { list: 'bullet' }],
       ['clean']
     ]
   };
 
-  return (
-    <ReactQuill
-      modules={modules}
-      value={text || ""} 
-      onChange={onChange} />
-  );
+  return <ReactQuill modules={modules} value={text || ''} onChange={onChange} />;
 };
 
 export default WysiwygField;

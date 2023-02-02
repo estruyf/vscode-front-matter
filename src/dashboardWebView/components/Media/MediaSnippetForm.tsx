@@ -14,7 +14,13 @@ export interface IMediaSnippetFormProps {
   onInsert: (output: string) => void;
 }
 
-export const MediaSnippetForm: React.FunctionComponent<IMediaSnippetFormProps> = ({ media, snippet, mediaData, onDismiss, onInsert }: React.PropsWithChildren<IMediaSnippetFormProps>) => {
+export const MediaSnippetForm: React.FunctionComponent<IMediaSnippetFormProps> = ({
+  media,
+  snippet,
+  mediaData,
+  onDismiss,
+  onInsert
+}: React.PropsWithChildren<IMediaSnippetFormProps>) => {
   const viewData = useRecoilValue(ViewDataSelector);
   const formRef = useRef<SnippetFormHandle>(null);
 
@@ -24,22 +30,24 @@ export const MediaSnippetForm: React.FunctionComponent<IMediaSnippetFormProps> =
   };
 
   return (
-    <FormDialog 
+    <FormDialog
       title={`Insert media: ${media.title || media.filename}`}
-      description={`Insert the ${media.title || media.filename} media file into the current article`}
+      description={`Insert the ${
+        media.title || media.filename
+      } media file into the current article`}
       isSaveDisabled={false}
       trigger={insertToArticle}
       dismiss={onDismiss}
-      okBtnText='Insert'
-      cancelBtnText='Cancel'>
-    
+      okBtnText="Insert"
+      cancelBtnText="Cancel"
+    >
       <SnippetForm
         ref={formRef}
         snippet={snippet}
         mediaData={mediaData}
         selection={viewData?.data?.selection}
-        onInsert={onInsert} />
-
+        onInsert={onInsert}
+      />
     </FormDialog>
   );
 };

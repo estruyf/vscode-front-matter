@@ -8,7 +8,9 @@ import { Pagination } from '../Header/Pagination';
 
 export interface IMediaHeaderBottomProps {}
 
-export const MediaHeaderBottom: React.FunctionComponent<IMediaHeaderBottomProps> = (props: React.PropsWithChildren<IMediaHeaderBottomProps>) => {
+export const MediaHeaderBottom: React.FunctionComponent<IMediaHeaderBottomProps> = (
+  props: React.PropsWithChildren<IMediaHeaderBottomProps>
+) => {
   const settings = useRecoilValue(SettingsAtom);
 
   if (!settings?.wsFolder) {
@@ -16,8 +18,10 @@ export const MediaHeaderBottom: React.FunctionComponent<IMediaHeaderBottomProps>
   }
 
   return (
-    <nav className="w-full bg-gray-200 text-vulcan-300 dark:bg-vulcan-400 dark:text-whisper-600 border-b border-gray-300 dark:border-vulcan-100 flex justify-between py-2" aria-label="Breadcrumb">
-
+    <nav
+      className="w-full bg-gray-200 text-vulcan-300 dark:bg-vulcan-400 dark:text-whisper-600 border-b border-gray-300 dark:border-vulcan-100 flex justify-between py-2"
+      aria-label="Breadcrumb"
+    >
       <Breadcrumb />
 
       <Pagination />
