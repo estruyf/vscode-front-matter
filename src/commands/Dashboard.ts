@@ -6,7 +6,6 @@ import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { Extension } from '../helpers/Extension';
 import { WebviewHelper } from '@estruyf/vscode';
 import { DashboardData } from '../models/DashboardData';
-import { MediaLibrary } from '../helpers/MediaLibrary';
 import {
   DashboardListener,
   MediaListener,
@@ -45,8 +44,6 @@ export class Dashboard {
    * Open or reveal the dashboard
    */
   public static async open(data?: DashboardData) {
-    MediaLibrary.getInstance();
-
     Dashboard._viewData = data;
 
     if (Dashboard.isOpen) {

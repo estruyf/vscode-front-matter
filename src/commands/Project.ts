@@ -5,7 +5,7 @@ import { join } from 'path';
 import { Notifications } from '../helpers/Notifications';
 import { Template } from './Template';
 import { Folders } from './Folders';
-import { FrameworkDetector, Logger, Settings } from '../helpers';
+import { FrameworkDetector, Logger, MediaLibrary, Settings } from '../helpers';
 import {
   SETTING_CONTENT_DEFAULT_FILETYPE,
   SETTING_TAXONOMY_CONTENT_TYPES,
@@ -29,7 +29,12 @@ categories: []
 `;
 
   public static isInitialized() {
-    return Settings.hasProjectFile();
+    const hasProjectFile = Settings.hasProjectFile();
+    // If it has a project file, initialize the media library
+    if (hasProjectFile) {
+      MediaLibrary.getInstance();
+    }
+    return hasProjectFile;
   }
 
   /**
@@ -47,6 +52,9 @@ categories: []
       } else {
         Notifications.info('Project initialized successfully.');
       }
+
+      // Initialize the media library
+      MediaLibrary.getInstance();
 
       Telemetry.send(TelemetryEvent.initialization);
 
