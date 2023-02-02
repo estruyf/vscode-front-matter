@@ -368,6 +368,8 @@ export async function activate(context: vscode.ExtensionContext) {
     collapseAll,
     createFolder
   );
+
+  console.log(`FRONT MATTER CMS activated!`)
 }
 
 export function deactivate() {

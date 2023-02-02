@@ -302,8 +302,31 @@ export class Extension {
   public async setState<T>(
     propKey: string,
     propValue: T,
-    type: 'workspace' | 'global' = 'global'
+    type: 'workspace' | 'global' = 'global',
+    setState: boolean = false
   ): Promise<void> {
+    if (this.isFileStorageNeeded(propKey)) {
+      let storageUri: Uri | undefined = undefined;
+      if (type === 'global') {
+        storageUri = await this.createGlobalStorageIfNotExists();
+      } else {
+        storageUri = await this.createLocalStorageIfNotExists();
+      }
+
+      if (storageUri) {
+        const workspaceData = Uri.joinPath(
+          storageUri,
+          `${this.formatStorageFileName(propKey)}.json`
+        );
+        const writeData = new TextEncoder().encode(JSON.stringify(propValue));
+        await workspace.fs.writeFile(workspaceData, writeData);
+
+        if (!setState) {
+          return;
+        }
+      }
+    }
+
     if (type === 'global') {
       await this.ctx.globalState.update(propKey, propValue);
     } else {
@@ -315,6 +338,32 @@ export class Extension {
     propKey: string,
     type: 'workspace' | 'global' = 'global'
   ): Promise<T | undefined> {
+    if (this.isFileStorageNeeded(propKey)) {
+      let storageUri: Uri | undefined = undefined;
+      if (type === 'global') {
+        storageUri = await this.createGlobalStorageIfNotExists();
+      } else {
+        storageUri = await this.createLocalStorageIfNotExists();
+      }
+
+      if (storageUri) {
+        try {
+          const workspaceData = Uri.joinPath(
+            storageUri,
+            `${this.formatStorageFileName(propKey)}.json`
+          );
+          const fileData = await workspace.fs.readFile(workspaceData);
+
+          if (fileData) {
+            const jsonData = new TextDecoder().decode(fileData);
+            return JSON.parse(jsonData);
+          }
+        } catch (e) {
+          // File doesn't exist, go and check if available on normal state
+        }
+      }
+    }
+
     if (type === 'global') {
       return await this.ctx.globalState.get(propKey);
     } else {
@@ -350,5 +399,59 @@ export class Extension {
       this.isBetaVersion() ? EXTENSION_BETA_ID : EXTENSION_ID
     )!;
     return frontMatter.packageJSON;
+  }
+
+  /**
+   * Checks if the storage key needs to be stored in a file
+   * @param propKey
+   * @returns
+   */
+  private isFileStorageNeeded(propKey: string) {
+    return propKey === ExtensionState.Dashboard.Pages.Cache;
+  }
+
+  /**
+   * Replace special characters in the storage file name
+   * @param propKey
+   * @returns
+   */
+  private formatStorageFileName(propKey: string) {
+    return propKey.replace(/:/g, '.');
+  }
+
+  /**
+   * Validates if the global storage path exists
+   */
+  private async createGlobalStorageIfNotExists() {
+    if (!this.ctx.globalStorageUri) {
+      return;
+    }
+
+    try {
+      // When folder doesn't exist, and error gets thrown
+      await workspace.fs.stat(this.ctx.globalStorageUri);
+    } catch {
+      await workspace.fs.createDirectory(this.ctx.globalStorageUri);
+    }
+
+    return this.ctx.globalStorageUri;
+  }
+
+  /**
+   * Validates if the storage path exists
+   */
+  private async createLocalStorageIfNotExists() {
+    if (!this.ctx.storageUri) {
+      return;
+    }
+
+    try {
+      // When folder doesn't exist, and error gets thrown
+      await workspace.fs.stat(this.ctx.storageUri);
+    } catch {
+      await workspace.fs.createDirectory(this.ctx.storageUri);
+    }
+
+    return this.ctx.storageUri;
   }
 }

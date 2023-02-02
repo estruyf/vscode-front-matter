@@ -23,9 +23,9 @@ export class Cache {
   private static async clear() {
     const ext = Extension.getInstance();
 
-    await ext.setState(ExtensionState.Dashboard.Pages.Cache, undefined, 'workspace');
-    await ext.setState(ExtensionState.Dashboard.Pages.Index, undefined, 'workspace');
-    await ext.setState(ExtensionState.Settings.Extends, undefined, 'workspace');
+    await ext.setState(ExtensionState.Dashboard.Pages.Cache, undefined, 'workspace', true);
+    await ext.setState(ExtensionState.Dashboard.Pages.Index, undefined, 'workspace', true);
+    await ext.setState(ExtensionState.Settings.Extends, undefined, 'workspace', true);
 
     Notifications.info('Cache cleared');
   }
