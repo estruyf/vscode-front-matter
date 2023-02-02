@@ -7,7 +7,9 @@ export interface IStatusProps {
   draft: boolean | string;
 }
 
-export const Status: React.FunctionComponent<IStatusProps> = ({draft}: React.PropsWithChildren<IStatusProps>) => {
+export const Status: React.FunctionComponent<IStatusProps> = ({
+  draft
+}: React.PropsWithChildren<IStatusProps>) => {
   const settings = useRecoilValue(SettingsAtom);
 
   const draftField = useMemo(() => settings?.draftField, [settings]);
@@ -22,17 +24,27 @@ export const Status: React.FunctionComponent<IStatusProps> = ({draft}: React.Pro
     }
   }, [draftField, draft]);
 
-  if (settings?.draftField && settings.draftField.type === "choice") {
+  if (settings?.draftField && settings.draftField.type === 'choice') {
     if (draftValue) {
-      return <span className={`inline-block px-2 py-1 leading-none rounded-sm font-semibold uppercase tracking-wide text-xs text-whisper-200 dark:text-vulcan-500 bg-teal-500`}>{draftValue}</span>;
+      return (
+        <span
+          className={`inline-block px-2 py-1 leading-none rounded-sm font-semibold uppercase tracking-wide text-xs text-whisper-200 dark:text-vulcan-500 bg-teal-500`}
+        >
+          {draftValue}
+        </span>
+      );
     } else {
       return null;
     }
   }
 
   return (
-    <span className={`inline-block px-2 py-1 leading-none rounded-sm font-semibold uppercase tracking-wide text-xs text-whisper-200 dark:text-vulcan-500 ${draftValue ? "bg-red-500" : "bg-teal-500"}`}>
-      {draftValue ? "Draft" : "Published"}
+    <span
+      className={`inline-block px-2 py-1 leading-none rounded-sm font-semibold uppercase tracking-wide text-xs text-whisper-200 dark:text-vulcan-500 ${
+        draftValue ? 'bg-red-500' : 'bg-teal-500'
+      }`}
+    >
+      {draftValue ? 'Draft' : 'Published'}
     </span>
   );
 };

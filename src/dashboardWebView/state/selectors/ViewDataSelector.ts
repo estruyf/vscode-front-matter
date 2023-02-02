@@ -3,7 +3,7 @@ import { ViewDataAtom } from '..';
 
 export const ViewDataSelector = selector({
   key: 'ViewDataSelector',
-  get: ({get}) => {
+  get: ({ get }) => {
     return get(ViewDataAtom);
   }
 });

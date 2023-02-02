@@ -2,7 +2,7 @@ import * as React from 'react';
 import { HTMLProps, Ref, useEffect } from 'react';
 import { Override, filterDOMProps, useField } from 'uniforms';
 
-type ValueType = string | number | readonly string[] | undefined
+type ValueType = string | number | readonly string[] | undefined;
 export type HiddenFieldProps = Override<
   HTMLProps<HTMLInputElement>,
   {
@@ -15,7 +15,7 @@ export type HiddenFieldProps = Override<
 
 export default function HiddenField({ value, ...rawProps }: HiddenFieldProps) {
   const props = useField(rawProps.name, rawProps, { initialValue: false })[0];
-  const defaultValue = props.value as ValueType ?? ''
+  const defaultValue = (props.value as ValueType) ?? '';
 
   useEffect(() => {
     if (value !== undefined && value !== props.value) {

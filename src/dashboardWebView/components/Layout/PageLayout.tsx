@@ -10,19 +10,26 @@ export interface IPageLayoutProps {
   contentClass?: string;
 }
 
-export const PageLayout: React.FunctionComponent<IPageLayoutProps> = ({ header, folders, totalPages, contentClass, children }: React.PropsWithChildren<IPageLayoutProps>) => {
+export const PageLayout: React.FunctionComponent<IPageLayoutProps> = ({
+  header,
+  folders,
+  totalPages,
+  contentClass,
+  children
+}: React.PropsWithChildren<IPageLayoutProps>) => {
   const settings = useRecoilValue(SettingsSelector);
-  
+
   return (
     <div className="flex flex-col h-full overflow-auto">
-      <Header 
-        header={header}
-        folders={folders}
-        totalPages={totalPages}
-        settings={settings} />
+      <Header header={header} folders={folders} totalPages={totalPages} settings={settings} />
 
-      <div className={contentClass || "w-full flex justify-between flex-col flex-grow max-w-7xl mx-auto pt-6 px-4"}>
-        { children }
+      <div
+        className={
+          contentClass ||
+          'w-full flex justify-between flex-col flex-grow max-w-7xl mx-auto pt-6 px-4'
+        }
+      >
+        {children}
       </div>
     </div>
   );

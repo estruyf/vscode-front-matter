@@ -3,7 +3,7 @@ import { TagAtom } from '..';
 
 export const TagSelector = selector({
   key: 'TagSelector',
-  get: ({get}) => {
+  get: ({ get }) => {
     return get(TagAtom);
   }
 });

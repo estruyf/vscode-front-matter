@@ -3,7 +3,7 @@ import { MediaFoldersAtom } from '..';
 
 export const MediaFoldersSelector = selector({
   key: 'MediaFoldersSelector',
-  get: ({get}) => {
+  get: ({ get }) => {
     return get(MediaFoldersAtom);
   }
 });

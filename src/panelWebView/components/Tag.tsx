@@ -18,23 +18,19 @@ const Tag: React.FunctionComponent<ITagProps> = (props: React.PropsWithChildren<
   return (
     <>
       <div className={`tag`}>
-        { 
-          !disableConfigurable && onCreate && (
-            <button 
-              className={`tag__create`}
-              title={`Add ${value} to your settings`} 
-              onClick={() => onCreate(value)}>
-              <PlusIcon style={{ width: `1rem`, height: `1rem` }} />
-            </button>
-          ) 
-        }
-        
+        {!disableConfigurable && onCreate && (
+          <button
+            className={`tag__create`}
+            title={`Add ${value} to your settings`}
+            onClick={() => onCreate(value)}
+          >
+            <PlusIcon style={{ width: `1rem`, height: `1rem` }} />
+          </button>
+        )}
+
         <div className={`tag__value`}>{value}</div>
 
-        <button 
-          title={title} 
-          className={`tag__delete`} 
-          onClick={() => onRemove(value)}>
+        <button title={title} className={`tag__delete`} onClick={() => onRemove(value)}>
           <XIcon style={{ width: `1rem`, height: `1rem` }} />
         </button>
       </div>

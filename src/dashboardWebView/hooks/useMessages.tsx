@@ -3,7 +3,14 @@ import { useRecoilState } from 'recoil';
 import { DashboardCommand } from '../DashboardCommand';
 import { DashboardMessage } from '../DashboardMessage';
 import { Page } from '../models/Page';
-import { DashboardViewAtom, LoadingAtom, SettingsAtom, ViewDataAtom, SearchReadyAtom, ModeAtom } from '../state';
+import {
+  DashboardViewAtom,
+  LoadingAtom,
+  SettingsAtom,
+  ViewDataAtom,
+  SearchReadyAtom,
+  ModeAtom
+} from '../state';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
 import { NavigationType } from '../models';
@@ -66,7 +73,7 @@ export default function useMessages() {
 
     return () => {
       Messenger.unlisten(messageListener);
-    }
+    };
   }, ['']);
 
   return {

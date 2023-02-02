@@ -1,16 +1,16 @@
 export const CONTEXT = {
-  canOpenPreview: "frontMatter:CanOpenPreview",
-  canOpenDashboard: "frontMatter:CanOpenDashboard",
-  isEnabled: "frontMatter:enabled",
-  isDashboardOpen: "frontMatter:dashboard:open",
-  wysiwyg: "frontMatter:markdown:wysiwyg",
-  backer: "frontMatter:backers:supporter",
-  isValidFile: "frontMatter:file:isValid",
+  canOpenPreview: 'frontMatter:CanOpenPreview',
+  canOpenDashboard: 'frontMatter:CanOpenDashboard',
+  isEnabled: 'frontMatter:enabled',
+  isDashboardOpen: 'frontMatter:dashboard:open',
+  wysiwyg: 'frontMatter:markdown:wysiwyg',
+  backer: 'frontMatter:backers:supporter',
+  isValidFile: 'frontMatter:file:isValid',
 
-  hasViewModes: "frontMatter:has:modes",
+  hasViewModes: 'frontMatter:has:modes',
 
-  isSnippetsDashboardEnabled: "frontMatter:dashboard:snippets:enabled",
-  isDataDashboardEnabled: "frontMatter:dashboard:data:enabled",
+  isSnippetsDashboardEnabled: 'frontMatter:dashboard:snippets:enabled',
+  isDataDashboardEnabled: 'frontMatter:dashboard:data:enabled',
 
-  isGitEnabled: "frontMatter:git:enabled",
+  isGitEnabled: 'frontMatter:git:enabled'
 };

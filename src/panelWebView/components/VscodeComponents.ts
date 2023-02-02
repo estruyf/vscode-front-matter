@@ -1,4 +1,4 @@
-import {wrapWc} from 'wc-react';
+import { wrapWc } from 'wc-react';
 
 // @bendera/vscode-webview-elements
 export const VsTable = wrapWc(`vscode-table`);

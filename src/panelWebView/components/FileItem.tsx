@@ -12,14 +12,17 @@ export interface IFileItemProps {
   folderName: string | undefined;
 }
 
-const FileItem: React.FunctionComponent<IFileItemProps> = ({ name, folderName, path }: React.PropsWithChildren<IFileItemProps>) => {
-
+const FileItem: React.FunctionComponent<IFileItemProps> = ({
+  name,
+  folderName,
+  path
+}: React.PropsWithChildren<IFileItemProps>) => {
   const openFile = () => {
     Messenger.send(CommandToCode.openInEditor, path);
   };
 
   const itemName = useMemo(() => {
-    if (folderName && name.includes("index.")) {
+    if (folderName && name.includes('index.')) {
       return folderName;
     }
 
@@ -30,15 +33,8 @@ const FileItem: React.FunctionComponent<IFileItemProps> = ({ name, folderName, p
   const fileExtension = useMemo(() => `.${name.split('.').pop()}`, [name]);
 
   return (
-    <li className={`file_list__items__item`}
-        onClick={openFile}>
-      {
-        (DEFAULT_FILE_TYPES.includes(fileExtension)) ? (
-          <MarkdownIcon />
-        ) : (
-          <FileIcon />
-        )
-      }
+    <li className={`file_list__items__item`} onClick={openFile}>
+      {DEFAULT_FILE_TYPES.includes(fileExtension) ? <MarkdownIcon /> : <FileIcon />}
 
       <span>{itemName}</span>
     </li>

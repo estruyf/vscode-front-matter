@@ -1,11 +1,10 @@
 import { stopWords, charMap } from '../constants';
 
 export class SlugHelper {
-  
   /**
    * Generate the slug
-   * 
-   * @param articleTitle 
+   *
+   * @param articleTitle
    */
   public static createSlug(articleTitle: string): string | null {
     if (!articleTitle) {
@@ -20,7 +19,7 @@ export class SlugHelper {
       let words = cleanTitle.split(/\s/);
       // Removing stop words
       words = this.removeStopWords(words);
-      cleanTitle = words.join("-");
+      cleanTitle = words.join('-');
       cleanTitle = this.replaceCharacters(cleanTitle);
       return cleanTitle;
     }
@@ -30,23 +29,23 @@ export class SlugHelper {
 
   /**
    * Remove  links, periods, commas, semi-colons, etc.
-   * 
-   * @param value 
+   *
+   * @param value
    */
   private static removePunctuation(value: string): string {
-    if (typeof value !== "string") {
-      return "";
+    if (typeof value !== 'string') {
+      return '';
     }
 
-    const punctuationless = value?.replace(/[\.,-\/#!$@%\^&\*;:{}=\-_`'"~()+\?<>]/g, " ");
+    const punctuationless = value?.replace(/[\.,-\/#!$@%\^&\*;:{}=\-_`'"~()+\?<>]/g, ' ');
     // Remove double spaces
-    return punctuationless?.replace(/\s{2,}/g," ");
+    return punctuationless?.replace(/\s{2,}/g, ' ');
   }
 
   /**
    * Remove stop words
-   * 
-   * @param words 
+   *
+   * @param words
    */
   private static removeStopWords(words: string[]) {
     const validWords: string[] = [];
@@ -60,11 +59,11 @@ export class SlugHelper {
 
   /**
    * Replace characters from title
-   * 
-   * @param value 
+   *
+   * @param value
    */
   private static replaceCharacters(value: string) {
     const characters = [...value];
-    return characters.map(c => charMap[c] || c).join("");
+    return characters.map((c) => charMap[c] || c).join('');
   }
 }

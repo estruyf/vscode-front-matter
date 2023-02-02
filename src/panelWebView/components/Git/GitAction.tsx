@@ -8,12 +8,14 @@ import { PanelSettings } from '../../../models';
 import { ActionButton } from '../ActionButton';
 
 export interface IGitActionProps {
-  settings: PanelSettings | undefined
+  settings: PanelSettings | undefined;
 }
 
-export const GitAction: React.FunctionComponent<IGitActionProps> = ({ settings }: React.PropsWithChildren<IGitActionProps>) => {
-  const [ isSyncing, setIsSyncing ] = useState(false);
-  
+export const GitAction: React.FunctionComponent<IGitActionProps> = ({
+  settings
+}: React.PropsWithChildren<IGitActionProps>) => {
+  const [isSyncing, setIsSyncing] = useState(false);
+
   const pull = () => {
     Messenger.send(GeneralCommands.toVSCode.gitSync);
   };
@@ -33,7 +35,7 @@ export const GitAction: React.FunctionComponent<IGitActionProps> = ({ settings }
 
     return () => {
       Messenger.unlisten(messageListener);
-    }
+    };
   }, []);
 
   if (!settings?.git?.actions || !settings?.git.isGitRepo) {
@@ -41,15 +43,16 @@ export const GitAction: React.FunctionComponent<IGitActionProps> = ({ settings }
   }
 
   return (
-    <div className='git_actions'>
-      <ActionButton 
-        onClick={pull} 
-        title={(
-          <div className='git_actions__sync'>
+    <div className="git_actions">
+      <ActionButton
+        onClick={pull}
+        title={
+          <div className="git_actions__sync">
             <RefreshIcon className={isSyncing ? 'animate-spin' : ''} />
             <span>Sync</span>
           </div>
-        )} />
+        }
+      />
     </div>
   );
 };

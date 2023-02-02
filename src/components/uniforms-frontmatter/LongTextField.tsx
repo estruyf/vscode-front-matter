@@ -28,7 +28,7 @@ function LongText({
         disabled={disabled}
         id={id}
         name={name}
-        onChange={event => onChange(event.target.value)}
+        onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         readOnly={readOnly}
         ref={inputRef}

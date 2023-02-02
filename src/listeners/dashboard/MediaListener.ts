@@ -1,7 +1,7 @@
 import { Telemetry } from '../../helpers/Telemetry';
 import { MediaHelpers } from '../../helpers/MediaHelpers';
-import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
-import { BaseListener } from "./BaseListener";
+import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
+import { BaseListener } from './BaseListener';
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { SortingOption } from '../../dashboardWebView/models';
 import { commands, env, Uri } from 'vscode';
@@ -9,14 +9,13 @@ import { COMMAND_NAME, TelemetryEvent } from '../../constants';
 import * as os from 'os';
 import { Folders } from '../../commands';
 
-
 export class MediaListener extends BaseListener {
   private static timers: { [folder: string]: any } = {};
 
-  public static async process(msg: { command: DashboardMessage, data: any }) {
+  public static async process(msg: { command: DashboardMessage; data: any }) {
     super.process(msg);
 
-    switch(msg.command) {
+    switch (msg.command) {
       case DashboardMessage.getMedia:
         const { page, folder, sorting } = msg?.data;
         this.sendMediaFiles(page, folder, sorting);
@@ -62,18 +61,22 @@ export class MediaListener extends BaseListener {
 
   /**
    * Sends the media files to the dashboard
-   * @param page 
-   * @param folder 
-   * @param sorting 
+   * @param page
+   * @param folder
+   * @param sorting
    */
-  public static async sendMediaFiles(page: number = 0, folder: string = '', sorting: SortingOption | null = null) {
+  public static async sendMediaFiles(
+    page: number = 0,
+    folder: string = '',
+    sorting: SortingOption | null = null
+  ) {
     const files = await MediaHelpers.getMedia(page, folder, sorting);
     this.sendMsg(DashboardCommand.media, files);
   }
 
   private static openFileInFinder(file: string) {
     if (file) {
-      if (os.type() === "Linux" && env.remoteName?.toLowerCase() === "wsl") {
+      if (os.type() === 'Linux' && env.remoteName?.toLowerCase() === 'wsl') {
         commands.executeCommand('remote-wsl.revealInExplorer', Uri.parse(file));
       } else {
         commands.executeCommand('revealFileInOS', Uri.parse(file));
@@ -83,7 +86,7 @@ export class MediaListener extends BaseListener {
 
   /**
    * Store the file and send a message after multiple uploads
-   * @param data 
+   * @param data
    */
   private static async store(data: any) {
     try {
@@ -95,10 +98,10 @@ export class MediaListener extends BaseListener {
         clearTimeout(this.timers[folderPath]);
         delete this.timers[folderPath];
       }
-      
+
       this.timers[folderPath] = setTimeout(() => {
         MediaHelpers.resetMedia();
-        this.sendMediaFiles(0, folder || "");
+        this.sendMediaFiles(0, folder || '');
         delete this.timers[folderPath];
       }, 500);
     } catch {}
@@ -106,26 +109,26 @@ export class MediaListener extends BaseListener {
 
   /**
    * Delete a media file
-   * @param data 
+   * @param data
    */
-  private static delete(data: { file: string; page: number; folder: string | null; }) {
+  private static delete(data: { file: string; page: number; folder: string | null }) {
     try {
       MediaHelpers.deleteFile(data);
-      this.sendMediaFiles(data.page || 0, data.folder || "");
+      this.sendMediaFiles(data.page || 0, data.folder || '');
     } catch {}
   }
 
   /**
    * Update media metadata
-   * @param data 
+   * @param data
    */
   private static async update(data: any) {
     try {
       const { page, folder } = data;
-        
+
       await MediaHelpers.updateMetadata(data);
 
-      this.sendMediaFiles(page || 0, folder || "");
+      this.sendMediaFiles(page || 0, folder || '');
     } catch {}
   }
 }

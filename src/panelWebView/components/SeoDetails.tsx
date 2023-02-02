@@ -1,5 +1,12 @@
 import * as React from 'react';
-import { VsTable, VsTableBody, VsTableHeader, VsTableHeaderCell, VsTableRow, VsTableCell } from './VscodeComponents';
+import {
+  VsTable,
+  VsTableBody,
+  VsTableHeader,
+  VsTableHeaderCell,
+  VsTableRow,
+  VsTableCell
+} from './VscodeComponents';
 
 export interface ISeoDetailsProps {
   allowedLength: number;
@@ -9,15 +16,17 @@ export interface ISeoDetailsProps {
   noValidation?: boolean;
 }
 
-const SeoDetails: React.FunctionComponent<ISeoDetailsProps> = (props: React.PropsWithChildren<ISeoDetailsProps>) => {
+const SeoDetails: React.FunctionComponent<ISeoDetailsProps> = (
+  props: React.PropsWithChildren<ISeoDetailsProps>
+) => {
   const { allowedLength, title, value, valueTitle, noValidation } = props;
 
   const validate = () => {
     if (noValidation) {
-      return "";
+      return '';
     }
 
-    return value <= allowedLength ? "valid" : "not-valid"
+    return value <= allowedLength ? 'valid' : 'not-valid';
   };
 
   return (

@@ -24,7 +24,9 @@ export interface IAppProps {
   showWelcome: boolean;
 }
 
-export const App: React.FunctionComponent<IAppProps> = ({showWelcome}: React.PropsWithChildren<IAppProps>) => {
+export const App: React.FunctionComponent<IAppProps> = ({
+  showWelcome
+}: React.PropsWithChildren<IAppProps>) => {
   const { loading, pages, settings } = useMessages();
   const view = useRecoilValue(DashboardViewSelector);
   const mode = useRecoilValue(ModeAtom);
@@ -34,19 +36,19 @@ export const App: React.FunctionComponent<IAppProps> = ({showWelcome}: React.Pro
   const viewState: any = Messenger.getState() || {};
 
   const isAllowed = (features: string[], flag: string) => {
-    if (!features ||( features.length > 0 && !features.includes(flag))) {
+    if (!features || (features.length > 0 && !features.includes(flag))) {
       return false;
     }
 
     return true;
-  }
+  };
 
   const allowDataView = useMemo(() => {
-    return isAllowed(mode?.features || [], FEATURE_FLAG.dashboard.data.view)
+    return isAllowed(mode?.features || [], FEATURE_FLAG.dashboard.data.view);
   }, [mode?.features]);
 
   const allowTaxonomyView = useMemo(() => {
-    return isAllowed(mode?.features || [], FEATURE_FLAG.dashboard.taxonomy.view)
+    return isAllowed(mode?.features || [], FEATURE_FLAG.dashboard.taxonomy.view);
   }, [mode?.features]);
 
   useEffect(() => {
@@ -72,27 +74,32 @@ export const App: React.FunctionComponent<IAppProps> = ({showWelcome}: React.Pro
 
   return (
     <ErrorBoundary
-      fallback={(<ErrorView />)}
+      fallback={<ErrorView />}
       onError={(error: Error, componentStack: string, eventId: string) => {
-        Messenger.send(DashboardMessage.logError, `Event ID: ${eventId}
+        Messenger.send(
+          DashboardMessage.logError,
+          `Event ID: ${eventId}
 Message: ${error.message}
 
-Stack: ${componentStack}`);
-      }}>
+Stack: ${componentStack}`
+        );
+      }}
+    >
       <main className={`h-full w-full`}>
         <Routes>
           <Route path={routePaths.welcome} element={<WelcomeScreen settings={settings} />} />
-          <Route path={routePaths.contents} element={<Contents pages={pages} loading={loading} />} />
+          <Route
+            path={routePaths.contents}
+            element={<Contents pages={pages} loading={loading} />}
+          />
           <Route path={routePaths.media} element={<Media />} />
           <Route path={routePaths.snippets} element={<Snippets />} />
-          
-          {
-            allowDataView && <Route path={routePaths.data} element={<DataView />} />
-          }
 
-          {
-            allowTaxonomyView && <Route path={routePaths.taxonomy} element={<TaxonomyView pages={pages} />} />
-          }
+          {allowDataView && <Route path={routePaths.data} element={<DataView />} />}
+
+          {allowTaxonomyView && (
+            <Route path={routePaths.taxonomy} element={<TaxonomyView pages={pages} />} />
+          )}
 
           <Route path={`*`} element={<UnknownView />} />
         </Routes>

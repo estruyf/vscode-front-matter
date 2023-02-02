@@ -1,6 +1,6 @@
-import { commands, window, Selection, QuickPickItem, TextEditor } from "vscode";
-import { COMMAND_NAME, CONTEXT, SETTING_CONTENT_WYSIWYG } from "../constants";
-import { Settings } from "../helpers";
+import { commands, window, Selection, QuickPickItem, TextEditor } from 'vscode';
+import { COMMAND_NAME, CONTEXT, SETTING_CONTENT_WYSIWYG } from '../constants';
+import { Settings } from '../helpers';
 
 enum MarkupType {
   bold = 1,
@@ -13,18 +13,16 @@ enum MarkupType {
   unorderedList,
   orderedList,
   taskList,
-  hyperlink,
+  hyperlink
 }
 
 export class Wysiwyg {
-
   /**
    * Registers the markup commands for the WYSIWYG controls
    * @param subscriptions
    * @returns
    */
   public static async registerCommands(subscriptions: unknown[]) {
-
     const wysiwygEnabled = Settings.get(SETTING_CONTENT_WYSIWYG);
 
     if (!wysiwygEnabled) {
@@ -34,59 +32,117 @@ export class Wysiwyg {
     await commands.executeCommand('setContext', CONTEXT.wysiwyg, true);
 
     // Surrounding markup
-    subscriptions.push(commands.registerCommand(COMMAND_NAME.bold, () => this.addMarkup(MarkupType.bold)));
-    subscriptions.push(commands.registerCommand(COMMAND_NAME.italic, () => this.addMarkup(MarkupType.italic)));
-    subscriptions.push(commands.registerCommand(COMMAND_NAME.strikethrough, () => this.addMarkup(MarkupType.strikethrough)));
-    subscriptions.push(commands.registerCommand(COMMAND_NAME.code, () => this.addMarkup(MarkupType.code)));
-    subscriptions.push(commands.registerCommand(COMMAND_NAME.codeblock, () => this.addMarkup(MarkupType.codeblock)));
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.bold, () => this.addMarkup(MarkupType.bold))
+    );
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.italic, () => this.addMarkup(MarkupType.italic))
+    );
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.strikethrough, () =>
+        this.addMarkup(MarkupType.strikethrough)
+      )
+    );
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.code, () => this.addMarkup(MarkupType.code))
+    );
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.codeblock, () => this.addMarkup(MarkupType.codeblock))
+    );
 
     // Prefix markup
-    subscriptions.push(commands.registerCommand(COMMAND_NAME.heading, () => this.addMarkup(MarkupType.heading)));
-    subscriptions.push(commands.registerCommand(COMMAND_NAME.blockquote, () => this.addMarkup(MarkupType.blockquote)));
-    subscriptions.push(commands.registerCommand(COMMAND_NAME.unorderedlist, () => this.addMarkup(MarkupType.unorderedList)));
-    subscriptions.push(commands.registerCommand(COMMAND_NAME.orderedlist, () => this.addMarkup(MarkupType.orderedList)));
-    subscriptions.push(commands.registerCommand(COMMAND_NAME.taskList, () => this.addMarkup(MarkupType.taskList)));
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.heading, () => this.addMarkup(MarkupType.heading))
+    );
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.blockquote, () => this.addMarkup(MarkupType.blockquote))
+    );
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.unorderedlist, () =>
+        this.addMarkup(MarkupType.unorderedList)
+      )
+    );
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.orderedlist, () =>
+        this.addMarkup(MarkupType.orderedList)
+      )
+    );
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.taskList, () => this.addMarkup(MarkupType.taskList))
+    );
 
     // Other markup
-    subscriptions.push(commands.registerCommand(COMMAND_NAME.hyperlink, () => this.addMarkup(MarkupType.hyperlink)));
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.hyperlink, () => this.addMarkup(MarkupType.hyperlink))
+    );
 
     // Options
-    subscriptions.push(commands.registerCommand(COMMAND_NAME.options, async () => {
-      const qpItems: QuickPickItem[] = [
-        { label: "$(list-unordered) Unordered list", detail: "Add an unordered list", alwaysShow: true,  },
-        { label: "$(list-ordered) Ordered list", detail: "Add an ordered list", alwaysShow: true },
-        { label: "$(tasklist) Task list", detail: "Add a task list", alwaysShow: true },
-        { label: "$(code) Code", detail: "Add inline code snippet", alwaysShow: true },
-        { label: "$(symbol-namespace) Code block", detail: "Add a code block", alwaysShow: true },
-        { label: "$(quote) Blockquote", detail: "Add a blockquote", alwaysShow: true },
-        { label: "$(symbol-text) Strikethrough", detail: "Add a strikethrough", alwaysShow: true },
-      ]
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.options, async () => {
+        const qpItems: QuickPickItem[] = [
+          {
+            label: '$(list-unordered) Unordered list',
+            detail: 'Add an unordered list',
+            alwaysShow: true
+          },
+          {
+            label: '$(list-ordered) Ordered list',
+            detail: 'Add an ordered list',
+            alwaysShow: true
+          },
+          {
+            label: '$(tasklist) Task list',
+            detail: 'Add a task list',
+            alwaysShow: true
+          },
+          {
+            label: '$(code) Code',
+            detail: 'Add inline code snippet',
+            alwaysShow: true
+          },
+          {
+            label: '$(symbol-namespace) Code block',
+            detail: 'Add a code block',
+            alwaysShow: true
+          },
+          {
+            label: '$(quote) Blockquote',
+            detail: 'Add a blockquote',
+            alwaysShow: true
+          },
+          {
+            label: '$(symbol-text) Strikethrough',
+            detail: 'Add a strikethrough',
+            alwaysShow: true
+          }
+        ];
 
-      const option = await window.showQuickPick([ ...qpItems ], {
-        title: "WYSIWYG Options",
-        placeHolder: "Which type of markup would you like to insert?",
-        canPickMany: false,
-        ignoreFocusOut: true
-      });
+        const option = await window.showQuickPick([...qpItems], {
+          title: 'WYSIWYG Options',
+          placeHolder: 'Which type of markup would you like to insert?',
+          canPickMany: false,
+          ignoreFocusOut: true
+        });
 
-      if (option) {
-        if (option.label === qpItems[0].label) {
-          await this.addMarkup(MarkupType.unorderedList);
-        } else if (option.label === qpItems[1].label) {
-          await this.addMarkup(MarkupType.orderedList);
-        } else if (option.label === qpItems[2].label) {
-          await this.addMarkup(MarkupType.taskList);
-        } else if (option.label === qpItems[3].label) {
-          await this.addMarkup(MarkupType.code);
-        } else if (option.label === qpItems[4].label) {
-          await this.addMarkup(MarkupType.codeblock);
-        } else if (option.label === qpItems[5].label) {
-          await this.addMarkup(MarkupType.blockquote);
-        } else if (option.label === qpItems[6].label) {
-          await this.addMarkup(MarkupType.strikethrough);
+        if (option) {
+          if (option.label === qpItems[0].label) {
+            await this.addMarkup(MarkupType.unorderedList);
+          } else if (option.label === qpItems[1].label) {
+            await this.addMarkup(MarkupType.orderedList);
+          } else if (option.label === qpItems[2].label) {
+            await this.addMarkup(MarkupType.taskList);
+          } else if (option.label === qpItems[3].label) {
+            await this.addMarkup(MarkupType.code);
+          } else if (option.label === qpItems[4].label) {
+            await this.addMarkup(MarkupType.codeblock);
+          } else if (option.label === qpItems[5].label) {
+            await this.addMarkup(MarkupType.blockquote);
+          } else if (option.label === qpItems[6].label) {
+            await this.addMarkup(MarkupType.strikethrough);
+          }
         }
-      }
-    }));
+      })
+    );
   }
 
   /**
@@ -119,7 +175,7 @@ export class Wysiwyg {
       const selectionText = editor.document.getText(selection);
       const txt = await this.insertText(markers, type, selectionText);
 
-      editor.edit(builder => {
+      editor.edit((builder) => {
         builder.replace(selection, txt);
       });
     } else {
@@ -127,9 +183,12 @@ export class Wysiwyg {
 
       // Insert the markers where cursor is located.
       const markerLength = this.isMarkupWrapping(type) ? txt.length + 1 : markers.length;
-      let newPosition = crntSelection.with(crntSelection.line, crntSelection.character + markerLength);
+      let newPosition = crntSelection.with(
+        crntSelection.line,
+        crntSelection.character + markerLength
+      );
 
-      await editor.edit(builder => {
+      await editor.edit((builder) => {
         builder.insert(newPosition, txt);
       });
 
@@ -147,20 +206,20 @@ export class Wysiwyg {
    */
   private static async addHyperlink(editor: TextEditor, selection: Selection) {
     const hasTextSelection = !selection.isEmpty;
-    const linkText = hasTextSelection ? editor.document.getText(selection) : "";
+    const linkText = hasTextSelection ? editor.document.getText(selection) : '';
 
     const link = await window.showInputBox({
-      title: "WYSIWYG Hyperlink",
-      placeHolder: "Enter the URL",
-      prompt: "Enter the URL",
+      title: 'WYSIWYG Hyperlink',
+      placeHolder: 'Enter the URL',
+      prompt: 'Enter the URL',
       value: linkText,
       ignoreFocusOut: true
     });
 
     const text = await window.showInputBox({
-      title: "WYSIWYG Text",
-      prompt: "Enter the text for the hyperlink",
-      placeHolder: "Enter the text for the hyperlink",
+      title: 'WYSIWYG Text',
+      prompt: 'Enter the text for the hyperlink',
+      placeHolder: 'Enter the text for the hyperlink',
       value: linkText,
       ignoreFocusOut: true
     });
@@ -169,15 +228,18 @@ export class Wysiwyg {
       const txt = `[${text || link}](${link})`;
 
       if (hasTextSelection) {
-        editor.edit(builder => {
+        editor.edit((builder) => {
           builder.replace(selection, txt);
         });
       } else {
         const crntSelection = selection.active;
         const markerLength = txt.length;
-        const newPosition = crntSelection.with(crntSelection.line, crntSelection.character + markerLength);
+        const newPosition = crntSelection.with(
+          crntSelection.line,
+          crntSelection.character + markerLength
+        );
 
-        await editor.edit(builder => {
+        await editor.edit((builder) => {
           builder.insert(newPosition, txt);
         });
 
@@ -204,39 +266,39 @@ export class Wysiwyg {
   /**
    * Insert text at the current cursor position
    */
-  private static async insertText(marker: string | undefined, type: MarkupType, text: string | null = null) {
+  private static async insertText(
+    marker: string | undefined,
+    type: MarkupType,
+    text: string | null = null
+  ) {
     const crntText = text || this.lineBreak(type);
 
     if (this.isMarkupWrapping(type)) {
       if (type === MarkupType.heading) {
-        const headingLvl = await window.showQuickPick([
-          "Heading 1",
-          "Heading 2",
-          "Heading 3",
-          "Heading 4",
-          "Heading 5",
-          "Heading 6"
-        ], {
-          title: "Heading Level",
-          canPickMany: false,
-          placeHolder: "Which heading level do you want to insert?",
-          ignoreFocusOut: true
-        });
+        const headingLvl = await window.showQuickPick(
+          ['Heading 1', 'Heading 2', 'Heading 3', 'Heading 4', 'Heading 5', 'Heading 6'],
+          {
+            title: 'Heading Level',
+            canPickMany: false,
+            placeHolder: 'Which heading level do you want to insert?',
+            ignoreFocusOut: true
+          }
+        );
 
         if (headingLvl) {
-          const headingNr = parseInt(headingLvl.replace("Heading ", ""));
+          const headingNr = parseInt(headingLvl.replace('Heading ', ''));
           return `${Array(headingNr + 1).join(marker)} ${crntText}`;
         }
       }
 
       if (type === MarkupType.unorderedList || type === MarkupType.taskList) {
-        const lines = crntText.split("\n").map(line => `${marker} ${line}`);
-        return lines.join("\n");
+        const lines = crntText.split('\n').map((line) => `${marker} ${line}`);
+        return lines.join('\n');
       }
 
       if (type === MarkupType.orderedList) {
-        const lines = crntText.split("\n").map((line, idx) => `${idx+1}. ${line}`);
-        return lines.join("\n");
+        const lines = crntText.split('\n').map((line, idx) => `${idx + 1}. ${line}`);
+        return lines.join('\n');
       }
 
       return `${marker} ${crntText}`;
@@ -254,7 +316,7 @@ export class Wysiwyg {
     if (type === MarkupType.codeblock) {
       return `\n\n`;
     }
-    return "";
+    return '';
   }
 
   /**
@@ -263,7 +325,7 @@ export class Wysiwyg {
    * @returns
    */
   private static getMarkers(type: MarkupType) {
-    switch(type) {
+    switch (type) {
       case MarkupType.bold:
         return `**`;
       case MarkupType.italic:
@@ -271,19 +333,19 @@ export class Wysiwyg {
       case MarkupType.strikethrough:
         return `~~`;
       case MarkupType.code:
-        return "`";
+        return '`';
       case MarkupType.codeblock:
-        return "```";
+        return '```';
       case MarkupType.blockquote:
-        return ">";
+        return '>';
       case MarkupType.heading:
-        return "#";
+        return '#';
       case MarkupType.unorderedList:
-        return "-";
+        return '-';
       case MarkupType.orderedList:
-        return "1.";
+        return '1.';
       case MarkupType.taskList:
-        return "- [ ]";
+        return '- [ ]';
       default:
         return;
     }

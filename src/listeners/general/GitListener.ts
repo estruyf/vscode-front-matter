@@ -1,10 +1,23 @@
 import { Settings } from './../../helpers/SettingsHelper';
 import { Dashboard } from '../../commands/Dashboard';
 import { ExplorerView } from '../../explorerView/ExplorerView';
-import { ArticleHelper, Extension, Logger, processKnownPlaceholders, Telemetry } from '../../helpers';
+import {
+  ArticleHelper,
+  Extension,
+  Logger,
+  processKnownPlaceholders,
+  Telemetry
+} from '../../helpers';
 import { GeneralCommands } from './../../constants/GeneralCommands';
 import simpleGit, { SimpleGit } from 'simple-git';
-import { COMMAND_NAME, CONTEXT, SETTING_DATE_FORMAT, SETTING_GIT_COMMIT_MSG, SETTING_GIT_ENABLED, TelemetryEvent } from '../../constants';
+import {
+  COMMAND_NAME,
+  CONTEXT,
+  SETTING_DATE_FORMAT,
+  SETTING_GIT_COMMIT_MSG,
+  SETTING_GIT_ENABLED,
+  TelemetryEvent
+} from '../../constants';
 import { Folders } from '../../commands/Folders';
 import { commands } from 'vscode';
 
@@ -26,9 +39,7 @@ export class GitListener {
 
     if (!this.isRegistered) {
       const ext = Extension.getInstance();
-      ext.subscriptions.push(
-        commands.registerCommand(COMMAND_NAME.gitSync, GitListener.sync)
-      );
+      ext.subscriptions.push(commands.registerCommand(COMMAND_NAME.gitSync, GitListener.sync));
 
       this.isRegistered = true;
     }
@@ -36,12 +47,12 @@ export class GitListener {
 
   /**
    * Process the messages
-   * @param msg 
+   * @param msg
    */
-  public static process(msg: { command: string, data: any }) {
-    switch(msg.command) {
+  public static process(msg: { command: string; data: any }) {
+    switch (msg.command) {
       case GeneralCommands.toVSCode.gitSync:
-        this.sync();   
+        this.sync();
         break;
     }
   }
@@ -54,7 +65,7 @@ export class GitListener {
 
       await this.pull();
       await this.push();
-    
+
       this.sendMsg(GeneralCommands.toWebview.gitSyncingEnd, {});
     } catch (e) {
       Logger.error((e as Error).message);
@@ -115,7 +126,7 @@ export class GitListener {
       await git.add(file);
     }
 
-    await git.commit(commitMsg || "Synced by Front Matter")
+    await git.commit(commitMsg || 'Synced by Front Matter');
 
     await git.push();
   }
@@ -128,17 +139,16 @@ export class GitListener {
     const wsFolder = Folders.getWorkspaceFolder();
 
     const options = {
-      baseDir: wsFolder?.fsPath || "",
+      baseDir: wsFolder?.fsPath || '',
       binary: 'git',
-      maxConcurrentProcesses: 6,
-    }
+      maxConcurrentProcesses: 6
+    };
 
     this.client = simpleGit(options);
     return this.client;
   }
 
   private static sendMsg(command: string, data: any) {
-
     const extPath = Extension.getInstance().extensionPath;
     const panel = ExplorerView.getInstance(extPath);
 

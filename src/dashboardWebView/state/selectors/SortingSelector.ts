@@ -3,7 +3,7 @@ import { SortingAtom } from '..';
 
 export const SortingSelector = selector({
   key: 'SortingSelector',
-  get: ({get}) => {
+  get: ({ get }) => {
     return get(SortingAtom);
   }
 });

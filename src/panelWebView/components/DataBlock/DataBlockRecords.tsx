@@ -15,16 +15,23 @@ export interface IDataBlockRecordsProps {
   onDelete: (id: number) => void;
 }
 
-const Container = SortableContainer(({children}: React.PropsWithChildren<any>) => {
+const Container = SortableContainer(({ children }: React.PropsWithChildren<any>) => {
   return <ul>{children}</ul>;
 });
 
-export const DataBlockRecords = ({ fieldGroups, records, selectedIndex, onSort, onAdd, onEdit, onDelete }: React.PropsWithChildren<IDataBlockRecordsProps>) => {
-
+export const DataBlockRecords = ({
+  fieldGroups,
+  records,
+  selectedIndex,
+  onSort,
+  onAdd,
+  onEdit,
+  onDelete
+}: React.PropsWithChildren<IDataBlockRecordsProps>) => {
   const getLabel = useCallback((record: any) => {
     if (record.fieldGroup) {
       if (fieldGroups) {
-        const fieldGroup = fieldGroups.find(f => f.id === record.fieldGroup);
+        const fieldGroup = fieldGroups.find((f) => f.id === record.fieldGroup);
         if (fieldGroup && fieldGroup.labelField && record[fieldGroup.labelField]) {
           return record[fieldGroup.labelField];
         }
@@ -32,7 +39,7 @@ export const DataBlockRecords = ({ fieldGroups, records, selectedIndex, onSort, 
 
       return record.fieldGroup;
     }
-    
+
     return 'Block';
   }, []);
 
@@ -41,29 +48,28 @@ export const DataBlockRecords = ({ fieldGroups, records, selectedIndex, onSort, 
   }
 
   return (
-    <div className='json_data__list'>
+    <div className="json_data__list">
       <VsLabel>
-        <div className={`metadata_field__label`} >
+        <div className={`metadata_field__label`}>
           <div>
-            <CollectionIcon style={{ width: "16px", height: "16px" }} />
-            <span style={{ lineHeight: "16px"}}>Records</span>
+            <CollectionIcon style={{ width: '16px', height: '16px' }} />
+            <span style={{ lineHeight: '16px' }}>Records</span>
           </div>
         </div>
       </VsLabel>
 
       <Container onSortEnd={onSort} useDragHandle>
-      {
-        records.map((v: any, idx: number) => (
-          <DataBlockRecord 
-            key={idx} 
+        {records.map((v: any, idx: number) => (
+          <DataBlockRecord
+            key={idx}
             id={idx}
             index={idx}
             label={getLabel(v)}
             isSelected={idx === selectedIndex}
             onEdit={onEdit}
-            onDelete={onDelete}  /> 
-        ))
-      }
+            onDelete={onDelete}
+          />
+        ))}
       </Container>
     </div>
   );

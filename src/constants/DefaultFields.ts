@@ -1,4 +1,3 @@
-
 export const DefaultFields = {
   PublishingDate: `date`,
   LastModified: `lastmod`,

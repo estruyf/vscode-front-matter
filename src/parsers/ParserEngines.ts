@@ -3,10 +3,10 @@ import * as toml from '@iarna/toml';
 import { Format, FrontMatterParser } from '.';
 
 export const getFormatOpts = (format: string): Format => {
-  const formats: { [prop: string]: Format} = {
+  const formats: { [prop: string]: Format } = {
     yaml: { language: 'yaml', delimiters: '---' },
     toml: { language: 'toml', delimiters: '+++' },
-    json: { language: 'json', delimiters: '---' },
+    json: { language: 'json', delimiters: '---' }
   };
 
   return formats[format];
@@ -56,16 +56,16 @@ export const Engines = {
       }
     }
   }
-}
+};
 
 /**
  * Retrieve the front matter from the content
- * @param value 
- * @returns 
+ * @param value
+ * @returns
  */
 const getMatter = (value: string): string | null => {
-  const open = "---";
-  const close = '\n' + "---";
+  const open = '---';
+  const close = '\n' + '---';
 
   let str = value;
 
@@ -94,7 +94,7 @@ const getMatter = (value: string): string | null => {
 
   // get the raw front-matter block
   return str.slice(0, closeIndex);
-}
+};
 
 const startsWith = (str: string, substr: string, len: number) => {
   if (typeof len !== 'number') len = substr.length;

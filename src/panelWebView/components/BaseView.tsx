@@ -18,16 +18,19 @@ export interface IBaseViewProps {
   mode: Mode | undefined;
 }
 
-const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings, folderAndFiles, mode}: React.PropsWithChildren<IBaseViewProps>) => {
-  
+const BaseView: React.FunctionComponent<IBaseViewProps> = ({
+  settings,
+  folderAndFiles,
+  mode
+}: React.PropsWithChildren<IBaseViewProps>) => {
   const openDashboard = () => {
     Messenger.send(CommandToCode.openDashboard);
   };
-  
+
   const initProject = () => {
     Messenger.send(CommandToCode.initProject);
   };
-  
+
   const createContent = () => {
     Messenger.send(CommandToCode.createContent);
   };
@@ -37,52 +40,55 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({settings, folderAndF
   };
 
   const runBulkScript = (script: CustomScript) => {
-    Messenger.send(CommandToCode.runCustomScript, { title: script.title, script });
+    Messenger.send(CommandToCode.runCustomScript, {
+      title: script.title,
+      script
+    });
   };
 
-  const customActions: any[] = (settings?.scripts || []).filter(s => s.bulk && (s.type === "content" || !s.type));
+  const customActions: any[] = (settings?.scripts || []).filter(
+    (s) => s.bulk && (s.type === 'content' || !s.type)
+  );
 
   return (
     <div className="frontmatter">
       <div className={`ext_actions`}>
-        {
-          !settings?.isInitialized && (
-            <div className={`initialize_actions`}>
-              <button onClick={initProject}>Initialize project</button>
-            </div>
-          )
-        }
-        
-        {
-          settings?.isInitialized && (
-            <>
-              <GitAction settings={settings} />
+        {!settings?.isInitialized && (
+          <div className={`initialize_actions`}>
+            <button onClick={initProject}>Initialize project</button>
+          </div>
+        )}
 
-              <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.globalSettings}>
-                <GlobalSettings settings={settings} isBase />
-              </FeatureFlag>
+        {settings?.isInitialized && (
+          <>
+            <GitAction settings={settings} />
 
-              <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.actions}>
-                <Collapsible id={`base_actions`} title="Actions">
-                  <div className={`base__actions`}>
-                    <button onClick={openDashboard}>Open dashboard</button>
-                    <button onClick={openPreview} disabled={!settings?.preview?.host}>Open preview</button>
-                    <StartServerButton settings={settings} />
+            <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.globalSettings}>
+              <GlobalSettings settings={settings} isBase />
+            </FeatureFlag>
 
-                    <button onClick={createContent}>Create new content</button>
+            <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.actions}>
+              <Collapsible id={`base_actions`} title="Actions">
+                <div className={`base__actions`}>
+                  <button onClick={openDashboard}>Open dashboard</button>
+                  <button onClick={openPreview} disabled={!settings?.preview?.host}>
+                    Open preview
+                  </button>
+                  <StartServerButton settings={settings} />
 
-                    {
-                      customActions.map((script) => (
-                        <button key={script.title} onClick={() => runBulkScript(script)}>{ script.title }</button>
-                      ))
-                    }
-                  </div>
-                </Collapsible>
-              </FeatureFlag>
-            </>
-          )
-        }
-        
+                  <button onClick={createContent}>Create new content</button>
+
+                  {customActions.map((script) => (
+                    <button key={script.title} onClick={() => runBulkScript(script)}>
+                      {script.title}
+                    </button>
+                  ))}
+                </div>
+              </Collapsible>
+            </FeatureFlag>
+          </>
+        )}
+
         <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.recentlyModified}>
           <FolderAndFiles data={folderAndFiles} isBase />
         </FeatureFlag>

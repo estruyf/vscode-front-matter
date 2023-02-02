@@ -1,4 +1,4 @@
-import { SortOrder, SortType } from ".";
+import { SortOrder, SortType } from '.';
 
 export interface SortingSetting {
   title: string;

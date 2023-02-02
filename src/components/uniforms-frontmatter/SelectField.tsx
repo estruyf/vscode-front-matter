@@ -7,7 +7,7 @@ import './SelectField.css';
 
 const base64: typeof btoa =
   typeof btoa === 'undefined'
-    ? /* istanbul ignore next */ x => Buffer.from(x).toString('base64')
+    ? /* istanbul ignore next */ (x) => Buffer.from(x).toString('base64')
     : btoa;
 const escape = (x: string) => base64(encodeURIComponent(x)).replace(/=+$/, '');
 
@@ -43,16 +43,14 @@ function Select({
 }: SelectFieldProps) {
   const multiple = fieldType === Array;
   return (
-    <div className='autoform__select_field' {...filterDOMProps(props)}>
+    <div className="autoform__select_field" {...filterDOMProps(props)}>
       <LabelField label={label} id={id} required={required} />
 
       {checkboxes ? (
-        allowedValues.map(item => (
+        allowedValues.map((item) => (
           <div key={item}>
             <input
-              checked={
-                fieldType === Array ? value.includes(item) : value === item
-              }
+              checked={fieldType === Array ? value.includes(item) : value === item}
               disabled={disableItem?.(item) ?? disabled}
               id={`${id}-${escape(item)}`}
               name={name}
@@ -64,9 +62,7 @@ function Select({
               type="checkbox"
             />
 
-            <label htmlFor={`${id}-${escape(item)}`}>
-              {transform ? transform(item) : item}
-            </label>
+            <label htmlFor={`${id}-${escape(item)}`}>{transform ? transform(item) : item}</label>
           </div>
         ))
       ) : (
@@ -75,7 +71,7 @@ function Select({
           id={id}
           multiple={multiple}
           name={name}
-          onChange={event => {
+          onChange={(event) => {
             if (!readOnly) {
               const item = event.target.value;
               if (multiple) {
@@ -88,7 +84,7 @@ function Select({
           }}
           ref={inputRef}
           value={value ?? ''}
-          style={{ width: "100%", padding: "0.5rem" }}
+          style={{ width: '100%', padding: '0.5rem' }}
         >
           {(!!placeholder || !required || value === undefined) && !multiple && (
             <option value="" disabled={required} hidden={required}>
@@ -96,7 +92,7 @@ function Select({
             </option>
           )}
 
-          {allowedValues?.map(value => (
+          {allowedValues?.map((value) => (
             <option disabled={disableItem?.(value)} key={value} value={value}>
               {transform ? transform(value) : value}
             </option>

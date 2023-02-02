@@ -5,15 +5,14 @@ import { ActionButton } from './ActionButton';
 
 export interface ISlugActionProps {}
 
-const SlugAction: React.FunctionComponent<ISlugActionProps> = ({}: React.PropsWithChildren<ISlugActionProps>) => {
-
+const SlugAction: React.FunctionComponent<
+  ISlugActionProps
+> = ({}: React.PropsWithChildren<ISlugActionProps>) => {
   const optimize = () => {
     Messenger.send(CommandToCode.updateSlug);
   };
 
-  return (
-    <ActionButton onClick={optimize} title={`Optimize slug`} />
-  );
+  return <ActionButton onClick={optimize} title={`Optimize slug`} />;
 };
 
 SlugAction.displayName = 'SlugAction';

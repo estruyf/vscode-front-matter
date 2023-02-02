@@ -1,6 +1,8 @@
-import { stat } from "fs";
-import { promisify } from "util";
+import { stat } from 'fs';
+import { promisify } from 'util';
 
 export const existsAsync = async (path: string) => {
-  return promisify(stat)(path).then(() => true).catch(() => false);
+  return promisify(stat)(path)
+    .then(() => true)
+    .catch(() => false);
 };

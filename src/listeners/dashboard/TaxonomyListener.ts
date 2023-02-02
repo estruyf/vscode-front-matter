@@ -1,22 +1,25 @@
-import { commands } from "vscode";
-import { COMMAND_NAME, SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_CUSTOM, SETTING_TAXONOMY_TAGS } from "../../constants";
-import { DashboardCommand } from "../../dashboardWebView/DashboardCommand";
-import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
-import { Settings, TaxonomyHelper } from "../../helpers";
-import { CustomTaxonomy } from "../../models";
-import { BaseListener } from "./BaseListener";
-
+import { commands } from 'vscode';
+import {
+  COMMAND_NAME,
+  SETTING_TAXONOMY_CATEGORIES,
+  SETTING_TAXONOMY_CUSTOM,
+  SETTING_TAXONOMY_TAGS
+} from '../../constants';
+import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
+import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
+import { Settings, TaxonomyHelper } from '../../helpers';
+import { CustomTaxonomy } from '../../models';
+import { BaseListener } from './BaseListener';
 
 export class TaxonomyListener extends BaseListener {
-
   /**
    * Process the messages for the dashboard views
-   * @param msg 
+   * @param msg
    */
-  public static process(msg: { command: DashboardMessage, data: any }) {
+  public static process(msg: { command: DashboardMessage; data: any }) {
     super.process(msg);
 
-    switch(msg.command) {
+    switch (msg.command) {
       case DashboardMessage.getTaxonomyData:
         this.getData();
         break;

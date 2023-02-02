@@ -1,24 +1,24 @@
 import { SETTING_GLOBAL_NOTIFICATIONS_DISABLED } from './../constants/settings';
-import { window } from "vscode";
-import { EXTENSION_NAME, SETTING_GLOBAL_NOTIFICATIONS } from "../constants";
-import { Logger } from "./Logger";
-import { Settings } from "./SettingsHelper";
+import { window } from 'vscode';
+import { EXTENSION_NAME, SETTING_GLOBAL_NOTIFICATIONS } from '../constants';
+import { Logger } from './Logger';
+import { Settings } from './SettingsHelper';
 
-type NotificationType = "INFO" | "WARNING" | "ERROR" | "ERROR_ONCE";
+type NotificationType = 'INFO' | 'WARNING' | 'ERROR' | 'ERROR_ONCE';
 
 export class Notifications {
   private static notifications: string[] = [];
 
   /**
    * Show a notification to the user
-   * @param message 
-   * @param items 
-   * @returns 
+   * @param message
+   * @param items
+   * @returns
    */
   public static info(message: string, ...items: any): Thenable<string | undefined> {
-    Logger.info(`${EXTENSION_NAME}: ${message}`, "INFO");
+    Logger.info(`${EXTENSION_NAME}: ${message}`, 'INFO');
 
-    if (this.shouldShow("INFO")) {
+    if (this.shouldShow('INFO')) {
       return window.showInformationMessage(`${EXTENSION_NAME}: ${message}`, ...items);
     }
 
@@ -27,14 +27,14 @@ export class Notifications {
 
   /**
    * Show a warning notification to the user
-   * @param message 
-   * @param items 
-   * @returns 
+   * @param message
+   * @param items
+   * @returns
    */
   public static warning(message: string, ...items: any): Thenable<string | undefined> {
-    Logger.info(`${EXTENSION_NAME}: ${message}`, "WARNING");
+    Logger.info(`${EXTENSION_NAME}: ${message}`, 'WARNING');
 
-    if (this.shouldShow("WARNING")) {
+    if (this.shouldShow('WARNING')) {
       return window.showWarningMessage(`${EXTENSION_NAME}: ${message}`, ...items);
     }
 
@@ -43,14 +43,14 @@ export class Notifications {
 
   /**
    * Show an error notification to the user
-   * @param message 
-   * @param items 
-   * @returns 
+   * @param message
+   * @param items
+   * @returns
    */
   public static error(message: string, ...items: any): Thenable<string | undefined> {
-    Logger.info(`${EXTENSION_NAME}: ${message}`, "ERROR");
+    Logger.info(`${EXTENSION_NAME}: ${message}`, 'ERROR');
 
-    if (this.shouldShow("ERROR")) {
+    if (this.shouldShow('ERROR')) {
       return window.showErrorMessage(`${EXTENSION_NAME}: ${message}`, ...items);
     }
 
@@ -59,9 +59,9 @@ export class Notifications {
 
   /**
    * Show an error notification to the user only once
-   * @param message 
-   * @param items 
-   * @returns 
+   * @param message
+   * @param items
+   * @returns
    */
   public static async errorShowOnce(message: string, ...items: any): Promise<string | undefined> {
     if (this.notifications.includes(message)) {
@@ -75,13 +75,18 @@ export class Notifications {
 
   /**
    * Show the notification if not disabled
-   * @param type 
-   * @param notificationType 
-   * @param message 
-   * @param items 
-   * @returns 
+   * @param type
+   * @param notificationType
+   * @param message
+   * @param items
+   * @returns
    */
-  public static async showIfNotDisabled(type: string, notificationType: NotificationType, message: string, ...items: any): Promise<string | undefined> {
+  public static async showIfNotDisabled(
+    type: string,
+    notificationType: NotificationType,
+    message: string,
+    ...items: any
+  ): Promise<string | undefined> {
     const disabledTypes = Settings.get<string[]>(SETTING_GLOBAL_NOTIFICATIONS_DISABLED);
 
     if (disabledTypes && disabledTypes.includes(type)) {
@@ -89,13 +94,13 @@ export class Notifications {
     }
 
     switch (notificationType) {
-      case "WARNING":
+      case 'WARNING':
         return await Notifications.warning(message, ...items);
-      case "ERROR":
+      case 'ERROR':
         return await Notifications.error(message, ...items);
-      case "ERROR_ONCE":
+      case 'ERROR_ONCE':
         return await Notifications.errorShowOnce(message, ...items);
-      case "INFO":
+      case 'INFO':
       default:
         return await Notifications.info(message, ...items);
     }
@@ -103,8 +108,8 @@ export class Notifications {
 
   /**
    * Check if the notification should be shown
-   * @param level 
-   * @returns 
+   * @param level
+   * @returns
    */
   private static shouldShow(level: NotificationType): boolean {
     let levels = Settings.get<string[]>(SETTING_GLOBAL_NOTIFICATIONS);
@@ -113,7 +118,7 @@ export class Notifications {
       return true;
     }
 
-    if (levels.map(l => l.toLowerCase()).includes(level.toLowerCase())) {
+    if (levels.map((l) => l.toLowerCase()).includes(level.toLowerCase())) {
       return true;
     }
 

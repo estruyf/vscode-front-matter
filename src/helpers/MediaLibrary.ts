@@ -23,16 +23,28 @@ export class MediaLibrary {
       return;
     }
 
-    this.db = new JsonDB(join(parseWinPath(wsFolder?.fsPath || ""), LocalStore.rootFolder, LocalStore.contentFolder, LocalStore.mediaDatabaseFile), true, false, '/');
+    this.db = new JsonDB(
+      join(
+        parseWinPath(wsFolder?.fsPath || ''),
+        LocalStore.rootFolder,
+        LocalStore.contentFolder,
+        LocalStore.mediaDatabaseFile
+      ),
+      true,
+      false,
+      '/'
+    );
 
-    workspace.onDidRenameFiles(e => {
-      e.files.forEach(f => {
+    workspace.onDidRenameFiles((e) => {
+      e.files.forEach((f) => {
         const path = f.oldUri.path.toLowerCase();
         // Check if file is an image
-        if (path.endsWith('.jpeg') || 
-            path.endsWith('.jpg') || 
-            path.endsWith('.png') || 
-            path.endsWith('.gif')) {
+        if (
+          path.endsWith('.jpeg') ||
+          path.endsWith('.jpg') ||
+          path.endsWith('.png') ||
+          path.endsWith('.gif')
+        ) {
           this.rename(f.oldUri.fsPath, f.newUri.fsPath);
           MediaHelpers.resetMedia();
         }
@@ -53,7 +65,7 @@ export class MediaLibrary {
       const fileId = this.parsePath(id);
       if (this.db?.exists(fileId)) {
         return this.db.getData(fileId);
-      } 
+      }
       return undefined;
     } catch {
       return undefined;
@@ -77,7 +89,7 @@ export class MediaLibrary {
 
   public async updateFilename(filePath: string, filename: string) {
     const name = basename(filePath);
-    
+
     if (name !== filename && filename) {
       try {
         const oldFileInfo = parse(filePath);
@@ -91,7 +103,7 @@ export class MediaLibrary {
           this.rename(filePath, newPath);
           MediaHelpers.resetMedia();
         }
-      } catch(err) {
+      } catch (err) {
         Notifications.error(`Something went wrong updating "${name}" to "${filename}".`);
       }
     }
@@ -100,7 +112,7 @@ export class MediaLibrary {
   private parsePath(path: string) {
     const wsFolder = Folders.getWorkspaceFolder();
     const isWindows = process.platform === 'win32';
-    let absPath = path.replace(parseWinPath(wsFolder?.fsPath || ""), WORKSPACE_PLACEHOLDER);
+    let absPath = path.replace(parseWinPath(wsFolder?.fsPath || ''), WORKSPACE_PLACEHOLDER);
     absPath = isWindows ? absPath.split('\\').join('/') : absPath;
     return absPath.toLowerCase();
   }

@@ -3,7 +3,16 @@ import { SortOption } from '../constants/SortOption';
 import { Tab } from '../constants/Tab';
 import { Page } from '../models/Page';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { CategorySelector, FolderSelector, SearchSelector, SettingsSelector, SortingAtom, TabInfoAtom, TabSelector, TagSelector } from '../state';
+import {
+  CategorySelector,
+  FolderSelector,
+  SearchSelector,
+  SettingsSelector,
+  SortingAtom,
+  TabInfoAtom,
+  TabSelector,
+  TagSelector
+} from '../state';
 import { SortOrder, SortType } from '../../models';
 import { Sorting } from '../../helpers/Sorting';
 import { Messenger } from '@estruyf/vscode/dist/client';
@@ -12,10 +21,10 @@ import { EventData } from '@estruyf/vscode/dist/models';
 import { parseWinPath } from '../../helpers/parseWinPath';
 
 export default function usePages(pages: Page[]) {
-  const [ pageItems, setPageItems ] = useState<Page[]>([]);
-  const [ sortedPages, setSortedPages ] = useState<Page[]>([]);
-  const [ sorting, setSorting ] = useRecoilState(SortingAtom);
-  const [ tabInfo , setTabInfo ] = useRecoilState(TabInfoAtom);
+  const [pageItems, setPageItems] = useState<Page[]>([]);
+  const [sortedPages, setSortedPages] = useState<Page[]>([]);
+  const [sorting, setSorting] = useRecoilState(SortingAtom);
+  const [tabInfo, setTabInfo] = useRecoilState(TabInfoAtom);
   const settings = useRecoilValue(SettingsSelector);
   const tab = useRecoilValue(TabSelector);
   const folder = useRecoilValue(FolderSelector);
@@ -26,136 +35,149 @@ export default function usePages(pages: Page[]) {
   /**
    * Process all the pages by applying the sorting, filtering and searching.
    */
-  const processPages = useCallback((searchedPages: Page[], fullProcess: boolean = true) => {
-    const framework = settings?.crntFramework;
+  const processPages = useCallback(
+    (searchedPages: Page[], fullProcess: boolean = true) => {
+      const framework = settings?.crntFramework;
 
-    // Filter the pages
-    let pagesToShow: Page[] = Object.assign([], searchedPages);
+      // Filter the pages
+      let pagesToShow: Page[] = Object.assign([], searchedPages);
 
-    // Framework specific actions
-    if (framework?.toLowerCase() === "jekyll") {
-      pagesToShow = pagesToShow.map(page => {
-        // https://jekyllrb.com/docs/posts/#drafts
-        const filePath = parseWinPath(page.fmFilePath);
-        page.draft = filePath.indexOf(`/_drafts/`) > -1;
+      // Framework specific actions
+      if (framework?.toLowerCase() === 'jekyll') {
+        pagesToShow = pagesToShow.map((page) => {
+          // https://jekyllrb.com/docs/posts/#drafts
+          const filePath = parseWinPath(page.fmFilePath);
+          page.draft = filePath.indexOf(`/_drafts/`) > -1;
 
-        // Published field: https://jekyllrb.com/docs/front-matter/#predefined-global-variables
-        if (typeof page.published !== "undefined") {
-          page.draft = !page.published;
-        }
+          // Published field: https://jekyllrb.com/docs/front-matter/#predefined-global-variables
+          if (typeof page.published !== 'undefined') {
+            page.draft = !page.published;
+          }
 
-        return page;
-      });
-    }
-
-    // Sort the pages
-    let pagesSorted: Page[] = Object.assign([], pagesToShow);
-    if (!search) {
-      if (sorting && sorting.id === SortOption.FileNameAsc) {
-        pagesSorted = pagesSorted.sort(Sorting.alphabetically("fmFileName"));
-      } else if (sorting && sorting.id === SortOption.FileNameDesc) {
-        pagesSorted = pagesSorted.sort(Sorting.alphabetically("fmFileName")).reverse();
-      } else if (sorting && sorting.id === SortOption.PublishedAsc) {
-        pagesSorted = pagesSorted.sort(Sorting.number("fmPublished"));
-      } else if (sorting && sorting.id === SortOption.LastModifiedAsc) {
-        pagesSorted = pagesSorted.sort(Sorting.number("fmModified"));
-      } else if (sorting && sorting.id === SortOption.PublishedDesc) {
-        pagesSorted = pagesSorted.sort(Sorting.number("fmPublished")).reverse();
-      } else if (sorting && sorting.id === SortOption.LastModifiedDesc) {
-        pagesSorted = pagesSorted.sort(Sorting.number("fmModified")).reverse();
-      } else if (sorting && sorting.id && sorting.name) {
-        const { order, name, type } = sorting;
-
-        if (type === SortType.string) {
-          pagesSorted = pagesSorted.sort(Sorting.alphabetically(name));
-        } else if (type === SortType.date) {
-          pagesSorted = pagesSorted.sort(Sorting.date(name));
-        } else if (type === SortType.number) {
-          pagesSorted = pagesSorted.sort(Sorting.number(name));
-        }
-
-        if (order === SortOrder.desc) {
-          pagesSorted = pagesSorted.reverse();
-        }
-      } else {
-        pagesSorted = pagesSorted.sort(Sorting.number("fmModified")).reverse();
+          return page;
+        });
       }
-    }
 
-    if (folder) {
-      pagesSorted = pagesSorted.filter(page => page.fmFolder === folder);
-    }
+      // Sort the pages
+      let pagesSorted: Page[] = Object.assign([], pagesToShow);
+      if (!search) {
+        if (sorting && sorting.id === SortOption.FileNameAsc) {
+          pagesSorted = pagesSorted.sort(Sorting.alphabetically('fmFileName'));
+        } else if (sorting && sorting.id === SortOption.FileNameDesc) {
+          pagesSorted = pagesSorted.sort(Sorting.alphabetically('fmFileName')).reverse();
+        } else if (sorting && sorting.id === SortOption.PublishedAsc) {
+          pagesSorted = pagesSorted.sort(Sorting.number('fmPublished'));
+        } else if (sorting && sorting.id === SortOption.LastModifiedAsc) {
+          pagesSorted = pagesSorted.sort(Sorting.number('fmModified'));
+        } else if (sorting && sorting.id === SortOption.PublishedDesc) {
+          pagesSorted = pagesSorted.sort(Sorting.number('fmPublished')).reverse();
+        } else if (sorting && sorting.id === SortOption.LastModifiedDesc) {
+          pagesSorted = pagesSorted.sort(Sorting.number('fmModified')).reverse();
+        } else if (sorting && sorting.id && sorting.name) {
+          const { order, name, type } = sorting;
 
-    // Filter by tag
-    if (tag) {
-      pagesSorted = pagesSorted.filter(page => page.fmTags && page.fmTags.includes(tag));
-    }
+          if (type === SortType.string) {
+            pagesSorted = pagesSorted.sort(Sorting.alphabetically(name));
+          } else if (type === SortType.date) {
+            pagesSorted = pagesSorted.sort(Sorting.date(name));
+          } else if (type === SortType.number) {
+            pagesSorted = pagesSorted.sort(Sorting.number(name));
+          }
 
-    // Filter by category
-    if (category) {
-      pagesSorted = pagesSorted.filter(page => page.fmCategories && page.fmCategories.includes(category));
-    }
+          if (order === SortOrder.desc) {
+            pagesSorted = pagesSorted.reverse();
+          }
+        } else {
+          pagesSorted = pagesSorted.sort(Sorting.number('fmModified')).reverse();
+        }
+      }
 
-    setSortedPages(pagesSorted);
-  }, [ settings, tab, folder, search, tag, category, sorting, tabInfo ]);
+      if (folder) {
+        pagesSorted = pagesSorted.filter((page) => page.fmFolder === folder);
+      }
 
+      // Filter by tag
+      if (tag) {
+        pagesSorted = pagesSorted.filter((page) => page.fmTags && page.fmTags.includes(tag));
+      }
+
+      // Filter by category
+      if (category) {
+        pagesSorted = pagesSorted.filter(
+          (page) => page.fmCategories && page.fmCategories.includes(category)
+        );
+      }
+
+      setSortedPages(pagesSorted);
+    },
+    [settings, tab, folder, search, tag, category, sorting, tabInfo]
+  );
 
   /**
    * Process the pages when the tab changes
    */
-  const processByTab = useCallback((pages: Page[]) => {
-    const draftField = settings?.draftField;
+  const processByTab = useCallback(
+    (pages: Page[]) => {
+      const draftField = settings?.draftField;
 
-    let crntPages: Page[] = Object.assign([], pages);
+      let crntPages: Page[] = Object.assign([], pages);
 
-    // Process the tab data
-    const draftTypes = Object.assign({}, tabInfo);
-    draftTypes[Tab.All] = crntPages.length;
+      // Process the tab data
+      const draftTypes = Object.assign({}, tabInfo);
+      draftTypes[Tab.All] = crntPages.length;
 
-    // Filter by draft status
-    if (draftField && draftField.type === 'choice') {
-      const draftChoices = settings?.draftField?.choices;
-      for (const choice of (draftChoices || [])) {
-        if (choice) {
-          draftTypes[choice] = crntPages.filter(page => page.fmDraft === choice).length;
+      // Filter by draft status
+      if (draftField && draftField.type === 'choice') {
+        const draftChoices = settings?.draftField?.choices;
+        for (const choice of draftChoices || []) {
+          if (choice) {
+            draftTypes[choice] = crntPages.filter((page) => page.fmDraft === choice).length;
+          }
+        }
+
+        if (tab !== Tab.All) {
+          crntPages = crntPages.filter((page) => page.fmDraft === tab);
+        } else {
+          crntPages = crntPages;
+        }
+      } else {
+        // Draft field is a boolean field
+        const draftFieldName = draftField?.name || 'draft';
+
+        const drafts = crntPages.filter(
+          (page) => page[draftFieldName] == true || page[draftFieldName] === 'true'
+        );
+        const published = crntPages.filter(
+          (page) =>
+            page[draftFieldName] == false ||
+            page[draftFieldName] === 'false' ||
+            typeof page[draftFieldName] === 'undefined'
+        );
+
+        draftTypes[Tab.Draft] = draftField?.invert ? published.length : drafts.length;
+        draftTypes[Tab.Published] = draftField?.invert ? drafts.length : published.length;
+
+        if (tab === Tab.Published) {
+          crntPages = draftField?.invert ? drafts : published;
+        } else if (tab === Tab.Draft) {
+          crntPages = draftField?.invert ? published : drafts;
+        } else {
+          crntPages = crntPages;
         }
       }
 
-      if (tab !== Tab.All) {
-        crntPages = crntPages.filter(page => page.fmDraft === tab);
-      } else {
-        crntPages = crntPages;
-      }
-    } else {
-      // Draft field is a boolean field
-      const draftFieldName = draftField?.name || "draft";
+      // Set the tab information
+      setTabInfo(draftTypes);
 
-      const drafts = crntPages.filter(page => page[draftFieldName] == true || page[draftFieldName] === "true");
-      const published = crntPages.filter(page => page[draftFieldName] == false || page[draftFieldName] === "false" || typeof page[draftFieldName] === "undefined");
-      
-      draftTypes[Tab.Draft] = draftField?.invert ? published.length : drafts.length;
-      draftTypes[Tab.Published] = draftField?.invert ? drafts.length : published.length;
+      // Set the pages
+      setPageItems(crntPages);
+    },
+    [tab, tabInfo, settings]
+  );
 
-      if (tab === Tab.Published) {
-        crntPages = draftField?.invert ? drafts : published;
-      } else if (tab === Tab.Draft) {
-        crntPages = draftField?.invert ? published : drafts;
-      } else {
-        crntPages = crntPages;
-      }
-    }
-
-    // Set the tab information
-    setTabInfo(draftTypes);
-
-    // Set the pages
-    setPageItems(crntPages);
-  }, [ tab, tabInfo, settings ]);
-
-  
   /**
    * Search listener for filtered pages
-   * @param message 
+   * @param message
    */
   const searchListener = (message: MessageEvent<EventData<any>>) => {
     switch (message.data.command) {
@@ -165,12 +187,11 @@ export default function usePages(pages: Page[]) {
     }
   };
 
-
   useEffect(() => {
     let usedSorting = sorting;
 
     if (!usedSorting) {
-      const lastSort = settings?.dashboardState.contents.sorting;      
+      const lastSort = settings?.dashboardState.contents.sorting;
       if (lastSort) {
         setSorting(lastSort);
         return;
@@ -184,22 +205,20 @@ export default function usePages(pages: Page[]) {
     } else {
       processPages(searchedPages);
     }
-  }, [ settings?.draftField, pages, sorting, search, tag, category, folder ]);
-
+  }, [settings?.draftField, pages, sorting, search, tag, category, folder]);
 
   useEffect(() => {
     if (sortedPages.length > 0) {
       processByTab(sortedPages);
     }
-  }, [sortedPages, tab])
-
+  }, [sortedPages, tab]);
 
   useEffect(() => {
     Messenger.listen(searchListener);
 
     return () => {
       Messenger.unlisten(searchListener);
-    }
+    };
   }, []);
 
   return {

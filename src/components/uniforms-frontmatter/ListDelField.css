@@ -1,10 +1,8 @@
-
-
 .autoform__list_del_field {
   display: flex;
   width: 100%;
   justify-content: center;
-  margin-top: .5rem;
+  margin-top: 0.5rem;
 
   &:hover {
     border-color: var(--vscode-button-background);
@@ -16,8 +14,8 @@
     height: 1px;
     background: var(--frontmatter-list-border, var(--vscode-editor-foreground));
     width: 100%;
-    margin-right: .5rem;
-    margin-top: .5rem;
+    margin-right: 0.5rem;
+    margin-top: 0.5rem;
   }
 
   svg {

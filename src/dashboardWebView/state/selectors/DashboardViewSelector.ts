@@ -3,7 +3,7 @@ import { DashboardViewAtom } from '..';
 
 export const DashboardViewSelector = selector({
   key: 'DashboardViewSelector',
-  get: ({get}) => {
+  get: ({ get }) => {
     return get(DashboardViewAtom);
   }
 });

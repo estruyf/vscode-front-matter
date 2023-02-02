@@ -9,22 +9,32 @@ export interface IFileListProps {
   totalFiles: number;
 }
 
-const FileList: React.FunctionComponent<IFileListProps> = ({files, folderName, totalFiles}: React.PropsWithChildren<IFileListProps>) => {
-
+const FileList: React.FunctionComponent<IFileListProps> = ({
+  files,
+  folderName,
+  totalFiles
+}: React.PropsWithChildren<IFileListProps>) => {
   if (!files || files.length === 0) {
     return null;
   }
-  
+
   return (
     <div className={`file_list`}>
-      <VsLabel>{folderName} - file{files.length === 1 ? '' : 's'}: {totalFiles}</VsLabel>
+      <VsLabel>
+        {folderName} - file{files.length === 1 ? '' : 's'}: {totalFiles}
+      </VsLabel>
 
       <ul className="file_list__items">
-        {
-          (files && files.length > 0) && files.map(file => (
-            <FileItem key={file.filePath} name={file.fileName} path={file.filePath} folderName={file.folderName} />
-          ))
-        }
+        {files &&
+          files.length > 0 &&
+          files.map((file) => (
+            <FileItem
+              key={file.filePath}
+              name={file.fileName}
+              path={file.filePath}
+              folderName={file.folderName}
+            />
+          ))}
       </ul>
     </div>
   );

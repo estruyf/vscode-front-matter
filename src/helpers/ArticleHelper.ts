@@ -4,7 +4,23 @@ import { Uri, workspace } from 'vscode';
 import { MarkdownFoldingProvider } from './../providers/MarkdownFoldingProvider';
 import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from './../constants/ContentType';
 import * as vscode from 'vscode';
-import { DefaultFields, SETTING_CONTENT_DEFAULT_FILETYPE, SETTING_CONTENT_PLACEHOLDERS, SETTING_CONTENT_SUPPORTED_FILETYPES, SETTING_FILE_PRESERVE_CASING, SETTING_COMMA_SEPARATED_FIELDS, SETTING_DATE_FIELD, SETTING_DATE_FORMAT, SETTING_INDENT_ARRAY, SETTING_REMOVE_QUOTES, SETTING_SITE_BASEURL, SETTING_TAXONOMY_CONTENT_TYPES, SETTING_TEMPLATES_PREFIX, SETTING_MODIFIED_FIELD, DefaultFieldValues } from '../constants';
+import {
+  DefaultFields,
+  SETTING_CONTENT_DEFAULT_FILETYPE,
+  SETTING_CONTENT_PLACEHOLDERS,
+  SETTING_CONTENT_SUPPORTED_FILETYPES,
+  SETTING_FILE_PRESERVE_CASING,
+  SETTING_COMMA_SEPARATED_FIELDS,
+  SETTING_DATE_FIELD,
+  SETTING_DATE_FORMAT,
+  SETTING_INDENT_ARRAY,
+  SETTING_REMOVE_QUOTES,
+  SETTING_SITE_BASEURL,
+  SETTING_TAXONOMY_CONTENT_TYPES,
+  SETTING_TEMPLATES_PREFIX,
+  SETTING_MODIFIED_FIELD,
+  DefaultFieldValues
+} from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { FrontMatterParser, ParsedFrontMatter } from '../parsers';
 import { Extension, Logger, Settings, SlugHelper } from '.';
@@ -29,11 +45,11 @@ import { mkdirAsync } from '../utils/mkdirAsync';
 
 export class ArticleHelper {
   private static notifiedFiles: string[] = [];
-  
+
   /**
    * Get the contents of the current article
-   * 
-   * @param editor 
+   *
+   * @param editor
    */
   public static getFrontMatter(editor: vscode.TextEditor) {
     return ArticleHelper.getFrontMatterFromDocument(editor.document);
@@ -41,7 +57,7 @@ export class ArticleHelper {
 
   /**
    * Get the contents of the specified document
-   * 
+   *
    * @param document The document to parse.
    */
   public static getFrontMatterFromDocument(document: vscode.TextDocument) {
@@ -52,7 +68,7 @@ export class ArticleHelper {
   /**
    * Get the current article
    */
-   public static getCurrent(): ParsedFrontMatter | undefined {
+  public static getCurrent(): ParsedFrontMatter | undefined {
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;
@@ -68,30 +84,30 @@ export class ArticleHelper {
 
   /**
    * Retrieve the file's front matter by its path
-   * @param filePath 
+   * @param filePath
    */
-  public static async getFrontMatterByPath(filePath: string) {   
-    const file = await readFileAsync(filePath, { encoding: "utf-8" });
+  public static async getFrontMatterByPath(filePath: string) {
+    const file = await readFileAsync(filePath, { encoding: 'utf-8' });
     return ArticleHelper.parseFile(file, filePath);
   }
 
   /**
    * Store the new information in the file
-   * 
-   * @param editor 
-   * @param article 
+   *
+   * @param editor
+   * @param article
    */
   public static async update(editor: vscode.TextEditor, article: ParsedFrontMatter) {
     const update = this.generateUpdate(editor.document, article);
 
-    await editor.edit(builder => builder.replace(update.range, update.newText));
+    await editor.edit((builder) => builder.replace(update.range, update.newText));
   }
 
   /**
    * Store the new information for the article path
-   * 
-   * @param path 
-   * @param article 
+   *
+   * @param path
+   * @param article
    */
   public static async updateByPath(path: string, article: ParsedFrontMatter) {
     const file = await workspace.openTextDocument(Uri.parse(path));
@@ -99,34 +115,41 @@ export class ArticleHelper {
 
     if (file && editor) {
       const update = this.generateUpdate(file, article);
-      
-      await editor.edit(builder => builder.replace(update.range, update.newText));
+
+      await editor.edit((builder) => builder.replace(update.range, update.newText));
     }
   }
 
   /**
    * Generate the update to be applied to the article.
-   * @param article 
+   * @param article
    */
-  public static generateUpdate(document: vscode.TextDocument, article: ParsedFrontMatter): vscode.TextEdit {
+  public static generateUpdate(
+    document: vscode.TextDocument,
+    article: ParsedFrontMatter
+  ): vscode.TextEdit {
     const nrOfLines = document.lineCount as number;
     const range = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(nrOfLines, 0));
     const removeQuotes = Settings.get(SETTING_REMOVE_QUOTES) as string[];
     const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
 
     // Check if there is a line ending
-    const lines = article.content.split("\n");
+    const lines = article.content.split('\n');
     const lastLine = lines.pop();
-    const endsWithNewLine = lastLine !== undefined && lastLine.trim() === "";
-    
-    let newMarkdown = this.stringifyFrontMatter(article.content, Object.assign({}, article.data), document?.getText());
+    const endsWithNewLine = lastLine !== undefined && lastLine.trim() === '';
+
+    let newMarkdown = this.stringifyFrontMatter(
+      article.content,
+      Object.assign({}, article.data),
+      document?.getText()
+    );
 
     // Logic to not include a new line at the end of the file
     if (!endsWithNewLine) {
-      const lines = newMarkdown.split("\n");
+      const lines = newMarkdown.split('\n');
       const lastLine = lines.pop();
-      if (lastLine !== undefined && lastLine?.trim() === "") {
-        newMarkdown = lines.join("\n");
+      if (lastLine !== undefined && lastLine?.trim() === '') {
+        newMarkdown = lines.join('\n');
       }
     }
 
@@ -135,12 +158,18 @@ export class ArticleHelper {
       for (const toRemove of removeQuotes) {
         if (article && article.data && article.data[toRemove]) {
           if (commaSeparated?.includes(toRemove)) {
-            const textToReplace = article.data[toRemove].join(", ");
+            const textToReplace = article.data[toRemove].join(', ');
             newMarkdown = newMarkdown.replace(`'${textToReplace}'`, textToReplace);
             newMarkdown = newMarkdown.replace(`"${textToReplace}"`, textToReplace);
           } else {
-            newMarkdown = newMarkdown.replace(`'${article.data[toRemove]}'`, article.data[toRemove]);
-            newMarkdown = newMarkdown.replace(`"${article.data[toRemove]}"`, article.data[toRemove]);
+            newMarkdown = newMarkdown.replace(
+              `'${article.data[toRemove]}'`,
+              article.data[toRemove]
+            );
+            newMarkdown = newMarkdown.replace(
+              `"${article.data[toRemove]}"`,
+              article.data[toRemove]
+            );
           }
         }
       }
@@ -151,10 +180,10 @@ export class ArticleHelper {
 
   /**
    * Stringify the front matter
-   * 
-   * @param content 
-   * @param data 
-   * @param originalContent 
+   *
+   * @param content
+   * @param data
+   * @param originalContent
    */
   public static stringifyFrontMatter(content: string, data: any, originalContent?: string) {
     const indentArray = Settings.get(SETTING_INDENT_ARRAY) as boolean;
@@ -164,30 +193,32 @@ export class ArticleHelper {
 
     if (commaSeparated) {
       for (const key of commaSeparated) {
-        if (data[key] && typeof data[key] === "object") {
-          data[key] = data[key].join(", ");
+        if (data[key] && typeof data[key] === 'object') {
+          data[key] = data[key].join(', ');
         }
       }
     }
-    
-    return FrontMatterParser.toFile(content, data, originalContent, ({
+
+    return FrontMatterParser.toFile(content, data, originalContent, {
       noArrayIndent: !indentArray,
       skipInvalid: true,
       noCompatMode: true,
       lineWidth: 500,
       indent: spaces || 2
-    } as DumpOptions as any));
+    } as DumpOptions as any);
   }
 
   /**
    * Checks if the current file is a markdown file
-   */ 
+   */
   public static isSupportedFile(document: vscode.TextDocument | undefined | null = null) {
-    const supportedLanguages = ["markdown", "mdx"];
+    const supportedLanguages = ['markdown', 'mdx'];
     const fileTypes = Settings.get<string[]>(SETTING_CONTENT_SUPPORTED_FILETYPES);
-    const supportedFileExtensions = fileTypes ? fileTypes.map(f => f.startsWith(`.`) ? f : `.${f}`) : DEFAULT_FILE_TYPES;
+    const supportedFileExtensions = fileTypes
+      ? fileTypes.map((f) => (f.startsWith(`.`) ? f : `.${f}`))
+      : DEFAULT_FILE_TYPES;
     const languageId = document?.languageId?.toLowerCase();
-    const isSupportedLanguage =  languageId && supportedLanguages.includes(languageId);
+    const isSupportedLanguage = languageId && supportedLanguages.includes(languageId);
     document ??= vscode.window.activeTextEditor?.document;
 
     /**
@@ -198,15 +229,18 @@ export class ArticleHelper {
     if (!isSupportedLanguage) {
       const fileName = document?.fileName?.toLowerCase();
 
-      return fileName && supportedFileExtensions.findIndex(fileExtension => fileName.endsWith(fileExtension)) > -1;
+      return (
+        fileName &&
+        supportedFileExtensions.findIndex((fileExtension) => fileName.endsWith(fileExtension)) > -1
+      );
     }
-    
+
     return isSupportedLanguage;
   }
 
   /**
    * Get date from front matter
-   */ 
+   */
   public static getDate(article: ParsedFrontMatter | null) {
     if (!article || !article.data) {
       return;
@@ -215,8 +249,8 @@ export class ArticleHelper {
     const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
     const dateField = ArticleHelper.getPublishDateField(article) || DefaultFields.PublishingDate;
 
-    if (typeof article.data[dateField] !== "undefined") {
-      if (dateFormat && typeof dateFormat === "string") {
+    if (typeof article.data[dateField] !== 'undefined') {
+      if (dateFormat && typeof dateFormat === 'string') {
         const date = parse(article.data[dateField], dateFormat, new Date());
         return date;
       } else {
@@ -229,8 +263,8 @@ export class ArticleHelper {
 
   /**
    * Retrieve the publishing date field name
-   * @param article 
-   * @returns 
+   * @param article
+   * @returns
    */
   public static getPublishDateField(article: ParsedFrontMatter | null) {
     if (!article || !article.data) {
@@ -238,15 +272,19 @@ export class ArticleHelper {
     }
 
     const articleCt = ArticleHelper.getContentType(article.data);
-    const pubDateField = articleCt.fields.find(f => f.isPublishDate);
+    const pubDateField = articleCt.fields.find((f) => f.isPublishDate);
 
-    return pubDateField?.name || Settings.get(SETTING_DATE_FIELD) as string || DefaultFields.PublishingDate;
+    return (
+      pubDateField?.name ||
+      (Settings.get(SETTING_DATE_FIELD) as string) ||
+      DefaultFields.PublishingDate
+    );
   }
 
   /**
    * Retrieve the publishing date field name
-   * @param article 
-   * @returns 
+   * @param article
+   * @returns
    */
   public static getModifiedDateField(article: ParsedFrontMatter | null) {
     if (!article || !article.data) {
@@ -254,14 +292,18 @@ export class ArticleHelper {
     }
 
     const articleCt = ArticleHelper.getContentType(article.data);
-    const modDateField = articleCt.fields.find(f => f.isModifiedDate);
+    const modDateField = articleCt.fields.find((f) => f.isModifiedDate);
 
-    return modDateField?.name || Settings.get(SETTING_MODIFIED_FIELD) as string || DefaultFields.LastModified;
+    return (
+      modDateField?.name ||
+      (Settings.get(SETTING_MODIFIED_FIELD) as string) ||
+      DefaultFields.LastModified
+    );
   }
 
   /**
    * Retrieve all the content types
-   * @returns 
+   * @returns
    */
   public static getContentTypes() {
     return Settings.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES) || [DEFAULT_CONTENT_TYPE];
@@ -269,18 +311,20 @@ export class ArticleHelper {
 
   /**
    * Retrieve the content type of the current file
-   * @param updatedMetadata 
+   * @param updatedMetadata
    */
-  public static getContentType(metadata: { [field: string]: string; }): ContentType {
+  public static getContentType(metadata: { [field: string]: string }): ContentType {
     const contentTypes = ArticleHelper.getContentTypes();
 
     if (!contentTypes || !metadata) {
       return DEFAULT_CONTENT_TYPE;
     }
 
-    let contentType = contentTypes.find(ct => ct.name === (metadata.type || DEFAULT_CONTENT_TYPE_NAME));
+    let contentType = contentTypes.find(
+      (ct) => ct.name === (metadata.type || DEFAULT_CONTENT_TYPE_NAME)
+    );
     if (!contentType) {
-      contentType = contentTypes.find(ct => ct.name === DEFAULT_CONTENT_TYPE_NAME);
+      contentType = contentTypes.find((ct) => ct.name === DEFAULT_CONTENT_TYPE_NAME);
     }
 
     if (contentType) {
@@ -296,14 +340,14 @@ export class ArticleHelper {
 
   /**
    * Update all dates in the metadata
-   * @param metadata 
+   * @param metadata
    */
-  public static updateDates(metadata: { [field: string]: string; }) {
+  public static updateDates(metadata: { [field: string]: string }) {
     const contentType = ArticleHelper.getContentType(metadata);
-    const dateFields = contentType.fields.filter((field) => field.type === "datetime");
+    const dateFields = contentType.fields.filter((field) => field.type === 'datetime');
 
     for (const dateField of dateFields) {
-      if (typeof metadata[dateField.name] !== "undefined") {
+      if (typeof metadata[dateField.name] !== 'undefined') {
         metadata[dateField.name] = Article.formatDate(new Date());
       }
     }
@@ -313,42 +357,49 @@ export class ArticleHelper {
 
   /**
    * Sanitize the value
-   * @param value 
-   * @returns 
+   * @param value
+   * @returns
    */
   public static sanitize(value: string): string {
     const preserveCasing = Settings.get(SETTING_FILE_PRESERVE_CASING) as boolean;
-    return sanitize((preserveCasing ? value : value.toLowerCase()).replace(/ /g, "-"));
+    return sanitize((preserveCasing ? value : value.toLowerCase()).replace(/ /g, '-'));
   }
 
   /**
    * Create the file or folder for the new content
-   * @param contentType 
-   * @param folderPath 
-   * @param titleValue 
+   * @param contentType
+   * @param folderPath
+   * @param titleValue
    * @returns The new file path
    */
-  public static async createContent(contentType: ContentType | undefined, folderPath: string, titleValue: string, fileExtension?: string): Promise<string | undefined> {
+  public static async createContent(
+    contentType: ContentType | undefined,
+    folderPath: string,
+    titleValue: string,
+    fileExtension?: string
+  ): Promise<string | undefined> {
     FrontMatterParser.currentContent = null;
-    
+
     const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
 
     let prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
     prefix = ArticleHelper.getFilePrefix(folderPath, contentType);
-    
+
     // Name of the file or folder to create
     let sanitizedName = ArticleHelper.sanitize(titleValue);
     let newFilePath: string | undefined;
 
     // Create a folder with the `index.md` file
     if (contentType?.pageBundle) {
-      if (prefix && typeof prefix === "string") {
+      if (prefix && typeof prefix === 'string') {
         sanitizedName = `${prefix}-${sanitizedName}`;
       }
 
       const newFolder = join(folderPath, sanitizedName);
       if (await existsAsync(newFolder)) {
-        Notifications.error(`A page bundle with the name ${sanitizedName} already exists in ${folderPath}`);
+        Notifications.error(
+          `A page bundle with the name ${sanitizedName} already exists in ${folderPath}`
+        );
         return;
       } else {
         await mkdirAsync(newFolder);
@@ -357,10 +408,10 @@ export class ArticleHelper {
     } else {
       let newFileName = `${sanitizedName}.${fileExtension || contentType?.fileType || fileType}`;
 
-      if (prefix && typeof prefix === "string") {
+      if (prefix && typeof prefix === 'string') {
         newFileName = `${prefix}-${newFileName}`;
       }
-      
+
       newFilePath = join(folderPath, newFileName);
 
       if (await existsAsync(newFilePath)) {
@@ -374,9 +425,9 @@ export class ArticleHelper {
 
   /**
    * Retrieve the file prefix
-   * @param filePath 
-   * @param contentType 
-   * @returns 
+   * @param filePath
+   * @param contentType
+   * @returns
    */
   public static getFilePrefix(filePath?: string, contentType?: ContentType): string | undefined {
     let prefix = undefined;
@@ -384,18 +435,18 @@ export class ArticleHelper {
     // Retrieve the file prefix from the folder
     if (filePath) {
       const filePrefixOnFolder = Folders.getFilePrefixByFolderPath(filePath);
-      if (typeof filePrefixOnFolder !== "undefined") {
+      if (typeof filePrefixOnFolder !== 'undefined') {
         prefix = filePrefixOnFolder;
       }
     }
 
     // Retrieve the file prefix from the content type
-    if (contentType && typeof contentType.filePrefix !== "undefined") {
+    if (contentType && typeof contentType.filePrefix !== 'undefined') {
       prefix = contentType.filePrefix;
     }
 
     // Process the prefix date formatting
-    if (prefix && typeof prefix === "string") {
+    if (prefix && typeof prefix === 'string') {
       prefix = `${format(new Date(), DateHelper.formatUpdate(prefix) as string)}`;
     }
 
@@ -404,9 +455,9 @@ export class ArticleHelper {
 
   /**
    * Update placeholder values in the front matter content
-   * @param data 
-   * @param title 
-   * @returns 
+   * @param data
+   * @param title
+   * @returns
    */
   public static async updatePlaceholders(data: any, title: string, filePath: string) {
     const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
@@ -415,11 +466,11 @@ export class ArticleHelper {
     for (const fieldName of Object.keys(fmData)) {
       const fieldValue = fmData[fieldName];
 
-      if (fieldName === "title" && (fieldValue === null || fieldValue === "")) {
+      if (fieldName === 'title' && (fieldValue === null || fieldValue === '')) {
         fmData[fieldName] = title;
       }
-  
-      if (fieldName === "slug" && (fieldValue === null || fieldValue === "")) {
+
+      if (fieldName === 'slug' && (fieldValue === null || fieldValue === '')) {
         fmData[fieldName] = SlugHelper.createSlug(title);
       }
 
@@ -432,36 +483,47 @@ export class ArticleHelper {
 
   /**
    * Replace the custom placeholders
-   * @param value 
-   * @param title 
-   * @returns 
+   * @param value
+   * @param title
+   * @returns
    */
-  public static async processCustomPlaceholders(value: string, title: string | undefined, filePath: string | undefined) {
-    if (value && typeof value === "string") {
+  public static async processCustomPlaceholders(
+    value: string,
+    title: string | undefined,
+    filePath: string | undefined
+  ) {
+    if (value && typeof value === 'string') {
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
       const placeholders = Settings.get<CustomPlaceholder[]>(SETTING_CONTENT_PLACEHOLDERS);
       if (placeholders && placeholders.length > 0) {
         for (const placeholder of placeholders) {
           if (value.includes(`{{${placeholder.id}}}`)) {
-
             try {
-              let placeHolderValue = placeholder.value || "";
+              let placeHolderValue = placeholder.value || '';
               if (placeholder.script) {
                 const wsFolder = Folders.getWorkspaceFolder();
-                const script = { title: placeholder.id, script: placeholder.script, command: placeholder.command };
-                let output: string | any = await CustomScript.executeScript(script, wsFolder?.fsPath || "", `'${wsFolder?.fsPath}' '${filePath}' '${title}'`);
+                const script = {
+                  title: placeholder.id,
+                  script: placeholder.script,
+                  command: placeholder.command
+                };
+                let output: string | any = await CustomScript.executeScript(
+                  script,
+                  wsFolder?.fsPath || '',
+                  `'${wsFolder?.fsPath}' '${filePath}' '${title}'`
+                );
 
                 if (output) {
                   // Check if the output needs to be parsed
-                  if (output.includes("{") && output.includes("}")) {
+                  if (output.includes('{') && output.includes('}')) {
                     try {
                       output = jsoncParser.parse(output);
                     } catch (e) {
                       // Do nothing
                     }
                   } else {
-                    if (output.includes("\n")) {
-                      output = output.split("\n");
+                    if (output.includes('\n')) {
+                      output = output.split('\n');
                     }
                   }
 
@@ -469,7 +531,7 @@ export class ArticleHelper {
                 }
               }
 
-              const regex = new RegExp(`{{${placeholder.id}}}`, "g");
+              const regex = new RegExp(`{{${placeholder.id}}}`, 'g');
               const updatedValue = processKnownPlaceholders(placeHolderValue, title, dateFormat);
 
               if (value === `{{${placeholder.id}}}`) {
@@ -483,7 +545,6 @@ export class ArticleHelper {
 
               value = DefaultFieldValues.faultyCustomPlaceholder;
             }
-            
           }
         }
       }
@@ -494,7 +555,7 @@ export class ArticleHelper {
 
   /**
    * Get the details of the current article
-   * @returns 
+   * @returns
    */
   public static getDetails() {
     const baseUrl = Settings.get<string>(SETTING_SITE_BASEURL);
@@ -512,29 +573,40 @@ export class ArticleHelper {
     if (article && article.content) {
       let content = article.content;
       content = content.replace(/({{(.*?)}})/g, ''); // remove hugo shortcodes
-      
+
       const mdTree = fromMarkdown(content);
       const elms: Parent[] | Link[] = this.getAllElms(mdTree);
 
-      const headings = elms.filter(node => node.type === 'heading');
-      const paragraphs = elms.filter(node => node.type === 'paragraph').length;
-      const images = elms.filter(node => node.type === 'image').length;
-      const links: string[] = elms.filter(node => node.type === 'link').map(node => (node as Link).url);
+      const headings = elms.filter((node) => node.type === 'heading');
+      const paragraphs = elms.filter((node) => node.type === 'paragraph').length;
+      const images = elms.filter((node) => node.type === 'image').length;
+      const links: string[] = elms
+        .filter((node) => node.type === 'link')
+        .map((node) => (node as Link).url);
 
-      const internalLinks = links.filter(link => !link.startsWith('http') || (baseUrl && link.toLowerCase().includes((baseUrl || "").toLowerCase()))).length;
-      let externalLinks = links.filter(link => link.startsWith('http'));
+      const internalLinks = links.filter(
+        (link) =>
+          !link.startsWith('http') ||
+          (baseUrl && link.toLowerCase().includes((baseUrl || '').toLowerCase()))
+      ).length;
+      let externalLinks = links.filter((link) => link.startsWith('http'));
       if (baseUrl) {
-        externalLinks = externalLinks.filter(link => !link.toLowerCase().includes(baseUrl.toLowerCase()));
+        externalLinks = externalLinks.filter(
+          (link) => !link.toLowerCase().includes(baseUrl.toLowerCase())
+        );
       }
 
       const headers = [];
-      for (const header of headings) { 
-        const text = header?.children?.filter((node: any) => node.type === 'text').map((node: any) => node.value).join(" ");
+      for (const header of headings) {
+        const text = header?.children
+          ?.filter((node: any) => node.type === 'text')
+          .map((node: any) => node.value)
+          .join(' ');
         if (text) {
           headers.push(text);
         }
       }
-      
+
       const wordCount = this.wordCount(0, mdTree);
 
       return {
@@ -554,9 +626,9 @@ export class ArticleHelper {
 
   /**
    * Retrieve all the elements from the markdown content
-   * @param node 
-   * @param allElms 
-   * @returns 
+   * @param node
+   * @param allElms
+   * @returns
    */
   private static getAllElms(node: Content | any, allElms?: any[]): any[] {
     if (!allElms) {
@@ -577,71 +649,85 @@ export class ArticleHelper {
    * Get the word count for the current document
    */
   private static wordCount(count: number, node: Content | any) {
-    if (node.type === "text") {
-      return count + node.value.split(" ").length;
+    if (node.type === 'text') {
+      return count + node.value.split(' ').length;
     } else {
-      return (node.children || []).reduce((childCount: number, childNode: any) => this.wordCount(childCount, childNode), count);
+      return (node.children || []).reduce(
+        (childCount: number, childNode: any) => this.wordCount(childCount, childNode),
+        count
+      );
     }
   }
 
   /**
    * Parse a markdown file and its front matter
-   * @param fileContents 
-   * @returns 
+   * @param fileContents
+   * @returns
    */
   private static parseFile(fileContents: string, fileName: string): ParsedFrontMatter | null {
     try {
       const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
-      
+
       if (fileContents) {
         let article = FrontMatterParser.fromFile(fileContents);
-  
+
         if (article?.data) {
           if (commaSeparated) {
             for (const key of commaSeparated) {
-              if (article?.data[key] && typeof article.data[key] === "string") {
-                article.data[key] = article.data[key].split(",").map((s: string) => s.trim());
+              if (article?.data[key] && typeof article.data[key] === 'string') {
+                article.data[key] = article.data[key].split(',').map((s: string) => s.trim());
               }
             }
           }
 
-          this.notifiedFiles = this.notifiedFiles.filter(n => n !== fileName);
+          this.notifiedFiles = this.notifiedFiles.filter((n) => n !== fileName);
 
           if (window.activeTextEditor?.document.uri) {
-            Extension.getInstance().diagnosticCollection.delete(window.activeTextEditor.document.uri);
+            Extension.getInstance().diagnosticCollection.delete(
+              window.activeTextEditor.document.uri
+            );
           }
 
           return article;
         }
       }
     } catch (error: any) {
-      const items = [{ 
-        title: "Check file", 
-        action: async () => {
-          await EditorHelper.showFile(fileName)
-        } 
-      }];
-      
+      const items = [
+        {
+          title: 'Check file',
+          action: async () => {
+            await EditorHelper.showFile(fileName);
+          }
+        }
+      ];
+
       Logger.error(`ArticleHelper::parseFile: ${fileName} - ${error.message}`);
 
       const editor = window.activeTextEditor;
       if (editor?.document.uri) {
         let fmRange = null;
 
-        if (error?.mark && typeof error.mark.line !== "undefined") {
+        if (error?.mark && typeof error.mark.line !== 'undefined') {
           const curLineText = editor.document.lineAt(error.mark.line - 1);
-          const lastCharPos = new Position(error.mark.line - 1, Math.max(curLineText.text.length, 0));
+          const lastCharPos = new Position(
+            error.mark.line - 1,
+            Math.max(curLineText.text.length, 0)
+          );
           fmRange = new Range(new Position(error.mark.line - 1, 0), lastCharPos);
         } else {
           fmRange = MarkdownFoldingProvider.getFrontMatterRange(editor.document);
         }
 
         if (fmRange) {
-          Extension.getInstance().diagnosticCollection.set(editor.document.uri, [{
-            severity: DiagnosticSeverity.Error,
-            message: `${error.name ? `${error.name}: ` : ""}Error parsing the front matter of ${fileName}`,
-            range: fmRange
-          }]);
+          Extension.getInstance().diagnosticCollection.set(editor.document.uri, [
+            {
+              severity: DiagnosticSeverity.Error,
+              message: `${
+                error.name ? `${error.name}: ` : ''
+              }Error parsing the front matter of ${fileName}`,
+              range: fmRange
+            }
+          ]);
         }
       }
     }

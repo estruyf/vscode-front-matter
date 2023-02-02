@@ -8,16 +8,18 @@ import { SearchAtom, SelectedMediaFolderAtom, SettingsAtom } from '../../state';
 
 export interface IBreadcrumbProps {}
 
-export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (props: React.PropsWithChildren<IBreadcrumbProps>) => {
-  const [ selectedFolder, setSelectedFolder ] = useRecoilState(SelectedMediaFolderAtom);
-  const [ , setSearchValue ] = useRecoilState(SearchAtom);
-  const [ folders, setFolders ] = React.useState<string[]>([]);
+export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (
+  props: React.PropsWithChildren<IBreadcrumbProps>
+) => {
+  const [selectedFolder, setSelectedFolder] = useRecoilState(SelectedMediaFolderAtom);
+  const [, setSearchValue] = useRecoilState(SearchAtom);
+  const [folders, setFolders] = React.useState<string[]>([]);
   const settings = useRecoilValue(SettingsAtom);
 
   const updateFolder = (folder: string) => {
     setSearchValue('');
     setSelectedFolder(folder);
-  }
+  };
 
   React.useEffect(() => {
     if (!settings) {
@@ -55,8 +57,10 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (props: Rea
     if (!selectedFolder) {
       setFolders([]);
     } else {
-      const relPath = parseWinPath(selectedFolder.replace(parseWinPath(settings.wsFolder) as string, '')) as string;
-      const folderParts = relPath.split('/').filter(f => f);
+      const relPath = parseWinPath(
+        selectedFolder.replace(parseWinPath(settings.wsFolder) as string, '')
+      ) as string;
+      const folderParts = relPath.split('/').filter((f) => f);
       const allFolders: string[] = [];
       let previousFolder = parseWinPath(settings.wsFolder) as string;
 
@@ -67,16 +71,19 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (props: Rea
         }
         previousFolder = folder;
       }
-  
+
       setFolders(allFolders);
     }
   }, [selectedFolder, settings]);
-  
+
   return (
     <ol role="list" className="flex space-x-4 px-5 flex-1">
       <li className="flex">
         <div className="flex items-center">
-          <button onClick={() => setSelectedFolder(HOME_PAGE_NAVIGATION_ID)} className="text-gray-500 hover:text-gray-600 dark:text-whisper-900 dark:hover:text-whisper-500">
+          <button
+            onClick={() => setSelectedFolder(HOME_PAGE_NAVIGATION_ID)}
+            className="text-gray-500 hover:text-gray-600 dark:text-whisper-900 dark:hover:text-whisper-500"
+          >
             <CollectionIcon className="flex-shrink-0 h-5 w-5" aria-hidden="true" />
             <span className="sr-only">Home</span>
           </button>

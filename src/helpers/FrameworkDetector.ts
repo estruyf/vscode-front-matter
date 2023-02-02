@@ -1,19 +1,23 @@
 import { parseWinPath } from './parseWinPath';
 import * as jsoncParser from 'jsonc-parser';
-import jsyaml = require("js-yaml");
-import { join, resolve } from "path";
-import { commands, Uri } from "vscode";
-import { Folders } from "../commands/Folders";
-import { COMMAND_NAME, SETTING_CONTENT_STATIC_FOLDER, SETTING_FRAMEWORK_ID, STATIC_FOLDER_PLACEHOLDER } from "../constants";
-import { FrameworkDetectors } from "../constants/FrameworkDetectors";
-import { Framework } from "../models";
-import { Logger } from "./Logger";
+import jsyaml = require('js-yaml');
+import { join, resolve } from 'path';
+import { commands, Uri } from 'vscode';
+import { Folders } from '../commands/Folders';
+import {
+  COMMAND_NAME,
+  SETTING_CONTENT_STATIC_FOLDER,
+  SETTING_FRAMEWORK_ID,
+  STATIC_FOLDER_PLACEHOLDER
+} from '../constants';
+import { FrameworkDetectors } from '../constants/FrameworkDetectors';
+import { Framework } from '../models';
+import { Logger } from './Logger';
 import { existsAsync, readFileAsync } from '../utils';
 import { Settings } from '.';
 import { parse } from 'path';
 
 export class FrameworkDetector {
-
   public static get(folder: string) {
     return this.check(folder);
   }
@@ -31,9 +35,10 @@ export class FrameworkDetector {
     try {
       const pkgFile = join(folder, 'package.json');
       if (await existsAsync(pkgFile)) {
-        let packageJson: any = await readFileAsync(pkgFile, "utf8");
+        let packageJson: any = await readFileAsync(pkgFile, 'utf8');
         if (packageJson) {
-          packageJson = typeof packageJson === "string" ? jsoncParser.parse(packageJson) : packageJson;
+          packageJson =
+            typeof packageJson === 'string' ? jsoncParser.parse(packageJson) : packageJson;
 
           dependencies = packageJson.dependencies || null;
           devDependencies = packageJson.devDependencies || null;
@@ -47,7 +52,7 @@ export class FrameworkDetector {
     try {
       const gemFile = join(folder, 'Gemfile');
       if (await existsAsync(gemFile)) {
-        gemContent = await readFileAsync(gemFile, "utf8");
+        gemContent = await readFileAsync(gemFile, 'utf8');
       }
     } catch (e) {
       // do nothing
@@ -55,12 +60,11 @@ export class FrameworkDetector {
 
     for (const detector of FrameworkDetectors) {
       if (detector && folder) {
-
         // Verify by dependencies
         for (const dependency of detector.requiredDependencies ?? []) {
           // Checks for package.json dependencies
-          const inDependencies = dependencies && dependencies[dependency]
-          const inDevDependencies = devDependencies && devDependencies[dependency]
+          const inDependencies = dependencies && dependencies[dependency];
+          const inDevDependencies = devDependencies && devDependencies[dependency];
           if (inDependencies || inDevDependencies) {
             return detector.framework;
           }
@@ -84,18 +88,18 @@ export class FrameworkDetector {
     return undefined;
   }
 
-  public static async checkDefaultSettings(framework: Framework) {    
-    if (framework.name.toLowerCase() === "jekyll") {
+  public static async checkDefaultSettings(framework: Framework) {
+    if (framework.name.toLowerCase() === 'jekyll') {
       await FrameworkDetector.jekyll();
-    } else if (framework.name.toLowerCase() === "hexo") {
+    } else if (framework.name.toLowerCase() === 'hexo') {
       await FrameworkDetector.hexo();
     }
   }
 
   /**
    * Check if there are any changes for the current framework that need to be applied
-   * @param relAssetPath 
-   * @param filePath 
+   * @param relAssetPath
+   * @param filePath
    */
   public static relAssetPathUpdate(relAssetPath: string, filePath: string): string {
     const staticFolder = Folders.getStaticFolderRelativePath();
@@ -103,24 +107,24 @@ export class FrameworkDetector {
 
     // Support for HEXO post asset folders
     if (staticFolder === STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
-      relAssetPath = relAssetPath.replace(STATIC_FOLDER_PLACEHOLDER.hexo.postsFolder, "");
+      relAssetPath = relAssetPath.replace(STATIC_FOLDER_PLACEHOLDER.hexo.postsFolder, '');
 
       // Filename without the extension
       const fileParsing = parse(filePath);
       const name = fileParsing.name;
-      relAssetPath = relAssetPath.replace(name, "");
+      relAssetPath = relAssetPath.replace(name, '');
       relAssetPath = join(relAssetPath);
 
       // Remove remove the slash at the beginning
       relAssetPath = parseWinPath(relAssetPath);
-      if (relAssetPath.startsWith("/")) {
+      if (relAssetPath.startsWith('/')) {
         relAssetPath = relAssetPath.substring(1);
       }
-    } 
+    }
     // Support for HEXO image folder
-    else if (frameworkId === "hexo") {
+    else if (frameworkId === 'hexo') {
       relAssetPath = parseWinPath(relAssetPath);
-      if (relAssetPath.startsWith("/")) {
+      if (relAssetPath.startsWith('/')) {
         relAssetPath = relAssetPath.substring(1);
       }
     }
@@ -134,11 +138,11 @@ export class FrameworkDetector {
   private static async hexo() {
     try {
       const wsFolder = Folders.getWorkspaceFolder();
-      const hexoConfig = join(wsFolder?.fsPath || "", '_config.yml');
-      let assetFoler = "source/images";
+      const hexoConfig = join(wsFolder?.fsPath || '', '_config.yml');
+      let assetFoler = 'source/images';
 
       if (await existsAsync(hexoConfig)) {
-        const content = await readFileAsync(hexoConfig, "utf8");
+        const content = await readFileAsync(hexoConfig, 'utf8');
         // Convert YAML to JSON
         const config = jsyaml.safeLoad(content);
 
@@ -150,7 +154,9 @@ export class FrameworkDetector {
 
       await Settings.update(SETTING_CONTENT_STATIC_FOLDER, assetFoler, true);
     } catch (e) {
-      Logger.error(`Something failed while processing your Hexo configuration. ${(e as Error).message}`);
+      Logger.error(
+        `Something failed while processing your Hexo configuration. ${(e as Error).message}`
+      );
     }
   }
 
@@ -160,11 +166,11 @@ export class FrameworkDetector {
   private static async jekyll() {
     try {
       const wsFolder = Folders.getWorkspaceFolder();
-      const jekyllConfig = join(wsFolder?.fsPath || "", '_config.yml');
-      let collectionDir = "";
+      const jekyllConfig = join(wsFolder?.fsPath || '', '_config.yml');
+      let collectionDir = '';
 
       if (await existsAsync(jekyllConfig)) {
-        const content = await readFileAsync(jekyllConfig, "utf8");
+        const content = await readFileAsync(jekyllConfig, 'utf8');
         // Convert YAML to JSON
         const config = jsyaml.safeLoad(content);
 
@@ -173,26 +179,28 @@ export class FrameworkDetector {
         }
       }
 
-      const draftsPath = join(wsFolder?.fsPath || "", collectionDir, "_drafts");
-      const postsPath = join(wsFolder?.fsPath || "", collectionDir, "_posts");
-  
+      const draftsPath = join(wsFolder?.fsPath || '', collectionDir, '_drafts');
+      const postsPath = join(wsFolder?.fsPath || '', collectionDir, '_posts');
+
       if (await existsAsync(draftsPath)) {
         const folderUri = Uri.file(draftsPath);
         commands.executeCommand(COMMAND_NAME.registerFolder, {
-          title: "drafts",
+          title: 'drafts',
           path: folderUri
         });
       }
-  
+
       if (await existsAsync(postsPath)) {
         const folderUri = Uri.file(postsPath);
         commands.executeCommand(COMMAND_NAME.registerFolder, {
-          title: "posts",
+          title: 'posts',
           path: folderUri
         });
       }
     } catch (e) {
-      Logger.error(`Something failed while processing your Jekyll configuration. ${(e as Error).message}`);
+      Logger.error(
+        `Something failed while processing your Jekyll configuration. ${(e as Error).message}`
+      );
     }
   }
 }

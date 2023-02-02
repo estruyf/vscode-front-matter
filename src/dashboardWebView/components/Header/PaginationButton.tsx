@@ -6,7 +6,11 @@ export interface IPaginationButtonProps {
   onClick: () => void;
 }
 
-export const PaginationButton: React.FunctionComponent<IPaginationButtonProps> = ({title, disabled, onClick}: React.PropsWithChildren<IPaginationButtonProps>) => {
+export const PaginationButton: React.FunctionComponent<IPaginationButtonProps> = ({
+  title,
+  disabled,
+  onClick
+}: React.PropsWithChildren<IPaginationButtonProps>) => {
   return (
     <button
       disabled={disabled}

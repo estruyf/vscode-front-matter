@@ -12,44 +12,49 @@ export interface IJsonFieldRecordsProps {
   onDelete: (id: number) => void;
 }
 
-const Container = SortableContainer(({children}: React.PropsWithChildren<any>) => {
+const Container = SortableContainer(({ children }: React.PropsWithChildren<any>) => {
   return <ul>{children}</ul>;
 });
 
-export const JsonFieldRecords = ({ records, selectedIndex, onSort, onAdd, onEdit, onDelete }: React.PropsWithChildren<IJsonFieldRecordsProps>) => {
-
+export const JsonFieldRecords = ({
+  records,
+  selectedIndex,
+  onSort,
+  onAdd,
+  onEdit,
+  onDelete
+}: React.PropsWithChildren<IJsonFieldRecordsProps>) => {
   if (!records || !records.length) {
     return null;
   }
 
   return (
-    <div className='json_data__list'>
+    <div className="json_data__list">
       <VsLabel>
-        <div className={`metadata_field__label`} >
+        <div className={`metadata_field__label`}>
           <div>
-            <CollectionIcon style={{ width: "16px", height: "16px" }} />
-            <span style={{ lineHeight: "16px"}}>Records</span>
+            <CollectionIcon style={{ width: '16px', height: '16px' }} />
+            <span style={{ lineHeight: '16px' }}>Records</span>
           </div>
 
-          <button title='Add new record' className='json_data__list__button' onClick={onAdd}>
-            <PlusIcon style={{ width: "16px", height: "16px" }} /> 
+          <button title="Add new record" className="json_data__list__button" onClick={onAdd}>
+            <PlusIcon style={{ width: '16px', height: '16px' }} />
           </button>
         </div>
       </VsLabel>
 
       <Container onSortEnd={onSort} useDragHandle>
-      {
-        records.map((v: any, idx: number) => (
-          <JsonFieldRecord 
-            key={idx} 
+        {records.map((v: any, idx: number) => (
+          <JsonFieldRecord
+            key={idx}
             id={idx}
             index={idx}
             label={v?.dataType ?? 'Record'}
             isSelected={idx === selectedIndex}
             onEdit={onEdit}
-            onDelete={onDelete}  /> 
-        ))
-      }
+            onDelete={onDelete}
+          />
+        ))}
       </Container>
     </div>
   );

@@ -46,5 +46,5 @@ export const TelemetryEvent = {
   webviewTaxonomyDashboard: 'webviewTaxonomyDashboard',
 
   // Git
-  gitSync: 'gitSync',
+  gitSync: 'gitSync'
 };

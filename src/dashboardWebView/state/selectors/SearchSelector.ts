@@ -3,7 +3,7 @@ import { SearchAtom } from '..';
 
 export const SearchSelector = selector({
   key: 'SearchSelector',
-  get: ({get}) => {
+  get: ({ get }) => {
     return get(SearchAtom);
   }
 });

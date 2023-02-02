@@ -6,7 +6,9 @@ export interface ISponsorMsgProps {
   isBacker: boolean | undefined;
 }
 
-const SponsorMsg: React.FunctionComponent<ISponsorMsgProps> = ({ isBacker }: React.PropsWithChildren<ISponsorMsgProps>) => {
+const SponsorMsg: React.FunctionComponent<ISponsorMsgProps> = ({
+  isBacker
+}: React.PropsWithChildren<ISponsorMsgProps>) => {
   if (isBacker) {
     return null;
   }

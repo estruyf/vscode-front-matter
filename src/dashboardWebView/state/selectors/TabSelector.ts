@@ -3,7 +3,7 @@ import { TabAtom } from '..';
 
 export const TabSelector = selector({
   key: 'TabSelector',
-  get: ({get}) => {
+  get: ({ get }) => {
     return get(TabAtom);
   }
 });

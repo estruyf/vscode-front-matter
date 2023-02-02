@@ -6,24 +6,32 @@ import { useDebounce } from '../../../hooks/useDebounce';
 import { usePrevious } from '../../../panelWebView/hooks/usePrevious';
 import { DashboardCommand } from '../../DashboardCommand';
 import { DashboardMessage } from '../../DashboardMessage';
-import { LoadingAtom, PageAtom, SelectedMediaFolderSelector, SettingsSelector, SortingSelector } from '../../state';
+import {
+  LoadingAtom,
+  PageAtom,
+  SelectedMediaFolderSelector,
+  SettingsSelector,
+  SortingSelector
+} from '../../state';
 import { Searchbox } from '../Header';
 import { PaginationStatus } from '../Header/PaginationStatus';
 import { FolderCreation } from './FolderCreation';
 
 export interface IMediaHeaderTopProps {}
 
-export const MediaHeaderTop: React.FunctionComponent<IMediaHeaderTopProps> = ({}: React.PropsWithChildren<IMediaHeaderTopProps>) => {
-  const [ lastUpdated, setLastUpdated ] = React.useState<string | null>(null);
+export const MediaHeaderTop: React.FunctionComponent<
+  IMediaHeaderTopProps
+> = ({}: React.PropsWithChildren<IMediaHeaderTopProps>) => {
+  const [lastUpdated, setLastUpdated] = React.useState<string | null>(null);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const crntSorting = useRecoilValue(SortingSelector);
-  const [ , setLoading ] = useRecoilState(LoadingAtom);
-  const [ page, setPage ] = useRecoilState(PageAtom);
+  const [, setLoading] = useRecoilState(LoadingAtom);
+  const [page, setPage] = useRecoilState(PageAtom);
   const settings = useRecoilValue(SettingsSelector);
   const debounceGetMedia = useDebounce<string | null>(lastUpdated, 200);
   const prevSelectedFolder = usePrevious<string | null>(selectedFolder);
 
-  const mediaUpdate = (message: MessageEvent<EventData<{ key: string, value: any }>>) => {
+  const mediaUpdate = (message: MessageEvent<EventData<{ key: string; value: any }>>) => {
     if (message.data.command === DashboardCommand.mediaUpdate) {
       setLoading(true);
       Messenger.send(DashboardMessage.getMedia, {
@@ -32,10 +40,13 @@ export const MediaHeaderTop: React.FunctionComponent<IMediaHeaderTopProps> = ({}
         sorting: crntSorting
       });
     }
-  }
+  };
 
   React.useEffect(() => {
-    if (prevSelectedFolder !== null || settings?.dashboardState?.media.selectedFolder !== selectedFolder) {
+    if (
+      prevSelectedFolder !== null ||
+      settings?.dashboardState?.media.selectedFolder !== selectedFolder
+    ) {
       setLoading(true);
       setPage(0);
       setLastUpdated(new Date().getTime().toString());
@@ -63,7 +74,7 @@ export const MediaHeaderTop: React.FunctionComponent<IMediaHeaderTopProps> = ({}
 
     return () => {
       Messenger.unlisten(mediaUpdate);
-    }
+    };
   }, []);
 
   return (

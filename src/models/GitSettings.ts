@@ -1,5 +1,4 @@
-
-export interface GitSettings { 
+export interface GitSettings {
   isGitRepo: boolean;
   actions: boolean;
 }
