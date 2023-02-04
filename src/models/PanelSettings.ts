@@ -136,6 +136,7 @@ export interface SEO {
   slug: number;
   description: number;
   content: number;
+  titleField: string;
   descriptionField: string;
 }
 

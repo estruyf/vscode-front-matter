@@ -1492,6 +1492,12 @@
           "markdownDescription": "Specifies the optimal slug length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seoSlugLength)",
           "scope": "Taxonomy"
         },
+        "frontMatter.taxonomy.seoTitleField": {
+          "type": "string",
+          "default": "title",
+          "markdownDescription": "Specifies the name of the SEO title field for your page. Default is 'title'. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seotitlefield)",
+          "scope": "Taxonomy"
+        },
         "frontMatter.taxonomy.seoTitleLength": {
           "type": "number",
           "default": 60,

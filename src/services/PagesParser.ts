@@ -8,7 +8,8 @@ import {
   DefaultFields,
   DEFAULT_CONTENT_TYPE_NAME,
   ExtensionState,
-  SETTING_SEO_DESCRIPTION_FIELD
+  SETTING_SEO_DESCRIPTION_FIELD,
+  SETTING_SEO_TITLE_FIELD
 } from '../constants';
 import { Page } from '../dashboardWebView/models';
 import {
@@ -155,10 +156,12 @@ export class PagesParser {
     folderTitle: string
   ): Promise<Page | undefined> {
     const article = await ArticleHelper.getFrontMatterByPath(filePath);
-    const articleTitle = article?.data.title || fileName;
 
     if (article?.data) {
       const wsFolder = Folders.getWorkspaceFolder();
+
+      const titleField = (Settings.get(SETTING_SEO_TITLE_FIELD) as string) || DefaultFields.Title;
+
       const descriptionField =
         (Settings.get(SETTING_SEO_DESCRIPTION_FIELD) as string) || DefaultFields.Description;
 
@@ -175,7 +178,7 @@ export class PagesParser {
 
       const staticFolder = Folders.getStaticFolderRelativePath();
 
-      let escapedTitle = articleTitle;
+      let escapedTitle = article?.data[titleField] || fileName;
       if (escapedTitle && typeof escapedTitle !== 'string') {
         escapedTitle = '<invalid title>';
       }
@@ -205,10 +208,10 @@ export class PagesParser {
         fmBody: article?.content || '',
         // Make sure these are always set
         title: escapedTitle,
+        description: escapedDescription,
         slug: article?.data.slug,
         date: article?.data[dateField] || '',
-        draft: article?.data.draft,
-        description: escapedDescription
+        draft: article?.data.draft
       };
 
       const contentType = ArticleHelper.getContentType(article.data);

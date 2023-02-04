@@ -8,6 +8,7 @@
 
 ### 🎨 Enhancements
 
+- [#473](https://github.com/estruyf/vscode-front-matter/issues/473): Allow setting the SEO title name with the `frontMatter.taxonomy.seoTitleField` setting
 - [#474](https://github.com/estruyf/vscode-front-matter/issues/474): Allow to define the file prefix on content types
 - [#484](https://github.com/estruyf/vscode-front-matter/issues/484): Support for overriding scripts per environment type
 - [#494](https://github.com/estruyf/vscode-front-matter/issues/494): Support for external image URLs in previews

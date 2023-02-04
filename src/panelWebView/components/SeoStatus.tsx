@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect } from 'react';
 import { SEO } from '../../models/PanelSettings';
 import { TagType } from '../TagType';
 import { ArticleDetails } from './ArticleDetails';
@@ -32,10 +33,10 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
     }, 10);
   }).current;
 
-  const { descriptionField } = seo;
+  const { descriptionField, titleField } = seo;
 
   // Workaround for lit components not updating render
-  React.useEffect(() => {
+  useEffect(() => {
     setTimeout(() => {
       let height = 0;
 
@@ -47,7 +48,7 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
         tableRef.current.style.height = `${height}px`;
       }
     }, 10);
-  }, [title, data[descriptionField], data?.articleDetails?.wordCount]);
+  }, [title, data[titleField], data[descriptionField], data?.articleDetails?.wordCount]);
 
   const renderContent = () => {
     if (!isOpen) {
@@ -66,14 +67,15 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
               <VsTableHeaderCell className={`table__cell`}>Valid</VsTableHeaderCell>
             </VsTableHeader>
             <VsTableBody slot="body">
-              {title && seo.title > 0 && (
+              {data[titleField] && seo.title > 0 && (
                 <SeoFieldInfo
-                  title={`title`}
-                  value={title.length}
+                  title={titleField}
+                  value={data[titleField].length}
                   recommendation={`${seo.title} chars`}
-                  isValid={title.length <= seo.title}
+                  isValid={data[titleField].length <= seo.title}
                 />
               )}
+
               {slug && seo.slug > 0 && (
                 <SeoFieldInfo
                   title={`slug`}

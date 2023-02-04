@@ -29,7 +29,8 @@ import {
   SETTING_TAXONOMY_CUSTOM,
   SETTING_TAXONOMY_FIELD_GROUPS,
   SETTING_TAXONOMY_TAGS,
-  SETTING_GIT_ENABLED
+  SETTING_GIT_ENABLED,
+  SETTING_SEO_TITLE_FIELD
 } from '../constants';
 import { GitListener } from '../listeners/general';
 import {
@@ -55,6 +56,7 @@ export class PanelSettings {
         slug: (Settings.get(SETTING_SEO_SLUG_LENGTH) as number) || -1,
         description: (Settings.get(SETTING_SEO_DESCRIPTION_LENGTH) as number) || -1,
         content: (Settings.get(SETTING_SEO_CONTENT_MIN_LENGTH) as number) || -1,
+        titleField: (Settings.get(SETTING_SEO_TITLE_FIELD) as string) || DefaultFields.Title,
         descriptionField:
           (Settings.get(SETTING_SEO_DESCRIPTION_FIELD) as string) || DefaultFields.Description
       },

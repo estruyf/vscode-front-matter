@@ -4,6 +4,7 @@ import {
   NOTIFICATION_TYPE,
   SETTING_SEO_DESCRIPTION_FIELD,
   SETTING_SEO_DESCRIPTION_LENGTH,
+  SETTING_SEO_TITLE_FIELD,
   SETTING_SEO_TITLE_LENGTH
 } from './../constants';
 import * as vscode from 'vscode';
@@ -59,15 +60,17 @@ export class StatusListener {
           // Retrieve the SEO config properties
           const titleLength = (Settings.get(SETTING_SEO_TITLE_LENGTH) as number) || -1;
           const descLength = (Settings.get(SETTING_SEO_DESCRIPTION_LENGTH) as number) || -1;
-          const fieldName =
+          const titleField =
+            (Settings.get(SETTING_SEO_TITLE_FIELD) as string) || DefaultFields.Title;
+          const descriptionField =
             (Settings.get(SETTING_SEO_DESCRIPTION_FIELD) as string) || DefaultFields.Description;
 
-          if (article.data.title && titleLength > -1) {
-            SeoHelper.checkLength(editor, collection, article, 'title', titleLength);
+          if (article.data[titleField] && titleLength > -1) {
+            SeoHelper.checkLength(editor, collection, article, titleField, titleLength);
           }
 
-          if (article.data[fieldName] && descLength > -1) {
-            SeoHelper.checkLength(editor, collection, article, fieldName, descLength);
+          if (article.data[descriptionField] && descLength > -1) {
+            SeoHelper.checkLength(editor, collection, article, descriptionField, descLength);
           }
 
           // Check the required fields

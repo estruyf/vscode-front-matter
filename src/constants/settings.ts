@@ -27,6 +27,7 @@ export const SETTING_REMOVE_QUOTES = 'taxonomy.noPropertyValueQuotes';
 
 export const SETTING_FRONTMATTER_TYPE = 'taxonomy.frontMatterType';
 
+export const SETTING_SEO_TITLE_FIELD = 'taxonomy.seoTitleField';
 export const SETTING_SEO_TITLE_LENGTH = 'taxonomy.seoTitleLength';
 export const SETTING_SEO_SLUG_LENGTH = 'taxonomy.seoSlugLength';
 export const SETTING_SEO_DESCRIPTION_LENGTH = 'taxonomy.seoDescriptionLength';

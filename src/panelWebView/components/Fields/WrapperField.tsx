@@ -182,7 +182,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
     );
   } else if (field.type === 'string') {
     let limit = -1;
-    if (field.name === 'title') {
+    if (field.name === settings.seo.titleField) {
       limit = settings?.seo.title;
     } else if (field.name === settings.seo.descriptionField) {
       limit = settings?.seo.description;
