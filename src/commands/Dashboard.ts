@@ -250,8 +250,8 @@ export class Dashboard {
 
         <title>Front Matter Dashboard</title>
       </head>
-      <body style="width:100%;height:100%;margin:0;padding:0;overflow:hidden" class="bg-gray-100 text-vulcan-500 dark:bg-vulcan-500 dark:text-whisper-500">
-        <div id="app" data-isProd="${isProd}" data-environment="${
+      <body style="width:100%;height:100%;margin:0;padding:0;overflow:hidden">
+        <div id="app" class="bg-gray-100 text-vulcan-500 dark:bg-vulcan-500 dark:text-whisper-500" data-isProd="${isProd}" data-environment="${
       isBeta ? 'BETA' : 'main'
     }" data-version="${version.usedVersion}" style="width:100%;height:100%;margin:0;padding:0;" ${
       version.usedVersion ? '' : `data-showWelcome="true"`

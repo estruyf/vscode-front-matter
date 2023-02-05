@@ -84,17 +84,17 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
     <>
       <div
         className={`${
-          listView ? '' : 'group-scope absolute top-6 right-0'
+          listView ? '' : 'group-scoped absolute top-6 right-0'
         } flex flex-col space-y-4`}
       >
         <div
-          className={`flex items-center border border-transparent group-scope-hover:bg-gray-200 dark:group-scope-hover:bg-vulcan-200 group-scope-hover:border-gray-100 dark:group-scope-hover:border-vulcan-50 rounded-full ${
+          className={`flex items-center border border-transparent group-scoped-hover:bg-gray-200 dark:group-scoped-hover:bg-vulcan-200 group-scoped-hover:border-gray-100 dark:group-scoped-hover:border-vulcan-50 rounded-full ${
             listView ? '' : 'p-2 -mt-4'
           }`}
         >
           <Menu as="div" className={`relative flex text-left ${listView ? '' : 'z-10'}`}>
             {!listView && (
-              <div className="hidden group-scope-hover:flex">
+              <div className="hidden group-scoped-hover:flex">
                 <QuickAction title={`View content`} onClick={onView}>
                   <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
                 </QuickAction>

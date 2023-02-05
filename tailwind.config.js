@@ -2,8 +2,8 @@ const colors = require('tailwindcss/colors');
 
 module.exports = {
   mode: 'jit',
-  purge: ['./src/**/*.{js,jsx,ts,tsx}'],
-  darkMode: 'class', // or 'media' or 'class'
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
+  darkMode: ['class', '.vscode-dark'],
   theme: {
     extend: {
       animation: {
@@ -18,7 +18,7 @@ module.exports = {
       },
       colors: {
         white: colors.white,
-        gray: colors.trueGray,
+        gray: colors.neutral,
         "red": {
           "50": "#ff7c7b",
           "100": "#ff7271",
@@ -118,11 +118,8 @@ module.exports = {
       }
     },
   },
-  variants: {
-    extend: {},
-  },
   plugins: [
     require("@tailwindcss/forms"),
-    require("tailwindcss-nested-groups"),
+    require("tailwindcss-scoped-groups"),
   ],
 }

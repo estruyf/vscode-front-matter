@@ -422,7 +422,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     <>
       <li className="group relative bg-gray-50 dark:bg-vulcan-200 shadow-md hover:shadow-xl dark:shadow-none dark:hover:bg-vulcan-100 border border-gray-200 dark:border-vulcan-50">
         <button
-          className={`group-scope relative bg-gray-200 dark:bg-vulcan-300 block w-full aspect-w-10 aspect-h-7 overflow-hidden  h-48 ${
+          className={`group-scoped relative bg-gray-200 dark:bg-vulcan-300 block w-full aspect-w-10 aspect-h-7 overflow-hidden  h-48 ${
             isImageFile ? 'cursor-pointer' : 'cursor-default'
           }`}
           onClick={hasViewData ? undefined : openLightbox}
@@ -439,7 +439,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           </div>
           {hasViewData && (
             <div
-              className={`hidden group-scope-hover:flex absolute top-0 right-0 bottom-0 left-0 items-center bg-vulcan-500 bg-opacity-70 justify-center`}
+              className={`hidden group-scoped-hover:flex absolute top-0 right-0 bottom-0 left-0 items-center bg-vulcan-500 bg-opacity-70 justify-center`}
             >
               <div
                 className={`h-full ${
@@ -472,10 +472,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           )}
         </button>
         <div className={`relative py-4 pl-4 pr-12`}>
-          <div className={`group-scope absolute top-4 right-4 flex flex-col space-y-4`}>
-            <div className="flex items-center border border-transparent group-scope-hover:bg-gray-200 dark:group-scope-hover:bg-vulcan-200 group-scope-hover:border-gray-100 dark:group-scope-hover:border-vulcan-50 rounded-full p-2 -mr-2 -mt-2">
+          <div className={`group-scoped absolute top-4 right-4 flex flex-col space-y-4`}>
+            <div className="flex items-center border border-transparent group-scoped-hover:bg-gray-200 dark:group-scoped-hover:bg-vulcan-200 group-scoped-hover:border-gray-100 dark:group-scoped-hover:border-vulcan-50 rounded-full p-2 -mr-2 -mt-2">
               <Menu as="div" className="relative z-10 flex text-left">
-                <div className="hidden group-scope-hover:flex">
+                <div className="hidden group-scoped-hover:flex">
                   <QuickAction title="View media details" onClick={viewMediaDetails}>
                     <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
                   </QuickAction>
