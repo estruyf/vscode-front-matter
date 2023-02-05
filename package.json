@@ -51,11 +51,28 @@
   "activationEvents": [
     "workspaceContains:**/.frontmatter",
     "workspaceContains:**/frontmatter.json",
-    "onView:frontMatter.explorer",
     "onStartupFinished"
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "keybindings": [
+      {
+        "command": "frontMatter.dashboard",
+        "key": "alt+d"
+      },
+      {
+        "command": "frontMatter.insertMedia",
+        "key": "ctrl+shift+i",
+        "mac": "cmd+shift+i",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "frontMatter.insertSnippet",
+        "key": "ctrl+shift+v",
+        "mac": "cmd+shift+v",
+        "when": "editorTextFocus"
+      }
+    ],
     "viewsContainers": {
       "activitybar": [
         {

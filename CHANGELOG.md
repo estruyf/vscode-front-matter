@@ -13,6 +13,8 @@
 - [#484](https://github.com/estruyf/vscode-front-matter/issues/484): Support for overriding scripts per environment type
 - [#494](https://github.com/estruyf/vscode-front-matter/issues/494): Support for external image URLs in previews
 - [#497](https://github.com/estruyf/vscode-front-matter/issues/497): Support for movie media previews in the content dashboard
+- [#502](https://github.com/estruyf/vscode-front-matter/issues/502): Keyboard bindings added to open dashboard, insert media, and insert snippet
+- [#503](https://github.com/estruyf/vscode-front-matter/issues/503): Allow making changes to the preview URL in the webview
 
 ### ⚡️ Optimizations
 
