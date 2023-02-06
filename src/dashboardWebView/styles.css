@@ -37,7 +37,6 @@
 }
 
 .loader {
-  border-top-color: #15c2cb;
   animation: spinner 1.5s linear infinite;
 }
 

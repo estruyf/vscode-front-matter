@@ -3,6 +3,7 @@ import { SETTING_DASHBOARD_OPENONSTART } from '../../constants';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../DashboardMessage';
 import { Settings } from '../models/Settings';
+import useThemeColors from '../hooks/useThemeColors';
 
 export interface IStartupProps {
   settings: Settings | null;
@@ -12,6 +13,7 @@ export const Startup: React.FunctionComponent<IStartupProps> = ({
   settings
 }: React.PropsWithChildren<IStartupProps>) => {
   const [isChecked, setIsChecked] = React.useState(false);
+  const { getColors } = useThemeColors();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsChecked(e.target.checked);
@@ -35,14 +37,24 @@ export const Startup: React.FunctionComponent<IStartupProps> = ({
           type="checkbox"
           checked={isChecked}
           onChange={onChange}
-          className="focus:outline-none focus:ring-teal-500 h-4 w-4 text-teal-600 border-gray-300 dark:border-vulcan-50 rounded"
+          className={`h-4 w-4 focus:outline-none rounded ${
+            getColors(
+              `focus:ring-teal-500 text-teal-600 border-gray-300 dark:border-vulcan-50`,
+              `focus:ring-[var(--vscode-button-background)] text-[var(--vscode-button-background)] border-[var(--vscode-editorWidget-border)]`
+            )
+          }`}
         />
       </div>
       <div className="ml-2 text-sm">
         <label
           id="startup-description"
           htmlFor="startup"
-          className="font-medium text-vulcan-50 dark:text-whisper-900"
+          className={`font-medium ${
+            getColors(
+              `text-vulcan-50 dark:text-whisper-900`,
+              `text-[var(--vscode-editor-foreground)]`
+            )
+          }`}
         >
           Open on startup?
         </label>

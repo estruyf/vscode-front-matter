@@ -1,4 +1,4 @@
-import { SETTING_DASHBOARD_OPENONSTART, CONTEXT, ExtensionState } from '../constants';
+import { SETTING_DASHBOARD_OPENONSTART, CONTEXT, ExtensionState, SETTING_EXPERIMENTAL } from '../constants';
 import { join } from 'path';
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window } from 'vscode';
 import { Logger, Settings as SettingsHelper } from '../helpers';
@@ -220,6 +220,9 @@ export class Dashboard {
     const version = ext.getVersion();
     const isBeta = ext.isBetaVersion();
 
+    // Get experimental setting
+    const experimental = SettingsHelper.get(SETTING_EXPERIMENTAL)
+
     const csp = [
       `default-src 'none';`,
       `img-src ${`vscode-file://vscode-app`} ${
@@ -255,7 +258,7 @@ export class Dashboard {
       isBeta ? 'BETA' : 'main'
     }" data-version="${version.usedVersion}" style="width:100%;height:100%;margin:0;padding:0;" ${
       version.usedVersion ? '' : `data-showWelcome="true"`
-    }></div>
+    } ${experimental ? `data-experimental="${experimental}"` : ""} ></div>
 
         <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759&slug=${`dashboard-${version.installedVersion}`}" alt="Daily usage" />
 

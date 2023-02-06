@@ -8,6 +8,7 @@ import { MenuItem, MenuItems, ActionMenuButton, QuickAction } from '../Menu';
 import { Alert } from '../Modals/Alert';
 import { usePopper } from 'react-popper';
 import { useState } from 'react';
+import useThemeColors from '../../hooks/useThemeColors';
 
 export interface IContentActionsProps {
   title: string;
@@ -25,6 +26,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
   listView
 }: React.PropsWithChildren<IContentActionsProps>) => {
   const [showDeletionAlert, setShowDeletionAlert] = React.useState(false);
+  const { getColors } = useThemeColors();
 
   const [referenceElement, setReferenceElement] = useState<any>(null);
   const [popperElement, setPopperElement] = useState<any>(null);
@@ -88,8 +90,13 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
         } flex flex-col space-y-4`}
       >
         <div
-          className={`flex items-center border border-transparent group-hover/card:bg-gray-200 dark:group-hover/card:bg-vulcan-200 group-hover/card:border-gray-100 dark:group-hover/card:border-vulcan-50 rounded-full ${
+          className={`flex items-center border border-transparent rounded-full ${
             listView ? '' : 'p-2 -mt-4'
+          } ${
+            getColors(
+              'group-hover/card:bg-gray-200 dark:group-hover/card:bg-vulcan-200 group-hover/card:border-gray-100 dark:group-hover/card:border-vulcan-50',
+              'group-hover/card:bg-[var(--vscode-sideBar-background)] group-hover/card:border-[var(--vscode-panel-border)]'
+            )
           }`}
         >
           <Menu as="div" className={`relative flex text-left ${listView ? '' : 'z-10'}`}>

@@ -8,6 +8,7 @@ import { SENTRY_LINK } from '../constants';
 import { MemoryRouter } from 'react-router-dom';
 import './styles.css';
 import { Preview } from './components/Preview';
+import { SettingsProvider } from './providers/SettingsProvider';
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -32,6 +33,7 @@ if (elm) {
   const isProd = elm?.getAttribute('data-isProd');
   const type = elm?.getAttribute('data-type');
   const url = elm?.getAttribute('data-url');
+  const experimental = elm?.getAttribute('data-experimental');
 
   if (isProd === 'true') {
     Sentry.init({
@@ -47,6 +49,10 @@ if (elm) {
     });
   }
 
+  if (experimental) {
+    elm.setAttribute("class", "bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]");
+  }
+
   if (type === 'preview') {
     render(<Preview url={url} />, elm);
   } else {
@@ -56,7 +62,9 @@ if (elm) {
           initialEntries={Object.keys(routePaths).map((key: string) => routePaths[key]) as string[]}
           initialIndex={1}
         >
-          <App showWelcome={!!welcome} />
+          <SettingsProvider experimental={experimental === 'true'} version={version || ""}>
+            <App showWelcome={!!welcome} />
+          </SettingsProvider>
         </MemoryRouter>
       </RecoilRoot>,
       elm

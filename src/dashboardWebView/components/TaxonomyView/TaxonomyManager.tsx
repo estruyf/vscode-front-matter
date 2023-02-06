@@ -10,6 +10,7 @@ import { SettingsSelector } from '../../state';
 import { getTaxonomyField } from '../../../helpers/getTaxonomyField';
 import { TaxonomyActions } from './TaxonomyActions';
 import { TaxonomyLookup } from './TaxonomyLookup';
+import useThemeColors from '../../hooks/useThemeColors';
 
 export interface ITaxonomyManagerProps {
   data: TaxonomyData | undefined;
@@ -23,6 +24,7 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
   pages
 }: React.PropsWithChildren<ITaxonomyManagerProps>) => {
   const settings = useRecoilValue(SettingsSelector);
+  const { getColors } = useThemeColors();
 
   const onCreate = () => {
     Messenger.send(DashboardMessage.createTaxonomy, {
@@ -113,7 +115,12 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
         </div>
         <div>
           <button
-            className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 focus:outline-none disabled:bg-gray-500`}
+            className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium focus:outline-none ${
+              getColors(
+                `text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-500`, 
+                `text-[var(--vscode-button-foreground)] bg-[var(--vscode-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`
+              )
+            }`}
             title={`Create a new ${taxonomy} value`}
             onClick={onCreate}
           >

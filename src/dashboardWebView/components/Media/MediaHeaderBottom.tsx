@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
+import useThemeColors from '../../hooks/useThemeColors';
 import { NavigationType } from '../../models/NavigationType';
 import { SettingsAtom } from '../../state';
 import { Sorting } from '../Header';
@@ -12,6 +13,7 @@ export const MediaHeaderBottom: React.FunctionComponent<IMediaHeaderBottomProps>
   props: React.PropsWithChildren<IMediaHeaderBottomProps>
 ) => {
   const settings = useRecoilValue(SettingsAtom);
+  const { getColors } = useThemeColors();
 
   if (!settings?.wsFolder) {
     return null;
@@ -19,7 +21,12 @@ export const MediaHeaderBottom: React.FunctionComponent<IMediaHeaderBottomProps>
 
   return (
     <nav
-      className="w-full bg-gray-200 text-vulcan-300 dark:bg-vulcan-400 dark:text-whisper-600 border-b border-gray-300 dark:border-vulcan-100 flex justify-between py-2"
+      className={`w-full flex justify-between py-2 border-b ${
+        getColors(
+          'bg-gray-200 text-vulcan-300 dark:bg-vulcan-400 dark:text-whisper-600 border-gray-300 dark:border-vulcan-100',
+          'bg-[var(--vscode-sideBar-background)] text-[var(--vscode-sideBar-foreground)] border-[var(--vscode-panel-border)]'
+        )
+      }`}
       aria-label="Breadcrumb"
     >
       <Breadcrumb />

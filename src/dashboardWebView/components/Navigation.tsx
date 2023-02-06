@@ -1,10 +1,17 @@
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { Tab } from '../constants/Tab';
+import useThemeColors from '../hooks/useThemeColors';
 import { SettingsAtom, TabAtom, TabInfoAtom } from '../state';
 
 export interface INavigationProps {
   totalPages: number;
+}
+
+export interface INavigationItemProps {
+  tabId: string;
+  isCrntTab: boolean;
+  onClick: () => void;
 }
 
 export const tabs = [
@@ -12,6 +19,36 @@ export const tabs = [
   { name: 'Published', id: Tab.Published },
   { name: 'In draft', id: Tab.Draft }
 ];
+
+const NavigationItem: React.FunctionComponent<INavigationItemProps> = ({
+  tabId,
+  isCrntTab,
+  onClick,
+  children
+}: React.PropsWithChildren<INavigationItemProps>) => {
+  const { getColors } = useThemeColors();
+
+  return (
+    <button
+      className={`${
+        isCrntTab
+          ? 
+          getColors(
+            'border-teal-900 dark:border-teal-300 text-teal-900 dark:text-teal-300', 
+            'border-[var(--vscode-textLink-foreground)] text-[var(--vscode-textLink-foreground)]'
+          ) : 
+          getColors(
+            `border-transparent text-gray-500 dark:text-whisper-600 hover:text-gray-700 dark:hover:text-whisper-700 hover:border-gray-300 dark:hover:border-whisper-500`,
+            `border-transparent text-[var(--vscode-input-foreground)] hover:text-[var(--vscode-textLink-foreground)] hover:border-[var(--vscode-textLink-foreground)]`
+          )
+      } whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm`}
+      aria-current={isCrntTab ? 'page' : undefined}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  )
+};
 
 export const Navigation: React.FunctionComponent<INavigationProps> = ({
   totalPages
@@ -24,49 +61,34 @@ export const Navigation: React.FunctionComponent<INavigationProps> = ({
     <nav className="flex-1 -mb-px flex space-x-6 xl:space-x-8" aria-label="Tabs">
       {settings?.draftField?.type === 'boolean' ? (
         tabs.map((tab) => (
-          <button
+          <NavigationItem
+            tabId={tab.id}
+            isCrntTab={tab.id === crntTab}
             key={tab.name}
-            className={`${
-              tab.id === crntTab
-                ? `border-teal-900 dark:border-teal-300 text-teal-900 dark:text-teal-300`
-                : `border-transparent text-gray-500 dark:text-whisper-600 hover:text-gray-700 dark:hover:text-whisper-700 hover:border-gray-300 dark:hover:border-whisper-500`
-            } whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm`}
-            aria-current={tab.id === crntTab ? 'page' : undefined}
-            onClick={() => setCrntTab(tab.id)}
-          >
+            onClick={() => setCrntTab(tab.id)}>
             {tab.name}
             {tabInfo && tabInfo[tab.id] ? ` (${tabInfo[tab.id]})` : ''}
-          </button>
+          </NavigationItem>
         ))
       ) : (
         <>
-          <button
-            className={`${
-              tabs[0].id === crntTab
-                ? `border-teal-900 dark:border-teal-300 text-teal-900 dark:text-teal-300`
-                : `border-transparent text-gray-500 dark:text-whisper-600 hover:text-gray-700 dark:hover:text-whisper-700 hover:border-gray-300 dark:hover:border-whisper-500`
-            } whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm`}
-            aria-current={tabs[0].id === crntTab ? 'page' : undefined}
-            onClick={() => setCrntTab(tabs[0].id)}
-          >
+          <NavigationItem
+            tabId={tabs[0].id}
+            isCrntTab={tabs[0].id === crntTab}
+            onClick={() => setCrntTab(tabs[0].id)}>
             {tabs[0].name}
             {tabInfo && tabInfo[tabs[0].id] ? ` (${tabInfo[tabs[0].id]})` : ''}
-          </button>
+          </NavigationItem>
 
           {settings?.draftField?.choices?.map((value, idx) => (
-            <button
+            <NavigationItem
               key={`${value}-${idx}`}
-              className={`${
-                value === crntTab
-                  ? `border-teal-900 dark:border-teal-300 text-teal-900 dark:text-teal-300`
-                  : `border-transparent text-gray-500 dark:text-whisper-600 hover:text-gray-700 dark:hover:text-whisper-700 hover:border-gray-300 dark:hover:border-whisper-500`
-              } whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm first-letter:uppercase`}
-              aria-current={value === crntTab ? 'page' : undefined}
-              onClick={() => setCrntTab(value)}
-            >
+              tabId={value}
+              isCrntTab={value === crntTab}
+              onClick={() => setCrntTab(value)}>
               {value}
               {tabInfo && tabInfo[value] ? ` (${tabInfo[value]})` : ''}
-            </button>
+            </NavigationItem>
           ))}
         </>
       )}

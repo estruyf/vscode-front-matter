@@ -96,6 +96,11 @@
     "configuration": {
       "title": "Front Matter: use frontmatter.json for shared team settings",
       "properties": {
+        "frontMatter.experimental": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Specify if you want to enable the experimental features. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.experimental)"
+        },
         "frontMatter.extends": {
           "type": "array",
           "markdownDescription": "Specify the list of paths/URLs to extend the Front Matter CMS config. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.extends)",

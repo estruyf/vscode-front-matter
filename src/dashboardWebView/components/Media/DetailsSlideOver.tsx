@@ -10,6 +10,7 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
 import { useRecoilValue } from 'recoil';
 import { PageSelector, SelectedMediaFolderSelector } from '../../state';
+import useThemeColors from '../../hooks/useThemeColors';
 
 export interface IDetailsSlideOverProps {
   imgSrc: string;
@@ -42,6 +43,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
   const [alt, setAlt] = React.useState(media.alt);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const page = useRecoilValue(PageSelector);
+  const { getColors } = useThemeColors();
 
   const createdDate = useMemo(() => DateHelper.tryParse(media.ctime), [media]);
   const modifiedDate = useMemo(() => DateHelper.tryParse(media.mtime), [media]);
@@ -75,7 +77,12 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
     <Transition.Root show={true} as={Fragment}>
       <Dialog onClose={onDismiss} as={'div' as any} className="fixed inset-0 overflow-hidden z-50">
         <div className="absolute inset-0 overflow-hidden">
-          <Dialog.Overlay className="absolute inset-0 bg-vulcan-500 bg-opacity-75 transition-opacity" />
+          <Dialog.Overlay className={`absolute inset-0 transition-opacity ${
+            getColors(
+              'bg-vulcan-500 bg-opacity-75',
+              'bg-[var(--vscode-editor-background)] opacity-75'
+            )
+          }`} />
 
           <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
             <Transition.Child
@@ -88,7 +95,12 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
               leaveTo="translate-x-full"
             >
               <div className="pointer-events-auto w-screen max-w-md">
-                <div className="flex h-full flex-col overflow-y-scroll bg-white dark:bg-vulcan-400 border-l border-whisper-900 dark:border-vulcan-50 py-6 shadow-xl">
+                <div className={`flex h-full flex-col overflow-y-scroll border-l py-6 shadow-xl ${
+                  getColors(
+                    `bg-white dark:bg-vulcan-400 border-whisper-900 dark:border-vulcan-50`,
+                    `bg-[var(--vscode-sideBar-background)] border-[var(--vscode-panel-border)]`
+                  )
+                }`}>
                   <div className="px-4 sm:px-6">
                     <div className="flex items-start justify-between">
                       <Dialog.Title className="text-lg font-medium text-vulcan-300 dark:text-whisper-900">
@@ -144,7 +156,12 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                                 </label>
                                 <div className="relative mt-1">
                                   <input
-                                    className="py-1 px-2 sm:text-sm bg-white dark:bg-vulcan-300 border border-gray-300 dark:border-vulcan-100 text-vulcan-500 dark:text-whisper-500 placeholder-gray-400 dark:placeholder-whisper-800 focus:outline-none w-full"
+                                    className={`py-1 px-2 sm:text-sm border focus:outline-none w-full ${
+                                      getColors(
+                                        'bg-white dark:bg-vulcan-300 border-gray-300 dark:border-vulcan-100 text-vulcan-500 dark:text-whisper-500 placeholder-gray-400 dark:placeholder-whisper-800',
+                                        ''
+                                      )
+                                    }`}
                                     value={name}
                                     onChange={(e) => setFilename(`${e.target.value}.${extension}`)}
                                   />

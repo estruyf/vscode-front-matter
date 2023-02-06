@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import usePagination from '../../hooks/usePagination';
+import useThemeColors from '../../hooks/useThemeColors';
 import { MediaTotalSelector, PageAtom, SettingsAtom } from '../../state';
 import { PaginationButton } from './PaginationButton';
 
@@ -20,6 +21,7 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({
     totalPages,
     totalMedia
   );
+  const { getColors } = useThemeColors();
 
   const getButtons = useCallback((): number[] => {
     const maxButtons = 5;
@@ -27,7 +29,7 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({
     const start = page - maxButtons;
     const end = page + maxButtons;
 
-    for (let i = start; i <= end; i++) {
+    for (let i = start; i < end; i++) {
       if (i >= 0 && i <= totalPagesNr) {
         buttons.push(i);
       }
@@ -72,11 +74,14 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({
           onClick={() => {
             setPage(button);
           }}
-          className={`${
+          className={`max-h-8 rounded ${
             page === button
-              ? 'bg-gray-200 px-2 text-vulcan-500'
-              : 'text-gray-500 hover:text-gray-600 dark:text-whisper-900 dark:hover:text-whisper-500'
-          } max-h-8 rounded-sm`}
+              ? `px-2 ${getColors('bg-gray-200  text-vulcan-500', 'bg-[var(--vscode-list-activeSelectionBackground)] text-[var(--vscode-list-activeSelectionForeground)]')}`
+              : getColors(
+                `text-gray-500 hover:text-gray-600 dark:text-whisper-900 dark:hover:text-whisper-500`,
+                `text-[var(--vscode-editor-foreground)] hover:text-[var(--vscode-list-activeSelectionForeground)]`
+              )
+          }`}
         >
           {button + 1}
         </button>

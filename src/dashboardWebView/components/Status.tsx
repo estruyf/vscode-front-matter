@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
+import useThemeColors from '../hooks/useThemeColors';
 import { SettingsAtom } from '../state';
 
 export interface IStatusProps {
@@ -10,6 +11,7 @@ export interface IStatusProps {
 export const Status: React.FunctionComponent<IStatusProps> = ({
   draft
 }: React.PropsWithChildren<IStatusProps>) => {
+  const { getColors } = useThemeColors();
   const settings = useRecoilValue(SettingsAtom);
 
   const draftField = useMemo(() => settings?.draftField, [settings]);
@@ -28,7 +30,7 @@ export const Status: React.FunctionComponent<IStatusProps> = ({
     if (draftValue) {
       return (
         <span
-          className={`inline-block px-2 py-1 leading-none rounded-sm font-semibold uppercase tracking-wide text-xs text-whisper-200 dark:text-vulcan-500 bg-teal-500`}
+          className={`inline-block px-2 py-1 leading-none rounded-sm font-semibold uppercase tracking-wide text-xs ${getColors(`text-whisper-200 dark:text-vulcan-500 bg-teal-500`, `text-[var(--vscode-badge-foreground)] bg-[var(--vscode-badge-background)]`)}`}
         >
           {draftValue}
         </span>
@@ -40,9 +42,14 @@ export const Status: React.FunctionComponent<IStatusProps> = ({
 
   return (
     <span
-      className={`inline-block px-2 py-1 leading-none rounded-sm font-semibold uppercase tracking-wide text-xs text-whisper-200 dark:text-vulcan-500 ${
-        draftValue ? 'bg-red-500' : 'bg-teal-500'
-      }`}
+      className={`
+        inline-block px-2 py-1 leading-none rounded-sm font-semibold uppercase tracking-wide text-xs 
+        ${getColors(`text-whisper-200 dark:text-vulcan-500`, ``)} 
+        ${
+          draftValue ? 
+            getColors(`bg-red-500`, 'bg-[var(--vscode-statusBarItem-errorBackground)] text-[var(--vscode-statusBarItem-errorForeground)]') : 
+            getColors(`bg-teal-500`, 'bg-[var(--vscode-badge-background)] text-[var(--vscode-badge-foreground)]') 
+        }`}
     >
       {draftValue ? 'Draft' : 'Published'}
     </span>

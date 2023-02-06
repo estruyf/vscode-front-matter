@@ -2,6 +2,7 @@ import { SearchIcon, XCircleIcon } from '@heroicons/react/solid';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useDebounce } from '../../../hooks/useDebounce';
+import useThemeColors from '../../hooks/useThemeColors';
 import { SearchAtom, SearchReadyAtom } from '../../state';
 import { RefreshDashboardData } from './RefreshDashboardData';
 
@@ -16,6 +17,7 @@ export const Searchbox: React.FunctionComponent<ISearchboxProps> = ({
   const [debounceSearchValue, setDebounceValue] = useRecoilState(SearchAtom);
   const searchReady = useRecoilValue(SearchReadyAtom);
   const debounceSearch = useDebounce<string>(value, 500);
+  const { getColors } = useThemeColors();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
@@ -44,13 +46,18 @@ export const Searchbox: React.FunctionComponent<ISearchboxProps> = ({
         </label>
         <div className="relative flex justify-center">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <SearchIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+            <SearchIcon className={`h-5 w-5 ${getColors(`text-gray-400`, 'text-[var(--vscode-input-foreground)]')}`} aria-hidden="true" />
           </div>
 
           <input
             type="text"
             name="search"
-            className={`block w-full py-2 pl-10 pr-3 sm:text-sm bg-white dark:bg-vulcan-300 border border-gray-300 dark:border-vulcan-100 text-vulcan-500 dark:text-whisper-500 placeholder-gray-400 dark:placeholder-whisper-800 focus:outline-none appearance-none disabled:opacity-50`}
+            className={`block w-full py-2 pl-10 pr-3 sm:text-sm focus:outline-none appearance-none disabled:opacity-50 ${
+              getColors(
+                'bg-white dark:bg-vulcan-300 border border-gray-300 dark:border-vulcan-100 text-vulcan-500 dark:text-whisper-500 placeholder-gray-400 dark:placeholder-whisper-800',
+                'bg-[var(--vscode-input-background)] text-[var(--vscode-input-foreground)] border-[var(--vscode-editorWidget-border)] placeholder-[var(--vscode-input-placeholderForeground)]'
+              )
+            }`}
             placeholder={placeholder || 'Search'}
             value={value}
             onChange={handleChange}
@@ -59,7 +66,7 @@ export const Searchbox: React.FunctionComponent<ISearchboxProps> = ({
 
           {value && (
             <button onClick={reset} className="absolute inset-y-0 right-0 pr-3 flex items-center">
-              <XCircleIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+              <XCircleIcon className={`h-5 w-5 ${getColors(`text-gray-400`, 'text-[var(--vscode-input-foreground)]')}`} aria-hidden="true" />
             </button>
           )}
         </div>

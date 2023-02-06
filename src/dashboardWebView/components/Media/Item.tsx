@@ -37,6 +37,7 @@ import { InfoDialog } from '../Modals/InfoDialog';
 import { DetailsSlideOver } from './DetailsSlideOver';
 import { usePopper } from 'react-popper';
 import { MediaSnippetForm } from './MediaSnippetForm';
+import useThemeColors from '../../hooks/useThemeColors';
 
 export interface IItemProps {
   media: MediaInfo;
@@ -59,6 +60,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const settings = useRecoilValue(SettingsSelector);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const viewData = useRecoilValue(ViewDataSelector);
+  const { getColors } = useThemeColors();
 
   const hasViewData = useMemo(() => {
     return viewData?.data?.filePath !== undefined;
@@ -345,18 +347,20 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     const path = media.fsPath;
     const extension = path.split('.').pop();
 
-    let icon = <DocumentIcon className={`h-4/6 text-gray-300 dark:text-vulcan-200`} />;
+    const colors = getColors(`text-gray-300 dark:text-vulcan-200`, `text-[var(--vscode-sideBarTitle-foreground)] opacity-80`);
+
+    let icon = <DocumentIcon className={`h-4/6 ${colors}`} />;
 
     if (isImageFile) {
-      return <PhotographIcon className={`h-1/2 text-gray-300 dark:text-vulcan-200`} />;
+      return <PhotographIcon className={`h-1/2 ${colors}`} />;
     }
 
     if (isVideoFile) {
-      icon = <VideoCameraIcon className={`h-4/6 text-gray-300 dark:text-vulcan-200`} />;
+      icon = <VideoCameraIcon className={`h-4/6 ${colors}`} />;
     }
 
     if (isAudioFile) {
-      icon = <MusicNoteIcon className={`h-4/6 text-gray-300 dark:text-vulcan-200`} />;
+      icon = <MusicNoteIcon className={`h-4/6 ${colors}`} />;
     }
 
     return (
@@ -420,10 +424,20 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
   return (
     <>
-      <li className="group relative bg-gray-50 dark:bg-vulcan-200 shadow-md hover:shadow-xl dark:shadow-none dark:hover:bg-vulcan-100 border border-gray-200 dark:border-vulcan-50">
+      <li className={`group relative shadow-md hover:shadow-xl dark:shadow-none border rounded ${
+        getColors(
+          'bg-gray-50 dark:bg-vulcan-200 dark:hover:bg-vulcan-100 border-gray-200 dark:border-vulcan-50',
+          'bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--vscode-panel-border)]'
+        )
+      }`}>
         <button
-          className={`group/button relative bg-gray-200 dark:bg-vulcan-300 block w-full aspect-w-10 aspect-h-7 overflow-hidden  h-48 ${
+          className={`group/button relative block w-full aspect-w-10 aspect-h-7 overflow-hidden h-48 ${
             isImageFile ? 'cursor-pointer' : 'cursor-default'
+          } ${
+            getColors(
+              `bg-gray-200 dark:bg-vulcan-300`,
+              `border-b border-[var(--vscode-panel-border)]`
+            )
           }`}
           onClick={hasViewData ? undefined : openLightbox}
         >
@@ -439,7 +453,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           </div>
           {hasViewData && (
             <div
-              className={`hidden group-hover/button:flex absolute top-0 right-0 bottom-0 left-0 items-center bg-vulcan-500 bg-opacity-70 justify-center`}
+              className={`hidden group-hover/button:flex absolute top-0 right-0 bottom-0 left-0 items-center justify-center ${
+                getColors(
+                  `bg-vulcan-500 bg-opacity-70`,
+                  `bg-black bg-opacity-90`
+                )
+              }`}
             >
               <div
                 className={`h-full ${
@@ -448,7 +467,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               >
                 <button
                   title="Insert image"
-                  className={`text-gray-300 hover:text-teal-600 h-1/3`}
+                  className={`h-1/3 ${getColors(`text-gray-300 hover:text-teal-600`, `text-[var(--vscode-editor-foreground)] hover:text-[var(--vscode-button-hoverBackground)]`)}`}
                   onClick={insertToArticle}
                 >
                   <PlusIcon className={`w-full h-full hover:drop-shadow-md `} aria-hidden="true" />
@@ -458,7 +477,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                 <div className={`h-full w-1/3 flex items-center justify-center`}>
                   <button
                     title="Insert snippet"
-                    className={`text-gray-300 hover:text-teal-600 h-1/3`}
+                    className={`h-1/3 ${getColors(`text-gray-300 hover:text-teal-600`, `text-[var(--vscode-editor-foreground)] hover:text-[var(--vscode-button-hoverBackground)]`)}`}
                     onClick={insertSnippet}
                   >
                     <CodeIcon
@@ -473,7 +492,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({
         </button>
         <div className={`relative py-4 pl-4 pr-12`}>
           <div className={`group/actions absolute top-4 right-4 flex flex-col space-y-4`}>
-            <div className="flex items-center border border-transparent group-hover/actions:bg-gray-200 dark:group-hover/actions:bg-vulcan-200 group-hover/actions:border-gray-100 dark:group-hover/actions:border-vulcan-50 rounded-full p-2 -mr-2 -mt-2">
+            <div className={`flex items-center border border-transparent rounded-full p-2 -mr-2 -mt-2 ${
+              getColors(
+                `group-hover/actions:bg-gray-200 dark:group-hover/actions:bg-vulcan-200 group-hover/actions:border-gray-100 dark:group-hover/actions:border-vulcan-50`,
+                `group-hover/actions:bg-[var(--vscode-sideBar-background)] group-hover/actions:border-[var(--vscode-panel-border)]`
+              )
+            }`}>
               <Menu as="div" className="relative z-10 flex text-left">
                 <div className="hidden group-hover/actions:flex">
                   <QuickAction title="View media details" onClick={viewMediaDetails}>
@@ -612,31 +636,31 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               </Menu>
             </div>
           </div>
-          <p className="text-sm dark:text-whisper-900 font-bold pointer-events-none flex items-center break-all">
+          <p className={`text-sm font-bold pointer-events-none flex items-center break-all ${getColors(`dark:text-whisper-900`, ``)}`}>
             {basename(parseWinPath(media.fsPath) || '')}
           </p>
           {!isImageFile && media.title && (
-            <p className="mt-2 text-xs dark:text-whisper-900 font-medium pointer-events-none flex flex-col items-start">
+            <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start ${getColors(`dark:text-whisper-900`, ``)}`}>
               <b className={`mr-2`}>Title:</b>
-              <span className={`block mt-1 dark:text-whisper-500 text-xs`}>{media.title}</span>
+              <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-activityBar-foreground)]`)}`}>{media.title}</span>
             </p>
           )}
           {media.caption && (
-            <p className="mt-2 text-xs dark:text-whisper-900 font-medium pointer-events-none flex flex-col items-start">
+            <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start ${getColors(`dark:text-whisper-900`, ``)}`}>
               <b className={`mr-2`}>Caption:</b>
-              <span className={`block mt-1 dark:text-whisper-500 text-xs`}>{media.caption}</span>
+              <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-activityBar-foreground)]`)}`}>{media.caption}</span>
             </p>
           )}
           {!media.caption && media.alt && (
-            <p className="mt-2 text-xs dark:text-whisper-900 font-medium pointer-events-none  flex flex-col items-start">
+            <p className={`mt-2 text-xs font-medium pointer-events-none  flex flex-col items-start ${getColors(`dark:text-whisper-900`, ``)}`}>
               <b className={`mr-2`}>Alt:</b>
-              <span className={`block mt-1 dark:text-whisper-500 text-xs`}>{media.alt}</span>
+              <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-activityBar-foreground)]`)}`}>{media.alt}</span>
             </p>
           )}
           {(media?.size || media?.dimensions) && (
-            <p className="mt-2 text-xs dark:text-whisper-900 font-medium pointer-events-none flex flex-col items-start">
+            <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start ${getColors(`dark:text-whisper-900`, ``)}`}>
               <b className={`mr-1`}>Size:</b>
-              <span className={`block mt-1 dark:text-whisper-500 text-xs`}>
+              <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-activityBar-foreground)]`)}`}>
                 {getMediaDetails()}
               </span>
             </p>
@@ -655,7 +679,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             {mediaSnippets.map((snippet, idx) => (
               <li key={idx} className="inline-flex items-center pb-2 mr-2">
                 <button
-                  className="w-full inline-flex justify-center border border-transparent shadow-sm px-4 py-2 bg-teal-600 text-base font-medium text-white hover:bg-teal-700 dark:hover:bg-teal-900 focus:outline-none sm:w-auto sm:text-sm disabled:opacity-30"
+                  className={`w-full inline-flex justify-center border border-transparent shadow-sm px-4 py-2 text-base font-medium focus:outline-none sm:w-auto sm:text-sm disabled:opacity-30 ${
+                    getColors(
+                      `bg-teal-600 text-white hover:bg-teal-700 dark:hover:bg-teal-900`,
+                      `bg-[var(--vscode-button-background)] text-[var(--vscode-button-foreground)] hover:bg-[var(--vscode-button-hoverBackground)]`
+                    )
+                  }`}
                   onClick={() => processSnippet(snippet)}
                 >
                   {snippet.title}
