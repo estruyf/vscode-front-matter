@@ -636,31 +636,31 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               </Menu>
             </div>
           </div>
-          <p className={`text-sm font-bold pointer-events-none flex items-center break-all ${getColors(`dark:text-whisper-900`, ``)}`}>
+          <p className={`text-sm font-bold pointer-events-none flex items-center break-all ${getColors(`dark:text-whisper-900`, `text-[var(--vscode-foreground)]`)}`}>
             {basename(parseWinPath(media.fsPath) || '')}
           </p>
           {!isImageFile && media.title && (
             <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start ${getColors(`dark:text-whisper-900`, ``)}`}>
               <b className={`mr-2`}>Title:</b>
-              <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-activityBar-foreground)]`)}`}>{media.title}</span>
+              <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-foreground)]`)}`}>{media.title}</span>
             </p>
           )}
           {media.caption && (
             <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start ${getColors(`dark:text-whisper-900`, ``)}`}>
               <b className={`mr-2`}>Caption:</b>
-              <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-activityBar-foreground)]`)}`}>{media.caption}</span>
+              <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-foreground)]`)}`}>{media.caption}</span>
             </p>
           )}
           {!media.caption && media.alt && (
             <p className={`mt-2 text-xs font-medium pointer-events-none  flex flex-col items-start ${getColors(`dark:text-whisper-900`, ``)}`}>
               <b className={`mr-2`}>Alt:</b>
-              <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-activityBar-foreground)]`)}`}>{media.alt}</span>
+              <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-foreground)]`)}`}>{media.alt}</span>
             </p>
           )}
           {(media?.size || media?.dimensions) && (
             <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start ${getColors(`dark:text-whisper-900`, ``)}`}>
               <b className={`mr-1`}>Size:</b>
-              <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-activityBar-foreground)]`)}`}>
+              <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-foreground)]`)}`}>
                 {getMediaDetails()}
               </span>
             </p>
