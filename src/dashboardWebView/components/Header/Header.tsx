@@ -142,10 +142,16 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
 
   return (
     <div className={`w-full sticky top-0 z-40 ${
-      getColors(`bg-gray-100 dark:bg-vulcan-500`, `bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]`)
-    } `}>
+      getColors(
+        `bg-gray-100 dark:bg-vulcan-500`, 
+        `bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]`
+      )
+    }`}>
       <div className={`mb-0 border-b ${
-        getColors(`bg-gray-100 dark:bg-vulcan-500 border-gray-200 dark:border-vulcan-300`, `bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)] border-[var(--vscode-editorWidget-border)]`)
+        getColors(
+          `bg-gray-100 dark:bg-vulcan-500 border-gray-200 dark:border-vulcan-300`, 
+          `bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)] border-[var(--vscode-editorWidget-border)]`
+        )
       }`}>
         <Tabs onNavigate={updateView} />
       </div>

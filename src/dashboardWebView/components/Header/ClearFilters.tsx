@@ -15,8 +15,8 @@ import {
 } from '../../state';
 
 import { DefaultValue } from 'recoil';
-import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
+import useThemeColors from '../../hooks/useThemeColors';
 
 export const guardRecoilDefaultValue = (candidate: any): candidate is DefaultValue => {
   if (candidate instanceof DefaultValue) return true;
@@ -29,6 +29,7 @@ export const ClearFilters: React.FunctionComponent<IClearFiltersProps> = (
   props: React.PropsWithChildren<IClearFiltersProps>
 ) => {
   const [show, setShow] = React.useState(false);
+  const { getColors } = useThemeColors();
 
   const folder = useRecoilValue(FolderSelector);
   const tag = useRecoilValue(TagSelector);
@@ -63,7 +64,12 @@ export const ClearFilters: React.FunctionComponent<IClearFiltersProps> = (
 
   return (
     <button
-      className="flex items-center hover:text-teal-600"
+      className={`flex items-center ${
+        getColors(
+          'hover:text-teal-600',
+          'hover:text-[var(--vscode-textLink-activeForeground)]'
+        )
+      }`}
       onClick={reset}
       title={`Clear filters, grouping, and sorting`}
     >

@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useCallback } from 'react';
 import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
 import { DashboardMessage } from '../../DashboardMessage';
+import useThemeColors from '../../hooks/useThemeColors';
 import { NavigationType } from '../../models';
 import {
   CategoryAtom,
@@ -32,6 +33,7 @@ export const RefreshDashboardData: React.FunctionComponent<IRefreshDashboardData
   // Media
   const resetPage = useResetRecoilState(PageAtom);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
+  const { getColors } = useThemeColors();
 
   const refreshPages = () => {
     setLoading(true);
@@ -60,7 +62,12 @@ export const RefreshDashboardData: React.FunctionComponent<IRefreshDashboardData
 
   return (
     <button
-      className={`mr-2 text-gray-500 hover:text-gray-600 dark:text-whisper-900 dark:hover:text-whisper-500`}
+      className={`mr-2 ${
+        getColors(
+          'text-gray-500 hover:text-gray-600 dark:text-whisper-900 dark:hover:text-whisper-500',
+          'text-[var(--vscode-foreground)] hover:text-[var(--vscode-textLink-foreground)]'
+        )
+      }`}
       title="Refresh dashboard"
       onClick={refresh}
     >
