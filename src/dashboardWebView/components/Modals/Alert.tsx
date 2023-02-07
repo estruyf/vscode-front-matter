@@ -42,7 +42,12 @@ export const Alert: React.FunctionComponent<IAlertProps> = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className={`fixed inset-0 bg-black bg-opacity-75 transition-opacity`} />
+            <Dialog.Overlay className={`fixed inset-0 transition-opacity ${
+              getColors(
+                `bg-vulcan-500 bg-opacity-75`,
+                `bg-[var(--vscode-editor-background)] opacity-75`
+              )
+            }`} />
           </Transition.Child>
 
           {/* This element is to trick the browser into centering the modal contents. */}

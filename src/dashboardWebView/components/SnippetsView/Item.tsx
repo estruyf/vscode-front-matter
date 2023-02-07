@@ -17,6 +17,7 @@ import { FEATURE_FLAG } from '../../../constants';
 import { SnippetParser } from '../../../helpers/SnippetParser';
 import { Snippet, Snippets } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
+import useThemeColors from '../../hooks/useThemeColors';
 import { ModeAtom, SettingsSelector, ViewDataSelector } from '../../state';
 import { QuickAction } from '../Menu';
 import { Alert } from '../Modals/Alert';
@@ -39,6 +40,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const [showInsertDialog, setShowInsertDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showAlert, setShowAlert] = React.useState(false);
+  const { getColors } = useThemeColors();
 
   const [snippetTitle, setSnippetTitle] = useState<string>('');
   const [snippetDescription, setSnippetDescription] = useState<string>('');
@@ -143,9 +145,19 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
   return (
     <>
-      <li className="group relative overflow-hidden bg-gray-50 dark:bg-vulcan-200 shadow-md hover:shadow-xl dark:shadow-none dark:hover:bg-vulcan-100 border border-gray-200 dark:border-vulcan-50 p-4 space-y-2">
+      <li className={`group relative overflow-hidden shadow-md hover:shadow-xl dark:shadow-none border p-4 space-y-2 ${
+        getColors(
+          'bg-gray-50 dark:bg-vulcan-200 dark:hover:bg-vulcan-100 border-gray-200 dark:border-vulcan-50',
+          'bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] border-[var(--vscode-panel-border)]'
+        )        
+      }`}>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <CodeIcon className="w-64 h-64 opacity-5 text-vulcan-200 dark:text-gray-400" />
+          <CodeIcon className={`w-64 h-64 opacity-5 ${
+            getColors(
+              'text-vulcan-200 dark:text-gray-400',
+              'text-[var(--vscode-foreground)]'
+            )
+          }`} />
         </div>
 
         <h2
@@ -167,7 +179,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           alternative={
             insertToContent ? (
               <div className={`absolute top-4 right-4 flex flex-col space-y-4`}>
-                <div className="flex items-center border border-transparent group-hover:bg-gray-200 dark:group-hover:bg-vulcan-200 group-hover:border-gray-100 dark:group-hover:border-vulcan-50 rounded-full p-2 -mr-2 -mt-2">
+                <div className={`flex items-center border border-transparent rounded-full p-2 -mr-2 -mt-2 ${
+                  getColors(
+                    'group-hover:bg-gray-200 dark:group-hover:bg-vulcan-200 group-hover:border-gray-100 dark:group-hover:border-vulcan-50',
+                    'group-hover:bg-[var(--vscode-sideBar-background)] group-hover:border-[var(--vscode-panel-border)]'
+                  )
+                }`}>
                   <div className="group-hover:hidden">
                     <DotsHorizontalIcon className="w-4 h-4" />
                   </div>
@@ -183,7 +200,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           }
         >
           <div className={`absolute top-4 right-4 flex flex-col space-y-4`}>
-            <div className="flex items-center border border-transparent group-hover:bg-gray-200 dark:group-hover:bg-vulcan-200 group-hover:border-gray-100 dark:group-hover:border-vulcan-50 rounded-full p-2 -mr-2 -mt-2">
+            <div className={`flex items-center border border-transparent rounded-full p-2 -mr-2 -mt-2 ${
+                  getColors(
+                    'group-hover:bg-gray-200 dark:group-hover:bg-vulcan-200 group-hover:border-gray-100 dark:group-hover:border-vulcan-50',
+                    'group-hover:bg-[var(--vscode-sideBar-background)] group-hover:border-[var(--vscode-panel-border)]'
+                  )
+                }`}>
               <div className="group-hover:hidden">
                 <DotsHorizontalIcon className="w-4 h-4" />
               </div>
@@ -217,7 +239,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           </div>
         </FeatureFlag>
 
-        <p className="text-xs text-vulcan-200 dark:text-whisper-800">{snippet.description}</p>
+        <p className={`text-xs ${
+          getColors(
+            'text-vulcan-200 dark:text-whisper-800',
+            'text-[var(--vscode-foreground)]'
+          )
+        }`}>{snippet.description}</p>
       </li>
 
       {showInsertDialog && (

@@ -12,6 +12,7 @@ import { GroupingSelector, PageAtom } from '../../state';
 import { Item } from './Item';
 import { List } from './List';
 import usePagination from '../../hooks/usePagination';
+import useThemeColors from '../../hooks/useThemeColors';
 
 export interface IOverviewProps {
   pages: Page[];
@@ -25,6 +26,7 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
   const grouping = useRecoilValue(GroupingSelector);
   const page = useRecoilValue(PageAtom);
   const { pageSetNr } = usePagination(settings?.dashboardState.contents.pagination);
+  const { getColors } = useThemeColors();
 
   const pagedPages = useMemo(() => {
     if (pageSetNr) {
@@ -50,7 +52,9 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
       <div className={`flex items-center justify-center h-full`}>
         <div className={`max-w-xl text-center`}>
           <FrontMatterIcon
-            className={`text-vulcan-300 dark:text-whisper-800 h-32 mx-auto opacity-90 mb-8`}
+            className={`h-32 mx-auto opacity-90 mb-8 ${
+              getColors('text-vulcan-300 dark:text-whisper-800', 'text-[var(--vscode-editor-foreground)]')
+            }`}
           />
           {settings && settings?.contentFolders?.length > 0 ? (
             <p className={`text-xl font-medium`}>No Markdown to show</p>

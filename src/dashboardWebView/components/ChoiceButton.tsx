@@ -29,6 +29,8 @@ export const ChoiceButton: React.FunctionComponent<IChoiceButtonProps> = ({
       <button
         type="button"
         className={`inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium ${
+          choices.length > 0 ? `rounded-l` : `rounded`
+        } ${
           getColors(
             `text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-500`, 
             `text-[var(--vscode-button-foreground)] bg-[var(--vscode-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`
@@ -43,7 +45,7 @@ export const ChoiceButton: React.FunctionComponent<IChoiceButtonProps> = ({
       {choices.length > 0 && (
         <Menu as="span" className="-ml-px relative block">
           <Menu.Button
-            className={`h-full inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium focus:outline-none ${
+            className={`h-full inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium focus:outline-none  rounded-r ${
               getColors(
                 `text-white dark:text-vulcan-500 bg-teal-700 hover:bg-teal-800 disabled:bg-gray-500`, 
                 `text-[var(--vscode-button-foreground)] bg-[var(--vscode-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`

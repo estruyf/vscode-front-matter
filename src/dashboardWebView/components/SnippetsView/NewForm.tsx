@@ -1,6 +1,8 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { GeneralCommands } from '../../../constants';
+import useThemeColors from '../../hooks/useThemeColors';
+import { SnippetInput } from './SnippetInput';
 
 export interface INewFormProps {
   title: string;
@@ -24,6 +26,8 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
   onDescriptionUpdate,
   onBodyUpdate
 }: React.PropsWithChildren<INewFormProps>) => {
+  const { getColors } = useThemeColors();
+
   const openLink = () => {
     Messenger.send(
       GeneralCommands.toVSCode.openLink,
@@ -36,19 +40,17 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
       <div>
         <label htmlFor={`title`} className="block text-sm font-medium capitalize">
           Title{' '}
-          <span className="text-red-400" title="Required field">
+          <span className={getColors(`text-red-400`, `text-[var(--vscode-notificationsErrorIcon-foreground)]`)} title="Required field">
             *
           </span>
         </label>
         <div className="mt-1">
-          <input
-            type="text"
-            name={`title`}
-            value={title || ''}
-            placeholder={`Snippet title`}
-            className="focus:outline-none block w-full sm:text-sm border-gray-300 text-vulcan-500"
+          <SnippetInput 
+            name='title'
+            value={title}
+            placeholder='Snippet title'
             onChange={(e) => onTitleUpdate(e.currentTarget.value)}
-          />
+            />
         </div>
       </div>
 
@@ -57,14 +59,12 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
           Description
         </label>
         <div className="mt-1">
-          <input
-            type="text"
-            name={`description`}
-            value={description || ''}
-            placeholder={`Snippet description`}
-            className="focus:outline-none block w-full sm:text-sm border-gray-300 text-vulcan-500"
+          <SnippetInput 
+            name='description'
+            value={description}
+            placeholder='Snippet description'
             onChange={(e) => onDescriptionUpdate(e.currentTarget.value)}
-          />
+            />
         </div>
       </div>
 
@@ -76,13 +76,13 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
           </span>
         </label>
         <div className="mt-1">
-          <textarea
-            name={`snippet`}
-            value={body || ''}
-            placeholder={`Snippet content`}
-            className="focus:outline-none block w-full sm:text-sm border-gray-300 text-vulcan-500"
+          <SnippetInput 
+            name='snippet'
+            value={body}
+            placeholder='Snippet content'
             onChange={(e) => onBodyUpdate(e.currentTarget.value)}
-          />
+            isTextArea
+            />
         </div>
       </div>
 
@@ -99,23 +99,30 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
               type="checkbox"
               checked={isMediaSnippet}
               onChange={(e) => onMediaSnippetUpdate(e.currentTarget.checked)}
-              className="focus:ring-teal-500 h-4 w-4 text-teal-600 border-gray-300 rounded"
+              className={`h-4 w-4 rounded ${
+                getColors(
+                  `focus:ring-teal-500 text-teal-600 border-gray-300 dark:border-vulcan-50`,
+                  `focus:ring-[var(--vscode-button-background)] text-[var(--vscode-button-background)] border-[var(--vscode-editorWidget-border)]`
+                )
+              }`}
             />
           </div>
           <div className="ml-3 text-sm">
             <label
               htmlFor="isMediaSnippet"
-              className="font-medium text-vulcan-100 dark:text-whisper-900"
+              className={`font-medium ${
+                getColors(`text-vulcan-100 dark:text-whisper-900`, `text-[var(--vscode-editor-foreground)]`)
+              }`}
             >
               Media snippet
             </label>
-            <p id="isMediaSnippet-description" className="text-vulcan-300 dark:text-whisper-500">
+            <p id="isMediaSnippet-description" className={getColors('text-vulcan-300 dark:text-whisper-500', `text-[var(--vscode-foreground)]`)}>
               Use the current snippet for inserting media files into your content.
             </p>
             <p>
               Check our{' '}
               <button
-                className="text-teal-700 hover:text-teal-500"
+                className={getColors('text-teal-700 hover:text-teal-500', 'text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)]')}
                 onClick={openLink}
                 title="media snippet placeholders"
               >

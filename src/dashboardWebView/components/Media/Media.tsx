@@ -177,7 +177,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (
           <div className={`absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center z-50 ${
             getColors(
               'text-whisper-500 bg-gray-900 bg-opacity-70',
-              'text-[var(--vscode-foreground)] bg-black bg-opacity-70'
+              'text-[var(--vscode-foreground)] bg-[var(--vscode-editor-background)] opacity-75'
             )
           }`}>
             <UploadIcon className={`h-32`} />

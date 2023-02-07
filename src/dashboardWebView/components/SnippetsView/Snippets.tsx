@@ -84,7 +84,7 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
         <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.dashboard.snippets.manage}>
           <div
             className={`py-3 px-4 flex items-center justify-between border-b ${
-              getColors(`border-gray-300 dark:border-vulcan-100`, `border-[var(--vscode-sideBar-border)]`)
+              getColors(`border-gray-300 dark:border-vulcan-100`, `border-[var(--vscode-panel-border)]`)
             }`}
             aria-label="snippets header"
           >
@@ -99,7 +99,7 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
 
             <div className="flex flex-1 justify-end">
               <button
-                className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium focus:outline-none ${
+                className={`inline-flex items-center px-3 py-1 rounded text-xs leading-4 font-medium focus:outline-none ${
                   getColors(
                     `text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-500`, 
                     `text-[var(--vscode-button-foreground)] bg-[var(--vscode-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`

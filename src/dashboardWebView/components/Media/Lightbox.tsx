@@ -23,7 +23,12 @@ export const Lightbox: React.FunctionComponent<ILightboxProps> = (
   return (
     <div
       onClick={hideLightbox}
-      className={`fixed top-0 left-0 right-0 bottom-0 w-full h-full flex flex-wrap items-center justify-center bg-black bg-opacity-50 z-50`}
+      className={`fixed top-0 left-0 right-0 bottom-0 w-full h-full flex flex-wrap items-center justify-center z-50 ${
+        getColors(
+          `bg-black bg-opacity-50`,
+          `bg-[var(--vscode-editor-background)] opacity-75`
+        )
+      }`}
     >
       <div className={`w-full h-full flex flex-wrap items-center justify-center`}>
         <img
