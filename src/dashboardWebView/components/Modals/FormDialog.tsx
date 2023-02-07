@@ -91,7 +91,7 @@ export const FormDialog: React.FunctionComponent<IFormDialogProps> = ({
                 <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                   <button
                     type="button"
-                    className={`w-full inline-flex justify-center rounded shadow-sm px-4 py-2 text-base font-medium  focus:outline-none sm:mt-0 sm:w-auto sm:text-sm sm:ml-3 ${
+                    className={`w-full inline-flex justify-center rounded shadow-sm px-4 py-2 text-base font-medium focus:outline-none sm:mt-0 sm:w-auto sm:text-sm sm:ml-3 ${
                       getColors(
                         'bg-teal-600 focus:ring-teal-500 text-white hover:bg-teal-700 dark:hover:bg-teal-900 ',
                         'bg-[var(--vscode-button-background)] text-[var(--vscode-button-foreground)] hover:bg-[var(--vscode-button-hoverBackground)]'
@@ -105,7 +105,7 @@ export const FormDialog: React.FunctionComponent<IFormDialogProps> = ({
                   
                   <button
                     type="button"
-                    className={`mt-3 w-full inline-flex justify-center rounded shadow-sm px-4 py-2 text-base font-medium  focus:outline-none sm:mt-0 sm:w-auto sm:text-sm ${
+                    className={`mt-3 w-full inline-flex justify-center rounded shadow-sm px-4 py-2 text-base font-medium focus:outline-none sm:mt-0 sm:w-auto sm:text-sm ${
                       getColors(
                         'bg-white border-gray-300 text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-200',
                         'bg-[var(--vscode-button-secondaryBackground)] text-[var(--vscode-button-secondaryForeground)] hover:bg-[var(--vscode-button-secondaryHoverBackground)]'

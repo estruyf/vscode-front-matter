@@ -4,7 +4,8 @@ import {
   SETTING_PREVIEW_PATHNAME,
   CONTEXT,
   TelemetryEvent,
-  PreviewCommands
+  PreviewCommands,
+  SETTING_EXPERIMENTAL
 } from './../constants';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { join } from 'path';
@@ -165,6 +166,9 @@ export class Preview {
       scriptUri = `http://${localServerUrl}/${dashboardFile}`;
     }
 
+    // Get experimental setting
+    const experimental = Settings.get(SETTING_EXPERIMENTAL);
+
     webView.webview.html = `
       <!DOCTYPE html>
       <html lang="en" style="width:100%;height:100%;margin:0;padding:0;">
@@ -181,9 +185,9 @@ export class Preview {
             slug || ''
           )}" data-isProd="${isProd}" data-environment="${
       isBeta ? 'BETA' : 'main'
-    }" data-version="${
-      version.usedVersion
-    }" style="width:100%;height:100%;margin:0;padding:0;"></div>
+    }" data-version="${version.usedVersion}" ${
+      experimental ? `data-experimental="${experimental}"` : ''
+    } style="width:100%;height:100%;margin:0;padding:0;"></div>
 
           <script ${isProd ? `nonce="${nonce}"` : ''} src="${scriptUri}"></script>
         </body>

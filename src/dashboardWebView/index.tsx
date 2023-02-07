@@ -54,7 +54,10 @@ if (elm) {
   }
 
   if (type === 'preview') {
-    render(<Preview url={url} />, elm);
+    render(
+      <SettingsProvider experimental={experimental === 'true'} version={version || ""}>
+        <Preview url={url} />
+      </SettingsProvider>, elm);
   } else {
     render(
       <RecoilRoot>
