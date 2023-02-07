@@ -39,7 +39,7 @@ const NavigationItem: React.FunctionComponent<INavigationItemProps> = ({
           ) : 
           getColors(
             `border-transparent text-gray-500 dark:text-whisper-600 hover:text-gray-700 dark:hover:text-whisper-700 hover:border-gray-300 dark:hover:border-whisper-500`,
-            `border-transparent text-[var(--vscode-input-foreground)] hover:text-[var(--vscode-textLink-foreground)] hover:border-[var(--vscode-textLink-foreground)]`
+            `border-transparent text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-textLink-activeForeground)] hover:border-[var(--vscode-textLink-activeForeground)]`
           )
       } whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm`}
       aria-current={isCrntTab ? 'page' : undefined}
