@@ -25,6 +25,7 @@ import { PageLayout } from '../Layout/PageLayout';
 import { parseWinPath } from '../../../helpers/parseWinPath';
 import { basename, extname, join } from 'path';
 import { MediaInfo } from '../../../models';
+import useThemeColors from '../../hooks/useThemeColors';
 
 export interface IMediaProps {}
 
@@ -37,6 +38,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (
   const selectedFolder = useRecoilValue(SelectedMediaFolderAtom);
   const folders = useRecoilValue(MediaFoldersAtom);
   const loading = useRecoilValue(LoadingAtom);
+  const { getColors } = useThemeColors();
 
   const currentStaticFolder = useMemo(() => {
     if (settings?.staticFolder) {
@@ -172,7 +174,12 @@ export const Media: React.FunctionComponent<IMediaProps> = (
         )}
 
         {isDragActive && (
-          <div className="absolute top-0 left-0 w-full h-full text-whisper-500 bg-gray-900 bg-opacity-70 flex flex-col justify-center items-center z-50">
+          <div className={`absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center z-50 ${
+            getColors(
+              'text-whisper-500 bg-gray-900 bg-opacity-70',
+              'text-[var(--vscode-foreground)] bg-black bg-opacity-70'
+            )
+          }`}>
             <UploadIcon className={`h-32`} />
             <p className={`text-xl max-w-md text-center`}>
               {selectedFolder
@@ -188,7 +195,9 @@ export const Media: React.FunctionComponent<IMediaProps> = (
           <div className={`flex items-center justify-center h-full`}>
             <div className={`max-w-xl text-center`}>
               <FrontMatterIcon
-                className={`text-vulcan-300 dark:text-whisper-800 h-32 mx-auto opacity-90 mb-8`}
+                className={`h-32 mx-auto opacity-90 mb-8 ${
+                  getColors('text-vulcan-300 dark:text-whisper-800', 'text-[var(--vscode-editor-foreground)]')
+                }`}
               />
 
               <p className={`text-xl font-medium`}>
