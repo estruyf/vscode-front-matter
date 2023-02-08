@@ -42,7 +42,7 @@ export const Preview: React.FunctionComponent<IPreviewProps> = ({
   return (
     <div className="w-full h-full bg-white">
       <div
-        className="slug fixed h-[30px] w-full top-0 flex items-center bg-[var(--vscode-editor-background)] text-[color:var(--vscode-editor-background)] border-b border-b-[var(--vscode-panel-border)]"
+        className="slug fixed h-[30px] w-full top-0 flex items-center bg-[var(--vscode-editor-background)] text-[color:var(--vscode-editor-background)] border-b border-b-[var(--frontmatter-border)]"
       >
         <input
           type="text"

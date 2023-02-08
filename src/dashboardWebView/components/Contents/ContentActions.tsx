@@ -85,19 +85,16 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
   return (
     <>
       <div
-        className={`${
-          listView ? '' : 'group/card absolute top-6 right-0'
-        } flex flex-col space-y-4`}
+        className={`${listView ? '' : 'group/card absolute top-6 right-0'
+          } flex flex-col space-y-4`}
       >
         <div
-          className={`flex items-center border border-transparent rounded-full ${
-            listView ? '' : 'p-2 -mt-4'
-          } ${
-            getColors(
+          className={`flex items-center border border-transparent rounded-full ${listView ? '' : 'p-2 -mt-4'
+            } ${getColors(
               'group-hover/card:bg-gray-200 dark:group-hover/card:bg-vulcan-200 group-hover/card:border-gray-100 dark:group-hover/card:border-vulcan-50',
-              'group-hover/card:bg-[var(--vscode-sideBar-background)] group-hover/card:border-[var(--vscode-panel-border)]'
+              'group-hover/card:bg-[var(--vscode-sideBar-background)] group-hover/card:border-[var(--frontmatter-border)]'
             )
-          }`}
+            }`}
         >
           <Menu as="div" className={`relative flex text-left ${listView ? '' : 'z-10'}`}>
             {!listView && (

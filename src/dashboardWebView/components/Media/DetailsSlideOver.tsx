@@ -79,12 +79,11 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
     <Transition.Root show={true} as={Fragment}>
       <Dialog onClose={onDismiss} as={'div' as any} className="fixed inset-0 overflow-hidden z-50">
         <div className="absolute inset-0 overflow-hidden">
-          <Dialog.Overlay className={`absolute inset-0 transition-opacity ${
-            getColors(
-              'bg-vulcan-500 bg-opacity-75',
-              'bg-[var(--vscode-editor-background)] opacity-75'
-            )
-          }`} />
+          <Dialog.Overlay className={`absolute inset-0 transition-opacity ${getColors(
+            'bg-vulcan-500 bg-opacity-75',
+            'bg-[var(--vscode-editor-background)] opacity-75'
+          )
+            }`} />
 
           <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
             <Transition.Child
@@ -97,31 +96,28 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
               leaveTo="translate-x-full"
             >
               <div className="pointer-events-auto w-screen max-w-md">
-                <div className={`flex h-full flex-col overflow-y-scroll border-l py-6 shadow-xl ${
-                  getColors(
-                    `bg-white dark:bg-vulcan-400 border-whisper-900 dark:border-vulcan-50`,
-                    `bg-[var(--vscode-sideBar-background)] border-[var(--vscode-panel-border)]`
-                  )
-                }`}>
+                <div className={`flex h-full flex-col overflow-y-scroll border-l py-6 shadow-xl ${getColors(
+                  `bg-white dark:bg-vulcan-400 border-whisper-900 dark:border-vulcan-50`,
+                  `bg-[var(--vscode-sideBar-background)] border-[var(--frontmatter-border)]`
+                )
+                  }`}>
                   <div className="px-4 sm:px-6">
                     <div className="flex items-start justify-between">
-                      <Dialog.Title className={`text-lg font-medium ${
-                        getColors(
-                          'text-vulcan-300 dark:text-whisper-900',
-                          'text-[var(--vscode-editor-foreground)]'
-                        )
-                      }`}>
+                      <Dialog.Title className={`text-lg font-medium ${getColors(
+                        'text-vulcan-300 dark:text-whisper-900',
+                        'text-[var(--vscode-editor-foreground)]'
+                      )
+                        }`}>
                         View details
                       </Dialog.Title>
                       <div className="ml-3 flex h-7 items-center">
                         <button
                           type="button"
-                          className={`focus:outline-none ${
-                            getColors(
-                              'text-vulcan-300 dark:text-whisper-900 hover:text-vulcan-500 dark:hover:text-whisper-500',
-                              'text-[var(--vscode-titleBar-inactiveForeground)] hover:text-[var(--vscode-titleBar-activeForeground)]'
-                            )
-                          }`}
+                          className={`focus:outline-none ${getColors(
+                            'text-vulcan-300 dark:text-whisper-900 hover:text-vulcan-500 dark:hover:text-whisper-500',
+                            'text-[var(--vscode-titleBar-inactiveForeground)] hover:text-[var(--vscode-titleBar-activeForeground)]'
+                          )
+                            }`}
                           onClick={onDismiss}
                         >
                           <span className="sr-only">Close panel</span>
@@ -135,32 +131,29 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                     <div className="absolute inset-0 px-4 sm:px-6 space-y-8">
                       <div>
                         {isImageFile && (
-                          <div className={`block w-full aspect-w-10 aspect-h-7 overflow-hidden border rounded ${
-                            getColors(
-                              'border-gray-200 dark:border-vulcan-200',
-                              'border-[var(--vscode-panel-border)] bg-[var(--vscode-editor-background)]'
-                            )
-                          }`}>
+                          <div className={`block w-full aspect-w-10 aspect-h-7 overflow-hidden border rounded ${getColors(
+                            'border-gray-200 dark:border-vulcan-200',
+                            'border-[var(--frontmatter-border)] bg-[var(--vscode-editor-background)]'
+                          )
+                            }`}>
                             <img src={imgSrc} alt={media.filename} className="object-cover max-h-[300px] mx-auto" />
                           </div>
                         )}
                         <div className="mt-4 flex items-start justify-between">
                           <div>
-                            <h2 className={`text-lg font-medium ${
-                              getColors(
-                                'text-vulcan-300 dark:text-whisper-500',
-                                'text-[var(--vscode-foreground)]'
-                              )
-                            }`}>
+                            <h2 className={`text-lg font-medium ${getColors(
+                              'text-vulcan-300 dark:text-whisper-500',
+                              'text-[var(--vscode-foreground)]'
+                            )
+                              }`}>
                               <span className="sr-only">Details for </span>
                               {media.filename}
                             </h2>
-                            <p className={`text-sm font-medium ${
-                              getColors(
-                                'text-vulcan-100 dark:text-whisper-900',
-                                'text-[var(--vscode-editor-foreground)]'
-                              )
-                            }`}>
+                            <p className={`text-sm font-medium ${getColors(
+                              'text-vulcan-100 dark:text-whisper-900',
+                              'text-[var(--vscode-editor-foreground)]'
+                            )
+                              }`}>
                               {size}
                             </p>
                           </div>
@@ -171,30 +164,27 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                         {/* EDIT METADATA FORM */}
                         {showForm && (
                           <>
-                            <h3 className={`text-base  ${
-                              getColors(
-                                'text-vulcan-300 dark:text-whisper-500',
-                                'text-[var(--vscode-editor-foreground)]'
-                              )
-                            }`}>
+                            <h3 className={`text-base  ${getColors(
+                              'text-vulcan-300 dark:text-whisper-500',
+                              'text-[var(--vscode-editor-foreground)]'
+                            )
+                              }`}>
                               Update metadata
                             </h3>
-                            <p className={`text-sm font-medium ${
-                              getColors(
-                                'text-vulcan-100 dark:text-whisper-900',
-                                'text-[var(--vscode-editor-foreground)]'
-                              )
-                            }`}>
+                            <p className={`text-sm font-medium ${getColors(
+                              'text-vulcan-100 dark:text-whisper-900',
+                              'text-[var(--vscode-editor-foreground)]'
+                            )
+                              }`}>
                               Please specify the metadata you want to set for the file.
                             </p>
                             <div className="flex flex-col py-3 space-y-3">
                               <div>
-                                <label className={`block text-sm font-medium  ${
-                                  getColors(
-                                    'text-gray-700 dark:text-whisper-900',
-                                    'text-[var(--vscode-editor-foreground)]'
-                                  )
-                                }`}>
+                                <label className={`block text-sm font-medium  ${getColors(
+                                  'text-gray-700 dark:text-whisper-900',
+                                  'text-[var(--vscode-editor-foreground)]'
+                                )
+                                  }`}>
                                   Filename
                                 </label>
                                 <div className="relative mt-1">
@@ -207,12 +197,11 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                               </div>
 
                               <div>
-                                <label className={`block text-sm font-medium ${
-                                  getColors(
-                                    'text-gray-700 dark:text-whisper-900',
-                                    'text-[var(--vscode-editor-foreground)]'
-                                  )
-                                }`}>
+                                <label className={`block text-sm font-medium ${getColors(
+                                  'text-gray-700 dark:text-whisper-900',
+                                  'text-[var(--vscode-editor-foreground)]'
+                                )
+                                  }`}>
                                   Title
                                 </label>
                                 <div className="mt-1">
@@ -223,12 +212,11 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                               {isImageFile && (
                                 <>
                                   <div>
-                                    <label className={`block text-sm font-medium ${
-                                      getColors(
-                                        'text-gray-700 dark:text-whisper-900',
-                                        'text-[var(--vscode-editor-foreground)]'
-                                      )
-                                    }`}>
+                                    <label className={`block text-sm font-medium ${getColors(
+                                      'text-gray-700 dark:text-whisper-900',
+                                      'text-[var(--vscode-editor-foreground)]'
+                                    )
+                                      }`}>
                                       Caption
                                     </label>
                                     <div className="mt-1">
@@ -236,12 +224,11 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                                     </div>
                                   </div>
                                   <div>
-                                    <label className={`block text-sm font-medium ${
-                                      getColors(
-                                        'text-gray-700 dark:text-whisper-900',
-                                        'text-[var(--vscode-editor-foreground)]'
-                                      )
-                                    }`}>
+                                    <label className={`block text-sm font-medium ${getColors(
+                                      'text-gray-700 dark:text-whisper-900',
+                                      'text-[var(--vscode-editor-foreground)]'
+                                    )
+                                      }`}>
                                       Alt tag value
                                     </label>
                                     <div className="mt-1">
@@ -255,12 +242,11 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                             <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                               <button
                                 type="button"
-                                className={`w-full inline-flex justify-center rounded border-transparent shadow-sm px-4 py-2 text-base font-medium sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-30 ${
-                                  getColors(
-                                    'border focus:outline-none focus:ring-2 focus:ring-offset-2 text-white bg-teal-600 hover:bg-teal-700 dark:hover:bg-teal-900 focus:ring-teal-500',
-                                    'bg-[var(--vscode-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] text-[var(--vscode-button-foreground)] outline-[var(--vscode-focusBorder)] outline-1'
-                                  )
-                                }`}
+                                className={`w-full inline-flex justify-center rounded border-transparent shadow-sm px-4 py-2 text-base font-medium sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-30 ${getColors(
+                                  'border focus:outline-none focus:ring-2 focus:ring-offset-2 text-white bg-teal-600 hover:bg-teal-700 dark:hover:bg-teal-900 focus:ring-teal-500',
+                                  'bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] text-[var(--vscode-button-foreground)] outline-[var(--vscode-focusBorder)] outline-1'
+                                )
+                                  }`}
                                 onClick={onSubmitMetadata}
                                 disabled={!filename}
                               >
@@ -268,12 +254,11 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                               </button>
                               <button
                                 type="button"
-                                className={`mt-3 w-full inline-flex justify-center rounded shadow-sm px-4 py-2 text-base font-medium focus:outline-none sm:mt-0 sm:w-auto sm:text-sm ${
-                                  getColors(
-                                    'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-200',
-                                    'bg-[var(--vscode-button-secondaryBackground)] hover:bg-[var(--vscode-button-secondaryHoverBackground)] text-[var(--vscode-button-secondaryForeground)]'
-                                  )
-                                }`}
+                                className={`mt-3 w-full inline-flex justify-center rounded shadow-sm px-4 py-2 text-base font-medium focus:outline-none sm:mt-0 sm:w-auto sm:text-sm ${getColors(
+                                  'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:hover:bg-gray-200',
+                                  'bg-[var(--vscode-button-secondaryBackground)] hover:bg-[var(--vscode-button-secondaryHoverBackground)] text-[var(--vscode-button-secondaryForeground)]'
+                                )
+                                  }`}
                                 onClick={onEditClose}
                               >
                                 Cancel
@@ -284,24 +269,22 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
 
                         {!showForm && (
                           <>
-                            <h3 className={`text-base flex items-center ${
-                              getColors(
-                                'text-vulcan-300 dark:text-whisper-500',
-                                'text-[var(--vscode-foreground)]'
-                              )
-                            }`}>
+                            <h3 className={`text-base flex items-center ${getColors(
+                              'text-vulcan-300 dark:text-whisper-500',
+                              'text-[var(--vscode-foreground)]'
+                            )
+                              }`}>
                               <span>Metadata</span>
                               <button onClick={onEdit}>
                                 <PencilAltIcon className="w-4 h-4 ml-2" aria-hidden="true" />
                                 <span className="sr-only">Edit</span>
                               </button>
                             </h3>
-                            <dl className={`mt-2 border-t border-b divide-y ${
-                              getColors(
-                                'border-gray-200 dark:border-vulcan-200 divide-gray-200 dark:divide-vulcan-200',
-                                'border-[var(--vscode-panel-border)] divide-[var(--vscode-panel-border)]'
-                              )
-                            }`}>
+                            <dl className={`mt-2 border-t border-b divide-y ${getColors(
+                              'border-gray-200 dark:border-vulcan-200 divide-gray-200 dark:divide-vulcan-200',
+                              'border-[var(--frontmatter-border)] divide-[var(--frontmatter-border)]'
+                            )
+                              }`}>
                               <DetailsItem title={`Filename`} details={media.filename} />
                               <DetailsItem title={`Title`} details={media.title || ""} />
 
@@ -318,20 +301,18 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
 
                       {!showForm && (
                         <div>
-                          <h3 className={`text-base ${
-                            getColors(
-                              'text-vulcan-300 dark:text-whisper-500', 
-                              'text-[var(--vscode-foreground)]'
-                            )
-                          }`}>
+                          <h3 className={`text-base ${getColors(
+                            'text-vulcan-300 dark:text-whisper-500',
+                            'text-[var(--vscode-foreground)]'
+                          )
+                            }`}>
                             Information
                           </h3>
-                          <dl className={`mt-2 border-t border-b divide-y ${
-                            getColors(
-                              'border-gray-200 dark:border-vulcan-200 divide-gray-200 dark:divide-vulcan-200',
-                              'border-[var(--vscode-panel-border)] divide-[var(--vscode-panel-border)]'
-                            )
-                          }`}>
+                          <dl className={`mt-2 border-t border-b divide-y ${getColors(
+                            'border-gray-200 dark:border-vulcan-200 divide-gray-200 dark:divide-vulcan-200',
+                            'border-[var(--frontmatter-border)] divide-[var(--frontmatter-border)]'
+                          )
+                            }`}>
                             {createdDate && (
                               <DetailsItem title={`Created`} details={format(createdDate, 'MMM dd, yyyy')} />
                             )}

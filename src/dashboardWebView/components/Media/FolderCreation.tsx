@@ -18,7 +18,7 @@ import { extname } from 'path';
 import { parseWinPath } from '../../../helpers/parseWinPath';
 import useThemeColors from '../../hooks/useThemeColors';
 
-export interface IFolderCreationProps {}
+export interface IFolderCreationProps { }
 
 export const FolderCreation: React.FunctionComponent<IFolderCreationProps> = (
   props: React.PropsWithChildren<IFolderCreationProps>
@@ -76,12 +76,11 @@ export const FolderCreation: React.FunctionComponent<IFolderCreationProps> = (
     if (isHexoPostAssetsEnabled) {
       return (
         <button
-          className={`mr-2 inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium  focus:outline-none ${
-            getColors(
-              `text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-500`, 
-              `text-[var(--vscode-button-foreground)] bg-[var(--vscode-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`
-            )
-          }`}
+          className={`mr-2 inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium  focus:outline-none ${getColors(
+            `text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-500`,
+            `text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`
+          )
+            }`}
           title={`Create post asset folder`}
           onClick={onAssetFolderCreation}
         >
@@ -115,12 +114,11 @@ export const FolderCreation: React.FunctionComponent<IFolderCreationProps> = (
     <div className="flex flex-1 justify-end">
       {renderPostAssetsButton}
       <button
-        className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium focus:outline-none rounded ${
-          getColors(
-            `text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-500`, 
-            `text-[var(--vscode-button-foreground)] bg-[var(--vscode-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`
-          )
-        }`}
+        className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium focus:outline-none rounded ${getColors(
+          `text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-500`,
+          `text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`
+        )
+          }`}
         title={`Create new folder`}
         onClick={onFolderCreation}
       >

@@ -17,7 +17,7 @@ import { SponsorMsg } from '../SponsorMsg';
 import { Item } from './Item';
 import { NewForm } from './NewForm';
 
-export interface ISnippetsProps {}
+export interface ISnippetsProps { }
 
 export const Snippets: React.FunctionComponent<ISnippetsProps> = (
   props: React.PropsWithChildren<ISnippetsProps>
@@ -83,9 +83,8 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
       header={
         <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.dashboard.snippets.manage}>
           <div
-            className={`py-3 px-4 flex items-center justify-between border-b ${
-              getColors(`border-gray-300 dark:border-vulcan-100`, `border-[var(--vscode-panel-border)]`)
-            }`}
+            className={`py-3 px-4 flex items-center justify-between border-b ${getColors(`border-gray-300 dark:border-vulcan-100`, `border-[var(--frontmatter-border)]`)
+              }`}
             aria-label="snippets header"
           >
             <FilterInput
@@ -99,12 +98,11 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
 
             <div className="flex flex-1 justify-end">
               <button
-                className={`inline-flex items-center px-3 py-1 rounded text-xs leading-4 font-medium focus:outline-none ${
-                  getColors(
-                    `text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-500`, 
-                    `text-[var(--vscode-button-foreground)] bg-[var(--vscode-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`
-                  )
-                }`}
+                className={`inline-flex items-center px-3 py-1 rounded text-xs leading-4 font-medium focus:outline-none ${getColors(
+                  `text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-500`,
+                  `text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`
+                )
+                  }`}
                 title={`Create new snippet`}
                 onClick={() => setShowCreateDialog(true)}
               >
@@ -134,9 +132,8 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
           </ul>
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <div className={`flex flex-col items-center ${
-              getColors(`text-gray-500 dark:text-vulcan-500`, `text-[var(--vscode-foreground)]`)
-            }`}>
+            <div className={`flex flex-col items-center ${getColors(`text-gray-500 dark:text-vulcan-500`, `text-[var(--vscode-foreground)]`)
+              }`}>
               <CodeIcon className="w-32 h-32" />
               <p className="text-3xl">No snippets found</p>
             </div>

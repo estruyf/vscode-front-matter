@@ -424,21 +424,18 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
   return (
     <>
-      <li className={`group relative shadow-md hover:shadow-xl dark:shadow-none border rounded ${
-        getColors(
-          'bg-gray-50 dark:bg-vulcan-200 dark:hover:bg-vulcan-100 border-gray-200 dark:border-vulcan-50',
-          'bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--vscode-panel-border)]'
-        )
-      }`}>
+      <li className={`group relative shadow-md hover:shadow-xl dark:shadow-none border rounded ${getColors(
+        'bg-gray-50 dark:bg-vulcan-200 dark:hover:bg-vulcan-100 border-gray-200 dark:border-vulcan-50',
+        'bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--frontmatter-border)]'
+      )
+        }`}>
         <button
-          className={`group/button relative block w-full aspect-w-10 aspect-h-7 overflow-hidden h-48 ${
-            isImageFile ? 'cursor-pointer' : 'cursor-default'
-          } ${
-            getColors(
+          className={`group/button relative block w-full aspect-w-10 aspect-h-7 overflow-hidden h-48 ${isImageFile ? 'cursor-pointer' : 'cursor-default'
+            } ${getColors(
               `bg-gray-200 dark:bg-vulcan-300`,
-              `border-b border-[var(--vscode-panel-border)]`
+              `border-b border-[var(--frontmatter-border)]`
             )
-          }`}
+            }`}
           onClick={hasViewData ? undefined : openLightbox}
         >
           <div
@@ -453,17 +450,15 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           </div>
           {hasViewData && (
             <div
-              className={`hidden group-hover/button:flex absolute top-0 right-0 bottom-0 left-0 items-center justify-center ${
-                getColors(
-                  `bg-vulcan-500 bg-opacity-70`,
-                  `bg-black bg-opacity-90`
-                )
-              }`}
+              className={`hidden group-hover/button:flex absolute top-0 right-0 bottom-0 left-0 items-center justify-center ${getColors(
+                `bg-vulcan-500 bg-opacity-70`,
+                `bg-black bg-opacity-90`
+              )
+                }`}
             >
               <div
-                className={`h-full ${
-                  showMediaSnippet ? 'w-1/3' : 'w-full'
-                } flex items-center justify-center`}
+                className={`h-full ${showMediaSnippet ? 'w-1/3' : 'w-full'
+                  } flex items-center justify-center`}
               >
                 <button
                   title="Insert image"
@@ -492,12 +487,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({
         </button>
         <div className={`relative py-4 pl-4 pr-12`}>
           <div className={`group/actions absolute top-4 right-4 flex flex-col space-y-4`}>
-            <div className={`flex items-center border border-transparent rounded-full p-2 -mr-2 -mt-2 ${
-              getColors(
-                `group-hover/actions:bg-gray-200 dark:group-hover/actions:bg-vulcan-200 group-hover/actions:border-gray-100 dark:group-hover/actions:border-vulcan-50`,
-                `group-hover/actions:bg-[var(--vscode-sideBar-background)] group-hover/actions:border-[var(--vscode-panel-border)]`
-              )
-            }`}>
+            <div className={`flex items-center border border-transparent rounded-full p-2 -mr-2 -mt-2 ${getColors(
+              `group-hover/actions:bg-gray-200 dark:group-hover/actions:bg-vulcan-200 group-hover/actions:border-gray-100 dark:group-hover/actions:border-vulcan-50`,
+              `group-hover/actions:bg-[var(--vscode-sideBar-background)] group-hover/actions:border-[var(--frontmatter-border)]`
+            )
+              }`}>
               <Menu as="div" className="relative z-10 flex text-left">
                 <div className="hidden group-hover/actions:flex">
                   <QuickAction title="View media details" onClick={viewMediaDetails}>
@@ -679,12 +673,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             {mediaSnippets.map((snippet, idx) => (
               <li key={idx} className="inline-flex items-center pb-2 mr-2">
                 <button
-                  className={`w-full inline-flex justify-center border border-transparent shadow-sm px-4 py-2 text-base font-medium focus:outline-none sm:w-auto sm:text-sm disabled:opacity-30 ${
-                    getColors(
-                      `bg-teal-600 text-white hover:bg-teal-700 dark:hover:bg-teal-900`,
-                      `bg-[var(--vscode-button-background)] text-[var(--vscode-button-foreground)] hover:bg-[var(--vscode-button-hoverBackground)]`
-                    )
-                  }`}
+                  className={`w-full inline-flex justify-center border border-transparent shadow-sm px-4 py-2 text-base font-medium focus:outline-none sm:w-auto sm:text-sm disabled:opacity-30 ${getColors(
+                    `bg-teal-600 text-white hover:bg-teal-700 dark:hover:bg-teal-900`,
+                    `bg-[var(--frontmatter-button-background)] text-[var(--vscode-button-foreground)] hover:bg-[var(--vscode-button-hoverBackground)]`
+                  )
+                    }`}
                   onClick={() => processSnippet(snippet)}
                 >
                   {snippet.title}

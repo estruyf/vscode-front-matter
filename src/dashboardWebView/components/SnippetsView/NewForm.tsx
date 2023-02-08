@@ -45,12 +45,12 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
           </span>
         </label>
         <div className="mt-1">
-          <SnippetInput 
+          <SnippetInput
             name='title'
             value={title}
             placeholder='Snippet title'
             onChange={(e) => onTitleUpdate(e.currentTarget.value)}
-            />
+          />
         </div>
       </div>
 
@@ -59,12 +59,12 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
           Description
         </label>
         <div className="mt-1">
-          <SnippetInput 
+          <SnippetInput
             name='description'
             value={description}
             placeholder='Snippet description'
             onChange={(e) => onDescriptionUpdate(e.currentTarget.value)}
-            />
+          />
         </div>
       </div>
 
@@ -76,13 +76,13 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
           </span>
         </label>
         <div className="mt-1">
-          <SnippetInput 
+          <SnippetInput
             name='snippet'
             value={body}
             placeholder='Snippet content'
             onChange={(e) => onBodyUpdate(e.currentTarget.value)}
             isTextArea
-            />
+          />
         </div>
       </div>
 
@@ -99,20 +99,18 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
               type="checkbox"
               checked={isMediaSnippet}
               onChange={(e) => onMediaSnippetUpdate(e.currentTarget.checked)}
-              className={`h-4 w-4 rounded ${
-                getColors(
-                  `focus:ring-teal-500 text-teal-600 border-gray-300 dark:border-vulcan-50`,
-                  `focus:ring-[var(--vscode-button-background)] text-[var(--vscode-button-background)] border-[var(--vscode-editorWidget-border)]`
-                )
-              }`}
+              className={`h-4 w-4 rounded ${getColors(
+                `focus:ring-teal-500 text-teal-600 border-gray-300 dark:border-vulcan-50`,
+                `focus:ring-[var(--frontmatter-button-background)] text-[var(--frontmatter-button-background)] border-[var(--vscode-editorWidget-border)]`
+              )
+                }`}
             />
           </div>
           <div className="ml-3 text-sm">
             <label
               htmlFor="isMediaSnippet"
-              className={`font-medium ${
-                getColors(`text-vulcan-100 dark:text-whisper-900`, `text-[var(--vscode-editor-foreground)]`)
-              }`}
+              className={`font-medium ${getColors(`text-vulcan-100 dark:text-whisper-900`, `text-[var(--vscode-editor-foreground)]`)
+                }`}
             >
               Media snippet
             </label>

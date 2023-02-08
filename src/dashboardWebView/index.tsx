@@ -25,8 +25,49 @@ export const routePaths: { [name: string]: string } = {
   taxonomy: '/taxonomy'
 };
 
+const preserveColor = (color: string | undefined) => {
+  if (color) {
+    if (color.startsWith('#') && color.length > 7) {
+      return color.slice(0, 7);
+    } else if (color.startsWith('rgba')) {
+      const splits = color.split(',');
+      splits.pop();
+      return `${splits.join(', ')}, 1)`;
+    }
+  }
+
+  return color;
+}
+
+const updateCssVariables = () => {
+  const styles = getComputedStyle(document.documentElement);
+
+  const panelBorder = styles.getPropertyValue('--vscode-panel-border');
+  if (panelBorder) {
+    document.documentElement.style.setProperty('--frontmatter-border', preserveColor(panelBorder) || "var(--vscode-panel-border)");
+  }
+
+  const buttonBackground = styles.getPropertyValue('--vscode-button-background');
+  if (buttonBackground) {
+    document.documentElement.style.setProperty('--frontmatter-button-background', preserveColor(buttonBackground) || "var(--vscode-button-background)");
+  }
+
+  const buttonHoverBackground = styles.getPropertyValue('--vscode-button-hoverBackground');
+  if (buttonHoverBackground) {
+    document.documentElement.style.setProperty('--frontmatter-button-hoverBackground', preserveColor(buttonHoverBackground) || "var(--vscode-button-hoverBackground)");
+  }
+}
+
+const mutationObserver = new MutationObserver((mutationsList, observer) => {
+  updateCssVariables();
+});
+
 const elm = document.querySelector('#app');
 if (elm) {
+  updateCssVariables();
+
+  mutationObserver.observe(document.body, { childList: false, attributes: true })
+
   const welcome = elm?.getAttribute('data-showWelcome');
   const version = elm?.getAttribute('data-version');
   const environment = elm?.getAttribute('data-environment');

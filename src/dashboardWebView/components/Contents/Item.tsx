@@ -12,7 +12,7 @@ import { ContentActions } from './ContentActions';
 import { useMemo } from 'react';
 import useThemeColors from '../../hooks/useThemeColors';
 
-export interface IItemProps extends Page {}
+export interface IItemProps extends Page { }
 
 const PREVIEW_IMAGE_FIELD = 'fmPreviewImage';
 
@@ -78,21 +78,19 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return (
       <li className="relative">
         <div
-          className={`group flex flex-wrap items-start content-start h-full w-full text-left shadow-md dark:shadow-none hover:shadow-xl border rounded ${
-            getColors(
-              'bg-gray-50 dark:bg-vulcan-200 text-vulcan-500 dark:text-whisper-500 dark:hover:bg-vulcan-100 border-gray-200 dark:border-vulcan-50', 
-              'bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--vscode-panel-border)]'
-            )
-          }`}
+          className={`group flex flex-wrap items-start content-start h-full w-full text-left shadow-md dark:shadow-none hover:shadow-xl border rounded ${getColors(
+            'bg-gray-50 dark:bg-vulcan-200 text-vulcan-500 dark:text-whisper-500 dark:hover:bg-vulcan-100 border-gray-200 dark:border-vulcan-50',
+            'bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--frontmatter-border)]'
+          )
+            }`}
         >
           <button
             onClick={openFile}
-            className={`relative h-36 w-full overflow-hidden border-b cursor-pointer ${
-              getColors(
-                'border-gray-100 dark:border-vulcan-100 dark:group-hover:border-vulcan-200',
-                'border-[var(--vscode-panel-border)]'
-              )
-            }`}
+            className={`relative h-36 w-full overflow-hidden border-b cursor-pointer ${getColors(
+              'border-gray-100 dark:border-vulcan-100 dark:group-hover:border-vulcan-200',
+              'border-[var(--frontmatter-border)]'
+            )
+              }`}
           >
             {pageData[PREVIEW_IMAGE_FIELD] ? (
               <img
@@ -103,19 +101,17 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               />
             ) : (
               <div
-                className={`flex items-center justify-center ${
-                  getColors(
-                    'bg-whisper-500 dark:bg-vulcan-200 dark:group-hover:bg-vulcan-100',
-                    'bg-[var(--vscode-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)]'
-                  )
-                }`}
+                className={`flex items-center justify-center ${getColors(
+                  'bg-whisper-500 dark:bg-vulcan-200 dark:group-hover:bg-vulcan-100',
+                  'bg-[var(--vscode-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)]'
+                )
+                  }`}
               >
-                <MarkdownIcon className={`h-32 ${
-                  getColors(
-                    'text-vulcan-100 dark:text-whisper-100',
-                    'text-[var(--vscode-sideBarTitle-foreground)] opacity-80'
-                  )
-                }`} />
+                <MarkdownIcon className={`h-32 ${getColors(
+                  'text-vulcan-100 dark:text-whisper-100',
+                  'text-[var(--vscode-sideBarTitle-foreground)] opacity-80'
+                )
+                  }`} />
               </div>
             )}
           </button>
@@ -149,12 +145,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                     tag && (
                       <span
                         key={index}
-                        className={`inline-block mr-1 mt-1 text-xs ${
-                          getColors(
-                            `text-[#5D561D] dark:text-[#F0ECD0]`,
-                            `text-[var(--vscode-textPreformat-foreground)]`
-                          )
-                        }`}
+                        className={`inline-block mr-1 mt-1 text-xs ${getColors(
+                          `text-[#5D561D] dark:text-[#F0ECD0]`,
+                          `text-[var(--vscode-textPreformat-foreground)]`
+                        )
+                          }`}
                       >
                         #{tag}
                       </span>
@@ -170,12 +165,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return (
       <li className="relative">
         <div
-          className={`px-5 cursor-pointer w-full text-left grid grid-cols-12 gap-x-4 sm:gap-x-6 xl:gap-x-8 py-2 border-b hover:bg-opacity-70 ${
-            getColors(
-              `border-gray-300 hover:bg-gray-200 dark:border-vulcan-50 dark:hover:bg-vulcan-50`,
-              `border-[var(--vscode-panel-border)] hover:bg-[var(--vscode-sideBar-background)]`
-            )
-          }`}
+          className={`px-5 cursor-pointer w-full text-left grid grid-cols-12 gap-x-4 sm:gap-x-6 xl:gap-x-8 py-2 border-b hover:bg-opacity-70 ${getColors(
+            `border-gray-300 hover:bg-gray-200 dark:border-vulcan-50 dark:hover:bg-vulcan-50`,
+            `border-[var(--frontmatter-border)] hover:bg-[var(--vscode-sideBar-background)]`
+          )
+            }`}
         >
           <div className="col-span-8 font-bold truncate flex items-center space-x-4">
             <button title={`Open: ${escapedTitle}`} onClick={openFile}>

@@ -37,24 +37,22 @@ export const Startup: React.FunctionComponent<IStartupProps> = ({
           type="checkbox"
           checked={isChecked}
           onChange={onChange}
-          className={`h-4 w-4 focus:outline-none rounded ${
-            getColors(
-              `focus:ring-teal-500 text-teal-600 border-gray-300 dark:border-vulcan-50`,
-              `focus:ring-[var(--vscode-button-background)] text-[var(--vscode-button-background)] border-[var(--vscode-editorWidget-border)]`
-            )
-          }`}
+          className={`h-4 w-4 focus:outline-none rounded ${getColors(
+            `focus:ring-teal-500 text-teal-600 border-gray-300 dark:border-vulcan-50`,
+            `focus:ring-[var(--frontmatter-button-background)] text-[var(--frontmatter-button-background)] border-[var(--vscode-editorWidget-border)]`
+          )
+            }`}
         />
       </div>
       <div className="ml-2 text-sm">
         <label
           id="startup-description"
           htmlFor="startup"
-          className={`font-medium ${
-            getColors(
-              `text-vulcan-50 dark:text-whisper-900`,
-              `text-[var(--vscode-editor-foreground)]`
-            )
-          }`}
+          className={`font-medium ${getColors(
+            `text-vulcan-50 dark:text-whisper-900`,
+            `text-[var(--vscode-editor-foreground)]`
+          )
+            }`}
         >
           Open on startup?
         </label>

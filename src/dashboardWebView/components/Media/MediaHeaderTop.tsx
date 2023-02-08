@@ -18,11 +18,11 @@ import { Searchbox } from '../Header';
 import { PaginationStatus } from '../Header/PaginationStatus';
 import { FolderCreation } from './FolderCreation';
 
-export interface IMediaHeaderTopProps {}
+export interface IMediaHeaderTopProps { }
 
 export const MediaHeaderTop: React.FunctionComponent<
   IMediaHeaderTopProps
-> = ({}: React.PropsWithChildren<IMediaHeaderTopProps>) => {
+> = ({ }: React.PropsWithChildren<IMediaHeaderTopProps>) => {
   const [lastUpdated, setLastUpdated] = React.useState<string | null>(null);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const crntSorting = useRecoilValue(SortingSelector);
@@ -81,12 +81,11 @@ export const MediaHeaderTop: React.FunctionComponent<
 
   return (
     <nav
-      className={`py-3 px-4 flex items-center justify-between border-b ${
-        getColors(
-          'border-gray-300 dark:border-vulcan-100',
-          'border-[var(--vscode-panel-border)]'
-        )
-      }`}
+      className={`py-3 px-4 flex items-center justify-between border-b ${getColors(
+        'border-gray-300 dark:border-vulcan-100',
+        'border-[var(--frontmatter-border)]'
+      )
+        }`}
       aria-label="Pagination"
     >
       <Searchbox placeholder={`Search in folder`} />

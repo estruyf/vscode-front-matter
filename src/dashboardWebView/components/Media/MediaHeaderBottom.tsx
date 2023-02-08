@@ -7,7 +7,7 @@ import { Sorting } from '../Header';
 import { Breadcrumb } from '../Header/Breadcrumb';
 import { Pagination } from '../Header/Pagination';
 
-export interface IMediaHeaderBottomProps {}
+export interface IMediaHeaderBottomProps { }
 
 export const MediaHeaderBottom: React.FunctionComponent<IMediaHeaderBottomProps> = (
   props: React.PropsWithChildren<IMediaHeaderBottomProps>
@@ -21,12 +21,11 @@ export const MediaHeaderBottom: React.FunctionComponent<IMediaHeaderBottomProps>
 
   return (
     <nav
-      className={`w-full flex justify-between py-2 border-b ${
-        getColors(
-          'bg-gray-200 text-vulcan-300 dark:bg-vulcan-400 dark:text-whisper-600 border-gray-300 dark:border-vulcan-100',
-          'bg-[var(--vscode-sideBar-background)] text-[var(--vscode-sideBar-foreground)] border-[var(--vscode-panel-border)]'
-        )
-      }`}
+      className={`w-full flex justify-between py-2 border-b ${getColors(
+        'bg-gray-200 text-vulcan-300 dark:bg-vulcan-400 dark:text-whisper-600 border-gray-300 dark:border-vulcan-100',
+        'bg-[var(--vscode-sideBar-background)] text-[var(--vscode-sideBar-foreground)] border-[var(--frontmatter-border)]'
+      )
+        }`}
       aria-label="Breadcrumb"
     >
       <Breadcrumb />

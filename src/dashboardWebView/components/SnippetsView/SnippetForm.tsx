@@ -148,12 +148,11 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
 
   return (
     <div>
-      <pre className={`border p-2 whitespace-pre-wrap break-words max-h-64 overflow-auto rounded ${
-        getColors(
-          'border-opacity-40',
-          'border-[var(--vscode-panel-border)] bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]',
-        )
-      }`}>
+      <pre className={`border p-2 whitespace-pre-wrap break-words max-h-64 overflow-auto rounded ${getColors(
+        'border-opacity-40',
+        'border-[var(--frontmatter-border)] bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]',
+      )
+        }`}>
         {snippetBody}
       </pre>
 

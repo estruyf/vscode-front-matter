@@ -7,6 +7,8 @@ import { GitHubIcon } from '../../panelWebView/components/Icons/GitHubIcon';
 import { DashboardMessage } from '../DashboardMessage';
 import { Settings } from '../models/Settings';
 import { StepsToGetStarted } from './Steps/StepsToGetStarted';
+import useThemeColors from '../hooks/useThemeColors';
+import { WelcomeLink } from './WelcomeView/WelcomeLink';
 
 export interface IWelcomeScreenProps {
   settings: Settings;
@@ -15,6 +17,8 @@ export interface IWelcomeScreenProps {
 export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({
   settings
 }: React.PropsWithChildren<IWelcomeScreenProps>) => {
+  const { getColors } = useThemeColors();
+
   React.useEffect(() => {
     Messenger.send(DashboardMessage.sendTelemetry, {
       event: TelemetryEvent.webviewWelcomeScreen
@@ -40,53 +44,54 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({
               <div>
                 <h1 className="mt-4 text-4xl tracking-tight font-extrabold sm:mt-5 sm:leading-none lg:mt-6 lg:text-5xl xl:text-6xl">
                   <span className="md:block">Manage your static site with</span>{' '}
-                  <span className="text-teal-500 md:block">Front Matter</span>
+                  <span className={`md:block ${getColors('text-teal-600', 'text-[var(--frontmatter-button-background)]')
+                    }`}>Front Matter</span>
                 </h1>
 
-                <p className="mt-3 text-base text-vulcan-300 dark:text-whisper-700 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
+                <p className={`mt-3 text-base  sm:mt-5 sm:text-xl lg:text-lg xl:text-xl ${getColors(
+                  'text-vulcan-300 dark:text-whisper-700',
+                  'text-[var(--vscode-editor-foreground)]'
+                )
+                  }`}>
                   Thank you for using Front Matter!
                 </p>
 
-                <p className="mt-3 text-base text-vulcan-300 dark:text-whisper-700 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
+                <p className={`mt-3 text-base sm:mt-5 sm:text-xl lg:text-lg xl:text-xl ${getColors(
+                  'text-vulcan-300 dark:text-whisper-700',
+                  'text-[var(--vscode-editor-foreground)]'
+                )
+                  }`}>
                   We try to aim to make Front Matter as easy to use as possible, but if you have any
                   questions or suggestions. Please don't hesitate to reach out to us on GitHub.
                 </p>
 
                 <div className="mt-5 w-full sm:mx-auto sm:max-w-lg lg:ml-0">
                   <div className="flex flex-wrap items-start justify-between">
-                    <a
-                      href={GITHUB_LINK}
-                      title={`GitHub`}
-                      className="flex items-center px-1 text-vulcan-300 hover:text-vulcan-500 dark:text-whisper-500 dark:hover:text-teal-500"
-                    >
+                    <WelcomeLink href={GITHUB_LINK} title={`GitHub`}>
                       <GitHubIcon className="w-8 h-8" />
                       <span className={`text-lg ml-2`}>GitHub / Documentation</span>
-                    </a>
+                    </WelcomeLink>
 
-                    <a
-                      href={SPONSOR_LINK}
-                      title={`Become a sponsor`}
-                      className="flex items-center px-1 text-vulcan-300 hover:text-vulcan-500 dark:text-whisper-500 dark:hover:text-teal-500"
-                    >
+                    <WelcomeLink href={SPONSOR_LINK} title={`Become a sponsor`}>
                       <HeartIcon className="w-8 h-8" />
                       <span className={`text-lg ml-2`}>Sponsor</span>
-                    </a>
+                    </WelcomeLink>
 
-                    <a
-                      href={REVIEW_LINK}
-                      title={`Write a quick review`}
-                      className="flex items-center px-1 text-vulcan-300 hover:text-vulcan-500 dark:text-whisper-500 dark:hover:text-teal-500"
-                    >
+                    <WelcomeLink href={REVIEW_LINK} title={`Write a quick review`}>
                       <StarIcon className="w-8 h-8" />
                       <span className={`text-lg ml-2`}>Review</span>
-                    </a>
+                    </WelcomeLink>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="col-span-4 flex justify-center items-center">
-              <FrontMatterIcon className={`h-64 w-64 text-vulcan-500 dark:text-whisper-500`} />
+              <FrontMatterIcon className={`h-64 w-64 ${getColors(
+                'text-vulcan-500 dark:text-whisper-500',
+                'text-[var(--vscode-editor-foreground)]'
+              )
+                }`} />
             </div>
           </div>
         </div>
@@ -100,7 +105,11 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({
             <div className={`col-span-8`}>
               <StepsToGetStarted settings={settings} />
 
-              <p className="mt-5 text-sm text-vulcan-300 dark:text-whisper-700">
+              <p className={`mt-5 text-sm  ${getColors(
+                'text-vulcan-300 dark:text-whisper-700',
+                'text-[var(--vscode-editor-foreground)]'
+              )
+                }`}>
                 You can also use the extension from the <b>Front Matter</b> side panel. There you
                 will find the actions you can perform specifically for your pages.
               </p>

@@ -7,7 +7,7 @@ import { DashboardMessage } from '../../DashboardMessage';
 import { DashboardViewType } from '../../models';
 import useThemeColors from '../../hooks/useThemeColors';
 
-export interface IViewSwitchProps {}
+export interface IViewSwitchProps { }
 
 export const ViewSwitch: React.FunctionComponent<IViewSwitchProps> = (
   props: React.PropsWithChildren<IViewSwitchProps>
@@ -32,18 +32,16 @@ export const ViewSwitch: React.FunctionComponent<IViewSwitchProps> = (
   return (
     <div className={`flex rounded-sm lg:mb-1 ${getColors('bg-vulcan-50', 'bg-[var(--vscode-button-secondaryBackground)]')}`}>
       <button
-        className={`flex items-center px-2 py-1 rounded-l-sm ${
-          view === DashboardViewType.Grid ? getColors('bg-teal-500 text-vulcan-500', 'bg-[var(--vscode-button-background)] text-[var(--vscode-button-foreground)]') : 'text-[var(--vscode-button-secondaryForeground)] hover:bg-[var(--vscode-button-secondaryHoverBackground)]'
-        }`}
+        className={`flex items-center px-2 py-1 rounded-l-sm ${view === DashboardViewType.Grid ? getColors('bg-teal-500 text-vulcan-500', 'bg-[var(--frontmatter-button-background)] text-[var(--vscode-button-foreground)]') : 'text-[var(--vscode-button-secondaryForeground)] hover:bg-[var(--vscode-button-secondaryHoverBackground)]'
+          }`}
         onClick={toggleView}
       >
         <ViewGridIcon className={`w-4 h-4`} />
         <span className={`sr-only`}>Change to grid</span>
       </button>
       <button
-        className={`flex items-center px-2 py-1 rounded-r-sm ${
-          view === DashboardViewType.List ? getColors('bg-teal-500 text-vulcan-500', 'bg-[var(--vscode-button-background)] text-[var(--vscode-button-foreground)]') : 'text-[var(--vscode-button-secondaryForeground)] hover:bg-[var(--vscode-button-secondaryHoverBackground)]'
-        }`}
+        className={`flex items-center px-2 py-1 rounded-r-sm ${view === DashboardViewType.List ? getColors('bg-teal-500 text-vulcan-500', 'bg-[var(--frontmatter-button-background)] text-[var(--vscode-button-foreground)]') : 'text-[var(--vscode-button-secondaryForeground)] hover:bg-[var(--vscode-button-secondaryHoverBackground)]'
+          }`}
         onClick={toggleView}
       >
         <ViewListIcon className={`w-4 h-4`} />

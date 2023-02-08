@@ -115,12 +115,11 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
         </div>
         <div>
           <button
-            className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium focus:outline-none ${
-              getColors(
-                `text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-500`, 
-                `text-[var(--vscode-button-foreground)] bg-[var(--vscode-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`
-              )
-            }`}
+            className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium focus:outline-none ${getColors(
+              `text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-500`,
+              `text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`
+            )
+              }`}
             title={`Create a new ${taxonomy} value`}
             onClick={onCreate}
           >
@@ -157,30 +156,30 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
           <tbody className="divide-y divide-gray-200 dark:divide-vulcan-300">
             {items && items.length > 0
               ? items.map((item, index) => (
-                  <tr key={index}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                      <TagIcon className="inline-block h-4 w-4 mr-2" />
-                      <span>{item}</span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
-                      <TaxonomyLookup taxonomy={taxonomy} value={item} pages={pages} />
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <TaxonomyActions field={taxonomy} value={item} />
-                    </td>
-                  </tr>
-                ))
+                <tr key={index}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
+                    <TagIcon className="inline-block h-4 w-4 mr-2" />
+                    <span>{item}</span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
+                    <TaxonomyLookup taxonomy={taxonomy} value={item} pages={pages} />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <TaxonomyActions field={taxonomy} value={item} />
+                  </td>
+                </tr>
+              ))
               : !unmappedItems ||
-                (unmappedItems.length === 0 && (
-                  <tr>
-                    <td
-                      className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
-                      colSpan={4}
-                    >
-                      No {taxonomy} found
-                    </td>
-                  </tr>
-                ))}
+              (unmappedItems.length === 0 && (
+                <tr>
+                  <td
+                    className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
+                    colSpan={4}
+                  >
+                    No {taxonomy} found
+                  </td>
+                </tr>
+              ))}
 
             {unmappedItems &&
               unmappedItems.length > 0 &&
