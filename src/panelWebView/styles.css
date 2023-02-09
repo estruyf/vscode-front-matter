@@ -8,6 +8,12 @@
   }
 }
 
+/* Overrides */
+vscode-button,
+button {
+  border-radius: 0.25rem;
+}
+
 /* CSS */
 .block_field__form,
 .list_field__form {
