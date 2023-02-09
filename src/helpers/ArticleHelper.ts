@@ -402,7 +402,7 @@ export class ArticleHelper {
         );
         return;
       } else {
-        await mkdirAsync(newFolder);
+        await mkdirAsync(newFolder, { recursive: true });
         newFilePath = join(newFolder, `index.${fileExtension || contentType.fileType || fileType}`);
       }
     } else {
@@ -413,6 +413,8 @@ export class ArticleHelper {
       }
 
       newFilePath = join(folderPath, newFileName);
+
+      await mkdirAsync(folderPath, { recursive: true });
 
       if (await existsAsync(newFilePath)) {
         Notifications.warning(`Content with the title already exists. Please specify a new title.`);

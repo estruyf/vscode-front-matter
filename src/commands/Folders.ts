@@ -4,6 +4,7 @@ import {
   SETTING_CONTENT_PAGE_FOLDERS,
   SETTING_CONTENT_STATIC_FOLDER,
   SETTING_CONTENT_SUPPORTED_FILETYPES,
+  SETTING_DATE_FORMAT,
   TelemetryEvent
 } from './../constants';
 import { commands, Uri, workspace, window } from 'vscode';
@@ -12,7 +13,7 @@ import { ContentFolder, FileInfo, FolderInfo } from '../models';
 import uniqBy = require('lodash.uniqby');
 import { Template } from './Template';
 import { Notifications } from '../helpers/Notifications';
-import { Logger, Settings } from '../helpers';
+import { Logger, processKnownPlaceholders, Settings } from '../helpers';
 import { existsSync } from 'fs';
 import { format } from 'date-fns';
 import { Dashboard } from './Dashboard';
@@ -343,18 +344,26 @@ export class Folders {
         folder.title = basename(folder.path);
       }
 
-      const folderPath = Folders.absWsFolder(folder, wsFolder);
-      if (!existsSync(folderPath)) {
-        Notifications.errorShowOnce(
-          `Folder "${folder.title} (${folder.path})" does not exist. Please remove it from the settings.`,
-          'Remove folder'
-        ).then((answer) => {
-          if (answer === 'Remove folder') {
-            const folders = Folders.get();
-            Folders.update(folders.filter((f) => f.path !== folder.path));
-          }
-        });
-        return null;
+      let folderPath: string | undefined = Folders.absWsFolder(folder, wsFolder);
+      if (folderPath.includes(`{{`) && folderPath.includes(`}}`)) {
+        const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
+        folderPath = processKnownPlaceholders(folderPath, undefined, dateFormat);
+      } else {
+        if (folderPath && !existsSync(folderPath)) {
+          Notifications.errorShowOnce(
+            `Folder "${folder.title} (${folder.path})" does not exist. Please remove it from the settings.`,
+            'Remove folder',
+            'Create folder'
+          ).then((answer) => {
+            if (answer === 'Remove folder') {
+              const folders = Folders.get();
+              Folders.update(folders.filter((f) => f.path !== folder.path));
+            } else if (answer === 'Create folder') {
+              mkdirAsync(folderPath as string, { recursive: true });
+            }
+          });
+          return null;
+        }
       }
 
       return {
