@@ -64,29 +64,29 @@ export const ContentTypeValidator: React.FunctionComponent<IContentTypeValidator
             />
           </svg>
 
-          <span>Content type</span>
+          <span>Content-type</span>
         </div>
       </VsLabel>
 
       <p className="inline_hint">
-        We noticed field differences between the content type and the front matter data.
+        We noticed field differences between the content-type and the front matter data.
       </p>
 
       <p className="inline_hint">
-        Would you like to create, update, or set the content type for this content?
+        Would you like to create, update, or set the content-type for this content?
       </p>
 
       <div className="hint__buttons">
         <VSCodeButton appearance={`secondary`} onClick={generateContentType}>
-          Create content type
+          Create content-type
         </VSCodeButton>
 
         <VSCodeButton appearance={`secondary`} onClick={addMissingFields}>
-          Add missing fields
+          Add missing fields to content-type
         </VSCodeButton>
 
         <VSCodeButton appearance={`secondary`} onClick={setContentType}>
-          Set content type
+          Change content-type of the file
         </VSCodeButton>
       </div>
 

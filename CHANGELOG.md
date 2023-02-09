@@ -24,6 +24,7 @@
 
 - [#469](https://github.com/estruyf/vscode-front-matter/issues/469): Fix for using the root folder as content folder
 - [#470](https://github.com/estruyf/vscode-front-matter/issues/470): Fix `initialize project` dashboard description
+- [#480](https://github.com/estruyf/vscode-front-matter/issues/480): Updated _add missing fields_ label to _add missing fields to content-type_
 - [#482](https://github.com/estruyf/vscode-front-matter/issues/482): Update the description when you want to overwrite the default content type description
 - [#488](https://github.com/estruyf/vscode-front-matter/issues/488): Fix an issue where the `.frontmatter` folder gets created before initializing the project
 - [#493](https://github.com/estruyf/vscode-front-matter/issues/493): Fix an issue where a custom placeholder value is replaced by an `array` instead of a `string`
