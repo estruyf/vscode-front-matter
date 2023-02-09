@@ -21,6 +21,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { DataType } from '../../../models/DataType';
 import { TelemetryEvent } from '../../../constants';
 import { NavigationItem } from '../Layout';
+import useThemeColors from '../../hooks/useThemeColors';
 
 export interface IDataViewProps { }
 
@@ -31,6 +32,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [dataEntries, setDataEntries] = useState<any | any[] | null>(null);
   const settings = useRecoilValue(SettingsSelector);
+  const { getColors } = useThemeColors();
 
   const setSchema = (dataFile: DataFile) => {
     setSelectedData(dataFile);
@@ -173,15 +175,27 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
         <div className="relative w-full flex-grow mx-auto overflow-hidden">
           <div className={`flex w-64 flex-col absolute inset-y-0`}>
             <aside
-              className={`flex flex-col flex-grow overflow-y-auto border-r border-gray-200 dark:border-vulcan-300  py-6 px-4 overflow-auto`}
+              className={`flex flex-col flex-grow overflow-y-auto border-r py-6 px-4 overflow-auto ${getColors(
+                'border-gray-200 dark:border-vulcan-300',
+                'border-[var(--frontmatter-border)]'
+              )
+                }`}
             >
-              <h2 className={`text-lg text-gray-500 dark:text-whisper-900`}>
+              <h2 className={`text-lg ${getColors(
+                `text-gray-500 dark:text-whisper-900`,
+                `text-[var(--frontmatter-text)]`
+              )
+                }`}>
                 Select your data type
               </h2>
 
-              <nav className={`flex-1 py-4 -mx-4 `}>
+              <nav className={`flex-1 py-4 -mx-4`}>
                 <div
-                  className={`divide-y divide-gray-200 dark:divide-vulcan-300 border-t border-b border-gray-200 dark:border-vulcan-300`}
+                  className={`divide-y border-t border-b  ${getColors(
+                    `divide-gray-200 dark:divide-vulcan-300 border-gray-200 dark:border-vulcan-300`,
+                    `divide-[var(--frontmatter-border)] border-[var(--frontmatter-border)]`
+                  )
+                    }`}
                 >
                   {dataFiles &&
                     dataFiles.length > 0 &&
@@ -205,9 +219,17 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
               <>
                 {!selectedData.singleEntry && (
                   <div
-                    className={`w-1/3 py-6 px-4 flex-1 border-r border-gray-200 dark:border-vulcan-300 overflow-auto`}
+                    className={`w-1/3 py-6 px-4 flex-1 border-r overflow-auto ${getColors(
+                      `border-gray-200 dark:border-vulcan-300`,
+                      `border-[var(--frontmatter-border)]`
+                    )
+                      }`}
                   >
-                    <h2 className={`text-lg text-gray-500 dark:text-whisper-900`}>
+                    <h2 className={`text-lg ${getColors(
+                      `text-gray-500 dark:text-whisper-900`,
+                      `text-[var(--frontmatter-text)]`
+                    )
+                      }`}>
                       Your {selectedData?.title?.toLowerCase() || ''} data items
                     </h2>
 
@@ -233,7 +255,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
                         </>
                       ) : (
                         <div className={`flex flex-col items-center justify-center`}>
-                          <p className={`text-gray-500 dark:text-whisper-900`}>
+                          <p className={getColors(`text-gray-500 dark:text-whisper-900`, `text-[var(--frontmatter-text)]`)}>
                             No {selectedData.title.toLowerCase()} data entries found
                           </p>
                         </div>
@@ -245,7 +267,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
                   className={`${selectedData.singleEntry ? 'w-full' : 'w-2/3'
                     } py-6 px-4 overflow-auto`}
                 >
-                  <h2 className={`text-lg text-gray-500 dark:text-whisper-900`}>
+                  <h2 className={`text-lg ${getColors(`text-gray-500 dark:text-whisper-900`, `text-[var(--frontmatter-text)]`)}`}>
                     Create or modify your {selectedData.title.toLowerCase()} data
                   </h2>
                   {selectedData ? (
@@ -267,12 +289,16 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
         </div>
       ) : (
         <div className="w-full h-full flex items-center justify-center">
-          <div className="flex flex-col items-center text-gray-500 dark:text-whisper-900">
+          <div className={`flex flex-col items-center ${getColors(
+            'text-gray-500 dark:text-whisper-900',
+            'text-[var(--frontmatter-text)]'
+          )
+            }`}>
             <DatabaseIcon className="w-32 h-32" />
             <p className="text-3xl mt-2">No data files found</p>
             <p className="text-xl mt-4">
               <a
-                className={`text-teal-700 hover:text-teal-900`}
+                className={getColors(`text-teal-700 hover:text-teal-900`, `text-[var(--frontmatter-link)] hover:text-[var(--frontmatter-link-hover)]`)}
                 href={`https://frontmatter.codes/docs/dashboard#data-files-view`}
                 title={`Read more to get started using data files`}
               >
@@ -281,7 +307,8 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
             </p>
           </div>
         </div>
-      )}
+      )
+      }
 
       <SponsorMsg
         beta={settings?.beta}
@@ -290,6 +317,6 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
       />
 
       <ToastContainer />
-    </div>
+    </div >
   );
 };

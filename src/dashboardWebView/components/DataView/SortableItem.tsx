@@ -1,6 +1,7 @@
 import { PencilIcon, SelectorIcon, TrashIcon, XIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { SortableHandle, SortableElement } from 'react-sortable-hoc';
+import useThemeColors from '../../hooks/useThemeColors';
 import { Alert } from '../Modals/Alert';
 
 export interface ISortableItemProps {
@@ -12,7 +13,7 @@ export interface ISortableItemProps {
   onDeleteItem: (index: number) => void;
 }
 
-const DragHandle = SortableHandle(() => <SelectorIcon className={`w-6 h-6 cursor-move`} />);
+const DragHandle = SortableHandle(() => <SelectorIcon className={`w-6 h-6 cursor-move hover:text-[var(--frontmatter-link-hover)]`} />);
 
 export const SortableItem = SortableElement(
   ({
@@ -23,6 +24,7 @@ export const SortableItem = SortableElement(
     onDeleteItem
   }: ISortableItemProps) => {
     const [showAlert, setShowAlert] = React.useState(false);
+    const { getColors } = useThemeColors();
 
     const deleteItemConfirm = () => {
       setShowAlert(true);
@@ -32,9 +34,12 @@ export const SortableItem = SortableElement(
       <>
         <li
           data-test={`${selectedIndex}-${crntIndex}`}
-          className={`sortable_item py-2 px-2 w-full flex justify-between content-center hover:bg-gray-200 dark:hover:bg-vulcan-400 ${
-            selectedIndex === crntIndex ? `bg-gray-300 dark:bg-vulcan-300` : ``
-          }`}
+          className={`sortable_item py-2 px-2 w-full flex justify-between content-center cursor-pointer ${selectedIndex === crntIndex ? getColors(`bg-gray-300 dark:bg-vulcan-300`, `bg-[var(--frontmatter-list-selected-background)] text-[var(--frontmatter-list-selected-text)]`) : ``
+            } ${getColors(
+              'hover:bg-gray-200 dark:hover:bg-vulcan-400',
+              'hover:bg-[var(--frontmatter-list-hover-background)]'
+            )
+            }`}
         >
           <div
             className="flex items-center w-full"
@@ -47,7 +52,12 @@ export const SortableItem = SortableElement(
           <div className={`space-x-2 flex items-center`}>
             <button
               type="button"
-              className={`text-gray-500 dark:text-whisper-900 hover:text-gray-600 dark:hover:text-whisper-500`}
+              className={
+                getColors(
+                  `text-gray-500 dark:text-whisper-900 hover:text-gray-600 dark:hover:text-whisper-500`,
+                  `text-[var(--frontmatter-secondary-text)] hover:text-[var(--frontmatter-link-hover)]`
+                )
+              }
               title={`Edit "${value}"`}
               onClick={() => onSelectedIndexChange(crntIndex)}
             >
@@ -56,7 +66,12 @@ export const SortableItem = SortableElement(
             </button>
             <button
               type="button"
-              className={`text-gray-500 dark:text-whisper-900 hover:text-gray-600 dark:hover:text-whisper-500`}
+              className={
+                getColors(
+                  `text-gray-500 dark:text-whisper-900 hover:text-gray-600 dark:hover:text-whisper-500`,
+                  `text-[var(--frontmatter-secondary-text)] hover:text-[var(--frontmatter-link-hover)]`
+                )
+              }
               title={`Delete "${value}"`}
               onClick={() => deleteItemConfirm()}
             >

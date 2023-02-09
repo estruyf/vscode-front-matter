@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useForm } from 'uniforms';
 import { SubmitField } from 'uniforms-unstyled';
+import useThemeColors from '../../hooks/useThemeColors';
 import { Button } from '../Common/Button';
 
 export interface IDataFormControlsProps {
@@ -13,9 +14,10 @@ export const DataFormControls: React.FunctionComponent<IDataFormControlsProps> =
   onClear
 }: React.PropsWithChildren<IDataFormControlsProps>) => {
   const { formRef } = useForm();
+  const { getColors } = useThemeColors();
 
   return (
-    <div className="text-right border-t border-gray-200 dark:border-vulcan-300">
+    <div className={`text-right border-t ${getColors(`border-gray-200 dark:border-vulcan-300`, `border-[var(--frontmatter-border)]`)}`}>
       <SubmitField value={model ? `Update` : `Add`} />
 
       <Button

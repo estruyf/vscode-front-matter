@@ -27,7 +27,7 @@ export const Button: React.FunctionComponent<IButtonProps> = ({
         )
         } ${secondary ?
           getColors(`bg-red-300 hover:bg-red-400`, `bg-[var(--vscode-button-secondaryBackground)] text-[--vscode-button-secondaryForeground] hover:bg-[var(--vscode-button-secondaryHoverBackground)]`) :
-          getColors(`bg-teal-600 hover:bg-teal-700`, `bg-[var(--frontmatter-button-background)] text-[--vscode-button-foreground] hover:bg-[var(--frontmatter-button-hoverBackground)]`)
+          getColors(`bg-teal-600 hover:bg-teal-700`, `bg-[var(--frontmatter-button-background)] text-[var(--vscode-button-foreground)] hover:bg-[var(--frontmatter-button-hoverBackground)]`)
         }
       `}
       onClick={onClick}

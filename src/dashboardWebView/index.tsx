@@ -42,11 +42,23 @@ const preserveColor = (color: string | undefined) => {
 const updateCssVariables = () => {
   const styles = getComputedStyle(document.documentElement);
 
-  const panelBorder = styles.getPropertyValue('--vscode-panel-border');
-  if (panelBorder) {
-    document.documentElement.style.setProperty('--frontmatter-border', preserveColor(panelBorder) || "var(--vscode-panel-border)");
-  }
+  // Text
+  document.documentElement.style.setProperty('--frontmatter-text', 'var(--vscode-editor-foreground)');
+  document.documentElement.style.setProperty('--frontmatter-secondary-text', 'var(--vscode-editorHint-foreground)');
+  document.documentElement.style.setProperty('--frontmatter-link', 'var(--vscode-textLink-foreground)');
+  document.documentElement.style.setProperty('--frontmatter-link-hover', 'var(--vscode-textLink-activeForeground)');
 
+  // List  
+  document.documentElement.style.setProperty('--frontmatter-list-text', 'var(--vscode-editor-foreground)');
+  document.documentElement.style.setProperty('--frontmatter-list-background', 'var(--vscode-list-activeSelectionBackground)');
+  document.documentElement.style.setProperty('--frontmatter-list-hover-background', 'var(--vscode-list-hoverBackground)');
+  document.documentElement.style.setProperty('--frontmatter-list-selected-background', 'var(--vscode-list-activeSelectionBackground)');
+  document.documentElement.style.setProperty('--frontmatter-list-selected-text', 'var(--vscode-list-activeSelectionForeground)');
+
+  // Borders
+  document.documentElement.style.setProperty('--frontmatter-border', 'var(--vscode-panel-border)');
+
+  // Other colors which should be preserved (no opacity)
   const buttonBackground = styles.getPropertyValue('--vscode-button-background');
   if (buttonBackground) {
     document.documentElement.style.setProperty('--frontmatter-button-background', preserveColor(buttonBackground) || "var(--vscode-button-background)");
