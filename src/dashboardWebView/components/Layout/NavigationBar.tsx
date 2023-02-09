@@ -34,7 +34,7 @@ export const NavigationBar: React.FunctionComponent<INavigationBarProps> = ({
           )
             }`}
         >
-          <div>{children}</div>
+          {children}
         </div>
       </nav>
 

@@ -10,7 +10,7 @@ export const Container = SortableContainer(
 
     return (
       <ul
-        className={`-mx-4 divide-y border-t border-b ${getColors(`divide-gray-200 dark:divide-vulcan-300 border-gray-200 dark:border-vulcan-300`, `divide-[var(--frontmatter-list-border)] border-[var(--frontmatter-list-border)]`)
+        className={`-mx-4 divide-y border-t border-b ${getColors(`divide-gray-200 dark:divide-vulcan-300 border-gray-200 dark:border-vulcan-300`, `divide-[var(--frontmatter-border)] border-[var(--frontmatter-border)]`)
           }`}
       >
         {children}

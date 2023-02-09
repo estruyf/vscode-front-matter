@@ -17,7 +17,7 @@ export const DataFormControls: React.FunctionComponent<IDataFormControlsProps> =
   const { getColors } = useThemeColors();
 
   return (
-    <div className={`text-right border-t ${getColors(`border-gray-200 dark:border-vulcan-300`, `border-[var(--frontmatter-border)]`)}`}>
+    <div className={`text-right ${getColors(`border-gray-200 dark:border-vulcan-300`, `border-[var(--frontmatter-border)]`)}`}>
       <SubmitField value={model ? `Update` : `Add`} />
 
       <Button

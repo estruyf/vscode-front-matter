@@ -374,6 +374,7 @@
       input[type='submit'] {
         color: var(--vscode-button-foreground);
         background-color: var(--vscode-button-background);
+        @apply rounded;
 
         &:hover {
           background-color: var(--vscode-button-hoverBackground);
