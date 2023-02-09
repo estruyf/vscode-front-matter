@@ -2,6 +2,7 @@ import { PencilIcon, SelectorIcon, TrashIcon, XIcon } from '@heroicons/react/out
 import * as React from 'react';
 import { SortableHandle, SortableElement } from 'react-sortable-hoc';
 import useThemeColors from '../../hooks/useThemeColors';
+import { LinkButton } from '../Common/LinkButton';
 import { Alert } from '../Modals/Alert';
 
 export interface ISortableItemProps {
@@ -50,34 +51,19 @@ export const SortableItem = SortableElement(
           </div>
 
           <div className={`space-x-2 flex items-center`}>
-            <button
-              type="button"
-              className={
-                getColors(
-                  `text-gray-500 dark:text-whisper-900 hover:text-gray-600 dark:hover:text-whisper-500`,
-                  `text-[var(--frontmatter-secondary-text)] hover:text-[var(--frontmatter-link-hover)]`
-                )
-              }
+            <LinkButton
               title={`Edit "${value}"`}
-              onClick={() => onSelectedIndexChange(crntIndex)}
-            >
+              onClick={() => onSelectedIndexChange(crntIndex)}>
               <PencilIcon className="w-4 h-4" />
               <span className="sr-only">Edit</span>
-            </button>
-            <button
-              type="button"
-              className={
-                getColors(
-                  `text-gray-500 dark:text-whisper-900 hover:text-gray-600 dark:hover:text-whisper-500`,
-                  `text-[var(--frontmatter-secondary-text)] hover:text-[var(--frontmatter-link-hover)]`
-                )
-              }
+            </LinkButton>
+
+            <LinkButton
               title={`Delete "${value}"`}
-              onClick={() => deleteItemConfirm()}
-            >
+              onClick={() => deleteItemConfirm()}>
               <TrashIcon className="w-4 h-4" />
               <span className="sr-only">Delete</span>
-            </button>
+            </LinkButton>
           </div>
         </li>
 

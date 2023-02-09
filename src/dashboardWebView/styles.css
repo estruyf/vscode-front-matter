@@ -75,7 +75,7 @@
   @apply py-4;
 
   h2 {
-    @apply text-sm mb-2;
+    @apply mb-2 text-sm;
   }
 
   form {
@@ -86,7 +86,7 @@
     }
 
     input {
-      @apply w-full text-vulcan-500 px-2 py-1;
+      @apply w-full px-2 py-1 text-vulcan-500;
 
       &::placeholder {
         @apply text-gray-500;
@@ -111,10 +111,10 @@
     }
 
     .ant-form-item-has-error .ant-form-item-children-icon {
-      @apply text-red-400 absolute right-1 top-1;
+      @apply absolute right-1 top-1 text-red-400;
 
       svg {
-        @apply w-4 h-4;
+        @apply h-4 w-4;
       }
     }
 
@@ -124,12 +124,12 @@
       }
 
       ul {
-        @apply list-disc pl-6 pr-4 py-4 bg-opacity-50;
+        @apply list-disc bg-opacity-50 py-4 pl-6 pr-4;
       }
     }
 
     input[type='submit'] {
-      @apply w-auto mt-4 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium text-white bg-teal-600 cursor-pointer;
+      @apply mt-4 inline-flex w-auto cursor-pointer items-center border border-transparent bg-teal-600 px-3 py-2 text-sm font-medium leading-4 text-white;
 
       &:hover {
         @apply bg-teal-700;
@@ -153,10 +153,10 @@
   }
 
   .ant-btn-dashed {
-    @apply border border-gray-300 border-dashed flex items-center justify-center py-1 mt-2;
+    @apply mt-2 flex items-center justify-center border border-dashed border-gray-300 py-1;
 
     &:hover {
-      @apply text-teal-900 border-teal-900;
+      @apply border-teal-900 text-teal-900;
     }
   }
 
@@ -168,7 +168,7 @@
 
   .ant-btn-ghost:focus,
   .ant-btn-ghost:hover {
-    @apply text-teal-600 border-teal-700;
+    @apply border-teal-700 text-teal-600;
   }
 
   .ant-switch-checked {
@@ -315,7 +315,7 @@
     }
 
     input[type='submit'] {
-      @apply text-vulcan-500;
+      @apply rounded text-vulcan-500;
     }
   }
 
@@ -327,7 +327,70 @@
     @apply border-vulcan-50;
 
     &:hover {
-      @apply text-teal-400 border-teal-900;
+      @apply border-teal-900 text-teal-400;
+    }
+  }
+}
+
+.experimental {
+  [type='text'],
+  [type='email'],
+  [type='url'],
+  [type='password'],
+  [type='number'],
+  [type='date'],
+  [type='datetime-local'],
+  [type='month'],
+  [type='search'],
+  [type='tel'],
+  [type='time'],
+  [type='week'],
+  [multiple],
+  textarea,
+  select {
+    color: var(--vscode-input-foreground);
+    background-color: var(--vscode-input-background);
+    border: 1px solid var(--vscode-editorWidget-border);
+    font-size: var(--vscode-font-size);
+    @apply rounded;
+
+    &::placeholder {
+      color: var(--vscode-input-placeholderForeground);
+    }
+
+    &:focus {
+      outline: 1px solid var(--vscode-focusBorder);
+      border-color: transparent;
+      outline-offset: 0;
+    }
+  }
+
+  .autoform {
+    form {
+      label {
+        color: var(--frontmatter-secondary-text);
+      }
+
+      input[type='submit'] {
+        color: var(--vscode-button-foreground);
+        background-color: var(--vscode-button-background);
+
+        &:hover {
+          background-color: var(--vscode-button-hoverBackground);
+        }
+      }
+    }
+
+    .ant-list.ant-list-bordered {
+      border-color: var(--frontmatter-border);
+    }
+
+    .ant-btn-dashed {
+      border-color: var(--frontmatter-border);
+
+      &:hover {
+        @apply border-teal-900 text-teal-400;
+      }
     }
   }
 }

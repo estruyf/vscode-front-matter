@@ -21,7 +21,7 @@ export const Button: React.FunctionComponent<IButtonProps> = ({
     <button
       type="button"
       className={`${className || ''
-        } inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium focus:outline-none ${getColors(
+        } inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium focus:outline-none rounded ${getColors(
           'text-white dark:text-vulcan-500 disabled:bg-gray-500',
           'disabled:opacity-50'
         )

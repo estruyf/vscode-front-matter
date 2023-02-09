@@ -106,16 +106,24 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
     <div className={`py-6 px-4 flex flex-col h-full overflow-hidden`}>
       <div className={`flex w-full justify-between flex-shrink-0`}>
         <div>
-          <h2 className={`text-lg text-gray-500 dark:text-whisper-900 first-letter:uppercase`}>
+          <h2 className={`text-lg first-letter:uppercase ${getColors(
+            'text-gray-500 dark:text-whisper-900',
+            'text-[var(--frontmatter-text)]'
+          )
+            }`}>
             {taxonomy}
           </h2>
-          <p className={`mt-2 text-sm text-gray-500 dark:text-whisper-900 first-letter:uppercase`}>
+          <p className={`mt-2 text-sm first-letter:uppercase ${getColors(
+            'text-gray-500 dark:text-whisper-900',
+            'text-[var(--frontmatter-secondary-text)]'
+          )
+            }`}>
             Create, edit, and manage the {taxonomy} of your site
           </p>
         </div>
         <div>
           <button
-            className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium focus:outline-none ${getColors(
+            className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium focus:outline-none rounded ${getColors(
               `text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-500`,
               `text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`
             )
@@ -135,36 +143,36 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
             <tr>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-whisper-900 uppercase"
+                className={`px-6 py-3 text-left text-xs font-medium uppercase ${getColors('text-gray-500 dark:text-whisper-900', 'text-[var(--frontmatter-secondary-text)]')}`}
               >
                 Name
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-whisper-900 uppercase"
+                className={`px-6 py-3 text-left text-xs font-medium uppercase ${getColors('text-gray-500 dark:text-whisper-900', 'text-[var(--frontmatter-secondary-text)]')}`}
               >
                 Count
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-whisper-900 uppercase"
+                className={`px-6 py-3 text-right text-xs font-medium uppercase ${getColors('text-gray-500 dark:text-whisper-900', 'text-[var(--frontmatter-secondary-text)]')}`}
               >
                 Action
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-vulcan-300">
+          <tbody className={`divide-y ${getColors(`divide-gray-200 dark:divide-vulcan-300`, `divide-[var(--frontmatter-border)]`)}`}>
             {items && items.length > 0
               ? items.map((item, index) => (
                 <tr key={index}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
+                  <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${getColors(`text-gray-800 dark:text-gray-200`, `text-[var(--frontmatter-text)]`)}`}>
                     <TagIcon className="inline-block h-4 w-4 mr-2" />
                     <span>{item}</span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
+                  <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${getColors(`text-gray-800 dark:text-gray-200`, `text-[var(--frontmatter-text)]`)}`}>
                     <TaxonomyLookup taxonomy={taxonomy} value={item} pages={pages} />
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <td className={`px-6 py-4 whitespace-nowrap text-right text-sm font-medium`}>
                     <TaxonomyActions field={taxonomy} value={item} />
                   </td>
                 </tr>
@@ -173,7 +181,7 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
               (unmappedItems.length === 0 && (
                 <tr>
                   <td
-                    className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
+                    className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${getColors(`text-gray-800 dark:text-gray-200`, `text-[var(--frontmatter-text)]`)}`}
                     colSpan={4}
                   >
                     No {taxonomy} found
@@ -186,16 +194,16 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
               unmappedItems.map((item, index) => (
                 <tr key={index}>
                   <td
-                    className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200"
+                    className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${getColors(`text-gray-800 dark:text-gray-200`, `text-[var(--frontmatter-text)]`)}`}
                     title="Missing in your settings"
                   >
                     <ExclamationIcon className="inline-block h-4 w-4 mr-2" />
                     <span>{item}</span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
+                  <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${getColors(`text-gray-800 dark:text-gray-200`, `text-[var(--frontmatter-text)]`)}`}>
                     <TaxonomyLookup taxonomy={taxonomy} value={item} pages={pages} />
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <td className={`px-6 py-4 whitespace-nowrap text-right text-sm font-medium`}>
                     <TaxonomyActions field={taxonomy} value={item} unmapped />
                   </td>
                 </tr>

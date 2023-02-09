@@ -1,7 +1,6 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import {
   ArrowCircleUpIcon,
-  ArrowUpIcon,
   PencilIcon,
   PlusIcon,
   TrashIcon
@@ -10,6 +9,7 @@ import * as React from 'react';
 import { useCallback } from 'react';
 import { MergeIcon } from '../../../components/icons/MergeIcon';
 import { DashboardMessage } from '../../DashboardMessage';
+import { LinkButton } from '../Common/LinkButton';
 
 export interface ITaxonomyActionsProps {
   field: string | null;
@@ -60,56 +60,41 @@ export const TaxonomyActions: React.FunctionComponent<ITaxonomyActionsProps> = (
   return (
     <div className={`space-x-2`}>
       {unmapped && (
-        <button
-          className="text-gray-500 hover:text-vulcan-600 dark:text-gray-400 dark:hover:text-whisper-600"
-          type={`button`}
+        <LinkButton
           title={`Add ${value} to taxonomy settings`}
-          onClick={onAdd}
-        >
+          onClick={onAdd}>
           <PlusIcon className={`w-4 h-4`} aria-hidden={true} />
           <span className="sr-only">Add to settings</span>
-        </button>
+        </LinkButton>
       )}
 
-      <button
-        className="text-gray-500 hover:text-vulcan-600 dark:text-gray-400 dark:hover:text-whisper-600"
-        type={`button`}
+      <LinkButton
         title={`Edit ${value}`}
-        onClick={onEdit}
-      >
+        onClick={onEdit}>
         <PencilIcon className={`w-4 h-4`} aria-hidden={true} />
         <span className="sr-only">Edit</span>
-      </button>
+      </LinkButton>
 
-      <button
-        className="text-gray-500 hover:text-vulcan-600 dark:text-gray-400 dark:hover:text-whisper-600"
-        type={`button`}
+      <LinkButton
         title={`Merge ${value}`}
-        onClick={onMerge}
-      >
+        onClick={onMerge}>
         <MergeIcon className={`w-4 h-4`} aria-hidden={true} />
         <span className="sr-only">Merge</span>
-      </button>
+      </LinkButton>
 
-      <button
-        className="text-gray-500 hover:text-vulcan-600 dark:text-gray-400 dark:hover:text-whisper-600"
-        type={`button`}
+      <LinkButton
         title={`Move to another taxonomy type`}
-        onClick={onMove}
-      >
+        onClick={onMove}>
         <ArrowCircleUpIcon className={`w-4 h-4`} aria-hidden={true} />
         <span className="sr-only">Move to another taxonomy type</span>
-      </button>
+      </LinkButton>
 
-      <button
-        className="text-gray-500 hover:text-vulcan-600 dark:text-gray-400 dark:hover:text-whisper-600"
-        type={`button`}
+      <LinkButton
         title={`Delete ${value}`}
-        onClick={onDelete}
-      >
+        onClick={onDelete}>
         <TrashIcon className={`w-4 h-4`} aria-hidden={true} />
         <span className="sr-only">Delete</span>
-      </button>
+      </LinkButton>
     </div>
   );
 };
