@@ -4,13 +4,13 @@ import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIco
 import { DashboardMessage } from '../../DashboardMessage';
 import { Page } from '../../models/Page';
 import { SettingsSelector, ViewSelector } from '../../state';
-import { DateField } from '../DateField';
-import { Status } from '../Status';
+import { DateField } from '../Common/DateField';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardViewType } from '../../models';
 import { ContentActions } from './ContentActions';
 import { useMemo } from 'react';
 import useThemeColors from '../../hooks/useThemeColors';
+import { Status } from './Status';
 
 export interface IItemProps extends Page { }
 

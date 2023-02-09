@@ -1,14 +1,14 @@
 import { HeartIcon, StarIcon } from '@heroicons/react/outline';
 import * as React from 'react';
-import { GITHUB_LINK, REVIEW_LINK, SPONSOR_LINK, TelemetryEvent } from '../../constants';
+import { GITHUB_LINK, REVIEW_LINK, SPONSOR_LINK, TelemetryEvent } from '../../../constants';
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { FrontMatterIcon } from '../../panelWebView/components/Icons/FrontMatterIcon';
-import { GitHubIcon } from '../../panelWebView/components/Icons/GitHubIcon';
-import { DashboardMessage } from '../DashboardMessage';
-import { Settings } from '../models/Settings';
-import { StepsToGetStarted } from './Steps/StepsToGetStarted';
-import useThemeColors from '../hooks/useThemeColors';
-import { WelcomeLink } from './WelcomeView/WelcomeLink';
+import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMatterIcon';
+import { GitHubIcon } from '../../../panelWebView/components/Icons/GitHubIcon';
+import { DashboardMessage } from '../../DashboardMessage';
+import { Settings } from '../../models/Settings';
+import { StepsToGetStarted } from '../Steps/StepsToGetStarted';
+import useThemeColors from '../../hooks/useThemeColors';
+import { WelcomeLink } from './WelcomeLink';
 
 export interface IWelcomeScreenProps {
   settings: Settings;

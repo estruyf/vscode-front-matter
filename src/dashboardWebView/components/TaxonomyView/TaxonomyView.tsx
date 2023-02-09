@@ -10,7 +10,7 @@ import { Page } from '../../models';
 import { SettingsSelector } from '../../state';
 import { NavigationBar, NavigationItem } from '../Layout';
 import { PageLayout } from '../Layout/PageLayout';
-import { SponsorMsg } from '../SponsorMsg';
+import { SponsorMsg } from '../Layout/SponsorMsg';
 import { TaxonomyManager } from './TaxonomyManager';
 
 export interface ITaxonomyViewProps {

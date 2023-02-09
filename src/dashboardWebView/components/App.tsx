@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Spinner } from './Spinner';
+import { Spinner } from './Common/Spinner';
 import useMessages from '../hooks/useMessages';
 import useDarkMode from '../../hooks/useDarkMode';
-import { WelcomeScreen } from './WelcomeScreen';
+import { WelcomeScreen } from './WelcomeView/WelcomeScreen';
 import { useRecoilValue } from 'recoil';
 import { DashboardViewSelector, ModeAtom } from '../state';
 import { Contents } from './Contents/Contents';

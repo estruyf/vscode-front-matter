@@ -84,8 +84,9 @@ if (elm) {
       release: version || '',
       environment: environment || '',
       ignoreErrors: [
-        'ResizeObserver loop limit exceeded',
-        "Cannot read properties of undefined (reading 'unobserve')"
+        `ResizeObserver loop limit exceeded`,
+        `Cannot read properties of undefined (reading 'unobserve')`,
+        `TypeError: Cannot read properties of undefined (reading 'unobserve')`
       ]
     });
   }

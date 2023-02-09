@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { Tab } from '../constants/Tab';
-import useThemeColors from '../hooks/useThemeColors';
-import { SettingsAtom, TabAtom, TabInfoAtom } from '../state';
+import { Tab } from '../../constants/Tab';
+import useThemeColors from '../../hooks/useThemeColors';
+import { SettingsAtom, TabAtom, TabInfoAtom } from '../../state';
 
 export interface INavigationProps {
   totalPages: number;
@@ -30,18 +30,17 @@ const NavigationItem: React.FunctionComponent<INavigationItemProps> = ({
 
   return (
     <button
-      className={`${
-        isCrntTab
-          ? 
+      className={`${isCrntTab
+          ?
           getColors(
-            'border-teal-900 dark:border-teal-300 text-teal-900 dark:text-teal-300', 
+            'border-teal-900 dark:border-teal-300 text-teal-900 dark:text-teal-300',
             'border-[var(--vscode-textLink-foreground)] text-[var(--vscode-textLink-foreground)]'
-          ) : 
+          ) :
           getColors(
             `border-transparent text-gray-500 dark:text-whisper-600 hover:text-gray-700 dark:hover:text-whisper-700 hover:border-gray-300 dark:hover:border-whisper-500`,
             `border-transparent text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-textLink-activeForeground)] hover:border-[var(--vscode-textLink-activeForeground)]`
           )
-      } whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm`}
+        } whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm`}
       aria-current={isCrntTab ? 'page' : undefined}
       onClick={onClick}
     >

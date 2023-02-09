@@ -9,8 +9,8 @@ import {
   SettingsSelector,
   ViewDataSelector
 } from '../../state';
-import { Spinner } from '../Spinner';
-import { SponsorMsg } from '../SponsorMsg';
+import { Spinner } from '../Common/Spinner';
+import { SponsorMsg } from '../Layout/SponsorMsg';
 import { Item } from './Item';
 import { Lightbox } from './Lightbox';
 import { List } from './List';
@@ -27,7 +27,7 @@ import { basename, extname, join } from 'path';
 import { MediaInfo } from '../../../models';
 import useThemeColors from '../../hooks/useThemeColors';
 
-export interface IMediaProps {}
+export interface IMediaProps { }
 
 export const Media: React.FunctionComponent<IMediaProps> = (
   props: React.PropsWithChildren<IMediaProps>
@@ -174,19 +174,17 @@ export const Media: React.FunctionComponent<IMediaProps> = (
         )}
 
         {isDragActive && (
-          <div className={`absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center z-50 ${
-            getColors(
-              'text-whisper-500 bg-gray-900 bg-opacity-70',
-              'text-[var(--vscode-foreground)] bg-[var(--vscode-editor-background)] opacity-75'
-            )
-          }`}>
+          <div className={`absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center z-50 ${getColors(
+            'text-whisper-500 bg-gray-900 bg-opacity-70',
+            'text-[var(--vscode-foreground)] bg-[var(--vscode-editor-background)] opacity-75'
+          )
+            }`}>
             <UploadIcon className={`h-32`} />
             <p className={`text-xl max-w-md text-center`}>
               {selectedFolder
                 ? `Upload to ${selectedFolder}`
-                : `No folder selected, files you drop will be added to the ${
-                    currentStaticFolder || 'public'
-                  } folder.`}
+                : `No folder selected, files you drop will be added to the ${currentStaticFolder || 'public'
+                } folder.`}
             </p>
           </div>
         )}
@@ -195,9 +193,8 @@ export const Media: React.FunctionComponent<IMediaProps> = (
           <div className={`flex items-center justify-center h-full`}>
             <div className={`max-w-xl text-center`}>
               <FrontMatterIcon
-                className={`h-32 mx-auto opacity-90 mb-8 ${
-                  getColors('text-vulcan-300 dark:text-whisper-800', 'text-[var(--vscode-editor-foreground)]')
-                }`}
+                className={`h-32 mx-auto opacity-90 mb-8 ${getColors('text-vulcan-300 dark:text-whisper-800', 'text-[var(--vscode-editor-foreground)]')
+                  }`}
               />
 
               <p className={`text-xl font-medium`}>

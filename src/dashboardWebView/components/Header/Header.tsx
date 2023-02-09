@@ -5,8 +5,6 @@ import { Filter } from './Filter';
 import { Folders } from './Folders';
 import { Settings, NavigationType } from '../../models';
 import { DashboardMessage } from '../../DashboardMessage';
-import { Startup } from '../Startup';
-import { Navigation } from '../Navigation';
 import { Grouping } from '.';
 import { ViewSwitch } from './ViewSwitch';
 import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
@@ -14,7 +12,7 @@ import { CategoryAtom, GroupingSelector, SortingAtom, TagAtom } from '../../stat
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { ClearFilters } from './ClearFilters';
 import { MediaHeaderTop } from '../Media/MediaHeaderTop';
-import { ChoiceButton } from '../ChoiceButton';
+import { ChoiceButton } from '../Common/ChoiceButton';
 import { MediaHeaderBottom } from '../Media/MediaHeaderBottom';
 import { Tabs } from './Tabs';
 import { CustomScript } from '../../../models';
@@ -28,6 +26,8 @@ import { GroupOption } from '../../constants/GroupOption';
 import usePagination from '../../hooks/usePagination';
 import { PaginationStatus } from './PaginationStatus';
 import useThemeColors from '../../hooks/useThemeColors';
+import { Startup } from './Startup';
+import { Navigation } from './Navigation';
 
 export interface IHeaderProps {
   header?: React.ReactNode;
@@ -141,18 +141,16 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
   }, [location.search]);
 
   return (
-    <div className={`w-full sticky top-0 z-40 ${
-      getColors(
-        `bg-gray-100 dark:bg-vulcan-500`, 
-        `bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]`
-      )
-    }`}>
-      <div className={`mb-0 border-b ${
-        getColors(
-          `bg-gray-100 dark:bg-vulcan-500 border-gray-200 dark:border-vulcan-300`, 
-          `bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)] border-[var(--vscode-editorWidget-border)]`
-        )
+    <div className={`w-full sticky top-0 z-40 ${getColors(
+      `bg-gray-100 dark:bg-vulcan-500`,
+      `bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]`
+    )
       }`}>
+      <div className={`mb-0 border-b ${getColors(
+        `bg-gray-100 dark:bg-vulcan-500 border-gray-200 dark:border-vulcan-300`,
+        `bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)] border-[var(--vscode-editorWidget-border)]`
+      )
+        }`}>
         <Tabs onNavigate={updateView} />
       </div>
 
@@ -175,9 +173,8 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
             </div>
           </div>
 
-          <div className={`px-4 flex flex-row items-center border-b justify-between ${
-            getColors(`border-gray-200 dark:border-vulcan-100`, `border-[var(--vscode-editorWidget-border)]`)
-          }`}>
+          <div className={`px-4 flex flex-row items-center border-b justify-between ${getColors(`border-gray-200 dark:border-vulcan-100`, `border-[var(--vscode-editorWidget-border)]`)
+            }`}>
             <div>
               <Navigation totalPages={totalPages || 0} />
             </div>
@@ -188,9 +185,8 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
           </div>
 
           <div
-            className={`py-4 px-5 w-full flex items-center justify-between lg:justify-end border-b space-x-4 lg:space-x-6 xl:space-x-8 ${
-              getColors(`bg-gray-200 border-gray-300 dark:bg-vulcan-400 dark:border-vulcan-100`, `bg-[var(--vscode-panel-background)] border-[var(--vscode-editorWidget-border)]`)
-            }`}
+            className={`py-4 px-5 w-full flex items-center justify-between lg:justify-end border-b space-x-4 lg:space-x-6 xl:space-x-8 ${getColors(`bg-gray-200 border-gray-300 dark:bg-vulcan-400 dark:border-vulcan-100`, `bg-[var(--vscode-panel-background)] border-[var(--vscode-editorWidget-border)]`)
+              }`}
           >
             <ClearFilters />
 
@@ -219,9 +215,8 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
             (totalPages || 0) > pageSetNr &&
             (!grouping || grouping === GroupOption.none) && (
               <div
-                className={`px-4 flex justify-between py-2 border-b ${
-                  getColors(`border-gray-300 dark:border-vulcan-100`, `border-[var(--vscode-editorWidget-border)]`)
-                }`}
+                className={`px-4 flex justify-between py-2 border-b ${getColors(`border-gray-300 dark:border-vulcan-100`, `border-[var(--vscode-editorWidget-border)]`)
+                  }`}
               >
                 <PaginationStatus totalPages={totalPages || 0} />
 

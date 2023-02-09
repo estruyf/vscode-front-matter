@@ -1,8 +1,8 @@
 import { HeartIcon, StarIcon } from '@heroicons/react/outline';
 import * as React from 'react';
-import { REVIEW_LINK, SPONSOR_LINK } from '../../constants';
-import { VersionInfo } from '../../models';
-import useThemeColors from '../hooks/useThemeColors';
+import { REVIEW_LINK, SPONSOR_LINK } from '../../../constants';
+import { VersionInfo } from '../../../models';
+import useThemeColors from '../../hooks/useThemeColors';
 
 export interface ISponsorMsgProps {
   beta: boolean | undefined;

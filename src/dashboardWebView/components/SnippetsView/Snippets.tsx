@@ -13,7 +13,7 @@ import { ModeAtom, SettingsSelector, ViewDataSelector } from '../../state';
 import { FilterInput } from '../Header/FilterInput';
 import { PageLayout } from '../Layout/PageLayout';
 import { FormDialog } from '../Modals/FormDialog';
-import { SponsorMsg } from '../SponsorMsg';
+import { SponsorMsg } from '../Layout/SponsorMsg';
 import { Item } from './Item';
 import { NewForm } from './NewForm';
 

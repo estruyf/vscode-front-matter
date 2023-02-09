@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { SETTING_DASHBOARD_OPENONSTART } from '../../constants';
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { DashboardMessage } from '../DashboardMessage';
-import { Settings } from '../models/Settings';
-import useThemeColors from '../hooks/useThemeColors';
+import { Settings } from '../../models';
+import useThemeColors from '../../hooks/useThemeColors';
+import { DashboardMessage } from '../../DashboardMessage';
+import { SETTING_DASHBOARD_OPENONSTART } from '../../../constants';
 
 export interface IStartupProps {
   settings: Settings | null;

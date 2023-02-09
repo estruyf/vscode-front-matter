@@ -7,10 +7,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { DataFile } from '../../../models/DataFile';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
-import { SponsorMsg } from '../SponsorMsg';
+import { SponsorMsg } from '../Layout/SponsorMsg';
 import { EventData } from '@estruyf/vscode';
 import { DashboardCommand } from '../../DashboardCommand';
-import { Button } from '../Button';
+import { Button } from '../Common/Button';
 import { arrayMoveImmutable } from 'array-move';
 import { EmptyView } from './EmptyView';
 import { Container } from './SortableContainer';
@@ -22,7 +22,7 @@ import { DataType } from '../../../models/DataType';
 import { TelemetryEvent } from '../../../constants';
 import { NavigationItem } from '../Layout';
 
-export interface IDataViewProps {}
+export interface IDataViewProps { }
 
 export const DataView: React.FunctionComponent<IDataViewProps> = (
   props: React.PropsWithChildren<IDataViewProps>
@@ -242,9 +242,8 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
                   </div>
                 )}
                 <div
-                  className={`${
-                    selectedData.singleEntry ? 'w-full' : 'w-2/3'
-                  } py-6 px-4 overflow-auto`}
+                  className={`${selectedData.singleEntry ? 'w-full' : 'w-2/3'
+                    } py-6 px-4 overflow-auto`}
                 >
                   <h2 className={`text-lg text-gray-500 dark:text-whisper-900`}>
                     Create or modify your {selectedData.title.toLowerCase()} data

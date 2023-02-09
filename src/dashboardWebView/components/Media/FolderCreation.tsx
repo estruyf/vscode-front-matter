@@ -10,7 +10,7 @@ import {
   ViewDataSelector
 } from '../../state';
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { ChoiceButton } from '../ChoiceButton';
+import { ChoiceButton } from '../Common/ChoiceButton';
 import { CustomScript, ScriptType } from '../../../models';
 import { STATIC_FOLDER_PLACEHOLDER } from '../../../constants';
 import { useCallback, useMemo } from 'react';

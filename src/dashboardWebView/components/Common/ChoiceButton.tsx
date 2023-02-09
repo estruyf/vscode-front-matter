@@ -1,8 +1,8 @@
 import { Menu } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import * as React from 'react';
-import useThemeColors from '../hooks/useThemeColors';
-import { MenuItem, MenuItems } from './Menu';
+import useThemeColors from '../../hooks/useThemeColors';
+import { MenuItem, MenuItems } from '../Menu';
 
 export interface IChoiceButtonProps {
   title: string;

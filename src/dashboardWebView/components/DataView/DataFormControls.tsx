@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useForm } from 'uniforms';
 import { SubmitField } from 'uniforms-unstyled';
-import { Button } from '../Button';
+import { Button } from '../Common/Button';
 
 export interface IDataFormControlsProps {
   model: any | null;
@@ -17,6 +17,7 @@ export const DataFormControls: React.FunctionComponent<IDataFormControlsProps> =
   return (
     <div className="text-right border-t border-gray-200 dark:border-vulcan-300">
       <SubmitField value={model ? `Update` : `Add`} />
+
       <Button
         className="ml-4"
         secondary
