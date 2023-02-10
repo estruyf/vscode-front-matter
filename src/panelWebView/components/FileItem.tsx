@@ -18,8 +18,16 @@ const FileItem: React.FunctionComponent<IFileItemProps> = ({ name, folderName, p
     Messenger.send(CommandToCode.openInEditor, path);
   };
 
+  /*  
+      File names which would not give any info about the content.
+      by themselves, e.g.: index | +page | etc…
+      Ideally we should have access to the `defaultFileName`
+      property of the contentType here to check.
+  */
+  const vagueFileNamesList = ['index', '+page']
+
   const itemName = useMemo(() => {
-    if (folderName && name.includes("index.")) {
+    if (folderName && vagueFileNamesList.some(vagueFileName => name.includes(vagueFileName + '.'))) {
       return folderName;
     }
 
