@@ -359,7 +359,7 @@ export class ArticleHelper {
         return;
       } else {
         await mkdirAsync(newFolder);
-        newFilePath = join(newFolder, `${contentType.defaultFileName ?? `index`}.${fileExtension || contentType.fileType || fileType}`);
+        newFilePath = join(newFolder, `${sanitize(contentType.defaultFileName ?? `index`) }.${fileExtension || contentType.fileType || fileType}`);
       }
     } else {
       let newFileName = `${sanitizedName}.${fileExtension || contentType?.fileType || fileType}`;
