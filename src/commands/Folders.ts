@@ -368,6 +368,7 @@ export class Folders {
 
       return {
         ...folder,
+        originalPath: folder.path,
         path: folderPath
       };
     });

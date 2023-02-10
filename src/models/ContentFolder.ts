@@ -6,4 +6,5 @@ export interface ContentFolder {
   previewPath?: string;
   filePrefix?: string;
   contentTypes?: string[];
+  originalPath?: string;
 }

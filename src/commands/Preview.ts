@@ -1,3 +1,5 @@
+import { processFmPlaceholders } from './../helpers/processFmPlaceholders';
+import { processPathPlaceholders } from './../helpers/processPathPlaceholders';
 import { Telemetry } from './../helpers/Telemetry';
 import {
   SETTING_PREVIEW_HOST,
@@ -5,12 +7,13 @@ import {
   CONTEXT,
   TelemetryEvent,
   PreviewCommands,
-  SETTING_EXPERIMENTAL
+  SETTING_EXPERIMENTAL,
+  SETTING_DATE_FORMAT
 } from './../constants';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { join } from 'path';
 import { commands, env, Uri, ViewColumn, window } from 'vscode';
-import { Extension, parseWinPath, Settings } from '../helpers';
+import { Extension, parseWinPath, processKnownPlaceholders, Settings } from '../helpers';
 import { ContentFolder, PreviewSettings } from '../models';
 import { format } from 'date-fns';
 import { DateHelper } from '../helpers/DateHelper';
@@ -62,6 +65,32 @@ export class Preview {
 
       if (selectedFolder) {
         pathname = selectedFolder.previewPath;
+      }
+
+      if (pathname) {
+        // Known placeholders
+        const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
+        pathname = processKnownPlaceholders(pathname, article?.data?.title, dateFormat);
+
+        // Custom placeholders
+        pathname = await ArticleHelper.processCustomPlaceholders(
+          pathname,
+          article?.data?.title,
+          filePath
+        );
+
+        // Process the path placeholders - {{pathToken.<integer>}}
+        if (selectedFolder?.originalPath) {
+          const folderPath = processKnownPlaceholders(
+            selectedFolder.originalPath,
+            article?.data?.title,
+            dateFormat
+          );
+          pathname = processPathPlaceholders(pathname, folderPath);
+        }
+
+        // Support front matter placeholders - {{fm.<field>}}
+        pathname = processFmPlaceholders(pathname, article?.data);
       }
     }
 
