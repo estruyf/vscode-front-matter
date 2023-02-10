@@ -14,7 +14,7 @@ import { ArticleHelper } from './../helpers/ArticleHelper';
 import { join } from 'path';
 import { commands, env, Uri, ViewColumn, window } from 'vscode';
 import { Extension, parseWinPath, processKnownPlaceholders, Settings } from '../helpers';
-import { ContentFolder, PreviewSettings } from '../models';
+import { ContentFolder, ContentType, PreviewSettings } from '../models';
 import { format } from 'date-fns';
 import { DateHelper } from '../helpers/DateHelper';
 import { Article } from '.';
@@ -50,6 +50,11 @@ export class Preview {
     let selectedFolder: ContentFolder | undefined | null = null;
     const filePath = parseWinPath(editor?.document.uri.fsPath);
 
+    let contentType: ContentType | undefined = undefined;
+    if (article?.data) {
+      contentType = ArticleHelper.getContentType(article.data);
+    }
+
     // Check if there is a pathname defined on content folder level
     const folders = Folders.get();
     if (folders.length > 0) {
@@ -64,12 +69,12 @@ export class Preview {
         }
       }
 
-      if (!selectedFolder && article?.data) {
+      if (!selectedFolder && article?.data && contentType && !contentType.previewPath) {
         // Try to find the folder by content type
-        const contentType = ArticleHelper.getContentType(article.data);
         const crntFolders = folders.filter((folder) =>
-          folder.contentTypes?.includes(contentType.name)
+          folder.contentTypes?.includes((contentType as ContentType).name)
         );
+
         if (crntFolders && crntFolders.length === 1) {
           selectedFolder = crntFolders[0];
         } else if (crntFolders && crntFolders.length > 1) {
@@ -86,7 +91,6 @@ export class Preview {
 
     // Check if there is a pathname defined on content type level
     if (article?.data) {
-      const contentType = ArticleHelper.getContentType(article.data);
       if (contentType && contentType.previewPath) {
         pathname = contentType.previewPath;
       }
