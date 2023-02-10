@@ -47,13 +47,14 @@ export class Preview {
 
     let pathname = settings.pathname;
 
+    let selectedFolder: ContentFolder | undefined | null = null;
+    const filePath = parseWinPath(editor?.document.uri.fsPath);
+
     // Check if there is a pathname defined on content folder level
     const folders = Folders.get();
     if (folders.length > 0) {
       const foldersWithPath = folders.filter((folder) => folder.previewPath);
-      const filePath = parseWinPath(editor?.document.uri.fsPath);
 
-      let selectedFolder: ContentFolder | null = null;
       for (const folder of foldersWithPath) {
         const folderPath = parseWinPath(folder.path);
         if (filePath.startsWith(folderPath)) {
@@ -63,34 +64,23 @@ export class Preview {
         }
       }
 
-      if (selectedFolder) {
-        pathname = selectedFolder.previewPath;
+      if (!selectedFolder && article?.data) {
+        // Try to find the folder by content type
+        const contentType = ArticleHelper.getContentType(article.data);
+        const crntFolders = folders.filter((folder) =>
+          folder.contentTypes?.includes(contentType.name)
+        );
+        if (crntFolders && crntFolders.length === 1) {
+          selectedFolder = crntFolders[0];
+        } else if (crntFolders && crntFolders.length > 1) {
+          selectedFolder = await Preview.askUserToPickFolder(crntFolders);
+        } else {
+          selectedFolder = await Preview.askUserToPickFolder(folders);
+        }
       }
 
-      if (pathname) {
-        // Known placeholders
-        const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
-        pathname = processKnownPlaceholders(pathname, article?.data?.title, dateFormat);
-
-        // Custom placeholders
-        pathname = await ArticleHelper.processCustomPlaceholders(
-          pathname,
-          article?.data?.title,
-          filePath
-        );
-
-        // Process the path placeholders - {{pathToken.<integer>}}
-        if (selectedFolder?.originalPath) {
-          const folderPath = processKnownPlaceholders(
-            selectedFolder.originalPath,
-            article?.data?.title,
-            dateFormat
-          );
-          pathname = processPathPlaceholders(pathname, folderPath);
-        }
-
-        // Support front matter placeholders - {{fm.<field>}}
-        pathname = processFmPlaceholders(pathname, article?.data);
+      if (selectedFolder) {
+        pathname = selectedFolder.previewPath;
       }
     }
 
@@ -107,9 +97,31 @@ export class Preview {
     }
 
     if (pathname) {
-      const articleDate = ArticleHelper.getDate(article);
+      // Known placeholders
+      const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
+      pathname = processKnownPlaceholders(pathname, article?.data?.title, dateFormat);
+
+      // Custom placeholders
+      pathname = await ArticleHelper.processCustomPlaceholders(
+        pathname,
+        article?.data?.title,
+        filePath
+      );
+
+      // Process the path placeholders - {{pathToken.<integer>}}
+      if (filePath) {
+        const wsFolder = Folders.getWorkspaceFolder();
+        // Get relative file path
+        const folderPath = wsFolder ? parseWinPath(wsFolder.fsPath) : '';
+        const relativePath = filePath.replace(folderPath, '');
+        pathname = processPathPlaceholders(pathname, relativePath);
+      }
+
+      // Support front matter placeholders - {{fm.<field>}}
+      pathname = processFmPlaceholders(pathname, article?.data);
 
       try {
+        const articleDate = ArticleHelper.getDate(article);
         slug = join(
           format(articleDate || new Date(), DateHelper.formatUpdate(pathname) as string),
           slug
@@ -237,5 +249,29 @@ export class Preview {
       host,
       pathname
     };
+  }
+
+  /**
+   * Ask the user to select the folder of the article to preview
+   * @param crntFolders
+   * @returns
+   */
+  private static async askUserToPickFolder(
+    crntFolders: ContentFolder[]
+  ): Promise<ContentFolder | undefined> {
+    let selectedFolder: ContentFolder | undefined = undefined;
+
+    // Ask the user to select the folder
+    const folderNames = crntFolders.map((folder) => folder.title);
+    const selectedFolderName = await window.showQuickPick(folderNames, {
+      canPickMany: false,
+      title: 'Select the folder of the article to preview'
+    });
+
+    if (selectedFolderName) {
+      selectedFolder = crntFolders.find((folder) => folder.title === selectedFolderName);
+    }
+
+    return selectedFolder;
   }
 }
