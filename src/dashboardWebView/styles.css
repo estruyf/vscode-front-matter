@@ -365,6 +365,12 @@
     }
   }
 
+  &[data-type='preview'] {
+    input {
+      @apply rounded-none;
+    }
+  }
+
   .autoform {
     form {
       label {

@@ -58,7 +58,7 @@ export const Preview: React.FunctionComponent<IPreviewProps> = ({
         />
 
         <div
-          className={`actions absolute right-[1px] top-[1px] bottom-[1px] flex items-center space-x-2 px-2 ${getColors('text-vulcan-500 dark:text-whisper-100', 'text-[var(--vscode-list-activeSelectionForeground)]')
+          className={`actions flex items-center space-x-2 px-2 ${getColors('text-vulcan-500 dark:text-whisper-100', 'text-[var(--vscode-list-activeSelectionForeground)]')
             }`}
         >
           <button title="Navigate" onClick={navigateToUrl} className={getColors(`hover:text-vulcan-500 dark:hover:text-whisper-100`, `hover:text-[var(--vscode-textLink-activeForeground)]`)}>
