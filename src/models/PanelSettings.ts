@@ -47,6 +47,7 @@ export interface ContentType {
   fileType?: 'md' | 'mdx' | string;
   previewPath?: string | null;
   pageBundle?: boolean;
+  defaultFileName?: string;
   template?: string;
   postScript?: string;
   filePrefix?: string;

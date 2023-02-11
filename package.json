@@ -1321,6 +1321,11 @@
                   "string"
                 ],
                 "description": "Defines a prefix for the file name."
+              },
+              "defaultFileName": {
+                "type": "string",
+                "default": "index",
+                "description": "Default file name to use when creating new content."
               }
             },
             "additionalProperties": false,

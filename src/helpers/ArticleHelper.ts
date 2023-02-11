@@ -403,7 +403,12 @@ export class ArticleHelper {
         return;
       } else {
         await mkdirAsync(newFolder, { recursive: true });
-        newFilePath = join(newFolder, `index.${fileExtension || contentType.fileType || fileType}`);
+        newFilePath = join(
+          newFolder,
+          `${sanitize(contentType.defaultFileName ?? `index`)}.${
+            fileExtension || contentType.fileType || fileType
+          }`
+        );
       }
     } else {
       let newFileName = `${sanitizedName}.${fileExtension || contentType?.fileType || fileType}`;

@@ -2,6 +2,7 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { useMemo } from 'react';
 import { DEFAULT_FILE_TYPES } from '../../constants/DefaultFileTypes';
+import { ContentType } from '../../helpers';
 import { CommandToCode } from '../CommandToCode';
 import { FileIcon } from './Icons/FileIcon';
 import { MarkdownIcon } from './Icons/MarkdownIcon';
@@ -21,8 +22,14 @@ const FileItem: React.FunctionComponent<IFileItemProps> = ({
     Messenger.send(CommandToCode.openInEditor, path);
   };
 
+  let vagueFileNamesList = ['index', '+page'];
+  const contentTypes = ContentType.getAll() || [];
+  const defaultNames = contentTypes.map(contentType => contentType.defaultFileName || "index");
+  vagueFileNamesList = [...vagueFileNamesList, ...defaultNames];
+  vagueFileNamesList = [...new Set(vagueFileNamesList)];
+
   const itemName = useMemo(() => {
-    if (folderName && name.includes('index.')) {
+    if (folderName && vagueFileNamesList.some(vagueFileName => name.includes(vagueFileName + '.'))) {
       return folderName;
     }
 
