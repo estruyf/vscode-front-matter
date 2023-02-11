@@ -1,9 +1,10 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { useMemo } from 'react';
+import { useRecoilValue } from 'recoil';
 import { DEFAULT_FILE_TYPES } from '../../constants/DefaultFileTypes';
-import { ContentType } from '../../helpers';
 import { CommandToCode } from '../CommandToCode';
+import { PanelSettingsAtom } from '../state';
 import { FileIcon } from './Icons/FileIcon';
 import { MarkdownIcon } from './Icons/MarkdownIcon';
 
@@ -18,23 +19,25 @@ const FileItem: React.FunctionComponent<IFileItemProps> = ({
   folderName,
   path
 }: React.PropsWithChildren<IFileItemProps>) => {
+  const settings = useRecoilValue(PanelSettingsAtom);
+
   const openFile = () => {
     Messenger.send(CommandToCode.openInEditor, path);
   };
 
-  let vagueFileNamesList = ['index', '+page'];
-  const contentTypes = ContentType.getAll() || [];
-  const defaultNames = contentTypes.map(contentType => contentType.defaultFileName || "index");
-  vagueFileNamesList = [...vagueFileNamesList, ...defaultNames];
-  vagueFileNamesList = [...new Set(vagueFileNamesList)];
-
   const itemName = useMemo(() => {
+    let vagueFileNamesList = ['index', '+page'];
+    const contentTypes = settings?.contentTypes || [];
+    const defaultNames = contentTypes.map(contentType => contentType.defaultFileName || "index");
+    vagueFileNamesList = [...vagueFileNamesList, ...defaultNames];
+    vagueFileNamesList = [...new Set(vagueFileNamesList)];
+
     if (folderName && vagueFileNamesList.some(vagueFileName => name.includes(vagueFileName + '.'))) {
       return folderName;
     }
 
     return name;
-  }, [name, folderName]);
+  }, [name, folderName, settings?.contentTypes]);
 
   // File extension
   const fileExtension = useMemo(() => `.${name.split('.').pop()}`, [name]);

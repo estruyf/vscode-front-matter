@@ -2,16 +2,18 @@ import { useState, useEffect } from 'react';
 import { GeneralCommands } from '../../constants';
 import { Mode } from '../../models/Mode';
 import { DashboardData } from '../../models/DashboardData';
-import { FolderInfo, PanelSettings } from '../../models/PanelSettings';
+import { FolderInfo } from '../../models/PanelSettings';
 import { Command } from '../Command';
 import { CommandToCode } from '../CommandToCode';
 import { TagType } from '../TagType';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
+import { useRecoilState } from 'recoil';
+import { PanelSettingsAtom } from '../state';
 
 export default function useMessages() {
   const [metadata, setMetadata] = useState<any>({});
-  const [settings, setSettings] = useState<PanelSettings>();
+  const [settings, setSettings] = useRecoilState(PanelSettingsAtom);
   const [loading, setLoading] = useState<boolean>(false);
   const [focusElm, setFocus] = useState<TagType | null>(null);
   const [folderAndFiles, setFolderAndFiles] = useState<FolderInfo[] | undefined>(undefined);

@@ -13,7 +13,7 @@ import { FeatureFlag } from '../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../constants/Features';
 import { GitAction } from './components/Git/GitAction';
 
-export interface IViewPanelProps {}
+export interface IViewPanelProps { }
 
 export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
   props: React.PropsWithChildren<IViewPanelProps>
