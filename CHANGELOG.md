@@ -16,6 +16,8 @@
 - [#497](https://github.com/estruyf/vscode-front-matter/issues/497): Support for movie media previews in the content dashboard
 - [#502](https://github.com/estruyf/vscode-front-matter/issues/502): Keyboard bindings added to open dashboard, insert media, and insert snippet
 - [#503](https://github.com/estruyf/vscode-front-matter/issues/503): Allow making changes to the preview URL in the webview
+- [#504](https://github.com/estruyf/vscode-front-matter/issues/504): Allow specifying the filename for your page bundles
+- [#505](https://github.com/estruyf/vscode-front-matter/issues/505): Experimental Visual Studio Code theming support
 
 ### ⚡️ Optimizations
 
@@ -49,7 +51,6 @@
 - [#449](https://github.com/estruyf/vscode-front-matter/issues/449): Show `filename` if the `title` is not set
 - [#450](https://github.com/estruyf/vscode-front-matter/issues/450): Additional time placeholders added `{{hour12}}`, `{{hour24}}`, `{{ampm}}`, and `{{minute}}`
 - [#458](https://github.com/estruyf/vscode-front-matter/issues/458): Ability to configure the file prefix on folder level
-- [#505](https://github.com/estruyf/vscode-front-matter/issues/505): Experimental Visual Studio Code theming support
 
 ### ⚡️ Optimizations
 
