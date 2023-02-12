@@ -84,7 +84,7 @@ export class Preview {
         }
       }
 
-      if (selectedFolder) {
+      if (selectedFolder && selectedFolder.previewPath) {
         pathname = selectedFolder.previewPath;
       }
     }
