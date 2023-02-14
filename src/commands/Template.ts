@@ -1,7 +1,11 @@
 import { Questions } from './../helpers/Questions';
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { SETTING_CONTENT_DEFAULT_FILETYPE, SETTING_TEMPLATES_FOLDER, TelemetryEvent } from '../constants';
+import {
+  SETTING_CONTENT_DEFAULT_FILETYPE,
+  SETTING_TEMPLATES_FOLDER,
+  TelemetryEvent
+} from '../constants';
 import { ArticleHelper, Settings } from '../helpers';
 import { Article } from '.';
 import { Notifications } from '../helpers/Notifications';
@@ -14,7 +18,6 @@ import { Telemetry } from '../helpers/Telemetry';
 import { writeFileAsync, copyFileAsync } from '../utils';
 
 export class Template {
-
   /**
    * Generate a template
    */
@@ -39,28 +42,30 @@ export class Template {
         return;
       }
 
-      const keepContents = await vscode.window.showQuickPick(
-        ["yes", "no"], 
-        { 
-          title: `Keep contents`,
-          canPickMany: false, 
-          placeHolder: `Do you want to keep the contents for the template?`,
-          ignoreFocusOut: true
-        }
-      );
+      const keepContents = await vscode.window.showQuickPick(['yes', 'no'], {
+        title: `Keep contents`,
+        canPickMany: false,
+        placeHolder: `Do you want to keep the contents for the template?`,
+        ignoreFocusOut: true
+      });
 
       if (!keepContents) {
-        Notifications.warning(`You did not pick any of the options for keeping the template its content.`);
+        Notifications.warning(
+          `You did not pick any of the options for keeping the template its content.`
+        );
         return;
       }
 
       await Project.init(false);
       const templatePath = Project.templatePath();
       if (templatePath) {
-        let fileContents = ArticleHelper.stringifyFrontMatter(keepContents === "no" ? "" : clonedArticle.content, clonedArticle.data);
+        const fileContents = ArticleHelper.stringifyFrontMatter(
+          keepContents === 'no' ? '' : clonedArticle.content,
+          clonedArticle.data
+        );
 
         const templateFile = path.join(templatePath.fsPath, `${titleValue}.${fileType}`);
-        await writeFileAsync(templateFile, fileContents, { encoding: "utf-8" });
+        await writeFileAsync(templateFile, fileContents, { encoding: 'utf-8' });
 
         Notifications.info(`Template created and is now available in your ${folder} folder.`);
       }
@@ -78,7 +83,10 @@ export class Template {
       return;
     }
 
-    return await vscode.workspace.findFiles(`${folder}/**/*`, "**/node_modules/**,**/archetypes/**");
+    return await vscode.workspace.findFiles(
+      `${folder}/**/*`,
+      '**/node_modules/**,**/archetypes/**'
+    );
   }
 
   /**
@@ -98,11 +106,14 @@ export class Template {
       return;
     }
 
-    const selectedTemplate = await vscode.window.showQuickPick(templates.map(t => path.basename(t.fsPath)), {
-      title: `Select a template`,
-      placeHolder: `Select the content template to use`,
-      ignoreFocusOut: true
-    });
+    const selectedTemplate = await vscode.window.showQuickPick(
+      templates.map((t) => path.basename(t.fsPath)),
+      {
+        title: `Select a template`,
+        placeHolder: `Select the content template to use`,
+        ignoreFocusOut: true
+      }
+    );
     if (!selectedTemplate) {
       Notifications.warning(`No template selected.`);
       return;
@@ -114,7 +125,7 @@ export class Template {
     }
 
     // Start the template read
-    const template = templates.find(t => t.fsPath.endsWith(selectedTemplate));
+    const template = templates.find((t) => t.fsPath.endsWith(selectedTemplate));
     if (!template) {
       Notifications.warning(`Content template could not be found.`);
       return;
@@ -123,15 +134,20 @@ export class Template {
     const templateData = await ArticleHelper.getFrontMatterByPath(template.fsPath);
     let contentType: IContentType | undefined;
     if (templateData && templateData.data && templateData.data.type) {
-      contentType = contentTypes?.find(t => t.name === templateData.data.type);
+      contentType = contentTypes?.find((t) => t.name === templateData.data.type);
     }
 
-    const fileExtension = extname(template.fsPath).replace(".", "");
-    let newFilePath: string | undefined = await ArticleHelper.createContent(contentType, folderPath, titleValue, fileExtension);
+    const fileExtension = extname(template.fsPath).replace('.', '');
+    const newFilePath: string | undefined = await ArticleHelper.createContent(
+      contentType,
+      folderPath,
+      titleValue,
+      fileExtension
+    );
     if (!newFilePath) {
       return;
     }
-    
+
     // Start the new file creation
     await copyFileAsync(template.fsPath, newFilePath);
 
@@ -143,11 +159,19 @@ export class Template {
     }
 
     if (frontMatter.data) {
-      frontMatter.data = await ArticleHelper.updatePlaceholders(frontMatter.data, titleValue, newFilePath);
+      frontMatter.data = await ArticleHelper.updatePlaceholders(
+        frontMatter.data,
+        titleValue,
+        newFilePath
+      );
 
       frontMatter = Article.updateDate(frontMatter);
 
-      await writeFileAsync(newFilePath, ArticleHelper.stringifyFrontMatter(frontMatter.content, frontMatter.data), { encoding: "utf8" });
+      await writeFileAsync(
+        newFilePath,
+        ArticleHelper.stringifyFrontMatter(frontMatter.content, frontMatter.data),
+        { encoding: 'utf8' }
+      );
 
       await vscode.commands.executeCommand('vscode.open', vscode.Uri.file(newFilePath));
     }

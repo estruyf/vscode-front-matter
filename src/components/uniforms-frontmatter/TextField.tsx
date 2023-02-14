@@ -23,7 +23,6 @@ function Text({
   value,
   ...props
 }: TextFieldProps) {
-
   return (
     <div {...filterDOMProps(props)}>
       <LabelField label={label} id={id} required={props.required} />
@@ -33,7 +32,7 @@ function Text({
         disabled={disabled}
         id={id}
         name={name}
-        onChange={event => onChange(event.target.value)}
+        onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         readOnly={readOnly}
         ref={inputRef}

@@ -1,4 +1,7 @@
-import TelemetryReporter, { TelemetryEventMeasurements, TelemetryEventProperties } from '@vscode/extension-telemetry';
+import TelemetryReporter, {
+  TelemetryEventMeasurements,
+  TelemetryEventProperties
+} from '@vscode/extension-telemetry';
 import { Extension, Settings } from '.';
 import { EXTENSION_BETA_ID, EXTENSION_ID, SETTING_TELEMETRY_DISABLE } from '../constants';
 
@@ -22,7 +25,11 @@ export class Telemetry {
     return Telemetry.instance;
   }
 
-  public static send(eventName: string, properties?: TelemetryEventProperties, measurements?: TelemetryEventMeasurements) {
+  public static send(
+    eventName: string,
+    properties?: TelemetryEventProperties,
+    measurements?: TelemetryEventMeasurements
+  ) {
     if (!Telemetry.reporter) {
       Telemetry.getInstance();
     }
@@ -31,7 +38,7 @@ export class Telemetry {
     if (isDisabled) {
       return;
     }
-    
+
     Telemetry.reporter?.sendTelemetryEvent(eventName, properties, measurements);
   }
 

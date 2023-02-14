@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect } from 'react';
 import { SEO } from '../../models/PanelSettings';
 import { TagType } from '../TagType';
 import { ArticleDetails } from './ArticleDetails';
@@ -17,9 +18,14 @@ export interface ISeoStatusProps {
   unsetFocus: () => void;
 }
 
-const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({ data, seo, focusElm, unsetFocus }: React.PropsWithChildren<ISeoStatusProps>) => {
+const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
+  data,
+  seo,
+  focusElm,
+  unsetFocus
+}: React.PropsWithChildren<ISeoStatusProps>) => {
   const { title, slug } = data;
-  const [ isOpen, setIsOpen ] = React.useState(true);
+  const [isOpen, setIsOpen] = React.useState(true);
   const tableRef = React.useRef<HTMLElement>();
   const pushUpdate = React.useRef((value: boolean) => {
     setTimeout(() => {
@@ -27,10 +33,10 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({ data, seo, focusE
     }, 10);
   }).current;
 
-  const { descriptionField } = seo;
+  const { descriptionField, titleField } = seo;
 
   // Workaround for lit components not updating render
-  React.useEffect(() => {
+  useEffect(() => {
     setTimeout(() => {
       let height = 0;
 
@@ -42,7 +48,7 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({ data, seo, focusE
         tableRef.current.style.height = `${height}px`;
       }
     }, 10);
-  }, [title, data[descriptionField], data?.articleDetails?.wordCount]);
+  }, [title, data[titleField], data[descriptionField], data?.articleDetails?.wordCount]);
 
   const renderContent = () => {
     if (!isOpen) {
@@ -61,50 +67,65 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({ data, seo, focusE
               <VsTableHeaderCell className={`table__cell`}>Valid</VsTableHeaderCell>
             </VsTableHeader>
             <VsTableBody slot="body">
-              { 
-                (title && seo.title > 0) && (
-                  <SeoFieldInfo title={`title`} value={title.length} recommendation={`${seo.title} chars`} isValid={title.length <= seo.title} />
-                )
-              }
-              { 
-                (slug && seo.slug > 0) && (
-                  <SeoFieldInfo title={`slug`} value={slug.length} recommendation={`${seo.slug} chars`} isValid={slug.length <= seo.slug} />
-                )
-              }
+              {data[titleField] && seo.title > 0 && (
+                <SeoFieldInfo
+                  title={titleField}
+                  value={data[titleField].length}
+                  recommendation={`${seo.title} chars`}
+                  isValid={data[titleField].length <= seo.title}
+                />
+              )}
 
-              {
-                (data[descriptionField] && seo.description > 0) && (
-                  <SeoFieldInfo title={descriptionField} value={data[descriptionField].length} recommendation={`${seo.description} chars`} isValid={data[descriptionField].length <= seo.description} />
-                )
-              }
+              {slug && seo.slug > 0 && (
+                <SeoFieldInfo
+                  title={`slug`}
+                  value={slug.length}
+                  recommendation={`${seo.slug} chars`}
+                  isValid={slug.length <= seo.slug}
+                />
+              )}
 
-              {
-                (seo.content > 0 && data?.articleDetails?.wordCount > 0) && (
-                  <SeoFieldInfo title={`Article length`} value={data?.articleDetails?.wordCount} recommendation={`${seo.content} words`} />
-                )
-              }
+              {data[descriptionField] && seo.description > 0 && (
+                <SeoFieldInfo
+                  title={descriptionField}
+                  value={data[descriptionField].length}
+                  recommendation={`${seo.description} chars`}
+                  isValid={data[descriptionField].length <= seo.description}
+                />
+              )}
+
+              {seo.content > 0 && data?.articleDetails?.wordCount > 0 && (
+                <SeoFieldInfo
+                  title={`Article length`}
+                  value={data?.articleDetails?.wordCount}
+                  recommendation={`${seo.content} words`}
+                />
+              )}
             </VsTableBody>
           </VsTable>
         </div>
 
-        <SeoKeywords keywords={data?.keywords}
-                     title={title} 
-                     description={data[descriptionField]} 
-                     slug={data.slug}
-                     headings={data?.articleDetails?.headingsText}
-                     wordCount={data?.articleDetails?.wordCount}
-                     content={data?.articleDetails?.content} />
-        
+        <SeoKeywords
+          keywords={data?.keywords}
+          title={title}
+          description={data[descriptionField]}
+          slug={data.slug}
+          headings={data?.articleDetails?.headingsText}
+          wordCount={data?.articleDetails?.wordCount}
+          content={data?.articleDetails?.content}
+        />
+
         <FieldBoundary fieldName={`Keywords`}>
-          <TagPicker 
-            type={TagType.keywords} 
+          <TagPicker
+            type={TagType.keywords}
             icon={<SymbolKeywordIcon />}
-            crntSelected={data.keywords as string[] || []} 
-            options={[]} 
-            freeform={true} 
+            crntSelected={(data.keywords as string[]) || []}
+            options={[]}
+            freeform={true}
             focussed={focusElm === TagType.keywords}
             unsetFocus={unsetFocus}
-            disableConfigurable />
+            disableConfigurable
+          />
         </FieldBoundary>
 
         <ArticleDetails details={data.articleDetails} />
@@ -112,19 +133,17 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({ data, seo, focusE
     );
   };
 
-  
-
   return (
     <Collapsible id={`seo`} title="SEO Status" sendUpdate={pushUpdate}>
-      {
-        !title && !data[descriptionField] ? (
-          <div className={`seo__status__empty`}>
-            <p><b>Title</b> or <b>{descriptionField}</b> is needed.</p>
-          </div>
-        ) : (
-          renderContent() 
-        )
-      }
+      {!title && !data[descriptionField] ? (
+        <div className={`seo__status__empty`}>
+          <p>
+            <b>Title</b> or <b>{descriptionField}</b> is needed.
+          </p>
+        </div>
+      ) : (
+        renderContent()
+      )}
     </Collapsible>
   );
 };

@@ -1,20 +1,18 @@
-import { SETTING_CUSTOM_SCRIPTS } from "../../constants";
-import { CustomScript, Settings } from "../../helpers";
-import { CustomScript as ICustomScript } from "../../models";
-import { CommandToCode } from "../../panelWebView/CommandToCode";
-import { BaseListener } from "./BaseListener";
-
+import { SETTING_CUSTOM_SCRIPTS } from '../../constants';
+import { CustomScript, Settings } from '../../helpers';
+import { CustomScript as ICustomScript } from '../../models';
+import { CommandToCode } from '../../panelWebView/CommandToCode';
+import { BaseListener } from './BaseListener';
 
 export class ScriptListener extends BaseListener {
-
   /**
    * Process the messages for the dashboard views
-   * @param msg 
+   * @param msg
    */
-  public static process(msg: { command: any, data: any }) {
+  public static process(msg: { command: any; data: any }) {
     super.process(msg);
 
-    switch(msg.command) {
+    switch (msg.command) {
       case CommandToCode.runCustomScript:
         this.runCustomScript(msg);
         break;
@@ -23,9 +21,9 @@ export class ScriptListener extends BaseListener {
 
   /**
    * Run a custom script
-   * @param msg 
+   * @param msg
    */
-  private static runCustomScript(msg: { command: string, data: any}) {
+  private static runCustomScript(msg: { command: string; data: any }) {
     const scripts: ICustomScript[] | undefined = Settings.get(SETTING_CUSTOM_SCRIPTS);
 
     if (msg?.data?.title && msg?.data?.script && scripts) {

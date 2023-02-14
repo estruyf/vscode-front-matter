@@ -1,28 +1,40 @@
-import {XCircleIcon} from '@heroicons/react/solid';
+import { XCircleIcon } from '@heroicons/react/solid';
 import * as React from 'react';
 import { useRecoilValue, useResetRecoilState } from 'recoil';
-import { FolderSelector, TagSelector, CategorySelector, SortingAtom, FolderAtom, DEFAULT_FOLDER_STATE, TagAtom, CategoryAtom, DEFAULT_TAG_STATE, DEFAULT_CATEGORY_STATE } from '../../state';
+import {
+  FolderSelector,
+  TagSelector,
+  CategorySelector,
+  SortingAtom,
+  FolderAtom,
+  DEFAULT_FOLDER_STATE,
+  TagAtom,
+  CategoryAtom,
+  DEFAULT_TAG_STATE,
+  DEFAULT_CATEGORY_STATE
+} from '../../state';
 
 import { DefaultValue } from 'recoil';
-import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
+import useThemeColors from '../../hooks/useThemeColors';
 
-export const guardRecoilDefaultValue = (
-  candidate: any
-): candidate is DefaultValue => {
+export const guardRecoilDefaultValue = (candidate: any): candidate is DefaultValue => {
   if (candidate instanceof DefaultValue) return true;
   return false;
 };
 
 export interface IClearFiltersProps {}
 
-export const ClearFilters: React.FunctionComponent<IClearFiltersProps> = (props: React.PropsWithChildren<IClearFiltersProps>) => {
-  const [ show, setShow ] = React.useState(false);
+export const ClearFilters: React.FunctionComponent<IClearFiltersProps> = (
+  props: React.PropsWithChildren<IClearFiltersProps>
+) => {
+  const [show, setShow] = React.useState(false);
+  const { getColors } = useThemeColors();
 
   const folder = useRecoilValue(FolderSelector);
   const tag = useRecoilValue(TagSelector);
   const category = useRecoilValue(CategorySelector);
-  
+
   const resetSorting = useResetRecoilState(SortingAtom);
   const resetFolder = useResetRecoilState(FolderAtom);
   const resetTag = useResetRecoilState(TagAtom);
@@ -37,7 +49,11 @@ export const ClearFilters: React.FunctionComponent<IClearFiltersProps> = (props:
   };
 
   useEffect(() => {
-    if (folder !== DEFAULT_FOLDER_STATE || tag !== DEFAULT_TAG_STATE || category !== DEFAULT_CATEGORY_STATE) {
+    if (
+      folder !== DEFAULT_FOLDER_STATE ||
+      tag !== DEFAULT_TAG_STATE ||
+      category !== DEFAULT_CATEGORY_STATE
+    ) {
       setShow(true);
     } else {
       setShow(false);
@@ -45,10 +61,20 @@ export const ClearFilters: React.FunctionComponent<IClearFiltersProps> = (props:
   }, [folder, tag, category]);
 
   if (!show) return null;
-  
+
   return (
-    <button className="flex items-center hover:text-teal-600" onClick={reset} title={`Clear filters, grouping, and sorting`}>
-      <XCircleIcon className={`inline-block w-5 h-5 mr-1`} /><span>Clear</span>
+    <button
+      className={`flex items-center ${
+        getColors(
+          'hover:text-teal-600',
+          'hover:text-[var(--vscode-textLink-activeForeground)]'
+        )
+      }`}
+      onClick={reset}
+      title={`Clear filters, grouping, and sorting`}
+    >
+      <XCircleIcon className={`inline-block w-5 h-5 mr-1`} />
+      <span>Clear</span>
       <span className={`sr-only`}> filters and grouping</span>
     </button>
   );

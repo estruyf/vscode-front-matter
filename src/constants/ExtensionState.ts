@@ -1,4 +1,3 @@
-
 export const ExtensionState = {
   PagesView: `frontMatter:Pages:ViewType`,
   SelectedFolder: `frontMatter:SelectedFolder`,
@@ -8,15 +7,19 @@ export const ExtensionState = {
 
   Dashboard: {
     Contents: {
-      Sorting: `frontMatter:Dashboard:Contents:Sorting`,
+      Sorting: `frontMatter:Dashboard:Contents:Sorting`
     },
     Media: {
-      Sorting: `frontMatter:Dashboard:Media:Sorting`,
+      Sorting: `frontMatter:Dashboard:Media:Sorting`
     },
     Pages: {
       Cache: `frontMatter:Dashboard:Pages:Cache`,
-      Index: `frontMatter:Dashboard:Pages:Index`,
+      Index: `frontMatter:Dashboard:Pages:Index`
     }
+  },
+
+  Settings: {
+    Extends: `frontMatter:Settings:Extends`
   },
 
   Updates: {

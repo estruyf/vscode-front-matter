@@ -3,7 +3,7 @@
   "displayName": "Front Matter CMS",
   "description": "Front Matter is a CMS that runs within Visual Studio Code. It gives you the power and control of a full-blown CMS while also providing you the flexibility and speed of the static site generator of your choice like: Hugo, Jekyll, Docusaurus, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "8.2.0",
+  "version": "8.3.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -51,11 +51,28 @@
   "activationEvents": [
     "workspaceContains:**/.frontmatter",
     "workspaceContains:**/frontmatter.json",
-    "onView:frontMatter.explorer",
     "onStartupFinished"
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "keybindings": [
+      {
+        "command": "frontMatter.dashboard",
+        "key": "alt+d"
+      },
+      {
+        "command": "frontMatter.insertMedia",
+        "key": "ctrl+shift+i",
+        "mac": "cmd+shift+i",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "frontMatter.insertSnippet",
+        "key": "ctrl+shift+v",
+        "mac": "cmd+shift+v",
+        "when": "editorTextFocus"
+      }
+    ],
     "viewsContainers": {
       "activitybar": [
         {
@@ -79,6 +96,19 @@
     "configuration": {
       "title": "Front Matter: use frontmatter.json for shared team settings",
       "properties": {
+        "frontMatter.experimental": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Specify if you want to enable the experimental features. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.experimental)"
+        },
+        "frontMatter.extends": {
+          "type": "array",
+          "markdownDescription": "Specify the list of paths/URLs to extend the Front Matter CMS config. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.extends)",
+          "default": [],
+          "items": {
+            "type": "string"
+          }
+        },
         "frontMatter.content.autoUpdateDate": {
           "type": "boolean",
           "default": false,
@@ -208,7 +238,10 @@
                 "description": "Defines a custom preview path for the folder."
               },
               "filePrefix": {
-                "type": [ "null", "string" ],
+                "type": [
+                  "null",
+                  "string"
+                ],
                 "description": "Defines a prefix for the file name."
               },
               "contentTypes": {
@@ -451,6 +484,30 @@
                 "type": "boolean",
                 "description": "Hide the action from the UI",
                 "default": false
+              },
+              "environments": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "macos",
+                        "linux",
+                        "windows"
+                      ],
+                      "description": "The environment type for which the script needs to be used"
+                    },
+                    "script": {
+                      "type": "string",
+                      "description": "Path to the script to execute"
+                    },
+                    "command": {
+                      "$ref": "#scriptCommand"
+                    }
+                  }
+                }
               }
             },
             "additionalProperties": false,
@@ -462,7 +519,10 @@
           "scope": "Custom scripts"
         },
         "frontMatter.dashboard.content.pagination": {
-          "type": ["boolean", "number"],
+          "type": [
+            "boolean",
+            "number"
+          ],
           "default": true,
           "markdownDescription": "Specify if you want to enable/disable pagination for your content. You can define your page number up to 52. Default items per page is `16`. Disabling the pagination can be done by setting it to `false`. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.content.pagination)",
           "scope": "Dashboard"
@@ -1254,6 +1314,18 @@
                 "type": "string",
                 "default": "",
                 "description": "An optional post script that can be used after new content creation."
+              },
+              "filePrefix": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "description": "Defines a prefix for the file name."
+              },
+              "defaultFileName": {
+                "type": "string",
+                "default": "index",
+                "description": "Default file name to use when creating new content."
               }
             },
             "additionalProperties": false,
@@ -1445,6 +1517,12 @@
           "type": "number",
           "default": 75,
           "markdownDescription": "Specifies the optimal slug length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seoSlugLength)",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.seoTitleField": {
+          "type": "string",
+          "default": "title",
+          "markdownDescription": "Specifies the name of the SEO title field for your page. Default is 'title'. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seotitlefield)",
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.seoTitleLength": {
@@ -2132,7 +2210,9 @@
     "clean": "rimraf dist",
     "start:site": "cd ./docs && npm run dev",
     "clean:test": "rm ./e2e/sample/frontmatter.json || exit 0 && rm -rf ./e2e/sample/.frontmatter || exit 0",
-    "test": "tsc -p tsconfig.e2e.json && npm run clean:test && node ./e2e/out/runTests.js"
+    "test": "pnpm lint; tsc -p tsconfig.e2e.json && npm run clean:test && pnpm i -g @vscode/vsce && node ./e2e/out/runTests.js",
+    "lint": "eslint --max-warnings=0 ./src/{commands,components}",
+    "prettier": "prettier --write ./src"
   },
   "devDependencies": {
     "@actions/core": "^1.8.2",
@@ -2145,7 +2225,7 @@
     "@popperjs/core": "^2.11.6",
     "@sentry/react": "^6.13.3",
     "@sentry/tracing": "^6.13.3",
-    "@tailwindcss/forms": "^0.3.3",
+    "@tailwindcss/forms": "^0.5.3",
     "@types/chai": "^4.3.1",
     "@types/glob": "7.1.3",
     "@types/invariant": "^2.2.35",
@@ -2153,6 +2233,7 @@
     "@types/lodash.omit": "^4.5.6",
     "@types/lodash.uniqby": "4.7.6",
     "@types/lodash.xor": "^4.5.6",
+    "@types/mdast": "^3.0.10",
     "@types/mime-types": "^2.1.1",
     "@types/mocha": "^5.2.7",
     "@types/mustache": "^4.1.2",
@@ -2162,17 +2243,20 @@
     "@types/react-datepicker": "^4.1.7",
     "@types/react-dom": "17.0.0",
     "@types/vscode": "^1.63.0",
+    "@typescript-eslint/eslint-plugin": "^5.50.0",
+    "@typescript-eslint/parser": "^5.50.0",
     "@vscode/codicons": "0.0.20",
     "@vscode/extension-telemetry": "^0.4.7",
     "@vscode/webview-ui-toolkit": "^0.9.1",
     "@webpack-cli/serve": "^1.6.0",
     "ajv": "^8.8.2",
     "array-move": "^4.0.0",
-    "autoprefixer": "^10.3.2",
+    "autoprefixer": "^10.4.13",
     "chai": "^4.3.6",
     "css-loader": "5.2.7",
     "date-fns": "2.23.0",
     "downshift": "6.0.6",
+    "eslint": "^8.33.0",
     "fuse.js": "6.5.3",
     "glob": "7.1.6",
     "gray-matter": "4.0.3",
@@ -2180,6 +2264,7 @@
     "html-webpack-plugin": "4.5.0",
     "image-size": "^1.0.0",
     "invariant": "^2.2.4",
+    "js-yaml": "^4.1.0",
     "jsonc-parser": "^3.2.0",
     "lodash-es": "^4.17.21",
     "lodash.omit": "^4.5.0",
@@ -2189,16 +2274,19 @@
     "mime-types": "^2.1.35",
     "mocha": "^10.0.0",
     "mustache": "^4.2.0",
+    "node-fetch": "^2.6.9",
     "node-json-db": "^1.3.0",
     "npm-run-all": "^4.1.5",
     "path-browserify": "^1.0.1",
-    "postcss": "^8.3.6",
-    "postcss-loader": "4.3.0",
-    "postcss-nested": "^5.0.6",
+    "postcss": "^8.4.21",
+    "postcss-loader": "^7.0.2",
+    "prettier": "^2.8.3",
+    "prettier-plugin-tailwindcss": "^0.2.2",
     "react": "17.0.1",
     "react-datepicker": "4.2.1",
     "react-dom": "17.0.1",
     "react-dropzone": "^11.3.4",
+    "react-popper": "^2.3.0",
     "react-quill": "^2.0.0-beta.4",
     "react-router-dom": "^6.3.0",
     "react-sortable-hoc": "^2.0.0",
@@ -2208,17 +2296,15 @@
     "semver": "^7.3.7",
     "simple-git": "^3.10.0",
     "style-loader": "2.0.0",
-    "tailwindcss": "^2.2.7",
-    "tailwindcss-nested-groups": "^1.2.4",
-    "ts-loader": "8.0.3",
-    "tslint": "6.1.3",
-    "typescript": "^4.5.4",
+    "tailwindcss": "^3.2.4",
+    "ts-loader": "^9.4.2",
+    "typescript": "^4.6.2",
     "uniforms": "^3.7.0",
     "uniforms-antd": "^3.7.0",
     "uniforms-bridge-json-schema": "^3.7.0",
     "uniforms-unstyled": "^3.7.0",
     "url-join-ts": "^1.0.5",
-    "vscode-extension-tester": "^4.2.5",
+    "vscode-extension-tester": "^5.3.0",
     "wc-react": "github:estruyf/wc-react",
     "webpack": "^5.65.0",
     "webpack-bundle-analyzer": "^4.5.0",
@@ -2227,7 +2313,7 @@
     "yaml": "^1.10.2",
     "yawn-yaml": "^1.5.0"
   },
-  "dependencies": {
-    "node-fetch": "^2.6.7"
+  "vsce": {
+    "dependencies": false
   }
 }

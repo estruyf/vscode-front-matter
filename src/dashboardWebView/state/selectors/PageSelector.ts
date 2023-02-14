@@ -3,7 +3,7 @@ import { PageAtom } from '..';
 
 export const PageSelector = selector({
   key: 'PageSelector',
-  get: ({get}) => {
+  get: ({ get }) => {
     return get(PageAtom);
   }
 });

@@ -35,7 +35,7 @@ function Num({
         max={max}
         min={min}
         name={name}
-        onChange={event => {
+        onChange={(event) => {
           const parse = decimal ? parseFloat : parseInt;
           const value = parse(event.target.value);
           onChange(isNaN(value) ? undefined : value);

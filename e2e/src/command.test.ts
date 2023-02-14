@@ -42,8 +42,8 @@ describe("Initialization testing", function() {
 
     await sleep(1000);
 
-    await VSBrowser.instance.driver.wait(() => { 
-      return notificationExists(workbench, 'Front Matter:'); 
+    await VSBrowser.instance.driver.wait(() => {
+      return notificationExists(workbench, 'Front Matter:');
     }, 2000) as Notification;
 
     const notifications = await workbench.getNotifications();

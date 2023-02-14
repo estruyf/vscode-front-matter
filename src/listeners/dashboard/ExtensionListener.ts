@@ -1,18 +1,16 @@
-import { commands, env } from "vscode";
-import { SettingsListener } from ".";
-import { COMMAND_NAME } from "../../constants";
-import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
-import { CustomScript, Extension } from "../../helpers";
-import { openFileInEditor } from "../../helpers/openFileInEditor";
-import { BaseListener } from "./BaseListener";
-
+import { commands, env } from 'vscode';
+import { SettingsListener } from '.';
+import { COMMAND_NAME } from '../../constants';
+import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
+import { CustomScript, Extension } from '../../helpers';
+import { openFileInEditor } from '../../helpers/openFileInEditor';
+import { BaseListener } from './BaseListener';
 
 export class ExtensionListener extends BaseListener {
-
-  public static process(msg: { command: DashboardMessage, data: any }) {
+  public static process(msg: { command: DashboardMessage; data: any }) {
     super.process(msg);
 
-    switch(msg.command) {
+    switch (msg.command) {
       case DashboardMessage.openFile:
         openFileInEditor(msg.data);
         break;
@@ -34,7 +32,7 @@ export class ExtensionListener extends BaseListener {
   private static setState(data: any) {
     const { key, value } = data;
     if (key && value) {
-      Extension.getInstance().setState(key, value, "workspace");
+      Extension.getInstance().setState(key, value, 'workspace');
     }
   }
 }

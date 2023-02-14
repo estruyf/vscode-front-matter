@@ -1,12 +1,10 @@
-
-
 .autoform__list_add_field {
   display: flex;
   padding: 5px;
   border: 1px dashed var(--frontmatter-field-border, var(--vscode-editor-foreground));
   width: 100%;
   justify-content: center;
-  margin-top: .5rem;
+  margin-top: 0.5rem;
 
   &:hover {
     border-color: var(--frontmatter-field-borderActive, var(--vscode-button-background));

@@ -9,13 +9,20 @@ export interface ISeoFieldInfoProps {
   isValid?: boolean;
 }
 
-const SeoFieldInfo: React.FunctionComponent<ISeoFieldInfoProps> = ({ title, value, recommendation, isValid }: React.PropsWithChildren<ISeoFieldInfoProps>) => {
+const SeoFieldInfo: React.FunctionComponent<ISeoFieldInfoProps> = ({
+  title,
+  value,
+  recommendation,
+  isValid
+}: React.PropsWithChildren<ISeoFieldInfoProps>) => {
   return (
     <VsTableRow>
       <VsTableCell className={`table__cell table__title`}>{title}</VsTableCell>
-      <VsTableCell className={`table__cell`}>{value}/{recommendation}</VsTableCell>
+      <VsTableCell className={`table__cell`}>
+        {value}/{recommendation}
+      </VsTableCell>
       <VsTableCell className={`table__cell table__cell__validation`}>
-        { isValid !== undefined ? <ValidInfo label={undefined} isValid={isValid} /> : <span>-</span> }
+        {isValid !== undefined ? <ValidInfo label={undefined} isValid={isValid} /> : <span>-</span>}
       </VsTableCell>
     </VsTableRow>
   );

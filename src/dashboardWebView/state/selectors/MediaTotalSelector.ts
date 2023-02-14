@@ -3,7 +3,7 @@ import { MediaTotalAtom } from '..';
 
 export const MediaTotalSelector = selector({
   key: 'MediaTotalSelector',
-  get: ({get}) => {
+  get: ({ get }) => {
     return get(MediaTotalAtom);
   }
 });

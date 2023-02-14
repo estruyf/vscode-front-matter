@@ -5,7 +5,7 @@ import { LabelField } from './LabelField';
 
 const base64: typeof btoa =
   typeof btoa === 'undefined'
-    ? /* istanbul ignore next */ x => Buffer.from(x).toString('base64')
+    ? /* istanbul ignore next */ (x) => Buffer.from(x).toString('base64')
     : btoa;
 const escape = (x: string) => base64(encodeURIComponent(x)).replace(/=+$/, '');
 
@@ -35,7 +35,7 @@ function Radio({
     <div {...omit(filterDOMProps(props), ['checkboxes'])}>
       <LabelField label={label} id={id} required={props.required} />
 
-      {allowedValues?.map(item => (
+      {allowedValues?.map((item) => (
         <div key={item}>
           <input
             checked={item === value}
@@ -50,9 +50,7 @@ function Radio({
             type="radio"
           />
 
-          <label htmlFor={`${id}-${escape(item)}`}>
-            {transform ? transform(item) : item}
-          </label>
+          <label htmlFor={`${id}-${escape(item)}`}>{transform ? transform(item) : item}</label>
         </div>
       ))}
     </div>

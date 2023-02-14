@@ -14,4 +14,4 @@ export const decodeBase64 = (dataString: string) => {
   response.data = Buffer.from(dataPart, 'base64');
 
   return response;
-}
+};

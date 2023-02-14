@@ -22,11 +22,21 @@ export interface IDataFileFieldProps {
   onChange: (value: string | string[]) => void;
 }
 
-export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({ label, description, dataFileId, dataFileKey, dataFileValue, selected, multiSelect, onChange, required }: React.PropsWithChildren<IDataFileFieldProps>) => {
-  const [ dataEntries, setDataEntries ] = useState<string[] | null>(null);
-  const [ crntSelected, setCrntSelected ] = React.useState<string | string[] | null>();
+export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
+  label,
+  description,
+  dataFileId,
+  dataFileKey,
+  dataFileValue,
+  selected,
+  multiSelect,
+  onChange,
+  required
+}: React.PropsWithChildren<IDataFileFieldProps>) => {
+  const [dataEntries, setDataEntries] = useState<string[] | null>(null);
+  const [crntSelected, setCrntSelected] = React.useState<string | string[] | null>();
   const dsRef = React.useRef<Downshift<string> | null>(null);
-  
+
   const messageListener = (message: MessageEvent<EventData<any>>) => {
     const { command, data } = message.data;
 
@@ -35,41 +45,49 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({ la
     }
   };
 
-  const onValueChange = useCallback((txtValue: string) => {
-    if (multiSelect) {
-      const newValue = [...(crntSelected || []) as string[], txtValue];
-      setCrntSelected(newValue);
-      onChange(newValue);
-    } else {
-      setCrntSelected(txtValue);
-      onChange(txtValue);
-    }
-  }, [crntSelected, multiSelect, onChange]);
+  const onValueChange = useCallback(
+    (txtValue: string) => {
+      if (multiSelect) {
+        const newValue = [...((crntSelected || []) as string[]), txtValue];
+        setCrntSelected(newValue);
+        onChange(newValue);
+      } else {
+        setCrntSelected(txtValue);
+        onChange(txtValue);
+      }
+    },
+    [crntSelected, multiSelect, onChange]
+  );
 
-  const removeSelected = useCallback((txtValue: string) => {
-    if (multiSelect) {
-      const newValue = [...(crntSelected || [])].filter(v => v !== txtValue);
-      setCrntSelected(newValue);
-      onChange(newValue);
-    } else {
-      setCrntSelected("");
-      onChange("");
-    }
-  }, [crntSelected, multiSelect, onChange]);
+  const removeSelected = useCallback(
+    (txtValue: string) => {
+      if (multiSelect) {
+        const newValue = [...(crntSelected || [])].filter((v) => v !== txtValue);
+        setCrntSelected(newValue);
+        onChange(newValue);
+      } else {
+        setCrntSelected('');
+        onChange('');
+      }
+    },
+    [crntSelected, multiSelect, onChange]
+  );
 
   const allChoices = useMemo(() => {
     if (dataEntries && dataFileKey) {
-      return dataEntries.map((r: any) => ({
-        id: r[dataFileKey],
-        title: r[dataFileValue || dataFileKey] || r[dataFileKey]
-      })).filter(r => r.id);
+      return dataEntries
+        .map((r: any) => ({
+          id: r[dataFileKey],
+          title: r[dataFileValue || dataFileKey] || r[dataFileKey]
+        }))
+        .filter((r) => r.id);
     }
     return [];
   }, [crntSelected, dataEntries, dataFileKey, dataFileValue]);
 
   const availableChoices = useMemo(() => {
     if (allChoices) {
-      return allChoices.filter(choice => {
+      return allChoices.filter((choice) => {
         if (choice) {
           if (typeof crntSelected === 'string') {
             return crntSelected !== choice.id;
@@ -86,16 +104,21 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({ la
     return [];
   }, [allChoices]);
 
-  const getChoiceValue = useCallback((id: string) => {
-    const choice = allChoices.find(r => r.id === id);
-    if (choice) {
-      return choice.title;
-    }
-    return "";
-  }, [allChoices]);
+  const getChoiceValue = useCallback(
+    (id: string) => {
+      const choice = allChoices.find((r) => r.id === id);
+      if (choice) {
+        return choice.title;
+      }
+      return '';
+    },
+    [allChoices]
+  );
 
   const showRequiredState = useMemo(() => {
-    return required && ((crntSelected instanceof Array && crntSelected.length === 0) || !crntSelected);
+    return (
+      required && ((crntSelected instanceof Array && crntSelected.length === 0) || !crntSelected)
+    );
   }, [required, crntSelected]);
 
   useEffect(() => {
@@ -109,7 +132,7 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({ la
       }
     }
 
-    setCrntSelected(multiSelect ? [] : "");
+    setCrntSelected(multiSelect ? [] : '');
   }, [selected, multiSelect]);
 
   useEffect(() => {
@@ -123,67 +146,80 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({ la
 
     return () => {
       Messenger.unlisten(messageListener);
-    }
+    };
   }, []);
-  
-  return (
-    <div className={`metadata_field ${showRequiredState ? "required" : ""}`}>
-      <FieldTitle 
-        label={label}
-        icon={<DatabaseIcon />}
-        required={required} />
 
-      <Downshift 
+  return (
+    <div className={`metadata_field ${showRequiredState ? 'required' : ''}`}>
+      <FieldTitle label={label} icon={<DatabaseIcon />} required={required} />
+
+      <Downshift
         ref={dsRef}
-        onSelect={(selected) => onValueChange(selected || "")}
-        itemToString={item => (item ? item : '')}>
+        onSelect={(selected) => onValueChange(selected || '')}
+        itemToString={(item) => (item ? item : '')}
+      >
         {({ getToggleButtonProps, getItemProps, getMenuProps, isOpen, getRootProps }) => (
-          <div {...getRootProps(undefined, {suppressRefError: true})} className={`metadata_field__choice`}>
-            <button 
-              {...getToggleButtonProps({ 
+          <div
+            {...getRootProps(undefined, { suppressRefError: true })}
+            className={`metadata_field__choice`}
+          >
+            <button
+              {...getToggleButtonProps({
                 className: `metadata_field__choice__toggle`,
-                disabled: availableChoices.length === 0 
-              })}>
+                disabled: availableChoices.length === 0
+              })}
+            >
               <span>{`Select ${label}`}</span>
               <ChevronDownIcon className="icon" />
             </button>
 
-            <ul className={`metadata_field__choice_list ${isOpen ? "open" : "closed" }`} {...getMenuProps()}>
-              { 
-                isOpen ? availableChoices.map((choice, index) => (
-                  <li {...getItemProps({ 
-                    key: choice.id, 
-                    index,
-                    item: choice.id,
-                  })}>
-                    { choice.title || <span className={`metadata_field__choice_list__item`}>Clear value</span> }
-                  </li>
-                )) : null
-              }
+            <ul
+              className={`metadata_field__choice_list ${isOpen ? 'open' : 'closed'}`}
+              {...getMenuProps()}
+            >
+              {isOpen
+                ? availableChoices.map((choice, index) => (
+                    <li
+                      {...getItemProps({
+                        key: choice.id,
+                        index,
+                        item: choice.id
+                      })}
+                    >
+                      {choice.title || (
+                        <span className={`metadata_field__choice_list__item`}>Clear value</span>
+                      )}
+                    </li>
+                  ))
+                : null}
             </ul>
           </div>
         )}
       </Downshift>
-      
-      <FieldMessage name={label.toLowerCase()} description={description} showRequired={showRequiredState} />
 
-      {
-        crntSelected instanceof Array ? crntSelected.map((value: string) => (
-          <ChoiceButton 
-            key={value} 
-            value={value} 
-            title={getChoiceValue(value)} 
-            onClick={removeSelected} />
-        )) : (
-          crntSelected && (
-            <ChoiceButton 
-              key={crntSelected} 
-              value={crntSelected} 
-              title={getChoiceValue(crntSelected)} 
-              onClick={removeSelected} />
-          )
-        )
-      }
+      <FieldMessage
+        name={label.toLowerCase()}
+        description={description}
+        showRequired={showRequiredState}
+      />
+
+      {crntSelected instanceof Array
+        ? crntSelected.map((value: string) => (
+            <ChoiceButton
+              key={value}
+              value={value}
+              title={getChoiceValue(value)}
+              onClick={removeSelected}
+            />
+          ))
+        : crntSelected && (
+            <ChoiceButton
+              key={crntSelected}
+              value={crntSelected}
+              title={getChoiceValue(crntSelected)}
+              onClick={removeSelected}
+            />
+          )}
     </div>
   );
 };

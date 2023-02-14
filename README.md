@@ -8,12 +8,12 @@
 
 <p align="center">
   <a href="https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter" title="Check it out on the Visual Studio Marketplace">
-    <img src="https://vsmarketplacebadge.apphb.com/version/eliostruyf.vscode-front-matter.svg" alt="Visual Studio Marketplace" style="display: inline-block" />
+    <img src="https://vsmarketplacebadges.dev/version/eliostruyf.vscode-front-matter.svg" alt="Visual Studio Marketplace" style="display: inline-block" />
   </a>
 
-  <img src="https://vsmarketplacebadge.apphb.com/installs/eliostruyf.vscode-front-matter.svg" alt="Number of installs"  style="display: inline-block;margin-left:10px" />
-  
-  <img src="https://vsmarketplacebadge.apphb.com/rating/eliostruyf.vscode-front-matter.svg" alt="Ratings" style="display: inline-block;margin-left:10px" />
+  <img src="https://vsmarketplacebadges.dev/installs/eliostruyf.vscode-front-matter.svg" alt="Number of installs"  style="display: inline-block;margin-left:10px" />
+
+  <img src="https://vsmarketplacebadges.dev/rating/eliostruyf.vscode-front-matter.svg" alt="Ratings" style="display: inline-block;margin-left:10px" />
 
   <a href="https://github.com/sponsors/estruyf" title="Become a sponsor" style="margin-left:10px">
     <img src="https://img.shields.io/github/sponsors/estruyf?color=%23CE2E7C&logo=github&style=flat" alt="Sponsor the project" style="display: inline-block" />
@@ -115,7 +115,7 @@ You can get the extension via:
 If you have the courage to test out the beta features, we made available a beta version as well. You can install this via:
 
 - Uninstall the main Front Matter version
-- Install the beta version 
+- Install the beta version
   - VS Code marketplace: [VS Code Marketplace - Front Matter BETA](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter-beta).
   - The extension CLI: `ext install eliostruyf.vscode-front-matter-beta`
   - Or by clicking on the following link: <a href="" title="open extension in VS Code" data-vscode="vscode:extension/eliostruyf.vscode-front-matter-beta">open extension in VS Code</a>
@@ -163,21 +163,29 @@ You can open showcase issues for the following things:
 
 <p align="center">
   <a href="https://github.com/estruyf/vscode-front-matter/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=estruyf/vscode-front-matter" />
+    <img src="https://contrib.rocks/image?repo=estruyf/vscode-front-matter" alt="Front Matter contributors" />
   </a>
 </p>
 
 ## 🖤 Backers & Sponsors 👇 🤘
 
 <p align="center">
-  <img src="https://frontmatter.codes/api/img-sponsors" />
+  <img src="https://frontmatter.codes/api/img-sponsors" alt="Front Matter sponsors" />
+</p>
+
+<br />
+
+<p align="center" title="Powered by Vercel">
+  <a href="https://vercel.com/?utm_source=vscode-frontmatter&utm_campaign=oss">
+    <img src="https://frontmatter.codes/assets/sponsors/powered-by-vercel.png" alt="Powered by Vercel" />
+   </a>
 </p>
 
 <br />
 
 <p align="center">
-  <a href="https://vercel.com/?utm_source=vscode-frontmatter&utm_campaign=oss">
-    <img src="https://frontmatter.codes/assets/sponsors/powered-by-vercel.png" />
+  <a href="http://bejs.io/" title="Supported by the BEJS Community">
+    <img src="https://frontmatter.codes/assets/sponsors/bejs-community.png" alt="Supported by the BEJS Community" height="50px"/>
    </a>
 </p>
 
@@ -190,6 +198,6 @@ You can open showcase issues for the following things:
 
 <p align="center">
   <a href="https://visitorbadge.io">
-    <img src="https://api.visitorbadge.io/api/VisitorHit?user=estruyf&repo=vscode-front-matter&countColor=%23F05450&labelColor=%230E131F" height="25px" />
+    <img src="https://api.visitorbadge.io/api/VisitorHit?user=estruyf&repo=vscode-front-matter&countColor=%23F05450&labelColor=%230E131F" height="25px" alt="Front Matter visitors" />
   </a>
 </p>

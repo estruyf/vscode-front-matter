@@ -4,7 +4,17 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { MediaInfo, MediaPaths } from '../../models';
 import { DashboardCommand } from '../DashboardCommand';
-import { AllContentFoldersAtom, AllStaticFoldersAtom, LoadingAtom, MediaFoldersAtom, MediaTotalAtom, PageAtom, SearchAtom, SelectedMediaFolderAtom, SettingsAtom } from '../state';
+import {
+  AllContentFoldersAtom,
+  AllStaticFoldersAtom,
+  LoadingAtom,
+  MediaFoldersAtom,
+  MediaTotalAtom,
+  PageAtom,
+  SearchAtom,
+  SelectedMediaFolderAtom,
+  SettingsAtom
+} from '../state';
 import Fuse from 'fuse.js';
 import usePagination from './usePagination';
 
@@ -20,24 +30,26 @@ const fuseOptions: Fuse.IFuseOptions<MediaInfo> = {
 };
 
 export default function useMedia() {
-  const [ media, setMedia ] = useState<MediaInfo[]>([]);
+  const [media, setMedia] = useState<MediaInfo[]>([]);
   const page = useRecoilValue(PageAtom);
-  const [ searchedMedia, setSearchedMedia ] = useState<MediaInfo[]>([]);
-  const [ , setSelectedFolder ] = useRecoilState(SelectedMediaFolderAtom);
-  const [ , setTotal ] = useRecoilState(MediaTotalAtom);
-  const [ , setFolders ] = useRecoilState(MediaFoldersAtom);
-  const [ , setAllContentFolders ] = useRecoilState(AllContentFoldersAtom);
-  const [ , setAllStaticFolders ] = useRecoilState(AllStaticFoldersAtom);
-  const [ , setLoading ] = useRecoilState(LoadingAtom);
+  const [searchedMedia, setSearchedMedia] = useState<MediaInfo[]>([]);
+  const [, setSelectedFolder] = useRecoilState(SelectedMediaFolderAtom);
+  const [, setTotal] = useRecoilState(MediaTotalAtom);
+  const [, setFolders] = useRecoilState(MediaFoldersAtom);
+  const [, setAllContentFolders] = useRecoilState(AllContentFoldersAtom);
+  const [, setAllStaticFolders] = useRecoilState(AllStaticFoldersAtom);
+  const [, setLoading] = useRecoilState(LoadingAtom);
   const search = useRecoilValue(SearchAtom);
   const settings = useRecoilValue(SettingsAtom);
   const { pageSetNr } = usePagination(settings?.dashboardState.contents.pagination);
 
   const getMedia = useCallback(() => {
-    return searchedMedia.slice(page * pageSetNr, ((page + 1) * pageSetNr));
+    return searchedMedia.slice(page * pageSetNr, (page + 1) * pageSetNr);
   }, [searchedMedia, page, pageSetNr]);
 
-  const messageListener = (message: MessageEvent<EventData<MediaPaths | { key: string, value: any }>>) => {
+  const messageListener = (
+    message: MessageEvent<EventData<MediaPaths | { key: string; value: any }>>
+  ) => {
     if (message.data.command === DashboardCommand.media) {
       const data: MediaPaths = message.data.data as MediaPaths;
       setLoading(false);
@@ -55,14 +67,14 @@ export default function useMedia() {
     if (search) {
       const fuse = new Fuse(media, fuseOptions);
       const results = fuse.search(search);
-      const newSearchedMedia = results.map(page => page.item);
+      const newSearchedMedia = results.map((page) => page.item);
 
       setSearchedMedia(newSearchedMedia);
       setTotal(results.length);
 
       return;
     }
-    
+
     setTotal(media.length);
     setSearchedMedia(media);
   }, [search, media]);
@@ -72,7 +84,7 @@ export default function useMedia() {
 
     return () => {
       Messenger.unlisten(messageListener);
-    }
+    };
   }, []);
 
   return {

@@ -13,288 +13,376 @@ import { ModeSwitch } from './services/ModeSwitch';
 import { PagesParser } from './services/PagesParser';
 import { ContentType, Telemetry, Extension } from './helpers';
 import { TaxonomyType, DashboardData } from './models';
-import { Backers, Diagnostics, Wysiwyg, Content, Cache, Template, Project, Preview, Folders, Dashboard, Article, Settings, StatusListener } from './commands';
+import {
+  Backers,
+  Diagnostics,
+  Wysiwyg,
+  Content,
+  Cache,
+  Template,
+  Project,
+  Preview,
+  Folders,
+  Dashboard,
+  Article,
+  Settings,
+  StatusListener
+} from './commands';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
-let statusDebouncer: { (fnc: any, time: number): void; };
-let editDebounce: { (fnc: any, time: number): void; };
+let statusDebouncer: { (fnc: any, time: number): void };
+let editDebounce: { (fnc: any, time: number): void };
 let collection: vscode.DiagnosticCollection;
 
 export async function activate(context: vscode.ExtensionContext) {
-	const { subscriptions, extensionUri, extensionPath } = context;
+  const { subscriptions, extensionUri, extensionPath } = context;
 
-	const extension = Extension.getInstance(context);
-	Backers.init(context).then(() => {});
+  const extension = Extension.getInstance(context);
+  Backers.init(context).then(() => {});
 
-	if (!extension.checkIfExtensionCanRun()) {
-		return undefined;
-	}
-	
-	await SettingsHelper.init();
-	extension.migrateSettings();
-	
-	SettingsHelper.checkToPromote();
+  if (!extension.checkIfExtensionCanRun()) {
+    return undefined;
+  }
 
-	// Sends the activation event
-	Telemetry.send(TelemetryEvent.activate);
+  await SettingsHelper.init();
+  extension.migrateSettings();
 
-	// Start listening to the folders for content changes.
-	// This will make sure the dashboard is up to date
-	PagesListener.startWatchers();
+  SettingsHelper.checkToPromote();
 
-	collection = vscode.languages.createDiagnosticCollection('frontMatter');
+  // Sends the activation event
+  Telemetry.send(TelemetryEvent.activate);
 
-	// Pages dashboard
-	Dashboard.init();
-	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboard, (data?: DashboardData) => {
-		Telemetry.send(TelemetryEvent.openContentDashboard);
-		if (!data) {
-			Dashboard.open({ type: NavigationType.Contents });
-		} else {
-			Dashboard.open(data);
-		}
-	}));
-	
-	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardMedia, (data?: DashboardData) => {
-		Telemetry.send(TelemetryEvent.openMediaDashboard);
-		Dashboard.open({ type: NavigationType.Media });
-	}));
-	
-	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardSnippets, (data?: DashboardData) => {
-		Telemetry.send(TelemetryEvent.openSnippetsDashboard);
-		Dashboard.open({ type: NavigationType.Snippets });
-	}));
-	
-	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardData, (data?: DashboardData) => {
-		Telemetry.send(TelemetryEvent.openDataDashboard);
-		Dashboard.open({ type: NavigationType.Data });
-	}));
+  // Start listening to the folders for content changes.
+  // This will make sure the dashboard is up to date
+  PagesListener.startWatchers();
 
-	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardTaxonomy, (data?: DashboardData) => {
-		Telemetry.send(TelemetryEvent.openTaxonomyDashboard);
-		Dashboard.open({ type: NavigationType.Taxonomy });
-	}));
-	
-	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.dashboardClose, (data?: DashboardData) => {
-		Telemetry.send(TelemetryEvent.closeDashboard);
-		Dashboard.close();
-	}));
+  collection = vscode.languages.createDiagnosticCollection('frontMatter');
 
-	if (!extension.getVersion().usedVersion) {
-		vscode.commands.executeCommand(COMMAND_NAME.dashboard);
-	}
+  // Pages dashboard
+  Dashboard.init();
+  subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_NAME.dashboard, (data?: DashboardData) => {
+      Telemetry.send(TelemetryEvent.openContentDashboard);
+      if (!data) {
+        Dashboard.open({ type: NavigationType.Contents });
+      } else {
+        Dashboard.open(data);
+      }
+    })
+  );
 
-	// Register the explorer view
-	const explorerSidebar = ExplorerView.getInstance(extensionUri);
-	const explorerView = vscode.window.registerWebviewViewProvider(ExplorerView.viewType, explorerSidebar, {
-		webviewOptions: {
-			retainContextWhenHidden: true
-		}
-	});
+  subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_NAME.dashboardMedia, (data?: DashboardData) => {
+      Telemetry.send(TelemetryEvent.openMediaDashboard);
+      Dashboard.open({ type: NavigationType.Media });
+    })
+  );
 
-	// Folding the front matter of markdown files
-	MarkdownFoldingProvider.register();
+  subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_NAME.dashboardSnippets, (data?: DashboardData) => {
+      Telemetry.send(TelemetryEvent.openSnippetsDashboard);
+      Dashboard.open({ type: NavigationType.Snippets });
+    })
+  );
 
-	const insertTags = vscode.commands.registerCommand(COMMAND_NAME.insertTags, async () => {
-		await vscode.commands.executeCommand('workbench.view.extension.frontmatter-explorer');
-		await vscode.commands.executeCommand('workbench.action.focusSideBar');
-		explorerSidebar.triggerInputFocus(TagType.tags);
-	});
+  subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_NAME.dashboardData, (data?: DashboardData) => {
+      Telemetry.send(TelemetryEvent.openDataDashboard);
+      Dashboard.open({ type: NavigationType.Data });
+    })
+  );
 
-	const insertCategories = vscode.commands.registerCommand(COMMAND_NAME.insertCategories, async () => {
-		await vscode.commands.executeCommand('workbench.view.extension.frontmatter-explorer');
-		await vscode.commands.executeCommand('workbench.action.focusSideBar');
-		explorerSidebar.triggerInputFocus(TagType.categories);
-	});
+  subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_NAME.dashboardTaxonomy, (data?: DashboardData) => {
+      Telemetry.send(TelemetryEvent.openTaxonomyDashboard);
+      Dashboard.open({ type: NavigationType.Taxonomy });
+    })
+  );
 
-	const createTag = vscode.commands.registerCommand(COMMAND_NAME.createTag, () => {
-		Settings.create(TaxonomyType.Tag);
-	});
+  subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_NAME.dashboardClose, (data?: DashboardData) => {
+      Telemetry.send(TelemetryEvent.closeDashboard);
+      Dashboard.close();
+    })
+  );
 
-	const createCategory = vscode.commands.registerCommand(COMMAND_NAME.createCategory, () => {
-		Settings.create(TaxonomyType.Category);
-	});
+  if (!extension.getVersion().usedVersion) {
+    vscode.commands.executeCommand(COMMAND_NAME.dashboard);
+  }
 
-	const exportTaxonomy = vscode.commands.registerCommand(COMMAND_NAME.exportTaxonomy, Settings.export);
-
-	const remap = vscode.commands.registerCommand(COMMAND_NAME.remap, Settings.remap);
-
-	const setLastModifiedDate = vscode.commands.registerCommand(COMMAND_NAME.setLastModifiedDate, Article.setLastModifiedDate);
-
-	const generateSlug = vscode.commands.registerCommand(COMMAND_NAME.generateSlug, Article.updateSlug);
-	
-	subscriptions.push(
-		vscode.commands.registerCommand(COMMAND_NAME.initTemplate, () => Project.createSampleTemplate(true))
-	);
-
-	const toggleDraftCommand = COMMAND_NAME.toggleDraft;
-	const toggleDraft = vscode.commands.registerCommand(toggleDraftCommand, async () => {
-		await Article.toggleDraft();
-		triggerShowDraftStatus(`toggleDraft`);
-	});
-
-	// Register project folders
-	const registerFolder = vscode.commands.registerCommand(COMMAND_NAME.registerFolder, Folders.register);
-
-	const unregisterFolder = vscode.commands.registerCommand(COMMAND_NAME.unregisterFolder, Folders.unregister);
-
-	const createFolder = vscode.commands.registerCommand(COMMAND_NAME.createFolder, Folders.addMediaFolder);
-
-	/**
-	 * Template creation
-	 */
-	const createTemplate = vscode.commands.registerCommand(COMMAND_NAME.createTemplate, Template.generate);
-	const createFromTemplate = vscode.commands.registerCommand(COMMAND_NAME.createFromTemplate, (folder: vscode.Uri) => {
-		const folderPath = Folders.getFolderPath(folder);
-    if (folderPath) {
-      Template.create(folderPath);
+  // Register the explorer view
+  const explorerSidebar = ExplorerView.getInstance(extensionUri);
+  const explorerView = vscode.window.registerWebviewViewProvider(
+    ExplorerView.viewType,
+    explorerSidebar,
+    {
+      webviewOptions: {
+        retainContextWhenHidden: true
+      }
     }
-	}); 
+  );
 
-	/**
-	 * Content creation
-	 */
-	const createByContentType = vscode.commands.registerCommand(COMMAND_NAME.createByContentType, ContentType.createContent);
-	const createByTemplate = vscode.commands.registerCommand(COMMAND_NAME.createByTemplate, Folders.create);
-	const createContent = vscode.commands.registerCommand(COMMAND_NAME.createContent, Content.create);
+  // Folding the front matter of markdown files
+  MarkdownFoldingProvider.register();
 
-	subscriptions.push(
-		vscode.commands.registerCommand(COMMAND_NAME.generateContentType, ContentType.generate)
-	);
+  const insertTags = vscode.commands.registerCommand(COMMAND_NAME.insertTags, async () => {
+    await vscode.commands.executeCommand('workbench.view.extension.frontmatter-explorer');
+    await vscode.commands.executeCommand('workbench.action.focusSideBar');
+    explorerSidebar.triggerInputFocus(TagType.tags);
+  });
 
-	subscriptions.push(
-		vscode.commands.registerCommand(COMMAND_NAME.addMissingFields, ContentType.addMissingFields)
-	);
+  const insertCategories = vscode.commands.registerCommand(
+    COMMAND_NAME.insertCategories,
+    async () => {
+      await vscode.commands.executeCommand('workbench.view.extension.frontmatter-explorer');
+      await vscode.commands.executeCommand('workbench.action.focusSideBar');
+      explorerSidebar.triggerInputFocus(TagType.categories);
+    }
+  );
 
-	subscriptions.push(
-		vscode.commands.registerCommand(COMMAND_NAME.setContentType, ContentType.setContentType)
-	);
+  const createTag = vscode.commands.registerCommand(COMMAND_NAME.createTag, () => {
+    Settings.create(TaxonomyType.Tag);
+  });
 
-	// Initialize command
-	subscriptions.push(
-		vscode.commands.registerCommand(COMMAND_NAME.init, async (cb: Function) => {
-			await Project.init();
+  const createCategory = vscode.commands.registerCommand(COMMAND_NAME.createCategory, () => {
+    Settings.create(TaxonomyType.Category);
+  });
 
-			if (cb) {
-				cb();
-			}
-		})
-	);
+  const exportTaxonomy = vscode.commands.registerCommand(
+    COMMAND_NAME.exportTaxonomy,
+    Settings.export
+  );
 
-	// Settings promotion command
-	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.promote, SettingsHelper.promote));
+  const remap = vscode.commands.registerCommand(COMMAND_NAME.remap, Settings.remap);
 
-	// Collapse all sections in the webview
-	const collapseAll = vscode.commands.registerCommand(COMMAND_NAME.collapseSections, () => {
-		ExplorerView.getInstance()?.collapseAll();
-	});
+  const setLastModifiedDate = vscode.commands.registerCommand(
+    COMMAND_NAME.setLastModifiedDate,
+    Article.setLastModifiedDate
+  );
 
-	// Things to do when configuration changes
-	SettingsHelper.onConfigChange(() => {
-		Preview.init();
-		GitListener.init();
+  const generateSlug = vscode.commands.registerCommand(
+    COMMAND_NAME.generateSlug,
+    Article.updateSlug
+  );
 
-		SettingsListener.getSettings();
-		DataListener.getFoldersAndFiles();	
-		MarkdownFoldingProvider.triggerHighlighting(true);
-		ModeSwitch.register();
-	});
+  subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_NAME.initTemplate, () =>
+      Project.createSampleTemplate(true)
+    )
+  );
 
-	// Create the status bar
- 	frontMatterStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-	frontMatterStatusBar.command = toggleDraftCommand;
-	subscriptions.push(frontMatterStatusBar);
-	statusDebouncer = debounceCallback();
-	
-	// Register listeners that make sure the status bar updates
-	subscriptions.push(vscode.window.onDidChangeActiveTextEditor(() => triggerShowDraftStatus(`onDidChangeActiveTextEditor`)));
-	subscriptions.push(vscode.window.onDidChangeTextEditorSelection((e) => {
-		if (e.kind === vscode.TextEditorSelectionChangeKind.Mouse) {
-			statusDebouncer(() => triggerShowDraftStatus(`onDidChangeTextEditorSelection`), 200);
-		}
-	}));
-	subscriptions.push(vscode.workspace.onDidChangeTextDocument((TextDocumentChangeEvent) => {
-		const filePath = TextDocumentChangeEvent.document.uri.fsPath;
-		if (filePath && !filePath.toLowerCase().startsWith(`extension-output`)) {
-			MarkdownFoldingProvider.triggerHighlighting();
-			statusDebouncer(() => triggerShowDraftStatus(`onDidChangeTextEditorSelection`), 200);
-		}
-	}));
-	
-	// Automatically run the command
-	triggerShowDraftStatus(`triggerShowDraftStatus`);
+  const toggleDraftCommand = COMMAND_NAME.toggleDraft;
+  const toggleDraft = vscode.commands.registerCommand(toggleDraftCommand, async () => {
+    await Article.toggleDraft();
+    triggerShowDraftStatus(`toggleDraft`);
+  });
 
-	// Listener for file edit changes
-	subscriptions.push(vscode.workspace.onWillSaveTextDocument(handleAutoDateUpdate));
+  // Register project folders
+  const registerFolder = vscode.commands.registerCommand(
+    COMMAND_NAME.registerFolder,
+    Folders.register
+  );
 
-	// Listener for file saves
-	subscriptions.push(PagesListener.saveFileWatcher());
+  const unregisterFolder = vscode.commands.registerCommand(
+    COMMAND_NAME.unregisterFolder,
+    Folders.unregister
+  );
 
-	// Webview for preview
-	Preview.init();
-	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.preview, () => Preview.open(extensionPath) ));
+  const createFolder = vscode.commands.registerCommand(
+    COMMAND_NAME.createFolder,
+    Folders.addMediaFolder
+  );
 
-	// Inserting an image in Markdown
-	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.insertMedia, Article.insertMedia));
+  /**
+   * Template creation
+   */
+  const createTemplate = vscode.commands.registerCommand(
+    COMMAND_NAME.createTemplate,
+    Template.generate
+  );
+  const createFromTemplate = vscode.commands.registerCommand(
+    COMMAND_NAME.createFromTemplate,
+    (folder: vscode.Uri) => {
+      const folderPath = Folders.getFolderPath(folder);
+      if (folderPath) {
+        Template.create(folderPath);
+      }
+    }
+  );
 
-	// Inserting a snippet in Markdown
-	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.insertSnippet, Article.insertSnippet));
+  /**
+   * Content creation
+   */
+  const createByContentType = vscode.commands.registerCommand(
+    COMMAND_NAME.createByContentType,
+    ContentType.createContent
+  );
+  const createByTemplate = vscode.commands.registerCommand(
+    COMMAND_NAME.createByTemplate,
+    Folders.create
+  );
+  const createContent = vscode.commands.registerCommand(COMMAND_NAME.createContent, Content.create);
 
-	// Create the editor experience for bulk scripts
-	subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(ContentProvider.scheme, new ContentProvider()));
+  subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_NAME.generateContentType, ContentType.generate)
+  );
 
-	// What you see, is what you get
-	Wysiwyg.registerCommands(subscriptions);
-	
-	// Mode switching
-	ModeSwitch.register();
+  subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_NAME.addMissingFields, ContentType.addMissingFields)
+  );
 
-	// Diagnostics
-	subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.diagnostics, Diagnostics.show));
+  subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_NAME.setContentType, ContentType.setContentType)
+  );
 
-	// Git
-	GitListener.init();
+  // Initialize command
+  subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_NAME.init, async (cb: Function) => {
+      await Project.init();
 
-	// Once everything is registered, the page parsing can start in the background
-	DashboardSettings.get();
-	PagesParser.start();
+      if (cb) {
+        cb();
+      }
+    })
+  );
 
-	// Cache commands
-	Cache.registerCommands();
+  // Settings promotion command
+  subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.promote, SettingsHelper.promote));
 
-	// Subscribe all commands
-	subscriptions.push(
-		insertTags,
-		explorerView,
-		insertCategories,
-		createTag,
-		createCategory,
-		exportTaxonomy,
-		remap,
-		setLastModifiedDate,
-		generateSlug,
-		createFromTemplate,
-		createTemplate,
-		toggleDraft,
-		registerFolder,
-		unregisterFolder,
-		createContent,
-		createByContentType,
-		createByTemplate,
-		collapseAll,
-		createFolder
-	);
+  // Collapse all sections in the webview
+  const collapseAll = vscode.commands.registerCommand(COMMAND_NAME.collapseSections, () => {
+    ExplorerView.getInstance()?.collapseAll();
+  });
+
+  // Things to do when configuration changes
+  SettingsHelper.onConfigChange(() => {
+    Preview.init();
+    GitListener.init();
+
+    SettingsListener.getSettings();
+    DataListener.getFoldersAndFiles();
+    MarkdownFoldingProvider.triggerHighlighting(true);
+    ModeSwitch.register();
+  });
+
+  // Create the status bar
+  frontMatterStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+  frontMatterStatusBar.command = toggleDraftCommand;
+  subscriptions.push(frontMatterStatusBar);
+  statusDebouncer = debounceCallback();
+
+  // Register listeners that make sure the status bar updates
+  subscriptions.push(
+    vscode.window.onDidChangeActiveTextEditor(() =>
+      triggerShowDraftStatus(`onDidChangeActiveTextEditor`)
+    )
+  );
+  subscriptions.push(
+    vscode.window.onDidChangeTextEditorSelection((e) => {
+      if (e.kind === vscode.TextEditorSelectionChangeKind.Mouse) {
+        statusDebouncer(() => triggerShowDraftStatus(`onDidChangeTextEditorSelection`), 200);
+      }
+    })
+  );
+  subscriptions.push(
+    vscode.workspace.onDidChangeTextDocument((TextDocumentChangeEvent) => {
+      const filePath = TextDocumentChangeEvent.document.uri.fsPath;
+      if (filePath && !filePath.toLowerCase().startsWith(`extension-output`)) {
+        MarkdownFoldingProvider.triggerHighlighting();
+        statusDebouncer(() => triggerShowDraftStatus(`onDidChangeTextEditorSelection`), 200);
+      }
+    })
+  );
+
+  // Automatically run the command
+  triggerShowDraftStatus(`triggerShowDraftStatus`);
+
+  // Listener for file edit changes
+  subscriptions.push(vscode.workspace.onWillSaveTextDocument(handleAutoDateUpdate));
+
+  // Listener for file saves
+  subscriptions.push(PagesListener.saveFileWatcher());
+
+  // Webview for preview
+  Preview.init();
+  subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_NAME.preview, () => Preview.open(extensionPath))
+  );
+
+  // Inserting an image in Markdown
+  subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_NAME.insertMedia, Article.insertMedia)
+  );
+
+  // Inserting a snippet in Markdown
+  subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_NAME.insertSnippet, Article.insertSnippet)
+  );
+
+  // Create the editor experience for bulk scripts
+  subscriptions.push(
+    vscode.workspace.registerTextDocumentContentProvider(
+      ContentProvider.scheme,
+      new ContentProvider()
+    )
+  );
+
+  // What you see, is what you get
+  Wysiwyg.registerCommands(subscriptions);
+
+  // Mode switching
+  ModeSwitch.register();
+
+  // Diagnostics
+  subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.diagnostics, Diagnostics.show));
+
+  // Git
+  GitListener.init();
+
+  // Once everything is registered, the page parsing can start in the background
+  DashboardSettings.get();
+  PagesParser.start();
+
+  // Cache commands
+  Cache.registerCommands();
+
+  // Subscribe all commands
+  subscriptions.push(
+    insertTags,
+    explorerView,
+    insertCategories,
+    createTag,
+    createCategory,
+    exportTaxonomy,
+    remap,
+    setLastModifiedDate,
+    generateSlug,
+    createFromTemplate,
+    createTemplate,
+    toggleDraft,
+    registerFolder,
+    unregisterFolder,
+    createContent,
+    createByContentType,
+    createByTemplate,
+    collapseAll,
+    createFolder
+  );
+
+  console.log(`FRONT MATTER CMS activated!`)
 }
 
 export function deactivate() {
-	Telemetry.dispose();
+  Telemetry.dispose();
 }
 
 const handleAutoDateUpdate = (e: vscode.TextDocumentWillSaveEvent) => {
-	Article.autoUpdate(e);
+  Article.autoUpdate(e);
 };
 
 const triggerShowDraftStatus = (location: string) => {
-	Logger.info(`Triggering draft status update: ${location}`);
-	statusDebouncer(() => { StatusListener.verify(frontMatterStatusBar, collection); }, 1000);
+  Logger.info(`Triggering draft status update: ${location}`);
+  statusDebouncer(() => {
+    StatusListener.verify(frontMatterStatusBar, collection);
+  }, 1000);
 };

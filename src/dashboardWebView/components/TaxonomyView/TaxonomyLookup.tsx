@@ -6,6 +6,7 @@ import { useRecoilValue } from 'recoil';
 import { getTaxonomyField } from '../../../helpers/getTaxonomyField';
 import { useNavigate } from 'react-router-dom';
 import { routePaths } from '../..';
+import useThemeColors from '../../hooks/useThemeColors';
 
 export interface ITaxonomyLookupProps {
   taxonomy: string | null;
@@ -13,28 +14,33 @@ export interface ITaxonomyLookupProps {
   pages: Page[];
 }
 
-export const TaxonomyLookup: React.FunctionComponent<ITaxonomyLookupProps> = ({ taxonomy, value, pages }: React.PropsWithChildren<ITaxonomyLookupProps>) => {
+export const TaxonomyLookup: React.FunctionComponent<ITaxonomyLookupProps> = ({
+  taxonomy,
+  value,
+  pages
+}: React.PropsWithChildren<ITaxonomyLookupProps>) => {
   const settings = useRecoilValue(SettingsSelector);
   const navigate = useNavigate();
+  const { getColors } = useThemeColors();
 
   const total: number | undefined = useMemo(() => {
     if (!taxonomy || !value || !pages || !settings?.contentTypes) {
       return undefined;
     }
 
-    return pages.filter(page => {
-      if (taxonomy === "tags") {
+    return pages.filter((page) => {
+      if (taxonomy === 'tags') {
         return (page.fmTags || []).includes(value);
-      } else if (taxonomy === "categories") {
+      } else if (taxonomy === 'categories') {
         return (page.fmCategories || []).includes(value);
       }
 
-      const contentType = settings.contentTypes.find(ct => ct.name === page.fmContentType);
+      const contentType = settings.contentTypes.find((ct) => ct.name === page.fmContentType);
 
       if (!contentType) {
         return false;
       }
-      
+
       let fieldName = getTaxonomyField(taxonomy, contentType);
 
       return fieldName && page[fieldName] ? page[fieldName].includes(value) : false;
@@ -47,20 +53,17 @@ export const TaxonomyLookup: React.FunctionComponent<ITaxonomyLookupProps> = ({ 
     }
   }, [total, navigate]);
 
-  if (taxonomy === "tags" || taxonomy === "categories") {
+  if (taxonomy === 'tags' || taxonomy === 'categories') {
     return (
-      <button 
-        className={total ? `text-teal-900 hover:text-teal-600 font-bold` : ``}
+      <button
+        className={total ? `font-bold ${getColors(`text-teal-900 hover:text-teal-600 `, `text-[var(--frontmatter-link)] hover:text-[var(--frontmatter-link-hover)]`)}` : ``}
         title={total ? `Show contents with ${value} in ${taxonomy}` : ``}
-        onClick={onNavigate}>
+        onClick={onNavigate}
+      >
         {total || `-`}
       </button>
     );
   }
-  
-  return (
-    <span>
-      {total || `-`}
-    </span>
-  );
+
+  return <span>{total || `-`}</span>;
 };

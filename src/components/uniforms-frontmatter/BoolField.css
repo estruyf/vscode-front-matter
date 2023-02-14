@@ -5,7 +5,7 @@
   height: 24px;
 }
 
-.field__toggle input { 
+.field__toggle input {
   opacity: 0;
   width: 0;
   height: 0;
@@ -18,22 +18,25 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--frontmatter-toggle-secondaryBackground, var(--vscode-button-secondaryBackground));
-  -webkit-transition: .4s;
-  transition: .4s;
+  background-color: var(
+    --frontmatter-toggle-secondaryBackground,
+    var(--vscode-button-secondaryBackground)
+  );
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
   border-radius: 34px;
 }
 
 .field__toggle__slider:before {
   position: absolute;
-  content: "";
+  content: '';
   height: 16px;
   width: 16px;
   left: 4px;
   bottom: 4px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
   border-radius: 50%;
 }
 

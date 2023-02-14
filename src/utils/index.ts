@@ -1,5 +1,6 @@
 export * from './copyFileAsync';
 export * from './existsAsync';
+export * from './fetchWithTimeout';
 export * from './fieldWhenClause';
 export * from './mkdirAsync';
 export * from './readFileAsync';

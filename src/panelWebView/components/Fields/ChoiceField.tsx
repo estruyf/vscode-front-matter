@@ -1,4 +1,4 @@
-import {CheckIcon, ChevronDownIcon} from '@heroicons/react/outline';
+import { CheckIcon, ChevronDownIcon } from '@heroicons/react/outline';
 import Downshift from 'downshift';
 import * as React from 'react';
 import { useEffect, useMemo } from 'react';
@@ -14,13 +14,21 @@ export interface IChoiceFieldProps extends BaseFieldProps<string | string[]> {
   onChange: (value: string | string[]) => void;
 }
 
-export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({ label, description, value, choices, multiSelect, onChange, required }: React.PropsWithChildren<IChoiceFieldProps>) => {
-  const [ crntSelected, setCrntSelected ] = React.useState<string | string[] | null>(value);
+export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({
+  label,
+  description,
+  value,
+  choices,
+  multiSelect,
+  onChange,
+  required
+}: React.PropsWithChildren<IChoiceFieldProps>) => {
+  const [crntSelected, setCrntSelected] = React.useState<string | string[] | null>(value);
   const dsRef = React.useRef<Downshift<string> | null>(null);
 
   const onValueChange = (txtValue: string) => {
     if (multiSelect) {
-      const newValue = [...(crntSelected || []) as string[], txtValue];
+      const newValue = [...((crntSelected || []) as string[]), txtValue];
       setCrntSelected(newValue);
       onChange(newValue);
     } else {
@@ -31,16 +39,16 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({ label,
 
   const removeSelected = (txtValue: string) => {
     if (multiSelect) {
-      const newValue = [...(crntSelected || [])].filter(v => v !== txtValue);
+      const newValue = [...(crntSelected || [])].filter((v) => v !== txtValue);
       setCrntSelected(newValue);
       onChange(newValue);
     } else {
-      setCrntSelected("");
-      onChange("");
+      setCrntSelected('');
+      onChange('');
     }
   };
 
-  const getValue = (value: string | Choice, type: "id" | "title") => {
+  const getValue = (value: string | Choice, type: 'id' | 'title') => {
     if (typeof value === 'string' || typeof value === 'number') {
       return `${value}`;
     }
@@ -48,27 +56,33 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({ label,
   };
 
   const getChoiceValue = (value: string) => {
-    const choice = (choices as Array<string | Choice>).find((c: string | Choice) => getValue(c, 'id') === value);
+    const choice = (choices as Array<string | Choice>).find(
+      (c: string | Choice) => getValue(c, 'id') === value
+    );
     if (choice) {
       return getValue(choice, 'title');
     }
-    return "";
+    return '';
   };
-  
-  const availableChoices = !multiSelect ? choices : (choices as Array<string | Choice>).filter((choice: string | Choice) => {
-    const value = typeof choice === 'string' || typeof choice === 'number' ? choice : choice.id;
 
-    if (typeof crntSelected === 'string') {
-      return crntSelected !== `${value}`;
-    } else if (crntSelected instanceof Array) {
-      return crntSelected.indexOf(`${value}`) === -1;
-    }
+  const availableChoices = !multiSelect
+    ? choices
+    : (choices as Array<string | Choice>).filter((choice: string | Choice) => {
+        const value = typeof choice === 'string' || typeof choice === 'number' ? choice : choice.id;
 
-    return true;
-  });
+        if (typeof crntSelected === 'string') {
+          return crntSelected !== `${value}`;
+        } else if (crntSelected instanceof Array) {
+          return crntSelected.indexOf(`${value}`) === -1;
+        }
+
+        return true;
+      });
 
   const showRequiredState = useMemo(() => {
-    return required && ((crntSelected instanceof Array && crntSelected.length === 0) || !crntSelected);
+    return (
+      required && ((crntSelected instanceof Array && crntSelected.length === 0) || !crntSelected)
+    );
   }, [required, crntSelected]);
 
   useEffect(() => {
@@ -78,55 +92,76 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({ label,
   }, [value]);
 
   return (
-    <div className={`metadata_field ${showRequiredState ? "required" : ""}`}>
-      <FieldTitle 
-        label={label}
-        icon={<CheckIcon />}
-        required={required} />
+    <div className={`metadata_field ${showRequiredState ? 'required' : ''}`}>
+      <FieldTitle label={label} icon={<CheckIcon />} required={required} />
 
-      <Downshift 
+      <Downshift
         ref={dsRef}
-        onSelect={(selected) => onValueChange(selected || "")}
-        itemToString={item => (item ? item : '')}>
+        onSelect={(selected) => onValueChange(selected || '')}
+        itemToString={(item) => (item ? item : '')}
+      >
         {({ getToggleButtonProps, getItemProps, getMenuProps, isOpen, getRootProps }) => (
-          <div {...getRootProps(undefined, {suppressRefError: true})} className={`metadata_field__choice`}>
-            <button 
-              {...getToggleButtonProps({ 
+          <div
+            {...getRootProps(undefined, { suppressRefError: true })}
+            className={`metadata_field__choice`}
+          >
+            <button
+              {...getToggleButtonProps({
                 className: `metadata_field__choice__toggle`,
-                disabled: availableChoices.length === 0 
-              })}>
+                disabled: availableChoices.length === 0
+              })}
+            >
               <span>{`Select ${label}`}</span>
               <ChevronDownIcon className="icon" />
             </button>
 
-            <ul className={`metadata_field__choice_list ${isOpen ? "open" : "closed" }`} {...getMenuProps()}>
-              { 
-                isOpen ? availableChoices.map((choice, index) => (
-                  <li {...getItemProps({ 
-                    key: getValue(choice, 'id'), 
-                    index,
-                    item: getValue(choice, 'id'),
-                  })}>
-                    { getValue(choice, 'title') || <span className={`metadata_field__choice_list__item`}>Clear value</span> }
-                  </li>
-                )) : null
-              }
+            <ul
+              className={`metadata_field__choice_list ${isOpen ? 'open' : 'closed'}`}
+              {...getMenuProps()}
+            >
+              {isOpen
+                ? availableChoices.map((choice, index) => (
+                    <li
+                      {...getItemProps({
+                        key: getValue(choice, 'id'),
+                        index,
+                        item: getValue(choice, 'id')
+                      })}
+                    >
+                      {getValue(choice, 'title') || (
+                        <span className={`metadata_field__choice_list__item`}>Clear value</span>
+                      )}
+                    </li>
+                  ))
+                : null}
             </ul>
           </div>
         )}
       </Downshift>
-      
-      <FieldMessage name={label.toLowerCase()} description={description} showRequired={showRequiredState} />
 
-      {
-        crntSelected instanceof Array ? crntSelected.map((value: string) => (
-          <ChoiceButton key={value} value={value} title={getChoiceValue(value)} onClick={removeSelected} />
-        )) : (
-          crntSelected && (
-            <ChoiceButton key={crntSelected} value={crntSelected} title={getChoiceValue(crntSelected)} onClick={removeSelected} />
-          )
-        )
-      }
+      <FieldMessage
+        name={label.toLowerCase()}
+        description={description}
+        showRequired={showRequiredState}
+      />
+
+      {crntSelected instanceof Array
+        ? crntSelected.map((value: string) => (
+            <ChoiceButton
+              key={value}
+              value={value}
+              title={getChoiceValue(value)}
+              onClick={removeSelected}
+            />
+          ))
+        : crntSelected && (
+            <ChoiceButton
+              key={crntSelected}
+              value={crntSelected}
+              title={getChoiceValue(crntSelected)}
+              onClick={removeSelected}
+            />
+          )}
     </div>
   );
 };

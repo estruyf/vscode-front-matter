@@ -6,9 +6,13 @@ export interface IFeatureFlagProps {
   alternative?: JSX.Element;
 }
 
-export const FeatureFlag: React.FunctionComponent<IFeatureFlagProps> = ({ flag, features, alternative, children }: React.PropsWithChildren<IFeatureFlagProps>) => {
-  
-  if (!features ||( features.length > 0 && !features.includes(flag))) {
+export const FeatureFlag: React.FunctionComponent<IFeatureFlagProps> = ({
+  flag,
+  features,
+  alternative,
+  children
+}: React.PropsWithChildren<IFeatureFlagProps>) => {
+  if (!features || (features.length > 0 && !features.includes(flag))) {
     if (alternative) {
       return alternative;
     }
@@ -16,11 +20,5 @@ export const FeatureFlag: React.FunctionComponent<IFeatureFlagProps> = ({ flag, 
     return null;
   }
 
-  
-  
-  return (
-    <>
-      {children}
-    </>
-  );
+  return <>{children}</>;
 };

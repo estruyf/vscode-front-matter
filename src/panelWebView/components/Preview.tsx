@@ -7,8 +7,9 @@ export interface IPreviewProps {
   slug: string;
 }
 
-const Preview: React.FunctionComponent<IPreviewProps> = ({slug}: React.PropsWithChildren<IPreviewProps>) => {
-
+const Preview: React.FunctionComponent<IPreviewProps> = ({
+  slug
+}: React.PropsWithChildren<IPreviewProps>) => {
   const open = () => {
     Messenger.send(CommandToCode.openPreview);
   };
@@ -17,9 +18,7 @@ const Preview: React.FunctionComponent<IPreviewProps> = ({slug}: React.PropsWith
     return null;
   }
 
-  return (
-    <ActionButton onClick={open} title={`Open preview`} />
-  );
+  return <ActionButton onClick={open} title={`Open preview`} />;
 };
 
 Preview.displayName = 'Preview';

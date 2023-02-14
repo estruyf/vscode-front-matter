@@ -32,3 +32,5 @@ export * from './getTaxonomyField';
 export * from './isValidFile';
 export * from './openFileInEditor';
 export * from './parseWinPath';
+export * from './processFmPlaceholders';
+export * from './processPathPlaceholders';

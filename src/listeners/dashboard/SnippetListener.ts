@@ -1,20 +1,18 @@
-import { EditorHelper } from "@estruyf/vscode";
-import { window } from "vscode";
-import { Dashboard } from "../../commands/Dashboard";
-import { SETTING_CONTENT_SNIPPETS, TelemetryEvent } from "../../constants";
-import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
-import { Notifications, Settings, Telemetry } from "../../helpers";
-import { Snippets } from "../../models";
-import { BaseListener } from "./BaseListener";
-import { SettingsListener } from "./SettingsListener";
-
+import { EditorHelper } from '@estruyf/vscode';
+import { window } from 'vscode';
+import { Dashboard } from '../../commands/Dashboard';
+import { SETTING_CONTENT_SNIPPETS, TelemetryEvent } from '../../constants';
+import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
+import { Notifications, Settings, Telemetry } from '../../helpers';
+import { Snippets } from '../../models';
+import { BaseListener } from './BaseListener';
+import { SettingsListener } from './SettingsListener';
 
 export class SnippetListener extends BaseListener {
-
-  public static process(msg: { command: DashboardMessage, data: any }) {
+  public static process(msg: { command: DashboardMessage; data: any }) {
     super.process(msg);
 
-    switch(msg.command) {
+    switch (msg.command) {
       case DashboardMessage.addSnippet:
         this.addSnippet(msg.data);
         break;
@@ -32,40 +30,40 @@ export class SnippetListener extends BaseListener {
     const { title, description, body, fields, isMediaSnippet } = data;
 
     if (!title || !body) {
-      Notifications.warning("Snippet missing title or body");
+      Notifications.warning('Snippet missing title or body');
       return;
     }
 
     const snippets = Settings.get<any>(SETTING_CONTENT_SNIPPETS);
     if (snippets && snippets[title]) {
-      Notifications.warning("Snippet with the same title already exists");
+      Notifications.warning('Snippet with the same title already exists');
       return;
     }
 
-    const snippetLines = body.split("\n");
+    const snippetLines = body.split('\n');
 
-    const snippetContent: any = { 
-      description, 
+    const snippetContent: any = {
+      description,
       body: snippetLines.length === 1 ? snippetLines[0] : snippetLines
     };
 
     if (isMediaSnippet) {
       snippetContent.isMediaSnippet = true;
     } else {
-      snippetContent.fields = fields || []
+      snippetContent.fields = fields || [];
     }
 
     snippets[title] = snippetContent;
-    
+
     await Settings.update(SETTING_CONTENT_SNIPPETS, snippets, true);
     SettingsListener.getSettings(true);
   }
 
   private static async updateSnippet(data: any) {
     const { snippets } = data;
-    
+
     if (!snippets) {
-      Notifications.warning("No snippets to update");
+      Notifications.warning('No snippets to update');
       return;
     }
 
@@ -98,12 +96,12 @@ export class SnippetListener extends BaseListener {
     }
 
     const selection = editor?.selection;
-    await editor?.edit(builder => {
+    await editor?.edit((builder) => {
       if (selection !== undefined) {
         builder.replace(selection, snippet);
       } else {
         builder.insert(position, snippet);
-      }            
+      }
     });
   }
 }

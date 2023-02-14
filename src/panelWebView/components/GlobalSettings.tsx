@@ -13,11 +13,14 @@ export interface IGlobalSettingsProps {
   isBase?: boolean;
 }
 
-const GlobalSettings: React.FunctionComponent<IGlobalSettingsProps> = ({settings, isBase}: React.PropsWithChildren<IGlobalSettingsProps>) => {
+const GlobalSettings: React.FunctionComponent<IGlobalSettingsProps> = ({
+  settings,
+  isBase
+}: React.PropsWithChildren<IGlobalSettingsProps>) => {
   const { modifiedDateUpdate, fmHighlighting } = settings || {};
-  const [ previewUrl, setPreviewUrl ] = React.useState<string>("");
-  const [ startCommandValue, setStartCommandValue ] = React.useState<string | null>(null);
-  const [ isDirty, setIsDirty ] = React.useState<boolean>(false);
+  const [previewUrl, setPreviewUrl] = React.useState<string>('');
+  const [startCommandValue, setStartCommandValue] = React.useState<string | null>(null);
+  const [isDirty, setIsDirty] = React.useState<boolean>(false);
   const { startCommand } = useStartCommand(settings);
 
   const debounceStartCommand = useDebounce(startCommandValue, 1000);
@@ -26,7 +29,7 @@ const GlobalSettings: React.FunctionComponent<IGlobalSettingsProps> = ({settings
   const onDateCheck = () => {
     Messenger.send(CommandToCode.updateModifiedUpdating, !modifiedDateUpdate);
   };
-  
+
   const onHighlightCheck = () => {
     Messenger.send(CommandToCode.updateFmHighlight, !fmHighlighting);
   };
@@ -67,30 +70,40 @@ const GlobalSettings: React.FunctionComponent<IGlobalSettingsProps> = ({settings
 
   return (
     <>
-      <Collapsible id={`${isBase ? "base_" : ""}settings`} className={`base__actions`} title="Global settings">
+      <Collapsible
+        id={`${isBase ? 'base_' : ''}settings`}
+        className={`base__actions`}
+        title="Global settings"
+      >
         <div className={`base__action`}>
           <VsLabel>Modified date</VsLabel>
-          <VSCodeCheckbox checked={modifiedDateUpdate} onClick={onDateCheck}>Auto-update modified date</VSCodeCheckbox>
+          <VSCodeCheckbox checked={modifiedDateUpdate} onClick={onDateCheck}>
+            Auto-update modified date
+          </VSCodeCheckbox>
         </div>
         <div className={`base__action`}>
           <VsLabel>Front Matter highlight</VsLabel>
-          <VSCodeCheckbox checked={fmHighlighting} onClick={onHighlightCheck}>Highlight Front Matter</VSCodeCheckbox>
+          <VSCodeCheckbox checked={fmHighlighting} onClick={onHighlightCheck}>
+            Highlight Front Matter
+          </VSCodeCheckbox>
         </div>
         <div className={`base__action`}>
           <VsLabel>Local preview</VsLabel>
-          <input 
-            type={`text`} 
-            placeholder="Example: http://localhost:1313" 
+          <input
+            type={`text`}
+            placeholder="Example: http://localhost:1313"
             value={previewUrl}
-            onChange={previewChange} />
+            onChange={previewChange}
+          />
         </div>
         <div className={`base__action`}>
           <VsLabel>Local server command</VsLabel>
-          <input 
-            type={`text`} 
-            placeholder="Example: hugo server -D" 
-            value={startCommandValue || ""}
-            onChange={updateStartCommand} />
+          <input
+            type={`text`}
+            placeholder="Example: hugo server -D"
+            value={startCommandValue || ''}
+            onChange={updateStartCommand}
+          />
         </div>
       </Collapsible>
     </>

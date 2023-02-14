@@ -1,5 +1,6 @@
 import { BaseForm } from 'uniforms';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Unstyled(parent: any) {
   class _ extends parent {
     static Unstyled = Unstyled;

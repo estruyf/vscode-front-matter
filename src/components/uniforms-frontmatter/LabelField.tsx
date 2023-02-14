@@ -8,13 +8,19 @@ export interface ILabelFieldProps {
   required?: boolean;
 }
 
-export const LabelField: React.FunctionComponent<ILabelFieldProps> = ({ label, id, required }: React.PropsWithChildren<ILabelFieldProps>) => {
-  return (
-    label ? (
-      <label className="autoform__label" htmlFor={id}>
-        {label}
-        {required && <span title='Required field' className='autoform__label__required'>*</span>}
-      </label>
-    ) : null
-  );
+export const LabelField: React.FunctionComponent<ILabelFieldProps> = ({
+  label,
+  id,
+  required
+}: React.PropsWithChildren<ILabelFieldProps>) => {
+  return label ? (
+    <label className="autoform__label" htmlFor={id}>
+      {label}
+      {required && (
+        <span title="Required field" className="autoform__label__required">
+          *
+        </span>
+      )}
+    </label>
+  ) : null;
 };

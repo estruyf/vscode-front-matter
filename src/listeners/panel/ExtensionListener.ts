@@ -1,24 +1,22 @@
-import { CommandToCode } from "../../panelWebView/CommandToCode";
-import { BaseListener } from "./BaseListener";
+import { CommandToCode } from '../../panelWebView/CommandToCode';
+import { BaseListener } from './BaseListener';
 import { commands, env as vscodeEnv } from 'vscode';
 import * as os from 'os';
 import { exec } from 'child_process';
-import { Folders } from "../../commands/Folders";
-import { COMMAND_NAME } from "../../constants";
-import { SettingsListener } from ".";
-import { openFileInEditor } from "../../helpers";
-
+import { Folders } from '../../commands/Folders';
+import { COMMAND_NAME } from '../../constants';
+import { SettingsListener } from '.';
+import { openFileInEditor } from '../../helpers';
 
 export class ExtensionListener extends BaseListener {
-
   /**
    * Process the messages for the dashboard views
-   * @param msg 
+   * @param msg
    */
-  public static process(msg: { command: any, data: any }) {
+  public static process(msg: { command: any; data: any }) {
     super.process(msg);
 
-    switch(msg.command) {
+    switch (msg.command) {
       case CommandToCode.openFile:
         this.openFile();
         break;
@@ -54,7 +52,7 @@ export class ExtensionListener extends BaseListener {
    * Open the file in your explorer
    */
   private static openFile() {
-    if (os.type() === "Linux" && vscodeEnv.remoteName?.toLowerCase() === "wsl") {
+    if (os.type() === 'Linux' && vscodeEnv.remoteName?.toLowerCase() === 'wsl') {
       commands.executeCommand('remote-wsl.revealInExplorer');
     } else {
       commands.executeCommand('revealFileInOS');
@@ -68,11 +66,11 @@ export class ExtensionListener extends BaseListener {
     const wsFolder = Folders.getWorkspaceFolder();
     if (wsFolder) {
       const wsPath = wsFolder.fsPath;
-      if (os.type() === "Darwin") {
+      if (os.type() === 'Darwin') {
         exec(`open ${wsPath}`);
-      } else if (os.type() === "Windows_NT") {
+      } else if (os.type() === 'Windows_NT') {
         exec(`explorer ${wsPath}`);
-      } else if (os.type() === "Linux" && vscodeEnv.remoteName?.toLowerCase() === "wsl") {
+      } else if (os.type() === 'Linux' && vscodeEnv.remoteName?.toLowerCase() === 'wsl') {
         exec('explorer.exe `wslpath -w "$PWD"`');
       } else {
         exec(`xdg-open ${wsPath}`);

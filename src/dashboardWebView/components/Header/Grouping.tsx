@@ -8,29 +8,32 @@ import { MenuButton, MenuItem, MenuItems } from '../Menu';
 export interface IGroupingProps {}
 
 export const GROUP_OPTIONS = [
-  { name: "None", id: GroupOption.none },
-  { name: "Year", id: GroupOption.Year },
-  { name: "Draft/Published", id: GroupOption.Draft },
+  { name: 'None', id: GroupOption.none },
+  { name: 'Year', id: GroupOption.Year },
+  { name: 'Draft/Published', id: GroupOption.Draft }
 ];
 
-export const Grouping: React.FunctionComponent<IGroupingProps> = ({}: React.PropsWithChildren<IGroupingProps>) => {
-  const [ group, setGroup ] = useRecoilState(GroupingAtom);
+export const Grouping: React.FunctionComponent<
+  IGroupingProps
+> = ({}: React.PropsWithChildren<IGroupingProps>) => {
+  const [group, setGroup] = useRecoilState(GroupingAtom);
 
-  const crntGroup = GROUP_OPTIONS.find(x => x.id === group);
+  const crntGroup = GROUP_OPTIONS.find((x) => x.id === group);
 
   return (
     <div className="flex items-center">
       <Menu as="div" className="relative z-10 inline-block text-left">
-        <MenuButton label={`Group by`} title={crntGroup?.name || ""} />
+        <MenuButton label={`Group by`} title={crntGroup?.name || ''} />
 
         <MenuItems disablePopper>
           {GROUP_OPTIONS.map((option) => (
-            <MenuItem 
+            <MenuItem
               key={option.id}
               title={option.name}
               value={option.id}
               isCurrent={option.id === crntGroup?.id}
-              onClick={(value) => setGroup(value)} />
+              onClick={(value) => setGroup(value)}
+            />
           ))}
         </MenuItems>
       </Menu>

@@ -3,7 +3,7 @@ import { GroupingAtom } from '..';
 
 export const GroupingSelector = selector({
   key: 'GroupingSelector',
-  get: ({get}) => {
+  get: ({ get }) => {
     return get(GroupingAtom);
   }
 });

@@ -1,23 +1,21 @@
 import { ModeSwitch } from './../../services/ModeSwitch';
 import { CONTEXT, FEATURE_FLAG, GeneralCommands, SETTING_GLOBAL_MODES } from '../../constants';
-import { DashboardMessage } from "../../dashboardWebView/DashboardMessage";
+import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { Mode } from '../../models';
-import { CommandToCode } from "../../panelWebView/CommandToCode";
-import { BaseListener } from "./BaseListener";
-import { Settings } from "../../helpers";
+import { CommandToCode } from '../../panelWebView/CommandToCode';
+import { BaseListener } from './BaseListener';
+import { Settings } from '../../helpers';
 import { commands } from 'vscode';
 
-
 export class ModeListener extends BaseListener {
-
   /**
    * Process the messages
-   * @param msg 
+   * @param msg
    */
-  public static process(msg: { command: DashboardMessage | CommandToCode, data: any }) {
+  public static process(msg: { command: DashboardMessage | CommandToCode; data: any }) {
     super.process(msg as any);
 
-    switch(msg.command) {
+    switch (msg.command) {
       case DashboardMessage.getMode:
       case CommandToCode.getMode:
         this.getMode();
@@ -34,14 +32,18 @@ export class ModeListener extends BaseListener {
 
     const activeMode = ModeSwitch.getMode();
     if (activeMode) {
-      const mode = modes.find(m => m.id === activeMode);
+      const mode = modes.find((m) => m.id === activeMode);
       this.sendMsg(GeneralCommands.toWebview.setMode as any, mode);
 
       // Check the commands that need to be enabled/disabled
-      const snippetsView = mode?.features.find(f => f === FEATURE_FLAG.dashboard.snippets.view);
-      const dataView = mode?.features.find(f => f === FEATURE_FLAG.dashboard.data.view);
+      const snippetsView = mode?.features.find((f) => f === FEATURE_FLAG.dashboard.snippets.view);
+      const dataView = mode?.features.find((f) => f === FEATURE_FLAG.dashboard.data.view);
 
-      await commands.executeCommand('setContext', CONTEXT.isSnippetsDashboardEnabled, !!snippetsView);
+      await commands.executeCommand(
+        'setContext',
+        CONTEXT.isSnippetsDashboardEnabled,
+        !!snippetsView
+      );
       await commands.executeCommand('setContext', CONTEXT.isDataDashboardEnabled, !!dataView);
     } else {
       this.sendMsg(GeneralCommands.toWebview.setMode as any, undefined);
@@ -53,20 +55,20 @@ export class ModeListener extends BaseListener {
 
   /**
    * Check if the mode has the feature enabled
-   * @param feature 
-   * @returns 
+   * @param feature
+   * @returns
    */
   public static async hasFeature(feature: string) {
     const modes = Settings.get<Mode[]>(SETTING_GLOBAL_MODES);
-    
+
     if (!modes || modes.length === 0) {
       return true;
     }
 
     const activeMode = ModeSwitch.getMode();
     if (activeMode) {
-      const mode = modes.find(m => m.id === activeMode);
-      return mode?.features.find(f => f === feature);
+      const mode = modes.find((m) => m.id === activeMode);
+      return mode?.features.find((f) => f === feature);
     }
 
     return true;

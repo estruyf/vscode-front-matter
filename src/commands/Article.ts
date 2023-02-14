@@ -1,10 +1,20 @@
 import { Folders } from './Folders';
 import { DEFAULT_CONTENT_TYPE } from './../constants/ContentType';
 import { isValidFile } from './../helpers/isValidFile';
-import { SETTING_AUTO_UPDATE_DATE, SETTING_MODIFIED_FIELD, SETTING_SLUG_UPDATE_FILE_NAME, SETTING_TEMPLATES_PREFIX, CONFIG_KEY, SETTING_DATE_FORMAT, SETTING_SLUG_PREFIX, SETTING_SLUG_SUFFIX, SETTING_CONTENT_PLACEHOLDERS, TelemetryEvent } from './../constants';
+import {
+  SETTING_AUTO_UPDATE_DATE,
+  SETTING_SLUG_UPDATE_FILE_NAME,
+  SETTING_TEMPLATES_PREFIX,
+  CONFIG_KEY,
+  SETTING_DATE_FORMAT,
+  SETTING_SLUG_PREFIX,
+  SETTING_SLUG_SUFFIX,
+  SETTING_CONTENT_PLACEHOLDERS,
+  TelemetryEvent
+} from './../constants';
 import * as vscode from 'vscode';
-import { CustomPlaceholder, Field, TaxonomyType } from "../models";
-import { format } from "date-fns";
+import { CustomPlaceholder, Field, TaxonomyType } from '../models';
+import { format } from 'date-fns';
 import { ArticleHelper, Settings, SlugHelper } from '../helpers';
 import { Notifications } from '../helpers/Notifications';
 import { extname, basename, parse, dirname } from 'path';
@@ -18,13 +28,12 @@ import { MediaListener } from '../listeners/panel';
 import { NavigationType } from '../dashboardWebView/models';
 import { processKnownPlaceholders } from '../helpers/PlaceholderHelper';
 
-
 export class Article {
   /**
-  * Insert taxonomy
-  *
-  * @param type
-  */
+   * Insert taxonomy
+   *
+   * @param type
+   */
   public static async insert(type: TaxonomyType) {
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
@@ -38,16 +47,21 @@ export class Article {
     }
 
     let options: vscode.QuickPickItem[] = [];
-    const matterProp: string = type === TaxonomyType.Tag ? "tags" : "categories";
+    const matterProp: string = type === TaxonomyType.Tag ? 'tags' : 'categories';
 
     // Add the selected options to the options array
     if (article.data[matterProp]) {
       const propData = article.data[matterProp];
       if (propData && propData.length > 0) {
-        options = [...propData].filter(p => p).map(p => ({
-          label: p,
-          picked: true
-        } as vscode.QuickPickItem));
+        options = [...propData]
+          .filter((p) => p)
+          .map(
+            (p) =>
+              ({
+                label: p,
+                picked: true
+              } as vscode.QuickPickItem)
+          );
       }
     }
 
@@ -55,7 +69,7 @@ export class Article {
     const crntOptions = Settings.getTaxonomy(type);
     if (crntOptions && crntOptions.length > 0) {
       for (const crntOpt of crntOptions) {
-        if (!options.find(o => o.label === crntOpt)) {
+        if (!options.find((o) => o.label === crntOpt)) {
           options.push({
             label: crntOpt
           });
@@ -64,18 +78,18 @@ export class Article {
     }
 
     if (options.length === 0) {
-      Notifications.info(`No ${type === TaxonomyType.Tag ? "tags" : "categories"} configured.`);
+      Notifications.info(`No ${type === TaxonomyType.Tag ? 'tags' : 'categories'} configured.`);
       return;
     }
 
     const selectedOptions = await vscode.window.showQuickPick(options, {
-      placeHolder: `Select your ${type === TaxonomyType.Tag ? "tags" : "categories"} to insert`,
+      placeHolder: `Select your ${type === TaxonomyType.Tag ? 'tags' : 'categories'} to insert`,
       canPickMany: true,
       ignoreFocusOut: true
     });
 
     if (selectedOptions) {
-      article.data[matterProp] = selectedOptions.map(o => o.label);
+      article.data[matterProp] = selectedOptions.map((o) => o.label);
     }
 
     ArticleHelper.update(editor, article);
@@ -95,21 +109,23 @@ export class Article {
       return;
     }
 
-    article = this.updateDate(article, true);
+    article = this.updateDate(article);
 
     try {
       ArticleHelper.update(editor, article);
     } catch (e) {
-      Notifications.error(`Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`);
+      Notifications.error(
+        `Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`
+      );
     }
   }
 
   /**
    * Update the date in the front matter
-   * @param article 
+   * @param article
    */
-  public static updateDate(article: ParsedFrontMatter, forceCreate: boolean = false) {
-    article.data = ArticleHelper.updateDates(article.data);   
+  public static updateDate(article: ParsedFrontMatter) {
+    article.data = ArticleHelper.updateDates(article.data);
     return article;
   }
 
@@ -124,14 +140,11 @@ export class Article {
 
     const updatedArticle = this.setLastModifiedDateInner(editor.document);
 
-    if (typeof updatedArticle === "undefined") {
+    if (typeof updatedArticle === 'undefined') {
       return;
     }
 
-    ArticleHelper.update(
-      editor,
-      updatedArticle as ParsedFrontMatter
-    );
+    ArticleHelper.update(editor, updatedArticle as ParsedFrontMatter);
   }
 
   public static async setLastModifiedDateOnSave(
@@ -139,7 +152,7 @@ export class Article {
   ): Promise<vscode.TextEdit[]> {
     const updatedArticle = this.setLastModifiedDateInner(document);
 
-    if (typeof updatedArticle === "undefined") {
+    if (typeof updatedArticle === 'undefined') {
       return [];
     }
 
@@ -163,8 +176,10 @@ export class Article {
     try {
       cloneArticle.data[dateField] = Article.formatDate(new Date());
       return cloneArticle;
-    } catch (e: any) {
-      Notifications.error(`Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`);
+    } catch (e: unknown) {
+      Notifications.error(
+        `Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`
+      );
     }
   }
 
@@ -194,11 +209,10 @@ export class Article {
   /**
    * Generate the slug based on the article title
    */
-	public static async updateSlug() {
-		Telemetry.send(TelemetryEvent.generateSlug);
-    
+  public static async updateSlug() {
+    Telemetry.send(TelemetryEvent.generateSlug);
+
     const updateFileName = Settings.get(SETTING_SLUG_UPDATE_FILE_NAME) as string;
-    let filePrefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
     const editor = vscode.window.activeTextEditor;
 
     if (!editor) {
@@ -210,36 +224,41 @@ export class Article {
       return;
     }
 
-    // Retrieve the file prefix from the folder
-    const filePrefixOnFolder = Folders.getFilePrefixBeFilePath(editor.document.uri.fsPath);
-    if (typeof filePrefixOnFolder !== "undefined") {
-      filePrefix = filePrefixOnFolder;
-    }
-
+    let filePrefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
     const contentType = ArticleHelper.getContentType(article.data);
-    const titleField = "title";
+    filePrefix = ArticleHelper.getFilePrefix(editor.document.uri.fsPath, contentType);
+
+    const titleField = 'title';
     const articleTitle: string = article.data[titleField];
     const slugInfo = Article.generateSlug(articleTitle);
-    
+
     if (slugInfo && slugInfo.slug && slugInfo.slugWithPrefixAndSuffix) {
-      article.data["slug"] = slugInfo.slugWithPrefixAndSuffix;
+      article.data['slug'] = slugInfo.slugWithPrefixAndSuffix;
 
       if (contentType) {
         // Update the fields containing the slug placeholder
-        let fieldsToUpdate: Field[] = contentType.fields.filter(f => f.default === "{{slug}}");
+        const fieldsToUpdate: Field[] = contentType.fields.filter((f) => f.default === '{{slug}}');
         for (const field of fieldsToUpdate) {
           article.data[field.name] = slugInfo.slug;
         }
 
         // Update the fields containing a custom placeholder that depends on slug
         const placeholders = Settings.get<CustomPlaceholder[]>(SETTING_CONTENT_PLACEHOLDERS);
-        const customPlaceholders = placeholders?.filter(p => p.value && p.value.includes("{{slug}}"));
+        const customPlaceholders = placeholders?.filter(
+          (p) => p.value && p.value.includes('{{slug}}')
+        );
         const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
-        for (const customPlaceholder of (customPlaceholders || [])) {
-          const customPlaceholderFields = contentType.fields.filter(f => f.default === `{{${customPlaceholder.id}}}`);
+        for (const customPlaceholder of customPlaceholders || []) {
+          const customPlaceholderFields = contentType.fields.filter(
+            (f) => f.default === `{{${customPlaceholder.id}}}`
+          );
           for (const pField of customPlaceholderFields) {
             article.data[pField.name] = customPlaceholder.value;
-            article.data[pField.name] = processKnownPlaceholders(article.data[pField.name], articleTitle, dateFormat);
+            article.data[pField.name] = processKnownPlaceholders(
+              article.data[pField.name],
+              articleTitle,
+              dateFormat
+            );
           }
         }
       }
@@ -253,13 +272,13 @@ export class Article {
         if (editor) {
           const ext = extname(editor.document.fileName);
           const fileName = basename(editor.document.fileName);
-          
-          let slugName = slugInfo.slug.startsWith("/") ? slugInfo.slug.substring(1) : slugInfo.slug;
-          slugName = slugName.endsWith("/") ? slugName.substring(0, slugName.length - 1) : slugName;
+
+          let slugName = slugInfo.slug.startsWith('/') ? slugInfo.slug.substring(1) : slugInfo.slug;
+          slugName = slugName.endsWith('/') ? slugName.substring(0, slugName.length - 1) : slugName;
 
           let newFileName = `${slugName}${ext}`;
-          if (filePrefix && typeof filePrefix === "string") {
-            newFileName = `${format(new Date(), DateHelper.formatUpdate(filePrefix) as string)}-${newFileName}`;
+          if (filePrefix && typeof filePrefix === 'string') {
+            newFileName = `${filePrefix}-${newFileName}`;
           }
 
           const newPath = editor.document.uri.fsPath.replace(fileName, newFileName);
@@ -270,13 +289,13 @@ export class Article {
             await vscode.workspace.fs.rename(editor.document.uri, vscode.Uri.file(newPath), {
               overwrite: false
             });
-          } catch (e: any) {
-            Notifications.error(`Failed to rename file: ${e?.message || e}`);
+          } catch (e: unknown) {
+            Notifications.error(`Failed to rename file: ${(e as Error).message || e}`);
           }
         }
       }
     }
-	}
+  }
 
   /**
    * Retrieve the slug from the front matter
@@ -295,7 +314,7 @@ export class Article {
 
     const parsedFile = parse(file);
 
-    if (parsedFile.name.toLowerCase() !== "index") {
+    if (parsedFile.name.toLowerCase() !== 'index') {
       return parsedFile.name;
     }
 
@@ -316,8 +335,8 @@ export class Article {
       return;
     }
 
-    const newDraftStatus = !article.data["draft"];
-    article.data["draft"] = newDraftStatus;
+    const newDraftStatus = !article.data['draft'];
+    article.data['draft'] = newDraftStatus;
     ArticleHelper.update(editor, article);
   }
 
@@ -333,7 +352,7 @@ export class Article {
       // Is article located in one of the content folders
       const folders = Folders.get();
       const documentPath = parseWinPath(document.fileName);
-      const folder = folders.find(f => documentPath.startsWith(f.path));
+      const folder = folders.find((f) => documentPath.startsWith(f.path));
       if (!folder) {
         return;
       }
@@ -350,10 +369,12 @@ export class Article {
   public static formatDate(dateValue: Date): string {
     const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
 
-    if (dateFormat && typeof dateFormat === "string") {
+    if (dateFormat && typeof dateFormat === 'string') {
       return format(dateValue, DateHelper.formatUpdate(dateFormat) as string);
     } else {
-      return typeof dateValue.toISOString === 'function' ? dateValue.toISOString() : dateValue?.toString();
+      return typeof dateValue.toISOString === 'function'
+        ? dateValue.toISOString()
+        : dateValue?.toString();
     }
   }
 
@@ -361,19 +382,20 @@ export class Article {
    * Insert an image from the media dashboard into the article
    */
   public static async insertMedia() {
-		let editor = vscode.window.activeTextEditor;
+    const editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;
     }
 
     const article = ArticleHelper.getFrontMatter(editor);
-    const contentType = article && article.data ? ArticleHelper.getContentType(article.data) : DEFAULT_CONTENT_TYPE;
+    const contentType =
+      article && article.data ? ArticleHelper.getContentType(article.data) : DEFAULT_CONTENT_TYPE;
 
     const position = editor.selection.active;
     const selectionText = editor.document.getText(editor.selection);
 
     await vscode.commands.executeCommand(COMMAND_NAME.dashboard, {
-      type: "media",
+      type: 'media',
       data: {
         pageBundle: !!contentType.pageBundle,
         filePath: editor.document.uri.fsPath,
@@ -385,13 +407,13 @@ export class Article {
 
     // Let the editor panel know you are selecting an image
     MediaListener.getMediaSelection();
-	}
+  }
 
   /**
    * Insert a snippet into the article
    */
   public static async insertSnippet() {
-		let editor = vscode.window.activeTextEditor;
+    const editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;
     }
@@ -404,24 +426,24 @@ export class Article {
     await vscode.commands.executeCommand(COMMAND_NAME.dashboard, {
       type: NavigationType.Snippets,
       data: {
-        fileTitle: article?.data.title || "",
+        fileTitle: article?.data.title || '',
         filePath: editor.document.uri.fsPath,
         fieldName: basename(editor.document.uri.fsPath),
         position,
         selection: selectionText
       }
     } as DashboardData);
-	}
+  }
 
   /**
    * Update the article date and return it
-   * @param article 
-   * @param dateFormat 
-   * @param field 
-   * @param forceCreate 
+   * @param article
+   * @param dateFormat
+   * @param field
+   * @param forceCreate
    */
   private static articleDate(article: ParsedFrontMatter, field: string, forceCreate: boolean) {
-    if (typeof article.data[field] !== "undefined" || forceCreate) {
+    if (typeof article.data[field] !== 'undefined' || forceCreate) {
       article.data[field] = Article.formatDate(new Date());
     }
     return article;

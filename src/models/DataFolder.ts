@@ -1,5 +1,3 @@
-
-
 export interface DataFolder {
   id: string;
   path: string;

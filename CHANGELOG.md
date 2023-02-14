@@ -1,6 +1,38 @@
 # Change Log
 
-## [8.2.0] - 2022-12-08 - [Release notes](https://beta.frontmatter.codes/updates/v8.2.0) 
+## [8.3.0] - 2022-02-14 - [Release notes](https://beta.frontmatter.codes/updates/v8.3.0)
+
+### ✨ New features
+
+- [#407](https://github.com/estruyf/vscode-front-matter/issues/407): External config support
+
+### 🎨 Enhancements
+
+- [#425](https://github.com/estruyf/vscode-front-matter/issues/425): Added support for placeholders in the content paths and previews
+- [#473](https://github.com/estruyf/vscode-front-matter/issues/473): Allow setting the SEO title name with the `frontMatter.taxonomy.seoTitleField` setting
+- [#474](https://github.com/estruyf/vscode-front-matter/issues/474): Allow to define the file prefix on content types
+- [#484](https://github.com/estruyf/vscode-front-matter/issues/484): Support for overriding scripts per environment type
+- [#494](https://github.com/estruyf/vscode-front-matter/issues/494): Support for external image URLs in previews
+- [#497](https://github.com/estruyf/vscode-front-matter/issues/497): Support for movie media previews in the content dashboard
+- [#502](https://github.com/estruyf/vscode-front-matter/issues/502): Keyboard bindings added to open dashboard, insert media, and insert snippet
+- [#503](https://github.com/estruyf/vscode-front-matter/issues/503): Allow making changes to the preview URL in the webview
+- [#504](https://github.com/estruyf/vscode-front-matter/issues/504): Allow specifying the filename for your page bundles
+- [#505](https://github.com/estruyf/vscode-front-matter/issues/505): Experimental Visual Studio Code theming support
+
+### ⚡️ Optimizations
+
+- [#496](https://github.com/estruyf/vscode-front-matter/issues/496): Make use of the `storageUri` and `globalStorageUri` for storing larger states
+
+### 🐞 Fixes
+
+- [#469](https://github.com/estruyf/vscode-front-matter/issues/469): Fix for using the root folder as content folder
+- [#470](https://github.com/estruyf/vscode-front-matter/issues/470): Fix `initialize project` dashboard description
+- [#480](https://github.com/estruyf/vscode-front-matter/issues/480): Updated _add missing fields_ label to _add missing fields to content-type_
+- [#482](https://github.com/estruyf/vscode-front-matter/issues/482): Update the description when you want to overwrite the default content type description
+- [#488](https://github.com/estruyf/vscode-front-matter/issues/488): Fix an issue where the `.frontmatter` folder gets created before initializing the project
+- [#493](https://github.com/estruyf/vscode-front-matter/issues/493): Fix an issue where a custom placeholder value is replaced by an `array` instead of a `string`
+
+## [8.2.0] - 2022-12-08 - [Release notes](https://beta.frontmatter.codes/updates/v8.2.0)
 
 ### ✨ New features
 
@@ -47,7 +79,7 @@
 
 - [#422](https://github.com/estruyf/vscode-front-matter/issues/422): Fix in panel initialization logic
 
-## [8.1.0] - 2022-09-22 - [Release notes](https://beta.frontmatter.codes/updates/v8.1.0) 
+## [8.1.0] - 2022-09-22 - [Release notes](https://beta.frontmatter.codes/updates/v8.1.0)
 
 ### ✨ New features
 
@@ -99,7 +131,7 @@
 - Fix missing clipboard icon for the media card action
 - Fix in tags rendering on content cards
 
-## [8.0.0] - 2022-07-11 - [Release notes](https://beta.frontmatter.codes/updates/v8.0.0) 
+## [8.0.0] - 2022-07-11 - [Release notes](https://beta.frontmatter.codes/updates/v8.0.0)
 
 ### ✨ New Features
 
@@ -143,7 +175,6 @@
 
 - [#346](https://github.com/estruyf/vscode-front-matter/issues/346): Fix media dashboard refresh action
 
-
 ## [7.3.1] - 2022-05-26
 
 ### 🐞 Fixes
@@ -169,7 +200,6 @@
 
 - [#334](https://github.com/estruyf/vscode-front-matter/issues/334): Fix for locked content folders retrieval
 - [#339](https://github.com/estruyf/vscode-front-matter/issues/339): Fix for content folders without a title
-
 
 ## [7.2.0] - 2022-05-02 - [Release notes](https://beta.frontmatter.codes/updates/v7.2.0)
 
@@ -212,7 +242,7 @@
 ## [7.1.0] - 2022-04-07 - [Release notes](https://beta.frontmatter.codes/updates/v7.1.0)
 
 ### 🎨 Enhancements
- 
+
 - [#240](https://github.com/estruyf/vscode-front-matter/issues/240): Capability added to define display modes
 - [#246](https://github.com/estruyf/vscode-front-matter/issues/246): Support to add multiple tags/keywords/taxonomy via comma separated values
 - [#293](https://github.com/estruyf/vscode-front-matter/issues/293): Support added for setting preview images in block fields
@@ -232,7 +262,7 @@
 - [#304](https://github.com/estruyf/vscode-front-matter/issues/304): Fix yaml stringify which caused additional fields to be added
 - [#305](https://github.com/estruyf/vscode-front-matter/issues/305): Fix for overflow issue in taxonomy picker
 - [#306](https://github.com/estruyf/vscode-front-matter/issues/306): Fix for default value of content type fields
-- [#311](https://github.com/estruyf/vscode-front-matter/issues/311): Fix for updating snippets 
+- [#311](https://github.com/estruyf/vscode-front-matter/issues/311): Fix for updating snippets
 
 ## [7.0.0] - 2022-03-21 - [Release notes](https://beta.frontmatter.codes/updates/v7.0.0)
 
@@ -408,7 +438,7 @@ As from this version onwards, the extension will be published to [open-vsx.org](
 ### 🎨 Enhancements
 
 - [#173](https://github.com/estruyf/vscode-front-matter/issues/173): Allow to specify your own sorting for the content dashboard
-- [#174](https://github.com/estruyf/vscode-front-matter/issues/174): Added option to exclude sub-directories from page/markdown content retrieval 
+- [#174](https://github.com/estruyf/vscode-front-matter/issues/174): Added option to exclude sub-directories from page/markdown content retrieval
 
 ## [5.4.0] - 2021-11-05
 
@@ -554,10 +584,10 @@ As from this version onwards, the extension will be published to [open-vsx.org](
 
 - Fix typo in the `package.json` file for the preview command
 
-## [2.5.0] - 2020-08-19  
+## [2.5.0] - 2020-08-19
 
 - Moved the center layout button to the other actions section
-- [#60](https://github.com/estruyf/vscode-front-matter/issues/60): Added the ability to open a site preview in VS Code 
+- [#60](https://github.com/estruyf/vscode-front-matter/issues/60): Added the ability to open a site preview in VS Code
 
 ## [2.4.1] - 2020-08-16
 

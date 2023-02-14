@@ -1,19 +1,17 @@
-import { Article } from "../../commands";
-import { Command } from "../../panelWebView/Command";
-import { CommandToCode } from "../../panelWebView/CommandToCode";
-import { BaseListener } from "./BaseListener";
-
+import { Article } from '../../commands';
+import { Command } from '../../panelWebView/Command';
+import { CommandToCode } from '../../panelWebView/CommandToCode';
+import { BaseListener } from './BaseListener';
 
 export class ArticleListener extends BaseListener {
-
   /**
    * Process the messages for the dashboard views
-   * @param msg 
+   * @param msg
    */
-  public static process(msg: { command: any, data: any }) {
+  public static process(msg: { command: any; data: any }) {
     super.process(msg);
 
-    switch(msg.command) {
+    switch (msg.command) {
       case CommandToCode.updateSlug:
         Article.updateSlug();
         break;
@@ -31,12 +29,12 @@ export class ArticleListener extends BaseListener {
 
   /**
    * Generate a slug
-   * @param title 
+   * @param title
    */
   private static generateSlug(title: string) {
     const slug = Article.generateSlug(title);
     if (slug) {
-      this.sendMsg(Command.updatedSlug, slug)
+      this.sendMsg(Command.updatedSlug, slug);
     }
   }
 }

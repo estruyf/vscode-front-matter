@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Sentry from "@sentry/react";
+import * as Sentry from '@sentry/react';
 import { VsLabel } from '../VscodeComponents';
 
 export interface IFieldBoundaryProps {
@@ -10,8 +10,10 @@ export interface IFieldBoundaryState {
   hasError: boolean;
 }
 
-export default class FieldBoundary extends React.Component<IFieldBoundaryProps, IFieldBoundaryState> {
-
+export default class FieldBoundary extends React.Component<
+  IFieldBoundaryProps,
+  IFieldBoundaryState
+> {
   constructor(props: IFieldBoundaryProps) {
     super(props);
     this.state = { hasError: false };
@@ -32,7 +34,7 @@ export default class FieldBoundary extends React.Component<IFieldBoundaryProps, 
         <div className={`metadata_field`}>
           <VsLabel>
             <div className={`metadata_field__label`}>
-              <span style={{ lineHeight: "16px"}}>{this.props.fieldName}</span>
+              <span style={{ lineHeight: '16px' }}>{this.props.fieldName}</span>
             </div>
           </VsLabel>
           <div className={`metadata_field__error`}>
@@ -44,6 +46,6 @@ export default class FieldBoundary extends React.Component<IFieldBoundaryProps, 
       );
     }
 
-    return this.props.children as any; 
+    return this.props.children as any;
   }
 }
