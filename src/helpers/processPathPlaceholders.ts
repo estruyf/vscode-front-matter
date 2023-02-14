@@ -1,15 +1,26 @@
-export const processPathPlaceholders = (value: string, path: string) => {
-  if (value && value.includes('{{pathToken.')) {
-    const regex = new RegExp('{{pathToken.(\\d+)}}', 'g');
-    const matches = value.match(regex);
+import { ContentFolder } from '../models';
 
+export const processPathPlaceholders = (
+  value: string,
+  path: string,
+  filePath: string,
+  contentFolder: ContentFolder | null | undefined
+) => {
+  if (value && value.includes('{{pathToken.')) {
+    const regex = /{{pathToken.(\d+|relPath)}}/g;
+    const matches = value.match(regex);
     if (matches) {
       for (const match of matches) {
-        const index = parseInt(match.replace('{{pathToken.', '').replace('}}', ''), 10);
-        const pathTokens = path.split('/');
+        const tokenIndex = match.replace('{{pathToken.', '').replace('}}', '');
 
-        if (pathTokens.length >= index) {
-          value = value.replace(match, pathTokens[index - 1]);
+        const pathTokens = path.split('/');
+        if (tokenIndex === 'relPath') {
+          // Return path without the file name
+          const relFilePath = filePath.replace(contentFolder?.path || '', '');
+          value = value.replace(match, relFilePath.substring(0, relFilePath.lastIndexOf('/')));
+        } else {
+          // Get the token from the path
+          value = value.replace(match, pathTokens[Number(tokenIndex)]);
         }
       }
     }

@@ -80,7 +80,7 @@ export class Preview {
         } else if (crntFolders && crntFolders.length > 1) {
           selectedFolder = await Preview.askUserToPickFolder(crntFolders);
         } else {
-          selectedFolder = await Preview.askUserToPickFolder(folders);
+          selectedFolder = await Preview.askUserToPickFolder(folders.filter((f) => f.previewPath));
         }
       }
 
@@ -118,7 +118,7 @@ export class Preview {
         // Get relative file path
         const folderPath = wsFolder ? parseWinPath(wsFolder.fsPath) : '';
         const relativePath = filePath.replace(folderPath, '');
-        pathname = processPathPlaceholders(pathname, relativePath);
+        pathname = processPathPlaceholders(pathname, relativePath, filePath, selectedFolder);
       }
 
       // Support front matter placeholders - {{fm.<field>}}
@@ -264,6 +264,10 @@ export class Preview {
     crntFolders: ContentFolder[]
   ): Promise<ContentFolder | undefined> {
     let selectedFolder: ContentFolder | undefined = undefined;
+
+    if (crntFolders.length === 0) {
+      return undefined;
+    }
 
     // Ask the user to select the folder
     const folderNames = crntFolders.map((folder) => folder.title);
