@@ -1697,15 +1697,18 @@
       },
       {
         "command": "frontMatter.createFromTemplate",
-        "title": "Front Matter: New article from template"
+        "title": "New article from template",
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.registerFolder",
-        "title": "Front Matter: Register folder"
+        "title": "Register folder",
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.unregisterFolder",
-        "title": "Front Matter: Unregister folder"
+        "title": "Unregister folder",
+        "category": "Front Matter"
       },
       {
         "command": "frontMatter.generateSlug",
@@ -1886,6 +1889,10 @@
         "category": "Front Matter"
       }
     ],
+    "submenus": [{
+      "id": "frontmatter.submenu",
+      "label": "Front Matter"
+    }],
     "menus": {
       "editor/title": [
         {
@@ -1966,19 +1973,25 @@
       ],
       "explorer/context": [
         {
+          "submenu": "frontmatter.submenu",
+          "group": "frontmatter@1"
+        }
+      ],
+      "frontmatter.submenu": [
+        {
           "command": "frontMatter.createFromTemplate",
           "when": "explorerResourceIsFolder",
-          "group": "Front Matter@1"
+          "group": "frontmatter@1"
         },
         {
           "command": "frontMatter.registerFolder",
           "when": "explorerResourceIsFolder",
-          "group": "Front Matter@2"
+          "group": "frontmatter@2"
         },
         {
           "command": "frontMatter.unregisterFolder",
           "when": "explorerResourceIsFolder",
-          "group": "Front Matter@3"
+          "group": "frontmatter@3"
         }
       ],
       "commandPalette": [
