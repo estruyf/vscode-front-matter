@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIcon';
 import { DashboardMessage } from '../../DashboardMessage';
@@ -8,9 +7,11 @@ import { DateField } from '../Common/DateField';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardViewType } from '../../models';
 import { ContentActions } from './ContentActions';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useThemeColors from '../../hooks/useThemeColors';
 import { Status } from './Status';
+import * as React from 'react';
+import { messageHandler } from '@estruyf/vscode/dist/client';
 
 export interface IItemProps extends Page { }
 
@@ -27,6 +28,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const view = useRecoilValue(ViewSelector);
   const settings = useRecoilValue(SettingsSelector);
   const draftField = useMemo(() => settings?.draftField, [settings]);
+  const [customHtml, setCustomHtml] = useState<string | undefined>(undefined);
   const { getColors } = useThemeColors();
 
   const escapedTitle = useMemo(() => {
@@ -49,7 +51,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     Messenger.send(DashboardMessage.openFile, fmFilePath);
   };
 
-  const tags: string[] | undefined = React.useMemo(() => {
+  const tags: string[] | undefined = useMemo(() => {
     if (!settings?.dashboardState?.contents?.tags) {
       return undefined;
     }
@@ -73,6 +75,15 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
     return [];
   }, [settings, pageData]);
+
+  useEffect(() => {
+    messageHandler.request<string>(DashboardMessage.getCustomHtml, {
+      path: fmFilePath,
+      data: pageData,
+    }).then((html) => {
+      setCustomHtml(html || "");
+    });
+  }, []);
 
   if (view === DashboardViewType.Grid) {
     return (
@@ -157,6 +168,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                 )}
               </div>
             )}
+
+            {
+              customHtml && (
+                <div className="mt-2" dangerouslySetInnerHTML={{ __html: customHtml }} />
+              )
+            }
           </div>
         </div>
       </li>

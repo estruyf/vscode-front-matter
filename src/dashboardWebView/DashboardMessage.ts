@@ -19,6 +19,7 @@ export enum DashboardMessage {
   searchPages = 'searchPages',
   openFile = 'openFile',
   deleteFile = 'deleteFile',
+  getCustomHtml = 'getCustomHtml',
 
   // Media Dashboard
   getMedia = 'getMedia',

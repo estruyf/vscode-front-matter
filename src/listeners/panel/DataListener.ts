@@ -17,6 +17,7 @@ import {
 import { Article } from '../../commands';
 import { ParsedFrontMatter } from '../../parsers';
 import { processKnownPlaceholders } from '../../helpers/PlaceholderHelper';
+import { PostMessageData } from '../../models';
 
 const FILE_LIMIT = 10;
 
@@ -28,7 +29,7 @@ export class DataListener extends BaseListener {
    * Process the messages for the dashboard views
    * @param msg
    */
-  public static process(msg: { command: CommandToCode; data: any }) {
+  public static process(msg: PostMessageData) {
     super.process(msg);
 
     switch (msg.command) {
@@ -43,16 +44,16 @@ export class DataListener extends BaseListener {
         commands.executeCommand(COMMAND_NAME.createTemplate);
         break;
       case CommandToCode.updateMetadata:
-        this.updateMetadata(msg.data);
+        this.updateMetadata(msg.payload);
         break;
       case CommandToCode.frameworkCommand:
-        this.openTerminalWithCommand(msg.data.command);
+        this.openTerminalWithCommand(msg.payload.command);
         break;
       case CommandToCode.stopServer:
         this.stopServer();
         break;
       case CommandToCode.updatePlaceholder:
-        this.updatePlaceholder(msg?.data?.field, msg?.data?.value, msg?.data?.title);
+        this.updatePlaceholder(msg?.payload?.field, msg?.payload?.value, msg?.payload?.title);
         break;
       case CommandToCode.generateContentType:
         commands.executeCommand(COMMAND_NAME.generateContentType);
@@ -64,7 +65,7 @@ export class DataListener extends BaseListener {
         commands.executeCommand(COMMAND_NAME.setContentType);
         break;
       case CommandToCode.getDataEntries:
-        this.getDataFileEntries(msg.data);
+        this.getDataFileEntries(msg.payload);
         break;
     }
   }

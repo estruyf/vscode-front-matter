@@ -1889,10 +1889,12 @@
         "category": "Front Matter"
       }
     ],
-    "submenus": [{
-      "id": "frontmatter.submenu",
-      "label": "Front Matter"
-    }],
+    "submenus": [
+      {
+        "id": "frontmatter.submenu",
+        "label": "Front Matter"
+      }
+    ],
     "menus": {
       "editor/title": [
         {
@@ -2230,7 +2232,7 @@
   "devDependencies": {
     "@actions/core": "^1.8.2",
     "@bendera/vscode-webview-elements": "0.6.2",
-    "@estruyf/vscode": "0.0.3",
+    "@estruyf/vscode": "^1.1.0",
     "@headlessui/react": "1.5.0",
     "@heroicons/react": "1.0.4",
     "@iarna/toml": "2.2.3",

@@ -115,7 +115,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     });
 
     window.onDidChangeActiveTextEditor(() => {
-      this.sendMessage({ command: Command.loading, data: true });
+      this.sendMessage({ command: Command.loading, payload: true });
 
       if (this.visible) {
         DataListener.getFileData();
@@ -131,7 +131,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * Post data to the panel
    * @param msg
    */
-  public sendMessage(msg: { command: Command; data?: any }) {
+  public sendMessage(msg: { command: Command; payload?: any }) {
     this.panel?.webview?.postMessage(msg);
   }
 

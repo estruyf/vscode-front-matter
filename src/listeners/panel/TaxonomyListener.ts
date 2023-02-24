@@ -3,7 +3,7 @@ import { TagType } from '../../panelWebView/TagType';
 import { BaseListener } from './BaseListener';
 import { window } from 'vscode';
 import { ArticleHelper, Settings } from '../../helpers';
-import { BlockFieldData, CustomTaxonomyData, TaxonomyType } from '../../models';
+import { BlockFieldData, CustomTaxonomyData, PostMessageData, TaxonomyType } from '../../models';
 import { DataListener } from '.';
 import { SETTING_TAXONOMY_CATEGORIES, SETTING_TAXONOMY_TAGS } from '../../constants';
 
@@ -12,45 +12,45 @@ export class TaxonomyListener extends BaseListener {
    * Process the messages for the dashboard views
    * @param msg
    */
-  public static process(msg: { command: any; data: any }) {
+  public static process(msg: PostMessageData) {
     super.process(msg);
 
     switch (msg.command) {
       case CommandToCode.updateTags:
         this.updateTags(
-          msg.data?.fieldName,
-          msg.data?.values || [],
-          msg.data?.parents || [],
-          msg.data?.blockData
+          msg.payload?.fieldName,
+          msg.payload?.values || [],
+          msg.payload?.parents || [],
+          msg.payload?.blockData
         );
         break;
       case CommandToCode.updateCategories:
         this.updateTags(
-          msg.data?.fieldName,
-          msg.data?.values || [],
-          msg.data?.parents || [],
-          msg.data?.blockData
+          msg.payload?.fieldName,
+          msg.payload?.values || [],
+          msg.payload?.parents || [],
+          msg.payload?.blockData
         );
         break;
       case CommandToCode.updateKeywords:
         this.updateTags(
           TagType.keywords.toLowerCase(),
-          msg.data?.values || [],
-          msg.data?.parents || [],
-          msg.data?.blockData
+          msg.payload?.values || [],
+          msg.payload?.parents || [],
+          msg.payload?.blockData
         );
         break;
       case CommandToCode.updateCustomTaxonomy:
-        this.updateCustomTaxonomy(msg.data);
+        this.updateCustomTaxonomy(msg.payload);
         break;
       case CommandToCode.addTagToSettings:
-        this.addTags(TagType.tags, msg.data);
+        this.addTags(TagType.tags, msg.payload);
         break;
       case CommandToCode.addCategoryToSettings:
-        this.addTags(TagType.categories, msg.data);
+        this.addTags(TagType.categories, msg.payload);
         break;
       case CommandToCode.addToCustomTaxonomy:
-        this.addCustomTaxonomy(msg.data);
+        this.addCustomTaxonomy(msg.payload);
         break;
     }
   }

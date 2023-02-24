@@ -1,4 +1,5 @@
 import { Article } from '../../commands';
+import { PostMessageData } from '../../models';
 import { Command } from '../../panelWebView/Command';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
@@ -8,7 +9,7 @@ export class ArticleListener extends BaseListener {
    * Process the messages for the dashboard views
    * @param msg
    */
-  public static process(msg: { command: any; data: any }) {
+  public static process(msg: PostMessageData) {
     super.process(msg);
 
     switch (msg.command) {
@@ -16,7 +17,7 @@ export class ArticleListener extends BaseListener {
         Article.updateSlug();
         break;
       case CommandToCode.generateSlug:
-        this.generateSlug(msg.data);
+        this.generateSlug(msg.payload);
         break;
       case CommandToCode.updateLastMod:
         Article.setLastModifiedDate();

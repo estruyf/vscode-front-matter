@@ -21,9 +21,9 @@ export const PreviewImage: React.FunctionComponent<IPreviewImageProps> = ({
     const message = event.data;
 
     if (message.command === Command.sendMediaUrl) {
-      const data = message.data;
-      if (data?.original === value && data.url) {
-        setImgUrl(data.url);
+      const payload = message.payload;
+      if (payload?.original === value && payload.url) {
+        setImgUrl(payload.url);
       }
     }
   };

@@ -77,7 +77,7 @@ export class Dashboard {
       if (hasData) {
         Dashboard.postWebviewMessage({
           command: DashboardCommand.viewData,
-          data: Dashboard.viewData
+          payload: Dashboard.viewData
         });
       }
     }
@@ -142,7 +142,7 @@ export class Dashboard {
 
         Dashboard.postWebviewMessage({
           command: DashboardCommand.viewData,
-          data: null
+          payload: null
         });
       }
 
@@ -190,7 +190,7 @@ export class Dashboard {
    * Post data to the dashboard
    * @param msg
    */
-  public static postWebviewMessage(msg: { command: DashboardCommand; data?: unknown }) {
+  public static postWebviewMessage(msg: { command: DashboardCommand; payload?: unknown }) {
     if (Dashboard.isDisposed) {
       return;
     }

@@ -71,7 +71,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       const message = event.data;
 
       if (message.command === Command.updatePlaceholder) {
-        const data = message.data;
+        const data = message.payload;
         if (data.field === field.name) {
           setFieldValue(data.value);
           onSendUpdate(field.name, data.value, parentFields);

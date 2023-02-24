@@ -1,7 +1,7 @@
 import { ModeSwitch } from './../../services/ModeSwitch';
 import { CONTEXT, FEATURE_FLAG, GeneralCommands, SETTING_GLOBAL_MODES } from '../../constants';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
-import { Mode } from '../../models';
+import { Mode, PostMessageData } from '../../models';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
 import { Settings } from '../../helpers';
@@ -12,7 +12,7 @@ export class ModeListener extends BaseListener {
    * Process the messages
    * @param msg
    */
-  public static process(msg: { command: DashboardMessage | CommandToCode; data: any }) {
+  public static process(msg: PostMessageData) {
     super.process(msg as any);
 
     switch (msg.command) {

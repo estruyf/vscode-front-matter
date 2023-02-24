@@ -20,6 +20,7 @@ import {
 } from '../../constants';
 import { Folders } from '../../commands/Folders';
 import { commands } from 'vscode';
+import { PostMessageData } from '../../models';
 
 export class GitListener {
   private static isRegistered: boolean = false;
@@ -49,7 +50,7 @@ export class GitListener {
    * Process the messages
    * @param msg
    */
-  public static process(msg: { command: string; data: any }) {
+  public static process(msg: PostMessageData) {
     switch (msg.command) {
       case GeneralCommands.toVSCode.gitSync:
         this.sync();
@@ -148,12 +149,12 @@ export class GitListener {
     return this.client;
   }
 
-  private static sendMsg(command: string, data: any) {
+  private static sendMsg(command: string, payload: any) {
     const extPath = Extension.getInstance().extensionPath;
     const panel = ExplorerView.getInstance(extPath);
 
-    panel.sendMessage({ command: command as any, data });
+    panel.sendMessage({ command: command as any, payload });
 
-    Dashboard.postWebviewMessage({ command: command as any, data });
+    Dashboard.postWebviewMessage({ command: command as any, payload });
   }
 }

@@ -44,7 +44,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
 
   const messageListener = (message: MessageEvent<EventData<any>>) => {
     if (message.data.command === DashboardCommand.dataFileEntries) {
-      setDataEntries(message.data.data);
+      setDataEntries(message.data.payload);
     }
   };
 

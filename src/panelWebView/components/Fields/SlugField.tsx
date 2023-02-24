@@ -38,9 +38,9 @@ export const SlugField: React.FunctionComponent<ISlugFieldProps> = ({
 
   const messageListener = useCallback(
     (message: MessageEvent<EventData<any>>) => {
-      const { command, data } = message.data;
+      const { command, payload } = message.data;
       if (command === Command.updatedSlug) {
-        setSlug(data?.slugWithPrefixAndSuffix);
+        setSlug(payload?.slugWithPrefixAndSuffix);
       }
     },
     [text]
@@ -87,9 +87,8 @@ export const SlugField: React.FunctionComponent<ISlugFieldProps> = ({
 
         <button
           title={slug !== text ? 'Update available' : 'Generate slug'}
-          className={`metadata_field__slug__button ${
-            slug !== text ? 'metadata_field__slug__button_update' : ''
-          }`}
+          className={`metadata_field__slug__button ${slug !== text ? 'metadata_field__slug__button_update' : ''
+            }`}
           onClick={updateSlug}
         >
           <RefreshIcon aria-hidden={true} />

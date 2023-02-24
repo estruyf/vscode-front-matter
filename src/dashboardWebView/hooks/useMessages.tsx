@@ -30,34 +30,34 @@ export default function useMessages() {
 
     switch (message.command) {
       case DashboardCommand.loading:
-        setLoading(message.data);
+        setLoading(message.payload);
         break;
       case DashboardCommand.viewData:
-        setViewData(message.data);
-        if (message.data?.type === NavigationType.Media) {
+        setViewData(message.payload);
+        if (message.payload?.type === NavigationType.Media) {
           setView(NavigationType.Media);
-        } else if (message.data?.type === NavigationType.Contents) {
+        } else if (message.payload?.type === NavigationType.Contents) {
           setView(NavigationType.Contents);
-        } else if (message.data?.type === NavigationType.Data) {
+        } else if (message.payload?.type === NavigationType.Data) {
           setView(NavigationType.Data);
-        } else if (message.data?.type === NavigationType.Taxonomy) {
+        } else if (message.payload?.type === NavigationType.Taxonomy) {
           setView(NavigationType.Taxonomy);
-        } else if (message.data?.type === NavigationType.Snippets) {
+        } else if (message.payload?.type === NavigationType.Snippets) {
           setView(NavigationType.Snippets);
         }
         break;
       case DashboardCommand.settings:
-        setSettings(message.data);
+        setSettings(message.payload);
         break;
       case DashboardCommand.pages:
-        setPages(message.data);
+        setPages(message.payload);
         setLoading(false);
         break;
       case DashboardCommand.searchReady:
         setSearchReady(true);
         break;
       case GeneralCommands.toWebview.setMode:
-        setMode(message.data);
+        setMode(message.payload);
         break;
     }
   };

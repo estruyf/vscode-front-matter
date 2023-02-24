@@ -4,24 +4,24 @@ import { Dashboard } from '../../commands/Dashboard';
 import { SETTING_CONTENT_SNIPPETS, TelemetryEvent } from '../../constants';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { Notifications, Settings, Telemetry } from '../../helpers';
-import { Snippets } from '../../models';
+import { PostMessageData, Snippets } from '../../models';
 import { BaseListener } from './BaseListener';
 import { SettingsListener } from './SettingsListener';
 
 export class SnippetListener extends BaseListener {
-  public static process(msg: { command: DashboardMessage; data: any }) {
+  public static process(msg: PostMessageData) {
     super.process(msg);
 
     switch (msg.command) {
       case DashboardMessage.addSnippet:
-        this.addSnippet(msg.data);
+        this.addSnippet(msg.payload);
         break;
       case DashboardMessage.updateSnippet:
-        this.updateSnippet(msg.data);
+        this.updateSnippet(msg.payload);
         break;
       case DashboardMessage.insertSnippet:
         Telemetry.send(TelemetryEvent.insertContentSnippet);
-        this.insertSnippet(msg.data);
+        this.insertSnippet(msg.payload);
         break;
     }
   }

@@ -6,7 +6,7 @@ import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { DashboardSettings, Settings } from '../../helpers';
 import { FrameworkDetector } from '../../helpers/FrameworkDetector';
-import { Framework } from '../../models';
+import { Framework, PostMessageData } from '../../models';
 import { BaseListener } from './BaseListener';
 
 export class SettingsListener extends BaseListener {
@@ -14,7 +14,7 @@ export class SettingsListener extends BaseListener {
    * Process the messages for the dashboard views
    * @param msg
    */
-  public static process(msg: { command: DashboardMessage; data: any }) {
+  public static process(msg: PostMessageData) {
     super.process(msg);
 
     switch (msg.command) {
@@ -22,13 +22,13 @@ export class SettingsListener extends BaseListener {
         this.getSettings();
         break;
       case DashboardMessage.updateSetting:
-        this.update(msg.data);
+        this.update(msg.payload);
         break;
       case DashboardMessage.setFramework:
-        this.setFramework(msg?.data);
+        this.setFramework(msg?.payload);
         break;
       case DashboardMessage.addFolder:
-        this.addFolder(msg?.data);
+        this.addFolder(msg?.payload);
         break;
     }
   }

@@ -9,6 +9,7 @@ import {
 } from '../../constants';
 import { Extension, Settings } from '../../helpers';
 import { PanelSettings } from '../../helpers/PanelSettings';
+import { PostMessageData } from '../../models';
 import { Command } from '../../panelWebView/Command';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
@@ -18,7 +19,7 @@ export class SettingsListener extends BaseListener {
    * Process the messages for the dashboard views
    * @param msg
    */
-  public static process(msg: { command: CommandToCode; data: any }) {
+  public static process(msg: PostMessageData) {
     super.process(msg);
 
     switch (msg.command) {
@@ -32,19 +33,19 @@ export class SettingsListener extends BaseListener {
         this.toggleWritingSettings();
         break;
       case CommandToCode.updateModifiedUpdating:
-        this.updateSetting(SETTING_AUTO_UPDATE_DATE, msg.data || false);
+        this.updateSetting(SETTING_AUTO_UPDATE_DATE, msg.payload || false);
         break;
       case CommandToCode.updateFmHighlight:
         this.updateSetting(
           SETTING_CONTENT_FRONTMATTER_HIGHLIGHT,
-          msg.data !== null && msg.data !== undefined ? msg.data : false
+          msg.payload !== null && msg.payload !== undefined ? msg.payload : false
         );
         break;
       case CommandToCode.updatePreviewUrl:
-        this.updateSetting(SETTING_PREVIEW_HOST, msg.data || '');
+        this.updateSetting(SETTING_PREVIEW_HOST, msg.payload || '');
         break;
       case CommandToCode.updateStartCommand:
-        this.updateSetting(SETTING_FRAMEWORK_START, msg.data || '');
+        this.updateSetting(SETTING_FRAMEWORK_START, msg.payload || '');
         break;
     }
   }
