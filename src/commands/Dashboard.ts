@@ -238,7 +238,7 @@ export class Dashboard {
       } 'self' 'unsafe-inline' https://*`,
       `script-src ${
         isProd ? `'nonce-${nonce}'` : `http://${localServerUrl} http://0.0.0.0:${localPort}`
-      } 'unsafe-eval'`,
+      } https://* 'unsafe-eval'`,
       `style-src ${webView.cspSource} 'self' 'unsafe-inline'`,
       `font-src ${webView.cspSource}`,
       `connect-src https://o1022172.ingest.sentry.io ${
@@ -267,6 +267,9 @@ export class Dashboard {
 
         <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759&slug=${`dashboard-${version.installedVersion}`}" alt="Daily usage" />
 
+        <script src="${webView.asWebviewUri(
+          Uri.parse(`/Users/eliostruyf/blog/web-eliostruyf-hugo/external.js`)
+        )}" nonce="${nonce}"></script>
         <script ${isProd ? `nonce="${nonce}"` : ''} src="${scriptUri}"></script>
       </body>
       </html>

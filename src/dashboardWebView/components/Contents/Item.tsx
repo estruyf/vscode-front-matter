@@ -17,6 +17,10 @@ export interface IItemProps extends Page { }
 
 const PREVIEW_IMAGE_FIELD = 'fmPreviewImage';
 
+declare const fmExternal: {
+  getCardHtml: (filePath: string, data: any) => string | undefined;
+};
+
 export const Item: React.FunctionComponent<IItemProps> = ({
   fmFilePath,
   date,
@@ -77,12 +81,21 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   }, [settings, pageData]);
 
   useEffect(() => {
-    messageHandler.request<string>(DashboardMessage.getCustomHtml, {
-      path: fmFilePath,
-      data: pageData,
-    }).then((html) => {
-      setCustomHtml(html || "");
-    });
+    // messageHandler.request<string>(DashboardMessage.getCustomHtml, {
+    //   path: fmFilePath,
+    //   data: pageData,
+    // }).then((html) => {
+    //   setCustomHtml(html || "");
+    // });
+
+    if (fmExternal && fmExternal.getCardHtml) {
+      const data = fmExternal.getCardHtml(fmFilePath, pageData);
+      if (data) {
+        setCustomHtml(data);
+      } else {
+        setCustomHtml(undefined);
+      }
+    }
   }, []);
 
   if (view === DashboardViewType.Grid) {
