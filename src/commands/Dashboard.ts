@@ -232,13 +232,15 @@ export class Dashboard {
     const extensibilityScripts = SettingsHelper.get<string[]>(SETTING_EXTENSIBILITY_SCRIPTS) || [];
 
     const scriptsToLoad: string[] = [];
-    for (const script of extensibilityScripts) {
-      if (script.startsWith('https://')) {
-        scriptsToLoad.push(script);
-      } else {
-        const absScriptPath = Folders.getAbsFilePath(script);
-        const scriptUri = webView.asWebviewUri(Uri.file(absScriptPath));
-        scriptsToLoad.push(scriptUri.toString());
+    if (experimental) {
+      for (const script of extensibilityScripts) {
+        if (script.startsWith('https://')) {
+          scriptsToLoad.push(script);
+        } else {
+          const absScriptPath = Folders.getAbsFilePath(script);
+          const scriptUri = webView.asWebviewUri(Uri.file(absScriptPath));
+          scriptsToLoad.push(scriptUri.toString());
+        }
       }
     }
 
@@ -279,14 +281,15 @@ export class Dashboard {
       version.usedVersion ? '' : `data-showWelcome="true"`
     } ${experimental ? `data-experimental="${experimental}"` : ''} ></div>
 
-        <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759&slug=${`dashboard-${version.installedVersion}`}" alt="Daily usage" />
-
         ${(scriptsToLoad || [])
           .map((script) => {
             return `<script type="module" src="${script}" nonce="${nonce}"></script>`;
           })
           .join('')}
+          
         <script ${isProd ? `nonce="${nonce}"` : ''} src="${scriptUri}"></script>
+
+        <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759&slug=${`dashboard-${version.installedVersion}`}" alt="Daily usage" />
       </body>
       </html>
     `;

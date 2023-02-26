@@ -1,6 +1,31 @@
 # Change Log
 
+## [8.4.0] - 2022-xx-xx
+
+### 🧪 Experimental features
+
+- External UI script support for dashboards
+- Visual Studio Code Theming support for the dashboards
+
+> **Info**: To enable the experimental features you need to set the `frontMatter.experimental` setting to `true`.
+
+### ✨ New features
+
+- [#513](https://github.com/estruyf/vscode-front-matter/issues/513): Added support for external UI scripts to add custom HTML on the dashboard elements
+
+### 🎨 Enhancements
+
+### ⚡️ Optimizations
+
+### 🐞 Fixes
+
 ## [8.3.0] - 2022-02-14 - [Release notes](https://beta.frontmatter.codes/updates/v8.3.0)
+
+### 🧪 Experimental features
+
+- Visual Studio Code Theming support for the dashboards
+
+> **Info**: To enable the experimental features you need to set the `frontMatter.experimental` setting to `true`.
 
 ### ✨ New features
 
