@@ -4,6 +4,8 @@ export const CONFIG_KEY = 'frontMatter';
 
 export const SETTING_EXPERIMENTAL = 'experimental';
 
+export const SETTING_EXTENSIBILITY_SCRIPTS = 'extensibility.scripts';
+
 export const SETTING_EXTENDS = 'extends';
 
 export const SETTING_GLOBAL_NOTIFICATIONS = 'global.notifications';

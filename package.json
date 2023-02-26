@@ -96,6 +96,14 @@
     "configuration": {
       "title": "Front Matter: use frontmatter.json for shared team settings",
       "properties": {
+        "frontMatter.extensibility.scripts": {
+          "type": "array",
+          "markdownDescription": "Specify the list of scripts to load in the Front Matter CMS. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.extensibility.scripts)",
+          "default": [],
+          "items": {
+            "type": "string"
+          }
+        },
         "frontMatter.experimental": {
           "type": "boolean",
           "default": false,

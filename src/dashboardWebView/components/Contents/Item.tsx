@@ -17,9 +17,14 @@ export interface IItemProps extends Page { }
 
 const PREVIEW_IMAGE_FIELD = 'fmPreviewImage';
 
-declare const fmExternal: {
-  getCardHtml: (filePath: string, data: any) => string | undefined;
-};
+declare global {
+  interface Window {
+    fmExternal: {
+      getCardImage(filePath: string, data: any): Promise<string | undefined>;
+      getCardFooter: (filePath: string, data: any) => Promise<string | undefined>;
+    }
+  }
+}
 
 export const Item: React.FunctionComponent<IItemProps> = ({
   fmFilePath,
@@ -81,20 +86,21 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   }, [settings, pageData]);
 
   useEffect(() => {
-    // messageHandler.request<string>(DashboardMessage.getCustomHtml, {
-    //   path: fmFilePath,
-    //   data: pageData,
-    // }).then((html) => {
-    //   setCustomHtml(html || "");
-    // });
-
-    if (fmExternal && fmExternal.getCardHtml) {
-      const data = fmExternal.getCardHtml(fmFilePath, pageData);
-      if (data) {
-        setCustomHtml(data);
-      } else {
-        setCustomHtml(undefined);
-      }
+    if (window.fmExternal && window.fmExternal.getCardFooter) {
+      window.fmExternal.getCardFooter(fmFilePath, {
+        fmFilePath,
+        date,
+        title,
+        description,
+        type,
+        ...pageData
+      }).then(htmlContent => {
+        if (htmlContent) {
+          setCustomHtml(htmlContent);
+        } else {
+          setCustomHtml(undefined);
+        }
+      });
     }
   }, []);
 
@@ -102,7 +108,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return (
       <li className="relative">
         <div
-          className={`group flex flex-wrap items-start content-start h-full w-full text-left shadow-md dark:shadow-none hover:shadow-xl border rounded ${getColors(
+          className={`group flex flex-col items-start content-start h-full w-full text-left shadow-md dark:shadow-none hover:shadow-xl border rounded ${getColors(
             'bg-gray-50 dark:bg-vulcan-200 text-vulcan-500 dark:text-whisper-500 dark:hover:bg-vulcan-100 border-gray-200 dark:border-vulcan-50',
             'bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--frontmatter-border)]'
           )
@@ -140,7 +146,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             )}
           </button>
 
-          <div className="relative p-4 w-full">
+          <div className="relative p-4 w-full grow">
             <div className={`flex justify-between items-center`}>
               {draftField && draftField.name && <Status draft={pageData[draftField.name]} />}
 
@@ -181,13 +187,13 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                 )}
               </div>
             )}
-
-            {
-              customHtml && (
-                <div className="mt-2" dangerouslySetInnerHTML={{ __html: customHtml }} />
-              )
-            }
           </div>
+
+          {
+            customHtml && (
+              <div className="placeholder__card__footer p-4 w-full" dangerouslySetInnerHTML={{ __html: customHtml }} />
+            )
+          }
         </div>
       </li>
     );

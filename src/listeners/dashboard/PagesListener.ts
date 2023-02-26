@@ -47,28 +47,7 @@ export class PagesListener extends BaseListener {
       case DashboardMessage.deleteFile:
         this.deletePage(msg.payload);
         break;
-      case DashboardMessage.getCustomHtml:
-        const message = msg as any;
-        this.getCustomCardHtml(message.command, message.requestId, message.payload);
-        break;
     }
-  }
-
-  private static async getCustomCardHtml(command: string, requestId: string, payload: any) {
-    if (!command || !requestId || !payload) {
-      return;
-    }
-
-    const slug = payload.data.slug;
-    if (!slug) {
-      return;
-    }
-
-    Dashboard.postWebviewMessage({
-      command,
-      requestId,
-      payload: `<div style="margin-top:0.5rem"><img src="https://api.visitorbadge.io/api/combined?path=https%3a%2f%2fwww.eliostruyf.com${encodeURIComponent(slug).replace(/%2F/g, '%2f')}&readonly=true&labelColor=%231E222C&countColor=%23108D94&style=flat-square&label=Views" /></div>`,
-    } as any)
   }
 
   /**

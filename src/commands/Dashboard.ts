@@ -2,10 +2,11 @@ import {
   SETTING_DASHBOARD_OPENONSTART,
   CONTEXT,
   ExtensionState,
-  SETTING_EXPERIMENTAL
+  SETTING_EXPERIMENTAL,
+  SETTING_EXTENSIBILITY_SCRIPTS
 } from '../constants';
 import { join } from 'path';
-import { commands, Uri, ViewColumn, Webview, WebviewPanel, window } from 'vscode';
+import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace } from 'vscode';
 import { Logger, Settings as SettingsHelper } from '../helpers';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { Extension } from '../helpers/Extension';
@@ -25,6 +26,7 @@ import {
 } from '../listeners/dashboard';
 import { MediaListener as PanelMediaListener } from '../listeners/panel';
 import { GitListener, ModeListener } from '../listeners/general';
+import { Folders } from './Folders';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -227,6 +229,18 @@ export class Dashboard {
 
     // Get experimental setting
     const experimental = SettingsHelper.get(SETTING_EXPERIMENTAL);
+    const extensibilityScripts = SettingsHelper.get<string[]>(SETTING_EXTENSIBILITY_SCRIPTS) || [];
+
+    const scriptsToLoad: string[] = [];
+    for (const script of extensibilityScripts) {
+      if (script.startsWith('https://')) {
+        scriptsToLoad.push(script);
+      } else {
+        const absScriptPath = Folders.getAbsFilePath(script);
+        const scriptUri = webView.asWebviewUri(Uri.file(absScriptPath));
+        scriptsToLoad.push(scriptUri.toString());
+      }
+    }
 
     const csp = [
       `default-src 'none';`,
@@ -267,9 +281,11 @@ export class Dashboard {
 
         <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759&slug=${`dashboard-${version.installedVersion}`}" alt="Daily usage" />
 
-        <script src="${webView.asWebviewUri(
-          Uri.parse(`/Users/eliostruyf/blog/web-eliostruyf-hugo/external.js`)
-        )}" nonce="${nonce}"></script>
+        ${(scriptsToLoad || [])
+          .map((script) => {
+            return `<script type="module" src="${script}" nonce="${nonce}"></script>`;
+          })
+          .join('')}
         <script ${isProd ? `nonce="${nonce}"` : ''} src="${scriptUri}"></script>
       </body>
       </html>
