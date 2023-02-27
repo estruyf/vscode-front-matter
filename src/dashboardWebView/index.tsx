@@ -9,12 +9,27 @@ import { MemoryRouter } from 'react-router-dom';
 import './styles.css';
 import { Preview } from './components/Preview';
 import { SettingsProvider } from './providers/SettingsProvider';
+import { CustomPanelViewResult } from '../models';
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
   setState: (data: T) => void;
   postMessage: (msg: unknown) => void;
 };
+
+declare global {
+  interface Window {
+    fmExternal: {
+      getCustomFields: {
+        name: string,
+        html: (data: any, change: (value: any) => void) => Promise<CustomPanelViewResult | undefined>
+      }[];
+      getPanelView: (data: any) => Promise<CustomPanelViewResult | undefined>;
+      getCardImage: (filePath: string, data: any) => Promise<string | undefined>;
+      getCardFooter: (filePath: string, data: any) => Promise<string | undefined>;
+    }
+  }
+}
 
 export const routePaths: { [name: string]: string } = {
   welcome: '/welcome',

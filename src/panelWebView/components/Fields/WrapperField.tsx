@@ -2,7 +2,7 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { DateHelper } from '../../../helpers/DateHelper';
-import { BlockFieldData, Field, PanelSettings, WhenOperator } from '../../../models';
+import { BlockFieldData, CustomPanelViewResult, Field, PanelSettings, WhenOperator } from '../../../models';
 import { Command } from '../../Command';
 import { CommandToCode } from '../../CommandToCode';
 import { TagType } from '../../TagType';
@@ -26,7 +26,8 @@ import {
   SlugField,
   PreviewImageField,
   PreviewImageValue,
-  NumberField
+  NumberField,
+  CustomField
 } from '.';
 import { fieldWhenClause } from '../../../utils/fieldWhenClause';
 
@@ -65,6 +66,10 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
   renderFields
 }: React.PropsWithChildren<IWrapperFieldProps>) => {
   const [fieldValue, setFieldValue] = useState<any | undefined>(undefined);
+  const [customFields, setCustomFields] = useState<{
+    name: string;
+    html: (data: any, onChange: (value: any) => void) => Promise<CustomPanelViewResult | undefined>;
+  }[]>([]);
 
   const listener = useCallback(
     (event: any) => {
@@ -131,6 +136,14 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       window.removeEventListener('message', listener);
     };
   }, [field, parent]);
+
+  useEffect(() => {
+    if (window.fmExternal && window.fmExternal.getCustomFields) {
+      setCustomFields(window.fmExternal.getCustomFields || []);
+    } else {
+      setCustomFields([]);
+    }
+  }, []);
 
   if (field.hidden || fieldValue === undefined) {
     return null;
@@ -470,6 +483,22 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
         />
       </FieldBoundary>
     );
+  } else if (customFields.find(f => f.name === field.type)) {
+    const fieldData = customFields.find(f => f.name === field.type);
+    if (fieldData) {
+      return (
+        <CustomField
+          key={field.name}
+          label={field.title || field.name}
+          description={field.description}
+          value={fieldValue}
+          required={!!field.required}
+          onChange={(value: any) => onSendUpdate(field.name, value, parentFields)}
+          fieldData={fieldData} />
+      );
+    } else {
+      return null;
+    }
   } else {
     console.warn(`Unknown field type: ${field.type}`);
     return null;

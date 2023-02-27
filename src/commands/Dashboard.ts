@@ -254,10 +254,10 @@ export class Dashboard {
       } 'self' 'unsafe-inline' https://*`,
       `script-src ${
         isProd ? `'nonce-${nonce}'` : `http://${localServerUrl} http://0.0.0.0:${localPort}`
-      } https://* 'unsafe-eval'`,
-      `style-src ${webView.cspSource} 'self' 'unsafe-inline'`,
+      } 'unsafe-eval' https://*`,
+      `style-src ${webView.cspSource} 'self' 'unsafe-inline' https://*`,
       `font-src ${webView.cspSource}`,
-      `connect-src https://o1022172.ingest.sentry.io ${
+      `connect-src https://o1022172.ingest.sentry.io https://* ${
         isProd
           ? ``
           : `ws://${localServerUrl} ws://0.0.0.0:${localPort} http://${localServerUrl} http://0.0.0.0:${localPort}`

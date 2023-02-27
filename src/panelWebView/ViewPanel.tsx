@@ -12,11 +12,12 @@ import useMessages from './hooks/useMessages';
 import { FeatureFlag } from '../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../constants/Features';
 import { GitAction } from './components/Git/GitAction';
+import { CustomView } from './components/CustomView';
 
 export interface IViewPanelProps { }
 
 export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
-  props: React.PropsWithChildren<IViewPanelProps>
+  { }: React.PropsWithChildren<IViewPanelProps>
 ) => {
   const {
     loading,
@@ -49,6 +50,8 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
     <div className="frontmatter">
       <div className={`ext_actions`}>
         <GitAction settings={settings} />
+
+        <CustomView metadata={metadata} />
 
         <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.globalSettings}>
           <GlobalSettings settings={settings} />

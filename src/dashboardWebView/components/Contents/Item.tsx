@@ -17,15 +17,6 @@ export interface IItemProps extends Page { }
 
 const PREVIEW_IMAGE_FIELD = 'fmPreviewImage';
 
-declare global {
-  interface Window {
-    fmExternal: {
-      getCardImage(filePath: string, data: any): Promise<string | undefined>;
-      getCardFooter: (filePath: string, data: any) => Promise<string | undefined>;
-    }
-  }
-}
-
 export const Item: React.FunctionComponent<IItemProps> = ({
   fmFilePath,
   date,
