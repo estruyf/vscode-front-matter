@@ -13,12 +13,14 @@ import { FeatureFlag } from '../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../constants/Features';
 import { GitAction } from './components/Git/GitAction';
 import { CustomView } from './components/CustomView';
+import { useEffect, useState } from 'react';
 
 export interface IViewPanelProps { }
 
 export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
   { }: React.PropsWithChildren<IViewPanelProps>
 ) => {
+  const [isDevMode, setIsDevMode] = useState(false);
   const {
     loading,
     mediaSelecting,
@@ -29,6 +31,13 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
     unsetFocus,
     mode
   } = useMessages();
+
+  useEffect(() => {
+    console.log(window.fmExternal)
+    if (window.fmExternal.isDevelopment) {
+      setIsDevMode(true);
+    }
+  }, []);
 
   if (mediaSelecting) {
     return (
@@ -48,6 +57,19 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
 
   return (
     <div className="frontmatter">
+      {
+        isDevMode && (
+          <div className="developer__bar">
+            <a
+              className="developer__bar__link"
+              href={`command:workbench.action.webview.reloadWebviewAction`}
+              title="Reload the dashboard">
+              Reload
+            </a>
+          </div>
+        )
+      }
+
       <div className={`ext_actions`}>
         <GitAction settings={settings} />
 

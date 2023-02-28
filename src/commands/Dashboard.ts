@@ -121,7 +121,8 @@ export class Dashboard {
       ViewColumn.One,
       {
         enableScripts: true,
-        retainContextWhenHidden: true
+        retainContextWhenHidden: true,
+        enableCommandUris: true
       }
     );
 

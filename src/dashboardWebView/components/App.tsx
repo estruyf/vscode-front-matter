@@ -14,7 +14,7 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import { TaxonomyView } from './TaxonomyView';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { routePaths } from '..';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { UnknownView } from './UnknownView';
 import { ErrorBoundary } from '@sentry/react';
 import { ErrorView } from './ErrorView';
@@ -30,6 +30,7 @@ export const App: React.FunctionComponent<IAppProps> = ({
   const { loading, pages, settings } = useMessages();
   const view = useRecoilValue(DashboardViewSelector);
   const mode = useRecoilValue(ModeAtom);
+  const [isDevMode, setIsDevMode] = useState(false);
   const navigate = useNavigate();
   useDarkMode();
 
@@ -60,6 +61,13 @@ export const App: React.FunctionComponent<IAppProps> = ({
     navigate(routePaths[view]);
   }, [view]);
 
+  useEffect(() => {
+    console.log(window.fmExternal)
+    if (window.fmExternal.isDevelopment) {
+      setIsDevMode(true);
+    }
+  }, []);
+
   if (!settings) {
     return <Spinner />;
   }
@@ -86,6 +94,21 @@ Stack: ${componentStack}`
       }}
     >
       <main className={`h-full w-full`}>
+        {
+          isDevMode && (
+            <div className="relative p-2 flex justify-center items-center bg-[var(--vscode-statusBar-debuggingBackground)] text-[var(--vscode-statusBar-debuggingForeground)]">
+              <span className='absolute left-2'>Development mode</span>
+
+              <a
+                className="ml-2 px-2 hover:text-[var(--vscode-statusBarItem-hoverForeground)] hover:bg-[var(--vscode-statusBarItem-hoverBackground)] hover:outline-none focus:outline-none"
+                href={`command:workbench.action.webview.reloadWebviewAction`}
+                title="Reload the dashboard">
+                Reload
+              </a>
+            </div>
+          )
+        }
+
         <Routes>
           <Route path={routePaths.welcome} element={<WelcomeScreen settings={settings} />} />
           <Route
@@ -104,6 +127,6 @@ Stack: ${componentStack}`
           <Route path={`*`} element={<UnknownView />} />
         </Routes>
       </main>
-    </ErrorBoundary>
+    </ErrorBoundary >
   );
 };

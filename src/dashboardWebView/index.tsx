@@ -20,6 +20,7 @@ declare const acquireVsCodeApi: <T = unknown>() => {
 declare global {
   interface Window {
     fmExternal: {
+      isDevelopment: boolean;
       getCustomFields: {
         name: string,
         html: (data: any, change: (value: any) => void) => Promise<CustomPanelViewResult | undefined>
