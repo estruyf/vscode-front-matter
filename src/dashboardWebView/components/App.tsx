@@ -62,8 +62,7 @@ export const App: React.FunctionComponent<IAppProps> = ({
   }, [view]);
 
   useEffect(() => {
-    console.log(window.fmExternal)
-    if (window.fmExternal.isDevelopment) {
+    if (window.fmExternal && window.fmExternal.isDevelopment) {
       setIsDevMode(true);
     }
   }, []);

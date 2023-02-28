@@ -33,8 +33,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
   } = useMessages();
 
   useEffect(() => {
-    console.log(window.fmExternal)
-    if (window.fmExternal.isDevelopment) {
+    if (window.fmExternal && window.fmExternal.isDevelopment) {
       setIsDevMode(true);
     }
   }, []);
