@@ -1022,10 +1022,13 @@ vscode-divider {
 
   a {
     color: var(--vscode-statusBar-debuggingForeground);
+    margin: 0 0.25em;
+    padding: 0 0.25em;
+    text-decoration: none;
 
     &:hover,
     &:focus {
-      color: var(--vscode-statusBarItem-hoverForeground);
+      color: var(--vscode-statusBar-debuggingForeground);
       background: var(--vscode-statusBarItem-hoverBackground);
       outline: none;
     }

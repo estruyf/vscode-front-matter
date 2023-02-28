@@ -100,10 +100,16 @@ Stack: ${componentStack}`
               <span className='absolute left-2'>Development mode</span>
 
               <a
-                className="ml-2 px-2 hover:text-[var(--vscode-statusBarItem-hoverForeground)] hover:bg-[var(--vscode-statusBarItem-hoverBackground)] hover:outline-none focus:outline-none"
+                className="ml-2 px-2 hover:text-[var(--vscode-statusBar-debuggingForeground)] hover:bg-[var(--vscode-statusBarItem-hoverBackground)] hover:outline-none focus:outline-none"
                 href={`command:workbench.action.webview.reloadWebviewAction`}
                 title="Reload the dashboard">
                 Reload
+              </a>
+              <a
+                className="ml-2 px-2 hover:text-[var(--vscode-statusBar-debuggingForeground)] hover:bg-[var(--vscode-statusBarItem-hoverBackground)] hover:outline-none focus:outline-none"
+                href={`command:workbench.action.webview.openDeveloperTools`}
+                title="Open DevTools">
+                DevTools
               </a>
             </div>
           )

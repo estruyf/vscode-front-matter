@@ -66,6 +66,12 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
               title="Reload the dashboard">
               Reload
             </a>
+            <a
+              className="developer__bar__link"
+              href={`command:workbench.action.webview.openDeveloperTools`}
+              title="Open DevTools">
+              DevTools
+            </a>
           </div>
         )
       }
