@@ -1010,3 +1010,27 @@ vscode-divider {
 .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke.ql-fill {
   fill: var(--vscode-button-background) !important;
 }
+
+/* Extensibility Developer Bar */
+.developer__bar {
+  background: var(--vscode-statusBar-debuggingBackground);
+  position: relative;
+  padding: 5px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  a {
+    color: var(--vscode-statusBar-debuggingForeground);
+    margin: 0 0.25em;
+    padding: 0 0.25em;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+      color: var(--vscode-statusBar-debuggingForeground);
+      background: var(--vscode-statusBarItem-hoverBackground);
+      outline: none;
+    }
+  }
+}
