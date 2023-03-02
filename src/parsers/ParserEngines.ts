@@ -1,4 +1,5 @@
 import * as yaml from 'yaml';
+import * as jsyaml from 'js-yaml';
 import * as toml from '@iarna/toml';
 import { Format, FrontMatterParser } from '.';
 
@@ -48,11 +49,12 @@ export const Engines = {
               }
             }
 
-            return docYaml.toString();
+            const jsonObj = docYaml.toJSON();
+            return jsyaml.dump(jsonObj, options);
           }
         }
 
-        return yaml.stringify(obj, options);
+        return jsyaml.dump(obj, options);
       }
     }
   }

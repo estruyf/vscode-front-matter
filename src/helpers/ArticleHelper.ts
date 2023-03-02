@@ -203,7 +203,7 @@ export class ArticleHelper {
       noArrayIndent: !indentArray,
       skipInvalid: true,
       noCompatMode: true,
-      lineWidth: 500,
+      lineWidth: 50000,
       indent: spaces || 2
     } as DumpOptions as any);
   }

@@ -19,6 +19,8 @@
 
 ### 🐞 Fixes
 
+- [#518](https://github.com/estruyf/vscode-front-matter/issues/518): Fix an issue where the `YAML` parser adds line breaks to long strings
+
 ## [8.3.0] - 2022-02-14 - [Release notes](https://beta.frontmatter.codes/updates/v8.3.0)
 
 ### 🧪 Experimental features
