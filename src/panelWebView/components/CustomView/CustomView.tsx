@@ -12,7 +12,6 @@ export const CustomView: React.FunctionComponent<ICustomViewProps> = ({ metadata
   const [customHtml, setCustomHtml] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    console.log(window.fmExternal)
     if (window.fmExternal && window.fmExternal.getPanelView) {
       window.fmExternal.getPanelView(metadata).then((viewDetails: CustomPanelViewResult | undefined) => {
         if (viewDetails && viewDetails.title && viewDetails.content) {
