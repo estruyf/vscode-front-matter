@@ -15,6 +15,8 @@
 
 ### 🎨 Enhancements
 
+- [#522](https://github.com/estruyf/vscode-front-matter/issues/522): Configuration support added for [Astro](https://astro.build)
+
 ### ⚡️ Optimizations
 
 ### 🐞 Fixes

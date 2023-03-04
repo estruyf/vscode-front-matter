@@ -1,6 +1,20 @@
 export const FrameworkDetectors = [
   {
     framework: {
+      name: 'astro',
+      dist: 'dist',
+      static: 'public',
+      build: 'npm run build',
+      server: 'http://127.0.0.1:3000'
+    },
+    requiredFiles: ['astro.config.mjs'],
+    requiredDependencies: ['astro'],
+    commands: {
+      start: 'npm run dev'
+    }
+  },
+  {
+    framework: {
       name: 'gatsby',
       dist: 'public',
       static: 'static',
@@ -17,7 +31,8 @@ export const FrameworkDetectors = [
       name: 'hugo',
       dist: 'public',
       static: 'static',
-      build: 'hugo'
+      build: 'hugo',
+      server: 'http://127.0.0.1:1313'
     },
     requiredFiles: ['config.toml', 'config.yaml', 'config.yml'],
     commands: {
