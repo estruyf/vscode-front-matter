@@ -16,6 +16,7 @@
 ### 🎨 Enhancements
 
 - [#522](https://github.com/estruyf/vscode-front-matter/issues/522): Configuration support added for [Astro](https://astro.build)
+- [#524](https://github.com/estruyf/vscode-front-matter/issues/524): Removed the **Global settings** view from the panel. You can still get it back by configuring a [custom view mode](https://frontmatter.codes/docs/panel#view-modes).
 
 ### ⚡️ Optimizations
 
