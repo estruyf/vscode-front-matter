@@ -161,7 +161,8 @@ export class Preview {
       light: Uri.file(join(extensionPath, 'assets/icons/frontmatter-short-light.svg'))
     };
 
-    const localhostUrl = await env.asExternalUri(Uri.parse(settings.host));
+    const crntUrl = settings.host.startsWith('http') ? settings.host : `http://${settings.host}`;
+    const localhostUrl = await env.asExternalUri(Uri.parse(crntUrl));
 
     const cspSource = webView.webview.cspSource;
 
