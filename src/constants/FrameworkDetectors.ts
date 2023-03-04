@@ -5,7 +5,7 @@ export const FrameworkDetectors = [
       dist: 'dist',
       static: 'public',
       build: 'npm run build',
-      server: 'http://127.0.0.1:3000'
+      server: 'http://localhost:3000'
     },
     requiredFiles: ['astro.config.mjs'],
     requiredDependencies: ['astro'],
@@ -18,7 +18,8 @@ export const FrameworkDetectors = [
       name: 'gatsby',
       dist: 'public',
       static: 'static',
-      build: 'gatsby build'
+      build: 'gatsby build',
+      server: 'http://localhost:8000'
     },
     requiredFiles: ['gatsby-config.js'],
     requiredDependencies: ['gatsby'],
@@ -32,7 +33,7 @@ export const FrameworkDetectors = [
       dist: 'public',
       static: 'static',
       build: 'hugo',
-      server: 'http://127.0.0.1:1313'
+      server: 'http://localhost:1313'
     },
     requiredFiles: ['config.toml', 'config.yaml', 'config.yml'],
     commands: {
@@ -44,7 +45,8 @@ export const FrameworkDetectors = [
       name: 'next',
       dist: '.next',
       static: 'public',
-      build: 'next build'
+      build: 'next build',
+      server: 'http://localhost:3000'
     },
     requiredFiles: ['next.config.js'],
     requiredDependencies: ['next'],
@@ -57,7 +59,8 @@ export const FrameworkDetectors = [
       name: 'nuxt',
       dist: 'dist',
       static: 'static',
-      build: 'nuxt'
+      build: 'nuxt',
+      server: 'http://localhost:3000'
     },
     requiredFiles: ['nuxt.config.js'],
     requiredDependencies: ['nuxt'],
@@ -70,7 +73,8 @@ export const FrameworkDetectors = [
       name: 'jekyll',
       dist: '_site',
       static: 'assets',
-      build: 'bundle exec jekyll build'
+      build: 'bundle exec jekyll build',
+      server: 'http://localhost:4000'
     },
     requiredFiles: ['Gemfile'],
     requiredDependencies: ['jekyll'],
@@ -83,7 +87,8 @@ export const FrameworkDetectors = [
       name: 'docusaurus',
       dist: 'build',
       static: 'static',
-      build: 'npx docusaurus build'
+      build: 'npx docusaurus build',
+      server: 'http://localhost:3000'
     },
     requiredFiles: ['docusaurus.config.js'],
     requiredDependencies: ['@docusaurus/core'],
@@ -95,7 +100,8 @@ export const FrameworkDetectors = [
     framework: {
       name: '11ty',
       dist: '_site',
-      build: 'npx @11ty/eleventy'
+      build: 'npx @11ty/eleventy',
+      server: 'http://localhost:8080'
     },
     requiredDependencies: ['@11ty/eleventy'],
     commands: {
@@ -106,7 +112,8 @@ export const FrameworkDetectors = [
     framework: {
       name: 'hexo',
       dist: 'public',
-      build: 'npx hexo-cli generate'
+      build: 'npx hexo-cli generate',
+      server: 'http://localhost:4000'
     },
     requiredFiles: ['_config.js'],
     requiredDependencies: ['hexo'],
