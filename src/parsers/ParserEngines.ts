@@ -49,12 +49,13 @@ export const Engines = {
               }
             }
 
-            const jsonObj = docYaml.toJSON();
-            return jsyaml.dump(jsonObj, options);
+            return docYaml.toString({
+              lineWidth: 5000
+            });
           }
         }
 
-        return jsyaml.dump(obj, options);
+        return yaml.stringify(obj, options);
       }
     }
   }
