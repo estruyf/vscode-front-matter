@@ -15,11 +15,16 @@
 
 ### 🎨 Enhancements
 
+- [#522](https://github.com/estruyf/vscode-front-matter/issues/522): Configuration support added for [Astro](https://astro.build)
+- [#523](https://github.com/estruyf/vscode-front-matter/issues/523): Added support for `floating`/`decimal` numbers with a new number field property called `numberOptions`
+- [#524](https://github.com/estruyf/vscode-front-matter/issues/524): Removed the **Global settings** view from the panel. You can still get it back by configuring a [custom view mode](https://frontmatter.codes/docs/panel#view-modes).
+
 ### ⚡️ Optimizations
 
 ### 🐞 Fixes
 
 - [#518](https://github.com/estruyf/vscode-front-matter/issues/518): Fix an issue where the `YAML` parser adds line breaks to long strings
+- [#520](https://github.com/estruyf/vscode-front-matter/issues/520): Add the URL protocol to the host on opening the preview if it's missing
 
 ## [8.3.0] - 2023-02-14 - [Release notes](https://beta.frontmatter.codes/updates/v8.3.0)
 

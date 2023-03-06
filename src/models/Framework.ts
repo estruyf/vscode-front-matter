@@ -3,4 +3,5 @@ export interface Framework {
   dist: string;
   static: string;
   build: string;
+  server?: string;
 }

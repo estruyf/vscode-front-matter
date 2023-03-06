@@ -13,7 +13,7 @@ import { FeatureFlag } from '../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../constants/Features';
 import { GitAction } from './components/Git/GitAction';
 import { CustomView } from './components/CustomView';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export interface IViewPanelProps { }
 
@@ -31,6 +31,10 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
     unsetFocus,
     mode
   } = useMessages();
+
+  const allPanelValues = useMemo(() => {
+    return Object.values(FEATURE_FLAG.panel).filter(v => v !== FEATURE_FLAG.panel.globalSettings)
+  }, [FEATURE_FLAG.panel]);
 
   useEffect(() => {
     if (window.fmExternal && window.fmExternal.isDevelopment) {
@@ -80,7 +84,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
 
         <CustomView metadata={metadata} />
 
-        <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.globalSettings}>
+        <FeatureFlag features={mode?.features || [...allPanelValues]} flag={FEATURE_FLAG.panel.globalSettings}>
           <GlobalSettings settings={settings} />
         </FeatureFlag>
 

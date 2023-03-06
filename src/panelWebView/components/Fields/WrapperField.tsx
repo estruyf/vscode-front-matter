@@ -217,7 +217,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       </FieldBoundary>
     );
   } else if (field.type === 'number') {
-    let nrValue: number | null = parseInt(fieldValue as string);
+    let nrValue: number | null = field.numberOptions?.isDecimal ? parseFloat(fieldValue as string) : parseInt(fieldValue as string);
     if (isNaN(nrValue)) {
       nrValue = null;
     }
@@ -228,6 +228,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           key={field.name}
           label={field.title || field.name}
           description={field.description}
+          options={field.numberOptions}
           onChange={(value) => onSendUpdate(field.name, value, parentFields)}
           value={nrValue}
           required={!!field.required}

@@ -1,7 +1,12 @@
 import { join } from 'path';
 import { commands, Uri } from 'vscode';
 import { Folders } from '../../commands/Folders';
-import { COMMAND_NAME, SETTING_CONTENT_STATIC_FOLDER, SETTING_FRAMEWORK_ID } from '../../constants';
+import {
+  COMMAND_NAME,
+  SETTING_CONTENT_STATIC_FOLDER,
+  SETTING_FRAMEWORK_ID,
+  SETTING_PREVIEW_HOST
+} from '../../constants';
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { DashboardSettings, Settings } from '../../helpers';
@@ -62,10 +67,16 @@ export class SettingsListener extends BaseListener {
 
     if (frameworkId) {
       const allFrameworks = FrameworkDetector.getAll();
-      const framework = allFrameworks.find((f: Framework) => f.name === frameworkId);
+      const framework: Framework | undefined = allFrameworks.find(
+        (f: Framework) => f.name === frameworkId
+      );
       if (framework) {
         if (framework.static) {
           await Settings.update(SETTING_CONTENT_STATIC_FOLDER, framework.static, true);
+        }
+
+        if (framework.server) {
+          await Settings.update(SETTING_PREVIEW_HOST, framework.server, true);
         }
 
         await FrameworkDetector.checkDefaultSettings(framework);

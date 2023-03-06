@@ -11,6 +11,7 @@ import { FeatureFlag } from '../../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../../constants/Features';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { GitAction } from './Git/GitAction';
+import { useMemo } from 'react';
 
 export interface IBaseViewProps {
   settings: PanelSettings | undefined;
@@ -50,6 +51,10 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({
     (s) => s.bulk && (s.type === 'content' || !s.type)
   );
 
+  const allPanelValues = useMemo(() => {
+    return Object.values(FEATURE_FLAG.panel).filter(v => v !== FEATURE_FLAG.panel.globalSettings)
+  }, [FEATURE_FLAG.panel]);
+
   return (
     <div className="frontmatter">
       <div className={`ext_actions`}>
@@ -63,7 +68,7 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({
           <>
             <GitAction settings={settings} />
 
-            <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.globalSettings}>
+            <FeatureFlag features={mode?.features || [...allPanelValues]} flag={FEATURE_FLAG.panel.globalSettings}>
               <GlobalSettings settings={settings} isBase />
             </FeatureFlag>
 

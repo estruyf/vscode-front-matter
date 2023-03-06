@@ -238,7 +238,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
     return `
       <!DOCTYPE html>
-      <html lang="en">
+      <html lang="en-US">
       <head>
         <meta http-equiv="Content-Security-Policy" content="${csp.join('; ')}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">

@@ -104,8 +104,18 @@ export interface Field {
   dataFileKey?: string;
   dataFileValue?: string;
 
+  // Number field options
+  numberOptions?: NumberOptions;
+
   // When clause
   when?: WhenClause;
+}
+
+export interface NumberOptions {
+  isDecimal?: boolean;
+  min?: number;
+  max?: number;
+  step?: number;
 }
 
 export enum WhenOperator {
