@@ -141,7 +141,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
   }, [location.search]);
 
   return (
-    <div className={`w-full sticky top-0 z-40 ${getColors(
+    <div className={`w-full sticky top-0 z-20 ${getColors(
       `bg-gray-100 dark:bg-vulcan-500`,
       `bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]`
     )
