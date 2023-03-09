@@ -97,6 +97,8 @@ export const TaxonomyView: React.FunctionComponent<ITaxonomyViewProps> = ({
         version={settings?.versionInfo}
         isBacker={settings?.isBacker}
       />
+
+      <img className='hidden' src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Ffrontmatter.codes%2Fmetrics%2Fdashboards&slug=taxonomy" alt="Taxonomy metrics" />
     </PageLayout>
   );
 };

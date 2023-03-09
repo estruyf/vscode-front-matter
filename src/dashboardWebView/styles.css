@@ -432,12 +432,25 @@
         circle at top right,
         rgba(0, 0, 0, 0) 0,
         rgba(0, 0, 0, 0) var(--size),
-        rgb(0 154 163 / var(--tw-bg-opacity)) var(--size)
+        #009aa3 var(--size)
       );
     }
   }
 
   .answer {
-    @apply rounded border border-teal-100 border-opacity-20 p-4 pb-0;
+    @apply break-all rounded border border-teal-100 border-opacity-20 p-4 pb-0;
+  }
+}
+
+.chatbox {
+  textarea {
+    border: 0;
+    outline: 0;
+
+    &:focus {
+      border: 0 !important;
+      outline: 0 !important;
+      box-shadow: none !important;
+    }
   }
 }

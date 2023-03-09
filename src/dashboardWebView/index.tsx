@@ -132,7 +132,13 @@ if (elm) {
       </SettingsProvider>, elm);
   } else if (type === 'chatbot') {
     render(
-      <Chatbot />, elm);
+      <SettingsProvider
+        aiKey='466f5321-12d9-4d64-9e5b-ea5db41ed2ba'
+        aiUrl='https://aijsplayground-production.up.railway.app'
+        experimental={experimental === 'true'}
+        version={version || ""}>
+        <Chatbot />
+      </SettingsProvider>, elm);
   } else {
     render(
       <RecoilRoot>

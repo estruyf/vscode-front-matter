@@ -43,6 +43,8 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({
         version={settings?.versionInfo}
         isBacker={settings?.isBacker}
       />
+
+      <img className='hidden' src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Ffrontmatter.codes%2Fmetrics%2Fdashboards&slug=content" alt="Content metrics" />
     </PageLayout>
   );
 };

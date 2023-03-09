@@ -1,26 +1,9 @@
-import { processFmPlaceholders } from './../helpers/processFmPlaceholders';
-import { processPathPlaceholders } from './../helpers/processPathPlaceholders';
 import { Telemetry } from './../helpers/Telemetry';
-import {
-  SETTING_PREVIEW_HOST,
-  SETTING_PREVIEW_PATHNAME,
-  CONTEXT,
-  TelemetryEvent,
-  PreviewCommands,
-  SETTING_EXPERIMENTAL,
-  SETTING_DATE_FORMAT
-} from './../constants';
-import { ArticleHelper } from './../helpers/ArticleHelper';
+import { TelemetryEvent, PreviewCommands, SETTING_EXPERIMENTAL } from './../constants';
 import { join } from 'path';
-import { commands, env, Uri, ViewColumn, window } from 'vscode';
-import { Extension, parseWinPath, processKnownPlaceholders, Settings } from '../helpers';
-import { ContentFolder, ContentType, PreviewSettings } from '../models';
-import { format } from 'date-fns';
-import { DateHelper } from '../helpers/DateHelper';
-import { Article } from '.';
-import { urlJoin } from 'url-join-ts';
+import { commands, Uri, ViewColumn, window } from 'vscode';
+import { Extension, Settings } from '../helpers';
 import { WebviewHelper } from '@estruyf/vscode';
-import { Folders } from './Folders';
 
 export class Chatbot {
   /**
@@ -30,7 +13,7 @@ export class Chatbot {
     // Create the preview webview
     const webView = window.createWebviewPanel(
       'frontMatterChatbot',
-      'Front Matter - Ask me anything',
+      'Front Matter AI - Ask me anything',
       {
         viewColumn: ViewColumn.Beside,
         preserveFocus: true
