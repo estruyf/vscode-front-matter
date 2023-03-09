@@ -10,6 +10,7 @@ import './styles.css';
 import { Preview } from './components/Preview';
 import { SettingsProvider } from './providers/SettingsProvider';
 import { CustomPanelViewResult } from '../models';
+import { Chatbot } from './components/Chatbot/Chatbot';
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -128,6 +129,15 @@ if (elm) {
     render(
       <SettingsProvider experimental={experimental === 'true'} version={version || ""}>
         <Preview url={url} />
+      </SettingsProvider>, elm);
+  } else if (type === 'chatbot') {
+    render(
+      <SettingsProvider
+        aiKey='466f5321-12d9-4d64-9e5b-ea5db41ed2ba'
+        aiUrl='https://aijsplayground-production.up.railway.app'
+        experimental={experimental === 'true'}
+        version={version || ""}>
+        <Chatbot />
       </SettingsProvider>, elm);
   } else {
     render(

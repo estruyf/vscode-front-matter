@@ -121,6 +121,8 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({
           </h2>
         </div>
       </main>
+
+      <img className='hidden' src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Ffrontmatter.codes%2Fmetrics%2Fdashboards&slug=welcome" alt="Welcome metrics" />
     </div>
   );
 };

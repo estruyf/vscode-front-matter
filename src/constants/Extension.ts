@@ -28,6 +28,7 @@ export const COMMAND_NAME = {
   initTemplate: getCommandName('initTemplate'),
   collapseSections: getCommandName('collapseSections'),
   preview: getCommandName('preview'),
+  chatbot: getCommandName('chatbot'),
   dashboard: getCommandName('dashboard'),
   dashboardMedia: getCommandName('dashboard.media'),
   dashboardSnippets: getCommandName('dashboard.snippets'),
