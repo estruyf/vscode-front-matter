@@ -28,6 +28,9 @@ export const TelemetryEvent = {
   updateMediaMetadata: 'updateMediaMetadata',
   openExplorerView: 'openExplorerView',
 
+  // Chatbot
+  openChatbot: 'openChatbot',
+
   // Content types
   generateContentType: 'generateContentType',
   addMissingFields: 'addMissingFields',

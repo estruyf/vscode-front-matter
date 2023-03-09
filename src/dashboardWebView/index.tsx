@@ -10,6 +10,7 @@ import './styles.css';
 import { Preview } from './components/Preview';
 import { SettingsProvider } from './providers/SettingsProvider';
 import { CustomPanelViewResult } from '../models';
+import { Chatbot } from './components/Chatbot/Chatbot';
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -129,6 +130,9 @@ if (elm) {
       <SettingsProvider experimental={experimental === 'true'} version={version || ""}>
         <Preview url={url} />
       </SettingsProvider>, elm);
+  } else if (type === 'chatbot') {
+    render(
+      <Chatbot />, elm);
   } else {
     render(
       <RecoilRoot>

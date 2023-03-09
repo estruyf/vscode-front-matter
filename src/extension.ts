@@ -26,7 +26,8 @@ import {
   Dashboard,
   Article,
   Settings,
-  StatusListener
+  StatusListener,
+  Chatbot
 } from './commands';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
@@ -309,6 +310,11 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand(COMMAND_NAME.preview, () => Preview.open(extensionPath))
   );
 
+  // Chat to the bot
+  subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_NAME.chatbot, () => Chatbot.open(extensionPath))
+  );
+
   // Inserting an image in Markdown
   subscriptions.push(
     vscode.commands.registerCommand(COMMAND_NAME.insertMedia, Article.insertMedia)
@@ -369,7 +375,7 @@ export async function activate(context: vscode.ExtensionContext) {
     createFolder
   );
 
-  console.log(`FRONT MATTER CMS activated!`)
+  console.log(`FRONT MATTER CMS activated!`);
 }
 
 export function deactivate() {
