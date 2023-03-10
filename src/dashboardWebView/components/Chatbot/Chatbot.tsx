@@ -1,7 +1,4 @@
 import * as React from 'react';
-import { InitResponse } from './models/InitResponse';
-import { NewConversationResponse } from './models/NewConversationResponse';
-import { fetchEventSource } from '@microsoft/fetch-event-source';
 import { useCallback, useEffect } from 'react';
 import { Header } from './Header';
 import { Chatbox } from './Chatbox';
@@ -9,11 +6,12 @@ import { Loader } from './Loader';
 import { QuestionAnswer } from './QuestionAnswer';
 import { Placeholder } from './Placeholder';
 import { useSettingsContext } from '../../providers/SettingsProvider';
+import { AiInitResponse } from './models/AiInitResponse';
 
 export interface IChatbotProps { }
 
 export const Chatbot: React.FunctionComponent<IChatbotProps> = ({ }: React.PropsWithChildren<IChatbotProps>) => {
-  const { aiKey, aiUrl } = useSettingsContext();
+  const { aiUrl } = useSettingsContext();
   const [company, setCompany] = React.useState<string | undefined>(undefined);
   const [chatId, setChatId] = React.useState<number | undefined>(undefined);
   const [questions, setQuestions] = React.useState<string[]>([]);
@@ -24,46 +22,29 @@ export const Chatbot: React.FunctionComponent<IChatbotProps> = ({ }: React.Props
 
   const init = async () => {
     setLoading(true);
-    const initResponse = await fetch(`${aiUrl}/initializeMendable`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        anon_key: aiKey
-      })
-    });
+    const initResponse = await fetch(`${aiUrl}/api/ai-init`);
 
     if (!initResponse.ok) {
       return;
     }
 
-    const initJson: InitResponse = await initResponse.json();
+    const initJson: AiInitResponse = await initResponse.json();
 
-    const newChatResponse = await fetch(`${aiUrl}/newConversation`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        anon_key: aiKey,
-        messages: []
-      })
-    })
-
-    if (!newChatResponse.ok) {
+    if (!initJson.company || !initJson.chatId) {
       return;
     }
 
-    const newChat: NewConversationResponse = await newChatResponse.json();
-
-    setCompany(initJson.company.name);
-    setChatId(newChat.conversation_id);
+    setCompany(initJson.company);
+    setChatId(initJson.chatId);
     setLoading(false);
   };
 
-  const callChatbot = useCallback(async (message) => {
-    const nrOfQuestions = questions.length + 1;
+  const onTrigger = useCallback(async (message: string) => {
+    callChatbot(message, questions.length);
+  }, [questions, company, chatId]);
+
+  const callChatbot = useCallback(async (message, questionLenght) => {
+    const nrOfQuestions = questionLenght + 1;
     setLoading(true);
 
     setQuestions(prev => [...prev, message])
@@ -75,62 +56,69 @@ export const Chatbot: React.FunctionComponent<IChatbotProps> = ({ }: React.Props
       return;
     }
 
-    await fetchEventSource(`${aiUrl}/qaChat`, {
+    const response = await fetch(`${aiUrl}/api/ai-chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'accept': 'application/json',
+        'accept': '*',
       },
       body: JSON.stringify({
-        company: company,
-        conversation_id: chatId,
-        history: [{ prompt: "", response: "", sources: [] }],
+        company,
+        chatId,
         question: message,
       }),
-      onmessage: (event) => {
-        setLoading(false);
-        const data = JSON.parse(event.data);
-        const chunk = data.chunk;
-
-        if (chunk === "<|source|>") {
-          setSources(prev => {
-            const metadata = [...new Set(data.metadata.map((m: any) => m.link))] as string[]
-
-            const crntSources: string[][] = Object.assign([], prev)
-            if (crntSources.length === nrOfQuestions) {
-              crntSources[nrOfQuestions - 1] = metadata;
-            } else {
-              crntSources.push(metadata);
-            }
-
-            return crntSources;
-          });
-        } else if (chunk === "<|message_id|>" && data.metadata) {
-          setAnswerIds(prev => {
-            const crntAnswerIds: number[] = Object.assign([], prev)
-            if (crntAnswerIds.length === nrOfQuestions) {
-              crntAnswerIds[nrOfQuestions - 1] = data.metadata;
-            } else {
-              crntAnswerIds.push(data.metadata);
-            }
-
-            return crntAnswerIds;
-          });
-        } else {
-          setAnswers(prev => {
-            const crntAnswers: string[] = Object.assign([], prev)
-            if (crntAnswers.length === nrOfQuestions) {
-              crntAnswers[nrOfQuestions - 1] = crntAnswers[nrOfQuestions - 1] + chunk;
-            } else {
-              crntAnswers.push(chunk);
-            }
-
-            return crntAnswers;
-          });
-        }
-      }
     });
-  }, [company, chatId, questions]);
+
+    setLoading(false);
+
+    if (!response.ok) {
+      return;
+    }
+
+    const data: {
+      answer: string;
+      answerId: number;
+      sources: string[];
+    } = await response.json();
+
+    if (!data.answer || !data.answerId) {
+      return;
+    }
+
+    setSources(prev => {
+      const metadata = [...new Set(data.sources || [])] as string[]
+      const crntSources: string[][] = Object.assign([], prev)
+      if (crntSources.length === nrOfQuestions) {
+        crntSources[nrOfQuestions - 1] = metadata;
+      } else {
+        crntSources.push(metadata);
+      }
+
+      return crntSources;
+    });
+
+    setAnswerIds(prev => {
+      const crntAnswerIds: number[] = Object.assign([], prev)
+      if (crntAnswerIds.length === nrOfQuestions) {
+        crntAnswerIds[nrOfQuestions - 1] = data.answerId;
+      } else {
+        crntAnswerIds.push(data.answerId);
+      }
+
+      return crntAnswerIds;
+    });
+
+    setAnswers(prev => {
+      const crntAnswers: string[] = Object.assign([], prev)
+      if (crntAnswers.length === nrOfQuestions) {
+        crntAnswers[nrOfQuestions - 1] = data.answer;
+      } else {
+        crntAnswers.push(data.answer);
+      }
+
+      return crntAnswers;
+    });
+  }, [company, chatId]);
 
   useEffect(() => {
     init();
@@ -161,7 +149,7 @@ export const Chatbot: React.FunctionComponent<IChatbotProps> = ({ }: React.Props
         }
       </main>
 
-      <Chatbox isLoading={loading} onTrigger={callChatbot} />
+      <Chatbox isLoading={loading} onTrigger={onTrigger} />
 
       <img className='hidden' src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Ffrontmatter.codes%2Fmetrics%2Fdashboards&slug=chatbot" alt="Chatbot metrics" />
     </div>

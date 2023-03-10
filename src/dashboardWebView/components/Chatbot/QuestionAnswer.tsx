@@ -10,7 +10,7 @@ export interface IQuestionAnswerProps {
 
 export const QuestionAnswer: React.FunctionComponent<IQuestionAnswerProps> = ({ question, answer, answerId, sources }: React.PropsWithChildren<IQuestionAnswerProps>) => {
   return (
-    <ul className={`space-y-4 px-4`}>
+    <ul className={`mt-4 space-y-4 px-4`}>
       <li className='question'>{question}</li>
 
       <Answer

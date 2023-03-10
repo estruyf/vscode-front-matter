@@ -133,8 +133,7 @@ if (elm) {
   } else if (type === 'chatbot') {
     render(
       <SettingsProvider
-        aiKey='466f5321-12d9-4d64-9e5b-ea5db41ed2ba'
-        aiUrl='https://aijsplayground-production.up.railway.app'
+        aiUrl='https://frontmatter.codes'
         experimental={experimental === 'true'}
         version={version || ""}>
         <Chatbot />

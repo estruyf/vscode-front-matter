@@ -28,13 +28,14 @@ export const Feedback: React.FunctionComponent<IFeedbackProps> = ({
   }, []);
 
   const callVote = useCallback(async (vote: boolean) => {
-    await fetch(`${aiUrl}/updateMessageRating/${answerId}`, {
+    await fetch(`${aiUrl}/api/ai-feedback`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        ratingValue: vote ? 1 : -1,
+        answerId,
+        vote: vote ? 1 : -1,
       })
     })
   }, [answerId])

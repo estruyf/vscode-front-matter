@@ -4,19 +4,17 @@ interface ISettingsProviderProps {
   version?: string;
   experimental?: boolean;
   aiUrl?: string;
-  aiKey?: string;
 }
 
 const SettingsContext = React.createContext<ISettingsProviderProps | undefined>(undefined);
 
-const SettingsProvider: React.FunctionComponent<ISettingsProviderProps> = ({ version, experimental, aiKey, aiUrl, children }: React.PropsWithChildren<ISettingsProviderProps>) => {
+const SettingsProvider: React.FunctionComponent<ISettingsProviderProps> = ({ version, experimental, aiUrl, children }: React.PropsWithChildren<ISettingsProviderProps>) => {
   return (
     <SettingsContext.Provider
       value={{
         version,
         experimental,
-        aiUrl,
-        aiKey
+        aiUrl
       }}
     >
       {children}
