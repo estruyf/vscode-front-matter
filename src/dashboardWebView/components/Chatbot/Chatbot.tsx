@@ -140,7 +140,9 @@ export const Chatbot: React.FunctionComponent<IChatbotProps> = ({ }: React.Props
               answerId={answerIds[idx]}
               sources={sources[idx]} />
           )) : (
-            <Placeholder />
+            <Placeholder>
+              {loading ? <div className='dots'>Assistent is getting ready</div> : `I'm ready, what do you want to know?`}
+            </Placeholder>
           )
         }
 
