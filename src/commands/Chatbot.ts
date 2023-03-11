@@ -75,8 +75,8 @@ export class Chatbot {
       scriptUri = `http://${localServerUrl}/${dashboardFile}`;
     }
 
-    // Get experimental setting
-    const experimental = Settings.get(SETTING_EXPERIMENTAL);
+    // By default, the chatbot is seen as experimental
+    const experimental = true;
 
     webView.webview.html = `
       <!DOCTYPE html>
