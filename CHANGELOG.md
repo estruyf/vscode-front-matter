@@ -29,6 +29,7 @@
 - [#520](https://github.com/estruyf/vscode-front-matter/issues/520): Add the URL protocol to the host on opening the preview if it's missing
 - [#521](https://github.com/estruyf/vscode-front-matter/issues/521): Fix empty snippets dashboard placeholder
 - [#526](https://github.com/estruyf/vscode-front-matter/issues/526): Fix card content menu
+- [#531](https://github.com/estruyf/vscode-front-matter/issues/531): Fix prettier update which caused data views to not render list items
 
 ## [8.3.0] - 2023-02-14 - [Release notes](https://beta.frontmatter.codes/updates/v8.3.0)
 

@@ -7,6 +7,7 @@ import ListItemField from './ListItemField';
 
 import './ListField.css';
 import { LabelField } from './LabelField';
+import { AutoField } from 'uniforms-unstyled';
 
 export type ListFieldProps = HTMLFieldProps<
   unknown[],
@@ -27,14 +28,13 @@ function List({
       <LabelField label={label} id={props.id} required={props.required} />
 
       {value?.map((item, itemIndex) =>
-        Children.map(children as React.ReactElement[], (child: React.ReactElement, childIndex) =>
+        Children.map(children as React.ReactElement[], (child: React.ReactElement<any>, childIndex) =>
           isValidElement(child)
-            ? cloneElement(child, {
-                key: `${itemIndex}-${childIndex}`,
-                // name: '',
-                // name: (child.props.name || '').replace('$', '' + itemIndex),
-                ...itemProps
-              })
+            ? cloneElement(child as React.ReactElement<any>, {
+              key: `${itemIndex}-${childIndex}`,
+              name: ((child?.props as any)?.name || "").replace('$', '' + itemIndex),
+              ...itemProps,
+            })
             : child
         )
       )}
