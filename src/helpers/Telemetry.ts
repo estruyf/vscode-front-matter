@@ -1,21 +1,20 @@
-import TelemetryReporter, {
-  TelemetryEventMeasurements,
-  TelemetryEventProperties
-} from '@vscode/extension-telemetry';
 import { Extension, Settings } from '.';
 import { EXTENSION_BETA_ID, EXTENSION_ID, SETTING_TELEMETRY_DISABLE } from '../constants';
+import fetch from 'node-fetch';
+
+const METRICS_URL = 'https://frontmatter.codes/api/metrics';
 
 export class Telemetry {
   private static instance: Telemetry;
-  private static reporter: TelemetryReporter | null = null;
+  private extTitle: string;
+  private extVersion: string;
+  private events: any[] = [];
+  private timeout: NodeJS.Timeout | undefined;
 
   private constructor() {
     const extension = Extension.getInstance();
-    const extTitle = extension.isBetaVersion() ? EXTENSION_BETA_ID : EXTENSION_ID;
-    const extVersion = extension.version;
-    const appKey = `525037e5-70ff-4620-8e52-30e1aef8deee`;
-
-    Telemetry.reporter = new TelemetryReporter(extTitle, extVersion, appKey);
+    this.extTitle = extension.isBetaVersion() ? EXTENSION_BETA_ID : EXTENSION_ID;
+    this.extVersion = extension.version;
   }
 
   public static getInstance(): Telemetry {
@@ -25,24 +24,51 @@ export class Telemetry {
     return Telemetry.instance;
   }
 
-  public static send(
-    eventName: string,
-    properties?: TelemetryEventProperties,
-    measurements?: TelemetryEventMeasurements
-  ) {
-    if (!Telemetry.reporter) {
-      Telemetry.getInstance();
-    }
-
+  /**
+   * Send metrics to our own database
+   * @param eventName
+   * @param properties
+   * @returns
+   */
+  public static send(eventName: string, properties?: any) {
     const isDisabled = Settings.get<boolean>(SETTING_TELEMETRY_DISABLE);
     if (isDisabled) {
       return;
     }
 
-    Telemetry.reporter?.sendTelemetryEvent(eventName, properties, measurements);
+    const instance = Telemetry.getInstance();
+    instance.events.push({
+      name: eventName,
+      extName: instance.extTitle,
+      version: instance.extVersion,
+      properties
+    });
+
+    instance.debounceMetrics();
   }
 
-  public static dispose() {
-    Telemetry.reporter?.dispose();
+  /**
+   * Debounce the metrics by 1 second
+   */
+  private async debounceMetrics() {
+    const instance = Telemetry.getInstance();
+
+    // Check if timeout was defined
+    if (instance.timeout) {
+      clearTimeout(instance.timeout);
+    }
+
+    // Set a new timeout
+    instance.timeout = setTimeout(async () => {
+      await fetch(METRICS_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(this.events)
+      });
+      // Reset the events
+      this.events = [];
+    }, 1000);
   }
 }

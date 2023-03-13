@@ -378,9 +378,7 @@ export async function activate(context: vscode.ExtensionContext) {
   console.log(`FRONT MATTER CMS activated!`);
 }
 
-export function deactivate() {
-  Telemetry.dispose();
-}
+export function deactivate() {}
 
 const handleAutoDateUpdate = (e: vscode.TextDocumentWillSaveEvent) => {
   Article.autoUpdate(e);

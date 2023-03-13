@@ -13,7 +13,7 @@ export class TelemetryListener extends BaseListener {
 
     switch (msg.command) {
       case DashboardMessage.sendTelemetry:
-        Telemetry.send(msg.payload.event, msg.payload.properties, msg.payload.metrics);
+        Telemetry.send(msg.payload.event, msg.payload.properties);
         break;
     }
   }
