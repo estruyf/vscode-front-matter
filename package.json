@@ -2314,7 +2314,6 @@
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
     "@vscode/codicons": "0.0.20",
-    "@vscode/extension-telemetry": "^0.4.7",
     "@vscode/webview-ui-toolkit": "^0.9.1",
     "@webpack-cli/serve": "^1.6.0",
     "ajv": "^8.8.2",
