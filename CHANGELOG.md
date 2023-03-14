@@ -24,6 +24,8 @@
 
 ### ⚡️ Optimizations
 
+- [#536](https://github.com/estruyf/vscode-front-matter/issues/536): Set the start location from the script to the root of the workspace
+
 ### 🐞 Fixes
 
 - [#518](https://github.com/estruyf/vscode-front-matter/issues/518): Fix an issue where the `YAML` parser adds line breaks to long strings
