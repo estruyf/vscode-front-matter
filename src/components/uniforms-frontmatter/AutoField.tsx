@@ -5,6 +5,7 @@ export { AutoFieldProps } from 'uniforms';
 import BoolField from './BoolField';
 import DateField from './DateField';
 import ListField from './ListField';
+import LongTextField from './LongTextField';
 import NestField from './NestField';
 import NumField from './NumField';
 import RadioField from './RadioField';
@@ -28,6 +29,9 @@ const AutoField = createAutoField((props) => {
     case Object:
       return NestField;
     case String:
+      if (props["multiline"]) {
+        return LongTextField;
+      }
       return TextField;
   }
 

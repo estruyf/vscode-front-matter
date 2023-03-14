@@ -3,7 +3,6 @@ import Ajv from 'ajv';
 import { useEffect, useState } from 'react';
 import { JSONSchemaBridge } from 'uniforms-bridge-json-schema';
 import { AutoFields, AutoForm, ErrorsField } from '../../../components/uniforms-frontmatter';
-// import { AutoFields, AutoForm, ErrorsField } from 'uniforms-antd';
 import { ErrorBoundary } from '@sentry/react';
 import { DataFormControls } from './DataFormControls';
 import useThemeColors from '../../hooks/useThemeColors';
@@ -24,7 +23,11 @@ export const DataForm: React.FunctionComponent<IDataFormProps> = ({
   const [bridge, setBridge] = useState<JSONSchemaBridge | null>(null);
   const { getColors } = useThemeColors();
 
-  const ajv = new Ajv({ allErrors: true, useDefaults: true });
+  const ajv = new Ajv({
+    allErrors: true,
+    useDefaults: true,
+    strict: false,
+  });
 
   const jsonValidator = (schema: object) => {
     const validator = ajv.compile(schema);

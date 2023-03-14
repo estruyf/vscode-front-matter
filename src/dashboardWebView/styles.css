@@ -85,7 +85,8 @@
       @apply my-2;
     }
 
-    input {
+    input,
+    textarea {
       @apply w-full px-2 py-1 text-vulcan-500;
 
       &::placeholder {
