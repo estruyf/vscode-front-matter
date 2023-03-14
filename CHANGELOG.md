@@ -15,6 +15,7 @@
 - [#363](https://github.com/estruyf/vscode-front-matter/issues/363): Multiline support for the `string` field in data view
 - [#513](https://github.com/estruyf/vscode-front-matter/issues/513): Added support for external UI scripts to add custom HTML on the dashboard elements
 - [#530](https://github.com/estruyf/vscode-front-matter/issues/530): Implementation of the Front Matter AI 🤖 powered by [mendable.ai](https://mendable.ai)
+- [#537](https://github.com/estruyf/vscode-front-matter/issues/537): Allow to use the root path `/` as the public folder
 
 ### 🎨 Enhancements
 

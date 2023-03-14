@@ -69,6 +69,6 @@ export class Telemetry {
       });
       // Reset the events
       this.events = [];
-    }, 1000) as NodeJS.Timeout;
+    }, 1000) as any as NodeJS.Timeout;
   }
 }

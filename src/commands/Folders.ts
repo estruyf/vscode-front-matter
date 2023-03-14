@@ -174,7 +174,7 @@ export class Folders {
   public static getStaticFolderRelativePath(): string | undefined {
     let staticFolder = Settings.get<string>(SETTING_CONTENT_STATIC_FOLDER);
 
-    if (staticFolder && staticFolder.includes(WORKSPACE_PLACEHOLDER)) {
+    if (staticFolder && (staticFolder.includes(WORKSPACE_PLACEHOLDER) || staticFolder === '/')) {
       staticFolder = Folders.getAbsFilePath(staticFolder);
       const wsFolder = Folders.getWorkspaceFolder();
       if (wsFolder) {
