@@ -40,8 +40,6 @@ export const NumberField: React.FunctionComponent<INumberFieldProps> = ({
     }
   }, [value]);
 
-  console.log(`NumberField: ${label} - ${value} - ${JSON.stringify(options)}`)
-
   return (
     <div className={`metadata_field ${showRequiredState ? 'required' : ''}`}>
       <FieldTitle label={label} icon={<CalculatorIcon />} required={required} />

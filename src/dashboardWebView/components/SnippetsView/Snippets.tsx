@@ -78,8 +78,6 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
     });
   }, []);
 
-  console.log('snippets', snippetKeys);
-
   return (
     <PageLayout
       header={
