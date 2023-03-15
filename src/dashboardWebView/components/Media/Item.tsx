@@ -109,7 +109,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
       relPath = mediaParsed.split(wsFolderParsed).pop();
 
-      if (settings.staticFolder && relPath) {
+      // If the static folder is the root, we can just return the relative path
+      if (settings.staticFolder === "/") {
+        return relPath;
+      } else if (settings.staticFolder && relPath) {
         const staticFolderParsed = parseWinPath(settings.staticFolder);
         relPath = relPath.split(staticFolderParsed).pop();
       }

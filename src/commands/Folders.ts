@@ -175,11 +175,14 @@ export class Folders {
     let staticFolder = Settings.get<string>(SETTING_CONTENT_STATIC_FOLDER);
 
     if (staticFolder && (staticFolder.includes(WORKSPACE_PLACEHOLDER) || staticFolder === '/')) {
-      staticFolder = Folders.getAbsFilePath(staticFolder);
+      staticFolder =
+        staticFolder === '/'
+          ? Folders.getAbsFilePath('[[workspace]]')
+          : Folders.getAbsFilePath(staticFolder);
       const wsFolder = Folders.getWorkspaceFolder();
       if (wsFolder) {
         const relativePath = relative(parseWinPath(wsFolder.fsPath), parseWinPath(staticFolder));
-        return relativePath;
+        return relativePath === '' ? '/' : relativePath;
       }
     }
 
