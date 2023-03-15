@@ -7,6 +7,7 @@ import { Notifications } from './Notifications';
 import { parseWinPath } from './parseWinPath';
 import { LocalStore } from '../constants';
 import { existsAsync, renameAsync } from '../utils';
+import { existsSync, mkdirSync, renameSync } from 'fs';
 
 interface MediaRecord {
   description: string;
@@ -23,11 +24,38 @@ export class MediaLibrary {
       return;
     }
 
+    // In version 8.4.0 we moved to a new database location
+    // This is to ensure that the database is moved to the new location
+    const oldDbPath = join(
+      parseWinPath(wsFolder?.fsPath || ''),
+      LocalStore.rootFolder,
+      LocalStore.contentFolder,
+      LocalStore.mediaDatabaseFile
+    );
+
+    const dbFolder = join(
+      parseWinPath(wsFolder?.fsPath || ''),
+      LocalStore.rootFolder,
+      LocalStore.databaseFolder
+    );
+    const dbPath = join(dbFolder, LocalStore.mediaDatabaseFile);
+
+    if (existsSync(oldDbPath)) {
+      // Check if the database folder exists
+      if (!existsSync(dbFolder)) {
+        mkdirSync(dbFolder, { recursive: true });
+      }
+      // Move the database file
+      if (existsSync(oldDbPath)) {
+        renameSync(oldDbPath, dbPath);
+      }
+    }
+
     this.db = new JsonDB(
       join(
         parseWinPath(wsFolder?.fsPath || ''),
         LocalStore.rootFolder,
-        LocalStore.contentFolder,
+        LocalStore.databaseFolder,
         LocalStore.mediaDatabaseFile
       ),
       true,

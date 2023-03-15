@@ -26,6 +26,7 @@
 
 ### ⚡️ Optimizations
 
+- [#534](https://github.com/estruyf/vscode-front-matter/issues/534): Moved the `mediaDb.json` file to a `.frontmatter/database` folder instead of the `.frontmatter/content` folder
 - [#536](https://github.com/estruyf/vscode-front-matter/issues/536): Set the start location from the script to the root of the workspace
 
 ### 🐞 Fixes
