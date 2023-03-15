@@ -447,7 +447,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             {renderMediaIcon}
           </div>
           <div
-            className={`absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center`}
+            className={`absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center group-hover:brightness-75`}
           >
             {renderMedia}
           </div>
