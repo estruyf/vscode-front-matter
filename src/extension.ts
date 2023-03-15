@@ -375,7 +375,7 @@ export async function activate(context: vscode.ExtensionContext) {
     createFolder
   );
 
-  console.log(`FRONT MATTER CMS activated!`);
+  console.log(`FRONT MATTER CMS activated! Ready to start writing... 👩‍💻🧑‍💻👨‍💻`);
 }
 
 export function deactivate() {}
