@@ -13,7 +13,8 @@ import { FeatureFlag } from '../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../constants/Features';
 import { GitAction } from './components/Git/GitAction';
 import { CustomView } from './components/CustomView';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { usePrevious } from './hooks/usePrevious';
 
 export interface IViewPanelProps { }
 
@@ -31,10 +32,36 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
     unsetFocus,
     mode
   } = useMessages();
+  const prevMediaSelection = usePrevious(mediaSelecting);
+  const [scrollY, setScrollY] = useState(0);
 
   const allPanelValues = useMemo(() => {
     return Object.values(FEATURE_FLAG.panel).filter(v => v !== FEATURE_FLAG.panel.globalSettings)
   }, [FEATURE_FLAG.panel]);
+
+  const scollListener = useCallback((e: Event) => {
+    if (!mediaSelecting) {
+      setScrollY(window.scrollY);
+    }
+  }, [mediaSelecting]);
+
+  useEffect(() => {
+    if (prevMediaSelection && !mediaSelecting) {
+      setTimeout(() => {
+        window.scrollTo({
+          top: scrollY,
+        })
+      }, 0);
+    }
+  }, [mediaSelecting, prevMediaSelection]);
+
+  useEffect(() => {
+    window.addEventListener('scroll', scollListener, true);
+
+    return () => {
+      window.removeEventListener('scroll', scollListener, true);
+    }
+  }, [mediaSelecting]);
 
   useEffect(() => {
     if (window.fmExternal && window.fmExternal.isDevelopment) {
