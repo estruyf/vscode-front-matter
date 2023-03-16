@@ -383,7 +383,7 @@ export class ArticleHelper {
     const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
 
     let prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
-    prefix = ArticleHelper.getFilePrefix(folderPath, contentType);
+    prefix = ArticleHelper.getFilePrefix(prefix, folderPath, contentType);
 
     // Name of the file or folder to create
     let sanitizedName = ArticleHelper.sanitize(titleValue);
@@ -436,8 +436,14 @@ export class ArticleHelper {
    * @param contentType
    * @returns
    */
-  public static getFilePrefix(filePath?: string, contentType?: ContentType): string | undefined {
-    let prefix = undefined;
+  public static getFilePrefix(
+    prefix: string | null | undefined,
+    filePath?: string,
+    contentType?: ContentType
+  ): string | undefined {
+    if (!prefix) {
+      prefix = undefined;
+    }
 
     // Retrieve the file prefix from the folder
     if (filePath) {
