@@ -2316,7 +2316,7 @@
     "@vscode/codicons": "0.0.20",
     "@vscode/webview-ui-toolkit": "^0.9.1",
     "@webpack-cli/serve": "^1.6.0",
-    "ajv": "^8.8.2",
+    "ajv": "^8.12.0",
     "array-move": "^4.0.0",
     "assert": "^2.0.0",
     "autoprefixer": "^10.4.13",

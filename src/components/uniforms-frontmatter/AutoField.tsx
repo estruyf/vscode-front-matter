@@ -11,6 +11,7 @@ import NumField from './NumField';
 import RadioField from './RadioField';
 import SelectField from './SelectField';
 import TextField from './TextField';
+import UnknownField from './UnknownField';
 
 const AutoField = createAutoField((props) => {
   if (props.allowedValues) {
@@ -33,6 +34,8 @@ const AutoField = createAutoField((props) => {
         return LongTextField;
       }
       return TextField;
+    default:
+      return UnknownField;
   }
 
   return invariant(false, 'Unsupported field type: %s', props.fieldType);

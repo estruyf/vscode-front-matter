@@ -333,7 +333,7 @@
   }
 }
 
-.experimental {
+.experimental form {
   [type='text'],
   [type='email'],
   [type='url'],

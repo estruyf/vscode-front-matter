@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Ajv from 'ajv';
+import Ajv, { FormatDefinition } from 'ajv';
 import { useEffect, useState } from 'react';
 import { JSONSchemaBridge } from 'uniforms-bridge-json-schema';
 import { AutoFields, AutoForm, ErrorsField } from '../../../components/uniforms-frontmatter';
@@ -21,21 +21,41 @@ export const DataForm: React.FunctionComponent<IDataFormProps> = ({
   onClear
 }: React.PropsWithChildren<IDataFormProps>) => {
   const [bridge, setBridge] = useState<JSONSchemaBridge | null>(null);
+  const [error, setError] = useState<string | undefined>(undefined);
   const { getColors } = useThemeColors();
 
   const ajv = new Ajv({
     allErrors: true,
     useDefaults: true,
+    validateSchema: false,
     strict: false,
+    strictTypes: false
+  });
+
+  // Added the multiline keyword for the textarea field
+  ajv.addKeyword({
+    keyword: 'multiline',
+    type: 'boolean',
+    schemaType: 'boolean'
   });
 
   const jsonValidator = (schema: object) => {
-    const validator = ajv.compile(schema);
+    try {
+      setError(undefined);
+      const validator = ajv.compile(schema);
 
-    return (crntModel: object) => {
-      validator(crntModel);
-      return validator.errors?.length ? { details: validator.errors } : null;
-    };
+      return (crntModel: object) => {
+        if (validator(crntModel)) {
+          return null;
+        } else {
+          console.log(validator.errors)
+          return { details: validator.errors }
+        }
+      };
+    } catch (error) {
+      setError((error as Error).message);
+      return () => { };
+    }
   };
 
   useEffect(() => {
@@ -48,13 +68,21 @@ export const DataForm: React.FunctionComponent<IDataFormProps> = ({
     return null;
   }
 
+  if (error) {
+    return (
+      <div className={`mt-4 text-[var(--vscode-errorForeground)]`}>
+        {error}
+      </div>
+    )
+  }
+
   return (
     <ErrorBoundary>
       <div className="autoform">
         {model ? (
-          <h2 className={getColors(`text-gray-500 dark:text-whisper-900`, `text-[var(--frontmatter-secondary-text)]`)}>Modify the data</h2>
+          <h2 className={getColors(`text - gray - 500 dark: text - whisper - 900`, `text - [var(--frontmatter - secondary - text)]`)}>Modify the data</h2>
         ) : (
-          <h2 className={getColors(`text-gray-500 dark:text-whisper-900`, `text-[var(--frontmatter-secondary-text)]`)}>Add new data</h2>
+          <h2 className={getColors(`text - gray - 500 dark: text - whisper - 900`, `text - [var(--frontmatter - secondary - text)]`)}>Add new data</h2>
         )}
 
         <AutoForm
@@ -70,7 +98,6 @@ export const DataForm: React.FunctionComponent<IDataFormProps> = ({
           <div className={`errors`}>
             <ErrorsField />
           </div>
-
           <DataFormControls model={model} onClear={onClear} />
         </AutoForm>
       </div>
