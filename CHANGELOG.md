@@ -36,6 +36,7 @@
 - [#520](https://github.com/estruyf/vscode-front-matter/issues/520): Add the URL protocol to the host on opening the preview if it's missing
 - [#521](https://github.com/estruyf/vscode-front-matter/issues/521): Fix empty snippets dashboard placeholder
 - [#526](https://github.com/estruyf/vscode-front-matter/issues/526): Fix card content menu
+- [#529](https://github.com/estruyf/vscode-front-matter/issues/529): Fix YAML parsing in Windows which added an extra carriage return
 - [#531](https://github.com/estruyf/vscode-front-matter/issues/531): Fix prettier update which caused data views to not render list items
 - [#539](https://github.com/estruyf/vscode-front-matter/issues/539): Fix the override of the default file prefix on content creation
 
