@@ -98,7 +98,7 @@
       "properties": {
         "frontMatter.extensibility.scripts": {
           "type": "array",
-          "markdownDescription": "Specify the list of scripts to load in the Front Matter CMS. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.extensibility.scripts)",
+          "markdownDescription": "Specify the list of scripts to load in the Front Matter CMS. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.extensibility.scripts)",
           "default": [],
           "items": {
             "type": "string"
@@ -107,11 +107,11 @@
         "frontMatter.experimental": {
           "type": "boolean",
           "default": false,
-          "markdownDescription": "Specify if you want to enable the experimental features. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.experimental)"
+          "markdownDescription": "Specify if you want to enable the experimental features. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.experimental)"
         },
         "frontMatter.extends": {
           "type": "array",
-          "markdownDescription": "Specify the list of paths/URLs to extend the Front Matter CMS config. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.extends)",
+          "markdownDescription": "Specify the list of paths/URLs to extend the Front Matter CMS config. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.extends)",
           "default": [],
           "items": {
             "type": "string"
@@ -120,7 +120,7 @@
         "frontMatter.content.autoUpdateDate": {
           "type": "boolean",
           "default": false,
-          "markdownDescription": "Specify if you want to automatically update the modified date of your article/page (only content located in your content folder). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.autoupdatedate)",
+          "markdownDescription": "Specify if you want to automatically update the modified date of your article/page (only content located in your content folder). [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.autoupdatedate)",
           "scope": "Content"
         },
         "frontMatter.content.defaultFileType": {
@@ -137,7 +137,7 @@
               "type": "string"
             }
           ],
-          "markdownDescription": "Specify the default file type for the content to create. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.defaultfiletype)",
+          "markdownDescription": "Specify the default file type for the content to create. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.defaultfiletype)",
           "scope": "Content"
         },
         "frontMatter.content.defaultSorting": {
@@ -156,12 +156,12 @@
               "type": "string"
             }
           ],
-          "markdownDescription": "Specify the default sorting option for the content dashboard. You can use one of the values from the enum or define your own ID. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.defaultSorting)",
+          "markdownDescription": "Specify the default sorting option for the content dashboard. You can use one of the values from the enum or define your own ID. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.defaultSorting)",
           "scope": "Content"
         },
         "frontMatter.content.draftField": {
           "type": "object",
-          "markdownDescription": "Define the draft field you want to use to manage your content. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.draftfield)",
+          "markdownDescription": "Define the draft field you want to use to manage your content. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.draftfield)",
           "default": {
             "name": "draft",
             "type": "boolean"
@@ -203,24 +203,24 @@
         "frontMatter.content.fmHighlight": {
           "type": "boolean",
           "default": true,
-          "markdownDescription": "Specify if you want to highlight the Front Matter in the Markdown file. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.fmhighlight)",
+          "markdownDescription": "Specify if you want to highlight the Front Matter in the Markdown file. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.fmhighlight)",
           "scope": "Content"
         },
         "frontMatter.content.hideFm": {
           "type": "boolean",
-          "markdownDescription": "Specify if you want to hide the Front Matter in the Markdown file. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.hidefm)",
+          "markdownDescription": "Specify if you want to hide the Front Matter in the Markdown file. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.hidefm)",
           "scope": "Content"
         },
         "frontMatter.content.hideFmMessage": {
           "type": "string",
           "default": "Use the editor panel to make front matter changes",
-          "markdownDescription": "Specify the message to display when the Front Matter is hidden. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.hidefmMessage)",
+          "markdownDescription": "Specify the message to display when the Front Matter is hidden. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.hidefmMessage)",
           "scope": "Content"
         },
         "frontMatter.content.pageFolders": {
           "type": "array",
           "default": [],
-          "markdownDescription": "This array of folders defines where the extension can retrieve or create new pages. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.pagefolders)",
+          "markdownDescription": "This array of folders defines where the extension can retrieve or create new pages. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.pagefolders)",
           "items": {
             "type": "object",
             "properties": {
@@ -271,7 +271,7 @@
         "frontMatter.content.placeholders": {
           "type": "array",
           "default": [],
-          "markdownDescription": "This array of placeholders defines the placeholders that you can use in your content types and templates for automatically populating your content its front matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.placeholders)",
+          "markdownDescription": "This array of placeholders defines the placeholders that you can use in your content types and templates for automatically populating your content its front matter. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.placeholders)",
           "items": {
             "type": "object",
             "properties": {
@@ -301,12 +301,12 @@
         "frontMatter.content.publicFolder": {
           "type": "string",
           "default": "",
-          "markdownDescription": "Specify the folder name where all your assets are located. For instance in Hugo this is the `static` folder. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.publicfolder)",
+          "markdownDescription": "Specify the folder name where all your assets are located. For instance in Hugo this is the `static` folder. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.publicfolder)",
           "scope": "Content"
         },
         "frontMatter.content.snippets": {
           "type": "object",
-          "markdownDescription": "Define the snippets you want to use in your content. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.snippets)",
+          "markdownDescription": "Define the snippets you want to use in your content. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.snippets)",
           "additionalProperties": {
             "type": "object",
             "required": [
@@ -356,7 +356,7 @@
         "frontMatter.content.sorting": {
           "type": "array",
           "default": [],
-          "markdownDescription": "Define the sorting options for your dashboard content. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.sorting)",
+          "markdownDescription": "Define the sorting options for your dashboard content. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.sorting)",
           "items": {
             "type": "object",
             "properties": {
@@ -407,7 +407,7 @@
             "mdx",
             "markdown"
           ],
-          "markdownDescription": "Specify the file types that you want to use in Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.supportedfiletypes)",
+          "markdownDescription": "Specify the file types that you want to use in Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.supportedfiletypes)",
           "items": {
             "type": "string"
           },
@@ -416,13 +416,13 @@
         "frontMatter.content.wysiwyg": {
           "type": "boolean",
           "default": true,
-          "markdownDescription": "Specifies if you want to enable/disable the What You See, Is What You Get (WYSIWYG) markdown controls. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.content.wysiwyg)",
+          "markdownDescription": "Specifies if you want to enable/disable the What You See, Is What You Get (WYSIWYG) markdown controls. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.wysiwyg)",
           "scope": "Content"
         },
         "frontMatter.custom.scripts": {
           "type": "array",
           "default": [],
-          "markdownDescription": "Specify the path to a Node.js script to execute. The current file path will be provided as an argument. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.custom.scripts)",
+          "markdownDescription": "Specify the path to a Node.js script to execute. The current file path will be provided as an argument. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.custom.scripts)",
           "items": {
             "type": "object",
             "properties": {
@@ -532,19 +532,19 @@
             "number"
           ],
           "default": true,
-          "markdownDescription": "Specify if you want to enable/disable pagination for your content. You can define your page number up to 52. Default items per page is `16`. Disabling the pagination can be done by setting it to `false`. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.content.pagination)",
+          "markdownDescription": "Specify if you want to enable/disable pagination for your content. You can define your page number up to 52. Default items per page is `16`. Disabling the pagination can be done by setting it to `false`. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.dashboard.content.pagination)",
           "scope": "Dashboard"
         },
         "frontMatter.dashboard.content.cardTags": {
           "type": "string",
           "default": "tags",
-          "markdownDescription": "Specify the name of the metadata field that will be used to show the tags on the content card. When empty or null, it will hide the tags from the card. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.dashboard.content.cardTags)",
+          "markdownDescription": "Specify the name of the metadata field that will be used to show the tags on the content card. When empty or null, it will hide the tags from the card. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontMatter.dashboard.content.cardTags)",
           "scope": "Dashboard"
         },
         "frontMatter.dashboard.mediaSnippet": {
           "type": "array",
           "default": [],
-          "markdownDescription": "Specify the a snippet for your custom media insert markup. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.mediasnippet)",
+          "markdownDescription": "Specify the a snippet for your custom media insert markup. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.dashboard.mediasnippet)",
           "deprecationMessage": "This setting is deprecated and will be removed in the next major version. Please define your media snippet in the `frontMatter.content.snippet` setting.",
           "items": {
             "type": "string",
@@ -558,13 +558,13 @@
             "null"
           ],
           "default": null,
-          "markdownDescription": "Specify if you want to open the dashboard when you start VS Code.  [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.dashboard.openonstart)",
+          "markdownDescription": "Specify if you want to open the dashboard when you start VS Code.  [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.dashboard.openonstart)",
           "scope": "Dashboard"
         },
         "frontMatter.data.files": {
           "type": "array",
           "default": [],
-          "markdownDescription": "Specify the data files you want to use for your website. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.data.files)",
+          "markdownDescription": "Specify the data files you want to use for your website. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.data.files)",
           "items": {
             "type": "object",
             "default": {},
@@ -664,7 +664,7 @@
         "frontMatter.data.folders": {
           "type": "array",
           "default": [],
-          "markdownDescription": "Specify the data files you want to use for your website. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.data.files)",
+          "markdownDescription": "Specify the data files you want to use for your website. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.data.files)",
           "items": {
             "type": "object",
             "default": {},
@@ -719,7 +719,7 @@
         "frontMatter.data.types": {
           "type": "array",
           "default": [],
-          "markdownDescription": "Specify the data types. These types can be used in for your data files. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.data.types)",
+          "markdownDescription": "Specify the data types. These types can be used in for your data files. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.data.types)",
           "items": {
             "type": "object",
             "default": {},
@@ -742,13 +742,13 @@
         "frontMatter.file.preserveCasing": {
           "type": "boolean",
           "default": false,
-          "markdownDescription": "Specify if you want to preserve the casing of your file names from the title. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.file.preservecasing)",
+          "markdownDescription": "Specify if you want to preserve the casing of your file names from the title. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.file.preservecasing)",
           "scope": "File"
         },
         "frontMatter.framework.id": {
           "type": "string",
           "default": "",
-          "markdownDescription": "Specify the ID of your static site generator or framework you are using for your website. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.framework.id)"
+          "markdownDescription": "Specify the ID of your static site generator or framework you are using for your website. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.framework.id)"
         },
         "frontMatter.framework.startCommand": {
           "type": [
@@ -756,16 +756,16 @@
             "null"
           ],
           "default": null,
-          "markdownDescription": "Specify the command you want to use to start your static site generator or framework. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.framework.startcommand)"
+          "markdownDescription": "Specify the command you want to use to start your static site generator or framework. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.framework.startcommand)"
         },
         "frontMatter.git.enabled": {
           "type": "boolean",
-          "markdownDescription": "Specify if you want to use the Git actions for your website. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.git.enabled)",
+          "markdownDescription": "Specify if you want to use the Git actions for your website. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.git.enabled)",
           "default": false
         },
         "frontMatter.git.commitMessage": {
           "type": "string",
-          "markdownDescription": "Specify the commit message you want to use for the sync. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.git.commitmessage)",
+          "markdownDescription": "Specify the commit message you want to use for the sync. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.git.commitmessage)",
           "default": "Synced by Front Matter"
         },
         "frontMatter.global.activeMode": {
@@ -774,13 +774,13 @@
             "null"
           ],
           "default": "",
-          "markdownDescription": "Specify the activated mode of Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.global.activemode)",
+          "markdownDescription": "Specify the activated mode of Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.global.activemode)",
           "scope": "Global"
         },
         "frontMatter.global.modes": {
           "type": "array",
           "default": [],
-          "markdownDescription": "Specify the modes you want to use for Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.global.modes)",
+          "markdownDescription": "Specify the modes you want to use for Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.global.modes)",
           "items": {
             "type": "object",
             "default": {},
@@ -833,13 +833,13 @@
             "warning",
             "error"
           ],
-          "markdownDescription": "Specifies the notifications you want to see. By default, all notifications types will be shown. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.global.notifications)",
+          "markdownDescription": "Specifies the notifications you want to see. By default, all notifications types will be shown. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.global.notifications)",
           "scope": "Templates"
         },
         "frontMatter.global.disabledNotificaitons": {
           "type": "array",
           "default": [],
-          "markdownDescription": "This is an array with the notifications types that can be disabled for Front Matter CMS. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.global.disablednotifications)",
+          "markdownDescription": "This is an array with the notifications types that can be disabled for Front Matter CMS. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.global.disablednotifications)",
           "enum": [
             "requiredFieldValidation"
           ]
@@ -853,7 +853,7 @@
             "FileNameAsc",
             "FileNameDesc"
           ],
-          "markdownDescription": "Specify the default sorting option for the media dashboard. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.media.defaultsorting)",
+          "markdownDescription": "Specify the default sorting option for the media dashboard. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.media.defaultsorting)",
           "scope": "Content"
         },
         "frontMatter.media.supportedMimeTypes": {
@@ -863,7 +863,7 @@
             "video/*",
             "audio/*"
           ],
-          "markdownDescription": "Specify the mime types to support for the media files. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.media.supportedMimeTypes)",
+          "markdownDescription": "Specify the mime types to support for the media files. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.media.supportedMimeTypes)",
           "items": {
             "type": "string"
           },
@@ -872,36 +872,36 @@
         "frontMatter.panel.freeform": {
           "type": "boolean",
           "default": true,
-          "markdownDescription": "Specifies if you want to allow yourself from entering unknown tags/categories in the tag picker (when enabled, you will have the option to store them afterwards). Default: true. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.panel.freeform)",
+          "markdownDescription": "Specifies if you want to allow yourself from entering unknown tags/categories in the tag picker (when enabled, you will have the option to store them afterwards). Default: true. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.panel.freeform)",
           "scope": "Panel"
         },
         "frontMatter.preview.host": {
           "type": "string",
           "default": "",
-          "markdownDescription": "Specify the host URL (example: http://localhost:1313) to be used when opening the preview. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.preview.host)",
+          "markdownDescription": "Specify the host URL (example: http://localhost:1313) to be used when opening the preview. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.preview.host)",
           "scope": "Site preview"
         },
         "frontMatter.preview.pathName": {
           "type": "string",
           "default": "",
-          "markdownDescription": "Specify the path you want to add after the host and before your slug. This can be used for instance to include the year/month like: `yyyy/MM`. The date will be generated based on the article its date field value. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.preview.pathname)",
+          "markdownDescription": "Specify the path you want to add after the host and before your slug. This can be used for instance to include the year/month like: `yyyy/MM`. The date will be generated based on the article its date field value. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.preview.pathname)",
           "scope": "Site preview"
         },
         "frontMatter.site.baseURL": {
           "type": "string",
           "default": "",
-          "markdownDescription": "Specify the base URL of your site, this will be used for SEO checks. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.site.baseurl)",
+          "markdownDescription": "Specify the base URL of your site, this will be used for SEO checks. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.site.baseurl)",
           "scope": "Site"
         },
         "frontMatter.taxonomy.alignFilename": {
           "type": "boolean",
           "default": false,
-          "markdownDescription": "Align the filename with the new slug when it gets generated. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.alignfilename)",
+          "markdownDescription": "Align the filename with the new slug when it gets generated. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.alignfilename)",
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.categories": {
           "type": "array",
-          "markdownDescription": "Specifies the categories which can be used in the Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.categories)",
+          "markdownDescription": "Specifies the categories which can be used in the Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.categories)",
           "items": {
             "type": "string"
           },
@@ -909,7 +909,7 @@
         },
         "frontMatter.taxonomy.commaSeparatedFields": {
           "type": "array",
-          "markdownDescription": "Specify the fields names that Front Matter should treat as a comma-separated array. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.commaSeparatedFields)",
+          "markdownDescription": "Specify the fields names that Front Matter should treat as a comma-separated array. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.commaSeparatedFields)",
           "items": {
             "type": "string",
             "description": "Name of the fields you want to use as comma-separated arrays."
@@ -921,7 +921,7 @@
             "array",
             "null"
           ],
-          "markdownDescription": "Specify the type of contents you want to use for your articles/pages/etc. Make sure the `type` is correctly set in your front matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.contentTypes)",
+          "markdownDescription": "Specify the type of contents you want to use for your articles/pages/etc. Make sure the `type` is correctly set in your front matter. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.contentTypes)",
           "items": {
             "type": "object",
             "description": "Define the content types you want to use in Front Matter.",
@@ -1417,7 +1417,7 @@
         },
         "frontMatter.taxonomy.customTaxonomy": {
           "type": "array",
-          "markdownDescription": "Specify the custom taxonomy field data. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.tags)",
+          "markdownDescription": "Specify the custom taxonomy field data. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.tags)",
           "items": {
             "type": "object",
             "properties": {
@@ -1457,17 +1457,17 @@
         "frontMatter.taxonomy.dateField": {
           "type": "string",
           "default": "date",
-          "markdownDescription": "This setting is used to define the publishing date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.datefield)",
+          "markdownDescription": "This setting is used to define the publishing date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.datefield)",
           "deprecationMessage": "This setting is deprecated and will be removed in the next major version. Please use the new `isPublishDate` settings instead in your content types date fields."
         },
         "frontMatter.taxonomy.dateFormat": {
           "type": "string",
-          "markdownDescription": "Specify the date format for your articles. Check [date-fns formating](https://date-fns.org/v2.0.1/docs/format) for more information. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.dateformat)",
+          "markdownDescription": "Specify the date format for your articles. Check [date-fns formating](https://date-fns.org/v2.0.1/docs/format) for more information. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.dateformat)",
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.fieldGroups": {
           "type": "array",
-          "markdownDescription": "Define the field groups you want to use for your block fields. [Check in the docs](https://frontmatter.codes/docs/settings#frontMatter.taxonomy.fieldgroups)",
+          "markdownDescription": "Define the field groups you want to use for your block fields. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontMatter.taxonomy.fieldgroups)",
           "default": [],
           "items": {
             "type": "object",
@@ -1499,7 +1499,7 @@
             "TOML",
             "JSON"
           ],
-          "markdownDescription": "Specify the type of Front Matter to use. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.frontmattertype)",
+          "markdownDescription": "Specify the type of Front Matter to use. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.frontmattertype)",
           "enumDescriptions": [
             "Specifies you want to use YAML markup for the front matter (default)",
             "Specifies you want to use TOML markup for the front matter",
@@ -1510,19 +1510,19 @@
         "frontMatter.taxonomy.indentArrays": {
           "type": "boolean",
           "default": true,
-          "markdownDescription": "Specify if arrays in front matter are indented. Default: true. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.indentarrays)",
+          "markdownDescription": "Specify if arrays in front matter are indented. Default: true. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.indentarrays)",
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.modifiedField": {
           "type": "string",
           "default": "lastmod",
-          "markdownDescription": "This setting is used to define the modified date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.modifiedfield)",
+          "markdownDescription": "This setting is used to define the modified date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.modifiedfield)",
           "deprecationMessage": "This setting is deprecated and will be removed in the next major version. Please use the new `isModifiedDate` settings instead in your content types date fields."
         },
         "frontMatter.taxonomy.noPropertyValueQuotes": {
           "type": "array",
           "default": [],
-          "markdownDescription": "Specify the properties from which quotes need to be removed. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.nopropertyvaluequotes)",
+          "markdownDescription": "Specify the properties from which quotes need to be removed. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.nopropertyvaluequotes)",
           "items": {
             "type": "string",
             "description": "Name of the properties you want to remove quotes from."
@@ -1532,52 +1532,52 @@
         "frontMatter.taxonomy.seoContentLengh": {
           "type": "number",
           "default": 1760,
-          "markdownDescription": "Specifies the optimal minimum length for your articles. Between 1,760 words – 2,400 is the absolute ideal article length for SEO in 2021. (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seocontentlengh)",
+          "markdownDescription": "Specifies the optimal minimum length for your articles. Between 1,760 words – 2,400 is the absolute ideal article length for SEO in 2021. (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.seocontentlengh)",
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.seoDescriptionField": {
           "type": "string",
           "default": "description",
-          "markdownDescription": "Specifies the name of the SEO description field for your page. Default is 'description'. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seodescriptionfield)",
+          "markdownDescription": "Specifies the name of the SEO description field for your page. Default is 'description'. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.seodescriptionfield)",
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.seoDescriptionLength": {
           "type": "number",
           "default": 160,
-          "markdownDescription": "Specifies the optimal description length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seodescriptionlength)",
+          "markdownDescription": "Specifies the optimal description length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.seodescriptionlength)",
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.seoSlugLength": {
           "type": "number",
           "default": 75,
-          "markdownDescription": "Specifies the optimal slug length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seoSlugLength)",
+          "markdownDescription": "Specifies the optimal slug length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.seoSlugLength)",
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.seoTitleField": {
           "type": "string",
           "default": "title",
-          "markdownDescription": "Specifies the name of the SEO title field for your page. Default is 'title'. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seotitlefield)",
+          "markdownDescription": "Specifies the name of the SEO title field for your page. Default is 'title'. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.seotitlefield)",
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.seoTitleLength": {
           "type": "number",
           "default": 60,
-          "markdownDescription": "Specifies the optimal title length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.seotitlelength)",
+          "markdownDescription": "Specifies the optimal title length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.seotitlelength)",
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.slugPrefix": {
           "type": "string",
-          "markdownDescription": "Specify a prefix for the slug. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.slugprefix)",
+          "markdownDescription": "Specify a prefix for the slug. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.slugprefix)",
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.slugSuffix": {
           "type": "string",
-          "markdownDescription": "Specify a suffix for the slug. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.slugsuffix)",
+          "markdownDescription": "Specify a suffix for the slug. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.slugsuffix)",
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.tags": {
           "type": "array",
-          "markdownDescription": "Specifies the tags which can be used in the Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.taxonomy.tags)",
+          "markdownDescription": "Specifies the tags which can be used in the Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.tags)",
           "items": {
             "type": "string"
           },
@@ -1586,24 +1586,24 @@
         "frontMatter.telemetry.disable": {
           "type": "boolean",
           "default": false,
-          "markdownDescription": "Specify if you want to disable the telemetry. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.telemetry.disable)"
+          "markdownDescription": "Specify if you want to disable the telemetry. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.telemetry.disable)"
         },
         "frontMatter.templates.enabled": {
           "type": "boolean",
           "default": false,
-          "markdownDescription": "Specify if you want to use templates. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.enabled)",
+          "markdownDescription": "Specify if you want to use templates. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.templates.enabled)",
           "scope": "Templates"
         },
         "frontMatter.templates.folder": {
           "type": "string",
           "default": ".frontmatter/templates",
-          "markdownDescription": "Specify the folder to use for your article templates. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.folder)",
+          "markdownDescription": "Specify the folder to use for your article templates. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.templates.folder)",
           "scope": "Templates"
         },
         "frontMatter.templates.prefix": {
           "type": "string",
           "default": "yyyy-MM-dd",
-          "markdownDescription": "Specify the prefix you want to add for your new article filenames. [Check in the docs](https://frontmatter.codes/docs/settings#frontmatter.templates.prefix)",
+          "markdownDescription": "Specify the prefix you want to add for your new article filenames. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.templates.prefix)",
           "scope": "Templates"
         }
       }
