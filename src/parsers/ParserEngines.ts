@@ -13,6 +13,25 @@ export const getFormatOpts = (format: string): Format => {
   return formats[format];
 };
 
+const removeCarriageReturn = (value: any) => {
+  const replacer = (crntValue: string) => {
+    return crntValue.replace(/\r/g, '');
+  }
+
+  if (typeof value === "string" && value.endsWith(`\r`)) {
+    value = replacer(value);
+  } else if (value instanceof Array) {
+    value = value.map(v => {
+      if (typeof v === "string" && v.endsWith(`\r`)) {
+        v = replacer(v);
+      }
+      return v;
+    })
+  }
+
+  return value;
+}
+
 export const Engines = {
   engines: {
     toml: {
@@ -25,7 +44,7 @@ export const Engines = {
     },
     yaml: {
       parse: (value: string) => {
-        return yaml.parse(value);
+        return yaml.parse(removeCarriageReturn(value));
       },
       stringify: (obj: any, options?: any) => {
         // Do our own parsing to keep the comments
@@ -33,13 +52,18 @@ export const Engines = {
           const originalContent = FrontMatterParser.currentContent;
           FrontMatterParser.currentContent = null;
 
-          const frontMatter = getMatter(originalContent);
+          let frontMatter = getMatter(originalContent);
           if (frontMatter) {
+            if (typeof frontMatter === "string" && frontMatter.endsWith(`\r`)) {
+              frontMatter = frontMatter.substring(0, frontMatter.length - 1)
+            }
+
             const docYaml = yaml.parseDocument(frontMatter);
 
             // Update all the new values
             for (const key in obj) {
-              docYaml.set(key, obj[key]);
+              let value = obj[key];
+              docYaml.set(key, removeCarriageReturn(value));
             }
 
             // Check if there are values to remove
@@ -49,9 +73,11 @@ export const Engines = {
               }
             }
 
-            return docYaml.toString({
+            let updatedValue = docYaml.toString({
               lineWidth: 5000
             });
+
+            return updatedValue;
           }
         }
 
