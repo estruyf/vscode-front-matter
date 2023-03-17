@@ -56,7 +56,8 @@
   "contributes": {
     "configurationDefaults": {
       "files.associations": {
-        "**/frontmatter.json": "jsonc"
+        "**/frontmatter.json": "jsonc",
+        "**/.frontmatter/config/*.json": "jsonc"
       }
     },
     "keybindings": [{
