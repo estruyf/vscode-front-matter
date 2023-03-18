@@ -1,7 +1,12 @@
-import { window } from 'vscode';
+import { QuickPickItem, QuickPickItemKind, window } from 'vscode';
+import { Backers } from '../commands';
 import { Folders } from '../commands/Folders';
+import { SETTING_SEO_TITLE_LENGTH, SETTING_SPONSORS_AI_TITLE } from '../constants';
 import { ContentType } from './ContentType';
 import { Notifications } from './Notifications';
+import { Settings } from './SettingsHelper';
+import { Logger } from './Logger';
+import fetch from 'node-fetch';
 
 export class Questions {
   /**
@@ -24,12 +29,87 @@ export class Questions {
    * @returns
    */
   public static async ContentTitle(showWarning: boolean = true): Promise<string | undefined> {
-    const title = await window.showInputBox({
-      title: 'Title',
-      prompt: `What would you like to use as a title for the content to create?`,
-      placeHolder: `Content title`,
-      ignoreFocusOut: true
-    });
+    const aiContentTitle = Settings.get<boolean>(SETTING_SPONSORS_AI_TITLE);
+    const username = await Backers.getUsername();
+
+    let title: string | undefined = '';
+
+    if (aiContentTitle && username) {
+      title = await window.showInputBox({
+        title: 'Title or description',
+        prompt: `What would you like to write about?`,
+        placeHolder: `Content title or description`,
+        ignoreFocusOut: true
+      });
+
+      if (title) {
+        try {
+          const response = await fetch(`https://frontmatter.codes/api/ai-title`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              accept: 'application/json'
+            },
+            body: JSON.stringify({
+              title: title,
+              username: username,
+              nrOfCharacters: Settings.get<number>(SETTING_SEO_TITLE_LENGTH) || 60
+            })
+          });
+          const data: string[] = await response.json();
+
+          if (data && data.length > 0) {
+            const options: QuickPickItem[] = [
+              {
+                label: `✏️ your title/description`,
+                kind: QuickPickItemKind.Separator
+              },
+              {
+                label: title
+              },
+              {
+                label: `🤖 AI generated title`,
+                kind: QuickPickItemKind.Separator
+              },
+              ...data.map((d: string) => ({
+                label: d
+              }))
+            ];
+
+            const selectedTitle = await window.showQuickPick(options, {
+              title: 'Select a title',
+              placeHolder: `Select a title for your content`,
+              ignoreFocusOut: true
+            });
+
+            if (selectedTitle) {
+              title = selectedTitle.label;
+            } else if (!selectedTitle) {
+              // Reset the title, so the user can enter their own title
+              title = undefined;
+            }
+          }
+        } catch (e) {
+          Logger.error((e as Error).message);
+          Notifications.error(
+            `Failed fetching the AI title. Please try to use your own title or try again later.`
+          );
+          title = undefined;
+        }
+      } else if (!title && showWarning) {
+        Notifications.warning(`You did not specify a title for your content.`);
+        return;
+      }
+    }
+
+    if (!title) {
+      title = await window.showInputBox({
+        title: 'Title',
+        prompt: `What would you like to use as a title for the content to create?`,
+        placeHolder: `Content title`,
+        ignoreFocusOut: true
+      });
+    }
 
     if (!title && showWarning) {
       Notifications.warning(`You did not specify a title for your content.`);

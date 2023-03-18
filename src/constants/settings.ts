@@ -91,6 +91,11 @@ export const SETTING_GIT_ENABLED = 'git.enabled';
 export const SETTING_GIT_COMMIT_MSG = 'git.commitMessage';
 
 /**
+ * Sponsors only settings
+ */
+export const SETTING_SPONSORS_AI_TITLE = 'sponsors.ai.titleEnabled';
+
+/**
  * @deprecated
  */
 export const SETTING_CONTENT_FOLDERS = 'content.folders';

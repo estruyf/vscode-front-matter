@@ -26,7 +26,7 @@
   },
   "qna": "https://github.com/estruyf/vscode-front-matter/discussions",
   "engines": {
-    "vscode": "^1.63.0"
+    "vscode": "^1.70.0"
   },
   "categories": [
     "Other"
@@ -96,6 +96,12 @@
     "configuration": {
       "title": "Front Matter: use frontmatter.json for shared team settings",
       "properties": {
+        "frontMatter.sponsors.ai.titleEnabled": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Specify if you want to enable AI suggestions for content titles. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.sponsors.ai.titleenabled)",
+          "scope": "Sponsors"
+        },
         "frontMatter.extensibility.scripts": {
           "type": "array",
           "markdownDescription": "Specify the list of scripts to load in the Front Matter CMS. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.extensibility.scripts)",
@@ -2285,7 +2291,7 @@
     "@types/react": "17.0.0",
     "@types/react-datepicker": "^4.1.7",
     "@types/react-dom": "17.0.0",
-    "@types/vscode": "^1.63.0",
+    "@types/vscode": "^1.70.0",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
     "@vscode/codicons": "0.0.20",
