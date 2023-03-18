@@ -10,12 +10,17 @@
 
 > **Info**: To enable the experimental features you need to set the `frontMatter.experimental` setting to `true`.
 
+### Sponsor only features
+
+- Title AI suggestions which you need to enable by setting the `frontMatter.sponsors.ai.titleEnabled` setting to `true`.
+
 ### ✨ New features
 
 - [#363](https://github.com/estruyf/vscode-front-matter/issues/363): Multiline support for the `string` field in data view
 - [#513](https://github.com/estruyf/vscode-front-matter/issues/513): Added support for external UI scripts to add custom HTML on the dashboard elements
 - [#530](https://github.com/estruyf/vscode-front-matter/issues/530): Implementation of the Front Matter AI 🤖 powered by [mendable.ai](https://mendable.ai)
 - [#537](https://github.com/estruyf/vscode-front-matter/issues/537): Allow to use the root path `/` as the public folder
+- [#541](https://github.com/estruyf/vscode-front-matter/issues/541): Add title AI suggestions for GitHub sponsors
 
 ### 🎨 Enhancements
 
