@@ -10,7 +10,7 @@
 
 > **Info**: To enable the experimental features you need to set the `frontMatter.experimental` setting to `true`.
 
-### Sponsor only features
+### 🙏 Sponsor only features
 
 - Title AI suggestions which you need to enable by setting the `frontMatter.sponsors.ai.titleEnabled` setting to `true`.
 
