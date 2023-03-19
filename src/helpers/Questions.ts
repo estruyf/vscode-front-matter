@@ -1,12 +1,11 @@
 import { authentication, QuickPickItem, QuickPickItemKind, window } from 'vscode';
-import { Backers } from '../commands';
 import { Folders } from '../commands/Folders';
-import { SETTING_SEO_TITLE_LENGTH, SETTING_SPONSORS_AI_TITLE } from '../constants';
+import { SETTING_SPONSORS_AI_TITLE } from '../constants';
 import { ContentType } from './ContentType';
 import { Notifications } from './Notifications';
 import { Settings } from './SettingsHelper';
 import { Logger } from './Logger';
-import fetch from 'node-fetch';
+import { SponsorAi } from '../services/SponsorAI';
 
 export class Questions {
   /**
@@ -45,21 +44,9 @@ export class Questions {
 
         if (title) {
           try {
-            const response = await fetch(`https://frontmatter.codes/api/ai-title`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                accept: 'application/json'
-              },
-              body: JSON.stringify({
-                title: title,
-                username: githubAuth.account.label,
-                nrOfCharacters: Settings.get<number>(SETTING_SEO_TITLE_LENGTH) || 60
-              })
-            });
-            const data: string[] = await response.json();
+            const aiTitles = await SponsorAi.getTitles(githubAuth.accessToken, title);
 
-            if (data && data.length > 0) {
+            if (aiTitles && aiTitles.length > 0) {
               const options: QuickPickItem[] = [
                 {
                   label: `✏️ your title/description`,
@@ -72,7 +59,7 @@ export class Questions {
                   label: `🤖 AI generated title`,
                   kind: QuickPickItemKind.Separator
                 },
-                ...data.map((d: string) => ({
+                ...aiTitles.map((d: string) => ({
                   label: d
                 }))
               ];
