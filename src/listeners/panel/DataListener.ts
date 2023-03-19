@@ -135,9 +135,7 @@ export class DataListener extends BaseListener {
       }
     }
 
-    // if (JSON.stringify(DataListener.lastMetadataUpdate) !== JSON.stringify(updatedMetadata)) {
     this.sendMsg(Command.metadata, updatedMetadata);
-    // }
 
     DataListener.lastMetadataUpdate = updatedMetadata;
   }
@@ -297,6 +295,11 @@ export class DataListener extends BaseListener {
     const editor = window.activeTextEditor;
     if (!editor) {
       return '';
+    }
+
+    // Check if the file is a valid article
+    if (!ArticleHelper.isSupportedFile()) {
+      return;
     }
 
     const article = ArticleHelper.getFrontMatter(editor);
