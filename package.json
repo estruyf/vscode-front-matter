@@ -1154,6 +1154,11 @@
                       "default": true,
                       "description": "Specify if the field is editable"
                     },
+                    "encodeEmoji": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "Specify if the field should encode emoji"
+                    },
                     "required": {
                       "type": "boolean",
                       "default": false,

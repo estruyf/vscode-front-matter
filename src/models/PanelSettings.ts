@@ -94,7 +94,7 @@ export interface Field {
   fileExtensions?: string[];
   editable?: boolean;
   required?: boolean;
-  encode?: boolean;
+  encodeEmoji?: boolean;
 
   // Date fields
   isPublishDate?: boolean;

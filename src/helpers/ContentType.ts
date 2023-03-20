@@ -28,7 +28,7 @@ import { Telemetry } from './Telemetry';
 import { processKnownPlaceholders } from './PlaceholderHelper';
 import { basename } from 'path';
 import { ParsedFrontMatter } from '../parsers';
-import { existsAsync, writeFileAsync } from '../utils';
+import { encodeEmoji, existsAsync, writeFileAsync } from '../utils';
 
 export class ContentType {
   /**
@@ -614,10 +614,11 @@ export class ContentType {
           return;
         }
 
-        // Check if the title needs to be encoded
+        titleValue = titleValue.trim();
+        // Check if the title needs to encode the emoji's used in it
         const titleField = contentType.fields.find((f) => f.name === 'title');
-        if (titleField && titleField.encode) {
-          titleValue = encodeURIComponent(titleValue);
+        if (titleField && titleField.encodeEmoji) {
+          titleValue = encodeEmoji(titleValue);
         }
 
         let templatePath = contentType.template;

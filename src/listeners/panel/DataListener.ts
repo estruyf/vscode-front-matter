@@ -18,6 +18,7 @@ import { Article } from '../../commands';
 import { ParsedFrontMatter } from '../../parsers';
 import { processKnownPlaceholders } from '../../helpers/PlaceholderHelper';
 import { PostMessageData } from '../../models';
+import { encodeEmoji } from '../../utils';
 
 const FILE_LIMIT = 10;
 
@@ -173,6 +174,7 @@ export class DataListener extends BaseListener {
     const dateFields = contentType.fields.filter((f) => f.type === 'datetime');
     const imageFields = contentType.fields.filter((f) => f.type === 'image' && f.multiple);
     const fileFields = contentType.fields.filter((f) => f.type === 'file' && f.multiple);
+    const fieldsWithEmojiEncoding = contentType.fields.filter((f) => f.encodeEmoji);
 
     // Support multi-level fields
     const parentObj = DataListener.getParentObject(article.data, article, parents, blockData);
@@ -208,6 +210,9 @@ export class DataListener extends BaseListener {
         }
       }
     } else {
+      if (fieldsWithEmojiEncoding.some((f) => f.name === field)) {
+        value = encodeEmoji(value);
+      }
       parentObj[field] = value;
     }
 

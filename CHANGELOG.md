@@ -30,6 +30,7 @@
 - [#523](https://github.com/estruyf/vscode-front-matter/issues/523): Added support for `floating`/`decimal` numbers with a new number field property called `numberOptions`
 - [#524](https://github.com/estruyf/vscode-front-matter/issues/524): Removed the **Global settings** view from the panel. You can still get it back by configuring a [custom view mode](https://frontmatter.codes/docs/panel#view-modes).
 - [#535](https://github.com/estruyf/vscode-front-matter/issues/535): Retain the scroll position after selecting a media file
+- [#538](https://github.com/estruyf/vscode-front-matter/issues/538): Added support to encode emojis in the string field
 
 ### ⚡️ Optimizations
 
