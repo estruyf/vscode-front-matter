@@ -46,6 +46,7 @@
 - [#529](https://github.com/estruyf/vscode-front-matter/issues/529): Fix YAML parsing in Windows which added an extra carriage return
 - [#531](https://github.com/estruyf/vscode-front-matter/issues/531): Fix prettier update which caused data views to not render list items
 - [#539](https://github.com/estruyf/vscode-front-matter/issues/539): Fix the override of the default file prefix on content creation
+- [#543](https://github.com/estruyf/vscode-front-matter/issues/543): Fix JSON schema for script commands
 
 ## [8.3.0] - 2023-02-14 - [Release notes](https://beta.frontmatter.codes/updates/v8.3.0)
 

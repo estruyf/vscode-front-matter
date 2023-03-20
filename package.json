@@ -475,7 +475,7 @@
               "command": {
                 "$id": "#scriptCommand",
                 "type": "string",
-                "oneOf": [{
+                "anyOf": [{
                     "enum": [
                       "node",
                       "bash",

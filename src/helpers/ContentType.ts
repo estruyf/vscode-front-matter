@@ -609,9 +609,15 @@ export class ContentType {
         cancellable: false
       },
       async () => {
-        const titleValue = await Questions.ContentTitle();
+        let titleValue = await Questions.ContentTitle();
         if (!titleValue) {
           return;
+        }
+
+        // Check if the title needs to be encoded
+        const titleField = contentType.fields.find((f) => f.name === 'title');
+        if (titleField && titleField.encode) {
+          titleValue = encodeURIComponent(titleValue);
         }
 
         let templatePath = contentType.template;
