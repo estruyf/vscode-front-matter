@@ -1,4 +1,4 @@
-export const EXTENSION_NAME = 'Front Matter';
+export const EXTENSION_NAME = '𝖥𝗋𝗈𝗇𝗍 𝖬𝖺𝗍𝗍𝖾𝗋 𝖢𝖬𝖲';
 
 export const CONFIG_KEY = 'frontMatter';
 
