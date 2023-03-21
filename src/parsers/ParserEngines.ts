@@ -16,21 +16,21 @@ export const getFormatOpts = (format: string): Format => {
 const removeCarriageReturn = (value: any) => {
   const replacer = (crntValue: string) => {
     return crntValue.replace(/\r/g, '');
-  }
+  };
 
-  if (typeof value === "string" && value.endsWith(`\r`)) {
+  if (typeof value === 'string' && value.endsWith(`\r`)) {
     value = replacer(value);
   } else if (value instanceof Array) {
-    value = value.map(v => {
-      if (typeof v === "string" && v.endsWith(`\r`)) {
+    value = value.map((v) => {
+      if (typeof v === 'string' && v.endsWith(`\r`)) {
         v = replacer(v);
       }
       return v;
-    })
+    });
   }
 
   return value;
-}
+};
 
 export const Engines = {
   engines: {
@@ -54,8 +54,8 @@ export const Engines = {
 
           let frontMatter = getMatter(originalContent);
           if (frontMatter) {
-            if (typeof frontMatter === "string" && frontMatter.endsWith(`\r`)) {
-              frontMatter = frontMatter.substring(0, frontMatter.length - 1)
+            if (typeof frontMatter === 'string' && frontMatter.endsWith(`\r`)) {
+              frontMatter = frontMatter.substring(0, frontMatter.length - 1);
             }
 
             const docYaml = yaml.parseDocument(frontMatter);
@@ -73,11 +73,12 @@ export const Engines = {
               }
             }
 
-            let updatedValue = docYaml.toString({
-              lineWidth: 5000
-            });
+            let updatedValue = docYaml.toJSON();
 
-            return updatedValue;
+            return yaml.stringify(updatedValue, {
+              lineWidth: 5000,
+              defaultStringType: 'PLAIN'
+            });
           }
         }
 
