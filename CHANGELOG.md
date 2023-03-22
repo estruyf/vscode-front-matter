@@ -48,6 +48,7 @@
 - [#531](https://github.com/estruyf/vscode-front-matter/issues/531): Fix prettier update which caused data views to not render list items
 - [#539](https://github.com/estruyf/vscode-front-matter/issues/539): Fix the override of the default file prefix on content creation
 - [#543](https://github.com/estruyf/vscode-front-matter/issues/543): Fix JSON schema for script commands
+- [#547](https://github.com/estruyf/vscode-front-matter/issues/547): Fix setting default value in a hidden group field (`block`)
 
 ## [8.3.0] - 2023-02-14 - [Release notes](https://beta.frontmatter.codes/updates/v8.3.0)
 
