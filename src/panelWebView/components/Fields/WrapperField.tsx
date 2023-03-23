@@ -146,7 +146,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
   }, []);
 
   if (field.hidden || fieldValue === undefined) {
-    if (field.hidden && fieldValue === undefined && field.default) {
+    if (field.hidden && fieldValue === undefined && field.default && parentFields.length > 0) {
       onSendUpdate(field.name, field.default, parentFields);
     }
 
