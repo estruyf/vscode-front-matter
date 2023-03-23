@@ -28,7 +28,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const view = useRecoilValue(ViewSelector);
   const settings = useRecoilValue(SettingsSelector);
   const draftField = useMemo(() => settings?.draftField, [settings]);
-  const [customHtml, setCustomHtml] = useState<string | undefined>(undefined);
+  const [imageHtml, setImageHtml] = useState<string | undefined>(undefined);
+  const [footerHtml, setFooterHtml] = useState<string | undefined>(undefined);
   const { getColors } = useThemeColors();
 
   const escapedTitle = useMemo(() => {
@@ -87,9 +88,24 @@ export const Item: React.FunctionComponent<IItemProps> = ({
         ...pageData
       }).then(htmlContent => {
         if (htmlContent) {
-          setCustomHtml(htmlContent);
+          setFooterHtml(htmlContent);
         } else {
-          setCustomHtml(undefined);
+          setFooterHtml(undefined);
+        }
+      });
+
+      window.fmExternal.getCardImage(fmFilePath, {
+        fmFilePath,
+        date,
+        title,
+        description,
+        type,
+        ...pageData
+      }).then(htmlContent => {
+        if (htmlContent) {
+          setImageHtml(htmlContent);
+        } else {
+          setImageHtml(undefined);
         }
       });
     }
@@ -113,28 +129,32 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             )
               }`}
           >
-            {pageData[PREVIEW_IMAGE_FIELD] ? (
-              <img
-                src={`${pageData[PREVIEW_IMAGE_FIELD]}`}
-                alt={escapedTitle}
-                className="absolute inset-0 h-full w-full object-cover group-hover:brightness-75"
-                loading="lazy"
-              />
-            ) : (
-              <div
-                className={`flex items-center justify-center ${getColors(
-                  'bg-whisper-500 dark:bg-vulcan-200 dark:group-hover:bg-vulcan-100',
-                  'bg-[var(--vscode-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)]'
+            {
+              imageHtml ?
+                <div className="h-full w-full" dangerouslySetInnerHTML={{ __html: imageHtml }} /> :
+                pageData[PREVIEW_IMAGE_FIELD] ? (
+                  <img
+                    src={`${pageData[PREVIEW_IMAGE_FIELD]}`}
+                    alt={escapedTitle}
+                    className="absolute inset-0 h-full w-full object-cover group-hover:brightness-75"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div
+                    className={`flex items-center justify-center ${getColors(
+                      'bg-whisper-500 dark:bg-vulcan-200 dark:group-hover:bg-vulcan-100',
+                      'bg-[var(--vscode-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)]'
+                    )
+                      }`}
+                  >
+                    <MarkdownIcon className={`h-32 ${getColors(
+                      'text-vulcan-100 dark:text-whisper-100',
+                      'text-[var(--vscode-sideBarTitle-foreground)] opacity-80'
+                    )
+                      }`} />
+                  </div>
                 )
-                  }`}
-              >
-                <MarkdownIcon className={`h-32 ${getColors(
-                  'text-vulcan-100 dark:text-whisper-100',
-                  'text-[var(--vscode-sideBarTitle-foreground)] opacity-80'
-                )
-                  }`} />
-              </div>
-            )}
+            }
           </button>
 
           <div className="relative p-4 w-full grow">
@@ -181,8 +201,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           </div>
 
           {
-            customHtml && (
-              <div className="placeholder__card__footer p-4 w-full" dangerouslySetInnerHTML={{ __html: customHtml }} />
+            footerHtml && (
+              <div className="placeholder__card__footer p-4 w-full" dangerouslySetInnerHTML={{ __html: footerHtml }} />
             )
           }
         </div>
