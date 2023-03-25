@@ -93,7 +93,9 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           setFooterHtml(undefined);
         }
       });
+    }
 
+    if (window.fmExternal && window.fmExternal.getCardImage) {
       window.fmExternal.getCardImage(fmFilePath, {
         fmFilePath,
         date,

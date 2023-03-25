@@ -1,3 +1,4 @@
+import { SETTING_EXTENSIBILITY_SCRIPTS } from './../constants/settings';
 import { parseWinPath } from './parseWinPath';
 import { Telemetry } from './Telemetry';
 import { Notifications } from './Notifications';
@@ -707,7 +708,22 @@ export class Settings {
         configJson,
         filePath
       );
+    } else if (typeof configJson === 'string') {
+      Settings.mergeStringArray(`${CONFIG_KEY}.${relSettingName}`, configJson);
     }
+  }
+
+  /**
+   * Merge the array setting in the global config
+   * @param key
+   * @param value
+   */
+  private static mergeStringArray(key: string, value: string) {
+    // Merge the arrays
+    Settings.globalConfig[key] = [...(Settings.globalConfig[key] || []), value];
+    Settings.globalConfig[key] = Settings.globalConfig[key].filter((item: any, index: number) => {
+      return Settings.globalConfig[key].indexOf(item) === index;
+    }, Settings.globalConfig[key]);
   }
 
   /**
