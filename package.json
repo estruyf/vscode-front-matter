@@ -769,6 +769,21 @@
           "markdownDescription": "Specify the commit message you want to use for the sync. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.git.commitmessage)",
           "default": "Synced by Front Matter"
         },
+        "frontMatter.git.submodule.pull": {
+          "type": "boolean",
+          "markdownDescription": "Specify if you want to pull submodules when syncing. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.git.submodule.pull)",
+          "default": false
+        },
+        "frontMatter.git.submodule.push": {
+          "type": "boolean",
+          "markdownDescription": "Specify if you want to push submodules when syncing. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.git.submodule.push)",
+          "default": false
+        },
+        "frontMatter.git.submodule.branch": {
+          "type": "string",
+          "markdownDescription": "Specify the submodule branch to checkout. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontMatter.git.submodule.branch)",
+          "default": ""
+        },
         "frontMatter.global.activeMode": {
           "type": [
             "string",

@@ -1,3 +1,8 @@
+import {
+  SETTING_GIT_SUBMODULE_BRANCH,
+  SETTING_GIT_SUBMODULE_PULL,
+  SETTING_GIT_SUBMODULE_PUSH
+} from './../../constants/settings';
 import { Settings } from './../../helpers/SettingsHelper';
 import { Dashboard } from '../../commands/Dashboard';
 import { ExplorerView } from '../../explorerView/ExplorerView';
@@ -5,6 +10,7 @@ import {
   ArticleHelper,
   Extension,
   Logger,
+  Notifications,
   processKnownPlaceholders,
   Telemetry
 } from '../../helpers';
@@ -95,6 +101,19 @@ export class GitListener {
       return;
     }
 
+    const submoduleBranch = Settings.get<string>(SETTING_GIT_SUBMODULE_BRANCH);
+    const submodulePull = Settings.get<boolean>(SETTING_GIT_SUBMODULE_PULL);
+
+    if (submoduleBranch) {
+      Logger.info(`Checking out the branch ${submoduleBranch} for submodules`);
+      await git.subModule(['foreach', 'git', 'checkout', submoduleBranch]);
+    }
+
+    if (submodulePull) {
+      Logger.info(`Pulling from remote with submodules`);
+      await git.subModule(['update', '--remote', '--merge']);
+    }
+
     Logger.info(`Pulling from remote`);
     await git.pull();
   }
@@ -111,6 +130,28 @@ export class GitListener {
     const git = this.getClient();
     if (!git) {
       return;
+    }
+
+    const submodulePush = Settings.get<boolean>(SETTING_GIT_SUBMODULE_PUSH);
+
+    if (submodulePush) {
+      Logger.info(`Pushing to remote with submodules`);
+
+      try {
+        await git.subModule(['foreach', 'git', 'add', '.', '-A']);
+        await git.subModule([
+          'foreach',
+          'git',
+          'commit',
+          '-m',
+          commitMsg || 'Synced by Front Matter'
+        ]);
+        await git.subModule(['foreach', 'git', 'push']);
+      } catch (e) {
+        Notifications.error(`Failed to push submodules. Please check the logs for more details.`);
+        Logger.error((e as Error).message);
+        return;
+      }
     }
 
     Logger.info(`Pushing to remote`);
