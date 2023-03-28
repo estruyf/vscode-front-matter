@@ -96,7 +96,7 @@ export const SETTING_GIT_SUBMODULE_BRANCH = 'git.submodule.branch';
 /**
  * Sponsors only settings
  */
-export const SETTING_SPONSORS_AI_TITLE = 'sponsors.ai.titleEnabled';
+export const SETTING_SPONSORS_AI_ENABLED = 'sponsors.ai.enabled';
 
 /**
  * @deprecated

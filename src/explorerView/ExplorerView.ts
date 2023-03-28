@@ -251,7 +251,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       <body>
         <div id="app" data-isProd="${isProd}" data-environment="${
       isBeta ? 'BETA' : 'main'
-    }" data-version="${version.usedVersion}" ></div>
+    }" data-version="${version.usedVersion}"></div>
 
       ${(scriptsToLoad || [])
         .map((script) => {

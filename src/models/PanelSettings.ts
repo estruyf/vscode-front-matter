@@ -28,6 +28,7 @@ export interface PanelSettings {
   dataTypes: DataType[] | undefined;
   fieldGroups: FieldGroup[] | undefined;
   commaSeparatedFields: string[];
+  aiEnabled: boolean;
 }
 
 export interface FieldGroup {

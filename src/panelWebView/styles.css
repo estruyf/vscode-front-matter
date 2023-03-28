@@ -291,7 +291,55 @@ button {
 .metadata_field__label {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 0.5rem;
+
+  div {
+    display: flex;
+    align-items: center;
+  }
+
+  button {
+    all: unset;
+  }
+
+  .metadata_field__title__action {
+    display: inline-flex;
+    justify-content: center;
+    height: 16px;
+    width: 16px;
+
+    &:hover {
+      color: var(--vscode-button-hoverBackground);
+      fill: var(--vscode-button-hoverBackground);
+      cursor: pointer;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      color: var(--vscode-disabledForeground);
+    }
+
+    svg {
+      margin-right: 0;
+    }
+  }
+}
+
+.metadata_field__loading {
+  border-radius: 0.25rem;
+  backdrop-filter: blur(15px);
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: calc(100% + 2.5em);
+  background-color: rgba(0, 0, 0, 0.8);
+  top: 30px;
+  left: -1.25rem;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
 }
 
 .metadata_field__label.metadata_field__label_parent {
@@ -326,6 +374,7 @@ button {
 .metadata_field__textarea,
 .metadata_field__textarea:focus {
   outline: none;
+  border-radius: 0.25rem;
 }
 
 /* Description message */
@@ -714,10 +763,15 @@ vscode-divider {
 }
 
 /* Tags */
+.article__tags {
+  position: relative;
+}
+
 .article__tags__input {
   position: relative;
   outline: 1px solid var(--vscode-inputValidation-infoBorder);
   outline-offset: -1px;
+  border-radius: 0.25rem;
 
   &.required {
     outline: 1px solid var(--vscode-inputValidation-errorBorder);
@@ -831,6 +885,7 @@ vscode-divider {
   padding-right: 2.5rem;
   border: 1px solid var(--vscode-inputValidation-infoBorder);
   outline: none;
+  border-radius: 0.25rem;
 
   &:disabled {
     color: var(--vscode-disabledForeground);

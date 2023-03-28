@@ -96,10 +96,10 @@
     "configuration": {
       "title": "Front Matter: use frontmatter.json for shared team settings",
       "properties": {
-        "frontMatter.sponsors.ai.titleEnabled": {
+        "frontMatter.sponsors.ai.enabled": {
           "type": "boolean",
           "default": false,
-          "markdownDescription": "Specify if you want to enable AI suggestions for content titles. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.sponsors.ai.titleenabled)",
+          "markdownDescription": "Specify if you want to enable AI suggestions. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.sponsors.ai.enabled)",
           "scope": "Sponsors"
         },
         "frontMatter.extensibility.scripts": {

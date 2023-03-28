@@ -1,6 +1,6 @@
 import { authentication, QuickPickItem, QuickPickItemKind, window } from 'vscode';
 import { Folders } from '../commands/Folders';
-import { SETTING_SPONSORS_AI_TITLE } from '../constants';
+import { SETTING_SPONSORS_AI_ENABLED } from '../constants';
 import { ContentType } from './ContentType';
 import { Notifications } from './Notifications';
 import { Settings } from './SettingsHelper';
@@ -28,10 +28,10 @@ export class Questions {
    * @returns
    */
   public static async ContentTitle(showWarning: boolean = true): Promise<string | undefined> {
-    const aiContentTitle = Settings.get<boolean>(SETTING_SPONSORS_AI_TITLE);
+    const aiEnabled = Settings.get<boolean>(SETTING_SPONSORS_AI_ENABLED);
     let title: string | undefined = '';
 
-    if (aiContentTitle) {
+    if (aiEnabled) {
       const githubAuth = await authentication.getSession('github', ['read:user'], { silent: true });
 
       if (githubAuth && githubAuth.account.label) {
