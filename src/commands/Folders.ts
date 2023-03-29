@@ -271,6 +271,7 @@ export class Folders {
 
       for (const folder of folders) {
         try {
+          const folderPath = parseWinPath(folder.path);
           let projectStart = parseWinPath(folder.path).replace(wsFolder, '');
 
           if (typeof projectStart === 'string') {
@@ -290,7 +291,10 @@ export class Folders {
                 filePath = `*${fileType.startsWith('.') ? '' : '.'}${fileType}`;
               }
 
-              const foundFiles = await workspace.findFiles(filePath, '**/node_modules/**');
+              let foundFiles = await workspace.findFiles(filePath, '**/node_modules/**');
+              // Make sure these file are coming from the folder path (this could be an issue in multi-root workspaces)
+              foundFiles = foundFiles.filter((f) => parseWinPath(f.fsPath).startsWith(folderPath));
+
               files = [...files, ...foundFiles];
             }
 
@@ -391,10 +395,22 @@ export class Folders {
   public static async update(folders: ContentFolder[]) {
     const wsFolder = Folders.getWorkspaceFolder();
 
-    const folderDetails = folders.map((folder) => ({
-      ...folder,
-      path: Folders.relWsFolder(folder, wsFolder)
-    }));
+    const folderDetails = folders
+      .map((folder) => {
+        const detail = {
+          ...folder,
+          path: Folders.relWsFolder(folder, wsFolder)
+        };
+
+        if (detail['$schema'] || detail.extended) {
+          return null;
+        }
+
+        delete detail.originalPath;
+
+        return detail;
+      })
+      .filter((folder) => folder !== null);
 
     await Settings.update(SETTING_CONTENT_PAGE_FOLDERS, folderDetails, true);
 

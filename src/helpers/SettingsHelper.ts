@@ -674,7 +674,10 @@ export class Settings {
     }
     // Page folders
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_PAGE_FOLDERS)) {
-      Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PAGE_FOLDERS, 'path', configJson);
+      Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_PAGE_FOLDERS, 'path', {
+        ...configJson,
+        extended: true
+      });
     }
     // Placeholders
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_PLACEHOLDERS)) {

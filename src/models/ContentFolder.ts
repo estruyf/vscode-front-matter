@@ -7,4 +7,6 @@ export interface ContentFolder {
   filePrefix?: string;
   contentTypes?: string[];
   originalPath?: string;
+  $schema?: string;
+  extended?: boolean;
 }
