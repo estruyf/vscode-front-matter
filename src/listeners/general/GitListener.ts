@@ -95,6 +95,10 @@ export class GitListener {
     return isRepo;
   }
 
+  /**
+   * Pull the changes from the remote
+   * @returns
+   */
   private static async pull() {
     const git = this.getClient();
     if (!git) {
@@ -118,6 +122,10 @@ export class GitListener {
     await git.pull();
   }
 
+  /**
+   * Push the changes to the remote
+   * @returns
+   */
   private static async push() {
     let commitMsg = Settings.get<string>(SETTING_GIT_COMMIT_MSG);
 
@@ -138,15 +146,21 @@ export class GitListener {
       Logger.info(`Pushing to remote with submodules`);
 
       try {
-        await git.subModule(['foreach', 'git', 'add', '.', '-A']);
-        await git.subModule([
-          'foreach',
-          'git',
-          'commit',
-          '-m',
-          commitMsg || 'Synced by Front Matter'
-        ]);
-        await git.subModule(['foreach', 'git', 'push']);
+        const status = await git.subModule(['foreach', 'git', 'status', '--porcelain', '-u']);
+        const lines = status.split('\n').filter((line) => line.trim() !== '');
+
+        // First line is the submodule folder name
+        if (lines.length > 1) {
+          await git.subModule(['foreach', 'git', 'add', '.', '-A']);
+          await git.subModule([
+            'foreach',
+            'git',
+            'commit',
+            '-m',
+            commitMsg || 'Synced by Front Matter'
+          ]);
+          await git.subModule(['foreach', 'git', 'push']);
+        }
       } catch (e) {
         Notifications.error(`Failed to push submodules. Please check the logs for more details.`);
         Logger.error((e as Error).message);
