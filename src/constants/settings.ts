@@ -92,6 +92,7 @@ export const SETTING_GIT_COMMIT_MSG = 'git.commitMessage';
 export const SETTING_GIT_SUBMODULE_PULL = 'git.submodule.pull';
 export const SETTING_GIT_SUBMODULE_PUSH = 'git.submodule.push';
 export const SETTING_GIT_SUBMODULE_BRANCH = 'git.submodule.branch';
+export const SETTING_GIT_SUBMODULE_FOLDER = 'git.submodule.folder';
 
 /**
  * Sponsors only settings

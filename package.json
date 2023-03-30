@@ -784,6 +784,11 @@
           "markdownDescription": "Specify the submodule branch to checkout. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontMatter.git.submodule.branch)",
           "default": ""
         },
+        "frontMatter.git.submodule.folder": {
+          "type": "string",
+          "markdownDescription": "Specify the submodule folder of your content, this can be handy when you are using multiple submodules. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontMatter.git.submodule.folder)",
+          "default": ""
+        },
         "frontMatter.global.activeMode": {
           "type": [
             "string",

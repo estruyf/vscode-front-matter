@@ -432,6 +432,26 @@ export class Folders {
   }
 
   /**
+   * Retrieve the absolute folder path
+   * @param filePath
+   * @returns
+   */
+  public static getAbsFolderPath(folderPath: string): string {
+    const wsFolder = Folders.getWorkspaceFolder();
+    const isWindows = process.platform === 'win32';
+
+    let absPath = '';
+    if (folderPath.includes(WORKSPACE_PLACEHOLDER)) {
+      absPath = folderPath.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ''));
+    } else {
+      absPath = join(parseWinPath(wsFolder?.fsPath || ''), folderPath);
+    }
+
+    absPath = isWindows ? absPath.split('/').join('\\') : absPath;
+    return parseWinPath(absPath);
+  }
+
+  /**
    * Generate the absolute URL for the workspace
    * @param folder
    * @param wsFolder
