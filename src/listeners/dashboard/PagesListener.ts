@@ -176,6 +176,7 @@ export class PagesListener extends BaseListener {
       this.sendMsg(DashboardCommand.searchReady, true);
 
       await this.createSearchIndex(pages);
+      this.sendMsg(DashboardCommand.loading, false);
     });
   }
 

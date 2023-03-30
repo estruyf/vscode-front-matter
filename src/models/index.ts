@@ -16,6 +16,7 @@ export * from './MediaPaths';
 export * from './Mode';
 export * from './PanelSettings';
 export * from './PostMessageData';
+export * from './Project';
 export * from './Snippets';
 export * from './SortOrder';
 export * from './SortType';

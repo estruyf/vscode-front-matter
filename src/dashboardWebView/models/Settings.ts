@@ -8,6 +8,7 @@ import {
   DraftField,
   Framework,
   GitSettings,
+  Project,
   Snippets,
   SortingSetting
 } from '../../models';
@@ -16,6 +17,8 @@ import { DashboardViewType } from '.';
 import { DataFile } from '../../models/DataFile';
 
 export interface Settings {
+  projects: Project[];
+  project: Project;
   git: GitSettings;
   beta: boolean;
   initialized: boolean;
