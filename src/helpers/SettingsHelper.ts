@@ -124,6 +124,12 @@ export class Settings {
       projects = Settings.globalConfig[settingKey];
     }
 
+    if (projects.length > 0) {
+      commands.executeCommand('setContext', CONTEXT.projectSwitchEnabled, true);
+    } else {
+      commands.executeCommand('setContext', CONTEXT.projectSwitchEnabled, false);
+    }
+
     return projects;
   }
 

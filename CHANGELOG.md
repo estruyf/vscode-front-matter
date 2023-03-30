@@ -21,6 +21,7 @@
 - [#530](https://github.com/estruyf/vscode-front-matter/issues/530): Implementation of the Front Matter AI 🤖 powered by [mendable.ai](https://mendable.ai)
 - [#537](https://github.com/estruyf/vscode-front-matter/issues/537): Allow to use the root path `/` as the public folder
 - [#541](https://github.com/estruyf/vscode-front-matter/issues/541): Added title AI suggestions for GitHub sponsors
+- [#548](https://github.com/estruyf/vscode-front-matter/issues/548): Project selection support when working in mono-repos or multi-root workspaces
 - [#550](https://github.com/estruyf/vscode-front-matter/issues/550): Added taxonomy (tags/categories) AI suggestions for GitHub sponsors
 
 ### 🎨 Enhancements

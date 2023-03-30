@@ -1,12 +1,13 @@
 import { DEFAULT_CONTENT_TYPE } from './../constants/ContentType';
 import { Telemetry } from './../helpers/Telemetry';
-import { workspace, Uri } from 'vscode';
+import { workspace, Uri, commands, window } from 'vscode';
 import { join } from 'path';
 import { Notifications } from '../helpers/Notifications';
 import { Template } from './Template';
 import { Folders } from './Folders';
-import { FrameworkDetector, Logger, MediaLibrary, Settings } from '../helpers';
+import { Extension, FrameworkDetector, Logger, MediaLibrary, Settings } from '../helpers';
 import {
+  COMMAND_NAME,
   SETTING_CONTENT_DEFAULT_FILETYPE,
   SETTING_TAXONOMY_CONTENT_TYPES,
   TelemetryEvent
@@ -27,6 +28,13 @@ tags: []
 categories: []
 ---
 `;
+
+  public static registerCommands() {
+    const ext = Extension.getInstance();
+    const subscriptions = ext.subscriptions;
+
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.switchProject, Project.switchProject));
+  }
 
   public static isInitialized() {
     const hasProjectFile = Settings.hasProjectFile();
@@ -72,6 +80,24 @@ categories: []
       Logger.error(`Project::init: ${err?.message || err}`);
       Notifications.error(`Sorry, something went wrong - ${err?.message || err}`);
     }
+  }
+
+  public static async switchProject() {
+    const projects = Settings.getProjects();
+    const project = await window.showQuickPick(
+      projects.map((p) => p.name),
+      {
+        canPickMany: false,
+        ignoreFocusOut: true,
+        title: 'Select a project to switch to'
+      }
+    );
+
+    if (!project) {
+      return;
+    }
+
+    SettingsListener.switchProject(project);
   }
 
   /**

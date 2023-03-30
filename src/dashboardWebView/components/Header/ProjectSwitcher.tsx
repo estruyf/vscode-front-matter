@@ -1,6 +1,6 @@
 import { messageHandler } from '@estruyf/vscode/dist/client';
 import { Menu } from '@headlessui/react';
-import { GlobeAltIcon } from '@heroicons/react/outline';
+import { SwitchHorizontalIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 import { DashboardMessage } from '../../DashboardMessage';
@@ -35,7 +35,7 @@ export const ProjectSwitcher: React.FunctionComponent<IProjectSwitcherProps> = (
         <MenuButton
           label={(
             <div className="inline-flex items-center">
-              <GlobeAltIcon className="h-4 w-4 mr-2" />
+              <SwitchHorizontalIcon className="h-4 w-4 mr-2" />
               <span>project</span>
             </div>
           )}

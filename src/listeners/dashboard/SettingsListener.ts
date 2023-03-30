@@ -3,13 +3,14 @@ import { commands, Uri } from 'vscode';
 import { Folders } from '../../commands/Folders';
 import {
   COMMAND_NAME,
+  ExtensionState,
   SETTING_CONTENT_STATIC_FOLDER,
   SETTING_FRAMEWORK_ID,
   SETTING_PREVIEW_HOST
 } from '../../constants';
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
-import { DashboardSettings, Settings } from '../../helpers';
+import { DashboardSettings, Extension, Settings } from '../../helpers';
 import { FrameworkDetector } from '../../helpers/FrameworkDetector';
 import { Framework, PostMessageData } from '../../models';
 import { BaseListener } from './BaseListener';
@@ -48,11 +49,18 @@ export class SettingsListener extends BaseListener {
     }
   }
 
-  private static async switchProject(project: string) {
+  public static async switchProject(project: string) {
     if (project) {
       this.sendMsg(DashboardCommand.loading, true);
       Settings.setProject(project);
       await Cache.clear(false);
+
+      // Clear out the media folder
+      await Extension.getInstance().setState<string | undefined>(
+        ExtensionState.SelectedFolder,
+        undefined,
+        'workspace'
+      );
 
       Preview.init();
       GitListener.init();

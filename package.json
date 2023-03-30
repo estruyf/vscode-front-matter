@@ -1652,6 +1652,12 @@
       }
     },
     "commands": [{
+        "command": "frontMatter.project.switch",
+        "title": "Switch project",
+        "category": "Front Matter",
+        "icon": "$(arrow-swap)"
+      },
+      {
         "command": "frontMatter.config.reload",
         "title": "Reload config",
         "category": "Front Matter"
@@ -2085,6 +2091,10 @@
           "when": "frontMatterCanInit"
         },
         {
+          "command": "frontMatter.project.switch",
+          "when": "frontMatter:project:switch:enabled"
+        },
+        {
           "command": "frontMatter.createTemplate",
           "when": "!frontMatterCanInit"
         },
@@ -2237,8 +2247,13 @@
           "when": "view == frontMatter.explorer && frontMatter:has:modes == true"
         },
         {
-          "command": "frontMatter.dashboard",
+          "command": "frontMatter.project.switch",
           "group": "navigation@3",
+          "when": "view == frontMatter.explorer && frontMatter:project:switch:enabled"
+        },
+        {
+          "command": "frontMatter.dashboard",
+          "group": "navigation@4",
           "when": "view == frontMatter.explorer || view == explorer"
         }
       ]

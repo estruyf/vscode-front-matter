@@ -65,6 +65,9 @@ export const COMMAND_NAME = {
   addMissingFields: getCommandName('contenttype.addMissingFields'),
   setContentType: getCommandName('contenttype.setContentType'),
 
+  // Project
+  switchProject: getCommandName('project.switch'),
+
   // Git
   gitSync: getCommandName('git.sync'),
 
