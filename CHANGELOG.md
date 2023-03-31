@@ -34,6 +34,7 @@
 - [#535](https://github.com/estruyf/vscode-front-matter/issues/535): Retain the scroll position after selecting a media file
 - [#538](https://github.com/estruyf/vscode-front-matter/issues/538): Added support to encode emojis in the string field
 - [#549](https://github.com/estruyf/vscode-front-matter/issues/549): Git submodule support to sync changes
+- [#554](https://github.com/estruyf/vscode-front-matter/issues/554): When inserting snippets, only the content snippets will be shown
 
 ### ⚡️ Optimizations
 
