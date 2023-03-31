@@ -10,13 +10,13 @@
 
 > **Info**: To enable the experimental features you need to set the `frontMatter.experimental` setting to `true`.
 
-### 🙏 Sponsor only features
+### 🙏 Exclusive Features for Sponsors
 
-In this version we added a Front Matter AI which is only available for sponsors of the project. You will need to set the `frontMatter.sponsors.ai.enabled` setting to `true` to enable it.
+We're excited to announce a brand new feature exclusively available to sponsors of Front Matter CMS. With this update, we've added Front Matter AI to the project, which provides helpful suggestions for creating new content such as title suggestions and tag/category suggestions.
 
-Once enabled, you will get the Front Matter AI help when creating new content by adding title suggestions or tag/category suggestions.
+> **Important**: To access the Front Matter AI feature, you will need to sign-in ([backers & supports sign-in instructions](https://frontmatter.codes/docs/getting-started#backers-&-supporters)) and set the `frontMatter.sponsors.ai.enabled` setting to `true` and you're good to go! We put it behind a setting to not automatically enable it and let you decide if you want to use it or not.
 
-If you want to support the project, you can do so by [becoming a sponsor](https://github.com/sponsors/estruyf).
+If you're not already a sponsor, now is a great time to consider supporting the project. By becoming a sponsor, you not only gain access to exclusive features like Front Matter AI, but also help to support the ongoing development and maintenance of the project. You can become a sponsor by visiting the [GitHub sponsor page](https://github.com/sponsors/estruyf).
 
 ### ✨ New features
 
