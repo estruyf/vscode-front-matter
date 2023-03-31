@@ -94,8 +94,31 @@
       }]
     },
     "configuration": {
+      "$id": "#gobalconfiguration",
       "title": "Front Matter: use frontmatter.json for shared team settings",
+      "type": "object",
       "properties": {
+        "frontMatter.projects": {
+          "type": "array",
+          "markdownDescription": "Specify the list of projects to load in the Front Matter CMS. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.projects)",
+          "default": [],
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "markdownDescription": "Specify the name of the project."
+              },
+              "default": {
+                "type": "boolean",
+                "markdownDescription": "Specify if this project is the default project to load."
+              },
+              "configuration": {
+                "$ref": "#gobalconfiguration"
+              }
+            }
+          }
+        },
         "frontMatter.sponsors.ai.enabled": {
           "type": "boolean",
           "default": false,
@@ -1629,6 +1652,12 @@
       }
     },
     "commands": [{
+        "command": "frontMatter.project.switch",
+        "title": "Switch project",
+        "category": "Front Matter",
+        "icon": "$(arrow-swap)"
+      },
+      {
         "command": "frontMatter.config.reload",
         "title": "Reload config",
         "category": "Front Matter"
@@ -2062,6 +2091,10 @@
           "when": "frontMatterCanInit"
         },
         {
+          "command": "frontMatter.project.switch",
+          "when": "frontMatter:project:switch:enabled"
+        },
+        {
           "command": "frontMatter.createTemplate",
           "when": "!frontMatterCanInit"
         },
@@ -2214,8 +2247,13 @@
           "when": "view == frontMatter.explorer && frontMatter:has:modes == true"
         },
         {
-          "command": "frontMatter.dashboard",
+          "command": "frontMatter.project.switch",
           "group": "navigation@3",
+          "when": "view == frontMatter.explorer && frontMatter:project:switch:enabled"
+        },
+        {
+          "command": "frontMatter.dashboard",
+          "group": "navigation@4",
           "when": "view == frontMatter.explorer || view == explorer"
         }
       ]

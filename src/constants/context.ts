@@ -12,5 +12,7 @@ export const CONTEXT = {
   isSnippetsDashboardEnabled: 'frontMatter:dashboard:snippets:enabled',
   isDataDashboardEnabled: 'frontMatter:dashboard:data:enabled',
 
-  isGitEnabled: 'frontMatter:git:enabled'
+  isGitEnabled: 'frontMatter:git:enabled',
+
+  projectSwitchEnabled: 'frontMatter:project:switch:enabled',
 };

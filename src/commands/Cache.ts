@@ -20,13 +20,15 @@ export class Cache {
     await Extension.getInstance().setState(key, data, type);
   }
 
-  private static async clear() {
+  public static async clear(showNotification: boolean = true) {
     const ext = Extension.getInstance();
 
     await ext.setState(ExtensionState.Dashboard.Pages.Cache, undefined, 'workspace', true);
     await ext.setState(ExtensionState.Dashboard.Pages.Index, undefined, 'workspace', true);
     await ext.setState(ExtensionState.Settings.Extends, undefined, 'workspace', true);
 
-    Notifications.info('Cache cleared');
+    if (showNotification) {
+      Notifications.info('Cache cleared');
+    }
   }
 }

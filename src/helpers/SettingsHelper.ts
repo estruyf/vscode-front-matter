@@ -1,10 +1,10 @@
-import { SETTING_EXTENSIBILITY_SCRIPTS } from './../constants/settings';
+import { SETTING_EXTENSIBILITY_SCRIPTS, SETTING_PROJECTS } from './../constants/settings';
 import { parseWinPath } from './parseWinPath';
 import { Telemetry } from './Telemetry';
 import { Notifications } from './Notifications';
 import { commands, Uri, workspace, window } from 'vscode';
 import * as vscode from 'vscode';
-import { ContentType, CustomTaxonomy, TaxonomyType } from '../models';
+import { ContentType, CustomTaxonomy, Project, TaxonomyType } from '../models';
 import {
   SETTING_TAXONOMY_TAGS,
   SETTING_TAXONOMY_CATEGORIES,
@@ -53,9 +53,31 @@ export class Settings {
   private static listeners: any[] = [];
   private static fileCreationWatcher: vscode.FileSystemWatcher | undefined;
   private static readConfigPromise: Promise<void> | undefined = undefined;
+  private static project: Project | undefined = undefined;
 
   public static async init() {
     await Settings.readConfig();
+
+    const projects = Settings.getProjects();
+    const crntProject = await Extension.getInstance().getState<string | undefined>(
+      ExtensionState.Project.current,
+      'workspace'
+    );
+
+    if (projects.length > 0) {
+      // Get the default project
+      const defaultProject = projects.find((p) => {
+        if (crntProject) {
+          return p.name === crntProject;
+        }
+        return p.default;
+      });
+      if (defaultProject) {
+        Settings.project = defaultProject;
+      } else {
+        Settings.project = projects[0];
+      }
+    }
 
     Settings.listeners = [];
 
@@ -70,6 +92,45 @@ export class Settings {
     Settings.onConfigChange(async () => {
       Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
     });
+  }
+
+  /**
+   * Get the current project
+   * @returns
+   */
+  public static getProject() {
+    return Settings.project;
+  }
+
+  /**
+   * Set the project
+   * @param value
+   */
+  public static setProject(value: string) {
+    Extension.getInstance().setState(ExtensionState.Project.current, value, 'workspace');
+    Settings.project = Settings.getProjects().find((p) => p.name === value);
+    console.log('setProject', Settings.project);
+  }
+
+  /**
+   * Fetch all the projects
+   * @returns
+   */
+  public static getProjects(): Project[] {
+    const settingKey = `${CONFIG_KEY}.${SETTING_PROJECTS}`;
+
+    let projects = [];
+    if (Settings.globalConfig && typeof Settings.globalConfig[settingKey] !== 'undefined') {
+      projects = Settings.globalConfig[settingKey];
+    }
+
+    if (projects.length > 0) {
+      commands.executeCommand('setContext', CONTEXT.projectSwitchEnabled, true);
+    } else {
+      commands.executeCommand('setContext', CONTEXT.projectSwitchEnabled, false);
+    }
+
+    return projects;
   }
 
   /**
@@ -194,6 +255,16 @@ export class Settings {
 
     let setting = undefined;
     const settingKey = `${CONFIG_KEY}.${name}`;
+
+    if (Settings.project) {
+      if (
+        typeof Settings.project.configuration !== 'undefined' &&
+        typeof Settings.project.configuration[settingKey] !== 'undefined'
+      ) {
+        setting = Settings.project.configuration[settingKey];
+        return setting;
+      }
+    }
 
     if (Settings.globalConfig && typeof Settings.globalConfig[settingKey] !== 'undefined') {
       setting = Settings.globalConfig[settingKey];
@@ -698,6 +769,10 @@ export class Settings {
     // Custom taxonomy
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_TAXONOMY_CUSTOM)) {
       Settings.updateGlobalConfigArraySetting(SETTING_TAXONOMY_CUSTOM, 'id', configJson);
+    }
+    // Projects
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_PROJECTS)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_PROJECTS, 'name', configJson);
     }
     // Snippets
     else if (

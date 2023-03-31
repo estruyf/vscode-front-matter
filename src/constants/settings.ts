@@ -100,6 +100,11 @@ export const SETTING_GIT_SUBMODULE_FOLDER = 'git.submodule.folder';
 export const SETTING_SPONSORS_AI_ENABLED = 'sponsors.ai.enabled';
 
 /**
+ * Project override support
+ */
+export const SETTING_PROJECTS = 'projects';
+
+/**
  * @deprecated
  */
 export const SETTING_CONTENT_FOLDERS = 'content.folders';

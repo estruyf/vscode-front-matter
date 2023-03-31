@@ -28,6 +28,7 @@ import { PaginationStatus } from './PaginationStatus';
 import useThemeColors from '../../hooks/useThemeColors';
 import { Startup } from './Startup';
 import { Navigation } from './Navigation';
+import { ProjectSwitcher } from './ProjectSwitcher';
 
 export interface IHeaderProps {
   header?: React.ReactNode;
@@ -146,12 +147,14 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
       `bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]`
     )
       }`}>
-      <div className={`mb-0 border-b ${getColors(
+      <div className={`mb-0 border-b flex justify-between ${getColors(
         `bg-gray-100 dark:bg-vulcan-500 border-gray-200 dark:border-vulcan-300`,
         `bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)] border-[var(--vscode-editorWidget-border)]`
       )
         }`}>
         <Tabs onNavigate={updateView} />
+
+        <ProjectSwitcher />
       </div>
 
       {location.pathname === routePaths.contents && (

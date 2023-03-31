@@ -18,12 +18,11 @@ export const QuickAction: React.FunctionComponent<IQuickActionProps> = ({
       type="button"
       title={title}
       onClick={onClick}
-      className={`px-2 group inline-flex justify-center text-sm font-medium ${
-        getColors(
-          'text-vulcan-400 hover:text-vulcan-600 dark:text-gray-400 dark:hover:text-whisper-600',
-          'text-[var(--vscode-foreground)] hover:text-[var(--vscode-list-activeSelectionForeground)]'
-        )
-      }`}
+      className={`px-2 group inline-flex justify-center text-sm font-medium ${getColors(
+        'text-vulcan-400 hover:text-vulcan-600 dark:text-gray-400 dark:hover:text-whisper-600',
+        'text-[var(--vscode-foreground)] hover:text-[var(--frontmatter-button-hoverBackground)]'
+      )
+        }`}
     >
       {children}
       <span className="sr-only">{title}</span>

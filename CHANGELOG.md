@@ -12,7 +12,11 @@
 
 ### 🙏 Sponsor only features
 
-- Title AI suggestions which you need to enable by setting the `frontMatter.sponsors.ai.titleEnabled` setting to `true`.
+In this version we added a Front Matter AI which is only available for sponsors of the project. You will need to set the `frontMatter.sponsors.ai.enabled` setting to `true` to enable it.
+
+Once enabled, you will get the Front Matter AI help when creating new content by adding title suggestions or tag/category suggestions.
+
+If you want to support the project, you can do so by [becoming a sponsor](https://github.com/sponsors/estruyf).
 
 ### ✨ New features
 
@@ -21,6 +25,7 @@
 - [#530](https://github.com/estruyf/vscode-front-matter/issues/530): Implementation of the Front Matter AI 🤖 powered by [mendable.ai](https://mendable.ai)
 - [#537](https://github.com/estruyf/vscode-front-matter/issues/537): Allow to use the root path `/` as the public folder
 - [#541](https://github.com/estruyf/vscode-front-matter/issues/541): Added title AI suggestions for GitHub sponsors
+- [#548](https://github.com/estruyf/vscode-front-matter/issues/548): Project selection support when working in mono-repos or multi-root workspaces
 - [#550](https://github.com/estruyf/vscode-front-matter/issues/550): Added taxonomy (tags/categories) AI suggestions for GitHub sponsors
 
 ### 🎨 Enhancements
@@ -33,6 +38,7 @@
 - [#535](https://github.com/estruyf/vscode-front-matter/issues/535): Retain the scroll position after selecting a media file
 - [#538](https://github.com/estruyf/vscode-front-matter/issues/538): Added support to encode emojis in the string field
 - [#549](https://github.com/estruyf/vscode-front-matter/issues/549): Git submodule support to sync changes
+- [#554](https://github.com/estruyf/vscode-front-matter/issues/554): When inserting snippets, only the content snippets will be shown
 
 ### ⚡️ Optimizations
 

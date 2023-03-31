@@ -35,7 +35,14 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
 
   const snippets = settings?.snippets || {};
   const snippetKeys = useMemo(() => {
-    const allSnippetKeys = Object.keys(snippets).sort((a, b) => a.localeCompare(b));
+    let allSnippetKeys = Object.keys(snippets).sort((a, b) => a.localeCompare(b));
+
+    if (viewData?.data?.filePath) {
+      allSnippetKeys = allSnippetKeys.filter((key) => {
+        return !snippets[key].isMediaSnippet;
+      });
+    }
+
     return allSnippetKeys.filter((key) => {
       const value = snippetFilter.toLowerCase();
       const keyValue = key.toLowerCase();
@@ -44,7 +51,9 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
       // Contains in key or description, values included in key are ranked higher (sort and fuzzy search)
       return keyValue.includes(value) || descriptionValue.includes(value);
     });
-  }, [settings?.snippets, snippetFilter]);
+
+
+  }, [settings?.snippets, snippetFilter, viewData?.data?.filePath]);
 
   const onSnippetAdd = useCallback(() => {
     if (!snippetTitle || !snippetBody) {

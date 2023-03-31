@@ -352,6 +352,9 @@ export async function activate(context: vscode.ExtensionContext) {
   // Cache commands
   Cache.registerCommands();
 
+  // Project switching
+  Project.registerCommands();
+
   // Subscribe all commands
   subscriptions.push(
     insertTags,
