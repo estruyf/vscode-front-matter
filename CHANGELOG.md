@@ -12,7 +12,11 @@
 
 ### 🙏 Sponsor only features
 
-- Title AI suggestions which you need to enable by setting the `frontMatter.sponsors.ai.titleEnabled` setting to `true`.
+In this version we added a Front Matter AI which is only available for sponsors of the project. You will need to set the `frontMatter.sponsors.ai.enabled` setting to `true` to enable it.
+
+Once enabled, you will get the Front Matter AI help when creating new content by adding title suggestions or tag/category suggestions.
+
+If you want to support the project, you can do so by [becoming a sponsor](https://github.com/sponsors/estruyf).
 
 ### ✨ New features
 
