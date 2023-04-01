@@ -34,6 +34,14 @@ export const NumberField: React.FunctionComponent<INumberFieldProps> = ({
     return required && (nrValue === null || nrValue === undefined);
   }, [required, nrValue]);
 
+  const stepValue = useMemo(() => {
+    if (options?.isDecimal) {
+      return options?.step ?? 0.1;
+    }
+
+    return options?.step ?? 1;
+  }, [options?.step]);
+
   useEffect(() => {
     if (nrValue !== value) {
       setNrValue(value);
@@ -50,7 +58,7 @@ export const NumberField: React.FunctionComponent<INumberFieldProps> = ({
         value={`${nrValue}`}
         min={options?.min ?? undefined}
         max={options?.max ?? undefined}
-        step={options?.step ?? undefined}
+        step={stepValue}
         onChange={(e) => onValueChange(e.target.value)}
       />
 
