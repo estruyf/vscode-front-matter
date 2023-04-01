@@ -51,7 +51,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
         window.scrollTo({
           top: scrollY,
         })
-      }, 0);
+      }, 10);
     }
   }, [mediaSelecting, prevMediaSelection]);
 
