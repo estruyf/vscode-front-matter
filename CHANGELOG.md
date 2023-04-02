@@ -39,6 +39,8 @@
 
 - [#534](https://github.com/estruyf/vscode-front-matter/issues/534): Moved the `mediaDb.json` file to a `.frontmatter/database` folder instead of the `.frontmatter/content` folder
 - [#536](https://github.com/estruyf/vscode-front-matter/issues/536): Set the start location from the script to the root of the workspace
+- [#555](https://github.com/estruyf/vscode-front-matter/issues/555): When generating a content-type from existing content, Front Matter will better detect the type of field
+- [#556](https://github.com/estruyf/vscode-front-matter/issues/556): Content values are aligned to the type of field
 
 ### 🐞 Fixes
 
