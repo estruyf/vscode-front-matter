@@ -60,6 +60,7 @@ If you're not already a sponsor, now is a great time to consider supporting the 
 - [#543](https://github.com/estruyf/vscode-front-matter/issues/543): Fix JSON schema for script commands
 - [#547](https://github.com/estruyf/vscode-front-matter/issues/547): Fix setting default value in a hidden group field (`block`)
 - [#552](https://github.com/estruyf/vscode-front-matter/issues/552): Fix for content retrieval in multi-root workspaces
+- [#557](https://github.com/estruyf/vscode-front-matter/issues/557): Fix for dropdown of the tag picker
 
 ## [8.3.0] - 2023-02-14 - [Release notes](https://beta.frontmatter.codes/updates/v8.3.0)
 

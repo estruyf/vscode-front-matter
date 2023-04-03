@@ -273,6 +273,38 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
     );
   }, [settings?.aiEnabled, label, type]);
 
+  const dropdownStyle = useCallback((isOpen) => {
+    if (isOpen && inputRef.current) {
+      const wrapper = inputRef.current.closest(".collapsible__body");
+      const dropdown = inputRef.current.parentElement?.parentElement?.querySelector('.article__tags__dropbox');
+
+      if (!wrapper || !dropdown) {
+        return undefined;
+      }
+
+      const wrapperStyles = getComputedStyle(wrapper);
+      const padding = parseInt(wrapperStyles.paddingTop) + parseInt(wrapperStyles.paddingBottom);
+      const wrapperHeight = wrapper.clientHeight - padding;
+
+      const tagPickerElm = inputRef.current.parentElement?.parentElement;
+      const dropdownHeight = dropdown?.clientHeight;
+
+      if (!tagPickerElm || !dropdownHeight) {
+        return undefined;
+      }
+
+      const tagPickerTop = tagPickerElm.offsetTop;
+
+      const fullHeight = tagPickerTop + dropdownHeight;
+
+      if (fullHeight > wrapperHeight) {
+        return "calc(100% - 38px)";
+      }
+    }
+
+    return undefined;
+  }, [inputRef]);
+
   useEffect(() => {
     setTimeout(() => {
       triggerFocus();
@@ -370,6 +402,9 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
 
             <ul
               className={`article__tags__dropbox ${isOpen ? 'open' : 'closed'}`}
+              style={{
+                bottom: dropdownStyle(isOpen)
+              }}
               {...getMenuProps()}
             >
               {isOpen

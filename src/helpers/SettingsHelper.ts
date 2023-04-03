@@ -109,7 +109,6 @@ export class Settings {
   public static setProject(value: string) {
     Extension.getInstance().setState(ExtensionState.Project.current, value, 'workspace');
     Settings.project = Settings.getProjects().find((p) => p.name === value);
-    console.log('setProject', Settings.project);
   }
 
   /**

@@ -48,7 +48,6 @@ export const DataForm: React.FunctionComponent<IDataFormProps> = ({
         if (validator(crntModel)) {
           return null;
         } else {
-          console.log(validator.errors)
           return { details: validator.errors }
         }
       };
