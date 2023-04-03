@@ -1,6 +1,6 @@
 # Change Log
 
-## [8.4.0] - 2023-xx-xx - [Release notes](https://beta.frontmatter.codes/updates/v8.4.0)
+## [8.4.0] - 2023-04-03 - [Release notes](https://beta.frontmatter.codes/updates/v8.4.0)
 
 ### 🧪 Experimental features
 
