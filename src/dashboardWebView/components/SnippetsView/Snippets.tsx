@@ -35,7 +35,14 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
 
   const snippets = settings?.snippets || {};
   const snippetKeys = useMemo(() => {
-    const allSnippetKeys = Object.keys(snippets).sort((a, b) => a.localeCompare(b));
+    let allSnippetKeys = Object.keys(snippets).sort((a, b) => a.localeCompare(b));
+
+    if (viewData?.data?.filePath) {
+      allSnippetKeys = allSnippetKeys.filter((key) => {
+        return !snippets[key].isMediaSnippet;
+      });
+    }
+
     return allSnippetKeys.filter((key) => {
       const value = snippetFilter.toLowerCase();
       const keyValue = key.toLowerCase();
@@ -44,7 +51,9 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
       // Contains in key or description, values included in key are ranked higher (sort and fuzzy search)
       return keyValue.includes(value) || descriptionValue.includes(value);
     });
-  }, [settings?.snippets, snippetFilter]);
+
+
+  }, [settings?.snippets, snippetFilter, viewData?.data?.filePath]);
 
   const onSnippetAdd = useCallback(() => {
     if (!snippetTitle || !snippetBody) {
@@ -90,7 +99,7 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
             <FilterInput
               placeholder="Search"
               isReady={true}
-              autoFocus={true}
+              autoFocus={(snippetKeys && snippetKeys.length > 0)}
               value={snippetFilter}
               onChange={(value: string) => setSnippetFilter(value)}
               onReset={() => setSnippetFilter('')}
@@ -121,7 +130,7 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
           </div>
         )}
 
-        {snippetKeys && snippetKeys.length > 0 ? (
+        {(snippetKeys && snippetKeys.length > 0) ? (
           <ul
             role="list"
             className={`grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8`}
@@ -131,11 +140,20 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
             ))}
           </ul>
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <div className={`flex flex-col items-center ${getColors(`text-gray-500 dark:text-vulcan-500`, `text-[var(--vscode-foreground)]`)
+          <div className="w-full h-full flex items-center justify-center text-white">
+            <div className={`flex flex-col items-center ${getColors('text-gray-500 dark:text-whisper-900', 'text-[var(--frontmatter-text)]')
               }`}>
               <CodeIcon className="w-32 h-32" />
-              <p className="text-3xl">No snippets found</p>
+              <p className="text-3xl mt-2">No snippets found</p>
+              <p className="text-xl mt-4">
+                <a
+                  className={getColors(`text-teal-700 hover:text-teal-900`, `text-[var(--frontmatter-link)] hover:text-[var(--frontmatter-link-hover)]`)}
+                  href={`https://frontmatter.codes/docs/snippets`}
+                  title={`Read more to get started with snippets`}
+                >
+                  Read more to get started with snippets
+                </a>
+              </p>
             </div>
           </div>
         )}
@@ -169,6 +187,8 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
         version={settings?.versionInfo}
         isBacker={settings?.isBacker}
       />
+
+      <img className='hidden' src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Ffrontmatter.codes%2Fmetrics%2Fdashboards&slug=snippets" alt="Snippets metrics" />
     </PageLayout>
   );
 };

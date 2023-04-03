@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIcon';
 import { DashboardMessage } from '../../DashboardMessage';
@@ -8,9 +7,11 @@ import { DateField } from '../Common/DateField';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardViewType } from '../../models';
 import { ContentActions } from './ContentActions';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useThemeColors from '../../hooks/useThemeColors';
 import { Status } from './Status';
+import * as React from 'react';
+import { messageHandler } from '@estruyf/vscode/dist/client';
 
 export interface IItemProps extends Page { }
 
@@ -27,6 +28,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const view = useRecoilValue(ViewSelector);
   const settings = useRecoilValue(SettingsSelector);
   const draftField = useMemo(() => settings?.draftField, [settings]);
+  const [imageHtml, setImageHtml] = useState<string | undefined>(undefined);
+  const [footerHtml, setFooterHtml] = useState<string | undefined>(undefined);
   const { getColors } = useThemeColors();
 
   const escapedTitle = useMemo(() => {
@@ -49,7 +52,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     Messenger.send(DashboardMessage.openFile, fmFilePath);
   };
 
-  const tags: string[] | undefined = React.useMemo(() => {
+  const tags: string[] | undefined = useMemo(() => {
     if (!settings?.dashboardState?.contents?.tags) {
       return undefined;
     }
@@ -74,11 +77,47 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return [];
   }, [settings, pageData]);
 
+  useEffect(() => {
+    if (window.fmExternal && window.fmExternal.getCardFooter) {
+      window.fmExternal.getCardFooter(fmFilePath, {
+        fmFilePath,
+        date,
+        title,
+        description,
+        type,
+        ...pageData
+      }).then(htmlContent => {
+        if (htmlContent) {
+          setFooterHtml(htmlContent);
+        } else {
+          setFooterHtml(undefined);
+        }
+      });
+    }
+
+    if (window.fmExternal && window.fmExternal.getCardImage) {
+      window.fmExternal.getCardImage(fmFilePath, {
+        fmFilePath,
+        date,
+        title,
+        description,
+        type,
+        ...pageData
+      }).then(htmlContent => {
+        if (htmlContent) {
+          setImageHtml(htmlContent);
+        } else {
+          setImageHtml(undefined);
+        }
+      });
+    }
+  }, []);
+
   if (view === DashboardViewType.Grid) {
     return (
       <li className="relative">
         <div
-          className={`group flex flex-wrap items-start content-start h-full w-full text-left shadow-md dark:shadow-none hover:shadow-xl border rounded ${getColors(
+          className={`group flex flex-col items-start content-start h-full w-full text-left shadow-md dark:shadow-none hover:shadow-xl border rounded ${getColors(
             'bg-gray-50 dark:bg-vulcan-200 text-vulcan-500 dark:text-whisper-500 dark:hover:bg-vulcan-100 border-gray-200 dark:border-vulcan-50',
             'bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--frontmatter-border)]'
           )
@@ -92,31 +131,35 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             )
               }`}
           >
-            {pageData[PREVIEW_IMAGE_FIELD] ? (
-              <img
-                src={`${pageData[PREVIEW_IMAGE_FIELD]}`}
-                alt={escapedTitle}
-                className="absolute inset-0 h-full w-full object-cover"
-                loading="lazy"
-              />
-            ) : (
-              <div
-                className={`flex items-center justify-center ${getColors(
-                  'bg-whisper-500 dark:bg-vulcan-200 dark:group-hover:bg-vulcan-100',
-                  'bg-[var(--vscode-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)]'
+            {
+              imageHtml ?
+                <div className="h-full w-full" dangerouslySetInnerHTML={{ __html: imageHtml }} /> :
+                pageData[PREVIEW_IMAGE_FIELD] ? (
+                  <img
+                    src={`${pageData[PREVIEW_IMAGE_FIELD]}`}
+                    alt={escapedTitle}
+                    className="absolute inset-0 h-full w-full object-cover group-hover:brightness-75"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div
+                    className={`flex items-center justify-center ${getColors(
+                      'bg-whisper-500 dark:bg-vulcan-200 dark:group-hover:bg-vulcan-100',
+                      'bg-[var(--vscode-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)]'
+                    )
+                      }`}
+                  >
+                    <MarkdownIcon className={`h-32 ${getColors(
+                      'text-vulcan-100 dark:text-whisper-100',
+                      'text-[var(--vscode-sideBarTitle-foreground)] opacity-80'
+                    )
+                      }`} />
+                  </div>
                 )
-                  }`}
-              >
-                <MarkdownIcon className={`h-32 ${getColors(
-                  'text-vulcan-100 dark:text-whisper-100',
-                  'text-[var(--vscode-sideBarTitle-foreground)] opacity-80'
-                )
-                  }`} />
-              </div>
-            )}
+            }
           </button>
 
-          <div className="relative p-4 w-full">
+          <div className="relative p-4 w-full grow">
             <div className={`flex justify-between items-center`}>
               {draftField && draftField.name && <Status draft={pageData[draftField.name]} />}
 
@@ -158,6 +201,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               </div>
             )}
           </div>
+
+          {
+            footerHtml && (
+              <div className="placeholder__card__footer p-4 w-full" dangerouslySetInnerHTML={{ __html: footerHtml }} />
+            )
+          }
         </div>
       </li>
     );

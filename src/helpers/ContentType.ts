@@ -28,7 +28,7 @@ import { Telemetry } from './Telemetry';
 import { processKnownPlaceholders } from './PlaceholderHelper';
 import { basename } from 'path';
 import { ParsedFrontMatter } from '../parsers';
-import { existsAsync, writeFileAsync } from '../utils';
+import { encodeEmoji, existsAsync, writeFileAsync } from '../utils';
 
 export class ContentType {
   /**
@@ -520,32 +520,30 @@ export class ContentType {
         continue;
       }
 
-      if (
+      if (field.toLowerCase() === 'tag' || field.toLowerCase() === 'tags') {
+        fields.push({
+          title: field,
+          name: field,
+          type: 'tags'
+        } as Field);
+      } else if (field.toLowerCase() === 'category' || field.toLowerCase() === 'categories') {
+        fields.push({
+          title: field,
+          name: field,
+          type: 'categories'
+        } as Field);
+      } else if (
         fieldData &&
         fieldData instanceof Array &&
         fieldData.length > 0 &&
         typeof fieldData[0] === 'string'
       ) {
-        if (field.toLowerCase() === 'tag' || field.toLowerCase() === 'tags') {
-          fields.push({
-            title: field,
-            name: field,
-            type: 'tags'
-          } as Field);
-        } else if (field.toLowerCase() === 'category' || field.toLowerCase() === 'categories') {
-          fields.push({
-            title: field,
-            name: field,
-            type: 'categories'
-          } as Field);
-        } else {
-          fields.push({
-            title: field,
-            name: field,
-            type: 'choice',
-            choices: fieldData
-          } as Field);
-        }
+        fields.push({
+          title: field,
+          name: field,
+          type: 'choice',
+          choices: fieldData
+        } as Field);
       } else if (
         fieldData &&
         fieldData instanceof Array &&
@@ -568,7 +566,19 @@ export class ContentType {
           fields: newFields
         } as Field);
       } else {
-        if (!isNaN(new Date(fieldData).getDate())) {
+        if (field.toLowerCase().includes('image')) {
+          fields.push({
+            title: field,
+            name: field,
+            type: 'image'
+          } as Field);
+        } else if (typeof fieldData === 'number') {
+          fields.push({
+            title: field,
+            name: field,
+            type: 'number'
+          } as Field);
+        } else if (!isNaN(new Date(fieldData).getDate())) {
           fields.push({
             title: field,
             name: field,
@@ -609,9 +619,16 @@ export class ContentType {
         cancellable: false
       },
       async () => {
-        const titleValue = await Questions.ContentTitle();
+        let titleValue = await Questions.ContentTitle();
         if (!titleValue) {
           return;
+        }
+
+        titleValue = titleValue.trim();
+        // Check if the title needs to encode the emoji's used in it
+        const titleField = contentType.fields.find((f) => f.name === 'title');
+        if (titleField && titleField.encodeEmoji) {
+          titleValue = encodeEmoji(titleValue);
         }
 
         let templatePath = contentType.template;
@@ -735,7 +752,37 @@ export class ContentType {
               ) {
                 data[field.name] = true;
               } else {
-                data[field.name] = '';
+                // Check the field types
+                switch (field.type) {
+                  case 'choice':
+                    if (field.multiple) {
+                      data[field.name] = [];
+                    } else {
+                      data[field.name] = '';
+                    }
+                    break;
+                  case 'boolean':
+                    data[field.name] = false;
+                    break;
+                  case 'number':
+                    data[field.name] = 0;
+                    break;
+                  case 'datetime':
+                    data[field.name] = null;
+                    break;
+                  case 'list':
+                  case 'tags':
+                  case 'categories':
+                  case 'taxonomy':
+                    data[field.name] = [];
+                    break;
+                  case 'string':
+                  case 'image':
+                  case 'file':
+                  default:
+                    data[field.name] = '';
+                    break;
+                }
               }
             }
           }

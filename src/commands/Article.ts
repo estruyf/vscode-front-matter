@@ -226,7 +226,7 @@ export class Article {
 
     let filePrefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
     const contentType = ArticleHelper.getContentType(article.data);
-    filePrefix = ArticleHelper.getFilePrefix(editor.document.uri.fsPath, contentType);
+    filePrefix = ArticleHelper.getFilePrefix(filePrefix, editor.document.uri.fsPath, contentType);
 
     const titleField = 'title';
     const articleTitle: string = article.data[titleField];

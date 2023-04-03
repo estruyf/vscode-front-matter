@@ -1,8 +1,10 @@
-export const EXTENSION_NAME = 'Front Matter';
+export const EXTENSION_NAME = '𝖥𝗋𝗈𝗇𝗍 𝖬𝖺𝗍𝗍𝖾𝗋 𝖢𝖬𝖲';
 
 export const CONFIG_KEY = 'frontMatter';
 
 export const SETTING_EXPERIMENTAL = 'experimental';
+
+export const SETTING_EXTENSIBILITY_SCRIPTS = 'extensibility.scripts';
 
 export const SETTING_EXTENDS = 'extends';
 
@@ -87,6 +89,20 @@ export const SETTING_SITE_BASEURL = 'site.baseURL';
 
 export const SETTING_GIT_ENABLED = 'git.enabled';
 export const SETTING_GIT_COMMIT_MSG = 'git.commitMessage';
+export const SETTING_GIT_SUBMODULE_PULL = 'git.submodule.pull';
+export const SETTING_GIT_SUBMODULE_PUSH = 'git.submodule.push';
+export const SETTING_GIT_SUBMODULE_BRANCH = 'git.submodule.branch';
+export const SETTING_GIT_SUBMODULE_FOLDER = 'git.submodule.folder';
+
+/**
+ * Sponsors only settings
+ */
+export const SETTING_SPONSORS_AI_ENABLED = 'sponsors.ai.enabled';
+
+/**
+ * Project override support
+ */
+export const SETTING_PROJECTS = 'projects';
 
 /**
  * @deprecated

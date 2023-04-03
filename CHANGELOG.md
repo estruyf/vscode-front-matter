@@ -1,6 +1,74 @@
 # Change Log
 
-## [8.3.0] - 2022-02-14 - [Release notes](https://beta.frontmatter.codes/updates/v8.3.0)
+## [8.4.0] - 2023-04-03 - [Release notes](https://beta.frontmatter.codes/updates/v8.4.0)
+
+### 🧪 Experimental features
+
+- External UI script support for dashboards
+- Visual Studio Code Theming support for the dashboards
+- Front matter AI 🤖
+
+> **Info**: To enable the experimental features you need to set the `frontMatter.experimental` setting to `true`.
+
+### 🙏 Exclusive Features for Sponsors
+
+We're excited to announce a brand new feature exclusively available to sponsors of Front Matter CMS. With this update, we've added Front Matter AI to the project, which provides helpful suggestions for creating new content such as title suggestions and tag/category suggestions.
+
+> **Important**: To access the Front Matter AI feature, you will need to sign-in ([backers & supports sign-in instructions](https://frontmatter.codes/docs/getting-started#backers-&-supporters)) and set the `frontMatter.sponsors.ai.enabled` setting to `true` and you're good to go! We put it behind a setting to not automatically enable it and let you decide if you want to use it or not.
+
+If you're not already a sponsor, now is a great time to consider supporting the project. By becoming a sponsor, you not only gain access to exclusive features like Front Matter AI, but also help to support the ongoing development and maintenance of the project. You can become a sponsor by visiting the [GitHub sponsor page](https://github.com/sponsors/estruyf).
+
+### ✨ New features
+
+- [#363](https://github.com/estruyf/vscode-front-matter/issues/363): Multiline support for the `string` field in data view
+- [#513](https://github.com/estruyf/vscode-front-matter/issues/513): Added support for external UI scripts to add custom HTML on the dashboard elements
+- [#530](https://github.com/estruyf/vscode-front-matter/issues/530): Implementation of the Front Matter AI 🤖 powered by [mendable.ai](https://mendable.ai)
+- [#537](https://github.com/estruyf/vscode-front-matter/issues/537): Allow to use the root path `/` as the public folder
+- [#541](https://github.com/estruyf/vscode-front-matter/issues/541): Added title AI suggestions for GitHub sponsors
+- [#548](https://github.com/estruyf/vscode-front-matter/issues/548): Project selection support when working in mono-repos or multi-root workspaces
+- [#550](https://github.com/estruyf/vscode-front-matter/issues/550): Added taxonomy (tags/categories) AI suggestions for GitHub sponsors
+
+### 🎨 Enhancements
+
+- Added an `unknown` field for uniforms when it has no type defined
+- [#512](https://github.com/estruyf/vscode-front-matter/issues/512): Added the `jsonc` file association for the `frontMatter.json` file. That way, you can use comments in the file.
+- [#522](https://github.com/estruyf/vscode-front-matter/issues/522): Configuration support added for [Astro](https://astro.build)
+- [#523](https://github.com/estruyf/vscode-front-matter/issues/523): Added support for `floating`/`decimal` numbers with a new number field property called `numberOptions`
+- [#524](https://github.com/estruyf/vscode-front-matter/issues/524): Removed the **Global settings** view from the panel. You can still get it back by configuring a [custom view mode](https://frontmatter.codes/docs/panel#view-modes).
+- [#535](https://github.com/estruyf/vscode-front-matter/issues/535): Retain the scroll position after selecting a media file
+- [#538](https://github.com/estruyf/vscode-front-matter/issues/538): Added support to encode emojis in the string field
+- [#549](https://github.com/estruyf/vscode-front-matter/issues/549): Git submodule support to sync changes
+- [#554](https://github.com/estruyf/vscode-front-matter/issues/554): When inserting snippets, only the content snippets will be shown
+
+### ⚡️ Optimizations
+
+- [#534](https://github.com/estruyf/vscode-front-matter/issues/534): Moved the `mediaDb.json` file to a `.frontmatter/database` folder instead of the `.frontmatter/content` folder
+- [#536](https://github.com/estruyf/vscode-front-matter/issues/536): Set the start location from the script to the root of the workspace
+- [#555](https://github.com/estruyf/vscode-front-matter/issues/555): When generating a content-type from existing content, Front Matter will better detect the type of field
+- [#556](https://github.com/estruyf/vscode-front-matter/issues/556): Content values are aligned to the type of field
+
+### 🐞 Fixes
+
+- [#518](https://github.com/estruyf/vscode-front-matter/issues/518): Fix an issue where the `YAML` parser adds line breaks to long strings
+- [#520](https://github.com/estruyf/vscode-front-matter/issues/520): Add the URL protocol to the host on opening the preview if it's missing
+- [#521](https://github.com/estruyf/vscode-front-matter/issues/521): Fix empty snippets dashboard placeholder
+- [#526](https://github.com/estruyf/vscode-front-matter/issues/526): Fix card content menu
+- [#528](https://github.com/estruyf/vscode-front-matter/issues/528): Fix where the `.astro` code section `---` is seen as front matter
+- [#529](https://github.com/estruyf/vscode-front-matter/issues/529): Fix YAML parsing in Windows which added an extra carriage return
+- [#531](https://github.com/estruyf/vscode-front-matter/issues/531): Fix prettier update which caused data views to not render list items
+- [#539](https://github.com/estruyf/vscode-front-matter/issues/539): Fix the override of the default file prefix on content creation
+- [#543](https://github.com/estruyf/vscode-front-matter/issues/543): Fix JSON schema for script commands
+- [#547](https://github.com/estruyf/vscode-front-matter/issues/547): Fix setting default value in a hidden group field (`block`)
+- [#552](https://github.com/estruyf/vscode-front-matter/issues/552): Fix for content retrieval in multi-root workspaces
+- [#557](https://github.com/estruyf/vscode-front-matter/issues/557): Fix for dropdown of the tag picker
+
+## [8.3.0] - 2023-02-14 - [Release notes](https://beta.frontmatter.codes/updates/v8.3.0)
+
+### 🧪 Experimental features
+
+- Visual Studio Code Theming support for the dashboards
+
+> **Info**: To enable the experimental features you need to set the `frontMatter.experimental` setting to `true`.
 
 ### ✨ New features
 

@@ -3,7 +3,7 @@ import { commands, window } from 'vscode';
 import { Dashboard } from '../../commands/Dashboard';
 import { COMMAND_NAME } from '../../constants';
 import { ImageHelper } from '../../helpers';
-import { DashboardData } from '../../models';
+import { DashboardData, PostMessageData } from '../../models';
 import { Command } from '../../panelWebView/Command';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
@@ -13,7 +13,7 @@ export class MediaListener extends BaseListener {
    * Process the messages for the dashboard views
    * @param msg
    */
-  public static process(msg: { command: any; data: any }) {
+  public static process(msg: PostMessageData) {
     super.process(msg);
 
     switch (msg.command) {
@@ -24,7 +24,7 @@ export class MediaListener extends BaseListener {
         this.selectMedia(msg);
         break;
       case CommandToCode.getImageUrl:
-        this.generateUrl(msg.data);
+        this.generateUrl(msg.payload);
         break;
     }
   }
@@ -47,10 +47,10 @@ export class MediaListener extends BaseListener {
   /**
    * Select a media file
    */
-  private static async selectMedia(msg: { data: any }) {
+  private static async selectMedia(msg: PostMessageData) {
     await commands.executeCommand(COMMAND_NAME.dashboard, {
       type: 'media',
-      data: msg.data
+      data: msg.payload
     } as DashboardData);
     this.getMediaSelection();
   }

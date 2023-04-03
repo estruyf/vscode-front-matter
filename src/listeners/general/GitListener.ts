@@ -1,3 +1,9 @@
+import {
+  SETTING_GIT_SUBMODULE_BRANCH,
+  SETTING_GIT_SUBMODULE_FOLDER,
+  SETTING_GIT_SUBMODULE_PULL,
+  SETTING_GIT_SUBMODULE_PUSH
+} from './../../constants/settings';
 import { Settings } from './../../helpers/SettingsHelper';
 import { Dashboard } from '../../commands/Dashboard';
 import { ExplorerView } from '../../explorerView/ExplorerView';
@@ -5,6 +11,7 @@ import {
   ArticleHelper,
   Extension,
   Logger,
+  Notifications,
   processKnownPlaceholders,
   Telemetry
 } from '../../helpers';
@@ -20,11 +27,16 @@ import {
 } from '../../constants';
 import { Folders } from '../../commands/Folders';
 import { commands } from 'vscode';
+import { PostMessageData } from '../../models';
 
 export class GitListener {
   private static isRegistered: boolean = false;
   private static client: SimpleGit | null = null;
+  private static subClient: SimpleGit | null = null;
 
+  /**
+   * Initialize the listener
+   */
   public static async init() {
     let isEnabled = false;
     const gitEnabled = Settings.get<boolean>(SETTING_GIT_ENABLED);
@@ -49,7 +61,7 @@ export class GitListener {
    * Process the messages
    * @param msg
    */
-  public static process(msg: { command: string; data: any }) {
+  public static process(msg: PostMessageData) {
     switch (msg.command) {
       case GeneralCommands.toVSCode.gitSync:
         this.sync();
@@ -57,6 +69,9 @@ export class GitListener {
     }
   }
 
+  /**
+   * Run the sync
+   */
   public static async sync() {
     try {
       this.sendMsg(GeneralCommands.toWebview.gitSyncingStart, {});
@@ -73,6 +88,10 @@ export class GitListener {
     }
   }
 
+  /**
+   * Check if the current workspace is a git repository
+   * @returns
+   */
   public static async isGitRepository() {
     const git = this.getClient();
     if (!git) {
@@ -88,16 +107,46 @@ export class GitListener {
     return isRepo;
   }
 
+  /**
+   * Pull the changes from the remote
+   * @returns
+   */
   private static async pull() {
     const git = this.getClient();
     if (!git) {
       return;
     }
 
+    const submoduleFolder = Settings.get<string>(SETTING_GIT_SUBMODULE_FOLDER);
+    const submoduleBranch = Settings.get<string>(SETTING_GIT_SUBMODULE_BRANCH);
+    const submodulePull = Settings.get<boolean>(SETTING_GIT_SUBMODULE_PULL);
+
+    if (submoduleFolder) {
+      const absFolderPath = Folders.getAbsFolderPath(submoduleFolder);
+      const subGit = this.getClient(absFolderPath);
+      if (subGit && submoduleBranch) {
+        await subGit.checkout(submoduleBranch);
+      }
+    } else {
+      if (submoduleBranch) {
+        Logger.info(`Checking out the branch ${submoduleBranch} for submodules`);
+        await git.subModule(['foreach', 'git', 'checkout', submoduleBranch]);
+      }
+    }
+
+    if (submodulePull) {
+      Logger.info(`Pulling from remote with submodules`);
+      await git.subModule(['update', '--remote', '--merge']);
+    }
+
     Logger.info(`Pulling from remote`);
     await git.pull();
   }
 
+  /**
+   * Push the changes to the remote
+   * @returns
+   */
   private static async push() {
     let commitMsg = Settings.get<string>(SETTING_GIT_COMMIT_MSG);
 
@@ -112,48 +161,107 @@ export class GitListener {
       return;
     }
 
+    const submoduleFolder = Settings.get<string>(SETTING_GIT_SUBMODULE_FOLDER);
+    const submodulePush = Settings.get<boolean>(SETTING_GIT_SUBMODULE_PUSH);
+
+    if (submoduleFolder) {
+      const absFolderPath = Folders.getAbsFolderPath(submoduleFolder);
+      const subGit = this.getClient(absFolderPath);
+      if (subGit && submodulePush) {
+        try {
+          const status = await subGit.status();
+          // Check if anything changed
+          if (status.files.length > 0) {
+            await subGit.raw(['add', '.', '-A']);
+            await subGit.commit(commitMsg || 'Synced by Front Matter');
+          }
+          await subGit.push();
+        } catch (e) {
+          Notifications.error(`Failed to push submodules. Please check the logs for more details.`);
+          Logger.error((e as Error).message);
+          return;
+        }
+      }
+    } else {
+      if (submodulePush) {
+        Logger.info(`Pushing to remote with submodules`);
+
+        try {
+          const status = await git.subModule(['foreach', 'git', 'status', '--porcelain', '-u']);
+          const lines = status.split('\n').filter((line) => line.trim() !== '');
+
+          // First line is the submodule folder name
+          if (lines.length > 1) {
+            await git.subModule(['foreach', 'git', 'add', '.', '-A']);
+            await git.subModule([
+              'foreach',
+              'git',
+              'commit',
+              '-m',
+              commitMsg || 'Synced by Front Matter'
+            ]);
+            await git.subModule(['foreach', 'git', 'push']);
+          }
+        } catch (e) {
+          Notifications.error(`Failed to push submodules. Please check the logs for more details.`);
+          Logger.error((e as Error).message);
+          return;
+        }
+      }
+    }
+
     Logger.info(`Pushing to remote`);
 
     const status = await git.status();
 
-    for (const file of status.not_added) {
-      await git.add(file);
+    if (status.files.length > 0) {
+      await git.raw(['add', '.', '-A']);
+      await git.commit(commitMsg || 'Synced by Front Matter');
     }
-    for (const file of status.modified) {
-      await git.add(file);
-    }
-    for (const file of status.deleted) {
-      await git.add(file);
-    }
-
-    await git.commit(commitMsg || 'Synced by Front Matter');
 
     await git.push();
   }
 
-  private static getClient() {
-    if (this.client) {
+  /**
+   * Get the git client
+   * @param submoduleFolder
+   * @returns
+   */
+  private static getClient(submoduleFolder: string = ''): SimpleGit | null {
+    if (!submoduleFolder && this.client) {
       return this.client;
+    } else if (submoduleFolder && this.subClient) {
+      return this.subClient;
     }
 
     const wsFolder = Folders.getWorkspaceFolder();
 
     const options = {
-      baseDir: wsFolder?.fsPath || '',
+      baseDir: submoduleFolder || wsFolder?.fsPath || '',
       binary: 'git',
       maxConcurrentProcesses: 6
     };
 
-    this.client = simpleGit(options);
-    return this.client;
+    if (submoduleFolder) {
+      this.subClient = simpleGit(options);
+      return this.subClient;
+    } else {
+      this.client = simpleGit(options);
+      return this.client;
+    }
   }
 
-  private static sendMsg(command: string, data: any) {
+  /**
+   * Send the message to the webview
+   * @param command
+   * @param payload
+   */
+  private static sendMsg(command: string, payload: any) {
     const extPath = Extension.getInstance().extensionPath;
     const panel = ExplorerView.getInstance(extPath);
 
-    panel.sendMessage({ command: command as any, data });
+    panel.sendMessage({ command: command as any, payload });
 
-    Dashboard.postWebviewMessage({ command: command as any, data });
+    Dashboard.postWebviewMessage({ command: command as any, payload });
   }
 }

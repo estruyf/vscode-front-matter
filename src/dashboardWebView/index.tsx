@@ -9,12 +9,29 @@ import { MemoryRouter } from 'react-router-dom';
 import './styles.css';
 import { Preview } from './components/Preview';
 import { SettingsProvider } from './providers/SettingsProvider';
+import { CustomPanelViewResult } from '../models';
+import { Chatbot } from './components/Chatbot/Chatbot';
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
   setState: (data: T) => void;
   postMessage: (msg: unknown) => void;
 };
+
+declare global {
+  interface Window {
+    fmExternal: {
+      isDevelopment: boolean;
+      getCustomFields: {
+        name: string,
+        html: (data: any, change: (value: any) => void) => Promise<CustomPanelViewResult | undefined>
+      }[];
+      getPanelView: (data: any) => Promise<CustomPanelViewResult | undefined>;
+      getCardImage: (filePath: string, data: any) => Promise<string | undefined>;
+      getCardFooter: (filePath: string, data: any) => Promise<string | undefined>;
+    }
+  }
+}
 
 export const routePaths: { [name: string]: string } = {
   welcome: '/welcome',
@@ -112,6 +129,14 @@ if (elm) {
     render(
       <SettingsProvider experimental={experimental === 'true'} version={version || ""}>
         <Preview url={url} />
+      </SettingsProvider>, elm);
+  } else if (type === 'chatbot') {
+    render(
+      <SettingsProvider
+        aiUrl='https://frontmatter.codes'
+        experimental={experimental === 'true'}
+        version={version || ""}>
+        <Chatbot />
       </SettingsProvider>, elm);
   } else {
     render(

@@ -5,6 +5,10 @@ export const ExtensionState = {
   SettingPromoted: `frontMatter:Settings:Promoted`,
   MoveTemplatesFolder: `frontMatter:Templates:Move`,
 
+  Project: {
+    current: `frontMatter:Project:current`
+  },
+
   Dashboard: {
     Contents: {
       Sorting: `frontMatter:Dashboard:Contents:Sorting`

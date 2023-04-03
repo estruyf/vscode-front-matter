@@ -2,10 +2,11 @@ import {
   SETTING_DASHBOARD_OPENONSTART,
   CONTEXT,
   ExtensionState,
-  SETTING_EXPERIMENTAL
+  SETTING_EXPERIMENTAL,
+  SETTING_EXTENSIBILITY_SCRIPTS
 } from '../constants';
 import { join } from 'path';
-import { commands, Uri, ViewColumn, Webview, WebviewPanel, window } from 'vscode';
+import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace } from 'vscode';
 import { Logger, Settings as SettingsHelper } from '../helpers';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { Extension } from '../helpers/Extension';
@@ -25,6 +26,7 @@ import {
 } from '../listeners/dashboard';
 import { MediaListener as PanelMediaListener } from '../listeners/panel';
 import { GitListener, ModeListener } from '../listeners/general';
+import { Folders } from './Folders';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -77,7 +79,7 @@ export class Dashboard {
       if (hasData) {
         Dashboard.postWebviewMessage({
           command: DashboardCommand.viewData,
-          data: Dashboard.viewData
+          payload: Dashboard.viewData
         });
       }
     }
@@ -119,7 +121,8 @@ export class Dashboard {
       ViewColumn.One,
       {
         enableScripts: true,
-        retainContextWhenHidden: true
+        retainContextWhenHidden: true,
+        enableCommandUris: true
       }
     );
 
@@ -142,7 +145,7 @@ export class Dashboard {
 
         Dashboard.postWebviewMessage({
           command: DashboardCommand.viewData,
-          data: null
+          payload: null
         });
       }
 
@@ -190,7 +193,7 @@ export class Dashboard {
    * Post data to the dashboard
    * @param msg
    */
-  public static postWebviewMessage(msg: { command: DashboardCommand; data?: unknown }) {
+  public static postWebviewMessage(msg: { command: DashboardCommand; payload?: unknown }) {
     if (Dashboard.isDisposed) {
       return;
     }
@@ -227,6 +230,20 @@ export class Dashboard {
 
     // Get experimental setting
     const experimental = SettingsHelper.get(SETTING_EXPERIMENTAL);
+    const extensibilityScripts = SettingsHelper.get<string[]>(SETTING_EXTENSIBILITY_SCRIPTS) || [];
+
+    const scriptsToLoad: string[] = [];
+    if (experimental) {
+      for (const script of extensibilityScripts) {
+        if (script.startsWith('https://')) {
+          scriptsToLoad.push(script);
+        } else {
+          const absScriptPath = Folders.getAbsFilePath(script);
+          const scriptUri = webView.asWebviewUri(Uri.file(absScriptPath));
+          scriptsToLoad.push(scriptUri.toString());
+        }
+      }
+    }
 
     const csp = [
       `default-src 'none';`,
@@ -238,10 +255,10 @@ export class Dashboard {
       } 'self' 'unsafe-inline' https://*`,
       `script-src ${
         isProd ? `'nonce-${nonce}'` : `http://${localServerUrl} http://0.0.0.0:${localPort}`
-      } 'unsafe-eval'`,
-      `style-src ${webView.cspSource} 'self' 'unsafe-inline'`,
+      } 'unsafe-eval' https://*`,
+      `style-src ${webView.cspSource} 'self' 'unsafe-inline' https://*`,
       `font-src ${webView.cspSource}`,
-      `connect-src https://o1022172.ingest.sentry.io ${
+      `connect-src https://o1022172.ingest.sentry.io https://* ${
         isProd
           ? ``
           : `ws://${localServerUrl} ws://0.0.0.0:${localPort} http://${localServerUrl} http://0.0.0.0:${localPort}`
@@ -265,9 +282,15 @@ export class Dashboard {
       version.usedVersion ? '' : `data-showWelcome="true"`
     } ${experimental ? `data-experimental="${experimental}"` : ''} ></div>
 
-        <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759&slug=${`dashboard-${version.installedVersion}`}" alt="Daily usage" />
-
+        ${(scriptsToLoad || [])
+          .map((script) => {
+            return `<script type="module" src="${script}" nonce="${nonce}"></script>`;
+          })
+          .join('')}
+          
         <script ${isProd ? `nonce="${nonce}"` : ''} src="${scriptUri}"></script>
+
+        <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759&slug=${`dashboard-${version.installedVersion}`}" alt="Daily usage" />
       </body>
       </html>
     `;

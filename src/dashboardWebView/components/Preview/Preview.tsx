@@ -84,6 +84,8 @@ export const Preview: React.FunctionComponent<IPreviewProps> = ({
           marginTop: '30px'
         }}
       ></iframe>
+
+      <img className='hidden' src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Ffrontmatter.codes%2Fmetrics%2Fdashboards&slug=preview" alt="Preview metrics" />
     </div>
   );
 };

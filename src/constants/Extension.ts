@@ -28,6 +28,7 @@ export const COMMAND_NAME = {
   initTemplate: getCommandName('initTemplate'),
   collapseSections: getCommandName('collapseSections'),
   preview: getCommandName('preview'),
+  chatbot: getCommandName('chatbot'),
   dashboard: getCommandName('dashboard'),
   dashboardMedia: getCommandName('dashboard.media'),
   dashboardSnippets: getCommandName('dashboard.snippets'),
@@ -63,6 +64,9 @@ export const COMMAND_NAME = {
   generateContentType: getCommandName('contenttype.generate'),
   addMissingFields: getCommandName('contenttype.addMissingFields'),
   setContentType: getCommandName('contenttype.setContentType'),
+
+  // Project
+  switchProject: getCommandName('project.switch'),
 
   // Git
   gitSync: getCommandName('git.sync'),

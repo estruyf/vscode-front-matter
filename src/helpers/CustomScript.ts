@@ -363,7 +363,7 @@ export class CustomScript {
       const fullScript = `${command} ${scriptPath} ${args}`;
       Logger.info(`Executing: ${fullScript}`);
 
-      exec(fullScript, (error, stdout) => {
+      exec(fullScript, { cwd: wsPath }, (error, stdout) => {
         if (error) {
           reject(error.message);
           return;

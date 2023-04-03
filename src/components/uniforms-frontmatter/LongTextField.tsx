@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Ref } from 'react';
 import { HTMLFieldProps, connectField, filterDOMProps } from 'uniforms';
+import { LabelField } from './LabelField';
 
 export type LongTextFieldProps = HTMLFieldProps<
   string,
@@ -22,7 +23,7 @@ function LongText({
 }: LongTextFieldProps) {
   return (
     <div {...filterDOMProps(props)}>
-      {label && <label htmlFor={id}>{label}</label>}
+      <LabelField label={label} id={id} required={props.required} />
 
       <textarea
         disabled={disabled}

@@ -44,7 +44,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
 
   const messageListener = (message: MessageEvent<EventData<any>>) => {
     if (message.data.command === DashboardCommand.dataFileEntries) {
-      setDataEntries(message.data.data);
+      setDataEntries(message.data.payload);
     }
   };
 
@@ -317,6 +317,8 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
       />
 
       <ToastContainer />
+
+      <img className='hidden' src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Ffrontmatter.codes%2Fmetrics%2Fdashboards&slug=dataview" alt="DataView metrics" />
     </div >
   );
 };

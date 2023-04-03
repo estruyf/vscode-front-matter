@@ -3,6 +3,7 @@ import { ExtensionState } from '../../constants';
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { Extension, Notifications } from '../../helpers';
+import { PostMessageData } from '../../models';
 import { BaseListener } from './BaseListener';
 
 export class DashboardListener extends BaseListener {
@@ -10,7 +11,7 @@ export class DashboardListener extends BaseListener {
    * Process the messages for the dashboard views
    * @param msg
    */
-  public static process(msg: { command: DashboardMessage; data: any }) {
+  public static process(msg: PostMessageData) {
     super.process(msg);
 
     switch (msg.command) {
@@ -23,10 +24,10 @@ export class DashboardListener extends BaseListener {
         Dashboard.reload();
         break;
       case DashboardMessage.setPageViewType:
-        Extension.getInstance().setState(ExtensionState.PagesView, msg.data, 'workspace');
+        Extension.getInstance().setState(ExtensionState.PagesView, msg.payload, 'workspace');
         break;
       case DashboardMessage.showWarning:
-        Notifications.warning(msg.data);
+        Notifications.warning(msg.payload);
         break;
     }
   }

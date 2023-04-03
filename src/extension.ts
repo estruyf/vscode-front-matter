@@ -26,7 +26,8 @@ import {
   Dashboard,
   Article,
   Settings,
-  StatusListener
+  StatusListener,
+  Chatbot
 } from './commands';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
@@ -309,6 +310,11 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand(COMMAND_NAME.preview, () => Preview.open(extensionPath))
   );
 
+  // Chat to the bot
+  subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_NAME.chatbot, () => Chatbot.open(extensionPath))
+  );
+
   // Inserting an image in Markdown
   subscriptions.push(
     vscode.commands.registerCommand(COMMAND_NAME.insertMedia, Article.insertMedia)
@@ -346,6 +352,9 @@ export async function activate(context: vscode.ExtensionContext) {
   // Cache commands
   Cache.registerCommands();
 
+  // Project switching
+  Project.registerCommands();
+
   // Subscribe all commands
   subscriptions.push(
     insertTags,
@@ -369,12 +378,10 @@ export async function activate(context: vscode.ExtensionContext) {
     createFolder
   );
 
-  console.log(`FRONT MATTER CMS activated!`)
+  console.log(`𝖥𝗋𝗈𝗇𝗍 𝖬𝖺𝗍𝗍𝖾𝗋 𝖢𝖬𝖲 𝖺𝖼𝗍𝗂𝗏𝖺𝗍𝖾𝖽! 𝖱𝖾𝖺𝖽𝗒 𝗍𝗈 𝗌𝗍𝖺𝗋𝗍 𝗐𝗋𝗂𝗍𝗂𝗇𝗀... 👩‍💻🧑‍💻👨‍💻`);
 }
 
-export function deactivate() {
-  Telemetry.dispose();
-}
+export function deactivate() {}
 
 const handleAutoDateUpdate = (e: vscode.TextDocumentWillSaveEvent) => {
   Article.autoUpdate(e);

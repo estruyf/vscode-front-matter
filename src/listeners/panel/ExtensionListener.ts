@@ -5,15 +5,15 @@ import * as os from 'os';
 import { exec } from 'child_process';
 import { Folders } from '../../commands/Folders';
 import { COMMAND_NAME } from '../../constants';
-import { SettingsListener } from '.';
 import { openFileInEditor } from '../../helpers';
+import { PostMessageData } from '../../models';
 
 export class ExtensionListener extends BaseListener {
   /**
    * Process the messages for the dashboard views
    * @param msg
    */
-  public static process(msg: { command: any; data: any }) {
+  public static process(msg: PostMessageData) {
     super.process(msg);
 
     switch (msg.command) {
@@ -24,7 +24,7 @@ export class ExtensionListener extends BaseListener {
         this.openFolder();
         break;
       case CommandToCode.openInEditor:
-        openFileInEditor(msg.data);
+        openFileInEditor(msg.payload);
         break;
       case CommandToCode.initProject:
         this.initialize();

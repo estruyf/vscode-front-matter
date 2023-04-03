@@ -85,7 +85,8 @@
       @apply my-2;
     }
 
-    input {
+    input,
+    textarea {
       @apply w-full px-2 py-1 text-vulcan-500;
 
       &::placeholder {
@@ -332,7 +333,7 @@
   }
 }
 
-.experimental {
+.experimental form {
   [type='text'],
   [type='email'],
   [type='url'],
@@ -399,5 +400,87 @@
         @apply border-teal-900 text-teal-400;
       }
     }
+  }
+}
+
+.qa__bot {
+  > div {
+    @apply space-y-4;
+  }
+
+  li {
+    @apply space-y-2;
+  }
+
+  pre code {
+    white-space: pre-wrap;
+  }
+
+  .question {
+    @apply relative ml-auto mr-3 w-5/6 rounded-full rounded-br-none bg-teal-900 py-2 px-4 text-whisper-500;
+
+    &:after {
+      --size: 1rem;
+      content: '';
+      position: absolute;
+      bottom: 0;
+      height: var(--size);
+      width: var(--size);
+      z-index: 2;
+      right: calc(var(--size) * -1);
+      border-bottom-right-radius: 8rem;
+      background: radial-gradient(
+        circle at top right,
+        rgba(0, 0, 0, 0) 0,
+        rgba(0, 0, 0, 0) var(--size),
+        #009aa3 var(--size)
+      );
+    }
+  }
+
+  .answer {
+    @apply break-all rounded border border-teal-100 border-opacity-20 p-4 pb-0;
+  }
+}
+
+.chatbox {
+  textarea {
+    border: 0;
+    outline: 0;
+
+    &:focus {
+      border: 0 !important;
+      outline: 0 !important;
+      box-shadow: none !important;
+    }
+  }
+}
+
+.dots {
+  &:after {
+    display: inline-block;
+    animation: ellipsis 1.25s infinite;
+    content: '.';
+    width: 1em;
+    text-align: left;
+    height: 20px;
+  }
+}
+
+@keyframes ellipsis {
+  0% {
+    content: '';
+  }
+  25% {
+    content: '.';
+  }
+  50% {
+    content: '..';
+  }
+  75% {
+    content: '...';
+  }
+  100% {
+    content: '';
   }
 }

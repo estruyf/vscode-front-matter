@@ -59,6 +59,8 @@ export class DashboardSettings {
     const pagination = Settings.get<boolean | number>(SETTING_DASHBOARD_CONTENT_PAGINATION);
 
     const settings = {
+      projects: Settings.getProjects(),
+      project: Settings.getProject(),
       git: {
         isGitRepo: gitActions ? await GitListener.isGitRepository() : false,
         actions: gitActions || false

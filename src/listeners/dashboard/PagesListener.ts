@@ -1,3 +1,4 @@
+import { PostMessageData } from './../../models/PostMessageData';
 import { basename } from 'path';
 import { commands, FileSystemWatcher, RelativePattern, TextDocument, Uri, workspace } from 'vscode';
 import { Dashboard } from '../../commands/Dashboard';
@@ -21,7 +22,7 @@ export class PagesListener extends BaseListener {
    * Process the messages for the dashboard views
    * @param msg
    */
-  public static async process(msg: { command: DashboardMessage; data: any }) {
+  public static async process(msg: PostMessageData) {
     super.process(msg);
 
     switch (msg.command) {
@@ -41,10 +42,10 @@ export class PagesListener extends BaseListener {
         this.getPagesData(true);
         break;
       case DashboardMessage.searchPages:
-        this.searchPages(msg.data);
+        this.searchPages(msg.payload);
         break;
       case DashboardMessage.deleteFile:
-        this.deletePage(msg.data);
+        this.deletePage(msg.payload);
         break;
     }
   }
@@ -175,6 +176,7 @@ export class PagesListener extends BaseListener {
       this.sendMsg(DashboardCommand.searchReady, true);
 
       await this.createSearchIndex(pages);
+      this.sendMsg(DashboardCommand.loading, false);
     });
   }
 

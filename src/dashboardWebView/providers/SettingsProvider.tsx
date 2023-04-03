@@ -3,27 +3,18 @@ import * as React from 'react'
 interface ISettingsProviderProps {
   version?: string;
   experimental?: boolean;
+  aiUrl?: string;
 }
 
 const SettingsContext = React.createContext<ISettingsProviderProps | undefined>(undefined);
 
-const SettingsProvider: React.FunctionComponent<ISettingsProviderProps> = ({ version, experimental, children }: React.PropsWithChildren<ISettingsProviderProps>) => {
-  const [ crntVersion, setCrntVersion ] = React.useState<string | undefined>(undefined);
-  const [ crntExprimental, setCrntExprimental ] = React.useState<boolean>(false);
-
-  React.useEffect(() => {
-    setCrntVersion(version);
-  }, [version]);
-
-  React.useEffect(() => {
-    setCrntExprimental(typeof experimental === 'boolean' ? experimental : false);
-  }, [experimental]);
-
+const SettingsProvider: React.FunctionComponent<ISettingsProviderProps> = ({ version, experimental, aiUrl, children }: React.PropsWithChildren<ISettingsProviderProps>) => {
   return (
-    <SettingsContext.Provider 
+    <SettingsContext.Provider
       value={{
-        version: crntVersion,
-        experimental: crntExprimental
+        version,
+        experimental,
+        aiUrl
       }}
     >
       {children}

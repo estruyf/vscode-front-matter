@@ -8,52 +8,53 @@ import { commands, env, Uri } from 'vscode';
 import { COMMAND_NAME, TelemetryEvent } from '../../constants';
 import * as os from 'os';
 import { Folders } from '../../commands';
+import { PostMessageData } from '../../models';
 
 export class MediaListener extends BaseListener {
   private static timers: { [folder: string]: any } = {};
 
-  public static async process(msg: { command: DashboardMessage; data: any }) {
+  public static async process(msg: PostMessageData) {
     super.process(msg);
 
     switch (msg.command) {
       case DashboardMessage.getMedia:
-        const { page, folder, sorting } = msg?.data;
+        const { page, folder, sorting } = msg?.payload;
         this.sendMediaFiles(page, folder, sorting);
         break;
       case DashboardMessage.refreshMedia:
         Telemetry.send(TelemetryEvent.refreshMedia);
         MediaHelpers.resetMedia();
-        this.sendMediaFiles(0, msg?.data?.folder);
+        this.sendMediaFiles(0, msg?.payload?.folder);
         break;
       case DashboardMessage.uploadMedia:
         Telemetry.send(TelemetryEvent.uploadMedia);
-        this.store(msg?.data);
+        this.store(msg?.payload);
         break;
       case DashboardMessage.deleteMedia:
         Telemetry.send(TelemetryEvent.deleteMedia);
-        this.delete(msg?.data);
+        this.delete(msg?.payload);
         break;
       case DashboardMessage.revealMedia:
-        this.openFileInFinder(msg?.data?.file);
+        this.openFileInFinder(msg?.payload?.file);
         break;
       case DashboardMessage.insertMedia:
         Telemetry.send(TelemetryEvent.insertMediaToContent);
-        MediaHelpers.insertMediaToMarkdown(msg?.data);
+        MediaHelpers.insertMediaToMarkdown(msg?.payload);
         break;
       case DashboardMessage.insertFile:
         Telemetry.send(TelemetryEvent.insertFileToContent);
-        MediaHelpers.insertMediaToMarkdown(msg?.data);
+        MediaHelpers.insertMediaToMarkdown(msg?.payload);
         break;
       case DashboardMessage.updateMediaMetadata:
         Telemetry.send(TelemetryEvent.updateMediaMetadata);
-        this.update(msg.data);
+        this.update(msg.payload);
         break;
       case DashboardMessage.createMediaFolder:
-        await commands.executeCommand(COMMAND_NAME.createFolder, msg?.data);
+        await commands.executeCommand(COMMAND_NAME.createFolder, msg?.payload);
         break;
       case DashboardMessage.createHexoAssetFolder:
-        if (msg?.data.hexoAssetFolderPath) {
-          Folders.createFolder(msg?.data.hexoAssetFolderPath);
+        if (msg?.payload.hexoAssetFolderPath) {
+          Folders.createFolder(msg?.payload.hexoAssetFolderPath);
         }
         break;
     }

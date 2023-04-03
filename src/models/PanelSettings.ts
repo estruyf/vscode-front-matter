@@ -28,6 +28,7 @@ export interface PanelSettings {
   dataTypes: DataType[] | undefined;
   fieldGroups: FieldGroup[] | undefined;
   commaSeparatedFields: string[];
+  aiEnabled: boolean;
 }
 
 export interface FieldGroup {
@@ -94,6 +95,7 @@ export interface Field {
   fileExtensions?: string[];
   editable?: boolean;
   required?: boolean;
+  encodeEmoji?: boolean;
 
   // Date fields
   isPublishDate?: boolean;
@@ -104,8 +106,18 @@ export interface Field {
   dataFileKey?: string;
   dataFileValue?: string;
 
+  // Number field options
+  numberOptions?: NumberOptions;
+
   // When clause
   when?: WhenClause;
+}
+
+export interface NumberOptions {
+  isDecimal?: boolean;
+  min?: number;
+  max?: number;
+  step?: number;
 }
 
 export enum WhenOperator {

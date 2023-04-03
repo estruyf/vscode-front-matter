@@ -25,18 +25,18 @@ export default function useMessages() {
 
     switch (message.command) {
       case Command.metadata:
-        setMetadata(message.data);
+        setMetadata(message.payload);
         setLoading(false);
         break;
       case Command.settings:
-        setSettings(message.data);
+        setSettings(message.payload);
         setLoading(false);
         break;
       case Command.folderInfo:
-        setFolderAndFiles(message.data);
+        setFolderAndFiles(message.payload);
         break;
       case Command.loading:
-        setLoading(message.data);
+        setLoading(message.payload);
         break;
       case Command.focusOnTags:
         setFocus(TagType.tags);
@@ -45,10 +45,10 @@ export default function useMessages() {
         setFocus(TagType.categories);
         break;
       case Command.mediaSelectionData:
-        setMediaSelecting(message.data);
+        setMediaSelecting(message.payload);
         break;
       case GeneralCommands.toWebview.setMode:
-        setMode(message.data);
+        setMode(message.payload);
         break;
     }
   };

@@ -5,6 +5,9 @@ export enum DashboardMessage {
   getMode = 'getMode',
   showWarning = 'showWarning',
 
+  // Project switching
+  switchProject = 'switchProject',
+
   // Welcome view
   initializeProject = 'initializeProject',
   setFramework = 'setFramework',

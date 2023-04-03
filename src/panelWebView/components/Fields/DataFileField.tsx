@@ -38,10 +38,10 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
   const dsRef = React.useRef<Downshift<string> | null>(null);
 
   const messageListener = (message: MessageEvent<EventData<any>>) => {
-    const { command, data } = message.data;
+    const { command, payload } = message.data;
 
     if (command === Command.dataFileEntries) {
-      setDataEntries(data || null);
+      setDataEntries(payload || null);
     }
   };
 
@@ -179,18 +179,18 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
             >
               {isOpen
                 ? availableChoices.map((choice, index) => (
-                    <li
-                      {...getItemProps({
-                        key: choice.id,
-                        index,
-                        item: choice.id
-                      })}
-                    >
-                      {choice.title || (
-                        <span className={`metadata_field__choice_list__item`}>Clear value</span>
-                      )}
-                    </li>
-                  ))
+                  <li
+                    {...getItemProps({
+                      key: choice.id,
+                      index,
+                      item: choice.id
+                    })}
+                  >
+                    {choice.title || (
+                      <span className={`metadata_field__choice_list__item`}>Clear value</span>
+                    )}
+                  </li>
+                ))
                 : null}
             </ul>
           </div>
@@ -205,21 +205,21 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
 
       {crntSelected instanceof Array
         ? crntSelected.map((value: string) => (
-            <ChoiceButton
-              key={value}
-              value={value}
-              title={getChoiceValue(value)}
-              onClick={removeSelected}
-            />
-          ))
+          <ChoiceButton
+            key={value}
+            value={value}
+            title={getChoiceValue(value)}
+            onClick={removeSelected}
+          />
+        ))
         : crntSelected && (
-            <ChoiceButton
-              key={crntSelected}
-              value={crntSelected}
-              title={getChoiceValue(crntSelected)}
-              onClick={removeSelected}
-            />
-          )}
+          <ChoiceButton
+            key={crntSelected}
+            value={crntSelected}
+            title={getChoiceValue(crntSelected)}
+            onClick={removeSelected}
+          />
+        )}
     </div>
   );
 };

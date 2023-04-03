@@ -33,8 +33,12 @@
   position: inherit !important;
 }
 
-.z-10 { z-index: 10 !important; }
-.z-20 { z-index: 10 !important; }
+.z-10 {
+  z-index: 10 !important;
+}
+.z-20 {
+  z-index: 10 !important;
+}
 
 .w-full {
   width: 100% !important;
@@ -44,11 +48,12 @@
 .ext_settings,
 .git_actions,
 .initialize_actions {
-	padding: 1rem 1.25rem;
+  padding: 1rem 1.25rem;
   box-sizing: border-box;
 }
 
-#app, .frontmatter {
+#app,
+.frontmatter {
   height: 100%;
 }
 
@@ -58,7 +63,7 @@
   align-items: center;
   opacity: 0.8;
   text-align: center;
-	padding: 1rem 1.25rem;
+  padding: 1rem 1.25rem;
 }
 
 .spinner,
@@ -103,7 +108,7 @@
   padding-bottom: var(--input-margin-vertical);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: start;
 }
 
 .frontmatter h3 {
@@ -113,7 +118,7 @@
 .frontmatter p,
 .frontmatter h4,
 .frontmatter ul {
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
 }
 
 .article__tags h3,
@@ -131,7 +136,8 @@
   margin-right: 0.5rem;
 }
 
-.seo__status__details, .seo__status__keywords {
+.seo__status__details,
+.seo__status__keywords {
   margin-bottom: 1rem;
 }
 
@@ -162,11 +168,11 @@
 }
 
 .article__tags__dropbox.open {
-  border: 1px solid rgba(0, 0, 0, .9);
+  border: 1px solid rgba(0, 0, 0, 0.9);
 }
 
 .article__tags ul {
-	color: var(--vscode-dropdown-foreground);
+  color: var(--vscode-dropdown-foreground);
   background-color: var(--vscode-dropdown-background);
 }
 
@@ -176,16 +182,16 @@
 }
 
 .article__tags li:active {
-	color: var(--vscode-button-foreground);
+  color: var(--vscode-button-foreground);
   background-color: var(--vscode-button-background);
 }
 
-.article__tags li[aria-selected="true"] {
+.article__tags li[aria-selected='true'] {
   color: var(--vscode-button-foreground);
   background-color: var(--vscode-button-hoverBackground);
 }
 
-.article__tags li[aria-disabled="true"] {
+.article__tags li[aria-disabled='true'] {
   display: none;
 }
 
@@ -224,7 +230,7 @@
 }
 
 .ext_link_block svg {
-  margin-right: .5rem;
+  margin-right: 0.5rem;
   display: block;
   width: 16px;
   height: 16px;
@@ -258,16 +264,16 @@
 }
 
 .ext_link_block button.active {
-	color: var(--vscode-button-foreground);
-	background: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+  background: var(--vscode-button-background);
 }
 .ext_link_block button.active:hover {
-	cursor: pointer;
-	background: var(--vscode-button-hoverBackground);
+  cursor: pointer;
+  background: var(--vscode-button-hoverBackground);
 }
 
-.ext_link_block a:hover, 
-.ext_link_block a:active, 
+.ext_link_block a:hover,
+.ext_link_block a:active,
 .ext_link_block a:focus,
 .ext_link_block a:visited {
   color: var(--vscode-button-secondaryForeground);
@@ -301,15 +307,15 @@
 }
 
 .table__cell__validation .valid {
-  color: #46EC86;
+  color: #46ec86;
 }
 
 .table__cell__validation .warning {
-  color: #E6AF2E;
+  color: #e6af2e;
 }
 
 .table__cell__validation div span + span {
-  margin-left: .5rem;
+  margin-left: 0.5rem;
 }
 
 .seo__status__note {
@@ -325,7 +331,7 @@
   height: 24px;
 }
 
-.field__toggle input { 
+.field__toggle input {
   opacity: 0;
   width: 0;
   height: 0;
@@ -339,21 +345,21 @@
   right: 0;
   bottom: 0;
   background-color: var(--vscode-button-secondaryBackground);
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
   border-radius: 34px;
 }
 
 .field__toggle__slider:before {
   position: absolute;
-  content: "";
+  content: '';
   height: 16px;
   width: 16px;
   left: 4px;
   bottom: 4px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
   border-radius: 50%;
 }
 
@@ -405,7 +411,7 @@ input:checked + .field__toggle__slider:before {
 }
 
 .file_list__items__item {
-	color: var(--vscode-foreground);
+  color: var(--vscode-foreground);
   font-size: var(--vscode-font-size);
   font-weight: var(--vscode-font-weight);
   cursor: pointer;
@@ -419,7 +425,7 @@ input:checked + .field__toggle__slider:before {
 }
 
 .file_list__items__item:hover {
-	background-color: var(--vscode-list-hoverBackground);
+  background-color: var(--vscode-list-hoverBackground);
   color: var(--vscode-list-hoverForeground);
   cursor: pointer;
 }
@@ -429,7 +435,7 @@ input:checked + .field__toggle__slider:before {
   flex-shrink: 0;
   height: 20px;
   width: 20px;
-  margin-right: .25rem;
+  margin-right: 0.25rem;
 }
 
 .file_list__items__item span {
@@ -454,7 +460,7 @@ input:checked + .field__toggle__slider:before {
 .sponsor svg {
   height: 20px;
   width: 20px;
-  margin-right: .25rem;
+  margin-right: 0.25rem;
 }
 
 .sponsor a {
@@ -471,7 +477,7 @@ input:checked + .field__toggle__slider:before {
 }
 
 .sponsor a > span {
-  margin-right: .25rem;
+  margin-right: 0.25rem;
 }
 
 /* Timepicker */

@@ -2,7 +2,7 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { DateHelper } from '../../../helpers/DateHelper';
-import { BlockFieldData, Field, PanelSettings, WhenOperator } from '../../../models';
+import { BlockFieldData, CustomPanelViewResult, Field, PanelSettings, WhenOperator } from '../../../models';
 import { Command } from '../../Command';
 import { CommandToCode } from '../../CommandToCode';
 import { TagType } from '../../TagType';
@@ -26,7 +26,8 @@ import {
   SlugField,
   PreviewImageField,
   PreviewImageValue,
-  NumberField
+  NumberField,
+  CustomField
 } from '.';
 import { fieldWhenClause } from '../../../utils/fieldWhenClause';
 
@@ -65,13 +66,17 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
   renderFields
 }: React.PropsWithChildren<IWrapperFieldProps>) => {
   const [fieldValue, setFieldValue] = useState<any | undefined>(undefined);
+  const [customFields, setCustomFields] = useState<{
+    name: string;
+    html: (data: any, onChange: (value: any) => void) => Promise<CustomPanelViewResult | undefined>;
+  }[]>([]);
 
   const listener = useCallback(
     (event: any) => {
       const message = event.data;
 
       if (message.command === Command.updatePlaceholder) {
-        const data = message.data;
+        const data = message.payload;
         if (data.field === field.name) {
           setFieldValue(data.value);
           onSendUpdate(field.name, data.value, parentFields);
@@ -132,7 +137,19 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
     };
   }, [field, parent]);
 
+  useEffect(() => {
+    if (window.fmExternal && window.fmExternal.getCustomFields) {
+      setCustomFields(window.fmExternal.getCustomFields || []);
+    } else {
+      setCustomFields([]);
+    }
+  }, []);
+
   if (field.hidden || fieldValue === undefined) {
+    if (field.hidden && fieldValue === undefined && field.default && parentFields.length > 0) {
+      onSendUpdate(field.name, field.default, parentFields);
+    }
+
     return null;
   }
 
@@ -204,7 +221,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       </FieldBoundary>
     );
   } else if (field.type === 'number') {
-    let nrValue: number | null = parseInt(fieldValue as string);
+    let nrValue: number | null = field.numberOptions?.isDecimal ? parseFloat(fieldValue as string) : parseInt(fieldValue as string);
     if (isNaN(nrValue)) {
       nrValue = null;
     }
@@ -215,6 +232,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           key={field.name}
           label={field.title || field.name}
           description={field.description}
+          options={field.numberOptions}
           onChange={(value) => onSendUpdate(field.name, value, parentFields)}
           value={nrValue}
           required={!!field.required}
@@ -470,6 +488,22 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
         />
       </FieldBoundary>
     );
+  } else if (customFields.find(f => f.name === field.type)) {
+    const fieldData = customFields.find(f => f.name === field.type);
+    if (fieldData) {
+      return (
+        <CustomField
+          key={field.name}
+          label={field.title || field.name}
+          description={field.description}
+          value={fieldValue}
+          required={!!field.required}
+          onChange={(value: any) => onSendUpdate(field.name, value, parentFields)}
+          fieldData={fieldData} />
+      );
+    } else {
+      return null;
+    }
   } else {
     console.warn(`Unknown field type: ${field.type}`);
     return null;

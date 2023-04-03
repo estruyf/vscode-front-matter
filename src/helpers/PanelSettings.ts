@@ -1,3 +1,4 @@
+import { SETTING_SPONSORS_AI_ENABLED } from './../constants/settings';
 import { workspace } from 'vscode';
 import { Extension, Settings } from '.';
 import { Dashboard } from '../commands/Dashboard';
@@ -46,7 +47,10 @@ export class PanelSettings {
   public static async get(): Promise<IPanelSettings> {
     const gitActions = Settings.get<boolean>(SETTING_GIT_ENABLED);
 
+    const aiEnabled = Settings.get<boolean>(SETTING_SPONSORS_AI_ENABLED);
+
     return {
+      aiEnabled: Settings.get<boolean>(SETTING_SPONSORS_AI_ENABLED) || false,
       git: {
         isGitRepo: gitActions ? await GitListener.isGitRepository() : false,
         actions: gitActions || false

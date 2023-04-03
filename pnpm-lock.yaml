@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@actions/core': ^1.8.2
   '@bendera/vscode-webview-elements': 0.6.2
-  '@estruyf/vscode': 0.0.3
+  '@estruyf/vscode': ^1.1.0
   '@headlessui/react': 1.5.0
   '@heroicons/react': 1.0.4
   '@iarna/toml': 2.2.3
@@ -96,13 +96,13 @@ specifiers:
   webpack-bundle-analyzer: ^4.5.0
   webpack-cli: ^4.9.1
   webpack-dev-server: ^4.6.0
-  yaml: ^1.10.2
+  yaml: ^2.2.1
   yawn-yaml: ^1.5.0
 
 devDependencies:
   '@actions/core': 1.10.0
   '@bendera/vscode-webview-elements': 0.6.2
-  '@estruyf/vscode': 0.0.3
+  '@estruyf/vscode': 1.1.0
   '@headlessui/react': 1.5.0_w7o5yyljkiidx2s2nzb26ottzu
   '@heroicons/react': 1.0.4_react@17.0.1
   '@iarna/toml': 2.2.3
@@ -195,7 +195,7 @@ devDependencies:
   webpack-bundle-analyzer: 4.7.0
   webpack-cli: 4.10.0_y7ttplitmkohdpgkllksfboxwa
   webpack-dev-server: 4.11.1_pda42hcaj7d62cr262fr632kue
-  yaml: 1.10.2
+  yaml: 2.2.1
   yawn-yaml: 1.5.0
 
 packages:
@@ -313,10 +313,11 @@ packages:
       - supports-color
     dev: true
 
-  /@estruyf/vscode/0.0.3:
-    resolution: {integrity: sha512-Mak13ZHj/TcyL0snPHsrqELlhpvV1JszZFScCcm1G2dp6UdP4dSk32MlNH5FusGhTIEOI6APE8krldMcZjS/3w==}
+  /@estruyf/vscode/1.1.0:
+    resolution: {integrity: sha512-JOjok+d870IsBPqk/E+KeW9E5ar+slqW8Sae5PtNb1yB8aMudJy9DHV5wQeki/ZwggFYDv+6EPjyzW/71/5yVw==}
     dependencies:
       '@types/vscode-webview': 1.57.0
+      uuid: 9.0.0
     dev: true
 
   /@headlessui/react/1.5.0_w7o5yyljkiidx2s2nzb26ottzu:
@@ -7137,6 +7138,11 @@ packages:
     hasBin: true
     dev: true
 
+  /uuid/9.0.0:
+    resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==}
+    hasBin: true
+    dev: true
+
   /uvu/0.5.6:
     resolution: {integrity: sha512-+g8ENReyr8YsOc6fv/NVJs2vFdHBnBNdfE49rshrTzDWOlUx4Gq7KOS2GD8eqhy2j+Ejq29+SbKH8yjkAqXqoA==}
     engines: {node: '>=8'}
@@ -7540,6 +7546,11 @@ packages:
   /yaml/1.10.2:
     resolution: {integrity: sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==}
     engines: {node: '>= 6'}
+    dev: true
+
+  /yaml/2.2.1:
+    resolution: {integrity: sha512-e0WHiYql7+9wr4cWMx3TVQrNwejKaEe7/rHNmQmqRjazfOP5W8PB6Jpebb5o6fIapbz9o9+2ipcaTM2ZwDI6lw==}
+    engines: {node: '>= 14'}
     dev: true
 
   /yargs-parser/20.2.4:

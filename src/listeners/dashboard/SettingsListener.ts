@@ -1,20 +1,33 @@
 import { join } from 'path';
 import { commands, Uri } from 'vscode';
 import { Folders } from '../../commands/Folders';
-import { COMMAND_NAME, SETTING_CONTENT_STATIC_FOLDER, SETTING_FRAMEWORK_ID } from '../../constants';
+import {
+  COMMAND_NAME,
+  ExtensionState,
+  SETTING_CONTENT_STATIC_FOLDER,
+  SETTING_FRAMEWORK_ID,
+  SETTING_PREVIEW_HOST
+} from '../../constants';
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
-import { DashboardSettings, Settings } from '../../helpers';
+import { DashboardSettings, Extension, Settings } from '../../helpers';
 import { FrameworkDetector } from '../../helpers/FrameworkDetector';
-import { Framework } from '../../models';
+import { Framework, PostMessageData } from '../../models';
 import { BaseListener } from './BaseListener';
+import { Cache } from '../../commands/Cache';
+import { Preview } from '../../commands';
+import { GitListener } from '../general';
+import { DataListener } from '../panel';
+import { MarkdownFoldingProvider } from '../../providers/MarkdownFoldingProvider';
+import { ModeSwitch } from '../../services/ModeSwitch';
+import { PagesListener } from './PagesListener';
 
 export class SettingsListener extends BaseListener {
   /**
    * Process the messages for the dashboard views
    * @param msg
    */
-  public static process(msg: { command: DashboardMessage; data: any }) {
+  public static process(msg: PostMessageData) {
     super.process(msg);
 
     switch (msg.command) {
@@ -22,14 +35,44 @@ export class SettingsListener extends BaseListener {
         this.getSettings();
         break;
       case DashboardMessage.updateSetting:
-        this.update(msg.data);
+        this.update(msg.payload);
         break;
       case DashboardMessage.setFramework:
-        this.setFramework(msg?.data);
+        this.setFramework(msg?.payload);
         break;
       case DashboardMessage.addFolder:
-        this.addFolder(msg?.data);
+        this.addFolder(msg?.payload);
         break;
+      case DashboardMessage.switchProject:
+        this.switchProject(msg.payload);
+        break;
+    }
+  }
+
+  public static async switchProject(project: string) {
+    if (project) {
+      this.sendMsg(DashboardCommand.loading, true);
+      Settings.setProject(project);
+      await Cache.clear(false);
+
+      // Clear out the media folder
+      await Extension.getInstance().setState<string | undefined>(
+        ExtensionState.SelectedFolder,
+        undefined,
+        'workspace'
+      );
+
+      Preview.init();
+      GitListener.init();
+
+      SettingsListener.getSettings(true);
+      DataListener.getFoldersAndFiles();
+      MarkdownFoldingProvider.triggerHighlighting(true);
+      ModeSwitch.register();
+
+      // Update pages
+      PagesListener.startWatchers();
+      PagesListener.refresh();
     }
   }
 
@@ -62,10 +105,16 @@ export class SettingsListener extends BaseListener {
 
     if (frameworkId) {
       const allFrameworks = FrameworkDetector.getAll();
-      const framework = allFrameworks.find((f: Framework) => f.name === frameworkId);
+      const framework: Framework | undefined = allFrameworks.find(
+        (f: Framework) => f.name === frameworkId
+      );
       if (framework) {
         if (framework.static) {
           await Settings.update(SETTING_CONTENT_STATIC_FOLDER, framework.static, true);
+        }
+
+        if (framework.server) {
+          await Settings.update(SETTING_PREVIEW_HOST, framework.server, true);
         }
 
         await FrameworkDetector.checkDefaultSettings(framework);

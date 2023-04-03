@@ -7,9 +7,12 @@ import Downshift from 'downshift';
 import { AddIcon } from './Icons/AddIcon';
 import { BlockFieldData, CustomTaxonomyData } from '../../models';
 import { useCallback, useEffect, useMemo } from 'react';
-import { Messenger } from '@estruyf/vscode/dist/client';
+import { messageHandler, Messenger } from '@estruyf/vscode/dist/client';
 import { FieldMessage } from './Fields/FieldMessage';
 import { FieldTitle } from './Fields/FieldTitle';
+import { useRecoilValue } from 'recoil';
+import { PanelSettingsAtom } from '../state';
+import { SparklesIcon } from '@heroicons/react/outline';
 
 export interface ITagPickerProps {
   type: TagType;
@@ -54,6 +57,8 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
   const prevSelected = usePrevious(crntSelected);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   const dsRef = React.useRef<Downshift<string> | null>(null);
+  const settings = useRecoilValue(PanelSettingsAtom);
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   /**
    * Removes an option
@@ -211,6 +216,19 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
     [options, inputRef, selected, freeform]
   );
 
+  const suggestTaxonomy = useCallback((type: TagType) => {
+    setLoading(true);
+    messageHandler.request<string[]>(CommandToCode.aiSuggestTaxonomy, type).then((values) => {
+      setLoading(false);
+      if (values && values instanceof Array && values.length > 0) {
+        const uniqValues = Array.from(new Set([...selected, ...values]));
+        setSelected(uniqValues);
+        sendUpdate(uniqValues);
+        setInputValue('');
+      }
+    });
+  }, [selected]);
+
   /**
    * Check if the input is disabled
    */
@@ -234,6 +252,59 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
     return required && (selected || []).length === 0;
   }, [required, selected]);
 
+  const actionElement = useMemo(() => {
+    if (!settings?.aiEnabled) {
+      return;
+    }
+
+    if (type !== TagType.tags && type !== TagType.categories) {
+      return;
+    }
+
+    return (
+      <button
+        className='metadata_field__title__action'
+        title={`Use Front Matter AI to suggest ${label?.toLowerCase() || type.toLowerCase()}`}
+        type='button'
+        onClick={() => suggestTaxonomy(type)}
+        disabled={loading}>
+        <SparklesIcon />
+      </button>
+    );
+  }, [settings?.aiEnabled, label, type]);
+
+  const dropdownStyle = useCallback((isOpen) => {
+    if (isOpen && inputRef.current) {
+      const wrapper = inputRef.current.closest(".collapsible__body");
+      const dropdown = inputRef.current.parentElement?.parentElement?.querySelector('.article__tags__dropbox');
+
+      if (!wrapper || !dropdown) {
+        return undefined;
+      }
+
+      const wrapperStyles = getComputedStyle(wrapper);
+      const padding = parseInt(wrapperStyles.paddingTop) + parseInt(wrapperStyles.paddingBottom);
+      const wrapperHeight = wrapper.clientHeight - padding;
+
+      const tagPickerElm = inputRef.current.parentElement?.parentElement;
+      const dropdownHeight = dropdown?.clientHeight;
+
+      if (!tagPickerElm || !dropdownHeight) {
+        return undefined;
+      }
+
+      const tagPickerTop = tagPickerElm.offsetTop;
+
+      const fullHeight = tagPickerTop + dropdownHeight;
+
+      if (fullHeight > wrapperHeight) {
+        return "calc(100% - 38px)";
+      }
+    }
+
+    return undefined;
+  }, [inputRef]);
+
   useEffect(() => {
     setTimeout(() => {
       triggerFocus();
@@ -248,6 +319,13 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
 
   return (
     <div className={`article__tags`}>
+      {
+        loading && (
+          <div className='metadata_field__loading'>
+            Generating suggestions...
+          </div>
+        )
+      }
       <FieldTitle
         label={
           <>
@@ -262,6 +340,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
             )}
           </>
         }
+        actionElement={actionElement}
         icon={icon}
         required={required}
       />
@@ -288,9 +367,8 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
           <>
             <div
               {...getRootProps(undefined, { suppressRefError: true })}
-              className={`article__tags__input ${freeform ? 'freeform' : ''} ${
-                showRequiredState ? 'required' : ''
-              }`}
+              className={`article__tags__input ${freeform ? 'freeform' : ''} ${showRequiredState ? 'required' : ''
+                }`}
             >
               <input
                 {...getInputProps({
@@ -324,14 +402,17 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
 
             <ul
               className={`article__tags__dropbox ${isOpen ? 'open' : 'closed'}`}
+              style={{
+                bottom: dropdownStyle(isOpen)
+              }}
               {...getMenuProps()}
             >
               {isOpen
                 ? options
-                    .filter((option) => filterList(option, inputValue))
-                    .map((item, index) => (
-                      <li {...getItemProps({ key: item, index, item })}>{item}</li>
-                    ))
+                  .filter((option) => filterList(option, inputValue))
+                  .map((item, index) => (
+                    <li {...getItemProps({ key: item, index, item })}>{item}</li>
+                  ))
                 : null}
             </ul>
           </>

@@ -96,7 +96,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
             )
             }`}
         >
-          <Menu as="div" className={`relative flex text-left ${listView ? '' : 'z-10'}`}>
+          <Menu as="div" className={`relative flex text-left`}>
             {!listView && (
               <div className="hidden group-hover/card:flex">
                 <QuickAction title={`View content`} onClick={onView}>

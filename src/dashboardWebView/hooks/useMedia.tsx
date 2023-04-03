@@ -51,15 +51,15 @@ export default function useMedia() {
     message: MessageEvent<EventData<MediaPaths | { key: string; value: any }>>
   ) => {
     if (message.data.command === DashboardCommand.media) {
-      const data: MediaPaths = message.data.data as MediaPaths;
+      const payload: MediaPaths = message.data.payload as MediaPaths;
       setLoading(false);
-      setMedia(data.media);
-      setTotal(data.total);
-      setFolders(data.folders);
-      setSelectedFolder(data.selectedFolder);
-      setSearchedMedia(data.media);
-      setAllContentFolders(data.allContentFolders);
-      setAllStaticFolders(data.allStaticfolders);
+      setMedia(payload.media);
+      setTotal(payload.total);
+      setFolders(payload.folders);
+      setSelectedFolder(payload.selectedFolder);
+      setSearchedMedia(payload.media);
+      setAllContentFolders(payload.allContentFolders);
+      setAllStaticFolders(payload.allStaticfolders);
     }
   };
 

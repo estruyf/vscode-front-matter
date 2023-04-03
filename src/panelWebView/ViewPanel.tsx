@@ -12,12 +12,16 @@ import useMessages from './hooks/useMessages';
 import { FeatureFlag } from '../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../constants/Features';
 import { GitAction } from './components/Git/GitAction';
+import { CustomView } from './components/CustomView';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { usePrevious } from './hooks/usePrevious';
 
 export interface IViewPanelProps { }
 
 export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
-  props: React.PropsWithChildren<IViewPanelProps>
+  { }: React.PropsWithChildren<IViewPanelProps>
 ) => {
+  const [isDevMode, setIsDevMode] = useState(false);
   const {
     loading,
     mediaSelecting,
@@ -28,6 +32,42 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
     unsetFocus,
     mode
   } = useMessages();
+  const prevMediaSelection = usePrevious(mediaSelecting);
+  const [scrollY, setScrollY] = useState(0);
+
+  const allPanelValues = useMemo(() => {
+    return Object.values(FEATURE_FLAG.panel).filter(v => v !== FEATURE_FLAG.panel.globalSettings)
+  }, [FEATURE_FLAG.panel]);
+
+  const scollListener = useCallback((e: Event) => {
+    if (!mediaSelecting) {
+      setScrollY(window.scrollY);
+    }
+  }, [mediaSelecting]);
+
+  useEffect(() => {
+    if (prevMediaSelection && !mediaSelecting) {
+      setTimeout(() => {
+        window.scrollTo({
+          top: scrollY,
+        })
+      }, 10);
+    }
+  }, [mediaSelecting, prevMediaSelection]);
+
+  useEffect(() => {
+    window.addEventListener('scroll', scollListener, true);
+
+    return () => {
+      window.removeEventListener('scroll', scollListener, true);
+    }
+  }, [mediaSelecting]);
+
+  useEffect(() => {
+    if (window.fmExternal && window.fmExternal.isDevelopment) {
+      setIsDevMode(true);
+    }
+  }, []);
 
   if (mediaSelecting) {
     return (
@@ -47,10 +87,31 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
 
   return (
     <div className="frontmatter">
+      {
+        isDevMode && (
+          <div className="developer__bar">
+            <a
+              className="developer__bar__link"
+              href={`command:workbench.action.webview.reloadWebviewAction`}
+              title="Reload the dashboard">
+              Reload
+            </a>
+            <a
+              className="developer__bar__link"
+              href={`command:workbench.action.webview.openDeveloperTools`}
+              title="Open DevTools">
+              DevTools
+            </a>
+          </div>
+        )
+      }
+
       <div className={`ext_actions`}>
         <GitAction settings={settings} />
 
-        <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.globalSettings}>
+        <CustomView metadata={metadata} />
+
+        <FeatureFlag features={mode?.features || [...allPanelValues]} flag={FEATURE_FLAG.panel.globalSettings}>
           <GlobalSettings settings={settings} />
         </FeatureFlag>
 

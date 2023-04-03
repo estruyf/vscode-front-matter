@@ -174,12 +174,20 @@ export class Folders {
   public static getStaticFolderRelativePath(): string | undefined {
     let staticFolder = Settings.get<string>(SETTING_CONTENT_STATIC_FOLDER);
 
-    if (staticFolder && staticFolder.includes(WORKSPACE_PLACEHOLDER)) {
-      staticFolder = Folders.getAbsFilePath(staticFolder);
+    if (
+      staticFolder &&
+      (staticFolder.includes(WORKSPACE_PLACEHOLDER) ||
+        staticFolder === '/' ||
+        staticFolder === './')
+    ) {
+      staticFolder =
+        staticFolder === '/' || staticFolder === './'
+          ? Folders.getAbsFilePath('[[workspace]]')
+          : Folders.getAbsFilePath(staticFolder);
       const wsFolder = Folders.getWorkspaceFolder();
       if (wsFolder) {
         const relativePath = relative(parseWinPath(wsFolder.fsPath), parseWinPath(staticFolder));
-        return relativePath;
+        return relativePath === '' ? '/' : relativePath;
       }
     }
 
@@ -263,6 +271,7 @@ export class Folders {
 
       for (const folder of folders) {
         try {
+          const folderPath = parseWinPath(folder.path);
           let projectStart = parseWinPath(folder.path).replace(wsFolder, '');
 
           if (typeof projectStart === 'string') {
@@ -282,7 +291,10 @@ export class Folders {
                 filePath = `*${fileType.startsWith('.') ? '' : '.'}${fileType}`;
               }
 
-              const foundFiles = await workspace.findFiles(filePath, '**/node_modules/**');
+              let foundFiles = await workspace.findFiles(filePath, '**/node_modules/**');
+              // Make sure these file are coming from the folder path (this could be an issue in multi-root workspaces)
+              foundFiles = foundFiles.filter((f) => parseWinPath(f.fsPath).startsWith(folderPath));
+
               files = [...files, ...foundFiles];
             }
 
@@ -383,10 +395,22 @@ export class Folders {
   public static async update(folders: ContentFolder[]) {
     const wsFolder = Folders.getWorkspaceFolder();
 
-    const folderDetails = folders.map((folder) => ({
-      ...folder,
-      path: Folders.relWsFolder(folder, wsFolder)
-    }));
+    const folderDetails = folders
+      .map((folder) => {
+        const detail = {
+          ...folder,
+          path: Folders.relWsFolder(folder, wsFolder)
+        };
+
+        if (detail['$schema'] || detail.extended) {
+          return null;
+        }
+
+        delete detail.originalPath;
+
+        return detail;
+      })
+      .filter((folder) => folder !== null);
 
     await Settings.update(SETTING_CONTENT_PAGE_FOLDERS, folderDetails, true);
 
@@ -403,6 +427,26 @@ export class Folders {
     const wsFolder = Folders.getWorkspaceFolder();
     const isWindows = process.platform === 'win32';
     let absPath = filePath.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ''));
+    absPath = isWindows ? absPath.split('/').join('\\') : absPath;
+    return parseWinPath(absPath);
+  }
+
+  /**
+   * Retrieve the absolute folder path
+   * @param filePath
+   * @returns
+   */
+  public static getAbsFolderPath(folderPath: string): string {
+    const wsFolder = Folders.getWorkspaceFolder();
+    const isWindows = process.platform === 'win32';
+
+    let absPath = '';
+    if (folderPath.includes(WORKSPACE_PLACEHOLDER)) {
+      absPath = folderPath.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ''));
+    } else {
+      absPath = join(parseWinPath(wsFolder?.fsPath || ''), folderPath);
+    }
+
     absPath = isWindows ? absPath.split('/').join('\\') : absPath;
     return parseWinPath(absPath);
   }

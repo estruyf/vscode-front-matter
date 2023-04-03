@@ -7,7 +7,7 @@ import {
   DataListener,
   SettingsListener
 } from './../listeners/panel';
-import { TelemetryEvent } from '../constants';
+import { SETTING_EXPERIMENTAL, SETTING_EXTENSIBILITY_SCRIPTS, TelemetryEvent } from '../constants';
 import {
   CancellationToken,
   Disposable,
@@ -25,6 +25,7 @@ import { WebviewHelper } from '@estruyf/vscode';
 import { Extension } from '../helpers/Extension';
 import { Telemetry } from '../helpers/Telemetry';
 import { GitListener, ModeListener } from '../listeners/general';
+import { Folders } from '../commands';
 
 export class ExplorerView implements WebviewViewProvider, Disposable {
   public static readonly viewType = 'frontMatter.explorer';
@@ -115,7 +116,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     });
 
     window.onDidChangeActiveTextEditor(() => {
-      this.sendMessage({ command: Command.loading, data: true });
+      this.sendMessage({ command: Command.loading, payload: true });
 
       if (this.visible) {
         DataListener.getFileData();
@@ -131,7 +132,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * Post data to the panel
    * @param msg
    */
-  public sendMessage(msg: { command: Command; data?: any }) {
+  public sendMessage(msg: { command: Command; payload?: any }) {
     this.panel?.webview?.postMessage(msg);
   }
 
@@ -201,17 +202,34 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       scriptUri = `http://${localServerUrl}/${dashboardFile}`;
     }
 
+    // Get experimental setting
+    const experimental = Settings.get(SETTING_EXPERIMENTAL);
+    const extensibilityScripts = Settings.get<string[]>(SETTING_EXTENSIBILITY_SCRIPTS) || [];
+
+    const scriptsToLoad: string[] = [];
+    if (experimental) {
+      for (const script of extensibilityScripts) {
+        if (script.startsWith('https://')) {
+          scriptsToLoad.push(script);
+        } else {
+          const absScriptPath = Folders.getAbsFilePath(script);
+          const scriptUri = webView.asWebviewUri(Uri.file(absScriptPath));
+          scriptsToLoad.push(scriptUri.toString());
+        }
+      }
+    }
+
     const csp = [
       `default-src 'none';`,
       `img-src ${`vscode-file://vscode-app`} ${
         webView.cspSource
       } https://api.visitorbadge.io 'self' 'unsafe-inline' https://*`,
-      `script-src 'unsafe-eval' ${
+      `script-src 'unsafe-eval' https://* ${
         isProd ? `'nonce-${nonce}'` : `http://${localServerUrl} http://0.0.0.0:${localPort}`
       }`,
-      `style-src ${webView.cspSource} 'self' 'unsafe-inline'`,
+      `style-src ${webView.cspSource} 'self' 'unsafe-inline' https://*`,
       `font-src ${webView.cspSource}`,
-      `connect-src https://o1022172.ingest.sentry.io ${
+      `connect-src https://o1022172.ingest.sentry.io https://* ${
         isProd
           ? ``
           : `ws://${localServerUrl} ws://0.0.0.0:${localPort} http://${localServerUrl} http://0.0.0.0:${localPort}`
@@ -220,7 +238,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
     return `
       <!DOCTYPE html>
-      <html lang="en">
+      <html lang="en-US">
       <head>
         <meta http-equiv="Content-Security-Policy" content="${csp.join('; ')}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -233,11 +251,17 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
       <body>
         <div id="app" data-isProd="${isProd}" data-environment="${
       isBeta ? 'BETA' : 'main'
-    }" data-version="${version.usedVersion}" ></div>
+    }" data-version="${version.usedVersion}"></div>
 
-        <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759&slug=${`panel-${version.installedVersion}`}" alt="Daily usage" />
+      ${(scriptsToLoad || [])
+        .map((script) => {
+          return `<script type="module" src="${script}" nonce="${nonce}"></script>`;
+        })
+        .join('')}
 
         <script ${isProd ? `nonce="${nonce}"` : ''} src="${scriptUri}"></script>
+
+        <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759&slug=${`panel-${version.installedVersion}`}" alt="Daily usage" />
       </body>
       </html>
     `;

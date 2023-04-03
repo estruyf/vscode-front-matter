@@ -21,7 +21,7 @@ export const GitAction: React.FunctionComponent<IGitActionProps> = ({
   };
 
   const messageListener = (message: MessageEvent<EventData<any>>) => {
-    const { command, data } = message.data;
+    const { command, payload } = message.data;
 
     if (command === GeneralCommands.toWebview.gitSyncingStart) {
       setIsSyncing(true);

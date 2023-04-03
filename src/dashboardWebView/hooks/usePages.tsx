@@ -182,7 +182,7 @@ export default function usePages(pages: Page[]) {
   const searchListener = (message: MessageEvent<EventData<any>>) => {
     switch (message.data.command) {
       case DashboardMessage.searchPages:
-        processPages(message.data.data);
+        processPages(message.data.payload);
         break;
     }
   };

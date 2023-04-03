@@ -1,7 +1,11 @@
-import { window } from 'vscode';
+import { authentication, QuickPickItem, QuickPickItemKind, window } from 'vscode';
 import { Folders } from '../commands/Folders';
+import { SETTING_SPONSORS_AI_ENABLED } from '../constants';
 import { ContentType } from './ContentType';
 import { Notifications } from './Notifications';
+import { Settings } from './SettingsHelper';
+import { Logger } from './Logger';
+import { SponsorAi } from '../services/SponsorAI';
 
 export class Questions {
   /**
@@ -24,12 +28,77 @@ export class Questions {
    * @returns
    */
   public static async ContentTitle(showWarning: boolean = true): Promise<string | undefined> {
-    const title = await window.showInputBox({
-      title: 'Title',
-      prompt: `What would you like to use as a title for the content to create?`,
-      placeHolder: `Content title`,
-      ignoreFocusOut: true
-    });
+    const aiEnabled = Settings.get<boolean>(SETTING_SPONSORS_AI_ENABLED);
+    let title: string | undefined = '';
+
+    if (aiEnabled) {
+      const githubAuth = await authentication.getSession('github', ['read:user'], { silent: true });
+
+      if (githubAuth && githubAuth.account.label) {
+        title = await window.showInputBox({
+          title: 'Title or description',
+          prompt: `What would you like to write about?`,
+          placeHolder: `Content title or description`,
+          ignoreFocusOut: true
+        });
+
+        if (title) {
+          try {
+            const aiTitles = await SponsorAi.getTitles(githubAuth.accessToken, title);
+
+            if (aiTitles && aiTitles.length > 0) {
+              const options: QuickPickItem[] = [
+                {
+                  label: `✏️ your title/description`,
+                  kind: QuickPickItemKind.Separator
+                },
+                {
+                  label: title
+                },
+                {
+                  label: `🤖 AI generated title`,
+                  kind: QuickPickItemKind.Separator
+                },
+                ...aiTitles.map((d: string) => ({
+                  label: d
+                }))
+              ];
+
+              const selectedTitle = await window.showQuickPick(options, {
+                title: 'Select a title',
+                placeHolder: `Select a title for your content`,
+                ignoreFocusOut: true
+              });
+
+              if (selectedTitle) {
+                title = selectedTitle.label;
+              } else if (!selectedTitle) {
+                // Reset the title, so the user can enter their own title
+                title = undefined;
+              }
+            }
+          } catch (e) {
+            Logger.error((e as Error).message);
+            Notifications.error(
+              `Failed fetching the AI title. Please try to use your own title or try again later.`
+            );
+            title = undefined;
+          }
+        } else if (!title && showWarning) {
+          Notifications.warning(`You did not specify a title for your content.`);
+          return;
+        }
+      }
+    }
+
+    if (!title) {
+      title = await window.showInputBox({
+        title: 'Title',
+        prompt: `What would you like to use as a title for the content to create?`,
+        placeHolder: `Content title`,
+        ignoreFocusOut: true
+      });
+    }
 
     if (!title && showWarning) {
       Notifications.warning(`You did not specify a title for your content.`);

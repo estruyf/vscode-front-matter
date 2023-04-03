@@ -9,21 +9,22 @@ import * as yaml from 'js-yaml';
 import { DataFileHelper } from '../../helpers';
 import { existsAsync, readFileAsync, writeFileAsync } from '../../utils';
 import { mkdirAsync } from '../../utils/mkdirAsync';
+import { PostMessageData } from '../../models';
 
 export class DataListener extends BaseListener {
-  public static process(msg: { command: DashboardMessage; data: any }) {
+  public static process(msg: PostMessageData) {
     super.process(msg);
 
     switch (msg.command) {
       case DashboardMessage.getDataEntries:
-        if (!(msg?.data as DataFile).file) {
+        if (!(msg?.payload as DataFile).file) {
           this.sendMsg(DashboardCommand.dataFileEntries, []);
         }
 
-        this.processDataFile(msg?.data);
+        this.processDataFile(msg?.payload);
         break;
       case DashboardMessage.putDataEntries:
-        this.processDataUpdate(msg?.data);
+        this.processDataUpdate(msg?.payload);
         break;
       default:
         return;
