@@ -42,6 +42,9 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
         crntItems = data.customTaxonomy.find((c) => c.id === taxonomy)?.options || [];
       }
 
+      // Only allow string values
+      crntItems = crntItems.filter((i) => typeof i === 'string');
+
       // Alphabetically sort the items
       crntItems = Object.assign([], crntItems).sort((a: string, b: string) => {
         a = a || '';

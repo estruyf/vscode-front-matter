@@ -1,5 +1,17 @@
 # Change Log
 
+## [8.5.0] - 2023-xx-xx
+
+### ✨ New features
+
+### 🎨 Enhancements
+
+### ⚡️ Optimizations
+
+### 🐞 Fixes
+
+- [#564](https://github.com/estruyf/vscode-front-matter/issues/564): Fix to only pass strings to the taxonomy dashboard
+
 ## [8.4.0] - 2023-04-03 - [Release notes](https://beta.frontmatter.codes/updates/v8.4.0)
 
 ### 🧪 Experimental features
