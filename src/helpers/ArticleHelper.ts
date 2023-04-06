@@ -111,12 +111,11 @@ export class ArticleHelper {
    */
   public static async updateByPath(path: string, article: ParsedFrontMatter) {
     const file = await workspace.openTextDocument(Uri.parse(path));
-    const editor = await window.showTextDocument(file);
 
-    if (file && editor) {
+    if (file) {
       const update = this.generateUpdate(file, article);
 
-      await editor.edit((builder) => builder.replace(update.range, update.newText));
+      await workspace.fs.writeFile(file.uri, new TextEncoder().encode(update.newText));
     }
   }
 
@@ -570,18 +569,18 @@ export class ArticleHelper {
    * Get the details of the current article
    * @returns
    */
-  public static getDetails() {
+  public static async getDetails(filePath: string) {
     const baseUrl = Settings.get<string>(SETTING_SITE_BASEURL);
-    const editor = window.activeTextEditor;
-    if (!editor) {
+    if (!filePath) {
       return null;
     }
 
-    if (!ArticleHelper.isSupportedFile()) {
+    const document = await workspace.openTextDocument(filePath);
+    if (!ArticleHelper.isSupportedFile(document)) {
       return null;
     }
 
-    const article = ArticleHelper.getFrontMatter(editor);
+    const article = await ArticleHelper.getFrontMatterByPath(filePath);
 
     if (article && article.content) {
       let content = article.content;

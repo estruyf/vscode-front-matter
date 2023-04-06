@@ -12,7 +12,7 @@ import {
 } from './../constants';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { join } from 'path';
-import { commands, env, Uri, ViewColumn, window } from 'vscode';
+import { commands, env, Uri, ViewColumn, window, WebviewPanel } from 'vscode';
 import { Extension, parseWinPath, processKnownPlaceholders, Settings } from '../helpers';
 import { ContentFolder, ContentType, PreviewSettings } from '../models';
 import { format } from 'date-fns';
@@ -21,8 +21,12 @@ import { Article } from '.';
 import { urlJoin } from 'url-join-ts';
 import { WebviewHelper } from '@estruyf/vscode';
 import { Folders } from './Folders';
+import { DataListener } from '../listeners/panel';
 
 export class Preview {
+  public static filePath: string | undefined = undefined;
+  public static webviews: { [filePath: string]: WebviewPanel } = {};
+
   /**
    * Init the preview
    */
@@ -42,6 +46,14 @@ export class Preview {
     }
 
     const editor = window.activeTextEditor;
+    const crntFilePath = editor?.document.uri.fsPath;
+    this.filePath = crntFilePath;
+
+    if (crntFilePath && this.webviews[crntFilePath]) {
+      this.webviews[crntFilePath].reveal();
+      return;
+    }
+
     const article = editor ? ArticleHelper.getFrontMatter(editor) : null;
     let slug = article?.data ? article.data.slug : '';
 
@@ -156,6 +168,10 @@ export class Preview {
       }
     );
 
+    if (crntFilePath) {
+      this.webviews[crntFilePath] = webView;
+    }
+
     webView.iconPath = {
       dark: Uri.file(join(extensionPath, 'assets/icons/frontmatter-short-dark.svg')),
       light: Uri.file(join(extensionPath, 'assets/icons/frontmatter-short-light.svg'))
@@ -165,6 +181,25 @@ export class Preview {
     const localhostUrl = await env.asExternalUri(Uri.parse(crntUrl));
 
     const cspSource = webView.webview.cspSource;
+
+    webView.onDidDispose(() => {
+      this.filePath = undefined;
+      if (crntFilePath) {
+        delete this.webviews[crntFilePath];
+      }
+      webView.dispose();
+    });
+
+    webView.onDidChangeViewState(async (e) => {
+      if (e.webviewPanel.visible) {
+        this.filePath = crntFilePath;
+
+        if (crntFilePath) {
+          const article = await ArticleHelper.getFrontMatterByPath(crntFilePath);
+          DataListener.pushMetadata(article?.data);
+        }
+      }
+    });
 
     webView.webview.onDidReceiveMessage((message) => {
       switch (message.command) {

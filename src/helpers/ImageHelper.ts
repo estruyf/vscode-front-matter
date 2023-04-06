@@ -6,6 +6,7 @@ import { Field } from '../models';
 import { existsSync } from 'fs';
 import { Folders } from '../commands/Folders';
 import { parseWinPath } from './parseWinPath';
+import { Preview } from '../commands';
 
 export class ImageHelper {
   /**
@@ -15,7 +16,7 @@ export class ImageHelper {
    * @returns
    */
   public static allRelToAbs(field: Field, value: string | string[] | undefined) {
-    const filePath = window.activeTextEditor?.document.uri.fsPath;
+    const filePath = window.activeTextEditor?.document.uri.fsPath || Preview.filePath;
     if (!filePath) {
       return;
     }

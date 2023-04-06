@@ -31,7 +31,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
 }: React.PropsWithChildren<IMetadataProps>) => {
   const contentType = useContentType(settings, metadata);
 
-  const sendUpdate = (field: string | undefined, value: any, parents: string[]) => {
+  const sendUpdate = React.useCallback((field: string | undefined, value: any, parents: string[]) => {
     if (!field) {
       return;
     }
@@ -39,9 +39,10 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
     Messenger.send(CommandToCode.updateMetadata, {
       field,
       parents,
-      value
+      value,
+      filePath: metadata.filePath
     });
-  };
+  }, [metadata.filePath]);
 
   if (!settings) {
     return null;

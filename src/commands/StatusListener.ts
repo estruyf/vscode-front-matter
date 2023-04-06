@@ -15,6 +15,7 @@ import { ContentType } from '../helpers/ContentType';
 import { DataListener } from '../listeners/panel';
 import { commands } from 'vscode';
 import { Field } from '../models';
+import { Preview } from './Preview';
 
 export class StatusListener {
   /**
@@ -36,11 +37,20 @@ export class StatusListener {
     }
 
     const editor = vscode.window.activeTextEditor;
-    if (editor && ArticleHelper.isSupportedFile()) {
+    let document = editor?.document;
+
+    if (!document) {
+      const filePath = Preview.filePath;
+      if (filePath) {
+        document = await vscode.workspace.openTextDocument(vscode.Uri.file(filePath));
+      }
+    }
+
+    if (document && ArticleHelper.isSupportedFile(document)) {
       try {
         commands.executeCommand('setContext', CONTEXT.isValidFile, true);
 
-        const article = ArticleHelper.getFrontMatter(editor);
+        const article = await ArticleHelper.getFrontMatterByPath(document.uri.fsPath);
 
         // Update the StatusBar based on the article draft state
         if (article && typeof article.data['draft'] !== 'undefined') {
@@ -65,16 +75,18 @@ export class StatusListener {
           const descriptionField =
             (Settings.get(SETTING_SEO_DESCRIPTION_FIELD) as string) || DefaultFields.Description;
 
-          if (article.data[titleField] && titleLength > -1) {
+          if (editor && article.data[titleField] && titleLength > -1) {
             SeoHelper.checkLength(editor, collection, article, titleField, titleLength);
           }
 
-          if (article.data[descriptionField] && descLength > -1) {
+          if (editor && article.data[descriptionField] && descLength > -1) {
             SeoHelper.checkLength(editor, collection, article, descriptionField, descLength);
           }
 
           // Check the required fields
-          StatusListener.verifyRequiredFields(editor, article, collection);
+          if (editor) {
+            StatusListener.verifyRequiredFields(editor, article, collection);
+          }
         }
 
         const panel = ExplorerView.getInstance();
