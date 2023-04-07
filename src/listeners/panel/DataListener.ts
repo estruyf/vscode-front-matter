@@ -138,6 +138,10 @@ export class DataListener extends BaseListener {
       }
     }
 
+    if (filePath && updatedMetadata[DefaultFields.Slug]) {
+      Preview.updatePageUrl(filePath, updatedMetadata[DefaultFields.Slug]);
+    }
+
     this.sendMsg(Command.metadata, updatedMetadata);
 
     DataListener.lastMetadataUpdate = updatedMetadata;

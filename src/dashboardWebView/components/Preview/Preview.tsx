@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { PreviewCommands } from '../../../constants';
 import useThemeColors from '../../hooks/useThemeColors';
+import { EventData } from '@estruyf/vscode/dist/models';
 
 export interface IPreviewProps {
   url: string | null;
@@ -35,9 +36,23 @@ export const Preview: React.FunctionComponent<IPreviewProps> = ({
     iframeRef.current!.src = navUrl;
   };
 
+  const msgListener = (message: MessageEvent<EventData<any>>) => {
+    if (message.data.command === PreviewCommands.toWebview.updateUrl) {
+      setCrntUrl(message.data.payload);
+    }
+  };
+
   useEffect(() => {
     setCrntUrl(url);
   }, [url]);
+
+  useEffect(() => {
+    Messenger.listen(msgListener);
+
+    return () => {
+      Messenger.unlisten(msgListener);
+    };
+  })
 
   return (
     <div className="w-full h-full bg-white">
@@ -77,7 +92,7 @@ export const Preview: React.FunctionComponent<IPreviewProps> = ({
 
       <iframe
         ref={iframeRef}
-        src={url || ''}
+        src={crntUrl || url || ''}
         className={`w-full border-0`}
         style={{
           height: 'calc(100% - 30px)',

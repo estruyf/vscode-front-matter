@@ -22,6 +22,7 @@ import { urlJoin } from 'url-join-ts';
 import { WebviewHelper } from '@estruyf/vscode';
 import { Folders } from './Folders';
 import { DataListener } from '../listeners/panel';
+import { ParsedFrontMatter } from '../parsers';
 
 export class Preview {
   public static filePath: string | undefined = undefined;
@@ -55,105 +56,7 @@ export class Preview {
     }
 
     const article = editor ? ArticleHelper.getFrontMatter(editor) : null;
-    let slug = article?.data ? article.data.slug : '';
-
-    let pathname = settings.pathname;
-
-    let selectedFolder: ContentFolder | undefined | null = null;
-    const filePath = parseWinPath(editor?.document.uri.fsPath);
-
-    let contentType: ContentType | undefined = undefined;
-    if (article?.data) {
-      contentType = ArticleHelper.getContentType(article.data);
-    }
-
-    // Check if there is a pathname defined on content folder level
-    const folders = Folders.get();
-    if (folders.length > 0) {
-      const foldersWithPath = folders.filter((folder) => folder.previewPath);
-
-      for (const folder of foldersWithPath) {
-        const folderPath = parseWinPath(folder.path);
-        if (filePath.startsWith(folderPath)) {
-          if (!selectedFolder || selectedFolder.path.length < folderPath.length) {
-            selectedFolder = folder;
-          }
-        }
-      }
-
-      if (!selectedFolder && article?.data && contentType && !contentType.previewPath) {
-        // Try to find the folder by content type
-        const crntFolders = folders.filter((folder) =>
-          folder.contentTypes?.includes((contentType as ContentType).name)
-        );
-
-        if (crntFolders && crntFolders.length === 1) {
-          selectedFolder = crntFolders[0];
-        } else if (crntFolders && crntFolders.length > 1) {
-          selectedFolder = await Preview.askUserToPickFolder(crntFolders);
-        } else {
-          selectedFolder = await Preview.askUserToPickFolder(folders.filter((f) => f.previewPath));
-        }
-      }
-
-      if (selectedFolder && selectedFolder.previewPath) {
-        pathname = selectedFolder.previewPath;
-      }
-    }
-
-    // Check if there is a pathname defined on content type level
-    if (article?.data) {
-      if (contentType && contentType.previewPath) {
-        pathname = contentType.previewPath;
-      }
-    }
-
-    if (!slug) {
-      slug = Article.getSlug();
-    }
-
-    if (pathname) {
-      // Known placeholders
-      const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
-      pathname = processKnownPlaceholders(pathname, article?.data?.title, dateFormat);
-
-      // Custom placeholders
-      pathname = await ArticleHelper.processCustomPlaceholders(
-        pathname,
-        article?.data?.title,
-        filePath
-      );
-
-      // Process the path placeholders - {{pathToken.<integer>}}
-      if (filePath) {
-        const wsFolder = Folders.getWorkspaceFolder();
-        // Get relative file path
-        const folderPath = wsFolder ? parseWinPath(wsFolder.fsPath) : '';
-        const relativePath = filePath.replace(folderPath, '');
-        pathname = processPathPlaceholders(pathname, relativePath, filePath, selectedFolder);
-      }
-
-      // Support front matter placeholders - {{fm.<field>}}
-      pathname = processFmPlaceholders(pathname, article?.data);
-
-      try {
-        const articleDate = ArticleHelper.getDate(article);
-        slug = join(
-          format(articleDate || new Date(), DateHelper.formatUpdate(pathname) as string),
-          slug
-        );
-      } catch (error) {
-        slug = join(pathname, slug);
-      }
-    }
-
-    // Make sure there are no backslashes in the slug
-    slug = parseWinPath(slug);
-
-    // Verify if the slug doesn't end with _index or index
-    if (slug.endsWith('_index') || slug.endsWith('index')) {
-      slug = slug.substring(0, slug.endsWith('_index') ? slug.length - 6 : slug.length - 5);
-    }
+    const slug = await this.getContentSlug(article, editor?.document.uri.fsPath);
 
     // Create the preview webview
     const webView = window.createWebviewPanel(
@@ -177,8 +80,7 @@ export class Preview {
       light: Uri.file(join(extensionPath, 'assets/icons/frontmatter-short-light.svg'))
     };
 
-    const crntUrl = settings.host.startsWith('http') ? settings.host : `http://${settings.host}`;
-    const localhostUrl = await env.asExternalUri(Uri.parse(crntUrl));
+    const localhostUrl = await this.getLocalServerUrl();
 
     const cspSource = webView.webview.cspSource;
 
@@ -276,6 +178,154 @@ export class Preview {
     `;
 
     Telemetry.send(TelemetryEvent.openPreview);
+  }
+
+  /**
+   * Update the url of the preview webview
+   * @param filePath
+   * @param slug
+   */
+  public static async updatePageUrl(filePath: string, slug?: string) {
+    const webView = this.webviews[filePath];
+    if (webView) {
+      const localhost = await this.getLocalServerUrl();
+      const article = await ArticleHelper.getFrontMatterByPath(filePath);
+      const slug = await this.getContentSlug(article, filePath);
+
+      webView.webview.postMessage({
+        command: PreviewCommands.toWebview.updateUrl,
+        payload: urlJoin(localhost.toString(), slug || '')
+      });
+    }
+  }
+
+  /**
+   * Retrieve the slug of the content
+   * @param article
+   * @param filePath
+   * @returns
+   */
+  private static async getContentSlug(
+    article: ParsedFrontMatter | null,
+    filePath?: string
+  ): Promise<string | undefined> {
+    if (!filePath) {
+      return;
+    }
+
+    let slug = article?.data ? article.data.slug : '';
+
+    const settings = this.getSettings();
+    let pathname = settings.pathname;
+
+    let selectedFolder: ContentFolder | undefined | null = null;
+    filePath = parseWinPath(filePath);
+
+    let contentType: ContentType | undefined = undefined;
+    if (article?.data) {
+      contentType = ArticleHelper.getContentType(article.data);
+    }
+
+    // Check if there is a pathname defined on content folder level
+    const folders = Folders.get();
+    if (folders.length > 0) {
+      const foldersWithPath = folders.filter((folder) => folder.previewPath);
+
+      for (const folder of foldersWithPath) {
+        const folderPath = parseWinPath(folder.path);
+        if (filePath.startsWith(folderPath)) {
+          if (!selectedFolder || selectedFolder.path.length < folderPath.length) {
+            selectedFolder = folder;
+          }
+        }
+      }
+
+      if (!selectedFolder && article?.data && contentType && !contentType.previewPath) {
+        // Try to find the folder by content type
+        const crntFolders = folders.filter((folder) =>
+          folder.contentTypes?.includes((contentType as ContentType).name)
+        );
+
+        if (crntFolders && crntFolders.length === 1) {
+          selectedFolder = crntFolders[0];
+        } else if (crntFolders && crntFolders.length > 1) {
+          selectedFolder = await Preview.askUserToPickFolder(crntFolders);
+        } else {
+          selectedFolder = await Preview.askUserToPickFolder(folders.filter((f) => f.previewPath));
+        }
+      }
+
+      if (selectedFolder && selectedFolder.previewPath) {
+        pathname = selectedFolder.previewPath;
+      }
+    }
+
+    // Check if there is a pathname defined on content type level
+    if (article?.data) {
+      if (contentType && contentType.previewPath) {
+        pathname = contentType.previewPath;
+      }
+    }
+
+    if (!slug) {
+      slug = Article.getSlug();
+    }
+
+    if (pathname) {
+      // Known placeholders
+      const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
+      pathname = processKnownPlaceholders(pathname, article?.data?.title, dateFormat);
+
+      // Custom placeholders
+      pathname = await ArticleHelper.processCustomPlaceholders(
+        pathname,
+        article?.data?.title,
+        filePath
+      );
+
+      // Process the path placeholders - {{pathToken.<integer>}}
+      if (filePath) {
+        const wsFolder = Folders.getWorkspaceFolder();
+        // Get relative file path
+        const folderPath = wsFolder ? parseWinPath(wsFolder.fsPath) : '';
+        const relativePath = filePath.replace(folderPath, '');
+        pathname = processPathPlaceholders(pathname, relativePath, filePath, selectedFolder);
+      }
+
+      // Support front matter placeholders - {{fm.<field>}}
+      pathname = processFmPlaceholders(pathname, article?.data);
+
+      try {
+        const articleDate = ArticleHelper.getDate(article);
+        slug = join(
+          format(articleDate || new Date(), DateHelper.formatUpdate(pathname) as string),
+          slug
+        );
+      } catch (error) {
+        slug = join(pathname, slug);
+      }
+    }
+
+    // Make sure there are no backslashes in the slug
+    slug = parseWinPath(slug);
+
+    // Verify if the slug doesn't end with _index or index
+    if (slug.endsWith('_index') || slug.endsWith('index')) {
+      slug = slug.substring(0, slug.endsWith('_index') ? slug.length - 6 : slug.length - 5);
+    }
+
+    return slug;
+  }
+
+  /**
+   * Retrieve the localhost url
+   * @returns
+   */
+  private static async getLocalServerUrl() {
+    const settings = Preview.getSettings();
+    const crntUrl = settings?.host?.startsWith('http') ? settings.host : `http://${settings.host}`;
+    const localhostUrl = await env.asExternalUri(Uri.parse(crntUrl));
+    return localhostUrl;
   }
 
   /**
