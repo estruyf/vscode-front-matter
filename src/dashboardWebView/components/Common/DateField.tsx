@@ -30,7 +30,7 @@ export const DateField: React.FunctionComponent<IDateFieldProps> = ({
   }
 
   return (
-    <span className={`${className || ''} text-xs ${getColors(`text-vulcan-100 dark:text-whisper-900`, `text-[var(--vscode-editor-foreground)]`)}`}>
+    <span className={`date__field ${className || ''} text-xs ${getColors(`text-vulcan-100 dark:text-whisper-900`, `text-[var(--vscode-editor-foreground)]`)}`}>
       {dateValue}
     </span>
   );

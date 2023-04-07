@@ -42,7 +42,7 @@ export const Status: React.FunctionComponent<IStatusProps> = ({
 
   return (
     <span
-      className={`
+      className={`draft__status
         inline-block px-2 py-1 leading-none rounded-sm font-semibold uppercase tracking-wide text-xs 
         ${getColors(`text-whisper-200 dark:text-vulcan-500`, ``)} 
         ${draftValue ?
