@@ -11,6 +11,7 @@
 ### 🐞 Fixes
 
 - [#564](https://github.com/estruyf/vscode-front-matter/issues/564): Fix to only pass strings to the taxonomy dashboard
+- [#567](https://github.com/estruyf/vscode-front-matter/issues/567): Fix taxonomy filters that are incorrectly positioned
 
 ## [8.4.0] - 2023-04-03 - [Release notes](https://beta.frontmatter.codes/updates/v8.4.0)
 
