@@ -31,7 +31,7 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
   const openLink = () => {
     Messenger.send(
       GeneralCommands.toVSCode.openLink,
-      'https://frontmatter.codes/docs/markdown#placeholders'
+      'https://frontmatter.codes/docs/snippets#placeholders'
     );
   };
 
