@@ -2421,7 +2421,7 @@
     "url-join-ts": "^1.0.5",
     "vscode-extension-tester": "^5.3.0",
     "wc-react": "github:estruyf/wc-react",
-    "webpack": "^5.65.0",
+    "webpack": "^5.76.0",
     "webpack-bundle-analyzer": "^4.5.0",
     "webpack-cli": "^4.9.1",
     "webpack-dev-server": "^4.6.0",
