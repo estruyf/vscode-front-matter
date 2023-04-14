@@ -15,7 +15,7 @@ import {
 import * as vscode from 'vscode';
 import { CustomPlaceholder, Field, TaxonomyType } from '../models';
 import { format } from 'date-fns';
-import { ArticleHelper, Settings, SlugHelper } from '../helpers';
+import { ArticleHelper, Settings, SlugHelper, TaxonomyHelper } from '../helpers';
 import { Notifications } from '../helpers/Notifications';
 import { extname, basename, parse, dirname } from 'path';
 import { COMMAND_NAME, DefaultFields } from '../constants';
@@ -66,7 +66,7 @@ export class Article {
     }
 
     // Add all the known options to the selection list
-    const crntOptions = Settings.getTaxonomy(type);
+    const crntOptions = (await TaxonomyHelper.get(type)) || [];
     if (crntOptions && crntOptions.length > 0) {
       for (const crntOpt of crntOptions) {
         if (!options.find((o) => o.label === crntOpt)) {

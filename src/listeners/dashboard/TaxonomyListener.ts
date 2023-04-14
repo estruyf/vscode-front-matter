@@ -1,14 +1,9 @@
 import { commands } from 'vscode';
-import {
-  COMMAND_NAME,
-  SETTING_TAXONOMY_CATEGORIES,
-  SETTING_TAXONOMY_CUSTOM,
-  SETTING_TAXONOMY_TAGS
-} from '../../constants';
+import { COMMAND_NAME } from '../../constants';
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
-import { Settings, TaxonomyHelper } from '../../helpers';
-import { CustomTaxonomy, PostMessageData } from '../../models';
+import { TaxonomyHelper } from '../../helpers';
+import { PostMessageData } from '../../models';
 import { BaseListener } from './BaseListener';
 
 export class TaxonomyListener extends BaseListener {
@@ -47,13 +42,9 @@ export class TaxonomyListener extends BaseListener {
     }
   }
 
-  private static async getData() {
+  private static getData() {
     // Retrieve the tags, categories and custom taxonomy
-    const taxonomyData = {
-      tags: Settings.get<string[]>(SETTING_TAXONOMY_TAGS) || [],
-      categories: Settings.get<string[]>(SETTING_TAXONOMY_CATEGORIES) || [],
-      customTaxonomy: Settings.get<CustomTaxonomy[]>(SETTING_TAXONOMY_CUSTOM) || []
-    };
+    const taxonomyData = TaxonomyHelper.getAll();
 
     this.sendMsg(DashboardCommand.setTaxonomyData, taxonomyData);
   }

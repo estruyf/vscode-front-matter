@@ -125,28 +125,28 @@ export class PagesListener extends BaseListener {
    * @param file
    */
   private static async watcherExec(file: Uri) {
-    if (Dashboard.isOpen) {
-      const ext = Extension.getInstance();
-      Logger.info(`File watcher execution for: ${file.fsPath}`);
+    const ext = Extension.getInstance();
+    Logger.info(`File watcher execution for: ${file.fsPath}`);
 
-      const pageIdx = this.lastPages.findIndex((p) => p.fmFilePath === file.fsPath);
-      if (pageIdx !== -1) {
-        const stats = await workspace.fs.stat(file);
-        const crntPage = this.lastPages[pageIdx];
-        const updatedPage = await PagesParser.processPageContent(
-          file.fsPath,
-          stats.mtime,
-          basename(file.fsPath),
-          crntPage.fmFolder
-        );
-        if (updatedPage) {
-          this.lastPages[pageIdx] = updatedPage;
+    const pageIdx = this.lastPages.findIndex((p) => p.fmFilePath === file.fsPath);
+    if (pageIdx !== -1) {
+      const stats = await workspace.fs.stat(file);
+      const crntPage = this.lastPages[pageIdx];
+      const updatedPage = await PagesParser.processPageContent(
+        file.fsPath,
+        stats.mtime,
+        basename(file.fsPath),
+        crntPage.fmFolder
+      );
+      if (updatedPage) {
+        this.lastPages[pageIdx] = updatedPage;
+        if (Dashboard.isOpen) {
           this.sendPageData(this.lastPages);
-          await ext.setState(ExtensionState.Dashboard.Pages.Cache, this.lastPages, 'workspace');
         }
-      } else {
-        this.getPagesData(true);
+        await ext.setState(ExtensionState.Dashboard.Pages.Cache, this.lastPages, 'workspace');
       }
+    } else {
+      this.getPagesData(true);
     }
   }
 

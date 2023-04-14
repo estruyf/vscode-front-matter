@@ -186,6 +186,9 @@ export class Dashboard {
    * @returns The webview
    */
   public static getWebview() {
+    if (Dashboard.isDisposed) {
+      return undefined;
+    }
     return Dashboard.webview?.webview;
   }
 

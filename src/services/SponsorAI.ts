@@ -1,11 +1,8 @@
-import {
-  SETTING_SEO_TITLE_LENGTH,
-  SETTING_TAXONOMY_CATEGORIES,
-  SETTING_TAXONOMY_TAGS
-} from '../constants';
-import { Logger, Notifications, Settings } from '../helpers';
+import { SETTING_SEO_TITLE_LENGTH } from '../constants';
+import { Logger, Notifications, Settings, TaxonomyHelper } from '../helpers';
 import fetch from 'node-fetch';
 import { TagType } from '../panelWebView/TagType';
+import { TaxonomyType } from '../models';
 
 const AI_URL = 'https://frontmatter.codes/api/ai';
 // const AI_URL = 'http://localhost:3000/api/ai';
@@ -74,8 +71,8 @@ export class SponsorAi {
 
       let options =
         type === TagType.tags
-          ? Settings.get<string[]>(SETTING_TAXONOMY_TAGS, true)
-          : Settings.get<string[]>(SETTING_TAXONOMY_CATEGORIES, true);
+          ? await TaxonomyHelper.get(TaxonomyType.Tag)
+          : await TaxonomyHelper.get(TaxonomyType.Category);
 
       const optionsString = options?.join(',') || '';
       const body = JSON.stringify({

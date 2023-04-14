@@ -321,6 +321,31 @@ export class Settings {
     await Settings.config.update(name, value);
   }
 
+  public static async remove(name: string) {
+    const fmConfig = Settings.projectConfigPath;
+
+    if (fmConfig && (await existsAsync(fmConfig))) {
+      const localConfig = await readFileAsync(fmConfig, 'utf8');
+      Settings.globalConfig = jsoncParser.parse(localConfig);
+      delete Settings.globalConfig[`${CONFIG_KEY}.${name}`];
+
+      const content = JSON.stringify(Settings.globalConfig, null, 2);
+      await writeFileAsync(fmConfig, content, 'utf8');
+
+      const workspaceSettingValue = Settings.hasWorkspaceSettings<ContentType[]>(name);
+      if (workspaceSettingValue) {
+        await Settings.update(name, undefined);
+      }
+
+      // Make sure to reload the whole config + all the data files
+      await Settings.readConfig();
+
+      return;
+    }
+
+    await Settings.config.update(name, undefined);
+  }
+
   /**
    * Checks if the project contains the frontmatter.json file
    */
@@ -362,42 +387,12 @@ export class Settings {
    *
    * @param type
    */
-  public static getTaxonomy(type: TaxonomyType): string[] {
-    // Add all the known options to the selection list
-    const configSetting =
-      type === TaxonomyType.Tag ? SETTING_TAXONOMY_TAGS : SETTING_TAXONOMY_CATEGORIES;
-    const crntOptions = Settings.get(configSetting, true) as string[];
-    if (crntOptions && crntOptions.length > 0) {
-      return crntOptions;
-    }
-    return [];
-  }
-
-  /**
-   * Return the taxonomy settings
-   *
-   * @param type
-   */
   public static getCustomTaxonomy(type: string): string[] {
     const customTaxs = Settings.get<CustomTaxonomy[]>(SETTING_TAXONOMY_CUSTOM, true);
     if (customTaxs && customTaxs.length > 0) {
       return customTaxs.find((t) => t.id === type)?.options || [];
     }
     return [];
-  }
-
-  /**
-   * Update the taxonomy settings
-   *
-   * @param type
-   * @param options
-   */
-  public static async updateTaxonomy(type: TaxonomyType, options: string[]) {
-    const configSetting =
-      type === TaxonomyType.Tag ? SETTING_TAXONOMY_TAGS : SETTING_TAXONOMY_CATEGORIES;
-    options = [...new Set(options)];
-    options = options.sort().filter((o) => !!o);
-    await Settings.update(configSetting, options, true);
   }
 
   /**

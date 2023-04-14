@@ -39,6 +39,7 @@ import { Extension } from './Extension';
 import { FrameworkDetector } from './FrameworkDetector';
 import { Settings } from './SettingsHelper';
 import { parseWinPath } from './parseWinPath';
+import { TaxonomyHelper } from './TaxonomyHelper';
 
 export class DashboardSettings {
   private static cachedSettings: ISettings | undefined = undefined;
@@ -69,8 +70,8 @@ export class DashboardSettings {
       wsFolder: wsFolder ? wsFolder.fsPath : '',
       staticFolder: Folders.getStaticFolderRelativePath(),
       initialized: isInitialized,
-      tags: Settings.getTaxonomy(TaxonomyType.Tag),
-      categories: Settings.getTaxonomy(TaxonomyType.Category),
+      tags: (await TaxonomyHelper.get(TaxonomyType.Tag)) || [],
+      categories: (await TaxonomyHelper.get(TaxonomyType.Category)) || [],
       customTaxonomy: Settings.get(SETTING_TAXONOMY_CUSTOM, true) || [],
       openOnStart: Settings.get(SETTING_DASHBOARD_OPENONSTART),
       versionInfo: ext.getVersion(),

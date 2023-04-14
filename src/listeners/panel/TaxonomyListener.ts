@@ -2,15 +2,13 @@ import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { TagType } from '../../panelWebView/TagType';
 import { BaseListener } from './BaseListener';
 import { authentication, window } from 'vscode';
-import { ArticleHelper, Extension, Settings } from '../../helpers';
+import { ArticleHelper, Extension, Settings, TaxonomyHelper } from '../../helpers';
 import { BlockFieldData, CustomTaxonomyData, PostMessageData, TaxonomyType } from '../../models';
 import { DataListener } from '.';
 import {
   DefaultFields,
   SETTING_SEO_DESCRIPTION_FIELD,
-  SETTING_SEO_TITLE_FIELD,
-  SETTING_TAXONOMY_CATEGORIES,
-  SETTING_TAXONOMY_TAGS
+  SETTING_SEO_TITLE_FIELD
 } from '../../constants';
 import { SponsorAi } from '../../services/SponsorAI';
 import { ExplorerView } from '../../explorerView/ExplorerView';
@@ -202,8 +200,8 @@ export class TaxonomyListener extends BaseListener {
     if (value) {
       let options =
         tagType === TagType.tags
-          ? Settings.get<string[]>(SETTING_TAXONOMY_TAGS, true)
-          : Settings.get<string[]>(SETTING_TAXONOMY_CATEGORIES, true);
+          ? await TaxonomyHelper.get(TaxonomyType.Tag)
+          : await TaxonomyHelper.get(TaxonomyType.Category);
 
       if (!options) {
         options = [];
@@ -211,7 +209,7 @@ export class TaxonomyListener extends BaseListener {
 
       options.push(value);
       const taxType = tagType === TagType.tags ? TaxonomyType.Tag : TaxonomyType.Category;
-      await Settings.updateTaxonomy(taxType, options);
+      TaxonomyHelper.update(taxType, options);
     }
   }
 }

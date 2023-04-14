@@ -1,7 +1,7 @@
 import { STATIC_FOLDER_PLACEHOLDER } from './../constants/StaticFolderPlaceholder';
 import { parseWinPath } from './../helpers/parseWinPath';
 import { dirname, extname, join } from 'path';
-import { StatusBarAlignment, Uri, window } from 'vscode';
+import { StatusBarAlignment, Uri, window, Webview } from 'vscode';
 import { Dashboard } from '../commands/Dashboard';
 import { Folders } from '../commands/Folders';
 import {
@@ -307,13 +307,16 @@ export class PagesParser {
               }
 
               if (previewUri) {
-                let previewPath = Dashboard.getWebview()?.asWebviewUri(previewUri);
+                let previewPath: string = '';
 
-                if (!previewPath) {
-                  previewPath = PagesParser.getWebviewUri(previewUri);
+                const Webview = Dashboard.getWebview();
+                if (Webview) {
+                  previewPath = Webview.asWebviewUri(previewUri).toString();
+                } else {
+                  previewPath = PagesParser.getWebviewUri(previewUri).toString();
                 }
 
-                page['fmPreviewImage'] = previewPath?.toString() || '';
+                page['fmPreviewImage'] = previewPath || '';
               }
             }
           }
@@ -342,7 +345,7 @@ export class PagesParser {
     return Uri.from({
       scheme: 'https',
       authority,
-      path: resource.path,
+      path: parseWinPath(resource.path),
       query: resource.query,
       fragment: resource.fragment
     });
