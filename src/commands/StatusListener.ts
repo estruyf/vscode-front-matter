@@ -50,7 +50,9 @@ export class StatusListener {
       try {
         commands.executeCommand('setContext', CONTEXT.isValidFile, true);
 
-        const article = await ArticleHelper.getFrontMatterByPath(document.uri.fsPath);
+        const article = editor
+          ? ArticleHelper.getFrontMatter(editor)
+          : await ArticleHelper.getFrontMatterByPath(document.uri.fsPath);
 
         // Update the StatusBar based on the article draft state
         if (article && typeof article.data['draft'] !== 'undefined') {
