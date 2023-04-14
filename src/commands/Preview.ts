@@ -12,7 +12,7 @@ import {
 } from './../constants';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { join } from 'path';
-import { commands, env, Uri, ViewColumn, window } from 'vscode';
+import { commands, env, Uri, ViewColumn, window, WebviewPanel } from 'vscode';
 import { Extension, parseWinPath, processKnownPlaceholders, Settings } from '../helpers';
 import { ContentFolder, ContentType, PreviewSettings } from '../models';
 import { format } from 'date-fns';
@@ -21,8 +21,13 @@ import { Article } from '.';
 import { urlJoin } from 'url-join-ts';
 import { WebviewHelper } from '@estruyf/vscode';
 import { Folders } from './Folders';
+import { DataListener } from '../listeners/panel';
+import { ParsedFrontMatter } from '../parsers';
 
 export class Preview {
+  public static filePath: string | undefined = undefined;
+  public static webviews: { [filePath: string]: WebviewPanel } = {};
+
   /**
    * Init the preview
    */
@@ -42,13 +47,179 @@ export class Preview {
     }
 
     const editor = window.activeTextEditor;
+    const crntFilePath = editor?.document.uri.fsPath;
+    this.filePath = crntFilePath;
+
+    if (crntFilePath && this.webviews[crntFilePath]) {
+      this.webviews[crntFilePath].reveal();
+      return;
+    }
+
     const article = editor ? ArticleHelper.getFrontMatter(editor) : null;
+    const slug = await this.getContentSlug(article, editor?.document.uri.fsPath);
+
+    // Create the preview webview
+    const webView = window.createWebviewPanel(
+      'frontMatterPreview',
+      article?.data?.title ? `Preview: ${article?.data?.title}` : 'FrontMatter Preview',
+      {
+        viewColumn: ViewColumn.Beside,
+        preserveFocus: true
+      },
+      {
+        enableScripts: true
+      }
+    );
+
+    if (crntFilePath) {
+      this.webviews[crntFilePath] = webView;
+    }
+
+    webView.iconPath = {
+      dark: Uri.file(join(extensionPath, 'assets/icons/frontmatter-short-dark.svg')),
+      light: Uri.file(join(extensionPath, 'assets/icons/frontmatter-short-light.svg'))
+    };
+
+    const localhostUrl = await this.getLocalServerUrl();
+
+    const cspSource = webView.webview.cspSource;
+
+    webView.onDidDispose(() => {
+      this.filePath = undefined;
+      if (crntFilePath) {
+        delete this.webviews[crntFilePath];
+      }
+      webView.dispose();
+    });
+
+    webView.onDidChangeViewState(async (e) => {
+      if (e.webviewPanel.visible) {
+        this.filePath = crntFilePath;
+
+        if (crntFilePath) {
+          const article = await ArticleHelper.getFrontMatterByPath(crntFilePath);
+          DataListener.pushMetadata(article?.data);
+        }
+      }
+    });
+
+    webView.webview.onDidReceiveMessage((message) => {
+      switch (message.command) {
+        case PreviewCommands.toVSCode.open:
+          if (message.data) {
+            commands.executeCommand('vscode.open', message.data);
+          }
+          return;
+      }
+    });
+
+    const dashboardFile = 'dashboardWebView.js';
+    const localPort = `9000`;
+    const localServerUrl = `localhost:${localPort}`;
+
+    const nonce = WebviewHelper.getNonce();
+
+    const ext = Extension.getInstance();
+    const isProd = ext.isProductionMode;
+    const version = ext.getVersion();
+    const isBeta = ext.isBetaVersion();
+    const extensionUri = ext.extensionPath;
+
+    const csp = [
+      `default-src 'none';`,
+      `img-src ${localhostUrl} ${cspSource} http: https:;`,
+      `script-src ${
+        isProd ? `'nonce-${nonce}'` : `http://${localServerUrl} http://0.0.0.0:${localPort}`
+      } 'unsafe-eval'`,
+      `style-src ${cspSource} 'self' 'unsafe-inline' http: https:`,
+      `connect-src https://o1022172.ingest.sentry.io ${
+        isProd
+          ? ``
+          : `ws://${localServerUrl} ws://0.0.0.0:${localPort} http://${localServerUrl} http://0.0.0.0:${localPort}`
+      }`,
+      `frame-src ${localhostUrl} ${cspSource} http: https:;`
+    ];
+
+    let scriptUri = '';
+    if (isProd) {
+      scriptUri = webView.webview
+        .asWebviewUri(Uri.joinPath(extensionUri, 'dist', dashboardFile))
+        .toString();
+    } else {
+      scriptUri = `http://${localServerUrl}/${dashboardFile}`;
+    }
+
+    // Get experimental setting
+    const experimental = Settings.get(SETTING_EXPERIMENTAL);
+
+    webView.webview.html = `
+      <!DOCTYPE html>
+      <html lang="en" style="width:100%;height:100%;margin:0;padding:0;">
+        <head>
+          <meta charset="UTF-8">
+          <meta http-equiv="Content-Security-Policy" content="${csp.join('; ')}">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+          <title>Front Matter Preview</title>
+        </head>
+        <body style="width:100%;height:100%;margin:0;padding:0;overflow:hidden">
+          <div id="app" data-type="preview" data-url="${urlJoin(
+            localhostUrl.toString(),
+            slug || ''
+          )}" data-isProd="${isProd}" data-environment="${
+      isBeta ? 'BETA' : 'main'
+    }" data-version="${version.usedVersion}" ${
+      experimental ? `data-experimental="${experimental}"` : ''
+    } style="width:100%;height:100%;margin:0;padding:0;"></div>
+
+          <script ${isProd ? `nonce="${nonce}"` : ''} src="${scriptUri}"></script>
+        </body>
+      </html>
+    `;
+
+    Telemetry.send(TelemetryEvent.openPreview);
+  }
+
+  /**
+   * Update the url of the preview webview
+   * @param filePath
+   * @param slug
+   */
+  public static async updatePageUrl(filePath: string, slug?: string) {
+    const webView = this.webviews[filePath];
+    if (webView) {
+      const localhost = await this.getLocalServerUrl();
+      const article = await ArticleHelper.getFrontMatterByPath(filePath);
+      const slug = await this.getContentSlug(article, filePath);
+
+      webView.webview.postMessage({
+        command: PreviewCommands.toWebview.updateUrl,
+        payload: urlJoin(localhost.toString(), slug || '')
+      });
+    }
+  }
+
+  /**
+   * Retrieve the slug of the content
+   * @param article
+   * @param filePath
+   * @returns
+   */
+  private static async getContentSlug(
+    article: ParsedFrontMatter | null,
+    filePath?: string
+  ): Promise<string | undefined> {
+    if (!filePath) {
+      return;
+    }
+
     let slug = article?.data ? article.data.slug : '';
 
+    const settings = this.getSettings();
     let pathname = settings.pathname;
 
     let selectedFolder: ContentFolder | undefined | null = null;
-    const filePath = parseWinPath(editor?.document.uri.fsPath);
+    filePath = parseWinPath(filePath);
 
     let contentType: ContentType | undefined = undefined;
     if (article?.data) {
@@ -143,104 +314,18 @@ export class Preview {
       slug = slug.substring(0, slug.endsWith('_index') ? slug.length - 6 : slug.length - 5);
     }
 
-    // Create the preview webview
-    const webView = window.createWebviewPanel(
-      'frontMatterPreview',
-      article?.data?.title ? `Preview: ${article?.data?.title}` : 'FrontMatter Preview',
-      {
-        viewColumn: ViewColumn.Beside,
-        preserveFocus: true
-      },
-      {
-        enableScripts: true
-      }
-    );
+    return slug;
+  }
 
-    webView.iconPath = {
-      dark: Uri.file(join(extensionPath, 'assets/icons/frontmatter-short-dark.svg')),
-      light: Uri.file(join(extensionPath, 'assets/icons/frontmatter-short-light.svg'))
-    };
-
-    const crntUrl = settings.host.startsWith('http') ? settings.host : `http://${settings.host}`;
+  /**
+   * Retrieve the localhost url
+   * @returns
+   */
+  private static async getLocalServerUrl() {
+    const settings = Preview.getSettings();
+    const crntUrl = settings?.host?.startsWith('http') ? settings.host : `http://${settings.host}`;
     const localhostUrl = await env.asExternalUri(Uri.parse(crntUrl));
-
-    const cspSource = webView.webview.cspSource;
-
-    webView.webview.onDidReceiveMessage((message) => {
-      switch (message.command) {
-        case PreviewCommands.toVSCode.open:
-          if (message.data) {
-            commands.executeCommand('vscode.open', message.data);
-          }
-          return;
-      }
-    });
-
-    const dashboardFile = 'dashboardWebView.js';
-    const localPort = `9000`;
-    const localServerUrl = `localhost:${localPort}`;
-
-    const nonce = WebviewHelper.getNonce();
-
-    const ext = Extension.getInstance();
-    const isProd = ext.isProductionMode;
-    const version = ext.getVersion();
-    const isBeta = ext.isBetaVersion();
-    const extensionUri = ext.extensionPath;
-
-    const csp = [
-      `default-src 'none';`,
-      `img-src ${localhostUrl} ${cspSource} http: https:;`,
-      `script-src ${
-        isProd ? `'nonce-${nonce}'` : `http://${localServerUrl} http://0.0.0.0:${localPort}`
-      } 'unsafe-eval'`,
-      `style-src ${cspSource} 'self' 'unsafe-inline' http: https:`,
-      `connect-src https://o1022172.ingest.sentry.io ${
-        isProd
-          ? ``
-          : `ws://${localServerUrl} ws://0.0.0.0:${localPort} http://${localServerUrl} http://0.0.0.0:${localPort}`
-      }`,
-      `frame-src ${localhostUrl} ${cspSource} http: https:;`
-    ];
-
-    let scriptUri = '';
-    if (isProd) {
-      scriptUri = webView.webview
-        .asWebviewUri(Uri.joinPath(extensionUri, 'dist', dashboardFile))
-        .toString();
-    } else {
-      scriptUri = `http://${localServerUrl}/${dashboardFile}`;
-    }
-
-    // Get experimental setting
-    const experimental = Settings.get(SETTING_EXPERIMENTAL);
-
-    webView.webview.html = `
-      <!DOCTYPE html>
-      <html lang="en" style="width:100%;height:100%;margin:0;padding:0;">
-        <head>
-          <meta charset="UTF-8">
-          <meta http-equiv="Content-Security-Policy" content="${csp.join('; ')}">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-          <title>Front Matter Preview</title>
-        </head>
-        <body style="width:100%;height:100%;margin:0;padding:0;overflow:hidden">
-          <div id="app" data-type="preview" data-url="${urlJoin(
-            localhostUrl.toString(),
-            slug || ''
-          )}" data-isProd="${isProd}" data-environment="${
-      isBeta ? 'BETA' : 'main'
-    }" data-version="${version.usedVersion}" ${
-      experimental ? `data-experimental="${experimental}"` : ''
-    } style="width:100%;height:100%;margin:0;padding:0;"></div>
-
-          <script ${isProd ? `nonce="${nonce}"` : ''} src="${scriptUri}"></script>
-        </body>
-      </html>
-    `;
-
-    Telemetry.send(TelemetryEvent.openPreview);
+    return localhostUrl;
   }
 
   /**

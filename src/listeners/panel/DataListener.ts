@@ -14,7 +14,7 @@ import {
   SETTING_DATE_FORMAT,
   SETTING_TAXONOMY_CONTENT_TYPES
 } from '../../constants';
-import { Article } from '../../commands';
+import { Article, Preview } from '../../commands';
 import { ParsedFrontMatter } from '../../parsers';
 import { processKnownPlaceholders } from '../../helpers/PlaceholderHelper';
 import { PostMessageData } from '../../models';
@@ -84,16 +84,18 @@ export class DataListener extends BaseListener {
    * Triggers a metadata change in the panel
    * @param metadata
    */
-  public static pushMetadata(metadata: any) {
+  public static async pushMetadata(metadata: any) {
     const wsFolder = Folders.getWorkspaceFolder();
-    const filePath = window.activeTextEditor?.document.uri.fsPath;
+    const filePath = window.activeTextEditor?.document.uri.fsPath || Preview.filePath;
     const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
     const contentTypes = Settings.get<string>(SETTING_TAXONOMY_CONTENT_TYPES);
 
     let articleDetails = null;
 
     try {
-      articleDetails = ArticleHelper.getDetails();
+      if (filePath) {
+        articleDetails = await ArticleHelper.getDetails(filePath);
+      }
     } catch (e) {
       Logger.error(`DataListener::pushMetadata: ${(e as Error).message}`);
     }
@@ -136,6 +138,10 @@ export class DataListener extends BaseListener {
       }
     }
 
+    if (filePath && updatedMetadata[DefaultFields.Slug]) {
+      Preview.updatePageUrl(filePath, updatedMetadata[DefaultFields.Slug]);
+    }
+
     this.sendMsg(Command.metadata, updatedMetadata);
 
     DataListener.lastMetadataUpdate = updatedMetadata;
@@ -148,11 +154,13 @@ export class DataListener extends BaseListener {
     field,
     parents,
     value,
+    filePath,
     blockData
   }: {
     field: string;
     value: any;
     parents?: string[];
+    filePath?: string;
     blockData?: BlockFieldData;
     fieldData?: { multiple: boolean; value: string[] };
   }) {
@@ -161,11 +169,21 @@ export class DataListener extends BaseListener {
     }
 
     const editor = window.activeTextEditor;
-    if (!editor) {
-      return;
+
+    let article;
+    if (filePath) {
+      article = await ArticleHelper.getFrontMatterByPath(filePath);
+    } else {
+      if (!editor) {
+        return;
+      }
+
+      const article = ArticleHelper.getFrontMatter(editor);
+      if (!article) {
+        return;
+      }
     }
 
-    const article = ArticleHelper.getFrontMatter(editor);
     if (!article) {
       return;
     }
@@ -216,7 +234,12 @@ export class DataListener extends BaseListener {
       parentObj[field] = value;
     }
 
-    ArticleHelper.update(editor, article);
+    if (editor) {
+      ArticleHelper.update(editor, article);
+    } else if (filePath) {
+      await ArticleHelper.updateByPath(filePath, article);
+    }
+
     this.pushMetadata(article.data);
   }
 
