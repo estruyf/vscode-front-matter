@@ -27,16 +27,31 @@ export class TaxonomyHelper {
   private static db: JsonDB;
 
   /**
+   * Initialize the database
+   * @returns
+   */
+  public static initDb() {
+    const wsFolder = Folders.getWorkspaceFolder();
+    if (!wsFolder) {
+      return;
+    }
+
+    const dbFolder = join(
+      parseWinPath(wsFolder?.fsPath || ''),
+      LocalStore.rootFolder,
+      LocalStore.databaseFolder
+    );
+    const dbPath = join(dbFolder, LocalStore.taxonomyDatabaseFile);
+
+    TaxonomyHelper.db = new JsonDB(new Config(dbPath, true, false, '/'));
+  }
+
+  /**
    * Get all the taxonomy values
    */
   public static async getAll() {
-    if (!this.db) {
-      const db = this.initDb();
-      if (!db) {
-        return;
-      }
-
-      this.db = db;
+    if (!TaxonomyHelper.db) {
+      return;
     }
 
     const taxonomyData = {
@@ -55,20 +70,15 @@ export class TaxonomyHelper {
    * @param options
    */
   public static async get(type: TaxonomyType): Promise<string[] | undefined> {
-    if (!this.db) {
-      const db = this.initDb();
-      if (!db) {
-        return;
-      }
-
-      this.db = db;
+    if (!TaxonomyHelper.db) {
+      return;
     }
 
     const tagType = TaxonomyHelper.getTaxonomyDbPath(type);
 
     let taxonomy: string[] = [];
-    if (await this.db.exists(tagType)) {
-      taxonomy = await this.db.getObject<string[]>(tagType);
+    if (await TaxonomyHelper.db.exists(tagType)) {
+      taxonomy = await TaxonomyHelper.db.getObject<string[]>(tagType);
     }
     return taxonomy;
   }
@@ -80,13 +90,8 @@ export class TaxonomyHelper {
    * @param options
    */
   public static async update(type: TaxonomyType, options: string[]) {
-    if (!this.db) {
-      const db = this.initDb();
-      if (!db) {
-        return;
-      }
-
-      this.db = db;
+    if (!TaxonomyHelper.db) {
+      return;
     }
 
     const tagType = TaxonomyHelper.getTaxonomyDbPath(type);
@@ -94,7 +99,7 @@ export class TaxonomyHelper {
     options = [...new Set(options)];
     options = options.sort().filter((o) => !!o);
 
-    await this.db.push(tagType, options, true);
+    await TaxonomyHelper.db.push(tagType, options, true);
 
     // Trigger the update of the taxonomy
     PanelSettingsListener.getSettings();
@@ -463,28 +468,6 @@ export class TaxonomyHelper {
         Notifications.info(`Move completed.`);
       }
     );
-  }
-
-  /**
-   * Initialize the database
-   * @returns
-   */
-  private static initDb() {
-    const wsFolder = Folders.getWorkspaceFolder();
-    if (!wsFolder) {
-      return;
-    }
-
-    const dbFolder = join(
-      parseWinPath(wsFolder?.fsPath || ''),
-      LocalStore.rootFolder,
-      LocalStore.databaseFolder
-    );
-    const dbPath = join(dbFolder, LocalStore.taxonomyDatabaseFile);
-
-    const db = new JsonDB(new Config(dbPath, true, false, '/'));
-
-    return db;
   }
 
   /**

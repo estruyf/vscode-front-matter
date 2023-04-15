@@ -61,7 +61,7 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
         return 0;
       });
 
-      return crntItems;
+      return crntItems.filter(i => i);
     }
 
     return [];
@@ -102,7 +102,7 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
       }
     }
 
-    return [...new Set(unmapped)];
+    return [...new Set(unmapped)].filter(i => i);
   }, [items, taxonomy, pages, settings?.contentTypes]);
 
   return (
