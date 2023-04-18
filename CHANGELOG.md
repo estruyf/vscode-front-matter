@@ -4,6 +4,8 @@
 
 ### ✨ New features
 
+- [#424](https://github.com/estruyf/vscode-front-matter/issues/424): Snippet wrapping to allow easier updates or changes to previously set snippets in the content
+
 ### 🎨 Enhancements
 
 - [#566](https://github.com/estruyf/vscode-front-matter/issues/566): Keep the panel context on the live preview

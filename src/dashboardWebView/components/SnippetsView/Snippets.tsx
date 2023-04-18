@@ -51,8 +51,6 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
       // Contains in key or description, values included in key are ranked higher (sort and fuzzy search)
       return keyValue.includes(value) || descriptionValue.includes(value);
     });
-
-
   }, [settings?.snippets, snippetFilter, viewData?.data?.filePath]);
 
   const onSnippetAdd = useCallback(() => {

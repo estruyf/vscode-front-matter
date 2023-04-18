@@ -32,7 +32,7 @@ export interface IItemProps {
 
 export const Item: React.FunctionComponent<IItemProps> = ({
   snippetKey,
-  snippet
+  snippet,
 }: React.PropsWithChildren<IItemProps>) => {
   const viewData = useRecoilValue(ViewDataSelector);
   const settings = useRecoilValue(SettingsSelector);
@@ -142,6 +142,22 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
     setShowAlert(false);
   }, [settings?.snippets, snippetKey]);
+
+  React.useEffect(() => {
+    if (viewData?.data?.snippetInfo?.id && snippetKey && viewData.data.snippetInfo.id === snippetKey) {
+      if (snippet) {
+        setSnippetTitle(snippet.title || viewData?.data?.snippetInfo?.id);
+        setSnippetDescription(snippet.description);
+        setSnippetOriginalBody(
+          typeof snippet.body === 'string'
+            ? snippet.body
+            : snippet.body.join(`\n`)
+        );
+        setMediaSnippet(!!snippet.isMediaSnippet);
+        setShowInsertDialog(true);
+      }
+    }
+  }, [viewData?.data?.snippetInfo?.id, snippetKey, snippet]);
 
   return (
     <>
@@ -254,7 +270,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           okBtnText="Insert"
           cancelBtnText="Cancel"
         >
-          <SnippetForm ref={formRef} snippet={snippet} selection={viewData?.data?.selection} />
+          <SnippetForm
+            ref={formRef}
+            snippetKey={snippetKey}
+            snippet={snippet}
+            fieldInfo={viewData?.data?.snippetInfo?.fields}
+            selection={viewData?.data?.selection} />
         </FormDialog>
       )}
 

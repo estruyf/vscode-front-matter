@@ -4,15 +4,18 @@ import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from '
 import { useRecoilValue } from 'recoil';
 import { processKnownPlaceholders } from '../../../helpers/PlaceholderHelper';
 import { SnippetParser } from '../../../helpers/SnippetParser';
-import { Snippet, SnippetField, SnippetSpecialPlaceholders } from '../../../models';
+import { Snippet, SnippetField, SnippetInfoField, SnippetSpecialPlaceholders } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
 import useThemeColors from '../../hooks/useThemeColors';
 import { SettingsAtom, ViewDataSelector } from '../../state';
 import { SnippetInputField } from './SnippetInputField';
+import { SNIPPET } from '../../../constants/Snippet';
 
 export interface ISnippetFormProps {
+  snippetKey?: string;
   snippet: Snippet;
   selection: string | undefined;
+  fieldInfo?: SnippetInfoField[];
   mediaData?: any;
   onInsert?: (mediaData: any) => void;
 }
@@ -22,7 +25,7 @@ export interface SnippetFormHandle {
 }
 
 const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFormProps> = (
-  { snippet, selection, mediaData, onInsert },
+  { snippetKey, snippet, selection, fieldInfo, mediaData, onInsert },
   ref
 ) => {
   const viewData = useRecoilValue(ViewDataSelector);
@@ -94,11 +97,26 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
         return;
       }
 
+      const snippetInfo = {
+        id: snippetKey,
+        fields: fields.map(f => ({
+          name: f.name,
+          value: f.value
+        }))
+      }
+
       if (!onInsert) {
-        Messenger.send(DashboardMessage.insertSnippet, {
-          file: viewData?.data?.filePath,
-          snippet: snippetBody
-        });
+        if (!snippetKey) {
+          Messenger.send(DashboardMessage.insertSnippet, snippetBody);
+        } else {
+          Messenger.send(DashboardMessage.insertSnippet, {
+            file: viewData?.data?.filePath,
+            range: viewData?.data?.range,
+            snippet: `<!-- ${SNIPPET.wrapper.start} data:${JSON.stringify(snippetInfo)} -->
+${snippetBody}
+<!-- ${SNIPPET.wrapper.end} -->`
+          });
+        }
       } else {
         onInsert(snippetBody);
       }
@@ -165,7 +183,7 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
                   {field.title || field.name}
                 </label>
                 <div className="mt-1">
-                  <SnippetInputField field={field} onValueChange={onTextChange} />
+                  <SnippetInputField field={field} fieldInfo={fieldInfo} onValueChange={onTextChange} />
                 </div>
               </div>
             )
