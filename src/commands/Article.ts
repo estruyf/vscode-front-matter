@@ -448,6 +448,7 @@ export class Article {
     let snippetInfo: { id: string; fields: any[] } | undefined = undefined;
     let range: SnippetRange | undefined = undefined;
     if (
+      snippetEndAfterPos > -1 &&
       (snippetStartAfterPos > snippetEndAfterPos || snippetStartAfterPos === -1) &&
       snippetStartBeforePos
     ) {

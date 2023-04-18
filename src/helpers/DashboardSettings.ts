@@ -24,7 +24,8 @@ import {
   SETTING_TAXONOMY_CUSTOM,
   SETTING_TEMPLATES_ENABLED,
   SETTING_GIT_ENABLED,
-  SETTING_DASHBOARD_CONTENT_PAGINATION
+  SETTING_DASHBOARD_CONTENT_PAGINATION,
+  SETTING_SNIPPETS_WRAPPER
 } from '../constants';
 import {
   DashboardViewType,
@@ -119,6 +120,7 @@ export class DashboardSettings {
       dataFiles: await this.getDataFiles(),
       dataTypes: Settings.get<DataType[]>(SETTING_DATA_TYPES),
       snippets: Settings.get<Snippets>(SETTING_CONTENT_SNIPPETS),
+      snippetsWrapper: Settings.get<boolean>(SETTING_SNIPPETS_WRAPPER),
       isBacker: await ext.getState<boolean | undefined>(CONTEXT.backer, 'global')
     } as ISettings;
 

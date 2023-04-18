@@ -339,6 +339,12 @@
           "markdownDescription": "Specify the folder name where all your assets are located. For instance in Hugo this is the `static` folder. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.publicfolder)",
           "scope": "Content"
         },
+        "frontMatter.snippets.wrapper": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Specify if you want to wrap the snippets. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontMatter.snippets.wrapper)",
+          "scope": "Content"
+        },
         "frontMatter.content.snippets": {
           "type": "object",
           "markdownDescription": "Define the snippets you want to use in your content. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.snippets)",

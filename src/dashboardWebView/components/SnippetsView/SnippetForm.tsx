@@ -106,8 +106,11 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
       }
 
       if (!onInsert) {
-        if (!snippetKey) {
-          Messenger.send(DashboardMessage.insertSnippet, snippetBody);
+        if (!snippetKey || settings?.snippetsWrapper === false) {
+          Messenger.send(DashboardMessage.insertSnippet, {
+            file: viewData?.data?.filePath,
+            snippet: snippetBody
+          });
         } else {
           Messenger.send(DashboardMessage.insertSnippet, {
             file: viewData?.data?.filePath,

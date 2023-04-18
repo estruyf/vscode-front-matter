@@ -42,6 +42,7 @@ export interface Settings {
   dataTypes: DataType[] | undefined;
   isBacker: boolean | undefined;
   snippets: Snippets | undefined;
+  snippetsWrapper: boolean;
   date: { format: string };
 }
 
