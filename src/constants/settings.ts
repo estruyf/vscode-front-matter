@@ -94,7 +94,7 @@ export const SETTING_GIT_SUBMODULE_PUSH = 'git.submodule.push';
 export const SETTING_GIT_SUBMODULE_BRANCH = 'git.submodule.branch';
 export const SETTING_GIT_SUBMODULE_FOLDER = 'git.submodule.folder';
 
-export const SETTING_SNIPPETS_WRAPPER = 'snippets.wrapper';
+export const SETTING_SNIPPETS_WRAPPER = 'snippets.wrapper.enabled';
 
 /**
  * Sponsors only settings
