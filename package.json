@@ -100,7 +100,7 @@
       ]
     },
     "configuration": {
-      "$id": "#gobalconfiguration",
+      "$id": "#globalconfiguration",
       "title": "Front Matter: use frontmatter.json for shared team settings",
       "type": "object",
       "properties": {
@@ -120,7 +120,7 @@
                 "markdownDescription": "Specify if this project is the default project to load."
               },
               "configuration": {
-                "$ref": "#gobalconfiguration"
+                "$ref": "#globalconfiguration"
               }
             }
           }
