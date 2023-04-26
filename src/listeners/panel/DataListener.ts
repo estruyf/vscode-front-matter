@@ -66,7 +66,7 @@ export class DataListener extends BaseListener {
         commands.executeCommand(COMMAND_NAME.setContentType);
         break;
       case CommandToCode.getDataEntries:
-        this.getDataFileEntries(msg.payload);
+        this.getDataFileEntries(msg.command, msg.requestId || '', msg.payload);
         break;
     }
   }
@@ -171,17 +171,11 @@ export class DataListener extends BaseListener {
     const editor = window.activeTextEditor;
 
     let article;
-    if (filePath) {
-      article = await ArticleHelper.getFrontMatterByPath(filePath);
-    } else {
-      if (!editor) {
-        return;
-      }
 
-      const article = ArticleHelper.getFrontMatter(editor);
-      if (!article) {
-        return;
-      }
+    if (editor) {
+      article = ArticleHelper.getFrontMatter(editor);
+    } else if (filePath) {
+      article = await ArticleHelper.getFrontMatterByPath(filePath);
     }
 
     if (!article) {
@@ -340,10 +334,16 @@ export class DataListener extends BaseListener {
    * Retrieve the data entries from local data files
    * @param data
    */
-  private static async getDataFileEntries(data: any) {
+  private static async getDataFileEntries(command: string, requestId: string, data: any) {
+    if (!command || !requestId || !data) {
+      return;
+    }
+
     const entries = await DataFileHelper.getById(data);
     if (entries) {
-      this.sendMsg(Command.dataFileEntries, entries);
+      this.sendRequest(command, requestId, entries);
+    } else {
+      this.sendRequestError(command, requestId, "Couldn't find data file entries");
     }
   }
 

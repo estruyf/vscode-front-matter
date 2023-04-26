@@ -1,9 +1,7 @@
-import { Messenger } from '@estruyf/vscode/dist/client';
-import { EventData } from '@estruyf/vscode/dist/models';
+import { messageHandler } from '@estruyf/vscode/dist/client';
 import { ChevronDownIcon, DatabaseIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Command } from '../../Command';
 import { CommandToCode } from '../../CommandToCode';
 import Downshift from 'downshift';
 import { ChoiceButton } from './ChoiceButton';
@@ -36,14 +34,6 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
   const [dataEntries, setDataEntries] = useState<string[] | null>(null);
   const [crntSelected, setCrntSelected] = React.useState<string | string[] | null>();
   const dsRef = React.useRef<Downshift<string> | null>(null);
-
-  const messageListener = (message: MessageEvent<EventData<any>>) => {
-    const { command, payload } = message.data;
-
-    if (command === Command.dataFileEntries) {
-      setDataEntries(payload || null);
-    }
-  };
 
   const onValueChange = useCallback(
     (txtValue: string) => {
@@ -137,17 +127,13 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
 
   useEffect(() => {
     if (dataFileId) {
-      Messenger.send(CommandToCode.getDataEntries, dataFileId);
+      messageHandler.request<string[]>(CommandToCode.getDataEntries, dataFileId).then((entries) => {
+        setDataEntries(entries || null);
+      }).catch((err) => {
+        setDataEntries(null);
+      });
     }
   }, [dataFileId]);
-
-  useEffect(() => {
-    Messenger.listen(messageListener);
-
-    return () => {
-      Messenger.unlisten(messageListener);
-    };
-  }, []);
 
   return (
     <div className={`metadata_field ${showRequiredState ? 'required' : ''}`}>

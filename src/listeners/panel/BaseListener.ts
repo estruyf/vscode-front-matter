@@ -23,4 +23,30 @@ export abstract class BaseListener {
       payload
     });
   }
+
+  public static sendRequest(command: string, requestId: string, payload: any) {
+    Logger.info(`Sending request result to panel: ${command}`);
+
+    const extPath = Extension.getInstance().extensionPath;
+    const panel = ExplorerView.getInstance(extPath);
+
+    panel.getWebview()?.postMessage({
+      command,
+      requestId,
+      payload
+    });
+  }
+
+  public static sendRequestError(command: string, requestId: string, error: any) {
+    Logger.info(`Sending request error to the panel: ${command}`);
+
+    const extPath = Extension.getInstance().extensionPath;
+    const panel = ExplorerView.getInstance(extPath);
+
+    panel.getWebview()?.postMessage({
+      command,
+      requestId,
+      error
+    });
+  }
 }
