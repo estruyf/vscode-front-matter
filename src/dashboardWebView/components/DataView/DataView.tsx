@@ -299,7 +299,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
             <p className="text-xl mt-4">
               <a
                 className={getColors(`text-teal-700 hover:text-teal-900`, `text-[var(--frontmatter-link)] hover:text-[var(--frontmatter-link-hover)]`)}
-                href={`https://frontmatter.codes/docs/dashboard#data-files-view`}
+                href={`https://frontmatter.codes/docs/datafiles-view`}
                 title={`Read more to get started using data files`}
               >
                 Read more to get started using data files
