@@ -1018,7 +1018,8 @@
                         "dataFile",
                         "slug",
                         "divider",
-                        "heading"
+                        "heading",
+                        "customField"
                       ],
                       "description": "Define the type of field"
                     },
