@@ -12,7 +12,7 @@ export interface IContentTypeValidatorProps {
   metadata: IMetadata;
 }
 
-const fieldsToIgnore = [`filePath`, `articleDetails`, `slug`, `keywords`];
+const fieldsToIgnore = [`filePath`, `articleDetails`, `slug`, `keywords`, `type`];
 
 export const ContentTypeValidator: React.FunctionComponent<IContentTypeValidatorProps> = ({
   fields,

@@ -14,6 +14,8 @@
 
 ### ⚡️ Optimizations
 
+- [#584](https://github.com/estruyf/vscode-front-matter/issues/584): - Ignore type field in content-type validation
+
 ### 🐞 Fixes
 
 - [#564](https://github.com/estruyf/vscode-front-matter/issues/564): Fix to only pass strings to the taxonomy dashboard
