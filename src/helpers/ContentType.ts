@@ -187,14 +187,6 @@ export class ContentType {
     }
 
     const fields = ContentType.generateFields(content.data);
-    if (!overrideBool && !fields.some((f) => f.name === 'type')) {
-      fields.push({
-        name: 'type',
-        type: 'string',
-        default: contentTypeName,
-        hidden: true
-      } as Field);
-    }
 
     // Update the type field in the page
     if (!overrideBool && editor) {
