@@ -153,7 +153,7 @@ export class PagesListener extends BaseListener {
   /**
    * Retrieve all the markdown pages
    */
-  private static async getPagesData(clear: boolean = false) {
+  public static async getPagesData(clear: boolean = false, cb?: (pages: Page[]) => void) {
     const ext = Extension.getInstance();
 
     // Get data from the cache
@@ -164,6 +164,10 @@ export class PagesListener extends BaseListener {
       );
       if (cachedPages) {
         this.sendPageData(cachedPages);
+
+        if (cb) {
+          cb(cachedPages);
+        }
       }
     } else {
       PagesParser.reset();
@@ -177,6 +181,10 @@ export class PagesListener extends BaseListener {
 
       await this.createSearchIndex(pages);
       this.sendMsg(DashboardCommand.loading, false);
+
+      if (cb) {
+        cb(pages);
+      }
     });
   }
 
@@ -199,7 +207,7 @@ export class PagesListener extends BaseListener {
    * @param pages
    */
   private static async createSearchIndex(pages: Page[]) {
-    const pagesIndex = Fuse.createIndex(['title', 'slug', 'description', 'fmBody'], pages);
+    const pagesIndex = Fuse.createIndex(['title', 'slug', 'description', 'fmBody', 'type'], pages);
     await Extension.getInstance().setState(
       ExtensionState.Dashboard.Pages.Index,
       pagesIndex,

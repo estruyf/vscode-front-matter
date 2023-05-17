@@ -40,5 +40,6 @@ export enum CommandToCode {
   getDataEntries = 'get-data-entries',
   generateSlug = 'generate-slug',
   stopServer = 'stop-server',
-  aiSuggestTaxonomy = 'ai-suggest-taxonomy'
+  aiSuggestTaxonomy = 'ai-suggest-taxonomy',
+  searchByType = 'search-by-type'
 }

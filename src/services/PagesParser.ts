@@ -196,6 +196,7 @@ export class PagesParser {
         // FrontMatter properties
         fmFolder: folderTitle,
         fmFilePath: filePath,
+        fmRelFilePath: parseWinPath(filePath).replace(wsFolder?.fsPath || '', ''),
         fmFileName: fileName,
         fmDraft: ContentType.getDraftStatus(article?.data),
         fmModified: modifiedFieldValue ? modifiedFieldValue : fileMtime,

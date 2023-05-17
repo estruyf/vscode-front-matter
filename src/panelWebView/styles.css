@@ -326,6 +326,15 @@ button {
   }
 }
 
+.metadata_field__wrapper {
+  position: relative;
+  height: 50px;
+
+  .metadata_field__loading {
+    top: 0;
+  }
+}
+
 .metadata_field__loading {
   border-radius: 0.25rem;
   backdrop-filter: blur(15px);

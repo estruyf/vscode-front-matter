@@ -73,7 +73,8 @@ export type FieldType =
   | 'list'
   | 'slug'
   | 'divider'
-  | 'heading';
+  | 'heading'
+  | 'contentRelationship';
 
 export interface Field {
   title?: string;
@@ -108,6 +109,10 @@ export interface Field {
 
   // Number field options
   numberOptions?: NumberOptions;
+
+  // Content relationship
+  contentTypeName?: string;
+  contentTypeValue?: 'path' | 'slug';
 
   // When clause
   when?: WhenClause;

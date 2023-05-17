@@ -1019,7 +1019,8 @@
                         "slug",
                         "divider",
                         "heading",
-                        "customField"
+                        "customField",
+                        "contentRelationship"
                       ],
                       "description": "Define the type of field"
                     },
@@ -1214,6 +1215,17 @@
                       "default": false,
                       "description": "Specify if the field is required"
                     },
+                    "contentTypeName": {
+                      "type": "string",
+                      "default": "",
+                      "description": "Specify the content type name to filter content for the contentRelationship field"
+                    },
+                    "contentTypeValue": {
+                      "type": "string",
+                      "enum": ["path", "slug"],
+                      "default": "path",
+                      "description": "Specify the value to insert for the contentRelationship field"
+                    },
                     "when": {
                       "type": "object",
                       "description": "Specify the conditions to show the field",
@@ -1318,6 +1330,20 @@
                       "then": {
                         "required": [
                           "taxonomyId"
+                        ]
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "contentRelationship"
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "contentTypeName"
                         ]
                       }
                     },

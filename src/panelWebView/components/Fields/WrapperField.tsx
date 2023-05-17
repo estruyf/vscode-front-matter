@@ -30,6 +30,7 @@ import {
   CustomField
 } from '.';
 import { fieldWhenClause } from '../../../utils/fieldWhenClause';
+import { ContentTypeRelationshipField } from './ContentTypeRelationshipField';
 
 export interface IWrapperFieldProps {
   field: Field;
@@ -470,6 +471,23 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           description={field.description}
           value={fieldValue}
           required={!!field.required}
+          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+        />
+      </FieldBoundary>
+    );
+  } else if (field.type === 'contentRelationship') {
+    const pages: string[] = [];
+
+    return (
+      <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+        <ContentTypeRelationshipField
+          label={field.title || field.name}
+          description={field.description}
+          value={fieldValue as string}
+          required={!!field.required}
+          contentTypeName={field.contentTypeName}
+          contentTypeValue={field.contentTypeValue}
+          multiSelect={field.multiple}
           onChange={(value) => onSendUpdate(field.name, value, parentFields)}
         />
       </FieldBoundary>
