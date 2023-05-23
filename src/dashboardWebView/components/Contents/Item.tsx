@@ -11,7 +11,6 @@ import { useEffect, useMemo, useState } from 'react';
 import useThemeColors from '../../hooks/useThemeColors';
 import { Status } from './Status';
 import * as React from 'react';
-import { messageHandler } from '@estruyf/vscode/dist/client';
 
 export interface IItemProps extends Page { }
 
@@ -28,25 +27,51 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const view = useRecoilValue(ViewSelector);
   const settings = useRecoilValue(SettingsSelector);
   const draftField = useMemo(() => settings?.draftField, [settings]);
+  const cardFields = useMemo(() => settings?.dashboardState?.contents?.cardFields, [settings?.dashboardState?.contents?.cardFields]);
   const [imageHtml, setImageHtml] = useState<string | undefined>(undefined);
   const [footerHtml, setFooterHtml] = useState<string | undefined>(undefined);
   const { getColors } = useThemeColors();
 
   const escapedTitle = useMemo(() => {
-    if (title && typeof title !== 'string') {
+    console.log('escapedTitle', title, cardFields?.title, pageData);
+    let value = title;
+
+    if (cardFields?.title) {
+      if (cardFields.title === "description") {
+        value = description;
+      } else if (cardFields?.title !== "title") {
+        value = pageData[cardFields?.title] || title;
+      }
+    } else if (cardFields?.title === null) {
+      return null;
+    }
+
+    if (value && typeof value !== 'string') {
       return '<invalid title>';
     }
 
-    return title;
-  }, [title]);
+    return value;
+  }, [title, description, cardFields?.title, pageData]);
 
   const escapedDescription = useMemo(() => {
-    if (description && typeof description !== 'string') {
+    let value = description;
+
+    if (cardFields?.description) {
+      if (cardFields.description === "title") {
+        value = title;
+      } else if (cardFields?.description !== "description") {
+        value = pageData[cardFields?.description] || description;
+      }
+    } else if (cardFields?.description === null) {
+      return null;
+    }
+
+    if (value && typeof value !== 'string') {
       return '<invalid description>';
     }
 
-    return description;
-  }, [description]);
+    return value;
+  }, [description, title, cardFields?.description, pageData]);
 
   const openFile = () => {
     Messenger.send(DashboardMessage.openFile, fmFilePath);
@@ -76,6 +101,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
     return [];
   }, [settings, pageData]);
+
+  const hasDraftOrDate = useMemo(() => {
+    return cardFields && (cardFields.state || cardFields.date);
+  }, [cardFields]);
 
   useEffect(() => {
     if (window.fmExternal && window.fmExternal.getCardFooter) {
@@ -137,7 +166,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                 pageData[PREVIEW_IMAGE_FIELD] ? (
                   <img
                     src={`${pageData[PREVIEW_IMAGE_FIELD]}`}
-                    alt={escapedTitle}
+                    alt={escapedTitle || ""}
                     className="absolute inset-0 h-full w-full object-cover group-hover:brightness-75"
                     loading="lazy"
                   />
@@ -160,21 +189,27 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           </button>
 
           <div className="relative p-4 w-full grow">
-            <div className={`flex justify-between items-center`}>
-              {draftField && draftField.name && <Status draft={pageData[draftField.name]} />}
+            <div className={`flex justify-between items-center ${hasDraftOrDate ? `mb-2` : ``}`}>
+              {
+                cardFields?.state && draftField && draftField.name && <Status draft={pageData[draftField.name]} />
+              }
 
-              <DateField className={`mr-4`} value={date} />
-
-              <ContentActions
-                title={title}
-                path={fmFilePath}
-                scripts={settings?.scripts}
-                onOpen={openFile}
-              />
+              {
+                cardFields?.date && <DateField className={`mr-4`} value={date} />
+              }
             </div>
 
+            <ContentActions
+              title={title}
+              path={fmFilePath}
+              scripts={settings?.scripts}
+              onOpen={openFile}
+            />
+
             <button onClick={openFile} className={`text-left block`}>
-              <h2 className="mt-2 mb-2 font-bold">{escapedTitle}</h2>
+              <h2 className="mb-2 font-bold">
+                {escapedTitle}
+              </h2>
             </button>
 
             <button onClick={openFile} className={`text-left block`}>
@@ -226,7 +261,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             </button>
 
             <ContentActions
-              title={escapedTitle}
+              title={escapedTitle || ""}
               path={fmFilePath}
               scripts={settings?.scripts}
               onOpen={openFile}

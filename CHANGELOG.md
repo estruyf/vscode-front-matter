@@ -9,9 +9,10 @@
 
 ### 🎨 Enhancements
 
+- [#558](https://github.com/estruyf/vscode-front-matter/issues/558): Moved the tags and categories to a `.frontmatter/database/taxonomyDb.json` file
 - [#566](https://github.com/estruyf/vscode-front-matter/issues/566): Keep the panel context on the live preview
 - [#568](https://github.com/estruyf/vscode-front-matter/issues/568): Update the preview URL if the slug changes
-- [#558](https://github.com/estruyf/vscode-front-matter/issues/558): Moved the tags and categories to a `.frontmatter/database/taxonomyDb.json` file
+- [#586](https://github.com/estruyf/vscode-front-matter/issues/586): Allow to specify the content card fields
 
 ### ⚡️ Optimizations
 

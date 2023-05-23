@@ -58,6 +58,14 @@ export interface ContentsViewState {
   tags: string | null | undefined;
   templatesEnabled: boolean | null | undefined;
   pagination: boolean | number | null | undefined;
+  cardFields: CardFields;
+}
+
+export interface CardFields {
+  state: boolean | undefined;
+  date: boolean | undefined;
+  title: string | null | undefined;
+  description: string | null | undefined;
 }
 
 export interface MediaViewState extends ContentsViewState {

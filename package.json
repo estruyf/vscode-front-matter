@@ -573,6 +573,26 @@
           "markdownDescription": "Specify the name of the metadata field that will be used to show the tags on the content card. When empty or null, it will hide the tags from the card. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontMatter.dashboard.content.cardTags)",
           "scope": "Dashboard"
         },
+        "frontMatter.dashboard.content.card.fields.state": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Specify if you want to show the state/draft status on the content card view. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontMatter.dashboard.content.card.fields.state)"
+        },
+        "frontMatter.dashboard.content.card.fields.date": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Specify if you want to show the date on the content card view. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontMatter.dashboard.content.card.fields.date)"
+        },
+        "frontMatter.dashboard.content.card.fields.description": {
+          "type": ["null", "string"],
+          "default": "",
+          "markdownDescription": "Specify the name of the metadata field that will be used to show the description on the content card. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontMatter.dashboard.content.card.fields.description)"
+        },
+        "frontMatter.dashboard.content.card.fields.title": {
+          "type": ["null", "string"],
+          "default": "",
+          "markdownDescription": "Specify the name of the metadata field that will be used to show the title on the content card. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontMatter.dashboard.content.card.fields.title)"
+        },
         "frontMatter.dashboard.mediaSnippet": {
           "type": "array",
           "default": [],

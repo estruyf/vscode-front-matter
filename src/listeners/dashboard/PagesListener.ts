@@ -3,11 +3,16 @@ import { basename } from 'path';
 import { commands, FileSystemWatcher, RelativePattern, TextDocument, Uri, workspace } from 'vscode';
 import { Dashboard } from '../../commands/Dashboard';
 import { Folders } from '../../commands/Folders';
-import { COMMAND_NAME, ExtensionState } from '../../constants';
+import {
+  COMMAND_NAME,
+  ExtensionState,
+  SETTING_DASHBOARD_CONTENT_CARD_DESCRIPTION,
+  SETTING_DASHBOARD_CONTENT_CARD_TITLE
+} from '../../constants';
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { Page } from '../../dashboardWebView/models';
-import { ArticleHelper, Extension, Logger } from '../../helpers';
+import { ArticleHelper, Extension, Logger, Settings } from '../../helpers';
 import { BaseListener } from './BaseListener';
 import { DataListener } from '../panel';
 import Fuse from 'fuse.js';
@@ -219,13 +224,24 @@ export class PagesListener extends BaseListener {
    * Search the pages
    */
   private static async searchPages(data: { query: string }) {
+    const fieldKeys = [
+      { name: 'title', weight: 1 },
+      { name: 'fmBody', weight: 1 },
+      { name: 'slug', weight: 0.5 },
+      { name: 'description', weight: 0.5 }
+    ];
+
+    const cardTitle = Settings.get(SETTING_DASHBOARD_CONTENT_CARD_TITLE);
+    if (cardTitle) {
+      fieldKeys.push({ name: cardTitle as string, weight: 1 });
+    }
+    const cardDescription = Settings.get(SETTING_DASHBOARD_CONTENT_CARD_DESCRIPTION);
+    if (cardTitle) {
+      fieldKeys.push({ name: cardDescription as string, weight: 0.5 });
+    }
+
     const fuseOptions: Fuse.IFuseOptions<Page> = {
-      keys: [
-        { name: 'title', weight: 1 },
-        { name: 'fmBody', weight: 1 },
-        { name: 'slug', weight: 0.5 },
-        { name: 'description', weight: 0.5 }
-      ],
+      keys: fieldKeys,
       includeScore: true,
       ignoreLocation: true,
       threshold: 0.1

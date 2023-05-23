@@ -25,7 +25,11 @@ import {
   SETTING_TEMPLATES_ENABLED,
   SETTING_GIT_ENABLED,
   SETTING_DASHBOARD_CONTENT_PAGINATION,
-  SETTING_SNIPPETS_WRAPPER
+  SETTING_SNIPPETS_WRAPPER,
+  SETTING_DASHBOARD_CONTENT_CARD_DATE,
+  SETTING_DASHBOARD_CONTENT_CARD_TITLE,
+  SETTING_DASHBOARD_CONTENT_CARD_STATE,
+  SETTING_DASHBOARD_CONTENT_CARD_DESCRIPTION
 } from '../constants';
 import {
   DashboardViewType,
@@ -99,7 +103,13 @@ export class DashboardSettings {
           defaultSorting: Settings.get<string>(SETTING_CONTENT_SORTING_DEFAULT),
           tags: Settings.get<string>(SETTING_DASHBOARD_CONTENT_TAGS),
           templatesEnabled: Settings.get<boolean>(SETTING_TEMPLATES_ENABLED),
-          pagination: pagination !== undefined ? pagination : true
+          pagination: pagination !== undefined ? pagination : true,
+          cardFields: {
+            state: Settings.get<string>(SETTING_DASHBOARD_CONTENT_CARD_STATE),
+            date: Settings.get<string>(SETTING_DASHBOARD_CONTENT_CARD_DATE),
+            title: Settings.get<string>(SETTING_DASHBOARD_CONTENT_CARD_TITLE),
+            description: Settings.get<string>(SETTING_DASHBOARD_CONTENT_CARD_DESCRIPTION)
+          }
         },
         media: {
           sorting: await ext.getState<SortingOption | undefined>(
