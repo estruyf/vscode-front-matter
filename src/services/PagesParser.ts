@@ -23,6 +23,7 @@ import {
   Settings
 } from '../helpers';
 import { existsAsync } from '../utils';
+import { Article } from '../commands';
 
 export class PagesParser {
   public static allPages: Page[] = [];
@@ -210,7 +211,7 @@ export class PagesParser {
         // Make sure these are always set
         title: escapedTitle,
         description: escapedDescription,
-        slug: article?.data.slug,
+        slug: article?.data.slug || Article.generateSlug(escapedTitle)?.slugWithPrefixAndSuffix,
         date: article?.data[dateField] || '',
         draft: article?.data.draft
       };
