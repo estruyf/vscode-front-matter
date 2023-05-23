@@ -90,8 +90,6 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
       });
   }, [choices, crntSelected, multiSelect]);
 
-  console.log('availableChoices', availableChoices);
-
   const showRequiredState = useMemo(() => {
     return (
       required && ((crntSelected instanceof Array && crntSelected.length === 0) || !crntSelected)
