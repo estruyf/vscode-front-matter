@@ -29,6 +29,12 @@ declare global {
       getPanelView: (data: any) => Promise<CustomPanelViewResult | undefined>;
       getCardImage: (filePath: string, data: any) => Promise<string | undefined>;
       getCardFooter: (filePath: string, data: any) => Promise<string | undefined>;
+      // 8.5.0 extension points
+      getCardTitle: (filePath: string, data: any) => Promise<string | undefined>;
+      getcardDescription: (filePath: string, data: any) => Promise<string | undefined>;
+      getCardTags: (filePath: string, data: any) => Promise<string | undefined>;
+      getCardDate: (filePath: string, data: any) => Promise<string | undefined>;
+      getCardStatus: (filePath: string, data: any) => Promise<string | undefined>;
     }
   }
 }

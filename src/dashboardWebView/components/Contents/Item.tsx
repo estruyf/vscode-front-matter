@@ -11,6 +11,7 @@ import { useEffect, useMemo, useState } from 'react';
 import useThemeColors from '../../hooks/useThemeColors';
 import { Status } from './Status';
 import * as React from 'react';
+import useExtensibility from '../../hooks/useExtensibility';
 
 export interface IItemProps extends Page { }
 
@@ -28,8 +29,14 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const settings = useRecoilValue(SettingsSelector);
   const draftField = useMemo(() => settings?.draftField, [settings]);
   const cardFields = useMemo(() => settings?.dashboardState?.contents?.cardFields, [settings?.dashboardState?.contents?.cardFields]);
-  const [imageHtml, setImageHtml] = useState<string | undefined>(undefined);
-  const [footerHtml, setFooterHtml] = useState<string | undefined>(undefined);
+  const { titleHtml, imageHtml, footerHtml } = useExtensibility({
+    fmFilePath,
+    date,
+    title,
+    description,
+    type,
+    pageData
+  });
   const { getColors } = useThemeColors();
 
   const escapedTitle = useMemo(() => {
@@ -106,42 +113,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return cardFields && (cardFields.state || cardFields.date);
   }, [cardFields]);
 
-  useEffect(() => {
-    if (window.fmExternal && window.fmExternal.getCardFooter) {
-      window.fmExternal.getCardFooter(fmFilePath, {
-        fmFilePath,
-        date,
-        title,
-        description,
-        type,
-        ...pageData
-      }).then(htmlContent => {
-        if (htmlContent) {
-          setFooterHtml(htmlContent);
-        } else {
-          setFooterHtml(undefined);
-        }
-      });
-    }
-
-    if (window.fmExternal && window.fmExternal.getCardImage) {
-      window.fmExternal.getCardImage(fmFilePath, {
-        fmFilePath,
-        date,
-        title,
-        description,
-        type,
-        ...pageData
-      }).then(htmlContent => {
-        if (htmlContent) {
-          setImageHtml(htmlContent);
-        } else {
-          setImageHtml(undefined);
-        }
-      });
-    }
-  }, []);
-
   if (view === DashboardViewType.Grid) {
     return (
       <li className="relative">
@@ -207,9 +178,13 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             />
 
             <button onClick={openFile} className={`text-left block`}>
-              <h2 className="mb-2 font-bold">
-                {escapedTitle}
-              </h2>
+              {
+                titleHtml ? titleHtml : (
+                  <h2 className="mb-2 font-bold">
+                    {escapedTitle}
+                  </h2>
+                )
+              }
             </button>
 
             <button onClick={openFile} className={`text-left block`}>
