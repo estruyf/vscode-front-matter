@@ -13,7 +13,6 @@ export default function useExtensibility(options: {
   const [footerHtml, setFooterHtml] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    console.log('useExtensibility', window.fmExternal);
     if (!window.fmExternal || !options || !options.fmFilePath) {
       return;
     }
