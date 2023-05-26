@@ -29,7 +29,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const settings = useRecoilValue(SettingsSelector);
   const draftField = useMemo(() => settings?.draftField, [settings]);
   const cardFields = useMemo(() => settings?.dashboardState?.contents?.cardFields, [settings?.dashboardState?.contents?.cardFields]);
-  const { titleHtml, imageHtml, footerHtml } = useExtensibility({
+  const { titleHtml, descriptionHtml, dateHtml, statusHtml, tagsHtml, imageHtml, footerHtml } = useExtensibility({
     fmFilePath,
     date,
     title,
@@ -162,11 +162,19 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           <div className="relative p-4 w-full grow">
             <div className={`flex justify-between items-center ${hasDraftOrDate ? `mb-2` : ``}`}>
               {
-                cardFields?.state && draftField && draftField.name && <Status draft={pageData[draftField.name]} />
+                statusHtml ? (
+                  <div dangerouslySetInnerHTML={{ __html: statusHtml }} />
+                ) : (
+                  cardFields?.state && draftField && draftField.name && <Status draft={pageData[draftField.name]} />
+                )
               }
 
               {
-                cardFields?.date && <DateField className={`mr-4`} value={date} />
+                dateHtml ? (
+                  <div className='mr-4' dangerouslySetInnerHTML={{ __html: dateHtml }} />
+                ) : (
+                  cardFields?.date && <DateField className={`mr-4`} value={date} />
+                )
               }
             </div>
 
@@ -179,7 +187,9 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
             <button onClick={openFile} className={`text-left block`}>
               {
-                titleHtml ? titleHtml : (
+                titleHtml ? (
+                  <div dangerouslySetInnerHTML={{ __html: titleHtml }} />
+                ) : (
                   <h2 className="mb-2 font-bold">
                     {escapedTitle}
                   </h2>
@@ -188,28 +198,39 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             </button>
 
             <button onClick={openFile} className={`text-left block`}>
-              <p className={`text-xs ${getColors('text-vulcan-200 dark:text-whisper-800', 'text-[vara(--vscode-titleBar-activeForeground)]')}`}>{escapedDescription}</p>
+              {
+                descriptionHtml ? (
+                  <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
+                ) : (
+                  <p className={`text-xs ${getColors('text-vulcan-200 dark:text-whisper-800', 'text-[vara(--vscode-titleBar-activeForeground)]')}`}>{escapedDescription}</p>
+                )
+              }
             </button>
 
-            {tags && tags.length > 0 && (
-              <div className="mt-2">
-                {tags.map(
-                  (tag, index) =>
-                    tag && (
-                      <span
-                        key={index}
-                        className={`inline-block mr-1 mt-1 text-xs ${getColors(
-                          `text-[#5D561D] dark:text-[#F0ECD0]`,
-                          `text-[var(--vscode-textPreformat-foreground)]`
-                        )
-                          }`}
-                      >
-                        #{tag}
-                      </span>
-                    )
-                )}
-              </div>
-            )}
+            {
+              tagsHtml ? (
+                <div className="mt-2" dangerouslySetInnerHTML={{ __html: tagsHtml }} />
+              ) : (
+                tags && tags.length > 0 && (
+                  <div className="mt-2">
+                    {tags.map(
+                      (tag, index) => tag && (
+                        <span
+                          key={index}
+                          className={`inline-block mr-1 mt-1 text-xs ${getColors(
+                            `text-[#5D561D] dark:text-[#F0ECD0]`,
+                            `text-[var(--vscode-textPreformat-foreground)]`
+                          )
+                            }`}
+                        >
+                          #{tag}
+                        </span>
+                      )
+                    )}
+                  </div>
+                )
+              )
+            }
           </div>
 
           {

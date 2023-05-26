@@ -9,6 +9,10 @@ export default function useExtensibility(options: {
   pageData: any;
 }) {
   const [titleHtml, setTitleHtml] = useState<string | undefined>(undefined);
+  const [descriptionHtml, setDescriptionHtml] = useState<string | undefined>(undefined);
+  const [statusHtml, setStatusHtml] = useState<string | undefined>(undefined);
+  const [dateHtml, setDateHtml] = useState<string | undefined>(undefined);
+  const [tagsHtml, setTagsHtml] = useState<string | undefined>(undefined);
   const [imageHtml, setImageHtml] = useState<string | undefined>(undefined);
   const [footerHtml, setFooterHtml] = useState<string | undefined>(undefined);
 
@@ -67,10 +71,82 @@ export default function useExtensibility(options: {
         }
       });
     }
+
+    if (window.fmExternal.getCardDescription) {
+      window.fmExternal.getCardDescription(options.fmFilePath, {
+        fmFilePath: options.fmFilePath,
+        date: options.date,
+        title: options.title,
+        description: options.description,
+        type: options.type,
+        ...options.pageData
+      }).then(htmlContent => {
+        if (htmlContent) {
+          setDescriptionHtml(htmlContent);
+        } else {
+          setDescriptionHtml(undefined);
+        }
+      });
+    }
+
+    if (window.fmExternal.getCardDate) {
+      window.fmExternal.getCardDate(options.fmFilePath, {
+        fmFilePath: options.fmFilePath,
+        date: options.date,
+        title: options.title,
+        description: options.description,
+        type: options.type,
+        ...options.pageData
+      }).then(htmlContent => {
+        if (htmlContent) {
+          setDateHtml(htmlContent);
+        } else {
+          setDateHtml(undefined);
+        }
+      });
+    }
+
+    if (window.fmExternal.getCardStatus) {
+      window.fmExternal.getCardStatus(options.fmFilePath, {
+        fmFilePath: options.fmFilePath,
+        date: options.date,
+        title: options.title,
+        description: options.description,
+        type: options.type,
+        ...options.pageData
+      }).then(htmlContent => {
+        if (htmlContent) {
+          setStatusHtml(htmlContent);
+        } else {
+          setStatusHtml(undefined);
+        }
+      });
+    }
+
+    if (window.fmExternal.getCardTags) {
+      window.fmExternal.getCardTags(options.fmFilePath, {
+        fmFilePath: options.fmFilePath,
+        date: options.date,
+        title: options.title,
+        description: options.description,
+        type: options.type,
+        ...options.pageData
+      }).then(htmlContent => {
+        if (htmlContent) {
+          setTagsHtml(htmlContent);
+        } else {
+          setTagsHtml(undefined);
+        }
+      });
+    }
   }, [options]);
 
   return {
     titleHtml,
+    descriptionHtml,
+    statusHtml,
+    dateHtml,
+    tagsHtml,
     imageHtml,
     footerHtml
   };
