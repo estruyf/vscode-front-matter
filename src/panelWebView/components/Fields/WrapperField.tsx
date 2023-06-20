@@ -428,7 +428,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       </FieldBoundary>
     );
   } else if (field.type === 'block') {
-    const blockData = Object.assign([], parent[field.name]);
+    const fieldData = Object.assign([], parent[field.name]);
 
     return (
       <FieldBoundary key={field.name} fieldName={field.title || field.name}>
@@ -437,7 +437,8 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           description={field.description}
           settings={settings}
           field={field}
-          value={blockData}
+          value={fieldData}
+          blockData={blockData}
           fieldsRenderer={renderFields}
           parentFields={parentFields}
           filePath={metadata.filePath as string}

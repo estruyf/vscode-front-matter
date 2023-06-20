@@ -25,6 +25,7 @@
 - [#567](https://github.com/estruyf/vscode-front-matter/issues/567): Fix taxonomy filters that are incorrectly positioned
 - [#572](https://github.com/estruyf/vscode-front-matter/issues/572): Fix the media snippet placeholder link
 - [#577](https://github.com/estruyf/vscode-front-matter/issues/577): Fix in the `dataFile` field where data entries get overwritten
+- [#590](https://github.com/estruyf/vscode-front-matter/issues/590): Fix for image fields inside a sub-block
 
 ## [8.4.0] - 2023-04-03 - [Release notes](https://beta.frontmatter.codes/updates/v8.4.0)
 

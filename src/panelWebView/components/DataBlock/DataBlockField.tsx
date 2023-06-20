@@ -15,6 +15,7 @@ export interface IDataBlockFieldProps {
   field: Field;
   parentFields: string[];
   value: any;
+  blockData: BlockFieldData | undefined;
   filePath: string;
   fieldsRenderer: (
     ctFields: Field[],
@@ -37,6 +38,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
   field,
   parentFields = [],
   value,
+  blockData,
   fieldsRenderer,
   onSubmit,
   parentBlock,
@@ -58,6 +60,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
 
   const onFieldUpdate = useCallback(
     (crntField: string | undefined, crntValue: any, parents: string[]) => {
+      debugger;
       const dataClone: any[] = Object.assign([], value);
 
       if (!crntField) {
@@ -91,7 +94,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
       // Delete the field group to have it added at the end
       delete data['fieldGroup'];
 
-      if (selectedIndex !== null && selectedIndex !== undefined) {
+      if (selectedIndex !== null && selectedIndex !== undefined && dataClone.length > 0) {
         dataClone[selectedIndex] = {
           ...data,
           fieldGroup: selectedGroup?.id
@@ -238,6 +241,21 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
     [SELECTION_STATE_KEY]
   );
 
+  const getSelectedIndex = useCallback(() => {
+    console.log(blockData)
+    let crntValue = [];
+
+    if (blockData?.selectedIndex !== null && blockData?.selectedIndex !== undefined) {
+      crntValue.push(blockData.selectedIndex);
+    }
+
+    if (selectedIndex !== null && selectedIndex !== undefined) {
+      crntValue.push(selectedIndex);
+    }
+
+    return crntValue.join('.');
+  }, [blockData, selectedIndex]);
+
   useEffect(() => {
     if (selectedIndex !== null) {
       const fieldData = value[selectedIndex];
@@ -293,7 +311,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
               {
                 parentFields: [...parentFields, field.name],
                 blockType: selectedGroup?.id || undefined,
-                selectedIndex: selectedIndex === null ? undefined : selectedIndex
+                selectedIndex: getSelectedIndex()
               },
               onFieldUpdate,
               `${field.name}-${selectedGroup?.id}-${selectedIndex || 0}`

@@ -70,11 +70,10 @@ export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps>
       <FieldTitle label={label} icon={<PhotographIcon />} required={required} />
 
       <div
-        className={`metadata_field__preview_image ${
-          multiple && value && (value as PreviewImageValue[]).length > 0
-            ? `metadata_field__multiple_images`
-            : ''
-        } ${showRequiredState ? 'required' : ''}`}
+        className={`metadata_field__preview_image ${multiple && value && (value as PreviewImageValue[]).length > 0
+          ? `metadata_field__multiple_images`
+          : ''
+          } ${showRequiredState ? 'required' : ''}`}
       >
         {(!value || isFaultyImage || multiple) && (
           <button
