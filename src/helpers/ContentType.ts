@@ -435,6 +435,53 @@ export class ContentType {
     return emptyFields || [];
   }
 
+  public static findFieldsByTypeDeep(
+    fields: Field[],
+    type: FieldType,
+    parents: Field[][] = [],
+    parentFields: Field[] = []
+  ): Field[][] {
+    for (const field of fields) {
+      if (field.type === type) {
+        parents.push([...parentFields, field]);
+      } else if (field.type === 'fields' && field.fields) {
+        this.findFieldsByTypeDeep(field.fields, type, parents, [...parentFields, field]);
+      } else if (field.type === 'block') {
+        const groups =
+          field.fieldGroup && Array.isArray(field.fieldGroup)
+            ? field.fieldGroup
+            : [field.fieldGroup];
+        const blocks = Settings.get<FieldGroup[]>(SETTING_TAXONOMY_FIELD_GROUPS);
+
+        if (groups && blocks) {
+          let found = false;
+
+          for (const group of groups) {
+            const block = blocks.find((block) => block.id === group);
+            if (!block) {
+              continue;
+            }
+
+            let newParents: Field[][] = [];
+            if (!found) {
+              newParents = this.findFieldsByTypeDeep(block?.fields, type, parents, [
+                ...parentFields,
+                field
+              ]);
+            }
+
+            if (newParents.length > 0) {
+              found = true;
+              return newParents;
+            }
+          }
+        }
+      }
+    }
+
+    return parents;
+  }
+
   /**
    * Find all the required fields in the content type
    * @param fields

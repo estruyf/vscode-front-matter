@@ -6,7 +6,7 @@ import { Command } from '../../panelWebView/Command';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
 import { commands, ThemeIcon, window } from 'vscode';
-import { ArticleHelper, Logger, Settings } from '../../helpers';
+import { ArticleHelper, ContentType, Logger, Settings } from '../../helpers';
 import {
   COMMAND_NAME,
   DefaultFields,
@@ -17,7 +17,7 @@ import {
 import { Article, Preview } from '../../commands';
 import { ParsedFrontMatter } from '../../parsers';
 import { processKnownPlaceholders } from '../../helpers/PlaceholderHelper';
-import { PostMessageData } from '../../models';
+import { Field, PostMessageData } from '../../models';
 import { encodeEmoji } from '../../utils';
 
 const FILE_LIMIT = 10;
@@ -183,48 +183,79 @@ export class DataListener extends BaseListener {
     }
 
     const contentType = ArticleHelper.getContentType(article.data);
-    const dateFields = contentType.fields.filter((f) => f.type === 'datetime');
-    const imageFields = contentType.fields.filter((f) => f.type === 'image' && f.multiple);
-    const fileFields = contentType.fields.filter((f) => f.type === 'file' && f.multiple);
-    const fieldsWithEmojiEncoding = contentType.fields.filter((f) => f.encodeEmoji);
+
+    const dateFields = ContentType.findFieldsByTypeDeep(contentType.fields, 'datetime');
+    const imageFields = ContentType.findFieldsByTypeDeep(contentType.fields, 'image');
+    const fileFields = ContentType.findFieldsByTypeDeep(contentType.fields, 'file');
+
+    // const dateFields = contentType.fields.filter((f) => f.type === 'datetime');
+    // const imageFields = contentType.fields.filter((f) => f.type === 'image' && f.multiple);
+    // const fileFields = contentType.fields.filter((f) => f.type === 'file' && f.multiple);
+    // const fieldsWithEmojiEncoding = contentType.fields.filter((f) => f.encodeEmoji);
 
     // Support multi-level fields
     const parentObj = DataListener.getParentObject(article.data, article, parents, blockData);
 
-    const isDateField = dateFields.some((f) => f.name === field);
-    const isMultiImageField = imageFields.some((f) => f.name === field);
-    const isMultiFileField = fileFields.some((f) => f.name === field);
+    const dateFieldsArray = dateFields.find((f: Field[]) => {
+      const lastField = f?.[f.length - 1];
+      if (lastField) {
+        return lastField.name === field;
+      }
+    });
 
-    if (isDateField) {
-      for (const dateField of dateFields) {
+    const multiImageFieldsArray = imageFields.find((f: Field[]) => {
+      const lastField = f?.[f.length - 1];
+      if (lastField) {
+        return lastField.name === field;
+      }
+    });
+
+    const multiFileFieldsArray = fileFields.find((f: Field[]) => {
+      const lastField = f?.[f.length - 1];
+      if (lastField) {
+        return lastField.name === field;
+      }
+    });
+
+    // const isDateField = dateFields.some((f) => f.name === field);
+    // const isMultiImageField = imageFields.some((f) => f.name === field);
+    // const isMultiFileField = fileFields.some((f) => f.name === field);
+
+    if (dateFieldsArray && dateFieldsArray.length > 0) {
+      for (const dateField of dateFieldsArray) {
         if (field === dateField.name && value) {
           parentObj[field] = Article.formatDate(new Date(value));
         }
       }
-    } else if (isMultiImageField || isMultiFileField) {
-      const fields = isMultiImageField ? imageFields : fileFields;
+    } else if (multiImageFieldsArray || multiFileFieldsArray) {
+      const fields =
+        multiImageFieldsArray && multiImageFieldsArray.length > 0
+          ? multiImageFieldsArray
+          : multiFileFieldsArray;
 
-      for (const crntField of fields) {
-        if (field === crntField.name) {
-          // If value is an array, it means it comes from the explorer view itself (deletion)
-          if (Array.isArray(value)) {
-            parentObj[field] = value || [];
-          } else {
-            // Otherwise it is coming from the media dashboard (addition)
-            let fieldValue = parentObj[field];
-            if (fieldValue && !Array.isArray(fieldValue)) {
-              fieldValue = [fieldValue];
+      if (fields) {
+        for (const crntField of fields) {
+          if (field === crntField.name) {
+            // If value is an array, it means it comes from the explorer view itself (deletion)
+            if (Array.isArray(value)) {
+              parentObj[field] = value || [];
+            } else {
+              // Otherwise it is coming from the media dashboard (addition)
+              let fieldValue = parentObj[field];
+              if (fieldValue && !Array.isArray(fieldValue)) {
+                fieldValue = [fieldValue];
+              }
+              const crntData = Object.assign([], fieldValue);
+              const allRelPaths = [...(crntData || []), value];
+              parentObj[field] = [...new Set(allRelPaths)].filter((f) => f);
             }
-            const crntData = Object.assign([], fieldValue);
-            const allRelPaths = [...(crntData || []), value];
-            parentObj[field] = [...new Set(allRelPaths)].filter((f) => f);
           }
         }
       }
     } else {
-      if (fieldsWithEmojiEncoding.some((f) => f.name === field)) {
-        value = encodeEmoji(value);
-      }
+      // if (fieldsWithEmojiEncoding.some((f) => f.name === field)) {
+      //   value = encodeEmoji(value);
+      // }
       parentObj[field] = value;
     }
 

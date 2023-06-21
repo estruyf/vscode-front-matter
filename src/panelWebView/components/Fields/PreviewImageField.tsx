@@ -50,9 +50,10 @@ export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps>
   }, [filePath, fieldName, value, multiple, parents]);
 
   const onImageRemove = (imageToRemove: string) => {
+    debugger;
     const newValue =
       value && Array.isArray(value)
-        ? value.filter((image) => image.original !== imageToRemove).map((i) => i.original)
+        ? value.filter((image) => (image?.original || image) !== imageToRemove).map((i) => (i?.original || i as any as string))
         : null;
     onChange(newValue);
   };
@@ -96,7 +97,7 @@ export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps>
           Array.isArray(value) &&
           !isFaultyImage &&
           value.map((image) => (
-            <PreviewImage key={image.original} value={image} onRemove={onImageRemove} />
+            <PreviewImage key={image?.original || image as any as string} value={image} onRemove={() => onImageRemove(image?.original || image as any as string)} />
           ))}
       </div>
 

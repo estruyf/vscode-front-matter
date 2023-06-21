@@ -241,6 +241,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       </FieldBoundary>
     );
   } else if (field.type === 'image') {
+    console.log('image', field, fieldValue);
     return (
       <FieldBoundary key={field.name} fieldName={field.title || field.name}>
         <PreviewImageField
