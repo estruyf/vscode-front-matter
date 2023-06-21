@@ -103,7 +103,6 @@ export class ImageHelper {
    * @param parents
    */
   public static processImageFields(updatedMetadata: any, fields: Field[], parents: string[] = []) {
-    // TODO: Support image fields from blocks
     const imageFields = fields.filter((field) => field.type === 'image');
     const panel = ExplorerView.getInstance();
 

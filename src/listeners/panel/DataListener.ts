@@ -187,11 +187,7 @@ export class DataListener extends BaseListener {
     const dateFields = ContentType.findFieldsByTypeDeep(contentType.fields, 'datetime');
     const imageFields = ContentType.findFieldsByTypeDeep(contentType.fields, 'image');
     const fileFields = ContentType.findFieldsByTypeDeep(contentType.fields, 'file');
-
-    // const dateFields = contentType.fields.filter((f) => f.type === 'datetime');
-    // const imageFields = contentType.fields.filter((f) => f.type === 'image' && f.multiple);
-    // const fileFields = contentType.fields.filter((f) => f.type === 'file' && f.multiple);
-    // const fieldsWithEmojiEncoding = contentType.fields.filter((f) => f.encodeEmoji);
+    const fieldsWithEmojiEncoding = contentType.fields.filter((f) => f.encodeEmoji);
 
     // Support multi-level fields
     const parentObj = DataListener.getParentObject(article.data, article, parents, blockData);
@@ -206,14 +202,14 @@ export class DataListener extends BaseListener {
     const multiImageFieldsArray = imageFields.find((f: Field[]) => {
       const lastField = f?.[f.length - 1];
       if (lastField) {
-        return lastField.name === field;
+        return lastField.name === field && lastField.multiple;
       }
     });
 
     const multiFileFieldsArray = fileFields.find((f: Field[]) => {
       const lastField = f?.[f.length - 1];
       if (lastField) {
-        return lastField.name === field;
+        return lastField.name === field && lastField.multiple;
       }
     });
 
@@ -253,9 +249,9 @@ export class DataListener extends BaseListener {
         }
       }
     } else {
-      // if (fieldsWithEmojiEncoding.some((f) => f.name === field)) {
-      //   value = encodeEmoji(value);
-      // }
+      if (fieldsWithEmojiEncoding.some((f) => f.name === field)) {
+        value = encodeEmoji(value);
+      }
       parentObj[field] = value;
     }
 

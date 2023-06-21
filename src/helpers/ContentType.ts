@@ -435,6 +435,14 @@ export class ContentType {
     return emptyFields || [];
   }
 
+  /**
+   * Find fields by type (deep search)
+   * @param fields
+   * @param type
+   * @param parents
+   * @param parentFields
+   * @returns
+   */
   public static findFieldsByTypeDeep(
     fields: Field[],
     type: FieldType,
@@ -480,6 +488,36 @@ export class ContentType {
     }
 
     return parents;
+  }
+
+  /**
+   * Retrieve the block field groups
+   * @param field
+   * @returns
+   */
+  public static getBlockFieldGroups(field: Field): FieldGroup[] {
+    const groups =
+      field.fieldGroup && Array.isArray(field.fieldGroup) ? field.fieldGroup : [field.fieldGroup];
+    if (!groups) {
+      return [];
+    }
+
+    const blocks = Settings.get<FieldGroup[]>(SETTING_TAXONOMY_FIELD_GROUPS);
+    if (!blocks) {
+      return [];
+    }
+
+    let foundBlocks = [];
+    for (const group of groups) {
+      const block = blocks.find((block) => block.id === group);
+      if (!block) {
+        continue;
+      }
+
+      foundBlocks.push(block);
+    }
+
+    return foundBlocks;
   }
 
   /**

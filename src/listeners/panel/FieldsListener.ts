@@ -53,8 +53,6 @@ export class FieldsListener extends BaseListener {
       });
       const pageResults = results.map((page) => page.item);
 
-      console.log('pageResults', pageResults);
-
       this.sendRequest(command, requestId, pageResults || []);
     });
   }

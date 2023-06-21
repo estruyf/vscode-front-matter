@@ -40,7 +40,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const { getColors } = useThemeColors();
 
   const escapedTitle = useMemo(() => {
-    console.log('escapedTitle', title, cardFields?.title, pageData);
     let value = title;
 
     if (cardFields?.title) {

@@ -60,7 +60,6 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
 
   const onFieldUpdate = useCallback(
     (crntField: string | undefined, crntValue: any, parents: string[]) => {
-      debugger;
       const dataClone: any[] = Object.assign([], value);
 
       if (!crntField) {
@@ -242,7 +241,6 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
   );
 
   const getSelectedIndex = useCallback(() => {
-    console.log(blockData)
     let crntValue = [];
 
     if (blockData?.selectedIndex !== null && blockData?.selectedIndex !== undefined) {

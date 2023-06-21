@@ -41,5 +41,6 @@ export enum CommandToCode {
   generateSlug = 'generate-slug',
   stopServer = 'stop-server',
   aiSuggestTaxonomy = 'ai-suggest-taxonomy',
-  searchByType = 'search-by-type'
+  searchByType = 'search-by-type',
+  processMediaData = 'process-media-data'
 }
