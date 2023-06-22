@@ -1230,6 +1230,11 @@
                       "default": false,
                       "description": "Specify if the field should encode emoji"
                     },
+                    "dateFormat": {
+                      "type": "string",
+                      "default": "",
+                      "description": "Specify the date format to use"
+                    },
                     "required": {
                       "type": "boolean",
                       "default": false,

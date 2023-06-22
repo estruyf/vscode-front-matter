@@ -180,7 +180,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           description={field.description}
           value={fieldValue}
           required={!!field.required}
-          format={settings?.date?.format}
+          format={field.dateFormat || settings?.date?.format}
           onChange={(date) => onSendUpdate(field.name, date, parentFields)}
         />
       </FieldBoundary>

@@ -14,6 +14,7 @@
 - [#568](https://github.com/estruyf/vscode-front-matter/issues/568): Update the preview URL if the slug changes
 - [#586](https://github.com/estruyf/vscode-front-matter/issues/586): Allow to specify the content card fields
 - [#588](https://github.com/estruyf/vscode-front-matter/issues/588): Added extensibility support to override card fields
+- [#591](https://github.com/estruyf/vscode-front-matter/issues/591): Support for date format in the `datetime` field
 
 ### ⚡️ Optimizations
 

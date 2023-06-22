@@ -368,10 +368,12 @@ export class Article {
   /**
    * Format the date to the defined format
    */
-  public static formatDate(dateValue: Date): string {
+  public static formatDate(dateValue: Date, fieldDateFormat?: string): string {
     const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
 
-    if (dateFormat && typeof dateFormat === 'string') {
+    if (fieldDateFormat) {
+      return format(dateValue, DateHelper.formatUpdate(fieldDateFormat) as string);
+    } else if (dateFormat && typeof dateFormat === 'string') {
       return format(dateValue, DateHelper.formatUpdate(dateFormat) as string);
     } else {
       return typeof dateValue.toISOString === 'function'

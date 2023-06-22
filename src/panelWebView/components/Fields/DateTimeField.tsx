@@ -41,6 +41,19 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({
     return required && !dateValue;
   }, [required, dateValue]);
 
+  const hasTimeFormat = useMemo(() => {
+    if (!format) {
+      return true;
+    }
+
+    return format?.toLowerCase().includes('h') ||
+      format?.includes('m') ||
+      format?.toLowerCase().includes('s') ||
+      format?.toLowerCase().includes('a') ||
+      format?.toLowerCase().includes('b') ||
+      format?.toLowerCase().includes('k');
+  }, [format]);
+
   useEffect(() => {
     const crntValue = DateHelper.tryParse(value, format);
     const stateValue = DateHelper.tryParse(dateValue, format);
@@ -61,7 +74,7 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({
           timeInputLabel="Time:"
           dateFormat={DateHelper.formatUpdate(format) || 'MM/dd/yyyy HH:mm'}
           customInput={<CustomInput />}
-          showTimeInput
+          showTimeInput={hasTimeFormat}
         />
 
         <button

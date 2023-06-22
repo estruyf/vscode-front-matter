@@ -794,7 +794,11 @@ export class ContentType {
       for (const field of obj.fields) {
         if (field.name === 'title') {
           if (field.default) {
-            data[field.name] = processKnownPlaceholders(field.default, titleValue, dateFormat);
+            data[field.name] = processKnownPlaceholders(
+              field.default,
+              titleValue,
+              field.dateFormat || dateFormat
+            );
             data[field.name] = await ArticleHelper.processCustomPlaceholders(
               data[field.name],
               titleValue,
@@ -812,7 +816,11 @@ export class ContentType {
             const defaultValue = field.default;
 
             if (typeof defaultValue === 'string') {
-              data[field.name] = processKnownPlaceholders(defaultValue, titleValue, dateFormat);
+              data[field.name] = processKnownPlaceholders(
+                defaultValue,
+                titleValue,
+                field.dateFormat || dateFormat
+              );
               data[field.name] = await ArticleHelper.processCustomPlaceholders(
                 data[field.name],
                 titleValue,

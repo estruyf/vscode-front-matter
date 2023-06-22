@@ -101,6 +101,7 @@ export interface Field {
   // Date fields
   isPublishDate?: boolean;
   isModifiedDate?: boolean;
+  dateFormat?: string;
 
   // Data file
   dataFileId?: string;

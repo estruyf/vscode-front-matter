@@ -213,14 +213,10 @@ export class DataListener extends BaseListener {
       }
     });
 
-    // const isDateField = dateFields.some((f) => f.name === field);
-    // const isMultiImageField = imageFields.some((f) => f.name === field);
-    // const isMultiFileField = fileFields.some((f) => f.name === field);
-
     if (dateFieldsArray && dateFieldsArray.length > 0) {
       for (const dateField of dateFieldsArray) {
         if (field === dateField.name && value) {
-          parentObj[field] = Article.formatDate(new Date(value));
+          parentObj[field] = Article.formatDate(new Date(value), dateField.dateFormat);
         }
       }
     } else if (multiImageFieldsArray || multiFileFieldsArray) {

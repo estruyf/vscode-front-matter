@@ -347,7 +347,7 @@ export class ArticleHelper {
 
     for (const dateField of dateFields) {
       if (typeof metadata[dateField.name] !== 'undefined') {
-        metadata[dateField.name] = Article.formatDate(new Date());
+        metadata[dateField.name] = Article.formatDate(new Date(), dateField.dateFormat);
       }
     }
 
