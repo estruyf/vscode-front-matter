@@ -8,12 +8,12 @@
 
 <p align="center">
   <a href="https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter" title="Check it out on the Visual Studio Marketplace">
-    <img src="https://vsmarketplacebadges.dev/version/eliostruyf.vscode-front-matter.svg" alt="Visual Studio Marketplace" style="display: inline-block" />
+    <img src="https://vscode-marketplace-badge.vercel.app/api/badge/version/eliostruyf.vscode-front-matter" alt="Visual Studio Marketplace" style="display: inline-block" />
   </a>
 
-  <img src="https://vsmarketplacebadges.dev/installs/eliostruyf.vscode-front-matter.svg" alt="Number of installs"  style="display: inline-block;margin-left:10px" />
+  <img src="https://vscode-marketplace-badge.vercel.app/api/badge/installs/eliostruyf.vscode-front-matter" alt="Number of installs"  style="display: inline-block;margin-left:10px" />
 
-  <img src="https://vsmarketplacebadges.dev/rating/eliostruyf.vscode-front-matter.svg" alt="Ratings" style="display: inline-block;margin-left:10px" />
+  <img src="https://vscode-marketplace-badge.vercel.app/api/badge/rating/eliostruyf.vscode-front-matter" alt="Ratings" style="display: inline-block;margin-left:10px" />
 
   <a href="https://github.com/sponsors/estruyf" title="Become a sponsor" style="margin-left:10px">
     <img src="https://img.shields.io/github/sponsors/estruyf?color=%23CE2E7C&logo=github&style=flat" alt="Sponsor the project" style="display: inline-block" />
