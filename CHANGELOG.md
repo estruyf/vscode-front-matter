@@ -15,6 +15,7 @@
 - [#586](https://github.com/estruyf/vscode-front-matter/issues/586): Allow to specify the content card fields
 - [#588](https://github.com/estruyf/vscode-front-matter/issues/588): Added extensibility support to override card fields
 - [#591](https://github.com/estruyf/vscode-front-matter/issues/591): Support for date format in the `datetime` field
+- [#593](https://github.com/estruyf/vscode-front-matter/issues/593): Add support for date formatting in the preview path
 
 ### ⚡️ Optimizations
 
