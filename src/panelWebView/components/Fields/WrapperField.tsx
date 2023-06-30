@@ -230,7 +230,6 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
     return (
       <FieldBoundary key={field.name} fieldName={field.title || field.name}>
         <NumberField
-          key={field.name}
           label={field.title || field.name}
           description={field.description}
           options={field.numberOptions}

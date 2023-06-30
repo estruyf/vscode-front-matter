@@ -28,7 +28,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   onChange,
   required
 }: React.PropsWithChildren<ITextFieldProps>) => {
-  const [requiredFields, setRequiredFields] = useRecoilState(RequiredFieldsAtom);
+  const [, setRequiredFields] = useRecoilState(RequiredFieldsAtom);
   const [text, setText] = React.useState<string | null>(value);
 
   const onTextChange = (txtValue: string) => {

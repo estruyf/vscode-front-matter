@@ -333,7 +333,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
           </div>
         </div>
       ) : (
-        <button title={`Add ${field.name}`} onClick={onShowForm}>
+        <button title={`Add ${field.name} `} onClick={onShowForm}>
           Add {field.name}
         </button>
       )}

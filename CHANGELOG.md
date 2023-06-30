@@ -29,6 +29,7 @@
 - [#577](https://github.com/estruyf/vscode-front-matter/issues/577): Fix in the `dataFile` field where data entries get overwritten
 - [#590](https://github.com/estruyf/vscode-front-matter/issues/590): Fix for image fields inside a sub-block
 - [#595](https://github.com/estruyf/vscode-front-matter/issues/595): Fix for media metadata now showing up
+- [#596](https://github.com/estruyf/vscode-front-matter/issues/596): Fix for number field in block data
 
 ## [8.4.0] - 2023-04-03 - [Release notes](https://beta.frontmatter.codes/updates/v8.4.0)
 
