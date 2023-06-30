@@ -480,7 +480,6 @@ export class ContentType {
 
             if (newParents.length > 0) {
               found = true;
-              return newParents;
             }
           }
         }

@@ -277,10 +277,14 @@ export class DataListener extends BaseListener {
     let parentObj = data;
     let allParents = Object.assign([], parents);
     const contentType = ArticleHelper.getContentType(article.data);
-    const selectedIndexes =
-      typeof blockData?.selectedIndex === 'string'
-        ? blockData?.selectedIndex.split('.').map((v) => parseInt(v))
-        : [blockData?.selectedIndex];
+    let selectedIndexes: number[] = [];
+    if (blockData?.selectedIndex) {
+      if (typeof blockData.selectedIndex === 'string') {
+        selectedIndexes = blockData.selectedIndex.split('.').map((v) => parseInt(v));
+      } else {
+        selectedIndexes = [blockData.selectedIndex];
+      }
+    }
     let lastSelectedIndex: number | undefined;
 
     // Add support for block fields
@@ -291,7 +295,7 @@ export class DataListener extends BaseListener {
       // Loop through the parents of the block field
       for (const parent of blockData?.parentFields) {
         if (!parentObj[parent]) {
-          parentObj[parent] = {};
+          parentObj[parent] = [];
         }
 
         if (allParents[0] && allParents[0] === parent) {

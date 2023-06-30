@@ -49,7 +49,7 @@ export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps>
       blockData,
       type: 'media'
     });
-  }, [filePath, fieldName, value, multiple, parents]);
+  }, [filePath, fieldName, multiple, parents, value]);
 
   const onImageRemove = useCallback((imageToRemove: string) => {
     const newValue =
@@ -84,10 +84,12 @@ export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps>
       ).then((data) => {
         setImageData(data);
       });
+    } else if (!value) {
+      setImageData(multiple ? [] : null);
     } else {
       setImageData(value);
     }
-  }, [value]);
+  }, [value, multiple]);
 
   return (
     <div className={`metadata_field`}>
