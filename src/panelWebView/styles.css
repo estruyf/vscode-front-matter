@@ -1098,3 +1098,17 @@ vscode-divider {
     }
   }
 }
+
+/* Empty base view */
+.base__empty {
+  display: flex;
+  color: var(--vscode-foreground);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 2em;
+  opacity: 0.8;
+  text-align: center;
+  padding: 1rem 1.25rem;
+}

@@ -55,6 +55,21 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({
     return Object.values(FEATURE_FLAG.panel).filter(v => v !== FEATURE_FLAG.panel.globalSettings)
   }, [FEATURE_FLAG.panel]);
 
+  const isSomethingShown = useMemo(() => {
+    const panelModeValues = (mode?.features || []).filter(v => v.startsWith('panel.'));
+
+    if (panelModeValues.length === 0) {
+      return true;
+    }
+
+    if (panelModeValues.includes(FEATURE_FLAG.panel.globalSettings) ||
+      panelModeValues.includes(FEATURE_FLAG.panel.actions) ||
+      panelModeValues.includes(FEATURE_FLAG.panel.recentlyModified) ||
+      panelModeValues.includes(FEATURE_FLAG.panel.otherActions)) {
+      return true;
+    }
+  }, [mode?.features]);
+
   return (
     <div className="frontmatter">
       <div className={`ext_actions`}>
@@ -102,6 +117,14 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({
           <OtherActions settings={settings} isFile={false} isBase />
         </FeatureFlag>
       </div>
+
+      {
+        !isSomethingShown && (
+          <div className={`base__empty`}>
+            Open a file to see more actions
+          </div>
+        )
+      }
 
       <SponsorMsg isBacker={settings?.isBacker} />
     </div>
