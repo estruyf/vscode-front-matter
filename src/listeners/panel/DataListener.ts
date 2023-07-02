@@ -248,7 +248,14 @@ export class DataListener extends BaseListener {
       if (fieldsWithEmojiEncoding.some((f) => f.name === field)) {
         value = encodeEmoji(value);
       }
-      parentObj[field] = value;
+
+      if (Array.isArray(parentObj)) {
+        parentObj.push({
+          [field]: value
+        });
+      } else {
+        parentObj[field] = value;
+      }
     }
 
     if (editor) {
@@ -294,8 +301,19 @@ export class DataListener extends BaseListener {
 
       // Loop through the parents of the block field
       for (const parent of blockData?.parentFields) {
+        if (!parentObj) {
+          continue;
+        }
+
         if (!parentObj[parent]) {
-          parentObj[parent] = [];
+          if (Array.isArray(parentObj)) {
+            parentObj.push({
+              [parent]: []
+            });
+            parentObj = parentObj[parentObj.length - 1];
+          } else {
+            parentObj[parent] = [];
+          }
         }
 
         if (allParents[0] && allParents[0] === parent) {
@@ -309,7 +327,12 @@ export class DataListener extends BaseListener {
         if (parentObj instanceof Array) {
           lastSelectedIndex = selectedIndexes.shift();
           if (typeof lastSelectedIndex !== 'undefined') {
-            parentObj = parentObj[lastSelectedIndex];
+            if (parentObj[lastSelectedIndex] === undefined) {
+              parentObj.push({});
+              parentObj = parentObj[parentObj.length - 1];
+            } else {
+              parentObj = parentObj[lastSelectedIndex];
+            }
           }
         }
       }
@@ -327,6 +350,10 @@ export class DataListener extends BaseListener {
       // Check if there are parents left
       if (allParents.length > 0) {
         for (const parent of allParents) {
+          if (!parentObj) {
+            continue;
+          }
+
           if (!parentObj[parent]) {
             parentObj[parent] = {};
           }
