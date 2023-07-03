@@ -12,12 +12,12 @@ import {
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { Page } from '../../dashboardWebView/models';
-import { ArticleHelper, Extension, Logger, Settings } from '../../helpers';
+import { ArticleHelper, Extension, Logger, parseWinPath, Settings } from '../../helpers';
 import { BaseListener } from './BaseListener';
 import { DataListener } from '../panel';
 import Fuse from 'fuse.js';
 import { PagesParser } from '../../services/PagesParser';
-import { unlinkAsync } from '../../utils';
+import { unlinkAsync, rmdirAsync } from '../../utils';
 
 export class PagesListener extends BaseListener {
   private static watchers: { [path: string]: FileSystemWatcher } = {};
@@ -114,9 +114,37 @@ export class PagesListener extends BaseListener {
       return;
     }
 
+    // Get the content type of the page
+    const article = await ArticleHelper.getFrontMatterByPath(path);
+    if (!article) {
+      return;
+    }
+    const contentType = ArticleHelper.getContentType(article.data);
+
     Logger.info(`Deleting file: ${path}`);
 
     await unlinkAsync(path);
+
+    // Check if the content type is a page bundle
+    if (contentType.pageBundle) {
+      const absPath = parseWinPath(path);
+      const folder = absPath.substring(0, absPath.lastIndexOf('/') + 1);
+      try {
+        // Check if the folder is empty
+        const files = await workspace.fs.readDirectory(Uri.file(folder));
+        if (files.length > 0) {
+          // Remove each file
+          for (const file of files) {
+            await unlinkAsync(`${folder}${file[0]}`);
+          }
+        }
+
+        // Delete the folder
+        await rmdirAsync(folder);
+      } catch (e) {
+        console.log((e as any).message);
+      }
+    }
 
     this.lastPages = this.lastPages.filter((p) => p.fmFilePath !== path);
     this.sendPageData(this.lastPages);
