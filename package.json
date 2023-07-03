@@ -26,8 +26,9 @@
   },
   "qna": "https://github.com/estruyf/vscode-front-matter/discussions",
   "engines": {
-    "vscode": "^1.70.0"
+    "vscode": "^1.73.0"
   },
+  "l10n": "./l10n",
   "categories": [
     "Other"
   ],
@@ -584,12 +585,18 @@
           "markdownDescription": "Specify if you want to show the date on the content card view. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontMatter.dashboard.content.card.fields.date)"
         },
         "frontMatter.dashboard.content.card.fields.description": {
-          "type": ["null", "string"],
+          "type": [
+            "null",
+            "string"
+          ],
           "default": "",
           "markdownDescription": "Specify the name of the metadata field that will be used to show the description on the content card. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontMatter.dashboard.content.card.fields.description)"
         },
         "frontMatter.dashboard.content.card.fields.title": {
-          "type": ["null", "string"],
+          "type": [
+            "null",
+            "string"
+          ],
           "default": "",
           "markdownDescription": "Specify the name of the metadata field that will be used to show the title on the content card. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontMatter.dashboard.content.card.fields.title)"
         },
@@ -1247,7 +1254,10 @@
                     },
                     "contentTypeValue": {
                       "type": "string",
-                      "enum": ["path", "slug"],
+                      "enum": [
+                        "path",
+                        "slug"
+                      ],
                       "default": "path",
                       "description": "Specify the value to insert for the contentRelationship field"
                     },
@@ -2412,10 +2422,11 @@
     "@types/react": "17.0.0",
     "@types/react-datepicker": "^4.1.7",
     "@types/react-dom": "17.0.0",
-    "@types/vscode": "^1.70.0",
+    "@types/vscode": "^1.73.0",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
     "@vscode/codicons": "0.0.20",
+    "@vscode/l10n": "^0.0.14",
     "@vscode/webview-ui-toolkit": "^0.9.1",
     "@webpack-cli/serve": "^1.6.0",
     "ajv": "^8.12.0",

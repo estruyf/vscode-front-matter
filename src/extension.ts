@@ -13,6 +13,7 @@ import { ModeSwitch } from './services/ModeSwitch';
 import { PagesParser } from './services/PagesParser';
 import { ContentType, Telemetry, Extension } from './helpers';
 import { TaxonomyType, DashboardData } from './models';
+import * as l10n from '@vscode/l10n';
 import {
   Backers,
   Diagnostics,
@@ -40,6 +41,17 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const extension = Extension.getInstance(context);
   Backers.init(context).then(() => {});
+
+  // Make sure the EN language file is loaded
+  if (!vscode.l10n.uri) {
+    l10n.config({
+      fsPath: vscode.Uri.parse(`${extensionPath}/l10n/bundle.l10n.json`).fsPath
+    });
+  } else {
+    l10n.config({
+      fsPath: vscode.l10n.uri.fsPath
+    });
+  }
 
   if (!extension.checkIfExtensionCanRun()) {
     return undefined;

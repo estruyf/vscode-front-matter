@@ -15,6 +15,7 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
 import { NavigationType } from '../models';
 import { GeneralCommands } from '../../constants';
+import * as l10n from '@vscode/l10n';
 
 export default function useMessages() {
   const [loading, setLoading] = useRecoilState(LoadingAtom);
@@ -59,6 +60,11 @@ export default function useMessages() {
       case GeneralCommands.toWebview.setMode:
         setMode(message.payload);
         break;
+      case DashboardCommand.setLocalization:
+        l10n.config({
+          contents: message.payload
+        })
+        break;
     }
   };
 
@@ -70,6 +76,7 @@ export default function useMessages() {
     Messenger.send(DashboardMessage.getTheme);
     Messenger.send(DashboardMessage.getData);
     Messenger.send(DashboardMessage.getMode);
+    Messenger.send(DashboardMessage.getLocalization);
 
     return () => {
       Messenger.unlisten(messageListener);

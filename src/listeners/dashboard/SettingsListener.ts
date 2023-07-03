@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { commands, Uri } from 'vscode';
+import { commands, Uri, l10n } from 'vscode';
 import { Folders } from '../../commands/Folders';
 import {
   COMMAND_NAME,
@@ -21,6 +21,7 @@ import { DataListener } from '../panel';
 import { MarkdownFoldingProvider } from '../../providers/MarkdownFoldingProvider';
 import { ModeSwitch } from '../../services/ModeSwitch';
 import { PagesListener } from './PagesListener';
+import { readFileAsync } from '../../utils';
 
 export class SettingsListener extends BaseListener {
   /**
@@ -33,6 +34,9 @@ export class SettingsListener extends BaseListener {
     switch (msg.command) {
       case DashboardMessage.getData:
         this.getSettings();
+        break;
+      case DashboardMessage.getLocalization:
+        this.getLocalization();
         break;
       case DashboardMessage.updateSetting:
         this.update(msg.payload);
@@ -47,6 +51,16 @@ export class SettingsListener extends BaseListener {
         this.switchProject(msg.payload);
         break;
     }
+  }
+
+  public static async getLocalization() {
+    const localeFilePath =
+      l10n.uri?.fsPath ||
+      Uri.parse(`${Extension.getInstance().extensionPath}/l10n/bundle.l10n.json`).fsPath;
+
+    const fileContents = await readFileAsync(localeFilePath, 'utf-8');
+
+    this.sendMsg(DashboardCommand.setLocalization, fileContents);
   }
 
   public static async switchProject(project: string) {

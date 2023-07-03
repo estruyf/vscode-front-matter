@@ -29,6 +29,7 @@ import useThemeColors from '../../hooks/useThemeColors';
 import { Startup } from './Startup';
 import { Navigation } from './Navigation';
 import { ProjectSwitcher } from './ProjectSwitcher';
+import * as l10n from '@vscode/l10n';
 
 export interface IHeaderProps {
   header?: React.ReactNode;
@@ -168,7 +169,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
               <SyncButton />
 
               <ChoiceButton
-                title={`Create content`}
+                title={l10n.t(`header.createContent`)}
                 choices={choiceOptions}
                 onClick={createContent}
                 disabled={!settings?.initialized}

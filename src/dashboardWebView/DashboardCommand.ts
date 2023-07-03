@@ -10,5 +10,8 @@ export enum DashboardCommand {
   searchReady = 'searchReady',
 
   // Taxonomy dashboard
-  setTaxonomyData = 'setTaxonomyData'
+  setTaxonomyData = 'setTaxonomyData',
+
+  // Localization
+  setLocalization = 'setLocalization'
 }
