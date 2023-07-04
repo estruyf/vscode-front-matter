@@ -1,4 +1,11 @@
 {
-  "header.createContent": "Create content",
-  "header.startup.label": "Open on startup?"
+  "dashboard.header.createContent": "Create content",
+  "dashboard.header.startup.label": "Open on startup?",
+
+  "panel.actions.title": "Actions",
+  "panel.actions.openDashboard": "Open dashboard",
+  "panel.actions.openPreview": "Open preview",
+  "panel.actions.startServer": "Start server",
+  "panel.actions.stopServer": "Stop server",
+  "panel.actions.createContent": "Create content"
 }

@@ -7,3 +7,4 @@ export * from './MediaListener';
 export * from './ScriptListener';
 export * from './SettingsListener';
 export * from './TaxonomyListener';
+export * from './LocalizationListener';

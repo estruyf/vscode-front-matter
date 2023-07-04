@@ -12,6 +12,8 @@ import { FEATURE_FLAG } from '../../constants/Features';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { GitAction } from './Git/GitAction';
 import { useMemo } from 'react';
+import * as l10n from "@vscode/l10n"
+import { LocalizationKey } from '../../localization';
 
 export interface IBaseViewProps {
   settings: PanelSettings | undefined;
@@ -88,15 +90,15 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({
             </FeatureFlag>
 
             <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.actions}>
-              <Collapsible id={`base_actions`} title="Actions">
+              <Collapsible id={`base_actions`} title={l10n.t(LocalizationKey.panelActionsTitle)}>
                 <div className={`base__actions`}>
-                  <button onClick={openDashboard}>Open dashboard</button>
+                  <button onClick={openDashboard}>{l10n.t(LocalizationKey.panelActionsOpenDashboard)}</button>
                   <button onClick={openPreview} disabled={!settings?.preview?.host}>
-                    Open preview
+                    {l10n.t(LocalizationKey.panelActionsOpenPreview)}
                   </button>
                   <StartServerButton settings={settings} />
 
-                  <button onClick={createContent}>Create new content</button>
+                  <button onClick={createContent}>{l10n.t(LocalizationKey.panelActionsCreateContent)}</button>
 
                   {customActions.map((script) => (
                     <button key={script.title} onClick={() => runBulkScript(script)}>

@@ -2374,7 +2374,7 @@
     }]
   },
   "scripts": {
-    "dev:ext": "npm run clean && npm-run-all --parallel watch:*",
+    "dev:ext": "npm run clean && npm run localization:generate && npm-run-all --parallel watch:*",
     "vscode:prepublish": "npm run clean && npm-run-all --parallel prod:*",
     "build:ext": "npm run clean && npm-run-all --parallel dev:build:*",
     "watch:ext": "webpack --mode development --watch --config ./webpack/extension.config.js",
@@ -2392,7 +2392,9 @@
     "clean:test": "rm ./e2e/sample/frontmatter.json || exit 0 && rm -rf ./e2e/sample/.frontmatter || exit 0",
     "test": "pnpm lint; tsc -p tsconfig.e2e.json && npm run clean:test && pnpm i -g @vscode/vsce && node ./e2e/out/runTests.js",
     "lint": "eslint --max-warnings=0 ./src/{commands,components}",
-    "prettier": "prettier --write ./src"
+    "prettier": "prettier --write ./src",
+    "localization:generate": "node scripts/generate-localization-enum.js",
+    "localization:sync": "node scripts/sync-localization.js"
   },
   "devDependencies": {
     "@actions/core": "^1.8.2",

@@ -30,6 +30,7 @@ import { Startup } from './Startup';
 import { Navigation } from './Navigation';
 import { ProjectSwitcher } from './ProjectSwitcher';
 import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IHeaderProps {
   header?: React.ReactNode;
@@ -169,7 +170,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
               <SyncButton />
 
               <ChoiceButton
-                title={l10n.t(`header.createContent`)}
+                title={l10n.t(LocalizationKey.dashboardHeaderCreateContent)}
                 choices={choiceOptions}
                 onClick={createContent}
                 disabled={!settings?.initialized}

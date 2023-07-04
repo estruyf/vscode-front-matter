@@ -10,6 +10,7 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
 import { useRecoilState } from 'recoil';
 import { PanelSettingsAtom } from '../state';
+import * as l10n from '@vscode/l10n';
 
 export default function useMessages() {
   const [metadata, setMetadata] = useState<any>({});
@@ -50,6 +51,11 @@ export default function useMessages() {
       case GeneralCommands.toWebview.setMode:
         setMode(message.payload);
         break;
+      case GeneralCommands.toWebview.setLocalization:
+        l10n.config({
+          contents: message.payload
+        })
+        break;
     }
   };
 
@@ -72,6 +78,7 @@ export default function useMessages() {
 
     Messenger.send(CommandToCode.getData);
     Messenger.send(CommandToCode.getMode);
+    Messenger.send(GeneralCommands.toVSCode.getLocalization);
 
     return () => {
       Messenger.unlisten(messageListener);

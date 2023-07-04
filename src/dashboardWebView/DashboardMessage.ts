@@ -56,7 +56,6 @@ export enum DashboardMessage {
   moveTaxonomy = 'moveTaxonomy',
 
   // Other
-  getLocalization = 'getLocalization',
   getTheme = 'getTheme',
   updateSetting = 'updateSetting',
   setState = 'setState',

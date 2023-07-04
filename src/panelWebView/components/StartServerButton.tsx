@@ -3,6 +3,8 @@ import * as React from 'react';
 import { PanelSettings } from '../../models';
 import { CommandToCode } from '../CommandToCode';
 import useStartCommand from '../hooks/useStartCommand';
+import { LocalizationKey } from '../../localization';
+import * as l10n from "@vscode/l10n"
 
 export interface IStartServerButtonProps {
   settings: PanelSettings | undefined;
@@ -23,8 +25,8 @@ export const StartServerButton: React.FunctionComponent<IStartServerButtonProps>
 
   return startCommand ? (
     <>
-      <button onClick={() => startLocalServer(startCommand)}>Start server</button>
-      <button onClick={() => stopLocalServer()}>Stop server</button>
+      <button onClick={() => startLocalServer(startCommand)}>{l10n.t(LocalizationKey.panelActionsStartServer)}</button>
+      <button onClick={() => stopLocalServer()}>{l10n.t(LocalizationKey.panelActionsStopServer)}</button>
     </>
   ) : null;
 };

@@ -22,7 +22,8 @@ import {
   ExtensionListener,
   SnippetListener,
   TaxonomyListener,
-  LogListener
+  LogListener,
+  LocalizationListener
 } from '../listeners/dashboard';
 import { MediaListener as PanelMediaListener } from '../listeners/panel';
 import { GitListener, ModeListener } from '../listeners/general';
@@ -166,6 +167,7 @@ export class Dashboard {
     Dashboard.webview.webview.onDidReceiveMessage(async (msg) => {
       Logger.info(`Receiving message from webview: ${msg.command}`);
 
+      LocalizationListener.process(msg);
       DashboardListener.process(msg);
       ExtensionListener.process(msg);
       MediaListener.process(msg);

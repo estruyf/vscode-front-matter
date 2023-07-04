@@ -6,7 +6,8 @@ import {
   TaxonomyListener,
   DataListener,
   SettingsListener,
-  FieldsListener
+  FieldsListener,
+  LocalizationListener
 } from './../listeners/panel';
 import { SETTING_EXPERIMENTAL, SETTING_EXTENSIBILITY_SCRIPTS, TelemetryEvent } from '../constants';
 import {
@@ -98,6 +99,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     webviewView.webview.onDidReceiveMessage(async (msg) => {
       Logger.info(`Receiving message from webview to panel: ${msg.command}`);
 
+      LocalizationListener.process(msg);
       FieldsListener.process(msg);
       ArticleListener.process(msg);
       DataListener.process(msg);

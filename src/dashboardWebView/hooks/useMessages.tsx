@@ -60,7 +60,7 @@ export default function useMessages() {
       case GeneralCommands.toWebview.setMode:
         setMode(message.payload);
         break;
-      case DashboardCommand.setLocalization:
+      case GeneralCommands.toWebview.setLocalization:
         l10n.config({
           contents: message.payload
         })
@@ -76,7 +76,7 @@ export default function useMessages() {
     Messenger.send(DashboardMessage.getTheme);
     Messenger.send(DashboardMessage.getData);
     Messenger.send(DashboardMessage.getMode);
-    Messenger.send(DashboardMessage.getLocalization);
+    Messenger.send(GeneralCommands.toVSCode.getLocalization);
 
     return () => {
       Messenger.unlisten(messageListener);
