@@ -2,10 +2,10 @@
   "dashboard.header.createContent": "新規コンテンツを作成",
   "dashboard.header.startup.label": "起動時に表示する",
 
-  "panel.actions.title": "🚧: Actions",
+  "panel.actions.title": "操作",
   "panel.actions.openDashboard": "ダッシュボードを表示",
   "panel.actions.openPreview": "プレビューを表示",
-  "panel.actions.startServer": "サーバー起動",
-  "panel.actions.stopServer": "サーバー停止",
+  "panel.actions.startServer": "サーバーを起動",
+  "panel.actions.stopServer": "サーバーを停止",
   "panel.actions.createContent": "新規コンテンツを作成"
 }
