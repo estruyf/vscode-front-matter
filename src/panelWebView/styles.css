@@ -294,6 +294,10 @@ button {
   justify-content: space-between;
   margin-bottom: 0.5rem;
 
+  &.metadata_field__alert {
+    justify-content: flex-start;
+  }
+
   div {
     display: flex;
     align-items: center;
