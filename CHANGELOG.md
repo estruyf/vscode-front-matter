@@ -2,8 +2,15 @@
 
 ## [8.5.0] - 2023-xx-xx
 
+### 🧪 Experimental features
+
+- External UI script support for dashboards
+- Front matter AI 🤖
+
 ### ✨ New features
 
+- Added description AI suggestion for GitHub sponsors
+- The Visual Studio Code theme support is now released in the stable version
 - [#424](https://github.com/estruyf/vscode-front-matter/issues/424): Snippet wrapping to allow easier updates or changes to previously set snippets in the content
 - [#585](https://github.com/estruyf/vscode-front-matter/issues/585): New content relationship field type (`contentRelationship`)
 

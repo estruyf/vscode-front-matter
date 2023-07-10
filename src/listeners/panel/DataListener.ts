@@ -5,13 +5,14 @@ import { Folders } from '../../commands/Folders';
 import { Command } from '../../panelWebView/Command';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
-import { commands, ThemeIcon, window } from 'vscode';
-import { ArticleHelper, ContentType, Logger, Settings } from '../../helpers';
+import { authentication, commands, ThemeIcon, window } from 'vscode';
+import { ArticleHelper, ContentType, Extension, Logger, Settings } from '../../helpers';
 import {
   COMMAND_NAME,
   DefaultFields,
   SETTING_COMMA_SEPARATED_FIELDS,
   SETTING_DATE_FORMAT,
+  SETTING_SEO_TITLE_FIELD,
   SETTING_TAXONOMY_CONTENT_TYPES
 } from '../../constants';
 import { Article, Preview } from '../../commands';
@@ -19,6 +20,9 @@ import { ParsedFrontMatter } from '../../parsers';
 import { processKnownPlaceholders } from '../../helpers/PlaceholderHelper';
 import { Field, PostMessageData } from '../../models';
 import { encodeEmoji } from '../../utils';
+import { ExplorerView } from '../../explorerView/ExplorerView';
+import { MessageHandlerData } from '@estruyf/vscode';
+import { SponsorAi } from '../../services/SponsorAI';
 
 const FILE_LIMIT = 10;
 
@@ -68,7 +72,69 @@ export class DataListener extends BaseListener {
       case CommandToCode.getDataEntries:
         this.getDataFileEntries(msg.command, msg.requestId || '', msg.payload);
         break;
+      case CommandToCode.aiSuggestDescription:
+        this.aiSuggestTaxonomy(msg.command, msg.requestId);
+        break;
     }
+  }
+
+  private static async aiSuggestTaxonomy(command: string, requestId?: string) {
+    if (!command || !requestId) {
+      return;
+    }
+
+    const extPath = Extension.getInstance().extensionPath;
+    const panel = ExplorerView.getInstance(extPath);
+
+    const editor = window.activeTextEditor;
+    if (!editor) {
+      panel.getWebview()?.postMessage({
+        command,
+        requestId,
+        error: 'No active editor'
+      } as MessageHandlerData<string>);
+      return;
+    }
+
+    const article = ArticleHelper.getFrontMatter(editor);
+    if (!article || !article.data) {
+      panel.getWebview()?.postMessage({
+        command,
+        requestId,
+        error: 'No article data'
+      } as MessageHandlerData<string>);
+      return;
+    }
+
+    const githubAuth = await authentication.getSession('github', ['read:user'], { silent: true });
+    if (!githubAuth || !githubAuth.accessToken) {
+      return;
+    }
+
+    const titleField = (Settings.get(SETTING_SEO_TITLE_FIELD) as string) || DefaultFields.Title;
+
+    const suggestion = await SponsorAi.getDescription(
+      githubAuth.accessToken,
+      article.data[titleField] || '',
+      article.content || ''
+    );
+
+    console.log(suggestion);
+
+    if (!suggestion) {
+      panel.getWebview()?.postMessage({
+        command,
+        requestId,
+        error: 'No article data'
+      } as MessageHandlerData<string>);
+      return;
+    }
+
+    panel.getWebview()?.postMessage({
+      command,
+      requestId,
+      payload: suggestion || []
+    } as MessageHandlerData<string>);
   }
 
   /**

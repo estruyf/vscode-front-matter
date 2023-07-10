@@ -286,6 +286,7 @@ button {
 /* Metadata section - Content type */
 .metadata_field {
   margin-bottom: 1rem;
+  position: relative;
 }
 
 .metadata_field__label {

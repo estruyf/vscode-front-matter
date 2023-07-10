@@ -226,6 +226,8 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
         sendUpdate(uniqValues);
         setInputValue('');
       }
+    }).catch(() => {
+      setLoading(false);
     });
   }, [selected]);
 
