@@ -462,11 +462,12 @@ export class Folders {
   private static absWsFolder(folder: ContentFolder, wsFolder?: Uri) {
     const isWindows = process.platform === 'win32';
     let absPath = folder.path.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ''));
-    absPath = isWindows ? absPath.split('/').join('\\') : absPath;
 
     if (absPath.includes('../')) {
       absPath = join(absPath);
     }
+
+    absPath = isWindows ? absPath.split('/').join('\\') : absPath;
 
     return parseWinPath(absPath);
   }
