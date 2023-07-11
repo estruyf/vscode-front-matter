@@ -272,7 +272,8 @@ export class Folders {
       for (const folder of folders) {
         try {
           const folderPath = parseWinPath(folder.path);
-          let projectStart = parseWinPath(folder.path).replace(wsFolder, '');
+          // let projectStart = parseWinPath(folder.path).replace(wsFolder, '');
+          let projectStart = folderPath;
 
           if (typeof projectStart === 'string') {
             projectStart = projectStart.replace(/\\/g, '/');
@@ -291,7 +292,8 @@ export class Folders {
                 filePath = `*${fileType.startsWith('.') ? '' : '.'}${fileType}`;
               }
 
-              let foundFiles = await workspace.findFiles(filePath, '**/node_modules/**');
+              let foundFiles = await Folders.findFiles(filePath);
+
               // Make sure these file are coming from the folder path (this could be an issue in multi-root workspaces)
               foundFiles = foundFiles.filter((f) => parseWinPath(f.fsPath).startsWith(folderPath));
 
@@ -461,6 +463,11 @@ export class Folders {
     const isWindows = process.platform === 'win32';
     let absPath = folder.path.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ''));
     absPath = isWindows ? absPath.split('/').join('\\') : absPath;
+
+    if (absPath.includes('../')) {
+      absPath = join(absPath);
+    }
+
     return parseWinPath(absPath);
   }
 
@@ -574,6 +581,20 @@ export class Folders {
         const allFolders = files.map((file) => dirname(file));
         const uniqueFolders = [...new Set(allFolders)];
         resolve(uniqueFolders);
+      });
+    });
+  }
+
+  /**
+   * Find all files
+   * @param pattern
+   * @returns
+   */
+  private static async findFiles(pattern: string): Promise<Uri[]> {
+    return new Promise((resolve) => {
+      glob(pattern, { ignore: '**/node_modules/**' }, (err, files) => {
+        const allFiles = files.map((file) => Uri.file(file));
+        resolve(allFiles);
       });
     });
   }
