@@ -272,23 +272,18 @@ export class Folders {
       for (const folder of folders) {
         try {
           const folderPath = parseWinPath(folder.path);
-          // let projectStart = parseWinPath(folder.path).replace(wsFolder, '');
-          let projectStart = folderPath;
 
-          if (typeof projectStart === 'string') {
-            projectStart = projectStart.replace(/\\/g, '/');
-            projectStart = projectStart.startsWith('/') ? projectStart.substring(1) : projectStart;
-
+          if (typeof folderPath === 'string') {
             let files: Uri[] = [];
 
             for (const fileType of supportedFiles || DEFAULT_FILE_TYPES) {
               let filePath = join(
-                projectStart,
+                folderPath,
                 folder.excludeSubdir ? '/' : '**',
                 `*${fileType.startsWith('.') ? '' : '.'}${fileType}`
               );
 
-              if (projectStart === '' && folder.excludeSubdir) {
+              if (folderPath === '' && folder.excludeSubdir) {
                 filePath = `*${fileType.startsWith('.') ? '' : '.'}${fileType}`;
               }
 
