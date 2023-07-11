@@ -182,7 +182,7 @@ export class Folders {
     ) {
       staticFolder =
         staticFolder === '/' || staticFolder === './'
-          ? Folders.getAbsFilePath('[[workspace]]')
+          ? Folders.getAbsFilePath(WORKSPACE_PLACEHOLDER)
           : Folders.getAbsFilePath(staticFolder);
       const wsFolder = Folders.getWorkspaceFolder();
       if (wsFolder) {
