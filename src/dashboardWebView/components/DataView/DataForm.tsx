@@ -1,11 +1,13 @@
 import * as React from 'react';
-import Ajv, { FormatDefinition } from 'ajv';
+import Ajv from 'ajv';
 import { useEffect, useState } from 'react';
 import { JSONSchemaBridge } from 'uniforms-bridge-json-schema';
 import { AutoFields, AutoForm, ErrorsField } from '../../../components/uniforms-frontmatter';
 import { ErrorBoundary } from '@sentry/react';
 import { DataFormControls } from './DataFormControls';
 import useThemeColors from '../../hooks/useThemeColors';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IDataFormProps {
   schema: any;
@@ -79,9 +81,13 @@ export const DataForm: React.FunctionComponent<IDataFormProps> = ({
     <ErrorBoundary>
       <div className="autoform">
         {model ? (
-          <h2 className={getColors(`text - gray - 500 dark: text - whisper - 900`, `text - [var(--frontmatter - secondary - text)]`)}>Modify the data</h2>
+          <h2 className={getColors(`text - gray - 500 dark: text - whisper - 900`, `text - [var(--frontmatter - secondary - text)]`)}>
+            {l10n.t(LocalizationKey.dashboardDataViewDataFormModify)}
+          </h2>
         ) : (
-          <h2 className={getColors(`text - gray - 500 dark: text - whisper - 900`, `text - [var(--frontmatter - secondary - text)]`)}>Add new data</h2>
+          <h2 className={getColors(`text - gray - 500 dark: text - whisper - 900`, `text - [var(--frontmatter - secondary - text)]`)}>
+            {l10n.t(LocalizationKey.dashboardDataViewDataFormAdd)}
+          </h2>
         )}
 
         <AutoForm

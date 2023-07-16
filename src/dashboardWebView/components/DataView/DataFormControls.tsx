@@ -3,6 +3,8 @@ import { useForm } from 'uniforms';
 import { SubmitField } from 'uniforms-unstyled';
 import useThemeColors from '../../hooks/useThemeColors';
 import { Button } from '../Common/Button';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IDataFormControlsProps {
   model: any | null;
@@ -30,7 +32,7 @@ export const DataFormControls: React.FunctionComponent<IDataFormControlsProps> =
           formRef.reset();
         }}
       >
-        Cancel
+        {l10n.t(LocalizationKey.commonCancel)}
       </Button>
     </div>
   );

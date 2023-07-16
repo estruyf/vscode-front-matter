@@ -11,6 +11,8 @@ import { SortingOption } from '../../models/SortingOption';
 import { SearchSelector, SettingsSelector, SortingAtom } from '../../state';
 import { MenuButton, MenuItem, MenuItems } from '../Menu';
 import { Sorting as SortingHelpers } from '../../../helpers/Sorting';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface ISortingProps {
   disableCustomSorting?: boolean;
@@ -19,25 +21,25 @@ export interface ISortingProps {
 
 export const sortOptions: SortingOption[] = [
   {
-    name: 'Last modified (asc)',
+    name: l10n.t(LocalizationKey.dashboardHeaderSortingLastModifiedAsc),
     id: SortOption.LastModifiedAsc,
     order: SortOrder.asc,
     type: SortType.date
   },
   {
-    name: 'Last modified (desc)',
+    name: l10n.t(LocalizationKey.dashboardHeaderSortingLastModifiedDesc),
     id: SortOption.LastModifiedDesc,
     order: SortOrder.desc,
     type: SortType.date
   },
   {
-    name: 'By filename (asc)',
+    name: l10n.t(LocalizationKey.dashboardHeaderSortingFilenameAsc),
     id: SortOption.FileNameAsc,
     order: SortOrder.asc,
     type: SortType.string
   },
   {
-    name: 'By filename (desc)',
+    name: l10n.t(LocalizationKey.dashboardHeaderSortingFilenameDesc),
     id: SortOption.FileNameDesc,
     order: SortOrder.desc,
     type: SortType.string
@@ -46,13 +48,13 @@ export const sortOptions: SortingOption[] = [
 
 const contentSortOptions: SortingOption[] = [
   {
-    name: 'Published (asc)',
+    name: l10n.t(LocalizationKey.dashboardHeaderSortingPublishedAsc),
     id: SortOption.PublishedAsc,
     order: SortOrder.asc,
     type: SortType.date
   },
   {
-    name: 'Published (desc)',
+    name: l10n.t(LocalizationKey.dashboardHeaderSortingPublishedDesc),
     id: SortOption.PublishedDesc,
     order: SortOrder.desc,
     type: SortType.date
@@ -61,37 +63,37 @@ const contentSortOptions: SortingOption[] = [
 
 const mediaSortOptions: SortingOption[] = [
   {
-    name: 'Size (asc)',
+    name: l10n.t(LocalizationKey.dashboardHeaderSortingSizeAsc),
     id: SortOption.SizeAsc,
     order: SortOrder.asc,
     type: SortType.number
   },
   {
-    name: 'Size (desc)',
+    name: l10n.t(LocalizationKey.dashboardHeaderSortingSizeDesc),
     id: SortOption.SizeDesc,
     order: SortOrder.desc,
     type: SortType.number
   },
   {
-    name: 'Caption (asc)',
+    name: l10n.t(LocalizationKey.dashboardHeaderSortingCaptionAsc),
     id: SortOption.CaptionAsc,
     order: SortOrder.asc,
     type: SortType.string
   },
   {
-    name: 'Caption (desc)',
+    name: l10n.t(LocalizationKey.dashboardHeaderSortingCaptionDesc),
     id: SortOption.CaptionDesc,
     order: SortOrder.desc,
     type: SortType.string
   },
   {
-    name: 'Alt (asc)',
+    name: l10n.t(LocalizationKey.dashboardHeaderSortingAltAsc),
     id: SortOption.AltAsc,
     order: SortOrder.asc,
     type: SortType.string
   },
   {
-    name: 'Alt (desc)',
+    name: l10n.t(LocalizationKey.dashboardHeaderSortingAltDesc),
     id: SortOption.AltDesc,
     order: SortOrder.desc,
     type: SortType.string
@@ -108,11 +110,10 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({
 
   const updateSorting = (value: SortingOption) => {
     Messenger.send(DashboardMessage.setState, {
-      key: `${
-        view === NavigationType.Contents
-          ? ExtensionState.Dashboard.Contents.Sorting
-          : ExtensionState.Dashboard.Media.Sorting
-      }`,
+      key: `${view === NavigationType.Contents
+        ? ExtensionState.Dashboard.Contents.Sorting
+        : ExtensionState.Dashboard.Media.Sorting
+        }`,
       value: value
     });
 
@@ -170,7 +171,7 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({
     <div className="flex items-center">
       <Menu as="div" className="relative z-10 inline-block text-left">
         <MenuButton
-          label={`Sort by`}
+          label={l10n.t(LocalizationKey.dashboardHeaderSortingLabel)}
           title={crntSort?.title || crntSort?.name || ''}
           disabled={!!searchValue}
         />

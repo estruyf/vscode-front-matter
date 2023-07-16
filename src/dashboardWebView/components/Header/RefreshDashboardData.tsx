@@ -17,8 +17,10 @@ import {
   SortingAtom,
   TagAtom
 } from '../../state';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
-export interface IRefreshDashboardDataProps {}
+export interface IRefreshDashboardDataProps { }
 
 export const RefreshDashboardData: React.FunctionComponent<IRefreshDashboardDataProps> = (
   props: React.PropsWithChildren<IRefreshDashboardDataProps>
@@ -62,17 +64,16 @@ export const RefreshDashboardData: React.FunctionComponent<IRefreshDashboardData
 
   return (
     <button
-      className={`mr-2 ${
-        getColors(
-          'text-gray-500 hover:text-gray-600 dark:text-whisper-900 dark:hover:text-whisper-500',
-          'text-[var(--vscode-foreground)] hover:text-[var(--vscode-textLink-foreground)]'
-        )
-      }`}
-      title="Refresh dashboard"
+      className={`mr-2 ${getColors(
+        'text-gray-500 hover:text-gray-600 dark:text-whisper-900 dark:hover:text-whisper-500',
+        'text-[var(--vscode-foreground)] hover:text-[var(--vscode-textLink-foreground)]'
+      )
+        }`}
+      title={l10n.t(LocalizationKey.dashboardHeaderRefreshDashboardLabel)}
       onClick={refresh}
     >
       <RefreshIcon className={`h-5 w-5`} />
-      <span className="sr-only">Refresh dashboard</span>
+      <span className="sr-only">{l10n.t(LocalizationKey.dashboardHeaderRefreshDashboardLabel)}</span>
     </button>
   );
 };

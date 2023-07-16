@@ -3,6 +3,8 @@ import * as React from 'react';
 import { REVIEW_LINK, SPONSOR_LINK } from '../../../constants';
 import { VersionInfo } from '../../../models';
 import useThemeColors from '../../hooks/useThemeColors';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface ISponsorMsgProps {
   beta: boolean | undefined;
@@ -57,18 +59,20 @@ export const SponsorMsg: React.FunctionComponent<ISponsorMsgProps> = ({
       ) : (
         <>
           <SponsorLink
-            title={`Support Front Matter`}
+            title={l10n.t(LocalizationKey.dashboardLayoutSponsorSupportMsg)}
             href={SPONSOR_LINK}>
-            <span>Support</span> <HeartIcon className={`h-5 w-5 group-hover:fill-current`} />
+            <span>{l10n.t(LocalizationKey.dashboardLayoutSponsorSupportLabel)}</span>{` `}
+            <HeartIcon className={`h-5 w-5 group-hover:fill-current`} />
           </SponsorLink>
           <span>
             Front Matter
             {version ? ` (v${version.installedVersion}${!!beta ? ` BETA` : ''})` : ''}
           </span>
           <SponsorLink
-            title={`Review Front Matter`}
+            title={l10n.t(LocalizationKey.dashboardLayoutSponsorReviewMsg)}
             href={REVIEW_LINK}>
-            <StarIcon className={`h-5 w-5 group-hover:fill-current`} /> <span>Review</span>
+            <StarIcon className={`h-5 w-5 group-hover:fill-current`} />{` `}
+            <span>{l10n.t(LocalizationKey.dashboardLayoutSponsorReviewLabel)}</span>
           </SponsorLink>
         </>
       )}

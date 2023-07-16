@@ -2,6 +2,8 @@ import { Menu } from '@headlessui/react';
 import { FilterIcon } from '@heroicons/react/solid';
 import * as React from 'react';
 import { MenuButton, MenuItem, MenuItems } from '../Menu';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IFilterProps {
   label: string;
@@ -10,7 +12,7 @@ export interface IFilterProps {
   onClick: (item: string | null) => void;
 }
 
-const DEFAULT_VALUE = 'No filter';
+const DEFAULT_VALUE = l10n.t(LocalizationKey.dashboardHeaderFilterDefault);
 
 export const Filter: React.FunctionComponent<IFilterProps> = ({
   label,

@@ -6,6 +6,8 @@ import { useRecoilValue } from 'recoil';
 import { DashboardMessage } from '../../DashboardMessage';
 import { SettingsSelector } from '../../state';
 import { MenuButton, MenuItem, MenuItems } from '../Menu';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IProjectSwitcherProps { }
 
@@ -36,7 +38,7 @@ export const ProjectSwitcher: React.FunctionComponent<IProjectSwitcherProps> = (
           label={(
             <div className="inline-flex items-center">
               <SwitchHorizontalIcon className="h-4 w-4 mr-2" />
-              <span>project</span>
+              <span>{l10n.t(LocalizationKey.dashboardHeaderProjectSwitcherLabel)}</span>
             </div>
           )}
           title={crntProject} />

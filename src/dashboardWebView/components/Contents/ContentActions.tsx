@@ -9,6 +9,8 @@ import { Alert } from '../Modals/Alert';
 import { usePopper } from 'react-popper';
 import { useState } from 'react';
 import useThemeColors from '../../hooks/useThemeColors';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IContentActionsProps {
   title: string;
@@ -110,7 +112,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
             )}
 
             <div ref={setReferenceElement} className={`flex`}>
-              <ActionMenuButton title={`Menu`} />
+              <ActionMenuButton title={l10n.t(LocalizationKey.dashboardContentsContentActionsActionMenuButtonTitle)} />
             </div>
 
             <div
@@ -128,10 +130,10 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
                   title={
                     <div className="flex items-center">
                       <EyeIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
-                      <span>View</span>
+                      <span>{l10n.t(LocalizationKey.dashboardContentsContentActionsMenuItemView)}</span>
                     </div>
                   }
-                  onClick={(value, e) => onView(e)}
+                  onClick={(_, e) => onView(e)}
                 />
 
                 {customScriptActions}
@@ -140,10 +142,10 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
                   title={
                     <div className="flex items-center">
                       <TrashIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
-                      <span>Delete</span>
+                      <span>{l10n.t(LocalizationKey.commonDelete)}</span>
                     </div>
                   }
-                  onClick={(value, e) => onDelete(e)}
+                  onClick={(_, e) => onDelete(e)}
                 />
               </MenuItems>
             </div>
@@ -153,10 +155,10 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
 
       {showDeletionAlert && (
         <Alert
-          title={`Delete: ${title}`}
-          description={`Are you sure you want to delete the "${title}" content?`}
-          okBtnText={`Delete`}
-          cancelBtnText={`Cancel`}
+          title={l10n.t(LocalizationKey.dashboardContentsContentActionsAlertTitle, title)}
+          description={l10n.t(LocalizationKey.dashboardContentsContentActionsAlertDescription, title)}
+          okBtnText={l10n.t(LocalizationKey.commonDelete)}
+          cancelBtnText={l10n.t(LocalizationKey.commonCancel)}
           dismiss={() => setShowDeletionAlert(false)}
           trigger={onDeleteConfirm}
         />

@@ -99,7 +99,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
           title: (
             <div className="flex items-center">
               <PlusIcon className="w-4 h-4 mr-2" />
-              <span>Create by content type</span>
+              <span>{l10n.t(LocalizationKey.dashboardHeaderHeaderCreateByContentType)}</span>
             </div>
           ),
           onClick: createByContentType,
@@ -109,7 +109,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
           title: (
             <div className="flex items-center">
               <PlusIcon className="w-4 h-4 mr-2" />
-              <span>Create by template</span>
+              <span>{l10n.t(LocalizationKey.dashboardHeaderHeaderCreateByTemplate)}</span>
             </div>
           ),
           onClick: createByTemplate,
@@ -170,7 +170,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
               <SyncButton />
 
               <ChoiceButton
-                title={l10n.t(LocalizationKey.dashboardHeaderCreateContent)}
+                title={l10n.t(LocalizationKey.dashboardHeaderHeaderCreateContent)}
                 choices={choiceOptions}
                 onClick={createContent}
                 disabled={!settings?.initialized}

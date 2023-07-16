@@ -2,6 +2,8 @@ import { PaperAirplaneIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { useCallback } from 'react';
 import useThemeColors from '../../hooks/useThemeColors';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IChatboxProps {
   isLoading: boolean;
@@ -32,7 +34,7 @@ export const Chatbox: React.FunctionComponent<IChatboxProps> = ({ isLoading, onT
               'focus:outline-none border-gray-300 text-vulcan-500',
               'border-transparent bg-[var(--vscode-input-background)] text-[var(--vscode-input-foreground)] placeholder-[var(--vscode-input-placeholderForeground)] focus:outline-none focus:border-transparent'
             )}`}
-            placeholder='How can I configure Front Matter?'
+            placeholder={l10n.t(LocalizationKey.dashboardChatbotChatboxPlaceholder)}
             autoFocus={true}
             value={message}
             cols={30}

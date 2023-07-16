@@ -13,6 +13,8 @@ import { PageSelector, SelectedMediaFolderSelector } from '../../state';
 import useThemeColors from '../../hooks/useThemeColors';
 import { DetailsItem } from './DetailsItem';
 import { DetailsInput } from './DetailsInput';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IDetailsSlideOverProps {
   imgSrc: string;
@@ -108,7 +110,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                         'text-[var(--vscode-editor-foreground)]'
                       )
                         }`}>
-                        View details
+                        {l10n.t(LocalizationKey.dashboardMediaDialogTitle)}
                       </Dialog.Title>
                       <div className="ml-3 flex h-7 items-center">
                         <button
@@ -120,7 +122,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                             }`}
                           onClick={onDismiss}
                         >
-                          <span className="sr-only">Close panel</span>
+                          <span className="sr-only">{l10n.t(LocalizationKey.dashboardMediaPanelClose)}</span>
                           <XIcon className="h-6 w-6" aria-hidden="true" />
                         </button>
                       </div>
@@ -169,14 +171,14 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                               'text-[var(--vscode-editor-foreground)]'
                             )
                               }`}>
-                              Update metadata
+                              {l10n.t(LocalizationKey.dashboardMediaMetadataPanelTitle)}
                             </h3>
                             <p className={`text-sm font-medium ${getColors(
                               'text-vulcan-100 dark:text-whisper-900',
                               'text-[var(--vscode-editor-foreground)]'
                             )
                               }`}>
-                              Please specify the metadata you want to set for the file.
+                              {l10n.t(LocalizationKey.dashboardMediaMetadataPanelDescription)}
                             </p>
                             <div className="flex flex-col py-3 space-y-3">
                               <div>
@@ -185,7 +187,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                                   'text-[var(--vscode-editor-foreground)]'
                                 )
                                   }`}>
-                                  Filename
+                                  {l10n.t(LocalizationKey.dashboardMediaMetadataPanelFieldFileName)}
                                 </label>
                                 <div className="relative mt-1">
                                   <DetailsInput value={name || ""} onChange={(e) => setFilename(`${e.target.value}.${extension}`)} />
@@ -202,7 +204,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                                   'text-[var(--vscode-editor-foreground)]'
                                 )
                                   }`}>
-                                  Title
+                                  {l10n.t(LocalizationKey.dashboardMediaMetadataPanelFieldTitle)}
                                 </label>
                                 <div className="mt-1">
                                   <DetailsInput value={title || ""} onChange={(e) => setTitle(e.target.value)} />
@@ -217,7 +219,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                                       'text-[var(--vscode-editor-foreground)]'
                                     )
                                       }`}>
-                                      Caption
+                                      {l10n.t(LocalizationKey.dashboardMediaMetadataPanelFieldCaption)}
                                     </label>
                                     <div className="mt-1">
                                       <DetailsInput value={caption || ""} onChange={(e) => setCaption(e.target.value)} isTextArea />
@@ -229,7 +231,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                                       'text-[var(--vscode-editor-foreground)]'
                                     )
                                       }`}>
-                                      Alt tag value
+                                      {l10n.t(LocalizationKey.dashboardMediaMetadataPanelFieldAlt)}
                                     </label>
                                     <div className="mt-1">
                                       <DetailsInput value={alt || ""} onChange={(e) => setAlt(e.target.value)} isTextArea />
@@ -250,7 +252,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                                 onClick={onSubmitMetadata}
                                 disabled={!filename}
                               >
-                                Save
+                                {l10n.t(LocalizationKey.commonSave)}
                               </button>
                               <button
                                 type="button"
@@ -261,7 +263,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                                   }`}
                                 onClick={onEditClose}
                               >
-                                Cancel
+                                {l10n.t(LocalizationKey.commonCancel)}
                               </button>
                             </div>
                           </>
@@ -274,10 +276,10 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                               'text-[var(--vscode-foreground)]'
                             )
                               }`}>
-                              <span>Metadata</span>
+                              <span>{l10n.t(LocalizationKey.dashboardMediaMetadataPanelFormMetadataTitle)}</span>
                               <button onClick={onEdit}>
                                 <PencilAltIcon className="w-4 h-4 ml-2" aria-hidden="true" />
-                                <span className="sr-only">Edit</span>
+                                <span className="sr-only">{l10n.t(LocalizationKey.commonEdit)}</span>
                               </button>
                             </h3>
                             <dl className={`mt-2 border-t border-b divide-y ${getColors(
@@ -285,13 +287,13 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                               'border-[var(--frontmatter-border)] divide-[var(--frontmatter-border)]'
                             )
                               }`}>
-                              <DetailsItem title={`Filename`} details={media.filename} />
-                              <DetailsItem title={`Title`} details={media.title || ""} />
+                              <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaMetadataPanelFieldFileName)} details={media.filename} />
+                              <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaMetadataPanelFieldTitle)} details={media.title || ""} />
 
                               {isImageFile && (
                                 <>
-                                  <DetailsItem title={`Caption`} details={media.caption || ''} />
-                                  <DetailsItem title={`Alternate text`} details={media.alt || ''} />
+                                  <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaMetadataPanelFieldCaption)} details={media.caption || ''} />
+                                  <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaMetadataPanelFieldAlt)} details={media.alt || ''} />
                                 </>
                               )}
                             </dl>
@@ -306,7 +308,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                             'text-[var(--vscode-foreground)]'
                           )
                             }`}>
-                            Information
+                            {l10n.t(LocalizationKey.dashboardMediaMetadataPanelFormInformationTitle)}
                           </h3>
                           <dl className={`mt-2 border-t border-b divide-y ${getColors(
                             'border-gray-200 dark:border-vulcan-200 divide-gray-200 dark:divide-vulcan-200',
@@ -314,19 +316,19 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                           )
                             }`}>
                             {createdDate && (
-                              <DetailsItem title={`Created`} details={format(createdDate, 'MMM dd, yyyy')} />
+                              <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaMetadataPanelFormInformationCreatedDate)} details={format(createdDate, 'MMM dd, yyyy')} />
                             )}
 
                             {modifiedDate && (
-                              <DetailsItem title={`Last modified`} details={format(modifiedDate, 'MMM dd, yyyy')} />
+                              <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaMetadataPanelFormInformationModifiedDate)} details={format(modifiedDate, 'MMM dd, yyyy')} />
                             )}
 
                             {dimensions && (
-                              <DetailsItem title={`Dimensions`} details={dimensions} />
+                              <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaMetadataPanelFormInformationDimensions)} details={dimensions} />
                             )}
 
                             {folder && (
-                              <DetailsItem title={`Folder`} details={folder} />
+                              <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaMetadataPanelFormInformationFolder)} details={folder} />
                             )}
                           </dl>
                         </div>

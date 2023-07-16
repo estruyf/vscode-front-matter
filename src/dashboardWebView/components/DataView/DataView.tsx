@@ -22,6 +22,8 @@ import { DataType } from '../../../models/DataType';
 import { TelemetryEvent } from '../../../constants';
 import { NavigationItem } from '../Layout';
 import useThemeColors from '../../hooks/useThemeColors';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IDataViewProps { }
 
@@ -186,7 +188,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
                 `text-[var(--frontmatter-text)]`
               )
                 }`}>
-                Select your data type
+                {l10n.t(LocalizationKey.dashboardDataViewDataViewSelect)}
               </h2>
 
               <nav className={`flex-1 py-4 -mx-4`}>
@@ -230,7 +232,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
                       `text-[var(--frontmatter-text)]`
                     )
                       }`}>
-                      Your {selectedData?.title?.toLowerCase() || ''} data items
+                      {l10n.t(LocalizationKey.dashboardDataViewDataViewTitle, selectedData?.title?.toLowerCase() || '')}
                     </h2>
 
                     <div className="py-4">
@@ -250,13 +252,13 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
                             ))}
                           </Container>
                           <Button className="mt-4" onClick={() => setSelectedIndex(null)}>
-                            Add a new entry
+                            {l10n.t(LocalizationKey.dashboardDataViewDataViewAdd)}
                           </Button>
                         </>
                       ) : (
                         <div className={`flex flex-col items-center justify-center`}>
                           <p className={getColors(`text-gray-500 dark:text-whisper-900`, `text-[var(--frontmatter-text)]`)}>
-                            No {selectedData.title.toLowerCase()} data entries found
+                            {l10n.t(LocalizationKey.dashboardDataViewDataViewEmpty, selectedData.title.toLowerCase())}
                           </p>
                         </div>
                       )}
@@ -268,7 +270,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
                     } py-6 px-4 overflow-auto`}
                 >
                   <h2 className={`text-lg ${getColors(`text-gray-500 dark:text-whisper-900`, `text-[var(--frontmatter-text)]`)}`}>
-                    Create or modify your {selectedData.title.toLowerCase()} data
+                    {l10n.t(LocalizationKey.dashboardDataViewDataViewCreateOrModify, selectedData.title.toLowerCase())}
                   </h2>
                   {selectedData ? (
                     <DataForm
@@ -278,7 +280,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
                       onClear={() => setSelectedIndex(null)}
                     />
                   ) : (
-                    <p>Select a data type to get started</p>
+                    <p>{l10n.t(LocalizationKey.dashboardDataViewDataViewGetStarted)}</p>
                   )}
                 </div>
               </>
@@ -295,14 +297,14 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
           )
             }`}>
             <DatabaseIcon className="w-32 h-32" />
-            <p className="text-3xl mt-2">No data files found</p>
+            <p className="text-3xl mt-2">{l10n.t(LocalizationKey.dashboardDataViewDataViewNoDataFiles)}</p>
             <p className="text-xl mt-4">
               <a
                 className={getColors(`text-teal-700 hover:text-teal-900`, `text-[var(--frontmatter-link)] hover:text-[var(--frontmatter-link-hover)]`)}
                 href={`https://frontmatter.codes/docs/dashboard#data-files-view`}
-                title={`Read more to get started using data files`}
+                title={l10n.t(LocalizationKey.dashboardDataViewDataViewGetStartedLink)}
               >
-                Read more to get started using data files
+                {l10n.t(LocalizationKey.dashboardDataViewDataViewGetStartedLink)}
               </a>
             </p>
           </div>
@@ -318,7 +320,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
 
       <ToastContainer />
 
-      <img className='hidden' src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Ffrontmatter.codes%2Fmetrics%2Fdashboards&slug=dataview" alt="DataView metrics" />
+      <img className='hidden' src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Ffrontmatter.codes%2Fmetrics%2Fdashboards&slug=DataView" alt="DataView metrics" />
     </div >
   );
 };

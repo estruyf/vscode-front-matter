@@ -17,16 +17,18 @@ import {
 import { DefaultValue } from 'recoil';
 import { useEffect } from 'react';
 import useThemeColors from '../../hooks/useThemeColors';
+import { l10n } from 'vscode';
+import { LocalizationKey } from '../../../localization';
 
 export const guardRecoilDefaultValue = (candidate: any): candidate is DefaultValue => {
   if (candidate instanceof DefaultValue) return true;
   return false;
 };
 
-export interface IClearFiltersProps {}
+export interface IClearFiltersProps { }
 
 export const ClearFilters: React.FunctionComponent<IClearFiltersProps> = (
-  props: React.PropsWithChildren<IClearFiltersProps>
+  _: React.PropsWithChildren<IClearFiltersProps>
 ) => {
   const [show, setShow] = React.useState(false);
   const { getColors } = useThemeColors();
@@ -64,18 +66,16 @@ export const ClearFilters: React.FunctionComponent<IClearFiltersProps> = (
 
   return (
     <button
-      className={`flex items-center ${
-        getColors(
-          'hover:text-teal-600',
-          'hover:text-[var(--vscode-textLink-activeForeground)]'
-        )
-      }`}
+      className={`flex items-center ${getColors(
+        'hover:text-teal-600',
+        'hover:text-[var(--vscode-textLink-activeForeground)]'
+      )
+        }`}
       onClick={reset}
-      title={`Clear filters, grouping, and sorting`}
+      title={l10n.t(LocalizationKey.dashboardHeaderClearFiltersTitle)}
     >
       <XCircleIcon className={`inline-block w-5 h-5 mr-1`} />
-      <span>Clear</span>
-      <span className={`sr-only`}> filters and grouping</span>
+      <span>{l10n.t(LocalizationKey.commonClear)}</span>
     </button>
   );
 };

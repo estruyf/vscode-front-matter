@@ -1,6 +1,142 @@
 {
-  "dashboard.header.createContent": "Create content",
+  "common.edit": "Edit",
+  "common.delete": "Delete",
+  "common.cancel": "Cancel",
+  "common.clear": "Clear",
+  "common.search": "Search",
+  "common.save": "Save",
+  "common.error.message": "Sorry, something went wrong.",
+
+  "field.required": "Required field",
+  "field.unknown": "Unknown field",
+
+  "dashboard.chatbot.answer.answer": "Answer",
+  "dashboard.chatbot.answer.resources": "Resources",
+  "dashboard.chatbot.answer.warning": "Warning: Anwers might be wrong. In case of doubt, please consult the docs.",
+
+  "dashboard.chatbot.chatbot.loading": "Assistent is getting ready",
+  "dashboard.chatbot.chatbot.ready": "I'm ready, what do you want to know?",
+
+  "dashboard.chatbot.chatbox.placeholder": "How can I configure Front Matter?",
+
+  "dashboard.chatbot.header.heading": "Ask Front Matter AI",
+  "dashboard.chatbot.header.description": "Our AI, powered by mendable.ai, has processed the documentation and can assist you with any queries regarding Front Matter. Go ahead and ask away!",
+
+  "dashboard.common.choiceButton.open": "Open options",
+
+  "dashboard.contents.contentActions.actionMenuButton.title": "Menu",
+  "dashboard.contents.contentActions.menuItem.view": "View",
+  "dashboard.contents.contentActions.alert.title": "Delete: {0}",
+  "dashboard.contents.contentActions.alert.description": "Are you sure you want to delete the \"{0}\" content?",
+
+  "dashboard.contents.item.invalidTitle": "<invalid title>",
+  "dashboard.contents.item.invalidDescription": "<invalid description>",
+
+  "dashboard.contents.list.title": "Title",
+  "dashboard.contents.list.date": "Date",
+  "dashboard.contents.list.status": "Status",
+
+  "dashboard.contents.overview.noMarkdown": "No Markdown to show",
+  "dashboard.contents.overview.noFolders": "Make sure you registered a content folder in your project to let Front Matter find the contents.",
+
+  "dashboard.contents.status.draft": "Draft",
+  "dashboard.contents.status.published": "Published",
+
+  "dashboard.dataView.dataForm.modify": "Modify the data",
+  "dashboard.dataView.dataForm.add": "Add new data",
+
+  "dashboard.dataView.dataView.select": "Select your data type",
+  "dashboard.dataView.dataView.title": "Your {0} data items",
+  "dashboard.dataView.dataView.add": "Add a new entry",
+  "dashboard.dataView.dataView.empty": "No {0} data entries found",
+  "dashboard.dataView.dataView.createOrModify": "Create or modify your {0} data",
+  "dashboard.dataView.dataView.getStarted": "Select a data type to get started",
+  "dashboard.dataView.dataView.noDataFiles": "No data files found",
+  "dashboard.dataView.dataView.getStarted.link": "Read more to get started using data files",
+
+  "dashboard.dataView.emptyView.heading": "Select your date type first",
+
+  "dashboard.dataView.sortableItem.editButton.title": "Edit \"{0}\"",
+  "dashboard.dataView.sortableItem.deleteButton.title": "Delete \"{0}\"",
+  "dashboard.dataView.sortableItem.alert.title": "Delete data entry",
+  "dashboard.dataView.sortableItem.alert.description": "Are you sure you want to delete the data entry?",
+
+  "dashboard.errorView.description": "Please close the dashboard and try again.",
+
+  "dashboard.header.breadcrumb.home": "Home",
+
+  "dashboard.header.clearFilters.title": "Clear filters, grouping, and sorting",
+
+  "dashboard.header.filter.default": "No filter",
+
+  "dashboard.header.folders.default": "All types",
+  "dashboard.header.folders.menuButton.showing": "Showing",
+
+  "dashboard.header.grouping.option.none": "None",
+  "dashboard.header.grouping.option.year": "Year",
+  "dashboard.header.grouping.option.draft": "Draft/Published",
+  "dashboard.header.grouping.menuButton.label": "Group by",
+
+  "dashboard.header.header.createContent": "Create content",
+  "dashboard.header.header.createByContentType": "Create by content type",
+  "dashboard.header.header.createByTemplate": "Create by template",
+
+  "dashboard.header.pagination.first": "First",
+  "dashboard.header.pagination.previous": "Previous",
+  "dashboard.header.pagination.next": "next",
+  "dashboard.header.pagination.last": "Last",
+
+  "dashboard.header.paginationStatus.text": "Showing {0} to {1} of {2} results",
+
+  "dashboard.header.projectSwitcher.label": "project",
+
+  "dashboard.header.refreshDashboard.label": "Refresh dashboard",
+
+  "dashboard.header.sorting.lastModified.asc": "Last modified (asc)",
+  "dashboard.header.sorting.lastModified.desc": "Last modified (desc)",
+  "dashboard.header.sorting.filename.asc": "By filename (asc)",
+  "dashboard.header.sorting.filename.desc": "By filename (desc)",
+  "dashboard.header.sorting.published.asc": "Published (asc)",
+  "dashboard.header.sorting.published.desc": "Published (desc)",
+  "dashboard.header.sorting.size.asc": "Size (asc)",
+  "dashboard.header.sorting.size.desc": "Size (desc)",
+  "dashboard.header.sorting.caption.asc": "Caption (asc)",
+  "dashboard.header.sorting.caption.desc": "Caption (desc)",
+  "dashboard.header.sorting.alt.asc": "Alt (asc)",
+  "dashboard.header.sorting.alt.desc": "Alt (desc)",
+  "dashboard.header.sorting.label": "Sort by",
+  
   "dashboard.header.startup.label": "Open on startup?",
+
+  "dashboard.header.syncButton.label": "Sync",
+
+  "dashboard.header.tabs.contents": "Contents",
+  "dashboard.header.tabs.media": "Media",
+  "dashboard.header.tabs.snippets": "Snippets",
+  "dashboard.header.tabs.data": "data",
+  "dashboard.header.tabs.taxonomies": "Taxonomies",
+
+  "dashboard.layout.sponsor.support.label": "Support",
+  "dashboard.layout.sponsor.support.msg": "Support Front Matter",
+  "dashboard.layout.sponsor.review.label": "Review",
+  "dashboard.layout.sponsor.review.msg": "Review Front Matter",
+
+  "dashboard.media.dialog.title": "View details",
+  "dashboard.media.panel.close": "Close panel",
+  "dashboard.media.metadata.panel.title": "Update metadata",
+  "dashboard.media.metadata.panel.description": "Please specify the metadata you want to set for the file.",
+  "dashboard.media.metadata.panel.field.fileName": "Filename",
+  "dashboard.media.metadata.panel.field.title": "Title",
+  "dashboard.media.metadata.panel.field.caption": "Caption",
+  "dashboard.media.metadata.panel.field.alt": "Alternate text",
+  "dashboard.media.metadata.panel.form.metadata.title": "Metadata",
+  "dashboard.media.metadata.panel.form.information.title": "Information",
+  "dashboard.media.metadata.panel.form.information.createdDate": "Created",
+  "dashboard.media.metadata.panel.form.information.modifiedDate": "Last modified",
+  "dashboard.media.metadata.panel.form.information.dimensions": "Dimensions",
+  "dashboard.media.metadata.panel.form.information.folder": "Folder",
+
+  "dashboard.media.folderCreation.button.create": "Create post asset folder",
 
   "panel.actions.title": "Actions",
   "panel.actions.openDashboard": "Open dashboard",

@@ -7,11 +7,13 @@ import { DateField } from '../Common/DateField';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardViewType } from '../../models';
 import { ContentActions } from './ContentActions';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import useThemeColors from '../../hooks/useThemeColors';
 import { Status } from './Status';
 import * as React from 'react';
 import useExtensibility from '../../hooks/useExtensibility';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IItemProps extends Page { }
 
@@ -53,7 +55,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     }
 
     if (value && typeof value !== 'string') {
-      return '<invalid title>';
+      return l10n.t(LocalizationKey.dashboardContentsItemInvalidTitle);
     }
 
     return value;
@@ -73,7 +75,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     }
 
     if (value && typeof value !== 'string') {
-      return '<invalid description>';
+      return l10n.t(LocalizationKey.dashboardContentsItemInvalidDescription);
     }
 
     return value;
