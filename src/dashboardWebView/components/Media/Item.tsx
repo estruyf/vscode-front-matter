@@ -521,7 +521,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                       </QuickAction>
 
                       {viewData?.data?.position && mediaSnippets.length > 0 && (
-                        <QuickAction title={l10n.t(LocalizationKey.dashboardMediaItemQuickActionInsertSnippet)} onClick={insertSnippet}>
+                        <QuickAction title={l10n.t(LocalizationKey.commonInsertSnippet)} onClick={insertSnippet}>
                           <CodeIcon className={`w-4 h-4`} aria-hidden="true" />
                         </QuickAction>
                       )}
@@ -678,7 +678,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
       {showSnippetSelection && (
         <InfoDialog
           icon={<CodeIcon className="h-6 w-6" aria-hidden="true" />}
-          title={l10n.t(LocalizationKey.dashboardMediaItemQuickActionInsertSnippet)}
+          title={l10n.t(LocalizationKey.commonInsertSnippet)}
           description={l10n.t(LocalizationKey.dashboardMediaItemInfoDialogSnippetDescription)}
           dismiss={() => setShowSnippetSelection(false)}
         >

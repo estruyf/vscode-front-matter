@@ -7,6 +7,8 @@
   "common.save": "Save",
   "common.menu": "Menu",
   "common.insert": "Insert",
+  "common.insert.snippet": "Insert snippet",
+  "common.update": "Update",
   "common.error.message": "Sorry, something went wrong.",
 
   "field.required": "Required field",
@@ -145,7 +147,6 @@
 
   "dashboard.media.item.quickAction.insert.field": "Insert image for your \"{0}\" field",
   "dashboard.media.item.quickAction.insert.markdown": "Insert image with markdown markup",
-  "dashboard.media.item.quickAction.insert.snippet": "Insert snippet",
   "dashboard.media.item.quickAction.copy.path": "Copy media path",
   "dashboard.media.item.quickAction.delete": "Delete media file",
   "dashboard.media.item.menuItem.edit.metadata": "Edit metadata",
@@ -166,6 +167,21 @@
 
   "dashboard.media.mediaSnippetForm.formDialog.title": "Insert media: {0}",
   "dashboard.media.mediaSnippetForm.formDialog.description": "Insert the {0} media file into the current article",
+
+  "dashboard.preview.input.placeholder": "Enter a URL",
+  "dashboard.preview.button.navigate.title": "Navigate",
+  "dashboard.preview.button.refresh.title": "Refresh",
+  "dashboard.preview.button.open.title": "Open",
+
+  "dashboard.snippetsView.item.quickAction.editSnippet": "Edit snippet",
+  "dashboard.snippetsView.item.quickAction.deleteSnippet": "Delete snippet",
+  "dashboard.snippetsView.item.quickAction.viewSnippet": "View snippet file",
+  "dashboard.snippetsView.item.insert.formDialog.title": "Insert snippet: {0}",
+  "dashboard.snippetsView.item.insert.formDialog.description": "Insert the {0} snippet into the current article",
+  "dashboard.snippetsView.item.edit.formDialog.title": "Edit snippet: {0}",
+  "dashboard.snippetsView.item.edit.formDialog.description": "Edit the {0} snippet",
+  "dashboard.snippetsView.item.alert.title": "Delete snippet: {0}",
+  "dashboard.snippetsView.item.alert.description": "Are you sure you want to delete the {0} snippet?",
 
   "panel.actions.title": "Actions",
   "panel.actions.openDashboard": "Open dashboard",

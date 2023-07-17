@@ -32,6 +32,14 @@ export enum LocalizationKey {
    */
   commonInsert = 'common.insert',
   /**
+   * Insert snippet
+   */
+  commonInsertSnippet = 'common.insert.snippet',
+  /**
+   * Update
+   */
+  commonUpdate = 'common.update',
+  /**
    * Sorry, something went wrong.
    */
   commonErrorMessage = 'common.error.message',
@@ -444,10 +452,6 @@ export enum LocalizationKey {
    */
   dashboardMediaItemQuickActionInsertMarkdown = 'dashboard.media.item.quickAction.insert.markdown',
   /**
-   * Insert snippet
-   */
-  dashboardMediaItemQuickActionInsertSnippet = 'dashboard.media.item.quickAction.insert.snippet',
-  /**
    * Copy media path
    */
   dashboardMediaItemQuickActionCopyPath = 'dashboard.media.item.quickAction.copy.path',
@@ -515,6 +519,58 @@ export enum LocalizationKey {
    * Insert the {0} media file into the current article
    */
   dashboardMediaMediaSnippetFormFormDialogDescription = 'dashboard.media.mediaSnippetForm.formDialog.description',
+  /**
+   * Enter a URL
+   */
+  dashboardPreviewInputPlaceholder = 'dashboard.preview.input.placeholder',
+  /**
+   * Navigate
+   */
+  dashboardPreviewButtonNavigateTitle = 'dashboard.preview.button.navigate.title',
+  /**
+   * Refresh
+   */
+  dashboardPreviewButtonRefreshTitle = 'dashboard.preview.button.refresh.title',
+  /**
+   * Open
+   */
+  dashboardPreviewButtonOpenTitle = 'dashboard.preview.button.open.title',
+  /**
+   * Edit snippet
+   */
+  dashboardSnippetsViewItemQuickActionEditSnippet = 'dashboard.snippetsView.item.quickAction.editSnippet',
+  /**
+   * Delete snippet
+   */
+  dashboardSnippetsViewItemQuickActionDeleteSnippet = 'dashboard.snippetsView.item.quickAction.deleteSnippet',
+  /**
+   * View snippet file
+   */
+  dashboardSnippetsViewItemQuickActionViewSnippet = 'dashboard.snippetsView.item.quickAction.viewSnippet',
+  /**
+   * Insert snippet: {0}
+   */
+  dashboardSnippetsViewItemInsertFormDialogTitle = 'dashboard.snippetsView.item.insert.formDialog.title',
+  /**
+   * Insert the {0} snippet into the current article
+   */
+  dashboardSnippetsViewItemInsertFormDialogDescription = 'dashboard.snippetsView.item.insert.formDialog.description',
+  /**
+   * Edit snippet: {0}
+   */
+  dashboardSnippetsViewItemEditFormDialogTitle = 'dashboard.snippetsView.item.edit.formDialog.title',
+  /**
+   * Edit the {0} snippet
+   */
+  dashboardSnippetsViewItemEditFormDialogDescription = 'dashboard.snippetsView.item.edit.formDialog.description',
+  /**
+   * Delete snippet: {0}
+   */
+  dashboardSnippetsViewItemAlertTitle = 'dashboard.snippetsView.item.alert.title',
+  /**
+   * Are you sure you want to delete the {0} snippet?
+   */
+  dashboardSnippetsViewItemAlertDescription = 'dashboard.snippetsView.item.alert.description',
   /**
    * Actions
    */
