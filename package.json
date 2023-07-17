@@ -2424,6 +2424,7 @@
     "test": "pnpm lint; tsc -p tsconfig.e2e.json && npm run clean:test && pnpm i -g @vscode/vsce && node ./e2e/out/runTests.js",
     "lint": "eslint --max-warnings=0 ./src/{commands,components}",
     "prettier": "prettier --write ./src",
+    "localization:watch": "node ./scripts/watch-localization.js",
     "localization:generate": "node scripts/generate-localization-enum.js",
     "localization:sync": "node scripts/sync-localization.js"
   },

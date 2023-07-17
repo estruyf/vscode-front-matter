@@ -83,11 +83,11 @@ export const FolderCreation: React.FunctionComponent<IFolderCreationProps> = (
             `text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`
           )
             }`}
-          title={l10n.t(LocalizationKey.dashboardMediaFolderCreationButtonCreate)}
+          title={l10n.t(LocalizationKey.dashboardMediaFolderCreationHexoCreate)}
           onClick={onAssetFolderCreation}
         >
           <FolderAddIcon className={`mr-2 h-6 w-6`} />
-          <span className={``}>{l10n.t(LocalizationKey.dashboardMediaFolderCreationButtonCreate)}</span>
+          <span className={``}>{l10n.t(LocalizationKey.dashboardMediaFolderCreationHexoCreate)}</span>
         </button>
       );
     }
@@ -99,7 +99,7 @@ export const FolderCreation: React.FunctionComponent<IFolderCreationProps> = (
       <div className="flex flex-1 justify-end">
         {renderPostAssetsButton}
         <ChoiceButton
-          title={`Create new folder`}
+          title={l10n.t(LocalizationKey.dashboardMediaFolderCreationFolderCreate)}
           choices={scripts.map((s) => ({
             title: s.title,
             icon: <LightningBoltIcon className="w-4 h-4 mr-2" />,
@@ -121,11 +121,11 @@ export const FolderCreation: React.FunctionComponent<IFolderCreationProps> = (
           `text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`
         )
           }`}
-        title={`Create new folder`}
+        title={l10n.t(LocalizationKey.dashboardMediaFolderCreationFolderCreate)}
         onClick={onFolderCreation}
       >
         <FolderAddIcon className={`mr-2 h-6 w-6`} />
-        <span className={``}>Create new folder</span>
+        <span className={``}>{l10n.t(LocalizationKey.dashboardMediaFolderCreationFolderCreate)}</span>
       </button>
     </div>
   );

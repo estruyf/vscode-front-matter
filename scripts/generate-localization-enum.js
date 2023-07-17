@@ -27,6 +27,9 @@ const camlCase = (str) => {
 
   // Write the enum values
   keys.forEach((key, index) => {
+    enumFile.write(`  /**\n`);
+    enumFile.write(`   * ${en[key]}\n`);
+    enumFile.write(`   */\n`);
     enumFile.write(`  ${camlCase(key)} = '${key}'${index === keys.length - 1 ? '' : ','}\n`);
   });
 

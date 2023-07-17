@@ -136,7 +136,8 @@
   "dashboard.media.metadata.panel.form.information.dimensions": "Dimensions",
   "dashboard.media.metadata.panel.form.information.folder": "Folder",
 
-  "dashboard.media.folderCreation.button.create": "Create post asset folder",
+  "dashboard.media.folderCreation.hexo.create": "Create post asset folder",
+  "dashboard.media.folderCreation.folder.create": "Create new folder",
 
   "panel.actions.title": "Actions",
   "panel.actions.openDashboard": "Open dashboard",
