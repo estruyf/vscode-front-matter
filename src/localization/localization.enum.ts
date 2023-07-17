@@ -28,6 +28,10 @@ export enum LocalizationKey {
    */
   commonMenu = 'common.menu',
   /**
+   * Insert
+   */
+  commonInsert = 'common.insert',
+  /**
    * Sorry, something went wrong.
    */
   commonErrorMessage = 'common.error.message',
@@ -471,6 +475,46 @@ export enum LocalizationKey {
    * Are you sure you want to delete the file from the {0} folder?
    */
   dashboardMediaItemAlertDeleteDescription = 'dashboard.media.item.alert.delete.description',
+  /**
+   * Select the media file to add to your content.
+   */
+  dashboardMediaMediaDescription = 'dashboard.media.media.description',
+  /**
+   * You can also drag and drop images from your desktop and select them once uploaded.
+   */
+  dashboardMediaMediaDragAndDrop = 'dashboard.media.media.dragAndDrop',
+  /**
+   * Upload to {0}
+   */
+  dashboardMediaMediaFolderUpload = 'dashboard.media.media.folder.upload',
+  /**
+   * No folder selected, files you drop will be added to the {0} folder
+   */
+  dashboardMediaMediaFolderDefault = 'dashboard.media.media.folder.default',
+  /**
+   * No media files to show. You can drag &amp; drop new files by holding your [shift] key.
+   */
+  dashboardMediaMediaPlaceholder = 'dashboard.media.media.placeholder',
+  /**
+   * Content folder
+   */
+  dashboardMediaMediaCurrentFolder = 'dashboard.media.media.currentFolder',
+  /**
+   * Public folder
+   */
+  dashboardMediaMediaPublicFolder = 'dashboard.media.media.publicFolder',
+  /**
+   * Search in folder
+   */
+  dashboardMediaMediaHeaderTopSearchboxPlaceholder = 'dashboard.media.mediaHeaderTop.searchbox.placeholder',
+  /**
+   * Insert media: {0}
+   */
+  dashboardMediaMediaSnippetFormFormDialogTitle = 'dashboard.media.mediaSnippetForm.formDialog.title',
+  /**
+   * Insert the {0} media file into the current article
+   */
+  dashboardMediaMediaSnippetFormFormDialogDescription = 'dashboard.media.mediaSnippetForm.formDialog.description',
   /**
    * Actions
    */

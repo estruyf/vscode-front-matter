@@ -6,6 +6,7 @@
   "common.search": "Search",
   "common.save": "Save",
   "common.menu": "Menu",
+  "common.insert": "Insert",
   "common.error.message": "Sorry, something went wrong.",
 
   "field.required": "Required field",
@@ -152,6 +153,19 @@
   "dashboard.media.item.menuItem.reveal.media": "Reveal media",
   "dashboard.media.item.infoDialog.snippet.description": "Select the media snippet to use for the current media file.",
   "dashboard.media.item.alert.delete.description": "Are you sure you want to delete the file from the {0} folder?",
+
+  "dashboard.media.media.description": "Select the media file to add to your content.",
+  "dashboard.media.media.dragAndDrop": "You can also drag and drop images from your desktop and select them once uploaded.",
+  "dashboard.media.media.folder.upload": "Upload to {0}",
+  "dashboard.media.media.folder.default": "No folder selected, files you drop will be added to the {0} folder",
+  "dashboard.media.media.placeholder": "No media files to show. You can drag &amp; drop new files by holding your [shift] key.",
+  "dashboard.media.media.currentFolder": "Content folder",
+  "dashboard.media.media.publicFolder": "Public folder",
+
+  "dashboard.media.mediaHeaderTop.searchbox.placeholder": "Search in folder",
+
+  "dashboard.media.mediaSnippetForm.formDialog.title": "Insert media: {0}",
+  "dashboard.media.mediaSnippetForm.formDialog.description": "Insert the {0} media file into the current article",
 
   "panel.actions.title": "Actions",
   "panel.actions.openDashboard": "Open dashboard",
