@@ -38,6 +38,8 @@ import { DetailsSlideOver } from './DetailsSlideOver';
 import { usePopper } from 'react-popper';
 import { MediaSnippetForm } from './MediaSnippetForm';
 import useThemeColors from '../../hooks/useThemeColors';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IItemProps {
   media: MediaInfo;
@@ -68,7 +70,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
   const [referenceElement, setReferenceElement] = useState<any>(null);
   const [popperElement, setPopperElement] = useState<any>(null);
-  const { styles, attributes, forceUpdate } = usePopper(referenceElement, popperElement, {
+  const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement: 'bottom-end',
     strategy: 'fixed'
   });
@@ -510,8 +512,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                       <QuickAction
                         title={
                           viewData.data.metadataInsert && viewData.data.fieldName
-                            ? `Insert image for your "${viewData.data.fieldName}" field`
-                            : `Insert image with markdown markup`
+                            ? l10n.t(LocalizationKey.dashboardMediaItemQuickActionInsertField, viewData.data.fieldName)
+                            : l10n.t(LocalizationKey.dashboardMediaItemQuickActionInsertMarkdown)
                         }
                         onClick={insertToArticle}
                       >
@@ -519,26 +521,26 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                       </QuickAction>
 
                       {viewData?.data?.position && mediaSnippets.length > 0 && (
-                        <QuickAction title="Insert snippet" onClick={insertSnippet}>
+                        <QuickAction title={l10n.t(LocalizationKey.dashboardMediaItemQuickActionInsertSnippet)} onClick={insertSnippet}>
                           <CodeIcon className={`w-4 h-4`} aria-hidden="true" />
                         </QuickAction>
                       )}
                     </>
                   ) : (
                     <>
-                      <QuickAction title="Copy media path" onClick={copyToClipboard}>
+                      <QuickAction title={l10n.t(LocalizationKey.dashboardMediaItemQuickActionCopyPath)} onClick={copyToClipboard}>
                         <ClipboardIcon className={`w-4 h-4`} aria-hidden="true" />
                       </QuickAction>
                     </>
                   )}
 
-                  <QuickAction title="Delete media file" onClick={deleteMedia}>
+                  <QuickAction title={l10n.t(LocalizationKey.dashboardMediaItemQuickActionDelete)} onClick={deleteMedia}>
                     <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
                   </QuickAction>
                 </div>
 
                 <div ref={setReferenceElement} className={`flex`}>
-                  <ActionMenuButton title={`Menu`} />
+                  <ActionMenuButton title={l10n.t(LocalizationKey.commonMenu)} />
                 </div>
 
                 <div
@@ -552,7 +554,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                       title={
                         <div className="flex items-center">
                           <PencilIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
-                          <span>Edit metadata</span>
+                          <span>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemEditMetadata)}</span>
                         </div>
                       }
                       onClick={updateMetadata}
@@ -564,7 +566,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                           title={
                             <div className="flex items-center">
                               <PlusIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
-                              <span>Insert image</span>
+                              <span>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemInsertImage)}</span>
                             </div>
                           }
                           onClick={insertToArticle}
@@ -599,7 +601,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                                 className="mr-2 h-5 w-5 flex-shrink-0"
                                 aria-hidden={true}
                               />{' '}
-                              <span>Copy media path</span>
+                              <span>{l10n.t(LocalizationKey.dashboardMediaItemQuickActionCopyPath)}</span>
                             </div>
                           }
                           onClick={copyToClipboard}
@@ -613,7 +615,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                       title={
                         <div className="flex items-center">
                           <EyeIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
-                          <span>Reveal media</span>
+                          <span>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemRevealMedia)}</span>
                         </div>
                       }
                       onClick={revealMedia}
@@ -623,7 +625,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                       title={
                         <div className="flex items-center">
                           <TrashIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
-                          <span>Delete</span>
+                          <span>{l10n.t(LocalizationKey.commonDelete)}</span>
                         </div>
                       }
                       onClick={deleteMedia}
@@ -638,25 +640,33 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           </p>
           {!isImageFile && media.title && (
             <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start ${getColors(`dark:text-whisper-900`, ``)}`}>
-              <b className={`mr-2`}>Title:</b>
+              <b className={`mr-2`}>
+                {l10n.t(LocalizationKey.dashboardMediaCommonTitle)}:
+              </b>
               <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-foreground)]`)}`}>{media.title}</span>
             </p>
           )}
           {media.caption && (
             <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start ${getColors(`dark:text-whisper-900`, ``)}`}>
-              <b className={`mr-2`}>Caption:</b>
+              <b className={`mr-2`}>
+                {l10n.t(LocalizationKey.dashboardMediaCommonCaption)}:
+              </b>
               <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-foreground)]`)}`}>{media.caption}</span>
             </p>
           )}
           {!media.caption && media.alt && (
             <p className={`mt-2 text-xs font-medium pointer-events-none  flex flex-col items-start ${getColors(`dark:text-whisper-900`, ``)}`}>
-              <b className={`mr-2`}>Alt:</b>
+              <b className={`mr-2`}>
+                {l10n.t(LocalizationKey.dashboardMediaCommonAlt)}:
+              </b>
               <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-foreground)]`)}`}>{media.alt}</span>
             </p>
           )}
           {(media?.size || media?.dimensions) && (
             <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start ${getColors(`dark:text-whisper-900`, ``)}`}>
-              <b className={`mr-1`}>Size:</b>
+              <b className={`mr-1`}>
+                {l10n.t(LocalizationKey.dashboardMediaCommonSize)}:
+              </b>
               <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-foreground)]`)}`}>
                 {getMediaDetails()}
               </span>
@@ -668,8 +678,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
       {showSnippetSelection && (
         <InfoDialog
           icon={<CodeIcon className="h-6 w-6" aria-hidden="true" />}
-          title="Insert snippet"
-          description="Select the media snippet to use for the current media file."
+          title={l10n.t(LocalizationKey.dashboardMediaItemQuickActionInsertSnippet)}
+          description={l10n.t(LocalizationKey.dashboardMediaItemInfoDialogSnippetDescription)}
           dismiss={() => setShowSnippetSelection(false)}
         >
           <ul className="flex justify-center">
@@ -711,10 +721,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
       {showAlert && (
         <Alert
-          title={`Delete: ${basename(parseWinPath(media.fsPath) || '')}`}
-          description={`Are you sure you want to delete the file from the ${getFolder()} folder?`}
-          okBtnText={`Delete`}
-          cancelBtnText={`Cancel`}
+          title={`${l10n.t(LocalizationKey.commonDelete)}: ${basename(parseWinPath(media.fsPath) || '')}`}
+          description={l10n.t(LocalizationKey.dashboardMediaItemAlertDeleteDescription, getFolder())}
+          okBtnText={l10n.t(LocalizationKey.commonDelete)}
+          cancelBtnText={l10n.t(LocalizationKey.commonCancel)}
           dismiss={() => setShowAlert(false)}
           trigger={confirmDeletion}
         />

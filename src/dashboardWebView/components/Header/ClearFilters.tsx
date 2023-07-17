@@ -13,11 +13,10 @@ import {
   DEFAULT_TAG_STATE,
   DEFAULT_CATEGORY_STATE
 } from '../../state';
-
 import { DefaultValue } from 'recoil';
 import { useEffect } from 'react';
 import useThemeColors from '../../hooks/useThemeColors';
-import { l10n } from 'vscode';
+import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 
 export const guardRecoilDefaultValue = (candidate: any): candidate is DefaultValue => {

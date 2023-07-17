@@ -5,6 +5,7 @@
   "common.clear": "Clear",
   "common.search": "Search",
   "common.save": "Save",
+  "common.menu": "Menu",
   "common.error.message": "Sorry, something went wrong.",
 
   "field.required": "Required field",
@@ -121,14 +122,16 @@
   "dashboard.layout.sponsor.review.label": "Review",
   "dashboard.layout.sponsor.review.msg": "Review Front Matter",
 
+  "dashboard.media.common.title": "Title",
+  "dashboard.media.common.caption": "Caption",
+  "dashboard.media.common.alt": "Alternate text",
+  "dashboard.media.common.size": "Size",
+
   "dashboard.media.dialog.title": "View details",
   "dashboard.media.panel.close": "Close panel",
   "dashboard.media.metadata.panel.title": "Update metadata",
   "dashboard.media.metadata.panel.description": "Please specify the metadata you want to set for the file.",
   "dashboard.media.metadata.panel.field.fileName": "Filename",
-  "dashboard.media.metadata.panel.field.title": "Title",
-  "dashboard.media.metadata.panel.field.caption": "Caption",
-  "dashboard.media.metadata.panel.field.alt": "Alternate text",
   "dashboard.media.metadata.panel.form.metadata.title": "Metadata",
   "dashboard.media.metadata.panel.form.information.title": "Information",
   "dashboard.media.metadata.panel.form.information.createdDate": "Created",
@@ -138,6 +141,17 @@
 
   "dashboard.media.folderCreation.hexo.create": "Create post asset folder",
   "dashboard.media.folderCreation.folder.create": "Create new folder",
+
+  "dashboard.media.item.quickAction.insert.field": "Insert image for your \"{0}\" field",
+  "dashboard.media.item.quickAction.insert.markdown": "Insert image with markdown markup",
+  "dashboard.media.item.quickAction.insert.snippet": "Insert snippet",
+  "dashboard.media.item.quickAction.copy.path": "Copy media path",
+  "dashboard.media.item.quickAction.delete": "Delete media file",
+  "dashboard.media.item.menuItem.edit.metadata": "Edit metadata",
+  "dashboard.media.item.menuItem.insert.image": "Insert image",
+  "dashboard.media.item.menuItem.reveal.media": "Reveal media",
+  "dashboard.media.item.infoDialog.snippet.description": "Select the media snippet to use for the current media file.",
+  "dashboard.media.item.alert.delete.description": "Are you sure you want to delete the file from the {0} folder?",
 
   "panel.actions.title": "Actions",
   "panel.actions.openDashboard": "Open dashboard",

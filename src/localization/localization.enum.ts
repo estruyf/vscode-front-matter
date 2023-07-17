@@ -24,6 +24,10 @@ export enum LocalizationKey {
    */
   commonSave = 'common.save',
   /**
+   * Menu
+   */
+  commonMenu = 'common.menu',
+  /**
    * Sorry, something went wrong.
    */
   commonErrorMessage = 'common.error.message',
@@ -360,6 +364,22 @@ export enum LocalizationKey {
    */
   dashboardLayoutSponsorReviewMsg = 'dashboard.layout.sponsor.review.msg',
   /**
+   * Title
+   */
+  dashboardMediaCommonTitle = 'dashboard.media.common.title',
+  /**
+   * Caption
+   */
+  dashboardMediaCommonCaption = 'dashboard.media.common.caption',
+  /**
+   * Alternate text
+   */
+  dashboardMediaCommonAlt = 'dashboard.media.common.alt',
+  /**
+   * Size
+   */
+  dashboardMediaCommonSize = 'dashboard.media.common.size',
+  /**
    * View details
    */
   dashboardMediaDialogTitle = 'dashboard.media.dialog.title',
@@ -379,18 +399,6 @@ export enum LocalizationKey {
    * Filename
    */
   dashboardMediaMetadataPanelFieldFileName = 'dashboard.media.metadata.panel.field.fileName',
-  /**
-   * Title
-   */
-  dashboardMediaMetadataPanelFieldTitle = 'dashboard.media.metadata.panel.field.title',
-  /**
-   * Caption
-   */
-  dashboardMediaMetadataPanelFieldCaption = 'dashboard.media.metadata.panel.field.caption',
-  /**
-   * Alternate text
-   */
-  dashboardMediaMetadataPanelFieldAlt = 'dashboard.media.metadata.panel.field.alt',
   /**
    * Metadata
    */
@@ -423,6 +431,46 @@ export enum LocalizationKey {
    * Create new folder
    */
   dashboardMediaFolderCreationFolderCreate = 'dashboard.media.folderCreation.folder.create',
+  /**
+   * Insert image for your "{0}" field
+   */
+  dashboardMediaItemQuickActionInsertField = 'dashboard.media.item.quickAction.insert.field',
+  /**
+   * Insert image with markdown markup
+   */
+  dashboardMediaItemQuickActionInsertMarkdown = 'dashboard.media.item.quickAction.insert.markdown',
+  /**
+   * Insert snippet
+   */
+  dashboardMediaItemQuickActionInsertSnippet = 'dashboard.media.item.quickAction.insert.snippet',
+  /**
+   * Copy media path
+   */
+  dashboardMediaItemQuickActionCopyPath = 'dashboard.media.item.quickAction.copy.path',
+  /**
+   * Delete media file
+   */
+  dashboardMediaItemQuickActionDelete = 'dashboard.media.item.quickAction.delete',
+  /**
+   * Edit metadata
+   */
+  dashboardMediaItemMenuItemEditMetadata = 'dashboard.media.item.menuItem.edit.metadata',
+  /**
+   * Insert image
+   */
+  dashboardMediaItemMenuItemInsertImage = 'dashboard.media.item.menuItem.insert.image',
+  /**
+   * Reveal media
+   */
+  dashboardMediaItemMenuItemRevealMedia = 'dashboard.media.item.menuItem.reveal.media',
+  /**
+   * Select the media snippet to use for the current media file.
+   */
+  dashboardMediaItemInfoDialogSnippetDescription = 'dashboard.media.item.infoDialog.snippet.description',
+  /**
+   * Are you sure you want to delete the file from the {0} folder?
+   */
+  dashboardMediaItemAlertDeleteDescription = 'dashboard.media.item.alert.delete.description',
   /**
    * Actions
    */

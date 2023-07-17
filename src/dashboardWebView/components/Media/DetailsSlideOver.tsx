@@ -204,7 +204,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                                   'text-[var(--vscode-editor-foreground)]'
                                 )
                                   }`}>
-                                  {l10n.t(LocalizationKey.dashboardMediaMetadataPanelFieldTitle)}
+                                  {l10n.t(LocalizationKey.dashboardMediaCommonTitle)}
                                 </label>
                                 <div className="mt-1">
                                   <DetailsInput value={title || ""} onChange={(e) => setTitle(e.target.value)} />
@@ -219,7 +219,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                                       'text-[var(--vscode-editor-foreground)]'
                                     )
                                       }`}>
-                                      {l10n.t(LocalizationKey.dashboardMediaMetadataPanelFieldCaption)}
+                                      {l10n.t(LocalizationKey.dashboardMediaCommonCaption)}
                                     </label>
                                     <div className="mt-1">
                                       <DetailsInput value={caption || ""} onChange={(e) => setCaption(e.target.value)} isTextArea />
@@ -231,7 +231,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                                       'text-[var(--vscode-editor-foreground)]'
                                     )
                                       }`}>
-                                      {l10n.t(LocalizationKey.dashboardMediaMetadataPanelFieldAlt)}
+                                      {l10n.t(LocalizationKey.dashboardMediaCommonAlt)}
                                     </label>
                                     <div className="mt-1">
                                       <DetailsInput value={alt || ""} onChange={(e) => setAlt(e.target.value)} isTextArea />
@@ -288,12 +288,12 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                             )
                               }`}>
                               <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaMetadataPanelFieldFileName)} details={media.filename} />
-                              <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaMetadataPanelFieldTitle)} details={media.title || ""} />
+                              <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaCommonTitle)} details={media.title || ""} />
 
                               {isImageFile && (
                                 <>
-                                  <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaMetadataPanelFieldCaption)} details={media.caption || ''} />
-                                  <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaMetadataPanelFieldAlt)} details={media.alt || ''} />
+                                  <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaCommonCaption)} details={media.caption || ''} />
+                                  <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaCommonAlt)} details={media.alt || ''} />
                                 </>
                               )}
                             </dl>
