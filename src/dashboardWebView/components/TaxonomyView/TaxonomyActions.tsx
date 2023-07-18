@@ -10,6 +10,8 @@ import { useCallback } from 'react';
 import { MergeIcon } from '../../../components/icons/MergeIcon';
 import { DashboardMessage } from '../../DashboardMessage';
 import { LinkButton } from '../Common/LinkButton';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface ITaxonomyActionsProps {
   field: string | null;
@@ -61,39 +63,47 @@ export const TaxonomyActions: React.FunctionComponent<ITaxonomyActionsProps> = (
     <div className={`space-x-2`}>
       {unmapped && (
         <LinkButton
-          title={`Add ${value} to taxonomy settings`}
+          title={l10n.t(LocalizationKey.dashboardTaxonomyViewButtonAddTitle, value)}
           onClick={onAdd}>
           <PlusIcon className={`w-4 h-4`} aria-hidden={true} />
-          <span className="sr-only">Add to settings</span>
+          <span className="sr-only">
+            {l10n.t(LocalizationKey.dashboardTaxonomyViewButtonAddTitle, value)}
+          </span>
         </LinkButton>
       )}
 
       <LinkButton
-        title={`Edit ${value}`}
+        title={l10n.t(LocalizationKey.dashboardTaxonomyViewButtonEditTitle, value)}
         onClick={onEdit}>
         <PencilIcon className={`w-4 h-4`} aria-hidden={true} />
-        <span className="sr-only">Edit</span>
+        <span className="sr-only">{l10n.t(LocalizationKey.commonEdit)}</span>
       </LinkButton>
 
       <LinkButton
-        title={`Merge ${value}`}
+        title={l10n.t(LocalizationKey.dashboardTaxonomyViewButtonMergeTitle, value)}
         onClick={onMerge}>
         <MergeIcon className={`w-4 h-4`} aria-hidden={true} />
-        <span className="sr-only">Merge</span>
+        <span className="sr-only">
+          {l10n.t(LocalizationKey.dashboardTaxonomyViewButtonMergeTitle, value)}
+        </span>
       </LinkButton>
 
       <LinkButton
-        title={`Move to another taxonomy type`}
+        title={l10n.t(LocalizationKey.dashboardTaxonomyViewButtonMoveTitle)}
         onClick={onMove}>
         <ArrowCircleUpIcon className={`w-4 h-4`} aria-hidden={true} />
-        <span className="sr-only">Move to another taxonomy type</span>
+        <span className="sr-only">
+          {l10n.t(LocalizationKey.dashboardTaxonomyViewButtonMoveTitle)}
+        </span>
       </LinkButton>
 
       <LinkButton
-        title={`Delete ${value}`}
+        title={l10n.t(LocalizationKey.dashboardTaxonomyViewButtonDeleteTitle, value)}
         onClick={onDelete}>
         <TrashIcon className={`w-4 h-4`} aria-hidden={true} />
-        <span className="sr-only">Delete</span>
+        <span className="sr-only">
+          {l10n.t(LocalizationKey.dashboardTaxonomyViewButtonDeleteTitle, value)}
+        </span>
       </LinkButton>
     </div>
   );

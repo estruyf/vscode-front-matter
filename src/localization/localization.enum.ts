@@ -36,9 +36,21 @@ export enum LocalizationKey {
    */
   commonInsertSnippet = 'common.insert.snippet',
   /**
+   * Title
+   */
+  commonTitle = 'common.title',
+  /**
    * Update
    */
   commonUpdate = 'common.update',
+  /**
+   * Info
+   */
+  commonInformation = 'common.information',
+  /**
+   * Important
+   */
+  commonImportant = 'common.important',
   /**
    * Sorry, something went wrong.
    */
@@ -571,6 +583,154 @@ export enum LocalizationKey {
    * Are you sure you want to delete the {0} snippet?
    */
   dashboardSnippetsViewItemAlertDescription = 'dashboard.snippetsView.item.alert.description',
+  /**
+   * Snippet title
+   */
+  dashboardSnippetsViewNewFormSnippetInputTitlePlaceholder = 'dashboard.snippetsView.newForm.snippetInput.title.placeholder',
+  /**
+   * Description
+   */
+  dashboardSnippetsViewNewFormSnippetInputDescriptionLabel = 'dashboard.snippetsView.newForm.snippetInput.description.label',
+  /**
+   * Snippet description
+   */
+  dashboardSnippetsViewNewFormSnippetInputDescriptionPlaceholder = 'dashboard.snippetsView.newForm.snippetInput.description.placeholder',
+  /**
+   * Snippet
+   */
+  dashboardSnippetsViewNewFormSnippetInputSnippetLabel = 'dashboard.snippetsView.newForm.snippetInput.snippet.label',
+  /**
+   * Snippet content
+   */
+  dashboardSnippetsViewNewFormSnippetInputSnippetPlaceholder = 'dashboard.snippetsView.newForm.snippetInput.snippet.placeholder',
+  /**
+   * Is a media snippet?
+   */
+  dashboardSnippetsViewNewFormSnippetInputIsMediaSnippetLabel = 'dashboard.snippetsView.newForm.snippetInput.isMediaSnippet.label',
+  /**
+   * Media snippet
+   */
+  dashboardSnippetsViewNewFormSnippetInputIsMediaSnippetCheckboxLabel = 'dashboard.snippetsView.newForm.snippetInput.isMediaSnippet.checkbox.label',
+  /**
+   * Use the current snippet for inserting media files into your content.
+   */
+  dashboardSnippetsViewNewFormSnippetInputIsMediaSnippetCheckboxDescription = 'dashboard.snippetsView.newForm.snippetInput.isMediaSnippet.checkbox.description',
+  /**
+   * Read more on using media snippet placeholders
+   */
+  dashboardSnippetsViewNewFormSnippetInputDocsButtonTitle = 'dashboard.snippetsView.newForm.snippetInput.docsButton.title',
+  /**
+   * Check our media snippet placeholders documentation to know which placeholders you can use.
+   */
+  dashboardSnippetsViewNewFormSnippetInputDocsButtonDescription = 'dashboard.snippetsView.newForm.snippetInput.docsButton.description',
+  /**
+   * Snippets header
+   */
+  dashboardSnippetsViewSnippetsAriaLabel = 'dashboard.snippetsView.snippets.ariaLabel',
+  /**
+   * Create new snippet
+   */
+  dashboardSnippetsViewSnippetsButtonCreate = 'dashboard.snippetsView.snippets.button.create',
+  /**
+   * Select the snippet to add to your content.
+   */
+  dashboardSnippetsViewSnippetsSelectDescription = 'dashboard.snippetsView.snippets.select.description',
+  /**
+   * No snippets found
+   */
+  dashboardSnippetsViewSnippetsEmptyMessage = 'dashboard.snippetsView.snippets.empty.message',
+  /**
+   * Read more to get started with snippets
+   */
+  dashboardSnippetsViewSnippetsReadMore = 'dashboard.snippetsView.snippets.readMore',
+  /**
+   * Create a snippet
+   */
+  dashboardSnippetsViewSnippetsFormDialogTitle = 'dashboard.snippetsView.snippets.formDialog.title',
+  /**
+   * Add as a content folder to Front Matter
+   */
+  dashboardStepsStepsToGetStartedButtonAddFolderTitle = 'dashboard.steps.stepsToGetStarted.button.addFolder.title',
+  /**
+   * Initialize project
+   */
+  dashboardStepsStepsToGetStartedInitializeProjectName = 'dashboard.steps.stepsToGetStarted.initializeProject.name',
+  /**
+   * Initialize the project will create the required files and folders for using the Front Matter CMS. Start by clicking on this action.
+   */
+  dashboardStepsStepsToGetStartedInitializeProjectDescription = 'dashboard.steps.stepsToGetStarted.initializeProject.description',
+  /**
+   * Framework presets
+   */
+  dashboardStepsStepsToGetStartedFrameworkName = 'dashboard.steps.stepsToGetStarted.framework.name',
+  /**
+   * Select your site-generator or framework to prefill some of the recommended settings.
+   */
+  dashboardStepsStepsToGetStartedFrameworkDescription = 'dashboard.steps.stepsToGetStarted.framework.description',
+  /**
+   * Select your framework
+   */
+  dashboardStepsStepsToGetStartedFrameworkSelect = 'dashboard.steps.stepsToGetStarted.framework.select',
+  /**
+   * other
+   */
+  dashboardStepsStepsToGetStartedFrameworkSelectOther = 'dashboard.steps.stepsToGetStarted.framework.select.other',
+  /**
+   * Register content folder(s)
+   */
+  dashboardStepsStepsToGetStartedContentFoldersName = 'dashboard.steps.stepsToGetStarted.contentFolders.name',
+  /**
+   * Add one of the folders we found in your project as a content folder. Once a folder is set, Front Matter can be used to list all contents and allow you to create content.
+   */
+  dashboardStepsStepsToGetStartedContentFoldersDescription = 'dashboard.steps.stepsToGetStarted.contentFolders.description',
+  /**
+   * Folders containing content:
+   */
+  dashboardStepsStepsToGetStartedContentFoldersLabel = 'dashboard.steps.stepsToGetStarted.contentFolders.label',
+  /**
+   * You can also perform this action by right-clicking on the folder in the explorer view, and selecting register folder
+   */
+  dashboardStepsStepsToGetStartedContentFoldersInformationDescription = 'dashboard.steps.stepsToGetStarted.contentFolders.information.description',
+  /**
+   * Import all tags and categories (optional)
+   */
+  dashboardStepsStepsToGetStartedTagsName = 'dashboard.steps.stepsToGetStarted.tags.name',
+  /**
+   * Now that Front Matter knows all the content folders. Would you like to import all tags and categories from the available content?
+   */
+  dashboardStepsStepsToGetStartedTagsDescription = 'dashboard.steps.stepsToGetStarted.tags.description',
+  /**
+   * Show the dashboard
+   */
+  dashboardStepsStepsToGetStartedShowDashboardName = 'dashboard.steps.stepsToGetStarted.showDashboard.name',
+  /**
+   * Once all actions are completed, the dashboard can be loaded.
+   */
+  dashboardStepsStepsToGetStartedShowDashboardDescription = 'dashboard.steps.stepsToGetStarted.showDashboard.description',
+  /**
+   * Add {0} to taxonomy settings
+   */
+  dashboardTaxonomyViewButtonAddTitle = 'dashboard.taxonomyView.button.add.title',
+  /**
+   * Edit {0}
+   */
+  dashboardTaxonomyViewButtonEditTitle = 'dashboard.taxonomyView.button.edit.title',
+  /**
+   * Merge {0}
+   */
+  dashboardTaxonomyViewButtonMergeTitle = 'dashboard.taxonomyView.button.merge.title',
+  /**
+   * Move to another taxonomy type
+   */
+  dashboardTaxonomyViewButtonMoveTitle = 'dashboard.taxonomyView.button.move.title',
+  /**
+   * Delete {0}
+   */
+  dashboardTaxonomyViewButtonDeleteTitle = 'dashboard.taxonomyView.button.delete.title',
+  /**
+   * Show contents with {0} in {1}
+   */
+  dashboardTaxonomyViewTaxonomyLookupButtonTitle = 'dashboard.taxonomyView.taxonomyLookup.button.title',
   /**
    * Actions
    */
