@@ -31,6 +31,8 @@ import {
 } from '.';
 import { fieldWhenClause } from '../../../utils/fieldWhenClause';
 import { ContentTypeRelationshipField } from './ContentTypeRelationshipField';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IWrapperFieldProps {
   field: Field;
@@ -478,8 +480,6 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       </FieldBoundary>
     );
   } else if (field.type === 'contentRelationship') {
-    const pages: string[] = [];
-
     return (
       <FieldBoundary key={field.name} fieldName={field.title || field.name}>
         <ContentTypeRelationshipField
@@ -525,7 +525,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       return null;
     }
   } else {
-    console.warn(`Unknown field type: ${field.type}`);
+    console.warn(l10n.t(LocalizationKey.panelFieldsWrapperFieldUnknown, field.type));
     return null;
   }
 };

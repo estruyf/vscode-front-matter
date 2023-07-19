@@ -8,6 +8,8 @@ import { FieldTitle } from './FieldTitle';
 import { FieldMessage } from './FieldMessage';
 import { messageHandler } from '@estruyf/vscode/dist/client';
 import { CommandToCode } from '../../CommandToCode';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface ITextFieldProps extends BaseFieldProps<string> {
   singleLine: boolean | undefined;
@@ -104,7 +106,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
     return (
       <button
         className='metadata_field__title__action'
-        title={`Use Front Matter AI to suggest ${label?.toLowerCase()}`}
+        title={l10n.t(LocalizationKey.panelFieldsTextFieldAiMessage, label?.toLowerCase())}
         type='button'
         onClick={() => suggestDescription()}
         disabled={loading}>
@@ -124,7 +126,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
       {
         loading && (
           <div className='metadata_field__loading'>
-            Generating suggestion...
+            {l10n.t(LocalizationKey.panelFieldsTextFieldAiGenerate)}
           </div>
         )
       }
@@ -132,7 +134,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
       <FieldTitle label={label} actionElement={actionElement} icon={<PencilIcon />} required={required} />
 
       {wysiwyg ? (
-        <React.Suspense fallback={<div>Loading field</div>}>
+        <React.Suspense fallback={<div>{l10n.t(LocalizationKey.panelFieldsTextFieldLoading)}</div>}>
           <WysiwygField text={text || ''} onChange={onTextChange} />
         </React.Suspense>
       ) : singleLine ? (
@@ -158,7 +160,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
 
       {limit && limit > 0 && (text || '').length > limit && (
         <div className={`metadata_field__limit`}>
-          Field limit reached {(text || '').length}/{limit}
+          {l10n.t(LocalizationKey.panelFieldsTextFieldLimit, `${(text || '').length}/${limit}`)}
         </div>
       )}
 

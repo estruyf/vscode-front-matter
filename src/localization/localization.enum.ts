@@ -1,5 +1,9 @@
 export enum LocalizationKey {
   /**
+   * Add
+   */
+  commonAdd = 'common.add',
+  /**
    * Edit
    */
   commonEdit = 'common.edit',
@@ -15,6 +19,10 @@ export enum LocalizationKey {
    * Clear
    */
   commonClear = 'common.clear',
+  /**
+   * Clear value
+   */
+  commonClearValue = 'common.clear.value',
   /**
    * Search
    */
@@ -40,6 +48,14 @@ export enum LocalizationKey {
    */
   commonTitle = 'common.title',
   /**
+   * Description
+   */
+  commonDescription = 'common.description',
+  /**
+   * Retry
+   */
+  commonRetry = 'common.retry',
+  /**
    * Update
    */
   commonUpdate = 'common.update',
@@ -51,6 +67,14 @@ export enum LocalizationKey {
    * Important
    */
   commonImportant = 'common.important',
+  /**
+   * Sync
+   */
+  commonSync = 'common.sync',
+  /**
+   * Slug
+   */
+  commonSlug = 'common.slug',
   /**
    * Sorry, something went wrong.
    */
@@ -359,10 +383,6 @@ export enum LocalizationKey {
    * Open on startup?
    */
   dashboardHeaderStartupLabel = 'dashboard.header.startup.label',
-  /**
-   * Sync
-   */
-  dashboardHeaderSyncButtonLabel = 'dashboard.header.syncButton.label',
   /**
    * Contents
    */
@@ -885,27 +905,311 @@ export enum LocalizationKey {
    */
   panelContentTypeContentTypeValidatorButtonChange = 'panel.contentType.contentTypeValidator.button.change',
   /**
+   * Editing: {0}
+   */
+  panelDataBlockDataBlockFieldGroupSelectedEdit = 'panel.dataBlock.dataBlockField.group.selected.edit',
+  /**
+   * Create a new {0}
+   */
+  panelDataBlockDataBlockFieldGroupSelectedCreate = 'panel.dataBlock.dataBlockField.group.selected.create',
+  /**
+   * Select a group
+   */
+  panelDataBlockDataBlockFieldGroupSelect = 'panel.dataBlock.dataBlockField.group.select',
+  /**
+   * Add {0}
+   */
+  panelDataBlockDataBlockFieldAdd = 'panel.dataBlock.dataBlockField.add',
+  /**
+   * Edit record
+   */
+  panelDataBlockDataBlockRecordEdit = 'panel.dataBlock.dataBlockRecord.edit',
+  /**
+   * Delete record
+   */
+  panelDataBlockDataBlockRecordDelete = 'panel.dataBlock.dataBlockRecord.delete',
+  /**
+   * Records
+   */
+  panelDataBlockDataBlockRecordsLabel = 'panel.dataBlock.dataBlockRecords.label',
+  /**
+   * Block type
+   */
+  panelDataBlockDataBlockSelectorLabel = 'panel.dataBlock.dataBlockSelector.label',
+  /**
+   * Failed viewing the field
+   */
+  panelErrorBoundaryFieldBoundaryLabel = 'panel.errorBoundary.fieldBoundary.label',
+  /**
+   * Remove {0}
+   */
+  panelFieldsChoiceButtonTitle = 'panel.fields.choiceButton.title',
+  /**
+   * Select {0}
+   */
+  panelFieldsChoiceFieldSelect = 'panel.fields.choiceField.select',
+  /**
+   * Clear value
+   */
+  panelFieldsChoiceFieldClear = 'panel.fields.choiceField.clear',
+  /**
+   * Fetching possible values...
+   */
+  panelFieldsContentTypeRelationshipFieldLoading = 'panel.fields.contentTypeRelationshipField.loading',
+  /**
+   * Pick your date
+   */
+  panelFieldsDateTimeFieldButtonPick = 'panel.fields.dateTimeField.button.pick',
+  /**
+   * Time:
+   */
+  panelFieldsDateTimeFieldTime = 'panel.fields.dateTimeField.time',
+  /**
+   * The {0} field is required
+   */
+  panelFieldsFieldMessageRequired = 'panel.fields.fieldMessage.required',
+  /**
+   * Delete file
+   */
+  panelFieldsFileFieldDelete = 'panel.fields.fileField.delete',
+  /**
+   * Add your {0}
+   */
+  panelFieldsFileFieldAdd = 'panel.fields.fileField.add',
+  /**
+   * The image coundn't be loaded
+   */
+  panelFieldsImageFallbackLabel = 'panel.fields.imageFallback.label',
+  /**
+   * Edit record
+   */
+  panelFieldsListFieldEdit = 'panel.fields.listField.edit',
+  /**
+   * Delete record
+   */
+  panelFieldsListFieldDelete = 'panel.fields.listField.delete',
+  /**
+   * Remove image
+   */
+  panelFieldsPreviewImageRemove = 'panel.fields.previewImage.remove',
+  /**
+   * Add your {0}
+   */
+  panelFieldsPreviewImageFieldAdd = 'panel.fields.previewImageField.add',
+  /**
+   * Update available
+   */
+  panelFieldsSlugFieldUpdate = 'panel.fields.slugField.update',
+  /**
+   * Generate slug
+   */
+  panelFieldsSlugFieldGenerate = 'panel.fields.slugField.generate',
+  /**
+   * Use Front Matter AI to suggest {0}
+   */
+  panelFieldsTextFieldAiMessage = 'panel.fields.textField.ai.message',
+  /**
+   * Generating suggestion...
+   */
+  panelFieldsTextFieldAiGenerate = 'panel.fields.textField.ai.generate',
+  /**
+   * Loading field
+   */
+  panelFieldsTextFieldLoading = 'panel.fields.textField.loading',
+  /**
+   * Field limit reached {0}
+   */
+  panelFieldsTextFieldLimit = 'panel.fields.textField.limit',
+  /**
+   * Unkown field type: {0}
+   */
+  panelFieldsWrapperFieldUnknown = 'panel.fields.wrapperField.unknown',
+  /**
    * Actions
    */
   panelActionsTitle = 'panel.actions.title',
   /**
+   * More details
+   */
+  panelArticleDetailsTitle = 'panel.articleDetails.title',
+  /**
+   * Type
+   */
+  panelArticleDetailsType = 'panel.articleDetails.type',
+  /**
+   * Total
+   */
+  panelArticleDetailsTotal = 'panel.articleDetails.total',
+  /**
+   * Headings
+   */
+  panelArticleDetailsHeadings = 'panel.articleDetails.headings',
+  /**
+   * Paragraphs
+   */
+  panelArticleDetailsParagraphs = 'panel.articleDetails.paragraphs',
+  /**
+   * Internal links
+   */
+  panelArticleDetailsInternalLinks = 'panel.articleDetails.internalLinks',
+  /**
+   * External links
+   */
+  panelArticleDetailsExternalLinks = 'panel.articleDetails.externalLinks',
+  /**
+   * Images
+   */
+  panelArticleDetailsImages = 'panel.articleDetails.images',
+  /**
+   * Initialize project
+   */
+  panelBaseViewInitialize = 'panel.baseView.initialize',
+  /**
+   * Actions
+   */
+  panelBaseViewActionsTitle = 'panel.baseView.actions.title',
+  /**
    * Open dashboard
    */
-  panelActionsOpenDashboard = 'panel.actions.openDashboard',
+  panelBaseViewActionOpenDashboard = 'panel.baseView.action.openDashboard',
   /**
    * Open preview
    */
-  panelActionsOpenPreview = 'panel.actions.openPreview',
-  /**
-   * Start server
-   */
-  panelActionsStartServer = 'panel.actions.startServer',
-  /**
-   * Stop server
-   */
-  panelActionsStopServer = 'panel.actions.stopServer',
+  panelBaseViewActionOpenPreview = 'panel.baseView.action.openPreview',
   /**
    * Create content
    */
-  panelActionsCreateContent = 'panel.actions.createContent'
+  panelBaseViewActionCreateContent = 'panel.baseView.action.createContent',
+  /**
+   * Open a file to see more actions
+   */
+  panelBaseViewEmpty = 'panel.baseView.empty',
+  /**
+   * file
+   */
+  panelFileListLabelSingular = 'panel.fileList.label.singular',
+  /**
+   * files
+   */
+  panelFileListLabelPlural = 'panel.fileList.label.plural',
+  /**
+   * Recently modified
+   */
+  panelFolderAndFilesTitle = 'panel.folderAndFiles.title',
+  /**
+   * Global settings
+   */
+  panelGlobalSettingsTitle = 'panel.globalSettings.title',
+  /**
+   * Modified date
+   */
+  panelGlobalSettingsActionModifiedDateLabel = 'panel.globalSettings.action.modifiedDate.label',
+  /**
+   * Auto-update modified date
+   */
+  panelGlobalSettingsActionModifiedDateDescription = 'panel.globalSettings.action.modifiedDate.description',
+  /**
+   * Front Matter highlight
+   */
+  panelGlobalSettingsActionFrontMatterLabel = 'panel.globalSettings.action.frontMatter.label',
+  /**
+   * Highlight Front Matter
+   */
+  panelGlobalSettingsActionFrontMatterDescription = 'panel.globalSettings.action.frontMatter.description',
+  /**
+   * Local preview
+   */
+  panelGlobalSettingsActionPreviewLabel = 'panel.globalSettings.action.preview.label',
+  /**
+   * Example: {0}
+   */
+  panelGlobalSettingsActionPreviewPlaceholder = 'panel.globalSettings.action.preview.placeholder',
+  /**
+   * Local server command
+   */
+  panelGlobalSettingsActionServerLabel = 'panel.globalSettings.action.server.label',
+  /**
+   * Example: {0}
+   */
+  panelGlobalSettingsActionServerPlaceholder = 'panel.globalSettings.action.server.placeholder',
+  /**
+   * Metadata
+   */
+  panelMetadataTitle = 'panel.metadata.title',
+  /**
+   * Other actions
+   */
+  panelOtherActionsTitle = 'panel.otherActions.title',
+  /**
+   * Writing settings enabled
+   */
+  panelOtherActionsWritingSettingsEnabled = 'panel.otherActions.writingSettings.enabled',
+  /**
+   * Enable writing settings
+   */
+  panelOtherActionsWritingSettingsDisabled = 'panel.otherActions.writingSettings.disabled',
+  /**
+   * Toggle center mode
+   */
+  panelOtherActionsCenterMode = 'panel.otherActions.centerMode',
+  /**
+   * Create template
+   */
+  panelOtherActionsCreateTemplate = 'panel.otherActions.createTemplate',
+  /**
+   * Reveal file in folder
+   */
+  panelOtherActionsRevealFile = 'panel.otherActions.revealFile',
+  /**
+   * Reveal project folder
+   */
+  panelOtherActionsOpenProject = 'panel.otherActions.openProject',
+  /**
+   * Open documentation
+   */
+  panelOtherActionsDocumentation = 'panel.otherActions.documentation',
+  /**
+   * Settings overview
+   */
+  panelOtherActionsSettings = 'panel.otherActions.settings',
+  /**
+   * Report an issue
+   */
+  panelOtherActionsIssue = 'panel.otherActions.issue',
+  /**
+   * Open preview
+   */
+  panelPreviewTitle = 'panel.preview.title',
+  /**
+   * Publish
+   */
+  panelPublishActionPublish = 'panel.publishAction.publish',
+  /**
+   * Revert to draft
+   */
+  panelPublishActionUnpublish = 'panel.publishAction.unpublish',
+  /**
+   * Recommended
+   */
+  panelSeoDetailsRecommended = 'panel.seoDetails.recommended',
+  /**
+   * Keyword usage {0} *
+   */
+  panelSeoKeywordInfoDensity = 'panel.seoKeywordInfo.density',
+  /**
+   * Used in heading(s)
+   */
+  panelSeoKeywordInfoValidInfoLabel = 'panel.seoKeywordInfo.validInfo.label',
+  /**
+   * Content
+   */
+  panelSeoKeywordInfoValidInfoContent = 'panel.seoKeywordInfo.validInfo.content',
+  /**
+   * Start server
+   */
+  panelBaseViewActionStartServer = 'panel.baseView.action.startServer',
+  /**
+   * Stop server
+   */
+  panelBaseViewActionStopServer = 'panel.baseView.action.stopServer'
 }

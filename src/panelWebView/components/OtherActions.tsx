@@ -12,6 +12,8 @@ import { OtherActionButton } from './OtherActionButton';
 import { DOCUMENTATION_LINK, DOCUMENTATION_SETTINGS_LINK, ISSUE_LINK } from '../../constants/Links';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { BookOpenIcon } from '@heroicons/react/outline';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../localization';
 
 export interface IOtherActionsProps {
   isFile: boolean;
@@ -48,7 +50,7 @@ const OtherActions: React.FunctionComponent<IOtherActionsProps> = ({
     <>
       <Collapsible
         id={`${isBase ? 'base_' : ''}other_actions`}
-        title="Other actions"
+        title={l10n.t(LocalizationKey.panelOtherActionsTitle)}
         className={`other_actions`}
       >
         <OtherActionButton
@@ -58,45 +60,47 @@ const OtherActions: React.FunctionComponent<IOtherActionsProps> = ({
         >
           <WritingIcon />{' '}
           <span>
-            {settings?.writingSettingsEnabled
-              ? 'Writing settings enabled'
-              : 'Enable writing settings'}
+            {
+              settings?.writingSettingsEnabled
+                ? l10n.t(LocalizationKey.panelOtherActionsWritingSettingsEnabled)
+                : l10n.t(LocalizationKey.panelOtherActionsWritingSettingsDisabled)
+            }
           </span>
         </OtherActionButton>
 
         <OtherActionButton onClick={() => Messenger.send(CommandToCode.toggleCenterMode)}>
-          <CenterIcon /> <span>Toggle center mode</span>
+          <CenterIcon /> <span>{l10n.t(LocalizationKey.panelOtherActionsCenterMode)}</span>
         </OtherActionButton>
 
         <OtherActionButton onClick={createAsTemplate} disabled={!isFile}>
-          <TemplateIcon /> <span>Create template</span>
+          <TemplateIcon /> <span>{l10n.t(LocalizationKey.panelOtherActionsCreateTemplate)}</span>
         </OtherActionButton>
 
         {/* <OtherActionButton onClick={openSettings}><SettingsIcon /> <span>Open settings</span></OtherActionButton> */}
 
         <OtherActionButton onClick={openFile} disabled={!isFile}>
-          <FileIcon /> <span>Reveal file in folder</span>
+          <FileIcon /> <span>{l10n.t(LocalizationKey.panelOtherActionsRevealFile)}</span>
         </OtherActionButton>
 
         <OtherActionButton onClick={openProject}>
-          <FolderOpenedIcon /> <span>Reveal project folder</span>
+          <FolderOpenedIcon /> <span>{l10n.t(LocalizationKey.panelOtherActionsOpenProject)}</span>
         </OtherActionButton>
 
         <div className="ext_link_block">
-          <a href={DOCUMENTATION_LINK} title="Open documentation">
-            <BookOpenIcon /> <span>Documentation</span>
+          <a href={DOCUMENTATION_LINK} title={l10n.t(LocalizationKey.panelOtherActionsDocumentation)}>
+            <BookOpenIcon /> <span>{l10n.t(LocalizationKey.panelOtherActionsDocumentation)}</span>
           </a>
         </div>
 
         <div className="ext_link_block">
-          <a href={DOCUMENTATION_SETTINGS_LINK} title="Open settings documentation">
-            <BookOpenIcon /> <span>Settings overview</span>
+          <a href={DOCUMENTATION_SETTINGS_LINK} title={l10n.t(LocalizationKey.panelOtherActionsSettings)}>
+            <BookOpenIcon /> <span>{l10n.t(LocalizationKey.panelOtherActionsSettings)}</span>
           </a>
         </div>
 
         <div className="ext_link_block">
-          <a href={ISSUE_LINK} title="Open an issue on GitHub">
-            <BugIcon /> <span>Report an issue</span>
+          <a href={ISSUE_LINK} title={l10n.t(LocalizationKey.panelOtherActionsIssue)}>
+            <BugIcon /> <span>{l10n.t(LocalizationKey.panelOtherActionsIssue)}</span>
           </a>
         </div>
       </Collapsible>

@@ -7,6 +7,8 @@ import Downshift from 'downshift';
 import { ChoiceButton } from './ChoiceButton';
 import { FieldTitle } from './FieldTitle';
 import { FieldMessage } from './FieldMessage';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IDataFileFieldProps {
   label: string;
@@ -129,7 +131,7 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
     if (dataFileId) {
       messageHandler.request<string[]>(CommandToCode.getDataEntries, dataFileId).then((entries) => {
         setDataEntries(entries || null);
-      }).catch((err) => {
+      }).catch((_) => {
         setDataEntries(null);
       });
     }
@@ -173,7 +175,9 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
                     })}
                   >
                     {choice.title || (
-                      <span className={`metadata_field__choice_list__item`}>Clear value</span>
+                      <span className={`metadata_field__choice_list__item`}>
+                        {l10n.t(LocalizationKey.commonClearValue)}
+                      </span>
                     )}
                   </li>
                 ))

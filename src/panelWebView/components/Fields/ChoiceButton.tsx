@@ -1,5 +1,7 @@
 import { XIcon } from '@heroicons/react/outline';
 import * as React from 'react';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IChoiceButtonProps {
   title: string;
@@ -14,7 +16,7 @@ export const ChoiceButton: React.FunctionComponent<IChoiceButtonProps> = ({
 }: React.PropsWithChildren<IChoiceButtonProps>) => {
   return (
     <button
-      title={`Remove ${title}`}
+      title={l10n.t(LocalizationKey.panelFieldsChoiceButtonTitle, title)}
       className="metadata_field__choice__button"
       onClick={() => onClick(value)}
     >

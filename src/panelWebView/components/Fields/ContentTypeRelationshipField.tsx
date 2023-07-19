@@ -9,6 +9,8 @@ import { FieldMessage } from './FieldMessage';
 import { messageHandler } from '@estruyf/vscode/dist/client';
 import { CommandToCode } from '../../CommandToCode';
 import { Page } from '../../../dashboardWebView/models';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IContentTypeRelationshipFieldProps extends BaseFieldProps<string | string[]> {
   contentTypeName?: string;
@@ -127,7 +129,7 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
         loading ? (
           <div className='metadata_field__wrapper'>
             <div className='metadata_field__loading'>
-              Fetching possible values...
+              {l10n.t(LocalizationKey.panelFieldsContentTypeRelationshipFieldLoading)}
             </div>
           </div>
         ) : (
@@ -166,7 +168,9 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
                           })}
                         >
                           {choice.title || (
-                            <span className={`metadata_field__choice_list__item`}>Clear value</span>
+                            <span className={`metadata_field__choice_list__item`}>
+                              {l10n.t(LocalizationKey.commonClearValue)}
+                            </span>
                           )}
                         </li>
                       ))

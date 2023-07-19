@@ -5,6 +5,8 @@ import { Command } from '../../Command';
 import { CommandToCode } from '../../CommandToCode';
 import { ImageFallback } from './ImageFallback';
 import { PreviewImageValue } from './PreviewImageField';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IPreviewImageProps {
   value: PreviewImageValue;
@@ -50,10 +52,11 @@ export const PreviewImage: React.FunctionComponent<IPreviewImageProps> = ({
 
       <button
         type="button"
+        title={l10n.t(LocalizationKey.panelFieldsPreviewImageRemove)}
         onClick={() => onRemove(value.original)}
         className={`metadata_field__preview_image__remove`}
       >
-        Remove image
+        {l10n.t(LocalizationKey.panelFieldsPreviewImageRemove)}
       </button>
     </div>
   );

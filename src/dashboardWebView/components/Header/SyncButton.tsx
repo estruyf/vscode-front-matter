@@ -61,7 +61,7 @@ export const SyncButton: React.FunctionComponent<ISyncButtonProps> = (
           className={`w-4 h-4 mr-2 ${isSyncing ? 'animate-reverse-spin' : ''}`}
           aria-hidden="true"
         />
-        <span>{l10n.t(LocalizationKey.dashboardHeaderSyncButtonLabel)}</span>
+        <span>{l10n.t(LocalizationKey.commonSync)}</span>
       </button>
     </div>
   );

@@ -1,17 +1,23 @@
 {
+  "common.add": "Add",
   "common.edit": "Edit",
   "common.delete": "Delete",
   "common.cancel": "Cancel",
   "common.clear": "Clear",
+  "common.clear.value": "Clear value",
   "common.search": "Search",
   "common.save": "Save",
   "common.menu": "Menu",
   "common.insert": "Insert",
   "common.insert.snippet": "Insert snippet",
   "common.title": "Title",
+  "common.description": "Description",
+  "common.retry": "Retry",
   "common.update": "Update",
   "common.information": "Info",
   "common.important": "Important",
+  "common.sync": "Sync",
+  "common.slug": "Slug",
   "common.error.message": "Sorry, something went wrong.",
 
   "field.required": "Required field",
@@ -118,8 +124,6 @@
   "dashboard.header.sorting.label": "Sort by",
   
   "dashboard.header.startup.label": "Open on startup?",
-
-  "dashboard.header.syncButton.label": "Sync",
 
   "dashboard.header.tabs.contents": "Contents",
   "dashboard.header.tabs.media": "Media",
@@ -273,10 +277,111 @@
   "panel.contentType.contentTypeValidator.button.add": "Add missing fields to content-type",
   "panel.contentType.contentTypeValidator.button.change": "Change content-type of the file",
 
+  "panel.dataBlock.dataBlockField.group.selected.edit": "Editing: {0}",
+  "panel.dataBlock.dataBlockField.group.selected.create": "Create a new {0}",
+  "panel.dataBlock.dataBlockField.group.select": "Select a group",
+  "panel.dataBlock.dataBlockField.add": "Add {0}",
+
+  "panel.dataBlock.dataBlockRecord.edit": "Edit record",
+  "panel.dataBlock.dataBlockRecord.delete": "Delete record",
+
+  "panel.dataBlock.dataBlockRecords.label": "Records",
+
+  "panel.dataBlock.dataBlockSelector.label": "Block type",
+
+  "panel.errorBoundary.fieldBoundary.label": "Failed viewing the field",
+
+  "panel.fields.choiceButton.title": "Remove {0}",
+
+  "panel.fields.choiceField.select": "Select {0}",
+  "panel.fields.choiceField.clear": "Clear value",
+
+  "panel.fields.contentTypeRelationshipField.loading": "Fetching possible values...",
+
+  "panel.fields.dateTimeField.button.pick": "Pick your date",
+  "panel.fields.dateTimeField.time": "Time:",
+
+  "panel.fields.fieldMessage.required": "The {0} field is required",
+
+  "panel.fields.fileField.delete": "Delete file",
+  "panel.fields.fileField.add": "Add your {0}",
+
+  "panel.fields.imageFallback.label": "The image coundn't be loaded",
+
+  "panel.fields.listField.edit": "Edit record",
+  "panel.fields.listField.delete": "Delete record",
+
+  "panel.fields.previewImage.remove": "Remove image",
+
+  "panel.fields.previewImageField.add": "Add your {0}",
+
+  "panel.fields.slugField.update": "Update available",
+  "panel.fields.slugField.generate": "Generate slug",
+
+  "panel.fields.textField.ai.message": "Use Front Matter AI to suggest {0}",
+  "panel.fields.textField.ai.generate": "Generating suggestion...",
+  "panel.fields.textField.loading": "Loading field",
+  "panel.fields.textField.limit": "Field limit reached {0}",
+
+  "panel.fields.wrapperField.unknown": "Unkown field type: {0}",
+
   "panel.actions.title": "Actions",
-  "panel.actions.openDashboard": "Open dashboard",
-  "panel.actions.openPreview": "Open preview",
-  "panel.actions.startServer": "Start server",
-  "panel.actions.stopServer": "Stop server",
-  "panel.actions.createContent": "Create content"
+
+  "panel.articleDetails.title": "More details",
+  "panel.articleDetails.type": "Type",
+  "panel.articleDetails.total": "Total",
+  "panel.articleDetails.headings": "Headings",
+  "panel.articleDetails.paragraphs": "Paragraphs",
+  "panel.articleDetails.internalLinks": "Internal links",
+  "panel.articleDetails.externalLinks": "External links",
+  "panel.articleDetails.images": "Images",
+
+  "panel.baseView.initialize": "Initialize project",
+  "panel.baseView.actions.title": "Actions",
+  "panel.baseView.action.openDashboard": "Open dashboard",
+  "panel.baseView.action.openPreview": "Open preview",
+  "panel.baseView.action.createContent": "Create content",
+  "panel.baseView.empty": "Open a file to see more actions",
+
+  "panel.fileList.label.singular": "file",
+  "panel.fileList.label.plural": "files",
+
+  "panel.folderAndFiles.title": "Recently modified",
+
+  "panel.globalSettings.title": "Global settings",
+  "panel.globalSettings.action.modifiedDate.label": "Modified date",
+  "panel.globalSettings.action.modifiedDate.description": "Auto-update modified date",
+  "panel.globalSettings.action.frontMatter.label": "Front Matter highlight",
+  "panel.globalSettings.action.frontMatter.description": "Highlight Front Matter",
+  "panel.globalSettings.action.preview.label": "Local preview",
+  "panel.globalSettings.action.preview.placeholder": "Example: {0}",
+  "panel.globalSettings.action.server.label": "Local server command",
+  "panel.globalSettings.action.server.placeholder": "Example: {0}",
+
+  "panel.metadata.title": "Metadata",
+
+  "panel.otherActions.title": "Other actions",
+  "panel.otherActions.writingSettings.enabled": "Writing settings enabled",
+  "panel.otherActions.writingSettings.disabled": "Enable writing settings",
+  "panel.otherActions.centerMode": "Toggle center mode",
+  "panel.otherActions.createTemplate": "Create template",
+  "panel.otherActions.revealFile": "Reveal file in folder",
+  "panel.otherActions.openProject": "Reveal project folder",
+  "panel.otherActions.documentation": "Open documentation",
+  "panel.otherActions.settings": "Settings overview",
+  "panel.otherActions.issue": "Report an issue",
+
+  "panel.preview.title": "Open preview",
+
+  "panel.publishAction.publish": "Publish",
+  "panel.publishAction.unpublish": "Revert to draft",
+
+  "panel.seoDetails.recommended": "Recommended",
+
+  "panel.seoKeywordInfo.density": "Keyword usage {0} *",
+  "panel.seoKeywordInfo.validInfo.label": "Used in heading(s)",
+  "panel.seoKeywordInfo.validInfo.content": "Content",
+
+  "panel.baseView.action.startServer": "Start server",
+  "panel.baseView.action.stopServer": "Stop server"
 }

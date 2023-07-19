@@ -8,6 +8,8 @@ import { CommandToCode } from '../../CommandToCode';
 import { FieldTitle } from './FieldTitle';
 import { PreviewImage } from './PreviewImage';
 import { FieldMessage } from './FieldMessage';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface PreviewImageValue {
   original: string;
@@ -104,12 +106,14 @@ export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps>
         {(!imageData || isFaultyImage || multiple) && (
           <button
             className={`metadata_field__preview_image__button`}
-            title={`Add your ${label?.toLowerCase() || 'image'}`}
+            title={l10n.t(LocalizationKey.panelFieldsPreviewImageFieldAdd, (label?.toLowerCase() || 'image'))}
             type="button"
             onClick={selectImage}
           >
             <PhotographIcon />
-            <span>Add your {label?.toLowerCase() || 'image'}</span>
+            <span>
+              {l10n.t(LocalizationKey.panelFieldsPreviewImageFieldAdd, (label?.toLowerCase() || 'image'))}
+            </span>
           </button>
         )}
 
@@ -122,7 +126,10 @@ export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps>
           Array.isArray(imageData) &&
           !isFaultyImage &&
           imageData.map((image) => (
-            <PreviewImage key={image.original} value={image} onRemove={() => onImageRemove(image.original)} />
+            <PreviewImage
+              key={image.original}
+              value={image}
+              onRemove={() => onImageRemove(image.original)} />
           ))}
       </div>
 

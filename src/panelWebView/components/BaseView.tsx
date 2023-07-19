@@ -77,7 +77,12 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({
       <div className={`ext_actions`}>
         {!settings?.isInitialized && (
           <div className={`initialize_actions`}>
-            <button onClick={initProject}>Initialize project</button>
+            <button
+              title={l10n.t(LocalizationKey.panelBaseViewInitialize)}
+              onClick={initProject}
+              type={`button`}>
+              {l10n.t(LocalizationKey.panelBaseViewInitialize)}
+            </button>
           </div>
         )}
 
@@ -90,18 +95,38 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({
             </FeatureFlag>
 
             <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.actions}>
-              <Collapsible id={`base_actions`} title={l10n.t(LocalizationKey.panelActionsTitle)}>
+              <Collapsible id={`base_actions`} title={l10n.t(LocalizationKey.panelBaseViewActionsTitle)}>
                 <div className={`base__actions`}>
-                  <button onClick={openDashboard}>{l10n.t(LocalizationKey.panelActionsOpenDashboard)}</button>
-                  <button onClick={openPreview} disabled={!settings?.preview?.host}>
-                    {l10n.t(LocalizationKey.panelActionsOpenPreview)}
+                  <button
+                    title={l10n.t(LocalizationKey.panelBaseViewActionOpenDashboard)}
+                    onClick={openDashboard}
+                    type={`button`}>
+                    {l10n.t(LocalizationKey.panelBaseViewActionOpenDashboard)}
                   </button>
+
+                  <button
+                    title={l10n.t(LocalizationKey.panelBaseViewActionOpenPreview)}
+                    onClick={openPreview}
+                    disabled={!settings?.preview?.host}
+                    type={`button`}>
+                    {l10n.t(LocalizationKey.panelBaseViewActionOpenPreview)}
+                  </button>
+
                   <StartServerButton settings={settings} />
 
-                  <button onClick={createContent}>{l10n.t(LocalizationKey.panelActionsCreateContent)}</button>
+                  <button
+                    title={l10n.t(LocalizationKey.panelBaseViewActionCreateContent)}
+                    onClick={createContent}
+                    type={`button`}>
+                    {l10n.t(LocalizationKey.panelBaseViewActionCreateContent)}
+                  </button>
 
                   {customActions.map((script) => (
-                    <button key={script.title} onClick={() => runBulkScript(script)}>
+                    <button
+                      key={script.title}
+                      title={script.title}
+                      type={`button`}
+                      onClick={() => runBulkScript(script)}>
                       {script.title}
                     </button>
                   ))}
@@ -123,7 +148,7 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({
       {
         !isSomethingShown && (
           <div className={`base__empty`}>
-            Open a file to see more actions
+            {l10n.t(LocalizationKey.panelBaseViewEmpty)}
           </div>
         )
       }

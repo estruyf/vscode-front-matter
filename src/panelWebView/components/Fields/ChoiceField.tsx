@@ -7,6 +7,8 @@ import { Choice } from '../../../models/Choice';
 import { ChoiceButton } from './ChoiceButton';
 import { FieldTitle } from './FieldTitle';
 import { FieldMessage } from './FieldMessage';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IChoiceFieldProps extends BaseFieldProps<string | string[]> {
   choices: string[] | Choice[];
@@ -68,16 +70,16 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({
   const availableChoices = !multiSelect
     ? choices
     : (choices as Array<string | Choice>).filter((choice: string | Choice) => {
-        const value = typeof choice === 'string' || typeof choice === 'number' ? choice : choice.id;
+      const value = typeof choice === 'string' || typeof choice === 'number' ? choice : choice.id;
 
-        if (typeof crntSelected === 'string') {
-          return crntSelected !== `${value}`;
-        } else if (crntSelected instanceof Array) {
-          return crntSelected.indexOf(`${value}`) === -1;
-        }
+      if (typeof crntSelected === 'string') {
+        return crntSelected !== `${value}`;
+      } else if (crntSelected instanceof Array) {
+        return crntSelected.indexOf(`${value}`) === -1;
+      }
 
-        return true;
-      });
+      return true;
+    });
 
   const showRequiredState = useMemo(() => {
     return (
@@ -111,7 +113,7 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({
                 disabled: availableChoices.length === 0
               })}
             >
-              <span>{`Select ${label}`}</span>
+              <span>{l10n.t(LocalizationKey.panelFieldsChoiceFieldSelect, label)}</span>
               <ChevronDownIcon className="icon" />
             </button>
 
@@ -121,18 +123,20 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({
             >
               {isOpen
                 ? availableChoices.map((choice, index) => (
-                    <li
-                      {...getItemProps({
-                        key: getValue(choice, 'id'),
-                        index,
-                        item: getValue(choice, 'id')
-                      })}
-                    >
-                      {getValue(choice, 'title') || (
-                        <span className={`metadata_field__choice_list__item`}>Clear value</span>
-                      )}
-                    </li>
-                  ))
+                  <li
+                    {...getItemProps({
+                      key: getValue(choice, 'id'),
+                      index,
+                      item: getValue(choice, 'id')
+                    })}
+                  >
+                    {getValue(choice, 'title') || (
+                      <span className={`metadata_field__choice_list__item`}>
+                        {l10n.t(LocalizationKey.commonClearValue)}
+                      </span>
+                    )}
+                  </li>
+                ))
                 : null}
             </ul>
           </div>
@@ -147,21 +151,21 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({
 
       {crntSelected instanceof Array
         ? crntSelected.map((value: string) => (
-            <ChoiceButton
-              key={value}
-              value={value}
-              title={getChoiceValue(value)}
-              onClick={removeSelected}
-            />
-          ))
+          <ChoiceButton
+            key={value}
+            value={value}
+            title={getChoiceValue(value)}
+            onClick={removeSelected}
+          />
+        ))
         : crntSelected && (
-            <ChoiceButton
-              key={crntSelected}
-              value={crntSelected}
-              title={getChoiceValue(crntSelected)}
-              onClick={removeSelected}
-            />
-          )}
+          <ChoiceButton
+            key={crntSelected}
+            value={crntSelected}
+            title={getChoiceValue(crntSelected)}
+            onClick={removeSelected}
+          />
+        )}
     </div>
   );
 };

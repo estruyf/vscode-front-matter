@@ -8,6 +8,8 @@ import { Command } from '../../Command';
 import { CommandToCode } from '../../CommandToCode';
 import { FieldTitle } from './FieldTitle';
 import { FieldMessage } from './FieldMessage';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface ISlugFieldProps extends BaseFieldProps<string> {
   titleValue: string | null;
@@ -86,7 +88,7 @@ export const SlugField: React.FunctionComponent<ISlugFieldProps> = ({
         />
 
         <button
-          title={slug !== text ? 'Update available' : 'Generate slug'}
+          title={slug !== text ? l10n.t(LocalizationKey.panelFieldsSlugFieldUpdate) : l10n.t(LocalizationKey.panelFieldsSlugFieldGenerate)}
           className={`metadata_field__slug__button ${slug !== text ? 'metadata_field__slug__button_update' : ''
             }`}
           onClick={updateSlug}
