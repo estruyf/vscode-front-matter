@@ -1,5 +1,7 @@
 import { PlusIcon, XIcon } from '@heroicons/react/outline';
 import * as React from 'react';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../localization';
 
 export interface ITagProps {
   className: string;
@@ -13,7 +15,7 @@ export interface ITagProps {
 }
 
 const Tag: React.FunctionComponent<ITagProps> = (props: React.PropsWithChildren<ITagProps>) => {
-  const { value, className, title, onRemove, onCreate, disableConfigurable } = props;
+  const { value, title, onRemove, onCreate, disableConfigurable } = props;
 
   return (
     <>
@@ -21,7 +23,8 @@ const Tag: React.FunctionComponent<ITagProps> = (props: React.PropsWithChildren<
         {!disableConfigurable && onCreate && (
           <button
             className={`tag__create`}
-            title={`Add ${value} to your settings`}
+            title={l10n.t(LocalizationKey.panelTagAdd, value)}
+            type={`button`}
             onClick={() => onCreate(value)}
           >
             <PlusIcon style={{ width: `1rem`, height: `1rem` }} />
@@ -30,7 +33,11 @@ const Tag: React.FunctionComponent<ITagProps> = (props: React.PropsWithChildren<
 
         <div className={`tag__value`}>{value}</div>
 
-        <button title={title} className={`tag__delete`} onClick={() => onRemove(value)}>
+        <button
+          title={title}
+          className={`tag__delete`}
+          type={`button`}
+          onClick={() => onRemove(value)}>
           <XIcon style={{ width: `1rem`, height: `1rem` }} />
         </button>
       </div>

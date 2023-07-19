@@ -61,7 +61,7 @@ export const SponsorMsg: React.FunctionComponent<ISponsorMsgProps> = ({
           <SponsorLink
             title={l10n.t(LocalizationKey.dashboardLayoutSponsorSupportMsg)}
             href={SPONSOR_LINK}>
-            <span>{l10n.t(LocalizationKey.dashboardLayoutSponsorSupportLabel)}</span>{` `}
+            <span>{l10n.t(LocalizationKey.commonSupport)}</span>{` `}
             <HeartIcon className={`h-5 w-5 group-hover:fill-current`} />
           </SponsorLink>
           <span>

@@ -18,6 +18,7 @@
   "common.important": "Important",
   "common.sync": "Sync",
   "common.slug": "Slug",
+  "common.support": "Support",
   "common.error.message": "Sorry, something went wrong.",
 
   "field.required": "Required field",
@@ -131,7 +132,6 @@
   "dashboard.header.tabs.data": "data",
   "dashboard.header.tabs.taxonomies": "Taxonomies",
 
-  "dashboard.layout.sponsor.support.label": "Support",
   "dashboard.layout.sponsor.support.msg": "Support Front Matter",
   "dashboard.layout.sponsor.review.label": "Review",
   "dashboard.layout.sponsor.review.msg": "Review Front Matter",
@@ -382,6 +382,34 @@
   "panel.seoKeywordInfo.validInfo.label": "Used in heading(s)",
   "panel.seoKeywordInfo.validInfo.content": "Content",
 
-  "panel.baseView.action.startServer": "Start server",
-  "panel.baseView.action.stopServer": "Stop server"
+  "panel.seoKeywords.title": "Keywords",
+  "panel.seoKeywords.header.keyword": "Keyword",
+  "panel.seoKeywords.header.details": "Details",
+  "panel.seoKeywords.density": "* A keyword density of 1-1.5% is sufficient in most cases.",
+
+  "panel.seoStatus.title": "Recommendations",
+  "panel.seoStatus.header.property": "Property",
+  "panel.seoStatus.header.length": "Length",
+  "panel.seoStatus.header.valid": "Valid",
+  "panel.seoStatus.seoFieldInfo.characters": "{0} chars",
+  "panel.seoStatus.seoFieldInfo.words": "{0} words",
+  "panel.seoStatus.seoFieldInfo.article": "Article length",
+  "panel.seoStatus.collapsible.title": "SEO Status",
+  "panel.seoStatus.required": "{0} or {1} is required.",
+
+  "panel.slugAction.title": "Optimize slug",
+
+  "panel.spinner.loading": "Loading...",
+
+  "panel.startServerbutton.start": "Start server",
+  "panel.startServerbutton.stop": "Stop server",
+
+  "panel.tag.add": "Add {0} to your settings",
+
+  "panel.tagPicker.inputPlaceholder.empty": "Pick your {0}",
+  "panel.tagPicker.inputPlaceholder.disabled": "You have reached the limit of {0}",
+  "panel.tagPicker.ai.suggest": "Use Front Matter AI to suggest {0}",
+  "panel.tagPicker.ai.generating": "Generating suggestions...",
+  "panel.tagPicker.limit": "Max.: {0}",
+  "panel.tagPicker.unkown": "Add the unknown tag"
 }

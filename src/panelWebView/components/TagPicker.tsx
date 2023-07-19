@@ -13,6 +13,8 @@ import { FieldTitle } from './Fields/FieldTitle';
 import { useRecoilValue } from 'recoil';
 import { PanelSettingsAtom } from '../state';
 import { SparklesIcon } from '@heroicons/react/outline';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../localization';
 
 export interface ITagPickerProps {
   type: TagType;
@@ -244,10 +246,10 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
 
   const inputPlaceholder = useMemo((): string => {
     if (checkIsDisabled()) {
-      return `You have reached the limit of ${limit} ${label || type.toLowerCase()}`;
+      return l10n.t(LocalizationKey.panelTagPickerInputPlaceholderDisabled, `${limit} ${label || type.toLowerCase()}`);
     }
 
-    return `Pick your ${label || type.toLowerCase()}`;
+    return l10n.t(LocalizationKey.panelTagPickerInputPlaceholderEmpty, (label || type.toLowerCase()));
   }, [label, type, checkIsDisabled]);
 
   const showRequiredState = useMemo(() => {
@@ -266,7 +268,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
     return (
       <button
         className='metadata_field__title__action'
-        title={`Use Front Matter AI to suggest ${label?.toLowerCase() || type.toLowerCase()}`}
+        title={l10n.t(LocalizationKey.panelTagPickerAiSuggest, (label?.toLowerCase() || type.toLowerCase()))}
         type='button'
         onClick={() => suggestTaxonomy(type)}
         disabled={loading}>
@@ -324,7 +326,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
       {
         loading && (
           <div className='metadata_field__loading'>
-            Generating suggestions...
+            {l10n.t(LocalizationKey.panelTagPickerAiGenerating)}
           </div>
         )
       }
@@ -335,7 +337,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
             {limit !== undefined && limit > 0 ? (
               <>
                 {` `}
-                <span style={{ fontWeight: 'lighter' }}>(Max.: {limit})</span>
+                <span style={{ fontWeight: 'lighter' }}>({l10n.t(LocalizationKey.panelTagPickerLimit, limit)})</span>
               </>
             ) : (
               ``
@@ -393,7 +395,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
               {freeform && (
                 <button
                   className={`article__tags__input__button`}
-                  title={`Add the unknown tag`}
+                  title={l10n.t(LocalizationKey.panelTagPickerUnkown)}
                   disabled={!inputValue || checkIsDisabled()}
                   onClick={() => insertUnkownTag(closeMenu)}
                 >

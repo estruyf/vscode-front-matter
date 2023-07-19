@@ -76,6 +76,10 @@ export enum LocalizationKey {
    */
   commonSlug = 'common.slug',
   /**
+   * Support
+   */
+  commonSupport = 'common.support',
+  /**
    * Sorry, something went wrong.
    */
   commonErrorMessage = 'common.error.message',
@@ -403,10 +407,6 @@ export enum LocalizationKey {
    * Taxonomies
    */
   dashboardHeaderTabsTaxonomies = 'dashboard.header.tabs.taxonomies',
-  /**
-   * Support
-   */
-  dashboardLayoutSponsorSupportLabel = 'dashboard.layout.sponsor.support.label',
   /**
    * Support Front Matter
    */
@@ -1205,11 +1205,99 @@ export enum LocalizationKey {
    */
   panelSeoKeywordInfoValidInfoContent = 'panel.seoKeywordInfo.validInfo.content',
   /**
+   * Keywords
+   */
+  panelSeoKeywordsTitle = 'panel.seoKeywords.title',
+  /**
+   * Keyword
+   */
+  panelSeoKeywordsHeaderKeyword = 'panel.seoKeywords.header.keyword',
+  /**
+   * Details
+   */
+  panelSeoKeywordsHeaderDetails = 'panel.seoKeywords.header.details',
+  /**
+   * * A keyword density of 1-1.5% is sufficient in most cases.
+   */
+  panelSeoKeywordsDensity = 'panel.seoKeywords.density',
+  /**
+   * Recommendations
+   */
+  panelSeoStatusTitle = 'panel.seoStatus.title',
+  /**
+   * Property
+   */
+  panelSeoStatusHeaderProperty = 'panel.seoStatus.header.property',
+  /**
+   * Length
+   */
+  panelSeoStatusHeaderLength = 'panel.seoStatus.header.length',
+  /**
+   * Valid
+   */
+  panelSeoStatusHeaderValid = 'panel.seoStatus.header.valid',
+  /**
+   * {0} chars
+   */
+  panelSeoStatusSeoFieldInfoCharacters = 'panel.seoStatus.seoFieldInfo.characters',
+  /**
+   * {0} words
+   */
+  panelSeoStatusSeoFieldInfoWords = 'panel.seoStatus.seoFieldInfo.words',
+  /**
+   * Article length
+   */
+  panelSeoStatusSeoFieldInfoArticle = 'panel.seoStatus.seoFieldInfo.article',
+  /**
+   * SEO Status
+   */
+  panelSeoStatusCollapsibleTitle = 'panel.seoStatus.collapsible.title',
+  /**
+   * {0} or {1} is required.
+   */
+  panelSeoStatusRequired = 'panel.seoStatus.required',
+  /**
+   * Optimize slug
+   */
+  panelSlugActionTitle = 'panel.slugAction.title',
+  /**
+   * Loading...
+   */
+  panelSpinnerLoading = 'panel.spinner.loading',
+  /**
    * Start server
    */
-  panelBaseViewActionStartServer = 'panel.baseView.action.startServer',
+  panelStartServerbuttonStart = 'panel.startServerbutton.start',
   /**
    * Stop server
    */
-  panelBaseViewActionStopServer = 'panel.baseView.action.stopServer'
+  panelStartServerbuttonStop = 'panel.startServerbutton.stop',
+  /**
+   * Add {0} to your settings
+   */
+  panelTagAdd = 'panel.tag.add',
+  /**
+   * Pick your {0}
+   */
+  panelTagPickerInputPlaceholderEmpty = 'panel.tagPicker.inputPlaceholder.empty',
+  /**
+   * You have reached the limit of {0}
+   */
+  panelTagPickerInputPlaceholderDisabled = 'panel.tagPicker.inputPlaceholder.disabled',
+  /**
+   * Use Front Matter AI to suggest {0}
+   */
+  panelTagPickerAiSuggest = 'panel.tagPicker.ai.suggest',
+  /**
+   * Generating suggestions...
+   */
+  panelTagPickerAiGenerating = 'panel.tagPicker.ai.generating',
+  /**
+   * Max.: {0}
+   */
+  panelTagPickerLimit = 'panel.tagPicker.limit',
+  /**
+   * Add the unknown tag
+   */
+  panelTagPickerUnkown = 'panel.tagPicker.unkown'
 }

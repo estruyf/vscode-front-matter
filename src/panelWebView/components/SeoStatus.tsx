@@ -10,6 +10,8 @@ import { SeoFieldInfo } from './SeoFieldInfo';
 import { SeoKeywords } from './SeoKeywords';
 import { TagPicker } from './TagPicker';
 import { VsTable, VsTableBody, VsTableHeader, VsTableHeaderCell } from './VscodeComponents';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../localization';
 
 export interface ISeoStatusProps {
   seo: SEO;
@@ -58,20 +60,26 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
     return (
       <div>
         <div className={`seo__status__details`}>
-          <h4>Recommendations</h4>
+          <h4>{l10n.t(LocalizationKey.panelSeoStatusTitle)}</h4>
 
           <VsTable ref={tableRef} bordered zebra>
             <VsTableHeader slot="header">
-              <VsTableHeaderCell className={`table__cell`}>Property</VsTableHeaderCell>
-              <VsTableHeaderCell className={`table__cell`}>Length</VsTableHeaderCell>
-              <VsTableHeaderCell className={`table__cell`}>Valid</VsTableHeaderCell>
+              <VsTableHeaderCell className={`table__cell`}>
+                {l10n.t(LocalizationKey.panelSeoStatusHeaderProperty)}
+              </VsTableHeaderCell>
+              <VsTableHeaderCell className={`table__cell`}>
+                {l10n.t(LocalizationKey.panelSeoStatusHeaderLength)}
+              </VsTableHeaderCell>
+              <VsTableHeaderCell className={`table__cell`}>
+                {l10n.t(LocalizationKey.panelSeoStatusHeaderValid)}
+              </VsTableHeaderCell>
             </VsTableHeader>
             <VsTableBody slot="body">
               {data[titleField] && seo.title > 0 && (
                 <SeoFieldInfo
                   title={titleField}
                   value={data[titleField].length}
-                  recommendation={`${seo.title} chars`}
+                  recommendation={l10n.t(LocalizationKey.panelSeoStatusSeoFieldInfoCharacters, seo.title)}
                   isValid={data[titleField].length <= seo.title}
                 />
               )}
@@ -80,7 +88,7 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
                 <SeoFieldInfo
                   title={`slug`}
                   value={slug.length}
-                  recommendation={`${seo.slug} chars`}
+                  recommendation={l10n.t(LocalizationKey.panelSeoStatusSeoFieldInfoCharacters, seo.slug)}
                   isValid={slug.length <= seo.slug}
                 />
               )}
@@ -89,16 +97,16 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
                 <SeoFieldInfo
                   title={descriptionField}
                   value={data[descriptionField].length}
-                  recommendation={`${seo.description} chars`}
+                  recommendation={l10n.t(LocalizationKey.panelSeoStatusSeoFieldInfoCharacters, seo.description)}
                   isValid={data[descriptionField].length <= seo.description}
                 />
               )}
 
               {seo.content > 0 && data?.articleDetails?.wordCount > 0 && (
                 <SeoFieldInfo
-                  title={`Article length`}
+                  title={l10n.t(LocalizationKey.panelSeoStatusSeoFieldInfoArticle)}
                   value={data?.articleDetails?.wordCount}
-                  recommendation={`${seo.content} words`}
+                  recommendation={l10n.t(LocalizationKey.panelSeoStatusSeoFieldInfoWords, seo.content)}
                 />
               )}
             </VsTableBody>
@@ -134,11 +142,11 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
   };
 
   return (
-    <Collapsible id={`seo`} title="SEO Status" sendUpdate={pushUpdate}>
+    <Collapsible id={`seo`} title={l10n.t(LocalizationKey.panelSeoStatusCollapsibleTitle)} sendUpdate={pushUpdate}>
       {!title && !data[descriptionField] ? (
         <div className={`seo__status__empty`}>
           <p>
-            <b>Title</b> or <b>{descriptionField}</b> is needed.
+            {l10n.t(LocalizationKey.panelSeoStatusRequired, "Title", descriptionField)}
           </p>
         </div>
       ) : (
