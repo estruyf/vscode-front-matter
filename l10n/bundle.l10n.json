@@ -267,6 +267,12 @@
   "dashboard.app.developer.devTools.title": "Open the DevTools",
   "dashboard.app.developer.devTools.label": "DevTools",
 
+  "panel.contentType.contentTypeValidator.title": "Content-type",
+  "panel.contentType.contentTypeValidator.hint": "We noticed field differences between the content-type and the front matter data. \n Would you like to create, update, or set the content-type for this content?",
+  "panel.contentType.contentTypeValidator.button.create": "Create content-type",
+  "panel.contentType.contentTypeValidator.button.add": "Add missing fields to content-type",
+  "panel.contentType.contentTypeValidator.button.change": "Change content-type of the file",
+
   "panel.actions.title": "Actions",
   "panel.actions.openDashboard": "Open dashboard",
   "panel.actions.openPreview": "Open preview",

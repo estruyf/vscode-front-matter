@@ -864,6 +864,27 @@ export enum LocalizationKey {
    */
   dashboardAppDeveloperDevToolsLabel = 'dashboard.app.developer.devTools.label',
   /**
+   * Content-type
+   */
+  panelContentTypeContentTypeValidatorTitle = 'panel.contentType.contentTypeValidator.title',
+  /**
+   * We noticed field differences between the content-type and the front matter data. 
+ Would you like to create, update, or set the content-type for this content?
+   */
+  panelContentTypeContentTypeValidatorHint = 'panel.contentType.contentTypeValidator.hint',
+  /**
+   * Create content-type
+   */
+  panelContentTypeContentTypeValidatorButtonCreate = 'panel.contentType.contentTypeValidator.button.create',
+  /**
+   * Add missing fields to content-type
+   */
+  panelContentTypeContentTypeValidatorButtonAdd = 'panel.contentType.contentTypeValidator.button.add',
+  /**
+   * Change content-type of the file
+   */
+  panelContentTypeContentTypeValidatorButtonChange = 'panel.contentType.contentTypeValidator.button.change',
+  /**
    * Actions
    */
   panelActionsTitle = 'panel.actions.title',
