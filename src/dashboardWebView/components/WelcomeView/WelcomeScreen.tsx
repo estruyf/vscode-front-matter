@@ -9,6 +9,8 @@ import { Settings } from '../../models/Settings';
 import { StepsToGetStarted } from '../Steps/StepsToGetStarted';
 import useThemeColors from '../../hooks/useThemeColors';
 import { WelcomeLink } from './WelcomeLink';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IWelcomeScreenProps {
   settings: Settings;
@@ -43,9 +45,7 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({
             <div className="px-6 col-span-8 text-left flex items-center">
               <div>
                 <h1 className="mt-4 text-4xl tracking-tight font-extrabold sm:mt-5 sm:leading-none lg:mt-6 lg:text-5xl xl:text-6xl">
-                  <span className="md:block">Manage your static site with</span>{' '}
-                  <span className={`md:block ${getColors('text-teal-600', 'text-[var(--frontmatter-button-background)]')
-                    }`}>Front Matter</span>
+                  {l10n.t(LocalizationKey.dashboardWelcomeScreenTitle)}
                 </h1>
 
                 <p className={`mt-3 text-base  sm:mt-5 sm:text-xl lg:text-lg xl:text-xl ${getColors(
@@ -53,7 +53,7 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({
                   'text-[var(--vscode-editor-foreground)]'
                 )
                   }`}>
-                  Thank you for using Front Matter!
+                  {l10n.t(LocalizationKey.dashboardWelcomeScreenThanks)}
                 </p>
 
                 <p className={`mt-3 text-base sm:mt-5 sm:text-xl lg:text-lg xl:text-xl ${getColors(
@@ -61,25 +61,30 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({
                   'text-[var(--vscode-editor-foreground)]'
                 )
                   }`}>
-                  We try to aim to make Front Matter as easy to use as possible, but if you have any
-                  questions or suggestions. Please don't hesitate to reach out to us on GitHub.
+                  {l10n.t(LocalizationKey.dashboardWelcomeScreenDescription)}
                 </p>
 
                 <div className="mt-5 w-full sm:mx-auto sm:max-w-lg lg:ml-0">
                   <div className="flex flex-wrap items-start justify-between">
-                    <WelcomeLink href={GITHUB_LINK} title={`GitHub`}>
+                    <WelcomeLink href={GITHUB_LINK} title={l10n.t(LocalizationKey.dashboardWelcomeScreenLinkGithubTitle)}>
                       <GitHubIcon className="w-8 h-8" />
-                      <span className={`text-lg ml-2`}>GitHub / Documentation</span>
+                      <span className={`text-lg ml-2`}>
+                        {l10n.t(LocalizationKey.dashboardWelcomeScreenLinkGithubLabel)}
+                      </span>
                     </WelcomeLink>
 
-                    <WelcomeLink href={SPONSOR_LINK} title={`Become a sponsor`}>
+                    <WelcomeLink href={SPONSOR_LINK} title={l10n.t(LocalizationKey.dashboardWelcomeScreenLinkSponsorTitle)}>
                       <HeartIcon className="w-8 h-8" />
-                      <span className={`text-lg ml-2`}>Sponsor</span>
+                      <span className={`text-lg ml-2`}>
+                        {l10n.t(LocalizationKey.dashboardWelcomeScreenLinkSponsorLabel)}
+                      </span>
                     </WelcomeLink>
 
-                    <WelcomeLink href={REVIEW_LINK} title={`Write a quick review`}>
+                    <WelcomeLink href={REVIEW_LINK} title={l10n.t(LocalizationKey.dashboardWelcomeScreenLinkReviewTitle)}>
                       <StarIcon className="w-8 h-8" />
-                      <span className={`text-lg ml-2`}>Review</span>
+                      <span className={`text-lg ml-2`}>
+                        {l10n.t(LocalizationKey.dashboardLayoutSponsorReviewLabel)}
+                      </span>
                     </WelcomeLink>
                   </div>
                 </div>
@@ -98,7 +103,7 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({
 
         <div className="mx-auto max-w-7xl mt-12 px-6">
           <h2 className="text-xl tracking-tight font-extrabold sm:leading-none">
-            Perform the next steps to get you started with the extension
+            {l10n.t(LocalizationKey.dashboardWelcomeScreenActionsHeading)}
           </h2>
 
           <div className={`grid grid-cols-12 gap-8 mt-5`}>
@@ -110,14 +115,13 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({
                 'text-[var(--vscode-editor-foreground)]'
               )
                 }`}>
-                You can also use the extension from the <b>Front Matter</b> side panel. There you
-                will find the actions you can perform specifically for your pages.
+                {l10n.t(LocalizationKey.dashboardWelcomeScreenActionsDescription)}
               </p>
             </div>
           </div>
 
           <h2 className="mt-5 text-lg tracking-tight font-extrabold sm:leading-none">
-            We hope you enjoy Front Matter!
+            {l10n.t(LocalizationKey.dashboardWelcomeScreenActionsThanks)}
           </h2>
         </div>
       </main>

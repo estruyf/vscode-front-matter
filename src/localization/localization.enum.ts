@@ -252,6 +252,18 @@ export enum LocalizationKey {
    */
   dashboardHeaderGroupingMenuButtonLabel = 'dashboard.header.grouping.menuButton.label',
   /**
+   * All articles
+   */
+  dashboardHeaderNavigationAllArticles = 'dashboard.header.navigation.allArticles',
+  /**
+   * Published
+   */
+  dashboardHeaderNavigationPublished = 'dashboard.header.navigation.published',
+  /**
+   * In draft
+   */
+  dashboardHeaderNavigationDraft = 'dashboard.header.navigation.draft',
+  /**
    * Create content
    */
   dashboardHeaderHeaderCreateContent = 'dashboard.header.header.createContent',
@@ -731,6 +743,126 @@ export enum LocalizationKey {
    * Show contents with {0} in {1}
    */
   dashboardTaxonomyViewTaxonomyLookupButtonTitle = 'dashboard.taxonomyView.taxonomyLookup.button.title',
+  /**
+   * Create, edit, and manage the {0} of your site
+   */
+  dashboardTaxonomyViewTaxonomyManagerDescription = 'dashboard.taxonomyView.taxonomyManager.description',
+  /**
+   * Create a new {0} value
+   */
+  dashboardTaxonomyViewTaxonomyManagerButtonCreate = 'dashboard.taxonomyView.taxonomyManager.button.create',
+  /**
+   * Name
+   */
+  dashboardTaxonomyViewTaxonomyManagerTableHeadingName = 'dashboard.taxonomyView.taxonomyManager.table.heading.name',
+  /**
+   * Count
+   */
+  dashboardTaxonomyViewTaxonomyManagerTableHeadingCount = 'dashboard.taxonomyView.taxonomyManager.table.heading.count',
+  /**
+   * Action
+   */
+  dashboardTaxonomyViewTaxonomyManagerTableHeadingAction = 'dashboard.taxonomyView.taxonomyManager.table.heading.action',
+  /**
+   * No {0} found
+   */
+  dashboardTaxonomyViewTaxonomyManagerTableRowEmpty = 'dashboard.taxonomyView.taxonomyManager.table.row.empty',
+  /**
+   * Missing in your settings
+   */
+  dashboardTaxonomyViewTaxonomyManagerTableUnmappedTitle = 'dashboard.taxonomyView.taxonomyManager.table.unmapped.title',
+  /**
+   * Select the taxonomy
+   */
+  dashboardTaxonomyViewTaxonomyViewNavigationBarTitle = 'dashboard.taxonomyView.taxonomyView.navigationBar.title',
+  /**
+   * Import taxonomy
+   */
+  dashboardTaxonomyViewTaxonomyViewButtonImport = 'dashboard.taxonomyView.taxonomyView.button.import',
+  /**
+   * Tags
+   */
+  dashboardTaxonomyViewTaxonomyViewNavigationItemTags = 'dashboard.taxonomyView.taxonomyView.navigationItem.tags',
+  /**
+   * Categories
+   */
+  dashboardTaxonomyViewTaxonomyViewNavigationItemCategories = 'dashboard.taxonomyView.taxonomyView.navigationItem.categories',
+  /**
+   * View does not exist
+   */
+  dashboardUnkownViewTitle = 'dashboard.unkownView.title',
+  /**
+   * You seem to have ended up on a view that doesn't exist. Please re-open the dashboard.
+   */
+  dashboardUnkownViewDescription = 'dashboard.unkownView.description',
+  /**
+   * Manage your static site with Front Matter
+   */
+  dashboardWelcomeScreenTitle = 'dashboard.welcomeScreen.title',
+  /**
+   * Thank you for using Front Matter!
+   */
+  dashboardWelcomeScreenThanks = 'dashboard.welcomeScreen.thanks',
+  /**
+   * We try to aim to make Front Matter as easy to use as possible, but if you have any questions or suggestions. Please don't hesitate to reach out to us on GitHub.
+   */
+  dashboardWelcomeScreenDescription = 'dashboard.welcomeScreen.description',
+  /**
+   * GitHub
+   */
+  dashboardWelcomeScreenLinkGithubTitle = 'dashboard.welcomeScreen.link.github.title',
+  /**
+   * GitHub / Documentation
+   */
+  dashboardWelcomeScreenLinkGithubLabel = 'dashboard.welcomeScreen.link.github.label',
+  /**
+   * Become a sponsor
+   */
+  dashboardWelcomeScreenLinkSponsorTitle = 'dashboard.welcomeScreen.link.sponsor.title',
+  /**
+   * Sponsor
+   */
+  dashboardWelcomeScreenLinkSponsorLabel = 'dashboard.welcomeScreen.link.sponsor.label',
+  /**
+   * Write a review
+   */
+  dashboardWelcomeScreenLinkReviewTitle = 'dashboard.welcomeScreen.link.review.title',
+  /**
+   * Review
+   */
+  dashboardWelcomeScreenLinkReviewLabel = 'dashboard.welcomeScreen.link.review.label',
+  /**
+   * Perform the next steps to get you started with the extension
+   */
+  dashboardWelcomeScreenActionsHeading = 'dashboard.welcomeScreen.actions.heading',
+  /**
+   * You can also use the extension from the Front Matter side panel. There you will find the actions you can perform specifically for your pages.
+   */
+  dashboardWelcomeScreenActionsDescription = 'dashboard.welcomeScreen.actions.description',
+  /**
+   * We hope you enjoy Front Matter!
+   */
+  dashboardWelcomeScreenActionsThanks = 'dashboard.welcomeScreen.actions.thanks',
+  /**
+   * Developer mode
+   */
+  dashboardAppDeveloperTitle = 'dashboard.app.developer.title',
+  /**
+   * Reload the dashboard
+   */
+  dashboardAppDeveloperReloadTitle = 'dashboard.app.developer.reload.title',
+  /**
+   * Reload
+   */
+  dashboardAppDeveloperReloadLabel = 'dashboard.app.developer.reload.label',
+  /**
+   * Open the DevTools
+   */
+  dashboardAppDeveloperDevToolsTitle = 'dashboard.app.developer.devTools.title',
+  /**
+   * DevTools
+   */
+  dashboardAppDeveloperDevToolsLabel = 'dashboard.app.developer.devTools.label',
   /**
    * Actions
    */

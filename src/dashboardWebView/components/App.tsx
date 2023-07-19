@@ -19,6 +19,8 @@ import { UnknownView } from './UnknownView';
 import { ErrorBoundary } from '@sentry/react';
 import { ErrorView } from './ErrorView';
 import { DashboardMessage } from '../DashboardMessage';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../localization';
 
 export interface IAppProps {
   showWelcome: boolean;
@@ -96,19 +98,21 @@ Stack: ${componentStack}`
         {
           isDevMode && (
             <div className="relative p-2 flex justify-center items-center bg-[var(--vscode-statusBar-debuggingBackground)] text-[var(--vscode-statusBar-debuggingForeground)]">
-              <span className='absolute left-2'>Development mode</span>
+              <span className='absolute left-2'>
+                {l10n.t(LocalizationKey.dashboardAppDeveloperTitle)}
+              </span>
 
               <a
                 className="ml-2 px-2 hover:text-[var(--vscode-statusBar-debuggingForeground)] hover:bg-[var(--vscode-statusBarItem-hoverBackground)] hover:outline-none focus:outline-none"
                 href={`command:workbench.action.webview.reloadWebviewAction`}
-                title="Reload the dashboard">
-                Reload
+                title={l10n.t(LocalizationKey.dashboardAppDeveloperReloadTitle)}>
+                {l10n.t(LocalizationKey.dashboardAppDeveloperReloadLabel)}
               </a>
               <a
                 className="ml-2 px-2 hover:text-[var(--vscode-statusBar-debuggingForeground)] hover:bg-[var(--vscode-statusBarItem-hoverBackground)] hover:outline-none focus:outline-none"
                 href={`command:workbench.action.webview.openDeveloperTools`}
-                title="Open DevTools">
-                DevTools
+                title={l10n.t(LocalizationKey.dashboardAppDeveloperDevToolsTitle)}>
+                {l10n.t(LocalizationKey.dashboardAppDeveloperDevToolsLabel)}
               </a>
             </div>
           )

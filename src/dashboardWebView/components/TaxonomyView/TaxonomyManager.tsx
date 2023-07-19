@@ -11,6 +11,8 @@ import { getTaxonomyField } from '../../../helpers/getTaxonomyField';
 import { TaxonomyActions } from './TaxonomyActions';
 import { TaxonomyLookup } from './TaxonomyLookup';
 import useThemeColors from '../../hooks/useThemeColors';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface ITaxonomyManagerProps {
   data: TaxonomyData | undefined;
@@ -105,6 +107,10 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
     return [...new Set(unmapped)].filter(i => i);
   }, [items, taxonomy, pages, settings?.contentTypes]);
 
+  if (!taxonomy) {
+    return null;
+  }
+
   return (
     <div className={`py-6 px-4 flex flex-col h-full overflow-hidden`}>
       <div className={`flex w-full justify-between flex-shrink-0`}>
@@ -121,7 +127,7 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
             'text-[var(--frontmatter-secondary-text)]'
           )
             }`}>
-            Create, edit, and manage the {taxonomy} of your site
+            {l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerDescription, taxonomy)}
           </p>
         </div>
         <div>
@@ -131,11 +137,11 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
               `text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`
             )
               }`}
-            title={`Create a new ${taxonomy} value`}
+            title={l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerButtonCreate, taxonomy)}
             onClick={onCreate}
           >
             <PlusSmIcon className={`mr-2 h-6 w-6`} />
-            <span className={`text-sm`}>Create a new {taxonomy} value</span>
+            <span className={`text-sm`}>{l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerButtonCreate, taxonomy)}</span>
           </button>
         </div>
       </div>
@@ -148,19 +154,19 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
                 scope="col"
                 className={`px-6 py-3 text-left text-xs font-medium uppercase ${getColors('text-gray-500 dark:text-whisper-900', 'text-[var(--frontmatter-secondary-text)]')}`}
               >
-                Name
+                {l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerTableHeadingName)}
               </th>
               <th
                 scope="col"
                 className={`px-6 py-3 text-left text-xs font-medium uppercase ${getColors('text-gray-500 dark:text-whisper-900', 'text-[var(--frontmatter-secondary-text)]')}`}
               >
-                Count
+                {l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerTableHeadingCount)}
               </th>
               <th
                 scope="col"
                 className={`px-6 py-3 text-right text-xs font-medium uppercase ${getColors('text-gray-500 dark:text-whisper-900', 'text-[var(--frontmatter-secondary-text)]')}`}
               >
-                Action
+                {l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerTableHeadingAction)}
               </th>
             </tr>
           </thead>
@@ -187,7 +193,7 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
                     className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${getColors(`text-gray-800 dark:text-gray-200`, `text-[var(--frontmatter-text)]`)}`}
                     colSpan={4}
                   >
-                    No {taxonomy} found
+                    {l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerTableRowEmpty, taxonomy)}
                   </td>
                 </tr>
               ))}
@@ -198,7 +204,7 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
                 <tr key={index}>
                   <td
                     className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${getColors(`text-gray-800 dark:text-gray-200`, `text-[var(--frontmatter-text)]`)}`}
-                    title="Missing in your settings"
+                    title={l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerTableUnmappedTitle)}
                   >
                     <ExclamationIcon className="inline-block h-4 w-4 mr-2" />
                     <span>{item}</span>

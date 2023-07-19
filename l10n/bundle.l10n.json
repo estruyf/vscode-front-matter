@@ -84,6 +84,10 @@
   "dashboard.header.grouping.option.draft": "Draft/Published",
   "dashboard.header.grouping.menuButton.label": "Group by",
 
+  "dashboard.header.navigation.allArticles": "All articles",
+  "dashboard.header.navigation.published": "Published",
+  "dashboard.header.navigation.draft": "In draft",
+
   "dashboard.header.header.createContent": "Create content",
   "dashboard.header.header.createByContentType": "Create by content type",
   "dashboard.header.header.createByTemplate": "Create by template",
@@ -227,6 +231,41 @@
   "dashboard.taxonomyView.button.delete.title": "Delete {0}",
 
   "dashboard.taxonomyView.taxonomyLookup.button.title": "Show contents with {0} in {1}",
+
+  "dashboard.taxonomyView.taxonomyManager.description": "Create, edit, and manage the {0} of your site",
+  "dashboard.taxonomyView.taxonomyManager.button.create": "Create a new {0} value",
+  "dashboard.taxonomyView.taxonomyManager.table.heading.name": "Name",
+  "dashboard.taxonomyView.taxonomyManager.table.heading.count": "Count",
+  "dashboard.taxonomyView.taxonomyManager.table.heading.action": "Action",
+  "dashboard.taxonomyView.taxonomyManager.table.row.empty": "No {0} found",
+  "dashboard.taxonomyView.taxonomyManager.table.unmapped.title": "Missing in your settings",
+
+  "dashboard.taxonomyView.taxonomyView.navigationBar.title": "Select the taxonomy",
+  "dashboard.taxonomyView.taxonomyView.button.import": "Import taxonomy",
+  "dashboard.taxonomyView.taxonomyView.navigationItem.tags": "Tags",
+  "dashboard.taxonomyView.taxonomyView.navigationItem.categories": "Categories",
+
+  "dashboard.unkownView.title": "View does not exist",
+  "dashboard.unkownView.description": "You seem to have ended up on a view that doesn't exist. Please re-open the dashboard.",
+
+  "dashboard.welcomeScreen.title": "Manage your static site with Front Matter",
+  "dashboard.welcomeScreen.thanks": "Thank you for using Front Matter!",
+  "dashboard.welcomeScreen.description": "We try to aim to make Front Matter as easy to use as possible, but if you have any questions or suggestions. Please don't hesitate to reach out to us on GitHub.",
+  "dashboard.welcomeScreen.link.github.title": "GitHub",
+  "dashboard.welcomeScreen.link.github.label": "GitHub / Documentation",
+  "dashboard.welcomeScreen.link.sponsor.title": "Become a sponsor",
+  "dashboard.welcomeScreen.link.sponsor.label": "Sponsor",
+  "dashboard.welcomeScreen.link.review.title": "Write a review",
+  "dashboard.welcomeScreen.link.review.label": "Review",
+  "dashboard.welcomeScreen.actions.heading": "Perform the next steps to get you started with the extension",
+  "dashboard.welcomeScreen.actions.description": "You can also use the extension from the Front Matter side panel. There you will find the actions you can perform specifically for your pages.",
+  "dashboard.welcomeScreen.actions.thanks": "We hope you enjoy Front Matter!",
+
+  "dashboard.app.developer.title": "Developer mode",
+  "dashboard.app.developer.reload.title": "Reload the dashboard",
+  "dashboard.app.developer.reload.label": "Reload",
+  "dashboard.app.developer.devTools.title": "Open the DevTools",
+  "dashboard.app.developer.devTools.label": "DevTools",
 
   "panel.actions.title": "Actions",
   "panel.actions.openDashboard": "Open dashboard",
