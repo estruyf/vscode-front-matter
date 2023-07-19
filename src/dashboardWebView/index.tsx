@@ -107,10 +107,8 @@ if (elm) {
   const url = elm?.getAttribute('data-url');
   const experimental = elm?.getAttribute('data-experimental');
 
-  if (experimental) {
-    updateCssVariables();
-    mutationObserver.observe(document.body, { childList: false, attributes: true });
-  }
+  updateCssVariables();
+  mutationObserver.observe(document.body, { childList: false, attributes: true });
 
   if (isProd === 'true') {
     Sentry.init({
@@ -127,9 +125,7 @@ if (elm) {
     });
   }
 
-  if (experimental) {
-    elm.setAttribute("class", "experimental bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]");
-  }
+  elm.setAttribute("class", `${experimental ? "experimental" : ""} bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]`);
 
   if (type === 'preview') {
     render(

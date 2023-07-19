@@ -209,6 +209,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
     return (
       <FieldBoundary key={field.name} fieldName={field.title || field.name}>
         <TextField
+          name={field.name}
           label={field.title || field.name}
           description={field.description}
           singleLine={field.single}
@@ -218,6 +219,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           onChange={(value) => onSendUpdate(field.name, value, parentFields)}
           value={(fieldValue as string) || null}
           required={!!field.required}
+          settings={settings}
         />
       </FieldBoundary>
     );
