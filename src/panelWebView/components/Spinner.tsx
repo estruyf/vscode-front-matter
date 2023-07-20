@@ -1,11 +1,17 @@
 import * as React from 'react';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../localization';
 
-export interface ISpinnerProps {}
+export interface ISpinnerProps { }
 
 const Spinner: React.FunctionComponent<ISpinnerProps> = (
-  props: React.PropsWithChildren<ISpinnerProps>
+  _: React.PropsWithChildren<ISpinnerProps>
 ) => {
-  return <div className="spinner">Loading...</div>;
+  return (
+    <div className="spinner">
+      {l10n.t(LocalizationKey.panelSpinnerLoading)}
+    </div>
+  );
 };
 
 Spinner.displayName = 'Spinner';

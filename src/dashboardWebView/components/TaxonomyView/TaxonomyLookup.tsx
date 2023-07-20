@@ -7,6 +7,8 @@ import { getTaxonomyField } from '../../../helpers/getTaxonomyField';
 import { useNavigate } from 'react-router-dom';
 import { routePaths } from '../..';
 import useThemeColors from '../../hooks/useThemeColors';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface ITaxonomyLookupProps {
   taxonomy: string | null;
@@ -57,7 +59,7 @@ export const TaxonomyLookup: React.FunctionComponent<ITaxonomyLookupProps> = ({
     return (
       <button
         className={total ? `font-bold ${getColors(`text-teal-900 hover:text-teal-600 `, `text-[var(--frontmatter-link)] hover:text-[var(--frontmatter-link-hover)]`)}` : ``}
-        title={total ? `Show contents with ${value} in ${taxonomy}` : ``}
+        title={total ? l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyLookupButtonTitle, value, taxonomy) : ``}
         onClick={onNavigate}
       >
         {total || `-`}

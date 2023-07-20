@@ -4,6 +4,8 @@ import { useRecoilValue } from 'recoil';
 import usePagination from '../../hooks/usePagination';
 import useThemeColors from '../../hooks/useThemeColors';
 import { MediaTotalSelector, PageAtom, SettingsAtom } from '../../state';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IPaginationStatusProps {
   totalPages?: number;
@@ -32,15 +34,18 @@ export const PaginationStatus: React.FunctionComponent<IPaginationStatusProps> =
 
   return (
     <div className="hidden sm:flex">
-      <p className={`text-sm ${
-        getColors(
-          'text-gray-500 dark:text-whisper-900',
-          'text-[var(--vscode-tab-inactiveForeground)]'
-        )
-      }`}>
-        Showing <span className="font-medium">{page * pageSetNr + 1}</span> to{' '}
-        <span className="font-medium">{totelItemsOnPage}</span> of{' '}
-        <span className="font-medium">{totalItems}</span> results
+      <p className={`text-sm ${getColors(
+        'text-gray-500 dark:text-whisper-900',
+        'text-[var(--vscode-tab-inactiveForeground)]'
+      )
+        }`}>
+        {
+          l10n.t(LocalizationKey.dashboardHeaderPaginationStatusText,
+            (page * pageSetNr + 1),
+            totelItemsOnPage,
+            totalItems
+          )
+        }
       </p>
     </div>
   );

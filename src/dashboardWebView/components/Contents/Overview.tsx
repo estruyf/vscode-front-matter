@@ -13,6 +13,8 @@ import { Item } from './Item';
 import { List } from './List';
 import usePagination from '../../hooks/usePagination';
 import useThemeColors from '../../hooks/useThemeColors';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IOverviewProps {
   pages: Page[];
@@ -52,19 +54,13 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
       <div className={`flex items-center justify-center h-full`}>
         <div className={`max-w-xl text-center`}>
           <FrontMatterIcon
-            className={`h-32 mx-auto opacity-90 mb-8 ${
-              getColors('text-vulcan-300 dark:text-whisper-800', 'text-[var(--vscode-editor-foreground)]')
-            }`}
+            className={`h-32 mx-auto opacity-90 mb-8 ${getColors('text-vulcan-300 dark:text-whisper-800', 'text-[var(--vscode-editor-foreground)]')
+              }`}
           />
           {settings && settings?.contentFolders?.length > 0 ? (
-            <p className={`text-xl font-medium`}>No Markdown to show</p>
+            <p className={`text-xl font-medium`}>{l10n.t(LocalizationKey.dashboardContentsOverviewNoMarkdown)}</p>
           ) : (
-            <>
-              <p className={`text-lg font-medium`}>
-                Make sure you registered a content folder in your project to let Front Matter find
-                the contents.
-              </p>
-            </>
+            <p className={`text-lg font-medium`}>{l10n.t(LocalizationKey.dashboardContentsOverviewNoFolders)}</p>
           )}
         </div>
       </div>

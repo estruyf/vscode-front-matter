@@ -1,17 +1,23 @@
-import { PencilIcon } from '@heroicons/react/outline';
+import { PencilIcon, SparklesIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useRecoilState } from 'recoil';
-import { BaseFieldProps } from '../../../models';
+import { BaseFieldProps, PanelSettings } from '../../../models';
 import { RequiredFieldsAtom } from '../../state';
 import { FieldTitle } from './FieldTitle';
 import { FieldMessage } from './FieldMessage';
+import { messageHandler } from '@estruyf/vscode/dist/client';
+import { CommandToCode } from '../../CommandToCode';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface ITextFieldProps extends BaseFieldProps<string> {
   singleLine: boolean | undefined;
   wysiwyg: boolean | undefined;
   limit: number | undefined;
   rows?: number;
+  name: string;
+  settings: PanelSettings;
   onChange: (txtValue: string) => void;
 }
 
@@ -25,11 +31,14 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   description,
   value,
   rows,
+  name,
+  settings,
   onChange,
   required
 }: React.PropsWithChildren<ITextFieldProps>) => {
   const [, setRequiredFields] = useRecoilState(RequiredFieldsAtom);
   const [text, setText] = React.useState<string | null>(value);
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   const onTextChange = (txtValue: string) => {
     setText(txtValue);
@@ -75,6 +84,37 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
     }
   }, [showRequiredState, isValid]);
 
+  const suggestDescription = () => {
+    setLoading(true);
+    messageHandler.request<string>(CommandToCode.aiSuggestDescription).then((suggestion) => {
+      setLoading(false);
+
+      if (suggestion) {
+        setText(suggestion);
+        onChange(suggestion);
+      }
+    }).catch(() => {
+      setLoading(false);
+    });
+  };
+
+  const actionElement = useMemo(() => {
+    if (!settings?.aiEnabled || settings.seo.descriptionField !== name) {
+      return;
+    }
+
+    return (
+      <button
+        className='metadata_field__title__action'
+        title={l10n.t(LocalizationKey.panelFieldsTextFieldAiMessage, label?.toLowerCase())}
+        type='button'
+        onClick={() => suggestDescription()}
+        disabled={loading}>
+        <SparklesIcon />
+      </button>
+    );
+  }, [settings?.aiEnabled, name]);
+
   useEffect(() => {
     if (text !== value) {
       setText(value);
@@ -83,10 +123,18 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
 
   return (
     <div className={`metadata_field`}>
-      <FieldTitle label={label} icon={<PencilIcon />} required={required} />
+      {
+        loading && (
+          <div className='metadata_field__loading'>
+            {l10n.t(LocalizationKey.panelFieldsTextFieldAiGenerate)}
+          </div>
+        )
+      }
+
+      <FieldTitle label={label} actionElement={actionElement} icon={<PencilIcon />} required={required} />
 
       {wysiwyg ? (
-        <React.Suspense fallback={<div>Loading field</div>}>
+        <React.Suspense fallback={<div>{l10n.t(LocalizationKey.panelFieldsTextFieldLoading)}</div>}>
           <WysiwygField text={text || ''} onChange={onTextChange} />
         </React.Suspense>
       ) : singleLine ? (
@@ -112,7 +160,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
 
       {limit && limit > 0 && (text || '').length > limit && (
         <div className={`metadata_field__limit`}>
-          Field limit reached {(text || '').length}/{limit}
+          {l10n.t(LocalizationKey.panelFieldsTextFieldLimit, `${(text || '').length}/${limit}`)}
         </div>
       )}
 

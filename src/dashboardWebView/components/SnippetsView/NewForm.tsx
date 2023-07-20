@@ -3,6 +3,8 @@ import * as React from 'react';
 import { GeneralCommands } from '../../../constants';
 import useThemeColors from '../../hooks/useThemeColors';
 import { SnippetInput } from './SnippetInput';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface INewFormProps {
   title: string;
@@ -39,7 +41,8 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
     <div className="space-y-4">
       <div>
         <label htmlFor={`title`} className="block text-sm font-medium capitalize">
-          Title{' '}
+          {l10n.t(LocalizationKey.commonTitle)}
+          {' '}
           <span className={getColors(`text-red-400`, `text-[var(--vscode-notificationsErrorIcon-foreground)]`)} title="Required field">
             *
           </span>
@@ -48,7 +51,7 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
           <SnippetInput
             name='title'
             value={title}
-            placeholder='Snippet title'
+            placeholder={l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputTitlePlaceholder)}
             onChange={(e) => onTitleUpdate(e.currentTarget.value)}
           />
         </div>
@@ -56,13 +59,13 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
 
       <div>
         <label htmlFor={`description`} className="block text-sm font-medium capitalize">
-          Description
+          {l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputDescriptionLabel)}
         </label>
         <div className="mt-1">
           <SnippetInput
             name='description'
             value={description}
-            placeholder='Snippet description'
+            placeholder={l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputDescriptionPlaceholder)}
             onChange={(e) => onDescriptionUpdate(e.currentTarget.value)}
           />
         </div>
@@ -70,7 +73,8 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
 
       <div>
         <label htmlFor={`snippet`} className="block text-sm font-medium capitalize">
-          Snippet{' '}
+          {l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputSnippetLabel)}
+          {' '}
           <span className="text-red-400" title="Required field">
             *
           </span>
@@ -79,7 +83,7 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
           <SnippetInput
             name='snippet'
             value={body}
-            placeholder='Snippet content'
+            placeholder={l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputSnippetPlaceholder)}
             onChange={(e) => onBodyUpdate(e.currentTarget.value)}
             isTextArea
           />
@@ -87,8 +91,8 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
       </div>
 
       <div>
-        <label htmlFor={`snippet`} className="block text-sm font-medium">
-          Is a media snippet?
+        <label htmlFor={`isMediaSnippet`} className="block text-sm font-medium">
+          {l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputIsMediaSnippetLabel)}
         </label>
         <div className="mt-1 relative flex items-start">
           <div className="flex items-center h-5">
@@ -112,21 +116,19 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
               className={`font-medium ${getColors(`text-vulcan-100 dark:text-whisper-900`, `text-[var(--vscode-editor-foreground)]`)
                 }`}
             >
-              Media snippet
+              {l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputIsMediaSnippetCheckboxLabel)}
             </label>
             <p id="isMediaSnippet-description" className={getColors('text-vulcan-300 dark:text-whisper-500', `text-[var(--vscode-foreground)]`)}>
-              Use the current snippet for inserting media files into your content.
+              {l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputIsMediaSnippetCheckboxDescription)}
             </p>
             <p>
-              Check our{' '}
               <button
                 className={getColors('text-teal-700 hover:text-teal-500', 'text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)]')}
                 onClick={openLink}
-                title="media snippet placeholders"
+                title={l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputDocsButtonTitle)}
               >
-                media snippet placeholders
-              </button>{' '}
-              documentation to know which placeholders you can use.
+                {l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputDocsButtonDescription)}
+              </button>
             </p>
           </div>
         </div>

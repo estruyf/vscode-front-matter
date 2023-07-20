@@ -1,11 +1,421 @@
 {
-  "dashboard.header.createContent": "Create content",
+  "common.add": "Add",
+  "common.edit": "Edit",
+  "common.delete": "Delete",
+  "common.cancel": "Cancel",
+  "common.clear": "Clear",
+  "common.clear.value": "Clear value",
+  "common.search": "Search",
+  "common.save": "Save",
+  "common.menu": "Menu",
+  "common.insert": "Insert",
+  "common.insert.snippet": "Insert snippet",
+  "common.title": "Title",
+  "common.description": "Description",
+  "common.retry": "Retry",
+  "common.update": "Update",
+  "common.information": "Info",
+  "common.important": "Important",
+  "common.sync": "Sync",
+  "common.slug": "Slug",
+  "common.support": "Support",
+  "common.remove.value": "Remove {0}",
+  "common.error.message": "Sorry, something went wrong.",
+
+  "developer.title": "Developer mode",
+  "developer.reload.title": "Reload the dashboard",
+  "developer.reload.label": "Reload",
+  "developer.devTools.title": "Open the DevTools",
+  "developer.devTools.label": "DevTools",
+
+  "field.required": "Required field",
+  "field.unknown": "Unknown field",
+
+  "dashboard.chatbot.answer.answer": "Answer",
+  "dashboard.chatbot.answer.resources": "Resources",
+  "dashboard.chatbot.answer.warning": "Warning: Anwers might be wrong. In case of doubt, please consult the docs.",
+
+  "dashboard.chatbot.chatbot.loading": "Assistent is getting ready",
+  "dashboard.chatbot.chatbot.ready": "I'm ready, what do you want to know?",
+
+  "dashboard.chatbot.chatbox.placeholder": "How can I configure Front Matter?",
+
+  "dashboard.chatbot.header.heading": "Ask Front Matter AI",
+  "dashboard.chatbot.header.description": "Our AI, powered by mendable.ai, has processed the documentation and can assist you with any queries regarding Front Matter. Go ahead and ask away!",
+
+  "dashboard.common.choiceButton.open": "Open options",
+
+  "dashboard.contents.contentActions.actionMenuButton.title": "Menu",
+  "dashboard.contents.contentActions.menuItem.view": "View",
+  "dashboard.contents.contentActions.alert.title": "Delete: {0}",
+  "dashboard.contents.contentActions.alert.description": "Are you sure you want to delete the \"{0}\" content?",
+
+  "dashboard.contents.item.invalidTitle": "<invalid title>",
+  "dashboard.contents.item.invalidDescription": "<invalid description>",
+
+  "dashboard.contents.list.title": "Title",
+  "dashboard.contents.list.date": "Date",
+  "dashboard.contents.list.status": "Status",
+
+  "dashboard.contents.overview.noMarkdown": "No Markdown to show",
+  "dashboard.contents.overview.noFolders": "Make sure you registered a content folder in your project to let Front Matter find the contents.",
+
+  "dashboard.contents.status.draft": "Draft",
+  "dashboard.contents.status.published": "Published",
+
+  "dashboard.dataView.dataForm.modify": "Modify the data",
+  "dashboard.dataView.dataForm.add": "Add new data",
+
+  "dashboard.dataView.dataView.select": "Select your data type",
+  "dashboard.dataView.dataView.title": "Your {0} data items",
+  "dashboard.dataView.dataView.add": "Add a new entry",
+  "dashboard.dataView.dataView.empty": "No {0} data entries found",
+  "dashboard.dataView.dataView.createOrModify": "Create or modify your {0} data",
+  "dashboard.dataView.dataView.getStarted": "Select a data type to get started",
+  "dashboard.dataView.dataView.noDataFiles": "No data files found",
+  "dashboard.dataView.dataView.getStarted.link": "Read more to get started using data files",
+
+  "dashboard.dataView.emptyView.heading": "Select your date type first",
+
+  "dashboard.dataView.sortableItem.editButton.title": "Edit \"{0}\"",
+  "dashboard.dataView.sortableItem.deleteButton.title": "Delete \"{0}\"",
+  "dashboard.dataView.sortableItem.alert.title": "Delete data entry",
+  "dashboard.dataView.sortableItem.alert.description": "Are you sure you want to delete the data entry?",
+
+  "dashboard.errorView.description": "Please close the dashboard and try again.",
+
+  "dashboard.header.breadcrumb.home": "Home",
+
+  "dashboard.header.clearFilters.title": "Clear filters, grouping, and sorting",
+
+  "dashboard.header.filter.default": "No filter",
+
+  "dashboard.header.folders.default": "All types",
+  "dashboard.header.folders.menuButton.showing": "Showing",
+
+  "dashboard.header.grouping.option.none": "None",
+  "dashboard.header.grouping.option.year": "Year",
+  "dashboard.header.grouping.option.draft": "Draft/Published",
+  "dashboard.header.grouping.menuButton.label": "Group by",
+
+  "dashboard.header.navigation.allArticles": "All articles",
+  "dashboard.header.navigation.published": "Published",
+  "dashboard.header.navigation.draft": "In draft",
+
+  "dashboard.header.header.createContent": "Create content",
+  "dashboard.header.header.createByContentType": "Create by content type",
+  "dashboard.header.header.createByTemplate": "Create by template",
+
+  "dashboard.header.pagination.first": "First",
+  "dashboard.header.pagination.previous": "Previous",
+  "dashboard.header.pagination.next": "next",
+  "dashboard.header.pagination.last": "Last",
+
+  "dashboard.header.paginationStatus.text": "Showing {0} to {1} of {2} results",
+
+  "dashboard.header.projectSwitcher.label": "project",
+
+  "dashboard.header.refreshDashboard.label": "Refresh dashboard",
+
+  "dashboard.header.sorting.lastModified.asc": "Last modified (asc)",
+  "dashboard.header.sorting.lastModified.desc": "Last modified (desc)",
+  "dashboard.header.sorting.filename.asc": "By filename (asc)",
+  "dashboard.header.sorting.filename.desc": "By filename (desc)",
+  "dashboard.header.sorting.published.asc": "Published (asc)",
+  "dashboard.header.sorting.published.desc": "Published (desc)",
+  "dashboard.header.sorting.size.asc": "Size (asc)",
+  "dashboard.header.sorting.size.desc": "Size (desc)",
+  "dashboard.header.sorting.caption.asc": "Caption (asc)",
+  "dashboard.header.sorting.caption.desc": "Caption (desc)",
+  "dashboard.header.sorting.alt.asc": "Alt (asc)",
+  "dashboard.header.sorting.alt.desc": "Alt (desc)",
+  "dashboard.header.sorting.label": "Sort by",
+  
   "dashboard.header.startup.label": "Open on startup?",
 
+  "dashboard.header.tabs.contents": "Contents",
+  "dashboard.header.tabs.media": "Media",
+  "dashboard.header.tabs.snippets": "Snippets",
+  "dashboard.header.tabs.data": "data",
+  "dashboard.header.tabs.taxonomies": "Taxonomies",
+
+  "dashboard.header.viewSwitch.toGrid": "Change to grid",
+  "dashboard.header.viewSwitch.toList": "Change to list",
+
+  "dashboard.layout.sponsor.support.msg": "Support Front Matter",
+  "dashboard.layout.sponsor.review.label": "Review",
+  "dashboard.layout.sponsor.review.msg": "Review Front Matter",
+
+  "dashboard.media.common.title": "Title",
+  "dashboard.media.common.caption": "Caption",
+  "dashboard.media.common.alt": "Alternate text",
+  "dashboard.media.common.size": "Size",
+
+  "dashboard.media.dialog.title": "View details",
+  "dashboard.media.panel.close": "Close panel",
+  "dashboard.media.metadata.panel.title": "Update metadata",
+  "dashboard.media.metadata.panel.description": "Please specify the metadata you want to set for the file.",
+  "dashboard.media.metadata.panel.field.fileName": "Filename",
+  "dashboard.media.metadata.panel.form.metadata.title": "Metadata",
+  "dashboard.media.metadata.panel.form.information.title": "Information",
+  "dashboard.media.metadata.panel.form.information.createdDate": "Created",
+  "dashboard.media.metadata.panel.form.information.modifiedDate": "Last modified",
+  "dashboard.media.metadata.panel.form.information.dimensions": "Dimensions",
+  "dashboard.media.metadata.panel.form.information.folder": "Folder",
+
+  "dashboard.media.folderCreation.hexo.create": "Create post asset folder",
+  "dashboard.media.folderCreation.folder.create": "Create new folder",
+
+  "dashboard.media.item.quickAction.insert.field": "Insert image for your \"{0}\" field",
+  "dashboard.media.item.quickAction.insert.markdown": "Insert image with markdown markup",
+  "dashboard.media.item.quickAction.copy.path": "Copy media path",
+  "dashboard.media.item.quickAction.delete": "Delete media file",
+  "dashboard.media.item.menuItem.edit.metadata": "Edit metadata",
+  "dashboard.media.item.menuItem.insert.image": "Insert image",
+  "dashboard.media.item.menuItem.reveal.media": "Reveal media",
+  "dashboard.media.item.infoDialog.snippet.description": "Select the media snippet to use for the current media file.",
+  "dashboard.media.item.alert.delete.description": "Are you sure you want to delete the file from the {0} folder?",
+
+  "dashboard.media.media.description": "Select the media file to add to your content.",
+  "dashboard.media.media.dragAndDrop": "You can also drag and drop images from your desktop and select them once uploaded.",
+  "dashboard.media.media.folder.upload": "Upload to {0}",
+  "dashboard.media.media.folder.default": "No folder selected, files you drop will be added to the {0} folder",
+  "dashboard.media.media.placeholder": "No media files to show. You can drag &amp; drop new files by holding your [shift] key.",
+  "dashboard.media.media.currentFolder": "Content folder",
+  "dashboard.media.media.publicFolder": "Public folder",
+
+  "dashboard.media.mediaHeaderTop.searchbox.placeholder": "Search in folder",
+
+  "dashboard.media.mediaSnippetForm.formDialog.title": "Insert media: {0}",
+  "dashboard.media.mediaSnippetForm.formDialog.description": "Insert the {0} media file into the current article",
+
+  "dashboard.preview.input.placeholder": "Enter a URL",
+  "dashboard.preview.button.navigate.title": "Navigate",
+  "dashboard.preview.button.refresh.title": "Refresh",
+  "dashboard.preview.button.open.title": "Open",
+
+  "dashboard.snippetsView.item.quickAction.editSnippet": "Edit snippet",
+  "dashboard.snippetsView.item.quickAction.deleteSnippet": "Delete snippet",
+  "dashboard.snippetsView.item.quickAction.viewSnippet": "View snippet file",
+  "dashboard.snippetsView.item.insert.formDialog.title": "Insert snippet: {0}",
+  "dashboard.snippetsView.item.insert.formDialog.description": "Insert the {0} snippet into the current article",
+  "dashboard.snippetsView.item.edit.formDialog.title": "Edit snippet: {0}",
+  "dashboard.snippetsView.item.edit.formDialog.description": "Edit the {0} snippet",
+  "dashboard.snippetsView.item.alert.title": "Delete snippet: {0}",
+  "dashboard.snippetsView.item.alert.description": "Are you sure you want to delete the {0} snippet?",
+
+  "dashboard.snippetsView.newForm.snippetInput.title.placeholder": "Snippet title",
+  "dashboard.snippetsView.newForm.snippetInput.description.label": "Description",
+  "dashboard.snippetsView.newForm.snippetInput.description.placeholder": "Snippet description",
+  "dashboard.snippetsView.newForm.snippetInput.snippet.label": "Snippet",
+  "dashboard.snippetsView.newForm.snippetInput.snippet.placeholder": "Snippet content",
+  "dashboard.snippetsView.newForm.snippetInput.isMediaSnippet.label": "Is a media snippet?",
+  "dashboard.snippetsView.newForm.snippetInput.isMediaSnippet.checkbox.label": "Media snippet",
+  "dashboard.snippetsView.newForm.snippetInput.isMediaSnippet.checkbox.description": "Use the current snippet for inserting media files into your content.",
+  "dashboard.snippetsView.newForm.snippetInput.docsButton.title": "Read more on using media snippet placeholders",
+  "dashboard.snippetsView.newForm.snippetInput.docsButton.description": "Check our media snippet placeholders documentation to know which placeholders you can use.",
+
+  "dashboard.snippetsView.snippets.ariaLabel": "Snippets header",
+  "dashboard.snippetsView.snippets.button.create": "Create new snippet",
+  "dashboard.snippetsView.snippets.select.description": "Select the snippet to add to your content.",
+  "dashboard.snippetsView.snippets.empty.message": "No snippets found",
+  "dashboard.snippetsView.snippets.readMore": "Read more to get started with snippets",
+  "dashboard.snippetsView.snippets.formDialog.title": "Create a snippet",
+
+  "dashboard.steps.stepsToGetStarted.button.addFolder.title": "Add as a content folder to Front Matter",
+  "dashboard.steps.stepsToGetStarted.initializeProject.name": "Initialize project",
+  "dashboard.steps.stepsToGetStarted.initializeProject.description": "Initialize the project will create the required files and folders for using the Front Matter CMS. Start by clicking on this action.",
+  "dashboard.steps.stepsToGetStarted.framework.name": "Framework presets",
+  "dashboard.steps.stepsToGetStarted.framework.description": "Select your site-generator or framework to prefill some of the recommended settings.",
+  "dashboard.steps.stepsToGetStarted.framework.select": "Select your framework",
+  "dashboard.steps.stepsToGetStarted.framework.select.other": "other",
+  "dashboard.steps.stepsToGetStarted.contentFolders.name": "Register content folder(s)",
+  "dashboard.steps.stepsToGetStarted.contentFolders.description": "Add one of the folders we found in your project as a content folder. Once a folder is set, Front Matter can be used to list all contents and allow you to create content.",
+  "dashboard.steps.stepsToGetStarted.contentFolders.label": "Folders containing content:",
+  "dashboard.steps.stepsToGetStarted.contentFolders.information.description": "You can also perform this action by right-clicking on the folder in the explorer view, and selecting register folder",
+  "dashboard.steps.stepsToGetStarted.tags.name": "Import all tags and categories (optional)",
+  "dashboard.steps.stepsToGetStarted.tags.description": "Now that Front Matter knows all the content folders. Would you like to import all tags and categories from the available content?",
+  "dashboard.steps.stepsToGetStarted.showDashboard.name": "Show the dashboard",
+  "dashboard.steps.stepsToGetStarted.showDashboard.description": "Once all actions are completed, the dashboard can be loaded.",
+
+  "dashboard.taxonomyView.button.add.title": "Add {0} to taxonomy settings",
+  "dashboard.taxonomyView.button.edit.title": "Edit {0}",
+  "dashboard.taxonomyView.button.merge.title": "Merge {0}",
+  "dashboard.taxonomyView.button.move.title": "Move to another taxonomy type",
+  "dashboard.taxonomyView.button.delete.title": "Delete {0}",
+
+  "dashboard.taxonomyView.taxonomyLookup.button.title": "Show contents with {0} in {1}",
+
+  "dashboard.taxonomyView.taxonomyManager.description": "Create, edit, and manage the {0} of your site",
+  "dashboard.taxonomyView.taxonomyManager.button.create": "Create a new {0} value",
+  "dashboard.taxonomyView.taxonomyManager.table.heading.name": "Name",
+  "dashboard.taxonomyView.taxonomyManager.table.heading.count": "Count",
+  "dashboard.taxonomyView.taxonomyManager.table.heading.action": "Action",
+  "dashboard.taxonomyView.taxonomyManager.table.row.empty": "No {0} found",
+  "dashboard.taxonomyView.taxonomyManager.table.unmapped.title": "Missing in your settings",
+
+  "dashboard.taxonomyView.taxonomyView.navigationBar.title": "Select the taxonomy",
+  "dashboard.taxonomyView.taxonomyView.button.import": "Import taxonomy",
+  "dashboard.taxonomyView.taxonomyView.navigationItem.tags": "Tags",
+  "dashboard.taxonomyView.taxonomyView.navigationItem.categories": "Categories",
+
+  "dashboard.unkownView.title": "View does not exist",
+  "dashboard.unkownView.description": "You seem to have ended up on a view that doesn't exist. Please re-open the dashboard.",
+
+  "dashboard.welcomeScreen.title": "Manage your static site with Front Matter",
+  "dashboard.welcomeScreen.thanks": "Thank you for using Front Matter!",
+  "dashboard.welcomeScreen.description": "We try to aim to make Front Matter as easy to use as possible, but if you have any questions or suggestions. Please don't hesitate to reach out to us on GitHub.",
+  "dashboard.welcomeScreen.link.github.title": "GitHub",
+  "dashboard.welcomeScreen.link.github.label": "GitHub / Documentation",
+  "dashboard.welcomeScreen.link.sponsor.title": "Become a sponsor",
+  "dashboard.welcomeScreen.link.sponsor.label": "Sponsor",
+  "dashboard.welcomeScreen.link.review.title": "Write a review",
+  "dashboard.welcomeScreen.link.review.label": "Review",
+  "dashboard.welcomeScreen.actions.heading": "Perform the next steps to get you started with the extension",
+  "dashboard.welcomeScreen.actions.description": "You can also use the extension from the Front Matter side panel. There you will find the actions you can perform specifically for your pages.",
+  "dashboard.welcomeScreen.actions.thanks": "We hope you enjoy Front Matter!",
+
+  "panel.contentType.contentTypeValidator.title": "Content-type",
+  "panel.contentType.contentTypeValidator.hint": "We noticed field differences between the content-type and the front matter data. \n Would you like to create, update, or set the content-type for this content?",
+  "panel.contentType.contentTypeValidator.button.create": "Create content-type",
+  "panel.contentType.contentTypeValidator.button.add": "Add missing fields to content-type",
+  "panel.contentType.contentTypeValidator.button.change": "Change content-type of the file",
+
+  "panel.dataBlock.dataBlockField.group.selected.edit": "Editing: {0}",
+  "panel.dataBlock.dataBlockField.group.selected.create": "Create a new {0}",
+  "panel.dataBlock.dataBlockField.group.select": "Select a group",
+  "panel.dataBlock.dataBlockField.add": "Add {0}",
+
+  "panel.dataBlock.dataBlockRecord.edit": "Edit record",
+  "panel.dataBlock.dataBlockRecord.delete": "Delete record",
+
+  "panel.dataBlock.dataBlockRecords.label": "Records",
+
+  "panel.dataBlock.dataBlockSelector.label": "Block type",
+
+  "panel.errorBoundary.fieldBoundary.label": "Failed viewing the field",
+
+  "panel.fields.choiceField.select": "Select {0}",
+  "panel.fields.choiceField.clear": "Clear value",
+
+  "panel.fields.contentTypeRelationshipField.loading": "Fetching possible values...",
+
+  "panel.fields.dateTimeField.button.pick": "Pick your date",
+  "panel.fields.dateTimeField.time": "Time:",
+
+  "panel.fields.fieldMessage.required": "The {0} field is required",
+
+  "panel.fields.fileField.delete": "Delete file",
+  "panel.fields.fileField.add": "Add your {0}",
+
+  "panel.fields.imageFallback.label": "The image coundn't be loaded",
+
+  "panel.fields.listField.edit": "Edit record",
+  "panel.fields.listField.delete": "Delete record",
+
+  "panel.fields.previewImage.remove": "Remove image",
+
+  "panel.fields.previewImageField.add": "Add your {0}",
+
+  "panel.fields.slugField.update": "Update available",
+  "panel.fields.slugField.generate": "Generate slug",
+
+  "panel.fields.textField.ai.message": "Use Front Matter AI to suggest {0}",
+  "panel.fields.textField.ai.generate": "Generating suggestion...",
+  "panel.fields.textField.loading": "Loading field",
+  "panel.fields.textField.limit": "Field limit reached {0}",
+
+  "panel.fields.wrapperField.unknown": "Unkown field type: {0}",
+
   "panel.actions.title": "Actions",
-  "panel.actions.openDashboard": "Open dashboard",
-  "panel.actions.openPreview": "Open preview",
-  "panel.actions.startServer": "Start server",
-  "panel.actions.stopServer": "Stop server",
-  "panel.actions.createContent": "Create content"
+
+  "panel.articleDetails.title": "More details",
+  "panel.articleDetails.type": "Type",
+  "panel.articleDetails.total": "Total",
+  "panel.articleDetails.headings": "Headings",
+  "panel.articleDetails.paragraphs": "Paragraphs",
+  "panel.articleDetails.internalLinks": "Internal links",
+  "panel.articleDetails.externalLinks": "External links",
+  "panel.articleDetails.images": "Images",
+
+  "panel.baseView.initialize": "Initialize project",
+  "panel.baseView.actions.title": "Actions",
+  "panel.baseView.action.openDashboard": "Open dashboard",
+  "panel.baseView.action.openPreview": "Open preview",
+  "panel.baseView.action.createContent": "Create content",
+  "panel.baseView.empty": "Open a file to see more actions",
+
+  "panel.fileList.label.singular": "file",
+  "panel.fileList.label.plural": "files",
+
+  "panel.folderAndFiles.title": "Recently modified",
+
+  "panel.globalSettings.title": "Global settings",
+  "panel.globalSettings.action.modifiedDate.label": "Modified date",
+  "panel.globalSettings.action.modifiedDate.description": "Auto-update modified date",
+  "panel.globalSettings.action.frontMatter.label": "Front Matter highlight",
+  "panel.globalSettings.action.frontMatter.description": "Highlight Front Matter",
+  "panel.globalSettings.action.preview.label": "Local preview",
+  "panel.globalSettings.action.preview.placeholder": "Example: {0}",
+  "panel.globalSettings.action.server.label": "Local server command",
+  "panel.globalSettings.action.server.placeholder": "Example: {0}",
+
+  "panel.metadata.title": "Metadata",
+
+  "panel.otherActions.title": "Other actions",
+  "panel.otherActions.writingSettings.enabled": "Writing settings enabled",
+  "panel.otherActions.writingSettings.disabled": "Enable writing settings",
+  "panel.otherActions.centerMode": "Toggle center mode",
+  "panel.otherActions.createTemplate": "Create template",
+  "panel.otherActions.revealFile": "Reveal file in folder",
+  "panel.otherActions.openProject": "Reveal project folder",
+  "panel.otherActions.documentation": "Open documentation",
+  "panel.otherActions.settings": "Settings overview",
+  "panel.otherActions.issue": "Report an issue",
+
+  "panel.preview.title": "Open preview",
+
+  "panel.publishAction.publish": "Publish",
+  "panel.publishAction.unpublish": "Revert to draft",
+
+  "panel.seoDetails.recommended": "Recommended",
+
+  "panel.seoKeywordInfo.density": "Keyword usage {0} *",
+  "panel.seoKeywordInfo.validInfo.label": "Used in heading(s)",
+  "panel.seoKeywordInfo.validInfo.content": "Content",
+
+  "panel.seoKeywords.title": "Keywords",
+  "panel.seoKeywords.header.keyword": "Keyword",
+  "panel.seoKeywords.header.details": "Details",
+  "panel.seoKeywords.density": "* A keyword density of 1-1.5% is sufficient in most cases.",
+
+  "panel.seoStatus.title": "Recommendations",
+  "panel.seoStatus.header.property": "Property",
+  "panel.seoStatus.header.length": "Length",
+  "panel.seoStatus.header.valid": "Valid",
+  "panel.seoStatus.seoFieldInfo.characters": "{0} chars",
+  "panel.seoStatus.seoFieldInfo.words": "{0} words",
+  "panel.seoStatus.seoFieldInfo.article": "Article length",
+  "panel.seoStatus.collapsible.title": "SEO Status",
+  "panel.seoStatus.required": "{0} or {1} is required.",
+
+  "panel.slugAction.title": "Optimize slug",
+
+  "panel.spinner.loading": "Loading...",
+
+  "panel.startServerbutton.start": "Start server",
+  "panel.startServerbutton.stop": "Stop server",
+
+  "panel.tag.add": "Add {0} to your settings",
+
+  "panel.tagPicker.inputPlaceholder.empty": "Pick your {0}",
+  "panel.tagPicker.inputPlaceholder.disabled": "You have reached the limit of {0}",
+  "panel.tagPicker.ai.suggest": "Use Front Matter AI to suggest {0}",
+  "panel.tagPicker.ai.generating": "Generating suggestions...",
+  "panel.tagPicker.limit": "Max.: {0}",
+  "panel.tagPicker.unkown": "Add the unknown tag",
+
+  "panel.tags.tag.warning": "Be aware, this tag \"{0}\" is not saved in your settings. Once removed, it will be gone forever.",
+
+  "panel.viewPanel.mediaInsert": "Continue in the media dashboard to select the image you want to insert."
 }

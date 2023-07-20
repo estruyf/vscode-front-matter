@@ -1,4 +1,4 @@
-import { SETTING_SEO_TITLE_LENGTH } from '../constants';
+import { SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH } from '../constants';
 import { Logger, Notifications, Settings, TaxonomyHelper } from '../helpers';
 import fetch from 'node-fetch';
 import { TagType } from '../panelWebView/TagType';
@@ -41,6 +41,45 @@ export class SponsorAi {
       const data: string[] = await response.json();
 
       return data || [];
+    } catch (e) {
+      Logger.error(`Sponsor AI: ${(e as Error).message}`);
+      return undefined;
+    }
+  }
+
+  public static async getDescription(token: string, title: string, content: string) {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => {
+        Notifications.warning(`The AI title generation took too long. Please try again later.`);
+        controller.abort();
+      }, 10000);
+      const signal = controller.signal;
+
+      let articleContent = content;
+      if (articleContent.length > 2000) {
+        articleContent = articleContent.substring(0, 2000);
+      }
+
+      const response = await fetch(`${AI_URL}/description`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          accept: 'application/json'
+        },
+        body: JSON.stringify({
+          title: title,
+          content: articleContent,
+          token: token,
+          nrOfCharacters: Settings.get<number>(SETTING_SEO_DESCRIPTION_LENGTH) || 160
+        }),
+        signal: signal as any
+      });
+      clearTimeout(timeout);
+
+      const data: string = await response.text();
+
+      return data || '';
     } catch (e) {
       Logger.error(`Sponsor AI: ${(e as Error).message}`);
       return undefined;

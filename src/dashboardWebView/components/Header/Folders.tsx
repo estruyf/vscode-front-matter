@@ -3,14 +3,16 @@ import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { FolderAtom, SettingsSelector } from '../../state';
 import { MenuButton, MenuItem, MenuItems } from '../Menu';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
-export interface IFoldersProps {}
+export interface IFoldersProps { }
 
-const DEFAULT_TYPE = 'All types';
+const DEFAULT_TYPE = l10n.t(LocalizationKey.dashboardHeaderFoldersDefault);
 
 export const Folders: React.FunctionComponent<
   IFoldersProps
-> = ({}: React.PropsWithChildren<IFoldersProps>) => {
+> = ({ }: React.PropsWithChildren<IFoldersProps>) => {
   const [crntFolder, setCrntFolder] = useRecoilState(FolderAtom);
   const settings = useRecoilValue(SettingsSelector);
   const contentFolders = settings?.contentFolders || [];
@@ -22,7 +24,7 @@ export const Folders: React.FunctionComponent<
   return (
     <div className="flex items-center">
       <Menu as="div" className="relative z-10 inline-block text-left">
-        <MenuButton label={`Showing`} title={crntFolder || DEFAULT_TYPE} />
+        <MenuButton label={l10n.t(LocalizationKey.dashboardHeaderFoldersMenuButtonShowing)} title={crntFolder || DEFAULT_TYPE} />
 
         <MenuItems disablePopper>
           <MenuItem

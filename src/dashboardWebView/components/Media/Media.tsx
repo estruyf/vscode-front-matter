@@ -26,11 +26,13 @@ import { parseWinPath } from '../../../helpers/parseWinPath';
 import { basename, extname, join } from 'path';
 import { MediaInfo } from '../../../models';
 import useThemeColors from '../../hooks/useThemeColors';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IMediaProps { }
 
 export const Media: React.FunctionComponent<IMediaProps> = (
-  props: React.PropsWithChildren<IMediaProps>
+  _: React.PropsWithChildren<IMediaProps>
 ) => {
   const { media } = useMedia();
   const settings = useRecoilValue(SettingsSelector);
@@ -166,9 +168,9 @@ export const Media: React.FunctionComponent<IMediaProps> = (
       <div className="w-full h-full pb-6" {...getRootProps()}>
         {viewData?.data?.filePath && (
           <div className={`text-lg text-center mb-6`}>
-            <p>Select the media file to add to your content.</p>
+            <p>{l10n.t(LocalizationKey.dashboardMediaMediaDescription)}</p>
             <p className={`opacity-80 text-base`}>
-              You can also drag and drop images from your desktop and select them once uploaded.
+              {l10n.t(LocalizationKey.dashboardMediaMediaDragAndDrop)}
             </p>
           </div>
         )}
@@ -182,9 +184,8 @@ export const Media: React.FunctionComponent<IMediaProps> = (
             <UploadIcon className={`h-32`} />
             <p className={`text-xl max-w-md text-center`}>
               {selectedFolder
-                ? `Upload to ${selectedFolder}`
-                : `No folder selected, files you drop will be added to the ${currentStaticFolder || 'public'
-                } folder.`}
+                ? l10n.t(LocalizationKey.dashboardMediaMediaFolderUpload, selectedFolder)
+                : l10n.t(LocalizationKey.dashboardMediaMediaFolderDefault, currentStaticFolder || 'public')}
             </p>
           </div>
         )}
@@ -198,8 +199,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (
               />
 
               <p className={`text-xl font-medium`}>
-                No media files to show. You can drag &amp; drop new files by holding your [shift]
-                key.
+                {l10n.t(LocalizationKey.dashboardMediaMediaPlaceholder)}
               </p>
             </div>
           </div>
@@ -213,7 +213,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (
               group.folders.length > 0 && (
                 <div key={`group-${idx}`} className={`mb-8`}>
                   <h2 className="text-lg mb-8 first-letter:uppercase">
-                    Content folder: <b>{group.title}</b>
+                    {l10n.t(LocalizationKey.dashboardMediaMediaCurrentFolder)}: <b>{group.title}</b>
                   </h2>
 
                   <List gap={0}>
@@ -234,7 +234,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (
           <div className={`mb-8`}>
             {contentFolders && contentFolders.length > 0 && (
               <h2 className="text-lg mb-8">
-                Public folder
+                {l10n.t(LocalizationKey.dashboardMediaMediaPublicFolder)}
                 {currentStaticFolder && (
                   <span>
                     : <b>{currentStaticFolder}</b>

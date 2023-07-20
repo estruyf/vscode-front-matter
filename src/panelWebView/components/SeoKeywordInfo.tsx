@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { ValidInfo } from './ValidInfo';
 import { VsTableCell, VsTableRow } from './VscodeComponents';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../localization';
 
 export interface ISeoKeywordInfoProps {
   keyword: string;
@@ -29,7 +31,7 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
     const pattern = new RegExp('\\b' + keyword.toLowerCase() + '\\b', 'ig');
     const count = (content.match(pattern) || []).length;
     const density = (count / wordCount) * 100;
-    const densityTitle = `Keyword usage ${density.toFixed(2)}% *`;
+    const densityTitle = l10n.t(LocalizationKey.panelSeoKeywordInfoDensity, `${density.toFixed(2)}%`);
 
     if (density < 0.75) {
       return <ValidInfo label={densityTitle} isValid={false} />;
@@ -61,7 +63,7 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
     }
 
     const exists = headings.filter((heading) => validateKeywords(heading, keyword));
-    return <ValidInfo label={`Used in heading(s)`} isValid={exists.length > 0} />;
+    return <ValidInfo label={l10n.t(LocalizationKey.panelSeoKeywordInfoValidInfoLabel)} isValid={exists.length > 0} />;
   };
 
   if (!keyword || typeof keyword !== 'string') {
@@ -74,19 +76,19 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
       <VsTableCell className={`table__cell table__cell__validation table__cell__seo_details`}>
         <div>
           <ValidInfo
-            label={`Title`}
+            label={l10n.t(LocalizationKey.commonTitle)}
             isValid={!!title && title.toLowerCase().includes(keyword.toLowerCase())}
           />
         </div>
         <div>
           <ValidInfo
-            label={`Description`}
+            label={l10n.t(LocalizationKey.commonDescription)}
             isValid={!!description && description.toLowerCase().includes(keyword.toLowerCase())}
           />
         </div>
         <div>
           <ValidInfo
-            label={`Slug`}
+            label={l10n.t(LocalizationKey.commonSlug)}
             isValid={
               !!slug &&
               (slug.toLowerCase().includes(keyword.toLowerCase()) ||
@@ -96,7 +98,7 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
         </div>
         <div>
           <ValidInfo
-            label={`Content`}
+            label={l10n.t(LocalizationKey.panelSeoKeywordInfoValidInfoContent)}
             isValid={!!content && content.toLowerCase().includes(keyword.toLowerCase())}
           />
         </div>

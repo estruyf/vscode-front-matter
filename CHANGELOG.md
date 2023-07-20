@@ -2,8 +2,15 @@
 
 ## [8.5.0] - 2023-xx-xx
 
+### 🧪 Experimental features
+
+- External UI script support for dashboards
+- Front matter AI 🤖
+
 ### ✨ New features
 
+- Added description AI suggestion for GitHub sponsors
+- The Visual Studio Code theme support is now released in the stable version
 - [#424](https://github.com/estruyf/vscode-front-matter/issues/424): Snippet wrapping to allow easier updates or changes to previously set snippets in the content
 - [#585](https://github.com/estruyf/vscode-front-matter/issues/585): New content relationship field type (`contentRelationship`)
 
@@ -18,6 +25,7 @@
 - [#591](https://github.com/estruyf/vscode-front-matter/issues/591): Support for date format in the `datetime` field
 - [#593](https://github.com/estruyf/vscode-front-matter/issues/593): Add support for date formatting in the preview path
 - [#599](https://github.com/estruyf/vscode-front-matter/issues/599): Add a placeholder when the base panel view is empty
+- [#602](https://github.com/estruyf/vscode-front-matter/issues/602): Find content outside the Front Matter workspace folder
 
 ### ⚡️ Optimizations
 
@@ -32,6 +40,7 @@
 - [#590](https://github.com/estruyf/vscode-front-matter/issues/590): Fix for image fields inside a sub-block
 - [#595](https://github.com/estruyf/vscode-front-matter/issues/595): Fix for media metadata now showing up
 - [#596](https://github.com/estruyf/vscode-front-matter/issues/596): Fix for number field in block data
+- [#603](https://github.com/estruyf/vscode-front-matter/issues/603): Fix problem with page bundles and path placeholders
 
 ## [8.4.0] - 2023-04-03 - [Release notes](https://beta.frontmatter.codes/updates/v8.4.0)
 

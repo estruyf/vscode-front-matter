@@ -11,7 +11,7 @@ import {
   SETTING_DATE_FORMAT
 } from './../constants';
 import { ArticleHelper } from './../helpers/ArticleHelper';
-import { join } from 'path';
+import { join, parse } from 'path';
 import { commands, env, Uri, ViewColumn, window, WebviewPanel } from 'vscode';
 import { Extension, parseWinPath, processKnownPlaceholders, Settings } from '../helpers';
 import { ContentFolder, ContentType, PreviewSettings } from '../models';
@@ -290,6 +290,11 @@ export class Preview {
         const folderPath = wsFolder ? parseWinPath(wsFolder.fsPath) : '';
         const relativePath = filePath.replace(folderPath, '');
         pathname = processPathPlaceholders(pathname, relativePath, filePath, selectedFolder);
+
+        const file = parse(filePath);
+        if (file.name.toLowerCase() === 'index' && pathname.endsWith(slug)) {
+          slug = '';
+        }
       }
 
       // Support front matter placeholders - {{fm.<field>}}

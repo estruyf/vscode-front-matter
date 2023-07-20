@@ -16,6 +16,7 @@ export default function useMessages() {
   const [metadata, setMetadata] = useState<any>({});
   const [settings, setSettings] = useRecoilState(PanelSettingsAtom);
   const [loading, setLoading] = useState<boolean>(false);
+  const [localeReady, setLocaleReady] = useState<boolean>(false);
   const [focusElm, setFocus] = useState<TagType | null>(null);
   const [folderAndFiles, setFolderAndFiles] = useState<FolderInfo[] | undefined>(undefined);
   const [mediaSelecting, setMediaSelecting] = useState<DashboardData | undefined>(undefined);
@@ -55,6 +56,7 @@ export default function useMessages() {
         l10n.config({
           contents: message.payload
         })
+        setLocaleReady(true)
         break;
     }
   };
@@ -93,6 +95,7 @@ export default function useMessages() {
     loading,
     mediaSelecting,
     mode,
+    localeReady,
     unsetFocus: () => {
       setFocus(null);
     }

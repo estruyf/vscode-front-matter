@@ -4,7 +4,7 @@ import { RecoilRoot } from 'recoil';
 import { App } from './components/App';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
-import { SENTRY_LINK } from '../constants';
+import { SENTRY_LINK, SentryIgnore } from '../constants';
 import { MemoryRouter } from 'react-router-dom';
 import './styles.css';
 import { Preview } from './components/Preview';
@@ -107,10 +107,8 @@ if (elm) {
   const url = elm?.getAttribute('data-url');
   const experimental = elm?.getAttribute('data-experimental');
 
-  if (experimental) {
-    updateCssVariables();
-    mutationObserver.observe(document.body, { childList: false, attributes: true });
-  }
+  updateCssVariables();
+  mutationObserver.observe(document.body, { childList: false, attributes: true });
 
   if (isProd === 'true') {
     Sentry.init({
@@ -119,17 +117,16 @@ if (elm) {
       tracesSampleRate: 0, // No performance tracing required
       release: version || '',
       environment: environment || '',
-      ignoreErrors: [
-        `ResizeObserver loop limit exceeded`,
-        `Cannot read properties of undefined (reading 'unobserve')`,
-        `TypeError: Cannot read properties of undefined (reading 'unobserve')`
-      ]
+      ignoreErrors: SentryIgnore
     });
+
+    Sentry.setTag("type", "dashboard");
+    if (document.body.getAttribute(`data-vscode-theme-id`)) {
+      Sentry.setTag("theme", document.body.getAttribute(`data-vscode-theme-id`));
+    }
   }
 
-  if (experimental) {
-    elm.setAttribute("class", "experimental bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]");
-  }
+  elm.setAttribute("class", `${experimental ? "experimental" : ""} bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]`);
 
   if (type === 'preview') {
     render(

@@ -115,6 +115,7 @@ export class TaxonomyListener extends BaseListener {
         requestId,
         error: 'No article data'
       } as MessageHandlerData<string>);
+      return;
     }
 
     panel.getWebview()?.postMessage({

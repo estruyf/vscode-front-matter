@@ -1,6 +1,8 @@
 import * as React from 'react';
 import * as Sentry from '@sentry/react';
 import { VsLabel } from '../VscodeComponents';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IFieldBoundaryProps {
   fieldName: string;
@@ -38,9 +40,13 @@ export default class FieldBoundary extends React.Component<
             </div>
           </VsLabel>
           <div className={`metadata_field__error`}>
-            <span>Error loading field</span>
+            <span>
+              {l10n.t(LocalizationKey.panelErrorBoundaryFieldBoundaryLabel)}
+            </span>
 
-            <button onClick={() => this.setState({ hasError: false })}>Retry</button>
+            <button onClick={() => this.setState({ hasError: false })}>
+              {l10n.t(LocalizationKey.commonRetry)}
+            </button>
           </div>
         </div>
       );

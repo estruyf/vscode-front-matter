@@ -13,6 +13,8 @@ import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/solid'
 import { FrameworkDetectors } from '../../../constants/FrameworkDetectors';
 import { join } from 'path';
 import useThemeColors from '../../hooks/useThemeColors';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IStepsToGetStartedProps {
   settings: Settings;
@@ -44,7 +46,7 @@ const Folder = ({
       <button
         onClick={() => addFolder(folder)}
         className={`mr-2 flex gap-2 items-center ${getColors('hover:text-teal-500', 'hover:text-[var(--vscode-textLink-activeForeground)]')}`}
-        title={`Add as a content folder to Front Matter`}
+        title={l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedButtonAddFolderTitle)}
       >
         {isAdded ? (
           <CheckCircleIconSolid className={`h-4 w-4`} />
@@ -94,13 +96,8 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
   const steps = [
     {
       id: `welcome-init`,
-      name: 'Initialize project',
-      description: (
-        <>
-          Initialize the project will create the required files and folders for using the Front
-          Matter CMS. <b>Start by clicking on this action</b>.
-        </>
-      ),
+      name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedInitializeProjectName),
+      description: <>{l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedInitializeProjectDescription)}</>,
       status: settings.initialized ? Status.Completed : Status.NotStarted,
       onClick: settings.initialized
         ? undefined
@@ -110,11 +107,11 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
     },
     {
       id: `welcome-framework`,
-      name: 'Framework presets',
+      name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedFrameworkName),
       description: (
         <div>
           <div>
-            Select your site-generator or framework to prefill some of the recommended settings.
+            {l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedFrameworkDescription)}
           </div>
 
           <Menu as="div" className="relative inline-block text-left mt-4">
@@ -124,7 +121,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
                 'text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)]'
               )
                 }`}>
-                {framework ? framework : 'Select your framework'}
+                {framework ? framework : l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedFrameworkSelect)}
                 <ChevronDownIcon
                   className={`flex-shrink-0 -mr-1 ml-1 h-5 w-5 ${getColors(
                     'text-gray-400 group-hover:text-gray-500 dark:text-whisper-600 dark:group-hover:text-whisper-700',
@@ -145,7 +142,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
             >
               <div className="py-1">
                 <MenuItem
-                  title={`other`}
+                  title={l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedFrameworkSelectOther)}
                   value={`other`}
                   isCurrent={!framework}
                   onClick={(value: string) => setFrameworkAndSendMessage(value)}
@@ -172,17 +169,16 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
     },
     {
       id: `welcome-content-folders`,
-      name: 'Register content folder(s)',
+      name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedContentFoldersName),
       description: (
         <>
           <p>
-            Add one of the folders we found in your project as a content folder. Once a folder is
-            set, Front Matter can be used to list all contents and allow you to create content.
+            {l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedContentFoldersDescription)}
           </p>
 
           {settings?.dashboardState?.welcome?.contentFolders?.length > 0 && (
             <div className="mt-4">
-              <div className="text-sm">Folders containing content:</div>
+              <div className="text-sm">{l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedContentFoldersLabel)}</div>
               <div className="mt-1 space-y-1">
                 {settings?.dashboardState?.welcome?.contentFolders?.map((folder: string) => (
                   <Folder
@@ -198,9 +194,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
           )}
 
           <p className={`mt-4 ${getColors('text-vulcan-300 dark:text-gray-400', '')}`}>
-            <b>IMPORTANT</b>: You can perform this action by{' '}
-            <b>right-clicking on the folder in the explorer view</b>, and selecting{' '}
-            <b>register folder</b>.
+            <b>{l10n.t(LocalizationKey.commonInformation)}</b>: {l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedContentFoldersInformationDescription)}.
           </p>
         </>
       ),
@@ -211,21 +205,16 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
     },
     {
       id: `welcome-import`,
-      name: 'Import all tags and categories (optional)',
-      description: (
-        <>
-          Now that Front Matter knows all the content folders. Would you like to import all tags and
-          categories from the available content?
-        </>
-      ),
+      name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedTagsName),
+      description: <>{l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedTagsDescription)}</>,
       status: taxImported ? Status.Completed : Status.NotStarted,
       onClick:
         settings.contentFolders && settings.contentFolders.length > 0 ? importTaxonomy : undefined
     },
     {
       id: `welcome-show-dashboard`,
-      name: 'Show the dashboard',
-      description: <>Once all actions are completed, the dashboard can be loaded.</>,
+      name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedShowDashboardName),
+      description: <>{l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedShowDashboardDescription)}</>,
       status:
         settings.initialized && settings.contentFolders && settings.contentFolders.length > 0
           ? Status.Active

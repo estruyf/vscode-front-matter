@@ -1,6 +1,6 @@
 import { CalculatorIcon } from '@heroicons/react/outline';
 import * as React from 'react';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { BaseFieldProps, NumberOptions } from '../../../models';
 import { FieldTitle } from './FieldTitle';
 import { FieldMessage } from './FieldMessage';

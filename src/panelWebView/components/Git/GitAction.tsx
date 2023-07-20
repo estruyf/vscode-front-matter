@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import { GeneralCommands } from '../../../constants';
 import { PanelSettings } from '../../../models';
 import { ActionButton } from '../ActionButton';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IGitActionProps {
   settings: PanelSettings | undefined;
@@ -21,7 +23,7 @@ export const GitAction: React.FunctionComponent<IGitActionProps> = ({
   };
 
   const messageListener = (message: MessageEvent<EventData<any>>) => {
-    const { command, payload } = message.data;
+    const { command } = message.data;
 
     if (command === GeneralCommands.toWebview.gitSyncingStart) {
       setIsSyncing(true);
@@ -49,7 +51,9 @@ export const GitAction: React.FunctionComponent<IGitActionProps> = ({
         title={
           <div className="git_actions__sync">
             <RefreshIcon className={isSyncing ? 'animate-spin' : ''} />
-            <span>Sync</span>
+            <span>
+              {l10n.t(LocalizationKey.commonSync)}
+            </span>
           </div>
         }
       />

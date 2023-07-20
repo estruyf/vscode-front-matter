@@ -30,6 +30,7 @@ export class PagesParser {
   public static cachedPages: Page[] | undefined = undefined;
   private static parser: Promise<void> | undefined;
   private static initialized: boolean = false;
+  private static pagesStatusBar = window.createStatusBarItem(StatusBarAlignment.Left);
 
   /**
    * Start the page parser
@@ -75,11 +76,10 @@ export class PagesParser {
     // Update the dashboard with the fresh data
     const folderInfo = await Folders.getInfo();
     const pages: Page[] = [];
-    const statusBar = window.createStatusBarItem(StatusBarAlignment.Left);
 
     if (folderInfo) {
-      statusBar.text = '$(sync~spin) Processing pages...';
-      statusBar.show();
+      PagesParser.pagesStatusBar.text = '$(sync~spin) Processing pages...';
+      PagesParser.pagesStatusBar.show();
 
       for (const folder of folderInfo) {
         for (const file of folder.lastModified) {
@@ -118,7 +118,7 @@ export class PagesParser {
     this.parser = undefined;
     this.initialized = true;
     PagesParser.allPages = [...pages];
-    statusBar.hide();
+    PagesParser.pagesStatusBar.hide();
   }
 
   /**

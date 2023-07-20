@@ -25,8 +25,18 @@ export const StartServerButton: React.FunctionComponent<IStartServerButtonProps>
 
   return startCommand ? (
     <>
-      <button onClick={() => startLocalServer(startCommand)}>{l10n.t(LocalizationKey.panelActionsStartServer)}</button>
-      <button onClick={() => stopLocalServer()}>{l10n.t(LocalizationKey.panelActionsStopServer)}</button>
+      <button
+        title={l10n.t(LocalizationKey.panelStartServerbuttonStart)}
+        type={`button`}
+        onClick={() => startLocalServer(startCommand)}>
+        {l10n.t(LocalizationKey.panelStartServerbuttonStart)}
+      </button>
+      <button
+        title={l10n.t(LocalizationKey.panelStartServerbuttonStop)}
+        type={`button`}
+        onClick={() => stopLocalServer()}>
+        {l10n.t(LocalizationKey.panelStartServerbuttonStop)}
+      </button>
     </>
   ) : null;
 };

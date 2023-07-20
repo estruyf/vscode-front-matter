@@ -286,6 +286,7 @@ button {
 /* Metadata section - Content type */
 .metadata_field {
   margin-bottom: 1rem;
+  position: relative;
 }
 
 .metadata_field__label {
@@ -293,6 +294,10 @@ button {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0.5rem;
+
+  &.metadata_field__alert {
+    justify-content: flex-start;
+  }
 
   div {
     display: flex;

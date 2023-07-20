@@ -5,6 +5,8 @@ import { useEffect, useRef, useState } from 'react';
 import { PreviewCommands } from '../../../constants';
 import useThemeColors from '../../hooks/useThemeColors';
 import { EventData } from '@estruyf/vscode/dist/models';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IPreviewProps {
   url: string | null;
@@ -68,7 +70,7 @@ export const Preview: React.FunctionComponent<IPreviewProps> = ({
               navigateToUrl();
             }
           }}
-          placeholder="Enter a URL"
+          placeholder={l10n.t(LocalizationKey.dashboardPreviewInputPlaceholder)}
           className="w-full m-[1px] h-full border-1 border-transparent text-xs py-1 px-2 focus:border-color-blue-500 bg-[var(--vscode-tab-activeBackground)] text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)] focus:text-[var(--vscode-tab-activeForeground)] placeholder-[var(--vscode-input-placeholderForeground)] focus:outline-[var(--vscode-focusBorder)] focus:outline-1 focus:outline-offset-0 focus:shadow-none focus:border-[var(--vscode-focusBorder)"
         />
 
@@ -76,15 +78,24 @@ export const Preview: React.FunctionComponent<IPreviewProps> = ({
           className={`actions flex items-center space-x-2 px-2 ${getColors('text-vulcan-500 dark:text-whisper-100', 'text-[var(--vscode-list-activeSelectionForeground)]')
             }`}
         >
-          <button title="Navigate" onClick={navigateToUrl} className={getColors(`hover:text-vulcan-500 dark:hover:text-whisper-100`, `hover:text-[var(--vscode-textLink-activeForeground)]`)}>
+          <button
+            title={l10n.t(LocalizationKey.dashboardPreviewButtonOpenTitle)}
+            onClick={navigateToUrl}
+            className={getColors(`hover:text-vulcan-500 dark:hover:text-whisper-100`, `hover:text-[var(--vscode-textLink-activeForeground)]`)}>
             <ArrowRightIcon className="w-4 h-4" aria-hidden="true" />
           </button>
 
-          <button title="Refresh" onClick={onRefresh} className={`mr-2 ${getColors(`hover:text-vulcan-500 dark:hover:text-whisper-100`, `hover:text-[var(--vscode-textLink-activeForeground)]`)}`}>
+          <button
+            title={l10n.t(LocalizationKey.dashboardPreviewButtonRefreshTitle)}
+            onClick={onRefresh}
+            className={`mr-2 ${getColors(`hover:text-vulcan-500 dark:hover:text-whisper-100`, `hover:text-[var(--vscode-textLink-activeForeground)]`)}`}>
             <RefreshIcon className="w-4 h-4" aria-hidden="true" />
           </button>
 
-          <button title="Open" onClick={openInBrowser} className={`mr-2 ${getColors(`hover:text-vulcan-500 dark:hover:text-whisper-100`, `hover:text-[var(--vscode-textLink-activeForeground)]`)}`}>
+          <button
+            title={l10n.t(LocalizationKey.dashboardPreviewButtonOpenTitle)}
+            onClick={openInBrowser}
+            className={`mr-2 ${getColors(`hover:text-vulcan-500 dark:hover:text-whisper-100`, `hover:text-[var(--vscode-textLink-activeForeground)]`)}`}>
             <ExternalLinkIcon className="w-4 h-4" aria-hidden="true" />
           </button>
         </div>

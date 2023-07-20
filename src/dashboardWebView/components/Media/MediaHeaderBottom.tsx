@@ -10,7 +10,7 @@ import { Pagination } from '../Header/Pagination';
 export interface IMediaHeaderBottomProps { }
 
 export const MediaHeaderBottom: React.FunctionComponent<IMediaHeaderBottomProps> = (
-  props: React.PropsWithChildren<IMediaHeaderBottomProps>
+  _: React.PropsWithChildren<IMediaHeaderBottomProps>
 ) => {
   const settings = useRecoilValue(SettingsAtom);
   const { getColors } = useThemeColors();

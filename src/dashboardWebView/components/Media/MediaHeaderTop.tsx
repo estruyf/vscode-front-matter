@@ -17,6 +17,8 @@ import {
 import { Searchbox } from '../Header';
 import { PaginationStatus } from '../Header/PaginationStatus';
 import { FolderCreation } from './FolderCreation';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IMediaHeaderTopProps { }
 
@@ -88,7 +90,7 @@ export const MediaHeaderTop: React.FunctionComponent<
         }`}
       aria-label="Pagination"
     >
-      <Searchbox placeholder={`Search in folder`} />
+      <Searchbox placeholder={l10n.t(LocalizationKey.dashboardMediaMediaHeaderTopSearchboxPlaceholder)} />
 
       <PaginationStatus />
 

@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { BaseFieldProps } from '../../../models';
 import { FieldTitle } from './FieldTitle';
 import { FieldMessage } from './FieldMessage';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IListFieldProps extends BaseFieldProps<string[] | null> {
   onChange: (value: string | string[]) => void;
@@ -105,18 +107,18 @@ export const ListField: React.FunctionComponent<IListFieldProps> = ({
       <div className={`list_field__form__buttons`}>
         <button
           className={`list_field__form__button__save`}
-          title={`Save`}
+          title={itemToEdit !== null ? l10n.t(LocalizationKey.commonUpdate) : l10n.t(LocalizationKey.commonAdd)}
           onClick={onSaveForm}
           disabled={!text}
         >
-          {itemToEdit !== null ? `Update` : `Add`}
+          {itemToEdit !== null ? l10n.t(LocalizationKey.commonUpdate) : l10n.t(LocalizationKey.commonAdd)}
         </button>
         <button
           className={`list_field__form__button__cancel`}
-          title={`Cancel`}
+          title={l10n.t(LocalizationKey.commonCancel)}
           onClick={onCancelForm}
         >
-          Cancel
+          {l10n.t(LocalizationKey.commonCancel)}
         </button>
       </div>
 
@@ -129,20 +131,24 @@ export const ListField: React.FunctionComponent<IListFieldProps> = ({
 
               <div>
                 <button
-                  title="Edit record"
+                  title={l10n.t(LocalizationKey.panelFieldsListFieldEdit)}
                   className="list_field__list__button list_field__list__button_edit"
                   onClick={() => onEdit(index)}
                 >
                   <PencilIcon className="list_field__list__button_icon" />
-                  <span className="sr-only">Edit</span>
+                  <span className="sr-only">
+                    {LocalizationKey.commonEdit}
+                  </span>
                 </button>
                 <button
-                  title="Delete record"
+                  title={l10n.t(LocalizationKey.panelFieldsListFieldDelete)}
                   className="list_field__list__button list_field__list__button_delete"
                   onClick={() => onDelete(index)}
                 >
                   <TrashIcon className="list_field__list__button_icon" />
-                  <span className="sr-only">Delete</span>
+                  <span className="sr-only">
+                    {LocalizationKey.commonDelete}
+                  </span>
                 </button>
               </div>
             </li>

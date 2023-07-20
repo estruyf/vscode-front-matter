@@ -5,6 +5,8 @@ import { MediaInfo, Snippet } from '../../../models';
 import { ViewDataSelector } from '../../state';
 import { FormDialog } from '../Modals/FormDialog';
 import SnippetForm, { SnippetFormHandle } from '../SnippetsView/SnippetForm';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IMediaSnippetFormProps {
   media: MediaInfo;
@@ -31,15 +33,13 @@ export const MediaSnippetForm: React.FunctionComponent<IMediaSnippetFormProps> =
 
   return (
     <FormDialog
-      title={`Insert media: ${media.title || media.filename}`}
-      description={`Insert the ${
-        media.title || media.filename
-      } media file into the current article`}
+      title={l10n.t(LocalizationKey.dashboardMediaMediaSnippetFormFormDialogTitle, media.title || media.filename)}
+      description={l10n.t(LocalizationKey.dashboardMediaMediaSnippetFormFormDialogDescription, media.title || media.filename)}
       isSaveDisabled={false}
       trigger={insertToArticle}
       dismiss={onDismiss}
-      okBtnText="Insert"
-      cancelBtnText="Cancel"
+      okBtnText={l10n.t(LocalizationKey.commonInsert)}
+      cancelBtnText={l10n.t(LocalizationKey.commonCancel)}
     >
       <SnippetForm
         ref={formRef}

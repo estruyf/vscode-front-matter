@@ -182,7 +182,7 @@ export class Folders {
     ) {
       staticFolder =
         staticFolder === '/' || staticFolder === './'
-          ? Folders.getAbsFilePath('[[workspace]]')
+          ? Folders.getAbsFilePath(WORKSPACE_PLACEHOLDER)
           : Folders.getAbsFilePath(staticFolder);
       const wsFolder = Folders.getWorkspaceFolder();
       if (wsFolder) {
@@ -272,26 +272,23 @@ export class Folders {
       for (const folder of folders) {
         try {
           const folderPath = parseWinPath(folder.path);
-          let projectStart = parseWinPath(folder.path).replace(wsFolder, '');
 
-          if (typeof projectStart === 'string') {
-            projectStart = projectStart.replace(/\\/g, '/');
-            projectStart = projectStart.startsWith('/') ? projectStart.substring(1) : projectStart;
-
+          if (typeof folderPath === 'string') {
             let files: Uri[] = [];
 
             for (const fileType of supportedFiles || DEFAULT_FILE_TYPES) {
               let filePath = join(
-                projectStart,
+                folderPath,
                 folder.excludeSubdir ? '/' : '**',
                 `*${fileType.startsWith('.') ? '' : '.'}${fileType}`
               );
 
-              if (projectStart === '' && folder.excludeSubdir) {
+              if (folderPath === '' && folder.excludeSubdir) {
                 filePath = `*${fileType.startsWith('.') ? '' : '.'}${fileType}`;
               }
 
-              let foundFiles = await workspace.findFiles(filePath, '**/node_modules/**');
+              let foundFiles = await Folders.findFiles(filePath);
+
               // Make sure these file are coming from the folder path (this could be an issue in multi-root workspaces)
               foundFiles = foundFiles.filter((f) => parseWinPath(f.fsPath).startsWith(folderPath));
 
@@ -460,7 +457,13 @@ export class Folders {
   private static absWsFolder(folder: ContentFolder, wsFolder?: Uri) {
     const isWindows = process.platform === 'win32';
     let absPath = folder.path.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ''));
+
+    if (absPath.includes('../')) {
+      absPath = join(absPath);
+    }
+
     absPath = isWindows ? absPath.split('/').join('\\') : absPath;
+
     return parseWinPath(absPath);
   }
 
@@ -574,6 +577,20 @@ export class Folders {
         const allFolders = files.map((file) => dirname(file));
         const uniqueFolders = [...new Set(allFolders)];
         resolve(uniqueFolders);
+      });
+    });
+  }
+
+  /**
+   * Find all files
+   * @param pattern
+   * @returns
+   */
+  private static async findFiles(pattern: string): Promise<Uri[]> {
+    return new Promise((resolve) => {
+      glob(pattern, { ignore: '**/node_modules/**' }, (err, files) => {
+        const allFiles = files.map((file) => Uri.file(file));
+        resolve(allFiles);
       });
     });
   }

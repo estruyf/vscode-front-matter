@@ -6,6 +6,8 @@ import { DateHelper } from '../../../helpers/DateHelper';
 import { BaseFieldProps } from '../../../models';
 import { FieldMessage } from './FieldMessage';
 import { FieldTitle } from './FieldTitle';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IDateTimeFieldProps extends BaseFieldProps<Date | null> {
   format?: string;
@@ -17,7 +19,7 @@ type InputProps = JSX.IntrinsicElements['input'];
 const CustomInput = forwardRef<HTMLInputElement, InputProps>(({ value, onClick }, ref) => {
   return (
     <button className="example-custom-input" onClick={onClick as any} ref={ref as any}>
-      {value || 'Pick your date'}
+      {value || l10n.t(LocalizationKey.panelFieldsDateTimeFieldButtonPick)}
     </button>
   );
 });
@@ -71,7 +73,7 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({
         <DatePicker
           selected={(DateHelper.tryParse(dateValue) as Date) || new Date()}
           onChange={onDateChange}
-          timeInputLabel="Time:"
+          timeInputLabel={l10n.t(LocalizationKey.panelFieldsDateTimeFieldTime)}
           dateFormat={DateHelper.formatUpdate(format) || 'MM/dd/yyyy HH:mm'}
           customInput={<CustomInput />}
           showTimeInput={hasTimeFormat}

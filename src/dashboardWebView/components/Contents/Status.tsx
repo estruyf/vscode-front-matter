@@ -3,6 +3,8 @@ import { useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
 import useThemeColors from '../../hooks/useThemeColors';
 import { SettingsAtom } from '../../state';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IStatusProps {
   draft: boolean | string;
@@ -50,7 +52,7 @@ export const Status: React.FunctionComponent<IStatusProps> = ({
           getColors(`bg-teal-500`, 'bg-[var(--vscode-badge-background)] text-[var(--vscode-badge-foreground)]')
         }`}
     >
-      {draftValue ? 'Draft' : 'Published'}
+      {draftValue ? l10n.t(LocalizationKey.dashboardContentsStatusDraft) : l10n.t(LocalizationKey.dashboardContentsStatusPublished)}
     </span>
   );
 };

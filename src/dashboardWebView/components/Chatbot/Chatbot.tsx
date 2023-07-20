@@ -7,6 +7,8 @@ import { QuestionAnswer } from './QuestionAnswer';
 import { Placeholder } from './Placeholder';
 import { useSettingsContext } from '../../providers/SettingsProvider';
 import { AiInitResponse } from './models/AiInitResponse';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IChatbotProps { }
 
@@ -141,7 +143,7 @@ export const Chatbot: React.FunctionComponent<IChatbotProps> = ({ }: React.Props
               sources={sources[idx]} />
           )) : (
             <Placeholder>
-              {loading ? <div className='dots'>Assistent is getting ready</div> : `I'm ready, what do you want to know?`}
+              {loading ? <div className='dots'>{l10n.t(LocalizationKey.dashboardChatbotChatbotLoading)}</div> : l10n.t(LocalizationKey.dashboardChatbotChatbotReady)}
             </Placeholder>
           )
         }
