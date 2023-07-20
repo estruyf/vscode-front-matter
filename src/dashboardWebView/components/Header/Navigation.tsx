@@ -16,12 +16,6 @@ export interface INavigationItemProps {
   onClick: () => void;
 }
 
-export const tabs = [
-  { name: l10n.t(LocalizationKey.dashboardHeaderNavigationAllArticles), id: Tab.All },
-  { name: l10n.t(LocalizationKey.dashboardHeaderNavigationPublished), id: Tab.Published },
-  { name: l10n.t(LocalizationKey.dashboardHeaderNavigationDraft), id: Tab.Draft }
-];
-
 const NavigationItem: React.FunctionComponent<INavigationItemProps> = ({
   tabId,
   isCrntTab,
@@ -57,6 +51,12 @@ export const Navigation: React.FunctionComponent<INavigationProps> = ({
   const [crntTab, setCrntTab] = useRecoilState(TabAtom);
   const tabInfo = useRecoilValue(TabInfoAtom);
   const settings = useRecoilValue(SettingsAtom);
+
+  const tabs = [
+    { name: l10n.t(LocalizationKey.dashboardHeaderNavigationAllArticles), id: Tab.All },
+    { name: l10n.t(LocalizationKey.dashboardHeaderNavigationPublished), id: Tab.Published },
+    { name: l10n.t(LocalizationKey.dashboardHeaderNavigationDraft), id: Tab.Draft }
+  ];
 
   return (
     <nav className="flex-1 -mb-px flex space-x-6 xl:space-x-8" aria-label="Tabs">

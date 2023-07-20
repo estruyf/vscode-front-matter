@@ -19,7 +19,14 @@
   "common.sync": "Sync",
   "common.slug": "Slug",
   "common.support": "Support",
+  "common.remove.value": "Remove {0}",
   "common.error.message": "Sorry, something went wrong.",
+
+  "developer.title": "Developer mode",
+  "developer.reload.title": "Reload the dashboard",
+  "developer.reload.label": "Reload",
+  "developer.devTools.title": "Open the DevTools",
+  "developer.devTools.label": "DevTools",
 
   "field.required": "Required field",
   "field.unknown": "Unknown field",
@@ -131,6 +138,9 @@
   "dashboard.header.tabs.snippets": "Snippets",
   "dashboard.header.tabs.data": "data",
   "dashboard.header.tabs.taxonomies": "Taxonomies",
+
+  "dashboard.header.viewSwitch.toGrid": "Change to grid",
+  "dashboard.header.viewSwitch.toList": "Change to list",
 
   "dashboard.layout.sponsor.support.msg": "Support Front Matter",
   "dashboard.layout.sponsor.review.label": "Review",
@@ -265,12 +275,6 @@
   "dashboard.welcomeScreen.actions.description": "You can also use the extension from the Front Matter side panel. There you will find the actions you can perform specifically for your pages.",
   "dashboard.welcomeScreen.actions.thanks": "We hope you enjoy Front Matter!",
 
-  "dashboard.app.developer.title": "Developer mode",
-  "dashboard.app.developer.reload.title": "Reload the dashboard",
-  "dashboard.app.developer.reload.label": "Reload",
-  "dashboard.app.developer.devTools.title": "Open the DevTools",
-  "dashboard.app.developer.devTools.label": "DevTools",
-
   "panel.contentType.contentTypeValidator.title": "Content-type",
   "panel.contentType.contentTypeValidator.hint": "We noticed field differences between the content-type and the front matter data. \n Would you like to create, update, or set the content-type for this content?",
   "panel.contentType.contentTypeValidator.button.create": "Create content-type",
@@ -290,8 +294,6 @@
   "panel.dataBlock.dataBlockSelector.label": "Block type",
 
   "panel.errorBoundary.fieldBoundary.label": "Failed viewing the field",
-
-  "panel.fields.choiceButton.title": "Remove {0}",
 
   "panel.fields.choiceField.select": "Select {0}",
   "panel.fields.choiceField.clear": "Clear value",
@@ -411,5 +413,9 @@
   "panel.tagPicker.ai.suggest": "Use Front Matter AI to suggest {0}",
   "panel.tagPicker.ai.generating": "Generating suggestions...",
   "panel.tagPicker.limit": "Max.: {0}",
-  "panel.tagPicker.unkown": "Add the unknown tag"
+  "panel.tagPicker.unkown": "Add the unknown tag",
+
+  "panel.tags.tag.warning": "Be aware, this tag \"{0}\" is not saved in your settings. Once removed, it will be gone forever.",
+
+  "panel.viewPanel.mediaInsert": "Continue in the media dashboard to select the image you want to insert."
 }

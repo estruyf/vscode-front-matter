@@ -9,16 +9,16 @@ import { LocalizationKey } from '../../../localization';
 
 export interface IGroupingProps { }
 
-export const GROUP_OPTIONS = [
-  { name: l10n.t(LocalizationKey.dashboardHeaderGroupingOptionNone), id: GroupOption.none },
-  { name: l10n.t(LocalizationKey.dashboardHeaderGroupingOptionYear), id: GroupOption.Year },
-  { name: l10n.t(LocalizationKey.dashboardHeaderGroupingOptionDraft), id: GroupOption.Draft }
-];
-
 export const Grouping: React.FunctionComponent<
   IGroupingProps
 > = ({ }: React.PropsWithChildren<IGroupingProps>) => {
   const [group, setGroup] = useRecoilState(GroupingAtom);
+
+  const GROUP_OPTIONS = [
+    { name: l10n.t(LocalizationKey.dashboardHeaderGroupingOptionNone), id: GroupOption.none },
+    { name: l10n.t(LocalizationKey.dashboardHeaderGroupingOptionYear), id: GroupOption.Year },
+    { name: l10n.t(LocalizationKey.dashboardHeaderGroupingOptionDraft), id: GroupOption.Draft }
+  ];
 
   const crntGroup = GROUP_OPTIONS.find((x) => x.id === group);
 

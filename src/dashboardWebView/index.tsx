@@ -4,7 +4,7 @@ import { RecoilRoot } from 'recoil';
 import { App } from './components/App';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
-import { SENTRY_LINK } from '../constants';
+import { SENTRY_LINK, SentryIgnore } from '../constants';
 import { MemoryRouter } from 'react-router-dom';
 import './styles.css';
 import { Preview } from './components/Preview';
@@ -117,11 +117,7 @@ if (elm) {
       tracesSampleRate: 0, // No performance tracing required
       release: version || '',
       environment: environment || '',
-      ignoreErrors: [
-        `ResizeObserver loop limit exceeded`,
-        `Cannot read properties of undefined (reading 'unobserve')`,
-        `TypeError: Cannot read properties of undefined (reading 'unobserve')`
-      ]
+      ignoreErrors: SentryIgnore
     });
   }
 

@@ -2426,7 +2426,8 @@
     "prettier": "prettier --write ./src",
     "localization:watch": "node ./scripts/watch-localization.js",
     "localization:generate": "node scripts/generate-localization-enum.js",
-    "localization:sync": "node scripts/sync-localization.js"
+    "localization:sync": "node scripts/sync-localization.js",
+    "localization:find": "node scripts/find-localization.js"
   },
   "devDependencies": {
     "@actions/core": "^1.8.2",

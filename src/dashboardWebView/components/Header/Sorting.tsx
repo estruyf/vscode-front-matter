@@ -19,87 +19,6 @@ export interface ISortingProps {
   view: NavigationType;
 }
 
-export const sortOptions: SortingOption[] = [
-  {
-    name: l10n.t(LocalizationKey.dashboardHeaderSortingLastModifiedAsc),
-    id: SortOption.LastModifiedAsc,
-    order: SortOrder.asc,
-    type: SortType.date
-  },
-  {
-    name: l10n.t(LocalizationKey.dashboardHeaderSortingLastModifiedDesc),
-    id: SortOption.LastModifiedDesc,
-    order: SortOrder.desc,
-    type: SortType.date
-  },
-  {
-    name: l10n.t(LocalizationKey.dashboardHeaderSortingFilenameAsc),
-    id: SortOption.FileNameAsc,
-    order: SortOrder.asc,
-    type: SortType.string
-  },
-  {
-    name: l10n.t(LocalizationKey.dashboardHeaderSortingFilenameDesc),
-    id: SortOption.FileNameDesc,
-    order: SortOrder.desc,
-    type: SortType.string
-  }
-];
-
-const contentSortOptions: SortingOption[] = [
-  {
-    name: l10n.t(LocalizationKey.dashboardHeaderSortingPublishedAsc),
-    id: SortOption.PublishedAsc,
-    order: SortOrder.asc,
-    type: SortType.date
-  },
-  {
-    name: l10n.t(LocalizationKey.dashboardHeaderSortingPublishedDesc),
-    id: SortOption.PublishedDesc,
-    order: SortOrder.desc,
-    type: SortType.date
-  }
-];
-
-const mediaSortOptions: SortingOption[] = [
-  {
-    name: l10n.t(LocalizationKey.dashboardHeaderSortingSizeAsc),
-    id: SortOption.SizeAsc,
-    order: SortOrder.asc,
-    type: SortType.number
-  },
-  {
-    name: l10n.t(LocalizationKey.dashboardHeaderSortingSizeDesc),
-    id: SortOption.SizeDesc,
-    order: SortOrder.desc,
-    type: SortType.number
-  },
-  {
-    name: l10n.t(LocalizationKey.dashboardHeaderSortingCaptionAsc),
-    id: SortOption.CaptionAsc,
-    order: SortOrder.asc,
-    type: SortType.string
-  },
-  {
-    name: l10n.t(LocalizationKey.dashboardHeaderSortingCaptionDesc),
-    id: SortOption.CaptionDesc,
-    order: SortOrder.desc,
-    type: SortType.string
-  },
-  {
-    name: l10n.t(LocalizationKey.dashboardHeaderSortingAltAsc),
-    id: SortOption.AltAsc,
-    order: SortOrder.asc,
-    type: SortType.string
-  },
-  {
-    name: l10n.t(LocalizationKey.dashboardHeaderSortingAltDesc),
-    id: SortOption.AltDesc,
-    order: SortOrder.desc,
-    type: SortType.string
-  }
-];
-
 export const Sorting: React.FunctionComponent<ISortingProps> = ({
   disableCustomSorting,
   view
@@ -107,6 +26,87 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({
   const [crntSorting, setCrntSorting] = useRecoilState(SortingAtom);
   const searchValue = useRecoilValue(SearchSelector);
   const settings = useRecoilValue(SettingsSelector);
+
+  const sortOptions: SortingOption[] = [
+    {
+      name: l10n.t(LocalizationKey.dashboardHeaderSortingLastModifiedAsc),
+      id: SortOption.LastModifiedAsc,
+      order: SortOrder.asc,
+      type: SortType.date
+    },
+    {
+      name: l10n.t(LocalizationKey.dashboardHeaderSortingLastModifiedDesc),
+      id: SortOption.LastModifiedDesc,
+      order: SortOrder.desc,
+      type: SortType.date
+    },
+    {
+      name: l10n.t(LocalizationKey.dashboardHeaderSortingFilenameAsc),
+      id: SortOption.FileNameAsc,
+      order: SortOrder.asc,
+      type: SortType.string
+    },
+    {
+      name: l10n.t(LocalizationKey.dashboardHeaderSortingFilenameDesc),
+      id: SortOption.FileNameDesc,
+      order: SortOrder.desc,
+      type: SortType.string
+    }
+  ];
+
+  const contentSortOptions: SortingOption[] = [
+    {
+      name: l10n.t(LocalizationKey.dashboardHeaderSortingPublishedAsc),
+      id: SortOption.PublishedAsc,
+      order: SortOrder.asc,
+      type: SortType.date
+    },
+    {
+      name: l10n.t(LocalizationKey.dashboardHeaderSortingPublishedDesc),
+      id: SortOption.PublishedDesc,
+      order: SortOrder.desc,
+      type: SortType.date
+    }
+  ];
+
+  const mediaSortOptions: SortingOption[] = [
+    {
+      name: l10n.t(LocalizationKey.dashboardHeaderSortingSizeAsc),
+      id: SortOption.SizeAsc,
+      order: SortOrder.asc,
+      type: SortType.number
+    },
+    {
+      name: l10n.t(LocalizationKey.dashboardHeaderSortingSizeDesc),
+      id: SortOption.SizeDesc,
+      order: SortOrder.desc,
+      type: SortType.number
+    },
+    {
+      name: l10n.t(LocalizationKey.dashboardHeaderSortingCaptionAsc),
+      id: SortOption.CaptionAsc,
+      order: SortOrder.asc,
+      type: SortType.string
+    },
+    {
+      name: l10n.t(LocalizationKey.dashboardHeaderSortingCaptionDesc),
+      id: SortOption.CaptionDesc,
+      order: SortOrder.desc,
+      type: SortType.string
+    },
+    {
+      name: l10n.t(LocalizationKey.dashboardHeaderSortingAltAsc),
+      id: SortOption.AltAsc,
+      order: SortOrder.asc,
+      type: SortType.string
+    },
+    {
+      name: l10n.t(LocalizationKey.dashboardHeaderSortingAltDesc),
+      id: SortOption.AltDesc,
+      order: SortOrder.desc,
+      type: SortType.string
+    }
+  ];
 
   const updateSorting = (value: SortingOption) => {
     Messenger.send(DashboardMessage.setState, {

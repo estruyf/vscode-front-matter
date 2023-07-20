@@ -80,9 +80,33 @@ export enum LocalizationKey {
    */
   commonSupport = 'common.support',
   /**
+   * Remove {0}
+   */
+  commonRemoveValue = 'common.remove.value',
+  /**
    * Sorry, something went wrong.
    */
   commonErrorMessage = 'common.error.message',
+  /**
+   * Developer mode
+   */
+  developerTitle = 'developer.title',
+  /**
+   * Reload the dashboard
+   */
+  developerReloadTitle = 'developer.reload.title',
+  /**
+   * Reload
+   */
+  developerReloadLabel = 'developer.reload.label',
+  /**
+   * Open the DevTools
+   */
+  developerDevToolsTitle = 'developer.devTools.title',
+  /**
+   * DevTools
+   */
+  developerDevToolsLabel = 'developer.devTools.label',
   /**
    * Required field
    */
@@ -407,6 +431,14 @@ export enum LocalizationKey {
    * Taxonomies
    */
   dashboardHeaderTabsTaxonomies = 'dashboard.header.tabs.taxonomies',
+  /**
+   * Change to grid
+   */
+  dashboardHeaderViewSwitchToGrid = 'dashboard.header.viewSwitch.toGrid',
+  /**
+   * Change to list
+   */
+  dashboardHeaderViewSwitchToList = 'dashboard.header.viewSwitch.toList',
   /**
    * Support Front Matter
    */
@@ -864,26 +896,6 @@ export enum LocalizationKey {
    */
   dashboardWelcomeScreenActionsThanks = 'dashboard.welcomeScreen.actions.thanks',
   /**
-   * Developer mode
-   */
-  dashboardAppDeveloperTitle = 'dashboard.app.developer.title',
-  /**
-   * Reload the dashboard
-   */
-  dashboardAppDeveloperReloadTitle = 'dashboard.app.developer.reload.title',
-  /**
-   * Reload
-   */
-  dashboardAppDeveloperReloadLabel = 'dashboard.app.developer.reload.label',
-  /**
-   * Open the DevTools
-   */
-  dashboardAppDeveloperDevToolsTitle = 'dashboard.app.developer.devTools.title',
-  /**
-   * DevTools
-   */
-  dashboardAppDeveloperDevToolsLabel = 'dashboard.app.developer.devTools.label',
-  /**
    * Content-type
    */
   panelContentTypeContentTypeValidatorTitle = 'panel.contentType.contentTypeValidator.title',
@@ -940,10 +952,6 @@ export enum LocalizationKey {
    * Failed viewing the field
    */
   panelErrorBoundaryFieldBoundaryLabel = 'panel.errorBoundary.fieldBoundary.label',
-  /**
-   * Remove {0}
-   */
-  panelFieldsChoiceButtonTitle = 'panel.fields.choiceButton.title',
   /**
    * Select {0}
    */
@@ -1299,5 +1307,13 @@ export enum LocalizationKey {
   /**
    * Add the unknown tag
    */
-  panelTagPickerUnkown = 'panel.tagPicker.unkown'
+  panelTagPickerUnkown = 'panel.tagPicker.unkown',
+  /**
+   * Be aware, this tag "{0}" is not saved in your settings. Once removed, it will be gone forever.
+   */
+  panelTagsTagWarning = 'panel.tags.tag.warning',
+  /**
+   * Continue in the media dashboard to select the image you want to insert.
+   */
+  panelViewPanelMediaInsert = 'panel.viewPanel.mediaInsert'
 }

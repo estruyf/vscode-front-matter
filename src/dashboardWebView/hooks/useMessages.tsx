@@ -25,6 +25,7 @@ export default function useMessages() {
   const [, setMode] = useRecoilState(ModeAtom);
   const [, setView] = useRecoilState(DashboardViewAtom);
   const [, setSearchReady] = useRecoilState(SearchReadyAtom);
+  const [localeReady, setLocaleReady] = useState<boolean>(false);
 
   const messageListener = (event: MessageEvent<EventData<any>>) => {
     const message = event.data;
@@ -63,7 +64,8 @@ export default function useMessages() {
       case GeneralCommands.toWebview.setLocalization:
         l10n.config({
           contents: message.payload
-        })
+        });
+        setLocaleReady(true);
         break;
     }
   };
@@ -87,6 +89,7 @@ export default function useMessages() {
     loading,
     pages,
     viewData,
-    settings
+    settings,
+    localeReady
   };
 }

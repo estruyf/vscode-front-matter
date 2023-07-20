@@ -148,7 +148,6 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                               'text-[var(--vscode-foreground)]'
                             )
                               }`}>
-                              <span className="sr-only">Details for </span>
                               {media.filename}
                             </h2>
                             <p className={`text-sm font-medium ${getColors(

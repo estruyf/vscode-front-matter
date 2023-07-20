@@ -76,8 +76,6 @@ const OtherActions: React.FunctionComponent<IOtherActionsProps> = ({
           <TemplateIcon /> <span>{l10n.t(LocalizationKey.panelOtherActionsCreateTemplate)}</span>
         </OtherActionButton>
 
-        {/* <OtherActionButton onClick={openSettings}><SettingsIcon /> <span>Open settings</span></OtherActionButton> */}
-
         <OtherActionButton onClick={openFile} disabled={!isFile}>
           <FileIcon /> <span>{l10n.t(LocalizationKey.panelOtherActionsRevealFile)}</span>
         </OtherActionButton>

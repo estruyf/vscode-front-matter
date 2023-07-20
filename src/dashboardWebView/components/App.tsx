@@ -29,7 +29,7 @@ export interface IAppProps {
 export const App: React.FunctionComponent<IAppProps> = ({
   showWelcome
 }: React.PropsWithChildren<IAppProps>) => {
-  const { loading, pages, settings } = useMessages();
+  const { loading, pages, settings, localeReady } = useMessages();
   const view = useRecoilValue(DashboardViewSelector);
   const mode = useRecoilValue(ModeAtom);
   const [isDevMode, setIsDevMode] = useState(false);
@@ -69,7 +69,7 @@ export const App: React.FunctionComponent<IAppProps> = ({
     }
   }, []);
 
-  if (!settings) {
+  if (!settings || !localeReady) {
     return <Spinner />;
   }
 
@@ -99,20 +99,20 @@ Stack: ${componentStack}`
           isDevMode && (
             <div className="relative p-2 flex justify-center items-center bg-[var(--vscode-statusBar-debuggingBackground)] text-[var(--vscode-statusBar-debuggingForeground)]">
               <span className='absolute left-2'>
-                {l10n.t(LocalizationKey.dashboardAppDeveloperTitle)}
+                {l10n.t(LocalizationKey.developerTitle)}
               </span>
 
               <a
                 className="ml-2 px-2 hover:text-[var(--vscode-statusBar-debuggingForeground)] hover:bg-[var(--vscode-statusBarItem-hoverBackground)] hover:outline-none focus:outline-none"
                 href={`command:workbench.action.webview.reloadWebviewAction`}
-                title={l10n.t(LocalizationKey.dashboardAppDeveloperReloadTitle)}>
-                {l10n.t(LocalizationKey.dashboardAppDeveloperReloadLabel)}
+                title={l10n.t(LocalizationKey.developerReloadTitle)}>
+                {l10n.t(LocalizationKey.developerReloadLabel)}
               </a>
               <a
                 className="ml-2 px-2 hover:text-[var(--vscode-statusBar-debuggingForeground)] hover:bg-[var(--vscode-statusBarItem-hoverBackground)] hover:outline-none focus:outline-none"
                 href={`command:workbench.action.webview.openDeveloperTools`}
-                title={l10n.t(LocalizationKey.dashboardAppDeveloperDevToolsTitle)}>
-                {l10n.t(LocalizationKey.dashboardAppDeveloperDevToolsLabel)}
+                title={l10n.t(LocalizationKey.developerDevToolsTitle)}>
+                {l10n.t(LocalizationKey.developerDevToolsLabel)}
               </a>
             </div>
           )

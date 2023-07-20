@@ -12,6 +12,8 @@ export * from './LocalStore';
 export * from './Navigation';
 export * from './NotificationType';
 export * from './PreviewCommands';
+export * from './SentryIgnore';
+export * from './Snippet';
 export * from './StaticFolderPlaceholder';
 export * from './TelemetryEvent';
 export * from './charCode';

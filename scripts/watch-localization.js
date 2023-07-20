@@ -5,6 +5,7 @@ const { join } = require('path');
 const localFile = '../l10n/bundle.l10n.json';
 
 console.log(`Watching for file changes on ${localFile}`);
+exec(`npm run localization:generate`)
 
 fs.watchFile(join(__dirname, localFile), (curr, prev) => {
   console.log(`update enum`)

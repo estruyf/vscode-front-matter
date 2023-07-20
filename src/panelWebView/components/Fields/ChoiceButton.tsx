@@ -16,7 +16,7 @@ export const ChoiceButton: React.FunctionComponent<IChoiceButtonProps> = ({
 }: React.PropsWithChildren<IChoiceButtonProps>) => {
   return (
     <button
-      title={l10n.t(LocalizationKey.panelFieldsChoiceButtonTitle, title)}
+      title={l10n.t(LocalizationKey.commonRemoveValue, title)}
       className="metadata_field__choice__button"
       onClick={() => onClick(value)}
     >
