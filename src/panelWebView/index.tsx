@@ -42,6 +42,11 @@ if (elm) {
       environment: environment || '',
       ignoreErrors: SentryIgnore
     });
+
+    Sentry.setTag("type", "panel");
+    if (document.body.getAttribute(`data-vscode-theme-id`)) {
+      Sentry.setTag("theme", document.body.getAttribute(`data-vscode-theme-id`));
+    }
   }
 
   render(

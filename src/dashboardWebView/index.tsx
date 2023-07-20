@@ -119,6 +119,11 @@ if (elm) {
       environment: environment || '',
       ignoreErrors: SentryIgnore
     });
+
+    Sentry.setTag("type", "dashboard");
+    if (document.body.getAttribute(`data-vscode-theme-id`)) {
+      Sentry.setTag("theme", document.body.getAttribute(`data-vscode-theme-id`));
+    }
   }
 
   elm.setAttribute("class", `${experimental ? "experimental" : ""} bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]`);
