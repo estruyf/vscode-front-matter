@@ -213,7 +213,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (
               group.folders.length > 0 && (
                 <div key={`group-${idx}`} className={`mb-8`}>
                   <h2 className="text-lg mb-8 first-letter:uppercase">
-                    {l10n.t(LocalizationKey.dashboardMediaMediaCurrentFolder)}: <b>{group.title}</b>
+                    {l10n.t(LocalizationKey.dashboardMediaMediaContentFolder)}: <b>{group.title}</b>
                   </h2>
 
                   <List gap={0}>
