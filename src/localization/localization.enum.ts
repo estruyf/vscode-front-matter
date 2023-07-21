@@ -578,7 +578,7 @@ export enum LocalizationKey {
   /**
    * Content folder
    */
-  dashboardMediaMediaCurrentFolder = 'dashboard.media.media.currentFolder',
+  dashboardMediaMediaContentFolder = 'dashboard.media.media.contentFolder',
   /**
    * Public folder
    */
