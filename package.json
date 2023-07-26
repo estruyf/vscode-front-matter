@@ -906,7 +906,7 @@
           "markdownDescription": "Specifies the notifications you want to see. By default, all notifications types will be shown. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.global.notifications)",
           "scope": "Templates"
         },
-        "frontMatter.global.disabledNotificaitons": {
+        "frontMatter.global.disabledNotifications": {
           "type": "array",
           "default": [],
           "markdownDescription": "This is an array with the notifications types that can be disabled for Front Matter CMS. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.global.disablednotifications)",
