@@ -924,10 +924,10 @@
           "markdownDescription": "%setting.frontMatter.global.notifications.markdownDescription%",
           "scope": "Templates"
         },
-        "frontMatter.global.disabledNotificaitons": {
+        "frontMatter.global.disabledNotifications": {
           "type": "array",
           "default": [],
-          "markdownDescription": "%setting.frontMatter.global.disabledNotificaitons.markdownDescription%",
+          "markdownDescription": "%setting.frontMatter.global.disabledNotifications.markdownDescription%",
           "enum": [
             "requiredFieldValidation"
           ]
