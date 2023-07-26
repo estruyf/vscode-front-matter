@@ -927,7 +927,7 @@
         "frontMatter.global.disabledNotifications": {
           "type": "array",
           "default": [],
-          "markdownDescription": "%setting.frontMatter.global.disabledNotificaitons.markdownDescription%",
+          "markdownDescription": "%setting.frontMatter.global.disabledNotifications.markdownDescription%",
           "enum": [
             "requiredFieldValidation"
           ]
