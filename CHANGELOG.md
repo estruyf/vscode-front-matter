@@ -2,7 +2,7 @@
 
 ## [9.0.0] - 2023-xx-xx
 
-### Multilingual support
+### 🌎 Multilingual support
 
 - German (translated via OpenAI)
 - Japanese (thanks to [mayumihara](https://github.com/mayumih387))
