@@ -2,6 +2,11 @@
 
 ## [9.0.0] - 2023-xx-xx
 
+### Multilingual support
+
+- German (translated via OpenAI)
+- Japanese (thanks to [mayumihara](https://github.com/mayumih387))
+
 ### 🧪 Experimental features
 
 - External UI script support for dashboards
@@ -13,7 +18,7 @@
 - The Visual Studio Code theme support is now released in the stable version
 - [#424](https://github.com/estruyf/vscode-front-matter/issues/424): Snippet wrapping to allow easier updates or changes to previously set snippets in the content
 - [#585](https://github.com/estruyf/vscode-front-matter/issues/585): New content relationship field type (`contentRelationship`)
-- [#598](https://github.com/estruyf/vscode-front-matter/issues/598): Multilingual support - Japanese (thanks to [mayumihara](https://github.com/mayumih387))
+- [#598](https://github.com/estruyf/vscode-front-matter/issues/598): Multilingual support
 
 ### 🎨 Enhancements
 
