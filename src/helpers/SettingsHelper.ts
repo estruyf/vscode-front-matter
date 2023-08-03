@@ -197,12 +197,26 @@ export class Settings {
         false,
         true
       );
-      Settings.fileChangeWatcher.onDidChange(async (uri: Uri) => {
+      Settings.fileChangeWatcher.onDidChange(async () => {
         Logger.info(`Config change detected - ${projectConfig} changed`);
         configDebouncer(() => callback(), 200);
-        // callback()
       });
     }
+
+    const reloadConfig = async (debounced: boolean = true) => {
+      Logger.info(`Reloading config...`);
+      if (Settings.readConfigPromise === undefined) {
+        Settings.readConfigPromise = Settings.readConfig();
+      }
+      await Settings.readConfigPromise;
+
+      Logger.info(`Reloaded config...`);
+      if (debounced) {
+        configDebouncer(() => callback(), 200);
+      } else {
+        callback();
+      }
+    };
 
     if (Settings.fileSaveListener) {
       Settings.fileSaveListener.dispose();
@@ -213,15 +227,7 @@ export class Settings {
 
       if (Settings.checkProjectConfig(filename)) {
         Logger.info(`Config change detected - ${filename} saved`);
-
-        Logger.info(`Reloading config...`);
-        if (Settings.readConfigPromise === undefined) {
-          Settings.readConfigPromise = Settings.readConfig();
-        }
-        await Settings.readConfigPromise;
-
-        Logger.info(`Reloaded config...`);
-        configDebouncer(() => callback(), 200);
+        await reloadConfig();
       }
     });
 
@@ -232,13 +238,7 @@ export class Settings {
     Settings.fileDeleteListener = workspace.onDidDeleteFiles(async (e) => {
       const needCallback = e?.files.find((f) => Settings.checkProjectConfig(f.fsPath));
       if (needCallback) {
-        Logger.info(`Reloading config...`);
-        if (Settings.readConfigPromise === undefined) {
-          Settings.readConfigPromise = Settings.readConfig();
-        }
-        await Settings.readConfigPromise;
-
-        callback();
+        await reloadConfig(false);
       }
     });
   }
