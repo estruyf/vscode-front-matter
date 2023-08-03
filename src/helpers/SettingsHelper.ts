@@ -52,6 +52,9 @@ export class Settings {
   private static isInitialized: boolean = false;
   private static listeners: any[] = [];
   private static fileCreationWatcher: vscode.FileSystemWatcher | undefined;
+  private static fileChangeWatcher: vscode.FileSystemWatcher | undefined;
+  private static fileSaveListener: vscode.Disposable;
+  private static fileDeleteListener: vscode.Disposable;
   private static readConfigPromise: Promise<void> | undefined = undefined;
   private static project: Project | undefined = undefined;
 
@@ -184,19 +187,32 @@ export class Settings {
 
     // Background listener for when it is not a user interaction
     if (projectConfig && existsSync(projectConfig)) {
-      let watcher = workspace.createFileSystemWatcher(projectConfig, true, false, true);
-      watcher.onDidChange(async (uri: Uri) => {
+      if (Settings.fileChangeWatcher) {
+        Settings.fileChangeWatcher.dispose();
+      }
+
+      Settings.fileChangeWatcher = workspace.createFileSystemWatcher(
+        projectConfig,
+        true,
+        false,
+        true
+      );
+      Settings.fileChangeWatcher.onDidChange(async (uri: Uri) => {
         Logger.info(`Config change detected - ${projectConfig} changed`);
         configDebouncer(() => callback(), 200);
         // callback()
       });
     }
 
-    workspace.onDidSaveTextDocument(async (e) => {
+    if (Settings.fileSaveListener) {
+      Settings.fileSaveListener.dispose();
+    }
+
+    Settings.fileSaveListener = workspace.onDidSaveTextDocument(async (e) => {
       const filename = e.uri.fsPath;
 
       if (Settings.checkProjectConfig(filename)) {
-        Logger.info(`Config change detected - ${projectConfig} saved`);
+        Logger.info(`Config change detected - ${filename} saved`);
 
         Logger.info(`Reloading config...`);
         if (Settings.readConfigPromise === undefined) {
@@ -209,7 +225,11 @@ export class Settings {
       }
     });
 
-    workspace.onDidDeleteFiles(async (e) => {
+    if (Settings.fileDeleteListener) {
+      Settings.fileDeleteListener.dispose();
+    }
+
+    Settings.fileDeleteListener = workspace.onDidDeleteFiles(async (e) => {
       const needCallback = e?.files.find((f) => Settings.checkProjectConfig(f.fsPath));
       if (needCallback) {
         Logger.info(`Reloading config...`);
