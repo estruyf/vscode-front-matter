@@ -1,5 +1,5 @@
 import { STATIC_FOLDER_PLACEHOLDER } from './../constants/StaticFolderPlaceholder';
-import { PanelProvider } from './../panelWebview/PanelProvider';
+import { PanelProvider } from './../panelWebView/PanelProvider';
 import { Uri, window } from 'vscode';
 import { dirname, extname, join } from 'path';
 import { Field } from '../models';

@@ -9,7 +9,7 @@ import {
 } from './../constants';
 import * as vscode from 'vscode';
 import { ArticleHelper, Notifications, SeoHelper, Settings } from '../helpers';
-import { PanelProvider } from '../panelWebview/PanelProvider';
+import { PanelProvider } from '../panelWebView/PanelProvider';
 import { DefaultFields } from '../constants';
 import { ContentType } from '../helpers/ContentType';
 import { DataListener } from '../listeners/panel';

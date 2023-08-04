@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { COMMAND_NAME, TelemetryEvent } from './constants';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
 import { TagType } from './panelWebView/TagType';
-import { PanelProvider } from './panelWebview/PanelProvider';
+import { PanelProvider } from './panelWebView/PanelProvider';
 import { DashboardSettings, debounceCallback, Logger, Settings as SettingsHelper } from './helpers';
 import ContentProvider from './providers/ContentProvider';
 import { PagesListener } from './listeners/dashboard';
