@@ -9,7 +9,7 @@ import {
 } from './../constants';
 import * as vscode from 'vscode';
 import { ArticleHelper, Notifications, SeoHelper, Settings } from '../helpers';
-import { ExplorerView } from '../explorerView/ExplorerView';
+import { PanelWebview } from '../PanelWebview/PanelWebview';
 import { DefaultFields } from '../constants';
 import { ContentType } from '../helpers/ContentType';
 import { DataListener } from '../listeners/panel';
@@ -91,7 +91,7 @@ export class StatusListener {
           }
         }
 
-        const panel = ExplorerView.getInstance();
+        const panel = PanelWebview.getInstance();
         if (panel && panel.visible) {
           DataListener.pushMetadata(article?.data);
         }
@@ -103,7 +103,7 @@ export class StatusListener {
     } else {
       commands.executeCommand('setContext', CONTEXT.isValidFile, false);
 
-      const panel = ExplorerView.getInstance();
+      const panel = PanelWebview.getInstance();
       if (panel && panel.visible) {
         DataListener.pushMetadata(null);
       }

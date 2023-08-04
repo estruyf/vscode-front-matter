@@ -29,9 +29,9 @@ import { Telemetry } from '../helpers/Telemetry';
 import { GitListener, ModeListener } from '../listeners/general';
 import { Folders } from '../commands';
 
-export class ExplorerView implements WebviewViewProvider, Disposable {
+export class PanelWebview implements WebviewViewProvider, Disposable {
   public static readonly viewType = 'frontMatter.explorer';
-  private static instance: ExplorerView;
+  private static instance: PanelWebview;
 
   private panel: WebviewView | null = null;
   private disposable: Disposable | null = null;
@@ -42,12 +42,12 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * Creates the singleton instance for the panel
    * @param extPath
    */
-  public static getInstance(extPath?: Uri): ExplorerView {
-    if (!ExplorerView.instance) {
-      ExplorerView.instance = new ExplorerView(extPath as Uri);
+  public static getInstance(extPath?: Uri): PanelWebview {
+    if (!PanelWebview.instance) {
+      PanelWebview.instance = new PanelWebview(extPath as Uri);
     }
 
-    return ExplorerView.instance;
+    return PanelWebview.instance;
   }
 
   /**
@@ -114,7 +114,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
     webviewView.onDidChangeVisibility(() => {
       if (this.visible) {
-        Telemetry.send(TelemetryEvent.openExplorerView);
+        Telemetry.send(TelemetryEvent.openPanelWebview);
         DataListener.getFileData();
       }
     });

@@ -1,4 +1,4 @@
-import { ExplorerView } from './../../explorerView/ExplorerView';
+import { PanelWebview } from './../../PanelWebview/PanelWebview';
 import { commands, window } from 'vscode';
 import { Dashboard } from '../../commands/Dashboard';
 import { COMMAND_NAME } from '../../constants';
@@ -38,7 +38,7 @@ export class MediaListener extends BaseListener {
       return;
     }
 
-    const panel = ExplorerView.getInstance();
+    const panel = PanelWebview.getInstance();
 
     if (typeof payload === 'string') {
       const imagePath = payload;
@@ -75,7 +75,7 @@ export class MediaListener extends BaseListener {
 
     const imgUrl = ImageHelper.relToAbs(filePath || '', data);
     if (imgUrl) {
-      const viewUrl = ExplorerView.getInstance().getWebview()?.asWebviewUri(imgUrl);
+      const viewUrl = PanelWebview.getInstance().getWebview()?.asWebviewUri(imgUrl);
       if (viewUrl) {
         this.sendMsg(Command.sendMediaUrl, {
           original: data,

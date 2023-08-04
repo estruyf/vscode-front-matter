@@ -3,7 +3,7 @@ import { COMMAND_NAME, CONTEXT } from '../constants';
 import { Extension } from '../helpers';
 import { Credentials } from '../services/Credentials';
 import fetch from 'node-fetch';
-import { ExplorerView } from '../explorerView/ExplorerView';
+import { PanelWebview } from '../PanelWebview/PanelWebview';
 import { Dashboard } from './Dashboard';
 import { SettingsListener } from '../listeners/panel';
 
@@ -61,8 +61,8 @@ export class Backers {
       await ext.setState(CONTEXT.backer, true, 'global');
 
       if (!prevData) {
-        const explorerView = ExplorerView.getInstance();
-        if (explorerView.visible) {
+        const PanelView = PanelWebview.getInstance();
+        if (PanelView.visible) {
           SettingsListener.getSettings();
         }
 

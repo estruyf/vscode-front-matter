@@ -26,7 +26,7 @@ export const TelemetryEvent = {
   insertMediaToContent: 'insertMediaToContent',
   insertFileToContent: 'insertFileToContent',
   updateMediaMetadata: 'updateMediaMetadata',
-  openExplorerView: 'openExplorerView',
+  openPanelWebview: 'openPanelWebview',
 
   // Chatbot
   openChatbot: 'openChatbot',
