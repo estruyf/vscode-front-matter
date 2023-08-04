@@ -6,7 +6,7 @@ import {
 } from './../../constants/settings';
 import { Settings } from './../../helpers/SettingsHelper';
 import { Dashboard } from '../../commands/Dashboard';
-import { PanelWebview } from '../../PanelWebview/PanelWebview';
+import { PanelWebview } from '../../panelWebview/PanelWebview';
 import {
   ArticleHelper,
   Extension,

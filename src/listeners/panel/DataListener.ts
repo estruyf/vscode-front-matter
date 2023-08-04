@@ -20,7 +20,7 @@ import { ParsedFrontMatter } from '../../parsers';
 import { processKnownPlaceholders } from '../../helpers/PlaceholderHelper';
 import { Field, PostMessageData } from '../../models';
 import { encodeEmoji } from '../../utils';
-import { PanelWebview } from '../../PanelWebview/PanelWebview';
+import { PanelWebview } from '../../panelWebview/PanelWebview';
 import { MessageHandlerData } from '@estruyf/vscode';
 import { SponsorAi } from '../../services/SponsorAI';
 

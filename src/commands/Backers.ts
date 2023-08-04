@@ -3,7 +3,7 @@ import { COMMAND_NAME, CONTEXT } from '../constants';
 import { Extension } from '../helpers';
 import { Credentials } from '../services/Credentials';
 import fetch from 'node-fetch';
-import { PanelWebview } from '../PanelWebview/PanelWebview';
+import { PanelWebview } from '../panelWebview/PanelWebview';
 import { Dashboard } from './Dashboard';
 import { SettingsListener } from '../listeners/panel';
 

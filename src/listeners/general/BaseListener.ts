@@ -1,6 +1,6 @@
 import { GeneralCommands } from './../../constants/GeneralCommands';
 import { Dashboard } from '../../commands/Dashboard';
-import { PanelWebview } from '../../PanelWebview/PanelWebview';
+import { PanelWebview } from '../../panelWebview/PanelWebview';
 import { Extension } from '../../helpers';
 import { Logger } from '../../helpers/Logger';
 import { commands, Uri } from 'vscode';

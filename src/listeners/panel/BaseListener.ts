@@ -1,5 +1,5 @@
 import { Extension } from './../../helpers/Extension';
-import { PanelWebview } from './../../PanelWebview/PanelWebview';
+import { PanelWebview } from './../../panelWebview/PanelWebview';
 import { Logger } from '../../helpers';
 import { Command } from '../../panelWebView/Command';
 import { PostMessageData } from '../../models';

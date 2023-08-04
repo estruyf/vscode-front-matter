@@ -1,4 +1,4 @@
-import { PanelWebview } from './../../PanelWebview/PanelWebview';
+import { PanelWebview } from './../../panelWebview/PanelWebview';
 import { commands, window } from 'vscode';
 import { Dashboard } from '../../commands/Dashboard';
 import { COMMAND_NAME } from '../../constants';

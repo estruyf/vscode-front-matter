@@ -11,7 +11,7 @@ import {
   SETTING_SEO_TITLE_FIELD
 } from '../../constants';
 import { SponsorAi } from '../../services/SponsorAI';
-import { PanelWebview } from '../../PanelWebview/PanelWebview';
+import { PanelWebview } from '../../panelWebview/PanelWebview';
 import { MessageHandlerData } from '@estruyf/vscode';
 
 export class TaxonomyListener extends BaseListener {
