@@ -1,5 +1,5 @@
 import { STATIC_FOLDER_PLACEHOLDER } from './../constants/StaticFolderPlaceholder';
-import { PanelWebview } from './../panelWebview/PanelWebview';
+import { PanelProvider } from './../panelWebview/PanelProvider';
 import { Uri, window } from 'vscode';
 import { dirname, extname, join } from 'path';
 import { Field } from '../models';
@@ -104,7 +104,7 @@ export class ImageHelper {
    */
   public static processImageFields(updatedMetadata: any, fields: Field[], parents: string[] = []) {
     const imageFields = fields.filter((field) => field.type === 'image');
-    const panel = PanelWebview.getInstance();
+    const panel = PanelProvider.getInstance();
 
     // Support multi-level fields
     let parentObj = updatedMetadata;

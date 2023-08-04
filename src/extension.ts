@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { COMMAND_NAME, TelemetryEvent } from './constants';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
 import { TagType } from './panelWebView/TagType';
-import { PanelWebview } from './panelWebview/PanelWebview';
+import { PanelProvider } from './panelWebview/PanelProvider';
 import { DashboardSettings, debounceCallback, Logger, Settings as SettingsHelper } from './helpers';
 import ContentProvider from './providers/ContentProvider';
 import { PagesListener } from './listeners/dashboard';
@@ -124,9 +124,9 @@ export async function activate(context: vscode.ExtensionContext) {
   }
 
   // Register the explorer view
-  const explorerSidebar = PanelWebview.getInstance(extensionUri);
+  const explorerSidebar = PanelProvider.getInstance(extensionUri);
   const PanelView = vscode.window.registerWebviewViewProvider(
-    PanelWebview.viewType,
+    PanelProvider.viewType,
     explorerSidebar,
     {
       webviewOptions: {
@@ -264,7 +264,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // Collapse all sections in the webview
   const collapseAll = vscode.commands.registerCommand(COMMAND_NAME.collapseSections, () => {
-    PanelWebview.getInstance()?.collapseAll();
+    PanelProvider.getInstance()?.collapseAll();
   });
 
   // Things to do when configuration changes

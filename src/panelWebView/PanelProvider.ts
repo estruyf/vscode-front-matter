@@ -29,9 +29,9 @@ import { Telemetry } from '../helpers/Telemetry';
 import { GitListener, ModeListener } from '../listeners/general';
 import { Folders } from '../commands';
 
-export class PanelWebview implements WebviewViewProvider, Disposable {
+export class PanelProvider implements WebviewViewProvider, Disposable {
   public static readonly viewType = 'frontMatter.explorer';
-  private static instance: PanelWebview;
+  private static instance: PanelProvider;
 
   private panel: WebviewView | null = null;
   private disposable: Disposable | null = null;
@@ -42,12 +42,12 @@ export class PanelWebview implements WebviewViewProvider, Disposable {
    * Creates the singleton instance for the panel
    * @param extPath
    */
-  public static getInstance(extPath?: Uri): PanelWebview {
-    if (!PanelWebview.instance) {
-      PanelWebview.instance = new PanelWebview(extPath as Uri);
+  public static getInstance(extPath?: Uri): PanelProvider {
+    if (!PanelProvider.instance) {
+      PanelProvider.instance = new PanelProvider(extPath as Uri);
     }
 
-    return PanelWebview.instance;
+    return PanelProvider.instance;
   }
 
   /**

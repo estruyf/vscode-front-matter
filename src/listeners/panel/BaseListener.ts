@@ -1,5 +1,5 @@
 import { Extension } from './../../helpers/Extension';
-import { PanelWebview } from './../../panelWebview/PanelWebview';
+import { PanelProvider } from './../../panelWebview/PanelProvider';
 import { Logger } from '../../helpers';
 import { Command } from '../../panelWebView/Command';
 import { PostMessageData } from '../../models';
@@ -16,7 +16,7 @@ export abstract class BaseListener {
     Logger.info(`Sending message to panel: ${command}`);
 
     const extPath = Extension.getInstance().extensionPath;
-    const panel = PanelWebview.getInstance(extPath);
+    const panel = PanelProvider.getInstance(extPath);
 
     panel.sendMessage({
       command,
@@ -28,7 +28,7 @@ export abstract class BaseListener {
     Logger.info(`Sending request result to panel: ${command}`);
 
     const extPath = Extension.getInstance().extensionPath;
-    const panel = PanelWebview.getInstance(extPath);
+    const panel = PanelProvider.getInstance(extPath);
 
     panel.getWebview()?.postMessage({
       command,
@@ -41,7 +41,7 @@ export abstract class BaseListener {
     Logger.info(`Sending request error to the panel: ${command}`);
 
     const extPath = Extension.getInstance().extensionPath;
-    const panel = PanelWebview.getInstance(extPath);
+    const panel = PanelProvider.getInstance(extPath);
 
     panel.getWebview()?.postMessage({
       command,

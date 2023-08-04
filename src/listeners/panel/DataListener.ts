@@ -20,7 +20,7 @@ import { ParsedFrontMatter } from '../../parsers';
 import { processKnownPlaceholders } from '../../helpers/PlaceholderHelper';
 import { Field, PostMessageData } from '../../models';
 import { encodeEmoji } from '../../utils';
-import { PanelWebview } from '../../panelWebview/PanelWebview';
+import { PanelProvider } from '../../panelWebView/PanelProvider';
 import { MessageHandlerData } from '@estruyf/vscode';
 import { SponsorAi } from '../../services/SponsorAI';
 
@@ -84,7 +84,7 @@ export class DataListener extends BaseListener {
     }
 
     const extPath = Extension.getInstance().extensionPath;
-    const panel = PanelWebview.getInstance(extPath);
+    const panel = PanelProvider.getInstance(extPath);
 
     const editor = window.activeTextEditor;
     if (!editor) {

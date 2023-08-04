@@ -1,6 +1,6 @@
 import { GeneralCommands } from './../../constants/GeneralCommands';
 import { Dashboard } from '../../commands/Dashboard';
-import { PanelWebview } from '../../panelWebview/PanelWebview';
+import { PanelProvider } from '../../panelWebview/PanelProvider';
 import { Extension } from '../../helpers';
 import { Logger } from '../../helpers/Logger';
 import { commands, Uri } from 'vscode';
@@ -26,7 +26,7 @@ export abstract class BaseListener {
     Logger.info(`Sending message to webview (panel&dashboard): ${command}`);
 
     const extPath = Extension.getInstance().extensionPath;
-    const panel = PanelWebview.getInstance(extPath);
+    const panel = PanelProvider.getInstance(extPath);
 
     panel.sendMessage({ command: command as any, payload });
 

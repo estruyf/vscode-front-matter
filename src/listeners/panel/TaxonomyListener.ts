@@ -11,7 +11,7 @@ import {
   SETTING_SEO_TITLE_FIELD
 } from '../../constants';
 import { SponsorAi } from '../../services/SponsorAI';
-import { PanelWebview } from '../../panelWebview/PanelWebview';
+import { PanelProvider } from '../../panelWebview/PanelProvider';
 import { MessageHandlerData } from '@estruyf/vscode';
 
 export class TaxonomyListener extends BaseListener {
@@ -71,7 +71,7 @@ export class TaxonomyListener extends BaseListener {
     }
 
     const extPath = Extension.getInstance().extensionPath;
-    const panel = PanelWebview.getInstance(extPath);
+    const panel = PanelProvider.getInstance(extPath);
 
     const editor = window.activeTextEditor;
     if (!editor) {
