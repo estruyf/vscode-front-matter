@@ -56,6 +56,13 @@ export class Folders {
       );
     }
 
+    if (startPath.includes(STATIC_FOLDER_PLACEHOLDER.astro.placeholder)) {
+      startPath = startPath.replace(
+        STATIC_FOLDER_PLACEHOLDER.astro.placeholder,
+        STATIC_FOLDER_PLACEHOLDER.astro.assetsFolder
+      );
+    }
+
     const folderName = await window.showInputBox({
       title: `Add media folder`,
       prompt: `Which name would you like to give to your folder (use "/" to create multi-level folders)?`,

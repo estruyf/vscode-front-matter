@@ -2,7 +2,7 @@ import { CollectionIcon } from '@heroicons/react/outline';
 import { basename, join } from 'path';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { HOME_PAGE_NAVIGATION_ID } from '../../../constants';
+import { HOME_PAGE_NAVIGATION_ID, STATIC_FOLDER_PLACEHOLDER } from '../../../constants';
 import { parseWinPath } from '../../../helpers/parseWinPath';
 import useThemeColors from '../../hooks/useThemeColors';
 import { SearchAtom, SelectedMediaFolderAtom, SettingsAtom } from '../../state';
@@ -33,8 +33,12 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (
     const { wsFolder, staticFolder, contentFolders } = settings;
 
     const isValid = (folderPath: string) => {
-      if (staticFolder) {
-        const staticPath = parseWinPath(join(wsFolder, staticFolder)) as string;
+      let crntStaticFolder = staticFolder;
+      if (staticFolder === STATIC_FOLDER_PLACEHOLDER.astro.placeholder) {
+        crntStaticFolder = STATIC_FOLDER_PLACEHOLDER.astro.assetsFolder;
+      }
+      if (crntStaticFolder) {
+        const staticPath = parseWinPath(join(wsFolder, crntStaticFolder)) as string;
         const relPath = folderPath.replace(staticPath, '') as string;
 
         if (relPath.length > 1 && folderPath.startsWith(staticPath)) {

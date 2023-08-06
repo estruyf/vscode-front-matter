@@ -47,6 +47,8 @@ export const Media: React.FunctionComponent<IMediaProps> = (
       let staticFolderPath = join('/', settings?.staticFolder || '', '/');
       if (settings?.staticFolder === STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
         staticFolderPath = join('/', STATIC_FOLDER_PLACEHOLDER.hexo.postsFolder, '/');
+      } else if (settings?.staticFolder === STATIC_FOLDER_PLACEHOLDER.astro.placeholder) {
+        staticFolderPath = join('/', STATIC_FOLDER_PLACEHOLDER.astro.assetsFolder, '/');
       }
       return staticFolderPath;
     }
@@ -60,7 +62,8 @@ export const Media: React.FunctionComponent<IMediaProps> = (
       viewData.data &&
       typeof viewData.data.pageBundle !== 'undefined' &&
       !viewData.data.pageBundle &&
-      settings?.staticFolder !== STATIC_FOLDER_PLACEHOLDER.hexo.placeholder
+      settings?.staticFolder !== STATIC_FOLDER_PLACEHOLDER.hexo.placeholder &&
+      settings?.staticFolder !== STATIC_FOLDER_PLACEHOLDER.astro.placeholder
     ) {
       return [];
     }

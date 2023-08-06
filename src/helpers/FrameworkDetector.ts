@@ -1,7 +1,7 @@
 import { parseWinPath } from './parseWinPath';
 import * as jsoncParser from 'jsonc-parser';
 import jsyaml = require('js-yaml');
-import { join, resolve } from 'path';
+import { join, resolve, relative, dirname } from 'path';
 import { commands, Uri } from 'vscode';
 import { Folders } from '../commands/Folders';
 import {
@@ -127,6 +127,19 @@ export class FrameworkDetector {
       if (relAssetPath.startsWith('/')) {
         relAssetPath = relAssetPath.substring(1);
       }
+    }
+    // Support for the Astro assets folder
+    else if (staticFolder === STATIC_FOLDER_PLACEHOLDER.astro.placeholder) {
+      const absAssetPath = parseWinPath(
+        join(Folders.getWorkspaceFolder()?.fsPath || '', relAssetPath)
+      );
+
+      const fileDir = dirname(filePath);
+      const assetDir = dirname(absAssetPath);
+      const fileName = parse(absAssetPath);
+
+      relAssetPath = relative(fileDir, assetDir);
+      relAssetPath = join(relAssetPath, `${fileName.name}${fileName.ext}`);
     }
 
     return parseWinPath(relAssetPath);
