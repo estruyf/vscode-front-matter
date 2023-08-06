@@ -81,6 +81,8 @@
   "setting.frontMatter.content.placeholders.items.properties.value.description": "Der Wert des Platzhalters",
   "setting.frontMatter.content.placeholders.items.properties.script.description": "Das Skript, das ausgeführt wird, um den Wert des Platzhalters zu erhalten",
   "setting.frontMatter.content.publicFolder.markdownDescription": "Geben Sie den Ordnernamen an, in dem sich alle Ihre Ressourcen befinden. Beispielsweise ist dies im Falle von Hugo der Ordner `static`. [Dokumentation prüfen](https://frontmatter.codes/docs/settings/overview#frontmatter.content.publicfolder)",
+  "setting.frontMatter.content.publicFolder.properties.path.description": "Geben Sie den Pfad des Assets-Ordners an.",
+  "setting.frontMatter.content.publicFolder.properties.relative.description": "Definiert, ob der Pfad zu Ihren Medien-Dateien relativ zur Inhaltsdatei sein soll.",
   "setting.frontMatter.snippets.wrapper.enabled.markdownDescription": "Geben Sie an, ob Sie die Snippets umschließen möchten. [Dokumentation prüfen](https://frontmatter.codes/docs/settings/overview#frontMatter.snippets.wrapper.enabled)",
   "setting.frontMatter.content.snippets.markdownDescription": "Definieren Sie die Snippets, die Sie in Ihrem Inhalt verwenden möchten. [Dokumentation prüfen](https://frontmatter.codes/docs/settings/overview#frontmatter.content.snippets)",
   "setting.frontMatter.content.sorting.markdownDescription": "Definieren Sie die Sortieroptionen für Ihren Dashboard-Inhalt. [Dokumentation prüfen](https://frontmatter.codes/docs/settings/overview#frontmatter.content.sorting)",

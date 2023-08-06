@@ -33,12 +33,8 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (
     const { wsFolder, staticFolder, contentFolders } = settings;
 
     const isValid = (folderPath: string) => {
-      let crntStaticFolder = staticFolder;
-      if (staticFolder === STATIC_FOLDER_PLACEHOLDER.astro.placeholder) {
-        crntStaticFolder = STATIC_FOLDER_PLACEHOLDER.astro.assetsFolder;
-      }
-      if (crntStaticFolder) {
-        const staticPath = parseWinPath(join(wsFolder, crntStaticFolder)) as string;
+      if (staticFolder) {
+        const staticPath = parseWinPath(join(wsFolder, staticFolder)) as string;
         const relPath = folderPath.replace(staticPath, '') as string;
 
         if (relPath.length > 1 && folderPath.startsWith(staticPath)) {

@@ -11,7 +11,7 @@ import {
   STATIC_FOLDER_PLACEHOLDER
 } from '../constants';
 import { FrameworkDetectors } from '../constants/FrameworkDetectors';
-import { Framework } from '../models';
+import { Framework, StaticFolder } from '../models';
 import { Logger } from './Logger';
 import { existsAsync, readFileAsync } from '../utils';
 import { Settings } from '.';
@@ -102,6 +102,7 @@ export class FrameworkDetector {
    * @param filePath
    */
   public static relAssetPathUpdate(relAssetPath: string, filePath: string): string {
+    const staticFolderValue = Settings.get<string | StaticFolder>(SETTING_CONTENT_STATIC_FOLDER);
     const staticFolder = Folders.getStaticFolderRelativePath();
     const frameworkId = Settings.get(SETTING_FRAMEWORK_ID);
 
@@ -129,9 +130,14 @@ export class FrameworkDetector {
       }
     }
     // Support for the Astro assets folder
-    else if (staticFolder === STATIC_FOLDER_PLACEHOLDER.astro.placeholder) {
+    else if (
+      staticFolder &&
+      staticFolderValue &&
+      typeof staticFolderValue !== 'string' &&
+      staticFolderValue.relative
+    ) {
       const absAssetPath = parseWinPath(
-        join(Folders.getWorkspaceFolder()?.fsPath || '', relAssetPath)
+        join(Folders.getWorkspaceFolder()?.fsPath || '', staticFolder, relAssetPath)
       );
 
       const fileDir = dirname(filePath);

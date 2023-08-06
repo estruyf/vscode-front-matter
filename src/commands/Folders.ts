@@ -9,7 +9,7 @@ import {
 } from './../constants';
 import { commands, Uri, workspace, window } from 'vscode';
 import { basename, dirname, join, relative, sep } from 'path';
-import { ContentFolder, FileInfo, FolderInfo } from '../models';
+import { ContentFolder, FileInfo, FolderInfo, StaticFolder } from '../models';
 import uniqBy = require('lodash.uniqby');
 import { Template } from './Template';
 import { Notifications } from '../helpers/Notifications';
@@ -53,13 +53,6 @@ export class Folders {
       startPath = startPath.replace(
         STATIC_FOLDER_PLACEHOLDER.hexo.placeholder,
         STATIC_FOLDER_PLACEHOLDER.hexo.postsFolder
-      );
-    }
-
-    if (startPath.includes(STATIC_FOLDER_PLACEHOLDER.astro.placeholder)) {
-      startPath = startPath.replace(
-        STATIC_FOLDER_PLACEHOLDER.astro.placeholder,
-        STATIC_FOLDER_PLACEHOLDER.astro.assetsFolder
       );
     }
 
@@ -179,26 +172,32 @@ export class Folders {
    * @returns
    */
   public static getStaticFolderRelativePath(): string | undefined {
-    let staticFolder = Settings.get<string>(SETTING_CONTENT_STATIC_FOLDER);
+    const staticFolder = Settings.get<string | StaticFolder>(SETTING_CONTENT_STATIC_FOLDER);
+
+    let assetFolder: string | undefined;
+
+    if (staticFolder && typeof staticFolder !== 'string' && staticFolder.path) {
+      assetFolder = staticFolder.path;
+    } else if (staticFolder && typeof staticFolder === 'string') {
+      assetFolder = staticFolder;
+    }
 
     if (
-      staticFolder &&
-      (staticFolder.includes(WORKSPACE_PLACEHOLDER) ||
-        staticFolder === '/' ||
-        staticFolder === './')
+      assetFolder &&
+      (assetFolder.includes(WORKSPACE_PLACEHOLDER) || assetFolder === '/' || assetFolder === './')
     ) {
-      staticFolder =
-        staticFolder === '/' || staticFolder === './'
+      assetFolder =
+        assetFolder === '/' || assetFolder === './'
           ? Folders.getAbsFilePath(WORKSPACE_PLACEHOLDER)
-          : Folders.getAbsFilePath(staticFolder);
+          : Folders.getAbsFilePath(assetFolder);
       const wsFolder = Folders.getWorkspaceFolder();
       if (wsFolder) {
-        const relativePath = relative(parseWinPath(wsFolder.fsPath), parseWinPath(staticFolder));
+        const relativePath = relative(parseWinPath(wsFolder.fsPath), parseWinPath(assetFolder));
         return relativePath === '' ? '/' : relativePath;
       }
     }
 
-    return staticFolder;
+    return assetFolder;
   }
 
   /**

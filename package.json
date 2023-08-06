@@ -335,7 +335,18 @@
           "scope": "Content"
         },
         "frontMatter.content.publicFolder": {
-          "type": "string",
+          "type": ["string", "object"],
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "%setting.frontMatter.content.publicFolder.properties.path.description%"
+            },
+            "relative": {
+              "type": "boolean",
+              "description": "%setting.frontMatter.content.publicFolder.properties.relative.description%",
+              "default": false
+            }
+          },
           "default": "",
           "markdownDescription": "%setting.frontMatter.content.publicFolder.markdownDescription%",
           "scope": "Content"

@@ -109,11 +109,7 @@ export class MediaHelpers {
 
       allMedia = [...media];
     } else {
-      if (
-        staticFolder &&
-        staticFolder !== STATIC_FOLDER_PLACEHOLDER.hexo.placeholder &&
-        staticFolder !== STATIC_FOLDER_PLACEHOLDER.astro.placeholder
-      ) {
+      if (staticFolder && staticFolder !== STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
         const folderSearch = join(staticFolder || '', '/*');
         const files = await workspace.findFiles(folderSearch);
         const media = await MediaHelpers.updateMediaData(MediaHelpers.filterMedia(files));
@@ -121,12 +117,6 @@ export class MediaHelpers {
         allMedia = [...media];
       } else if (staticFolder && staticFolder === STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
         const folderSearch = join(STATIC_FOLDER_PLACEHOLDER.hexo.postsFolder, '/*');
-        const files = await workspace.findFiles(folderSearch);
-        const media = await MediaHelpers.updateMediaData(MediaHelpers.filterMedia(files));
-
-        allMedia = [...media];
-      } else if (staticFolder && staticFolder === STATIC_FOLDER_PLACEHOLDER.astro.placeholder) {
-        const folderSearch = join(STATIC_FOLDER_PLACEHOLDER.astro.assetsFolder, '/*');
         const files = await workspace.findFiles(folderSearch);
         const media = await MediaHelpers.updateMediaData(MediaHelpers.filterMedia(files));
 
@@ -234,11 +224,6 @@ export class MediaHelpers {
       staticPath = join(
         parseWinPath(wsFolder?.fsPath || ''),
         STATIC_FOLDER_PLACEHOLDER.hexo.postsFolder
-      );
-    } else if (staticFolder === STATIC_FOLDER_PLACEHOLDER.astro.placeholder) {
-      staticPath = join(
-        parseWinPath(wsFolder?.fsPath || ''),
-        STATIC_FOLDER_PLACEHOLDER.astro.assetsFolder
       );
     }
 

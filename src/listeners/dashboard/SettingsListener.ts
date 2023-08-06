@@ -12,7 +12,7 @@ import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { DashboardSettings, Extension, Settings } from '../../helpers';
 import { FrameworkDetector } from '../../helpers/FrameworkDetector';
-import { Framework, PostMessageData } from '../../models';
+import { Framework, PostMessageData, StaticFolder } from '../../models';
 import { BaseListener } from './BaseListener';
 import { Cache } from '../../commands/Cache';
 import { Preview } from '../../commands';
@@ -42,6 +42,9 @@ export class SettingsListener extends BaseListener {
         break;
       case DashboardMessage.addFolder:
         this.addFolder(msg?.payload);
+        break;
+      case DashboardMessage.addAssetsFolder:
+        this.addAssetsFolder(msg?.payload);
         break;
       case DashboardMessage.switchProject:
         this.switchProject(msg.payload);
@@ -109,7 +112,7 @@ export class SettingsListener extends BaseListener {
         (f: Framework) => f.name === frameworkId
       );
       if (framework) {
-        if (framework.static) {
+        if (framework.static && typeof framework.static === 'string') {
           await Settings.update(SETTING_CONTENT_STATIC_FOLDER, framework.static, true);
         }
 
@@ -123,6 +126,11 @@ export class SettingsListener extends BaseListener {
       }
     }
 
+    SettingsListener.getSettings(true);
+  }
+
+  public static async addAssetsFolder(assetFolder: string | StaticFolder) {
+    await Settings.update(SETTING_CONTENT_STATIC_FOLDER, assetFolder, true);
     SettingsListener.getSettings(true);
   }
 

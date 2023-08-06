@@ -79,6 +79,8 @@
   "setting.frontMatter.content.placeholders.items.properties.value.description": "The placeholder its value",
   "setting.frontMatter.content.placeholders.items.properties.script.description": "The script to execute to get the value of the placeholder",
   "setting.frontMatter.content.publicFolder.markdownDescription": "Specify the folder name where all your assets are located. For instance in Hugo this is the `static` folder. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.publicfolder)",
+  "setting.frontMatter.content.publicFolder.properties.path.description": "Specify the path of the assets folder",
+  "setting.frontMatter.content.publicFolder.properties.relative.description": "Defines if the path to your media files be relative to the content file?",
   "setting.frontMatter.snippets.wrapper.enabled.markdownDescription": "Specify if you want to wrap the snippets. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontMatter.snippets.wrapper.enabled)",
   "setting.frontMatter.content.snippets.markdownDescription": "Define the snippets you want to use in your content. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.snippets)",
   "setting.frontMatter.content.sorting.markdownDescription": "Define the sorting options for your dashboard content. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.sorting)",

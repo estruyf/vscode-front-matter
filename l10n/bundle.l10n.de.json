@@ -21,51 +21,37 @@
   "common.support": "Support",
   "common.remove.value": "{0} entfernen",
   "common.error.message": "Entschuldigung, etwas ist schiefgelaufen.",
-
   "developer.title": "Entwicklermodus",
   "developer.reload.title": "Dashboard neu laden",
   "developer.reload.label": "Neu laden",
   "developer.devTools.title": "Entwicklertools öffnen",
   "developer.devTools.label": "DevTools",
-
   "field.required": "Pflichtfeld",
   "field.unknown": "Unbekanntes Feld",
-
   "dashboard.chatbot.answer.answer": "Antwort",
   "dashboard.chatbot.answer.resources": "Ressourcen",
   "dashboard.chatbot.answer.warning": "Warnung: Antworten können falsch sein. Im Zweifelsfall konsultieren Sie bitte die Dokumentation.",
-
   "dashboard.chatbot.chatbot.loading": "Assistent wird vorbereitet",
   "dashboard.chatbot.chatbot.ready": "Ich bin bereit, was möchtest du wissen?",
-
   "dashboard.chatbot.chatbox.placeholder": "Wie kann ich Front Matter konfigurieren?",
-
   "dashboard.chatbot.header.heading": "Frag den Front Matter AI",
   "dashboard.chatbot.header.description": "Unser KI-System, powered by mendable.ai, hat die Dokumentation verarbeitet und kann Ihnen bei Fragen zu Front Matter behilflich sein. Legen Sie los und fragen Sie!",
-
   "dashboard.common.choiceButton.open": "Optionen öffnen",
-
   "dashboard.contents.contentActions.actionMenuButton.title": "Menü",
   "dashboard.contents.contentActions.menuItem.view": "Anzeigen",
   "dashboard.contents.contentActions.alert.title": "Löschen: {0}",
   "dashboard.contents.contentActions.alert.description": "Möchten Sie den Inhalt \"{0}\" wirklich löschen?",
-
   "dashboard.contents.item.invalidTitle": "<ungültiger Titel>",
   "dashboard.contents.item.invalidDescription": "<ungültige Beschreibung>",
-
   "dashboard.contents.list.title": "Titel",
   "dashboard.contents.list.date": "Datum",
   "dashboard.contents.list.status": "Status",
-
   "dashboard.contents.overview.noMarkdown": "Kein Markdown vorhanden",
   "dashboard.contents.overview.noFolders": "Stellen Sie sicher, dass Sie einen Inhaltsordner in Ihrem Projekt registriert haben, damit Front Matter die Inhalte finden kann.",
-
   "dashboard.contents.status.draft": "Entwurf",
   "dashboard.contents.status.published": "Veröffentlicht",
-
   "dashboard.dataView.dataForm.modify": "Daten bearbeiten",
   "dashboard.dataView.dataForm.add": "Neue Daten hinzufügen",
-
   "dashboard.dataView.dataView.select": "Wählen Sie Ihren Datentyp",
   "dashboard.dataView.dataView.title": "Ihre {0} Dateneinträge",
   "dashboard.dataView.dataView.add": "Neuen Eintrag hinzufügen",
@@ -74,49 +60,34 @@
   "dashboard.dataView.dataView.getStarted": "Wählen Sie einen Datentyp, um zu beginnen",
   "dashboard.dataView.dataView.noDataFiles": "Keine Datendateien gefunden",
   "dashboard.dataView.dataView.getStarted.link": "Lesen Sie mehr, um zu erfahren, wie Sie Datenfiles verwenden können",
-
   "dashboard.dataView.emptyView.heading": "Wählen Sie zuerst Ihren Datentyp aus",
-
   "dashboard.dataView.sortableItem.editButton.title": "\"{0}\" bearbeiten",
   "dashboard.dataView.sortableItem.deleteButton.title": "\"{0}\" löschen",
   "dashboard.dataView.sortableItem.alert.title": "Daten-Eintrag löschen",
   "dashboard.dataView.sortableItem.alert.description": "Sind Sie sicher, dass Sie den Daten-Eintrag löschen möchten?",
-
   "dashboard.errorView.description": "Bitte schließen Sie das Dashboard und versuchen Sie es erneut.",
-
   "dashboard.header.breadcrumb.home": "Startseite",
-
   "dashboard.header.clearFilters.title": "Filter, Gruppierung und Sortierung zurücksetzen",
-
   "dashboard.header.filter.default": "Kein Filter",
-
   "dashboard.header.folders.default": "Alle Typen",
   "dashboard.header.folders.menuButton.showing": "Anzeige",
-
   "dashboard.header.grouping.option.none": "Keine",
   "dashboard.header.grouping.option.year": "Jahr",
   "dashboard.header.grouping.option.draft": "Entwurf/Veröffentlicht",
   "dashboard.header.grouping.menuButton.label": "Gruppieren nach",
-
   "dashboard.header.navigation.allArticles": "Alle Artikel",
   "dashboard.header.navigation.published": "Veröffentlicht",
   "dashboard.header.navigation.draft": "Im Entwurf",
-
   "dashboard.header.header.createContent": "Inhalt erstellen",
   "dashboard.header.header.createByContentType": "Nach Inhaltstyp erstellen",
   "dashboard.header.header.createByTemplate": "Nach Vorlage erstellen",
-
   "dashboard.header.pagination.first": "Erste",
   "dashboard.header.pagination.previous": "Vorherige",
   "dashboard.header.pagination.next": "Nächste",
   "dashboard.header.pagination.last": "Letzte",
-
   "dashboard.header.paginationStatus.text": "Zeige {0} bis {1} von {2} Ergebnissen",
-
   "dashboard.header.projectSwitcher.label": "Projekt",
-
   "dashboard.header.refreshDashboard.label": "Dashboard aktualisieren",
-
   "dashboard.header.sorting.lastModified.asc": "Zuletzt geändert (aufsteigend)",
   "dashboard.header.sorting.lastModified.desc": "Zuletzt geändert (absteigend)",
   "dashboard.header.sorting.filename.asc": "Nach Dateiname (aufsteigend)",
@@ -130,27 +101,21 @@
   "dashboard.header.sorting.alt.asc": "Alt-Text (aufsteigend)",
   "dashboard.header.sorting.alt.desc": "Alt-Text (absteigend)",
   "dashboard.header.sorting.label": "Sortieren nach",
-  
   "dashboard.header.startup.label": "Beim Start öffnen?",
-
   "dashboard.header.tabs.contents": "Inhalte",
   "dashboard.header.tabs.media": "Medien",
   "dashboard.header.tabs.snippets": "Snippets",
   "dashboard.header.tabs.data": "Daten",
   "dashboard.header.tabs.taxonomies": "Taxonomien",
-
   "dashboard.header.viewSwitch.toGrid": "Zur Rasteransicht wechseln",
   "dashboard.header.viewSwitch.toList": "Zur Listenansicht wechseln",
-
   "dashboard.layout.sponsor.support.msg": "Unterstützen Sie Front Matter",
   "dashboard.layout.sponsor.review.label": "Bewerten",
   "dashboard.layout.sponsor.review.msg": "Bewerten Sie Front Matter",
-
   "dashboard.media.common.title": "Titel",
   "dashboard.media.common.caption": "Beschriftung",
   "dashboard.media.common.alt": "Alternativer Text",
   "dashboard.media.common.size": "Größe",
-
   "dashboard.media.dialog.title": "Details anzeigen",
   "dashboard.media.panel.close": "Panel schließen",
   "dashboard.media.metadata.panel.title": "Metadaten aktualisieren",
@@ -162,10 +127,8 @@
   "dashboard.media.metadata.panel.form.information.modifiedDate": "Zuletzt geändert",
   "dashboard.media.metadata.panel.form.information.dimensions": "Abmessungen",
   "dashboard.media.metadata.panel.form.information.folder": "Ordner",
-
   "dashboard.media.folderCreation.hexo.create": "Post-Asset-Ordner erstellen",
   "dashboard.media.folderCreation.folder.create": "Neuen Ordner erstellen",
-
   "dashboard.media.item.quickAction.insert.field": "Bild in Ihrem Feld \"{0}\" einfügen",
   "dashboard.media.item.quickAction.insert.markdown": "Bild mit Markdown-Markup einfügen",
   "dashboard.media.item.quickAction.copy.path": "Medienpfad kopieren",
@@ -175,7 +138,6 @@
   "dashboard.media.item.menuItem.reveal.media": "Medien anzeigen",
   "dashboard.media.item.infoDialog.snippet.description": "Wählen Sie das Media-Snippet aus, das für die aktuelle Mediendatei verwendet werden soll.",
   "dashboard.media.item.alert.delete.description": "Sind Sie sicher, dass Sie die Datei aus dem Ordner {0} löschen möchten?",
-
   "dashboard.media.media.description": "Wählen Sie die Medien-Datei aus, die Sie Ihrem Inhalt hinzufügen möchten.",
   "dashboard.media.media.dragAndDrop": "Sie können Bilder auch per Drag & Drop von Ihrem Desktop auswählen, nachdem sie hochgeladen wurden.",
   "dashboard.media.media.folder.upload": "Zu {0} hochladen",
@@ -183,17 +145,13 @@
   "dashboard.media.media.placeholder": "Keine Medien-Dateien vorhanden. Sie können neue Dateien per Drag & Drop unter Verwendung der [Shift]-Taste hinzufügen.",
   "dashboard.media.media.contentFolder": "Inhaltsordner",
   "dashboard.media.media.publicFolder": "Öffentlicher Ordner",
-
   "dashboard.media.mediaHeaderTop.searchbox.placeholder": "In Ordner suchen",
-
   "dashboard.media.mediaSnippetForm.formDialog.title": "Medien einfügen: {0}",
   "dashboard.media.mediaSnippetForm.formDialog.description": "Fügen Sie die {0}-Mediendatei in den aktuellen Artikel ein",
-
   "dashboard.preview.input.placeholder": "Geben Sie eine URL ein",
   "dashboard.preview.button.navigate.title": "Navigieren",
   "dashboard.preview.button.refresh.title": "Aktualisieren",
   "dashboard.preview.button.open.title": "Öffnen",
-
   "dashboard.snippetsView.item.quickAction.editSnippet": "Snippet bearbeiten",
   "dashboard.snippetsView.item.quickAction.deleteSnippet": "Snippet löschen",
   "dashboard.snippetsView.item.quickAction.viewSnippet": "Snippet-Datei anzeigen",
@@ -203,7 +161,6 @@
   "dashboard.snippetsView.item.edit.formDialog.description": "Bearbeiten Sie das {0}-Snippet",
   "dashboard.snippetsView.item.alert.title": "Snippet löschen: {0}",
   "dashboard.snippetsView.item.alert.description": "Sind Sie sicher, dass Sie das {0}-Snippet löschen möchten?",
-
   "dashboard.snippetsView.newForm.snippetInput.title.placeholder": "Titel des Schnipsels",
   "dashboard.snippetsView.newForm.snippetInput.description.label": "Beschreibung",
   "dashboard.snippetsView.newForm.snippetInput.description.placeholder": "Beschreibung des Schnipsels",
@@ -214,14 +171,12 @@
   "dashboard.snippetsView.newForm.snippetInput.isMediaSnippet.checkbox.description": "Verwende diesen Schnipsel, um Medieninhalte in deine Seiten einzufügen.",
   "dashboard.snippetsView.newForm.snippetInput.docsButton.title": "Erfahre mehr über die Verwendung von Platzhaltern für Medienschnipsel",
   "dashboard.snippetsView.newForm.snippetInput.docsButton.description": "In unserer Dokumentation zu Medienschnipsel-Platzhaltern erfährst du, welche Platzhalter du verwenden kannst.",
-
   "dashboard.snippetsView.snippets.ariaLabel": "Überschrift der Schnipsel",
   "dashboard.snippetsView.snippets.button.create": "Neuen Schnipsel erstellen",
   "dashboard.snippetsView.snippets.select.description": "Wähle den Schnipsel aus, den du deinem Inhalt hinzufügen möchtest.",
   "dashboard.snippetsView.snippets.empty.message": "Keine Schnipsel gefunden",
   "dashboard.snippetsView.snippets.readMore": "Erfahre mehr über die Verwendung von Schnipseln",
   "dashboard.snippetsView.snippets.formDialog.title": "Einen Schnipsel erstellen",
-
   "dashboard.steps.stepsToGetStarted.button.addFolder.title": "Als Inhaltsordner zu Front Matter hinzufügen",
   "dashboard.steps.stepsToGetStarted.initializeProject.name": "Projekt initialisieren",
   "dashboard.steps.stepsToGetStarted.initializeProject.description": "Mit der Projektinitialisierung werden die erforderlichen Dateien und Ordner für die Verwendung des Front Matter CMS erstellt. Starte mit einem Klick auf diese Aktion.",
@@ -237,15 +192,12 @@
   "dashboard.steps.stepsToGetStarted.tags.description": "Jetzt, da Front Matter alle Inhaltsordner kennt, möchtest du alle Tags und Kategorien aus den verfügbaren Inhalten importieren?",
   "dashboard.steps.stepsToGetStarted.showDashboard.name": "Dashboard anzeigen",
   "dashboard.steps.stepsToGetStarted.showDashboard.description": "Sobald alle Aktionen abgeschlossen sind, kann das Dashboard geladen werden.",
-
   "dashboard.taxonomyView.button.add.title": "{0} zur Taxonomie hinzufügen",
   "dashboard.taxonomyView.button.edit.title": "{0} bearbeiten",
   "dashboard.taxonomyView.button.merge.title": "{0} zusammenführen",
   "dashboard.taxonomyView.button.move.title": "In eine andere Taxonomie verschieben",
   "dashboard.taxonomyView.button.delete.title": "{0} löschen",
-
   "dashboard.taxonomyView.taxonomyLookup.button.title": "Inhalte mit {0} in {1} anzeigen",
-
   "dashboard.taxonomyView.taxonomyManager.description": "{0} deiner Website erstellen, bearbeiten und verwalten",
   "dashboard.taxonomyView.taxonomyManager.button.create": "Neuen {0}-Wert erstellen",
   "dashboard.taxonomyView.taxonomyManager.table.heading.name": "Name",
@@ -253,15 +205,12 @@
   "dashboard.taxonomyView.taxonomyManager.table.heading.action": "Aktion",
   "dashboard.taxonomyView.taxonomyManager.table.row.empty": "Keine {0} gefunden",
   "dashboard.taxonomyView.taxonomyManager.table.unmapped.title": "In den Einstellungen nicht gefunden",
-
   "dashboard.taxonomyView.taxonomyView.navigationBar.title": "Taxonomie auswählen",
   "dashboard.taxonomyView.taxonomyView.button.import": "Taxonomie importieren",
   "dashboard.taxonomyView.taxonomyView.navigationItem.tags": "Tags",
   "dashboard.taxonomyView.taxonomyView.navigationItem.categories": "Kategorien",
-
   "dashboard.unkownView.title": "Ansicht existiert nicht",
   "dashboard.unkownView.description": "Du hast anscheinend eine Ansicht geöffnet, die nicht existiert. Bitte öffne das Dashboard erneut.",
-
   "dashboard.welcomeScreen.title": "Verwalte deine statische Website mit Front Matter",
   "dashboard.welcomeScreen.thanks": "Vielen Dank, dass du Front Matter verwendest!",
   "dashboard.welcomeScreen.description": "Wir bemühen uns, Front Matter so benutzerfreundlich wie möglich zu gestalten, aber wenn du Fragen oder Vorschläge hast, zögere bitte nicht, uns auf GitHub zu kontaktieren.",
@@ -274,61 +223,41 @@
   "dashboard.welcomeScreen.actions.heading": "Führe die nächsten Schritte aus, um mit der Erweiterung zu beginnen",
   "dashboard.welcomeScreen.actions.description": "Du kannst die Erweiterung auch über das Front Matter-Seitenpanel verwenden. Dort findest du die Aktionen, die speziell für deine Seiten ausgeführt werden können.",
   "dashboard.welcomeScreen.actions.thanks": "Wir hoffen, dass du Freude an Front Matter hast!",
-
   "panel.contentType.contentTypeValidator.title": "Inhaltstyp",
   "panel.contentType.contentTypeValidator.hint": "Wir haben Unterschiede zwischen dem Inhaltstyp und den Front-Matter-Daten festgestellt. Möchtest du den Inhaltstyp für diesen Inhalt erstellen, aktualisieren oder festlegen?",
   "panel.contentType.contentTypeValidator.button.create": "Inhaltstyp erstellen",
   "panel.contentType.contentTypeValidator.button.add": "Fehlende Felder zum Inhaltstyp hinzufügen",
   "panel.contentType.contentTypeValidator.button.change": "Inhaltstyp der Datei ändern",
-
   "panel.dataBlock.dataBlockField.group.selected.edit": "Bearbeiten: {0}",
   "panel.dataBlock.dataBlockField.group.selected.create": "Neuen {0} erstellen",
   "panel.dataBlock.dataBlockField.group.select": "Gruppe auswählen",
   "panel.dataBlock.dataBlockField.add": "{0} hinzufügen",
-
   "panel.dataBlock.dataBlockRecord.edit": "Datensatz bearbeiten",
   "panel.dataBlock.dataBlockRecord.delete": "Datensatz löschen",
-
   "panel.dataBlock.dataBlockRecords.label": "Datensätze",
-
   "panel.dataBlock.dataBlockSelector.label": "Blocktyp",
-
   "panel.errorBoundary.fieldBoundary.label": "Fehler beim Anzeigen des Felds",
-
   "panel.fields.choiceField.select": "{0} auswählen",
   "panel.fields.choiceField.clear": "Wert löschen",
-
   "panel.fields.contentTypeRelationshipField.loading": "Lade mögliche Werte...",
-
   "panel.fields.dateTimeField.button.pick": "Wähle dein Datum",
   "panel.fields.dateTimeField.time": "Uhrzeit",
-
   "panel.fields.fieldMessage.required": "Das Feld {0} ist erforderlich",
-
   "panel.fields.fileField.delete": "Datei löschen",
   "panel.fields.fileField.add": "Ihre {0} hinzufügen",
-
   "panel.fields.imageFallback.label": "Das Bild konnte nicht geladen werden",
-
   "panel.fields.listField.edit": "Eintrag bearbeiten",
   "panel.fields.listField.delete": "Eintrag löschen",
-
   "panel.fields.previewImage.remove": "Bild entfernen",
-
   "panel.fields.previewImageField.add": "Ihre {0} hinzufügen",
-
   "panel.fields.slugField.update": "Aktualisierung verfügbar",
   "panel.fields.slugField.generate": "Slug generieren",
-
   "panel.fields.textField.ai.message": "Verwenden Sie Front Matter AI, um {0} vorzuschlagen",
   "panel.fields.textField.ai.generate": "Vorschlag wird generiert...",
   "panel.fields.textField.loading": "Feld wird geladen",
   "panel.fields.textField.limit": "Feldgrenze erreicht {0}",
-
   "panel.fields.wrapperField.unknown": "Unbekannter Feldtyp: {0}",
-
   "panel.actions.title": "Aktionen",
-
   "panel.articleDetails.title": "Weitere Details",
   "panel.articleDetails.type": "Typ",
   "panel.articleDetails.total": "Gesamt",
@@ -337,19 +266,15 @@
   "panel.articleDetails.internalLinks": "Interne Links",
   "panel.articleDetails.externalLinks": "Externe Links",
   "panel.articleDetails.images": "Bilder",
-
   "panel.baseView.initialize": "Projekt initialisieren",
   "panel.baseView.actions.title": "Aktionen",
   "panel.baseView.action.openDashboard": "Dashboard öffnen",
   "panel.baseView.action.openPreview": "Vorschau öffnen",
   "panel.baseView.action.createContent": "Inhalt erstellen",
   "panel.baseView.empty": "Öffnen Sie eine Datei, um weitere Aktionen anzuzeigen",
-
   "panel.fileList.label.singular": "Datei",
   "panel.fileList.label.plural": "Dateien",
-
   "panel.folderAndFiles.title": "Zuletzt geändert",
-
   "panel.globalSettings.title": " Globale Einstellungen",
   "panel.globalSettings.action.modifiedDate.label": "Änderungsdatum",
   "panel.globalSettings.action.modifiedDate.description": "Änderungsdatum automatisch aktualisieren",
@@ -359,9 +284,7 @@
   "panel.globalSettings.action.preview.placeholder": "Beispiel: {0}",
   "panel.globalSettings.action.server.label": "Lokaler Serverbefehl",
   "panel.globalSettings.action.server.placeholder": "Beispiel: {0}",
-
   "panel.metadata.title": "Metadaten",
-
   "panel.otherActions.title": "Weitere Aktionen",
   "panel.otherActions.writingSettings.enabled": "Schreib-Einstellungen aktiviert",
   "panel.otherActions.writingSettings.disabled": "Schreib-Einstellungen aktivieren",
@@ -372,23 +295,17 @@
   "panel.otherActions.documentation": "Dokumentation öffnen",
   "panel.otherActions.settings": "Einstellungen anzeigen",
   "panel.otherActions.issue": "Problem melden",
-
   "panel.preview.title": "Vorschau öffnen",
-
   "panel.publishAction.publish": "Veröffentlichen",
   "panel.publishAction.unpublish": "Zurück zu Entwurf",
-
   "panel.seoDetails.recommended": "Empfohlen",
-
   "panel.seoKeywordInfo.density": "Stichwortdichte {0} *",
   "panel.seoKeywordInfo.validInfo.label": "Verwendet in Überschrift(en)",
   "panel.seoKeywordInfo.validInfo.content": "Inhalt",
-
   "panel.seoKeywords.title": "Stichwörter",
   "panel.seoKeywords.header.keyword": "Stichwort",
   "panel.seoKeywords.header.details": "Details",
   "panel.seoKeywords.density": "* Eine Stichwortdichte von 1-1,5 % ist in den meisten Fällen ausreichend.",
-
   "panel.seoStatus.title": "Empfehlungen",
   "panel.seoStatus.header.property": "Eigenschaft",
   "panel.seoStatus.header.length": "Länge",
@@ -398,24 +315,23 @@
   "panel.seoStatus.seoFieldInfo.article": "Artikellänge",
   "panel.seoStatus.collapsible.title": "SEO-Status",
   "panel.seoStatus.required": "{0} oder {1} ist erforderlich.",
-
   "panel.slugAction.title": "Slug optimieren",
-
   "panel.spinner.loading": "Laden...",
-
   "panel.startServerbutton.start": "Server starten",
   "panel.startServerbutton.stop": "Server stoppen",
-
   "panel.tag.add": "{0} zu Ihren Einstellungen hinzufügen",
-
   "panel.tagPicker.inputPlaceholder.empty": "{0} auswählen",
   "panel.tagPicker.inputPlaceholder.disabled": "Sie haben das Limit von {0} erreicht",
   "panel.tagPicker.ai.suggest": "Front Matter AI verwenden, um {0} vorzuschlagen",
   "panel.tagPicker.ai.generating": "Vorschläge werden generiert...",
   "panel.tagPicker.limit": "Max.: {0}",
   "panel.tagPicker.unkown": "Unbekanntes Tag hinzufügen",
-
   "panel.tags.tag.warning": "Achtung, dieses Tag \"{0}\" wird nicht in Ihren Einstellungen gespeichert. Sobald es entfernt ist, wird es unwiederbringlich verloren sein.",
+  "panel.viewPanel.mediaInsert": "Fahren Sie mit dem Medien-Dashboard fort, um das Bild auszuwählen, das Sie einfügen möchten.",
+  "dashboard.steps.stepsToGetStarted.assetsFolder.name": "Wo befindet sich Ihr Assets-Ordner?",
+  "dashboard.steps.stepsToGetStarted.assetsFolder.description": "Wählen Sie den Ordner aus, der Ihre Assets enthält. In diesem Ordner werden alle Ihre Mediendateien für Ihre Artikel gespeichert.",
+  "dashboard.steps.stepsToGetStarted.assetsFolder.public.title": "Verwende den 'public'-Ordner",
+  "dashboard.steps.stepsToGetStarted.assetsFolder.assets.title": "Verwende den Astro-Assets-Ordner (src/assets)",
+  "dashboard.steps.stepsToGetStarted.assetsFolder.other.description": "Wenn Sie einen anderen Ordner konfigurieren möchten, können Sie dies manuell in der frontmatter.json-Datei tun."
 
-  "panel.viewPanel.mediaInsert": "Fahren Sie mit dem Medien-Dashboard fort, um das Bild auszuwählen, das Sie einfügen möchten."
 }

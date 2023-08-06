@@ -73,7 +73,7 @@ export const ContentTypeValidator: React.FunctionComponent<IContentTypeValidator
       </VsLabel>
 
 
-      {l10n.t(LocalizationKey.panelContentTypeContentTypeValidatorHint).split(`\n`).map(s => (<p className="inline_hint">{s}</p>))}
+      {l10n.t(LocalizationKey.panelContentTypeContentTypeValidatorHint).split(`\n`).map(s => (<p className="inline_hint" key={s}>{s}</p>))}
 
 
       <div className="hint__buttons">

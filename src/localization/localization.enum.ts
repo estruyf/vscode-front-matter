@@ -740,6 +740,26 @@ export enum LocalizationKey {
    */
   dashboardStepsStepsToGetStartedFrameworkSelectOther = 'dashboard.steps.stepsToGetStarted.framework.select.other',
   /**
+   * What is your assets folder?
+   */
+  dashboardStepsStepsToGetStartedAssetsFolderName = 'dashboard.steps.stepsToGetStarted.assetsFolder.name',
+  /**
+   * Select the folder containing your assets. This folder will be used to store all your media files for your articles.
+   */
+  dashboardStepsStepsToGetStartedAssetsFolderDescription = 'dashboard.steps.stepsToGetStarted.assetsFolder.description',
+  /**
+   * Use the 'public' folder
+   */
+  dashboardStepsStepsToGetStartedAssetsFolderPublicTitle = 'dashboard.steps.stepsToGetStarted.assetsFolder.public.title',
+  /**
+   * Use the Astro assets folder (src/assets)
+   */
+  dashboardStepsStepsToGetStartedAssetsFolderAssetsTitle = 'dashboard.steps.stepsToGetStarted.assetsFolder.assets.title',
+  /**
+   * In case you want to configure another folder, you can do this manually in the frontmatter.json file.
+   */
+  dashboardStepsStepsToGetStartedAssetsFolderOtherDescription = 'dashboard.steps.stepsToGetStarted.assetsFolder.other.description',
+  /**
    * Register content folder(s)
    */
   dashboardStepsStepsToGetStartedContentFoldersName = 'dashboard.steps.stepsToGetStarted.contentFolders.name',

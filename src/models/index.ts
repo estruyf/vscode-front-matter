@@ -21,6 +21,7 @@ export * from './Snippets';
 export * from './SortOrder';
 export * from './SortType';
 export * from './SortingSetting';
+export * from './StaticFolder';
 export * from './TaxonomyData';
 export * from './TaxonomyType';
 export * from './VersionInfo';

@@ -7,14 +7,14 @@ import { Step } from './Step';
 import { useMemo, useState } from 'react';
 import { Menu } from '@headlessui/react';
 import { MenuItem } from '../Menu';
-import { ContentFolder, Framework } from '../../../models';
-import { CheckCircleIcon, ChevronDownIcon } from '@heroicons/react/outline';
-import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/solid';
+import { ContentFolder, Framework, StaticFolder } from '../../../models';
+import { ChevronDownIcon } from '@heroicons/react/outline';
 import { FrameworkDetectors } from '../../../constants/FrameworkDetectors';
 import { join } from 'path';
 import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { SelectItem } from './SelectItem';
 
 export interface IStepsToGetStartedProps {
   settings: Settings;
@@ -31,7 +31,6 @@ const Folder = ({
   folders: ContentFolder[];
   addFolder: (folder: string) => void;
 }) => {
-  const { getColors } = useThemeColors();
 
   const isAdded = useMemo(
     () => folders.find((f) => f.path.toLowerCase() === join(wsFolder, folder).toLowerCase()),
@@ -39,23 +38,11 @@ const Folder = ({
   );
 
   return (
-    <div
-      className={`text-sm flex items-center ${isAdded ? getColors('text-teal-800', 'text-[var(--vscode-textLink-foreground)]') : getColors('text-vulcan-300 dark:text-whisper-800', '')
-        }`}
-    >
-      <button
-        onClick={() => addFolder(folder)}
-        className={`mr-2 flex gap-2 items-center ${getColors('hover:text-teal-500', 'hover:text-[var(--vscode-textLink-activeForeground)]')}`}
-        title={l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedButtonAddFolderTitle)}
-      >
-        {isAdded ? (
-          <CheckCircleIconSolid className={`h-4 w-4`} />
-        ) : (
-          <CheckCircleIcon className={`h-4 w-4`} />
-        )}
-        <span>{folder}</span>
-      </button>
-    </div>
+    <SelectItem
+      title={folder}
+      buttonTitle={l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedButtonAddFolderTitle)}
+      isSelected={!!isAdded}
+      onClick={() => addFolder(folder)} />
   );
 };
 
@@ -76,6 +63,10 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
   const addFolder = (folder: string) => {
     Messenger.send(DashboardMessage.addFolder, folder);
   };
+
+  const addAssetFolder = (folder: string | StaticFolder) => {
+    Messenger.send(DashboardMessage.addAssetsFolder, folder);
+  }
 
   const reload = () => {
     const crntState: any = Messenger.getState() || {};
@@ -98,6 +89,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
       id: `welcome-init`,
       name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedInitializeProjectName),
       description: <>{l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedInitializeProjectDescription)}</>,
+      show: true,
       status: settings.initialized ? Status.Completed : Status.NotStarted,
       onClick: settings.initialized
         ? undefined
@@ -164,8 +156,39 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
           </Menu>
         </div>
       ),
+      show: true,
       status: settings.crntFramework ? Status.Completed : Status.NotStarted,
       onClick: undefined
+    },
+    {
+      id: `welcome-assets`,
+      name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedAssetsFolderName),
+      description: (
+        <div className='mt-4'>
+          <div className="text-sm">{l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedAssetsFolderDescription)}</div>
+          <div className="mt-1 space-y-1">
+            <SelectItem
+              title={l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedAssetsFolderPublicTitle)}
+              buttonTitle={l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedAssetsFolderPublicTitle)}
+              isSelected={settings.staticFolder === "public"}
+              onClick={() => addAssetFolder(`public`)} />
+
+            <SelectItem
+              title={l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedAssetsFolderAssetsTitle)}
+              buttonTitle={l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedAssetsFolderAssetsTitle)}
+              isSelected={settings.staticFolder === "src/assets"}
+              onClick={() => addAssetFolder({
+                "path": "src/assets",
+                "relative": true
+              })} />
+
+            <p className='text-sm'>
+              <b>{l10n.t(LocalizationKey.commonInformation)}</b>: {l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedAssetsFolderOtherDescription)}</p>
+          </div>
+        </div>
+      ),
+      show: settings.crntFramework === 'astro' || framework === 'astro',
+      status: !settings.staticFolder ? Status.NotStarted : Status.Completed,
     },
     {
       id: `welcome-content-folders`,
@@ -198,6 +221,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
           </p>
         </>
       ),
+      show: true,
       status:
         settings.contentFolders && settings.contentFolders.length > 0
           ? Status.Completed
@@ -207,6 +231,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
       id: `welcome-import`,
       name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedTagsName),
       description: <>{l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedTagsDescription)}</>,
+      show: true,
       status: taxImported ? Status.Completed : Status.NotStarted,
       onClick:
         settings.contentFolders && settings.contentFolders.length > 0 ? importTaxonomy : undefined
@@ -215,6 +240,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
       id: `welcome-show-dashboard`,
       name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedShowDashboardName),
       description: <>{l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedShowDashboardDescription)}</>,
+      show: true,
       status:
         settings.initialized && settings.contentFolders && settings.contentFolders.length > 0
           ? Status.Active
@@ -236,19 +262,21 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
     <nav aria-label="Progress">
       <ol role="list">
         {steps.map((step, stepIdx) => (
-          <li
-            key={step.id}
-            className={`${stepIdx !== steps.length - 1 ? 'pb-10' : ''} relative`}
-            data-test={step.id}
-          >
-            <Step
-              name={step.name}
-              description={step.description}
-              status={step.status}
-              showLine={stepIdx !== steps.length - 1}
-              onClick={step.onClick}
-            />
-          </li>
+          step.show && (
+            <li
+              key={step.id}
+              className={`${stepIdx !== steps.length - 1 ? 'pb-10' : ''} relative`}
+              data-test={step.id}
+            >
+              <Step
+                name={step.name}
+                description={step.description}
+                status={step.status}
+                showLine={stepIdx !== steps.length - 1}
+                onClick={step.onClick}
+              />
+            </li>
+          )
         ))}
       </ol>
     </nav>

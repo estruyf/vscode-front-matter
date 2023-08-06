@@ -79,6 +79,8 @@
   "setting.frontMatter.content.placeholders.items.properties.value.description": "🚧: The placeholder its value",
   "setting.frontMatter.content.placeholders.items.properties.script.description": "🚧: The script to execute to get the value of the placeholder",
   "setting.frontMatter.content.publicFolder.markdownDescription": "アセットが保存されているフォルダーを設定します。例えば、Hugoでは`static`フォルダーです。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.content.publicfolder)",
+  "setting.frontMatter.content.publicFolder.properties.path.description": "アセットフォルダーのパスを指定します。",
+  "setting.frontMatter.content.publicFolder.properties.relative.description": "メディアファイルへのパスがコンテンツファイルに対して相対的であるかを定義します。",
   "setting.frontMatter.snippets.wrapper.enabled.markdownDescription": "スニペット挿入時にコメントでラップします。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontMatter.snippets.wrapper.enabled)",
   "setting.frontMatter.content.snippets.markdownDescription": "記事中に使用するスニペットを設定します。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.content.snippets)",
   "setting.frontMatter.content.sorting.markdownDescription": "ダッシュボード上での記事の並べ替えオプションを追加します。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.content.sorting)",
