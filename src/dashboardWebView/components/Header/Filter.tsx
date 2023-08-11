@@ -12,14 +12,14 @@ export interface IFilterProps {
   onClick: (item: string | null) => void;
 }
 
-const DEFAULT_VALUE = l10n.t(LocalizationKey.dashboardHeaderFilterDefault);
-
 export const Filter: React.FunctionComponent<IFilterProps> = ({
   label,
   activeItem,
   items,
   onClick
 }: React.PropsWithChildren<IFilterProps>) => {
+  const DEFAULT_VALUE = l10n.t(LocalizationKey.dashboardHeaderFilterDefault);
+
   if (!items || items.length === 0) {
     return null;
   }

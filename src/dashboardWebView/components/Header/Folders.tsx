@@ -8,11 +8,10 @@ import { LocalizationKey } from '../../../localization';
 
 export interface IFoldersProps { }
 
-const DEFAULT_TYPE = l10n.t(LocalizationKey.dashboardHeaderFoldersDefault);
-
 export const Folders: React.FunctionComponent<
   IFoldersProps
 > = ({ }: React.PropsWithChildren<IFoldersProps>) => {
+  const DEFAULT_TYPE = l10n.t(LocalizationKey.dashboardHeaderFoldersDefault);
   const [crntFolder, setCrntFolder] = useRecoilState(FolderAtom);
   const settings = useRecoilValue(SettingsSelector);
   const contentFolders = settings?.contentFolders || [];
