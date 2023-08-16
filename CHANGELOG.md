@@ -49,6 +49,7 @@
 - [#595](https://github.com/estruyf/vscode-front-matter/issues/595): Fix for media metadata now showing up
 - [#596](https://github.com/estruyf/vscode-front-matter/issues/596): Fix for number field in block data
 - [#603](https://github.com/estruyf/vscode-front-matter/issues/603): Fix problem with page bundles and path placeholders
+- [#620](https://github.com/estruyf/vscode-front-matter/issues/620): Fix in array field of data files
 
 ## [8.4.0] - 2023-04-03 - [Release notes](https://beta.frontmatter.codes/updates/v8.4.0)
 

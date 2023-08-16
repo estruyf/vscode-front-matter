@@ -28,7 +28,7 @@ function ListAdd({ disabled, initialCount, name, readOnly, value, ...props }: Li
   const limitNotReached = !disabled && !(parent.maxCount <= parent.value.length);
 
   function onAction(event: React.KeyboardEvent | React.MouseEvent) {
-    if (limitNotReached && !readOnly && (!('key' in event) || event.key === 'Enter')) {
+    if (!limitNotReached && !readOnly && (!('key' in event) || event.key === 'Enter')) {
       parent.onChange(parent.value.concat([value]));
     }
   }
