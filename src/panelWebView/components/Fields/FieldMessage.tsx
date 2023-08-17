@@ -20,7 +20,7 @@ export const FieldMessage: React.FunctionComponent<IFieldMessageProps> = ({
   if (showRequired) {
     return (
       <div className={`metadata_field__required__message`}>
-        {l10n.t(LocalizationKey.panelFieldsFieldMessageRequired)}
+        {l10n.t(LocalizationKey.panelFieldsFieldMessageRequired, name)}
       </div>
     );
   }
