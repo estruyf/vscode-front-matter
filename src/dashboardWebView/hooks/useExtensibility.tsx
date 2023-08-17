@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSettingsContext } from '../providers/SettingsProvider';
 
 export default function useExtensibility(options: {
   fmFilePath: string;
@@ -8,6 +9,7 @@ export default function useExtensibility(options: {
   type: string;
   pageData: any;
 }) {
+  const { webviewUrl } = useSettingsContext();
   const [titleHtml, setTitleHtml] = useState<string | undefined>(undefined);
   const [descriptionHtml, setDescriptionHtml] = useState<string | undefined>(undefined);
   const [statusHtml, setStatusHtml] = useState<string | undefined>(undefined);
@@ -41,6 +43,7 @@ export default function useExtensibility(options: {
     if (window.fmExternal.getCardImage) {
       window.fmExternal.getCardImage(options.fmFilePath, {
         fmFilePath: options.fmFilePath,
+        fmWebviewUrl: webviewUrl,
         date: options.date,
         title: options.title,
         description: options.description,

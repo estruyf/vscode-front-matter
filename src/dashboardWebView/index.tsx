@@ -106,6 +106,7 @@ if (elm) {
   const type = elm?.getAttribute('data-type');
   const url = elm?.getAttribute('data-url');
   const experimental = elm?.getAttribute('data-experimental');
+  const webviewUrl = elm?.getAttribute('data-webview-url');
 
   updateCssVariables();
   mutationObserver.observe(document.body, { childList: false, attributes: true });
@@ -121,7 +122,7 @@ if (elm) {
     });
 
     Sentry.setTag("type", "dashboard");
-    if (document.body.getAttribute(`data-vscode-theme-id`)) {
+    if (document.body.getAttribute(`data - vscode - theme - id`)) {
       Sentry.setTag("theme", document.body.getAttribute(`data-vscode-theme-id`));
     }
   }
@@ -148,7 +149,7 @@ if (elm) {
           initialEntries={Object.keys(routePaths).map((key: string) => routePaths[key]) as string[]}
           initialIndex={1}
         >
-          <SettingsProvider experimental={experimental === 'true'} version={version || ""}>
+          <SettingsProvider experimental={experimental === 'true'} version={version || ""} webviewUrl={webviewUrl || ""}>
             <App showWelcome={!!welcome} />
           </SettingsProvider>
         </MemoryRouter>

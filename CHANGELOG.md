@@ -34,6 +34,7 @@
 - [#599](https://github.com/estruyf/vscode-front-matter/issues/599): Add a placeholder when the base panel view is empty
 - [#602](https://github.com/estruyf/vscode-front-matter/issues/602): Find content outside the Front Matter workspace folder
 - [#611](https://github.com/estruyf/vscode-front-matter/issues/611): Fix typo in the `frontMatter.global.disabledNotifications` setting
+- [#619](https://github.com/estruyf/vscode-front-matter/issues/619): Added the `fmWebviewUrl` property to be used in the `registerCardImage` extensibility library
 
 ### ⚡️ Optimizations
 
