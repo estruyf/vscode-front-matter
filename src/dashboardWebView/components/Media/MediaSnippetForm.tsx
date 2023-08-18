@@ -3,10 +3,10 @@ import { useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import { MediaInfo, Snippet } from '../../../models';
 import { ViewDataSelector } from '../../state';
-import { FormDialog } from '../Modals/FormDialog';
 import SnippetForm, { SnippetFormHandle } from '../SnippetsView/SnippetForm';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { SnippetSlideOver } from './SnippetSlideOver';
 
 export interface IMediaSnippetFormProps {
   media: MediaInfo;
@@ -32,7 +32,7 @@ export const MediaSnippetForm: React.FunctionComponent<IMediaSnippetFormProps> =
   };
 
   return (
-    <FormDialog
+    <SnippetSlideOver
       title={l10n.t(LocalizationKey.dashboardMediaMediaSnippetFormFormDialogTitle, media.title || media.filename)}
       description={l10n.t(LocalizationKey.dashboardMediaMediaSnippetFormFormDialogDescription, media.title || media.filename)}
       isSaveDisabled={false}
@@ -48,6 +48,6 @@ export const MediaSnippetForm: React.FunctionComponent<IMediaSnippetFormProps> =
         selection={viewData?.data?.selection}
         onInsert={onInsert}
       />
-    </FormDialog>
+    </SnippetSlideOver>
   );
 };
