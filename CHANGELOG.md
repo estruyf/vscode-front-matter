@@ -1,6 +1,6 @@
 # Change Log
 
-## [9.0.0] - 2023-xx-xx
+## [9.0.0] - 2023-xx-xx - [Release notes](https://beta.frontmatter.codes/updates/v9.0.0)
 
 ### 🌎 Multilingual support
 
@@ -38,7 +38,7 @@
 
 ### ⚡️ Optimizations
 
-- [#584](https://github.com/estruyf/vscode-front-matter/issues/584): - Ignore type field in content-type validation
+- [#584](https://github.com/estruyf/vscode-front-matter/issues/584): Ignore type field in content-type validation
 
 ### 🐞 Fixes
 
