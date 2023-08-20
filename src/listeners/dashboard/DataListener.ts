@@ -48,6 +48,8 @@ export class DataListener extends BaseListener {
       if (!(await existsAsync(dirPath))) {
         await mkdirAsync(dirPath, { recursive: true });
       }
+
+      await writeFileAsync(absPath, '', 'utf8');
     }
 
     const fileContent = await readFileAsync(absPath, 'utf8');
