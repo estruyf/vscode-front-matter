@@ -50,6 +50,7 @@
 - [#595](https://github.com/estruyf/vscode-front-matter/issues/595): Fix for media metadata now showing up
 - [#596](https://github.com/estruyf/vscode-front-matter/issues/596): Fix for number field in block data
 - [#603](https://github.com/estruyf/vscode-front-matter/issues/603): Fix problem with page bundles and path placeholders
+- [#616](https://github.com/estruyf/vscode-front-matter/issues/616): Fix content filtering
 - [#617](https://github.com/estruyf/vscode-front-matter/issues/617): Fix insert media snippet dialog by using a slideover instead of a dialog
 - [#620](https://github.com/estruyf/vscode-front-matter/issues/620): Fix in array field of data files
 - [#621](https://github.com/estruyf/vscode-front-matter/issues/621): Create data file if it does not exist yet
