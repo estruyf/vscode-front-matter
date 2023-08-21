@@ -1,0 +1,259 @@
+{
+  "common.add": "Aggiungi",
+  "common.edit": "Modifica",
+  "common.delete": "Elimina",
+  "common.cancel": "Annulla",
+  "common.clear": "Svuota",
+  "common.clear.value": "Svuota valore",
+  "common.search": "Cerca",
+  "common.save": "Salva",
+  "common.menu": "Menu",
+  "common.insert": "Inserisci",
+  "common.insert.snippet": "Inserisci snippet",
+  "common.title": "Titolo",
+  "common.description": "Descrizione",
+  "common.retry": "Riprova",
+  "common.update": "Aggiorna",
+  "common.information": "Informazioni",
+  "common.important": "Importante",
+  "common.sync": "Sincronizza",
+  "common.slug": "Slug",
+  "common.support": "Supporto",
+  "common.remove.value": "Rimuovi {0}",
+  "common.error.message": "Spiacente, qualcosa è andato storto.",
+
+  "developer.title": "Modalità sviluppatore",
+  "developer.reload.title": "Ricarica il cruscotto",
+  "developer.reload.label": "Ricarica",
+  "developer.devTools.title": "Apri gli strumenti per sviluppatori",
+  "developer.devTools.label": "Strumenti per sviluppatori",
+
+  "field.required": "Campo obbligatorio",
+  "field.unknown": "Campo sconosciuto",
+
+  "dashboard.chatbot.answer.answer": "Risposta",
+  "dashboard.chatbot.answer.resources": "Risorse",
+  "dashboard.chatbot.answer.warning": "Avviso: Le risposte potrebbero essere errate. In caso di dubbio, consulta la documentazione.",
+
+  "dashboard.chatbot.chatbot.loading": "L'assistente si sta preparando",
+  "dashboard.chatbot.chatbot.ready": "Sono pronto, cosa vuoi sapere?",
+
+  "dashboard.chatbot.chatbox.placeholder": "Come posso configurare il Front Matter?",
+
+  "dashboard.chatbot.header.heading": "Chiedi a Front Matter AI",
+  "dashboard.chatbot.header.description": "Il nostro AI, alimentato da mendable.ai, ha elaborato la documentazione e può assisterti con qualsiasi domanda riguardante il Front Matter. Fai pure una domanda!",
+
+  "dashboard.common.choiceButton.open": "Apri opzioni",
+
+  "dashboard.contents.contentActions.actionMenuButton.title": "Menu",
+  "dashboard.contents.contentActions.menuItem.view": "Visualizza",
+  "dashboard.contents.contentActions.alert.title": "Elimina: {0}",
+  "dashboard.contents.contentActions.alert.description": "Sei sicuro di voler eliminare il contenuto \"{0}\"?",
+
+  "dashboard.contents.item.invalidTitle": "<titolo non valido>",
+  "dashboard.contents.item.invalidDescription": "<descrizione non valida>",
+
+  "dashboard.contents.list.title": "Titolo",
+  "dashboard.contents.list.date": "Data",
+  "dashboard.contents.list.status": "Stato",
+
+  "dashboard.contents.overview.noMarkdown": "Nessun markdown da mostrare",
+  "dashboard.contents.overview.noFolders": "Assicurati di aver registrato una cartella di contenuti nel tuo progetto per consentire a Front Matter di trovare i contenuti.",
+
+  "dashboard.contents.status.draft": "Bozza",
+  "dashboard.contents.status.published": "Pubblicato",
+
+  "dashboard.dataView.dataForm.modify": "Modifica i dati",
+  "dashboard.dataView.dataForm.add": "Aggiungi nuovi dati",
+
+
+  "dashboard.dataView.dataView.select": "Seleziona il tuo tipo di dati",
+  "dashboard.dataView.dataView.title": "I tuoi elementi dati {0}",
+  "dashboard.dataView.dataView.add": "Aggiungi una nuova voce",
+  "dashboard.dataView.dataView.empty": "Nessuna voce dati {0} trovata",
+  "dashboard.dataView.dataView.createOrModify": "Crea o modifica i tuoi dati {0}",
+  "dashboard.dataView.dataView.getStarted": "Seleziona un tipo di dati per iniziare",
+  "dashboard.dataView.dataView.noDataFiles": "Nessun file dati trovato",
+  "dashboard.dataView.dataView.getStarted.link": "Leggi di più per iniziare ad utilizzare i file dati",
+
+  "dashboard.dataView.emptyView.heading": "Seleziona prima il tuo tipo di data",
+
+  "dashboard.dataView.sortableItem.editButton.title": "Modifica \"{0}\"",
+  "dashboard.dataView.sortableItem.deleteButton.title": "Elimina \"{0}\"",
+  "dashboard.dataView.sortableItem.alert.title": "Elimina voce dati",
+  "dashboard.dataView.sortableItem.alert.description": "Sei sicuro di voler eliminare la voce dati?",
+
+  "dashboard.errorView.description": "Chiudi il cruscotto e riprova.",
+
+  "dashboard.header.breadcrumb.home": "Home",
+
+  "dashboard.header.clearFilters.title": "Cancella filtri, raggruppamenti e ordinamenti",
+
+  "dashboard.header.filter.default": "Nessun filtro",
+
+  "dashboard.header.folders.default": "Tutti i tipi",
+  "dashboard.header.folders.menuButton.showing": "Visualizzazione",
+
+  "dashboard.header.grouping.option.none": "Nessuno",
+  "dashboard.header.grouping.option.year": "Anno",
+  "dashboard.header.grouping.option.draft": "Bozza/Pubblicato",
+  "dashboard.header.grouping.menuButton.label": "Raggruppa per",
+
+  "dashboard.header.navigation.allArticles": "Tutti gli articoli",
+  "dashboard.header.navigation.published": "Pubblicati",
+  "dashboard.header.navigation.draft": "In bozza",
+
+  "dashboard.header.header.createContent": "Crea contenuto",
+  "dashboard.header.header.createByContentType": "Crea per tipo di contenuto",
+  "dashboard.header.header.createByTemplate": "Crea per modello",
+
+  "dashboard.header.pagination.first": "Primo",
+  "dashboard.header.pagination.previous": "Precedente",
+  "dashboard.header.pagination.next": "successivo",
+  "dashboard.header.pagination.last": "Ultimo",
+
+  "dashboard.header.paginationStatus.text": "Mostrando da {0} a {1} di {2} risultati",
+
+  "dashboard.header.projectSwitcher.label": "progetto",
+
+  "dashboard.header.refreshDashboard.label": "Aggiorna il cruscotto",
+
+  "dashboard.header.sorting.lastModified.asc": "Ultima modifica (crescente)",
+  "dashboard.header.sorting.lastModified.desc": "Ultima modifica (decrescente)",
+  "dashboard.header.sorting.filename.asc": "Per nome file (crescente)",
+  "dashboard.header.sorting.filename.desc": "Per nome file (decrescente)",
+  "dashboard.header.sorting.published.asc": "Pubblicato (crescente)",
+  "dashboard.header.sorting.published.desc": "Pubblicato (decrescente)",
+  "dashboard.header.sorting.size.asc": "Dimensione (crescente)",
+  "dashboard.header.sorting.size.desc": "Dimensione (decrescente)",
+  "dashboard.header.sorting.caption.asc": "Didascalia (crescente)",
+  "dashboard.header.sorting.caption.desc": "Didascalia (decrescente)",
+  "dashboard.header.sorting.alt.asc": "Alt (crescente)",
+  "dashboard.header.sorting.alt.desc": "Alt (decrescente)",
+  "dashboard.header.sorting.label": "Ordina per",
+  
+  "dashboard.header.startup.label": "Apri all'avvio?",
+
+  "dashboard.header.tabs.contents": "Contenuti",
+  "dashboard.header.tabs.media": "Media",
+  "dashboard.header.tabs.snippets": "Snippet",
+  "dashboard.header.tabs.data": "Dati",
+  "dashboard.header.tabs.taxonomies": "Tassonomie",
+
+  "dashboard.header.viewSwitch.toGrid": "Cambia in griglia",
+  "dashboard.header.viewSwitch.toList": "Cambia in elenco",
+
+  "dashboard.layout.sponsor.support.msg": "Supporta Front Matter",
+  "dashboard.layout.sponsor.review.label": "Recensione",
+  "dashboard.layout.sponsor.review.msg": "Recensisci Front Matter",
+
+  "dashboard.media.common.title": "Titolo",
+  "dashboard.media.common.caption": "Didascalia",
+  "dashboard.media.common.alt": "Testo alternativo",
+  "dashboard.media.common.size": "Dimensione",
+
+  "dashboard.media.dialog.title": "Visualizza dettagli",
+  "dashboard.media.panel.close": "Chiudi pannello",
+  "dashboard.media.metadata.panel.title": "Aggiorna metadati",
+  "dashboard.media.metadata.panel.description": "Specificare i metadati da impostare per il file.",
+  "dashboard.media.metadata.panel.field.fileName": "Nome file",
+  "dashboard.media.metadata.panel.form.metadata.title": "Metadati",
+  "dashboard.media.metadata.panel.form.information.title": "Informazioni",
+  "dashboard.media.metadata.panel.form.information.createdDate": "Creazione",
+  "dashboard.media.metadata.panel.form.information.modifiedDate": "Ultima modifica",
+  "dashboard.media.metadata.panel.form.information.dimensions": "Dimensioni",
+  "dashboard.media.metadata.panel.form.information.folder": "Cartella",
+
+  "dashboard.media.folderCreation.hexo.create": "Crea cartella asset post",
+  "dashboard.media.folderCreation.folder.create": "Crea nuova cartella",
+
+  "dashboard.media.item.quickAction.insert.field": "Inserisci immagine per il tuo campo \"{0}\"",
+  "dashboard.media.item.quickAction.insert.markdown": "Inserisci immagine con markup markdown",
+  "dashboard.media.item.quickAction.copy.path": "Copia percorso media",
+  "dashboard.media.item.quickAction.delete": "Elimina file multimediale",
+  "dashboard.media.item.menuItem.edit.metadata": "Modifica metadati",
+  "dashboard.media.item.menuItem.insert.image": "Inserisci immagine",
+  "dashboard.media.item.menuItem.reveal.media": "Mostra media",
+  "dashboard.media.item.infoDialog.snippet.description": "Seleziona lo snippet multimediale da utilizzare per il file multimediale corrente.",
+  "dashboard.media.item.alert.delete.description": "Sei sicuro di voler eliminare il file dalla cartella {0}?",
+
+  "dashboard.media.media.description": "Seleziona il file multimediale da aggiungere al tuo contenuto.",
+  "dashboard.media.media.dragAndDrop": "Puoi anche trascinare e rilasciare immagini dal tuo desktop e selezionarle una volta caricate.",
+  "dashboard.media.media.folder.upload": "Carica in {0}",
+  "dashboard.media.media.folder.default": "Nessuna cartella selezionata, i file che rilasci verranno aggiunti alla cartella {0}",
+  "dashboard.media.media.placeholder": "Nessun file multimediale da mostrare. Puoi trascinare e rilasciare nuovi file tenendo premuto il tasto [shift].",
+  "dashboard.media.media.contentFolder": "Cartella contenuti",
+  "dashboard.media.media.publicFolder": "Cartella pubblica",
+
+  "dashboard.media.mediaHeaderTop.searchbox.placeholder": "Cerca nella cartella",
+
+  "dashboard.media.mediaSnippetForm.formDialog.title": "Inserisci media: {0}",
+  "dashboard.media.mediaSnippetForm.formDialog.description": "Inserisci il file multimediale {0} nell'articolo corrente",
+
+  "dashboard.preview.input.placeholder": "Inserisci un URL",
+  "dashboard.preview.button.navigate.title": "Vai",
+  "dashboard.preview.button.refresh.title": "Aggiorna",
+  "dashboard.preview.button.open.title": "Apri",
+
+  "dashboard.snippetsView.item.quickAction.editSnippet": "Modifica snippet",
+  "dashboard.snippetsView.item.quickAction.deleteSnippet": "Elimina snippet",
+  "dashboard.snippetsView.item.quickAction.viewSnippet": "Visualizza file snippet",
+  "dashboard.snippetsView.item.insert.formDialog.title": "Inserisci snippet: {0}",
+  "dashboard.snippetsView.item.insert.formDialog.description": "Inserisci lo snippet {0} nell'articolo corrente",
+  "dashboard.snippetsView.item.edit.formDialog.title": "Modifica snippet: {0}",
+  "dashboard.snippetsView.item.edit.formDialog.description": "Modifica lo snippet {0}",
+  "dashboard.snippetsView.item.alert.title": "Elimina snippet: {0}",
+  "dashboard.snippetsView.item.alert.description": "Sei sicuro di voler eliminare lo snippet {0}?",
+
+  "dashboard.snippetsView.newForm.snippetInput.title.placeholder": "Titolo snippet",
+  "dashboard.snippetsView.newForm.snippetInput.description.label": "Descrizione",
+  "dashboard.snippetsView.newForm.snippetInput.description.placeholder": "Descrizione snippet",
+  "dashboard.snippetsView.newForm.snippetInput.snippet.label": "Snippet",
+  "dashboard.snippetsView.newForm.snippetInput.snippet.placeholder": "Contenuto snippet",
+  "dashboard.snippetsView.newForm.snippetInput.isMediaSnippet.label": "È uno snippet multimediale?",
+  "dashboard.snippetsView.newForm.snippetInput.isMediaSnippet.checkbox.label": "Snippet multimediale",
+  "dashboard.snippetsView.newForm.snippetInput.isMediaSnippet.checkbox.description": "Usa lo snippet corrente per l'inserimento di file multimediali nel tuo contenuto.",
+  "dashboard.snippetsView.newForm.snippetInput.docsButton.title": "Leggi di più sull'uso dei segnaposti per gli snippet multimediali",
+  "dashboard.snippetsView.newForm.snippetInput.docsButton.description": "Consulta la documentazione sui segnaposti per gli snippet multimediali per sapere quali segnaposti puoi utilizzare.",
+
+  "dashboard.snippetsView.snippets.ariaLabel": "Intestazione snippet",
+  "dashboard.snippetsView.snippets.button.create": "Crea nuovo snippet",
+  "dashboard.snippetsView.snippets.select.description": "Seleziona lo snippet da aggiungere al tuo contenuto.",
+  "dashboard.snippetsView.snippets.empty.message": "Nessuno snippet trovato",
+  "dashboard.snippetsView.snippets.readMore": "Per iniziare con gli snippet, leggi di più",
+  "dashboard.snippetsView.snippets.formDialog.title": "Crea uno snippet",
+
+  "dashboard.steps.stepsToGetStarted.button.addFolder.title": "Aggiungi come cartella contenuto a Front Matter",
+  "dashboard.steps.stepsToGetStarted.initializeProject.name": "Inizializza progetto",
+  "dashboard.steps.stepsToGetStarted.initializeProject.description": "Inizializzare il progetto creerà i file e le cartelle necessari per l'uso del CMS Front Matter. Inizia facendo clic su questa azione.",
+  "dashboard.steps.stepsToGetStarted.framework.name": "Impostazioni framework",
+  "dashboard.steps.stepsToGetStarted.framework.description": "Seleziona il tuo generatore di siti o framework per compilare alcune delle impostazioni consigliate.",
+  "dashboard.steps.stepsToGetStarted.framework.select": "Seleziona il tuo framework",
+  "dashboard.steps.stepsToGetStarted.framework.select.other": "altro",
+  "dashboard.steps.stepsToGetStarted.assetsFolder.name": "Qual è la tua cartella risorse?",
+  "dashboard.steps.stepsToGetStarted.assetsFolder.description": "Seleziona la cartella contenente le risorse. Questa cartella verrà utilizzata per archiviare tutti i tuoi file multimediali per gli articoli.",
+  "dashboard.steps.stepsToGetStarted.assetsFolder.public.title": "Usa la cartella 'public'",
+  "dashboard.steps.stepsToGetStarted.assetsFolder.assets.title": "Usa la cartella risorse di Astro (src/assets)",
+  "dashboard.steps.stepsToGetStarted.assetsFolder.other.description": "Nel caso tu voglia configurare un'altra cartella, puoi farlo manualmente nel file frontmatter.json.",
+  "dashboard.steps.stepsToGetStarted.contentFolders.name": "Registra cartella(i) contenuto",
+  "dashboard.steps.stepsToGetStarted.contentFolders.description": "Aggiungi una delle cartelle che abbiamo trovato nel tuo progetto come cartella contenuto. Una volta impostata una cartella, Front Matter può essere utilizzato per elencare tutti i contenuti e consentirti di crearne di nuovi.",
+  "dashboard.steps.stepsToGetStarted.contentFolders.label": "Cartelle contenenti il contenuto:",
+  "dashboard.steps.stepsToGetStarted.contentFolders.information.description": "Puoi anche eseguire questa azione facendo clic destro sulla cartella nella vista dell'esploratore e selezionando 'registra cartella'",
+  "dashboard.steps.stepsToGetStarted.tags.name": "Importa tutte le etichette e le categorie (opzionale)",
+  "dashboard.steps.stepsToGetStarted.tags.description": "Ora che Front Matter conosce tutte le cartelle contenuto, vuoi importare tutte le etichette e le categorie dai contenuti disponibili?",
+  "dashboard.steps.stepsToGetStarted.showDashboard.name": "Mostra dashboard",
+  "dashboard.steps.stepsToGetStarted.showDashboard.description": "Adesso che hai completato la configurazione iniziale, è il momento di aprire la dashboard di Front Matter e iniziare a esplorare.",
+  "dashboard.steps.stepsToGetStarted.showDashboard.button": "Mostra dashboard",
+  "dashboard.steps.stepsToGetStarted.finished.name": "Completato!",
+  "dashboard.steps.stepsToGetStarted.finished.description": "Hai completato con successo tutti i passaggi per iniziare con Front Matter. Ora puoi esplorare la dashboard, aggiungere nuovi contenuti e gestire il tuo sito web.",
+
+  "dashboard.tagPicker.inputPlaceholder.disabled": "Hai raggiunto il limite di {0}",
+  "dashboard.tagPicker.ai.suggest": "Usa Front Matter AI per suggerire {0}",
+  "dashboard.tagPicker.ai.generating": "Generazione suggerimenti in corso...",
+  "dashboard.tagPicker.limit": "Max: {0}",
+  "dashboard.tagPicker.unkown": "Aggiungi l'etichetta sconosciuta",
+
+  "dashboard.tags.tag.warning": "Attenzione, l'etichetta \"{0}\" non è salvata nelle tue impostazioni. Una volta rimossa, verrà eliminata definitivamente.",
+
+  "panel.viewPanel.mediaInsert": "Continua nella dashboard dei media per selezionare l'immagine che desideri inserire."
+}
