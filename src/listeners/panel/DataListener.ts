@@ -119,8 +119,6 @@ export class DataListener extends BaseListener {
       article.content || ''
     );
 
-    console.log(suggestion);
-
     if (!suggestion) {
       panel.getWebview()?.postMessage({
         command,

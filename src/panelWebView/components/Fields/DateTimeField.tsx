@@ -57,7 +57,6 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({
   }, [format]);
 
   useEffect(() => {
-    console.log('value', value, dateValue);
     const crntValue = DateHelper.tryParse(value, format);
     const stateValue = DateHelper.tryParse(dateValue, format);
 
