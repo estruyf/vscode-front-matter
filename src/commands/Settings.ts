@@ -1,8 +1,8 @@
 import { TaxonomyHelper } from './../helpers/TaxonomyHelper';
 import * as vscode from 'vscode';
 import { TaxonomyType } from '../models';
-import { SETTING_TAXONOMY_TAGS, SETTING_TAXONOMY_CATEGORIES, EXTENSION_NAME } from '../constants';
-import { ArticleHelper, Settings as SettingsHelper, FilesHelper } from '../helpers';
+import { EXTENSION_NAME } from '../constants';
+import { ArticleHelper, FilesHelper } from '../helpers';
 import { FrontMatterParser } from '../parsers';
 import { Notifications } from '../helpers/Notifications';
 
@@ -22,12 +22,7 @@ export class Settings {
     });
 
     if (newOption) {
-      const configSetting =
-        type === TaxonomyType.Tag ? SETTING_TAXONOMY_TAGS : SETTING_TAXONOMY_CATEGORIES;
-      let options = SettingsHelper.get(configSetting, true) as string[];
-      if (!options) {
-        options = [];
-      }
+      let options = (await TaxonomyHelper.get(type)) || [];
 
       if (options.find((o) => o === newOption)) {
         Notifications.info(
@@ -37,7 +32,7 @@ export class Settings {
       }
 
       options.push(newOption);
-      await SettingsHelper.updateTaxonomy(type, options);
+      TaxonomyHelper.update(type, options);
 
       // Ask if the new term needs to be added to the page
       const addToPage = await vscode.window.showQuickPick(['yes', 'no'], {
@@ -128,7 +123,7 @@ export class Settings {
         }
 
         // Retrieve the currently known tags, and add the new ones
-        let crntTags: string[] = SettingsHelper.get(SETTING_TAXONOMY_TAGS, true) as string[];
+        let crntTags: string[] = (await TaxonomyHelper.get(TaxonomyType.Tag)) || [];
         if (!crntTags) {
           crntTags = [];
         }
@@ -136,13 +131,10 @@ export class Settings {
         // Update the tags and filter out the duplicates
         crntTags = [...new Set(crntTags)];
         crntTags = crntTags.sort().filter((t) => !!t);
-        await SettingsHelper.update(SETTING_TAXONOMY_TAGS, crntTags, true);
+        TaxonomyHelper.update(TaxonomyType.Tag, crntTags);
 
         // Retrieve the currently known tags, and add the new ones
-        let crntCategories: string[] = SettingsHelper.get(
-          SETTING_TAXONOMY_CATEGORIES,
-          true
-        ) as string[];
+        let crntCategories: string[] = (await TaxonomyHelper.get(TaxonomyType.Category)) || [];
         if (!crntCategories) {
           crntCategories = [];
         }
@@ -150,7 +142,7 @@ export class Settings {
         // Update the categories and filter out the duplicates
         crntCategories = [...new Set(crntCategories)];
         crntCategories = crntCategories.sort().filter((c) => !!c);
-        await SettingsHelper.update(SETTING_TAXONOMY_CATEGORIES, crntCategories, true);
+        TaxonomyHelper.update(TaxonomyType.Category, crntCategories);
 
         // Done
         Notifications.info(
@@ -176,7 +168,7 @@ export class Settings {
     }
 
     const type = taxType === 'Tag' ? TaxonomyType.Tag : TaxonomyType.Category;
-    const options = SettingsHelper.getTaxonomy(type);
+    const options = (await TaxonomyHelper.get(type)) || [];
 
     if (!options || options.length === 0) {
       Notifications.info(`No ${type === TaxonomyType.Tag ? 'tags' : 'categories'} configured.`);

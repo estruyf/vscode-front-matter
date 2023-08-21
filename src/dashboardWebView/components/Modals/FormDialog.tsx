@@ -30,7 +30,7 @@ export const FormDialog: React.FunctionComponent<IFormDialogProps> = ({
   return (
     <Transition.Root show={true} as={Fragment}>
       <Dialog
-        className="fixed z-10 inset-0 overflow-y-auto"
+        className="fixed z-50 inset-0 overflow-y-auto"
         initialFocus={cancelButtonRef}
         onClose={() => dismiss()}
       >
@@ -65,7 +65,7 @@ export const FormDialog: React.FunctionComponent<IFormDialogProps> = ({
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
-            <div className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 border-2 ${getColors(
+            <div className={`inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-auto shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 border-2 ${getColors(
               'bg-white dark:bg-vulcan-500 border-whisper-900',
               'bg-[var(--vscode-sideBar-background)] border-[var(--frontmatter-border)]'
             )

@@ -7,6 +7,8 @@ import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIco
 import { NavigationType } from '../../models';
 import { ModeAtom } from '../../state';
 import { Tab } from './Tab';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface ITabsProps {
   onNavigate: (navigationType: NavigationType) => void;
@@ -26,20 +28,20 @@ export const Tabs: React.FunctionComponent<ITabsProps> = ({
       <li className="mr-2" role="presentation">
         <Tab navigationType={NavigationType.Contents} onNavigate={onNavigate}>
           <MarkdownIcon className={`h-6 w-auto mr-2`} />
-          <span>Contents</span>
+          <span>{l10n.t(LocalizationKey.dashboardHeaderTabsContents)}</span>
         </Tab>
       </li>
       <li className="mr-2" role="presentation">
         <Tab navigationType={NavigationType.Media} onNavigate={onNavigate}>
           <PhotographIcon className={`h-6 w-auto mr-2`} />
-          <span>Media</span>
+          <span>{l10n.t(LocalizationKey.dashboardHeaderTabsMedia)}</span>
         </Tab>
       </li>
       <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.dashboard.snippets.view}>
         <li className="mr-2" role="presentation">
           <Tab navigationType={NavigationType.Snippets} onNavigate={onNavigate}>
             <ScissorsIcon className={`h-6 w-auto mr-2`} />
-            <span>Snippets</span>
+            <span>{l10n.t(LocalizationKey.dashboardHeaderTabsSnippets)}</span>
           </Tab>
         </li>
       </FeatureFlag>
@@ -47,7 +49,7 @@ export const Tabs: React.FunctionComponent<ITabsProps> = ({
         <li className="mr-2" role="presentation">
           <Tab navigationType={NavigationType.Data} onNavigate={onNavigate}>
             <DatabaseIcon className={`h-6 w-auto mr-2`} />
-            <span>Data</span>
+            <span>{l10n.t(LocalizationKey.dashboardHeaderTabsData)}</span>
           </Tab>
         </li>
       </FeatureFlag>
@@ -55,7 +57,7 @@ export const Tabs: React.FunctionComponent<ITabsProps> = ({
         <li className="mr-2" role="presentation">
           <Tab navigationType={NavigationType.Taxonomy} onNavigate={onNavigate}>
             <TagIcon className={`h-6 w-auto mr-2`} />
-            <span>Taxonomies</span>
+            <span>{l10n.t(LocalizationKey.dashboardHeaderTabsTaxonomies)}</span>
           </Tab>
         </li>
       </FeatureFlag>

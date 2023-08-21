@@ -5,7 +5,14 @@ import { join } from 'path';
 import { Notifications } from '../helpers/Notifications';
 import { Template } from './Template';
 import { Folders } from './Folders';
-import { Extension, FrameworkDetector, Logger, MediaLibrary, Settings } from '../helpers';
+import {
+  Extension,
+  FrameworkDetector,
+  Logger,
+  MediaLibrary,
+  Settings,
+  TaxonomyHelper
+} from '../helpers';
 import {
   COMMAND_NAME,
   SETTING_CONTENT_DEFAULT_FILETYPE,
@@ -41,6 +48,7 @@ categories: []
     // If it has a project file, initialize the media library
     if (hasProjectFile) {
       MediaLibrary.getInstance();
+      TaxonomyHelper.initDb();
     }
     return hasProjectFile;
   }
@@ -63,6 +71,9 @@ categories: []
 
       // Initialize the media library
       MediaLibrary.getInstance();
+
+      // Initialize the taxonomy database
+      TaxonomyHelper.initDb();
 
       Telemetry.send(TelemetryEvent.initialization);
 

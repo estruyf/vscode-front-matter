@@ -7,7 +7,7 @@ import { LightboxAtom } from '../../state';
 export interface ILightboxProps { }
 
 export const Lightbox: React.FunctionComponent<ILightboxProps> = (
-  props: React.PropsWithChildren<ILightboxProps>
+  _: React.PropsWithChildren<ILightboxProps>
 ) => {
   const [lightbox, setLightbox] = useRecoilState(LightboxAtom);
   const { getColors } = useThemeColors();

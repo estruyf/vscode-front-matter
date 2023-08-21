@@ -2,6 +2,8 @@ import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { Field, FieldGroup } from '../../../models';
 import { VSCodeDropdown, VSCodeOption } from '@vscode/webview-ui-toolkit/react';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IDataBlockSelectorProps {
   field: Field;
@@ -70,7 +72,8 @@ export const DataBlockSelector: React.FunctionComponent<IDataBlockSelectorProps>
 
   return (
     <div className="json_data__selector">
-      <h3>Block type</h3>
+      <h3>{LocalizationKey.panelDataBlockDataBlockSelectorLabel}</h3>
+
       <VSCodeDropdown
         value={selectedGroup ?? EMPTY_OPTION}
         onChange={onGroupSelect}

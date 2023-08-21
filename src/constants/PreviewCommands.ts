@@ -2,5 +2,7 @@ export const PreviewCommands = {
   toVSCode: {
     open: `preview.open`
   },
-  fromVSCode: {}
+  toWebview: {
+    updateUrl: `preview.updateUrl`
+  }
 };

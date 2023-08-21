@@ -6,7 +6,7 @@ import {
 } from './../../constants/settings';
 import { Settings } from './../../helpers/SettingsHelper';
 import { Dashboard } from '../../commands/Dashboard';
-import { ExplorerView } from '../../explorerView/ExplorerView';
+import { PanelProvider } from '../../panelWebView/PanelProvider';
 import {
   ArticleHelper,
   Extension,
@@ -258,7 +258,7 @@ export class GitListener {
    */
   private static sendMsg(command: string, payload: any) {
     const extPath = Extension.getInstance().extensionPath;
-    const panel = ExplorerView.getInstance(extPath);
+    const panel = PanelProvider.getInstance(extPath);
 
     panel.sendMessage({ command: command as any, payload });
 

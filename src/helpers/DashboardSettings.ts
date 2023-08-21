@@ -24,7 +24,12 @@ import {
   SETTING_TAXONOMY_CUSTOM,
   SETTING_TEMPLATES_ENABLED,
   SETTING_GIT_ENABLED,
-  SETTING_DASHBOARD_CONTENT_PAGINATION
+  SETTING_DASHBOARD_CONTENT_PAGINATION,
+  SETTING_SNIPPETS_WRAPPER,
+  SETTING_DASHBOARD_CONTENT_CARD_DATE,
+  SETTING_DASHBOARD_CONTENT_CARD_TITLE,
+  SETTING_DASHBOARD_CONTENT_CARD_STATE,
+  SETTING_DASHBOARD_CONTENT_CARD_DESCRIPTION
 } from '../constants';
 import {
   DashboardViewType,
@@ -39,6 +44,7 @@ import { Extension } from './Extension';
 import { FrameworkDetector } from './FrameworkDetector';
 import { Settings } from './SettingsHelper';
 import { parseWinPath } from './parseWinPath';
+import { TaxonomyHelper } from './TaxonomyHelper';
 
 export class DashboardSettings {
   private static cachedSettings: ISettings | undefined = undefined;
@@ -69,8 +75,8 @@ export class DashboardSettings {
       wsFolder: wsFolder ? wsFolder.fsPath : '',
       staticFolder: Folders.getStaticFolderRelativePath(),
       initialized: isInitialized,
-      tags: Settings.getTaxonomy(TaxonomyType.Tag),
-      categories: Settings.getTaxonomy(TaxonomyType.Category),
+      tags: (await TaxonomyHelper.get(TaxonomyType.Tag)) || [],
+      categories: (await TaxonomyHelper.get(TaxonomyType.Category)) || [],
       customTaxonomy: Settings.get(SETTING_TAXONOMY_CUSTOM, true) || [],
       openOnStart: Settings.get(SETTING_DASHBOARD_OPENONSTART),
       versionInfo: ext.getVersion(),
@@ -97,7 +103,13 @@ export class DashboardSettings {
           defaultSorting: Settings.get<string>(SETTING_CONTENT_SORTING_DEFAULT),
           tags: Settings.get<string>(SETTING_DASHBOARD_CONTENT_TAGS),
           templatesEnabled: Settings.get<boolean>(SETTING_TEMPLATES_ENABLED),
-          pagination: pagination !== undefined ? pagination : true
+          pagination: pagination !== undefined ? pagination : true,
+          cardFields: {
+            state: Settings.get<string>(SETTING_DASHBOARD_CONTENT_CARD_STATE),
+            date: Settings.get<string>(SETTING_DASHBOARD_CONTENT_CARD_DATE),
+            title: Settings.get<string>(SETTING_DASHBOARD_CONTENT_CARD_TITLE),
+            description: Settings.get<string>(SETTING_DASHBOARD_CONTENT_CARD_DESCRIPTION)
+          }
         },
         media: {
           sorting: await ext.getState<SortingOption | undefined>(
@@ -118,6 +130,7 @@ export class DashboardSettings {
       dataFiles: await this.getDataFiles(),
       dataTypes: Settings.get<DataType[]>(SETTING_DATA_TYPES),
       snippets: Settings.get<Snippets>(SETTING_CONTENT_SNIPPETS),
+      snippetsWrapper: Settings.get<boolean>(SETTING_SNIPPETS_WRAPPER),
       isBacker: await ext.getState<boolean | undefined>(CONTEXT.backer, 'global')
     } as ISettings;
 

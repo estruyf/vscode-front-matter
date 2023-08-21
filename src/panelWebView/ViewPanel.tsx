@@ -13,8 +13,10 @@ import { FeatureFlag } from '../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../constants/Features';
 import { GitAction } from './components/Git/GitAction';
 import { CustomView } from './components/CustomView';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePrevious } from './hooks/usePrevious';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export interface IViewPanelProps { }
 
@@ -30,6 +32,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
     folderAndFiles,
     focusElm,
     unsetFocus,
+    localeReady,
     mode
   } = useMessages();
   const prevMediaSelection = usePrevious(mediaSelecting);
@@ -72,12 +75,14 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
   if (mediaSelecting) {
     return (
       <div className="frontmatter media_selection">
-        <h1>Continue in the media dashboard to select the image you want to insert.</h1>
+        <h1>
+          {l10n.t(LocalizationKey.panelViewPanelMediaInsert)}
+        </h1>
       </div>
     );
   }
 
-  if (loading) {
+  if (loading || !localeReady) {
     return <Spinner />;
   }
 
@@ -93,14 +98,14 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
             <a
               className="developer__bar__link"
               href={`command:workbench.action.webview.reloadWebviewAction`}
-              title="Reload the dashboard">
-              Reload
+              title={l10n.t(LocalizationKey.developerReloadTitle)}>
+              {l10n.t(LocalizationKey.developerReloadLabel)}
             </a>
             <a
               className="developer__bar__link"
               href={`command:workbench.action.webview.openDeveloperTools`}
-              title="Open DevTools">
-              DevTools
+              title={l10n.t(LocalizationKey.developerDevToolsTitle)}>
+              {l10n.t(LocalizationKey.developerDevToolsLabel)}
             </a>
           </div>
         )

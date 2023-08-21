@@ -15,11 +15,11 @@ import {
 import * as vscode from 'vscode';
 import { CustomPlaceholder, Field, TaxonomyType } from '../models';
 import { format } from 'date-fns';
-import { ArticleHelper, Settings, SlugHelper } from '../helpers';
+import { ArticleHelper, Settings, SlugHelper, TaxonomyHelper } from '../helpers';
 import { Notifications } from '../helpers/Notifications';
 import { extname, basename, parse, dirname } from 'path';
 import { COMMAND_NAME, DefaultFields } from '../constants';
-import { DashboardData } from '../models/DashboardData';
+import { DashboardData, SnippetRange } from '../models/DashboardData';
 import { DateHelper } from '../helpers/DateHelper';
 import { parseWinPath } from '../helpers/parseWinPath';
 import { Telemetry } from '../helpers/Telemetry';
@@ -27,6 +27,8 @@ import { ParsedFrontMatter } from '../parsers';
 import { MediaListener } from '../listeners/panel';
 import { NavigationType } from '../dashboardWebView/models';
 import { processKnownPlaceholders } from '../helpers/PlaceholderHelper';
+import { Position } from 'vscode';
+import { SNIPPET } from '../constants/Snippet';
 
 export class Article {
   /**
@@ -66,7 +68,7 @@ export class Article {
     }
 
     // Add all the known options to the selection list
-    const crntOptions = Settings.getTaxonomy(type);
+    const crntOptions = (await TaxonomyHelper.get(type)) || [];
     if (crntOptions && crntOptions.length > 0) {
       for (const crntOpt of crntOptions) {
         if (!options.find((o) => o.label === crntOpt)) {
@@ -366,10 +368,12 @@ export class Article {
   /**
    * Format the date to the defined format
    */
-  public static formatDate(dateValue: Date): string {
+  public static formatDate(dateValue: Date, fieldDateFormat?: string): string {
     const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
 
-    if (dateFormat && typeof dateFormat === 'string') {
+    if (fieldDateFormat) {
+      return format(dateValue, DateHelper.formatUpdate(fieldDateFormat) as string);
+    } else if (dateFormat && typeof dateFormat === 'string') {
       return format(dateValue, DateHelper.formatUpdate(dateFormat) as string);
     } else {
       return typeof dateValue.toISOString === 'function'
@@ -418,8 +422,53 @@ export class Article {
       return;
     }
 
-    const position = editor.selection.active;
+    let position = editor.selection.active;
     const selectionText = editor.document.getText(editor.selection);
+
+    // Check for snippet wrapper
+    const selectionStart = editor.selection.start;
+    const docText = editor.document.getText();
+    const docTextLines = docText.split(`\n`);
+    const snippetEndAfterPos = docTextLines.findIndex((value: string, idx: number) => {
+      return value.includes(SNIPPET.wrapper.end) && idx >= selectionStart.line;
+    });
+
+    const snippetStartAfterPos = docTextLines.findIndex((value: string, idx: number) => {
+      return value.includes(SNIPPET.wrapper.start) && idx > selectionStart.line;
+    });
+
+    const linesBeforeSelection = docTextLines.slice(0, selectionStart.line + 1);
+
+    let snippetStartBeforePos = linesBeforeSelection
+      .reverse()
+      .findIndex((r) => r.includes(SNIPPET.wrapper.start));
+
+    if (snippetStartBeforePos > -1) {
+      snippetStartBeforePos = linesBeforeSelection.length - snippetStartBeforePos - 1;
+    }
+
+    let snippetInfo: { id: string; fields: any[] } | undefined = undefined;
+    let range: SnippetRange | undefined = undefined;
+    if (
+      snippetEndAfterPos > -1 &&
+      (snippetStartAfterPos > snippetEndAfterPos || snippetStartAfterPos === -1) &&
+      snippetStartBeforePos
+    ) {
+      // Content was within a snippet block, get all the text
+      const snippetBlock = docTextLines.slice(snippetStartBeforePos, snippetEndAfterPos + 1);
+      const firstLine = snippetBlock[0];
+
+      range = {
+        start: new Position(snippetStartBeforePos, 0),
+        end: new Position(snippetEndAfterPos, snippetBlock[snippetBlock.length - 1].length)
+      };
+
+      const data = firstLine
+        .replace(`<!-- ${SNIPPET.wrapper.start} data:`, '')
+        .replace(' -->', '')
+        .replace(/'/g, '"');
+      snippetInfo = JSON.parse(data);
+    }
 
     const article = ArticleHelper.getFrontMatter(editor);
 
@@ -430,7 +479,9 @@ export class Article {
         filePath: editor.document.uri.fsPath,
         fieldName: basename(editor.document.uri.fsPath),
         position,
-        selection: selectionText
+        range,
+        selection: selectionText,
+        snippetInfo
       }
     } as DashboardData);
   }

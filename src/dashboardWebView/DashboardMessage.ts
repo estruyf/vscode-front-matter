@@ -12,6 +12,7 @@ export enum DashboardMessage {
   initializeProject = 'initializeProject',
   setFramework = 'setFramework',
   addFolder = 'addFolder',
+  addAssetsFolder = 'addAssetsFolder',
 
   // Content dashboard
   getData = 'getData',

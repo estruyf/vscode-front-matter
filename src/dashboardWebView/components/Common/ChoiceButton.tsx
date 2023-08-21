@@ -3,6 +3,8 @@ import { ChevronDownIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import useThemeColors from '../../hooks/useThemeColors';
 import { MenuItem, MenuItems } from '../Menu';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IChoiceButtonProps {
   title: string;
@@ -50,7 +52,7 @@ export const ChoiceButton: React.FunctionComponent<IChoiceButtonProps> = ({
               }`}
             disabled={disabled}
           >
-            <span className="sr-only">Open options</span>
+            <span className="sr-only">{l10n.t(LocalizationKey.dashboardCommonChoiceButtonOpen)}</span>
             <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
           </Menu.Button>
 

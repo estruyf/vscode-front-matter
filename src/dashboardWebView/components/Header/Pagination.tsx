@@ -5,6 +5,8 @@ import usePagination from '../../hooks/usePagination';
 import useThemeColors from '../../hooks/useThemeColors';
 import { MediaTotalSelector, PageAtom, SettingsAtom } from '../../state';
 import { PaginationButton } from './PaginationButton';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IPaginationProps {
   totalPages?: number;
@@ -48,7 +50,7 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({
   return (
     <div className="flex justify-between items-center sm:justify-end space-x-2 text-sm">
       <PaginationButton
-        title="First"
+        title={l10n.t(LocalizationKey.dashboardHeaderPaginationFirst)}
         disabled={page === 0}
         onClick={() => {
           if (page > 0) {
@@ -58,7 +60,7 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({
       />
 
       <PaginationButton
-        title="Previous"
+        title={l10n.t(LocalizationKey.dashboardHeaderPaginationPrevious)}
         disabled={page === 0}
         onClick={() => {
           if (page > 0) {
@@ -74,27 +76,26 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({
           onClick={() => {
             setPage(button);
           }}
-          className={`max-h-8 rounded ${
-            page === button
-              ? `px-2 ${getColors('bg-gray-200  text-vulcan-500', 'bg-[var(--vscode-list-activeSelectionBackground)] text-[var(--vscode-list-activeSelectionForeground)]')}`
-              : getColors(
-                `text-gray-500 hover:text-gray-600 dark:text-whisper-900 dark:hover:text-whisper-500`,
-                `text-[var(--vscode-editor-foreground)] hover:text-[var(--vscode-list-activeSelectionForeground)]`
-              )
-          }`}
+          className={`max-h-8 rounded ${page === button
+            ? `px-2 ${getColors('bg-gray-200  text-vulcan-500', 'bg-[var(--vscode-list-activeSelectionBackground)] text-[var(--vscode-list-activeSelectionForeground)]')}`
+            : getColors(
+              `text-gray-500 hover:text-gray-600 dark:text-whisper-900 dark:hover:text-whisper-500`,
+              `text-[var(--vscode-editor-foreground)] hover:text-[var(--vscode-list-activeSelectionForeground)]`
+            )
+            }`}
         >
           {button + 1}
         </button>
       ))}
 
       <PaginationButton
-        title="Next"
+        title={l10n.t(LocalizationKey.dashboardHeaderPaginationNext)}
         disabled={page >= totalPagesNr}
         onClick={() => setPage(page + 1)}
       />
 
       <PaginationButton
-        title="Last"
+        title={l10n.t(LocalizationKey.dashboardHeaderPaginationLast)}
         disabled={page >= totalPagesNr}
         onClick={() => setPage(totalPagesNr)}
       />

@@ -187,14 +187,6 @@ export class ContentType {
     }
 
     const fields = ContentType.generateFields(content.data);
-    if (!overrideBool && !fields.some((f) => f.name === 'type')) {
-      fields.push({
-        name: 'type',
-        type: 'string',
-        default: contentTypeName,
-        hidden: true
-      } as Field);
-    }
 
     // Update the type field in the page
     if (!overrideBool && editor) {
@@ -441,6 +433,90 @@ export class ContentType {
     }
 
     return emptyFields || [];
+  }
+
+  /**
+   * Find fields by type (deep search)
+   * @param fields
+   * @param type
+   * @param parents
+   * @param parentFields
+   * @returns
+   */
+  public static findFieldsByTypeDeep(
+    fields: Field[],
+    type: FieldType,
+    parents: Field[][] = [],
+    parentFields: Field[] = []
+  ): Field[][] {
+    for (const field of fields) {
+      if (field.type === type) {
+        parents.push([...parentFields, field]);
+      } else if (field.type === 'fields' && field.fields) {
+        this.findFieldsByTypeDeep(field.fields, type, parents, [...parentFields, field]);
+      } else if (field.type === 'block') {
+        const groups =
+          field.fieldGroup && Array.isArray(field.fieldGroup)
+            ? field.fieldGroup
+            : [field.fieldGroup];
+        const blocks = Settings.get<FieldGroup[]>(SETTING_TAXONOMY_FIELD_GROUPS);
+
+        if (groups && blocks) {
+          let found = false;
+
+          for (const group of groups) {
+            const block = blocks.find((block) => block.id === group);
+            if (!block) {
+              continue;
+            }
+
+            let newParents: Field[][] = [];
+            if (!found) {
+              newParents = this.findFieldsByTypeDeep(block?.fields, type, parents, [
+                ...parentFields,
+                field
+              ]);
+            }
+
+            if (newParents.length > 0) {
+              found = true;
+            }
+          }
+        }
+      }
+    }
+
+    return parents;
+  }
+
+  /**
+   * Retrieve the block field groups
+   * @param field
+   * @returns
+   */
+  public static getBlockFieldGroups(field: Field): FieldGroup[] {
+    const groups =
+      field.fieldGroup && Array.isArray(field.fieldGroup) ? field.fieldGroup : [field.fieldGroup];
+    if (!groups) {
+      return [];
+    }
+
+    const blocks = Settings.get<FieldGroup[]>(SETTING_TAXONOMY_FIELD_GROUPS);
+    if (!blocks) {
+      return [];
+    }
+
+    let foundBlocks = [];
+    for (const group of groups) {
+      const block = blocks.find((block) => block.id === group);
+      if (!block) {
+        continue;
+      }
+
+      foundBlocks.push(block);
+    }
+
+    return foundBlocks;
   }
 
   /**
@@ -717,7 +793,11 @@ export class ContentType {
       for (const field of obj.fields) {
         if (field.name === 'title') {
           if (field.default) {
-            data[field.name] = processKnownPlaceholders(field.default, titleValue, dateFormat);
+            data[field.name] = processKnownPlaceholders(
+              field.default,
+              titleValue,
+              field.dateFormat || dateFormat
+            );
             data[field.name] = await ArticleHelper.processCustomPlaceholders(
               data[field.name],
               titleValue,
@@ -735,7 +815,11 @@ export class ContentType {
             const defaultValue = field.default;
 
             if (typeof defaultValue === 'string') {
-              data[field.name] = processKnownPlaceholders(defaultValue, titleValue, dateFormat);
+              data[field.name] = processKnownPlaceholders(
+                defaultValue,
+                titleValue,
+                field.dateFormat || dateFormat
+              );
               data[field.name] = await ArticleHelper.processCustomPlaceholders(
                 data[field.name],
                 titleValue,

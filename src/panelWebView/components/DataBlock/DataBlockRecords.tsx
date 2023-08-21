@@ -5,6 +5,9 @@ import { DataBlockRecord } from '.';
 import { SortableContainer, SortEnd } from 'react-sortable-hoc';
 import { useCallback } from 'react';
 import { FieldGroup } from '../../../models';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
+
 export interface IDataBlockRecordsProps {
   fieldGroups?: FieldGroup[];
   records: any[];
@@ -53,7 +56,9 @@ export const DataBlockRecords = ({
         <div className={`metadata_field__label`}>
           <div>
             <CollectionIcon style={{ width: '16px', height: '16px' }} />
-            <span style={{ lineHeight: '16px' }}>Records</span>
+            <span style={{ lineHeight: '16px' }}>
+              {l10n.t(LocalizationKey.panelDataBlockDataBlockRecordsLabel)}
+            </span>
           </div>
         </div>
       </VsLabel>

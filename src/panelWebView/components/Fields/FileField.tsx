@@ -7,6 +7,8 @@ import { BaseFieldProps, BlockFieldData } from '../../../models';
 import { CommandToCode } from '../../CommandToCode';
 import { FieldTitle } from './FieldTitle';
 import { FieldMessage } from './FieldMessage';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IFileFieldProps extends BaseFieldProps<string | string[] | null> {
   fieldName: string;
@@ -31,10 +33,13 @@ const File = ({ value, onRemove }: { value: string; onRemove: (value: string) =>
       <button
         className="metadata_field__file__item__remove"
         type="button"
+        title={l10n.t(LocalizationKey.panelFieldsFileFieldDelete)}
         onClick={() => onRemove(value)}
       >
         <TrashIcon style={{ width: '16px', height: '16px' }} />
-        <span className="sr-only">Delete file</span>
+        <span className="sr-only">
+          {l10n.t(LocalizationKey.panelFieldsFileFieldDelete)}
+        </span>
       </button>
     </div>
   );
@@ -90,12 +95,12 @@ export const FileField: React.FunctionComponent<IFileFieldProps> = ({
         {(isEmpty || multiple) && (
           <button
             className={`metadata_field__file__button ${isEmpty ? '' : 'not_empty'}`}
-            title={`Add your ${label?.toLowerCase() || 'file'}`}
+            title={l10n.t(LocalizationKey.panelFieldsFileFieldAdd, (label?.toLowerCase() || 'file'))}
             type="button"
             onClick={selectFile}
           >
             <DocumentIcon />
-            <span>Add your {label?.toLowerCase() || 'file'}</span>
+            <span>{l10n.t(LocalizationKey.panelFieldsFileFieldAdd, (label?.toLowerCase() || 'file'))}</span>
           </button>
         )}
 

@@ -1,5 +1,5 @@
 import { EditorHelper } from '@estruyf/vscode';
-import { window } from 'vscode';
+import { window, Range, Position } from 'vscode';
 import { Dashboard } from '../../commands/Dashboard';
 import { SETTING_CONTENT_SNIPPETS, TelemetryEvent } from '../../constants';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
@@ -80,7 +80,7 @@ export class SnippetListener extends BaseListener {
   }
 
   private static async insertSnippet(data: any) {
-    const { file, snippet } = data;
+    const { file, snippet, range } = data;
 
     if (!file || !snippet) {
       return;
@@ -90,18 +90,30 @@ export class SnippetListener extends BaseListener {
     Dashboard.resetViewData();
 
     const editor = window.activeTextEditor;
-    const position = editor?.selection?.active;
-    if (!position) {
-      return;
-    }
 
-    const selection = editor?.selection;
-    await editor?.edit((builder) => {
-      if (selection !== undefined) {
-        builder.replace(selection, snippet);
-      } else {
-        builder.insert(position, snippet);
+    if (range) {
+      await editor?.edit((builder) => {
+        const vsCodeRange = new Range(
+          new Position((range as Range).start.line, (range as Range).start.character),
+          new Position((range as Range).end.line, (range as Range).end.character)
+        );
+
+        builder.replace(vsCodeRange, snippet);
+      });
+    } else {
+      const position = editor?.selection?.active;
+      if (!position) {
+        return;
       }
-    });
+
+      const selection = editor?.selection;
+      await editor?.edit((builder) => {
+        if (selection !== undefined) {
+          builder.replace(selection, snippet);
+        } else {
+          builder.insert(position, snippet);
+        }
+      });
+    }
   }
 }

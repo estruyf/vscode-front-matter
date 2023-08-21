@@ -1,7 +1,7 @@
 import { parseWinPath } from './parseWinPath';
 import * as jsoncParser from 'jsonc-parser';
 import jsyaml = require('js-yaml');
-import { join, resolve } from 'path';
+import { join, resolve, relative, dirname } from 'path';
 import { commands, Uri } from 'vscode';
 import { Folders } from '../commands/Folders';
 import {
@@ -11,7 +11,7 @@ import {
   STATIC_FOLDER_PLACEHOLDER
 } from '../constants';
 import { FrameworkDetectors } from '../constants/FrameworkDetectors';
-import { Framework } from '../models';
+import { Framework, StaticFolder } from '../models';
 import { Logger } from './Logger';
 import { existsAsync, readFileAsync } from '../utils';
 import { Settings } from '.';
@@ -102,6 +102,7 @@ export class FrameworkDetector {
    * @param filePath
    */
   public static relAssetPathUpdate(relAssetPath: string, filePath: string): string {
+    const staticFolderValue = Settings.get<string | StaticFolder>(SETTING_CONTENT_STATIC_FOLDER);
     const staticFolder = Folders.getStaticFolderRelativePath();
     const frameworkId = Settings.get(SETTING_FRAMEWORK_ID);
 
@@ -127,6 +128,24 @@ export class FrameworkDetector {
       if (relAssetPath.startsWith('/')) {
         relAssetPath = relAssetPath.substring(1);
       }
+    }
+    // Support for the Astro assets folder
+    else if (
+      staticFolder &&
+      staticFolderValue &&
+      typeof staticFolderValue !== 'string' &&
+      staticFolderValue.relative
+    ) {
+      const absAssetPath = parseWinPath(
+        join(Folders.getWorkspaceFolder()?.fsPath || '', staticFolder, relAssetPath)
+      );
+
+      const fileDir = dirname(filePath);
+      const assetDir = dirname(absAssetPath);
+      const fileName = parse(absAssetPath);
+
+      relAssetPath = relative(fileDir, assetDir);
+      relAssetPath = join(relAssetPath, `${fileName.name}${fileName.ext}`);
     }
 
     return parseWinPath(relAssetPath);

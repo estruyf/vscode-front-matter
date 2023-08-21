@@ -1,6 +1,6 @@
 import { SETTING_SPONSORS_AI_ENABLED } from './../constants/settings';
 import { workspace } from 'vscode';
-import { Extension, Settings } from '.';
+import { Extension, Settings, TaxonomyHelper } from '.';
 import { Dashboard } from '../commands/Dashboard';
 import { Preview } from '../commands/Preview';
 import { Project } from '../commands/Project';
@@ -25,11 +25,9 @@ import {
   SETTING_SLUG_PREFIX,
   SETTING_SLUG_SUFFIX,
   SETTING_SLUG_UPDATE_FILE_NAME,
-  SETTING_TAXONOMY_CATEGORIES,
   SETTING_TAXONOMY_CONTENT_TYPES,
   SETTING_TAXONOMY_CUSTOM,
   SETTING_TAXONOMY_FIELD_GROUPS,
-  SETTING_TAXONOMY_TAGS,
   SETTING_GIT_ENABLED,
   SETTING_SEO_TITLE_FIELD
 } from '../constants';
@@ -40,14 +38,13 @@ import {
   DraftField,
   FieldGroup,
   PanelSettings as IPanelSettings,
-  ScriptType
+  ScriptType,
+  TaxonomyType
 } from '../models';
 
 export class PanelSettings {
   public static async get(): Promise<IPanelSettings> {
     const gitActions = Settings.get<boolean>(SETTING_GIT_ENABLED);
-
-    const aiEnabled = Settings.get<boolean>(SETTING_SPONSORS_AI_ENABLED);
 
     return {
       aiEnabled: Settings.get<boolean>(SETTING_SPONSORS_AI_ENABLED) || false,
@@ -72,8 +69,8 @@ export class PanelSettings {
       date: {
         format: Settings.get<string>(SETTING_DATE_FORMAT) || ''
       },
-      tags: Settings.get(SETTING_TAXONOMY_TAGS, true) || [],
-      categories: Settings.get(SETTING_TAXONOMY_CATEGORIES, true) || [],
+      tags: (await TaxonomyHelper.get(TaxonomyType.Tag)) || [],
+      categories: (await TaxonomyHelper.get(TaxonomyType.Category)) || [],
       customTaxonomy: Settings.get(SETTING_TAXONOMY_CUSTOM, true) || [],
       freeform: Settings.get(SETTING_PANEL_FREEFORM),
       scripts: (Settings.get<CustomScript[]>(SETTING_CUSTOM_SCRIPTS) || []).filter(

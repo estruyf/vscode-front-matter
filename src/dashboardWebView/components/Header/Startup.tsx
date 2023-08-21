@@ -4,6 +4,8 @@ import { Settings } from '../../models';
 import useThemeColors from '../../hooks/useThemeColors';
 import { DashboardMessage } from '../../DashboardMessage';
 import { SETTING_DASHBOARD_OPENONSTART } from '../../../constants';
+import * as l10n from "@vscode/l10n"
+import { LocalizationKey } from '../../../localization';
 
 export interface IStartupProps {
   settings: Settings | null;
@@ -54,7 +56,7 @@ export const Startup: React.FunctionComponent<IStartupProps> = ({
           )
             }`}
         >
-          Open on startup?
+          {l10n.t(LocalizationKey.dashboardHeaderStartupLabel)}
         </label>
       </div>
     </div>

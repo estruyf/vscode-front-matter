@@ -5,7 +5,9 @@ import {
   ScriptListener,
   TaxonomyListener,
   DataListener,
-  SettingsListener
+  SettingsListener,
+  FieldsListener,
+  LocalizationListener
 } from './../listeners/panel';
 import { SETTING_EXPERIMENTAL, SETTING_EXTENSIBILITY_SCRIPTS, TelemetryEvent } from '../constants';
 import {
@@ -27,9 +29,9 @@ import { Telemetry } from '../helpers/Telemetry';
 import { GitListener, ModeListener } from '../listeners/general';
 import { Folders } from '../commands';
 
-export class ExplorerView implements WebviewViewProvider, Disposable {
+export class PanelProvider implements WebviewViewProvider, Disposable {
   public static readonly viewType = 'frontMatter.explorer';
-  private static instance: ExplorerView;
+  private static instance: PanelProvider;
 
   private panel: WebviewView | null = null;
   private disposable: Disposable | null = null;
@@ -40,12 +42,12 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
    * Creates the singleton instance for the panel
    * @param extPath
    */
-  public static getInstance(extPath?: Uri): ExplorerView {
-    if (!ExplorerView.instance) {
-      ExplorerView.instance = new ExplorerView(extPath as Uri);
+  public static getInstance(extPath?: Uri): PanelProvider {
+    if (!PanelProvider.instance) {
+      PanelProvider.instance = new PanelProvider(extPath as Uri);
     }
 
-    return ExplorerView.instance;
+    return PanelProvider.instance;
   }
 
   /**
@@ -97,6 +99,8 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
     webviewView.webview.onDidReceiveMessage(async (msg) => {
       Logger.info(`Receiving message from webview to panel: ${msg.command}`);
 
+      LocalizationListener.process(msg);
+      FieldsListener.process(msg);
       ArticleListener.process(msg);
       DataListener.process(msg);
       ExtensionListener.process(msg);
@@ -110,7 +114,7 @@ export class ExplorerView implements WebviewViewProvider, Disposable {
 
     webviewView.onDidChangeVisibility(() => {
       if (this.visible) {
-        Telemetry.send(TelemetryEvent.openExplorerView);
+        Telemetry.send(TelemetryEvent.openPanelWebview);
         DataListener.getFileData();
       }
     });

@@ -1,11 +1,12 @@
 import { STATIC_FOLDER_PLACEHOLDER } from './../constants/StaticFolderPlaceholder';
-import { ExplorerView } from './../explorerView/ExplorerView';
+import { PanelProvider } from './../panelWebView/PanelProvider';
 import { Uri, window } from 'vscode';
 import { dirname, extname, join } from 'path';
 import { Field } from '../models';
 import { existsSync } from 'fs';
 import { Folders } from '../commands/Folders';
 import { parseWinPath } from './parseWinPath';
+import { Preview } from '../commands';
 
 export class ImageHelper {
   /**
@@ -15,7 +16,7 @@ export class ImageHelper {
    * @returns
    */
   public static allRelToAbs(field: Field, value: string | string[] | undefined) {
-    const filePath = window.activeTextEditor?.document.uri.fsPath;
+    const filePath = window.activeTextEditor?.document.uri.fsPath || Preview.filePath;
     if (!filePath) {
       return;
     }
@@ -103,7 +104,7 @@ export class ImageHelper {
    */
   public static processImageFields(updatedMetadata: any, fields: Field[], parents: string[] = []) {
     const imageFields = fields.filter((field) => field.type === 'image');
-    const panel = ExplorerView.getInstance();
+    const panel = PanelProvider.getInstance();
 
     // Support multi-level fields
     let parentObj = updatedMetadata;

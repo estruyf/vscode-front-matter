@@ -73,7 +73,9 @@ export type FieldType =
   | 'list'
   | 'slug'
   | 'divider'
-  | 'heading';
+  | 'heading'
+  | 'contentRelationship'
+  | 'customField';
 
 export interface Field {
   title?: string;
@@ -100,6 +102,7 @@ export interface Field {
   // Date fields
   isPublishDate?: boolean;
   isModifiedDate?: boolean;
+  dateFormat?: string;
 
   // Data file
   dataFileId?: string;
@@ -108,6 +111,13 @@ export interface Field {
 
   // Number field options
   numberOptions?: NumberOptions;
+
+  // Content relationship
+  contentTypeName?: string;
+  contentTypeValue?: 'path' | 'slug';
+
+  // Custom field
+  customType?: string;
 
   // When clause
   when?: WhenClause;

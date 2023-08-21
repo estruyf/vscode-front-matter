@@ -3,5 +3,6 @@ export const LocalStore = {
   contentFolder: 'content',
   databaseFolder: 'database',
   templatesFolder: 'templates',
-  mediaDatabaseFile: 'mediaDb.json'
+  mediaDatabaseFile: 'mediaDb.json',
+  taxonomyDatabaseFile: 'taxonomyDb.json'
 };

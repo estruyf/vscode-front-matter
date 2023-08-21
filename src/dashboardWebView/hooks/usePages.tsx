@@ -208,9 +208,7 @@ export default function usePages(pages: Page[]) {
   }, [settings?.draftField, pages, sorting, search, tag, category, folder]);
 
   useEffect(() => {
-    if (sortedPages.length > 0) {
-      processByTab(sortedPages);
-    }
+    processByTab(sortedPages);
   }, [sortedPages, tab]);
 
   useEffect(() => {

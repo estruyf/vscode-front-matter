@@ -76,6 +76,13 @@ export const SETTING_DASHBOARD_OPENONSTART = 'dashboard.openOnStart';
 export const SETTING_DASHBOARD_CONTENT_TAGS = 'dashboard.content.cardTags';
 export const SETTING_DASHBOARD_CONTENT_PAGINATION = 'dashboard.content.pagination';
 
+// Content cards
+export const SETTING_DASHBOARD_CONTENT_CARD_STATE = 'dashboard.content.card.fields.state';
+export const SETTING_DASHBOARD_CONTENT_CARD_DATE = 'dashboard.content.card.fields.date';
+export const SETTING_DASHBOARD_CONTENT_CARD_TITLE = 'dashboard.content.card.fields.title';
+export const SETTING_DASHBOARD_CONTENT_CARD_DESCRIPTION =
+  'dashboard.content.card.fields.description';
+
 export const SETTING_DATA_FILES = 'data.files';
 export const SETTING_DATA_FOLDERS = 'data.folders';
 export const SETTING_DATA_TYPES = 'data.types';
@@ -93,6 +100,8 @@ export const SETTING_GIT_SUBMODULE_PULL = 'git.submodule.pull';
 export const SETTING_GIT_SUBMODULE_PUSH = 'git.submodule.push';
 export const SETTING_GIT_SUBMODULE_BRANCH = 'git.submodule.branch';
 export const SETTING_GIT_SUBMODULE_FOLDER = 'git.submodule.folder';
+
+export const SETTING_SNIPPETS_WRAPPER = 'snippets.wrapper.enabled';
 
 /**
  * Sponsors only settings

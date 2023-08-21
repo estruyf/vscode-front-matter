@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { useForm } from 'uniforms';
 import { SubmitField } from 'uniforms-unstyled';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IDataBlockControlsProps {
   model: any | null;
@@ -15,7 +17,7 @@ export const DataBlockControls: React.FunctionComponent<IDataBlockControlsProps>
 
   return (
     <div className="json_data__buttons">
-      <SubmitField value={model ? `Update` : `Add`} />
+      <SubmitField value={model ? l10n.t(LocalizationKey.commonUpdate) : l10n.t(LocalizationKey.commonAdd)} />
 
       <button
         className="ml-4"

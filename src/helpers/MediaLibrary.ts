@@ -1,6 +1,6 @@
 import { MediaHelpers } from './MediaHelpers';
 import { workspace } from 'vscode';
-import { JsonDB } from 'node-json-db/dist/JsonDB';
+import { Config, JsonDB } from 'node-json-db';
 import { basename, dirname, join, parse } from 'path';
 import { Folders, WORKSPACE_PLACEHOLDER } from '../commands/Folders';
 import { Notifications } from './Notifications';
@@ -52,15 +52,17 @@ export class MediaLibrary {
     }
 
     this.db = new JsonDB(
-      join(
-        parseWinPath(wsFolder?.fsPath || ''),
-        LocalStore.rootFolder,
-        LocalStore.databaseFolder,
-        LocalStore.mediaDatabaseFile
-      ),
-      true,
-      false,
-      '/'
+      new Config(
+        join(
+          parseWinPath(wsFolder?.fsPath || ''),
+          LocalStore.rootFolder,
+          LocalStore.databaseFolder,
+          LocalStore.mediaDatabaseFile
+        ),
+        true,
+        false,
+        '/'
+      )
     );
 
     workspace.onDidRenameFiles((e) => {
@@ -88,11 +90,11 @@ export class MediaLibrary {
     return MediaLibrary.instance;
   }
 
-  public get(id: string): MediaRecord | undefined {
+  public async get(id: string): Promise<MediaRecord | undefined> {
     try {
       const fileId = this.parsePath(id);
-      if (this.db?.exists(fileId)) {
-        return this.db.getData(fileId);
+      if (await this.db?.exists(fileId)) {
+        return await this.db?.getData(fileId);
       }
       return undefined;
     } catch {

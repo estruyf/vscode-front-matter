@@ -16,7 +16,7 @@ for (const key of Object.keys(packageJson.contributes.configuration.properties))
 // frontMatter.content.draftField - object
 // frontMatter.content.supportedFileTypes - array
 // frontMatter.global.notifications - array
-// frontMatter.global.disabledNotificaitons - array
+// frontMatter.global.disabledNotifications - array
 // frontMatter.media.supportedMimeTypes - array
 // frontMatter.taxonomy.commaSeparatedFields - array
 

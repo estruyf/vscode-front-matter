@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import { ViewPanel } from './ViewPanel';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
-import { SENTRY_LINK } from '../constants';
+import { SENTRY_LINK, SentryIgnore } from '../constants';
 import { RecoilRoot } from 'recoil';
 import './styles.css';
 
@@ -40,8 +40,13 @@ if (elm) {
       tracesSampleRate: 0, // No performance tracing required
       release: version || '',
       environment: environment || '',
-      ignoreErrors: ['ResizeObserver loop limit exceeded']
+      ignoreErrors: SentryIgnore
     });
+
+    Sentry.setTag("type", "panel");
+    if (document.body.getAttribute(`data-vscode-theme-id`)) {
+      Sentry.setTag("theme", document.body.getAttribute(`data-vscode-theme-id`));
+    }
   }
 
   render(

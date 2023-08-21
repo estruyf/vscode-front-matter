@@ -1,4 +1,4 @@
-import { ExplorerView } from './../../explorerView/ExplorerView';
+import { PanelProvider } from './../../panelWebView/PanelProvider';
 import { commands, window } from 'vscode';
 import { Dashboard } from '../../commands/Dashboard';
 import { COMMAND_NAME } from '../../constants';
@@ -7,6 +7,7 @@ import { DashboardData, PostMessageData } from '../../models';
 import { Command } from '../../panelWebView/Command';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
+import { Preview } from '../../commands';
 
 export class MediaListener extends BaseListener {
   /**
@@ -26,6 +27,46 @@ export class MediaListener extends BaseListener {
       case CommandToCode.getImageUrl:
         this.generateUrl(msg.payload);
         break;
+      case CommandToCode.processMediaData:
+        this.processMedia(msg.command, msg.payload, msg.requestId);
+        break;
+    }
+  }
+
+  private static processMedia(command: string, payload: any, requestId?: string) {
+    if (!requestId || !payload) {
+      return;
+    }
+
+    const panel = PanelProvider.getInstance();
+
+    if (typeof payload === 'string') {
+      const imagePath = payload;
+      const filePath = window.activeTextEditor?.document.uri.fsPath || Preview.filePath;
+      if (!filePath) {
+        return;
+      }
+
+      const imageAbsPath = imagePath.startsWith('http')
+        ? imagePath
+        : ImageHelper.relToAbs(filePath, imagePath);
+
+      let preview = undefined;
+      if (imageAbsPath) {
+        preview =
+          typeof imageAbsPath === 'string'
+            ? imageAbsPath
+            : panel.getWebview()?.asWebviewUri(imageAbsPath);
+      }
+
+      const imageData = {
+        original: imagePath,
+        absPath: imageAbsPath,
+        webviewUrl: preview ? preview.toString() : null
+      };
+
+      this.sendRequest(command, requestId, imageData);
+      return;
     }
   }
 
@@ -34,7 +75,7 @@ export class MediaListener extends BaseListener {
 
     const imgUrl = ImageHelper.relToAbs(filePath || '', data);
     if (imgUrl) {
-      const viewUrl = ExplorerView.getInstance().getWebview()?.asWebviewUri(imgUrl);
+      const viewUrl = PanelProvider.getInstance().getWebview()?.asWebviewUri(imgUrl);
       if (viewUrl) {
         this.sendMsg(Command.sendMediaUrl, {
           original: data,

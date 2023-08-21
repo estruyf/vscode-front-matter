@@ -7,11 +7,13 @@ import { useRecoilValue } from 'recoil';
 import { GeneralCommands } from '../../../constants';
 import useThemeColors from '../../hooks/useThemeColors';
 import { SettingsSelector } from '../../state';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface ISyncButtonProps { }
 
 export const SyncButton: React.FunctionComponent<ISyncButtonProps> = (
-  props: React.PropsWithChildren<ISyncButtonProps>
+  _: React.PropsWithChildren<ISyncButtonProps>
 ) => {
   const settings = useRecoilValue(SettingsSelector);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -22,7 +24,7 @@ export const SyncButton: React.FunctionComponent<ISyncButtonProps> = (
   };
 
   const messageListener = (message: MessageEvent<EventData<any>>) => {
-    const { command, payload } = message.data;
+    const { command } = message.data;
 
     if (command === GeneralCommands.toWebview.gitSyncingStart) {
       setIsSyncing(true);
@@ -59,7 +61,7 @@ export const SyncButton: React.FunctionComponent<ISyncButtonProps> = (
           className={`w-4 h-4 mr-2 ${isSyncing ? 'animate-reverse-spin' : ''}`}
           aria-hidden="true"
         />
-        <span>Sync</span>
+        <span>{l10n.t(LocalizationKey.commonSync)}</span>
       </button>
     </div>
   );

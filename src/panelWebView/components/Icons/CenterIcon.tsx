@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-export interface ICenterIconProps {}
+export interface ICenterIconProps { }
 
 export const CenterIcon: React.FunctionComponent<ICenterIconProps> = (
   props: React.PropsWithChildren<ICenterIconProps>

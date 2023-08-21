@@ -2,6 +2,8 @@ import * as React from 'react';
 import { FileInfo } from '../../models';
 import { FileItem } from './FileItem';
 import { VsLabel } from './VscodeComponents';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../localization';
 
 export interface IFileListProps {
   folderName: string;
@@ -21,7 +23,7 @@ const FileList: React.FunctionComponent<IFileListProps> = ({
   return (
     <div className={`file_list`}>
       <VsLabel>
-        {folderName} - file{files.length === 1 ? '' : 's'}: {totalFiles}
+        {folderName} - {files.length === 1 ? l10n.t(LocalizationKey.panelFileListLabelSingular) : l10n.t(LocalizationKey.panelFileListLabelPlural)}: {totalFiles}
       </VsLabel>
 
       <ul className="file_list__items">

@@ -7,5 +7,6 @@ export * from './mkdirAsync';
 export * from './readFileAsync';
 export * from './readdirAsync';
 export * from './renameAsync';
+export * from './rmdirAsync';
 export * from './unlinkAsync';
 export * from './writeFileAsync';

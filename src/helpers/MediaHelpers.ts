@@ -147,22 +147,24 @@ export class MediaHelpers {
     const total = files.length;
 
     // Get media set
-    files = files.map((file) => {
-      try {
-        const metadata = MediaLibrary.getInstance().get(file.fsPath);
-        const mimeType = lookup(file.fsPath);
+    files = await Promise.all(
+      files.map(async (file) => {
+        try {
+          const metadata = await MediaLibrary.getInstance().get(file.fsPath);
+          const mimeType = lookup(file.fsPath);
 
-        return {
-          ...file,
-          dimensions:
-            mimeType && mimeType.startsWith('image/') ? imageSize(file.fsPath) : undefined,
-          mimeType: lookup(file.fsPath) || '',
-          ...metadata
-        };
-      } catch (e) {
-        return { ...file };
-      }
-    });
+          return {
+            ...file,
+            dimensions:
+              mimeType && mimeType.startsWith('image/') ? imageSize(file.fsPath) : undefined,
+            mimeType: lookup(file.fsPath) || '',
+            ...metadata
+          };
+        } catch (e) {
+          return { ...file };
+        }
+      })
+    );
     files = files.filter((f) => f.mtime !== undefined);
 
     // Sort the files

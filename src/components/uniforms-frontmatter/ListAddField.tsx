@@ -15,21 +15,17 @@ export type ListAddFieldProps = HTMLFieldProps<
 function ListAdd({ disabled, initialCount, name, readOnly, value, ...props }: ListAddFieldProps) {
   const nameParts = joinName(null, name);
   const parentName = joinName(nameParts.slice(0, -1));
-  const parent = {
-    maxCount: 0,
-    value: [] as ValueType[],
-    ...useField<ParentFieldType, ValueType[]>(
-      parentName,
-      { initialCount },
-      { absoluteName: true }
-    )[0]
-  };
 
-  const limitNotReached = !disabled && !(parent.maxCount <= parent.value.length);
+  const parent = useField<
+    { initialCount?: number; maxCount?: number },
+    unknown[]
+  >(parentName, { initialCount }, { absoluteName: true })[0];
+
+  const limitNotReached = !disabled && !(parent.maxCount! <= parent.value!.length);
 
   function onAction(event: React.KeyboardEvent | React.MouseEvent) {
     if (limitNotReached && !readOnly && (!('key' in event) || event.key === 'Enter')) {
-      parent.onChange(parent.value.concat([value]));
+      parent.onChange(parent.value!.concat([value]));
     }
   }
 

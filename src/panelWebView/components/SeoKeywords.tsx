@@ -2,6 +2,8 @@ import * as React from 'react';
 import { SeoKeywordInfo } from './SeoKeywordInfo';
 import { VsTable, VsTableBody, VsTableHeader, VsTableHeaderCell } from './VscodeComponents';
 import { ErrorBoundary } from '@sentry/react';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../localization';
 
 export interface ISeoKeywordsProps {
   keywords: string[] | null;
@@ -50,12 +52,16 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({
 
   return (
     <div className={`seo__status__keywords`}>
-      <h4>Keywords</h4>
+      <h4>{l10n.t(LocalizationKey.panelSeoKeywordsTitle)}</h4>
 
       <VsTable bordered columns={['30%', 'auto']}>
         <VsTableHeader slot="header">
-          <VsTableHeaderCell className={`table__cell`}>Keyword</VsTableHeaderCell>
-          <VsTableHeaderCell className={`table__cell`}>Details</VsTableHeaderCell>
+          <VsTableHeaderCell className={`table__cell`}>
+            {l10n.t(LocalizationKey.panelSeoKeywordsHeaderKeyword)}
+          </VsTableHeaderCell>
+          <VsTableHeaderCell className={`table__cell`}>
+            {l10n.t(LocalizationKey.panelSeoKeywordsHeaderDetails)}
+          </VsTableHeaderCell>
         </VsTableHeader>
         <VsTableBody slot="body">
           {validateKeywords().map((keyword, index) => {
@@ -70,7 +76,7 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({
 
       {data.wordCount && (
         <div className={`seo__status__note`}>
-          * A keyword density of 1-1.5% is sufficient in most cases.
+          {l10n.t(LocalizationKey.panelSeoKeywordsDensity)}
         </div>
       )}
     </div>

@@ -5,6 +5,8 @@ import { CustomScript } from './CustomScript';
 import { Preview } from './Preview';
 import { SlugAction } from './SlugAction';
 import { StartServerButton } from './StartServerButton';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../localization';
 
 export interface IActionsProps {
   metadata: any;
@@ -20,7 +22,7 @@ const Actions: React.FunctionComponent<IActionsProps> = ({
   }
 
   return (
-    <Collapsible id={`actions`} title="Actions">
+    <Collapsible id={`actions`} title={l10n.t(LocalizationKey.panelActionsTitle)}>
       <div className={`article__actions`}>
         {metadata && metadata.title && <SlugAction />}
 

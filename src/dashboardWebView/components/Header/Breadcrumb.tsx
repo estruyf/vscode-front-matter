@@ -2,15 +2,17 @@ import { CollectionIcon } from '@heroicons/react/outline';
 import { basename, join } from 'path';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { HOME_PAGE_NAVIGATION_ID } from '../../../constants';
+import { HOME_PAGE_NAVIGATION_ID, STATIC_FOLDER_PLACEHOLDER } from '../../../constants';
 import { parseWinPath } from '../../../helpers/parseWinPath';
 import useThemeColors from '../../hooks/useThemeColors';
 import { SearchAtom, SelectedMediaFolderAtom, SettingsAtom } from '../../state';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
-export interface IBreadcrumbProps {}
+export interface IBreadcrumbProps { }
 
 export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (
-  props: React.PropsWithChildren<IBreadcrumbProps>
+  _: React.PropsWithChildren<IBreadcrumbProps>
 ) => {
   const [selectedFolder, setSelectedFolder] = useRecoilState(SelectedMediaFolderAtom);
   const [, setSearchValue] = useRecoilState(SearchAtom);
@@ -90,7 +92,7 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (
             )}
           >
             <CollectionIcon className="flex-shrink-0 h-5 w-5" aria-hidden="true" />
-            <span className="sr-only">Home</span>
+            <span className="sr-only">{l10n.t(LocalizationKey.dashboardHeaderBreadcrumbHome)}</span>
           </button>
         </div>
       </li>
@@ -99,12 +101,11 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (
         <li key={folder} className="flex">
           <div className="flex items-center">
             <svg
-              className={`flex-shrink-0 h-5 w-5 ${
-                getColors(
-                  `text-gray-300 dark:text-whisper-900`,
-                  `text-[var(--vscode-tab-inactiveForeground)]`
-                )
-              }`}
+              className={`flex-shrink-0 h-5 w-5 ${getColors(
+                `text-gray-300 dark:text-whisper-900`,
+                `text-[var(--vscode-tab-inactiveForeground)]`
+              )
+                }`}
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
               viewBox="0 0 20 20"
@@ -115,12 +116,11 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (
 
             <button
               onClick={() => updateFolder(folder)}
-              className={`ml-4 text-sm font-medium ${
-                getColors(
-                  `text-gray-500 hover:text-gray-600 dark:text-whisper-900 dark:hover:text-whisper-500`,
-                  `text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)]`
-                )
-              }`}
+              className={`ml-4 text-sm font-medium ${getColors(
+                `text-gray-500 hover:text-gray-600 dark:text-whisper-900 dark:hover:text-whisper-500`,
+                `text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)]`
+              )
+                }`}
             >
               {basename(folder)}
             </button>

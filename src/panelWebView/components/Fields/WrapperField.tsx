@@ -30,6 +30,9 @@ import {
   CustomField
 } from '.';
 import { fieldWhenClause } from '../../../utils/fieldWhenClause';
+import { ContentTypeRelationshipField } from './ContentTypeRelationshipField';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IWrapperFieldProps {
   field: Field;
@@ -179,7 +182,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           description={field.description}
           value={fieldValue}
           required={!!field.required}
-          format={settings?.date?.format}
+          format={field.dateFormat || settings?.date?.format}
           onChange={(date) => onSendUpdate(field.name, date, parentFields)}
         />
       </FieldBoundary>
@@ -208,6 +211,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
     return (
       <FieldBoundary key={field.name} fieldName={field.title || field.name}>
         <TextField
+          name={field.name}
           label={field.title || field.name}
           description={field.description}
           singleLine={field.single}
@@ -217,6 +221,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           onChange={(value) => onSendUpdate(field.name, value, parentFields)}
           value={(fieldValue as string) || null}
           required={!!field.required}
+          settings={settings}
         />
       </FieldBoundary>
     );
@@ -229,7 +234,6 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
     return (
       <FieldBoundary key={field.name} fieldName={field.title || field.name}>
         <NumberField
-          key={field.name}
           label={field.title || field.name}
           description={field.description}
           options={field.numberOptions}
@@ -427,7 +431,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       </FieldBoundary>
     );
   } else if (field.type === 'block') {
-    const blockData = Object.assign([], parent[field.name]);
+    const fieldData = Object.assign([], parent[field.name]);
 
     return (
       <FieldBoundary key={field.name} fieldName={field.title || field.name}>
@@ -436,7 +440,8 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           description={field.description}
           settings={settings}
           field={field}
-          value={blockData}
+          value={fieldData}
+          blockData={blockData}
           fieldsRenderer={renderFields}
           parentFields={parentFields}
           filePath={metadata.filePath as string}
@@ -474,6 +479,21 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
         />
       </FieldBoundary>
     );
+  } else if (field.type === 'contentRelationship') {
+    return (
+      <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+        <ContentTypeRelationshipField
+          label={field.title || field.name}
+          description={field.description}
+          value={fieldValue as string}
+          required={!!field.required}
+          contentTypeName={field.contentTypeName}
+          contentTypeValue={field.contentTypeValue}
+          multiSelect={field.multiple}
+          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+        />
+      </FieldBoundary>
+    );
   } else if (field.type === 'slug') {
     return (
       <FieldBoundary key={field.name} fieldName={field.title || field.name}>
@@ -488,8 +508,8 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
         />
       </FieldBoundary>
     );
-  } else if (customFields.find(f => f.name === field.type)) {
-    const fieldData = customFields.find(f => f.name === field.type);
+  } else if (field.type === 'customField') {
+    const fieldData = customFields.find(f => f.name === field.customType);
     if (fieldData) {
       return (
         <CustomField
@@ -505,7 +525,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       return null;
     }
   } else {
-    console.warn(`Unknown field type: ${field.type}`);
+    console.warn(l10n.t(LocalizationKey.panelFieldsWrapperFieldUnknown, field.type));
     return null;
   }
 };

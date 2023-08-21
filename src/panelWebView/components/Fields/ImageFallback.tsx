@@ -1,5 +1,7 @@
 import { XCircleIcon } from '@heroicons/react/solid';
 import * as React from 'react';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IImageFallbackProps {
   src: string;
@@ -35,7 +37,7 @@ export const ImageFallback: React.FunctionComponent<IImageFallbackProps> = ({
             color: 'var(--button-secondary-foreground)'
           }}
         >
-          The image couldn't be loaded
+          {l10n.t(LocalizationKey.panelFieldsImageFallbackLabel)}
         </p>
       </div>
     );

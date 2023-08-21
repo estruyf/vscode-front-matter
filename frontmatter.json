@@ -33,7 +33,7 @@
           "type": "string",
           "name": "year",
           "title": "Year",
-          "default": "2022"
+          "default": "{{year}}"
         },
         {
           "type": "string",

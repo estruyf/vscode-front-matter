@@ -52,6 +52,17 @@ const config = [{
     allowedHosts: "all",
     headers: {
       "Access-Control-Allow-Origin": "*",
+    },
+    client: {
+      overlay: {
+        runtimeErrors: (error) => {
+          if (error.message === "ResizeObserver loop limit exceeded") {
+            return false;
+          }
+  
+          return true;
+        }
+      }
     }
   }
 }];

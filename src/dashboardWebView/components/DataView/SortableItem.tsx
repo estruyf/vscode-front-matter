@@ -1,9 +1,11 @@
-import { PencilIcon, SelectorIcon, TrashIcon, XIcon } from '@heroicons/react/outline';
+import { PencilIcon, SelectorIcon, TrashIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { SortableHandle, SortableElement } from 'react-sortable-hoc';
 import useThemeColors from '../../hooks/useThemeColors';
 import { LinkButton } from '../Common/LinkButton';
 import { Alert } from '../Modals/Alert';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface ISortableItemProps {
   value: string;
@@ -52,27 +54,27 @@ export const SortableItem = SortableElement(
 
           <div className={`space-x-2 flex items-center`}>
             <LinkButton
-              title={`Edit "${value}"`}
+              title={l10n.t(LocalizationKey.dashboardDataViewSortableItemEditButtonTitle)}
               onClick={() => onSelectedIndexChange(crntIndex)}>
               <PencilIcon className="w-4 h-4" />
-              <span className="sr-only">Edit</span>
+              <span className="sr-only">{l10n.t(LocalizationKey.commonEdit)}</span>
             </LinkButton>
 
             <LinkButton
-              title={`Delete "${value}"`}
+              title={l10n.t(LocalizationKey.dashboardDataViewSortableItemDeleteButtonTitle)}
               onClick={() => deleteItemConfirm()}>
               <TrashIcon className="w-4 h-4" />
-              <span className="sr-only">Delete</span>
+              <span className="sr-only">{l10n.t(LocalizationKey.commonDelete)}</span>
             </LinkButton>
           </div>
         </li>
 
         {showAlert && (
           <Alert
-            title={`Delete data entry`}
-            description={`Are you sure you want to delete the data entry?`}
-            okBtnText={`Delete`}
-            cancelBtnText={`Cancel`}
+            title={l10n.t(LocalizationKey.dashboardDataViewSortableItemAlertTitle)}
+            description={l10n.t(LocalizationKey.dashboardDataViewSortableItemAlertDescription)}
+            okBtnText={l10n.t(LocalizationKey.commonDelete)}
+            cancelBtnText={l10n.t(LocalizationKey.commonCancel)}
             dismiss={() => setShowAlert(false)}
             trigger={() => {
               setShowAlert(false);

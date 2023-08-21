@@ -6,6 +6,7 @@ export interface Page {
   // Front matter fields
   fmFolder: string;
   fmFilePath: string;
+  fmRelFilePath: string;
   fmFileName: string;
   fmModified: number;
   fmPublished: number | null | undefined;

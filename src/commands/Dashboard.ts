@@ -22,7 +22,8 @@ import {
   ExtensionListener,
   SnippetListener,
   TaxonomyListener,
-  LogListener
+  LogListener,
+  LocalizationListener
 } from '../listeners/dashboard';
 import { MediaListener as PanelMediaListener } from '../listeners/panel';
 import { GitListener, ModeListener } from '../listeners/general';
@@ -166,6 +167,7 @@ export class Dashboard {
     Dashboard.webview.webview.onDidReceiveMessage(async (msg) => {
       Logger.info(`Receiving message from webview: ${msg.command}`);
 
+      LocalizationListener.process(msg);
       DashboardListener.process(msg);
       ExtensionListener.process(msg);
       MediaListener.process(msg);
@@ -186,6 +188,9 @@ export class Dashboard {
    * @returns The webview
    */
   public static getWebview() {
+    if (Dashboard.isDisposed) {
+      return undefined;
+    }
     return Dashboard.webview?.webview;
   }
 
@@ -265,6 +270,14 @@ export class Dashboard {
       }`
     ];
 
+    const frontMatterUri = webView
+      .asWebviewUri(
+        SettingsHelper.projectConfigPath ? Uri.file(SettingsHelper.projectConfigPath) : Uri.file('')
+      )
+      .toString();
+
+    const webviewUrl = frontMatterUri.replace(`/${SettingsHelper.globalFile}`, '');
+
     return `
       <!DOCTYPE html>
       <html lang="en" style="width:100%;height:100%;margin:0;padding:0;">
@@ -280,7 +293,9 @@ export class Dashboard {
       isBeta ? 'BETA' : 'main'
     }" data-version="${version.usedVersion}" style="width:100%;height:100%;margin:0;padding:0;" ${
       version.usedVersion ? '' : `data-showWelcome="true"`
-    } ${experimental ? `data-experimental="${experimental}"` : ''} ></div>
+    } ${
+      experimental ? `data-experimental="${experimental}"` : ''
+    } data-webview-url="${webviewUrl}" ></div>
 
         ${(scriptsToLoad || [])
           .map((script) => {

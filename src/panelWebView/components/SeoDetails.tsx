@@ -7,6 +7,8 @@ import {
   VsTableRow,
   VsTableCell
 } from './VscodeComponents';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../localization';
 
 export interface ISeoDetailsProps {
   allowedLength: number;
@@ -36,7 +38,7 @@ const SeoDetails: React.FunctionComponent<ISeoDetailsProps> = (
       <VsTable bordered>
         <VsTableHeader slot="header">
           <VsTableHeaderCell className={validate()}>{valueTitle}</VsTableHeaderCell>
-          <VsTableHeaderCell>Recommended</VsTableHeaderCell>
+          <VsTableHeaderCell>{l10n.t(LocalizationKey.panelSeoDetailsRecommended)}</VsTableHeaderCell>
         </VsTableHeader>
         <VsTableBody slot="body">
           <VsTableRow>

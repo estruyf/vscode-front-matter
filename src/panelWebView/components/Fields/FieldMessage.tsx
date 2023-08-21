@@ -1,4 +1,6 @@
 import * as React from 'react';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IFieldMessageProps {
   name: string;
@@ -16,7 +18,11 @@ export const FieldMessage: React.FunctionComponent<IFieldMessageProps> = ({
   }
 
   if (showRequired) {
-    return <div className={`metadata_field__required__message`}>The {name} field is required.</div>;
+    return (
+      <div className={`metadata_field__required__message`}>
+        {l10n.t(LocalizationKey.panelFieldsFieldMessageRequired, name)}
+      </div>
+    );
   }
 
   if (description) {

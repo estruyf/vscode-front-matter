@@ -3,16 +3,21 @@ import { basename } from 'path';
 import { commands, FileSystemWatcher, RelativePattern, TextDocument, Uri, workspace } from 'vscode';
 import { Dashboard } from '../../commands/Dashboard';
 import { Folders } from '../../commands/Folders';
-import { COMMAND_NAME, ExtensionState } from '../../constants';
+import {
+  COMMAND_NAME,
+  ExtensionState,
+  SETTING_DASHBOARD_CONTENT_CARD_DESCRIPTION,
+  SETTING_DASHBOARD_CONTENT_CARD_TITLE
+} from '../../constants';
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { Page } from '../../dashboardWebView/models';
-import { ArticleHelper, Extension, Logger } from '../../helpers';
+import { ArticleHelper, Extension, Logger, parseWinPath, Settings } from '../../helpers';
 import { BaseListener } from './BaseListener';
 import { DataListener } from '../panel';
 import Fuse from 'fuse.js';
 import { PagesParser } from '../../services/PagesParser';
-import { unlinkAsync } from '../../utils';
+import { unlinkAsync, rmdirAsync } from '../../utils';
 
 export class PagesListener extends BaseListener {
   private static watchers: { [path: string]: FileSystemWatcher } = {};
@@ -109,9 +114,37 @@ export class PagesListener extends BaseListener {
       return;
     }
 
+    // Get the content type of the page
+    const article = await ArticleHelper.getFrontMatterByPath(path);
+    if (!article) {
+      return;
+    }
+    const contentType = ArticleHelper.getContentType(article.data);
+
     Logger.info(`Deleting file: ${path}`);
 
     await unlinkAsync(path);
+
+    // Check if the content type is a page bundle
+    if (contentType.pageBundle) {
+      const absPath = parseWinPath(path);
+      const folder = absPath.substring(0, absPath.lastIndexOf('/') + 1);
+      try {
+        // Check if the folder is empty
+        const files = await workspace.fs.readDirectory(Uri.file(folder));
+        if (files.length > 0) {
+          // Remove each file
+          for (const file of files) {
+            await unlinkAsync(`${folder}${file[0]}`);
+          }
+        }
+
+        // Delete the folder
+        await rmdirAsync(folder);
+      } catch (e) {
+        console.log((e as any).message);
+      }
+    }
 
     this.lastPages = this.lastPages.filter((p) => p.fmFilePath !== path);
     this.sendPageData(this.lastPages);
@@ -125,35 +158,35 @@ export class PagesListener extends BaseListener {
    * @param file
    */
   private static async watcherExec(file: Uri) {
-    if (Dashboard.isOpen) {
-      const ext = Extension.getInstance();
-      Logger.info(`File watcher execution for: ${file.fsPath}`);
+    const ext = Extension.getInstance();
+    Logger.info(`File watcher execution for: ${file.fsPath}`);
 
-      const pageIdx = this.lastPages.findIndex((p) => p.fmFilePath === file.fsPath);
-      if (pageIdx !== -1) {
-        const stats = await workspace.fs.stat(file);
-        const crntPage = this.lastPages[pageIdx];
-        const updatedPage = await PagesParser.processPageContent(
-          file.fsPath,
-          stats.mtime,
-          basename(file.fsPath),
-          crntPage.fmFolder
-        );
-        if (updatedPage) {
-          this.lastPages[pageIdx] = updatedPage;
+    const pageIdx = this.lastPages.findIndex((p) => p.fmFilePath === file.fsPath);
+    if (pageIdx !== -1) {
+      const stats = await workspace.fs.stat(file);
+      const crntPage = this.lastPages[pageIdx];
+      const updatedPage = await PagesParser.processPageContent(
+        file.fsPath,
+        stats.mtime,
+        basename(file.fsPath),
+        crntPage.fmFolder
+      );
+      if (updatedPage) {
+        this.lastPages[pageIdx] = updatedPage;
+        if (Dashboard.isOpen) {
           this.sendPageData(this.lastPages);
-          await ext.setState(ExtensionState.Dashboard.Pages.Cache, this.lastPages, 'workspace');
         }
-      } else {
-        this.getPagesData(true);
+        await ext.setState(ExtensionState.Dashboard.Pages.Cache, this.lastPages, 'workspace');
       }
+    } else {
+      this.getPagesData(true);
     }
   }
 
   /**
    * Retrieve all the markdown pages
    */
-  private static async getPagesData(clear: boolean = false) {
+  public static async getPagesData(clear: boolean = false, cb?: (pages: Page[]) => void) {
     const ext = Extension.getInstance();
 
     // Get data from the cache
@@ -164,6 +197,10 @@ export class PagesListener extends BaseListener {
       );
       if (cachedPages) {
         this.sendPageData(cachedPages);
+
+        if (cb) {
+          cb(cachedPages);
+        }
       }
     } else {
       PagesParser.reset();
@@ -177,6 +214,10 @@ export class PagesListener extends BaseListener {
 
       await this.createSearchIndex(pages);
       this.sendMsg(DashboardCommand.loading, false);
+
+      if (cb) {
+        cb(pages);
+      }
     });
   }
 
@@ -199,7 +240,7 @@ export class PagesListener extends BaseListener {
    * @param pages
    */
   private static async createSearchIndex(pages: Page[]) {
-    const pagesIndex = Fuse.createIndex(['title', 'slug', 'description', 'fmBody'], pages);
+    const pagesIndex = Fuse.createIndex(['title', 'slug', 'description', 'fmBody', 'type'], pages);
     await Extension.getInstance().setState(
       ExtensionState.Dashboard.Pages.Index,
       pagesIndex,
@@ -211,13 +252,24 @@ export class PagesListener extends BaseListener {
    * Search the pages
    */
   private static async searchPages(data: { query: string }) {
+    const fieldKeys = [
+      { name: 'title', weight: 1 },
+      { name: 'fmBody', weight: 1 },
+      { name: 'slug', weight: 0.5 },
+      { name: 'description', weight: 0.5 }
+    ];
+
+    const cardTitle = Settings.get(SETTING_DASHBOARD_CONTENT_CARD_TITLE);
+    if (cardTitle) {
+      fieldKeys.push({ name: cardTitle as string, weight: 1 });
+    }
+    const cardDescription = Settings.get(SETTING_DASHBOARD_CONTENT_CARD_DESCRIPTION);
+    if (cardTitle) {
+      fieldKeys.push({ name: cardDescription as string, weight: 0.5 });
+    }
+
     const fuseOptions: Fuse.IFuseOptions<Page> = {
-      keys: [
-        { name: 'title', weight: 1 },
-        { name: 'fmBody', weight: 1 },
-        { name: 'slug', weight: 0.5 },
-        { name: 'description', weight: 0.5 }
-      ],
+      keys: fieldKeys,
       includeScore: true,
       ignoreLocation: true,
       threshold: 0.1

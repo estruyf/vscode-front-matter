@@ -17,7 +17,7 @@ export const MenuButton: React.FunctionComponent<IMenuButtonProps> = ({
   const { getColors } = useThemeColors();
 
   return (
-    <div className={`group inline-flex items-center ${disabled ? 'opacity-50' : ''}`}>
+    <div className={`group flex items-center ${disabled ? 'opacity-50' : ''}`}>
       <div className={`mr-2 font-medium flex items-center ${getColors('text-gray-500 dark:text-whisper-700', 'text-[var(--vscode-tab-inactiveForeground)]')}`}>{label}:</div>
 
       <Menu.Button

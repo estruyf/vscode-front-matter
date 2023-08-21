@@ -12,6 +12,8 @@ import { FEATURE_FLAG } from '../../constants/Features';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { GitAction } from './Git/GitAction';
 import { useMemo } from 'react';
+import * as l10n from "@vscode/l10n"
+import { LocalizationKey } from '../../localization';
 
 export interface IBaseViewProps {
   settings: PanelSettings | undefined;
@@ -55,12 +57,32 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({
     return Object.values(FEATURE_FLAG.panel).filter(v => v !== FEATURE_FLAG.panel.globalSettings)
   }, [FEATURE_FLAG.panel]);
 
+  const isSomethingShown = useMemo(() => {
+    const panelModeValues = (mode?.features || []).filter(v => v.startsWith('panel.'));
+
+    if (panelModeValues.length === 0) {
+      return true;
+    }
+
+    if (panelModeValues.includes(FEATURE_FLAG.panel.globalSettings) ||
+      panelModeValues.includes(FEATURE_FLAG.panel.actions) ||
+      panelModeValues.includes(FEATURE_FLAG.panel.recentlyModified) ||
+      panelModeValues.includes(FEATURE_FLAG.panel.otherActions)) {
+      return true;
+    }
+  }, [mode?.features]);
+
   return (
     <div className="frontmatter">
       <div className={`ext_actions`}>
         {!settings?.isInitialized && (
           <div className={`initialize_actions`}>
-            <button onClick={initProject}>Initialize project</button>
+            <button
+              title={l10n.t(LocalizationKey.panelBaseViewInitialize)}
+              onClick={initProject}
+              type={`button`}>
+              {l10n.t(LocalizationKey.panelBaseViewInitialize)}
+            </button>
           </div>
         )}
 
@@ -73,18 +95,38 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({
             </FeatureFlag>
 
             <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.actions}>
-              <Collapsible id={`base_actions`} title="Actions">
+              <Collapsible id={`base_actions`} title={l10n.t(LocalizationKey.panelBaseViewActionsTitle)}>
                 <div className={`base__actions`}>
-                  <button onClick={openDashboard}>Open dashboard</button>
-                  <button onClick={openPreview} disabled={!settings?.preview?.host}>
-                    Open preview
+                  <button
+                    title={l10n.t(LocalizationKey.panelBaseViewActionOpenDashboard)}
+                    onClick={openDashboard}
+                    type={`button`}>
+                    {l10n.t(LocalizationKey.panelBaseViewActionOpenDashboard)}
                   </button>
+
+                  <button
+                    title={l10n.t(LocalizationKey.panelBaseViewActionOpenPreview)}
+                    onClick={openPreview}
+                    disabled={!settings?.preview?.host}
+                    type={`button`}>
+                    {l10n.t(LocalizationKey.panelBaseViewActionOpenPreview)}
+                  </button>
+
                   <StartServerButton settings={settings} />
 
-                  <button onClick={createContent}>Create new content</button>
+                  <button
+                    title={l10n.t(LocalizationKey.panelBaseViewActionCreateContent)}
+                    onClick={createContent}
+                    type={`button`}>
+                    {l10n.t(LocalizationKey.panelBaseViewActionCreateContent)}
+                  </button>
 
                   {customActions.map((script) => (
-                    <button key={script.title} onClick={() => runBulkScript(script)}>
+                    <button
+                      key={script.title}
+                      title={script.title}
+                      type={`button`}
+                      onClick={() => runBulkScript(script)}>
                       {script.title}
                     </button>
                   ))}
@@ -102,6 +144,14 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({
           <OtherActions settings={settings} isFile={false} isBase />
         </FeatureFlag>
       </div>
+
+      {
+        !isSomethingShown && (
+          <div className={`base__empty`}>
+            {l10n.t(LocalizationKey.panelBaseViewEmpty)}
+          </div>
+        )
+      }
 
       <SponsorMsg isBacker={settings?.isBacker} />
     </div>

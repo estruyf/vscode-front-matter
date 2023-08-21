@@ -24,11 +24,14 @@ import {
   SETTING_CONTENT_PAGE_FOLDERS,
   SETTING_DASHBOARD_MEDIA_SNIPPET,
   SETTING_CONTENT_SNIPPETS,
-  SETTING_TEMPLATES_ENABLED
+  SETTING_TEMPLATES_ENABLED,
+  SETTING_TAXONOMY_TAGS,
+  SETTING_TAXONOMY_CATEGORIES
 } from '../constants';
-import { ContentFolder, Snippet } from '../models';
+import { ContentFolder, Snippet, TaxonomyType } from '../models';
 import { Notifications } from './Notifications';
 import { Settings } from './SettingsHelper';
+import { TaxonomyHelper } from './TaxonomyHelper';
 
 export class Extension {
   private static instance: Extension;
@@ -295,6 +298,25 @@ export class Extension {
           answer?.toLocaleLowerCase() === 'yes',
           true
         );
+      }
+    }
+
+    // The tags and categories settings need to be moved to the database
+    const tags = Settings.get<string[]>(SETTING_TAXONOMY_TAGS) || [];
+    const categories = Settings.get<string[]>(SETTING_TAXONOMY_CATEGORIES) || [];
+
+    if (tags.length > 0 || categories.length > 0) {
+      const tagsFromDb = (await TaxonomyHelper.get(TaxonomyType.Tag)) || [];
+      const categoriesFromDb = (await TaxonomyHelper.get(TaxonomyType.Category)) || [];
+
+      if (tagsFromDb.length === 0) {
+        await TaxonomyHelper.update(TaxonomyType.Tag, tags);
+        await Settings.remove(SETTING_TAXONOMY_TAGS);
+      }
+
+      if (categoriesFromDb.length === 0) {
+        await TaxonomyHelper.update(TaxonomyType.Category, categories);
+        await Settings.remove(SETTING_TAXONOMY_CATEGORIES);
       }
     }
   }

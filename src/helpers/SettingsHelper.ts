@@ -52,6 +52,9 @@ export class Settings {
   private static isInitialized: boolean = false;
   private static listeners: any[] = [];
   private static fileCreationWatcher: vscode.FileSystemWatcher | undefined;
+  private static fileChangeWatcher: vscode.FileSystemWatcher | undefined;
+  private static fileSaveListener: vscode.Disposable;
+  private static fileDeleteListener: vscode.Disposable;
   private static readConfigPromise: Promise<void> | undefined = undefined;
   private static project: Project | undefined = undefined;
 
@@ -184,41 +187,58 @@ export class Settings {
 
     // Background listener for when it is not a user interaction
     if (projectConfig && existsSync(projectConfig)) {
-      let watcher = workspace.createFileSystemWatcher(projectConfig, true, false, true);
-      watcher.onDidChange(async (uri: Uri) => {
+      if (Settings.fileChangeWatcher) {
+        Settings.fileChangeWatcher.dispose();
+      }
+
+      Settings.fileChangeWatcher = workspace.createFileSystemWatcher(
+        projectConfig,
+        true,
+        false,
+        true
+      );
+      Settings.fileChangeWatcher.onDidChange(async () => {
         Logger.info(`Config change detected - ${projectConfig} changed`);
         configDebouncer(() => callback(), 200);
-        // callback()
       });
     }
 
-    workspace.onDidSaveTextDocument(async (e) => {
+    const reloadConfig = async (debounced: boolean = true) => {
+      Logger.info(`Reloading config...`);
+      if (Settings.readConfigPromise === undefined) {
+        Settings.readConfigPromise = Settings.readConfig();
+      }
+      await Settings.readConfigPromise;
+
+      Logger.info(`Reloaded config...`);
+      if (debounced) {
+        configDebouncer(() => callback(), 200);
+      } else {
+        callback();
+      }
+    };
+
+    if (Settings.fileSaveListener) {
+      Settings.fileSaveListener.dispose();
+    }
+
+    Settings.fileSaveListener = workspace.onDidSaveTextDocument(async (e) => {
       const filename = e.uri.fsPath;
 
       if (Settings.checkProjectConfig(filename)) {
-        Logger.info(`Config change detected - ${projectConfig} saved`);
-
-        Logger.info(`Reloading config...`);
-        if (Settings.readConfigPromise === undefined) {
-          Settings.readConfigPromise = Settings.readConfig();
-        }
-        await Settings.readConfigPromise;
-
-        Logger.info(`Reloaded config...`);
-        configDebouncer(() => callback(), 200);
+        Logger.info(`Config change detected - ${filename} saved`);
+        await reloadConfig();
       }
     });
 
-    workspace.onDidDeleteFiles(async (e) => {
+    if (Settings.fileDeleteListener) {
+      Settings.fileDeleteListener.dispose();
+    }
+
+    Settings.fileDeleteListener = workspace.onDidDeleteFiles(async (e) => {
       const needCallback = e?.files.find((f) => Settings.checkProjectConfig(f.fsPath));
       if (needCallback) {
-        Logger.info(`Reloading config...`);
-        if (Settings.readConfigPromise === undefined) {
-          Settings.readConfigPromise = Settings.readConfig();
-        }
-        await Settings.readConfigPromise;
-
-        callback();
+        await reloadConfig(false);
       }
     });
   }
@@ -321,6 +341,31 @@ export class Settings {
     await Settings.config.update(name, value);
   }
 
+  public static async remove(name: string) {
+    const fmConfig = Settings.projectConfigPath;
+
+    if (fmConfig && (await existsAsync(fmConfig))) {
+      const localConfig = await readFileAsync(fmConfig, 'utf8');
+      Settings.globalConfig = jsoncParser.parse(localConfig);
+      delete Settings.globalConfig[`${CONFIG_KEY}.${name}`];
+
+      const content = JSON.stringify(Settings.globalConfig, null, 2);
+      await writeFileAsync(fmConfig, content, 'utf8');
+
+      const workspaceSettingValue = Settings.hasWorkspaceSettings<ContentType[]>(name);
+      if (workspaceSettingValue) {
+        await Settings.update(name, undefined);
+      }
+
+      // Make sure to reload the whole config + all the data files
+      await Settings.readConfig();
+
+      return;
+    }
+
+    await Settings.config.update(name, undefined);
+  }
+
   /**
    * Checks if the project contains the frontmatter.json file
    */
@@ -362,42 +407,12 @@ export class Settings {
    *
    * @param type
    */
-  public static getTaxonomy(type: TaxonomyType): string[] {
-    // Add all the known options to the selection list
-    const configSetting =
-      type === TaxonomyType.Tag ? SETTING_TAXONOMY_TAGS : SETTING_TAXONOMY_CATEGORIES;
-    const crntOptions = Settings.get(configSetting, true) as string[];
-    if (crntOptions && crntOptions.length > 0) {
-      return crntOptions;
-    }
-    return [];
-  }
-
-  /**
-   * Return the taxonomy settings
-   *
-   * @param type
-   */
   public static getCustomTaxonomy(type: string): string[] {
     const customTaxs = Settings.get<CustomTaxonomy[]>(SETTING_TAXONOMY_CUSTOM, true);
     if (customTaxs && customTaxs.length > 0) {
       return customTaxs.find((t) => t.id === type)?.options || [];
     }
     return [];
-  }
-
-  /**
-   * Update the taxonomy settings
-   *
-   * @param type
-   * @param options
-   */
-  public static async updateTaxonomy(type: TaxonomyType, options: string[]) {
-    const configSetting =
-      type === TaxonomyType.Tag ? SETTING_TAXONOMY_TAGS : SETTING_TAXONOMY_CATEGORIES;
-    options = [...new Set(options)];
-    options = options.sort().filter((o) => !!o);
-    await Settings.update(configSetting, options, true);
   }
 
   /**

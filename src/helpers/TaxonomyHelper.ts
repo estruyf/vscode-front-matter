@@ -1,5 +1,11 @@
 import { getTaxonomyField } from './getTaxonomyField';
-import { EXTENSION_NAME, SETTING_TAXONOMY_CUSTOM } from '../constants';
+import {
+  EXTENSION_NAME,
+  LocalStore,
+  SETTING_TAXONOMY_CATEGORIES,
+  SETTING_TAXONOMY_CUSTOM,
+  SETTING_TAXONOMY_TAGS
+} from '../constants';
 import { CustomTaxonomy, TaxonomyType, ContentType as IContentType } from '../models';
 import { FilesHelper } from './FilesHelper';
 import { ProgressLocation, window } from 'vscode';
@@ -11,8 +17,106 @@ import { Notifications } from './Notifications';
 import { ArticleHelper } from './ArticleHelper';
 import { ContentType } from './ContentType';
 import { readFileAsync, writeFileAsync } from '../utils';
+import { Config, JsonDB } from 'node-json-db';
+import { Folders } from '../commands';
+import { join } from 'path';
+import { SettingsListener as PanelSettingsListener } from '../listeners/panel';
+import { SettingsListener as DashboardSettingsListener } from '../listeners/dashboard';
 
 export class TaxonomyHelper {
+  private static db: JsonDB;
+
+  /**
+   * Initialize the database
+   * @returns
+   */
+  public static initDb() {
+    const wsFolder = Folders.getWorkspaceFolder();
+    if (!wsFolder) {
+      return;
+    }
+
+    const dbFolder = join(
+      parseWinPath(wsFolder?.fsPath || ''),
+      LocalStore.rootFolder,
+      LocalStore.databaseFolder
+    );
+    const dbPath = join(dbFolder, LocalStore.taxonomyDatabaseFile);
+
+    TaxonomyHelper.db = new JsonDB(new Config(dbPath, true, false, '/'));
+  }
+
+  /**
+   * Get all the taxonomy values
+   */
+  public static async getAll() {
+    if (!TaxonomyHelper.db) {
+      return;
+    }
+
+    const taxonomyData = {
+      tags: (await TaxonomyHelper.get(TaxonomyType.Tag)) || [],
+      categories: (await TaxonomyHelper.get(TaxonomyType.Category)) || [],
+      customTaxonomy: Settings.get<CustomTaxonomy[]>(SETTING_TAXONOMY_CUSTOM) || []
+    };
+
+    return taxonomyData;
+  }
+
+  /**
+   * Get the taxonomy settings
+   *
+   * @param type
+   * @param options
+   */
+  public static async get(type: TaxonomyType): Promise<string[] | undefined> {
+    if (!TaxonomyHelper.db) {
+      return;
+    }
+
+    const tagType = TaxonomyHelper.getTaxonomyDbPath(type);
+
+    let taxonomy: string[] = [];
+    if (await TaxonomyHelper.db.exists(tagType)) {
+      taxonomy = await TaxonomyHelper.db.getObject<string[]>(tagType);
+    }
+    return taxonomy;
+  }
+
+  /**
+   * Update the taxonomy settings
+   *
+   * @param type
+   * @param options
+   */
+  public static async update(type: TaxonomyType, options: string[]) {
+    if (!TaxonomyHelper.db) {
+      return;
+    }
+
+    const tagType = TaxonomyHelper.getTaxonomyDbPath(type);
+
+    options = [...new Set(options)];
+    options = options.sort().filter((o) => !!o);
+
+    await TaxonomyHelper.db.push(tagType, options, true);
+
+    // Trigger the update of the taxonomy
+    PanelSettingsListener.getSettings();
+    DashboardSettingsListener.getSettings(true);
+  }
+
+  /**
+   * Get the Taxonomy path of the db entry
+   * @param type
+   * @returns
+   */
+  public static getTaxonomyDbPath(type: TaxonomyType) {
+    let tagType = type === TaxonomyType.Tag ? SETTING_TAXONOMY_TAGS : SETTING_TAXONOMY_CATEGORIES;
+    tagType = tagType.replace('.', '/');
+    return `/${tagType}`;
+  }
+
   /**
    * Rename an taxonomy value
    * @param data
@@ -56,7 +160,7 @@ export class TaxonomyHelper {
 
     let options = [];
     if (taxonomyType === TaxonomyType.Tag || taxonomyType === TaxonomyType.Category) {
-      options = Settings.getTaxonomy(taxonomyType);
+      options = (await TaxonomyHelper.get(taxonomyType)) || [];
     } else {
       options = Settings.getCustomTaxonomy(taxonomyType);
     }
@@ -114,7 +218,7 @@ export class TaxonomyHelper {
     const { type } = data;
 
     const taxonomyType = this.getTypeFromString(type);
-    const options = this.getTaxonomyOptions(taxonomyType);
+    const options = await this.getTaxonomyOptions(taxonomyType);
 
     const newOption = await window.showInputBox({
       title: `Create a new ${type} value`,
@@ -413,7 +517,7 @@ export class TaxonomyHelper {
     newValue?: string
   ) {
     // Update the settings
-    let options = this.getTaxonomyOptions(taxonomyType);
+    let options = await this.getTaxonomyOptions(taxonomyType);
 
     const idx = options.findIndex((o) => o === oldValue);
     if (newValue) {
@@ -429,7 +533,7 @@ export class TaxonomyHelper {
     }
 
     if (taxonomyType === TaxonomyType.Tag || taxonomyType === TaxonomyType.Category) {
-      await Settings.updateTaxonomy(taxonomyType, options);
+      TaxonomyHelper.update(taxonomyType, options);
     } else {
       await Settings.updateCustomTaxonomyOptions(taxonomyType, options);
     }
@@ -440,11 +544,11 @@ export class TaxonomyHelper {
    * @param taxonomyType
    * @returns
    */
-  private static getTaxonomyOptions(taxonomyType: TaxonomyType | string) {
+  private static async getTaxonomyOptions(taxonomyType: TaxonomyType | string) {
     let options = [];
 
     if (taxonomyType === TaxonomyType.Tag || taxonomyType === TaxonomyType.Category) {
-      options = Settings.getTaxonomy(taxonomyType);
+      options = (await TaxonomyHelper.get(taxonomyType)) || [];
     } else {
       options = Settings.getCustomTaxonomy(taxonomyType);
     }

@@ -9,7 +9,7 @@ import {
 } from './../constants';
 import { commands, Uri, workspace, window } from 'vscode';
 import { basename, dirname, join, relative, sep } from 'path';
-import { ContentFolder, FileInfo, FolderInfo } from '../models';
+import { ContentFolder, FileInfo, FolderInfo, StaticFolder } from '../models';
 import uniqBy = require('lodash.uniqby');
 import { Template } from './Template';
 import { Notifications } from '../helpers/Notifications';
@@ -172,26 +172,32 @@ export class Folders {
    * @returns
    */
   public static getStaticFolderRelativePath(): string | undefined {
-    let staticFolder = Settings.get<string>(SETTING_CONTENT_STATIC_FOLDER);
+    const staticFolder = Settings.get<string | StaticFolder>(SETTING_CONTENT_STATIC_FOLDER);
+
+    let assetFolder: string | undefined;
+
+    if (staticFolder && typeof staticFolder !== 'string' && staticFolder.path) {
+      assetFolder = staticFolder.path;
+    } else if (staticFolder && typeof staticFolder === 'string') {
+      assetFolder = staticFolder;
+    }
 
     if (
-      staticFolder &&
-      (staticFolder.includes(WORKSPACE_PLACEHOLDER) ||
-        staticFolder === '/' ||
-        staticFolder === './')
+      assetFolder &&
+      (assetFolder.includes(WORKSPACE_PLACEHOLDER) || assetFolder === '/' || assetFolder === './')
     ) {
-      staticFolder =
-        staticFolder === '/' || staticFolder === './'
-          ? Folders.getAbsFilePath('[[workspace]]')
-          : Folders.getAbsFilePath(staticFolder);
+      assetFolder =
+        assetFolder === '/' || assetFolder === './'
+          ? Folders.getAbsFilePath(WORKSPACE_PLACEHOLDER)
+          : Folders.getAbsFilePath(assetFolder);
       const wsFolder = Folders.getWorkspaceFolder();
       if (wsFolder) {
-        const relativePath = relative(parseWinPath(wsFolder.fsPath), parseWinPath(staticFolder));
+        const relativePath = relative(parseWinPath(wsFolder.fsPath), parseWinPath(assetFolder));
         return relativePath === '' ? '/' : relativePath;
       }
     }
 
-    return staticFolder;
+    return assetFolder;
   }
 
   /**
@@ -272,26 +278,23 @@ export class Folders {
       for (const folder of folders) {
         try {
           const folderPath = parseWinPath(folder.path);
-          let projectStart = parseWinPath(folder.path).replace(wsFolder, '');
 
-          if (typeof projectStart === 'string') {
-            projectStart = projectStart.replace(/\\/g, '/');
-            projectStart = projectStart.startsWith('/') ? projectStart.substring(1) : projectStart;
-
+          if (typeof folderPath === 'string') {
             let files: Uri[] = [];
 
             for (const fileType of supportedFiles || DEFAULT_FILE_TYPES) {
               let filePath = join(
-                projectStart,
+                folderPath,
                 folder.excludeSubdir ? '/' : '**',
                 `*${fileType.startsWith('.') ? '' : '.'}${fileType}`
               );
 
-              if (projectStart === '' && folder.excludeSubdir) {
+              if (folderPath === '' && folder.excludeSubdir) {
                 filePath = `*${fileType.startsWith('.') ? '' : '.'}${fileType}`;
               }
 
-              let foundFiles = await workspace.findFiles(filePath, '**/node_modules/**');
+              let foundFiles = await Folders.findFiles(filePath);
+
               // Make sure these file are coming from the folder path (this could be an issue in multi-root workspaces)
               foundFiles = foundFiles.filter((f) => parseWinPath(f.fsPath).startsWith(folderPath));
 
@@ -460,7 +463,13 @@ export class Folders {
   private static absWsFolder(folder: ContentFolder, wsFolder?: Uri) {
     const isWindows = process.platform === 'win32';
     let absPath = folder.path.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ''));
+
+    if (absPath.includes('../')) {
+      absPath = join(absPath);
+    }
+
     absPath = isWindows ? absPath.split('/').join('\\') : absPath;
+
     return parseWinPath(absPath);
   }
 
@@ -574,6 +583,20 @@ export class Folders {
         const allFolders = files.map((file) => dirname(file));
         const uniqueFolders = [...new Set(allFolders)];
         resolve(uniqueFolders);
+      });
+    });
+  }
+
+  /**
+   * Find all files
+   * @param pattern
+   * @returns
+   */
+  private static async findFiles(pattern: string): Promise<Uri[]> {
+    return new Promise((resolve) => {
+      glob(pattern, { ignore: '**/node_modules/**' }, (err, files) => {
+        const allFiles = files.map((file) => Uri.file(file));
+        resolve(allFiles);
       });
     });
   }

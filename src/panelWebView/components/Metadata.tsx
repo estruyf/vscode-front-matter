@@ -10,6 +10,8 @@ import { ContentTypeValidator } from './ContentType/ContentTypeValidator';
 import { FeatureFlag } from '../../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../../constants';
 import { Messenger } from '@estruyf/vscode/dist/client';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../localization';
 
 export interface IMetadata {
   [prop: string]: string[] | string | null | IMetadata;
@@ -31,7 +33,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
 }: React.PropsWithChildren<IMetadataProps>) => {
   const contentType = useContentType(settings, metadata);
 
-  const sendUpdate = (field: string | undefined, value: any, parents: string[]) => {
+  const sendUpdate = React.useCallback((field: string | undefined, value: any, parents: string[]) => {
     if (!field) {
       return;
     }
@@ -39,9 +41,10 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
     Messenger.send(CommandToCode.updateMetadata, {
       field,
       parents,
-      value
+      value,
+      filePath: metadata.filePath
     });
-  };
+  }, [metadata.filePath]);
 
   if (!settings) {
     return null;
@@ -86,7 +89,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
   };
 
   return (
-    <Collapsible id={`tags`} title="Metadata" className={`inherit z-20`}>
+    <Collapsible id={`tags`} title={l10n.t(LocalizationKey.panelMetadataTitle)} className={`inherit z-20`}>
       <FeatureFlag features={features || []} flag={FEATURE_FLAG.panel.contentType}>
         <ContentTypeValidator fields={contentType?.fields || []} metadata={metadata} />
       </FeatureFlag>

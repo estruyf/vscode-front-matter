@@ -7,11 +7,13 @@ import { DateField } from '../Common/DateField';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardViewType } from '../../models';
 import { ContentActions } from './ContentActions';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import useThemeColors from '../../hooks/useThemeColors';
 import { Status } from './Status';
 import * as React from 'react';
-import { messageHandler } from '@estruyf/vscode/dist/client';
+import useExtensibility from '../../hooks/useExtensibility';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IItemProps extends Page { }
 
@@ -28,25 +30,56 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const view = useRecoilValue(ViewSelector);
   const settings = useRecoilValue(SettingsSelector);
   const draftField = useMemo(() => settings?.draftField, [settings]);
-  const [imageHtml, setImageHtml] = useState<string | undefined>(undefined);
-  const [footerHtml, setFooterHtml] = useState<string | undefined>(undefined);
+  const cardFields = useMemo(() => settings?.dashboardState?.contents?.cardFields, [settings?.dashboardState?.contents?.cardFields]);
+  const { titleHtml, descriptionHtml, dateHtml, statusHtml, tagsHtml, imageHtml, footerHtml } = useExtensibility({
+    fmFilePath,
+    date,
+    title,
+    description,
+    type,
+    pageData
+  });
   const { getColors } = useThemeColors();
 
   const escapedTitle = useMemo(() => {
-    if (title && typeof title !== 'string') {
-      return '<invalid title>';
+    let value = title;
+
+    if (cardFields?.title) {
+      if (cardFields.title === "description") {
+        value = description;
+      } else if (cardFields?.title !== "title") {
+        value = pageData[cardFields?.title] || title;
+      }
+    } else if (cardFields?.title === null) {
+      return null;
     }
 
-    return title;
-  }, [title]);
+    if (value && typeof value !== 'string') {
+      return l10n.t(LocalizationKey.dashboardContentsItemInvalidTitle);
+    }
+
+    return value;
+  }, [title, description, cardFields?.title, pageData]);
 
   const escapedDescription = useMemo(() => {
-    if (description && typeof description !== 'string') {
-      return '<invalid description>';
+    let value = description;
+
+    if (cardFields?.description) {
+      if (cardFields.description === "title") {
+        value = title;
+      } else if (cardFields?.description !== "description") {
+        value = pageData[cardFields?.description] || description;
+      }
+    } else if (cardFields?.description === null) {
+      return null;
     }
 
-    return description;
-  }, [description]);
+    if (value && typeof value !== 'string') {
+      return l10n.t(LocalizationKey.dashboardContentsItemInvalidDescription);
+    }
+
+    return value;
+  }, [description, title, cardFields?.description, pageData]);
 
   const openFile = () => {
     Messenger.send(DashboardMessage.openFile, fmFilePath);
@@ -77,41 +110,9 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return [];
   }, [settings, pageData]);
 
-  useEffect(() => {
-    if (window.fmExternal && window.fmExternal.getCardFooter) {
-      window.fmExternal.getCardFooter(fmFilePath, {
-        fmFilePath,
-        date,
-        title,
-        description,
-        type,
-        ...pageData
-      }).then(htmlContent => {
-        if (htmlContent) {
-          setFooterHtml(htmlContent);
-        } else {
-          setFooterHtml(undefined);
-        }
-      });
-    }
-
-    if (window.fmExternal && window.fmExternal.getCardImage) {
-      window.fmExternal.getCardImage(fmFilePath, {
-        fmFilePath,
-        date,
-        title,
-        description,
-        type,
-        ...pageData
-      }).then(htmlContent => {
-        if (htmlContent) {
-          setImageHtml(htmlContent);
-        } else {
-          setImageHtml(undefined);
-        }
-      });
-    }
-  }, []);
+  const hasDraftOrDate = useMemo(() => {
+    return cardFields && (cardFields.state || cardFields.date);
+  }, [cardFields]);
 
   if (view === DashboardViewType.Grid) {
     return (
@@ -137,7 +138,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                 pageData[PREVIEW_IMAGE_FIELD] ? (
                   <img
                     src={`${pageData[PREVIEW_IMAGE_FIELD]}`}
-                    alt={escapedTitle}
+                    alt={escapedTitle || ""}
                     className="absolute inset-0 h-full w-full object-cover group-hover:brightness-75"
                     loading="lazy"
                   />
@@ -160,46 +161,77 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           </button>
 
           <div className="relative p-4 w-full grow">
-            <div className={`flex justify-between items-center`}>
-              {draftField && draftField.name && <Status draft={pageData[draftField.name]} />}
+            <div className={`flex justify-between items-center ${hasDraftOrDate ? `mb-2` : ``}`}>
+              {
+                statusHtml ? (
+                  <div dangerouslySetInnerHTML={{ __html: statusHtml }} />
+                ) : (
+                  cardFields?.state && draftField && draftField.name && <Status draft={pageData[draftField.name]} />
+                )
+              }
 
-              <DateField className={`mr-4`} value={date} />
-
-              <ContentActions
-                title={title}
-                path={fmFilePath}
-                scripts={settings?.scripts}
-                onOpen={openFile}
-              />
+              {
+                dateHtml ? (
+                  <div className='mr-4' dangerouslySetInnerHTML={{ __html: dateHtml }} />
+                ) : (
+                  cardFields?.date && <DateField className={`mr-4`} value={date} />
+                )
+              }
             </div>
 
+            <ContentActions
+              title={title}
+              path={fmFilePath}
+              scripts={settings?.scripts}
+              onOpen={openFile}
+            />
+
             <button onClick={openFile} className={`text-left block`}>
-              <h2 className="mt-2 mb-2 font-bold">{escapedTitle}</h2>
+              {
+                titleHtml ? (
+                  <div dangerouslySetInnerHTML={{ __html: titleHtml }} />
+                ) : (
+                  <h2 className="mb-2 font-bold">
+                    {escapedTitle}
+                  </h2>
+                )
+              }
             </button>
 
             <button onClick={openFile} className={`text-left block`}>
-              <p className={`text-xs ${getColors('text-vulcan-200 dark:text-whisper-800', 'text-[vara(--vscode-titleBar-activeForeground)]')}`}>{escapedDescription}</p>
+              {
+                descriptionHtml ? (
+                  <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
+                ) : (
+                  <p className={`text-xs ${getColors('text-vulcan-200 dark:text-whisper-800', 'text-[vara(--vscode-titleBar-activeForeground)]')}`}>{escapedDescription}</p>
+                )
+              }
             </button>
 
-            {tags && tags.length > 0 && (
-              <div className="mt-2">
-                {tags.map(
-                  (tag, index) =>
-                    tag && (
-                      <span
-                        key={index}
-                        className={`inline-block mr-1 mt-1 text-xs ${getColors(
-                          `text-[#5D561D] dark:text-[#F0ECD0]`,
-                          `text-[var(--vscode-textPreformat-foreground)]`
-                        )
-                          }`}
-                      >
-                        #{tag}
-                      </span>
-                    )
-                )}
-              </div>
-            )}
+            {
+              tagsHtml ? (
+                <div className="mt-2" dangerouslySetInnerHTML={{ __html: tagsHtml }} />
+              ) : (
+                tags && tags.length > 0 && (
+                  <div className="mt-2">
+                    {tags.map(
+                      (tag, index) => tag && (
+                        <span
+                          key={index}
+                          className={`inline-block mr-1 mt-1 text-xs ${getColors(
+                            `text-[#5D561D] dark:text-[#F0ECD0]`,
+                            `text-[var(--vscode-textPreformat-foreground)]`
+                          )
+                            }`}
+                        >
+                          #{tag}
+                        </span>
+                      )
+                    )}
+                  </div>
+                )
+              )
+            }
           </div>
 
           {
@@ -226,7 +258,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             </button>
 
             <ContentActions
-              title={escapedTitle}
+              title={escapedTitle || ""}
               path={fmFilePath}
               scripts={settings?.scripts}
               onOpen={openFile}

@@ -7,6 +7,8 @@ import { VsLabel } from './VscodeComponents';
 import useStartCommand from '../hooks/useStartCommand';
 import { VSCodeCheckbox } from '@vscode/webview-ui-toolkit/react';
 import { Messenger } from '@estruyf/vscode/dist/client';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../localization';
 
 export interface IGlobalSettingsProps {
   settings: PanelSettings | undefined;
@@ -73,34 +75,42 @@ const GlobalSettings: React.FunctionComponent<IGlobalSettingsProps> = ({
       <Collapsible
         id={`${isBase ? 'base_' : ''}settings`}
         className={`base__actions`}
-        title="Global settings"
+        title={l10n.t(LocalizationKey.panelGlobalSettingsTitle)}
       >
         <div className={`base__action`}>
-          <VsLabel>Modified date</VsLabel>
+          <VsLabel>
+            {l10n.t(LocalizationKey.panelGlobalSettingsActionModifiedDateLabel)}
+          </VsLabel>
           <VSCodeCheckbox checked={modifiedDateUpdate} onClick={onDateCheck}>
-            Auto-update modified date
+            {l10n.t(LocalizationKey.panelGlobalSettingsActionModifiedDateDescription)}
           </VSCodeCheckbox>
         </div>
         <div className={`base__action`}>
-          <VsLabel>Front Matter highlight</VsLabel>
+          <VsLabel>
+            {l10n.t(LocalizationKey.panelGlobalSettingsActionFrontMatterLabel)}
+          </VsLabel>
           <VSCodeCheckbox checked={fmHighlighting} onClick={onHighlightCheck}>
-            Highlight Front Matter
+            {l10n.t(LocalizationKey.panelGlobalSettingsActionFrontMatterDescription)}
           </VSCodeCheckbox>
         </div>
         <div className={`base__action`}>
-          <VsLabel>Local preview</VsLabel>
+          <VsLabel>
+            {l10n.t(LocalizationKey.panelGlobalSettingsActionPreviewLabel)}
+          </VsLabel>
           <input
             type={`text`}
-            placeholder="Example: http://localhost:1313"
+            placeholder={l10n.t(LocalizationKey.dashboardPreviewInputPlaceholder, `http://localhost:1313`)}
             value={previewUrl}
             onChange={previewChange}
           />
         </div>
         <div className={`base__action`}>
-          <VsLabel>Local server command</VsLabel>
+          <VsLabel>
+            {l10n.t(LocalizationKey.panelGlobalSettingsActionServerLabel)}
+          </VsLabel>
           <input
             type={`text`}
-            placeholder="Example: hugo server -D"
+            placeholder={l10n.t(LocalizationKey.panelGlobalSettingsActionServerPlaceholder, `hugo server -D`)}
             value={startCommandValue || ''}
             onChange={updateStartCommand}
           />

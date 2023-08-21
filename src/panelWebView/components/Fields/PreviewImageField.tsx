@@ -1,13 +1,15 @@
-import { Messenger } from '@estruyf/vscode/dist/client';
+import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import { PhotographIcon } from '@heroicons/react/outline';
 import * as React from 'react';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { DefaultFieldValues } from '../../../constants';
 import { BaseFieldProps, BlockFieldData } from '../../../models';
 import { CommandToCode } from '../../CommandToCode';
 import { FieldTitle } from './FieldTitle';
 import { PreviewImage } from './PreviewImage';
 import { FieldMessage } from './FieldMessage';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface PreviewImageValue {
   original: string;
@@ -15,7 +17,7 @@ export interface PreviewImageValue {
 }
 
 export interface IPreviewImageFieldProps
-  extends BaseFieldProps<PreviewImageValue | PreviewImageValue[] | null> {
+  extends BaseFieldProps<PreviewImageValue | PreviewImageValue[] | string[] | null> {
   fieldName: string;
   filePath: string | null;
   parents?: string[];
@@ -36,6 +38,8 @@ export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps>
   parents,
   required
 }: React.PropsWithChildren<IPreviewImageFieldProps>) => {
+  const [imageData, setImageData] = React.useState<PreviewImageValue | PreviewImageValue[] | null>(null);
+
   const selectImage = useCallback(() => {
     Messenger.send(CommandToCode.selectImage, {
       filePath: filePath,
@@ -47,15 +51,15 @@ export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps>
       blockData,
       type: 'media'
     });
-  }, [filePath, fieldName, value, multiple, parents]);
+  }, [filePath, fieldName, multiple, parents, value]);
 
-  const onImageRemove = (imageToRemove: string) => {
+  const onImageRemove = useCallback((imageToRemove: string) => {
     const newValue =
-      value && Array.isArray(value)
-        ? value.filter((image) => image.original !== imageToRemove).map((i) => i.original)
+      imageData && Array.isArray(imageData)
+        ? imageData.filter((image) => image.original !== imageToRemove).map((i) => i.original)
         : null;
     onChange(newValue);
-  };
+  }, [imageData]);
 
   const isFaultyImage = useMemo(() => {
     return typeof value === 'string' && value === DefaultFieldValues.faultyCustomPlaceholder;
@@ -65,39 +69,67 @@ export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps>
     return required && (isFaultyImage || !value);
   }, [required, value, isFaultyImage]);
 
+  useEffect(() => {
+    if (typeof value === 'string') {
+      messageHandler.request<PreviewImageValue>(CommandToCode.processMediaData, value).then((data) => {
+        setImageData(data);
+      });
+    } else if (Array.isArray(value)) {
+      Promise.all(
+        value.map((v) => {
+          if (typeof v === 'string') {
+            return messageHandler.request<PreviewImageValue>(CommandToCode.processMediaData, v);
+          } else {
+            return Promise.resolve(v);
+          }
+        })
+      ).then((data) => {
+        setImageData(data);
+      });
+    } else if (!value) {
+      setImageData(multiple ? [] : null);
+    } else {
+      setImageData(value);
+    }
+  }, [value, multiple]);
+
   return (
     <div className={`metadata_field`}>
       <FieldTitle label={label} icon={<PhotographIcon />} required={required} />
 
       <div
-        className={`metadata_field__preview_image ${
-          multiple && value && (value as PreviewImageValue[]).length > 0
-            ? `metadata_field__multiple_images`
-            : ''
-        } ${showRequiredState ? 'required' : ''}`}
+        className={`metadata_field__preview_image ${multiple && imageData && (imageData as PreviewImageValue[]).length > 0
+          ? `metadata_field__multiple_images`
+          : ''
+          } ${showRequiredState ? 'required' : ''}`}
       >
-        {(!value || isFaultyImage || multiple) && (
+        {(!imageData || isFaultyImage || multiple) && (
           <button
             className={`metadata_field__preview_image__button`}
-            title={`Add your ${label?.toLowerCase() || 'image'}`}
+            title={l10n.t(LocalizationKey.panelFieldsPreviewImageFieldAdd, (label?.toLowerCase() || 'image'))}
             type="button"
             onClick={selectImage}
           >
             <PhotographIcon />
-            <span>Add your {label?.toLowerCase() || 'image'}</span>
+            <span>
+              {l10n.t(LocalizationKey.panelFieldsPreviewImageFieldAdd, (label?.toLowerCase() || 'image'))}
+            </span>
           </button>
         )}
 
-        {value && !Array.isArray(value) && !isFaultyImage && (
-          <PreviewImage value={value} onRemove={() => onChange(null)} />
+        {imageData && !Array.isArray(imageData) && !isFaultyImage && (
+          <PreviewImage value={imageData} onRemove={() => onChange(null)} />
         )}
 
         {multiple &&
-          value &&
-          Array.isArray(value) &&
+          imageData &&
+          Array.isArray(imageData) &&
           !isFaultyImage &&
-          value.map((image) => (
-            <PreviewImage key={image.original} value={image} onRemove={onImageRemove} />
+          imageData.map((image) => (
+            <PreviewImage
+              key={image.original}
+              value={image}
+              onRemove={() => onImageRemove(image.original)} />
           ))}
       </div>
 

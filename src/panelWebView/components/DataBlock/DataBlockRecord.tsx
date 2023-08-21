@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { PencilIcon, SelectorIcon, TrashIcon } from '@heroicons/react/outline';
 import { SortableHandle, SortableElement } from 'react-sortable-hoc';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
+
 export interface IDataBlockRecordProps {
   id: number;
   index: number;
@@ -30,20 +33,20 @@ export const DataBlockRecord = SortableElement(
 
         <div>
           <button
-            title="Edit record"
+            title={l10n.t(LocalizationKey.panelDataBlockDataBlockRecordEdit)}
             className="json_data__list__button json_data__list__button_edit"
             onClick={() => onEdit(id)}
           >
             <PencilIcon className="json_data__list__button_icon" />
-            <span className="sr-only">Edit</span>
+            <span className="sr-only">{l10n.t(LocalizationKey.commonEdit)}</span>
           </button>
           <button
-            title="Delete record"
+            title={l10n.t(LocalizationKey.panelDataBlockDataBlockRecordDelete)}
             className="json_data__list__button json_data__list__button_delete"
             onClick={() => onDelete(id)}
           >
             <TrashIcon className="json_data__list__button_icon" />
-            <span className="sr-only">Delete</span>
+            <span className="sr-only">{l10n.t(LocalizationKey.commonDelete)}</span>
           </button>
         </div>
       </li>

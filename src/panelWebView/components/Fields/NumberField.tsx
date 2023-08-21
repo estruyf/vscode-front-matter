@@ -1,6 +1,6 @@
 import { CalculatorIcon } from '@heroicons/react/outline';
 import * as React from 'react';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { BaseFieldProps, NumberOptions } from '../../../models';
 import { FieldTitle } from './FieldTitle';
 import { FieldMessage } from './FieldMessage';
@@ -20,7 +20,7 @@ export const NumberField: React.FunctionComponent<INumberFieldProps> = ({
 }: React.PropsWithChildren<INumberFieldProps>) => {
   const [nrValue, setNrValue] = React.useState<number | null>(value);
 
-  const onValueChange = useCallback((txtValue: string) => {
+  const onValueChange = (txtValue: string) => {
     let newValue: number | null = options?.isDecimal ? parseFloat(txtValue) : parseInt(txtValue);
     if (isNaN(newValue)) {
       newValue = null;
@@ -28,7 +28,7 @@ export const NumberField: React.FunctionComponent<INumberFieldProps> = ({
 
     setNrValue(newValue);
     onChange(newValue);
-  }, [options?.isDecimal]);
+  };
 
   const showRequiredState = useMemo(() => {
     return required && (nrValue === null || nrValue === undefined);

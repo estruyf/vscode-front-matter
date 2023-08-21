@@ -1,5 +1,5 @@
 import { Extension } from './../../helpers/Extension';
-import { ExplorerView } from './../../explorerView/ExplorerView';
+import { PanelProvider } from './../../panelWebView/PanelProvider';
 import { Logger } from '../../helpers';
 import { Command } from '../../panelWebView/Command';
 import { PostMessageData } from '../../models';
@@ -16,11 +16,37 @@ export abstract class BaseListener {
     Logger.info(`Sending message to panel: ${command}`);
 
     const extPath = Extension.getInstance().extensionPath;
-    const panel = ExplorerView.getInstance(extPath);
+    const panel = PanelProvider.getInstance(extPath);
 
     panel.sendMessage({
       command,
       payload
+    });
+  }
+
+  public static sendRequest(command: string, requestId: string, payload: any) {
+    Logger.info(`Sending request result to panel: ${command}`);
+
+    const extPath = Extension.getInstance().extensionPath;
+    const panel = PanelProvider.getInstance(extPath);
+
+    panel.getWebview()?.postMessage({
+      command,
+      requestId,
+      payload
+    });
+  }
+
+  public static sendRequestError(command: string, requestId: string, error: any) {
+    Logger.info(`Sending request error to the panel: ${command}`);
+
+    const extPath = Extension.getInstance().extensionPath;
+    const panel = PanelProvider.getInstance(extPath);
+
+    panel.getWebview()?.postMessage({
+      command,
+      requestId,
+      error
     });
   }
 }

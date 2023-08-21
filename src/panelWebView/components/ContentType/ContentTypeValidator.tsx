@@ -6,13 +6,15 @@ import { Field } from '../../../models';
 import { CommandToCode } from '../../CommandToCode';
 import { IMetadata } from '../Metadata';
 import { VsLabel } from '../VscodeComponents';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IContentTypeValidatorProps {
   fields: Field[];
   metadata: IMetadata;
 }
 
-const fieldsToIgnore = [`filePath`, `articleDetails`, `slug`, `keywords`];
+const fieldsToIgnore = [`filePath`, `articleDetails`, `slug`, `keywords`, `type`];
 
 export const ContentTypeValidator: React.FunctionComponent<IContentTypeValidatorProps> = ({
   fields,
@@ -64,29 +66,27 @@ export const ContentTypeValidator: React.FunctionComponent<IContentTypeValidator
             />
           </svg>
 
-          <span>Content-type</span>
+          <span>
+            {l10n.t(LocalizationKey.panelContentTypeContentTypeValidatorTitle)}
+          </span>
         </div>
       </VsLabel>
 
-      <p className="inline_hint">
-        We noticed field differences between the content-type and the front matter data.
-      </p>
 
-      <p className="inline_hint">
-        Would you like to create, update, or set the content-type for this content?
-      </p>
+      {l10n.t(LocalizationKey.panelContentTypeContentTypeValidatorHint).split(`\n`).map(s => (<p className="inline_hint" key={s}>{s}</p>))}
+
 
       <div className="hint__buttons">
         <VSCodeButton appearance={`secondary`} onClick={generateContentType}>
-          Create content-type
+          {l10n.t(LocalizationKey.panelContentTypeContentTypeValidatorButtonCreate)}
         </VSCodeButton>
 
         <VSCodeButton appearance={`secondary`} onClick={addMissingFields}>
-          Add missing fields to content-type
+          {l10n.t(LocalizationKey.panelContentTypeContentTypeValidatorButtonAdd)}
         </VSCodeButton>
 
         <VSCodeButton appearance={`secondary`} onClick={setContentType}>
-          Change content-type of the file
+          {l10n.t(LocalizationKey.panelContentTypeContentTypeValidatorButtonChange)}
         </VSCodeButton>
       </div>
 

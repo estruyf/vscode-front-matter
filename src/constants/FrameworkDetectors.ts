@@ -3,7 +3,7 @@ export const FrameworkDetectors = [
     framework: {
       name: 'astro',
       dist: 'dist',
-      static: 'public',
+      static: ['public', 'src/assets'],
       build: 'npm run build',
       server: 'http://localhost:3000'
     },

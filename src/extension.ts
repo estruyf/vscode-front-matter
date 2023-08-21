@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { COMMAND_NAME, TelemetryEvent } from './constants';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
 import { TagType } from './panelWebView/TagType';
-import { ExplorerView } from './explorerView/ExplorerView';
+import { PanelProvider } from './panelWebView/PanelProvider';
 import { DashboardSettings, debounceCallback, Logger, Settings as SettingsHelper } from './helpers';
 import ContentProvider from './providers/ContentProvider';
 import { PagesListener } from './listeners/dashboard';
@@ -13,6 +13,7 @@ import { ModeSwitch } from './services/ModeSwitch';
 import { PagesParser } from './services/PagesParser';
 import { ContentType, Telemetry, Extension } from './helpers';
 import { TaxonomyType, DashboardData } from './models';
+import * as l10n from '@vscode/l10n';
 import {
   Backers,
   Diagnostics,
@@ -40,6 +41,17 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const extension = Extension.getInstance(context);
   Backers.init(context).then(() => {});
+
+  // Make sure the EN language file is loaded
+  if (!vscode.l10n.uri) {
+    l10n.config({
+      fsPath: vscode.Uri.parse(`${extensionPath}/l10n/bundle.l10n.json`).fsPath
+    });
+  } else {
+    l10n.config({
+      fsPath: vscode.l10n.uri.fsPath
+    });
+  }
 
   if (!extension.checkIfExtensionCanRun()) {
     return undefined;
@@ -112,9 +124,9 @@ export async function activate(context: vscode.ExtensionContext) {
   }
 
   // Register the explorer view
-  const explorerSidebar = ExplorerView.getInstance(extensionUri);
-  const explorerView = vscode.window.registerWebviewViewProvider(
-    ExplorerView.viewType,
+  const explorerSidebar = PanelProvider.getInstance(extensionUri);
+  const PanelView = vscode.window.registerWebviewViewProvider(
+    PanelProvider.viewType,
     explorerSidebar,
     {
       webviewOptions: {
@@ -252,7 +264,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // Collapse all sections in the webview
   const collapseAll = vscode.commands.registerCommand(COMMAND_NAME.collapseSections, () => {
-    ExplorerView.getInstance()?.collapseAll();
+    PanelProvider.getInstance()?.collapseAll();
   });
 
   // Things to do when configuration changes
@@ -358,7 +370,7 @@ export async function activate(context: vscode.ExtensionContext) {
   // Subscribe all commands
   subscriptions.push(
     insertTags,
-    explorerView,
+    PanelView,
     insertCategories,
     createTag,
     createCategory,

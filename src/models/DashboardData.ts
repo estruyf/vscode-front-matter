@@ -13,6 +13,8 @@ export interface ViewData {
   position?: Position;
   fileTitle?: string;
   selection?: string;
+  range?: SnippetRange;
+  snippetInfo?: SnippetInfo;
   pageBundle?: boolean;
   metadataInsert?: boolean;
   blockData?: BlockFieldData;
@@ -23,4 +25,19 @@ export interface ViewData {
   // File fields
   type: 'file' | 'media';
   fileExtensions?: string[];
+}
+
+export interface SnippetRange {
+  start: Position;
+  end: Position;
+}
+
+export interface SnippetInfo {
+  id: string;
+  fields: SnippetInfoField[];
+}
+
+export interface SnippetInfoField {
+  name: string;
+  value: string;
 }

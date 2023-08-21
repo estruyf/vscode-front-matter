@@ -16,11 +16,13 @@ import { FormDialog } from '../Modals/FormDialog';
 import { SponsorMsg } from '../Layout/SponsorMsg';
 import { Item } from './Item';
 import { NewForm } from './NewForm';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface ISnippetsProps { }
 
 export const Snippets: React.FunctionComponent<ISnippetsProps> = (
-  props: React.PropsWithChildren<ISnippetsProps>
+  _: React.PropsWithChildren<ISnippetsProps>
 ) => {
   const settings = useRecoilValue(SettingsSelector);
   const viewData = useRecoilValue(ViewDataSelector);
@@ -51,8 +53,6 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
       // Contains in key or description, values included in key are ranked higher (sort and fuzzy search)
       return keyValue.includes(value) || descriptionValue.includes(value);
     });
-
-
   }, [settings?.snippets, snippetFilter, viewData?.data?.filePath]);
 
   const onSnippetAdd = useCallback(() => {
@@ -94,10 +94,10 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
           <div
             className={`py-3 px-4 flex items-center justify-between border-b ${getColors(`border-gray-300 dark:border-vulcan-100`, `border-[var(--frontmatter-border)]`)
               }`}
-            aria-label="snippets header"
+            aria-label={l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsAriaLabel)}
           >
             <FilterInput
-              placeholder="Search"
+              placeholder={l10n.t(LocalizationKey.commonSearch)}
               isReady={true}
               autoFocus={(snippetKeys && snippetKeys.length > 0)}
               value={snippetFilter}
@@ -112,11 +112,13 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
                   `text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`
                 )
                   }`}
-                title={`Create new snippet`}
+                title={l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsButtonCreate)}
                 onClick={() => setShowCreateDialog(true)}
               >
                 <PlusSmIcon className={`mr-2 h-6 w-6`} />
-                <span className={`text-sm`}>Create new snippet</span>
+                <span className={`text-sm`}>
+                  {l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsButtonCreate)}
+                </span>
               </button>
             </div>
           </div>
@@ -126,7 +128,9 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
       <div className="flex flex-col h-full">
         {viewData?.data?.filePath && (
           <div className={`text-xl text-center mb-6`}>
-            <p>Select the snippet to add to your content.</p>
+            <p>
+              {l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsSelectDescription)}
+            </p>
           </div>
         )}
 
@@ -144,14 +148,16 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
             <div className={`flex flex-col items-center ${getColors('text-gray-500 dark:text-whisper-900', 'text-[var(--frontmatter-text)]')
               }`}>
               <CodeIcon className="w-32 h-32" />
-              <p className="text-3xl mt-2">No snippets found</p>
+              <p className="text-3xl mt-2">
+                {l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsEmptyMessage)}
+              </p>
               <p className="text-xl mt-4">
                 <a
                   className={getColors(`text-teal-700 hover:text-teal-900`, `text-[var(--frontmatter-link)] hover:text-[var(--frontmatter-link-hover)]`)}
                   href={`https://frontmatter.codes/docs/snippets`}
-                  title={`Read more to get started with snippets`}
+                  title={l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsReadMore)}
                 >
-                  Read more to get started with snippets
+                  {l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsReadMore)}
                 </a>
               </p>
             </div>
@@ -160,13 +166,13 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
 
         {showCreateDialog && (
           <FormDialog
-            title={`Create a snippet`}
+            title={l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsFormDialogTitle)}
             description={``}
             isSaveDisabled={!snippetTitle || !snippetBody}
             trigger={onSnippetAdd}
             dismiss={reset}
-            okBtnText="Save"
-            cancelBtnText="Cancel"
+            okBtnText={l10n.t(LocalizationKey.commonSave)}
+            cancelBtnText={l10n.t(LocalizationKey.commonCancel)}
           >
             <NewForm
               title={snippetTitle}

@@ -7,6 +7,8 @@ import { SortEnd } from 'react-sortable-hoc';
 import { arrayMoveImmutable } from 'array-move';
 import { IMetadata } from '../Metadata';
 import { FieldTitle } from '../Fields/FieldTitle';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IDataBlockFieldProps {
   label: string;
@@ -15,6 +17,7 @@ export interface IDataBlockFieldProps {
   field: Field;
   parentFields: string[];
   value: any;
+  blockData: BlockFieldData | undefined;
   filePath: string;
   fieldsRenderer: (
     ctFields: Field[],
@@ -37,6 +40,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
   field,
   parentFields = [],
   value,
+  blockData,
   fieldsRenderer,
   onSubmit,
   parentBlock,
@@ -91,7 +95,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
       // Delete the field group to have it added at the end
       delete data['fieldGroup'];
 
-      if (selectedIndex !== null && selectedIndex !== undefined) {
+      if (selectedIndex !== null && selectedIndex !== undefined && dataClone.length > 0) {
         dataClone[selectedIndex] = {
           ...data,
           fieldGroup: selectedGroup?.id
@@ -238,6 +242,20 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
     [SELECTION_STATE_KEY]
   );
 
+  const getSelectedIndex = useCallback(() => {
+    let crntValue = [];
+
+    if (blockData?.selectedIndex !== null && blockData?.selectedIndex !== undefined) {
+      crntValue.push(blockData.selectedIndex);
+    }
+
+    if (selectedIndex !== null && selectedIndex !== undefined) {
+      crntValue.push(selectedIndex);
+    }
+
+    return crntValue.join('.');
+  }, [blockData, selectedIndex]);
+
   useEffect(() => {
     if (selectedIndex !== null) {
       const fieldData = value[selectedIndex];
@@ -273,9 +291,9 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
           <h3>
             {selectedGroup?.id
               ? selectedIndex !== null
-                ? `Editing: ${selectedGroup.id} ${selectedIndex + 1}`
-                : `Create a new ${selectedGroup?.id}`
-              : `Select a group`}
+                ? l10n.t(LocalizationKey.panelDataBlockDataBlockFieldGroupSelectedEdit, `${selectedGroup.id} ${selectedIndex + 1}`)
+                : l10n.t(LocalizationKey.panelDataBlockDataBlockFieldGroupSelectedCreate, selectedGroup?.id)
+              : l10n.t(LocalizationKey.panelDataBlockDataBlockFieldGroupSelect)}
           </h3>
 
           <DataBlockSelector
@@ -293,7 +311,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
               {
                 parentFields: [...parentFields, field.name],
                 blockType: selectedGroup?.id || undefined,
-                selectedIndex: selectedIndex === null ? undefined : selectedIndex
+                selectedIndex: getSelectedIndex()
               },
               onFieldUpdate,
               `${field.name}-${selectedGroup?.id}-${selectedIndex || 0}`
@@ -302,23 +320,23 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
           <div className={`block_field__form__buttons`}>
             <button
               className={`block_field__form__button__save`}
-              title={`Save`}
+              title={l10n.t(LocalizationKey.commonSave)}
               onClick={onSaveForm}
             >
-              Save
+              {l10n.t(LocalizationKey.commonSave)}
             </button>
             <button
               className={`block_field__form__button__cancel`}
-              title={`Cancel`}
+              title={l10n.t(LocalizationKey.commonCancel)}
               onClick={onCancelForm}
             >
-              Cancel
+              {l10n.t(LocalizationKey.commonCancel)}
             </button>
           </div>
         </div>
       ) : (
-        <button title={`Add ${field.name}`} onClick={onShowForm}>
-          Add {field.name}
+        <button title={l10n.t(LocalizationKey.panelDataBlockDataBlockFieldAdd, field.name)} onClick={onShowForm}>
+          {l10n.t(LocalizationKey.panelDataBlockDataBlockFieldAdd, field.name)}
         </button>
       )}
 

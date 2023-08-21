@@ -286,6 +286,7 @@ button {
 /* Metadata section - Content type */
 .metadata_field {
   margin-bottom: 1rem;
+  position: relative;
 }
 
 .metadata_field__label {
@@ -293,6 +294,10 @@ button {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0.5rem;
+
+  &.metadata_field__alert {
+    justify-content: flex-start;
+  }
 
   div {
     display: flex;
@@ -323,6 +328,15 @@ button {
     svg {
       margin-right: 0;
     }
+  }
+}
+
+.metadata_field__wrapper {
+  position: relative;
+  height: 50px;
+
+  .metadata_field__loading {
+    top: 0;
   }
 }
 
@@ -1088,4 +1102,18 @@ vscode-divider {
       outline: none;
     }
   }
+}
+
+/* Empty base view */
+.base__empty {
+  display: flex;
+  color: var(--vscode-foreground);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 2em;
+  opacity: 0.8;
+  text-align: center;
+  padding: 1rem 1.25rem;
 }

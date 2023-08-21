@@ -24,6 +24,8 @@ import { Alert } from '../Modals/Alert';
 import { FormDialog } from '../Modals/FormDialog';
 import { NewForm } from './NewForm';
 import SnippetForm, { SnippetFormHandle } from './SnippetForm';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IItemProps {
   snippetKey: string;
@@ -32,7 +34,7 @@ export interface IItemProps {
 
 export const Item: React.FunctionComponent<IItemProps> = ({
   snippetKey,
-  snippet
+  snippet,
 }: React.PropsWithChildren<IItemProps>) => {
   const viewData = useRecoilValue(ViewDataSelector);
   const settings = useRecoilValue(SettingsSelector);
@@ -143,6 +145,22 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     setShowAlert(false);
   }, [settings?.snippets, snippetKey]);
 
+  React.useEffect(() => {
+    if (viewData?.data?.snippetInfo?.id && snippetKey && viewData.data.snippetInfo.id === snippetKey) {
+      if (snippet) {
+        setSnippetTitle(snippet.title || viewData?.data?.snippetInfo?.id);
+        setSnippetDescription(snippet.description);
+        setSnippetOriginalBody(
+          typeof snippet.body === 'string'
+            ? snippet.body
+            : snippet.body.join(`\n`)
+        );
+        setMediaSnippet(!!snippet.isMediaSnippet);
+        setShowInsertDialog(true);
+      }
+    }
+  }, [viewData?.data?.snippetInfo?.id, snippetKey, snippet]);
+
   return (
     <>
       <li className={`group relative overflow-hidden shadow-md hover:shadow-xl dark:shadow-none border p-4 space-y-2 rounded ${getColors(
@@ -187,7 +205,9 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                   </div>
 
                   <div className="hidden group-hover:flex">
-                    <QuickAction title={`Insert snippet`} onClick={() => setShowInsertDialog(true)}>
+                    <QuickAction
+                      title={l10n.t(LocalizationKey.commonInsertSnippet)}
+                      onClick={() => setShowInsertDialog(true)}>
                       <PlusIcon className={`w-4 h-4`} aria-hidden="true" />
                     </QuickAction>
                   </div>
@@ -209,7 +229,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               <div className="hidden group-hover:flex">
                 {insertToContent && !snippet.isMediaSnippet && (
                   <>
-                    <QuickAction title={`Insert snippet`} onClick={() => setShowInsertDialog(true)}>
+                    <QuickAction title={l10n.t(LocalizationKey.commonInsertSnippet)} onClick={() => setShowInsertDialog(true)}>
                       <PlusIcon className={`w-4 h-4`} aria-hidden="true" />
                     </QuickAction>
                   </>
@@ -217,16 +237,22 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
                 {!snippet.sourcePath ? (
                   <>
-                    <QuickAction title={`Edit snippet`} onClick={onOpenEdit}>
+                    <QuickAction
+                      title={l10n.t(LocalizationKey.dashboardSnippetsViewItemQuickActionEditSnippet)}
+                      onClick={onOpenEdit}>
                       <PencilIcon className={`w-4 h-4`} aria-hidden="true" />
                     </QuickAction>
 
-                    <QuickAction title={`Delete snippet`} onClick={() => setShowAlert(true)}>
+                    <QuickAction
+                      title={l10n.t(LocalizationKey.dashboardSnippetsViewItemQuickActionDeleteSnippet)}
+                      onClick={() => setShowAlert(true)}>
                       <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
                     </QuickAction>
                   </>
                 ) : (
-                  <QuickAction title={`View snippet file`} onClick={showFile}>
+                  <QuickAction
+                    title={l10n.t(LocalizationKey.dashboardSnippetsViewItemQuickActionViewSnippet)}
+                    onClick={showFile}>
                     <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
                   </QuickAction>
                 )}
@@ -244,29 +270,32 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
       {showInsertDialog && (
         <FormDialog
-          title={`Insert snippet: ${snippet.title || snippetKey}`}
-          description={`Insert the ${(
-            snippet.title || snippetKey
-          ).toLowerCase()} snippet into the current article`}
+          title={l10n.t(LocalizationKey.dashboardSnippetsViewItemInsertFormDialogTitle, snippet.title || snippetKey)}
+          description={l10n.t(LocalizationKey.dashboardSnippetsViewItemInsertFormDialogDescription, (snippet.title || snippetKey).toLowerCase())}
           isSaveDisabled={!insertToContent}
           trigger={insertToArticle}
           dismiss={() => setShowInsertDialog(false)}
-          okBtnText="Insert"
-          cancelBtnText="Cancel"
+          okBtnText={l10n.t(LocalizationKey.commonInsert)}
+          cancelBtnText={l10n.t(LocalizationKey.commonCancel)}
         >
-          <SnippetForm ref={formRef} snippet={snippet} selection={viewData?.data?.selection} />
+          <SnippetForm
+            ref={formRef}
+            snippetKey={snippetKey}
+            snippet={snippet}
+            fieldInfo={viewData?.data?.snippetInfo?.fields}
+            selection={viewData?.data?.selection} />
         </FormDialog>
       )}
 
       {showEditDialog && (
         <FormDialog
-          title={`Edit snippet: ${snippet.title || snippetKey}`}
-          description={`Edit the ${(snippet.title || snippetKey).toLowerCase()} snippet`}
+          title={l10n.t(LocalizationKey.dashboardSnippetsViewItemEditFormDialogTitle, snippet.title || snippetKey)}
+          description={l10n.t(LocalizationKey.dashboardSnippetsViewItemEditFormDialogDescription, (snippet.title || snippetKey).toLowerCase())}
           isSaveDisabled={!snippetTitle || !snippetOriginalBody}
           trigger={onSnippetUpdate}
           dismiss={reset}
-          okBtnText="Update"
-          cancelBtnText="Cancel"
+          okBtnText={l10n.t(LocalizationKey.commonUpdate)}
+          cancelBtnText={l10n.t(LocalizationKey.commonCancel)}
         >
           <NewForm
             title={snippetTitle}
@@ -283,12 +312,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
       {showAlert && (
         <Alert
-          title={`Delete snippet: ${snippet.title || snippetKey}`}
-          description={`Are you sure you want to delete the ${(
-            snippet.title || snippetKey
-          ).toLowerCase()} snippet?`}
-          okBtnText={`Delete`}
-          cancelBtnText={`Cancel`}
+          title={l10n.t(LocalizationKey.dashboardSnippetsViewItemAlertTitle, snippet.title || snippetKey)}
+          description={l10n.t(LocalizationKey.dashboardSnippetsViewItemAlertDescription, (snippet.title || snippetKey).toLowerCase())}
+          okBtnText={l10n.t(LocalizationKey.commonDelete)}
+          cancelBtnText={l10n.t(LocalizationKey.commonCancel)}
           dismiss={() => setShowAlert(false)}
           trigger={onDelete}
         />
