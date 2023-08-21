@@ -466,7 +466,7 @@ export class Article {
       const data = firstLine
         .replace(`<!-- ${SNIPPET.wrapper.start} data:`, '')
         .replace(' -->', '')
-        .replace("'", '"');
+        .replace(/'/g, '"');
       snippetInfo = JSON.parse(data);
     }
 
