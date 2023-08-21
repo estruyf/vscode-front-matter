@@ -54,6 +54,10 @@ A couple of our extension highlights that hopefully get you interested in giving
 
 > If you see something missing in your article creation flow, please feel free to reach out.
 
+**Version 9**
+
+The extension is now available in multiple languages: English, German, and Japanese. Want to add your language? Check out the [localization the extension](https://frontmatter.codes/docs/contributing#translating-the-extension).
+
 **Version 8**
 
 The taxonomy dashboard got introduced on which you can manage your tags, categories, and custom taxonomy.
