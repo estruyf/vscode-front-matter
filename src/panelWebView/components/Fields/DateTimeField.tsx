@@ -57,6 +57,7 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({
   }, [format]);
 
   useEffect(() => {
+    console.log('value', value, dateValue);
     const crntValue = DateHelper.tryParse(value, format);
     const stateValue = DateHelper.tryParse(dateValue, format);
 
@@ -71,7 +72,7 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({
 
       <div className={`metadata_field__datetime`}>
         <DatePicker
-          selected={(DateHelper.tryParse(dateValue) as Date) || new Date()}
+          selected={(DateHelper.tryParse(dateValue, format) as Date) || new Date()}
           onChange={onDateChange}
           timeInputLabel={l10n.t(LocalizationKey.panelFieldsDateTimeFieldTime)}
           dateFormat={DateHelper.formatUpdate(format) || 'MM/dd/yyyy HH:mm'}
