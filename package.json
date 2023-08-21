@@ -1258,6 +1258,11 @@
                       "default": false,
                       "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.required.description%"
                     },
+                    "customType": {
+                      "type": "string",
+                      "default": "",
+                      "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.customType.description%"
+                    },
                     "contentTypeName": {
                       "type": "string",
                       "default": "",
@@ -1348,6 +1353,20 @@
                         "required": [
                           "dataFileId",
                           "dataFileKey"
+                        ]
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "customType"
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "customType"
                         ]
                       }
                     },

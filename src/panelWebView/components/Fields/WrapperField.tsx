@@ -508,8 +508,8 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
         />
       </FieldBoundary>
     );
-  } else if (customFields.find(f => f.name === field.type)) {
-    const fieldData = customFields.find(f => f.name === field.type);
+  } else if (field.type === 'customField') {
+    const fieldData = customFields.find(f => f.name === field.customType);
     if (fieldData) {
       return (
         <CustomField

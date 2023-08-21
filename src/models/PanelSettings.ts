@@ -74,7 +74,8 @@ export type FieldType =
   | 'slug'
   | 'divider'
   | 'heading'
-  | 'contentRelationship';
+  | 'contentRelationship'
+  | 'customField';
 
 export interface Field {
   title?: string;
@@ -114,6 +115,9 @@ export interface Field {
   // Content relationship
   contentTypeName?: string;
   contentTypeValue?: 'path' | 'slug';
+
+  // Custom field
+  customType?: string;
 
   // When clause
   when?: WhenClause;

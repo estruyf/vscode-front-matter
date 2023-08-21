@@ -333,5 +333,4 @@
   "dashboard.steps.stepsToGetStarted.assetsFolder.public.title": "Verwende den 'public'-Ordner",
   "dashboard.steps.stepsToGetStarted.assetsFolder.assets.title": "Verwende den Astro-Assets-Ordner (src/assets)",
   "dashboard.steps.stepsToGetStarted.assetsFolder.other.description": "Wenn Sie einen anderen Ordner konfigurieren möchten, können Sie dies manuell in der frontmatter.json-Datei tun."
-
 }

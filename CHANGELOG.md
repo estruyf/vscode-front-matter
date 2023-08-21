@@ -9,8 +9,10 @@
 
 ### 🧪 Experimental features
 
-- External UI script support for dashboards
+- External UI script support for dashboards and Front Matter panel
 - Front matter AI 🤖
+
+> **Info**: To enable the experimental features you need to set the `frontMatter.experimental` setting to `true`.
 
 ### ✨ New features
 

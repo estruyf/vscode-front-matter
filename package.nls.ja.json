@@ -160,11 +160,11 @@
   "setting.frontMatter.taxonomy.commaSeparatedFields.markdownDescription": "カンマ区切りで配列を管理するフィールド名を設定します。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.commaseparatedfields)",
   "setting.frontMatter.taxonomy.commaSeparatedFields.items.description": "コンマ区切りの配列として使用するフィールドの名前。",
   "setting.frontMatter.taxonomy.contentTypes.markdownDescription": "記事・ページ・その他で利用したい記事タイプを設定します。front matterで正しく`type`が設定されていることを確認してください。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.contenttypes)",
-"setting.frontMatter.taxonomy.contentTypes.items.description": "Front Matterで使用するコンテンツタイプを定義します。",
+  "setting.frontMatter.taxonomy.contentTypes.items.description": "Front Matterで使用するコンテンツタイプを定義します。",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.name.description": "🚧: Define the type of field",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fileType.description": "🚧: Specifies the type of content you want to create.",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.description": "🚧: Define the fields of the content type",
-"setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.description": "Front Matterで使用するコンテンツタイプを定義します。",
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.description": "Front Matterで使用するコンテンツタイプを定義します。",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.type.description": "🚧: Define the type of field",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.name.description": "🚧: Name of the field to use",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.title.description": "🚧: Title to show in the UI",
@@ -222,7 +222,7 @@
   "setting.frontMatter.taxonomy.indentArrays.markdownDescription": "front matterメタデータが配列の場合はインデント（字下げ）させます。規定値はtrueです。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.indentarrays)",
   "setting.frontMatter.taxonomy.modifiedField.markdownDescription": "🚧: This setting is used to define the modified date field of your articles. [ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.modifiedfield)",
   "setting.frontMatter.taxonomy.noPropertyValueQuotes.markdownDescription": "引用符を付与しないメタデータを指定します。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.nopropertyvaluequotes)",
-"setting.frontMatter.taxonomy.noPropertyValueQuotes.items.description": "引用符を削除したいプロパティの名前。",
+  "setting.frontMatter.taxonomy.noPropertyValueQuotes.items.description": "引用符を削除したいプロパティの名前。",
   "setting.frontMatter.taxonomy.seoContentLengh.markdownDescription": "最適な記事の長さを指定します。2021年のSEOでは、1,760語から2,400語の間が最も理想的とされています。（-1に設定するとオフになります。）[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.seocontentlengh)",
   "setting.frontMatter.taxonomy.seoDescriptionField.markdownDescription": "ページのSEO情報のディスクリプションに使うフィールドの名前を指定します。規定値は'description'です。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.seodescriptionfield)",
   "setting.frontMatter.taxonomy.seoDescriptionLength.markdownDescription": "SEOに適したディスクリプションの文字数を設定します。（`-1`に設定するとオフになります。）[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.seodescriptionlength)",
@@ -238,5 +238,7 @@
   "setting.frontMatter.templates.prefix.markdownDescription": "新しい記事の作成時、ファイル名に付与する接頭辞を設定します。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.templates.prefix)",
   "setting.frontMatter.dashboard.mediaSnippet.deprecationMessage": "🚧: This setting is deprecated and will be removed in the next major version. Please define your media snippet in the `frontMatter.content.snippet` setting.",
   "setting.frontMatter.taxonomy.dateField.deprecationMessage": "🚧: This setting is deprecated and will be removed in the next major version. Please use the new `isPublishDate` settings instead in your content types date fields.",
-  "setting.frontMatter.taxonomy.modifiedField.deprecationMessage": "🚧: This setting is deprecated and will be removed in the next major version. Please use the new `isModifiedDate` settings instead in your content types date fields."
+  "setting.frontMatter.taxonomy.modifiedField.deprecationMessage": "🚧: This setting is deprecated and will be removed in the next major version. Please use the new `isModifiedDate` settings instead in your content types date fields.",
+  "setting.frontMatter.global.disabledNotifications.markdownDescription": "🚧: This is an array with the notifications types that can be disabled for Front Matter CMS. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.global.disablednotifications)",
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.customType.description": "🚧: Specify the name of the custom field type to use."
 }

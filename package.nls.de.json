@@ -48,7 +48,6 @@
   "command.frontMatter.markup.unorderedlist": "Ungeordnete Liste",
   "command.frontMatter.git.sync": "Synchronisieren",
   "command.frontMatter.cache.clear": "Cache löschen",
-
   "settings.configuration.title": "Front Matter: Verwendung von frontmatter.json für gemeinsame Team-Einstellungen",
   "setting.frontMatter.projects.markdownDescription": "Geben Sie die Liste der Projekte an, die in Front Matter CMS geladen werden sollen. [Dokumentation prüfen](https://frontmatter.codes/docs/settings/overview#frontmatter.projects)",
   "setting.frontMatter.projects.items.properties.name.markdownDescription": "Geben Sie den Namen des Projekts an.",
@@ -69,7 +68,6 @@
   "setting.frontMatter.content.hideFm.markdownDescription": "Geben Sie an, ob Sie das Front Matter in der Markdown-Datei ausblenden möchten. [Dokumentation prüfen](https://frontmatter.codes/docs/settings/overview#frontmatter.content.hidefm)",
   "setting.frontMatter.content.hideFmMessage.markdownDescription": "Geben Sie die Meldung an, die angezeigt werden soll, wenn das Front Matter ausgeblendet ist. [Dokumentation prüfen](https://frontmatter.codes/docs/settings/overview#frontmatter.content.hidefmMessage)",
   "setting.frontMatter.content.pageFolders.markdownDescription": "Dieses Array von Ordnern definiert, wo die Erweiterung Seiten abrufen oder erstellen kann. [Dokumentation prüfen](https://frontmatter.codes/docs/settings/overview#frontmatter.content.pagefolders)",
-
   "setting.frontMatter.content.pageFolders.items.properties.title.description": "Name des Ordners",
   "setting.frontMatter.content.pageFolders.items.properties.path.description": "Pfad des Ordners",
   "setting.frontMatter.content.pageFolders.items.properties.excludeSubdir.description": "Unterordner ausschließen",
@@ -100,7 +98,6 @@
   "setting.frontMatter.custom.scripts.items.properties.nodeBin.description": "Pfad zum Node-Ausführbaren. Dies ist erforderlich, wenn NVM verwendet wird, um Verwirrung über die zu verwendende Node-Version zu vermeiden. (veraltet: stattdessen die Eigenschaft 'command' verwenden)",
   "setting.frontMatter.custom.scripts.items.properties.bulk.description": "Das Skript für alle Inhaltsdateien ausführen",
   "setting.frontMatter.custom.scripts.items.properties.output.description": "Definieren Sie, wo Sie Ihre Skriptausgabe anzeigen möchten. Standardmäßig handelt es sich um eine Benachrichtigung, aber Sie können angeben, dass sie in einem Editorfenster angezeigt wird.",
-
   "setting.frontMatter.custom.scripts.items.properties.outputType.description": "Der Ausgabetyp für das Editorfenster. Kann beispielsweise auf 'markdown' geändert werden",
   "setting.frontMatter.custom.scripts.items.properties.type.description": "Der Typ, für den das Skript verwendet wird.",
   "setting.frontMatter.custom.scripts.items.properties.command.description": "Der Typ des auszuführenden Skripts.",
@@ -130,7 +127,6 @@
   "setting.frontMatter.data.files.items.properties.type.description": "Wenn Sie Datentypen verwenden, können Sie Ihre Typ-ID angeben.",
   "setting.frontMatter.data.files.items.properties.singleEntry.description": "Wenn Sie eine einzelne Eingabe für Ihre Datendatei verwenden möchten.",
   "setting.frontMatter.data.folders.markdownDescription": "Geben Sie die Datenspeicherorte an, die Sie für Ihre Website verwenden möchten. [Dokumentation prüfen](https://frontmatter.codes/docs/settings/overview#frontmatter.data.folders)",
-
   "setting.frontMatter.data.folders.items.properties.id.description": "Ihre eindeutige ID, die Sie für Ihren Datenordner verwenden möchten.",
   "setting.frontMatter.data.folders.items.properties.labelField.description": "Das Feld, das Sie als Bezeichnung für Ihre Dateneinträge verwenden möchten.",
   "setting.frontMatter.data.folders.items.properties.path.description": "Pfad zum Ordner, um Dateien zu laden.",
@@ -151,7 +147,6 @@
   "setting.frontMatter.global.modes.markdownDescription": "Definieren Sie die Modi, die Sie für Front Matter verwenden möchten. [Weitere Informationen in der Dokumentation](https://frontmatter.codes/docs/settings/overview#frontmatter.global.modes)",
   "setting.frontMatter.global.modes.items.properties.id.description": "Die ID Ihres Modus.",
   "setting.frontMatter.global.modes.items.properties.features.description": "Die Funktionen, die Sie für Ihren Modus verwenden möchten.",
-
   "setting.frontMatter.global.notifications.markdownDescription": "Legt fest, welche Benachrichtigungen angezeigt werden sollen. Standardmäßig werden alle Benachrichtigungstypen angezeigt. [Weitere Informationen in der Dokumentation](https://frontmatter.codes/docs/settings/overview#frontmatter.global.notifications)",
   "setting.frontMatter.global.disabledNotifications.markdownDescription": "Dies ist ein Array mit den Benachrichtigungstypen, die für Front Matter CMS deaktiviert werden können. [Weitere Informationen in der Dokumentation](https://frontmatter.codes/docs/settings/overview#frontmatter.global.disablednotifications)",
   "setting.frontMatter.media.defaultSorting.markdownDescription": "Gibt die Standard-Sortieroption für das Medien-Dashboard an. [Weitere Informationen in der Dokumentation](https://frontmatter.codes/docs/settings/overview#frontmatter.media.defaultsorting)",
@@ -200,7 +195,6 @@
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.dataFileValue.description": "Gibt den Eigenschaftsnamen an, der verwendet wird, um den Wert für das Feld anzuzeigen",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.editable.description": "Gibt an, ob das Feld bearbeitbar ist",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.encodeEmoji.description": "Gibt an, ob das Feld Emojis kodieren soll",
-
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.dateFormat.description": "Gibt das Datumsformat an, das verwendet werden soll.",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.required.description": "Gibt an, ob das Feld erforderlich ist.",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.contentTypeName.description": "Gibt den Namen des Content-Typs an, um Inhalte für das contentRelationship-Feld zu filtern.",
@@ -231,7 +225,6 @@
   "setting.frontMatter.taxonomy.noPropertyValueQuotes.items.description": "Name der Eigenschaften, von denen Sie Anführungszeichen entfernen möchten.",
   "setting.frontMatter.taxonomy.seoContentLengh.markdownDescription": "Gibt die optimale Mindestlänge für Ihre Artikel an. Zwischen 1.760 Wörtern – 2.400 ist die absolut ideale Artikelänge für SEO im Jahr 2021. (auf `-1` setzen, um es auszuschalten). [Weitere Informationen in der Dokumentation](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.seocontentlengh)",
   "setting.frontMatter.taxonomy.seoDescriptionField.markdownDescription": "Gibt den Namen des SEO-Beschreibungsfeldes für Ihre Seite an. Standard ist 'description'. [Weitere Informationen in der Dokumentation](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.seodescriptionfield)",
-
   "setting.frontMatter.taxonomy.seoDescriptionLength.markdownDescription": "Gibt die optimale Beschreibungslänge für SEO an (auf `-1` setzen, um es auszuschalten). [Weitere Informationen in der Dokumentation](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.seodescriptionlength)",
   "setting.frontMatter.taxonomy.seoSlugLength.markdownDescription": "Gibt die optimale Schlagwortlänge für SEO an (auf `-1` setzen, um es auszuschalten). [Weitere Informationen in der Dokumentation](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.seosluglength)",
   "setting.frontMatter.taxonomy.seoTitleField.markdownDescription": "Gibt den Namen des SEO-Titelfelds für Ihre Seite an. Standard ist 'title'. [Weitere Informationen in der Dokumentation](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.seotitlefield)",
@@ -245,5 +238,6 @@
   "setting.frontMatter.templates.prefix.markdownDescription": "Gibt das Präfix an, das Sie für die Dateinamen Ihrer neuen Artikel hinzufügen möchten. [Weitere Informationen in der Dokumentation](https://frontmatter.codes/docs/settings/overview#frontmatter.templates.prefix)",
   "setting.frontMatter.dashboard.mediaSnippet.deprecationMessage": "Diese Einstellung ist veraltet und wird in der nächsten Hauptversion entfernt. Bitte definieren Sie Ihr Medien-Snippet in der `frontMatter.content.snippet` Einstellung.",
   "setting.frontMatter.taxonomy.dateField.deprecationMessage": "Diese Einstellung ist veraltet und wird in der nächsten Hauptversion entfernt. Bitte verwenden Sie stattdessen die neuen `isPublishDate`-Einstellungen in den Datumsfeldern Ihrer Content-Typen.",
-  "setting.frontMatter.taxonomy.modifiedField.deprecationMessage": "Diese Einstellung ist veraltet und wird in der nächsten Hauptversion entfernt. Bitte verwenden Sie stattdessen die neuen `isModifiedDate`-Einstellungen in den Datumsfeldern Ihrer Content-Typen."
+  "setting.frontMatter.taxonomy.modifiedField.deprecationMessage": "Diese Einstellung ist veraltet und wird in der nächsten Hauptversion entfernt. Bitte verwenden Sie stattdessen die neuen `isModifiedDate`-Einstellungen in den Datumsfeldern Ihrer Content-Typen.",
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.customType.description": "🚧: Specify the name of the custom field type to use."
 }

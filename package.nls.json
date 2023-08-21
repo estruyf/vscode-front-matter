@@ -238,5 +238,6 @@
   "setting.frontMatter.templates.prefix.markdownDescription": "Specify the prefix you want to add for your new article filenames. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.templates.prefix)",
   "setting.frontMatter.dashboard.mediaSnippet.deprecationMessage": "This setting is deprecated and will be removed in the next major version. Please define your media snippet in the `frontMatter.content.snippet` setting.",
   "setting.frontMatter.taxonomy.dateField.deprecationMessage": "This setting is deprecated and will be removed in the next major version. Please use the new `isPublishDate` settings instead in your content types date fields.",
-  "setting.frontMatter.taxonomy.modifiedField.deprecationMessage": "This setting is deprecated and will be removed in the next major version. Please use the new `isModifiedDate` settings instead in your content types date fields."
+  "setting.frontMatter.taxonomy.modifiedField.deprecationMessage": "This setting is deprecated and will be removed in the next major version. Please use the new `isModifiedDate` settings instead in your content types date fields.",
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.customType.description": "Specify the name of the custom field type to use."
 }
