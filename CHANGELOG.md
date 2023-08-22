@@ -1,5 +1,17 @@
 # Change Log
 
+## [9.1.0] - 2023-xx-xx
+
+### ✨ New features
+
+- [#630](https://github.com/estruyf/vscode-front-matter/issues/630): Italian localization added (thanks to [Emanuele Bartolesi](https://github.com/kasuken))
+
+### 🎨 Enhancements
+
+### ⚡️ Optimizations
+
+### 🐞 Fixes
+
 ## [9.0.0] - 2023-08-21 - [Release notes](https://beta.frontmatter.codes/updates/v9.0.0)
 
 ### 🌎 Multilingual support
