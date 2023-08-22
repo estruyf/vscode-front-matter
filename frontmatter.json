@@ -1,5 +1,6 @@
 {
   "$schema": "https://beta.frontmatter.codes/frontmatter.schema.json",
+  "frontMatter.snippets.wrapper.enabled": false,
   "frontMatter.framework.id": "other",
   "frontMatter.content.publicFolder": "",
   "frontMatter.content.pageFolders": [
