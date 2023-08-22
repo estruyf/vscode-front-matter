@@ -12,6 +12,8 @@
 
 ### 🐞 Fixes
 
+- [#628](https://github.com/estruyf/vscode-front-matter/issues/628): Fix path argument and JSON data on custom scripts
+
 ## [9.0.0] - 2023-08-21 - [Release notes](https://beta.frontmatter.codes/updates/v9.0.0)
 
 ### 🌎 Multilingual support
