@@ -97,6 +97,10 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
         }
       }
 
+      if (typeof values === 'string') {
+        values = [values];
+      }
+
       for (const value of values) {
         if (!items.includes(value)) {
           unmapped.push(value);
@@ -110,6 +114,8 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
   if (!taxonomy) {
     return null;
   }
+
+  console.log('items', unmappedItems);
 
   return (
     <div className={`py-6 px-4 flex flex-col h-full overflow-hidden`}>
