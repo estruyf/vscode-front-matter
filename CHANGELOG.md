@@ -15,6 +15,8 @@
 - [#628](https://github.com/estruyf/vscode-front-matter/issues/628): Fix path argument and JSON data on custom scripts
 - [#633](https://github.com/estruyf/vscode-front-matter/issues/633): Fix custom taxonomy used as single value
 - [#634](https://github.com/estruyf/vscode-front-matter/issues/634): Fix public folder processing in case of Hexo
+- [#635](https://github.com/estruyf/vscode-front-matter/issues/635): Fix UI themes make some links hard to discover or see
+- [#636](https://github.com/estruyf/vscode-front-matter/issues/636): Fix UI themes make some links hard to discover or see
 
 ## [9.0.0] - 2023-08-21 - [Release notes](https://beta.frontmatter.codes/updates/v9.0.0)
 

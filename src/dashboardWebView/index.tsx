@@ -62,8 +62,21 @@ const preserveColor = (color: string | undefined) => {
   return color;
 }
 
+const addBgOpacity = (color: string | undefined) => {
+  if (color) {
+
+  }
+
+  return color;
+}
+
 const updateCssVariables = () => {
   const styles = getComputedStyle(document.documentElement);
+
+  // Lightbox
+  const background = styles.getPropertyValue('--vscode-editor-background');
+  // Adds 75% opacity to the background color
+  document.documentElement.style.setProperty('--frontmatter-lightbox-background', `${preserveColor(background)}BF`);
 
   // Text
   document.documentElement.style.setProperty('--frontmatter-text', 'var(--vscode-editor-foreground)');
