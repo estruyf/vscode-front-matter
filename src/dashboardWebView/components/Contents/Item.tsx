@@ -114,10 +114,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return cardFields && (cardFields.state || cardFields.date);
   }, [cardFields]);
 
-  if (pageData.slug === `Top-10-Pens-of-Jon-Kantner`) {
-    console.log(pageData)
-  }
-
   if (view === DashboardViewType.Grid) {
     return (
       <li className="relative">

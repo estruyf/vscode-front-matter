@@ -115,8 +115,6 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
     return null;
   }
 
-  console.log('items', unmappedItems);
-
   return (
     <div className={`py-6 px-4 flex flex-col h-full overflow-hidden`}>
       <div className={`flex w-full justify-between flex-shrink-0`}>
