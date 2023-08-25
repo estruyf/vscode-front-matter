@@ -22,19 +22,11 @@ export const MenuButton: React.FunctionComponent<IMenuButtonProps> = ({
 
       <Menu.Button
         disabled={disabled}
-        className={`group inline-flex justify-center text-sm font-medium ${getColors(
-          'text-vulcan-500 hover:text-vulcan-600 dark:text-whisper-500 dark:hover:text-whisper-600',
-          'text-[var(--vscode-list-activeSelectionForeground)] hover:text-[var(--vscode-list-highlightForeground)]'
-        )
-          }`}
+        className={`group inline-flex justify-center text-sm font-medium text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)]`}
       >
         {title}
         <ChevronDownIcon
-          className={`flex-shrink-0 -mr-1 ml-1 h-5 w-5 ${getColors(
-            'text-gray-400 group-hover:text-gray-500 dark:text-whisper-600 dark:group-hover:text-whisper-700',
-            'text-[var(--vscode-list-activeSelectionForeground)] group-hover:text-[var(--vscode-list-highlightForeground)]'
-          )
-            }`}
+          className={`flex-shrink-0 -mr-1 ml-1 h-5 w-5 text-[var(--vscode-textLink-foreground)] group-hover:text-[var(--vscode-textLink-activeForeground)]`}
           aria-hidden="true"
         />
       </Menu.Button>
