@@ -4,7 +4,13 @@ import { COMMAND_NAME, TelemetryEvent } from './constants';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
 import { TagType } from './panelWebView/TagType';
 import { PanelProvider } from './panelWebView/PanelProvider';
-import { DashboardSettings, debounceCallback, Logger, parseWinPath, Settings as SettingsHelper } from './helpers';
+import {
+  DashboardSettings,
+  debounceCallback,
+  Logger,
+  parseWinPath,
+  Settings as SettingsHelper
+} from './helpers';
 import ContentProvider from './providers/ContentProvider';
 import { PagesListener } from './listeners/dashboard';
 import { DataListener, SettingsListener } from './listeners/panel';

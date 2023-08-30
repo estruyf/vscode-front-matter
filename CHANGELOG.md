@@ -1,12 +1,10 @@
 # Change Log
 
-## [9.1.0] - 2023-xx-xx
+## [9.1.0] - 2023-08-30
 
 ### ✨ New features
 
 - [#630](https://github.com/estruyf/vscode-front-matter/issues/630): Italian localization added (thanks to [Emanuele Bartolesi](https://github.com/kasuken))
-
-### 🎨 Enhancements
 
 ### ⚡️ Optimizations
 
@@ -21,7 +19,6 @@
 - [#635](https://github.com/estruyf/vscode-front-matter/issues/635): Fix UI themes make some links hard to discover or see
 - [#636](https://github.com/estruyf/vscode-front-matter/issues/636): Fix media browser lightbox background color
 - [#641](https://github.com/estruyf/vscode-front-matter/issues/641): Fix file parsing of the localization file
-
 
 ## [9.0.0] - 2023-08-21 - [Release notes](https://beta.frontmatter.codes/updates/v9.0.0)
 
