@@ -4,7 +4,7 @@ import { COMMAND_NAME, TelemetryEvent } from './constants';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
 import { TagType } from './panelWebView/TagType';
 import { PanelProvider } from './panelWebView/PanelProvider';
-import { DashboardSettings, debounceCallback, Logger, Settings as SettingsHelper } from './helpers';
+import { DashboardSettings, debounceCallback, Logger, parseWinPath, Settings as SettingsHelper } from './helpers';
 import ContentProvider from './providers/ContentProvider';
 import { PagesListener } from './listeners/dashboard';
 import { DataListener, SettingsListener } from './listeners/panel';
@@ -30,6 +30,7 @@ import {
   StatusListener,
   Chatbot
 } from './commands';
+import { join } from 'path';
 
 let frontMatterStatusBar: vscode.StatusBarItem;
 let statusDebouncer: { (fnc: any, time: number): void };
@@ -45,7 +46,7 @@ export async function activate(context: vscode.ExtensionContext) {
   // Make sure the EN language file is loaded
   if (!vscode.l10n.uri) {
     l10n.config({
-      fsPath: vscode.Uri.parse(`${extensionPath}/l10n/bundle.l10n.json`).fsPath
+      fsPath: vscode.Uri.file(join(parseWinPath(extensionPath), `/l10n/bundle.l10n.json`)).fsPath
     });
   } else {
     l10n.config({
