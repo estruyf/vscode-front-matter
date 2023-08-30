@@ -243,7 +243,7 @@ export class PagesListener extends BaseListener {
     const pagesIndex = Fuse.createIndex(['title', 'slug', 'description', 'fmBody', 'type'], pages);
     await Extension.getInstance().setState(
       ExtensionState.Dashboard.Pages.Index,
-      pagesIndex,
+      pagesIndex.toJSON(),
       'workspace'
     );
   }
@@ -279,7 +279,8 @@ export class PagesListener extends BaseListener {
       ExtensionState.Dashboard.Pages.Index,
       'workspace'
     );
-    const fuse = new Fuse(this.lastPages, fuseOptions, pagesIndex);
+    const fuseIndex = Fuse.parseIndex(pagesIndex);
+    const fuse = new Fuse(this.lastPages, fuseOptions, fuseIndex);
     const results = fuse.search(data.query || '');
     const pageResults = results.map((page) => page.item);
 
