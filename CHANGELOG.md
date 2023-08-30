@@ -11,6 +11,7 @@
 ### ⚡️ Optimizations
 
 - [#639](https://github.com/estruyf/vscode-front-matter/issues/639): Add check for content type in page folders setting
+- [#642](https://github.com/estruyf/vscode-front-matter/issues/642): Store the search index in a storage file
 
 ### 🐞 Fixes
 

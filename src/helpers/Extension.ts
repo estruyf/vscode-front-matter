@@ -331,8 +331,12 @@ export class Extension {
       let storageUri: Uri | undefined = undefined;
       if (type === 'global') {
         storageUri = await this.createGlobalStorageIfNotExists();
+        // Clear workspace state
+        await this.ctx.globalState.update(propKey, undefined);
       } else {
         storageUri = await this.createLocalStorageIfNotExists();
+        // Clear workspace state
+        await this.ctx.workspaceState.update(propKey, undefined);
       }
 
       if (storageUri) {
@@ -429,7 +433,10 @@ export class Extension {
    * @returns
    */
   private isFileStorageNeeded(propKey: string) {
-    return propKey === ExtensionState.Dashboard.Pages.Cache;
+    return (
+      propKey === ExtensionState.Dashboard.Pages.Cache ||
+      propKey === ExtensionState.Dashboard.Pages.Index
+    );
   }
 
   /**
