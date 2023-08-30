@@ -10,6 +10,8 @@
 
 ### ⚡️ Optimizations
 
+- [#639](https://github.com/estruyf/vscode-front-matter/issues/639): Add check for content type in page folders setting
+
 ### 🐞 Fixes
 
 - [#628](https://github.com/estruyf/vscode-front-matter/issues/628): Fix path argument and JSON data on custom scripts

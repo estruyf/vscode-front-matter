@@ -77,6 +77,8 @@ export class ImageHelper {
     } else if (workspaceFolderPath && existsSync(workspaceFolderPath)) {
       return Uri.file(workspaceFolderPath);
     }
+
+    return null;
   }
 
   /**

@@ -1,5 +1,5 @@
 import { FileStat } from 'vscode';
-import { DraftField, GitSettings } from '.';
+import { ContentFolder, DraftField, GitSettings } from '.';
 import { Choice } from './Choice';
 import { DashboardData } from './DashboardData';
 import { DataType } from './DataType';
@@ -29,6 +29,7 @@ export interface PanelSettings {
   fieldGroups: FieldGroup[] | undefined;
   commaSeparatedFields: string[];
   aiEnabled: boolean;
+  contentFolders: ContentFolder[];
 }
 
 export interface FieldGroup {
