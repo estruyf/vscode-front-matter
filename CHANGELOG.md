@@ -6,8 +6,6 @@
 
 - [#630](https://github.com/estruyf/vscode-front-matter/issues/630): Italian localization added (thanks to [Emanuele Bartolesi](https://github.com/kasuken))
 
-### 🎨 Enhancements
-
 ### ⚡️ Optimizations
 
 - [#639](https://github.com/estruyf/vscode-front-matter/issues/639): Add check for content type in page folders setting
