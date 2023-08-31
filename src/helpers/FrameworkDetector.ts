@@ -122,14 +122,7 @@ export class FrameworkDetector {
         relAssetPath = relAssetPath.substring(1);
       }
     }
-    // Support for HEXO image folder
-    else if (frameworkId === 'hexo') {
-      relAssetPath = parseWinPath(relAssetPath);
-      if (relAssetPath.startsWith('/')) {
-        relAssetPath = relAssetPath.substring(1);
-      }
-    }
-    // Support for the Astro assets folder
+    // Support for the Astro assets folder or when you need relative paths
     else if (
       staticFolder &&
       staticFolderValue &&
@@ -146,6 +139,13 @@ export class FrameworkDetector {
 
       relAssetPath = relative(fileDir, assetDir);
       relAssetPath = join(relAssetPath, `${fileName.name}${fileName.ext}`);
+    }
+    // Support for HEXO image folder
+    else if (frameworkId === 'hexo') {
+      relAssetPath = parseWinPath(relAssetPath);
+      if (relAssetPath.startsWith('/')) {
+        relAssetPath = relAssetPath.substring(1);
+      }
     }
 
     return parseWinPath(relAssetPath);

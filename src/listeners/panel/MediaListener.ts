@@ -70,17 +70,21 @@ export class MediaListener extends BaseListener {
     }
   }
 
-  private static generateUrl(data: string) {
+  private static generateUrl(
+    data: string | { original: string; absPath: string; webviewUrl: string }
+  ) {
     const filePath = window.activeTextEditor?.document.uri.fsPath;
 
-    const imgUrl = ImageHelper.relToAbs(filePath || '', data);
-    if (imgUrl) {
-      const viewUrl = PanelProvider.getInstance().getWebview()?.asWebviewUri(imgUrl);
-      if (viewUrl) {
-        this.sendMsg(Command.sendMediaUrl, {
-          original: data,
-          url: viewUrl.toString()
-        });
+    if (typeof data === 'string') {
+      const imgUrl = ImageHelper.relToAbs(filePath || '', data);
+      if (imgUrl) {
+        const viewUrl = PanelProvider.getInstance().getWebview()?.asWebviewUri(imgUrl);
+        if (viewUrl) {
+          this.sendMsg(Command.sendMediaUrl, {
+            original: data,
+            url: viewUrl.toString()
+          });
+        }
       }
     }
   }

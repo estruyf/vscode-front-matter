@@ -1,12 +1,13 @@
 import { Uri, l10n } from 'vscode';
-import { Extension, Logger } from '../helpers';
+import { Extension, Logger, parseWinPath } from '../helpers';
 import { readFileAsync } from './readFileAsync';
+import { join } from 'path';
 
 export const getLocalizationFile = async () => {
   try {
     const localeFilePath =
       l10n.uri?.fsPath ||
-      Uri.parse(`${Extension.getInstance().extensionPath}/l10n/bundle.l10n.json`).fsPath;
+      Uri.file(join(parseWinPath(Extension.getInstance().extensionPath.fsPath), `/l10n/bundle.l10n.json`)).fsPath;
 
     const fileContents = await readFileAsync(localeFilePath, 'utf-8');
     return fileContents;

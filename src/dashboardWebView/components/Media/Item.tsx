@@ -352,9 +352,13 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     const path = media.fsPath;
     const extension = path.split('.').pop();
 
-    const colors = getColors(`text-gray-300 dark:text-vulcan-200`, `text-[var(--vscode-sideBarTitle-foreground)] opacity-80`);
+    const colors = `text-[var(--vscode-sideBarTitle-foreground)] opacity-80`;
 
     let icon = <DocumentIcon className={`h-4/6 ${colors}`} />;
+
+    if (media.vsPath) {
+      return null;
+    }
 
     if (isImageFile) {
       return <PhotographIcon className={`h-1/2 ${colors}`} />;

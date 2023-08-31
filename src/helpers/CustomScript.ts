@@ -222,7 +222,12 @@ export class CustomScript {
       let articleData = '';
       if (os.type() === 'Windows_NT') {
         const jsonData = JSON.stringify(article?.data);
-        articleData = `'${jsonData.replace(/"/g, `\"`)}'`;
+
+        if (script.command && script.command.toLowerCase() === "powershell") {
+          articleData = `'${jsonData.replace(/"/g, `\\"`)}'`;
+        } else {
+          articleData = `"${jsonData.replace(/"/g, `\\"`)}"`;
+        }
       } else {
         articleData = JSON.stringify(article?.data).replace(/'/g, '%27');
         articleData = `'${articleData}'`;
@@ -360,7 +365,11 @@ export class CustomScript {
         return;
       }
 
-      const fullScript = `${command} ${scriptPath} ${args}`;
+      if (osType === 'Windows_NT' && command.toLowerCase() === "powershell") {
+        command = `${command} -File`;
+      }
+
+      const fullScript = `${command} "${scriptPath}" ${args}`;
       Logger.info(`Executing: ${fullScript}`);
 
       exec(fullScript, { cwd: wsPath }, (error, stdout) => {

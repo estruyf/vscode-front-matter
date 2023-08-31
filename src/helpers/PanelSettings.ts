@@ -41,6 +41,7 @@ import {
   ScriptType,
   TaxonomyType
 } from '../models';
+import { Folders } from '../commands';
 
 export class PanelSettings {
   public static async get(): Promise<IPanelSettings> {
@@ -94,7 +95,8 @@ export class PanelSettings {
         start: Settings.get<string>(SETTING_FRAMEWORK_START)
       },
       dataTypes: Settings.get<DataType[]>(SETTING_DATA_TYPES),
-      fieldGroups: Settings.get<FieldGroup[]>(SETTING_TAXONOMY_FIELD_GROUPS)
+      fieldGroups: Settings.get<FieldGroup[]>(SETTING_TAXONOMY_FIELD_GROUPS),
+      contentFolders: Folders.get()
     };
   }
 

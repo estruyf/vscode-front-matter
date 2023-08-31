@@ -25,7 +25,7 @@ export const Lightbox: React.FunctionComponent<ILightboxProps> = (
       onClick={hideLightbox}
       className={`fixed top-0 left-0 right-0 bottom-0 w-full h-full flex flex-wrap items-center justify-center z-50 ${getColors(
         `bg-black bg-opacity-50`,
-        `bg-[var(--vscode-editor-background)] opacity-75`
+        `bg-[var(--frontmatter-lightbox-background)]`
       )
         }`}
     >
@@ -33,7 +33,7 @@ export const Lightbox: React.FunctionComponent<ILightboxProps> = (
         <img
           src={lightbox}
           alt={basename(lightbox)}
-          className={`w-1/2 h-auto rounded border shadow-2xl ${getColors(`border-vulcan-500 bg-vulcan-600`, `border-[var(--frontmatter-border)] bg-[var(--vscode-sideBar-background)]`)}`}
+          className={`w-1/2 h-auto rounded border shadow-2xl border-[var(--frontmatter-border)] bg-[var(--vscode-sideBar-background)]`}
         />
       </div>
     </div>

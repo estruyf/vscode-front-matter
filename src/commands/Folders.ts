@@ -197,7 +197,7 @@ export class Folders {
       }
     }
 
-    return assetFolder;
+    return assetFolder || '/';
   }
 
   /**

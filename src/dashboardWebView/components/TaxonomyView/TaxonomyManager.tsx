@@ -97,6 +97,10 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
         }
       }
 
+      if (typeof values === 'string') {
+        values = [values];
+      }
+
       for (const value of values) {
         if (!items.includes(value)) {
           unmapped.push(value);

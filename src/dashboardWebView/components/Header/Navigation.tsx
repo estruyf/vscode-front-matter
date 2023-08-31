@@ -28,14 +28,8 @@ const NavigationItem: React.FunctionComponent<INavigationItemProps> = ({
     <button
       className={`${isCrntTab
         ?
-        getColors(
-          'border-teal-900 dark:border-teal-300 text-teal-900 dark:text-teal-300',
-          'border-[var(--vscode-textLink-foreground)] text-[var(--vscode-textLink-foreground)]'
-        ) :
-        getColors(
-          `border-transparent text-gray-500 dark:text-whisper-600 hover:text-gray-700 dark:hover:text-whisper-700 hover:border-gray-300 dark:hover:border-whisper-500`,
-          `border-transparent text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-textLink-activeForeground)] hover:border-[var(--vscode-textLink-activeForeground)]`
-        )
+        `border-[var(--vscode-textLink-foreground)] text-[var(--vscode-textLink-foreground)]` :
+        `border-transparent text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-textLink-activeForeground)] hover:border-[var(--vscode-textLink-activeForeground)]`
         } whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm`}
       aria-current={isCrntTab ? 'page' : undefined}
       onClick={onClick}
