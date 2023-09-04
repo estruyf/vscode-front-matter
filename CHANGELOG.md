@@ -1,5 +1,17 @@
 # Change Log
 
+## [9.2.0] - 2023-xx-xx
+
+### ✨ New features
+
+- [#645](https://github.com/estruyf/vscode-front-matter/issues/645): French localization added (thanks to [Clément Barbaza](https://github.com/cba85))
+
+### 🎨 Enhancements
+
+### ⚡️ Optimizations
+
+### 🐞 Fixes
+
 ## [9.1.0] - 2023-08-31
 
 ### ✨ New features
