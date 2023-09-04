@@ -8,7 +8,8 @@ import {
   TelemetryEvent,
   PreviewCommands,
   SETTING_EXPERIMENTAL,
-  SETTING_DATE_FORMAT
+  SETTING_DATE_FORMAT,
+  GeneralCommands
 } from './../constants';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { join, parse } from 'path';
@@ -23,6 +24,7 @@ import { WebviewHelper } from '@estruyf/vscode';
 import { Folders } from './Folders';
 import { DataListener } from '../listeners/panel';
 import { ParsedFrontMatter } from '../parsers';
+import { getLocalizationFile } from '../utils/getLocalizationFile';
 
 export class Preview {
   public static filePath: string | undefined = undefined;
@@ -103,12 +105,26 @@ export class Preview {
       }
     });
 
-    webView.webview.onDidReceiveMessage((message) => {
+    webView.webview.onDidReceiveMessage(async (message) => {
       switch (message.command) {
         case PreviewCommands.toVSCode.open:
-          if (message.data) {
-            commands.executeCommand('vscode.open', message.data);
+          if (message.payload) {
+            commands.executeCommand('vscode.open', message.payload);
           }
+          return;
+        case GeneralCommands.toVSCode.getLocalization:
+          const { requestId } = message;
+          if (!requestId) {
+            return;
+          }
+
+          const fileContents = await getLocalizationFile();
+
+          webView.webview.postMessage({
+            command: GeneralCommands.toVSCode.getLocalization,
+            requestId,
+            payload: fileContents
+          });
           return;
       }
     });
