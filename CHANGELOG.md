@@ -12,6 +12,8 @@
 
 ### 🐞 Fixes
 
+- [#646](https://github.com/estruyf/vscode-front-matter/issues/646): Update the Astro `3000` port to `4321`
+
 ## [9.1.0] - 2023-08-31
 
 ### ✨ New features

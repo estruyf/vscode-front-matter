@@ -5,7 +5,7 @@ export const FrameworkDetectors = [
       dist: 'dist',
       static: ['public', 'src/assets'],
       build: 'npm run build',
-      server: 'http://localhost:3000'
+      server: 'http://localhost:4321'
     },
     requiredFiles: ['astro.config.mjs'],
     requiredDependencies: ['astro'],
