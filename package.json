@@ -101,7 +101,6 @@
       ]
     },
     "configuration": {
-      "$id": "#globalconfiguration",
       "title": "%settings.configuration.title%",
       "type": "object",
       "properties": {
@@ -121,7 +120,7 @@
                 "markdownDescription": "%setting.frontMatter.projects.items.properties.default.markdownDescription%"
               },
               "configuration": {
-                "$ref": "#globalconfiguration"
+                "$ref": "https://frontmatter.codes/frontmatter.schema.json"
               }
             }
           }
