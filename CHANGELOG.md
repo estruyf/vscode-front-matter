@@ -4,6 +4,7 @@
 
 ### ✨ New features
 
+- [#570](https://github.com/estruyf/vscode-front-matter/issues/570): Clear empty values on content creation and editing
 - [#645](https://github.com/estruyf/vscode-front-matter/issues/645): French localization added (thanks to [Clément Barbaza](https://github.com/cba85))
 
 ### 🎨 Enhancements

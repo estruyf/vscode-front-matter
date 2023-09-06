@@ -53,6 +53,7 @@ export interface ContentType {
   template?: string;
   postScript?: string;
   filePrefix?: string;
+  clearEmpty?: boolean;
 }
 
 export type FieldType =
