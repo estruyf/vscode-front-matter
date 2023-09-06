@@ -9,6 +9,8 @@ import { useSettingsContext } from '../../providers/SettingsProvider';
 import { AiInitResponse } from './models/AiInitResponse';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { messageHandler } from '@estruyf/vscode/dist/client';
+import { GeneralCommands } from '../../../constants';
 
 export interface IChatbotProps { }
 
@@ -21,9 +23,19 @@ export const Chatbot: React.FunctionComponent<IChatbotProps> = ({ }: React.Props
   const [answerIds, setAnswerIds] = React.useState<number[]>([]);
   const [sources, setSources] = React.useState<string[][]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [localeReady, setLocaleReady] = React.useState<boolean>(false);
 
   const init = async () => {
     setLoading(true);
+    messageHandler.request<any>(GeneralCommands.toVSCode.getLocalization).then((data) => {
+      if (data) {
+        l10n.config({
+          contents: data
+        });
+      }
+      setLocaleReady(true);
+    });
+
     const initResponse = await fetch(`${aiUrl}/api/ai-init`);
 
     if (!initResponse.ok) {
@@ -54,7 +66,7 @@ export const Chatbot: React.FunctionComponent<IChatbotProps> = ({ }: React.Props
     setSources(prev => [...prev, []])
     setAnswerIds(prev => [...prev, 0])
 
-    if (!company || !chatId) {
+    if (!company || !chatId || !localeReady) {
       return;
     }
 
