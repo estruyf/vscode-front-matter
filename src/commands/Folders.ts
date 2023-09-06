@@ -495,6 +495,10 @@ export class Folders {
   public static async getContentFolders() {
     // Find folders that contain files
     const wsFolder = Folders.getWorkspaceFolder();
+    if (!wsFolder) {
+      return [];
+    }
+
     const supportedFiles =
       Settings.get<string[]>(SETTING_CONTENT_SUPPORTED_FILETYPES) || DEFAULT_FILE_TYPES;
     const patterns = supportedFiles.map(
