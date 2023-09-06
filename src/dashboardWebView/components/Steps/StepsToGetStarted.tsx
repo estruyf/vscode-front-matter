@@ -99,7 +99,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
     }
 
     return FrameworkTemplates.filter((t) => t.framework === settings.crntFramework);
-  }, [settings.framework])
+  }, [settings.crntFramework])
 
   const steps = [
     {
