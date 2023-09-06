@@ -60,7 +60,8 @@
             "title": "Minimum heading level",
             "type": "number",
             "numberOptions": {
-              "min": 2
+              "min": 2,
+              "max": 6
             }
           },
           {
@@ -68,7 +69,8 @@
             "title": "Maximum heading level",
             "type": "number",
             "numberOptions": {
-              "min": 2
+              "min": 2,
+              "max": 6
             }
           }
         ]
