@@ -93,8 +93,6 @@ const updateCssVariables = () => {
 
   // Borders
   document.documentElement.style.setProperty('--frontmatter-border', 'var(--vscode-panel-border)');
-  const panelBorder = styles.getPropertyValue('--vscode-panel-border');
-  document.documentElement.style.setProperty('--frontmatter-border-noOpacity', preserveColor(panelBorder) || "var(--vscode-panel-border)");
 
   // Other colors which should be preserved (no opacity)
   const buttonBackground = styles.getPropertyValue('--vscode-button-background');
