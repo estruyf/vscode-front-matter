@@ -8,11 +8,23 @@ export class SnippetParser {
     closingTags: string = ']]'
   ): string[] {
     const template = SnippetParser.template(value);
-    return Mustache.parse(template, [openingTags, closingTags])
-      .filter((v) => v[0] === 'name' || v[0] === '&')
-      .map((v) => {
-        return v[1];
-      });
+    const parseTree = Mustache.parse(template, [openingTags, closingTags]);
+
+    const flattenVariablesFromParseTree = (acc: any, v: any) => {
+      if (v[0] === 'name') {
+        return acc.concat([v]);
+      } else if (v[0] === '&') {
+        return acc.concat([v]);
+      } else if (v[0] === '#') {
+        return acc.concat(v[4].reduce(flattenVariablesFromParseTree, []));
+      } else {
+        return acc;
+      }
+    };
+
+    const variables = parseTree.reduce(flattenVariablesFromParseTree, []).map((v: any) => v[1]);
+
+    return variables;
   }
 
   public static render(
