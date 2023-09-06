@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Messenger } from '@estruyf/vscode/dist/client';
+import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
 import { Settings } from '../../models/Settings';
 import { Status } from '../../models/Status';
@@ -7,7 +7,7 @@ import { Step } from './Step';
 import { useMemo, useState } from 'react';
 import { Menu } from '@headlessui/react';
 import { MenuItem } from '../Menu';
-import { ContentFolder, Framework, StaticFolder } from '../../../models';
+import { ContentFolder, Framework, FrameworkTemplate, StaticFolder } from '../../../models';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import { FrameworkDetectors } from '../../../constants/FrameworkDetectors';
 import { join } from 'path';
@@ -15,6 +15,7 @@ import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { SelectItem } from './SelectItem';
+import { FrameworkTemplates } from '../../../constants';
 
 export interface IStepsToGetStartedProps {
   settings: Settings;
@@ -68,6 +69,14 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
     Messenger.send(DashboardMessage.addAssetsFolder, folder);
   }
 
+  const triggerTemplate = (template: FrameworkTemplate) => {
+    messageHandler.request<boolean>(DashboardMessage.triggerTemplate, template).then((result) => {
+      if (result) {
+        reload();
+      }
+    });
+  }
+
   const reload = () => {
     const crntState: any = Messenger.getState() || {};
 
@@ -83,6 +92,14 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
     Messenger.send(DashboardMessage.importTaxonomy);
     setTaxImported(true);
   };
+
+  const templates = useMemo(() => {
+    if (!settings.crntFramework) {
+      return [];
+    }
+
+    return FrameworkTemplates.filter((t) => t.framework === settings.crntFramework);
+  }, [settings.framework])
 
   const steps = [
     {
@@ -161,6 +178,29 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
       onClick: undefined
     },
     {
+      id: `welcome-template`,
+      name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedTemplateName),
+      description: (
+        <div className='mt-4'>
+          <div className="text-sm">{l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedTemplateDescription)}</div>
+          <div className="mt-1 space-y-1">
+            {
+              templates && (templates || []).map(template => (
+                <SelectItem
+                  key={template.id}
+                  title={template.name}
+                  buttonTitle={template.name}
+                  isSelected={false}
+                  onClick={() => triggerTemplate(template)} />
+              ))
+            }
+          </div>
+        </div>
+      ),
+      show: (templates || []).length > 0,
+      status: Status.Active,
+    },
+    {
       id: `welcome-assets`,
       name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedAssetsFolderName),
       description: (
@@ -188,7 +228,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
         </div>
       ),
       show: settings.crntFramework === 'astro' || framework === 'astro',
-      status: !settings.staticFolder ? Status.NotStarted : Status.Completed,
+      status: settings.initialized && settings.staticFolder && settings.staticFolder !== "/" ? Status.Completed : Status.NotStarted,
     },
     {
       id: `welcome-content-folders`,

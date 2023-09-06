@@ -4,11 +4,13 @@
 
 ### ✨ New features
 
+- [#650](https://github.com/estruyf/vscode-front-matter/issues/650): Added template support for [Astro Starlight](https://starlight.astro.build/)
+
+### 🎨 Enhancements
+
 - [#570](https://github.com/estruyf/vscode-front-matter/issues/570): Clear empty values on content creation and editing
 - [#645](https://github.com/estruyf/vscode-front-matter/issues/645): French localization added (thanks to [Clément Barbaza](https://github.com/cba85))
 - [#649](https://github.com/estruyf/vscode-front-matter/issues/649): Parse optional variables from snippets
-
-### 🎨 Enhancements
 
 ### ⚡️ Optimizations
 

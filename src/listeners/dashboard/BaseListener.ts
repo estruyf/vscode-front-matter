@@ -20,4 +20,12 @@ export abstract class BaseListener {
       payload
     });
   }
+
+  public static sendRequest(command: DashboardCommand, requestId: string, payload: any) {
+    Dashboard.postWebviewMessage({
+      command,
+      requestId,
+      payload
+    });
+  }
 }

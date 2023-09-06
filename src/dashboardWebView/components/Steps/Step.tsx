@@ -28,7 +28,7 @@ export const Step: React.FunctionComponent<IStepProps> = ({
             <span
               className={`relative z-10 w-8 h-8 flex items-center justify-center border-2 rounded-full ${getColors(
                 'bg-white border-gray-300',
-                'bg-[var(--frontmatter-border)] border-[var(--frontmatter-border)]'
+                'bg-[var(--frontmatter-border-noOpacity)] border-[var(--frontmatter-border)]'
               )
                 } ${onClick ? getColors('group-hover:text-gray-400', 'group-hover:text-[var(--vscode-button-foreground)] group-hover:border-[var(--vscode-button-hoverBackground)]') : ''
                 }`}

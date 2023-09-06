@@ -11,6 +11,7 @@ export * from './DataFolder';
 export * from './DataType';
 export * from './DraftField';
 export * from './Framework';
+export * from './FrameworkTemplate';
 export * from './GitSettings';
 export * from './MediaPaths';
 export * from './Mode';

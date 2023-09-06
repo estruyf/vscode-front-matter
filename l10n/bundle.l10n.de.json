@@ -332,5 +332,8 @@
   "dashboard.steps.stepsToGetStarted.assetsFolder.description": "Wählen Sie den Ordner aus, der Ihre Assets enthält. In diesem Ordner werden alle Ihre Mediendateien für Ihre Artikel gespeichert.",
   "dashboard.steps.stepsToGetStarted.assetsFolder.public.title": "Verwende den 'public'-Ordner",
   "dashboard.steps.stepsToGetStarted.assetsFolder.assets.title": "Verwende den Astro-Assets-Ordner (src/assets)",
-  "dashboard.steps.stepsToGetStarted.assetsFolder.other.description": "Wenn Sie einen anderen Ordner konfigurieren möchten, können Sie dies manuell in der frontmatter.json-Datei tun."
+  "dashboard.steps.stepsToGetStarted.assetsFolder.other.description": "Wenn Sie einen anderen Ordner konfigurieren möchten, können Sie dies manuell in der frontmatter.json-Datei tun.",
+  "dashboard.steps.stepsToGetStarted.template.name": "Verwende eine Konfigurationsvorlage",
+  "dashboard.steps.stepsToGetStarted.template.description": "Wählen Sie eine Vorlage aus, um die Datei frontmatter.json mit den empfohlenen Einstellungen vorzufüllen.",
+  "listeners.dashboard.settingsListener.triggerTemplate.notification": "Vorlagendateien kopiert."
 }

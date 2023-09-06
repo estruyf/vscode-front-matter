@@ -198,7 +198,11 @@ export class Dashboard {
    * Post data to the dashboard
    * @param msg
    */
-  public static postWebviewMessage(msg: { command: DashboardCommand; payload?: unknown }) {
+  public static postWebviewMessage(msg: {
+    command: DashboardCommand;
+    requestId?: string;
+    payload?: unknown;
+  }) {
     if (Dashboard.isDisposed) {
       return;
     }

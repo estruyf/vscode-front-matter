@@ -6,6 +6,7 @@ export * from './Extension';
 export * from './ExtensionState';
 export * from './Features';
 export * from './FrameworkDetectors';
+export * from './FrameworkTemplates';
 export * from './GeneralCommands';
 export * from './Links';
 export * from './LocalStore';
