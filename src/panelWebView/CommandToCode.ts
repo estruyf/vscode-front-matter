@@ -43,5 +43,6 @@ export enum CommandToCode {
   aiSuggestTaxonomy = 'ai-suggest-taxonomy',
   aiSuggestDescription = 'ai-suggest-description',
   searchByType = 'search-by-type',
-  processMediaData = 'process-media-data'
+  processMediaData = 'process-media-data',
+  isServerStarted = 'is-server-started'
 }

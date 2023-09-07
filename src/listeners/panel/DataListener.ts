@@ -57,6 +57,9 @@ export class DataListener extends BaseListener {
       case CommandToCode.stopServer:
         this.stopServer();
         break;
+      case CommandToCode.isServerStarted:
+        this.isServerStarted(msg.command, msg?.requestId);
+        break;
       case CommandToCode.updatePlaceholder:
         this.updatePlaceholder(msg?.payload?.field, msg?.payload?.value, msg?.payload?.title);
         break;
@@ -523,6 +526,8 @@ export class DataListener extends BaseListener {
         localServerTerminal.sendText(command);
         localServerTerminal.show(false);
       }
+
+      this.sendMsg(Command.serverStarted, true);
     }
   }
 
@@ -534,6 +539,20 @@ export class DataListener extends BaseListener {
     if (localServerTerminal) {
       localServerTerminal.dispose();
     }
+
+    this.sendMsg(Command.serverStarted, false);
+  }
+
+  /**
+   * Checks if the server is started
+   */
+  private static isServerStarted(command: string, requestId?: string) {
+    if (!command || !requestId) {
+      return;
+    }
+
+    const localServerTerminal = DataListener.findServerTerminal();
+    this.sendRequest(command, requestId, !!localServerTerminal);
   }
 
   /**
