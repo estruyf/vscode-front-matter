@@ -10,6 +10,8 @@
 ### 🎨 Enhancements
 
 - Grouping and status tabs enhancements
+- Removed the status bar item to toggle the draft field
+- Added a FM status bar item to open the dashboard
 - [#570](https://github.com/estruyf/vscode-front-matter/issues/570): Clear empty values on content creation and editing
 - [#645](https://github.com/estruyf/vscode-front-matter/issues/645): French localization added (thanks to [Clément Barbaza](https://github.com/cba85))
 - [#649](https://github.com/estruyf/vscode-front-matter/issues/649): Parse optional variables from snippets

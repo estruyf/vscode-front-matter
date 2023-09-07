@@ -55,6 +55,15 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "icons": {
+      "fm-logo": {
+        "description": "Front Matter icon",
+        "default": {
+          "fontPath": "assets/frontmatter.woff",
+          "fontCharacter": "\\e900"
+        }
+      }
+    },
     "configurationDefaults": {
       "files.associations": {
         "**/frontmatter.json": "jsonc",
