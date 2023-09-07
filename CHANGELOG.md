@@ -5,6 +5,7 @@
 ### ✨ New features
 
 - [#650](https://github.com/estruyf/vscode-front-matter/issues/650): Added template support for [Astro Starlight](https://starlight.astro.build/)
+- [#655](https://github.com/estruyf/vscode-front-matter/issues/655): Added a new command to manually refresh the settings of the Front Matter CMS
 
 ### 🎨 Enhancements
 

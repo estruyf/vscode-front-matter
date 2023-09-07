@@ -1767,6 +1767,12 @@
         "icon": "$(arrow-swap)"
       },
       {
+        "command": "frontMatter.settings.refresh",
+        "title": "%command.frontMatter.settings.refresh%",
+        "category": "Front Matter",
+        "icon": "$(refresh)"
+      },
+      {
         "command": "frontMatter.config.reload",
         "title": "%command.frontMatter.config.reload%",
         "category": "Front Matter"
@@ -2361,8 +2367,12 @@
           "when": "view == frontMatter.explorer && frontMatter:project:switch:enabled"
         },
         {
+          "command": "frontMatter.settings.refresh",
+          "group": "navigation@4"
+        },
+        {
           "command": "frontMatter.dashboard",
-          "group": "navigation@4",
+          "group": "navigation@5",
           "when": "view == frontMatter.explorer || view == explorer"
         }
       ]

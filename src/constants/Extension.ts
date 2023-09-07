@@ -42,6 +42,9 @@ export const COMMAND_NAME = {
 
   showOutputChannel: getCommandName('showOutputChannel'),
 
+  // Settings
+  settingsRefresh: getCommandName('settings.refresh'),
+
   // Insert dashboards
   insertMedia: getCommandName('insertMedia'),
   insertSnippet: getCommandName('insertSnippet'),
