@@ -13,7 +13,6 @@ import {
 } from './helpers';
 import ContentProvider from './providers/ContentProvider';
 import { PagesListener } from './listeners/dashboard';
-import { DataListener, SettingsListener } from './listeners/panel';
 import { NavigationType } from './dashboardWebView/models';
 import { ModeSwitch } from './services/ModeSwitch';
 import { PagesParser } from './services/PagesParser';
@@ -275,15 +274,7 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 
   // Things to do when configuration changes
-  SettingsHelper.onConfigChange(() => {
-    Preview.init();
-    GitListener.init();
-
-    SettingsListener.getSettings();
-    DataListener.getFoldersAndFiles();
-    MarkdownFoldingProvider.triggerHighlighting(true);
-    ModeSwitch.register();
-  });
+  SettingsHelper.startListening();
 
   // Create the status bar
   frontMatterStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);

@@ -160,7 +160,7 @@ export class Dashboard {
       await commands.executeCommand('setContext', CONTEXT.isDashboardOpen, false);
     });
 
-    SettingsHelper.onConfigChange(() => {
+    SettingsHelper.attachListener('dashboard-listener', () => {
       SettingsListener.getSettings(true);
     });
 

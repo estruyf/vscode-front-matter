@@ -127,7 +127,7 @@ export class PanelProvider implements WebviewViewProvider, Disposable {
       }
     }, this);
 
-    Settings.onConfigChange(() => {
+    Settings.attachListener('panel-listener', () => {
       SettingsListener.getSettings();
     });
   }

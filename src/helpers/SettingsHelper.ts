@@ -1,10 +1,10 @@
-import { SETTING_EXTENSIBILITY_SCRIPTS, SETTING_PROJECTS } from './../constants/settings';
+import { SETTING_PROJECTS } from './../constants/settings';
 import { parseWinPath } from './parseWinPath';
 import { Telemetry } from './Telemetry';
 import { Notifications } from './Notifications';
 import { commands, Uri, workspace, window } from 'vscode';
 import * as vscode from 'vscode';
-import { ContentType, CustomTaxonomy, Project, TaxonomyType } from '../models';
+import { ContentType, CustomTaxonomy, Project } from '../models';
 import {
   SETTING_TAXONOMY_TAGS,
   SETTING_TAXONOMY_CATEGORIES,
@@ -42,7 +42,11 @@ import { debounceCallback } from './DebounceCallback';
 import { Logger } from './Logger';
 import * as jsoncParser from 'jsonc-parser';
 import { existsAsync, fetchWithTimeout, readFileAsync, writeFileAsync } from '../utils';
-import { Cache } from '../commands';
+import { Cache, Preview } from '../commands';
+import { GitListener } from '../listeners/general';
+import { DataListener } from '../listeners/panel';
+import { MarkdownFoldingProvider } from '../providers/MarkdownFoldingProvider';
+import { ModeSwitch } from '../services/ModeSwitch';
 
 export class Settings {
   public static globalFile = 'frontmatter.json';
@@ -50,7 +54,7 @@ export class Settings {
   public static globalConfig: any;
   private static config: vscode.WorkspaceConfiguration;
   private static isInitialized: boolean = false;
-  private static listeners: any[] = [];
+  private static listeners: { id: string; callback: (global?: any) => void }[] = [];
   private static fileCreationWatcher: vscode.FileSystemWatcher | undefined;
   private static fileChangeWatcher: vscode.FileSystemWatcher | undefined;
   private static fileSaveListener: vscode.Disposable;
@@ -92,8 +96,25 @@ export class Settings {
 
     Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
 
-    Settings.onConfigChange(async () => {
+    Settings.attachListener('settings-init', async () => {
       Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
+    });
+
+    Settings.onConfigChange();
+  }
+
+  /**
+   * Start listening to changes
+   */
+  public static startListening() {
+    // Things to do when configuration changes
+    Settings.attachListener('settings-global', () => {
+      Preview.init();
+      GitListener.init();
+
+      DataListener.getFoldersAndFiles();
+      MarkdownFoldingProvider.triggerHighlighting(true);
+      ModeSwitch.register();
     });
   }
 
@@ -165,19 +186,45 @@ export class Settings {
   }
 
   /**
+   * Attach a new listener for the setting changes
+   * @param id
+   * @param callback
+   * @returns
+   */
+  public static attachListener(id: string, callback: (global?: any) => void) {
+    const listener = Settings.listeners.find((l) => l.id === id);
+    if (listener) {
+      listener.callback = callback;
+      return;
+    }
+
+    Settings.listeners.push({
+      id,
+      callback
+    });
+  }
+
+  /**
+   * Trigger all the listeners
+   */
+  public static triggerListeners() {
+    for (const listener of Settings.listeners) {
+      Logger.info(`Triggering listener: ${listener.id}`);
+      listener.callback();
+    }
+  }
+
+  /**
    * Check for config changes on global and local settings
    * @param callback
    */
-  public static onConfigChange(callback: (global?: any) => void) {
+  public static onConfigChange() {
     const projectConfig = Settings.projectConfigPath;
     const configDebouncer = debounceCallback();
 
     workspace.onDidChangeConfiguration(() => {
-      callback();
+      Settings.triggerListeners();
     });
-
-    // Keep track of the listeners
-    Settings.listeners.push(callback);
 
     if (projectConfig && !existsSync(projectConfig)) {
       // No config file, no need to watch
@@ -199,7 +246,7 @@ export class Settings {
       );
       Settings.fileChangeWatcher.onDidChange(async () => {
         Logger.info(`Config change detected - ${projectConfig} changed`);
-        configDebouncer(() => callback(), 200);
+        configDebouncer(() => Settings.triggerListeners(), 200);
       });
     }
 
@@ -212,9 +259,9 @@ export class Settings {
 
       Logger.info(`Reloaded config...`);
       if (debounced) {
-        configDebouncer(() => callback(), 200);
+        configDebouncer(() => Settings.triggerListeners(), 200);
       } else {
-        callback();
+        Settings.triggerListeners();
       }
     };
 
@@ -909,6 +956,7 @@ export class Settings {
       Settings.fileCreationWatcher.onDidCreate(
         (uri) => {
           if (parseWinPath(uri.fsPath) === parseWinPath(Settings.projectConfigPath)) {
+            Settings.onConfigChange();
             Settings.rebindWatchers();
             // Stop listening to file creation events
             Settings.fileCreationWatcher?.dispose();
@@ -927,10 +975,11 @@ export class Settings {
   private static rebindWatchers() {
     Logger.info(`Rebinding ${this.listeners.length} listeners`);
 
-    this.listeners.forEach((l) => {
-      Settings.onConfigChange(l);
-      l();
+    Settings.listeners.forEach((l) => {
+      Settings.attachListener(l.id, l.callback);
     });
+
+    Settings.triggerListeners();
   }
 
   /**

@@ -17,6 +17,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { usePrevious } from './hooks/usePrevious';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
+import { InitializeAction } from './components/InitializeAction';
 
 export interface IViewPanelProps { }
 
@@ -92,6 +93,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
 
   return (
     <div className="frontmatter">
+      <InitializeAction settings={settings} />
       {
         isDevMode && (
           <div className="developer__bar">
