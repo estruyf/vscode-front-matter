@@ -88,6 +88,10 @@ export enum LocalizationKey {
    */
   commonErrorMessage = 'common.error.message',
   /**
+   * Open on website
+   */
+  commonOpenOnWebsite = 'common.openOnWebsite',
+  /**
    * Developer mode
    */
   developerTitle = 'developer.title',

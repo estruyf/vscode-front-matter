@@ -21,6 +21,7 @@
   "common.support": "Support",
   "common.remove.value": "Remove {0}",
   "common.error.message": "Sorry, something went wrong.",
+  "common.openOnWebsite": "Open on website",
 
   "developer.title": "Developer mode",
   "developer.reload.title": "Reload the dashboard",

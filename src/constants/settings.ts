@@ -103,6 +103,8 @@ export const SETTING_GIT_SUBMODULE_FOLDER = 'git.submodule.folder';
 
 export const SETTING_SNIPPETS_WRAPPER = 'snippets.wrapper.enabled';
 
+export const SETTING_WEBSITE_URL = 'website.host';
+
 /**
  * Sponsors only settings
  */

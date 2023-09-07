@@ -240,5 +240,6 @@
   "setting.frontMatter.taxonomy.dateField.deprecationMessage": "This setting is deprecated and will be removed in the next major version. Please use the new `isPublishDate` settings instead in your content types date fields.",
   "setting.frontMatter.taxonomy.modifiedField.deprecationMessage": "This setting is deprecated and will be removed in the next major version. Please use the new `isModifiedDate` settings instead in your content types date fields.",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.customType.description": "Specify the name of the custom field type to use.",
-  "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.clearEmpty.description": "Specify if the empty values should be cleared."
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.clearEmpty.description": "Specify if the empty values should be cleared.",
+  "setting.frontMatter.website.host.markdownDescription": "Specify the host URL of your website. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.website.url)"
 }

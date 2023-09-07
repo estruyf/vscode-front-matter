@@ -1753,6 +1753,10 @@
           "default": "yyyy-MM-dd",
           "markdownDescription": "%setting.frontMatter.templates.prefix.markdownDescription%",
           "scope": "Templates"
+        },
+        "frontMatter.website.host": {
+          "type": "string",
+          "markdownDescription": "%setting.frontMatter.website.host.markdownDescription%"
         }
       }
     },

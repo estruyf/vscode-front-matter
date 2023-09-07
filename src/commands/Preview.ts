@@ -221,7 +221,7 @@ export class Preview {
    * @param filePath
    * @returns
    */
-  private static async getContentSlug(
+  public static async getContentSlug(
     article: ParsedFrontMatter | null,
     filePath?: string
   ): Promise<string | undefined> {

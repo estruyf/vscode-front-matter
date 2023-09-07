@@ -335,5 +335,6 @@
   "dashboard.steps.stepsToGetStarted.assetsFolder.other.description": "Wenn Sie einen anderen Ordner konfigurieren möchten, können Sie dies manuell in der frontmatter.json-Datei tun.",
   "dashboard.steps.stepsToGetStarted.template.name": "Verwende eine Konfigurationsvorlage",
   "dashboard.steps.stepsToGetStarted.template.description": "Wählen Sie eine Vorlage aus, um die Datei frontmatter.json mit den empfohlenen Einstellungen vorzufüllen.",
-  "listeners.dashboard.settingsListener.triggerTemplate.notification": "Vorlagendateien kopiert."
+  "listeners.dashboard.settingsListener.triggerTemplate.notification": "Vorlagendateien kopiert.",
+  "common.openOnWebsite": "Auf der Website öffnen"
 }

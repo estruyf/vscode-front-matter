@@ -30,6 +30,7 @@ export interface PanelSettings {
   commaSeparatedFields: string[];
   aiEnabled: boolean;
   contentFolders: ContentFolder[];
+  websiteUrl: string;
 }
 
 export interface FieldGroup {

@@ -1,10 +1,12 @@
 import { GeneralCommands } from './../../constants/GeneralCommands';
 import { Dashboard } from '../../commands/Dashboard';
 import { PanelProvider } from '../../panelWebView/PanelProvider';
-import { Extension } from '../../helpers';
+import { ArticleHelper, Extension } from '../../helpers';
 import { Logger } from '../../helpers/Logger';
-import { commands, Uri } from 'vscode';
+import { commands, Uri, window } from 'vscode';
 import { PostMessageData } from '../../models';
+import { Preview } from '../../commands';
+import { urlJoin } from 'url-join-ts';
 
 export abstract class BaseListener {
   public static process(msg: PostMessageData) {
@@ -13,6 +15,9 @@ export abstract class BaseListener {
         if (msg.payload) {
           commands.executeCommand('vscode.open', Uri.parse(msg.payload));
         }
+        break;
+      case GeneralCommands.toVSCode.openOnWebsite:
+        this.openOnWebsite(msg.payload);
         break;
     }
   }
@@ -31,5 +36,39 @@ export abstract class BaseListener {
     panel.sendMessage({ command: command as any, payload });
 
     Dashboard.postWebviewMessage({ command: command as any, payload });
+  }
+
+  /**
+   * Open the page on the website
+   * @param param0
+   * @returns
+   */
+  private static async openOnWebsite({
+    websiteUrl,
+    filePath
+  }: {
+    websiteUrl: string;
+    filePath?: string;
+  }) {
+    if (websiteUrl) {
+      const article = filePath
+        ? await ArticleHelper.getFrontMatterByPath(filePath)
+        : ArticleHelper.getCurrent();
+      if (article) {
+        if (!filePath) {
+          const editor = window.activeTextEditor;
+          if (!editor) {
+            return;
+          }
+
+          filePath = editor.document.uri.fsPath;
+        }
+
+        const slug = await Preview.getContentSlug(article, filePath);
+
+        const fullUrl = urlJoin(websiteUrl, slug);
+        commands.executeCommand('vscode.open', fullUrl);
+      }
+    }
   }
 }
