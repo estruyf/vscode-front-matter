@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { Tab } from '../../constants/Tab';
-import useThemeColors from '../../hooks/useThemeColors';
-import { SettingsAtom, TabAtom, TabInfoAtom } from '../../state';
+import { AllPagesAtom, SettingsAtom, TabAtom, TabInfoAtom } from '../../state';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 
@@ -22,7 +21,6 @@ const NavigationItem: React.FunctionComponent<INavigationItemProps> = ({
   onClick,
   children
 }: React.PropsWithChildren<INavigationItemProps>) => {
-  const { getColors } = useThemeColors();
 
   return (
     <button
@@ -40,8 +38,9 @@ const NavigationItem: React.FunctionComponent<INavigationItemProps> = ({
 };
 
 export const Navigation: React.FunctionComponent<INavigationProps> = ({
-  totalPages
+
 }: React.PropsWithChildren<INavigationProps>) => {
+  const pages = useRecoilValue(AllPagesAtom);
   const [crntTab, setCrntTab] = useRecoilState(TabAtom);
   const tabInfo = useRecoilValue(TabInfoAtom);
   const settings = useRecoilValue(SettingsAtom);
@@ -51,6 +50,14 @@ export const Navigation: React.FunctionComponent<INavigationProps> = ({
     { name: l10n.t(LocalizationKey.dashboardHeaderNavigationPublished), id: Tab.Published },
     { name: l10n.t(LocalizationKey.dashboardHeaderNavigationDraft), id: Tab.Draft }
   ];
+
+  const usesDraft = React.useMemo(() => {
+    return pages.some((x) => x.fmDraft);
+  }, [pages]);
+
+  if (!usesDraft) {
+    return null;
+  }
 
   return (
     <nav className="flex-1 -mb-px flex space-x-6 xl:space-x-8" aria-label="Tabs">

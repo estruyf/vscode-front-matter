@@ -189,6 +189,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
                 <SelectItem
                   key={template.id}
                   title={template.name}
+                  icon='add'
                   buttonTitle={template.name}
                   isSelected={false}
                   onClick={() => triggerTemplate(template)} />

@@ -16,6 +16,7 @@ export interface Page {
   fmTags: string[];
   fmCategories: string[];
   fmContentType: string;
+  fmDateFormat: string | undefined;
 
   title: string;
   slug: string;

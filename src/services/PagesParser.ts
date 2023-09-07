@@ -1,7 +1,7 @@
 import { STATIC_FOLDER_PLACEHOLDER } from './../constants/StaticFolderPlaceholder';
 import { parseWinPath } from './../helpers/parseWinPath';
 import { dirname, extname, join } from 'path';
-import { StatusBarAlignment, Uri, window, Webview } from 'vscode';
+import { StatusBarAlignment, Uri, window } from 'vscode';
 import { Dashboard } from '../commands/Dashboard';
 import { Folders } from '../commands/Folders';
 import {
@@ -9,7 +9,8 @@ import {
   DEFAULT_CONTENT_TYPE_NAME,
   ExtensionState,
   SETTING_SEO_DESCRIPTION_FIELD,
-  SETTING_SEO_TITLE_FIELD
+  SETTING_SEO_TITLE_FIELD,
+  SETTING_DATE_FORMAT
 } from '../constants';
 import { Page } from '../dashboardWebView/models';
 import {
@@ -23,7 +24,7 @@ import {
   Settings
 } from '../helpers';
 import { existsAsync } from '../utils';
-import { Article } from '../commands';
+import { Article, Cache } from '../commands';
 
 export class PagesParser {
   public static allPages: Page[] = [];
@@ -65,6 +66,7 @@ export class PagesParser {
   public static async reset() {
     this.parser = undefined;
     PagesParser.allPages = [];
+    await Cache.clear(false);
   }
 
   /**
@@ -167,8 +169,16 @@ export class PagesParser {
         (Settings.get(SETTING_SEO_DESCRIPTION_FIELD) as string) || DefaultFields.Description;
 
       const dateField = ArticleHelper.getPublishDateField(article) || DefaultFields.PublishingDate;
+
+      const contentType = ArticleHelper.getContentType(article.data);
+      let dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
+      const ctDateField = ContentType.findFieldByName(contentType.fields, dateField);
+      if (ctDateField && ctDateField.dateFormat) {
+        dateFormat = ctDateField.dateFormat;
+      }
+
       const dateFieldValue = article?.data[dateField]
-        ? DateHelper.tryParse(article?.data[dateField])
+        ? DateHelper.tryParse(article?.data[dateField], dateFormat)
         : undefined;
 
       const modifiedField = ArticleHelper.getModifiedDateField(article) || null;
@@ -206,8 +216,9 @@ export class PagesParser {
         fmPreviewImage: '',
         fmTags: [],
         fmCategories: [],
-        fmContentType: DEFAULT_CONTENT_TYPE_NAME,
+        fmContentType: contentType.name || DEFAULT_CONTENT_TYPE_NAME,
         fmBody: article?.content || '',
+        fmDateFormat: dateFormat,
         // Make sure these are always set
         title: escapedTitle,
         description: escapedDescription,
@@ -215,11 +226,6 @@ export class PagesParser {
         date: article?.data[dateField] || '',
         draft: article?.data.draft
       };
-
-      const contentType = ArticleHelper.getContentType(article.data);
-      if (contentType) {
-        page.fmContentType = contentType.name;
-      }
 
       let previewFieldParents = ContentType.findPreviewField(contentType.fields);
       if (previewFieldParents.length === 0) {

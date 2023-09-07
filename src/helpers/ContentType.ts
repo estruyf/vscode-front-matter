@@ -350,6 +350,25 @@ export class ContentType {
   }
 
   /**
+   * Find the field by its name
+   * @param fields
+   * @param name
+   * @returns
+   */
+  public static findFieldByName(fields: Field[], name: string): Field | undefined {
+    for (const field of fields) {
+      if (field.name === name) {
+        return field;
+      } else if (field.type === 'fields' && field.fields) {
+        const subField = this.findFieldByName(field.fields, name);
+        if (subField) {
+          return subField;
+        }
+      }
+    }
+  }
+
+  /**
    * Find the field by its type
    * @param fields
    * @param type
