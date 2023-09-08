@@ -23,6 +23,7 @@
 - [#647](https://github.com/estruyf/vscode-front-matter/issues/647): Fix the open in browser action on the preview
 - [#648](https://github.com/estruyf/vscode-front-matter/issues/648): Fix the global configuration reference to the URL of the schema file
 - [#651](https://github.com/estruyf/vscode-front-matter/issues/651): Fix settings listeners which did not push updates to the webviews
+- [#657](https://github.com/estruyf/vscode-front-matter/issues/657): Fix correctly updating front matter with scripts outcome on Windows
 
 ## [9.1.0] - 2023-08-31
 
