@@ -64,6 +64,7 @@ export class Settings {
   private static configDebouncer = debounceCallback();
 
   public static async init() {
+    const allCommands = await commands.getCommands(true);
     await Settings.readConfig();
 
     const projects = Settings.getProjects();
@@ -92,10 +93,14 @@ export class Settings {
     if (!Settings.isInitialized) {
       Settings.isInitialized = true;
 
-      commands.registerCommand(COMMAND_NAME.reloadConfig, Settings.rebindWatchers);
+      if (!allCommands.includes(COMMAND_NAME.reloadConfig)) {
+        commands.registerCommand(COMMAND_NAME.reloadConfig, Settings.rebindWatchers);
+      }
     }
 
-    commands.registerCommand(COMMAND_NAME.settingsRefresh, Settings.reloadConfig);
+    if (!allCommands.includes(COMMAND_NAME.settingsRefresh)) {
+      commands.registerCommand(COMMAND_NAME.settingsRefresh, Settings.reloadConfig);
+    }
 
     Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
 

@@ -10,7 +10,8 @@
     "color": "#0e131f",
     "theme": "dark"
   },
-  "badges": [{
+  "badges": [
+    {
       "description": "version",
       "url": "https://img.shields.io/github/package-json/v/estruyf/vscode-front-matter?color=green&label=vscode-front-matter&style=flat-square",
       "href": "https://github.com/estruyf/vscode-front-matter"
@@ -70,7 +71,8 @@
         "**/.frontmatter/config/*.json": "jsonc"
       }
     },
-    "keybindings": [{
+    "keybindings": [
+      {
         "command": "frontMatter.dashboard",
         "key": "alt+d"
       },
@@ -88,20 +90,24 @@
       }
     ],
     "viewsContainers": {
-      "activitybar": [{
-        "id": "frontmatter-explorer",
-        "title": "Front Matter",
-        "icon": "assets/frontmatter-short-min.svg"
-      }]
+      "activitybar": [
+        {
+          "id": "frontmatter-explorer",
+          "title": "Front Matter",
+          "icon": "assets/frontmatter-short-min.svg"
+        }
+      ]
     },
     "views": {
-      "frontmatter-explorer": [{
-        "id": "frontMatter.explorer",
-        "name": "Front Matter",
-        "icon": "assets/frontmatter-short-min.svg",
-        "contextualTitle": "Front Matter",
-        "type": "webview"
-      }]
+      "frontmatter-explorer": [
+        {
+          "id": "frontMatter.explorer",
+          "name": "Front Matter",
+          "icon": "assets/frontmatter-short-min.svg",
+          "contextualTitle": "Front Matter",
+          "type": "webview"
+        }
+      ]
     },
     "configuration": {
       "title": "%settings.configuration.title%",
@@ -164,7 +170,8 @@
         "frontMatter.content.defaultFileType": {
           "type": "string",
           "default": "md",
-          "oneOf": [{
+          "oneOf": [
+            {
               "enum": [
                 "md",
                 "mdx"
@@ -180,7 +187,8 @@
         "frontMatter.content.defaultSorting": {
           "type": "string",
           "default": "",
-          "oneOf": [{
+          "oneOf": [
+            {
               "enum": [
                 "LastModifiedAsc",
                 "LastModifiedDesc",
@@ -527,7 +535,8 @@
               "command": {
                 "$id": "#scriptCommand",
                 "type": "string",
-                "anyOf": [{
+                "anyOf": [
+                  {
                     "enum": [
                       "node",
                       "bash",
@@ -727,7 +736,8 @@
               "title",
               "file"
             ],
-            "anyOf": [{
+            "anyOf": [
+              {
                 "required": [
                   "schema"
                 ]
@@ -781,7 +791,8 @@
               "id",
               "path"
             ],
-            "anyOf": [{
+            "anyOf": [
+              {
                 "required": [
                   "schema"
                 ]
@@ -1149,7 +1160,8 @@
                       "default": "",
                       "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.taxonomyId.description%",
                       "not": {
-                        "anyOf": [{
+                        "anyOf": [
+                          {
                             "const": ""
                           },
                           {
@@ -1343,7 +1355,8 @@
                     "type",
                     "name"
                   ],
-                  "allOf": [{
+                  "allOf": [
+                    {
                       "if": {
                         "properties": {
                           "type": {
@@ -1529,48 +1542,51 @@
               "fields"
             ]
           },
-          "default": [{
-            "name": "default",
-            "pageBundle": false,
-            "fields": [{
-                "title": "Title",
-                "name": "title",
-                "type": "string"
-              },
-              {
-                "title": "Description",
-                "name": "description",
-                "type": "string"
-              },
-              {
-                "title": "Publishing date",
-                "name": "date",
-                "type": "datetime",
-                "default": "{{now}}",
-                "isPublishDate": true
-              },
-              {
-                "title": "Content preview",
-                "name": "preview",
-                "type": "image"
-              },
-              {
-                "title": "Is in draft",
-                "name": "draft",
-                "type": "boolean"
-              },
-              {
-                "title": "Tags",
-                "name": "tags",
-                "type": "tags"
-              },
-              {
-                "title": "Categories",
-                "name": "categories",
-                "type": "categories"
-              }
-            ]
-          }],
+          "default": [
+            {
+              "name": "default",
+              "pageBundle": false,
+              "fields": [
+                {
+                  "title": "Title",
+                  "name": "title",
+                  "type": "string"
+                },
+                {
+                  "title": "Description",
+                  "name": "description",
+                  "type": "string"
+                },
+                {
+                  "title": "Publishing date",
+                  "name": "date",
+                  "type": "datetime",
+                  "default": "{{now}}",
+                  "isPublishDate": true
+                },
+                {
+                  "title": "Content preview",
+                  "name": "preview",
+                  "type": "image"
+                },
+                {
+                  "title": "Is in draft",
+                  "name": "draft",
+                  "type": "boolean"
+                },
+                {
+                  "title": "Tags",
+                  "name": "tags",
+                  "type": "tags"
+                },
+                {
+                  "title": "Categories",
+                  "name": "categories",
+                  "type": "categories"
+                }
+              ]
+            }
+          ],
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.customTaxonomy": {
@@ -1583,7 +1599,8 @@
                 "type": "string",
                 "description": "%setting.frontMatter.taxonomy.customTaxonomy.items.properties.id.description%",
                 "not": {
-                  "anyOf": [{
+                  "anyOf": [
+                    {
                       "const": ""
                     },
                     {
@@ -1769,7 +1786,8 @@
         }
       }
     },
-    "commands": [{
+    "commands": [
+      {
         "command": "frontMatter.project.switch",
         "title": "%command.frontMatter.project.switch%",
         "category": "Front Matter",
@@ -2104,12 +2122,15 @@
         "category": "Front Matter"
       }
     ],
-    "submenus": [{
-      "id": "frontmatter.submenu",
-      "label": "Front Matter"
-    }],
+    "submenus": [
+      {
+        "id": "frontmatter.submenu",
+        "label": "Front Matter"
+      }
+    ],
     "menus": {
-      "editor/title": [{
+      "editor/title": [
+        {
           "command": "frontMatter.markup.heading",
           "group": "navigation@-133",
           "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
@@ -2190,11 +2211,14 @@
           "when": "resourceFilename == 'frontmatter.json'"
         }
       ],
-      "explorer/context": [{
-        "submenu": "frontmatter.submenu",
-        "group": "frontmatter@1"
-      }],
-      "frontmatter.submenu": [{
+      "explorer/context": [
+        {
+          "submenu": "frontmatter.submenu",
+          "group": "frontmatter@1"
+        }
+      ],
+      "frontmatter.submenu": [
+        {
           "command": "frontMatter.createFromTemplate",
           "when": "explorerResourceIsFolder",
           "group": "frontmatter@1"
@@ -2210,7 +2234,8 @@
           "group": "frontmatter@3"
         }
       ],
-      "commandPalette": [{
+      "commandPalette": [
+        {
           "command": "frontMatter.init",
           "when": "frontMatterCanInit"
         },
@@ -2355,7 +2380,8 @@
           "when": "frontMatter:file:isValid == true"
         }
       ],
-      "view/title": [{
+      "view/title": [
+        {
           "command": "frontMatter.chatbot",
           "group": "navigation@0",
           "when": "view == frontMatter.explorer"
@@ -2386,52 +2412,57 @@
         }
       ]
     },
-    "grammars": [{
-      "path": "./syntaxes/hugo.tmLanguage.json",
-      "scopeName": "frontmatter.markdown.hugo",
-      "injectTo": [
-        "text.html.markdown"
-      ]
-    }],
-    "walkthroughs": [{
-      "id": "frontmatter.welcome",
-      "title": "Get started with Front Matter",
-      "description": "Discover the features of Front Matter and learn how to use the CMS for your SSG or static site.",
-      "steps": [{
-          "id": "frontmatter.welcome.init",
-          "title": "Get started",
-          "description": "Initial steps to get started.\n[Open dashboard](command:frontMatter.dashboard)",
-          "media": {
-            "markdown": "assets/walkthrough/get-started.md"
+    "grammars": [
+      {
+        "path": "./syntaxes/hugo.tmLanguage.json",
+        "scopeName": "frontmatter.markdown.hugo",
+        "injectTo": [
+          "text.html.markdown"
+        ]
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "frontmatter.welcome",
+        "title": "Get started with Front Matter",
+        "description": "Discover the features of Front Matter and learn how to use the CMS for your SSG or static site.",
+        "steps": [
+          {
+            "id": "frontmatter.welcome.init",
+            "title": "Get started",
+            "description": "Initial steps to get started.\n[Open dashboard](command:frontMatter.dashboard)",
+            "media": {
+              "markdown": "assets/walkthrough/get-started.md"
+            },
+            "completionEvents": [
+              "onContext:frontMatterInitialized"
+            ]
           },
-          "completionEvents": [
-            "onContext:frontMatterInitialized"
-          ]
-        },
-        {
-          "id": "frontmatter.welcome.documentation",
-          "title": "Documentation",
-          "description": "Check out the documentation for Front Matter.\n[View our documentation](https://frontmatter.codes/docs)",
-          "media": {
-            "markdown": "assets/walkthrough/documentation.md"
+          {
+            "id": "frontmatter.welcome.documentation",
+            "title": "Documentation",
+            "description": "Check out the documentation for Front Matter.\n[View our documentation](https://frontmatter.codes/docs)",
+            "media": {
+              "markdown": "assets/walkthrough/documentation.md"
+            },
+            "completionEvents": [
+              "onLink:https://frontmatter.codes/docs"
+            ]
           },
-          "completionEvents": [
-            "onLink:https://frontmatter.codes/docs"
-          ]
-        },
-        {
-          "id": "frontmatter.welcome.supporter",
-          "title": "Support the project",
-          "description": "Become a supporter.\n[Support the project](https://github.com/sponsors/estruyf)",
-          "media": {
-            "markdown": "assets/walkthrough/support-the-project.md"
-          },
-          "completionEvents": [
-            "onLink:https://github.com/sponsors/estruyf"
-          ]
-        }
-      ]
-    }]
+          {
+            "id": "frontmatter.welcome.supporter",
+            "title": "Support the project",
+            "description": "Become a supporter.\n[Support the project](https://github.com/sponsors/estruyf)",
+            "media": {
+              "markdown": "assets/walkthrough/support-the-project.md"
+            },
+            "completionEvents": [
+              "onLink:https://github.com/sponsors/estruyf"
+            ]
+          }
+        ]
+      }
+    ]
   },
   "scripts": {
     "dev:ext": "npm run clean && npm run localization:generate && npm-run-all --parallel watch:*",
@@ -2504,6 +2535,7 @@
     "downshift": "6.0.6",
     "eslint": "^8.33.0",
     "fuse.js": "6.5.3",
+    "github-directory-downloader": "^1.3.6",
     "glob": "7.1.6",
     "gray-matter": "4.0.3",
     "html-loader": "1.3.2",

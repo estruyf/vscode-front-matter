@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { commands, FileType, Uri, workspace } from 'vscode';
+import { commands, FileType, Uri, workspace, window, ProgressLocation } from 'vscode';
 import { Folders } from '../../commands/Folders';
 import {
   COMMAND_NAME,
@@ -12,7 +12,7 @@ import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { DashboardSettings, Extension, Notifications, Settings } from '../../helpers';
 import { FrameworkDetector } from '../../helpers/FrameworkDetector';
-import { Framework, FrameworkTemplate, PostMessageData, StaticFolder } from '../../models';
+import { Framework, Template, PostMessageData, StaticFolder } from '../../models';
 import { BaseListener } from './BaseListener';
 import { Cache } from '../../commands/Cache';
 import { Preview } from '../../commands';
@@ -24,6 +24,7 @@ import { PagesListener } from './PagesListener';
 import { existsAsync } from '../../utils';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
+import download from 'github-directory-downloader/esm';
 
 export class SettingsListener extends BaseListener {
   /**
@@ -152,32 +153,45 @@ export class SettingsListener extends BaseListener {
    * Adds the template files to the workspace
    * @param template
    */
-  private static async triggerTemplate(requestId?: string, template?: FrameworkTemplate) {
-    if (template && template.template) {
-      const templateFileLocation = join(
-        Extension.getInstance().extensionPath.fsPath,
-        'templates',
-        template.template
-      );
+  private static async triggerTemplate(requestId?: string, template?: Template) {
+    if (template && template.url) {
+      const wsFolder = Folders.getWorkspaceFolder();
 
-      if (await existsAsync(templateFileLocation)) {
-        const allFiles = await workspace.fs.readDirectory(Uri.file(templateFileLocation));
-
-        await this.copyTemplateFiles(allFiles, templateFileLocation);
-
-        await Settings.init();
-        await SettingsListener.getSettings(true);
-
-        if (template.showDashboardOnComplete) {
-          if (requestId) {
-            this.sendRequest(DashboardMessage.triggerTemplate as any, requestId, true);
-          }
-        } else {
-          Notifications.info(
-            l10n.t(LocalizationKey.listenersDashboardSettingsListenerTriggerTemplateNotification)
-          );
-        }
+      if (!wsFolder) {
+        return;
       }
+
+      await window.withProgress(
+        {
+          location: ProgressLocation.Notification,
+          title: 'Downloading and initializing the template...',
+          cancellable: false
+        },
+        async (progress) => {
+          try {
+            const ghFolder = await download(template.url, wsFolder.fsPath);
+
+            if (!ghFolder.downloaded) {
+              Notifications.error('Failed to download the template.');
+              return;
+            }
+
+            await Settings.init();
+            await SettingsListener.getSettings(true);
+            if (requestId) {
+              this.sendRequest(DashboardMessage.triggerTemplate as any, requestId, true);
+
+              Notifications.info(
+                l10n.t(
+                  LocalizationKey.listenersDashboardSettingsListenerTriggerTemplateNotification
+                )
+              );
+            }
+          } catch (e) {
+            Notifications.error(`Failed to initialize the template.`);
+          }
+        }
+      );
     }
   }
 
