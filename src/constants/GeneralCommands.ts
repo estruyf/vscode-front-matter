@@ -8,6 +8,7 @@ export const GeneralCommands = {
   toVSCode: {
     openLink: 'openLink',
     gitSync: 'gitSync',
-    getLocalization: 'getLocalization'
+    getLocalization: 'getLocalization',
+    openOnWebsite: 'openOnWebsite'
   }
 };

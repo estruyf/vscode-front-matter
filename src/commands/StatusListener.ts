@@ -24,18 +24,7 @@ export class StatusListener {
    * @param frontMatterSB
    * @param collection
    */
-  public static async verify(
-    frontMatterSB: vscode.StatusBarItem,
-    collection: vscode.DiagnosticCollection
-  ) {
-    const draftMsg = 'in draft';
-    const publishMsg = 'to publish';
-
-    const draft = ContentType.getDraftField();
-    if (!draft || draft.type !== 'boolean') {
-      frontMatterSB.hide();
-    }
-
+  public static async verify(collection: vscode.DiagnosticCollection) {
     const editor = vscode.window.activeTextEditor;
     let document = editor?.document;
 
@@ -53,17 +42,6 @@ export class StatusListener {
         const article = editor
           ? ArticleHelper.getFrontMatter(editor)
           : await ArticleHelper.getFrontMatterByPath(document.uri.fsPath);
-
-        // Update the StatusBar based on the article draft state
-        if (article && typeof article.data['draft'] !== 'undefined') {
-          if (article.data['draft'] === true) {
-            frontMatterSB.text = `$(book) ${draftMsg}`;
-            frontMatterSB.show();
-          } else if (article.data['draft'] === false) {
-            frontMatterSB.text = `$(book) ${publishMsg}`;
-            frontMatterSB.show();
-          }
-        }
 
         // Check SEO and required fields
         if (article && article.data) {
@@ -108,8 +86,6 @@ export class StatusListener {
         DataListener.pushMetadata(null);
       }
     }
-
-    frontMatterSB.hide();
   }
 
   /**

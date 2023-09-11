@@ -21,6 +21,7 @@
   "common.support": "Support",
   "common.remove.value": "Remove {0}",
   "common.error.message": "Sorry, something went wrong.",
+  "common.openOnWebsite": "Open on website",
 
   "developer.title": "Developer mode",
   "developer.reload.title": "Reload the dashboard",
@@ -130,7 +131,7 @@
   "dashboard.header.sorting.alt.asc": "Alt (asc)",
   "dashboard.header.sorting.alt.desc": "Alt (desc)",
   "dashboard.header.sorting.label": "Sort by",
-  
+
   "dashboard.header.startup.label": "Open on startup?",
 
   "dashboard.header.tabs.contents": "Contents",
@@ -242,6 +243,8 @@
   "dashboard.steps.stepsToGetStarted.tags.description": "Now that Front Matter knows all the content folders. Would you like to import all tags and categories from the available content?",
   "dashboard.steps.stepsToGetStarted.showDashboard.name": "Show the dashboard",
   "dashboard.steps.stepsToGetStarted.showDashboard.description": "Once all actions are completed, the dashboard can be loaded.",
+  "dashboard.steps.stepsToGetStarted.template.name": "Use a configuration template",
+  "dashboard.steps.stepsToGetStarted.template.description": "Select a template to prefill the frontmatter.json file with the recommended settings.",
 
   "dashboard.taxonomyView.button.add.title": "Add {0} to taxonomy settings",
   "dashboard.taxonomyView.button.edit.title": "Edit {0}",
@@ -422,5 +425,7 @@
 
   "panel.tags.tag.warning": "Be aware, this tag \"{0}\" is not saved in your settings. Once removed, it will be gone forever.",
 
-  "panel.viewPanel.mediaInsert": "Continue in the media dashboard to select the image you want to insert."
+  "panel.viewPanel.mediaInsert": "Continue in the media dashboard to select the image you want to insert.",
+
+  "listeners.dashboard.settingsListener.triggerTemplate.notification": "Template files copied."
 }

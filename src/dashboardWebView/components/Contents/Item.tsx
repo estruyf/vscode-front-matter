@@ -21,6 +21,7 @@ const PREVIEW_IMAGE_FIELD = 'fmPreviewImage';
 
 export const Item: React.FunctionComponent<IItemProps> = ({
   fmFilePath,
+  fmDateFormat,
   date,
   title,
   description,
@@ -174,7 +175,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                 dateHtml ? (
                   <div className='mr-4' dangerouslySetInnerHTML={{ __html: dateHtml }} />
                 ) : (
-                  cardFields?.date && <DateField className={`mr-4`} value={date} />
+                  cardFields?.date && <DateField className={`mr-4`} value={date} format={fmDateFormat} />
                 )
               }
             </div>

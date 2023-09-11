@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { CheckCircleIcon } from '@heroicons/react/outline';
-import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/solid';
+import { CheckCircleIcon, PlusCircleIcon } from '@heroicons/react/outline';
+import { CheckCircleIcon as CheckCircleIconSolid, PlusCircleIcon as PlusCircleIconSolid } from '@heroicons/react/solid';
 
 export interface ISelectItemProps {
   title: string;
+  icon?: "add" | "select";
   buttonTitle: string;
   isSelected: boolean;
   onClick: () => void;
@@ -11,6 +12,7 @@ export interface ISelectItemProps {
 
 export const SelectItem: React.FunctionComponent<ISelectItemProps> = ({
   title,
+  icon = "select",
   buttonTitle,
   isSelected,
   onClick
@@ -25,9 +27,17 @@ export const SelectItem: React.FunctionComponent<ISelectItemProps> = ({
         title={buttonTitle}
       >
         {isSelected ? (
-          <CheckCircleIconSolid className={`h-4 w-4`} />
+          icon === "add" ? (
+            <PlusCircleIconSolid className={`h-4 w-4`} />
+          ) : (
+            <CheckCircleIconSolid className={`h-4 w-4`} />
+          )
         ) : (
-          <CheckCircleIcon className={`h-4 w-4`} />
+          icon === "add" ? (
+            <PlusCircleIcon className={`h-4 w-4`} />
+          ) : (
+            <CheckCircleIcon className={`h-4 w-4`} />
+          )
         )}
         <span>{title}</span>
       </button>

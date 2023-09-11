@@ -77,15 +77,15 @@ export const ContentTypeValidator: React.FunctionComponent<IContentTypeValidator
 
 
       <div className="hint__buttons">
-        <VSCodeButton appearance={`secondary`} onClick={generateContentType}>
+        <VSCodeButton style={{ "--border-width": 0 }} appearance={`secondary`} onClick={generateContentType}>
           {l10n.t(LocalizationKey.panelContentTypeContentTypeValidatorButtonCreate)}
         </VSCodeButton>
 
-        <VSCodeButton appearance={`secondary`} onClick={addMissingFields}>
+        <VSCodeButton style={{ "--border-width": 0 }} appearance={`secondary`} onClick={addMissingFields}>
           {l10n.t(LocalizationKey.panelContentTypeContentTypeValidatorButtonAdd)}
         </VSCodeButton>
 
-        <VSCodeButton appearance={`secondary`} onClick={setContentType}>
+        <VSCodeButton style={{ "--border-width": 0 }} appearance={`secondary`} onClick={setContentType}>
           {l10n.t(LocalizationKey.panelContentTypeContentTypeValidatorButtonChange)}
         </VSCodeButton>
       </div>

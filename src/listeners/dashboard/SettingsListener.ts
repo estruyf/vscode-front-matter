@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { commands, Uri } from 'vscode';
+import { commands, FileType, Uri, workspace, window, ProgressLocation } from 'vscode';
 import { Folders } from '../../commands/Folders';
 import {
   COMMAND_NAME,
@@ -10,9 +10,9 @@ import {
 } from '../../constants';
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
-import { DashboardSettings, Extension, Settings } from '../../helpers';
+import { DashboardSettings, Extension, Notifications, Settings } from '../../helpers';
 import { FrameworkDetector } from '../../helpers/FrameworkDetector';
-import { Framework, PostMessageData, StaticFolder } from '../../models';
+import { Framework, Template, PostMessageData, StaticFolder } from '../../models';
 import { BaseListener } from './BaseListener';
 import { Cache } from '../../commands/Cache';
 import { Preview } from '../../commands';
@@ -21,6 +21,10 @@ import { DataListener } from '../panel';
 import { MarkdownFoldingProvider } from '../../providers/MarkdownFoldingProvider';
 import { ModeSwitch } from '../../services/ModeSwitch';
 import { PagesListener } from './PagesListener';
+import { existsAsync } from '../../utils';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../localization';
+import download from 'github-directory-downloader/esm';
 
 export class SettingsListener extends BaseListener {
   /**
@@ -45,6 +49,9 @@ export class SettingsListener extends BaseListener {
         break;
       case DashboardMessage.addAssetsFolder:
         this.addAssetsFolder(msg?.payload);
+        break;
+      case DashboardMessage.triggerTemplate:
+        this.triggerTemplate(msg?.requestId, msg?.payload);
         break;
       case DashboardMessage.switchProject:
         this.switchProject(msg.payload);
@@ -139,6 +146,89 @@ export class SettingsListener extends BaseListener {
       const wsFolder = Folders.getWorkspaceFolder();
       const folderUri = Uri.file(join(wsFolder?.fsPath || '', folder));
       commands.executeCommand(COMMAND_NAME.registerFolder, folderUri);
+    }
+  }
+
+  /**
+   * Adds the template files to the workspace
+   * @param template
+   */
+  private static async triggerTemplate(requestId?: string, template?: Template) {
+    if (template && template.url) {
+      const wsFolder = Folders.getWorkspaceFolder();
+
+      if (!wsFolder) {
+        return;
+      }
+
+      await window.withProgress(
+        {
+          location: ProgressLocation.Notification,
+          title: 'Downloading and initializing the template...',
+          cancellable: false
+        },
+        async (progress) => {
+          try {
+            const ghFolder = await download(template.url, wsFolder.fsPath);
+
+            if (!ghFolder.downloaded) {
+              Notifications.error('Failed to download the template.');
+              return;
+            }
+
+            await Settings.init();
+            await SettingsListener.getSettings(true);
+            if (requestId) {
+              this.sendRequest(DashboardMessage.triggerTemplate as any, requestId, true);
+
+              Notifications.info(
+                l10n.t(
+                  LocalizationKey.listenersDashboardSettingsListenerTriggerTemplateNotification
+                )
+              );
+            }
+          } catch (e) {
+            Notifications.error(`Failed to initialize the template.`);
+          }
+        }
+      );
+    }
+  }
+
+  /**
+   * Copies all the template files to the workspace
+   * @param files
+   * @param templateFileLocation
+   * @param extRelPath
+   * @returns
+   */
+  private static async copyTemplateFiles(
+    files: [string, FileType][],
+    templateFileLocation: string,
+    extRelPath: string = ''
+  ) {
+    const wsFolder = Folders.getWorkspaceFolder();
+    if (!wsFolder) {
+      return;
+    }
+
+    for (const file of files) {
+      const crntFolderPath = join(extRelPath, file[0]);
+      const extFilePath = join(templateFileLocation, crntFolderPath);
+
+      if (file[1] === FileType.Directory) {
+        const allFiles = await workspace.fs.readDirectory(Uri.file(extFilePath));
+
+        const wsFolderPath = join(wsFolder.fsPath || '', crntFolderPath);
+        await workspace.fs.createDirectory(Uri.file(wsFolderPath));
+
+        await this.copyTemplateFiles(allFiles, templateFileLocation, crntFolderPath);
+      } else {
+        const wsFilePath = join(wsFolder.fsPath || '', crntFolderPath);
+        await workspace.fs.copy(Uri.file(extFilePath), Uri.file(wsFilePath), {
+          overwrite: true
+        });
+      }
     }
   }
 }

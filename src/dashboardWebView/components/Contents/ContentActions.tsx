@@ -1,6 +1,6 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { Menu } from '@headlessui/react';
-import { EyeIcon, TerminalIcon, TrashIcon } from '@heroicons/react/outline';
+import { EyeIcon, GlobeIcon, TerminalIcon, TrashIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { CustomScript, ScriptType } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
@@ -11,6 +11,9 @@ import { useState } from 'react';
 import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { useRecoilValue } from 'recoil';
+import { SettingsSelector } from '../../state';
+import { GeneralCommands } from '../../../constants';
 
 export interface IContentActionsProps {
   title: string;
@@ -29,6 +32,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
 }: React.PropsWithChildren<IContentActionsProps>) => {
   const [showDeletionAlert, setShowDeletionAlert] = React.useState(false);
   const { getColors } = useThemeColors();
+  const settings = useRecoilValue(SettingsSelector);
 
   const [referenceElement, setReferenceElement] = useState<any>(null);
   const [popperElement, setPopperElement] = useState<any>(null);
@@ -53,6 +57,16 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
     }
     setShowDeletionAlert(false);
   };
+
+  const openOnWebsite = React.useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (settings?.websiteUrl && path) {
+      Messenger.send(GeneralCommands.toVSCode.openOnWebsite, {
+        websiteUrl: settings.websiteUrl,
+        filePath: path
+      });
+    }
+  }, [settings?.websiteUrl, path]);
 
   const runCustomScript = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement>, script: CustomScript) => {
@@ -101,11 +115,19 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
           <Menu as="div" className={`relative flex text-left`}>
             {!listView && (
               <div className="hidden group-hover/card:flex">
-                <QuickAction title={`View content`} onClick={onView}>
+                <QuickAction title={l10n.t(LocalizationKey.dashboardContentsContentActionsMenuItemView)} onClick={onView}>
                   <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
                 </QuickAction>
 
-                <QuickAction title={`Delete content`} onClick={onDelete}>
+                {
+                  settings?.websiteUrl && (
+                    <QuickAction title={l10n.t(LocalizationKey.commonOpenOnWebsite)} onClick={openOnWebsite}>
+                      <GlobeIcon className={`w-4 h-4`} aria-hidden="true" />
+                    </QuickAction>
+                  )
+                }
+
+                <QuickAction title={l10n.t(LocalizationKey.commonDelete)} onClick={onDelete}>
                   <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
                 </QuickAction>
               </div>
@@ -135,6 +157,20 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
                   }
                   onClick={(_, e) => onView(e)}
                 />
+
+                {
+                  settings?.websiteUrl && (
+                    <MenuItem
+                      title={
+                        <div className="flex items-center">
+                          <GlobeIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
+                          <span>{l10n.t(LocalizationKey.commonOpenOnWebsite)}</span>
+                        </div>
+                      }
+                      onClick={(_, e) => openOnWebsite(e)}
+                    />
+                  )
+                }
 
                 {customScriptActions}
 

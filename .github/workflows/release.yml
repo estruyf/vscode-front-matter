@@ -7,19 +7,21 @@ on:
 
 jobs:
   build:
-    name: "Build and release"
+    name: 'Build and release'
     runs-on: ubuntu-latest
+    environment:
+      name: Stable
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
           registry-url: https://registry.npmjs.org/
 
       - name: Install the dependencies
         run: npm i
-      
+
       - name: Prepare MAIN release
         run: node scripts/main-release.js
 

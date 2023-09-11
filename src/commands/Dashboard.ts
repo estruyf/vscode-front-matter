@@ -160,7 +160,7 @@ export class Dashboard {
       await commands.executeCommand('setContext', CONTEXT.isDashboardOpen, false);
     });
 
-    SettingsHelper.onConfigChange(() => {
+    SettingsHelper.attachListener('dashboard-listener', () => {
       SettingsListener.getSettings(true);
     });
 
@@ -198,7 +198,11 @@ export class Dashboard {
    * Post data to the dashboard
    * @param msg
    */
-  public static postWebviewMessage(msg: { command: DashboardCommand; payload?: unknown }) {
+  public static postWebviewMessage(msg: {
+    command: DashboardCommand;
+    requestId?: string;
+    payload?: unknown;
+  }) {
     if (Dashboard.isDisposed) {
       return;
     }

@@ -18,7 +18,6 @@ export const COMMAND_NAME = {
   setLastModifiedDate: getCommandName('setLastModifiedDate'),
   generateSlug: getCommandName('generateSlug'),
   createFromTemplate: getCommandName('createFromTemplate'),
-  toggleDraft: getCommandName('toggleDraft'),
   registerFolder: getCommandName('registerFolder'),
   unregisterFolder: getCommandName('unregisterFolder'),
   createContent: getCommandName('createContent'),
@@ -41,6 +40,9 @@ export const COMMAND_NAME = {
   modeSwitch: getCommandName('mode.switch'),
 
   showOutputChannel: getCommandName('showOutputChannel'),
+
+  // Settings
+  settingsRefresh: getCommandName('settings.refresh'),
 
   // Insert dashboards
   insertMedia: getCommandName('insertMedia'),

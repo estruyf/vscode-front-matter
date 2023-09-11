@@ -23,7 +23,7 @@ import {
 } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { FrontMatterParser, ParsedFrontMatter } from '../parsers';
-import { Extension, Logger, Settings, SlugHelper } from '.';
+import { Extension, Logger, Settings, SlugHelper, parseWinPath } from '.';
 import { format, parse } from 'date-fns';
 import { Notifications } from './Notifications';
 import { Article } from '../commands';
@@ -110,7 +110,7 @@ export class ArticleHelper {
    * @param article
    */
   public static async updateByPath(path: string, article: ParsedFrontMatter) {
-    const file = await workspace.openTextDocument(Uri.parse(path));
+    const file = await workspace.openTextDocument(Uri.file(parseWinPath(path)));
 
     if (file) {
       const update = this.generateUpdate(file, article);

@@ -13,10 +13,18 @@ export abstract class BaseListener {
    * @param data
    */
   public static sendMsg(command: DashboardCommand, payload: any) {
-    Logger.info(`Sending message to webview: ${command}`);
+    Logger.info(`Sending message to dashboard: ${command}`);
 
     Dashboard.postWebviewMessage({
       command,
+      payload
+    });
+  }
+
+  public static sendRequest(command: DashboardCommand, requestId: string, payload: any) {
+    Dashboard.postWebviewMessage({
+      command,
+      requestId,
       payload
     });
   }

@@ -350,6 +350,25 @@ export class ContentType {
   }
 
   /**
+   * Find the field by its name
+   * @param fields
+   * @param name
+   * @returns
+   */
+  public static findFieldByName(fields: Field[], name: string): Field | undefined {
+    for (const field of fields) {
+      if (field.name === name) {
+        return field;
+      } else if (field.type === 'fields' && field.fields) {
+        const subField = this.findFieldByName(field.fields, name);
+        if (subField) {
+          return subField;
+        }
+      }
+    }
+  }
+
+  /**
    * Find the field by its type
    * @param fields
    * @param type
@@ -737,7 +756,8 @@ export class ContentType {
           contentType,
           titleValue,
           templateData?.data || {},
-          newFilePath
+          newFilePath,
+          !!contentType.clearEmpty
         );
 
         data = ArticleHelper.updateDates(Object.assign({}, data));
@@ -785,6 +805,7 @@ export class ContentType {
     titleValue: string,
     data: any,
     filePath: string,
+    clearEmpty: boolean,
     isRoot: boolean = true
   ): Promise<any> {
     if (obj.fields) {
@@ -805,12 +826,23 @@ export class ContentType {
             );
           } else if (isRoot) {
             data[field.name] = titleValue;
-          } else {
+          } else if (!clearEmpty) {
             data[field.name] = '';
           }
         } else {
           if (field.type === 'fields') {
-            data[field.name] = await this.processFields(field, titleValue, {}, filePath, false);
+            data[field.name] = await this.processFields(
+              field,
+              titleValue,
+              {},
+              filePath,
+              clearEmpty,
+              false
+            );
+
+            if (clearEmpty && Object.keys(data[field.name]).length === 0) {
+              delete data[field.name];
+            }
           } else {
             const defaultValue = field.default;
 
@@ -841,30 +873,40 @@ export class ContentType {
                   case 'choice':
                     if (field.multiple) {
                       data[field.name] = [];
-                    } else {
+                    } else if (!clearEmpty) {
                       data[field.name] = '';
                     }
                     break;
                   case 'boolean':
-                    data[field.name] = false;
+                    if (!clearEmpty) {
+                      data[field.name] = false;
+                    }
                     break;
                   case 'number':
-                    data[field.name] = 0;
+                    if (!clearEmpty) {
+                      data[field.name] = 0;
+                    }
                     break;
                   case 'datetime':
-                    data[field.name] = null;
+                    if (!clearEmpty) {
+                      data[field.name] = null;
+                    }
                     break;
                   case 'list':
                   case 'tags':
                   case 'categories':
                   case 'taxonomy':
-                    data[field.name] = [];
+                    if (!clearEmpty) {
+                      data[field.name] = [];
+                    }
                     break;
                   case 'string':
                   case 'image':
                   case 'file':
                   default:
-                    data[field.name] = '';
+                    if (!clearEmpty) {
+                      data[field.name] = '';
+                    }
                     break;
                 }
               }

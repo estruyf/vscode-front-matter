@@ -30,6 +30,7 @@ export interface PanelSettings {
   commaSeparatedFields: string[];
   aiEnabled: boolean;
   contentFolders: ContentFolder[];
+  websiteUrl: string;
 }
 
 export interface FieldGroup {
@@ -53,6 +54,7 @@ export interface ContentType {
   template?: string;
   postScript?: string;
   filePrefix?: string;
+  clearEmpty?: boolean;
 }
 
 export type FieldType =

@@ -4,6 +4,7 @@ import { Tab } from '../constants/Tab';
 import { Page } from '../models/Page';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
+  AllPagesAtom,
   CategorySelector,
   FolderSelector,
   SearchSelector,
@@ -19,9 +20,10 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../DashboardMessage';
 import { EventData } from '@estruyf/vscode/dist/models';
 import { parseWinPath } from '../../helpers/parseWinPath';
+import { format } from 'date-fns';
 
 export default function usePages(pages: Page[]) {
-  const [pageItems, setPageItems] = useState<Page[]>([]);
+  const [pageItems, setPageItems] = useRecoilState(AllPagesAtom);
   const [sortedPages, setSortedPages] = useState<Page[]>([]);
   const [sorting, setSorting] = useRecoilState(SortingAtom);
   const [tabInfo, setTabInfo] = useRecoilState(TabInfoAtom);

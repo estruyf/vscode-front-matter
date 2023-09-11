@@ -23,7 +23,7 @@ import { LocalizationKey } from '../../../localization';
 export interface IRefreshDashboardDataProps { }
 
 export const RefreshDashboardData: React.FunctionComponent<IRefreshDashboardDataProps> = (
-  props: React.PropsWithChildren<IRefreshDashboardDataProps>
+  { }: React.PropsWithChildren<IRefreshDashboardDataProps>
 ) => {
   const view = useRecoilValue(DashboardViewAtom);
   const [, setLoading] = useRecoilState(LoadingAtom);
@@ -35,7 +35,6 @@ export const RefreshDashboardData: React.FunctionComponent<IRefreshDashboardData
   // Media
   const resetPage = useResetRecoilState(PageAtom);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
-  const { getColors } = useThemeColors();
 
   const refreshPages = () => {
     setLoading(true);
@@ -64,11 +63,7 @@ export const RefreshDashboardData: React.FunctionComponent<IRefreshDashboardData
 
   return (
     <button
-      className={`mr-2 ${getColors(
-        'text-gray-500 hover:text-gray-600 dark:text-whisper-900 dark:hover:text-whisper-500',
-        'text-[var(--vscode-foreground)] hover:text-[var(--vscode-textLink-foreground)]'
-      )
-        }`}
+      className={`mr-2 text-[var(--vscode-foreground)] hover:text-[var(--vscode-textLink-foreground)]`}
       title={l10n.t(LocalizationKey.dashboardHeaderRefreshDashboardLabel)}
       onClick={refresh}
     >

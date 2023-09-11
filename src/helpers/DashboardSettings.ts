@@ -29,7 +29,8 @@ import {
   SETTING_DASHBOARD_CONTENT_CARD_DATE,
   SETTING_DASHBOARD_CONTENT_CARD_TITLE,
   SETTING_DASHBOARD_CONTENT_CARD_STATE,
-  SETTING_DASHBOARD_CONTENT_CARD_DESCRIPTION
+  SETTING_DASHBOARD_CONTENT_CARD_DESCRIPTION,
+  SETTING_WEBSITE_URL
 } from '../constants';
 import {
   DashboardViewType,
@@ -131,7 +132,8 @@ export class DashboardSettings {
       dataTypes: Settings.get<DataType[]>(SETTING_DATA_TYPES),
       snippets: Settings.get<Snippets>(SETTING_CONTENT_SNIPPETS),
       snippetsWrapper: Settings.get<boolean>(SETTING_SNIPPETS_WRAPPER),
-      isBacker: await ext.getState<boolean | undefined>(CONTEXT.backer, 'global')
+      isBacker: await ext.getState<boolean | undefined>(CONTEXT.backer, 'global'),
+      websiteUrl: Settings.get<string>(SETTING_WEBSITE_URL)
     } as ISettings;
 
     return settings;

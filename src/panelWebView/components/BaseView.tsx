@@ -14,6 +14,7 @@ import { GitAction } from './Git/GitAction';
 import { useMemo } from 'react';
 import * as l10n from "@vscode/l10n"
 import { LocalizationKey } from '../../localization';
+import { InitializeAction } from './InitializeAction';
 
 export interface IBaseViewProps {
   settings: PanelSettings | undefined;
@@ -28,10 +29,6 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({
 }: React.PropsWithChildren<IBaseViewProps>) => {
   const openDashboard = () => {
     Messenger.send(CommandToCode.openDashboard);
-  };
-
-  const initProject = () => {
-    Messenger.send(CommandToCode.initProject);
   };
 
   const createContent = () => {
@@ -75,16 +72,7 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({
   return (
     <div className="frontmatter">
       <div className={`ext_actions`}>
-        {!settings?.isInitialized && (
-          <div className={`initialize_actions`}>
-            <button
-              title={l10n.t(LocalizationKey.panelBaseViewInitialize)}
-              onClick={initProject}
-              type={`button`}>
-              {l10n.t(LocalizationKey.panelBaseViewInitialize)}
-            </button>
-          </div>
-        )}
+        <InitializeAction settings={settings} />
 
         {settings?.isInitialized && (
           <>

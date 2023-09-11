@@ -68,7 +68,7 @@ export const Engines = {
 
             // Check if there are values to remove
             for (const key in docYaml.toJSON()) {
-              if (typeof obj[key] === undefined) {
+              if (typeof obj[key] === 'undefined') {
                 docYaml.delete(key);
               }
             }
@@ -77,7 +77,8 @@ export const Engines = {
 
             return yaml.stringify(updatedValue, {
               lineWidth: 5000,
-              defaultStringType: 'PLAIN'
+              defaultStringType: 'PLAIN',
+              keepUndefined: false
             });
           }
         }

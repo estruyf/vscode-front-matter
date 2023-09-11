@@ -332,5 +332,9 @@
   "dashboard.steps.stepsToGetStarted.assetsFolder.description": "記事のメディアファイルを保存するためのフォルダーを選択してください。",
   "dashboard.steps.stepsToGetStarted.assetsFolder.public.title": "'public'フォルダーを使用する",
   "dashboard.steps.stepsToGetStarted.assetsFolder.assets.title": "Astroアセットフォルダー(src/assets)を使用する",
-  "dashboard.steps.stepsToGetStarted.assetsFolder.other.description": "別のフォルダを設定する場合は、frontmatter.jsonファイルで手動で行うことができます。"
+  "dashboard.steps.stepsToGetStarted.assetsFolder.other.description": "別のフォルダを設定する場合は、frontmatter.jsonファイルで手動で行うことができます。",
+  "dashboard.steps.stepsToGetStarted.template.name": "設定テンプレートを使用する",
+  "dashboard.steps.stepsToGetStarted.template.description": "おすすめの設定でfrontmatter.jsonファイルを事前に埋めるテンプレートを選択します。",
+  "listeners.dashboard.settingsListener.triggerTemplate.notification": "テンプレートファイルがコピーされました。",
+  "common.openOnWebsite": "ウェブサイトで開く"
 }

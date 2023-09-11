@@ -4,10 +4,15 @@ import { COMMAND_NAME, TelemetryEvent } from './constants';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
 import { TagType } from './panelWebView/TagType';
 import { PanelProvider } from './panelWebView/PanelProvider';
-import { DashboardSettings, debounceCallback, Logger, parseWinPath, Settings as SettingsHelper } from './helpers';
+import {
+  DashboardSettings,
+  debounceCallback,
+  Logger,
+  parseWinPath,
+  Settings as SettingsHelper
+} from './helpers';
 import ContentProvider from './providers/ContentProvider';
 import { PagesListener } from './listeners/dashboard';
-import { DataListener, SettingsListener } from './listeners/panel';
 import { NavigationType } from './dashboardWebView/models';
 import { ModeSwitch } from './services/ModeSwitch';
 import { PagesParser } from './services/PagesParser';
@@ -32,8 +37,7 @@ import {
 } from './commands';
 import { join } from 'path';
 
-let frontMatterStatusBar: vscode.StatusBarItem;
-let statusDebouncer: { (fnc: any, time: number): void };
+let pageUpdateDebouncer: { (fnc: any, time: number): void };
 let editDebounce: { (fnc: any, time: number): void };
 let collection: vscode.DiagnosticCollection;
 
@@ -185,12 +189,6 @@ export async function activate(context: vscode.ExtensionContext) {
     )
   );
 
-  const toggleDraftCommand = COMMAND_NAME.toggleDraft;
-  const toggleDraft = vscode.commands.registerCommand(toggleDraftCommand, async () => {
-    await Article.toggleDraft();
-    triggerShowDraftStatus(`toggleDraft`);
-  });
-
   // Register project folders
   const registerFolder = vscode.commands.registerCommand(
     COMMAND_NAME.registerFolder,
@@ -269,32 +267,30 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 
   // Things to do when configuration changes
-  SettingsHelper.onConfigChange(() => {
-    Preview.init();
-    GitListener.init();
-
-    SettingsListener.getSettings();
-    DataListener.getFoldersAndFiles();
-    MarkdownFoldingProvider.triggerHighlighting(true);
-    ModeSwitch.register();
-  });
+  SettingsHelper.startListening();
 
   // Create the status bar
-  frontMatterStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-  frontMatterStatusBar.command = toggleDraftCommand;
-  subscriptions.push(frontMatterStatusBar);
-  statusDebouncer = debounceCallback();
+  let fmStatusBarItem = vscode.window.createStatusBarItem(
+    'fm-statusBarItem',
+    vscode.StatusBarAlignment.Right,
+    -100
+  );
+  fmStatusBarItem.command = COMMAND_NAME.dashboard;
+  fmStatusBarItem.text = `$(fm-logo)`;
+  fmStatusBarItem.tooltip = `Front Matter CMS`;
+  fmStatusBarItem.show();
 
   // Register listeners that make sure the status bar updates
+  pageUpdateDebouncer = debounceCallback();
   subscriptions.push(
     vscode.window.onDidChangeActiveTextEditor(() =>
-      triggerShowDraftStatus(`onDidChangeActiveTextEditor`)
+      triggerPageUpdate(`onDidChangeActiveTextEditor`)
     )
   );
   subscriptions.push(
     vscode.window.onDidChangeTextEditorSelection((e) => {
       if (e.kind === vscode.TextEditorSelectionChangeKind.Mouse) {
-        statusDebouncer(() => triggerShowDraftStatus(`onDidChangeTextEditorSelection`), 200);
+        pageUpdateDebouncer(() => triggerPageUpdate(`onDidChangeTextEditorSelection`), 200);
       }
     })
   );
@@ -303,13 +299,13 @@ export async function activate(context: vscode.ExtensionContext) {
       const filePath = TextDocumentChangeEvent.document.uri.fsPath;
       if (filePath && !filePath.toLowerCase().startsWith(`extension-output`)) {
         MarkdownFoldingProvider.triggerHighlighting();
-        statusDebouncer(() => triggerShowDraftStatus(`onDidChangeTextEditorSelection`), 200);
+        pageUpdateDebouncer(() => triggerPageUpdate(`onDidChangeTextEditorSelection`), 200);
       }
     })
   );
 
   // Automatically run the command
-  triggerShowDraftStatus(`triggerShowDraftStatus`);
+  triggerPageUpdate(`main`);
 
   // Listener for file edit changes
   subscriptions.push(vscode.workspace.onWillSaveTextDocument(handleAutoDateUpdate));
@@ -381,14 +377,14 @@ export async function activate(context: vscode.ExtensionContext) {
     generateSlug,
     createFromTemplate,
     createTemplate,
-    toggleDraft,
     registerFolder,
     unregisterFolder,
     createContent,
     createByContentType,
     createByTemplate,
     collapseAll,
-    createFolder
+    createFolder,
+    fmStatusBarItem
   );
 
   console.log(`𝖥𝗋𝗈𝗇𝗍 𝖬𝖺𝗍𝗍𝖾𝗋 𝖢𝖬𝖲 𝖺𝖼𝗍𝗂𝗏𝖺𝗍𝖾𝖽! 𝖱𝖾𝖺𝖽𝗒 𝗍𝗈 𝗌𝗍𝖺𝗋𝗍 𝗐𝗋𝗂𝗍𝗂𝗇𝗀... 👩‍💻🧑‍💻👨‍💻`);
@@ -400,9 +396,9 @@ const handleAutoDateUpdate = (e: vscode.TextDocumentWillSaveEvent) => {
   Article.autoUpdate(e);
 };
 
-const triggerShowDraftStatus = (location: string) => {
+const triggerPageUpdate = (location: string) => {
   Logger.info(`Triggering draft status update: ${location}`);
-  statusDebouncer(() => {
-    StatusListener.verify(frontMatterStatusBar, collection);
+  pageUpdateDebouncer(() => {
+    StatusListener.verify(collection);
   }, 1000);
 };

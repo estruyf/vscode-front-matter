@@ -1,4 +1,5 @@
 export * from './AllContentFoldersAtom';
+export * from './AllPagesAtom';
 export * from './AllStaticFoldersAtom';
 export * from './CategoryAtom';
 export * from './DashboardViewAtom';

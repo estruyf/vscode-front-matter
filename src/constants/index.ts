@@ -16,6 +16,7 @@ export * from './SentryIgnore';
 export * from './Snippet';
 export * from './StaticFolderPlaceholder';
 export * from './TelemetryEvent';
+export * from './Templates';
 export * from './charCode';
 export * from './charMap';
 export * from './context';

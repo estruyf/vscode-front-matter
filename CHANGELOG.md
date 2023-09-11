@@ -1,5 +1,30 @@
 # Change Log
 
+## [9.2.0] - 2023-09-11
+
+### ✨ New features
+
+- [#650](https://github.com/estruyf/vscode-front-matter/issues/650): Added template support for [Astro Starlight](https://starlight.astro.build/)
+- [#655](https://github.com/estruyf/vscode-front-matter/issues/655): Added a new command to manually refresh the settings of the Front Matter CMS
+
+### 🎨 Enhancements
+
+- Grouping and status tabs enhancements
+- Removed the status bar item to toggle the draft field
+- Added a FM status bar item to open the dashboard
+- [#570](https://github.com/estruyf/vscode-front-matter/issues/570): Clear empty values on content creation and editing
+- [#645](https://github.com/estruyf/vscode-front-matter/issues/645): French localization added (thanks to [Clément Barbaza](https://github.com/cba85))
+- [#649](https://github.com/estruyf/vscode-front-matter/issues/649): Parse optional variables from snippets
+- [#652](https://github.com/estruyf/vscode-front-matter/issues/652): Show the start/stop server buttons depending on the local terminal session
+
+### 🐞 Fixes
+
+- [#646](https://github.com/estruyf/vscode-front-matter/issues/646): Update the Astro `3000` port to `4321`
+- [#647](https://github.com/estruyf/vscode-front-matter/issues/647): Fix the open in browser action on the preview
+- [#648](https://github.com/estruyf/vscode-front-matter/issues/648): Fix the global configuration reference to the URL of the schema file
+- [#651](https://github.com/estruyf/vscode-front-matter/issues/651): Fix settings listeners which did not push updates to the webviews
+- [#657](https://github.com/estruyf/vscode-front-matter/issues/657): Fix correctly updating front matter with scripts outcome on Windows
+
 ## [9.1.0] - 2023-08-31
 
 ### ✨ New features
@@ -19,7 +44,6 @@
 - [#635](https://github.com/estruyf/vscode-front-matter/issues/635): Fix UI themes make some links hard to discover or see
 - [#636](https://github.com/estruyf/vscode-front-matter/issues/636): Fix media browser lightbox background color
 - [#641](https://github.com/estruyf/vscode-front-matter/issues/641): Fix file parsing of the localization file
-
 
 ## [9.0.0] - 2023-08-21 - [Release notes](https://beta.frontmatter.codes/updates/v9.0.0)
 

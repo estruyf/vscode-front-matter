@@ -7,6 +7,7 @@ import { SlugAction } from './SlugAction';
 import { StartServerButton } from './StartServerButton';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
+import { OpenOnWebsiteAction } from './Actions/OpenOnWebsiteAction';
 
 export interface IActionsProps {
   metadata: any;
@@ -27,6 +28,8 @@ const Actions: React.FunctionComponent<IActionsProps> = ({
         {metadata && metadata.title && <SlugAction />}
 
         {settings?.preview?.host && <Preview slug={metadata.slug} />}
+
+        <OpenOnWebsiteAction baseUrl={settings.websiteUrl} slug={metadata.slug} />
 
         <StartServerButton settings={settings} />
 

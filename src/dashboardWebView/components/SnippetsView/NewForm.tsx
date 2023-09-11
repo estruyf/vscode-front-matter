@@ -118,12 +118,12 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
             >
               {l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputIsMediaSnippetCheckboxLabel)}
             </label>
-            <p id="isMediaSnippet-description" className={getColors('text-vulcan-300 dark:text-whisper-500', `text-[var(--vscode-foreground)]`)}>
+            <p id="isMediaSnippet-description" className={`text-[var(--vscode-foreground)] text-left`}>
               {l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputIsMediaSnippetCheckboxDescription)}
             </p>
             <p>
               <button
-                className={getColors('text-teal-700 hover:text-teal-500', 'text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)]')}
+                className={`text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground) text-left`}
                 onClick={openLink}
                 title={l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputDocsButtonTitle)}
               >

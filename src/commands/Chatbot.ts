@@ -1,9 +1,10 @@
 import { Telemetry } from './../helpers/Telemetry';
-import { TelemetryEvent, PreviewCommands, SETTING_EXPERIMENTAL } from './../constants';
+import { TelemetryEvent, PreviewCommands, GeneralCommands } from './../constants';
 import { join } from 'path';
 import { commands, Uri, ViewColumn, window } from 'vscode';
 import { Extension, Settings } from '../helpers';
 import { WebviewHelper } from '@estruyf/vscode';
+import { getLocalizationFile } from '../utils/getLocalizationFile';
 
 export class Chatbot {
   /**
@@ -30,12 +31,26 @@ export class Chatbot {
 
     const cspSource = webView.webview.cspSource;
 
-    webView.webview.onDidReceiveMessage((message) => {
+    webView.webview.onDidReceiveMessage(async (message) => {
       switch (message.command) {
         case PreviewCommands.toVSCode.open:
           if (message.data) {
             commands.executeCommand('vscode.open', message.data);
           }
+          return;
+        case GeneralCommands.toVSCode.getLocalization:
+          const { requestId } = message;
+          if (!requestId) {
+            return;
+          }
+
+          const fileContents = await getLocalizationFile();
+
+          webView.webview.postMessage({
+            command: GeneralCommands.toVSCode.getLocalization,
+            requestId,
+            payload: fileContents
+          });
           return;
       }
     });

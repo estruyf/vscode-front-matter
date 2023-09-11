@@ -88,6 +88,10 @@ export enum LocalizationKey {
    */
   commonErrorMessage = 'common.error.message',
   /**
+   * Open on website
+   */
+  commonOpenOnWebsite = 'common.openOnWebsite',
+  /**
    * Developer mode
    */
   developerTitle = 'developer.title',
@@ -792,6 +796,14 @@ export enum LocalizationKey {
    */
   dashboardStepsStepsToGetStartedShowDashboardDescription = 'dashboard.steps.stepsToGetStarted.showDashboard.description',
   /**
+   * Use a configuration template
+   */
+  dashboardStepsStepsToGetStartedTemplateName = 'dashboard.steps.stepsToGetStarted.template.name',
+  /**
+   * Select a template to prefill the frontmatter.json file with the recommended settings.
+   */
+  dashboardStepsStepsToGetStartedTemplateDescription = 'dashboard.steps.stepsToGetStarted.template.description',
+  /**
    * Add {0} to taxonomy settings
    */
   dashboardTaxonomyViewButtonAddTitle = 'dashboard.taxonomyView.button.add.title',
@@ -1335,5 +1347,9 @@ export enum LocalizationKey {
   /**
    * Continue in the media dashboard to select the image you want to insert.
    */
-  panelViewPanelMediaInsert = 'panel.viewPanel.mediaInsert'
+  panelViewPanelMediaInsert = 'panel.viewPanel.mediaInsert',
+  /**
+   * Template files copied.
+   */
+  listenersDashboardSettingsListenerTriggerTemplateNotification = 'listeners.dashboard.settingsListener.triggerTemplate.notification'
 }

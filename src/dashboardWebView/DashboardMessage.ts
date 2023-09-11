@@ -13,6 +13,7 @@ export enum DashboardMessage {
   setFramework = 'setFramework',
   addFolder = 'addFolder',
   addAssetsFolder = 'addAssetsFolder',
+  triggerTemplate = 'triggerTemplate',
 
   // Content dashboard
   getData = 'getData',

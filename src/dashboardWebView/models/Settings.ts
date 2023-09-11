@@ -33,6 +33,7 @@ export interface Settings {
   contentTypes: ContentType[];
   contentFolders: ContentFolder[];
   crntFramework: string;
+  websiteUrl: string;
   framework: Framework | null | undefined;
   draftField: DraftField | null | undefined;
   customSorting: SortingSetting[] | undefined;

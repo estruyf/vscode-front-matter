@@ -57,6 +57,9 @@ export class DataListener extends BaseListener {
       case CommandToCode.stopServer:
         this.stopServer();
         break;
+      case CommandToCode.isServerStarted:
+        this.isServerStarted(msg.command, msg?.requestId);
+        break;
       case CommandToCode.updatePlaceholder:
         this.updatePlaceholder(msg?.payload?.field, msg?.payload?.value, msg?.payload?.title);
         break;
@@ -232,6 +235,8 @@ export class DataListener extends BaseListener {
       return;
     }
 
+    const titleField = (Settings.get(SETTING_SEO_TITLE_FIELD) as string) || DefaultFields.Title;
+
     const editor = window.activeTextEditor;
 
     let article;
@@ -248,6 +253,10 @@ export class DataListener extends BaseListener {
 
     const contentType = ArticleHelper.getContentType(article.data);
 
+    if (!value && field !== titleField && contentType.clearEmpty) {
+      value = undefined;
+    }
+
     const dateFields = ContentType.findFieldsByTypeDeep(contentType.fields, 'datetime');
     const imageFields = ContentType.findFieldsByTypeDeep(contentType.fields, 'image');
     const fileFields = ContentType.findFieldsByTypeDeep(contentType.fields, 'file');
@@ -263,6 +272,7 @@ export class DataListener extends BaseListener {
       }
     });
 
+    // Check multi-image fields
     const multiImageFieldsArray = imageFields.find((f: Field[]) => {
       const lastField = f?.[f.length - 1];
       if (lastField) {
@@ -270,6 +280,7 @@ export class DataListener extends BaseListener {
       }
     });
 
+    // Check multi-file fields
     const multiFileFieldsArray = fileFields.find((f: Field[]) => {
       const lastField = f?.[f.length - 1];
       if (lastField) {
@@ -277,6 +288,7 @@ export class DataListener extends BaseListener {
       }
     });
 
+    // Check date fields
     if (dateFieldsArray && dateFieldsArray.length > 0) {
       for (const dateField of dateFieldsArray) {
         if (field === dateField.name && value) {
@@ -320,6 +332,18 @@ export class DataListener extends BaseListener {
       } else {
         parentObj[field] = value;
       }
+    }
+
+    // Clear the field if it is empty
+    if (
+      value === undefined ||
+      (value instanceof Array && value.length === 0 && contentType.clearEmpty)
+    ) {
+      delete parentObj[field];
+    }
+
+    if (Object.keys(parentObj).length === 0 && field !== titleField && contentType.clearEmpty) {
+      delete article.data[parents![0]];
     }
 
     if (editor) {
@@ -502,6 +526,8 @@ export class DataListener extends BaseListener {
         localServerTerminal.sendText(command);
         localServerTerminal.show(false);
       }
+
+      this.sendMsg(Command.serverStarted, true);
     }
   }
 
@@ -513,6 +539,20 @@ export class DataListener extends BaseListener {
     if (localServerTerminal) {
       localServerTerminal.dispose();
     }
+
+    this.sendMsg(Command.serverStarted, false);
+  }
+
+  /**
+   * Checks if the server is started
+   */
+  private static isServerStarted(command: string, requestId?: string) {
+    if (!command || !requestId) {
+      return;
+    }
+
+    const localServerTerminal = DataListener.findServerTerminal();
+    this.sendRequest(command, requestId, !!localServerTerminal);
   }
 
   /**
