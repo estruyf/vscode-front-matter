@@ -433,18 +433,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
   return (
     <>
-      <li className={`group relative shadow-md hover:shadow-xl dark:shadow-none border rounded ${getColors(
-        'bg-gray-50 dark:bg-vulcan-200 dark:hover:bg-vulcan-100 border-gray-200 dark:border-vulcan-50',
-        'bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--frontmatter-border)]'
+      <li className={`group relative shadow-md hover:shadow-xl dark:shadow-none border rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--frontmatter-border)]
       )
         }`}>
         <button
-          className={`group/button relative block w-full aspect-w-10 aspect-h-7 overflow-hidden h-48 ${isImageFile ? 'cursor-pointer' : 'cursor-default'
-            } ${getColors(
-              `bg-gray-200 dark:bg-vulcan-300`,
-              `border-b border-[var(--frontmatter-border)]`
-            )
-            }`}
+          className={`group/button relative block w-full aspect-w-10 aspect-h-7 overflow-hidden h-48 ${isImageFile ? 'cursor-pointer' : 'cursor-default'} border-b border-[var(--frontmatter-border)]`}
           onClick={hasViewData ? undefined : openLightbox}
         >
           <div
@@ -459,11 +452,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           </div>
           {hasViewData && (
             <div
-              className={`hidden group-hover/button:flex absolute top-0 right-0 bottom-0 left-0 items-center justify-center ${getColors(
-                `bg-vulcan-500 bg-opacity-70`,
-                `bg-black bg-opacity-90`
-              )
-                }`}
+              className={`hidden group-hover/button:flex absolute top-0 right-0 bottom-0 left-0 items-center justify-center bg-black bg-opacity-70`}
             >
               <div
                 className={`h-full ${showMediaSnippet ? 'w-1/3' : 'w-full'
@@ -471,7 +460,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               >
                 <button
                   title="Insert image"
-                  className={`h-1/3 ${getColors(`text-gray-300 hover:text-teal-600`, `text-[var(--vscode-editor-foreground)] hover:text-[var(--vscode-button-hoverBackground)]`)}`}
+                  className={`h-1/3 text-white hover:text-[var(--vscode-button-background)]`}
                   onClick={insertToArticle}
                 >
                   <PlusIcon className={`w-full h-full hover:drop-shadow-md `} aria-hidden="true" />
@@ -481,7 +470,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                 <div className={`h-full w-1/3 flex items-center justify-center`}>
                   <button
                     title="Insert snippet"
-                    className={`h-1/3 ${getColors(`text-gray-300 hover:text-teal-600`, `text-[var(--vscode-editor-foreground)] hover:text-[var(--vscode-button-hoverBackground)]`)}`}
+                    className={`h-1/3 text-white hover:text-[var(--vscode-button-background)]`}
                     onClick={insertSnippet}
                   >
                     <CodeIcon
