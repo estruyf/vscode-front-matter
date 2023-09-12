@@ -1,5 +1,17 @@
 # Change Log
 
+## [9.3.0] - 2023-xx-xx
+
+### ✨ New features
+
+### 🎨 Enhancements
+
+- [#659](https://github.com/estruyf/vscode-front-matter/issues/659): Implement a filter for the taxonomy dashboard
+
+### ⚡️ Optimizations
+
+### 🐞 Fixes
+
 ## [9.2.0] - 2023-09-11
 
 ### ✨ New features
