@@ -12,6 +12,8 @@
 
 ### 🐞 Fixes
 
+- [#660](https://github.com/estruyf/vscode-front-matter/issues/660): Allow only to select unique content relationship values
+
 ## [9.2.0] - 2023-09-11
 
 ### ✨ New features

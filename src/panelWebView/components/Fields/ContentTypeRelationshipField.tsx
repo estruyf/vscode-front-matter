@@ -37,9 +37,11 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
 
   const onValueChange = (txtValue: string) => {
     if (multiSelect) {
-      const newValue = [...((crntSelected || []) as string[]), txtValue];
-      setCrntSelected(newValue);
-      onChange(newValue);
+      const crntValue = typeof crntSelected === 'string' ? [crntSelected] : crntSelected;
+      const newValue = [...((crntValue || []) as string[]), txtValue];
+      const uniqueValues = [...new Set(newValue)];
+      setCrntSelected(uniqueValues);
+      onChange(uniqueValues);
     } else {
       setCrntSelected(txtValue);
       onChange(txtValue);
@@ -77,20 +79,19 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
   }, [choices, contentTypeValue]);
 
   const availableChoices = useMemo(() => {
-    return !multiSelect
-      ? pages
-      : pages.filter((page: Page) => {
-        const value = page.fmFilePath;
+    return pages.filter((page: Page) => {
+      const value = contentTypeValue === "slug" ? page.slug : page.fmFilePath;
 
-        if (typeof crntSelected === 'string') {
-          return crntSelected !== `${value}`;
-        } else if (crntSelected instanceof Array) {
-          return crntSelected.indexOf(`${value}`) === -1;
-        }
+      if (typeof crntSelected === 'string') {
+        return crntSelected !== `${value}` && !value.includes(crntSelected);
+      } else if (crntSelected instanceof Array) {
+        const selected = crntSelected.filter((v) => v === `${value}` || value.includes(v));
+        return selected.length === 0;
+      }
 
-        return true;
-      });
-  }, [choices, crntSelected, multiSelect]);
+      return true;
+    });
+  }, [choices, crntSelected, multiSelect, contentTypeValue]);
 
   const showRequiredState = useMemo(() => {
     return (
