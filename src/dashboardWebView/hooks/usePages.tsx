@@ -44,7 +44,7 @@ export default function usePages(pages: Page[]) {
       let pagesToShow: Page[] = Object.assign([], searchedPages);
 
       // Framework specific actions
-      if (framework?.toLowerCase() === 'jekyll') {
+      if (framework?.toLowerCase() === 'jekyll' || framework?.toLowerCase() === 'hexo') {
         pagesToShow = pagesToShow.map((page) => {
           // https://jekyllrb.com/docs/posts/#drafts
           const filePath = parseWinPath(page.fmFilePath);

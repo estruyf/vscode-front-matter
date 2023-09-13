@@ -6,6 +6,7 @@
 
 ### 🎨 Enhancements
 
+- [#638](https://github.com/estruyf/vscode-front-matter/issues/638): Add Hexo support for the `_drafts` folder
 - [#659](https://github.com/estruyf/vscode-front-matter/issues/659): Implement a filter for the taxonomy dashboard
 - [#662](https://github.com/estruyf/vscode-front-matter/issues/662): Always show the `all articles` tab with the page counter
 - [#663](https://github.com/estruyf/vscode-front-matter/issues/663): Make card tags clickable to filter the view
