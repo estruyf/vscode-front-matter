@@ -336,5 +336,6 @@
   "dashboard.steps.stepsToGetStarted.template.name": "Utiliser un modèle de configuration",
   "dashboard.steps.stepsToGetStarted.template.description": "Sélectionnez un modèle pour préremplir le fichier frontmatter.json avec les paramètres recommandés.",
   "listeners.dashboard.settingsListener.triggerTemplate.notification": "Fichiers de modèle copiés.",
-  "common.openOnWebsite": "Ouvrir sur le site web"
+  "common.openOnWebsite": "Ouvrir sur le site web",
+  "common.filter.value": "Filtrer par {0}"
 }

@@ -8,12 +8,13 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardViewType } from '../../models';
 import { ContentActions } from './ContentActions';
 import { useMemo } from 'react';
-import useThemeColors from '../../hooks/useThemeColors';
 import { Status } from './Status';
 import * as React from 'react';
 import useExtensibility from '../../hooks/useExtensibility';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { useNavigate } from 'react-router-dom';
+import { routePaths } from '../..';
 
 export interface IItemProps extends Page { }
 
@@ -32,6 +33,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const settings = useRecoilValue(SettingsSelector);
   const draftField = useMemo(() => settings?.draftField, [settings]);
   const cardFields = useMemo(() => settings?.dashboardState?.contents?.cardFields, [settings?.dashboardState?.contents?.cardFields]);
+  const navigate = useNavigate();
   const { titleHtml, descriptionHtml, dateHtml, statusHtml, tagsHtml, imageHtml, footerHtml } = useExtensibility({
     fmFilePath,
     date,
@@ -40,7 +42,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     type,
     pageData
   });
-  const { getColors } = useThemeColors();
 
   const escapedTitle = useMemo(() => {
     let value = title;
@@ -139,17 +140,9 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                   />
                 ) : (
                   <div
-                    className={`flex items-center justify-center ${getColors(
-                      'bg-whisper-500 dark:bg-vulcan-200 dark:group-hover:bg-vulcan-100',
-                      'bg-[var(--vscode-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)]'
-                    )
-                      }`}
+                    className={`flex items-center justify-center bg-[var(--vscode-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)]`}
                   >
-                    <MarkdownIcon className={`h-32 ${getColors(
-                      'text-vulcan-100 dark:text-whisper-100',
-                      'text-[var(--vscode-sideBarTitle-foreground)] opacity-80'
-                    )
-                      }`} />
+                    <MarkdownIcon className={`h-32 text-[var(--vscode-sideBarTitle-foreground)] opacity-80`} />
                   </div>
                 )
             }
@@ -198,7 +191,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                 descriptionHtml ? (
                   <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
                 ) : (
-                  <p className={`text-xs ${getColors('text-vulcan-200 dark:text-whisper-800', 'text-[vara(--vscode-titleBar-activeForeground)]')}`}>{escapedDescription}</p>
+                  <p className={`text-xs text-[vara(--vscode-titleBar-activeForeground)]`}>{escapedDescription}</p>
                 )
               }
             </button>
@@ -211,16 +204,19 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                   <div className="mt-2">
                     {tags.map(
                       (tag, index) => tag && (
-                        <span
+                        <button
                           key={index}
-                          className={`inline-block mr-1 mt-1 text-xs ${getColors(
-                            `text-[#5D561D] dark:text-[#F0ECD0]`,
-                            `text-[var(--vscode-textPreformat-foreground)]`
-                          )
-                            }`}
+                          className={`inline-block mr-1 mt-1 text-xs text-[var(--vscode-textPreformat-foreground)] hover:brightness-75 hover:underline hover:underline-offset-1`}
+                          title={l10n.t(LocalizationKey.commonFilterValue, tag)}
+                          onClick={() => {
+                            const tagField = settings?.dashboardState.contents.tags;
+                            if (tagField) {
+                              navigate(`${routePaths.contents}?taxonomy=${tagField}&value=${tag}`);
+                            }
+                          }}
                         >
                           #{tag}
-                        </span>
+                        </button>
                       )
                     )}
                   </div>
@@ -241,11 +237,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return (
       <li className="relative">
         <div
-          className={`px-5 cursor-pointer w-full text-left grid grid-cols-12 gap-x-4 sm:gap-x-6 xl:gap-x-8 py-2 border-b hover:bg-opacity-70 ${getColors(
-            `border-gray-300 hover:bg-gray-200 dark:border-vulcan-50 dark:hover:bg-vulcan-50`,
-            `border-[var(--frontmatter-border)] hover:bg-[var(--vscode-sideBar-background)]`
-          )
-            }`}
+          className={`px-5 cursor-pointer w-full text-left grid grid-cols-12 gap-x-4 sm:gap-x-6 xl:gap-x-8 py-2 border-b hover:bg-opacity-70 border-[var(--frontmatter-border)] hover:bg-[var(--vscode-sideBar-background)]`}
         >
           <div className="col-span-8 font-bold truncate flex items-center space-x-4">
             <button title={`Open: ${escapedTitle}`} onClick={openFile}>

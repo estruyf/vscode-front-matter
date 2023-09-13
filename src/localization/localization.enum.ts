@@ -84,6 +84,10 @@ export enum LocalizationKey {
    */
   commonRemoveValue = 'common.remove.value',
   /**
+   * Filter by {0}
+   */
+  commonFilterValue = 'common.filter.value',
+  /**
    * Sorry, something went wrong.
    */
   commonErrorMessage = 'common.error.message',

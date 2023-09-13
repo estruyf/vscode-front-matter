@@ -336,5 +336,6 @@
   "dashboard.steps.stepsToGetStarted.template.name": "Verwende eine Konfigurationsvorlage",
   "dashboard.steps.stepsToGetStarted.template.description": "Wählen Sie eine Vorlage aus, um die Datei frontmatter.json mit den empfohlenen Einstellungen vorzufüllen.",
   "listeners.dashboard.settingsListener.triggerTemplate.notification": "Vorlagendateien kopiert.",
-  "common.openOnWebsite": "Auf der Website öffnen"
+  "common.openOnWebsite": "Auf der Website öffnen",
+  "common.filter.value": "Filtern nach {0}"
 }

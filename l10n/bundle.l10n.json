@@ -20,6 +20,7 @@
   "common.slug": "Slug",
   "common.support": "Support",
   "common.remove.value": "Remove {0}",
+  "common.filter.value": "Filter by {0}",
   "common.error.message": "Sorry, something went wrong.",
   "common.openOnWebsite": "Open on website",
 

@@ -336,5 +336,6 @@
   "dashboard.steps.stepsToGetStarted.template.name": "Usa un modello di configurazione",
   "dashboard.steps.stepsToGetStarted.template.description": "Seleziona un modello per riempire in anticipo il file frontmatter.json con le impostazioni consigliate.",
   "listeners.dashboard.settingsListener.triggerTemplate.notification": "File del modello copiati.",
-  "common.openOnWebsite": "Apri sul sito web"
+  "common.openOnWebsite": "Apri sul sito web",
+  "common.filter.value": "Filtra per {0}"
 }
