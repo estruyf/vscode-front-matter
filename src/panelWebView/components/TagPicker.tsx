@@ -15,6 +15,7 @@ import { PanelSettingsAtom } from '../state';
 import { SparklesIcon } from '@heroicons/react/outline';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
+import useDropdownStyle from '../hooks/useDropdownStyle';
 
 export interface ITagPickerProps {
   type: TagType;
@@ -58,6 +59,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
   const [inputValue, setInputValue] = React.useState<string>('');
   const prevSelected = usePrevious(crntSelected);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const { getDropdownStyle } = useDropdownStyle(inputRef as any);
   const dsRef = React.useRef<Downshift<string> | null>(null);
   const settings = useRecoilValue(PanelSettingsAtom);
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -277,38 +279,6 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
     );
   }, [settings?.aiEnabled, label, type]);
 
-  const dropdownStyle = useCallback((isOpen) => {
-    if (isOpen && inputRef.current) {
-      const wrapper = inputRef.current.closest(".collapsible__body");
-      const dropdown = inputRef.current.parentElement?.parentElement?.querySelector('.article__tags__dropbox');
-
-      if (!wrapper || !dropdown) {
-        return undefined;
-      }
-
-      const wrapperStyles = getComputedStyle(wrapper);
-      const padding = parseInt(wrapperStyles.paddingTop) + parseInt(wrapperStyles.paddingBottom);
-      const wrapperHeight = wrapper.clientHeight - padding;
-
-      const tagPickerElm = inputRef.current.parentElement?.parentElement;
-      const dropdownHeight = dropdown?.clientHeight;
-
-      if (!tagPickerElm || !dropdownHeight) {
-        return undefined;
-      }
-
-      const tagPickerTop = tagPickerElm.offsetTop;
-
-      const fullHeight = tagPickerTop + dropdownHeight;
-
-      if (fullHeight > wrapperHeight) {
-        return "calc(100% - 38px)";
-      }
-    }
-
-    return undefined;
-  }, [inputRef]);
-
   useEffect(() => {
     setTimeout(() => {
       triggerFocus();
@@ -322,7 +292,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
   }, [crntSelected]);
 
   return (
-    <div className={`article__tags`}>
+    <div className={`article__tags metadata_field`}>
       {
         loading && (
           <div className='metadata_field__loading'>
@@ -405,19 +375,19 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
             </div>
 
             <ul
-              className={`article__tags__dropbox ${isOpen ? 'open' : 'closed'}`}
+              className={`field_dropdown article__tags__dropbox ${isOpen ? 'open' : 'closed'}`}
               style={{
-                bottom: dropdownStyle(isOpen)
+                bottom: getDropdownStyle(isOpen)
               }}
               {...getMenuProps()}
             >
-              {isOpen
-                ? options
+              {
+                options
                   .filter((option) => filterList(option, inputValue))
                   .map((item, index) => (
                     <li {...getItemProps({ key: item, index, item })}>{item}</li>
                   ))
-                : null}
+              }
             </ul>
           </>
         )}

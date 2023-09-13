@@ -11,6 +11,7 @@ import { CommandToCode } from '../../CommandToCode';
 import { Page } from '../../../dashboardWebView/models';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import useDropdownStyle from '../../hooks/useDropdownStyle';
 
 export interface IContentTypeRelationshipFieldProps extends BaseFieldProps<string | string[]> {
   contentTypeName?: string;
@@ -34,6 +35,8 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
   const [pages, setPages] = React.useState<Page[]>([]);
   const [crntSelected, setCrntSelected] = React.useState<string | string[] | null>(value);
   const dsRef = React.useRef<Downshift<string> | null>(null);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const { getDropdownStyle } = useDropdownStyle(inputRef as any);
 
   const onValueChange = (txtValue: string) => {
     if (multiSelect) {
@@ -143,6 +146,7 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
               {({ getToggleButtonProps, getItemProps, getMenuProps, isOpen, getRootProps }) => (
                 <div
                   {...getRootProps(undefined, { suppressRefError: true })}
+                  ref={inputRef}
                   className={`metadata_field__choice`}
                 >
                   <button
@@ -156,11 +160,14 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
                   </button>
 
                   <ul
-                    className={`metadata_field__choice_list ${isOpen ? 'open' : 'closed'}`}
+                    className={`field_dropdown metadata_field__choice_list ${isOpen ? 'open' : 'closed'}`}
+                    style={{
+                      bottom: getDropdownStyle(isOpen)
+                    }}
                     {...getMenuProps()}
                   >
-                    {isOpen
-                      ? availableChoices.map((choice: Page, index) => (
+                    {
+                      availableChoices.map((choice: Page, index) => (
                         <li
                           {...getItemProps({
                             key: getValue(choice, contentTypeValue),
@@ -175,7 +182,7 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
                           )}
                         </li>
                       ))
-                      : null}
+                    }
                   </ul>
                 </div>
               )}

@@ -776,6 +776,11 @@ vscode-divider {
   padding: 0.5rem;
 }
 
+/* Dropdown */
+.field_dropdown.closed {
+  display: none;
+}
+
 /* Tags */
 .article__tags {
   position: relative;
