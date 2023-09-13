@@ -119,18 +119,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return (
       <li className="relative">
         <div
-          className={`group flex flex-col items-start content-start h-full w-full text-left shadow-md dark:shadow-none hover:shadow-xl border rounded ${getColors(
-            'bg-gray-50 dark:bg-vulcan-200 text-vulcan-500 dark:text-whisper-500 dark:hover:bg-vulcan-100 border-gray-200 dark:border-vulcan-50',
-            'bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--frontmatter-border)]'
-          )
+          className={`group flex flex-col items-start content-start h-full w-full text-left shadow-md dark:shadow-none hover:shadow-xl border rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--frontmatter-border)]
             }`}
         >
           <button
             onClick={openFile}
-            className={`relative h-36 w-full overflow-hidden border-b cursor-pointer ${getColors(
-              'border-gray-100 dark:border-vulcan-100 dark:group-hover:border-vulcan-200',
-              'border-[var(--frontmatter-border)]'
-            )
+            className={`relative h-36 w-full overflow-hidden border-b cursor-pointer border-[var(--frontmatter-border)]
               }`}
           >
             {

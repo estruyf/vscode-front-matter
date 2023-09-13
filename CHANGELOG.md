@@ -7,6 +7,7 @@
 ### 🎨 Enhancements
 
 - [#659](https://github.com/estruyf/vscode-front-matter/issues/659): Implement a filter for the taxonomy dashboard
+- [#662](https://github.com/estruyf/vscode-front-matter/issues/662): Always show the `all articles` tab with the page counter
 
 ### ⚡️ Optimizations
 
