@@ -1,5 +1,4 @@
 import * as yaml from 'yaml';
-import * as jsyaml from 'js-yaml';
 import * as toml from '@iarna/toml';
 import { Format, FrontMatterParser } from '.';
 
@@ -46,7 +45,16 @@ export const Engines = {
       parse: (value: string) => {
         return yaml.parse(removeCarriageReturn(value));
       },
-      stringify: (obj: any, options?: any) => {
+      stringify: (
+        obj: any,
+        options?: {
+          indent?: number;
+          noArrayIndent?: boolean;
+          skipInvalid?: true;
+          noCompatMode?: true;
+          lineWidth?: number;
+        }
+      ) => {
         // Do our own parsing to keep the comments
         if (FrontMatterParser.currentContent) {
           const originalContent = FrontMatterParser.currentContent;
@@ -76,9 +84,11 @@ export const Engines = {
             let updatedValue = docYaml.toJSON();
 
             return yaml.stringify(updatedValue, {
-              lineWidth: 5000,
+              lineWidth: options?.lineWidth || 5000,
               defaultStringType: 'PLAIN',
-              keepUndefined: false
+              keepUndefined: false,
+              indent: options?.indent || 2,
+              indentSeq: options?.noArrayIndent ? false : true
             });
           }
         }
