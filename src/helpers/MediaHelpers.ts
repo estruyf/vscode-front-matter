@@ -26,6 +26,7 @@ import imageSize from 'image-size';
 import { EditorHelper } from '@estruyf/vscode';
 import { SortOption } from '../dashboardWebView/constants/SortOption';
 import { DataListener, MediaListener } from '../listeners/panel';
+import { MediaListener as DashboardMediaListener } from '../listeners/dashboard';
 import { ArticleHelper } from './ArticleHelper';
 import { lookup } from 'mime-types';
 import { existsAsync, readdirAsync, unlinkAsync, writeFileAsync } from '../utils';
@@ -273,6 +274,10 @@ export class MediaHelpers {
    */
   public static resetMedia() {
     MediaHelpers.media = [];
+
+    if (Dashboard.isOpen) {
+      DashboardMediaListener.sendMediaFiles();
+    }
   }
 
   /**

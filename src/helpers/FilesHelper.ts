@@ -1,7 +1,9 @@
 import { Notifications } from './Notifications';
-import { Uri, workspace } from 'vscode';
+import { Uri } from 'vscode';
 import { Folders } from '../commands/Folders';
 import { isValidFile } from './isValidFile';
+import { parseWinPath } from './parseWinPath';
+import { join } from 'path';
 
 export class FilesHelper {
   /**
@@ -27,5 +29,16 @@ export class FilesHelper {
     }
 
     return pages;
+  }
+
+  /**
+   * Relative path to absolute path
+   * @param filePath
+   * @returns
+   */
+  public static relToAbsPath(filePath: string): string {
+    const wsFolder = Folders.getWorkspaceFolder();
+    let absPath = join(parseWinPath(wsFolder?.fsPath || ''), filePath);
+    return parseWinPath(absPath);
   }
 }

@@ -337,5 +337,6 @@
   "dashboard.steps.stepsToGetStarted.template.description": "Sélectionnez un modèle pour préremplir le fichier frontmatter.json avec les paramètres recommandés.",
   "listeners.dashboard.settingsListener.triggerTemplate.notification": "Fichiers de modèle copiés.",
   "common.openOnWebsite": "Ouvrir sur le site web",
-  "common.filter.value": "Filtrer par {0}"
+  "common.filter.value": "Filtrer par {0}",
+  "dashboard.media.detailsSlideOver.unmapped.description": "Voulez-vous remapper les métadonnées des fichiers non mappés?"
 }

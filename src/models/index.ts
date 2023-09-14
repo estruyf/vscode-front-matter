@@ -25,4 +25,5 @@ export * from './StaticFolder';
 export * from './TaxonomyData';
 export * from './TaxonomyType';
 export * from './Template';
+export * from './UnmappedMedia';
 export * from './VersionInfo';

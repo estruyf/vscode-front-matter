@@ -337,5 +337,6 @@
   "dashboard.steps.stepsToGetStarted.template.description": "Wählen Sie eine Vorlage aus, um die Datei frontmatter.json mit den empfohlenen Einstellungen vorzufüllen.",
   "listeners.dashboard.settingsListener.triggerTemplate.notification": "Vorlagendateien kopiert.",
   "common.openOnWebsite": "Auf der Website öffnen",
-  "common.filter.value": "Filtern nach {0}"
+  "common.filter.value": "Filtern nach {0}",
+  "dashboard.media.detailsSlideOver.unmapped.description": "Möchten Sie die Metadaten von nicht zugeordneten Dateien neu zuordnen?"
 }

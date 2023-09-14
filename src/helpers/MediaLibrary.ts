@@ -1,5 +1,5 @@
 import { MediaHelpers } from './MediaHelpers';
-import { workspace } from 'vscode';
+import { Disposable, workspace } from 'vscode';
 import { Config, JsonDB } from 'node-json-db';
 import { basename, dirname, join, parse } from 'path';
 import { Folders, WORKSPACE_PLACEHOLDER } from '../commands/Folders';
@@ -16,6 +16,7 @@ interface MediaRecord {
 
 export class MediaLibrary {
   private db: JsonDB | undefined;
+  private renameFilesListener: Disposable | undefined;
   private static instance: MediaLibrary;
 
   private constructor() {
@@ -65,17 +66,23 @@ export class MediaLibrary {
       )
     );
 
-    workspace.onDidRenameFiles((e) => {
-      e.files.forEach((f) => {
+    if (this.renameFilesListener) {
+      this.renameFilesListener.dispose();
+    }
+
+    this.renameFilesListener = workspace.onDidRenameFiles((e) => {
+      e.files.forEach(async (f) => {
         const path = f.oldUri.path.toLowerCase();
         // Check if file is an image
         if (
           path.endsWith('.jpeg') ||
           path.endsWith('.jpg') ||
           path.endsWith('.png') ||
-          path.endsWith('.gif')
+          path.endsWith('.gif') ||
+          path.endsWith('.mp4') ||
+          path.endsWith('.pdf')
         ) {
-          this.rename(f.oldUri.fsPath, f.newUri.fsPath);
+          await this.rename(f.oldUri.fsPath, f.newUri.fsPath);
           MediaHelpers.resetMedia();
         }
       });
@@ -90,6 +97,10 @@ export class MediaLibrary {
     return MediaLibrary.instance;
   }
 
+  public static reset() {
+    MediaLibrary.instance = new MediaLibrary();
+  }
+
   public async get(id: string): Promise<MediaRecord | undefined> {
     try {
       const fileId = this.parsePath(id);
@@ -102,15 +113,24 @@ export class MediaLibrary {
     }
   }
 
+  public async getAll() {
+    try {
+      const data = await this.db?.getData('/');
+      return data;
+    } catch {
+      return undefined;
+    }
+  }
+
   public set(id: string, metadata: any): void {
     const fileId = this.parsePath(id);
     this.db?.push(fileId, metadata, true);
   }
 
-  public rename(oldId: string, newId: string): void {
+  public async rename(oldId: string, newId: string): Promise<void> {
     const fileId = this.parsePath(oldId);
     const newFileId = this.parsePath(newId);
-    const data = this.db?.getData(fileId);
+    const data = await this.get(fileId);
     if (data) {
       this.db?.delete(fileId);
       this.db?.push(newFileId, data, true);
@@ -130,7 +150,7 @@ export class MediaLibrary {
           Notifications.warning(`The name "${filename}" already exists at the file location.`);
         } else {
           await renameAsync(filePath, newPath);
-          this.rename(filePath, newPath);
+          await this.rename(filePath, newPath);
           MediaHelpers.resetMedia();
         }
       } catch (err) {
@@ -139,7 +159,7 @@ export class MediaLibrary {
     }
   }
 
-  private parsePath(path: string) {
+  public parsePath(path: string) {
     const wsFolder = Folders.getWorkspaceFolder();
     const isWindows = process.platform === 'win32';
     let absPath = path.replace(parseWinPath(wsFolder?.fsPath || ''), WORKSPACE_PLACEHOLDER);

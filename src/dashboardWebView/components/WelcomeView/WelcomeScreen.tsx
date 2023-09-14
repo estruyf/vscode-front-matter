@@ -11,6 +11,9 @@ import useThemeColors from '../../hooks/useThemeColors';
 import { WelcomeLink } from './WelcomeLink';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { DashboardViewAtom } from '../../state';
+import { useRecoilState } from 'recoil';
+import { NavigationType } from '../../models';
 
 export interface IWelcomeScreenProps {
   settings: Settings;
@@ -20,8 +23,10 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({
   settings
 }: React.PropsWithChildren<IWelcomeScreenProps>) => {
   const { getColors } = useThemeColors();
+  const [, setView] = useRecoilState(DashboardViewAtom);
 
   React.useEffect(() => {
+    setView(NavigationType.Welcome);
     Messenger.send(DashboardMessage.sendTelemetry, {
       event: TelemetryEvent.webviewWelcomeScreen
     });

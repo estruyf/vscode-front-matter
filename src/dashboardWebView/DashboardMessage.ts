@@ -37,6 +37,8 @@ export enum DashboardMessage {
   createMediaFolder = 'createMediaFolder',
   insertFile = 'insertFile',
   createHexoAssetFolder = 'createHexoAssetFolder',
+  getUnmappedMedia = 'getUnmappedMedia',
+  remapMediaMetadata = 'remapMediaMetadata',
 
   // Data dashboard
   getDataEntries = 'getDataEntries',

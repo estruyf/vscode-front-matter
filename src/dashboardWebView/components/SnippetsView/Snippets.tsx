@@ -2,14 +2,14 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import { CodeIcon, PlusSmIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { FeatureFlag } from '../../../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../../../constants';
 import { TelemetryEvent } from '../../../constants/TelemetryEvent';
 import { SnippetParser } from '../../../helpers/SnippetParser';
 import { DashboardMessage } from '../../DashboardMessage';
 import useThemeColors from '../../hooks/useThemeColors';
-import { ModeAtom, SettingsSelector, ViewDataSelector } from '../../state';
+import { DashboardViewAtom, ModeAtom, SettingsSelector, ViewDataSelector } from '../../state';
 import { FilterInput } from '../Header/FilterInput';
 import { PageLayout } from '../Layout/PageLayout';
 import { FormDialog } from '../Modals/FormDialog';
@@ -18,6 +18,7 @@ import { Item } from './Item';
 import { NewForm } from './NewForm';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { NavigationType } from '../../models';
 
 export interface ISnippetsProps { }
 
@@ -34,6 +35,7 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
   const [mediaSnippet, setMediaSnippet] = useState(false);
   const [snippetFilter, setSnippetFilter] = useState<string>('');
   const { getColors } = useThemeColors();
+  const [, setView] = useRecoilState(DashboardViewAtom);
 
   const snippets = settings?.snippets || {};
   const snippetKeys = useMemo(() => {
@@ -82,6 +84,7 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
   };
 
   useEffect(() => {
+    setView(NavigationType.Snippets);
     Messenger.send(DashboardMessage.sendTelemetry, {
       event: TelemetryEvent.webviewSnippetsView
     });

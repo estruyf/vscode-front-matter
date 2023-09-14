@@ -932,6 +932,10 @@ export enum LocalizationKey {
    */
   dashboardWelcomeScreenActionsThanks = 'dashboard.welcomeScreen.actions.thanks',
   /**
+   * Found the following unmapped files. Do you want to remap the metadata?
+   */
+  dashboardMediaDetailsSlideOverUnmappedDescription = 'dashboard.media.detailsSlideOver.unmapped.description',
+  /**
    * Content-type
    */
   panelContentTypeContentTypeValidatorTitle = 'panel.contentType.contentTypeValidator.title',

@@ -337,5 +337,6 @@
   "dashboard.steps.stepsToGetStarted.template.description": "おすすめの設定でfrontmatter.jsonファイルを事前に埋めるテンプレートを選択します。",
   "listeners.dashboard.settingsListener.triggerTemplate.notification": "テンプレートファイルがコピーされました。",
   "common.openOnWebsite": "ウェブサイトで開く",
-  "common.filter.value": "{0} でフィルタリング"
+  "common.filter.value": "{0} でフィルタリング",
+  "dashboard.media.detailsSlideOver.unmapped.description": "未割り当てのファイルのメタデータを再マップしますか"
 }

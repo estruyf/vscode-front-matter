@@ -8,7 +8,9 @@ import { commands, env, Uri } from 'vscode';
 import { COMMAND_NAME, TelemetryEvent } from '../../constants';
 import * as os from 'os';
 import { Folders } from '../../commands';
-import { PostMessageData } from '../../models';
+import { PostMessageData, UnmappedMedia } from '../../models';
+import { FilesHelper, MediaLibrary } from '../../helpers';
+import { existsAsync, flattenObjectKeys } from '../../utils';
 
 export class MediaListener extends BaseListener {
   private static timers: { [folder: string]: any } = {};
@@ -49,6 +51,12 @@ export class MediaListener extends BaseListener {
         Telemetry.send(TelemetryEvent.updateMediaMetadata);
         this.update(msg.payload);
         break;
+      case DashboardMessage.getUnmappedMedia:
+        this.getUnmappedMedia(msg);
+        break;
+      case DashboardMessage.remapMediaMetadata:
+        this.remapMediaMetadata(msg);
+        break;
       case DashboardMessage.createMediaFolder:
         await commands.executeCommand(COMMAND_NAME.createFolder, msg?.payload);
         break;
@@ -71,10 +79,15 @@ export class MediaListener extends BaseListener {
     folder: string = '',
     sorting: SortingOption | null = null
   ) {
+    MediaLibrary.reset();
     const files = await MediaHelpers.getMedia(page, folder, sorting);
     this.sendMsg(DashboardCommand.media, files);
   }
 
+  /**
+   * Open file in finder or explorer
+   * @param file
+   */
   private static openFileInFinder(file: string) {
     if (file) {
       if (os.type() === 'Linux' && env.remoteName?.toLowerCase() === 'wsl') {
@@ -82,6 +95,62 @@ export class MediaListener extends BaseListener {
       } else {
         commands.executeCommand('revealFileInOS', Uri.parse(file));
       }
+    }
+  }
+
+  private static async remapMediaMetadata({ command, payload }: PostMessageData) {
+    if (!payload || !command) {
+      return;
+    }
+
+    const { unmappedItem, file, folder, page } = payload;
+
+    if (!unmappedItem || !(unmappedItem as UnmappedMedia).absPath || !file) {
+      return;
+    }
+
+    const mediaLib = MediaLibrary.getInstance();
+
+    await mediaLib.rename((unmappedItem as UnmappedMedia).absPath, file);
+    this.sendMediaFiles(page || 0, folder || '');
+  }
+
+  /**
+   * Find all the unmapped media file with the given name
+   * @param msg
+   */
+  private static async getUnmappedMedia({ command, payload, requestId }: PostMessageData) {
+    if (!payload || !command || !requestId) {
+      return;
+    }
+
+    const mediaLib = MediaLibrary.getInstance();
+    const allMetadata = await mediaLib.getAll();
+    const allFilePaths = flattenObjectKeys(allMetadata);
+
+    const filesEndingWith = allFilePaths.filter((f) => f.endsWith(payload));
+
+    // Check if the files exist
+    const unmappedFiles: UnmappedMedia[] = [];
+    for (const file of filesEndingWith) {
+      const absPath = FilesHelper.relToAbsPath(file);
+      if (!(await existsAsync(absPath))) {
+        const parsedPath = mediaLib.parsePath(absPath);
+        const metadata = await mediaLib.get(parsedPath);
+        if (metadata) {
+          unmappedFiles.push({
+            file,
+            absPath,
+            metadata: {
+              ...(metadata as { [key: string]: any })
+            }
+          } as UnmappedMedia);
+        }
+      }
+    }
+
+    if (unmappedFiles && unmappedFiles.length > 0) {
+      this.sendRequest(command as any, requestId, unmappedFiles);
     }
   }
 

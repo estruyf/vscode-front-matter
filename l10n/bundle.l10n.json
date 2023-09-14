@@ -284,6 +284,8 @@
   "dashboard.welcomeScreen.actions.description": "You can also use the extension from the Front Matter side panel. There you will find the actions you can perform specifically for your pages.",
   "dashboard.welcomeScreen.actions.thanks": "We hope you enjoy Front Matter!",
 
+  "dashboard.media.detailsSlideOver.unmapped.description": "Do you want to remap the metadata of unmapped files?",
+
   "panel.contentType.contentTypeValidator.title": "Content-type",
   "panel.contentType.contentTypeValidator.hint": "We noticed field differences between the content-type and the front matter data. \n Would you like to create, update, or set the content-type for this content?",
   "panel.contentType.contentTypeValidator.button.create": "Create content-type",
