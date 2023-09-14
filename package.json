@@ -1049,6 +1049,11 @@
                 ],
                 "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fileType.description%"
               },
+              "clearEmpty": {
+                "type": "boolean",
+                "default": false,
+                "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.clearEmpty.description%"
+              },
               "fields": {
                 "$id": "#contenttypefield",
                 "type": "array",
@@ -1280,11 +1285,6 @@
                       "type": "boolean",
                       "default": false,
                       "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.required.description%"
-                    },
-                    "clearEmpty": {
-                      "type": "boolean",
-                      "default": false,
-                      "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.clearEmpty.description%"
                     },
                     "customType": {
                       "type": "string",
