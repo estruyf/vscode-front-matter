@@ -46,16 +46,21 @@ export default function usePages(pages: Page[]) {
       // Framework specific actions
       if (framework?.toLowerCase() === 'jekyll' || framework?.toLowerCase() === 'hexo') {
         pagesToShow = pagesToShow.map((page) => {
-          // https://jekyllrb.com/docs/posts/#drafts
-          const filePath = parseWinPath(page.fmFilePath);
-          page.draft = filePath.indexOf(`/_drafts/`) > -1;
+          try {
+            const crntPage = Object.assign({}, page);
+            // https://jekyllrb.com/docs/posts/#drafts
+            const filePath = parseWinPath(page.fmFilePath);
+            crntPage.draft = filePath.indexOf(`/_drafts/`) > -1;
 
-          // Published field: https://jekyllrb.com/docs/front-matter/#predefined-global-variables
-          if (typeof page.published !== 'undefined') {
-            page.draft = !page.published;
+            // Published field: https://jekyllrb.com/docs/front-matter/#predefined-global-variables
+            if (typeof crntPage.published !== 'undefined') {
+              crntPage.draft = !crntPage.published;
+            }
+
+            return crntPage;
+          } catch (error) {
+            return page;
           }
-
-          return page;
         });
       }
 
