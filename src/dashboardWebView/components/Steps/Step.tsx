@@ -24,61 +24,45 @@ export const Step: React.FunctionComponent<IStepProps> = ({
     return (
       <>
         {status === Status.NotStarted && (
-          <span className="h-9 flex items-center" aria-hidden="true">
-            <span
-              className={`relative z-10 w-8 h-8 flex items-center justify-center border-2 rounded-full bg-[var(--frontmatter-border)] border-[var(--frontmatter-border)] ${onClick ? getColors('group-hover:text-gray-400', 'group-hover:text-[var(--vscode-button-foreground)] group-hover:border-[var(--vscode-button-hoverBackground)]') : ''
+          <div className="h-9 flex items-center" aria-hidden="true">
+            <div
+              className={`relative z-10 w-8 h-8 flex items-center justify-center border-2 rounded-full bg-[var(--frontmatter-border)] border-[var(--frontmatter-border)] ${onClick ? 'group-hover:text-[var(--vscode-button-foreground)] group-hover:border-[var(--vscode-button-hoverBackground)]' : ''
                 }`}
             >
               <span
                 className={`h-2.5 w-2.5 bg-transparent rounded-full ${onClick ? getColors('group-hover:bg-gray-400', 'group-hover:bg-[var(--vscode-button-hoverBackground)]') : ''
                   }`}
               />
-            </span>
-          </span>
+            </div>
+          </div>
         )}
 
         {status === Status.Active && (
-          <span className="h-9 flex items-center" aria-hidden="true">
-            <span className={`relative z-10 w-8 h-8 flex items-center justify-center border-2 rounded-full ${getColors(
-              'bg-white border-teal-600',
-              'bg-[var(--frontmatter-border)] border-[var(--frontmatter-border)] group-hover:text-[var(--vscode-button-foreground)] group-hover:border-[var(--vscode-button-hoverBackground)]'
-            )
-              }`}>
+          <div className="h-9 flex items-center" aria-hidden="true">
+            <div className={`relative z-10 w-8 h-8 flex items-center justify-center border-2 rounded-full bg-[var(--frontmatter-border)] border-[var(--frontmatter-border)] group-hover:text-[var(--vscode-button-foreground)] group-hover:border-[var(--vscode-button-hoverBackground)]`}>
               <span className={`h-2.5 w-2.5 rounded-full ${getColors(
                 'bg-teal-600',
                 'bg-[var(--frontmatter-button-background)]'
               )
                 }`} />
-            </span>
-          </span>
+            </div>
+          </div>
         )}
 
         {status === Status.Completed && (
-          <span className="h-9 flex items-center">
-            <span className={`relative z-10 w-8 h-8 flex items-center justify-center rounded-full ${getColors(
-              'bg-teal-600 group-hover:bg-teal-800',
-              'text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] group-hover:bg-[var(--vscode-button-hoverBackground)]'
-            )
-              }`}>
-              <CheckIcon className={`w-5 h-5 ${getColors('text-white', '')}`} aria-hidden="true" />
-            </span>
-          </span>
+          <div className="h-9 flex items-center">
+            <div className={`relative z-10 w-8 h-8 flex items-center justify-center rounded-full text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] group-hover:bg-[var(--vscode-button-hoverBackground)]`}>
+              <CheckIcon className={`w-5 h-5`} aria-hidden="true" />
+            </div>
+          </div>
         )}
 
-        <span className={`ml-4 min-w-0 flex flex-col`}>
-          <span className={`text-xs font-semibold tracking-wide uppercase ${getColors(
-            'text-vulcan-500 dark:text-whisper-500',
-            'text-[var(--vscode-editor-foreground)]'
-          )
-            }`}>
+        <div className={`ml-4 flex flex-col w-full`}>
+          <div className={`text-xs font-semibold tracking-wide uppercase text-[var(--vscode-editor-foreground)]`}>
             {name}
-          </span>
-          <div className={`mt-1 text-sm ${getColors(
-            'text-vulcan-400 dark:text-whisper-600',
-            'text-[var(--vscode-editor-foreground)]'
-          )
-            }`}>{description}</div>
-        </span>
+          </div>
+          <div className={`mt-1 text-sm text-[var(--vscode-editor-foreground)]`}>{description}</div>
+        </div>
       </>
     );
   };

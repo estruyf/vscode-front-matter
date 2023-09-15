@@ -16,6 +16,8 @@ import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { SelectItem } from './SelectItem';
 import { Templates } from '../../../constants';
+import { TemplateItem } from './TemplateItem';
+import { Spinner } from '../Common/Spinner';
 
 export interface IStepsToGetStartedProps {
   settings: Settings;
@@ -50,6 +52,7 @@ const Folder = ({
 export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps> = ({
   settings
 }: React.PropsWithChildren<IStepsToGetStartedProps>) => {
+  const [loading, setLoading] = useState<boolean>(false);
   const [framework, setFramework] = useState<string | null>(null);
   const [taxImported, setTaxImported] = useState<boolean>(false);
   const [templates, setTemplates] = useState<Template[]>([]);
@@ -71,7 +74,9 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
   }
 
   const triggerTemplate = (template: Template) => {
+    setLoading(true);
     messageHandler.request<boolean>(DashboardMessage.triggerTemplate, template).then((result) => {
+      setLoading(false);
       if (result) {
         reload();
       }
@@ -183,17 +188,18 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
         id: `welcome-template`,
         name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedTemplateName),
         description: (
-          <div className='mt-4'>
+          <div className=''>
             <div className="text-sm">{l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedTemplateDescription)}</div>
-            <div className="mt-1 space-y-1">
+            <div className="mt-4 grid grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-4 w-full">
               {
                 crntTemplates && (crntTemplates || []).map(template => (
-                  <SelectItem
+                  <TemplateItem
                     key={template.name.toLowerCase().replace(/ /g, '-')}
                     title={template.name}
-                    icon='add'
+                    author={template.author}
+                    version={template.version}
+                    description={template.description}
                     buttonTitle={template.name}
-                    isSelected={false}
                     onClick={() => triggerTemplate(template)} />
                 ))
               }
@@ -321,6 +327,11 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
 
   return (
     <nav aria-label="Progress">
+      {
+        loading && (
+          <Spinner />
+        )
+      }
       <ol role="list">
         {steps.map((step, stepIdx) => (
           step.show && (
