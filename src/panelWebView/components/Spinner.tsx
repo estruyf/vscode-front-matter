@@ -8,8 +8,10 @@ const Spinner: React.FunctionComponent<ISpinnerProps> = (
   _: React.PropsWithChildren<ISpinnerProps>
 ) => {
   return (
-    <div className="spinner">
-      {l10n.t(LocalizationKey.panelSpinnerLoading)}
+    <div className="vscode__loader">
+      <div className="vscode__loader__bar">
+        <div className="vscode__loader__bar__animation"></div>
+      </div>
     </div>
   );
 };

@@ -66,43 +66,6 @@
   padding: 1rem 1.25rem;
 }
 
-.spinner,
-.spinner:before,
-.spinner:after {
-  border-radius: 50%;
-  width: 2em;
-  height: 2em;
-  animation-fill-mode: both;
-  animation: load7 1.8s infinite ease-in-out;
-}
-
-.spinner {
-  color: var(--vscode-panelSectionHeader-foreground);
-  font-size: 10px;
-  margin: 80px auto;
-  position: relative;
-  text-indent: -9999em;
-  transform: translateZ(0);
-  animation-delay: -0.16s;
-}
-
-.spinner:before,
-.spinner:after {
-  content: '';
-  position: absolute;
-  top: 0;
-}
-
-.spinner:before {
-  left: -3.5em;
-  -webkit-animation-delay: -0.32s;
-  animation-delay: -0.32s;
-}
-
-.spinner:after {
-  left: 3.5em;
-}
-
 .frontmatter {
   padding-top: 0;
   padding-bottom: var(--input-margin-vertical);
