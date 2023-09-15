@@ -4,6 +4,8 @@
 
 ### ✨ New features
 
+- [#563](https://github.com/estruyf/vscode-front-matter/issues/563): New `fieldCollection` to inherit/reuse fields in multiple content-types
+
 ### 🎨 Enhancements
 
 - [#638](https://github.com/estruyf/vscode-front-matter/issues/638): Add Hexo support for the `_drafts` folder

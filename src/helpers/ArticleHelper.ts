@@ -331,34 +331,7 @@ export class ArticleHelper {
         contentType.fields = DEFAULT_CONTENT_TYPE.fields;
       }
 
-      // Check if there is a field collection
-      const fcFields = ContentType.findAllFieldsByType(contentType.fields || [], 'fieldCollection');
-
-      if (fcFields.length > 0) {
-        const fieldCollections = Settings.get<any[]>('taxonomy.fieldCollection');
-
-        if (fieldCollections && fieldCollections.length > 0) {
-          for (const cField of fcFields) {
-            let fields = contentType.fields;
-
-            for (const fieldName of cField) {
-              const field = fields.find((f) => f.name === fieldName);
-
-              if (field && field.type === 'fieldCollection') {
-                const fieldCollection = fieldCollections.find(
-                  (fc) => fc.id === (field as any).fieldCollectionId
-                );
-                if (fieldCollection) {
-                  const fieldIdx = fields.findIndex((f) => f.name === field.name);
-                  fields.splice(fieldIdx, 1, ...fieldCollection.fields);
-                }
-              } else if (field && field.type === 'fields') {
-                fields = field.fields || [];
-              }
-            }
-          }
-        }
-      }
+      contentType.fields = ContentType.mergeFields(contentType.fields);
 
       return contentType;
     }

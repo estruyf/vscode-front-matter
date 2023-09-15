@@ -1,6 +1,6 @@
 import { SETTING_SPONSORS_AI_ENABLED, SETTING_WEBSITE_URL } from './../constants/settings';
 import { workspace } from 'vscode';
-import { Extension, Settings, TaxonomyHelper } from '.';
+import { ContentType, Extension, Settings, TaxonomyHelper } from '.';
 import { Dashboard } from '../commands/Dashboard';
 import { Preview } from '../commands/Preview';
 import { Project } from '../commands/Project';
@@ -83,7 +83,7 @@ export class PanelSettings {
       fmHighlighting: Settings.get(SETTING_CONTENT_FRONTMATTER_HIGHLIGHT),
       preview: Preview.getSettings(),
       commaSeparatedFields: Settings.get(SETTING_COMMA_SEPARATED_FIELDS) || [],
-      contentTypes: Settings.get(SETTING_TAXONOMY_CONTENT_TYPES) || [],
+      contentTypes: ContentType.getAll() || [],
       dashboardViewData: Dashboard.viewData,
       draftField: Settings.get<DraftField>(SETTING_CONTENT_DRAFT_FIELD),
       isBacker: await Extension.getInstance().getState<boolean | undefined>(

@@ -111,7 +111,50 @@ export class ContentType {
    * @returns
    */
   public static getAll() {
-    return Settings.get<IContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
+    const cts = Settings.get<IContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
+
+    for (const ct of cts || []) {
+      ct.fields = ContentType.mergeFields(ct.fields || []);
+    }
+
+    return cts;
+  }
+
+  /**
+   * Merge the collection fields
+   * @param contentType
+   * @returns
+   */
+  public static mergeFields(fields: Field[]) {
+    if (!fields) {
+      return [];
+    }
+
+    // Check if there is a field collection
+    const fcFields = ContentType.findAllFieldsByType(fields || [], 'fieldCollection');
+    if (fcFields.length > 0) {
+      const fieldGroups = Settings.get<FieldGroup[]>(SETTING_TAXONOMY_FIELD_GROUPS);
+
+      if (fieldGroups && fieldGroups.length > 0) {
+        for (const cField of fcFields) {
+          for (const fieldName of cField) {
+            const field = fields.find((f) => f.name === fieldName);
+
+            if (field && field.type === 'fieldCollection') {
+              const fieldGroup = fieldGroups.find((fg) => fg.id === field.fieldGroup);
+              if (fieldGroup) {
+                const fieldIdx = fields.findIndex((f) => f.name === field.name);
+                fields.splice(fieldIdx, 1, ...fieldGroup.fields);
+              }
+            } else if (field && field.type === 'fields') {
+              fields = field.fields || [];
+            }
+          }
+        }
+      }
+    }
+
+    return fields;
   }
 
   /**
