@@ -173,7 +173,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                                         <li className='list-disc'>
                                           <button
                                             key={item.file}
-                                            className='hover:text-[var(--frontmatter-link-hover)]'
+                                            className='text-left hover:text-[var(--frontmatter-link-hover)]'
                                             onClick={() => remapMetadata(item)}>
                                             {item.file}{item.metadata.title ? ` (${item.metadata.title})` : ''}
                                           </button>
