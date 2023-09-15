@@ -46,6 +46,7 @@ import { FrameworkDetector } from './FrameworkDetector';
 import { Settings } from './SettingsHelper';
 import { parseWinPath } from './parseWinPath';
 import { TaxonomyHelper } from './TaxonomyHelper';
+import { ContentType } from './ContentType';
 
 export class DashboardSettings {
   private static cachedSettings: ISettings | undefined = undefined;
@@ -85,7 +86,7 @@ export class DashboardSettings {
         ExtensionState.PagesView,
         'workspace'
       ),
-      contentTypes: Settings.get(SETTING_TAXONOMY_CONTENT_TYPES) || [],
+      contentTypes: ContentType.getAll() || [],
       draftField: Settings.get<DraftField>(SETTING_CONTENT_DRAFT_FIELD),
       customSorting: Settings.get<SortingSetting[]>(SETTING_CONTENT_SORTING),
       contentFolders: Folders.get(),

@@ -78,6 +78,7 @@ export type FieldType =
   | 'divider'
   | 'heading'
   | 'contentRelationship'
+  | 'fieldCollection'
   | 'customField';
 
 export interface Field {

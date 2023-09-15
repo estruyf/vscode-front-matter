@@ -215,7 +215,7 @@
   "setting.frontMatter.taxonomy.customTaxonomy.items.properties.options.description": "Options from which you can pick.",
   "setting.frontMatter.taxonomy.dateField.markdownDescription": "This setting is used to define the publishing date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.datefield)",
   "setting.frontMatter.taxonomy.dateFormat.markdownDescription": "Specify the date format for your articles. Check [date-fns formating](https://date-fns.org/v2.0.1/docs/format) for more information. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.dateformat)",
-  "setting.frontMatter.taxonomy.fieldGroups.markdownDescription": "Define the field groups you want to use for your block fields. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.fieldgroups)",
+  "setting.frontMatter.taxonomy.fieldGroups.markdownDescription": "Define the field groups you want to use for your block fields or collection fields. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.fieldgroups)",
   "setting.frontMatter.taxonomy.fieldGroups.items.properties.id.description": "The name of the field group",
   "setting.frontMatter.taxonomy.fieldGroups.items.properties.labelField.description": "The name of the field to be used as display value",
   "setting.frontMatter.taxonomy.frontMatterType.markdownDescription": "Specify the type of Front Matter to use. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.frontmattertype)",
