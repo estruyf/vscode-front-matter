@@ -433,9 +433,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
   return (
     <>
-      <li className={`group relative shadow-md hover:shadow-xl dark:shadow-none border rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--frontmatter-border)]
-      )
-        }`}>
+      <li className={`group relative shadow-md hover:shadow-xl dark:shadow-none border rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--frontmatter-border)]`}>
         <button
           className={`group/button relative block w-full aspect-w-10 aspect-h-7 overflow-hidden h-48 ${isImageFile ? 'cursor-pointer' : 'cursor-default'} border-b border-[var(--frontmatter-border)]`}
           onClick={hasViewData ? undefined : openLightbox}
