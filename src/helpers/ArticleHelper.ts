@@ -23,14 +23,14 @@ import {
 } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { FrontMatterParser, ParsedFrontMatter } from '../parsers';
-import { Extension, Logger, Settings, SlugHelper, parseWinPath } from '.';
+import { ContentType, Extension, Logger, Settings, SlugHelper, parseWinPath } from '.';
 import { format, parse } from 'date-fns';
 import { Notifications } from './Notifications';
 import { Article } from '../commands';
 import { join } from 'path';
 import { EditorHelper } from '@estruyf/vscode';
 import sanitize from '../helpers/Sanitize';
-import { ContentType } from '../models';
+import { ContentType as IContentType } from '../models';
 import { DateHelper } from './DateHelper';
 import { DiagnosticSeverity, Position, window, Range } from 'vscode';
 import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
@@ -305,14 +305,14 @@ export class ArticleHelper {
    * @returns
    */
   public static getContentTypes() {
-    return Settings.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES) || [DEFAULT_CONTENT_TYPE];
+    return Settings.get<IContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES) || [DEFAULT_CONTENT_TYPE];
   }
 
   /**
    * Retrieve the content type of the current file
    * @param updatedMetadata
    */
-  public static getContentType(metadata: { [field: string]: string }): ContentType {
+  public static getContentType(metadata: { [field: string]: string }): IContentType {
     const contentTypes = ArticleHelper.getContentTypes();
 
     if (!contentTypes || !metadata) {
@@ -329,6 +329,35 @@ export class ArticleHelper {
     if (contentType) {
       if (!contentType.fields) {
         contentType.fields = DEFAULT_CONTENT_TYPE.fields;
+      }
+
+      // Check if there is a field collection
+      const fcFields = ContentType.findAllFieldsByType(contentType.fields || [], 'fieldCollection');
+
+      if (fcFields.length > 0) {
+        const fieldCollections = Settings.get<any[]>('taxonomy.fieldCollection');
+
+        if (fieldCollections && fieldCollections.length > 0) {
+          for (const cField of fcFields) {
+            let fields = contentType.fields;
+
+            for (const fieldName of cField) {
+              const field = fields.find((f) => f.name === fieldName);
+
+              if (field && field.type === 'fieldCollection') {
+                const fieldCollection = fieldCollections.find(
+                  (fc) => fc.id === (field as any).fieldCollectionId
+                );
+                if (fieldCollection) {
+                  const fieldIdx = fields.findIndex((f) => f.name === field.name);
+                  fields.splice(fieldIdx, 1, ...fieldCollection.fields);
+                }
+              } else if (field && field.type === 'fields') {
+                fields = field.fields || [];
+              }
+            }
+          }
+        }
       }
 
       return contentType;
@@ -372,7 +401,7 @@ export class ArticleHelper {
    * @returns The new file path
    */
   public static async createContent(
-    contentType: ContentType | undefined,
+    contentType: IContentType | undefined,
     folderPath: string,
     titleValue: string,
     fileExtension?: string
@@ -438,7 +467,7 @@ export class ArticleHelper {
   public static getFilePrefix(
     prefix: string | null | undefined,
     filePath?: string,
-    contentType?: ContentType
+    contentType?: IContentType
   ): string | undefined {
     if (!prefix) {
       prefix = undefined;

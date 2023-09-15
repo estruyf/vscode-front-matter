@@ -396,6 +396,29 @@ export class ContentType {
   }
 
   /**
+   * Find all the fields by type
+   * @param fields
+   * @param type
+   * @returns
+   */
+  public static findAllFieldsByType(fields: Field[], type: FieldType): string[][] {
+    let parents: string[][] = [];
+
+    for (const field of fields) {
+      if (field.type === type) {
+        parents.push([field.name]);
+      } else if (field.type === 'fields' && field.fields) {
+        const subFields = this.findAllFieldsByType(field.fields, type);
+        if (subFields.length > 0) {
+          parents = [...parents, ...subFields.map((f) => [field.name, ...f])];
+        }
+      }
+    }
+
+    return parents;
+  }
+
+  /**
    * Find the preview field in the fields
    * @param ctFields
    * @param parents
