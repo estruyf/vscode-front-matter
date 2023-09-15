@@ -8,6 +8,7 @@ import { parseWinPath } from './parseWinPath';
 import { LocalStore } from '../constants';
 import { existsAsync, renameAsync } from '../utils';
 import { existsSync, mkdirSync, renameSync } from 'fs';
+import { lookup } from 'mime-types';
 
 interface MediaRecord {
   description: string;
@@ -73,14 +74,14 @@ export class MediaLibrary {
     this.renameFilesListener = workspace.onDidRenameFiles((e) => {
       e.files.forEach(async (f) => {
         const path = f.oldUri.path.toLowerCase();
+        const mimeType = lookup(path);
         // Check if file is an image
         if (
-          path.endsWith('.jpeg') ||
-          path.endsWith('.jpg') ||
-          path.endsWith('.png') ||
-          path.endsWith('.gif') ||
-          path.endsWith('.mp4') ||
-          path.endsWith('.pdf')
+          mimeType &&
+          (mimeType.startsWith('image/') ||
+            mimeType.startsWith('video/') ||
+            mimeType.startsWith('audio/') ||
+            mimeType.startsWith('application/pdf'))
         ) {
           await this.rename(f.oldUri.fsPath, f.newUri.fsPath);
           MediaHelpers.resetMedia();
