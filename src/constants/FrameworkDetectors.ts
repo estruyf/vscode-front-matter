@@ -65,7 +65,7 @@ export const FrameworkDetectors = [
     requiredFiles: ['nuxt.config.js'],
     requiredDependencies: ['nuxt'],
     commands: {
-      start: 'npx nuxt'
+      start: 'npx nuxt dev'
     }
   },
   {

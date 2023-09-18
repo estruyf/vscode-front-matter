@@ -22,6 +22,7 @@
 - [#660](https://github.com/estruyf/vscode-front-matter/issues/660): Allow only to select unique content relationship values
 - [#661](https://github.com/estruyf/vscode-front-matter/issues/661): Fixing the dropdowns when used at the bottom of a collapsible group
 - [#664](https://github.com/estruyf/vscode-front-matter/issues/664): Fix for parsing draft status in Hexo and Jekyll
+- [#665](https://github.com/estruyf/vscode-front-matter/issues/665): Added `dev` parameter to Nuxt script
 
 ## [9.2.0] - 2023-09-11
 
