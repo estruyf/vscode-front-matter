@@ -23,6 +23,7 @@ export interface IDetailsSlideOverProps {
   media: MediaInfo;
   showForm: boolean;
   isImageFile: boolean;
+  isVideoFile: boolean;
   onEdit: () => void;
   onEditClose: () => void;
   onDismiss: () => void;
@@ -38,7 +39,8 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
   onEdit,
   onEditClose,
   onDismiss,
-  isImageFile
+  isImageFile,
+  isVideoFile
 }: React.PropsWithChildren<IDetailsSlideOverProps>) => {
   const [filename, setFilename] = React.useState<string>(media.filename);
   const [caption, setCaption] = React.useState<string | undefined>(media.caption);
@@ -136,9 +138,19 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                   <div className="relative mt-6 flex-1 px-4 sm:px-6">
                     <div className="absolute inset-0 px-4 sm:px-6 space-y-8">
                       <div>
-                        {isImageFile && (
+                        {(isImageFile || isVideoFile) && (
                           <div className={`block w-full aspect-w-10 aspect-h-7 overflow-hidden border rounded border-[var(--frontmatter-border)] bg-[var(--vscode-editor-background)]`}>
-                            <img src={imgSrc} alt={media.filename} className="object-cover max-h-[300px] mx-auto" />
+                            {
+                              isImageFile && (
+                                <img src={imgSrc} alt={media.filename} className="object-cover max-h-[300px] mx-auto" />
+                              )
+                            }
+
+                            {
+                              isVideoFile && (
+                                <video src={media.vsPath} className="mx-auto object-cover" controls muted />
+                              )
+                            }
                           </div>
                         )}
                         <div className="mt-4 flex items-start justify-between">
@@ -211,25 +223,25 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                                 </div>
                               </div>
 
+                              {(isImageFile || isVideoFile) && (
+                                <div>
+                                  <label className={`block text-sm font-medium text-[var(--vscode-editor-foreground)]`}>
+                                    {l10n.t(LocalizationKey.dashboardMediaCommonCaption)}
+                                  </label>
+                                  <div className="mt-1">
+                                    <DetailsInput value={caption || ""} onChange={(e) => setCaption(e.target.value)} isTextArea />
+                                  </div>
+                                </div>
+                              )}
                               {isImageFile && (
-                                <>
-                                  <div>
-                                    <label className={`block text-sm font-medium text-[var(--vscode-editor-foreground)]`}>
-                                      {l10n.t(LocalizationKey.dashboardMediaCommonCaption)}
-                                    </label>
-                                    <div className="mt-1">
-                                      <DetailsInput value={caption || ""} onChange={(e) => setCaption(e.target.value)} isTextArea />
-                                    </div>
+                                <div>
+                                  <label className={`block text-sm font-medium text-[var(--vscode-editor-foreground)]`}>
+                                    {l10n.t(LocalizationKey.dashboardMediaCommonAlt)}
+                                  </label>
+                                  <div className="mt-1">
+                                    <DetailsInput value={alt || ""} onChange={(e) => setAlt(e.target.value)} isTextArea />
                                   </div>
-                                  <div>
-                                    <label className={`block text-sm font-medium text-[var(--vscode-editor-foreground)]`}>
-                                      {l10n.t(LocalizationKey.dashboardMediaCommonAlt)}
-                                    </label>
-                                    <div className="mt-1">
-                                      <DetailsInput value={alt || ""} onChange={(e) => setAlt(e.target.value)} isTextArea />
-                                    </div>
-                                  </div>
-                                </>
+                                </div>
                               )}
                             </div>
 

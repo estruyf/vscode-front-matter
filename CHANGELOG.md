@@ -12,6 +12,7 @@
 - [#659](https://github.com/estruyf/vscode-front-matter/issues/659): Implement a filter for the taxonomy dashboard
 - [#662](https://github.com/estruyf/vscode-front-matter/issues/662): Always show the `all articles` tab with the page counter
 - [#663](https://github.com/estruyf/vscode-front-matter/issues/663): Make card tags clickable to filter the view
+- [#669](https://github.com/estruyf/vscode-front-matter/issues/669): Add the video preview to the details panel + caption field
 
 ### ⚡️ Optimizations
 

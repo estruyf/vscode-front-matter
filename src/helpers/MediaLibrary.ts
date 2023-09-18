@@ -18,6 +18,7 @@ interface MediaRecord {
 export class MediaLibrary {
   private db: JsonDB | undefined;
   private renameFilesListener: Disposable | undefined;
+  private removeFilesListener: Disposable | undefined;
   private static instance: MediaLibrary;
 
   private constructor() {
@@ -74,16 +75,22 @@ export class MediaLibrary {
     this.renameFilesListener = workspace.onDidRenameFiles((e) => {
       e.files.forEach(async (f) => {
         const path = f.oldUri.path.toLowerCase();
-        const mimeType = lookup(path);
-        // Check if file is an image
-        if (
-          mimeType &&
-          (mimeType.startsWith('image/') ||
-            mimeType.startsWith('video/') ||
-            mimeType.startsWith('audio/') ||
-            mimeType.startsWith('application/pdf'))
-        ) {
+        if (MediaLibrary.isMediaFile(path)) {
           await this.rename(f.oldUri.fsPath, f.newUri.fsPath);
+          MediaHelpers.resetMedia();
+        }
+      });
+    });
+
+    if (this.removeFilesListener) {
+      this.removeFilesListener.dispose();
+    }
+
+    this.removeFilesListener = workspace.onDidDeleteFiles((e) => {
+      e.files.forEach(async (f) => {
+        const path = f.path.toLowerCase();
+        if (MediaLibrary.isMediaFile(path)) {
+          this.remove(f.fsPath);
           MediaHelpers.resetMedia();
         }
       });
@@ -138,6 +145,11 @@ export class MediaLibrary {
     }
   }
 
+  public async remove(path: string): Promise<void> {
+    const fileId = this.parsePath(path);
+    await this.db?.delete(fileId);
+  }
+
   public async updateFilename(filePath: string, filename: string) {
     const name = basename(filePath);
 
@@ -166,5 +178,20 @@ export class MediaLibrary {
     let absPath = path.replace(parseWinPath(wsFolder?.fsPath || ''), WORKSPACE_PLACEHOLDER);
     absPath = isWindows ? absPath.split('\\').join('/') : absPath;
     return absPath.toLowerCase();
+  }
+
+  private static isMediaFile(path: string) {
+    const mimeType = lookup(path);
+    // Check if file is an image
+    if (
+      mimeType &&
+      (mimeType.startsWith('image/') ||
+        mimeType.startsWith('video/') ||
+        mimeType.startsWith('audio/') ||
+        mimeType.startsWith('application/pdf'))
+    ) {
+      return true;
+    }
+    return false;
   }
 }

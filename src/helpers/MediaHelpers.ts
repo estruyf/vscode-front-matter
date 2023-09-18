@@ -350,6 +350,8 @@ export class MediaHelpers {
     try {
       await unlinkAsync(file);
 
+      MediaLibrary.getInstance().remove(file);
+
       MediaHelpers.media = [];
       return true;
     } catch (err: any) {

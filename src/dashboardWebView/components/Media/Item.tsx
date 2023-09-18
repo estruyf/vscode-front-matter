@@ -701,6 +701,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           media={media}
           showForm={showForm}
           isImageFile={isImageFile}
+          isVideoFile={isVideoFile}
           onEdit={() => setShowForm(true)}
           onEditClose={() => setShowForm(false)}
           onDismiss={() => {
