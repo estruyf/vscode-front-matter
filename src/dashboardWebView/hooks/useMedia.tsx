@@ -53,7 +53,6 @@ export default function useMedia() {
   }, [search, prevSearch]);
 
   const getMedia = useCallback(() => {
-    // console.log('getMedia', searchedMedia, page, pageSetNr);
     return searchedMedia.slice(page * pageSetNr, (page + 1) * pageSetNr);
   }, [searchedMedia, page, pageSetNr]);
 
