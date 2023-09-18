@@ -2,7 +2,7 @@ import { Menu } from '@headlessui/react';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { GroupOption } from '../../constants/GroupOption';
-import { AllPagesAtom, GroupingAtom, PageAtom } from '../../state';
+import { AllPagesAtom, GroupingAtom } from '../../state';
 import { MenuButton, MenuItem, MenuItems } from '../Menu';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
