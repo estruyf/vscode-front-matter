@@ -4,6 +4,7 @@
 
 ### ✨ New features
 
+- [#553](https://github.com/estruyf/vscode-front-matter/issues/553): New `frontMatter.config.dynamicFilePath` setting which allows you to dynamically update the settings from a custom JS file
 - [#563](https://github.com/estruyf/vscode-front-matter/issues/563): New `fieldCollection` to inherit/reuse fields in multiple content-types
 
 ### 🎨 Enhancements

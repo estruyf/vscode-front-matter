@@ -155,6 +155,11 @@
             "type": "string"
           }
         },
+        "frontMatter.config.dynamicFilePath": {
+          "type": "string",
+          "markdownDescription": "%setting.frontMatter.config.dynamicFilePath.markdownDescription%",
+          "default": ""
+        },
         "frontMatter.content.autoUpdateDate": {
           "type": "boolean",
           "default": false,
@@ -2575,6 +2580,7 @@
     "webpack-bundle-analyzer": "^4.7.0",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.11.1",
+    "webpack-ignore-dynamic-require": "^1.0.0",
     "yaml": "^2.2.1",
     "yawn-yaml": "^1.5.0"
   },

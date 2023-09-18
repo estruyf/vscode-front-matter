@@ -7,6 +7,7 @@ export const SETTING_EXPERIMENTAL = 'experimental';
 export const SETTING_EXTENSIBILITY_SCRIPTS = 'extensibility.scripts';
 
 export const SETTING_EXTENDS = 'extends';
+export const SETTING_CONFIG_DYNAMIC_FILE_PATH = 'config.dynamicFilePath';
 
 export const SETTING_GLOBAL_NOTIFICATIONS = 'global.notifications';
 export const SETTING_GLOBAL_NOTIFICATIONS_DISABLED = 'global.disabledNotifications';
