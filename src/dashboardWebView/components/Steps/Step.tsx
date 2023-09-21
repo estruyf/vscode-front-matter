@@ -1,6 +1,5 @@
 import { CheckIcon } from '@heroicons/react/outline';
 import * as React from 'react';
-import useThemeColors from '../../hooks/useThemeColors';
 import { Status } from '../../models/Status';
 
 export interface IStepProps {
@@ -18,7 +17,6 @@ export const Step: React.FunctionComponent<IStepProps> = ({
   showLine,
   onClick
 }: React.PropsWithChildren<IStepProps>) => {
-  const { getColors } = useThemeColors();
 
   const renderChildren = () => {
     return (
@@ -30,21 +28,17 @@ export const Step: React.FunctionComponent<IStepProps> = ({
                 }`}
             >
               <span
-                className={`h-2.5 w-2.5 bg-transparent rounded-full ${onClick ? getColors('group-hover:bg-gray-400', 'group-hover:bg-[var(--vscode-button-hoverBackground)]') : ''
+                className={`h-2.5 w-2.5 bg-transparent rounded-full ${onClick ? 'group-hover:bg-[var(--vscode-button-hoverBackground)]' : ''
                   }`}
               />
             </div>
           </div>
         )}
 
-        {status === Status.Active && (
+        {(status === Status.Active || status === Status.Optional) && (
           <div className="h-9 flex items-center" aria-hidden="true">
             <div className={`relative z-10 w-8 h-8 flex items-center justify-center border-2 rounded-full bg-[var(--frontmatter-border)] border-[var(--frontmatter-border)] group-hover:text-[var(--vscode-button-foreground)] group-hover:border-[var(--vscode-button-hoverBackground)]`}>
-              <span className={`h-2.5 w-2.5 rounded-full ${getColors(
-                'bg-teal-600',
-                'bg-[var(--frontmatter-button-background)]'
-              )
-                }`} />
+              <span className={`h-2.5 w-2.5 rounded-full bg-[var(--frontmatter-button-background)]`} />
             </div>
           </div>
         )}
@@ -71,8 +65,7 @@ export const Step: React.FunctionComponent<IStepProps> = ({
     <>
       {showLine ? (
         <div
-          className={`-ml-px absolute mt-0.5 top-4 left-4 w-0.5 h-full ${status === Status.Completed ? getColors('bg-teal-600', 'bg-[var(--frontmatter-button-background)]') : getColors('bg-gray-300', 'bg-[var(--frontmatter-border)]')
-            }`}
+          className={`-ml-px absolute mt-0.5 top-4 left-4 w-0.5 h-full ${(status === Status.Completed || status === Status.Optional) ? 'bg-[var(--frontmatter-button-background)]' : 'bg-[var(--frontmatter-border)]'}`}
           aria-hidden="true"
         />
       ) : null}

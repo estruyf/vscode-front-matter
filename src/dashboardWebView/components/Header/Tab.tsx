@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useLocation } from 'react-router-dom';
-import useThemeColors from '../../hooks/useThemeColors';
 import { NavigationType } from '../../models';
 
 export interface ITabProps {
@@ -14,7 +13,6 @@ export const Tab: React.FunctionComponent<ITabProps> = ({
   children
 }: React.PropsWithChildren<ITabProps>) => {
   const location = useLocation();
-  const { getColors } = useThemeColors();
 
   return (
     <button

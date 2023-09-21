@@ -6,7 +6,7 @@ import {
   SETTING_EXTENSIBILITY_SCRIPTS
 } from '../constants';
 import { join } from 'path';
-import { commands, Uri, ViewColumn, Webview, WebviewPanel, window, workspace } from 'vscode';
+import { commands, Uri, ViewColumn, Webview, WebviewPanel, window } from 'vscode';
 import { Logger, Settings as SettingsHelper } from '../helpers';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { Extension } from '../helpers/Extension';
@@ -23,7 +23,8 @@ import {
   SnippetListener,
   TaxonomyListener,
   LogListener,
-  LocalizationListener
+  LocalizationListener,
+  SsgListener
 } from '../listeners/dashboard';
 import { MediaListener as PanelMediaListener } from '../listeners/panel';
 import { GitListener, ModeListener } from '../listeners/general';
@@ -180,6 +181,7 @@ export class Dashboard {
       GitListener.process(msg);
       TaxonomyListener.process(msg);
       LogListener.process(msg);
+      SsgListener.process(msg);
     });
   }
 

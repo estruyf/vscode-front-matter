@@ -30,7 +30,7 @@ const glob = require('glob');
     for (const key of enKeys) {
       // If the key does not exist in the file, add it
       if (!content[key]) {
-        content[key] = `🚧: ${enContent[key]}`;
+        content[key] = `${enContent[key]}`;
       }
     }
 

@@ -109,9 +109,12 @@ export class Folders {
    * Register the new folder path
    * @param folderInfo
    */
-  public static async register(folderInfo: { title: string; path: Uri } | Uri) {
+  public static async register(
+    folderInfo: { title: string; path: Uri; contentType: string[] } | Uri
+  ) {
     let folderName = folderInfo instanceof Uri ? undefined : folderInfo.title;
     const folder = folderInfo instanceof Uri ? folderInfo : folderInfo.path;
+    const contentType = folderInfo instanceof Uri ? undefined : folderInfo.contentType;
 
     if (folder && folder.fsPath) {
       const wslPath = folder.fsPath.replace(/\//g, '\\');
@@ -137,10 +140,16 @@ export class Folders {
         });
       }
 
-      folders.push({
+      const contentFolder = {
         title: folderName,
         path: folder.fsPath
-      } as ContentFolder);
+      } as ContentFolder;
+
+      if (contentType) {
+        contentFolder.contentTypes = typeof contentType === 'string' ? [contentType] : contentType;
+      }
+
+      folders.push(contentFolder);
 
       folders = uniqBy(folders, (f) => f.path);
       await Folders.update(folders);

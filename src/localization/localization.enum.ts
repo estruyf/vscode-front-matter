@@ -96,6 +96,30 @@ export enum LocalizationKey {
    */
   commonOpenOnWebsite = 'common.openOnWebsite',
   /**
+   * Settings
+   */
+  commonSettings = 'common.settings',
+  /**
+   * Content types
+   */
+  settingsContentTypes = 'settings.contentTypes',
+  /**
+   * Content folders
+   */
+  settingsContentFolders = 'settings.contentFolders',
+  /**
+   * Diagnostic
+   */
+  settingsDiagnostic = 'settings.diagnostic',
+  /**
+   * You can run the diagnostics to check the whole Front Matter CMS configuration.
+   */
+  settingsDiagnosticDescription = 'settings.diagnostic.description',
+  /**
+   * Run full diagnostics
+   */
+  settingsDiagnosticLink = 'settings.diagnostic.link',
+  /**
    * Developer mode
    */
   developerTitle = 'developer.title',
@@ -808,6 +832,10 @@ export enum LocalizationKey {
    */
   dashboardStepsStepsToGetStartedTemplateDescription = 'dashboard.steps.stepsToGetStarted.template.description',
   /**
+   * Create Content-Types for your Astro Content Collections
+   */
+  dashboardStepsStepsToGetStartedAstroContentTypesName = 'dashboard.steps.stepsToGetStarted.astroContentTypes.name',
+  /**
    * Add {0} to taxonomy settings
    */
   dashboardTaxonomyViewButtonAddTitle = 'dashboard.taxonomyView.button.add.title',
@@ -935,6 +963,14 @@ export enum LocalizationKey {
    * Do you want to remap the metadata of unmapped files?
    */
   dashboardMediaDetailsSlideOverUnmappedDescription = 'dashboard.media.detailsSlideOver.unmapped.description',
+  /**
+   * No Astro Content Collections found.
+   */
+  dashboardConfigurationAstroAstroContentTypesEmpty = 'dashboard.configuration.astro.astroContentTypes.empty',
+  /**
+   * The following Astro Content Collections and can be used to generate a content-type.
+   */
+  dashboardConfigurationAstroAstroContentTypesDescription = 'dashboard.configuration.astro.astroContentTypes.description',
   /**
    * Content-type
    */

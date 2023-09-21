@@ -10,3 +10,4 @@ export * from './TelemetryListener';
 export * from './TaxonomyListener';
 export * from './LogListener';
 export * from './LocalizationListener';
+export * from './SsgListener';

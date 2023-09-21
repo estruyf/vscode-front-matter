@@ -1,3 +1,4 @@
+export * from './AstroCollections';
 export * from './BaseFieldProps';
 export * from './BlockFieldData';
 export * from './Choice';

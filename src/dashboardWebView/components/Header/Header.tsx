@@ -31,6 +31,7 @@ import { Navigation } from './Navigation';
 import { ProjectSwitcher } from './ProjectSwitcher';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { SettingsLink } from '../SettingsView/SettingsLink';
 
 export interface IHeaderProps {
   header?: React.ReactNode;
@@ -156,7 +157,11 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
         }`}>
         <Tabs onNavigate={updateView} />
 
-        <ProjectSwitcher />
+        <div className='flex'>
+          <ProjectSwitcher />
+
+          <SettingsLink onNavigate={updateView} />
+        </div>
       </div>
 
       {location.pathname === routePaths.contents && (

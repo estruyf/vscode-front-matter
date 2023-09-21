@@ -14,6 +14,8 @@ export enum DashboardMessage {
   addFolder = 'addFolder',
   addAssetsFolder = 'addAssetsFolder',
   triggerTemplate = 'triggerTemplate',
+  ssgGetAstroContentTypes = 'ssgGetAstroContentTypes',
+  ssgSetAstroContentTypes = 'ssgSetAstroContentTypes',
 
   // Content dashboard
   getData = 'getData',

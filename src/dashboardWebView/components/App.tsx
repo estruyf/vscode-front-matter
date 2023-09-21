@@ -21,6 +21,7 @@ import { ErrorView } from './ErrorView';
 import { DashboardMessage } from '../DashboardMessage';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
+import { SettingsView } from './SettingsView/SettingsView';
 
 export interface IAppProps {
   showWelcome: boolean;
@@ -132,6 +133,8 @@ Stack: ${componentStack}`
           {allowTaxonomyView && (
             <Route path={routePaths.taxonomy} element={<TaxonomyView pages={pages} />} />
           )}
+
+          <Route path={routePaths.settings} element={<SettingsView />} />
 
           <Route path={`*`} element={<UnknownView />} />
         </Routes>

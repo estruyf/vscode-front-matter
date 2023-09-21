@@ -14,6 +14,7 @@ export * from './NotificationType';
 export * from './PreviewCommands';
 export * from './SentryIgnore';
 export * from './Snippet';
+export * from './SsgScripts';
 export * from './StaticFolderPlaceholder';
 export * from './TelemetryEvent';
 export * from './Templates';

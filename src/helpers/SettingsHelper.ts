@@ -626,36 +626,41 @@ export class Settings {
       }
 
       // Check if there is a dynamic config file and use it to update the global config
-      const dynamicConfigPath =
-        Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CONFIG_DYNAMIC_FILE_PATH}`];
-      if (dynamicConfigPath) {
-        try {
-          await window.withProgress(
-            {
-              location: vscode.ProgressLocation.Notification,
-              title: `${EXTENSION_NAME}: Reading dynamic config file...`
-            },
-            async () => {
-              const absFilePath = Folders.getAbsFilePath(dynamicConfigPath);
-              Logger.info(`Reading dynamic config file: ${absFilePath}`);
-              if (absFilePath) {
-                if (await existsAsync(absFilePath)) {
-                  const configFunction = require(absFilePath);
-                  const dynamicConfig = await configFunction(
-                    Object.assign({}, Settings.globalConfig)
-                  );
+      if (
+        Settings.globalConfig &&
+        Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CONFIG_DYNAMIC_FILE_PATH}`]
+      ) {
+        const dynamicConfigPath =
+          Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CONFIG_DYNAMIC_FILE_PATH}`];
+        if (dynamicConfigPath) {
+          try {
+            await window.withProgress(
+              {
+                location: vscode.ProgressLocation.Notification,
+                title: `${EXTENSION_NAME}: Reading dynamic config file...`
+              },
+              async () => {
+                const absFilePath = Folders.getAbsFilePath(dynamicConfigPath);
+                Logger.info(`Reading dynamic config file: ${absFilePath}`);
+                if (absFilePath) {
+                  if (await existsAsync(absFilePath)) {
+                    const configFunction = require(absFilePath);
+                    const dynamicConfig = await configFunction(
+                      Object.assign({}, Settings.globalConfig)
+                    );
 
-                  if (dynamicConfig) {
-                    Settings.globalConfig = dynamicConfig;
-                    Logger.info(`Dynamic config file loaded`);
+                    if (dynamicConfig) {
+                      Settings.globalConfig = dynamicConfig;
+                      Logger.info(`Dynamic config file loaded`);
+                    }
                   }
                 }
               }
-            }
-          );
-        } catch (e) {
-          Logger.error(`Error reading dynamic config file: ${dynamicConfigPath}`);
-          Logger.error((e as Error).message);
+            );
+          } catch (e) {
+            Logger.error(`Error reading dynamic config file: ${dynamicConfigPath}`);
+            Logger.error((e as Error).message);
+          }
         }
       }
     } catch (e) {
