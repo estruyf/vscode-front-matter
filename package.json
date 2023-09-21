@@ -2397,7 +2397,8 @@
         },
         {
           "command": "frontMatter.settings.refresh",
-          "group": "navigation@4"
+          "group": "navigation@4",
+          "when": "view == frontMatter.explorer"
         },
         {
           "command": "frontMatter.dashboard",
