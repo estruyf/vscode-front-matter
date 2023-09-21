@@ -66,7 +66,7 @@ export class SsgListener extends BaseListener {
 
     try {
       // Check if the content folder exists
-      const folderName = `/src/content/${name}`;
+      const folderName = `/src/content/${collection.name}`;
       const folderUri = Uri.joinPath(Folders.getWorkspaceFolder()!, folderName);
       await workspace.fs.readDirectory(folderUri);
 
@@ -76,7 +76,7 @@ export class SsgListener extends BaseListener {
         contentType: [collection.name]
       });
 
-      contentType.previewPath = `'${name}'`;
+      contentType.previewPath = `'${collection.name}'`;
     } catch (e) {
       // Something failed, so it seems the folder does not exist
     }
