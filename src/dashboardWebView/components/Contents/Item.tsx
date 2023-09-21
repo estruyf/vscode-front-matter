@@ -139,7 +139,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                   />
                 ) : (
                   <div
-                    className={`flex items-center justify-center bg-[var(--vscode-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)]`}
+                    className={`h-full flex items-center justify-center bg-[var(--vscode-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)]`}
                   >
                     <MarkdownIcon className={`h-32 text-[var(--vscode-sideBarTitle-foreground)] opacity-80`} />
                   </div>
