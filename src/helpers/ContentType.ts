@@ -85,7 +85,7 @@ export class ContentType {
     }
 
     const contentTypes = ContentType.getAll();
-    const folders = Folders.get();
+    const folders = Folders.get().filter((f) => !f.disableCreation);
     const folder = folders.find((f) => f.title === selectedFolder);
 
     if (!folder) {

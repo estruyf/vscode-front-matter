@@ -95,7 +95,7 @@ export class Folders {
       return;
     }
 
-    const folders = Folders.get();
+    const folders = Folders.get().filter((f) => !f.disableCreation);
     const location = folders.find((f) => f.title === selectedFolder);
     if (location) {
       const folderPath = Folders.getFolderPath(Uri.file(location.path));

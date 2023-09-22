@@ -74,6 +74,7 @@
   "setting.frontMatter.content.pageFolders.items.properties.previewPath.description": "Defines a custom preview path for the folder.",
   "setting.frontMatter.content.pageFolders.items.properties.filePrefix.description": "Defines a prefix for the file name.",
   "setting.frontMatter.content.pageFolders.items.properties.contentTypes.description": "Defines which content types can be used for the current location. If not defined, all content types will be available.",
+  "setting.frontMatter.content.pageFolders.items.properties.disableCreation.description": "Disable the creation of new content in the folder.",
   "setting.frontMatter.content.placeholders.markdownDescription": "This array of placeholders defines the placeholders that you can use in your content types and templates for automatically populating your content its front matter. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.placeholders)",
   "setting.frontMatter.content.placeholders.items.properties.id.description": "ID of the placeholder, in your content type or template, use it as follows: {{placeholder}}",
   "setting.frontMatter.content.placeholders.items.properties.value.description": "The placeholder its value",

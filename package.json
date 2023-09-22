@@ -299,6 +299,11 @@
                 "items": {
                   "type": "string"
                 }
+              },
+              "disableCreation": {
+                "type": "boolean",
+                "default": false,
+                "description": "%setting.frontMatter.content.pageFolders.items.properties.disableCreation.description%"
               }
             },
             "additionalProperties": false,
