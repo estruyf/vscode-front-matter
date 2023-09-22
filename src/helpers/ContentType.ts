@@ -254,7 +254,7 @@ export class ContentType {
 
     await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
 
-    const configPath = Settings.projectConfigPath;
+    const configPath = await Settings.projectConfigPath();
     const notificationAction = await Notifications.info(
       `Content type ${contentTypeName} has been ${overrideBool ? `updated` : `generated`}.`,
       configPath && (await existsAsync(configPath)) ? `Open settings` : undefined
@@ -291,7 +291,7 @@ export class ContentType {
 
     await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
 
-    const configPath = Settings.projectConfigPath;
+    const configPath = await Settings.projectConfigPath();
     const notificationAction = await Notifications.info(
       `Content type ${contentType.name} has been updated.`,
       configPath && (await existsAsync(configPath)) ? `Open settings` : undefined

@@ -62,7 +62,7 @@ export class DashboardSettings {
   public static async getSettings() {
     const ext = Extension.getInstance();
     const wsFolder = Folders.getWorkspaceFolder();
-    const isInitialized = Project.isInitialized();
+    const isInitialized = await Project.isInitialized();
     const gitActions = Settings.get<boolean>(SETTING_GIT_ENABLED);
     const pagination = Settings.get<boolean | number>(SETTING_DASHBOARD_CONTENT_PAGINATION);
 

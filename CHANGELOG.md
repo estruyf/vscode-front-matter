@@ -16,6 +16,7 @@
 - [#662](https://github.com/estruyf/vscode-front-matter/issues/662): Always show the `all articles` tab with the page counter
 - [#663](https://github.com/estruyf/vscode-front-matter/issues/663): Make card tags clickable to filter the view
 - [#669](https://github.com/estruyf/vscode-front-matter/issues/669): Add the video preview to the details panel + caption field
+- [#676](https://github.com/estruyf/vscode-front-matter/issues/676): Allow the `frontmatter.json` file to be placed in a sub-directory
 
 ### ⚡️ Optimizations
 

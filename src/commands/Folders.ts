@@ -592,7 +592,7 @@ export class Folders {
    */
   private static findFolders(pattern: string): Promise<string[]> {
     return new Promise((resolve) => {
-      glob(pattern, { ignore: '**/node_modules/**' }, (err, files) => {
+      glob(pattern, { ignore: '**/node_modules/**', dot: true }, (err, files) => {
         const allFolders = files.map((file) => dirname(file));
         const uniqueFolders = [...new Set(allFolders)];
         resolve(uniqueFolders);

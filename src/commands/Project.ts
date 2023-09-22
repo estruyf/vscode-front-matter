@@ -43,8 +43,8 @@ categories: []
     subscriptions.push(commands.registerCommand(COMMAND_NAME.switchProject, Project.switchProject));
   }
 
-  public static isInitialized() {
-    const hasProjectFile = Settings.hasProjectFile();
+  public static async isInitialized() {
+    const hasProjectFile = await Settings.hasProjectFile();
     // If it has a project file, initialize the media library
     if (hasProjectFile) {
       MediaLibrary.getInstance();

@@ -77,7 +77,7 @@ export class PanelSettings {
       scripts: (Settings.get<CustomScript[]>(SETTING_CUSTOM_SCRIPTS) || []).filter(
         (s) => (s.type === ScriptType.Content || !s.type) && !s.hidden
       ),
-      isInitialized: Project.isInitialized(),
+      isInitialized: await Project.isInitialized(),
       modifiedDateUpdate: Settings.get(SETTING_AUTO_UPDATE_DATE) || false,
       writingSettingsEnabled: this.isWritingSettingsEnabled() || false,
       fmHighlighting: Settings.get(SETTING_CONTENT_FRONTMATTER_HIGHLIGHT),

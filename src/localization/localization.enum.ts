@@ -928,9 +928,13 @@ export enum LocalizationKey {
    */
   dashboardWelcomeScreenLinkGithubTitle = 'dashboard.welcomeScreen.link.github.title',
   /**
-   * GitHub / Documentation
+   * GitHub
    */
   dashboardWelcomeScreenLinkGithubLabel = 'dashboard.welcomeScreen.link.github.label',
+  /**
+   * Documentation
+   */
+  dashboardWelcomeScreenLinkDocumentationLabel = 'dashboard.welcomeScreen.link.documentation.label',
   /**
    * Become a sponsor
    */

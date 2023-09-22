@@ -135,7 +135,7 @@ export class Dashboard {
       light: Uri.file(join(extensionUri.fsPath, 'assets/icons/frontmatter-short-light.svg'))
     };
 
-    Dashboard.webview.webview.html = Dashboard.getWebviewContent(
+    Dashboard.webview.webview.html = await Dashboard.getWebviewContent(
       Dashboard.webview.webview,
       extensionUri
     );
@@ -218,7 +218,7 @@ export class Dashboard {
    * Retrieve the webview HTML contents
    * @param webView
    */
-  private static getWebviewContent(webView: Webview, extensionPath: Uri): string {
+  private static async getWebviewContent(webView: Webview, extensionPath: Uri): Promise<string> {
     const dashboardFile = 'dashboardWebView.js';
     const localPort = `9000`;
     const localServerUrl = `localhost:${localPort}`;
@@ -276,10 +276,9 @@ export class Dashboard {
       }`
     ];
 
+    const globalConfigPath = await SettingsHelper.projectConfigPath();
     const frontMatterUri = webView
-      .asWebviewUri(
-        SettingsHelper.projectConfigPath ? Uri.file(SettingsHelper.projectConfigPath) : Uri.file('')
-      )
+      .asWebviewUri(globalConfigPath ? Uri.file(globalConfigPath) : Uri.file(''))
       .toString();
 
     const webviewUrl = frontMatterUri.replace(`/${SettingsHelper.globalFile}`, '');
