@@ -1,6 +1,6 @@
-import { HeartIcon, StarIcon } from '@heroicons/react/outline';
+import { BookOpenIcon, HeartIcon, StarIcon } from '@heroicons/react/outline';
 import * as React from 'react';
-import { GITHUB_LINK, REVIEW_LINK, SPONSOR_LINK, TelemetryEvent } from '../../../constants';
+import { DOCUMENTATION_LINK, GITHUB_LINK, REVIEW_LINK, SPONSOR_LINK, TelemetryEvent } from '../../../constants';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMatterIcon';
 import { GitHubIcon } from '../../../panelWebView/components/Icons/GitHubIcon';
@@ -75,6 +75,13 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({
                       <GitHubIcon className="w-8 h-8" />
                       <span className={`text-lg ml-2`}>
                         {l10n.t(LocalizationKey.dashboardWelcomeScreenLinkGithubLabel)}
+                      </span>
+                    </WelcomeLink>
+
+                    <WelcomeLink href={DOCUMENTATION_LINK} title={l10n.t(LocalizationKey.dashboardWelcomeScreenLinkDocumentationLabel)}>
+                      <BookOpenIcon className="w-8 h-8" />
+                      <span className={`text-lg ml-2`}>
+                        {l10n.t(LocalizationKey.dashboardWelcomeScreenLinkDocumentationLabel)}
                       </span>
                     </WelcomeLink>
 
