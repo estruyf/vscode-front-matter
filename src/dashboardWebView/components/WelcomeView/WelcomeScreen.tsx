@@ -7,7 +7,6 @@ import { GitHubIcon } from '../../../panelWebView/components/Icons/GitHubIcon';
 import { DashboardMessage } from '../../DashboardMessage';
 import { Settings } from '../../models/Settings';
 import { StepsToGetStarted } from '../Steps/StepsToGetStarted';
-import useThemeColors from '../../hooks/useThemeColors';
 import { WelcomeLink } from './WelcomeLink';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
@@ -22,7 +21,6 @@ export interface IWelcomeScreenProps {
 export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({
   settings
 }: React.PropsWithChildren<IWelcomeScreenProps>) => {
-  const { getColors } = useThemeColors();
   const [, setView] = useRecoilState(DashboardViewAtom);
 
   React.useEffect(() => {
@@ -53,19 +51,11 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({
                   {l10n.t(LocalizationKey.dashboardWelcomeScreenTitle)}
                 </h1>
 
-                <p className={`mt-3 text-base  sm:mt-5 sm:text-xl lg:text-lg xl:text-xl ${getColors(
-                  'text-vulcan-300 dark:text-whisper-700',
-                  'text-[var(--vscode-editor-foreground)]'
-                )
-                  }`}>
+                <p className={`mt-3 text-base  sm:mt-5 sm:text-xl lg:text-lg xl:text-xl text-[var(--vscode-editor-foreground)]`}>
                   {l10n.t(LocalizationKey.dashboardWelcomeScreenThanks)}
                 </p>
 
-                <p className={`mt-3 text-base sm:mt-5 sm:text-xl lg:text-lg xl:text-xl ${getColors(
-                  'text-vulcan-300 dark:text-whisper-700',
-                  'text-[var(--vscode-editor-foreground)]'
-                )
-                  }`}>
+                <p className={`mt-3 text-base sm:mt-5 sm:text-xl lg:text-lg xl:text-xl text-[var(--vscode-editor-foreground)]`}>
                   {l10n.t(LocalizationKey.dashboardWelcomeScreenDescription)}
                 </p>
 
@@ -104,11 +94,7 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({
             </div>
 
             <div className="col-span-4 flex justify-center items-center">
-              <FrontMatterIcon className={`h-64 w-64 ${getColors(
-                'text-vulcan-500 dark:text-whisper-500',
-                'text-[var(--vscode-editor-foreground)]'
-              )
-                }`} />
+              <FrontMatterIcon className={`h-64 w-64 text-[var(--vscode-button-background)]`} />
             </div>
           </div>
         </div>
@@ -122,11 +108,7 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({
             <div className={`col-span-8`}>
               <StepsToGetStarted settings={settings} />
 
-              <p className={`mt-5 text-sm  ${getColors(
-                'text-vulcan-300 dark:text-whisper-700',
-                'text-[var(--vscode-editor-foreground)]'
-              )
-                }`}>
+              <p className={`mt-5 text-sm text-[var(--vscode-editor-foreground)]`}>
                 {l10n.t(LocalizationKey.dashboardWelcomeScreenActionsDescription)}
               </p>
             </div>
