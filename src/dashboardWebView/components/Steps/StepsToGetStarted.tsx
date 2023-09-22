@@ -188,7 +188,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
             settings={settings}
             triggerLoading={(isLoading) => setLoading(isLoading)} />
         ),
-        show: settings.crntFramework === 'astro' || framework === 'astro',
+        show: settings.crntFramework === 'astro',
         status: Status.Optional
       },
       {
