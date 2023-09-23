@@ -49,7 +49,7 @@ export const AstroContentTypes: React.FunctionComponent<IAstroContentTypesProps>
 
       <div className='mt-2'>
         {
-          collections.map((collection) => {
+          (collections || []).map((collection) => {
             const ct = settings.contentTypes.find((c) => c.name === collection.name);
 
             return (
