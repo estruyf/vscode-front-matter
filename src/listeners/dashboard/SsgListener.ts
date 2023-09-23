@@ -102,7 +102,7 @@ export class SsgListener extends BaseListener {
     const contentConfig = await workspace.findFiles(`**/src/content/config.*`);
 
     if (contentConfig.length === 0) {
-      SsgListener.sendRequest(command as any, requestId, {});
+      SsgListener.sendRequest(command as any, requestId, []);
       return;
     }
 
@@ -113,7 +113,7 @@ export class SsgListener extends BaseListener {
       !contentConfigFile.fsPath.endsWith('.ts') &&
       !contentConfigFile.fsPath.endsWith('.mts')
     ) {
-      SsgListener.sendRequest(command as any, requestId, {});
+      SsgListener.sendRequest(command as any, requestId, []);
       return;
     }
 
@@ -125,7 +125,7 @@ export class SsgListener extends BaseListener {
 
     const wsFolder = Folders.getWorkspaceFolder();
     if (!wsFolder) {
-      SsgListener.sendRequest(command as any, requestId, {});
+      SsgListener.sendRequest(command as any, requestId, []);
       return;
     }
 
@@ -145,7 +145,7 @@ export class SsgListener extends BaseListener {
       }
     } catch (error) {
       Logger.error((error as Error).message);
-      SsgListener.sendRequest(command as any, requestId, {});
+      SsgListener.sendRequest(command as any, requestId, []);
       return;
     } finally {
       await workspace.fs.delete(tempLocation, { recursive: true, useTrash: false });
