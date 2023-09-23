@@ -1,4 +1,4 @@
-import { Messenger } from '@estruyf/vscode/dist/client';
+import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import { Menu } from '@headlessui/react';
 import { EyeIcon, GlobeIcon, TerminalIcon, TrashIcon } from '@heroicons/react/outline';
 import * as React from 'react';
@@ -11,13 +11,16 @@ import { useState } from 'react';
 import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { SettingsSelector } from '../../state';
 import { GeneralCommands } from '../../../constants';
+import { PinIcon } from '../Icons/PinIcon';
+import { PinnedItemsAtom } from '../../state/atom/PinnedItems';
 
 export interface IContentActionsProps {
   title: string;
   path: string;
+  relPath: string;
   scripts: CustomScript[] | undefined;
   listView?: boolean;
   onOpen: () => void;
@@ -26,10 +29,12 @@ export interface IContentActionsProps {
 export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
   title,
   path,
+  relPath,
   scripts,
   onOpen,
   listView
 }: React.PropsWithChildren<IContentActionsProps>) => {
+  const [pinnedItems, setPinnedItems] = useRecoilState(PinnedItemsAtom);
   const [showDeletionAlert, setShowDeletionAlert] = React.useState(false);
   const { getColors } = useThemeColors();
   const settings = useRecoilValue(SettingsSelector);
@@ -68,6 +73,20 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
     }
   }, [settings?.websiteUrl, path]);
 
+  const pinItem = React.useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    messageHandler.request<string[]>(DashboardMessage.pinItem, path).then((result) => {
+      setPinnedItems(result || []);
+    })
+  }, [path]);
+
+  const unpinItem = React.useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    messageHandler.request<string[]>(DashboardMessage.unpinItem, path).then((result) => {
+      setPinnedItems(result || []);
+    })
+  }, [path]);
+
   const runCustomScript = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement>, script: CustomScript) => {
       e.stopPropagation();
@@ -75,6 +94,10 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
     },
     [path]
   );
+
+  const isPinned = React.useMemo(() => {
+    return pinnedItems.includes(relPath);
+  }, [pinnedItems, relPath]);
 
   const customScriptActions = React.useMemo(() => {
     return (scripts || [])
@@ -148,6 +171,15 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
                 widthClass="w-44"
                 marginTopClass={listView ? '' : ''}
               >
+                <MenuItem
+                  title={
+                    <div className="flex items-center">
+                      <PinIcon className={`mr-2 h-5 w-5 flex-shrink-0 ${isPinned ? "" : "-rotate-90"}`} aria-hidden={true} />{' '}
+                      <span>{isPinned ? l10n.t(LocalizationKey.commonUnpin) : l10n.t(LocalizationKey.commonPin)}</span>
+                    </div>
+                  }
+                  onClick={(_, e) => isPinned ? unpinItem(e) : pinItem(e)}
+                />
                 <MenuItem
                   title={
                     <div className="flex items-center">

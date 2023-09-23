@@ -26,6 +26,9 @@ export enum DashboardMessage {
   searchPages = 'searchPages',
   openFile = 'openFile',
   deleteFile = 'deleteFile',
+  getPinnedItems = 'getPinnedItems',
+  pinItem = 'pinItem',
+  unpinItem = 'unpinItem',
 
   // Media Dashboard
   getMedia = 'getMedia',

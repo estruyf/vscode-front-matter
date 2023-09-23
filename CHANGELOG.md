@@ -8,6 +8,7 @@
 - [#553](https://github.com/estruyf/vscode-front-matter/issues/553): New `frontMatter.config.dynamicFilePath` setting which allows you to dynamically update the settings from a custom JS file
 - [#563](https://github.com/estruyf/vscode-front-matter/issues/563): New `fieldCollection` to inherit/reuse fields in multiple content-types
 - [#653](https://github.com/estruyf/vscode-front-matter/issues/653): Retrieve the Astro Content Collections to allow content type generation
+- [#675](https://github.com/estruyf/vscode-front-matter/issues/675): Pinning content to the top of the content dashboard
 
 ### 🎨 Enhancements
 

@@ -204,6 +204,7 @@ export class Dashboard {
     command: DashboardCommand;
     requestId?: string;
     payload?: unknown;
+    error?: unknown;
   }) {
     if (Dashboard.isDisposed) {
       return;

@@ -2,19 +2,25 @@ import { Disclosure } from '@headlessui/react';
 import { ChevronRightIcon } from '@heroicons/react/solid';
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { groupBy } from '../../../helpers/GroupBy';
 import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMatterIcon';
 import { GroupOption } from '../../constants/GroupOption';
 import { Page } from '../../models/Page';
 import { Settings } from '../../models/Settings';
-import { GroupingSelector, PageAtom } from '../../state';
+import { GroupingSelector, PageAtom, ViewSelector } from '../../state';
 import { Item } from './Item';
 import { List } from './List';
 import usePagination from '../../hooks/usePagination';
 import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { PinnedItemsAtom } from '../../state/atom/PinnedItems';
+import { messageHandler } from '@estruyf/vscode/dist/client';
+import { DashboardMessage } from '../../DashboardMessage';
+import { PinIcon } from '../Icons/PinIcon';
+import { PinnedItem } from './PinnedItem';
+import { DashboardViewType } from '../../models';
 
 export interface IOverviewProps {
   pages: Page[];
@@ -25,10 +31,13 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
   pages,
   settings
 }: React.PropsWithChildren<IOverviewProps>) => {
+  const [isReady, setIsReady] = React.useState<boolean>(false);
+  const [pinnedItems, setPinnedItems] = useRecoilState(PinnedItemsAtom);
   const grouping = useRecoilValue(GroupingSelector);
   const page = useRecoilValue(PageAtom);
   const { pageSetNr } = usePagination(settings?.dashboardState.contents.pagination);
   const { getColors } = useThemeColors();
+  const view = useRecoilValue(ViewSelector);
 
   const pagedPages = useMemo(() => {
     if (pageSetNr) {
@@ -36,7 +45,15 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
     }
 
     return pages;
-  }, [pages, page, pageSetNr]);
+  }, [pages, page, pageSetNr, pinnedItems, grouping]);
+
+  const pinnedPages = useMemo(() => {
+    if (grouping === GroupOption.none) {
+      return pages.filter((page) => pinnedItems.includes(page.fmRelFileWsPath));
+    }
+
+    return [];
+  }, [pages, pinnedItems, grouping]);
 
   const groupName = useCallback(
     (groupId, groupedPages) => {
@@ -48,6 +65,20 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
     },
     [grouping]
   );
+
+  React.useEffect(() => {
+    messageHandler.request<string[]>(DashboardMessage.getPinnedItems).then((items) => {
+      setIsReady(true);
+      setPinnedItems(items || []);
+    }).catch(() => {
+      setIsReady(true);
+      setPinnedItems([]);
+    });
+  }, []);
+
+  if (!isReady) {
+    return null;
+  }
 
   if (!pages || !pages.length) {
     return (
@@ -108,10 +139,34 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
   }
 
   return (
-    <List>
-      {pagedPages.map((page, idx) => (
-        <Item key={`${page.slug}-${idx}`} {...page} />
-      ))}
-    </List>
+    <div className='divide-y divide-[var(--frontmatter-border)]'>
+      {
+        pinnedPages.length > 0 && (
+          <div className='mb-8'>
+            <h1 className='text-xl flex space-x-2 items-center mb-4'>
+              <PinIcon className={`-rotate-45`} />
+              <span>{l10n.t(LocalizationKey.dashboardContentsOverviewPinned)}</span>
+            </h1>
+            <List>
+              {pinnedPages.map((page, idx) => (
+                view === DashboardViewType.List ? (
+                  <Item key={`${page.slug}-${idx}`} {...page} />
+                ) : (
+                  <PinnedItem key={`${page.slug}-${idx}`} {...page} />
+                )
+              ))}
+            </List>
+          </div>
+        )
+      }
+
+      <div className={pinnedItems.length > 0 ? "pt-8" : ""}>
+        <List>
+          {pagedPages.map((page, idx) => (
+            <Item key={`${page.slug}-${idx}`} {...page} />
+          ))}
+        </List>
+      </div>
+    </div>
   );
 };

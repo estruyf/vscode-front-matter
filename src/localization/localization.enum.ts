@@ -100,6 +100,14 @@ export enum LocalizationKey {
    */
   commonSettings = 'common.settings',
   /**
+   * Pin
+   */
+  commonPin = 'common.pin',
+  /**
+   * Unpin
+   */
+  commonUnpin = 'common.unpin',
+  /**
    * Content types
    */
   settingsContentTypes = 'settings.contentTypes',
@@ -227,6 +235,10 @@ export enum LocalizationKey {
    * Make sure you registered a content folder in your project to let Front Matter find the contents.
    */
   dashboardContentsOverviewNoFolders = 'dashboard.contents.overview.noFolders',
+  /**
+   * Pinned
+   */
+  dashboardContentsOverviewPinned = 'dashboard.contents.overview.pinned',
   /**
    * Draft
    */

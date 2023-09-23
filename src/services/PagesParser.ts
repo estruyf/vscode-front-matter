@@ -18,6 +18,7 @@ import {
   ContentType,
   DateHelper,
   Extension,
+  FilesHelper,
   isValidFile,
   Logger,
   Notifications,
@@ -207,6 +208,7 @@ export class PagesParser {
         // FrontMatter properties
         fmFolder: folderTitle,
         fmFilePath: filePath,
+        fmRelFileWsPath: FilesHelper.absToRelPath(filePath),
         fmRelFilePath: parseWinPath(filePath).replace(wsFolder?.fsPath || '', ''),
         fmFileName: fileName,
         fmDraft: ContentType.getDraftStatus(article?.data),

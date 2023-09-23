@@ -4,5 +4,6 @@ export const LocalStore = {
   databaseFolder: 'database',
   templatesFolder: 'templates',
   mediaDatabaseFile: 'mediaDb.json',
-  taxonomyDatabaseFile: 'taxonomyDb.json'
+  taxonomyDatabaseFile: 'taxonomyDb.json',
+  pinnedItemsDatabaseFile: 'pinnedItemsDb.json'
 };

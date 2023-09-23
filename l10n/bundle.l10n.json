@@ -24,6 +24,8 @@
   "common.error.message": "Sorry, something went wrong.",
   "common.openOnWebsite": "Open on website",
   "common.settings": "Settings",
+  "common.pin": "Pin",
+  "common.unpin": "Unpin",
 
   "settings.contentTypes": "Content types",
   "settings.contentFolders": "Content folders",
@@ -68,6 +70,7 @@
 
   "dashboard.contents.overview.noMarkdown": "No Markdown to show",
   "dashboard.contents.overview.noFolders": "Make sure you registered a content folder in your project to let Front Matter find the contents.",
+  "dashboard.contents.overview.pinned": "Pinned",
 
   "dashboard.contents.status.draft": "Draft",
   "dashboard.contents.status.published": "Published",

@@ -15,76 +15,32 @@ import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { useNavigate } from 'react-router-dom';
 import { routePaths } from '../..';
+import useCard from '../../hooks/useCard';
 
 export interface IItemProps extends Page { }
 
 const PREVIEW_IMAGE_FIELD = 'fmPreviewImage';
 
 export const Item: React.FunctionComponent<IItemProps> = ({
-  fmFilePath,
-  fmDateFormat,
-  date,
-  title,
-  description,
-  type,
   ...pageData
 }: React.PropsWithChildren<IItemProps>) => {
   const view = useRecoilValue(ViewSelector);
   const settings = useRecoilValue(SettingsSelector);
   const draftField = useMemo(() => settings?.draftField, [settings]);
   const cardFields = useMemo(() => settings?.dashboardState?.contents?.cardFields, [settings?.dashboardState?.contents?.cardFields]);
+  const { escapedTitle, escapedDescription } = useCard(pageData, settings?.dashboardState?.contents?.cardFields);
   const navigate = useNavigate();
   const { titleHtml, descriptionHtml, dateHtml, statusHtml, tagsHtml, imageHtml, footerHtml } = useExtensibility({
-    fmFilePath,
-    date,
-    title,
-    description,
-    type,
+    fmFilePath: pageData.fmFileData,
+    date: pageData.date,
+    title: pageData.title,
+    description: pageData.description,
+    type: pageData.type,
     pageData
   });
 
-  const escapedTitle = useMemo(() => {
-    let value = title;
-
-    if (cardFields?.title) {
-      if (cardFields.title === "description") {
-        value = description;
-      } else if (cardFields?.title !== "title") {
-        value = pageData[cardFields?.title] || title;
-      }
-    } else if (cardFields?.title === null) {
-      return null;
-    }
-
-    if (value && typeof value !== 'string') {
-      return l10n.t(LocalizationKey.dashboardContentsItemInvalidTitle);
-    }
-
-    return value;
-  }, [title, description, cardFields?.title, pageData]);
-
-  const escapedDescription = useMemo(() => {
-    let value = description;
-
-    if (cardFields?.description) {
-      if (cardFields.description === "title") {
-        value = title;
-      } else if (cardFields?.description !== "description") {
-        value = pageData[cardFields?.description] || description;
-      }
-    } else if (cardFields?.description === null) {
-      return null;
-    }
-
-    if (value && typeof value !== 'string') {
-      return l10n.t(LocalizationKey.dashboardContentsItemInvalidDescription);
-    }
-
-    return value;
-  }, [description, title, cardFields?.description, pageData]);
-
   const openFile = () => {
-    Messenger.send(DashboardMessage.openFile, fmFilePath);
+    Messenger.send(DashboardMessage.openFile, pageData.fmFilePath);
   };
 
   const tags: string[] | undefined = useMemo(() => {
@@ -161,14 +117,15 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                 dateHtml ? (
                   <div className='mr-4' dangerouslySetInnerHTML={{ __html: dateHtml }} />
                 ) : (
-                  cardFields?.date && <DateField className={`mr-4`} value={date} format={fmDateFormat} />
+                  cardFields?.date && <DateField className={`mr-4`} value={pageData.date} format={pageData.fmDateFormat} />
                 )
               }
             </div>
 
             <ContentActions
-              title={title}
-              path={fmFilePath}
+              title={pageData.title}
+              path={pageData.fmFilePath}
+              relPath={pageData.fmRelFileWsPath}
               scripts={settings?.scripts}
               onOpen={openFile}
             />
@@ -245,14 +202,15 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
             <ContentActions
               title={escapedTitle || ""}
-              path={fmFilePath}
+              path={pageData.fmFilePath}
+              relPath={pageData.fmRelFileWsPath}
               scripts={settings?.scripts}
               onOpen={openFile}
               listView
             />
           </div>
           <div className="col-span-2">
-            <DateField value={date} />
+            <DateField value={pageData.date} />
           </div>
           <div className="col-span-2">
             {draftField && draftField.name && <Status draft={pageData[draftField.name]} />}

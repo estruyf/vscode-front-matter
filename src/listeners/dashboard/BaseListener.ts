@@ -28,4 +28,12 @@ export abstract class BaseListener {
       payload
     });
   }
+
+  public static sendError(command: DashboardCommand, requestId: string, error: any) {
+    Dashboard.postWebviewMessage({
+      command,
+      requestId,
+      error
+    });
+  }
 }
