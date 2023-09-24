@@ -70,5 +70,9 @@ export enum DashboardMessage {
   setState = 'setState',
   runCustomScript = 'runCustomScript',
   sendTelemetry = 'sendTelemetry',
-  logError = 'logError'
+  logError = 'logError',
+
+  // Settings
+  getSettings = 'getSettings',
+  setSettings = 'setSettings'
 }

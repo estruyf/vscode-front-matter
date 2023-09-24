@@ -26,7 +26,6 @@ import { GroupOption } from '../../constants/GroupOption';
 import usePagination from '../../hooks/usePagination';
 import { PaginationStatus } from './PaginationStatus';
 import useThemeColors from '../../hooks/useThemeColors';
-import { Startup } from './Startup';
 import { Navigation } from './Navigation';
 import { ProjectSwitcher } from './ProjectSwitcher';
 import * as l10n from '@vscode/l10n';
@@ -170,8 +169,6 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
             <Searchbox />
 
             <div className={`flex items-center justify-end space-x-4 flex-1`}>
-              <Startup settings={settings} />
-
               <SyncButton />
 
               <ChoiceButton

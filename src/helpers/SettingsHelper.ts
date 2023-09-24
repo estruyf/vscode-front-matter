@@ -104,7 +104,7 @@ export class Settings {
     }
 
     if (!allCommands.includes(COMMAND_NAME.settingsRefresh)) {
-      commands.registerCommand(COMMAND_NAME.settingsRefresh, Settings.reloadConfig);
+      commands.registerCommand(COMMAND_NAME.settingsRefresh, Settings.refreshConfig);
     }
 
     Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
@@ -1086,6 +1086,15 @@ export class Settings {
     }
 
     return config;
+  }
+
+  /**
+   * Reload the config
+   * @param debounced
+   */
+  private static async refreshConfig() {
+    await Settings.reloadConfig();
+    Notifications.info(`Settings have been refreshed.`);
   }
 
   /**

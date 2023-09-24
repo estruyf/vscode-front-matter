@@ -134,7 +134,8 @@ export class DashboardSettings {
       snippets: Settings.get<Snippets>(SETTING_CONTENT_SNIPPETS),
       snippetsWrapper: Settings.get<boolean>(SETTING_SNIPPETS_WRAPPER),
       isBacker: await ext.getState<boolean | undefined>(CONTEXT.backer, 'global'),
-      websiteUrl: Settings.get<string>(SETTING_WEBSITE_URL)
+      websiteUrl: Settings.get<string>(SETTING_WEBSITE_URL),
+      lastUpdated: new Date().getTime()
     } as ISettings;
 
     return settings;

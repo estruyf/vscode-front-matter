@@ -100,6 +100,10 @@ export enum LocalizationKey {
    */
   commonSettings = 'common.settings',
   /**
+   * Refresh settings
+   */
+  commonRefreshSettings = 'common.refreshSettings',
+  /**
    * Pin
    */
   commonPin = 'common.pin',
@@ -107,6 +111,22 @@ export enum LocalizationKey {
    * Unpin
    */
   commonUnpin = 'common.unpin',
+  /**
+   * Common
+   */
+  settingsViewCommon = 'settings.view.common',
+  /**
+   * Content folders
+   */
+  settingsViewContentFolders = 'settings.view.contentFolders',
+  /**
+   * Astro
+   */
+  settingsViewAstro = 'settings.view.astro',
+  /**
+   * Open dashboard on startup
+   */
+  settingsOpenOnStartup = 'settings.openOnStartup',
   /**
    * Content types
    */
@@ -127,6 +147,22 @@ export enum LocalizationKey {
    * Run full diagnostics
    */
   settingsDiagnosticLink = 'settings.diagnostic.link',
+  /**
+   * Website and SSG settings
+   */
+  settingsCommonSettingsWebsiteTitle = 'settings.commonSettings.website.title',
+  /**
+   * Preview URL
+   */
+  settingsCommonSettingsPreviewUrl = 'settings.commonSettings.previewUrl',
+  /**
+   * Website URL
+   */
+  settingsCommonSettingsWebsiteUrl = 'settings.commonSettings.websiteUrl',
+  /**
+   * SSG/Framework start command
+   */
+  settingsCommonSettingsStartCommand = 'settings.commonSettings.startCommand',
   /**
    * Developer mode
    */

@@ -8,6 +8,10 @@ import { AstroContentTypes } from '../Configuration/Astro/AstroContentTypes';
 import { ContentFolders } from '../Configuration/Common/ContentFolders';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { COMMAND_NAME } from '../../../constants';
+import { RefreshIcon } from '@heroicons/react/outline';
+import { VSCodePanelTab, VSCodePanelView, VSCodePanels } from '@vscode/webview-ui-toolkit/react';
+import { CommonSettings } from './CommonSettings';
 
 export interface ISettingsViewProps { }
 
@@ -23,46 +27,61 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (_: Rea
 
       {
         settings && (
-          <div className='mx-auto max-w-7xl'>
-            <h1 className='text-3xl'>{l10n.t(LocalizationKey.commonSettings)}</h1>
+          <div className='mx-auto max-w-7xl w-full'>
+            <div className='flex items-center justify-between'>
+              <h1 className='text-3xl'>{l10n.t(LocalizationKey.commonSettings)}</h1>
 
-            <div className='divide-y divide-[var(--frontmatter-border)]'>
+              <a
+                type="button"
+                className={`inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium focus:outline-none rounded text-[var(--vscode-button-foreground)] hover:text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`}
+                href={`command:${COMMAND_NAME.settingsRefresh}`}
+              >
+                <RefreshIcon
+                  className={`w-4 h-4 mr-2`}
+                  aria-hidden="true"
+                />
+                <span>{l10n.t(LocalizationKey.commonRefreshSettings)}</span>
+              </a>
+            </div>
+
+            <VSCodePanels className={`mt-4`}>
+              <VSCodePanelTab id="view-1">{l10n.t(LocalizationKey.settingsViewCommon)}</VSCodePanelTab>
+              <VSCodePanelTab id="view-2">{l10n.t(LocalizationKey.settingsViewContentFolders)}</VSCodePanelTab>
+
               {
                 settings?.crntFramework === 'astro' && (
-                  <div className='py-4'>
-                    <h2 className='text-xl mb-2'>{l10n.t(LocalizationKey.settingsContentTypes)}</h2>
-
-                    <AstroContentTypes
-                      settings={settings}
-                      triggerLoading={(isLoading) => setLoading(isLoading)} />
-                  </div>
+                  <VSCodePanelTab id="view-3">{l10n.t(LocalizationKey.settingsViewAstro)}</VSCodePanelTab>
                 )
               }
 
-              <div className='py-4'>
-                <h2 className='text-xl mb-2'>{l10n.t(LocalizationKey.settingsContentFolders)}</h2>
+              <VSCodePanelView id="view-1">
+                <CommonSettings />
+              </VSCodePanelView>
 
-                <ContentFolders
-                  settings={settings}
-                  triggerLoading={(isLoading) => setLoading(isLoading)} />
-              </div>
+              <VSCodePanelView id="view-2">
+                <div className='py-4'>
+                  <h2 className='text-xl mb-2'>{l10n.t(LocalizationKey.settingsContentFolders)}</h2>
 
-              <div className='py-4 space-y-2'>
-                <h2 className='text-xl mb-2'>{l10n.t(LocalizationKey.settingsDiagnostic)}</h2>
+                  <ContentFolders
+                    settings={settings}
+                    triggerLoading={(isLoading) => setLoading(isLoading)} />
+                </div>
+              </VSCodePanelView>
 
-                <p>{l10n.t(LocalizationKey.settingsDiagnosticDescription)}</p>
+              {
+                settings?.crntFramework === 'astro' && (
+                  <VSCodePanelView id="view-3">
+                    <div className='py-4'>
+                      <h2 className='text-xl mb-2'>{l10n.t(LocalizationKey.settingsContentTypes)}</h2>
 
-                <p>
-                  <a
-                    href={`command:frontMatter.diagnostics`}
-                    title={l10n.t(LocalizationKey.settingsDiagnosticLink)}
-                    className='text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)]'
-                  >
-                    {l10n.t(LocalizationKey.settingsDiagnosticLink)}
-                  </a>
-                </p>
-              </div>
-            </div>
+                      <AstroContentTypes
+                        settings={settings}
+                        triggerLoading={(isLoading) => setLoading(isLoading)} />
+                    </div>
+                  </VSCodePanelView>
+                )
+              }
+            </VSCodePanels>
           </div>
         )
       }
