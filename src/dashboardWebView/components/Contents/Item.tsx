@@ -31,7 +31,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const { escapedTitle, escapedDescription } = useCard(pageData, settings?.dashboardState?.contents?.cardFields);
   const navigate = useNavigate();
   const { titleHtml, descriptionHtml, dateHtml, statusHtml, tagsHtml, imageHtml, footerHtml } = useExtensibility({
-    fmFilePath: pageData.fmFileData,
+    fmFilePath: pageData.fmFilePath,
     date: pageData.date,
     title: pageData.title,
     description: pageData.description,
@@ -71,6 +71,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const hasDraftOrDate = useMemo(() => {
     return cardFields && (cardFields.state || cardFields.date);
   }, [cardFields]);
+
+  console.log(footerHtml)
 
   if (view === DashboardViewType.Grid) {
     return (
