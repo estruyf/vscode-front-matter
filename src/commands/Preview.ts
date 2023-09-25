@@ -258,9 +258,15 @@ export class Preview {
 
       if (!selectedFolder && article?.data && contentType && !contentType.previewPath) {
         // Try to find the folder by content type
-        const crntFolders = folders.filter((folder) =>
-          folder.contentTypes?.includes((contentType as ContentType).name)
+        let crntFolders = folders.filter(
+          (folder) =>
+            folder.contentTypes?.includes((contentType as ContentType).name) && folder.previewPath
         );
+
+        // Use file path to find the folder
+        if (crntFolders.length > 0) {
+          crntFolders = crntFolders.filter((folder) => filePath?.startsWith(folder.path));
+        }
 
         if (crntFolders && crntFolders.length === 1) {
           selectedFolder = crntFolders[0];
