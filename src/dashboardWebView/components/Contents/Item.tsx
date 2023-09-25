@@ -72,8 +72,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return cardFields && (cardFields.state || cardFields.date);
   }, [cardFields]);
 
-  console.log(footerHtml)
-
   if (view === DashboardViewType.Grid) {
     return (
       <li className="relative">
