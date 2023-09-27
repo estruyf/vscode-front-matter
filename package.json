@@ -2558,6 +2558,7 @@
     "cheerio": "1.0.0-rc.12",
     "css-loader": "5.2.7",
     "date-fns": "2.23.0",
+    "dotenv": "^16.3.1",
     "downshift": "6.0.6",
     "eslint": "^8.33.0",
     "fuse.js": "6.5.3",
