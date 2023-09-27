@@ -91,6 +91,7 @@ const callTranslationService = async (body, locale) => {
 
     if (apiUrl && transKey && location) {
       if (keysToTranslate.length > 0) {
+        console.log(`  - Translating: ${keysToTranslate.length}`);
         const body = JSON.stringify(keysToTranslate.map(key => ({ text: key.value })));
         const data = await callTranslationService(body, locale);
         
@@ -118,7 +119,6 @@ const callTranslationService = async (body, locale) => {
   const enPkgKeys = Object.keys(enPkgContent);
 
   const pkgFiles = glob.sync(path.join(__dirname, '../package.nls.*.json'));
-
 
   console.log(``);
   console.log(`Starting nls bundles`);
@@ -160,6 +160,7 @@ const callTranslationService = async (body, locale) => {
 
     if (apiUrl && transKey && location) {
       if (keysToTranslate.length > 0) {
+        console.log(`  - Translating: ${keysToTranslate.length}`);
         const body = JSON.stringify(keysToTranslate.map(key => ({ text: key.value })));
         const data = await callTranslationService(body, locale);
         

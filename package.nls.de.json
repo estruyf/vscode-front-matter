@@ -239,9 +239,10 @@
   "setting.frontMatter.dashboard.mediaSnippet.deprecationMessage": "Diese Einstellung ist veraltet und wird in der nächsten Hauptversion entfernt. Bitte definieren Sie Ihr Medien-Snippet in der `frontMatter.content.snippet` Einstellung.",
   "setting.frontMatter.taxonomy.dateField.deprecationMessage": "Diese Einstellung ist veraltet und wird in der nächsten Hauptversion entfernt. Bitte verwenden Sie stattdessen die neuen `isPublishDate`-Einstellungen in den Datumsfeldern Ihrer Content-Typen.",
   "setting.frontMatter.taxonomy.modifiedField.deprecationMessage": "Diese Einstellung ist veraltet und wird in der nächsten Hauptversion entfernt. Bitte verwenden Sie stattdessen die neuen `isModifiedDate`-Einstellungen in den Datumsfeldern Ihrer Content-Typen.",
-  "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.customType.description": "🚧: Specify the name of the custom field type to use.",
-  "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.clearEmpty.description": "🚧: Specify if the empty values should be cleared.",
-  "setting.frontMatter.website.host.markdownDescription": "🚧: Specify the host URL of your website. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.website.url)",
-  "command.frontMatter.settings.refresh": "🚧: Refresh Front Matter Settings",
-  "setting.frontMatter.config.dynamicFilePath.markdownDescription": "🚧: Specify the path to the dynamic config file (ex: [[workspace]]/config.js). [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.config.dynamicfilepath)"
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.customType.description": "Geben Sie den Namen des zu verwendenden benutzerdefinierten Feldtyps an.",
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.clearEmpty.description": "Geben Sie an, ob die leeren Werte gelöscht werden sollen.",
+  "setting.frontMatter.website.host.markdownDescription": "Geben Sie die Host-URL Ihrer Website an. [Überprüfen Sie die Dokumente] (https://frontmatter.codes/docs/settings/overview#frontmatter.website.url)",
+  "command.frontMatter.settings.refresh": "Aktualisieren Sie die Einstellungen für Frontmatter",
+  "setting.frontMatter.config.dynamicFilePath.markdownDescription": "Geben Sie den Pfad zur dynamischen Konfigurationsdatei an (z. B. [[workspace]]/config.js). [Überprüfen Sie die Dokumente] (https://frontmatter.codes/docs/settings/overview#frontmatter.config.dynamicfilepath)",
+  "setting.frontMatter.content.pageFolders.items.properties.disableCreation.description": "Deaktivieren Sie die Erstellung neuer Inhalte im Ordner."
 }
