@@ -20,7 +20,7 @@ import {
   WebviewViewResolveContext,
   window
 } from 'vscode';
-import { Logger, Settings } from '../helpers';
+import { ArticleHelper, Logger, Settings } from '../helpers';
 import { Command } from '../panelWebView/Command';
 import { TagType } from '../panelWebView/TagType';
 import { WebviewHelper } from '@estruyf/vscode';
@@ -28,6 +28,7 @@ import { Extension } from '../helpers/Extension';
 import { Telemetry } from '../helpers/Telemetry';
 import { GitListener, ModeListener } from '../listeners/general';
 import { Folders } from '../commands';
+import { basename } from 'path';
 
 export class PanelProvider implements WebviewViewProvider, Disposable {
   public static readonly viewType = 'frontMatter.explorer';
@@ -96,6 +97,8 @@ export class PanelProvider implements WebviewViewProvider, Disposable {
       }, this)
     );
 
+    this.updateCurrentFile();
+
     webviewView.webview.onDidReceiveMessage(async (msg) => {
       Logger.info(`Receiving message from webview to panel: ${msg.command}`);
 
@@ -159,15 +162,43 @@ export class PanelProvider implements WebviewViewProvider, Disposable {
     this.sendMessage({ command: Command.closeSections });
   }
 
-  private counts(acc: any, node: any) {
-    // add 1 to an initial or existing value
-    acc[node.type] = (acc[node.type] || 0) + 1;
+  /**
+   * On view change, update the current file that is loaded to show the correct data
+   */
+  public async updateCurrentFile() {
+    const crntPanel = PanelProvider.getInstance();
+    if (!crntPanel.visible) {
+      return;
+    }
 
-    // find and add up the counts from all of this node's children
-    return (node.children || []).reduce(
-      (childAcc: any, childNode: any) => this.counts(childAcc, childNode),
-      acc
-    );
+    const filePath = ArticleHelper.getActiveFile();
+    if (filePath) {
+      const article = await ArticleHelper.getFrontMatterByPath(filePath);
+      DataListener.pushMetadata(article?.data);
+
+      const fileName = basename(filePath);
+      crntPanel.updateTitle(fileName);
+    } else {
+      crntPanel.updateTitle(undefined);
+    }
+  }
+
+  /**
+   * Update the title of the panel
+   * @param title
+   * @returns
+   */
+  private updateTitle(title: string | undefined) {
+    if (!this.panel) {
+      return;
+    }
+
+    if (!title) {
+      this.panel.title = 'General';
+      return;
+    }
+
+    this.panel.title = title;
   }
 
   /**

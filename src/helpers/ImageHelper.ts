@@ -7,6 +7,7 @@ import { existsSync } from 'fs';
 import { Folders } from '../commands/Folders';
 import { parseWinPath } from './parseWinPath';
 import { Preview } from '../commands';
+import { ArticleHelper } from './ArticleHelper';
 
 export class ImageHelper {
   /**
@@ -16,7 +17,10 @@ export class ImageHelper {
    * @returns
    */
   public static allRelToAbs(field: Field, value: string | string[] | undefined) {
-    const filePath = window.activeTextEditor?.document.uri.fsPath || Preview.filePath;
+    let filePath =
+      window.activeTextEditor?.document.uri.fsPath ||
+      Preview.filePath ||
+      ArticleHelper.getActiveFile();
     if (!filePath) {
       return;
     }
@@ -27,7 +31,7 @@ export class ImageHelper {
       if (Array.isArray(value)) {
         previewUri = value.map((v) => ({
           original: v,
-          absPath: v.startsWith('http') ? v : ImageHelper.relToAbs(filePath, v)
+          absPath: v.startsWith('http') ? v : ImageHelper.relToAbs(filePath as string, v)
         }));
       }
     } else {

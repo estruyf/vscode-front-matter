@@ -29,7 +29,7 @@ export class StatusListener {
     let document = editor?.document;
 
     if (!document) {
-      const filePath = Preview.filePath;
+      const filePath = Preview.filePath || ArticleHelper.getActiveFile();
       if (filePath) {
         document = await vscode.workspace.openTextDocument(vscode.Uri.file(filePath));
       }

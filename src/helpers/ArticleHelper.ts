@@ -23,7 +23,7 @@ import {
 } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { FrontMatterParser, ParsedFrontMatter } from '../parsers';
-import { ContentType, Extension, Logger, Settings, SlugHelper, parseWinPath } from '.';
+import { ContentType, Extension, Logger, Settings, SlugHelper, isValidFile, parseWinPath } from '.';
 import { format, parse } from 'date-fns';
 import { Notifications } from './Notifications';
 import { Article } from '../commands';
@@ -636,6 +636,22 @@ export class ArticleHelper {
     }
 
     return null;
+  }
+
+  /**
+   * Retrieve the active file
+   * @returns
+   */
+  public static getActiveFile() {
+    const editors = window.visibleTextEditors;
+    if (editors.length === 1) {
+      const editor = editors[0];
+      const filePath = parseWinPath(editor.document.uri.fsPath);
+      if (isValidFile(filePath)) {
+        return filePath;
+      }
+    }
+    return undefined;
   }
 
   /**

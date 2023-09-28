@@ -13,7 +13,7 @@ import {
 } from './../constants';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { join, parse } from 'path';
-import { commands, env, Uri, ViewColumn, window, WebviewPanel } from 'vscode';
+import { commands, env, Uri, ViewColumn, window, WebviewPanel, extensions } from 'vscode';
 import { Extension, parseWinPath, processKnownPlaceholders, Settings } from '../helpers';
 import { ContentFolder, ContentType, PreviewSettings } from '../models';
 import { format } from 'date-fns';
@@ -22,7 +22,6 @@ import { Article } from '.';
 import { urlJoin } from 'url-join-ts';
 import { WebviewHelper } from '@estruyf/vscode';
 import { Folders } from './Folders';
-import { DataListener } from '../listeners/panel';
 import { ParsedFrontMatter } from '../parsers';
 import { getLocalizationFile } from '../utils/getLocalizationFile';
 
@@ -48,17 +47,26 @@ export class Preview {
       return;
     }
 
+    const browserLiteCommand = await this.getBrowserLiteCommand();
+
     const editor = window.activeTextEditor;
     const crntFilePath = editor?.document.uri.fsPath;
     this.filePath = crntFilePath;
 
-    if (crntFilePath && this.webviews[crntFilePath]) {
+    if (crntFilePath && this.webviews[crntFilePath] && !browserLiteCommand) {
       this.webviews[crntFilePath].reveal();
       return;
     }
 
     const article = editor ? ArticleHelper.getFrontMatter(editor) : null;
     const slug = await this.getContentSlug(article, editor?.document.uri.fsPath);
+    const localhostUrl = await this.getLocalServerUrl();
+
+    if (browserLiteCommand) {
+      const pageUrl = urlJoin(localhostUrl.toString(), slug || '');
+      commands.executeCommand(browserLiteCommand, pageUrl);
+      return;
+    }
 
     // Create the preview webview
     const webView = window.createWebviewPanel(
@@ -82,27 +90,10 @@ export class Preview {
       light: Uri.file(join(extensionPath, 'assets/icons/frontmatter-short-light.svg'))
     };
 
-    const localhostUrl = await this.getLocalServerUrl();
-
     const cspSource = webView.webview.cspSource;
 
     webView.onDidDispose(() => {
-      this.filePath = undefined;
-      if (crntFilePath) {
-        delete this.webviews[crntFilePath];
-      }
       webView.dispose();
-    });
-
-    webView.onDidChangeViewState(async (e) => {
-      if (e.webviewPanel.visible) {
-        this.filePath = crntFilePath;
-
-        if (crntFilePath) {
-          const article = await ArticleHelper.getFrontMatterByPath(crntFilePath);
-          DataListener.pushMetadata(article?.data);
-        }
-      }
     });
 
     webView.webview.onDidReceiveMessage(async (message) => {
@@ -342,6 +333,22 @@ export class Preview {
     }
 
     return slug;
+  }
+
+  /**
+   * Check if Browser Lite is installed
+   */
+  private static async getBrowserLiteCommand() {
+    const ext = extensions.getExtension(`antfu.browse-lite`);
+    if (ext && ext.packageJSON) {
+      const hasCommand = ext.packageJSON.contributes?.commands?.find(
+        (c: { command: string }) => c.command === 'browse-lite.open'
+      );
+      if (hasCommand) {
+        return 'browse-lite.open';
+      }
+    }
+    return undefined;
   }
 
   /**

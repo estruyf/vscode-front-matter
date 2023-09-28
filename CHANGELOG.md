@@ -19,6 +19,7 @@
 - [#669](https://github.com/estruyf/vscode-front-matter/issues/669): Add the video preview to the details panel + caption field
 - [#674](https://github.com/estruyf/vscode-front-matter/issues/674): Specify to disable content creation for a specific page folder
 - [#676](https://github.com/estruyf/vscode-front-matter/issues/676): Allow the `frontmatter.json` file to be placed in a sub-directory
+- [#677](https://github.com/estruyf/vscode-front-matter/issues/677): Added support for [Browse Lite](https://marketplace.visualstudio.com/items?itemName=antfu.browse-lite) extension to open preview when installed
 
 ### ⚡️ Optimizations
 

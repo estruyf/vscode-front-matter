@@ -153,7 +153,10 @@ export class DataListener extends BaseListener {
    */
   public static async pushMetadata(metadata: any) {
     const wsFolder = Folders.getWorkspaceFolder();
-    const filePath = window.activeTextEditor?.document.uri.fsPath || Preview.filePath;
+    const filePath =
+      window.activeTextEditor?.document.uri.fsPath ||
+      Preview.filePath ||
+      ArticleHelper.getActiveFile();
     const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
     const contentTypes = Settings.get<string>(SETTING_TAXONOMY_CONTENT_TYPES);
 
