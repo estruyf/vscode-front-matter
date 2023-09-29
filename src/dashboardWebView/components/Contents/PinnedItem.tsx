@@ -41,7 +41,7 @@ export const PinnedItem: React.FunctionComponent<IPinnedItemProps> = ({
         }
       </button>
 
-      <button onClick={openFile} className='relative w-2/3 p-4 text-left flex items-start'>
+      <button onClick={openFile} className='relative w-2/3 p-4 pr-6 text-left flex items-start'>
         <p className='font-bold'>{escapedTitle}</p>
 
         <ContentActions
