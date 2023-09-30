@@ -32,6 +32,7 @@
 - [#664](https://github.com/estruyf/vscode-front-matter/issues/664): Fix for parsing draft status in Hexo and Jekyll
 - [#665](https://github.com/estruyf/vscode-front-matter/issues/665): Added `dev` parameter to Nuxt script
 - [#668](https://github.com/estruyf/vscode-front-matter/issues/668): Reset pagination on media search
+- [#678](https://github.com/estruyf/vscode-front-matter/issues/678): Check field type of `tags` fields for tags rendering on item cards
 
 ## [9.2.0] - 2023-09-11
 
