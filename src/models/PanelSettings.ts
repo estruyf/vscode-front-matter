@@ -197,6 +197,7 @@ export interface CustomScript {
   command?: CommandType | string;
   hidden?: boolean;
   environments?: EnvironmentScript[];
+  contentTypes?: string[];
 }
 
 export type EnvironmentType = 'windows' | 'macos' | 'linux';

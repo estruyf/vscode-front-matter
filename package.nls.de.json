@@ -244,5 +244,6 @@
   "setting.frontMatter.website.host.markdownDescription": "Geben Sie die Host-URL Ihrer Website an. [Überprüfen Sie die Dokumente] (https://frontmatter.codes/docs/settings/overview#frontmatter.website.url)",
   "command.frontMatter.settings.refresh": "Aktualisieren Sie die Einstellungen für Frontmatter",
   "setting.frontMatter.config.dynamicFilePath.markdownDescription": "Geben Sie den Pfad zur dynamischen Konfigurationsdatei an (z. B. [[workspace]]/config.js). [Überprüfen Sie die Dokumente] (https://frontmatter.codes/docs/settings/overview#frontmatter.config.dynamicfilepath)",
-  "setting.frontMatter.content.pageFolders.items.properties.disableCreation.description": "Deaktivieren Sie die Erstellung neuer Inhalte im Ordner."
+  "setting.frontMatter.content.pageFolders.items.properties.disableCreation.description": "Deaktivieren Sie die Erstellung neuer Inhalte im Ordner.",
+  "setting.frontMatter.custom.scripts.items.properties.contentTypes.description": "Definieren Sie die Inhaltstypen, für die das Skript verwendet werden soll. Wenn keine definiert sind, ist sie für alle Typen verfügbar."
 }

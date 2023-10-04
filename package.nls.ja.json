@@ -245,5 +245,6 @@
   "setting.frontMatter.website.host.markdownDescription": "ウェブサイトのホスト URL を指定します。[ドキュメントをチェックイン](https://frontmatter.codes/docs/settings/overview#frontmatter.website.url)",
   "command.frontMatter.settings.refresh": "フロントマター設定の更新",
   "setting.frontMatter.config.dynamicFilePath.markdownDescription": "動的構成ファイルへのパスを指定します (例: [[ワークスペース]]/config.js)。[ドキュメントをチェックイン](https://frontmatter.codes/docs/settings/overview#frontmatter.config.dynamicfilepath)",
-  "setting.frontMatter.content.pageFolders.items.properties.disableCreation.description": "フォルダー内の新しいコンテンツの作成を無効にします。"
+  "setting.frontMatter.content.pageFolders.items.properties.disableCreation.description": "フォルダー内の新しいコンテンツの作成を無効にします。",
+  "setting.frontMatter.custom.scripts.items.properties.contentTypes.description": "スクリプトを使用するコンテンツ タイプを定義します。何も定義されていない場合は、すべての型で使用できます。"
 }

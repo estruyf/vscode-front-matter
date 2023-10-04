@@ -8,6 +8,7 @@ import { StartServerButton } from './StartServerButton';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
 import { OpenOnWebsiteAction } from './Actions/OpenOnWebsiteAction';
+import useContentType from '../../hooks/useContentType';
 
 export interface IActionsProps {
   metadata: any;
@@ -18,6 +19,29 @@ const Actions: React.FunctionComponent<IActionsProps> = ({
   metadata,
   settings
 }: React.PropsWithChildren<IActionsProps>) => {
+  const contentType = useContentType(settings, metadata);
+
+  const actions = React.useMemo(() => {
+    let allActions: JSX.Element[] = [];
+    let scripts = settings.scripts || [];
+
+    if (contentType?.name) {
+      scripts = scripts.filter((script) => {
+        if (script.contentTypes && script.contentTypes.length > 0) {
+          return script.contentTypes.includes(contentType.name);
+        }
+
+        return true;
+      });
+    }
+
+    allActions = scripts.map((value, idx) => (
+      <CustomScript key={value?.title?.replace(/ /g, '') || idx} {...value} />
+    ))
+
+    return allActions;
+  }, [settings.scripts, contentType]);
+
   if (!metadata || Object.keys(metadata).length === 0 || !settings) {
     return null;
   }
@@ -37,9 +61,7 @@ const Actions: React.FunctionComponent<IActionsProps> = ({
           <>
             <div className="divider py-4 w-full" style={{ height: `1px` }}></div>
 
-            {settings.scripts.map((value, idx) => (
-              <CustomScript key={value?.title?.replace(/ /g, '') || idx} {...value} />
-            ))}
+            {...actions}
           </>
         )}
       </div>
