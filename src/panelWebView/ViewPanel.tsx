@@ -134,7 +134,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
         )}
         {settings && metadata && (
           <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.actions}>
-            <Actions metadata={metadata} settings={settings} />
+            <Actions metadata={metadata} settings={settings} scripts={settings.scripts} />
           </FeatureFlag>
         )}
 

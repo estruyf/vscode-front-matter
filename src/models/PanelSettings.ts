@@ -31,7 +31,17 @@ export interface PanelSettings {
   aiEnabled: boolean;
   contentFolders: ContentFolder[];
   websiteUrl: string;
+  disabledActions: PanelAction[];
 }
+
+export type PanelAction =
+  | 'openDashboard'
+  | 'createContent'
+  | 'optimizeSlug'
+  | 'preview'
+  | 'openOnWebsite'
+  | 'startStopServer'
+  | 'customActions';
 
 export interface FieldGroup {
   id: string;

@@ -46,6 +46,7 @@ export const SETTING_TEMPLATES_ENABLED = 'templates.enabled';
 export const SETTING_TELEMETRY_DISABLE = 'telemetry.disable';
 
 export const SETTING_PANEL_FREEFORM = 'panel.freeform';
+export const SETTING_PANEL_ACTIONS_DISABLED = 'panel.actions.disabled';
 
 export const SETTING_PREVIEW_HOST = 'preview.host';
 export const SETTING_PREVIEW_PATHNAME = 'preview.pathName';

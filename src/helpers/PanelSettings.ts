@@ -1,4 +1,8 @@
-import { SETTING_SPONSORS_AI_ENABLED, SETTING_WEBSITE_URL } from './../constants/settings';
+import {
+  SETTING_PANEL_ACTIONS_DISABLED,
+  SETTING_SPONSORS_AI_ENABLED,
+  SETTING_WEBSITE_URL
+} from './../constants/settings';
 import { workspace } from 'vscode';
 import { ContentType, Extension, Settings, TaxonomyHelper } from '.';
 import { Dashboard } from '../commands/Dashboard';
@@ -38,6 +42,7 @@ import {
   DraftField,
   FieldGroup,
   PanelSettings as IPanelSettings,
+  PanelAction,
   ScriptType,
   TaxonomyType
 } from '../models';
@@ -97,7 +102,8 @@ export class PanelSettings {
       dataTypes: Settings.get<DataType[]>(SETTING_DATA_TYPES),
       fieldGroups: Settings.get<FieldGroup[]>(SETTING_TAXONOMY_FIELD_GROUPS),
       contentFolders: Folders.get(),
-      websiteUrl: Settings.get<string>(SETTING_WEBSITE_URL) || ''
+      websiteUrl: Settings.get<string>(SETTING_WEBSITE_URL) || '',
+      disabledActions: Settings.get<PanelAction[]>(SETTING_PANEL_ACTIONS_DISABLED) || []
     };
   }
 

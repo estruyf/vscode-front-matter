@@ -1209,10 +1209,6 @@ export enum LocalizationKey {
    */
   panelBaseViewActionOpenDashboard = 'panel.baseView.action.openDashboard',
   /**
-   * Open preview
-   */
-  panelBaseViewActionOpenPreview = 'panel.baseView.action.openPreview',
-  /**
    * Create content
    */
   panelBaseViewActionCreateContent = 'panel.baseView.action.createContent',

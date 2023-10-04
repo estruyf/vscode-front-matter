@@ -377,7 +377,6 @@
   "panel.baseView.initialize": "Initialize project",
   "panel.baseView.actions.title": "Actions",
   "panel.baseView.action.openDashboard": "Open dashboard",
-  "panel.baseView.action.openPreview": "Open preview",
   "panel.baseView.action.createContent": "Create content",
   "panel.baseView.empty": "Open a file to see more actions",
 
