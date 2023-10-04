@@ -62,7 +62,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     if (typeof tagsValue === 'string') {
       return [tagsValue];
     } else if (Array.isArray(tagsValue)) {
-      return tagsValue;
+      const items = tagsValue.map(t => typeof t === 'string' ? t : undefined);
+      return items.filter(t => t !== undefined) as string[];
     }
 
     return [];
