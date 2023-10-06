@@ -579,7 +579,16 @@ export class Settings {
       return Settings.globalConfigPath;
     }
 
-    const configFiles = await workspace.findFiles(`**/${Settings.globalFile}`);
+    const rootFilePath = join(Folders.getWorkspaceFolder()?.fsPath || '', Settings.globalFile);
+    if (await existsAsync(rootFilePath)) {
+      Settings.globalConfigPath = rootFilePath;
+      return Settings.globalConfigPath;
+    }
+
+    let configFiles = await workspace.findFiles(`**/${Settings.globalFile}`);
+    // Sort by file path length
+    configFiles = configFiles.sort((a, b) => a.fsPath.localeCompare(b.fsPath));
+
     if (configFiles.length === 0) {
       Settings.globalConfigPath = undefined;
       return Settings.globalConfigPath;
