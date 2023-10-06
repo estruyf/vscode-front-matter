@@ -7,49 +7,27 @@ import { Step } from './Step';
 import { useMemo, useState } from 'react';
 import { Menu } from '@headlessui/react';
 import { MenuItem } from '../Menu';
-import { ContentFolder, Framework, StaticFolder, Template } from '../../../models';
+import { Framework, StaticFolder, Template } from '../../../models';
 import { ChevronDownIcon } from '@heroicons/react/outline';
 import { FrameworkDetectors } from '../../../constants/FrameworkDetectors';
-import { join } from 'path';
 import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { SelectItem } from './SelectItem';
 import { Templates } from '../../../constants';
+import { TemplateItem } from './TemplateItem';
+import { Spinner } from '../Common/Spinner';
+import { AstroContentTypes } from '../Configuration/Astro/AstroContentTypes';
+import { ContentFolders } from '../Configuration/Common/ContentFolders';
 
 export interface IStepsToGetStartedProps {
   settings: Settings;
 }
 
-const Folder = ({
-  wsFolder,
-  folder,
-  folders,
-  addFolder
-}: {
-  wsFolder: string;
-  folder: string;
-  folders: ContentFolder[];
-  addFolder: (folder: string) => void;
-}) => {
-
-  const isAdded = useMemo(
-    () => folders.find((f) => f.path.toLowerCase() === join(wsFolder, folder).toLowerCase()),
-    [folder, folders, wsFolder]
-  );
-
-  return (
-    <SelectItem
-      title={folder}
-      buttonTitle={l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedButtonAddFolderTitle)}
-      isSelected={!!isAdded}
-      onClick={() => addFolder(folder)} />
-  );
-};
-
 export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps> = ({
   settings
 }: React.PropsWithChildren<IStepsToGetStartedProps>) => {
+  const [loading, setLoading] = useState<boolean>(false);
   const [framework, setFramework] = useState<string | null>(null);
   const [taxImported, setTaxImported] = useState<boolean>(false);
   const [templates, setTemplates] = useState<Template[]>([]);
@@ -62,16 +40,14 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
     Messenger.send(DashboardMessage.setFramework, framework);
   };
 
-  const addFolder = (folder: string) => {
-    Messenger.send(DashboardMessage.addFolder, folder);
-  };
-
   const addAssetFolder = (folder: string | StaticFolder) => {
     Messenger.send(DashboardMessage.addAssetsFolder, folder);
   }
 
   const triggerTemplate = (template: Template) => {
+    setLoading(true);
     messageHandler.request<boolean>(DashboardMessage.triggerTemplate, template).then((result) => {
+      setLoading(false);
       if (result) {
         reload();
       }
@@ -183,17 +159,18 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
         id: `welcome-template`,
         name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedTemplateName),
         description: (
-          <div className='mt-4'>
+          <div className=''>
             <div className="text-sm">{l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedTemplateDescription)}</div>
-            <div className="mt-1 space-y-1">
+            <div className="mt-4 grid grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-4 w-full">
               {
                 crntTemplates && (crntTemplates || []).map(template => (
-                  <SelectItem
+                  <TemplateItem
                     key={template.name.toLowerCase().replace(/ /g, '-')}
                     title={template.name}
-                    icon='add'
+                    author={template.author}
+                    version={template.version}
+                    description={template.description}
                     buttonTitle={template.name}
-                    isSelected={false}
                     onClick={() => triggerTemplate(template)} />
                 ))
               }
@@ -201,13 +178,38 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
           </div>
         ),
         show: (crntTemplates || []).length > 0,
-        status: Status.Active,
+        status: Status.Optional,
+      },
+      {
+        id: `astro-content-types`,
+        name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedAstroContentTypesName),
+        description: (
+          <AstroContentTypes
+            settings={settings}
+            triggerLoading={(isLoading) => setLoading(isLoading)} />
+        ),
+        show: settings.crntFramework === 'astro',
+        status: Status.Optional
+      },
+      {
+        id: `welcome-content-folders`,
+        name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedContentFoldersName),
+        description: (
+          <ContentFolders
+            settings={settings}
+            triggerLoading={(isLoading) => setLoading(isLoading)} />
+        ),
+        show: true,
+        status:
+          settings.contentFolders && settings.contentFolders.length > 0
+            ? Status.Completed
+            : Status.NotStarted
       },
       {
         id: `welcome-assets`,
         name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedAssetsFolderName),
         description: (
-          <div className='mt-4'>
+          <div className='mt-1'>
             <div className="text-sm">{l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedAssetsFolderDescription)}</div>
             <div className="mt-1 space-y-1">
               <SelectItem
@@ -232,43 +234,6 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
         ),
         show: settings.crntFramework === 'astro' || framework === 'astro',
         status: settings.initialized && settings.staticFolder && settings.staticFolder !== "/" ? Status.Completed : Status.NotStarted,
-      },
-      {
-        id: `welcome-content-folders`,
-        name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedContentFoldersName),
-        description: (
-          <>
-            <p>
-              {l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedContentFoldersDescription)}
-            </p>
-
-            {settings?.dashboardState?.welcome?.contentFolders?.length > 0 && (
-              <div className="mt-4">
-                <div className="text-sm">{l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedContentFoldersLabel)}</div>
-                <div className="mt-1 space-y-1">
-                  {settings?.dashboardState?.welcome?.contentFolders?.map((folder: string) => (
-                    <Folder
-                      key={folder}
-                      folder={folder}
-                      addFolder={addFolder}
-                      wsFolder={settings.wsFolder}
-                      folders={settings.contentFolders}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <p className={`mt-4 ${getColors('text-vulcan-300 dark:text-gray-400', '')}`}>
-              <b>{l10n.t(LocalizationKey.commonInformation)}</b>: {l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedContentFoldersInformationDescription)}.
-            </p>
-          </>
-        ),
-        show: true,
-        status:
-          settings.contentFolders && settings.contentFolders.length > 0
-            ? Status.Completed
-            : Status.NotStarted
       },
       {
         id: `welcome-import`,
@@ -321,6 +286,11 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
 
   return (
     <nav aria-label="Progress">
+      {
+        loading && (
+          <Spinner />
+        )
+      }
       <ol role="list">
         {steps.map((step, stepIdx) => (
           step.show && (

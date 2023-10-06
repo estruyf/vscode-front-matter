@@ -3,6 +3,8 @@ export * from './encodeEmoji';
 export * from './existsAsync';
 export * from './fetchWithTimeout';
 export * from './fieldWhenClause';
+export * from './flattenObjectKeys';
+export * from './getLocalizationFile';
 export * from './mkdirAsync';
 export * from './readFileAsync';
 export * from './readdirAsync';

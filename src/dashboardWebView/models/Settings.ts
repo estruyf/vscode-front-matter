@@ -45,6 +45,7 @@ export interface Settings {
   snippets: Snippets | undefined;
   snippetsWrapper: boolean;
   date: { format: string };
+  lastUpdated: number;
 }
 
 export interface DashboardState {

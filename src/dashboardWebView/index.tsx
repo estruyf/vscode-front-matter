@@ -45,7 +45,8 @@ export const routePaths: { [name: string]: string } = {
   media: '/media',
   snippets: '/snippets',
   data: '/data',
-  taxonomy: '/taxonomy'
+  taxonomy: '/taxonomy',
+  settings: '/settings',
 };
 
 const preserveColor = (color: string | undefined) => {

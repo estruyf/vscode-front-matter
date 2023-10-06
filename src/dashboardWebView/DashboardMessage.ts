@@ -14,6 +14,8 @@ export enum DashboardMessage {
   addFolder = 'addFolder',
   addAssetsFolder = 'addAssetsFolder',
   triggerTemplate = 'triggerTemplate',
+  ssgGetAstroContentTypes = 'ssgGetAstroContentTypes',
+  ssgSetAstroContentTypes = 'ssgSetAstroContentTypes',
 
   // Content dashboard
   getData = 'getData',
@@ -24,6 +26,9 @@ export enum DashboardMessage {
   searchPages = 'searchPages',
   openFile = 'openFile',
   deleteFile = 'deleteFile',
+  getPinnedItems = 'getPinnedItems',
+  pinItem = 'pinItem',
+  unpinItem = 'unpinItem',
 
   // Media Dashboard
   getMedia = 'getMedia',
@@ -37,6 +42,8 @@ export enum DashboardMessage {
   createMediaFolder = 'createMediaFolder',
   insertFile = 'insertFile',
   createHexoAssetFolder = 'createHexoAssetFolder',
+  getUnmappedMedia = 'getUnmappedMedia',
+  remapMediaMetadata = 'remapMediaMetadata',
 
   // Data dashboard
   getDataEntries = 'getDataEntries',
@@ -63,5 +70,9 @@ export enum DashboardMessage {
   setState = 'setState',
   runCustomScript = 'runCustomScript',
   sendTelemetry = 'sendTelemetry',
-  logError = 'logError'
+  logError = 'logError',
+
+  // Settings
+  getSettings = 'getSettings',
+  setSettings = 'setSettings'
 }

@@ -74,6 +74,7 @@
   "setting.frontMatter.content.pageFolders.items.properties.previewPath.description": "Defines a custom preview path for the folder.",
   "setting.frontMatter.content.pageFolders.items.properties.filePrefix.description": "Defines a prefix for the file name.",
   "setting.frontMatter.content.pageFolders.items.properties.contentTypes.description": "Defines which content types can be used for the current location. If not defined, all content types will be available.",
+  "setting.frontMatter.content.pageFolders.items.properties.disableCreation.description": "Disable the creation of new content in the folder.",
   "setting.frontMatter.content.placeholders.markdownDescription": "This array of placeholders defines the placeholders that you can use in your content types and templates for automatically populating your content its front matter. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.placeholders)",
   "setting.frontMatter.content.placeholders.items.properties.id.description": "ID of the placeholder, in your content type or template, use it as follows: {{placeholder}}",
   "setting.frontMatter.content.placeholders.items.properties.value.description": "The placeholder its value",
@@ -104,6 +105,7 @@
   "setting.frontMatter.custom.scripts.items.properties.hidden.description": "Hide the action from the UI",
   "setting.frontMatter.custom.scripts.items.properties.environments.items.properties.type.description": "The environment type for which the script needs to be used",
   "setting.frontMatter.custom.scripts.items.properties.environments.items.properties.script.description": "Path to the script to execute",
+  "setting.frontMatter.custom.scripts.items.properties.contentTypes.description": "Define the content types for which the script will be used. If none are defined, it will be available to all types.",
   "setting.frontMatter.dashboard.content.pagination.markdownDescription": "Specify if you want to enable/disable pagination for your content. You can define your page number up to 52. Default items per page is `16`. Disabling the pagination can be done by setting it to `false`. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.dashboard.content.pagination)",
   "setting.frontMatter.dashboard.content.cardTags.markdownDescription": "Specify the name of the metadata field that will be used to show the tags on the content card. When empty or null, it will hide the tags from the card. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.dashboard.content.cardtags)",
   "setting.frontMatter.dashboard.content.card.fields.state.markdownDescription": "Specify if you want to show the state/draft status on the content card view. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontMatter.dashboard.content.card.fields.state)",
@@ -215,7 +217,7 @@
   "setting.frontMatter.taxonomy.customTaxonomy.items.properties.options.description": "Options from which you can pick.",
   "setting.frontMatter.taxonomy.dateField.markdownDescription": "This setting is used to define the publishing date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.datefield)",
   "setting.frontMatter.taxonomy.dateFormat.markdownDescription": "Specify the date format for your articles. Check [date-fns formating](https://date-fns.org/v2.0.1/docs/format) for more information. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.dateformat)",
-  "setting.frontMatter.taxonomy.fieldGroups.markdownDescription": "Define the field groups you want to use for your block fields. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.fieldgroups)",
+  "setting.frontMatter.taxonomy.fieldGroups.markdownDescription": "Define the field groups you want to use for your block fields or collection fields. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.fieldgroups)",
   "setting.frontMatter.taxonomy.fieldGroups.items.properties.id.description": "The name of the field group",
   "setting.frontMatter.taxonomy.fieldGroups.items.properties.labelField.description": "The name of the field to be used as display value",
   "setting.frontMatter.taxonomy.frontMatterType.markdownDescription": "Specify the type of Front Matter to use. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.frontmattertype)",
@@ -242,5 +244,6 @@
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.customType.description": "Specify the name of the custom field type to use.",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.clearEmpty.description": "Specify if the empty values should be cleared.",
   "setting.frontMatter.website.host.markdownDescription": "Specify the host URL of your website. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.website.url)",
-  "command.frontMatter.settings.refresh": "Refresh Front Matter Settings"
+  "command.frontMatter.settings.refresh": "Refresh Front Matter Settings",
+  "setting.frontMatter.config.dynamicFilePath.markdownDescription": "Specify the path to the dynamic config file (ex: [[workspace]]/config.js). [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.config.dynamicfilepath)"
 }

@@ -11,6 +11,7 @@ import { CommandToCode } from '../../CommandToCode';
 import { Page } from '../../../dashboardWebView/models';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import useDropdownStyle from '../../hooks/useDropdownStyle';
 
 export interface IContentTypeRelationshipFieldProps extends BaseFieldProps<string | string[]> {
   contentTypeName?: string;
@@ -34,12 +35,16 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
   const [pages, setPages] = React.useState<Page[]>([]);
   const [crntSelected, setCrntSelected] = React.useState<string | string[] | null>(value);
   const dsRef = React.useRef<Downshift<string> | null>(null);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const { getDropdownStyle } = useDropdownStyle(inputRef as any);
 
   const onValueChange = (txtValue: string) => {
     if (multiSelect) {
-      const newValue = [...((crntSelected || []) as string[]), txtValue];
-      setCrntSelected(newValue);
-      onChange(newValue);
+      const crntValue = typeof crntSelected === 'string' ? [crntSelected] : crntSelected;
+      const newValue = [...((crntValue || []) as string[]), txtValue];
+      const uniqueValues = [...new Set(newValue)];
+      setCrntSelected(uniqueValues);
+      onChange(uniqueValues);
     } else {
       setCrntSelected(txtValue);
       onChange(txtValue);
@@ -77,20 +82,19 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
   }, [choices, contentTypeValue]);
 
   const availableChoices = useMemo(() => {
-    return !multiSelect
-      ? pages
-      : pages.filter((page: Page) => {
-        const value = page.fmFilePath;
+    return pages.filter((page: Page) => {
+      const value = contentTypeValue === "slug" ? page.slug : page.fmFilePath;
 
-        if (typeof crntSelected === 'string') {
-          return crntSelected !== `${value}`;
-        } else if (crntSelected instanceof Array) {
-          return crntSelected.indexOf(`${value}`) === -1;
-        }
+      if (typeof crntSelected === 'string') {
+        return crntSelected !== `${value}` && !value.includes(crntSelected);
+      } else if (crntSelected instanceof Array) {
+        const selected = crntSelected.filter((v) => v === `${value}` || value.includes(v));
+        return selected.length === 0;
+      }
 
-        return true;
-      });
-  }, [choices, crntSelected, multiSelect]);
+      return true;
+    });
+  }, [choices, crntSelected, multiSelect, contentTypeValue]);
 
   const showRequiredState = useMemo(() => {
     return (
@@ -142,6 +146,7 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
               {({ getToggleButtonProps, getItemProps, getMenuProps, isOpen, getRootProps }) => (
                 <div
                   {...getRootProps(undefined, { suppressRefError: true })}
+                  ref={inputRef}
                   className={`metadata_field__choice`}
                 >
                   <button
@@ -155,11 +160,14 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
                   </button>
 
                   <ul
-                    className={`metadata_field__choice_list ${isOpen ? 'open' : 'closed'}`}
+                    className={`field_dropdown metadata_field__choice_list ${isOpen ? 'open' : 'closed'}`}
+                    style={{
+                      bottom: getDropdownStyle(isOpen)
+                    }}
                     {...getMenuProps()}
                   >
-                    {isOpen
-                      ? availableChoices.map((choice: Page, index) => (
+                    {
+                      availableChoices.map((choice: Page, index) => (
                         <li
                           {...getItemProps({
                             key: getValue(choice, contentTypeValue),
@@ -174,7 +182,7 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
                           )}
                         </li>
                       ))
-                      : null}
+                    }
                   </ul>
                 </div>
               )}

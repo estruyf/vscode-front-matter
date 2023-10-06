@@ -3,15 +3,14 @@
   "displayName": "Front Matter CMS",
   "description": "Front Matter is a CMS that runs within Visual Studio Code. It gives you the power and control of a full-blown CMS while also providing you the flexibility and speed of the static site generator of your choice like: Hugo, Jekyll, Docusaurus, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "9.2.0",
+  "version": "9.3.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
     "color": "#0e131f",
     "theme": "dark"
   },
-  "badges": [
-    {
+  "badges": [{
       "description": "version",
       "url": "https://img.shields.io/github/package-json/v/estruyf/vscode-front-matter?color=green&label=vscode-front-matter&style=flat-square",
       "href": "https://github.com/estruyf/vscode-front-matter"
@@ -71,8 +70,7 @@
         "**/.frontmatter/config/*.json": "jsonc"
       }
     },
-    "keybindings": [
-      {
+    "keybindings": [{
         "command": "frontMatter.dashboard",
         "key": "alt+d"
       },
@@ -90,24 +88,19 @@
       }
     ],
     "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "frontmatter-explorer",
-          "title": "Front Matter",
-          "icon": "assets/frontmatter-short-min.svg"
-        }
-      ]
+      "activitybar": [{
+        "id": "frontmatter-explorer",
+        "title": "FM",
+        "icon": "$(fm-logo)"
+      }]
     },
     "views": {
-      "frontmatter-explorer": [
-        {
-          "id": "frontMatter.explorer",
-          "name": "Front Matter",
-          "icon": "assets/frontmatter-short-min.svg",
-          "contextualTitle": "Front Matter",
-          "type": "webview"
-        }
-      ]
+      "frontmatter-explorer": [{
+        "id": "frontMatter.explorer",
+        "name": "Front Matter",
+        "icon": "$(fm-logo)",
+        "type": "webview"
+      }]
     },
     "configuration": {
       "title": "%settings.configuration.title%",
@@ -161,6 +154,11 @@
             "type": "string"
           }
         },
+        "frontMatter.config.dynamicFilePath": {
+          "type": "string",
+          "markdownDescription": "%setting.frontMatter.config.dynamicFilePath.markdownDescription%",
+          "default": ""
+        },
         "frontMatter.content.autoUpdateDate": {
           "type": "boolean",
           "default": false,
@@ -170,8 +168,7 @@
         "frontMatter.content.defaultFileType": {
           "type": "string",
           "default": "md",
-          "oneOf": [
-            {
+          "oneOf": [{
               "enum": [
                 "md",
                 "mdx"
@@ -187,8 +184,7 @@
         "frontMatter.content.defaultSorting": {
           "type": "string",
           "default": "",
-          "oneOf": [
-            {
+          "oneOf": [{
               "enum": [
                 "LastModifiedAsc",
                 "LastModifiedDesc",
@@ -302,6 +298,11 @@
                 "items": {
                   "type": "string"
                 }
+              },
+              "disableCreation": {
+                "type": "boolean",
+                "default": false,
+                "description": "%setting.frontMatter.content.pageFolders.items.properties.disableCreation.description%"
               }
             },
             "additionalProperties": false,
@@ -535,8 +536,7 @@
               "command": {
                 "$id": "#scriptCommand",
                 "type": "string",
-                "anyOf": [
-                  {
+                "anyOf": [{
                     "enum": [
                       "node",
                       "bash",
@@ -579,6 +579,13 @@
                       "$ref": "#scriptCommand"
                     }
                   }
+                }
+              },
+              "contentTypes": {
+                "type": "array",
+                "description": "%setting.frontMatter.custom.scripts.items.properties.contentTypes.description%",
+                "items": {
+                  "type": "string"
                 }
               }
             },
@@ -736,8 +743,7 @@
               "title",
               "file"
             ],
-            "anyOf": [
-              {
+            "anyOf": [{
                 "required": [
                   "schema"
                 ]
@@ -791,8 +797,7 @@
               "id",
               "path"
             ],
-            "anyOf": [
-              {
+            "anyOf": [{
                 "required": [
                   "schema"
                 ]
@@ -985,6 +990,20 @@
           "markdownDescription": "%setting.frontMatter.panel.freeform.markdownDescription%",
           "scope": "Panel"
         },
+        "frontMatter.panel.actions.disabled": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "%setting.frontMatter.panel.actions.disabeld.markdownDescription%",
+          "enum": [
+            "openDashboard",
+            "createContent",
+            "optimizeSlug",
+            "preview",
+            "openOnWebsite",
+            "startStopServer",
+            "customActions"
+          ]
+        },
         "frontMatter.preview.host": {
           "type": "string",
           "default": "",
@@ -1049,6 +1068,11 @@
                 ],
                 "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fileType.description%"
               },
+              "clearEmpty": {
+                "type": "boolean",
+                "default": false,
+                "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.clearEmpty.description%"
+              },
               "fields": {
                 "$id": "#contenttypefield",
                 "type": "array",
@@ -1080,7 +1104,8 @@
                         "divider",
                         "heading",
                         "customField",
-                        "contentRelationship"
+                        "contentRelationship",
+                        "fieldCollection"
                       ],
                       "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.type.description%"
                     },
@@ -1160,8 +1185,7 @@
                       "default": "",
                       "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.taxonomyId.description%",
                       "not": {
-                        "anyOf": [
-                          {
+                        "anyOf": [{
                             "const": ""
                           },
                           {
@@ -1281,11 +1305,6 @@
                       "default": false,
                       "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.required.description%"
                     },
-                    "clearEmpty": {
-                      "type": "boolean",
-                      "default": false,
-                      "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.clearEmpty.description%"
-                    },
                     "customType": {
                       "type": "string",
                       "default": "",
@@ -1355,8 +1374,7 @@
                     "type",
                     "name"
                   ],
-                  "allOf": [
-                    {
+                  "allOf": [{
                       "if": {
                         "properties": {
                           "type": {
@@ -1487,6 +1505,20 @@
                       "if": {
                         "properties": {
                           "type": {
+                            "const": "fieldCollection"
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "fieldGroup"
+                        ]
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
                             "const": "json"
                           }
                         }
@@ -1542,51 +1574,48 @@
               "fields"
             ]
           },
-          "default": [
-            {
-              "name": "default",
-              "pageBundle": false,
-              "fields": [
-                {
-                  "title": "Title",
-                  "name": "title",
-                  "type": "string"
-                },
-                {
-                  "title": "Description",
-                  "name": "description",
-                  "type": "string"
-                },
-                {
-                  "title": "Publishing date",
-                  "name": "date",
-                  "type": "datetime",
-                  "default": "{{now}}",
-                  "isPublishDate": true
-                },
-                {
-                  "title": "Content preview",
-                  "name": "preview",
-                  "type": "image"
-                },
-                {
-                  "title": "Is in draft",
-                  "name": "draft",
-                  "type": "boolean"
-                },
-                {
-                  "title": "Tags",
-                  "name": "tags",
-                  "type": "tags"
-                },
-                {
-                  "title": "Categories",
-                  "name": "categories",
-                  "type": "categories"
-                }
-              ]
-            }
-          ],
+          "default": [{
+            "name": "default",
+            "pageBundle": false,
+            "fields": [{
+                "title": "Title",
+                "name": "title",
+                "type": "string"
+              },
+              {
+                "title": "Description",
+                "name": "description",
+                "type": "string"
+              },
+              {
+                "title": "Publishing date",
+                "name": "date",
+                "type": "datetime",
+                "default": "{{now}}",
+                "isPublishDate": true
+              },
+              {
+                "title": "Content preview",
+                "name": "preview",
+                "type": "image"
+              },
+              {
+                "title": "Is in draft",
+                "name": "draft",
+                "type": "boolean"
+              },
+              {
+                "title": "Tags",
+                "name": "tags",
+                "type": "tags"
+              },
+              {
+                "title": "Categories",
+                "name": "categories",
+                "type": "categories"
+              }
+            ]
+          }],
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.customTaxonomy": {
@@ -1599,8 +1628,7 @@
                 "type": "string",
                 "description": "%setting.frontMatter.taxonomy.customTaxonomy.items.properties.id.description%",
                 "not": {
-                  "anyOf": [
-                    {
+                  "anyOf": [{
                       "const": ""
                     },
                     {
@@ -1786,8 +1814,7 @@
         }
       }
     },
-    "commands": [
-      {
+    "commands": [{
         "command": "frontMatter.project.switch",
         "title": "%command.frontMatter.project.switch%",
         "category": "Front Matter",
@@ -1846,10 +1873,7 @@
         "command": "frontMatter.dashboard.close",
         "title": "%command.frontMatter.dashboard.close%",
         "category": "Front Matter",
-        "icon": {
-          "dark": "/assets/icons/frontmatter-small-teal.svg",
-          "light": "/assets/icons/frontmatter-small-teal.svg"
-        }
+        "icon": "$(fm-logo)"
       },
       {
         "command": "frontMatter.markup.code",
@@ -1994,46 +2018,31 @@
         "command": "frontMatter.dashboard",
         "title": "%command.frontMatter.dashboard%",
         "category": "Front Matter",
-        "icon": {
-          "dark": "/assets/icons/frontmatter-small-dark.svg",
-          "light": "/assets/icons/frontmatter-small-light.svg"
-        }
+        "icon": "$(fm-logo)"
       },
       {
         "command": "frontMatter.dashboard.data",
         "title": "%command.frontMatter.dashboard.data%",
         "category": "Front Matter",
-        "icon": {
-          "dark": "/assets/icons/frontmatter-small-dark.svg",
-          "light": "/assets/icons/frontmatter-small-light.svg"
-        }
+        "icon": "$(fm-logo)"
       },
       {
         "command": "frontMatter.dashboard.media",
         "title": "%command.frontMatter.dashboard.media%",
         "category": "Front Matter",
-        "icon": {
-          "dark": "/assets/icons/frontmatter-small-dark.svg",
-          "light": "/assets/icons/frontmatter-small-light.svg"
-        }
+        "icon": "$(fm-logo)"
       },
       {
         "command": "frontMatter.dashboard.snippets",
         "title": "%command.frontMatter.dashboard.snippets%",
         "category": "Front Matter",
-        "icon": {
-          "dark": "/assets/icons/frontmatter-small-dark.svg",
-          "light": "/assets/icons/frontmatter-small-light.svg"
-        }
+        "icon": "$(fm-logo)"
       },
       {
         "command": "frontMatter.dashboard.taxonomy",
         "title": "%command.frontMatter.dashboard.taxonomy%",
         "category": "Front Matter",
-        "icon": {
-          "dark": "/assets/icons/frontmatter-small-dark.svg",
-          "light": "/assets/icons/frontmatter-small-light.svg"
-        }
+        "icon": "$(fm-logo)"
       },
       {
         "command": "frontMatter.markup.orderedlist",
@@ -2122,15 +2131,12 @@
         "category": "Front Matter"
       }
     ],
-    "submenus": [
-      {
-        "id": "frontmatter.submenu",
-        "label": "Front Matter"
-      }
-    ],
+    "submenus": [{
+      "id": "frontmatter.submenu",
+      "label": "Front Matter"
+    }],
     "menus": {
-      "editor/title": [
-        {
+      "editor/title": [{
           "command": "frontMatter.markup.heading",
           "group": "navigation@-133",
           "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
@@ -2211,14 +2217,11 @@
           "when": "resourceFilename == 'frontmatter.json'"
         }
       ],
-      "explorer/context": [
-        {
-          "submenu": "frontmatter.submenu",
-          "group": "frontmatter@1"
-        }
-      ],
-      "frontmatter.submenu": [
-        {
+      "explorer/context": [{
+        "submenu": "frontmatter.submenu",
+        "group": "frontmatter@1"
+      }],
+      "frontmatter.submenu": [{
           "command": "frontMatter.createFromTemplate",
           "when": "explorerResourceIsFolder",
           "group": "frontmatter@1"
@@ -2234,8 +2237,7 @@
           "group": "frontmatter@3"
         }
       ],
-      "commandPalette": [
-        {
+      "commandPalette": [{
           "command": "frontMatter.init",
           "when": "frontMatterCanInit"
         },
@@ -2380,8 +2382,7 @@
           "when": "frontMatter:file:isValid == true"
         }
       ],
-      "view/title": [
-        {
+      "view/title": [{
           "command": "frontMatter.chatbot",
           "group": "navigation@0",
           "when": "view == frontMatter.explorer"
@@ -2403,7 +2404,8 @@
         },
         {
           "command": "frontMatter.settings.refresh",
-          "group": "navigation@4"
+          "group": "navigation@4",
+          "when": "view == frontMatter.explorer"
         },
         {
           "command": "frontMatter.dashboard",
@@ -2412,57 +2414,52 @@
         }
       ]
     },
-    "grammars": [
-      {
-        "path": "./syntaxes/hugo.tmLanguage.json",
-        "scopeName": "frontmatter.markdown.hugo",
-        "injectTo": [
-          "text.html.markdown"
-        ]
-      }
-    ],
-    "walkthroughs": [
-      {
-        "id": "frontmatter.welcome",
-        "title": "Get started with Front Matter",
-        "description": "Discover the features of Front Matter and learn how to use the CMS for your SSG or static site.",
-        "steps": [
-          {
-            "id": "frontmatter.welcome.init",
-            "title": "Get started",
-            "description": "Initial steps to get started.\n[Open dashboard](command:frontMatter.dashboard)",
-            "media": {
-              "markdown": "assets/walkthrough/get-started.md"
-            },
-            "completionEvents": [
-              "onContext:frontMatterInitialized"
-            ]
+    "grammars": [{
+      "path": "./syntaxes/hugo.tmLanguage.json",
+      "scopeName": "frontmatter.markdown.hugo",
+      "injectTo": [
+        "text.html.markdown"
+      ]
+    }],
+    "walkthroughs": [{
+      "id": "frontmatter.welcome",
+      "title": "Get started with Front Matter",
+      "description": "Discover the features of Front Matter and learn how to use the CMS for your SSG or static site.",
+      "steps": [{
+          "id": "frontmatter.welcome.init",
+          "title": "Get started",
+          "description": "Initial steps to get started.\n[Open dashboard](command:frontMatter.dashboard)",
+          "media": {
+            "markdown": "assets/walkthrough/get-started.md"
           },
-          {
-            "id": "frontmatter.welcome.documentation",
-            "title": "Documentation",
-            "description": "Check out the documentation for Front Matter.\n[View our documentation](https://frontmatter.codes/docs)",
-            "media": {
-              "markdown": "assets/walkthrough/documentation.md"
-            },
-            "completionEvents": [
-              "onLink:https://frontmatter.codes/docs"
-            ]
+          "completionEvents": [
+            "onContext:frontMatterInitialized"
+          ]
+        },
+        {
+          "id": "frontmatter.welcome.documentation",
+          "title": "Documentation",
+          "description": "Check out the documentation for Front Matter.\n[View our documentation](https://frontmatter.codes/docs)",
+          "media": {
+            "markdown": "assets/walkthrough/documentation.md"
           },
-          {
-            "id": "frontmatter.welcome.supporter",
-            "title": "Support the project",
-            "description": "Become a supporter.\n[Support the project](https://github.com/sponsors/estruyf)",
-            "media": {
-              "markdown": "assets/walkthrough/support-the-project.md"
-            },
-            "completionEvents": [
-              "onLink:https://github.com/sponsors/estruyf"
-            ]
-          }
-        ]
-      }
-    ]
+          "completionEvents": [
+            "onLink:https://frontmatter.codes/docs"
+          ]
+        },
+        {
+          "id": "frontmatter.welcome.supporter",
+          "title": "Support the project",
+          "description": "Become a supporter.\n[Support the project](https://github.com/sponsors/estruyf)",
+          "media": {
+            "markdown": "assets/walkthrough/support-the-project.md"
+          },
+          "completionEvents": [
+            "onLink:https://github.com/sponsors/estruyf"
+          ]
+        }
+      ]
+    }]
   },
   "scripts": {
     "dev:ext": "npm run clean && npm run localization:generate && npm-run-all --parallel watch:*",
@@ -2522,7 +2519,7 @@
     "@typescript-eslint/parser": "^5.50.0",
     "@vscode/codicons": "0.0.20",
     "@vscode/l10n": "^0.0.14",
-    "@vscode/webview-ui-toolkit": "^0.9.3",
+    "@vscode/webview-ui-toolkit": "^1.2.2",
     "@webpack-cli/serve": "^1.7.0",
     "ajv": "^8.12.0",
     "array-move": "^4.0.0",
@@ -2532,6 +2529,7 @@
     "cheerio": "1.0.0-rc.12",
     "css-loader": "5.2.7",
     "date-fns": "2.23.0",
+    "dotenv": "^16.3.1",
     "downshift": "6.0.6",
     "eslint": "^8.33.0",
     "fuse.js": "6.5.3",
@@ -2591,6 +2589,7 @@
     "webpack-bundle-analyzer": "^4.7.0",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.11.1",
+    "webpack-ignore-dynamic-require": "^1.0.0",
     "yaml": "^2.2.1",
     "yawn-yaml": "^1.5.0"
   },

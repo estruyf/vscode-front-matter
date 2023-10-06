@@ -10,7 +10,7 @@ export default function useContentType(
   const [contentType, setContentType] = useState<ContentType | null>(null);
 
   useEffect(() => {
-    if (settings) {
+    if (settings && metadata) {
       let contentTypeName = DEFAULT_CONTENT_TYPE_NAME;
 
       if (metadata?.type) {

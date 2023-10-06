@@ -20,8 +20,28 @@
   "common.slug": "Slug",
   "common.support": "Support",
   "common.remove.value": "Remove {0}",
+  "common.filter.value": "Filter by {0}",
   "common.error.message": "Sorry, something went wrong.",
   "common.openOnWebsite": "Open on website",
+  "common.settings": "Settings",
+  "common.refreshSettings": "Refresh settings",
+  "common.pin": "Pin",
+  "common.unpin": "Unpin",
+
+  "settings.view.common": "Common",
+  "settings.view.contentFolders": "Content folders",
+  "settings.view.astro": "Astro",
+  "settings.openOnStartup": "Open dashboard on startup",
+  "settings.contentTypes": "Content types",
+  "settings.contentFolders": "Content folders",
+  "settings.diagnostic": "Diagnostic",
+  "settings.diagnostic.description": "You can run the diagnostics to check the whole Front Matter CMS configuration.",
+  "settings.diagnostic.link": "Run full diagnostics",
+
+  "settings.commonSettings.website.title": "Website and SSG settings",
+  "settings.commonSettings.previewUrl": "Preview URL",
+  "settings.commonSettings.websiteUrl": "Website URL",
+  "settings.commonSettings.startCommand": "SSG/Framework start command",
 
   "developer.title": "Developer mode",
   "developer.reload.title": "Reload the dashboard",
@@ -60,6 +80,7 @@
 
   "dashboard.contents.overview.noMarkdown": "No Markdown to show",
   "dashboard.contents.overview.noFolders": "Make sure you registered a content folder in your project to let Front Matter find the contents.",
+  "dashboard.contents.overview.pinned": "Pinned",
 
   "dashboard.contents.status.draft": "Draft",
   "dashboard.contents.status.published": "Published",
@@ -245,6 +266,7 @@
   "dashboard.steps.stepsToGetStarted.showDashboard.description": "Once all actions are completed, the dashboard can be loaded.",
   "dashboard.steps.stepsToGetStarted.template.name": "Use a configuration template",
   "dashboard.steps.stepsToGetStarted.template.description": "Select a template to prefill the frontmatter.json file with the recommended settings.",
+  "dashboard.steps.stepsToGetStarted.astroContentTypes.name": "Create Content-Types for your Astro Content Collections",
 
   "dashboard.taxonomyView.button.add.title": "Add {0} to taxonomy settings",
   "dashboard.taxonomyView.button.edit.title": "Edit {0}",
@@ -274,7 +296,8 @@
   "dashboard.welcomeScreen.thanks": "Thank you for using Front Matter!",
   "dashboard.welcomeScreen.description": "We try to aim to make Front Matter as easy to use as possible, but if you have any questions or suggestions. Please don't hesitate to reach out to us on GitHub.",
   "dashboard.welcomeScreen.link.github.title": "GitHub",
-  "dashboard.welcomeScreen.link.github.label": "GitHub / Documentation",
+  "dashboard.welcomeScreen.link.github.label": "GitHub",
+  "dashboard.welcomeScreen.link.documentation.label": "Documentation",
   "dashboard.welcomeScreen.link.sponsor.title": "Become a sponsor",
   "dashboard.welcomeScreen.link.sponsor.label": "Sponsor",
   "dashboard.welcomeScreen.link.review.title": "Write a review",
@@ -282,6 +305,11 @@
   "dashboard.welcomeScreen.actions.heading": "Perform the next steps to get you started with the extension",
   "dashboard.welcomeScreen.actions.description": "You can also use the extension from the Front Matter side panel. There you will find the actions you can perform specifically for your pages.",
   "dashboard.welcomeScreen.actions.thanks": "We hope you enjoy Front Matter!",
+
+  "dashboard.media.detailsSlideOver.unmapped.description": "Do you want to remap the metadata of unmapped files?",
+
+  "dashboard.configuration.astro.astroContentTypes.empty": "No Astro Content Collections found.",
+  "dashboard.configuration.astro.astroContentTypes.description": "The following Astro Content Collections and can be used to generate a content-type.",
 
   "panel.contentType.contentTypeValidator.title": "Content-type",
   "panel.contentType.contentTypeValidator.hint": "We noticed field differences between the content-type and the front matter data. \n Would you like to create, update, or set the content-type for this content?",
@@ -349,7 +377,6 @@
   "panel.baseView.initialize": "Initialize project",
   "panel.baseView.actions.title": "Actions",
   "panel.baseView.action.openDashboard": "Open dashboard",
-  "panel.baseView.action.openPreview": "Open preview",
   "panel.baseView.action.createContent": "Create content",
   "panel.baseView.empty": "Open a file to see more actions",
 

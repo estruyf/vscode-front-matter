@@ -20,7 +20,6 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../DashboardMessage';
 import { EventData } from '@estruyf/vscode/dist/models';
 import { parseWinPath } from '../../helpers/parseWinPath';
-import { format } from 'date-fns';
 
 export default function usePages(pages: Page[]) {
   const [pageItems, setPageItems] = useRecoilState(AllPagesAtom);
@@ -45,18 +44,23 @@ export default function usePages(pages: Page[]) {
       let pagesToShow: Page[] = Object.assign([], searchedPages);
 
       // Framework specific actions
-      if (framework?.toLowerCase() === 'jekyll') {
+      if (framework?.toLowerCase() === 'jekyll' || framework?.toLowerCase() === 'hexo') {
         pagesToShow = pagesToShow.map((page) => {
-          // https://jekyllrb.com/docs/posts/#drafts
-          const filePath = parseWinPath(page.fmFilePath);
-          page.draft = filePath.indexOf(`/_drafts/`) > -1;
+          try {
+            const crntPage = Object.assign({}, page);
+            // https://jekyllrb.com/docs/posts/#drafts
+            const filePath = parseWinPath(page.fmFilePath);
+            crntPage.draft = filePath.indexOf(`/_drafts/`) > -1;
 
-          // Published field: https://jekyllrb.com/docs/front-matter/#predefined-global-variables
-          if (typeof page.published !== 'undefined') {
-            page.draft = !page.published;
+            // Published field: https://jekyllrb.com/docs/front-matter/#predefined-global-variables
+            if (typeof crntPage.published !== 'undefined') {
+              crntPage.draft = !crntPage.published;
+            }
+
+            return crntPage;
+          } catch (error) {
+            return page;
           }
-
-          return page;
         });
       }
 
@@ -146,25 +150,28 @@ export default function usePages(pages: Page[]) {
         // Draft field is a boolean field
         const draftFieldName = draftField?.name || 'draft';
 
-        const drafts = crntPages.filter(
-          (page) => page[draftFieldName] == true || page[draftFieldName] === 'true'
-        );
-        const published = crntPages.filter(
-          (page) =>
-            page[draftFieldName] == false ||
-            page[draftFieldName] === 'false' ||
-            typeof page[draftFieldName] === 'undefined'
-        );
+        const usesDraft = crntPages.some(x => typeof x[draftFieldName] !== 'undefined');
+        if (usesDraft) {
+          const drafts = crntPages.filter(
+            (page) => page[draftFieldName] == true || page[draftFieldName] === 'true'
+          );
+          const published = crntPages.filter(
+            (page) =>
+              page[draftFieldName] == false ||
+              page[draftFieldName] === 'false' ||
+              typeof page[draftFieldName] === 'undefined'
+          );
 
-        draftTypes[Tab.Draft] = draftField?.invert ? published.length : drafts.length;
-        draftTypes[Tab.Published] = draftField?.invert ? drafts.length : published.length;
+          draftTypes[Tab.Draft] = draftField?.invert ? published.length : drafts.length;
+          draftTypes[Tab.Published] = draftField?.invert ? drafts.length : published.length;
 
-        if (tab === Tab.Published) {
-          crntPages = draftField?.invert ? drafts : published;
-        } else if (tab === Tab.Draft) {
-          crntPages = draftField?.invert ? published : drafts;
-        } else {
-          crntPages = crntPages;
+          if (tab === Tab.Published) {
+            crntPages = draftField?.invert ? drafts : published;
+          } else if (tab === Tab.Draft) {
+            crntPages = draftField?.invert ? published : drafts;
+          } else {
+            crntPages = crntPages;
+          }
         }
       }
 

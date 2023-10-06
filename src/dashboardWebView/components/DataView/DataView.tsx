@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Header } from '../Header';
-import { useRecoilValue } from 'recoil';
-import { SettingsSelector } from '../../state';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { DashboardViewAtom, SettingsSelector } from '../../state';
 import { DataForm } from './DataForm';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { DataFile } from '../../../models/DataFile';
@@ -24,6 +24,7 @@ import { NavigationItem } from '../Layout';
 import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { NavigationType } from '../../models';
 
 export interface IDataViewProps { }
 
@@ -35,6 +36,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
   const [dataEntries, setDataEntries] = useState<any | any[] | null>(null);
   const settings = useRecoilValue(SettingsSelector);
   const { getColors } = useThemeColors();
+  const [, setView] = useRecoilState(DashboardViewAtom);
 
   const setSchema = (dataFile: DataFile) => {
     setSelectedData(dataFile);
@@ -135,6 +137,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
   }, [selectedData, , dataEntries, selectedIndex]);
 
   useEffect(() => {
+    setView(NavigationType.Data);
     Messenger.listen(messageListener);
 
     Messenger.send(DashboardMessage.sendTelemetry, {

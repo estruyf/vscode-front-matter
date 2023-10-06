@@ -1,4 +1,8 @@
-import { SETTING_PROJECTS } from './../constants/settings';
+import {
+  EXTENSION_NAME,
+  SETTING_CONFIG_DYNAMIC_FILE_PATH,
+  SETTING_PROJECTS
+} from './../constants/settings';
 import { parseWinPath } from './parseWinPath';
 import { Telemetry } from './Telemetry';
 import { Notifications } from './Notifications';
@@ -51,6 +55,7 @@ import { ModeSwitch } from '../services/ModeSwitch';
 export class Settings {
   public static globalFile = 'frontmatter.json';
   public static globalConfigFolder = '.frontmatter/config';
+  public static globalConfigPath: string | undefined = undefined;
   public static globalConfig: any;
   private static config: vscode.WorkspaceConfiguration;
   private static isInitialized: boolean = false;
@@ -99,7 +104,7 @@ export class Settings {
     }
 
     if (!allCommands.includes(COMMAND_NAME.settingsRefresh)) {
-      commands.registerCommand(COMMAND_NAME.settingsRefresh, Settings.reloadConfig);
+      commands.registerCommand(COMMAND_NAME.settingsRefresh, Settings.refreshConfig);
     }
 
     Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
@@ -226,14 +231,14 @@ export class Settings {
    * Check for config changes on global and local settings
    * @param callback
    */
-  public static onConfigChange() {
-    const projectConfig = Settings.projectConfigPath;
+  public static async onConfigChange() {
+    const projectConfig = await Settings.projectConfigPath();
 
     workspace.onDidChangeConfiguration(() => {
       Settings.triggerListeners();
     });
 
-    if (projectConfig && !existsSync(projectConfig)) {
+    if (projectConfig && !(await existsAsync(projectConfig))) {
       // No config file, no need to watch
       Settings.createFileCreationWatcher();
       return;
@@ -264,7 +269,7 @@ export class Settings {
     Settings.fileSaveListener = workspace.onDidSaveTextDocument(async (e) => {
       const filename = e.uri.fsPath;
 
-      if (Settings.checkProjectConfig(filename)) {
+      if (await Settings.checkProjectConfig(filename)) {
         Logger.info(`Config change detected - ${filename} saved`);
         await Settings.reloadConfig();
       }
@@ -275,7 +280,7 @@ export class Settings {
     }
 
     Settings.fileDeleteListener = workspace.onDidDeleteFiles(async (e) => {
-      const needCallback = e?.files.find((f) => Settings.checkProjectConfig(f.fsPath));
+      const needCallback = e?.files.find(async (f) => await Settings.checkProjectConfig(f.fsPath));
       if (needCallback) {
         await Settings.reloadConfig(false);
       }
@@ -350,7 +355,7 @@ export class Settings {
    * @param value
    */
   public static async update<T>(name: string, value: T, updateGlobal: boolean = false) {
-    const fmConfig = Settings.projectConfigPath;
+    const fmConfig = await Settings.projectConfigPath();
 
     if (updateGlobal) {
       if (fmConfig && (await existsAsync(fmConfig))) {
@@ -381,7 +386,7 @@ export class Settings {
   }
 
   public static async remove(name: string) {
-    const fmConfig = Settings.projectConfigPath;
+    const fmConfig = await Settings.projectConfigPath();
 
     if (fmConfig && (await existsAsync(fmConfig))) {
       const localConfig = await readFileAsync(fmConfig, 'utf8');
@@ -408,10 +413,18 @@ export class Settings {
   /**
    * Checks if the project contains the frontmatter.json file
    */
-  public static hasProjectFile() {
+  public static async hasProjectFile(): Promise<boolean> {
     const wsFolder = Folders.getWorkspaceFolder();
-    const configPath = join(wsFolder?.fsPath || '', Settings.globalFile);
-    return existsSync(configPath);
+    if (!wsFolder) {
+      return false;
+    }
+
+    const globalConfigPath = await Settings.projectConfigPath();
+    if (!globalConfigPath) {
+      return false;
+    }
+
+    return await existsAsync(globalConfigPath);
   }
 
   /**
@@ -561,13 +574,30 @@ export class Settings {
    * Get the project config path
    * @returns
    */
-  public static get projectConfigPath() {
-    const wsFolder = Folders.getWorkspaceFolder();
-    if (wsFolder) {
-      const fmConfig = join(wsFolder.fsPath, Settings.globalFile);
-      return fmConfig;
+  public static async projectConfigPath() {
+    if (Settings.globalConfigPath) {
+      return Settings.globalConfigPath;
     }
-    return undefined;
+
+    const rootFilePath = join(Folders.getWorkspaceFolder()?.fsPath || '', Settings.globalFile);
+    if (await existsAsync(rootFilePath)) {
+      Settings.globalConfigPath = rootFilePath;
+      return Settings.globalConfigPath;
+    }
+
+    let configFiles = await workspace.findFiles(`**/${Settings.globalFile}`);
+    // Sort by file path length
+    configFiles = configFiles.sort((a, b) => a.fsPath.localeCompare(b.fsPath));
+
+    if (configFiles.length === 0) {
+      Settings.globalConfigPath = undefined;
+      return Settings.globalConfigPath;
+    }
+
+    const configPath = configFiles[0].fsPath;
+    Settings.globalConfigPath = configPath;
+
+    return Settings.globalConfigPath;
   }
 
   /**
@@ -575,8 +605,8 @@ export class Settings {
    * @param filePath
    * @returns
    */
-  private static checkProjectConfig(filePath: string) {
-    const fmConfig = Settings.projectConfigPath;
+  private static async checkProjectConfig(filePath: string) {
+    const fmConfig = await Settings.projectConfigPath();
     filePath = parseWinPath(filePath);
 
     if (filePath.includes(Settings.globalConfigFolder)) {
@@ -597,7 +627,7 @@ export class Settings {
    */
   private static async readConfig() {
     try {
-      const fmConfig = Settings.projectConfigPath;
+      const fmConfig = await Settings.projectConfigPath();
       if (fmConfig && (await existsAsync(fmConfig))) {
         const localConfig = await readFileAsync(fmConfig, 'utf8');
         Settings.globalConfig = jsoncParser.parse(localConfig);
@@ -619,6 +649,45 @@ export class Settings {
       configFiles = configFiles.sort((a, b) => a.fsPath.localeCompare(b.fsPath));
       for await (const configFile of configFiles) {
         await Settings.processConfigFile(configFile);
+      }
+
+      // Check if there is a dynamic config file and use it to update the global config
+      if (
+        Settings.globalConfig &&
+        Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CONFIG_DYNAMIC_FILE_PATH}`]
+      ) {
+        const dynamicConfigPath =
+          Settings.globalConfig[`${CONFIG_KEY}.${SETTING_CONFIG_DYNAMIC_FILE_PATH}`];
+        if (dynamicConfigPath) {
+          try {
+            await window.withProgress(
+              {
+                location: vscode.ProgressLocation.Notification,
+                title: `${EXTENSION_NAME}: Reading dynamic config file...`
+              },
+              async () => {
+                const absFilePath = Folders.getAbsFilePath(dynamicConfigPath);
+                Logger.info(`Reading dynamic config file: ${absFilePath}`);
+                if (absFilePath) {
+                  if (await existsAsync(absFilePath)) {
+                    const configFunction = require(absFilePath);
+                    const dynamicConfig = await configFunction(
+                      Object.assign({}, Settings.globalConfig)
+                    );
+
+                    if (dynamicConfig) {
+                      Settings.globalConfig = dynamicConfig;
+                      Logger.info(`Dynamic config file loaded`);
+                    }
+                  }
+                }
+              }
+            );
+          } catch (e) {
+            Logger.error(`Error reading dynamic config file: ${dynamicConfigPath}`);
+            Logger.error((e as Error).message);
+          }
+        }
       }
     } catch (e) {
       Settings.globalConfig = undefined;
@@ -946,8 +1015,9 @@ export class Settings {
         true
       );
       Settings.fileCreationWatcher.onDidCreate(
-        (uri) => {
-          if (parseWinPath(uri.fsPath) === parseWinPath(Settings.projectConfigPath)) {
+        async (uri) => {
+          const globalConfigPath = await Settings.projectConfigPath();
+          if (globalConfigPath && parseWinPath(uri.fsPath) === parseWinPath(globalConfigPath)) {
             Settings.onConfigChange();
             Settings.rebindWatchers();
             // Stop listening to file creation events
@@ -1025,6 +1095,15 @@ export class Settings {
     }
 
     return config;
+  }
+
+  /**
+   * Reload the config
+   * @param debounced
+   */
+  private static async refreshConfig() {
+    await Settings.reloadConfig();
+    Notifications.info(`Settings have been refreshed.`);
   }
 
   /**

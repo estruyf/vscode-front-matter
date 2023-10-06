@@ -1,6 +1,10 @@
-import { SETTING_SPONSORS_AI_ENABLED, SETTING_WEBSITE_URL } from './../constants/settings';
+import {
+  SETTING_PANEL_ACTIONS_DISABLED,
+  SETTING_SPONSORS_AI_ENABLED,
+  SETTING_WEBSITE_URL
+} from './../constants/settings';
 import { workspace } from 'vscode';
-import { Extension, Settings, TaxonomyHelper } from '.';
+import { ContentType, Extension, Settings, TaxonomyHelper } from '.';
 import { Dashboard } from '../commands/Dashboard';
 import { Preview } from '../commands/Preview';
 import { Project } from '../commands/Project';
@@ -38,6 +42,7 @@ import {
   DraftField,
   FieldGroup,
   PanelSettings as IPanelSettings,
+  PanelAction,
   ScriptType,
   TaxonomyType
 } from '../models';
@@ -77,13 +82,13 @@ export class PanelSettings {
       scripts: (Settings.get<CustomScript[]>(SETTING_CUSTOM_SCRIPTS) || []).filter(
         (s) => (s.type === ScriptType.Content || !s.type) && !s.hidden
       ),
-      isInitialized: Project.isInitialized(),
+      isInitialized: await Project.isInitialized(),
       modifiedDateUpdate: Settings.get(SETTING_AUTO_UPDATE_DATE) || false,
       writingSettingsEnabled: this.isWritingSettingsEnabled() || false,
       fmHighlighting: Settings.get(SETTING_CONTENT_FRONTMATTER_HIGHLIGHT),
       preview: Preview.getSettings(),
       commaSeparatedFields: Settings.get(SETTING_COMMA_SEPARATED_FIELDS) || [],
-      contentTypes: Settings.get(SETTING_TAXONOMY_CONTENT_TYPES) || [],
+      contentTypes: ContentType.getAll() || [],
       dashboardViewData: Dashboard.viewData,
       draftField: Settings.get<DraftField>(SETTING_CONTENT_DRAFT_FIELD),
       isBacker: await Extension.getInstance().getState<boolean | undefined>(
@@ -97,7 +102,8 @@ export class PanelSettings {
       dataTypes: Settings.get<DataType[]>(SETTING_DATA_TYPES),
       fieldGroups: Settings.get<FieldGroup[]>(SETTING_TAXONOMY_FIELD_GROUPS),
       contentFolders: Folders.get(),
-      websiteUrl: Settings.get<string>(SETTING_WEBSITE_URL) || ''
+      websiteUrl: Settings.get<string>(SETTING_WEBSITE_URL) || '',
+      disabledActions: Settings.get<PanelAction[]>(SETTING_PANEL_ACTIONS_DISABLED) || []
     };
   }
 

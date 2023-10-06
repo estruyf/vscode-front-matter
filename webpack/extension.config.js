@@ -4,6 +4,7 @@
 
 const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const IgnoreDynamicRequire = require('webpack-ignore-dynamic-require');
 
 const config = [
   {
@@ -56,7 +57,9 @@ const config = [
         }
       }
     },
-    plugins: []
+    plugins: [
+      new IgnoreDynamicRequire()
+    ]
   }
 ];
 

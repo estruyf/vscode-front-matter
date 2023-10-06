@@ -23,14 +23,14 @@ import {
 } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { FrontMatterParser, ParsedFrontMatter } from '../parsers';
-import { Extension, Logger, Settings, SlugHelper, parseWinPath } from '.';
+import { ContentType, Extension, Logger, Settings, SlugHelper, isValidFile, parseWinPath } from '.';
 import { format, parse } from 'date-fns';
 import { Notifications } from './Notifications';
 import { Article } from '../commands';
 import { join } from 'path';
 import { EditorHelper } from '@estruyf/vscode';
 import sanitize from '../helpers/Sanitize';
-import { ContentType } from '../models';
+import { ContentType as IContentType } from '../models';
 import { DateHelper } from './DateHelper';
 import { DiagnosticSeverity, Position, window, Range } from 'vscode';
 import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
@@ -305,14 +305,14 @@ export class ArticleHelper {
    * @returns
    */
   public static getContentTypes() {
-    return Settings.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES) || [DEFAULT_CONTENT_TYPE];
+    return Settings.get<IContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES) || [DEFAULT_CONTENT_TYPE];
   }
 
   /**
    * Retrieve the content type of the current file
    * @param updatedMetadata
    */
-  public static getContentType(metadata: { [field: string]: string }): ContentType {
+  public static getContentType(metadata: { [field: string]: string }): IContentType {
     const contentTypes = ArticleHelper.getContentTypes();
 
     if (!contentTypes || !metadata) {
@@ -330,6 +330,8 @@ export class ArticleHelper {
       if (!contentType.fields) {
         contentType.fields = DEFAULT_CONTENT_TYPE.fields;
       }
+
+      contentType.fields = ContentType.mergeFields(contentType.fields);
 
       return contentType;
     }
@@ -372,7 +374,7 @@ export class ArticleHelper {
    * @returns The new file path
    */
   public static async createContent(
-    contentType: ContentType | undefined,
+    contentType: IContentType | undefined,
     folderPath: string,
     titleValue: string,
     fileExtension?: string
@@ -438,7 +440,7 @@ export class ArticleHelper {
   public static getFilePrefix(
     prefix: string | null | undefined,
     filePath?: string,
-    contentType?: ContentType
+    contentType?: IContentType
   ): string | undefined {
     if (!prefix) {
       prefix = undefined;
@@ -634,6 +636,22 @@ export class ArticleHelper {
     }
 
     return null;
+  }
+
+  /**
+   * Retrieve the active file
+   * @returns
+   */
+  public static getActiveFile() {
+    const editors = window.visibleTextEditors;
+    if (editors.length === 1) {
+      const editor = editors[0];
+      const filePath = parseWinPath(editor.document.uri.fsPath);
+      if (isValidFile(filePath)) {
+        return filePath;
+      }
+    }
+    return undefined;
   }
 
   /**

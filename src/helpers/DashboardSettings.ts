@@ -46,6 +46,7 @@ import { FrameworkDetector } from './FrameworkDetector';
 import { Settings } from './SettingsHelper';
 import { parseWinPath } from './parseWinPath';
 import { TaxonomyHelper } from './TaxonomyHelper';
+import { ContentType } from './ContentType';
 
 export class DashboardSettings {
   private static cachedSettings: ISettings | undefined = undefined;
@@ -61,7 +62,7 @@ export class DashboardSettings {
   public static async getSettings() {
     const ext = Extension.getInstance();
     const wsFolder = Folders.getWorkspaceFolder();
-    const isInitialized = Project.isInitialized();
+    const isInitialized = await Project.isInitialized();
     const gitActions = Settings.get<boolean>(SETTING_GIT_ENABLED);
     const pagination = Settings.get<boolean | number>(SETTING_DASHBOARD_CONTENT_PAGINATION);
 
@@ -85,7 +86,7 @@ export class DashboardSettings {
         ExtensionState.PagesView,
         'workspace'
       ),
-      contentTypes: Settings.get(SETTING_TAXONOMY_CONTENT_TYPES) || [],
+      contentTypes: ContentType.getAll() || [],
       draftField: Settings.get<DraftField>(SETTING_CONTENT_DRAFT_FIELD),
       customSorting: Settings.get<SortingSetting[]>(SETTING_CONTENT_SORTING),
       contentFolders: Folders.get(),
@@ -133,7 +134,8 @@ export class DashboardSettings {
       snippets: Settings.get<Snippets>(SETTING_CONTENT_SNIPPETS),
       snippetsWrapper: Settings.get<boolean>(SETTING_SNIPPETS_WRAPPER),
       isBacker: await ext.getState<boolean | undefined>(CONTEXT.backer, 'global'),
-      websiteUrl: Settings.get<string>(SETTING_WEBSITE_URL)
+      websiteUrl: Settings.get<string>(SETTING_WEBSITE_URL),
+      lastUpdated: new Date().getTime()
     } as ISettings;
 
     return settings;

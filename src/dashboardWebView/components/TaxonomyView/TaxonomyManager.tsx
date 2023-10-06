@@ -13,6 +13,9 @@ import { TaxonomyLookup } from './TaxonomyLookup';
 import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { FilterInput } from './FilterInput';
+import { useDebounce } from '../../../hooks/useDebounce';
+import { usePrevious } from '../../../panelWebView/hooks/usePrevious';
 
 export interface ITaxonomyManagerProps {
   data: TaxonomyData | undefined;
@@ -27,6 +30,9 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
 }: React.PropsWithChildren<ITaxonomyManagerProps>) => {
   const settings = useRecoilValue(SettingsSelector);
   const { getColors } = useThemeColors();
+  const [filterValue, setFilterValue] = React.useState('');
+  const debounceFilterValue = useDebounce<string>(filterValue, 500);
+  const prevTaxonomy = usePrevious<string | null>(taxonomy);
 
   const onCreate = () => {
     Messenger.send(DashboardMessage.createTaxonomy, {
@@ -63,11 +69,15 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
         return 0;
       });
 
+      if (debounceFilterValue) {
+        crntItems = crntItems.filter((i) => i.toLowerCase().includes(debounceFilterValue.toLowerCase()));
+      }
+
       return crntItems.filter(i => i);
     }
 
     return [];
-  }, [data, taxonomy]);
+  }, [data, taxonomy, debounceFilterValue]);
 
   const unmappedItems = useMemo(() => {
     let unmapped: string[] = [];
@@ -108,8 +118,20 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
       }
     }
 
-    return [...new Set(unmapped)].filter(i => i);
-  }, [items, taxonomy, pages, settings?.contentTypes]);
+    const unmappedItems = [...new Set(unmapped)].filter(i => i);
+
+    if (debounceFilterValue) {
+      return unmappedItems.filter((i) => i.toLowerCase().includes(debounceFilterValue.toLowerCase()));
+    }
+
+    return unmappedItems;
+  }, [items, taxonomy, pages, settings?.contentTypes, debounceFilterValue]);
+
+  React.useEffect(() => {
+    if (prevTaxonomy !== taxonomy) {
+      setFilterValue('');
+    }
+  }, [prevTaxonomy, taxonomy])
 
   if (!taxonomy) {
     return null;
@@ -134,19 +156,27 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
             {l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerDescription, taxonomy)}
           </p>
         </div>
-        <div>
-          <button
-            className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium focus:outline-none rounded ${getColors(
-              `text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-500`,
-              `text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`
-            )
-              }`}
-            title={l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerButtonCreate, taxonomy)}
-            onClick={onCreate}
-          >
-            <PlusSmIcon className={`mr-2 h-6 w-6`} />
-            <span className={`text-sm`}>{l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerButtonCreate, taxonomy)}</span>
-          </button>
+        <div className='flex gap-4 justify-center items-center'>
+          <FilterInput
+            placeholder='Filter'
+            value={filterValue}
+            onChange={(value) => setFilterValue(value)}
+            onReset={() => setFilterValue('')} />
+
+          <div>
+            <button
+              className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium focus:outline-none rounded ${getColors(
+                `text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-500`,
+                `text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`
+              )
+                }`}
+              title={l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerButtonCreate, taxonomy)}
+              onClick={onCreate}
+            >
+              <PlusSmIcon className={`mr-2 h-6 w-6`} />
+              <span className={`text-sm`}>{l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerButtonCreate, taxonomy)}</span>
+            </button>
+          </div>
         </div>
       </div>
 

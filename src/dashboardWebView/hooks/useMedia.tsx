@@ -17,6 +17,7 @@ import {
 } from '../state';
 import Fuse from 'fuse.js';
 import usePagination from './usePagination';
+import { usePrevious } from '../../panelWebView/hooks/usePrevious';
 
 const fuseOptions: Fuse.IFuseOptions<MediaInfo> = {
   keys: [
@@ -31,7 +32,8 @@ const fuseOptions: Fuse.IFuseOptions<MediaInfo> = {
 
 export default function useMedia() {
   const [media, setMedia] = useState<MediaInfo[]>([]);
-  const page = useRecoilValue(PageAtom);
+  // const page = useRecoilValue(PageAtom);
+  const [page, setPage] = useRecoilState(PageAtom);
   const [searchedMedia, setSearchedMedia] = useState<MediaInfo[]>([]);
   const [, setSelectedFolder] = useRecoilState(SelectedMediaFolderAtom);
   const [, setTotal] = useRecoilState(MediaTotalAtom);
@@ -40,8 +42,15 @@ export default function useMedia() {
   const [, setAllStaticFolders] = useRecoilState(AllStaticFoldersAtom);
   const [, setLoading] = useRecoilState(LoadingAtom);
   const search = useRecoilValue(SearchAtom);
+  const prevSearch = usePrevious<string>(search);
   const settings = useRecoilValue(SettingsAtom);
   const { pageSetNr } = usePagination(settings?.dashboardState.contents.pagination);
+
+  useEffect(() => {
+    if (prevSearch !== search) {
+      setPage(0);
+    }
+  }, [search, prevSearch]);
 
   const getMedia = useCallback(() => {
     return searchedMedia.slice(page * pageSetNr, (page + 1) * pageSetNr);

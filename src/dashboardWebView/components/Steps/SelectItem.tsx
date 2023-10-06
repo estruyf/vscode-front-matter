@@ -7,6 +7,7 @@ export interface ISelectItemProps {
   icon?: "add" | "select";
   buttonTitle: string;
   isSelected: boolean;
+  disabled?: boolean;
   onClick: () => void;
 }
 
@@ -15,6 +16,7 @@ export const SelectItem: React.FunctionComponent<ISelectItemProps> = ({
   icon = "select",
   buttonTitle,
   isSelected,
+  disabled,
   onClick
 }: React.PropsWithChildren<ISelectItemProps>) => {
   return (
@@ -23,8 +25,9 @@ export const SelectItem: React.FunctionComponent<ISelectItemProps> = ({
     >
       <button
         onClick={onClick}
-        className={`mr-2 flex gap-2 items-center hover:text-[var(--vscode-textLink-activeForeground)]`}
+        className={`mr-2 flex gap-2 items-center hover:text-[var(--vscode-textLink-activeForeground)] disabled:cursor-not-allowed`}
         title={buttonTitle}
+        disabled={disabled}
       >
         {isSelected ? (
           icon === "add" ? (

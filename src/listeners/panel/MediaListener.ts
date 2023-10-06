@@ -2,7 +2,7 @@ import { PanelProvider } from './../../panelWebView/PanelProvider';
 import { commands, window } from 'vscode';
 import { Dashboard } from '../../commands/Dashboard';
 import { COMMAND_NAME } from '../../constants';
-import { ImageHelper } from '../../helpers';
+import { ArticleHelper, ImageHelper } from '../../helpers';
 import { DashboardData, PostMessageData } from '../../models';
 import { Command } from '../../panelWebView/Command';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
@@ -42,7 +42,10 @@ export class MediaListener extends BaseListener {
 
     if (typeof payload === 'string') {
       const imagePath = payload;
-      const filePath = window.activeTextEditor?.document.uri.fsPath || Preview.filePath;
+      const filePath =
+        window.activeTextEditor?.document.uri.fsPath ||
+        Preview.filePath ||
+        ArticleHelper.getActiveFile();
       if (!filePath) {
         return;
       }

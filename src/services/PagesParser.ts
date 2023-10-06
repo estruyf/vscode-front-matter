@@ -18,6 +18,7 @@ import {
   ContentType,
   DateHelper,
   Extension,
+  FilesHelper,
   isValidFile,
   Logger,
   Notifications,
@@ -207,6 +208,7 @@ export class PagesParser {
         // FrontMatter properties
         fmFolder: folderTitle,
         fmFilePath: filePath,
+        fmRelFileWsPath: FilesHelper.absToRelPath(filePath),
         fmRelFilePath: parseWinPath(filePath).replace(wsFolder?.fsPath || '', ''),
         fmFileName: fileName,
         fmDraft: ContentType.getDraftStatus(article?.data),
@@ -236,21 +238,32 @@ export class PagesParser {
           previewFieldParents = ['preview'];
         }
       }
+      // Retrieve the tags from the artilce
+      let tagParents = ContentType.findFieldsByTypeDeep(contentType.fields, 'tags');
+      if (tagParents.length > 0) {
+        const firstField = tagParents[0];
+        if (firstField.length > 0) {
+          const tagsValue = ContentType.getFieldValue(
+            article.data,
+            firstField.map((f) => f.name)
+          );
+          page.fmTags = typeof tagsValue === 'string' ? tagsValue.split(',') : tagsValue;
+        }
+      }
 
-      let tagParents = ContentType.findFieldByType(contentType.fields, 'tags');
-      const tagsValue = ContentType.getFieldValue(
-        article.data,
-        tagParents.length !== 0 ? tagParents : ['tags']
-      );
-      page.fmTags = typeof tagsValue === 'string' ? tagsValue.split(',') : tagsValue;
-
-      let categoryParents = ContentType.findFieldByType(contentType.fields, 'categories');
-      const categoriesValue = ContentType.getFieldValue(
-        article.data,
-        categoryParents.length !== 0 ? categoryParents : ['categories']
-      );
-      page.fmCategories =
-        typeof categoriesValue === 'string' ? categoriesValue.split(',') : categoriesValue;
+      // Retrieve the categories from the artilce
+      let categoryParents = ContentType.findFieldsByTypeDeep(contentType.fields, 'categories');
+      if (categoryParents.length > 0) {
+        const firstField = categoryParents[0];
+        if (firstField.length > 0) {
+          const categoriesValue = ContentType.getFieldValue(
+            article.data,
+            firstField.map((f) => f.name)
+          );
+          page.fmCategories =
+            typeof categoriesValue === 'string' ? categoriesValue.split(',') : categoriesValue;
+        }
+      }
 
       // Check if parent fields were retrieved, if not there was no image present
       if (previewFieldParents.length > 0) {

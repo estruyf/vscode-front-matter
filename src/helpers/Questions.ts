@@ -116,7 +116,7 @@ export class Questions {
   public static async SelectContentFolder(
     showWarning: boolean = true
   ): Promise<string | undefined> {
-    let folders = Folders.get();
+    let folders = Folders.get().filter((f) => !f.disableCreation);
 
     let selectedFolder: string | undefined;
     if (folders.length > 1) {

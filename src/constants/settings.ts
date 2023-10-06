@@ -7,6 +7,7 @@ export const SETTING_EXPERIMENTAL = 'experimental';
 export const SETTING_EXTENSIBILITY_SCRIPTS = 'extensibility.scripts';
 
 export const SETTING_EXTENDS = 'extends';
+export const SETTING_CONFIG_DYNAMIC_FILE_PATH = 'config.dynamicFilePath';
 
 export const SETTING_GLOBAL_NOTIFICATIONS = 'global.notifications';
 export const SETTING_GLOBAL_NOTIFICATIONS_DISABLED = 'global.disabledNotifications';
@@ -45,6 +46,7 @@ export const SETTING_TEMPLATES_ENABLED = 'templates.enabled';
 export const SETTING_TELEMETRY_DISABLE = 'telemetry.disable';
 
 export const SETTING_PANEL_FREEFORM = 'panel.freeform';
+export const SETTING_PANEL_ACTIONS_DISABLED = 'panel.actions.disabled';
 
 export const SETTING_PREVIEW_HOST = 'preview.host';
 export const SETTING_PREVIEW_PATHNAME = 'preview.pathName';

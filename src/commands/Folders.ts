@@ -95,7 +95,7 @@ export class Folders {
       return;
     }
 
-    const folders = Folders.get();
+    const folders = Folders.get().filter((f) => !f.disableCreation);
     const location = folders.find((f) => f.title === selectedFolder);
     if (location) {
       const folderPath = Folders.getFolderPath(Uri.file(location.path));
@@ -109,9 +109,12 @@ export class Folders {
    * Register the new folder path
    * @param folderInfo
    */
-  public static async register(folderInfo: { title: string; path: Uri } | Uri) {
+  public static async register(
+    folderInfo: { title: string; path: Uri; contentType: string[] } | Uri
+  ) {
     let folderName = folderInfo instanceof Uri ? undefined : folderInfo.title;
     const folder = folderInfo instanceof Uri ? folderInfo : folderInfo.path;
+    const contentType = folderInfo instanceof Uri ? undefined : folderInfo.contentType;
 
     if (folder && folder.fsPath) {
       const wslPath = folder.fsPath.replace(/\//g, '\\');
@@ -137,10 +140,16 @@ export class Folders {
         });
       }
 
-      folders.push({
+      const contentFolder = {
         title: folderName,
         path: folder.fsPath
-      } as ContentFolder);
+      } as ContentFolder;
+
+      if (contentType) {
+        contentFolder.contentTypes = typeof contentType === 'string' ? [contentType] : contentType;
+      }
+
+      folders.push(contentFolder);
 
       folders = uniqBy(folders, (f) => f.path);
       await Folders.update(folders);
@@ -429,9 +438,14 @@ export class Folders {
   public static getAbsFilePath(filePath: string): string {
     const wsFolder = Folders.getWorkspaceFolder();
     const isWindows = process.platform === 'win32';
-    let absPath = filePath.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ''));
-    absPath = isWindows ? absPath.split('/').join('\\') : absPath;
-    return parseWinPath(absPath);
+
+    if (filePath.includes(WORKSPACE_PLACEHOLDER)) {
+      let absPath = filePath.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ''));
+      absPath = isWindows ? absPath.split('/').join('\\') : absPath;
+      return parseWinPath(absPath);
+    }
+
+    return parseWinPath(join(parseWinPath(wsFolder?.fsPath || ''), filePath));
   }
 
   /**
@@ -583,7 +597,7 @@ export class Folders {
    */
   private static findFolders(pattern: string): Promise<string[]> {
     return new Promise((resolve) => {
-      glob(pattern, { ignore: '**/node_modules/**' }, (err, files) => {
+      glob(pattern, { ignore: '**/node_modules/**', dot: true }, (err, files) => {
         const allFolders = files.map((file) => dirname(file));
         const uniqueFolders = [...new Set(allFolders)];
         resolve(uniqueFolders);

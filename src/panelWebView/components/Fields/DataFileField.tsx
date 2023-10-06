@@ -9,6 +9,7 @@ import { FieldTitle } from './FieldTitle';
 import { FieldMessage } from './FieldMessage';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import useDropdownStyle from '../../hooks/useDropdownStyle';
 
 export interface IDataFileFieldProps {
   label: string;
@@ -36,6 +37,8 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
   const [dataEntries, setDataEntries] = useState<string[] | null>(null);
   const [crntSelected, setCrntSelected] = React.useState<string | string[] | null>();
   const dsRef = React.useRef<Downshift<string> | null>(null);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const { getDropdownStyle } = useDropdownStyle(inputRef as any);
 
   const onValueChange = useCallback(
     (txtValue: string) => {
@@ -149,6 +152,7 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
         {({ getToggleButtonProps, getItemProps, getMenuProps, isOpen, getRootProps }) => (
           <div
             {...getRootProps(undefined, { suppressRefError: true })}
+            ref={inputRef}
             className={`metadata_field__choice`}
           >
             <button
@@ -163,10 +167,13 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
 
             <ul
               className={`metadata_field__choice_list ${isOpen ? 'open' : 'closed'}`}
+              style={{
+                bottom: getDropdownStyle(isOpen)
+              }}
               {...getMenuProps()}
             >
-              {isOpen
-                ? availableChoices.map((choice, index) => (
+              {
+                availableChoices.map((choice, index) => (
                   <li
                     {...getItemProps({
                       key: choice.id,
@@ -181,7 +188,7 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
                     )}
                   </li>
                 ))
-                : null}
+              }
             </ul>
           </div>
         )}

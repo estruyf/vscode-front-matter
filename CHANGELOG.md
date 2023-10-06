@@ -1,5 +1,40 @@
 # Change Log
 
+## [9.3.0] - 2023-10-06 - [Release notes](https://beta.frontmatter.codes/updates/v9.3.0)
+
+### ✨ New features
+
+- [#80](https://github.com/estruyf/vscode-front-matter/issues/80): Minimal settings view for the Front Matter CMS
+- [#553](https://github.com/estruyf/vscode-front-matter/issues/553): New `frontMatter.config.dynamicFilePath` setting which allows you to dynamically update the settings from a custom JS file
+- [#563](https://github.com/estruyf/vscode-front-matter/issues/563): New `fieldCollection` to inherit/reuse fields in multiple content-types
+- [#653](https://github.com/estruyf/vscode-front-matter/issues/653): Retrieve the Astro Content Collections to allow content type generation
+- [#675](https://github.com/estruyf/vscode-front-matter/issues/675): Pinning content to the top of the content dashboard
+
+### 🎨 Enhancements
+
+- [#517](https://github.com/estruyf/vscode-front-matter/issues/517): Add `contentTypes` property to custom scripts to show/hide custom actions
+- [#517](https://github.com/estruyf/vscode-front-matter/issues/517): Added `frontMatter.panel.actions.disabled` setting to define which actions should be hidden
+- [#638](https://github.com/estruyf/vscode-front-matter/issues/638): Add Hexo support for the `_drafts` folder
+- [#659](https://github.com/estruyf/vscode-front-matter/issues/659): Implement a filter for the taxonomy dashboard
+- [#662](https://github.com/estruyf/vscode-front-matter/issues/662): Always show the `all articles` tab with the page counter
+- [#663](https://github.com/estruyf/vscode-front-matter/issues/663): Make card tags clickable to filter the view
+- [#669](https://github.com/estruyf/vscode-front-matter/issues/669): Add the video preview to the details panel + caption field
+- [#674](https://github.com/estruyf/vscode-front-matter/issues/674): Specify to disable content creation for a specific page folder
+- [#676](https://github.com/estruyf/vscode-front-matter/issues/676): Allow the `frontmatter.json` file to be placed in a sub-directory
+- [#677](https://github.com/estruyf/vscode-front-matter/issues/677): Added support for [Browse Lite](https://marketplace.visualstudio.com/items?itemName=antfu.browse-lite) extension to open preview when installed
+
+### 🐞 Fixes
+
+- [#623](https://github.com/estruyf/vscode-front-matter/issues/623): Fix issue where metadata is not maintained on file move
+- [#629](https://github.com/estruyf/vscode-front-matter/issues/629): Fix array indent to the new property
+- [#660](https://github.com/estruyf/vscode-front-matter/issues/660): Allow only to select unique content relationship values
+- [#661](https://github.com/estruyf/vscode-front-matter/issues/661): Fixing the dropdowns when used at the bottom of a collapsible group
+- [#664](https://github.com/estruyf/vscode-front-matter/issues/664): Fix for parsing draft status in Hexo and Jekyll
+- [#665](https://github.com/estruyf/vscode-front-matter/issues/665): Added `dev` parameter to Nuxt script
+- [#668](https://github.com/estruyf/vscode-front-matter/issues/668): Reset pagination on media search
+- [#678](https://github.com/estruyf/vscode-front-matter/issues/678): Check field type of `tags` fields for tags rendering on item cards
+- [#681](https://github.com/estruyf/vscode-front-matter/issues/681): Fix SVG icons which are used in the VSCode UI
+
 ## [9.2.0] - 2023-09-11
 
 ### ✨ New features
@@ -16,6 +51,7 @@
 - [#645](https://github.com/estruyf/vscode-front-matter/issues/645): French localization added (thanks to [Clément Barbaza](https://github.com/cba85))
 - [#649](https://github.com/estruyf/vscode-front-matter/issues/649): Parse optional variables from snippets
 - [#652](https://github.com/estruyf/vscode-front-matter/issues/652): Show the start/stop server buttons depending on the local terminal session
+- [#654](https://github.com/estruyf/vscode-front-matter/issues/654): Added a new action to open the content in the browser
 
 ### 🐞 Fixes
 

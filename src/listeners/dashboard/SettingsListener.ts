@@ -21,7 +21,6 @@ import { DataListener } from '../panel';
 import { MarkdownFoldingProvider } from '../../providers/MarkdownFoldingProvider';
 import { ModeSwitch } from '../../services/ModeSwitch';
 import { PagesListener } from './PagesListener';
-import { existsAsync } from '../../utils';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
 import download from 'github-directory-downloader/esm';
@@ -31,7 +30,7 @@ export class SettingsListener extends BaseListener {
    * Process the messages for the dashboard views
    * @param msg
    */
-  public static process(msg: PostMessageData) {
+  public static async process(msg: PostMessageData) {
     super.process(msg);
 
     switch (msg.command) {
@@ -56,7 +55,45 @@ export class SettingsListener extends BaseListener {
       case DashboardMessage.switchProject:
         this.switchProject(msg.payload);
         break;
+      case DashboardMessage.getSettings:
+        this.getConfigSettings(msg);
+        break;
+      case DashboardMessage.setSettings:
+        this.setConfigSettings(msg);
+        break;
     }
+  }
+
+  public static async getConfigSettings({ command, requestId, payload }: PostMessageData) {
+    if (!command || !requestId || !payload) {
+      return;
+    }
+
+    const settings = [];
+
+    for (const setting of payload) {
+      const value = Settings.get(setting);
+      settings.push({ name: setting, value });
+    }
+
+    this.sendRequest(command as any, requestId, settings);
+  }
+
+  public static async setConfigSettings({ command, requestId, payload }: PostMessageData) {
+    if (!command || !requestId || !payload) {
+      return;
+    }
+
+    for (const setting of payload) {
+      if (typeof setting.name !== 'undefined' && typeof setting.value !== 'undefined') {
+        const value = Settings.get(setting.name);
+        if (value !== setting.value) {
+          await Settings.update(setting.name, setting.value, true);
+        }
+      }
+    }
+
+    this.sendRequest(command as any, requestId, true);
   }
 
   public static async switchProject(project: string) {

@@ -2,12 +2,12 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import { ChevronRightIcon, DownloadIcon } from '@heroicons/react/outline';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { TelemetryEvent } from '../../../constants';
 import { TaxonomyData } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
-import { Page } from '../../models';
-import { SettingsSelector } from '../../state';
+import { NavigationType, Page } from '../../models';
+import { DashboardViewAtom, SettingsSelector } from '../../state';
 import { NavigationBar, NavigationItem } from '../Layout';
 import { PageLayout } from '../Layout/PageLayout';
 import { SponsorMsg } from '../Layout/SponsorMsg';
@@ -25,6 +25,7 @@ export const TaxonomyView: React.FunctionComponent<ITaxonomyViewProps> = ({
   const settings = useRecoilValue(SettingsSelector);
   const [taxonomySettings, setTaxonomySettings] = useState<TaxonomyData>();
   const [selectedTaxonomy, setSelectedTaxonomy] = useState<string | null>(`tags`);
+  const [, setView] = useRecoilState(DashboardViewAtom);
 
   const onImport = () => {
     Messenger.send(DashboardMessage.importTaxonomy);
@@ -39,6 +40,7 @@ export const TaxonomyView: React.FunctionComponent<ITaxonomyViewProps> = ({
   }, [settings?.tags, settings?.categories, settings?.customTaxonomy]);
 
   useEffect(() => {
+    setView(NavigationType.Taxonomy);
     Messenger.send(DashboardMessage.sendTelemetry, {
       event: TelemetryEvent.webviewTaxonomyDashboard
     });
@@ -90,7 +92,10 @@ export const TaxonomyView: React.FunctionComponent<ITaxonomyViewProps> = ({
         </NavigationBar>
 
         <div className={`w-10/12 h-full overflow-hidden`}>
-          <TaxonomyManager data={taxonomySettings} taxonomy={selectedTaxonomy} pages={pages} />
+          <TaxonomyManager
+            data={taxonomySettings}
+            taxonomy={selectedTaxonomy}
+            pages={pages} />
         </div>
       </div>
 

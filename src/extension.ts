@@ -397,8 +397,12 @@ const handleAutoDateUpdate = (e: vscode.TextDocumentWillSaveEvent) => {
 };
 
 const triggerPageUpdate = (location: string) => {
-  Logger.info(`Triggering draft status update: ${location}`);
+  Logger.info(`Trigger page update: ${location}`);
   pageUpdateDebouncer(() => {
     StatusListener.verify(collection);
   }, 1000);
+
+  if (location === 'onDidChangeActiveTextEditor') {
+    PanelProvider.getInstance()?.updateCurrentFile();
+  }
 };

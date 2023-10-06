@@ -26,11 +26,11 @@ import { GroupOption } from '../../constants/GroupOption';
 import usePagination from '../../hooks/usePagination';
 import { PaginationStatus } from './PaginationStatus';
 import useThemeColors from '../../hooks/useThemeColors';
-import { Startup } from './Startup';
 import { Navigation } from './Navigation';
 import { ProjectSwitcher } from './ProjectSwitcher';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { SettingsLink } from '../SettingsView/SettingsLink';
 
 export interface IHeaderProps {
   header?: React.ReactNode;
@@ -156,7 +156,11 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
         }`}>
         <Tabs onNavigate={updateView} />
 
-        <ProjectSwitcher />
+        <div className='flex'>
+          <ProjectSwitcher />
+
+          <SettingsLink onNavigate={updateView} />
+        </div>
       </div>
 
       {location.pathname === routePaths.contents && (
@@ -165,8 +169,6 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
             <Searchbox />
 
             <div className={`flex items-center justify-end space-x-4 flex-1`}>
-              <Startup settings={settings} />
-
               <SyncButton />
 
               <ChoiceButton

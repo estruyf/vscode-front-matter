@@ -31,7 +31,17 @@ export interface PanelSettings {
   aiEnabled: boolean;
   contentFolders: ContentFolder[];
   websiteUrl: string;
+  disabledActions: PanelAction[];
 }
+
+export type PanelAction =
+  | 'openDashboard'
+  | 'createContent'
+  | 'optimizeSlug'
+  | 'preview'
+  | 'openOnWebsite'
+  | 'startStopServer'
+  | 'customActions';
 
 export interface FieldGroup {
   id: string;
@@ -78,6 +88,7 @@ export type FieldType =
   | 'divider'
   | 'heading'
   | 'contentRelationship'
+  | 'fieldCollection'
   | 'customField';
 
 export interface Field {
@@ -196,6 +207,7 @@ export interface CustomScript {
   command?: CommandType | string;
   hidden?: boolean;
   environments?: EnvironmentScript[];
+  contentTypes?: string[];
 }
 
 export type EnvironmentType = 'windows' | 'macos' | 'linux';

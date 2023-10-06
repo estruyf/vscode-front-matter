@@ -43,7 +43,8 @@ export class FieldsListener extends BaseListener {
         ExtensionState.Dashboard.Pages.Index,
         'workspace'
       );
-      const fuse = new Fuse(pages || [], fuseOptions, Fuse.parseIndex(pagesIndex));
+      const fuseIndex = Fuse.parseIndex(pagesIndex);
+      const fuse = new Fuse(pages || [], fuseOptions, fuseIndex);
       const results = fuse.search({
         $and: [
           {

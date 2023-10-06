@@ -84,6 +84,10 @@ export enum LocalizationKey {
    */
   commonRemoveValue = 'common.remove.value',
   /**
+   * Filter by {0}
+   */
+  commonFilterValue = 'common.filter.value',
+  /**
    * Sorry, something went wrong.
    */
   commonErrorMessage = 'common.error.message',
@@ -91,6 +95,74 @@ export enum LocalizationKey {
    * Open on website
    */
   commonOpenOnWebsite = 'common.openOnWebsite',
+  /**
+   * Settings
+   */
+  commonSettings = 'common.settings',
+  /**
+   * Refresh settings
+   */
+  commonRefreshSettings = 'common.refreshSettings',
+  /**
+   * Pin
+   */
+  commonPin = 'common.pin',
+  /**
+   * Unpin
+   */
+  commonUnpin = 'common.unpin',
+  /**
+   * Common
+   */
+  settingsViewCommon = 'settings.view.common',
+  /**
+   * Content folders
+   */
+  settingsViewContentFolders = 'settings.view.contentFolders',
+  /**
+   * Astro
+   */
+  settingsViewAstro = 'settings.view.astro',
+  /**
+   * Open dashboard on startup
+   */
+  settingsOpenOnStartup = 'settings.openOnStartup',
+  /**
+   * Content types
+   */
+  settingsContentTypes = 'settings.contentTypes',
+  /**
+   * Content folders
+   */
+  settingsContentFolders = 'settings.contentFolders',
+  /**
+   * Diagnostic
+   */
+  settingsDiagnostic = 'settings.diagnostic',
+  /**
+   * You can run the diagnostics to check the whole Front Matter CMS configuration.
+   */
+  settingsDiagnosticDescription = 'settings.diagnostic.description',
+  /**
+   * Run full diagnostics
+   */
+  settingsDiagnosticLink = 'settings.diagnostic.link',
+  /**
+   * Website and SSG settings
+   */
+  settingsCommonSettingsWebsiteTitle = 'settings.commonSettings.website.title',
+  /**
+   * Preview URL
+   */
+  settingsCommonSettingsPreviewUrl = 'settings.commonSettings.previewUrl',
+  /**
+   * Website URL
+   */
+  settingsCommonSettingsWebsiteUrl = 'settings.commonSettings.websiteUrl',
+  /**
+   * SSG/Framework start command
+   */
+  settingsCommonSettingsStartCommand = 'settings.commonSettings.startCommand',
   /**
    * Developer mode
    */
@@ -199,6 +271,10 @@ export enum LocalizationKey {
    * Make sure you registered a content folder in your project to let Front Matter find the contents.
    */
   dashboardContentsOverviewNoFolders = 'dashboard.contents.overview.noFolders',
+  /**
+   * Pinned
+   */
+  dashboardContentsOverviewPinned = 'dashboard.contents.overview.pinned',
   /**
    * Draft
    */
@@ -804,6 +880,10 @@ export enum LocalizationKey {
    */
   dashboardStepsStepsToGetStartedTemplateDescription = 'dashboard.steps.stepsToGetStarted.template.description',
   /**
+   * Create Content-Types for your Astro Content Collections
+   */
+  dashboardStepsStepsToGetStartedAstroContentTypesName = 'dashboard.steps.stepsToGetStarted.astroContentTypes.name',
+  /**
    * Add {0} to taxonomy settings
    */
   dashboardTaxonomyViewButtonAddTitle = 'dashboard.taxonomyView.button.add.title',
@@ -896,9 +976,13 @@ export enum LocalizationKey {
    */
   dashboardWelcomeScreenLinkGithubTitle = 'dashboard.welcomeScreen.link.github.title',
   /**
-   * GitHub / Documentation
+   * GitHub
    */
   dashboardWelcomeScreenLinkGithubLabel = 'dashboard.welcomeScreen.link.github.label',
+  /**
+   * Documentation
+   */
+  dashboardWelcomeScreenLinkDocumentationLabel = 'dashboard.welcomeScreen.link.documentation.label',
   /**
    * Become a sponsor
    */
@@ -927,6 +1011,18 @@ export enum LocalizationKey {
    * We hope you enjoy Front Matter!
    */
   dashboardWelcomeScreenActionsThanks = 'dashboard.welcomeScreen.actions.thanks',
+  /**
+   * Do you want to remap the metadata of unmapped files?
+   */
+  dashboardMediaDetailsSlideOverUnmappedDescription = 'dashboard.media.detailsSlideOver.unmapped.description',
+  /**
+   * No Astro Content Collections found.
+   */
+  dashboardConfigurationAstroAstroContentTypesEmpty = 'dashboard.configuration.astro.astroContentTypes.empty',
+  /**
+   * The following Astro Content Collections and can be used to generate a content-type.
+   */
+  dashboardConfigurationAstroAstroContentTypesDescription = 'dashboard.configuration.astro.astroContentTypes.description',
   /**
    * Content-type
    */
@@ -1112,10 +1208,6 @@ export enum LocalizationKey {
    * Open dashboard
    */
   panelBaseViewActionOpenDashboard = 'panel.baseView.action.openDashboard',
-  /**
-   * Open preview
-   */
-  panelBaseViewActionOpenPreview = 'panel.baseView.action.openPreview',
   /**
    * Create content
    */

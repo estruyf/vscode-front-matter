@@ -163,12 +163,31 @@ export class FrameworkDetector {
       if (await existsAsync(hexoConfig)) {
         const content = await readFileAsync(hexoConfig, 'utf8');
         // Convert YAML to JSON
-        const config = jsyaml.safeLoad(content);
+        const config = jsyaml.load(content);
 
         // Check if post assets are used: https://hexo.io/docs/asset-folders.html#Post-Asset-Folder
         if (config.post_asset_folder) {
           assetFoler = STATIC_FOLDER_PLACEHOLDER.hexo.placeholder;
         }
+      }
+
+      const draftsPath = join(wsFolder?.fsPath || '', 'source', '_drafts');
+      const postsPath = join(wsFolder?.fsPath || '', 'source', '_posts');
+
+      if (await existsAsync(draftsPath)) {
+        const folderUri = Uri.file(draftsPath);
+        await commands.executeCommand(COMMAND_NAME.registerFolder, {
+          title: 'drafts',
+          path: folderUri
+        });
+      }
+
+      if (await existsAsync(postsPath)) {
+        const folderUri = Uri.file(postsPath);
+        await commands.executeCommand(COMMAND_NAME.registerFolder, {
+          title: 'posts',
+          path: folderUri
+        });
       }
 
       await Settings.update(SETTING_CONTENT_STATIC_FOLDER, assetFoler, true);
@@ -191,7 +210,7 @@ export class FrameworkDetector {
       if (await existsAsync(jekyllConfig)) {
         const content = await readFileAsync(jekyllConfig, 'utf8');
         // Convert YAML to JSON
-        const config = jsyaml.safeLoad(content);
+        const config = jsyaml.load(content);
 
         if (config.collections_dir) {
           collectionDir = config.collections_dir;
@@ -203,7 +222,7 @@ export class FrameworkDetector {
 
       if (await existsAsync(draftsPath)) {
         const folderUri = Uri.file(draftsPath);
-        commands.executeCommand(COMMAND_NAME.registerFolder, {
+        await commands.executeCommand(COMMAND_NAME.registerFolder, {
           title: 'drafts',
           path: folderUri
         });
@@ -211,7 +230,7 @@ export class FrameworkDetector {
 
       if (await existsAsync(postsPath)) {
         const folderUri = Uri.file(postsPath);
-        commands.executeCommand(COMMAND_NAME.registerFolder, {
+        await commands.executeCommand(COMMAND_NAME.registerFolder, {
           title: 'posts',
           path: folderUri
         });

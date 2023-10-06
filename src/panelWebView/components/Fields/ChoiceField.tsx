@@ -9,6 +9,7 @@ import { FieldTitle } from './FieldTitle';
 import { FieldMessage } from './FieldMessage';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import useDropdownStyle from '../../hooks/useDropdownStyle';
 
 export interface IChoiceFieldProps extends BaseFieldProps<string | string[]> {
   choices: string[] | Choice[];
@@ -27,6 +28,8 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({
 }: React.PropsWithChildren<IChoiceFieldProps>) => {
   const [crntSelected, setCrntSelected] = React.useState<string | string[] | null>(value);
   const dsRef = React.useRef<Downshift<string> | null>(null);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const { getDropdownStyle } = useDropdownStyle(inputRef as any);
 
   const onValueChange = (txtValue: string) => {
     if (multiSelect) {
@@ -105,6 +108,7 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({
         {({ getToggleButtonProps, getItemProps, getMenuProps, isOpen, getRootProps }) => (
           <div
             {...getRootProps(undefined, { suppressRefError: true })}
+            ref={inputRef}
             className={`metadata_field__choice`}
           >
             <button
@@ -118,11 +122,14 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({
             </button>
 
             <ul
-              className={`metadata_field__choice_list ${isOpen ? 'open' : 'closed'}`}
+              className={`field_dropdown metadata_field__choice_list ${isOpen ? 'open' : 'closed'}`}
+              style={{
+                bottom: getDropdownStyle(isOpen)
+              }}
               {...getMenuProps()}
             >
-              {isOpen
-                ? availableChoices.map((choice, index) => (
+              {
+                availableChoices.map((choice, index) => (
                   <li
                     {...getItemProps({
                       key: getValue(choice, 'id'),
@@ -137,7 +144,7 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({
                     )}
                   </li>
                 ))
-                : null}
+              }
             </ul>
           </div>
         )}

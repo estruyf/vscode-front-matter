@@ -8,6 +8,26 @@
   }
 }
 
+@keyframes vscode-loader {
+  0% {
+    left: 0;
+    width: 30px;
+  }
+  25% {
+    width: 50px;
+  }
+  50% {
+    width: 20px;
+  }
+  75% {
+    width: 50px;
+  }
+  100% {
+    width: 20px;
+    left: 100%;
+  }
+}
+
 /* Overrides */
 vscode-button,
 button {
@@ -776,6 +796,11 @@ vscode-divider {
   padding: 0.5rem;
 }
 
+/* Dropdown */
+.field_dropdown.closed {
+  display: none;
+}
+
 /* Tags */
 .article__tags {
   position: relative;
@@ -1116,4 +1141,34 @@ vscode-divider {
   opacity: 0.8;
   text-align: center;
   padding: 1rem 1.25rem;
+}
+
+/* VSCode loader */
+.vscode__loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--vscode-sideBar-background);
+  opacity: 75%;
+  z-index: 50;
+
+  .vscode__loader__bar {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 2px;
+
+    .vscode__loader__bar__animation {
+      height: 100%;
+      position: absolute;
+      border-radius: 2px;
+      background-color: var(--vscode-activityBarBadge-background);
+
+      animation: vscode-loader 4s ease-in-out infinite;
+    }
+  }
 }

@@ -20,10 +20,17 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - name: Install the dependencies
-        run: npm i
+        run: npm ci
 
       - name: Prepare BETA
         run: node scripts/beta-release.js $GITHUB_RUN_ID
+
+      - name: Run localization sync
+        run: npm run localization:sync
+        env:
+          TRANSLATION_API_KEY: ${{ secrets.TRANSLATION_API_KEY }}
+          TRANSLATION_API_LOCATION: ${{ secrets.TRANSLATION_API_LOCATION }}
+          TRANSLATION_API_URL: ${{ secrets.TRANSLATION_API_URL }}
 
       - name: Publish
         run: npx @vscode/vsce publish -p ${{ secrets.VSCE_PAT }} --baseImagesUrl https://raw.githubusercontent.com/estruyf/vscode-front-matter/dev
