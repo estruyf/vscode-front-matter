@@ -1,6 +1,6 @@
 # Change Log
 
-## [9.3.0] - 2023-xx-xx - [Release notes](https://beta.frontmatter.codes/updates/v9.3.0)
+## [9.3.0] - 2023-10-06 - [Release notes](https://beta.frontmatter.codes/updates/v9.3.0)
 
 ### ✨ New features
 
