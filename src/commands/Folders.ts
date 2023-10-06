@@ -438,9 +438,14 @@ export class Folders {
   public static getAbsFilePath(filePath: string): string {
     const wsFolder = Folders.getWorkspaceFolder();
     const isWindows = process.platform === 'win32';
-    let absPath = filePath.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ''));
-    absPath = isWindows ? absPath.split('/').join('\\') : absPath;
-    return parseWinPath(absPath);
+
+    if (filePath.includes(WORKSPACE_PLACEHOLDER)) {
+      let absPath = filePath.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ''));
+      absPath = isWindows ? absPath.split('/').join('\\') : absPath;
+      return parseWinPath(absPath);
+    }
+
+    return parseWinPath(join(parseWinPath(wsFolder?.fsPath || ''), filePath));
   }
 
   /**
