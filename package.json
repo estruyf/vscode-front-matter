@@ -91,14 +91,14 @@
       "activitybar": [{
         "id": "frontmatter-explorer",
         "title": "FM",
-        "icon": "assets/frontmatter-short-min.svg"
+        "icon": "$(fm-logo)"
       }]
     },
     "views": {
       "frontmatter-explorer": [{
         "id": "frontMatter.explorer",
         "name": "Front Matter",
-        "icon": "assets/frontmatter-short-min.svg",
+        "icon": "$(fm-logo)",
         "type": "webview"
       }]
     },
@@ -1873,10 +1873,7 @@
         "command": "frontMatter.dashboard.close",
         "title": "%command.frontMatter.dashboard.close%",
         "category": "Front Matter",
-        "icon": {
-          "dark": "/assets/icons/frontmatter-small-teal.svg",
-          "light": "/assets/icons/frontmatter-small-teal.svg"
-        }
+        "icon": "$(fm-logo)"
       },
       {
         "command": "frontMatter.markup.code",
@@ -2021,46 +2018,31 @@
         "command": "frontMatter.dashboard",
         "title": "%command.frontMatter.dashboard%",
         "category": "Front Matter",
-        "icon": {
-          "dark": "/assets/icons/frontmatter-small-dark.svg",
-          "light": "/assets/icons/frontmatter-small-light.svg"
-        }
+        "icon": "$(fm-logo)"
       },
       {
         "command": "frontMatter.dashboard.data",
         "title": "%command.frontMatter.dashboard.data%",
         "category": "Front Matter",
-        "icon": {
-          "dark": "/assets/icons/frontmatter-small-dark.svg",
-          "light": "/assets/icons/frontmatter-small-light.svg"
-        }
+        "icon": "$(fm-logo)"
       },
       {
         "command": "frontMatter.dashboard.media",
         "title": "%command.frontMatter.dashboard.media%",
         "category": "Front Matter",
-        "icon": {
-          "dark": "/assets/icons/frontmatter-small-dark.svg",
-          "light": "/assets/icons/frontmatter-small-light.svg"
-        }
+        "icon": "$(fm-logo)"
       },
       {
         "command": "frontMatter.dashboard.snippets",
         "title": "%command.frontMatter.dashboard.snippets%",
         "category": "Front Matter",
-        "icon": {
-          "dark": "/assets/icons/frontmatter-small-dark.svg",
-          "light": "/assets/icons/frontmatter-small-light.svg"
-        }
+        "icon": "$(fm-logo)"
       },
       {
         "command": "frontMatter.dashboard.taxonomy",
         "title": "%command.frontMatter.dashboard.taxonomy%",
         "category": "Front Matter",
-        "icon": {
-          "dark": "/assets/icons/frontmatter-small-dark.svg",
-          "light": "/assets/icons/frontmatter-small-light.svg"
-        }
+        "icon": "$(fm-logo)"
       },
       {
         "command": "frontMatter.markup.orderedlist",
