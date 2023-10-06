@@ -23,8 +23,6 @@
 - [#676](https://github.com/estruyf/vscode-front-matter/issues/676): Allow the `frontmatter.json` file to be placed in a sub-directory
 - [#677](https://github.com/estruyf/vscode-front-matter/issues/677): Added support for [Browse Lite](https://marketplace.visualstudio.com/items?itemName=antfu.browse-lite) extension to open preview when installed
 
-### ⚡️ Optimizations
-
 ### 🐞 Fixes
 
 - [#623](https://github.com/estruyf/vscode-front-matter/issues/623): Fix issue where metadata is not maintained on file move
@@ -35,6 +33,7 @@
 - [#665](https://github.com/estruyf/vscode-front-matter/issues/665): Added `dev` parameter to Nuxt script
 - [#668](https://github.com/estruyf/vscode-front-matter/issues/668): Reset pagination on media search
 - [#678](https://github.com/estruyf/vscode-front-matter/issues/678): Check field type of `tags` fields for tags rendering on item cards
+- [#681](https://github.com/estruyf/vscode-front-matter/issues/681): Fix SVG icons which are used in the VSCode UI
 
 ## [9.2.0] - 2023-09-11
 
