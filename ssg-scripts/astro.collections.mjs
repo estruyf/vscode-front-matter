@@ -1,3 +1,5 @@
+import { writeFileSync } from "fs";
+import { join } from "path";
 import { createServer } from "vite";
 import zod from "zod";
 
@@ -206,7 +208,9 @@ const astroContentModulePlugin = () => {
     const collections = Object.entries(contentModule.collections ?? {});
     const processedCollections = processCollection(collections);
 
-    console.log(JSON.stringify(processedCollections));
+    writeFileSync(join(process.cwd(), `./.frontmatter/temp/astro.collections.json`), JSON.stringify(processedCollections));
+    
+    console.log("Collections generated successfully");
     process.exit(0);
   } catch (error) {
     console.log(error.message);

@@ -1,4 +1,5 @@
 export const SsgScripts = {
   folder: '/ssg-scripts',
-  astroContentCollection: 'astro-collections.mjs'
+  astroContentCollectionScript: 'astro.collections.mjs',
+  astroContentCollectionJSON: 'astro.collections.json'
 };

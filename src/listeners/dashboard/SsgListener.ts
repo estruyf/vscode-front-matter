@@ -8,6 +8,7 @@ import { Folders } from '../../commands';
 import { SETTING_TAXONOMY_CONTENT_TYPES, SsgScripts } from '../../constants';
 import { SettingsListener } from './SettingsListener';
 import { Terminal } from '../../services';
+import { existsAsync, readFileAsync } from '../../utils';
 
 export class SsgListener extends BaseListener {
   /**
@@ -120,7 +121,7 @@ export class SsgListener extends BaseListener {
     const scriptPath = Uri.joinPath(
       Extension.getInstance().extensionPath,
       SsgScripts.folder,
-      SsgScripts.astroContentCollection
+      SsgScripts.astroContentCollectionScript
     );
 
     const wsFolder = Folders.getWorkspaceFolder();
@@ -130,7 +131,7 @@ export class SsgListener extends BaseListener {
     }
 
     const tempLocation = Uri.joinPath(wsFolder, '/.frontmatter/temp');
-    const tempScriptPath = Uri.joinPath(tempLocation, SsgScripts.astroContentCollection);
+    const tempScriptPath = Uri.joinPath(tempLocation, SsgScripts.astroContentCollectionScript);
     await workspace.fs.createDirectory(tempLocation);
     workspace.fs.copy(scriptPath, tempScriptPath, { overwrite: true });
 
@@ -139,9 +140,13 @@ export class SsgListener extends BaseListener {
     try {
       const result: string = await SsgListener.executeScript(fullScript, wsFolder?.fsPath || '');
       if (result) {
-        let collections: AstroCollection[] = JSON.parse(result);
-        collections = collections.filter((c) => c.type === 'content');
-        SsgListener.sendRequest(command as any, requestId, collections);
+        const tempJsonPath = Uri.joinPath(tempLocation, SsgScripts.astroContentCollectionJSON);
+        if (await existsAsync(tempJsonPath.fsPath)) {
+          const contents = await readFileAsync(tempJsonPath.fsPath, 'utf8');
+          let collections: AstroCollection[] = JSON.parse(contents);
+          collections = collections.filter((c) => c.type === 'content');
+          SsgListener.sendRequest(command as any, requestId, collections);
+        }
       }
     } catch (error) {
       Logger.error((error as Error).message);
