@@ -145,7 +145,10 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
     if (selectedItem) {
       let value = selectedItem || '';
 
-      const item = options.find((o) => o?.toLowerCase() === selectedItem?.toLowerCase());
+      const item = options.find((o) => {
+        o = typeof o === 'string' ? o : `${o}`;
+        return o?.toLowerCase() === value?.toLowerCase();
+      });
       if (item) {
         value = item;
       }
@@ -174,8 +177,12 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
    * @param inputValue
    */
   const filterList = (option: string, inputValue: string | null) => {
+    if (typeof option !== 'string') {
+      return false;
+    }
+
     return (
-      !selected.includes(option) && option.toLowerCase().includes((inputValue || '').toLowerCase())
+      option && !selected.includes(option) && option.toLowerCase().includes((inputValue || '').toLowerCase())
     );
   };
 
@@ -201,7 +208,10 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
         for (let crntValue of values) {
           crntValue = crntValue.trim();
           if (crntValue) {
-            const item = options.find((o) => o?.toLowerCase() === crntValue?.toLowerCase());
+            const item = options.find((o) => {
+              o = typeof o === 'string' ? o : `${o}`;
+              return o?.toLowerCase() === crntValue?.toLowerCase();
+            });
             if (item) {
               newValues.push(item);
             } else if (freeform) {
@@ -278,6 +288,15 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
       </button>
     );
   }, [settings?.aiEnabled, label, type]);
+
+  const sortedSelectedTags = useMemo(() => {
+    return (selected || []).sort((a: string, b: string) => {
+      const aString = typeof a === 'string' ? a : `${a}`;
+      const bString = typeof b === 'string' ? b : `${b}`;
+
+      return aString?.toLowerCase() < bString?.toLowerCase() ? -1 : 1;
+    });
+  }, [selected]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -400,9 +419,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
       />
 
       <Tags
-        values={(selected || []).sort((a: string, b: string) =>
-          a?.toLowerCase() < b?.toLowerCase() ? -1 : 1
-        )}
+        values={sortedSelectedTags}
         onRemove={onRemove}
         onCreate={onCreate}
         options={options}

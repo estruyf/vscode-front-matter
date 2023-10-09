@@ -1,5 +1,17 @@
 # Change Log
 
+## [9.4.0] - 2023-xx-xx
+
+### ✨ New features
+
+### 🎨 Enhancements
+
+### ⚡️ Optimizations
+
+### 🐞 Fixes
+
+- [#685](https://github.com/estruyf/vscode-front-matter/issues/685): Fix when using non-string values in the tag picker
+
 ## [9.3.0] - 2023-10-06 - [Release notes](https://beta.frontmatter.codes/updates/v9.3.0)
 
 ### ✨ New features
