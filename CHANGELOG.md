@@ -6,6 +6,8 @@
 
 ### 🎨 Enhancements
 
+- [#686](https://github.com/estruyf/vscode-front-matter/issues/686): Allow script authors to ask questions during script execution
+
 ### ⚡️ Optimizations
 
 ### 🐞 Fixes

@@ -223,7 +223,7 @@ export class CustomScript {
       if (os.type() === 'Windows_NT') {
         const jsonData = JSON.stringify(article?.data);
 
-        if (script.command && script.command.toLowerCase() === "powershell") {
+        if (script.command && script.command.toLowerCase() === 'powershell') {
           articleData = `'${jsonData.replace(/"/g, `\\"`)}'`;
         } else {
           articleData = `"${jsonData.replace(/"/g, `\\"`)}"`;
@@ -323,55 +323,97 @@ export class CustomScript {
     wsPath: string,
     args: string
   ): Promise<string> {
-    return new Promise(async (resolve, reject) => {
-      const osType = os.type();
+    const osType = os.type();
 
-      // Check the command to use
-      let command = script.nodeBin || 'node';
-      if (script.command && script.command !== CommandType.Node) {
-        command = script.command;
+    // Check the command to use
+    let command = script.nodeBin || 'node';
+    if (script.command && script.command !== CommandType.Node) {
+      command = script.command;
+    }
+
+    let scriptPath = join(wsPath, script.script);
+    if (script.script.includes(WORKSPACE_PLACEHOLDER)) {
+      scriptPath = Folders.getAbsFilePath(script.script);
+    }
+
+    // Check if there is an environments overwrite required
+    if (script.environments) {
+      let crntType: EnvironmentType | null = null;
+      if (osType === 'Windows_NT') {
+        crntType = 'windows';
+      } else if (osType === 'Darwin') {
+        crntType = 'macos';
+      } else {
+        crntType = 'linux';
       }
 
-      let scriptPath = join(wsPath, script.script);
-      if (script.script.includes(WORKSPACE_PLACEHOLDER)) {
-        scriptPath = Folders.getAbsFilePath(script.script);
-      }
-
-      // Check if there is an environments overwrite required
-      if (script.environments) {
-        let crntType: EnvironmentType | null = null;
-        if (osType === 'Windows_NT') {
-          crntType = 'windows';
-        } else if (osType === 'Darwin') {
-          crntType = 'macos';
-        } else {
-          crntType = 'linux';
-        }
-
-        const environment = script.environments.find((e) => e.type === crntType);
-        if (environment && environment.script && environment.command) {
-          if (await CustomScript.validateCommand(environment.command)) {
-            command = environment.command;
-            scriptPath = join(wsPath, environment.script);
-            if (environment.script.includes(WORKSPACE_PLACEHOLDER)) {
-              scriptPath = Folders.getAbsFilePath(environment.script);
-            }
+      const environment = script.environments.find((e) => e.type === crntType);
+      if (environment && environment.script && environment.command) {
+        if (await CustomScript.validateCommand(environment.command)) {
+          command = environment.command;
+          scriptPath = join(wsPath, environment.script);
+          if (environment.script.includes(WORKSPACE_PLACEHOLDER)) {
+            scriptPath = Folders.getAbsFilePath(environment.script);
           }
         }
       }
+    }
 
-      if (!(await existsAsync(scriptPath))) {
-        reject(new Error(`Script not found: ${scriptPath}`));
-        return;
+    if (!(await existsAsync(scriptPath))) {
+      throw new Error(`Script not found: ${scriptPath}`);
+    }
+
+    if (osType === 'Windows_NT' && command.toLowerCase() === 'powershell') {
+      command = `${command} -File`;
+    }
+
+    const fullScript = `${command} "${scriptPath}" ${args}`;
+    Logger.info(`Executing: ${fullScript}`);
+
+    const output: string = await CustomScript.executeScriptAsync(fullScript, wsPath);
+
+    try {
+      const data = JSON.parse(output);
+      if (data.questions) {
+        const answers: string[] = [];
+
+        for (const question of data.questions) {
+          if (question.name && question.message) {
+            const answer = await window.showInputBox({
+              prompt: question.message,
+              value: question.default || '',
+              ignoreFocusOut: true,
+              title: question.message
+            });
+
+            if (answer) {
+              answers.push(`${question.name}='${answer}'`);
+            } else {
+              return '';
+            }
+          }
+        }
+
+        if (answers.length > 0) {
+          const newScript = `${fullScript} ${answers.join(' ')}`;
+          return await CustomScript.executeScriptAsync(newScript, wsPath);
+        }
       }
+    } catch (error) {
+      // Not a JSON
+    }
 
-      if (osType === 'Windows_NT' && command.toLowerCase() === "powershell") {
-        command = `${command} -File`;
-      }
+    return output;
+  }
 
-      const fullScript = `${command} "${scriptPath}" ${args}`;
-      Logger.info(`Executing: ${fullScript}`);
-
+  /**
+   * Execute script async
+   * @param fullScript
+   * @param wsPath
+   * @returns
+   */
+  private static async executeScriptAsync(fullScript: string, wsPath: string): Promise<string> {
+    return new Promise(async (resolve, reject) => {
       exec(fullScript, { cwd: wsPath }, (error, stdout) => {
         if (error) {
           reject(error.message);
