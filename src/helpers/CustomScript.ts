@@ -387,7 +387,7 @@ export class CustomScript {
             });
 
             if (answer) {
-              answers.push(`${question.name}='${answer}'`);
+              answers.push(`${question.name}="${answer}"`);
             } else {
               return '';
             }
