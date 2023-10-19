@@ -284,6 +284,10 @@ export enum LocalizationKey {
    */
   dashboardContentsStatusPublished = 'dashboard.contents.status.published',
   /**
+   * Scheduled
+   */
+  dashboardContentsStatusScheduled = 'dashboard.contents.status.scheduled',
+  /**
    * Modify the data
    */
   dashboardDataViewDataFormModify = 'dashboard.dataView.dataForm.modify',
@@ -391,6 +395,10 @@ export enum LocalizationKey {
    * Published
    */
   dashboardHeaderNavigationPublished = 'dashboard.header.navigation.published',
+  /**
+   * Scheduled
+   */
+  dashboardHeaderNavigationScheduled = 'dashboard.header.navigation.scheduled',
   /**
    * In draft
    */

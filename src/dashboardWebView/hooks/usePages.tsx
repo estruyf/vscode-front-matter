@@ -152,23 +152,32 @@ export default function usePages(pages: Page[]) {
 
         const usesDraft = crntPages.some(x => typeof x[draftFieldName] !== 'undefined');
         if (usesDraft) {
-          const drafts = crntPages.filter(
+          const allDrafts = crntPages.filter(
             (page) => page[draftFieldName] == true || page[draftFieldName] === 'true'
           );
-          const published = crntPages.filter(
+          const allPublished = crntPages.filter(
             (page) =>
               page[draftFieldName] == false ||
               page[draftFieldName] === 'false' ||
               typeof page[draftFieldName] === 'undefined'
           );
 
-          draftTypes[Tab.Draft] = draftField?.invert ? published.length : drafts.length;
-          draftTypes[Tab.Published] = draftField?.invert ? drafts.length : published.length;
+          // If the invert is set, the drafts become published and vice versa
+          const isInverted = draftField?.invert;
+          const drafts = !isInverted ? allDrafts : allPublished;
+          const published = (!isInverted ? allPublished : allDrafts).filter((page) => !page.fmPublished || page.fmPublished <= Date.now());
+          const scheduled = (!isInverted ? allPublished : allDrafts).filter((page) => page.fmPublished && page.fmPublished > Date.now());
+
+          draftTypes[Tab.Draft] = drafts.length;
+          draftTypes[Tab.Published] = published.length;
+          draftTypes[Tab.Scheduled] = scheduled.length;
 
           if (tab === Tab.Published) {
-            crntPages = draftField?.invert ? drafts : published;
+            crntPages = published;
           } else if (tab === Tab.Draft) {
-            crntPages = draftField?.invert ? published : drafts;
+            crntPages = drafts;
+          } else if (tab === Tab.Scheduled) {
+            crntPages = scheduled;
           } else {
             crntPages = crntPages;
           }

@@ -84,6 +84,7 @@
 
   "dashboard.contents.status.draft": "Draft",
   "dashboard.contents.status.published": "Published",
+  "dashboard.contents.status.scheduled": "Scheduled",
 
   "dashboard.dataView.dataForm.modify": "Modify the data",
   "dashboard.dataView.dataForm.add": "Add new data",
@@ -122,6 +123,7 @@
 
   "dashboard.header.navigation.allArticles": "All articles",
   "dashboard.header.navigation.published": "Published",
+  "dashboard.header.navigation.scheduled": "Scheduled",
   "dashboard.header.navigation.draft": "In draft",
 
   "dashboard.header.header.createContent": "Create content",

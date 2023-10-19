@@ -66,6 +66,44 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
     [grouping]
   );
 
+  const { groupKeys, groupedPages } = useMemo(() => {
+    if (grouping === GroupOption.none) {
+      return { groupKeys: [], groupedPages: {} };
+    }
+
+    let groupedPages = groupBy(pages, grouping === GroupOption.Year ? 'fmYear' : 'fmDraft');
+    let groupKeys = Object.keys(groupedPages);
+
+    if (grouping === GroupOption.Year) {
+      groupKeys = groupKeys.sort((a, b) => {
+        return parseInt(b) - parseInt(a);
+      });
+    } else if (grouping === GroupOption.Draft && settings?.draftField?.type !== 'choice') {
+      const isInverted = settings?.draftField?.invert;
+      const allPublished: Page[] = groupedPages['Published'] || [];
+      const allDrafts: Page[] = groupedPages['Draft'] || [];
+
+      if (allPublished.length > 0) {
+        const drafts = !isInverted ? allDrafts : allPublished;
+        const published = (!isInverted ? allPublished : allDrafts).filter((page) => !page.fmPublished || page.fmPublished <= Date.now());
+        const scheduled = (!isInverted ? allPublished : allDrafts).filter((page) => page.fmPublished && page.fmPublished > Date.now());
+
+        delete groupedPages["Published"];
+        delete groupedPages["Draft"];
+
+        groupKeys = ['Scheduled', ...groupKeys];
+        groupedPages = {
+          "Scheduled": scheduled,
+          "Published": published,
+          "Draft": drafts,
+          ...groupedPages,
+        }
+      }
+    }
+
+    return { groupKeys, groupedPages };
+  }, [pages, grouping, settings?.draftField]);
+
   React.useEffect(() => {
     messageHandler.request<string[]>(DashboardMessage.getPinnedItems).then((items) => {
       setIsReady(true);
@@ -99,40 +137,33 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
   }
 
   if (grouping !== GroupOption.none) {
-    const groupedPages = groupBy(pages, grouping === GroupOption.Year ? 'fmYear' : 'fmDraft');
-    let groupKeys = Object.keys(groupedPages);
-
-    if (grouping === GroupOption.Year) {
-      groupKeys = groupKeys.sort((a, b) => {
-        return parseInt(b) - parseInt(a);
-      });
-    }
-
     return (
       <>
         {groupKeys.map((groupId, idx) => (
-          <Disclosure key={groupId} as={`div`} className={`w-full`} defaultOpen>
-            {({ open }) => (
-              <>
-                <Disclosure.Button className={`mb-4 ${idx !== 0 ? 'mt-8' : ''}`}>
-                  <h2 className={`text-2xl font-bold flex items-center`}>
-                    <ChevronRightIcon
-                      className={`w-8 h-8 mr-1 ${open ? 'transform rotate-90' : ''}`}
-                    />
-                    {groupName(groupId, groupedPages)}
-                  </h2>
-                </Disclosure.Button>
+          groupedPages[groupId].length > 0 && (
+            <Disclosure key={groupId} as={`div`} className={`w-full`} defaultOpen>
+              {({ open }) => (
+                <>
+                  <Disclosure.Button className={`mb-4 ${idx !== 0 ? 'mt-8' : ''}`}>
+                    <h2 className={`text-2xl font-bold flex items-center`}>
+                      <ChevronRightIcon
+                        className={`w-8 h-8 mr-1 ${open ? 'transform rotate-90' : ''}`}
+                      />
+                      {groupName(groupId, groupedPages)}
+                    </h2>
+                  </Disclosure.Button>
 
-                <Disclosure.Panel>
-                  <List>
-                    {groupedPages[groupId].map((page: Page) => (
-                      <Item key={`${page.slug}-${idx}`} {...page} />
-                    ))}
-                  </List>
-                </Disclosure.Panel>
-              </>
-            )}
-          </Disclosure>
+                  <Disclosure.Panel>
+                    <List>
+                      {groupedPages[groupId].map((page: Page) => (
+                        <Item key={`${page.slug}-${idx}`} {...page} />
+                      ))}
+                    </List>
+                  </Disclosure.Panel>
+                </>
+              )}
+            </Disclosure>
+          )
         ))}
       </>
     );

@@ -51,6 +51,11 @@ export const Navigation: React.FunctionComponent<INavigationProps> = ({
 
     if (settings?.draftField?.type === 'boolean' && tabInfo && Object.keys(tabInfo).length > 1) {
       crntTabs.push({ name: l10n.t(LocalizationKey.dashboardHeaderNavigationPublished), id: Tab.Published });
+
+      if (tabInfo.scheduled) {
+        crntTabs.push({ name: l10n.t(LocalizationKey.dashboardHeaderNavigationScheduled), id: Tab.Scheduled });
+      }
+
       crntTabs.push({ name: l10n.t(LocalizationKey.dashboardHeaderNavigationDraft), id: Tab.Draft });
     }
 
