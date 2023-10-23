@@ -8,12 +8,12 @@ export const List: React.FunctionComponent<IListProps> = ({
   gap,
   children
 }: React.PropsWithChildren<IListProps>) => {
-  const gapClass = gap !== undefined ? `gap-y-${gap}` : `gap-y-8`;
+  const gapClass = gap !== undefined ? `gap-y-${gap}` : ``;
 
   return (
     <ul
       role="list"
-      className={`grid grid-cols-2 gap-x-4 ${gapClass} sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8`}
+      className={`grid gap-4 ${gapClass} grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5`}
     >
       {children}
     </ul>

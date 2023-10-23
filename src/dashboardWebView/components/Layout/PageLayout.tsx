@@ -26,7 +26,7 @@ export const PageLayout: React.FunctionComponent<IPageLayoutProps> = ({
       <div
         className={
           contentClass ||
-          'w-full flex justify-between flex-col flex-grow max-w-7xl mx-auto pt-6 px-4'
+          'w-full flex justify-between flex-col flex-grow mx-auto pt-6 px-4 max-w-full xl:max-w-[90%]'
         }
       >
         {children}

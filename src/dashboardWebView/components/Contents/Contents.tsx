@@ -37,7 +37,7 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({
 
   return (
     <PageLayout folders={pageFolders} totalPages={pageItems.length}>
-      <div className="w-full flex-grow max-w-7xl mx-auto pb-6 px-4">
+      <div className="w-full flex-grow max-w-full mx-auto pb-6 px-4">
         {loading ? <Spinner /> : <Overview pages={pageItems} settings={settings} />}
       </div>
 

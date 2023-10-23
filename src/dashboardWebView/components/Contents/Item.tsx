@@ -91,7 +91,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                   <img
                     src={`${pageData[PREVIEW_IMAGE_FIELD]}`}
                     alt={escapedTitle || ""}
-                    className="absolute inset-0 h-full w-full object-cover group-hover:brightness-75"
+                    className="absolute inset-0 h-full w-full object-cover object-left-top group-hover:brightness-75"
                     loading="lazy"
                   />
                 ) : (

@@ -11,6 +11,8 @@
 
 ### ⚡️ Optimizations
 
+- Dashboard layout grid optimizations
+
 ### 🐞 Fixes
 
 - [#685](https://github.com/estruyf/vscode-front-matter/issues/685): Fix when using non-string values in the tag picker
