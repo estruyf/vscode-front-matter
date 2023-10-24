@@ -35,6 +35,7 @@ export interface ITagPickerProps {
   taxonomyId?: string;
   limit?: number;
   required?: boolean;
+  renderAsString?: boolean;
 }
 
 const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
@@ -53,7 +54,8 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
   parents,
   blockData,
   limit,
-  required
+  required,
+  renderAsString
 }: React.PropsWithChildren<ITagPickerProps>) => {
   const [selected, setSelected] = React.useState<string[]>([]);
   const [inputValue, setInputValue] = React.useState<string>('');
@@ -96,11 +98,12 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
    * Send an update to VSCode
    * @param values
    */
-  const sendUpdate = (values: string[]) => {
+  const sendUpdate = useCallback((values: string[]) => {
     if (type === TagType.tags) {
       Messenger.send(CommandToCode.updateTags, {
         fieldName,
         values,
+        renderAsString,
         parents,
         blockData
       });
@@ -108,6 +111,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
       Messenger.send(CommandToCode.updateCategories, {
         fieldName,
         values,
+        renderAsString,
         parents,
         blockData
       });
@@ -121,11 +125,12 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
         id: taxonomyId,
         name: fieldName,
         options: values,
+        renderAsString,
         parents,
         blockData
       } as CustomTaxonomyData);
     }
-  };
+  }, [renderAsString]);
 
   /**
    * Triggers the focus to the input when command is executed

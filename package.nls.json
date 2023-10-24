@@ -190,6 +190,7 @@
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.numberOptions.properties.max.description": "The maximum value",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.numberOptions.properties.step.description": "The step value",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.taxonomyLimit.description": "Limit the number of taxonomies to select. Set to 0 to allow unlimited.",
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.singleValueAsString.description": "Specify if you want to store a single array value as a string instead of an array.",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.isPublishDate.description": "Specify if the field is the publish date field",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.isModifiedDate.description": "Specify if the field is the modified date field",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.dataFileId.description": "Specify the ID of the data file to use for this field",

@@ -311,6 +311,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           parents={parentFields}
           blockData={blockData}
           limit={field.taxonomyLimit}
+          renderAsString={field.singleValueAsString}
           required={!!field.required}
         />
       </FieldBoundary>
@@ -335,6 +336,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           parents={parentFields}
           blockData={blockData}
           limit={field.taxonomyLimit}
+          renderAsString={field.singleValueAsString}
           required={!!field.required}
         />
       </FieldBoundary>
@@ -356,6 +358,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           parents={parentFields}
           blockData={blockData}
           limit={field.taxonomyLimit}
+          renderAsString={field.singleValueAsString}
           required={!!field.required}
         />
       </FieldBoundary>

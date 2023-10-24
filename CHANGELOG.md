@@ -6,6 +6,7 @@
 
 ### 🎨 Enhancements
 
+- [#273](https://github.com/estruyf/vscode-front-matter/issues/273): Allow single value arrays to be set as a string with the `singleValueAsString` field property
 - [#686](https://github.com/estruyf/vscode-front-matter/issues/686): Allow script authors to ask questions during script execution
 - [#688](https://github.com/estruyf/vscode-front-matter/issues/688): Allow to show the scheduled articles in the content dashboard (filter and group)
 

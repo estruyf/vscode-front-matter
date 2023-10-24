@@ -108,6 +108,7 @@ export interface Field {
   fieldGroup?: string | string[];
   dataType?: string | string[];
   taxonomyLimit?: number;
+  singleValueAsString?: boolean;
   fileExtensions?: string[];
   editable?: boolean;
   required?: boolean;
