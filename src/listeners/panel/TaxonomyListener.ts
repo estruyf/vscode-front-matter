@@ -28,6 +28,7 @@ export class TaxonomyListener extends BaseListener {
           msg.payload?.fieldName,
           msg.payload?.values || [],
           msg.payload?.parents || [],
+          typeof msg.payload?.renderAsString !== 'undefined' ? msg.payload?.renderAsString : false,
           msg.payload?.blockData
         );
         break;
@@ -36,6 +37,7 @@ export class TaxonomyListener extends BaseListener {
           msg.payload?.fieldName,
           msg.payload?.values || [],
           msg.payload?.parents || [],
+          typeof msg.payload?.renderAsString !== 'undefined' ? msg.payload?.renderAsString : false,
           msg.payload?.blockData
         );
         break;
@@ -134,6 +136,7 @@ export class TaxonomyListener extends BaseListener {
     fieldName: string,
     values: string[],
     parents: string[],
+    renderAsString: boolean,
     blockData?: BlockFieldData
   ) {
     const editor = window.activeTextEditor;
@@ -145,7 +148,17 @@ export class TaxonomyListener extends BaseListener {
     if (article && article.data) {
       const parentObj = DataListener.getParentObject(article.data, article, parents, blockData);
 
-      parentObj[fieldName] = values || [];
+      if (renderAsString) {
+        if (values.length === 0) {
+          parentObj[fieldName] = '';
+        } else if (values.length === 1) {
+          parentObj[fieldName] = values[0];
+        } else {
+          parentObj[fieldName] = values || [];
+        }
+      } else {
+        parentObj[fieldName] = values || [];
+      }
       ArticleHelper.update(editor, article);
       DataListener.pushMetadata(article!.data);
     }
@@ -174,7 +187,18 @@ export class TaxonomyListener extends BaseListener {
         data.blockData
       );
 
-      parentObj[data.name] = data.options || [];
+      if (data.renderAsString) {
+        if (!data.options || data.options.length === 0) {
+          parentObj[data.name] = '';
+        } else if (data.options.length === 1) {
+          parentObj[data.name] = data.options[0];
+        } else {
+          parentObj[data.name] = data.options || [] || [];
+        }
+      } else {
+        parentObj[data.name] = data.options || [];
+      }
+
       ArticleHelper.update(editor, article);
       DataListener.pushMetadata(article!.data);
     }

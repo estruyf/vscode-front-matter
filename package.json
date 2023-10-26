@@ -1272,6 +1272,11 @@
                       "default": 0,
                       "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.taxonomyLimit.description%"
                     },
+                    "singleValueAsString": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.singleValueAsString.description%"
+                    },
                     "isPublishDate": {
                       "type": "boolean",
                       "default": false,

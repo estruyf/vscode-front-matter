@@ -6,5 +6,6 @@ export interface CustomTaxonomyData {
   options?: string[] | undefined;
   option?: string | undefined;
   parents?: string[];
+  renderAsString?: boolean;
   blockData?: BlockFieldData;
 }
