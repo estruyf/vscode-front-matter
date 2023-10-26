@@ -1,5 +1,6 @@
-import { workspace, window, ThemeIcon } from 'vscode';
+import { workspace, window, ThemeIcon, TerminalOptions } from 'vscode';
 import * as os from 'os';
+import { Folders } from '../commands';
 
 interface ShellSetting {
   path: string;
@@ -41,11 +42,21 @@ export class Terminal {
       !localServerTerminal ||
       (localServerTerminal && localServerTerminal.state.isInteractedWith === true)
     ) {
-      localServerTerminal = window.createTerminal({
+      const terminalOptions: TerminalOptions = {
         name: Terminal.terminalName,
         iconPath: new ThemeIcon('server-environment'),
         message: `Starting local server`
-      });
+      };
+
+      // Check if workspace
+      if (workspace.workspaceFolders && workspace.workspaceFolders.length > 1) {
+        const wsFolder = Folders.getWorkspaceFolder();
+        if (wsFolder) {
+          terminalOptions.cwd = wsFolder;
+        }
+      }
+
+      localServerTerminal = window.createTerminal(terminalOptions);
     }
 
     if (localServerTerminal) {
