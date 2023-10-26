@@ -17,6 +17,7 @@
 
 - [#685](https://github.com/estruyf/vscode-front-matter/issues/685): Fix when using non-string values in the tag picker
 - [#691](https://github.com/estruyf/vscode-front-matter/issues/691): Silent authentication retrieval for GitHub sponsors
+- [#696](https://github.com/estruyf/vscode-front-matter/issues/696): Close the local server terminal on restart
 
 ## [9.3.0] - 2023-10-06 - [Release notes](https://beta.frontmatter.codes/updates/v9.3.0)
 

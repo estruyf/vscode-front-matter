@@ -36,6 +36,7 @@ import {
   Chatbot
 } from './commands';
 import { join } from 'path';
+import { Terminal } from './services';
 
 let pageUpdateDebouncer: { (fnc: any, time: number): void };
 let editDebounce: { (fnc: any, time: number): void };
@@ -57,6 +58,9 @@ export async function activate(context: vscode.ExtensionContext) {
       fsPath: vscode.l10n.uri.fsPath
     });
   }
+
+  // Make sure the terminal windows are closed
+  Terminal.closeLocalServerTerminal();
 
   if (!extension.checkIfExtensionCanRun()) {
     return undefined;

@@ -1,4 +1,4 @@
-import { workspace } from 'vscode';
+import { workspace, window, ThemeIcon } from 'vscode';
 import * as os from 'os';
 
 interface ShellSetting {
@@ -6,6 +6,8 @@ interface ShellSetting {
 }
 
 export class Terminal {
+  public static readonly terminalName: string = 'Local server';
+
   /**
    * Return the shell path for the current platform
    */
@@ -20,6 +22,58 @@ export class Terminal {
     }
 
     return shellPath;
+  }
+
+  /**
+   * Open a new local server terminal
+   */
+  public static openLocalServerTerminal(command: string) {
+    let localServerTerminal = Terminal.findLocalServerTerminal();
+    if (localServerTerminal) {
+      localServerTerminal.dispose();
+    }
+
+    if (!command) {
+      return;
+    }
+
+    if (
+      !localServerTerminal ||
+      (localServerTerminal && localServerTerminal.state.isInteractedWith === true)
+    ) {
+      localServerTerminal = window.createTerminal({
+        name: Terminal.terminalName,
+        iconPath: new ThemeIcon('server-environment'),
+        message: `Starting local server`
+      });
+    }
+
+    if (localServerTerminal) {
+      localServerTerminal.sendText(command);
+      localServerTerminal.show(false);
+    }
+  }
+
+  /**
+   * Close local server terminal
+   */
+  public static closeLocalServerTerminal() {
+    const localServerTerminal = Terminal.findLocalServerTerminal();
+    if (localServerTerminal) {
+      localServerTerminal.dispose();
+    }
+  }
+
+  /**
+   * Find the server terminal
+   * @returns
+   */
+  public static findLocalServerTerminal() {
+    let terminals = window.terminals;
+    if (terminals) {
+      const localServerTerminal = terminals.find((t) => t.name === Terminal.terminalName);
+      return localServerTerminal;
+    }
   }
 
   /**

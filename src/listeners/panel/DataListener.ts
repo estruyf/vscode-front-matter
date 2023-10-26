@@ -5,7 +5,7 @@ import { Folders } from '../../commands/Folders';
 import { Command } from '../../panelWebView/Command';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
-import { authentication, commands, ThemeIcon, window } from 'vscode';
+import { authentication, commands, window } from 'vscode';
 import { ArticleHelper, ContentType, Extension, Logger, Settings } from '../../helpers';
 import {
   COMMAND_NAME,
@@ -23,12 +23,12 @@ import { encodeEmoji } from '../../utils';
 import { PanelProvider } from '../../panelWebView/PanelProvider';
 import { MessageHandlerData } from '@estruyf/vscode';
 import { SponsorAi } from '../../services/SponsorAI';
+import { Terminal } from '../../services';
 
 const FILE_LIMIT = 10;
 
 export class DataListener extends BaseListener {
   private static lastMetadataUpdate: any = {};
-  private static readonly terminalName: string = 'Local server';
 
   /**
    * Process the messages for the dashboard views
@@ -509,27 +509,7 @@ export class DataListener extends BaseListener {
    */
   private static openTerminalWithCommand(command: string) {
     if (command) {
-      let localServerTerminal = DataListener.findServerTerminal();
-      if (localServerTerminal) {
-        localServerTerminal.dispose();
-      }
-
-      if (
-        !localServerTerminal ||
-        (localServerTerminal && localServerTerminal.state.isInteractedWith === true)
-      ) {
-        localServerTerminal = window.createTerminal({
-          name: this.terminalName,
-          iconPath: new ThemeIcon('server-environment'),
-          message: `Starting local server`
-        });
-      }
-
-      if (localServerTerminal) {
-        localServerTerminal.sendText(command);
-        localServerTerminal.show(false);
-      }
-
+      Terminal.openLocalServerTerminal(command);
       this.sendMsg(Command.serverStarted, true);
     }
   }
@@ -538,11 +518,7 @@ export class DataListener extends BaseListener {
    * Stop the local server
    */
   private static stopServer() {
-    const localServerTerminal = DataListener.findServerTerminal();
-    if (localServerTerminal) {
-      localServerTerminal.dispose();
-    }
-
+    Terminal.closeLocalServerTerminal();
     this.sendMsg(Command.serverStarted, false);
   }
 
@@ -554,20 +530,8 @@ export class DataListener extends BaseListener {
       return;
     }
 
-    const localServerTerminal = DataListener.findServerTerminal();
+    const localServerTerminal = Terminal.findLocalServerTerminal();
     this.sendRequest(command, requestId, !!localServerTerminal);
-  }
-
-  /**
-   * Find the server terminal
-   * @returns
-   */
-  private static findServerTerminal() {
-    let terminals = window.terminals;
-    if (terminals) {
-      const localServerTerminal = terminals.find((t) => t.name === DataListener.terminalName);
-      return localServerTerminal;
-    }
   }
 
   /**
