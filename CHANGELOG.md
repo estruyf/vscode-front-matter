@@ -21,6 +21,12 @@
 - [#694](https://github.com/estruyf/vscode-front-matter/issues/694): Start terminal session from the folder where the `frontmatter.json` file is located
 - [#696](https://github.com/estruyf/vscode-front-matter/issues/696): Close the local server terminal on restart
 
+## [9.3.1] - 2023-10-27
+
+### 🐞 Fixes
+
+- [#697](https://github.com/estruyf/vscode-front-matter/issues/697): Fix missing localization key
+
 ## [9.3.0] - 2023-10-06 - [Release notes](https://beta.frontmatter.codes/updates/v9.3.0)
 
 ### ✨ New features
