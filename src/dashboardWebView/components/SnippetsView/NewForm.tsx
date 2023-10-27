@@ -105,7 +105,7 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
               onChange={(e) => onMediaSnippetUpdate(e.currentTarget.checked)}
               className={`h-4 w-4 rounded ${getColors(
                 `focus:ring-teal-500 text-teal-600 border-gray-300 dark:border-vulcan-50`,
-                `focus:ring-[var(--frontmatter-button-background)] text-[var(--frontmatter-button-background)] border-[var(--vscode-editorWidget-border)]`
+                `focus:ring-[var(--frontmatter-button-background)] text-[var(--frontmatter-button-background)] border-[var(--frontmatter-border)]`
               )
                 }`}
             />
