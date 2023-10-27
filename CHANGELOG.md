@@ -1,5 +1,11 @@
 # Change Log
 
+## [9.3.1] - 2023-10-27
+
+### 🐞 Fixes
+
+- [#697](https://github.com/estruyf/vscode-front-matter/issues/697): Fix missing localization key
+
 ## [9.3.0] - 2023-10-06 - [Release notes](https://beta.frontmatter.codes/updates/v9.3.0)
 
 ### ✨ New features

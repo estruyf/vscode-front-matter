@@ -993,7 +993,7 @@
         "frontMatter.panel.actions.disabled": {
           "type": "array",
           "default": [],
-          "markdownDescription": "%setting.frontMatter.panel.actions.disabeld.markdownDescription%",
+          "markdownDescription": "%setting.frontMatter.panel.actions.disabled.markdownDescription%",
           "enum": [
             "openDashboard",
             "createContent",
