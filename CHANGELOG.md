@@ -13,6 +13,7 @@
 ### ⚡️ Optimizations
 
 - Dashboard layout grid optimizations
+- Added the content-type name to the metadata section in the panel
 
 ### 🐞 Fixes
 

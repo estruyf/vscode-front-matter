@@ -19,7 +19,7 @@ export default function useContentType(
 
       // Get the content type by the folder name
       const pageFolders = settings.contentFolders;
-      let pageFolderMatches = pageFolders.filter((folder) => metadata.filePath.includes(folder.path));
+      let pageFolderMatches = pageFolders.filter((folder) => metadata.filePath && folder.path && metadata.filePath.includes(folder.path));
 
       // Sort by longest path
       pageFolderMatches = pageFolderMatches.sort((a, b) => b.path.length - a.path.length);
