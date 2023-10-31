@@ -32,6 +32,7 @@ import { ContentFolder, Snippet, TaxonomyType } from '../models';
 import { Notifications } from './Notifications';
 import { Settings } from './SettingsHelper';
 import { TaxonomyHelper } from './TaxonomyHelper';
+import { Cache } from '../commands/Cache';
 
 export class Extension {
   private static instance: Extension;
@@ -104,6 +105,9 @@ export class Extension {
         });
 
       this.setVersion(installedVersion);
+
+      // Reset the cache
+      Cache.clear(false);
     }
 
     return {
