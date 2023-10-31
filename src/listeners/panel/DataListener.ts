@@ -254,7 +254,7 @@ export class DataListener extends BaseListener {
       return;
     }
 
-    const contentType = ArticleHelper.getContentType(article.data);
+    const contentType = ArticleHelper.getContentType(article);
 
     if (!value && field !== titleField && contentType.clearEmpty) {
       value = undefined;
@@ -374,7 +374,7 @@ export class DataListener extends BaseListener {
   ) {
     let parentObj = data;
     let allParents = Object.assign([], parents);
-    const contentType = ArticleHelper.getContentType(article.data);
+    const contentType = ArticleHelper.getContentType(article);
     let selectedIndexes: number[] = [];
     if (blockData?.selectedIndex) {
       if (typeof blockData.selectedIndex === 'string') {

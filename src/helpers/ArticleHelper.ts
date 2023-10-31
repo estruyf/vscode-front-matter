@@ -60,9 +60,19 @@ export class ArticleHelper {
    *
    * @param document The document to parse.
    */
-  public static getFrontMatterFromDocument(document: vscode.TextDocument) {
+  public static getFrontMatterFromDocument(
+    document: vscode.TextDocument
+  ): ParsedFrontMatter | undefined {
     const fileContents = document.getText();
-    return ArticleHelper.parseFile(fileContents, document.fileName);
+    const article = ArticleHelper.parseFile(fileContents, document.fileName);
+    if (!article) {
+      return undefined;
+    }
+
+    return {
+      ...article,
+      path: document.uri.fsPath
+    };
   }
 
   /**
@@ -79,7 +89,10 @@ export class ArticleHelper {
       return;
     }
 
-    return article;
+    return {
+      ...article,
+      path: editor.document.uri.fsPath
+    };
   }
 
   /**
@@ -88,7 +101,15 @@ export class ArticleHelper {
    */
   public static async getFrontMatterByPath(filePath: string) {
     const file = await readFileAsync(filePath, { encoding: 'utf-8' });
-    return ArticleHelper.parseFile(file, filePath);
+    const article = ArticleHelper.parseFile(file, filePath);
+    if (!article) {
+      return undefined;
+    }
+
+    return {
+      ...article,
+      path: filePath
+    };
   }
 
   /**
@@ -240,7 +261,7 @@ export class ArticleHelper {
   /**
    * Get date from front matter
    */
-  public static getDate(article: ParsedFrontMatter | null) {
+  public static getDate(article: ParsedFrontMatter | null | undefined) {
     if (!article || !article.data) {
       return;
     }
@@ -270,7 +291,7 @@ export class ArticleHelper {
       return;
     }
 
-    const articleCt = ArticleHelper.getContentType(article.data);
+    const articleCt = ArticleHelper.getContentType(article);
     const pubDateField = articleCt.fields.find((f) => f.isPublishDate);
 
     return (
@@ -290,7 +311,7 @@ export class ArticleHelper {
       return;
     }
 
-    const articleCt = ArticleHelper.getContentType(article.data);
+    const articleCt = ArticleHelper.getContentType(article);
     const modDateField = articleCt.fields.find((f) => f.isModifiedDate);
 
     return (
@@ -312,16 +333,38 @@ export class ArticleHelper {
    * Retrieve the content type of the current file
    * @param updatedMetadata
    */
-  public static getContentType(metadata: { [field: string]: string }): IContentType {
+  public static getContentType(article: ParsedFrontMatter): IContentType {
     const contentTypes = ArticleHelper.getContentTypes();
 
-    if (!contentTypes || !metadata) {
+    if (!contentTypes || !article.data) {
       return DEFAULT_CONTENT_TYPE;
     }
 
-    let contentType = contentTypes.find(
-      (ct) => ct.name === (metadata.type || DEFAULT_CONTENT_TYPE_NAME)
-    );
+    let contentType: IContentType | undefined = undefined;
+
+    // Get content type by type name in the front matter
+    if (article.data.type) {
+      contentType = contentTypes.find((ct) => ct.name === article.data.type);
+    } else if (!contentType && article.path) {
+      // Get the content type by the folder name
+      let folders = Folders.get();
+      let parsedPath = parseWinPath(article.path);
+      let pageFolderMatches = folders.filter(
+        (folder) => parsedPath && folder.path && parsedPath.includes(folder.path)
+      );
+
+      // Sort by longest path
+      pageFolderMatches = pageFolderMatches.sort((a, b) => b.path.length - a.path.length);
+      if (
+        pageFolderMatches.length > 0 &&
+        pageFolderMatches[0].contentTypes &&
+        pageFolderMatches[0].contentTypes.length === 1
+      ) {
+        const contentTypeName = pageFolderMatches[0].contentTypes[0];
+        contentType = contentTypes.find((ct) => ct.name === contentTypeName);
+      }
+    }
+
     if (!contentType) {
       contentType = contentTypes.find((ct) => ct.name === DEFAULT_CONTENT_TYPE_NAME);
     }
@@ -343,17 +386,17 @@ export class ArticleHelper {
    * Update all dates in the metadata
    * @param metadata
    */
-  public static updateDates(metadata: { [field: string]: string }) {
-    const contentType = ArticleHelper.getContentType(metadata);
+  public static updateDates(article: ParsedFrontMatter) {
+    const contentType = ArticleHelper.getContentType(article);
     const dateFields = contentType.fields.filter((field) => field.type === 'datetime');
 
     for (const dateField of dateFields) {
-      if (typeof metadata[dateField.name] !== 'undefined') {
-        metadata[dateField.name] = Article.formatDate(new Date(), dateField.dateFormat);
+      if (typeof article?.data[dateField.name] !== 'undefined') {
+        article.data[dateField.name] = Article.formatDate(new Date(), dateField.dateFormat);
       }
     }
 
-    return metadata;
+    return article.data;
   }
 
   /**

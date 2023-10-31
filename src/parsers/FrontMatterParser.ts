@@ -11,6 +11,7 @@ export interface Format {
 export interface ParsedFrontMatter {
   data: { [key: string]: any };
   content: string;
+  path?: string;
 }
 
 export class FrontMatterParser {

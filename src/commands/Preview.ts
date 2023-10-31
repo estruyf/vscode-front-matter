@@ -213,7 +213,7 @@ export class Preview {
    * @returns
    */
   public static async getContentSlug(
-    article: ParsedFrontMatter | null,
+    article: ParsedFrontMatter | null | undefined,
     filePath?: string
   ): Promise<string | undefined> {
     if (!filePath) {
@@ -230,7 +230,7 @@ export class Preview {
 
     let contentType: ContentType | undefined = undefined;
     if (article?.data) {
-      contentType = ArticleHelper.getContentType(article.data);
+      contentType = ArticleHelper.getContentType(article);
     }
 
     // Check if there is a pathname defined on content folder level

@@ -171,7 +171,7 @@ export class PagesParser {
 
       const dateField = ArticleHelper.getPublishDateField(article) || DefaultFields.PublishingDate;
 
-      const contentType = ArticleHelper.getContentType(article.data);
+      const contentType = ArticleHelper.getContentType(article);
       let dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
       const ctDateField = ContentType.findFieldByName(contentType.fields, dateField);
       if (ctDateField && ctDateField.dateFormat) {
@@ -211,7 +211,7 @@ export class PagesParser {
         fmRelFileWsPath: FilesHelper.absToRelPath(filePath),
         fmRelFilePath: parseWinPath(filePath).replace(wsFolder?.fsPath || '', ''),
         fmFileName: fileName,
-        fmDraft: ContentType.getDraftStatus(article?.data),
+        fmDraft: ContentType.getDraftStatus(article),
         fmModified: modifiedFieldValue ? modifiedFieldValue : fileMtime,
         fmPublished: dateFieldValue ? dateFieldValue.getTime() : null,
         fmYear: dateFieldValue ? dateFieldValue.getFullYear() : null,

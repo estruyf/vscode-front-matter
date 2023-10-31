@@ -305,7 +305,7 @@ export class TaxonomyHelper {
           if (mdFile) {
             try {
               const article = FrontMatterParser.fromFile(mdFile);
-              const contentType = ArticleHelper.getContentType(article.data);
+              const contentType = ArticleHelper.getContentType(article);
 
               let fieldNames: string[] = this.getFieldsHierarchy(taxonomyType, contentType);
 
@@ -415,7 +415,7 @@ export class TaxonomyHelper {
           if (mdFile) {
             try {
               const article = FrontMatterParser.fromFile(mdFile);
-              const contentType = ArticleHelper.getContentType(article.data);
+              const contentType = ArticleHelper.getContentType(article);
 
               let oldFieldNames: string[] = this.getFieldsHierarchy(oldType, contentType);
               let newFieldNames: string[] = this.getFieldsHierarchy(newType, contentType, true);

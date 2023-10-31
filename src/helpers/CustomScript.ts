@@ -71,7 +71,7 @@ export class CustomScript {
     path: string | null = null
   ): Promise<void> {
     let articlePath: string | null = path;
-    let article: ParsedFrontMatter | null = null;
+    let article: ParsedFrontMatter | null | undefined = null;
 
     if (!path) {
       const editor = window.activeTextEditor;
@@ -214,7 +214,7 @@ export class CustomScript {
    */
   private static async runScript(
     wsPath: string,
-    article: ParsedFrontMatter | null,
+    article: ParsedFrontMatter | null | undefined,
     contentPath: string,
     script: ICustomScript
   ): Promise<string | null> {

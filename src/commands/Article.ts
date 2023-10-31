@@ -127,7 +127,7 @@ export class Article {
    * @param article
    */
   public static updateDate(article: ParsedFrontMatter) {
-    article.data = ArticleHelper.updateDates(article.data);
+    article.data = ArticleHelper.updateDates(article);
     return article;
   }
 
@@ -227,7 +227,7 @@ export class Article {
     }
 
     let filePrefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
-    const contentType = ArticleHelper.getContentType(article.data);
+    const contentType = ArticleHelper.getContentType(article);
     filePrefix = ArticleHelper.getFilePrefix(filePrefix, editor.document.uri.fsPath, contentType);
 
     const titleField = 'title';
@@ -393,7 +393,7 @@ export class Article {
 
     const article = ArticleHelper.getFrontMatter(editor);
     const contentType =
-      article && article.data ? ArticleHelper.getContentType(article.data) : DEFAULT_CONTENT_TYPE;
+      article && article.data ? ArticleHelper.getContentType(article) : DEFAULT_CONTENT_TYPE;
 
     const position = editor.selection.active;
     const selectionText = editor.document.getText(editor.selection);

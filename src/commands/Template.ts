@@ -165,11 +165,15 @@ export class Template {
         newFilePath
       );
 
-      frontMatter = Article.updateDate(frontMatter);
+      const article = Article.updateDate(frontMatter);
+
+      if (!article) {
+        return;
+      }
 
       await writeFileAsync(
         newFilePath,
-        ArticleHelper.stringifyFrontMatter(frontMatter.content, frontMatter.data),
+        ArticleHelper.stringifyFrontMatter(article.content, article.data),
         { encoding: 'utf8' }
       );
 
