@@ -33,6 +33,7 @@ import { fieldWhenClause } from '../../../utils/fieldWhenClause';
 import { ContentTypeRelationshipField } from './ContentTypeRelationshipField';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { ComboboxField } from './ComboboxField';
 
 export interface IWrapperFieldProps {
   field: Field;
@@ -485,7 +486,18 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
   } else if (field.type === 'contentRelationship') {
     return (
       <FieldBoundary key={field.name} fieldName={field.title || field.name}>
-        <ContentTypeRelationshipField
+        {/* <ContentTypeRelationshipField
+          label={field.title || field.name}
+          description={field.description}
+          value={fieldValue as string}
+          required={!!field.required}
+          contentTypeName={field.contentTypeName}
+          contentTypeValue={field.contentTypeValue}
+          multiSelect={field.multiple}
+          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+        /> */}
+
+        <ComboboxField
           label={field.title || field.name}
           description={field.description}
           value={fieldValue as string}

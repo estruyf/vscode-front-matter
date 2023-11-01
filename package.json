@@ -2526,7 +2526,7 @@
     "@actions/core": "^1.10.0",
     "@bendera/vscode-webview-elements": "0.6.2",
     "@estruyf/vscode": "^1.1.0",
-    "@headlessui/react": "1.5.0",
+    "@headlessui/react": "^1.7.17",
     "@heroicons/react": "1.0.4",
     "@iarna/toml": "2.2.3",
     "@octokit/rest": "^18.12.0",
