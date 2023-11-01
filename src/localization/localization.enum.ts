@@ -112,6 +112,10 @@ export enum LocalizationKey {
    */
   commonUnpin = 'common.unpin',
   /**
+   * No results
+   */
+  commonNoResults = 'common.noResults',
+  /**
    * Common
    */
   settingsViewCommon = 'settings.view.common',

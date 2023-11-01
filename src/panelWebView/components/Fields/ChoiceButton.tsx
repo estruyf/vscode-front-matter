@@ -6,21 +6,23 @@ import { LocalizationKey } from '../../../localization';
 export interface IChoiceButtonProps {
   title: string;
   value: string;
+  className?: string;
   onClick: (value: string) => void;
 }
 
 export const ChoiceButton: React.FunctionComponent<IChoiceButtonProps> = ({
   title,
   value,
+  className,
   onClick
 }: React.PropsWithChildren<IChoiceButtonProps>) => {
   return (
     <button
       title={l10n.t(LocalizationKey.commonRemoveValue, title)}
-      className="metadata_field__choice__button"
+      className={`metadata_field__choice__button text-left ${className || ""}`}
       onClick={() => onClick(value)}
     >
-      {title}
+      <span>{title}</span>
       <XIcon className={`metadata_field__choice__button_icon`} />
     </button>
   );
