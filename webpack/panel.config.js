@@ -31,7 +31,21 @@ const config = [{
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader', 'postcss-loader']
+        use: ['style-loader', 'css-loader', {
+          loader: "postcss-loader",
+          options: {
+            postcssOptions: {
+              plugins: {
+                'postcss-import': {},
+                'tailwindcss/nesting': {},
+                tailwindcss: {
+                  config: path.resolve(__dirname, '../tailwind.panel.js')
+                },
+                autoprefixer: {},
+              },
+            },
+          },
+        }]
       },
       {
         test: /\.m?js/,

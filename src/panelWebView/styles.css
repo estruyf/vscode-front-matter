@@ -1,3 +1,6 @@
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
 /* Animations */
 @keyframes spin {
   from {
