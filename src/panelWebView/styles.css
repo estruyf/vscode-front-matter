@@ -1,3 +1,6 @@
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
 /* Animations */
 @keyframes spin {
   from {
@@ -969,7 +972,7 @@ vscode-divider {
 
 /* Divider */
 .divider {
-  background: var(--divider-background);
+  background: var(--vscode-panel-border);
 }
 
 /* Git actions */

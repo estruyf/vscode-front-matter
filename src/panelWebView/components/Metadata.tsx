@@ -89,7 +89,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
   };
 
   return (
-    <Collapsible id={`tags`} title={l10n.t(LocalizationKey.panelMetadataTitle)} className={`inherit z-20`}>
+    <Collapsible id={`tags`} title={`${l10n.t(LocalizationKey.panelMetadataTitle)}${contentType?.name ? ` (${contentType?.name})` : ""}`} className={`inherit z-20`}>
       <FeatureFlag features={features || []} flag={FEATURE_FLAG.panel.contentType}>
         <ContentTypeValidator fields={contentType?.fields || []} metadata={metadata} />
       </FeatureFlag>

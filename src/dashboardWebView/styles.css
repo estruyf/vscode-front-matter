@@ -351,7 +351,7 @@
   select {
     color: var(--vscode-input-foreground);
     background-color: var(--vscode-input-background);
-    border: 1px solid var(--vscode-editorWidget-border);
+    border: 1px solid var(--vscode-panel-border);
     font-size: var(--vscode-font-size);
     @apply rounded;
 

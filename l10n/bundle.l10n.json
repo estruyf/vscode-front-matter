@@ -27,6 +27,7 @@
   "common.refreshSettings": "Refresh settings",
   "common.pin": "Pin",
   "common.unpin": "Unpin",
+  "common.noResults": "No results",
 
   "settings.view.common": "Common",
   "settings.view.contentFolders": "Content folders",

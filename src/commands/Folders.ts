@@ -361,7 +361,10 @@ export class Folders {
    */
   public static get(): ContentFolder[] {
     const wsFolder = Folders.getWorkspaceFolder();
-    const folders: ContentFolder[] = Settings.get(SETTING_CONTENT_PAGE_FOLDERS) as ContentFolder[];
+    let folders: ContentFolder[] = Settings.get(SETTING_CONTENT_PAGE_FOLDERS) as ContentFolder[];
+
+    // Filter out folders without a path
+    folders = folders.filter((f) => f.path);
 
     const contentFolders = folders.map((folder) => {
       if (!folder.title) {

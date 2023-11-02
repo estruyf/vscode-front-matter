@@ -380,7 +380,7 @@ export class MediaHelpers {
 
       const article = editor ? ArticleHelper.getFrontMatter(editor) : null;
       const articleCt =
-        article && article.data ? ArticleHelper.getContentType(article.data) : DEFAULT_CONTENT_TYPE;
+        article && article.data ? ArticleHelper.getContentType(article) : DEFAULT_CONTENT_TYPE;
 
       const absImgPath = join(parseWinPath(wsFolder?.fsPath || ''), relPath);
       const fileDir = parseWinPath(dirname(filePath));

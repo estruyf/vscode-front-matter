@@ -49,18 +49,18 @@ export class ContentType {
    * @param data
    * @returns
    */
-  public static getDraftStatus(data: { [field: string]: any }) {
-    const contentType = ArticleHelper.getContentType(data);
+  public static getDraftStatus(article: ParsedFrontMatter) {
+    const contentType = ArticleHelper.getContentType(article);
     const draftSetting = ContentType.getDraftField();
 
     const draftField = contentType.fields.find((f) => f.type === 'draft');
 
     let fieldValue = null;
 
-    if (draftField) {
-      fieldValue = data[draftField.name];
-    } else if (draftSetting && data && data[draftSetting.name]) {
-      fieldValue = data[draftSetting.name];
+    if (draftField && article?.data) {
+      fieldValue = article?.data[draftField.name];
+    } else if (draftSetting && article?.data && article?.data[draftSetting.name]) {
+      fieldValue = article?.data[draftSetting.name];
     }
 
     if (draftSetting && fieldValue !== null) {
@@ -282,7 +282,7 @@ export class ContentType {
       return;
     }
 
-    const contentType = ArticleHelper.getContentType(content?.data);
+    const contentType = ArticleHelper.getContentType(content);
     const updatedFields = ContentType.generateFields(content.data, contentType.fields);
 
     const contentTypes = ContentType.getAll() || [];
@@ -492,7 +492,7 @@ export class ContentType {
    * Find the required fields
    */
   public static findEmptyRequiredFields(article: ParsedFrontMatter): Field[][] | undefined {
-    const contentType = ArticleHelper.getContentType(article.data);
+    const contentType = ArticleHelper.getContentType(article);
     if (!contentType) {
       return;
     }
@@ -793,7 +793,7 @@ export class ContentType {
         }
 
         let templatePath = contentType.template;
-        let templateData: ParsedFrontMatter | null = null;
+        let templateData: ParsedFrontMatter | null | undefined = null;
         if (templatePath) {
           templatePath = Folders.getAbsFilePath(templatePath);
           templateData = await ArticleHelper.getFrontMatterByPath(templatePath);

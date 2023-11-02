@@ -9,10 +9,13 @@
 - [#273](https://github.com/estruyf/vscode-front-matter/issues/273): Allow single value arrays to be set as a string with the `singleValueAsString` field property
 - [#686](https://github.com/estruyf/vscode-front-matter/issues/686): Allow script authors to ask questions during script execution
 - [#688](https://github.com/estruyf/vscode-front-matter/issues/688): Allow to show the scheduled articles in the content dashboard (filter and group)
+- [#690](https://github.com/estruyf/vscode-front-matter/issues/690): Added the ability to filter values in the `contentRelationship` field
 
 ### ⚡️ Optimizations
 
 - Dashboard layout grid optimizations
+- Added the content-type name to the metadata section in the panel
+- New implementation of the combobox for the `contentRelationship` field
 
 ### 🐞 Fixes
 
@@ -20,6 +23,13 @@
 - [#691](https://github.com/estruyf/vscode-front-matter/issues/691): Silent authentication retrieval for GitHub sponsors
 - [#694](https://github.com/estruyf/vscode-front-matter/issues/694): Start terminal session from the folder where the `frontmatter.json` file is located
 - [#696](https://github.com/estruyf/vscode-front-matter/issues/696): Close the local server terminal on restart
+- [#699](https://github.com/estruyf/vscode-front-matter/issues/699): Changing border theme variable for the dashboard header
+
+## [9.3.1] - 2023-10-27
+
+### 🐞 Fixes
+
+- [#697](https://github.com/estruyf/vscode-front-matter/issues/697): Fix missing localization key
 
 ## [9.3.0] - 2023-10-06 - [Release notes](https://beta.frontmatter.codes/updates/v9.3.0)
 

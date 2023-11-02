@@ -136,7 +136,7 @@ if (elm) {
     });
 
     Sentry.setTag("type", "dashboard");
-    if (document.body.getAttribute(`data - vscode - theme - id`)) {
+    if (document.body.getAttribute(`data-vscode-theme-id`)) {
       Sentry.setTag("theme", document.body.getAttribute(`data-vscode-theme-id`));
     }
   }

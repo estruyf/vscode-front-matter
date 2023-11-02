@@ -1,6 +1,6 @@
 import { commands } from 'vscode';
 import { COMMAND_NAME, ExtensionState } from '../constants';
-import { Extension, Notifications } from '../helpers';
+import { Extension, Logger, Notifications } from '../helpers';
 
 export class Cache {
   public static async registerCommands() {
@@ -29,6 +29,8 @@ export class Cache {
 
     if (showNotification) {
       Notifications.info('Cache cleared');
+    } else {
+      Logger.info('Cache cleared');
     }
   }
 }
