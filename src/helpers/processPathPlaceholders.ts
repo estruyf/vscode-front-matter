@@ -1,3 +1,4 @@
+import { dirname, relative } from 'path';
 import { ContentFolder } from '../models';
 
 export const processPathPlaceholders = (
@@ -7,6 +8,13 @@ export const processPathPlaceholders = (
   contentFolder: ContentFolder | null | undefined
 ) => {
   if (value && value.includes('{{pathToken.')) {
+    const relPathToken = '{{pathToken.relPath}}';
+    if (value.includes(relPathToken) && contentFolder?.path) {
+      const dirName = dirname(filePath);
+      let relPath = relative(contentFolder.path, dirName);
+      value = value.replace(relPathToken, relPath);
+    }
+
     const regex = /{{pathToken.(\d+|relPath)}}/g;
     const matches = value.match(regex);
     if (matches) {

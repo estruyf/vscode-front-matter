@@ -10,6 +10,7 @@
 - [#686](https://github.com/estruyf/vscode-front-matter/issues/686): Allow script authors to ask questions during script execution
 - [#688](https://github.com/estruyf/vscode-front-matter/issues/688): Allow to show the scheduled articles in the content dashboard (filter and group)
 - [#690](https://github.com/estruyf/vscode-front-matter/issues/690): Added the ability to filter values in the `contentRelationship` field
+- [#700](https://github.com/estruyf/vscode-front-matter/issues/700): Added the `{{pathToken.relPath}}` placeholder for the `previewPath` property
 
 ### ⚡️ Optimizations
 
