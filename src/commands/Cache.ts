@@ -1,6 +1,8 @@
 import { commands } from 'vscode';
 import { COMMAND_NAME, ExtensionState } from '../constants';
 import { Extension, Logger, Notifications } from '../helpers';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class Cache {
   public static async registerCommands() {
@@ -28,9 +30,9 @@ export class Cache {
     await ext.setState(ExtensionState.Settings.Extends, undefined, 'workspace', true);
 
     if (showNotification) {
-      Notifications.info('Cache cleared');
+      Notifications.info(l10n.t(LocalizationKey.commandsCacheCleared));
     } else {
-      Logger.info('Cache cleared');
+      Logger.info(l10n.t(LocalizationKey.commandsCacheCleared));
     }
   }
 }

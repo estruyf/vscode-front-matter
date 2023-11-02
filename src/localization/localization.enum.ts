@@ -1453,6 +1453,106 @@ export enum LocalizationKey {
    */
   panelViewPanelMediaInsert = 'panel.viewPanel.mediaInsert',
   /**
+   * No {0} configured.
+   */
+  commandsArticleNotificationNoTaxonomy = 'commands.article.notification.noTaxonomy',
+  /**
+   * Select your {0} to insert.
+   */
+  commandsArticleQuickPickPlaceholder = 'commands.article.quickPick.placeholder',
+  /**
+   * Something failed while parsing the date format. Check your "{0}" setting.
+   */
+  commandsArticleSetDateError = 'commands.article.setDate.error',
+  /**
+   * Failed to rename file: {0}
+   */
+  commandsArticleUpdateSlugError = 'commands.article.updateSlug.error',
+  /**
+   * Cache cleared
+   */
+  commandsCacheCleared = 'commands.cache.cleared',
+  /**
+   * Ask me anything
+   */
+  commandsChatbotTitle = 'commands.chatbot.title',
+  /**
+   * Create content by content type
+   */
+  commandsContentOptionContentTypeLabel = 'commands.content.option.contentType.label',
+  /**
+   * Select if you want to create new content by the available content type(s)
+   */
+  commandsContentOptionContentTypeDescription = 'commands.content.option.contentType.description',
+  /**
+   * Create content by template
+   */
+  commandsContentOptionTemplateLabel = 'commands.content.option.template.label',
+  /**
+   * Select if you want to create new content by the available template(s)
+   */
+  commandsContentOptionTemplateDescription = 'commands.content.option.template.description',
+  /**
+   * Create content
+   */
+  commandsContentQuickPickTitle = 'commands.content.quickPick.title',
+  /**
+   * Select how you want to create your new content
+   */
+  commandsContentQuickPickPlaceholder = 'commands.content.quickPick.placeholder',
+  /**
+   * Dashboard
+   */
+  commandsDashboardTitle = 'commands.dashboard.title',
+  /**
+   * Add media folder
+   */
+  commandsFoldersAddMediaFolderInputBoxTitle = 'commands.folders.addMediaFolder.inputBox.title',
+  /**
+   * Which name would you like to give to your folder (use "/" to create multi-level folders)?
+   */
+  commandsFoldersAddMediaFolderInputBoxPrompt = 'commands.folders.addMediaFolder.inputBox.prompt',
+  /**
+   * No folder name was specified.
+   */
+  commandsFoldersAddMediaFolderNoFolderWarning = 'commands.folders.addMediaFolder.noFolder.warning',
+  /**
+   * Folder is already registered
+   */
+  commandsFoldersCreateFolderExistsWarning = 'commands.folders.create.folderExists.warning',
+  /**
+   * Register folder
+   */
+  commandsFoldersCreateInputTitle = 'commands.folders.create.input.title',
+  /**
+   * Which name would you like to specify for this folder?
+   */
+  commandsFoldersCreateInputPrompt = 'commands.folders.create.input.prompt',
+  /**
+   * Folder name
+   */
+  commandsFoldersCreateInputPlaceholder = 'commands.folders.create.input.placeholder',
+  /**
+   * Folder registered
+   */
+  commandsFoldersCreateSuccess = 'commands.folders.create.success',
+  /**
+   * Please select the main workspace folder for Front Matter to use.
+   */
+  commandsFoldersGetWorkspaceFolderWorkspaceFolderPickPlaceholder = 'commands.folders.getWorkspaceFolder.workspaceFolderPick.placeholder',
+  /**
+   * Folder "{0}" does not exist. Please remove it from the settings.
+   */
+  commandsFoldersGetNotificationErrorTitle = 'commands.folders.get.notificationError.title',
+  /**
+   * Remove folder
+   */
+  commandsFoldersGetNotificationErrorRemoveAction = 'commands.folders.get.notificationError.remove.action',
+  /**
+   * Create folder
+   */
+  commandsFoldersGetNotificationErrorCreateAction = 'commands.folders.get.notificationError.create.action',
+  /**
    * Template files copied.
    */
   listenersDashboardSettingsListenerTriggerTemplateNotification = 'listeners.dashboard.settingsListener.triggerTemplate.notification'

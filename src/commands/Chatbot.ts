@@ -2,9 +2,11 @@ import { Telemetry } from './../helpers/Telemetry';
 import { TelemetryEvent, PreviewCommands, GeneralCommands } from './../constants';
 import { join } from 'path';
 import { commands, Uri, ViewColumn, window } from 'vscode';
-import { Extension, Settings } from '../helpers';
+import { Extension } from '../helpers';
 import { WebviewHelper } from '@estruyf/vscode';
 import { getLocalizationFile } from '../utils/getLocalizationFile';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class Chatbot {
   /**
@@ -14,7 +16,7 @@ export class Chatbot {
     // Create the preview webview
     const webView = window.createWebviewPanel(
       'frontMatterChatbot',
-      'Front Matter AI - Ask me anything',
+      `Front Matter AI - ${l10n.t(LocalizationKey.commandsChatbotTitle)}`,
       {
         viewColumn: ViewColumn.Beside,
         preserveFocus: true

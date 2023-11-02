@@ -457,5 +457,37 @@
 
   "panel.viewPanel.mediaInsert": "Continue in the media dashboard to select the image you want to insert.",
 
+  "commands.article.notification.noTaxonomy": "No {0} configured.",
+  "commands.article.quickPick.placeholder": "Select your {0} to insert.",
+  "commands.article.setDate.error": "Something failed while parsing the date format. Check your \"{0}\" setting.",
+  "commands.article.updateSlug.error": "Failed to rename file: {0}",
+
+  "commands.cache.cleared": "Cache cleared",
+
+  "commands.chatbot.title": "Ask me anything",
+
+  "commands.content.option.contentType.label": "Create content by content type",
+  "commands.content.option.contentType.description": "Select if you want to create new content by the available content type(s)",
+  "commands.content.option.template.label": "Create content by template",
+  "commands.content.option.template.description": "Select if you want to create new content by the available template(s)",
+  "commands.content.quickPick.title": "Create content",
+  "commands.content.quickPick.placeholder": "Select how you want to create your new content",
+
+  "commands.dashboard.title": "Dashboard",
+
+  "commands.folders.addMediaFolder.inputBox.title": "Add media folder",
+  "commands.folders.addMediaFolder.inputBox.prompt": "Which name would you like to give to your folder (use \"/\" to create multi-level folders)?",
+  "commands.folders.addMediaFolder.noFolder.warning": "No folder name was specified.",
+  "commands.folders.create.folderExists.warning": "Folder is already registered",
+  "commands.folders.create.input.title": "Register folder",
+  "commands.folders.create.input.prompt": "Which name would you like to specify for this folder?",
+  "commands.folders.create.input.placeholder": "Folder name",
+  "commands.folders.create.success": "Folder registered",
+  "commands.folders.getWorkspaceFolder.workspaceFolderPick.placeholder": "Please select the main workspace folder for Front Matter to use.",
+  "commands.folders.get.notificationError.title": "Folder \"{0}\" does not exist. Please remove it from the settings.",
+  "commands.folders.get.notificationError.remove.action": "Remove folder",
+  "commands.folders.get.notificationError.create.action": "Create folder",
+
   "listeners.dashboard.settingsListener.triggerTemplate.notification": "Template files copied."
+
 }
