@@ -109,20 +109,22 @@ export class Template {
 
     const templates = await Template.getTemplates();
     if (!templates || templates.length === 0) {
-      Notifications.warning(`No templates found.`);
+      Notifications.warning(l10n.t(LocalizationKey.commandsTemplateCreateNoTemplatesWarning));
       return;
     }
 
     const selectedTemplate = await vscode.window.showQuickPick(
       templates.map((t) => path.basename(t.fsPath)),
       {
-        title: `Select a template`,
-        placeHolder: `Select the content template to use`,
+        title: l10n.t(LocalizationKey.commandsTemplateCreateSelectTemplateTitle),
+        placeHolder: l10n.t(LocalizationKey.commandsTemplateCreateSelectTemplatePlaceholder),
         ignoreFocusOut: true
       }
     );
     if (!selectedTemplate) {
-      Notifications.warning(`No template selected.`);
+      Notifications.warning(
+        l10n.t(LocalizationKey.commandsTemplateCreateSelectTemplateNoTemplateWarning)
+      );
       return;
     }
 
@@ -134,7 +136,9 @@ export class Template {
     // Start the template read
     const template = templates.find((t) => t.fsPath.endsWith(selectedTemplate));
     if (!template) {
-      Notifications.warning(`Content template could not be found.`);
+      Notifications.warning(
+        l10n.t(LocalizationKey.commandsTemplateCreateSelectTemplateNotFoundWarning)
+      );
       return;
     }
 
@@ -161,7 +165,7 @@ export class Template {
     // Update the properties inside the template
     let frontMatter = await ArticleHelper.getFrontMatterByPath(newFilePath);
     if (!frontMatter) {
-      Notifications.warning(`Something failed when retrieving the newly created file.`);
+      Notifications.warning(l10n.t(LocalizationKey.commonError));
       return;
     }
 
@@ -192,7 +196,7 @@ export class Template {
       vscode.window.showTextDocument(txtDoc);
     }
 
-    Notifications.info(`Your new content has been created.`);
+    Notifications.info(l10n.t(LocalizationKey.commandsTemplateCreateSuccess));
 
     Telemetry.send(TelemetryEvent.createContentFromTemplate);
 

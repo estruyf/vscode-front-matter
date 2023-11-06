@@ -128,6 +128,10 @@ export enum LocalizationKey {
    */
   commonNo = 'common.no',
   /**
+   * Open settings
+   */
+  commonOpenSettings = 'common.openSettings',
+  /**
    * output window
    */
   notificationsOutputChannelLink = 'notifications.outputChannel.link',
@@ -1692,6 +1696,302 @@ export enum LocalizationKey {
    * Incorrect project folder path retrieved.
    */
   commandsTemplateCreateFolderPathWarning = 'commands.template.create.folderPath.warning',
+  /**
+   * No templates found.
+   */
+  commandsTemplateCreateNoTemplatesWarning = 'commands.template.create.noTemplates.warning',
+  /**
+   * Select a template
+   */
+  commandsTemplateCreateSelectTemplateTitle = 'commands.template.create.selectTemplate.title',
+  /**
+   * Select the content template to use
+   */
+  commandsTemplateCreateSelectTemplatePlaceholder = 'commands.template.create.selectTemplate.placeholder',
+  /**
+   * No template selected.
+   */
+  commandsTemplateCreateSelectTemplateNoTemplateWarning = 'commands.template.create.selectTemplate.noTemplate.warning',
+  /**
+   * Content template could not be found.
+   */
+  commandsTemplateCreateSelectTemplateNotFoundWarning = 'commands.template.create.selectTemplate.notFound.warning',
+  /**
+   * Your new content is now available.
+   */
+  commandsTemplateCreateSuccess = 'commands.template.create.success',
+  /**
+   * Unordered list
+   */
+  commandsWysiwygCommandUnorderedListLabel = 'commands.wysiwyg.command.unorderedList.label',
+  /**
+   * Add an unordered list
+   */
+  commandsWysiwygCommandUnorderedListDetail = 'commands.wysiwyg.command.unorderedList.detail',
+  /**
+   * Ordered list
+   */
+  commandsWysiwygCommandOrderedListLabel = 'commands.wysiwyg.command.orderedList.label',
+  /**
+   * Add an ordered list
+   */
+  commandsWysiwygCommandOrderedListDetail = 'commands.wysiwyg.command.orderedList.detail',
+  /**
+   * Task list
+   */
+  commandsWysiwygCommandTaskListLabel = 'commands.wysiwyg.command.taskList.label',
+  /**
+   * Add a task list
+   */
+  commandsWysiwygCommandTaskListDetail = 'commands.wysiwyg.command.taskList.detail',
+  /**
+   * Code
+   */
+  commandsWysiwygCommandCodeLabel = 'commands.wysiwyg.command.code.label',
+  /**
+   * Add inline code snippet
+   */
+  commandsWysiwygCommandCodeDetail = 'commands.wysiwyg.command.code.detail',
+  /**
+   * Code block
+   */
+  commandsWysiwygCommandCodeblockLabel = 'commands.wysiwyg.command.codeblock.label',
+  /**
+   * Add a code block
+   */
+  commandsWysiwygCommandCodeblockDetail = 'commands.wysiwyg.command.codeblock.detail',
+  /**
+   * Blockquote
+   */
+  commandsWysiwygCommandBlockquoteLabel = 'commands.wysiwyg.command.blockquote.label',
+  /**
+   * Add a blockquote
+   */
+  commandsWysiwygCommandBlockquoteDetail = 'commands.wysiwyg.command.blockquote.detail',
+  /**
+   * Strikethrough
+   */
+  commandsWysiwygCommandStrikethroughLabel = 'commands.wysiwyg.command.strikethrough.label',
+  /**
+   * Add strikethrough text
+   */
+  commandsWysiwygCommandStrikethroughDetail = 'commands.wysiwyg.command.strikethrough.detail',
+  /**
+   * WYSIWYG Options
+   */
+  commandsWysiwygQuickPickTitle = 'commands.wysiwyg.quickPick.title',
+  /**
+   * Which type of markup would you like to insert?
+   */
+  commandsWysiwygQuickPickPlaceholder = 'commands.wysiwyg.quickPick.placeholder',
+  /**
+   * WYSIWYG Hyperlink
+   */
+  commandsWysiwygAddHyperlinkHyperlinkInputTitle = 'commands.wysiwyg.addHyperlink.hyperlinkInput.title',
+  /**
+   * Enter the URL
+   */
+  commandsWysiwygAddHyperlinkHyperlinkInputPrompt = 'commands.wysiwyg.addHyperlink.hyperlinkInput.prompt',
+  /**
+   * WYSIWYG Text
+   */
+  commandsWysiwygAddHyperlinkTextInputTitle = 'commands.wysiwyg.addHyperlink.textInput.title',
+  /**
+   * Enter the text for the hyperlink
+   */
+  commandsWysiwygAddHyperlinkTextInputPrompt = 'commands.wysiwyg.addHyperlink.textInput.prompt',
+  /**
+   * Heading level
+   */
+  commandsWysiwygInsertTextHeadingInputTitle = 'commands.wysiwyg.insertText.heading.input.title',
+  /**
+   * Which heading level do you want to insert?
+   */
+  commandsWysiwygInsertTextHeadingInputPlaceholder = 'commands.wysiwyg.insertText.heading.input.placeholder',
+  /**
+   * A page bundle with the name {0} already exists in {1}.
+   */
+  helpersArticleHelperCreateContentPageBundleError = 'helpers.articleHelper.createContent.pageBundle.error',
+  /**
+   * Content with the title already exists. Please specify a new title.
+   */
+  helpersArticleHelperCreateContentContentExistsWarning = 'helpers.articleHelper.createContent.contentExists.warning',
+  /**
+   * Error while processing the {0} placeholder.
+   */
+  helpersArticleHelperProcessCustomPlaceholdersPlaceholderError = 'helpers.articleHelper.processCustomPlaceholders.placeholder.error',
+  /**
+   * Error parsing the front matter of {0}.
+   */
+  helpersArticleHelperParseFileDiagnosticError = 'helpers.articleHelper.parseFile.diagnostic.error',
+  /**
+   * No front matter data found to generate a content type.
+   */
+  helpersContentTypeGenerateNoFrontMatterError = 'helpers.contentType.generate.noFrontMatter.error',
+  /**
+   * Override the default content type
+   */
+  helpersContentTypeGenerateOverrideQuickPickTitle = 'helpers.contentType.generate.override.quickPick.title',
+  /**
+   * Do you want to overwrite the default content type configuration with the fields used in the current field?
+   */
+  helpersContentTypeGenerateOverrideQuickPickPlaceholder = 'helpers.contentType.generate.override.quickPick.placeholder',
+  /**
+   * Generate Content Type
+   */
+  helpersContentTypeGenerateContentTypeInputTitle = 'helpers.contentType.generate.contentTypeInput.title',
+  /**
+   * Enter the name of the content type to generate
+   */
+  helpersContentTypeGenerateContentTypeInputPrompt = 'helpers.contentType.generate.contentTypeInput.prompt',
+  /**
+   * Please enter a name for the content type.
+   */
+  helpersContentTypeGenerateContentTypeInputValidationEnterName = 'helpers.contentType.generate.contentTypeInput.validation.enterName',
+  /**
+   * A content type with this name already exists.
+   */
+  helpersContentTypeGenerateContentTypeInputValidationNameExists = 'helpers.contentType.generate.contentTypeInput.validation.nameExists',
+  /**
+   * You didn't specify a name for the content type.
+   */
+  helpersContentTypeGenerateNoContentTypeNameWarning = 'helpers.contentType.generate.noContentTypeName.warning',
+  /**
+   * Use as a page bundle
+   */
+  helpersContentTypeGeneratePageBundleQuickPickTitle = 'helpers.contentType.generate.pageBundle.quickPick.title',
+  /**
+   * Do you want to use this content type as a page bundle?
+   */
+  helpersContentTypeGeneratePageBundleQuickPickPlaceHolder = 'helpers.contentType.generate.pageBundle.quickPick.placeHolder',
+  /**
+   * Content type {0} has been updated.
+   */
+  helpersContentTypeGenerateUpdatedSuccess = 'helpers.contentType.generate.updated.success',
+  /**
+   * Content type {0} has been generated.
+   */
+  helpersContentTypeGenerateGeneratedSuccess = 'helpers.contentType.generate.generated.success',
+  /**
+   * No front matter data found to add missing fields.
+   */
+  helpersContentTypeAddMissingFieldsNoFrontMatterWarning = 'helpers.contentType.addMissingFields.noFrontMatter.warning',
+  /**
+   * Content type {0} has been updated.
+   */
+  helpersContentTypeAddMissingFieldsUpdatedSuccess = 'helpers.contentType.addMissingFields.updated.success',
+  /**
+   * No front matter data found to set the content type.
+   */
+  helpersContentTypeSetContentTypeNoFrontMatterWarning = 'helpers.contentType.setContentType.noFrontMatter.warning',
+  /**
+   * Select the content type
+   */
+  helpersContentTypeSetContentTypeQuickPickTitle = 'helpers.contentType.setContentType.quickPick.title',
+  /**
+   * Which content type would you like to use?
+   */
+  helpersContentTypeSetContentTypeQuickPickPlaceholder = 'helpers.contentType.setContentType.quickPick.placeholder',
+  /**
+   * {0}: Creating content...
+   */
+  helpersContentTypeCreateProgressTitle = 'helpers.contentType.create.progress.title',
+  /**
+   * Your new content has been created.
+   */
+  helpersContentTypeCreateSuccess = 'helpers.contentType.create.success',
+  /**
+   * The content type actions are not available in this mode.
+   */
+  helpersContentTypeVerifyWarning = 'helpers.contentType.verify.warning',
+  /**
+   * Executing: {0}
+   */
+  helpersCustomScriptExecuting = 'helpers.customScript.executing',
+  /**
+   * {0}: Article couldn't be retrieved.
+   */
+  helpersCustomScriptSingleRunArticleWarning = 'helpers.customScript.singleRun.article.warning',
+  /**
+   * {0}: No files found
+   */
+  helpersCustomScriptBulkRunNoFilesWarning = 'helpers.customScript.bulkRun.noFiles.warning',
+  /**
+   * {0}: There was no folder or media path specified.
+   */
+  helpersCustomScriptRunMediaScriptNoFolderWarning = 'helpers.customScript.runMediaScript.noFolder.warning',
+  /**
+   * {0}: front matter updated.
+   */
+  helpersCustomScriptShowOutputFrontMatterSuccess = 'helpers.customScript.showOutput.frontMatter.success',
+  /**
+   * Copy output
+   */
+  helpersCustomScriptShowOutputCopyOutputAction = 'helpers.customScript.showOutput.copyOutput.action',
+  /**
+   * {0}: Executed your custom script.
+   */
+  helpersCustomScriptShowOutputSuccess = 'helpers.customScript.showOutput.success',
+  /**
+   * Invalid command: {0}
+   */
+  helpersCustomScriptValidateCommandError = 'helpers.customScript.validateCommand.error',
+  /**
+   * Something went wrong while processing the data file.
+   */
+  helpersDataFileHelperProcessError = 'helpers.dataFileHelper.process.error',
+  /**
+   * Check the changelog
+   */
+  helpersExtensionGetVersionChangelog = 'helpers.extension.getVersion.changelog',
+  /**
+   * Give it a ⭐️
+   */
+  helpersExtensionGetVersionStarIt = 'helpers.extension.getVersion.starIt',
+  /**
+   * {0} has been updated to v{1} — check out what's new!
+   */
+  helpersExtensionGetVersionUpdateNotification = 'helpers.extension.getVersion.update.notification',
+  /**
+   * The "{0}" and "{1}" settings have been deprecated. Please use the "isPublishDate" and "isModifiedDate" datetime field properties instead.
+   */
+  helpersExtensionMigrateSettingsDeprecatedWarning = 'helpers.extension.migrateSettings.deprecated.warning',
+  /**
+   * Hide
+   */
+  helpersExtensionMigrateSettingsDeprecatedWarningHide = 'helpers.extension.migrateSettings.deprecated.warning.hide',
+  /**
+   * See migration guide
+   */
+  helpersExtensionMigrateSettingsDeprecatedWarningSeeGuide = 'helpers.extension.migrateSettings.deprecated.warning.seeGuide',
+  /**
+   * {0} - Templates
+   */
+  helpersExtensionMigrateSettingsTemplatesQuickPickTitle = 'helpers.extension.migrateSettings.templates.quickPick.title',
+  /**
+   * Do you want to keep on using the template functionality?
+   */
+  helpersExtensionMigrateSettingsTemplatesQuickPickPlaceholder = 'helpers.extension.migrateSettings.templates.quickPick.placeholder',
+  /**
+   * Front Matter BETA cannot be used while the stable version is installed. Please ensure that you have only over version installed.
+   */
+  helpersExtensionCheckIfExtensionCanRunWarning = 'helpers.extension.checkIfExtensionCanRun.warning',
+  /**
+   * We couldn't find your selected folder.
+   */
+  helpersMediaHelperSaveFileFolderError = 'helpers.mediaHelper.saveFile.folder.error',
+  /**
+   * File {0} uploaded to: {1}
+   */
+  helpersMediaHelperSaveFileFileUploadedSuccess = 'helpers.mediaHelper.saveFile.file.uploaded.success',
+  /**
+   * Sorry, something went wrong uploading {0}
+   */
+  helpersMediaHelperSaveFileFileUploadedFailed = 'helpers.mediaHelper.saveFile.file.uploaded.failed',
+  /**
+   * Sorry, something went wrong deleting {0}
+   */
+  helpersMediaHelperDeleteFileFileDeletionFailed = 'helpers.mediaHelper.deleteFile.file.deletion.failed',
   /**
    * Template files copied.
    */

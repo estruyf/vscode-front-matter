@@ -1,6 +1,8 @@
 import { commands, window, Selection, QuickPickItem, TextEditor } from 'vscode';
 import { COMMAND_NAME, CONTEXT, SETTING_CONTENT_WYSIWYG } from '../constants';
 import { Settings } from '../helpers';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 enum MarkupType {
   bold = 1,
@@ -81,45 +83,45 @@ export class Wysiwyg {
       commands.registerCommand(COMMAND_NAME.options, async () => {
         const qpItems: QuickPickItem[] = [
           {
-            label: '$(list-unordered) Unordered list',
-            detail: 'Add an unordered list',
+            label: `$(list-unordered) ${LocalizationKey.commandsWysiwygCommandUnorderedListLabel}`,
+            detail: LocalizationKey.commandsWysiwygCommandUnorderedListDetail,
             alwaysShow: true
           },
           {
-            label: '$(list-ordered) Ordered list',
-            detail: 'Add an ordered list',
+            label: `$(list-ordered) ${LocalizationKey.commandsWysiwygCommandOrderedListLabel}`,
+            detail: LocalizationKey.commandsWysiwygCommandOrderedListDetail,
             alwaysShow: true
           },
           {
-            label: '$(tasklist) Task list',
-            detail: 'Add a task list',
+            label: `$(tasklist) ${LocalizationKey.commandsWysiwygCommandTaskListLabel}`,
+            detail: LocalizationKey.commandsWysiwygCommandTaskListDetail,
             alwaysShow: true
           },
           {
-            label: '$(code) Code',
-            detail: 'Add inline code snippet',
+            label: `$(code) ${LocalizationKey.commandsWysiwygCommandCodeLabel}`,
+            detail: LocalizationKey.commandsWysiwygCommandCodeDetail,
             alwaysShow: true
           },
           {
-            label: '$(symbol-namespace) Code block',
-            detail: 'Add a code block',
+            label: `$(symbol-namespace) ${LocalizationKey.commandsWysiwygCommandCodeblockLabel}`,
+            detail: LocalizationKey.commandsWysiwygCommandCodeblockDetail,
             alwaysShow: true
           },
           {
-            label: '$(quote) Blockquote',
-            detail: 'Add a blockquote',
+            label: `$(quote) ${LocalizationKey.commandsWysiwygCommandBlockquoteLabel}`,
+            detail: LocalizationKey.commandsWysiwygCommandBlockquoteDetail,
             alwaysShow: true
           },
           {
-            label: '$(symbol-text) Strikethrough',
-            detail: 'Add a strikethrough',
+            label: `$(symbol-text) ${LocalizationKey.commandsWysiwygCommandStrikethroughLabel}`,
+            detail: LocalizationKey.commandsWysiwygCommandStrikethroughDetail,
             alwaysShow: true
           }
         ];
 
         const option = await window.showQuickPick([...qpItems], {
-          title: 'WYSIWYG Options',
-          placeHolder: 'Which type of markup would you like to insert?',
+          title: l10n.t(LocalizationKey.commandsWysiwygQuickPickTitle),
+          placeHolder: l10n.t(LocalizationKey.commandsWysiwygQuickPickPlaceholder),
           canPickMany: false,
           ignoreFocusOut: true
         });
@@ -209,17 +211,17 @@ export class Wysiwyg {
     const linkText = hasTextSelection ? editor.document.getText(selection) : '';
 
     const link = await window.showInputBox({
-      title: 'WYSIWYG Hyperlink',
-      placeHolder: 'Enter the URL',
-      prompt: 'Enter the URL',
+      title: l10n.t(LocalizationKey.commandsWysiwygAddHyperlinkHyperlinkInputTitle),
+      placeHolder: l10n.t(LocalizationKey.commandsWysiwygAddHyperlinkHyperlinkInputPrompt),
+      prompt: l10n.t(LocalizationKey.commandsWysiwygAddHyperlinkHyperlinkInputPrompt),
       value: linkText,
       ignoreFocusOut: true
     });
 
     const text = await window.showInputBox({
-      title: 'WYSIWYG Text',
-      prompt: 'Enter the text for the hyperlink',
-      placeHolder: 'Enter the text for the hyperlink',
+      title: l10n.t(LocalizationKey.commandsWysiwygAddHyperlinkTextInputTitle),
+      prompt: l10n.t(LocalizationKey.commandsWysiwygAddHyperlinkTextInputPrompt),
+      placeHolder: l10n.t(LocalizationKey.commandsWysiwygAddHyperlinkTextInputPrompt),
       value: linkText,
       ignoreFocusOut: true
     });
@@ -278,9 +280,9 @@ export class Wysiwyg {
         const headingLvl = await window.showQuickPick(
           ['Heading 1', 'Heading 2', 'Heading 3', 'Heading 4', 'Heading 5', 'Heading 6'],
           {
-            title: 'Heading Level',
+            title: l10n.t(LocalizationKey.commandsWysiwygInsertTextHeadingInputTitle),
+            placeHolder: l10n.t(LocalizationKey.commandsWysiwygInsertTextHeadingInputPlaceholder),
             canPickMany: false,
-            placeHolder: 'Which heading level do you want to insert?',
             ignoreFocusOut: true
           }
         );
