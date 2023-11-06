@@ -1993,6 +1993,210 @@ export enum LocalizationKey {
    */
   helpersMediaHelperDeleteFileFileDeletionFailed = 'helpers.mediaHelper.deleteFile.file.deletion.failed',
   /**
+   * The name "{0}" already exists at the file location.
+   */
+  helpersMediaLibraryRemoveWarning = 'helpers.mediaLibrary.remove.warning',
+  /**
+   * Sorry, something went wrong updating "{0}" to "{1}".
+   */
+  helpersMediaLibraryRemoveError = 'helpers.mediaLibrary.remove.error',
+  /**
+   * Couldn't open the file.
+   */
+  helpersOpenFileInEditorError = 'helpers.openFileInEditor.error',
+  /**
+   * Title or description
+   */
+  helpersQuestionsContentTitleAiInputTitle = 'helpers.questions.contentTitle.aiInput.title',
+  /**
+   * What would you like to write about?
+   */
+  helpersQuestionsContentTitleAiInputPrompt = 'helpers.questions.contentTitle.aiInput.prompt',
+  /**
+   * What would you like to write about?
+   */
+  helpersQuestionsContentTitleAiInputPlaceholder = 'helpers.questions.contentTitle.aiInput.placeholder',
+  /**
+   * your title/description
+   */
+  helpersQuestionsContentTitleAiInputQuickPickTitleSeparator = 'helpers.questions.contentTitle.aiInput.quickPick.title.separator',
+  /**
+   * AI generated title
+   */
+  helpersQuestionsContentTitleAiInputQuickPickAiSeparator = 'helpers.questions.contentTitle.aiInput.quickPick.ai.separator',
+  /**
+   * Select a title
+   */
+  helpersQuestionsContentTitleAiInputSelectTitle = 'helpers.questions.contentTitle.aiInput.select.title',
+  /**
+   * Select a title for your content
+   */
+  helpersQuestionsContentTitleAiInputSelectPlaceholder = 'helpers.questions.contentTitle.aiInput.select.placeholder',
+  /**
+   * Failed fetching the AI title. Please try to use your own title or try again later.
+   */
+  helpersQuestionsContentTitleAiInputFailed = 'helpers.questions.contentTitle.aiInput.failed',
+  /**
+   * You did not specify a title for your content.
+   */
+  helpersQuestionsContentTitleAiInputWarning = 'helpers.questions.contentTitle.aiInput.warning',
+  /**
+   * Content title
+   */
+  helpersQuestionsContentTitleTitleInputTitle = 'helpers.questions.contentTitle.titleInput.title',
+  /**
+   * What would you like to use as a title for the content to create?
+   */
+  helpersQuestionsContentTitleTitleInputPrompt = 'helpers.questions.contentTitle.titleInput.prompt',
+  /**
+   * Content title
+   */
+  helpersQuestionsContentTitleTitleInputPlaceholder = 'helpers.questions.contentTitle.titleInput.placeholder',
+  /**
+   * You did not specify a title for your content.
+   */
+  helpersQuestionsContentTitleTitleInputWarning = 'helpers.questions.contentTitle.titleInput.warning',
+  /**
+   * Select a folder
+   */
+  helpersQuestionsSelectContentFolderQuickPickTitle = 'helpers.questions.selectContentFolder.quickPick.title',
+  /**
+   * Select where you want to create your content
+   */
+  helpersQuestionsSelectContentFolderQuickPickPlaceholder = 'helpers.questions.selectContentFolder.quickPick.placeholder',
+  /**
+   * No page folders were configured.
+   */
+  helpersQuestionsSelectContentFolderQuickPickNoFoldersWarning = 'helpers.questions.selectContentFolder.quickPick.noFolders.warning',
+  /**
+   * You didn't select a place where you wanted to create your content.
+   */
+  helpersQuestionsSelectContentFolderQuickPickNoSelectionWarning = 'helpers.questions.selectContentFolder.quickPick.noSelection.warning',
+  /**
+   * No content types found. Please create a content type first.
+   */
+  helpersQuestionsSelectContentTypeNoContentTypeWarning = 'helpers.questions.selectContentType.noContentType.warning',
+  /**
+   * Content type
+   */
+  helpersQuestionsSelectContentTypeQuickPickTitle = 'helpers.questions.selectContentType.quickPick.title',
+  /**
+   * Select the content type to create your new content
+   */
+  helpersQuestionsSelectContentTypeQuickPickPlaceholder = 'helpers.questions.selectContentType.quickPick.placeholder',
+  /**
+   * No content type was selected.
+   */
+  helpersQuestionsSelectContentTypeNoSelectionWarning = 'helpers.questions.selectContentType.noSelection.warning',
+  /**
+   * Article {0} is longer than {1} characters (current length: {2}). For SEO reasons, it would be better to make it less than {1} characters.
+   */
+  helpersSeoHelperCheckLengthDiagnosticMessage = 'helpers.seoHelper.checkLength.diagnostic.message',
+  /**
+   * You have local settings. Would you like to promote them to the global settings ("frontmatter.json")?
+   */
+  helpersSettingsHelperCheckToPromoteMessage = 'helpers.settingsHelper.checkToPromote.message',
+  /**
+   * All settings promoted to team level.
+   */
+  helpersSettingsHelperPromoteSuccess = 'helpers.settingsHelper.promote.success',
+  /**
+   * {0}: Reading dynamic config file...
+   */
+  helpersSettingsHelperReadConfigProgressTitle = 'helpers.settingsHelper.readConfig.progress.title',
+  /**
+   * Error reading your configuration.
+   */
+  helpersSettingsHelperReadConfigError = 'helpers.settingsHelper.readConfig.error',
+  /**
+   * Settings have been refreshed.
+   */
+  helpersSettingsHelperRefreshConfigSuccess = 'helpers.settingsHelper.refreshConfig.success',
+  /**
+   * Rename the {0}
+   */
+  helpersTaxonomyHelperRenameInputTitle = 'helpers.taxonomyHelper.rename.input.title',
+  /**
+   * The new value must be different from the old one.
+   */
+  helpersTaxonomyHelperRenameValidateEqualValue = 'helpers.taxonomyHelper.rename.validate.equalValue',
+  /**
+   * A new value must be provided.
+   */
+  helpersTaxonomyHelperRenameValidateNoValue = 'helpers.taxonomyHelper.rename.validate.noValue',
+  /**
+   * Merge the "{0}" with another {1} value
+   */
+  helpersTaxonomyHelperMergeQuickPickTitle = 'helpers.taxonomyHelper.merge.quickPick.title',
+  /**
+   * Select the {0} value to merge with
+   */
+  helpersTaxonomyHelperMergeQuickPickPlaceholder = 'helpers.taxonomyHelper.merge.quickPick.placeholder',
+  /**
+   * Delete the "{0}" {1} value
+   */
+  helpersTaxonomyHelperDeleteQuickPickTitle = 'helpers.taxonomyHelper.delete.quickPick.title',
+  /**
+   * Are you sure you want to delete the "{0}" {1} value?
+   */
+  helpersTaxonomyHelperDeleteQuickPickPlaceholder = 'helpers.taxonomyHelper.delete.quickPick.placeholder',
+  /**
+   * Create a new {0} value
+   */
+  helpersTaxonomyHelperCreateNewInputTitle = 'helpers.taxonomyHelper.createNew.input.title',
+  /**
+   * Enter the value you want to add
+   */
+  helpersTaxonomyHelperCreateNewInputPlaceholder = 'helpers.taxonomyHelper.createNew.input.placeholder',
+  /**
+   * A value must be provided.
+   */
+  helpersTaxonomyHelperCreateNewInputValidateNoValue = 'helpers.taxonomyHelper.createNew.input.validate.noValue',
+  /**
+   * The value already exists.
+   */
+  helpersTaxonomyHelperCreateNewInputValidateExists = 'helpers.taxonomyHelper.createNew.input.validate.exists',
+  /**
+   * {0}: Renaming "{1}" from {2} to {3}.
+   */
+  helpersTaxonomyHelperProcessEdit = 'helpers.taxonomyHelper.process.edit',
+  /**
+   * {0}: Merging "{1}" from {2} to {3}.
+   */
+  helpersTaxonomyHelperProcessMerge = 'helpers.taxonomyHelper.process.merge',
+  /**
+   * {0}: Deleting "{1}" from {2}.
+   */
+  helpersTaxonomyHelperProcessDelete = 'helpers.taxonomyHelper.process.delete',
+  /**
+   * Edit completed.
+   */
+  helpersTaxonomyHelperProcessEditSuccess = 'helpers.taxonomyHelper.process.edit.success',
+  /**
+   * Merge completed.
+   */
+  helpersTaxonomyHelperProcessMergeSuccess = 'helpers.taxonomyHelper.process.merge.success',
+  /**
+   * Deletion completed.
+   */
+  helpersTaxonomyHelperProcessDeleteSuccess = 'helpers.taxonomyHelper.process.delete.success',
+  /**
+   * Move the "{0}" to another type
+   */
+  helpersTaxonomyHelperMoveQuickPickTitle = 'helpers.taxonomyHelper.move.quickPick.title',
+  /**
+   * Select the type to move to
+   */
+  helpersTaxonomyHelperMoveQuickPickPlaceholder = 'helpers.taxonomyHelper.move.quickPick.placeholder',
+  /**
+   * {0}: Moving "{1}" from {2} to "${3}".
+   */
+  helpersTaxonomyHelperMoveProgressTitle = 'helpers.taxonomyHelper.move.progress.title',
+  /**
+   * Move completed.
+   */
+  helpersTaxonomyHelperMoveSuccess = 'helpers.taxonomyHelper.move.success',
+  /**
    * Template files copied.
    */
   listenersDashboardSettingsListenerTriggerTemplateNotification = 'listeners.dashboard.settingsListener.triggerTemplate.notification'
