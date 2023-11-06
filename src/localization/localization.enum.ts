@@ -116,6 +116,26 @@ export enum LocalizationKey {
    */
   commonNoResults = 'common.noResults',
   /**
+   * Sorry, something went wrong.
+   */
+  commonError = 'common.error',
+  /**
+   * yes
+   */
+  commonYes = 'common.yes',
+  /**
+   * no
+   */
+  commonNo = 'common.no',
+  /**
+   * output window
+   */
+  notificationsOutputChannelLink = 'notifications.outputChannel.link',
+  /**
+   * Check the {0} for more details.
+   */
+  notificationsOutputChannelDescription = 'notifications.outputChannel.description',
+  /**
    * Common
    */
   settingsViewCommon = 'settings.view.common',
@@ -1552,6 +1572,126 @@ export enum LocalizationKey {
    * Create folder
    */
   commandsFoldersGetNotificationErrorCreateAction = 'commands.folders.get.notificationError.create.action',
+  /**
+   * Preview: {0}
+   */
+  commandsPreviewPanelTitle = 'commands.preview.panel.title',
+  /**
+   * Select the folder of the article to preview
+   */
+  commandsPreviewAskUserToPickFolderTitle = 'commands.preview.askUserToPickFolder.title',
+  /**
+   * Project initialized successfully.
+   */
+  commandsProjectInitializeSuccess = 'commands.project.initialize.success',
+  /**
+   * To which project do you want to switch?
+   */
+  commandsProjectSwitchProjectTitle = 'commands.project.switchProject.title',
+  /**
+   * Sample template created.
+   */
+  commandsProjectCreateSampleTemplateInfo = 'commands.project.createSampleTemplate.info',
+  /**
+   * Insert the value of the {0} that you want to add to your configuration.
+   */
+  commandsSettingsCreateInputPrompt = 'commands.settings.create.input.prompt',
+  /**
+   * Name of the {0}
+   */
+  commandsSettingsCreateInputPlaceholder = 'commands.settings.create.input.placeholder',
+  /**
+   * The provided {0} already exists.
+   */
+  commandsSettingsCreateWarning = 'commands.settings.create.warning',
+  /**
+   * Do you want to add the new {0} to the page?
+   */
+  commandsSettingsCreateQuickPickPlaceholder = 'commands.settings.create.quickPick.placeholder',
+  /**
+   * {0}: exporting tags and categories
+   */
+  commandsSettingsExportProgressTitle = 'commands.settings.export.progress.title',
+  /**
+   * Export completed. Tags: {0} - Categories: {1}.
+   */
+  commandsSettingsExportProgressSuccess = 'commands.settings.export.progress.success',
+  /**
+   * Remap
+   */
+  commandsSettingsRemapQuickpickTitle = 'commands.settings.remap.quickpick.title',
+  /**
+   * What do you want to remap?
+   */
+  commandsSettingsRemapQuickpickPlaceholder = 'commands.settings.remap.quickpick.placeholder',
+  /**
+   * No {0} configured.
+   */
+  commandsSettingsRemapNoTaxonomyWarning = 'commands.settings.remap.noTaxonomy.warning',
+  /**
+   * Select your {0} to insert.
+   */
+  commandsSettingsRemapSelectTaxonomyPlaceholder = 'commands.settings.remap.selectTaxonomy.placeholder',
+  /**
+   * Specify the value of the {0} with which you want to remap "{1}". Leave the input <blank> if you want to remove the {0} from all articles.
+   */
+  commandsSettingsRemapNewOptionInputPrompt = 'commands.settings.remap.newOption.input.prompt',
+  /**
+   * Name of the {0}
+   */
+  commandsSettingsRemapNewOptionInputPlaceholder = 'commands.settings.remap.newOption.input.placeholder',
+  /**
+   * Delete {0} {1}?
+   */
+  commandsSettingsRemapDeletePlaceholder = 'commands.settings.remap.delete.placeholder',
+  /**
+   * The {0} field is required. Please define a value for the field.
+   */
+  commandsStatusListenerVerifyRequiredFieldsDiagnosticEmptyField = 'commands.statusListener.verifyRequiredFields.diagnostic.emptyField',
+  /**
+   * The following fields are required to contain a value: {0}
+   */
+  commandsStatusListenerVerifyRequiredFieldsNotificationError = 'commands.statusListener.verifyRequiredFields.notification.error',
+  /**
+   * Template title
+   */
+  commandsTemplateGenerateInputTitle = 'commands.template.generate.input.title',
+  /**
+   * Which name would you like to give your template?
+   */
+  commandsTemplateGenerateInputPrompt = 'commands.template.generate.input.prompt',
+  /**
+   * article
+   */
+  commandsTemplateGenerateInputPlaceholder = 'commands.template.generate.input.placeholder',
+  /**
+   * You did not specify a template title.
+   */
+  commandsTemplateGenerateNoTitleWarning = 'commands.template.generate.noTitle.warning',
+  /**
+   * Keep content
+   */
+  commandsTemplateGenerateKeepContentsTitle = 'commands.template.generate.keepContents.title',
+  /**
+   * Do you want to keep the contents for the template?
+   */
+  commandsTemplateGenerateKeepContentsPlaceholder = 'commands.template.generate.keepContents.placeholder',
+  /**
+   * You did not pick any of the options for keeping the template its content.
+   */
+  commandsTemplateGenerateKeepContentsNoOptionWarning = 'commands.template.generate.keepContents.noOption.warning',
+  /**
+   * Template created and is now available in your {0} folder.
+   */
+  commandsTemplateGenerateKeepContentsSuccess = 'commands.template.generate.keepContents.success',
+  /**
+   * No templates found.
+   */
+  commandsTemplateGetTemplatesWarning = 'commands.template.getTemplates.warning',
+  /**
+   * Incorrect project folder path retrieved.
+   */
+  commandsTemplateCreateFolderPathWarning = 'commands.template.create.folderPath.warning',
   /**
    * Template files copied.
    */

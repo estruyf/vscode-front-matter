@@ -28,6 +28,12 @@
   "common.pin": "Pin",
   "common.unpin": "Unpin",
   "common.noResults": "No results",
+  "common.error": "Sorry, something went wrong.",
+  "common.yes": "yes",
+  "common.no": "no",
+
+  "notifications.outputChannel.link": "output window",
+  "notifications.outputChannel.description": "Check the {0} for more details.",
 
   "settings.view.common": "Common",
   "settings.view.contentFolders": "Content folders",
@@ -488,6 +494,40 @@
   "commands.folders.get.notificationError.remove.action": "Remove folder",
   "commands.folders.get.notificationError.create.action": "Create folder",
 
-  "listeners.dashboard.settingsListener.triggerTemplate.notification": "Template files copied."
+  "commands.preview.panel.title": "Preview: {0}",
+  "commands.preview.askUserToPickFolder.title": "Select the folder of the article to preview",
 
+  "commands.project.initialize.success": "Project initialized successfully.",
+  "commands.project.switchProject.title": "To which project do you want to switch?",
+  "commands.project.createSampleTemplate.info": "Sample template created.",
+
+  "commands.settings.create.input.prompt": "Insert the value of the {0} that you want to add to your configuration.",
+  "commands.settings.create.input.placeholder": "Name of the {0}",
+  "commands.settings.create.warning": "The provided {0} already exists.",
+  "commands.settings.create.quickPick.placeholder": "Do you want to add the new {0} to the page?",
+  "commands.settings.export.progress.title": "{0}: exporting tags and categories",
+  "commands.settings.export.progress.success": "Export completed. Tags: {0} - Categories: {1}.",
+  "commands.settings.remap.quickpick.title": "Remap",
+  "commands.settings.remap.quickpick.placeholder": "What do you want to remap?",
+  "commands.settings.remap.noTaxonomy.warning": "No {0} configured.",
+  "commands.settings.remap.selectTaxonomy.placeholder": "Select your {0} to insert.",
+  "commands.settings.remap.newOption.input.prompt": "Specify the value of the {0} with which you want to remap \"{1}\". Leave the input <blank> if you want to remove the {0} from all articles.",
+  "commands.settings.remap.newOption.input.placeholder": "Name of the {0}",
+  "commands.settings.remap.delete.placeholder": "Delete {0} {1}?",
+
+  "commands.statusListener.verifyRequiredFields.diagnostic.emptyField": "The {0} field is required. Please define a value for the field.",
+  "commands.statusListener.verifyRequiredFields.notification.error": "The following fields are required to contain a value: {0}",
+
+  "commands.template.generate.input.title": "Template title",
+  "commands.template.generate.input.prompt": "Which name would you like to give your template?",
+  "commands.template.generate.input.placeholder": "article",
+  "commands.template.generate.noTitle.warning": "You did not specify a template title.",
+  "commands.template.generate.keepContents.title": "Keep content",
+  "commands.template.generate.keepContents.placeholder": "Do you want to keep the contents for the template?",
+  "commands.template.generate.keepContents.noOption.warning": "You did not pick any of the options for keeping the template its content.",
+  "commands.template.generate.keepContents.success": "Template created and is now available in your {0} folder.",
+  "commands.template.getTemplates.warning": "No templates found.",
+  "commands.template.create.folderPath.warning": "Incorrect project folder path retrieved.",
+
+  "listeners.dashboard.settingsListener.triggerTemplate.notification": "Template files copied."
 }
