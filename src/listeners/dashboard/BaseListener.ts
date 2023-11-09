@@ -1,6 +1,5 @@
 import { Dashboard } from '../../commands/Dashboard';
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
-import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { Logger } from '../../helpers/Logger';
 import { PostMessageData } from '../../models';
 
