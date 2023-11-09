@@ -9,6 +9,7 @@ import { SETTING_TAXONOMY_CONTENT_TYPES, SsgScripts } from '../../constants';
 import { SettingsListener } from './SettingsListener';
 import { Terminal } from '../../services';
 import { existsAsync, readFileAsync } from '../../utils';
+import { join } from 'path';
 
 export class SsgListener extends BaseListener {
   /**
@@ -133,7 +134,28 @@ export class SsgListener extends BaseListener {
     const tempLocation = Uri.joinPath(wsFolder, '/.frontmatter/temp');
     const tempScriptPath = Uri.joinPath(tempLocation, SsgScripts.astroContentCollectionScript);
     await workspace.fs.createDirectory(tempLocation);
-    workspace.fs.copy(scriptPath, tempScriptPath, { overwrite: true });
+
+    // Check if the workspace uses pnpm
+    if (await existsAsync(Uri.joinPath(wsFolder, 'node_modules/.pnpm').fsPath)) {
+      const vitePackageFiles = await workspace.findFiles(
+        `**/node_modules/.pnpm/vite@*/node_modules/vite/package.json`
+      );
+      if (vitePackageFiles.length > 0) {
+        const vitePackageFile = vitePackageFiles[0];
+        const vitePackage = JSON.parse(await readFileAsync(vitePackageFile.fsPath, 'utf8')) as {
+          main: string;
+        };
+        const viteFolder = vitePackageFile.fsPath.replace('/package.json', '');
+        const vitePath = join(viteFolder, vitePackage.main).replace(wsFolder.fsPath, '../..');
+
+        // Update the vite reference, as it is not a direct dependency of the project
+        let scriptContents = await readFileAsync(scriptPath.fsPath, 'utf8');
+        scriptContents = scriptContents.replace(`"vite"`, `"${vitePath}"`);
+        await workspace.fs.writeFile(tempScriptPath, Buffer.from(scriptContents, 'utf8'));
+      }
+    } else {
+      workspace.fs.copy(scriptPath, tempScriptPath, { overwrite: true });
+    }
 
     const fullScript = `node "${tempScriptPath.fsPath}" "${contentConfigFile.fsPath}"`;
 
