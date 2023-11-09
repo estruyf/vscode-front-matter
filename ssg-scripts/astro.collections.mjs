@@ -1,7 +1,7 @@
 import { writeFileSync } from "fs";
 import { join } from "path";
 import { createServer } from "vite";
-import zod from "zod";
+import zod from "astro/zod";
 
 const {
   ZodDefault,

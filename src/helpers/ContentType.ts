@@ -860,7 +860,13 @@ export class ContentType {
           !!contentType.clearEmpty
         );
 
-        data = ArticleHelper.updateDates(Object.assign({}, data));
+        const article: ParsedFrontMatter = {
+          content: '',
+          data: Object.assign({}, data),
+          path: newFilePath
+        };
+
+        data = ArticleHelper.updateDates(article);
 
         if (contentType.name !== DEFAULT_CONTENT_TYPE_NAME) {
           data['type'] = contentType.name;
