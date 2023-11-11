@@ -62,6 +62,12 @@ export class SsgListener extends BaseListener {
       }
     }
 
+    // Set the preview image on the first found image of the content type
+    const images = contentType.fields.filter((f) => f.type === 'image');
+    if (images.length > 0) {
+      images[0].isPreviewImage = true;
+    }
+
     let contentTypes = Settings.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES) || [];
 
     // Filter out the default content type
@@ -260,6 +266,16 @@ export class SsgListener extends BaseListener {
           type: 'datetime',
           default: '{{now}}'
         } as Field;
+
+        if (field.name.toLowerCase() === 'published') {
+          ctField.isPublishDate = true;
+        } else if (
+          field.name.toLowerCase() === 'modified' ||
+          field.name.toLowerCase() === 'updated'
+        ) {
+          ctField.isModifiedDate = true;
+        }
+
         break;
       case 'image':
         ctField = {
