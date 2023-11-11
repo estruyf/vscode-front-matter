@@ -1,9 +1,15 @@
 import { ModeListener } from './../listeners/general/ModeListener';
-import { SETTING_GLOBAL_ACTIVE_MODE, SETTING_GLOBAL_MODES } from './../constants/settings';
-import { commands, StatusBarAlignment, StatusBarItem, ThemeColor, window } from 'vscode';
+import {
+  EXTENSION_NAME,
+  SETTING_GLOBAL_ACTIVE_MODE,
+  SETTING_GLOBAL_MODES
+} from './../constants/settings';
+import { commands, StatusBarAlignment, StatusBarItem, window } from 'vscode';
 import { Settings } from '../helpers/SettingsHelper';
 import { COMMAND_NAME, CONTEXT } from '../constants';
 import { Mode } from '../models';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class ModeSwitch {
   private static isInit: boolean = false;
@@ -56,9 +62,9 @@ export class ModeSwitch {
     const modePicks = ['Default', ...modes.map((m) => m.id)];
 
     const mode = await window.showQuickPick(modePicks, {
-      placeHolder: `Select the mode you want to use`,
-      ignoreFocusOut: true,
-      title: `Front Matter: Mode selection`
+      title: l10n.t(LocalizationKey.servicesModeSwitchSwitchModeQuickPickTitle, EXTENSION_NAME),
+      placeHolder: l10n.t(LocalizationKey.servicesModeSwitchSwitchModeQuickPickPlaceholder),
+      ignoreFocusOut: true
     });
 
     if (mode) {
@@ -70,9 +76,10 @@ export class ModeSwitch {
   }
 
   private static setText() {
-    ModeSwitch.statusBarElm.text = `$(preview) Mode: ${
+    ModeSwitch.statusBarElm.text = `$(preview) ${l10n.t(
+      LocalizationKey.servicesModeSwitchSetTextMode,
       ModeSwitch.currentMode ? ModeSwitch.currentMode : 'Default'
-    }`;
+    )}`;
     ModeSwitch.statusBarElm.show();
   }
 }

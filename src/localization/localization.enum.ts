@@ -1056,7 +1056,7 @@ export enum LocalizationKey {
    */
   dashboardConfigurationAstroAstroContentTypesEmpty = 'dashboard.configuration.astro.astroContentTypes.empty',
   /**
-   * The following Astro Content Collections and can be used to generate a content-type.
+   * The following Astro Content Collections can be used to generate a content-type.
    */
   dashboardConfigurationAstroAstroContentTypesDescription = 'dashboard.configuration.astro.astroContentTypes.description',
   /**
@@ -2197,7 +2197,103 @@ export enum LocalizationKey {
    */
   helpersTaxonomyHelperMoveSuccess = 'helpers.taxonomyHelper.move.success',
   /**
+   * No path provided.
+   */
+  listenersDashboardDashboardListenerPinItemNoPathError = 'listeners.dashboard.dashboardListener.pinItem.noPath.error',
+  /**
+   * Could not pin item.
+   */
+  listenersDashboardDashboardListenerPinItemCoundNotPinError = 'listeners.dashboard.dashboardListener.pinItem.coundNotPin.error',
+  /**
+   * Could not unpin item.
+   */
+  listenersDashboardDashboardListenerPinItemCoundNotUnPinError = 'listeners.dashboard.dashboardListener.pinItem.coundNotUnPin.error',
+  /**
    * Template files copied.
    */
-  listenersDashboardSettingsListenerTriggerTemplateNotification = 'listeners.dashboard.settingsListener.triggerTemplate.notification'
+  listenersDashboardSettingsListenerTriggerTemplateNotification = 'listeners.dashboard.settingsListener.triggerTemplate.notification',
+  /**
+   * Downloading and initializing the template...
+   */
+  listenersDashboardSettingsListenerTriggerTemplateProgressTitle = 'listeners.dashboard.settingsListener.triggerTemplate.progress.title',
+  /**
+   * Failed to download the template.
+   */
+  listenersDashboardSettingsListenerTriggerTemplateDownloadError = 'listeners.dashboard.settingsListener.triggerTemplate.download.error',
+  /**
+   * Failed to initialize the template.
+   */
+  listenersDashboardSettingsListenerTriggerTemplateInitError = 'listeners.dashboard.settingsListener.triggerTemplate.init.error',
+  /**
+   * Snippet missing title or body
+   */
+  listenersDashboardSnippetListenerAddSnippetMissingFieldsWarning = 'listeners.dashboard.snippetListener.addSnippet.missingFields.warning',
+  /**
+   * Snippet with the same title already exists
+   */
+  listenersDashboardSnippetListenerAddSnippetExistsWarning = 'listeners.dashboard.snippetListener.addSnippet.exists.warning',
+  /**
+   * No snippets to update
+   */
+  listenersDashboardSnippetListenerUpdateSnippetNoSnippetsWarning = 'listeners.dashboard.snippetListener.updateSnippet.noSnippets.warning',
+  /**
+   * Failed to push submodules.
+   */
+  listenersGeneralGitListenerPushError = 'listeners.general.gitListener.push.error',
+  /**
+   * No active editor
+   */
+  listenersPanelDataListenerAiSuggestTaxonomyNoEditorError = 'listeners.panel.dataListener.aiSuggestTaxonomy.noEditor.error',
+  /**
+   * No article data
+   */
+  listenersPanelDataListenerAiSuggestTaxonomyNoDataError = 'listeners.panel.dataListener.aiSuggestTaxonomy.noData.error',
+  /**
+   * Couldn't find data file entries
+   */
+  listenersPanelDataListenerGetDataFileEntriesNoDataFilesError = 'listeners.panel.dataListener.getDataFileEntries.noDataFiles.error',
+  /**
+   * No active editor
+   */
+  listenersPanelTaxonomyListenerAiSuggestTaxonomyNoEditorError = 'listeners.panel.taxonomyListener.aiSuggestTaxonomy.noEditor.error',
+  /**
+   * No article data
+   */
+  listenersPanelTaxonomyListenerAiSuggestTaxonomyNoDataError = 'listeners.panel.taxonomyListener.aiSuggestTaxonomy.noData.error',
+  /**
+   * Select the mode you want to use
+   */
+  servicesModeSwitchSwitchModeQuickPickPlaceholder = 'services.modeSwitch.switchMode.quickPick.placeholder',
+  /**
+   * {0}: Mode selection
+   */
+  servicesModeSwitchSwitchModeQuickPickTitle = 'services.modeSwitch.switchMode.quickPick.title',
+  /**
+   * Mode: {0}
+   */
+  servicesModeSwitchSetTextMode = 'services.modeSwitch.setText.mode',
+  /**
+   * Processing...
+   */
+  servicesPagesParserParsePagesStatusBarText = 'services.pagesParser.parsePages.statusBar.text',
+  /**
+   * File error: {0}
+   */
+  servicesPagesParserParsePagesFileError = 'services.pagesParser.parsePages.file.error',
+  /**
+   * The AI title generation took too long. Please try again later.
+   */
+  servicesSponsorAiGetTitlesWarning = 'services.sponsorAi.getTitles.warning',
+  /**
+   * The AI description generation took too long. Please try again later.
+   */
+  servicesSponsorAiGetDescriptionWarning = 'services.sponsorAi.getDescription.warning',
+  /**
+   * The AI taxonomy generation took too long. Please try again later.
+   */
+  servicesSponsorAiGetTaxonomySuggestionsWarning = 'services.sponsorAi.getTaxonomySuggestions.warning',
+  /**
+   * Starting local server
+   */
+  servicesTerminalOpenLocalServerTerminalTerminalOptionMessage = 'services.terminal.openLocalServerTerminal.terminalOption.message'
 }

@@ -6,6 +6,8 @@ import { Extension, Notifications } from '../../helpers';
 import { PostMessageData } from '../../models';
 import { PinnedItems } from '../../services';
 import { BaseListener } from './BaseListener';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../localization';
 
 export class DashboardListener extends BaseListener {
   /**
@@ -66,14 +68,22 @@ export class DashboardListener extends BaseListener {
 
     const path = payload;
     if (!path) {
-      this.sendError(command as any, requestId, 'No path provided.');
+      this.sendError(
+        command as any,
+        requestId,
+        l10n.t(LocalizationKey.listenersDashboardDashboardListenerPinItemNoPathError)
+      );
       return;
     }
 
     const allPinned = await PinnedItems.pin(path);
 
     if (!allPinned) {
-      this.sendError(command as any, requestId, 'Could not pin item.');
+      this.sendError(
+        command as any,
+        requestId,
+        l10n.t(LocalizationKey.listenersDashboardDashboardListenerPinItemCoundNotPinError)
+      );
       return;
     }
 
@@ -92,14 +102,22 @@ export class DashboardListener extends BaseListener {
 
     const path = payload;
     if (!path) {
-      this.sendError(command as any, requestId, 'No path provided.');
+      this.sendError(
+        command as any,
+        requestId,
+        l10n.t(LocalizationKey.listenersDashboardDashboardListenerPinItemNoPathError)
+      );
       return;
     }
 
     const updatedPinned = await PinnedItems.remove(path);
 
     if (!updatedPinned) {
-      this.sendError(command as any, requestId, 'Could not unpin item.');
+      this.sendError(
+        command as any,
+        requestId,
+        l10n.t(LocalizationKey.listenersDashboardDashboardListenerPinItemCoundNotUnPinError)
+      );
       return;
     }
 

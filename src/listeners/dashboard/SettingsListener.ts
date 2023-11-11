@@ -201,7 +201,9 @@ export class SettingsListener extends BaseListener {
       await window.withProgress(
         {
           location: ProgressLocation.Notification,
-          title: 'Downloading and initializing the template...',
+          title: l10n.t(
+            LocalizationKey.listenersDashboardSettingsListenerTriggerTemplateProgressTitle
+          ),
           cancellable: false
         },
         async (progress) => {
@@ -209,7 +211,11 @@ export class SettingsListener extends BaseListener {
             const ghFolder = await download(template.url, wsFolder.fsPath);
 
             if (!ghFolder.downloaded) {
-              Notifications.error('Failed to download the template.');
+              Notifications.error(
+                l10n.t(
+                  LocalizationKey.listenersDashboardSettingsListenerTriggerTemplateDownloadError
+                )
+              );
               return;
             }
 
@@ -225,7 +231,9 @@ export class SettingsListener extends BaseListener {
               );
             }
           } catch (e) {
-            Notifications.error(`Failed to initialize the template.`);
+            Notifications.error(
+              l10n.t(LocalizationKey.listenersDashboardSettingsListenerTriggerTemplateInitError)
+            );
           }
         }
       );

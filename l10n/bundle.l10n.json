@@ -319,7 +319,7 @@
   "dashboard.media.detailsSlideOver.unmapped.description": "Do you want to remap the metadata of unmapped files?",
 
   "dashboard.configuration.astro.astroContentTypes.empty": "No Astro Content Collections found.",
-  "dashboard.configuration.astro.astroContentTypes.description": "The following Astro Content Collections and can be used to generate a content-type.",
+  "dashboard.configuration.astro.astroContentTypes.description": "The following Astro Content Collections can be used to generate a content-type.",
 
   "panel.contentType.contentTypeValidator.title": "Content-type",
   "panel.contentType.contentTypeValidator.hint": "We noticed field differences between the content-type and the front matter data. \n Would you like to create, update, or set the content-type for this content?",
@@ -668,5 +668,39 @@
   "helpers.taxonomyHelper.move.progress.title": "{0}: Moving \"{1}\" from {2} to \"${3}\".",
   "helpers.taxonomyHelper.move.success": "Move completed.",
 
-  "listeners.dashboard.settingsListener.triggerTemplate.notification": "Template files copied."
+  "listeners.dashboard.dashboardListener.pinItem.noPath.error": "No path provided.",
+  "listeners.dashboard.dashboardListener.pinItem.coundNotPin.error": "Could not pin item.",
+  "listeners.dashboard.dashboardListener.pinItem.coundNotUnPin.error": "Could not unpin item.",
+
+  "listeners.dashboard.settingsListener.triggerTemplate.notification": "Template files copied.",
+  "listeners.dashboard.settingsListener.triggerTemplate.progress.title": "Downloading and initializing the template...",
+  "listeners.dashboard.settingsListener.triggerTemplate.download.error": "Failed to download the template.",
+  "listeners.dashboard.settingsListener.triggerTemplate.init.error": "Failed to initialize the template.",
+
+  "listeners.dashboard.snippetListener.addSnippet.missingFields.warning": "Snippet missing title or body",
+  "listeners.dashboard.snippetListener.addSnippet.exists.warning": "Snippet with the same title already exists",
+  "listeners.dashboard.snippetListener.updateSnippet.noSnippets.warning": "No snippets to update",
+
+  "listeners.general.gitListener.push.error": "Failed to push submodules.",
+
+  "listeners.panel.dataListener.aiSuggestTaxonomy.noEditor.error": "No active editor",
+  "listeners.panel.dataListener.aiSuggestTaxonomy.noData.error": "No article data",
+  "listeners.panel.dataListener.getDataFileEntries.noDataFiles.error": "Couldn't find data file entries",
+
+
+  "listeners.panel.taxonomyListener.aiSuggestTaxonomy.noEditor.error": "No active editor",
+  "listeners.panel.taxonomyListener.aiSuggestTaxonomy.noData.error": "No article data",
+
+  "services.modeSwitch.switchMode.quickPick.placeholder": "Select the mode you want to use",
+  "services.modeSwitch.switchMode.quickPick.title": "{0}: Mode selection",
+  "services.modeSwitch.setText.mode": "Mode: {0}",
+
+  "services.pagesParser.parsePages.statusBar.text": "Processing...",
+  "services.pagesParser.parsePages.file.error": "File error: {0}",
+
+  "services.sponsorAi.getTitles.warning": "The AI title generation took too long. Please try again later.",
+  "services.sponsorAi.getDescription.warning": "The AI description generation took too long. Please try again later.",
+  "services.sponsorAi.getTaxonomySuggestions.warning": "The AI taxonomy generation took too long. Please try again later.",
+
+  "services.terminal.openLocalServerTerminal.terminalOption.message": "Starting local server"
 }

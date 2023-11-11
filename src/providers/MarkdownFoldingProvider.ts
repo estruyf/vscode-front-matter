@@ -18,8 +18,7 @@ import {
 } from 'vscode';
 import {
   SETTING_CONTENT_FRONTMATTER_HIGHLIGHT,
-  SETTING_CONTENT_SUPPORTED_FILETYPES,
-  SETTING_FRONTMATTER_TYPE
+  SETTING_CONTENT_SUPPORTED_FILETYPES
 } from '../constants';
 import { Settings } from '../helpers';
 import { FrontMatterDecorationProvider } from './FrontMatterDecorationProvider';
