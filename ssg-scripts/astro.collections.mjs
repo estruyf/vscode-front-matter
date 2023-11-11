@@ -3,8 +3,7 @@ import { join } from 'path';
 import { createServer } from 'vite';
 import zod from 'astro/zod';
 
-const { ZodDefault, ZodObject, ZodOptional, ZodString, ZodEffects, ZodEnum, ZodUnion, ZodArray } =
-  zod;
+const { ZodDefault, ZodObject, ZodOptional, ZodString, ZodEffects, ZodEnum, ZodUnion } = zod;
 
 /**
  * Process the Zod field
@@ -73,26 +72,6 @@ function generateFieldInfo(name, type) {
     required: !isFieldOptional
   };
 
-  switch (fieldInfo.type) {
-    case 'ZodString':
-      fieldInfo.type = 'string';
-      break;
-    case 'ZodNumber':
-      fieldInfo.type = 'number';
-      break;
-    case 'ZodBoolean':
-      fieldInfo.type = 'boolean';
-      break;
-    case 'ZodDate':
-      fieldInfo.type = 'datetime';
-      break;
-    case 'ZodArray':
-      fieldInfo.type = 'choice';
-      break;
-    default:
-      break;
-  }
-
   if (fieldType instanceof ZodObject) {
     const subFields = extractFieldInfoFromShape(fieldType);
 
@@ -109,16 +88,6 @@ function generateFieldInfo(name, type) {
 
   if (fieldType instanceof ZodEnum) {
     fieldInfo.options = fieldType.options;
-  }
-
-  if (fieldType instanceof ZodArray) {
-    if (fieldInfo.name === 'tags') {
-      fieldInfo.type = 'tags';
-    } else if (fieldInfo.name === 'categories') {
-      fieldInfo.type = 'categories';
-    } else {
-      fieldInfo.options = fieldType.options;
-    }
   }
 
   if (fieldType instanceof ZodString) {
