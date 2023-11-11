@@ -5,7 +5,11 @@ import { BaseListener } from './BaseListener';
 import { exec } from 'child_process';
 import { Extension, Logger, Settings } from '../../helpers';
 import { Folders } from '../../commands';
-import { SETTING_TAXONOMY_CONTENT_TYPES, SsgScripts } from '../../constants';
+import {
+  DEFAULT_CONTENT_TYPE_NAME,
+  SETTING_TAXONOMY_CONTENT_TYPES,
+  SsgScripts
+} from '../../constants';
 import { SettingsListener } from './SettingsListener';
 import { Terminal } from '../../services';
 import { existsAsync, readFileAsync } from '../../utils';
@@ -58,7 +62,10 @@ export class SsgListener extends BaseListener {
       }
     }
 
-    const contentTypes = Settings.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES) || [];
+    let contentTypes = Settings.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES) || [];
+
+    // Filter out the default content type
+    contentTypes = contentTypes.filter((ct) => ct.name !== DEFAULT_CONTENT_TYPE_NAME);
 
     if (contentTypes.find((ct) => ct.name === collection.name)) {
       SsgListener.sendRequest(command as any, requestId, {});
@@ -150,7 +157,7 @@ export class SsgListener extends BaseListener {
 
         // Update the vite reference, as it is not a direct dependency of the project
         let scriptContents = await readFileAsync(scriptPath.fsPath, 'utf8');
-        scriptContents = scriptContents.replace(`"vite"`, `"${vitePath}"`);
+        scriptContents = scriptContents.replace(`'vite'`, `'${vitePath}'`);
         await workspace.fs.writeFile(tempScriptPath, Buffer.from(scriptContents, 'utf8'));
       }
     } else {
@@ -209,16 +216,35 @@ export class SsgListener extends BaseListener {
         } as Field;
         break;
       case 'ZodBoolean':
-        ctField = {
-          name: field.name,
-          type: 'boolean'
-        } as Field;
+        if (field.name === 'published') {
+          ctField = {
+            name: field.name,
+            type: 'draft'
+          } as Field;
+        } else {
+          ctField = {
+            name: field.name,
+            type: 'boolean'
+          } as Field;
+        }
         break;
       case 'ZodArray':
-        ctField = {
-          name: field.name,
-          type: 'list'
-        } as Field;
+        if (field.name === 'tags') {
+          ctField = {
+            name: field.name,
+            type: 'tags'
+          } as Field;
+        } else if (field.name === 'categories') {
+          ctField = {
+            name: field.name,
+            type: 'categories'
+          } as Field;
+        } else {
+          ctField = {
+            name: field.name,
+            type: 'list'
+          } as Field;
+        }
         break;
       case 'ZodEnum':
         ctField = {
@@ -227,6 +253,7 @@ export class SsgListener extends BaseListener {
           choices: field.options || []
         } as Field;
         break;
+      case 'datetime':
       case 'ZodDate':
         ctField = {
           name: field.name,

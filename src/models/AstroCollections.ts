@@ -14,6 +14,7 @@ export interface AstroField {
     | 'ZodEnum'
     | 'ZodDate'
     | 'ZodObject'
+    | 'datetime'
     | 'email'
     | 'url'
     | 'image';

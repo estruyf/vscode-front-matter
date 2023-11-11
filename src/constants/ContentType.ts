@@ -3,7 +3,7 @@ import { ContentType } from './../models/PanelSettings';
 export const DEFAULT_CONTENT_TYPE_NAME = 'default';
 
 export const DEFAULT_CONTENT_TYPE: ContentType = {
-  name: 'default',
+  name: DEFAULT_CONTENT_TYPE_NAME,
   pageBundle: false,
   previewPath: null,
   fields: [
