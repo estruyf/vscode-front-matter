@@ -16,6 +16,8 @@ import { PagesListener } from '../listeners/dashboard';
 import { extname } from 'path';
 import { Telemetry } from '../helpers/Telemetry';
 import { writeFileAsync, copyFileAsync } from '../utils';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class Template {
   /**
@@ -31,27 +33,30 @@ export class Template {
       const clonedArticle = Object.assign({}, article);
 
       const titleValue = await vscode.window.showInputBox({
-        title: `Template title`,
-        prompt: `What name would you like to give your template?`,
-        placeHolder: `article`,
+        title: l10n.t(LocalizationKey.commandsTemplateGenerateInputTitle),
+        prompt: l10n.t(LocalizationKey.commandsTemplateGenerateInputPrompt),
+        placeHolder: l10n.t(LocalizationKey.commandsTemplateGenerateInputPlaceholder),
         ignoreFocusOut: true
       });
 
       if (!titleValue) {
-        Notifications.warning(`You did not specify a template title.`);
+        Notifications.warning(l10n.t(LocalizationKey.commandsTemplateGenerateNoTitleWarning));
         return;
       }
 
-      const keepContents = await vscode.window.showQuickPick(['yes', 'no'], {
-        title: `Keep contents`,
-        canPickMany: false,
-        placeHolder: `Do you want to keep the contents for the template?`,
-        ignoreFocusOut: true
-      });
+      const keepContents = await vscode.window.showQuickPick(
+        [l10n.t(LocalizationKey.commonYes), l10n.t(LocalizationKey.commonNo)],
+        {
+          title: l10n.t(LocalizationKey.commandsTemplateGenerateKeepContentsTitle),
+          placeHolder: l10n.t(LocalizationKey.commandsTemplateGenerateKeepContentsPlaceholder),
+          canPickMany: false,
+          ignoreFocusOut: true
+        }
+      );
 
       if (!keepContents) {
         Notifications.warning(
-          `You did not pick any of the options for keeping the template its content.`
+          l10n.t(LocalizationKey.commandsTemplateGenerateKeepContentsNoOptionWarning)
         );
         return;
       }
@@ -60,14 +65,16 @@ export class Template {
       const templatePath = Project.templatePath();
       if (templatePath) {
         const fileContents = ArticleHelper.stringifyFrontMatter(
-          keepContents === 'no' ? '' : clonedArticle.content,
+          keepContents === l10n.t(LocalizationKey.commonNo) ? '' : clonedArticle.content,
           clonedArticle.data
         );
 
         const templateFile = path.join(templatePath.fsPath, `${titleValue}.${fileType}`);
         await writeFileAsync(templateFile, fileContents, { encoding: 'utf-8' });
 
-        Notifications.info(`Template created and is now available in your ${folder} folder.`);
+        Notifications.info(
+          l10n.t(LocalizationKey.commandsTemplateGenerateKeepContentsSuccess, folder)
+        );
       }
     }
   }
@@ -79,7 +86,7 @@ export class Template {
     const folder = Settings.get<string>(SETTING_TEMPLATES_FOLDER);
 
     if (!folder) {
-      Notifications.warning(`No templates found.`);
+      Notifications.warning(l10n.t(LocalizationKey.commandsTemplateGetTemplatesWarning));
       return;
     }
 
@@ -96,26 +103,28 @@ export class Template {
     const contentTypes = ContentType.getAll();
 
     if (!folderPath) {
-      Notifications.warning(`Incorrect project folder path retrieved.`);
+      Notifications.warning(l10n.t(LocalizationKey.commandsTemplateCreateFolderPathWarning));
       return;
     }
 
     const templates = await Template.getTemplates();
     if (!templates || templates.length === 0) {
-      Notifications.warning(`No templates found.`);
+      Notifications.warning(l10n.t(LocalizationKey.commandsTemplateCreateNoTemplatesWarning));
       return;
     }
 
     const selectedTemplate = await vscode.window.showQuickPick(
       templates.map((t) => path.basename(t.fsPath)),
       {
-        title: `Select a template`,
-        placeHolder: `Select the content template to use`,
+        title: l10n.t(LocalizationKey.commandsTemplateCreateSelectTemplateTitle),
+        placeHolder: l10n.t(LocalizationKey.commandsTemplateCreateSelectTemplatePlaceholder),
         ignoreFocusOut: true
       }
     );
     if (!selectedTemplate) {
-      Notifications.warning(`No template selected.`);
+      Notifications.warning(
+        l10n.t(LocalizationKey.commandsTemplateCreateSelectTemplateNoTemplateWarning)
+      );
       return;
     }
 
@@ -127,7 +136,9 @@ export class Template {
     // Start the template read
     const template = templates.find((t) => t.fsPath.endsWith(selectedTemplate));
     if (!template) {
-      Notifications.warning(`Content template could not be found.`);
+      Notifications.warning(
+        l10n.t(LocalizationKey.commandsTemplateCreateSelectTemplateNotFoundWarning)
+      );
       return;
     }
 
@@ -154,7 +165,7 @@ export class Template {
     // Update the properties inside the template
     let frontMatter = await ArticleHelper.getFrontMatterByPath(newFilePath);
     if (!frontMatter) {
-      Notifications.warning(`Something failed when retrieving the newly created file.`);
+      Notifications.warning(l10n.t(LocalizationKey.commonError));
       return;
     }
 
@@ -185,7 +196,7 @@ export class Template {
       vscode.window.showTextDocument(txtDoc);
     }
 
-    Notifications.info(`Your new content has been created.`);
+    Notifications.info(l10n.t(LocalizationKey.commandsTemplateCreateSuccess));
 
     Telemetry.send(TelemetryEvent.createContentFromTemplate);
 

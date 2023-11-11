@@ -7,6 +7,8 @@ import { Notifications, Settings, Telemetry } from '../../helpers';
 import { PostMessageData, Snippets } from '../../models';
 import { BaseListener } from './BaseListener';
 import { SettingsListener } from './SettingsListener';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../localization';
 
 export class SnippetListener extends BaseListener {
   public static process(msg: PostMessageData) {
@@ -30,13 +32,17 @@ export class SnippetListener extends BaseListener {
     const { title, description, body, fields, isMediaSnippet } = data;
 
     if (!title || !body) {
-      Notifications.warning('Snippet missing title or body');
+      Notifications.warning(
+        l10n.t(LocalizationKey.listenersDashboardSnippetListenerAddSnippetMissingFieldsWarning)
+      );
       return;
     }
 
     const snippets = Settings.get<any>(SETTING_CONTENT_SNIPPETS);
     if (snippets && snippets[title]) {
-      Notifications.warning('Snippet with the same title already exists');
+      Notifications.warning(
+        l10n.t(LocalizationKey.listenersDashboardSnippetListenerAddSnippetExistsWarning)
+      );
       return;
     }
 
@@ -63,7 +69,9 @@ export class SnippetListener extends BaseListener {
     const { snippets } = data;
 
     if (!snippets) {
-      Notifications.warning('No snippets to update');
+      Notifications.warning(
+        l10n.t(LocalizationKey.listenersDashboardSnippetListenerUpdateSnippetNoSnippetsWarning)
+      );
       return;
     }
 

@@ -25,6 +25,8 @@ import { Telemetry } from '../helpers/Telemetry';
 import { glob } from 'glob';
 import { mkdirAsync } from '../utils/mkdirAsync';
 import { existsAsync } from '../utils';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
@@ -57,15 +59,15 @@ export class Folders {
     }
 
     const folderName = await window.showInputBox({
-      title: `Add media folder`,
-      prompt: `Which name would you like to give to your folder (use "/" to create multi-level folders)?`,
+      title: l10n.t(LocalizationKey.commandsFoldersAddMediaFolderInputBoxTitle),
+      prompt: l10n.t(LocalizationKey.commandsFoldersAddMediaFolderInputBoxPrompt),
       value: startPath,
       ignoreFocusOut: true,
       placeHolder: `${format(new Date(), `yyyy/MM`)}`
     });
 
     if (!folderName) {
-      Notifications.warning(`No folder name was specified.`);
+      Notifications.warning(l10n.t(LocalizationKey.commandsFoldersAddMediaFolderNoFolderWarning));
       return;
     }
 
@@ -126,15 +128,15 @@ export class Folders {
       );
 
       if (exists) {
-        Notifications.warning(`Folder is already registered`);
+        Notifications.warning(l10n.t(LocalizationKey.commandsFoldersCreateFolderExistsWarning));
         return;
       }
 
       if (!folderName) {
         folderName = await window.showInputBox({
-          title: `Register folder`,
-          prompt: `Which name would you like to specify for this folder?`,
-          placeHolder: `Folder name`,
+          title: l10n.t(LocalizationKey.commandsFoldersCreateInputTitle),
+          prompt: l10n.t(LocalizationKey.commandsFoldersCreateInputPrompt),
+          placeHolder: l10n.t(LocalizationKey.commandsFoldersCreateInputPlaceholder),
           value: basename(folder.fsPath),
           ignoreFocusOut: true
         });
@@ -154,7 +156,7 @@ export class Folders {
       folders = uniqBy(folders, (f) => f.path);
       await Folders.update(folders);
 
-      Notifications.info(`Folder registered`);
+      Notifications.info(l10n.t(LocalizationKey.commandsFoldersCreateSuccess));
 
       Telemetry.send(TelemetryEvent.registerFolder);
 
@@ -245,7 +247,9 @@ export class Folders {
       if (!projectFolder) {
         window
           .showWorkspaceFolderPick({
-            placeHolder: `Please select the main workspace folder for Front Matter to use.`
+            placeHolder: l10n.t(
+              LocalizationKey.commandsFoldersGetWorkspaceFolderWorkspaceFolderPickPlaceholder
+            )
           })
           .then(async (selectedFolder) => {
             if (selectedFolder) {
@@ -378,14 +382,21 @@ export class Folders {
       } else {
         if (folderPath && !existsSync(folderPath)) {
           Notifications.errorShowOnce(
-            `Folder "${folder.title} (${folder.path})" does not exist. Please remove it from the settings.`,
-            'Remove folder',
-            'Create folder'
+            l10n.t(
+              LocalizationKey.commandsFoldersGetNotificationErrorTitle,
+              `${folder.title} (${folder.path})`
+            ),
+            l10n.t(LocalizationKey.commandsFoldersGetNotificationErrorRemoveAction),
+            l10n.t(LocalizationKey.commandsFoldersGetNotificationErrorCreateAction)
           ).then((answer) => {
-            if (answer === 'Remove folder') {
+            if (
+              answer === l10n.t(LocalizationKey.commandsFoldersGetNotificationErrorRemoveAction)
+            ) {
               const folders = Folders.get();
               Folders.update(folders.filter((f) => f.path !== folder.path));
-            } else if (answer === 'Create folder') {
+            } else if (
+              answer === l10n.t(LocalizationKey.commandsFoldersGetNotificationErrorCreateAction)
+            ) {
               mkdirAsync(folderPath as string, { recursive: true });
             }
           });

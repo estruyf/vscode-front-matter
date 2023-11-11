@@ -42,6 +42,8 @@ import { CustomScript } from './CustomScript';
 import { Folders } from '../commands/Folders';
 import { existsAsync, readFileAsync } from '../utils';
 import { mkdirAsync } from '../utils/mkdirAsync';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class ArticleHelper {
   private static notifiedFiles: string[] = [];
@@ -442,7 +444,11 @@ export class ArticleHelper {
       const newFolder = join(folderPath, sanitizedName);
       if (await existsAsync(newFolder)) {
         Notifications.error(
-          `A page bundle with the name ${sanitizedName} already exists in ${folderPath}`
+          l10n.t(
+            LocalizationKey.helpersArticleHelperCreateContentPageBundleError,
+            sanitizedName,
+            folderPath
+          )
         );
         return;
       } else {
@@ -466,7 +472,9 @@ export class ArticleHelper {
       await mkdirAsync(folderPath, { recursive: true });
 
       if (await existsAsync(newFilePath)) {
-        Notifications.warning(`Content with the title already exists. Please specify a new title.`);
+        Notifications.warning(
+          l10n.t(LocalizationKey.helpersArticleHelperCreateContentContentExistsWarning)
+        );
         return;
       }
     }
@@ -597,7 +605,12 @@ export class ArticleHelper {
                 value = value.replace(regex, updatedValue);
               }
             } catch (e) {
-              Notifications.error(`Error while processing the ${placeholder.id} placeholder`);
+              Notifications.error(
+                l10n.t(
+                  LocalizationKey.helpersArticleHelperProcessCustomPlaceholdersPlaceholderError,
+                  placeholder.id
+                )
+              );
               Logger.error((e as Error).message);
 
               value = DefaultFieldValues.faultyCustomPlaceholder;
@@ -795,9 +808,10 @@ export class ArticleHelper {
           Extension.getInstance().diagnosticCollection.set(editor.document.uri, [
             {
               severity: DiagnosticSeverity.Error,
-              message: `${
-                error.name ? `${error.name}: ` : ''
-              }Error parsing the front matter of ${fileName}`,
+              message: `${error.name ? `${error.name}: ` : ''}${l10n.t(
+                LocalizationKey.helpersArticleHelperParseFileDiagnosticError,
+                fileName
+              )}`,
               range: fmRange
             }
           ]);

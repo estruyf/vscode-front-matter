@@ -30,6 +30,8 @@ import { MediaListener as DashboardMediaListener } from '../listeners/dashboard'
 import { ArticleHelper } from './ArticleHelper';
 import { lookup } from 'mime-types';
 import { existsAsync, readdirAsync, unlinkAsync, writeFileAsync } from '../utils';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class MediaHelpers {
   private static media: MediaInfo[] = [];
@@ -308,7 +310,7 @@ export class MediaHelpers {
       }
 
       if (!(await existsAsync(absFolderPath))) {
-        Notifications.error(`We couldn't find your selected folder.`);
+        Notifications.error(l10n.t(LocalizationKey.helpersMediaHelperSaveFileFolderError));
         return;
       }
 
@@ -317,12 +319,22 @@ export class MediaHelpers {
 
       if (imgData) {
         await writeFileAsync(staticPath, imgData.data);
-        Notifications.info(`File ${fileName} uploaded to: ${folder}`);
+        Notifications.info(
+          l10n.t(
+            LocalizationKey.helpersMediaHelperSaveFileFileUploadedSuccess,
+            fileName,
+            folder || ''
+          )
+        );
 
         return true;
       } else {
-        Notifications.error(`Something went wrong uploading ${fileName}`);
-        throw new Error(`Something went wrong uploading ${fileName}`);
+        Notifications.error(
+          l10n.t(LocalizationKey.helpersMediaHelperSaveFileFileUploadedFailed, fileName)
+        );
+        throw new Error(
+          l10n.t(LocalizationKey.helpersMediaHelperSaveFileFileUploadedFailed, fileName)
+        );
       }
     }
 
@@ -355,8 +367,12 @@ export class MediaHelpers {
       MediaHelpers.media = [];
       return true;
     } catch (err: any) {
-      Notifications.error(`Something went wrong deleting ${basename(file)}`);
-      throw new Error(`Something went wrong deleting ${basename(file)}`);
+      Notifications.error(
+        l10n.t(LocalizationKey.helpersMediaHelperDeleteFileFileDeletionFailed, basename(file))
+      );
+      throw new Error(
+        l10n.t(LocalizationKey.helpersMediaHelperDeleteFileFileDeletionFailed, basename(file))
+      );
     }
   }
 

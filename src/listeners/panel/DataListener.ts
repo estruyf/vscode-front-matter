@@ -24,6 +24,8 @@ import { PanelProvider } from '../../panelWebView/PanelProvider';
 import { MessageHandlerData } from '@estruyf/vscode';
 import { SponsorAi } from '../../services/SponsorAI';
 import { Terminal } from '../../services';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../localization';
 
 const FILE_LIMIT = 10;
 
@@ -94,7 +96,7 @@ export class DataListener extends BaseListener {
       panel.getWebview()?.postMessage({
         command,
         requestId,
-        error: 'No active editor'
+        error: l10n.t(LocalizationKey.listenersPanelDataListenerAiSuggestTaxonomyNoEditorError)
       } as MessageHandlerData<string>);
       return;
     }
@@ -104,7 +106,7 @@ export class DataListener extends BaseListener {
       panel.getWebview()?.postMessage({
         command,
         requestId,
-        error: 'No article data'
+        error: l10n.t(LocalizationKey.listenersPanelDataListenerAiSuggestTaxonomyNoDataError)
       } as MessageHandlerData<string>);
       return;
     }
@@ -126,7 +128,7 @@ export class DataListener extends BaseListener {
       panel.getWebview()?.postMessage({
         command,
         requestId,
-        error: 'No article data'
+        error: l10n.t(LocalizationKey.listenersPanelDataListenerAiSuggestTaxonomyNoDataError)
       } as MessageHandlerData<string>);
       return;
     }
@@ -499,7 +501,11 @@ export class DataListener extends BaseListener {
     if (entries) {
       this.sendRequest(command, requestId, entries);
     } else {
-      this.sendRequestError(command, requestId, "Couldn't find data file entries");
+      this.sendRequestError(
+        command,
+        requestId,
+        l10n.t(LocalizationKey.listenersPanelDataListenerGetDataFileEntriesNoDataFilesError)
+      );
     }
   }
 

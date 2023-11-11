@@ -1,8 +1,10 @@
 import { SETTING_GLOBAL_NOTIFICATIONS_DISABLED } from './../constants/settings';
 import { window } from 'vscode';
-import { EXTENSION_NAME, SETTING_GLOBAL_NOTIFICATIONS } from '../constants';
+import { COMMAND_NAME, EXTENSION_NAME, SETTING_GLOBAL_NOTIFICATIONS } from '../constants';
 import { Logger } from './Logger';
 import { Settings } from './SettingsHelper';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 type NotificationType = 'INFO' | 'WARNING' | 'ERROR' | 'ERROR_ONCE';
 
@@ -52,6 +54,30 @@ export class Notifications {
 
     if (this.shouldShow('ERROR')) {
       return window.showErrorMessage(`${EXTENSION_NAME}: ${message}`, ...items);
+    }
+
+    return Promise.resolve(undefined);
+  }
+
+  /**
+   * Show an error notification to the user with a link to the output channel
+   * @param message
+   * @param items
+   * @returns
+   */
+  public static errorWithOutput(message: string, ...items: any): Thenable<string | undefined> {
+    Logger.info(`${EXTENSION_NAME}: ${message}`, 'ERROR');
+
+    if (this.shouldShow('ERROR')) {
+      return window.showErrorMessage(
+        `${EXTENSION_NAME}: ${message} ${l10n.t(
+          LocalizationKey.notificationsOutputChannelDescription,
+          `[${l10n.t(LocalizationKey.notificationsOutputChannelLink)}](command:${
+            COMMAND_NAME.showOutputChannel
+          })`
+        )}`,
+        ...items
+      );
     }
 
     return Promise.resolve(undefined);

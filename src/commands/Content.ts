@@ -1,6 +1,8 @@
 import { commands, QuickPickItem, window } from 'vscode';
 import { COMMAND_NAME, SETTING_TEMPLATES_ENABLED } from '../constants';
 import { Settings } from '../helpers';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class Content {
   public static async create() {
@@ -12,18 +14,18 @@ export class Content {
 
     const options: QuickPickItem[] = [
       {
-        label: 'Create content by content type',
-        description: 'Select if you want to create new content by the available content type(s)'
+        label: l10n.t(LocalizationKey.commandsContentOptionContentTypeLabel),
+        description: l10n.t(LocalizationKey.commandsContentOptionContentTypeDescription)
       },
       {
-        label: 'Create content by template',
-        description: 'Select if you want to create new content by the available template(s)'
+        label: l10n.t(LocalizationKey.commandsContentOptionTemplateLabel),
+        description: l10n.t(LocalizationKey.commandsContentOptionTemplateDescription)
       } as QuickPickItem
     ];
 
     const selectedOption = await window.showQuickPick(options, {
-      title: 'Create content',
-      placeHolder: `Select how you want to create your new content`,
+      title: l10n.t(LocalizationKey.commandsContentQuickPickTitle),
+      placeHolder: l10n.t(LocalizationKey.commandsContentQuickPickPlaceholder),
       canPickMany: false,
       ignoreFocusOut: true
     });

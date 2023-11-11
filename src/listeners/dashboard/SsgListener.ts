@@ -216,7 +216,7 @@ export class SsgListener extends BaseListener {
         } as Field;
         break;
       case 'ZodBoolean':
-        if (field.name === 'published') {
+        if (field.name === 'draft') {
           ctField = {
             name: field.name,
             type: 'draft'
