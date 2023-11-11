@@ -916,6 +916,10 @@ export enum LocalizationKey {
    */
   dashboardStepsStepsToGetStartedTemplateDescription = 'dashboard.steps.stepsToGetStarted.template.description',
   /**
+   * Selecting a template applies a whole configuration to your project and closes this configuration view.
+   */
+  dashboardStepsStepsToGetStartedTemplateWarning = 'dashboard.steps.stepsToGetStarted.template.warning',
+  /**
    * Create Content-Types for your Astro Content Collections
    */
   dashboardStepsStepsToGetStartedAstroContentTypesName = 'dashboard.steps.stepsToGetStarted.astroContentTypes.name',

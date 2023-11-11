@@ -276,6 +276,7 @@
   "dashboard.steps.stepsToGetStarted.showDashboard.description": "Once all actions are completed, the dashboard can be loaded.",
   "dashboard.steps.stepsToGetStarted.template.name": "Use a configuration template",
   "dashboard.steps.stepsToGetStarted.template.description": "Select a template to prefill the frontmatter.json file with the recommended settings.",
+  "dashboard.steps.stepsToGetStarted.template.warning": "Selecting a template applies a whole configuration to your project and closes this configuration view.",
   "dashboard.steps.stepsToGetStarted.astroContentTypes.name": "Create Content-Types for your Astro Content Collections",
 
   "dashboard.taxonomyView.button.add.title": "Add {0} to taxonomy settings",
