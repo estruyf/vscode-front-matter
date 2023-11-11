@@ -669,6 +669,7 @@
   "helpers.taxonomyHelper.move.progress.title": "{0}: Moving \"{1}\" from {2} to \"${3}\".",
   "helpers.taxonomyHelper.move.success": "Move completed.",
 
+  "listeners.dashboard.dashboardListener.openConfig.notification": "Open the \"frontmatter.json\" file if you want to review the configuration.",
   "listeners.dashboard.dashboardListener.pinItem.noPath.error": "No path provided.",
   "listeners.dashboard.dashboardListener.pinItem.coundNotPin.error": "Could not pin item.",
   "listeners.dashboard.dashboardListener.pinItem.coundNotUnPin.error": "Could not unpin item.",

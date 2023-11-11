@@ -55,6 +55,10 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
     });
   }
 
+  const showNotification = () => {
+    Messenger.send(DashboardMessage.openConfig);
+  };
+
   const reload = () => {
     const crntState: any = Messenger.getState() || {};
 
@@ -260,7 +264,10 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
             : Status.NotStarted,
         onClick:
           settings.initialized && settings.contentFolders && settings.contentFolders.length > 0
-            ? reload
+            ? () => {
+              showNotification();
+              reload();
+            }
             : undefined
       }
     ]

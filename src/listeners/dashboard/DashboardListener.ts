@@ -2,12 +2,14 @@ import { Dashboard } from '../../commands/Dashboard';
 import { ExtensionState } from '../../constants';
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
-import { Extension, Notifications } from '../../helpers';
+import { Extension, Notifications, Settings } from '../../helpers';
 import { PostMessageData } from '../../models';
 import { PinnedItems } from '../../services';
 import { BaseListener } from './BaseListener';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
+import { Uri, commands } from 'vscode';
+import { existsAsync } from '../../utils';
 
 export class DashboardListener extends BaseListener {
   /**
@@ -29,6 +31,9 @@ export class DashboardListener extends BaseListener {
       case DashboardMessage.setPageViewType:
         Extension.getInstance().setState(ExtensionState.PagesView, msg.payload, 'workspace');
         break;
+      case DashboardMessage.openConfig:
+        this.openConfig();
+        break;
       case DashboardMessage.showWarning:
         Notifications.warning(msg.payload);
         break;
@@ -41,6 +46,21 @@ export class DashboardListener extends BaseListener {
       case DashboardMessage.getPinnedItems:
         DashboardListener.getPinnedItems(msg);
         break;
+    }
+  }
+
+  private static async openConfig() {
+    const answer = await Notifications.info(
+      l10n.t(LocalizationKey.listenersDashboardDashboardListenerOpenConfigNotification),
+      l10n.t(LocalizationKey.commonOpenSettings)
+    );
+
+    if (answer && answer === l10n.t(LocalizationKey.commonOpenSettings)) {
+      const configPath = await Settings.projectConfigPath();
+
+      if (configPath && (await existsAsync(configPath))) {
+        commands.executeCommand('vscode.open', Uri.file(configPath));
+      }
     }
   }
 

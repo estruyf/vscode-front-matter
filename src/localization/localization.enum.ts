@@ -2201,6 +2201,10 @@ export enum LocalizationKey {
    */
   helpersTaxonomyHelperMoveSuccess = 'helpers.taxonomyHelper.move.success',
   /**
+   * Open the "frontmatter.json" file if you want to review the configuration.
+   */
+  listenersDashboardDashboardListenerOpenConfigNotification = 'listeners.dashboard.dashboardListener.openConfig.notification',
+  /**
    * No path provided.
    */
   listenersDashboardDashboardListenerPinItemNoPathError = 'listeners.dashboard.dashboardListener.pinItem.noPath.error',
