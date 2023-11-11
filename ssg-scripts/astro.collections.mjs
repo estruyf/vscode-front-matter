@@ -3,7 +3,8 @@ import { join } from 'path';
 import { createServer } from 'vite';
 import zod from 'astro/zod';
 
-const { ZodDefault, ZodObject, ZodOptional, ZodString, ZodEffects, ZodEnum } = zod;
+const { ZodDefault, ZodObject, ZodOptional, ZodString, ZodEffects, ZodEnum, ZodUnion, ZodArray } =
+  zod;
 
 /**
  * Process the Zod field
@@ -18,6 +19,17 @@ function getField(field, isOptional = false, defaultValue = undefined) {
     isOptional = true;
     const type = field.unwrap();
 
+    return getField(type, isOptional, defaultValue);
+  }
+
+  if (field instanceof ZodEffects) {
+    const type = field.sourceType();
+    return getField(type, isOptional, defaultValue);
+  }
+
+  if (field instanceof ZodUnion) {
+    const types = field._def.options;
+    const type = types[0];
     return getField(type, isOptional, defaultValue);
   }
 
@@ -61,6 +73,26 @@ function generateFieldInfo(name, type) {
     required: !isFieldOptional
   };
 
+  switch (fieldInfo.type) {
+    case 'ZodString':
+      fieldInfo.type = 'string';
+      break;
+    case 'ZodNumber':
+      fieldInfo.type = 'number';
+      break;
+    case 'ZodBoolean':
+      fieldInfo.type = 'boolean';
+      break;
+    case 'ZodDate':
+      fieldInfo.type = 'datetime';
+      break;
+    case 'ZodArray':
+      fieldInfo.type = 'choice';
+      break;
+    default:
+      break;
+  }
+
   if (fieldType instanceof ZodObject) {
     const subFields = extractFieldInfoFromShape(fieldType);
 
@@ -71,8 +103,22 @@ function generateFieldInfo(name, type) {
     fieldInfo.type = fieldType.sourceType().fmFieldType;
   }
 
+  if (fieldInfo.name.toLowerCase().includes('image')) {
+    fieldInfo.type = 'image';
+  }
+
   if (fieldType instanceof ZodEnum) {
     fieldInfo.options = fieldType.options;
+  }
+
+  if (fieldType instanceof ZodArray) {
+    if (fieldInfo.name === 'tags') {
+      fieldInfo.type = 'tags';
+    } else if (fieldInfo.name === 'categories') {
+      fieldInfo.type = 'categories';
+    } else {
+      fieldInfo.options = fieldType.options;
+    }
   }
 
   if (fieldType instanceof ZodString) {
@@ -205,7 +251,7 @@ const astroContentModulePlugin = () => {
 
     writeFileSync(
       join(process.cwd(), `./.frontmatter/temp/astro.collections.json`),
-      JSON.stringify(processedCollections)
+      JSON.stringify(processedCollections, null, 2)
     );
 
     console.log('Collections generated successfully');
