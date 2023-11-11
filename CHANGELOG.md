@@ -4,6 +4,8 @@
 
 ### ✨ New features
 
+- Localization implemented for the whole extension
+
 ### 🎨 Enhancements
 
 - [#273](https://github.com/estruyf/vscode-front-matter/issues/273): Allow single value arrays to be set as a string with the `singleValueAsString` field property
