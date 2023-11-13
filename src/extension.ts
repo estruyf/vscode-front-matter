@@ -1,6 +1,6 @@
 import { GitListener } from './listeners/general/GitListener';
 import * as vscode from 'vscode';
-import { COMMAND_NAME, TelemetryEvent } from './constants';
+import { COMMAND_NAME, EXTENSION_NAME, TelemetryEvent } from './constants';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
 import { TagType } from './panelWebView/TagType';
 import { PanelProvider } from './panelWebView/PanelProvider';
@@ -281,7 +281,7 @@ export async function activate(context: vscode.ExtensionContext) {
   );
   fmStatusBarItem.command = COMMAND_NAME.dashboard;
   fmStatusBarItem.text = `$(fm-logo)`;
-  fmStatusBarItem.tooltip = `Front Matter CMS`;
+  fmStatusBarItem.tooltip = EXTENSION_NAME;
   fmStatusBarItem.show();
 
   // Register listeners that make sure the status bar updates

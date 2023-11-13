@@ -22,6 +22,8 @@ import { Folders } from '../commands';
 import { join } from 'path';
 import { SettingsListener as PanelSettingsListener } from '../listeners/panel';
 import { SettingsListener as DashboardSettingsListener } from '../listeners/dashboard';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class TaxonomyHelper {
   private static db: JsonDB;
@@ -126,15 +128,15 @@ export class TaxonomyHelper {
     const { type, value } = data;
 
     const answer = await window.showInputBox({
-      title: `Rename the "${value}"`,
+      title: l10n.t(LocalizationKey.helpersTaxonomyHelperRenameInputTitle, value),
       value,
       validateInput: (text) => {
         if (text === value) {
-          return 'The new value must be different from the old one.';
+          return l10n.t(LocalizationKey.helpersTaxonomyHelperRenameValidateEqualValue);
         }
 
         if (!text) {
-          return 'A new value must be provided.';
+          return l10n.t(LocalizationKey.helpersTaxonomyHelperRenameValidateNoValue);
         }
 
         return null;
@@ -168,8 +170,8 @@ export class TaxonomyHelper {
     const answer = await window.showQuickPick(
       options.filter((o) => o !== value),
       {
-        title: `Merge the "${value}" with another ${type} value`,
-        placeHolder: `Select the ${type} value to merge with`,
+        title: l10n.t(LocalizationKey.helpersTaxonomyHelperMergeQuickPickTitle, value, type),
+        placeHolder: l10n.t(LocalizationKey.helpersTaxonomyHelperMergeQuickPickPlaceholder, type),
         ignoreFocusOut: true
       }
     );
@@ -188,13 +190,20 @@ export class TaxonomyHelper {
   public static async delete(data: { type: string; value: string }) {
     const { type, value } = data;
 
-    const answer = await window.showQuickPick(['Yes', 'No'], {
-      title: `Delete the "${value}" ${type} value`,
-      placeHolder: `Are you sure you want to delete the "${value}" ${type} value?`,
-      ignoreFocusOut: true
-    });
+    const answer = await window.showQuickPick(
+      [l10n.t(LocalizationKey.commonYes), l10n.t(LocalizationKey.commonNo)],
+      {
+        title: l10n.t(LocalizationKey.helpersTaxonomyHelperDeleteQuickPickTitle, value, type),
+        placeHolder: l10n.t(
+          LocalizationKey.helpersTaxonomyHelperDeleteQuickPickPlaceholder,
+          value,
+          type
+        ),
+        ignoreFocusOut: true
+      }
+    );
 
-    if (!answer || answer === 'No') {
+    if (!answer || answer === l10n.t(LocalizationKey.commonNo)) {
       return;
     }
 
@@ -221,16 +230,16 @@ export class TaxonomyHelper {
     const options = await this.getTaxonomyOptions(taxonomyType);
 
     const newOption = await window.showInputBox({
-      title: `Create a new ${type} value`,
-      placeHolder: `The value you want to add`,
+      title: l10n.t(LocalizationKey.helpersTaxonomyHelperCreateNewInputTitle, type),
+      placeHolder: l10n.t(LocalizationKey.helpersTaxonomyHelperCreateNewInputPlaceholder),
       ignoreFocusOut: true,
       validateInput: (text) => {
         if (!text) {
-          return 'A value must be provided.';
+          return l10n.t(LocalizationKey.helpersTaxonomyHelperCreateNewInputValidateNoValue);
         }
 
         if (options.includes(text)) {
-          return 'The value already exists.';
+          return l10n.t(LocalizationKey.helpersTaxonomyHelperCreateNewInputValidateExists);
         }
 
         return null;
@@ -276,11 +285,28 @@ export class TaxonomyHelper {
     let progressText = ``;
 
     if (type === 'edit') {
-      progressText = `${EXTENSION_NAME}: Renaming "${oldValue}" from ${taxonomyName} to "${newValue}".`;
+      progressText = l10n.t(
+        LocalizationKey.helpersTaxonomyHelperProcessEdit,
+        EXTENSION_NAME,
+        oldValue,
+        taxonomyName,
+        newValue || ''
+      );
     } else if (type === 'merge') {
-      progressText = `${EXTENSION_NAME}: Merging "${oldValue}" from "${taxonomyName}" to "${newValue}".`;
+      progressText = l10n.t(
+        LocalizationKey.helpersTaxonomyHelperProcessMerge,
+        EXTENSION_NAME,
+        oldValue,
+        taxonomyName,
+        newValue || ''
+      );
     } else if (type === 'delete') {
-      progressText = `${EXTENSION_NAME}: Deleting "${oldValue}" from "${taxonomyName}".`;
+      progressText = l10n.t(
+        LocalizationKey.helpersTaxonomyHelperProcessDelete,
+        EXTENSION_NAME,
+        oldValue,
+        taxonomyName
+      );
     }
 
     window.withProgress(
@@ -350,11 +376,11 @@ export class TaxonomyHelper {
         await this.addToSettings(taxonomyType, oldValue, newValue);
 
         if (type === 'edit') {
-          Notifications.info(`Edit completed.`);
+          Notifications.info(l10n.t(LocalizationKey.helpersTaxonomyHelperProcessEditSuccess));
         } else if (type === 'merge') {
-          Notifications.info(`Merge completed.`);
+          Notifications.info(l10n.t(LocalizationKey.helpersTaxonomyHelperProcessMergeSuccess));
         } else if (type === 'delete') {
-          Notifications.info(`Deletion completed.`);
+          Notifications.info(l10n.t(LocalizationKey.helpersTaxonomyHelperProcessDeleteSuccess));
         }
       }
     );
@@ -375,8 +401,8 @@ export class TaxonomyHelper {
     options = options.filter((o) => o !== type);
 
     const answer = await window.showQuickPick(options, {
-      title: `Move the "${value}" to another type`,
-      placeHolder: `Select the type to move to`,
+      title: l10n.t(LocalizationKey.helpersTaxonomyHelperMoveQuickPickTitle, value),
+      placeHolder: l10n.t(LocalizationKey.helpersTaxonomyHelperMoveQuickPickPlaceholder),
       ignoreFocusOut: true
     });
 
@@ -390,7 +416,13 @@ export class TaxonomyHelper {
     window.withProgress(
       {
         location: ProgressLocation.Notification,
-        title: `${EXTENSION_NAME}: Moving "${value}" from ${type} to "${answer}".`,
+        title: l10n.t(
+          LocalizationKey.helpersTaxonomyHelperMoveProgressTitle,
+          EXTENSION_NAME,
+          value,
+          type,
+          answer
+        ),
         cancellable: false
       },
       async (progress) => {
@@ -465,7 +497,7 @@ export class TaxonomyHelper {
 
         await this.process('delete', oldType, value);
 
-        Notifications.info(`Move completed.`);
+        Notifications.info(l10n.t(LocalizationKey.helpersTaxonomyHelperMoveSuccess));
       }
     );
   }

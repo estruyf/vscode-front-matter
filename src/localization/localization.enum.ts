@@ -116,6 +116,30 @@ export enum LocalizationKey {
    */
   commonNoResults = 'common.noResults',
   /**
+   * Sorry, something went wrong.
+   */
+  commonError = 'common.error',
+  /**
+   * yes
+   */
+  commonYes = 'common.yes',
+  /**
+   * no
+   */
+  commonNo = 'common.no',
+  /**
+   * Open settings
+   */
+  commonOpenSettings = 'common.openSettings',
+  /**
+   * output window
+   */
+  notificationsOutputChannelLink = 'notifications.outputChannel.link',
+  /**
+   * Check the {0} for more details.
+   */
+  notificationsOutputChannelDescription = 'notifications.outputChannel.description',
+  /**
    * Common
    */
   settingsViewCommon = 'settings.view.common',
@@ -892,6 +916,10 @@ export enum LocalizationKey {
    */
   dashboardStepsStepsToGetStartedTemplateDescription = 'dashboard.steps.stepsToGetStarted.template.description',
   /**
+   * Selecting a template applies a whole configuration to your project and closes this configuration view.
+   */
+  dashboardStepsStepsToGetStartedTemplateWarning = 'dashboard.steps.stepsToGetStarted.template.warning',
+  /**
    * Create Content-Types for your Astro Content Collections
    */
   dashboardStepsStepsToGetStartedAstroContentTypesName = 'dashboard.steps.stepsToGetStarted.astroContentTypes.name',
@@ -1032,7 +1060,7 @@ export enum LocalizationKey {
    */
   dashboardConfigurationAstroAstroContentTypesEmpty = 'dashboard.configuration.astro.astroContentTypes.empty',
   /**
-   * The following Astro Content Collections and can be used to generate a content-type.
+   * The following Astro Content Collections can be used to generate a content-type.
    */
   dashboardConfigurationAstroAstroContentTypesDescription = 'dashboard.configuration.astro.astroContentTypes.description',
   /**
@@ -1453,7 +1481,827 @@ export enum LocalizationKey {
    */
   panelViewPanelMediaInsert = 'panel.viewPanel.mediaInsert',
   /**
+   * No {0} configured.
+   */
+  commandsArticleNotificationNoTaxonomy = 'commands.article.notification.noTaxonomy',
+  /**
+   * Select your {0} to insert.
+   */
+  commandsArticleQuickPickPlaceholder = 'commands.article.quickPick.placeholder',
+  /**
+   * Something failed while parsing the date format. Check your "{0}" setting.
+   */
+  commandsArticleSetDateError = 'commands.article.setDate.error',
+  /**
+   * Failed to rename file: {0}
+   */
+  commandsArticleUpdateSlugError = 'commands.article.updateSlug.error',
+  /**
+   * Cache cleared
+   */
+  commandsCacheCleared = 'commands.cache.cleared',
+  /**
+   * Ask me anything
+   */
+  commandsChatbotTitle = 'commands.chatbot.title',
+  /**
+   * Create content by content type
+   */
+  commandsContentOptionContentTypeLabel = 'commands.content.option.contentType.label',
+  /**
+   * Select if you want to create new content by the available content type(s)
+   */
+  commandsContentOptionContentTypeDescription = 'commands.content.option.contentType.description',
+  /**
+   * Create content by template
+   */
+  commandsContentOptionTemplateLabel = 'commands.content.option.template.label',
+  /**
+   * Select if you want to create new content by the available template(s)
+   */
+  commandsContentOptionTemplateDescription = 'commands.content.option.template.description',
+  /**
+   * Create content
+   */
+  commandsContentQuickPickTitle = 'commands.content.quickPick.title',
+  /**
+   * Select how you want to create your new content
+   */
+  commandsContentQuickPickPlaceholder = 'commands.content.quickPick.placeholder',
+  /**
+   * Dashboard
+   */
+  commandsDashboardTitle = 'commands.dashboard.title',
+  /**
+   * Add media folder
+   */
+  commandsFoldersAddMediaFolderInputBoxTitle = 'commands.folders.addMediaFolder.inputBox.title',
+  /**
+   * Which name would you like to give to your folder (use "/" to create multi-level folders)?
+   */
+  commandsFoldersAddMediaFolderInputBoxPrompt = 'commands.folders.addMediaFolder.inputBox.prompt',
+  /**
+   * No folder name was specified.
+   */
+  commandsFoldersAddMediaFolderNoFolderWarning = 'commands.folders.addMediaFolder.noFolder.warning',
+  /**
+   * Folder is already registered
+   */
+  commandsFoldersCreateFolderExistsWarning = 'commands.folders.create.folderExists.warning',
+  /**
+   * Register folder
+   */
+  commandsFoldersCreateInputTitle = 'commands.folders.create.input.title',
+  /**
+   * Which name would you like to specify for this folder?
+   */
+  commandsFoldersCreateInputPrompt = 'commands.folders.create.input.prompt',
+  /**
+   * Folder name
+   */
+  commandsFoldersCreateInputPlaceholder = 'commands.folders.create.input.placeholder',
+  /**
+   * Folder registered
+   */
+  commandsFoldersCreateSuccess = 'commands.folders.create.success',
+  /**
+   * Please select the main workspace folder for Front Matter to use.
+   */
+  commandsFoldersGetWorkspaceFolderWorkspaceFolderPickPlaceholder = 'commands.folders.getWorkspaceFolder.workspaceFolderPick.placeholder',
+  /**
+   * Folder "{0}" does not exist. Please remove it from the settings.
+   */
+  commandsFoldersGetNotificationErrorTitle = 'commands.folders.get.notificationError.title',
+  /**
+   * Remove folder
+   */
+  commandsFoldersGetNotificationErrorRemoveAction = 'commands.folders.get.notificationError.remove.action',
+  /**
+   * Create folder
+   */
+  commandsFoldersGetNotificationErrorCreateAction = 'commands.folders.get.notificationError.create.action',
+  /**
+   * Preview: {0}
+   */
+  commandsPreviewPanelTitle = 'commands.preview.panel.title',
+  /**
+   * Select the folder of the article to preview
+   */
+  commandsPreviewAskUserToPickFolderTitle = 'commands.preview.askUserToPickFolder.title',
+  /**
+   * Project initialized successfully.
+   */
+  commandsProjectInitializeSuccess = 'commands.project.initialize.success',
+  /**
+   * To which project do you want to switch?
+   */
+  commandsProjectSwitchProjectTitle = 'commands.project.switchProject.title',
+  /**
+   * Sample template created.
+   */
+  commandsProjectCreateSampleTemplateInfo = 'commands.project.createSampleTemplate.info',
+  /**
+   * Insert the value of the {0} that you want to add to your configuration.
+   */
+  commandsSettingsCreateInputPrompt = 'commands.settings.create.input.prompt',
+  /**
+   * Name of the {0}
+   */
+  commandsSettingsCreateInputPlaceholder = 'commands.settings.create.input.placeholder',
+  /**
+   * The provided {0} already exists.
+   */
+  commandsSettingsCreateWarning = 'commands.settings.create.warning',
+  /**
+   * Do you want to add the new {0} to the page?
+   */
+  commandsSettingsCreateQuickPickPlaceholder = 'commands.settings.create.quickPick.placeholder',
+  /**
+   * {0}: exporting tags and categories
+   */
+  commandsSettingsExportProgressTitle = 'commands.settings.export.progress.title',
+  /**
+   * Export completed. Tags: {0} - Categories: {1}.
+   */
+  commandsSettingsExportProgressSuccess = 'commands.settings.export.progress.success',
+  /**
+   * Remap
+   */
+  commandsSettingsRemapQuickpickTitle = 'commands.settings.remap.quickpick.title',
+  /**
+   * What do you want to remap?
+   */
+  commandsSettingsRemapQuickpickPlaceholder = 'commands.settings.remap.quickpick.placeholder',
+  /**
+   * No {0} configured.
+   */
+  commandsSettingsRemapNoTaxonomyWarning = 'commands.settings.remap.noTaxonomy.warning',
+  /**
+   * Select your {0} to insert.
+   */
+  commandsSettingsRemapSelectTaxonomyPlaceholder = 'commands.settings.remap.selectTaxonomy.placeholder',
+  /**
+   * Specify the value of the {0} with which you want to remap "{1}". Leave the input <blank> if you want to remove the {0} from all articles.
+   */
+  commandsSettingsRemapNewOptionInputPrompt = 'commands.settings.remap.newOption.input.prompt',
+  /**
+   * Name of the {0}
+   */
+  commandsSettingsRemapNewOptionInputPlaceholder = 'commands.settings.remap.newOption.input.placeholder',
+  /**
+   * Delete {0} {1}?
+   */
+  commandsSettingsRemapDeletePlaceholder = 'commands.settings.remap.delete.placeholder',
+  /**
+   * The {0} field is required. Please define a value for the field.
+   */
+  commandsStatusListenerVerifyRequiredFieldsDiagnosticEmptyField = 'commands.statusListener.verifyRequiredFields.diagnostic.emptyField',
+  /**
+   * The following fields are required to contain a value: {0}
+   */
+  commandsStatusListenerVerifyRequiredFieldsNotificationError = 'commands.statusListener.verifyRequiredFields.notification.error',
+  /**
+   * Template title
+   */
+  commandsTemplateGenerateInputTitle = 'commands.template.generate.input.title',
+  /**
+   * Which name would you like to give your template?
+   */
+  commandsTemplateGenerateInputPrompt = 'commands.template.generate.input.prompt',
+  /**
+   * article
+   */
+  commandsTemplateGenerateInputPlaceholder = 'commands.template.generate.input.placeholder',
+  /**
+   * You did not specify a template title.
+   */
+  commandsTemplateGenerateNoTitleWarning = 'commands.template.generate.noTitle.warning',
+  /**
+   * Keep content
+   */
+  commandsTemplateGenerateKeepContentsTitle = 'commands.template.generate.keepContents.title',
+  /**
+   * Do you want to keep the contents for the template?
+   */
+  commandsTemplateGenerateKeepContentsPlaceholder = 'commands.template.generate.keepContents.placeholder',
+  /**
+   * You did not pick any of the options for keeping the template its content.
+   */
+  commandsTemplateGenerateKeepContentsNoOptionWarning = 'commands.template.generate.keepContents.noOption.warning',
+  /**
+   * Template created and is now available in your {0} folder.
+   */
+  commandsTemplateGenerateKeepContentsSuccess = 'commands.template.generate.keepContents.success',
+  /**
+   * No templates found.
+   */
+  commandsTemplateGetTemplatesWarning = 'commands.template.getTemplates.warning',
+  /**
+   * Incorrect project folder path retrieved.
+   */
+  commandsTemplateCreateFolderPathWarning = 'commands.template.create.folderPath.warning',
+  /**
+   * No templates found.
+   */
+  commandsTemplateCreateNoTemplatesWarning = 'commands.template.create.noTemplates.warning',
+  /**
+   * Select a template
+   */
+  commandsTemplateCreateSelectTemplateTitle = 'commands.template.create.selectTemplate.title',
+  /**
+   * Select the content template to use
+   */
+  commandsTemplateCreateSelectTemplatePlaceholder = 'commands.template.create.selectTemplate.placeholder',
+  /**
+   * No template selected.
+   */
+  commandsTemplateCreateSelectTemplateNoTemplateWarning = 'commands.template.create.selectTemplate.noTemplate.warning',
+  /**
+   * Content template could not be found.
+   */
+  commandsTemplateCreateSelectTemplateNotFoundWarning = 'commands.template.create.selectTemplate.notFound.warning',
+  /**
+   * Your new content is now available.
+   */
+  commandsTemplateCreateSuccess = 'commands.template.create.success',
+  /**
+   * Unordered list
+   */
+  commandsWysiwygCommandUnorderedListLabel = 'commands.wysiwyg.command.unorderedList.label',
+  /**
+   * Add an unordered list
+   */
+  commandsWysiwygCommandUnorderedListDetail = 'commands.wysiwyg.command.unorderedList.detail',
+  /**
+   * Ordered list
+   */
+  commandsWysiwygCommandOrderedListLabel = 'commands.wysiwyg.command.orderedList.label',
+  /**
+   * Add an ordered list
+   */
+  commandsWysiwygCommandOrderedListDetail = 'commands.wysiwyg.command.orderedList.detail',
+  /**
+   * Task list
+   */
+  commandsWysiwygCommandTaskListLabel = 'commands.wysiwyg.command.taskList.label',
+  /**
+   * Add a task list
+   */
+  commandsWysiwygCommandTaskListDetail = 'commands.wysiwyg.command.taskList.detail',
+  /**
+   * Code
+   */
+  commandsWysiwygCommandCodeLabel = 'commands.wysiwyg.command.code.label',
+  /**
+   * Add inline code snippet
+   */
+  commandsWysiwygCommandCodeDetail = 'commands.wysiwyg.command.code.detail',
+  /**
+   * Code block
+   */
+  commandsWysiwygCommandCodeblockLabel = 'commands.wysiwyg.command.codeblock.label',
+  /**
+   * Add a code block
+   */
+  commandsWysiwygCommandCodeblockDetail = 'commands.wysiwyg.command.codeblock.detail',
+  /**
+   * Blockquote
+   */
+  commandsWysiwygCommandBlockquoteLabel = 'commands.wysiwyg.command.blockquote.label',
+  /**
+   * Add a blockquote
+   */
+  commandsWysiwygCommandBlockquoteDetail = 'commands.wysiwyg.command.blockquote.detail',
+  /**
+   * Strikethrough
+   */
+  commandsWysiwygCommandStrikethroughLabel = 'commands.wysiwyg.command.strikethrough.label',
+  /**
+   * Add strikethrough text
+   */
+  commandsWysiwygCommandStrikethroughDetail = 'commands.wysiwyg.command.strikethrough.detail',
+  /**
+   * WYSIWYG Options
+   */
+  commandsWysiwygQuickPickTitle = 'commands.wysiwyg.quickPick.title',
+  /**
+   * Which type of markup would you like to insert?
+   */
+  commandsWysiwygQuickPickPlaceholder = 'commands.wysiwyg.quickPick.placeholder',
+  /**
+   * WYSIWYG Hyperlink
+   */
+  commandsWysiwygAddHyperlinkHyperlinkInputTitle = 'commands.wysiwyg.addHyperlink.hyperlinkInput.title',
+  /**
+   * Enter the URL
+   */
+  commandsWysiwygAddHyperlinkHyperlinkInputPrompt = 'commands.wysiwyg.addHyperlink.hyperlinkInput.prompt',
+  /**
+   * WYSIWYG Text
+   */
+  commandsWysiwygAddHyperlinkTextInputTitle = 'commands.wysiwyg.addHyperlink.textInput.title',
+  /**
+   * Enter the text for the hyperlink
+   */
+  commandsWysiwygAddHyperlinkTextInputPrompt = 'commands.wysiwyg.addHyperlink.textInput.prompt',
+  /**
+   * Heading level
+   */
+  commandsWysiwygInsertTextHeadingInputTitle = 'commands.wysiwyg.insertText.heading.input.title',
+  /**
+   * Which heading level do you want to insert?
+   */
+  commandsWysiwygInsertTextHeadingInputPlaceholder = 'commands.wysiwyg.insertText.heading.input.placeholder',
+  /**
+   * A page bundle with the name {0} already exists in {1}.
+   */
+  helpersArticleHelperCreateContentPageBundleError = 'helpers.articleHelper.createContent.pageBundle.error',
+  /**
+   * Content with the title already exists. Please specify a new title.
+   */
+  helpersArticleHelperCreateContentContentExistsWarning = 'helpers.articleHelper.createContent.contentExists.warning',
+  /**
+   * Error while processing the {0} placeholder.
+   */
+  helpersArticleHelperProcessCustomPlaceholdersPlaceholderError = 'helpers.articleHelper.processCustomPlaceholders.placeholder.error',
+  /**
+   * Error parsing the front matter of {0}.
+   */
+  helpersArticleHelperParseFileDiagnosticError = 'helpers.articleHelper.parseFile.diagnostic.error',
+  /**
+   * No front matter data found to generate a content type.
+   */
+  helpersContentTypeGenerateNoFrontMatterError = 'helpers.contentType.generate.noFrontMatter.error',
+  /**
+   * Override the default content type
+   */
+  helpersContentTypeGenerateOverrideQuickPickTitle = 'helpers.contentType.generate.override.quickPick.title',
+  /**
+   * Do you want to overwrite the default content type configuration with the fields used in the current field?
+   */
+  helpersContentTypeGenerateOverrideQuickPickPlaceholder = 'helpers.contentType.generate.override.quickPick.placeholder',
+  /**
+   * Generate Content Type
+   */
+  helpersContentTypeGenerateContentTypeInputTitle = 'helpers.contentType.generate.contentTypeInput.title',
+  /**
+   * Enter the name of the content type to generate
+   */
+  helpersContentTypeGenerateContentTypeInputPrompt = 'helpers.contentType.generate.contentTypeInput.prompt',
+  /**
+   * Please enter a name for the content type.
+   */
+  helpersContentTypeGenerateContentTypeInputValidationEnterName = 'helpers.contentType.generate.contentTypeInput.validation.enterName',
+  /**
+   * A content type with this name already exists.
+   */
+  helpersContentTypeGenerateContentTypeInputValidationNameExists = 'helpers.contentType.generate.contentTypeInput.validation.nameExists',
+  /**
+   * You didn't specify a name for the content type.
+   */
+  helpersContentTypeGenerateNoContentTypeNameWarning = 'helpers.contentType.generate.noContentTypeName.warning',
+  /**
+   * Use as a page bundle
+   */
+  helpersContentTypeGeneratePageBundleQuickPickTitle = 'helpers.contentType.generate.pageBundle.quickPick.title',
+  /**
+   * Do you want to use this content type as a page bundle?
+   */
+  helpersContentTypeGeneratePageBundleQuickPickPlaceHolder = 'helpers.contentType.generate.pageBundle.quickPick.placeHolder',
+  /**
+   * Content type {0} has been updated.
+   */
+  helpersContentTypeGenerateUpdatedSuccess = 'helpers.contentType.generate.updated.success',
+  /**
+   * Content type {0} has been generated.
+   */
+  helpersContentTypeGenerateGeneratedSuccess = 'helpers.contentType.generate.generated.success',
+  /**
+   * No front matter data found to add missing fields.
+   */
+  helpersContentTypeAddMissingFieldsNoFrontMatterWarning = 'helpers.contentType.addMissingFields.noFrontMatter.warning',
+  /**
+   * Content type {0} has been updated.
+   */
+  helpersContentTypeAddMissingFieldsUpdatedSuccess = 'helpers.contentType.addMissingFields.updated.success',
+  /**
+   * No front matter data found to set the content type.
+   */
+  helpersContentTypeSetContentTypeNoFrontMatterWarning = 'helpers.contentType.setContentType.noFrontMatter.warning',
+  /**
+   * Select the content type
+   */
+  helpersContentTypeSetContentTypeQuickPickTitle = 'helpers.contentType.setContentType.quickPick.title',
+  /**
+   * Which content type would you like to use?
+   */
+  helpersContentTypeSetContentTypeQuickPickPlaceholder = 'helpers.contentType.setContentType.quickPick.placeholder',
+  /**
+   * {0}: Creating content...
+   */
+  helpersContentTypeCreateProgressTitle = 'helpers.contentType.create.progress.title',
+  /**
+   * Your new content has been created.
+   */
+  helpersContentTypeCreateSuccess = 'helpers.contentType.create.success',
+  /**
+   * The content type actions are not available in this mode.
+   */
+  helpersContentTypeVerifyWarning = 'helpers.contentType.verify.warning',
+  /**
+   * Executing: {0}
+   */
+  helpersCustomScriptExecuting = 'helpers.customScript.executing',
+  /**
+   * {0}: Article couldn't be retrieved.
+   */
+  helpersCustomScriptSingleRunArticleWarning = 'helpers.customScript.singleRun.article.warning',
+  /**
+   * {0}: No files found
+   */
+  helpersCustomScriptBulkRunNoFilesWarning = 'helpers.customScript.bulkRun.noFiles.warning',
+  /**
+   * {0}: There was no folder or media path specified.
+   */
+  helpersCustomScriptRunMediaScriptNoFolderWarning = 'helpers.customScript.runMediaScript.noFolder.warning',
+  /**
+   * {0}: front matter updated.
+   */
+  helpersCustomScriptShowOutputFrontMatterSuccess = 'helpers.customScript.showOutput.frontMatter.success',
+  /**
+   * Copy output
+   */
+  helpersCustomScriptShowOutputCopyOutputAction = 'helpers.customScript.showOutput.copyOutput.action',
+  /**
+   * {0}: Executed your custom script.
+   */
+  helpersCustomScriptShowOutputSuccess = 'helpers.customScript.showOutput.success',
+  /**
+   * Invalid command: {0}
+   */
+  helpersCustomScriptValidateCommandError = 'helpers.customScript.validateCommand.error',
+  /**
+   * Something went wrong while processing the data file.
+   */
+  helpersDataFileHelperProcessError = 'helpers.dataFileHelper.process.error',
+  /**
+   * Check the changelog
+   */
+  helpersExtensionGetVersionChangelog = 'helpers.extension.getVersion.changelog',
+  /**
+   * Give it a ⭐️
+   */
+  helpersExtensionGetVersionStarIt = 'helpers.extension.getVersion.starIt',
+  /**
+   * {0} has been updated to v{1} — check out what's new!
+   */
+  helpersExtensionGetVersionUpdateNotification = 'helpers.extension.getVersion.update.notification',
+  /**
+   * The "{0}" and "{1}" settings have been deprecated. Please use the "isPublishDate" and "isModifiedDate" datetime field properties instead.
+   */
+  helpersExtensionMigrateSettingsDeprecatedWarning = 'helpers.extension.migrateSettings.deprecated.warning',
+  /**
+   * Hide
+   */
+  helpersExtensionMigrateSettingsDeprecatedWarningHide = 'helpers.extension.migrateSettings.deprecated.warning.hide',
+  /**
+   * See migration guide
+   */
+  helpersExtensionMigrateSettingsDeprecatedWarningSeeGuide = 'helpers.extension.migrateSettings.deprecated.warning.seeGuide',
+  /**
+   * {0} - Templates
+   */
+  helpersExtensionMigrateSettingsTemplatesQuickPickTitle = 'helpers.extension.migrateSettings.templates.quickPick.title',
+  /**
+   * Do you want to keep on using the template functionality?
+   */
+  helpersExtensionMigrateSettingsTemplatesQuickPickPlaceholder = 'helpers.extension.migrateSettings.templates.quickPick.placeholder',
+  /**
+   * Front Matter BETA cannot be used while the stable version is installed. Please ensure that you have only over version installed.
+   */
+  helpersExtensionCheckIfExtensionCanRunWarning = 'helpers.extension.checkIfExtensionCanRun.warning',
+  /**
+   * We couldn't find your selected folder.
+   */
+  helpersMediaHelperSaveFileFolderError = 'helpers.mediaHelper.saveFile.folder.error',
+  /**
+   * File {0} uploaded to: {1}
+   */
+  helpersMediaHelperSaveFileFileUploadedSuccess = 'helpers.mediaHelper.saveFile.file.uploaded.success',
+  /**
+   * Sorry, something went wrong uploading {0}
+   */
+  helpersMediaHelperSaveFileFileUploadedFailed = 'helpers.mediaHelper.saveFile.file.uploaded.failed',
+  /**
+   * Sorry, something went wrong deleting {0}
+   */
+  helpersMediaHelperDeleteFileFileDeletionFailed = 'helpers.mediaHelper.deleteFile.file.deletion.failed',
+  /**
+   * The name "{0}" already exists at the file location.
+   */
+  helpersMediaLibraryRemoveWarning = 'helpers.mediaLibrary.remove.warning',
+  /**
+   * Sorry, something went wrong updating "{0}" to "{1}".
+   */
+  helpersMediaLibraryRemoveError = 'helpers.mediaLibrary.remove.error',
+  /**
+   * Couldn't open the file.
+   */
+  helpersOpenFileInEditorError = 'helpers.openFileInEditor.error',
+  /**
+   * Title or description
+   */
+  helpersQuestionsContentTitleAiInputTitle = 'helpers.questions.contentTitle.aiInput.title',
+  /**
+   * What would you like to write about?
+   */
+  helpersQuestionsContentTitleAiInputPrompt = 'helpers.questions.contentTitle.aiInput.prompt',
+  /**
+   * What would you like to write about?
+   */
+  helpersQuestionsContentTitleAiInputPlaceholder = 'helpers.questions.contentTitle.aiInput.placeholder',
+  /**
+   * your title/description
+   */
+  helpersQuestionsContentTitleAiInputQuickPickTitleSeparator = 'helpers.questions.contentTitle.aiInput.quickPick.title.separator',
+  /**
+   * AI generated title
+   */
+  helpersQuestionsContentTitleAiInputQuickPickAiSeparator = 'helpers.questions.contentTitle.aiInput.quickPick.ai.separator',
+  /**
+   * Select a title
+   */
+  helpersQuestionsContentTitleAiInputSelectTitle = 'helpers.questions.contentTitle.aiInput.select.title',
+  /**
+   * Select a title for your content
+   */
+  helpersQuestionsContentTitleAiInputSelectPlaceholder = 'helpers.questions.contentTitle.aiInput.select.placeholder',
+  /**
+   * Failed fetching the AI title. Please try to use your own title or try again later.
+   */
+  helpersQuestionsContentTitleAiInputFailed = 'helpers.questions.contentTitle.aiInput.failed',
+  /**
+   * You did not specify a title for your content.
+   */
+  helpersQuestionsContentTitleAiInputWarning = 'helpers.questions.contentTitle.aiInput.warning',
+  /**
+   * Content title
+   */
+  helpersQuestionsContentTitleTitleInputTitle = 'helpers.questions.contentTitle.titleInput.title',
+  /**
+   * What would you like to use as a title for the content to create?
+   */
+  helpersQuestionsContentTitleTitleInputPrompt = 'helpers.questions.contentTitle.titleInput.prompt',
+  /**
+   * Content title
+   */
+  helpersQuestionsContentTitleTitleInputPlaceholder = 'helpers.questions.contentTitle.titleInput.placeholder',
+  /**
+   * You did not specify a title for your content.
+   */
+  helpersQuestionsContentTitleTitleInputWarning = 'helpers.questions.contentTitle.titleInput.warning',
+  /**
+   * Select a folder
+   */
+  helpersQuestionsSelectContentFolderQuickPickTitle = 'helpers.questions.selectContentFolder.quickPick.title',
+  /**
+   * Select where you want to create your content
+   */
+  helpersQuestionsSelectContentFolderQuickPickPlaceholder = 'helpers.questions.selectContentFolder.quickPick.placeholder',
+  /**
+   * No page folders were configured.
+   */
+  helpersQuestionsSelectContentFolderQuickPickNoFoldersWarning = 'helpers.questions.selectContentFolder.quickPick.noFolders.warning',
+  /**
+   * You didn't select a place where you wanted to create your content.
+   */
+  helpersQuestionsSelectContentFolderQuickPickNoSelectionWarning = 'helpers.questions.selectContentFolder.quickPick.noSelection.warning',
+  /**
+   * No content types found. Please create a content type first.
+   */
+  helpersQuestionsSelectContentTypeNoContentTypeWarning = 'helpers.questions.selectContentType.noContentType.warning',
+  /**
+   * Content type
+   */
+  helpersQuestionsSelectContentTypeQuickPickTitle = 'helpers.questions.selectContentType.quickPick.title',
+  /**
+   * Select the content type to create your new content
+   */
+  helpersQuestionsSelectContentTypeQuickPickPlaceholder = 'helpers.questions.selectContentType.quickPick.placeholder',
+  /**
+   * No content type was selected.
+   */
+  helpersQuestionsSelectContentTypeNoSelectionWarning = 'helpers.questions.selectContentType.noSelection.warning',
+  /**
+   * Article {0} is longer than {1} characters (current length: {2}). For SEO reasons, it would be better to make it less than {1} characters.
+   */
+  helpersSeoHelperCheckLengthDiagnosticMessage = 'helpers.seoHelper.checkLength.diagnostic.message',
+  /**
+   * You have local settings. Would you like to promote them to the global settings ("frontmatter.json")?
+   */
+  helpersSettingsHelperCheckToPromoteMessage = 'helpers.settingsHelper.checkToPromote.message',
+  /**
+   * All settings promoted to team level.
+   */
+  helpersSettingsHelperPromoteSuccess = 'helpers.settingsHelper.promote.success',
+  /**
+   * {0}: Reading dynamic config file...
+   */
+  helpersSettingsHelperReadConfigProgressTitle = 'helpers.settingsHelper.readConfig.progress.title',
+  /**
+   * Error reading your configuration.
+   */
+  helpersSettingsHelperReadConfigError = 'helpers.settingsHelper.readConfig.error',
+  /**
+   * Settings have been refreshed.
+   */
+  helpersSettingsHelperRefreshConfigSuccess = 'helpers.settingsHelper.refreshConfig.success',
+  /**
+   * Rename the {0}
+   */
+  helpersTaxonomyHelperRenameInputTitle = 'helpers.taxonomyHelper.rename.input.title',
+  /**
+   * The new value must be different from the old one.
+   */
+  helpersTaxonomyHelperRenameValidateEqualValue = 'helpers.taxonomyHelper.rename.validate.equalValue',
+  /**
+   * A new value must be provided.
+   */
+  helpersTaxonomyHelperRenameValidateNoValue = 'helpers.taxonomyHelper.rename.validate.noValue',
+  /**
+   * Merge the "{0}" with another {1} value
+   */
+  helpersTaxonomyHelperMergeQuickPickTitle = 'helpers.taxonomyHelper.merge.quickPick.title',
+  /**
+   * Select the {0} value to merge with
+   */
+  helpersTaxonomyHelperMergeQuickPickPlaceholder = 'helpers.taxonomyHelper.merge.quickPick.placeholder',
+  /**
+   * Delete the "{0}" {1} value
+   */
+  helpersTaxonomyHelperDeleteQuickPickTitle = 'helpers.taxonomyHelper.delete.quickPick.title',
+  /**
+   * Are you sure you want to delete the "{0}" {1} value?
+   */
+  helpersTaxonomyHelperDeleteQuickPickPlaceholder = 'helpers.taxonomyHelper.delete.quickPick.placeholder',
+  /**
+   * Create a new {0} value
+   */
+  helpersTaxonomyHelperCreateNewInputTitle = 'helpers.taxonomyHelper.createNew.input.title',
+  /**
+   * Enter the value you want to add
+   */
+  helpersTaxonomyHelperCreateNewInputPlaceholder = 'helpers.taxonomyHelper.createNew.input.placeholder',
+  /**
+   * A value must be provided.
+   */
+  helpersTaxonomyHelperCreateNewInputValidateNoValue = 'helpers.taxonomyHelper.createNew.input.validate.noValue',
+  /**
+   * The value already exists.
+   */
+  helpersTaxonomyHelperCreateNewInputValidateExists = 'helpers.taxonomyHelper.createNew.input.validate.exists',
+  /**
+   * {0}: Renaming "{1}" from {2} to {3}.
+   */
+  helpersTaxonomyHelperProcessEdit = 'helpers.taxonomyHelper.process.edit',
+  /**
+   * {0}: Merging "{1}" from {2} to {3}.
+   */
+  helpersTaxonomyHelperProcessMerge = 'helpers.taxonomyHelper.process.merge',
+  /**
+   * {0}: Deleting "{1}" from {2}.
+   */
+  helpersTaxonomyHelperProcessDelete = 'helpers.taxonomyHelper.process.delete',
+  /**
+   * Edit completed.
+   */
+  helpersTaxonomyHelperProcessEditSuccess = 'helpers.taxonomyHelper.process.edit.success',
+  /**
+   * Merge completed.
+   */
+  helpersTaxonomyHelperProcessMergeSuccess = 'helpers.taxonomyHelper.process.merge.success',
+  /**
+   * Deletion completed.
+   */
+  helpersTaxonomyHelperProcessDeleteSuccess = 'helpers.taxonomyHelper.process.delete.success',
+  /**
+   * Move the "{0}" to another type
+   */
+  helpersTaxonomyHelperMoveQuickPickTitle = 'helpers.taxonomyHelper.move.quickPick.title',
+  /**
+   * Select the type to move to
+   */
+  helpersTaxonomyHelperMoveQuickPickPlaceholder = 'helpers.taxonomyHelper.move.quickPick.placeholder',
+  /**
+   * {0}: Moving "{1}" from {2} to "${3}".
+   */
+  helpersTaxonomyHelperMoveProgressTitle = 'helpers.taxonomyHelper.move.progress.title',
+  /**
+   * Move completed.
+   */
+  helpersTaxonomyHelperMoveSuccess = 'helpers.taxonomyHelper.move.success',
+  /**
+   * Open the "frontmatter.json" file if you want to review the configuration.
+   */
+  listenersDashboardDashboardListenerOpenConfigNotification = 'listeners.dashboard.dashboardListener.openConfig.notification',
+  /**
+   * No path provided.
+   */
+  listenersDashboardDashboardListenerPinItemNoPathError = 'listeners.dashboard.dashboardListener.pinItem.noPath.error',
+  /**
+   * Could not pin item.
+   */
+  listenersDashboardDashboardListenerPinItemCoundNotPinError = 'listeners.dashboard.dashboardListener.pinItem.coundNotPin.error',
+  /**
+   * Could not unpin item.
+   */
+  listenersDashboardDashboardListenerPinItemCoundNotUnPinError = 'listeners.dashboard.dashboardListener.pinItem.coundNotUnPin.error',
+  /**
    * Template files copied.
    */
-  listenersDashboardSettingsListenerTriggerTemplateNotification = 'listeners.dashboard.settingsListener.triggerTemplate.notification'
+  listenersDashboardSettingsListenerTriggerTemplateNotification = 'listeners.dashboard.settingsListener.triggerTemplate.notification',
+  /**
+   * Downloading and initializing the template...
+   */
+  listenersDashboardSettingsListenerTriggerTemplateProgressTitle = 'listeners.dashboard.settingsListener.triggerTemplate.progress.title',
+  /**
+   * Failed to download the template.
+   */
+  listenersDashboardSettingsListenerTriggerTemplateDownloadError = 'listeners.dashboard.settingsListener.triggerTemplate.download.error',
+  /**
+   * Failed to initialize the template.
+   */
+  listenersDashboardSettingsListenerTriggerTemplateInitError = 'listeners.dashboard.settingsListener.triggerTemplate.init.error',
+  /**
+   * Snippet missing title or body
+   */
+  listenersDashboardSnippetListenerAddSnippetMissingFieldsWarning = 'listeners.dashboard.snippetListener.addSnippet.missingFields.warning',
+  /**
+   * Snippet with the same title already exists
+   */
+  listenersDashboardSnippetListenerAddSnippetExistsWarning = 'listeners.dashboard.snippetListener.addSnippet.exists.warning',
+  /**
+   * No snippets to update
+   */
+  listenersDashboardSnippetListenerUpdateSnippetNoSnippetsWarning = 'listeners.dashboard.snippetListener.updateSnippet.noSnippets.warning',
+  /**
+   * Failed to push submodules.
+   */
+  listenersGeneralGitListenerPushError = 'listeners.general.gitListener.push.error',
+  /**
+   * No active editor
+   */
+  listenersPanelDataListenerAiSuggestTaxonomyNoEditorError = 'listeners.panel.dataListener.aiSuggestTaxonomy.noEditor.error',
+  /**
+   * No article data
+   */
+  listenersPanelDataListenerAiSuggestTaxonomyNoDataError = 'listeners.panel.dataListener.aiSuggestTaxonomy.noData.error',
+  /**
+   * Couldn't find data file entries
+   */
+  listenersPanelDataListenerGetDataFileEntriesNoDataFilesError = 'listeners.panel.dataListener.getDataFileEntries.noDataFiles.error',
+  /**
+   * No active editor
+   */
+  listenersPanelTaxonomyListenerAiSuggestTaxonomyNoEditorError = 'listeners.panel.taxonomyListener.aiSuggestTaxonomy.noEditor.error',
+  /**
+   * No article data
+   */
+  listenersPanelTaxonomyListenerAiSuggestTaxonomyNoDataError = 'listeners.panel.taxonomyListener.aiSuggestTaxonomy.noData.error',
+  /**
+   * Select the mode you want to use
+   */
+  servicesModeSwitchSwitchModeQuickPickPlaceholder = 'services.modeSwitch.switchMode.quickPick.placeholder',
+  /**
+   * {0}: Mode selection
+   */
+  servicesModeSwitchSwitchModeQuickPickTitle = 'services.modeSwitch.switchMode.quickPick.title',
+  /**
+   * Mode: {0}
+   */
+  servicesModeSwitchSetTextMode = 'services.modeSwitch.setText.mode',
+  /**
+   * Processing...
+   */
+  servicesPagesParserParsePagesStatusBarText = 'services.pagesParser.parsePages.statusBar.text',
+  /**
+   * File error: {0}
+   */
+  servicesPagesParserParsePagesFileError = 'services.pagesParser.parsePages.file.error',
+  /**
+   * The AI title generation took too long. Please try again later.
+   */
+  servicesSponsorAiGetTitlesWarning = 'services.sponsorAi.getTitles.warning',
+  /**
+   * The AI description generation took too long. Please try again later.
+   */
+  servicesSponsorAiGetDescriptionWarning = 'services.sponsorAi.getDescription.warning',
+  /**
+   * The AI taxonomy generation took too long. Please try again later.
+   */
+  servicesSponsorAiGetTaxonomySuggestionsWarning = 'services.sponsorAi.getTaxonomySuggestions.warning',
+  /**
+   * Starting local server
+   */
+  servicesTerminalOpenLocalServerTerminalTerminalOptionMessage = 'services.terminal.openLocalServerTerminal.terminalOption.message'
 }

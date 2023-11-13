@@ -5,6 +5,8 @@ import { EXTENSION_NAME } from '../constants';
 import { ArticleHelper, FilesHelper } from '../helpers';
 import { FrontMatterParser } from '../parsers';
 import { Notifications } from '../helpers/Notifications';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class Settings {
   /**
@@ -13,11 +15,11 @@ export class Settings {
    * @param type
    */
   public static async create(type: TaxonomyType) {
+    const taxonomy = type === TaxonomyType.Tag ? 'tag' : 'category';
+
     const newOption = await vscode.window.showInputBox({
-      prompt: `Insert the value of the ${
-        type === TaxonomyType.Tag ? 'tag' : 'category'
-      } that you want to add to your configuration.`,
-      placeHolder: `Name of the ${type === TaxonomyType.Tag ? 'tag' : 'category'}`,
+      prompt: l10n.t(LocalizationKey.commandsFoldersCreateInputPrompt, taxonomy),
+      placeHolder: l10n.t(LocalizationKey.commandsFoldersCreateInputPlaceholder, taxonomy),
       ignoreFocusOut: true
     });
 
@@ -25,9 +27,7 @@ export class Settings {
       let options = (await TaxonomyHelper.get(type)) || [];
 
       if (options.find((o) => o === newOption)) {
-        Notifications.info(
-          `The provided ${type === TaxonomyType.Tag ? 'tag' : 'category'} already exists.`
-        );
+        Notifications.warning(l10n.t(LocalizationKey.commandsSettingsCreateWarning, taxonomy));
         return;
       }
 
@@ -35,15 +35,16 @@ export class Settings {
       TaxonomyHelper.update(type, options);
 
       // Ask if the new term needs to be added to the page
-      const addToPage = await vscode.window.showQuickPick(['yes', 'no'], {
-        canPickMany: false,
-        placeHolder: `Do you want to add the new ${
-          type === TaxonomyType.Tag ? 'tag' : 'category'
-        } to the page?`,
-        ignoreFocusOut: true
-      });
+      const addToPage = await vscode.window.showQuickPick(
+        [l10n.t(LocalizationKey.commonYes), l10n.t(LocalizationKey.commonNo)],
+        {
+          canPickMany: false,
+          placeHolder: l10n.t(LocalizationKey.commandsSettingsCreateQuickPickPlaceholder, taxonomy),
+          ignoreFocusOut: true
+        }
+      );
 
-      if (addToPage && addToPage === 'yes') {
+      if (addToPage && addToPage === l10n.t(LocalizationKey.commonYes)) {
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
           return;
@@ -54,7 +55,7 @@ export class Settings {
           return;
         }
 
-        const matterProp: string = type === TaxonomyType.Tag ? 'tags' : 'categories';
+        const matterProp: string = taxonomy;
         // Add the selected options to the options array
         if (article.data[matterProp]) {
           const propData: string[] = article.data[matterProp];
@@ -83,7 +84,7 @@ export class Settings {
     vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Notification,
-        title: `${EXTENSION_NAME}: exporting tags and categories`,
+        title: l10n.t(LocalizationKey.commandsSettingsExportProgressTitle, EXTENSION_NAME),
         cancellable: false
       },
       async (progress) => {
@@ -146,7 +147,11 @@ export class Settings {
 
         // Done
         Notifications.info(
-          `Export completed. Tags: ${crntTags.length} - Categories: ${crntCategories.length}.`
+          l10n.t(
+            LocalizationKey.commandsSettingsExportProgressSuccess,
+            crntTags.length,
+            crntCategories.length
+          )
         );
       }
     );
@@ -157,8 +162,8 @@ export class Settings {
    */
   public static async remap() {
     const taxType = await vscode.window.showQuickPick(['Tag', 'Category'], {
-      title: `Remap`,
-      placeHolder: `What do you want to remap?`,
+      title: l10n.t(LocalizationKey.commandsSettingsRemapQuickpickTitle),
+      placeHolder: l10n.t(LocalizationKey.commandsSettingsRemapQuickpickPlaceholder),
       canPickMany: false,
       ignoreFocusOut: true
     });
@@ -168,15 +173,18 @@ export class Settings {
     }
 
     const type = taxType === 'Tag' ? TaxonomyType.Tag : TaxonomyType.Category;
+    const taxonomy = type === TaxonomyType.Tag ? 'tags' : 'categories';
     const options = (await TaxonomyHelper.get(type)) || [];
 
     if (!options || options.length === 0) {
-      Notifications.info(`No ${type === TaxonomyType.Tag ? 'tags' : 'categories'} configured.`);
+      Notifications.warning(
+        l10n.t(LocalizationKey.commandsSettingsRemapNoTaxonomyWarning, taxonomy)
+      );
       return;
     }
 
     const selectedOption = await vscode.window.showQuickPick(options, {
-      placeHolder: `Select your ${type === TaxonomyType.Tag ? 'tags' : 'categories'} to insert`,
+      placeHolder: l10n.t(LocalizationKey.commandsSettingsRemapSelectTaxonomyPlaceholder, taxonomy),
       canPickMany: false,
       ignoreFocusOut: true
     });
@@ -186,19 +194,23 @@ export class Settings {
     }
 
     const newOptionValue = await vscode.window.showInputBox({
-      prompt: `Specify the value of the ${
-        type === TaxonomyType.Tag ? 'tag' : 'category'
-      } with which you want to remap "${selectedOption}". Leave the input <blank> if you want to remove the ${
-        type === TaxonomyType.Tag ? 'tag' : 'category'
-      } from all articles.`,
-      placeHolder: `Name of the ${type === TaxonomyType.Tag ? 'tag' : 'category'}`,
+      prompt: l10n.t(
+        LocalizationKey.commandsSettingsRemapNewOptionInputPrompt,
+        taxonomy,
+        selectedOption
+      ),
+      placeHolder: l10n.t(LocalizationKey.commandsSettingsRemapNewOptionInputPlaceholder, taxonomy),
       ignoreFocusOut: true
     });
 
     if (!newOptionValue) {
       const deleteAnswer = await vscode.window.showQuickPick(['yes', 'no'], {
         canPickMany: false,
-        placeHolder: `Delete ${selectedOption} ${type === TaxonomyType.Tag ? 'tag' : 'category'}?`,
+        placeHolder: l10n.t(
+          LocalizationKey.commandsSettingsRemapDeletePlaceholder,
+          selectedOption,
+          taxonomy
+        ),
         ignoreFocusOut: true
       });
       if (deleteAnswer === 'no') {

@@ -29,6 +29,8 @@ import {
 import { MediaListener as PanelMediaListener } from '../listeners/panel';
 import { GitListener, ModeListener } from '../listeners/general';
 import { Folders } from './Folders';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -119,7 +121,7 @@ export class Dashboard {
     // Create the preview webview
     Dashboard.webview = window.createWebviewPanel(
       'frontMatterDashboard',
-      'FrontMatter Dashboard',
+      `Front Matter ${l10n.t(LocalizationKey.commandsDashboardTitle)}`,
       ViewColumn.One,
       {
         enableScripts: true,

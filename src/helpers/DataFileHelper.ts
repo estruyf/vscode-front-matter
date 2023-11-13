@@ -7,6 +7,8 @@ import { commands } from 'vscode';
 import { COMMAND_NAME, SETTING_DATA_FILES } from '../constants';
 import { Settings } from './SettingsHelper';
 import { existsAsync, readFileAsync } from '../utils';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class DataFileHelper {
   /**
@@ -60,15 +62,7 @@ export class DataFileHelper {
       }
     } catch (ex) {
       Logger.error(`DataFileHelper::process: ${(ex as Error).message}`);
-      const btnClick = await Notifications.error(
-        `Something went wrong while processing the data file. Check your file and output log for more information.`,
-        'Open output'
-      );
-
-      if (btnClick && btnClick === 'Open output') {
-        commands.executeCommand(COMMAND_NAME.showOutputChannel);
-      }
-
+      Notifications.errorWithOutput(l10n.t(LocalizationKey.helpersDataFileHelperProcessError));
       return;
     }
   }

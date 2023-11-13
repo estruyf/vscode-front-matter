@@ -3,6 +3,8 @@ import { Logger, Notifications, Settings, TaxonomyHelper } from '../helpers';
 import fetch from 'node-fetch';
 import { TagType } from '../panelWebView/TagType';
 import { TaxonomyType } from '../models';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 const AI_URL = 'https://frontmatter.codes/api/ai';
 // const AI_URL = 'http://localhost:3000/api/ai';
@@ -18,7 +20,7 @@ export class SponsorAi {
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => {
-        Notifications.warning(`The AI title generation took too long. Please try again later.`);
+        Notifications.warning(l10n.t(LocalizationKey.servicesSponsorAiGetTitlesWarning));
         controller.abort();
       }, 10000);
       const signal = controller.signal;
@@ -51,7 +53,7 @@ export class SponsorAi {
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => {
-        Notifications.warning(`The AI title generation took too long. Please try again later.`);
+        Notifications.warning(l10n.t(LocalizationKey.servicesSponsorAiGetDescriptionWarning));
         controller.abort();
       }, 10000);
       const signal = controller.signal;
@@ -103,7 +105,9 @@ export class SponsorAi {
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => {
-        Notifications.warning(`The AI taxonomy generation took too long. Please try again later.`);
+        Notifications.warning(
+          l10n.t(LocalizationKey.servicesSponsorAiGetTaxonomySuggestionsWarning)
+        );
         controller.abort();
       }, 10000);
       const signal = controller.signal;

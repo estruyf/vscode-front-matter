@@ -6,6 +6,8 @@ import { Notifications } from './Notifications';
 import { Settings } from './SettingsHelper';
 import { Logger } from './Logger';
 import { SponsorAi } from '../services/SponsorAI';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class Questions {
   /**
@@ -14,12 +16,15 @@ export class Questions {
    * @returns
    */
   public static async yesOrNo(placeholder: string) {
-    const answer = await window.showQuickPick(['yes', 'no'], {
-      placeHolder: placeholder,
-      canPickMany: false,
-      ignoreFocusOut: true
-    });
-    return answer === 'yes';
+    const answer = await window.showQuickPick(
+      [l10n.t(LocalizationKey.commonYes), l10n.t(LocalizationKey.commonNo)],
+      {
+        placeHolder: placeholder,
+        canPickMany: false,
+        ignoreFocusOut: true
+      }
+    );
+    return answer === l10n.t(LocalizationKey.commonYes);
   }
 
   /**
@@ -36,9 +41,9 @@ export class Questions {
 
       if (githubAuth && githubAuth.account.label) {
         title = await window.showInputBox({
-          title: 'Title or description',
-          prompt: `What would you like to write about?`,
-          placeHolder: `Content title or description`,
+          title: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputTitle),
+          prompt: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputPrompt),
+          placeHolder: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputPlaceholder),
           ignoreFocusOut: true
         });
 
@@ -49,14 +54,18 @@ export class Questions {
             if (aiTitles && aiTitles.length > 0) {
               const options: QuickPickItem[] = [
                 {
-                  label: `✏️ your title/description`,
+                  label: `✏️ ${l10n.t(
+                    LocalizationKey.helpersQuestionsContentTitleAiInputQuickPickTitleSeparator
+                  )}`,
                   kind: QuickPickItemKind.Separator
                 },
                 {
                   label: title
                 },
                 {
-                  label: `🤖 AI generated title`,
+                  label: `🤖 ${l10n.t(
+                    LocalizationKey.helpersQuestionsContentTitleAiInputQuickPickAiSeparator
+                  )}`,
                   kind: QuickPickItemKind.Separator
                 },
                 ...aiTitles.map((d: string) => ({
@@ -65,8 +74,10 @@ export class Questions {
               ];
 
               const selectedTitle = await window.showQuickPick(options, {
-                title: 'Select a title',
-                placeHolder: `Select a title for your content`,
+                title: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputSelectTitle),
+                placeHolder: l10n.t(
+                  LocalizationKey.helpersQuestionsContentTitleAiInputSelectPlaceholder
+                ),
                 ignoreFocusOut: true
               });
 
@@ -79,13 +90,11 @@ export class Questions {
             }
           } catch (e) {
             Logger.error((e as Error).message);
-            Notifications.error(
-              `Failed fetching the AI title. Please try to use your own title or try again later.`
-            );
+            Notifications.error(l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputFailed));
             title = undefined;
           }
         } else if (!title && showWarning) {
-          Notifications.warning(`You did not specify a title for your content.`);
+          Notifications.warning(l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputWarning));
           return;
         }
       }
@@ -93,15 +102,15 @@ export class Questions {
 
     if (!title) {
       title = await window.showInputBox({
-        title: 'Title',
-        prompt: `What would you like to use as a title for the content to create?`,
-        placeHolder: `Content title`,
+        title: l10n.t(LocalizationKey.helpersQuestionsContentTitleTitleInputTitle),
+        prompt: l10n.t(LocalizationKey.helpersQuestionsContentTitleTitleInputPrompt),
+        placeHolder: l10n.t(LocalizationKey.helpersQuestionsContentTitleTitleInputPlaceholder),
         ignoreFocusOut: true
       });
     }
 
     if (!title && showWarning) {
-      Notifications.warning(`You did not specify a title for your content.`);
+      Notifications.warning(l10n.t(LocalizationKey.helpersQuestionsContentTitleTitleInputWarning));
       return;
     }
 
@@ -123,20 +132,26 @@ export class Questions {
       selectedFolder = await window.showQuickPick(
         folders.map((f) => f.title),
         {
-          title: `Select a folder`,
-          placeHolder: `Select where you want to create your content`,
+          title: l10n.t(LocalizationKey.helpersQuestionsSelectContentFolderQuickPickTitle),
+          placeHolder: l10n.t(
+            LocalizationKey.helpersQuestionsSelectContentFolderQuickPickPlaceholder
+          ),
           ignoreFocusOut: true
         }
       );
     } else if (folders.length === 1) {
       selectedFolder = folders[0].title;
     } else {
-      Notifications.warning(`No page folders were configures.`);
+      Notifications.warning(
+        l10n.t(LocalizationKey.helpersQuestionsSelectContentFolderQuickPickNoFoldersWarning)
+      );
       return;
     }
 
     if (!selectedFolder && showWarning) {
-      Notifications.warning(`You didn't select a place where you wanted to create your content.`);
+      Notifications.warning(
+        l10n.t(LocalizationKey.helpersQuestionsSelectContentFolderQuickPickNoSelectionWarning)
+      );
       return;
     }
 
@@ -155,7 +170,9 @@ export class Questions {
   ): Promise<string | undefined> {
     let contentTypes = ContentType.getAll();
     if (!contentTypes || contentTypes.length === 0) {
-      Notifications.warning('No content types found. Please create a content type first.');
+      Notifications.warning(
+        l10n.t(LocalizationKey.helpersQuestionsSelectContentTypeNoContentTypeWarning)
+      );
       return;
     }
 
@@ -175,14 +192,16 @@ export class Questions {
     }));
 
     const selectedOption = await window.showQuickPick(options, {
-      title: `Content type`,
-      placeHolder: `Select the content type to create your new content`,
+      title: l10n.t(LocalizationKey.helpersQuestionsSelectContentTypeQuickPickTitle),
+      placeHolder: l10n.t(LocalizationKey.helpersQuestionsSelectContentTypeQuickPickPlaceholder),
       canPickMany: false,
       ignoreFocusOut: true
     });
 
     if (!selectedOption && showWarning) {
-      Notifications.warning('No content type was selected.');
+      Notifications.warning(
+        l10n.t(LocalizationKey.helpersQuestionsSelectContentTypeNoSelectionWarning)
+      );
       return;
     }
 

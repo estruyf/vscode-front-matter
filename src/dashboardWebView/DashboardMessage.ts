@@ -4,6 +4,7 @@ export enum DashboardMessage {
   setPageViewType = 'setPageViewType',
   getMode = 'getMode',
   showWarning = 'showWarning',
+  openConfig = 'openConfig',
 
   // Project switching
   switchProject = 'switchProject',

@@ -4,7 +4,6 @@ import { CheckCircleIcon as CheckCircleIconSolid, PlusCircleIcon as PlusCircleIc
 
 export interface ISelectItemProps {
   title: string;
-  icon?: "add" | "select";
   buttonTitle: string;
   isSelected: boolean;
   disabled?: boolean;
@@ -13,7 +12,6 @@ export interface ISelectItemProps {
 
 export const SelectItem: React.FunctionComponent<ISelectItemProps> = ({
   title,
-  icon = "select",
   buttonTitle,
   isSelected,
   disabled,
@@ -30,17 +28,9 @@ export const SelectItem: React.FunctionComponent<ISelectItemProps> = ({
         disabled={disabled}
       >
         {isSelected ? (
-          icon === "add" ? (
-            <PlusCircleIconSolid className={`h-4 w-4`} />
-          ) : (
-            <CheckCircleIconSolid className={`h-4 w-4`} />
-          )
+          <CheckCircleIconSolid className={`h-4 w-4`} />
         ) : (
-          icon === "add" ? (
-            <PlusCircleIcon className={`h-4 w-4`} />
-          ) : (
-            <CheckCircleIcon className={`h-4 w-4`} />
-          )
+          <PlusCircleIcon className={`h-4 w-4`} />
         )}
         <span>{title}</span>
       </button>

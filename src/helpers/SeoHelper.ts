@@ -1,6 +1,9 @@
 import * as vscode from 'vscode';
 import { ArticleHelper } from '.';
 import { ParsedFrontMatter } from '../parsers';
+import { EXTENSION_NAME } from '../constants';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class SeoHelper {
   public static checkLength(
@@ -23,10 +26,15 @@ export class SeoHelper {
 
         const diagnostic: vscode.Diagnostic = {
           code: '',
-          message: `Article ${fieldName} is longer than ${length} characters (current length: ${value.length}). For SEO reasons, it would be better to make it less than ${length} characters.`,
+          message: l10n.t(
+            LocalizationKey.helpersSeoHelperCheckLengthDiagnosticMessage,
+            fieldName,
+            length,
+            value.length
+          ),
           range: new vscode.Range(posStart, posEnd),
           severity: vscode.DiagnosticSeverity.Warning,
-          source: 'Front Matter'
+          source: EXTENSION_NAME
         };
 
         if (collection.has(editor.document.uri)) {

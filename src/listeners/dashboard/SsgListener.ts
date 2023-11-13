@@ -5,10 +5,15 @@ import { BaseListener } from './BaseListener';
 import { exec } from 'child_process';
 import { Extension, Logger, Settings } from '../../helpers';
 import { Folders } from '../../commands';
-import { SETTING_TAXONOMY_CONTENT_TYPES, SsgScripts } from '../../constants';
+import {
+  DEFAULT_CONTENT_TYPE_NAME,
+  SETTING_TAXONOMY_CONTENT_TYPES,
+  SsgScripts
+} from '../../constants';
 import { SettingsListener } from './SettingsListener';
 import { Terminal } from '../../services';
 import { existsAsync, readFileAsync } from '../../utils';
+import { join } from 'path';
 
 export class SsgListener extends BaseListener {
   /**
@@ -57,7 +62,16 @@ export class SsgListener extends BaseListener {
       }
     }
 
-    const contentTypes = Settings.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES) || [];
+    // Set the preview image on the first found image of the content type
+    const images = contentType.fields.filter((f) => f.type === 'image');
+    if (images.length > 0) {
+      images[0].isPreviewImage = true;
+    }
+
+    let contentTypes = Settings.get<ContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES) || [];
+
+    // Filter out the default content type
+    contentTypes = contentTypes.filter((ct) => ct.name !== DEFAULT_CONTENT_TYPE_NAME);
 
     if (contentTypes.find((ct) => ct.name === collection.name)) {
       SsgListener.sendRequest(command as any, requestId, {});
@@ -133,7 +147,28 @@ export class SsgListener extends BaseListener {
     const tempLocation = Uri.joinPath(wsFolder, '/.frontmatter/temp');
     const tempScriptPath = Uri.joinPath(tempLocation, SsgScripts.astroContentCollectionScript);
     await workspace.fs.createDirectory(tempLocation);
-    workspace.fs.copy(scriptPath, tempScriptPath, { overwrite: true });
+
+    // Check if the workspace uses pnpm
+    if (await existsAsync(Uri.joinPath(wsFolder, 'node_modules/.pnpm').fsPath)) {
+      const vitePackageFiles = await workspace.findFiles(
+        `**/node_modules/.pnpm/vite@*/node_modules/vite/package.json`
+      );
+      if (vitePackageFiles.length > 0) {
+        const vitePackageFile = vitePackageFiles[0];
+        const vitePackage = JSON.parse(await readFileAsync(vitePackageFile.fsPath, 'utf8')) as {
+          main: string;
+        };
+        const viteFolder = vitePackageFile.fsPath.replace('/package.json', '');
+        const vitePath = join(viteFolder, vitePackage.main).replace(wsFolder.fsPath, '../..');
+
+        // Update the vite reference, as it is not a direct dependency of the project
+        let scriptContents = await readFileAsync(scriptPath.fsPath, 'utf8');
+        scriptContents = scriptContents.replace(`'vite'`, `'${vitePath}'`);
+        await workspace.fs.writeFile(tempScriptPath, Buffer.from(scriptContents, 'utf8'));
+      }
+    } else {
+      workspace.fs.copy(scriptPath, tempScriptPath, { overwrite: true });
+    }
 
     const fullScript = `node "${tempScriptPath.fsPath}" "${contentConfigFile.fsPath}"`;
 
@@ -187,16 +222,35 @@ export class SsgListener extends BaseListener {
         } as Field;
         break;
       case 'ZodBoolean':
-        ctField = {
-          name: field.name,
-          type: 'boolean'
-        } as Field;
+        if (field.name === 'draft') {
+          ctField = {
+            name: field.name,
+            type: 'draft'
+          } as Field;
+        } else {
+          ctField = {
+            name: field.name,
+            type: 'boolean'
+          } as Field;
+        }
         break;
       case 'ZodArray':
-        ctField = {
-          name: field.name,
-          type: 'list'
-        } as Field;
+        if (field.name === 'tags') {
+          ctField = {
+            name: field.name,
+            type: 'tags'
+          } as Field;
+        } else if (field.name === 'categories') {
+          ctField = {
+            name: field.name,
+            type: 'categories'
+          } as Field;
+        } else {
+          ctField = {
+            name: field.name,
+            type: 'list'
+          } as Field;
+        }
         break;
       case 'ZodEnum':
         ctField = {
@@ -205,12 +259,23 @@ export class SsgListener extends BaseListener {
           choices: field.options || []
         } as Field;
         break;
+      case 'datetime':
       case 'ZodDate':
         ctField = {
           name: field.name,
           type: 'datetime',
           default: '{{now}}'
         } as Field;
+
+        if (field.name.toLowerCase() === 'published') {
+          ctField.isPublishDate = true;
+        } else if (
+          field.name.toLowerCase() === 'modified' ||
+          field.name.toLowerCase() === 'updated'
+        ) {
+          ctField.isModifiedDate = true;
+        }
+
         break;
       case 'image':
         ctField = {

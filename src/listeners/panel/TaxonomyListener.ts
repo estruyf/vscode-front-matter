@@ -13,6 +13,8 @@ import {
 import { SponsorAi } from '../../services/SponsorAI';
 import { PanelProvider } from '../../panelWebView/PanelProvider';
 import { MessageHandlerData } from '@estruyf/vscode';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../localization';
 
 export class TaxonomyListener extends BaseListener {
   /**
@@ -80,7 +82,7 @@ export class TaxonomyListener extends BaseListener {
       panel.getWebview()?.postMessage({
         command,
         requestId,
-        error: 'No active editor'
+        error: l10n.t(LocalizationKey.listenersPanelTaxonomyListenerAiSuggestTaxonomyNoDataError)
       } as MessageHandlerData<string>);
       return;
     }
@@ -90,7 +92,7 @@ export class TaxonomyListener extends BaseListener {
       panel.getWebview()?.postMessage({
         command,
         requestId,
-        error: 'No article data'
+        error: l10n.t(LocalizationKey.listenersPanelTaxonomyListenerAiSuggestTaxonomyNoEditorError)
       } as MessageHandlerData<string>);
       return;
     }
@@ -115,7 +117,7 @@ export class TaxonomyListener extends BaseListener {
       panel.getWebview()?.postMessage({
         command,
         requestId,
-        error: 'No article data'
+        error: l10n.t(LocalizationKey.listenersPanelTaxonomyListenerAiSuggestTaxonomyNoDataError)
       } as MessageHandlerData<string>);
       return;
     }

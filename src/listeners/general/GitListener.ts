@@ -28,6 +28,8 @@ import {
 import { Folders } from '../../commands/Folders';
 import { commands } from 'vscode';
 import { PostMessageData } from '../../models';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../localization';
 
 export class GitListener {
   private static isRegistered: boolean = false;
@@ -177,7 +179,9 @@ export class GitListener {
           }
           await subGit.push();
         } catch (e) {
-          Notifications.error(`Failed to push submodules. Please check the logs for more details.`);
+          Notifications.errorWithOutput(
+            l10n.t(LocalizationKey.listenersGeneralGitListenerPushError)
+          );
           Logger.error((e as Error).message);
           return;
         }
@@ -203,7 +207,9 @@ export class GitListener {
             await git.subModule(['foreach', 'git', 'push']);
           }
         } catch (e) {
-          Notifications.error(`Failed to push submodules. Please check the logs for more details.`);
+          Notifications.errorWithOutput(
+            l10n.t(LocalizationKey.listenersGeneralGitListenerPushError)
+          );
           Logger.error((e as Error).message);
           return;
         }

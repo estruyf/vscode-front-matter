@@ -1,6 +1,8 @@
 import { workspace, window, ThemeIcon, TerminalOptions } from 'vscode';
 import * as os from 'os';
 import { Folders } from '../commands';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 interface ShellSetting {
   path: string;
@@ -45,7 +47,9 @@ export class Terminal {
       const terminalOptions: TerminalOptions = {
         name: Terminal.terminalName,
         iconPath: new ThemeIcon('server-environment'),
-        message: `Starting local server`
+        message: l10n.t(
+          LocalizationKey.servicesTerminalOpenLocalServerTerminalTerminalOptionMessage
+        )
       };
 
       // Check if workspace

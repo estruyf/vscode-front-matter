@@ -76,7 +76,8 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (_: Rea
 
                       <AstroContentTypes
                         settings={settings}
-                        triggerLoading={(isLoading) => setLoading(isLoading)} />
+                        triggerLoading={(isLoading) => setLoading(isLoading)}
+                        setStatus={_ => null} />
                     </div>
                   </VSCodePanelView>
                 )
