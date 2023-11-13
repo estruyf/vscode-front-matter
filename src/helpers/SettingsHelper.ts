@@ -668,7 +668,10 @@ export class Settings {
             await window.withProgress(
               {
                 location: vscode.ProgressLocation.Notification,
-                title: l10n.t(LocalizationKey.helpersSettingsHelperReadConfigProgressTitle)
+                title: l10n.t(
+                  LocalizationKey.helpersSettingsHelperReadConfigProgressTitle,
+                  EXTENSION_NAME
+                )
               },
               async () => {
                 const absFilePath = Folders.getAbsFilePath(dynamicConfigPath);

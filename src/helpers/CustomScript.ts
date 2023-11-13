@@ -204,7 +204,7 @@ export class CustomScript {
 
             return;
           } catch (e) {
-            Notifications.error(`${script.title}: ${(e as Error).message}`);
+            Notifications.errorWithOutput(`${script.title} -`);
             return;
           }
         }
@@ -434,6 +434,7 @@ export class CustomScript {
     return new Promise(async (resolve, reject) => {
       exec(fullScript, { cwd: wsPath }, (error, stdout) => {
         if (error) {
+          Logger.error(error.message);
           reject(error.message);
           return;
         }
