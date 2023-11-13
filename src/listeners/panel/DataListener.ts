@@ -257,9 +257,18 @@ export class DataListener extends BaseListener {
     }
 
     const contentType = ArticleHelper.getContentType(article);
+    const sourceField = ContentType.findFieldByName(contentType.fields, field);
 
     if (!value && field !== titleField && contentType.clearEmpty) {
-      value = undefined;
+      // Check if the draft or boolean field needs to be cleared
+      // This is only required when the default value is not set to true
+      if (sourceField && (sourceField.type === 'draft' || sourceField.type === 'boolean')) {
+        if (!sourceField.default) {
+          value = undefined;
+        }
+      } else {
+        value = undefined;
+      }
     }
 
     const dateFields = ContentType.findFieldsByTypeDeep(contentType.fields, 'datetime');

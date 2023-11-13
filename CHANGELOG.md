@@ -30,6 +30,7 @@
 - [#699](https://github.com/estruyf/vscode-front-matter/issues/699): Changing border theme variable for the dashboard header
 - [#703](https://github.com/estruyf/vscode-front-matter/issues/703): Fix retrieval of Astro Collections for `pnpm` projects
 - [#704](https://github.com/estruyf/vscode-front-matter/issues/704): Fix `zod` schema script for optional fields
+- [#707](https://github.com/estruyf/vscode-front-matter/issues/707): Fix `clearEmpty` issue with `draft` and `boolean` fields which are by default set to `true`
 
 ## [9.3.1] - 2023-10-27
 
