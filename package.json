@@ -2514,7 +2514,7 @@
     "clean": "rimraf dist",
     "start:site": "cd ./docs && npm run dev",
     "clean:test": "rm ./e2e/sample/frontmatter.json || exit 0 && rm -rf ./e2e/sample/.frontmatter || exit 0",
-    "test": "pnpm lint; tsc -p tsconfig.e2e.json && npm run clean:test && pnpm i -g @vscode/vsce && node ./e2e/out/runTests.js",
+    "test": "npm run lint; tsc -p tsconfig.e2e.json && npm run clean:test && npm run i -g @vscode/vsce && node ./e2e/out/runTests.js",
     "lint": "eslint --max-warnings=0 ./src/{commands,components}",
     "prettier": "prettier --write ./src",
     "localization:watch": "node ./scripts/watch-localization.js",
