@@ -1,7 +1,6 @@
 import { authentication, commands, ExtensionContext } from 'vscode';
 import { COMMAND_NAME, CONTEXT } from '../constants';
 import { Extension, Logger } from '../helpers';
-import { Credentials } from '../services/Credentials';
 import fetch from 'node-fetch';
 import { Dashboard } from './Dashboard';
 import { SettingsListener } from '../listeners/panel';
