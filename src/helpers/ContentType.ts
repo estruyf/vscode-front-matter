@@ -1,6 +1,6 @@
 import { ModeListener } from './../listeners/general/ModeListener';
 import { PagesListener } from './../listeners/dashboard';
-import { ArticleHelper, CustomScript, Settings } from '.';
+import { ArticleHelper, CustomScript, Logger, Settings } from '.';
 import {
   DefaultFieldValues,
   EXTENSION_NAME,
@@ -29,7 +29,7 @@ import { Telemetry } from './Telemetry';
 import { processKnownPlaceholders } from './PlaceholderHelper';
 import { basename } from 'path';
 import { ParsedFrontMatter } from '../parsers';
-import { encodeEmoji, existsAsync, writeFileAsync } from '../utils';
+import { encodeEmoji, existsAsync, fieldWhenClause, writeFileAsync } from '../utils';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 
@@ -918,6 +918,11 @@ export class ContentType {
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
 
       for (const field of obj.fields) {
+        if (!fieldWhenClause(field, data)) {
+          Logger.info(`Field ${field.name} not added because of when clause`);
+          continue;
+        }
+
         if (field.name === 'title') {
           if (field.default) {
             data[field.name] = processKnownPlaceholders(
