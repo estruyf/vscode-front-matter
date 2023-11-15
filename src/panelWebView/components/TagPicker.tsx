@@ -158,7 +158,8 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
         value = item;
       }
 
-      const uniqValues = Array.from(new Set([...selected, value]));
+      const safeSelected = selected instanceof Array ? selected : [];
+      const uniqValues = Array.from(new Set([...safeSelected, value]));
       setSelected(uniqValues);
       sendUpdate(uniqValues);
       setInputValue('');
@@ -181,15 +182,19 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
    * @param option
    * @param inputValue
    */
-  const filterList = (option: string, inputValue: string | null) => {
+  const filterList = useCallback((option: string, inputValue: string | null) => {
     if (typeof option !== 'string') {
       return false;
+    }
+
+    if (!(selected instanceof Array)) {
+      return true;
     }
 
     return (
       option && !selected.includes(option) && option.toLowerCase().includes((inputValue || '').toLowerCase())
     );
-  };
+  }, [selected]);
 
   /**
    * Add the new item to the data
@@ -295,12 +300,18 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
   }, [settings?.aiEnabled, label, type]);
 
   const sortedSelectedTags = useMemo(() => {
-    return (selected || []).sort((a: string, b: string) => {
-      const aString = typeof a === 'string' ? a : `${a}`;
-      const bString = typeof b === 'string' ? b : `${b}`;
+    const safeSelected = selected || [];
 
-      return aString?.toLowerCase() < bString?.toLowerCase() ? -1 : 1;
-    });
+    if (safeSelected instanceof Array && safeSelected.length > 0) {
+      return (selected || []).sort((a: string, b: string) => {
+        const aString = typeof a === 'string' ? a : `${a}`;
+        const bString = typeof b === 'string' ? b : `${b}`;
+
+        return aString?.toLowerCase() < bString?.toLowerCase() ? -1 : 1;
+      });
+    }
+
+    return [];
   }, [selected]);
 
   useEffect(() => {
