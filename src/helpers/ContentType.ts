@@ -918,7 +918,7 @@ export class ContentType {
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
 
       for (const field of obj.fields) {
-        if (!fieldWhenClause(field, data)) {
+        if (!fieldWhenClause(field, data, obj.fields)) {
           Logger.info(`Field ${field.name} not added because of when clause`);
           continue;
         }

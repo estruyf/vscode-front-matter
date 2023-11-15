@@ -15,6 +15,7 @@
 - [#700](https://github.com/estruyf/vscode-front-matter/issues/700): Added the `{{pathToken.relPath}}` placeholder for the `previewPath` property
 - [#706](https://github.com/estruyf/vscode-front-matter/issues/706): Show the error of scripts failing in the Front Matter output panel
 - [#709](https://github.com/estruyf/vscode-front-matter/issues/709): Take "where clause" into account on content creation
+- [#710](https://github.com/estruyf/vscode-front-matter/issues/710): Hide child field when parent field its "when clause" is not met, also remove the fields from the content
 
 ### ⚡️ Optimizations
 

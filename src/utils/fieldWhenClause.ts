@@ -8,10 +8,18 @@ import { IMetadata } from '../panelWebView/components/Metadata';
  * @param parent - The parent metadata object.
  * @returns A boolean indicating whether the field should be displayed.
  */
-export const fieldWhenClause = (field: Field, parent: IMetadata): boolean => {
+export const fieldWhenClause = (field: Field, parent: IMetadata, allFields?: Field[]): boolean => {
   const when = field.when;
   if (!when) {
     return true;
+  }
+
+  let parentField = allFields?.find((f) => f.name === when.fieldRef);
+  if (parentField && parentField.when) {
+    const renderParent = fieldWhenClause(parentField, parent, allFields);
+    if (!renderParent) {
+      return false;
+    }
   }
 
   let whenValue = parent[when.fieldRef];

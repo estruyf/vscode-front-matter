@@ -19,7 +19,7 @@ import { Article, Preview } from '../../commands';
 import { ParsedFrontMatter } from '../../parsers';
 import { processKnownPlaceholders } from '../../helpers/PlaceholderHelper';
 import { Field, PostMessageData } from '../../models';
-import { encodeEmoji } from '../../utils';
+import { encodeEmoji, fieldWhenClause } from '../../utils';
 import { PanelProvider } from '../../panelWebView/PanelProvider';
 import { MessageHandlerData } from '@estruyf/vscode';
 import { SponsorAi } from '../../services/SponsorAI';
@@ -345,6 +345,29 @@ export class DataListener extends BaseListener {
         });
       } else {
         parentObj[field] = value;
+      }
+    }
+
+    // Verify if there are fields to be cleared due to the when clause
+    const allFieldNames = Object.keys(parentObj);
+    let ctFields = contentType.fields;
+    if (parents && parents.length > 0) {
+      for (const parent of parents) {
+        const crntField = ctFields.find((f) => f.name === parent);
+        if (crntField) {
+          ctFields = crntField.fields || [];
+        }
+      }
+    }
+    if (ctFields && ctFields.length > 0) {
+      for (const field of allFieldNames) {
+        const crntField = ctFields.find((f) => f.name === field);
+        if (crntField && crntField.when) {
+          const renderField = fieldWhenClause(crntField, parentObj, ctFields);
+          if (!renderField) {
+            delete parentObj[field];
+          }
+        }
       }
     }
 

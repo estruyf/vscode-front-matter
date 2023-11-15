@@ -74,6 +74,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
       <WrapperField
         key={field.name}
         field={field}
+        allFields={ctFields}
         parent={parent}
         parentFields={parentFields}
         metadata={metadata}
