@@ -64,6 +64,6 @@ export class SlugHelper {
    */
   private static replaceCharacters(value: string) {
     const characters = [...value];
-    return characters.map((c) => charMap[c] || c).join('');
+    return characters.map((c) => (typeof charMap[c] === 'string' ? charMap[c] : c)).join('');
   }
 }
