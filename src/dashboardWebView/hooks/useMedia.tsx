@@ -53,24 +53,20 @@ export default function useMedia() {
   }, [search, prevSearch]);
 
   const allMedia = useMemo(() => {
-    console.log('getMedia', searchedMedia);
     return searchedMedia.slice(page * pageSetNr, (page + 1) * pageSetNr);
   }, [searchedMedia, page, pageSetNr]);
 
   const searchMedia = (search: string, media: MediaInfo[]) => {
-    console.log('searchMedia start', search, media);
     if (search) {
       const fuse = new Fuse(media, fuseOptions);
       const results = fuse.search(search);
       const newSearchedMedia = results.map((page) => page.item);
-      console.log('searchMedia end', search, newSearchedMedia);
 
       setSearchedMedia(newSearchedMedia);
       setTotal(results.length);
 
       return;
     }
-    console.log('searchMedia end skip', search, media);
 
     setTotal(media.length);
     setSearchedMedia(media);
@@ -78,7 +74,6 @@ export default function useMedia() {
 
   const messageListener = useCallback((message: MessageEvent<EventData<MediaPaths | { key: string; value: any }>>) => {
     if (message.data.command === DashboardCommand.media) {
-      console.log('messageListener', search, message.data);
       const payload: MediaPaths = message.data.payload as MediaPaths;
       setLoading(false);
       setMedia(payload.media);
