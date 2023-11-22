@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { NavigationType, Page } from '../../models';
-import { DashboardViewAtom, SettingsSelector } from '../../state';
+import { useRecoilValue } from 'recoil';
+import { Page } from '../../models';
+import { SettingsSelector } from '../../state';
 import { Overview } from './Overview';
 import { Spinner } from '../Common/Spinner';
 import { SponsorMsg } from '../Layout/SponsorMsg';
@@ -23,13 +23,10 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({
 }: React.PropsWithChildren<IContentsProps>) => {
   const settings = useRecoilValue(SettingsSelector);
   const { pageItems } = usePages(pages);
-  const [, setView] = useRecoilState(DashboardViewAtom);
 
   const pageFolders = [...new Set(pageItems.map((page) => page.fmFolder))];
 
   useEffect(() => {
-    setView(NavigationType.Contents);
-
     Messenger.send(DashboardMessage.sendTelemetry, {
       event: TelemetryEvent.webviewContentsView
     });

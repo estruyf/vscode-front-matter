@@ -1,9 +1,8 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { UploadIcon } from '@heroicons/react/outline';
 import * as React from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import {
-  DashboardViewAtom,
   LoadingAtom,
   MediaFoldersAtom,
   SelectedMediaFolderAtom,
@@ -43,7 +42,6 @@ export const Media: React.FunctionComponent<IMediaProps> = (
   const folders = useRecoilValue(MediaFoldersAtom);
   const loading = useRecoilValue(LoadingAtom);
   const { getColors } = useThemeColors();
-  const [, setView] = useRecoilState(DashboardViewAtom);
 
   const currentStaticFolder = useMemo(() => {
     if (settings?.staticFolder) {
@@ -153,7 +151,6 @@ export const Media: React.FunctionComponent<IMediaProps> = (
   );
 
   useEffect(() => {
-    setView(NavigationType.Media);
     Messenger.send(DashboardMessage.sendTelemetry, {
       event: TelemetryEvent.webviewMediaView
     });
