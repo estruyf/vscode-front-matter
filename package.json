@@ -994,15 +994,18 @@
           "type": "array",
           "default": [],
           "markdownDescription": "%setting.frontMatter.panel.actions.disabled.markdownDescription%",
-          "enum": [
-            "openDashboard",
-            "createContent",
-            "optimizeSlug",
-            "preview",
-            "openOnWebsite",
-            "startStopServer",
-            "customActions"
-          ]
+          "items": {
+            "type": "string",
+            "enum": [
+              "openDashboard",
+              "createContent",
+              "optimizeSlug",
+              "preview",
+              "openOnWebsite",
+              "startStopServer",
+              "customActions"
+            ]
+          }
         },
         "frontMatter.preview.host": {
           "type": "string",
