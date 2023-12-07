@@ -814,6 +814,62 @@ export class ContentType {
         cancellable: false
       },
       async () => {
+        if (contentType.isSubContent || contentType.allowAsSubContent) {
+          let showDialog = true;
+
+          if (contentType.allowAsSubContent) {
+            const subContentAnswer = await window.showQuickPick(
+              [l10n.t(LocalizationKey.commonNo), l10n.t(LocalizationKey.commonYes)],
+              {
+                title: l10n.t(LocalizationKey.helpersContentTypeCreateAllowSubContentTitle),
+                placeHolder: l10n.t(
+                  LocalizationKey.helpersContentTypeCreateAllowSubContentPlaceHolder
+                ),
+                ignoreFocusOut: true
+              }
+            );
+            showDialog = subContentAnswer === l10n.t(LocalizationKey.commonYes);
+          }
+
+          if (showDialog) {
+            const folderLocation = await window.showOpenDialog({
+              canSelectFiles: false,
+              canSelectFolders: true,
+              canSelectMany: false,
+              defaultUri: Uri.file(folderPath),
+              openLabel: l10n.t(
+                LocalizationKey.helpersContentTypeCreateAllowSubContentShowOpenDialogOpenLabel
+              ),
+              title: l10n.t(
+                LocalizationKey.helpersContentTypeCreateAllowSubContentShowOpenDialogTitle
+              )
+            });
+
+            if (!folderLocation || folderLocation.length === 0) {
+              return;
+            }
+
+            folderPath = folderLocation[0].fsPath;
+
+            if (contentType.pageBundle) {
+              const createAsPageBundle = await window.showQuickPick(
+                [l10n.t(LocalizationKey.commonNo), l10n.t(LocalizationKey.commonYes)],
+                {
+                  title: l10n.t(LocalizationKey.helpersContentTypeCreatePageBundleTitle),
+                  placeHolder: l10n.t(
+                    LocalizationKey.helpersContentTypeCreatePageBundlePlaceHolder
+                  ),
+                  ignoreFocusOut: true
+                }
+              );
+
+              if (createAsPageBundle === l10n.t(LocalizationKey.commonNo)) {
+                contentType.pageBundle = false;
+              }
+            }
+          }
+        }
+
         let titleValue = await Questions.ContentTitle();
         if (!titleValue) {
           return;

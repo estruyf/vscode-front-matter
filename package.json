@@ -1074,7 +1074,17 @@
               "clearEmpty": {
                 "type": "boolean",
                 "default": false,
-                "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.clearEmpty.description%"
+                "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.clearEmpty.description%"
+              },
+              "allowAsSubContent": {
+                "type": "boolean",
+                "default": false,
+                "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.allowAsSubContent.description%"
+              },
+              "isSubContent": {
+                "type": "boolean",
+                "default": false,
+                "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.isSubContent.description%"
               },
               "fields": {
                 "$id": "#contenttypefield",

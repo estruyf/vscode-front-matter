@@ -1897,6 +1897,30 @@ export enum LocalizationKey {
    */
   helpersContentTypeSetContentTypeQuickPickPlaceholder = 'helpers.contentType.setContentType.quickPick.placeholder',
   /**
+   * Do you want to create it as sub-content?
+   */
+  helpersContentTypeCreateAllowSubContentTitle = 'helpers.contentType.create.allowSubContent.title',
+  /**
+   * Do you want to create it as sub-content?
+   */
+  helpersContentTypeCreateAllowSubContentPlaceHolder = 'helpers.contentType.create.allowSubContent.placeHolder',
+  /**
+   * Select folder
+   */
+  helpersContentTypeCreateAllowSubContentShowOpenDialogOpenLabel = 'helpers.contentType.create.allowSubContent.showOpenDialog.openLabel',
+  /**
+   * Select folder to create the content
+   */
+  helpersContentTypeCreateAllowSubContentShowOpenDialogTitle = 'helpers.contentType.create.allowSubContent.showOpenDialog.title',
+  /**
+   * Create as a page bundle?
+   */
+  helpersContentTypeCreatePageBundleTitle = 'helpers.contentType.create.pageBundle.title',
+  /**
+   * Do you want to create the sub-content as a page bundle?
+   */
+  helpersContentTypeCreatePageBundlePlaceHolder = 'helpers.contentType.create.pageBundle.placeHolder',
+  /**
    * {0}: Creating content...
    */
   helpersContentTypeCreateProgressTitle = 'helpers.contentType.create.progress.title',

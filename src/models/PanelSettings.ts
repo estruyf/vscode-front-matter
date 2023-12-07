@@ -65,6 +65,8 @@ export interface ContentType {
   postScript?: string;
   filePrefix?: string;
   clearEmpty?: boolean;
+  isSubContent?: boolean;
+  allowAsSubContent?: boolean;
 }
 
 export type FieldType =

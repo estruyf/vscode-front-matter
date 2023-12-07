@@ -17,6 +17,7 @@
 - [#709](https://github.com/estruyf/vscode-front-matter/issues/709): Take "where clause" into account on content creation
 - [#710](https://github.com/estruyf/vscode-front-matter/issues/710): Hide child field when parent field its "when clause" is not met, also remove the fields from the content
 - [#713](https://github.com/estruyf/vscode-front-matter/issues/713): Add the ability to always use quotes around string values in front matter
+- [#722](https://github.com/estruyf/vscode-front-matter/issues/722): Allow to create sub-content which shows a dialog to select the parent folder
 
 ### ⚡️ Optimizations
 
