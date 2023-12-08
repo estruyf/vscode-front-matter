@@ -56,7 +56,7 @@ export class DataFileHelper {
       const dataFile = await DataFileHelper.get(file);
 
       if (fileType === 'yaml') {
-        return yaml.safeLoad(dataFile || '');
+        return yaml.load(dataFile || '');
       } else {
         return dataFile ? JSON.parse(dataFile) : undefined;
       }
