@@ -773,6 +773,20 @@ export class ContentType {
             name: field,
             type: 'number'
           } as Field);
+        } else if (typeof fieldData === 'boolean') {
+          if (field.toLowerCase() === 'draft') {
+            fields.push({
+              title: field,
+              name: field,
+              type: 'draft'
+            } as Field);
+          } else {
+            fields.push({
+              title: field,
+              name: field,
+              type: 'boolean'
+            } as Field);
+          }
         } else if (!isNaN(new Date(fieldData).getDate())) {
           fields.push({
             title: field,
