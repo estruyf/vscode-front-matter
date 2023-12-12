@@ -21,7 +21,7 @@ export class Credentials {
      * prompting the user to sign in.
      * */
     const session = await authentication.getSession(GITHUB_AUTH_PROVIDER_ID, SCOPES, {
-      createIfNone: false
+      silent: true
     });
 
     if (session) {
@@ -62,8 +62,13 @@ export class Credentials {
      * Note that this can throw if the user clicks cancel.
      */
     const session = await authentication.getSession(GITHUB_AUTH_PROVIDER_ID, SCOPES, {
-      createIfNone: true
+      silent: true
     });
+
+    if (!session) {
+      throw new Error('No GitHub authentication session available.');
+    }
+
     this.octokit = new Octokit.Octokit({
       auth: session.accessToken
     });

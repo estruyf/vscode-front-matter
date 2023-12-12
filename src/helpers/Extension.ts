@@ -32,6 +32,9 @@ import { ContentFolder, Snippet, TaxonomyType } from '../models';
 import { Notifications } from './Notifications';
 import { Settings } from './SettingsHelper';
 import { TaxonomyHelper } from './TaxonomyHelper';
+import { Cache } from '../commands/Cache';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class Extension {
   private static instance: Extension;
@@ -71,8 +74,8 @@ export class Extension {
     }
 
     if (usedVersion !== installedVersion) {
-      const whatIsNewTitle = `Check the changelog`;
-      const githubTitle = `Give it a ⭐️`;
+      const whatIsNewTitle = l10n.t(LocalizationKey.helpersExtensionGetVersionChangelog);
+      const githubTitle = l10n.t(LocalizationKey.helpersExtensionGetVersionStarIt);
 
       const whatIsNew = {
         title: whatIsNewTitle,
@@ -93,7 +96,11 @@ export class Extension {
 
       window
         .showInformationMessage(
-          `${EXTENSION_NAME} has been updated to v${installedVersion} — check out what's new!`,
+          l10n.t(
+            LocalizationKey.helpersExtensionGetVersionUpdateNotification,
+            EXTENSION_NAME,
+            installedVersion
+          ),
           starGitHub,
           whatIsNew
         )
@@ -104,6 +111,9 @@ export class Extension {
         });
 
       this.setVersion(installedVersion);
+
+      // Reset the cache
+      Cache.clear(false);
     }
 
     return {
@@ -211,11 +221,18 @@ export class Extension {
         modifiedField?.teamValue
       ) {
         Notifications.warning(
-          `The "${CONFIG_KEY}.${SETTING_DATE_FIELD}" and "${CONFIG_KEY}.${SETTING_MODIFIED_FIELD}" settings have been deprecated. Please use the "isPublishDate" and "isModifiedDate" datetime field properties instead.`,
-          'Hide',
-          'See migration guide'
+          l10n.t(
+            LocalizationKey.helpersExtensionMigrateSettingsDeprecatedWarning,
+            `${CONFIG_KEY}.${SETTING_DATE_FIELD}`,
+            `${CONFIG_KEY}.${SETTING_MODIFIED_FIELD}`
+          ),
+          l10n.t(LocalizationKey.helpersExtensionMigrateSettingsDeprecatedWarningHide),
+          l10n.t(LocalizationKey.helpersExtensionMigrateSettingsDeprecatedWarningSeeGuide)
         ).then(async (value) => {
-          if (value === 'See migration guide') {
+          if (
+            value ===
+            l10n.t(LocalizationKey.helpersExtensionMigrateSettingsDeprecatedWarningSeeGuide)
+          ) {
             const isProd = this.isProductionMode;
             commands.executeCommand(
               'vscode.open',
@@ -230,7 +247,9 @@ export class Extension {
               true,
               'workspace'
             );
-          } else if (value === 'Hide') {
+          } else if (
+            value === l10n.t(LocalizationKey.helpersExtensionMigrateSettingsDeprecatedWarningHide)
+          ) {
             await Extension.getInstance().setState<boolean>(
               ExtensionState.Updates.v7_0_0.dateFields,
               true,
@@ -287,15 +306,23 @@ export class Extension {
 
       const templates = await Template.getTemplates();
       if (templates && templates.length > 0) {
-        const answer = await window.showQuickPick(['Yes', 'No'], {
-          title: 'Front Matter - Templates',
-          placeHolder: 'Do you want to keep on using the template functionality?',
-          ignoreFocusOut: true
-        });
+        const answer = await window.showQuickPick(
+          [l10n.t(LocalizationKey.commonYes), l10n.t(LocalizationKey.commonNo)],
+          {
+            title: l10n.t(
+              LocalizationKey.helpersExtensionMigrateSettingsTemplatesQuickPickTitle,
+              EXTENSION_NAME
+            ),
+            placeHolder: l10n.t(
+              LocalizationKey.helpersExtensionMigrateSettingsTemplatesQuickPickPlaceholder
+            ),
+            ignoreFocusOut: true
+          }
+        );
 
         await Settings.update(
           SETTING_TEMPLATES_ENABLED,
-          answer?.toLocaleLowerCase() === 'yes',
+          answer?.toLocaleLowerCase() === l10n.t(LocalizationKey.commonYes),
           true
         );
       }
@@ -406,9 +433,7 @@ export class Extension {
       const mainVersionInstalled = extensions.getExtension(EXTENSION_ID);
 
       if (mainVersionInstalled) {
-        Notifications.error(
-          `Front Matter BETA cannot be used while the main version is installed. Please ensure that you have only over version installed.`
-        );
+        Notifications.error(l10n.t(LocalizationKey.helpersExtensionCheckIfExtensionCanRunWarning));
         return false;
       }
     }

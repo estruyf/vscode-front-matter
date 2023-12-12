@@ -2,7 +2,7 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { DateHelper } from '../../../helpers/DateHelper';
-import { BlockFieldData, CustomPanelViewResult, Field, PanelSettings, WhenOperator } from '../../../models';
+import { BlockFieldData, CustomPanelViewResult, Field, PanelSettings } from '../../../models';
 import { Command } from '../../Command';
 import { CommandToCode } from '../../CommandToCode';
 import { TagType } from '../../TagType';
@@ -36,6 +36,7 @@ import { LocalizationKey } from '../../../localization';
 
 export interface IWrapperFieldProps {
   field: Field;
+  allFields: Field[];
   parent: IMetadata;
   parentFields: string[];
   metadata: IMetadata;
@@ -57,6 +58,7 @@ export interface IWrapperFieldProps {
 
 export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
   field,
+  allFields,
   parent,
   parentFields,
   metadata,
@@ -158,7 +160,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
 
   // Conditional fields
   if (typeof field.when !== 'undefined') {
-    const shouldRender = fieldWhenClause(field, parent);
+    const shouldRender = fieldWhenClause(field, parent, allFields);
 
     if (!shouldRender) {
       return null;
@@ -311,6 +313,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           parents={parentFields}
           blockData={blockData}
           limit={field.taxonomyLimit}
+          renderAsString={field.singleValueAsString}
           required={!!field.required}
         />
       </FieldBoundary>
@@ -335,6 +338,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           parents={parentFields}
           blockData={blockData}
           limit={field.taxonomyLimit}
+          renderAsString={field.singleValueAsString}
           required={!!field.required}
         />
       </FieldBoundary>
@@ -356,6 +360,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           parents={parentFields}
           blockData={blockData}
           limit={field.taxonomyLimit}
+          renderAsString={field.singleValueAsString}
           required={!!field.required}
         />
       </FieldBoundary>

@@ -31,6 +31,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
   const [framework, setFramework] = useState<string | null>(null);
   const [taxImported, setTaxImported] = useState<boolean>(false);
   const [templates, setTemplates] = useState<Template[]>([]);
+  const [astroCollectionsStatus, setAstroCollectionsStatus] = useState<Status>(Status.Optional)
   const { getColors } = useThemeColors();
 
   const frameworks: Framework[] = FrameworkDetectors.map((detector: any) => detector.framework);
@@ -53,6 +54,10 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
       }
     });
   }
+
+  const showNotification = () => {
+    Messenger.send(DashboardMessage.openConfig);
+  };
 
   const reload = () => {
     const crntState: any = Messenger.getState() || {};
@@ -175,6 +180,9 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
                 ))
               }
             </div>
+
+            <p className='mt-4 text-[var(--vscode-editorWarning-foreground)]'>
+              <b>{l10n.t(LocalizationKey.commonImportant)}</b>: {l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedTemplateWarning)}</p>
           </div>
         ),
         show: (crntTemplates || []).length > 0,
@@ -186,10 +194,11 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
         description: (
           <AstroContentTypes
             settings={settings}
-            triggerLoading={(isLoading) => setLoading(isLoading)} />
+            triggerLoading={(isLoading) => setLoading(isLoading)}
+            setStatus={(status) => setAstroCollectionsStatus(status)} />
         ),
         show: settings.crntFramework === 'astro',
-        status: Status.Optional
+        status: astroCollectionsStatus
       },
       {
         id: `welcome-content-folders`,
@@ -255,11 +264,14 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
             : Status.NotStarted,
         onClick:
           settings.initialized && settings.contentFolders && settings.contentFolders.length > 0
-            ? reload
+            ? () => {
+              showNotification();
+              reload();
+            }
             : undefined
       }
     ]
-  ), [settings, framework, taxImported, templates]);
+  ), [settings, framework, taxImported, templates, astroCollectionsStatus]);
 
   React.useEffect(() => {
     if (settings.crntFramework || settings.framework?.name) {

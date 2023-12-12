@@ -1,6 +1,7 @@
 import { ParsedFrontMatter } from './../parsers/FrontMatterParser';
 import {
   CONTEXT,
+  EXTENSION_NAME,
   NOTIFICATION_TYPE,
   SETTING_SEO_DESCRIPTION_FIELD,
   SETTING_SEO_DESCRIPTION_LENGTH,
@@ -16,6 +17,8 @@ import { DataListener } from '../listeners/panel';
 import { commands } from 'vscode';
 import { Field } from '../models';
 import { Preview } from './Preview';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class StatusListener {
   /**
@@ -135,12 +138,13 @@ export class StatusListener {
 
           const diagnostic: vscode.Diagnostic = {
             code: '',
-            message: `This ${fields
-              .map((f) => f.name)
-              .join('/')} field is required to contain a value.`,
+            message: l10n.t(
+              LocalizationKey.commandsStatusListenerVerifyRequiredFieldsDiagnosticEmptyField,
+              fields.map((f) => f.name).join('/')
+            ),
             range: new vscode.Range(posStart, posEnd),
             severity: vscode.DiagnosticSeverity.Error,
-            source: 'Front Matter'
+            source: EXTENSION_NAME
           };
 
           requiredDiagnostics.push(diagnostic);
@@ -158,7 +162,10 @@ export class StatusListener {
         Notifications.showIfNotDisabled(
           NOTIFICATION_TYPE.requiredFieldValidation,
           'ERROR_ONCE',
-          `The following fields are required to contain a value: ${fieldsToReport.join(', ')}`
+          l10n.t(
+            LocalizationKey.commandsStatusListenerVerifyRequiredFieldsNotificationError,
+            fieldsToReport.join(', ')
+          )
         );
       }
     }

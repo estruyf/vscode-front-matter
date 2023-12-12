@@ -24,6 +24,8 @@ import { WebviewHelper } from '@estruyf/vscode';
 import { Folders } from './Folders';
 import { ParsedFrontMatter } from '../parsers';
 import { getLocalizationFile } from '../utils/getLocalizationFile';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class Preview {
   public static filePath: string | undefined = undefined;
@@ -71,7 +73,9 @@ export class Preview {
     // Create the preview webview
     const webView = window.createWebviewPanel(
       'frontMatterPreview',
-      article?.data?.title ? `Preview: ${article?.data?.title}` : 'FrontMatter Preview',
+      article?.data?.title
+        ? l10n.t(LocalizationKey.commandsPreviewPanelTitle, article?.data.title)
+        : 'Front Matter Preview',
       {
         viewColumn: ViewColumn.Beside,
         preserveFocus: true
@@ -213,7 +217,7 @@ export class Preview {
    * @returns
    */
   public static async getContentSlug(
-    article: ParsedFrontMatter | null,
+    article: ParsedFrontMatter | null | undefined,
     filePath?: string
   ): Promise<string | undefined> {
     if (!filePath) {
@@ -230,7 +234,7 @@ export class Preview {
 
     let contentType: ContentType | undefined = undefined;
     if (article?.data) {
-      contentType = ArticleHelper.getContentType(article.data);
+      contentType = ArticleHelper.getContentType(article);
     }
 
     // Check if there is a pathname defined on content folder level
@@ -393,7 +397,7 @@ export class Preview {
     const folderNames = crntFolders.map((folder) => folder.title);
     const selectedFolderName = await window.showQuickPick(folderNames, {
       canPickMany: false,
-      title: 'Select the folder of the article to preview'
+      title: l10n.t(LocalizationKey.commandsPreviewAskUserToPickFolderTitle)
     });
 
     if (selectedFolderName) {

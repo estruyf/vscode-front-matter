@@ -119,7 +119,7 @@ export class PagesListener extends BaseListener {
     if (!article) {
       return;
     }
-    const contentType = ArticleHelper.getContentType(article.data);
+    const contentType = ArticleHelper.getContentType(article);
 
     Logger.info(`Deleting file: ${path}`);
 
@@ -240,7 +240,10 @@ export class PagesListener extends BaseListener {
    * @param pages
    */
   private static async createSearchIndex(pages: Page[]) {
-    const pagesIndex = Fuse.createIndex(['title', 'slug', 'description', 'fmBody', 'type'], pages);
+    const pagesIndex = Fuse.createIndex(
+      ['title', 'slug', 'description', 'fmBody', 'type', 'fmContentType'],
+      pages
+    );
     await Extension.getInstance().setState(
       ExtensionState.Dashboard.Pages.Index,
       pagesIndex.toJSON(),

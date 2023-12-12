@@ -1,6 +1,8 @@
 import * as yaml from 'yaml';
 import * as toml from '@iarna/toml';
 import { Format, FrontMatterParser } from '.';
+import { SETTING_QUOTE_STRINGS } from '../constants';
+import { Settings } from '../helpers';
 
 export const getFormatOpts = (format: string): Format => {
   const formats: { [prop: string]: Format } = {
@@ -83,9 +85,12 @@ export const Engines = {
 
             let updatedValue = docYaml.toJSON();
 
+            const quoteStrings = Settings.get(SETTING_QUOTE_STRINGS);
+
             return yaml.stringify(updatedValue, {
               lineWidth: options?.lineWidth || 5000,
-              defaultStringType: 'PLAIN',
+              defaultStringType: quoteStrings ? 'QUOTE_DOUBLE' : 'PLAIN',
+              defaultKeyType: 'PLAIN',
               keepUndefined: false,
               indent: options?.indent || 2,
               indentSeq: options?.noArrayIndent ? false : true

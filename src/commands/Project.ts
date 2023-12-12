@@ -21,6 +21,8 @@ import {
 } from '../constants';
 import { SettingsListener } from '../listeners/dashboard';
 import { existsAsync, writeFileAsync } from '../utils';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class Project {
   private static content = `---
@@ -66,7 +68,7 @@ categories: []
       if (sampleTemplate !== undefined) {
         await Project.createSampleTemplate();
       } else {
-        Notifications.info('Project initialized successfully.');
+        Notifications.info(l10n.t(LocalizationKey.commandsProjectInitializeSuccess));
       }
 
       // Initialize the media library
@@ -89,10 +91,14 @@ categories: []
     } catch (error: unknown) {
       const err = error as Error;
       Logger.error(`Project::init: ${err?.message || err}`);
-      Notifications.error(`Sorry, something went wrong - ${err?.message || err}`);
+      Notifications.errorWithOutput(l10n.t(LocalizationKey.commonError));
     }
   }
 
+  /**
+   * Project switcher
+   * @returns
+   */
   public static async switchProject() {
     const projects = Settings.getProjects();
     const project = await window.showQuickPick(
@@ -100,7 +106,7 @@ categories: []
       {
         canPickMany: false,
         ignoreFocusOut: true,
-        title: 'Select a project to switch to'
+        title: l10n.t(LocalizationKey.commandsProjectSwitchProjectTitle)
       }
     );
 
@@ -136,7 +142,7 @@ categories: []
       await writeFileAsync(article.fsPath, Project.content, {
         encoding: 'utf-8'
       });
-      Notifications.info('Sample template created.');
+      Notifications.info(l10n.t(LocalizationKey.commandsProjectCreateSampleTemplateInfo));
     }
   }
 

@@ -9,6 +9,8 @@ import { LocalStore } from '../constants';
 import { existsAsync, renameAsync } from '../utils';
 import { existsSync, mkdirSync, renameSync } from 'fs';
 import { lookup } from 'mime-types';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 interface MediaRecord {
   description: string;
@@ -160,14 +162,14 @@ export class MediaLibrary {
         const newPath = join(dirname(filePath), `${newFileInfo.name}${oldFileInfo.ext}`);
 
         if (await existsAsync(newPath)) {
-          Notifications.warning(`The name "${filename}" already exists at the file location.`);
+          Notifications.warning(LocalizationKey.helpersMediaLibraryRemoveWarning, filename);
         } else {
           await renameAsync(filePath, newPath);
           await this.rename(filePath, newPath);
           MediaHelpers.resetMedia();
         }
       } catch (err) {
-        Notifications.error(`Something went wrong updating "${name}" to "${filename}".`);
+        Notifications.error(l10n.t(LocalizationKey.helpersMediaLibraryRemoveError, name, filename));
       }
     }
   }

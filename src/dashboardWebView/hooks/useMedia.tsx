@@ -1,6 +1,6 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { MediaInfo, MediaPaths } from '../../models';
 import { DashboardCommand } from '../DashboardCommand';
@@ -52,27 +52,11 @@ export default function useMedia() {
     }
   }, [search, prevSearch]);
 
-  const getMedia = useCallback(() => {
+  const allMedia = useMemo(() => {
     return searchedMedia.slice(page * pageSetNr, (page + 1) * pageSetNr);
   }, [searchedMedia, page, pageSetNr]);
 
-  const messageListener = (
-    message: MessageEvent<EventData<MediaPaths | { key: string; value: any }>>
-  ) => {
-    if (message.data.command === DashboardCommand.media) {
-      const payload: MediaPaths = message.data.payload as MediaPaths;
-      setLoading(false);
-      setMedia(payload.media);
-      setTotal(payload.total);
-      setFolders(payload.folders);
-      setSelectedFolder(payload.selectedFolder);
-      setSearchedMedia(payload.media);
-      setAllContentFolders(payload.allContentFolders);
-      setAllStaticFolders(payload.allStaticfolders);
-    }
-  };
-
-  useEffect(() => {
+  const searchMedia = (search: string, media: MediaInfo[]) => {
     if (search) {
       const fuse = new Fuse(media, fuseOptions);
       const results = fuse.search(search);
@@ -86,6 +70,28 @@ export default function useMedia() {
 
     setTotal(media.length);
     setSearchedMedia(media);
+  }
+
+  const messageListener = useCallback((message: MessageEvent<EventData<MediaPaths | { key: string; value: any }>>) => {
+    if (message.data.command === DashboardCommand.media) {
+      const payload: MediaPaths = message.data.payload as MediaPaths;
+      setLoading(false);
+      setMedia(payload.media);
+      setTotal(payload.total);
+      setFolders(payload.folders);
+      setSelectedFolder(payload.selectedFolder);
+      if (search) {
+        searchMedia(search, payload.media);
+      } else {
+        setSearchedMedia(payload.media);
+      }
+      setAllContentFolders(payload.allContentFolders);
+      setAllStaticFolders(payload.allStaticfolders);
+    }
+  }, [search]);
+
+  useEffect(() => {
+    searchMedia(search, media);
   }, [search, media]);
 
   useEffect(() => {
@@ -94,9 +100,9 @@ export default function useMedia() {
     return () => {
       Messenger.unlisten(messageListener);
     };
-  }, []);
+  }, [search]);
 
   return {
-    media: getMedia()
+    media: allMedia
   };
 }

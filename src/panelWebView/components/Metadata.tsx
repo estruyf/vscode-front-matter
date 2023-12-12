@@ -74,6 +74,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
       <WrapperField
         key={field.name}
         field={field}
+        allFields={ctFields}
         parent={parent}
         parentFields={parentFields}
         metadata={metadata}
@@ -89,7 +90,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
   };
 
   return (
-    <Collapsible id={`tags`} title={l10n.t(LocalizationKey.panelMetadataTitle)} className={`inherit z-20`}>
+    <Collapsible id={`tags`} title={`${l10n.t(LocalizationKey.panelMetadataTitle)}${contentType?.name ? ` (${contentType?.name})` : ""}`} className={`inherit z-20`}>
       <FeatureFlag features={features || []} flag={FEATURE_FLAG.panel.contentType}>
         <ContentTypeValidator fields={contentType?.fields || []} metadata={metadata} />
       </FeatureFlag>

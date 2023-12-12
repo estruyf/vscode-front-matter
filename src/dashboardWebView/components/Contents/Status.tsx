@@ -7,15 +7,18 @@ import { LocalizationKey } from '../../../localization';
 
 export interface IStatusProps {
   draft: boolean | string;
+  published: number | null | undefined;
 }
 
 export const Status: React.FunctionComponent<IStatusProps> = ({
-  draft
+  draft,
+  published
 }: React.PropsWithChildren<IStatusProps>) => {
   const settings = useRecoilValue(SettingsAtom);
   const tabInfo = useRecoilValue(TabInfoAtom);
 
   const draftField = useMemo(() => settings?.draftField, [settings]);
+  const isFuture = useMemo(() => published ? published > Date.now() : false, [published]);
 
   const draftValue = useMemo(() => {
     if (draftField && draftField.type === 'choice') {
@@ -31,7 +34,7 @@ export const Status: React.FunctionComponent<IStatusProps> = ({
     if (draftValue) {
       return (
         <span
-          className={`inline-block px-2 py-1 leading-none rounded-sm font-semibold uppercase tracking-wide text-xs text-[var(--vscode-badge-foreground)] bg-[var(--vscode-badge-background)]`}
+          className={`inline-block px-1 py-1 leading-none rounded-sm font-semibold uppercase tracking-wide text-[0.7rem] text-[var(--vscode-badge-foreground)] bg-[var(--vscode-badge-background)]`}
         >
           {draftValue}
         </span>
@@ -48,16 +51,21 @@ export const Status: React.FunctionComponent<IStatusProps> = ({
   return (
     <span
       className={`draft__status
-        inline-block px-2 py-1 leading-none rounded-sm font-semibold uppercase tracking-wide text-xs 
+        inline-block px-1 py-1 leading-none rounded-sm font-semibold uppercase tracking-wide text-[0.7rem] 
         ${draftValue ?
           'bg-[var(--vscode-statusBarItem-errorBackground)] text-[var(--vscode-statusBarItem-errorForeground)]' :
-          'bg-[var(--vscode-badge-background)] text-[var(--vscode-badge-foreground)]'
+          isFuture ?
+            'bg-[var(--vscode-statusBarItem-warningBackground)] text-[var(--vscode-statusBarItem-warningForeground)]' :
+            'bg-[var(--vscode-badge-background)] text-[var(--vscode-badge-foreground)]'
         }`}
     >
       {
         draftValue ?
-          l10n.t(LocalizationKey.dashboardContentsStatusDraft) :
-          l10n.t(LocalizationKey.dashboardContentsStatusPublished)
+          l10n.t(LocalizationKey.dashboardContentsStatusDraft) : (
+            isFuture ?
+              l10n.t(LocalizationKey.dashboardContentsStatusScheduled) :
+              l10n.t(LocalizationKey.dashboardContentsStatusPublished)
+          )
       }
     </span>
   );

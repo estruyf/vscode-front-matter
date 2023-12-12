@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const jsoncParser = require('jsonc-parser');
 
 const camlCase = (str) => {
   const words = str.split('.');
@@ -15,12 +16,14 @@ const camlCase = (str) => {
   const enFile = fs.readFileSync(path.join(__dirname, '../l10n/bundle.l10n.json'), 'utf8');
 
   // Parse the EN file
-  const en = JSON.parse(enFile);
+  const en = jsoncParser.parse(enFile);
 
   const keys = Object.keys(en);
 
   // Create an enum file
-  const enumFile = fs.createWriteStream(path.join(__dirname, '../src/localization/localization.enum.ts'));
+  const enumFile = fs.createWriteStream(
+    path.join(__dirname, '../src/localization/localization.enum.ts')
+  );
 
   // Write the enum file header
   enumFile.write(`export enum LocalizationKey {\n`);

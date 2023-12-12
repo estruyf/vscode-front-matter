@@ -3,7 +3,7 @@
   "displayName": "Front Matter CMS",
   "description": "Front Matter is a CMS that runs within Visual Studio Code. It gives you the power and control of a full-blown CMS while also providing you the flexibility and speed of the static site generator of your choice like: Hugo, Jekyll, Docusaurus, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "9.3.1",
+  "version": "9.4.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -1005,15 +1005,18 @@
           "type": "array",
           "default": [],
           "markdownDescription": "%setting.frontMatter.panel.actions.disabled.markdownDescription%",
-          "enum": [
-            "openDashboard",
-            "createContent",
-            "optimizeSlug",
-            "preview",
-            "openOnWebsite",
-            "startStopServer",
-            "customActions"
-          ]
+          "items": {
+            "type": "string",
+            "enum": [
+              "openDashboard",
+              "createContent",
+              "optimizeSlug",
+              "preview",
+              "openOnWebsite",
+              "startStopServer",
+              "customActions"
+            ]
+          }
         },
         "frontMatter.preview.host": {
           "type": "string",
@@ -1082,7 +1085,17 @@
               "clearEmpty": {
                 "type": "boolean",
                 "default": false,
-                "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.clearEmpty.description%"
+                "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.clearEmpty.description%"
+              },
+              "allowAsSubContent": {
+                "type": "boolean",
+                "default": false,
+                "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.allowAsSubContent.description%"
+              },
+              "isSubContent": {
+                "type": "boolean",
+                "default": false,
+                "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.isSubContent.description%"
               },
               "fields": {
                 "$id": "#contenttypefield",
@@ -1271,6 +1284,11 @@
                       "type": "number",
                       "default": 0,
                       "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.taxonomyLimit.description%"
+                    },
+                    "singleValueAsString": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.singleValueAsString.description%"
                     },
                     "isPublishDate": {
                       "type": "boolean",
@@ -1737,6 +1755,12 @@
           "default": "lastmod",
           "markdownDescription": "%setting.frontMatter.taxonomy.modifiedField.markdownDescription%",
           "deprecationMessage": "%setting.frontMatter.taxonomy.modifiedField.deprecationMessage%"
+        },
+        "frontMatter.taxonomy.quoteStringValues": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "%setting.frontMatter.taxonomy.quoteStringValues.markdownDescription%",
+          "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.noPropertyValueQuotes": {
           "type": "array",
@@ -2509,7 +2533,7 @@
     "clean": "rimraf dist",
     "start:site": "cd ./docs && npm run dev",
     "clean:test": "rm ./e2e/sample/frontmatter.json || exit 0 && rm -rf ./e2e/sample/.frontmatter || exit 0",
-    "test": "pnpm lint; tsc -p tsconfig.e2e.json && npm run clean:test && pnpm i -g @vscode/vsce && node ./e2e/out/runTests.js",
+    "test": "npm run lint; tsc -p tsconfig.e2e.json && npm run clean:test && npm run i -g @vscode/vsce && node ./e2e/out/runTests.js",
     "lint": "eslint --max-warnings=0 ./src/{commands,components}",
     "prettier": "prettier --write ./src",
     "localization:watch": "node ./scripts/watch-localization.js",
@@ -2521,7 +2545,7 @@
     "@actions/core": "^1.10.0",
     "@bendera/vscode-webview-elements": "0.6.2",
     "@estruyf/vscode": "^1.1.0",
-    "@headlessui/react": "1.5.0",
+    "@headlessui/react": "^1.7.17",
     "@heroicons/react": "1.0.4",
     "@iarna/toml": "2.2.3",
     "@octokit/rest": "^18.12.0",

@@ -1,32 +1,35 @@
-import { writeFileSync } from "fs";
-import { join } from "path";
-import { createServer } from "vite";
-import zod from "zod";
+import { writeFileSync } from 'fs';
+import { join } from 'path';
+import { createServer } from 'vite';
+import zod from 'astro/zod';
 
-const {
-  ZodDefault,
-  ZodObject,
-  ZodOptional,
-  ZodString,
-  ZodEffects,
-  ZodEnum
-} = zod;
+const { ZodDefault, ZodObject, ZodOptional, ZodString, ZodEffects, ZodEnum, ZodUnion } = zod;
 
 /**
  * Process the Zod field
- * @param {ZodTypeAny} field 
- * @param {string} defaultValue 
- * @returns 
+ * @param {ZodTypeAny} field
+ * @param {boolean} isOptional
+ * @param {string} defaultValue
+ * @returns
  */
-function getField(field, defaultValue = undefined) {
-  let isOptional = false;
-
+function getField(field, isOptional = false, defaultValue = undefined) {
   // Handle various type transformations and assignments
   if (field instanceof ZodOptional) {
     isOptional = true;
     const type = field.unwrap();
 
-    return getField(type, isOptional, defaultValue)
+    return getField(type, isOptional, defaultValue);
+  }
+
+  if (field instanceof ZodEffects) {
+    const type = field.sourceType();
+    return getField(type, isOptional, defaultValue);
+  }
+
+  if (field instanceof ZodUnion) {
+    const types = field._def.options;
+    const type = types[0];
+    return getField(type, isOptional, defaultValue);
   }
 
   if (field instanceof ZodDefault) {
@@ -35,48 +38,52 @@ function getField(field, defaultValue = undefined) {
     defaultValue = field.parse(undefined);
     // https://github.com/sachinraja/zod-to-ts/blob/main/src/index.ts
     const type = field._def.innerType;
-    return getField(type, isOptional, defaultValue)
+    return getField(type, isOptional, defaultValue);
   }
 
   return {
     type: field,
     isOptional,
     defaultValue
-  }
+  };
 }
 
 /**
  * Generate the field information
- * @param {string} name 
- * @param {ZodTypeAny} type 
- * @returns 
+ * @param {string} name
+ * @param {ZodTypeAny} type
+ * @returns
  */
 function generateFieldInfo(name, type) {
   let description = type.description;
   let defaultValue = undefined;
 
-  const { 
-    type: fieldType, 
-    isOptional: isFieldOptional, 
-    defaultValue: fieldDefaultValue 
-  } = getField(type, defaultValue);
+  const {
+    type: fieldType,
+    isOptional: isFieldOptional,
+    defaultValue: fieldDefaultValue
+  } = getField(type, false, defaultValue);
 
   const fieldInfo = {
     name: name,
     description: description,
     defaultValue: fieldDefaultValue,
     type: fieldType._def.typeName,
-    required: !isFieldOptional,
+    required: !isFieldOptional
   };
 
   if (fieldType instanceof ZodObject) {
     const subFields = extractFieldInfoFromShape(fieldType);
-    
+
     fieldInfo.fields = subFields;
   }
 
   if (fieldType instanceof ZodEffects) {
     fieldInfo.type = fieldType.sourceType().fmFieldType;
+  }
+
+  if (fieldInfo.name.toLowerCase().includes('image')) {
+    fieldInfo.type = 'image';
   }
 
   if (fieldType instanceof ZodEnum) {
@@ -96,8 +103,8 @@ function generateFieldInfo(name, type) {
 
 /**
  * Parse the scheme into an array of fields
- * @param {ZodTypeAny} type 
- * @returns 
+ * @param {ZodTypeAny} type
+ * @returns
  */
 function extractFieldInfoFromShape(type) {
   if (type instanceof ZodOptional) {
@@ -106,7 +113,7 @@ function extractFieldInfoFromShape(type) {
 
   if (!(type instanceof ZodObject)) {
     // Return an empty array if the type is not of the expected type
-    return []; 
+    return [];
   }
 
   // Iterate through the shape properties
@@ -121,8 +128,8 @@ function extractFieldInfoFromShape(type) {
 
 /**
  * Process each content collection
- * @param {*} collections 
- * @returns 
+ * @param {*} collections
+ * @returns
  */
 function processCollection(collections) {
   if (!Array.isArray(collections)) {
@@ -130,32 +137,35 @@ function processCollection(collections) {
   }
 
   return collections.map(([name, collection]) => {
-    const schema = typeof collection.schema === "function" ? collection.schema({
-      image() {
-        const field = zod.string();
-        field.fmFieldType = "image";
-        return field;
-      }
-    }) : collection.schema;
+    const schema =
+      typeof collection.schema === 'function'
+        ? collection.schema({
+            image() {
+              const field = zod.string();
+              field.fmFieldType = 'image';
+              return field;
+            }
+          })
+        : collection.schema;
 
     return {
       name,
-      type: collection.type || "content",
-      fields: extractFieldInfoFromShape(schema),
+      type: collection.type || 'content',
+      fields: extractFieldInfoFromShape(schema)
     };
   });
 }
 
 /**
  * More info: https://vitejs.dev/guide/api-plugin.html#virtual-modules-convention
- * @returns 
+ * @returns
  */
 const astroContentModulePlugin = () => {
-  const astroContent = "astro:content";
+  const astroContent = 'astro:content';
   const astroContentMarker = `\0${astroContent}`;
 
   return {
-    name: "astro-content-collections",
+    name: 'astro-content-collections',
     resolveId(importee) {
       if (importee === astroContent) {
         return astroContentMarker;
@@ -174,7 +184,7 @@ const astroContentModulePlugin = () => {
         `;
       }
     }
-  }
+  };
 };
 
 /**
@@ -182,8 +192,8 @@ const astroContentModulePlugin = () => {
  */
 (async () => {
   const configPath = process.argv[2];
-  if (!configPath || typeof configPath !== "string") {
-    console.log("No config path provided");
+  if (!configPath || typeof configPath !== 'string') {
+    console.log('No config path provided');
     process.exit(1);
   }
 
@@ -195,22 +205,25 @@ const astroContentModulePlugin = () => {
       hmr: false
     },
     optimizeDeps: {
-      disabled: true,
+      disabled: true
     },
-    appType: "custom",
+    appType: 'custom',
     plugins: [astroContentModulePlugin()]
   });
 
   try {
     // https://github.dev/withastro/astro/blob/defab70cb2a0c67d5e9153542490d2749046b151/packages/astro/src/content/utils.ts#L334
-    const contentModule = await server.ssrLoadModule(configPath)
+    const contentModule = await server.ssrLoadModule(configPath);
 
     const collections = Object.entries(contentModule.collections ?? {});
     const processedCollections = processCollection(collections);
 
-    writeFileSync(join(process.cwd(), `./.frontmatter/temp/astro.collections.json`), JSON.stringify(processedCollections));
-    
-    console.log("Collections generated successfully");
+    writeFileSync(
+      join(process.cwd(), `./.frontmatter/temp/astro.collections.json`),
+      JSON.stringify(processedCollections, null, 2)
+    );
+
+    console.log('Collections generated successfully');
     process.exit(0);
   } catch (error) {
     console.log(error.message);

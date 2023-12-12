@@ -56,7 +56,7 @@ export const Searchbox: React.FunctionComponent<ISearchboxProps> = ({
             name="search"
             className={`block w-full py-2 pl-10 pr-3 sm:text-sm appearance-none disabled:opacity-50 rounded ${getColors(
               'bg-white dark:bg-vulcan-300 border border-gray-300 dark:border-vulcan-100 text-vulcan-500 dark:text-whisper-500 placeholder-gray-400 dark:placeholder-whisper-800 focus:outline-none',
-              'bg-[var(--vscode-input-background)] text-[var(--vscode-input-foreground)] border-[var(--vscode-editorWidget-border)] placeholder-[var(--vscode-input-placeholderForeground)] focus:outline-[var(--vscode-focusBorder)] focus:outline-1 focus:outline-offset-0 focus:shadow-none focus:border-transparent'
+              'bg-[var(--vscode-input-background)] text-[var(--vscode-input-foreground)] border-[var(--vscode-input-border, --vscode-editorWidget-border)] placeholder-[var(--vscode-input-placeholderForeground)] focus:outline-[var(--vscode-focusBorder)] focus:outline-1 focus:outline-offset-0 focus:shadow-none focus:border-transparent'
             )
               }`}
             placeholder={placeholder || l10n.t(LocalizationKey.commonSearch)}

@@ -191,6 +191,7 @@
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.numberOptions.properties.max.description": "The maximum value",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.numberOptions.properties.step.description": "The step value",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.taxonomyLimit.description": "Limit the number of taxonomies to select. Set to 0 to allow unlimited.",
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.singleValueAsString.description": "Specify if you want to store a single array value as a string instead of an array.",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.isPublishDate.description": "Specify if the field is the publish date field",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.isModifiedDate.description": "Specify if the field is the modified date field",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.dataFileId.description": "Specify the ID of the data file to use for this field",
@@ -224,6 +225,7 @@
   "setting.frontMatter.taxonomy.frontMatterType.markdownDescription": "Specify the type of Front Matter to use. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.frontmattertype)",
   "setting.frontMatter.taxonomy.indentArrays.markdownDescription": "Specify if arrays in front matter are indented. Default: true. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.indentarrays)",
   "setting.frontMatter.taxonomy.modifiedField.markdownDescription": "This setting is used to define the modified date field of your articles. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.modifiedfield)",
+  "setting.frontMatter.taxonomy.quoteStringValues.markdownDescription": "Specify if you want to quote string values in the front matter. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.quotestringvalues)",
   "setting.frontMatter.taxonomy.noPropertyValueQuotes.markdownDescription": "Specify the properties from which quotes need to be removed. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.nopropertyvaluequotes)",
   "setting.frontMatter.taxonomy.noPropertyValueQuotes.items.description": "Name of the properties you want to remove quotes from.",
   "setting.frontMatter.taxonomy.seoContentLengh.markdownDescription": "Specifies the optimal minimum length for your articles. Between 1,760 words – 2,400 is the absolute ideal article length for SEO in 2021. (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.seocontentlengh)",
@@ -243,8 +245,10 @@
   "setting.frontMatter.taxonomy.dateField.deprecationMessage": "This setting is deprecated and will be removed in the next major version. Please use the new `isPublishDate` settings instead in your content types date fields.",
   "setting.frontMatter.taxonomy.modifiedField.deprecationMessage": "This setting is deprecated and will be removed in the next major version. Please use the new `isModifiedDate` settings instead in your content types date fields.",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.customType.description": "Specify the name of the custom field type to use.",
-  "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.clearEmpty.description": "Specify if the empty values should be cleared.",
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.clearEmpty.description": "Specify if the empty values should be cleared.",
   "setting.frontMatter.website.host.markdownDescription": "Specify the host URL of your website. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.website.url)",
   "command.frontMatter.settings.refresh": "Refresh Front Matter Settings",
-  "setting.frontMatter.config.dynamicFilePath.markdownDescription": "Specify the path to the dynamic config file (ex: [[workspace]]/config.js). [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.config.dynamicfilepath)"
+  "setting.frontMatter.config.dynamicFilePath.markdownDescription": "Specify the path to the dynamic config file (ex: [[workspace]]/config.js). [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.config.dynamicfilepath)",
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.allowAsSubContent.description": "Specify if the content type can be used as sub content.",
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.isSubContent.description": "Specify if the content type is sub content."
 }

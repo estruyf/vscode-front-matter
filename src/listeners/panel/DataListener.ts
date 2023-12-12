@@ -5,7 +5,7 @@ import { Folders } from '../../commands/Folders';
 import { Command } from '../../panelWebView/Command';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
-import { authentication, commands, ThemeIcon, window } from 'vscode';
+import { authentication, commands, window } from 'vscode';
 import { ArticleHelper, ContentType, Extension, Logger, Settings } from '../../helpers';
 import {
   COMMAND_NAME,
@@ -19,16 +19,18 @@ import { Article, Preview } from '../../commands';
 import { ParsedFrontMatter } from '../../parsers';
 import { processKnownPlaceholders } from '../../helpers/PlaceholderHelper';
 import { Field, PostMessageData } from '../../models';
-import { encodeEmoji } from '../../utils';
+import { encodeEmoji, fieldWhenClause } from '../../utils';
 import { PanelProvider } from '../../panelWebView/PanelProvider';
 import { MessageHandlerData } from '@estruyf/vscode';
 import { SponsorAi } from '../../services/SponsorAI';
+import { Terminal } from '../../services';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../localization';
 
 const FILE_LIMIT = 10;
 
 export class DataListener extends BaseListener {
   private static lastMetadataUpdate: any = {};
-  private static readonly terminalName: string = 'Local server';
 
   /**
    * Process the messages for the dashboard views
@@ -94,7 +96,7 @@ export class DataListener extends BaseListener {
       panel.getWebview()?.postMessage({
         command,
         requestId,
-        error: 'No active editor'
+        error: l10n.t(LocalizationKey.listenersPanelDataListenerAiSuggestTaxonomyNoEditorError)
       } as MessageHandlerData<string>);
       return;
     }
@@ -104,7 +106,7 @@ export class DataListener extends BaseListener {
       panel.getWebview()?.postMessage({
         command,
         requestId,
-        error: 'No article data'
+        error: l10n.t(LocalizationKey.listenersPanelDataListenerAiSuggestTaxonomyNoDataError)
       } as MessageHandlerData<string>);
       return;
     }
@@ -126,7 +128,7 @@ export class DataListener extends BaseListener {
       panel.getWebview()?.postMessage({
         command,
         requestId,
-        error: 'No article data'
+        error: l10n.t(LocalizationKey.listenersPanelDataListenerAiSuggestTaxonomyNoDataError)
       } as MessageHandlerData<string>);
       return;
     }
@@ -254,10 +256,19 @@ export class DataListener extends BaseListener {
       return;
     }
 
-    const contentType = ArticleHelper.getContentType(article.data);
+    const contentType = ArticleHelper.getContentType(article);
+    const sourceField = ContentType.findFieldByName(contentType.fields, field);
 
     if (!value && field !== titleField && contentType.clearEmpty) {
-      value = undefined;
+      // Check if the draft or boolean field needs to be cleared
+      // This is only required when the default value is not set to true
+      if (sourceField && (sourceField.type === 'draft' || sourceField.type === 'boolean')) {
+        if (!sourceField.default) {
+          value = undefined;
+        }
+      } else {
+        value = undefined;
+      }
     }
 
     const dateFields = ContentType.findFieldsByTypeDeep(contentType.fields, 'datetime');
@@ -337,6 +348,29 @@ export class DataListener extends BaseListener {
       }
     }
 
+    // Verify if there are fields to be cleared due to the when clause
+    const allFieldNames = Object.keys(parentObj);
+    let ctFields = contentType.fields;
+    if (parents && parents.length > 0) {
+      for (const parent of parents) {
+        const crntField = ctFields.find((f) => f.name === parent);
+        if (crntField) {
+          ctFields = crntField.fields || [];
+        }
+      }
+    }
+    if (ctFields && ctFields.length > 0) {
+      for (const field of allFieldNames) {
+        const crntField = ctFields.find((f) => f.name === field);
+        if (crntField && crntField.when) {
+          const renderField = fieldWhenClause(crntField, parentObj, ctFields);
+          if (!renderField) {
+            delete parentObj[field];
+          }
+        }
+      }
+    }
+
     // Clear the field if it is empty
     if (
       value === undefined ||
@@ -374,7 +408,7 @@ export class DataListener extends BaseListener {
   ) {
     let parentObj = data;
     let allParents = Object.assign([], parents);
-    const contentType = ArticleHelper.getContentType(article.data);
+    const contentType = ArticleHelper.getContentType(article);
     let selectedIndexes: number[] = [];
     if (blockData?.selectedIndex) {
       if (typeof blockData.selectedIndex === 'string') {
@@ -499,7 +533,11 @@ export class DataListener extends BaseListener {
     if (entries) {
       this.sendRequest(command, requestId, entries);
     } else {
-      this.sendRequestError(command, requestId, "Couldn't find data file entries");
+      this.sendRequestError(
+        command,
+        requestId,
+        l10n.t(LocalizationKey.listenersPanelDataListenerGetDataFileEntriesNoDataFilesError)
+      );
     }
   }
 
@@ -509,27 +547,7 @@ export class DataListener extends BaseListener {
    */
   private static openTerminalWithCommand(command: string) {
     if (command) {
-      let localServerTerminal = DataListener.findServerTerminal();
-      if (localServerTerminal) {
-        localServerTerminal.dispose();
-      }
-
-      if (
-        !localServerTerminal ||
-        (localServerTerminal && localServerTerminal.state.isInteractedWith === true)
-      ) {
-        localServerTerminal = window.createTerminal({
-          name: this.terminalName,
-          iconPath: new ThemeIcon('server-environment'),
-          message: `Starting local server`
-        });
-      }
-
-      if (localServerTerminal) {
-        localServerTerminal.sendText(command);
-        localServerTerminal.show(false);
-      }
-
+      Terminal.openLocalServerTerminal(command);
       this.sendMsg(Command.serverStarted, true);
     }
   }
@@ -538,11 +556,7 @@ export class DataListener extends BaseListener {
    * Stop the local server
    */
   private static stopServer() {
-    const localServerTerminal = DataListener.findServerTerminal();
-    if (localServerTerminal) {
-      localServerTerminal.dispose();
-    }
-
+    Terminal.closeLocalServerTerminal();
     this.sendMsg(Command.serverStarted, false);
   }
 
@@ -554,20 +568,8 @@ export class DataListener extends BaseListener {
       return;
     }
 
-    const localServerTerminal = DataListener.findServerTerminal();
+    const localServerTerminal = Terminal.findLocalServerTerminal();
     this.sendRequest(command, requestId, !!localServerTerminal);
-  }
-
-  /**
-   * Find the server terminal
-   * @returns
-   */
-  private static findServerTerminal() {
-    let terminals = window.terminals;
-    if (terminals) {
-      const localServerTerminal = terminals.find((t) => t.name === DataListener.terminalName);
-      return localServerTerminal;
-    }
   }
 
   /**

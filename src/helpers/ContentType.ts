@@ -1,8 +1,9 @@
 import { ModeListener } from './../listeners/general/ModeListener';
 import { PagesListener } from './../listeners/dashboard';
-import { ArticleHelper, CustomScript, Settings } from '.';
+import { ArticleHelper, CustomScript, Logger, Settings } from '.';
 import {
   DefaultFieldValues,
+  EXTENSION_NAME,
   FEATURE_FLAG,
   SETTING_CONTENT_DRAFT_FIELD,
   SETTING_DATE_FORMAT,
@@ -28,7 +29,9 @@ import { Telemetry } from './Telemetry';
 import { processKnownPlaceholders } from './PlaceholderHelper';
 import { basename } from 'path';
 import { ParsedFrontMatter } from '../parsers';
-import { encodeEmoji, existsAsync, writeFileAsync } from '../utils';
+import { encodeEmoji, existsAsync, fieldWhenClause, writeFileAsync } from '../utils';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class ContentType {
   /**
@@ -49,18 +52,18 @@ export class ContentType {
    * @param data
    * @returns
    */
-  public static getDraftStatus(data: { [field: string]: any }) {
-    const contentType = ArticleHelper.getContentType(data);
+  public static getDraftStatus(article: ParsedFrontMatter) {
+    const contentType = ArticleHelper.getContentType(article);
     const draftSetting = ContentType.getDraftField();
 
     const draftField = contentType.fields.find((f) => f.type === 'draft');
 
     let fieldValue = null;
 
-    if (draftField) {
-      fieldValue = data[draftField.name];
-    } else if (draftSetting && data && data[draftSetting.name]) {
-      fieldValue = data[draftSetting.name];
+    if (draftField && article?.data) {
+      fieldValue = article?.data[draftField.name];
+    } else if (draftSetting && article?.data && article?.data[draftSetting.name]) {
+      fieldValue = article?.data[draftSetting.name];
     }
 
     if (draftSetting && fieldValue !== null) {
@@ -173,30 +176,34 @@ export class ContentType {
     const filePath = editor?.document.uri.fsPath;
 
     if (!content || !content.data) {
-      Notifications.warning(`No front matter data found to generate a content type.`);
+      Notifications.warning(l10n.t(LocalizationKey.helpersContentTypeGenerateNoFrontMatterError));
       return;
     }
 
-    const override = await window.showQuickPick(['Yes', 'No'], {
-      title: 'Override default content type',
-      placeHolder:
-        'Do you want to overwrite the default content type configuration with the fields used in the current field?',
-      ignoreFocusOut: true
-    });
-    const overrideBool = override === 'Yes';
+    const override = await window.showQuickPick(
+      [l10n.t(LocalizationKey.commonYes), l10n.t(LocalizationKey.commonNo)],
+      {
+        title: l10n.t(LocalizationKey.helpersContentTypeGenerateOverrideQuickPickTitle),
+        placeHolder: l10n.t(LocalizationKey.helpersContentTypeGenerateOverrideQuickPickPlaceholder),
+        ignoreFocusOut: true
+      }
+    );
+    const overrideBool = override === l10n.t(LocalizationKey.commonYes);
 
     let contentTypeName: string | undefined = `default`;
 
     // Ask for the new content type name
     if (!overrideBool) {
       contentTypeName = await window.showInputBox({
-        title: 'Generate Content Type',
-        placeHolder: 'Enter the name of the content type to generate',
-        prompt: 'Enter the name of the content type to generate',
+        title: l10n.t(LocalizationKey.helpersContentTypeGenerateContentTypeInputTitle),
+        placeHolder: l10n.t(LocalizationKey.helpersContentTypeGenerateContentTypeInputPrompt),
+        prompt: l10n.t(LocalizationKey.helpersContentTypeGenerateContentTypeInputPrompt),
         ignoreFocusOut: true,
         validateInput: (value: string) => {
           if (!value) {
-            return 'Please enter a name for the content type';
+            return l10n.t(
+              LocalizationKey.helpersContentTypeGenerateContentTypeInputValidationEnterName
+            );
           }
 
           const contentTypes = ContentType.getAll();
@@ -204,7 +211,9 @@ export class ContentType {
             contentTypes &&
             contentTypes.find((ct) => ct.name.toLowerCase() === value.toLowerCase())
           ) {
-            return 'A content type with this name already exists';
+            return l10n.t(
+              LocalizationKey.helpersContentTypeGenerateContentTypeInputValidationNameExists
+            );
           }
 
           return null;
@@ -212,7 +221,9 @@ export class ContentType {
       });
 
       if (!contentTypeName) {
-        Notifications.warning(`You didn't specify a name for the content type.`);
+        Notifications.warning(
+          l10n.t(LocalizationKey.helpersContentTypeGenerateNoContentTypeNameWarning)
+        );
         return;
       }
     }
@@ -221,12 +232,17 @@ export class ContentType {
     let pageBundle = false;
     const fileName = filePath ? basename(filePath) : undefined;
     if (fileName?.startsWith(`index.`)) {
-      const pageBundleAnswer = await window.showQuickPick(['Yes', 'No'], {
-        title: 'Use as page bundle',
-        placeHolder: 'Do you want to use this content type as a page bundle?',
-        ignoreFocusOut: true
-      });
-      pageBundle = pageBundleAnswer === 'Yes';
+      const pageBundleAnswer = await window.showQuickPick(
+        [l10n.t(LocalizationKey.commonYes), l10n.t(LocalizationKey.commonNo)],
+        {
+          title: l10n.t(LocalizationKey.helpersContentTypeGeneratePageBundleQuickPickTitle),
+          placeHolder: l10n.t(
+            LocalizationKey.helpersContentTypeGeneratePageBundleQuickPickPlaceHolder
+          ),
+          ignoreFocusOut: true
+        }
+      );
+      pageBundle = pageBundleAnswer === l10n.t(LocalizationKey.commonYes);
     }
 
     const fields = ContentType.generateFields(content.data);
@@ -256,11 +272,19 @@ export class ContentType {
 
     const configPath = await Settings.projectConfigPath();
     const notificationAction = await Notifications.info(
-      `Content type ${contentTypeName} has been ${overrideBool ? `updated` : `generated`}.`,
-      configPath && (await existsAsync(configPath)) ? `Open settings` : undefined
+      overrideBool
+        ? l10n.t(LocalizationKey.helpersContentTypeGenerateUpdatedSuccess)
+        : l10n.t(LocalizationKey.helpersContentTypeGenerateGeneratedSuccess),
+      configPath && (await existsAsync(configPath))
+        ? l10n.t(LocalizationKey.commonOpenSettings)
+        : undefined
     );
 
-    if (notificationAction === 'Open settings' && configPath && (await existsAsync(configPath))) {
+    if (
+      notificationAction === l10n.t(LocalizationKey.commonOpenSettings) &&
+      configPath &&
+      (await existsAsync(configPath))
+    ) {
       commands.executeCommand('vscode.open', Uri.file(configPath));
     }
   }
@@ -278,11 +302,13 @@ export class ContentType {
     const content = ArticleHelper.getCurrent();
 
     if (!content || !content.data) {
-      Notifications.warning(`No front matter data found to add missing fields.`);
+      Notifications.warning(
+        l10n.t(LocalizationKey.helpersContentTypeAddMissingFieldsNoFrontMatterWarning)
+      );
       return;
     }
 
-    const contentType = ArticleHelper.getContentType(content?.data);
+    const contentType = ArticleHelper.getContentType(content);
     const updatedFields = ContentType.generateFields(content.data, contentType.fields);
 
     const contentTypes = ContentType.getAll() || [];
@@ -293,11 +319,17 @@ export class ContentType {
 
     const configPath = await Settings.projectConfigPath();
     const notificationAction = await Notifications.info(
-      `Content type ${contentType.name} has been updated.`,
-      configPath && (await existsAsync(configPath)) ? `Open settings` : undefined
+      l10n.t(LocalizationKey.helpersContentTypeAddMissingFieldsUpdatedSuccess, contentType.name),
+      configPath && (await existsAsync(configPath))
+        ? l10n.t(LocalizationKey.commonOpenSettings)
+        : undefined
     );
 
-    if (notificationAction === 'Open settings' && configPath && (await existsAsync(configPath))) {
+    if (
+      notificationAction === l10n.t(LocalizationKey.commonOpenSettings) &&
+      configPath &&
+      (await existsAsync(configPath))
+    ) {
       commands.executeCommand('vscode.open', Uri.file(configPath));
     }
   }
@@ -316,16 +348,18 @@ export class ContentType {
     const contentTypes = ContentType.getAll() || [];
 
     if (!content || !content.data) {
-      Notifications.warning(`No front matter data found to set the content type.`);
+      Notifications.warning(
+        l10n.t(LocalizationKey.helpersContentTypeSetContentTypeNoFrontMatterWarning)
+      );
       return;
     }
 
     const ctAnswer = await window.showQuickPick(
       contentTypes.map((ct) => ct.name),
       {
-        title: 'Select the content type',
-        ignoreFocusOut: true,
-        placeHolder: 'Which content type would you like to use?'
+        title: l10n.t(LocalizationKey.helpersContentTypeSetContentTypeQuickPickTitle),
+        placeHolder: l10n.t(LocalizationKey.helpersContentTypeSetContentTypeQuickPickPlaceholder),
+        ignoreFocusOut: true
       }
     );
 
@@ -492,7 +526,7 @@ export class ContentType {
    * Find the required fields
    */
   public static findEmptyRequiredFields(article: ParsedFrontMatter): Field[][] | undefined {
-    const contentType = ArticleHelper.getContentType(article.data);
+    const contentType = ArticleHelper.getContentType(article);
     if (!contentType) {
       return;
     }
@@ -739,6 +773,20 @@ export class ContentType {
             name: field,
             type: 'number'
           } as Field);
+        } else if (typeof fieldData === 'boolean') {
+          if (field.toLowerCase() === 'draft') {
+            fields.push({
+              title: field,
+              name: field,
+              type: 'draft'
+            } as Field);
+          } else {
+            fields.push({
+              title: field,
+              name: field,
+              type: 'boolean'
+            } as Field);
+          }
         } else if (!isNaN(new Date(fieldData).getDate())) {
           fields.push({
             title: field,
@@ -776,10 +824,66 @@ export class ContentType {
     window.withProgress(
       {
         location: ProgressLocation.Notification,
-        title: 'Front Matter: Creating content...',
+        title: l10n.t(LocalizationKey.helpersContentTypeCreateProgressTitle, EXTENSION_NAME),
         cancellable: false
       },
       async () => {
+        if (contentType.isSubContent || contentType.allowAsSubContent) {
+          let showDialog = true;
+
+          if (contentType.allowAsSubContent) {
+            const subContentAnswer = await window.showQuickPick(
+              [l10n.t(LocalizationKey.commonNo), l10n.t(LocalizationKey.commonYes)],
+              {
+                title: l10n.t(LocalizationKey.helpersContentTypeCreateAllowSubContentTitle),
+                placeHolder: l10n.t(
+                  LocalizationKey.helpersContentTypeCreateAllowSubContentPlaceHolder
+                ),
+                ignoreFocusOut: true
+              }
+            );
+            showDialog = subContentAnswer === l10n.t(LocalizationKey.commonYes);
+          }
+
+          if (showDialog) {
+            const folderLocation = await window.showOpenDialog({
+              canSelectFiles: false,
+              canSelectFolders: true,
+              canSelectMany: false,
+              defaultUri: Uri.file(folderPath),
+              openLabel: l10n.t(
+                LocalizationKey.helpersContentTypeCreateAllowSubContentShowOpenDialogOpenLabel
+              ),
+              title: l10n.t(
+                LocalizationKey.helpersContentTypeCreateAllowSubContentShowOpenDialogTitle
+              )
+            });
+
+            if (!folderLocation || folderLocation.length === 0) {
+              return;
+            }
+
+            folderPath = folderLocation[0].fsPath;
+
+            if (contentType.pageBundle) {
+              const createAsPageBundle = await window.showQuickPick(
+                [l10n.t(LocalizationKey.commonNo), l10n.t(LocalizationKey.commonYes)],
+                {
+                  title: l10n.t(LocalizationKey.helpersContentTypeCreatePageBundleTitle),
+                  placeHolder: l10n.t(
+                    LocalizationKey.helpersContentTypeCreatePageBundlePlaceHolder
+                  ),
+                  ignoreFocusOut: true
+                }
+              );
+
+              if (createAsPageBundle === l10n.t(LocalizationKey.commonNo)) {
+                contentType.pageBundle = false;
+              }
+            }
+          }
+        }
+
         let titleValue = await Questions.ContentTitle();
         if (!titleValue) {
           return;
@@ -793,7 +897,7 @@ export class ContentType {
         }
 
         let templatePath = contentType.template;
-        let templateData: ParsedFrontMatter | null = null;
+        let templateData: ParsedFrontMatter | null | undefined = null;
         if (templatePath) {
           templatePath = Folders.getAbsFilePath(templatePath);
           templateData = await ArticleHelper.getFrontMatterByPath(templatePath);
@@ -826,7 +930,13 @@ export class ContentType {
           !!contentType.clearEmpty
         );
 
-        data = ArticleHelper.updateDates(Object.assign({}, data));
+        const article: ParsedFrontMatter = {
+          content: '',
+          data: Object.assign({}, data),
+          path: newFilePath
+        };
+
+        data = ArticleHelper.updateDates(article);
 
         if (contentType.name !== DEFAULT_CONTENT_TYPE_NAME) {
           data['type'] = contentType.name;
@@ -851,7 +961,7 @@ export class ContentType {
 
         await commands.executeCommand('vscode.open', Uri.file(newFilePath));
 
-        Notifications.info(`Your new content has been created.`);
+        Notifications.info(l10n.t(LocalizationKey.helpersContentTypeCreateSuccess));
 
         Telemetry.send(TelemetryEvent.createContentFromContentType);
 
@@ -878,6 +988,11 @@ export class ContentType {
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
 
       for (const field of obj.fields) {
+        if (!fieldWhenClause(field, data, obj.fields)) {
+          Logger.info(`Field ${field.name} not added because of when clause`);
+          continue;
+        }
+
         if (field.name === 'title') {
           if (field.default) {
             data[field.name] = processKnownPlaceholders(
@@ -992,7 +1107,7 @@ export class ContentType {
   private static async verify() {
     const hasFeature = await ModeListener.hasFeature(FEATURE_FLAG.panel.contentType);
     if (!hasFeature) {
-      Notifications.warning(`The content type actions are not available in this mode.`);
+      Notifications.warning(l10n.t(LocalizationKey.helpersContentTypeVerifyWarning));
       return false;
     }
 

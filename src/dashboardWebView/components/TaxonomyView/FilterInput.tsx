@@ -37,7 +37,7 @@ export const FilterInput: React.FunctionComponent<IFilterInputProps> = ({
           <input
             type="text"
             name="filter"
-            className={`block w-full py-2 pl-10 pr-3 sm:text-sm appearance-none disabled:opacity-50 rounded bg-[var(--vscode-input-background)] text-[var(--vscode-input-foreground)] border-[var(--vscode-editorWidget-border)] placeholder-[var(--vscode-input-placeholderForeground)] focus:outline-[var(--vscode-focusBorder)] focus:outline-1 focus:outline-offset-0 focus:shadow-none focus:border-transparent`}
+            className={`block w-full py-2 pl-10 pr-3 sm:text-sm appearance-none disabled:opacity-50 rounded bg-[var(--vscode-input-background)] text-[var(--vscode-input-foreground)] border-[var(--vscode-input-border)] placeholder-[var(--vscode-input-placeholderForeground)] focus:outline-[var(--vscode-focusBorder)] focus:outline-1 focus:outline-offset-0 focus:shadow-none focus:border-transparent`}
             placeholder={placeholder || ""}
             value={value}
             onChange={(e) => onChange && onChange(e.target.value)}

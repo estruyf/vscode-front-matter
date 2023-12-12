@@ -144,9 +144,18 @@
         @apply bg-gray-500 opacity-50;
       }
     }
-  }
 
-  .fields {
+    > .fields {
+      > div > label:first-of-type {
+        color: var(--primary-color);
+      }
+
+      > div:not(:first-child) > label:first-of-type {
+        margin-block-start: 2rem;
+        border-block-start: 1px solid;
+        padding-block-start: 2rem;
+      }
+    }
   }
 
   .ant-list.ant-list-bordered {
@@ -351,7 +360,7 @@
   select {
     color: var(--vscode-input-foreground);
     background-color: var(--vscode-input-background);
-    border: 1px solid var(--vscode-editorWidget-border);
+    border: 1px solid var(--vscode-panel-border);
     font-size: var(--vscode-font-size);
     @apply rounded;
 

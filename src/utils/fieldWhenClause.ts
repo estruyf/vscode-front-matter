@@ -3,15 +3,23 @@ import { Field, WhenOperator } from '../models';
 import { IMetadata } from '../panelWebView/components/Metadata';
 
 /**
- * Validate the field its "when" clause
- * @param field
- * @param parent
- * @returns
+ * Determines whether a field should be displayed based on its "when" clause.
+ * @param field - The field to check.
+ * @param parent - The parent metadata object.
+ * @returns A boolean indicating whether the field should be displayed.
  */
-export const fieldWhenClause = (field: Field, parent: IMetadata): boolean => {
+export const fieldWhenClause = (field: Field, parent: IMetadata, allFields?: Field[]): boolean => {
   const when = field.when;
   if (!when) {
     return true;
+  }
+
+  let parentField = allFields?.find((f) => f.name === when.fieldRef);
+  if (parentField && parentField.when) {
+    const renderParent = fieldWhenClause(parentField, parent, allFields);
+    if (!renderParent) {
+      return false;
+    }
   }
 
   let whenValue = parent[when.fieldRef];
@@ -23,11 +31,11 @@ export const fieldWhenClause = (field: Field, parent: IMetadata): boolean => {
 };
 
 /**
- * Case sensitive checks
- * @param when
- * @param field
- * @param whenValue
- * @returns
+ * Returns a boolean indicating whether the given `when` clause matches the given `field` and `whenValue`, ignoring case sensitivity.
+ * @param when - The `WhenClause` to match against.
+ * @param field - The `Field` to match against.
+ * @param whenValue - The value to match against the `when` clause.
+ * @returns A boolean indicating whether the `when` clause matches the `field` and `whenValue`, ignoring case sensitivity.
  */
 const caseInsensitive = (
   when: WhenClause,
@@ -43,11 +51,11 @@ const caseInsensitive = (
 };
 
 /**
- * Case insensitive checks
- * @param when
- * @param field
- * @param whenValue
- * @returns
+ * Determines if a given field matches a when clause with case sensitivity.
+ * @param when - The when clause to match against.
+ * @param field - The field to match.
+ * @param whenValue - The value to match against the when clause.
+ * @returns True if the field matches the when clause, false otherwise.
  */
 const caseSensitive = (
   when: WhenClause,
@@ -119,9 +127,9 @@ const caseSensitive = (
 };
 
 /**
- * Lower the value(s)
- * @param value
- * @returns
+ * Converts the given string or array of strings to lowercase.
+ * @param value - The string or array of strings to convert to lowercase.
+ * @returns The converted string or array of strings.
  */
 const lowerValue = (value: string | string[] | any) => {
   if (typeof value === 'string') {

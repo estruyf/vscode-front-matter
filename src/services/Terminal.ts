@@ -1,11 +1,16 @@
-import { workspace } from 'vscode';
+import { workspace, window, ThemeIcon, TerminalOptions } from 'vscode';
 import * as os from 'os';
+import { Folders } from '../commands';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 interface ShellSetting {
   path: string;
 }
 
 export class Terminal {
+  public static readonly terminalName: string = 'Local server';
+
   /**
    * Return the shell path for the current platform
    */
@@ -20,6 +25,70 @@ export class Terminal {
     }
 
     return shellPath;
+  }
+
+  /**
+   * Open a new local server terminal
+   */
+  public static openLocalServerTerminal(command: string) {
+    let localServerTerminal = Terminal.findLocalServerTerminal();
+    if (localServerTerminal) {
+      localServerTerminal.dispose();
+    }
+
+    if (!command) {
+      return;
+    }
+
+    if (
+      !localServerTerminal ||
+      (localServerTerminal && localServerTerminal.state.isInteractedWith === true)
+    ) {
+      const terminalOptions: TerminalOptions = {
+        name: Terminal.terminalName,
+        iconPath: new ThemeIcon('server-environment'),
+        message: l10n.t(
+          LocalizationKey.servicesTerminalOpenLocalServerTerminalTerminalOptionMessage
+        )
+      };
+
+      // Check if workspace
+      if (workspace.workspaceFolders && workspace.workspaceFolders.length > 1) {
+        const wsFolder = Folders.getWorkspaceFolder();
+        if (wsFolder) {
+          terminalOptions.cwd = wsFolder;
+        }
+      }
+
+      localServerTerminal = window.createTerminal(terminalOptions);
+    }
+
+    if (localServerTerminal) {
+      localServerTerminal.sendText(command);
+      localServerTerminal.show(false);
+    }
+  }
+
+  /**
+   * Close local server terminal
+   */
+  public static closeLocalServerTerminal() {
+    const localServerTerminal = Terminal.findLocalServerTerminal();
+    if (localServerTerminal) {
+      localServerTerminal.dispose();
+    }
+  }
+
+  /**
+   * Find the server terminal
+   * @returns
+   */
+  public static findLocalServerTerminal() {
+    let terminals = window.terminals;
+    if (terminals) {
+      const localServerTerminal = terminals.find((t) => t.name === Terminal.terminalName);
+      return localServerTerminal;
+    }
   }
 
   /**

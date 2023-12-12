@@ -25,7 +25,6 @@ import { Pagination } from './Pagination';
 import { GroupOption } from '../../constants/GroupOption';
 import usePagination from '../../hooks/usePagination';
 import { PaginationStatus } from './PaginationStatus';
-import useThemeColors from '../../hooks/useThemeColors';
 import { Navigation } from './Navigation';
 import { ProjectSwitcher } from './ProjectSwitcher';
 import * as l10n from '@vscode/l10n';
@@ -55,7 +54,6 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
   const location = useLocation();
   const navigate = useNavigate();
   const { pageSetNr } = usePagination(settings?.dashboardState.contents.pagination);
-  const { getColors } = useThemeColors();
 
   const createContent = () => {
     Messenger.send(DashboardMessage.createContent);
@@ -144,16 +142,8 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
   }, [location.search]);
 
   return (
-    <div className={`w-full sticky top-0 z-20 ${getColors(
-      `bg-gray-100 dark:bg-vulcan-500`,
-      `bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]`
-    )
-      }`}>
-      <div className={`mb-0 border-b flex justify-between ${getColors(
-        `bg-gray-100 dark:bg-vulcan-500 border-gray-200 dark:border-vulcan-300`,
-        `bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)] border-[var(--vscode-editorWidget-border)]`
-      )
-        }`}>
+    <div className={`w-full sticky top-0 z-20 bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]`}>
+      <div className={`mb-0 border-b flex justify-between bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)] border-[var(--frontmatter-border)]`}>
         <Tabs onNavigate={updateView} />
 
         <div className='flex'>
@@ -180,8 +170,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
             </div>
           </div>
 
-          <div className={`px-4 flex flex-row items-center border-b justify-between ${getColors(`border-gray-200 dark:border-vulcan-100`, `border-[var(--vscode-editorWidget-border)]`)
-            }`}>
+          <div className={`px-4 flex flex-row items-center border-b justify-between border-[var(--frontmatter-border)]`}>
             <div>
               <Navigation totalPages={totalPages || 0} />
             </div>
@@ -192,8 +181,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
           </div>
 
           <div
-            className={`py-4 px-5 w-full flex items-center justify-between lg:justify-end border-b space-x-4 lg:space-x-6 xl:space-x-8 ${getColors(`bg-gray-200 border-gray-300 dark:bg-vulcan-400 dark:border-vulcan-100`, `bg-[var(--vscode-panel-background)] border-[var(--vscode-editorWidget-border)]`)
-              }`}
+            className={`py-4 px-5 w-full flex items-center justify-between lg:justify-end border-b space-x-4 lg:space-x-6 xl:space-x-8 bg-[var(--vscode-panel-background)] border-[var(--frontmatter-border)]`}
           >
             <ClearFilters />
 
@@ -222,8 +210,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
             (totalPages || 0) > pageSetNr &&
             (!grouping || grouping === GroupOption.none) && (
               <div
-                className={`px-4 flex justify-between py-2 border-b ${getColors(`border-gray-300 dark:border-vulcan-100`, `border-[var(--vscode-editorWidget-border)]`)
-                  }`}
+                className={`px-4 flex justify-between py-2 border-b border-[var(--frontmatter-border)]`}
               >
                 <PaginationStatus totalPages={totalPages || 0} />
 

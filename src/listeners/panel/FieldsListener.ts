@@ -36,7 +36,7 @@ export class FieldsListener extends BaseListener {
 
     PagesListener.getPagesData(false, async (pages) => {
       const fuseOptions: Fuse.IFuseOptions<Page> = {
-        keys: [{ name: 'type', weight: 1 }]
+        keys: [{ name: 'fmContentType', weight: 1 }]
       };
 
       const pagesIndex = await Extension.getInstance().getState<Fuse.FuseIndex<Page>>(
@@ -48,7 +48,7 @@ export class FieldsListener extends BaseListener {
       const results = fuse.search({
         $and: [
           {
-            type
+            fmContentType: type
           }
         ]
       });

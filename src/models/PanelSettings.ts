@@ -65,6 +65,8 @@ export interface ContentType {
   postScript?: string;
   filePrefix?: string;
   clearEmpty?: boolean;
+  isSubContent?: boolean;
+  allowAsSubContent?: boolean;
 }
 
 export type FieldType =
@@ -108,6 +110,7 @@ export interface Field {
   fieldGroup?: string | string[];
   dataType?: string | string[];
   taxonomyLimit?: number;
+  singleValueAsString?: boolean;
   fileExtensions?: string[];
   editable?: boolean;
   required?: boolean;

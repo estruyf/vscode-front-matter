@@ -26,6 +26,8 @@ import {
 } from '../helpers';
 import { existsAsync } from '../utils';
 import { Article, Cache } from '../commands';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class PagesParser {
   public static allPages: Page[] = [];
@@ -81,7 +83,9 @@ export class PagesParser {
     const pages: Page[] = [];
 
     if (folderInfo) {
-      PagesParser.pagesStatusBar.text = '$(sync~spin) Processing pages...';
+      PagesParser.pagesStatusBar.text = `$(sync~spin) ${l10n.t(
+        LocalizationKey.servicesPagesParserParsePagesStatusBarText
+      )}`;
       PagesParser.pagesStatusBar.show();
 
       for (const folder of folderInfo) {
@@ -108,7 +112,12 @@ export class PagesParser {
               }
 
               Logger.error(`PagesParser::parsePages: ${file.filePath} - ${error.message}`);
-              Notifications.error(`File error: ${file.filePath} - ${error?.message || error}`);
+              Notifications.error(
+                l10n.t(
+                  LocalizationKey.servicesPagesParserParsePagesFileError,
+                  `${file.filePath} - ${error?.message || error}`
+                )
+              );
             }
           }
         }
@@ -171,7 +180,7 @@ export class PagesParser {
 
       const dateField = ArticleHelper.getPublishDateField(article) || DefaultFields.PublishingDate;
 
-      const contentType = ArticleHelper.getContentType(article.data);
+      const contentType = ArticleHelper.getContentType(article);
       let dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
       const ctDateField = ContentType.findFieldByName(contentType.fields, dateField);
       if (ctDateField && ctDateField.dateFormat) {
@@ -211,7 +220,7 @@ export class PagesParser {
         fmRelFileWsPath: FilesHelper.absToRelPath(filePath),
         fmRelFilePath: parseWinPath(filePath).replace(wsFolder?.fsPath || '', ''),
         fmFileName: fileName,
-        fmDraft: ContentType.getDraftStatus(article?.data),
+        fmDraft: ContentType.getDraftStatus(article),
         fmModified: modifiedFieldValue ? modifiedFieldValue : fileMtime,
         fmPublished: dateFieldValue ? dateFieldValue.getTime() : null,
         fmYear: dateFieldValue ? dateFieldValue.getFullYear() : null,

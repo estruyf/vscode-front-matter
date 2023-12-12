@@ -5,6 +5,7 @@ import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
 import { SENTRY_LINK, SentryIgnore } from '../constants';
 import { RecoilRoot } from 'recoil';
+
 import './styles.css';
 
 // require('@vscode/codicons/dist/codicon.css');

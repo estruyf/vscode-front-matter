@@ -51,6 +51,8 @@ import { GitListener } from '../listeners/general';
 import { DataListener } from '../listeners/panel';
 import { MarkdownFoldingProvider } from '../providers/MarkdownFoldingProvider';
 import { ModeSwitch } from '../services/ModeSwitch';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class Settings {
   public static globalFile = 'frontmatter.json';
@@ -181,16 +183,19 @@ export class Settings {
       if (Settings.hasSettings()) {
         window
           .showInformationMessage(
-            `You have local settings. Would you like to promote them to the global settings ("frontmatter.json")?`,
-            'Yes',
-            'No'
+            l10n.t(LocalizationKey.helpersSettingsHelperCheckToPromoteMessage),
+            l10n.t(LocalizationKey.commonYes),
+            l10n.t(LocalizationKey.commonNo)
           )
           .then(async (result) => {
-            if (result === 'Yes') {
+            if (result === l10n.t(LocalizationKey.commonYes)) {
               Settings.promote();
             }
 
-            if (result === 'No' || result === 'Yes') {
+            if (
+              result === l10n.t(LocalizationKey.commonNo) ||
+              result === l10n.t(LocalizationKey.commonYes)
+            ) {
               Extension.getInstance().setState(ExtensionState.SettingPromoted, true, 'workspace');
             }
           });
@@ -529,7 +534,7 @@ export class Settings {
       }
     }
 
-    Notifications.info(`All settings promoted to team level.`);
+    Notifications.info(l10n.t(LocalizationKey.helpersSettingsHelperPromoteSuccess));
 
     Telemetry.send(TelemetryEvent.promoteSettings);
   }
@@ -663,7 +668,10 @@ export class Settings {
             await window.withProgress(
               {
                 location: vscode.ProgressLocation.Notification,
-                title: `${EXTENSION_NAME}: Reading dynamic config file...`
+                title: l10n.t(
+                  LocalizationKey.helpersSettingsHelperReadConfigProgressTitle,
+                  EXTENSION_NAME
+                )
               },
               async () => {
                 const absFilePath = Folders.getAbsFilePath(dynamicConfigPath);
@@ -691,9 +699,7 @@ export class Settings {
       }
     } catch (e) {
       Settings.globalConfig = undefined;
-      Notifications.error(
-        `Error reading "frontmatter.json" config file. Check [output window](command:${COMMAND_NAME.showOutputChannel}) for more details.`
-      );
+      Notifications.errorWithOutput(l10n.t(LocalizationKey.helpersSettingsHelperReadConfigError));
       Logger.error((e as Error).message);
     }
 
@@ -1103,7 +1109,7 @@ export class Settings {
    */
   private static async refreshConfig() {
     await Settings.reloadConfig();
-    Notifications.info(`Settings have been refreshed.`);
+    Notifications.info(l10n.t(LocalizationKey.helpersSettingsHelperRefreshConfigSuccess));
   }
 
   /**

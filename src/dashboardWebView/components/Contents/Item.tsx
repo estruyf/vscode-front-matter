@@ -91,7 +91,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                   <img
                     src={`${pageData[PREVIEW_IMAGE_FIELD]}`}
                     alt={escapedTitle || ""}
-                    className="absolute inset-0 h-full w-full object-cover group-hover:brightness-75"
+                    className="absolute inset-0 h-full w-full object-cover object-left-top group-hover:brightness-75"
                     loading="lazy"
                   />
                 ) : (
@@ -110,7 +110,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                 statusHtml ? (
                   <div dangerouslySetInnerHTML={{ __html: statusHtml }} />
                 ) : (
-                  cardFields?.state && draftField && draftField.name && <Status draft={pageData[draftField.name]} />
+                  cardFields?.state && draftField && draftField.name && <Status draft={pageData[draftField.name]} published={pageData.fmPublished} />
                 )
               }
 
@@ -214,7 +214,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             <DateField value={pageData.date} />
           </div>
           <div className="col-span-2">
-            {draftField && draftField.name && <Status draft={pageData[draftField.name]} />}
+            {draftField && draftField.name && <Status draft={pageData[draftField.name]} published={pageData.fmPublished} />}
           </div>
         </div>
       </li>

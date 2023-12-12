@@ -29,6 +29,8 @@ import { NavigationType } from '../dashboardWebView/models';
 import { processKnownPlaceholders } from '../helpers/PlaceholderHelper';
 import { Position } from 'vscode';
 import { SNIPPET } from '../constants/Snippet';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class Article {
   /**
@@ -80,12 +82,20 @@ export class Article {
     }
 
     if (options.length === 0) {
-      Notifications.info(`No ${type === TaxonomyType.Tag ? 'tags' : 'categories'} configured.`);
+      Notifications.info(
+        l10n.t(
+          LocalizationKey.commandsArticleNotificationNoTaxonomy,
+          type === TaxonomyType.Tag ? 'tags' : 'categories'
+        )
+      );
       return;
     }
 
     const selectedOptions = await vscode.window.showQuickPick(options, {
-      placeHolder: `Select your ${type === TaxonomyType.Tag ? 'tags' : 'categories'} to insert`,
+      placeHolder: l10n.t(
+        LocalizationKey.commandsArticleQuickPickPlaceholder,
+        type === TaxonomyType.Tag ? 'tags' : 'categories'
+      ),
       canPickMany: true,
       ignoreFocusOut: true
     });
@@ -117,7 +127,7 @@ export class Article {
       ArticleHelper.update(editor, article);
     } catch (e) {
       Notifications.error(
-        `Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`
+        l10n.t(LocalizationKey.commandsArticleSetDateError, `${CONFIG_KEY}${SETTING_DATE_FORMAT}`)
       );
     }
   }
@@ -127,7 +137,7 @@ export class Article {
    * @param article
    */
   public static updateDate(article: ParsedFrontMatter) {
-    article.data = ArticleHelper.updateDates(article.data);
+    article.data = ArticleHelper.updateDates(article);
     return article;
   }
 
@@ -180,7 +190,7 @@ export class Article {
       return cloneArticle;
     } catch (e: unknown) {
       Notifications.error(
-        `Something failed while parsing the date format. Check your "${CONFIG_KEY}${SETTING_DATE_FORMAT}" setting.`
+        l10n.t(LocalizationKey.commandsArticleSetDateError, `${CONFIG_KEY}${SETTING_DATE_FORMAT}`)
       );
     }
   }
@@ -227,7 +237,7 @@ export class Article {
     }
 
     let filePrefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
-    const contentType = ArticleHelper.getContentType(article.data);
+    const contentType = ArticleHelper.getContentType(article);
     filePrefix = ArticleHelper.getFilePrefix(filePrefix, editor.document.uri.fsPath, contentType);
 
     const titleField = 'title';
@@ -292,7 +302,12 @@ export class Article {
               overwrite: false
             });
           } catch (e: unknown) {
-            Notifications.error(`Failed to rename file: ${(e as Error).message || e}`);
+            Notifications.error(
+              l10n.t(
+                LocalizationKey.commandsArticleUpdateSlugError,
+                ((e as Error).message || e) as string
+              )
+            );
           }
         }
       }
@@ -393,7 +408,7 @@ export class Article {
 
     const article = ArticleHelper.getFrontMatter(editor);
     const contentType =
-      article && article.data ? ArticleHelper.getContentType(article.data) : DEFAULT_CONTENT_TYPE;
+      article && article.data ? ArticleHelper.getContentType(article) : DEFAULT_CONTENT_TYPE;
 
     const position = editor.selection.active;
     const selectionText = editor.document.getText(editor.selection);

@@ -1,5 +1,47 @@
 # Change Log
 
+## [9.4.0] - 2023-12-12 - [Release notes](https://beta.frontmatter.codes/updates/v9.4.0)
+
+### ✨ New features
+
+- Localization implemented for the whole extension
+
+### 🎨 Enhancements
+
+- [#273](https://github.com/estruyf/vscode-front-matter/issues/273): Allow single value arrays to be set as a string with the `singleValueAsString` field property
+- [#686](https://github.com/estruyf/vscode-front-matter/issues/686): Allow script authors to ask questions during script execution
+- [#688](https://github.com/estruyf/vscode-front-matter/issues/688): Allow to show the scheduled articles in the content dashboard (filter and group)
+- [#690](https://github.com/estruyf/vscode-front-matter/issues/690): Added the ability to filter values in the `contentRelationship` field
+- [#700](https://github.com/estruyf/vscode-front-matter/issues/700): Added the `{{pathToken.relPath}}` placeholder for the `previewPath` property
+- [#706](https://github.com/estruyf/vscode-front-matter/issues/706): Show the error of scripts failing in the Front Matter output panel
+- [#709](https://github.com/estruyf/vscode-front-matter/issues/709): Take "where clause" into account on content creation
+- [#710](https://github.com/estruyf/vscode-front-matter/issues/710): Hide child field when parent field its "when clause" is not met, also remove the fields from the content
+- [#713](https://github.com/estruyf/vscode-front-matter/issues/713): Add the ability to always use quotes around string values in front matter
+- [#722](https://github.com/estruyf/vscode-front-matter/issues/722): Allow to create sub-content which shows a dialog to select the parent folder
+
+### ⚡️ Optimizations
+
+- Dashboard layout grid optimizations
+- Added the content-type name to the metadata section in the panel
+- New implementation of the combobox for the `contentRelationship` field
+
+### 🐞 Fixes
+
+- [#685](https://github.com/estruyf/vscode-front-matter/issues/685): Fix when using non-string values in the tag picker
+- [#691](https://github.com/estruyf/vscode-front-matter/issues/691): Silent authentication retrieval for GitHub sponsors
+- [#694](https://github.com/estruyf/vscode-front-matter/issues/694): Start terminal session from the folder where the `frontmatter.json` file is located
+- [#696](https://github.com/estruyf/vscode-front-matter/issues/696): Close the local server terminal on restart
+- [#699](https://github.com/estruyf/vscode-front-matter/issues/699): Changing border theme variable for the dashboard header
+- [#703](https://github.com/estruyf/vscode-front-matter/issues/703): Fix retrieval of Astro Collections for `pnpm` projects
+- [#704](https://github.com/estruyf/vscode-front-matter/issues/704): Fix `zod` schema script for optional fields
+- [#707](https://github.com/estruyf/vscode-front-matter/issues/707): Fix `clearEmpty` issue with `draft` and `boolean` fields which are by default set to `true`
+- [#711](https://github.com/estruyf/vscode-front-matter/issues/711): Fix in character mapping in the slug field
+- [#712](https://github.com/estruyf/vscode-front-matter/issues/712): Keep the search context when deleting media files
+- [#714](https://github.com/estruyf/vscode-front-matter/issues/714): Fix for taxonomy filtering from taxonomy view to content view
+- [#717](https://github.com/estruyf/vscode-front-matter/issues/717): Fix in loading yaml data files
+- [#718](https://github.com/estruyf/vscode-front-matter/issues/718): Fix JSON schema for the `frontMatter.panel.actions.disabled` setting
+- [#719](https://github.com/estruyf/vscode-front-matter/issues/719): Fix styling on data view with objects views
+
 ## [9.3.1] - 2023-10-27
 
 ### 🐞 Fixes

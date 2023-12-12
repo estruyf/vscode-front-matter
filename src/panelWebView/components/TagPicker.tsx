@@ -35,6 +35,7 @@ export interface ITagPickerProps {
   taxonomyId?: string;
   limit?: number;
   required?: boolean;
+  renderAsString?: boolean;
 }
 
 const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
@@ -53,7 +54,8 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
   parents,
   blockData,
   limit,
-  required
+  required,
+  renderAsString
 }: React.PropsWithChildren<ITagPickerProps>) => {
   const [selected, setSelected] = React.useState<string[]>([]);
   const [inputValue, setInputValue] = React.useState<string>('');
@@ -96,11 +98,12 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
    * Send an update to VSCode
    * @param values
    */
-  const sendUpdate = (values: string[]) => {
+  const sendUpdate = useCallback((values: string[]) => {
     if (type === TagType.tags) {
       Messenger.send(CommandToCode.updateTags, {
         fieldName,
         values,
+        renderAsString,
         parents,
         blockData
       });
@@ -108,6 +111,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
       Messenger.send(CommandToCode.updateCategories, {
         fieldName,
         values,
+        renderAsString,
         parents,
         blockData
       });
@@ -121,11 +125,12 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
         id: taxonomyId,
         name: fieldName,
         options: values,
+        renderAsString,
         parents,
         blockData
       } as CustomTaxonomyData);
     }
-  };
+  }, [renderAsString]);
 
   /**
    * Triggers the focus to the input when command is executed
@@ -145,12 +150,16 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
     if (selectedItem) {
       let value = selectedItem || '';
 
-      const item = options.find((o) => o?.toLowerCase() === selectedItem?.toLowerCase());
+      const item = options.find((o) => {
+        o = typeof o === 'string' ? o : `${o}`;
+        return o?.toLowerCase() === value?.toLowerCase();
+      });
       if (item) {
         value = item;
       }
 
-      const uniqValues = Array.from(new Set([...selected, value]));
+      const safeSelected = selected instanceof Array ? selected : [];
+      const uniqValues = Array.from(new Set([...safeSelected, value]));
       setSelected(uniqValues);
       sendUpdate(uniqValues);
       setInputValue('');
@@ -173,11 +182,19 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
    * @param option
    * @param inputValue
    */
-  const filterList = (option: string, inputValue: string | null) => {
+  const filterList = useCallback((option: string, inputValue: string | null) => {
+    if (typeof option !== 'string') {
+      return false;
+    }
+
+    if (!(selected instanceof Array)) {
+      return true;
+    }
+
     return (
-      !selected.includes(option) && option.toLowerCase().includes((inputValue || '').toLowerCase())
+      option && !selected.includes(option) && option.toLowerCase().includes((inputValue || '').toLowerCase())
     );
-  };
+  }, [selected]);
 
   /**
    * Add the new item to the data
@@ -201,7 +218,10 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
         for (let crntValue of values) {
           crntValue = crntValue.trim();
           if (crntValue) {
-            const item = options.find((o) => o?.toLowerCase() === crntValue?.toLowerCase());
+            const item = options.find((o) => {
+              o = typeof o === 'string' ? o : `${o}`;
+              return o?.toLowerCase() === crntValue?.toLowerCase();
+            });
             if (item) {
               newValues.push(item);
             } else if (freeform) {
@@ -278,6 +298,21 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
       </button>
     );
   }, [settings?.aiEnabled, label, type]);
+
+  const sortedSelectedTags = useMemo(() => {
+    const safeSelected = selected || [];
+
+    if (safeSelected instanceof Array && safeSelected.length > 0) {
+      return (selected || []).sort((a: string, b: string) => {
+        const aString = typeof a === 'string' ? a : `${a}`;
+        const bString = typeof b === 'string' ? b : `${b}`;
+
+        return aString?.toLowerCase() < bString?.toLowerCase() ? -1 : 1;
+      });
+    }
+
+    return [];
+  }, [selected]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -400,9 +435,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
       />
 
       <Tags
-        values={(selected || []).sort((a: string, b: string) =>
-          a?.toLowerCase() < b?.toLowerCase() ? -1 : 1
-        )}
+        values={sortedSelectedTags}
         onRemove={onRemove}
         onCreate={onCreate}
         options={options}

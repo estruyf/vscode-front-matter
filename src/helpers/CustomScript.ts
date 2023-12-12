@@ -15,6 +15,8 @@ import { ParsedFrontMatter } from '../parsers';
 import { TelemetryEvent } from '../constants/TelemetryEvent';
 import { SETTING_CUSTOM_SCRIPTS } from '../constants';
 import { existsAsync } from '../utils';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 export class CustomScript {
   /**
@@ -71,7 +73,7 @@ export class CustomScript {
     path: string | null = null
   ): Promise<void> {
     let articlePath: string | null = path;
-    let article: ParsedFrontMatter | null = null;
+    let article: ParsedFrontMatter | null | undefined = null;
 
     if (!path) {
       const editor = window.activeTextEditor;
@@ -101,7 +103,9 @@ export class CustomScript {
         }
       );
     } else {
-      Notifications.warning(`${script.title}: Article couldn't be retrieved.`);
+      Notifications.warning(
+        l10n.t(LocalizationKey.helpersCustomScriptSingleRunArticleWarning, script.title)
+      );
     }
   }
 
@@ -115,7 +119,9 @@ export class CustomScript {
     const folders = await Folders.getInfo();
 
     if (!folders || folders.length === 0) {
-      Notifications.warning(`${script.title}: No files found.`);
+      Notifications.warning(
+        l10n.t(LocalizationKey.helpersCustomScriptBulkRunNoFilesWarning, script.title)
+      );
       return;
     }
 
@@ -124,7 +130,7 @@ export class CustomScript {
     window.withProgress(
       {
         location: ProgressLocation.Notification,
-        title: `Executing: ${script.title}`,
+        title: l10n.t(LocalizationKey.helpersCustomScriptExecuting, script.title),
         cancellable: false
       },
       async (progress, token) => {
@@ -169,7 +175,9 @@ export class CustomScript {
     script: ICustomScript
   ): Promise<void> {
     if (!path) {
-      Notifications.error(`${script.title}: There was no folder or media path specified.`);
+      Notifications.error(
+        l10n.t(LocalizationKey.helpersCustomScriptRunMediaScriptNoFolderWarning, script.title)
+      );
       return;
     }
 
@@ -177,7 +185,7 @@ export class CustomScript {
       window.withProgress(
         {
           location: ProgressLocation.Notification,
-          title: `Executing: ${script.title}`,
+          title: l10n.t(LocalizationKey.helpersCustomScriptExecuting, script.title),
           cancellable: false
         },
         async () => {
@@ -196,7 +204,7 @@ export class CustomScript {
 
             return;
           } catch (e) {
-            Notifications.error(`${script.title}: ${(e as Error).message}`);
+            Notifications.errorWithOutput(`${script.title} -`);
             return;
           }
         }
@@ -214,7 +222,7 @@ export class CustomScript {
    */
   private static async runScript(
     wsPath: string,
-    article: ParsedFrontMatter | null,
+    article: ParsedFrontMatter | null | undefined,
     contentPath: string,
     script: ICustomScript
   ): Promise<string | null> {
@@ -223,7 +231,7 @@ export class CustomScript {
       if (os.type() === 'Windows_NT') {
         const jsonData = JSON.stringify(article?.data);
 
-        if (script.command && script.command.toLowerCase() === "powershell") {
+        if (script.command && script.command.toLowerCase() === 'powershell') {
           articleData = `'${jsonData.replace(/"/g, `\\"`)}'`;
         } else {
           articleData = `"${jsonData.replace(/"/g, `\\"`)}"`;
@@ -286,11 +294,15 @@ export class CustomScript {
             } else if (editor) {
               await ArticleHelper.update(editor, article);
             } else {
+              Logger.error(`Couldn't update article.`);
               throw new Error(`Couldn't update article.`);
             }
-            Notifications.info(`${script.title}: front matter updated.`);
+            Notifications.info(
+              l10n.t(LocalizationKey.helpersCustomScriptShowOutputFrontMatterSuccess, script.title)
+            );
           }
         } else {
+          Logger.error(`No frontmatter found.`);
           throw new Error(`No frontmatter found.`);
         }
       } catch (error) {
@@ -298,16 +310,21 @@ export class CustomScript {
           ContentProvider.show(output, script.title, script.outputType || 'text');
         } else {
           window
-            .showInformationMessage(`${script.title}: ${output}`, 'Copy output')
+            .showInformationMessage(
+              `${script.title}: ${output}`,
+              l10n.t(LocalizationKey.helpersCustomScriptShowOutputCopyOutputAction)
+            )
             .then((value) => {
-              if (value === 'Copy output') {
+              if (value === l10n.t(LocalizationKey.helpersCustomScriptShowOutputCopyOutputAction)) {
                 vscodeEnv.clipboard.writeText(output);
               }
             });
         }
       }
     } else {
-      Notifications.info(`${script.title}: Executed your custom script.`);
+      Notifications.info(
+        l10n.t(LocalizationKey.helpersCustomScriptShowOutputSuccess, script.title)
+      );
     }
   }
 
@@ -323,57 +340,101 @@ export class CustomScript {
     wsPath: string,
     args: string
   ): Promise<string> {
-    return new Promise(async (resolve, reject) => {
-      const osType = os.type();
+    const osType = os.type();
 
-      // Check the command to use
-      let command = script.nodeBin || 'node';
-      if (script.command && script.command !== CommandType.Node) {
-        command = script.command;
+    // Check the command to use
+    let command = script.nodeBin || 'node';
+    if (script.command && script.command !== CommandType.Node) {
+      command = script.command;
+    }
+
+    let scriptPath = join(wsPath, script.script);
+    if (script.script.includes(WORKSPACE_PLACEHOLDER)) {
+      scriptPath = Folders.getAbsFilePath(script.script);
+    }
+
+    // Check if there is an environments overwrite required
+    if (script.environments) {
+      let crntType: EnvironmentType | null = null;
+      if (osType === 'Windows_NT') {
+        crntType = 'windows';
+      } else if (osType === 'Darwin') {
+        crntType = 'macos';
+      } else {
+        crntType = 'linux';
       }
 
-      let scriptPath = join(wsPath, script.script);
-      if (script.script.includes(WORKSPACE_PLACEHOLDER)) {
-        scriptPath = Folders.getAbsFilePath(script.script);
-      }
-
-      // Check if there is an environments overwrite required
-      if (script.environments) {
-        let crntType: EnvironmentType | null = null;
-        if (osType === 'Windows_NT') {
-          crntType = 'windows';
-        } else if (osType === 'Darwin') {
-          crntType = 'macos';
-        } else {
-          crntType = 'linux';
-        }
-
-        const environment = script.environments.find((e) => e.type === crntType);
-        if (environment && environment.script && environment.command) {
-          if (await CustomScript.validateCommand(environment.command)) {
-            command = environment.command;
-            scriptPath = join(wsPath, environment.script);
-            if (environment.script.includes(WORKSPACE_PLACEHOLDER)) {
-              scriptPath = Folders.getAbsFilePath(environment.script);
-            }
+      const environment = script.environments.find((e) => e.type === crntType);
+      if (environment && environment.script && environment.command) {
+        if (await CustomScript.validateCommand(environment.command)) {
+          command = environment.command;
+          scriptPath = join(wsPath, environment.script);
+          if (environment.script.includes(WORKSPACE_PLACEHOLDER)) {
+            scriptPath = Folders.getAbsFilePath(environment.script);
           }
         }
       }
+    }
 
-      if (!(await existsAsync(scriptPath))) {
-        reject(new Error(`Script not found: ${scriptPath}`));
-        return;
+    if (!(await existsAsync(scriptPath))) {
+      Logger.error(`Script not found: ${scriptPath}`);
+      throw new Error(`Script not found: ${scriptPath}`);
+    }
+
+    if (osType === 'Windows_NT' && command.toLowerCase() === 'powershell') {
+      command = `${command} -File`;
+    }
+
+    const fullScript = `${command} "${scriptPath}" ${args}`;
+    Logger.info(l10n.t(LocalizationKey.helpersCustomScriptExecuting, fullScript));
+
+    const output: string = await CustomScript.executeScriptAsync(fullScript, wsPath);
+
+    try {
+      const data = JSON.parse(output);
+      if (data.questions) {
+        const answers: string[] = [];
+
+        for (const question of data.questions) {
+          if (question.name && question.message) {
+            const answer = await window.showInputBox({
+              prompt: question.message,
+              value: question.default || '',
+              ignoreFocusOut: true,
+              title: question.message
+            });
+
+            if (answer) {
+              answers.push(`${question.name}="${answer}"`);
+            } else {
+              return '';
+            }
+          }
+        }
+
+        if (answers.length > 0) {
+          const newScript = `${fullScript} ${answers.join(' ')}`;
+          return await CustomScript.executeScriptAsync(newScript, wsPath);
+        }
       }
+    } catch (error) {
+      // Not a JSON
+    }
 
-      if (osType === 'Windows_NT' && command.toLowerCase() === "powershell") {
-        command = `${command} -File`;
-      }
+    return output;
+  }
 
-      const fullScript = `${command} "${scriptPath}" ${args}`;
-      Logger.info(`Executing: ${fullScript}`);
-
+  /**
+   * Execute script async
+   * @param fullScript
+   * @param wsPath
+   * @returns
+   */
+  private static async executeScriptAsync(fullScript: string, wsPath: string): Promise<string> {
+    return new Promise(async (resolve, reject) => {
       exec(fullScript, { cwd: wsPath }, (error, stdout) => {
         if (error) {
+          Logger.error(error.message);
           reject(error.message);
           return;
         }
@@ -399,7 +460,7 @@ export class CustomScript {
 
       return true;
     } catch (e) {
-      Logger.error(`Invalid command: ${command}`);
+      Logger.error(l10n.t(LocalizationKey.helpersCustomScriptValidateCommandError, command));
       return false;
     }
   }

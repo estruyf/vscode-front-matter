@@ -114,7 +114,7 @@ const Actions: React.FunctionComponent<IActionsProps> = ({
 
         {customActions?.length > 0 && (
           <>
-            {actions?.length > 0 && <div className="divider py-4 w-full" style={{ height: `1px` }}></div>}
+            {actions?.length > 0 && <div className="divider w-full" style={{ height: `1px` }}></div>}
 
             {...customActions}
           </>
