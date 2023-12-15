@@ -590,7 +590,7 @@ export class Settings {
       return Settings.globalConfigPath;
     }
 
-    let configFiles = await workspace.findFiles(`**/${Settings.globalFile}`);
+    let configFiles = await workspace.findFiles(`**/${Settings.globalFile}`, '**/node_modules/**');
     // Sort by file path length
     configFiles = configFiles.sort((a, b) => a.fsPath.localeCompare(b.fsPath));
 
@@ -645,7 +645,10 @@ export class Settings {
       await Settings.processExternalConfig();
 
       // Read the files from the config folder
-      let configFiles = await workspace.findFiles(`**/${Settings.globalConfigFolder}/**/*.json`);
+      let configFiles = await workspace.findFiles(
+        `**/${Settings.globalConfigFolder}/**/*.json`,
+        '**/node_modules/**'
+      );
       if (configFiles.length === 0) {
         Logger.info(`No ".frontmatter/config" config files found.`);
       }
