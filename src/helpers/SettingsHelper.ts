@@ -210,10 +210,14 @@ export class Settings {
    * @returns
    */
   public static attachListener(id: string, callback: (global?: any) => void) {
-    const listener = Settings.listeners.find((l) => l.id === id);
+    const listener = (Settings.listeners || []).find((l) => l.id === id);
     if (listener) {
       listener.callback = callback;
       return;
+    }
+
+    if (!Settings.listeners) {
+      Settings.listeners = [];
     }
 
     Settings.listeners.push({
@@ -226,7 +230,7 @@ export class Settings {
    * Trigger all the listeners
    */
   public static triggerListeners() {
-    for (const listener of Settings.listeners) {
+    for (const listener of Settings.listeners || []) {
       Logger.info(`Triggering listener: ${listener.id}`);
       listener.callback();
     }
@@ -437,7 +441,7 @@ export class Settings {
    */
   public static async createTeamSettings() {
     const wsFolder = Folders.getWorkspaceFolder();
-    await this.createGlobalFile(wsFolder);
+    await Settings.createGlobalFile(wsFolder);
   }
 
   /**
@@ -1044,9 +1048,9 @@ export class Settings {
    * Rebind the configuration watchers
    */
   private static rebindWatchers() {
-    Logger.info(`Rebinding ${this.listeners.length} listeners`);
+    Logger.info(`Rebinding ${(Settings.listeners || []).length} listeners`);
 
-    Settings.listeners.forEach((l) => {
+    (Settings.listeners || []).forEach((l) => {
       Settings.attachListener(l.id, l.callback);
     });
 
