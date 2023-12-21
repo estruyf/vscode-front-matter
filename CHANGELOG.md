@@ -1,5 +1,17 @@
 # Change Log
 
+## [9.5.0] - 2024-xx-xx
+
+### ✨ New features
+
+### 🎨 Enhancements
+
+### ⚡️ Optimizations
+
+### 🐞 Fixes
+
+- [#725](https://github.com/estruyf/vscode-front-matter/issues/725): Fix for opening menu of pinned items
+
 ## [9.4.0] - 2023-12-12 - [Release notes](https://beta.frontmatter.codes/updates/v9.4.0)
 
 ### ✨ New features
