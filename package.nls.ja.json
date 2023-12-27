@@ -191,7 +191,7 @@
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.numberOptions.properties.max.description": "最大値",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.numberOptions.properties.step.description": "ステップ値",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.taxonomyLimit.description": "選択する分類の数を制限します。無制限を許可するには 0 に設定します。",
-  "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.singleValueAsString.description": "🚧Specify if you want to store a single array value as a string instead of an array.",
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.singleValueAsString.description": "配列内の要素が1つだけの時、配列ではなく文字列として扱います。",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.isPublishDate.description": "フィールドが公開日フィールドであるかどうかを指定します",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.isModifiedDate.description": "フィールドが変更日フィールドであるかどうかを指定します",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.dataFileId.description": "このフィールドに使用するデータファイルのIDを指定します",
@@ -249,6 +249,6 @@
   "setting.frontMatter.website.host.markdownDescription": "ウェブサイトのホストURLを指定します。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.website.url)",
   "command.frontMatter.settings.refresh": "Front Matterの設定の再読み込み",
   "setting.frontMatter.config.dynamicFilePath.markdownDescription": "動的構成ファイルへのパスを指定します (例: [[ワークスペース]]/config.js)。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.config.dynamicfilepath)",
-  "setting.frontMatter.taxonomy.contentTypes.items.properties.allowAsSubContent.description": "🚧Specify if the content type can be used as sub content.",
-  "setting.frontMatter.taxonomy.contentTypes.items.properties.isSubContent.description": "🚧Specify if the content type is sub content."
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.allowAsSubContent.description": "記事をサブコンテンツとして作成可能かどうかを設定します。",
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.isSubContent.description": "記事をサブコンテンツとして作成するかどうかを設定します。"
 }
