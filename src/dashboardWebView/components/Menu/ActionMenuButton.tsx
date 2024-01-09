@@ -19,7 +19,7 @@ export const ActionMenuButton: React.FunctionComponent<IActionMenuButtonProps> =
   return (
     <Menu.Button
       ref={ref || null}
-      onClick={(e) => e.stopPropagation()}
+      onClick={(e: React.MouseEvent<HTMLButtonElement>) => e.stopPropagation()}
       disabled={disabled}
       className={`group inline-flex justify-center text-sm font-medium ${getColors(
         'text-vulcan-400 hover:text-vulcan-600 dark:text-gray-400 dark:hover:text-whisper-600',

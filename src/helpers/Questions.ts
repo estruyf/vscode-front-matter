@@ -142,9 +142,7 @@ export class Questions {
     } else if (folders.length === 1) {
       selectedFolder = folders[0].title;
     } else {
-      Notifications.warning(
-        l10n.t(LocalizationKey.helpersQuestionsSelectContentFolderQuickPickNoFoldersWarning)
-      );
+      // When no page folders are found, the welcome dashboard is shown
       return;
     }
 

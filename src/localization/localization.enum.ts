@@ -1481,14 +1481,6 @@ export enum LocalizationKey {
    */
   panelViewPanelMediaInsert = 'panel.viewPanel.mediaInsert',
   /**
-   * No {0} configured.
-   */
-  commandsArticleNotificationNoTaxonomy = 'commands.article.notification.noTaxonomy',
-  /**
-   * Select your {0} to insert.
-   */
-  commandsArticleQuickPickPlaceholder = 'commands.article.quickPick.placeholder',
-  /**
    * Something failed while parsing the date format. Check your "{0}" setting.
    */
   commandsArticleSetDateError = 'commands.article.setDate.error',
@@ -2092,10 +2084,6 @@ export enum LocalizationKey {
    * Select where you want to create your content
    */
   helpersQuestionsSelectContentFolderQuickPickPlaceholder = 'helpers.questions.selectContentFolder.quickPick.placeholder',
-  /**
-   * No page folders were configured.
-   */
-  helpersQuestionsSelectContentFolderQuickPickNoFoldersWarning = 'helpers.questions.selectContentFolder.quickPick.noFolders.warning',
   /**
    * You didn't select a place where you wanted to create your content.
    */
