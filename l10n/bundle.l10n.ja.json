@@ -465,8 +465,6 @@
 
   "panel.viewPanel.mediaInsert": "ダッシュボードのメディア管理画面から、利用したい画像を選択してください。",
 
-  "commands.article.notification.noTaxonomy": "🚧: No {0} configured.",
-  "commands.article.quickPick.placeholder": "挿入する{0}を選択してください。",
   "commands.article.setDate.error": "日付の表示形式の解析中に何らかの問題が発生しました。\"{0}\"の設定を確認してください。",
   "commands.article.updateSlug.error": "ファイル名を変更できませんでした。: {0}",
 
@@ -638,7 +636,6 @@
   "helpers.questions.contentTitle.titleInput.warning": "記事タイトルの入力がされていません。",
   "helpers.questions.selectContentFolder.quickPick.title": "フォルダーを選択",
   "helpers.questions.selectContentFolder.quickPick.placeholder": "記事の保存先を選択してください。",
-  "helpers.questions.selectContentFolder.quickPick.noFolders.warning": "🚧: No page folders were configured.",
   "helpers.questions.selectContentFolder.quickPick.noSelection.warning": "記事の保存先が選択されていません。",
   "helpers.questions.selectContentType.noContentType.warning": "記事タイプが見つかりません。先に記事タイプを作成してから記事を作成してください。",
   "helpers.questions.selectContentType.quickPick.title": "記事タイプ",
