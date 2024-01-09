@@ -33,8 +33,8 @@
   "common.no": "いいえ",
   "common.openSettings": "設定を開く",
 
-  "notifications.outputChannel.link": "🚧output window",
-  "notifications.outputChannel.description": "🚧Check the {0} for more details.",
+  "notifications.outputChannel.link": "出力ウィンドウ",
+  "notifications.outputChannel.description": "詳細は{0}を確認してください。",
 
   "settings.view.common": "一般",
   "settings.view.contentFolders": "記事フォルダー",
@@ -269,7 +269,7 @@
   "dashboard.steps.stepsToGetStarted.contentFolders.name": "記事ファイルのフォルダーを登録",
   "dashboard.steps.stepsToGetStarted.contentFolders.description": "記事ファイルの保存フォルダーを追加してください。フォルダーが設定されると、フォルダー内の記事ファイルがFront Matterでリスト化され、新規の記事ファイルを追加できるようになります。",
   "dashboard.steps.stepsToGetStarted.contentFolders.label": "記事ファイルを含むフォルダー",
-  "dashboard.steps.stepsToGetStarted.contentFolders.information.description": "フォルダーの登録は、エクスプローラーでフォルダー名を右クリックして「フォルダーを登録」を選択することでも可能です。",
+  "dashboard.steps.stepsToGetStarted.contentFolders.information.description": "エクスプローラーでフォルダー名を右クリックして「フォルダーを登録」を選択する方法でも、フォルダーの登録が可能です。",
   "dashboard.steps.stepsToGetStarted.tags.name": "全てのタグとカテゴリーをインポート（オプション）",
   "dashboard.steps.stepsToGetStarted.tags.description": "Front Matterに記事用フォルダーが登録されました。記事から全てのタグとカテゴリーをインポートしますか？",
   "dashboard.steps.stepsToGetStarted.showDashboard.name": "ダッシュボードを開く",
@@ -465,10 +465,10 @@
 
   "panel.viewPanel.mediaInsert": "ダッシュボードのメディア管理画面から、利用したい画像を選択してください。",
 
-  "commands.article.notification.noTaxonomy": "🚧No {0} configured.",
-  "commands.article.quickPick.placeholder": "🚧Select your {0} to insert.",
-  "commands.article.setDate.error": "🚧Something failed while parsing the date format. Check your \"{0}\" setting.",
-  "commands.article.updateSlug.error": "🚧Failed to rename file: {0}",
+  "commands.article.notification.noTaxonomy": "🚧: No {0} configured.",
+  "commands.article.quickPick.placeholder": "挿入する{0}を選択してください。",
+  "commands.article.setDate.error": "日付の表示形式の解析中に何らかの問題が発生しました。\"{0}\"の設定を確認してください。",
+  "commands.article.updateSlug.error": "ファイル名を変更できませんでした。: {0}",
 
   "commands.cache.cleared": "キャッシュがクリアされました。",
 
@@ -491,22 +491,22 @@
   "commands.folders.create.input.prompt": "登録するフォルダー名を指定してください。",
   "commands.folders.create.input.placeholder": "フォルダー名",
   "commands.folders.create.success": "フォルダーが登録されました。",
-  "commands.folders.getWorkspaceFolder.workspaceFolderPick.placeholder": "🚧Please select the main workspace folder for Front Matter to use.",
+  "commands.folders.getWorkspaceFolder.workspaceFolderPick.placeholder": "Front Matterを利用するメインのワークスペースのフォルダーを選択してください。",
   "commands.folders.get.notificationError.title": "\"{0}\"フォルダーが存在しません。このフォルダーを設定から削除してください。",
   "commands.folders.get.notificationError.remove.action": "フォルダー設定を削除",
   "commands.folders.get.notificationError.create.action": "フォルダーを作成",
 
   "commands.preview.panel.title": "プレビュー: {0}",
-  "commands.preview.askUserToPickFolder.title": "🚧Select the folder of the article to preview",
+  "commands.preview.askUserToPickFolder.title": "プレビュー用の記事フォルダーを選択してください。",
 
   "commands.project.initialize.success": "プロジェクトが初期化されました。",
   "commands.project.switchProject.title": "どのプロジェクトに切り替えますか？",
   "commands.project.createSampleTemplate.info": "テンプレートサンプルを作成しました。",
 
-  "commands.settings.create.input.prompt": "🚧Insert the value of the {0} that you want to add to your configuration.",
-  "commands.settings.create.input.placeholder": "🚧Name of the {0}",
-  "commands.settings.create.warning": "🚧The provided {0} already exists.",
-  "commands.settings.create.quickPick.placeholder": "🚧Do you want to add the new {0} to the page?",
+  "commands.settings.create.input.prompt": "設定に追加したい{0}の値を入力してください。",
+  "commands.settings.create.input.placeholder": "{0}の名前",
+  "commands.settings.create.warning": "入力された {0} は既に存在しています。",
+  "commands.settings.create.quickPick.placeholder": "新規{0}をページに追加しますか？",
   "commands.settings.export.progress.title": "{0}: タグとカテゴリーをエクスポートしています。",
   "commands.settings.export.progress.success": "エクスポートが完了しました。タグ: {0} - カテゴリー: {1}",
   "commands.settings.remap.quickpick.title": "再構成",
@@ -517,8 +517,8 @@
   "commands.settings.remap.newOption.input.placeholder": "{0}名",
   "commands.settings.remap.delete.placeholder": "{1} {0}を削除しますか？",
 
-  "commands.statusListener.verifyRequiredFields.diagnostic.emptyField": "🚧The {0} field is required. Please define a value for the field.",
-  "commands.statusListener.verifyRequiredFields.notification.error": "🚧The following fields are required to contain a value: {0}",
+  "commands.statusListener.verifyRequiredFields.diagnostic.emptyField": "フィールド {0} は必須です。値を入力してください。",
+  "commands.statusListener.verifyRequiredFields.notification.error": "以下の必須のフィールドに値が入力されていません。: {0}",
 
   "commands.template.generate.input.title": "テンプレート名",
   "commands.template.generate.input.prompt": "テンプレート名を入力してください。",
@@ -529,13 +529,13 @@
   "commands.template.generate.keepContents.noOption.warning": "記事本文を残すかどうかの選択がされませんでした。",
   "commands.template.generate.keepContents.success": "{0}フォルダー内にテンプレートが作成されました。",
   "commands.template.getTemplates.warning": "テンプレートがありません。",
-  "commands.template.create.folderPath.warning": "🚧Incorrect project folder path retrieved.",
+  "commands.template.create.folderPath.warning": "取得されたプロジェクトフォルダーのパスが不正です。",
   "commands.template.create.noTemplates.warning": "テンプレートがありません。",
   "commands.template.create.selectTemplate.title": "テンプレートの選択",
   "commands.template.create.selectTemplate.placeholder": "記事テンプレートを選択してください。",
   "commands.template.create.selectTemplate.noTemplate.warning": "テンプレートが選択されていません。",
   "commands.template.create.selectTemplate.notFound.warning": "記事テンプレートが見つかりません。",
-  "commands.template.create.success": "🚧Your new content is now available.",
+  "commands.template.create.success": "新規記事が有効になりました。",
 
   "commands.wysiwyg.command.unorderedList.label": "順序なしリスト",
   "commands.wysiwyg.command.unorderedList.detail": "順序なしリストを追加",
@@ -563,9 +563,9 @@
   "helpers.articleHelper.createContent.pageBundle.error": "{0}という名称のページバンドルは、既に {1} に存在しています。",
   "helpers.articleHelper.createContent.contentExists.warning": "同タイトルの記事が存在します。別のタイトルを付けてください。",
   "helpers.articleHelper.processCustomPlaceholders.placeholder.error": "プレースホルダー{0}の生成中にエラーが発生しました。",
-  "helpers.articleHelper.parseFile.diagnostic.error": "🚧Error parsing the front matter of {0}.",
+  "helpers.articleHelper.parseFile.diagnostic.error": "{0}のfront matterの解析中にエラーが発生しました。",
 
-  "helpers.contentType.generate.noFrontMatter.error": "🚧No front matter data found to generate a content type.",
+  "helpers.contentType.generate.noFrontMatter.error": "記事タイプの生成に必要なfront matterデータがありません。",
   "helpers.contentType.generate.override.quickPick.title": "デフォルトの記事タイプを上書き",
   "helpers.contentType.generate.override.quickPick.placeholder": "この記事のフィールド設定を、デフォルトの記事タイプのフィールド設定に上書きしますか？",
   "helpers.contentType.generate.contentTypeInput.title": "記事タイプを生成",
@@ -573,13 +573,13 @@
   "helpers.contentType.generate.contentTypeInput.validation.enterName": "記事タイプ名を入力してください。",
   "helpers.contentType.generate.contentTypeInput.validation.nameExists": "この記事タイプ名は既に存在しています。",
   "helpers.contentType.generate.noContentTypeName.warning": "記事タイプが選択されませんでした。",
-  "helpers.contentType.generate.pageBundle.quickPick.title": "🚧Use as a page bundle",
-  "helpers.contentType.generate.pageBundle.quickPick.placeHolder": "🚧Do you want to use this content type as a page bundle?",
+  "helpers.contentType.generate.pageBundle.quickPick.title": "ページバンドルとして使用",
+  "helpers.contentType.generate.pageBundle.quickPick.placeHolder": "この記事タイプをページバンドルとして使用しますか？",
   "helpers.contentType.generate.updated.success": "記事タイプ {0} を更新しました。",
   "helpers.contentType.generate.generated.success": "記事タイプ {0} を生成しました。",
-  "helpers.contentType.addMissingFields.noFrontMatter.warning": "🚧No front matter data found to add missing fields.",
+  "helpers.contentType.addMissingFields.noFrontMatter.warning": "追加すべきfront matterデータはありません。",
   "helpers.contentType.addMissingFields.updated.success": "記事タイプ {0} を更新しました。",
-  "helpers.contentType.setContentType.noFrontMatter.warning": "🚧No front matter data found to set the content type.",
+  "helpers.contentType.setContentType.noFrontMatter.warning": "記事タイプの設定が必要なfront matterデータが見つかりません。",
   "helpers.contentType.setContentType.quickPick.title": "記事タイプを選択",
   "helpers.contentType.setContentType.quickPick.placeholder": "どの記事タイプを使用しますか？",
   "helpers.contentType.create.allowSubContent.title": "サブコンテンツとしての要否",
@@ -590,7 +590,7 @@
   "helpers.contentType.create.pageBundle.placeHolder": "ページバンドルとして記事を作成しますか？",
   "helpers.contentType.create.progress.title": "{0}: 記事ファイルを作成中...",
   "helpers.contentType.create.success": "記事ファイルを作成しました。",
-  "helpers.contentType.verify.warning": "🚧The content type actions are not available in this mode.",
+  "helpers.contentType.verify.warning": "記事タイプ・コマンドは、このモードでは有効になっていません。",
 
   "helpers.customScript.executing": "実行中: {0}",
   "helpers.customScript.singleRun.article.warning": "{0}: Article couldn't be retrieved.",
@@ -601,16 +601,16 @@
   "helpers.customScript.showOutput.success": "{0}: カスタムスクリプトを実行しました。",
   "helpers.customScript.validateCommand.error": "不正なコマンド: {0}",
 
-  "helpers.dataFileHelper.process.error": "🚧Something went wrong while processing the data file.",
+  "helpers.dataFileHelper.process.error": "データファイルの実行中に何らかの問題が発生しました。",
 
   "helpers.extension.getVersion.changelog": "変更履歴を確認する",
   "helpers.extension.getVersion.starIt": "⭐️を付ける",
   "helpers.extension.getVersion.update.notification": "{0} が v{1} に更新されました！新機能をチェックしてください！",
-  "helpers.extension.migrateSettings.deprecated.warning": "🚧The \"{0}\" and \"{1}\" settings have been deprecated. Please use the \"isPublishDate\" and \"isModifiedDate\" datetime field properties instead.",
+  "helpers.extension.migrateSettings.deprecated.warning": "\"{0}\"及び\"{1}\"の設定は非推奨になりました。代わりに\"isPublishDate\"と\"isModifiedDate\"の日付フィールドを使用してください。",
   "helpers.extension.migrateSettings.deprecated.warning.hide": "非表示にする",
   "helpers.extension.migrateSettings.deprecated.warning.seeGuide": "移行ガイドを読む",
-  "helpers.extension.migrateSettings.templates.quickPick.title": "{0} - Templates",
-  "helpers.extension.migrateSettings.templates.quickPick.placeholder": "🚧Do you want to keep on using the template functionality?",
+  "helpers.extension.migrateSettings.templates.quickPick.title": "{0} - テンプレート",
+  "helpers.extension.migrateSettings.templates.quickPick.placeholder": "テンプレート機能の使用を継続しますか？",
   "helpers.extension.checkIfExtensionCanRun.warning": "Front MatterのBETA版は安定版がインストールされている場合は利用できません。BETA版のみがインストールされていることを確認してください。",
 
   "helpers.mediaHelper.saveFile.folder.error": "選択されたフォルダーが見つかりません。",
@@ -618,7 +618,7 @@
   "helpers.mediaHelper.saveFile.file.uploaded.failed": "申し訳ありません、{0}のアップロード中にエラーが発生しました。",
   "helpers.mediaHelper.deleteFile.file.deletion.failed": "申し訳ありません、{0}の削除中にエラーが発生しました。",
 
-  "helpers.mediaLibrary.remove.warning": "その場所にはファイル\"{0}\"が既に存在します。",
+  "helpers.mediaLibrary.remove.warning": "その場所にはファイル\"{0}\"が既に存在しています。",
   "helpers.mediaLibrary.remove.error": "申し訳ありません、\"{0}\"を\"{1}\"へのアップロード中にエラーが発生しました。",
 
   "helpers.openFileInEditor.error": "ファイルを開けません。",
@@ -638,7 +638,7 @@
   "helpers.questions.contentTitle.titleInput.warning": "記事タイトルの入力がされていません。",
   "helpers.questions.selectContentFolder.quickPick.title": "フォルダーを選択",
   "helpers.questions.selectContentFolder.quickPick.placeholder": "記事の保存先を選択してください。",
-  "helpers.questions.selectContentFolder.quickPick.noFolders.warning": "🚧No page folders were configured.",
+  "helpers.questions.selectContentFolder.quickPick.noFolders.warning": "🚧: No page folders were configured.",
   "helpers.questions.selectContentFolder.quickPick.noSelection.warning": "記事の保存先が選択されていません。",
   "helpers.questions.selectContentType.noContentType.warning": "記事タイプが見つかりません。先に記事タイプを作成してから記事を作成してください。",
   "helpers.questions.selectContentType.quickPick.title": "記事タイプ",
@@ -649,11 +649,11 @@
 
   "helpers.settingsHelper.checkToPromote.message": "ローカル設定が存在します。この設定をグローバル設定(\"frontmatter.json\")に昇格させますか？",
   "helpers.settingsHelper.promote.success": "全ての設定をチームレベルに昇格しました。",
-  "helpers.settingsHelper.readConfig.progress.title": "{0}: Reading dynamic config file...",
-  "helpers.settingsHelper.readConfig.error": "🚧Error reading your configuration.",
+  "helpers.settingsHelper.readConfig.progress.title": "{0}: 動的な設定ファイルを読み込んでいます...",
+  "helpers.settingsHelper.readConfig.error": "設定の読み込みでエラーが発生しました。",
   "helpers.settingsHelper.refreshConfig.success": "設定を再読み込みしました。",
 
-  "helpers.taxonomyHelper.rename.input.title": "ファイル名を変更 {0}",
+  "helpers.taxonomyHelper.rename.input.title": "タクソノミー名を変更 {0}",
   "helpers.taxonomyHelper.rename.validate.equalValue": "現在のファイル名とは別のファイル名を入力してください。",
   "helpers.taxonomyHelper.rename.validate.noValue": "新しいファイル名を入力してください。",
   "helpers.taxonomyHelper.merge.quickPick.title": "\"{0}\"を別の{1}にマージ",
@@ -663,7 +663,7 @@
   "helpers.taxonomyHelper.createNew.input.title": "{0}に新規タクソノミーを作成",
   "helpers.taxonomyHelper.createNew.input.placeholder": "作成したいタクソノミー名を入力してください。",
   "helpers.taxonomyHelper.createNew.input.validate.noValue": "タクソノミー名は必須です。",
-  "helpers.taxonomyHelper.createNew.input.validate.exists": "このタクソノミー名は既に存在します。",
+  "helpers.taxonomyHelper.createNew.input.validate.exists": "このタクソノミー名は既に存在しています。",
   "helpers.taxonomyHelper.process.edit": "{0}: {2}内の\"{1}\"を{3}に変更しています。",
   "helpers.taxonomyHelper.process.merge": "{0}: {2}内の\"{1}\"を{3}にマージしています。",
   "helpers.taxonomyHelper.process.delete": "{0}: \"{1}\"を{2}から削除しています。",
@@ -676,7 +676,7 @@
   "helpers.taxonomyHelper.move.success": "移行しました。",
 
   "listeners.dashboard.dashboardListener.openConfig.notification": "設定内容を確認するには\"frontmatter.json\"を開いてください。",
-  "listeners.dashboard.dashboardListener.pinItem.noPath.error": "🚧No path provided.",
+  "listeners.dashboard.dashboardListener.pinItem.noPath.error": "パスが指定されていません。",
   "listeners.dashboard.dashboardListener.pinItem.coundNotPin.error": "ピン留めができませんでした。",
   "listeners.dashboard.dashboardListener.pinItem.coundNotUnPin.error": "ピン留めの解除ができませんでした。",
 
@@ -693,7 +693,7 @@
 
   "listeners.panel.dataListener.aiSuggestTaxonomy.noEditor.error": "アクティブなエディターがありません。",
   "listeners.panel.dataListener.aiSuggestTaxonomy.noData.error": "記事データがありません。",
-  "listeners.panel.dataListener.getDataFileEntries.noDataFiles.error": "🚧Couldn't find data file entries",
+  "listeners.panel.dataListener.getDataFileEntries.noDataFiles.error": "データファイルのエントリーが見つかりませんでした。",
 
 
   "listeners.panel.taxonomyListener.aiSuggestTaxonomy.noEditor.error": "アクティブなエディターがありません。",
