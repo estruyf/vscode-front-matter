@@ -20,38 +20,83 @@
   "common.slug": "スラッグ",
   "common.support": "サポート",
   "common.remove.value": "{0}を削除",
+  "common.filter.value": "{0}で絞り込み",
   "common.error.message": "申し訳ありません。エラーが発生しました。",
+  "common.openOnWebsite": "ウェブサイトで開く",
+  "common.settings": "設定",
+  "common.refreshSettings": "設定の再読み込み",
+  "common.pin": "ピン留めする",
+  "common.unpin": "ピン留めを外す",
+  "common.noResults": "結果なし",
+  "common.error": "申し訳ありません。エラーが発生しました。",
+  "common.yes": "はい",
+  "common.no": "いいえ",
+  "common.openSettings": "設定を開く",
+
+  "notifications.outputChannel.link": "出力ウィンドウ",
+  "notifications.outputChannel.description": "詳細は{0}を確認してください。",
+
+  "settings.view.common": "一般",
+  "settings.view.contentFolders": "記事フォルダー",
+  "settings.view.astro": "Astro",
+  "settings.openOnStartup": "起動時にダッシュボードを開く",
+  "settings.contentTypes": "記事タイプ",
+  "settings.contentFolders": "記事フォルダー",
+  "settings.diagnostic": "診断",
+  "settings.diagnostic.description": "診断プログラムを実行して、Front Matter CMS構成全体を確認できます。",
+  "settings.diagnostic.link": "完全診断を実行する",
+
+  "settings.commonSettings.website.title": "ウェブサイトとSSGの設定",
+  "settings.commonSettings.previewUrl": "プレビュー用URL",
+  "settings.commonSettings.websiteUrl": "ウェブサイトのURL",
+  "settings.commonSettings.startCommand": "SSG/フレームワーク起動コマンド",
+
   "developer.title": "開発モード",
   "developer.reload.title": "ダッシュボードを再読み込み",
   "developer.reload.label": "再読み込み",
   "developer.devTools.title": "開発ツールを開く",
   "developer.devTools.label": "開発ツール",
+
   "field.required": "必須フィールド",
   "field.unknown": "不明なフィールド",
+
   "dashboard.chatbot.answer.answer": "回答",
   "dashboard.chatbot.answer.resources": "参考",
   "dashboard.chatbot.answer.warning": "回答が正しくない場合もあります。内容がおかしいと思われる場合には、公式ドキュメントを確認してください。",
+
   "dashboard.chatbot.chatbot.loading": "アシスタントを起動中",
   "dashboard.chatbot.chatbot.ready": "準備ができました。何について知りたいですか？",
+
   "dashboard.chatbot.chatbox.placeholder": "Front Matterの設定方法は？",
+
   "dashboard.chatbot.header.heading": "Front Matter AIに質問する",
   "dashboard.chatbot.header.description": "このAIはmendable.aiをベースに公式ドキュメントがチューニングされており、Front Matter関連のクエリを理解してあなたをアシストします。何でも聞いてください！",
+
   "dashboard.common.choiceButton.open": "オプションを開く",
+
   "dashboard.contents.contentActions.actionMenuButton.title": "メニュー",
   "dashboard.contents.contentActions.menuItem.view": "開く",
   "dashboard.contents.contentActions.alert.title": "削除: {0}",
   "dashboard.contents.contentActions.alert.description": "本当に\"{0}\"を削除しますか？",
+
   "dashboard.contents.item.invalidTitle": "<無効なタイトル>",
   "dashboard.contents.item.invalidDescription": "<無効なディスクリプション>",
+
   "dashboard.contents.list.title": "タイトル",
   "dashboard.contents.list.date": "日付",
   "dashboard.contents.list.status": "ステータス",
+
   "dashboard.contents.overview.noMarkdown": "Markdownファイルはありません",
   "dashboard.contents.overview.noFolders": "プロジェクト内の記事用フォルダーを登録して、Front Matterが記事を見つけられるようにしてください。",
+  "dashboard.contents.overview.pinned": "ピン留めアイテム",
+
   "dashboard.contents.status.draft": "下書き",
   "dashboard.contents.status.published": "公開済み",
+  "dashboard.contents.status.scheduled": "予約済み",
+
   "dashboard.dataView.dataForm.modify": "エントリーを編集",
   "dashboard.dataView.dataForm.add": "エントリーを作成",
+
   "dashboard.dataView.dataView.select": "データタイプを選択",
   "dashboard.dataView.dataView.title": "\"{0}\"のエントリー",
   "dashboard.dataView.dataView.add": "新規エントリーを追加",
@@ -60,34 +105,50 @@
   "dashboard.dataView.dataView.getStarted": "データタイプを選択して開始する",
   "dashboard.dataView.dataView.noDataFiles": "データファイルが見つかりませんでした",
   "dashboard.dataView.dataView.getStarted.link": "データファイルの利用方法について確認する",
+
   "dashboard.dataView.emptyView.heading": "最初にデータタイプを選んでください",
+
   "dashboard.dataView.sortableItem.editButton.title": "\"{0}\"を編集する",
   "dashboard.dataView.sortableItem.deleteButton.title": "\"{0}\"を削除する",
   "dashboard.dataView.sortableItem.alert.title": "データアイテムを削除",
   "dashboard.dataView.sortableItem.alert.description": "本当にこのデータアイテムを削除しますか？",
+
   "dashboard.errorView.description": "ダッシュボードを一旦閉じてからやり直してください。",
+
   "dashboard.header.breadcrumb.home": "ホーム",
+
   "dashboard.header.clearFilters.title": "フィルター・グループ・並べ替えを解除",
+
   "dashboard.header.filter.default": "なし",
+
   "dashboard.header.folders.default": "全ての記事タイプ",
   "dashboard.header.folders.menuButton.showing": "表示",
+
   "dashboard.header.grouping.option.none": "なし",
   "dashboard.header.grouping.option.year": "公開年",
   "dashboard.header.grouping.option.draft": "下書き/公開済み",
   "dashboard.header.grouping.menuButton.label": "グループ",
+
   "dashboard.header.navigation.allArticles": "全ての記事",
   "dashboard.header.navigation.published": "公開済み",
+  "dashboard.header.navigation.scheduled": "予約済み",
   "dashboard.header.navigation.draft": "下書き",
+
   "dashboard.header.header.createContent": "新しい記事を作成",
   "dashboard.header.header.createByContentType": "記事タイプから作成",
   "dashboard.header.header.createByTemplate": "テンプレートから作成",
+
   "dashboard.header.pagination.first": "最初",
   "dashboard.header.pagination.previous": "前へ",
   "dashboard.header.pagination.next": "次へ",
   "dashboard.header.pagination.last": "最後",
+
   "dashboard.header.paginationStatus.text": "{0}～{1}件目（全{2}件中）を表示中",
+
   "dashboard.header.projectSwitcher.label": "プロジェクト",
+
   "dashboard.header.refreshDashboard.label": "ダッシュボードを再読み込み",
+
   "dashboard.header.sorting.lastModified.asc": "最終更新日（昇順）",
   "dashboard.header.sorting.lastModified.desc": "最終更新日（降順）",
   "dashboard.header.sorting.filename.asc": "ファイル名（昇順）",
@@ -101,21 +162,27 @@
   "dashboard.header.sorting.alt.asc": "代替テキスト（昇順）",
   "dashboard.header.sorting.alt.desc": "代替テキスト（降順）",
   "dashboard.header.sorting.label": "並べ替え",
+
   "dashboard.header.startup.label": "起動時に表示",
+
   "dashboard.header.tabs.contents": "記事",
   "dashboard.header.tabs.media": "メディア",
   "dashboard.header.tabs.snippets": "スニペット",
   "dashboard.header.tabs.data": "データ",
   "dashboard.header.tabs.taxonomies": "タクソノミー",
+
   "dashboard.header.viewSwitch.toGrid": "グリッド表示",
   "dashboard.header.viewSwitch.toList": "リスト表示",
+
   "dashboard.layout.sponsor.support.msg": "Front Matterをサポートする",
   "dashboard.layout.sponsor.review.label": "評価する",
   "dashboard.layout.sponsor.review.msg": "Front Matterを評価する",
+
   "dashboard.media.common.title": "タイトル",
   "dashboard.media.common.caption": "キャプション",
   "dashboard.media.common.alt": "代替テキスト",
   "dashboard.media.common.size": "サイズ",
+
   "dashboard.media.dialog.title": "ファイルの詳細",
   "dashboard.media.panel.close": "パネルを閉じる",
   "dashboard.media.metadata.panel.title": "メタデータを編集",
@@ -127,8 +194,10 @@
   "dashboard.media.metadata.panel.form.information.modifiedDate": "最終更新日",
   "dashboard.media.metadata.panel.form.information.dimensions": "ディメンション",
   "dashboard.media.metadata.panel.form.information.folder": "フォルダー",
+
   "dashboard.media.folderCreation.hexo.create": "Assetフォルダーを作成",
   "dashboard.media.folderCreation.folder.create": "新規フォルダーを作成",
+
   "dashboard.media.item.quickAction.insert.field": "この画像を\"{0}\"フィールドに追加",
   "dashboard.media.item.quickAction.insert.markdown": "画像をMarkdown記法で挿入",
   "dashboard.media.item.quickAction.copy.path": "ファイルパスをコピー",
@@ -138,6 +207,7 @@
   "dashboard.media.item.menuItem.reveal.media": "メディアの場所を表示",
   "dashboard.media.item.infoDialog.snippet.description": "このメディアに適用するメディア用スニペットを選択してください。",
   "dashboard.media.item.alert.delete.description": "本当にこのファイルを {0} から削除しますか？",
+
   "dashboard.media.media.description": "記事に挿入するメディアファイルを選択してください。",
   "dashboard.media.media.dragAndDrop": "デスクトップから画像をドラッグ＆ドロップして、アップロード後に選択することもできます。",
   "dashboard.media.media.folder.upload": "{0}にアップロードする",
@@ -145,13 +215,17 @@
   "dashboard.media.media.placeholder": "メディアファイルはありません。Shiftキーを押しながら、新規ファイルをドラック＆ドロップで追加することができます。",
   "dashboard.media.media.contentFolder": "記事フォルダー",
   "dashboard.media.media.publicFolder": "Publicフォルダー",
+
   "dashboard.media.mediaHeaderTop.searchbox.placeholder": "フォルダー内を検索",
+
   "dashboard.media.mediaSnippetForm.formDialog.title": "メディアを挿入: {0}",
   "dashboard.media.mediaSnippetForm.formDialog.description": "メディアファイル\"{0}\"を現在の記事に挿入する",
+
   "dashboard.preview.input.placeholder": "URLを入力",
   "dashboard.preview.button.navigate.title": "ナビゲーション",
   "dashboard.preview.button.refresh.title": "更新",
   "dashboard.preview.button.open.title": "開く",
+
   "dashboard.snippetsView.item.quickAction.editSnippet": "スニペットを編集",
   "dashboard.snippetsView.item.quickAction.deleteSnippet": "スニペットを削除",
   "dashboard.snippetsView.item.quickAction.viewSnippet": "スニペットファイルの表示",
@@ -161,6 +235,7 @@
   "dashboard.snippetsView.item.edit.formDialog.description": "\"{0}\"スニペットの編集",
   "dashboard.snippetsView.item.alert.title": "\"{0}\"スニペットを削除",
   "dashboard.snippetsView.item.alert.description": "本当に\"{0}\"スニペットを削除しますか？",
+
   "dashboard.snippetsView.newForm.snippetInput.title.placeholder": "スニペットのタイトル",
   "dashboard.snippetsView.newForm.snippetInput.description.label": "概要",
   "dashboard.snippetsView.newForm.snippetInput.description.placeholder": "スニペットの概要",
@@ -171,12 +246,14 @@
   "dashboard.snippetsView.newForm.snippetInput.isMediaSnippet.checkbox.description": "このスニペットをメディアファイル挿入時に利用",
   "dashboard.snippetsView.newForm.snippetInput.docsButton.title": "メディア用スニペットのプレースホルダーについて読む",
   "dashboard.snippetsView.newForm.snippetInput.docsButton.description": "スニペットに設定可能なプレースホルダーをドキュメントで確認",
+
   "dashboard.snippetsView.snippets.ariaLabel": "スニペット ヘッダー",
   "dashboard.snippetsView.snippets.button.create": "新規スニペットを作成",
   "dashboard.snippetsView.snippets.select.description": "挿入するスニペットを選択してください。",
   "dashboard.snippetsView.snippets.empty.message": "スニペットはありません",
   "dashboard.snippetsView.snippets.readMore": "スニペットの使い方を読む",
   "dashboard.snippetsView.snippets.formDialog.title": "新規スニペットを作成",
+
   "dashboard.steps.stepsToGetStarted.button.addFolder.title": "Front Matterに記事フォルダーとして登録",
   "dashboard.steps.stepsToGetStarted.initializeProject.name": "プロジェクトの初期設定",
   "dashboard.steps.stepsToGetStarted.initializeProject.description": "Front Matter CMSに必要な設定ファイルを作成します。クリックして開始してください。",
@@ -184,20 +261,32 @@
   "dashboard.steps.stepsToGetStarted.framework.description": "静的サイトジェネレーターまたはフレームワークを選択して、必要なセッティングを追加します。",
   "dashboard.steps.stepsToGetStarted.framework.select": "フレームワークを選択",
   "dashboard.steps.stepsToGetStarted.framework.select.other": "その他",
+  "dashboard.steps.stepsToGetStarted.assetsFolder.name": "アセットフォルダーを登録",
+  "dashboard.steps.stepsToGetStarted.assetsFolder.description": "記事のメディアファイルを保存するためのフォルダーを選択してください。",
+  "dashboard.steps.stepsToGetStarted.assetsFolder.public.title": "'public'フォルダーを使用する",
+  "dashboard.steps.stepsToGetStarted.assetsFolder.assets.title": "Astroアセットフォルダー(src/assets)を使用する",
+  "dashboard.steps.stepsToGetStarted.assetsFolder.other.description": "別のフォルダーを指定する場合は、frontmatter.jsonファイルへ手動で設定可能です。",
   "dashboard.steps.stepsToGetStarted.contentFolders.name": "記事ファイルのフォルダーを登録",
-  "dashboard.steps.stepsToGetStarted.contentFolders.description": "記事ファイルの保存フォルダーを追加してください。フォルダーが設定されると、フォルダー内の記事ファイルがFront Matterでリスト化され、新規記事ファイルを追加できるようになります。",
+  "dashboard.steps.stepsToGetStarted.contentFolders.description": "記事ファイルの保存フォルダーを追加してください。フォルダーが設定されると、フォルダー内の記事ファイルがFront Matterでリスト化され、新規の記事ファイルを追加できるようになります。",
   "dashboard.steps.stepsToGetStarted.contentFolders.label": "記事ファイルを含むフォルダー",
-  "dashboard.steps.stepsToGetStarted.contentFolders.information.description": "フォルダーの登録は、エクスプローラーでフォルダー名を右クリックして「フォルダーを登録」を選択することでも可能です。",
+  "dashboard.steps.stepsToGetStarted.contentFolders.information.description": "エクスプローラーでフォルダー名を右クリックして「フォルダーを登録」を選択する方法でも、フォルダーの登録が可能です。",
   "dashboard.steps.stepsToGetStarted.tags.name": "全てのタグとカテゴリーをインポート（オプション）",
   "dashboard.steps.stepsToGetStarted.tags.description": "Front Matterに記事用フォルダーが登録されました。記事から全てのタグとカテゴリーをインポートしますか？",
   "dashboard.steps.stepsToGetStarted.showDashboard.name": "ダッシュボードを開く",
   "dashboard.steps.stepsToGetStarted.showDashboard.description": "全ての設定が終わると、ダッシュボードが表示できるようになります。",
+  "dashboard.steps.stepsToGetStarted.template.name": "設定用のテンプレートを使用する",
+  "dashboard.steps.stepsToGetStarted.template.description": "おすすめの設定のテンプレートを選択して、frontmatter.jsonに反映させます。",
+  "dashboard.steps.stepsToGetStarted.template.warning": "選択によりプロジェクトの構成にテンプレートが適用され、この設定画面は終了します。",
+  "dashboard.steps.stepsToGetStarted.astroContentTypes.name": "Astroコンテンツコレクションのコンテンツタイプを作成する",
+
   "dashboard.taxonomyView.button.add.title": "\"{0}\"をタクソノミーに追加",
   "dashboard.taxonomyView.button.edit.title": "\"{0}\"を編集",
   "dashboard.taxonomyView.button.merge.title": "\"{0}\"をマージ",
   "dashboard.taxonomyView.button.move.title": "他のタクソノミーへ移行",
   "dashboard.taxonomyView.button.delete.title": "\"{0}\"を削除",
+
   "dashboard.taxonomyView.taxonomyLookup.button.title": "{1}\"{0}\"の記事一覧を表示",
+
   "dashboard.taxonomyView.taxonomyManager.description": "サイト内{0}の新規作成・編集・コマンド",
   "dashboard.taxonomyView.taxonomyManager.button.create": "新規{0}を作成",
   "dashboard.taxonomyView.taxonomyManager.table.heading.name": "名前",
@@ -205,17 +294,21 @@
   "dashboard.taxonomyView.taxonomyManager.table.heading.action": "コマンド",
   "dashboard.taxonomyView.taxonomyManager.table.row.empty": "{0}はありません",
   "dashboard.taxonomyView.taxonomyManager.table.unmapped.title": "設定ファイルに見つかりません",
+
   "dashboard.taxonomyView.taxonomyView.navigationBar.title": "タクソノミーを選択",
   "dashboard.taxonomyView.taxonomyView.button.import": "タクソノミーをインポート",
   "dashboard.taxonomyView.taxonomyView.navigationItem.tags": "タグ",
   "dashboard.taxonomyView.taxonomyView.navigationItem.categories": "カテゴリー",
+
   "dashboard.unkownView.title": "表示出来る画面がありません",
   "dashboard.unkownView.description": "存在しない画面で終了してしまったようです。ダッシュボードを再度開きなおしてください。",
+
   "dashboard.welcomeScreen.title": "Front Matterで静的サイトを管理しよう",
   "dashboard.welcomeScreen.thanks": "Front Matterをお使いいただきありがとうございます！",
   "dashboard.welcomeScreen.description": "私たちはFront Matterをより使いやすくするため、日々努力しています。ご質問やご提案など、GitHubまでお気軽にお問い合わせください。",
   "dashboard.welcomeScreen.link.github.title": "GitHub",
-  "dashboard.welcomeScreen.link.github.label": "GitHub / ドキュメント",
+  "dashboard.welcomeScreen.link.github.label": "GitHub",
+  "dashboard.welcomeScreen.link.documentation.label": "ドキュメント",
   "dashboard.welcomeScreen.link.sponsor.title": "スポンサーになる",
   "dashboard.welcomeScreen.link.sponsor.label": "スポンサー",
   "dashboard.welcomeScreen.link.review.title": "評価する",
@@ -223,41 +316,66 @@
   "dashboard.welcomeScreen.actions.heading": "以下の手順に従って、この拡張機能をスタートさせてください。",
   "dashboard.welcomeScreen.actions.description": "サイドパネルからもFront Matterを利用できます。サイドパネルでは、各コンテンツに合った具体的なコマンドが実行可能です。",
   "dashboard.welcomeScreen.actions.thanks": "Front Matterをお楽しみください！",
+
+  "dashboard.media.detailsSlideOver.unmapped.description": "未割り当てのファイルのメタデータを再マップしますか？",
+
+  "dashboard.configuration.astro.astroContentTypes.empty": "Astroコンテンツコレクションが見つかりません。",
+  "dashboard.configuration.astro.astroContentTypes.description": "以下のAstroコンテンツコレクションは、コンテンツタイプを生成するために使用できます。",
+
   "panel.contentType.contentTypeValidator.title": "記事タイプ",
   "panel.contentType.contentTypeValidator.hint": "記事タイプのフィールドは設定と異なります。この記事の記事タイプを、作成・更新または設定しますか？",
   "panel.contentType.contentTypeValidator.button.create": "新しい記事タイプを作成",
   "panel.contentType.contentTypeValidator.button.add": "この記事タイプの設定にないフィールドを追加",
   "panel.contentType.contentTypeValidator.button.change": "このファイルの記事タイプを変更",
+
   "panel.dataBlock.dataBlockField.group.selected.edit": "編集: {0}",
   "panel.dataBlock.dataBlockField.group.selected.create": "新規{0}を作成",
   "panel.dataBlock.dataBlockField.group.select": "グループを選択",
   "panel.dataBlock.dataBlockField.add": "{0}を追加",
+
   "panel.dataBlock.dataBlockRecord.edit": "レコードを編集",
   "panel.dataBlock.dataBlockRecord.delete": "レコードを削除",
+
   "panel.dataBlock.dataBlockRecords.label": "レコード",
+
   "panel.dataBlock.dataBlockSelector.label": "ブロックタイプ",
+
   "panel.errorBoundary.fieldBoundary.label": "フィールドの表示に失敗しました",
+
   "panel.fields.choiceField.select": "{0}を選択",
   "panel.fields.choiceField.clear": "値をクリア",
+
   "panel.fields.contentTypeRelationshipField.loading": "読み込み中...",
+
   "panel.fields.dateTimeField.button.pick": "日付を選択",
   "panel.fields.dateTimeField.time": "時刻",
+
   "panel.fields.fieldMessage.required": "{0}は必須フィールドです",
+
   "panel.fields.fileField.delete": "ファイルを削除",
   "panel.fields.fileField.add": "{0}を追加",
+
   "panel.fields.imageFallback.label": "画像を読み込めませんでした。",
+
   "panel.fields.listField.edit": "レコードを編集",
   "panel.fields.listField.delete": "レコードを削除",
+
   "panel.fields.previewImage.remove": "画像を削除",
+
   "panel.fields.previewImageField.add": "{0}を追加",
+
   "panel.fields.slugField.update": "更新が可能",
   "panel.fields.slugField.generate": "スラッグを生成",
+
   "panel.fields.textField.ai.message": "Front Matter AIに{0}を提案してもらう",
   "panel.fields.textField.ai.generate": "提案を生成中...",
   "panel.fields.textField.loading": "読み込み中",
   "panel.fields.textField.limit": "値が上限を超えています。{0}",
+
   "panel.fields.wrapperField.unknown": "不明なフィールド: {0}",
+
   "panel.actions.title": "コマンド",
+
   "panel.articleDetails.title": "詳細",
   "panel.articleDetails.type": "項目",
   "panel.articleDetails.total": "数",
@@ -266,15 +384,18 @@
   "panel.articleDetails.internalLinks": "内部リンク",
   "panel.articleDetails.externalLinks": "外部リンク",
   "panel.articleDetails.images": "画像",
+
   "panel.baseView.initialize": "プロジェクトの初期設定",
   "panel.baseView.actions.title": "コマンド",
   "panel.baseView.action.openDashboard": "ダッシュボードを開く",
-  "panel.baseView.action.openPreview": "プレビューを開く",
   "panel.baseView.action.createContent": "新しい記事を作成",
   "panel.baseView.empty": "他の操作を見るには、ファイルを開いてください。",
+
   "panel.fileList.label.singular": "ファイル",
   "panel.fileList.label.plural": "ファイル",
+
   "panel.folderAndFiles.title": "最近の更新",
+
   "panel.globalSettings.title": "一般設定",
   "panel.globalSettings.action.modifiedDate.label": "最終更新日",
   "panel.globalSettings.action.modifiedDate.description": "最終更新日を自動で更新",
@@ -284,7 +405,9 @@
   "panel.globalSettings.action.preview.placeholder": "例: {0}",
   "panel.globalSettings.action.server.label": "ローカルサーバーのコマンド",
   "panel.globalSettings.action.server.placeholder": "例: {0}",
+
   "panel.metadata.title": "メタデータ",
+
   "panel.otherActions.title": "他のコマンド",
   "panel.otherActions.writingSettings.enabled": "ライティング設定が有効",
   "panel.otherActions.writingSettings.disabled": "ライティング設定を有効化",
@@ -295,17 +418,23 @@
   "panel.otherActions.documentation": "ドキュメントを開く",
   "panel.otherActions.settings": "設定方法の概要",
   "panel.otherActions.issue": "問題を報告",
+
   "panel.preview.title": "プレビューを表示",
+
   "panel.publishAction.publish": "公開",
   "panel.publishAction.unpublish": "下書きに戻す",
+
   "panel.seoDetails.recommended": "推奨",
+
   "panel.seoKeywordInfo.density": "キーワード出現率 {0} *",
   "panel.seoKeywordInfo.validInfo.label": "見出しへの利用",
   "panel.seoKeywordInfo.validInfo.content": "本文",
+
   "panel.seoKeywords.title": "キーワード",
   "panel.seoKeywords.header.keyword": "キーワード",
   "panel.seoKeywords.header.details": "詳細",
   "panel.seoKeywords.density": "* キーワード出現率は通常1~1.5%で十分です。",
+
   "panel.seoStatus.title": "推奨項目",
   "panel.seoStatus.header.property": "項目",
   "panel.seoStatus.header.length": "長さ",
@@ -315,50 +444,268 @@
   "panel.seoStatus.seoFieldInfo.article": "記事の長さ",
   "panel.seoStatus.collapsible.title": "SEO対策",
   "panel.seoStatus.required": "{0}か{1}は必須です。",
+
   "panel.slugAction.title": "スラッグを最適化",
+
   "panel.spinner.loading": "読み込み中...",
+
   "panel.startServerbutton.start": "サーバーを起動",
   "panel.startServerbutton.stop": "サーバーを停止",
+
   "panel.tag.add": "\"{0}\"を設定に追加",
+
   "panel.tagPicker.inputPlaceholder.empty": "{0}を選択",
   "panel.tagPicker.inputPlaceholder.disabled": "{0}の上限数に達しました",
   "panel.tagPicker.ai.suggest": "Front Matter AIに{0}を提案してもらう",
   "panel.tagPicker.ai.generating": "提案を生成中...",
   "panel.tagPicker.limit": "上限数: {0}",
   "panel.tagPicker.unkown": "不明なタグを追加",
+
   "panel.tags.tag.warning": "\"{0}\"は設定に保存されていません。削除すると復元できませんのでご注意ください。",
+
   "panel.viewPanel.mediaInsert": "ダッシュボードのメディア管理画面から、利用したい画像を選択してください。",
-  "dashboard.steps.stepsToGetStarted.assetsFolder.name": "アセットフォルダーの場所はどこですか？",
-  "dashboard.steps.stepsToGetStarted.assetsFolder.description": "記事のメディアファイルを保存するためのフォルダーを選択してください。",
-  "dashboard.steps.stepsToGetStarted.assetsFolder.public.title": "'public'フォルダーを使用する",
-  "dashboard.steps.stepsToGetStarted.assetsFolder.assets.title": "Astroアセットフォルダー(src/assets)を使用する",
-  "dashboard.steps.stepsToGetStarted.assetsFolder.other.description": "別のフォルダを設定する場合は、frontmatter.jsonファイルで手動で行うことができます。",
-  "dashboard.steps.stepsToGetStarted.template.name": "設定テンプレートを使用する",
-  "dashboard.steps.stepsToGetStarted.template.description": "おすすめの設定でfrontmatter.jsonファイルを事前に埋めるテンプレートを選択します。",
+
+  "commands.article.setDate.error": "日付の表示形式の解析中に何らかの問題が発生しました。\"{0}\"の設定を確認してください。",
+  "commands.article.updateSlug.error": "ファイル名を変更できませんでした。: {0}",
+
+  "commands.cache.cleared": "キャッシュがクリアされました。",
+
+  "commands.chatbot.title": "何でも聞いてください",
+
+  "commands.content.option.contentType.label": "記事タイプから記事を作成",
+  "commands.content.option.contentType.description": "設定済みの記事タイプを選択して記事を作成",
+  "commands.content.option.template.label": "テンプレートから記事を作成",
+  "commands.content.option.template.description": "設定済みのテンプレートを選択して記事を作成",
+  "commands.content.quickPick.title": "記事の作成",
+  "commands.content.quickPick.placeholder": "記事の作成方法を選択してください。",
+
+  "commands.dashboard.title": "ダッシュボード",
+
+  "commands.folders.addMediaFolder.inputBox.title": "メディアフォルダーの追加",
+  "commands.folders.addMediaFolder.inputBox.prompt": "新規作成するフォルダー名を入力してください。(\"/\"で多階層のフォルダーを作成可能です)",
+  "commands.folders.addMediaFolder.noFolder.warning": "フォルダー名が入力されていません。",
+  "commands.folders.create.folderExists.warning": "フォルダーは既に登録済です。",
+  "commands.folders.create.input.title": "フォルダーを登録する",
+  "commands.folders.create.input.prompt": "登録するフォルダー名を指定してください。",
+  "commands.folders.create.input.placeholder": "フォルダー名",
+  "commands.folders.create.success": "フォルダーが登録されました。",
+  "commands.folders.getWorkspaceFolder.workspaceFolderPick.placeholder": "Front Matterを利用するメインのワークスペースのフォルダーを選択してください。",
+  "commands.folders.get.notificationError.title": "\"{0}\"フォルダーが存在しません。このフォルダーを設定から削除してください。",
+  "commands.folders.get.notificationError.remove.action": "フォルダー設定を削除",
+  "commands.folders.get.notificationError.create.action": "フォルダーを作成",
+
+  "commands.preview.panel.title": "プレビュー: {0}",
+  "commands.preview.askUserToPickFolder.title": "プレビュー用の記事フォルダーを選択してください。",
+
+  "commands.project.initialize.success": "プロジェクトが初期化されました。",
+  "commands.project.switchProject.title": "どのプロジェクトに切り替えますか？",
+  "commands.project.createSampleTemplate.info": "テンプレートサンプルを作成しました。",
+
+  "commands.settings.create.input.prompt": "設定に追加したい{0}の値を入力してください。",
+  "commands.settings.create.input.placeholder": "{0}の名前",
+  "commands.settings.create.warning": "入力された {0} は既に存在しています。",
+  "commands.settings.create.quickPick.placeholder": "新規{0}をページに追加しますか？",
+  "commands.settings.export.progress.title": "{0}: タグとカテゴリーをエクスポートしています。",
+  "commands.settings.export.progress.success": "エクスポートが完了しました。タグ: {0} - カテゴリー: {1}",
+  "commands.settings.remap.quickpick.title": "再構成",
+  "commands.settings.remap.quickpick.placeholder": "何を再構成しますか？",
+  "commands.settings.remap.noTaxonomy.warning": "編集可能な{0}が存在しません。",
+  "commands.settings.remap.selectTaxonomy.placeholder": "編集したい{0}を選択してください。",
+  "commands.settings.remap.newOption.input.prompt": "\"{1}\"を再構成します。変更したい{0}値を入力してください。全ての記事から{0}を削除する場合は空欄にしてください。",
+  "commands.settings.remap.newOption.input.placeholder": "{0}名",
+  "commands.settings.remap.delete.placeholder": "{1} {0}を削除しますか？",
+
+  "commands.statusListener.verifyRequiredFields.diagnostic.emptyField": "フィールド {0} は必須です。値を入力してください。",
+  "commands.statusListener.verifyRequiredFields.notification.error": "以下の必須のフィールドに値が入力されていません。: {0}",
+
+  "commands.template.generate.input.title": "テンプレート名",
+  "commands.template.generate.input.prompt": "テンプレート名を入力してください。",
+  "commands.template.generate.input.placeholder": "article",
+  "commands.template.generate.noTitle.warning": "テンプレート名が入力されていません。",
+  "commands.template.generate.keepContents.title": "記事本文の反映",
+  "commands.template.generate.keepContents.placeholder": "記事本文をテンプレートにそのまま残しますか？",
+  "commands.template.generate.keepContents.noOption.warning": "記事本文を残すかどうかの選択がされませんでした。",
+  "commands.template.generate.keepContents.success": "{0}フォルダー内にテンプレートが作成されました。",
+  "commands.template.getTemplates.warning": "テンプレートがありません。",
+  "commands.template.create.folderPath.warning": "取得されたプロジェクトフォルダーのパスが不正です。",
+  "commands.template.create.noTemplates.warning": "テンプレートがありません。",
+  "commands.template.create.selectTemplate.title": "テンプレートの選択",
+  "commands.template.create.selectTemplate.placeholder": "記事テンプレートを選択してください。",
+  "commands.template.create.selectTemplate.noTemplate.warning": "テンプレートが選択されていません。",
+  "commands.template.create.selectTemplate.notFound.warning": "記事テンプレートが見つかりません。",
+  "commands.template.create.success": "新規記事が有効になりました。",
+
+  "commands.wysiwyg.command.unorderedList.label": "順序なしリスト",
+  "commands.wysiwyg.command.unorderedList.detail": "順序なしリストを追加",
+  "commands.wysiwyg.command.orderedList.label": "順序付きリスト",
+  "commands.wysiwyg.command.orderedList.detail": "順序付きリストを追加",
+  "commands.wysiwyg.command.taskList.label": "タスクリスト",
+  "commands.wysiwyg.command.taskList.detail": "タスクリストを追加",
+  "commands.wysiwyg.command.code.label": "コード",
+  "commands.wysiwyg.command.code.detail": "インラインコードスニペットを追加",
+  "commands.wysiwyg.command.codeblock.label": "コードブロック",
+  "commands.wysiwyg.command.codeblock.detail": "コードブロックを追加",
+  "commands.wysiwyg.command.blockquote.label": "ブロック引用要素",
+  "commands.wysiwyg.command.blockquote.detail": "ブロック引用要素を追加",
+  "commands.wysiwyg.command.strikethrough.label": "取り消し線",
+  "commands.wysiwyg.command.strikethrough.detail": "取り消し線付きテキストを追加",
+  "commands.wysiwyg.quickPick.title": "WYSIWYG オプション",
+  "commands.wysiwyg.quickPick.placeholder": "どのマークアップ要素を挿入しますか？",
+  "commands.wysiwyg.addHyperlink.hyperlinkInput.title": "WYSIWYG ハイパーリンク",
+  "commands.wysiwyg.addHyperlink.hyperlinkInput.prompt": "URLを入力",
+  "commands.wysiwyg.addHyperlink.textInput.title": "WYSIWYG テキスト",
+  "commands.wysiwyg.addHyperlink.textInput.prompt": "ハイパーリンクのテキストを入力",
+  "commands.wysiwyg.insertText.heading.input.title": "見出し",
+  "commands.wysiwyg.insertText.heading.input.placeholder": "見出しのレベルを選択",
+
+  "helpers.articleHelper.createContent.pageBundle.error": "{0}という名称のページバンドルは、既に {1} に存在しています。",
+  "helpers.articleHelper.createContent.contentExists.warning": "同タイトルの記事が存在します。別のタイトルを付けてください。",
+  "helpers.articleHelper.processCustomPlaceholders.placeholder.error": "プレースホルダー{0}の生成中にエラーが発生しました。",
+  "helpers.articleHelper.parseFile.diagnostic.error": "{0}のfront matterの解析中にエラーが発生しました。",
+
+  "helpers.contentType.generate.noFrontMatter.error": "記事タイプの生成に必要なfront matterデータがありません。",
+  "helpers.contentType.generate.override.quickPick.title": "デフォルトの記事タイプを上書き",
+  "helpers.contentType.generate.override.quickPick.placeholder": "この記事のフィールド設定を、デフォルトの記事タイプのフィールド設定に上書きしますか？",
+  "helpers.contentType.generate.contentTypeInput.title": "記事タイプを生成",
+  "helpers.contentType.generate.contentTypeInput.prompt": "新規作成したい記事タイプ名を入力してください。",
+  "helpers.contentType.generate.contentTypeInput.validation.enterName": "記事タイプ名を入力してください。",
+  "helpers.contentType.generate.contentTypeInput.validation.nameExists": "この記事タイプ名は既に存在しています。",
+  "helpers.contentType.generate.noContentTypeName.warning": "記事タイプが選択されませんでした。",
+  "helpers.contentType.generate.pageBundle.quickPick.title": "ページバンドルとして使用",
+  "helpers.contentType.generate.pageBundle.quickPick.placeHolder": "この記事タイプをページバンドルとして使用しますか？",
+  "helpers.contentType.generate.updated.success": "記事タイプ {0} を更新しました。",
+  "helpers.contentType.generate.generated.success": "記事タイプ {0} を生成しました。",
+  "helpers.contentType.addMissingFields.noFrontMatter.warning": "追加すべきfront matterデータはありません。",
+  "helpers.contentType.addMissingFields.updated.success": "記事タイプ {0} を更新しました。",
+  "helpers.contentType.setContentType.noFrontMatter.warning": "記事タイプの設定が必要なfront matterデータが見つかりません。",
+  "helpers.contentType.setContentType.quickPick.title": "記事タイプを選択",
+  "helpers.contentType.setContentType.quickPick.placeholder": "どの記事タイプを使用しますか？",
+  "helpers.contentType.create.allowSubContent.title": "サブコンテンツとしての要否",
+  "helpers.contentType.create.allowSubContent.placeHolder": "新規記事をサブコンテンツとして作成しますか？",
+  "helpers.contentType.create.allowSubContent.showOpenDialog.openLabel": "フォルダーを選択",
+  "helpers.contentType.create.allowSubContent.showOpenDialog.title": "新規記事用のフォルダーを選択してください。",
+  "helpers.contentType.create.pageBundle.title": "ページバンドルとして要否",
+  "helpers.contentType.create.pageBundle.placeHolder": "ページバンドルとして記事を作成しますか？",
+  "helpers.contentType.create.progress.title": "{0}: 記事ファイルを作成中...",
+  "helpers.contentType.create.success": "記事ファイルを作成しました。",
+  "helpers.contentType.verify.warning": "記事タイプ・コマンドは、このモードでは有効になっていません。",
+
+  "helpers.customScript.executing": "実行中: {0}",
+  "helpers.customScript.singleRun.article.warning": "{0}: Article couldn't be retrieved.",
+  "helpers.customScript.bulkRun.noFiles.warning": "{0}: ファイルが見つかりません。",
+  "helpers.customScript.runMediaScript.noFolder.warning": "{0}: フォルダーまたはメディアへのパスの指定がされていません。",
+  "helpers.customScript.showOutput.frontMatter.success": "{0}: front matter updated.",
+  "helpers.customScript.showOutput.copyOutput.action": "出力結果をコピー",
+  "helpers.customScript.showOutput.success": "{0}: カスタムスクリプトを実行しました。",
+  "helpers.customScript.validateCommand.error": "不正なコマンド: {0}",
+
+  "helpers.dataFileHelper.process.error": "データファイルの実行中に何らかの問題が発生しました。",
+
+  "helpers.extension.getVersion.changelog": "変更履歴を確認する",
+  "helpers.extension.getVersion.starIt": "⭐️を付ける",
+  "helpers.extension.getVersion.update.notification": "{0} が v{1} に更新されました！新機能をチェックしてください！",
+  "helpers.extension.migrateSettings.deprecated.warning": "\"{0}\"及び\"{1}\"の設定は非推奨になりました。代わりに\"isPublishDate\"と\"isModifiedDate\"の日付フィールドを使用してください。",
+  "helpers.extension.migrateSettings.deprecated.warning.hide": "非表示にする",
+  "helpers.extension.migrateSettings.deprecated.warning.seeGuide": "移行ガイドを読む",
+  "helpers.extension.migrateSettings.templates.quickPick.title": "{0} - テンプレート",
+  "helpers.extension.migrateSettings.templates.quickPick.placeholder": "テンプレート機能の使用を継続しますか？",
+  "helpers.extension.checkIfExtensionCanRun.warning": "Front MatterのBETA版は安定版がインストールされている場合は利用できません。BETA版のみがインストールされていることを確認してください。",
+
+  "helpers.mediaHelper.saveFile.folder.error": "選択されたフォルダーが見つかりません。",
+  "helpers.mediaHelper.saveFile.file.uploaded.success": "ファイル{0}が{1}へアップロードされました。",
+  "helpers.mediaHelper.saveFile.file.uploaded.failed": "申し訳ありません、{0}のアップロード中にエラーが発生しました。",
+  "helpers.mediaHelper.deleteFile.file.deletion.failed": "申し訳ありません、{0}の削除中にエラーが発生しました。",
+
+  "helpers.mediaLibrary.remove.warning": "その場所にはファイル\"{0}\"が既に存在しています。",
+  "helpers.mediaLibrary.remove.error": "申し訳ありません、\"{0}\"を\"{1}\"へのアップロード中にエラーが発生しました。",
+
+  "helpers.openFileInEditor.error": "ファイルを開けません。",
+
+  "helpers.questions.contentTitle.aiInput.title": "タイトルまたはディスクリプション",
+  "helpers.questions.contentTitle.aiInput.prompt": "どんな内容について書きたいですか？",
+  "helpers.questions.contentTitle.aiInput.placeholder": "どんな内容について書きたいですか？",
+  "helpers.questions.contentTitle.aiInput.quickPick.title.separator": "タイトル/ディスクリプション",
+  "helpers.questions.contentTitle.aiInput.quickPick.ai.separator": "AI生成によるタイトル",
+  "helpers.questions.contentTitle.aiInput.select.title": "タイトルを選択",
+  "helpers.questions.contentTitle.aiInput.select.placeholder": "記事に付けるタイトルを選択",
+  "helpers.questions.contentTitle.aiInput.failed": "AIタイトルの取得に失敗しました。自分で作成するか、後からもう一度試してください。",
+  "helpers.questions.contentTitle.aiInput.warning": "記事タイトルの入力がされていません。",
+  "helpers.questions.contentTitle.titleInput.title": "記事タイトル",
+  "helpers.questions.contentTitle.titleInput.prompt": "新しい記事のタイトルを入力してください。",
+  "helpers.questions.contentTitle.titleInput.placeholder": "タイトル",
+  "helpers.questions.contentTitle.titleInput.warning": "記事タイトルの入力がされていません。",
+  "helpers.questions.selectContentFolder.quickPick.title": "フォルダーを選択",
+  "helpers.questions.selectContentFolder.quickPick.placeholder": "記事の保存先を選択してください。",
+  "helpers.questions.selectContentFolder.quickPick.noSelection.warning": "記事の保存先が選択されていません。",
+  "helpers.questions.selectContentType.noContentType.warning": "記事タイプが見つかりません。先に記事タイプを作成してから記事を作成してください。",
+  "helpers.questions.selectContentType.quickPick.title": "記事タイプ",
+  "helpers.questions.selectContentType.quickPick.placeholder": "新規作成する記事の記事タイプを選択してください。",
+  "helpers.questions.selectContentType.noSelection.warning": "記事タイプが選択されていません。",
+
+  "helpers.seoHelper.checkLength.diagnostic.message": "記事{0}の文字数が{1}文字を超えています（現在の文字数: {2}）。SEOの観点上、{1}文字以内に収めることが推奨されます。",
+
+  "helpers.settingsHelper.checkToPromote.message": "ローカル設定が存在します。この設定をグローバル設定(\"frontmatter.json\")に昇格させますか？",
+  "helpers.settingsHelper.promote.success": "全ての設定をチームレベルに昇格しました。",
+  "helpers.settingsHelper.readConfig.progress.title": "{0}: 動的な設定ファイルを読み込んでいます...",
+  "helpers.settingsHelper.readConfig.error": "設定の読み込みでエラーが発生しました。",
+  "helpers.settingsHelper.refreshConfig.success": "設定を再読み込みしました。",
+
+  "helpers.taxonomyHelper.rename.input.title": "タクソノミー名を変更 {0}",
+  "helpers.taxonomyHelper.rename.validate.equalValue": "現在のファイル名とは別のファイル名を入力してください。",
+  "helpers.taxonomyHelper.rename.validate.noValue": "新しいファイル名を入力してください。",
+  "helpers.taxonomyHelper.merge.quickPick.title": "\"{0}\"を別の{1}にマージ",
+  "helpers.taxonomyHelper.merge.quickPick.placeholder": "マージする{0}を選択してください。",
+  "helpers.taxonomyHelper.delete.quickPick.title": "\"{0}\"を{1}から削除",
+  "helpers.taxonomyHelper.delete.quickPick.placeholder": "本当に\"{0}\"を{1}から削除しますか？",
+  "helpers.taxonomyHelper.createNew.input.title": "{0}に新規タクソノミーを作成",
+  "helpers.taxonomyHelper.createNew.input.placeholder": "作成したいタクソノミー名を入力してください。",
+  "helpers.taxonomyHelper.createNew.input.validate.noValue": "タクソノミー名は必須です。",
+  "helpers.taxonomyHelper.createNew.input.validate.exists": "このタクソノミー名は既に存在しています。",
+  "helpers.taxonomyHelper.process.edit": "{0}: {2}内の\"{1}\"を{3}に変更しています。",
+  "helpers.taxonomyHelper.process.merge": "{0}: {2}内の\"{1}\"を{3}にマージしています。",
+  "helpers.taxonomyHelper.process.delete": "{0}: \"{1}\"を{2}から削除しています。",
+  "helpers.taxonomyHelper.process.edit.success": "変更しました。",
+  "helpers.taxonomyHelper.process.merge.success": "マージしました。",
+  "helpers.taxonomyHelper.process.delete.success": "削除しました。",
+  "helpers.taxonomyHelper.move.quickPick.title": "\"{0}\"を別のタクソノミータイプに移行",
+  "helpers.taxonomyHelper.move.quickPick.placeholder": "移行先のタクソノミータイプを選択してください。",
+  "helpers.taxonomyHelper.move.progress.title": "{0}: \"{1}\"を{2}から\"${3}\"へ移行しています。",
+  "helpers.taxonomyHelper.move.success": "移行しました。",
+
+  "listeners.dashboard.dashboardListener.openConfig.notification": "設定内容を確認するには\"frontmatter.json\"を開いてください。",
+  "listeners.dashboard.dashboardListener.pinItem.noPath.error": "パスが指定されていません。",
+  "listeners.dashboard.dashboardListener.pinItem.coundNotPin.error": "ピン留めができませんでした。",
+  "listeners.dashboard.dashboardListener.pinItem.coundNotUnPin.error": "ピン留めの解除ができませんでした。",
+
   "listeners.dashboard.settingsListener.triggerTemplate.notification": "テンプレートファイルがコピーされました。",
-  "common.openOnWebsite": "ウェブサイトで開く",
-  "common.filter.value": "{0} でフィルタリング",
-  "dashboard.media.detailsSlideOver.unmapped.description": "未割り当てのファイルのメタデータを再マップしますか",
-  "common.settings": "設定",
-  "common.refreshSettings": "設定の更新",
-  "common.pin": "ピン",
-  "common.unpin": "解除",
-  "settings.view.common": "コモン",
-  "settings.view.contentFolders": "コンテンツ フォルダー",
-  "settings.view.astro": "アストロ",
-  "settings.openOnStartup": "起動時にダッシュボードを開く",
-  "settings.contentTypes": "コンテンツ タイプ",
-  "settings.contentFolders": "コンテンツ フォルダー",
-  "settings.diagnostic": "診断",
-  "settings.diagnostic.description": "診断プログラムを実行して、フロントマター CMS 構成全体を確認できます。",
-  "settings.diagnostic.link": "完全診断を実行する",
-  "settings.commonSettings.website.title": "ウェブサイトとSSGの設定",
-  "settings.commonSettings.previewUrl": "URL のプレビュー",
-  "settings.commonSettings.websiteUrl": "ウェブサイトの URL",
-  "settings.commonSettings.startCommand": "SSG/フレームワーク起動コマンド",
-  "dashboard.contents.overview.pinned": "固定",
-  "dashboard.steps.stepsToGetStarted.astroContentTypes.name": "Astroコンテンツコレクションのコンテンツタイプを作成する",
-  "dashboard.welcomeScreen.link.documentation.label": "ドキュメンテーション",
-  "dashboard.configuration.astro.astroContentTypes.empty": "Astroコンテンツコレクションが見つかりません。",
-  "dashboard.configuration.astro.astroContentTypes.description": "以下のAstroコンテンツコレクションは、コンテンツタイプを生成するために使用できます。"
+  "listeners.dashboard.settingsListener.triggerTemplate.progress.title": "テンプレートをダウンロードして初期化しています...",
+  "listeners.dashboard.settingsListener.triggerTemplate.download.error": "テンプレートのダウンロードに失敗しました。",
+  "listeners.dashboard.settingsListener.triggerTemplate.init.error": "テンプレートの初期化に失敗しました。",
+
+  "listeners.dashboard.snippetListener.addSnippet.missingFields.warning": "スニペットのタイトルまたはbodyが空です。",
+  "listeners.dashboard.snippetListener.addSnippet.exists.warning": "同じタイトルのスニペットが既に存在しています。",
+  "listeners.dashboard.snippetListener.updateSnippet.noSnippets.warning": "更新が必要なスニペットはありません。",
+
+  "listeners.general.gitListener.push.error": "submoduleのpushに失敗しました。",
+
+  "listeners.panel.dataListener.aiSuggestTaxonomy.noEditor.error": "アクティブなエディターがありません。",
+  "listeners.panel.dataListener.aiSuggestTaxonomy.noData.error": "記事データがありません。",
+  "listeners.panel.dataListener.getDataFileEntries.noDataFiles.error": "データファイルのエントリーが見つかりませんでした。",
+
+
+  "listeners.panel.taxonomyListener.aiSuggestTaxonomy.noEditor.error": "アクティブなエディターがありません。",
+  "listeners.panel.taxonomyListener.aiSuggestTaxonomy.noData.error": "記事データがありません。",
+
+  "services.modeSwitch.switchMode.quickPick.placeholder": "モードを選択してください。",
+  "services.modeSwitch.switchMode.quickPick.title": "{0}: モードの選択",
+  "services.modeSwitch.setText.mode": "モード: {0}",
+
+  "services.pagesParser.parsePages.statusBar.text": "読み込み中...",
+  "services.pagesParser.parsePages.file.error": "ファイルエラー: {0}",
+
+  "services.sponsorAi.getTitles.warning": "AIによるタイトル生成に時間がかかりすぎています。後でもう一度試してください。",
+  "services.sponsorAi.getDescription.warning": "AIによるディスクリプション生成に時間がかかりすぎています。後でもう一度試してください。",
+  "services.sponsorAi.getTaxonomySuggestions.warning": "AIによるタクソノミー生成に時間がかかりすぎています。後でもう一度試してください。",
+
+  "services.terminal.openLocalServerTerminal.terminalOption.message": "ローカルサーバーを起動"
 }

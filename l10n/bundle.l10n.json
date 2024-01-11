@@ -465,8 +465,6 @@
 
   "panel.viewPanel.mediaInsert": "Continue in the media dashboard to select the image you want to insert.",
 
-  "commands.article.notification.noTaxonomy": "No {0} configured.",
-  "commands.article.quickPick.placeholder": "Select your {0} to insert.",
   "commands.article.setDate.error": "Something failed while parsing the date format. Check your \"{0}\" setting.",
   "commands.article.updateSlug.error": "Failed to rename file: {0}",
 
@@ -638,7 +636,6 @@
   "helpers.questions.contentTitle.titleInput.warning": "You did not specify a title for your content.",
   "helpers.questions.selectContentFolder.quickPick.title": "Select a folder",
   "helpers.questions.selectContentFolder.quickPick.placeholder": "Select where you want to create your content",
-  "helpers.questions.selectContentFolder.quickPick.noFolders.warning": "No page folders were configured.",
   "helpers.questions.selectContentFolder.quickPick.noSelection.warning": "You didn't select a place where you wanted to create your content.",
   "helpers.questions.selectContentType.noContentType.warning": "No content types found. Please create a content type first.",
   "helpers.questions.selectContentType.quickPick.title": "Content type",

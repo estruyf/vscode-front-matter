@@ -6,6 +6,8 @@
 
 ### 🎨 Enhancements
 
+- [#727](https://github.com/estruyf/vscode-front-matter/pull/727): Updated Japanese translations thanks to [mayumihara](https://github.com/mayumih387)
+
 ### ⚡️ Optimizations
 
 ### 🐞 Fixes
