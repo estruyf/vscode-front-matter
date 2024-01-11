@@ -10,6 +10,7 @@
 
 ### 🐞 Fixes
 
+- [#721](https://github.com/estruyf/vscode-front-matter/issues/721): Fix keywords regex to support unicode characters
 - [#725](https://github.com/estruyf/vscode-front-matter/issues/725): Fix for opening menu of pinned items
 
 ## [9.4.0] - 2023-12-12 - [Release notes](https://beta.frontmatter.codes/updates/v9.4.0)
