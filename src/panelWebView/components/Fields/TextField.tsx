@@ -12,6 +12,8 @@ import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { useDebounce } from '../../../hooks/useDebounce';
 
+const DEBOUNCE_TIME = 300;
+
 export interface ITextFieldProps extends BaseFieldProps<string> {
   singleLine: boolean | undefined;
   wysiwyg: boolean | undefined;
@@ -38,12 +40,14 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   required
 }: React.PropsWithChildren<ITextFieldProps>) => {
   const [, setRequiredFields] = useRecoilState(RequiredFieldsAtom);
-  const [text, setText] = React.useState<string | null>(value);
+  const [text, setText] = React.useState<string | null | undefined>(undefined);
   const [loading, setLoading] = React.useState<boolean>(false);
-  const debouncedValue = useDebounce<string | null>(text, 500);
+  const [lastUpdated, setLastUpdated] = React.useState<number>(0);
+  const debouncedText = useDebounce<string | null | undefined>(text, DEBOUNCE_TIME);
 
   const onTextChange = (txtValue: string) => {
     setText(txtValue);
+    setLastUpdated(Date.now());
   };
 
   let isValid = true;
@@ -117,16 +121,16 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   }, [settings?.aiEnabled, name]);
 
   useEffect(() => {
-    if (text !== value) {
-      setText(value);
+    if (text !== value && (Date.now() - DEBOUNCE_TIME) > lastUpdated) {
+      setText(value || null);
     }
   }, [value]);
 
   useEffect(() => {
-    if (debouncedValue !== value) {
-      onChange(debouncedValue || '');
+    if (debouncedText !== undefined) {
+      onChange(debouncedText || '');
     }
-  }, [debouncedValue]);
+  }, [debouncedText]);
 
   return (
     <div className={`metadata_field`}>
