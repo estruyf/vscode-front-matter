@@ -21,12 +21,14 @@ export interface ITaxonomyManagerProps {
   data: TaxonomyData | undefined;
   taxonomy: string | null;
   pages: Page[];
+  onContentTagging: (value: string) => void;
 }
 
 export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = ({
   data,
   taxonomy,
-  pages
+  pages,
+  onContentTagging
 }: React.PropsWithChildren<ITaxonomyManagerProps>) => {
   const settings = useRecoilValue(SettingsSelector);
   const { getColors } = useThemeColors();
@@ -216,7 +218,7 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
                     <TaxonomyLookup taxonomy={taxonomy} value={item} pages={pages} />
                   </td>
                   <td className={`px-6 py-4 whitespace-nowrap text-right text-sm font-medium`}>
-                    <TaxonomyActions field={taxonomy} value={item} />
+                    <TaxonomyActions field={taxonomy} value={item} onContentTagging={onContentTagging} />
                   </td>
                 </tr>
               ))
@@ -247,7 +249,7 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
                     <TaxonomyLookup taxonomy={taxonomy} value={item} pages={pages} />
                   </td>
                   <td className={`px-6 py-4 whitespace-nowrap text-right text-sm font-medium`}>
-                    <TaxonomyActions field={taxonomy} value={item} unmapped />
+                    <TaxonomyActions field={taxonomy} value={item} onContentTagging={onContentTagging} unmapped />
                   </td>
                 </tr>
               ))}
