@@ -1,4 +1,4 @@
-import { SearchIcon, XCircleIcon } from '@heroicons/react/solid';
+import { MagnifyingGlassIcon, XCircleIcon } from '@heroicons/react/24/solid';
 import * as React from 'react';
 import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
@@ -31,7 +31,7 @@ export const FilterInput: React.FunctionComponent<IFilterInputProps> = ({
         </label>
         <div className="relative flex justify-center">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <SearchIcon className={`h-5 w-5 ${getColors(`text-gray-400`, 'text-[var(--vscode-input-foreground)]')}`} aria-hidden="true" />
+            <MagnifyingGlassIcon className={`h-5 w-5 ${getColors(`text-gray-400`, 'text-[var(--vscode-input-foreground)]')}`} aria-hidden="true" />
           </div>
 
           <input

@@ -3,8 +3,6 @@ import { useEffect, useMemo, useState } from 'react';
 import JSONSchemaBridge from 'uniforms-bridge-json-schema';
 import { AutoFields, AutoForm, ErrorsField } from '../../../components/uniforms-frontmatter';
 import { JsonFieldControls } from './JsonFieldControls';
-import { JsonFieldRecord } from './JsonFieldRecord';
-import { CollectionIcon, PencilIcon, TrashIcon } from '@heroicons/react/outline';
 import Ajv from 'ajv';
 
 export interface IJsonFieldFormProps {

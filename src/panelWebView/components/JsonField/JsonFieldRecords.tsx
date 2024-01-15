@@ -1,4 +1,4 @@
-import { CollectionIcon, PlusIcon } from '@heroicons/react/outline';
+import { CircleStackIcon, PlusIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { VsLabel } from '../VscodeComponents';
 import { JsonFieldRecord } from '.';
@@ -33,7 +33,7 @@ export const JsonFieldRecords = ({
       <VsLabel>
         <div className={`metadata_field__label`}>
           <div>
-            <CollectionIcon style={{ width: '16px', height: '16px' }} />
+            <CircleStackIcon style={{ width: '16px', height: '16px' }} />
             <span style={{ lineHeight: '16px' }}>Records</span>
           </div>
 

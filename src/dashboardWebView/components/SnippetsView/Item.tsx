@@ -1,14 +1,14 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import {
-  CodeIcon,
+  CodeBracketIcon,
   DocumentTextIcon,
-  DotsHorizontalIcon,
+  EllipsisHorizontalIcon,
   EyeIcon,
   PencilIcon,
-  PhotographIcon,
+  PhotoIcon,
   PlusIcon,
   TrashIcon
-} from '@heroicons/react/outline';
+} from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
@@ -169,7 +169,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
       )
         }`}>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <CodeIcon className={`w-64 h-64 opacity-5 ${getColors(
+          <CodeBracketIcon className={`w-64 h-64 opacity-5 ${getColors(
             'text-vulcan-200 dark:text-gray-400',
             'text-[var(--vscode-foreground)]'
           )
@@ -181,7 +181,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           title={snippet.isMediaSnippet ? 'Media snippet' : 'Content snippet'}
         >
           {snippet.isMediaSnippet ? (
-            <PhotographIcon className="w-5 h-5 mr-1" aria-hidden={true} />
+            <PhotoIcon className="w-5 h-5 mr-1" aria-hidden={true} />
           ) : (
             <DocumentTextIcon className="w-5 h-5 mr-1" aria-hidden={true} />
           )}
@@ -201,7 +201,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                 )
                   }`}>
                   <div className="group-hover:hidden">
-                    <DotsHorizontalIcon className="w-4 h-4" />
+                    <EllipsisHorizontalIcon className="w-4 h-4" />
                   </div>
 
                   <div className="hidden group-hover:flex">
@@ -223,7 +223,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             )
               }`}>
               <div className="group-hover:hidden">
-                <DotsHorizontalIcon className="w-4 h-4" />
+                <EllipsisHorizontalIcon className="w-4 h-4" />
               </div>
 
               <div className="hidden group-hover:flex">

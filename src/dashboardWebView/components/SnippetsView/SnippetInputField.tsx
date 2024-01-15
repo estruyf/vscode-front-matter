@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ChevronDownIcon } from '@heroicons/react/outline';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Choice, SnippetField, SnippetInfoField } from '../../../models';
 import useThemeColors from '../../hooks/useThemeColors';
 import { useEffect } from 'react';

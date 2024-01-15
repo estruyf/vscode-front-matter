@@ -1,6 +1,6 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
-import { LinkIcon, RefreshIcon } from '@heroicons/react/outline';
+import { LinkIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo } from 'react';
 import { BaseFieldProps } from '../../../models';
@@ -93,7 +93,7 @@ export const SlugField: React.FunctionComponent<ISlugFieldProps> = ({
             }`}
           onClick={updateSlug}
         >
-          <RefreshIcon aria-hidden={true} />
+          <ArrowPathIcon aria-hidden={true} />
         </button>
       </div>
 

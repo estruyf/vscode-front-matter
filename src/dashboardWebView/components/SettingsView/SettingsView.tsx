@@ -9,7 +9,7 @@ import { ContentFolders } from '../Configuration/Common/ContentFolders';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { COMMAND_NAME } from '../../../constants';
-import { RefreshIcon } from '@heroicons/react/outline';
+import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import { VSCodePanelTab, VSCodePanelView, VSCodePanels } from '@vscode/webview-ui-toolkit/react';
 import { CommonSettings } from './CommonSettings';
 
@@ -36,7 +36,7 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (_: Rea
                 className={`inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium focus:outline-none rounded text-[var(--vscode-button-foreground)] hover:text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`}
                 href={`command:${COMMAND_NAME.settingsRefresh}`}
               >
-                <RefreshIcon
+                <ArrowPathIcon
                   className={`w-4 h-4 mr-2`}
                   aria-hidden="true"
                 />

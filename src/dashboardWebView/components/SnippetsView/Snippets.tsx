@@ -1,5 +1,5 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { CodeIcon, PlusSmIcon } from '@heroicons/react/outline';
+import { CodeBracketIcon, PlusIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
@@ -115,7 +115,7 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
                 title={l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsButtonCreate)}
                 onClick={() => setShowCreateDialog(true)}
               >
-                <PlusSmIcon className={`mr-2 h-6 w-6`} />
+                <PlusIcon className={`mr-2 h-6 w-6`} />
                 <span className={`text-sm`}>
                   {l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsButtonCreate)}
                 </span>
@@ -147,7 +147,7 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
           <div className="w-full h-full flex items-center justify-center text-white">
             <div className={`flex flex-col items-center ${getColors('text-gray-500 dark:text-whisper-900', 'text-[var(--frontmatter-text)]')
               }`}>
-              <CodeIcon className="w-32 h-32" />
+              <CodeBracketIcon className="w-32 h-32" />
               <p className="text-3xl mt-2">
                 {l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsEmptyMessage)}
               </p>

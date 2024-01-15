@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ClockIcon } from '@heroicons/react/outline';
+import { ClockIcon } from '@heroicons/react/24/outline';
 import DatePicker from 'react-datepicker';
 import { forwardRef, useEffect, useMemo } from 'react';
 import { DateHelper } from '../../../helpers/DateHelper';

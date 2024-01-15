@@ -1,5 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { ExclamationIcon } from '@heroicons/react/outline';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { Fragment, useRef } from 'react';
 import useThemeColors from '../../hooks/useThemeColors';
@@ -74,7 +74,7 @@ export const Alert: React.FunctionComponent<IAlertProps> = ({
                   'bg-[var(--vscode-sidebar-background)]'
                 )
                   }`}>
-                  <ExclamationIcon
+                  <ExclamationTriangleIcon
                     className={`h-6 w-6 ${getColors(`text-red-500 dark:text-red-50`, `text-[var(--vscode-errorForeground)]`)}`}
                     aria-hidden="true"
                   />

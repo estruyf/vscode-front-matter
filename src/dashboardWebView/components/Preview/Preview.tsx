@@ -1,5 +1,5 @@
 import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
-import { ArrowRightIcon, ExternalLinkIcon, RefreshIcon } from '@heroicons/react/outline';
+import { ArrowRightIcon, ArrowTopRightOnSquareIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { GeneralCommands, PreviewCommands } from '../../../constants';
@@ -101,14 +101,14 @@ export const Preview: React.FunctionComponent<IPreviewProps> = ({
                 title={l10n.t(LocalizationKey.dashboardPreviewButtonRefreshTitle)}
                 onClick={onRefresh}
                 className={`mr-2 ${getColors(`hover:text-vulcan-500 dark:hover:text-whisper-100`, `hover:text-[var(--vscode-textLink-activeForeground)]`)}`}>
-                <RefreshIcon className="w-4 h-4" aria-hidden="true" />
+                <ArrowPathIcon className="w-4 h-4" aria-hidden="true" />
               </button>
 
               <button
                 title={l10n.t(LocalizationKey.dashboardPreviewButtonOpenTitle)}
                 onClick={openInBrowser}
                 className={`mr-2 ${getColors(`hover:text-vulcan-500 dark:hover:text-whisper-100`, `hover:text-[var(--vscode-textLink-activeForeground)]`)}`}>
-                <ExternalLinkIcon className="w-4 h-4" aria-hidden="true" />
+                <ArrowTopRightOnSquareIcon className="w-4 h-4" aria-hidden="true" />
               </button>
             </div>
           )

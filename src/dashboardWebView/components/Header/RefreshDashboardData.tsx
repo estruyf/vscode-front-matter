@@ -1,5 +1,5 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { RefreshIcon } from '@heroicons/react/outline';
+import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useCallback } from 'react';
 import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
@@ -67,7 +67,7 @@ export const RefreshDashboardData: React.FunctionComponent<IRefreshDashboardData
       title={l10n.t(LocalizationKey.dashboardHeaderRefreshDashboardLabel)}
       onClick={refresh}
     >
-      <RefreshIcon className={`h-5 w-5`} />
+      <ArrowPathIcon className={`h-5 w-5`} />
       <span className="sr-only">{l10n.t(LocalizationKey.dashboardHeaderRefreshDashboardLabel)}</span>
     </button>
   );

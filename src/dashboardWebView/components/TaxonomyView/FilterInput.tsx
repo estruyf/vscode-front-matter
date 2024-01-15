@@ -1,4 +1,4 @@
-import { FilterIcon, XCircleIcon } from '@heroicons/react/outline';
+import { FunnelIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 
 export interface IFilterInputProps {
@@ -31,7 +31,7 @@ export const FilterInput: React.FunctionComponent<IFilterInputProps> = ({
 
         <div className="relative flex justify-center">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <FilterIcon className={`h-4 w-4 text-[var(--vscode-input-foreground)]`} aria-hidden="true" />
+            <FunnelIcon className={`h-4 w-4 text-[var(--vscode-input-foreground)]`} aria-hidden="true" />
           </div>
 
           <input

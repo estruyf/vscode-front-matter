@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { ThumbDownIcon, ThumbUpIcon } from '@heroicons/react/outline';
-import { ThumbDownIcon as ThumbDownSolidIcon, ThumbUpIcon as ThumbUpSolidIcon } from '@heroicons/react/solid';
+import { HandThumbDownIcon, HandThumbUpIcon } from '@heroicons/react/24/outline';
+import { HandThumbDownIcon as ThumbDownSolidIcon, HandThumbUpIcon as ThumbUpSolidIcon } from '@heroicons/react/24/solid';
 import { useCallback } from 'react';
 import { useSettingsContext } from '../../providers/SettingsProvider';
 
@@ -53,7 +53,7 @@ export const Feedback: React.FunctionComponent<IFeedbackProps> = ({
           isUpVoted ? (
             <ThumbUpSolidIcon className='h-4 w-4 text-[var(--vscode-textLink-foreground)]' />
           ) : (
-            <ThumbUpIcon className='h-4 w-4' />
+            <HandThumbUpIcon className='h-4 w-4' />
           )
         }
       </button>
@@ -64,7 +64,7 @@ export const Feedback: React.FunctionComponent<IFeedbackProps> = ({
           isDownVoted ? (
             <ThumbDownSolidIcon className='h-4 w-4 text-[var(--vscode-textLink-foreground)]' />
           ) : (
-            <ThumbDownIcon className='h-4 w-4' />
+            <HandThumbDownIcon className='h-4 w-4' />
           )
         }
       </button>

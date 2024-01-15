@@ -1,4 +1,4 @@
-import { XIcon } from '@heroicons/react/outline';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
@@ -23,7 +23,7 @@ export const ChoiceButton: React.FunctionComponent<IChoiceButtonProps> = ({
       onClick={() => onClick(value)}
     >
       <span>{title}</span>
-      <XIcon className={`metadata_field__choice__button_icon`} />
+      <XMarkIcon className={`metadata_field__choice__button_icon`} />
     </button>
   );
 };

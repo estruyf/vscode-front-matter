@@ -1,5 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { PencilAltIcon, XIcon } from '@heroicons/react/outline';
+import { PencilSquareIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
 import { basename } from 'path';
 import * as React from 'react';
@@ -129,7 +129,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                           onClick={onDismiss}
                         >
                           <span className="sr-only">{l10n.t(LocalizationKey.dashboardMediaPanelClose)}</span>
-                          <XIcon className="h-6 w-6" aria-hidden="true" />
+                          <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                         </button>
                       </div>
                     </div>
@@ -270,7 +270,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                             <h3 className={`text-base flex items-center text-[var(--vscode-foreground)]`}>
                               <span>{l10n.t(LocalizationKey.dashboardMediaMetadataPanelFormMetadataTitle)}</span>
                               <button onClick={onEdit}>
-                                <PencilAltIcon className="w-4 h-4 ml-2" aria-hidden="true" />
+                                <PencilSquareIcon className="w-4 h-4 ml-2" aria-hidden="true" />
                                 <span className="sr-only">{l10n.t(LocalizationKey.commonEdit)}</span>
                               </button>
                             </h3>

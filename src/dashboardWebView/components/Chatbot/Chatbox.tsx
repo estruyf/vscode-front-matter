@@ -1,4 +1,4 @@
-import { PaperAirplaneIcon } from '@heroicons/react/outline';
+import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useCallback } from 'react';
 import useThemeColors from '../../hooks/useThemeColors';

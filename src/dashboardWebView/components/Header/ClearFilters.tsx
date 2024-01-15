@@ -1,4 +1,4 @@
-import { XCircleIcon } from '@heroicons/react/solid';
+import { XCircleIcon } from '@heroicons/react/24/solid';
 import * as React from 'react';
 import { useRecoilValue, useResetRecoilState } from 'recoil';
 import {

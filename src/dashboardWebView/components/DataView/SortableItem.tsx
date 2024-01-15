@@ -1,4 +1,4 @@
-import { PencilIcon, SelectorIcon, TrashIcon } from '@heroicons/react/outline';
+import { PencilIcon, ChevronDownIcon, TrashIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { SortableHandle, SortableElement } from 'react-sortable-hoc';
 import useThemeColors from '../../hooks/useThemeColors';
@@ -16,7 +16,7 @@ export interface ISortableItemProps {
   onDeleteItem: (index: number) => void;
 }
 
-const DragHandle = SortableHandle(() => <SelectorIcon className={`w-6 h-6 cursor-move hover:text-[var(--frontmatter-link-hover)]`} />);
+const DragHandle = SortableHandle(() => <ChevronDownIcon className={`w-6 h-6 cursor-move hover:text-[var(--frontmatter-link-hover)]`} />);
 
 export const SortableItem = SortableElement(
   ({

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { ViewAtom, SettingsSelector } from '../../state';
-import { ViewListIcon, ViewGridIcon } from '@heroicons/react/solid';
+import { Bars4Icon, Squares2X2Icon } from '@heroicons/react/24/solid';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
 import { DashboardViewType } from '../../models';
@@ -40,7 +40,7 @@ export const ViewSwitch: React.FunctionComponent<IViewSwitchProps> = (
         type={`button`}
         onClick={toggleView}
       >
-        <ViewGridIcon className={`w-4 h-4`} />
+        <Squares2X2Icon className={`w-4 h-4`} />
         <span className={`sr-only`}>
           {l10n.t(LocalizationKey.dashboardHeaderViewSwitchToGrid)}
         </span>
@@ -52,7 +52,7 @@ export const ViewSwitch: React.FunctionComponent<IViewSwitchProps> = (
         type={`button`}
         onClick={toggleView}
       >
-        <ViewListIcon className={`w-4 h-4`} />
+        <Bars4Icon className={`w-4 h-4`} />
         <span className={`sr-only`}>
           {l10n.t(LocalizationKey.dashboardHeaderViewSwitchToList)}
         </span>

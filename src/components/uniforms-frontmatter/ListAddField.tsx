@@ -1,4 +1,4 @@
-import { PlusIcon } from '@heroicons/react/outline';
+import { PlusIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { HTMLFieldProps, connectField, filterDOMProps, joinName, useField } from 'uniforms';
 import './ListAddField.css';

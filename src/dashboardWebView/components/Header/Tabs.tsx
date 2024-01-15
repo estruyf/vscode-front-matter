@@ -1,4 +1,4 @@
-import { DatabaseIcon, PhotographIcon, ScissorsIcon, TagIcon } from '@heroicons/react/outline';
+import { CircleStackIcon, PhotoIcon, ScissorsIcon, TagIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 import { FeatureFlag } from '../../../components/features/FeatureFlag';
@@ -33,7 +33,7 @@ export const Tabs: React.FunctionComponent<ITabsProps> = ({
       </li>
       <li className="mr-2" role="presentation">
         <Tab navigationType={NavigationType.Media} onNavigate={onNavigate}>
-          <PhotographIcon className={`h-6 w-auto mr-2`} />
+          <PhotoIcon className={`h-6 w-auto mr-2`} />
           <span>{l10n.t(LocalizationKey.dashboardHeaderTabsMedia)}</span>
         </Tab>
       </li>
@@ -48,7 +48,7 @@ export const Tabs: React.FunctionComponent<ITabsProps> = ({
       <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.dashboard.data.view}>
         <li className="mr-2" role="presentation">
           <Tab navigationType={NavigationType.Data} onNavigate={onNavigate}>
-            <DatabaseIcon className={`h-6 w-auto mr-2`} />
+            <CircleStackIcon className={`h-6 w-auto mr-2`} />
             <span>{l10n.t(LocalizationKey.dashboardHeaderTabsData)}</span>
           </Tab>
         </li>

@@ -1,6 +1,6 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
-import { RefreshIcon } from '@heroicons/react/outline';
+import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
@@ -57,7 +57,7 @@ export const SyncButton: React.FunctionComponent<ISyncButtonProps> = (
         onClick={pull}
         disabled={isSyncing}
       >
-        <RefreshIcon
+        <ArrowPathIcon
           className={`w-4 h-4 mr-2 ${isSyncing ? 'animate-reverse-spin' : ''}`}
           aria-hidden="true"
         />

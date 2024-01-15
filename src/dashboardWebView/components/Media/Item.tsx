@@ -2,17 +2,17 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import { Menu } from '@headlessui/react';
 import {
   ClipboardIcon,
-  CodeIcon,
+  CodeBracketIcon,
   DocumentIcon,
   EyeIcon,
-  MusicNoteIcon,
+  MusicalNoteIcon,
   PencilIcon,
-  PhotographIcon,
+  PhotoIcon,
   PlusIcon,
-  TerminalIcon,
+  CommandLineIcon,
   TrashIcon,
   VideoCameraIcon
-} from '@heroicons/react/outline';
+} from '@heroicons/react/24/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -315,7 +315,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           key={script.title}
           title={
             <div className="flex items-center">
-              <TerminalIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
+              <CommandLineIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
               <span>{script.title}</span>
             </div>
           }
@@ -361,7 +361,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     }
 
     if (isImageFile) {
-      return <PhotographIcon className={`h-1/2 ${colors}`} />;
+      return <PhotoIcon className={`h-1/2 ${colors}`} />;
     }
 
     if (isVideoFile) {
@@ -369,7 +369,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     }
 
     if (isAudioFile) {
-      icon = <MusicNoteIcon className={`h-4/6 ${colors}`} />;
+      icon = <MusicalNoteIcon className={`h-4/6 ${colors}`} />;
     }
 
     return (
@@ -471,7 +471,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                     className={`h-1/3 text-white hover:text-[var(--vscode-button-background)]`}
                     onClick={insertSnippet}
                   >
-                    <CodeIcon
+                    <CodeBracketIcon
                       className={`w-full h-full hover:drop-shadow-md `}
                       aria-hidden="true"
                     />
@@ -513,7 +513,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
                       {viewData?.data?.position && mediaSnippets.length > 0 && (
                         <QuickAction title={l10n.t(LocalizationKey.commonInsertSnippet)} onClick={insertSnippet}>
-                          <CodeIcon className={`w-4 h-4`} aria-hidden="true" />
+                          <CodeBracketIcon className={`w-4 h-4`} aria-hidden="true" />
                         </QuickAction>
                       )}
                     </>
@@ -570,7 +570,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                               key={idx}
                               title={
                                 <div className="flex items-center">
-                                  <CodeIcon
+                                  <CodeBracketIcon
                                     className="mr-2 h-5 w-5 flex-shrink-0"
                                     aria-hidden={true}
                                   />{' '}
@@ -668,7 +668,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
       {showSnippetSelection && (
         <InfoDialog
-          icon={<CodeIcon className="h-6 w-6" aria-hidden="true" />}
+          icon={<CodeBracketIcon className="h-6 w-6" aria-hidden="true" />}
           title={l10n.t(LocalizationKey.commonInsertSnippet)}
           description={l10n.t(LocalizationKey.dashboardMediaItemInfoDialogSnippetDescription)}
           dismiss={() => setShowSnippetSelection(false)}

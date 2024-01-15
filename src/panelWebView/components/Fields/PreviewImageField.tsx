@@ -1,5 +1,5 @@
 import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
-import { PhotographIcon } from '@heroicons/react/outline';
+import { PhotoIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo } from 'react';
 import { DefaultFieldValues } from '../../../constants';
@@ -95,7 +95,7 @@ export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps>
 
   return (
     <div className={`metadata_field`}>
-      <FieldTitle label={label} icon={<PhotographIcon />} required={required} />
+      <FieldTitle label={label} icon={<PhotoIcon />} required={required} />
 
       <div
         className={`metadata_field__preview_image ${multiple && imageData && (imageData as PreviewImageValue[]).length > 0
@@ -110,7 +110,7 @@ export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps>
             type="button"
             onClick={selectImage}
           >
-            <PhotographIcon />
+            <PhotoIcon />
             <span>
               {l10n.t(LocalizationKey.panelFieldsPreviewImageFieldAdd, (label?.toLowerCase() || 'image'))}
             </span>

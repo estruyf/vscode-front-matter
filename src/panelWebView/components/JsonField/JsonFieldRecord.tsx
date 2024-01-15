@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { PencilIcon, SelectorIcon, TrashIcon } from '@heroicons/react/outline';
+import { PencilIcon, ChevronUpDownIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { SortableHandle, SortableElement } from 'react-sortable-hoc';
 export interface IJsonFieldRecordProps {
   id: number;
@@ -12,7 +12,7 @@ export interface IJsonFieldRecordProps {
 
 const DragHandle = SortableHandle(() => (
   <span className="drag_handler">
-    <SelectorIcon />
+    <ChevronUpDownIcon />
   </span>
 ));
 

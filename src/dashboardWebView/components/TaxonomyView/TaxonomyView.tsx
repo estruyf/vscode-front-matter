@@ -1,5 +1,5 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { ChevronRightIcon, DownloadIcon } from '@heroicons/react/outline';
+import { ChevronRightIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
@@ -55,7 +55,7 @@ export const TaxonomyView: React.FunctionComponent<ITaxonomyViewProps> = ({
               title={l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyViewButtonImport)}
               onClick={onImport}
             >
-              <DownloadIcon className={`w-5 mr-2`} />
+              <ArrowDownTrayIcon className={`w-5 mr-2`} />
               <span>{l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyViewButtonImport)}</span>
             </button>
           }

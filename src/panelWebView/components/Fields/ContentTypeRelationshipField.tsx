@@ -5,7 +5,7 @@ import { Fragment, useCallback, useEffect, useMemo } from 'react';
 import { Page } from '../../../dashboardWebView/models';
 import { messageHandler } from '@estruyf/vscode/dist/client/webview';
 import { CommandToCode } from '../../CommandToCode';
-import { ChevronDownIcon, DocumentAddIcon } from '@heroicons/react/outline';
+import { ChevronDownIcon, DocumentPlusIcon } from '@heroicons/react/24/outline';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { FieldTitle } from './FieldTitle';
@@ -165,7 +165,7 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
     <div className={`metadata_field ${showRequiredState ? 'required' : ''}`}>
       <FieldTitle
         label={label}
-        icon={<DocumentAddIcon />}
+        icon={<DocumentPlusIcon />}
         required={required} />
 
       {

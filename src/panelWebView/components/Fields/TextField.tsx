@@ -1,4 +1,4 @@
-import { PencilIcon, SparklesIcon } from '@heroicons/react/outline';
+import { PencilIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useRecoilState } from 'recoil';

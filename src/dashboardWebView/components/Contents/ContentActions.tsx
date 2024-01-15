@@ -1,6 +1,6 @@
 import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import { Menu } from '@headlessui/react';
-import { EyeIcon, GlobeIcon, TerminalIcon, TrashIcon } from '@heroicons/react/outline';
+import { EyeIcon, GlobeEuropeAfricaIcon, CommandLineIcon, TrashIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { CustomScript, ScriptType } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
@@ -112,7 +112,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
           key={script.title}
           title={
             <div className="flex items-center">
-              <TerminalIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
+              <CommandLineIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
               <span>{script.title}</span>
             </div>
           }
@@ -145,7 +145,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
                 {
                   settings?.websiteUrl && (
                     <QuickAction title={l10n.t(LocalizationKey.commonOpenOnWebsite)} onClick={openOnWebsite}>
-                      <GlobeIcon className={`w-4 h-4`} aria-hidden="true" />
+                      <GlobeEuropeAfricaIcon className={`w-4 h-4`} aria-hidden="true" />
                     </QuickAction>
                   )
                 }
@@ -195,7 +195,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
                     <MenuItem
                       title={
                         <div className="flex items-center">
-                          <GlobeIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
+                          <GlobeEuropeAfricaIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
                           <span>{l10n.t(LocalizationKey.commonOpenOnWebsite)}</span>
                         </div>
                       }

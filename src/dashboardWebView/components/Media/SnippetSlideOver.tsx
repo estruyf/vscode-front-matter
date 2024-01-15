@@ -1,5 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { XIcon } from '@heroicons/react/outline';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { Fragment, useRef } from 'react';
 import * as l10n from '@vscode/l10n';
@@ -58,7 +58,7 @@ export const SnippetSlideOver: React.FunctionComponent<ISnippetSlideOverProps> =
                           onClick={dismiss}
                         >
                           <span className="sr-only">{l10n.t(LocalizationKey.dashboardMediaPanelClose)}</span>
-                          <XIcon className="h-6 w-6" aria-hidden="true" />
+                          <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                         </button>
                       </div>
                     </div>

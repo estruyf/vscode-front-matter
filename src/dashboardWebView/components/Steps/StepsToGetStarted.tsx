@@ -8,7 +8,7 @@ import { useMemo, useState } from 'react';
 import { Menu } from '@headlessui/react';
 import { MenuItem } from '../Menu';
 import { Framework, StaticFolder, Template } from '../../../models';
-import { ChevronDownIcon } from '@heroicons/react/outline';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { FrameworkDetectors } from '../../../constants/FrameworkDetectors';
 import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';

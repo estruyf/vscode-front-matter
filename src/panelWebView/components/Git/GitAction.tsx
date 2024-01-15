@@ -1,6 +1,6 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
-import { RefreshIcon } from '@heroicons/react/outline';
+import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { GeneralCommands } from '../../../constants';
@@ -50,7 +50,7 @@ export const GitAction: React.FunctionComponent<IGitActionProps> = ({
         onClick={pull}
         title={
           <div className="git_actions__sync">
-            <RefreshIcon className={isSyncing ? 'animate-spin' : ''} />
+            <ArrowPathIcon className={isSyncing ? 'animate-spin' : ''} />
             <span>
               {l10n.t(LocalizationKey.commonSync)}
             </span>

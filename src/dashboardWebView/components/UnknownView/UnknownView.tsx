@@ -1,4 +1,4 @@
-import { StopIcon } from '@heroicons/react/outline';
+import { StopIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';

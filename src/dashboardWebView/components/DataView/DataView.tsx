@@ -15,7 +15,7 @@ import { arrayMoveImmutable } from 'array-move';
 import { EmptyView } from './EmptyView';
 import { Container } from './SortableContainer';
 import { SortableItem } from './SortableItem';
-import { ChevronRightIcon, DatabaseIcon } from '@heroicons/react/outline';
+import { ChevronRightIcon, CircleStackIcon } from '@heroicons/react/24/outline';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { DataType } from '../../../models/DataType';
@@ -297,7 +297,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
             'text-[var(--frontmatter-text)]'
           )
             }`}>
-            <DatabaseIcon className="w-32 h-32" />
+            <CircleStackIcon className="w-32 h-32" />
             <p className="text-3xl mt-2">{l10n.t(LocalizationKey.dashboardDataViewDataViewNoDataFiles)}</p>
             <p className="text-xl mt-4">
               <a

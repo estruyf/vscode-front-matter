@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { BlockFieldData, Field, FieldGroup, PanelSettings } from '../../../models';
-import { PencilIcon } from '@heroicons/react/outline';
+import { PencilIcon } from '@heroicons/react/24/outline';
 import { DataBlockRecords, DataBlockSelector } from '.';
 import { SortEnd } from 'react-sortable-hoc';
 import { arrayMoveImmutable } from 'array-move';

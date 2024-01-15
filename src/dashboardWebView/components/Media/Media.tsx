@@ -1,5 +1,5 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { UploadIcon } from '@heroicons/react/outline';
+import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 import {
@@ -182,7 +182,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (
             'text-[var(--vscode-foreground)] bg-[var(--vscode-editor-background)] opacity-75'
           )
             }`}>
-            <UploadIcon className={`h-32`} />
+            <ArrowUpTrayIcon className={`h-32`} />
             <p className={`text-xl max-w-md text-center`}>
               {selectedFolder
                 ? l10n.t(LocalizationKey.dashboardMediaMediaFolderUpload, selectedFolder)

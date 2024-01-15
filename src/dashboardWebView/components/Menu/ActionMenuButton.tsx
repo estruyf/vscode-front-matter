@@ -1,5 +1,5 @@
 import { Menu } from '@headlessui/react';
-import { DotsVerticalIcon } from '@heroicons/react/outline';
+import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import useThemeColors from '../../hooks/useThemeColors';
 
@@ -29,7 +29,7 @@ export const ActionMenuButton: React.FunctionComponent<IActionMenuButtonProps> =
         }`}
     >
       <span className="sr-only">{title}</span>
-      <DotsVerticalIcon className="w-4 h-4" aria-hidden="true" />
+      <EllipsisVerticalIcon className="w-4 h-4" aria-hidden="true" />
     </Menu.Button>
   );
 };

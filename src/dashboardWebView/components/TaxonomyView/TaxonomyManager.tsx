@@ -1,5 +1,5 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { ExclamationIcon, PlusSmIcon, TagIcon } from '@heroicons/react/outline';
+import { ExclamationTriangleIcon, PlusIcon, TagIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
@@ -173,7 +173,7 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
               title={l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerButtonCreate, taxonomy)}
               onClick={onCreate}
             >
-              <PlusSmIcon className={`mr-2 h-6 w-6`} />
+              <PlusIcon className={`mr-2 h-6 w-6`} />
               <span className={`text-sm`}>{l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerButtonCreate, taxonomy)}</span>
             </button>
           </div>
@@ -240,7 +240,7 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
                     className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${getColors(`text-gray-800 dark:text-gray-200`, `text-[var(--frontmatter-text)]`)}`}
                     title={l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerTableUnmappedTitle)}
                   >
-                    <ExclamationIcon className="inline-block h-4 w-4 mr-2" />
+                    <ExclamationTriangleIcon className="inline-block h-4 w-4 mr-2" />
                     <span>{item}</span>
                   </td>
                   <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${getColors(`text-gray-800 dark:text-gray-200`, `text-[var(--frontmatter-text)]`)}`}>

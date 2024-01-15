@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 import { SettingsSelector } from '../../state';
-import { CogIcon } from '@heroicons/react/solid';
+import { CogIcon } from '@heroicons/react/24/solid';
 import { NavigationType } from '../../models';
 
 export interface ISettingsLinkProps {

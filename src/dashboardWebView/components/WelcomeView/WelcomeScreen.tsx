@@ -1,4 +1,4 @@
-import { BookOpenIcon, HeartIcon, StarIcon } from '@heroicons/react/outline';
+import { BookOpenIcon, HeartIcon, StarIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { DOCUMENTATION_LINK, GITHUB_LINK, REVIEW_LINK, SPONSOR_LINK, TelemetryEvent } from '../../../constants';
 import { Messenger } from '@estruyf/vscode/dist/client';

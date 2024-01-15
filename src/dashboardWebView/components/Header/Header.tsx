@@ -16,7 +16,7 @@ import { ChoiceButton } from '../Common/ChoiceButton';
 import { MediaHeaderBottom } from '../Media/MediaHeaderBottom';
 import { Tabs } from './Tabs';
 import { CustomScript } from '../../../models';
-import { LightningBoltIcon, PlusIcon } from '@heroicons/react/outline';
+import { BoltIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { routePaths } from '../..';
 import { useEffect, useMemo } from 'react';
@@ -81,7 +81,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
     .map((s, idx) => ({
       title: (
         <div key={idx} className="flex items-center">
-          <LightningBoltIcon className="w-4 h-4 mr-2" />
+          <BoltIcon className="w-4 h-4 mr-2" />
           <span>{s.title}</span>
         </div>
       ),

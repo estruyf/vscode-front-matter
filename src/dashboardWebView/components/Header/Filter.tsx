@@ -1,5 +1,5 @@
 import { Menu } from '@headlessui/react';
-import { FilterIcon } from '@heroicons/react/solid';
+import { FunnelIcon } from '@heroicons/react/24/solid';
 import * as React from 'react';
 import { MenuButton, MenuItem, MenuItems } from '../Menu';
 import * as l10n from '@vscode/l10n';
@@ -30,7 +30,7 @@ export const Filter: React.FunctionComponent<IFilterProps> = ({
         <MenuButton
           label={
             <>
-              <FilterIcon className={`inline-block w-5 h-5 mr-1`} />
+              <FunnelIcon className={`inline-block w-5 h-5 mr-1`} />
               <span>{label}</span>
             </>
           }

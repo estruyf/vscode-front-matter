@@ -1,10 +1,11 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import {
-  ArrowCircleUpIcon,
+  ArrowUpCircleIcon,
   PencilIcon,
   PlusIcon,
-  TrashIcon
-} from '@heroicons/react/outline';
+  SquaresPlusIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useCallback } from 'react';
 import { MergeIcon } from '../../../components/icons/MergeIcon';
@@ -73,6 +74,13 @@ export const TaxonomyActions: React.FunctionComponent<ITaxonomyActionsProps> = (
       )}
 
       <LinkButton
+        title={`Tag content`}
+        onClick={onEdit}>
+        <SquaresPlusIcon className={`w-4 h-4`} aria-hidden={true} />
+        <span className="sr-only">{l10n.t(LocalizationKey.commonEdit)}</span>
+      </LinkButton>
+
+      <LinkButton
         title={l10n.t(LocalizationKey.dashboardTaxonomyViewButtonEditTitle, value)}
         onClick={onEdit}>
         <PencilIcon className={`w-4 h-4`} aria-hidden={true} />
@@ -91,7 +99,7 @@ export const TaxonomyActions: React.FunctionComponent<ITaxonomyActionsProps> = (
       <LinkButton
         title={l10n.t(LocalizationKey.dashboardTaxonomyViewButtonMoveTitle)}
         onClick={onMove}>
-        <ArrowCircleUpIcon className={`w-4 h-4`} aria-hidden={true} />
+        <ArrowUpCircleIcon className={`w-4 h-4`} aria-hidden={true} />
         <span className="sr-only">
           {l10n.t(LocalizationKey.dashboardTaxonomyViewButtonMoveTitle)}
         </span>

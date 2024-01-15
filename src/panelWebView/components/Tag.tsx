@@ -1,4 +1,4 @@
-import { PlusIcon, XIcon } from '@heroicons/react/outline';
+import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
@@ -38,7 +38,7 @@ const Tag: React.FunctionComponent<ITagProps> = (props: React.PropsWithChildren<
           className={`tag__delete`}
           type={`button`}
           onClick={() => onRemove(value)}>
-          <XIcon style={{ width: `1rem`, height: `1rem` }} />
+          <XMarkIcon style={{ width: `1rem`, height: `1rem` }} />
         </button>
       </div>
     </>
