@@ -10,6 +10,7 @@ import { messageHandler } from '@estruyf/vscode/dist/client';
 import { CommandToCode } from '../../CommandToCode';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { useDebounce } from '../../../hooks/useDebounce';
 
 export interface ITextFieldProps extends BaseFieldProps<string> {
   singleLine: boolean | undefined;
@@ -39,10 +40,10 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   const [, setRequiredFields] = useRecoilState(RequiredFieldsAtom);
   const [text, setText] = React.useState<string | null>(value);
   const [loading, setLoading] = React.useState<boolean>(false);
+  const debouncedValue = useDebounce<string | null>(text, 500);
 
   const onTextChange = (txtValue: string) => {
     setText(txtValue);
-    onChange(txtValue);
   };
 
   let isValid = true;
@@ -120,6 +121,12 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
       setText(value);
     }
   }, [value]);
+
+  useEffect(() => {
+    if (debouncedValue !== value) {
+      onChange(debouncedValue || '');
+    }
+  }, [debouncedValue]);
 
   return (
     <div className={`metadata_field`}>
