@@ -976,6 +976,10 @@ export enum LocalizationKey {
    */
   dashboardTaxonomyViewTaxonomyManagerTableUnmappedTitle = 'dashboard.taxonomyView.taxonomyManager.table.unmapped.title',
   /**
+   * Filter
+   */
+  dashboardTaxonomyViewTaxonomyManagerFilterInputPlaceholder = 'dashboard.taxonomyView.taxonomyManager.filterInput.placeholder',
+  /**
    * Select the taxonomy
    */
   dashboardTaxonomyViewTaxonomyViewNavigationBarTitle = 'dashboard.taxonomyView.taxonomyView.navigationBar.title',
@@ -2175,6 +2179,10 @@ export enum LocalizationKey {
   /**
    * {0}: Renaming "{1}" from {2} to {3}.
    */
+  helpersTaxonomyHelperProcessInsert = 'helpers.taxonomyHelper.process.insert',
+  /**
+   * {0}: Renaming "{1}" from {2} to {3}.
+   */
   helpersTaxonomyHelperProcessEdit = 'helpers.taxonomyHelper.process.edit',
   /**
    * {0}: Merging "{1}" from {2} to {3}.
@@ -2184,6 +2192,10 @@ export enum LocalizationKey {
    * {0}: Deleting "{1}" from {2}.
    */
   helpersTaxonomyHelperProcessDelete = 'helpers.taxonomyHelper.process.delete',
+  /**
+   * Insert completed.
+   */
+  helpersTaxonomyHelperProcessInsertSuccess = 'helpers.taxonomyHelper.process.insert.success',
   /**
    * Edit completed.
    */

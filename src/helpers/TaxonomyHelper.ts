@@ -24,6 +24,7 @@ import { SettingsListener as PanelSettingsListener } from '../listeners/panel';
 import { SettingsListener as DashboardSettingsListener } from '../listeners/dashboard';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
+import { Page } from '../dashboardWebView/models';
 
 export class TaxonomyHelper {
   private static db: JsonDB;
@@ -262,13 +263,14 @@ export class TaxonomyHelper {
    * @returns
    */
   public static async process(
-    type: 'edit' | 'merge' | 'delete',
+    type: 'insert' | 'edit' | 'merge' | 'delete',
     taxonomyType: TaxonomyType | string,
     oldValue: string,
-    newValue?: string
+    newValue?: string,
+    pages?: Page[]
   ) {
     // Retrieve all the markdown files
-    const allFiles = await FilesHelper.getAllFiles();
+    const allFiles = type === 'insert' ? pages : await FilesHelper.getAllFiles();
     if (!allFiles) {
       return;
     }
@@ -284,7 +286,14 @@ export class TaxonomyHelper {
 
     let progressText = ``;
 
-    if (type === 'edit') {
+    if (type === 'insert') {
+      progressText = l10n.t(
+        LocalizationKey.helpersTaxonomyHelperProcessInsert,
+        EXTENSION_NAME,
+        taxonomyName,
+        newValue || ''
+      );
+    } else if (type === 'edit') {
       progressText = l10n.t(
         LocalizationKey.helpersTaxonomyHelperProcessEdit,
         EXTENSION_NAME,
@@ -309,7 +318,7 @@ export class TaxonomyHelper {
       );
     }
 
-    window.withProgress(
+    await window.withProgress(
       {
         location: ProgressLocation.Notification,
         title: progressText,
@@ -324,7 +333,8 @@ export class TaxonomyHelper {
         for (const file of allFiles) {
           progress.report({ increment: ++i / progressNr });
 
-          const mdFile = await readFileAsync(parseWinPath(file.fsPath), {
+          const filePath = type === 'insert' ? (file as Page).fmFilePath : file.fsPath;
+          const mdFile = await readFileAsync(parseWinPath(filePath), {
             encoding: 'utf8'
           });
 
@@ -342,7 +352,27 @@ export class TaxonomyHelper {
                   taxonomies = taxonomies.split(`,`);
                 }
 
-                if (taxonomies && taxonomies.length > 0) {
+                const spaces = window.activeTextEditor?.options?.tabSize;
+
+                if (type === 'insert' && newValue) {
+                  if (taxonomies && taxonomies.length > 0) {
+                    taxonomies.push(newValue);
+                  } else {
+                    taxonomies = [newValue];
+                  }
+
+                  const newTaxValue = [...new Set(taxonomies)].sort();
+                  ContentType.setFieldValue(data, fieldNames, newTaxValue);
+
+                  // Update the file
+                  await writeFileAsync(
+                    parseWinPath(filePath),
+                    FrontMatterParser.toFile(article.content, article.data, mdFile, {
+                      indent: spaces || 2
+                    } as DumpOptions as any),
+                    { encoding: 'utf8' }
+                  );
+                } else if (type !== 'insert' && taxonomies && taxonomies.length > 0) {
                   const idx = taxonomies.findIndex((o) => o === oldValue);
 
                   if (idx !== -1) {
@@ -355,7 +385,6 @@ export class TaxonomyHelper {
                     const newTaxValue = [...new Set(taxonomies)].sort();
                     ContentType.setFieldValue(data, fieldNames, newTaxValue);
 
-                    const spaces = window.activeTextEditor?.options?.tabSize;
                     // Update the file
                     await writeFileAsync(
                       parseWinPath(file.fsPath),
@@ -375,7 +404,9 @@ export class TaxonomyHelper {
 
         await this.addToSettings(taxonomyType, oldValue, newValue);
 
-        if (type === 'edit') {
+        if (type === 'insert') {
+          Notifications.info(l10n.t(LocalizationKey.helpersTaxonomyHelperProcessInsertSuccess));
+        } else if (type === 'edit') {
           Notifications.info(l10n.t(LocalizationKey.helpersTaxonomyHelperProcessEditSuccess));
         } else if (type === 'merge') {
           Notifications.info(l10n.t(LocalizationKey.helpersTaxonomyHelperProcessMergeSuccess));
@@ -503,6 +534,21 @@ export class TaxonomyHelper {
   }
 
   /**
+   * Retrieve the taxonomy type based from the string
+   * @param taxonomyType
+   * @returns
+   */
+  public static getTypeFromString(taxonomyType: string): TaxonomyType | string {
+    if (taxonomyType === 'tags') {
+      return TaxonomyType.Tag;
+    } else if (taxonomyType === 'categories') {
+      return TaxonomyType.Category;
+    } else {
+      return taxonomyType;
+    }
+  }
+
+  /**
    * Retrieve the fields for the taxonomy field
    * @returns
    */
@@ -586,20 +632,5 @@ export class TaxonomyHelper {
     }
 
     return options;
-  }
-
-  /**
-   * Retrieve the taxonomy type based from the string
-   * @param taxonomyType
-   * @returns
-   */
-  private static getTypeFromString(taxonomyType: string): TaxonomyType | string {
-    if (taxonomyType === 'tags') {
-      return TaxonomyType.Tag;
-    } else if (taxonomyType === 'categories') {
-      return TaxonomyType.Category;
-    } else {
-      return taxonomyType;
-    }
   }
 }

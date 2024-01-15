@@ -5,6 +5,7 @@ import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { TaxonomyHelper } from '../../helpers';
 import { PostMessageData } from '../../models';
 import { BaseListener } from './BaseListener';
+import { Page } from '../../dashboardWebView/models';
 
 export class TaxonomyListener extends BaseListener {
   /**
@@ -39,7 +40,34 @@ export class TaxonomyListener extends BaseListener {
       case DashboardMessage.importTaxonomy:
         commands.executeCommand(COMMAND_NAME.exportTaxonomy);
         break;
+      case DashboardMessage.mapTaxonomy:
+        TaxonomyListener.mapTaxonomy(msg);
+        break;
     }
+  }
+
+  private static async mapTaxonomy({
+    command,
+    requestId,
+    payload: { taxonomy, value, pages }
+  }: {
+    command: string;
+    requestId?: string;
+    payload: { taxonomy: string; value: string; pages: Page[] };
+  }) {
+    if (!command || !requestId || !taxonomy || !value || !pages) {
+      return;
+    }
+
+    await TaxonomyHelper.process(
+      'insert',
+      TaxonomyHelper.getTypeFromString(taxonomy),
+      '',
+      value,
+      pages
+    );
+
+    this.sendRequest(command as any, requestId, {});
   }
 
   private static getData() {

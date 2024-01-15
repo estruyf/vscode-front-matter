@@ -1,4 +1,4 @@
-import { Messenger } from '@estruyf/vscode/dist/client';
+import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import { ChevronRightIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
@@ -31,6 +31,16 @@ export const TaxonomyView: React.FunctionComponent<ITaxonomyViewProps> = ({
   const onImport = () => {
     Messenger.send(DashboardMessage.importTaxonomy);
   };
+
+  const onContentMapping = React.useCallback((value: string, pages: Page[]) => {
+    messageHandler.request(DashboardMessage.mapTaxonomy, {
+      taxonomy: selectedTaxonomy,
+      value,
+      pages
+    }).then(() => {
+      setContentTagging(null);
+    });
+  }, [selectedTaxonomy]);
 
   useEffect(() => {
     setTaxonomySettings({
@@ -107,6 +117,7 @@ export const TaxonomyView: React.FunctionComponent<ITaxonomyViewProps> = ({
                 value={contentTagging}
                 taxonomy={selectedTaxonomy}
                 pages={pages}
+                onContentMapping={(value: string, pages: Page[]) => onContentMapping(value, pages)}
                 onDismiss={() => setContentTagging(null)} />
             ) : (
               <TaxonomyManager
