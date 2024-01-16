@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Page, PageMappings, SortingOption } from '../../models';
 import { useRecoilValue } from 'recoil';
-import { SettingsSelector, SortingAtom } from '../../state';
+import { SettingsSelector } from '../../state';
 import { getTaxonomyField } from '../../../helpers/getTaxonomyField';
 import { Sorting } from '../../../helpers/Sorting';
-import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, EyeIcon } from '@heroicons/react/24/outline';
 import { Button } from '../Common/Button';
 import { VSCodeCheckbox } from '@vscode/webview-ui-toolkit/react';
 import { FilterInput } from './FilterInput';
@@ -12,9 +12,10 @@ import { useDebounce } from '../../../hooks/useDebounce';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { sortPages } from '../../../utils/sortPages';
-import { messageHandler } from '@estruyf/vscode/dist/client';
+import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
 import { ExtensionState } from '../../../constants';
+import { LinkButton } from '../Common/LinkButton';
 
 export interface ITaxonomyTaggingProps {
   taxonomy: string | null;
@@ -123,6 +124,10 @@ export const TaxonomyTagging: React.FunctionComponent<ITaxonomyTaggingProps> = (
     return (!untaggedPages.find((p: Page) => p.fmFilePath === page.fmFilePath) && !pageMappings.untagged.find((p: Page) => p.fmFilePath === page.fmFilePath)) || pageMappings.tagged.find((p: Page) => p.fmFilePath === page.fmFilePath);
   }, [untaggedPages, pageMappings.tagged]);
 
+  const onFileView = (filePath: string) => {
+    Messenger.send(DashboardMessage.openFile, filePath);
+  }
+
   React.useEffect(() => {
     messageHandler.request<{ key: string; value: SortingOption; }>(DashboardMessage.getState, {
       key: ExtensionState.Dashboard.Contents.Sorting
@@ -173,12 +178,18 @@ export const TaxonomyTagging: React.FunctionComponent<ITaxonomyTaggingProps> = (
               >
                 {l10n.t(LocalizationKey.commonTitle)}
               </th>
+              <th
+                scope="col"
+                className={``}
+              >
+
+              </th>
             </tr>
           </thead>
           <tbody className={`divide-y divide-[var(--frontmatter-border)]`}>
             {untaggedPages && sortedPages && sortedPages.map((page) => (
-              <tr key={page.fmFilePath} className='py-2'>
-                <td className={`pl-6 w-[25px]`}>
+              <tr key={page.fmFilePath}>
+                <td className={`pl-6 py-2 w-[25px]`}>
                   <VSCodeCheckbox
                     title={l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyTaggingCheckbox, value)}
                     onClick={() => onCheckboxClick(page)}
@@ -188,13 +199,23 @@ export const TaxonomyTagging: React.FunctionComponent<ITaxonomyTaggingProps> = (
                     </span>
                   </VSCodeCheckbox>
                 </td>
-                <td className={`pr-6 whitespace-nowrap text-sm font-medium text-[var(--frontmatter-text)]`}>
+                <td className={`py-2 text-sm font-medium text-[var(--frontmatter-text)]`}>
                   <button
                     title={l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyTaggingCheckbox, value)}
-                    className='hover:text-[var(--vscode-textLink-activeForeground)]'
+                    className='hover:text-[var(--vscode-textLink-activeForeground)] text-left'
                     onClick={() => onCheckboxClick(page)}>
                     {page.title}
                   </button>
+                </td>
+                <td className={`py-2 pr-6`}>
+                  <LinkButton
+                    title={l10n.t(LocalizationKey.dashboardContentsContentActionsMenuItemView)}
+                    onClick={() => onFileView(page.fmFilePath)}>
+                    <EyeIcon className={`w-4 h-4`} aria-hidden={true} />
+                    <span className='sr-only'>
+                      {l10n.t(LocalizationKey.dashboardContentsContentActionsMenuItemView)}
+                    </span>
+                  </LinkButton>
                 </td>
               </tr>
             ))}

@@ -174,7 +174,7 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
             <tr>
               <th
                 scope="col"
-                className={`px-6 py-3 text-left text-xs font-medium uppercase text-[var(--frontmatter-secondary-text)]'`}
+                className={`px-6 py-3 text-left text-xs font-medium uppercase text-[var(--frontmatter-secondary-text)]`}
               >
                 {l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerTableHeadingName)}
               </th>

@@ -2,10 +2,11 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import {
   ArrowUpCircleIcon,
   PencilIcon,
+  PlusCircleIcon,
   PlusIcon,
   TagIcon,
   TrashIcon,
-} from '@heroicons/react/24/outline';
+} from '@heroicons/react/24/solid';
 import * as React from 'react';
 import { useCallback } from 'react';
 import { MergeIcon } from '../../../components/icons/MergeIcon';
@@ -68,7 +69,7 @@ export const TaxonomyActions: React.FunctionComponent<ITaxonomyActionsProps> = (
 
   return (
     <>
-      <div className={`space-x-2`}>
+      <div className={`space-x-2 text-[var(--frontmatter-text)]`}>
         {unmapped && (
           <LinkButton
             title={l10n.t(LocalizationKey.dashboardTaxonomyViewButtonAddTitle, value)}
@@ -83,7 +84,10 @@ export const TaxonomyActions: React.FunctionComponent<ITaxonomyActionsProps> = (
         <LinkButton
           title={`Tag content`}
           onClick={onTagging}>
-          <TagIcon className={`w-4 h-4`} aria-hidden={true} />
+          <div className='relative'>
+            <TagIcon className={`w-4 h-4`} aria-hidden={true} />
+            <PlusCircleIcon className={`w-3 h-3 absolute left-[-3px] bottom-[-4px] border-1 bg-[var(--vscode-editor-background)] rounded-full`} aria-hidden={true} />
+          </div>
           <span className="sr-only">{l10n.t(LocalizationKey.commonEdit)}</span>
         </LinkButton>
 
