@@ -32,7 +32,6 @@ export const AstroContentTypes: React.FunctionComponent<IAstroContentTypesProps>
     if (collections.length > 0 && settings?.contentTypes?.length > 0) {
       // Find created content types from the collections
       const astroCollection = collections.find(c => settings.contentTypes.find((ct) => ct.name === c.name));
-      console.log(`astroCollection`, astroCollection)
       if (astroCollection) {
         setStatus(Status.Completed);
       } else {

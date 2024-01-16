@@ -7,7 +7,7 @@ import {
 } from '../constants';
 import { join } from 'path';
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window } from 'vscode';
-import { Logger, Settings as SettingsHelper } from '../helpers';
+import { DashboardSettings, Logger, Settings as SettingsHelper } from '../helpers';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { Extension } from '../helpers/Extension';
 import { WebviewHelper } from '@estruyf/vscode';
@@ -160,6 +160,7 @@ export class Dashboard {
       Dashboard.isDisposed = true;
       Dashboard._viewData = undefined;
       PanelMediaListener.getMediaSelection();
+      DashboardSettings.updateAfterClose();
       await commands.executeCommand('setContext', CONTEXT.isDashboardOpen, false);
     });
 

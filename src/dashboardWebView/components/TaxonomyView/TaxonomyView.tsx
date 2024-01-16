@@ -6,7 +6,7 @@ import { useRecoilValue } from 'recoil';
 import { TelemetryEvent } from '../../../constants';
 import { TaxonomyData } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
-import { Page } from '../../models';
+import { Page, PageMappings } from '../../models';
 import { SettingsSelector } from '../../state';
 import { NavigationBar, NavigationItem } from '../Layout';
 import { PageLayout } from '../Layout/PageLayout';
@@ -32,12 +32,14 @@ export const TaxonomyView: React.FunctionComponent<ITaxonomyViewProps> = ({
     Messenger.send(DashboardMessage.importTaxonomy);
   };
 
-  const onContentMapping = React.useCallback((value: string, pages: Page[]) => {
+  const onContentMapping = React.useCallback((value: string, pageMappings: PageMappings) => {
     messageHandler.request(DashboardMessage.mapTaxonomy, {
       taxonomy: selectedTaxonomy,
       value,
-      pages
+      pageMappings
     }).then(() => {
+      setContentTagging(null);
+    }).catch(() => {
       setContentTagging(null);
     });
   }, [selectedTaxonomy]);
@@ -117,7 +119,7 @@ export const TaxonomyView: React.FunctionComponent<ITaxonomyViewProps> = ({
                 value={contentTagging}
                 taxonomy={selectedTaxonomy}
                 pages={pages}
-                onContentMapping={(value: string, pages: Page[]) => onContentMapping(value, pages)}
+                onContentMapping={(value: string, pageMappings: PageMappings) => onContentMapping(value, pageMappings)}
                 onDismiss={() => setContentTagging(null)} />
             ) : (
               <TaxonomyManager

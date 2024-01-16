@@ -70,6 +70,7 @@ export enum DashboardMessage {
   getTheme = 'getTheme',
   updateSetting = 'updateSetting',
   setState = 'setState',
+  getState = 'getState',
   runCustomScript = 'runCustomScript',
   sendTelemetry = 'sendTelemetry',
   logError = 'logError',

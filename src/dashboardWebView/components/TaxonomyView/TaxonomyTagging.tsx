@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Page } from '../../models';
+import { Page, PageMappings, SortingOption } from '../../models';
 import { useRecoilValue } from 'recoil';
-import { SettingsSelector } from '../../state';
+import { SettingsSelector, SortingAtom } from '../../state';
 import { getTaxonomyField } from '../../../helpers/getTaxonomyField';
 import { Sorting } from '../../../helpers/Sorting';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
@@ -9,12 +9,18 @@ import { Button } from '../Common/Button';
 import { VSCodeCheckbox } from '@vscode/webview-ui-toolkit/react';
 import { FilterInput } from './FilterInput';
 import { useDebounce } from '../../../hooks/useDebounce';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
+import { sortPages } from '../../../utils/sortPages';
+import { messageHandler } from '@estruyf/vscode/dist/client';
+import { DashboardMessage } from '../../DashboardMessage';
+import { ExtensionState } from '../../../constants';
 
 export interface ITaxonomyTaggingProps {
   taxonomy: string | null;
   value: string;
   pages: Page[];
-  onContentMapping: (value: string, pages: Page[]) => void;
+  onContentMapping: (value: string, pageMappings: PageMappings) => void;
   onDismiss: () => void;
 }
 
@@ -26,33 +32,25 @@ export const TaxonomyTagging: React.FunctionComponent<ITaxonomyTaggingProps> = (
   onDismiss,
 }: React.PropsWithChildren<ITaxonomyTaggingProps>) => {
   const settings = useRecoilValue(SettingsSelector);
-  const [selectedPages, setSelectedPages] = React.useState<Page[]>([]);
+  const [sortedPages, setSortedPages] = React.useState<Page[]>([]);
+  const [pageMappings, setPageMappings] = React.useState<{
+    tagged: Page[];
+    untagged: Page[];
+  }>({
+    tagged: [],
+    untagged: []
+  });
   const [filterValue, setFilterValue] = React.useState('');
   const debounceFilterValue = useDebounce<string>(filterValue, 500);
-
-  const onCheckboxClick = React.useCallback((page: Page) => {
-    const pageIdx = selectedPages.findIndex((p: Page) => p.fmFilePath === page.fmFilePath);
-    if (pageIdx === -1) {
-      setSelectedPages([...selectedPages, page]);
-    } else {
-      const newSelectedPages = [...selectedPages];
-      newSelectedPages.splice(pageIdx, 1);
-      setSelectedPages(newSelectedPages);
-    }
-  }, [selectedPages]);
-
-  const checkIfChecked = React.useCallback((page: Page) => {
-    return selectedPages.find((p: Page) => p.fmFilePath === page.fmFilePath);
-  }, [selectedPages]);
 
   const untaggedPages = React.useMemo(() => {
     let untagged: Page[] = [];
 
-    if (!pages || !settings?.contentTypes || !taxonomy) {
+    if (!sortedPages || !settings?.contentTypes || !taxonomy) {
       return untagged;
     }
 
-    for (const page of pages) {
+    for (const page of sortedPages) {
       if (taxonomy === 'tags') {
         if (!page.fmTags || page.fmTags.indexOf(value) === -1) {
           untagged.push(page);
@@ -85,25 +83,74 @@ export const TaxonomyTagging: React.FunctionComponent<ITaxonomyTaggingProps> = (
     }
 
     return untagged;
-  }, [pages, taxonomy, value, debounceFilterValue]);
+  }, [sortedPages, taxonomy, value, debounceFilterValue]);
 
-  console.log(`Selected pages`, selectedPages)
+  const onCheckboxClick = React.useCallback((page: Page) => {
+    const untaggedPage = untaggedPages.find((p: Page) => p.fmFilePath === page.fmFilePath);
+
+    const clonedPageMappings = Object.assign({}, pageMappings);
+    const taggedIdx = pageMappings.tagged.findIndex((p: Page) => p.fmFilePath === page.fmFilePath);
+    const untaggedIdx = pageMappings.untagged.findIndex((p: Page) => p.fmFilePath === page.fmFilePath);
+
+    if (untaggedPage) {
+      // Page was not yet tagged
+      if (taggedIdx === -1) {
+        clonedPageMappings.tagged.push(page);
+
+        if (untaggedIdx !== -1) {
+          clonedPageMappings.untagged.splice(untaggedIdx, 1);
+        }
+      } else {
+        clonedPageMappings.tagged.splice(taggedIdx, 1);
+
+        if (untaggedIdx === -1) {
+          clonedPageMappings.untagged.push(page);
+        }
+      }
+    } else {
+      // Page was already tagged, so only the untagged array needs to be updated
+      if (untaggedIdx === -1) {
+        clonedPageMappings.untagged.push(page);
+      } else {
+        clonedPageMappings.untagged.splice(taggedIdx, 1);
+      }
+    }
+
+    setPageMappings(clonedPageMappings);
+  }, [pageMappings, untaggedPages]);
+
+  const checkIfChecked = React.useCallback((page: Page) => {
+    return (!untaggedPages.find((p: Page) => p.fmFilePath === page.fmFilePath) && !pageMappings.untagged.find((p: Page) => p.fmFilePath === page.fmFilePath)) || pageMappings.tagged.find((p: Page) => p.fmFilePath === page.fmFilePath);
+  }, [untaggedPages, pageMappings.tagged]);
+
+  React.useEffect(() => {
+    messageHandler.request<{ key: string; value: SortingOption; }>(DashboardMessage.getState, {
+      key: ExtensionState.Dashboard.Contents.Sorting
+    }).then(({ key, value }) => {
+      if (key === ExtensionState.Dashboard.Contents.Sorting && value) {
+        const sorted = sortPages(pages, value)
+        setSortedPages(sorted);
+      } else {
+        setSortedPages(pages);
+      }
+    });
+  }, [pages]);
 
   return (
     <div className={`py-6 px-4 flex flex-col h-full overflow-hidden`}>
       <div className={`flex w-full justify-between flex-shrink-0`}>
         <div className={`flex gap-2 items-center`}>
-          <button onClick={onDismiss} title='Back'>
-            <span className='sr-only'>Back</span>
+          <button onClick={onDismiss} title={l10n.t(LocalizationKey.commonBack)}>
+            <span className='sr-only'>{l10n.t(LocalizationKey.commonBack)}</span>
             <ArrowLeftIcon className='w-5 h-5 text-[var(--frontmatter-text)]' />
           </button>
           <h2 className={`text-lg first-letter:uppercase text-[var(--frontmatter-text)]`}>
-            Map your content with: {value} <span className='ml-2'></span>
+            {l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyTaggingPageTitle, value)}
           </h2>
         </div>
         <div className='flex gap-4 justify-center items-center'>
           <FilterInput
-            placeholder='Filter'
+            placeholder={l10n.t(LocalizationKey.commonFilter)}
             value={filterValue}
             onChange={(value) => setFilterValue(value)}
             onReset={() => setFilterValue('')} />
@@ -124,23 +171,27 @@ export const TaxonomyTagging: React.FunctionComponent<ITaxonomyTaggingProps> = (
                 scope="col"
                 className={`pr-6 py-3 text-left text-xs font-medium uppercase text-[var(--frontmatter-secondary-text)]`}
               >
-                Name
+                {l10n.t(LocalizationKey.commonTitle)}
               </th>
             </tr>
           </thead>
           <tbody className={`divide-y divide-[var(--frontmatter-border)]`}>
-            {untaggedPages.map((page) => (
+            {untaggedPages && sortedPages && sortedPages.map((page) => (
               <tr key={page.fmFilePath} className='py-2'>
                 <td className={`pl-6 w-[25px]`}>
                   <VSCodeCheckbox
+                    title={l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyTaggingCheckbox, value)}
                     onClick={() => onCheckboxClick(page)}
                     checked={checkIfChecked(page)}>
-                    <span className='sr-only'>Tag page</span>
+                    <span className='sr-only'>
+                      {l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyTaggingCheckbox, value)}
+                    </span>
                   </VSCodeCheckbox>
                 </td>
                 <td className={`pr-6 whitespace-nowrap text-sm font-medium text-[var(--frontmatter-text)]`}>
                   <button
-                    title={page.title}
+                    title={l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyTaggingCheckbox, value)}
+                    className='hover:text-[var(--vscode-textLink-activeForeground)]'
                     onClick={() => onCheckboxClick(page)}>
                     {page.title}
                   </button>
@@ -152,8 +203,8 @@ export const TaxonomyTagging: React.FunctionComponent<ITaxonomyTaggingProps> = (
       </div>
 
       <div className='flex justify-end space-x-2'>
-        <Button onClick={onDismiss} secondary>Cancel</Button>
-        <Button onClick={() => onContentMapping(value, selectedPages)}>Apply</Button>
+        <Button onClick={onDismiss} secondary>{l10n.t(LocalizationKey.commonCancel)}</Button>
+        <Button onClick={() => onContentMapping(value, pageMappings)}>{l10n.t(LocalizationKey.commonApply)}</Button>
       </div>
     </div>
   );

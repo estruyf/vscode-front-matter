@@ -3,7 +3,7 @@ import {
   ArrowUpCircleIcon,
   PencilIcon,
   PlusIcon,
-  SquaresPlusIcon,
+  TagIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import * as React from 'react';
@@ -83,7 +83,7 @@ export const TaxonomyActions: React.FunctionComponent<ITaxonomyActionsProps> = (
         <LinkButton
           title={`Tag content`}
           onClick={onTagging}>
-          <SquaresPlusIcon className={`w-4 h-4`} aria-hidden={true} />
+          <TagIcon className={`w-4 h-4`} aria-hidden={true} />
           <span className="sr-only">{l10n.t(LocalizationKey.commonEdit)}</span>
         </LinkButton>
 

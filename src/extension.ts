@@ -1,6 +1,6 @@
 import { GitListener } from './listeners/general/GitListener';
 import * as vscode from 'vscode';
-import { COMMAND_NAME, EXTENSION_NAME, TelemetryEvent } from './constants';
+import { COMMAND_NAME, CONTEXT, EXTENSION_NAME, TelemetryEvent } from './constants';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
 import { TagType } from './panelWebView/TagType';
 import { PanelProvider } from './panelWebView/PanelProvider';
@@ -46,6 +46,11 @@ export async function activate(context: vscode.ExtensionContext) {
   const { subscriptions, extensionUri, extensionPath } = context;
 
   const extension = Extension.getInstance(context);
+  // Set development context
+  if (!Extension.getInstance().isProductionMode) {
+    vscode.commands.executeCommand('setContext', CONTEXT.isDevelopment, true);
+  }
+
   Backers.init(context).then(() => {});
 
   // Make sure the EN language file is loaded

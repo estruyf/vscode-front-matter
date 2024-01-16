@@ -25,6 +25,7 @@ import { SettingsListener as DashboardSettingsListener } from '../listeners/dash
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 import { Page } from '../dashboardWebView/models';
+import { Logger } from './Logger';
 
 export class TaxonomyHelper {
   private static db: JsonDB;
@@ -255,22 +256,26 @@ export class TaxonomyHelper {
   }
 
   /**
-   * Process the taxonomy changes
-   * @param type
-   * @param taxonomyType
-   * @param oldValue
-   * @param newValue
-   * @returns
+   * Processes the taxonomy changes based on the specified type.
+   * @param type - The type of taxonomy change ('insert', 'edit', 'merge', 'delete').
+   * @param taxonomyType - The type of taxonomy ('Tag', 'Category', or custom taxonomy name).
+   * @param oldValue - The old value of the taxonomy.
+   * @param newValue - The new value of the taxonomy (optional).
+   * @param pages - The array of Page objects (optional).
+   * @param needsSettingsUpdate - Indicates whether the settings need to be updated (default: true).
    */
   public static async process(
     type: 'insert' | 'edit' | 'merge' | 'delete',
     taxonomyType: TaxonomyType | string,
     oldValue: string,
     newValue?: string,
-    pages?: Page[]
+    pages?: Page[],
+    needsSettingsUpdate: boolean = true
   ) {
     // Retrieve all the markdown files
-    const allFiles = type === 'insert' ? pages : await FilesHelper.getAllFiles();
+    const allFiles = pages
+      ? pages?.map((p) => ({ fsPath: p.fmFilePath }))
+      : await FilesHelper.getAllFiles();
     if (!allFiles) {
       return;
     }
@@ -290,7 +295,6 @@ export class TaxonomyHelper {
       progressText = l10n.t(
         LocalizationKey.helpersTaxonomyHelperProcessInsert,
         EXTENSION_NAME,
-        taxonomyName,
         newValue || ''
       );
     } else if (type === 'edit') {
@@ -333,8 +337,7 @@ export class TaxonomyHelper {
         for (const file of allFiles) {
           progress.report({ increment: ++i / progressNr });
 
-          const filePath = type === 'insert' ? (file as Page).fmFilePath : file.fsPath;
-          const mdFile = await readFileAsync(parseWinPath(filePath), {
+          const mdFile = await readFileAsync(parseWinPath(file.fsPath), {
             encoding: 'utf8'
           });
 
@@ -352,8 +355,7 @@ export class TaxonomyHelper {
                   taxonomies = taxonomies.split(`,`);
                 }
 
-                const spaces = window.activeTextEditor?.options?.tabSize;
-
+                let needsFileUpdate = false;
                 if (type === 'insert' && newValue) {
                   if (taxonomies && taxonomies.length > 0) {
                     taxonomies.push(newValue);
@@ -363,15 +365,7 @@ export class TaxonomyHelper {
 
                   const newTaxValue = [...new Set(taxonomies)].sort();
                   ContentType.setFieldValue(data, fieldNames, newTaxValue);
-
-                  // Update the file
-                  await writeFileAsync(
-                    parseWinPath(filePath),
-                    FrontMatterParser.toFile(article.content, article.data, mdFile, {
-                      indent: spaces || 2
-                    } as DumpOptions as any),
-                    { encoding: 'utf8' }
-                  );
+                  needsFileUpdate = true;
                 } else if (type !== 'insert' && taxonomies && taxonomies.length > 0) {
                   const idx = taxonomies.findIndex((o) => o === oldValue);
 
@@ -384,25 +378,32 @@ export class TaxonomyHelper {
 
                     const newTaxValue = [...new Set(taxonomies)].sort();
                     ContentType.setFieldValue(data, fieldNames, newTaxValue);
-
-                    // Update the file
-                    await writeFileAsync(
-                      parseWinPath(file.fsPath),
-                      FrontMatterParser.toFile(article.content, article.data, mdFile, {
-                        indent: spaces || 2
-                      } as DumpOptions as any),
-                      { encoding: 'utf8' }
-                    );
+                    needsFileUpdate = true;
                   }
+                }
+
+                // Update the file when needed
+                if (needsFileUpdate) {
+                  const spaces = window.activeTextEditor?.options?.tabSize;
+
+                  await writeFileAsync(
+                    parseWinPath(file.fsPath),
+                    FrontMatterParser.toFile(article.content, article.data, mdFile, {
+                      indent: spaces || 2
+                    } as DumpOptions as any),
+                    { encoding: 'utf8' }
+                  );
                 }
               }
             } catch (e) {
-              // Continue with the next file
+              Logger.error(`Failed to ${type} taxonomy value in ${file.fsPath}`);
             }
           }
         }
 
-        await this.addToSettings(taxonomyType, oldValue, newValue);
+        if (needsSettingsUpdate) {
+          await this.addToSettings(taxonomyType, oldValue, newValue);
+        }
 
         if (type === 'insert') {
           Notifications.info(l10n.t(LocalizationKey.helpersTaxonomyHelperProcessInsertSuccess));

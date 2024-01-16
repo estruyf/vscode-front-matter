@@ -16,6 +16,10 @@ export enum LocalizationKey {
    */
   commonCancel = 'common.cancel',
   /**
+   * Apply
+   */
+  commonApply = 'common.apply',
+  /**
    * Clear
    */
   commonClear = 'common.clear',
@@ -84,6 +88,10 @@ export enum LocalizationKey {
    */
   commonRemoveValue = 'common.remove.value',
   /**
+   * Back
+   */
+  commonFilter = 'common.filter',
+  /**
    * Filter by {0}
    */
   commonFilterValue = 'common.filter.value',
@@ -131,6 +139,10 @@ export enum LocalizationKey {
    * Open settings
    */
   commonOpenSettings = 'common.openSettings',
+  /**
+   * Back
+   */
+  commonBack = 'common.back',
   /**
    * output window
    */
@@ -979,6 +991,14 @@ export enum LocalizationKey {
    * Filter
    */
   dashboardTaxonomyViewTaxonomyManagerFilterInputPlaceholder = 'dashboard.taxonomyView.taxonomyManager.filterInput.placeholder',
+  /**
+   * Map your content with: {0}
+   */
+  dashboardTaxonomyViewTaxonomyTaggingPageTitle = 'dashboard.taxonomyView.taxonomyTagging.pageTitle',
+  /**
+   * Tag page with {0}
+   */
+  dashboardTaxonomyViewTaxonomyTaggingCheckbox = 'dashboard.taxonomyView.taxonomyTagging.checkbox',
   /**
    * Select the taxonomy
    */
@@ -2177,7 +2197,7 @@ export enum LocalizationKey {
    */
   helpersTaxonomyHelperCreateNewInputValidateExists = 'helpers.taxonomyHelper.createNew.input.validate.exists',
   /**
-   * {0}: Renaming "{1}" from {2} to {3}.
+   * {0}: Inserting "{1}" to your selected pages.
    */
   helpersTaxonomyHelperProcessInsert = 'helpers.taxonomyHelper.process.insert',
   /**

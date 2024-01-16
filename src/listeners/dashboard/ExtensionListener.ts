@@ -27,6 +27,9 @@ export class ExtensionListener extends BaseListener {
       case DashboardMessage.setState:
         this.setState(msg?.payload);
         break;
+      case DashboardMessage.getState:
+        this.getState(msg.command, msg?.payload, msg.requestId);
+        break;
     }
   }
 
@@ -34,6 +37,19 @@ export class ExtensionListener extends BaseListener {
     const { key, value } = data;
     if (key && value) {
       Extension.getInstance().setState(key, value, 'workspace');
+    }
+  }
+
+  private static async getState(command: string, data: any, requestId?: string) {
+    if (!command || !requestId || !data) {
+      return;
+    }
+
+    const { key } = data;
+    if (key) {
+      const value = await Extension.getInstance().getState<any | undefined>(key, 'workspace');
+
+      this.sendRequest(command as any, requestId, { key, value });
     }
   }
 }

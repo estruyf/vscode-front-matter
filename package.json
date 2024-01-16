@@ -2180,6 +2180,12 @@
       }
     ],
     "menus": {
+      "webview/context": [
+        {
+          "command": "workbench.action.webview.openDeveloperTools",
+          "when": "frontMatter:isDevelopment"
+        }
+      ],
       "editor/title": [
         {
           "command": "frontMatter.markup.heading",
