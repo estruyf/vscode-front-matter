@@ -3,7 +3,7 @@ import {
   ArrowUpCircleIcon,
   PencilIcon,
   PlusIcon,
-  SquaresPlusIcon,
+  TagIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import * as React from 'react';
@@ -18,12 +18,14 @@ export interface ITaxonomyActionsProps {
   field: string | null;
   value: string;
   unmapped?: boolean;
+  onContentTagging: (value: string) => void;
 }
 
 export const TaxonomyActions: React.FunctionComponent<ITaxonomyActionsProps> = ({
   field,
   value,
-  unmapped
+  unmapped,
+  onContentTagging
 }: React.PropsWithChildren<ITaxonomyActionsProps>) => {
   const onEdit = useCallback(() => {
     Messenger.send(DashboardMessage.editTaxonomy, {
@@ -60,59 +62,65 @@ export const TaxonomyActions: React.FunctionComponent<ITaxonomyActionsProps> = (
     });
   }, [field, value]);
 
+  const onTagging = useCallback(() => {
+    onContentTagging(value);
+  }, [value]);
+
   return (
-    <div className={`space-x-2`}>
-      {unmapped && (
+    <>
+      <div className={`space-x-2`}>
+        {unmapped && (
+          <LinkButton
+            title={l10n.t(LocalizationKey.dashboardTaxonomyViewButtonAddTitle, value)}
+            onClick={onAdd}>
+            <PlusIcon className={`w-4 h-4`} aria-hidden={true} />
+            <span className="sr-only">
+              {l10n.t(LocalizationKey.dashboardTaxonomyViewButtonAddTitle, value)}
+            </span>
+          </LinkButton>
+        )}
+
         <LinkButton
-          title={l10n.t(LocalizationKey.dashboardTaxonomyViewButtonAddTitle, value)}
-          onClick={onAdd}>
-          <PlusIcon className={`w-4 h-4`} aria-hidden={true} />
+          title={`Tag content`}
+          onClick={onTagging}>
+          <TagIcon className={`w-4 h-4`} aria-hidden={true} />
+          <span className="sr-only">{l10n.t(LocalizationKey.commonEdit)}</span>
+        </LinkButton>
+
+        <LinkButton
+          title={l10n.t(LocalizationKey.dashboardTaxonomyViewButtonEditTitle, value)}
+          onClick={onEdit}>
+          <PencilIcon className={`w-4 h-4`} aria-hidden={true} />
+          <span className="sr-only">{l10n.t(LocalizationKey.commonEdit)}</span>
+        </LinkButton>
+
+        <LinkButton
+          title={l10n.t(LocalizationKey.dashboardTaxonomyViewButtonMergeTitle, value)}
+          onClick={onMerge}>
+          <MergeIcon className={`w-4 h-4`} aria-hidden={true} />
           <span className="sr-only">
-            {l10n.t(LocalizationKey.dashboardTaxonomyViewButtonAddTitle, value)}
+            {l10n.t(LocalizationKey.dashboardTaxonomyViewButtonMergeTitle, value)}
           </span>
         </LinkButton>
-      )}
 
-      <LinkButton
-        title={`Tag content`}
-        onClick={onEdit}>
-        <SquaresPlusIcon className={`w-4 h-4`} aria-hidden={true} />
-        <span className="sr-only">{l10n.t(LocalizationKey.commonEdit)}</span>
-      </LinkButton>
+        <LinkButton
+          title={l10n.t(LocalizationKey.dashboardTaxonomyViewButtonMoveTitle)}
+          onClick={onMove}>
+          <ArrowUpCircleIcon className={`w-4 h-4`} aria-hidden={true} />
+          <span className="sr-only">
+            {l10n.t(LocalizationKey.dashboardTaxonomyViewButtonMoveTitle)}
+          </span>
+        </LinkButton>
 
-      <LinkButton
-        title={l10n.t(LocalizationKey.dashboardTaxonomyViewButtonEditTitle, value)}
-        onClick={onEdit}>
-        <PencilIcon className={`w-4 h-4`} aria-hidden={true} />
-        <span className="sr-only">{l10n.t(LocalizationKey.commonEdit)}</span>
-      </LinkButton>
-
-      <LinkButton
-        title={l10n.t(LocalizationKey.dashboardTaxonomyViewButtonMergeTitle, value)}
-        onClick={onMerge}>
-        <MergeIcon className={`w-4 h-4`} aria-hidden={true} />
-        <span className="sr-only">
-          {l10n.t(LocalizationKey.dashboardTaxonomyViewButtonMergeTitle, value)}
-        </span>
-      </LinkButton>
-
-      <LinkButton
-        title={l10n.t(LocalizationKey.dashboardTaxonomyViewButtonMoveTitle)}
-        onClick={onMove}>
-        <ArrowUpCircleIcon className={`w-4 h-4`} aria-hidden={true} />
-        <span className="sr-only">
-          {l10n.t(LocalizationKey.dashboardTaxonomyViewButtonMoveTitle)}
-        </span>
-      </LinkButton>
-
-      <LinkButton
-        title={l10n.t(LocalizationKey.dashboardTaxonomyViewButtonDeleteTitle, value)}
-        onClick={onDelete}>
-        <TrashIcon className={`w-4 h-4`} aria-hidden={true} />
-        <span className="sr-only">
-          {l10n.t(LocalizationKey.dashboardTaxonomyViewButtonDeleteTitle, value)}
-        </span>
-      </LinkButton>
-    </div>
+        <LinkButton
+          title={l10n.t(LocalizationKey.dashboardTaxonomyViewButtonDeleteTitle, value)}
+          onClick={onDelete}>
+          <TrashIcon className={`w-4 h-4`} aria-hidden={true} />
+          <span className="sr-only">
+            {l10n.t(LocalizationKey.dashboardTaxonomyViewButtonDeleteTitle, value)}
+          </span>
+        </LinkButton>
+      </div>
+    </>
   );
 };

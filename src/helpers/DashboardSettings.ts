@@ -59,6 +59,22 @@ export class DashboardSettings {
     return this.cachedSettings;
   }
 
+  public static async updateAfterClose() {
+    if (this.cachedSettings) {
+      this.cachedSettings = await this.getSettings();
+
+      const ext = Extension.getInstance();
+
+      // Update states
+      this.cachedSettings.dashboardState.contents.sorting = await ext.getState<
+        SortingOption | undefined
+      >(ExtensionState.Dashboard.Contents.Sorting, 'workspace');
+      this.cachedSettings.dashboardState.media.sorting = await ext.getState<
+        SortingOption | undefined
+      >(ExtensionState.Dashboard.Media.Sorting, 'workspace');
+    }
+  }
+
   public static async getSettings() {
     const ext = Extension.getInstance();
     const wsFolder = Folders.getWorkspaceFolder();

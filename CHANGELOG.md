@@ -4,6 +4,8 @@
 
 ### ✨ New features
 
+- [#731](https://github.com/estruyf/vscode-front-matter/issues/731): Added the ability to map/unmap taxonomy to multiple pages at once
+
 ### 🎨 Enhancements
 
 - [#727](https://github.com/estruyf/vscode-front-matter/pull/727): Updated Japanese translations thanks to [mayumihara](https://github.com/mayumih387)

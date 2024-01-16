@@ -1,4 +1,4 @@
-import { Messenger } from '@estruyf/vscode/dist/client';
+import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import { Menu } from '@headlessui/react';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -26,6 +26,7 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({
   const [crntSorting, setCrntSorting] = useRecoilState(SortingAtom);
   const searchValue = useRecoilValue(SearchSelector);
   const settings = useRecoilValue(SettingsSelector);
+  const [crntSort, setCrntSort] = React.useState<SortingOption | null>(null);
 
   const sortOptions: SortingOption[] = [
     {
@@ -143,29 +144,37 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({
     ];
   }
 
-  let crntSortingOption = crntSorting;
-  if (!crntSortingOption) {
-    if (view === NavigationType.Contents) {
-      crntSortingOption = settings?.dashboardState?.contents?.sorting || null;
-    } else if (view === NavigationType.Media) {
-      crntSortingOption = settings?.dashboardState?.media?.sorting || null;
-    }
+  React.useEffect(() => {
+    const getSorting = async () => {
+      let crntSortingOption = crntSorting;
+      if (!crntSortingOption) {
+        const sortingState = await messageHandler.request<{ key: string; value: SortingOption; }>(DashboardMessage.getState, { key: view === NavigationType.Media ? ExtensionState.Dashboard.Media.Sorting : ExtensionState.Dashboard.Contents.Sorting });
+        crntSortingOption = sortingState?.value || null;
 
-    if (crntSortingOption === null) {
-      if (view === NavigationType.Contents && settings?.dashboardState.contents.defaultSorting) {
-        crntSortingOption =
-          allOptions.find((f) => f.id === settings?.dashboardState.contents.defaultSorting) || null;
-      } else if (
-        view === NavigationType.Media &&
-        settings?.dashboardState.contents.defaultSorting
-      ) {
-        crntSortingOption =
-          allOptions.find((f) => f.id === settings?.dashboardState.contents.defaultSorting) || null;
+        if (crntSortingOption === null) {
+          if (view === NavigationType.Contents && settings?.dashboardState.contents.defaultSorting) {
+            crntSortingOption =
+              allOptions.find((f) => f.id === settings?.dashboardState.contents.defaultSorting) || null;
+          } else if (
+            view === NavigationType.Media &&
+            settings?.dashboardState.media.defaultSorting
+          ) {
+            crntSortingOption =
+              allOptions.find((f) => f.id === settings?.dashboardState.media.defaultSorting) || null;
+          }
+        }
       }
-    }
-  }
 
-  let crntSort = allOptions.find((x) => x.id === crntSortingOption?.id) || sortOptions[0];
+      let sort = allOptions.find((x) => x.id === crntSortingOption?.id) || sortOptions[0];
+      setCrntSort(sort);
+    };
+
+    getSorting();
+  }, [crntSorting]);
+
+  if (crntSort === null) {
+    return null;
+  }
 
   return (
     <div className="flex items-center">

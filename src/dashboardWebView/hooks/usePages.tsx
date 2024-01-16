@@ -14,12 +14,13 @@ import {
   TabSelector,
   TagSelector
 } from '../state';
-import { SortOrder, SortType } from '../../models';
-import { Sorting } from '../../helpers/Sorting';
-import { Messenger } from '@estruyf/vscode/dist/client';
+import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../DashboardMessage';
 import { EventData } from '@estruyf/vscode/dist/models';
 import { parseWinPath } from '../../helpers/parseWinPath';
+import { sortPages } from '../../utils/sortPages';
+import { ExtensionState } from '../../constants';
+import { SortingOption } from '../models';
 
 export default function usePages(pages: Page[]) {
   const [pageItems, setPageItems] = useRecoilState(AllPagesAtom);
@@ -37,7 +38,7 @@ export default function usePages(pages: Page[]) {
    * Process all the pages by applying the sorting, filtering and searching.
    */
   const processPages = useCallback(
-    (searchedPages: Page[], fullProcess: boolean = true) => {
+    (searchedPages: Page[]) => {
       const framework = settings?.crntFramework;
 
       // Filter the pages
@@ -67,35 +68,7 @@ export default function usePages(pages: Page[]) {
       // Sort the pages
       let pagesSorted: Page[] = Object.assign([], pagesToShow);
       if (!search) {
-        if (sorting && sorting.id === SortOption.FileNameAsc) {
-          pagesSorted = pagesSorted.sort(Sorting.alphabetically('fmFileName'));
-        } else if (sorting && sorting.id === SortOption.FileNameDesc) {
-          pagesSorted = pagesSorted.sort(Sorting.alphabetically('fmFileName')).reverse();
-        } else if (sorting && sorting.id === SortOption.PublishedAsc) {
-          pagesSorted = pagesSorted.sort(Sorting.number('fmPublished'));
-        } else if (sorting && sorting.id === SortOption.LastModifiedAsc) {
-          pagesSorted = pagesSorted.sort(Sorting.number('fmModified'));
-        } else if (sorting && sorting.id === SortOption.PublishedDesc) {
-          pagesSorted = pagesSorted.sort(Sorting.number('fmPublished')).reverse();
-        } else if (sorting && sorting.id === SortOption.LastModifiedDesc) {
-          pagesSorted = pagesSorted.sort(Sorting.number('fmModified')).reverse();
-        } else if (sorting && sorting.id && sorting.name) {
-          const { order, name, type } = sorting;
-
-          if (type === SortType.string) {
-            pagesSorted = pagesSorted.sort(Sorting.alphabetically(name));
-          } else if (type === SortType.date) {
-            pagesSorted = pagesSorted.sort(Sorting.date(name));
-          } else if (type === SortType.number) {
-            pagesSorted = pagesSorted.sort(Sorting.number(name));
-          }
-
-          if (order === SortOrder.desc) {
-            pagesSorted = pagesSorted.reverse();
-          }
-        } else {
-          pagesSorted = pagesSorted.sort(Sorting.number('fmModified')).reverse();
-        }
+        pagesSorted = sortPages(pagesSorted, sorting);
       }
 
       if (folder) {
@@ -208,20 +181,27 @@ export default function usePages(pages: Page[]) {
   useEffect(() => {
     let usedSorting = sorting;
 
-    if (!usedSorting) {
-      const lastSort = settings?.dashboardState.contents.sorting;
-      if (lastSort) {
-        setSorting(lastSort);
-        return;
+    const startPageProcessing = () => {
+      // Check if search needs to be performed
+      let searchedPages = pages;
+      if (search) {
+        Messenger.send(DashboardMessage.searchPages, { query: search });
+      } else {
+        processPages(searchedPages);
       }
     }
 
-    // Check if search needs to be performed
-    let searchedPages = pages;
-    if (search) {
-      Messenger.send(DashboardMessage.searchPages, { query: search });
+    if (!usedSorting) {
+      messageHandler.request<{ key: string; value: SortingOption; }>(DashboardMessage.getState, {
+        key: ExtensionState.Dashboard.Contents.Sorting
+      }).then(({ key, value }) => {
+        if (key === ExtensionState.Dashboard.Contents.Sorting && value) {
+          setSorting(value);
+          return;
+        }
+      });
     } else {
-      processPages(searchedPages);
+      startPageProcessing();
     }
   }, [settings?.draftField, pages, sorting, search, tag, category, folder]);
 

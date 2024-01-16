@@ -6,6 +6,7 @@ export const CONTEXT = {
   wysiwyg: 'frontMatter:markdown:wysiwyg',
   backer: 'frontMatter:backers:supporter',
   isValidFile: 'frontMatter:file:isValid',
+  isDevelopment: 'frontMatter:isDevelopment',
 
   hasViewModes: 'frontMatter:has:modes',
 
@@ -14,5 +15,5 @@ export const CONTEXT = {
 
   isGitEnabled: 'frontMatter:git:enabled',
 
-  projectSwitchEnabled: 'frontMatter:project:switch:enabled',
+  projectSwitchEnabled: 'frontMatter:project:switch:enabled'
 };
