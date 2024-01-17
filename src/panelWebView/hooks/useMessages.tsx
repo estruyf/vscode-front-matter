@@ -61,6 +61,10 @@ export default function useMessages() {
     }
   };
 
+  const unsetFocus = () => {
+    setFocus(null);
+  };
+
   useEffect(() => {
     if (loading) {
       window.setTimeout(() => {
@@ -96,8 +100,6 @@ export default function useMessages() {
     mediaSelecting,
     mode,
     localeReady,
-    unsetFocus: () => {
-      setFocus(null);
-    }
+    unsetFocus
   };
 }

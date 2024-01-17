@@ -42,7 +42,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   const [, setRequiredFields] = useRecoilState(RequiredFieldsAtom);
   const [text, setText] = React.useState<string | null | undefined>(undefined);
   const [loading, setLoading] = React.useState<boolean>(false);
-  const [lastUpdated, setLastUpdated] = React.useState<number>(0);
+  const [lastUpdated, setLastUpdated] = React.useState<number | null>(null);
   const debouncedText = useDebounce<string | null | undefined>(text, DEBOUNCE_TIME);
 
   const onTextChange = (txtValue: string) => {
@@ -121,16 +121,17 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   }, [settings?.aiEnabled, name]);
 
   useEffect(() => {
-    if (text !== value && (Date.now() - DEBOUNCE_TIME) > lastUpdated) {
+    if (text !== value && (lastUpdated === null || (Date.now() - DEBOUNCE_TIME) > lastUpdated)) {
       setText(value || null);
     }
+    setLastUpdated(null);
   }, [value]);
 
   useEffect(() => {
-    if (debouncedText !== undefined && value !== debouncedText) {
+    if (debouncedText !== undefined && value !== debouncedText && lastUpdated !== null) {
       onChange(debouncedText || '');
     }
-  }, [debouncedText, value]);
+  }, [debouncedText, value, lastUpdated]);
 
   return (
     <div className={`metadata_field`}>

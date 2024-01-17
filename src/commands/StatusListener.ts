@@ -72,10 +72,10 @@ export class StatusListener {
           }
         }
 
-        // const panel = PanelProvider.getInstance();
-        // if (panel && panel.visible) {
-        //   DataListener.pushMetadata(article?.data);
-        // }
+        const panel = PanelProvider.getInstance();
+        if (panel && panel.visible) {
+          DataListener.pushMetadata(article?.data);
+        }
 
         return;
       } catch (e) {
