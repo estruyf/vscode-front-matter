@@ -33,7 +33,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
 }: React.PropsWithChildren<IMetadataProps>) => {
   const contentType = useContentType(settings, metadata);
 
-  const sendUpdate = React.useCallback((field: string | undefined, value: any, parents: string[]) => {
+  const onSendUpdate = React.useCallback((field: string | undefined, value: any, parents: string[]) => {
     if (!field) {
       return;
     }
@@ -46,10 +46,6 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
     });
   }, [metadata.filePath]);
 
-  if (!settings) {
-    return null;
-  }
-
   const renderFields = (
     ctFields: Field[],
     parent: IMetadata,
@@ -58,17 +54,9 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
     onFieldUpdate?: (field: string | undefined, value: any, parents: string[]) => void,
     parentBlock?: string | null
   ): (JSX.Element | null)[] | undefined => {
-    if (!ctFields) {
+    if (!ctFields || !settings) {
       return;
     }
-
-    const onSendUpdate = (field: string | undefined, value: any, parents: string[]) => {
-      if (onFieldUpdate) {
-        onFieldUpdate(field, value, parents);
-      } else {
-        sendUpdate(field, value, parents);
-      }
-    };
 
     return ctFields.map((field) => (
       <WrapperField
@@ -82,20 +70,29 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
         blockData={blockData}
         parentBlock={parentBlock}
         focusElm={focusElm}
-        onSendUpdate={onSendUpdate}
+        onSendUpdate={onFieldUpdate || onSendUpdate}
         unsetFocus={unsetFocus}
         renderFields={renderFields}
       />
     ));
   };
 
+  const allFields = React.useMemo(() => renderFields(contentType?.fields || [], metadata), [contentType?.fields, JSON.stringify(metadata)]);
+
+  if (!settings) {
+    return null;
+  }
+
   return (
-    <Collapsible id={`tags`} title={`${l10n.t(LocalizationKey.panelMetadataTitle)}${contentType?.name ? ` (${contentType?.name})` : ""}`} className={`inherit z-20`}>
+    <Collapsible
+      id={`tags`}
+      title={`${l10n.t(LocalizationKey.panelMetadataTitle)}${contentType?.name ? ` (${contentType?.name})` : ""}`}
+      className={`inherit z-20`}>
       <FeatureFlag features={features || []} flag={FEATURE_FLAG.panel.contentType}>
         <ContentTypeValidator fields={contentType?.fields || []} metadata={metadata} />
       </FeatureFlag>
 
-      {renderFields(contentType?.fields || [], metadata)}
+      {allFields}
     </Collapsible>
   );
 };

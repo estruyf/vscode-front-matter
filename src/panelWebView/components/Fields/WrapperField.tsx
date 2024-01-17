@@ -96,6 +96,8 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
     return parsedDate || (date as Date | null);
   };
 
+  const onFieldChange = useCallback((value: any) => onSendUpdate(field.name, value, parentFields), [field.name, parentFields, onSendUpdate]);
+
   useEffect(() => {
     let value: any = parent[field.name];
 
@@ -185,7 +187,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           value={fieldValue}
           required={!!field.required}
           format={field.dateFormat || settings?.date?.format}
-          onChange={(date) => onSendUpdate(field.name, date, parentFields)}
+          onChange={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -198,7 +200,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           description={field.description}
           value={fieldValue}
           required={!!field.required}
-          onChanged={(checked) => onSendUpdate(field.name, checked, parentFields)}
+          onChanged={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -220,7 +222,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           limit={limit}
           wysiwyg={field.wysiwyg}
           rows={3}
-          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+          onChange={onFieldChange}
           value={(fieldValue as string) || null}
           required={!!field.required}
           settings={settings}
@@ -239,7 +241,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           label={field.title || field.name}
           description={field.description}
           options={field.numberOptions}
-          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+          onChange={onFieldChange}
           value={nrValue}
           required={!!field.required}
         />
@@ -258,7 +260,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           required={!!field.required}
           multiple={field.multiple}
           blockData={blockData}
-          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+          onChange={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -276,7 +278,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           required={!!field.required}
           parents={parentFields}
           blockData={blockData}
-          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+          onChange={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -292,7 +294,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           required={!!field.required}
           choices={choices}
           multiSelect={field.multiple}
-          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+          onChange={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -383,7 +385,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           choices={draftField?.choices || []}
           value={draftValue as boolean | string | null | undefined}
           required={!!field.required}
-          onChanged={(value: boolean | string) => onSendUpdate(field.name, value, parentFields)}
+          onChanged={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -431,7 +433,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           settings={settings}
           field={field}
           value={collectionData}
-          onSubmit={(value) => onSendUpdate(field.name, value, parentFields)}
+          onSubmit={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -452,7 +454,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           filePath={metadata.filePath as string}
           parentBlock={parentBlock}
           required={!!field.required}
-          onSubmit={(value) => onSendUpdate(field.name, value, parentFields)}
+          onSubmit={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -468,7 +470,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           selected={fieldValue as string}
           required={!!field.required}
           multiSelect={field.multiple}
-          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+          onChange={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -480,7 +482,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           description={field.description}
           value={fieldValue}
           required={!!field.required}
-          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+          onChange={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -495,7 +497,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           contentTypeName={field.contentTypeName}
           contentTypeValue={field.contentTypeValue}
           multiSelect={field.multiple}
-          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+          onChange={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -509,7 +511,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           value={fieldValue}
           required={!!field.required}
           editable={field.editable}
-          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+          onChange={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -523,7 +525,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           description={field.description}
           value={fieldValue}
           required={!!field.required}
-          onChange={(value: any) => onSendUpdate(field.name, value, parentFields)}
+          onChange={onFieldChange}
           fieldData={fieldData} />
       );
     } else {
