@@ -21,6 +21,7 @@ import { unlinkAsync, rmdirAsync } from '../../utils';
 
 export class PagesListener extends BaseListener {
   private static watchers: { [path: string]: FileSystemWatcher } = {};
+  private static watchersPromises: { [path: string]: Promise<void> } = {};
   private static lastPages: Page[] = [];
 
   /**
@@ -158,29 +159,38 @@ export class PagesListener extends BaseListener {
    * @param file
    */
   private static async watcherExec(file: Uri) {
-    const ext = Extension.getInstance();
-    Logger.info(`File watcher execution for: ${file.fsPath}`);
+    const progressFile = async (file: Uri) => {
+      const ext = Extension.getInstance();
+      Logger.info(`File watcher execution for: ${file.fsPath}`);
 
-    const pageIdx = this.lastPages.findIndex((p) => p.fmFilePath === file.fsPath);
-    if (pageIdx !== -1) {
-      const stats = await workspace.fs.stat(file);
-      const crntPage = this.lastPages[pageIdx];
-      const updatedPage = await PagesParser.processPageContent(
-        file.fsPath,
-        stats.mtime,
-        basename(file.fsPath),
-        crntPage.fmFolder
-      );
-      if (updatedPage) {
-        this.lastPages[pageIdx] = updatedPage;
-        if (Dashboard.isOpen) {
-          this.sendPageData(this.lastPages);
+      const pageIdx = this.lastPages.findIndex((p) => p.fmFilePath === file.fsPath);
+      if (pageIdx !== -1) {
+        const stats = await workspace.fs.stat(file);
+        const crntPage = this.lastPages[pageIdx];
+        const updatedPage = await PagesParser.processPageContent(
+          file.fsPath,
+          stats.mtime,
+          basename(file.fsPath),
+          crntPage.fmFolder
+        );
+        if (updatedPage) {
+          this.lastPages[pageIdx] = updatedPage;
+          if (Dashboard.isOpen) {
+            this.sendPageData(this.lastPages);
+          }
+          await ext.setState(ExtensionState.Dashboard.Pages.Cache, this.lastPages, 'workspace');
         }
-        await ext.setState(ExtensionState.Dashboard.Pages.Cache, this.lastPages, 'workspace');
+      } else {
+        this.getPagesData(true);
       }
-    } else {
-      this.getPagesData(true);
+    };
+
+    const watcherPromise = this.watchersPromises[file.fsPath];
+    if (!watcherPromise) {
+      this.watchersPromises[file.fsPath] = progressFile(file);
     }
+    await this.watchersPromises[file.fsPath];
+    delete this.watchersPromises[file.fsPath];
   }
 
   /**

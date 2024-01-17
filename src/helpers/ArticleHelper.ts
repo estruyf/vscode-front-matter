@@ -699,9 +699,8 @@ export class ArticleHelper {
    * @returns
    */
   public static getActiveFile() {
-    const editors = window.visibleTextEditors;
-    if (editors.length === 1) {
-      const editor = editors[0];
+    const editor = window.activeTextEditor;
+    if (editor) {
       const filePath = parseWinPath(editor.document.uri.fsPath);
       if (isValidFile(filePath)) {
         return filePath;
