@@ -4,6 +4,7 @@
   "common.delete": "削除",
   "common.cancel": "キャンセル",
   "common.clear": "クリア",
+  "common.apply": "適用",
   "common.clear.value": "値をクリア",
   "common.search": "検索",
   "common.save": "保存",
@@ -20,6 +21,7 @@
   "common.slug": "スラッグ",
   "common.support": "サポート",
   "common.remove.value": "{0}を削除",
+  "common.filter": "絞り込み",
   "common.filter.value": "{0}で絞り込み",
   "common.error.message": "申し訳ありません。エラーが発生しました。",
   "common.openOnWebsite": "ウェブサイトで開く",
@@ -32,6 +34,7 @@
   "common.yes": "はい",
   "common.no": "いいえ",
   "common.openSettings": "設定を開く",
+  "common.back": "戻る",
 
   "notifications.outputChannel.link": "出力ウィンドウ",
   "notifications.outputChannel.description": "詳細は{0}を確認してください。",
@@ -117,7 +120,7 @@
 
   "dashboard.header.breadcrumb.home": "ホーム",
 
-  "dashboard.header.clearFilters.title": "フィルター・グループ・並べ替えを解除",
+  "dashboard.header.clearFilters.title": "絞り込み・グループ・並べ替えを解除",
 
   "dashboard.header.filter.default": "なし",
 
@@ -294,6 +297,10 @@
   "dashboard.taxonomyView.taxonomyManager.table.heading.action": "コマンド",
   "dashboard.taxonomyView.taxonomyManager.table.row.empty": "{0}はありません",
   "dashboard.taxonomyView.taxonomyManager.table.unmapped.title": "設定ファイルに見つかりません",
+  "dashboard.taxonomyView.taxonomyManager.filterInput.placeholder": "絞り込み",
+
+  "dashboard.taxonomyView.taxonomyTagging.pageTitle": "タクソノミー {0} をリマッピング",
+  "dashboard.taxonomyView.taxonomyTagging.checkbox": "ページにタクソノミー{0}を付ける",
 
   "dashboard.taxonomyView.taxonomyView.navigationBar.title": "タクソノミーを選択",
   "dashboard.taxonomyView.taxonomyView.button.import": "タクソノミーをインポート",
@@ -661,9 +668,11 @@
   "helpers.taxonomyHelper.createNew.input.placeholder": "作成したいタクソノミー名を入力してください。",
   "helpers.taxonomyHelper.createNew.input.validate.noValue": "タクソノミー名は必須です。",
   "helpers.taxonomyHelper.createNew.input.validate.exists": "このタクソノミー名は既に存在しています。",
+  "helpers.taxonomyHelper.process.insert": "{0}: 選択した記事に \"{1}\" を追加しています。",
   "helpers.taxonomyHelper.process.edit": "{0}: {2}内の\"{1}\"を{3}に変更しています。",
   "helpers.taxonomyHelper.process.merge": "{0}: {2}内の\"{1}\"を{3}にマージしています。",
   "helpers.taxonomyHelper.process.delete": "{0}: \"{1}\"を{2}から削除しています。",
+  "helpers.taxonomyHelper.process.insert.success": "追加しました。",
   "helpers.taxonomyHelper.process.edit.success": "変更しました。",
   "helpers.taxonomyHelper.process.merge.success": "マージしました。",
   "helpers.taxonomyHelper.process.delete.success": "削除しました。",
