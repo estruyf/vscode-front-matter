@@ -1,7 +1,6 @@
 import { format as fnsFormat } from 'date-fns';
 import * as React from 'react';
 import { DateHelper } from '../../../helpers/DateHelper';
-import useThemeColors from '../../hooks/useThemeColors';
 
 export interface IDateFieldProps {
   className?: string;
@@ -15,7 +14,6 @@ export const DateField: React.FunctionComponent<IDateFieldProps> = ({
   format
 }: React.PropsWithChildren<IDateFieldProps>) => {
   const [dateValue, setDateValue] = React.useState<string>('');
-  const { getColors } = useThemeColors();
 
   React.useEffect(() => {
     try {
@@ -38,7 +36,7 @@ export const DateField: React.FunctionComponent<IDateFieldProps> = ({
   }
 
   return (
-    <span className={`date__field ${className || ''} text-xs ${getColors(`text-vulcan-100 dark:text-whisper-900`, `text-[var(--vscode-editor-foreground)]`)}`}>
+    <span className={`date__field ${className || ''} text-xs text-[var(--frontmatter-text)]`}>
       {dateValue}
     </span>
   );
