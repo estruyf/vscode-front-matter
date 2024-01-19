@@ -16,7 +16,7 @@ import { ChoiceButton } from '../Common/ChoiceButton';
 import { MediaHeaderBottom } from '../Media/MediaHeaderBottom';
 import { Tabs } from './Tabs';
 import { CustomScript } from '../../../models';
-import { BoltIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { ArrowTopRightOnSquareIcon, BoltIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { routePaths } from '../..';
 import { useEffect, useMemo } from 'react';
@@ -30,6 +30,7 @@ import { ProjectSwitcher } from './ProjectSwitcher';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { SettingsLink } from '../SettingsView/SettingsLink';
+import { Link } from '../Common/Link';
 
 export interface IHeaderProps {
   header?: React.ReactNode;
@@ -146,8 +147,21 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
       <div className={`mb-0 border-b flex justify-between bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)] border-[var(--frontmatter-border)]`}>
         <Tabs onNavigate={updateView} />
 
-        <div className='flex'>
+        <div className='flex items-center'>
           <ProjectSwitcher />
+
+          {
+            settings?.websiteUrl && (
+              <Link
+                className='inline-flex items-center mr-2'
+                href={settings?.websiteUrl}
+                title={settings?.websiteUrl}>
+                <span>{settings?.websiteUrl}</span>
+
+                <ArrowTopRightOnSquareIcon className='w-4 h-4 ml-1' aria-hidden="true" />
+              </Link>
+            )
+          }
 
           <SettingsLink onNavigate={updateView} />
         </div>
