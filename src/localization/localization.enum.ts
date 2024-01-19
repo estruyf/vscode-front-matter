@@ -700,7 +700,7 @@ export enum LocalizationKey {
    */
   dashboardMediaMediaFolderDefault = 'dashboard.media.media.folder.default',
   /**
-   * No media files to show. You can drag &amp; drop new files by holding your [shift] key.
+   * No media files to show. You can drag & drop new files by holding your [shift] key.
    */
   dashboardMediaMediaPlaceholder = 'dashboard.media.media.placeholder',
   /**

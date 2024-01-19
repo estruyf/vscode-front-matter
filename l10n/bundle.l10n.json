@@ -215,7 +215,7 @@
   "dashboard.media.media.dragAndDrop": "You can also drag and drop images from your desktop and select them once uploaded.",
   "dashboard.media.media.folder.upload": "Upload to {0}",
   "dashboard.media.media.folder.default": "No folder selected, files you drop will be added to the {0} folder",
-  "dashboard.media.media.placeholder": "No media files to show. You can drag &amp; drop new files by holding your [shift] key.",
+  "dashboard.media.media.placeholder": "No media files to show. You can drag&drop new files by holding your [shift] key.",
   "dashboard.media.media.contentFolder": "Content folder",
   "dashboard.media.media.publicFolder": "Public folder",
 
