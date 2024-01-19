@@ -1,4 +1,4 @@
-import { HomeModernIcon } from '@heroicons/react/24/outline';
+import { HomeIcon } from '@heroicons/react/24/outline';
 import { basename, join } from 'path';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -91,7 +91,7 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (
               `text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)]`
             )}
           >
-            <HomeModernIcon className="flex-shrink-0 h-5 w-5" aria-hidden="true" />
+            <HomeIcon className="flex-shrink-0 h-5 w-5" aria-hidden="true" />
             <span className="sr-only">{l10n.t(LocalizationKey.dashboardHeaderBreadcrumbHome)}</span>
           </button>
         </div>
