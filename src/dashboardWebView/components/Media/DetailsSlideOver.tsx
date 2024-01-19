@@ -206,7 +206,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                                   {l10n.t(LocalizationKey.dashboardMediaMetadataPanelFieldFileName)}
                                 </label>
                                 <div className="relative mt-1">
-                                  <DetailsInput value={name || ""} onChange={(e) => setFilename(`${e.target.value}.${extension}`)} />
+                                  <DetailsInput name={`filename`} value={name || ""} onChange={(e) => setFilename(`${e}.${extension}`)} />
 
                                   <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                                     <span className={`sm:text-sm placeholder-[var(--vscode-input-placeholderForeground)]`}>.{extension}</span>
@@ -219,7 +219,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                                   {l10n.t(LocalizationKey.dashboardMediaCommonTitle)}
                                 </label>
                                 <div className="mt-1">
-                                  <DetailsInput value={title || ""} onChange={(e) => setTitle(e.target.value)} />
+                                  <DetailsInput name={`title`} value={title || ""} onChange={(e) => setTitle(e)} />
                                 </div>
                               </div>
 
@@ -229,7 +229,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                                     {l10n.t(LocalizationKey.dashboardMediaCommonCaption)}
                                   </label>
                                   <div className="mt-1">
-                                    <DetailsInput value={caption || ""} onChange={(e) => setCaption(e.target.value)} isTextArea />
+                                    <DetailsInput name={`caption`} value={caption || ""} onChange={(e) => setCaption(e)} isTextArea />
                                   </div>
                                 </div>
                               )}
@@ -239,7 +239,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                                     {l10n.t(LocalizationKey.dashboardMediaCommonAlt)}
                                   </label>
                                   <div className="mt-1">
-                                    <DetailsInput value={alt || ""} onChange={(e) => setAlt(e.target.value)} isTextArea />
+                                    <DetailsInput name={`alt`} value={alt || ""} onChange={(e) => setAlt(e)} isTextArea />
                                   </div>
                                 </div>
                               )}

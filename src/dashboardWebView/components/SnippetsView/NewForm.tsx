@@ -52,7 +52,7 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
             name='title'
             value={title}
             placeholder={l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputTitlePlaceholder)}
-            onChange={(e) => onTitleUpdate(e.currentTarget.value)}
+            onChange={(e) => onTitleUpdate(e)}
           />
         </div>
       </div>
@@ -66,7 +66,7 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
             name='description'
             value={description}
             placeholder={l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputDescriptionPlaceholder)}
-            onChange={(e) => onDescriptionUpdate(e.currentTarget.value)}
+            onChange={(e) => onDescriptionUpdate(e)}
           />
         </div>
       </div>
@@ -84,7 +84,7 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
             name='snippet'
             value={body}
             placeholder={l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputSnippetPlaceholder)}
-            onChange={(e) => onBodyUpdate(e.currentTarget.value)}
+            onChange={(e) => onBodyUpdate(e)}
             isTextArea
           />
         </div>
