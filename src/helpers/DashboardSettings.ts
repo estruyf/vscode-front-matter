@@ -79,16 +79,12 @@ export class DashboardSettings {
     const ext = Extension.getInstance();
     const wsFolder = Folders.getWorkspaceFolder();
     const isInitialized = await Project.isInitialized();
-    const gitActions = Settings.get<boolean>(SETTING_GIT_ENABLED);
     const pagination = Settings.get<boolean | number>(SETTING_DASHBOARD_CONTENT_PAGINATION);
 
     const settings = {
       projects: Settings.getProjects(),
       project: Settings.getProject(),
-      git: {
-        isGitRepo: gitActions ? await GitListener.isGitRepository() : false,
-        actions: gitActions || false
-      },
+      git: await GitListener.getSettings(),
       beta: ext.isBetaVersion(),
       wsFolder: wsFolder ? wsFolder.fsPath : '',
       staticFolder: Folders.getStaticFolderRelativePath(),

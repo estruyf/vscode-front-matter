@@ -5,7 +5,7 @@ import { DashboardData } from './DashboardData';
 import { DataType } from './DataType';
 
 export interface PanelSettings {
-  git: GitSettings;
+  git: GitSettings | undefined;
   seo: SEO;
   slug: Slug;
   tags: string[];

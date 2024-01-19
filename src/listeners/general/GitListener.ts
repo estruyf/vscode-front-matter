@@ -1,4 +1,5 @@
 import {
+  SETTING_GIT_DISABLED_BRANCHES,
   SETTING_GIT_SUBMODULE_BRANCH,
   SETTING_GIT_SUBMODULE_FOLDER,
   SETTING_GIT_SUBMODULE_PULL,
@@ -12,6 +13,7 @@ import {
   Extension,
   Logger,
   Notifications,
+  parseWinPath,
   processKnownPlaceholders,
   Telemetry
 } from '../../helpers';
@@ -26,15 +28,38 @@ import {
   TelemetryEvent
 } from '../../constants';
 import { Folders } from '../../commands/Folders';
-import { commands } from 'vscode';
-import { PostMessageData } from '../../models';
+import { commands, extensions } from 'vscode';
+import { GitRepository, GitRepositoryState, PostMessageData } from '../../models';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
 
 export class GitListener {
+  private static gitAPI: {
+    onDidChangeState: (repo: any) => void;
+    onDidOpenRepository: (repo: any) => void;
+    onDidCloseRepository: (repo: any) => void;
+    getAPI: (version: number) => any;
+    repositories: GitRepository[];
+  } | null = null;
   private static isRegistered: boolean = false;
   private static client: SimpleGit | null = null;
   private static subClient: SimpleGit | null = null;
+  private static repository: GitRepository | null = null;
+
+  public static async getSettings() {
+    const gitActions = Settings.get<boolean>(SETTING_GIT_ENABLED);
+    if (gitActions) {
+      return {
+        isGitRepo: gitActions ? await GitListener.isGitRepository() : false,
+        actions: gitActions || false,
+        disabledBranches: gitActions
+          ? Settings.get<string[]>(SETTING_GIT_DISABLED_BRANCHES) || []
+          : []
+      };
+    }
+
+    return;
+  }
 
   /**
    * Initialize the listener
@@ -65,10 +90,21 @@ export class GitListener {
    */
   public static process(msg: PostMessageData) {
     switch (msg.command) {
-      case GeneralCommands.toVSCode.gitSync:
+      case GeneralCommands.toVSCode.git.sync:
         this.sync();
         break;
+      case GeneralCommands.toVSCode.git.getBranch:
+        this.getBranch(msg.command, msg.requestId);
+        break;
+      case GeneralCommands.toVSCode.git.selectBranch:
+        this.selectBranch();
+        break;
     }
+  }
+
+  public static async selectBranch() {
+    const workspaceFolder = Folders.getWorkspaceFolder();
+    await commands.executeCommand('git.checkout', workspaceFolder);
   }
 
   /**
@@ -76,17 +112,17 @@ export class GitListener {
    */
   public static async sync() {
     try {
-      this.sendMsg(GeneralCommands.toWebview.gitSyncingStart, {});
+      this.sendMsg(GeneralCommands.toWebview.git.syncingStart, {});
 
       Telemetry.send(TelemetryEvent.gitSync);
 
       await this.pull();
       await this.push();
 
-      this.sendMsg(GeneralCommands.toWebview.gitSyncingEnd, {});
+      this.sendMsg(GeneralCommands.toWebview.git.syncingEnd, {});
     } catch (e) {
       Logger.error((e as Error).message);
-      this.sendMsg(GeneralCommands.toWebview.gitSyncingEnd, {});
+      this.sendMsg(GeneralCommands.toWebview.git.syncingEnd, {});
     }
   }
 
@@ -105,6 +141,8 @@ export class GitListener {
     if (!isRepo) {
       Logger.warning(`Current workspace is not a GIT repository`);
     }
+
+    GitListener.vscodeGitProvider();
 
     return isRepo;
   }
@@ -257,6 +295,100 @@ export class GitListener {
     }
   }
 
+  private static async vscodeGitProvider() {
+    if (!GitListener.gitAPI) {
+      const wsFolder = Folders.getWorkspaceFolder();
+      const extension = extensions.getExtension('vscode.git');
+
+      /**
+       * Logic from: https://github.com/microsoft/vscode/blob/main/extensions/github/src/extension.ts
+       * initializeGitExtension
+       */
+      if (wsFolder && extension) {
+        const gitExtension = extension.isActive ? extension.exports : await extension.activate();
+
+        // Get version 1 of the API
+        GitListener.gitAPI = gitExtension.getAPI(1);
+
+        if (!GitListener.gitAPI) {
+          return;
+        }
+
+        GitListener.listenToRepo(GitListener.gitAPI?.repositories);
+
+        GitListener.gitAPI.onDidChangeState(() => {
+          GitListener.listenToRepo(GitListener.gitAPI?.repositories);
+        });
+
+        GitListener.gitAPI?.onDidOpenRepository((repo: GitRepository) => {
+          GitListener.triggerBranchChange(repo);
+
+          repo.state.onDidChange(() => {
+            GitListener.triggerBranchChange(repo);
+          });
+        });
+
+        GitListener.gitAPI?.onDidCloseRepository((repo: any) => {
+          console.log(`Closed repo:`, repo);
+        });
+      }
+    }
+  }
+
+  private static async getBranch(command: string, requestId?: string) {
+    if (!command || !requestId) {
+      return;
+    }
+
+    this.sendRequest(command, requestId, GitListener.repository?.state?.HEAD.name);
+  }
+
+  private static listenToRepo(repositories: GitRepository[] | undefined) {
+    if (!repositories) {
+      return;
+    }
+
+    if (repositories && repositories.length === 1) {
+      GitListener.repository = repositories[0];
+    } else if (repositories && repositories.length > 1) {
+      const wsFolder = Folders.getWorkspaceFolder();
+      if (wsFolder) {
+        const repo = repositories.find(
+          (repo) => parseWinPath(repo.rootUri.fsPath) === parseWinPath(wsFolder.fsPath)
+        );
+        if (repo) {
+          GitListener.repository = repo;
+        }
+      }
+    }
+
+    GitListener.repository?.state?.onDidChange(() => {
+      GitListener.triggerBranchChange(GitListener.repository);
+    });
+  }
+
+  /**
+   * Trigger the branch change
+   * @param repo
+   */
+  private static async triggerBranchChange(repo: GitRepository | null) {
+    if (repo && repo.state) {
+      GitListener.repository = repo;
+      let branches = [];
+
+      if (repo.repository.getBranches) {
+        const allBranches = await repo.repository.getBranches();
+        if (allBranches && allBranches.length > 0) {
+          branches = allBranches.map((branch: any) => branch.name);
+        }
+      }
+      this.sendMsg(GeneralCommands.toWebview.git.branchInfo, {
+        crntBranch: GitListener.repository?.state?.HEAD.name,
+        branches
+      });
+    }
+  }
+
   /**
    * Send the message to the webview
    * @param command
@@ -269,5 +401,24 @@ export class GitListener {
     panel.sendMessage({ command: command as any, payload });
 
     Dashboard.postWebviewMessage({ command: command as any, payload });
+  }
+
+  /**
+   * Sends a request to the webview panel.
+   * @param command - The command to send.
+   * @param requestId - The unique identifier for the request.
+   * @param payload - The payload to send with the request.
+   */
+  private static sendRequest(command: string, requestId: string, payload: any) {
+    const extPath = Extension.getInstance().extensionPath;
+    const panel = PanelProvider.getInstance(extPath);
+
+    panel.getWebview()?.postMessage({
+      command,
+      requestId,
+      payload
+    });
+
+    Dashboard.postWebviewMessage({ command: command as any, requestId, payload });
   }
 }
