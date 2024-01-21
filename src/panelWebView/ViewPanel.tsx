@@ -83,7 +83,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
     );
   }
 
-  if (loading || !localeReady) {
+  if (loading && !localeReady) {
     return <Spinner />;
   }
 
@@ -116,37 +116,44 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
       <div className={`ext_actions`}>
         <GitAction settings={settings} />
 
-        <CustomView metadata={metadata} />
+        {!loading && (<CustomView metadata={metadata} />)}
 
         <FeatureFlag features={mode?.features || [...allPanelValues]} flag={FEATURE_FLAG.panel.globalSettings}>
           <GlobalSettings settings={settings} />
         </FeatureFlag>
 
-        {settings && settings.seo && (
-          <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.seo}>
-            <SeoStatus
-              seo={settings.seo}
-              data={metadata}
-              focusElm={focusElm}
-              unsetFocus={unsetFocus}
-            />
-          </FeatureFlag>
-        )}
-        {settings && metadata && (
+        {
+          !loading && settings && settings.seo && (
+            <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.seo}>
+              <SeoStatus
+                seo={settings.seo}
+                data={metadata}
+                focusElm={focusElm}
+                unsetFocus={unsetFocus}
+              />
+            </FeatureFlag>
+          )
+        }
+
+        {!loading && settings && metadata && (
           <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.actions}>
             <Actions metadata={metadata} settings={settings} scripts={settings.scripts} />
           </FeatureFlag>
         )}
 
-        <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.metadata}>
-          <Metadata
-            settings={settings}
-            metadata={metadata}
-            focusElm={focusElm}
-            unsetFocus={unsetFocus}
-            features={mode?.features || []}
-          />
-        </FeatureFlag>
+        {
+          !loading && (
+            <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.metadata}>
+              <Metadata
+                settings={settings}
+                metadata={metadata}
+                focusElm={focusElm}
+                unsetFocus={unsetFocus}
+                features={mode?.features || []}
+              />
+            </FeatureFlag>
+          )
+        }
 
         <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.recentlyModified}>
           <FolderAndFiles data={folderAndFiles} />
