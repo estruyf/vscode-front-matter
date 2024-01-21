@@ -28,16 +28,16 @@ import {
   TelemetryEvent
 } from '../../constants';
 import { Folders } from '../../commands/Folders';
-import { commands, extensions } from 'vscode';
-import { GitRepository, GitRepositoryState, PostMessageData } from '../../models';
+import { Event, commands, extensions } from 'vscode';
+import { GitAPIState, GitRepository, PostMessageData } from '../../models';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
 
 export class GitListener {
   private static gitAPI: {
-    onDidChangeState: (repo: any) => void;
-    onDidOpenRepository: (repo: any) => void;
-    onDidCloseRepository: (repo: any) => void;
+    onDidChangeState: Event<GitAPIState>;
+    onDidOpenRepository: Event<GitRepository>;
+    onDidCloseRepository: Event<GitRepository>;
     getAPI: (version: number) => any;
     repositories: GitRepository[];
   } | null = null;
@@ -320,16 +320,12 @@ export class GitListener {
           GitListener.listenToRepo(GitListener.gitAPI?.repositories);
         });
 
-        GitListener.gitAPI?.onDidOpenRepository((repo: GitRepository) => {
+        GitListener.gitAPI.onDidOpenRepository((repo: GitRepository) => {
           GitListener.triggerBranchChange(repo);
-
-          repo.state.onDidChange(() => {
-            GitListener.triggerBranchChange(repo);
-          });
         });
 
-        GitListener.gitAPI?.onDidCloseRepository((repo: any) => {
-          console.log(`Closed repo:`, repo);
+        GitListener.gitAPI.onDidCloseRepository((repo: GitRepository) => {
+          Logger.info(`Closed repo: ${repo?.state?.HEAD?.name}`);
         });
       }
     }
@@ -349,7 +345,7 @@ export class GitListener {
     }
 
     if (repositories && repositories.length === 1) {
-      GitListener.repository = repositories[0];
+      GitListener.triggerBranchChange(repositories[0]);
     } else if (repositories && repositories.length > 1) {
       const wsFolder = Folders.getWorkspaceFolder();
       if (wsFolder) {
@@ -357,14 +353,10 @@ export class GitListener {
           (repo) => parseWinPath(repo.rootUri.fsPath) === parseWinPath(wsFolder.fsPath)
         );
         if (repo) {
-          GitListener.repository = repo;
+          GitListener.triggerBranchChange(repo);
         }
       }
     }
-
-    GitListener.repository?.state?.onDidChange(() => {
-      GitListener.triggerBranchChange(GitListener.repository);
-    });
   }
 
   /**
@@ -373,19 +365,25 @@ export class GitListener {
    */
   private static async triggerBranchChange(repo: GitRepository | null) {
     if (repo && repo.state) {
-      GitListener.repository = repo;
-      let branches = [];
+      if (repo.state.HEAD.name !== GitListener.repository?.state?.HEAD.name) {
+        GitListener.repository = repo;
+        let branches = [];
 
-      if (repo.repository.getBranches) {
-        const allBranches = await repo.repository.getBranches();
-        if (allBranches && allBranches.length > 0) {
-          branches = allBranches.map((branch: any) => branch.name);
+        if (repo.repository.getBranches) {
+          const allBranches = await repo.repository.getBranches();
+          if (allBranches && allBranches.length > 0) {
+            branches = allBranches.map((branch: any) => branch.name);
+          }
         }
+        this.sendMsg(GeneralCommands.toWebview.git.branchInfo, {
+          crntBranch: GitListener.repository?.state?.HEAD.name,
+          branches
+        });
+
+        repo.state.onDidChange(() => {
+          GitListener.triggerBranchChange(repo);
+        });
       }
-      this.sendMsg(GeneralCommands.toWebview.git.branchInfo, {
-        crntBranch: GitListener.repository?.state?.HEAD.name,
-        branches
-      });
     }
   }
 

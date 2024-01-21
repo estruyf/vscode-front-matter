@@ -1,3 +1,7 @@
+import { Event } from 'vscode';
+
+export type GitAPIState = 'uninitialized' | 'initialized';
+
 export interface GitRepository {
   state: GitRepositoryState;
   rootUri: {
@@ -11,7 +15,7 @@ export interface GitRepository {
 
 export interface GitRepositoryState {
   HEAD: GitBranch;
-  onDidChange: (listener: () => void) => void;
+  onDidChange: Event<void>;
 }
 
 export interface GitBranch {
