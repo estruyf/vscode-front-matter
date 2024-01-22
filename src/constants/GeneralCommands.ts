@@ -4,7 +4,7 @@ export const GeneralCommands = {
     git: {
       syncingStart: 'gitSyncingStart',
       syncingEnd: 'gitSyncingEnd',
-      branchInfo: 'gitBranchInfo'
+      branchName: 'gitBranchName'
     },
     setLocalization: 'setLocalization'
   },
@@ -12,6 +12,7 @@ export const GeneralCommands = {
     openLink: 'openLink',
     git: {
       sync: 'gitSync',
+      fetch: 'getFetch',
       getBranch: 'getBranch',
       selectBranch: 'gitSelectBranch'
     },

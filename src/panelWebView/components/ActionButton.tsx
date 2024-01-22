@@ -14,7 +14,7 @@ const ActionButton: React.FunctionComponent<IActionButtonProps> = ({
   title
 }: React.PropsWithChildren<IActionButtonProps>) => {
   return (
-    <div className={`article__action`}>
+    <div className={`article__action w-full`}>
       <button onClick={onClick} className={className || ''} disabled={disabled}>
         {title}
       </button>

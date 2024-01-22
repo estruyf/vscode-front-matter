@@ -31,7 +31,6 @@ import {
   SETTING_SLUG_UPDATE_FILE_NAME,
   SETTING_TAXONOMY_CUSTOM,
   SETTING_TAXONOMY_FIELD_GROUPS,
-  SETTING_GIT_ENABLED,
   SETTING_SEO_TITLE_FIELD
 } from '../constants';
 import { GitListener } from '../listeners/general';

@@ -1,5 +1,6 @@
 import {
   SETTING_GIT_DISABLED_BRANCHES,
+  SETTING_GIT_REQUIRES_COMMIT_MSG,
   SETTING_GIT_SUBMODULE_BRANCH,
   SETTING_GIT_SUBMODULE_FOLDER,
   SETTING_GIT_SUBMODULE_PULL,
@@ -45,6 +46,7 @@ export class GitListener {
   private static client: SimpleGit | null = null;
   private static subClient: SimpleGit | null = null;
   private static repository: GitRepository | null = null;
+  private static branchName: string | null = null;
 
   public static async getSettings() {
     const gitActions = Settings.get<boolean>(SETTING_GIT_ENABLED);
@@ -54,6 +56,9 @@ export class GitListener {
         actions: gitActions || false,
         disabledBranches: gitActions
           ? Settings.get<string[]>(SETTING_GIT_DISABLED_BRANCHES) || []
+          : [],
+        requiresCommitMessage: gitActions
+          ? Settings.get<string[]>(SETTING_GIT_REQUIRES_COMMIT_MSG) || []
           : []
       };
     }
@@ -91,7 +96,10 @@ export class GitListener {
   public static process(msg: PostMessageData) {
     switch (msg.command) {
       case GeneralCommands.toVSCode.git.sync:
-        this.sync();
+        this.sync(msg.payload);
+        break;
+      case GeneralCommands.toVSCode.git.fetch:
+        this.sync(undefined, false);
         break;
       case GeneralCommands.toVSCode.git.getBranch:
         this.getBranch(msg.command, msg.requestId);
@@ -108,16 +116,19 @@ export class GitListener {
   }
 
   /**
-   * Run the sync
+   * Run the sync/fetch
    */
-  public static async sync() {
+  public static async sync(commitMsg?: string, isSync: boolean = true) {
     try {
-      this.sendMsg(GeneralCommands.toWebview.git.syncingStart, {});
+      this.sendMsg(GeneralCommands.toWebview.git.syncingStart, isSync ? 'syncing' : 'fetching');
 
-      Telemetry.send(TelemetryEvent.gitSync);
+      Telemetry.send(isSync ? TelemetryEvent.gitSync : TelemetryEvent.gitFetch);
 
       await this.pull();
-      await this.push();
+
+      if (isSync) {
+        await this.push(commitMsg);
+      }
 
       this.sendMsg(GeneralCommands.toWebview.git.syncingEnd, {});
     } catch (e) {
@@ -187,8 +198,9 @@ export class GitListener {
    * Push the changes to the remote
    * @returns
    */
-  private static async push() {
-    let commitMsg = Settings.get<string>(SETTING_GIT_COMMIT_MSG);
+  private static async push(commitMsg?: string) {
+    commitMsg =
+      commitMsg || Settings.get<string>(SETTING_GIT_COMMIT_MSG) || 'Synced by Front Matter';
 
     if (commitMsg) {
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
@@ -213,7 +225,7 @@ export class GitListener {
           // Check if anything changed
           if (status.files.length > 0) {
             await subGit.raw(['add', '.', '-A']);
-            await subGit.commit(commitMsg || 'Synced by Front Matter');
+            await subGit.commit(commitMsg);
           }
           await subGit.push();
         } catch (e) {
@@ -235,13 +247,7 @@ export class GitListener {
           // First line is the submodule folder name
           if (lines.length > 1) {
             await git.subModule(['foreach', 'git', 'add', '.', '-A']);
-            await git.subModule([
-              'foreach',
-              'git',
-              'commit',
-              '-m',
-              commitMsg || 'Synced by Front Matter'
-            ]);
+            await git.subModule(['foreach', 'git', 'commit', '-m', commitMsg]);
             await git.subModule(['foreach', 'git', 'push']);
           }
         } catch (e) {
@@ -260,7 +266,7 @@ export class GitListener {
 
     if (status.files.length > 0) {
       await git.raw(['add', '.', '-A']);
-      await git.commit(commitMsg || 'Synced by Front Matter');
+      await git.commit(commitMsg);
     }
 
     await git.push();
@@ -365,20 +371,11 @@ export class GitListener {
    */
   private static async triggerBranchChange(repo: GitRepository | null) {
     if (repo && repo.state) {
-      if (repo.state.HEAD.name !== GitListener.repository?.state?.HEAD.name) {
+      if (repo.state.HEAD.name !== GitListener.branchName) {
+        GitListener.branchName = repo.state.HEAD.name;
         GitListener.repository = repo;
-        let branches = [];
 
-        if (repo.repository.getBranches) {
-          const allBranches = await repo.repository.getBranches();
-          if (allBranches && allBranches.length > 0) {
-            branches = allBranches.map((branch: any) => branch.name);
-          }
-        }
-        this.sendMsg(GeneralCommands.toWebview.git.branchInfo, {
-          crntBranch: GitListener.repository?.state?.HEAD.name,
-          branches
-        });
+        this.sendMsg(GeneralCommands.toWebview.git.branchName, GitListener.branchName);
 
         repo.state.onDidChange(() => {
           GitListener.triggerBranchChange(repo);

@@ -173,7 +173,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
             <Searchbox />
 
             <div className={`flex items-center justify-end space-x-4 flex-1`}>
-              <SyncButton />
+              {/* <SyncButton /> */}
 
               <ChoiceButton
                 title={l10n.t(LocalizationKey.dashboardHeaderHeaderCreateContent)}
