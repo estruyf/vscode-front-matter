@@ -16,7 +16,7 @@ export const List: React.FunctionComponent<IListProps> = ({
 
   let className = '';
   if (view === DashboardViewType.Grid) {
-    className = `grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4`;
+    className = `grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4`;
   } else if (view === DashboardViewType.List) {
     className = `-mx-4`;
   }

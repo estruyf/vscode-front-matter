@@ -9,6 +9,7 @@
 ### 🎨 Enhancements
 
 - [#727](https://github.com/estruyf/vscode-front-matter/pull/727): Updated Japanese translations thanks to [mayumihara](https://github.com/mayumih387)
+- [#737](https://github.com/estruyf/vscode-front-matter/issues/737): Optimize the grid layout of the content and media dashboards
 
 ### ⚡️ Optimizations
 
