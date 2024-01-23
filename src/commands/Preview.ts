@@ -97,6 +97,9 @@ export class Preview {
     const cspSource = webView.webview.cspSource;
 
     webView.onDidDispose(() => {
+      if (crntFilePath && this.webviews[crntFilePath]) {
+        delete this.webviews[crntFilePath];
+      }
       webView.dispose();
     });
 
