@@ -33,7 +33,7 @@ export const GitAction: React.FunctionComponent<IGitActionProps> = ({
     messageHandler.send(GeneralCommands.toVSCode.git.selectBranch)
   }
 
-  const messageListener = (message: MessageEvent<EventData<any>>) => {
+  const messageListener = React.useCallback((message: MessageEvent<EventData<any>>) => {
     const { command, payload } = message.data;
 
     if (command === GeneralCommands.toWebview.git.syncingStart) {
@@ -46,7 +46,7 @@ export const GitAction: React.FunctionComponent<IGitActionProps> = ({
     } else if (command === GeneralCommands.toWebview.git.branchName) {
       setCrntBranch(payload || undefined);
     }
-  };
+  }, []);
 
   const isCommitRequired = React.useMemo(() => {
     const requiresCommitMessage = settings?.git?.requiresCommitMessage || [];
@@ -95,7 +95,13 @@ export const GitAction: React.FunctionComponent<IGitActionProps> = ({
     }
 
     return false;
-  }, [settings?.git?.disabledBranches, settings?.git?.requiresCommitMessage, crntBanch, commitMessage])
+  }, [settings?.git?.disabledBranches, settings?.git?.requiresCommitMessage, crntBanch, commitMessage]);
+
+  const fetchBranch = React.useCallback(() => {
+    messageHandler.request<string>(GeneralCommands.toVSCode.git.getBranch).then((branch) => {
+      setCrntBranch(branch);
+    });
+  }, []);
 
   useEffect(() => {
     Messenger.listen(messageListener);
@@ -103,13 +109,11 @@ export const GitAction: React.FunctionComponent<IGitActionProps> = ({
     return () => {
       Messenger.unlisten(messageListener);
     };
-  }, []);
+  }, [messageListener]);
 
   useEffect(() => {
-    messageHandler.request<string>(GeneralCommands.toVSCode.git.getBranch).then((branch) => {
-      setCrntBranch(branch);
-    });
-  }, []);
+    fetchBranch();
+  }, [fetchBranch]);
 
   if (!settings?.git?.actions || !settings?.git.isGitRepo) {
     return null;

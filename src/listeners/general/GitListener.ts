@@ -48,6 +48,15 @@ export class GitListener {
   private static repository: GitRepository | null = null;
   private static branchName: string | null = null;
 
+  /**
+   * Retrieves the Git settings.
+   * @returns {Promise<{
+   *   isGitRepo: boolean,
+   *   actions: boolean,
+   *   disabledBranches: string[],
+   *   requiresCommitMessage: string[]
+   * }>} The Git settings.
+   */
   public static async getSettings() {
     const gitActions = Settings.get<boolean>(SETTING_GIT_ENABLED);
     if (gitActions) {
@@ -110,13 +119,19 @@ export class GitListener {
     }
   }
 
-  public static async selectBranch() {
+  /**
+   * Selects the current branch in the Git repository.
+   * @returns {Promise<void>} A promise that resolves when the branch command has been executed.
+   */
+  public static async selectBranch(): Promise<void> {
     const workspaceFolder = Folders.getWorkspaceFolder();
     await commands.executeCommand('git.checkout', workspaceFolder);
   }
 
   /**
-   * Run the sync/fetch
+   * Synchronizes the local repository with the remote repository.
+   * @param commitMsg The commit message for the push operation.
+   * @param isSync Determines whether to perform a sync operation (default: true) or a fetch operation.
    */
   public static async sync(commitMsg?: string, isSync: boolean = true) {
     try {
@@ -138,8 +153,8 @@ export class GitListener {
   }
 
   /**
-   * Check if the current workspace is a git repository
-   * @returns
+   * Checks if the current workspace is a Git repository.
+   * @returns A boolean indicating whether the current workspace is a Git repository.
    */
   public static async isGitRepository() {
     const git = this.getClient();
@@ -159,8 +174,9 @@ export class GitListener {
   }
 
   /**
-   * Pull the changes from the remote
-   * @returns
+   * Pulls the latest changes from the remote repository.
+   * If submoduleFolder is specified, it checks out the submoduleBranch for the submodule located in that folder.
+   * If submodulePull is true, it also updates the submodules with the latest changes from the remote repository.
    */
   private static async pull() {
     const git = this.getClient();
@@ -195,8 +211,10 @@ export class GitListener {
   }
 
   /**
-   * Push the changes to the remote
-   * @returns
+   * Pushes the changes to the remote repository.
+   *
+   * @param commitMsg The commit message to use. If not provided, it will use the default commit message or the one specified in the settings.
+   * @returns A promise that resolves when the push operation is completed.
    */
   private static async push(commitMsg?: string) {
     commitMsg =
@@ -273,9 +291,11 @@ export class GitListener {
   }
 
   /**
-   * Get the git client
-   * @param submoduleFolder
-   * @returns
+   * Retrieves the Git client instance based on the provided submodule folder.
+   * If no submodule folder is provided, it returns the main Git client instance.
+   * If a submodule folder is provided, it returns the submodule-specific Git client instance.
+   * @param submoduleFolder The path to the submodule folder.
+   * @returns The Git client instance or null if it cannot be retrieved.
    */
   private static getClient(submoduleFolder: string = ''): SimpleGit | null {
     if (!submoduleFolder && this.client) {
@@ -301,16 +321,19 @@ export class GitListener {
     }
   }
 
-  private static async vscodeGitProvider() {
+  /**
+   * Initializes the VS Code Git provider and sets up event listeners for repository changes.
+   * @returns {Promise<void>} A promise that resolves when the Git provider is initialized.
+   */
+  private static async vscodeGitProvider(): Promise<void> {
     if (!GitListener.gitAPI) {
-      const wsFolder = Folders.getWorkspaceFolder();
       const extension = extensions.getExtension('vscode.git');
 
       /**
        * Logic from: https://github.com/microsoft/vscode/blob/main/extensions/github/src/extension.ts
        * initializeGitExtension
        */
-      if (wsFolder && extension) {
+      if (extension) {
         const gitExtension = extension.isActive ? extension.exports : await extension.activate();
 
         // Get version 1 of the API
@@ -337,6 +360,11 @@ export class GitListener {
     }
   }
 
+  /**
+   * Retrieves the branch name and sends a request.
+   * @param command - The command to send.
+   * @param requestId - The ID of the request.
+   */
   private static async getBranch(command: string, requestId?: string) {
     if (!command || !requestId) {
       return;
@@ -366,8 +394,8 @@ export class GitListener {
   }
 
   /**
-   * Trigger the branch change
-   * @param repo
+   * Triggers a branch change event for the specified Git repository.
+   * @param repo The Git repository to monitor for branch changes.
    */
   private static async triggerBranchChange(repo: GitRepository | null) {
     if (repo && repo.state) {
@@ -385,9 +413,9 @@ export class GitListener {
   }
 
   /**
-   * Send the message to the webview
-   * @param command
-   * @param payload
+   * Sends a message to the panel and the dashboard.
+   * @param command - The command to send.
+   * @param payload - The payload to send with the command.
    */
   private static sendMsg(command: string, payload: any) {
     const extPath = Extension.getInstance().extensionPath;
