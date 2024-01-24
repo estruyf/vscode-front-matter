@@ -12,7 +12,11 @@ const Preview: React.FunctionComponent<IPreviewProps> = (_: React.PropsWithChild
     Messenger.send(CommandToCode.openPreview);
   };
 
-  return <ActionButton onClick={open} title={l10n.t(LocalizationKey.panelPreviewTitle)} />;
+  return (
+    <ActionButton onClick={open} title={l10n.t(LocalizationKey.panelPreviewTitle)}>
+      {l10n.t(LocalizationKey.panelPreviewTitle)}
+    </ActionButton>
+  );
 };
 
 Preview.displayName = 'Preview';

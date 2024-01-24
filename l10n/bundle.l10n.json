@@ -329,6 +329,10 @@
   "dashboard.configuration.astro.astroContentTypes.empty": "No Astro Content Collections found.",
   "dashboard.configuration.astro.astroContentTypes.description": "The following Astro Content Collections can be used to generate a content-type.",
 
+  "panel.git.gitAction.title": "Publish changes",
+  "panel.git.gitAction.input.placeholder": "Commit message",
+  "panel.git.gitAction.button.fetch": "Fetch",
+
   "panel.contentType.contentTypeValidator.title": "Content-type",
   "panel.contentType.contentTypeValidator.hint": "We noticed field differences between the content-type and the front matter data. \n Would you like to create, update, or set the content-type for this content?",
   "panel.contentType.contentTypeValidator.button.create": "Create content-type",

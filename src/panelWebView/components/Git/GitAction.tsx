@@ -123,14 +123,14 @@ export const GitAction: React.FunctionComponent<IGitActionProps> = ({
     <div className="git_actions">
       <h2 className='text-[11px] flex justify-between items-center mb-4'>
         <span className='uppercase'>
-          Changes
+          {l10n.t(LocalizationKey.panelGitGitActionTitle)}
         </span>
 
         <button
           className='inline-flex items-center w-auto p-0 bg-inherit text-[var(--vscode-sideBarTitle-foreground)] hover:bg-inherit hover:text-[var(--vscode-sideBarTitle-foreground-hover)]'
           title='Select Branch'
           onClick={selectBranch}>
-          <BranchIcon className='w-4 h-4' />
+          <BranchIcon className='w-4 h-4' aria-hidden="true" />
           <span className='ml-1'>{crntBanch}</span>
         </button>
       </h2>
@@ -139,7 +139,7 @@ export const GitAction: React.FunctionComponent<IGitActionProps> = ({
         <input
           type='text'
           className='rounded-md disabled:opacity-50 disabled:cursor-not-allowed'
-          placeholder='Commit message'
+          placeholder={l10n.t(LocalizationKey.panelGitGitActionInputPlaceholder)}
           style={{
             ...isCommitRequired
           }}
@@ -151,28 +151,28 @@ export const GitAction: React.FunctionComponent<IGitActionProps> = ({
         <ActionButton
           disabled={isSyncDisabled || isSyncing !== "idle"}
           onClick={sync}
-          title={
-            <div className="git_actions__sync">
-              <ArrowPathIcon className={isSyncing === "syncing" ? 'animate-spin' : ''} />
-              <span>
-                {l10n.t(LocalizationKey.commonSync)}
-              </span>
-            </div>
-          }
-        />
+          title={l10n.t(LocalizationKey.commonSync)}
+        >
+          <div className="git_actions__sync">
+            <ArrowPathIcon className={isSyncing === "syncing" ? 'animate-spin' : ''} aria-hidden="true" />
+            <span>
+              {l10n.t(LocalizationKey.commonSync)}
+            </span>
+          </div>
+        </ActionButton>
 
         <ActionButton
-          disabled={isSyncing !== "idle"}
+          disabled={!crntBanch || isSyncing !== "idle"}
           onClick={fetch}
-          title={
-            <div className="git_actions__fetch">
-              <ArrowDownTrayIcon className={isSyncing === "fetching" ? 'animate-bounce' : ''} />
-              <span>
-                Fetch
-              </span>
-            </div>
-          }
-        />
+          title={l10n.t(LocalizationKey.panelGitGitActionButtonFetch)}
+        >
+          <div className="git_actions__fetch">
+            <ArrowDownTrayIcon className={isSyncing === "fetching" ? 'animate-bounce' : ''} aria-hidden="true" />
+            <span>
+              {l10n.t(LocalizationKey.panelGitGitActionButtonFetch)}
+            </span>
+          </div>
+        </ActionButton>
       </div>
     </div>
   );
