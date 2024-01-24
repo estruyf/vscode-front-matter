@@ -18,6 +18,7 @@ import { DataListener } from '../panel';
 import Fuse from 'fuse.js';
 import { PagesParser } from '../../services/PagesParser';
 import { unlinkAsync, rmdirAsync } from '../../utils';
+import { LoadingType } from '../../models';
 
 export class PagesListener extends BaseListener {
   private static watchers: { [path: string]: FileSystemWatcher } = {};
@@ -211,6 +212,8 @@ export class PagesListener extends BaseListener {
         if (cb) {
           cb(cachedPages);
         }
+      } else {
+        this.sendMsg(DashboardCommand.loading, 'initPages' as LoadingType);
       }
     } else {
       PagesParser.reset();
@@ -223,7 +226,7 @@ export class PagesListener extends BaseListener {
       this.sendMsg(DashboardCommand.searchReady, true);
 
       await this.createSearchIndex(pages);
-      this.sendMsg(DashboardCommand.loading, false);
+      this.sendMsg(DashboardCommand.loading, undefined as LoadingType);
 
       if (cb) {
         cb(pages);

@@ -123,7 +123,7 @@ Stack: ${componentStack}`
           <Route path={routePaths.welcome} element={<WelcomeScreen settings={settings} />} />
           <Route
             path={routePaths.contents}
-            element={<Contents pages={pages} loading={loading} />}
+            element={<Contents pages={pages} />}
           />
           <Route path={routePaths.media} element={<Media />} />
           <Route path={routePaths.snippets} element={<Snippets />} />

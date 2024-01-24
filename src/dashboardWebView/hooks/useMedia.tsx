@@ -75,7 +75,7 @@ export default function useMedia() {
   const messageListener = useCallback((message: MessageEvent<EventData<MediaPaths | { key: string; value: any }>>) => {
     if (message.data.command === DashboardCommand.media) {
       const payload: MediaPaths = message.data.payload as MediaPaths;
-      setLoading(false);
+      setLoading("loading");
       setMedia(payload.media);
       setTotal(payload.total);
       setFolders(payload.folders);

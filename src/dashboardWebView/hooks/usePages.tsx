@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { SortOption } from '../constants/SortOption';
 import { Tab } from '../constants/Tab';
 import { Page } from '../models/Page';
 import { useRecoilState, useRecoilValue } from 'recoil';

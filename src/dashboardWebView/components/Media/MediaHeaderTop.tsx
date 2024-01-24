@@ -37,7 +37,7 @@ export const MediaHeaderTop: React.FunctionComponent<
 
   const mediaUpdate = (message: MessageEvent<EventData<{ key: string; value: any }>>) => {
     if (message.data.command === DashboardCommand.mediaUpdate) {
-      setLoading(true);
+      setLoading("loading");
       Messenger.send(DashboardMessage.getMedia, {
         page,
         folder: selectedFolder || '',
@@ -51,7 +51,7 @@ export const MediaHeaderTop: React.FunctionComponent<
       prevSelectedFolder !== null ||
       settings?.dashboardState?.media.selectedFolder !== selectedFolder
     ) {
-      setLoading(true);
+      setLoading("loading");
       setPage(0);
       setLastUpdated(new Date().getTime().toString());
     }
@@ -63,7 +63,7 @@ export const MediaHeaderTop: React.FunctionComponent<
 
   React.useEffect(() => {
     if (debounceGetMedia) {
-      setLoading(true);
+      setLoading("loading");
 
       Messenger.send(DashboardMessage.getMedia, {
         page,

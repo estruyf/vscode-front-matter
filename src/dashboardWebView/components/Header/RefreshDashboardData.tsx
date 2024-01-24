@@ -37,7 +37,7 @@ export const RefreshDashboardData: React.FunctionComponent<IRefreshDashboardData
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
 
   const refreshPages = () => {
-    setLoading(true);
+    setLoading("initPages");
     resetSearch();
     resetSorting();
     resetFolder();
@@ -47,7 +47,7 @@ export const RefreshDashboardData: React.FunctionComponent<IRefreshDashboardData
   };
 
   const refreshMedia = () => {
-    setLoading(true);
+    setLoading("initPages");
     resetPage();
     resetSearch();
     Messenger.send(DashboardMessage.refreshMedia, { folder: selectedFolder });

@@ -53,7 +53,7 @@ export default function useMessages() {
         break;
       case DashboardCommand.pages:
         setPages(message.payload);
-        setLoading(false);
+        setLoading(undefined);
         break;
       case DashboardCommand.searchReady:
         setSearchReady(true);
@@ -73,7 +73,7 @@ export default function useMessages() {
   useEffect(() => {
     Messenger.listen(messageListener);
 
-    setLoading(true);
+    setLoading("loading");
     Messenger.send(DashboardMessage.getViewType);
     Messenger.send(DashboardMessage.getTheme);
     Messenger.send(DashboardMessage.getData);

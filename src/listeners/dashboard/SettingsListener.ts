@@ -12,7 +12,7 @@ import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { DashboardSettings, Extension, Notifications, Settings } from '../../helpers';
 import { FrameworkDetector } from '../../helpers/FrameworkDetector';
-import { Framework, Template, PostMessageData, StaticFolder } from '../../models';
+import { Framework, Template, PostMessageData, StaticFolder, LoadingType } from '../../models';
 import { BaseListener } from './BaseListener';
 import { Cache } from '../../commands/Cache';
 import { Preview } from '../../commands';
@@ -98,7 +98,7 @@ export class SettingsListener extends BaseListener {
 
   public static async switchProject(project: string) {
     if (project) {
-      this.sendMsg(DashboardCommand.loading, true);
+      this.sendMsg(DashboardCommand.loading, 'loading' as LoadingType);
       Settings.setProject(project);
       await Cache.clear(false);
 

@@ -6,8 +6,6 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { groupBy } from '../../../helpers/GroupBy';
 import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMatterIcon';
 import { GroupOption } from '../../constants/GroupOption';
-import { Page } from '../../models/Page';
-import { Settings } from '../../models/Settings';
 import { GroupingSelector, PageAtom, ViewSelector } from '../../state';
 import { Item } from './Item';
 import { List } from './List';
@@ -20,7 +18,7 @@ import { messageHandler } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
 import { PinIcon } from '../Icons/PinIcon';
 import { PinnedItem } from './PinnedItem';
-import { DashboardViewType } from '../../models';
+import { DashboardViewType, Page, Settings } from '../../models';
 
 export interface IOverviewProps {
   pages: Page[];

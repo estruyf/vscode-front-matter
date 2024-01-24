@@ -144,6 +144,10 @@ export enum LocalizationKey {
    */
   commonBack = 'common.back',
   /**
+   * Loading content
+   */
+  loadingInitPages = 'loading.initPages',
+  /**
    * output window
    */
   notificationsOutputChannelLink = 'notifications.outputChannel.link',

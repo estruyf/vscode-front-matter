@@ -36,6 +36,8 @@
   "common.openSettings": "Open settings",
   "common.back": "Back",
 
+  "loading.initPages": "Loading content",
+
   "notifications.outputChannel.link": "output window",
   "notifications.outputChannel.description": "Check the {0} for more details.",
 

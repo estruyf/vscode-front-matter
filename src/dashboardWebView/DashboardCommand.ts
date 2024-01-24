@@ -1,4 +1,5 @@
 export enum DashboardCommand {
+  initializing = 'initializing',
   loading = 'loading',
   pages = 'pages',
   searchPages = 'searchPages',
