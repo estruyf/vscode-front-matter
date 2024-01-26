@@ -16,20 +16,17 @@ import { EmptyView } from './EmptyView';
 import { Container } from './SortableContainer';
 import { SortableItem } from './SortableItem';
 import { ChevronRightIcon, CircleStackIcon } from '@heroicons/react/24/outline';
-import { ToastContainer, toast, Slide } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { DataType } from '../../../models/DataType';
 import { TelemetryEvent } from '../../../constants';
 import { NavigationItem } from '../Layout';
 import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
-import { NavigationType } from '../../models';
 
 export interface IDataViewProps { }
 
 export const DataView: React.FunctionComponent<IDataViewProps> = (
-  props: React.PropsWithChildren<IDataViewProps>
+  _: React.PropsWithChildren<IDataViewProps>
 ) => {
   const [selectedData, setSelectedData] = useState<DataFile | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -112,15 +109,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
         entries: data
       });
 
-      // Show toast message
-      toast.success('Updated your data entries', {
-        position: 'top-right',
-        autoClose: 2000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        transition: Slide
-      });
+      Messenger.send(DashboardMessage.showNotification, 'Updated your data entries');
     },
     [selectedData]
   );
@@ -318,8 +307,6 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
         version={settings?.versionInfo}
         isBacker={settings?.isBacker}
       />
-
-      <ToastContainer />
 
       <img className='hidden' src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Ffrontmatter.codes%2Fmetrics%2Fdashboards&slug=DataView" alt="DataView metrics" />
     </div >

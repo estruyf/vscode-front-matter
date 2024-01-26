@@ -6,7 +6,7 @@ import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { Folders } from '../../commands/Folders';
 import { dirname } from 'path';
 import * as yaml from 'js-yaml';
-import { DataFileHelper } from '../../helpers';
+import { DataFileHelper, Logger } from '../../helpers';
 import { existsAsync, readFileAsync, writeFileAsync } from '../../utils';
 import { mkdirAsync } from '../../utils/mkdirAsync';
 import { PostMessageData } from '../../models';
@@ -59,8 +59,12 @@ export class DataListener extends BaseListener {
       newFileContent || workspace.getConfiguration().get('files.insertFinalNewline');
 
     if (fileType === 'yaml') {
-      const yamlData = yaml.safeDump(entries);
-      await writeFileAsync(absPath, insertFinalNewLine ? `${yamlData}\n` : yamlData, 'utf8');
+      try {
+        const yamlData = yaml.dump(entries);
+        await writeFileAsync(absPath, insertFinalNewLine ? `${yamlData}\n` : yamlData, 'utf8');
+      } catch (e) {
+        Logger.error((e as Error).message);
+      }
     } else {
       const jsonData = JSON.stringify(entries, null, 2);
       await writeFileAsync(absPath, insertFinalNewLine ? `${jsonData}\n` : jsonData, 'utf8');

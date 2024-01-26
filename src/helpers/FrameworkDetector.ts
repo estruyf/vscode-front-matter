@@ -163,7 +163,7 @@ export class FrameworkDetector {
       if (await existsAsync(hexoConfig)) {
         const content = await readFileAsync(hexoConfig, 'utf8');
         // Convert YAML to JSON
-        const config = jsyaml.load(content);
+        const config = jsyaml.load(content) as any;
 
         // Check if post assets are used: https://hexo.io/docs/asset-folders.html#Post-Asset-Folder
         if (config.post_asset_folder) {
@@ -210,7 +210,7 @@ export class FrameworkDetector {
       if (await existsAsync(jekyllConfig)) {
         const content = await readFileAsync(jekyllConfig, 'utf8');
         // Convert YAML to JSON
-        const config = jsyaml.load(content);
+        const config = jsyaml.load(content) as any;
 
         if (config.collections_dir) {
           collectionDir = config.collections_dir;

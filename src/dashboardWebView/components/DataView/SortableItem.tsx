@@ -1,7 +1,6 @@
-import { PencilIcon, ChevronDownIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, TrashIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { SortableHandle, SortableElement } from 'react-sortable-hoc';
-import useThemeColors from '../../hooks/useThemeColors';
 import { LinkButton } from '../Common/LinkButton';
 import { Alert } from '../Modals/Alert';
 import * as l10n from '@vscode/l10n';
@@ -16,7 +15,7 @@ export interface ISortableItemProps {
   onDeleteItem: (index: number) => void;
 }
 
-const DragHandle = SortableHandle(() => <ChevronDownIcon className={`w-6 h-6 cursor-move hover:text-[var(--frontmatter-link-hover)]`} />);
+const DragHandle = SortableHandle(() => <ChevronUpDownIcon className={`w-6 h-6 mr-2 cursor-move hover:text-[var(--frontmatter-link-hover)]`} />);
 
 export const SortableItem = SortableElement(
   ({
@@ -27,7 +26,6 @@ export const SortableItem = SortableElement(
     onDeleteItem
   }: ISortableItemProps) => {
     const [showAlert, setShowAlert] = React.useState(false);
-    const { getColors } = useThemeColors();
 
     const deleteItemConfirm = () => {
       setShowAlert(true);
@@ -37,12 +35,8 @@ export const SortableItem = SortableElement(
       <>
         <li
           data-test={`${selectedIndex}-${crntIndex}`}
-          className={`sortable_item py-2 px-2 w-full flex justify-between content-center cursor-pointer ${selectedIndex === crntIndex ? getColors(`bg-gray-300 dark:bg-vulcan-300`, `bg-[var(--frontmatter-list-selected-background)] text-[var(--frontmatter-list-selected-text)]`) : ``
-            } ${getColors(
-              'hover:bg-gray-200 dark:hover:bg-vulcan-400',
-              'hover:bg-[var(--frontmatter-list-hover-background)]'
-            )
-            }`}
+          className={`sortable_item py-2 px-2 w-full flex justify-between content-center cursor-pointer ${selectedIndex === crntIndex ? `bg-[var(--frontmatter-list-selected-background)] text-[var(--frontmatter-list-selected-text)]` : ``
+            } hover:bg-[var(--frontmatter-list-hover-background)]`}
         >
           <div
             className="flex items-center w-full"
