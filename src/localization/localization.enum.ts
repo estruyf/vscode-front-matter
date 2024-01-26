@@ -372,6 +372,10 @@ export enum LocalizationKey {
    */
   dashboardDataViewDataViewGetStartedLink = 'dashboard.dataView.dataView.getStarted.link',
   /**
+   * Updated your data entries
+   */
+  dashboardDataViewDataViewUpdateMessage = 'dashboard.dataView.dataView.update.message',
+  /**
    * Select your date type first
    */
   dashboardDataViewEmptyViewHeading = 'dashboard.dataView.emptyView.heading',

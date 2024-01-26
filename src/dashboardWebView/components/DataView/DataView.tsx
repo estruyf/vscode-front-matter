@@ -19,7 +19,6 @@ import { ChevronRightIcon, CircleStackIcon } from '@heroicons/react/24/outline';
 import { DataType } from '../../../models/DataType';
 import { TelemetryEvent } from '../../../constants';
 import { NavigationItem } from '../Layout';
-import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 
@@ -32,7 +31,6 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [dataEntries, setDataEntries] = useState<any | any[] | null>(null);
   const settings = useRecoilValue(SettingsSelector);
-  const { getColors } = useThemeColors();
 
   const setSchema = (dataFile: DataFile) => {
     setSelectedData(dataFile);
@@ -109,7 +107,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
         entries: data
       });
 
-      Messenger.send(DashboardMessage.showNotification, 'Updated your data entries');
+      Messenger.send(DashboardMessage.showNotification, l10n.t(LocalizationKey.dashboardDataViewDataViewUpdateMessage));
     },
     [selectedData]
   );
@@ -167,27 +165,15 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
         <div className="relative w-full flex-grow mx-auto overflow-hidden">
           <div className={`flex w-64 flex-col absolute inset-y-0`}>
             <aside
-              className={`flex flex-col flex-grow overflow-y-auto border-r py-6 px-4 overflow-auto ${getColors(
-                'border-gray-200 dark:border-vulcan-300',
-                'border-[var(--frontmatter-border)]'
-              )
-                }`}
+              className={`flex flex-col flex-grow overflow-y-auto border-r py-6 px-4 overflow-auto border-[var(--frontmatter-border)]`}
             >
-              <h2 className={`text-lg ${getColors(
-                `text-gray-500 dark:text-whisper-900`,
-                `text-[var(--frontmatter-text)]`
-              )
-                }`}>
+              <h2 className={`text-lg text-[var(--frontmatter-text)]`}>
                 {l10n.t(LocalizationKey.dashboardDataViewDataViewSelect)}
               </h2>
 
               <nav className={`flex-1 py-4 -mx-4`}>
                 <div
-                  className={`divide-y border-t border-b  ${getColors(
-                    `divide-gray-200 dark:divide-vulcan-300 border-gray-200 dark:border-vulcan-300`,
-                    `divide-[var(--frontmatter-border)] border-[var(--frontmatter-border)]`
-                  )
-                    }`}
+                  className={`divide-y border-t border-b divide-[var(--frontmatter-border)] border-[var(--frontmatter-border)]`}
                 >
                   {dataFiles &&
                     dataFiles.length > 0 &&
@@ -211,17 +197,9 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
               <>
                 {!selectedData.singleEntry && (
                   <div
-                    className={`w-1/3 py-6 px-4 flex-1 border-r overflow-auto ${getColors(
-                      `border-gray-200 dark:border-vulcan-300`,
-                      `border-[var(--frontmatter-border)]`
-                    )
-                      }`}
+                    className={`w-1/3 py-6 px-4 flex-1 border-r overflow-auto border-[var(--frontmatter-border)]`}
                   >
-                    <h2 className={`text-lg ${getColors(
-                      `text-gray-500 dark:text-whisper-900`,
-                      `text-[var(--frontmatter-text)]`
-                    )
-                      }`}>
+                    <h2 className={`text-lg text-[var(--frontmatter-text)]`}>
                       {l10n.t(LocalizationKey.dashboardDataViewDataViewTitle, selectedData?.title?.toLowerCase() || '')}
                     </h2>
 
@@ -247,7 +225,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
                         </>
                       ) : (
                         <div className={`flex flex-col items-center justify-center`}>
-                          <p className={getColors(`text-gray-500 dark:text-whisper-900`, `text-[var(--frontmatter-text)]`)}>
+                          <p className={`text-[var(--frontmatter-text)]`}>
                             {l10n.t(LocalizationKey.dashboardDataViewDataViewEmpty, selectedData.title.toLowerCase())}
                           </p>
                         </div>
@@ -259,7 +237,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
                   className={`${selectedData.singleEntry ? 'w-full' : 'w-2/3'
                     } py-6 px-4 overflow-auto`}
                 >
-                  <h2 className={`text-lg ${getColors(`text-gray-500 dark:text-whisper-900`, `text-[var(--frontmatter-text)]`)}`}>
+                  <h2 className={`text-lg text-[var(--frontmatter-text)]`}>
                     {l10n.t(LocalizationKey.dashboardDataViewDataViewCreateOrModify, selectedData.title.toLowerCase())}
                   </h2>
                   {selectedData ? (
@@ -281,16 +259,12 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
         </div>
       ) : (
         <div className="w-full h-full flex items-center justify-center">
-          <div className={`flex flex-col items-center ${getColors(
-            'text-gray-500 dark:text-whisper-900',
-            'text-[var(--frontmatter-text)]'
-          )
-            }`}>
+          <div className={`flex flex-col items-center text-[var(--frontmatter-text)]`}>
             <CircleStackIcon className="w-32 h-32" />
             <p className="text-3xl mt-2">{l10n.t(LocalizationKey.dashboardDataViewDataViewNoDataFiles)}</p>
             <p className="text-xl mt-4">
               <a
-                className={getColors(`text-teal-700 hover:text-teal-900`, `text-[var(--frontmatter-link)] hover:text-[var(--frontmatter-link-hover)]`)}
+                className={`text-[var(--frontmatter-link)] hover:text-[var(--frontmatter-link-hover)]`}
                 href={`https://frontmatter.codes/docs/dashboard#data-files-view`}
                 title={l10n.t(LocalizationKey.dashboardDataViewDataViewGetStartedLink)}
               >
