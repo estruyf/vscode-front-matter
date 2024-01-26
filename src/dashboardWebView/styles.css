@@ -79,21 +79,6 @@
   }
 
   form {
-    label {
-      @apply block;
-      @apply text-gray-500;
-      @apply my-2;
-    }
-
-    input,
-    textarea {
-      @apply w-full px-2 py-1 text-vulcan-500;
-
-      &::placeholder {
-        @apply text-gray-500;
-      }
-    }
-
     .ant-form-item-has-error .ant-form-item-control-input {
       @apply relative;
     }
@@ -147,12 +132,12 @@
 
     > .fields {
       > div > label:first-of-type {
-        color: var(--primary-color);
+        color: var(--frontmatter-text);
       }
 
       > div:not(:first-child) > label:first-of-type {
         margin-block-start: 2rem;
-        border-block-start: 1px solid;
+        border-block-start: 1px solid var(--frontmatter-border);
         padding-block-start: 2rem;
       }
     }
