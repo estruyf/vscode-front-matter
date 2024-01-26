@@ -50,7 +50,7 @@ export const GitAction: React.FunctionComponent<IGitActionProps> = ({
         onClick={pull}
         title={
           <div className="git_actions__sync">
-            <ArrowPathIcon className={isSyncing ? 'animate-spin' : ''} />
+            <ArrowPathIcon className={isSyncing ? 'animate-reverse-spin' : ''} />
             <span>
               {l10n.t(LocalizationKey.commonSync)}
             </span>
