@@ -197,6 +197,8 @@ export default function usePages(pages: Page[]) {
         if (key === ExtensionState.Dashboard.Contents.Sorting && value) {
           setSorting(value);
           return;
+        } else {
+          startPageProcessing();
         }
       });
     } else {

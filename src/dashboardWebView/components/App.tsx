@@ -30,7 +30,7 @@ export interface IAppProps {
 export const App: React.FunctionComponent<IAppProps> = ({
   showWelcome
 }: React.PropsWithChildren<IAppProps>) => {
-  const { loading, pages, settings, localeReady } = useMessages();
+  const { pages, settings, localeReady } = useMessages();
   const view = useRecoilValue(DashboardViewSelector);
   const mode = useRecoilValue(ModeAtom);
   const [isDevMode, setIsDevMode] = useState(false);
