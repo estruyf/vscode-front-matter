@@ -12,7 +12,7 @@ import {
   Extension,
   Logger,
   Notifications,
-  processKnownPlaceholders,
+  processTimePlaceholders,
   Telemetry
 } from '../../helpers';
 import { GeneralCommands } from './../../constants/GeneralCommands';
@@ -154,7 +154,7 @@ export class GitListener {
 
     if (commitMsg) {
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
-      commitMsg = processKnownPlaceholders(commitMsg, undefined, dateFormat);
+      commitMsg = processTimePlaceholders(commitMsg, dateFormat);
       commitMsg = await ArticleHelper.processCustomPlaceholders(commitMsg, undefined, undefined);
     }
 

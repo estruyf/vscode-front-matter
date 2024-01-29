@@ -1,5 +1,6 @@
 import { Dashboard } from '../../commands/Dashboard';
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
+import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { Logger } from '../../helpers/Logger';
 import { PostMessageData } from '../../models';
 
@@ -20,7 +21,11 @@ export abstract class BaseListener {
     });
   }
 
-  public static sendRequest(command: DashboardCommand, requestId: string, payload: any) {
+  public static sendRequest(
+    command: DashboardCommand | DashboardMessage,
+    requestId: string,
+    payload: any
+  ) {
     Dashboard.postWebviewMessage({
       command,
       requestId,

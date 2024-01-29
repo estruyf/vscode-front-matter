@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 
-export const processFmPlaceholders = (value: string, fmData: any) => {
+export const processFmPlaceholders = (value: string, fmData: { [key: string]: any }) => {
   // Example: {{fm.date}} or {{fm.date | dateFormat 'DD.MM.YYYY'}}
   if (value && value.includes('{{fm.')) {
     const regex = /{{fm.[^}]*}}/g;

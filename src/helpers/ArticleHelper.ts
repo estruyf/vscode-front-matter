@@ -23,7 +23,17 @@ import {
 } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { FrontMatterParser, ParsedFrontMatter } from '../parsers';
-import { ContentType, Extension, Logger, Settings, SlugHelper, isValidFile, parseWinPath } from '.';
+import {
+  ContentType,
+  Extension,
+  Logger,
+  Settings,
+  SlugHelper,
+  isValidFile,
+  parseWinPath,
+  processArticlePlaceholdersFromPath,
+  processTimePlaceholders
+} from '.';
 import { format, parse } from 'date-fns';
 import { Notifications } from './Notifications';
 import { Article } from '../commands';
@@ -37,7 +47,6 @@ import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { Link, Parent } from 'mdast-util-from-markdown/lib';
 import { Content } from 'mdast';
-import { processKnownPlaceholders } from './PlaceholderHelper';
 import { CustomScript } from './CustomScript';
 import { Folders } from '../commands/Folders';
 import { existsAsync, readFileAsync } from '../utils';
@@ -54,6 +63,19 @@ export class ArticleHelper {
    * @param editor
    */
   public static getFrontMatter(editor: vscode.TextEditor) {
+    return ArticleHelper.getFrontMatterFromDocument(editor.document);
+  }
+
+  /**
+   * Retrieves the front matter from the current active document.
+   * @returns The front matter object if found, otherwise undefined.
+   */
+  public static getFrontMatterFromCurrentDocument() {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+
     return ArticleHelper.getFrontMatterFromDocument(editor.document);
   }
 
@@ -524,7 +546,12 @@ export class ArticleHelper {
    * @param title
    * @returns
    */
-  public static async updatePlaceholders(data: any, title: string, filePath: string) {
+  public static async updatePlaceholders(
+    data: any,
+    title: string,
+    filePath: string,
+    slugTemplate?: string
+  ) {
     const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
     const fmData = Object.assign({}, data);
 
@@ -536,10 +563,11 @@ export class ArticleHelper {
       }
 
       if (fieldName === 'slug' && (fieldValue === null || fieldValue === '')) {
-        fmData[fieldName] = SlugHelper.createSlug(title);
+        fmData[fieldName] = SlugHelper.createSlug(title, fmData, slugTemplate);
       }
 
-      fmData[fieldName] = processKnownPlaceholders(fmData[fieldName], title, dateFormat);
+      fmData[fieldName] = await processArticlePlaceholdersFromPath(fmData[fieldName], filePath);
+      fmData[fieldName] = processTimePlaceholders(fmData[fieldName], dateFormat);
       fmData[fieldName] = await this.processCustomPlaceholders(fmData[fieldName], title, filePath);
     }
 
@@ -597,7 +625,11 @@ export class ArticleHelper {
               }
 
               const regex = new RegExp(`{{${placeholder.id}}}`, 'g');
-              const updatedValue = processKnownPlaceholders(placeHolderValue, title, dateFormat);
+              let updatedValue = filePath
+                ? await processArticlePlaceholdersFromPath(placeHolderValue, filePath)
+                : placeHolderValue;
+
+              updatedValue = processTimePlaceholders(updatedValue, dateFormat);
 
               if (value === `{{${placeholder.id}}}`) {
                 value = updatedValue;

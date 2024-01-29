@@ -31,6 +31,7 @@ import { GitListener, ModeListener } from '../listeners/general';
 import { Folders } from './Folders';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
+import { DashboardMessage } from '../dashboardWebView/DashboardMessage';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -204,7 +205,7 @@ export class Dashboard {
    * @param msg
    */
   public static postWebviewMessage(msg: {
-    command: DashboardCommand;
+    command: DashboardCommand | DashboardMessage;
     requestId?: string;
     payload?: unknown;
     error?: unknown;

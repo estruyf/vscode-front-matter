@@ -1,4 +1,5 @@
 import { Article } from '../../commands';
+import { ArticleHelper } from '../../helpers';
 import { PostMessageData } from '../../models';
 import { Command } from '../../panelWebView/Command';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
@@ -32,8 +33,9 @@ export class ArticleListener extends BaseListener {
    * Generate a slug
    * @param title
    */
-  private static generateSlug(title: string) {
-    const slug = Article.generateSlug(title);
+  private static generateSlug({ title, slugTemplate }: { title: string; slugTemplate?: string }) {
+    const article = ArticleHelper.getFrontMatterFromCurrentDocument();
+    const slug = Article.generateSlug(title, article, slugTemplate);
     if (slug) {
       this.sendMsg(Command.updatedSlug, slug);
     }

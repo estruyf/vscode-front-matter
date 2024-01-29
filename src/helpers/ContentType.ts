@@ -1,6 +1,13 @@
 import { ModeListener } from './../listeners/general/ModeListener';
 import { PagesListener } from './../listeners/dashboard';
-import { ArticleHelper, CustomScript, Logger, Settings } from '.';
+import {
+  ArticleHelper,
+  CustomScript,
+  Logger,
+  Settings,
+  processArticlePlaceholdersFromData,
+  processTimePlaceholders
+} from '.';
 import {
   DefaultFieldValues,
   EXTENSION_NAME,
@@ -26,7 +33,6 @@ import { Questions } from './Questions';
 import { Notifications } from './Notifications';
 import { DEFAULT_CONTENT_TYPE_NAME } from '../constants/ContentType';
 import { Telemetry } from './Telemetry';
-import { processKnownPlaceholders } from './PlaceholderHelper';
 import { basename } from 'path';
 import { ParsedFrontMatter } from '../parsers';
 import { encodeEmoji, existsAsync, fieldWhenClause, writeFileAsync } from '../utils';
@@ -927,7 +933,8 @@ export class ContentType {
           titleValue,
           templateData?.data || {},
           newFilePath,
-          !!contentType.clearEmpty
+          !!contentType.clearEmpty,
+          contentType
         );
 
         const article: ParsedFrontMatter = {
@@ -982,6 +989,7 @@ export class ContentType {
     data: any,
     filePath: string,
     clearEmpty: boolean,
+    contentType: IContentType,
     isRoot: boolean = true
   ): Promise<any> {
     if (obj.fields) {
@@ -995,9 +1003,9 @@ export class ContentType {
 
         if (field.name === 'title') {
           if (field.default) {
-            data[field.name] = processKnownPlaceholders(
-              field.default,
-              titleValue,
+            data[field.name] = processArticlePlaceholdersFromData(field.default, data, contentType);
+            data[field.name] = processTimePlaceholders(
+              data[field.name],
               field.dateFormat || dateFormat
             );
             data[field.name] = await ArticleHelper.processCustomPlaceholders(
@@ -1018,6 +1026,7 @@ export class ContentType {
               {},
               filePath,
               clearEmpty,
+              contentType,
               false
             );
 
@@ -1028,9 +1037,13 @@ export class ContentType {
             const defaultValue = field.default;
 
             if (typeof defaultValue === 'string') {
-              data[field.name] = processKnownPlaceholders(
+              data[field.name] = processArticlePlaceholdersFromData(
                 defaultValue,
-                titleValue,
+                data,
+                contentType
+              );
+              data[field.name] = processTimePlaceholders(
+                data[field.name],
                 field.dateFormat || dateFormat
               );
               data[field.name] = await ArticleHelper.processCustomPlaceholders(

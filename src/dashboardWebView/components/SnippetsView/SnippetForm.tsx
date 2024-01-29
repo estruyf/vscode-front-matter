@@ -1,12 +1,10 @@
-import { Messenger } from '@estruyf/vscode/dist/client';
+import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import { processKnownPlaceholders } from '../../../helpers/PlaceholderHelper';
 import { SnippetParser } from '../../../helpers/SnippetParser';
 import { Snippet, SnippetField, SnippetInfoField, SnippetSpecialPlaceholders } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
-import useThemeColors from '../../hooks/useThemeColors';
 import { SettingsAtom, ViewDataSelector } from '../../state';
 import { SnippetInputField } from './SnippetInputField';
 import { SNIPPET } from '../../../constants/Snippet';
@@ -15,6 +13,7 @@ export interface ISnippetFormProps {
   snippetKey?: string;
   snippet: Snippet;
   selection: string | undefined;
+  filePath?: string;
   fieldInfo?: SnippetInfoField[];
   mediaData?: any;
   onInsert?: (mediaData: any) => void;
@@ -25,13 +24,12 @@ export interface SnippetFormHandle {
 }
 
 const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFormProps> = (
-  { snippetKey, snippet, selection, fieldInfo, mediaData, onInsert },
+  { snippetKey, snippet, selection, filePath, fieldInfo, mediaData, onInsert },
   ref
 ) => {
   const viewData = useRecoilValue(ViewDataSelector);
   const [fields, setFields] = useState<SnippetField[]>([]);
   const settings = useRecoilValue(SettingsAtom);
-  const { getColors } = useThemeColors();
 
   const onTextChange = useCallback(
     (field: SnippetField, value: string) => {
@@ -43,20 +41,19 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
   );
 
   const insertPlaceholderValues = useCallback(
-    (value: SnippetSpecialPlaceholders) => {
+    async (value: SnippetSpecialPlaceholders) => {
       if (value === 'FM_SELECTED_TEXT') {
         return selection || '';
       }
 
-      value = processKnownPlaceholders(
+      value = await messageHandler.request<string>(DashboardMessage.updateSnippetPlaceholders, {
         value,
-        viewData?.data?.fileTitle || '',
-        settings?.date.format || ''
-      );
+        filePath
+      });
 
       return value;
     },
-    [selection]
+    [selection, filePath]
   );
 
   const insertValueFromMedia = useCallback(
@@ -126,7 +123,7 @@ ${snippetBody}
     }
   }));
 
-  useEffect(() => {
+  const processFields = useCallback(async () => {
     // Get all placeholder variables from the snippet
     const body = typeof snippet.body === 'string' ? snippet.body : snippet.body.join(`\n`);
 
@@ -145,7 +142,7 @@ ${snippetBody}
       if (idx > -1) {
         allFields.push({
           ...field,
-          value: insertPlaceholderValues(field.default || '')
+          value: await insertPlaceholderValues(field.default || '')
         });
       }
     }
@@ -165,15 +162,15 @@ ${snippetBody}
     }
 
     setFields(allFields);
+  }, [snippet, insertPlaceholderValues, insertValueFromMedia]);
+
+  useEffect(() => {
+    processFields();
   }, [snippet]);
 
   return (
     <div>
-      <pre className={`border p-2 whitespace-pre-wrap break-words max-h-64 overflow-auto rounded ${getColors(
-        'border-opacity-40',
-        'border-[var(--frontmatter-border)] bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]',
-      )
-        }`}>
+      <pre className={`border p-2 whitespace-pre-wrap break-words max-h-64 overflow-auto rounded border-[var(--frontmatter-border)] bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]`}>
         {snippetBody}
       </pre>
 

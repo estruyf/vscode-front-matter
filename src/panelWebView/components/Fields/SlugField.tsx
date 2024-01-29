@@ -14,6 +14,7 @@ import { LocalizationKey } from '../../../localization';
 export interface ISlugFieldProps extends BaseFieldProps<string> {
   titleValue: string | null;
   editable?: boolean;
+  slugTemplate?: string;
   onChange: (txtValue: string) => void;
 }
 
@@ -23,6 +24,7 @@ export const SlugField: React.FunctionComponent<ISlugFieldProps> = ({
   editable,
   value,
   titleValue,
+  slugTemplate,
   onChange,
   required
 }: React.PropsWithChildren<ISlugFieldProps>) => {
@@ -60,9 +62,12 @@ export const SlugField: React.FunctionComponent<ISlugFieldProps> = ({
 
   useEffect(() => {
     if (titleValue) {
-      Messenger.send(CommandToCode.generateSlug, titleValue);
+      Messenger.send(CommandToCode.generateSlug, {
+        title: titleValue,
+        slugTemplate
+      });
     }
-  }, [titleValue]);
+  }, [titleValue, slugTemplate]);
 
   useEffect(() => {
     Messenger.listen(messageListener);

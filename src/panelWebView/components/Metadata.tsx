@@ -66,6 +66,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
         parent={parent}
         parentFields={parentFields}
         metadata={metadata}
+        contentType={contentType}
         settings={settings}
         blockData={blockData}
         parentBlock={parentBlock}

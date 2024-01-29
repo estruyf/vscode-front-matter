@@ -1,4 +1,6 @@
-import { stopWords, charMap } from '../constants';
+import { Settings } from '.';
+import { stopWords, charMap, SETTING_DATE_FORMAT, SETTING_SLUG_TEMPLATE } from '../constants';
+import { processTimePlaceholders, processFmPlaceholders } from '.';
 
 export class SlugHelper {
   /**
@@ -6,13 +8,41 @@ export class SlugHelper {
    *
    * @param articleTitle
    */
-  public static createSlug(articleTitle: string): string | null {
+  public static createSlug(
+    articleTitle: string,
+    articleData: { [key: string]: any },
+    slugTemplate?: string
+  ): string | null {
     if (!articleTitle) {
       return null;
     }
 
-    // Remove punctuation from input string, and split it into words.
-    let cleanTitle = this.removePunctuation(articleTitle).trim();
+    if (!slugTemplate) {
+      slugTemplate = Settings.get<string>(SETTING_SLUG_TEMPLATE) || undefined;
+    }
+
+    if (slugTemplate) {
+      if (slugTemplate.includes('{{title}}')) {
+        const regex = new RegExp('{{title}}', 'g');
+        slugTemplate = slugTemplate.replace(regex, SlugHelper.slugify(articleTitle));
+      }
+
+      const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
+      articleTitle = processTimePlaceholders(slugTemplate, dateFormat);
+      articleTitle = processFmPlaceholders(articleTitle, articleData);
+      return articleTitle;
+    }
+
+    return SlugHelper.slugify(articleTitle);
+  }
+
+  /**
+   * Converts a title into a slug by removing punctuation, stop words, and replacing characters.
+   * @param title - The title to be slugified.
+   * @returns The slugified version of the title.
+   */
+  public static slugify(title: string): string {
+    let cleanTitle = this.removePunctuation(title).trim();
     if (cleanTitle) {
       cleanTitle = cleanTitle.toLowerCase();
       // Split into words
@@ -23,8 +53,7 @@ export class SlugHelper {
       cleanTitle = this.replaceCharacters(cleanTitle);
       return cleanTitle;
     }
-
-    return null;
+    return '';
   }
 
   /**

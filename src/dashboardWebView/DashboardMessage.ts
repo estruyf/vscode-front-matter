@@ -54,6 +54,7 @@ export enum DashboardMessage {
   insertSnippet = 'insertSnippet',
   addSnippet = 'addSnippet',
   updateSnippet = 'updateSnippet',
+  updateSnippetPlaceholders = 'updateSnippetPlaceholders',
 
   // Taxonomy dashboard
   getTaxonomyData = 'getTaxonomyData',
