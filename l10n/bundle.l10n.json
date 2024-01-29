@@ -110,6 +110,7 @@
   "dashboard.dataView.dataView.getStarted": "Select a data type to get started",
   "dashboard.dataView.dataView.noDataFiles": "No data files found",
   "dashboard.dataView.dataView.getStarted.link": "Read more to get started using data files",
+  "dashboard.dataView.dataView.update.message": "Updated your data entries",
 
   "dashboard.dataView.emptyView.heading": "Select your date type first",
 
