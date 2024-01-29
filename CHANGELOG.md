@@ -21,6 +21,7 @@
 - [#730](https://github.com/estruyf/vscode-front-matter/issues/730): Add debounce to the input fields
 - [#738](https://github.com/estruyf/vscode-front-matter/issues/738): Fix when re-opening the preview after closing it
 - [#743](https://github.com/estruyf/vscode-front-matter/issues/743): Fix for storing data in YAML data files
+- [#745](https://github.com/estruyf/vscode-front-matter/issues/745): Fix for date field values in `block` field type
 
 ## [9.4.0] - 2023-12-12 - [Release notes](https://beta.frontmatter.codes/updates/v9.4.0)
 
