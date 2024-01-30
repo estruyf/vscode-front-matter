@@ -223,7 +223,11 @@ export class DataListener extends BaseListener {
 
     if (keys.length > 0 && contentTypes && wsFolder) {
       // Get the current content type
-      const contentType = ArticleHelper.getContentType(updatedMetadata);
+      const contentType = ArticleHelper.getContentType({
+        content: '',
+        data: updatedMetadata,
+        path: filePath
+      });
       let slugField;
       if (contentType) {
         ImageHelper.processImageFields(updatedMetadata, contentType.fields);

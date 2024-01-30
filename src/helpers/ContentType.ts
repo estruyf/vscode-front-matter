@@ -305,17 +305,17 @@ export class ContentType {
 
     Telemetry.send(TelemetryEvent.addMissingFields);
 
-    const content = ArticleHelper.getCurrent();
+    const article = ArticleHelper.getCurrent();
 
-    if (!content || !content.data) {
+    if (!article || !article.data) {
       Notifications.warning(
         l10n.t(LocalizationKey.helpersContentTypeAddMissingFieldsNoFrontMatterWarning)
       );
       return;
     }
 
-    const contentType = ArticleHelper.getContentType(content);
-    const updatedFields = ContentType.generateFields(content.data, contentType.fields);
+    const contentType = ArticleHelper.getContentType(article);
+    const updatedFields = ContentType.generateFields(article.data, contentType.fields);
 
     const contentTypes = ContentType.getAll() || [];
     const index = contentTypes.findIndex((ct) => ct.name === contentType.name);

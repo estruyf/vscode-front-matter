@@ -3,7 +3,6 @@ import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { DateHelper } from '../../../helpers/DateHelper';
 import { BlockFieldData, ContentType, CustomPanelViewResult, Field, PanelSettings } from '../../../models';
-import { Command } from '../../Command';
 import { CommandToCode } from '../../CommandToCode';
 import { TagType } from '../../TagType';
 import { DataBlockField } from '../DataBlock';
