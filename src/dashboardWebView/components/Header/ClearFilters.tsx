@@ -15,7 +15,6 @@ import {
 } from '../../state';
 import { DefaultValue } from 'recoil';
 import { useEffect } from 'react';
-import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 
@@ -30,7 +29,6 @@ export const ClearFilters: React.FunctionComponent<IClearFiltersProps> = (
   _: React.PropsWithChildren<IClearFiltersProps>
 ) => {
   const [show, setShow] = React.useState(false);
-  const { getColors } = useThemeColors();
 
   const folder = useRecoilValue(FolderSelector);
   const tag = useRecoilValue(TagSelector);
@@ -65,11 +63,7 @@ export const ClearFilters: React.FunctionComponent<IClearFiltersProps> = (
 
   return (
     <button
-      className={`flex items-center ${getColors(
-        'hover:text-teal-600',
-        'hover:text-[var(--vscode-textLink-activeForeground)]'
-      )
-        }`}
+      className={`flex items-center hover:text-[var(--vscode-textLink-activeForeground)]`}
       onClick={reset}
       title={l10n.t(LocalizationKey.dashboardHeaderClearFiltersTitle)}
     >

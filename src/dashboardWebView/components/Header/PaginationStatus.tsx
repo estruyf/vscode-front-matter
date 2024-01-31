@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
 import usePagination from '../../hooks/usePagination';
-import useThemeColors from '../../hooks/useThemeColors';
 import { MediaTotalSelector, PageAtom, SettingsAtom } from '../../state';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
@@ -22,8 +21,6 @@ export const PaginationStatus: React.FunctionComponent<IPaginationStatusProps> =
     totalPages || 0,
     totalMedia
   );
-  const { getColors } = useThemeColors();
-
   const totelItemsOnPage = useMemo(() => {
     const items = (page + 1) * pageSetNr;
     if (totalItems < items) {
@@ -34,11 +31,7 @@ export const PaginationStatus: React.FunctionComponent<IPaginationStatusProps> =
 
   return (
     <div className="hidden sm:flex">
-      <p className={`text-sm ${getColors(
-        'text-gray-500 dark:text-whisper-900',
-        'text-[var(--vscode-tab-inactiveForeground)]'
-      )
-        }`}>
+      <p className={`text-sm text-[var(--vscode-tab-inactiveForeground)]`}>
         {
           l10n.t(LocalizationKey.dashboardHeaderPaginationStatusText,
             (page * pageSetNr + 1),

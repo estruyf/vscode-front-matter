@@ -3,7 +3,6 @@ import { ArrowRightIcon, ArrowTopRightOnSquareIcon, ArrowPathIcon } from '@heroi
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { GeneralCommands, PreviewCommands } from '../../../constants';
-import useThemeColors from '../../hooks/useThemeColors';
 import { EventData } from '@estruyf/vscode/dist/models';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
@@ -17,7 +16,6 @@ export const Preview: React.FunctionComponent<IPreviewProps> = ({
 }: React.PropsWithChildren<IPreviewProps>) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [crntUrl, setCrntUrl] = useState<string | null>(null);
-  const { getColors } = useThemeColors();
   const [localeReady, setLocaleReady] = useState<boolean>(false);
 
   const onRefresh = () => {
@@ -87,27 +85,26 @@ export const Preview: React.FunctionComponent<IPreviewProps> = ({
         {
           localeReady && (
             <div
-              className={`actions flex items-center space-x-2 px-2 ${getColors('text-vulcan-500 dark:text-whisper-100', 'text-[var(--vscode-list-activeSelectionForeground)]')
-                }`}
+              className={`actions flex items-center space-x-2 px-2 text-[var(--vscode-list-activeSelectionForeground)]`}
             >
               <button
                 title={l10n.t(LocalizationKey.dashboardPreviewButtonOpenTitle)}
                 onClick={navigateToUrl}
-                className={getColors(`hover:text-vulcan-500 dark:hover:text-whisper-100`, `hover:text-[var(--vscode-textLink-activeForeground)]`)}>
+                className={`hover:text-[var(--vscode-textLink-activeForeground)]`}>
                 <ArrowRightIcon className="w-4 h-4" aria-hidden="true" />
               </button>
 
               <button
                 title={l10n.t(LocalizationKey.dashboardPreviewButtonRefreshTitle)}
                 onClick={onRefresh}
-                className={`mr-2 ${getColors(`hover:text-vulcan-500 dark:hover:text-whisper-100`, `hover:text-[var(--vscode-textLink-activeForeground)]`)}`}>
+                className={`mr-2 hover:text-[var(--vscode-textLink-activeForeground)]`}>
                 <ArrowPathIcon className="w-4 h-4" aria-hidden="true" />
               </button>
 
               <button
                 title={l10n.t(LocalizationKey.dashboardPreviewButtonOpenTitle)}
                 onClick={openInBrowser}
-                className={`mr-2 ${getColors(`hover:text-vulcan-500 dark:hover:text-whisper-100`, `hover:text-[var(--vscode-textLink-activeForeground)]`)}`}>
+                className={`mr-2 hover:text-[var(--vscode-textLink-activeForeground)]`}>
                 <ArrowTopRightOnSquareIcon className="w-4 h-4" aria-hidden="true" />
               </button>
             </div>

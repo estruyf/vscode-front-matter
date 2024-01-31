@@ -6,7 +6,6 @@ import { processKnownPlaceholders } from '../../../helpers/PlaceholderHelper';
 import { SnippetParser } from '../../../helpers/SnippetParser';
 import { Snippet, SnippetField, SnippetInfoField, SnippetSpecialPlaceholders } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
-import useThemeColors from '../../hooks/useThemeColors';
 import { SettingsAtom, ViewDataSelector } from '../../state';
 import { SnippetInputField } from './SnippetInputField';
 import { SNIPPET } from '../../../constants/Snippet';
@@ -31,7 +30,6 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
   const viewData = useRecoilValue(ViewDataSelector);
   const [fields, setFields] = useState<SnippetField[]>([]);
   const settings = useRecoilValue(SettingsAtom);
-  const { getColors } = useThemeColors();
 
   const onTextChange = useCallback(
     (field: SnippetField, value: string) => {
@@ -169,11 +167,7 @@ ${snippetBody}
 
   return (
     <div>
-      <pre className={`border p-2 whitespace-pre-wrap break-words max-h-64 overflow-auto rounded ${getColors(
-        'border-opacity-40',
-        'border-[var(--frontmatter-border)] bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]',
-      )
-        }`}>
+      <pre className={`border p-2 whitespace-pre-wrap break-words max-h-64 overflow-auto rounded border-[var(--frontmatter-border)] bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]`}>
         {snippetBody}
       </pre>
 

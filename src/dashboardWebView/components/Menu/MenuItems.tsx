@@ -1,7 +1,6 @@
 import { Menu, Transition } from '@headlessui/react';
 import * as React from 'react';
 import { Fragment } from 'react';
-import useThemeColors from '../../hooks/useThemeColors';
 
 export interface IMenuItemsProps {
   widthClass?: string;
@@ -17,8 +16,6 @@ export const MenuItems: React.FunctionComponent<IMenuItemsProps> = ({
   updatePopper,
   disablePopper
 }: React.PropsWithChildren<IMenuItemsProps>) => {
-  const { getColors } = useThemeColors();
-
   return (
     <Transition
       as={Fragment}
@@ -32,11 +29,7 @@ export const MenuItems: React.FunctionComponent<IMenuItemsProps> = ({
     >
       <Menu.Items
         className={`${widthClass || ''} ${marginTopClass || 'mt-2'} ${disablePopper ? 'origin-top-right absolute right-0 z-20' : ''
-          } rounded shadow-2xl ring-1 ring-opacity-5 focus:outline-none text-sm max-h-96 overflow-auto ${getColors(
-            'bg-white dark:bg-vulcan-500 ring-vulcan-400 dark:ring-white',
-            'bg-[var(--vscode-sideBar-background)] ring-[var(--frontmatter-border)]'
-          )
-          }`}
+          } rounded shadow-2xl ring-1 ring-opacity-5 focus:outline-none text-sm max-h-96 overflow-auto bg-[var(--vscode-sideBar-background)] ring-[var(--frontmatter-border)]`}
       >
         <div className="py-1">{children}</div>
       </Menu.Items>

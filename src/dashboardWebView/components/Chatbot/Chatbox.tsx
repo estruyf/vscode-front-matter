@@ -1,7 +1,6 @@
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useCallback } from 'react';
-import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 
@@ -13,7 +12,6 @@ export interface IChatboxProps {
 export const Chatbox: React.FunctionComponent<IChatboxProps> = ({ isLoading, onTrigger }: React.PropsWithChildren<IChatboxProps>) => {
   const [message, setMessage] = React.useState<string>("");
   const [isFocussed, setIsFocussed] = React.useState<boolean>(false);
-  const { getColors } = useThemeColors();
 
   const callAi = useCallback(() => {
     setTimeout(() => {
@@ -29,11 +27,7 @@ export const Chatbox: React.FunctionComponent<IChatboxProps> = ({ isLoading, onT
         <div className='chatbox px-4'>
           <textarea
             className={`
-          resize-none w-full outline-none border-0 pr-8 
-          ${getColors(
-              'focus:outline-none border-gray-300 text-vulcan-500',
-              'border-transparent bg-[var(--vscode-input-background)] text-[var(--vscode-input-foreground)] placeholder-[var(--vscode-input-placeholderForeground)] focus:outline-none focus:border-transparent'
-            )}`}
+          resize-none w-full outline-none border-0 pr-8 border-transparent bg-[var(--vscode-input-background)] text-[var(--vscode-input-foreground)] placeholder-[var(--vscode-input-placeholderForeground)] focus:outline-none focus:border-transparent`}
             placeholder={l10n.t(LocalizationKey.dashboardChatbotChatboxPlaceholder)}
             autoFocus={true}
             value={message}

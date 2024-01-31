@@ -87,7 +87,7 @@
       label {
         &::after {
           content: ' *';
-          @apply text-red-400;
+          @apply text-[var(--vscode-editorError-foreground)];
         }
       }
     }
@@ -97,7 +97,7 @@
     }
 
     .ant-form-item-has-error .ant-form-item-children-icon {
-      @apply absolute right-1 top-1 text-red-400;
+      @apply absolute right-1 top-1 text-[var(--vscode-editorError-foreground)];
 
       svg {
         @apply h-4 w-4;

@@ -5,7 +5,6 @@ import { Bars4Icon, Squares2X2Icon } from '@heroicons/react/24/solid';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
 import { DashboardViewType } from '../../models';
-import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 
@@ -16,7 +15,6 @@ export const ViewSwitch: React.FunctionComponent<IViewSwitchProps> = (
 ) => {
   const [view, setView] = useRecoilState(ViewAtom);
   const settings = useRecoilValue(SettingsSelector);
-  const { getColors } = useThemeColors();
 
   const toggleView = () => {
     const newView =
@@ -32,9 +30,9 @@ export const ViewSwitch: React.FunctionComponent<IViewSwitchProps> = (
   }, [settings?.pageViewType]);
 
   return (
-    <div className={`flex rounded-sm lg:mb-1 ${getColors('bg-vulcan-50', 'bg-[var(--vscode-button-secondaryBackground)]')}`}>
+    <div className={`flex rounded-sm lg:mb-1 bg-[var(--vscode-button-secondaryBackground)]`}>
       <button
-        className={`flex items-center px-2 py-1 rounded-l-sm ${view === DashboardViewType.Grid ? getColors('bg-teal-500 text-vulcan-500', 'bg-[var(--frontmatter-button-background)] text-[var(--vscode-button-foreground)]') : 'text-[var(--vscode-button-secondaryForeground)] hover:bg-[var(--vscode-button-secondaryHoverBackground)]'
+        className={`flex items-center px-2 py-1 rounded-l-sm ${view === DashboardViewType.Grid ? `bg-[var(--frontmatter-button-background)] text-[var(--vscode-button-foreground)]` : 'text-[var(--vscode-button-secondaryForeground)] hover:bg-[var(--vscode-button-secondaryHoverBackground)]'
           }`}
         title={l10n.t(LocalizationKey.dashboardHeaderViewSwitchToGrid)}
         type={`button`}
@@ -46,7 +44,7 @@ export const ViewSwitch: React.FunctionComponent<IViewSwitchProps> = (
         </span>
       </button>
       <button
-        className={`flex items-center px-2 py-1 rounded-r-sm ${view === DashboardViewType.List ? getColors('bg-teal-500 text-vulcan-500', 'bg-[var(--frontmatter-button-background)] text-[var(--vscode-button-foreground)]') : 'text-[var(--vscode-button-secondaryForeground)] hover:bg-[var(--vscode-button-secondaryHoverBackground)]'
+        className={`flex items-center px-2 py-1 rounded-r-sm ${view === DashboardViewType.List ? `bg-[var(--frontmatter-button-background)] text-[var(--vscode-button-foreground)]` : 'text-[var(--vscode-button-secondaryForeground)] hover:bg-[var(--vscode-button-secondaryHoverBackground)]'
           }`}
         title={l10n.t(LocalizationKey.dashboardHeaderViewSwitchToList)}
         type={`button`}

@@ -4,7 +4,6 @@ import * as React from 'react';
 import { useCallback } from 'react';
 import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
 import { DashboardMessage } from '../../DashboardMessage';
-import useThemeColors from '../../hooks/useThemeColors';
 import { NavigationType } from '../../models';
 import {
   CategoryAtom,

@@ -1,7 +1,6 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { GeneralCommands } from '../../../constants';
-import useThemeColors from '../../hooks/useThemeColors';
 import { SnippetInput } from './SnippetInput';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
@@ -28,8 +27,6 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
   onDescriptionUpdate,
   onBodyUpdate
 }: React.PropsWithChildren<INewFormProps>) => {
-  const { getColors } = useThemeColors();
-
   const openLink = () => {
     Messenger.send(
       GeneralCommands.toVSCode.openLink,
@@ -43,7 +40,7 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
         <label htmlFor={`title`} className="block text-sm font-medium capitalize">
           {l10n.t(LocalizationKey.commonTitle)}
           {' '}
-          <span className={getColors(`text-red-400`, `text-[var(--vscode-notificationsErrorIcon-foreground)]`)} title="Required field">
+          <span className={`text-[var(--vscode-editorError-foreground)]`} title="Required field">
             *
           </span>
         </label>
@@ -75,7 +72,7 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
         <label htmlFor={`snippet`} className="block text-sm font-medium capitalize">
           {l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputSnippetLabel)}
           {' '}
-          <span className="text-red-400" title="Required field">
+          <span className="text-[var(--vscode-editorError-foreground)]" title="Required field">
             *
           </span>
         </label>
@@ -103,18 +100,13 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
               type="checkbox"
               checked={isMediaSnippet}
               onChange={(e) => onMediaSnippetUpdate(e.currentTarget.checked)}
-              className={`h-4 w-4 rounded ${getColors(
-                `focus:ring-teal-500 text-teal-600 border-gray-300 dark:border-vulcan-50`,
-                `focus:ring-[var(--frontmatter-button-background)] text-[var(--frontmatter-button-background)] border-[var(--frontmatter-border)]`
-              )
-                }`}
+              className={`h-4 w-4 rounded focus:ring-[var(--frontmatter-button-background)] text-[var(--frontmatter-button-background)] border-[var(--frontmatter-border)]`}
             />
           </div>
           <div className="ml-3 text-sm">
             <label
               htmlFor="isMediaSnippet"
-              className={`font-medium ${getColors(`text-vulcan-100 dark:text-whisper-900`, `text-[var(--vscode-editor-foreground)]`)
-                }`}
+              className={`font-medium text-[var(--vscode-editor-foreground)]`}
             >
               {l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputIsMediaSnippetCheckboxLabel)}
             </label>
