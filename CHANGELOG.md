@@ -11,6 +11,7 @@
 - [#727](https://github.com/estruyf/vscode-front-matter/pull/727): Updated Japanese translations thanks to [mayumihara](https://github.com/mayumih387)
 - [#737](https://github.com/estruyf/vscode-front-matter/issues/737): Optimize the grid layout of the content and media dashboards
 - [#741](https://github.com/estruyf/vscode-front-matter/issues/741): Added message on the content dashboard when content is processed
+- [#747](https://github.com/estruyf/vscode-front-matter/issues/747): The `@frontmatter/extensibility` dependency now supports scripts for placeholders
 
 ### ⚡️ Optimizations
 
