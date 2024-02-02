@@ -37,6 +37,7 @@ export interface Settings {
   framework: Framework | null | undefined;
   draftField: DraftField | null | undefined;
   customSorting: SortingSetting[] | undefined;
+  filters: (string | { title: string; name: string })[] | undefined;
   dashboardState: DashboardState;
   scripts: CustomScript[];
   dataFiles: DataFile[] | undefined;

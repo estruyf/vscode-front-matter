@@ -492,6 +492,29 @@
           "markdownDescription": "%setting.frontMatter.content.wysiwyg.markdownDescription%",
           "scope": "Content"
         },
+        "frontMatter.content.filters": {
+          "type": "array",
+          "default": [
+            "pageFolders", "tags", "categories"
+          ],
+          "markdownDescription": "%setting.frontMatter.content.filters.markdownDescription%",
+          "items": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        },
         "frontMatter.custom.scripts": {
           "type": "array",
           "default": [],

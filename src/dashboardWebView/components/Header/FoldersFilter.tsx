@@ -6,11 +6,11 @@ import { MenuButton, MenuItem, MenuItems } from '../Menu';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 
-export interface IFoldersProps { }
+export interface IFoldersFilterProps { }
 
-export const Folders: React.FunctionComponent<
-  IFoldersProps
-> = ({ }: React.PropsWithChildren<IFoldersProps>) => {
+export const FoldersFilter: React.FunctionComponent<
+  IFoldersFilterProps
+> = ({ }: React.PropsWithChildren<IFoldersFilterProps>) => {
   const DEFAULT_TYPE = l10n.t(LocalizationKey.dashboardHeaderFoldersDefault);
   const [crntFolder, setCrntFolder] = useRecoilState(FolderAtom);
   const settings = useRecoilValue(SettingsSelector);

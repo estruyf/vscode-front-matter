@@ -1,14 +1,12 @@
 import * as React from 'react';
 import { Sorting } from './Sorting';
 import { Searchbox } from './Searchbox';
-import { Filter } from './Filter';
-import { Folders } from './Folders';
 import { Settings, NavigationType } from '../../models';
 import { DashboardMessage } from '../../DashboardMessage';
 import { Grouping } from '.';
 import { ViewSwitch } from './ViewSwitch';
-import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
-import { CategoryAtom, GroupingSelector, SortingAtom, TagAtom } from '../../state';
+import { useRecoilValue, useResetRecoilState } from 'recoil';
+import { GroupingSelector, SortingAtom } from '../../state';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { ClearFilters } from './ClearFilters';
 import { MediaHeaderTop } from '../Media/MediaHeaderTop';
@@ -33,6 +31,7 @@ import { LocalizationKey } from '../../../localization';
 import { SettingsLink } from '../SettingsView/SettingsLink';
 import { Link } from '../Common/Link';
 import { SPONSOR_LINK } from '../../../constants';
+import { Filters } from './Filters';
 
 export interface IHeaderProps {
   header?: React.ReactNode;
@@ -50,8 +49,6 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
   totalPages,
   settings
 }: React.PropsWithChildren<IHeaderProps>) => {
-  const [crntTag, setCrntTag] = useRecoilState(TagAtom);
-  const [crntCategory, setCrntCategory] = useRecoilState(CategoryAtom);
   const grouping = useRecoilValue(GroupingSelector);
   const resetSorting = useResetRecoilState(SortingAtom);
   const location = useLocation();
@@ -123,27 +120,6 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
     return [];
   }, [settings?.dashboardState?.contents?.templatesEnabled]);
 
-  useEffect(() => {
-    if (location.search) {
-      const searchParams = new URLSearchParams(location.search);
-      const taxonomy = searchParams.get('taxonomy');
-      const value = searchParams.get('value');
-
-      if (taxonomy && value) {
-        if (taxonomy === 'tags') {
-          setCrntTag(value);
-        } else if (taxonomy === 'categories') {
-          setCrntCategory(value);
-        }
-      }
-
-      return;
-    }
-
-    setCrntTag('');
-    setCrntCategory('');
-  }, [location.search]);
-
   return (
     <div className={`w-full sticky top-0 z-20 bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]`}>
       <div className={`mb-0 border-b flex justify-between bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)] border-[var(--frontmatter-border)]`}>
@@ -214,21 +190,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
           >
             <ClearFilters />
 
-            <Folders />
-
-            <Filter
-              label={`Tag`}
-              activeItem={crntTag}
-              items={settings?.tags || []}
-              onClick={(value) => setCrntTag(value)}
-            />
-
-            <Filter
-              label={`Category`}
-              activeItem={crntCategory}
-              items={settings?.categories || []}
-              onClick={(value) => setCrntCategory(value)}
-            />
+            <Filters />
 
             <Grouping />
 
