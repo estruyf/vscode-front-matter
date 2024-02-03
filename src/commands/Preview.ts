@@ -199,7 +199,7 @@ export class Preview {
    * @param filePath
    * @param slug
    */
-  public static async updatePageUrl(filePath: string, slug?: string) {
+  public static async updatePageUrl(filePath: string, _: string) {
     const webView = this.webviews[filePath];
     if (webView) {
       const localhost = await this.getLocalServerUrl();
