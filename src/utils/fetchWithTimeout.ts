@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 export const fetchWithTimeout = async (url: string, options: any, timeout = 5000) => {
   try {
     const controller = new AbortController();
