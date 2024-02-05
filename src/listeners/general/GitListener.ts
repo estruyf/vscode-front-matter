@@ -1,9 +1,16 @@
 import {
+  COMMAND_NAME,
+  CONTEXT,
+  GIT_CONFIG,
+  SETTING_DATE_FORMAT,
+  SETTING_GIT_COMMIT_MSG,
+  SETTING_GIT_ENABLED,
   SETTING_GIT_SUBMODULE_BRANCH,
   SETTING_GIT_SUBMODULE_FOLDER,
   SETTING_GIT_SUBMODULE_PULL,
-  SETTING_GIT_SUBMODULE_PUSH
-} from './../../constants/settings';
+  SETTING_GIT_SUBMODULE_PUSH,
+  TelemetryEvent
+} from './../../constants';
 import { Settings } from './../../helpers/SettingsHelper';
 import { Dashboard } from '../../commands/Dashboard';
 import { PanelProvider } from '../../panelWebView/PanelProvider';
@@ -17,14 +24,6 @@ import {
 } from '../../helpers';
 import { GeneralCommands } from './../../constants/GeneralCommands';
 import simpleGit, { SimpleGit } from 'simple-git';
-import {
-  COMMAND_NAME,
-  CONTEXT,
-  SETTING_DATE_FORMAT,
-  SETTING_GIT_COMMIT_MSG,
-  SETTING_GIT_ENABLED,
-  TelemetryEvent
-} from '../../constants';
 import { Folders } from '../../commands/Folders';
 import { commands } from 'vscode';
 import { PostMessageData } from '../../models';
@@ -187,7 +186,7 @@ export class GitListener {
           // Check if anything changed
           if (status.files.length > 0) {
             await subGit.raw(['add', '.', '-A']);
-            await subGit.commit(commitMsg || 'Synced by Front Matter');
+            await subGit.commit(commitMsg || GIT_CONFIG.defaultCommitMessage);
           }
           await subGit.push();
         } catch (e) {
@@ -214,7 +213,7 @@ export class GitListener {
               'git',
               'commit',
               '-m',
-              commitMsg || 'Synced by Front Matter'
+              commitMsg || GIT_CONFIG.defaultCommitMessage
             ]);
             await git.subModule(['foreach', 'git', 'push']);
           }
@@ -234,7 +233,7 @@ export class GitListener {
 
     if (status.files.length > 0) {
       await git.raw(['add', '.', '-A']);
-      await git.commit(commitMsg || 'Synced by Front Matter');
+      await git.commit(commitMsg || GIT_CONFIG.defaultCommitMessage);
     }
 
     await git.push();

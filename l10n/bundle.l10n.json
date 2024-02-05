@@ -50,8 +50,11 @@
   "settings.diagnostic": "Diagnostic",
   "settings.diagnostic.description": "You can run the diagnostics to check the whole Front Matter CMS configuration.",
   "settings.diagnostic.link": "Run full diagnostics",
-  "settings.git.enabled": "Git synchronization",
-  "settings.git.enabled.description": "Enable Git synchronization to easily sync your changes with your repository.",
+  "settings.git": "Git synchronization",
+  "settings.git.enabled": "Enable Git synchronization to easily sync your changes with your repository.",
+  "settings.git.commitMessage": "Commit message",
+  "settings.git.submoduleInfo": "When working with Git submodules, you can refer to the submodule settings in the documentation.",
+  "settings.git.submoduleLink": "Read more about Git submodules",
 
   "settings.commonSettings.website.title": "Website and SSG settings",
   "settings.commonSettings.previewUrl": "Preview URL",

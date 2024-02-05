@@ -194,11 +194,23 @@ export enum LocalizationKey {
   /**
    * Git synchronization
    */
-  settingsGitEnabled = 'settings.git.enabled',
+  settingsGit = 'settings.git',
   /**
    * Enable Git synchronization to easily sync your changes with your repository.
    */
-  settingsGitEnabledDescription = 'settings.git.enabled.description',
+  settingsGitEnabled = 'settings.git.enabled',
+  /**
+   * Commit message
+   */
+  settingsGitCommitMessage = 'settings.git.commitMessage',
+  /**
+   * When working with Git submodules, you can refer to the submodule settings in the documentation.
+   */
+  settingsGitSubmoduleInfo = 'settings.git.submoduleInfo',
+  /**
+   * Read more about Git submodules
+   */
+  settingsGitSubmoduleLink = 'settings.git.submoduleLink',
   /**
    * Website and SSG settings
    */

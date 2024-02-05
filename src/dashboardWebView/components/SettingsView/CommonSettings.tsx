@@ -6,10 +6,11 @@ import { useRecoilValue } from 'recoil';
 import { SettingsSelector } from '../../state';
 import { SettingsInput } from './SettingsInput';
 import { VSCodeButton } from '@vscode/webview-ui-toolkit/react';
-import { FrameworkDetectors, SETTING_FRAMEWORK_START, SETTING_GIT_ENABLED, SETTING_PREVIEW_HOST, SETTING_WEBSITE_URL } from '../../../constants';
+import { DOCS_SUBMODULES, FrameworkDetectors, GIT_CONFIG, SETTING_FRAMEWORK_START, SETTING_GIT_COMMIT_MSG, SETTING_GIT_ENABLED, SETTING_PREVIEW_HOST, SETTING_WEBSITE_URL } from '../../../constants';
 import { messageHandler } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
 import { SettingsCheckbox } from './SettingsCheckbox';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
 export interface ICommonSettingsProps { }
 
@@ -44,7 +45,8 @@ export const CommonSettings: React.FunctionComponent<ICommonSettingsProps> = (pr
       SETTING_PREVIEW_HOST,
       SETTING_WEBSITE_URL,
       SETTING_FRAMEWORK_START,
-      SETTING_GIT_ENABLED
+      SETTING_GIT_ENABLED,
+      SETTING_GIT_COMMIT_MSG,
     ]).then((config) => {
       setConfig(config);
       setUpdated(false);
@@ -72,15 +74,38 @@ export const CommonSettings: React.FunctionComponent<ICommonSettingsProps> = (pr
       </div>
 
       <div className='py-4'>
-        <h2 className='text-xl mb-2'>{l10n.t(LocalizationKey.settingsGitEnabled)}</h2>
+        <h2 className='text-xl mb-2'>{l10n.t(LocalizationKey.settingsGit)}</h2>
 
         <div className='space-y-2'>
           <SettingsCheckbox
-            label={l10n.t(LocalizationKey.settingsGitEnabledDescription)}
+            label={l10n.t(LocalizationKey.settingsGitEnabled)}
             name={SETTING_GIT_ENABLED}
             value={(config.find((c) => c.name === SETTING_GIT_ENABLED)?.value || false) as boolean}
             onChange={onSettingChange}
           />
+
+          <SettingsInput
+            label={l10n.t(LocalizationKey.settingsGitCommitMessage)}
+            name={SETTING_GIT_COMMIT_MSG}
+            value={(config.find((c) => c.name === SETTING_GIT_COMMIT_MSG)?.value || "") as string}
+            placeholder={GIT_CONFIG.defaultCommitMessage}
+            onChange={onSettingChange}
+          />
+
+          <p className={`text-[var(--frontmatter-secondary-text)] flex items-center`}>
+            <ChevronRightIcon className='h-4 w-4 inline' />
+
+            <span>
+              {l10n.t(LocalizationKey.settingsGitSubmoduleInfo)}&nbsp;
+            </span>
+
+            <a
+              href={DOCS_SUBMODULES}
+              title={l10n.t(LocalizationKey.settingsGitSubmoduleLink)}
+              className='text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)]'>
+              {l10n.t(LocalizationKey.settingsGitSubmoduleLink)}
+            </a>
+          </p>
         </div>
       </div>
 
