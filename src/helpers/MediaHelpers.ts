@@ -67,7 +67,7 @@ export class MediaHelpers {
           )
         : sort;
 
-    // If the static folder is not set, retreive the last opened location
+    // If the static folder is not set, retrieve the last opened location
     if (!selectedFolder) {
       const stateValue = await ext.getState<string | undefined>(
         ExtensionState.SelectedFolder,
