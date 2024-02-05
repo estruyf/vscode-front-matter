@@ -65,10 +65,22 @@ export class GitListener {
    */
   public static process(msg: PostMessageData) {
     switch (msg.command) {
+      case GeneralCommands.toVSCode.gitIsRepo:
+        this.checkIsGitRepo(msg.command, msg.requestId);
+        break;
       case GeneralCommands.toVSCode.gitSync:
         this.sync();
         break;
     }
+  }
+
+  public static async checkIsGitRepo(command: string, requestId?: string) {
+    if (!command || !requestId) {
+      return;
+    }
+
+    const isRepo = await GitListener.isGitRepository();
+    Dashboard.postWebviewMessage({ command: command as any, payload: isRepo, requestId });
   }
 
   /**

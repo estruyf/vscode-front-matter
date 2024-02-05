@@ -192,6 +192,14 @@ export enum LocalizationKey {
    */
   settingsDiagnosticLink = 'settings.diagnostic.link',
   /**
+   * Git synchronization
+   */
+  settingsGitEnabled = 'settings.git.enabled',
+  /**
+   * Enable Git synchronization to easily sync your changes with your repository.
+   */
+  settingsGitEnabledDescription = 'settings.git.enabled.description',
+  /**
    * Website and SSG settings
    */
   settingsCommonSettingsWebsiteTitle = 'settings.commonSettings.website.title',
@@ -919,6 +927,14 @@ export enum LocalizationKey {
    * Now that Front Matter knows all the content folders. Would you like to import all tags and categories from the available content?
    */
   dashboardStepsStepsToGetStartedTagsDescription = 'dashboard.steps.stepsToGetStarted.tags.description',
+  /**
+   * Do you want to enable Git synchronization?
+   */
+  dashboardStepsStepsToGetStartedGitName = 'dashboard.steps.stepsToGetStarted.git.name',
+  /**
+   * Enable Git synchronization to eaily sync your changes with your repository.
+   */
+  dashboardStepsStepsToGetStartedGitDescription = 'dashboard.steps.stepsToGetStarted.git.description',
   /**
    * Show the dashboard
    */

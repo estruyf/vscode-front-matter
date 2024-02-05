@@ -50,6 +50,8 @@
   "settings.diagnostic": "Diagnostic",
   "settings.diagnostic.description": "You can run the diagnostics to check the whole Front Matter CMS configuration.",
   "settings.diagnostic.link": "Run full diagnostics",
+  "settings.git.enabled": "Git synchronization",
+  "settings.git.enabled.description": "Enable Git synchronization to easily sync your changes with your repository.",
 
   "settings.commonSettings.website.title": "Website and SSG settings",
   "settings.commonSettings.previewUrl": "Preview URL",
@@ -278,6 +280,8 @@
   "dashboard.steps.stepsToGetStarted.contentFolders.information.description": "You can also perform this action by right-clicking on the folder in the explorer view, and selecting register folder",
   "dashboard.steps.stepsToGetStarted.tags.name": "Import all tags and categories (optional)",
   "dashboard.steps.stepsToGetStarted.tags.description": "Now that Front Matter knows all the content folders. Would you like to import all tags and categories from the available content?",
+  "dashboard.steps.stepsToGetStarted.git.name": "Do you want to enable Git synchronization?",
+  "dashboard.steps.stepsToGetStarted.git.description": "Enable Git synchronization to eaily sync your changes with your repository.",
   "dashboard.steps.stepsToGetStarted.showDashboard.name": "Show the dashboard",
   "dashboard.steps.stepsToGetStarted.showDashboard.description": "Once all actions are completed, the dashboard can be loaded.",
   "dashboard.steps.stepsToGetStarted.template.name": "Use a configuration template",
