@@ -14,11 +14,15 @@ export interface MediaInfo {
   fsPath: string;
   vsPath: string | undefined;
   dimensions?: ISizeCalculationResult | undefined;
-  title?: string | undefined;
-  caption?: string | undefined;
-  alt?: string | undefined;
   mimeType?: string | undefined;
   mtime?: Date;
   ctime?: Date;
   size?: number;
+
+  metadata: {
+    title?: string | undefined;
+    caption?: string | undefined;
+    alt?: string | undefined;
+    [fieldName: string]: string | string[] | Date | number | undefined;
+  };
 }

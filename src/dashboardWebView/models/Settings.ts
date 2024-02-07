@@ -8,6 +8,7 @@ import {
   DraftField,
   Framework,
   GitSettings,
+  MediaContentType,
   Project,
   Snippets,
   SortingSetting
@@ -47,6 +48,11 @@ export interface Settings {
   snippetsWrapper: boolean;
   date: { format: string };
   lastUpdated: number;
+  media: MediaDashboardSettings;
+}
+
+export interface MediaDashboardSettings {
+  contentTypes: MediaContentType[];
 }
 
 export interface DashboardState {

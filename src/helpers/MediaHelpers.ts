@@ -161,7 +161,9 @@ export class MediaHelpers {
             dimensions:
               mimeType && mimeType.startsWith('image/') ? imageSize(file.fsPath) : undefined,
             mimeType: lookup(file.fsPath) || '',
-            ...metadata
+            metadata: {
+              ...metadata
+            }
           };
         } catch (e) {
           return { ...file };
@@ -478,15 +480,11 @@ export class MediaHelpers {
     const {
       file,
       filename,
-      page,
-      folder,
-      ...metadata
+      metadata
     }: {
       file: string;
       filename: string;
-      page: number;
-      folder: string | null;
-      metadata: any;
+      metadata: { [fieldName: string]: string | string[] | Date | number | undefined };
     } = data;
 
     const mediaLib = MediaLibrary.getInstance();
@@ -522,7 +520,8 @@ export class MediaHelpers {
             filename: basename(file.fsPath),
             fsPath: file.fsPath,
             vsPath: Dashboard.getWebview()?.asWebviewUri(file).toString(),
-            stats: undefined
+            stats: undefined,
+            metadata: {}
           } as MediaInfo)
       );
   }

@@ -55,8 +55,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const [showDetails, setShowDetails] = useState(false);
   const [showSnippetFormDialog, setShowSnippetFormDialog] = useState(false);
   const [mediaData, setMediaData] = useState<any | undefined>(undefined);
-  const [caption, setCaption] = useState(media.caption);
-  const [alt, setAlt] = useState(media.alt);
   const [filename, setFilename] = useState<string | null>(null);
   const settings = useRecoilValue(SettingsSelector);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
@@ -150,7 +148,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
         position: viewData?.data?.position || null,
         blockData:
           typeof viewData?.data?.blockData !== 'undefined' ? viewData?.data?.blockData : undefined,
-        title: media.title
+        title: media.metadata.title
       });
     } else {
       Messenger.send(DashboardMessage.insertMedia, {
@@ -163,9 +161,9 @@ export const Item: React.FunctionComponent<IItemProps> = ({
         position: viewData?.data?.position || null,
         blockData:
           typeof viewData?.data?.blockData !== 'undefined' ? viewData?.data?.blockData : undefined,
-        alt: alt || '',
-        caption: caption || '',
-        title: media.title || ''
+        alt: media.metadata.alt || '',
+        caption: media.metadata.caption || '',
+        title: media.metadata.title || ''
       });
     }
   };
@@ -190,12 +188,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
       const fieldData = {
         mediaUrl: (parseWinPath(relPath) || '').replace(/ /g, '%20'),
-        alt: alt || '',
-        caption: caption || '',
-        title: media.title || '',
         filename: basename(relPath || ''),
         mediaWidth: media?.dimensions?.width?.toString() || '',
-        mediaHeight: media?.dimensions?.height?.toString() || ''
+        mediaHeight: media?.dimensions?.height?.toString() || '',
+        ...media.metadata
       };
 
       if (!snippet.fields || snippet.fields.length === 0) {
@@ -215,7 +211,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
         setMediaData(fieldData);
       }
     },
-    [alt, caption, media, settings, viewData, mediaSnippets]
+    [media, settings, viewData, mediaSnippets]
   );
 
   /**
@@ -403,18 +399,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     setSnippet(undefined);
     setMediaData(undefined);
   };
-
-  useEffect(() => {
-    if (media.alt !== alt) {
-      setAlt(media.alt);
-    }
-  }, [media.alt]);
-
-  useEffect(() => {
-    if (media.caption !== caption) {
-      setCaption(media.caption);
-    }
-  }, [media.caption]);
 
   useEffect(() => {
     const name = basename(parseWinPath(media.fsPath) || '');
@@ -623,28 +607,28 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           <p className={`text-sm font-bold pointer-events-none flex items-center break-all text-[var(--vscode-foreground)]}`}>
             {basename(parseWinPath(media.fsPath) || '')}
           </p>
-          {!isImageFile && media.title && (
+          {!isImageFile && media.metadata.title && (
             <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start`}>
               <b className={`mr-2`}>
                 {l10n.t(LocalizationKey.dashboardMediaCommonTitle)}:
               </b>
-              <span className={`block mt-1 text-xs text-[var(--vscode-foreground)]`}>{media.title}</span>
+              <span className={`block mt-1 text-xs text-[var(--vscode-foreground)]`}>{media.metadata.title}</span>
             </p>
           )}
-          {media.caption && (
+          {media.metadata.caption && (
             <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start`}>
               <b className={`mr-2`}>
                 {l10n.t(LocalizationKey.dashboardMediaCommonCaption)}:
               </b>
-              <span className={`block mt-1 text-xs text-[var(--vscode-foreground)]`}>{media.caption}</span>
+              <span className={`block mt-1 text-xs text-[var(--vscode-foreground)]`}>{media.metadata.caption}</span>
             </p>
           )}
-          {!media.caption && media.alt && (
+          {!media.metadata.caption && media.metadata.alt && (
             <p className={`mt-2 text-xs font-medium pointer-events-none  flex flex-col items-start`}>
               <b className={`mr-2`}>
                 {l10n.t(LocalizationKey.dashboardMediaCommonAlt)}:
               </b>
-              <span className={`block mt-1 text-xs text-[var(--vscode-foreground)]`}>{media.alt}</span>
+              <span className={`block mt-1 text-xs text-[var(--vscode-foreground)]`}>{media.metadata.alt}</span>
             </p>
           )}
           {(media?.size || media?.dimensions) && (
