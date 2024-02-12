@@ -154,7 +154,7 @@ export const GitAction: React.FunctionComponent<IGitActionProps> = ({
           title={l10n.t(LocalizationKey.commonSync)}
         >
           <div className="git_actions__sync">
-            <ArrowPathIcon className={isSyncing === "syncing" ? 'animate-reverse-spin' : ''} aria-hidden="true" />
+            <ArrowPathIcon className={isSyncing === "syncing" ? 'animate-spin' : ''} aria-hidden="true" />
             <span>
               {l10n.t(LocalizationKey.commonSync)}
             </span>
