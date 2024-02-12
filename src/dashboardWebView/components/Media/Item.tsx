@@ -42,10 +42,12 @@ import { LocalizationKey } from '../../../localization';
 
 export interface IItemProps {
   media: MediaInfo;
+  index: number;
 }
 
 export const Item: React.FunctionComponent<IItemProps> = ({
-  media
+  media,
+  index
 }: React.PropsWithChildren<IItemProps>) => {
   const [, setLightbox] = useRecoilState(LightboxAtom);
   const [showAlert, setShowAlert] = useState(false);
@@ -68,7 +70,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
   const [referenceElement, setReferenceElement] = useState<any>(null);
   const [popperElement, setPopperElement] = useState<any>(null);
-  const { styles, attributes } = usePopper(referenceElement, popperElement, {
+  const { styles, attributes, update } = usePopper(referenceElement, popperElement, {
     placement: 'bottom-end',
     strategy: 'fixed'
   });
@@ -403,6 +405,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     setSnippet(undefined);
     setMediaData(undefined);
   };
+
+  useEffect(() => {
+    if (update) {
+      update();
+    }
+  }, [update, index]);
 
   useEffect(() => {
     if (media.alt !== alt) {
