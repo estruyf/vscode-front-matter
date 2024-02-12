@@ -25,6 +25,7 @@ export const SETTING_TAXONOMY_CONTENT_TYPES = 'taxonomy.contentTypes';
 
 export const SETTING_SLUG_PREFIX = 'taxonomy.slugPrefix';
 export const SETTING_SLUG_SUFFIX = 'taxonomy.slugSuffix';
+export const SETTING_SLUG_TEMPLATE = 'taxonomy.slugTemplate';
 export const SETTING_SLUG_UPDATE_FILE_NAME = 'taxonomy.alignFilename';
 
 export const SETTING_INDENT_ARRAY = 'taxonomy.indentArrays';

@@ -15,18 +15,23 @@ import {
 import * as vscode from 'vscode';
 import { CustomPlaceholder, Field } from '../models';
 import { format } from 'date-fns';
-import { ArticleHelper, Settings, SlugHelper } from '../helpers';
+import {
+  ArticleHelper,
+  Settings,
+  SlugHelper,
+  processArticlePlaceholdersFromData,
+  processTimePlaceholders
+} from '../helpers';
 import { Notifications } from '../helpers/Notifications';
 import { extname, basename, parse, dirname } from 'path';
 import { COMMAND_NAME, DefaultFields } from '../constants';
-import { DashboardData, SnippetRange } from '../models/DashboardData';
+import { DashboardData, SnippetInfo, SnippetRange } from '../models/DashboardData';
 import { DateHelper } from '../helpers/DateHelper';
 import { parseWinPath } from '../helpers/parseWinPath';
 import { Telemetry } from '../helpers/Telemetry';
 import { ParsedFrontMatter } from '../parsers';
 import { MediaListener } from '../listeners/panel';
 import { NavigationType } from '../dashboardWebView/models';
-import { processKnownPlaceholders } from '../helpers/PlaceholderHelper';
 import { Position } from 'vscode';
 import { SNIPPET } from '../constants/Snippet';
 import * as l10n from '@vscode/l10n';
@@ -124,7 +129,7 @@ export class Article {
   /**
    * Generate the new slug
    */
-  public static generateSlug(title: string) {
+  public static generateSlug(title: string, article?: ParsedFrontMatter, slugTemplate?: string) {
     if (!title) {
       return;
     }
@@ -132,13 +137,15 @@ export class Article {
     const prefix = Settings.get(SETTING_SLUG_PREFIX) as string;
     const suffix = Settings.get(SETTING_SLUG_SUFFIX) as string;
 
-    const slug = SlugHelper.createSlug(title);
+    if (article?.data) {
+      const slug = SlugHelper.createSlug(title, article?.data, slugTemplate);
 
-    if (slug) {
-      return {
-        slug,
-        slugWithPrefixAndSuffix: `${prefix}${slug}${suffix}`
-      };
+      if (slug) {
+        return {
+          slug,
+          slugWithPrefixAndSuffix: `${prefix}${slug}${suffix}`
+        };
+      }
     }
 
     return undefined;
@@ -168,7 +175,7 @@ export class Article {
 
     const titleField = 'title';
     const articleTitle: string = article.data[titleField];
-    const slugInfo = Article.generateSlug(articleTitle);
+    const slugInfo = Article.generateSlug(articleTitle, article, contentType.slugTemplate);
 
     if (slugInfo && slugInfo.slug && slugInfo.slugWithPrefixAndSuffix) {
       article.data['slug'] = slugInfo.slugWithPrefixAndSuffix;
@@ -192,9 +199,13 @@ export class Article {
           );
           for (const pField of customPlaceholderFields) {
             article.data[pField.name] = customPlaceholder.value;
-            article.data[pField.name] = processKnownPlaceholders(
+            article.data[pField.name] = processArticlePlaceholdersFromData(
               article.data[pField.name],
-              articleTitle,
+              article.data,
+              contentType
+            );
+            article.data[pField.name] = processTimePlaceholders(
+              article.data[pField.name],
               dateFormat
             );
           }
@@ -388,7 +399,7 @@ export class Article {
       snippetStartBeforePos = linesBeforeSelection.length - snippetStartBeforePos - 1;
     }
 
-    let snippetInfo: { id: string; fields: any[] } | undefined = undefined;
+    let snippetInfo: SnippetInfo | undefined = undefined;
     let range: SnippetRange | undefined = undefined;
     if (
       snippetEndAfterPos > -1 &&
@@ -412,6 +423,7 @@ export class Article {
     }
 
     const article = ArticleHelper.getFrontMatter(editor);
+    const contentType = article ? ArticleHelper.getContentType(article) : undefined;
 
     await vscode.commands.executeCommand(COMMAND_NAME.dashboard, {
       type: NavigationType.Snippets,
@@ -419,6 +431,7 @@ export class Article {
         fileTitle: article?.data.title || '',
         filePath: editor.document.uri.fsPath,
         fieldName: basename(editor.document.uri.fsPath),
+        contentType,
         position,
         range,
         selection: selectionText,

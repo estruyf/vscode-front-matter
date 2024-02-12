@@ -6,7 +6,16 @@ import { Command } from '../../panelWebView/Command';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
 import { authentication, commands, window } from 'vscode';
-import { ArticleHelper, ContentType, Extension, Logger, Settings } from '../../helpers';
+import {
+  ArticleHelper,
+  Extension,
+  Logger,
+  Settings,
+  ContentType,
+  processArticlePlaceholdersFromData,
+  processTimePlaceholders,
+  processFmPlaceholders
+} from '../../helpers';
 import {
   COMMAND_NAME,
   DefaultFields,
@@ -20,8 +29,7 @@ import {
 } from '../../constants';
 import { Article, Preview } from '../../commands';
 import { ParsedFrontMatter } from '../../parsers';
-import { processKnownPlaceholders } from '../../helpers/PlaceholderHelper';
-import { Field, Mode, PostMessageData } from '../../models';
+import { Field, Mode, PostMessageData, ContentType as IContentType } from '../../models';
 import { encodeEmoji, fieldWhenClause } from '../../utils';
 import { PanelProvider } from '../../panelWebView/PanelProvider';
 import { MessageHandlerData } from '@estruyf/vscode';
@@ -66,7 +74,11 @@ export class DataListener extends BaseListener {
         this.isServerStarted(msg.command, msg?.requestId);
         break;
       case CommandToCode.updatePlaceholder:
-        this.updatePlaceholder(msg?.payload?.field, msg?.payload?.value, msg?.payload?.title);
+        this.updatePlaceholder(
+          msg.command,
+          msg.payload as { field: string; value: string; data: { [key: string]: any } },
+          msg.requestId
+        );
         break;
       case CommandToCode.generateContentType:
         commands.executeCommand(COMMAND_NAME.generateContentType);
@@ -211,7 +223,11 @@ export class DataListener extends BaseListener {
 
     if (keys.length > 0 && contentTypes && wsFolder) {
       // Get the current content type
-      const contentType = ArticleHelper.getContentType(updatedMetadata);
+      const contentType = ArticleHelper.getContentType({
+        content: '',
+        data: updatedMetadata,
+        path: filePath
+      });
       let slugField;
       if (contentType) {
         ImageHelper.processImageFields(updatedMetadata, contentType.fields);
@@ -597,18 +613,37 @@ export class DataListener extends BaseListener {
    * @param value
    * @param title
    */
-  private static async updatePlaceholder(field: string, value: string, title: string) {
-    if (field && value) {
+  private static async updatePlaceholder(
+    command: CommandToCode,
+    articleData: {
+      field: string;
+      value: string;
+      data: { [key: string]: any };
+      contentType?: IContentType;
+    },
+    requestId?: string
+  ) {
+    if (!command || !requestId || !articleData) {
+      return;
+    }
+
+    let { field, value, data, contentType } = articleData;
+
+    value = value || '';
+    if (field) {
       const crntFile = window.activeTextEditor?.document;
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
-      value = processKnownPlaceholders(value, title || '', dateFormat);
+      value =
+        data && contentType ? processArticlePlaceholdersFromData(value, data, contentType) : value;
+      value = processTimePlaceholders(value, dateFormat);
+      value = processFmPlaceholders(value, data);
       value = await ArticleHelper.processCustomPlaceholders(
         value,
-        title || '',
+        data.title || '',
         crntFile?.uri.fsPath || ''
       );
     }
 
-    this.sendMsg(Command.updatePlaceholder, { field, value });
+    this.sendRequest(Command.updatePlaceholder, requestId, { field, value });
   }
 }

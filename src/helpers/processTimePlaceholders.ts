@@ -1,29 +1,14 @@
 import { format } from 'date-fns';
 import { DateHelper } from './DateHelper';
-import { SlugHelper } from './SlugHelper';
 
 /**
- * Replace the known placeholders
+ * Replace the time placeholders
  * @param value
  * @param title
  * @returns
  */
-export const processKnownPlaceholders = (
-  value: string,
-  title: string | undefined,
-  dateFormat: string
-) => {
+export const processTimePlaceholders = (value: string, dateFormat?: string) => {
   if (value && typeof value === 'string') {
-    if (value.includes('{{title}}')) {
-      const regex = new RegExp('{{title}}', 'g');
-      value = value.replace(regex, title || '');
-    }
-
-    if (value.includes('{{slug}}')) {
-      const regex = new RegExp('{{slug}}', 'g');
-      value = value.replace(regex, SlugHelper.createSlug(title || '') || '');
-    }
-
     if (value.includes('{{now}}')) {
       const regex = new RegExp('{{now}}', 'g');
 

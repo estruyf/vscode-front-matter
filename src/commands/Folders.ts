@@ -13,7 +13,7 @@ import { ContentFolder, FileInfo, FolderInfo, StaticFolder } from '../models';
 import uniqBy = require('lodash.uniqby');
 import { Template } from './Template';
 import { Notifications } from '../helpers/Notifications';
-import { Logger, processKnownPlaceholders, Settings } from '../helpers';
+import { Logger, Settings, processTimePlaceholders } from '../helpers';
 import { existsSync } from 'fs';
 import { format } from 'date-fns';
 import { Dashboard } from './Dashboard';
@@ -377,7 +377,7 @@ export class Folders {
       let folderPath: string | undefined = Folders.absWsFolder(folder, wsFolder);
       if (folderPath.includes(`{{`) && folderPath.includes(`}}`)) {
         const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
-        folderPath = processKnownPlaceholders(folderPath, undefined, dateFormat);
+        folderPath = processTimePlaceholders(folderPath, dateFormat);
       } else {
         if (folderPath && !existsSync(folderPath)) {
           Notifications.errorShowOnce(
