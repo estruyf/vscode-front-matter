@@ -11,6 +11,7 @@ export const GeneralCommands = {
   toVSCode: {
     openLink: 'openLink',
     git: {
+      isRepo: 'gitIsRepo',
       sync: 'gitSync',
       fetch: 'getFetch',
       getBranch: 'getBranch',
