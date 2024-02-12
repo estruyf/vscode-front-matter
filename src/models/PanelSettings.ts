@@ -106,7 +106,7 @@ export interface Field {
   isPreviewImage?: boolean;
   hidden?: boolean;
   taxonomyId?: string;
-  default?: string;
+  default?: string | number | string[] | boolean;
   fields?: Field[];
   fieldGroup?: string | string[];
   dataType?: string | string[];

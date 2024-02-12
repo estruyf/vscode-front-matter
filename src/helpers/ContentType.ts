@@ -1003,7 +1003,11 @@ export class ContentType {
 
         if (field.name === 'title') {
           if (field.default) {
-            data[field.name] = processArticlePlaceholdersFromData(field.default, data, contentType);
+            data[field.name] = processArticlePlaceholdersFromData(
+              field.default as string,
+              data,
+              contentType
+            );
             data[field.name] = processTimePlaceholders(
               data[field.name],
               field.dateFormat || dateFormat
@@ -1035,22 +1039,33 @@ export class ContentType {
             }
           } else {
             const defaultValue = field.default;
+            console.log(field.name, defaultValue, Array.isArray(defaultValue));
 
             if (typeof defaultValue === 'string') {
-              data[field.name] = processArticlePlaceholdersFromData(
+              data[field.name] = ContentType.processFieldPlaceholders(
                 defaultValue,
                 data,
-                contentType
-              );
-              data[field.name] = processTimePlaceholders(
-                data[field.name],
-                field.dateFormat || dateFormat
-              );
-              data[field.name] = await ArticleHelper.processCustomPlaceholders(
-                data[field.name],
+                contentType,
+                field.dateFormat || dateFormat,
                 titleValue,
                 filePath
               );
+            } else if (defaultValue && Array.isArray(defaultValue)) {
+              let defaultValues = [];
+              for (let value of defaultValue as string[]) {
+                if (typeof value === 'string') {
+                  value = await ContentType.processFieldPlaceholders(
+                    value,
+                    data,
+                    contentType,
+                    field.dateFormat || dateFormat,
+                    titleValue,
+                    filePath
+                  );
+                }
+                defaultValues.push(value);
+              }
+              data[field.name] = defaultValues;
             } else if (typeof defaultValue !== 'undefined') {
               data[field.name] = defaultValue;
             } else {
@@ -1111,6 +1126,32 @@ export class ContentType {
     }
 
     return data;
+  }
+
+  /**
+   * Processes the field placeholders in the given value.
+   *
+   * @param defaultValue - The default value for the field.
+   * @param data - The data object containing the field values.
+   * @param contentType - The content type object.
+   * @param dateFormat - The date format string.
+   * @param title - The title string.
+   * @param filePath - The file path string.
+   * @returns The processed value with field placeholders replaced.
+   */
+  private static async processFieldPlaceholders(
+    defaultValue: string,
+    data: any,
+    contentType: IContentType,
+    dateFormat: string,
+    title: string,
+    filePath: string
+  ) {
+    let value = processArticlePlaceholdersFromData(defaultValue, data, contentType);
+    value = processTimePlaceholders(value, dateFormat);
+    value = await ArticleHelper.processCustomPlaceholders(value, title, filePath);
+
+    return value;
   }
 
   /**

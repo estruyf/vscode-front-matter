@@ -16,6 +16,7 @@
 - [#739](https://github.com/estruyf/vscode-front-matter/pull/739): New Git settings to disable and require a commit message
 - [#741](https://github.com/estruyf/vscode-front-matter/issues/741): Added message on the content dashboard when content is processed
 - [#747](https://github.com/estruyf/vscode-front-matter/issues/747): The `@frontmatter/extensibility` dependency now supports scripts for placeholders
+- [#752](https://github.com/estruyf/vscode-front-matter/issues/752): Placeholder support in default `list` field values
 
 ### ⚡️ Optimizations
 

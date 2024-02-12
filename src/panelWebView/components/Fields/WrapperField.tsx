@@ -361,7 +361,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
     let draftValue = parent[field.name];
 
     if (!draftValue && typeof parent[field.name] === 'undefined' && field.default) {
-      draftValue = field.default;
+      draftValue = field.default as string;
       onSendUpdate(field.name, draftValue, parentFields);
     }
 
