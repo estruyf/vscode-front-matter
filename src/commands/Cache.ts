@@ -22,7 +22,7 @@ export class Cache {
     await Extension.getInstance().setState(key, data, type);
   }
 
-  public static async clear(showNotification: boolean = true) {
+  public static async clear(showNotification = true) {
     const ext = Extension.getInstance();
 
     await ext.setState(ExtensionState.Dashboard.Pages.Cache, undefined, 'workspace', true);

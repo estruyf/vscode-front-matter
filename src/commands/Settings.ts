@@ -24,7 +24,7 @@ export class Settings {
     });
 
     if (newOption) {
-      let options = (await TaxonomyHelper.get(type)) || [];
+      const options = (await TaxonomyHelper.get(type)) || [];
 
       if (options.find((o) => o === newOption)) {
         Notifications.warning(l10n.t(LocalizationKey.commandsSettingsCreateWarning, taxonomy));

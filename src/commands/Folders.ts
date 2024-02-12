@@ -283,7 +283,6 @@ export class Folders {
   public static async getInfo(limit?: number): Promise<FolderInfo[] | null> {
     const supportedFiles = Settings.get<string[]>(SETTING_CONTENT_SUPPORTED_FILETYPES);
     const folders = Folders.get();
-    const wsFolder = parseWinPath(Folders.getWorkspaceFolder()?.fsPath || '');
 
     if (folders && folders.length > 0) {
       const folderInfo: FolderInfo[] = [];

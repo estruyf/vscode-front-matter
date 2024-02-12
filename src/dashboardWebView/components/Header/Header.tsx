@@ -1,14 +1,12 @@
 import * as React from 'react';
 import { Sorting } from './Sorting';
 import { Searchbox } from './Searchbox';
-import { Filter } from './Filter';
-import { Folders } from './Folders';
 import { Settings, NavigationType } from '../../models';
 import { DashboardMessage } from '../../DashboardMessage';
 import { Grouping } from '.';
 import { ViewSwitch } from './ViewSwitch';
-import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
-import { CategoryAtom, GroupingSelector, SortingAtom, TagAtom } from '../../state';
+import { useRecoilValue, useResetRecoilState } from 'recoil';
+import { GroupingSelector, SortingAtom } from '../../state';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { ClearFilters } from './ClearFilters';
 import { MediaHeaderTop } from '../Media/MediaHeaderTop';
@@ -17,6 +15,7 @@ import { MediaHeaderBottom } from '../Media/MediaHeaderBottom';
 import { Tabs } from './Tabs';
 import { CustomScript } from '../../../models';
 import { ArrowTopRightOnSquareIcon, BoltIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { HeartIcon } from '@heroicons/react/24/solid';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { routePaths } from '../..';
 import { useEffect, useMemo } from 'react';
@@ -31,6 +30,8 @@ import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { SettingsLink } from '../SettingsView/SettingsLink';
 import { Link } from '../Common/Link';
+import { SPONSOR_LINK } from '../../../constants';
+import { Filters } from './Filters';
 
 export interface IHeaderProps {
   header?: React.ReactNode;
@@ -48,8 +49,6 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
   totalPages,
   settings
 }: React.PropsWithChildren<IHeaderProps>) => {
-  const [crntTag, setCrntTag] = useRecoilState(TagAtom);
-  const [crntCategory, setCrntCategory] = useRecoilState(CategoryAtom);
   const grouping = useRecoilValue(GroupingSelector);
   const resetSorting = useResetRecoilState(SortingAtom);
   const location = useLocation();
@@ -121,44 +120,36 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
     return [];
   }, [settings?.dashboardState?.contents?.templatesEnabled]);
 
-  useEffect(() => {
-    if (location.search) {
-      const searchParams = new URLSearchParams(location.search);
-      const taxonomy = searchParams.get('taxonomy');
-      const value = searchParams.get('value');
-
-      if (taxonomy && value) {
-        if (taxonomy === 'tags') {
-          setCrntTag(value);
-        } else if (taxonomy === 'categories') {
-          setCrntCategory(value);
-        }
-      }
-
-      return;
-    }
-
-    setCrntTag('');
-    setCrntCategory('');
-  }, [location.search]);
-
   return (
     <div className={`w-full sticky top-0 z-20 bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]`}>
       <div className={`mb-0 border-b flex justify-between bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)] border-[var(--frontmatter-border)]`}>
         <Tabs onNavigate={updateView} />
 
-        <div className='flex items-center'>
+        <div className='flex items-center space-x-2 pr-4'>
           <ProjectSwitcher />
 
           {
             settings?.websiteUrl && (
               <Link
-                className='inline-flex items-center mr-2'
+                className='inline-flex items-center'
                 href={settings?.websiteUrl}
                 title={settings?.websiteUrl}>
                 <span>{settings?.websiteUrl}</span>
 
                 <ArrowTopRightOnSquareIcon className='w-4 h-4 ml-1' aria-hidden="true" />
+              </Link>
+            )
+          }
+
+          {
+            !settings?.isBacker && (
+              <Link
+                className='inline-flex items-center text-[var(--vscode-badge-background)]'
+                title={l10n.t(LocalizationKey.commonSupport)}
+                href={SPONSOR_LINK}
+              >
+                <span className='sr-only'>{l10n.t(LocalizationKey.commonSupport)}</span>
+                <HeartIcon className='w-4 h-4' aria-hidden="true" />
               </Link>
             )
           }
@@ -199,21 +190,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
           >
             <ClearFilters />
 
-            <Folders />
-
-            <Filter
-              label={`Tag`}
-              activeItem={crntTag}
-              items={settings?.tags || []}
-              onClick={(value) => setCrntTag(value)}
-            />
-
-            <Filter
-              label={`Category`}
-              activeItem={crntCategory}
-              items={settings?.categories || []}
-              onClick={(value) => setCrntCategory(value)}
-            />
+            <Filters />
 
             <Grouping />
 

@@ -29,7 +29,7 @@ function ListDel({ disabled, name, readOnly, ...props }: ListDelFieldProps) {
 
   return (
     <span
-      className="autoform__list_del_field"
+      className="autoform__list_del_field mb-1"
       {...filterDOMProps(props)}
       onClick={onAction}
       onKeyDown={onAction}

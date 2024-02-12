@@ -92,6 +92,7 @@
   "setting.frontMatter.content.sorting.items.properties.type.description": "Type of the field value",
   "setting.frontMatter.content.supportedFileTypes.markdownDescription": "Specify the file types that you want to use in Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.supportedfiletypes)",
   "setting.frontMatter.content.wysiwyg.markdownDescription": "Specifies if you want to enable/disable the What You See, Is What You Get (WYSIWYG) markdown controls. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.wysiwyg)",
+  "setting.frontMatter.content.filters.markdownDescription": "Specify the filters you want to use for your content dashboard. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.content.filters)",
   "setting.frontMatter.custom.scripts.markdownDescription": "Specify the path to a Node.js script to execute. The current file path will be provided as an argument. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.custom.scripts)",
   "setting.frontMatter.custom.scripts.items.properties.id.description": "ID of the script.",
   "setting.frontMatter.custom.scripts.items.properties.title.description": "Title you want to give to your script. Will be shown as the title of the button.",

@@ -1,4 +1,4 @@
-import { parse, parseISO, parseJSON } from 'date-fns';
+import { parse, parseISO, parseJSON, format } from 'date-fns';
 
 export class DateHelper {
   public static formatUpdate(value: string | null | undefined): string | null {
@@ -9,6 +9,14 @@ export class DateHelper {
     value = value.replace(/YYYY/g, 'yyyy');
     value = value.replace(/DD/g, 'dd');
     return value;
+  }
+
+  public static format(date?: Date, dateFormat?: string): string | null {
+    if (!date || !dateFormat) {
+      return null;
+    }
+
+    return format(date, DateHelper.formatUpdate(dateFormat) as string);
   }
 
   public static tryParse(date: any, format?: string): Date | null {

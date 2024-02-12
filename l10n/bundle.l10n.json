@@ -36,6 +36,8 @@
   "common.openSettings": "Open settings",
   "common.back": "Back",
 
+  "loading.initPages": "Loading content",
+
   "notifications.outputChannel.link": "output window",
   "notifications.outputChannel.description": "Check the {0} for more details.",
 
@@ -108,6 +110,7 @@
   "dashboard.dataView.dataView.getStarted": "Select a data type to get started",
   "dashboard.dataView.dataView.noDataFiles": "No data files found",
   "dashboard.dataView.dataView.getStarted.link": "Read more to get started using data files",
+  "dashboard.dataView.dataView.update.message": "Updated your data entries",
 
   "dashboard.dataView.emptyView.heading": "Select your date type first",
 

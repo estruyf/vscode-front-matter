@@ -8,7 +8,6 @@ import { FEATURE_FLAG } from '../../../constants';
 import { TelemetryEvent } from '../../../constants/TelemetryEvent';
 import { SnippetParser } from '../../../helpers/SnippetParser';
 import { DashboardMessage } from '../../DashboardMessage';
-import useThemeColors from '../../hooks/useThemeColors';
 import { ModeAtom, SettingsSelector, ViewDataSelector } from '../../state';
 import { FilterInput } from '../Header/FilterInput';
 import { PageLayout } from '../Layout/PageLayout';
@@ -33,7 +32,6 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [mediaSnippet, setMediaSnippet] = useState(false);
   const [snippetFilter, setSnippetFilter] = useState<string>('');
-  const { getColors } = useThemeColors();
 
   const snippets = settings?.snippets || {};
   const snippetKeys = useMemo(() => {
@@ -92,8 +90,7 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
       header={
         <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.dashboard.snippets.manage}>
           <div
-            className={`py-3 px-4 flex items-center justify-between border-b ${getColors(`border-gray-300 dark:border-vulcan-100`, `border-[var(--frontmatter-border)]`)
-              }`}
+            className={`py-3 px-4 flex items-center justify-between border-b border-[var(--frontmatter-border)]`}
             aria-label={l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsAriaLabel)}
           >
             <FilterInput
@@ -107,11 +104,7 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
 
             <div className="flex flex-1 justify-end">
               <button
-                className={`inline-flex items-center px-3 py-1 rounded text-xs leading-4 font-medium focus:outline-none ${getColors(
-                  `text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-500`,
-                  `text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`
-                )
-                  }`}
+                className={`inline-flex items-center px-3 py-1 rounded text-xs leading-4 font-medium focus:outline-none text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`}
                 title={l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsButtonCreate)}
                 onClick={() => setShowCreateDialog(true)}
               >
@@ -145,15 +138,14 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
           </ul>
         ) : (
           <div className="w-full h-full flex items-center justify-center text-white">
-            <div className={`flex flex-col items-center ${getColors('text-gray-500 dark:text-whisper-900', 'text-[var(--frontmatter-text)]')
-              }`}>
+            <div className={`flex flex-col items-center text-[var(--frontmatter-text)]`}>
               <CodeBracketIcon className="w-32 h-32" />
               <p className="text-3xl mt-2">
                 {l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsEmptyMessage)}
               </p>
               <p className="text-xl mt-4">
                 <a
-                  className={getColors(`text-teal-700 hover:text-teal-900`, `text-[var(--frontmatter-link)] hover:text-[var(--frontmatter-link-hover)]`)}
+                  className={`text-[var(--frontmatter-link)] hover:text-[var(--frontmatter-link-hover)]`}
                   href={`https://frontmatter.codes/docs/snippets`}
                   title={l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsReadMore)}
                 >

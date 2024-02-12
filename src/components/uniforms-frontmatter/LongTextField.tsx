@@ -26,6 +26,7 @@ function LongText({
       <LabelField label={label} id={id} required={props.required} />
 
       <textarea
+        className={`block w-full py-2 pr-2 sm:text-sm appearance-none disabled:opacity-50 rounded bg-[var(--vscode-input-background)] text-[var(--vscode-input-foreground)] placeholder-[var(--vscode-input-placeholderForeground)] border-[var(--frontmatter-border)] focus:border-[var(--vscode-focusBorder)] focus:outline-0`}
         disabled={disabled}
         id={id}
         name={name}

@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
-import { SortOption } from '../constants/SortOption';
 import { Tab } from '../constants/Tab';
 import { Page } from '../models/Page';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   AllPagesAtom,
   CategorySelector,
+  FilterValuesAtom,
+  FiltersAtom,
   FolderSelector,
   SearchSelector,
   SettingsSelector,
@@ -27,12 +28,14 @@ export default function usePages(pages: Page[]) {
   const [sortedPages, setSortedPages] = useState<Page[]>([]);
   const [sorting, setSorting] = useRecoilState(SortingAtom);
   const [tabInfo, setTabInfo] = useRecoilState(TabInfoAtom);
+  const [, setFilterValues] = useRecoilState(FilterValuesAtom);
   const settings = useRecoilValue(SettingsSelector);
   const tab = useRecoilValue(TabSelector);
   const folder = useRecoilValue(FolderSelector);
   const search = useRecoilValue(SearchSelector);
   const tag = useRecoilValue(TagSelector);
   const category = useRecoilValue(CategorySelector);
+  const filters = useRecoilValue(FiltersAtom);
 
   /**
    * Process all the pages by applying the sorting, filtering and searching.
@@ -87,9 +90,19 @@ export default function usePages(pages: Page[]) {
         );
       }
 
+      const filterNames = Object.keys(filters);
+      if (filterNames.length > 0) {
+        for (const filter of filterNames) {
+          const filterValue = filters[filter];
+          if (filterValue) {
+            pagesSorted = pagesSorted.filter((page) => page[filter] === filterValue);
+          }
+        }
+      }
+
       setSortedPages(pagesSorted);
     },
-    [settings, tab, folder, search, tag, category, sorting, tabInfo]
+    [settings, tab, folder, search, tag, category, sorting, tabInfo, filters]
   );
 
   /**
@@ -160,10 +173,27 @@ export default function usePages(pages: Page[]) {
       // Set the tab information
       setTabInfo(draftTypes);
 
+      if (Object.keys(filters).length === 0) {
+        const availableFilters = (settings?.filters || []).filter((f) => f !== 'pageFolders' && f !== 'tags' && f !== 'categories');
+        if (availableFilters.length > 0) {
+          const allFilters: { [filter: string]: string[]; } = {};
+          for (const filter of availableFilters) {
+            if (filter) {
+              const filterName = typeof filter === 'string' ? filter : filter.name;
+              const values = crntPages.map((page) => page[filterName]).filter((value) => value);
+              allFilters[filterName] = [...new Set(values)];
+            }
+          }
+          setFilterValues(allFilters);
+        } else {
+          setFilterValues({});
+        }
+      }
+
       // Set the pages
       setPageItems(crntPages);
     },
-    [tab, tabInfo, settings]
+    [tab, tabInfo, settings, filters]
   );
 
   /**
@@ -198,12 +228,14 @@ export default function usePages(pages: Page[]) {
         if (key === ExtensionState.Dashboard.Contents.Sorting && value) {
           setSorting(value);
           return;
+        } else {
+          startPageProcessing();
         }
       });
     } else {
       startPageProcessing();
     }
-  }, [settings?.draftField, pages, sorting, search, tag, category, folder]);
+  }, [settings?.draftField, pages, sorting, search, tag, category, filters, folder]);
 
   useEffect(() => {
     processByTab(sortedPages);

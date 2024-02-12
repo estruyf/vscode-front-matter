@@ -46,6 +46,11 @@ export class DashboardListener extends BaseListener {
       case DashboardMessage.getPinnedItems:
         DashboardListener.getPinnedItems(msg);
         break;
+      case DashboardMessage.showNotification:
+        if (msg.payload) {
+          Notifications.info(msg.payload);
+        }
+        break;
     }
   }
 

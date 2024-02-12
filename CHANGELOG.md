@@ -5,11 +5,15 @@
 ### ✨ New features
 
 - [#731](https://github.com/estruyf/vscode-front-matter/issues/731): Added the ability to map/unmap taxonomy to multiple pages at once
+- [#749](https://github.com/estruyf/vscode-front-matter/issues/749): Ability to set your own filters on the content dashboard with the `frontMatter.content.filters` setting
 
 ### 🎨 Enhancements
 
 - [#727](https://github.com/estruyf/vscode-front-matter/pull/727): Updated Japanese translations thanks to [mayumihara](https://github.com/mayumih387)
 - [#739](https://github.com/estruyf/vscode-front-matter/pull/739): New Git settings to disable and require a commit message
+- [#737](https://github.com/estruyf/vscode-front-matter/issues/737): Optimize the grid layout of the content and media dashboards
+- [#741](https://github.com/estruyf/vscode-front-matter/issues/741): Added message on the content dashboard when content is processed
+- [#747](https://github.com/estruyf/vscode-front-matter/issues/747): The `@frontmatter/extensibility` dependency now supports scripts for placeholders
 
 ### ⚡️ Optimizations
 
@@ -19,6 +23,8 @@
 - [#725](https://github.com/estruyf/vscode-front-matter/issues/725): Fix for opening menu of pinned items
 - [#730](https://github.com/estruyf/vscode-front-matter/issues/730): Add debounce to the input fields
 - [#738](https://github.com/estruyf/vscode-front-matter/issues/738): Fix when re-opening the preview after closing it
+- [#743](https://github.com/estruyf/vscode-front-matter/issues/743): Fix for storing data in YAML data files
+- [#745](https://github.com/estruyf/vscode-front-matter/issues/745): Fix for date field values in `block` field type
 
 ## [9.4.0] - 2023-12-12 - [Release notes](https://beta.frontmatter.codes/updates/v9.4.0)
 

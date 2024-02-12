@@ -144,6 +144,10 @@ export enum LocalizationKey {
    */
   commonBack = 'common.back',
   /**
+   * Loading content
+   */
+  loadingInitPages = 'loading.initPages',
+  /**
    * output window
    */
   notificationsOutputChannelLink = 'notifications.outputChannel.link',
@@ -367,6 +371,10 @@ export enum LocalizationKey {
    * Read more to get started using data files
    */
   dashboardDataViewDataViewGetStartedLink = 'dashboard.dataView.dataView.getStarted.link',
+  /**
+   * Updated your data entries
+   */
+  dashboardDataViewDataViewUpdateMessage = 'dashboard.dataView.dataView.update.message',
   /**
    * Select your date type first
    */

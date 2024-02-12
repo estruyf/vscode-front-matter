@@ -10,15 +10,18 @@ import { ArticleHelper, ContentType, Extension, Logger, Settings } from '../../h
 import {
   COMMAND_NAME,
   DefaultFields,
+  FEATURE_FLAG,
   SETTING_COMMA_SEPARATED_FIELDS,
   SETTING_DATE_FORMAT,
+  SETTING_GLOBAL_ACTIVE_MODE,
+  SETTING_GLOBAL_MODES,
   SETTING_SEO_TITLE_FIELD,
   SETTING_TAXONOMY_CONTENT_TYPES
 } from '../../constants';
 import { Article, Preview } from '../../commands';
 import { ParsedFrontMatter } from '../../parsers';
 import { processKnownPlaceholders } from '../../helpers/PlaceholderHelper';
-import { Field, PostMessageData } from '../../models';
+import { Field, Mode, PostMessageData } from '../../models';
 import { encodeEmoji, fieldWhenClause } from '../../utils';
 import { PanelProvider } from '../../panelWebView/PanelProvider';
 import { MessageHandlerData } from '@estruyf/vscode';
@@ -144,6 +147,22 @@ export class DataListener extends BaseListener {
    * Retrieve the information about the registered folders and its files
    */
   public static async getFoldersAndFiles() {
+    const mode = Settings.get<string | null>(SETTING_GLOBAL_ACTIVE_MODE);
+    const modes = Settings.get<Mode[]>(SETTING_GLOBAL_MODES);
+
+    if (mode && modes && modes.length > 0) {
+      const crntMode = modes.find((m) => m.id === mode);
+      if (crntMode) {
+        const recentlyModified = crntMode.features.find(
+          (f) => f === FEATURE_FLAG.panel.recentlyModified
+        );
+        if (!recentlyModified) {
+          this.sendMsg(Command.folderInfo, null);
+          return;
+        }
+      }
+    }
+
     const folders = (await Folders.getInfo(FILE_LIMIT)) || null;
 
     this.sendMsg(Command.folderInfo, folders);

@@ -37,7 +37,6 @@ import { InfoDialog } from '../Modals/InfoDialog';
 import { DetailsSlideOver } from './DetailsSlideOver';
 import { usePopper } from 'react-popper';
 import { MediaSnippetForm } from './MediaSnippetForm';
-import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 
@@ -62,7 +61,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const settings = useRecoilValue(SettingsSelector);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const viewData = useRecoilValue(ViewDataSelector);
-  const { getColors } = useThemeColors();
 
   const hasViewData = useMemo(() => {
     return viewData?.data?.filePath !== undefined;
@@ -483,11 +481,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
         </button>
         <div className={`relative py-4 pl-4 pr-12`}>
           <div className={`group/actions absolute top-4 right-4 flex flex-col space-y-4`}>
-            <div className={`flex items-center border border-transparent rounded-full p-2 -mr-2 -mt-2 ${getColors(
-              `group-hover/actions:bg-gray-200 dark:group-hover/actions:bg-vulcan-200 group-hover/actions:border-gray-100 dark:group-hover/actions:border-vulcan-50`,
-              `group-hover/actions:bg-[var(--vscode-sideBar-background)] group-hover/actions:border-[var(--frontmatter-border)]`
-            )
-              }`}>
+            <div className={`flex items-center border border-transparent rounded-full p-2 -mr-2 -mt-2 group-hover/actions:bg-[var(--vscode-sideBar-background)] group-hover/actions:border-[var(--frontmatter-border)]`}>
               <Menu as="div" className="relative z-10 flex text-left">
                 <div className="hidden group-hover/actions:flex">
                   <QuickAction title="View media details" onClick={viewMediaDetails}>
@@ -626,39 +620,39 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               </Menu>
             </div>
           </div>
-          <p className={`text-sm font-bold pointer-events-none flex items-center break-all ${getColors(`dark:text-whisper-900`, `text-[var(--vscode-foreground)]`)}`}>
+          <p className={`text-sm font-bold pointer-events-none flex items-center break-all text-[var(--vscode-foreground)]}`}>
             {basename(parseWinPath(media.fsPath) || '')}
           </p>
           {!isImageFile && media.title && (
-            <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start ${getColors(`dark:text-whisper-900`, ``)}`}>
+            <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start`}>
               <b className={`mr-2`}>
                 {l10n.t(LocalizationKey.dashboardMediaCommonTitle)}:
               </b>
-              <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-foreground)]`)}`}>{media.title}</span>
+              <span className={`block mt-1 text-xs text-[var(--vscode-foreground)]`}>{media.title}</span>
             </p>
           )}
           {media.caption && (
-            <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start ${getColors(`dark:text-whisper-900`, ``)}`}>
+            <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start`}>
               <b className={`mr-2`}>
                 {l10n.t(LocalizationKey.dashboardMediaCommonCaption)}:
               </b>
-              <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-foreground)]`)}`}>{media.caption}</span>
+              <span className={`block mt-1 text-xs text-[var(--vscode-foreground)]`}>{media.caption}</span>
             </p>
           )}
           {!media.caption && media.alt && (
-            <p className={`mt-2 text-xs font-medium pointer-events-none  flex flex-col items-start ${getColors(`dark:text-whisper-900`, ``)}`}>
+            <p className={`mt-2 text-xs font-medium pointer-events-none  flex flex-col items-start`}>
               <b className={`mr-2`}>
                 {l10n.t(LocalizationKey.dashboardMediaCommonAlt)}:
               </b>
-              <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-foreground)]`)}`}>{media.alt}</span>
+              <span className={`block mt-1 text-xs text-[var(--vscode-foreground)]`}>{media.alt}</span>
             </p>
           )}
           {(media?.size || media?.dimensions) && (
-            <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start ${getColors(`dark:text-whisper-900`, ``)}`}>
+            <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start`}>
               <b className={`mr-1`}>
                 {l10n.t(LocalizationKey.dashboardMediaCommonSize)}:
               </b>
-              <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-foreground)]`)}`}>
+              <span className={`block mt-1 text-xs text-[var(--vscode-foreground)]`}>
                 {getMediaDetails()}
               </span>
             </p>
@@ -677,11 +671,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             {mediaSnippets.map((snippet, idx) => (
               <li key={idx} className="inline-flex items-center pb-2 mr-2">
                 <button
-                  className={`w-full inline-flex justify-center border border-transparent shadow-sm px-4 py-2 text-base font-medium focus:outline-none sm:w-auto sm:text-sm disabled:opacity-30 ${getColors(
-                    `bg-teal-600 text-white hover:bg-teal-700 dark:hover:bg-teal-900`,
-                    `bg-[var(--frontmatter-button-background)] text-[var(--vscode-button-foreground)] hover:bg-[var(--vscode-button-hoverBackground)]`
-                  )
-                    }`}
+                  className={`w-full inline-flex justify-center border border-transparent shadow-sm px-4 py-2 text-base font-medium focus:outline-none sm:w-auto sm:text-sm disabled:opacity-30 bg-[var(--frontmatter-button-background)] text-[var(--vscode-button-foreground)] hover:bg-[var(--vscode-button-hoverBackground)]`}
                   onClick={() => processSnippet(snippet)}
                 >
                   {snippet.title}

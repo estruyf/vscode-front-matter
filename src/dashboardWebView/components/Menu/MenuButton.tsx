@@ -1,7 +1,6 @@
 import { Menu } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import * as React from 'react';
-import useThemeColors from '../../hooks/useThemeColors';
 
 export interface IMenuButtonProps {
   label: string | JSX.Element;
@@ -14,11 +13,9 @@ export const MenuButton: React.FunctionComponent<IMenuButtonProps> = ({
   title,
   disabled
 }: React.PropsWithChildren<IMenuButtonProps>) => {
-  const { getColors } = useThemeColors();
-
   return (
     <div className={`group flex items-center ${disabled ? 'opacity-50' : ''}`}>
-      <div className={`mr-2 font-medium flex items-center ${getColors('text-gray-500 dark:text-whisper-700', 'text-[var(--vscode-tab-inactiveForeground)]')}`}>{label}:</div>
+      <div className={`mr-2 font-medium flex items-center text-[var(--vscode-tab-inactiveForeground)]`}>{label}:</div>
 
       <Menu.Button
         disabled={disabled}

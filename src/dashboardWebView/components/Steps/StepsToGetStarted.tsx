@@ -10,7 +10,6 @@ import { MenuItem } from '../Menu';
 import { Framework, StaticFolder, Template } from '../../../models';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { FrameworkDetectors } from '../../../constants/FrameworkDetectors';
-import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { SelectItem } from './SelectItem';
@@ -31,8 +30,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
   const [framework, setFramework] = useState<string | null>(null);
   const [taxImported, setTaxImported] = useState<boolean>(false);
   const [templates, setTemplates] = useState<Template[]>([]);
-  const [astroCollectionsStatus, setAstroCollectionsStatus] = useState<Status>(Status.Optional)
-  const { getColors } = useThemeColors();
+  const [astroCollectionsStatus, setAstroCollectionsStatus] = useState<Status>(Status.Optional);
 
   const frameworks: Framework[] = FrameworkDetectors.map((detector: any) => detector.framework);
 
@@ -108,29 +106,17 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
 
             <Menu as="div" className="relative inline-block text-left mt-4">
               <div>
-                <Menu.Button className={`group flex justify-center p-2 rounded-md border ${getColors(
-                  'text-vulcan-500 hover:text-vulcan-600 dark:text-whisper-500 dark:hover:text-whisper-600 border-vulcan-400 dark:border-white',
-                  'text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)]'
-                )
-                  }`}>
+                <Menu.Button className={`group flex justify-center p-2 rounded-md border text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)]`}>
                   {framework ? framework : l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedFrameworkSelect)}
                   <ChevronDownIcon
-                    className={`flex-shrink-0 -mr-1 ml-1 h-5 w-5 ${getColors(
-                      'text-gray-400 group-hover:text-gray-500 dark:text-whisper-600 dark:group-hover:text-whisper-700',
-                      ''
-                    )
-                      }`}
+                    className={`flex-shrink-0 -mr-1 ml-1 h-5 w-5`}
                     aria-hidden="true"
                   />
                 </Menu.Button>
               </div>
 
               <Menu.Items
-                className={`w-40 origin-top-left absolute left-0 z-10 mt-2 rounded-md shadow-2xl ring-1 ring-opacity-5 focus:outline-none text-sm max-h-96 overflow-auto ${getColors(
-                  'bg-white dark:bg-vulcan-500 ring-vulcan-400 dark:ring-white',
-                  'bg-[var(--vscode-sideBar-background)] ring-[var(--frontmatter-border)]'
-                )
-                  }`}
+                className={`w-40 origin-top-left absolute left-0 z-10 mt-2 rounded-md shadow-2xl ring-1 ring-opacity-5 focus:outline-none text-sm max-h-96 overflow-auto bg-[var(--vscode-sideBar-background)] ring-[var(--frontmatter-border)]`}
               >
                 <div className="py-1">
                   <MenuItem
