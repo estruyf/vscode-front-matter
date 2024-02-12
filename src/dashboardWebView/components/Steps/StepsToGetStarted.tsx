@@ -255,7 +255,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
           </div>
         ),
         show: isGitRepo,
-        status: settings.git.actions ? Status.Completed : Status.NotStarted
+        status: settings.git?.actions ? Status.Completed : Status.NotStarted
       },
       {
         id: `welcome-import`,
@@ -293,12 +293,12 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
   }, [settings.crntFramework, settings.framework]);
 
   React.useEffect(() => {
-    messageHandler.request<boolean>(GeneralCommands.toVSCode.gitIsRepo).then((result) => {
+    messageHandler.request<boolean>(GeneralCommands.toVSCode.git.isRepo).then((result) => {
       setIsGitRepo(result);
     });
 
-    setIsGitEnabled(settings.git.actions);
-  }, [settings.git.actions]);
+    setIsGitEnabled(settings.git?.actions || false);
+  }, [settings.git?.actions]);
 
   React.useEffect(() => {
     const fetchTemplates = async () => {
