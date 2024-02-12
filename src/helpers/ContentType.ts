@@ -1042,7 +1042,7 @@ export class ContentType {
             console.log(field.name, defaultValue, Array.isArray(defaultValue));
 
             if (typeof defaultValue === 'string') {
-              data[field.name] = ContentType.processFieldPlaceholders(
+              data[field.name] = await ContentType.processFieldPlaceholders(
                 defaultValue,
                 data,
                 contentType,
