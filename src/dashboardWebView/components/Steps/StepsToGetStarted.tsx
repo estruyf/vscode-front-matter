@@ -13,11 +13,12 @@ import { FrameworkDetectors } from '../../../constants/FrameworkDetectors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { SelectItem } from './SelectItem';
-import { Templates } from '../../../constants';
+import { GeneralCommands, SETTING_GIT_ENABLED, Templates } from '../../../constants';
 import { TemplateItem } from './TemplateItem';
 import { Spinner } from '../Common/Spinner';
 import { AstroContentTypes } from '../Configuration/Astro/AstroContentTypes';
 import { ContentFolders } from '../Configuration/Common/ContentFolders';
+import { VSCodeCheckbox } from '@vscode/webview-ui-toolkit/react';
 
 export interface IStepsToGetStartedProps {
   settings: Settings;
@@ -29,6 +30,8 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
   const [loading, setLoading] = useState<boolean>(false);
   const [framework, setFramework] = useState<string | null>(null);
   const [taxImported, setTaxImported] = useState<boolean>(false);
+  const [isGitEnabled, setIsGitEnabled] = useState<boolean>(false);
+  const [isGitRepo, setIsGitRepo] = useState<boolean>(false);
   const [templates, setTemplates] = useState<Template[]>([]);
   const [astroCollectionsStatus, setAstroCollectionsStatus] = useState<Status>(Status.Optional);
 
@@ -72,6 +75,15 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
     Messenger.send(DashboardMessage.importTaxonomy);
     setTaxImported(true);
   };
+
+  const updateSetting = (name: string, value: any) => {
+    setIsGitEnabled(value);
+    Messenger.send(DashboardMessage.updateSetting, {
+      name,
+      value,
+      global: true
+    });
+  }
 
   const crntTemplates = useMemo(() => {
     if (!templates || templates.length === 0 || !settings.crntFramework) {
@@ -231,6 +243,21 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
         status: settings.initialized && settings.staticFolder && settings.staticFolder !== "/" ? Status.Completed : Status.NotStarted,
       },
       {
+        id: `welcome-git`,
+        name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedGitName),
+        description: (
+          <div className='mt-1'>
+            <VSCodeCheckbox
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateSetting(SETTING_GIT_ENABLED, e.target.checked)}
+              checked={isGitEnabled}>
+              {l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedGitDescription)}
+            </VSCodeCheckbox>
+          </div>
+        ),
+        show: isGitRepo,
+        status: settings.git.actions ? Status.Completed : Status.NotStarted
+      },
+      {
         id: `welcome-import`,
         name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedTagsName),
         description: <>{l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedTagsDescription)}</>,
@@ -257,13 +284,21 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
             : undefined
       }
     ]
-  ), [settings, framework, taxImported, templates, astroCollectionsStatus]);
+  ), [settings, framework, taxImported, templates, astroCollectionsStatus, isGitRepo]);
 
   React.useEffect(() => {
     if (settings.crntFramework || settings.framework?.name) {
       setFramework(settings.crntFramework || settings.framework?.name || null);
     }
   }, [settings.crntFramework, settings.framework]);
+
+  React.useEffect(() => {
+    messageHandler.request<boolean>(GeneralCommands.toVSCode.gitIsRepo).then((result) => {
+      setIsGitRepo(result);
+    });
+
+    setIsGitEnabled(settings.git.actions);
+  }, [settings.git.actions]);
 
   React.useEffect(() => {
     const fetchTemplates = async () => {

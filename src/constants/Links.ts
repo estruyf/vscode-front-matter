@@ -8,3 +8,5 @@ export const DOCUMENTATION_SETTINGS_LINK = 'https://frontmatter.codes/docs/setti
 
 export const SENTRY_LINK =
   'https://1ac45704bbe74264a7b4674bdc2abf48@o1022172.ingest.sentry.io/5988293';
+
+export const DOCS_SUBMODULES = 'https://frontmatter.codes/docs/git-integration#git-submodules';
