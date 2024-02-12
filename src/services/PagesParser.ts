@@ -233,7 +233,10 @@ export class PagesParser {
         // Make sure these are always set
         title: escapedTitle,
         description: escapedDescription,
-        slug: article?.data.slug || Article.generateSlug(escapedTitle)?.slugWithPrefixAndSuffix,
+        slug:
+          article?.data.slug ||
+          Article.generateSlug(escapedTitle, article, contentType.slugTemplate)
+            ?.slugWithPrefixAndSuffix,
         date: article?.data[dateField] || '',
         draft: article?.data.draft
       };

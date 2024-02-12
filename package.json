@@ -1604,6 +1604,14 @@
                 "default": null,
                 "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.previewPath.description%"
               },
+              "slugTemplate": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "default": null,
+                "description": "%setting.frontMatter.content.pageFolders.items.properties.slugTemplate.description%"
+              },
               "template": {
                 "type": "string",
                 "default": "",
@@ -1840,6 +1848,11 @@
         "frontMatter.taxonomy.slugSuffix": {
           "type": "string",
           "markdownDescription": "%setting.frontMatter.taxonomy.slugSuffix.markdownDescription%",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.slugTemplate": {
+          "type": "string",
+          "markdownDescription": "%setting.frontMatter.taxonomy.slugTemplate.markdownDescription%",
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.tags": {

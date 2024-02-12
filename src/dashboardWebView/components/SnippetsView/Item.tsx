@@ -260,6 +260,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             ref={formRef}
             snippetKey={snippetKey}
             snippet={snippet}
+            filePath={viewData?.data?.filePath}
             fieldInfo={viewData?.data?.snippetInfo?.fields}
             selection={viewData?.data?.selection} />
         </FormDialog>

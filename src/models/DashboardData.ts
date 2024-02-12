@@ -1,6 +1,7 @@
 import { Position } from 'vscode';
 import { NavigationType } from '../dashboardWebView/models';
 import { BlockFieldData } from './BlockFieldData';
+import { ContentType } from '.';
 
 export interface DashboardData {
   type: NavigationType;
@@ -12,6 +13,7 @@ export interface ViewData {
   fieldName?: string;
   position?: Position;
   fileTitle?: string;
+  contentType?: ContentType;
   selection?: string;
   range?: SnippetRange;
   snippetInfo?: SnippetInfo;

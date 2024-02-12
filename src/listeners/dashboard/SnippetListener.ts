@@ -1,9 +1,16 @@
 import { EditorHelper } from '@estruyf/vscode';
 import { window, Range, Position } from 'vscode';
 import { Dashboard } from '../../commands/Dashboard';
-import { SETTING_CONTENT_SNIPPETS, TelemetryEvent } from '../../constants';
+import { SETTING_CONTENT_SNIPPETS, SETTING_DATE_FORMAT, TelemetryEvent } from '../../constants';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
-import { Notifications, Settings, Telemetry } from '../../helpers';
+import {
+  ArticleHelper,
+  Notifications,
+  Settings,
+  Telemetry,
+  processArticlePlaceholdersFromPath,
+  processTimePlaceholders
+} from '../../helpers';
 import { PostMessageData, Snippets } from '../../models';
 import { BaseListener } from './BaseListener';
 import { SettingsListener } from './SettingsListener';
@@ -24,6 +31,9 @@ export class SnippetListener extends BaseListener {
       case DashboardMessage.insertSnippet:
         Telemetry.send(TelemetryEvent.insertContentSnippet);
         this.insertSnippet(msg.payload);
+        break;
+      case DashboardMessage.updateSnippetPlaceholders:
+        this.updateSnippetPlaceholders(msg.command, msg.payload, msg.requestId);
         break;
     }
   }
@@ -123,5 +133,26 @@ export class SnippetListener extends BaseListener {
         }
       });
     }
+  }
+
+  private static async updateSnippetPlaceholders(
+    command: DashboardMessage,
+    data: { value: string; filePath: string },
+    requestId?: string
+  ) {
+    if (!data.value || !command || !requestId) {
+      return;
+    }
+
+    let value = data.value;
+
+    if (data.filePath) {
+      value = await processArticlePlaceholdersFromPath(data.value, data.filePath);
+    }
+
+    const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
+    value = processTimePlaceholders(value, dateFormat);
+
+    this.sendRequest(command, requestId, value);
   }
 }

@@ -127,9 +127,9 @@ export class SettingsListener extends BaseListener {
    * Update a setting from the dashboard
    * @param data
    */
-  private static async update(data: { name: string; value: any }) {
+  private static async update(data: { name: string; value: any; global?: boolean }) {
     if (data.name) {
-      await Settings.update(data.name, data.value);
+      await Settings.update(data.name, data.value, data.global);
       this.getSettings(true);
     }
   }

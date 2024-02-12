@@ -1,11 +1,18 @@
 import {
+  COMMAND_NAME,
+  CONTEXT,
+  GIT_CONFIG,
+  SETTING_DATE_FORMAT,
+  SETTING_GIT_COMMIT_MSG,
   SETTING_GIT_DISABLED_BRANCHES,
+  SETTING_GIT_ENABLED,
   SETTING_GIT_REQUIRES_COMMIT_MSG,
   SETTING_GIT_SUBMODULE_BRANCH,
   SETTING_GIT_SUBMODULE_FOLDER,
   SETTING_GIT_SUBMODULE_PULL,
-  SETTING_GIT_SUBMODULE_PUSH
-} from './../../constants/settings';
+  SETTING_GIT_SUBMODULE_PUSH,
+  TelemetryEvent
+} from './../../constants';
 import { Settings } from './../../helpers/SettingsHelper';
 import { Dashboard } from '../../commands/Dashboard';
 import { PanelProvider } from '../../panelWebView/PanelProvider';
@@ -15,19 +22,11 @@ import {
   Logger,
   Notifications,
   parseWinPath,
-  processKnownPlaceholders,
+  processTimePlaceholders,
   Telemetry
 } from '../../helpers';
 import { GeneralCommands } from './../../constants/GeneralCommands';
 import simpleGit, { SimpleGit } from 'simple-git';
-import {
-  COMMAND_NAME,
-  CONTEXT,
-  SETTING_DATE_FORMAT,
-  SETTING_GIT_COMMIT_MSG,
-  SETTING_GIT_ENABLED,
-  TelemetryEvent
-} from '../../constants';
 import { Folders } from '../../commands/Folders';
 import { Event, commands, extensions } from 'vscode';
 import { GitAPIState, GitRepository, PostMessageData } from '../../models';
@@ -115,8 +114,19 @@ export class GitListener {
         break;
       case GeneralCommands.toVSCode.git.selectBranch:
         this.selectBranch();
+      case GeneralCommands.toVSCode.git.isRepo:
+        this.checkIsGitRepo(msg.command, msg.requestId);
         break;
     }
+  }
+
+  public static async checkIsGitRepo(command: string, requestId?: string) {
+    if (!command || !requestId) {
+      return;
+    }
+
+    const isRepo = await GitListener.isGitRepository();
+    Dashboard.postWebviewMessage({ command: command as any, payload: isRepo, requestId });
   }
 
   /**
@@ -222,7 +232,7 @@ export class GitListener {
 
     if (commitMsg) {
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
-      commitMsg = processKnownPlaceholders(commitMsg, undefined, dateFormat);
+      commitMsg = processTimePlaceholders(commitMsg, dateFormat);
       commitMsg = await ArticleHelper.processCustomPlaceholders(commitMsg, undefined, undefined);
     }
 
@@ -243,7 +253,7 @@ export class GitListener {
           // Check if anything changed
           if (status.files.length > 0) {
             await subGit.raw(['add', '.', '-A']);
-            await subGit.commit(commitMsg);
+            await subGit.commit(commitMsg || GIT_CONFIG.defaultCommitMessage);
           }
           await subGit.push();
         } catch (e) {
@@ -265,7 +275,13 @@ export class GitListener {
           // First line is the submodule folder name
           if (lines.length > 1) {
             await git.subModule(['foreach', 'git', 'add', '.', '-A']);
-            await git.subModule(['foreach', 'git', 'commit', '-m', commitMsg]);
+            await git.subModule([
+              'foreach',
+              'git',
+              'commit',
+              '-m',
+              commitMsg || GIT_CONFIG.defaultCommitMessage
+            ]);
             await git.subModule(['foreach', 'git', 'push']);
           }
         } catch (e) {
@@ -284,7 +300,7 @@ export class GitListener {
 
     if (status.files.length > 0) {
       await git.raw(['add', '.', '-A']);
-      await git.commit(commitMsg);
+      await git.commit(commitMsg || GIT_CONFIG.defaultCommitMessage);
     }
 
     await git.push();

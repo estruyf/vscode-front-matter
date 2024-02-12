@@ -1,10 +1,8 @@
-import { Messenger } from '@estruyf/vscode/dist/client';
-import { EventData } from '@estruyf/vscode/dist/models';
+import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import { LinkIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { BaseFieldProps } from '../../../models';
-import { Command } from '../../Command';
 import { CommandToCode } from '../../CommandToCode';
 import { FieldTitle } from './FieldTitle';
 import { FieldMessage } from './FieldMessage';
@@ -14,6 +12,7 @@ import { LocalizationKey } from '../../../localization';
 export interface ISlugFieldProps extends BaseFieldProps<string> {
   titleValue: string | null;
   editable?: boolean;
+  slugTemplate?: string;
   onChange: (txtValue: string) => void;
 }
 
@@ -23,6 +22,7 @@ export const SlugField: React.FunctionComponent<ISlugFieldProps> = ({
   editable,
   value,
   titleValue,
+  slugTemplate,
   onChange,
   required
 }: React.PropsWithChildren<ISlugFieldProps>) => {
@@ -38,16 +38,6 @@ export const SlugField: React.FunctionComponent<ISlugFieldProps> = ({
     Messenger.send(CommandToCode.updateSlug);
   };
 
-  const messageListener = useCallback(
-    (message: MessageEvent<EventData<any>>) => {
-      const { command, payload } = message.data;
-      if (command === Command.updatedSlug) {
-        setSlug(payload?.slugWithPrefixAndSuffix);
-      }
-    },
-    [text]
-  );
-
   const showRequiredState = useMemo(() => {
     return required && !text;
   }, [required, text]);
@@ -60,17 +50,18 @@ export const SlugField: React.FunctionComponent<ISlugFieldProps> = ({
 
   useEffect(() => {
     if (titleValue) {
-      Messenger.send(CommandToCode.generateSlug, titleValue);
+      messageHandler.request<{ slug: string; slugWithPrefixAndSuffix: string; }>(CommandToCode.generateSlug, {
+        title: titleValue,
+        slugTemplate
+      }).then((slug) => {
+        if (slug.slugWithPrefixAndSuffix) {
+          setSlug(slug.slugWithPrefixAndSuffix);
+        }
+      }).catch((_) => {
+        setSlug(null);
+      });
     }
-  }, [titleValue]);
-
-  useEffect(() => {
-    Messenger.listen(messageListener);
-
-    return () => {
-      Messenger.unlisten(messageListener);
-    };
-  }, []);
+  }, [titleValue, slugTemplate]);
 
   return (
     <div className={`metadata_field`}>

@@ -5,10 +5,12 @@
 ### ✨ New features
 
 - [#731](https://github.com/estruyf/vscode-front-matter/issues/731): Added the ability to map/unmap taxonomy to multiple pages at once
+- [#746](https://github.com/estruyf/vscode-front-matter/issues/746): Placeholder support added to to the `slug` field
 - [#749](https://github.com/estruyf/vscode-front-matter/issues/749): Ability to set your own filters on the content dashboard with the `frontMatter.content.filters` setting
 
 ### 🎨 Enhancements
 
+- [#673](https://github.com/estruyf/vscode-front-matter/pull/673): Added git settings to the welcome view and settings view
 - [#727](https://github.com/estruyf/vscode-front-matter/pull/727): Updated Japanese translations thanks to [mayumihara](https://github.com/mayumih387)
 - [#737](https://github.com/estruyf/vscode-front-matter/issues/737): Optimize the grid layout of the content and media dashboards
 - [#739](https://github.com/estruyf/vscode-front-matter/pull/739): New Git settings to disable and require a commit message
