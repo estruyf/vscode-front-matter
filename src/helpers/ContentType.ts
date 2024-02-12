@@ -1110,6 +1110,7 @@ export class ContentType {
                     }
                     break;
                   case 'string':
+                  case 'slug':
                   case 'image':
                   case 'file':
                   default:
