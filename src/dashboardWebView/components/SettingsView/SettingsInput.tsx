@@ -5,6 +5,7 @@ export interface ISettingsInputProps {
   label: string;
   name: string;
   value: string;
+  placeholder?: string;
   onChange: (key: string, value: string) => void;
   fallback?: string;
 }
@@ -13,6 +14,7 @@ export const SettingsInput: React.FunctionComponent<ISettingsInputProps> = ({
   label,
   name,
   value,
+  placeholder,
   onChange,
   fallback
 }: React.PropsWithChildren<ISettingsInputProps>) => {
@@ -24,6 +26,7 @@ export const SettingsInput: React.FunctionComponent<ISettingsInputProps> = ({
         boxShadow: 'none'
       }}
       value={value || fallback || ""}
+      placeholder={placeholder}
       onInput={(e: React.ChangeEvent<HTMLInputElement>) => onChange(name, e.target.value)}>
       {label}
     </VSCodeTextField>

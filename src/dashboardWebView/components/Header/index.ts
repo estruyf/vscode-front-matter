@@ -1,5 +1,5 @@
 export * from './Filter';
-export * from './Folders';
+export * from './FoldersFilter';
 export * from './Grouping';
 export * from './Header';
 export * from './Searchbox';

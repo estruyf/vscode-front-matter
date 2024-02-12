@@ -1,6 +1,5 @@
 import { SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH } from '../constants';
 import { Logger, Notifications, Settings, TaxonomyHelper } from '../helpers';
-import fetch from 'node-fetch';
 import { TagType } from '../panelWebView/TagType';
 import { TaxonomyType } from '../models';
 import * as l10n from '@vscode/l10n';

@@ -1,6 +1,5 @@
 import { Extension, Settings } from '.';
 import { EXTENSION_BETA_ID, EXTENSION_ID, SETTING_TELEMETRY_DISABLE } from '../constants';
-import fetch from 'node-fetch';
 
 const METRICS_URL = 'https://frontmatter.codes/api/metrics';
 

@@ -7,6 +7,7 @@ export * from './ExtensionState';
 export * from './Features';
 export * from './FrameworkDetectors';
 export * from './GeneralCommands';
+export * from './Git';
 export * from './Links';
 export * from './LocalStore';
 export * from './Navigation';

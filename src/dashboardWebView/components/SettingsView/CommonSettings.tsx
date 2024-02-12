@@ -6,15 +6,17 @@ import { useRecoilValue } from 'recoil';
 import { SettingsSelector } from '../../state';
 import { SettingsInput } from './SettingsInput';
 import { VSCodeButton } from '@vscode/webview-ui-toolkit/react';
-import { FrameworkDetectors, SETTING_FRAMEWORK_START, SETTING_PREVIEW_HOST, SETTING_WEBSITE_URL } from '../../../constants';
+import { DOCS_SUBMODULES, FrameworkDetectors, GIT_CONFIG, SETTING_FRAMEWORK_START, SETTING_GIT_COMMIT_MSG, SETTING_GIT_ENABLED, SETTING_PREVIEW_HOST, SETTING_WEBSITE_URL } from '../../../constants';
 import { messageHandler } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
+import { SettingsCheckbox } from './SettingsCheckbox';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
 export interface ICommonSettingsProps { }
 
 interface Config {
   name: string;
-  value: string;
+  value: string | boolean;
 }
 
 export const CommonSettings: React.FunctionComponent<ICommonSettingsProps> = (props: React.PropsWithChildren<ICommonSettingsProps>) => {
@@ -22,7 +24,7 @@ export const CommonSettings: React.FunctionComponent<ICommonSettingsProps> = (pr
   const [config, setConfig] = React.useState<Config[]>([]);
   const [updated, setUpdated] = React.useState<boolean>(false);
 
-  const onSettingChange = React.useCallback((name: string, value: string) => {
+  const onSettingChange = React.useCallback((name: string, value: string | boolean) => {
     setConfig((prev) => {
       const setting = prev.find((c) => c.name === name);
       if (setting) {
@@ -39,7 +41,13 @@ export const CommonSettings: React.FunctionComponent<ICommonSettingsProps> = (pr
   }, [config]);
 
   const retrieveSettings = () => {
-    messageHandler.request<Config[]>(DashboardMessage.getSettings, [SETTING_PREVIEW_HOST, SETTING_WEBSITE_URL, SETTING_FRAMEWORK_START]).then((config) => {
+    messageHandler.request<Config[]>(DashboardMessage.getSettings, [
+      SETTING_PREVIEW_HOST,
+      SETTING_WEBSITE_URL,
+      SETTING_FRAMEWORK_START,
+      SETTING_GIT_ENABLED,
+      SETTING_GIT_COMMIT_MSG,
+    ]).then((config) => {
       setConfig(config);
       setUpdated(false);
     });
@@ -66,27 +74,63 @@ export const CommonSettings: React.FunctionComponent<ICommonSettingsProps> = (pr
       </div>
 
       <div className='py-4'>
+        <h2 className='text-xl mb-2'>{l10n.t(LocalizationKey.settingsGit)}</h2>
+
+        <div className='space-y-2'>
+          <SettingsCheckbox
+            label={l10n.t(LocalizationKey.settingsGitEnabled)}
+            name={SETTING_GIT_ENABLED}
+            value={(config.find((c) => c.name === SETTING_GIT_ENABLED)?.value || false) as boolean}
+            onChange={onSettingChange}
+          />
+
+          <SettingsInput
+            label={l10n.t(LocalizationKey.settingsGitCommitMessage)}
+            name={SETTING_GIT_COMMIT_MSG}
+            value={(config.find((c) => c.name === SETTING_GIT_COMMIT_MSG)?.value || "") as string}
+            placeholder={GIT_CONFIG.defaultCommitMessage}
+            onChange={onSettingChange}
+          />
+
+          <p className={`text-[var(--frontmatter-secondary-text)] flex items-center`}>
+            <ChevronRightIcon className='h-4 w-4 inline' />
+
+            <span>
+              {l10n.t(LocalizationKey.settingsGitSubmoduleInfo)}&nbsp;
+            </span>
+
+            <a
+              href={DOCS_SUBMODULES}
+              title={l10n.t(LocalizationKey.settingsGitSubmoduleLink)}
+              className='text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)]'>
+              {l10n.t(LocalizationKey.settingsGitSubmoduleLink)}
+            </a>
+          </p>
+        </div>
+      </div>
+
+      <div className='py-4'>
         <h2 className='text-xl mb-2'>{l10n.t(LocalizationKey.settingsCommonSettingsWebsiteTitle)}</h2>
 
         <div className='space-y-2'>
           <SettingsInput
             label={l10n.t(LocalizationKey.settingsCommonSettingsPreviewUrl)}
             name={SETTING_PREVIEW_HOST}
-            value={config.find((c) => c.name === SETTING_PREVIEW_HOST)?.value || ""}
+            value={(config.find((c) => c.name === SETTING_PREVIEW_HOST)?.value || "") as string}
             onChange={onSettingChange}
           />
 
           <SettingsInput
             label={l10n.t(LocalizationKey.settingsCommonSettingsWebsiteUrl)}
             name={SETTING_WEBSITE_URL}
-            value={config.find((c) => c.name === SETTING_WEBSITE_URL)?.value || ""}
+            value={(config.find((c) => c.name === SETTING_WEBSITE_URL)?.value || "") as string}
             onChange={onSettingChange}
           />
 
           <SettingsInput
             label={l10n.t(LocalizationKey.settingsCommonSettingsStartCommand)}
             name={SETTING_FRAMEWORK_START}
-            value={config.find((c) => c.name === SETTING_FRAMEWORK_START)?.value || ""}
+            value={(config.find((c) => c.name === SETTING_FRAMEWORK_START)?.value || "") as string}
             onChange={onSettingChange}
             fallback={FrameworkDetectors.find((f) => f.framework.name === settings?.crntFramework)?.commands.start || ""}
           />

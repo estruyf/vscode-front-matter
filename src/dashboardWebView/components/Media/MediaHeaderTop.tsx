@@ -6,7 +6,6 @@ import { useDebounce } from '../../../hooks/useDebounce';
 import { usePrevious } from '../../../panelWebView/hooks/usePrevious';
 import { DashboardCommand } from '../../DashboardCommand';
 import { DashboardMessage } from '../../DashboardMessage';
-import useThemeColors from '../../hooks/useThemeColors';
 import {
   LoadingAtom,
   PageAtom,
@@ -33,7 +32,6 @@ export const MediaHeaderTop: React.FunctionComponent<
   const settings = useRecoilValue(SettingsSelector);
   const debounceGetMedia = useDebounce<string | null>(lastUpdated, 200);
   const prevSelectedFolder = usePrevious<string | null>(selectedFolder);
-  const { getColors } = useThemeColors();
 
   const mediaUpdate = (message: MessageEvent<EventData<{ key: string; value: any }>>) => {
     if (message.data.command === DashboardCommand.mediaUpdate) {
@@ -83,11 +81,7 @@ export const MediaHeaderTop: React.FunctionComponent<
 
   return (
     <nav
-      className={`py-3 px-4 flex items-center justify-between border-b ${getColors(
-        'border-gray-300 dark:border-vulcan-100',
-        'border-[var(--frontmatter-border)]'
-      )
-        }`}
+      className={`py-3 px-4 flex items-center justify-between border-b border-[var(--frontmatter-border)]`}
       aria-label="Pagination"
     >
       <Searchbox placeholder={l10n.t(LocalizationKey.dashboardMediaMediaHeaderTopSearchboxPlaceholder)} />

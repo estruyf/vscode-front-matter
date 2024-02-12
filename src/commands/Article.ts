@@ -374,7 +374,7 @@ export class Article {
       return;
     }
 
-    let position = editor.selection.active;
+    const position = editor.selection.active;
     const selectionText = editor.document.getText(editor.selection);
 
     // Check for snippet wrapper

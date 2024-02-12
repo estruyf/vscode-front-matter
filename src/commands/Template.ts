@@ -163,7 +163,7 @@ export class Template {
     await copyFileAsync(template.fsPath, newFilePath);
 
     // Update the properties inside the template
-    let frontMatter = await ArticleHelper.getFrontMatterByPath(newFilePath);
+    const frontMatter = await ArticleHelper.getFrontMatterByPath(newFilePath);
     if (!frontMatter) {
       Notifications.warning(l10n.t(LocalizationKey.commonError));
       return;

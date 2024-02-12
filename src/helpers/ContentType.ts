@@ -279,8 +279,8 @@ export class ContentType {
     const configPath = await Settings.projectConfigPath();
     const notificationAction = await Notifications.info(
       overrideBool
-        ? l10n.t(LocalizationKey.helpersContentTypeGenerateUpdatedSuccess)
-        : l10n.t(LocalizationKey.helpersContentTypeGenerateGeneratedSuccess),
+        ? l10n.t(LocalizationKey.helpersContentTypeGenerateUpdatedSuccess, contentTypeName)
+        : l10n.t(LocalizationKey.helpersContentTypeGenerateGeneratedSuccess, contentTypeName),
       configPath && (await existsAsync(configPath))
         ? l10n.t(LocalizationKey.commonOpenSettings)
         : undefined

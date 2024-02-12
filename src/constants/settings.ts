@@ -61,6 +61,7 @@ export const SETTING_CONTENT_STATIC_FOLDER = 'content.publicFolder';
 export const SETTING_CONTENT_FRONTMATTER_HIGHLIGHT = 'content.fmHighlight';
 export const SETTING_CONTENT_DRAFT_FIELD = 'content.draftField';
 export const SETTING_CONTENT_SORTING = 'content.sorting';
+export const SETTING_CONTENT_FILTERS = 'content.filters';
 export const SETTING_CONTENT_WYSIWYG = 'content.wysiwyg';
 export const SETTING_CONTENT_PLACEHOLDERS = 'content.placeholders';
 export const SETTING_CONTENT_SNIPPETS = 'content.snippets';

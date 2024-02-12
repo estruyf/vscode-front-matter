@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Choice, SnippetField, SnippetInfoField } from '../../../models';
-import useThemeColors from '../../hooks/useThemeColors';
 import { useEffect } from 'react';
 import { TextField } from '../Common/TextField';
 
@@ -16,7 +15,6 @@ export const SnippetInputField: React.FunctionComponent<ISnippetInputFieldProps>
   fieldInfo,
   onValueChange
 }: React.PropsWithChildren<ISnippetInputFieldProps>) => {
-  const { getColors } = useThemeColors();
 
   useEffect(() => {
     if (fieldInfo) {
