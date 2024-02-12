@@ -253,5 +253,8 @@
   "command.frontMatter.settings.refresh": "Refresh Front Matter Settings",
   "setting.frontMatter.config.dynamicFilePath.markdownDescription": "Specify the path to the dynamic config file (ex: [[workspace]]/config.js). [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.config.dynamicfilepath)",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.allowAsSubContent.description": "Specify if the content type can be used as sub content.",
-  "setting.frontMatter.taxonomy.contentTypes.items.properties.isSubContent.description": "Specify if the content type is sub content."
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.isSubContent.description": "Specify if the content type is sub content.",
+
+  "setting.frontMatter.git.disableOnBranches.markdownDescription": "Specify the branches on which you want to disable the Git actions. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.git.disableonbranches)",
+  "setting.frontMatter.git.requiresCommitMessage.markdownDescription": "Specify if you want to require a commit message when publishing your changes for a specified branch. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.git.requirescommitmessage)"
 }

@@ -12,6 +12,7 @@ export * from './DataFolder';
 export * from './DataType';
 export * from './DraftField';
 export * from './Framework';
+export * from './GitRepository';
 export * from './GitSettings';
 export * from './LoadingType';
 export * from './MediaPaths';

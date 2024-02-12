@@ -1124,6 +1124,18 @@ export enum LocalizationKey {
    */
   dashboardConfigurationAstroAstroContentTypesDescription = 'dashboard.configuration.astro.astroContentTypes.description',
   /**
+   * Publish changes
+   */
+  panelGitGitActionTitle = 'panel.git.gitAction.title',
+  /**
+   * Commit message
+   */
+  panelGitGitActionInputPlaceholder = 'panel.git.gitAction.input.placeholder',
+  /**
+   * Fetch
+   */
+  panelGitGitActionButtonFetch = 'panel.git.gitAction.button.fetch',
+  /**
    * Content-type
    */
   panelContentTypeContentTypeValidatorTitle = 'panel.contentType.contentTypeValidator.title',

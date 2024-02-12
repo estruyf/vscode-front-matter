@@ -100,6 +100,8 @@ export const SETTING_FRAMEWORK_START = 'framework.startCommand';
 export const SETTING_SITE_BASEURL = 'site.baseURL';
 
 export const SETTING_GIT_ENABLED = 'git.enabled';
+export const SETTING_GIT_DISABLED_BRANCHES = 'git.disableOnBranches';
+export const SETTING_GIT_REQUIRES_COMMIT_MSG = 'git.requiresCommitMessage';
 export const SETTING_GIT_COMMIT_MSG = 'git.commitMessage';
 export const SETTING_GIT_SUBMODULE_PULL = 'git.submodule.pull';
 export const SETTING_GIT_SUBMODULE_PUSH = 'git.submodule.push';

@@ -1,14 +1,22 @@
 export const GeneralCommands = {
   toWebview: {
     setMode: 'setMode',
-    gitSyncingStart: 'gitSyncingStart',
-    gitSyncingEnd: 'gitSyncingEnd',
+    git: {
+      syncingStart: 'gitSyncingStart',
+      syncingEnd: 'gitSyncingEnd',
+      branchName: 'gitBranchName'
+    },
     setLocalization: 'setLocalization'
   },
   toVSCode: {
     openLink: 'openLink',
-    gitSync: 'gitSync',
-    gitIsRepo: 'gitIsRepo',
+    git: {
+      isRepo: 'gitIsRepo',
+      sync: 'gitSync',
+      fetch: 'getFetch',
+      getBranch: 'getBranch',
+      selectBranch: 'gitSelectBranch'
+    },
     getLocalization: 'getLocalization',
     openOnWebsite: 'openOnWebsite'
   }

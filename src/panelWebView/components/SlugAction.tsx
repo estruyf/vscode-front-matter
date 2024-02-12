@@ -14,7 +14,11 @@ const SlugAction: React.FunctionComponent<
     Messenger.send(CommandToCode.updateSlug);
   };
 
-  return <ActionButton onClick={optimize} title={l10n.t(LocalizationKey.panelSlugActionTitle)} />;
+  return (
+    <ActionButton onClick={optimize} title={l10n.t(LocalizationKey.panelSlugActionTitle)}>
+      {l10n.t(LocalizationKey.panelSlugActionTitle)}
+    </ActionButton>
+  );
 };
 
 SlugAction.displayName = 'SlugAction';

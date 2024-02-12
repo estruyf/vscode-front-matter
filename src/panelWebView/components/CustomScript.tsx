@@ -16,7 +16,11 @@ const CustomScript: React.FunctionComponent<ICustomScriptProps> = ({
     Messenger.send(CommandToCode.runCustomScript, { title, script });
   };
 
-  return <ActionButton onClick={runCustomScript} title={title} />;
+  return (
+    <ActionButton onClick={runCustomScript} title={title}>
+      {title}
+    </ActionButton>
+  );
 };
 
 CustomScript.displayName = 'CustomScript';

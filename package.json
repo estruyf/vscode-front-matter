@@ -888,6 +888,22 @@
           "markdownDescription": "%setting.frontMatter.git.commitMessage.markdownDescription%",
           "default": "Synced by Front Matter"
         },
+        "frontMatter.git.disableOnBranches": {
+          "type": "array",
+          "markdownDescription": "%setting.frontMatter.git.disableOnBranches.markdownDescription%",
+          "default": [],
+          "items": {
+            "type": "string"
+          }
+        },
+        "frontMatter.git.requiresCommitMessage": {
+          "type": "array",
+          "markdownDescription": "%setting.frontMatter.git.requiresCommitMessage.markdownDescription%",
+          "default": [],
+          "items": {
+            "type": "string"
+          }
+        },
         "frontMatter.git.submodule.pull": {
           "type": "boolean",
           "markdownDescription": "%setting.frontMatter.git.submodule.pull.markdownDescription%",
