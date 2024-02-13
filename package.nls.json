@@ -154,6 +154,17 @@
   "setting.frontMatter.global.disabledNotifications.markdownDescription": "This is an array with the notifications types that can be disabled for Front Matter CMS. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.global.disablednotifications)",
   "setting.frontMatter.media.defaultSorting.markdownDescription": "Specify the default sorting option for the media dashboard. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.media.defaultsorting)",
   "setting.frontMatter.media.supportedMimeTypes.markdownDescription": "Specify the mime types to support for the media files. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.media.supportedmimetypes)",
+
+  "setting.frontMatter.media.contentTypes.markdownDescription": "Specify the media content types you want to use in Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.media.contenttypes)",
+  "setting.frontMatter.media.contentTypes.items.description": "Define the media content types you want to use in Front Matter.",
+  "setting.frontMatter.media.contentTypes.items.properties.name.description": "Name of the media content type",
+  "setting.frontMatter.media.contentTypes.items.properties.fileTypes.description": "Specify the file types to allow for the media content type",
+  "setting.frontMatter.media.contentTypes.items.properties.fields.description": "Define the fields of the media content type",
+  "setting.frontMatter.media.contentTypes.items.properties.fields.properties.title.description": "Title to show in the UI",
+  "setting.frontMatter.media.contentTypes.items.properties.fields.properties.name.description": "Name of the field to use",
+  "setting.frontMatter.media.contentTypes.items.properties.fields.properties.type.description": "Define the type of field",
+  "setting.frontMatter.media.contentTypes.items.properties.fields.properties.single.description": "Is a single line field",
+
   "setting.frontMatter.panel.freeform.markdownDescription": "Specifies if you want to allow yourself from entering unknown tags/categories in the tag picker (when enabled, you will have the option to store them afterwards). Default: true. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.panel.freeform)",
   "setting.frontMatter.panel.actions.disabled.markdownDescription": "Specify the actions you want to disable in the panel. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.panel.actions.disabled)",
   "setting.frontMatter.preview.host.markdownDescription": "Specify the host URL (example: http://localhost:1313) to be used when opening the preview. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.preview.host)",
