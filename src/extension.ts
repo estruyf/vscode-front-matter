@@ -87,51 +87,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // Pages dashboard
   Dashboard.init();
-  subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.dashboard, (data?: DashboardData) => {
-      Telemetry.send(TelemetryEvent.openContentDashboard);
-      if (!data) {
-        Dashboard.open({ type: NavigationType.Contents });
-      } else {
-        Dashboard.open(data);
-      }
-    })
-  );
-
-  subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.dashboardMedia, (data?: DashboardData) => {
-      Telemetry.send(TelemetryEvent.openMediaDashboard);
-      Dashboard.open({ type: NavigationType.Media });
-    })
-  );
-
-  subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.dashboardSnippets, (data?: DashboardData) => {
-      Telemetry.send(TelemetryEvent.openSnippetsDashboard);
-      Dashboard.open({ type: NavigationType.Snippets });
-    })
-  );
-
-  subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.dashboardData, (data?: DashboardData) => {
-      Telemetry.send(TelemetryEvent.openDataDashboard);
-      Dashboard.open({ type: NavigationType.Data });
-    })
-  );
-
-  subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.dashboardTaxonomy, (data?: DashboardData) => {
-      Telemetry.send(TelemetryEvent.openTaxonomyDashboard);
-      Dashboard.open({ type: NavigationType.Taxonomy });
-    })
-  );
-
-  subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.dashboardClose, (data?: DashboardData) => {
-      Telemetry.send(TelemetryEvent.closeDashboard);
-      Dashboard.close();
-    })
-  );
+  Dashboard.registerCommands();
 
   if (!extension.getVersion().usedVersion) {
     vscode.commands.executeCommand(COMMAND_NAME.dashboard);

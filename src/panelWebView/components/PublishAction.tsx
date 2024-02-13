@@ -23,7 +23,9 @@ const PublishAction: React.FunctionComponent<IPublishActionProps> = (
       onClick={publish}
       className={`${draft ? '' : 'secondary'}`}
       title={draft ? l10n.t(LocalizationKey.panelPublishActionPublish) : l10n.t(LocalizationKey.panelPublishActionUnpublish)}
-    />
+    >
+      {draft ? l10n.t(LocalizationKey.panelPublishActionPublish) : l10n.t(LocalizationKey.panelPublishActionUnpublish)}
+    </ActionButton>
   );
 };
 

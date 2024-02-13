@@ -50,6 +50,11 @@
   "settings.diagnostic": "Diagnostic",
   "settings.diagnostic.description": "You can run the diagnostics to check the whole Front Matter CMS configuration.",
   "settings.diagnostic.link": "Run full diagnostics",
+  "settings.git": "Git synchronization",
+  "settings.git.enabled": "Enable Git synchronization to easily sync your changes with your repository.",
+  "settings.git.commitMessage": "Commit message",
+  "settings.git.submoduleInfo": "When working with Git submodules, you can refer to the submodule settings in the documentation.",
+  "settings.git.submoduleLink": "Read more about Git submodules",
 
   "settings.commonSettings.website.title": "Website and SSG settings",
   "settings.commonSettings.previewUrl": "Preview URL",
@@ -278,6 +283,8 @@
   "dashboard.steps.stepsToGetStarted.contentFolders.information.description": "You can also perform this action by right-clicking on the folder in the explorer view, and selecting register folder",
   "dashboard.steps.stepsToGetStarted.tags.name": "Import all tags and categories (optional)",
   "dashboard.steps.stepsToGetStarted.tags.description": "Now that Front Matter knows all the content folders. Would you like to import all tags and categories from the available content?",
+  "dashboard.steps.stepsToGetStarted.git.name": "Do you want to enable Git synchronization?",
+  "dashboard.steps.stepsToGetStarted.git.description": "Enable Git synchronization to eaily sync your changes with your repository.",
   "dashboard.steps.stepsToGetStarted.showDashboard.name": "Show the dashboard",
   "dashboard.steps.stepsToGetStarted.showDashboard.description": "Once all actions are completed, the dashboard can be loaded.",
   "dashboard.steps.stepsToGetStarted.template.name": "Use a configuration template",
@@ -331,6 +338,10 @@
 
   "dashboard.configuration.astro.astroContentTypes.empty": "No Astro Content Collections found.",
   "dashboard.configuration.astro.astroContentTypes.description": "The following Astro Content Collections can be used to generate a content-type.",
+
+  "panel.git.gitAction.title": "Publish changes",
+  "panel.git.gitAction.input.placeholder": "Commit message",
+  "panel.git.gitAction.button.fetch": "Fetch",
 
   "panel.contentType.contentTypeValidator.title": "Content-type",
   "panel.contentType.contentTypeValidator.hint": "We noticed field differences between the content-type and the front matter data. \n Would you like to create, update, or set the content-type for this content?",

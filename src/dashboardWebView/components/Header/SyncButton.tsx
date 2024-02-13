@@ -18,15 +18,15 @@ export const SyncButton: React.FunctionComponent<ISyncButtonProps> = (
   const [isSyncing, setIsSyncing] = useState(false);
 
   const pull = () => {
-    Messenger.send(GeneralCommands.toVSCode.gitSync);
+    Messenger.send(GeneralCommands.toVSCode.git.sync);
   };
 
   const messageListener = (message: MessageEvent<EventData<any>>) => {
     const { command } = message.data;
 
-    if (command === GeneralCommands.toWebview.gitSyncingStart) {
+    if (command === GeneralCommands.toWebview.git.syncingStart) {
       setIsSyncing(true);
-    } else if (command === GeneralCommands.toWebview.gitSyncingEnd) {
+    } else if (command === GeneralCommands.toWebview.git.syncingEnd) {
       setIsSyncing(false);
     }
   };

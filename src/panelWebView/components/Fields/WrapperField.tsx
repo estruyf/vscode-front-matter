@@ -1,9 +1,8 @@
-import { Messenger } from '@estruyf/vscode/dist/client';
+import { messageHandler } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { DateHelper } from '../../../helpers/DateHelper';
-import { BlockFieldData, CustomPanelViewResult, Field, PanelSettings } from '../../../models';
-import { Command } from '../../Command';
+import { BlockFieldData, ContentType, CustomPanelViewResult, Field, PanelSettings } from '../../../models';
 import { CommandToCode } from '../../CommandToCode';
 import { TagType } from '../../TagType';
 import { DataBlockField } from '../DataBlock';
@@ -41,6 +40,7 @@ export interface IWrapperFieldProps {
   parentFields: string[];
   metadata: IMetadata;
   settings: PanelSettings;
+  contentType: ContentType | null;
   blockData: BlockFieldData | undefined;
   focusElm: TagType | null;
   parentBlock: string | null | undefined;
@@ -63,6 +63,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
   parentFields,
   metadata,
   settings,
+  contentType,
   blockData,
   focusElm,
   parentBlock,
@@ -75,21 +76,6 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
     name: string;
     html: (data: any, onChange: (value: any) => void) => Promise<CustomPanelViewResult | undefined>;
   }[]>([]);
-
-  const listener = useCallback(
-    (event: any) => {
-      const message = event.data;
-
-      if (message.command === Command.updatePlaceholder) {
-        const data = message.payload;
-        if (data.field === field.name) {
-          setFieldValue(data.value);
-          onSendUpdate(field.name, data.value, parentFields);
-        }
-      }
-    },
-    [field]
-  );
 
   const getDate = (date: string | Date): Date | null => {
     const parsedDate = DateHelper.tryParse(date, settings?.date?.format);
@@ -126,11 +112,18 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
 
     // Check if the field value contains a placeholder
     if (value && typeof value === 'string' && value.includes(`{{`) && value.includes(`}}`)) {
-      window.addEventListener('message', listener);
-      Messenger.send(CommandToCode.updatePlaceholder, {
+      messageHandler.request<{ field: string; value: any; }>(CommandToCode.updatePlaceholder, {
         field: field.name,
-        title: metadata['title'],
-        value
+        value,
+        data: metadata,
+        contentType
+      }).then((data) => {
+        if (data.field === field.name) {
+          setFieldValue(data.value);
+          onSendUpdate(field.name, data.value, parentFields);
+        }
+      }).catch((err) => {
+        console.error(err);
       });
     } else {
       // Did not contain a placeholder, so value can be set
@@ -138,10 +131,6 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
         setFieldValue(value || null);
       }
     }
-
-    return () => {
-      window.removeEventListener('message', listener);
-    };
   }, [field, parent]);
 
   useEffect(() => {
@@ -372,7 +361,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
     let draftValue = parent[field.name];
 
     if (!draftValue && typeof parent[field.name] === 'undefined' && field.default) {
-      draftValue = field.default;
+      draftValue = field.default as string;
       onSendUpdate(field.name, draftValue, parentFields);
     }
 
@@ -509,6 +498,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           description={field.description}
           titleValue={metadata.title as string}
           value={fieldValue}
+          slugTemplate={contentType?.slugTemplate}
           required={!!field.required}
           editable={field.editable}
           onChange={onFieldChange}

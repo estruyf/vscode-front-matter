@@ -5,7 +5,7 @@ import { DashboardData } from './DashboardData';
 import { DataType } from './DataType';
 
 export interface PanelSettings {
-  git: GitSettings;
+  git: GitSettings | undefined;
   seo: SEO;
   slug: Slug;
   tags: string[];
@@ -59,6 +59,7 @@ export interface ContentType {
 
   fileType?: 'md' | 'mdx' | string;
   previewPath?: string | null;
+  slugTemplate?: string;
   pageBundle?: boolean;
   defaultFileName?: string;
   template?: string;
@@ -105,7 +106,7 @@ export interface Field {
   isPreviewImage?: boolean;
   hidden?: boolean;
   taxonomyId?: string;
-  default?: string;
+  default?: string | number | string[] | boolean;
   fields?: Field[];
   fieldGroup?: string | string[];
   dataType?: string | string[];

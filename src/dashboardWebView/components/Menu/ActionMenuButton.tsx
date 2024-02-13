@@ -18,8 +18,7 @@ export const ActionMenuButton: React.FunctionComponent<IActionMenuButtonProps> =
       ref={ref || null}
       onClick={(e: React.MouseEvent<HTMLButtonElement>) => e.stopPropagation()}
       disabled={disabled}
-      className={`group inline-flex justify-center text-sm font-medium text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)] ${disabled ? 'opacity-50' : ''
-        }`}
+      className={`group inline-flex justify-center text-sm font-medium text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)] ${disabled ? 'opacity-50' : ''}`}
     >
       <span className="sr-only">{title}</span>
       <EllipsisVerticalIcon className="w-4 h-4" aria-hidden="true" />

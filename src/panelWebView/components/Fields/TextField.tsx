@@ -20,6 +20,7 @@ export interface ITextFieldProps extends BaseFieldProps<string> {
   limit: number | undefined;
   rows?: number;
   name: string;
+  placeholder?: string;
   settings: PanelSettings;
   onChange: (txtValue: string) => void;
 }
@@ -27,6 +28,7 @@ export interface ITextFieldProps extends BaseFieldProps<string> {
 const WysiwygField = React.lazy(() => import('./WysiwygField'));
 
 export const TextField: React.FunctionComponent<ITextFieldProps> = ({
+  placeholder,
   singleLine,
   wysiwyg,
   limit,
@@ -154,6 +156,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
           className={`metadata_field__input`}
           value={text || ''}
           onChange={(e) => onTextChange(e.currentTarget.value)}
+          placeholder={placeholder}
           style={{
             border
           }}
@@ -164,6 +167,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
           rows={rows || 2}
           value={text || ''}
           onChange={(e) => onTextChange(e.currentTarget.value)}
+          placeholder={placeholder}
           style={{
             border
           }}

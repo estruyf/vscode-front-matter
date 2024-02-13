@@ -20,7 +20,7 @@ import { DataFile } from '../../models/DataFile';
 export interface Settings {
   projects: Project[];
   project: Project;
-  git: GitSettings;
+  git: GitSettings | undefined;
   beta: boolean;
   initialized: boolean;
   wsFolder: string;

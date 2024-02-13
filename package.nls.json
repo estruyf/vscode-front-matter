@@ -211,6 +211,7 @@
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.when.properties.caseSensitive.description": "Specify if the comparison is case sensitive. Default: true",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.pageBundle.description": "Specify if you want to create a folder when creating new content.",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.previewPath.description": "Defines a custom preview path for the content type.",
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.slugTemplate.description": "Defines a custom slug template for the content type.",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.template.description": "An optional template that can be used for creating new content.",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.postScript.description": "An optional post script that can be used after new content creation.",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.filePrefix.description": "Defines a prefix for the file name.",
@@ -237,6 +238,7 @@
   "setting.frontMatter.taxonomy.seoTitleLength.markdownDescription": "Specifies the optimal title length for SEO (set to `-1` to turn it off). [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.seotitlelength)",
   "setting.frontMatter.taxonomy.slugPrefix.markdownDescription": "Specify a prefix for the slug. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.slugprefix)",
   "setting.frontMatter.taxonomy.slugSuffix.markdownDescription": "Specify a suffix for the slug. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.slugsuffix)",
+  "setting.frontMatter.taxonomy.slugTemplate.markdownDescription": "Defines a custom slug template for the content you will create. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.slugtemplate)",
   "setting.frontMatter.taxonomy.tags.markdownDescription": "Specifies the tags which can be used in the Front Matter. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.tags)",
   "setting.frontMatter.telemetry.disable.markdownDescription": "Specify if you want to disable the telemetry. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.telemetry.disable)",
   "setting.frontMatter.templates.enabled.markdownDescription": "Specify if you want to use templates. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.templates.enabled)",
@@ -251,5 +253,8 @@
   "command.frontMatter.settings.refresh": "Refresh Front Matter Settings",
   "setting.frontMatter.config.dynamicFilePath.markdownDescription": "Specify the path to the dynamic config file (ex: [[workspace]]/config.js). [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.config.dynamicfilepath)",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.allowAsSubContent.description": "Specify if the content type can be used as sub content.",
-  "setting.frontMatter.taxonomy.contentTypes.items.properties.isSubContent.description": "Specify if the content type is sub content."
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.isSubContent.description": "Specify if the content type is sub content.",
+
+  "setting.frontMatter.git.disableOnBranches.markdownDescription": "Specify the branches on which you want to disable the Git actions. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.git.disableonbranches)",
+  "setting.frontMatter.git.requiresCommitMessage.markdownDescription": "Specify if you want to require a commit message when publishing your changes for a specified branch. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.git.requirescommitmessage)"
 }

@@ -887,6 +887,22 @@
           "markdownDescription": "%setting.frontMatter.git.commitMessage.markdownDescription%",
           "default": "Synced by Front Matter"
         },
+        "frontMatter.git.disableOnBranches": {
+          "type": "array",
+          "markdownDescription": "%setting.frontMatter.git.disableOnBranches.markdownDescription%",
+          "default": [],
+          "items": {
+            "type": "string"
+          }
+        },
+        "frontMatter.git.requiresCommitMessage": {
+          "type": "array",
+          "markdownDescription": "%setting.frontMatter.git.requiresCommitMessage.markdownDescription%",
+          "default": [],
+          "items": {
+            "type": "string"
+          }
+        },
         "frontMatter.git.submodule.pull": {
           "type": "boolean",
           "markdownDescription": "%setting.frontMatter.git.submodule.pull.markdownDescription%",
@@ -1654,6 +1670,14 @@
                 "default": null,
                 "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.previewPath.description%"
               },
+              "slugTemplate": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "default": null,
+                "description": "%setting.frontMatter.content.pageFolders.items.properties.slugTemplate.description%"
+              },
               "template": {
                 "type": "string",
                 "default": "",
@@ -1890,6 +1914,11 @@
         "frontMatter.taxonomy.slugSuffix": {
           "type": "string",
           "markdownDescription": "%setting.frontMatter.taxonomy.slugSuffix.markdownDescription%",
+          "scope": "Taxonomy"
+        },
+        "frontMatter.taxonomy.slugTemplate": {
+          "type": "string",
+          "markdownDescription": "%setting.frontMatter.taxonomy.slugTemplate.markdownDescription%",
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.tags": {
@@ -2610,7 +2639,7 @@
     "@actions/core": "^1.10.0",
     "@bendera/vscode-webview-elements": "0.6.2",
     "@estruyf/vscode": "^1.1.0",
-    "@headlessui/react": "^1.7.17",
+    "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.1.1",
     "@iarna/toml": "2.2.3",
     "@octokit/rest": "^18.12.0",
