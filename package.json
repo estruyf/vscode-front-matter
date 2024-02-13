@@ -1035,22 +1035,25 @@
               "fields": {
                 "type": "array",
                 "description": "%setting.frontMatter.media.contentTypes.items.properties.fields.description%",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "description": "%setting.frontMatter.media.contentTypes.items.properties.fields.properties.title.description%"
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "%setting.frontMatter.media.contentTypes.items.properties.fields.properties.name.description%"
-                  },
-                  "type": {
-                    "type": "string",
-                    "description": "%setting.frontMatter.media.contentTypes.items.properties.fields.properties.type.description%"
-                  },
-                  "single": {
-                    "type": "boolean",
-                    "description": "%setting.frontMatter.media.contentTypes.items.properties.fields.properties.single.description%"
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "description": "%setting.frontMatter.media.contentTypes.items.properties.fields.properties.title.description%"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "%setting.frontMatter.media.contentTypes.items.properties.fields.properties.name.description%"
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "%setting.frontMatter.media.contentTypes.items.properties.fields.properties.type.description%"
+                    },
+                    "single": {
+                      "type": "boolean",
+                      "description": "%setting.frontMatter.media.contentTypes.items.properties.fields.properties.single.description%"
+                    }
                   }
                 }
               }
