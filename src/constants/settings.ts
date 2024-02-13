@@ -76,6 +76,7 @@ export const SETTING_CONTENT_HIDE_FRONTMATTER = 'content.hideFm';
 export const SETTING_CONTENT_HIDE_FRONTMATTER_MESSAGE = 'content.hideFmMessage';
 
 export const SETTING_MEDIA_SUPPORTED_MIMETYPES = 'media.supportedMimeTypes';
+export const SETTING_MEDIA_CONTENTTYPES = 'media.contentTypes';
 
 export const SETTING_DASHBOARD_OPENONSTART = 'dashboard.openOnStart';
 export const SETTING_DASHBOARD_CONTENT_TAGS = 'dashboard.content.cardTags';

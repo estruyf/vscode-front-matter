@@ -30,14 +30,23 @@ import {
   SETTING_DASHBOARD_CONTENT_CARD_TITLE,
   SETTING_DASHBOARD_CONTENT_CARD_STATE,
   SETTING_DASHBOARD_CONTENT_CARD_DESCRIPTION,
-  SETTING_WEBSITE_URL
+  SETTING_WEBSITE_URL,
+  SETTING_MEDIA_CONTENTTYPES
 } from '../constants';
 import {
   DashboardViewType,
   SortingOption,
   Settings as ISettings
 } from '../dashboardWebView/models';
-import { CustomScript, DraftField, Snippets, SortingSetting, TaxonomyType } from '../models';
+import {
+  CustomScript,
+  DEFAULT_MEDIA_CONTENT_TYPE,
+  DraftField,
+  MediaContentType,
+  Snippets,
+  SortingSetting,
+  TaxonomyType
+} from '../models';
 import { DataFile } from '../models/DataFile';
 import { DataFolder } from '../models/DataFolder';
 import { DataType } from '../models/DataType';
@@ -148,6 +157,11 @@ export class DashboardSettings {
       snippetsWrapper: Settings.get<boolean>(SETTING_SNIPPETS_WRAPPER),
       isBacker: await ext.getState<boolean | undefined>(CONTEXT.backer, 'global'),
       websiteUrl: Settings.get<string>(SETTING_WEBSITE_URL),
+      media: {
+        contentTypes: Settings.get<MediaContentType[]>(SETTING_MEDIA_CONTENTTYPES) || [
+          DEFAULT_MEDIA_CONTENT_TYPE
+        ]
+      },
       lastUpdated: new Date().getTime()
     } as ISettings;
 

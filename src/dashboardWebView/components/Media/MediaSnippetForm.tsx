@@ -33,8 +33,8 @@ export const MediaSnippetForm: React.FunctionComponent<IMediaSnippetFormProps> =
 
   return (
     <SnippetSlideOver
-      title={l10n.t(LocalizationKey.dashboardMediaMediaSnippetFormFormDialogTitle, media.title || media.filename)}
-      description={l10n.t(LocalizationKey.dashboardMediaMediaSnippetFormFormDialogDescription, media.title || media.filename)}
+      title={l10n.t(LocalizationKey.dashboardMediaMediaSnippetFormFormDialogTitle, media.metadata.title || media.filename)}
+      description={l10n.t(LocalizationKey.dashboardMediaMediaSnippetFormFormDialogDescription, media.metadata.title || media.filename)}
       isSaveDisabled={false}
       trigger={insertToArticle}
       dismiss={onDismiss}

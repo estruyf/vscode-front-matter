@@ -65,6 +65,10 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
       if (mediaData[fieldName]) {
         return mediaData[fieldName];
       }
+
+      if (mediaData.metadata && mediaData.metadata[fieldName]) {
+        return mediaData.metadata[fieldName];
+      }
     },
     [mediaData]
   );
