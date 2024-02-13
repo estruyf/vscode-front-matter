@@ -1048,6 +1048,7 @@
                     },
                     "type": {
                       "type": "string",
+                      "enum": ["string"],
                       "description": "%setting.frontMatter.media.contentTypes.items.properties.fields.properties.type.description%"
                     },
                     "single": {
