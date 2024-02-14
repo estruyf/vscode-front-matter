@@ -213,6 +213,7 @@
   "dashboard.media.item.quickAction.insert.markdown": "Insert image with markdown markup",
   "dashboard.media.item.quickAction.copy.path": "Copy media path",
   "dashboard.media.item.quickAction.delete": "Delete media file",
+  "dashboard.media.item.menuItem.view": "View media details",
   "dashboard.media.item.menuItem.edit.metadata": "Edit metadata",
   "dashboard.media.item.menuItem.insert.image": "Insert image",
   "dashboard.media.item.menuItem.reveal.media": "Reveal media",

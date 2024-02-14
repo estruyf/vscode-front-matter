@@ -11,7 +11,8 @@ import {
   PlusIcon,
   CommandLineIcon,
   TrashIcon,
-  VideoCameraIcon
+  VideoCameraIcon,
+  EllipsisVerticalIcon
 } from '@heroicons/react/24/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
@@ -29,25 +30,21 @@ import {
   SettingsSelector,
   ViewDataSelector
 } from '../../state';
-import { MenuItem, MenuItems } from '../Menu';
-import { ActionMenuButton } from '../Menu/ActionMenuButton';
 import { QuickAction } from '../Menu/QuickAction';
 import { Alert } from '../Modals/Alert';
 import { InfoDialog } from '../Modals/InfoDialog';
 import { DetailsSlideOver } from './DetailsSlideOver';
-import { usePopper } from 'react-popper';
 import { MediaSnippetForm } from './MediaSnippetForm';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../../components/shadcn/Dropdown';
 
 export interface IItemProps {
   media: MediaInfo;
-  index: number;
 }
 
 export const Item: React.FunctionComponent<IItemProps> = ({
   media,
-  index
 }: React.PropsWithChildren<IItemProps>) => {
   const [, setLightbox] = useRecoilState(LightboxAtom);
   const [showAlert, setShowAlert] = useState(false);
@@ -65,13 +62,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const hasViewData = useMemo(() => {
     return viewData?.data?.filePath !== undefined;
   }, [viewData]);
-
-  const [referenceElement, setReferenceElement] = useState<any>(null);
-  const [popperElement, setPopperElement] = useState<any>(null);
-  const { styles, attributes, update } = usePopper(referenceElement, popperElement, {
-    placement: 'bottom-end',
-    strategy: 'fixed'
-  });
 
   const mediaSnippets = useMemo(() => {
     if (!settings?.snippets) {
@@ -303,22 +293,19 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     setShowDetails(true);
   };
 
-  const customScriptActions = () => {
+  const customScriptActions = useMemo(() => {
     return (settings?.scripts || [])
       .filter((script) => script.type === ScriptType.MediaFile && !script.hidden)
       .map((script) => (
-        <MenuItem
+        <DropdownMenuItem
           key={script.title}
-          title={
-            <div className="flex items-center">
-              <CommandLineIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
-              <span>{script.title}</span>
-            </div>
-          }
           onClick={() => runCustomScript(script)}
-        />
+        >
+          <CommandLineIcon className="mr-2 h-4 w-4" aria-hidden={true} />
+          <span>{script.title}</span>
+        </DropdownMenuItem>
       ));
-  };
+  }, [settings?.scripts]);
 
   const isVideoFile = useMemo(() => {
     if (media.mimeType?.startsWith('video/')) {
@@ -403,12 +390,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   };
 
   useEffect(() => {
-    if (update) {
-      update();
-    }
-  }, [update, index]);
-
-  useEffect(() => {
     const name = basename(parseWinPath(media.fsPath) || '');
     if (name !== filename) {
       setFilename(getFileName());
@@ -476,12 +457,14 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             <div className={`flex items-center border border-transparent rounded-full p-2 -mr-2 -mt-2 group-hover/actions:bg-[var(--vscode-sideBar-background)] group-hover/actions:border-[var(--frontmatter-border)]`}>
               <Menu as="div" className="relative z-10 flex text-left">
                 <div className="hidden group-hover/actions:flex">
-                  <QuickAction title="View media details" onClick={viewMediaDetails}>
+                  <QuickAction title={l10n.t(LocalizationKey.dashboardMediaItemMenuItemView)} onClick={viewMediaDetails}>
                     <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
+                    <span className='sr-only'>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemView)}</span>
                   </QuickAction>
 
-                  <QuickAction title="Edit metadata" onClick={updateMetadata}>
+                  <QuickAction title={l10n.t(LocalizationKey.dashboardMediaItemMenuItemEditMetadata)} onClick={updateMetadata}>
                     <PencilIcon className={`w-4 h-4`} aria-hidden="true" />
+                    <span className='sr-only'>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemEditMetadata)}</span>
                   </QuickAction>
 
                   {viewData?.data?.filePath ? (
@@ -516,99 +499,65 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                   </QuickAction>
                 </div>
 
-                <div ref={setReferenceElement} className={`flex`}>
-                  <ActionMenuButton title={l10n.t(LocalizationKey.commonMenu)} />
-                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger className='text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)]'>
+                    <span className="sr-only">{l10n.t(LocalizationKey.commonMenu)}</span>
+                    <EllipsisVerticalIcon className="w-4 h-4" aria-hidden="true" />
+                  </DropdownMenuTrigger>
 
-                <div
-                  className="menu_items__wrapper z-20"
-                  ref={setPopperElement}
-                  style={styles.popper}
-                  {...attributes.popper}
-                >
-                  <MenuItems widthClass="w-40">
-                    <MenuItem
-                      title={
-                        <div className="flex items-center">
-                          <PencilIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
-                          <span>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemEditMetadata)}</span>
-                        </div>
-                      }
-                      onClick={updateMetadata}
-                    />
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={updateMetadata}>
+                      <PencilIcon className="mr-2 h-4 w-4" aria-hidden={true} />
+                      <span>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemEditMetadata)}</span>
+                    </DropdownMenuItem>
 
-                    {viewData?.data?.filePath ? (
-                      <>
-                        <MenuItem
-                          title={
-                            <div className="flex items-center">
-                              <PlusIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
-                              <span>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemInsertImage)}</span>
-                            </div>
+                    {
+                      viewData?.data?.filePath ? (
+                        <>
+                          <DropdownMenuItem onClick={updateMetadata}>
+                            <PlusIcon className="mr-2 h-4 w-4" aria-hidden={true} />
+                            <span>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemInsertImage)}</span>
+                          </DropdownMenuItem>
+
+                          {
+                            viewData?.data?.position &&
+                            mediaSnippets.length > 0 &&
+                            mediaSnippets.map((snippet, idx) => (
+                              <DropdownMenuItem key={idx} onClick={() => processSnippet(snippet)}>
+                                <CodeBracketIcon
+                                  className="mr-2 h-4 w-4"
+                                  aria-hidden={true}
+                                />
+                                <span>{snippet.title}</span>
+                              </DropdownMenuItem>
+                            ))
                           }
-                          onClick={insertToArticle}
-                        />
 
-                        {viewData?.data?.position &&
-                          mediaSnippets.length > 0 &&
-                          mediaSnippets.map((snippet, idx) => (
-                            <MenuItem
-                              key={idx}
-                              title={
-                                <div className="flex items-center">
-                                  <CodeBracketIcon
-                                    className="mr-2 h-5 w-5 flex-shrink-0"
-                                    aria-hidden={true}
-                                  />{' '}
-                                  <span>{snippet.title}</span>
-                                </div>
-                              }
-                              onClick={() => processSnippet(snippet)}
-                            />
-                          ))}
+                          {customScriptActions}
+                        </>
+                      ) : (
+                        <>
+                          <DropdownMenuItem onClick={copyToClipboard}>
+                            <ClipboardIcon className="mr-2 h-4 w-4" aria-hidden={true} />
+                            <span>{l10n.t(LocalizationKey.dashboardMediaItemQuickActionCopyPath)}</span>
+                          </DropdownMenuItem>
 
-                        {customScriptActions()}
-                      </>
-                    ) : (
-                      <>
-                        <MenuItem
-                          title={
-                            <div className="flex items-center">
-                              <ClipboardIcon
-                                className="mr-2 h-5 w-5 flex-shrink-0"
-                                aria-hidden={true}
-                              />{' '}
-                              <span>{l10n.t(LocalizationKey.dashboardMediaItemQuickActionCopyPath)}</span>
-                            </div>
-                          }
-                          onClick={copyToClipboard}
-                        />
+                          {customScriptActions}
+                        </>
+                      )
+                    }
 
-                        {customScriptActions()}
-                      </>
-                    )}
+                    <DropdownMenuItem onClick={revealMedia}>
+                      <EyeIcon className="mr-2 h-4 w-4" aria-hidden={true} />
+                      <span>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemRevealMedia)}</span>
+                    </DropdownMenuItem>
 
-                    <MenuItem
-                      title={
-                        <div className="flex items-center">
-                          <EyeIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
-                          <span>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemRevealMedia)}</span>
-                        </div>
-                      }
-                      onClick={revealMedia}
-                    />
-
-                    <MenuItem
-                      title={
-                        <div className="flex items-center">
-                          <TrashIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
-                          <span>{l10n.t(LocalizationKey.commonDelete)}</span>
-                        </div>
-                      }
-                      onClick={deleteMedia}
-                    />
-                  </MenuItems>
-                </div>
+                    <DropdownMenuItem onClick={deleteMedia} className={`focus:bg-[var(--vscode-statusBarItem-errorBackground)] focus:text-[var(--vscode-statusBarItem-errorForeground)]`}>
+                      <TrashIcon className="mr-2 h-4 w-4" aria-hidden={true} />
+                      <span>{l10n.t(LocalizationKey.commonDelete)}</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </Menu>
             </div>
           </div>

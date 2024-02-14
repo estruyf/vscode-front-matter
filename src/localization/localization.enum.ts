@@ -692,6 +692,10 @@ export enum LocalizationKey {
    */
   dashboardMediaItemQuickActionDelete = 'dashboard.media.item.quickAction.delete',
   /**
+   * View media details
+   */
+  dashboardMediaItemMenuItemView = 'dashboard.media.item.menuItem.view',
+  /**
    * Edit metadata
    */
   dashboardMediaItemMenuItemEditMetadata = 'dashboard.media.item.menuItem.edit.metadata',
