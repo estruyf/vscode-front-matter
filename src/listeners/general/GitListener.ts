@@ -386,7 +386,7 @@ export class GitListener {
       return;
     }
 
-    this.sendRequest(command, requestId, GitListener.repository?.state?.HEAD.name);
+    this.sendRequest(command, requestId, GitListener.repository?.state?.HEAD?.name);
   }
 
   private static listenToRepo(repositories: GitRepository[] | undefined) {
@@ -415,7 +415,7 @@ export class GitListener {
    */
   private static async triggerBranchChange(repo: GitRepository | null) {
     if (repo && repo.state) {
-      if (repo.state.HEAD.name !== GitListener.branchName) {
+      if (repo.state?.HEAD?.name && repo.state.HEAD.name !== GitListener.branchName) {
         GitListener.branchName = repo.state.HEAD.name;
         GitListener.repository = repo;
 

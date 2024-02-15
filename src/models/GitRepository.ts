@@ -14,13 +14,13 @@ export interface GitRepository {
 }
 
 export interface GitRepositoryState {
-  HEAD: GitBranch;
+  HEAD?: GitBranch;
   onDidChange: Event<void>;
 }
 
 export interface GitBranch {
   type: number;
-  name: string;
+  name?: string;
   upstream: Upstream;
   commit: string;
   ahead: number;
