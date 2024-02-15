@@ -80,6 +80,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           className={`group flex flex-col items-start content-start h-full w-full text-left shadow-md dark:shadow-none hover:shadow-xl border rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--frontmatter-border)]`}
         >
           <button
+            title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
             onClick={openFile}
             className={`relative h-36 w-full overflow-hidden border-b cursor-pointer border-[var(--frontmatter-border)]
               }`}
@@ -131,7 +132,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               onOpen={openFile}
             />
 
-            <button onClick={openFile} className={`text-left block`}>
+            <button
+              title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
+              onClick={openFile}
+              className={`text-left block`}>
               {
                 titleHtml ? (
                   <div dangerouslySetInnerHTML={{ __html: titleHtml }} />
@@ -143,7 +147,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               }
             </button>
 
-            <button onClick={openFile} className={`text-left block`}>
+            <button
+              title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
+              onClick={openFile}
+              className={`text-left block`}>
               {
                 descriptionHtml ? (
                   <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
@@ -197,7 +204,9 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           className={`px-5 cursor-pointer w-full text-left grid grid-cols-12 gap-x-4 sm:gap-x-6 xl:gap-x-8 py-2 border-b hover:bg-opacity-70 border-[var(--frontmatter-border)] hover:bg-[var(--vscode-sideBar-background)]`}
         >
           <div className="col-span-8 font-bold truncate flex items-center space-x-4">
-            <button title={`Open: ${escapedTitle}`} onClick={openFile}>
+            <button
+              title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
+              onClick={openFile}>
               {escapedTitle}
             </button>
 

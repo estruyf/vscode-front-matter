@@ -144,6 +144,14 @@ export enum LocalizationKey {
    */
   commonBack = 'common.back',
   /**
+   * Open
+   */
+  commonOpen = 'common.open',
+  /**
+   * Open: {0}
+   */
+  commonOpenWithValue = 'common.openWithValue',
+  /**
    * Loading content
    */
   loadingInitPages = 'loading.initPages',
@@ -676,6 +684,14 @@ export enum LocalizationKey {
    */
   dashboardMediaFolderCreationFolderCreate = 'dashboard.media.folderCreation.folder.create',
   /**
+   * Insert image
+   */
+  dashboardMediaItemButtomInsertImage = 'dashboard.media.item.buttom.insert.image',
+  /**
+   * Insert snippet
+   */
+  dashboardMediaItemButtomInsertSnippet = 'dashboard.media.item.buttom.insert.snippet',
+  /**
    * Insert image for your "{0}" field
    */
   dashboardMediaItemQuickActionInsertField = 'dashboard.media.item.quickAction.insert.field',
@@ -980,6 +996,10 @@ export enum LocalizationKey {
    */
   dashboardTaxonomyViewButtonAddTitle = 'dashboard.taxonomyView.button.add.title',
   /**
+   * Tag content
+   */
+  dashboardTaxonomyViewButtonTagTitle = 'dashboard.taxonomyView.button.tag.title',
+  /**
    * Edit {0}
    */
   dashboardTaxonomyViewButtonEditTitle = 'dashboard.taxonomyView.button.edit.title',
@@ -1131,6 +1151,10 @@ export enum LocalizationKey {
    * Publish changes
    */
   panelGitGitActionTitle = 'panel.git.gitAction.title',
+  /**
+   * Select branch
+   */
+  panelGitGitActionBranchSelect = 'panel.git.gitAction.branch.select',
   /**
    * Commit message
    */

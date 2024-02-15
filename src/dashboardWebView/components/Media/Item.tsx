@@ -358,7 +358,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                   } flex items-center justify-center`}
               >
                 <button
-                  title="Insert image"
+                  title={l10n.t(LocalizationKey.dashboardMediaItemButtomInsertImage)}
                   className={`h-1/3 text-white hover:text-[var(--vscode-button-background)]`}
                   onClick={insertIntoArticle}
                 >
@@ -368,7 +368,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               {viewData?.data?.position && mediaSnippets.length > 0 && (
                 <div className={`h-full w-1/3 flex items-center justify-center`}>
                   <button
-                    title="Insert snippet"
+                    title={l10n.t(LocalizationKey.dashboardMediaItemButtomInsertSnippet)}
                     className={`h-1/3 text-white hover:text-[var(--vscode-button-background)]`}
                     onClick={insertSnippet}
                   >

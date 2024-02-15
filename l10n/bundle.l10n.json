@@ -35,6 +35,8 @@
   "common.no": "no",
   "common.openSettings": "Open settings",
   "common.back": "Back",
+  "common.open": "Open",
+  "common.openWithValue": "Open: {0}",
 
   "loading.initPages": "Loading content",
 
@@ -209,6 +211,9 @@
   "dashboard.media.folderCreation.hexo.create": "Create post asset folder",
   "dashboard.media.folderCreation.folder.create": "Create new folder",
 
+  "dashboard.media.item.buttom.insert.image": "Insert image",
+  "dashboard.media.item.buttom.insert.snippet": "Insert snippet",
+
   "dashboard.media.item.quickAction.insert.field": "Insert image for your \"{0}\" field",
   "dashboard.media.item.quickAction.insert.markdown": "Insert image with markdown markup",
   "dashboard.media.item.quickAction.copy.path": "Copy media path",
@@ -294,6 +299,7 @@
   "dashboard.steps.stepsToGetStarted.astroContentTypes.name": "Create Content-Types for your Astro Content Collections",
 
   "dashboard.taxonomyView.button.add.title": "Add {0} to taxonomy settings",
+  "dashboard.taxonomyView.button.tag.title": "Tag content",
   "dashboard.taxonomyView.button.edit.title": "Edit {0}",
   "dashboard.taxonomyView.button.merge.title": "Merge {0}",
   "dashboard.taxonomyView.button.move.title": "Move to another taxonomy type",
@@ -341,6 +347,7 @@
   "dashboard.configuration.astro.astroContentTypes.description": "The following Astro Content Collections can be used to generate a content-type.",
 
   "panel.git.gitAction.title": "Publish changes",
+  "panel.git.gitAction.branch.select": "Select branch",
   "panel.git.gitAction.input.placeholder": "Commit message",
   "panel.git.gitAction.button.fetch": "Fetch",
 

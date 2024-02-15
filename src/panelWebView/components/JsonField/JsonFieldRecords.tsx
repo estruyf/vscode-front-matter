@@ -3,6 +3,9 @@ import * as React from 'react';
 import { VsLabel } from '../VscodeComponents';
 import { JsonFieldRecord } from '.';
 import { SortableContainer, SortEnd } from 'react-sortable-hoc';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
+
 export interface IJsonFieldRecordsProps {
   records: any[];
   selectedIndex: number | null;
@@ -37,7 +40,7 @@ export const JsonFieldRecords = ({
             <span style={{ lineHeight: '16px' }}>Records</span>
           </div>
 
-          <button title="Add new record" className="json_data__list__button" onClick={onAdd}>
+          <button title={l10n.t(LocalizationKey.commonAdd)} className="json_data__list__button" onClick={onAdd}>
             <PlusIcon style={{ width: '16px', height: '16px' }} />
           </button>
         </div>

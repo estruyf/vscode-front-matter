@@ -40,7 +40,7 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
         <label htmlFor={`title`} className="block text-sm font-medium capitalize">
           {l10n.t(LocalizationKey.commonTitle)}
           {' '}
-          <span className={`text-[var(--vscode-editorError-foreground)]`} title="Required field">
+          <span className={`text-[var(--vscode-editorError-foreground)]`} title={l10n.t(LocalizationKey.fieldRequired)}>
             *
           </span>
         </label>
@@ -72,7 +72,7 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
         <label htmlFor={`snippet`} className="block text-sm font-medium capitalize">
           {l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputSnippetLabel)}
           {' '}
-          <span className="text-[var(--vscode-editorError-foreground)]" title="Required field">
+          <span className="text-[var(--vscode-editorError-foreground)]" title={l10n.t(LocalizationKey.fieldRequired)}>
             *
           </span>
         </label>

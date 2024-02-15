@@ -128,7 +128,7 @@ export const GitAction: React.FunctionComponent<IGitActionProps> = ({
 
         <button
           className='inline-flex items-center w-auto p-0 bg-inherit text-[var(--vscode-sideBarTitle-foreground)] hover:bg-inherit hover:text-[var(--vscode-sideBarTitle-foreground-hover)]'
-          title='Select Branch'
+          title={l10n.t(LocalizationKey.panelGitGitActionBranchSelect)}
           onClick={selectBranch}>
           <BranchIcon className='w-4 h-4' aria-hidden="true" />
           <span className='ml-1'>{crntBanch}</span>

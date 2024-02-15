@@ -82,13 +82,13 @@ export const TaxonomyActions: React.FunctionComponent<ITaxonomyActionsProps> = (
         )}
 
         <LinkButton
-          title={`Tag content`}
+          title={l10n.t(LocalizationKey.dashboardTaxonomyViewButtonTagTitle)}
           onClick={onTagging}>
           <div className='relative'>
             <TagIcon className={`w-4 h-4`} aria-hidden={true} />
             <PlusCircleIcon className={`w-3 h-3 absolute left-[-3px] bottom-[-4px] border-1 bg-[var(--vscode-editor-background)] rounded-full`} aria-hidden={true} />
           </div>
-          <span className="sr-only">{l10n.t(LocalizationKey.commonEdit)}</span>
+          <span className="sr-only">{l10n.t(LocalizationKey.dashboardTaxonomyViewButtonTagTitle)}</span>
         </LinkButton>
 
         <LinkButton
