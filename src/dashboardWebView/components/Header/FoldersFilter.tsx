@@ -1,10 +1,10 @@
-import { Menu } from '@headlessui/react';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { FolderAtom, SettingsSelector } from '../../state';
-import { MenuButton, MenuItem, MenuItems } from '../Menu';
+import { MenuButton, MenuItem } from '../Menu';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '../../../components/shadcn/Dropdown';
 
 export interface IFoldersFilterProps { }
 
@@ -21,29 +21,27 @@ export const FoldersFilter: React.FunctionComponent<
   }
 
   return (
-    <div className="flex items-center">
-      <Menu as="div" className="relative z-10 inline-block text-left">
-        <MenuButton label={l10n.t(LocalizationKey.dashboardHeaderFoldersMenuButtonShowing)} title={crntFolder || DEFAULT_TYPE} />
+    <DropdownMenu>
+      <MenuButton label={l10n.t(LocalizationKey.dashboardHeaderFoldersMenuButtonShowing)} title={crntFolder || DEFAULT_TYPE} />
 
-        <MenuItems disablePopper>
+      <DropdownMenuContent>
+        <MenuItem
+          title={DEFAULT_TYPE}
+          value={null}
+          isCurrent={!crntFolder}
+          onClick={(value) => setCrntFolder(value)}
+        />
+
+        {contentFolders.map((option) => (
           <MenuItem
-            title={DEFAULT_TYPE}
-            value={null}
-            isCurrent={!crntFolder}
+            key={option.title}
+            title={option.title}
+            value={option.title}
+            isCurrent={option.title === crntFolder}
             onClick={(value) => setCrntFolder(value)}
           />
-
-          {contentFolders.map((option) => (
-            <MenuItem
-              key={option.title}
-              title={option.title}
-              value={option.title}
-              isCurrent={option.title === crntFolder}
-              onClick={(value) => setCrntFolder(value)}
-            />
-          ))}
-        </MenuItems>
-      </Menu>
-    </div>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

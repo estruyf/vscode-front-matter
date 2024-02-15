@@ -1,27 +1,18 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { Menu } from '@headlessui/react';
 import {
-  ClipboardIcon,
   CodeBracketIcon,
   DocumentIcon,
-  EyeIcon,
   MusicalNoteIcon,
-  PencilIcon,
   PhotoIcon,
   PlusIcon,
-  CommandLineIcon,
-  TrashIcon,
   VideoCameraIcon,
-  EllipsisVerticalIcon
 } from '@heroicons/react/24/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { CustomScript } from '../../../helpers/CustomScript';
 import { parseWinPath } from '../../../helpers/parseWinPath';
 import { SnippetParser } from '../../../helpers/SnippetParser';
-import { ScriptType, Snippet } from '../../../models';
 import { MediaInfo } from '../../../models/MediaPaths';
 import { DashboardMessage } from '../../DashboardMessage';
 import {
@@ -30,14 +21,15 @@ import {
   SettingsSelector,
   ViewDataSelector
 } from '../../state';
-import { QuickAction } from '../Menu/QuickAction';
 import { Alert } from '../Modals/Alert';
 import { InfoDialog } from '../Modals/InfoDialog';
 import { DetailsSlideOver } from './DetailsSlideOver';
 import { MediaSnippetForm } from './MediaSnippetForm';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../../components/shadcn/Dropdown';
+import { ItemMenu } from './ItemMenu';
+import { getRelPath } from '../../utils';
+import { Snippet } from '../../../models';
 
 export interface IItemProps {
   media: MediaInfo;
@@ -58,6 +50,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const settings = useRecoilValue(SettingsSelector);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const viewData = useRecoilValue(ViewDataSelector);
+
+  const relPath = useMemo(() => {
+    return getRelPath(media.fsPath, settings?.staticFolder, settings?.wsFolder);
+  }, [media.fsPath, settings?.staticFolder, settings?.wsFolder]);
 
   const hasViewData = useMemo(() => {
     return viewData?.data?.filePath !== undefined;
@@ -91,44 +87,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return '';
   };
 
-  const getRelPath = () => {
-    let relPath: string | undefined = '';
-    if (settings?.wsFolder && media.fsPath) {
-      const wsFolderParsed = parseWinPath(settings.wsFolder);
-      const mediaParsed = parseWinPath(media.fsPath);
-
-      relPath = mediaParsed.split(wsFolderParsed).pop();
-
-      // If the static folder is the root, we can just return the relative path
-      if (settings.staticFolder === "/") {
-        return relPath;
-      } else if (settings.staticFolder && relPath) {
-        const staticFolderParsed = parseWinPath(settings.staticFolder);
-        relPath = relPath.split(staticFolderParsed).pop();
-      }
-    }
-    return relPath;
-  };
-
   const getFileName = () => {
     return basename(parseWinPath(media.fsPath) || '');
   };
 
-  const copyToClipboard = () => {
-    const relPath = getRelPath();
-    Messenger.send(DashboardMessage.copyToClipboard, parseWinPath(relPath) || '');
-  };
-
-  const runCustomScript = (script: CustomScript) => {
-    Messenger.send(DashboardMessage.runCustomScript, {
-      script,
-      path: media.fsPath
-    });
-  };
-
-  const insertToArticle = () => {
-    const relPath = getRelPath();
-
+  const insertIntoArticle = useCallback(() => {
     if (viewData?.data?.type === 'file') {
       Messenger.send(DashboardMessage.insertFile, {
         relPath: parseWinPath(relPath) || '',
@@ -158,7 +121,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
         title: media.metadata.title || ''
       });
     }
-  };
+  }, [media, settings, viewData, relPath]);
 
   const insertSnippet = useCallback(() => {
     if (mediaSnippets.length === 1) {
@@ -175,8 +138,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const processSnippet = useCallback(
     (snippet: Snippet) => {
       setShowSnippetSelection(false);
-
-      const relPath = getRelPath();
 
       const fieldData = {
         mediaUrl: (parseWinPath(relPath) || '').replace(/ /g, '%20'),
@@ -203,7 +164,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
         setMediaData(fieldData);
       }
     },
-    [media, settings, viewData, mediaSnippets]
+    [media, settings, viewData, mediaSnippets, relPath]
   );
 
   /**
@@ -211,8 +172,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
    */
   const insertMediaSnippetToArticle = useCallback(
     (output: string) => {
-      const relPath = getRelPath();
-
       Messenger.send(DashboardMessage.insertMedia, {
         relPath: parseWinPath(relPath) || '',
         file: viewData?.data?.filePath,
@@ -221,19 +180,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
         snippet: output
       });
     },
-    [viewData]
+    [viewData, relPath]
   );
-
-  const deleteMedia = () => {
-    setShowAlert(true);
-  };
-
-  const revealMedia = () => {
-    Messenger.send(DashboardMessage.revealMedia, {
-      file: media.fsPath,
-      folder: selectedFolder
-    });
-  };
 
   const confirmDeletion = () => {
     Messenger.send(DashboardMessage.deleteMedia, {
@@ -278,10 +226,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return sizeDetails.join(' - ');
   };
 
-  const viewMediaDetails = () => {
-    setShowDetails(true);
-  };
-
   const openLightbox = useCallback(() => {
     if (isImageFile) {
       setLightbox(media.vsPath || '');
@@ -292,20 +236,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     setShowForm(true);
     setShowDetails(true);
   };
-
-  const customScriptActions = useMemo(() => {
-    return (settings?.scripts || [])
-      .filter((script) => script.type === ScriptType.MediaFile && !script.hidden)
-      .map((script) => (
-        <DropdownMenuItem
-          key={script.title}
-          onClick={() => runCustomScript(script)}
-        >
-          <CommandLineIcon className="mr-2 h-4 w-4" aria-hidden={true} />
-          <span>{script.title}</span>
-        </DropdownMenuItem>
-      ));
-  }, [settings?.scripts]);
 
   const isVideoFile = useMemo(() => {
     if (media.mimeType?.startsWith('video/')) {
@@ -430,7 +360,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                 <button
                   title="Insert image"
                   className={`h-1/3 text-white hover:text-[var(--vscode-button-background)]`}
-                  onClick={insertToArticle}
+                  onClick={insertIntoArticle}
                 >
                   <PlusIcon className={`w-full h-full hover:drop-shadow-md `} aria-hidden="true" />
                 </button>
@@ -453,114 +383,20 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           )}
         </button>
         <div className={`relative py-4 pl-4 pr-12`}>
-          <div className={`group/actions absolute top-4 right-4 flex flex-col space-y-4`}>
-            <div className={`flex items-center border border-transparent rounded-full p-2 -mr-2 -mt-2 group-hover/actions:bg-[var(--vscode-sideBar-background)] group-hover/actions:border-[var(--frontmatter-border)]`}>
-              <Menu as="div" className="relative z-10 flex text-left">
-                <div className="hidden group-hover/actions:flex">
-                  <QuickAction title={l10n.t(LocalizationKey.dashboardMediaItemMenuItemView)} onClick={viewMediaDetails}>
-                    <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
-                    <span className='sr-only'>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemView)}</span>
-                  </QuickAction>
+          <ItemMenu
+            media={media}
+            relPath={relPath}
+            selectedFolder={selectedFolder}
+            viewData={viewData?.data}
+            snippets={mediaSnippets}
+            scripts={settings?.scripts}
+            insertIntoArticle={insertIntoArticle}
+            insertSnippet={insertSnippet}
+            showUpdateMedia={updateMetadata}
+            showMediaDetails={() => setShowDetails(true)}
+            processSnippet={processSnippet}
+            onDelete={() => setShowAlert(true)} />
 
-                  <QuickAction title={l10n.t(LocalizationKey.dashboardMediaItemMenuItemEditMetadata)} onClick={updateMetadata}>
-                    <PencilIcon className={`w-4 h-4`} aria-hidden="true" />
-                    <span className='sr-only'>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemEditMetadata)}</span>
-                  </QuickAction>
-
-                  {viewData?.data?.filePath ? (
-                    <>
-                      <QuickAction
-                        title={
-                          viewData.data.metadataInsert && viewData.data.fieldName
-                            ? l10n.t(LocalizationKey.dashboardMediaItemQuickActionInsertField, viewData.data.fieldName)
-                            : l10n.t(LocalizationKey.dashboardMediaItemQuickActionInsertMarkdown)
-                        }
-                        onClick={insertToArticle}
-                      >
-                        <PlusIcon className={`w-4 h-4`} aria-hidden="true" />
-                      </QuickAction>
-
-                      {viewData?.data?.position && mediaSnippets.length > 0 && (
-                        <QuickAction title={l10n.t(LocalizationKey.commonInsertSnippet)} onClick={insertSnippet}>
-                          <CodeBracketIcon className={`w-4 h-4`} aria-hidden="true" />
-                        </QuickAction>
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      <QuickAction title={l10n.t(LocalizationKey.dashboardMediaItemQuickActionCopyPath)} onClick={copyToClipboard}>
-                        <ClipboardIcon className={`w-4 h-4`} aria-hidden="true" />
-                      </QuickAction>
-                    </>
-                  )}
-
-                  <QuickAction title={l10n.t(LocalizationKey.dashboardMediaItemQuickActionDelete)} onClick={deleteMedia}>
-                    <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
-                  </QuickAction>
-                </div>
-
-                <DropdownMenu>
-                  <DropdownMenuTrigger className='text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)]'>
-                    <span className="sr-only">{l10n.t(LocalizationKey.commonMenu)}</span>
-                    <EllipsisVerticalIcon className="w-4 h-4" aria-hidden="true" />
-                  </DropdownMenuTrigger>
-
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={updateMetadata}>
-                      <PencilIcon className="mr-2 h-4 w-4" aria-hidden={true} />
-                      <span>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemEditMetadata)}</span>
-                    </DropdownMenuItem>
-
-                    {
-                      viewData?.data?.filePath ? (
-                        <>
-                          <DropdownMenuItem onClick={updateMetadata}>
-                            <PlusIcon className="mr-2 h-4 w-4" aria-hidden={true} />
-                            <span>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemInsertImage)}</span>
-                          </DropdownMenuItem>
-
-                          {
-                            viewData?.data?.position &&
-                            mediaSnippets.length > 0 &&
-                            mediaSnippets.map((snippet, idx) => (
-                              <DropdownMenuItem key={idx} onClick={() => processSnippet(snippet)}>
-                                <CodeBracketIcon
-                                  className="mr-2 h-4 w-4"
-                                  aria-hidden={true}
-                                />
-                                <span>{snippet.title}</span>
-                              </DropdownMenuItem>
-                            ))
-                          }
-
-                          {customScriptActions}
-                        </>
-                      ) : (
-                        <>
-                          <DropdownMenuItem onClick={copyToClipboard}>
-                            <ClipboardIcon className="mr-2 h-4 w-4" aria-hidden={true} />
-                            <span>{l10n.t(LocalizationKey.dashboardMediaItemQuickActionCopyPath)}</span>
-                          </DropdownMenuItem>
-
-                          {customScriptActions}
-                        </>
-                      )
-                    }
-
-                    <DropdownMenuItem onClick={revealMedia}>
-                      <EyeIcon className="mr-2 h-4 w-4" aria-hidden={true} />
-                      <span>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemRevealMedia)}</span>
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem onClick={deleteMedia} className={`focus:bg-[var(--vscode-statusBarItem-errorBackground)] focus:text-[var(--vscode-statusBarItem-errorForeground)]`}>
-                      <TrashIcon className="mr-2 h-4 w-4" aria-hidden={true} />
-                      <span>{l10n.t(LocalizationKey.commonDelete)}</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </Menu>
-            </div>
-          </div>
           <p className={`text-sm font-bold pointer-events-none flex items-center break-all text-[var(--vscode-foreground)]}`}>
             {basename(parseWinPath(media.fsPath) || '')}
           </p>

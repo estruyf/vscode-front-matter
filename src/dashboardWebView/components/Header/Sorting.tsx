@@ -1,5 +1,4 @@
 import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
-import { Menu } from '@headlessui/react';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { ExtensionState } from '../../../constants';
@@ -9,10 +8,11 @@ import { DashboardMessage } from '../../DashboardMessage';
 import { NavigationType } from '../../models';
 import { SortingOption } from '../../models/SortingOption';
 import { SearchSelector, SettingsSelector, SortingAtom } from '../../state';
-import { MenuButton, MenuItem, MenuItems } from '../Menu';
+import { MenuButton, MenuItem } from '../Menu';
 import { Sorting as SortingHelpers } from '../../../helpers/Sorting';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { DropdownMenu, DropdownMenuContent } from '../../../components/shadcn/Dropdown';
 
 export interface ISortingProps {
   disableCustomSorting?: boolean;
@@ -177,26 +177,24 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({
   }
 
   return (
-    <div className="flex items-center">
-      <Menu as="div" className="relative z-10 inline-block text-left">
-        <MenuButton
-          label={l10n.t(LocalizationKey.dashboardHeaderSortingLabel)}
-          title={crntSort?.title || crntSort?.name || ''}
-          disabled={!!searchValue}
-        />
+    <DropdownMenu>
+      <MenuButton
+        label={l10n.t(LocalizationKey.dashboardHeaderSortingLabel)}
+        title={crntSort?.title || crntSort?.name || ''}
+        disabled={!!searchValue}
+      />
 
-        <MenuItems widthClass="w-48" disablePopper>
-          {allOptions.map((option) => (
-            <MenuItem
-              key={option.id}
-              title={option.title || option.name}
-              value={option}
-              isCurrent={option.id === crntSort.id}
-              onClick={(value) => updateSorting(value)}
-            />
-          ))}
-        </MenuItems>
-      </Menu>
-    </div>
+      <DropdownMenuContent>
+        {allOptions.map((option) => (
+          <MenuItem
+            key={option.id}
+            title={option.title || option.name}
+            value={option}
+            isCurrent={option.id === crntSort.id}
+            onClick={(value) => updateSorting(value)}
+          />
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
