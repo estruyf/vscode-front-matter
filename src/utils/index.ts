@@ -1,3 +1,4 @@
+export * from './cn';
 export * from './copyFileAsync';
 export * from './encodeEmoji';
 export * from './existsAsync';
@@ -10,5 +11,6 @@ export * from './readFileAsync';
 export * from './readdirAsync';
 export * from './renameAsync';
 export * from './rmdirAsync';
+export * from './sortPages';
 export * from './unlinkAsync';
 export * from './writeFileAsync';

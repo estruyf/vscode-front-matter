@@ -1,6 +1,7 @@
 import { Menu } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import * as React from 'react';
+import { DropdownMenuTrigger } from '../../../components/shadcn/Dropdown';
 
 export interface IMenuButtonProps {
   label: string | JSX.Element;
@@ -15,18 +16,16 @@ export const MenuButton: React.FunctionComponent<IMenuButtonProps> = ({
 }: React.PropsWithChildren<IMenuButtonProps>) => {
   return (
     <div className={`group flex items-center ${disabled ? 'opacity-50' : ''}`}>
-      <div className={`mr-2 font-medium flex items-center text-[var(--vscode-tab-inactiveForeground)]`}>{label}:</div>
+      <div className={`mr-2 font-medium flex items-center text-[var(--vscode-tab-inactiveForeground)]`}>
+        {label}:
+      </div>
 
-      <Menu.Button
-        disabled={disabled}
-        className={`group inline-flex justify-center text-sm font-medium text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)]`}
-      >
-        {title}
-        <ChevronDownIcon
-          className={`flex-shrink-0 -mr-1 ml-1 h-5 w-5 text-[var(--vscode-textLink-foreground)] group-hover:text-[var(--vscode-textLink-activeForeground)]`}
-          aria-hidden="true"
-        />
-      </Menu.Button>
+      <DropdownMenuTrigger
+        className='text-[var(--vscode-textLink-foreground)] hover:text-[var(--vscode-textLink-activeForeground)] flex items-center focus:outline-none'
+        disabled={disabled}>
+        <span>{title}</span>
+        <ChevronDownIcon className={`-mr-1 ml-1 h-4 w-4`} aria-hidden="true" />
+      </DropdownMenuTrigger>
     </div>
   );
 };

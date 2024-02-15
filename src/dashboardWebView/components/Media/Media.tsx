@@ -251,7 +251,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (
 
         <List>
           {allMedia.map((file, idx) => (
-            <Item key={file.fsPath} media={file} index={idx} />
+            <Item key={file.fsPath} media={file} />
           ))}
         </List>
       </div>

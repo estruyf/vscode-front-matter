@@ -1,13 +1,13 @@
 import { messageHandler } from '@estruyf/vscode/dist/client';
-import { Menu } from '@headlessui/react';
 import { ArrowsRightLeftIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 import { DashboardMessage } from '../../DashboardMessage';
 import { SettingsSelector } from '../../state';
-import { MenuButton, MenuItem, MenuItems } from '../Menu';
+import { MenuButton, MenuItem } from '../Menu';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { DropdownMenu, DropdownMenuContent } from '../../../components/shadcn/Dropdown';
 
 export interface IProjectSwitcherProps { }
 
@@ -32,8 +32,8 @@ export const ProjectSwitcher: React.FunctionComponent<IProjectSwitcherProps> = (
   }
 
   return (
-    <div className="flex items-center mr-4 z-[51]">
-      <Menu as="div" className="relative z-10 inline-block text-left">
+    <div className="mr-4 z-[51]">
+      <DropdownMenu>
         <MenuButton
           label={(
             <div className="inline-flex items-center">
@@ -43,7 +43,7 @@ export const ProjectSwitcher: React.FunctionComponent<IProjectSwitcherProps> = (
           )}
           title={crntProject} />
 
-        <MenuItems disablePopper>
+        <DropdownMenuContent>
           {projects.map((p) => (
             <MenuItem
               key={p.name}
@@ -53,8 +53,8 @@ export const ProjectSwitcher: React.FunctionComponent<IProjectSwitcherProps> = (
               onClick={(value) => setProject(p.name)}
             />
           ))}
-        </MenuItems>
-      </Menu>
-    </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div >
   );
 };
