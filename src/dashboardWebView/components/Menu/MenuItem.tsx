@@ -1,4 +1,3 @@
-import { Menu } from '@headlessui/react';
 import * as React from 'react';
 import { DropdownMenuItem } from '../../../components/shadcn/Dropdown';
 

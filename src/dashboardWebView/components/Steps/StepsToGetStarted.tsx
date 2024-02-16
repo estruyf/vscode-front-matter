@@ -5,7 +5,6 @@ import { Settings } from '../../models/Settings';
 import { Status } from '../../models/Status';
 import { Step } from './Step';
 import { useMemo, useState } from 'react';
-import { Menu } from '@headlessui/react';
 import { MenuItem } from '../Menu';
 import { Framework, StaticFolder, Template } from '../../../models';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
@@ -19,6 +18,7 @@ import { Spinner } from '../Common/Spinner';
 import { AstroContentTypes } from '../Configuration/Astro/AstroContentTypes';
 import { ContentFolders } from '../Configuration/Common/ContentFolders';
 import { VSCodeCheckbox } from '@vscode/webview-ui-toolkit/react';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuSeparator } from '../../../components/shadcn/Dropdown';
 
 export interface IStepsToGetStartedProps {
   settings: Settings;
@@ -116,42 +116,33 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
               {l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedFrameworkDescription)}
             </div>
 
-            <Menu as="div" className="relative inline-block text-left mt-4">
-              <div>
-                <Menu.Button className={`group flex justify-center p-2 rounded-md border text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)]`}>
-                  {framework ? framework : l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedFrameworkSelect)}
-                  <ChevronDownIcon
-                    className={`flex-shrink-0 -mr-1 ml-1 h-5 w-5`}
-                    aria-hidden="true"
-                  />
-                </Menu.Button>
-              </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger className='mt-4 group flex justify-center p-2 rounded-md border text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)] focus:outline-none'>
+                <span className="">{framework ? framework : l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedFrameworkSelect)}</span>
+                <ChevronDownIcon className="-mr-1 ml-1 w-4 h-4" aria-hidden="true" />
+              </DropdownMenuTrigger>
 
-              <Menu.Items
-                className={`w-40 origin-top-left absolute left-0 z-10 mt-2 rounded-md shadow-2xl ring-1 ring-opacity-5 focus:outline-none text-sm max-h-96 overflow-auto bg-[var(--vscode-sideBar-background)] ring-[var(--frontmatter-border)]`}
-              >
-                <div className="py-1">
+              <DropdownMenuContent align='start'>
+                <MenuItem
+                  title={l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedFrameworkSelectOther)}
+                  value={`other`}
+                  isCurrent={!framework}
+                  onClick={(value: string) => setFrameworkAndSendMessage(value)}
+                />
+
+                <DropdownMenuSeparator />
+
+                {frameworks.map((f) => (
                   <MenuItem
-                    title={l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedFrameworkSelectOther)}
-                    value={`other`}
-                    isCurrent={!framework}
+                    key={f.name}
+                    title={f.name}
+                    value={f.name}
+                    isCurrent={f.name === framework}
                     onClick={(value: string) => setFrameworkAndSendMessage(value)}
                   />
-
-                  <hr className={`border-[var(--frontmatter-border)]`} />
-
-                  {frameworks.map((f) => (
-                    <MenuItem
-                      key={f.name}
-                      title={f.name}
-                      value={f.name}
-                      isCurrent={f.name === framework}
-                      onClick={(value: string) => setFrameworkAndSendMessage(value)}
-                    />
-                  ))}
-                </div>
-              </Menu.Items>
-            </Menu>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         ),
         show: true,

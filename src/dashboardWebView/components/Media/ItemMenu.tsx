@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as l10n from '@vscode/l10n';
-import { Menu } from '@headlessui/react';
 import { LocalizationKey } from '../../../localization';
 import { QuickAction } from '../Menu';
 import { ClipboardIcon, CodeBracketIcon, CommandLineIcon, EllipsisVerticalIcon, EyeIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
@@ -77,7 +76,7 @@ export const ItemMenu: React.FunctionComponent<IItemMenuProps> = ({
   return (
     <div className={`group/actions absolute top-4 right-4 flex flex-col space-y-4`}>
       <div className={`flex items-center border border-transparent rounded-full p-2 -mr-2 -mt-2 group-hover/actions:bg-[var(--vscode-sideBar-background)] group-hover/actions:border-[var(--frontmatter-border)]`}>
-        <Menu as="div" className="relative z-10 flex text-left">
+        <div className="relative z-10 flex text-left">
           <div className="hidden group-hover/actions:flex">
             <QuickAction title={l10n.t(LocalizationKey.dashboardMediaItemMenuItemView)} onClick={showMediaDetails}>
               <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
@@ -184,7 +183,7 @@ export const ItemMenu: React.FunctionComponent<IItemMenuProps> = ({
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </Menu>
+        </div>
       </div>
     </div>
   );

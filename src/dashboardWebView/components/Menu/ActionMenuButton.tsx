@@ -1,4 +1,3 @@
-import { Menu } from '@headlessui/react';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 
@@ -14,7 +13,7 @@ export const ActionMenuButton: React.FunctionComponent<IActionMenuButtonProps> =
   ref
 }: React.PropsWithChildren<IActionMenuButtonProps>) => {
   return (
-    <Menu.Button
+    <button
       ref={ref || null}
       onClick={(e: React.MouseEvent<HTMLButtonElement>) => e.stopPropagation()}
       disabled={disabled}
@@ -22,6 +21,6 @@ export const ActionMenuButton: React.FunctionComponent<IActionMenuButtonProps> =
     >
       <span className="sr-only">{title}</span>
       <EllipsisVerticalIcon className="w-4 h-4" aria-hidden="true" />
-    </Menu.Button>
+    </button>
   );
 };

@@ -1,4 +1,3 @@
-import { Menu } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import * as React from 'react';
 import { DropdownMenuTrigger } from '../../../components/shadcn/Dropdown';

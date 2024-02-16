@@ -1,5 +1,4 @@
 import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
-import { Menu } from '@headlessui/react';
 import { EyeIcon, GlobeEuropeAfricaIcon, CommandLineIcon, TrashIcon, EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { CustomScript, ScriptType } from '../../../models';
@@ -98,7 +97,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
           !script.hidden
       )
       .map((script) => (
-        <DropdownMenuItem onClick={(e) => runCustomScript(e, script)}>
+        <DropdownMenuItem key={script.id || script.title} onClick={(e) => runCustomScript(e, script)}>
           <CommandLineIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
           <span>{script.title}</span>
         </DropdownMenuItem>
@@ -115,7 +114,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
           className={`flex items-center border border-transparent rounded-full ${listView ? '' : 'p-2 -mt-4'
             } group-hover/card:bg-[var(--vscode-sideBar-background)] group-hover/card:border-[var(--frontmatter-border)]`}
         >
-          <Menu as="div" className={`relative flex text-left`}>
+          <div className={`relative flex text-left`}>
             {!listView && (
               <div className="hidden group-hover/card:flex">
                 <QuickAction title={l10n.t(LocalizationKey.dashboardContentsContentActionsMenuItemView)} onClick={onView}>
@@ -171,7 +170,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
 
               </DropdownMenuContent>
             </DropdownMenu>
-          </Menu>
+          </div>
         </div>
       </div>
 
