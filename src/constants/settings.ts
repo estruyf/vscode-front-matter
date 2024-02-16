@@ -57,6 +57,7 @@ export const SETTING_CUSTOM_SCRIPTS = 'custom.scripts';
 
 export const SETTING_AUTO_UPDATE_DATE = 'content.autoUpdateDate';
 export const SETTING_CONTENT_PAGE_FOLDERS = 'content.pageFolders';
+export const SETTING_CONTENT_I18N = 'content.i18n';
 export const SETTING_CONTENT_STATIC_FOLDER = 'content.publicFolder';
 export const SETTING_CONTENT_FRONTMATTER_HIGHLIGHT = 'content.fmHighlight';
 export const SETTING_CONTENT_DRAFT_FIELD = 'content.draftField';

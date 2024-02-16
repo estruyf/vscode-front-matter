@@ -31,3 +31,4 @@ export * from './TaxonomyType';
 export * from './Template';
 export * from './UnmappedMedia';
 export * from './VersionInfo';
+export * from './i18nConfig';

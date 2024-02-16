@@ -13,11 +13,10 @@ import {
 } from './helpers';
 import ContentProvider from './providers/ContentProvider';
 import { PagesListener } from './listeners/dashboard';
-import { NavigationType } from './dashboardWebView/models';
 import { ModeSwitch } from './services/ModeSwitch';
 import { PagesParser } from './services/PagesParser';
 import { ContentType, Telemetry, Extension } from './helpers';
-import { TaxonomyType, DashboardData } from './models';
+import { TaxonomyType } from './models';
 import * as l10n from '@vscode/l10n';
 import {
   Backers,
@@ -37,6 +36,7 @@ import {
 } from './commands';
 import { join } from 'path';
 import { Terminal } from './services';
+import { i18n } from './commands/i18n';
 
 let pageUpdateDebouncer: { (fnc: any, time: number): void };
 let editDebounce: { (fnc: any, time: number): void };
@@ -88,6 +88,8 @@ export async function activate(context: vscode.ExtensionContext) {
   // Pages dashboard
   Dashboard.init();
   Dashboard.registerCommands();
+
+  i18n.register();
 
   if (!extension.getVersion().usedVersion) {
     vscode.commands.executeCommand(COMMAND_NAME.dashboard);
