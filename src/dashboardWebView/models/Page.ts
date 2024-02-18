@@ -24,7 +24,12 @@ export interface Page {
   // i18n fields
   fmDefaultLocale?: boolean;
   fmLocale?: I18nConfig;
-  fmTranslations?: { [locale: string]: string };
+  fmTranslations?: { 
+    [locale: string]: {
+      locale: I18nConfig;
+      path: string;
+    }
+  };
 
   title: string;
   slug: string;

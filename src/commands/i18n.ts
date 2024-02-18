@@ -23,6 +23,8 @@ import { ParsedFrontMatter } from '../parsers';
 // Locale settings on the page folder level and global level
 // Show the i18n content -> if default locale is in subfolder, the other content is not found
 // Update the page folder setting to include the locales property (use #ref)
+// Update the default card item when the translation is removed
+// Add action to create new translation
 
 export class i18n {
   /**
@@ -146,21 +148,31 @@ export class i18n {
    */
   public static async getTranslations(
     filePath: string
-  ): Promise<{ [locale: string]: string } | undefined> {
+  ): Promise<{ [locale: string]: {
+    locale: I18nConfig;
+    path: string;
+  } } | undefined> {
     const i18nSettings = await i18n.getSettings(filePath);
     if (!i18nSettings) {
       return;
     }
 
-    const translations: { [locale: string]: string } = {};
+    const translations: { [locale: string]: {
+      locale: I18nConfig;
+      path: string;
+    } } = {};
 
     const pageFolder = Folders.getPageFolderByFilePath(filePath);
+    const fileName = parse(filePath).base;
     if (pageFolder && pageFolder.defaultLocale) {
       for (const i18n of i18nSettings) {
         if (i18n.path) {
-          const translation = join(pageFolder.path, i18n.path, filePath);
+          const translation = join(pageFolder.path, i18n.path, fileName);
           if (await existsAsync(translation)) {
-            translations[i18n.locale] = translation;
+            translations[i18n.locale] = {
+              locale: i18n,
+              path: translation
+            };
           }
         }
       }
@@ -172,7 +184,6 @@ export class i18n {
       return;
     }
 
-    const fileName = parse(filePath).base;
     const defaultLanguageFolders = folders.filter((folder) => folder.defaultLocale);
     let defaultLanguageFolder: ContentFolder | undefined;
     for (const folder of defaultLanguageFolders) {
@@ -190,7 +201,10 @@ export class i18n {
     for (const i18n of i18nSettings) {
       const translation = join(defaultLanguageFolder.path, i18n.path || '', fileName);
       if (await existsAsync(translation)) {
-        translations[i18n.locale] = translation;
+        translations[i18n.locale] = {
+          locale: i18n,
+          path: translation
+        };
       }
     }
 

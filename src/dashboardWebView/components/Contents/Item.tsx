@@ -70,6 +70,34 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return [];
   }, [settings, pageData]);
 
+  const statusPlaceholder = useMemo(() => {
+    if (!statusHtml && !cardFields?.state) {
+      return null;
+    }
+
+    return (
+      statusHtml ? (
+        <div dangerouslySetInnerHTML={{ __html: statusHtml }} />
+      ) : (
+        cardFields?.state && draftField && draftField.name && pageData[draftField.name] ? <Status draft={pageData[draftField.name]} published={pageData.fmPublished} /> : null
+      )
+    )
+  }, [statusHtml, cardFields?.state, draftField, pageData]);
+
+  const datePlaceholder = useMemo(() => {
+    if (!dateHtml && !cardFields?.date) {
+      return null;
+    }
+
+    return (
+      dateHtml ? (
+        <div className='mr-4' dangerouslySetInnerHTML={{ __html: dateHtml }} />
+      ) : (
+        cardFields?.date && pageData.date ? <DateField className={`mr-4`} value={pageData.date} format={pageData.fmDateFormat} /> : null
+      )
+    )
+  }, [dateHtml, cardFields?.date, pageData]);
+
   const hasDraftOrDate = useMemo(() => {
     return cardFields && (cardFields.state || cardFields.date);
   }, [cardFields]);
@@ -107,23 +135,14 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           </button>
 
           <div className="relative p-4 w-full grow">
-            <div className={`flex justify-between items-center ${hasDraftOrDate ? `mb-2` : ``}`}>
-              {
-                statusHtml ? (
-                  <div dangerouslySetInnerHTML={{ __html: statusHtml }} />
-                ) : (
-                  cardFields?.state && draftField && draftField.name && <Status draft={pageData[draftField.name]} published={pageData.fmPublished} />
-                )
-              }
-
-              {
-                dateHtml ? (
-                  <div className='mr-4' dangerouslySetInnerHTML={{ __html: dateHtml }} />
-                ) : (
-                  cardFields?.date && <DateField className={`mr-4`} value={pageData.date} format={pageData.fmDateFormat} />
-                )
-              }
-            </div>
+            {
+              (statusPlaceholder || datePlaceholder) && (
+                <div className={`flex justify-between items-center ${hasDraftOrDate ? `mb-2` : ``}`}>
+                  {statusPlaceholder}
+                  {datePlaceholder}
+                </div>
+              )
+            }
 
             <ContentActions
               title={pageData.title}

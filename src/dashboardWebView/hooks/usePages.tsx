@@ -114,6 +114,9 @@ export default function usePages(pages: Page[]) {
 
       let crntPages: Page[] = Object.assign([], pages);
 
+      // Filter out translations
+      crntPages = crntPages.filter((page) => !page.fmLocale || (page.fmLocale && page.fmDefaultLocale))
+
       // Process the tab data
       const draftTypes = Object.assign({}, tabInfo);
       draftTypes[Tab.All] = crntPages.length;

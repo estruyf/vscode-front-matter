@@ -136,7 +136,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
             )}
 
             <DropdownMenu>
-              <DropdownMenuTrigger className='text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)]'>
+              <DropdownMenuTrigger className='text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)] focus:outline-none'>
                 <span className="sr-only">{l10n.t(LocalizationKey.dashboardContentsContentActionsActionMenuButtonTitle)}</span>
                 <EllipsisVerticalIcon className="w-4 h-4" aria-hidden="true" />
               </DropdownMenuTrigger>
