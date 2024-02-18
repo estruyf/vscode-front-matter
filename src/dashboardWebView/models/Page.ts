@@ -1,3 +1,5 @@
+import { I18nConfig } from '../../models';
+
 export interface Page {
   // Properties for caching
   fmCachePath: string;
@@ -18,6 +20,11 @@ export interface Page {
   fmCategories: string[];
   fmContentType: string;
   fmDateFormat: string | undefined;
+
+  // i18n fields
+  fmDefaultLocale?: boolean;
+  fmLocale?: I18nConfig;
+  fmTranslations?: { [locale: string]: string };
 
   title: string;
   slug: string;

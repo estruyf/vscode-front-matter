@@ -257,7 +257,7 @@
           "markdownDescription": "%setting.frontMatter.content.hideFmMessage.markdownDescription%",
           "scope": "Content"
         },
-        "frontMatter.content.pageFolderscontent.pageFolders": {
+        "frontMatter.content.pageFolders": {
           "type": "array",
           "default": [],
           "markdownDescription": "%setting.frontMatter.content.pageFolders.markdownDescription%",
@@ -303,6 +303,10 @@
                 "type": "boolean",
                 "default": false,
                 "description": "%setting.frontMatter.content.pageFolders.items.properties.disableCreation.description%"
+              },
+              "defaultLocale": {
+                "type": "string",
+                "description": "%setting.frontMatter.content.pageFolders.items.properties.defaultLocale.description%"
               }
             },
             "additionalProperties": false,
@@ -335,8 +339,7 @@
             },
             "additionalProperties": false,
             "required": [
-              "locale",
-              "path"
+              "locale"
             ]
           },
           "scope": "Content"
@@ -2311,7 +2314,11 @@
       {
         "command": "frontMatter.i18n.create",
         "title": "%command.frontMatter.i18n.create%",
-        "category": "Front Matter"
+        "category": "Front Matter",
+        "icon": {
+          "light": "assets/icons/i18n-light.svg",
+          "dark": "assets/icons/i18n-dark.svg"
+        }
       }
     ],
     "submenus": [{
@@ -2352,6 +2359,11 @@
           "command": "frontMatter.insertMedia",
           "group": "navigation@-128",
           "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.i18n.create",
+          "group": "navigation@-127",
+          "when": "frontMatter:file:isValid && frontMatter:i18n:default"
         },
         {
           "command": "frontMatter.markup.options",
@@ -2451,6 +2463,10 @@
         {
           "command": "frontMatter.git.sync",
           "when": "frontMatter:git:enabled"
+        },
+        {
+          "command": "frontMatter.i18n.create",
+          "when": "frontMatter:i18n:default"
         },
         {
           "command": "frontMatter.collapseSections",

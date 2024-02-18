@@ -16,6 +16,7 @@ import { LocalizationKey } from '../../../localization';
 import { useNavigate } from 'react-router-dom';
 import { routePaths } from '../..';
 import useCard from '../../hooks/useCard';
+import { I18nLabel } from './I18nLabel';
 
 export interface IItemProps extends Page { }
 
@@ -132,6 +133,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               onOpen={openFile}
             />
 
+            <I18nLabel page={pageData} />
+
             <button
               title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
               onClick={openFile}
@@ -140,25 +143,29 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                 titleHtml ? (
                   <div dangerouslySetInnerHTML={{ __html: titleHtml }} />
                 ) : (
-                  <h2 className="mb-2 font-bold">
-                    {escapedTitle}
+                  <h2 className="font-bold">
+                    <span>{escapedTitle}</span>
                   </h2>
                 )
               }
             </button>
 
-            <button
-              title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
-              onClick={openFile}
-              className={`text-left block`}>
-              {
-                descriptionHtml ? (
-                  <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
-                ) : (
-                  <p className={`text-xs text-[vara(--vscode-titleBar-activeForeground)]`}>{escapedDescription}</p>
-                )
-              }
-            </button>
+            {
+              (escapedDescription || descriptionHtml) && (
+                <button
+                  title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
+                  onClick={openFile}
+                  className={`mt-2 text-left block`}>
+                  {
+                    descriptionHtml ? (
+                      <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
+                    ) : (
+                      <p className={`text-xs text-[vara(--vscode-titleBar-activeForeground)]`}>{escapedDescription}</p>
+                    )
+                  }
+                </button>
+              )
+            }
 
             {
               tagsHtml ? (

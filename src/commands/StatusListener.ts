@@ -19,6 +19,7 @@ import { Field } from '../models';
 import { Preview } from './Preview';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
+import { i18n } from './i18n';
 
 export class StatusListener {
   /**
@@ -41,6 +42,10 @@ export class StatusListener {
     if (document && ArticleHelper.isSupportedFile(document)) {
       try {
         commands.executeCommand('setContext', CONTEXT.isValidFile, true);
+
+        // Check i18n
+        const isI18nDefault = await i18n.isDefaultLanguage(document.uri.fsPath);
+        commands.executeCommand('setContext', CONTEXT.isI18nDefault, isI18nDefault);
 
         const article = editor
           ? ArticleHelper.getFrontMatter(editor)
@@ -83,6 +88,7 @@ export class StatusListener {
       }
     } else {
       commands.executeCommand('setContext', CONTEXT.isValidFile, false);
+      commands.executeCommand('setContext', CONTEXT.isI18nDefault, false);
 
       const panel = PanelProvider.getInstance();
       if (panel && panel.visible) {

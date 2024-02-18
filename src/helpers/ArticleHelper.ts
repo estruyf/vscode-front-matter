@@ -123,8 +123,14 @@ export class ArticleHelper {
    * Retrieve the file's front matter by its path
    * @param filePath
    */
-  public static async getFrontMatterByPath(filePath: string) {
-    const file = await readFileAsync(filePath, { encoding: 'utf-8' });
+  public static async getFrontMatterByPath(
+    filePath: string
+  ): Promise<ParsedFrontMatter | undefined> {
+    const file = await ArticleHelper.getContents(filePath);
+    if (!file) {
+      return undefined;
+    }
+
     const article = ArticleHelper.parseFile(file, filePath);
     if (!article) {
       return undefined;
@@ -134,6 +140,20 @@ export class ArticleHelper {
       ...article,
       path: filePath
     };
+  }
+
+  /**
+   * Reads the contents of a file asynchronously.
+   * @param filePath - The path of the file to read.
+   * @returns A promise that resolves to the contents of the file, or undefined if the file does not exist.
+   */
+  public static async getContents(filePath: string): Promise<string | undefined> {
+    const file = await workspace.fs.readFile(Uri.file(parseWinPath(filePath)));
+    if (!file) {
+      return undefined;
+    }
+
+    return new TextDecoder().decode(file);
   }
 
   /**
@@ -370,21 +390,9 @@ export class ArticleHelper {
     if (article.data.type) {
       contentType = contentTypes.find((ct) => ct.name === article.data.type);
     } else if (!contentType && article.path) {
-      // Get the content type by the folder name
-      let folders = Folders.get();
-      let parsedPath = parseWinPath(article.path);
-      let pageFolderMatches = folders.filter(
-        (folder) => parsedPath && folder.path && parsedPath.includes(folder.path)
-      );
-
-      // Sort by longest path
-      pageFolderMatches = pageFolderMatches.sort((a, b) => b.path.length - a.path.length);
-      if (
-        pageFolderMatches.length > 0 &&
-        pageFolderMatches[0].contentTypes &&
-        pageFolderMatches[0].contentTypes.length === 1
-      ) {
-        const contentTypeName = pageFolderMatches[0].contentTypes[0];
+      const pageFolder = Folders.getPageFolderByFilePath(article.path);
+      if (pageFolder && pageFolder.contentTypes?.length === 1) {
+        const contentTypeName = pageFolder.contentTypes[0];
         contentType = contentTypes.find((ct) => ct.name === contentTypeName);
       }
     }
