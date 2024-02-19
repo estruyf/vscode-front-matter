@@ -24,6 +24,8 @@ import { LocalizationKey } from '../localization';
 // Support for DeepL, Azure
 
 export class i18n {
+  private static processedFiles: { [filePath: string]: { dir: string; filename: string; isPageBundle: boolean; }} = {};
+
   /**
    * Registers the i18n commands.
    */
@@ -31,6 +33,15 @@ export class i18n {
     const subscriptions = Extension.getInstance().subscriptions;
 
     subscriptions.push(commands.registerCommand(COMMAND_NAME.i18n.create, i18n.create));
+  
+    i18n.clearFiles();
+  }
+
+  /**
+   * Clear the processed files
+   */
+  public static clearFiles() {
+    i18n.processedFiles = {};
   }
 
   /**
@@ -315,6 +326,10 @@ export class i18n {
    * @returns An object containing the filename and directory.
    */
   private static async getFileInfo(filePath: string): Promise<{ filename: string; dir: string }> {
+    if (i18n.processedFiles[filePath]) {
+      return i18n.processedFiles[filePath];
+    }
+
     const fileInfo = parse(filePath);
     let filename = fileInfo.base;
     let dir = fileInfo.dir;
@@ -329,10 +344,13 @@ export class i18n {
       dir += '/';
     }
 
-    return {
+    i18n.processedFiles[filePath] = {
+      isPageBundle,
       filename,
       dir
-    };
+    }
+
+    return i18n.processedFiles[filePath];
   }
 
   /**

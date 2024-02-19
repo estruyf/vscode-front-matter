@@ -77,6 +77,7 @@ export class PagesParser {
    * Parse all pages in the workspace
    */
   public static async parsePages() {
+    i18n.clearFiles();
     const ext = Extension.getInstance();
 
     // Update the dashboard with the fresh data
