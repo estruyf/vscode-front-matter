@@ -21,16 +21,7 @@ import { LocalizationKey } from '../localization';
 
 // TODO:
 // Allow sponsors to automatically translate the content
-// Support page bundles
-// Filter on locale ✅
-// Locale settings on the page folder level and global level
-// Show the i18n content -> if default locale is in subfolder, the other content is not found ✅
-// Update the page folder setting to include the locales property (use #ref) ✅
-// Update the default card item when the translation is removed ✅
-// Add action to create new translation ✅
-// Trigger page update when translation is created ✅
-// Add translations to the menu ✅
-// Localization of the React components ✅
+// Support for DeepL, Azure
 
 export class i18n {
   /**
@@ -54,21 +45,7 @@ export class i18n {
     const i18nSettings = Settings.get<I18nConfig[]>(SETTING_CONTENT_I18N);
     let pageFolder = Folders.getPageFolderByFilePath(filePath);
     if (!pageFolder) {
-      const folders = Folders.get();
-
-      const localeFolders = folders?.filter((folder) => folder.defaultLocale);
-      if (!localeFolders) {
-        return;
-      }
-
-      const fileName = parse(filePath).base;
-      for (const folder of localeFolders) {
-        const defaultFile = join(folder.path, fileName);
-        if (await existsAsync(defaultFile)) {
-          pageFolder = folder;
-          break;
-        }
-      }
+      pageFolder = await i18n.getPageFolder(filePath);
     }
 
     if (!pageFolder || !pageFolder.locales) {
@@ -94,11 +71,17 @@ export class i18n {
       return false;
     }
 
-    const fileInfo = parse(filePath);
-    const dir = fileInfo.dir;
+    const fileInfo = await i18n.getFileInfo(filePath);
 
     if (pageFolder.path) {
-      return parseWinPath(dir).toLowerCase() === parseWinPath(pageFolder.path).toLowerCase();
+      let pageFolderPath = parseWinPath(pageFolder.path);
+      if (!pageFolderPath.endsWith('/')) {
+        pageFolderPath += '/';
+      }
+
+      return (
+        parseWinPath(fileInfo.dir).toLowerCase() === parseWinPath(pageFolderPath).toLowerCase()
+      );
     }
 
     return false;
@@ -115,31 +98,34 @@ export class i18n {
       return;
     }
 
-    const pageFolder = Folders.getPageFolderByFilePath(filePath);
-    const fileInfo = parse(filePath);
+    let pageFolder = Folders.getPageFolderByFilePath(filePath);
+
+    const fileInfo = await i18n.getFileInfo(filePath);
+
     if (pageFolder && pageFolder.defaultLocale) {
+      let pageFolderPath = parseWinPath(pageFolder.path);
+      if (!pageFolderPath.endsWith('/')) {
+        pageFolderPath += '/';
+      }
+
       if (
         pageFolder.path &&
-        parseWinPath(fileInfo.dir).toLowerCase() === parseWinPath(pageFolder.path).toLowerCase()
+        parseWinPath(fileInfo.dir).toLowerCase() === parseWinPath(pageFolderPath).toLowerCase()
       ) {
-        return i18nSettings.find((i18n) => i18n.locale === pageFolder.defaultLocale);
+        return i18nSettings.find((i18n) => i18n.locale === pageFolder?.defaultLocale);
       }
     }
 
-    const folders = Folders.get();
-    if (!folders) {
+    pageFolder = await i18n.getPageFolder(filePath);
+    if (!pageFolder) {
       return;
     }
 
-    const fileName = fileInfo.base;
-    const defaultLanguageFolders = folders.filter((folder) => folder.defaultLocale);
-    for (const folder of defaultLanguageFolders) {
-      for (const locale of i18nSettings) {
-        if (locale.path && folder.defaultLocale !== locale.locale) {
-          const translation = join(folder.path, locale.path, fileName);
-          if (parseWinPath(translation).toLowerCase() === parseWinPath(filePath).toLowerCase()) {
-            return locale;
-          }
+    for (const locale of i18nSettings) {
+      if (locale.path && pageFolder.defaultLocale !== locale.locale) {
+        const translation = join(pageFolder.path, locale.path, fileInfo.filename);
+        if (parseWinPath(translation).toLowerCase() === parseWinPath(filePath).toLowerCase()) {
+          return locale;
         }
       }
     }
@@ -173,11 +159,12 @@ export class i18n {
       };
     } = {};
 
-    const pageFolder = Folders.getPageFolderByFilePath(filePath);
-    const fileName = parse(filePath).base;
+    let pageFolder = Folders.getPageFolderByFilePath(filePath);
+    const fileInfo = await i18n.getFileInfo(filePath);
+
     if (pageFolder && pageFolder.defaultLocale) {
       for (const i18n of i18nSettings) {
-        const translation = join(pageFolder.path, i18n.path || '', fileName);
+        const translation = join(pageFolder.path, i18n.path || '', fileInfo.filename);
         if (await existsAsync(translation)) {
           translations[i18n.locale] = {
             locale: i18n,
@@ -188,27 +175,13 @@ export class i18n {
       return translations;
     }
 
-    const folders = Folders.get();
-    if (!folders) {
-      return;
-    }
-
-    const defaultLanguageFolders = folders.filter((folder) => folder.defaultLocale);
-    let defaultLanguageFolder: ContentFolder | undefined;
-    for (const folder of defaultLanguageFolders) {
-      const defaultFile = join(folder.path, fileName);
-      if (await existsAsync(defaultFile)) {
-        defaultLanguageFolder = folder;
-        break;
-      }
-    }
-
-    if (!defaultLanguageFolder) {
+    pageFolder = await i18n.getPageFolder(filePath);
+    if (!pageFolder) {
       return translations;
     }
 
     for (const i18n of i18nSettings) {
-      const translation = join(defaultLanguageFolder.path, i18n.path || '', fileName);
+      const translation = join(pageFolder.path, i18n.path || '', fileInfo.filename);
       if (await existsAsync(translation)) {
         translations[i18n.locale] = {
           locale: i18n,
@@ -288,7 +261,16 @@ export class i18n {
 
     // Get the directory of the file
     const fileInfo = parse(fileUri.fsPath);
-    const i18nDir = join(fileInfo.dir, selectedI18n.path);
+    let dir = fileInfo.dir;
+    let pageBundleDir = '';
+
+    if (await ArticleHelper.isPageBundle(fileUri.fsPath)) {
+      dir = ArticleHelper.getPageFolderFromBundlePath(fileUri.fsPath);
+      pageBundleDir = fileUri.fsPath.replace(dir, '');
+      pageBundleDir = join(parse(pageBundleDir).dir);
+    }
+
+    const i18nDir = join(dir, selectedI18n.path, pageBundleDir);
 
     if (!(await existsAsync(i18nDir))) {
       await workspace.fs.createDirectory(Uri.file(i18nDir));
@@ -324,6 +306,57 @@ export class i18n {
         selectedI18n.title || selectedI18n.locale
       )
     );
+  }
+
+  /**
+   * Retrieves the filename and directory information from the given file path.
+   * If the file is a page bundle, the directory will be adjusted accordingly.
+   * @param filePath - The path of the file.
+   * @returns An object containing the filename and directory.
+   */
+  private static async getFileInfo(filePath: string): Promise<{ filename: string; dir: string }> {
+    const fileInfo = parse(filePath);
+    let filename = fileInfo.base;
+    let dir = fileInfo.dir;
+
+    const isPageBundle = await ArticleHelper.isPageBundle(filePath);
+    if (isPageBundle) {
+      dir = ArticleHelper.getPageFolderFromBundlePath(filePath);
+      filename = join(parseWinPath(filePath).replace(parseWinPath(dir), ''));
+    }
+
+    if (!dir.endsWith('/')) {
+      dir += '/';
+    }
+
+    return {
+      filename,
+      dir
+    };
+  }
+
+  /**
+   * Retrieves the page folder for a given file path.
+   *
+   * @param filePath - The path of the file.
+   * @returns A promise that resolves to the ContentFolder object representing the page folder, or undefined if not found.
+   */
+  private static async getPageFolder(filePath: string): Promise<ContentFolder | undefined> {
+    const folders = Folders.get();
+
+    const localeFolders = folders?.filter((folder) => folder.defaultLocale);
+    if (!localeFolders) {
+      return;
+    }
+
+    const fileInfo = await i18n.getFileInfo(filePath);
+
+    for (const folder of localeFolders) {
+      const defaultFile = join(folder.path, fileInfo.filename);
+      if (await existsAsync(defaultFile)) {
+        return folder;
+      }
+    }
   }
 
   /**

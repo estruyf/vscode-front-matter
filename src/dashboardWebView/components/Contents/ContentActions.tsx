@@ -134,6 +134,10 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
     const crntLocale = translations[locale.locale];
     const otherLocales = Object.entries(translations).filter(([key]) => key !== locale.locale);
 
+    if (otherLocales.length === 0) {
+      return null;
+    }
+
     return (
       <DropdownMenuSub>
         <DropdownMenuSubTrigger>
@@ -200,7 +204,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
             )}
 
             <DropdownMenu>
-              <DropdownMenuTrigger className='text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)] focus:outline-none'>
+              <DropdownMenuTrigger className='text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)] data-[state=open]:text-[var(--vscode-tab-activeForeground)] focus:outline-none'>
                 <span className="sr-only">{l10n.t(LocalizationKey.dashboardContentsContentActionsActionMenuButtonTitle)}</span>
                 <EllipsisVerticalIcon className="w-4 h-4" aria-hidden="true" />
               </DropdownMenuTrigger>

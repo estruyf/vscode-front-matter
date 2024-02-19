@@ -37,7 +37,7 @@ import {
 import { format, parse } from 'date-fns';
 import { Notifications } from './Notifications';
 import { Article } from '../commands';
-import { join } from 'path';
+import { join, parse as parseFile } from 'path';
 import { EditorHelper } from '@estruyf/vscode';
 import sanitize from '../helpers/Sanitize';
 import { ContentType as IContentType } from '../models';
@@ -49,7 +49,7 @@ import { Link, Parent } from 'mdast-util-from-markdown/lib';
 import { Content } from 'mdast';
 import { CustomScript } from './CustomScript';
 import { Folders } from '../commands/Folders';
-import { existsAsync, readFileAsync } from '../utils';
+import { existsAsync } from '../utils';
 import { mkdirAsync } from '../utils/mkdirAsync';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
@@ -300,6 +300,35 @@ export class ArticleHelper {
     }
 
     return isSupportedLanguage;
+  }
+
+  /**
+   * Checks if the given file path represents a page bundle.
+   *
+   * @param filePath - The path of the file to check.
+   * @returns A boolean indicating whether the file is a page bundle or not.
+   */
+  public static async isPageBundle(filePath: string) {
+    let article = await ArticleHelper.getFrontMatterByPath(filePath);
+    if (!article) {
+      return false;
+    }
+
+    const contentType = ArticleHelper.getContentType(article);
+    return !!contentType.pageBundle;
+  }
+
+  /**
+   * Retrieves the page folder from the given bundle file path.
+   *
+   * @param filePath - The file path of the bundle.
+   * @returns The page folder path.
+   */
+  public static getPageFolderFromBundlePath(filePath: string) {
+    // Remove the last folder from the dir
+    const dir = parseFile(filePath).dir;
+    const lastSlash = dir.lastIndexOf('/');
+    return dir.substring(0, lastSlash);
   }
 
   /**
