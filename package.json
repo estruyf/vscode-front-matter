@@ -307,6 +307,13 @@
               "defaultLocale": {
                 "type": "string",
                 "description": "%setting.frontMatter.content.pageFolders.items.properties.defaultLocale.description%"
+              },
+              "locales": {
+                "type": "array",
+                "description": "%setting.frontMatter.content.pageFolders.items.properties.locales.description%",
+                "items": {
+                  "$ref": "#i18n"
+                }
               }
             },
             "additionalProperties": false,
@@ -322,6 +329,7 @@
           "default": [],
           "markdownDescription": "%setting.frontMatter.content.i18n.markdownDescription%",
           "items": {
+            "$id": "#i18n",
             "type": "object",
             "properties": {
               "title": {

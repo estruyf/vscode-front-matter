@@ -17,6 +17,7 @@ export const GeneralCommands = {
       getBranch: 'getBranch',
       selectBranch: 'gitSelectBranch'
     },
+    runCommand: 'runCommand',
     getLocalization: 'getLocalization',
     openOnWebsite: 'openOnWebsite'
   }

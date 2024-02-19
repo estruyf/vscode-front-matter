@@ -90,6 +90,8 @@
   "dashboard.contents.contentActions.menuItem.view": "View",
   "dashboard.contents.contentActions.alert.title": "Delete: {0}",
   "dashboard.contents.contentActions.alert.description": "Are you sure you want to delete the \"{0}\" content?",
+  "dashboard.contents.contentActions.translations.create": "Create translation",
+  "dashboard.contents.contentActions.translations.menu": "Translations",
 
   "dashboard.contents.item.invalidTitle": "<invalid title>",
   "dashboard.contents.item.invalidDescription": "<invalid description>",
@@ -127,6 +129,9 @@
   "dashboard.dataView.sortableItem.alert.description": "Are you sure you want to delete the data entry?",
 
   "dashboard.errorView.description": "Please close the dashboard and try again.",
+
+  "dashboard.filters.languageFilter.label": "Locale",
+  "dashboard.filters.languageFilter.all": "All",
 
   "dashboard.header.breadcrumb.home": "Home",
 
@@ -522,6 +527,16 @@
   "commands.folders.get.notificationError.title": "Folder \"{0}\" does not exist. Please remove it from the settings.",
   "commands.folders.get.notificationError.remove.action": "Remove folder",
   "commands.folders.get.notificationError.create.action": "Create folder",
+
+  "commands.i18n.create.warning.noFileSelected": "No file selected.",
+  "commands.i18n.create.warning.noFile": "The file could not be retrieved.",
+  "commands.i18n.create.warning.noContentType": "Content type could not be retrieved for the current file.",
+  "commands.i18n.create.warning.noConfig": "No i18n configuration found.",
+  "commands.i18n.create.warning.notDefaultLocale": "The current file cannot be used for i18n content creation.",
+  "commands.i18n.create.error.fileExists": "The i18n translation already exists.",
+  "commands.i18n.create.success.created": "Created \"{0}\" i18n content file.",
+  "commands.i18n.create.quickPick.title": "Create content for locale",
+  "commands.i18n.create.quickPick.placeHolder": "To which locale do you want to create a new content?",
 
   "commands.preview.panel.title": "Preview: {0}",
   "commands.preview.askUserToPickFolder.title": "Select the folder of the article to preview",

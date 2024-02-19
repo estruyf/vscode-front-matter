@@ -119,7 +119,10 @@ export const ItemMenu: React.FunctionComponent<IItemMenuProps> = ({
               </>
             )}
 
-            <QuickAction title={l10n.t(LocalizationKey.dashboardMediaItemQuickActionDelete)} onClick={onDelete}>
+            <QuickAction
+              title={l10n.t(LocalizationKey.dashboardMediaItemQuickActionDelete)}
+              className={`hover:text-[var(--vscode-statusBarItem-errorBackground)]`}
+              onClick={onDelete}>
               <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
             </QuickAction>
           </div>

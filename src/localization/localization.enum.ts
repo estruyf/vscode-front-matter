@@ -316,6 +316,14 @@ export enum LocalizationKey {
    */
   dashboardContentsContentActionsAlertDescription = 'dashboard.contents.contentActions.alert.description',
   /**
+   * Create translation
+   */
+  dashboardContentsContentActionsTranslationsCreate = 'dashboard.contents.contentActions.translations.create',
+  /**
+   * Translations
+   */
+  dashboardContentsContentActionsTranslationsMenu = 'dashboard.contents.contentActions.translations.menu',
+  /**
    * <invalid title>
    */
   dashboardContentsItemInvalidTitle = 'dashboard.contents.item.invalidTitle',
@@ -427,6 +435,14 @@ export enum LocalizationKey {
    * Please close the dashboard and try again.
    */
   dashboardErrorViewDescription = 'dashboard.errorView.description',
+  /**
+   * Locale
+   */
+  dashboardFiltersLanguageFilterLabel = 'dashboard.filters.languageFilter.label',
+  /**
+   * All
+   */
+  dashboardFiltersLanguageFilterAll = 'dashboard.filters.languageFilter.all',
   /**
    * Home
    */
@@ -1672,6 +1688,42 @@ export enum LocalizationKey {
    * Create folder
    */
   commandsFoldersGetNotificationErrorCreateAction = 'commands.folders.get.notificationError.create.action',
+  /**
+   * No file selected.
+   */
+  commandsI18nCreateWarningNoFileSelected = 'commands.i18n.create.warning.noFileSelected',
+  /**
+   * The file could not be retrieved.
+   */
+  commandsI18nCreateWarningNoFile = 'commands.i18n.create.warning.noFile',
+  /**
+   * Content type could not be retrieved for the current file.
+   */
+  commandsI18nCreateWarningNoContentType = 'commands.i18n.create.warning.noContentType',
+  /**
+   * No i18n configuration found.
+   */
+  commandsI18nCreateWarningNoConfig = 'commands.i18n.create.warning.noConfig',
+  /**
+   * The current file cannot be used for i18n content creation.
+   */
+  commandsI18nCreateWarningNotDefaultLocale = 'commands.i18n.create.warning.notDefaultLocale',
+  /**
+   * The i18n translation already exists.
+   */
+  commandsI18nCreateErrorFileExists = 'commands.i18n.create.error.fileExists',
+  /**
+   * Created "{0}" i18n content file.
+   */
+  commandsI18nCreateSuccessCreated = 'commands.i18n.create.success.created',
+  /**
+   * Create content for locale
+   */
+  commandsI18nCreateQuickPickTitle = 'commands.i18n.create.quickPick.title',
+  /**
+   * To which locale do you want to create a new content?
+   */
+  commandsI18nCreateQuickPickPlaceHolder = 'commands.i18n.create.quickPick.placeHolder',
   /**
    * Preview: {0}
    */

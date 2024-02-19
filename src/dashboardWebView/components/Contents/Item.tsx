@@ -79,7 +79,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
       statusHtml ? (
         <div dangerouslySetInnerHTML={{ __html: statusHtml }} />
       ) : (
-        cardFields?.state && draftField && draftField.name && pageData[draftField.name] ? <Status draft={pageData[draftField.name]} published={pageData.fmPublished} /> : null
+        cardFields?.state && draftField && draftField.name && typeof pageData[draftField.name] !== "undefined" ? <Status draft={pageData[draftField.name]} published={pageData.fmPublished} /> : null
       )
     )
   }, [statusHtml, cardFields?.state, draftField, pageData]);
@@ -111,8 +111,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           <button
             title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
             onClick={openFile}
-            className={`relative h-36 w-full overflow-hidden border-b cursor-pointer border-[var(--frontmatter-border)]
-              }`}
+            className={`relative h-36 w-full overflow-hidden border-b cursor-pointer border-[var(--frontmatter-border)]`}
           >
             {
               imageHtml ?
@@ -148,6 +147,9 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               title={pageData.title}
               path={pageData.fmFilePath}
               relPath={pageData.fmRelFileWsPath}
+              locale={pageData.fmLocale}
+              isDefaultLocale={pageData.fmDefaultLocale}
+              translations={pageData.fmTranslations}
               scripts={settings?.scripts}
               onOpen={openFile}
             />

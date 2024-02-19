@@ -15,16 +15,22 @@ import { join, parse } from 'path';
 import { existsAsync } from '../utils';
 import { Folders } from '.';
 import { ParsedFrontMatter } from '../parsers';
+import { PagesListener } from '../listeners/dashboard';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../localization';
 
 // TODO:
 // Allow sponsors to automatically translate the content
 // Support page bundles
-// Filter on locale
+// Filter on locale ✅
 // Locale settings on the page folder level and global level
-// Show the i18n content -> if default locale is in subfolder, the other content is not found
-// Update the page folder setting to include the locales property (use #ref)
-// Update the default card item when the translation is removed
-// Add action to create new translation
+// Show the i18n content -> if default locale is in subfolder, the other content is not found ✅
+// Update the page folder setting to include the locales property (use #ref) ✅
+// Update the default card item when the translation is removed ✅
+// Add action to create new translation ✅
+// Trigger page update when translation is created ✅
+// Add translations to the menu ✅
+// Localization of the React components ✅
 
 export class i18n {
   /**
@@ -146,34 +152,37 @@ export class i18n {
    * @param filePath - The path of the file for which translations are requested.
    * @returns A promise that resolves to an object containing translations for each locale, or undefined if i18n settings are not available.
    */
-  public static async getTranslations(
-    filePath: string
-  ): Promise<{ [locale: string]: {
-    locale: I18nConfig;
-    path: string;
-  } } | undefined> {
+  public static async getTranslations(filePath: string): Promise<
+    | {
+        [locale: string]: {
+          locale: I18nConfig;
+          path: string;
+        };
+      }
+    | undefined
+  > {
     const i18nSettings = await i18n.getSettings(filePath);
     if (!i18nSettings) {
       return;
     }
 
-    const translations: { [locale: string]: {
-      locale: I18nConfig;
-      path: string;
-    } } = {};
+    const translations: {
+      [locale: string]: {
+        locale: I18nConfig;
+        path: string;
+      };
+    } = {};
 
     const pageFolder = Folders.getPageFolderByFilePath(filePath);
     const fileName = parse(filePath).base;
     if (pageFolder && pageFolder.defaultLocale) {
       for (const i18n of i18nSettings) {
-        if (i18n.path) {
-          const translation = join(pageFolder.path, i18n.path, fileName);
-          if (await existsAsync(translation)) {
-            translations[i18n.locale] = {
-              locale: i18n,
-              path: translation
-            };
-          }
+        const translation = join(pageFolder.path, i18n.path || '', fileName);
+        if (await existsAsync(translation)) {
+          translations[i18n.locale] = {
+            locale: i18n,
+            path: translation
+          };
         }
       }
       return translations;
@@ -217,34 +226,38 @@ export class i18n {
    * If no file path is provided, the active file in the editor will be used.
    * @param filePath The path of the file where the new content file should be created.
    */
-  private static async create(fileUri?: Uri) {
+  private static async create(fileUri?: Uri | string) {
     if (!fileUri) {
       const filePath = ArticleHelper.getActiveFile();
       fileUri = filePath ? Uri.file(filePath) : undefined;
     }
 
     if (!fileUri) {
-      Notifications.warning('No file selected');
+      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoFileSelected));
       return;
+    }
+
+    if (typeof fileUri === 'string') {
+      fileUri = Uri.file(fileUri);
     }
 
     const i18nSettings = await i18n.getSettings(fileUri.fsPath);
     if (!i18nSettings) {
-      Notifications.warning('No i18n configuration found');
+      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoConfig));
       return;
     }
 
     const isDefaultLanguage = await i18n.isDefaultLanguage(fileUri.fsPath);
     if (!isDefaultLanguage) {
-      Notifications.warning('The current file cannot be used for i18n content creation');
+      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNotDefaultLocale));
       return;
     }
 
     const locale = await window.showQuickPick(
       i18nSettings.filter((i18n) => i18n.path).map((i18n) => i18n.title || i18n.locale),
       {
-        title: 'Create content for locale',
-        placeHolder: 'To which locale do you want to create a new content?',
+        title: l10n.t(LocalizationKey.commandsI18nCreateQuickPickTitle),
+        placeHolder: l10n.t(LocalizationKey.commandsI18nCreateQuickPickPlaceHolder),
         ignoreFocusOut: true
       }
     );
@@ -257,19 +270,19 @@ export class i18n {
       (i18n) => i18n.title === locale || i18n.locale === locale
     );
     if (!selectedI18n || !selectedI18n.path) {
-      Notifications.warning('No i18n configuration found');
+      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoConfig));
       return;
     }
 
     let article = await ArticleHelper.getFrontMatterByPath(fileUri.fsPath);
     if (!article) {
-      Notifications.warning('No content found');
+      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoFile));
       return;
     }
 
     const contentType = ArticleHelper.getContentType(article);
     if (!contentType) {
-      Notifications.warning('No content type found');
+      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoContentType));
       return;
     }
 
@@ -291,7 +304,7 @@ export class i18n {
 
     const newFilePath = join(i18nDir, fileInfo.base);
     if (await existsAsync(newFilePath)) {
-      Notifications.warning('File already exists');
+      Notifications.error(l10n.t(LocalizationKey.commandsI18nCreateErrorFileExists));
       return;
     }
 
@@ -303,7 +316,14 @@ export class i18n {
 
     await openFileInEditor(newFilePath);
 
-    Notifications.info(`Created "${selectedI18n.title || selectedI18n.locale}" i18n content file`);
+    PagesListener.refresh();
+
+    Notifications.info(
+      l10n.t(
+        LocalizationKey.commandsI18nCreateSuccessCreated,
+        selectedI18n.title || selectedI18n.locale
+      )
+    );
   }
 
   /**

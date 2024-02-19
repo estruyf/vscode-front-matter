@@ -8,6 +8,8 @@ import {
   FilterValuesAtom,
   FiltersAtom,
   FolderSelector,
+  LocaleAtom,
+  LocalesAtom,
   SearchSelector,
   SettingsSelector,
   SortingAtom,
@@ -22,20 +24,25 @@ import { parseWinPath } from '../../helpers/parseWinPath';
 import { sortPages } from '../../utils/sortPages';
 import { ExtensionState } from '../../constants';
 import { SortingOption } from '../models';
+import { I18nConfig } from '../../models';
+import { usePrevious } from '../../panelWebView/hooks/usePrevious';
 
 export default function usePages(pages: Page[]) {
-  const [pageItems, setPageItems] = useRecoilState(AllPagesAtom);
   const [sortedPages, setSortedPages] = useState<Page[]>([]);
+  const [pageItems, setPageItems] = useRecoilState(AllPagesAtom);
   const [sorting, setSorting] = useRecoilState(SortingAtom);
   const [tabInfo, setTabInfo] = useRecoilState(TabInfoAtom);
+  const [locales, setLocales] = useRecoilState(LocalesAtom);
   const [, setFilterValues] = useRecoilState(FilterValuesAtom);
   const settings = useRecoilValue(SettingsSelector);
   const tab = useRecoilValue(TabSelector);
   const folder = useRecoilValue(FolderSelector);
   const search = useRecoilValue(SearchSelector);
   const tag = useRecoilValue(TagSelector);
+  const locale = useRecoilValue(LocaleAtom);
   const category = useRecoilValue(CategorySelector);
   const filters = useRecoilValue(FiltersAtom);
+  const tabPrevious = usePrevious(tab);
 
   /**
    * Process all the pages by applying the sorting, filtering and searching.
@@ -90,6 +97,11 @@ export default function usePages(pages: Page[]) {
         );
       }
 
+      // If filtered by locale
+      if (locale) {
+        pagesSorted = pagesSorted.filter((page) => page.fmLocale && page.fmLocale.locale === locale);
+      }
+
       const filterNames = Object.keys(filters);
       if (filterNames.length > 0) {
         for (const filter of filterNames) {
@@ -102,7 +114,7 @@ export default function usePages(pages: Page[]) {
 
       setSortedPages(pagesSorted);
     },
-    [settings, tab, folder, search, tag, category, sorting, tabInfo, filters]
+    [settings, tab, folder, search, tag, category, locale, sorting, tabInfo, filters]
   );
 
   /**
@@ -114,8 +126,23 @@ export default function usePages(pages: Page[]) {
 
       let crntPages: Page[] = Object.assign([], pages);
 
-      // Filter out translations
-      crntPages = crntPages.filter((page) => !page.fmLocale || (page.fmLocale && page.fmDefaultLocale))
+      // Update the translations of pages
+      crntPages = crntPages.map((page) => {
+        if (page.fmTranslations) {
+          const translations = Object.assign({}, page.fmTranslations);
+
+          for (const [key, value] of Object.entries(translations)) {
+            const translatedPage = crntPages.find((p) => parseWinPath(p.fmFilePath).toLowerCase() === parseWinPath(value.path).toLowerCase());
+            if (!translatedPage) {
+              delete translations[key];
+            }
+          }
+
+          return { ...page, fmTranslations: translations };
+        }
+
+        return page;
+      });
 
       // Process the tab data
       const draftTypes = Object.assign({}, tabInfo);
@@ -193,10 +220,21 @@ export default function usePages(pages: Page[]) {
         }
       }
 
+      if (tabPrevious !== tab || !locales || locales.length === 0) {
+        // Store the locale information
+        const config: I18nConfig[] = [];
+        crntPages.forEach((page) => {
+          if (page.fmLocale && !config.some(locale => locale.locale === page.fmLocale?.locale)) {
+            config.push(page.fmLocale);
+          }
+        });
+        setLocales(config);
+      }
+
       // Set the pages
       setPageItems(crntPages);
     },
-    [tab, tabInfo, settings, filters]
+    [tab, tabInfo, settings, filters, locales, tabPrevious]
   );
 
   /**
@@ -238,7 +276,7 @@ export default function usePages(pages: Page[]) {
     } else {
       startPageProcessing();
     }
-  }, [settings?.draftField, pages, sorting, search, tag, category, filters, folder]);
+  }, [settings?.draftField, pages, sorting, search, tag, category, locale, filters, folder]);
 
   useEffect(() => {
     processByTab(sortedPages);

@@ -1,7 +1,7 @@
 import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
-import { EyeIcon, GlobeEuropeAfricaIcon, CommandLineIcon, TrashIcon, EllipsisVerticalIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, GlobeEuropeAfricaIcon, CommandLineIcon, TrashIcon, EllipsisVerticalIcon, LanguageIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
-import { CustomScript, ScriptType } from '../../../models';
+import { CustomScript, I18nConfig, ScriptType } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
 import { QuickAction } from '../Menu';
 import { Alert } from '../Modals/Alert';
@@ -9,10 +9,10 @@ import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { SettingsSelector } from '../../state';
-import { GeneralCommands } from '../../../constants';
+import { COMMAND_NAME, GeneralCommands } from '../../../constants';
 import { PinIcon } from '../Icons/PinIcon';
 import { PinnedItemsAtom } from '../../state/atom/PinnedItems';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../../components/shadcn/Dropdown';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from '../../../components/shadcn/Dropdown';
 
 export interface IContentActionsProps {
   title: string;
@@ -20,6 +20,14 @@ export interface IContentActionsProps {
   relPath: string;
   scripts: CustomScript[] | undefined;
   listView?: boolean;
+  locale?: I18nConfig;
+  isDefaultLocale?: boolean;
+  translations?: {
+    [locale: string]: {
+      locale: I18nConfig;
+      path: string;
+    };
+  };
   onOpen: () => void;
 }
 
@@ -29,7 +37,10 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
   relPath,
   scripts,
   onOpen,
-  listView
+  listView,
+  isDefaultLocale,
+  translations,
+  locale
 }: React.PropsWithChildren<IContentActionsProps>) => {
   const [pinnedItems, setPinnedItems] = useRecoilState(PinnedItemsAtom);
   const [showDeletionAlert, setShowDeletionAlert] = React.useState(false);
@@ -51,6 +62,10 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
     }
     setShowDeletionAlert(false);
   };
+
+  const onOpenFile = (filePath: string) => {
+    messageHandler.send(DashboardMessage.openFile, filePath);
+  }
 
   const openOnWebsite = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
@@ -84,6 +99,13 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
     [path]
   );
 
+  const runCommand = React.useCallback((commandId: string) => {
+    messageHandler.send(GeneralCommands.toVSCode.runCommand, {
+      command: commandId,
+      args: path
+    })
+  }, [path]);
+
   const isPinned = React.useMemo(() => {
     return pinnedItems.includes(relPath);
   }, [pinnedItems, relPath]);
@@ -103,6 +125,45 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
         </DropdownMenuItem>
       ));
   }, [scripts]);
+
+  const translationsMenu = React.useMemo(() => {
+    if (!locale || !translations || Object.keys(translations).length === 0) {
+      return null;
+    }
+
+    const crntLocale = translations[locale.locale];
+    const otherLocales = Object.entries(translations).filter(([key]) => key !== locale.locale);
+
+    return (
+      <DropdownMenuSub>
+        <DropdownMenuSubTrigger>
+          <LanguageIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
+          <span>{l10n.t(LocalizationKey.dashboardContentsContentActionsTranslationsMenu)}</span>
+        </DropdownMenuSubTrigger>
+
+        <DropdownMenuPortal>
+          <DropdownMenuSubContent>
+            <DropdownMenuItem onClick={() => onOpenFile(crntLocale.path)}>
+              <span>{crntLocale.locale.title || crntLocale.locale.locale}</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            {
+              otherLocales.map(([key, value]) => (
+                <DropdownMenuItem
+                  key={key}
+                  onClick={() => onOpenFile(value.path)}
+                >
+                  <span>{value.locale.title || value.locale.locale}</span>
+                </DropdownMenuItem>
+              ))
+            }
+          </DropdownMenuSubContent>
+        </DropdownMenuPortal>
+      </DropdownMenuSub>
+    );
+  }, [translations, locale, isDefaultLocale]);
 
   return (
     <>
@@ -129,7 +190,10 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
                   )
                 }
 
-                <QuickAction title={l10n.t(LocalizationKey.commonDelete)} onClick={onDelete}>
+                <QuickAction
+                  title={l10n.t(LocalizationKey.commonDelete)}
+                  className={`hover:text-[var(--vscode-statusBarItem-errorBackground)]`}
+                  onClick={onDelete}>
                   <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
                 </QuickAction>
               </div>
@@ -160,6 +224,17 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
                     </DropdownMenuItem>
                   )
                 }
+
+                {
+                  locale && isDefaultLocale && (
+                    <DropdownMenuItem onClick={() => runCommand(COMMAND_NAME.i18n.create)}>
+                      <LanguageIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
+                      <span>{l10n.t(LocalizationKey.dashboardContentsContentActionsTranslationsCreate)}</span>
+                    </DropdownMenuItem>
+                  )
+                }
+
+                {translationsMenu}
 
                 {customScriptActions}
 
