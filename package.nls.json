@@ -268,6 +268,7 @@
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.customType.description": "Specify the name of the custom field type to use.",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.clearEmpty.description": "Specify if the empty values should be cleared.",
   "setting.frontMatter.website.host.markdownDescription": "Specify the host URL of your website. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.website.url)",
+  "setting.frontMatter.integration.deepl.markdownDescription": "Specify the DeepL API key to use for the translation of your content. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.integration.deepl)",
   "command.frontMatter.settings.refresh": "Refresh Front Matter Settings",
   "setting.frontMatter.config.dynamicFilePath.markdownDescription": "Specify the path to the dynamic config file (ex: [[workspace]]/config.js). [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.config.dynamicfilepath)",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.allowAsSubContent.description": "Specify if the content type can be used as sub content.",

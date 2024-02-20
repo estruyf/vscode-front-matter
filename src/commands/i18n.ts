@@ -1,15 +1,16 @@
-import { Uri, commands, window, workspace } from 'vscode';
+import { ProgressLocation, Uri, commands, window, workspace } from 'vscode';
 import {
   ArticleHelper,
   ContentType,
   Extension,
   FrameworkDetector,
+  Logger,
   Notifications,
   Settings,
   openFileInEditor,
   parseWinPath
 } from '../helpers';
-import { COMMAND_NAME, SETTING_CONTENT_I18N } from '../constants';
+import { COMMAND_NAME, SETTING_CONTENT_I18N, SETTING_INTEGRATION_DEEPL } from '../constants';
 import { ContentFolder, Field, I18nConfig, ContentType as IContentType } from '../models';
 import { join, parse } from 'path';
 import { existsAsync } from '../utils';
@@ -19,12 +20,10 @@ import { PagesListener } from '../listeners/dashboard';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 
-// TODO:
-// Allow sponsors to automatically translate the content
-// Support for DeepL, Azure
-
 export class i18n {
-  private static processedFiles: { [filePath: string]: { dir: string; filename: string; isPageBundle: boolean; }} = {};
+  private static processedFiles: {
+    [filePath: string]: { dir: string; filename: string; isPageBundle: boolean };
+  } = {};
 
   /**
    * Registers the i18n commands.
@@ -33,7 +32,7 @@ export class i18n {
     const subscriptions = Extension.getInstance().subscriptions;
 
     subscriptions.push(commands.registerCommand(COMMAND_NAME.i18n.create, i18n.create));
-  
+
     i18n.clearFiles();
   }
 
@@ -301,6 +300,11 @@ export class i18n {
       return;
     }
 
+    const sourceLocale = await i18n.getLocale(fileUri.fsPath);
+    if (sourceLocale?.locale) {
+      article = await i18n.translate(article, sourceLocale, selectedI18n);
+    }
+
     const newFileUri = Uri.file(newFilePath);
     await workspace.fs.writeFile(
       newFileUri,
@@ -317,6 +321,79 @@ export class i18n {
         selectedI18n.title || selectedI18n.locale
       )
     );
+  }
+
+  /**
+   * Translates the given article from the source locale to the target locale using DeepL translation service.
+   * @param article - The article to be translated.
+   * @param sourceLocale - The source locale configuration.
+   * @param targetLocale - The target locale configuration.
+   * @returns A promise that resolves to the translated article.
+   */
+  private static async translate(
+    article: ParsedFrontMatter,
+    sourceLocale: I18nConfig,
+    targetLocale: I18nConfig
+  ) {
+    return new Promise<ParsedFrontMatter>(async (resolve) => {
+      const authKey = Settings.get<string>(SETTING_INTEGRATION_DEEPL);
+      if (!authKey) {
+        resolve(article);
+        return;
+      }
+
+      await window.withProgress(
+        {
+          location: ProgressLocation.Notification,
+          title: l10n.t(LocalizationKey.commandsI18nTranslateProgressTitle),
+          cancellable: false
+        },
+        async () => {
+          const title = article.data.title;
+          const description = article.data.description;
+          const content = article.content;
+
+          try {
+            const body = JSON.stringify({
+              text: [title, description, content],
+              source_lang: sourceLocale.locale,
+              target_lang: targetLocale.locale
+            });
+
+            let host = authKey.endsWith(':fx') ? 'api-free.deepl.com' : 'api.deepl.com';
+
+            const response = await fetch(`https://${host}/v2/translate`, {
+              method: 'POST',
+              headers: {
+                Authorization: `DeepL-Auth-Key ${authKey}`,
+                'User-Agent': `FrontMatterCMS/${Extension.getInstance().version}`,
+                'Content-Type': 'application/json',
+                'content-length': body.length.toString(),
+                Accept: 'application/json'
+              },
+              body
+            });
+
+            if (!response.ok) {
+              throw new Error(`DeepL: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            if (!data.translations || data.translations.length < 3) {
+              throw new Error('DeepL: Invalid response');
+            }
+
+            article.data.title = data.translations[0].text;
+            article.data.description = data.translations[1].text;
+            article.content = data.translations[2].text;
+          } catch (error) {
+            Notifications.error(`${(error as Error).message}`);
+          }
+
+          resolve(article);
+        }
+      );
+    });
   }
 
   /**
@@ -348,7 +425,7 @@ export class i18n {
       isPageBundle,
       filename,
       dir
-    }
+    };
 
     return i18n.processedFiles[filePath];
   }

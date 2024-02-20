@@ -114,6 +114,8 @@ export const SETTING_SNIPPETS_WRAPPER = 'snippets.wrapper.enabled';
 
 export const SETTING_WEBSITE_URL = 'website.host';
 
+export const SETTING_INTEGRATION_DEEPL = 'integration.deepl';
+
 /**
  * Sponsors only settings
  */

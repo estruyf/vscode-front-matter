@@ -1725,6 +1725,10 @@ export enum LocalizationKey {
    */
   commandsI18nCreateQuickPickPlaceHolder = 'commands.i18n.create.quickPick.placeHolder',
   /**
+   * Translating content...
+   */
+  commandsI18nTranslateProgressTitle = 'commands.i18n.translate.progress.title',
+  /**
    * Preview: {0}
    */
   commandsPreviewPanelTitle = 'commands.preview.panel.title',
