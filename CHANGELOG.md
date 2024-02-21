@@ -1,6 +1,6 @@
 # Change Log
 
-## [9.5.0] - 2024-xx-xx
+## [10.0.0] - 2024-xx-xx
 
 ### ✨ New features
 

@@ -52,6 +52,12 @@ A couple of our extension highlights that hopefully get you interested in giving
 
 > If you see something missing in your article creation flow, please feel free to reach out.
 
+**Version 10**
+
+In version 10, we introduced the new i18n/multilingual support for your content. You can now manage your content in multiple languages, more information can be found in the [multilingual](https://frontmatter.codes/docs/content-creation/multilingual) section of our documentation.
+
+![Multilingual support](https://beta.frontmatter.codes/releases/v10.0.0/multilingual-content.png)
+
 **Version 9**
 
 The extension is now available in multiple languages: English, German, and Japanese. Want to add your language? Check out the [localization the extension](https://frontmatter.codes/docs/contributing#translating-the-extension).
