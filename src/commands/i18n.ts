@@ -10,7 +10,7 @@ import {
   openFileInEditor,
   parseWinPath
 } from '../helpers';
-import { COMMAND_NAME, SETTING_CONTENT_I18N, SETTING_INTEGRATION_DEEPL } from '../constants';
+import { COMMAND_NAME, ExtensionState, SETTING_CONTENT_I18N } from '../constants';
 import { ContentFolder, Field, I18nConfig, ContentType as IContentType } from '../models';
 import { join, parse } from 'path';
 import { existsAsync } from '../utils';
@@ -336,7 +336,7 @@ export class i18n {
     targetLocale: I18nConfig
   ) {
     return new Promise<ParsedFrontMatter>(async (resolve) => {
-      const authKey = Settings.get<string>(SETTING_INTEGRATION_DEEPL);
+      const authKey = await Extension.getInstance().getSecret(ExtensionState.Secrets.DeeplApiKey);
       if (!authKey) {
         resolve(article);
         return;

@@ -424,6 +424,14 @@ export class Extension {
     }
   }
 
+  public async getSecret(key: string): Promise<string | undefined> {
+    return this.ctx.secrets.get(key);
+  }
+
+  public async setSecret(key: string, value: string): Promise<void> {
+    return this.ctx.secrets.store(key, value);
+  }
+
   public isBetaVersion() {
     return basename(this.ctx.globalStorageUri.fsPath) === EXTENSION_BETA_ID;
   }

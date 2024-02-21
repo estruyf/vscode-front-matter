@@ -176,6 +176,10 @@ export enum LocalizationKey {
    */
   settingsViewAstro = 'settings.view.astro',
   /**
+   * Integration
+   */
+  settingsViewIntegration = 'settings.view.integration',
+  /**
    * Open dashboard on startup
    */
   settingsOpenOnStartup = 'settings.openOnStartup',
@@ -220,6 +224,10 @@ export enum LocalizationKey {
    */
   settingsGitSubmoduleLink = 'settings.git.submoduleLink',
   /**
+   * Integration
+   */
+  settingsIntegrationTitle = 'settings.integration.title',
+  /**
    * Website and SSG settings
    */
   settingsCommonSettingsWebsiteTitle = 'settings.commonSettings.website.title',
@@ -235,6 +243,18 @@ export enum LocalizationKey {
    * SSG/Framework start command
    */
   settingsCommonSettingsStartCommand = 'settings.commonSettings.startCommand',
+  /**
+   * DeepL
+   */
+  settingsIntegrationsViewDeeplTitle = 'settings.integrationsView.deepl.title',
+  /**
+   * Authentication key
+   */
+  settingsIntegrationsViewDeeplIntputLabel = 'settings.integrationsView.deepl.intput.label',
+  /**
+   * Enter your DeepL authentication key
+   */
+  settingsIntegrationsViewDeeplIntputPlaceholder = 'settings.integrationsView.deepl.intput.placeholder',
   /**
    * Developer mode
    */
@@ -2408,6 +2428,10 @@ export enum LocalizationKey {
    * Failed to initialize the template.
    */
   listenersDashboardSettingsListenerTriggerTemplateInitError = 'listeners.dashboard.settingsListener.triggerTemplate.init.error',
+  /**
+   * Setting has been updated.
+   */
+  listenersDashboardSettingsListenerSetSecretValueMessage = 'listeners.dashboard.settingsListener.setSecretValue.message',
   /**
    * Snippet missing title or body
    */

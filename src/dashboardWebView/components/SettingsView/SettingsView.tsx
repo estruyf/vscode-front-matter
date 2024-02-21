@@ -12,6 +12,7 @@ import { COMMAND_NAME } from '../../../constants';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import { VSCodePanelTab, VSCodePanelView, VSCodePanels } from '@vscode/webview-ui-toolkit/react';
 import { CommonSettings } from './CommonSettings';
+import { IntegrationsView } from './IntegrationsView';
 
 export interface ISettingsViewProps { }
 
@@ -54,6 +55,8 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (_: Rea
                 )
               }
 
+              <VSCodePanelTab id="view-4">{l10n.t(LocalizationKey.settingsViewIntegration)}</VSCodePanelTab>
+
               <VSCodePanelView id="view-1">
                 <CommonSettings />
               </VSCodePanelView>
@@ -82,6 +85,10 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (_: Rea
                   </VSCodePanelView>
                 )
               }
+
+              <VSCodePanelView id="view-4">
+                <IntegrationsView />
+              </VSCodePanelView>
             </VSCodePanels>
           </div>
         )
