@@ -1,3 +1,4 @@
+import { i18n } from './../commands/i18n';
 import { STATIC_FOLDER_PLACEHOLDER } from './../constants/StaticFolderPlaceholder';
 import { parseWinPath } from './../helpers/parseWinPath';
 import { dirname, extname, join } from 'path';
@@ -76,6 +77,7 @@ export class PagesParser {
    * Parse all pages in the workspace
    */
   public static async parsePages() {
+    i18n.clearFiles();
     const ext = Extension.getInstance();
 
     // Update the dashboard with the fresh data
@@ -209,6 +211,10 @@ export class PagesParser {
         escapedDescription = '<invalid title>';
       }
 
+      const isDefaultLanguage = await i18n.isDefaultLanguage(filePath);
+      const locale = await i18n.getLocale(filePath);
+      const translations = await i18n.getTranslations(filePath);
+
       const page: Page = {
         ...article.data,
         // Cache properties
@@ -230,6 +236,10 @@ export class PagesParser {
         fmContentType: contentType.name || DEFAULT_CONTENT_TYPE_NAME,
         fmBody: article?.content || '',
         fmDateFormat: dateFormat,
+        // i18n properties
+        fmDefaultLocale: isDefaultLanguage,
+        fmLocale: locale,
+        fmTranslations: translations,
         // Make sure these are always set
         title: escapedTitle,
         description: escapedDescription,

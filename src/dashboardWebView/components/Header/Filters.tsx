@@ -6,6 +6,7 @@ import { CategoryAtom, SettingsSelector, TagAtom, FiltersAtom, FilterValuesAtom 
 import { useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { firstToUpper } from '../../../helpers/StringHelpers';
+import { LanguageFilter } from '../Filters/LanguageFilter';
 
 export interface IFiltersProps { }
 
@@ -16,7 +17,6 @@ export const Filters: React.FunctionComponent<IFiltersProps> = (_: React.PropsWi
   const filterValues = useRecoilValue(FilterValuesAtom);
   const settings = useRecoilValue(SettingsSelector);
   const location = useLocation();
-
 
   const otherFilters = useMemo(() => settings?.filters?.filter((filter) => filter !== "pageFolders" && filter !== "tags" && filter !== "categories"), [settings?.filters]);
 
@@ -74,6 +74,8 @@ export const Filters: React.FunctionComponent<IFiltersProps> = (_: React.PropsWi
 
   return (
     <>
+      <LanguageFilter />
+
       {
         settings?.filters?.includes("pageFolders") && (
           <FoldersFilter />

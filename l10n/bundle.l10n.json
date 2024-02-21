@@ -46,6 +46,8 @@
   "settings.view.common": "Common",
   "settings.view.contentFolders": "Content folders",
   "settings.view.astro": "Astro",
+  "settings.view.integration": "Integration",
+
   "settings.openOnStartup": "Open dashboard on startup",
   "settings.contentTypes": "Content types",
   "settings.contentFolders": "Content folders",
@@ -57,11 +59,16 @@
   "settings.git.commitMessage": "Commit message",
   "settings.git.submoduleInfo": "When working with Git submodules, you can refer to the submodule settings in the documentation.",
   "settings.git.submoduleLink": "Read more about Git submodules",
+  "settings.integration.title": "Integration",
 
   "settings.commonSettings.website.title": "Website and SSG settings",
   "settings.commonSettings.previewUrl": "Preview URL",
   "settings.commonSettings.websiteUrl": "Website URL",
   "settings.commonSettings.startCommand": "SSG/Framework start command",
+
+  "settings.integrationsView.deepl.title": "DeepL",
+  "settings.integrationsView.deepl.intput.label": "Authentication key",
+  "settings.integrationsView.deepl.intput.placeholder": "Enter your DeepL authentication key",
 
   "developer.title": "Developer mode",
   "developer.reload.title": "Reload the dashboard",
@@ -90,6 +97,8 @@
   "dashboard.contents.contentActions.menuItem.view": "View",
   "dashboard.contents.contentActions.alert.title": "Delete: {0}",
   "dashboard.contents.contentActions.alert.description": "Are you sure you want to delete the \"{0}\" content?",
+  "dashboard.contents.contentActions.translations.create": "Create translation",
+  "dashboard.contents.contentActions.translations.menu": "Translations",
 
   "dashboard.contents.item.invalidTitle": "<invalid title>",
   "dashboard.contents.item.invalidDescription": "<invalid description>",
@@ -127,6 +136,9 @@
   "dashboard.dataView.sortableItem.alert.description": "Are you sure you want to delete the data entry?",
 
   "dashboard.errorView.description": "Please close the dashboard and try again.",
+
+  "dashboard.filters.languageFilter.label": "Locale",
+  "dashboard.filters.languageFilter.all": "All",
 
   "dashboard.header.breadcrumb.home": "Home",
 
@@ -523,6 +535,17 @@
   "commands.folders.get.notificationError.remove.action": "Remove folder",
   "commands.folders.get.notificationError.create.action": "Create folder",
 
+  "commands.i18n.create.warning.noFileSelected": "No file selected.",
+  "commands.i18n.create.warning.noFile": "The file could not be retrieved.",
+  "commands.i18n.create.warning.noContentType": "Content type could not be retrieved for the current file.",
+  "commands.i18n.create.warning.noConfig": "No i18n configuration found.",
+  "commands.i18n.create.warning.notDefaultLocale": "The current file cannot be used for i18n content creation.",
+  "commands.i18n.create.error.fileExists": "The i18n translation already exists.",
+  "commands.i18n.create.success.created": "Created \"{0}\" i18n content file.",
+  "commands.i18n.create.quickPick.title": "Create content for locale",
+  "commands.i18n.create.quickPick.placeHolder": "To which locale do you want to create a new content?",
+  "commands.i18n.translate.progress.title": "Translating content...",
+
   "commands.preview.panel.title": "Preview: {0}",
   "commands.preview.askUserToPickFolder.title": "Select the folder of the article to preview",
 
@@ -712,6 +735,7 @@
   "listeners.dashboard.settingsListener.triggerTemplate.progress.title": "Downloading and initializing the template...",
   "listeners.dashboard.settingsListener.triggerTemplate.download.error": "Failed to download the template.",
   "listeners.dashboard.settingsListener.triggerTemplate.init.error": "Failed to initialize the template.",
+  "listeners.dashboard.settingsListener.setSecretValue.message": "Setting has been updated.",
 
   "listeners.dashboard.snippetListener.addSnippet.missingFields.warning": "Snippet missing title or body",
   "listeners.dashboard.snippetListener.addSnippet.exists.warning": "Snippet with the same title already exists",

@@ -16,6 +16,7 @@ import { LocalizationKey } from '../../../localization';
 import { useNavigate } from 'react-router-dom';
 import { routePaths } from '../..';
 import useCard from '../../hooks/useCard';
+import { I18nLabel } from './I18nLabel';
 
 export interface IItemProps extends Page { }
 
@@ -69,6 +70,34 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return [];
   }, [settings, pageData]);
 
+  const statusPlaceholder = useMemo(() => {
+    if (!statusHtml && !cardFields?.state) {
+      return null;
+    }
+
+    return (
+      statusHtml ? (
+        <div dangerouslySetInnerHTML={{ __html: statusHtml }} />
+      ) : (
+        cardFields?.state && draftField && draftField.name && typeof pageData[draftField.name] !== "undefined" ? <Status draft={pageData[draftField.name]} published={pageData.fmPublished} /> : null
+      )
+    )
+  }, [statusHtml, cardFields?.state, draftField, pageData]);
+
+  const datePlaceholder = useMemo(() => {
+    if (!dateHtml && !cardFields?.date) {
+      return null;
+    }
+
+    return (
+      dateHtml ? (
+        <div className='mr-4' dangerouslySetInnerHTML={{ __html: dateHtml }} />
+      ) : (
+        cardFields?.date && pageData.date ? <DateField className={`mr-4`} value={pageData.date} format={pageData.fmDateFormat} /> : null
+      )
+    )
+  }, [dateHtml, cardFields?.date, pageData]);
+
   const hasDraftOrDate = useMemo(() => {
     return cardFields && (cardFields.state || cardFields.date);
   }, [cardFields]);
@@ -82,8 +111,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           <button
             title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
             onClick={openFile}
-            className={`relative h-36 w-full overflow-hidden border-b cursor-pointer border-[var(--frontmatter-border)]
-              }`}
+            className={`relative h-36 w-full overflow-hidden border-b cursor-pointer border-[var(--frontmatter-border)]`}
           >
             {
               imageHtml ?
@@ -106,31 +134,27 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           </button>
 
           <div className="relative p-4 w-full grow">
-            <div className={`flex justify-between items-center ${hasDraftOrDate ? `mb-2` : ``}`}>
-              {
-                statusHtml ? (
-                  <div dangerouslySetInnerHTML={{ __html: statusHtml }} />
-                ) : (
-                  cardFields?.state && draftField && draftField.name && <Status draft={pageData[draftField.name]} published={pageData.fmPublished} />
-                )
-              }
-
-              {
-                dateHtml ? (
-                  <div className='mr-4' dangerouslySetInnerHTML={{ __html: dateHtml }} />
-                ) : (
-                  cardFields?.date && <DateField className={`mr-4`} value={pageData.date} format={pageData.fmDateFormat} />
-                )
-              }
-            </div>
+            {
+              (statusPlaceholder || datePlaceholder) && (
+                <div className={`flex justify-between items-center ${hasDraftOrDate ? `mb-2` : ``}`}>
+                  {statusPlaceholder}
+                  {datePlaceholder}
+                </div>
+              )
+            }
 
             <ContentActions
               title={pageData.title}
               path={pageData.fmFilePath}
               relPath={pageData.fmRelFileWsPath}
+              locale={pageData.fmLocale}
+              isDefaultLocale={pageData.fmDefaultLocale}
+              translations={pageData.fmTranslations}
               scripts={settings?.scripts}
               onOpen={openFile}
             />
+
+            <I18nLabel page={pageData} />
 
             <button
               title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
@@ -140,25 +164,29 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                 titleHtml ? (
                   <div dangerouslySetInnerHTML={{ __html: titleHtml }} />
                 ) : (
-                  <h2 className="mb-2 font-bold">
-                    {escapedTitle}
+                  <h2 className="font-bold">
+                    <span>{escapedTitle}</span>
                   </h2>
                 )
               }
             </button>
 
-            <button
-              title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
-              onClick={openFile}
-              className={`text-left block`}>
-              {
-                descriptionHtml ? (
-                  <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
-                ) : (
-                  <p className={`text-xs text-[vara(--vscode-titleBar-activeForeground)]`}>{escapedDescription}</p>
-                )
-              }
-            </button>
+            {
+              (escapedDescription || descriptionHtml) && (
+                <button
+                  title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
+                  onClick={openFile}
+                  className={`mt-2 text-left block`}>
+                  {
+                    descriptionHtml ? (
+                      <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
+                    ) : (
+                      <p className={`text-xs text-[vara(--vscode-titleBar-activeForeground)]`}>{escapedDescription}</p>
+                    )
+                  }
+                </button>
+              )
+            }
 
             {
               tagsHtml ? (

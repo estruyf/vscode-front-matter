@@ -176,6 +176,10 @@ export enum LocalizationKey {
    */
   settingsViewAstro = 'settings.view.astro',
   /**
+   * Integration
+   */
+  settingsViewIntegration = 'settings.view.integration',
+  /**
    * Open dashboard on startup
    */
   settingsOpenOnStartup = 'settings.openOnStartup',
@@ -220,6 +224,10 @@ export enum LocalizationKey {
    */
   settingsGitSubmoduleLink = 'settings.git.submoduleLink',
   /**
+   * Integration
+   */
+  settingsIntegrationTitle = 'settings.integration.title',
+  /**
    * Website and SSG settings
    */
   settingsCommonSettingsWebsiteTitle = 'settings.commonSettings.website.title',
@@ -235,6 +243,18 @@ export enum LocalizationKey {
    * SSG/Framework start command
    */
   settingsCommonSettingsStartCommand = 'settings.commonSettings.startCommand',
+  /**
+   * DeepL
+   */
+  settingsIntegrationsViewDeeplTitle = 'settings.integrationsView.deepl.title',
+  /**
+   * Authentication key
+   */
+  settingsIntegrationsViewDeeplIntputLabel = 'settings.integrationsView.deepl.intput.label',
+  /**
+   * Enter your DeepL authentication key
+   */
+  settingsIntegrationsViewDeeplIntputPlaceholder = 'settings.integrationsView.deepl.intput.placeholder',
   /**
    * Developer mode
    */
@@ -315,6 +335,14 @@ export enum LocalizationKey {
    * Are you sure you want to delete the "{0}" content?
    */
   dashboardContentsContentActionsAlertDescription = 'dashboard.contents.contentActions.alert.description',
+  /**
+   * Create translation
+   */
+  dashboardContentsContentActionsTranslationsCreate = 'dashboard.contents.contentActions.translations.create',
+  /**
+   * Translations
+   */
+  dashboardContentsContentActionsTranslationsMenu = 'dashboard.contents.contentActions.translations.menu',
   /**
    * <invalid title>
    */
@@ -427,6 +455,14 @@ export enum LocalizationKey {
    * Please close the dashboard and try again.
    */
   dashboardErrorViewDescription = 'dashboard.errorView.description',
+  /**
+   * Locale
+   */
+  dashboardFiltersLanguageFilterLabel = 'dashboard.filters.languageFilter.label',
+  /**
+   * All
+   */
+  dashboardFiltersLanguageFilterAll = 'dashboard.filters.languageFilter.all',
   /**
    * Home
    */
@@ -1673,6 +1709,46 @@ export enum LocalizationKey {
    */
   commandsFoldersGetNotificationErrorCreateAction = 'commands.folders.get.notificationError.create.action',
   /**
+   * No file selected.
+   */
+  commandsI18nCreateWarningNoFileSelected = 'commands.i18n.create.warning.noFileSelected',
+  /**
+   * The file could not be retrieved.
+   */
+  commandsI18nCreateWarningNoFile = 'commands.i18n.create.warning.noFile',
+  /**
+   * Content type could not be retrieved for the current file.
+   */
+  commandsI18nCreateWarningNoContentType = 'commands.i18n.create.warning.noContentType',
+  /**
+   * No i18n configuration found.
+   */
+  commandsI18nCreateWarningNoConfig = 'commands.i18n.create.warning.noConfig',
+  /**
+   * The current file cannot be used for i18n content creation.
+   */
+  commandsI18nCreateWarningNotDefaultLocale = 'commands.i18n.create.warning.notDefaultLocale',
+  /**
+   * The i18n translation already exists.
+   */
+  commandsI18nCreateErrorFileExists = 'commands.i18n.create.error.fileExists',
+  /**
+   * Created "{0}" i18n content file.
+   */
+  commandsI18nCreateSuccessCreated = 'commands.i18n.create.success.created',
+  /**
+   * Create content for locale
+   */
+  commandsI18nCreateQuickPickTitle = 'commands.i18n.create.quickPick.title',
+  /**
+   * To which locale do you want to create a new content?
+   */
+  commandsI18nCreateQuickPickPlaceHolder = 'commands.i18n.create.quickPick.placeHolder',
+  /**
+   * Translating content...
+   */
+  commandsI18nTranslateProgressTitle = 'commands.i18n.translate.progress.title',
+  /**
    * Preview: {0}
    */
   commandsPreviewPanelTitle = 'commands.preview.panel.title',
@@ -2352,6 +2428,10 @@ export enum LocalizationKey {
    * Failed to initialize the template.
    */
   listenersDashboardSettingsListenerTriggerTemplateInitError = 'listeners.dashboard.settingsListener.triggerTemplate.init.error',
+  /**
+   * Setting has been updated.
+   */
+  listenersDashboardSettingsListenerSetSecretValueMessage = 'listeners.dashboard.settingsListener.setSecretValue.message',
   /**
    * Snippet missing title or body
    */

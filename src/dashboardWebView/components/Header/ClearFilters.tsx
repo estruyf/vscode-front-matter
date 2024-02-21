@@ -12,7 +12,9 @@ import {
   CategoryAtom,
   DEFAULT_TAG_STATE,
   DEFAULT_CATEGORY_STATE,
-  FiltersAtom
+  FiltersAtom,
+  LocaleAtom,
+  DEFAULT_LOCALE_STATE
 } from '../../state';
 import { DefaultValue } from 'recoil';
 import { useEffect, useMemo } from 'react';
@@ -34,12 +36,14 @@ export const ClearFilters: React.FunctionComponent<IClearFiltersProps> = (
   const folder = useRecoilValue(FolderSelector);
   const tag = useRecoilValue(TagSelector);
   const category = useRecoilValue(CategorySelector);
+  const locale = useRecoilValue(LocaleAtom);
   const filters = useRecoilValue(FiltersAtom);
 
   const resetSorting = useResetRecoilState(SortingAtom);
   const resetFolder = useResetRecoilState(FolderAtom);
   const resetTag = useResetRecoilState(TagAtom);
   const resetCategory = useResetRecoilState(CategoryAtom);
+  const resetLocale = useResetRecoilState(LocaleAtom);
   const resetFilters = useResetRecoilState(FiltersAtom);
 
   const reset = () => {
@@ -48,6 +52,7 @@ export const ClearFilters: React.FunctionComponent<IClearFiltersProps> = (
     resetFolder();
     resetTag();
     resetCategory();
+    resetLocale();
     resetFilters();
   };
 
@@ -61,19 +66,20 @@ export const ClearFilters: React.FunctionComponent<IClearFiltersProps> = (
       folder !== DEFAULT_FOLDER_STATE ||
       tag !== DEFAULT_TAG_STATE ||
       category !== DEFAULT_CATEGORY_STATE ||
+      locale !== DEFAULT_LOCALE_STATE ||
       hasCustomFilters
     ) {
       setShow(true);
     } else {
       setShow(false);
     }
-  }, [folder, tag, category, hasCustomFilters]);
+  }, [folder, tag, category, locale, hasCustomFilters]);
 
   if (!show) return null;
 
   return (
     <button
-      className={`flex items-center hover:text-[var(--vscode-textLink-activeForeground)]`}
+      className={`flex items-center hover:text-[var(--vscode-statusBarItem-errorBackground)]`}
       onClick={reset}
       title={l10n.t(LocalizationKey.dashboardHeaderClearFiltersTitle)}
     >

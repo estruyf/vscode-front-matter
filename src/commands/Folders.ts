@@ -1,6 +1,7 @@
 import { STATIC_FOLDER_PLACEHOLDER } from './../constants/StaticFolderPlaceholder';
 import { Questions } from './../helpers/Questions';
 import {
+  SETTING_CONTENT_I18N,
   SETTING_CONTENT_PAGE_FOLDERS,
   SETTING_CONTENT_STATIC_FOLDER,
   SETTING_CONTENT_SUPPORTED_FILETYPES,
@@ -9,7 +10,7 @@ import {
 } from './../constants';
 import { commands, Uri, workspace, window } from 'vscode';
 import { basename, dirname, join, relative, sep } from 'path';
-import { ContentFolder, FileInfo, FolderInfo, StaticFolder } from '../models';
+import { ContentFolder, FileInfo, FolderInfo, I18nConfig, StaticFolder } from '../models';
 import uniqBy = require('lodash.uniqby');
 import { Template } from './Template';
 import { Notifications } from '../helpers/Notifications';
@@ -288,67 +289,34 @@ export class Folders {
       const folderInfo: FolderInfo[] = [];
 
       for (const folder of folders) {
-        try {
-          const folderPath = parseWinPath(folder.path);
+        const crntFolderInfo = await Folders.getFilesByFolder(folder, supportedFiles, limit);
+        if (crntFolderInfo) {
+          folderInfo.push(crntFolderInfo);
+        }
 
-          if (typeof folderPath === 'string') {
-            let files: Uri[] = [];
+        // Process localization folders
+        if (folder.defaultLocale) {
+          const i18nConfig = folder.locales || Settings.get<I18nConfig[]>(SETTING_CONTENT_I18N);
+          if (i18nConfig) {
+            for (const i18n of i18nConfig) {
+              if (i18n.locale !== folder.defaultLocale && i18n.path) {
+                const i18nFolder = {
+                  ...folder,
+                  path: join(folder.path, i18n.path),
+                  title: `${folder.title} (${i18n.title})`
+                } as ContentFolder;
 
-            for (const fileType of supportedFiles || DEFAULT_FILE_TYPES) {
-              let filePath = join(
-                folderPath,
-                folder.excludeSubdir ? '/' : '**',
-                `*${fileType.startsWith('.') ? '' : '.'}${fileType}`
-              );
-
-              if (folderPath === '' && folder.excludeSubdir) {
-                filePath = `*${fileType.startsWith('.') ? '' : '.'}${fileType}`;
-              }
-
-              let foundFiles = await Folders.findFiles(filePath);
-
-              // Make sure these file are coming from the folder path (this could be an issue in multi-root workspaces)
-              foundFiles = foundFiles.filter((f) => parseWinPath(f.fsPath).startsWith(folderPath));
-
-              files = [...files, ...foundFiles];
-            }
-
-            if (files) {
-              let fileStats: FileInfo[] = [];
-
-              for (const file of files) {
-                try {
-                  const fileName = basename(file.fsPath);
-                  const folderName = dirname(file.fsPath).split(sep).pop();
-
-                  const stats = await workspace.fs.stat(file);
-
-                  fileStats.push({
-                    filePath: file.fsPath,
-                    fileName,
-                    folderName,
-                    ...stats
-                  });
-                } catch (error) {
-                  // Skip the file
+                const crntFolderInfo = await Folders.getFilesByFolder(
+                  i18nFolder,
+                  supportedFiles,
+                  limit
+                );
+                if (crntFolderInfo) {
+                  folderInfo.push(crntFolderInfo);
                 }
               }
-
-              fileStats = fileStats.sort((a, b) => b.mtime - a.mtime);
-
-              if (limit) {
-                fileStats = fileStats.slice(0, limit);
-              }
-
-              folderInfo.push({
-                title: folder.title,
-                files: files.length,
-                lastModified: fileStats
-              });
             }
           }
-        } catch (e) {
-          // Skip the current folder
         }
       }
 
@@ -598,6 +566,97 @@ export class Folders {
       if (selectedFolder && typeof selectedFolder.filePrefix !== 'undefined') {
         return selectedFolder.filePrefix;
       }
+    }
+
+    return;
+  }
+
+  /**
+   * Retrieves the page folder that matches the given file path.
+   *
+   * @param filePath - The file path to match against the page folders.
+   * @returns The page folder that matches the file path, or undefined if no match is found.
+   */
+  public static getPageFolderByFilePath(filePath: string): ContentFolder | undefined {
+    const folders = Folders.get();
+    const parsedPath = parseWinPath(filePath);
+    const pageFolderMatches = folders
+      .filter((folder) => parsedPath && folder.path && parsedPath.includes(folder.path))
+      .sort((a, b) => b.path.length - a.path.length);
+
+    if (pageFolderMatches.length > 0 && pageFolderMatches[0]) {
+      return pageFolderMatches[0];
+    }
+
+    return;
+  }
+
+  private static async getFilesByFolder(
+    folder: ContentFolder,
+    supportedFiles: string[] | undefined,
+    limit?: number
+  ): Promise<FolderInfo | undefined> {
+    try {
+      const folderPath = parseWinPath(folder.path);
+
+      if (typeof folderPath === 'string') {
+        let files: Uri[] = [];
+
+        for (const fileType of supportedFiles || DEFAULT_FILE_TYPES) {
+          let filePath = join(
+            folderPath,
+            folder.excludeSubdir ? '/' : '**',
+            `*${fileType.startsWith('.') ? '' : '.'}${fileType}`
+          );
+
+          if (folderPath === '' && folder.excludeSubdir) {
+            filePath = `*${fileType.startsWith('.') ? '' : '.'}${fileType}`;
+          }
+
+          let foundFiles = await Folders.findFiles(filePath);
+
+          // Make sure these file are coming from the folder path (this could be an issue in multi-root workspaces)
+          foundFiles = foundFiles.filter((f) => parseWinPath(f.fsPath).startsWith(folderPath));
+
+          files = [...files, ...foundFiles];
+        }
+
+        if (files) {
+          let fileStats: FileInfo[] = [];
+
+          for (const file of files) {
+            try {
+              const fileName = basename(file.fsPath);
+              const folderName = dirname(file.fsPath).split(sep).pop();
+
+              const stats = await workspace.fs.stat(file);
+
+              fileStats.push({
+                filePath: file.fsPath,
+                fileName,
+                folderName,
+                ...stats
+              });
+            } catch (error) {
+              // Skip the file
+            }
+          }
+
+          fileStats = fileStats.sort((a, b) => b.mtime - a.mtime);
+
+          if (limit) {
+            fileStats = fileStats.slice(0, limit);
+          }
+
+          return {
+            title: folder.title,
+            files: files.length,
+            lastModified: fileStats
+          };
+        }
+      }
+    } catch (e) {
+      // Skip the current folder
     }
 
     return;

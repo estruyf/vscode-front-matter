@@ -40,7 +40,7 @@ export const Filter: React.FunctionComponent<IFilterProps> = ({
         <MenuItem
           title={DEFAULT_VALUE}
           value={null}
-          isCurrent={!!activeItem}
+          isCurrent={!activeItem}
           onClick={() => onClick(null)}
         />
 

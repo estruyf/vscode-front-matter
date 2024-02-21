@@ -1,3 +1,5 @@
+import { I18nConfig } from './i18nConfig';
+
 export interface ContentFolder {
   title: string;
   path: string;
@@ -10,4 +12,6 @@ export interface ContentFolder {
   originalPath?: string;
   $schema?: string;
   extended?: boolean;
+  defaultLocale?: string;
+  locales: I18nConfig[];
 }
