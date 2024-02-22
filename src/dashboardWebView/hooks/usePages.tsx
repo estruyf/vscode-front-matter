@@ -220,16 +220,6 @@ export default function usePages(pages: Page[]) {
         }
       }
 
-      if (tabPrevious !== tab || !locales || locales.length === 0) {
-        // Store the locale information
-        const config: I18nConfig[] = [];
-        crntPages.forEach((page) => {
-          if (page.fmLocale && !config.some(locale => locale.locale === page.fmLocale?.locale)) {
-            config.push(page.fmLocale);
-          }
-        });
-        setLocales(config);
-      }
 
       // Set the pages
       setPageItems(crntPages);
@@ -275,6 +265,17 @@ export default function usePages(pages: Page[]) {
       });
     } else {
       startPageProcessing();
+    }
+
+    if (pages && pages.length > 0) {
+      // Store the locale information
+      const config: I18nConfig[] = [];
+      pages.forEach((page) => {
+        if (page.fmLocale && !config.some(locale => locale.locale === page.fmLocale?.locale)) {
+          config.push(page.fmLocale);
+        }
+      });
+      setLocales(config);
     }
   }, [settings?.draftField, pages, sorting, search, tag, category, locale, filters, folder]);
 
