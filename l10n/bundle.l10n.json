@@ -67,8 +67,14 @@
   "settings.commonSettings.startCommand": "SSG/Framework start command",
 
   "settings.integrationsView.deepl.title": "DeepL",
-  "settings.integrationsView.deepl.intput.label": "Authentication key",
-  "settings.integrationsView.deepl.intput.placeholder": "Enter your DeepL authentication key",
+  "settings.integrationsView.deepl.intput.label": "API key",
+  "settings.integrationsView.deepl.intput.placeholder": "Enter your Azure Translator API key",
+
+  "settings.integrationsView.azure.title": "Azure AI Translator Service",
+  "settings.integrationsView.azure.intput.label": "Subscription key",
+  "settings.integrationsView.azure.intput.placeholder": "Enter your Azure AI Translator - Subscription key",
+  "settings.integrationsView.azure.region.label": "Region",
+  "settings.integrationsView.azure.region.placeholder": "Enter your Azure AI Translator - Region. Example: westeurope",
 
   "developer.title": "Developer mode",
   "developer.reload.title": "Reload the dashboard",

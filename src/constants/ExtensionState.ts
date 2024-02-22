@@ -33,6 +33,12 @@ export const ExtensionState = {
   },
 
   Secrets: {
-    DeeplApiKey: `frontMatter:Secrets:DeeplApiKey`
+    Deepl: {
+      ApiKey: `frontMatter:Secrets:DeeplApiKey`
+    },
+    Azure: {
+      TranslatorKey: `frontMatter:Secrets:AzureTranslatorKey`,
+      TranslatorRegion: `frontMatter:Secrets:AzureTranslatorRegion`
+    }
   }
 };
