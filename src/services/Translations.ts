@@ -56,7 +56,7 @@ export class Translations {
       const body = JSON.stringify(text.map((t) => ({ Text: t })));
 
       const response = await fetch(
-        `https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=${target}&from=${source}`,
+        `https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=${target}&from=${source}&textType=html`,
         {
           method: 'POST',
           headers: {
