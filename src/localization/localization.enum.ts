@@ -248,13 +248,33 @@ export enum LocalizationKey {
    */
   settingsIntegrationsViewDeeplTitle = 'settings.integrationsView.deepl.title',
   /**
-   * Authentication key
+   * API key
    */
   settingsIntegrationsViewDeeplIntputLabel = 'settings.integrationsView.deepl.intput.label',
   /**
-   * Enter your DeepL authentication key
+   * Enter your Azure Translator API key
    */
   settingsIntegrationsViewDeeplIntputPlaceholder = 'settings.integrationsView.deepl.intput.placeholder',
+  /**
+   * Azure AI Translator Service
+   */
+  settingsIntegrationsViewAzureTitle = 'settings.integrationsView.azure.title',
+  /**
+   * Subscription key
+   */
+  settingsIntegrationsViewAzureIntputLabel = 'settings.integrationsView.azure.intput.label',
+  /**
+   * Enter your Azure AI Translator - Subscription key
+   */
+  settingsIntegrationsViewAzureIntputPlaceholder = 'settings.integrationsView.azure.intput.placeholder',
+  /**
+   * Region
+   */
+  settingsIntegrationsViewAzureRegionLabel = 'settings.integrationsView.azure.region.label',
+  /**
+   * Enter your Azure AI Translator - Region. Example: westeurope
+   */
+  settingsIntegrationsViewAzureRegionPlaceholder = 'settings.integrationsView.azure.region.placeholder',
   /**
    * Developer mode
    */
@@ -2156,18 +2176,6 @@ export enum LocalizationKey {
    * {0} has been updated to v{1} — check out what's new!
    */
   helpersExtensionGetVersionUpdateNotification = 'helpers.extension.getVersion.update.notification',
-  /**
-   * The "{0}" and "{1}" settings have been deprecated. Please use the "isPublishDate" and "isModifiedDate" datetime field properties instead.
-   */
-  helpersExtensionMigrateSettingsDeprecatedWarning = 'helpers.extension.migrateSettings.deprecated.warning',
-  /**
-   * Hide
-   */
-  helpersExtensionMigrateSettingsDeprecatedWarningHide = 'helpers.extension.migrateSettings.deprecated.warning.hide',
-  /**
-   * See migration guide
-   */
-  helpersExtensionMigrateSettingsDeprecatedWarningSeeGuide = 'helpers.extension.migrateSettings.deprecated.warning.seeGuide',
   /**
    * {0} - Templates
    */

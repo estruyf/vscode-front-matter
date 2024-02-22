@@ -4,13 +4,12 @@ import {
   ContentType,
   Extension,
   FrameworkDetector,
-  Logger,
   Notifications,
   Settings,
   openFileInEditor,
   parseWinPath
 } from '../helpers';
-import { COMMAND_NAME, ExtensionState, SETTING_CONTENT_I18N } from '../constants';
+import { COMMAND_NAME, SETTING_CONTENT_I18N } from '../constants';
 import { ContentFolder, Field, I18nConfig, ContentType as IContentType } from '../models';
 import { join, parse } from 'path';
 import { existsAsync } from '../utils';
@@ -19,6 +18,7 @@ import { ParsedFrontMatter } from '../parsers';
 import { PagesListener } from '../listeners/dashboard';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
+import { Translations } from '../services/Translations';
 
 export class i18n {
   private static processedFiles: {
@@ -380,12 +380,6 @@ export class i18n {
     targetLocale: I18nConfig
   ) {
     return new Promise<ParsedFrontMatter>(async (resolve) => {
-      const authKey = await Extension.getInstance().getSecret(ExtensionState.Secrets.DeeplApiKey);
-      if (!authKey) {
-        resolve(article);
-        return;
-      }
-
       await window.withProgress(
         {
           location: ProgressLocation.Notification,
@@ -393,42 +387,25 @@ export class i18n {
           cancellable: false
         },
         async () => {
-          const title = article.data.title || '';
-          const description = article.data.description || '';
-          const content = article.content || '';
-
           try {
-            const body = JSON.stringify({
-              text: [title, description, content],
-              source_lang: sourceLocale.locale,
-              target_lang: targetLocale.locale
-            });
+            const title = article.data.title || '';
+            const description = article.data.description || '';
+            const content = article.content || '';
 
-            let host = authKey.endsWith(':fx') ? 'api-free.deepl.com' : 'api.deepl.com';
+            const text = [title, description, content];
+            const translations = await Translations.translate(
+              text,
+              sourceLocale.locale,
+              targetLocale.locale
+            );
 
-            const response = await fetch(`https://${host}/v2/translate`, {
-              method: 'POST',
-              headers: {
-                Authorization: `DeepL-Auth-Key ${authKey}`,
-                'User-Agent': `FrontMatterCMS/${Extension.getInstance().version}`,
-                'Content-Type': 'application/json',
-                Accept: 'application/json'
-              },
-              body
-            });
-
-            if (!response.ok) {
-              throw new Error(`DeepL: ${response.statusText}`);
+            if (!translations || translations.length < 3) {
+              throw new Error('Invalid response');
             }
 
-            const data = await response.json();
-            if (!data.translations || data.translations.length < 3) {
-              throw new Error('DeepL: Invalid response');
-            }
-
-            article.data.title = article.data.title ? data.translations[0].text : '';
-            article.data.description = article.data.description ? data.translations[1].text : '';
-            article.content = article.content ? data.translations[2].text : '';
+            article.data.title = article.data.title ? translations[0] : '';
+            article.data.description = article.data.description ? translations[1] : '';
+            article.content = article.content ? translations[2] : '';
           } catch (error) {
             Notifications.error(`${(error as Error).message}`);
           }
