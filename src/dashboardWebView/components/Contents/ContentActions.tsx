@@ -230,7 +230,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
                 }
 
                 {
-                  locale && isDefaultLocale && (
+                  locale && (
                     <DropdownMenuItem onClick={() => runCommand(COMMAND_NAME.i18n.create)}>
                       <LanguageIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
                       <span>{l10n.t(LocalizationKey.dashboardContentsContentActionsTranslationsCreate)}</span>

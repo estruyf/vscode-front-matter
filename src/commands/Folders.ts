@@ -293,31 +293,6 @@ export class Folders {
         if (crntFolderInfo) {
           folderInfo.push(crntFolderInfo);
         }
-
-        // Process localization folders
-        if (folder.defaultLocale) {
-          const i18nConfig = folder.locales || Settings.get<I18nConfig[]>(SETTING_CONTENT_I18N);
-          if (i18nConfig) {
-            for (const i18n of i18nConfig) {
-              if (i18n.locale !== folder.defaultLocale && i18n.path) {
-                const i18nFolder = {
-                  ...folder,
-                  path: join(folder.path, i18n.path),
-                  title: `${folder.title} (${i18n.title})`
-                } as ContentFolder;
-
-                const crntFolderInfo = await Folders.getFilesByFolder(
-                  i18nFolder,
-                  supportedFiles,
-                  limit
-                );
-                if (crntFolderInfo) {
-                  folderInfo.push(crntFolderInfo);
-                }
-              }
-            }
-          }
-        }
       }
 
       return folderInfo;
@@ -333,11 +308,14 @@ export class Folders {
   public static get(): ContentFolder[] {
     const wsFolder = Folders.getWorkspaceFolder();
     let folders: ContentFolder[] = Settings.get(SETTING_CONTENT_PAGE_FOLDERS) as ContentFolder[];
+    const i18nSettings = Settings.get<I18nConfig[]>(SETTING_CONTENT_I18N);
 
     // Filter out folders without a path
     folders = folders.filter((f) => f.path);
 
-    const contentFolders = folders.map((folder) => {
+    const contentFolders: ContentFolder[] = [];
+
+    folders.forEach((folder) => {
       if (!folder.title) {
         folder.title = basename(folder.path);
       }
@@ -371,11 +349,52 @@ export class Folders {
         }
       }
 
-      return {
-        ...folder,
-        originalPath: folder.path,
-        path: folderPath
-      };
+      // Check i18n
+      if (folder.defaultLocale && (folder.locales || i18nSettings)) {
+        const i18nConfig =
+          folder.locales && folder.locales.length > 0 ? folder.locales : i18nSettings;
+
+        let defaultLocale;
+        let sourcePath = folderPath;
+        let localeFolders: ContentFolder[] = [];
+
+        if (i18nConfig && i18nConfig.length > 0) {
+          for (const i18n of i18nConfig) {
+            if (i18n.locale === folder.defaultLocale) {
+              defaultLocale = i18n;
+            } else if (i18n.locale !== folder.defaultLocale && i18n.path) {
+              localeFolders.push({
+                ...folder,
+                title: `${folder.title} (${i18n.title})`,
+                locale: i18n.locale,
+                localeSourcePath: sourcePath,
+                path: join(folderPath, i18n.path)
+              });
+            }
+          }
+        }
+
+        const defaultTitle = defaultLocale?.title
+          ? `${folder.title} (${defaultLocale.title})`
+          : folder.title;
+        contentFolders.push({
+          ...folder,
+          title: defaultTitle,
+          locale: folder.defaultLocale,
+          originalPath: folder.path,
+          localeSourcePath: sourcePath,
+          path: join(folderPath, defaultLocale?.path || '')
+        });
+
+        contentFolders.push(...localeFolders);
+      } else {
+        contentFolders.push({
+          ...folder,
+          locale: folder.defaultLocale,
+          originalPath: folder.path,
+          path: folderPath
+        });
+      }
     });
 
     return contentFolders.filter((folder) => folder !== null) as ContentFolder[];

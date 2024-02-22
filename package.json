@@ -347,7 +347,8 @@
             },
             "additionalProperties": false,
             "required": [
-              "locale"
+              "locale",
+              "path"
             ]
           },
           "scope": "Content"
@@ -2371,7 +2372,7 @@
         {
           "command": "frontMatter.i18n.create",
           "group": "navigation@-127",
-          "when": "frontMatter:file:isValid && frontMatter:i18n:default"
+          "when": "frontMatter:file:isValid && frontMatter:i18n:enabled"
         },
         {
           "command": "frontMatter.markup.options",
@@ -2474,7 +2475,7 @@
         },
         {
           "command": "frontMatter.i18n.create",
-          "when": "frontMatter:i18n:default"
+          "when": "frontMatter:i18n:enabled"
         },
         {
           "command": "frontMatter.collapseSections",

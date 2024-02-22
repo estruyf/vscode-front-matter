@@ -8,7 +8,7 @@ export const CONTEXT = {
   isValidFile: 'frontMatter:file:isValid',
   isDevelopment: 'frontMatter:isDevelopment',
 
-  isI18nDefault: 'frontMatter:i18n:default',
+  isI18nEnabled: 'frontMatter:i18n:enabled',
 
   hasViewModes: 'frontMatter:has:modes',
 

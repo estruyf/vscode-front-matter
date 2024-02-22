@@ -1725,9 +1725,17 @@ export enum LocalizationKey {
    */
   commandsI18nCreateWarningNoConfig = 'commands.i18n.create.warning.noConfig',
   /**
-   * The current file cannot be used for i18n content creation.
+   * Could not retrieve the locale for the current file.
    */
-  commandsI18nCreateWarningNotDefaultLocale = 'commands.i18n.create.warning.notDefaultLocale',
+  commandsI18nCreateErrorNoLocaleDefinition = 'commands.i18n.create.error.noLocaleDefinition',
+  /**
+   * Current file has been translated to all available languages.
+   */
+  commandsI18nCreateErrorNoLocales = 'commands.i18n.create.error.noLocales',
+  /**
+   * Could not define a content folder for the current file.
+   */
+  commandsI18nCreateErrorNoContentFolder = 'commands.i18n.create.error.noContentFolder',
   /**
    * The i18n translation already exists.
    */

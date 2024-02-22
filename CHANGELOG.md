@@ -7,6 +7,7 @@
 - [#731](https://github.com/estruyf/vscode-front-matter/issues/731): Added the ability to map/unmap taxonomy to multiple pages at once
 - [#746](https://github.com/estruyf/vscode-front-matter/issues/746): Placeholder support added to to the `slug` field
 - [#749](https://github.com/estruyf/vscode-front-matter/issues/749): Ability to set your own filters on the content dashboard with the `frontMatter.content.filters` setting
+- [[#756](https://github.com/estruyf/vscode-front-matter/issues/756): i18n/multilingual content support
 
 ### 🎨 Enhancements
 
