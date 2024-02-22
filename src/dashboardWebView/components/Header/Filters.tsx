@@ -77,7 +77,7 @@ export const Filters: React.FunctionComponent<IFiltersProps> = (_: React.PropsWi
       <LanguageFilter />
 
       {
-        settings?.filters?.includes("pageFolders") && (
+        settings?.filters?.includes("contentFolders") && (
           <FoldersFilter />
         )
       }
