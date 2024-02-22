@@ -11,6 +11,7 @@ export * from './DataFile';
 export * from './DataFolder';
 export * from './DataType';
 export * from './DraftField';
+export * from './FilterType';
 export * from './Framework';
 export * from './GitRepository';
 export * from './GitSettings';

@@ -533,7 +533,12 @@
           ],
           "markdownDescription": "%setting.frontMatter.content.filters.markdownDescription%",
           "items": [{
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "contentFolders",
+                "tags",
+                "categories"
+              ]
             },
             {
               "type": "object",

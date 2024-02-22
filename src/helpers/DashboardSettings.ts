@@ -42,6 +42,7 @@ import {
   CustomScript,
   DEFAULT_MEDIA_CONTENT_TYPE,
   DraftField,
+  FilterType,
   MediaContentType,
   Snippets,
   SortingSetting,
@@ -111,7 +112,8 @@ export class DashboardSettings {
       draftField: Settings.get<DraftField>(SETTING_CONTENT_DRAFT_FIELD),
       customSorting: Settings.get<SortingSetting[]>(SETTING_CONTENT_SORTING),
       contentFolders: Folders.get(),
-      filters: Settings.get<string[]>(SETTING_CONTENT_FILTERS),
+      filters:
+        Settings.get<(FilterType | { title: string; name: string })[]>(SETTING_CONTENT_FILTERS),
       crntFramework: Settings.get<string>(SETTING_FRAMEWORK_ID),
       framework: !isInitialized && wsFolder ? await FrameworkDetector.get(wsFolder.fsPath) : null,
       scripts: Settings.get<CustomScript[]>(SETTING_CUSTOM_SCRIPTS) || [],

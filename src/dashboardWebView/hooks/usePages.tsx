@@ -204,7 +204,7 @@ export default function usePages(pages: Page[]) {
       setTabInfo(draftTypes);
 
       if (Object.keys(filters).length === 0) {
-        const availableFilters = (settings?.filters || []).filter((f) => f !== 'pageFolders' && f !== 'tags' && f !== 'categories');
+        const availableFilters = (settings?.filters || []).filter((f) => f !== 'contentFolders' && f !== 'tags' && f !== 'categories');
         if (availableFilters.length > 0) {
           const allFilters: { [filter: string]: string[]; } = {};
           for (const filter of availableFilters) {
