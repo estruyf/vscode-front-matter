@@ -527,7 +527,7 @@
         "frontMatter.content.filters": {
           "type": "array",
           "default": [
-            "pageFolders",
+            "contentFolders",
             "tags",
             "categories"
           ],
