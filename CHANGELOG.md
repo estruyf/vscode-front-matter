@@ -1,6 +1,6 @@
 # Change Log
 
-## [10.0.0] - 2024-xx-xx
+## [10.0.0] - 2024-xx-xx - [Release notes](https://beta.frontmatter.codes/updates/v10.0.0)
 
 ### ✨ New features
 
@@ -18,8 +18,6 @@
 - [#741](https://github.com/estruyf/vscode-front-matter/issues/741): Added message on the content dashboard when content is processed
 - [#747](https://github.com/estruyf/vscode-front-matter/issues/747): The `@frontmatter/extensibility` dependency now supports scripts for placeholders
 - [#752](https://github.com/estruyf/vscode-front-matter/issues/752): Placeholder support in default `list` field values
-
-### ⚡️ Optimizations
 
 ### 🐞 Fixes
 
