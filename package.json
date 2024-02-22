@@ -707,17 +707,6 @@
           "default": "",
           "markdownDescription": "%setting.frontMatter.dashboard.content.card.fields.title.markdownDescription%"
         },
-        "frontMatter.dashboard.mediaSnippet": {
-          "type": "array",
-          "default": [],
-          "markdownDescription": "%setting.frontMatter.dashboard.mediaSnippet.markdownDescription%",
-          "deprecationMessage": "%setting.frontMatter.dashboard.mediaSnippet.deprecationMessage%",
-          "items": {
-            "type": "string",
-            "description": "%setting.frontMatter.dashboard.mediaSnippet.items.description%"
-          },
-          "scope": "dashboard"
-        },
         "frontMatter.dashboard.openOnStart": {
           "type": [
             "boolean",
@@ -1840,12 +1829,6 @@
           },
           "scope": "Taxonomy"
         },
-        "frontMatter.taxonomy.dateField": {
-          "type": "string",
-          "default": "date",
-          "markdownDescription": "%setting.frontMatter.taxonomy.dateField.markdownDescription%",
-          "deprecationMessage": "%setting.frontMatter.taxonomy.dateField.deprecationMessage%"
-        },
         "frontMatter.taxonomy.dateFormat": {
           "type": "string",
           "markdownDescription": "%setting.frontMatter.taxonomy.dateFormat.markdownDescription%",
@@ -1898,12 +1881,6 @@
           "default": true,
           "markdownDescription": "%setting.frontMatter.taxonomy.indentArrays.markdownDescription%",
           "scope": "Taxonomy"
-        },
-        "frontMatter.taxonomy.modifiedField": {
-          "type": "string",
-          "default": "lastmod",
-          "markdownDescription": "%setting.frontMatter.taxonomy.modifiedField.markdownDescription%",
-          "deprecationMessage": "%setting.frontMatter.taxonomy.modifiedField.deprecationMessage%"
         },
         "frontMatter.taxonomy.quoteStringValues": {
           "type": "boolean",

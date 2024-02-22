@@ -18,7 +18,6 @@ import {
   SETTING_SITE_BASEURL,
   SETTING_TAXONOMY_CONTENT_TYPES,
   SETTING_TEMPLATES_PREFIX,
-  SETTING_MODIFIED_FIELD,
   DefaultFieldValues
 } from '../constants';
 import { DumpOptions } from 'js-yaml';
@@ -387,11 +386,7 @@ export class ArticleHelper {
     const articleCt = ArticleHelper.getContentType(article);
     const modDateField = articleCt.fields.find((f) => f.isModifiedDate);
 
-    return (
-      modDateField?.name ||
-      (Settings.get(SETTING_MODIFIED_FIELD) as string) ||
-      DefaultFields.LastModified
-    );
+    return modDateField?.name || DefaultFields.LastModified;
   }
 
   /**

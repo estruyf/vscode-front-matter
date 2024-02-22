@@ -133,13 +133,3 @@ export const SETTING_CONTENT_FOLDERS = 'content.folders';
  * Use the `isPublishDate` property on the content type datetime field instead
  */
 export const SETTING_DATE_FIELD = 'taxonomy.dateField';
-/**
- * @deprecated
- * Use the `isModifiedDate` property on the content type datetime field instead
- */
-export const SETTING_MODIFIED_FIELD = 'taxonomy.modifiedField';
-/**
- * @deprecated
- * Use the `frontMatter.content.snippets` setting instead
- */
-export const SETTING_DASHBOARD_MEDIA_SNIPPET = 'dashboard.mediaSnippet';
