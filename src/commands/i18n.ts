@@ -44,6 +44,30 @@ export class i18n {
   }
 
   /**
+   * Retrieves all the I18nConfig settings.
+   *
+   * @returns An array of I18nConfig settings.
+   */
+  public static getAll() {
+    const i18nSettings = Settings.get<I18nConfig[]>(SETTING_CONTENT_I18N) || [];
+
+    const folders = Folders.get();
+    if (folders) {
+      for (const folder of folders) {
+        if (folder.locales) {
+          for (const locale of folder.locales) {
+            if (!i18nSettings.some((i18n) => i18n.locale === locale.locale)) {
+              i18nSettings.push(locale);
+            }
+          }
+        }
+      }
+    }
+
+    return i18nSettings;
+  }
+
+  /**
    * Retrieves the I18nConfig settings from the application.
    * @returns An array of I18nConfig objects if settings are found, otherwise undefined.
    */

@@ -21,6 +21,9 @@ export const GeneralCommands = {
       get: 'getSecret',
       set: 'setSecret'
     },
+    content: {
+      locales: 'getContentLocales'
+    },
     runCommand: 'runCommand',
     getLocalization: 'getLocalization',
     openOnWebsite: 'openOnWebsite'
