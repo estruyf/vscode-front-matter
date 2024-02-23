@@ -26,7 +26,8 @@ import {
   PreviewImageField,
   PreviewImageValue,
   NumberField,
-  CustomField
+  CustomField,
+  FieldCollection
 } from '.';
 import { fieldWhenClause } from '../../../utils/fieldWhenClause';
 import { ContentTypeRelationshipField } from './ContentTypeRelationshipField';
@@ -521,6 +522,27 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
     } else {
       return null;
     }
+  } else if (field.type === "fieldCollection") {
+    if (!parent[field.name]) {
+      parent[field.name] = {};
+    }
+
+    const subMetadata = parent[field.name] as IMetadata;
+
+    return (
+      <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+        <FieldCollection
+          key={field.name}
+          field={field}
+          parent={subMetadata}
+          parentFields={parentFields}
+          renderFields={renderFields}
+          settings={settings}
+          blockData={blockData}
+          onChange={onSendUpdate}
+        />
+      </FieldBoundary>
+    );
   } else {
     console.warn(l10n.t(LocalizationKey.panelFieldsWrapperFieldUnknown, field.type));
     return null;
