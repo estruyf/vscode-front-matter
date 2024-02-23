@@ -14,6 +14,7 @@ export interface ContentFolder {
   extended?: boolean;
 
   locale?: string;
+  localeTitle?: string;
   localeSourcePath?: string;
   defaultLocale?: string;
   locales: I18nConfig[];

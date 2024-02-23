@@ -8,6 +8,7 @@ import { Logger } from './Logger';
 import { SponsorAi } from '../services/SponsorAI';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
+import { ContentFolder } from '../models';
 
 export class Questions {
   /**
@@ -130,7 +131,12 @@ export class Questions {
     let selectedFolder: string | undefined;
     if (folders.length > 1) {
       selectedFolder = await window.showQuickPick(
-        folders.map((f) => f.title),
+        folders.map((f: ContentFolder) => {
+          if (f.locale) {
+            return `${f.title} (${f.localeTitle || f.locale})`;
+          }
+          return f.title;
+        }),
         {
           title: l10n.t(LocalizationKey.helpersQuestionsSelectContentFolderQuickPickTitle),
           placeHolder: l10n.t(

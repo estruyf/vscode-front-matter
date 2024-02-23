@@ -365,8 +365,10 @@ export class Folders {
             } else if (i18n.locale !== folder.defaultLocale && i18n.path) {
               localeFolders.push({
                 ...folder,
-                title: `${folder.title} (${i18n.title})`,
+                title: folder.title,
+                originalPath: folder.path,
                 locale: i18n.locale,
+                localeTitle: i18n?.title || i18n.locale,
                 localeSourcePath: sourcePath,
                 path: join(folderPath, i18n.path)
               });
@@ -374,13 +376,11 @@ export class Folders {
           }
         }
 
-        const defaultTitle = defaultLocale?.title
-          ? `${folder.title} (${defaultLocale.title})`
-          : folder.title;
         contentFolders.push({
           ...folder,
-          title: defaultTitle,
+          title: folder.title,
           locale: folder.defaultLocale,
+          localeTitle: defaultLocale?.title || folder.defaultLocale,
           originalPath: folder.path,
           localeSourcePath: sourcePath,
           path: join(folderPath, defaultLocale?.path || '')
