@@ -937,6 +937,13 @@ export class ContentType {
           contentType
         );
 
+        let isTypeSet = false;
+        if (data.type) {
+          isTypeSet = true;
+        } else {
+          data.type = contentType.name;
+        }
+
         const article: ParsedFrontMatter = {
           content: '',
           data: Object.assign({}, data),
@@ -944,6 +951,10 @@ export class ContentType {
         };
 
         data = ArticleHelper.updateDates(article);
+
+        if (isTypeSet) {
+          delete data.type;
+        }
 
         if (contentType.name !== DEFAULT_CONTENT_TYPE_NAME) {
           data['type'] = contentType.name;
