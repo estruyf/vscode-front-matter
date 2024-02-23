@@ -12,6 +12,7 @@ import { SettingsProvider } from './providers/SettingsProvider';
 import { CustomPanelViewResult } from '../models';
 import { Chatbot } from './components/Chatbot/Chatbot';
 import { updateCssVariables } from './utils';
+import { I10nProvider } from './providers/I10nProvider';
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -50,7 +51,7 @@ export const routePaths: { [name: string]: string } = {
   settings: '/settings',
 };
 
-const mutationObserver = new MutationObserver((mutationsList, observer) => {
+const mutationObserver = new MutationObserver((_, __) => {
   updateCssVariables();
 });
 
@@ -88,17 +89,21 @@ if (elm) {
 
   if (type === 'preview') {
     render(
-      <SettingsProvider experimental={experimental === 'true'} version={version || ""}>
-        <Preview url={url} />
-      </SettingsProvider>, elm);
+      <I10nProvider>
+        <SettingsProvider experimental={experimental === 'true'} version={version || ""}>
+          <Preview url={url} />
+        </SettingsProvider>
+      </I10nProvider>, elm);
   } else if (type === 'chatbot') {
     render(
-      <SettingsProvider
-        aiUrl='https://frontmatter.codes'
-        experimental={experimental === 'true'}
-        version={version || ""}>
-        <Chatbot />
-      </SettingsProvider>, elm);
+      <I10nProvider>
+        <SettingsProvider
+          aiUrl='https://frontmatter.codes'
+          experimental={experimental === 'true'}
+          version={version || ""}>
+          <Chatbot />
+        </SettingsProvider>
+      </I10nProvider>, elm);
   } else {
     render(
       <RecoilRoot>
@@ -106,9 +111,11 @@ if (elm) {
           initialEntries={Object.keys(routePaths).map((key: string) => routePaths[key]) as string[]}
           initialIndex={1}
         >
-          <SettingsProvider experimental={experimental === 'true'} version={version || ""} webviewUrl={webviewUrl || ""}>
-            <App showWelcome={!!welcome} />
-          </SettingsProvider>
+          <I10nProvider>
+            <SettingsProvider experimental={experimental === 'true'} version={version || ""} webviewUrl={webviewUrl || ""}>
+              <App showWelcome={!!welcome} />
+            </SettingsProvider>
+          </I10nProvider>
         </MemoryRouter>
       </RecoilRoot>,
       elm

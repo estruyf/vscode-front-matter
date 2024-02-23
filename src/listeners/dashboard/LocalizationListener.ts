@@ -12,7 +12,7 @@ export class LocalizationListener extends BaseListener {
   public static process(msg: PostMessageData) {
     switch (msg.command) {
       case GeneralCommands.toVSCode.getLocalization:
-        this.getLocalization();
+        this.getLocalization(msg.command, msg.requestId);
         break;
       case GeneralCommands.toVSCode.content.locales:
         this.getContentLocales(msg.command, msg.requestId);
@@ -20,10 +20,13 @@ export class LocalizationListener extends BaseListener {
     }
   }
 
-  public static async getLocalization() {
-    const fileContents = await getLocalizationFile();
+  public static async getLocalization(command: string, requestId?: string) {
+    if (!command || !requestId) {
+      return;
+    }
 
-    this.sendMsg(GeneralCommands.toWebview.setLocalization as any, fileContents);
+    const fileContents = await getLocalizationFile();
+    this.sendRequest(command as any, requestId, fileContents);
   }
 
   private static async getContentLocales(command: string, requestId?: string) {

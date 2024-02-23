@@ -17,6 +17,7 @@ import '@bendera/vscode-webview-elements/dist/vscode-table-row.js';
 import '@bendera/vscode-webview-elements/dist/vscode-table-cell.js';
 import '@bendera/vscode-webview-elements/dist/vscode-collapsible.js';
 import '@bendera/vscode-webview-elements/dist/vscode-label.js';
+import { I10nProvider } from '../dashboardWebView/providers/I10nProvider';
 // import '@bendera/vscode-webview-elements/dist/vscode-checkbox.js';
 
 // import '@vscode/webview-ui-toolkit/dist/esm/checkbox';
@@ -51,9 +52,11 @@ if (elm) {
   }
 
   render(
-    <RecoilRoot>
-      <ViewPanel />
-    </RecoilRoot>,
+    <I10nProvider>
+      <RecoilRoot>
+        <ViewPanel />
+      </RecoilRoot>
+    </I10nProvider>,
     elm
   );
 }

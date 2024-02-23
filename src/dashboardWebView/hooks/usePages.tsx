@@ -269,7 +269,6 @@ export default function usePages(pages: Page[]) {
 
     if (pages && pages.length > 0) {
       messageHandler.request<I18nConfig[]>(GeneralCommands.toVSCode.content.locales).then((config) => {
-        console.log('config', config);
         setLocales(config || []);
       });
     }

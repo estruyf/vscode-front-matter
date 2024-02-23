@@ -30,7 +30,7 @@ export interface IAppProps {
 export const App: React.FunctionComponent<IAppProps> = ({
   showWelcome
 }: React.PropsWithChildren<IAppProps>) => {
-  const { pages, settings, localeReady } = useMessages();
+  const { pages, settings } = useMessages();
   const view = useRecoilValue(DashboardViewSelector);
   const mode = useRecoilValue(ModeAtom);
   const [isDevMode, setIsDevMode] = useState(false);
@@ -70,7 +70,7 @@ export const App: React.FunctionComponent<IAppProps> = ({
     }
   }, []);
 
-  if (!settings || !localeReady) {
+  if (!settings) {
     return <Spinner />;
   }
 
