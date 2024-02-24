@@ -698,6 +698,7 @@
   "helpers.questions.selectContentType.quickPick.title": "Content type",
   "helpers.questions.selectContentType.quickPick.placeholder": "Select the content type to create your new content",
   "helpers.questions.selectContentType.noSelection.warning": "No content type was selected.",
+  "helpers.questions.selectContentType.quickPick.error.noContentTypes": "There are no matching content types configured for this folder.",
 
   "helpers.seoHelper.checkLength.diagnostic.message": "Article {0} is longer than {1} characters (current length: {2}). For SEO reasons, it would be better to make it less than {1} characters.",
 

@@ -2297,6 +2297,10 @@ export enum LocalizationKey {
    */
   helpersQuestionsSelectContentTypeNoSelectionWarning = 'helpers.questions.selectContentType.noSelection.warning',
   /**
+   * There are no matching content types configured for this folder.
+   */
+  helpersQuestionsSelectContentTypeQuickPickErrorNoContentTypes = 'helpers.questions.selectContentType.quickPick.error.noContentTypes',
+  /**
    * Article {0} is longer than {1} characters (current length: {2}). For SEO reasons, it would be better to make it less than {1} characters.
    */
   helpersSeoHelperCheckLengthDiagnosticMessage = 'helpers.seoHelper.checkLength.diagnostic.message',

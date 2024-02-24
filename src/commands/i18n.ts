@@ -424,7 +424,8 @@ export class i18n {
             );
 
             if (!translations || translations.length < 3) {
-              throw new Error('Invalid response');
+              resolve(article);
+              return;
             }
 
             article.data.title = article.data.title ? translations[0] : '';

@@ -99,7 +99,7 @@ export class Folders {
     }
 
     const folders = Folders.get().filter((f) => !f.disableCreation);
-    const location = folders.find((f) => f.title === selectedFolder);
+    const location = folders.find((f) => f.path === selectedFolder.path);
     if (location) {
       const folderPath = Folders.getFolderPath(Uri.file(location.path));
       if (folderPath) {
@@ -370,7 +370,7 @@ export class Folders {
                 locale: i18n.locale,
                 localeTitle: i18n?.title || i18n.locale,
                 localeSourcePath: sourcePath,
-                path: join(folderPath, i18n.path)
+                path: parseWinPath(join(folderPath, i18n.path))
               });
             }
           }
@@ -383,7 +383,7 @@ export class Folders {
           localeTitle: defaultLocale?.title || folder.defaultLocale,
           originalPath: folder.path,
           localeSourcePath: sourcePath,
-          path: join(folderPath, defaultLocale?.path || '')
+          path: parseWinPath(join(folderPath, defaultLocale?.path || ''))
         });
 
         contentFolders.push(...localeFolders);
