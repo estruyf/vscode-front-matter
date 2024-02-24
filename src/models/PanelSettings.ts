@@ -191,6 +191,8 @@ export interface FolderInfo {
   title: string;
   files: number;
   lastModified: FileInfo[];
+  locale?: string;
+  localeTitle?: string;
 }
 
 export interface FileInfo extends FileStat {

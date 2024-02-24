@@ -29,7 +29,7 @@ const FolderAndFiles: React.FunctionComponent<IFolderAndFilesProps> = ({
                 {folder.lastModified ? (
                   <div key={`${folder.title}-${idx}`}>
                     <FileList
-                      folderName={folder.title}
+                      folderName={folder.localeTitle ? `${folder.title} (${folder.localeTitle})` : folder.title}
                       totalFiles={folder.files}
                       files={folder.lastModified}
                     />

@@ -670,7 +670,9 @@ export class Folders {
           return {
             title: folder.title,
             files: files.length,
-            lastModified: fileStats
+            lastModified: fileStats,
+            locale: folder.locale,
+            localeTitle: folder.localeTitle
           };
         }
       }
