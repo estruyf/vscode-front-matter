@@ -24,6 +24,9 @@ export class SlugHelper {
     if (slugTemplate) {
       if (slugTemplate.includes('{{title}}')) {
         const regex = new RegExp('{{title}}', 'g');
+        slugTemplate = slugTemplate.replace(regex, articleTitle.toLowerCase().replace(/\s/g, '-'));
+      } else if (slugTemplate.includes('{{seoTitle}}')) {
+        const regex = new RegExp('{{seoTitle}}', 'g');
         slugTemplate = slugTemplate.replace(regex, SlugHelper.slugify(articleTitle));
       }
 

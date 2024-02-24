@@ -10,7 +10,8 @@ import {
   SETTING_SLUG_PREFIX,
   SETTING_SLUG_SUFFIX,
   SETTING_CONTENT_PLACEHOLDERS,
-  TelemetryEvent
+  TelemetryEvent,
+  SETTING_SLUG_TEMPLATE
 } from './../constants';
 import * as vscode from 'vscode';
 import { CustomPlaceholder, Field } from '../models';
@@ -258,6 +259,21 @@ export class Article {
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;
+    }
+
+    const slugTemplate = Settings.get<string>(SETTING_SLUG_TEMPLATE);
+    if (slugTemplate) {
+      if (slugTemplate === '{{title}}') {
+        const article = ArticleHelper.getFrontMatter(editor);
+        if (article?.data?.title) {
+          return article.data.title.toLowerCase().replace(/\s/g, '-');
+        }
+      } else {
+        const article = ArticleHelper.getFrontMatter(editor);
+        if (article?.data) {
+          return SlugHelper.createSlug(article.data.title, article.data, slugTemplate);
+        }
+      }
     }
 
     const file = parseWinPath(editor.document.fileName);
