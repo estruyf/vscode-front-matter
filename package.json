@@ -2489,14 +2489,6 @@
           "when": "frontMatter:project:switch:enabled"
         },
         {
-          "command": "frontMatter.createTemplate",
-          "when": "!frontMatterCanInit"
-        },
-        {
-          "command": "frontMatter.preview",
-          "when": "frontMatterCanOpenPreview"
-        },
-        {
           "command": "frontMatter.dashboard.data",
           "when": "frontMatter:dashboard:data:enabled"
         },
@@ -2511,6 +2503,10 @@
         {
           "command": "frontMatter.i18n.create",
           "when": "frontMatter:i18n:default"
+        },
+        {
+          "command": "frontMatter.authenticate",
+          "when": "false"
         },
         {
           "command": "frontMatter.collapseSections",
@@ -2577,7 +2573,19 @@
           "when": "false"
         },
         {
+          "command": "frontMatter.markup.hyperlink",
+          "when": "false"
+        },
+        {
           "command": "frontMatter.config.reload",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.initTemplate",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.createTemplate",
           "when": "false"
         },
         {
@@ -2602,10 +2610,6 @@
         },
         {
           "command": "frontMatter.insertTags",
-          "when": "frontMatter:file:isValid == true"
-        },
-        {
-          "command": "frontMatter.createTemplate",
           "when": "frontMatter:file:isValid == true"
         },
         {
