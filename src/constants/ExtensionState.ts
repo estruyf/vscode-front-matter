@@ -30,5 +30,9 @@ export const ExtensionState = {
     v7_0_0: {
       dateFields: `frontMatter:Updates:v7.0.0:dateFields`
     }
+  },
+
+  Secrets: {
+    DeeplApiKey: `frontMatter:Secrets:DeeplApiKey`
   }
 };
