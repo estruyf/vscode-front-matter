@@ -171,6 +171,21 @@ You can open showcase issues for the following things:
 - Share an article/video/webcast/... that explains how you use Front Matter;
 - Got something else to share? Open an issue and we can see where it fits on our website.
 
+## 📊 Telemetry
+
+The Front Matter CMS extension collects telemetry data to help us build a better understand which features from the CMS are used. The extension respects the `telemetry.enableTelemetry` setting which you can learn more about in the [Visual Studio Code FAQ](https://aka.ms/vscode-remote/telemetry), or you can only disable it for the extension by configuring the `frontMatter.telemetry.disable` setting.
+
+We only collect the following data:
+
+- Type of event
+- Extension title (main or beta)
+- Extension version
+
+No user-specific data is collected, you can check the telemetry implementation in the following files:
+
+- [Telemetry class](https://github.com/estruyf/vscode-front-matter/blob/59528a3db01be8d34dc40638e6cf827090e31986/src/helpers/Telemetry.ts)
+- [Metrics API](https://github.com/FrontMatter/web-documentation-nextjs/blob/main/pages/api/metrics.ts)
+
 ## 👉 Contributors 🤘
 
 <p align="center">

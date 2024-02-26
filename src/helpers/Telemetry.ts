@@ -1,3 +1,4 @@
+import { workspace } from 'vscode';
 import { Extension, Settings } from '.';
 import { EXTENSION_BETA_ID, EXTENSION_ID, SETTING_TELEMETRY_DISABLE } from '../constants';
 
@@ -30,8 +31,11 @@ export class Telemetry {
    * @returns
    */
   public static send(eventName: string, properties?: any) {
+    const config = workspace.getConfiguration('telemetry');
+    const isVscodeEnable = config.get<'off' | undefined>('enableTelemetry');
+
     const isDisabled = Settings.get<boolean>(SETTING_TELEMETRY_DISABLE);
-    if (isDisabled) {
+    if (isDisabled || isVscodeEnable === 'off') {
       return;
     }
 
