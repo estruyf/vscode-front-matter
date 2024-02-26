@@ -358,7 +358,7 @@ export class Dashboard {
       version.usedVersion ? '' : `data-showWelcome="true"`
     } ${
       experimental ? `data-experimental="${experimental}"` : ''
-    } data-webview-url="${webviewUrl}" ></div>
+    } data-webview-url="${webviewUrl}" data-is-crash-disabled="${!Telemetry.isVscodeEnabled()}" ></div>
 
         ${(scriptsToLoad || [])
           .map((script) => {

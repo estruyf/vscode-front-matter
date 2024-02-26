@@ -3,8 +3,6 @@ import { render } from 'react-dom';
 import { RecoilRoot } from 'recoil';
 import { App } from './components/App';
 import * as Sentry from '@sentry/react';
-import { Integrations } from '@sentry/tracing';
-import { SENTRY_LINK, SentryIgnore } from '../constants';
 import { MemoryRouter } from 'react-router-dom';
 import './styles.css';
 import { Preview } from './components/Preview';
@@ -13,6 +11,7 @@ import { CustomPanelViewResult } from '../models';
 import { Chatbot } from './components/Chatbot/Chatbot';
 import { updateCssVariables } from './utils';
 import { I10nProvider } from './providers/I10nProvider';
+import { SentryInit } from '../utils/sentryInit';
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -65,19 +64,13 @@ if (elm) {
   const url = elm?.getAttribute('data-url');
   const experimental = elm?.getAttribute('data-experimental');
   const webviewUrl = elm?.getAttribute('data-webview-url');
+  const isCrashDisabled = elm?.getAttribute('data-is-crash-disabled');
 
   updateCssVariables();
   mutationObserver.observe(document.body, { childList: false, attributes: true });
 
-  if (isProd === 'true') {
-    Sentry.init({
-      dsn: SENTRY_LINK,
-      integrations: [new Integrations.BrowserTracing()],
-      tracesSampleRate: 0, // No performance tracing required
-      release: version || '',
-      environment: environment || '',
-      ignoreErrors: SentryIgnore
-    });
+  if (isProd === 'true' && isCrashDisabled === 'false') {
+    Sentry.init(SentryInit(version, environment));
 
     Sentry.setTag("type", "dashboard");
     if (document.body.getAttribute(`data-vscode-theme-id`)) {
