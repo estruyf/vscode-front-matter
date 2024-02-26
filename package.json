@@ -2477,6 +2477,14 @@
           "when": "false"
         },
         {
+          "command": "frontMatter.insertTags",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.insertCategories",
+          "when": "false"
+        },
+        {
           "command": "frontMatter.registerFolder",
           "when": "false"
         },
@@ -2570,10 +2578,6 @@
         },
         {
           "command": "frontMatter.insertCategories",
-          "when": "frontMatter:file:isValid == true"
-        },
-        {
-          "command": "frontMatter.insertTags",
           "when": "frontMatter:file:isValid == true"
         },
         {

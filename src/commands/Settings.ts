@@ -18,8 +18,8 @@ export class Settings {
     const taxonomy = type === TaxonomyType.Tag ? 'tag' : 'category';
 
     const newOption = await vscode.window.showInputBox({
-      prompt: l10n.t(LocalizationKey.commandsFoldersCreateInputPrompt, taxonomy),
-      placeHolder: l10n.t(LocalizationKey.commandsFoldersCreateInputPlaceholder, taxonomy),
+      prompt: l10n.t(LocalizationKey.commandsSettingsCreateInputPrompt, taxonomy),
+      placeHolder: l10n.t(LocalizationKey.commandsSettingsCreateInputPlaceholder, taxonomy),
       ignoreFocusOut: true
     });
 
