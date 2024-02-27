@@ -15,7 +15,7 @@
   "command.frontMatter.initTemplate": "Initialize the template folder",
   "command.frontMatter.createTemplate": "Create template from current file",
   "command.frontMatter.createCategory": "Create category",
-  "command.frontMatter.createContent": "Create new content from defined content type or template",
+  "command.frontMatter.createContent": "Create new content",
   "command.frontMatter.createTag": "Create tag",
   "command.frontMatter.diagnostics": "Diagnostic logging",
   "command.frontMatter.exportTaxonomy": "Export all tags & categories to your settings",

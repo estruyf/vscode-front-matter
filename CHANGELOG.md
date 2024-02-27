@@ -20,6 +20,8 @@
 
 ### ⚡️ Optimizations
 
+- Updated the list of commands which are available in the command palette
+
 ### 🐞 Fixes
 
 - [#721](https://github.com/estruyf/vscode-front-matter/issues/721): Fix keywords regex to support unicode characters

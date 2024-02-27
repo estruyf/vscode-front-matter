@@ -2477,6 +2477,10 @@
           "when": "false"
         },
         {
+          "command": "frontMatter.remap",
+          "when": "false"
+        },
+        {
           "command": "frontMatter.insertTags",
           "when": "false"
         },
@@ -2561,6 +2565,22 @@
           "when": "false"
         },
         {
+          "command": "frontMatter.contenttype.addMissingFields",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.exportTaxonomy",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.generateSlug",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.promoteSettings",
+          "when": "false"
+        },
+        {
           "command": "frontMatter.insertSnippet",
           "when": "frontMatter:file:isValid == true && frontMatter:dashboard:snippets:enabled"
         },
@@ -2594,10 +2614,6 @@
         },
         {
           "command": "frontMatter.contenttype.generate",
-          "when": "frontMatter:file:isValid == true"
-        },
-        {
-          "command": "frontMatter.contenttype.addMissingFields",
           "when": "frontMatter:file:isValid == true"
         },
         {
