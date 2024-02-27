@@ -67,8 +67,14 @@
   "settings.commonSettings.startCommand": "SSG/Framework start command",
 
   "settings.integrationsView.deepl.title": "DeepL",
-  "settings.integrationsView.deepl.intput.label": "Authentication key",
-  "settings.integrationsView.deepl.intput.placeholder": "Enter your DeepL authentication key",
+  "settings.integrationsView.deepl.intput.label": "API key",
+  "settings.integrationsView.deepl.intput.placeholder": "Enter your Azure Translator API key",
+
+  "settings.integrationsView.azure.title": "Azure AI Translator Service",
+  "settings.integrationsView.azure.intput.label": "Subscription key",
+  "settings.integrationsView.azure.intput.placeholder": "Enter your Azure AI Translator - Subscription key",
+  "settings.integrationsView.azure.region.label": "Region",
+  "settings.integrationsView.azure.region.placeholder": "Enter your Azure AI Translator - Region. Example: westeurope",
 
   "developer.title": "Developer mode",
   "developer.reload.title": "Reload the dashboard",
@@ -539,7 +545,9 @@
   "commands.i18n.create.warning.noFile": "The file could not be retrieved.",
   "commands.i18n.create.warning.noContentType": "Content type could not be retrieved for the current file.",
   "commands.i18n.create.warning.noConfig": "No i18n configuration found.",
-  "commands.i18n.create.warning.notDefaultLocale": "The current file cannot be used for i18n content creation.",
+  "commands.i18n.create.error.noLocaleDefinition": "Could not retrieve the locale for the current file.",
+  "commands.i18n.create.error.noLocales": "Current file has been translated to all available languages.",
+  "commands.i18n.create.error.noContentFolder": "Could not define a content folder for the current file.",
   "commands.i18n.create.error.fileExists": "The i18n translation already exists.",
   "commands.i18n.create.success.created": "Created \"{0}\" i18n content file.",
   "commands.i18n.create.quickPick.title": "Create content for locale",
@@ -656,9 +664,6 @@
   "helpers.extension.getVersion.changelog": "Check the changelog",
   "helpers.extension.getVersion.starIt": "Give it a ⭐️",
   "helpers.extension.getVersion.update.notification": "{0} has been updated to v{1} — check out what's new!",
-  "helpers.extension.migrateSettings.deprecated.warning": "The \"{0}\" and \"{1}\" settings have been deprecated. Please use the \"isPublishDate\" and \"isModifiedDate\" datetime field properties instead.",
-  "helpers.extension.migrateSettings.deprecated.warning.hide": "Hide",
-  "helpers.extension.migrateSettings.deprecated.warning.seeGuide": "See migration guide",
   "helpers.extension.migrateSettings.templates.quickPick.title": "{0} - Templates",
   "helpers.extension.migrateSettings.templates.quickPick.placeholder": "Do you want to keep on using the template functionality?",
   "helpers.extension.checkIfExtensionCanRun.warning": "Front Matter BETA cannot be used while the stable version is installed. Please ensure that you have only over version installed.",
@@ -693,6 +698,7 @@
   "helpers.questions.selectContentType.quickPick.title": "Content type",
   "helpers.questions.selectContentType.quickPick.placeholder": "Select the content type to create your new content",
   "helpers.questions.selectContentType.noSelection.warning": "No content type was selected.",
+  "helpers.questions.selectContentType.quickPick.error.noContentTypes": "There are no matching content types configured for this folder.",
 
   "helpers.seoHelper.checkLength.diagnostic.message": "Article {0} is longer than {1} characters (current length: {2}). For SEO reasons, it would be better to make it less than {1} characters.",
 

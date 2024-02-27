@@ -54,6 +54,12 @@ A couple of our extension highlights that hopefully get you interested in giving
 
 > If you see something missing in your article creation flow, please feel free to reach out.
 
+**Version 10**
+
+In version 10, we introduced the new i18n/multilingual support for your content. You can now manage your content in multiple languages, more information can be found in the [multilingual](https://frontmatter.codes/docs/content-creation/multilingual) section of our documentation.
+
+![Multilingual support](https://beta.frontmatter.codes/releases/v10.0.0/multilingual-content.png)
+
 **Version 9**
 
 The extension is now available in multiple languages: English, German, and Japanese. Want to add your language? Check out the [localization the extension](https://frontmatter.codes/docs/contributing#translating-the-extension).
@@ -186,6 +192,27 @@ You can open showcase issues for the following things:
     <img src="https://frontmatter.codes/assets/sponsors/powered-by-vercel.png" />
   </a>
 </p>
+
+## 📊 Telemetry
+
+The Front Matter CMS extension collects telemetry data to help us build a better understand which features from the CMS are used. The extension respects the `telemetry.enableTelemetry` setting which you can learn more about in the [Visual Studio Code FAQ](https://aka.ms/vscode-remote/telemetry), or you can only disable it for the extension by configuring the `frontMatter.telemetry.disable` setting.
+
+We only collect the following data:
+
+- Type of event
+- Extension title (main or beta)
+- Extension version
+
+No user-specific data is collected, you can check the telemetry implementation in the following files:
+
+- [Telemetry class](https://github.com/estruyf/vscode-front-matter/blob/59528a3db01be8d34dc40638e6cf827090e31986/src/helpers/Telemetry.ts)
+- [Metrics API](https://github.com/FrontMatter/web-documentation-nextjs/blob/main/pages/api/metrics.ts)
+
+For crash reports in the webviews, we make use of Sentry to help us understand what went wrong. This data is only used to fix issues and improve the extension. You can find more information about the Sentry implementation in the following files:
+
+- [Sentry config](https://github.com/estruyf/vscode-front-matter/blob/63e296d62f11be73ac86d9e823084247952a7ddc/src/utils/sentryInit.ts)
+
+> The user ip address is not collected.
 
 ## 🔑 License
 

@@ -4,13 +4,12 @@ import {
   ContentType,
   Extension,
   FrameworkDetector,
-  Logger,
   Notifications,
   Settings,
   openFileInEditor,
   parseWinPath
 } from '../helpers';
-import { COMMAND_NAME, ExtensionState, SETTING_CONTENT_I18N } from '../constants';
+import { COMMAND_NAME, SETTING_CONTENT_I18N } from '../constants';
 import { ContentFolder, Field, I18nConfig, ContentType as IContentType } from '../models';
 import { join, parse } from 'path';
 import { existsAsync } from '../utils';
@@ -19,6 +18,7 @@ import { ParsedFrontMatter } from '../parsers';
 import { PagesListener } from '../listeners/dashboard';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
+import { Translations } from '../services/Translations';
 
 export class i18n {
   private static processedFiles: {
@@ -44,6 +44,30 @@ export class i18n {
   }
 
   /**
+   * Retrieves all the I18nConfig settings.
+   *
+   * @returns An array of I18nConfig settings.
+   */
+  public static getAll() {
+    const i18nSettings = Settings.get<I18nConfig[]>(SETTING_CONTENT_I18N) || [];
+
+    const folders = Folders.get();
+    if (folders) {
+      for (const folder of folders) {
+        if (folder.locales) {
+          for (const locale of folder.locales) {
+            if (!i18nSettings.some((i18n) => i18n.locale === locale.locale)) {
+              i18nSettings.push(locale);
+            }
+          }
+        }
+      }
+    }
+
+    return i18nSettings;
+  }
+
+  /**
    * Retrieves the I18nConfig settings from the application.
    * @returns An array of I18nConfig objects if settings are found, otherwise undefined.
    */
@@ -66,6 +90,25 @@ export class i18n {
   }
 
   /**
+   * Checks if the locale is enabled for the given file path.
+   * @param filePath - The file path to check.
+   * @returns A promise that resolves to a boolean indicating whether the locale is enabled or not.
+   */
+  public static async isLocaleEnabled(filePath: string): Promise<boolean> {
+    const i18nSettings = await i18n.getSettings(filePath);
+    if (!i18nSettings) {
+      return false;
+    }
+
+    const pageFolder = Folders.getPageFolderByFilePath(filePath);
+    if (!pageFolder || !pageFolder.locale) {
+      return false;
+    }
+
+    return i18nSettings.some((i18n) => i18n.locale === pageFolder.locale);
+  }
+
+  /**
    * Checks if the given file path corresponds to the default language.
    * @param filePath - The file path to check.
    * @returns True if the file path corresponds to the default language, false otherwise.
@@ -84,6 +127,10 @@ export class i18n {
     const fileInfo = await i18n.getFileInfo(filePath);
 
     if (pageFolder.path) {
+      if (pageFolder.locale) {
+        return pageFolder.locale === pageFolder.defaultLocale;
+      }
+
       let pageFolderPath = parseWinPath(pageFolder.path);
       if (!pageFolderPath.endsWith('/')) {
         pageFolderPath += '/';
@@ -120,9 +167,10 @@ export class i18n {
 
       if (
         pageFolder.path &&
+        pageFolder.locale &&
         parseWinPath(fileInfo.dir).toLowerCase() === parseWinPath(pageFolderPath).toLowerCase()
       ) {
-        return i18nSettings.find((i18n) => i18n.locale === pageFolder?.defaultLocale);
+        return i18nSettings.find((i18n) => i18n.locale === pageFolder?.locale);
       }
     }
 
@@ -172,9 +220,9 @@ export class i18n {
     let pageFolder = Folders.getPageFolderByFilePath(filePath);
     const fileInfo = await i18n.getFileInfo(filePath);
 
-    if (pageFolder && pageFolder.defaultLocale) {
+    if (pageFolder && pageFolder.defaultLocale && pageFolder.localeSourcePath) {
       for (const i18n of i18nSettings) {
-        const translation = join(pageFolder.path, i18n.path || '', fileInfo.filename);
+        const translation = join(pageFolder.localeSourcePath, i18n.path || '', fileInfo.filename);
         if (await existsAsync(translation)) {
           translations[i18n.locale] = {
             locale: i18n,
@@ -224,20 +272,40 @@ export class i18n {
       fileUri = Uri.file(fileUri);
     }
 
+    const pageFolder = Folders.getPageFolderByFilePath(fileUri.fsPath);
+    if (!pageFolder || !pageFolder.localeSourcePath) {
+      Notifications.error(l10n.t(LocalizationKey.commandsI18nCreateErrorNoContentFolder));
+      return;
+    }
+
     const i18nSettings = await i18n.getSettings(fileUri.fsPath);
     if (!i18nSettings) {
       Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoConfig));
       return;
     }
 
-    const isDefaultLanguage = await i18n.isDefaultLanguage(fileUri.fsPath);
-    if (!isDefaultLanguage) {
-      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNotDefaultLocale));
+    const sourceLocale = await i18n.getLocale(fileUri.fsPath);
+    if (!sourceLocale || !sourceLocale.locale) {
+      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateErrorNoLocaleDefinition));
+      return;
+    }
+
+    const translations = (await i18n.getTranslations(fileUri.fsPath)) || {};
+    const targetLocales = i18nSettings.filter((i18nSetting) => {
+      return (
+        i18nSetting.path &&
+        i18nSetting.locale !== sourceLocale.locale &&
+        !translations[i18nSetting.locale]
+      );
+    });
+
+    if (targetLocales.length === 0) {
+      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateErrorNoLocales));
       return;
     }
 
     const locale = await window.showQuickPick(
-      i18nSettings.filter((i18n) => i18n.path).map((i18n) => i18n.title || i18n.locale),
+      targetLocales.map((i18n) => i18n.title || i18n.locale),
       {
         title: l10n.t(LocalizationKey.commandsI18nCreateQuickPickTitle),
         placeHolder: l10n.t(LocalizationKey.commandsI18nCreateQuickPickPlaceHolder),
@@ -249,10 +317,10 @@ export class i18n {
       return;
     }
 
-    const selectedI18n = i18nSettings.find(
+    const targetLocale = i18nSettings.find(
       (i18n) => i18n.title === locale || i18n.locale === locale
     );
-    if (!selectedI18n || !selectedI18n.path) {
+    if (!targetLocale || !targetLocale.path) {
       Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoConfig));
       return;
     }
@@ -280,7 +348,7 @@ export class i18n {
       pageBundleDir = join(parse(pageBundleDir).dir);
     }
 
-    const i18nDir = join(dir, selectedI18n.path, pageBundleDir);
+    const i18nDir = join(pageFolder.localeSourcePath, targetLocale.path, pageBundleDir);
 
     if (!(await existsAsync(i18nDir))) {
       await workspace.fs.createDirectory(Uri.file(i18nDir));
@@ -290,7 +358,8 @@ export class i18n {
       article,
       fileUri.fsPath,
       contentType,
-      selectedI18n,
+      sourceLocale,
+      targetLocale,
       i18nDir
     );
 
@@ -300,9 +369,8 @@ export class i18n {
       return;
     }
 
-    const sourceLocale = await i18n.getLocale(fileUri.fsPath);
     if (sourceLocale?.locale) {
-      article = await i18n.translate(article, sourceLocale, selectedI18n);
+      article = await i18n.translate(article, sourceLocale, targetLocale);
     }
 
     const newFileUri = Uri.file(newFilePath);
@@ -318,7 +386,7 @@ export class i18n {
     Notifications.info(
       l10n.t(
         LocalizationKey.commandsI18nCreateSuccessCreated,
-        selectedI18n.title || selectedI18n.locale
+        sourceLocale.title || sourceLocale.locale
       )
     );
   }
@@ -336,12 +404,6 @@ export class i18n {
     targetLocale: I18nConfig
   ) {
     return new Promise<ParsedFrontMatter>(async (resolve) => {
-      const authKey = await Extension.getInstance().getSecret(ExtensionState.Secrets.DeeplApiKey);
-      if (!authKey) {
-        resolve(article);
-        return;
-      }
-
       await window.withProgress(
         {
           location: ProgressLocation.Notification,
@@ -349,43 +411,26 @@ export class i18n {
           cancellable: false
         },
         async () => {
-          const title = article.data.title;
-          const description = article.data.description;
-          const content = article.content;
-
           try {
-            const body = JSON.stringify({
-              text: [title, description, content],
-              source_lang: sourceLocale.locale,
-              target_lang: targetLocale.locale
-            });
+            const title = article.data.title || '';
+            const description = article.data.description || '';
+            const content = article.content || '';
 
-            let host = authKey.endsWith(':fx') ? 'api-free.deepl.com' : 'api.deepl.com';
+            const text = [title, description, content];
+            const translations = await Translations.translate(
+              text,
+              sourceLocale.locale,
+              targetLocale.locale
+            );
 
-            const response = await fetch(`https://${host}/v2/translate`, {
-              method: 'POST',
-              headers: {
-                Authorization: `DeepL-Auth-Key ${authKey}`,
-                'User-Agent': `FrontMatterCMS/${Extension.getInstance().version}`,
-                'Content-Type': 'application/json',
-                'content-length': body.length.toString(),
-                Accept: 'application/json'
-              },
-              body
-            });
-
-            if (!response.ok) {
-              throw new Error(`DeepL: ${response.statusText}`);
+            if (!translations || translations.length < 3) {
+              resolve(article);
+              return;
             }
 
-            const data = await response.json();
-            if (!data.translations || data.translations.length < 3) {
-              throw new Error('DeepL: Invalid response');
-            }
-
-            article.data.title = data.translations[0].text;
-            article.data.description = data.translations[1].text;
-            article.content = data.translations[2].text;
+            article.data.title = article.data.title ? translations[0] : '';
+            article.data.description = article.data.description ? translations[1] : '';
+            article.content = article.content ? translations[2] : '';
           } catch (error) {
             Notifications.error(`${(error as Error).message}`);
           }
@@ -460,7 +505,8 @@ export class i18n {
    * @param article - The parsed front matter of the article.
    * @param filePath - The path of the file containing the front matter.
    * @param contentType - The content type of the article.
-   * @param i18nConfig - The configuration for internationalization.
+   * @param sourceLocale - The source locale.
+   * @param targetLocale - The target locale.
    * @param i18nDir - The directory where the i18n files are located.
    * @returns A Promise that resolves to the updated parsed front matter.
    */
@@ -468,7 +514,8 @@ export class i18n {
     article: ParsedFrontMatter,
     filePath: string,
     contentType: IContentType,
-    i18nConfig: I18nConfig,
+    sourceLocale: I18nConfig,
+    targetLocale: I18nConfig,
     i18nDir: string
   ): Promise<ParsedFrontMatter> {
     const imageFields = ContentType.findFieldsByTypeDeep(contentType.fields, 'image');

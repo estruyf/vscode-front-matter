@@ -43,7 +43,8 @@ import {
   SETTING_CONFIG_DYNAMIC_FILE_PATH,
   SETTING_PROJECTS,
   SETTING_TAXONOMY_TAGS,
-  SETTING_TAXONOMY_CATEGORIES
+  SETTING_TAXONOMY_CATEGORIES,
+  SETTING_CONTENT_FILTERS
 } from '../constants';
 import { Folders } from '../commands/Folders';
 import { join, basename, dirname, parse } from 'path';
@@ -804,7 +805,8 @@ export class Settings {
           settingName === SETTING_GLOBAL_NOTIFICATIONS ||
           settingName === SETTING_GLOBAL_NOTIFICATIONS_DISABLED ||
           settingName === SETTING_MEDIA_SUPPORTED_MIMETYPES ||
-          settingName === SETTING_COMMA_SEPARATED_FIELDS
+          settingName === SETTING_COMMA_SEPARATED_FIELDS ||
+          settingName === SETTING_CONTENT_FILTERS
         ) {
           if (typeof originalConfig[key] === 'undefined') {
             Settings.globalConfig[key] = value;

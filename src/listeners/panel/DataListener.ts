@@ -306,20 +306,12 @@ export class DataListener extends BaseListener {
       }
     }
 
-    const dateFields = ContentType.findFieldsByTypeDeep(contentType.fields, 'datetime');
     const imageFields = ContentType.findFieldsByTypeDeep(contentType.fields, 'image');
     const fileFields = ContentType.findFieldsByTypeDeep(contentType.fields, 'file');
     const fieldsWithEmojiEncoding = contentType.fields.filter((f) => f.encodeEmoji);
 
     // Support multi-level fields
     const parentObj = DataListener.getParentObject(article.data, article, parents, blockData);
-
-    const dateFieldsArray = dateFields.find((f: Field[]) => {
-      const lastField = f?.[f.length - 1];
-      if (lastField) {
-        return lastField.name === field;
-      }
-    });
 
     // Check multi-image fields
     const multiImageFieldsArray = imageFields.find((f: Field[]) => {
@@ -338,13 +330,7 @@ export class DataListener extends BaseListener {
     });
 
     // Check date fields
-    if (dateFieldsArray && dateFieldsArray.length > 0) {
-      for (const dateField of dateFieldsArray) {
-        if (field === dateField.name && value) {
-          parentObj[field] = Article.formatDate(new Date(value), dateField.dateFormat);
-        }
-      }
-    } else if (multiImageFieldsArray || multiFileFieldsArray) {
+    if (multiImageFieldsArray || multiFileFieldsArray) {
       const fields =
         multiImageFieldsArray && multiImageFieldsArray.length > 0
           ? multiImageFieldsArray

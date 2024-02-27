@@ -18,7 +18,7 @@ export const Filters: React.FunctionComponent<IFiltersProps> = (_: React.PropsWi
   const settings = useRecoilValue(SettingsSelector);
   const location = useLocation();
 
-  const otherFilters = useMemo(() => settings?.filters?.filter((filter) => filter !== "pageFolders" && filter !== "tags" && filter !== "categories"), [settings?.filters]);
+  const otherFilters = useMemo(() => settings?.filters?.filter((filter) => filter !== "contentFolders" && filter !== "tags" && filter !== "categories"), [settings?.filters]);
 
   const otherFilterValues = useMemo(() => {
     return otherFilters?.map((filter) => {
@@ -77,7 +77,7 @@ export const Filters: React.FunctionComponent<IFiltersProps> = (_: React.PropsWi
       <LanguageFilter />
 
       {
-        settings?.filters?.includes("pageFolders") && (
+        settings?.filters?.includes("contentFolders") && (
           <FoldersFilter />
         )
       }

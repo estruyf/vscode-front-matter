@@ -8,6 +8,12 @@ import { Logger } from './Logger';
 import { SponsorAi } from '../services/SponsorAI';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
+import { ContentFolder } from '../models';
+
+interface FolderQuickPickItem extends QuickPickItem {
+  path: string;
+  locale?: string;
+}
 
 export class Questions {
   /**
@@ -124,13 +130,27 @@ export class Questions {
    */
   public static async SelectContentFolder(
     showWarning: boolean = true
-  ): Promise<string | undefined> {
+  ): Promise<FolderQuickPickItem | undefined> {
     let folders = Folders.get().filter((f) => !f.disableCreation);
 
-    let selectedFolder: string | undefined;
+    let selectedFolder: FolderQuickPickItem | undefined;
     if (folders.length > 1) {
+      const folderOptions = folders.map((f: ContentFolder) => {
+        if (f.locale) {
+          return {
+            label: `${f.title} (${f.localeTitle || f.locale})`,
+            locale: f.locale,
+            path: f.path
+          } as FolderQuickPickItem;
+        }
+        return {
+          label: f.title,
+          path: f.path
+        } as FolderQuickPickItem;
+      });
+
       selectedFolder = await window.showQuickPick(
-        folders.map((f) => f.title),
+        folderOptions,
         {
           title: l10n.t(LocalizationKey.helpersQuestionsSelectContentFolderQuickPickTitle),
           placeHolder: l10n.t(
@@ -140,7 +160,10 @@ export class Questions {
         }
       );
     } else if (folders.length === 1) {
-      selectedFolder = folders[0].title;
+      selectedFolder = {
+        label: folders[0].title,
+        path: folders[0].path
+      } as FolderQuickPickItem;
     } else {
       // When no page folders are found, the welcome dashboard is shown
       return;
@@ -188,6 +211,11 @@ export class Questions {
     const options = contentTypes.map((contentType) => ({
       label: contentType.name
     }));
+
+    if (options.length === 0) {
+      Notifications.error(LocalizationKey.helpersQuestionsSelectContentTypeQuickPickErrorNoContentTypes);
+      return;
+    }
 
     const selectedOption = await window.showQuickPick(options, {
       title: l10n.t(LocalizationKey.helpersQuestionsSelectContentTypeQuickPickTitle),

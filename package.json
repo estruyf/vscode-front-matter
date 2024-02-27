@@ -3,7 +3,7 @@
   "displayName": "Front Matter CMS",
   "description": "Front Matter is a CMS that runs within Visual Studio Code. It gives you the power and control of a full-blown CMS while also providing you the flexibility and speed of the static site generator of your choice like: Hugo, Jekyll, Docusaurus, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "9.5.0",
+  "version": "10.0.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -347,7 +347,8 @@
             },
             "additionalProperties": false,
             "required": [
-              "locale"
+              "locale",
+              "path"
             ]
           },
           "scope": "Content"
@@ -526,13 +527,18 @@
         "frontMatter.content.filters": {
           "type": "array",
           "default": [
-            "pageFolders",
+            "contentFolders",
             "tags",
             "categories"
           ],
           "markdownDescription": "%setting.frontMatter.content.filters.markdownDescription%",
           "items": [{
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "contentFolders",
+                "tags",
+                "categories"
+              ]
             },
             {
               "type": "object",
@@ -700,17 +706,6 @@
           ],
           "default": "",
           "markdownDescription": "%setting.frontMatter.dashboard.content.card.fields.title.markdownDescription%"
-        },
-        "frontMatter.dashboard.mediaSnippet": {
-          "type": "array",
-          "default": [],
-          "markdownDescription": "%setting.frontMatter.dashboard.mediaSnippet.markdownDescription%",
-          "deprecationMessage": "%setting.frontMatter.dashboard.mediaSnippet.deprecationMessage%",
-          "items": {
-            "type": "string",
-            "description": "%setting.frontMatter.dashboard.mediaSnippet.items.description%"
-          },
-          "scope": "dashboard"
         },
         "frontMatter.dashboard.openOnStart": {
           "type": [
@@ -1834,12 +1829,6 @@
           },
           "scope": "Taxonomy"
         },
-        "frontMatter.taxonomy.dateField": {
-          "type": "string",
-          "default": "date",
-          "markdownDescription": "%setting.frontMatter.taxonomy.dateField.markdownDescription%",
-          "deprecationMessage": "%setting.frontMatter.taxonomy.dateField.deprecationMessage%"
-        },
         "frontMatter.taxonomy.dateFormat": {
           "type": "string",
           "markdownDescription": "%setting.frontMatter.taxonomy.dateFormat.markdownDescription%",
@@ -1892,12 +1881,6 @@
           "default": true,
           "markdownDescription": "%setting.frontMatter.taxonomy.indentArrays.markdownDescription%",
           "scope": "Taxonomy"
-        },
-        "frontMatter.taxonomy.modifiedField": {
-          "type": "string",
-          "default": "lastmod",
-          "markdownDescription": "%setting.frontMatter.taxonomy.modifiedField.markdownDescription%",
-          "deprecationMessage": "%setting.frontMatter.taxonomy.modifiedField.deprecationMessage%"
         },
         "frontMatter.taxonomy.quoteStringValues": {
           "type": "boolean",
@@ -2371,7 +2354,7 @@
         {
           "command": "frontMatter.i18n.create",
           "group": "navigation@-127",
-          "when": "frontMatter:file:isValid && frontMatter:i18n:default"
+          "when": "frontMatter:file:isValid && frontMatter:i18n:enabled"
         },
         {
           "command": "frontMatter.markup.options",
@@ -2466,7 +2449,7 @@
         },
         {
           "command": "frontMatter.i18n.create",
-          "when": "frontMatter:i18n:default"
+          "when": "frontMatter:i18n:enabled"
         },
         {
           "command": "frontMatter.authenticate",

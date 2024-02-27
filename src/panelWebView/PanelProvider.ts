@@ -286,7 +286,9 @@ export class PanelProvider implements WebviewViewProvider, Disposable {
       <body>
         <div id="app" data-isProd="${isProd}" data-environment="${
       isBeta ? 'BETA' : 'main'
-    }" data-version="${version.usedVersion}"></div>
+    }" data-version="${
+      version.usedVersion
+    }" data-is-crash-disabled="${!Telemetry.isVscodeEnabled()}"></div>
 
       ${(scriptsToLoad || [])
         .map((script) => {

@@ -11,7 +11,7 @@ import { LocalizationKey } from '../../../localization';
 
 export interface IDateTimeFieldProps extends BaseFieldProps<Date | null> {
   format?: string;
-  onChange: (date: Date) => void;
+  onChange: (date: string) => void;
 }
 
 type InputProps = JSX.IntrinsicElements['input'];
@@ -37,7 +37,7 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({
 
   const onDateChange = React.useCallback((date: Date) => {
     setDateValue(date);
-    onChange(date);
+    onChange(DateHelper.format(date, format || DEFAULT_FORMAT) || "");
   }, [format, onChange]);
 
   const showRequiredState = useMemo(() => {

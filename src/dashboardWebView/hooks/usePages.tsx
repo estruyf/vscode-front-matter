@@ -22,7 +22,7 @@ import { DashboardMessage } from '../DashboardMessage';
 import { EventData } from '@estruyf/vscode/dist/models';
 import { parseWinPath } from '../../helpers/parseWinPath';
 import { sortPages } from '../../utils/sortPages';
-import { ExtensionState } from '../../constants';
+import { ExtensionState, GeneralCommands } from '../../constants';
 import { SortingOption } from '../models';
 import { I18nConfig } from '../../models';
 import { usePrevious } from '../../panelWebView/hooks/usePrevious';
@@ -204,7 +204,7 @@ export default function usePages(pages: Page[]) {
       setTabInfo(draftTypes);
 
       if (Object.keys(filters).length === 0) {
-        const availableFilters = (settings?.filters || []).filter((f) => f !== 'pageFolders' && f !== 'tags' && f !== 'categories');
+        const availableFilters = (settings?.filters || []).filter((f) => f !== 'contentFolders' && f !== 'tags' && f !== 'categories');
         if (availableFilters.length > 0) {
           const allFilters: { [filter: string]: string[]; } = {};
           for (const filter of availableFilters) {
@@ -220,16 +220,6 @@ export default function usePages(pages: Page[]) {
         }
       }
 
-      if (tabPrevious !== tab || !locales || locales.length === 0) {
-        // Store the locale information
-        const config: I18nConfig[] = [];
-        crntPages.forEach((page) => {
-          if (page.fmLocale && !config.some(locale => locale.locale === page.fmLocale?.locale)) {
-            config.push(page.fmLocale);
-          }
-        });
-        setLocales(config);
-      }
 
       // Set the pages
       setPageItems(crntPages);
@@ -275,6 +265,12 @@ export default function usePages(pages: Page[]) {
       });
     } else {
       startPageProcessing();
+    }
+
+    if (pages && pages.length > 0) {
+      messageHandler.request<I18nConfig[]>(GeneralCommands.toVSCode.content.locales).then((config) => {
+        setLocales(config || []);
+      });
     }
   }, [settings?.draftField, pages, sorting, search, tag, category, locale, filters, folder]);
 

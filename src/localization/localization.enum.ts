@@ -248,13 +248,33 @@ export enum LocalizationKey {
    */
   settingsIntegrationsViewDeeplTitle = 'settings.integrationsView.deepl.title',
   /**
-   * Authentication key
+   * API key
    */
   settingsIntegrationsViewDeeplIntputLabel = 'settings.integrationsView.deepl.intput.label',
   /**
-   * Enter your DeepL authentication key
+   * Enter your Azure Translator API key
    */
   settingsIntegrationsViewDeeplIntputPlaceholder = 'settings.integrationsView.deepl.intput.placeholder',
+  /**
+   * Azure AI Translator Service
+   */
+  settingsIntegrationsViewAzureTitle = 'settings.integrationsView.azure.title',
+  /**
+   * Subscription key
+   */
+  settingsIntegrationsViewAzureIntputLabel = 'settings.integrationsView.azure.intput.label',
+  /**
+   * Enter your Azure AI Translator - Subscription key
+   */
+  settingsIntegrationsViewAzureIntputPlaceholder = 'settings.integrationsView.azure.intput.placeholder',
+  /**
+   * Region
+   */
+  settingsIntegrationsViewAzureRegionLabel = 'settings.integrationsView.azure.region.label',
+  /**
+   * Enter your Azure AI Translator - Region. Example: westeurope
+   */
+  settingsIntegrationsViewAzureRegionPlaceholder = 'settings.integrationsView.azure.region.placeholder',
   /**
    * Developer mode
    */
@@ -1725,9 +1745,17 @@ export enum LocalizationKey {
    */
   commandsI18nCreateWarningNoConfig = 'commands.i18n.create.warning.noConfig',
   /**
-   * The current file cannot be used for i18n content creation.
+   * Could not retrieve the locale for the current file.
    */
-  commandsI18nCreateWarningNotDefaultLocale = 'commands.i18n.create.warning.notDefaultLocale',
+  commandsI18nCreateErrorNoLocaleDefinition = 'commands.i18n.create.error.noLocaleDefinition',
+  /**
+   * Current file has been translated to all available languages.
+   */
+  commandsI18nCreateErrorNoLocales = 'commands.i18n.create.error.noLocales',
+  /**
+   * Could not define a content folder for the current file.
+   */
+  commandsI18nCreateErrorNoContentFolder = 'commands.i18n.create.error.noContentFolder',
   /**
    * The i18n translation already exists.
    */
@@ -2149,18 +2177,6 @@ export enum LocalizationKey {
    */
   helpersExtensionGetVersionUpdateNotification = 'helpers.extension.getVersion.update.notification',
   /**
-   * The "{0}" and "{1}" settings have been deprecated. Please use the "isPublishDate" and "isModifiedDate" datetime field properties instead.
-   */
-  helpersExtensionMigrateSettingsDeprecatedWarning = 'helpers.extension.migrateSettings.deprecated.warning',
-  /**
-   * Hide
-   */
-  helpersExtensionMigrateSettingsDeprecatedWarningHide = 'helpers.extension.migrateSettings.deprecated.warning.hide',
-  /**
-   * See migration guide
-   */
-  helpersExtensionMigrateSettingsDeprecatedWarningSeeGuide = 'helpers.extension.migrateSettings.deprecated.warning.seeGuide',
-  /**
    * {0} - Templates
    */
   helpersExtensionMigrateSettingsTemplatesQuickPickTitle = 'helpers.extension.migrateSettings.templates.quickPick.title',
@@ -2280,6 +2296,10 @@ export enum LocalizationKey {
    * No content type was selected.
    */
   helpersQuestionsSelectContentTypeNoSelectionWarning = 'helpers.questions.selectContentType.noSelection.warning',
+  /**
+   * There are no matching content types configured for this folder.
+   */
+  helpersQuestionsSelectContentTypeQuickPickErrorNoContentTypes = 'helpers.questions.selectContentType.quickPick.error.noContentTypes',
   /**
    * Article {0} is longer than {1} characters (current length: {2}). For SEO reasons, it would be better to make it less than {1} characters.
    */

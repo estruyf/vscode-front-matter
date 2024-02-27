@@ -33,7 +33,6 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
     folderAndFiles,
     focusElm,
     unsetFocus,
-    localeReady,
     mode
   } = useMessages();
   const prevMediaSelection = usePrevious(mediaSelecting);
@@ -83,7 +82,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
     );
   }
 
-  if (loading && !localeReady) {
+  if (loading) {
     return <Spinner />;
   }
 

@@ -128,7 +128,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                   </div>
 
                   <div className="relative mt-6 flex-1 px-4 sm:px-6">
-                    <div className="absolute inset-0 px-4 sm:px-6 space-y-8">
+                    <div className="space-y-8">
                       <div>
                         {(isImageFile || isVideoFile) && (
                           <div className={`block w-full aspect-w-10 aspect-h-7 overflow-hidden border rounded border-[var(--frontmatter-border)] bg-[var(--vscode-editor-background)]`}>

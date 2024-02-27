@@ -44,8 +44,8 @@ export class StatusListener {
         commands.executeCommand('setContext', CONTEXT.isValidFile, true);
 
         // Check i18n
-        const isI18nDefault = await i18n.isDefaultLanguage(document.uri.fsPath);
-        commands.executeCommand('setContext', CONTEXT.isI18nDefault, isI18nDefault);
+        const isI18nEnabled = await i18n.isLocaleEnabled(document.uri.fsPath);
+        commands.executeCommand('setContext', CONTEXT.isI18nEnabled, isI18nEnabled);
 
         const article = editor
           ? ArticleHelper.getFrontMatter(editor)
@@ -88,7 +88,7 @@ export class StatusListener {
       }
     } else {
       commands.executeCommand('setContext', CONTEXT.isValidFile, false);
-      commands.executeCommand('setContext', CONTEXT.isI18nDefault, false);
+      commands.executeCommand('setContext', CONTEXT.isI18nEnabled, false);
 
       const panel = PanelProvider.getInstance();
       if (panel && panel.visible) {
