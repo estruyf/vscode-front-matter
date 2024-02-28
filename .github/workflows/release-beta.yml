@@ -44,6 +44,7 @@ jobs:
   release-ms:
     name: 'Release to VSCode Marketplace'
     runs-on: ubuntu-latest
+    needs: localization
     environment:
       name: 'MS - BETA'
       url: ${{ env.MS_URL }}
@@ -71,6 +72,7 @@ jobs:
   release-vsx:
     name: 'Release to Open VSX'
     runs-on: ubuntu-latest
+    needs: localization
     environment:
       name: 'Open VSX - BETA'
       url: ${{ env.VSX_URL }}
