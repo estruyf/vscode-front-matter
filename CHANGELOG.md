@@ -1,5 +1,11 @@
 # Change Log
 
+## [10.0.1] - 2024-02-28
+
+### 🐞 Fixes
+
+- [#766](https://github.com/estruyf/vscode-front-matter/issues/766): Fix for snippet placeholder retrieval
+
 ## [10.0.0] - 2024-02-28 - [Release notes](https://beta.frontmatter.codes/updates/v10.0.0)
 
 ### ✨ New features
