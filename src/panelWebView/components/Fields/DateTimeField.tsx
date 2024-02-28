@@ -37,7 +37,11 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({
 
   const onDateChange = React.useCallback((date: Date) => {
     setDateValue(date);
-    onChange(DateHelper.format(date, format || DEFAULT_FORMAT) || "");
+    if (format) {
+      onChange(DateHelper.format(date, format) || "");
+    } else {
+      onChange(date.toISOString());
+    }
   }, [format, onChange]);
 
   const showRequiredState = useMemo(() => {

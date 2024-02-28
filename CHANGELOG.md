@@ -19,7 +19,6 @@
 - [#747](https://github.com/estruyf/vscode-front-matter/issues/747): The `@frontmatter/extensibility` dependency now supports scripts for placeholders
 - [#752](https://github.com/estruyf/vscode-front-matter/issues/752): Placeholder support in default `list` field values
 - Support for using the `fieldCollection` field in a `block` field
-
 - Updated the list of commands which are available in the command palette
 
 ### 🐞 Fixes

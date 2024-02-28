@@ -193,10 +193,10 @@ export class PagesParser {
         ? DateHelper.tryParse(article?.data[dateField], dateFormat)
         : undefined;
 
-      const modifiedField = ArticleHelper.getModifiedDateField(article) || null;
+      const modifiedField = ArticleHelper.getModifiedDateField(article);
       const modifiedFieldValue =
-        modifiedField && article?.data[modifiedField]
-          ? DateHelper.tryParse(article?.data[modifiedField])?.getTime()
+        modifiedField?.name && article?.data[modifiedField.name]
+          ? DateHelper.tryParse(article?.data[modifiedField.name])?.getTime()
           : undefined;
 
       const staticFolder = Folders.getStaticFolderRelativePath();

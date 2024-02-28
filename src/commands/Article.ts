@@ -116,9 +116,10 @@ export class Article {
     }
 
     const cloneArticle = Object.assign({}, article);
-    const dateField = ArticleHelper.getModifiedDateField(article) || DefaultFields.LastModified;
+    const dateField = ArticleHelper.getModifiedDateField(article);
     try {
-      cloneArticle.data[dateField] = Article.formatDate(new Date());
+      const fieldName = dateField?.name || DefaultFields.LastModified;
+      cloneArticle.data[fieldName] = Article.formatDate(new Date(), dateField?.dateFormat);
       return cloneArticle;
     } catch (e: unknown) {
       Notifications.error(

@@ -39,7 +39,7 @@ import { Article } from '../commands';
 import { join, parse as parseFile } from 'path';
 import { EditorHelper } from '@estruyf/vscode';
 import sanitize from '../helpers/Sanitize';
-import { ContentType as IContentType } from '../models';
+import { Field, ContentType as IContentType } from '../models';
 import { DateHelper } from './DateHelper';
 import { DiagnosticSeverity, Position, window, Range } from 'vscode';
 import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
@@ -378,7 +378,7 @@ export class ArticleHelper {
    * @param article
    * @returns
    */
-  public static getModifiedDateField(article: ParsedFrontMatter | null) {
+  public static getModifiedDateField(article: ParsedFrontMatter | null): Field | undefined {
     if (!article || !article.data) {
       return;
     }
@@ -386,7 +386,7 @@ export class ArticleHelper {
     const articleCt = ArticleHelper.getContentType(article);
     const modDateField = articleCt.fields.find((f) => f.isModifiedDate);
 
-    return modDateField?.name || DefaultFields.LastModified;
+    return modDateField;
   }
 
   /**
