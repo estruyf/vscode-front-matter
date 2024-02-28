@@ -30,7 +30,7 @@ runs:
 
     - name: Sync localization
       shell: bash
-      run: npm run sync-localization
+      run: npm run localization:sync
       env:
         TRANSLATION_API_KEY: ${{ inputs.TRANSLATION_API_KEY }}
         TRANSLATION_API_LOCATION: ${{ inputs.TRANSLATION_API_LOCATION }}
