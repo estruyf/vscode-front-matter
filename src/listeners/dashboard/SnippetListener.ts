@@ -140,7 +140,7 @@ export class SnippetListener extends BaseListener {
     data: { value: string; filePath: string },
     requestId?: string
   ) {
-    if (!data.value || !command || !requestId) {
+    if (!command || !requestId) {
       return;
     }
 

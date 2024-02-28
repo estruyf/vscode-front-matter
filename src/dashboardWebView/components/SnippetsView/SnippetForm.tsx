@@ -42,6 +42,10 @@ const SnippetForm: React.ForwardRefRenderFunction<SnippetFormHandle, ISnippetFor
 
   const insertPlaceholderValues = useCallback(
     async (value: SnippetSpecialPlaceholders) => {
+      if (!value) {
+        return '';
+      }
+
       if (value === 'FM_SELECTED_TEXT') {
         return selection || '';
       }
@@ -141,13 +145,23 @@ ${snippetBody}
     const snippetFields = snippet.fields || [];
 
     // Loop over all fields to check if they are present in the snippet
-    for (const field of snippetFields) {
+    console.log('placeholders', placeholders);
+    console.log('snippetFields', snippetFields);
+
+    for await (const field of snippetFields) {
+      console.log('field', field);
       const idx = placeholders.findIndex((fieldName) => fieldName === field.name);
       if (idx > -1) {
-        allFields.push({
-          ...field,
-          value: await insertPlaceholderValues(field.default || '')
-        });
+        try {
+          const value = await insertPlaceholderValues(field.default || '');
+          console.log('value', value);
+          allFields.push({
+            ...field,
+            value
+          });
+        } catch (e) {
+          console.log('Error', (e as Error).message)
+        }
       }
     }
 
