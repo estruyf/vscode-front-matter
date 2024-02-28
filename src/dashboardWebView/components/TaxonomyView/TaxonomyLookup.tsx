@@ -6,7 +6,6 @@ import { useRecoilValue } from 'recoil';
 import { getTaxonomyField } from '../../../helpers/getTaxonomyField';
 import { useNavigate } from 'react-router-dom';
 import { routePaths } from '../..';
-import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 
@@ -23,7 +22,6 @@ export const TaxonomyLookup: React.FunctionComponent<ITaxonomyLookupProps> = ({
 }: React.PropsWithChildren<ITaxonomyLookupProps>) => {
   const settings = useRecoilValue(SettingsSelector);
   const navigate = useNavigate();
-  const { getColors } = useThemeColors();
 
   const total: number | undefined = useMemo(() => {
     if (!taxonomy || !value || !pages || !settings?.contentTypes) {
@@ -58,7 +56,7 @@ export const TaxonomyLookup: React.FunctionComponent<ITaxonomyLookupProps> = ({
   if (taxonomy === 'tags' || taxonomy === 'categories') {
     return (
       <button
-        className={total ? `font-bold ${getColors(`text-teal-900 hover:text-teal-600 `, `text-[var(--frontmatter-link)] hover:text-[var(--frontmatter-link-hover)]`)}` : ``}
+        className={total ? `font-bold text-[var(--frontmatter-link)] hover:text-[var(--frontmatter-link-hover)]` : ``}
         title={total ? l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyLookupButtonTitle, value, taxonomy) : ``}
         onClick={onNavigate}
       >

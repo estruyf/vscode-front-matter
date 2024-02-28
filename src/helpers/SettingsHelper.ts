@@ -1,17 +1,19 @@
-import {
-  EXTENSION_NAME,
-  SETTING_CONFIG_DYNAMIC_FILE_PATH,
-  SETTING_PROJECTS
-} from './../constants/settings';
 import { parseWinPath } from './parseWinPath';
 import { Telemetry } from './Telemetry';
 import { Notifications } from './Notifications';
-import { commands, Uri, workspace, window } from 'vscode';
-import * as vscode from 'vscode';
+import {
+  commands,
+  Uri,
+  workspace,
+  window,
+  WorkspaceConfiguration,
+  FileSystemWatcher,
+  Disposable,
+  ProgressLocation
+} from 'vscode';
 import { ContentType, CustomTaxonomy, Project } from '../models';
 import {
-  SETTING_TAXONOMY_TAGS,
-  SETTING_TAXONOMY_CATEGORIES,
+  EXTENSION_NAME,
   CONFIG_KEY,
   CONTEXT,
   ExtensionState,
@@ -35,8 +37,14 @@ import {
   SETTING_GLOBAL_NOTIFICATIONS,
   SETTING_GLOBAL_NOTIFICATIONS_DISABLED,
   SETTING_MEDIA_SUPPORTED_MIMETYPES,
+  SETTING_MEDIA_CONTENTTYPES,
   SETTING_COMMA_SEPARATED_FIELDS,
-  SETTING_REMOVE_QUOTES
+  SETTING_REMOVE_QUOTES,
+  SETTING_CONFIG_DYNAMIC_FILE_PATH,
+  SETTING_PROJECTS,
+  SETTING_TAXONOMY_TAGS,
+  SETTING_TAXONOMY_CATEGORIES,
+  SETTING_CONTENT_FILTERS
 } from '../constants';
 import { Folders } from '../commands/Folders';
 import { join, basename, dirname, parse } from 'path';
@@ -59,13 +67,13 @@ export class Settings {
   public static globalConfigFolder = '.frontmatter/config';
   public static globalConfigPath: string | undefined = undefined;
   public static globalConfig: any;
-  private static config: vscode.WorkspaceConfiguration;
+  private static config: WorkspaceConfiguration;
   private static isInitialized: boolean = false;
   private static listeners: { id: string; callback: (global?: any) => void }[] = [];
-  private static fileCreationWatcher: vscode.FileSystemWatcher | undefined;
-  private static fileChangeWatcher: vscode.FileSystemWatcher | undefined;
-  private static fileSaveListener: vscode.Disposable;
-  private static fileDeleteListener: vscode.Disposable;
+  private static fileCreationWatcher: FileSystemWatcher | undefined;
+  private static fileChangeWatcher: FileSystemWatcher | undefined;
+  private static fileSaveListener: Disposable;
+  private static fileDeleteListener: Disposable;
   private static readConfigPromise: Promise<void> | undefined = undefined;
   private static project: Project | undefined = undefined;
   private static configDebouncer = debounceCallback();
@@ -109,10 +117,10 @@ export class Settings {
       commands.registerCommand(COMMAND_NAME.settingsRefresh, Settings.refreshConfig);
     }
 
-    Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
+    Settings.config = workspace.getConfiguration(CONFIG_KEY);
 
     Settings.attachListener('settings-init', async () => {
-      Settings.config = vscode.workspace.getConfiguration(CONFIG_KEY);
+      Settings.config = workspace.getConfiguration(CONFIG_KEY);
     });
 
     Settings.onConfigChange();
@@ -210,10 +218,14 @@ export class Settings {
    * @returns
    */
   public static attachListener(id: string, callback: (global?: any) => void) {
-    const listener = Settings.listeners.find((l) => l.id === id);
+    const listener = (Settings.listeners || []).find((l) => l.id === id);
     if (listener) {
       listener.callback = callback;
       return;
+    }
+
+    if (!Settings.listeners) {
+      Settings.listeners = [];
     }
 
     Settings.listeners.push({
@@ -226,7 +238,7 @@ export class Settings {
    * Trigger all the listeners
    */
   public static triggerListeners() {
-    for (const listener of Settings.listeners) {
+    for (const listener of Settings.listeners || []) {
       Logger.info(`Triggering listener: ${listener.id}`);
       listener.callback();
     }
@@ -437,7 +449,7 @@ export class Settings {
    */
   public static async createTeamSettings() {
     const wsFolder = Folders.getWorkspaceFolder();
-    await this.createGlobalFile(wsFolder);
+    await Settings.createGlobalFile(wsFolder);
   }
 
   /**
@@ -590,7 +602,7 @@ export class Settings {
       return Settings.globalConfigPath;
     }
 
-    let configFiles = await workspace.findFiles(`**/${Settings.globalFile}`);
+    let configFiles = await workspace.findFiles(`**/${Settings.globalFile}`, '**/node_modules/**');
     // Sort by file path length
     configFiles = configFiles.sort((a, b) => a.fsPath.localeCompare(b.fsPath));
 
@@ -645,7 +657,10 @@ export class Settings {
       await Settings.processExternalConfig();
 
       // Read the files from the config folder
-      let configFiles = await workspace.findFiles(`**/${Settings.globalConfigFolder}/**/*.json`);
+      let configFiles = await workspace.findFiles(
+        `**/${Settings.globalConfigFolder}/**/*.json`,
+        '**/node_modules/**'
+      );
       if (configFiles.length === 0) {
         Logger.info(`No ".frontmatter/config" config files found.`);
       }
@@ -667,7 +682,7 @@ export class Settings {
           try {
             await window.withProgress(
               {
-                location: vscode.ProgressLocation.Notification,
+                location: ProgressLocation.Notification,
                 title: l10n.t(
                   LocalizationKey.helpersSettingsHelperReadConfigProgressTitle,
                   EXTENSION_NAME
@@ -790,7 +805,8 @@ export class Settings {
           settingName === SETTING_GLOBAL_NOTIFICATIONS ||
           settingName === SETTING_GLOBAL_NOTIFICATIONS_DISABLED ||
           settingName === SETTING_MEDIA_SUPPORTED_MIMETYPES ||
-          settingName === SETTING_COMMA_SEPARATED_FIELDS
+          settingName === SETTING_COMMA_SEPARATED_FIELDS ||
+          settingName === SETTING_CONTENT_FILTERS
         ) {
           if (typeof originalConfig[key] === 'undefined') {
             Settings.globalConfig[key] = value;
@@ -858,6 +874,10 @@ export class Settings {
     // Content types
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_TAXONOMY_CONTENT_TYPES)) {
       Settings.updateGlobalConfigArraySetting(SETTING_TAXONOMY_CONTENT_TYPES, 'name', configJson);
+    }
+    // Media Content types
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_MEDIA_CONTENTTYPES)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_MEDIA_CONTENTTYPES, 'name', configJson);
     }
     // Data files
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_DATA_FILES)) {
@@ -1041,9 +1061,9 @@ export class Settings {
    * Rebind the configuration watchers
    */
   private static rebindWatchers() {
-    Logger.info(`Rebinding ${this.listeners.length} listeners`);
+    Logger.info(`Rebinding ${(Settings.listeners || []).length} listeners`);
 
-    Settings.listeners.forEach((l) => {
+    (Settings.listeners || []).forEach((l) => {
       Settings.attachListener(l.id, l.callback);
     });
 

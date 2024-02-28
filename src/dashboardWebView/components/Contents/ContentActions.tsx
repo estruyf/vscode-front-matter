@@ -1,21 +1,18 @@
 import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
-import { Menu } from '@headlessui/react';
-import { EyeIcon, GlobeIcon, TerminalIcon, TrashIcon } from '@heroicons/react/outline';
+import { EyeIcon, GlobeEuropeAfricaIcon, CommandLineIcon, TrashIcon, EllipsisVerticalIcon, LanguageIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
-import { CustomScript, ScriptType } from '../../../models';
+import { CustomScript, I18nConfig, ScriptType } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
-import { MenuItem, MenuItems, ActionMenuButton, QuickAction } from '../Menu';
+import { QuickAction } from '../Menu';
 import { Alert } from '../Modals/Alert';
-import { usePopper } from 'react-popper';
-import { useState } from 'react';
-import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { SettingsSelector } from '../../state';
-import { GeneralCommands } from '../../../constants';
+import { COMMAND_NAME, GeneralCommands } from '../../../constants';
 import { PinIcon } from '../Icons/PinIcon';
 import { PinnedItemsAtom } from '../../state/atom/PinnedItems';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from '../../../components/shadcn/Dropdown';
 
 export interface IContentActionsProps {
   title: string;
@@ -23,6 +20,14 @@ export interface IContentActionsProps {
   relPath: string;
   scripts: CustomScript[] | undefined;
   listView?: boolean;
+  locale?: I18nConfig;
+  isDefaultLocale?: boolean;
+  translations?: {
+    [locale: string]: {
+      locale: I18nConfig;
+      path: string;
+    };
+  };
   onOpen: () => void;
 }
 
@@ -32,26 +37,21 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
   relPath,
   scripts,
   onOpen,
-  listView
+  listView,
+  isDefaultLocale,
+  translations,
+  locale
 }: React.PropsWithChildren<IContentActionsProps>) => {
   const [pinnedItems, setPinnedItems] = useRecoilState(PinnedItemsAtom);
   const [showDeletionAlert, setShowDeletionAlert] = React.useState(false);
-  const { getColors } = useThemeColors();
   const settings = useRecoilValue(SettingsSelector);
 
-  const [referenceElement, setReferenceElement] = useState<any>(null);
-  const [popperElement, setPopperElement] = useState<any>(null);
-  const { styles, attributes, forceUpdate } = usePopper(referenceElement, popperElement, {
-    placement: listView ? 'right-start' : 'bottom-end',
-    strategy: 'fixed'
-  });
-
-  const onView = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onView = (e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     onOpen();
   };
 
-  const onDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onDelete = (e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     setShowDeletionAlert(true);
   };
@@ -63,7 +63,11 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
     setShowDeletionAlert(false);
   };
 
-  const openOnWebsite = React.useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+  const onOpenFile = (filePath: string) => {
+    messageHandler.send(DashboardMessage.openFile, filePath);
+  }
+
+  const openOnWebsite = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     if (settings?.websiteUrl && path) {
       Messenger.send(GeneralCommands.toVSCode.openOnWebsite, {
@@ -73,14 +77,14 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
     }
   }, [settings?.websiteUrl, path]);
 
-  const pinItem = React.useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+  const pinItem = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     messageHandler.request<string[]>(DashboardMessage.pinItem, path).then((result) => {
       setPinnedItems(result || []);
     })
   }, [path]);
 
-  const unpinItem = React.useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+  const unpinItem = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     messageHandler.request<string[]>(DashboardMessage.unpinItem, path).then((result) => {
       setPinnedItems(result || []);
@@ -88,12 +92,19 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
   }, [path]);
 
   const runCustomScript = React.useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>, script: CustomScript) => {
+    (e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>, script: CustomScript) => {
       e.stopPropagation();
       Messenger.send(DashboardMessage.runCustomScript, { script, path });
     },
     [path]
   );
+
+  const runCommand = React.useCallback((commandId: string) => {
+    messageHandler.send(GeneralCommands.toVSCode.runCommand, {
+      command: commandId,
+      args: path
+    })
+  }, [path]);
 
   const isPinned = React.useMemo(() => {
     return pinnedItems.includes(relPath);
@@ -108,18 +119,55 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
           !script.hidden
       )
       .map((script) => (
-        <MenuItem
-          key={script.title}
-          title={
-            <div className="flex items-center">
-              <TerminalIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
-              <span>{script.title}</span>
-            </div>
-          }
-          onClick={(value, e) => runCustomScript(e, script)}
-        />
+        <DropdownMenuItem key={script.id || script.title} onClick={(e) => runCustomScript(e, script)}>
+          <CommandLineIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
+          <span>{script.title}</span>
+        </DropdownMenuItem>
       ));
   }, [scripts]);
+
+  const translationsMenu = React.useMemo(() => {
+    if (!locale || !translations || Object.keys(translations).length === 0) {
+      return null;
+    }
+
+    const crntLocale = translations[locale.locale];
+    const otherLocales = Object.entries(translations).filter(([key]) => key !== locale.locale);
+
+    if (otherLocales.length === 0) {
+      return null;
+    }
+
+    return (
+      <DropdownMenuSub>
+        <DropdownMenuSubTrigger>
+          <LanguageIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
+          <span>{l10n.t(LocalizationKey.dashboardContentsContentActionsTranslationsMenu)}</span>
+        </DropdownMenuSubTrigger>
+
+        <DropdownMenuPortal>
+          <DropdownMenuSubContent>
+            <DropdownMenuItem onClick={() => onOpenFile(crntLocale.path)}>
+              <span>{crntLocale.locale.title || crntLocale.locale.locale}</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            {
+              otherLocales.map(([key, value]) => (
+                <DropdownMenuItem
+                  key={key}
+                  onClick={() => onOpenFile(value.path)}
+                >
+                  <span>{value.locale.title || value.locale.locale}</span>
+                </DropdownMenuItem>
+              ))
+            }
+          </DropdownMenuSubContent>
+        </DropdownMenuPortal>
+      </DropdownMenuSub>
+    );
+  }, [translations, locale, isDefaultLocale]);
 
   return (
     <>
@@ -129,13 +177,9 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
       >
         <div
           className={`flex items-center border border-transparent rounded-full ${listView ? '' : 'p-2 -mt-4'
-            } ${getColors(
-              'group-hover/card:bg-gray-200 dark:group-hover/card:bg-vulcan-200 group-hover/card:border-gray-100 dark:group-hover/card:border-vulcan-50',
-              'group-hover/card:bg-[var(--vscode-sideBar-background)] group-hover/card:border-[var(--frontmatter-border)]'
-            )
-            }`}
+            } group-hover/card:bg-[var(--vscode-sideBar-background)] group-hover/card:border-[var(--frontmatter-border)]`}
         >
-          <Menu as="div" className={`relative flex text-left`}>
+          <div className={`relative flex text-left`}>
             {!listView && (
               <div className="hidden group-hover/card:flex">
                 <QuickAction title={l10n.t(LocalizationKey.dashboardContentsContentActionsMenuItemView)} onClick={onView}>
@@ -145,79 +189,67 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
                 {
                   settings?.websiteUrl && (
                     <QuickAction title={l10n.t(LocalizationKey.commonOpenOnWebsite)} onClick={openOnWebsite}>
-                      <GlobeIcon className={`w-4 h-4`} aria-hidden="true" />
+                      <GlobeEuropeAfricaIcon className={`w-4 h-4`} aria-hidden="true" />
                     </QuickAction>
                   )
                 }
 
-                <QuickAction title={l10n.t(LocalizationKey.commonDelete)} onClick={onDelete}>
+                <QuickAction
+                  title={l10n.t(LocalizationKey.commonDelete)}
+                  className={`hover:text-[var(--vscode-statusBarItem-errorBackground)]`}
+                  onClick={onDelete}>
                   <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
                 </QuickAction>
               </div>
             )}
 
-            <div ref={setReferenceElement} className={`flex`}>
-              <ActionMenuButton title={l10n.t(LocalizationKey.dashboardContentsContentActionsActionMenuButtonTitle)} />
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger className='text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)] data-[state=open]:text-[var(--vscode-tab-activeForeground)] focus:outline-none'>
+                <span className="sr-only">{l10n.t(LocalizationKey.dashboardContentsContentActionsActionMenuButtonTitle)}</span>
+                <EllipsisVerticalIcon className="w-4 h-4" aria-hidden="true" />
+              </DropdownMenuTrigger>
 
-            <div
-              className="menu_items__wrapper z-20"
-              ref={setPopperElement}
-              style={styles.popper}
-              {...attributes.popper}
-            >
-              <MenuItems
-                updatePopper={forceUpdate || undefined}
-                widthClass="w-44"
-                marginTopClass={listView ? '' : ''}
-              >
-                <MenuItem
-                  title={
-                    <div className="flex items-center">
-                      <PinIcon className={`mr-2 h-5 w-5 flex-shrink-0 ${isPinned ? "" : "-rotate-90"}`} aria-hidden={true} />{' '}
-                      <span>{isPinned ? l10n.t(LocalizationKey.commonUnpin) : l10n.t(LocalizationKey.commonPin)}</span>
-                    </div>
-                  }
-                  onClick={(_, e) => isPinned ? unpinItem(e) : pinItem(e)}
-                />
-                <MenuItem
-                  title={
-                    <div className="flex items-center">
-                      <EyeIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
-                      <span>{l10n.t(LocalizationKey.dashboardContentsContentActionsMenuItemView)}</span>
-                    </div>
-                  }
-                  onClick={(_, e) => onView(e)}
-                />
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={(e) => isPinned ? unpinItem(e) : pinItem(e)}>
+                  <PinIcon className={`mr-2 h-4 w-4 ${isPinned ? "" : "-rotate-90"}`} aria-hidden={true} />
+                  <span>{isPinned ? l10n.t(LocalizationKey.commonUnpin) : l10n.t(LocalizationKey.commonPin)}</span>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem onClick={onView}>
+                  <EyeIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
+                  <span>{l10n.t(LocalizationKey.dashboardContentsContentActionsMenuItemView)}</span>
+                </DropdownMenuItem>
 
                 {
                   settings?.websiteUrl && (
-                    <MenuItem
-                      title={
-                        <div className="flex items-center">
-                          <GlobeIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
-                          <span>{l10n.t(LocalizationKey.commonOpenOnWebsite)}</span>
-                        </div>
-                      }
-                      onClick={(_, e) => openOnWebsite(e)}
-                    />
+                    <DropdownMenuItem onClick={openOnWebsite}>
+                      <GlobeEuropeAfricaIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
+                      <span>{l10n.t(LocalizationKey.commonOpenOnWebsite)}</span>
+                    </DropdownMenuItem>
                   )
                 }
 
+                {
+                  locale && (
+                    <DropdownMenuItem onClick={() => runCommand(COMMAND_NAME.i18n.create)}>
+                      <LanguageIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
+                      <span>{l10n.t(LocalizationKey.dashboardContentsContentActionsTranslationsCreate)}</span>
+                    </DropdownMenuItem>
+                  )
+                }
+
+                {translationsMenu}
+
                 {customScriptActions}
 
-                <MenuItem
-                  title={
-                    <div className="flex items-center">
-                      <TrashIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
-                      <span>{l10n.t(LocalizationKey.commonDelete)}</span>
-                    </div>
-                  }
-                  onClick={(_, e) => onDelete(e)}
-                />
-              </MenuItems>
-            </div>
-          </Menu>
+                <DropdownMenuItem onClick={onDelete} className={`focus:bg-[var(--vscode-statusBarItem-errorBackground)] focus:text-[var(--vscode-statusBarItem-errorForeground)]`}>
+                  <TrashIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
+                  <span>{l10n.t(LocalizationKey.commonDelete)}</span>
+                </DropdownMenuItem>
+
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
 

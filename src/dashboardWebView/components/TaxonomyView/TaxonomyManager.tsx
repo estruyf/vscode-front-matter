@@ -1,5 +1,5 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { ExclamationIcon, PlusSmIcon, TagIcon } from '@heroicons/react/outline';
+import { ExclamationTriangleIcon, PlusIcon, TagIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
@@ -10,7 +10,6 @@ import { SettingsSelector } from '../../state';
 import { getTaxonomyField } from '../../../helpers/getTaxonomyField';
 import { TaxonomyActions } from './TaxonomyActions';
 import { TaxonomyLookup } from './TaxonomyLookup';
-import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { FilterInput } from './FilterInput';
@@ -21,15 +20,16 @@ export interface ITaxonomyManagerProps {
   data: TaxonomyData | undefined;
   taxonomy: string | null;
   pages: Page[];
+  onContentTagging: (value: string) => void;
 }
 
 export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = ({
   data,
   taxonomy,
-  pages
+  pages,
+  onContentTagging
 }: React.PropsWithChildren<ITaxonomyManagerProps>) => {
   const settings = useRecoilValue(SettingsSelector);
-  const { getColors } = useThemeColors();
   const [filterValue, setFilterValue] = React.useState('');
   const debounceFilterValue = useDebounce<string>(filterValue, 500);
   const prevTaxonomy = usePrevious<string | null>(taxonomy);
@@ -141,39 +141,27 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
     <div className={`py-6 px-4 flex flex-col h-full overflow-hidden`}>
       <div className={`flex w-full justify-between flex-shrink-0`}>
         <div>
-          <h2 className={`text-lg first-letter:uppercase ${getColors(
-            'text-gray-500 dark:text-whisper-900',
-            'text-[var(--frontmatter-text)]'
-          )
-            }`}>
+          <h2 className={`text-lg first-letter:uppercase text-[var(--frontmatter-text)]`}>
             {taxonomy}
           </h2>
-          <p className={`mt-2 text-sm first-letter:uppercase ${getColors(
-            'text-gray-500 dark:text-whisper-900',
-            'text-[var(--frontmatter-secondary-text)]'
-          )
-            }`}>
+          <p className={`mt-2 text-sm first-letter:uppercase text-[var(--frontmatter-secondary-text)]`}>
             {l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerDescription, taxonomy)}
           </p>
         </div>
         <div className='flex gap-4 justify-center items-center'>
           <FilterInput
-            placeholder='Filter'
+            placeholder={l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerFilterInputPlaceholder, taxonomy)}
             value={filterValue}
             onChange={(value) => setFilterValue(value)}
             onReset={() => setFilterValue('')} />
 
           <div>
             <button
-              className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium focus:outline-none rounded ${getColors(
-                `text-white dark:text-vulcan-500 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-500`,
-                `text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`
-              )
-                }`}
+              className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium focus:outline-none rounded text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`}
               title={l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerButtonCreate, taxonomy)}
               onClick={onCreate}
             >
-              <PlusSmIcon className={`mr-2 h-6 w-6`} />
+              <PlusIcon className={`mr-2 h-6 w-6`} />
               <span className={`text-sm`}>{l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerButtonCreate, taxonomy)}</span>
             </button>
           </div>
@@ -181,42 +169,42 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
       </div>
 
       <div className="mt-6 pb-6 -mr-4 pr-4 flex flex-col flex-grow overflow-auto">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-vulcan-300">
+        <table className="min-w-full divide-y divide-[var(--frontmatter-border)]">
           <thead>
             <tr>
               <th
                 scope="col"
-                className={`px-6 py-3 text-left text-xs font-medium uppercase ${getColors('text-gray-500 dark:text-whisper-900', 'text-[var(--frontmatter-secondary-text)]')}`}
+                className={`px-6 py-3 text-left text-xs font-medium uppercase text-[var(--frontmatter-secondary-text)]`}
               >
                 {l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerTableHeadingName)}
               </th>
               <th
                 scope="col"
-                className={`px-6 py-3 text-left text-xs font-medium uppercase ${getColors('text-gray-500 dark:text-whisper-900', 'text-[var(--frontmatter-secondary-text)]')}`}
+                className={`px-6 py-3 text-left text-xs font-medium uppercase text-[var(--frontmatter-secondary-text)]`}
               >
                 {l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerTableHeadingCount)}
               </th>
               <th
                 scope="col"
-                className={`px-6 py-3 text-right text-xs font-medium uppercase ${getColors('text-gray-500 dark:text-whisper-900', 'text-[var(--frontmatter-secondary-text)]')}`}
+                className={`px-6 py-3 text-right text-xs font-medium uppercase text-[var(--frontmatter-secondary-text)]`}
               >
                 {l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerTableHeadingAction)}
               </th>
             </tr>
           </thead>
-          <tbody className={`divide-y ${getColors(`divide-gray-200 dark:divide-vulcan-300`, `divide-[var(--frontmatter-border)]`)}`}>
+          <tbody className={`divide-y divide-[var(--frontmatter-border)]`}>
             {items && items.length > 0
               ? items.map((item, index) => (
                 <tr key={index}>
-                  <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${getColors(`text-gray-800 dark:text-gray-200`, `text-[var(--frontmatter-text)]`)}`}>
+                  <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--frontmatter-text)]`}>
                     <TagIcon className="inline-block h-4 w-4 mr-2" />
                     <span>{item}</span>
                   </td>
-                  <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${getColors(`text-gray-800 dark:text-gray-200`, `text-[var(--frontmatter-text)]`)}`}>
+                  <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--frontmatter-text)]`}>
                     <TaxonomyLookup taxonomy={taxonomy} value={item} pages={pages} />
                   </td>
                   <td className={`px-6 py-4 whitespace-nowrap text-right text-sm font-medium`}>
-                    <TaxonomyActions field={taxonomy} value={item} />
+                    <TaxonomyActions field={taxonomy} value={item} onContentTagging={onContentTagging} />
                   </td>
                 </tr>
               ))
@@ -224,7 +212,7 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
               (unmappedItems.length === 0 && (
                 <tr>
                   <td
-                    className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${getColors(`text-gray-800 dark:text-gray-200`, `text-[var(--frontmatter-text)]`)}`}
+                    className={`px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--frontmatter-text)]`}
                     colSpan={4}
                   >
                     {l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerTableRowEmpty, taxonomy)}
@@ -237,17 +225,17 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
               unmappedItems.map((item, index) => (
                 <tr key={index}>
                   <td
-                    className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${getColors(`text-gray-800 dark:text-gray-200`, `text-[var(--frontmatter-text)]`)}`}
+                    className={`px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--frontmatter-text)]`}
                     title={l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyManagerTableUnmappedTitle)}
                   >
-                    <ExclamationIcon className="inline-block h-4 w-4 mr-2" />
+                    <ExclamationTriangleIcon className="inline-block h-4 w-4 mr-2" />
                     <span>{item}</span>
                   </td>
-                  <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${getColors(`text-gray-800 dark:text-gray-200`, `text-[var(--frontmatter-text)]`)}`}>
+                  <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--frontmatter-text)]`}>
                     <TaxonomyLookup taxonomy={taxonomy} value={item} pages={pages} />
                   </td>
                   <td className={`px-6 py-4 whitespace-nowrap text-right text-sm font-medium`}>
-                    <TaxonomyActions field={taxonomy} value={item} unmapped />
+                    <TaxonomyActions field={taxonomy} value={item} onContentTagging={onContentTagging} unmapped />
                   </td>
                 </tr>
               ))}

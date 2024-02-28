@@ -1,19 +1,17 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { PencilAltIcon, XIcon } from '@heroicons/react/outline';
+import { PencilSquareIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
-import { basename } from 'path';
 import * as React from 'react';
-import { Fragment, useCallback, useMemo } from 'react';
+import { Fragment, useMemo } from 'react';
 import { DateHelper } from '../../../helpers/DateHelper';
-import { MediaInfo, UnmappedMedia } from '../../../models';
-import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
-import { DashboardMessage } from '../../DashboardMessage';
-import { useRecoilValue } from 'recoil';
-import { PageSelector, SelectedMediaFolderSelector } from '../../state';
+import { DEFAULT_MEDIA_CONTENT_TYPE, MediaInfo } from '../../../models';
 import { DetailsItem } from './DetailsItem';
-import { DetailsInput } from './DetailsInput';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { DetailsForm } from './DetailsForm';
+import { useRecoilValue } from 'recoil';
+import { SettingsAtom } from '../../state';
+import { basename } from 'path';
 
 export interface IDetailsSlideOverProps {
   imgSrc: string;
@@ -42,62 +40,56 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
   isImageFile,
   isVideoFile
 }: React.PropsWithChildren<IDetailsSlideOverProps>) => {
-  const [filename, setFilename] = React.useState<string>(media.filename);
-  const [caption, setCaption] = React.useState<string | undefined>(media.caption);
-  const [title, setTitle] = React.useState<string | undefined>(media.title);
-  const [unmapped, setUnmapped] = React.useState<UnmappedMedia[]>([]);
-  const [alt, setAlt] = React.useState(media.alt);
-  const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
-  const page = useRecoilValue(PageSelector);
-
+  const settings = useRecoilValue(SettingsAtom);
   const createdDate = useMemo(() => DateHelper.tryParse(media.ctime), [media]);
   const modifiedDate = useMemo(() => DateHelper.tryParse(media.mtime), [media]);
 
-  const fileInfo = filename ? basename(filename).split('.') : null;
-  const extension = fileInfo?.pop();
-  const name = fileInfo?.join('.');
+  const extension = useMemo(() => {
+    const fileInfo = media.filename ? basename(media.filename).split('.') : null;
+    const extension = fileInfo?.pop();
+    return extension;
+  }, [media.filename]);
 
-  const onSubmitMetadata = useCallback(() => {
-    Messenger.send(DashboardMessage.updateMediaMetadata, {
-      file: media.fsPath,
-      filename,
-      caption,
-      alt,
-      title,
-      folder: selectedFolder,
-      page
-    });
-
-    onEditClose();
-  }, [media, filename, caption, alt, title, selectedFolder, page]);
-
-  const remapMetadata = useCallback((item: UnmappedMedia) => {
-    Messenger.send(DashboardMessage.remapMediaMetadata, {
-      file: media.fsPath,
-      unmappedItem: item,
-      folder: selectedFolder,
-      page
-    });
-
-    onEditClose();
-  }, [media, filename, caption, alt, title, selectedFolder, page]);
-
-  React.useEffect(() => {
-    setTitle(media.title);
-    setAlt(media.alt);
-    setCaption(media.caption);
-    setFilename(media.filename);
-  }, [media]);
-
-  React.useEffect(() => {
-    if (showForm) {
-      messageHandler.request<UnmappedMedia[]>(DashboardMessage.getUnmappedMedia, filename).then((result) => {
-        setUnmapped(result);
-      });
-    } else {
-      setUnmapped([]);
+  const fields = useMemo(() => {
+    if (extension) {
+      const contentType = settings?.media.contentTypes.find((c) => c.fileTypes?.map(t => t.toLowerCase()).includes(extension as string)) || DEFAULT_MEDIA_CONTENT_TYPE;
+      return contentType.fields;
     }
-  }, [showForm, filename]);
+  }, [extension, settings?.media.contentTypes]);
+
+  const detailItems = useMemo(() => {
+    const items = [];
+
+    items.push(
+      <DetailsItem key="filename" title={l10n.t(LocalizationKey.dashboardMediaMetadataPanelFieldFileName)} details={media.filename} />
+    );
+
+    fields?.forEach((field) => {
+      if (field.name === "title") {
+        items.push(
+          <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaCommonTitle)} details={media.metadata.title || ""} />
+        );
+      } else if (field.name === "caption") {
+        if (isImageFile) {
+          items.push(
+            <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaCommonCaption)} details={media.metadata.caption || ""} />
+          );
+        }
+      } else if (field.name === "alt") {
+        if (isImageFile) {
+          items.push(
+            <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaCommonAlt)} details={media.metadata.alt || ""} />
+          );
+        }
+      } else {
+        items.push(
+          <DetailsItem title={field.title || field.name} details={(media.metadata[field.name] || "") as string} />
+        );
+      }
+    });
+
+    return items;
+  }, [fields, media.metadata]);
 
   return (
     <Transition.Root show={true} as={Fragment}>
@@ -129,14 +121,14 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                           onClick={onDismiss}
                         >
                           <span className="sr-only">{l10n.t(LocalizationKey.dashboardMediaPanelClose)}</span>
-                          <XIcon className="h-6 w-6" aria-hidden="true" />
+                          <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                         </button>
                       </div>
                     </div>
                   </div>
 
                   <div className="relative mt-6 flex-1 px-4 sm:px-6">
-                    <div className="absolute inset-0 px-4 sm:px-6 space-y-8">
+                    <div className="space-y-8">
                       <div>
                         {(isImageFile || isVideoFile) && (
                           <div className={`block w-full aspect-w-10 aspect-h-7 overflow-hidden border rounded border-[var(--frontmatter-border)] bg-[var(--vscode-editor-background)]`}>
@@ -168,101 +160,11 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                       <div>
                         {/* EDIT METADATA FORM */}
                         {showForm && (
-                          <>
-                            <h3 className={`text-base text-[var(--vscode-editor-foreground)]`}>
-                              {l10n.t(LocalizationKey.dashboardMediaMetadataPanelTitle)}
-                            </h3>
-
-                            {
-                              unmapped && unmapped.length > 0 && (
-                                <div className="flex flex-col py-3 space-y-3">
-                                  <p className={`text-sm my-3 font-medium text-[var(--vscode-editor-foreground)] opacity-90`}>
-                                    {l10n.t(LocalizationKey.dashboardMediaDetailsSlideOverUnmappedDescription)}
-                                  </p>
-                                  <ul className='pl-4'>
-                                    {
-                                      unmapped.map((item) => (
-                                        <li className='list-disc'>
-                                          <button
-                                            key={item.file}
-                                            className='text-left hover:text-[var(--frontmatter-link-hover)]'
-                                            onClick={() => remapMetadata(item)}>
-                                            {item.file}{item.metadata.title ? ` (${item.metadata.title})` : ''}
-                                          </button>
-                                        </li>
-                                      ))
-                                    }
-                                  </ul>
-                                </div>
-                              )
-                            }
-
-                            <p className={`text-sm my-3 font-medium text-[var(--vscode-editor-foreground)] opacity-90`}>
-                              {l10n.t(LocalizationKey.dashboardMediaMetadataPanelDescription)}
-                            </p>
-                            <div className="flex flex-col py-3 space-y-3">
-                              <div>
-                                <label className={`block text-sm font-medium text-[var(--vscode-editor-foreground)]`}>
-                                  {l10n.t(LocalizationKey.dashboardMediaMetadataPanelFieldFileName)}
-                                </label>
-                                <div className="relative mt-1">
-                                  <DetailsInput value={name || ""} onChange={(e) => setFilename(`${e.target.value}.${extension}`)} />
-
-                                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                    <span className={`sm:text-sm placeholder-[var(--vscode-input-placeholderForeground)]`}>.{extension}</span>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div>
-                                <label className={`block text-sm font-medium text-[var(--vscode-editor-foreground)]`}>
-                                  {l10n.t(LocalizationKey.dashboardMediaCommonTitle)}
-                                </label>
-                                <div className="mt-1">
-                                  <DetailsInput value={title || ""} onChange={(e) => setTitle(e.target.value)} />
-                                </div>
-                              </div>
-
-                              {(isImageFile || isVideoFile) && (
-                                <div>
-                                  <label className={`block text-sm font-medium text-[var(--vscode-editor-foreground)]`}>
-                                    {l10n.t(LocalizationKey.dashboardMediaCommonCaption)}
-                                  </label>
-                                  <div className="mt-1">
-                                    <DetailsInput value={caption || ""} onChange={(e) => setCaption(e.target.value)} isTextArea />
-                                  </div>
-                                </div>
-                              )}
-                              {isImageFile && (
-                                <div>
-                                  <label className={`block text-sm font-medium text-[var(--vscode-editor-foreground)]`}>
-                                    {l10n.t(LocalizationKey.dashboardMediaCommonAlt)}
-                                  </label>
-                                  <div className="mt-1">
-                                    <DetailsInput value={alt || ""} onChange={(e) => setAlt(e.target.value)} isTextArea />
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-
-                            <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                              <button
-                                type="button"
-                                className={`w-full inline-flex justify-center rounded border-transparent shadow-sm px-4 py-2 text-base font-medium sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-30 bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] text-[var(--vscode-button-foreground)] outline-[var(--vscode-focusBorder)] outline-1`}
-                                onClick={onSubmitMetadata}
-                                disabled={!filename}
-                              >
-                                {l10n.t(LocalizationKey.commonSave)}
-                              </button>
-                              <button
-                                type="button"
-                                className={`mt-3 w-full inline-flex justify-center rounded shadow-sm px-4 py-2 text-base font-medium focus:outline-none sm:mt-0 sm:w-auto sm:text-sm bg-[var(--vscode-button-secondaryBackground)] hover:bg-[var(--vscode-button-secondaryHoverBackground)] text-[var(--vscode-button-secondaryForeground)]`}
-                                onClick={onEditClose}
-                              >
-                                {l10n.t(LocalizationKey.commonCancel)}
-                              </button>
-                            </div>
-                          </>
+                          <DetailsForm
+                            media={media}
+                            isImageFile={isImageFile}
+                            isVideoFile={isVideoFile}
+                            onDismiss={onEditClose} />
                         )}
 
                         {!showForm && (
@@ -270,20 +172,12 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                             <h3 className={`text-base flex items-center text-[var(--vscode-foreground)]`}>
                               <span>{l10n.t(LocalizationKey.dashboardMediaMetadataPanelFormMetadataTitle)}</span>
                               <button onClick={onEdit}>
-                                <PencilAltIcon className="w-4 h-4 ml-2" aria-hidden="true" />
+                                <PencilSquareIcon className="w-4 h-4 ml-2" aria-hidden="true" />
                                 <span className="sr-only">{l10n.t(LocalizationKey.commonEdit)}</span>
                               </button>
                             </h3>
                             <dl className={`mt-2 border-t border-b divide-y border-[var(--frontmatter-border)] divide-[var(--frontmatter-border)]`}>
-                              <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaMetadataPanelFieldFileName)} details={media.filename} />
-                              <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaCommonTitle)} details={media.title || ""} />
-
-                              {isImageFile && (
-                                <>
-                                  <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaCommonCaption)} details={media.caption || ''} />
-                                  <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaCommonAlt)} details={media.alt || ''} />
-                                </>
-                              )}
+                              {detailItems}
                             </dl>
                           </>
                         )}

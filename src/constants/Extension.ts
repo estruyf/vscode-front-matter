@@ -67,6 +67,11 @@ export const COMMAND_NAME = {
   addMissingFields: getCommandName('contenttype.addMissingFields'),
   setContentType: getCommandName('contenttype.setContentType'),
 
+  // i18n
+  i18n: {
+    create: getCommandName('i18n.create')
+  },
+
   // Project
   switchProject: getCommandName('project.switch'),
 

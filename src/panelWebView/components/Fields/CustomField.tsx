@@ -1,4 +1,4 @@
-import { CodeIcon } from '@heroicons/react/outline';
+import { CodeBracketIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { BaseFieldProps, CustomPanelViewResult } from '../../../models';
@@ -42,7 +42,7 @@ export const CustomField: React.FunctionComponent<ICustomFieldProps> = ({ label,
 
   return (
     <div className={`metadata_field`}>
-      <FieldTitle label={label} icon={<CodeIcon />} required={required} />
+      <FieldTitle label={label} icon={<CodeBracketIcon />} required={required} />
 
       <div className="metadata_field">
         <div dangerouslySetInnerHTML={{ __html: customHtml }} />

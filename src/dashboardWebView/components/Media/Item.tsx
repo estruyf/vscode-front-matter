@@ -1,26 +1,18 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { Menu } from '@headlessui/react';
 import {
-  ClipboardIcon,
-  CodeIcon,
+  CodeBracketIcon,
   DocumentIcon,
-  EyeIcon,
-  MusicNoteIcon,
-  PencilIcon,
-  PhotographIcon,
+  MusicalNoteIcon,
+  PhotoIcon,
   PlusIcon,
-  TerminalIcon,
-  TrashIcon,
-  VideoCameraIcon
-} from '@heroicons/react/outline';
+  VideoCameraIcon,
+} from '@heroicons/react/24/outline';
 import { basename, dirname } from 'path';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { CustomScript } from '../../../helpers/CustomScript';
 import { parseWinPath } from '../../../helpers/parseWinPath';
 import { SnippetParser } from '../../../helpers/SnippetParser';
-import { ScriptType, Snippet } from '../../../models';
 import { MediaInfo } from '../../../models/MediaPaths';
 import { DashboardMessage } from '../../DashboardMessage';
 import {
@@ -29,24 +21,22 @@ import {
   SettingsSelector,
   ViewDataSelector
 } from '../../state';
-import { MenuItem, MenuItems } from '../Menu';
-import { ActionMenuButton } from '../Menu/ActionMenuButton';
-import { QuickAction } from '../Menu/QuickAction';
 import { Alert } from '../Modals/Alert';
 import { InfoDialog } from '../Modals/InfoDialog';
 import { DetailsSlideOver } from './DetailsSlideOver';
-import { usePopper } from 'react-popper';
 import { MediaSnippetForm } from './MediaSnippetForm';
-import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { ItemMenu } from './ItemMenu';
+import { getRelPath } from '../../utils';
+import { Snippet } from '../../../models';
 
 export interface IItemProps {
   media: MediaInfo;
 }
 
 export const Item: React.FunctionComponent<IItemProps> = ({
-  media
+  media,
 }: React.PropsWithChildren<IItemProps>) => {
   const [, setLightbox] = useRecoilState(LightboxAtom);
   const [showAlert, setShowAlert] = useState(false);
@@ -56,24 +46,18 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const [showDetails, setShowDetails] = useState(false);
   const [showSnippetFormDialog, setShowSnippetFormDialog] = useState(false);
   const [mediaData, setMediaData] = useState<any | undefined>(undefined);
-  const [caption, setCaption] = useState(media.caption);
-  const [alt, setAlt] = useState(media.alt);
   const [filename, setFilename] = useState<string | null>(null);
   const settings = useRecoilValue(SettingsSelector);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const viewData = useRecoilValue(ViewDataSelector);
-  const { getColors } = useThemeColors();
+
+  const relPath = useMemo(() => {
+    return getRelPath(media.fsPath, settings?.staticFolder, settings?.wsFolder);
+  }, [media.fsPath, settings?.staticFolder, settings?.wsFolder]);
 
   const hasViewData = useMemo(() => {
     return viewData?.data?.filePath !== undefined;
   }, [viewData]);
-
-  const [referenceElement, setReferenceElement] = useState<any>(null);
-  const [popperElement, setPopperElement] = useState<any>(null);
-  const { styles, attributes } = usePopper(referenceElement, popperElement, {
-    placement: 'bottom-end',
-    strategy: 'fixed'
-  });
 
   const mediaSnippets = useMemo(() => {
     if (!settings?.snippets) {
@@ -103,44 +87,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return '';
   };
 
-  const getRelPath = () => {
-    let relPath: string | undefined = '';
-    if (settings?.wsFolder && media.fsPath) {
-      const wsFolderParsed = parseWinPath(settings.wsFolder);
-      const mediaParsed = parseWinPath(media.fsPath);
-
-      relPath = mediaParsed.split(wsFolderParsed).pop();
-
-      // If the static folder is the root, we can just return the relative path
-      if (settings.staticFolder === "/") {
-        return relPath;
-      } else if (settings.staticFolder && relPath) {
-        const staticFolderParsed = parseWinPath(settings.staticFolder);
-        relPath = relPath.split(staticFolderParsed).pop();
-      }
-    }
-    return relPath;
-  };
-
   const getFileName = () => {
     return basename(parseWinPath(media.fsPath) || '');
   };
 
-  const copyToClipboard = () => {
-    const relPath = getRelPath();
-    Messenger.send(DashboardMessage.copyToClipboard, parseWinPath(relPath) || '');
-  };
-
-  const runCustomScript = (script: CustomScript) => {
-    Messenger.send(DashboardMessage.runCustomScript, {
-      script,
-      path: media.fsPath
-    });
-  };
-
-  const insertToArticle = () => {
-    const relPath = getRelPath();
-
+  const insertIntoArticle = useCallback(() => {
     if (viewData?.data?.type === 'file') {
       Messenger.send(DashboardMessage.insertFile, {
         relPath: parseWinPath(relPath) || '',
@@ -152,7 +103,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
         position: viewData?.data?.position || null,
         blockData:
           typeof viewData?.data?.blockData !== 'undefined' ? viewData?.data?.blockData : undefined,
-        title: media.title
+        title: media.metadata.title
       });
     } else {
       Messenger.send(DashboardMessage.insertMedia, {
@@ -165,12 +116,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({
         position: viewData?.data?.position || null,
         blockData:
           typeof viewData?.data?.blockData !== 'undefined' ? viewData?.data?.blockData : undefined,
-        alt: alt || '',
-        caption: caption || '',
-        title: media.title || ''
+        alt: media.metadata.alt || '',
+        caption: media.metadata.caption || '',
+        title: media.metadata.title || ''
       });
     }
-  };
+  }, [media, settings, viewData, relPath]);
 
   const insertSnippet = useCallback(() => {
     if (mediaSnippets.length === 1) {
@@ -188,16 +139,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     (snippet: Snippet) => {
       setShowSnippetSelection(false);
 
-      const relPath = getRelPath();
-
       const fieldData = {
         mediaUrl: (parseWinPath(relPath) || '').replace(/ /g, '%20'),
-        alt: alt || '',
-        caption: caption || '',
-        title: media.title || '',
         filename: basename(relPath || ''),
         mediaWidth: media?.dimensions?.width?.toString() || '',
-        mediaHeight: media?.dimensions?.height?.toString() || ''
+        mediaHeight: media?.dimensions?.height?.toString() || '',
+        ...media.metadata
       };
 
       if (!snippet.fields || snippet.fields.length === 0) {
@@ -217,7 +164,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
         setMediaData(fieldData);
       }
     },
-    [alt, caption, media, settings, viewData, mediaSnippets]
+    [media, settings, viewData, mediaSnippets, relPath]
   );
 
   /**
@@ -225,8 +172,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
    */
   const insertMediaSnippetToArticle = useCallback(
     (output: string) => {
-      const relPath = getRelPath();
-
       Messenger.send(DashboardMessage.insertMedia, {
         relPath: parseWinPath(relPath) || '',
         file: viewData?.data?.filePath,
@@ -235,19 +180,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
         snippet: output
       });
     },
-    [viewData]
+    [viewData, relPath]
   );
-
-  const deleteMedia = () => {
-    setShowAlert(true);
-  };
-
-  const revealMedia = () => {
-    Messenger.send(DashboardMessage.revealMedia, {
-      file: media.fsPath,
-      folder: selectedFolder
-    });
-  };
 
   const confirmDeletion = () => {
     Messenger.send(DashboardMessage.deleteMedia, {
@@ -292,10 +226,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return sizeDetails.join(' - ');
   };
 
-  const viewMediaDetails = () => {
-    setShowDetails(true);
-  };
-
   const openLightbox = useCallback(() => {
     if (isImageFile) {
       setLightbox(media.vsPath || '');
@@ -305,23 +235,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const updateMetadata = () => {
     setShowForm(true);
     setShowDetails(true);
-  };
-
-  const customScriptActions = () => {
-    return (settings?.scripts || [])
-      .filter((script) => script.type === ScriptType.MediaFile && !script.hidden)
-      .map((script) => (
-        <MenuItem
-          key={script.title}
-          title={
-            <div className="flex items-center">
-              <TerminalIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
-              <span>{script.title}</span>
-            </div>
-          }
-          onClick={() => runCustomScript(script)}
-        />
-      ));
   };
 
   const isVideoFile = useMemo(() => {
@@ -361,7 +274,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     }
 
     if (isImageFile) {
-      return <PhotographIcon className={`h-1/2 ${colors}`} />;
+      return <PhotoIcon className={`h-1/2 ${colors}`} />;
     }
 
     if (isVideoFile) {
@@ -369,7 +282,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     }
 
     if (isAudioFile) {
-      icon = <MusicNoteIcon className={`h-4/6 ${colors}`} />;
+      icon = <MusicalNoteIcon className={`h-4/6 ${colors}`} />;
     }
 
     return (
@@ -405,18 +318,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     setSnippet(undefined);
     setMediaData(undefined);
   };
-
-  useEffect(() => {
-    if (media.alt !== alt) {
-      setAlt(media.alt);
-    }
-  }, [media.alt]);
-
-  useEffect(() => {
-    if (media.caption !== caption) {
-      setCaption(media.caption);
-    }
-  }, [media.caption]);
 
   useEffect(() => {
     const name = basename(parseWinPath(media.fsPath) || '');
@@ -457,9 +358,9 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                   } flex items-center justify-center`}
               >
                 <button
-                  title="Insert image"
+                  title={l10n.t(LocalizationKey.dashboardMediaItemButtomInsertImage)}
                   className={`h-1/3 text-white hover:text-[var(--vscode-button-background)]`}
-                  onClick={insertToArticle}
+                  onClick={insertIntoArticle}
                 >
                   <PlusIcon className={`w-full h-full hover:drop-shadow-md `} aria-hidden="true" />
                 </button>
@@ -467,11 +368,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               {viewData?.data?.position && mediaSnippets.length > 0 && (
                 <div className={`h-full w-1/3 flex items-center justify-center`}>
                   <button
-                    title="Insert snippet"
+                    title={l10n.t(LocalizationKey.dashboardMediaItemButtomInsertSnippet)}
                     className={`h-1/3 text-white hover:text-[var(--vscode-button-background)]`}
                     onClick={insertSnippet}
                   >
-                    <CodeIcon
+                    <CodeBracketIcon
                       className={`w-full h-full hover:drop-shadow-md `}
                       aria-hidden="true"
                     />
@@ -482,183 +383,53 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           )}
         </button>
         <div className={`relative py-4 pl-4 pr-12`}>
-          <div className={`group/actions absolute top-4 right-4 flex flex-col space-y-4`}>
-            <div className={`flex items-center border border-transparent rounded-full p-2 -mr-2 -mt-2 ${getColors(
-              `group-hover/actions:bg-gray-200 dark:group-hover/actions:bg-vulcan-200 group-hover/actions:border-gray-100 dark:group-hover/actions:border-vulcan-50`,
-              `group-hover/actions:bg-[var(--vscode-sideBar-background)] group-hover/actions:border-[var(--frontmatter-border)]`
-            )
-              }`}>
-              <Menu as="div" className="relative z-10 flex text-left">
-                <div className="hidden group-hover/actions:flex">
-                  <QuickAction title="View media details" onClick={viewMediaDetails}>
-                    <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
-                  </QuickAction>
+          <ItemMenu
+            media={media}
+            relPath={relPath}
+            selectedFolder={selectedFolder}
+            viewData={viewData?.data}
+            snippets={mediaSnippets}
+            scripts={settings?.scripts}
+            insertIntoArticle={insertIntoArticle}
+            insertSnippet={insertSnippet}
+            showUpdateMedia={updateMetadata}
+            showMediaDetails={() => setShowDetails(true)}
+            processSnippet={processSnippet}
+            onDelete={() => setShowAlert(true)} />
 
-                  <QuickAction title="Edit metadata" onClick={updateMetadata}>
-                    <PencilIcon className={`w-4 h-4`} aria-hidden="true" />
-                  </QuickAction>
-
-                  {viewData?.data?.filePath ? (
-                    <>
-                      <QuickAction
-                        title={
-                          viewData.data.metadataInsert && viewData.data.fieldName
-                            ? l10n.t(LocalizationKey.dashboardMediaItemQuickActionInsertField, viewData.data.fieldName)
-                            : l10n.t(LocalizationKey.dashboardMediaItemQuickActionInsertMarkdown)
-                        }
-                        onClick={insertToArticle}
-                      >
-                        <PlusIcon className={`w-4 h-4`} aria-hidden="true" />
-                      </QuickAction>
-
-                      {viewData?.data?.position && mediaSnippets.length > 0 && (
-                        <QuickAction title={l10n.t(LocalizationKey.commonInsertSnippet)} onClick={insertSnippet}>
-                          <CodeIcon className={`w-4 h-4`} aria-hidden="true" />
-                        </QuickAction>
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      <QuickAction title={l10n.t(LocalizationKey.dashboardMediaItemQuickActionCopyPath)} onClick={copyToClipboard}>
-                        <ClipboardIcon className={`w-4 h-4`} aria-hidden="true" />
-                      </QuickAction>
-                    </>
-                  )}
-
-                  <QuickAction title={l10n.t(LocalizationKey.dashboardMediaItemQuickActionDelete)} onClick={deleteMedia}>
-                    <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
-                  </QuickAction>
-                </div>
-
-                <div ref={setReferenceElement} className={`flex`}>
-                  <ActionMenuButton title={l10n.t(LocalizationKey.commonMenu)} />
-                </div>
-
-                <div
-                  className="menu_items__wrapper z-20"
-                  ref={setPopperElement}
-                  style={styles.popper}
-                  {...attributes.popper}
-                >
-                  <MenuItems widthClass="w-40">
-                    <MenuItem
-                      title={
-                        <div className="flex items-center">
-                          <PencilIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
-                          <span>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemEditMetadata)}</span>
-                        </div>
-                      }
-                      onClick={updateMetadata}
-                    />
-
-                    {viewData?.data?.filePath ? (
-                      <>
-                        <MenuItem
-                          title={
-                            <div className="flex items-center">
-                              <PlusIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
-                              <span>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemInsertImage)}</span>
-                            </div>
-                          }
-                          onClick={insertToArticle}
-                        />
-
-                        {viewData?.data?.position &&
-                          mediaSnippets.length > 0 &&
-                          mediaSnippets.map((snippet, idx) => (
-                            <MenuItem
-                              key={idx}
-                              title={
-                                <div className="flex items-center">
-                                  <CodeIcon
-                                    className="mr-2 h-5 w-5 flex-shrink-0"
-                                    aria-hidden={true}
-                                  />{' '}
-                                  <span>{snippet.title}</span>
-                                </div>
-                              }
-                              onClick={() => processSnippet(snippet)}
-                            />
-                          ))}
-
-                        {customScriptActions()}
-                      </>
-                    ) : (
-                      <>
-                        <MenuItem
-                          title={
-                            <div className="flex items-center">
-                              <ClipboardIcon
-                                className="mr-2 h-5 w-5 flex-shrink-0"
-                                aria-hidden={true}
-                              />{' '}
-                              <span>{l10n.t(LocalizationKey.dashboardMediaItemQuickActionCopyPath)}</span>
-                            </div>
-                          }
-                          onClick={copyToClipboard}
-                        />
-
-                        {customScriptActions()}
-                      </>
-                    )}
-
-                    <MenuItem
-                      title={
-                        <div className="flex items-center">
-                          <EyeIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
-                          <span>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemRevealMedia)}</span>
-                        </div>
-                      }
-                      onClick={revealMedia}
-                    />
-
-                    <MenuItem
-                      title={
-                        <div className="flex items-center">
-                          <TrashIcon className="mr-2 h-5 w-5 flex-shrink-0" aria-hidden={true} />{' '}
-                          <span>{l10n.t(LocalizationKey.commonDelete)}</span>
-                        </div>
-                      }
-                      onClick={deleteMedia}
-                    />
-                  </MenuItems>
-                </div>
-              </Menu>
-            </div>
-          </div>
-          <p className={`text-sm font-bold pointer-events-none flex items-center break-all ${getColors(`dark:text-whisper-900`, `text-[var(--vscode-foreground)]`)}`}>
+          <p className={`text-sm font-bold pointer-events-none flex items-center break-all text-[var(--vscode-foreground)]}`}>
             {basename(parseWinPath(media.fsPath) || '')}
           </p>
-          {!isImageFile && media.title && (
-            <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start ${getColors(`dark:text-whisper-900`, ``)}`}>
+          {!isImageFile && media.metadata.title && (
+            <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start`}>
               <b className={`mr-2`}>
                 {l10n.t(LocalizationKey.dashboardMediaCommonTitle)}:
               </b>
-              <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-foreground)]`)}`}>{media.title}</span>
+              <span className={`block mt-1 text-xs text-[var(--vscode-foreground)]`}>{media.metadata.title}</span>
             </p>
           )}
-          {media.caption && (
-            <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start ${getColors(`dark:text-whisper-900`, ``)}`}>
+          {media.metadata.caption && (
+            <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start`}>
               <b className={`mr-2`}>
                 {l10n.t(LocalizationKey.dashboardMediaCommonCaption)}:
               </b>
-              <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-foreground)]`)}`}>{media.caption}</span>
+              <span className={`block mt-1 text-xs text-[var(--vscode-foreground)]`}>{media.metadata.caption}</span>
             </p>
           )}
-          {!media.caption && media.alt && (
-            <p className={`mt-2 text-xs font-medium pointer-events-none  flex flex-col items-start ${getColors(`dark:text-whisper-900`, ``)}`}>
+          {!media.metadata.caption && media.metadata.alt && (
+            <p className={`mt-2 text-xs font-medium pointer-events-none  flex flex-col items-start`}>
               <b className={`mr-2`}>
                 {l10n.t(LocalizationKey.dashboardMediaCommonAlt)}:
               </b>
-              <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-foreground)]`)}`}>{media.alt}</span>
+              <span className={`block mt-1 text-xs text-[var(--vscode-foreground)]`}>{media.metadata.alt}</span>
             </p>
           )}
           {(media?.size || media?.dimensions) && (
-            <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start ${getColors(`dark:text-whisper-900`, ``)}`}>
+            <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start`}>
               <b className={`mr-1`}>
                 {l10n.t(LocalizationKey.dashboardMediaCommonSize)}:
               </b>
-              <span className={`block mt-1 text-xs ${getColors(`dark:text-whisper-500`, `text-[var(--vscode-foreground)]`)}`}>
+              <span className={`block mt-1 text-xs text-[var(--vscode-foreground)]`}>
                 {getMediaDetails()}
               </span>
             </p>
@@ -668,7 +439,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
       {showSnippetSelection && (
         <InfoDialog
-          icon={<CodeIcon className="h-6 w-6" aria-hidden="true" />}
+          icon={<CodeBracketIcon className="h-6 w-6" aria-hidden="true" />}
           title={l10n.t(LocalizationKey.commonInsertSnippet)}
           description={l10n.t(LocalizationKey.dashboardMediaItemInfoDialogSnippetDescription)}
           dismiss={() => setShowSnippetSelection(false)}
@@ -677,11 +448,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             {mediaSnippets.map((snippet, idx) => (
               <li key={idx} className="inline-flex items-center pb-2 mr-2">
                 <button
-                  className={`w-full inline-flex justify-center border border-transparent shadow-sm px-4 py-2 text-base font-medium focus:outline-none sm:w-auto sm:text-sm disabled:opacity-30 ${getColors(
-                    `bg-teal-600 text-white hover:bg-teal-700 dark:hover:bg-teal-900`,
-                    `bg-[var(--frontmatter-button-background)] text-[var(--vscode-button-foreground)] hover:bg-[var(--vscode-button-hoverBackground)]`
-                  )
-                    }`}
+                  className={`w-full inline-flex justify-center border border-transparent shadow-sm px-4 py-2 text-base font-medium focus:outline-none sm:w-auto sm:text-sm disabled:opacity-30 bg-[var(--frontmatter-button-background)] text-[var(--vscode-button-foreground)] hover:bg-[var(--vscode-button-hoverBackground)]`}
                   onClick={() => processSnippet(snippet)}
                 >
                   {snippet.title}

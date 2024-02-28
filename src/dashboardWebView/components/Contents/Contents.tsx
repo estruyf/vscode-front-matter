@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 import { Page } from '../../models';
-import { SettingsSelector } from '../../state';
+import { LoadingAtom, SettingsSelector } from '../../state';
 import { Overview } from './Overview';
 import { Spinner } from '../Common/Spinner';
 import { SponsorMsg } from '../Layout/SponsorMsg';
@@ -14,13 +14,12 @@ import { PageLayout } from '../Layout/PageLayout';
 
 export interface IContentsProps {
   pages: Page[];
-  loading: boolean;
 }
 
 export const Contents: React.FunctionComponent<IContentsProps> = ({
-  pages,
-  loading
+  pages
 }: React.PropsWithChildren<IContentsProps>) => {
+  const loading = useRecoilValue(LoadingAtom);
   const settings = useRecoilValue(SettingsSelector);
   const { pageItems } = usePages(pages);
 
@@ -34,8 +33,8 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({
 
   return (
     <PageLayout folders={pageFolders} totalPages={pageItems.length}>
-      <div className="w-full flex-grow max-w-full mx-auto pb-6 px-4">
-        {loading ? <Spinner /> : <Overview pages={pageItems} settings={settings} />}
+      <div className="w-full flex-grow max-w-full mx-auto pb-6">
+        {loading ? <Spinner type={loading} /> : <Overview pages={pageItems} settings={settings} />}
       </div>
 
       <SponsorMsg

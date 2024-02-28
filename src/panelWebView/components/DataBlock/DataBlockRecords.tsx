@@ -1,4 +1,4 @@
-import { CollectionIcon, PlusIcon } from '@heroicons/react/outline';
+import { RectangleStackIcon, PlusIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { VsLabel } from '../VscodeComponents';
 import { DataBlockRecord } from '.';
@@ -55,7 +55,7 @@ export const DataBlockRecords = ({
       <VsLabel>
         <div className={`metadata_field__label`}>
           <div>
-            <CollectionIcon style={{ width: '16px', height: '16px' }} />
+            <RectangleStackIcon style={{ width: '16px', height: '16px' }} />
             <span style={{ lineHeight: '16px' }}>
               {l10n.t(LocalizationKey.panelDataBlockDataBlockRecordsLabel)}
             </span>

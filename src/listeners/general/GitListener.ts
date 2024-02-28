@@ -1,9 +1,18 @@
 import {
+  COMMAND_NAME,
+  CONTEXT,
+  GIT_CONFIG,
+  SETTING_DATE_FORMAT,
+  SETTING_GIT_COMMIT_MSG,
+  SETTING_GIT_DISABLED_BRANCHES,
+  SETTING_GIT_ENABLED,
+  SETTING_GIT_REQUIRES_COMMIT_MSG,
   SETTING_GIT_SUBMODULE_BRANCH,
   SETTING_GIT_SUBMODULE_FOLDER,
   SETTING_GIT_SUBMODULE_PULL,
-  SETTING_GIT_SUBMODULE_PUSH
-} from './../../constants/settings';
+  SETTING_GIT_SUBMODULE_PUSH,
+  TelemetryEvent
+} from './../../constants';
 import { Settings } from './../../helpers/SettingsHelper';
 import { Dashboard } from '../../commands/Dashboard';
 import { PanelProvider } from '../../panelWebView/PanelProvider';
@@ -12,29 +21,58 @@ import {
   Extension,
   Logger,
   Notifications,
-  processKnownPlaceholders,
+  parseWinPath,
+  processTimePlaceholders,
   Telemetry
 } from '../../helpers';
 import { GeneralCommands } from './../../constants/GeneralCommands';
 import simpleGit, { SimpleGit } from 'simple-git';
-import {
-  COMMAND_NAME,
-  CONTEXT,
-  SETTING_DATE_FORMAT,
-  SETTING_GIT_COMMIT_MSG,
-  SETTING_GIT_ENABLED,
-  TelemetryEvent
-} from '../../constants';
 import { Folders } from '../../commands/Folders';
-import { commands } from 'vscode';
-import { PostMessageData } from '../../models';
+import { Event, commands, extensions } from 'vscode';
+import { GitAPIState, GitRepository, PostMessageData } from '../../models';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
 
 export class GitListener {
+  private static gitAPI: {
+    onDidChangeState: Event<GitAPIState>;
+    onDidOpenRepository: Event<GitRepository>;
+    onDidCloseRepository: Event<GitRepository>;
+    getAPI: (version: number) => any;
+    repositories: GitRepository[];
+  } | null = null;
   private static isRegistered: boolean = false;
   private static client: SimpleGit | null = null;
   private static subClient: SimpleGit | null = null;
+  private static repository: GitRepository | null = null;
+  private static branchName: string | null = null;
+
+  /**
+   * Retrieves the Git settings.
+   * @returns {Promise<{
+   *   isGitRepo: boolean,
+   *   actions: boolean,
+   *   disabledBranches: string[],
+   *   requiresCommitMessage: string[]
+   * }>} The Git settings.
+   */
+  public static async getSettings() {
+    const gitActions = Settings.get<boolean>(SETTING_GIT_ENABLED);
+    if (gitActions) {
+      return {
+        isGitRepo: gitActions ? await GitListener.isGitRepository() : false,
+        actions: gitActions || false,
+        disabledBranches: gitActions
+          ? Settings.get<string[]>(SETTING_GIT_DISABLED_BRANCHES) || []
+          : [],
+        requiresCommitMessage: gitActions
+          ? Settings.get<string[]>(SETTING_GIT_REQUIRES_COMMIT_MSG) || []
+          : []
+      };
+    }
+
+    return;
+  }
 
   /**
    * Initialize the listener
@@ -65,34 +103,68 @@ export class GitListener {
    */
   public static process(msg: PostMessageData) {
     switch (msg.command) {
-      case GeneralCommands.toVSCode.gitSync:
-        this.sync();
+      case GeneralCommands.toVSCode.git.sync:
+        this.sync(msg.payload);
+        break;
+      case GeneralCommands.toVSCode.git.fetch:
+        this.sync(undefined, false);
+        break;
+      case GeneralCommands.toVSCode.git.getBranch:
+        this.getBranch(msg.command, msg.requestId);
+        break;
+      case GeneralCommands.toVSCode.git.selectBranch:
+        this.selectBranch();
+      case GeneralCommands.toVSCode.git.isRepo:
+        this.checkIsGitRepo(msg.command, msg.requestId);
         break;
     }
   }
 
-  /**
-   * Run the sync
-   */
-  public static async sync() {
-    try {
-      this.sendMsg(GeneralCommands.toWebview.gitSyncingStart, {});
+  public static async checkIsGitRepo(command: string, requestId?: string) {
+    if (!command || !requestId) {
+      return;
+    }
 
-      Telemetry.send(TelemetryEvent.gitSync);
+    const isRepo = await GitListener.isGitRepository();
+    Dashboard.postWebviewMessage({ command: command as any, payload: isRepo, requestId });
+  }
+
+  /**
+   * Selects the current branch in the Git repository.
+   * @returns {Promise<void>} A promise that resolves when the branch command has been executed.
+   */
+  public static async selectBranch(): Promise<void> {
+    const workspaceFolder = Folders.getWorkspaceFolder();
+    await commands.executeCommand('git.checkout', workspaceFolder);
+  }
+
+  /**
+   * Synchronizes the local repository with the remote repository.
+   * @param commitMsg The commit message for the push operation.
+   * @param isSync Determines whether to perform a sync operation (default: true) or a fetch operation.
+   */
+  public static async sync(commitMsg?: string, isSync: boolean = true) {
+    try {
+      this.sendMsg(GeneralCommands.toWebview.git.syncingStart, isSync ? 'syncing' : 'fetching');
+
+      Telemetry.send(isSync ? TelemetryEvent.gitSync : TelemetryEvent.gitFetch);
 
       await this.pull();
-      await this.push();
 
-      this.sendMsg(GeneralCommands.toWebview.gitSyncingEnd, {});
+      if (isSync) {
+        await this.push(commitMsg);
+      }
+
+      this.sendMsg(GeneralCommands.toWebview.git.syncingEnd, {});
     } catch (e) {
       Logger.error((e as Error).message);
-      this.sendMsg(GeneralCommands.toWebview.gitSyncingEnd, {});
+      this.sendMsg(GeneralCommands.toWebview.git.syncingEnd, {});
     }
   }
 
   /**
-   * Check if the current workspace is a git repository
-   * @returns
+   * Checks if the current workspace is a Git repository.
+   * @returns A boolean indicating whether the current workspace is a Git repository.
    */
   public static async isGitRepository() {
     const git = this.getClient();
@@ -106,12 +178,15 @@ export class GitListener {
       Logger.warning(`Current workspace is not a GIT repository`);
     }
 
+    GitListener.vscodeGitProvider();
+
     return isRepo;
   }
 
   /**
-   * Pull the changes from the remote
-   * @returns
+   * Pulls the latest changes from the remote repository.
+   * If submoduleFolder is specified, it checks out the submoduleBranch for the submodule located in that folder.
+   * If submodulePull is true, it also updates the submodules with the latest changes from the remote repository.
    */
   private static async pull() {
     const git = this.getClient();
@@ -146,15 +221,18 @@ export class GitListener {
   }
 
   /**
-   * Push the changes to the remote
-   * @returns
+   * Pushes the changes to the remote repository.
+   *
+   * @param commitMsg The commit message to use. If not provided, it will use the default commit message or the one specified in the settings.
+   * @returns A promise that resolves when the push operation is completed.
    */
-  private static async push() {
-    let commitMsg = Settings.get<string>(SETTING_GIT_COMMIT_MSG);
+  private static async push(commitMsg?: string) {
+    commitMsg =
+      commitMsg || Settings.get<string>(SETTING_GIT_COMMIT_MSG) || 'Synced by Front Matter';
 
     if (commitMsg) {
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
-      commitMsg = processKnownPlaceholders(commitMsg, undefined, dateFormat);
+      commitMsg = processTimePlaceholders(commitMsg, dateFormat);
       commitMsg = await ArticleHelper.processCustomPlaceholders(commitMsg, undefined, undefined);
     }
 
@@ -175,7 +253,7 @@ export class GitListener {
           // Check if anything changed
           if (status.files.length > 0) {
             await subGit.raw(['add', '.', '-A']);
-            await subGit.commit(commitMsg || 'Synced by Front Matter');
+            await subGit.commit(commitMsg || GIT_CONFIG.defaultCommitMessage);
           }
           await subGit.push();
         } catch (e) {
@@ -202,7 +280,7 @@ export class GitListener {
               'git',
               'commit',
               '-m',
-              commitMsg || 'Synced by Front Matter'
+              commitMsg || GIT_CONFIG.defaultCommitMessage
             ]);
             await git.subModule(['foreach', 'git', 'push']);
           }
@@ -222,16 +300,18 @@ export class GitListener {
 
     if (status.files.length > 0) {
       await git.raw(['add', '.', '-A']);
-      await git.commit(commitMsg || 'Synced by Front Matter');
+      await git.commit(commitMsg || GIT_CONFIG.defaultCommitMessage);
     }
 
     await git.push();
   }
 
   /**
-   * Get the git client
-   * @param submoduleFolder
-   * @returns
+   * Retrieves the Git client instance based on the provided submodule folder.
+   * If no submodule folder is provided, it returns the main Git client instance.
+   * If a submodule folder is provided, it returns the submodule-specific Git client instance.
+   * @param submoduleFolder The path to the submodule folder.
+   * @returns The Git client instance or null if it cannot be retrieved.
    */
   private static getClient(submoduleFolder: string = ''): SimpleGit | null {
     if (!submoduleFolder && this.client) {
@@ -258,9 +338,100 @@ export class GitListener {
   }
 
   /**
-   * Send the message to the webview
-   * @param command
-   * @param payload
+   * Initializes the VS Code Git provider and sets up event listeners for repository changes.
+   * @returns {Promise<void>} A promise that resolves when the Git provider is initialized.
+   */
+  private static async vscodeGitProvider(): Promise<void> {
+    if (!GitListener.gitAPI) {
+      const extension = extensions.getExtension('vscode.git');
+
+      /**
+       * Logic from: https://github.com/microsoft/vscode/blob/main/extensions/github/src/extension.ts
+       * initializeGitExtension
+       */
+      if (extension) {
+        const gitExtension = extension.isActive ? extension.exports : await extension.activate();
+
+        // Get version 1 of the API
+        GitListener.gitAPI = gitExtension.getAPI(1);
+
+        if (!GitListener.gitAPI) {
+          return;
+        }
+
+        GitListener.listenToRepo(GitListener.gitAPI?.repositories);
+
+        GitListener.gitAPI.onDidChangeState(() => {
+          GitListener.listenToRepo(GitListener.gitAPI?.repositories);
+        });
+
+        GitListener.gitAPI.onDidOpenRepository((repo: GitRepository) => {
+          GitListener.triggerBranchChange(repo);
+        });
+
+        GitListener.gitAPI.onDidCloseRepository((repo: GitRepository) => {
+          Logger.info(`Closed repo: ${repo?.state?.HEAD?.name}`);
+        });
+      }
+    }
+  }
+
+  /**
+   * Retrieves the branch name and sends a request.
+   * @param command - The command to send.
+   * @param requestId - The ID of the request.
+   */
+  private static async getBranch(command: string, requestId?: string) {
+    if (!command || !requestId) {
+      return;
+    }
+
+    this.sendRequest(command, requestId, GitListener.repository?.state?.HEAD?.name);
+  }
+
+  private static listenToRepo(repositories: GitRepository[] | undefined) {
+    if (!repositories) {
+      return;
+    }
+
+    if (repositories && repositories.length === 1) {
+      GitListener.triggerBranchChange(repositories[0]);
+    } else if (repositories && repositories.length > 1) {
+      const wsFolder = Folders.getWorkspaceFolder();
+      if (wsFolder) {
+        const repo = repositories.find(
+          (repo) => parseWinPath(repo.rootUri.fsPath) === parseWinPath(wsFolder.fsPath)
+        );
+        if (repo) {
+          GitListener.triggerBranchChange(repo);
+        }
+      }
+    }
+  }
+
+  /**
+   * Triggers a branch change event for the specified Git repository.
+   * @param repo The Git repository to monitor for branch changes.
+   */
+  private static async triggerBranchChange(repo: GitRepository | null) {
+    if (repo && repo.state) {
+      if (repo.state?.HEAD?.name && repo.state.HEAD.name !== GitListener.branchName) {
+        GitListener.branchName = repo.state.HEAD.name;
+        GitListener.repository = repo;
+
+        this.sendMsg(GeneralCommands.toWebview.git.branchName, GitListener.branchName);
+
+        repo.state.onDidChange(() => {
+          GitListener.triggerBranchChange(repo);
+        });
+      }
+    }
+  }
+
+  /**
+   * Sends a message to the panel and the dashboard.
+   * @param command - The command to send.
+   * @param payload - The payload to send with the command.
    */
   private static sendMsg(command: string, payload: any) {
     const extPath = Extension.getInstance().extensionPath;
@@ -269,5 +440,24 @@ export class GitListener {
     panel.sendMessage({ command: command as any, payload });
 
     Dashboard.postWebviewMessage({ command: command as any, payload });
+  }
+
+  /**
+   * Sends a request to the webview panel.
+   * @param command - The command to send.
+   * @param requestId - The unique identifier for the request.
+   * @param payload - The payload to send with the request.
+   */
+  private static sendRequest(command: string, requestId: string, payload: any) {
+    const extPath = Extension.getInstance().extensionPath;
+    const panel = PanelProvider.getInstance(extPath);
+
+    panel.getWebview()?.postMessage({
+      command,
+      requestId,
+      payload
+    });
+
+    Dashboard.postWebviewMessage({ command: command as any, requestId, payload });
   }
 }

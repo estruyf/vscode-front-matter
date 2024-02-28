@@ -6,19 +6,30 @@ import { Command } from '../../panelWebView/Command';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
 import { authentication, commands, window } from 'vscode';
-import { ArticleHelper, ContentType, Extension, Logger, Settings } from '../../helpers';
+import {
+  ArticleHelper,
+  Extension,
+  Logger,
+  Settings,
+  ContentType,
+  processArticlePlaceholdersFromData,
+  processTimePlaceholders,
+  processFmPlaceholders
+} from '../../helpers';
 import {
   COMMAND_NAME,
   DefaultFields,
+  FEATURE_FLAG,
   SETTING_COMMA_SEPARATED_FIELDS,
   SETTING_DATE_FORMAT,
+  SETTING_GLOBAL_ACTIVE_MODE,
+  SETTING_GLOBAL_MODES,
   SETTING_SEO_TITLE_FIELD,
   SETTING_TAXONOMY_CONTENT_TYPES
 } from '../../constants';
 import { Article, Preview } from '../../commands';
 import { ParsedFrontMatter } from '../../parsers';
-import { processKnownPlaceholders } from '../../helpers/PlaceholderHelper';
-import { Field, PostMessageData } from '../../models';
+import { Field, Mode, PostMessageData, ContentType as IContentType } from '../../models';
 import { encodeEmoji, fieldWhenClause } from '../../utils';
 import { PanelProvider } from '../../panelWebView/PanelProvider';
 import { MessageHandlerData } from '@estruyf/vscode';
@@ -63,7 +74,11 @@ export class DataListener extends BaseListener {
         this.isServerStarted(msg.command, msg?.requestId);
         break;
       case CommandToCode.updatePlaceholder:
-        this.updatePlaceholder(msg?.payload?.field, msg?.payload?.value, msg?.payload?.title);
+        this.updatePlaceholder(
+          msg.command,
+          msg.payload as { field: string; value: string; data: { [key: string]: any } },
+          msg.requestId
+        );
         break;
       case CommandToCode.generateContentType:
         commands.executeCommand(COMMAND_NAME.generateContentType);
@@ -144,6 +159,22 @@ export class DataListener extends BaseListener {
    * Retrieve the information about the registered folders and its files
    */
   public static async getFoldersAndFiles() {
+    const mode = Settings.get<string | null>(SETTING_GLOBAL_ACTIVE_MODE);
+    const modes = Settings.get<Mode[]>(SETTING_GLOBAL_MODES);
+
+    if (mode && modes && modes.length > 0) {
+      const crntMode = modes.find((m) => m.id === mode);
+      if (crntMode) {
+        const recentlyModified = crntMode.features.find(
+          (f) => f === FEATURE_FLAG.panel.recentlyModified
+        );
+        if (!recentlyModified) {
+          this.sendMsg(Command.folderInfo, null);
+          return;
+        }
+      }
+    }
+
     const folders = (await Folders.getInfo(FILE_LIMIT)) || null;
 
     this.sendMsg(Command.folderInfo, folders);
@@ -192,7 +223,11 @@ export class DataListener extends BaseListener {
 
     if (keys.length > 0 && contentTypes && wsFolder) {
       // Get the current content type
-      const contentType = ArticleHelper.getContentType(updatedMetadata);
+      const contentType = ArticleHelper.getContentType({
+        content: '',
+        data: updatedMetadata,
+        path: filePath
+      });
       let slugField;
       if (contentType) {
         ImageHelper.processImageFields(updatedMetadata, contentType.fields);
@@ -271,20 +306,12 @@ export class DataListener extends BaseListener {
       }
     }
 
-    const dateFields = ContentType.findFieldsByTypeDeep(contentType.fields, 'datetime');
     const imageFields = ContentType.findFieldsByTypeDeep(contentType.fields, 'image');
     const fileFields = ContentType.findFieldsByTypeDeep(contentType.fields, 'file');
     const fieldsWithEmojiEncoding = contentType.fields.filter((f) => f.encodeEmoji);
 
     // Support multi-level fields
     const parentObj = DataListener.getParentObject(article.data, article, parents, blockData);
-
-    const dateFieldsArray = dateFields.find((f: Field[]) => {
-      const lastField = f?.[f.length - 1];
-      if (lastField) {
-        return lastField.name === field;
-      }
-    });
 
     // Check multi-image fields
     const multiImageFieldsArray = imageFields.find((f: Field[]) => {
@@ -303,13 +330,7 @@ export class DataListener extends BaseListener {
     });
 
     // Check date fields
-    if (dateFieldsArray && dateFieldsArray.length > 0) {
-      for (const dateField of dateFieldsArray) {
-        if (field === dateField.name && value) {
-          parentObj[field] = Article.formatDate(new Date(value), dateField.dateFormat);
-        }
-      }
-    } else if (multiImageFieldsArray || multiFileFieldsArray) {
+    if (multiImageFieldsArray || multiFileFieldsArray) {
       const fields =
         multiImageFieldsArray && multiImageFieldsArray.length > 0
           ? multiImageFieldsArray
@@ -578,18 +599,37 @@ export class DataListener extends BaseListener {
    * @param value
    * @param title
    */
-  private static async updatePlaceholder(field: string, value: string, title: string) {
-    if (field && value) {
+  private static async updatePlaceholder(
+    command: CommandToCode,
+    articleData: {
+      field: string;
+      value: string;
+      data: { [key: string]: any };
+      contentType?: IContentType;
+    },
+    requestId?: string
+  ) {
+    if (!command || !requestId || !articleData) {
+      return;
+    }
+
+    let { field, value, data, contentType } = articleData;
+
+    value = value || '';
+    if (field) {
       const crntFile = window.activeTextEditor?.document;
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
-      value = processKnownPlaceholders(value, title || '', dateFormat);
+      value =
+        data && contentType ? processArticlePlaceholdersFromData(value, data, contentType) : value;
+      value = processTimePlaceholders(value, dateFormat);
+      value = processFmPlaceholders(value, data);
       value = await ArticleHelper.processCustomPlaceholders(
         value,
-        title || '',
+        data.title || '',
         crntFile?.uri.fsPath || ''
       );
     }
 
-    this.sendMsg(Command.updatePlaceholder, { field, value });
+    this.sendRequest(Command.updatePlaceholder, requestId, { field, value });
   }
 }

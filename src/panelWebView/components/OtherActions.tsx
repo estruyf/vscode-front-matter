@@ -11,7 +11,7 @@ import { WritingIcon } from './Icons/WritingIcon';
 import { OtherActionButton } from './OtherActionButton';
 import { DOCUMENTATION_LINK, DOCUMENTATION_SETTINGS_LINK, ISSUE_LINK } from '../../constants/Links';
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { BookOpenIcon } from '@heroicons/react/outline';
+import { BookOpenIcon } from '@heroicons/react/24/outline';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
 

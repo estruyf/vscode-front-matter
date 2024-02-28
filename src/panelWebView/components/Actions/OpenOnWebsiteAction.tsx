@@ -28,6 +28,8 @@ export const OpenOnWebsiteAction: React.FunctionComponent<IOpenOnWebsiteActionPr
   return (
     <ActionButton
       title={l10n.t(LocalizationKey.commonOpenOnWebsite)}
-      onClick={open} />
+      onClick={open}>
+      {l10n.t(LocalizationKey.commonOpenOnWebsite)}
+    </ActionButton>
   );
 };

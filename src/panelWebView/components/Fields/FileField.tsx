@@ -1,5 +1,5 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { DocumentIcon, PaperClipIcon, TrashIcon } from '@heroicons/react/outline';
+import { DocumentIcon, PaperClipIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { basename } from 'path';
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';

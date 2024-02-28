@@ -1,4 +1,4 @@
-import { XCircleIcon } from '@heroicons/react/solid';
+import { XCircleIcon } from '@heroicons/react/24/solid';
 import * as React from 'react';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';

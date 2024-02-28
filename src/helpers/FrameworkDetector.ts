@@ -152,6 +152,60 @@ export class FrameworkDetector {
   }
 
   /**
+   * Returns the absolute path by combining the relative path and the file path.
+   * If a static folder is configured, it will be taken into account.
+   * @param relAssetPath The relative path.
+   * @param filePath The file path.
+   * @returns The absolute path.
+   */
+  public static getAbsPathByFile(relAssetPath: string, filePath: string): string {
+    const staticFolderValue = Settings.get<string | StaticFolder>(SETTING_CONTENT_STATIC_FOLDER);
+    const staticFolder = Folders.getStaticFolderRelativePath();
+
+    if (
+      staticFolderValue &&
+      staticFolder &&
+      typeof staticFolderValue !== 'string' &&
+      staticFolderValue.relative
+    ) {
+      const fileDir = dirname(filePath);
+      return parseWinPath(join(fileDir, relAssetPath));
+    }
+
+    return relAssetPath;
+  }
+
+  /**
+   * Returns the relative path of an asset file based on the provided absolute asset path and file path.
+   * If the static folder setting is configured and the static folder is available, the relative path is calculated based on the file and asset directories.
+   * Otherwise, the absolute asset path is returned as is.
+   *
+   * @param absAssetPath The absolute path of the asset file.
+   * @param fileDir The path of the directory
+   * @returns The relative path of the asset file.
+   */
+  public static getRelPathByFileDir(absAssetPath: string, fileDir: string): string {
+    const staticFolderValue = Settings.get<string | StaticFolder>(SETTING_CONTENT_STATIC_FOLDER);
+    const staticFolder = Folders.getStaticFolderRelativePath();
+
+    if (
+      staticFolderValue &&
+      staticFolder &&
+      typeof staticFolderValue !== 'string' &&
+      staticFolderValue.relative
+    ) {
+      const assetDir = dirname(absAssetPath);
+      const fileName = parse(absAssetPath);
+
+      let relAssetPath = relative(fileDir, assetDir);
+      relAssetPath = join(relAssetPath, `${fileName.name}${fileName.ext}`);
+      return parseWinPath(relAssetPath);
+    }
+
+    return absAssetPath;
+  }
+
+  /**
    * Define the default settings for Hexo
    */
   private static async hexo() {
@@ -163,7 +217,7 @@ export class FrameworkDetector {
       if (await existsAsync(hexoConfig)) {
         const content = await readFileAsync(hexoConfig, 'utf8');
         // Convert YAML to JSON
-        const config = jsyaml.load(content);
+        const config = jsyaml.load(content) as any;
 
         // Check if post assets are used: https://hexo.io/docs/asset-folders.html#Post-Asset-Folder
         if (config.post_asset_folder) {
@@ -210,7 +264,7 @@ export class FrameworkDetector {
       if (await existsAsync(jekyllConfig)) {
         const content = await readFileAsync(jekyllConfig, 'utf8');
         // Convert YAML to JSON
-        const config = jsyaml.load(content);
+        const config = jsyaml.load(content) as any;
 
         if (config.collections_dir) {
           collectionDir = config.collections_dir;

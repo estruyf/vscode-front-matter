@@ -14,7 +14,7 @@ import {
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { join, parse } from 'path';
 import { commands, env, Uri, ViewColumn, window, WebviewPanel, extensions } from 'vscode';
-import { Extension, parseWinPath, processKnownPlaceholders, Settings } from '../helpers';
+import { Extension, parseWinPath, processTimePlaceholders, Settings } from '../helpers';
 import { ContentFolder, ContentType, PreviewSettings } from '../models';
 import { format } from 'date-fns';
 import { DateHelper } from '../helpers/DateHelper';
@@ -97,6 +97,9 @@ export class Preview {
     const cspSource = webView.webview.cspSource;
 
     webView.onDidDispose(() => {
+      if (crntFilePath && this.webviews[crntFilePath]) {
+        delete this.webviews[crntFilePath];
+      }
       webView.dispose();
     });
 
@@ -196,7 +199,7 @@ export class Preview {
    * @param filePath
    * @param slug
    */
-  public static async updatePageUrl(filePath: string, slug?: string) {
+  public static async updatePageUrl(filePath: string, _: string) {
     const webView = this.webviews[filePath];
     if (webView) {
       const localhost = await this.getLocalServerUrl();
@@ -291,7 +294,7 @@ export class Preview {
     if (pathname) {
       // Known placeholders
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
-      pathname = processKnownPlaceholders(pathname, article?.data?.title, dateFormat);
+      pathname = processTimePlaceholders(pathname, dateFormat);
 
       // Custom placeholders
       pathname = await ArticleHelper.processCustomPlaceholders(
@@ -315,7 +318,7 @@ export class Preview {
       }
 
       // Support front matter placeholders - {{fm.<field>}}
-      pathname = processFmPlaceholders(pathname, article?.data);
+      pathname = article?.data ? processFmPlaceholders(pathname, article?.data) : pathname;
 
       try {
         const articleDate = ArticleHelper.getDate(article);

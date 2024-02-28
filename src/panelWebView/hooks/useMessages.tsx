@@ -10,13 +10,11 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
 import { useRecoilState } from 'recoil';
 import { PanelSettingsAtom } from '../state';
-import * as l10n from '@vscode/l10n';
 
 export default function useMessages() {
   const [metadata, setMetadata] = useState<any>({});
   const [settings, setSettings] = useRecoilState(PanelSettingsAtom);
   const [loading, setLoading] = useState<boolean>(false);
-  const [localeReady, setLocaleReady] = useState<boolean>(false);
   const [focusElm, setFocus] = useState<TagType | null>(null);
   const [folderAndFiles, setFolderAndFiles] = useState<FolderInfo[] | undefined>(undefined);
   const [mediaSelecting, setMediaSelecting] = useState<DashboardData | undefined>(undefined);
@@ -52,13 +50,11 @@ export default function useMessages() {
       case GeneralCommands.toWebview.setMode:
         setMode(message.payload);
         break;
-      case GeneralCommands.toWebview.setLocalization:
-        l10n.config({
-          contents: message.payload
-        })
-        setLocaleReady(true)
-        break;
     }
+  };
+
+  const unsetFocus = () => {
+    setFocus(null);
   };
 
   useEffect(() => {
@@ -95,9 +91,6 @@ export default function useMessages() {
     loading,
     mediaSelecting,
     mode,
-    localeReady,
-    unsetFocus: () => {
-      setFocus(null);
-    }
+    unsetFocus
   };
 }

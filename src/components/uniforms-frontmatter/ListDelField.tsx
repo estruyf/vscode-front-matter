@@ -1,4 +1,4 @@
-import { TrashIcon } from '@heroicons/react/outline';
+import { TrashIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { HTMLFieldProps, connectField, filterDOMProps, joinName, useField } from 'uniforms';
 import './ListDelField.css';
@@ -29,7 +29,7 @@ function ListDel({ disabled, name, readOnly, ...props }: ListDelFieldProps) {
 
   return (
     <span
-      className="autoform__list_del_field"
+      className="autoform__list_del_field mb-1"
       {...filterDOMProps(props)}
       onClick={onAction}
       onKeyDown={onAction}

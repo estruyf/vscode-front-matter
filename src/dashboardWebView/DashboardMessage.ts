@@ -54,6 +54,7 @@ export enum DashboardMessage {
   insertSnippet = 'insertSnippet',
   addSnippet = 'addSnippet',
   updateSnippet = 'updateSnippet',
+  updateSnippetPlaceholders = 'updateSnippetPlaceholders',
 
   // Taxonomy dashboard
   getTaxonomyData = 'getTaxonomyData',
@@ -64,14 +65,17 @@ export enum DashboardMessage {
   createTaxonomy = 'createTaxonomy',
   importTaxonomy = 'importTaxonomy',
   moveTaxonomy = 'moveTaxonomy',
+  mapTaxonomy = 'mapTaxonomy',
 
   // Other
   getTheme = 'getTheme',
   updateSetting = 'updateSetting',
   setState = 'setState',
+  getState = 'getState',
   runCustomScript = 'runCustomScript',
   sendTelemetry = 'sendTelemetry',
   logError = 'logError',
+  showNotification = 'showNotification',
 
   // Settings
   getSettings = 'getSettings',

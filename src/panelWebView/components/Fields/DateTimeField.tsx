@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ClockIcon } from '@heroicons/react/outline';
+import { ClockIcon } from '@heroicons/react/24/outline';
 import DatePicker from 'react-datepicker';
 import { forwardRef, useEffect, useMemo } from 'react';
 import { DateHelper } from '../../../helpers/DateHelper';
@@ -11,7 +11,7 @@ import { LocalizationKey } from '../../../localization';
 
 export interface IDateTimeFieldProps extends BaseFieldProps<Date | null> {
   format?: string;
-  onChange: (date: Date) => void;
+  onChange: (date: string) => void;
 }
 
 type InputProps = JSX.IntrinsicElements['input'];
@@ -32,12 +32,17 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({
   format,
   onChange
 }: React.PropsWithChildren<IDateTimeFieldProps>) => {
+  const DEFAULT_FORMAT = 'MM/dd/yyyy HH:mm';
   const [dateValue, setDateValue] = React.useState<Date | null>(null);
 
-  const onDateChange = (date: Date) => {
+  const onDateChange = React.useCallback((date: Date) => {
     setDateValue(date);
-    onChange(date);
-  };
+    if (format) {
+      onChange(DateHelper.format(date, format) || "");
+    } else {
+      onChange(date.toISOString());
+    }
+  }, [format, onChange]);
 
   const showRequiredState = useMemo(() => {
     return required && !dateValue;
@@ -74,7 +79,7 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({
           selected={(DateHelper.tryParse(dateValue, format) as Date) || new Date()}
           onChange={onDateChange}
           timeInputLabel={l10n.t(LocalizationKey.panelFieldsDateTimeFieldTime)}
-          dateFormat={DateHelper.formatUpdate(format) || 'MM/dd/yyyy HH:mm'}
+          dateFormat={DateHelper.formatUpdate(format) || DEFAULT_FORMAT}
           customInput={<CustomInput />}
           showTimeInput={hasTimeFormat}
         />

@@ -18,13 +18,13 @@ export class Settings {
     const taxonomy = type === TaxonomyType.Tag ? 'tag' : 'category';
 
     const newOption = await vscode.window.showInputBox({
-      prompt: l10n.t(LocalizationKey.commandsFoldersCreateInputPrompt, taxonomy),
-      placeHolder: l10n.t(LocalizationKey.commandsFoldersCreateInputPlaceholder, taxonomy),
+      prompt: l10n.t(LocalizationKey.commandsSettingsCreateInputPrompt, taxonomy),
+      placeHolder: l10n.t(LocalizationKey.commandsSettingsCreateInputPlaceholder, taxonomy),
       ignoreFocusOut: true
     });
 
     if (newOption) {
-      let options = (await TaxonomyHelper.get(type)) || [];
+      const options = (await TaxonomyHelper.get(type)) || [];
 
       if (options.find((o) => o === newOption)) {
         Notifications.warning(l10n.t(LocalizationKey.commandsSettingsCreateWarning, taxonomy));

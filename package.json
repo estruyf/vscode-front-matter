@@ -3,15 +3,14 @@
   "displayName": "Front Matter CMS",
   "description": "Front Matter is a CMS that runs within Visual Studio Code. It gives you the power and control of a full-blown CMS while also providing you the flexibility and speed of the static site generator of your choice like: Hugo, Jekyll, Docusaurus, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "9.4.0",
+  "version": "10.0.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
     "color": "#0e131f",
     "theme": "dark"
   },
-  "badges": [
-    {
+  "badges": [{
       "description": "version",
       "url": "https://img.shields.io/github/package-json/v/estruyf/vscode-front-matter?color=green&label=vscode-front-matter&style=flat-square",
       "href": "https://github.com/estruyf/vscode-front-matter"
@@ -71,8 +70,7 @@
         "**/.frontmatter/config/*.json": "jsonc"
       }
     },
-    "keybindings": [
-      {
+    "keybindings": [{
         "command": "frontMatter.dashboard",
         "key": "alt+d"
       },
@@ -90,23 +88,19 @@
       }
     ],
     "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "frontmatter-explorer",
-          "title": "FM",
-          "icon": "$(fm-logo)"
-        }
-      ]
+      "activitybar": [{
+        "id": "frontmatter-explorer",
+        "title": "FM",
+        "icon": "$(fm-logo)"
+      }]
     },
     "views": {
-      "frontmatter-explorer": [
-        {
-          "id": "frontMatter.explorer",
-          "name": "Front Matter",
-          "icon": "$(fm-logo)",
-          "type": "webview"
-        }
-      ]
+      "frontmatter-explorer": [{
+        "id": "frontMatter.explorer",
+        "name": "Front Matter",
+        "icon": "$(fm-logo)",
+        "type": "webview"
+      }]
     },
     "configuration": {
       "title": "%settings.configuration.title%",
@@ -174,8 +168,7 @@
         "frontMatter.content.defaultFileType": {
           "type": "string",
           "default": "md",
-          "oneOf": [
-            {
+          "oneOf": [{
               "enum": [
                 "md",
                 "mdx"
@@ -191,8 +184,7 @@
         "frontMatter.content.defaultSorting": {
           "type": "string",
           "default": "",
-          "oneOf": [
-            {
+          "oneOf": [{
               "enum": [
                 "LastModifiedAsc",
                 "LastModifiedDesc",
@@ -311,11 +303,51 @@
                 "type": "boolean",
                 "default": false,
                 "description": "%setting.frontMatter.content.pageFolders.items.properties.disableCreation.description%"
+              },
+              "defaultLocale": {
+                "type": "string",
+                "description": "%setting.frontMatter.content.pageFolders.items.properties.defaultLocale.description%"
+              },
+              "locales": {
+                "type": "array",
+                "description": "%setting.frontMatter.content.pageFolders.items.properties.locales.description%",
+                "items": {
+                  "$ref": "#i18n"
+                }
               }
             },
             "additionalProperties": false,
             "required": [
               "title",
+              "path"
+            ]
+          },
+          "scope": "Content"
+        },
+        "frontMatter.content.i18n": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "%setting.frontMatter.content.i18n.markdownDescription%",
+          "items": {
+            "$id": "#i18n",
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "%setting.frontMatter.content.i18n.items.properties.title.description%"
+              },
+              "locale": {
+                "type": "string",
+                "description": "%setting.frontMatter.content.i18n.items.properties.locale.description%"
+              },
+              "path": {
+                "type": "string",
+                "description": "%setting.frontMatter.content.i18n.items.properties.path.description%"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "locale",
               "path"
             ]
           },
@@ -492,6 +524,35 @@
           "markdownDescription": "%setting.frontMatter.content.wysiwyg.markdownDescription%",
           "scope": "Content"
         },
+        "frontMatter.content.filters": {
+          "type": "array",
+          "default": [
+            "contentFolders",
+            "tags",
+            "categories"
+          ],
+          "markdownDescription": "%setting.frontMatter.content.filters.markdownDescription%",
+          "items": [{
+              "type": "string",
+              "enum": [
+                "contentFolders",
+                "tags",
+                "categories"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        },
         "frontMatter.custom.scripts": {
           "type": "array",
           "default": [],
@@ -544,8 +605,7 @@
               "command": {
                 "$id": "#scriptCommand",
                 "type": "string",
-                "anyOf": [
-                  {
+                "anyOf": [{
                     "enum": [
                       "node",
                       "bash",
@@ -647,17 +707,6 @@
           "default": "",
           "markdownDescription": "%setting.frontMatter.dashboard.content.card.fields.title.markdownDescription%"
         },
-        "frontMatter.dashboard.mediaSnippet": {
-          "type": "array",
-          "default": [],
-          "markdownDescription": "%setting.frontMatter.dashboard.mediaSnippet.markdownDescription%",
-          "deprecationMessage": "%setting.frontMatter.dashboard.mediaSnippet.deprecationMessage%",
-          "items": {
-            "type": "string",
-            "description": "%setting.frontMatter.dashboard.mediaSnippet.items.description%"
-          },
-          "scope": "dashboard"
-        },
         "frontMatter.dashboard.openOnStart": {
           "type": [
             "boolean",
@@ -752,8 +801,7 @@
               "title",
               "file"
             ],
-            "anyOf": [
-              {
+            "anyOf": [{
                 "required": [
                   "schema"
                 ]
@@ -807,8 +855,7 @@
               "id",
               "path"
             ],
-            "anyOf": [
-              {
+            "anyOf": [{
                 "required": [
                   "schema"
                 ]
@@ -873,6 +920,22 @@
           "type": "string",
           "markdownDescription": "%setting.frontMatter.git.commitMessage.markdownDescription%",
           "default": "Synced by Front Matter"
+        },
+        "frontMatter.git.disableOnBranches": {
+          "type": "array",
+          "markdownDescription": "%setting.frontMatter.git.disableOnBranches.markdownDescription%",
+          "default": [],
+          "items": {
+            "type": "string"
+          }
+        },
+        "frontMatter.git.requiresCommitMessage": {
+          "type": "array",
+          "markdownDescription": "%setting.frontMatter.git.requiresCommitMessage.markdownDescription%",
+          "default": [],
+          "items": {
+            "type": "string"
+          }
         },
         "frontMatter.git.submodule.pull": {
           "type": "boolean",
@@ -981,6 +1044,79 @@
           ],
           "markdownDescription": "%setting.frontMatter.media.defaultSorting.markdownDescription%",
           "scope": "Content"
+        },
+        "frontMatter.media.contentTypes": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "markdownDescription": "%setting.frontMatter.media.contentTypes.markdownDescription%",
+          "items": {
+            "type": "object",
+            "description": "%setting.frontMatter.media.contentTypes.items.description%",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "%setting.frontMatter.media.contentTypes.items.properties.name.description%"
+              },
+              "fileTypes": {
+                "type": "array",
+                "description": "%setting.frontMatter.media.contentTypes.items.properties.fileTypes.description%",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "fields": {
+                "type": "array",
+                "description": "%setting.frontMatter.media.contentTypes.items.properties.fields.description%",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "description": "%setting.frontMatter.media.contentTypes.items.properties.fields.properties.title.description%"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "%setting.frontMatter.media.contentTypes.items.properties.fields.properties.name.description%"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "string"
+                      ],
+                      "description": "%setting.frontMatter.media.contentTypes.items.properties.fields.properties.type.description%"
+                    },
+                    "single": {
+                      "type": "boolean",
+                      "description": "%setting.frontMatter.media.contentTypes.items.properties.fields.properties.single.description%"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": [{
+            "name": "default",
+            "fileTypes": null,
+            "fields": [{
+                "title": "Title",
+                "name": "title",
+                "type": "string"
+              },
+              {
+                "title": "Caption",
+                "name": "caption",
+                "type": "string"
+              },
+              {
+                "title": "Alt text",
+                "name": "alt",
+                "type": "string"
+              }
+            ]
+          }],
+          "scope": "Media"
         },
         "frontMatter.media.supportedMimeTypes": {
           "type": "array",
@@ -1209,8 +1345,7 @@
                       "default": "",
                       "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.taxonomyId.description%",
                       "not": {
-                        "anyOf": [
-                          {
+                        "anyOf": [{
                             "const": ""
                           },
                           {
@@ -1404,8 +1539,7 @@
                     "type",
                     "name"
                   ],
-                  "allOf": [
-                    {
+                  "allOf": [{
                       "if": {
                         "properties": {
                           "type": {
@@ -1576,6 +1710,14 @@
                 "default": null,
                 "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.previewPath.description%"
               },
+              "slugTemplate": {
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "default": null,
+                "description": "%setting.frontMatter.content.pageFolders.items.properties.slugTemplate.description%"
+              },
               "template": {
                 "type": "string",
                 "default": "",
@@ -1605,51 +1747,48 @@
               "fields"
             ]
           },
-          "default": [
-            {
-              "name": "default",
-              "pageBundle": false,
-              "fields": [
-                {
-                  "title": "Title",
-                  "name": "title",
-                  "type": "string"
-                },
-                {
-                  "title": "Description",
-                  "name": "description",
-                  "type": "string"
-                },
-                {
-                  "title": "Publishing date",
-                  "name": "date",
-                  "type": "datetime",
-                  "default": "{{now}}",
-                  "isPublishDate": true
-                },
-                {
-                  "title": "Content preview",
-                  "name": "preview",
-                  "type": "image"
-                },
-                {
-                  "title": "Is in draft",
-                  "name": "draft",
-                  "type": "boolean"
-                },
-                {
-                  "title": "Tags",
-                  "name": "tags",
-                  "type": "tags"
-                },
-                {
-                  "title": "Categories",
-                  "name": "categories",
-                  "type": "categories"
-                }
-              ]
-            }
-          ],
+          "default": [{
+            "name": "default",
+            "pageBundle": false,
+            "fields": [{
+                "title": "Title",
+                "name": "title",
+                "type": "string"
+              },
+              {
+                "title": "Description",
+                "name": "description",
+                "type": "string"
+              },
+              {
+                "title": "Publishing date",
+                "name": "date",
+                "type": "datetime",
+                "default": "{{now}}",
+                "isPublishDate": true
+              },
+              {
+                "title": "Content preview",
+                "name": "preview",
+                "type": "image"
+              },
+              {
+                "title": "Is in draft",
+                "name": "draft",
+                "type": "boolean"
+              },
+              {
+                "title": "Tags",
+                "name": "tags",
+                "type": "tags"
+              },
+              {
+                "title": "Categories",
+                "name": "categories",
+                "type": "categories"
+              }
+            ]
+          }],
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.customTaxonomy": {
@@ -1662,8 +1801,7 @@
                 "type": "string",
                 "description": "%setting.frontMatter.taxonomy.customTaxonomy.items.properties.id.description%",
                 "not": {
-                  "anyOf": [
-                    {
+                  "anyOf": [{
                       "const": ""
                     },
                     {
@@ -1690,12 +1828,6 @@
             ]
           },
           "scope": "Taxonomy"
-        },
-        "frontMatter.taxonomy.dateField": {
-          "type": "string",
-          "default": "date",
-          "markdownDescription": "%setting.frontMatter.taxonomy.dateField.markdownDescription%",
-          "deprecationMessage": "%setting.frontMatter.taxonomy.dateField.deprecationMessage%"
         },
         "frontMatter.taxonomy.dateFormat": {
           "type": "string",
@@ -1749,12 +1881,6 @@
           "default": true,
           "markdownDescription": "%setting.frontMatter.taxonomy.indentArrays.markdownDescription%",
           "scope": "Taxonomy"
-        },
-        "frontMatter.taxonomy.modifiedField": {
-          "type": "string",
-          "default": "lastmod",
-          "markdownDescription": "%setting.frontMatter.taxonomy.modifiedField.markdownDescription%",
-          "deprecationMessage": "%setting.frontMatter.taxonomy.modifiedField.deprecationMessage%"
         },
         "frontMatter.taxonomy.quoteStringValues": {
           "type": "boolean",
@@ -1818,6 +1944,11 @@
           "markdownDescription": "%setting.frontMatter.taxonomy.slugSuffix.markdownDescription%",
           "scope": "Taxonomy"
         },
+        "frontMatter.taxonomy.slugTemplate": {
+          "type": "string",
+          "markdownDescription": "%setting.frontMatter.taxonomy.slugTemplate.markdownDescription%",
+          "scope": "Taxonomy"
+        },
         "frontMatter.taxonomy.tags": {
           "type": "array",
           "markdownDescription": "%setting.frontMatter.taxonomy.tags.markdownDescription%",
@@ -1855,8 +1986,7 @@
         }
       }
     },
-    "commands": [
-      {
+    "commands": [{
         "command": "frontMatter.project.switch",
         "title": "%command.frontMatter.project.switch%",
         "category": "Front Matter",
@@ -2171,17 +2301,27 @@
         "command": "frontMatter.cache.clear",
         "title": "%command.frontMatter.cache.clear%",
         "category": "Front Matter"
-      }
-    ],
-    "submenus": [
+      },
       {
-        "id": "frontmatter.submenu",
-        "label": "Front Matter"
+        "command": "frontMatter.i18n.create",
+        "title": "%command.frontMatter.i18n.create%",
+        "category": "Front Matter",
+        "icon": {
+          "light": "assets/icons/i18n-light.svg",
+          "dark": "assets/icons/i18n-dark.svg"
+        }
       }
     ],
+    "submenus": [{
+      "id": "frontmatter.submenu",
+      "label": "Front Matter"
+    }],
     "menus": {
-      "editor/title": [
-        {
+      "webview/context": [{
+        "command": "workbench.action.webview.openDeveloperTools",
+        "when": "frontMatter:isDevelopment"
+      }],
+      "editor/title": [{
           "command": "frontMatter.markup.heading",
           "group": "navigation@-133",
           "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
@@ -2210,6 +2350,11 @@
           "command": "frontMatter.insertMedia",
           "group": "navigation@-128",
           "when": "frontMatter:file:isValid == true"
+        },
+        {
+          "command": "frontMatter.i18n.create",
+          "group": "navigation@-127",
+          "when": "frontMatter:file:isValid && frontMatter:i18n:enabled"
         },
         {
           "command": "frontMatter.markup.options",
@@ -2262,14 +2407,11 @@
           "when": "resourceFilename == 'frontmatter.json'"
         }
       ],
-      "explorer/context": [
-        {
-          "submenu": "frontmatter.submenu",
-          "group": "frontmatter@1"
-        }
-      ],
-      "frontmatter.submenu": [
-        {
+      "explorer/context": [{
+        "submenu": "frontmatter.submenu",
+        "group": "frontmatter@1"
+      }],
+      "frontmatter.submenu": [{
           "command": "frontMatter.createFromTemplate",
           "when": "explorerResourceIsFolder",
           "group": "frontmatter@1"
@@ -2285,22 +2427,13 @@
           "group": "frontmatter@3"
         }
       ],
-      "commandPalette": [
-        {
+      "commandPalette": [{
           "command": "frontMatter.init",
           "when": "frontMatterCanInit"
         },
         {
           "command": "frontMatter.project.switch",
           "when": "frontMatter:project:switch:enabled"
-        },
-        {
-          "command": "frontMatter.createTemplate",
-          "when": "!frontMatterCanInit"
-        },
-        {
-          "command": "frontMatter.preview",
-          "when": "frontMatterCanOpenPreview"
         },
         {
           "command": "frontMatter.dashboard.data",
@@ -2315,7 +2448,27 @@
           "when": "frontMatter:git:enabled"
         },
         {
+          "command": "frontMatter.i18n.create",
+          "when": "frontMatter:i18n:enabled"
+        },
+        {
+          "command": "frontMatter.authenticate",
+          "when": "false"
+        },
+        {
           "command": "frontMatter.collapseSections",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.remap",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.insertTags",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.insertCategories",
           "when": "false"
         },
         {
@@ -2379,6 +2532,38 @@
           "when": "false"
         },
         {
+          "command": "frontMatter.markup.hyperlink",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.config.reload",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.initTemplate",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.createTemplate",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.contenttype.addMissingFields",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.exportTaxonomy",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.generateSlug",
+          "when": "false"
+        },
+        {
+          "command": "frontMatter.promoteSettings",
+          "when": "false"
+        },
+        {
           "command": "frontMatter.insertSnippet",
           "when": "frontMatter:file:isValid == true && frontMatter:dashboard:snippets:enabled"
         },
@@ -2399,14 +2584,6 @@
           "when": "frontMatter:file:isValid == true"
         },
         {
-          "command": "frontMatter.insertTags",
-          "when": "frontMatter:file:isValid == true"
-        },
-        {
-          "command": "frontMatter.createTemplate",
-          "when": "frontMatter:file:isValid == true"
-        },
-        {
           "command": "frontMatter.preview",
           "when": "frontMatter:file:isValid == true"
         },
@@ -2423,16 +2600,11 @@
           "when": "frontMatter:file:isValid == true"
         },
         {
-          "command": "frontMatter.contenttype.addMissingFields",
-          "when": "frontMatter:file:isValid == true"
-        },
-        {
           "command": "frontMatter.contenttype.setContentType",
           "when": "frontMatter:file:isValid == true"
         }
       ],
-      "view/title": [
-        {
+      "view/title": [{
           "command": "frontMatter.chatbot",
           "group": "navigation@0",
           "when": "view == frontMatter.explorer"
@@ -2464,57 +2636,52 @@
         }
       ]
     },
-    "grammars": [
-      {
-        "path": "./syntaxes/hugo.tmLanguage.json",
-        "scopeName": "frontmatter.markdown.hugo",
-        "injectTo": [
-          "text.html.markdown"
-        ]
-      }
-    ],
-    "walkthroughs": [
-      {
-        "id": "frontmatter.welcome",
-        "title": "Get started with Front Matter",
-        "description": "Discover the features of Front Matter and learn how to use the CMS for your SSG or static site.",
-        "steps": [
-          {
-            "id": "frontmatter.welcome.init",
-            "title": "Get started",
-            "description": "Initial steps to get started.\n[Open dashboard](command:frontMatter.dashboard)",
-            "media": {
-              "markdown": "assets/walkthrough/get-started.md"
-            },
-            "completionEvents": [
-              "onContext:frontMatterInitialized"
-            ]
+    "grammars": [{
+      "path": "./syntaxes/hugo.tmLanguage.json",
+      "scopeName": "frontmatter.markdown.hugo",
+      "injectTo": [
+        "text.html.markdown"
+      ]
+    }],
+    "walkthroughs": [{
+      "id": "frontmatter.welcome",
+      "title": "Get started with Front Matter",
+      "description": "Discover the features of Front Matter and learn how to use the CMS for your SSG or static site.",
+      "steps": [{
+          "id": "frontmatter.welcome.init",
+          "title": "Get started",
+          "description": "Initial steps to get started.\n[Open dashboard](command:frontMatter.dashboard)",
+          "media": {
+            "markdown": "assets/walkthrough/get-started.md"
           },
-          {
-            "id": "frontmatter.welcome.documentation",
-            "title": "Documentation",
-            "description": "Check out the documentation for Front Matter.\n[View our documentation](https://frontmatter.codes/docs)",
-            "media": {
-              "markdown": "assets/walkthrough/documentation.md"
-            },
-            "completionEvents": [
-              "onLink:https://frontmatter.codes/docs"
-            ]
+          "completionEvents": [
+            "onContext:frontMatterInitialized"
+          ]
+        },
+        {
+          "id": "frontmatter.welcome.documentation",
+          "title": "Documentation",
+          "description": "Check out the documentation for Front Matter.\n[View our documentation](https://frontmatter.codes/docs)",
+          "media": {
+            "markdown": "assets/walkthrough/documentation.md"
           },
-          {
-            "id": "frontmatter.welcome.supporter",
-            "title": "Support the project",
-            "description": "Become a supporter.\n[Support the project](https://github.com/sponsors/estruyf)",
-            "media": {
-              "markdown": "assets/walkthrough/support-the-project.md"
-            },
-            "completionEvents": [
-              "onLink:https://github.com/sponsors/estruyf"
-            ]
-          }
-        ]
-      }
-    ]
+          "completionEvents": [
+            "onLink:https://frontmatter.codes/docs"
+          ]
+        },
+        {
+          "id": "frontmatter.welcome.supporter",
+          "title": "Support the project",
+          "description": "Become a supporter.\n[Support the project](https://github.com/sponsors/estruyf)",
+          "media": {
+            "markdown": "assets/walkthrough/support-the-project.md"
+          },
+          "completionEvents": [
+            "onLink:https://github.com/sponsors/estruyf"
+          ]
+        }
+      ]
+    }]
   },
   "scripts": {
     "dev:ext": "npm run clean && npm run localization:generate && npm-run-all --parallel watch:*",
@@ -2531,9 +2698,6 @@
     "prod:panel": "webpack --mode production --config ./webpack/panel.config.js",
     "test-compile": "tsc -p ./",
     "clean": "rimraf dist",
-    "start:site": "cd ./docs && npm run dev",
-    "clean:test": "rm ./e2e/sample/frontmatter.json || exit 0 && rm -rf ./e2e/sample/.frontmatter || exit 0",
-    "test": "npm run lint; tsc -p tsconfig.e2e.json && npm run clean:test && npm run i -g @vscode/vsce && node ./e2e/out/runTests.js",
     "lint": "eslint --max-warnings=0 ./src/{commands,components}",
     "prettier": "prettier --write ./src",
     "localization:watch": "node ./scripts/watch-localization.js",
@@ -2545,34 +2709,29 @@
     "@actions/core": "^1.10.0",
     "@bendera/vscode-webview-elements": "0.6.2",
     "@estruyf/vscode": "^1.1.0",
-    "@headlessui/react": "^1.7.17",
-    "@heroicons/react": "1.0.4",
+    "@headlessui/react": "^1.7.18",
+    "@heroicons/react": "^2.1.1",
     "@iarna/toml": "2.2.3",
     "@octokit/rest": "^18.12.0",
-    "@popperjs/core": "^2.11.6",
     "@sentry/react": "^6.19.7",
     "@sentry/tracing": "^6.19.7",
     "@tailwindcss/forms": "^0.5.3",
-    "@types/chai": "^4.3.4",
     "@types/glob": "7.1.3",
     "@types/invariant": "^2.2.35",
-    "@types/js-yaml": "3.12.1",
+    "@types/js-yaml": "^4.0.9",
     "@types/lodash.omit": "^4.5.7",
     "@types/lodash.uniqby": "4.7.6",
     "@types/lodash.xor": "^4.5.7",
     "@types/mdast": "^3.0.10",
     "@types/mime-types": "^2.1.1",
-    "@types/mocha": "^5.2.7",
     "@types/mustache": "^4.2.2",
-    "@types/node": "10.17.48",
-    "@types/node-fetch": "^2.6.2",
+    "@types/node": "^18.17.1",
     "@types/react": "17.0.0",
     "@types/react-datepicker": "^4.8.0",
     "@types/react-dom": "17.0.0",
     "@types/vscode": "^1.73.0",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
-    "@vscode/codicons": "0.0.20",
     "@vscode/l10n": "^0.0.14",
     "@vscode/webview-ui-toolkit": "^1.2.2",
     "@webpack-cli/serve": "^1.7.0",
@@ -2580,8 +2739,8 @@
     "array-move": "^4.0.0",
     "assert": "^2.0.0",
     "autoprefixer": "^10.4.13",
-    "chai": "^4.3.7",
     "cheerio": "1.0.0-rc.12",
+    "clsx": "^2.1.0",
     "css-loader": "5.2.7",
     "date-fns": "2.23.0",
     "dotenv": "^16.3.1",
@@ -2603,9 +2762,7 @@
     "lodash.xor": "^4.5.0",
     "mdast-util-from-markdown": "1.0.0",
     "mime-types": "^2.1.35",
-    "mocha": "^10.2.0",
     "mustache": "^4.2.0",
-    "node-fetch": "^2.6.9",
     "node-json-db": "^2.2.0",
     "npm-run-all": "^4.1.5",
     "path-browserify": "^1.0.1",
@@ -2619,18 +2776,18 @@
     "react-dom": "17.0.1",
     "react-dropzone": "^11.7.1",
     "react-markdown": "^8.0.7",
-    "react-popper": "^2.3.0",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.8.0",
     "react-sortable-hoc": "^2.0.0",
-    "react-toastify": "^8.2.0",
     "recoil": "^0.4.1",
     "remark-gfm": "^3.0.1",
     "rimraf": "^3.0.2",
     "semver": "^7.3.8",
     "simple-git": "^3.16.0",
     "style-loader": "2.0.0",
+    "tailwind-merge": "^2.2.1",
     "tailwindcss": "^3.2.4",
+    "tailwindcss-animate": "^1.0.7",
     "ts-loader": "^9.4.2",
     "typescript": "^4.9.5",
     "uniforms": "^3.10.2",
@@ -2638,7 +2795,6 @@
     "uniforms-bridge-json-schema": "^3.10.2",
     "uniforms-unstyled": "^3.10.2",
     "url-join-ts": "^1.0.5",
-    "vscode-extension-tester": "^5.3.0",
     "wc-react": "github:estruyf/wc-react",
     "webpack": "^5.75.0",
     "webpack-bundle-analyzer": "^4.7.0",
@@ -2650,5 +2806,8 @@
   },
   "vsce": {
     "dependencies": false
+  },
+  "dependencies": {
+    "@radix-ui/react-dropdown-menu": "^2.0.6"
   }
 }

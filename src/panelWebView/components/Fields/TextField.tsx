@@ -1,4 +1,4 @@
-import { PencilIcon, SparklesIcon } from '@heroicons/react/outline';
+import { PencilIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useRecoilState } from 'recoil';
@@ -10,6 +10,9 @@ import { messageHandler } from '@estruyf/vscode/dist/client';
 import { CommandToCode } from '../../CommandToCode';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { useDebounce } from '../../../hooks/useDebounce';
+
+const DEBOUNCE_TIME = 300;
 
 export interface ITextFieldProps extends BaseFieldProps<string> {
   singleLine: boolean | undefined;
@@ -17,6 +20,7 @@ export interface ITextFieldProps extends BaseFieldProps<string> {
   limit: number | undefined;
   rows?: number;
   name: string;
+  placeholder?: string;
   settings: PanelSettings;
   onChange: (txtValue: string) => void;
 }
@@ -24,6 +28,7 @@ export interface ITextFieldProps extends BaseFieldProps<string> {
 const WysiwygField = React.lazy(() => import('./WysiwygField'));
 
 export const TextField: React.FunctionComponent<ITextFieldProps> = ({
+  placeholder,
   singleLine,
   wysiwyg,
   limit,
@@ -37,12 +42,14 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   required
 }: React.PropsWithChildren<ITextFieldProps>) => {
   const [, setRequiredFields] = useRecoilState(RequiredFieldsAtom);
-  const [text, setText] = React.useState<string | null>(value);
+  const [text, setText] = React.useState<string | null | undefined>(undefined);
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [lastUpdated, setLastUpdated] = React.useState<number | null>(null);
+  const debouncedText = useDebounce<string | null | undefined>(text, DEBOUNCE_TIME);
 
   const onTextChange = (txtValue: string) => {
     setText(txtValue);
-    onChange(txtValue);
+    setLastUpdated(Date.now());
   };
 
   let isValid = true;
@@ -116,10 +123,17 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   }, [settings?.aiEnabled, name]);
 
   useEffect(() => {
-    if (text !== value) {
-      setText(value);
+    if (text !== value && (lastUpdated === null || (Date.now() - DEBOUNCE_TIME) > lastUpdated)) {
+      setText(value || null);
     }
+    setLastUpdated(null);
   }, [value]);
+
+  useEffect(() => {
+    if (debouncedText !== undefined && value !== debouncedText && lastUpdated !== null) {
+      onChange(debouncedText || '');
+    }
+  }, [debouncedText, value, lastUpdated]);
 
   return (
     <div className={`metadata_field`}>
@@ -142,6 +156,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
           className={`metadata_field__input`}
           value={text || ''}
           onChange={(e) => onTextChange(e.currentTarget.value)}
+          placeholder={placeholder}
           style={{
             border
           }}
@@ -152,6 +167,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
           rows={rows || 2}
           value={text || ''}
           onChange={(e) => onTextChange(e.currentTarget.value)}
+          placeholder={placeholder}
           style={{
             border
           }}

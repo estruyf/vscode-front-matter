@@ -4,6 +4,7 @@ import { Folders } from '../../commands/Folders';
 import {
   COMMAND_NAME,
   ExtensionState,
+  GeneralCommands,
   SETTING_CONTENT_STATIC_FOLDER,
   SETTING_FRAMEWORK_ID,
   SETTING_PREVIEW_HOST
@@ -12,7 +13,7 @@ import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { DashboardSettings, Extension, Notifications, Settings } from '../../helpers';
 import { FrameworkDetector } from '../../helpers/FrameworkDetector';
-import { Framework, Template, PostMessageData, StaticFolder } from '../../models';
+import { Framework, Template, PostMessageData, StaticFolder, LoadingType } from '../../models';
 import { BaseListener } from './BaseListener';
 import { Cache } from '../../commands/Cache';
 import { Preview } from '../../commands';
@@ -61,9 +62,21 @@ export class SettingsListener extends BaseListener {
       case DashboardMessage.setSettings:
         this.setConfigSettings(msg);
         break;
+      case GeneralCommands.toVSCode.secrets.get:
+        this.getSecretValue(msg.command, msg.payload, msg.requestId);
+        break;
+      case GeneralCommands.toVSCode.secrets.set:
+        this.setSecretValue(msg.command, msg.payload, msg.requestId);
+        break;
     }
   }
 
+  /**
+   * Retrieves the configuration settings based on the provided payload.
+   * @param command - The command to execute.
+   * @param requestId - The ID of the request.
+   * @param payload - The payload containing the settings to retrieve.
+   */
   public static async getConfigSettings({ command, requestId, payload }: PostMessageData) {
     if (!command || !requestId || !payload) {
       return;
@@ -96,9 +109,13 @@ export class SettingsListener extends BaseListener {
     this.sendRequest(command as any, requestId, true);
   }
 
+  /**
+   * Switches the current project to the specified project.
+   * @param project - The name of the project to switch to.
+   */
   public static async switchProject(project: string) {
     if (project) {
-      this.sendMsg(DashboardCommand.loading, true);
+      this.sendMsg(DashboardCommand.loading, 'loading' as LoadingType);
       Settings.setProject(project);
       await Cache.clear(false);
 
@@ -124,12 +141,56 @@ export class SettingsListener extends BaseListener {
   }
 
   /**
+   * Retrieves the secret value for a given command and value.
+   * @param command - The command to retrieve the secret value for.
+   * @param key - The key associated with the secret.
+   * @param requestId - Optional. The ID of the request.
+   * @returns A Promise that resolves to the secret value.
+   */
+  private static async getSecretValue(command: string, key: string, requestId?: string) {
+    if (!command || !requestId) {
+      return;
+    }
+
+    const extension = Extension.getInstance();
+    const value = await extension.getSecret(key);
+
+    this.sendRequest(command as any, requestId, value);
+  }
+
+  /**
+   * Sets the secret value for a given key.
+   * @param command - The command to execute.
+   * @param key - The key for the secret value.
+   * @param value - The secret value to set.
+   * @param requestId - Optional. The request ID.
+   */
+  private static async setSecretValue(
+    command: string,
+    { key, value }: { key: string; value: string },
+    requestId?: string
+  ) {
+    if (!command || !requestId || !key) {
+      return;
+    }
+
+    const extension = Extension.getInstance();
+    await extension.setSecret(key, value || '');
+
+    Notifications.info(
+      l10n.t(LocalizationKey.listenersDashboardSettingsListenerSetSecretValueMessage)
+    );
+
+    this.sendRequest(command as any, requestId, true);
+  }
+
+  /**
    * Update a setting from the dashboard
    * @param data
    */
-  private static async update(data: { name: string; value: any }) {
+  private static async update(data: { name: string; value: any; global?: boolean }) {
     if (data.name) {
-      await Settings.update(data.name, data.value);
+      await Settings.update(data.name, data.value, data.global);
       this.getSettings(true);
     }
   }

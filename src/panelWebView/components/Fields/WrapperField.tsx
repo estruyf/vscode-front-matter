@@ -1,9 +1,8 @@
-import { Messenger } from '@estruyf/vscode/dist/client';
+import { messageHandler } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { DateHelper } from '../../../helpers/DateHelper';
-import { BlockFieldData, CustomPanelViewResult, Field, PanelSettings } from '../../../models';
-import { Command } from '../../Command';
+import { BlockFieldData, ContentType, CustomPanelViewResult, Field, PanelSettings } from '../../../models';
 import { CommandToCode } from '../../CommandToCode';
 import { TagType } from '../../TagType';
 import { DataBlockField } from '../DataBlock';
@@ -27,7 +26,8 @@ import {
   PreviewImageField,
   PreviewImageValue,
   NumberField,
-  CustomField
+  CustomField,
+  FieldCollection
 } from '.';
 import { fieldWhenClause } from '../../../utils/fieldWhenClause';
 import { ContentTypeRelationshipField } from './ContentTypeRelationshipField';
@@ -41,6 +41,7 @@ export interface IWrapperFieldProps {
   parentFields: string[];
   metadata: IMetadata;
   settings: PanelSettings;
+  contentType: ContentType | null;
   blockData: BlockFieldData | undefined;
   focusElm: TagType | null;
   parentBlock: string | null | undefined;
@@ -63,6 +64,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
   parentFields,
   metadata,
   settings,
+  contentType,
   blockData,
   focusElm,
   parentBlock,
@@ -76,25 +78,12 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
     html: (data: any, onChange: (value: any) => void) => Promise<CustomPanelViewResult | undefined>;
   }[]>([]);
 
-  const listener = useCallback(
-    (event: any) => {
-      const message = event.data;
-
-      if (message.command === Command.updatePlaceholder) {
-        const data = message.payload;
-        if (data.field === field.name) {
-          setFieldValue(data.value);
-          onSendUpdate(field.name, data.value, parentFields);
-        }
-      }
-    },
-    [field]
-  );
-
   const getDate = (date: string | Date): Date | null => {
     const parsedDate = DateHelper.tryParse(date, settings?.date?.format);
     return parsedDate || (date as Date | null);
   };
+
+  const onFieldChange = useCallback((value: any) => onSendUpdate(field.name, value, parentFields), [field.name, parentFields, onSendUpdate]);
 
   useEffect(() => {
     let value: any = parent[field.name];
@@ -124,11 +113,18 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
 
     // Check if the field value contains a placeholder
     if (value && typeof value === 'string' && value.includes(`{{`) && value.includes(`}}`)) {
-      window.addEventListener('message', listener);
-      Messenger.send(CommandToCode.updatePlaceholder, {
+      messageHandler.request<{ field: string; value: any; }>(CommandToCode.updatePlaceholder, {
         field: field.name,
-        title: metadata['title'],
-        value
+        value,
+        data: metadata,
+        contentType
+      }).then((data) => {
+        if (data.field === field.name) {
+          setFieldValue(data.value);
+          onSendUpdate(field.name, data.value, parentFields);
+        }
+      }).catch((err) => {
+        console.error(err);
       });
     } else {
       // Did not contain a placeholder, so value can be set
@@ -136,10 +132,6 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
         setFieldValue(value || null);
       }
     }
-
-    return () => {
-      window.removeEventListener('message', listener);
-    };
   }, [field, parent]);
 
   useEffect(() => {
@@ -185,7 +177,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           value={fieldValue}
           required={!!field.required}
           format={field.dateFormat || settings?.date?.format}
-          onChange={(date) => onSendUpdate(field.name, date, parentFields)}
+          onChange={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -198,7 +190,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           description={field.description}
           value={fieldValue}
           required={!!field.required}
-          onChanged={(checked) => onSendUpdate(field.name, checked, parentFields)}
+          onChanged={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -220,7 +212,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           limit={limit}
           wysiwyg={field.wysiwyg}
           rows={3}
-          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+          onChange={onFieldChange}
           value={(fieldValue as string) || null}
           required={!!field.required}
           settings={settings}
@@ -239,7 +231,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           label={field.title || field.name}
           description={field.description}
           options={field.numberOptions}
-          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+          onChange={onFieldChange}
           value={nrValue}
           required={!!field.required}
         />
@@ -258,7 +250,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           required={!!field.required}
           multiple={field.multiple}
           blockData={blockData}
-          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+          onChange={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -276,7 +268,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           required={!!field.required}
           parents={parentFields}
           blockData={blockData}
-          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+          onChange={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -292,7 +284,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           required={!!field.required}
           choices={choices}
           multiSelect={field.multiple}
-          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+          onChange={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -370,7 +362,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
     let draftValue = parent[field.name];
 
     if (!draftValue && typeof parent[field.name] === 'undefined' && field.default) {
-      draftValue = field.default;
+      draftValue = field.default as string;
       onSendUpdate(field.name, draftValue, parentFields);
     }
 
@@ -383,7 +375,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           choices={draftField?.choices || []}
           value={draftValue as boolean | string | null | undefined}
           required={!!field.required}
-          onChanged={(value: boolean | string) => onSendUpdate(field.name, value, parentFields)}
+          onChanged={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -431,7 +423,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           settings={settings}
           field={field}
           value={collectionData}
-          onSubmit={(value) => onSendUpdate(field.name, value, parentFields)}
+          onSubmit={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -452,7 +444,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           filePath={metadata.filePath as string}
           parentBlock={parentBlock}
           required={!!field.required}
-          onSubmit={(value) => onSendUpdate(field.name, value, parentFields)}
+          onSubmit={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -468,7 +460,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           selected={fieldValue as string}
           required={!!field.required}
           multiSelect={field.multiple}
-          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+          onChange={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -480,7 +472,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           description={field.description}
           value={fieldValue}
           required={!!field.required}
-          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+          onChange={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -495,7 +487,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           contentTypeName={field.contentTypeName}
           contentTypeValue={field.contentTypeValue}
           multiSelect={field.multiple}
-          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+          onChange={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -507,9 +499,10 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           description={field.description}
           titleValue={metadata.title as string}
           value={fieldValue}
+          slugTemplate={contentType?.slugTemplate}
           required={!!field.required}
           editable={field.editable}
-          onChange={(value) => onSendUpdate(field.name, value, parentFields)}
+          onChange={onFieldChange}
         />
       </FieldBoundary>
     );
@@ -523,12 +516,33 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           description={field.description}
           value={fieldValue}
           required={!!field.required}
-          onChange={(value: any) => onSendUpdate(field.name, value, parentFields)}
+          onChange={onFieldChange}
           fieldData={fieldData} />
       );
     } else {
       return null;
     }
+  } else if (field.type === "fieldCollection") {
+    if (!parent[field.name]) {
+      parent[field.name] = {};
+    }
+
+    const subMetadata = parent[field.name] as IMetadata;
+
+    return (
+      <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+        <FieldCollection
+          key={field.name}
+          field={field}
+          parent={subMetadata}
+          parentFields={parentFields}
+          renderFields={renderFields}
+          settings={settings}
+          blockData={blockData}
+          onChange={onSendUpdate}
+        />
+      </FieldBoundary>
+    );
   } else {
     console.warn(l10n.t(LocalizationKey.panelFieldsWrapperFieldUnknown, field.type));
     return null;

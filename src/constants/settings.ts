@@ -25,6 +25,7 @@ export const SETTING_TAXONOMY_CONTENT_TYPES = 'taxonomy.contentTypes';
 
 export const SETTING_SLUG_PREFIX = 'taxonomy.slugPrefix';
 export const SETTING_SLUG_SUFFIX = 'taxonomy.slugSuffix';
+export const SETTING_SLUG_TEMPLATE = 'taxonomy.slugTemplate';
 export const SETTING_SLUG_UPDATE_FILE_NAME = 'taxonomy.alignFilename';
 
 export const SETTING_INDENT_ARRAY = 'taxonomy.indentArrays';
@@ -56,10 +57,12 @@ export const SETTING_CUSTOM_SCRIPTS = 'custom.scripts';
 
 export const SETTING_AUTO_UPDATE_DATE = 'content.autoUpdateDate';
 export const SETTING_CONTENT_PAGE_FOLDERS = 'content.pageFolders';
+export const SETTING_CONTENT_I18N = 'content.i18n';
 export const SETTING_CONTENT_STATIC_FOLDER = 'content.publicFolder';
 export const SETTING_CONTENT_FRONTMATTER_HIGHLIGHT = 'content.fmHighlight';
 export const SETTING_CONTENT_DRAFT_FIELD = 'content.draftField';
 export const SETTING_CONTENT_SORTING = 'content.sorting';
+export const SETTING_CONTENT_FILTERS = 'content.filters';
 export const SETTING_CONTENT_WYSIWYG = 'content.wysiwyg';
 export const SETTING_CONTENT_PLACEHOLDERS = 'content.placeholders';
 export const SETTING_CONTENT_SNIPPETS = 'content.snippets';
@@ -74,6 +77,7 @@ export const SETTING_CONTENT_HIDE_FRONTMATTER = 'content.hideFm';
 export const SETTING_CONTENT_HIDE_FRONTMATTER_MESSAGE = 'content.hideFmMessage';
 
 export const SETTING_MEDIA_SUPPORTED_MIMETYPES = 'media.supportedMimeTypes';
+export const SETTING_MEDIA_CONTENTTYPES = 'media.contentTypes';
 
 export const SETTING_DASHBOARD_OPENONSTART = 'dashboard.openOnStart';
 export const SETTING_DASHBOARD_CONTENT_TAGS = 'dashboard.content.cardTags';
@@ -98,6 +102,8 @@ export const SETTING_FRAMEWORK_START = 'framework.startCommand';
 export const SETTING_SITE_BASEURL = 'site.baseURL';
 
 export const SETTING_GIT_ENABLED = 'git.enabled';
+export const SETTING_GIT_DISABLED_BRANCHES = 'git.disableOnBranches';
+export const SETTING_GIT_REQUIRES_COMMIT_MSG = 'git.requiresCommitMessage';
 export const SETTING_GIT_COMMIT_MSG = 'git.commitMessage';
 export const SETTING_GIT_SUBMODULE_PULL = 'git.submodule.pull';
 export const SETTING_GIT_SUBMODULE_PUSH = 'git.submodule.push';
@@ -127,13 +133,3 @@ export const SETTING_CONTENT_FOLDERS = 'content.folders';
  * Use the `isPublishDate` property on the content type datetime field instead
  */
 export const SETTING_DATE_FIELD = 'taxonomy.dateField';
-/**
- * @deprecated
- * Use the `isModifiedDate` property on the content type datetime field instead
- */
-export const SETTING_MODIFIED_FIELD = 'taxonomy.modifiedField';
-/**
- * @deprecated
- * Use the `frontMatter.content.snippets` setting instead
- */
-export const SETTING_DASHBOARD_MEDIA_SNIPPET = 'dashboard.mediaSnippet';

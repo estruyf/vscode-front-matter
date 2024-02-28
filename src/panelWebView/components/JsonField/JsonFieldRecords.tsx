@@ -1,8 +1,11 @@
-import { CollectionIcon, PlusIcon } from '@heroicons/react/outline';
+import { CircleStackIcon, PlusIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { VsLabel } from '../VscodeComponents';
 import { JsonFieldRecord } from '.';
 import { SortableContainer, SortEnd } from 'react-sortable-hoc';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
+
 export interface IJsonFieldRecordsProps {
   records: any[];
   selectedIndex: number | null;
@@ -33,11 +36,11 @@ export const JsonFieldRecords = ({
       <VsLabel>
         <div className={`metadata_field__label`}>
           <div>
-            <CollectionIcon style={{ width: '16px', height: '16px' }} />
+            <CircleStackIcon style={{ width: '16px', height: '16px' }} />
             <span style={{ lineHeight: '16px' }}>Records</span>
           </div>
 
-          <button title="Add new record" className="json_data__list__button" onClick={onAdd}>
+          <button title={l10n.t(LocalizationKey.commonAdd)} className="json_data__list__button" onClick={onAdd}>
             <PlusIcon style={{ width: '16px', height: '16px' }} />
           </button>
         </div>

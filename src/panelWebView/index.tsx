@@ -1,10 +1,10 @@
 import * as React from 'react';
+import * as Sentry from '@sentry/react';
 import { render } from 'react-dom';
 import { ViewPanel } from './ViewPanel';
-import * as Sentry from '@sentry/react';
-import { Integrations } from '@sentry/tracing';
-import { SENTRY_LINK, SentryIgnore } from '../constants';
 import { RecoilRoot } from 'recoil';
+import { I10nProvider } from '../dashboardWebView/providers/I10nProvider';
+import { SentryInit } from '../utils/sentryInit';
 
 import './styles.css';
 
@@ -33,16 +33,10 @@ if (elm) {
   const version = elm?.getAttribute('data-version');
   const environment = elm?.getAttribute('data-environment');
   const isProd = elm?.getAttribute('data-isProd');
+  const isCrashDisabled = elm?.getAttribute('data-is-crash-disabled');
 
-  if (isProd === 'true') {
-    Sentry.init({
-      dsn: SENTRY_LINK,
-      integrations: [new Integrations.BrowserTracing()],
-      tracesSampleRate: 0, // No performance tracing required
-      release: version || '',
-      environment: environment || '',
-      ignoreErrors: SentryIgnore
-    });
+  if (isProd === 'true' && isCrashDisabled === 'false') {
+    Sentry.init(SentryInit(version, environment));
 
     Sentry.setTag("type", "panel");
     if (document.body.getAttribute(`data-vscode-theme-id`)) {
@@ -51,9 +45,11 @@ if (elm) {
   }
 
   render(
-    <RecoilRoot>
-      <ViewPanel />
-    </RecoilRoot>,
+    <I10nProvider>
+      <RecoilRoot>
+        <ViewPanel />
+      </RecoilRoot>
+    </I10nProvider>,
     elm
   );
 }

@@ -397,12 +397,21 @@ export class CustomScript {
 
         for (const question of data.questions) {
           if (question.name && question.message) {
-            const answer = await window.showInputBox({
-              prompt: question.message,
-              value: question.default || '',
-              ignoreFocusOut: true,
-              title: question.message
-            });
+            let answer;
+            if (question.options) {
+              answer = await window.showQuickPick(question.options, {
+                title: question.message,
+                ignoreFocusOut: true,
+                canPickMany: false
+              });
+            } else {
+              answer = await window.showInputBox({
+                prompt: question.message,
+                value: question.default || '',
+                ignoreFocusOut: true,
+                title: question.message
+              });
+            }
 
             if (answer) {
               answers.push(`${question.name}="${answer}"`);

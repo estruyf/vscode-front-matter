@@ -3,14 +3,15 @@ import { render } from 'react-dom';
 import { RecoilRoot } from 'recoil';
 import { App } from './components/App';
 import * as Sentry from '@sentry/react';
-import { Integrations } from '@sentry/tracing';
-import { SENTRY_LINK, SentryIgnore } from '../constants';
 import { MemoryRouter } from 'react-router-dom';
 import './styles.css';
 import { Preview } from './components/Preview';
 import { SettingsProvider } from './providers/SettingsProvider';
 import { CustomPanelViewResult } from '../models';
 import { Chatbot } from './components/Chatbot/Chatbot';
+import { updateCssVariables } from './utils';
+import { I10nProvider } from './providers/I10nProvider';
+import { SentryInit } from '../utils/sentryInit';
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -49,65 +50,7 @@ export const routePaths: { [name: string]: string } = {
   settings: '/settings',
 };
 
-const preserveColor = (color: string | undefined) => {
-  if (color) {
-    if (color.startsWith('#') && color.length > 7) {
-      return color.slice(0, 7);
-    } else if (color.startsWith('rgba')) {
-      const splits = color.split(',');
-      splits.pop();
-      return `${splits.join(', ')}, 1)`;
-    }
-  }
-
-  return color;
-}
-
-const addBgOpacity = (color: string | undefined) => {
-  if (color) {
-
-  }
-
-  return color;
-}
-
-const updateCssVariables = () => {
-  const styles = getComputedStyle(document.documentElement);
-
-  // Lightbox
-  const background = styles.getPropertyValue('--vscode-editor-background');
-  // Adds 75% opacity to the background color
-  document.documentElement.style.setProperty('--frontmatter-lightbox-background', `${preserveColor(background)}BF`);
-
-  // Text
-  document.documentElement.style.setProperty('--frontmatter-text', 'var(--vscode-editor-foreground)');
-  document.documentElement.style.setProperty('--frontmatter-secondary-text', 'var(--vscode-editorHint-foreground)');
-  document.documentElement.style.setProperty('--frontmatter-link', 'var(--vscode-textLink-foreground)');
-  document.documentElement.style.setProperty('--frontmatter-link-hover', 'var(--vscode-textLink-activeForeground)');
-
-  // List  
-  document.documentElement.style.setProperty('--frontmatter-list-text', 'var(--vscode-editor-foreground)');
-  document.documentElement.style.setProperty('--frontmatter-list-background', 'var(--vscode-list-activeSelectionBackground)');
-  document.documentElement.style.setProperty('--frontmatter-list-hover-background', 'var(--vscode-list-hoverBackground)');
-  document.documentElement.style.setProperty('--frontmatter-list-selected-background', 'var(--vscode-list-activeSelectionBackground)');
-  document.documentElement.style.setProperty('--frontmatter-list-selected-text', 'var(--vscode-list-activeSelectionForeground)');
-
-  // Borders
-  document.documentElement.style.setProperty('--frontmatter-border', 'var(--vscode-panel-border)');
-
-  // Other colors which should be preserved (no opacity)
-  const buttonBackground = styles.getPropertyValue('--vscode-button-background');
-  if (buttonBackground) {
-    document.documentElement.style.setProperty('--frontmatter-button-background', preserveColor(buttonBackground) || "var(--vscode-button-background)");
-  }
-
-  const buttonHoverBackground = styles.getPropertyValue('--vscode-button-hoverBackground');
-  if (buttonHoverBackground) {
-    document.documentElement.style.setProperty('--frontmatter-button-hoverBackground', preserveColor(buttonHoverBackground) || "var(--vscode-button-hoverBackground)");
-  }
-}
-
-const mutationObserver = new MutationObserver((mutationsList, observer) => {
+const mutationObserver = new MutationObserver((_, __) => {
   updateCssVariables();
 });
 
@@ -121,19 +64,13 @@ if (elm) {
   const url = elm?.getAttribute('data-url');
   const experimental = elm?.getAttribute('data-experimental');
   const webviewUrl = elm?.getAttribute('data-webview-url');
+  const isCrashDisabled = elm?.getAttribute('data-is-crash-disabled');
 
   updateCssVariables();
   mutationObserver.observe(document.body, { childList: false, attributes: true });
 
-  if (isProd === 'true') {
-    Sentry.init({
-      dsn: SENTRY_LINK,
-      integrations: [new Integrations.BrowserTracing()],
-      tracesSampleRate: 0, // No performance tracing required
-      release: version || '',
-      environment: environment || '',
-      ignoreErrors: SentryIgnore
-    });
+  if (isProd === 'true' && isCrashDisabled === 'false') {
+    Sentry.init(SentryInit(version, environment));
 
     Sentry.setTag("type", "dashboard");
     if (document.body.getAttribute(`data-vscode-theme-id`)) {
@@ -145,17 +82,21 @@ if (elm) {
 
   if (type === 'preview') {
     render(
-      <SettingsProvider experimental={experimental === 'true'} version={version || ""}>
-        <Preview url={url} />
-      </SettingsProvider>, elm);
+      <I10nProvider>
+        <SettingsProvider experimental={experimental === 'true'} version={version || ""}>
+          <Preview url={url} />
+        </SettingsProvider>
+      </I10nProvider>, elm);
   } else if (type === 'chatbot') {
     render(
-      <SettingsProvider
-        aiUrl='https://frontmatter.codes'
-        experimental={experimental === 'true'}
-        version={version || ""}>
-        <Chatbot />
-      </SettingsProvider>, elm);
+      <I10nProvider>
+        <SettingsProvider
+          aiUrl='https://frontmatter.codes'
+          experimental={experimental === 'true'}
+          version={version || ""}>
+          <Chatbot />
+        </SettingsProvider>
+      </I10nProvider>, elm);
   } else {
     render(
       <RecoilRoot>
@@ -163,9 +104,11 @@ if (elm) {
           initialEntries={Object.keys(routePaths).map((key: string) => routePaths[key]) as string[]}
           initialIndex={1}
         >
-          <SettingsProvider experimental={experimental === 'true'} version={version || ""} webviewUrl={webviewUrl || ""}>
-            <App showWelcome={!!welcome} />
-          </SettingsProvider>
+          <I10nProvider>
+            <SettingsProvider experimental={experimental === 'true'} version={version || ""} webviewUrl={webviewUrl || ""}>
+              <App showWelcome={!!welcome} />
+            </SettingsProvider>
+          </I10nProvider>
         </MemoryRouter>
       </RecoilRoot>,
       elm

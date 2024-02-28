@@ -4,10 +4,10 @@
 /* Animations */
 @keyframes spin {
   from {
-    transform: rotate(360deg);
+    transform: rotate(0deg);
   }
   to {
-    transform: rotate(0deg);
+    transform: rotate(360deg);
   }
 }
 
@@ -976,12 +976,14 @@ vscode-divider {
 }
 
 /* Git actions */
+.git_actions__fetch,
 .git_actions__sync {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.git_actions__fetch svg,
 .git_actions__sync svg {
   height: 1.25rem;
   width: 1.25rem;

@@ -3,11 +3,13 @@ import {
   CONTEXT,
   ExtensionState,
   SETTING_EXPERIMENTAL,
-  SETTING_EXTENSIBILITY_SCRIPTS
+  SETTING_EXTENSIBILITY_SCRIPTS,
+  COMMAND_NAME,
+  TelemetryEvent
 } from '../constants';
 import { join } from 'path';
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window } from 'vscode';
-import { Logger, Settings as SettingsHelper } from '../helpers';
+import { DashboardSettings, Logger, Settings as SettingsHelper, Telemetry } from '../helpers';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { Extension } from '../helpers/Extension';
 import { WebviewHelper } from '@estruyf/vscode';
@@ -31,6 +33,8 @@ import { GitListener, ModeListener } from '../listeners/general';
 import { Folders } from './Folders';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
+import { DashboardMessage } from '../dashboardWebView/DashboardMessage';
+import { NavigationType } from '../dashboardWebView/models';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -49,6 +53,56 @@ export class Dashboard {
     if (openOnStartup) {
       Dashboard.open();
     }
+  }
+
+  public static registerCommands() {
+    const subscriptions = Extension.getInstance().subscriptions;
+
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.dashboard, (data?: DashboardData) => {
+        Telemetry.send(TelemetryEvent.openContentDashboard);
+        if (!data) {
+          Dashboard.open({ type: NavigationType.Contents });
+        } else {
+          Dashboard.open(data);
+        }
+      })
+    );
+
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.dashboardMedia, () => {
+        Telemetry.send(TelemetryEvent.openMediaDashboard);
+        Dashboard.open({ type: NavigationType.Media });
+      })
+    );
+
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.dashboardSnippets, () => {
+        Telemetry.send(TelemetryEvent.openSnippetsDashboard);
+        Dashboard.open({ type: NavigationType.Snippets });
+      })
+    );
+
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.dashboardData, () => {
+        Telemetry.send(TelemetryEvent.openDataDashboard);
+        Dashboard.open({ type: NavigationType.Data });
+      })
+    );
+
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.dashboardTaxonomy, () => {
+        Telemetry.send(TelemetryEvent.openTaxonomyDashboard);
+        Dashboard.open({ type: NavigationType.Taxonomy });
+      })
+    );
+
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.dashboardClose, () => {
+        Telemetry.send(TelemetryEvent.closeDashboard);
+        Dashboard.close();
+      })
+    );
   }
 
   /**
@@ -160,6 +214,7 @@ export class Dashboard {
       Dashboard.isDisposed = true;
       Dashboard._viewData = undefined;
       PanelMediaListener.getMediaSelection();
+      DashboardSettings.updateAfterClose();
       await commands.executeCommand('setContext', CONTEXT.isDashboardOpen, false);
     });
 
@@ -203,7 +258,7 @@ export class Dashboard {
    * @param msg
    */
   public static postWebviewMessage(msg: {
-    command: DashboardCommand;
+    command: DashboardCommand | DashboardMessage;
     requestId?: string;
     payload?: unknown;
     error?: unknown;
@@ -303,7 +358,7 @@ export class Dashboard {
       version.usedVersion ? '' : `data-showWelcome="true"`
     } ${
       experimental ? `data-experimental="${experimental}"` : ''
-    } data-webview-url="${webviewUrl}" ></div>
+    } data-webview-url="${webviewUrl}" data-is-crash-disabled="${!Telemetry.isVscodeEnabled()}" ></div>
 
         ${(scriptsToLoad || [])
           .map((script) => {

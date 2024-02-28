@@ -1,6 +1,6 @@
+import { workspace } from 'vscode';
 import { Extension, Settings } from '.';
 import { EXTENSION_BETA_ID, EXTENSION_ID, SETTING_TELEMETRY_DISABLE } from '../constants';
-import fetch from 'node-fetch';
 
 const METRICS_URL = 'https://frontmatter.codes/api/metrics';
 
@@ -24,6 +24,24 @@ export class Telemetry {
     return Telemetry.instance;
   }
 
+  public static isVscodeEnabled(): boolean {
+    const config = workspace.getConfiguration('telemetry');
+    const isVscodeEnable = config.get<'off' | undefined>('enableTelemetry');
+    return isVscodeEnable === 'off' ? false : true;
+  }
+
+  /**
+   * Checks if telemetry is enabled.
+   * @returns {boolean} Returns true if telemetry is enabled, false otherwise.
+   */
+  public static isEnabled(): boolean {
+    const isVscodeEnable = Telemetry.isVscodeEnabled();
+
+    const isDisabled = Settings.get<boolean>(SETTING_TELEMETRY_DISABLE);
+
+    return isDisabled || isVscodeEnable ? false : true;
+  }
+
   /**
    * Send metrics to our own database
    * @param eventName
@@ -31,8 +49,7 @@ export class Telemetry {
    * @returns
    */
   public static send(eventName: string, properties?: any) {
-    const isDisabled = Settings.get<boolean>(SETTING_TELEMETRY_DISABLE);
-    if (isDisabled) {
+    if (!Telemetry.isEnabled()) {
       return;
     }
 

@@ -1,11 +1,11 @@
-import { Menu } from '@headlessui/react';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { GroupOption } from '../../constants/GroupOption';
 import { AllPagesAtom, GroupingAtom } from '../../state';
-import { MenuButton, MenuItem, MenuItems } from '../Menu';
+import { MenuButton, MenuItem } from '../Menu';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { DropdownMenu, DropdownMenuContent } from '../../../components/shadcn/Dropdown';
 
 export interface IGroupingProps { }
 
@@ -42,22 +42,20 @@ export const Grouping: React.FunctionComponent<
   }
 
   return (
-    <div className="flex items-center">
-      <Menu as="div" className="relative z-10 inline-block text-left">
-        <MenuButton label={l10n.t(LocalizationKey.dashboardHeaderGroupingMenuButtonLabel)} title={crntGroup?.name || ''} />
+    <DropdownMenu>
+      <MenuButton label={l10n.t(LocalizationKey.dashboardHeaderGroupingMenuButtonLabel)} title={crntGroup?.name || ''} />
 
-        <MenuItems disablePopper>
-          {GROUP_OPTIONS.map((option) => (
-            <MenuItem
-              key={option.id}
-              title={option.name}
-              value={option.id}
-              isCurrent={option.id === crntGroup?.id}
-              onClick={(value) => setGroup(value)}
-            />
-          ))}
-        </MenuItems>
-      </Menu>
-    </div>
+      <DropdownMenuContent>
+        {GROUP_OPTIONS.map((option) => (
+          <MenuItem
+            key={option.id}
+            title={option.name}
+            value={option.id}
+            isCurrent={option.id === crntGroup?.id}
+            onClick={(value) => setGroup(value)}
+          />
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

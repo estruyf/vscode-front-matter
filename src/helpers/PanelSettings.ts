@@ -31,7 +31,6 @@ import {
   SETTING_SLUG_UPDATE_FILE_NAME,
   SETTING_TAXONOMY_CUSTOM,
   SETTING_TAXONOMY_FIELD_GROUPS,
-  SETTING_GIT_ENABLED,
   SETTING_SEO_TITLE_FIELD
 } from '../constants';
 import { GitListener } from '../listeners/general';
@@ -49,14 +48,9 @@ import { Folders } from '../commands';
 
 export class PanelSettings {
   public static async get(): Promise<IPanelSettings> {
-    const gitActions = Settings.get<boolean>(SETTING_GIT_ENABLED);
-
     return {
       aiEnabled: Settings.get<boolean>(SETTING_SPONSORS_AI_ENABLED) || false,
-      git: {
-        isGitRepo: gitActions ? await GitListener.isGitRepository() : false,
-        actions: gitActions || false
-      },
+      git: await GitListener.getSettings(),
       seo: {
         title: (Settings.get(SETTING_SEO_TITLE_LENGTH) as number) || -1,
         slug: (Settings.get(SETTING_SEO_SLUG_LENGTH) as number) || -1,

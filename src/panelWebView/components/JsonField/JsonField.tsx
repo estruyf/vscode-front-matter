@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { Field, PanelSettings } from '../../../models';
-import { PencilIcon } from '@heroicons/react/outline';
+import { PencilIcon } from '@heroicons/react/24/outline';
 import { VsLabel } from '../VscodeComponents';
 import { JsonFieldRecords, JsonFieldForm, JsonFieldSelector } from '.';
 import { SortEnd } from 'react-sortable-hoc';

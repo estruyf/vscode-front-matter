@@ -24,6 +24,8 @@ import { SettingsListener as PanelSettingsListener } from '../listeners/panel';
 import { SettingsListener as DashboardSettingsListener } from '../listeners/dashboard';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
+import { Page } from '../dashboardWebView/models';
+import { Logger } from './Logger';
 
 export class TaxonomyHelper {
   private static db: JsonDB;
@@ -254,21 +256,26 @@ export class TaxonomyHelper {
   }
 
   /**
-   * Process the taxonomy changes
-   * @param type
-   * @param taxonomyType
-   * @param oldValue
-   * @param newValue
-   * @returns
+   * Processes the taxonomy changes based on the specified type.
+   * @param type - The type of taxonomy change ('insert', 'edit', 'merge', 'delete').
+   * @param taxonomyType - The type of taxonomy ('Tag', 'Category', or custom taxonomy name).
+   * @param oldValue - The old value of the taxonomy.
+   * @param newValue - The new value of the taxonomy (optional).
+   * @param pages - The array of Page objects (optional).
+   * @param needsSettingsUpdate - Indicates whether the settings need to be updated (default: true).
    */
   public static async process(
-    type: 'edit' | 'merge' | 'delete',
+    type: 'insert' | 'edit' | 'merge' | 'delete',
     taxonomyType: TaxonomyType | string,
     oldValue: string,
-    newValue?: string
+    newValue?: string,
+    pages?: Page[],
+    needsSettingsUpdate: boolean = true
   ) {
     // Retrieve all the markdown files
-    const allFiles = await FilesHelper.getAllFiles();
+    const allFiles = pages
+      ? pages?.map((p) => ({ fsPath: p.fmFilePath }))
+      : await FilesHelper.getAllFiles();
     if (!allFiles) {
       return;
     }
@@ -284,7 +291,13 @@ export class TaxonomyHelper {
 
     let progressText = ``;
 
-    if (type === 'edit') {
+    if (type === 'insert') {
+      progressText = l10n.t(
+        LocalizationKey.helpersTaxonomyHelperProcessInsert,
+        EXTENSION_NAME,
+        newValue || ''
+      );
+    } else if (type === 'edit') {
       progressText = l10n.t(
         LocalizationKey.helpersTaxonomyHelperProcessEdit,
         EXTENSION_NAME,
@@ -309,7 +322,7 @@ export class TaxonomyHelper {
       );
     }
 
-    window.withProgress(
+    await window.withProgress(
       {
         location: ProgressLocation.Notification,
         title: progressText,
@@ -342,7 +355,18 @@ export class TaxonomyHelper {
                   taxonomies = taxonomies.split(`,`);
                 }
 
-                if (taxonomies && taxonomies.length > 0) {
+                let needsFileUpdate = false;
+                if (type === 'insert' && newValue) {
+                  if (taxonomies && taxonomies.length > 0) {
+                    taxonomies.push(newValue);
+                  } else {
+                    taxonomies = [newValue];
+                  }
+
+                  const newTaxValue = [...new Set(taxonomies)].sort();
+                  ContentType.setFieldValue(data, fieldNames, newTaxValue);
+                  needsFileUpdate = true;
+                } else if (type !== 'insert' && taxonomies && taxonomies.length > 0) {
                   const idx = taxonomies.findIndex((o) => o === oldValue);
 
                   if (idx !== -1) {
@@ -354,28 +378,36 @@ export class TaxonomyHelper {
 
                     const newTaxValue = [...new Set(taxonomies)].sort();
                     ContentType.setFieldValue(data, fieldNames, newTaxValue);
-
-                    const spaces = window.activeTextEditor?.options?.tabSize;
-                    // Update the file
-                    await writeFileAsync(
-                      parseWinPath(file.fsPath),
-                      FrontMatterParser.toFile(article.content, article.data, mdFile, {
-                        indent: spaces || 2
-                      } as DumpOptions as any),
-                      { encoding: 'utf8' }
-                    );
+                    needsFileUpdate = true;
                   }
+                }
+
+                // Update the file when needed
+                if (needsFileUpdate) {
+                  const spaces = window.activeTextEditor?.options?.tabSize;
+
+                  await writeFileAsync(
+                    parseWinPath(file.fsPath),
+                    FrontMatterParser.toFile(article.content, article.data, mdFile, {
+                      indent: spaces || 2
+                    } as DumpOptions as any),
+                    { encoding: 'utf8' }
+                  );
                 }
               }
             } catch (e) {
-              // Continue with the next file
+              Logger.error(`Failed to ${type} taxonomy value in ${file.fsPath}`);
             }
           }
         }
 
-        await this.addToSettings(taxonomyType, oldValue, newValue);
+        if (needsSettingsUpdate) {
+          await this.addToSettings(taxonomyType, oldValue, newValue);
+        }
 
-        if (type === 'edit') {
+        if (type === 'insert') {
+          Notifications.info(l10n.t(LocalizationKey.helpersTaxonomyHelperProcessInsertSuccess));
+        } else if (type === 'edit') {
           Notifications.info(l10n.t(LocalizationKey.helpersTaxonomyHelperProcessEditSuccess));
         } else if (type === 'merge') {
           Notifications.info(l10n.t(LocalizationKey.helpersTaxonomyHelperProcessMergeSuccess));
@@ -503,6 +535,21 @@ export class TaxonomyHelper {
   }
 
   /**
+   * Retrieve the taxonomy type based from the string
+   * @param taxonomyType
+   * @returns
+   */
+  public static getTypeFromString(taxonomyType: string): TaxonomyType | string {
+    if (taxonomyType === 'tags') {
+      return TaxonomyType.Tag;
+    } else if (taxonomyType === 'categories') {
+      return TaxonomyType.Category;
+    } else {
+      return taxonomyType;
+    }
+  }
+
+  /**
    * Retrieve the fields for the taxonomy field
    * @returns
    */
@@ -586,20 +633,5 @@ export class TaxonomyHelper {
     }
 
     return options;
-  }
-
-  /**
-   * Retrieve the taxonomy type based from the string
-   * @param taxonomyType
-   * @returns
-   */
-  private static getTypeFromString(taxonomyType: string): TaxonomyType | string {
-    if (taxonomyType === 'tags') {
-      return TaxonomyType.Tag;
-    } else if (taxonomyType === 'categories') {
-      return TaxonomyType.Category;
-    } else {
-      return taxonomyType;
-    }
   }
 }

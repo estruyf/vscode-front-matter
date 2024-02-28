@@ -1,9 +1,9 @@
-import { Menu } from '@headlessui/react';
-import { FilterIcon } from '@heroicons/react/solid';
 import * as React from 'react';
-import { MenuButton, MenuItem, MenuItems } from '../Menu';
+import { MenuButton, MenuItem } from '../Menu';
 import * as l10n from '@vscode/l10n';
+import { FunnelIcon } from '@heroicons/react/24/solid';
 import { LocalizationKey } from '../../../localization';
+import { DropdownMenu, DropdownMenuContent } from '../../../components/shadcn/Dropdown';
 
 export interface IFilterProps {
   label: string;
@@ -25,37 +25,35 @@ export const Filter: React.FunctionComponent<IFilterProps> = ({
   }
 
   return (
-    <div className="flex items-center">
-      <Menu as="div" className="relative z-10 inline-block text-left">
-        <MenuButton
-          label={
-            <>
-              <FilterIcon className={`inline-block w-5 h-5 mr-1`} />
-              <span>{label}</span>
-            </>
-          }
-          title={activeItem || DEFAULT_VALUE}
+    <DropdownMenu>
+      <MenuButton
+        label={
+          <>
+            <FunnelIcon className={`inline-block w-4 h-4 mr-2`} />
+            <span>{label}</span>
+          </>
+        }
+        title={activeItem || DEFAULT_VALUE}
+      />
+
+      <DropdownMenuContent>
+        <MenuItem
+          title={DEFAULT_VALUE}
+          value={null}
+          isCurrent={!activeItem}
+          onClick={() => onClick(null)}
         />
 
-        <MenuItems disablePopper>
+        {items.map((option) => (
           <MenuItem
-            title={DEFAULT_VALUE}
-            value={null}
-            isCurrent={!!activeItem}
-            onClick={() => onClick(null)}
+            key={option}
+            title={option}
+            value={option}
+            isCurrent={option === activeItem}
+            onClick={() => onClick(option)}
           />
-
-          {items.map((option) => (
-            <MenuItem
-              key={option}
-              title={option}
-              value={option}
-              isCurrent={option === activeItem}
-              onClick={() => onClick(option)}
-            />
-          ))}
-        </MenuItems>
-      </Menu>
-    </div>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

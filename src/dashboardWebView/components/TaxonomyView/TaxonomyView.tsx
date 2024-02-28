@@ -1,12 +1,12 @@
-import { Messenger } from '@estruyf/vscode/dist/client';
-import { ChevronRightIcon, DownloadIcon } from '@heroicons/react/outline';
+import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
+import { ChevronRightIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { TelemetryEvent } from '../../../constants';
 import { TaxonomyData } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
-import { Page } from '../../models';
+import { Page, PageMappings } from '../../models';
 import { SettingsSelector } from '../../state';
 import { NavigationBar, NavigationItem } from '../Layout';
 import { PageLayout } from '../Layout/PageLayout';
@@ -14,6 +14,7 @@ import { SponsorMsg } from '../Layout/SponsorMsg';
 import { TaxonomyManager } from './TaxonomyManager';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { TaxonomyTagging } from './TaxonomyTagging';
 
 export interface ITaxonomyViewProps {
   pages: Page[];
@@ -25,10 +26,23 @@ export const TaxonomyView: React.FunctionComponent<ITaxonomyViewProps> = ({
   const settings = useRecoilValue(SettingsSelector);
   const [taxonomySettings, setTaxonomySettings] = useState<TaxonomyData>();
   const [selectedTaxonomy, setSelectedTaxonomy] = useState<string | null>(`tags`);
+  const [contentTagging, setContentTagging] = useState<string | null>(null);
 
   const onImport = () => {
     Messenger.send(DashboardMessage.importTaxonomy);
   };
+
+  const onContentMapping = React.useCallback((value: string, pageMappings: PageMappings) => {
+    messageHandler.request(DashboardMessage.mapTaxonomy, {
+      taxonomy: selectedTaxonomy,
+      value,
+      pageMappings
+    }).then(() => {
+      setContentTagging(null);
+    }).catch(() => {
+      setContentTagging(null);
+    });
+  }, [selectedTaxonomy]);
 
   useEffect(() => {
     setTaxonomySettings({
@@ -55,14 +69,17 @@ export const TaxonomyView: React.FunctionComponent<ITaxonomyViewProps> = ({
               title={l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyViewButtonImport)}
               onClick={onImport}
             >
-              <DownloadIcon className={`w-5 mr-2`} />
+              <ArrowDownTrayIcon className={`w-5 mr-2`} />
               <span>{l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyViewButtonImport)}</span>
             </button>
           }
         >
           <NavigationItem
             isSelected={selectedTaxonomy === 'tags'}
-            onClick={() => setSelectedTaxonomy(`tags`)}
+            onClick={() => {
+              setSelectedTaxonomy(`tags`);
+              setContentTagging(null);
+            }}
           >
             <ChevronRightIcon className="-ml-1 w-5 mr-2" />
             <span>{l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyViewNavigationItemTags)}</span>
@@ -70,7 +87,10 @@ export const TaxonomyView: React.FunctionComponent<ITaxonomyViewProps> = ({
 
           <NavigationItem
             isSelected={selectedTaxonomy === 'categories'}
-            onClick={() => setSelectedTaxonomy(`categories`)}
+            onClick={() => {
+              setSelectedTaxonomy(`categories`);
+              setContentTagging(null);
+            }}
           >
             <ChevronRightIcon className="-ml-1 w-5 mr-2" />
             <span>{l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyViewNavigationItemCategories)}</span>
@@ -81,7 +101,10 @@ export const TaxonomyView: React.FunctionComponent<ITaxonomyViewProps> = ({
               <NavigationItem
                 key={`${taxonomy.id}-${index}`}
                 isSelected={selectedTaxonomy === taxonomy.id}
-                onClick={() => setSelectedTaxonomy(taxonomy.id)}
+                onClick={() => {
+                  setSelectedTaxonomy(taxonomy.id);
+                  setContentTagging(null);
+                }}
               >
                 <ChevronRightIcon className="-ml-1 w-5 mr-2" />
                 <span className={`first-letter:uppercase`}>{taxonomy.id}</span>
@@ -90,10 +113,22 @@ export const TaxonomyView: React.FunctionComponent<ITaxonomyViewProps> = ({
         </NavigationBar>
 
         <div className={`w-10/12 h-full overflow-hidden`}>
-          <TaxonomyManager
-            data={taxonomySettings}
-            taxonomy={selectedTaxonomy}
-            pages={pages} />
+          {
+            contentTagging ? (
+              <TaxonomyTagging
+                value={contentTagging}
+                taxonomy={selectedTaxonomy}
+                pages={pages}
+                onContentMapping={(value: string, pageMappings: PageMappings) => onContentMapping(value, pageMappings)}
+                onDismiss={() => setContentTagging(null)} />
+            ) : (
+              <TaxonomyManager
+                data={taxonomySettings}
+                taxonomy={selectedTaxonomy}
+                pages={pages}
+                onContentTagging={(value: string) => setContentTagging(value)} />
+            )
+          }
         </div>
       </div>
 

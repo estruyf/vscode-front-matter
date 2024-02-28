@@ -1,5 +1,5 @@
-import { UserIcon } from '@heroicons/react/outline';
-import { PuzzleIcon } from '@heroicons/react/solid';
+import { UserIcon } from '@heroicons/react/24/outline';
+import { PuzzlePieceIcon } from '@heroicons/react/24/solid';
 import * as React from 'react';
 
 export interface ITemplateItemProps {
@@ -32,7 +32,7 @@ export const TemplateItem: React.FunctionComponent<ITemplateItemProps> = ({
         <span>v{version}</span>
       </div>
 
-      <PuzzleIcon className='absolute top-0 right-2 h-8 w-8 opacity-25' />
+      <PuzzlePieceIcon className='absolute top-0 right-2 h-8 w-8 opacity-25' />
     </button>
   );
 };

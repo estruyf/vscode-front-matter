@@ -1,5 +1,5 @@
 import { messageHandler } from '@estruyf/vscode/dist/client';
-import { ChevronDownIcon, DatabaseIcon } from '@heroicons/react/outline';
+import { ChevronDownIcon, CircleStackIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { CommandToCode } from '../../CommandToCode';
@@ -142,7 +142,7 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
 
   return (
     <div className={`metadata_field ${showRequiredState ? 'required' : ''}`}>
-      <FieldTitle label={label} icon={<DatabaseIcon />} required={required} />
+      <FieldTitle label={label} icon={<CircleStackIcon />} required={required} />
 
       <Downshift
         ref={dsRef}

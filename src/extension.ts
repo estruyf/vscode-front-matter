@@ -1,6 +1,6 @@
 import { GitListener } from './listeners/general/GitListener';
 import * as vscode from 'vscode';
-import { COMMAND_NAME, EXTENSION_NAME, TelemetryEvent } from './constants';
+import { COMMAND_NAME, CONTEXT, EXTENSION_NAME, TelemetryEvent } from './constants';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
 import { TagType } from './panelWebView/TagType';
 import { PanelProvider } from './panelWebView/PanelProvider';
@@ -13,11 +13,10 @@ import {
 } from './helpers';
 import ContentProvider from './providers/ContentProvider';
 import { PagesListener } from './listeners/dashboard';
-import { NavigationType } from './dashboardWebView/models';
 import { ModeSwitch } from './services/ModeSwitch';
 import { PagesParser } from './services/PagesParser';
 import { ContentType, Telemetry, Extension } from './helpers';
-import { TaxonomyType, DashboardData } from './models';
+import { TaxonomyType } from './models';
 import * as l10n from '@vscode/l10n';
 import {
   Backers,
@@ -37,6 +36,7 @@ import {
 } from './commands';
 import { join } from 'path';
 import { Terminal } from './services';
+import { i18n } from './commands/i18n';
 
 let pageUpdateDebouncer: { (fnc: any, time: number): void };
 let editDebounce: { (fnc: any, time: number): void };
@@ -46,6 +46,11 @@ export async function activate(context: vscode.ExtensionContext) {
   const { subscriptions, extensionUri, extensionPath } = context;
 
   const extension = Extension.getInstance(context);
+  // Set development context
+  if (!Extension.getInstance().isProductionMode) {
+    vscode.commands.executeCommand('setContext', CONTEXT.isDevelopment, true);
+  }
+
   Backers.init(context).then(() => {});
 
   // Make sure the EN language file is loaded
@@ -82,51 +87,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // Pages dashboard
   Dashboard.init();
-  subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.dashboard, (data?: DashboardData) => {
-      Telemetry.send(TelemetryEvent.openContentDashboard);
-      if (!data) {
-        Dashboard.open({ type: NavigationType.Contents });
-      } else {
-        Dashboard.open(data);
-      }
-    })
-  );
+  Dashboard.registerCommands();
 
-  subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.dashboardMedia, (data?: DashboardData) => {
-      Telemetry.send(TelemetryEvent.openMediaDashboard);
-      Dashboard.open({ type: NavigationType.Media });
-    })
-  );
-
-  subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.dashboardSnippets, (data?: DashboardData) => {
-      Telemetry.send(TelemetryEvent.openSnippetsDashboard);
-      Dashboard.open({ type: NavigationType.Snippets });
-    })
-  );
-
-  subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.dashboardData, (data?: DashboardData) => {
-      Telemetry.send(TelemetryEvent.openDataDashboard);
-      Dashboard.open({ type: NavigationType.Data });
-    })
-  );
-
-  subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.dashboardTaxonomy, (data?: DashboardData) => {
-      Telemetry.send(TelemetryEvent.openTaxonomyDashboard);
-      Dashboard.open({ type: NavigationType.Taxonomy });
-    })
-  );
-
-  subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.dashboardClose, (data?: DashboardData) => {
-      Telemetry.send(TelemetryEvent.closeDashboard);
-      Dashboard.close();
-    })
-  );
+  i18n.register();
 
   if (!extension.getVersion().usedVersion) {
     vscode.commands.executeCommand(COMMAND_NAME.dashboard);

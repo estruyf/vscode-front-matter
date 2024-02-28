@@ -7,6 +7,7 @@ import {
   CONTEXT,
   ExtensionState,
   SETTING_CONTENT_DRAFT_FIELD,
+  SETTING_CONTENT_FILTERS,
   SETTING_CONTENT_SORTING,
   SETTING_CONTENT_SORTING_DEFAULT,
   SETTING_DASHBOARD_OPENONSTART,
@@ -16,7 +17,6 @@ import {
   SETTING_FRAMEWORK_ID,
   SETTING_MEDIA_SORTING_DEFAULT,
   SETTING_CUSTOM_SCRIPTS,
-  SETTING_TAXONOMY_CONTENT_TYPES,
   SETTING_CONTENT_SNIPPETS,
   SETTING_DATE_FORMAT,
   SETTING_DASHBOARD_CONTENT_TAGS,
@@ -30,14 +30,24 @@ import {
   SETTING_DASHBOARD_CONTENT_CARD_TITLE,
   SETTING_DASHBOARD_CONTENT_CARD_STATE,
   SETTING_DASHBOARD_CONTENT_CARD_DESCRIPTION,
-  SETTING_WEBSITE_URL
+  SETTING_WEBSITE_URL,
+  SETTING_MEDIA_CONTENTTYPES
 } from '../constants';
 import {
   DashboardViewType,
   SortingOption,
   Settings as ISettings
 } from '../dashboardWebView/models';
-import { CustomScript, DraftField, Snippets, SortingSetting, TaxonomyType } from '../models';
+import {
+  CustomScript,
+  DEFAULT_MEDIA_CONTENT_TYPE,
+  DraftField,
+  FilterType,
+  MediaContentType,
+  Snippets,
+  SortingSetting,
+  TaxonomyType
+} from '../models';
 import { DataFile } from '../models/DataFile';
 import { DataFolder } from '../models/DataFolder';
 import { DataType } from '../models/DataType';
@@ -59,20 +69,32 @@ export class DashboardSettings {
     return this.cachedSettings;
   }
 
+  public static async updateAfterClose() {
+    if (this.cachedSettings) {
+      this.cachedSettings = await this.getSettings();
+
+      const ext = Extension.getInstance();
+
+      // Update states
+      this.cachedSettings.dashboardState.contents.sorting = await ext.getState<
+        SortingOption | undefined
+      >(ExtensionState.Dashboard.Contents.Sorting, 'workspace');
+      this.cachedSettings.dashboardState.media.sorting = await ext.getState<
+        SortingOption | undefined
+      >(ExtensionState.Dashboard.Media.Sorting, 'workspace');
+    }
+  }
+
   public static async getSettings() {
     const ext = Extension.getInstance();
     const wsFolder = Folders.getWorkspaceFolder();
     const isInitialized = await Project.isInitialized();
-    const gitActions = Settings.get<boolean>(SETTING_GIT_ENABLED);
     const pagination = Settings.get<boolean | number>(SETTING_DASHBOARD_CONTENT_PAGINATION);
 
     const settings = {
       projects: Settings.getProjects(),
       project: Settings.getProject(),
-      git: {
-        isGitRepo: gitActions ? await GitListener.isGitRepository() : false,
-        actions: gitActions || false
-      },
+      git: await GitListener.getSettings(),
       beta: ext.isBetaVersion(),
       wsFolder: wsFolder ? wsFolder.fsPath : '',
       staticFolder: Folders.getStaticFolderRelativePath(),
@@ -90,6 +112,8 @@ export class DashboardSettings {
       draftField: Settings.get<DraftField>(SETTING_CONTENT_DRAFT_FIELD),
       customSorting: Settings.get<SortingSetting[]>(SETTING_CONTENT_SORTING),
       contentFolders: Folders.get(),
+      filters:
+        Settings.get<(FilterType | { title: string; name: string })[]>(SETTING_CONTENT_FILTERS),
       crntFramework: Settings.get<string>(SETTING_FRAMEWORK_ID),
       framework: !isInitialized && wsFolder ? await FrameworkDetector.get(wsFolder.fsPath) : null,
       scripts: Settings.get<CustomScript[]>(SETTING_CUSTOM_SCRIPTS) || [],
@@ -135,6 +159,11 @@ export class DashboardSettings {
       snippetsWrapper: Settings.get<boolean>(SETTING_SNIPPETS_WRAPPER),
       isBacker: await ext.getState<boolean | undefined>(CONTEXT.backer, 'global'),
       websiteUrl: Settings.get<string>(SETTING_WEBSITE_URL),
+      media: {
+        contentTypes: Settings.get<MediaContentType[]>(SETTING_MEDIA_CONTENTTYPES) || [
+          DEFAULT_MEDIA_CONTENT_TYPE
+        ]
+      },
       lastUpdated: new Date().getTime()
     } as ISettings;
 

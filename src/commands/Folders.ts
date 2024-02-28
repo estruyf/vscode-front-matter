@@ -1,6 +1,7 @@
 import { STATIC_FOLDER_PLACEHOLDER } from './../constants/StaticFolderPlaceholder';
 import { Questions } from './../helpers/Questions';
 import {
+  SETTING_CONTENT_I18N,
   SETTING_CONTENT_PAGE_FOLDERS,
   SETTING_CONTENT_STATIC_FOLDER,
   SETTING_CONTENT_SUPPORTED_FILETYPES,
@@ -9,11 +10,11 @@ import {
 } from './../constants';
 import { commands, Uri, workspace, window } from 'vscode';
 import { basename, dirname, join, relative, sep } from 'path';
-import { ContentFolder, FileInfo, FolderInfo, StaticFolder } from '../models';
+import { ContentFolder, FileInfo, FolderInfo, I18nConfig, StaticFolder } from '../models';
 import uniqBy = require('lodash.uniqby');
 import { Template } from './Template';
 import { Notifications } from '../helpers/Notifications';
-import { Logger, processKnownPlaceholders, Settings } from '../helpers';
+import { Logger, Settings, processTimePlaceholders } from '../helpers';
 import { existsSync } from 'fs';
 import { format } from 'date-fns';
 import { Dashboard } from './Dashboard';
@@ -98,7 +99,7 @@ export class Folders {
     }
 
     const folders = Folders.get().filter((f) => !f.disableCreation);
-    const location = folders.find((f) => f.title === selectedFolder);
+    const location = folders.find((f) => f.path === selectedFolder.path);
     if (location) {
       const folderPath = Folders.getFolderPath(Uri.file(location.path));
       if (folderPath) {
@@ -283,73 +284,14 @@ export class Folders {
   public static async getInfo(limit?: number): Promise<FolderInfo[] | null> {
     const supportedFiles = Settings.get<string[]>(SETTING_CONTENT_SUPPORTED_FILETYPES);
     const folders = Folders.get();
-    const wsFolder = parseWinPath(Folders.getWorkspaceFolder()?.fsPath || '');
 
     if (folders && folders.length > 0) {
       const folderInfo: FolderInfo[] = [];
 
       for (const folder of folders) {
-        try {
-          const folderPath = parseWinPath(folder.path);
-
-          if (typeof folderPath === 'string') {
-            let files: Uri[] = [];
-
-            for (const fileType of supportedFiles || DEFAULT_FILE_TYPES) {
-              let filePath = join(
-                folderPath,
-                folder.excludeSubdir ? '/' : '**',
-                `*${fileType.startsWith('.') ? '' : '.'}${fileType}`
-              );
-
-              if (folderPath === '' && folder.excludeSubdir) {
-                filePath = `*${fileType.startsWith('.') ? '' : '.'}${fileType}`;
-              }
-
-              let foundFiles = await Folders.findFiles(filePath);
-
-              // Make sure these file are coming from the folder path (this could be an issue in multi-root workspaces)
-              foundFiles = foundFiles.filter((f) => parseWinPath(f.fsPath).startsWith(folderPath));
-
-              files = [...files, ...foundFiles];
-            }
-
-            if (files) {
-              let fileStats: FileInfo[] = [];
-
-              for (const file of files) {
-                try {
-                  const fileName = basename(file.fsPath);
-                  const folderName = dirname(file.fsPath).split(sep).pop();
-
-                  const stats = await workspace.fs.stat(file);
-
-                  fileStats.push({
-                    filePath: file.fsPath,
-                    fileName,
-                    folderName,
-                    ...stats
-                  });
-                } catch (error) {
-                  // Skip the file
-                }
-              }
-
-              fileStats = fileStats.sort((a, b) => b.mtime - a.mtime);
-
-              if (limit) {
-                fileStats = fileStats.slice(0, limit);
-              }
-
-              folderInfo.push({
-                title: folder.title,
-                files: files.length,
-                lastModified: fileStats
-              });
-            }
-          }
-        } catch (e) {
-          // Skip the current folder
+        const crntFolderInfo = await Folders.getFilesByFolder(folder, supportedFiles, limit);
+        if (crntFolderInfo) {
+          folderInfo.push(crntFolderInfo);
         }
       }
 
@@ -366,11 +308,14 @@ export class Folders {
   public static get(): ContentFolder[] {
     const wsFolder = Folders.getWorkspaceFolder();
     let folders: ContentFolder[] = Settings.get(SETTING_CONTENT_PAGE_FOLDERS) as ContentFolder[];
+    const i18nSettings = Settings.get<I18nConfig[]>(SETTING_CONTENT_I18N);
 
     // Filter out folders without a path
     folders = folders.filter((f) => f.path);
 
-    const contentFolders = folders.map((folder) => {
+    const contentFolders: ContentFolder[] = [];
+
+    folders.forEach((folder) => {
       if (!folder.title) {
         folder.title = basename(folder.path);
       }
@@ -378,7 +323,7 @@ export class Folders {
       let folderPath: string | undefined = Folders.absWsFolder(folder, wsFolder);
       if (folderPath.includes(`{{`) && folderPath.includes(`}}`)) {
         const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
-        folderPath = processKnownPlaceholders(folderPath, undefined, dateFormat);
+        folderPath = processTimePlaceholders(folderPath, dateFormat);
       } else {
         if (folderPath && !existsSync(folderPath)) {
           Notifications.errorShowOnce(
@@ -404,11 +349,52 @@ export class Folders {
         }
       }
 
-      return {
-        ...folder,
-        originalPath: folder.path,
-        path: folderPath
-      };
+      // Check i18n
+      if (folder.defaultLocale && (folder.locales || i18nSettings)) {
+        const i18nConfig =
+          folder.locales && folder.locales.length > 0 ? folder.locales : i18nSettings;
+
+        let defaultLocale;
+        let sourcePath = folderPath;
+        let localeFolders: ContentFolder[] = [];
+
+        if (i18nConfig && i18nConfig.length > 0) {
+          for (const i18n of i18nConfig) {
+            if (i18n.locale === folder.defaultLocale) {
+              defaultLocale = i18n;
+            } else if (i18n.locale !== folder.defaultLocale && i18n.path) {
+              localeFolders.push({
+                ...folder,
+                title: folder.title,
+                originalPath: folder.path,
+                locale: i18n.locale,
+                localeTitle: i18n?.title || i18n.locale,
+                localeSourcePath: sourcePath,
+                path: parseWinPath(join(folderPath, i18n.path))
+              });
+            }
+          }
+        }
+
+        contentFolders.push({
+          ...folder,
+          title: folder.title,
+          locale: folder.defaultLocale,
+          localeTitle: defaultLocale?.title || folder.defaultLocale,
+          originalPath: folder.path,
+          localeSourcePath: sourcePath,
+          path: parseWinPath(join(folderPath, defaultLocale?.path || ''))
+        });
+
+        contentFolders.push(...localeFolders);
+      } else {
+        contentFolders.push({
+          ...folder,
+          locale: folder.defaultLocale,
+          originalPath: folder.path,
+          path: folderPath
+        });
+      }
     });
 
     return contentFolders.filter((folder) => folder !== null) as ContentFolder[];
@@ -599,6 +585,99 @@ export class Folders {
       if (selectedFolder && typeof selectedFolder.filePrefix !== 'undefined') {
         return selectedFolder.filePrefix;
       }
+    }
+
+    return;
+  }
+
+  /**
+   * Retrieves the page folder that matches the given file path.
+   *
+   * @param filePath - The file path to match against the page folders.
+   * @returns The page folder that matches the file path, or undefined if no match is found.
+   */
+  public static getPageFolderByFilePath(filePath: string): ContentFolder | undefined {
+    const folders = Folders.get();
+    const parsedPath = parseWinPath(filePath);
+    const pageFolderMatches = folders
+      .filter((folder) => parsedPath && folder.path && parsedPath.includes(folder.path))
+      .sort((a, b) => b.path.length - a.path.length);
+
+    if (pageFolderMatches.length > 0 && pageFolderMatches[0]) {
+      return pageFolderMatches[0];
+    }
+
+    return;
+  }
+
+  private static async getFilesByFolder(
+    folder: ContentFolder,
+    supportedFiles: string[] | undefined,
+    limit?: number
+  ): Promise<FolderInfo | undefined> {
+    try {
+      const folderPath = parseWinPath(folder.path);
+
+      if (typeof folderPath === 'string') {
+        let files: Uri[] = [];
+
+        for (const fileType of supportedFiles || DEFAULT_FILE_TYPES) {
+          let filePath = join(
+            folderPath,
+            folder.excludeSubdir ? '/' : '**',
+            `*${fileType.startsWith('.') ? '' : '.'}${fileType}`
+          );
+
+          if (folderPath === '' && folder.excludeSubdir) {
+            filePath = `*${fileType.startsWith('.') ? '' : '.'}${fileType}`;
+          }
+
+          let foundFiles = await Folders.findFiles(filePath);
+
+          // Make sure these file are coming from the folder path (this could be an issue in multi-root workspaces)
+          foundFiles = foundFiles.filter((f) => parseWinPath(f.fsPath).startsWith(folderPath));
+
+          files = [...files, ...foundFiles];
+        }
+
+        if (files) {
+          let fileStats: FileInfo[] = [];
+
+          for (const file of files) {
+            try {
+              const fileName = basename(file.fsPath);
+              const folderName = dirname(file.fsPath).split(sep).pop();
+
+              const stats = await workspace.fs.stat(file);
+
+              fileStats.push({
+                filePath: file.fsPath,
+                fileName,
+                folderName,
+                ...stats
+              });
+            } catch (error) {
+              // Skip the file
+            }
+          }
+
+          fileStats = fileStats.sort((a, b) => b.mtime - a.mtime);
+
+          if (limit) {
+            fileStats = fileStats.slice(0, limit);
+          }
+
+          return {
+            title: folder.title,
+            files: files.length,
+            lastModified: fileStats,
+            locale: folder.locale,
+            localeTitle: folder.localeTitle
+          };
+        }
+      }
+    } catch (e) {
+      // Skip the current folder
     }
 
     return;

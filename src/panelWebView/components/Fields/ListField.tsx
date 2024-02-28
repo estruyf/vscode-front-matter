@@ -1,4 +1,4 @@
-import { PencilIcon, TrashIcon, ViewListIcon } from '@heroicons/react/outline';
+import { PencilIcon, TrashIcon, ListBulletIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { BaseFieldProps } from '../../../models';
@@ -88,7 +88,7 @@ export const ListField: React.FunctionComponent<IListFieldProps> = ({
 
   return (
     <div className={`list_field ${showRequiredState ? 'required' : ''}`}>
-      <FieldTitle label={label} icon={<ViewListIcon />} required={required} />
+      <FieldTitle label={label} icon={<ListBulletIcon />} required={required} />
 
       <input
         ref={inputRef}

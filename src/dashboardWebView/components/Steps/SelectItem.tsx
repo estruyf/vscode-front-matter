@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { CheckCircleIcon, PlusCircleIcon } from '@heroicons/react/outline';
-import { CheckCircleIcon as CheckCircleIconSolid, PlusCircleIcon as PlusCircleIconSolid } from '@heroicons/react/solid';
+import { CheckCircleIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon as CheckCircleIconSolid, PlusCircleIcon as PlusCircleIconSolid } from '@heroicons/react/24/solid';
 
 export interface ISelectItemProps {
   title: string;

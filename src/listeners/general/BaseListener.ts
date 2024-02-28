@@ -3,7 +3,7 @@ import { Dashboard } from '../../commands/Dashboard';
 import { PanelProvider } from '../../panelWebView/PanelProvider';
 import { ArticleHelper, Extension } from '../../helpers';
 import { Logger } from '../../helpers/Logger';
-import { commands, Uri, window } from 'vscode';
+import { commands, Uri, window, workspace } from 'vscode';
 import { PostMessageData } from '../../models';
 import { Preview } from '../../commands';
 import { urlJoin } from 'url-join-ts';
@@ -18,6 +18,12 @@ export abstract class BaseListener {
         break;
       case GeneralCommands.toVSCode.openOnWebsite:
         this.openOnWebsite(msg.payload);
+        break;
+      case GeneralCommands.toVSCode.runCommand:
+        if (msg.payload) {
+          const { command, args } = msg.payload;
+          commands.executeCommand(command, args);
+        }
         break;
     }
   }

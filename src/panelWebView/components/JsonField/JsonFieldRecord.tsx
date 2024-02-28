@@ -1,6 +1,9 @@
 import * as React from 'react';
-import { PencilIcon, SelectorIcon, TrashIcon } from '@heroicons/react/outline';
+import { PencilIcon, ChevronUpDownIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { SortableHandle, SortableElement } from 'react-sortable-hoc';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
+
 export interface IJsonFieldRecordProps {
   id: number;
   index: number;
@@ -12,7 +15,7 @@ export interface IJsonFieldRecordProps {
 
 const DragHandle = SortableHandle(() => (
   <span className="drag_handler">
-    <SelectorIcon />
+    <ChevronUpDownIcon />
   </span>
 ));
 
@@ -30,20 +33,20 @@ export const JsonFieldRecord = SortableElement(
 
         <div>
           <button
-            title="Edit record"
+            title={l10n.t(LocalizationKey.commonEdit)}
             className="json_data__list__button json_data__list__button_edit"
             onClick={() => onEdit(id)}
           >
             <PencilIcon className="json_data__list__button_icon" />
-            <span className="sr-only">Edit</span>
+            <span className="sr-only">{l10n.t(LocalizationKey.commonEdit)}</span>
           </button>
           <button
-            title="Delete record"
+            title={l10n.t(LocalizationKey.commonDelete)}
             className="json_data__list__button json_data__list__button_delete"
             onClick={() => onDelete(id)}
           >
             <TrashIcon className="json_data__list__button_icon" />
-            <span className="sr-only">Delete</span>
+            <span className="sr-only">{l10n.t(LocalizationKey.commonDelete)}</span>
           </button>
         </div>
       </li>

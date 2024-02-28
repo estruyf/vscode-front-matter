@@ -28,7 +28,7 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
       return null;
     }
 
-    const pattern = new RegExp('\\b' + keyword.toLowerCase() + '\\b', 'ig');
+    const pattern = new RegExp(`(^${keyword.toLowerCase()}(?=\\s|$))|(\\s${keyword.toLowerCase()}(?=\\s|$))`, 'ig');
     const count = (content.match(pattern) || []).length;
     const density = (count / wordCount) * 100;
     const densityTitle = l10n.t(LocalizationKey.panelSeoKeywordInfoDensity, `${density.toFixed(2)}%`);

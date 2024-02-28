@@ -5,20 +5,20 @@ import { Settings } from '../../models/Settings';
 import { Status } from '../../models/Status';
 import { Step } from './Step';
 import { useMemo, useState } from 'react';
-import { Menu } from '@headlessui/react';
 import { MenuItem } from '../Menu';
 import { Framework, StaticFolder, Template } from '../../../models';
-import { ChevronDownIcon } from '@heroicons/react/outline';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { FrameworkDetectors } from '../../../constants/FrameworkDetectors';
-import useThemeColors from '../../hooks/useThemeColors';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { SelectItem } from './SelectItem';
-import { Templates } from '../../../constants';
+import { GeneralCommands, SETTING_GIT_ENABLED, Templates } from '../../../constants';
 import { TemplateItem } from './TemplateItem';
 import { Spinner } from '../Common/Spinner';
 import { AstroContentTypes } from '../Configuration/Astro/AstroContentTypes';
 import { ContentFolders } from '../Configuration/Common/ContentFolders';
+import { VSCodeCheckbox } from '@vscode/webview-ui-toolkit/react';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuSeparator } from '../../../components/shadcn/Dropdown';
 
 export interface IStepsToGetStartedProps {
   settings: Settings;
@@ -30,9 +30,10 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
   const [loading, setLoading] = useState<boolean>(false);
   const [framework, setFramework] = useState<string | null>(null);
   const [taxImported, setTaxImported] = useState<boolean>(false);
+  const [isGitEnabled, setIsGitEnabled] = useState<boolean>(false);
+  const [isGitRepo, setIsGitRepo] = useState<boolean>(false);
   const [templates, setTemplates] = useState<Template[]>([]);
-  const [astroCollectionsStatus, setAstroCollectionsStatus] = useState<Status>(Status.Optional)
-  const { getColors } = useThemeColors();
+  const [astroCollectionsStatus, setAstroCollectionsStatus] = useState<Status>(Status.Optional);
 
   const frameworks: Framework[] = FrameworkDetectors.map((detector: any) => detector.framework);
 
@@ -75,6 +76,15 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
     setTaxImported(true);
   };
 
+  const updateSetting = (name: string, value: any) => {
+    setIsGitEnabled(value);
+    Messenger.send(DashboardMessage.updateSetting, {
+      name,
+      value,
+      global: true
+    });
+  }
+
   const crntTemplates = useMemo(() => {
     if (!templates || templates.length === 0 || !settings.crntFramework) {
       return [];
@@ -106,54 +116,33 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
               {l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedFrameworkDescription)}
             </div>
 
-            <Menu as="div" className="relative inline-block text-left mt-4">
-              <div>
-                <Menu.Button className={`group flex justify-center p-2 rounded-md border ${getColors(
-                  'text-vulcan-500 hover:text-vulcan-600 dark:text-whisper-500 dark:hover:text-whisper-600 border-vulcan-400 dark:border-white',
-                  'text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)]'
-                )
-                  }`}>
-                  {framework ? framework : l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedFrameworkSelect)}
-                  <ChevronDownIcon
-                    className={`flex-shrink-0 -mr-1 ml-1 h-5 w-5 ${getColors(
-                      'text-gray-400 group-hover:text-gray-500 dark:text-whisper-600 dark:group-hover:text-whisper-700',
-                      ''
-                    )
-                      }`}
-                    aria-hidden="true"
-                  />
-                </Menu.Button>
-              </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger className='mt-4 group flex justify-center p-2 rounded-md border text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)] focus:outline-none'>
+                <span className="">{framework ? framework : l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedFrameworkSelect)}</span>
+                <ChevronDownIcon className="-mr-1 ml-1 w-4 h-4" aria-hidden="true" />
+              </DropdownMenuTrigger>
 
-              <Menu.Items
-                className={`w-40 origin-top-left absolute left-0 z-10 mt-2 rounded-md shadow-2xl ring-1 ring-opacity-5 focus:outline-none text-sm max-h-96 overflow-auto ${getColors(
-                  'bg-white dark:bg-vulcan-500 ring-vulcan-400 dark:ring-white',
-                  'bg-[var(--vscode-sideBar-background)] ring-[var(--frontmatter-border)]'
-                )
-                  }`}
-              >
-                <div className="py-1">
+              <DropdownMenuContent align='start'>
+                <MenuItem
+                  title={l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedFrameworkSelectOther)}
+                  value={`other`}
+                  isCurrent={!framework}
+                  onClick={(value: string) => setFrameworkAndSendMessage(value)}
+                />
+
+                <DropdownMenuSeparator />
+
+                {frameworks.map((f) => (
                   <MenuItem
-                    title={l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedFrameworkSelectOther)}
-                    value={`other`}
-                    isCurrent={!framework}
+                    key={f.name}
+                    title={f.name}
+                    value={f.name}
+                    isCurrent={f.name === framework}
                     onClick={(value: string) => setFrameworkAndSendMessage(value)}
                   />
-
-                  <hr className={`border-[var(--frontmatter-border)]`} />
-
-                  {frameworks.map((f) => (
-                    <MenuItem
-                      key={f.name}
-                      title={f.name}
-                      value={f.name}
-                      isCurrent={f.name === framework}
-                      onClick={(value: string) => setFrameworkAndSendMessage(value)}
-                    />
-                  ))}
-                </div>
-              </Menu.Items>
-            </Menu>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         ),
         show: true,
@@ -245,6 +234,21 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
         status: settings.initialized && settings.staticFolder && settings.staticFolder !== "/" ? Status.Completed : Status.NotStarted,
       },
       {
+        id: `welcome-git`,
+        name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedGitName),
+        description: (
+          <div className='mt-1'>
+            <VSCodeCheckbox
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateSetting(SETTING_GIT_ENABLED, e.target.checked)}
+              checked={isGitEnabled}>
+              {l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedGitDescription)}
+            </VSCodeCheckbox>
+          </div>
+        ),
+        show: isGitRepo,
+        status: settings.git?.actions ? Status.Completed : Status.NotStarted
+      },
+      {
         id: `welcome-import`,
         name: l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedTagsName),
         description: <>{l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedTagsDescription)}</>,
@@ -271,13 +275,21 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
             : undefined
       }
     ]
-  ), [settings, framework, taxImported, templates, astroCollectionsStatus]);
+  ), [settings, framework, taxImported, templates, astroCollectionsStatus, isGitRepo]);
 
   React.useEffect(() => {
     if (settings.crntFramework || settings.framework?.name) {
       setFramework(settings.crntFramework || settings.framework?.name || null);
     }
   }, [settings.crntFramework, settings.framework]);
+
+  React.useEffect(() => {
+    messageHandler.request<boolean>(GeneralCommands.toVSCode.git.isRepo).then((result) => {
+      setIsGitRepo(result);
+    });
+
+    setIsGitEnabled(settings.git?.actions || false);
+  }, [settings.git?.actions]);
 
   React.useEffect(() => {
     const fetchTemplates = async () => {

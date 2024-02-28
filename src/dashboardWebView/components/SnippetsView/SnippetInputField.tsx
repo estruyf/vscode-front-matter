@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { ChevronDownIcon } from '@heroicons/react/outline';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Choice, SnippetField, SnippetInfoField } from '../../../models';
-import useThemeColors from '../../hooks/useThemeColors';
 import { useEffect } from 'react';
+import { TextField } from '../Common/TextField';
 
 export interface ISnippetInputFieldProps {
   field: SnippetField;
@@ -15,7 +15,6 @@ export const SnippetInputField: React.FunctionComponent<ISnippetInputFieldProps>
   fieldInfo,
   onValueChange
 }: React.PropsWithChildren<ISnippetInputFieldProps>) => {
-  const { getColors } = useThemeColors();
 
   useEffect(() => {
     if (fieldInfo) {
@@ -32,11 +31,10 @@ export const SnippetInputField: React.FunctionComponent<ISnippetInputFieldProps>
         <select
           name={field.name}
           value={field.value || ''}
-          className={`block w-full sm:text-sm ${getColors(
-            'focus:outline-none border-gray-300 text-vulcan-500',
-            'border-transparent bg-[var(--vscode-input-background)] text-[var(--vscode-input-foreground)] placeholder-[var(--vscode-input-placeholderForeground)] focus:outline-[var(--vscode-focusBorder)] focus:outline-1 focus:outline-offset-0 focus:shadow-none focus:border-transparent'
-          )
-            }`}
+          className={`block w-full sm:text-sm pr-2 appearance-none disabled:opacity-50 rounded bg-[var(--vscode-input-background)] text-[var(--vscode-input-foreground)] placeholder-[var(--vscode-input-placeholderForeground)] border-[var(--frontmatter-border)] focus:border-[var(--vscode-focusBorder)] focus:outline-0`}
+          style={{
+            boxShadow: "none"
+          }}
           onChange={(e) => onValueChange(field, e.target.value)}
         >
           {(field.choices || [])?.map((option: string | Choice, index: number) =>
@@ -59,31 +57,21 @@ export const SnippetInputField: React.FunctionComponent<ISnippetInputFieldProps>
 
   if (field.type === 'string' && !field.single) {
     return (
-      <textarea
+      <TextField
         name={field.name}
         value={field.value || ''}
-        className={`block w-full sm:text-sm h-auto ${getColors(
-          'focus:outline-none border-gray-300 text-vulcan-500',
-          'border-transparent bg-[var(--vscode-input-background)] text-[var(--vscode-input-foreground)] placeholder-[var(--vscode-input-placeholderForeground)] focus:outline-[var(--vscode-focusBorder)] focus:outline-1 focus:outline-offset-0 focus:shadow-none focus:border-transparent'
-        )
-          }`}
-        onChange={(e) => onValueChange(field, e.currentTarget.value)}
+        onChange={(e) => onValueChange(field, e)}
         rows={4}
+        multiline
       />
     );
   }
 
   return (
-    <input
-      type="text"
+    <TextField
       name={field.name}
       value={field.value || ''}
-      className={`block w-full sm:text-sm ${getColors(
-        'focus:outline-none border-gray-300 text-vulcan-500',
-        'border-transparent bg-[var(--vscode-input-background)] text-[var(--vscode-input-foreground)] placeholder-[var(--vscode-input-placeholderForeground)] focus:outline-[var(--vscode-focusBorder)] focus:outline-1 focus:outline-offset-0 focus:shadow-none focus:border-transparent'
-      )
-        }`}
-      onChange={(e) => onValueChange(field, e.currentTarget.value)}
+      onChange={(e) => onValueChange(field, e)}
     />
   );
 };

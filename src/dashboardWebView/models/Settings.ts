@@ -6,8 +6,10 @@ import {
   CustomScript,
   CustomTaxonomy,
   DraftField,
+  FilterType,
   Framework,
   GitSettings,
+  MediaContentType,
   Project,
   Snippets,
   SortingSetting
@@ -19,7 +21,7 @@ import { DataFile } from '../../models/DataFile';
 export interface Settings {
   projects: Project[];
   project: Project;
-  git: GitSettings;
+  git: GitSettings | undefined;
   beta: boolean;
   initialized: boolean;
   wsFolder: string;
@@ -37,6 +39,7 @@ export interface Settings {
   framework: Framework | null | undefined;
   draftField: DraftField | null | undefined;
   customSorting: SortingSetting[] | undefined;
+  filters: (FilterType | { title: string; name: string })[] | undefined;
   dashboardState: DashboardState;
   scripts: CustomScript[];
   dataFiles: DataFile[] | undefined;
@@ -46,6 +49,11 @@ export interface Settings {
   snippetsWrapper: boolean;
   date: { format: string };
   lastUpdated: number;
+  media: MediaDashboardSettings;
+}
+
+export interface MediaDashboardSettings {
+  contentTypes: MediaContentType[];
 }
 
 export interface DashboardState {

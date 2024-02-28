@@ -18,29 +18,37 @@ import {
   SETTING_SITE_BASEURL,
   SETTING_TAXONOMY_CONTENT_TYPES,
   SETTING_TEMPLATES_PREFIX,
-  SETTING_MODIFIED_FIELD,
   DefaultFieldValues
 } from '../constants';
 import { DumpOptions } from 'js-yaml';
 import { FrontMatterParser, ParsedFrontMatter } from '../parsers';
-import { ContentType, Extension, Logger, Settings, SlugHelper, isValidFile, parseWinPath } from '.';
+import {
+  ContentType,
+  Extension,
+  Logger,
+  Settings,
+  SlugHelper,
+  isValidFile,
+  parseWinPath,
+  processArticlePlaceholdersFromPath,
+  processTimePlaceholders
+} from '.';
 import { format, parse } from 'date-fns';
 import { Notifications } from './Notifications';
 import { Article } from '../commands';
-import { join } from 'path';
+import { join, parse as parseFile } from 'path';
 import { EditorHelper } from '@estruyf/vscode';
 import sanitize from '../helpers/Sanitize';
-import { ContentType as IContentType } from '../models';
+import { Field, ContentType as IContentType } from '../models';
 import { DateHelper } from './DateHelper';
 import { DiagnosticSeverity, Position, window, Range } from 'vscode';
 import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { Link, Parent } from 'mdast-util-from-markdown/lib';
 import { Content } from 'mdast';
-import { processKnownPlaceholders } from './PlaceholderHelper';
 import { CustomScript } from './CustomScript';
 import { Folders } from '../commands/Folders';
-import { existsAsync, readFileAsync } from '../utils';
+import { existsAsync } from '../utils';
 import { mkdirAsync } from '../utils/mkdirAsync';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
@@ -54,6 +62,19 @@ export class ArticleHelper {
    * @param editor
    */
   public static getFrontMatter(editor: vscode.TextEditor) {
+    return ArticleHelper.getFrontMatterFromDocument(editor.document);
+  }
+
+  /**
+   * Retrieves the front matter from the current active document.
+   * @returns The front matter object if found, otherwise undefined.
+   */
+  public static getFrontMatterFromCurrentDocument() {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      return;
+    }
+
     return ArticleHelper.getFrontMatterFromDocument(editor.document);
   }
 
@@ -101,8 +122,14 @@ export class ArticleHelper {
    * Retrieve the file's front matter by its path
    * @param filePath
    */
-  public static async getFrontMatterByPath(filePath: string) {
-    const file = await readFileAsync(filePath, { encoding: 'utf-8' });
+  public static async getFrontMatterByPath(
+    filePath: string
+  ): Promise<ParsedFrontMatter | undefined> {
+    const file = await ArticleHelper.getContents(filePath);
+    if (!file) {
+      return undefined;
+    }
+
     const article = ArticleHelper.parseFile(file, filePath);
     if (!article) {
       return undefined;
@@ -112,6 +139,20 @@ export class ArticleHelper {
       ...article,
       path: filePath
     };
+  }
+
+  /**
+   * Reads the contents of a file asynchronously.
+   * @param filePath - The path of the file to read.
+   * @returns A promise that resolves to the contents of the file, or undefined if the file does not exist.
+   */
+  public static async getContents(filePath: string): Promise<string | undefined> {
+    const file = await workspace.fs.readFile(Uri.file(parseWinPath(filePath)));
+    if (!file) {
+      return undefined;
+    }
+
+    return new TextDecoder().decode(file);
   }
 
   /**
@@ -261,6 +302,35 @@ export class ArticleHelper {
   }
 
   /**
+   * Checks if the given file path represents a page bundle.
+   *
+   * @param filePath - The path of the file to check.
+   * @returns A boolean indicating whether the file is a page bundle or not.
+   */
+  public static async isPageBundle(filePath: string) {
+    let article = await ArticleHelper.getFrontMatterByPath(filePath);
+    if (!article) {
+      return false;
+    }
+
+    const contentType = ArticleHelper.getContentType(article);
+    return !!contentType.pageBundle;
+  }
+
+  /**
+   * Retrieves the page folder from the given bundle file path.
+   *
+   * @param filePath - The file path of the bundle.
+   * @returns The page folder path.
+   */
+  public static getPageFolderFromBundlePath(filePath: string) {
+    // Remove the last folder from the dir
+    const dir = parseFile(filePath).dir;
+    const lastSlash = dir.lastIndexOf('/');
+    return dir.substring(0, lastSlash);
+  }
+
+  /**
    * Get date from front matter
    */
   public static getDate(article: ParsedFrontMatter | null | undefined) {
@@ -308,7 +378,7 @@ export class ArticleHelper {
    * @param article
    * @returns
    */
-  public static getModifiedDateField(article: ParsedFrontMatter | null) {
+  public static getModifiedDateField(article: ParsedFrontMatter | null): Field | undefined {
     if (!article || !article.data) {
       return;
     }
@@ -316,11 +386,7 @@ export class ArticleHelper {
     const articleCt = ArticleHelper.getContentType(article);
     const modDateField = articleCt.fields.find((f) => f.isModifiedDate);
 
-    return (
-      modDateField?.name ||
-      (Settings.get(SETTING_MODIFIED_FIELD) as string) ||
-      DefaultFields.LastModified
-    );
+    return modDateField;
   }
 
   /**
@@ -348,21 +414,9 @@ export class ArticleHelper {
     if (article.data.type) {
       contentType = contentTypes.find((ct) => ct.name === article.data.type);
     } else if (!contentType && article.path) {
-      // Get the content type by the folder name
-      let folders = Folders.get();
-      let parsedPath = parseWinPath(article.path);
-      let pageFolderMatches = folders.filter(
-        (folder) => parsedPath && folder.path && parsedPath.includes(folder.path)
-      );
-
-      // Sort by longest path
-      pageFolderMatches = pageFolderMatches.sort((a, b) => b.path.length - a.path.length);
-      if (
-        pageFolderMatches.length > 0 &&
-        pageFolderMatches[0].contentTypes &&
-        pageFolderMatches[0].contentTypes.length === 1
-      ) {
-        const contentTypeName = pageFolderMatches[0].contentTypes[0];
+      const pageFolder = Folders.getPageFolderByFilePath(article.path);
+      if (pageFolder && pageFolder.contentTypes?.length === 1) {
+        const contentTypeName = pageFolder.contentTypes[0];
         contentType = contentTypes.find((ct) => ct.name === contentTypeName);
       }
     }
@@ -524,7 +578,12 @@ export class ArticleHelper {
    * @param title
    * @returns
    */
-  public static async updatePlaceholders(data: any, title: string, filePath: string) {
+  public static async updatePlaceholders(
+    data: any,
+    title: string,
+    filePath: string,
+    slugTemplate?: string
+  ) {
     const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
     const fmData = Object.assign({}, data);
 
@@ -536,10 +595,11 @@ export class ArticleHelper {
       }
 
       if (fieldName === 'slug' && (fieldValue === null || fieldValue === '')) {
-        fmData[fieldName] = SlugHelper.createSlug(title);
+        fmData[fieldName] = SlugHelper.createSlug(title, fmData, slugTemplate);
       }
 
-      fmData[fieldName] = processKnownPlaceholders(fmData[fieldName], title, dateFormat);
+      fmData[fieldName] = await processArticlePlaceholdersFromPath(fmData[fieldName], filePath);
+      fmData[fieldName] = processTimePlaceholders(fmData[fieldName], dateFormat);
       fmData[fieldName] = await this.processCustomPlaceholders(fmData[fieldName], title, filePath);
     }
 
@@ -596,12 +656,19 @@ export class ArticleHelper {
                 }
               }
 
-              const regex = new RegExp(`{{${placeholder.id}}}`, 'g');
-              const updatedValue = processKnownPlaceholders(placeHolderValue, title, dateFormat);
+              let updatedValue = placeHolderValue;
+
+              // Check if the file already exists, during creation it might not exist yet
+              if (filePath && (await existsAsync(filePath))) {
+                updatedValue = await processArticlePlaceholdersFromPath(placeHolderValue, filePath);
+              }
+
+              updatedValue = processTimePlaceholders(updatedValue, dateFormat);
 
               if (value === `{{${placeholder.id}}}`) {
                 value = updatedValue;
               } else {
+                const regex = new RegExp(`{{${placeholder.id}}}`, 'g');
                 value = value.replace(regex, updatedValue);
               }
             } catch (e) {
@@ -699,9 +766,8 @@ export class ArticleHelper {
    * @returns
    */
   public static getActiveFile() {
-    const editors = window.visibleTextEditors;
-    if (editors.length === 1) {
-      const editor = editors[0];
+    const editor = window.activeTextEditor;
+    if (editor) {
       const filePath = parseWinPath(editor.document.uri.fsPath);
       if (isValidFile(filePath)) {
         return filePath;

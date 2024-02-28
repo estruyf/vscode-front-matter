@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { Field, FieldGroup } from '../../../models';
 import { VSCodeDropdown, VSCodeOption } from '@vscode/webview-ui-toolkit/react';
-import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 
 export interface IDataBlockSelectorProps {

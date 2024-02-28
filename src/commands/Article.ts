@@ -10,103 +10,35 @@ import {
   SETTING_SLUG_PREFIX,
   SETTING_SLUG_SUFFIX,
   SETTING_CONTENT_PLACEHOLDERS,
-  TelemetryEvent
+  TelemetryEvent,
+  SETTING_SLUG_TEMPLATE
 } from './../constants';
 import * as vscode from 'vscode';
-import { CustomPlaceholder, Field, TaxonomyType } from '../models';
+import { CustomPlaceholder, Field } from '../models';
 import { format } from 'date-fns';
-import { ArticleHelper, Settings, SlugHelper, TaxonomyHelper } from '../helpers';
+import {
+  ArticleHelper,
+  Settings,
+  SlugHelper,
+  processArticlePlaceholdersFromData,
+  processTimePlaceholders
+} from '../helpers';
 import { Notifications } from '../helpers/Notifications';
 import { extname, basename, parse, dirname } from 'path';
 import { COMMAND_NAME, DefaultFields } from '../constants';
-import { DashboardData, SnippetRange } from '../models/DashboardData';
+import { DashboardData, SnippetInfo, SnippetRange } from '../models/DashboardData';
 import { DateHelper } from '../helpers/DateHelper';
 import { parseWinPath } from '../helpers/parseWinPath';
 import { Telemetry } from '../helpers/Telemetry';
 import { ParsedFrontMatter } from '../parsers';
 import { MediaListener } from '../listeners/panel';
 import { NavigationType } from '../dashboardWebView/models';
-import { processKnownPlaceholders } from '../helpers/PlaceholderHelper';
 import { Position } from 'vscode';
 import { SNIPPET } from '../constants/Snippet';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 
 export class Article {
-  /**
-   * Insert taxonomy
-   *
-   * @param type
-   */
-  public static async insert(type: TaxonomyType) {
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) {
-      return;
-    }
-
-    const article = ArticleHelper.getCurrent();
-
-    if (!article) {
-      return;
-    }
-
-    let options: vscode.QuickPickItem[] = [];
-    const matterProp: string = type === TaxonomyType.Tag ? 'tags' : 'categories';
-
-    // Add the selected options to the options array
-    if (article.data[matterProp]) {
-      const propData = article.data[matterProp];
-      if (propData && propData.length > 0) {
-        options = [...propData]
-          .filter((p) => p)
-          .map(
-            (p) =>
-              ({
-                label: p,
-                picked: true
-              } as vscode.QuickPickItem)
-          );
-      }
-    }
-
-    // Add all the known options to the selection list
-    const crntOptions = (await TaxonomyHelper.get(type)) || [];
-    if (crntOptions && crntOptions.length > 0) {
-      for (const crntOpt of crntOptions) {
-        if (!options.find((o) => o.label === crntOpt)) {
-          options.push({
-            label: crntOpt
-          });
-        }
-      }
-    }
-
-    if (options.length === 0) {
-      Notifications.info(
-        l10n.t(
-          LocalizationKey.commandsArticleNotificationNoTaxonomy,
-          type === TaxonomyType.Tag ? 'tags' : 'categories'
-        )
-      );
-      return;
-    }
-
-    const selectedOptions = await vscode.window.showQuickPick(options, {
-      placeHolder: l10n.t(
-        LocalizationKey.commandsArticleQuickPickPlaceholder,
-        type === TaxonomyType.Tag ? 'tags' : 'categories'
-      ),
-      canPickMany: true,
-      ignoreFocusOut: true
-    });
-
-    if (selectedOptions) {
-      article.data[matterProp] = selectedOptions.map((o) => o.label);
-    }
-
-    ArticleHelper.update(editor, article);
-  }
-
   /**
    * Sets the article date
    */
@@ -184,9 +116,10 @@ export class Article {
     }
 
     const cloneArticle = Object.assign({}, article);
-    const dateField = ArticleHelper.getModifiedDateField(article) || DefaultFields.LastModified;
+    const dateField = ArticleHelper.getModifiedDateField(article);
     try {
-      cloneArticle.data[dateField] = Article.formatDate(new Date());
+      const fieldName = dateField?.name || DefaultFields.LastModified;
+      cloneArticle.data[fieldName] = Article.formatDate(new Date(), dateField?.dateFormat);
       return cloneArticle;
     } catch (e: unknown) {
       Notifications.error(
@@ -198,7 +131,7 @@ export class Article {
   /**
    * Generate the new slug
    */
-  public static generateSlug(title: string) {
+  public static generateSlug(title: string, article?: ParsedFrontMatter, slugTemplate?: string) {
     if (!title) {
       return;
     }
@@ -206,13 +139,15 @@ export class Article {
     const prefix = Settings.get(SETTING_SLUG_PREFIX) as string;
     const suffix = Settings.get(SETTING_SLUG_SUFFIX) as string;
 
-    const slug = SlugHelper.createSlug(title);
+    if (article?.data) {
+      const slug = SlugHelper.createSlug(title, article?.data, slugTemplate);
 
-    if (slug) {
-      return {
-        slug,
-        slugWithPrefixAndSuffix: `${prefix}${slug}${suffix}`
-      };
+      if (slug) {
+        return {
+          slug,
+          slugWithPrefixAndSuffix: `${prefix}${slug}${suffix}`
+        };
+      }
     }
 
     return undefined;
@@ -242,7 +177,7 @@ export class Article {
 
     const titleField = 'title';
     const articleTitle: string = article.data[titleField];
-    const slugInfo = Article.generateSlug(articleTitle);
+    const slugInfo = Article.generateSlug(articleTitle, article, contentType.slugTemplate);
 
     if (slugInfo && slugInfo.slug && slugInfo.slugWithPrefixAndSuffix) {
       article.data['slug'] = slugInfo.slugWithPrefixAndSuffix;
@@ -266,9 +201,13 @@ export class Article {
           );
           for (const pField of customPlaceholderFields) {
             article.data[pField.name] = customPlaceholder.value;
-            article.data[pField.name] = processKnownPlaceholders(
+            article.data[pField.name] = processArticlePlaceholdersFromData(
               article.data[pField.name],
-              articleTitle,
+              article.data,
+              contentType
+            );
+            article.data[pField.name] = processTimePlaceholders(
+              article.data[pField.name],
               dateFormat
             );
           }
@@ -321,6 +260,21 @@ export class Article {
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
       return;
+    }
+
+    const slugTemplate = Settings.get<string>(SETTING_SLUG_TEMPLATE);
+    if (slugTemplate) {
+      if (slugTemplate === '{{title}}') {
+        const article = ArticleHelper.getFrontMatter(editor);
+        if (article?.data?.title) {
+          return article.data.title.toLowerCase().replace(/\s/g, '-');
+        }
+      } else {
+        const article = ArticleHelper.getFrontMatter(editor);
+        if (article?.data) {
+          return SlugHelper.createSlug(article.data.title, article.data, slugTemplate);
+        }
+      }
     }
 
     const file = parseWinPath(editor.document.fileName);
@@ -437,7 +391,7 @@ export class Article {
       return;
     }
 
-    let position = editor.selection.active;
+    const position = editor.selection.active;
     const selectionText = editor.document.getText(editor.selection);
 
     // Check for snippet wrapper
@@ -462,7 +416,7 @@ export class Article {
       snippetStartBeforePos = linesBeforeSelection.length - snippetStartBeforePos - 1;
     }
 
-    let snippetInfo: { id: string; fields: any[] } | undefined = undefined;
+    let snippetInfo: SnippetInfo | undefined = undefined;
     let range: SnippetRange | undefined = undefined;
     if (
       snippetEndAfterPos > -1 &&
@@ -486,6 +440,7 @@ export class Article {
     }
 
     const article = ArticleHelper.getFrontMatter(editor);
+    const contentType = article ? ArticleHelper.getContentType(article) : undefined;
 
     await vscode.commands.executeCommand(COMMAND_NAME.dashboard, {
       type: NavigationType.Snippets,
@@ -493,6 +448,7 @@ export class Article {
         fileTitle: article?.data.title || '',
         filePath: editor.document.uri.fsPath,
         fieldName: basename(editor.document.uri.fsPath),
+        contentType,
         position,
         range,
         selection: selectionText,

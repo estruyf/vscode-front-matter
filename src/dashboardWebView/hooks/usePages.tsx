@@ -1,12 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
-import { SortOption } from '../constants/SortOption';
 import { Tab } from '../constants/Tab';
 import { Page } from '../models/Page';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   AllPagesAtom,
   CategorySelector,
+  FilterValuesAtom,
+  FiltersAtom,
   FolderSelector,
+  LocaleAtom,
+  LocalesAtom,
   SearchSelector,
   SettingsSelector,
   SortingAtom,
@@ -14,30 +17,38 @@ import {
   TabSelector,
   TagSelector
 } from '../state';
-import { SortOrder, SortType } from '../../models';
-import { Sorting } from '../../helpers/Sorting';
-import { Messenger } from '@estruyf/vscode/dist/client';
+import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../DashboardMessage';
 import { EventData } from '@estruyf/vscode/dist/models';
 import { parseWinPath } from '../../helpers/parseWinPath';
+import { sortPages } from '../../utils/sortPages';
+import { ExtensionState, GeneralCommands } from '../../constants';
+import { SortingOption } from '../models';
+import { I18nConfig } from '../../models';
+import { usePrevious } from '../../panelWebView/hooks/usePrevious';
 
 export default function usePages(pages: Page[]) {
-  const [pageItems, setPageItems] = useRecoilState(AllPagesAtom);
   const [sortedPages, setSortedPages] = useState<Page[]>([]);
+  const [pageItems, setPageItems] = useRecoilState(AllPagesAtom);
   const [sorting, setSorting] = useRecoilState(SortingAtom);
   const [tabInfo, setTabInfo] = useRecoilState(TabInfoAtom);
+  const [locales, setLocales] = useRecoilState(LocalesAtom);
+  const [, setFilterValues] = useRecoilState(FilterValuesAtom);
   const settings = useRecoilValue(SettingsSelector);
   const tab = useRecoilValue(TabSelector);
   const folder = useRecoilValue(FolderSelector);
   const search = useRecoilValue(SearchSelector);
   const tag = useRecoilValue(TagSelector);
+  const locale = useRecoilValue(LocaleAtom);
   const category = useRecoilValue(CategorySelector);
+  const filters = useRecoilValue(FiltersAtom);
+  const tabPrevious = usePrevious(tab);
 
   /**
    * Process all the pages by applying the sorting, filtering and searching.
    */
   const processPages = useCallback(
-    (searchedPages: Page[], fullProcess: boolean = true) => {
+    (searchedPages: Page[]) => {
       const framework = settings?.crntFramework;
 
       // Filter the pages
@@ -67,35 +78,7 @@ export default function usePages(pages: Page[]) {
       // Sort the pages
       let pagesSorted: Page[] = Object.assign([], pagesToShow);
       if (!search) {
-        if (sorting && sorting.id === SortOption.FileNameAsc) {
-          pagesSorted = pagesSorted.sort(Sorting.alphabetically('fmFileName'));
-        } else if (sorting && sorting.id === SortOption.FileNameDesc) {
-          pagesSorted = pagesSorted.sort(Sorting.alphabetically('fmFileName')).reverse();
-        } else if (sorting && sorting.id === SortOption.PublishedAsc) {
-          pagesSorted = pagesSorted.sort(Sorting.number('fmPublished'));
-        } else if (sorting && sorting.id === SortOption.LastModifiedAsc) {
-          pagesSorted = pagesSorted.sort(Sorting.number('fmModified'));
-        } else if (sorting && sorting.id === SortOption.PublishedDesc) {
-          pagesSorted = pagesSorted.sort(Sorting.number('fmPublished')).reverse();
-        } else if (sorting && sorting.id === SortOption.LastModifiedDesc) {
-          pagesSorted = pagesSorted.sort(Sorting.number('fmModified')).reverse();
-        } else if (sorting && sorting.id && sorting.name) {
-          const { order, name, type } = sorting;
-
-          if (type === SortType.string) {
-            pagesSorted = pagesSorted.sort(Sorting.alphabetically(name));
-          } else if (type === SortType.date) {
-            pagesSorted = pagesSorted.sort(Sorting.date(name));
-          } else if (type === SortType.number) {
-            pagesSorted = pagesSorted.sort(Sorting.number(name));
-          }
-
-          if (order === SortOrder.desc) {
-            pagesSorted = pagesSorted.reverse();
-          }
-        } else {
-          pagesSorted = pagesSorted.sort(Sorting.number('fmModified')).reverse();
-        }
+        pagesSorted = sortPages(pagesSorted, sorting);
       }
 
       if (folder) {
@@ -114,9 +97,24 @@ export default function usePages(pages: Page[]) {
         );
       }
 
+      // If filtered by locale
+      if (locale) {
+        pagesSorted = pagesSorted.filter((page) => page.fmLocale && page.fmLocale.locale === locale);
+      }
+
+      const filterNames = Object.keys(filters);
+      if (filterNames.length > 0) {
+        for (const filter of filterNames) {
+          const filterValue = filters[filter];
+          if (filterValue) {
+            pagesSorted = pagesSorted.filter((page) => page[filter] === filterValue);
+          }
+        }
+      }
+
       setSortedPages(pagesSorted);
     },
-    [settings, tab, folder, search, tag, category, sorting, tabInfo]
+    [settings, tab, folder, search, tag, category, locale, sorting, tabInfo, filters]
   );
 
   /**
@@ -127,6 +125,24 @@ export default function usePages(pages: Page[]) {
       const draftField = settings?.draftField;
 
       let crntPages: Page[] = Object.assign([], pages);
+
+      // Update the translations of pages
+      crntPages = crntPages.map((page) => {
+        if (page.fmTranslations) {
+          const translations = Object.assign({}, page.fmTranslations);
+
+          for (const [key, value] of Object.entries(translations)) {
+            const translatedPage = crntPages.find((p) => parseWinPath(p.fmFilePath).toLowerCase() === parseWinPath(value.path).toLowerCase());
+            if (!translatedPage) {
+              delete translations[key];
+            }
+          }
+
+          return { ...page, fmTranslations: translations };
+        }
+
+        return page;
+      });
 
       // Process the tab data
       const draftTypes = Object.assign({}, tabInfo);
@@ -187,10 +203,28 @@ export default function usePages(pages: Page[]) {
       // Set the tab information
       setTabInfo(draftTypes);
 
+      if (Object.keys(filters).length === 0) {
+        const availableFilters = (settings?.filters || []).filter((f) => f !== 'contentFolders' && f !== 'tags' && f !== 'categories');
+        if (availableFilters.length > 0) {
+          const allFilters: { [filter: string]: string[]; } = {};
+          for (const filter of availableFilters) {
+            if (filter) {
+              const filterName = typeof filter === 'string' ? filter : filter.name;
+              const values = crntPages.map((page) => page[filterName]).filter((value) => value);
+              allFilters[filterName] = [...new Set(values)];
+            }
+          }
+          setFilterValues(allFilters);
+        } else {
+          setFilterValues({});
+        }
+      }
+
+
       // Set the pages
       setPageItems(crntPages);
     },
-    [tab, tabInfo, settings]
+    [tab, tabInfo, settings, filters, locales, tabPrevious]
   );
 
   /**
@@ -208,22 +242,37 @@ export default function usePages(pages: Page[]) {
   useEffect(() => {
     let usedSorting = sorting;
 
-    if (!usedSorting) {
-      const lastSort = settings?.dashboardState.contents.sorting;
-      if (lastSort) {
-        setSorting(lastSort);
-        return;
+    const startPageProcessing = () => {
+      // Check if search needs to be performed
+      let searchedPages = pages;
+      if (search) {
+        Messenger.send(DashboardMessage.searchPages, { query: search });
+      } else {
+        processPages(searchedPages);
       }
     }
 
-    // Check if search needs to be performed
-    let searchedPages = pages;
-    if (search) {
-      Messenger.send(DashboardMessage.searchPages, { query: search });
+    if (!usedSorting) {
+      messageHandler.request<{ key: string; value: SortingOption; }>(DashboardMessage.getState, {
+        key: ExtensionState.Dashboard.Contents.Sorting
+      }).then(({ key, value }) => {
+        if (key === ExtensionState.Dashboard.Contents.Sorting && value) {
+          setSorting(value);
+          return;
+        } else {
+          startPageProcessing();
+        }
+      });
     } else {
-      processPages(searchedPages);
+      startPageProcessing();
     }
-  }, [settings?.draftField, pages, sorting, search, tag, category, folder]);
+
+    if (pages && pages.length > 0) {
+      messageHandler.request<I18nConfig[]>(GeneralCommands.toVSCode.content.locales).then((config) => {
+        setLocales(config || []);
+      });
+    }
+  }, [settings?.draftField, pages, sorting, search, tag, category, locale, filters, folder]);
 
   useEffect(() => {
     processByTab(sortedPages);

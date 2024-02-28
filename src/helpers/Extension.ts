@@ -15,20 +15,15 @@ import { Template } from '../commands/Template';
 import {
   EXTENSION_NAME,
   GITHUB_LINK,
-  SETTING_DATE_FIELD,
-  SETTING_MODIFIED_FIELD,
   EXTENSION_BETA_ID,
   EXTENSION_ID,
   ExtensionState,
-  CONFIG_KEY,
   SETTING_CONTENT_PAGE_FOLDERS,
-  SETTING_DASHBOARD_MEDIA_SNIPPET,
-  SETTING_CONTENT_SNIPPETS,
   SETTING_TEMPLATES_ENABLED,
   SETTING_TAXONOMY_TAGS,
   SETTING_TAXONOMY_CATEGORIES
 } from '../constants';
-import { ContentFolder, Snippet, TaxonomyType } from '../models';
+import { ContentFolder, TaxonomyType } from '../models';
 import { Notifications } from './Notifications';
 import { Settings } from './SettingsHelper';
 import { TaxonomyHelper } from './TaxonomyHelper';
@@ -202,64 +197,6 @@ export class Extension {
       await Settings.createTeamSettings();
     }
 
-    const hideDateDeprecation = await Extension.getInstance().getState<boolean>(
-      ExtensionState.Updates.v7_0_0.dateFields,
-      'workspace'
-    );
-    if (!hideDateDeprecation) {
-      // Migration scripts can be written here
-      const publishField = Settings.inspect(SETTING_DATE_FIELD);
-      const modifiedField = Settings.inspect(SETTING_MODIFIED_FIELD);
-
-      // Check for extension deprecations
-      if (
-        publishField?.workspaceValue ||
-        publishField?.globalValue ||
-        publishField?.teamValue ||
-        modifiedField?.workspaceValue ||
-        modifiedField?.globalValue ||
-        modifiedField?.teamValue
-      ) {
-        Notifications.warning(
-          l10n.t(
-            LocalizationKey.helpersExtensionMigrateSettingsDeprecatedWarning,
-            `${CONFIG_KEY}.${SETTING_DATE_FIELD}`,
-            `${CONFIG_KEY}.${SETTING_MODIFIED_FIELD}`
-          ),
-          l10n.t(LocalizationKey.helpersExtensionMigrateSettingsDeprecatedWarningHide),
-          l10n.t(LocalizationKey.helpersExtensionMigrateSettingsDeprecatedWarningSeeGuide)
-        ).then(async (value) => {
-          if (
-            value ===
-            l10n.t(LocalizationKey.helpersExtensionMigrateSettingsDeprecatedWarningSeeGuide)
-          ) {
-            const isProd = this.isProductionMode;
-            commands.executeCommand(
-              'vscode.open',
-              Uri.parse(
-                `https://${
-                  isProd ? '' : 'beta.'
-                }frontmatter.codes/docs/troubleshooting#publish-and-modified-date-migration`
-              )
-            );
-            await Extension.getInstance().setState<boolean>(
-              ExtensionState.Updates.v7_0_0.dateFields,
-              true,
-              'workspace'
-            );
-          } else if (
-            value === l10n.t(LocalizationKey.helpersExtensionMigrateSettingsDeprecatedWarningHide)
-          ) {
-            await Extension.getInstance().setState<boolean>(
-              ExtensionState.Updates.v7_0_0.dateFields,
-              true,
-              'workspace'
-            );
-          }
-        });
-      }
-    }
-
     if (major < 7) {
       const contentFolders: ContentFolder[] = Settings.get(
         SETTING_CONTENT_PAGE_FOLDERS
@@ -282,28 +219,6 @@ export class Extension {
     }
 
     if (major <= 7 && minor < 3) {
-      const mediaSnippet = Settings.get<string[]>(SETTING_DASHBOARD_MEDIA_SNIPPET);
-      if (mediaSnippet && mediaSnippet.length > 0) {
-        let snippet = mediaSnippet.join(`\n`);
-
-        snippet = snippet.replace(`{mediaUrl}`, `[[&mediaUrl]]`);
-        snippet = snippet.replace(`{mediaHeight}`, `[[mediaHeight]]`);
-        snippet = snippet.replace(`{mediaWidth}`, `[[mediaWidth]]`);
-        snippet = snippet.replace(`{caption}`, `[[&caption]]`);
-        snippet = snippet.replace(`{alt}`, `[[alt]]`);
-        snippet = snippet.replace(`{filename}`, `[[filename]]`);
-        snippet = snippet.replace(`{title}`, `[[title]]`);
-
-        const snippets = Settings.get<Snippet[]>(SETTING_CONTENT_SNIPPETS) || ({} as any);
-        snippets[`Media snippet (migrated)`] = {
-          body: snippet.split(`\n`),
-          isMediaSnippet: true,
-          description: `Migrated media snippet from frontMatter.dashboard.mediaSnippet setting`
-        };
-
-        await Settings.update(SETTING_CONTENT_SNIPPETS, snippets, true);
-      }
-
       const templates = await Template.getTemplates();
       if (templates && templates.length > 0) {
         const answer = await window.showQuickPick(
@@ -422,6 +337,14 @@ export class Extension {
     } else {
       return await this.ctx.workspaceState.get(propKey);
     }
+  }
+
+  public async getSecret(key: string): Promise<string | undefined> {
+    return this.ctx.secrets.get(key);
+  }
+
+  public async setSecret(key: string, value: string): Promise<void> {
+    return this.ctx.secrets.store(key, value);
   }
 
   public isBetaVersion() {

@@ -16,6 +16,10 @@ export enum LocalizationKey {
    */
   commonCancel = 'common.cancel',
   /**
+   * Apply
+   */
+  commonApply = 'common.apply',
+  /**
    * Clear
    */
   commonClear = 'common.clear',
@@ -84,6 +88,10 @@ export enum LocalizationKey {
    */
   commonRemoveValue = 'common.remove.value',
   /**
+   * Back
+   */
+  commonFilter = 'common.filter',
+  /**
    * Filter by {0}
    */
   commonFilterValue = 'common.filter.value',
@@ -132,6 +140,22 @@ export enum LocalizationKey {
    */
   commonOpenSettings = 'common.openSettings',
   /**
+   * Back
+   */
+  commonBack = 'common.back',
+  /**
+   * Open
+   */
+  commonOpen = 'common.open',
+  /**
+   * Open: {0}
+   */
+  commonOpenWithValue = 'common.openWithValue',
+  /**
+   * Loading content
+   */
+  loadingInitPages = 'loading.initPages',
+  /**
    * output window
    */
   notificationsOutputChannelLink = 'notifications.outputChannel.link',
@@ -151,6 +175,10 @@ export enum LocalizationKey {
    * Astro
    */
   settingsViewAstro = 'settings.view.astro',
+  /**
+   * Integration
+   */
+  settingsViewIntegration = 'settings.view.integration',
   /**
    * Open dashboard on startup
    */
@@ -176,6 +204,30 @@ export enum LocalizationKey {
    */
   settingsDiagnosticLink = 'settings.diagnostic.link',
   /**
+   * Git synchronization
+   */
+  settingsGit = 'settings.git',
+  /**
+   * Enable Git synchronization to easily sync your changes with your repository.
+   */
+  settingsGitEnabled = 'settings.git.enabled',
+  /**
+   * Commit message
+   */
+  settingsGitCommitMessage = 'settings.git.commitMessage',
+  /**
+   * When working with Git submodules, you can refer to the submodule settings in the documentation.
+   */
+  settingsGitSubmoduleInfo = 'settings.git.submoduleInfo',
+  /**
+   * Read more about Git submodules
+   */
+  settingsGitSubmoduleLink = 'settings.git.submoduleLink',
+  /**
+   * Integration
+   */
+  settingsIntegrationTitle = 'settings.integration.title',
+  /**
    * Website and SSG settings
    */
   settingsCommonSettingsWebsiteTitle = 'settings.commonSettings.website.title',
@@ -191,6 +243,38 @@ export enum LocalizationKey {
    * SSG/Framework start command
    */
   settingsCommonSettingsStartCommand = 'settings.commonSettings.startCommand',
+  /**
+   * DeepL
+   */
+  settingsIntegrationsViewDeeplTitle = 'settings.integrationsView.deepl.title',
+  /**
+   * API key
+   */
+  settingsIntegrationsViewDeeplIntputLabel = 'settings.integrationsView.deepl.intput.label',
+  /**
+   * Enter your Azure Translator API key
+   */
+  settingsIntegrationsViewDeeplIntputPlaceholder = 'settings.integrationsView.deepl.intput.placeholder',
+  /**
+   * Azure AI Translator Service
+   */
+  settingsIntegrationsViewAzureTitle = 'settings.integrationsView.azure.title',
+  /**
+   * Subscription key
+   */
+  settingsIntegrationsViewAzureIntputLabel = 'settings.integrationsView.azure.intput.label',
+  /**
+   * Enter your Azure AI Translator - Subscription key
+   */
+  settingsIntegrationsViewAzureIntputPlaceholder = 'settings.integrationsView.azure.intput.placeholder',
+  /**
+   * Region
+   */
+  settingsIntegrationsViewAzureRegionLabel = 'settings.integrationsView.azure.region.label',
+  /**
+   * Enter your Azure AI Translator - Region. Example: westeurope
+   */
+  settingsIntegrationsViewAzureRegionPlaceholder = 'settings.integrationsView.azure.region.placeholder',
   /**
    * Developer mode
    */
@@ -271,6 +355,14 @@ export enum LocalizationKey {
    * Are you sure you want to delete the "{0}" content?
    */
   dashboardContentsContentActionsAlertDescription = 'dashboard.contents.contentActions.alert.description',
+  /**
+   * Create translation
+   */
+  dashboardContentsContentActionsTranslationsCreate = 'dashboard.contents.contentActions.translations.create',
+  /**
+   * Translations
+   */
+  dashboardContentsContentActionsTranslationsMenu = 'dashboard.contents.contentActions.translations.menu',
   /**
    * <invalid title>
    */
@@ -356,6 +448,10 @@ export enum LocalizationKey {
    */
   dashboardDataViewDataViewGetStartedLink = 'dashboard.dataView.dataView.getStarted.link',
   /**
+   * Updated your data entries
+   */
+  dashboardDataViewDataViewUpdateMessage = 'dashboard.dataView.dataView.update.message',
+  /**
    * Select your date type first
    */
   dashboardDataViewEmptyViewHeading = 'dashboard.dataView.emptyView.heading',
@@ -379,6 +475,14 @@ export enum LocalizationKey {
    * Please close the dashboard and try again.
    */
   dashboardErrorViewDescription = 'dashboard.errorView.description',
+  /**
+   * Locale
+   */
+  dashboardFiltersLanguageFilterLabel = 'dashboard.filters.languageFilter.label',
+  /**
+   * All
+   */
+  dashboardFiltersLanguageFilterAll = 'dashboard.filters.languageFilter.all',
   /**
    * Home
    */
@@ -636,6 +740,14 @@ export enum LocalizationKey {
    */
   dashboardMediaFolderCreationFolderCreate = 'dashboard.media.folderCreation.folder.create',
   /**
+   * Insert image
+   */
+  dashboardMediaItemButtomInsertImage = 'dashboard.media.item.buttom.insert.image',
+  /**
+   * Insert snippet
+   */
+  dashboardMediaItemButtomInsertSnippet = 'dashboard.media.item.buttom.insert.snippet',
+  /**
    * Insert image for your "{0}" field
    */
   dashboardMediaItemQuickActionInsertField = 'dashboard.media.item.quickAction.insert.field',
@@ -651,6 +763,10 @@ export enum LocalizationKey {
    * Delete media file
    */
   dashboardMediaItemQuickActionDelete = 'dashboard.media.item.quickAction.delete',
+  /**
+   * View media details
+   */
+  dashboardMediaItemMenuItemView = 'dashboard.media.item.menuItem.view',
   /**
    * Edit metadata
    */
@@ -688,7 +804,7 @@ export enum LocalizationKey {
    */
   dashboardMediaMediaFolderDefault = 'dashboard.media.media.folder.default',
   /**
-   * No media files to show. You can drag &amp; drop new files by holding your [shift] key.
+   * No media files to show. You can drag&drop new files by holding your [shift] key.
    */
   dashboardMediaMediaPlaceholder = 'dashboard.media.media.placeholder',
   /**
@@ -900,6 +1016,14 @@ export enum LocalizationKey {
    */
   dashboardStepsStepsToGetStartedTagsDescription = 'dashboard.steps.stepsToGetStarted.tags.description',
   /**
+   * Do you want to enable Git synchronization?
+   */
+  dashboardStepsStepsToGetStartedGitName = 'dashboard.steps.stepsToGetStarted.git.name',
+  /**
+   * Enable Git synchronization to eaily sync your changes with your repository.
+   */
+  dashboardStepsStepsToGetStartedGitDescription = 'dashboard.steps.stepsToGetStarted.git.description',
+  /**
    * Show the dashboard
    */
   dashboardStepsStepsToGetStartedShowDashboardName = 'dashboard.steps.stepsToGetStarted.showDashboard.name',
@@ -927,6 +1051,10 @@ export enum LocalizationKey {
    * Add {0} to taxonomy settings
    */
   dashboardTaxonomyViewButtonAddTitle = 'dashboard.taxonomyView.button.add.title',
+  /**
+   * Tag content
+   */
+  dashboardTaxonomyViewButtonTagTitle = 'dashboard.taxonomyView.button.tag.title',
   /**
    * Edit {0}
    */
@@ -975,6 +1103,18 @@ export enum LocalizationKey {
    * Missing in your settings
    */
   dashboardTaxonomyViewTaxonomyManagerTableUnmappedTitle = 'dashboard.taxonomyView.taxonomyManager.table.unmapped.title',
+  /**
+   * Filter
+   */
+  dashboardTaxonomyViewTaxonomyManagerFilterInputPlaceholder = 'dashboard.taxonomyView.taxonomyManager.filterInput.placeholder',
+  /**
+   * Map your content with: {0}
+   */
+  dashboardTaxonomyViewTaxonomyTaggingPageTitle = 'dashboard.taxonomyView.taxonomyTagging.pageTitle',
+  /**
+   * Tag page with {0}
+   */
+  dashboardTaxonomyViewTaxonomyTaggingCheckbox = 'dashboard.taxonomyView.taxonomyTagging.checkbox',
   /**
    * Select the taxonomy
    */
@@ -1063,6 +1203,22 @@ export enum LocalizationKey {
    * The following Astro Content Collections can be used to generate a content-type.
    */
   dashboardConfigurationAstroAstroContentTypesDescription = 'dashboard.configuration.astro.astroContentTypes.description',
+  /**
+   * Publish changes
+   */
+  panelGitGitActionTitle = 'panel.git.gitAction.title',
+  /**
+   * Select branch
+   */
+  panelGitGitActionBranchSelect = 'panel.git.gitAction.branch.select',
+  /**
+   * Commit message
+   */
+  panelGitGitActionInputPlaceholder = 'panel.git.gitAction.input.placeholder',
+  /**
+   * Fetch
+   */
+  panelGitGitActionButtonFetch = 'panel.git.gitAction.button.fetch',
   /**
    * Content-type
    */
@@ -1481,14 +1637,6 @@ export enum LocalizationKey {
    */
   panelViewPanelMediaInsert = 'panel.viewPanel.mediaInsert',
   /**
-   * No {0} configured.
-   */
-  commandsArticleNotificationNoTaxonomy = 'commands.article.notification.noTaxonomy',
-  /**
-   * Select your {0} to insert.
-   */
-  commandsArticleQuickPickPlaceholder = 'commands.article.quickPick.placeholder',
-  /**
    * Something failed while parsing the date format. Check your "{0}" setting.
    */
   commandsArticleSetDateError = 'commands.article.setDate.error',
@@ -1580,6 +1728,54 @@ export enum LocalizationKey {
    * Create folder
    */
   commandsFoldersGetNotificationErrorCreateAction = 'commands.folders.get.notificationError.create.action',
+  /**
+   * No file selected.
+   */
+  commandsI18nCreateWarningNoFileSelected = 'commands.i18n.create.warning.noFileSelected',
+  /**
+   * The file could not be retrieved.
+   */
+  commandsI18nCreateWarningNoFile = 'commands.i18n.create.warning.noFile',
+  /**
+   * Content type could not be retrieved for the current file.
+   */
+  commandsI18nCreateWarningNoContentType = 'commands.i18n.create.warning.noContentType',
+  /**
+   * No i18n configuration found.
+   */
+  commandsI18nCreateWarningNoConfig = 'commands.i18n.create.warning.noConfig',
+  /**
+   * Could not retrieve the locale for the current file.
+   */
+  commandsI18nCreateErrorNoLocaleDefinition = 'commands.i18n.create.error.noLocaleDefinition',
+  /**
+   * Current file has been translated to all available languages.
+   */
+  commandsI18nCreateErrorNoLocales = 'commands.i18n.create.error.noLocales',
+  /**
+   * Could not define a content folder for the current file.
+   */
+  commandsI18nCreateErrorNoContentFolder = 'commands.i18n.create.error.noContentFolder',
+  /**
+   * The i18n translation already exists.
+   */
+  commandsI18nCreateErrorFileExists = 'commands.i18n.create.error.fileExists',
+  /**
+   * Created "{0}" i18n content file.
+   */
+  commandsI18nCreateSuccessCreated = 'commands.i18n.create.success.created',
+  /**
+   * Create content for locale
+   */
+  commandsI18nCreateQuickPickTitle = 'commands.i18n.create.quickPick.title',
+  /**
+   * To which locale do you want to create a new content?
+   */
+  commandsI18nCreateQuickPickPlaceHolder = 'commands.i18n.create.quickPick.placeHolder',
+  /**
+   * Translating content...
+   */
+  commandsI18nTranslateProgressTitle = 'commands.i18n.translate.progress.title',
   /**
    * Preview: {0}
    */
@@ -1981,18 +2177,6 @@ export enum LocalizationKey {
    */
   helpersExtensionGetVersionUpdateNotification = 'helpers.extension.getVersion.update.notification',
   /**
-   * The "{0}" and "{1}" settings have been deprecated. Please use the "isPublishDate" and "isModifiedDate" datetime field properties instead.
-   */
-  helpersExtensionMigrateSettingsDeprecatedWarning = 'helpers.extension.migrateSettings.deprecated.warning',
-  /**
-   * Hide
-   */
-  helpersExtensionMigrateSettingsDeprecatedWarningHide = 'helpers.extension.migrateSettings.deprecated.warning.hide',
-  /**
-   * See migration guide
-   */
-  helpersExtensionMigrateSettingsDeprecatedWarningSeeGuide = 'helpers.extension.migrateSettings.deprecated.warning.seeGuide',
-  /**
    * {0} - Templates
    */
   helpersExtensionMigrateSettingsTemplatesQuickPickTitle = 'helpers.extension.migrateSettings.templates.quickPick.title',
@@ -2093,10 +2277,6 @@ export enum LocalizationKey {
    */
   helpersQuestionsSelectContentFolderQuickPickPlaceholder = 'helpers.questions.selectContentFolder.quickPick.placeholder',
   /**
-   * No page folders were configured.
-   */
-  helpersQuestionsSelectContentFolderQuickPickNoFoldersWarning = 'helpers.questions.selectContentFolder.quickPick.noFolders.warning',
-  /**
    * You didn't select a place where you wanted to create your content.
    */
   helpersQuestionsSelectContentFolderQuickPickNoSelectionWarning = 'helpers.questions.selectContentFolder.quickPick.noSelection.warning',
@@ -2116,6 +2296,10 @@ export enum LocalizationKey {
    * No content type was selected.
    */
   helpersQuestionsSelectContentTypeNoSelectionWarning = 'helpers.questions.selectContentType.noSelection.warning',
+  /**
+   * There are no matching content types configured for this folder.
+   */
+  helpersQuestionsSelectContentTypeQuickPickErrorNoContentTypes = 'helpers.questions.selectContentType.quickPick.error.noContentTypes',
   /**
    * Article {0} is longer than {1} characters (current length: {2}). For SEO reasons, it would be better to make it less than {1} characters.
    */
@@ -2185,6 +2369,10 @@ export enum LocalizationKey {
    */
   helpersTaxonomyHelperCreateNewInputValidateExists = 'helpers.taxonomyHelper.createNew.input.validate.exists',
   /**
+   * {0}: Inserting "{1}" to your selected pages.
+   */
+  helpersTaxonomyHelperProcessInsert = 'helpers.taxonomyHelper.process.insert',
+  /**
    * {0}: Renaming "{1}" from {2} to {3}.
    */
   helpersTaxonomyHelperProcessEdit = 'helpers.taxonomyHelper.process.edit',
@@ -2196,6 +2384,10 @@ export enum LocalizationKey {
    * {0}: Deleting "{1}" from {2}.
    */
   helpersTaxonomyHelperProcessDelete = 'helpers.taxonomyHelper.process.delete',
+  /**
+   * Insert completed.
+   */
+  helpersTaxonomyHelperProcessInsertSuccess = 'helpers.taxonomyHelper.process.insert.success',
   /**
    * Edit completed.
    */
@@ -2256,6 +2448,10 @@ export enum LocalizationKey {
    * Failed to initialize the template.
    */
   listenersDashboardSettingsListenerTriggerTemplateInitError = 'listeners.dashboard.settingsListener.triggerTemplate.init.error',
+  /**
+   * Setting has been updated.
+   */
+  listenersDashboardSettingsListenerSetSecretValueMessage = 'listeners.dashboard.settingsListener.setSecretValue.message',
   /**
    * Snippet missing title or body
    */

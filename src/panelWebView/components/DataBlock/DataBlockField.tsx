@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { BlockFieldData, Field, FieldGroup, PanelSettings } from '../../../models';
-import { PencilIcon } from '@heroicons/react/outline';
+import { PencilIcon } from '@heroicons/react/24/outline';
 import { DataBlockRecords, DataBlockSelector } from '.';
 import { SortEnd } from 'react-sortable-hoc';
 import { arrayMoveImmutable } from 'array-move';
@@ -94,6 +94,13 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
 
       // Delete the field group to have it added at the end
       delete data['fieldGroup'];
+
+      // Remove the empty fields
+      Object.keys(data).forEach((key) => {
+        if (data[key] === undefined || data[key] === null || Object.keys(data[key]).length === 0) {
+          delete data[key];
+        }
+      });
 
       if (selectedIndex !== null && selectedIndex !== undefined && dataClone.length > 0) {
         dataClone[selectedIndex] = {
@@ -306,7 +313,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
           {selectedGroup?.fields &&
             fieldsRenderer(
               selectedGroup?.fields,
-              selectedBlockData || {},
+              Object.assign({}, selectedBlockData) || {},
               [...parentFields, field.name],
               {
                 parentFields: [...parentFields, field.name],

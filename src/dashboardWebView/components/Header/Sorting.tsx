@@ -1,5 +1,4 @@
-import { Messenger } from '@estruyf/vscode/dist/client';
-import { Menu } from '@headlessui/react';
+import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { ExtensionState } from '../../../constants';
@@ -9,10 +8,11 @@ import { DashboardMessage } from '../../DashboardMessage';
 import { NavigationType } from '../../models';
 import { SortingOption } from '../../models/SortingOption';
 import { SearchSelector, SettingsSelector, SortingAtom } from '../../state';
-import { MenuButton, MenuItem, MenuItems } from '../Menu';
+import { MenuButton, MenuItem } from '../Menu';
 import { Sorting as SortingHelpers } from '../../../helpers/Sorting';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { DropdownMenu, DropdownMenuContent } from '../../../components/shadcn/Dropdown';
 
 export interface ISortingProps {
   disableCustomSorting?: boolean;
@@ -26,6 +26,7 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({
   const [crntSorting, setCrntSorting] = useRecoilState(SortingAtom);
   const searchValue = useRecoilValue(SearchSelector);
   const settings = useRecoilValue(SettingsSelector);
+  const [crntSort, setCrntSort] = React.useState<SortingOption | null>(null);
 
   const sortOptions: SortingOption[] = [
     {
@@ -143,51 +144,57 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({
     ];
   }
 
-  let crntSortingOption = crntSorting;
-  if (!crntSortingOption) {
-    if (view === NavigationType.Contents) {
-      crntSortingOption = settings?.dashboardState?.contents?.sorting || null;
-    } else if (view === NavigationType.Media) {
-      crntSortingOption = settings?.dashboardState?.media?.sorting || null;
-    }
+  React.useEffect(() => {
+    const getSorting = async () => {
+      let crntSortingOption = crntSorting;
+      if (!crntSortingOption) {
+        const sortingState = await messageHandler.request<{ key: string; value: SortingOption; }>(DashboardMessage.getState, { key: view === NavigationType.Media ? ExtensionState.Dashboard.Media.Sorting : ExtensionState.Dashboard.Contents.Sorting });
+        crntSortingOption = sortingState?.value || null;
 
-    if (crntSortingOption === null) {
-      if (view === NavigationType.Contents && settings?.dashboardState.contents.defaultSorting) {
-        crntSortingOption =
-          allOptions.find((f) => f.id === settings?.dashboardState.contents.defaultSorting) || null;
-      } else if (
-        view === NavigationType.Media &&
-        settings?.dashboardState.contents.defaultSorting
-      ) {
-        crntSortingOption =
-          allOptions.find((f) => f.id === settings?.dashboardState.contents.defaultSorting) || null;
+        if (crntSortingOption === null) {
+          if (view === NavigationType.Contents && settings?.dashboardState.contents.defaultSorting) {
+            crntSortingOption =
+              allOptions.find((f) => f.id === settings?.dashboardState.contents.defaultSorting) || null;
+          } else if (
+            view === NavigationType.Media &&
+            settings?.dashboardState.media.defaultSorting
+          ) {
+            crntSortingOption =
+              allOptions.find((f) => f.id === settings?.dashboardState.media.defaultSorting) || null;
+          }
+        }
       }
-    }
+
+      let sort = allOptions.find((x) => x.id === crntSortingOption?.id) || sortOptions[0];
+      setCrntSort(sort);
+    };
+
+    getSorting();
+  }, [crntSorting]);
+
+  if (crntSort === null) {
+    return null;
   }
 
-  let crntSort = allOptions.find((x) => x.id === crntSortingOption?.id) || sortOptions[0];
-
   return (
-    <div className="flex items-center">
-      <Menu as="div" className="relative z-10 inline-block text-left">
-        <MenuButton
-          label={l10n.t(LocalizationKey.dashboardHeaderSortingLabel)}
-          title={crntSort?.title || crntSort?.name || ''}
-          disabled={!!searchValue}
-        />
+    <DropdownMenu>
+      <MenuButton
+        label={l10n.t(LocalizationKey.dashboardHeaderSortingLabel)}
+        title={crntSort?.title || crntSort?.name || ''}
+        disabled={!!searchValue}
+      />
 
-        <MenuItems widthClass="w-48" disablePopper>
-          {allOptions.map((option) => (
-            <MenuItem
-              key={option.id}
-              title={option.title || option.name}
-              value={option}
-              isCurrent={option.id === crntSort.id}
-              onClick={(value) => updateSorting(value)}
-            />
-          ))}
-        </MenuItems>
-      </Menu>
-    </div>
+      <DropdownMenuContent>
+        {allOptions.map((option) => (
+          <MenuItem
+            key={option.id}
+            title={option.title || option.name}
+            value={option}
+            isCurrent={option.id === crntSort.id}
+            onClick={(value) => updateSorting(value)}
+          />
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
