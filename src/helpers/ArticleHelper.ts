@@ -656,16 +656,19 @@ export class ArticleHelper {
                 }
               }
 
-              const regex = new RegExp(`{{${placeholder.id}}}`, 'g');
-              let updatedValue = filePath
-                ? await processArticlePlaceholdersFromPath(placeHolderValue, filePath)
-                : placeHolderValue;
+              let updatedValue = placeHolderValue;
+
+              // Check if the file already exists, during creation it might not exist yet
+              if (filePath && (await existsAsync(filePath))) {
+                updatedValue = await processArticlePlaceholdersFromPath(placeHolderValue, filePath);
+              }
 
               updatedValue = processTimePlaceholders(updatedValue, dateFormat);
 
               if (value === `{{${placeholder.id}}}`) {
                 value = updatedValue;
               } else {
+                const regex = new RegExp(`{{${placeholder.id}}}`, 'g');
                 value = value.replace(regex, updatedValue);
               }
             } catch (e) {
