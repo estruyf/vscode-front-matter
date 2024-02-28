@@ -1,0 +1,45 @@
+name: Localization sync
+description: Syncs the localization values from English to the other supported languages
+
+input:
+  TRANSLATION_API_KEY:
+    description: 'The API key for the translation service'
+    required: true
+  TRANSLATION_API_LOCATION:
+    description: 'The location of the translation service'
+    required: true
+  TRANSLATION_API_URL:
+    description: 'The URL of the translation service'
+    required: true
+  PACKAGE_NAME:
+    description: 'The name of the package to be uploaded'
+    required: true
+  
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 18
+        registry-url: https://registry.npmjs.org/
+        cache: 'npm'
+
+    - name: Install the dependencies
+      run: npm ci
+
+    - name: Sync localization
+      run: npm run sync-localization
+      env:
+        TRANSLATION_API_KEY: ${{ inputs.TRANSLATION_API_KEY }}
+        TRANSLATION_API_LOCATION: ${{ inputs.TRANSLATION_API_LOCATION }}
+        TRANSLATION_API_URL: ${{ inputs.TRANSLATION_API_URL }}
+
+    - name: Remove the node_modules
+      run: rm -rf node_modules
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.PACKAGE_NAME }}
+        path: .

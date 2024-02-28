@@ -12,34 +12,17 @@ env:
 
 jobs:
   localization:
-    name: 'Build and release'
+    name: 'Localization'
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Localize the solution
+        uses: ./.github/actions/localization
         with:
-          node-version: 18
-          registry-url: https://registry.npmjs.org/
-          cache: 'npm'
-
-      - name: Install the dependencies
-        run: npm ci
-
-      - name: Run localization sync
-        run: npm run localization:sync
-        env:
           TRANSLATION_API_KEY: ${{ secrets.TRANSLATION_API_KEY }}
           TRANSLATION_API_LOCATION: ${{ secrets.TRANSLATION_API_LOCATION }}
           TRANSLATION_API_URL: ${{ secrets.TRANSLATION_API_URL }}
-
-      - name: Remove the node_modules
-        run: rm -rf node_modules
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.PACKAGE_NAME }}
-          path: .
+          PACKAGE_NAME: ${{ env.PACKAGE_NAME }}
 
   release-ms:
     name: 'Release to VSCode Marketplace'

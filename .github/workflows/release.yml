@@ -5,19 +5,43 @@ on:
       - published
   workflow_dispatch:
 
+env:
+  PACKAGE_NAME: 'fm-localized'
+  MS_URL: 'https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter'
+  VSX_URL: 'https://open-vsx.org/extension/eliostruyf/vscode-front-matter'
+
 jobs:
-  build:
-    name: 'Build and release'
+  localization:
+    name: 'Localization'
     runs-on: ubuntu-latest
-    environment:
-      name: Stable
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Localize the solution
+        uses: ./.github/actions/localization
+        with:
+          TRANSLATION_API_KEY: ${{ secrets.TRANSLATION_API_KEY }}
+          TRANSLATION_API_LOCATION: ${{ secrets.TRANSLATION_API_LOCATION }}
+          TRANSLATION_API_URL: ${{ secrets.TRANSLATION_API_URL }}
+          PACKAGE_NAME: ${{ env.PACKAGE_NAME }}
+
+  release-ms:
+    name: 'Release to VSCode Marketplace'
+    runs-on: ubuntu-latest
+    needs: localization
+    environment:
+      name: 'MS - Stable'
+      url: ${{ env.MS_URL }}
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.PACKAGE_NAME }}
+
       - uses: actions/setup-node@v4
         with:
           node-version: 18
           registry-url: https://registry.npmjs.org/
+          cache: 'npm'
 
       - name: Install the dependencies
         run: npm ci
@@ -25,15 +49,33 @@ jobs:
       - name: Prepare MAIN release
         run: node scripts/main-release.js
 
-      - name: Run localization sync
-        run: npm run localization:sync
-        env:
-          TRANSLATION_API_KEY: ${{ secrets.TRANSLATION_API_KEY }}
-          TRANSLATION_API_LOCATION: ${{ secrets.TRANSLATION_API_LOCATION }}
-          TRANSLATION_API_URL: ${{ secrets.TRANSLATION_API_URL }}
-
       - name: Publish
         run: npx @vscode/vsce publish -p ${{ secrets.VSCE_PAT }}
+
+  release-vsx:
+    name: 'Release to Open VSX'
+    runs-on: ubuntu-latest
+    needs: localization
+    environment:
+      name: 'Open VSX - Stable'
+      url: ${{ env.VSX_URL }}
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.PACKAGE_NAME }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          registry-url: https://registry.npmjs.org/
+          cache: 'npm'
+
+      - name: Install the dependencies
+        run: npm ci
+
+      - name: Prepare MAIN release
+        run: node scripts/main-release.js
 
       - name: Publish to open-vsx.org
         run: npx ovsx publish -p ${{ secrets.OPEN_VSX_PAT }}
