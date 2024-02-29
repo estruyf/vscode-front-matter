@@ -1,5 +1,17 @@
 # Change Log
 
+## [10.1.0] - 2024-xx-xx
+
+### ✨ New features
+
+### 🎨 Enhancements
+
+### ⚡️ Optimizations
+
+### 🐞 Fixes
+
+- [#768](https://github.com/estruyf/vscode-front-matter/issues/768): Update broken link to the documentation
+
 ## [10.0.1] - 2024-02-28
 
 ### 🐞 Fixes
