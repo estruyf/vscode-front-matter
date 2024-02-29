@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { FeatureFlag } from '../../../components/features/FeatureFlag';
-import { FEATURE_FLAG } from '../../../constants';
+import { FEATURE_FLAG, WEBSITE_LINKS } from '../../../constants';
 import { TelemetryEvent } from '../../../constants/TelemetryEvent';
 import { SnippetParser } from '../../../helpers/SnippetParser';
 import { DashboardMessage } from '../../DashboardMessage';
@@ -146,7 +146,7 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
               <p className="text-xl mt-4">
                 <a
                   className={`text-[var(--frontmatter-link)] hover:text-[var(--frontmatter-link-hover)]`}
-                  href={`https://frontmatter.codes/docs/snippets`}
+                  href={WEBSITE_LINKS.docs.snippets}
                   title={l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsReadMore)}
                 >
                   {l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsReadMore)}

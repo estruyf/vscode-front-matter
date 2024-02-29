@@ -12,6 +12,7 @@ import { Chatbot } from './components/Chatbot/Chatbot';
 import { updateCssVariables } from './utils';
 import { I10nProvider } from './providers/I10nProvider';
 import { SentryInit } from '../utils/sentryInit';
+import { WEBSITE_LINKS } from '../constants';
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -91,7 +92,7 @@ if (elm) {
     render(
       <I10nProvider>
         <SettingsProvider
-          aiUrl='https://frontmatter.codes'
+          aiUrl={WEBSITE_LINKS.root}
           experimental={experimental === 'true'}
           version={version || ""}>
           <Chatbot />

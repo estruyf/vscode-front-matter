@@ -10,3 +10,16 @@ export const SENTRY_LINK =
   'https://1ac45704bbe74264a7b4674bdc2abf48@o1022172.ingest.sentry.io/5988293';
 
 export const DOCS_SUBMODULES = 'https://frontmatter.codes/docs/git-integration#git-submodules';
+
+export const WEBSITE_LINKS = {
+  root: 'https://frontmatter.codes',
+  api: {
+    metrics: 'https://frontmatter.codes/api/metrics',
+    ai: 'https://frontmatter.codes/api/ai'
+  },
+  docs: {
+    dataDashboard: 'https://frontmatter.codes/docs/dashboard/datafiles-view',
+    snippets: `https://frontmatter.codes/docs/snippets`,
+    snippetsPlaceholders: `https://frontmatter.codes/docs/snippets#placeholders`
+  }
+};
