@@ -1,5 +1,11 @@
 # Change Log
 
+## [10.0.2] - 2024-03-01
+
+### 🐞 Fixes
+
+- [#769](https://github.com/estruyf/vscode-front-matter/issues/769): Fix to remove internal properties for content folders
+
 ## [10.0.1] - 2024-02-28
 
 ### 🐞 Fixes
