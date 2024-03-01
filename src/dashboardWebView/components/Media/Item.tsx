@@ -30,6 +30,7 @@ import { LocalizationKey } from '../../../localization';
 import { ItemMenu } from './ItemMenu';
 import { getRelPath } from '../../utils';
 import { Snippet } from '../../../models';
+import { VSCodeCheckbox } from '@vscode/webview-ui-toolkit/react';
 
 export interface IItemProps {
   media: MediaInfo;
@@ -349,6 +350,14 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           >
             {renderMedia}
           </div>
+
+          <div className='hidden group-hover:block absolute top-2 left-2 white'>
+            <VSCodeCheckbox
+              onClick={(e: any) => {
+                e.stopPropagation();
+              }} />
+          </div>
+
           {hasViewData && (
             <div
               className={`hidden group-hover/button:flex absolute top-0 right-0 bottom-0 left-0 items-center justify-center bg-black bg-opacity-70`}
