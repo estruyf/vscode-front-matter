@@ -10,7 +10,7 @@ import {
   DiagnosticCollection,
   languages
 } from 'vscode';
-import { Folders } from '../commands/Folders';
+import { Folders, WORKSPACE_PLACEHOLDER } from '../commands/Folders';
 import { Template } from '../commands/Template';
 import {
   EXTENSION_NAME,
@@ -30,6 +30,7 @@ import { TaxonomyHelper } from './TaxonomyHelper';
 import { Cache } from '../commands/Cache';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
+import { parseWinPath } from './parseWinPath';
 
 export class Extension {
   private static instance: Extension;
@@ -241,6 +242,31 @@ export class Extension {
           true
         );
       }
+    }
+
+    if (major === 10 && minor === 0 && patch < 2) {
+      let folders = Settings.get<ContentFolder[]>(SETTING_CONTENT_PAGE_FOLDERS) || [];
+      folders = folders
+        .filter((f) => !f.locale || f.locale === f.defaultLocale)
+        .map((f) => {
+          delete f.locale;
+          delete f.localeTitle;
+
+          if (f.localeSourcePath) {
+            const wsFolder = Folders.getWorkspaceFolder();
+            if (wsFolder) {
+              const localPath = parseWinPath(f.localeSourcePath).replace(
+                parseWinPath(wsFolder.fsPath),
+                WORKSPACE_PLACEHOLDER
+              );
+              f.path = localPath;
+            }
+            delete f.localeSourcePath;
+          }
+
+          return f;
+        });
+      await Settings.update(SETTING_CONTENT_PAGE_FOLDERS, folders, true);
     }
 
     // The tags and categories settings need to be moved to the database
