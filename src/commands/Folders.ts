@@ -405,8 +405,13 @@ export class Folders {
    * @param folders
    */
   public static async update(folders: ContentFolder[]) {
+    const originalFolders = Settings.get(SETTING_CONTENT_PAGE_FOLDERS) as ContentFolder[];
     const wsFolder = Folders.getWorkspaceFolder();
 
+    // Filter out the locale folders
+    folders = folders.filter((folder) => !folder.locale || folder.locale === folder.defaultLocale);
+
+    // Remove the internal FM properties
     const folderDetails = folders
       .map((folder) => {
         const detail = {
@@ -418,6 +423,19 @@ export class Folders {
           return null;
         }
 
+        if (detail.locale && detail.locale === detail.defaultLocale) {
+          // Check if the folder was on the original list
+          const originalFolder = originalFolders.find((f) => f.path === folder.originalPath);
+
+          if (originalFolder && !originalFolder.locales && folder.locales) {
+            delete detail.locales;
+          }
+
+          delete detail.localeSourcePath;
+          delete detail.localeTitle;
+        }
+
+        delete detail.locale;
         delete detail.originalPath;
 
         return detail;
