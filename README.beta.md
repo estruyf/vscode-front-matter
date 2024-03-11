@@ -182,15 +182,31 @@ You can open showcase issues for the following things:
 ## 🖤 Backers & Sponsors 👇 🤘
 
 <p align="center">
-  <img src="https://frontmatter.codes/api/img-sponsors" />
+  <img src="https://frontmatter.codes/api/img-sponsors" alt="Front Matter sponsors" />
+</p>
+
+<br />
+
+<p align="center" title="Powered by Vercel">
+  <a href="https://run.events/?utm_source=frontmatter&utm_campaign=oss">
+    <img src="https://frontmatter.codes/assets/sponsors/runevents-purple.svg" alt="run.events - Event Management Platform" height="44px" />
+   </a>
+</p>
+
+<br />
+
+<p align="center" title="Powered by Vercel">
+  <a href="https://vercel.com/?utm_source=vscode-frontmatter&utm_campaign=oss">
+    <img src="https://frontmatter.codes/assets/sponsors/powered-by-vercel.png" alt="Powered by Vercel" height="44px" />
+   </a>
 </p>
 
 <br />
 
 <p align="center">
-  <a href="https://vercel.com/?utm_source=vscode-frontmatter&utm_campaign=oss">
-    <img src="https://frontmatter.codes/assets/sponsors/powered-by-vercel.png" />
-  </a>
+  <a href="http://bejs.io/" title="Supported by the BEJS Community">
+    <img src="https://frontmatter.codes/assets/sponsors/bejs-community.png" alt="Supported by the BEJS Community" height="50px"/>
+   </a>
 </p>
 
 ## 📊 Telemetry
