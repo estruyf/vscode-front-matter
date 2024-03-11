@@ -229,6 +229,9 @@
   "dashboard.media.folderCreation.hexo.create": "Create post asset folder",
   "dashboard.media.folderCreation.folder.create": "Create new folder",
 
+  "dashboard.media.folderItem.contentDirectory": "Content directory",
+  "dashboard.media.folderItem.publicDirectory": "Public directory",
+
   "dashboard.media.item.buttom.insert.image": "Insert image",
   "dashboard.media.item.buttom.insert.snippet": "Insert snippet",
 

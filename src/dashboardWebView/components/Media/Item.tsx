@@ -17,6 +17,8 @@ import { MediaInfo } from '../../../models/MediaPaths';
 import { DashboardMessage } from '../../DashboardMessage';
 import {
   LightboxAtom,
+  MultiSelectedItemsAtom,
+  SelectedItemActionAtom,
   SelectedMediaFolderSelector,
   SettingsSelector,
   ViewDataSelector
@@ -40,6 +42,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   media,
 }: React.PropsWithChildren<IItemProps>) => {
   const [, setLightbox] = useRecoilState(LightboxAtom);
+  const [selectedFiles, setSelectedFiles] = useRecoilState(MultiSelectedItemsAtom);
+  const [selectedItemAction, setSelectedItemAction] = useRecoilState(SelectedItemActionAtom);
   const [showAlert, setShowAlert] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [showSnippetSelection, setShowSnippetSelection] = useState(false);
@@ -191,14 +195,14 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     });
   };
 
-  const getDimensions = () => {
+  const dimensions = useMemo(() => {
     if (media.dimensions) {
       return `${media.dimensions.width} x ${media.dimensions.height}`;
     }
     return '';
-  };
+  }, [media]);
 
-  const getSize = () => {
+  const size = useMemo(() => {
     if (media?.size) {
       const size = media.size / (1024 * 1024);
       if (size > 1) {
@@ -209,23 +213,21 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     }
 
     return '';
-  };
+  }, [media]);
 
-  const getMediaDetails = () => {
+  const mediaDetails = useMemo(() => {
     let sizeDetails = [];
 
-    const dimensions = getDimensions();
     if (dimensions) {
       sizeDetails.push(dimensions);
     }
 
-    const size = getSize();
     if (size) {
       sizeDetails.push(size);
     }
 
     return sizeDetails.join(' - ');
-  };
+  }, [media, dimensions, size]);
 
   const openLightbox = useCallback(() => {
     if (isImageFile) {
@@ -314,11 +316,28 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return null;
   }, [media]);
 
+  const onMultiSelect = useCallback(() => {
+    if (selectedFiles.includes(media.fsPath)) {
+      setSelectedFiles(selectedFiles.filter((file) => file !== media.fsPath));
+    } else {
+      setSelectedFiles([...selectedFiles, media.fsPath]);
+    }
+  }, [selectedFiles]);
+
   const clearFormData = () => {
     setShowSnippetFormDialog(false);
     setSnippet(undefined);
     setMediaData(undefined);
   };
+
+  useEffect(() => {
+    if (selectedItemAction && selectedItemAction.path === media.fsPath) {
+      if (selectedItemAction.action === 'edit') {
+        updateMetadata();
+        setSelectedItemAction(undefined);
+      }
+    }
+  }, [media, selectedItemAction])
 
   useEffect(() => {
     const name = basename(parseWinPath(media.fsPath) || '');
@@ -351,11 +370,13 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             {renderMedia}
           </div>
 
-          <div className='hidden group-hover:block absolute top-2 left-2 white'>
+          <div className={`${selectedFiles.includes(media.fsPath) ? 'block' : 'hidden'} group-hover:block absolute top-2 left-2 white`}>
             <VSCodeCheckbox
-              onClick={(e: any) => {
+              onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
                 e.stopPropagation();
-              }} />
+                onMultiSelect();
+              }}
+              checked={selectedFiles.includes(media.fsPath)} />
           </div>
 
           {hasViewData && (
@@ -439,7 +460,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                 {l10n.t(LocalizationKey.dashboardMediaCommonSize)}:
               </b>
               <span className={`block mt-1 text-xs text-[var(--vscode-foreground)]`}>
-                {getMediaDetails()}
+                {mediaDetails}
               </span>
             </p>
           )}
@@ -471,8 +492,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
       {showDetails && (
         <DetailsSlideOver
           imgSrc={media.vsPath || ''}
-          size={getSize()}
-          dimensions={getDimensions()}
+          size={size}
+          dimensions={dimensions}
           folder={getFolder()}
           media={media}
           showForm={showForm}

@@ -5,7 +5,6 @@ import { DashboardMessage } from '../../DashboardMessage';
 import {
   AllContentFoldersAtom,
   AllStaticFoldersAtom,
-  SelectedMediaFolderAtom,
   SettingsSelector,
   ViewDataSelector
 } from '../../state';
@@ -18,13 +17,14 @@ import { extname } from 'path';
 import { parseWinPath } from '../../../helpers/parseWinPath';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import useMediaFolder from '../../hooks/useMediaFolder';
 
 export interface IFolderCreationProps { }
 
 export const FolderCreation: React.FunctionComponent<IFolderCreationProps> = (
-  props: React.PropsWithChildren<IFolderCreationProps>
+  _: React.PropsWithChildren<IFolderCreationProps>
 ) => {
-  const selectedFolder = useRecoilValue(SelectedMediaFolderAtom);
+  const { selectedFolder } = useMediaFolder();
   const settings = useRecoilValue(SettingsSelector);
   const allStaticFolders = useRecoilValue(AllStaticFoldersAtom);
   const allContentFolders = useRecoilValue(AllContentFoldersAtom);

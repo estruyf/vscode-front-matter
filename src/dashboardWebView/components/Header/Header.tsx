@@ -6,7 +6,7 @@ import { DashboardMessage } from '../../DashboardMessage';
 import { Grouping } from '.';
 import { ViewSwitch } from './ViewSwitch';
 import { useRecoilValue, useResetRecoilState } from 'recoil';
-import { GroupingSelector, SortingAtom } from '../../state';
+import { GroupingSelector, MultiSelectedItemsAtom, SortingAtom } from '../../state';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { ClearFilters } from './ClearFilters';
 import { MediaHeaderTop } from '../Media/MediaHeaderTop';
@@ -18,8 +18,7 @@ import { ArrowTopRightOnSquareIcon, BoltIcon, PlusIcon } from '@heroicons/react/
 import { HeartIcon } from '@heroicons/react/24/solid';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { routePaths } from '../..';
-import { useEffect, useMemo } from 'react';
-import { SyncButton } from './SyncButton';
+import { useMemo } from 'react';
 import { Pagination } from './Pagination';
 import { GroupOption } from '../../constants/GroupOption';
 import usePagination from '../../hooks/usePagination';
@@ -32,6 +31,7 @@ import { SettingsLink } from '../SettingsView/SettingsLink';
 import { Link } from '../Common/Link';
 import { SPONSOR_LINK } from '../../../constants';
 import { Filters } from './Filters';
+import { ActionsBar } from './ActionsBar';
 
 export interface IHeaderProps {
   header?: React.ReactNode;
@@ -51,6 +51,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
 }: React.PropsWithChildren<IHeaderProps>) => {
   const grouping = useRecoilValue(GroupingSelector);
   const resetSorting = useResetRecoilState(SortingAtom);
+  const resetSelectedItems = useResetRecoilState(MultiSelectedItemsAtom);
   const location = useLocation();
   const navigate = useNavigate();
   const { pageSetNr } = usePagination(settings?.dashboardState.contents.pagination);
@@ -70,6 +71,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
   const updateView = (view: NavigationType) => {
     navigate(routePaths[view]);
     resetSorting();
+    resetSelectedItems();
   };
 
   const runBulkScript = (script: CustomScript) => {
@@ -216,6 +218,8 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
           <MediaHeaderTop />
 
           <MediaHeaderBottom />
+
+          <ActionsBar view={NavigationType.Media} />
         </>
       )}
 

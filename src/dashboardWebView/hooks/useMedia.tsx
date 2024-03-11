@@ -12,12 +12,12 @@ import {
   MediaTotalAtom,
   PageAtom,
   SearchAtom,
-  SelectedMediaFolderAtom,
   SettingsAtom
 } from '../state';
 import Fuse from 'fuse.js';
 import usePagination from './usePagination';
 import { usePrevious } from '../../panelWebView/hooks/usePrevious';
+import useMediaFolder from './useMediaFolder';
 
 const fuseOptions: Fuse.IFuseOptions<MediaInfo> = {
   keys: [
@@ -35,7 +35,7 @@ export default function useMedia() {
   // const page = useRecoilValue(PageAtom);
   const [page, setPage] = useRecoilState(PageAtom);
   const [searchedMedia, setSearchedMedia] = useState<MediaInfo[]>([]);
-  const [, setSelectedFolder] = useRecoilState(SelectedMediaFolderAtom);
+  const { updateFolder } = useMediaFolder();
   const [, setTotal] = useRecoilState(MediaTotalAtom);
   const [, setFolders] = useRecoilState(MediaFoldersAtom);
   const [, setAllContentFolders] = useRecoilState(AllContentFoldersAtom);
@@ -79,7 +79,7 @@ export default function useMedia() {
       setMedia(payload.media);
       setTotal(payload.total);
       setFolders(payload.folders);
-      setSelectedFolder(payload.selectedFolder);
+      updateFolder(payload.selectedFolder);
       if (search) {
         searchMedia(search, payload.media);
       } else {

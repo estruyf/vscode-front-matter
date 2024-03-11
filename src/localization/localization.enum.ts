@@ -740,6 +740,14 @@ export enum LocalizationKey {
    */
   dashboardMediaFolderCreationFolderCreate = 'dashboard.media.folderCreation.folder.create',
   /**
+   * Content directory
+   */
+  dashboardMediaFolderItemContentDirectory = 'dashboard.media.folderItem.contentDirectory',
+  /**
+   * Public directory
+   */
+  dashboardMediaFolderItemPublicDirectory = 'dashboard.media.folderItem.publicDirectory',
+  /**
    * Insert image
    */
   dashboardMediaItemButtomInsertImage = 'dashboard.media.item.buttom.insert.image',
