@@ -189,7 +189,7 @@ You can open showcase issues for the following things:
 
 <p align="center" title="Powered by Vercel">
   <a href="https://run.events/?utm_source=frontmatter&utm_campaign=oss">
-    <img src="https://frontmatter.codes/assets/sponsors/runevents-purple.svg" alt="run.events - Event Management Platform" height="44px" />
+    <img src="https://frontmatter.codes/assets/sponsors/runevents-purple.webp" alt="run.events - Event Management Platform" height="50px" />
    </a>
 </p>
 
