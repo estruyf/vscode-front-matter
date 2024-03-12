@@ -1,13 +1,13 @@
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIcon';
 import { DashboardMessage } from '../../DashboardMessage';
 import { Page } from '../../models/Page';
-import { MultiSelectedItemsAtom, SettingsSelector, ViewSelector } from '../../state';
+import { SettingsSelector, ViewSelector } from '../../state';
 import { DateField } from '../Common/DateField';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardViewType } from '../../models';
 import { ContentActions } from './ContentActions';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Status } from './Status';
 import * as React from 'react';
 import useExtensibility from '../../hooks/useExtensibility';
@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { routePaths } from '../..';
 import useCard from '../../hooks/useCard';
 import { I18nLabel } from './I18nLabel';
-import { VSCodeCheckbox } from '@vscode/webview-ui-toolkit/react';
+import { ItemSelection } from '../Common/ItemSelection';
 
 export interface IItemProps extends Page { }
 
@@ -28,7 +28,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 }: React.PropsWithChildren<IItemProps>) => {
   const view = useRecoilValue(ViewSelector);
   const settings = useRecoilValue(SettingsSelector);
-  const [selectedFiles, setSelectedFiles] = useRecoilState(MultiSelectedItemsAtom);
   const draftField = useMemo(() => settings?.draftField, [settings]);
   const cardFields = useMemo(() => settings?.dashboardState?.contents?.cardFields, [settings?.dashboardState?.contents?.cardFields]);
   const { escapedTitle, escapedDescription } = useCard(pageData, settings?.dashboardState?.contents?.cardFields);
@@ -104,14 +103,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return cardFields && (cardFields.state || cardFields.date);
   }, [cardFields]);
 
-  const onMultiSelect = useCallback(() => {
-    if (selectedFiles.includes(pageData.fmFilePath)) {
-      setSelectedFiles(selectedFiles.filter((file) => file !== pageData.fmFilePath));
-    } else {
-      setSelectedFiles([...selectedFiles, pageData.fmFilePath]);
-    }
-  }, [selectedFiles]);
-
   if (view === DashboardViewType.Grid) {
     return (
       <li className="relative">
@@ -143,14 +134,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             }
           </button>
 
-          <div className={`${selectedFiles.includes(pageData.fmFilePath) ? 'block' : 'hidden'} group-hover:block absolute top-2 left-2 white`}>
-            <VSCodeCheckbox
-              onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-                e.stopPropagation();
-                onMultiSelect();
-              }}
-              checked={selectedFiles.includes(pageData.fmFilePath)} />
-          </div>
+          <ItemSelection filePath={pageData.fmFilePath} />
 
           <div className="relative p-4 w-full grow">
             {
@@ -251,6 +235,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           className={`px-5 cursor-pointer w-full text-left grid grid-cols-12 gap-x-4 sm:gap-x-6 xl:gap-x-8 py-2 border-b hover:bg-opacity-70 border-[var(--frontmatter-border)] hover:bg-[var(--vscode-sideBar-background)]`}
         >
           <div className="col-span-8 font-bold truncate flex items-center space-x-4">
+            <ItemSelection filePath={pageData.fmFilePath} isRowItem />
+
             <button
               title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
               onClick={openFile}>

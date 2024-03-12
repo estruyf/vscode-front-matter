@@ -124,7 +124,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
 
   return (
     <div className={`w-full sticky top-0 z-20 bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]`}>
-      <div className={`mb-0 border-b flex justify-between bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)] border-[var(--frontmatter-border)]`}>
+      <div className={`overflow-x-auto mb-0 border-b flex justify-between bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)] border-[var(--frontmatter-border)]`}>
         <Tabs onNavigate={updateView} />
 
         <div className='flex items-center space-x-2 pr-4'>
@@ -186,7 +186,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
           </div>
 
           <div
-            className={`py-2 px-4 w-full flex items-center justify-between lg:justify-end border-b space-x-4 lg:space-x-6 xl:space-x-8 bg-[var(--vscode-panel-background)] border-[var(--frontmatter-border)]`}
+            className={`overflow-x-auto py-2 px-4 w-full flex items-center justify-between lg:justify-end border-b space-x-4 lg:space-x-6 xl:space-x-8 bg-[var(--vscode-panel-background)] border-[var(--frontmatter-border)]`}
           >
             <ClearFilters />
 

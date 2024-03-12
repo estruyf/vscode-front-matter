@@ -52,7 +52,12 @@ export const updateCssVariables = () => {
   );
 
   // Borders
+  const borderColor = styles.getPropertyValue('--vscode-panel-border');
   document.documentElement.style.setProperty('--frontmatter-border', 'var(--vscode-panel-border)');
+  document.documentElement.style.setProperty(
+    '--frontmatter-border-preserve',
+    preserveColor(borderColor) || 'var(--vscode-panel-border)'
+  );
 
   // Other colors which should be preserved (no opacity)
   const buttonBackground = styles.getPropertyValue('--vscode-button-background');

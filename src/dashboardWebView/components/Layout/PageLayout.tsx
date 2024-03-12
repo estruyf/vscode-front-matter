@@ -20,7 +20,7 @@ export const PageLayout: React.FunctionComponent<IPageLayoutProps> = ({
   const settings = useRecoilValue(SettingsSelector);
 
   return (
-    <div className="flex flex-col h-full overflow-auto">
+    <div className="flex flex-col h-full overflow-y-auto overflow-x-hidden">
       <Header header={header} folders={folders} totalPages={totalPages} settings={settings} />
 
       <div

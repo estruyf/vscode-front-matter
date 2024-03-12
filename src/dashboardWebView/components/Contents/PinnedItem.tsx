@@ -7,6 +7,7 @@ import { messageHandler } from '@estruyf/vscode/dist/client';
 import useCard from '../../hooks/useCard';
 import { SettingsSelector } from '../../state';
 import { useRecoilValue } from 'recoil';
+import { ItemSelection } from '../Common/ItemSelection';
 
 export interface IPinnedItemProps extends Page { }
 
@@ -21,7 +22,7 @@ export const PinnedItem: React.FunctionComponent<IPinnedItemProps> = ({
   }, [pageData.fmFilePath]);
 
   return (
-    <li className='group flex w-full border border-[var(--frontmatter-border)] rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)]'>
+    <li className='group flex w-full border border-[var(--frontmatter-border)] rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] relative'>
       <button onClick={openFile} className='relative h-full w-1/3'>
         {
           pageData["fmPreviewImage"] ? (
@@ -40,6 +41,8 @@ export const PinnedItem: React.FunctionComponent<IPinnedItemProps> = ({
           )
         }
       </button>
+
+      <ItemSelection filePath={pageData.fmFilePath} />
 
       <button onClick={openFile} className='relative w-2/3 p-4 pr-6 text-left flex items-start'>
         <p className='font-bold'>{escapedTitle}</p>

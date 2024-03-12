@@ -17,7 +17,6 @@ import { MediaInfo } from '../../../models/MediaPaths';
 import { DashboardMessage } from '../../DashboardMessage';
 import {
   LightboxAtom,
-  MultiSelectedItemsAtom,
   SelectedItemActionAtom,
   SelectedMediaFolderSelector,
   SettingsSelector,
@@ -31,8 +30,8 @@ import { LocalizationKey } from '../../../localization';
 import { ItemMenu } from './ItemMenu';
 import { getRelPath } from '../../utils';
 import { Snippet } from '../../../models';
-import { VSCodeCheckbox } from '@vscode/webview-ui-toolkit/react';
 import useMediaInfo from '../../hooks/useMediaInfo';
+import { ItemSelection } from '../Common/ItemSelection';
 
 export interface IItemProps {
   media: MediaInfo;
@@ -43,7 +42,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 }: React.PropsWithChildren<IItemProps>) => {
   const [, setLightbox] = useRecoilState(LightboxAtom);
   const [, setSelectedItemAction] = useRecoilState(SelectedItemActionAtom);
-  const [selectedFiles, setSelectedFiles] = useRecoilState(MultiSelectedItemsAtom);
   const [showAlert, setShowAlert] = useState(false);
   const [showSnippetSelection, setShowSnippetSelection] = useState(false);
   const [snippet, setSnippet] = useState<Snippet | undefined>(undefined);
@@ -246,14 +244,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return null;
   }, [media]);
 
-  const onMultiSelect = useCallback(() => {
-    if (selectedFiles.includes(media.fsPath)) {
-      setSelectedFiles(selectedFiles.filter((file) => file !== media.fsPath));
-    } else {
-      setSelectedFiles([...selectedFiles, media.fsPath]);
-    }
-  }, [selectedFiles]);
-
   const clearFormData = () => {
     setShowSnippetFormDialog(false);
     setSnippet(undefined);
@@ -291,14 +281,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             {renderMedia}
           </div>
 
-          <div className={`${selectedFiles.includes(media.fsPath) ? 'block' : 'hidden'} group-hover:block absolute top-2 left-2 white`}>
-            <VSCodeCheckbox
-              onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-                e.stopPropagation();
-                onMultiSelect();
-              }}
-              checked={selectedFiles.includes(media.fsPath)} />
-          </div>
+          <ItemSelection filePath={media.fsPath} />
 
           {hasViewData && (
             <div

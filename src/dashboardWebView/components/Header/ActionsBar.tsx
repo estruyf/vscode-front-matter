@@ -55,8 +55,6 @@ export const ActionsBar: React.FunctionComponent<IActionsBarProps> = ({
         path: file
       });
     }
-
-    setSelectedFiles([]);
   }, [selectedFiles]);
 
   const customScriptActions = React.useMemo(() => {
@@ -65,38 +63,42 @@ export const ActionsBar: React.FunctionComponent<IActionsBarProps> = ({
     }
 
     const { scripts } = settings;
-    if (view === NavigationType.Media) {
-      const mediaScripts = (scripts || [])
+    let crntScripts: CustomScript[] = [];
+    if (view === NavigationType.Contents) {
+      crntScripts = (scripts || [])
+        .filter((script) => (script.type === undefined || script.type === ScriptType.Content) && !script.bulk && !script.hidden);
+    } else if (view === NavigationType.Media) {
+      crntScripts = (scripts || [])
         .filter((script) => script.type === ScriptType.MediaFile && !script.hidden);
+    }
 
-      if (mediaScripts.length > 0) {
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              className='flex items-center text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)] disabled:opacity-50 disabled:hover:text-[var(--vscode-tab-inactiveForeground)]'
-              disabled={selectedFiles.length === 0}
-            >
-              <CommandLineIcon className="mr-2 h-4 w-4" aria-hidden={true} />
-              <span>Scripts</span>
-              <ChevronDownIcon className="ml-2 h-4 w-4" aria-hidden={true} />
-            </DropdownMenuTrigger>
+    if (crntScripts.length > 0) {
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            className='flex items-center text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)] disabled:opacity-50 disabled:hover:text-[var(--vscode-tab-inactiveForeground)]'
+            disabled={selectedFiles.length === 0}
+          >
+            <CommandLineIcon className="mr-2 h-4 w-4" aria-hidden={true} />
+            <span>Scripts</span>
+            <ChevronDownIcon className="ml-2 h-4 w-4" aria-hidden={true} />
+          </DropdownMenuTrigger>
 
-            <DropdownMenuContent align='start'>
-              {
-                mediaScripts.map((script) => (
-                  <DropdownMenuItem
-                    key={script.id || script.title}
-                    onClick={() => runCustomScript(script)}
-                  >
-                    <CommandLineIcon className="mr-2 h-4 w-4" aria-hidden={true} />
-                    <span>{script.title}</span>
-                  </DropdownMenuItem>
-                ))
-              }
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )
-      }
+          <DropdownMenuContent align='start'>
+            {
+              crntScripts.map((script) => (
+                <DropdownMenuItem
+                  key={script.id || script.title}
+                  onClick={() => runCustomScript(script)}
+                >
+                  <CommandLineIcon className="mr-2 h-4 w-4" aria-hidden={true} />
+                  <span>{script.title}</span>
+                </DropdownMenuItem>
+              ))
+            }
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
     }
 
     return null;
@@ -136,20 +138,20 @@ export const ActionsBar: React.FunctionComponent<IActionsBarProps> = ({
                   <PencilIcon className="w-4 h-4 mr-2" aria-hidden="true" />
                   <span>{l10n.t(LocalizationKey.commonEdit)}</span>
                 </ActionsBarItem>
-
-                {customScriptActions}
-
-                <ActionsBarItem
-                  className='hover:text-[var(--vscode-statusBarItem-errorBackground)]'
-                  disabled={selectedFiles.length === 0}
-                  onClick={() => setShowAlert(true)}
-                >
-                  <TrashIcon className="w-4 h-4 mr-2" aria-hidden="true" />
-                  <span>{l10n.t(LocalizationKey.commonDelete)}</span>
-                </ActionsBarItem>
               </>
             )
           }
+
+          {customScriptActions}
+
+          <ActionsBarItem
+            className='hover:text-[var(--vscode-statusBarItem-errorBackground)]'
+            disabled={selectedFiles.length === 0}
+            onClick={() => setShowAlert(true)}
+          >
+            <TrashIcon className="w-4 h-4 mr-2" aria-hidden="true" />
+            <span>{l10n.t(LocalizationKey.commonDelete)}</span>
+          </ActionsBarItem>
         </div>
 
         {
