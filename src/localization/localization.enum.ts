@@ -152,6 +152,10 @@ export enum LocalizationKey {
    */
   commonOpenWithValue = 'common.openWithValue',
   /**
+   * View
+   */
+  commonView = 'common.view',
+  /**
    * Loading content
    */
   loadingInitPages = 'loading.initPages',

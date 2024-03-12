@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { NavigationType } from '../../models';
-import { CommandLineIcon, PencilIcon, TrashIcon, ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { CommandLineIcon, PencilIcon, TrashIcon, ChevronDownIcon, XMarkIcon, EyeIcon } from '@heroicons/react/24/outline';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { MultiSelectedItemsAtom, SelectedItemActionAtom, SelectedMediaFolderSelector, SettingsSelector } from '../../state';
 import { ActionsBarItem } from './ActionsBarItem';
@@ -24,6 +24,12 @@ export const ActionsBar: React.FunctionComponent<IActionsBarProps> = ({
   const [showAlert, setShowAlert] = React.useState(false);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const settings = useRecoilValue(SettingsSelector);
+
+  const viewFile = React.useCallback(() => {
+    if (selectedFiles.length === 1 && view === NavigationType.Contents) {
+      messageHandler.send(DashboardMessage.openFile, selectedFiles[0]);
+    }
+  }, [selectedFiles]);
 
   const onDeleteConfirm = React.useCallback(() => {
     for (const file of selectedFiles) {
@@ -102,33 +108,49 @@ export const ActionsBar: React.FunctionComponent<IActionsBarProps> = ({
         className={`w-full flex items-center justify-between py-2 px-4 border-b bg-[var(--vscode-sideBar-background)] text-[var(--vscode-sideBar-foreground)] border-[var(--frontmatter-border)]`}
         aria-label="Item actions"
       >
-        {
-          view === NavigationType.Media && (
-            <div className='flex items-center space-x-6'>
-              <ActionsBarItem
-                disabled={selectedFiles.length === 0 || selectedFiles.length > 1}
-                onClick={() => setSelectedItemAction({
-                  path: selectedFiles[0],
-                  action: 'edit'
-                })}
-              >
-                <PencilIcon className="w-4 h-4 mr-2" aria-hidden="true" />
-                <span>{l10n.t(LocalizationKey.commonEdit)}</span>
-              </ActionsBarItem>
+        <div className='flex items-center space-x-6'>
+          {
+            view === NavigationType.Contents && (
+              <>
+                <ActionsBarItem
+                  disabled={selectedFiles.length === 0 || selectedFiles.length > 1}
+                  onClick={viewFile}
+                >
+                  <EyeIcon className="w-4 h-4 mr-2" aria-hidden="true" />
+                  <span>{l10n.t(LocalizationKey.commonView)}</span>
+                </ActionsBarItem>
+              </>
+            )
+          }
 
-              {customScriptActions}
+          {
+            view === NavigationType.Media && (
+              <>
+                <ActionsBarItem
+                  disabled={selectedFiles.length === 0 || selectedFiles.length > 1}
+                  onClick={() => setSelectedItemAction({
+                    path: selectedFiles[0],
+                    action: 'edit'
+                  })}
+                >
+                  <PencilIcon className="w-4 h-4 mr-2" aria-hidden="true" />
+                  <span>{l10n.t(LocalizationKey.commonEdit)}</span>
+                </ActionsBarItem>
 
-              <ActionsBarItem
-                className='hover:text-[var(--vscode-statusBarItem-errorBackground)]'
-                disabled={selectedFiles.length === 0}
-                onClick={() => setShowAlert(true)}
-              >
-                <TrashIcon className="w-4 h-4 mr-2" aria-hidden="true" />
-                <span>{l10n.t(LocalizationKey.commonDelete)}</span>
-              </ActionsBarItem>
-            </div>
-          )
-        }
+                {customScriptActions}
+
+                <ActionsBarItem
+                  className='hover:text-[var(--vscode-statusBarItem-errorBackground)]'
+                  disabled={selectedFiles.length === 0}
+                  onClick={() => setShowAlert(true)}
+                >
+                  <TrashIcon className="w-4 h-4 mr-2" aria-hidden="true" />
+                  <span>{l10n.t(LocalizationKey.commonDelete)}</span>
+                </ActionsBarItem>
+              </>
+            )
+          }
+        </div>
 
         {
           selectedFiles.length > 0 && (

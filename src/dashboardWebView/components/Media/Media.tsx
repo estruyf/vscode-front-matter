@@ -27,6 +27,7 @@ import { basename, extname, join } from 'path';
 import { MediaInfo } from '../../../models';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { MediaItemPanel } from './MediaItemPanel';
 
 export interface IMediaProps { }
 
@@ -255,6 +256,8 @@ export const Media: React.FunctionComponent<IMediaProps> = (
           ))}
         </List>
       </div>
+
+      <MediaItemPanel allMedia={allMedia} />
 
       {loading && <Spinner />}
 

@@ -90,7 +90,7 @@ export const FolderCreation: React.FunctionComponent<IFolderCreationProps> = (
 
   if (scripts.length > 0) {
     return (
-      <div className="flex flex-1 justify-end">
+      <div className="flex flex-1 justify-start">
         {renderPostAssetsButton}
         <ChoiceButton
           title={l10n.t(LocalizationKey.dashboardMediaFolderCreationFolderCreate)}
@@ -107,7 +107,7 @@ export const FolderCreation: React.FunctionComponent<IFolderCreationProps> = (
   }
 
   return (
-    <div className="flex flex-1 justify-end">
+    <div className="flex flex-1 justify-start">
       {renderPostAssetsButton}
       <button
         className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium focus:outline-none rounded text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`}

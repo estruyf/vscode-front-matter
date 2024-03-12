@@ -7,7 +7,7 @@ import {
   PlusIcon,
   VideoCameraIcon,
 } from '@heroicons/react/24/outline';
-import { basename, dirname } from 'path';
+import { basename } from 'path';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -25,7 +25,6 @@ import {
 } from '../../state';
 import { Alert } from '../Modals/Alert';
 import { InfoDialog } from '../Modals/InfoDialog';
-import { DetailsSlideOver } from './DetailsSlideOver';
 import { MediaSnippetForm } from './MediaSnippetForm';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
@@ -33,6 +32,7 @@ import { ItemMenu } from './ItemMenu';
 import { getRelPath } from '../../utils';
 import { Snippet } from '../../../models';
 import { VSCodeCheckbox } from '@vscode/webview-ui-toolkit/react';
+import useMediaInfo from '../../hooks/useMediaInfo';
 
 export interface IItemProps {
   media: MediaInfo;
@@ -42,19 +42,18 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   media,
 }: React.PropsWithChildren<IItemProps>) => {
   const [, setLightbox] = useRecoilState(LightboxAtom);
+  const [, setSelectedItemAction] = useRecoilState(SelectedItemActionAtom);
   const [selectedFiles, setSelectedFiles] = useRecoilState(MultiSelectedItemsAtom);
-  const [selectedItemAction, setSelectedItemAction] = useRecoilState(SelectedItemActionAtom);
   const [showAlert, setShowAlert] = useState(false);
-  const [showForm, setShowForm] = useState(false);
   const [showSnippetSelection, setShowSnippetSelection] = useState(false);
   const [snippet, setSnippet] = useState<Snippet | undefined>(undefined);
-  const [showDetails, setShowDetails] = useState(false);
   const [showSnippetFormDialog, setShowSnippetFormDialog] = useState(false);
   const [mediaData, setMediaData] = useState<any | undefined>(undefined);
   const [filename, setFilename] = useState<string | null>(null);
   const settings = useRecoilValue(SettingsSelector);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const viewData = useRecoilValue(ViewDataSelector);
+  const { mediaFolder, mediaDetails, isAudio, isImage, isVideo } = useMediaInfo(media);
 
   const relPath = useMemo(() => {
     return getRelPath(media.fsPath, settings?.staticFolder, settings?.wsFolder);
@@ -78,19 +77,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const showMediaSnippet = useMemo(() => {
     return viewData?.data?.position && mediaSnippets.length > 0;
   }, [viewData, mediaSnippets]);
-
-  const getFolder = () => {
-    if (settings?.wsFolder && media.fsPath) {
-      let relPath = media.fsPath.split(settings.wsFolder).pop();
-
-      if (settings.staticFolder && relPath) {
-        relPath = relPath.split(settings.staticFolder).pop();
-      }
-
-      return dirname(parseWinPath(relPath) || '');
-    }
-    return '';
-  };
 
   const getFileName = () => {
     return basename(parseWinPath(media.fsPath) || '');
@@ -195,73 +181,17 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     });
   };
 
-  const dimensions = useMemo(() => {
-    if (media.dimensions) {
-      return `${media.dimensions.width} x ${media.dimensions.height}`;
-    }
-    return '';
-  }, [media]);
-
-  const size = useMemo(() => {
-    if (media?.size) {
-      const size = media.size / (1024 * 1024);
-      if (size > 1) {
-        return `${size.toFixed(2)} MB`;
-      } else {
-        return `${(size * 1024).toFixed(2)} KB`;
-      }
-    }
-
-    return '';
-  }, [media]);
-
-  const mediaDetails = useMemo(() => {
-    let sizeDetails = [];
-
-    if (dimensions) {
-      sizeDetails.push(dimensions);
-    }
-
-    if (size) {
-      sizeDetails.push(size);
-    }
-
-    return sizeDetails.join(' - ');
-  }, [media, dimensions, size]);
-
   const openLightbox = useCallback(() => {
-    if (isImageFile) {
+    if (isImage) {
       setLightbox(media.vsPath || '');
     }
   }, [media.vsPath]);
 
-  const updateMetadata = () => {
-    setShowForm(true);
-    setShowDetails(true);
-  };
-
-  const isVideoFile = useMemo(() => {
-    if (media.mimeType?.startsWith('video/')) {
-      return true;
-    }
-    return false;
-  }, [media]);
-
-  const isAudioFile = useMemo(() => {
-    if (media.mimeType?.startsWith('audio/')) {
-      return true;
-    }
-    return false;
-  }, [media]);
-
-  const isImageFile = useMemo(() => {
-    if (
-      media.mimeType?.startsWith('image/') &&
-      !media.mimeType?.startsWith('image/vnd.adobe.photoshop')
-    ) {
-      return true;
-    }
-    return false;
+  const updateMetadata = useCallback(() => {
+    setSelectedItemAction({
+      path: media.fsPath,
+      action: 'edit'
+    });
   }, [media]);
 
   const renderMediaIcon = useMemo(() => {
@@ -276,15 +206,15 @@ export const Item: React.FunctionComponent<IItemProps> = ({
       return null;
     }
 
-    if (isImageFile) {
+    if (isImage) {
       return <PhotoIcon className={`h-1/2 ${colors}`} />;
     }
 
-    if (isVideoFile) {
+    if (isVideo) {
       icon = <VideoCameraIcon className={`h-4/6 ${colors}`} />;
     }
 
-    if (isAudioFile) {
+    if (isAudio) {
       icon = <MusicalNoteIcon className={`h-4/6 ${colors}`} />;
     }
 
@@ -296,18 +226,18 @@ export const Item: React.FunctionComponent<IItemProps> = ({
         </span>
       </div>
     );
-  }, [media, isImageFile, isVideoFile, isAudioFile]);
+  }, [media, isImage, isVideo, isAudio]);
 
   const renderMedia = useMemo(() => {
-    if (isAudioFile) {
+    if (isAudio) {
       return null;
     }
 
-    if (isVideoFile) {
+    if (isVideo) {
       return <video src={media.vsPath} className="mx-auto object-cover" controls muted />;
     }
 
-    if (isImageFile) {
+    if (isImage) {
       return (
         <img src={media.vsPath} alt={basename(media.fsPath)} className="mx-auto object-cover" />
       );
@@ -331,15 +261,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   };
 
   useEffect(() => {
-    if (selectedItemAction && selectedItemAction.path === media.fsPath) {
-      if (selectedItemAction.action === 'edit') {
-        updateMetadata();
-        setSelectedItemAction(undefined);
-      }
-    }
-  }, [media, selectedItemAction])
-
-  useEffect(() => {
     const name = basename(parseWinPath(media.fsPath) || '');
     if (name !== filename) {
       setFilename(getFileName());
@@ -356,7 +277,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     <>
       <li className={`group relative shadow-md hover:shadow-xl dark:shadow-none border rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--frontmatter-border)]`}>
         <button
-          className={`group/button relative block w-full aspect-w-10 aspect-h-7 overflow-hidden h-48 ${isImageFile ? 'cursor-pointer' : 'cursor-default'} border-b border-[var(--frontmatter-border)]`}
+          className={`group/button relative block w-full aspect-w-10 aspect-h-7 overflow-hidden h-48 ${isImage ? 'cursor-pointer' : 'cursor-default'} border-b border-[var(--frontmatter-border)]`}
           onClick={hasViewData ? undefined : openLightbox}
         >
           <div
@@ -423,14 +344,14 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             insertIntoArticle={insertIntoArticle}
             insertSnippet={insertSnippet}
             showUpdateMedia={updateMetadata}
-            showMediaDetails={() => setShowDetails(true)}
+            showMediaDetails={() => setSelectedItemAction({ path: media.fsPath, action: 'view' })}
             processSnippet={processSnippet}
             onDelete={() => setShowAlert(true)} />
 
           <p className={`text-sm font-bold pointer-events-none flex items-center break-all text-[var(--vscode-foreground)]}`}>
             {basename(parseWinPath(media.fsPath) || '')}
           </p>
-          {!isImageFile && media.metadata.title && (
+          {!isImage && media.metadata.title && (
             <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start`}>
               <b className={`mr-2`}>
                 {l10n.t(LocalizationKey.dashboardMediaCommonTitle)}:
@@ -489,29 +410,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({
         </InfoDialog>
       )}
 
-      {showDetails && (
-        <DetailsSlideOver
-          imgSrc={media.vsPath || ''}
-          size={size}
-          dimensions={dimensions}
-          folder={getFolder()}
-          media={media}
-          showForm={showForm}
-          isImageFile={isImageFile}
-          isVideoFile={isVideoFile}
-          onEdit={() => setShowForm(true)}
-          onEditClose={() => setShowForm(false)}
-          onDismiss={() => {
-            setShowDetails(false);
-            setShowForm(false);
-          }}
-        />
-      )}
-
       {showAlert && (
         <Alert
           title={`${l10n.t(LocalizationKey.commonDelete)}: ${basename(parseWinPath(media.fsPath) || '')}`}
-          description={l10n.t(LocalizationKey.dashboardMediaItemAlertDeleteDescription, getFolder())}
+          description={l10n.t(LocalizationKey.dashboardMediaItemAlertDeleteDescription, mediaFolder)}
           okBtnText={l10n.t(LocalizationKey.commonDelete)}
           cancelBtnText={l10n.t(LocalizationKey.commonCancel)}
           dismiss={() => setShowAlert(false)}

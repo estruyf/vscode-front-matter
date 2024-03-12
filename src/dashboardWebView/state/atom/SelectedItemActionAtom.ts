@@ -3,7 +3,7 @@ import { atom } from 'recoil';
 export const SelectedItemActionAtom = atom<
   | {
       path: string;
-      action: 'edit';
+      action: 'view' | 'edit';
     }
   | undefined
 >({
