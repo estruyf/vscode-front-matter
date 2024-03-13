@@ -313,6 +313,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                   </button>
                 </div>
               )}
+
+              <ItemSelection filePath={media.fsPath} />
             </div>
           )}
         </button>

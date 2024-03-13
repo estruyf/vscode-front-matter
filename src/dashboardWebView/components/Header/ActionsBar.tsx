@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { NavigationType } from '../../models';
-import { CommandLineIcon, PencilIcon, TrashIcon, ChevronDownIcon, XMarkIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { NavigationType, Page } from '../../models';
+import { CommandLineIcon, PencilIcon, TrashIcon, ChevronDownIcon, XMarkIcon, EyeIcon, LanguageIcon } from '@heroicons/react/24/outline';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { MultiSelectedItemsAtom, SelectedItemActionAtom, SelectedMediaFolderSelector, SettingsSelector } from '../../state';
 import { ActionsBarItem } from './ActionsBarItem';
@@ -10,7 +10,9 @@ import { Alert } from '../Modals/Alert';
 import { messageHandler } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
 import { CustomScript, ScriptType } from '../../../models';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../../components/shadcn/Dropdown';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../../../components/shadcn/Dropdown';
+import { useFilesContext } from '../../providers/FilesProvider';
+import { COMMAND_NAME, GeneralCommands } from '../../../constants';
 
 export interface IActionsBarProps {
   view: NavigationType;
@@ -24,10 +26,15 @@ export const ActionsBar: React.FunctionComponent<IActionsBarProps> = ({
   const [showAlert, setShowAlert] = React.useState(false);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const settings = useRecoilValue(SettingsSelector);
+  const { files } = useFilesContext();
 
   const viewFile = React.useCallback(() => {
-    if (selectedFiles.length === 1 && view === NavigationType.Contents) {
-      messageHandler.send(DashboardMessage.openFile, selectedFiles[0]);
+    if (selectedFiles.length === 1) {
+      if (view === NavigationType.Contents) {
+        messageHandler.send(DashboardMessage.openFile, selectedFiles[0]);
+      } else if (view === NavigationType.Media) {
+        setSelectedItemAction({ path: selectedFiles[0], action: 'view' })
+      }
     }
   }, [selectedFiles]);
 
@@ -57,6 +64,75 @@ export const ActionsBar: React.FunctionComponent<IActionsBarProps> = ({
     }
   }, [selectedFiles]);
 
+  const languageActions = React.useMemo(() => {
+    const actions: React.ReactNode[] = [];
+
+    if (view === NavigationType.Contents && files.length > 0 && selectedFiles.length === 1) {
+      const selectedItem = selectedFiles[0];
+      const page = ((files || []) as Page[]).find((f: Page) => f.fmFilePath === selectedItem);
+
+      if (page?.fmLocale) {
+        const locale = page.fmLocale;
+        const translations = page.fmTranslations;
+
+        actions.push(
+          <ActionsBarItem
+            key="translate"
+            onClick={() => {
+              messageHandler.send(GeneralCommands.toVSCode.runCommand, {
+                command: COMMAND_NAME.i18n.create,
+                args: selectedItem
+              })
+            }}>
+            <LanguageIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
+            <span>{l10n.t(LocalizationKey.commonTranslate)}</span>
+          </ActionsBarItem>
+        )
+
+        if (translations && Object.keys(translations).length > 0) {
+          const crntLocale = translations[locale.locale];
+          const otherLocales = Object.entries(translations).filter(([key]) => key !== locale.locale);
+
+          if (otherLocales.length > 0) {
+            actions.push(
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  className='flex items-center text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)]'
+                >
+                  <LanguageIcon className="mr-2 h-4 w-4" aria-hidden={true} />
+                  <span>{l10n.t(LocalizationKey.commonLanguages)}</span>
+                  <ChevronDownIcon className="ml-2 h-4 w-4" aria-hidden={true} />
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent align='start'>
+
+                  <DropdownMenuItem onClick={() => messageHandler.send(DashboardMessage.openFile, crntLocale.path)}>
+                    <span>{crntLocale.locale.title || crntLocale.locale.locale}</span>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuSeparator />
+
+                  {
+                    otherLocales.map(([key, value]) => (
+                      <DropdownMenuItem
+                        key={key}
+                        onClick={() => messageHandler.send(DashboardMessage.openFile, value.path)}
+                      >
+                        <span>{value.locale.title || value.locale.locale}</span>
+                      </DropdownMenuItem>
+                    ))
+                  }
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )
+          }
+        }
+      }
+    }
+
+    return actions;
+  }, [files, selectedFiles]);
+
   const customScriptActions = React.useMemo(() => {
     if (!settings?.scripts) {
       return null;
@@ -80,7 +156,7 @@ export const ActionsBar: React.FunctionComponent<IActionsBarProps> = ({
             disabled={selectedFiles.length === 0}
           >
             <CommandLineIcon className="mr-2 h-4 w-4" aria-hidden={true} />
-            <span>Scripts</span>
+            <span>{l10n.t(LocalizationKey.commonScripts)}</span>
             <ChevronDownIcon className="ml-2 h-4 w-4" aria-hidden={true} />
           </DropdownMenuTrigger>
 
@@ -111,19 +187,13 @@ export const ActionsBar: React.FunctionComponent<IActionsBarProps> = ({
         aria-label="Item actions"
       >
         <div className='flex items-center space-x-6'>
-          {
-            view === NavigationType.Contents && (
-              <>
-                <ActionsBarItem
-                  disabled={selectedFiles.length === 0 || selectedFiles.length > 1}
-                  onClick={viewFile}
-                >
-                  <EyeIcon className="w-4 h-4 mr-2" aria-hidden="true" />
-                  <span>{l10n.t(LocalizationKey.commonView)}</span>
-                </ActionsBarItem>
-              </>
-            )
-          }
+          <ActionsBarItem
+            disabled={selectedFiles.length === 0 || selectedFiles.length > 1}
+            onClick={viewFile}
+          >
+            <EyeIcon className="w-4 h-4 mr-2" aria-hidden="true" />
+            <span>{l10n.t(LocalizationKey.commonView)}</span>
+          </ActionsBarItem>
 
           {
             view === NavigationType.Media && (
@@ -141,6 +211,8 @@ export const ActionsBar: React.FunctionComponent<IActionsBarProps> = ({
               </>
             )
           }
+
+          {languageActions}
 
           {customScriptActions}
 
@@ -170,8 +242,8 @@ export const ActionsBar: React.FunctionComponent<IActionsBarProps> = ({
 
       {showAlert && (
         <Alert
-          title={`${l10n.t(LocalizationKey.commonDelete)}`}
-          description={`Are you sure you want to delete the selected files?`}
+          title={`${l10n.t(LocalizationKey.dashboardHeaderActionsBarAlertDeleteTitle)}`}
+          description={l10n.t(LocalizationKey.dashboardHeaderActionsBarAlertDeleteDescription)}
           okBtnText={l10n.t(LocalizationKey.commonDelete)}
           cancelBtnText={l10n.t(LocalizationKey.commonCancel)}
           dismiss={() => setShowAlert(false)}

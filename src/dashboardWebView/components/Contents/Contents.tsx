@@ -11,6 +11,7 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
 import { TelemetryEvent } from '../../../constants';
 import { PageLayout } from '../Layout/PageLayout';
+import { FilesProvider } from '../../providers/FilesProvider';
 
 export interface IContentsProps {
   pages: Page[];
@@ -32,18 +33,20 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({
   }, []);
 
   return (
-    <PageLayout folders={pageFolders} totalPages={pageItems.length}>
-      <div className="w-full flex-grow max-w-full mx-auto pb-6">
-        {loading ? <Spinner type={loading} /> : <Overview pages={pageItems} settings={settings} />}
-      </div>
+    <FilesProvider files={pageItems}>
+      <PageLayout folders={pageFolders} totalPages={pageItems.length}>
+        <div className="w-full flex-grow max-w-full mx-auto pb-6">
+          {loading ? <Spinner type={loading} /> : <Overview pages={pageItems} settings={settings} />}
+        </div>
 
-      <SponsorMsg
-        beta={settings?.beta}
-        version={settings?.versionInfo}
-        isBacker={settings?.isBacker}
-      />
+        <SponsorMsg
+          beta={settings?.beta}
+          version={settings?.versionInfo}
+          isBacker={settings?.isBacker}
+        />
 
-      <img className='hidden' src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Ffrontmatter.codes%2Fmetrics%2Fdashboards&slug=content" alt="Content metrics" />
-    </PageLayout>
+        <img className='hidden' src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Ffrontmatter.codes%2Fmetrics%2Fdashboards&slug=content" alt="Content metrics" />
+      </PageLayout>
+    </FilesProvider>
   );
 };

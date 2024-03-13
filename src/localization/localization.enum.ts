@@ -156,6 +156,18 @@ export enum LocalizationKey {
    */
   commonView = 'common.view',
   /**
+   * Translate
+   */
+  commonTranslate = 'common.translate',
+  /**
+   * Languages
+   */
+  commonLanguages = 'common.languages',
+  /**
+   * Scripts
+   */
+  commonScripts = 'common.scripts',
+  /**
    * Loading content
    */
   loadingInitPages = 'loading.initPages',
@@ -487,6 +499,14 @@ export enum LocalizationKey {
    * All
    */
   dashboardFiltersLanguageFilterAll = 'dashboard.filters.languageFilter.all',
+  /**
+   * Delete selected files
+   */
+  dashboardHeaderActionsBarAlertDeleteTitle = 'dashboard.header.actionsBar.alertDelete.title',
+  /**
+   * Are you sure you want to delete the selected files?
+   */
+  dashboardHeaderActionsBarAlertDeleteDescription = 'dashboard.header.actionsBar.alertDelete.description',
   /**
    * Home
    */
