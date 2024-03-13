@@ -234,7 +234,7 @@ export const ActionsBar: React.FunctionComponent<IActionsBarProps> = ({
               onClick={() => setSelectedFiles([])}
             >
               <XMarkIcon className="w-4 h-4 mr-1" aria-hidden="true" />
-              <span>{l10n.t(LocalizationKey.dashboardHeaderActionsBarItemsSelected)}</span>
+              <span>{l10n.t(LocalizationKey.dashboardHeaderActionsBarItemsSelected, selectedFiles.length)}</span>
             </button>
           )
         }
