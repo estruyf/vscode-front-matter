@@ -18,8 +18,7 @@ import { ArrowTopRightOnSquareIcon, BoltIcon, PlusIcon } from '@heroicons/react/
 import { HeartIcon } from '@heroicons/react/24/solid';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { routePaths } from '../..';
-import { useEffect, useMemo } from 'react';
-import { SyncButton } from './SyncButton';
+import { useMemo } from 'react';
 import { Pagination } from './Pagination';
 import { GroupOption } from '../../constants/GroupOption';
 import usePagination from '../../hooks/usePagination';
