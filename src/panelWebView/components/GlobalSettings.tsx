@@ -3,12 +3,12 @@ import { PanelSettings } from '../../models';
 import { CommandToCode } from '../CommandToCode';
 import { useDebounce } from '../../hooks/useDebounce';
 import { Collapsible } from './Collapsible';
-import { VsLabel } from './VscodeComponents';
 import useStartCommand from '../hooks/useStartCommand';
 import { VSCodeCheckbox } from '@vscode/webview-ui-toolkit/react';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
+import { VSCodeLabel } from './VSCode';
 
 export interface IGlobalSettingsProps {
   settings: PanelSettings | undefined;
@@ -78,25 +78,25 @@ const GlobalSettings: React.FunctionComponent<IGlobalSettingsProps> = ({
         title={l10n.t(LocalizationKey.panelGlobalSettingsTitle)}
       >
         <div className={`base__action`}>
-          <VsLabel>
+          <VSCodeLabel>
             {l10n.t(LocalizationKey.panelGlobalSettingsActionModifiedDateLabel)}
-          </VsLabel>
+          </VSCodeLabel>
           <VSCodeCheckbox checked={modifiedDateUpdate} onClick={onDateCheck}>
             {l10n.t(LocalizationKey.panelGlobalSettingsActionModifiedDateDescription)}
           </VSCodeCheckbox>
         </div>
         <div className={`base__action`}>
-          <VsLabel>
+          <VSCodeLabel>
             {l10n.t(LocalizationKey.panelGlobalSettingsActionFrontMatterLabel)}
-          </VsLabel>
+          </VSCodeLabel>
           <VSCodeCheckbox checked={fmHighlighting} onClick={onHighlightCheck}>
             {l10n.t(LocalizationKey.panelGlobalSettingsActionFrontMatterDescription)}
           </VSCodeCheckbox>
         </div>
         <div className={`base__action`}>
-          <VsLabel>
+          <VSCodeLabel>
             {l10n.t(LocalizationKey.panelGlobalSettingsActionPreviewLabel)}
-          </VsLabel>
+          </VSCodeLabel>
           <input
             type={`text`}
             placeholder={l10n.t(LocalizationKey.dashboardPreviewInputPlaceholder, `http://localhost:1313`)}
@@ -105,9 +105,9 @@ const GlobalSettings: React.FunctionComponent<IGlobalSettingsProps> = ({
           />
         </div>
         <div className={`base__action`}>
-          <VsLabel>
+          <VSCodeLabel>
             {l10n.t(LocalizationKey.panelGlobalSettingsActionServerLabel)}
-          </VsLabel>
+          </VSCodeLabel>
           <input
             type={`text`}
             placeholder={l10n.t(LocalizationKey.panelGlobalSettingsActionServerPlaceholder, `hugo server -D`)}

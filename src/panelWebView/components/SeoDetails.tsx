@@ -1,14 +1,7 @@
 import * as React from 'react';
-import {
-  VsTable,
-  VsTableBody,
-  VsTableHeader,
-  VsTableHeaderCell,
-  VsTableRow,
-  VsTableCell
-} from './VscodeComponents';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
+import { VSCodeTable, VSCodeTableBody, VSCodeTableCell, VSCodeTableHead, VSCodeTableHeader, VSCodeTableRow } from './VSCode/VSCodeTable';
 
 export interface ISeoDetailsProps {
   allowedLength: number;
@@ -23,30 +16,33 @@ const SeoDetails: React.FunctionComponent<ISeoDetailsProps> = (
 ) => {
   const { allowedLength, title, value, valueTitle, noValidation } = props;
 
-  const validate = () => {
+  const validate = React.useMemo(() => {
     if (noValidation) {
       return '';
     }
 
     return value <= allowedLength ? 'valid' : 'not-valid';
-  };
+  }, [value, allowedLength, noValidation]);
 
   return (
-    <div className={`seo__status__details ${validate()}`}>
+    <div className={`seo__status__details ${validate}`}>
       <h4>{title}</h4>
 
-      <VsTable bordered>
-        <VsTableHeader slot="header">
-          <VsTableHeaderCell className={validate()}>{valueTitle}</VsTableHeaderCell>
-          <VsTableHeaderCell>{l10n.t(LocalizationKey.panelSeoDetailsRecommended)}</VsTableHeaderCell>
-        </VsTableHeader>
-        <VsTableBody slot="body">
-          <VsTableRow>
-            <VsTableCell className={validate()}>{value}</VsTableCell>
-            <VsTableCell>{allowedLength}</VsTableCell>
-          </VsTableRow>
-        </VsTableBody>
-      </VsTable>
+      <VSCodeTable>
+        <VSCodeTableHeader>
+          <VSCodeTableRow>
+            <VSCodeTableHead className={validate}>{valueTitle}</VSCodeTableHead>
+            <VSCodeTableHead>{l10n.t(LocalizationKey.panelSeoDetailsRecommended)}</VSCodeTableHead>
+          </VSCodeTableRow>
+        </VSCodeTableHeader>
+
+        <VSCodeTableBody>
+          <VSCodeTableRow>
+            <VSCodeTableCell className={validate}>{value}</VSCodeTableCell>
+            <VSCodeTableCell>{allowedLength}</VSCodeTableCell>
+          </VSCodeTableRow>
+        </VSCodeTableBody>
+      </VSCodeTable>
     </div>
   );
 };

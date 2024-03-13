@@ -2,9 +2,9 @@ import * as React from 'react';
 import { FolderInfo } from '../../models';
 import { Collapsible } from './Collapsible';
 import { FileList } from './FileList';
-import { VsLabel } from './VscodeComponents';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
+import { VSCodeLabel } from './VSCode';
 
 export interface IFolderAndFilesProps {
   data: FolderInfo[] | undefined;
@@ -35,9 +35,9 @@ const FolderAndFiles: React.FunctionComponent<IFolderAndFilesProps> = ({
                     />
                   </div>
                 ) : isBase ? (
-                  <VsLabel key={`${folder.title}-${idx}`}>
+                  <VSCodeLabel key={`${folder.title}-${idx}`}>
                     {folder.title}: {folder.files} {folder.files > 1 ? l10n.t(LocalizationKey.panelFileListLabelPlural) : l10n.t(LocalizationKey.panelFileListLabelSingular)}
-                  </VsLabel>
+                  </VSCodeLabel>
                 ) : null}
               </div>
             ))}

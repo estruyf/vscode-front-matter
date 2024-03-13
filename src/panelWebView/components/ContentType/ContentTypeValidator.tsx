@@ -5,9 +5,9 @@ import { useMemo } from 'react';
 import { Field } from '../../../models';
 import { CommandToCode } from '../../CommandToCode';
 import { IMetadata } from '../Metadata';
-import { VsLabel } from '../VscodeComponents';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { VSCodeLabel } from '../VSCode';
 
 export interface IContentTypeValidatorProps {
   fields: Field[];
@@ -50,7 +50,7 @@ export const ContentTypeValidator: React.FunctionComponent<IContentTypeValidator
 
   return (
     <div className="hint">
-      <VsLabel>
+      <VSCodeLabel>
         <div className={`metadata_field__label metadata_field__alert`}>
           <svg
             width="16"
@@ -70,7 +70,7 @@ export const ContentTypeValidator: React.FunctionComponent<IContentTypeValidator
             {l10n.t(LocalizationKey.panelContentTypeContentTypeValidatorTitle)}
           </span>
         </div>
-      </VsLabel>
+      </VSCodeLabel>
 
 
       {l10n.t(LocalizationKey.panelContentTypeContentTypeValidatorHint).split(`\n`).map(s => (<p className="inline_hint" key={s}>{s}</p>))}

@@ -6,7 +6,7 @@ import { DashboardMessage } from '../../DashboardMessage';
 import { Grouping } from '.';
 import { ViewSwitch } from './ViewSwitch';
 import { useRecoilValue, useResetRecoilState } from 'recoil';
-import { GroupingSelector, SortingAtom } from '../../state';
+import { GroupingSelector, MultiSelectedItemsAtom, SortingAtom } from '../../state';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { ClearFilters } from './ClearFilters';
 import { MediaHeaderTop } from '../Media/MediaHeaderTop';
@@ -31,6 +31,7 @@ import { SettingsLink } from '../SettingsView/SettingsLink';
 import { Link } from '../Common/Link';
 import { SPONSOR_LINK } from '../../../constants';
 import { Filters } from './Filters';
+import { ActionsBar } from './ActionsBar';
 
 export interface IHeaderProps {
   header?: React.ReactNode;
@@ -50,6 +51,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
 }: React.PropsWithChildren<IHeaderProps>) => {
   const grouping = useRecoilValue(GroupingSelector);
   const resetSorting = useResetRecoilState(SortingAtom);
+  const resetSelectedItems = useResetRecoilState(MultiSelectedItemsAtom);
   const location = useLocation();
   const navigate = useNavigate();
   const { pageSetNr } = usePagination(settings?.dashboardState.contents.pagination);
@@ -69,6 +71,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
   const updateView = (view: NavigationType) => {
     navigate(routePaths[view]);
     resetSorting();
+    resetSelectedItems();
   };
 
   const runBulkScript = (script: CustomScript) => {
@@ -121,7 +124,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
 
   return (
     <div className={`w-full sticky top-0 z-20 bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]`}>
-      <div className={`mb-0 border-b flex justify-between bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)] border-[var(--frontmatter-border)]`}>
+      <div className={`overflow-x-auto mb-0 border-b flex justify-between bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)] border-[var(--frontmatter-border)]`}>
         <Tabs onNavigate={updateView} />
 
         <div className='flex items-center space-x-2 pr-4'>
@@ -159,12 +162,8 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
 
       {location.pathname === routePaths.contents && (
         <>
-          <div className={`px-4 mt-3 mb-2 flex items-center justify-between`}>
-            <Searchbox />
-
-            <div className={`flex items-center justify-end space-x-4 flex-1`}>
-              {/* <SyncButton /> */}
-
+          <div className={`px-4 mt-2 mb-2 flex items-center justify-between`}>
+            <div className={`flex items-center justify-start space-x-4 flex-1`}>
               <ChoiceButton
                 title={l10n.t(LocalizationKey.dashboardHeaderHeaderCreateContent)}
                 choices={choiceOptions}
@@ -172,6 +171,8 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
                 disabled={!settings?.initialized}
               />
             </div>
+
+            <Searchbox />
           </div>
 
           <div className={`px-4 flex flex-row items-center border-b justify-between border-[var(--frontmatter-border)]`}>
@@ -185,7 +186,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
           </div>
 
           <div
-            className={`py-4 px-5 w-full flex items-center justify-between lg:justify-end border-b space-x-4 lg:space-x-6 xl:space-x-8 bg-[var(--vscode-panel-background)] border-[var(--frontmatter-border)]`}
+            className={`overflow-x-auto py-2 px-4 w-full flex items-center justify-between lg:justify-end border-b space-x-4 lg:space-x-6 xl:space-x-8 bg-[var(--vscode-panel-background)] border-[var(--frontmatter-border)]`}
           >
             <ClearFilters />
 
@@ -207,6 +208,8 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
                 <Pagination totalPages={totalPages || 0} />
               </div>
             )}
+
+          <ActionsBar view={NavigationType.Contents} />
         </>
       )}
 
@@ -215,6 +218,8 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
           <MediaHeaderTop />
 
           <MediaHeaderBottom />
+
+          <ActionsBar view={NavigationType.Media} />
         </>
       )}
 

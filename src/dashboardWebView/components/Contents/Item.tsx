@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { routePaths } from '../..';
 import useCard from '../../hooks/useCard';
 import { I18nLabel } from './I18nLabel';
+import { ItemSelection } from '../Common/ItemSelection';
 
 export interface IItemProps extends Page { }
 
@@ -133,6 +134,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             }
           </button>
 
+          <ItemSelection filePath={pageData.fmFilePath} />
+
           <div className="relative p-4 w-full grow">
             {
               (statusPlaceholder || datePlaceholder) && (
@@ -232,6 +235,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           className={`px-5 cursor-pointer w-full text-left grid grid-cols-12 gap-x-4 sm:gap-x-6 xl:gap-x-8 py-2 border-b hover:bg-opacity-70 border-[var(--frontmatter-border)] hover:bg-[var(--vscode-sideBar-background)]`}
         >
           <div className="col-span-8 font-bold truncate flex items-center space-x-4">
+            <ItemSelection filePath={pageData.fmFilePath} isRowItem />
+
             <button
               title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
               onClick={openFile}>

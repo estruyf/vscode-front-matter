@@ -37,6 +37,10 @@
   "common.back": "Back",
   "common.open": "Open",
   "common.openWithValue": "Open: {0}",
+  "common.view": "View",
+  "common.translate": "Translate",
+  "common.languages": "Languages",
+  "common.scripts": "Scripts",
 
   "loading.initPages": "Loading content",
 
@@ -146,6 +150,10 @@
   "dashboard.filters.languageFilter.label": "Locale",
   "dashboard.filters.languageFilter.all": "All",
 
+  "dashboard.header.actionsBar.itemsSelected": "{0} selected",
+  "dashboard.header.actionsBar.alertDelete.title": "Delete selected files",
+  "dashboard.header.actionsBar.alertDelete.description": "Are you sure you want to delete the selected files?",
+
   "dashboard.header.breadcrumb.home": "Home",
 
   "dashboard.header.clearFilters.title": "Clear filters, grouping, and sorting",
@@ -228,6 +236,9 @@
 
   "dashboard.media.folderCreation.hexo.create": "Create post asset folder",
   "dashboard.media.folderCreation.folder.create": "Create new folder",
+
+  "dashboard.media.folderItem.contentDirectory": "Content directory",
+  "dashboard.media.folderItem.publicDirectory": "Public directory",
 
   "dashboard.media.item.buttom.insert.image": "Insert image",
   "dashboard.media.item.buttom.insert.snippet": "Insert snippet",

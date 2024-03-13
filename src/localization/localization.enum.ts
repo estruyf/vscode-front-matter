@@ -152,6 +152,22 @@ export enum LocalizationKey {
    */
   commonOpenWithValue = 'common.openWithValue',
   /**
+   * View
+   */
+  commonView = 'common.view',
+  /**
+   * Translate
+   */
+  commonTranslate = 'common.translate',
+  /**
+   * Languages
+   */
+  commonLanguages = 'common.languages',
+  /**
+   * Scripts
+   */
+  commonScripts = 'common.scripts',
+  /**
    * Loading content
    */
   loadingInitPages = 'loading.initPages',
@@ -484,6 +500,18 @@ export enum LocalizationKey {
    */
   dashboardFiltersLanguageFilterAll = 'dashboard.filters.languageFilter.all',
   /**
+   * {0} selected
+   */
+  dashboardHeaderActionsBarItemsSelected = 'dashboard.header.actionsBar.itemsSelected',
+  /**
+   * Delete selected files
+   */
+  dashboardHeaderActionsBarAlertDeleteTitle = 'dashboard.header.actionsBar.alertDelete.title',
+  /**
+   * Are you sure you want to delete the selected files?
+   */
+  dashboardHeaderActionsBarAlertDeleteDescription = 'dashboard.header.actionsBar.alertDelete.description',
+  /**
    * Home
    */
   dashboardHeaderBreadcrumbHome = 'dashboard.header.breadcrumb.home',
@@ -739,6 +767,14 @@ export enum LocalizationKey {
    * Create new folder
    */
   dashboardMediaFolderCreationFolderCreate = 'dashboard.media.folderCreation.folder.create',
+  /**
+   * Content directory
+   */
+  dashboardMediaFolderItemContentDirectory = 'dashboard.media.folderItem.contentDirectory',
+  /**
+   * Public directory
+   */
+  dashboardMediaFolderItemPublicDirectory = 'dashboard.media.folderItem.publicDirectory',
   /**
    * Insert image
    */

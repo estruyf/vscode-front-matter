@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { ValidInfo } from './ValidInfo';
-import { VsTableCell, VsTableRow } from './VscodeComponents';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
+import { VSCodeTableCell, VSCodeTableRow } from './VSCode/VSCodeTable';
 
 export interface ISeoKeywordInfoProps {
   keyword: string;
@@ -71,22 +71,22 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
   }
 
   return (
-    <VsTableRow>
-      <VsTableCell className={`table__cell`}>{keyword}</VsTableCell>
-      <VsTableCell className={`table__cell table__cell__validation table__cell__seo_details`}>
-        <div>
+    <VSCodeTableRow>
+      <VSCodeTableCell>{keyword}</VSCodeTableCell>
+      <VSCodeTableCell className={` table__cell__validation`}>
+        <div className='flex items-center'>
           <ValidInfo
             label={l10n.t(LocalizationKey.commonTitle)}
             isValid={!!title && title.toLowerCase().includes(keyword.toLowerCase())}
           />
         </div>
-        <div>
+        <div className='flex items-center'>
           <ValidInfo
             label={l10n.t(LocalizationKey.commonDescription)}
             isValid={!!description && description.toLowerCase().includes(keyword.toLowerCase())}
           />
         </div>
-        <div>
+        <div className='flex items-center'>
           <ValidInfo
             label={l10n.t(LocalizationKey.commonSlug)}
             isValid={
@@ -96,16 +96,18 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
             }
           />
         </div>
-        <div>
+        <div className='flex items-center'>
           <ValidInfo
             label={l10n.t(LocalizationKey.panelSeoKeywordInfoValidInfoContent)}
             isValid={!!content && content.toLowerCase().includes(keyword.toLowerCase())}
           />
         </div>
-        {headings && headings.length > 0 && <div>{checkHeadings()}</div>}
-        {wordCount && <div>{density()}</div>}
-      </VsTableCell>
-    </VsTableRow>
+        {headings && headings.length > 0 &&
+          <div className='flex items-center'>{checkHeadings()}</div>}
+        {wordCount &&
+          <div className='flex items-center'>{density()}</div>}
+      </VSCodeTableCell>
+    </VSCodeTableRow>
   );
 };
 

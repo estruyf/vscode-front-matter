@@ -27,6 +27,8 @@ import { basename, extname, join } from 'path';
 import { MediaInfo } from '../../../models';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { MediaItemPanel } from './MediaItemPanel';
+import { FilesProvider } from '../../providers/FilesProvider';
 
 export interface IMediaProps { }
 
@@ -162,111 +164,115 @@ export const Media: React.FunctionComponent<IMediaProps> = (
   });
 
   return (
-    <PageLayout>
-      <div className="w-full h-full pb-6" {...getRootProps()}>
-        {viewData?.data?.filePath && (
-          <div className={`text-lg text-center mb-6`}>
-            <p>{l10n.t(LocalizationKey.dashboardMediaMediaDescription)}</p>
-            <p className={`opacity-80 text-base`}>
-              {l10n.t(LocalizationKey.dashboardMediaMediaDragAndDrop)}
-            </p>
-          </div>
-        )}
-
-        {isDragActive && (
-          <div className={`absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center z-50 text-[var(--vscode-foreground)] bg-[var(--vscode-editor-background)] opacity-75`}>
-            <ArrowUpTrayIcon className={`h-32`} />
-            <p className={`text-xl max-w-md text-center`}>
-              {selectedFolder
-                ? l10n.t(LocalizationKey.dashboardMediaMediaFolderUpload, selectedFolder)
-                : l10n.t(LocalizationKey.dashboardMediaMediaFolderDefault, currentStaticFolder || 'public')}
-            </p>
-          </div>
-        )}
-
-        {allMedia.length === 0 && folders.length === 0 && !loading && (
-          <div className={`flex items-center justify-center h-full`}>
-            <div className={`max-w-xl text-center`}>
-              <FrontMatterIcon
-                className={`h-32 mx-auto opacity-90 mb-8 text-[var(--vscode-editor-foreground)]`}
-              />
-
-              <p className={`text-xl font-medium`}>
-                {l10n.t(LocalizationKey.dashboardMediaMediaPlaceholder)}
+    <FilesProvider files={allMedia}>
+      <PageLayout>
+        <div className="w-full h-full pb-6" {...getRootProps()}>
+          {viewData?.data?.filePath && (
+            <div className={`text-lg text-center mb-6`}>
+              <p>{l10n.t(LocalizationKey.dashboardMediaMediaDescription)}</p>
+              <p className={`opacity-80 text-base`}>
+                {l10n.t(LocalizationKey.dashboardMediaMediaDragAndDrop)}
               </p>
             </div>
-          </div>
-        )}
-
-        {contentFolders &&
-          contentFolders.length > 0 &&
-          contentFolders.map(
-            (group, idx) =>
-              group.folders &&
-              group.folders.length > 0 && (
-                <div key={`group-${idx}`} className={`mb-8`}>
-                  <h2 className="text-lg mb-8 first-letter:uppercase">
-                    {l10n.t(LocalizationKey.dashboardMediaMediaContentFolder)}: <b>{group.title}</b>
-                  </h2>
-
-                  <List gap={0}>
-                    {group.folders.map((folder) => (
-                      <FolderItem
-                        key={folder}
-                        folder={folder}
-                        staticFolder={currentStaticFolder}
-                        wsFolder={settings?.wsFolder}
-                      />
-                    ))}
-                  </List>
-                </div>
-              )
           )}
 
-        {publicFolders && publicFolders.length > 0 && (
-          <div className={`mb-8`}>
-            {contentFolders && contentFolders.length > 0 && (
-              <h2 className="text-lg mb-8">
-                {l10n.t(LocalizationKey.dashboardMediaMediaPublicFolder)}
-                {currentStaticFolder && (
-                  <span>
-                    : <b>{currentStaticFolder}</b>
-                  </span>
-                )}
-              </h2>
+          {isDragActive && (
+            <div className={`absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center z-50 text-[var(--vscode-foreground)] bg-[var(--vscode-editor-background)] opacity-75`}>
+              <ArrowUpTrayIcon className={`h-32`} />
+              <p className={`text-xl max-w-md text-center`}>
+                {selectedFolder
+                  ? l10n.t(LocalizationKey.dashboardMediaMediaFolderUpload, selectedFolder)
+                  : l10n.t(LocalizationKey.dashboardMediaMediaFolderDefault, currentStaticFolder || 'public')}
+              </p>
+            </div>
+          )}
+
+          {allMedia.length === 0 && folders.length === 0 && !loading && (
+            <div className={`flex items-center justify-center h-full`}>
+              <div className={`max-w-xl text-center`}>
+                <FrontMatterIcon
+                  className={`h-32 mx-auto opacity-90 mb-8 text-[var(--vscode-editor-foreground)]`}
+                />
+
+                <p className={`text-xl font-medium`}>
+                  {l10n.t(LocalizationKey.dashboardMediaMediaPlaceholder)}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {contentFolders &&
+            contentFolders.length > 0 &&
+            contentFolders.map(
+              (group, idx) =>
+                group.folders &&
+                group.folders.length > 0 && (
+                  <div key={`group-${idx}`} className={`mb-8`}>
+                    <h2 className="text-lg mb-8 first-letter:uppercase">
+                      {l10n.t(LocalizationKey.dashboardMediaMediaContentFolder)}: <b>{group.title}</b>
+                    </h2>
+
+                    <List gap={0}>
+                      {group.folders.map((folder) => (
+                        <FolderItem
+                          key={folder}
+                          folder={folder}
+                          staticFolder={currentStaticFolder}
+                          wsFolder={settings?.wsFolder}
+                        />
+                      ))}
+                    </List>
+                  </div>
+                )
             )}
 
-            <List gap={0}>
-              {publicFolders.map((folder) => (
-                <FolderItem
-                  key={folder}
-                  folder={folder}
-                  staticFolder={currentStaticFolder}
-                  wsFolder={settings?.wsFolder}
-                />
-              ))}
-            </List>
-          </div>
-        )}
+          {publicFolders && publicFolders.length > 0 && (
+            <div className={`mb-8`}>
+              {contentFolders && contentFolders.length > 0 && (
+                <h2 className="text-lg mb-8">
+                  {l10n.t(LocalizationKey.dashboardMediaMediaPublicFolder)}
+                  {currentStaticFolder && (
+                    <span>
+                      : <b>{currentStaticFolder}</b>
+                    </span>
+                  )}
+                </h2>
+              )}
 
-        <List>
-          {allMedia.map((file, idx) => (
-            <Item key={file.fsPath} media={file} />
-          ))}
-        </List>
-      </div>
+              <List gap={0}>
+                {publicFolders.map((folder) => (
+                  <FolderItem
+                    key={folder}
+                    folder={folder}
+                    staticFolder={currentStaticFolder}
+                    wsFolder={settings?.wsFolder}
+                  />
+                ))}
+              </List>
+            </div>
+          )}
 
-      {loading && <Spinner />}
+          <List>
+            {allMedia.map((file, idx) => (
+              <Item key={file.fsPath} media={file} />
+            ))}
+          </List>
+        </div>
 
-      <Lightbox />
+        <MediaItemPanel allMedia={allMedia} />
 
-      <SponsorMsg
-        beta={settings?.beta}
-        version={settings?.versionInfo}
-        isBacker={settings?.isBacker}
-      />
+        {loading && <Spinner />}
 
-      <img className='hidden' src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Ffrontmatter.codes%2Fmetrics%2Fdashboards&slug=media" alt="Media metrics" />
-    </PageLayout>
+        <Lightbox />
+
+        <SponsorMsg
+          beta={settings?.beta}
+          version={settings?.versionInfo}
+          isBacker={settings?.isBacker}
+        />
+
+        <img className='hidden' src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Ffrontmatter.codes%2Fmetrics%2Fdashboards&slug=media" alt="Media metrics" />
+      </PageLayout>
+    </FilesProvider>
   );
 };

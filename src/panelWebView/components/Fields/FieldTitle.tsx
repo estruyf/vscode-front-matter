@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useMemo } from 'react';
-import { VsLabel } from '../VscodeComponents';
 import { RequiredAsterix } from './RequiredAsterix';
+import { VSCodeLabel } from '../VSCode';
 
 export interface IFieldTitleProps {
   label: string | JSX.Element;
@@ -23,7 +23,7 @@ export const FieldTitle: React.FunctionComponent<IFieldTitleProps> = ({
   }, [icon]);
 
   return (
-    <VsLabel>
+    <VSCodeLabel>
       <div className={`metadata_field__label ${className || ''}`}>
         <div>
           {Icon}
@@ -33,6 +33,6 @@ export const FieldTitle: React.FunctionComponent<IFieldTitleProps> = ({
 
         {actionElement}
       </div>
-    </VsLabel>
+    </VSCodeLabel>
   );
 };

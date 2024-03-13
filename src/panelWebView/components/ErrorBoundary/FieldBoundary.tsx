@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as Sentry from '@sentry/react';
-import { VsLabel } from '../VscodeComponents';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { VSCodeLabel } from '../VSCode';
 
 export interface IFieldBoundaryProps {
   fieldName: string;
@@ -34,11 +34,11 @@ export default class FieldBoundary extends React.Component<
     if (this.state.hasError) {
       return (
         <div className={`metadata_field`}>
-          <VsLabel>
+          <VSCodeLabel>
             <div className={`metadata_field__label`}>
               <span style={{ lineHeight: '16px' }}>{this.props.fieldName}</span>
             </div>
-          </VsLabel>
+          </VSCodeLabel>
           <div className={`metadata_field__error`}>
             <span>
               {l10n.t(LocalizationKey.panelErrorBoundaryFieldBoundaryLabel)}

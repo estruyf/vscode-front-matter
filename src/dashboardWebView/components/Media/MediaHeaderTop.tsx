@@ -81,14 +81,14 @@ export const MediaHeaderTop: React.FunctionComponent<
 
   return (
     <nav
-      className={`py-3 px-4 flex items-center justify-between border-b border-[var(--frontmatter-border)]`}
+      className={`py-2 px-4 flex items-center justify-between border-b border-[var(--frontmatter-border)]`}
       aria-label="Pagination"
     >
-      <Searchbox placeholder={l10n.t(LocalizationKey.dashboardMediaMediaHeaderTopSearchboxPlaceholder)} />
+      <FolderCreation />
 
       <PaginationStatus />
 
-      <FolderCreation />
+      <Searchbox placeholder={l10n.t(LocalizationKey.dashboardMediaMediaHeaderTopSearchboxPlaceholder)} />
     </nav>
   );
 };
