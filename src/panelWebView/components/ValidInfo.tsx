@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { CheckIcon } from './Icons/CheckIcon';
-import { WarningIcon } from './Icons/WarningIcon';
+import { CheckIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 
 export interface IValidInfoProps {
   label?: string;
@@ -14,13 +13,9 @@ const ValidInfo: React.FunctionComponent<IValidInfoProps> = ({
   return (
     <>
       {isValid ? (
-        <span className="valid">
-          <CheckIcon />
-        </span>
+        <CheckIcon className={`h-4 w-4 text-[#46ec86] mr-2`} />
       ) : (
-        <span className="warning">
-          <WarningIcon />
-        </span>
+        <ExclamationTriangleIcon className={`h-4 w-4 text-[var(--vscode-statusBarItem-warningBackground)] mr-2`} />
       )}
       {label && <span>{label}</span>}
     </>

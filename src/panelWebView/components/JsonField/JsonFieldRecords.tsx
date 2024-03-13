@@ -1,10 +1,10 @@
 import { CircleStackIcon, PlusIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
-import { VsLabel } from '../VscodeComponents';
 import { JsonFieldRecord } from '.';
 import { SortableContainer, SortEnd } from 'react-sortable-hoc';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { VSCodeLabel } from '../VSCode';
 
 export interface IJsonFieldRecordsProps {
   records: any[];
@@ -33,7 +33,7 @@ export const JsonFieldRecords = ({
 
   return (
     <div className="json_data__list">
-      <VsLabel>
+      <VSCodeLabel>
         <div className={`metadata_field__label`}>
           <div>
             <CircleStackIcon style={{ width: '16px', height: '16px' }} />
@@ -44,7 +44,7 @@ export const JsonFieldRecords = ({
             <PlusIcon style={{ width: '16px', height: '16px' }} />
           </button>
         </div>
-      </VsLabel>
+      </VSCodeLabel>
 
       <Container onSortEnd={onSort} useDragHandle>
         {records.map((v: any, idx: number) => (
