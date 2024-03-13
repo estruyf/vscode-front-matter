@@ -500,6 +500,10 @@ export enum LocalizationKey {
    */
   dashboardFiltersLanguageFilterAll = 'dashboard.filters.languageFilter.all',
   /**
+   * {0} selected
+   */
+  dashboardHeaderActionsBarItemsSelected = 'dashboard.header.actionsBar.itemsSelected',
+  /**
    * Delete selected files
    */
   dashboardHeaderActionsBarAlertDeleteTitle = 'dashboard.header.actionsBar.alertDelete.title',
