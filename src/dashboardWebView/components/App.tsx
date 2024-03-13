@@ -55,6 +55,21 @@ export const App: React.FunctionComponent<IAppProps> = ({
     return isAllowed(mode?.features || [], FEATURE_FLAG.dashboard.taxonomy.view);
   }, [mode?.features]);
 
+  const checkDevMode = (retry: number = 0) => {
+    if (!window.fmExternal) {
+      if (retry < 5) {
+        setTimeout(() => checkDevMode(retry + 1), 150);
+      } else {
+        setIsDevMode(false);
+        return;
+      }
+    }
+
+    if (window.fmExternal && window.fmExternal.isDevelopment) {
+      setIsDevMode(true);
+    }
+  }
+
   useEffect(() => {
     if (view && routePaths[view]) {
       navigate(routePaths[view]);
@@ -65,9 +80,7 @@ export const App: React.FunctionComponent<IAppProps> = ({
   }, [view]);
 
   useEffect(() => {
-    if (window.fmExternal && window.fmExternal.isDevelopment) {
-      setIsDevMode(true);
-    }
+    checkDevMode();
   }, []);
 
   if (!settings) {
