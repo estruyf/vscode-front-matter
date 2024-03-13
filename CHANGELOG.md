@@ -4,6 +4,8 @@
 
 ### ✨ New features
 
+- [#671](https://github.com/estruyf/vscode-front-matter/issues/671): Command bar for contents and media dashboard
+
 ### 🎨 Enhancements
 
 ### ⚡️ Optimizations

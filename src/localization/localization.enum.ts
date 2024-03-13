@@ -672,7 +672,7 @@ export enum LocalizationKey {
    */
   dashboardHeaderTabsSnippets = 'dashboard.header.tabs.snippets',
   /**
-   * data
+   * Data
    */
   dashboardHeaderTabsData = 'dashboard.header.tabs.data',
   /**
