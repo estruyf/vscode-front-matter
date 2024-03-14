@@ -13,6 +13,7 @@ import { COMMAND_NAME, GeneralCommands } from '../../../constants';
 import { PinIcon } from '../Icons/PinIcon';
 import { PinnedItemsAtom } from '../../state/atom/PinnedItems';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from '../../../components/shadcn/Dropdown';
+import { RenameIcon } from '../../../components/icons/RenameIcon';
 
 export interface IContentActionsProps {
   title: string;
@@ -55,6 +56,11 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
     e.stopPropagation();
     setShowDeletionAlert(true);
   };
+
+  const onRename = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    messageHandler.send(DashboardMessage.rename, path);
+  }, [path])
 
   const onDeleteConfirm = () => {
     if (path) {
@@ -218,6 +224,11 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
                 <DropdownMenuItem onClick={onView}>
                   <EyeIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
                   <span>{l10n.t(LocalizationKey.dashboardContentsContentActionsMenuItemView)}</span>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem onClick={onRename}>
+                  <RenameIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
+                  <span>{l10n.t(LocalizationKey.commonRename)}</span>
                 </DropdownMenuItem>
 
                 {

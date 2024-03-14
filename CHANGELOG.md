@@ -8,6 +8,8 @@
 
 ### 🎨 Enhancements
 
+- [#773](https://github.com/estruyf/vscode-front-matter/issues/773): Added the ability to rename content files
+
 ### ⚡️ Optimizations
 
 ### 🐞 Fixes

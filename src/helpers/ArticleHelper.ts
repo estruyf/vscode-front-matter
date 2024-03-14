@@ -36,7 +36,7 @@ import {
 import { format, parse } from 'date-fns';
 import { Notifications } from './Notifications';
 import { Article } from '../commands';
-import { join, parse as parseFile } from 'path';
+import { dirname, join, parse as parseFile } from 'path';
 import { EditorHelper } from '@estruyf/vscode';
 import sanitize from '../helpers/Sanitize';
 import { Field, ContentType as IContentType } from '../models';
@@ -181,6 +181,53 @@ export class ArticleHelper {
 
       await workspace.fs.writeFile(file.uri, new TextEncoder().encode(update.newText));
     }
+  }
+
+  /**
+   * Renames a file.
+   * @param filePath - The path of the file to be renamed.
+   */
+  public static async rename(filePath: string) {
+    filePath = parseWinPath(filePath);
+    const fileUri = Uri.file(filePath);
+    const file = workspace.openTextDocument(fileUri);
+    if (!file) {
+      Notifications.error(l10n.t(LocalizationKey.commandsArticleRenameFileNotExistsError));
+      return;
+    }
+
+    const folderPath = dirname(fileUri.fsPath);
+    const fileName = parseFile(filePath).base;
+    const fileNameWithoutExt = parseFile(filePath).name;
+    const fileExtension = parseFile(filePath).ext;
+    const newFileName = await window.showInputBox({
+      title: l10n.t(LocalizationKey.commandsArticleRenameFileNameTitle, fileName),
+      prompt: l10n.t(LocalizationKey.commandsArticleRenameFileNamePrompt),
+      value: fileNameWithoutExt,
+      ignoreFocusOut: true,
+      validateInput: async (value) => {
+        try {
+          const newFileUri = Uri.joinPath(Uri.file(folderPath), `${value}${fileExtension}`);
+          console.log(newFileUri.fsPath);
+          const exists = await workspace.fs.readFile(newFileUri);
+          if (exists && value !== fileNameWithoutExt) {
+            return l10n.t(LocalizationKey.commandsArticleRenameFileExistsError, value);
+          }
+        } catch (e) {
+          // File does not exist
+        }
+        return undefined;
+      }
+    });
+
+    if (!newFileName) {
+      return;
+    }
+
+    const newFileUri = Uri.joinPath(Uri.file(folderPath), `${newFileName}${fileExtension}`);
+    await workspace.fs.rename(fileUri, newFileUri, {
+      overwrite: true
+    });
   }
 
   /**

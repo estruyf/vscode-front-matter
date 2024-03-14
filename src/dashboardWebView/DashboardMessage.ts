@@ -30,6 +30,7 @@ export enum DashboardMessage {
   getPinnedItems = 'getPinnedItems',
   pinItem = 'pinItem',
   unpinItem = 'unpinItem',
+  rename = 'rename',
 
   // Media Dashboard
   getMedia = 'getMedia',

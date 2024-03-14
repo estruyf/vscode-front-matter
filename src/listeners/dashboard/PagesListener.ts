@@ -54,6 +54,9 @@ export class PagesListener extends BaseListener {
       case DashboardMessage.deleteFile:
         this.deletePage(msg.payload);
         break;
+      case DashboardMessage.rename:
+        ArticleHelper.rename(msg.payload);
+        break;
     }
   }
 

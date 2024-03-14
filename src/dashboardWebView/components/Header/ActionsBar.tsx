@@ -13,6 +13,7 @@ import { CustomScript, ScriptType } from '../../../models';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../../../components/shadcn/Dropdown';
 import { useFilesContext } from '../../providers/FilesProvider';
 import { COMMAND_NAME, GeneralCommands } from '../../../constants';
+import { RenameIcon } from '../../../components/icons/RenameIcon';
 
 export interface IActionsBarProps {
   view: NavigationType;
@@ -194,6 +195,21 @@ export const ActionsBar: React.FunctionComponent<IActionsBarProps> = ({
             <EyeIcon className="w-4 h-4 mr-2" aria-hidden="true" />
             <span>{l10n.t(LocalizationKey.commonView)}</span>
           </ActionsBarItem>
+
+          {
+            view === NavigationType.Contents && (
+              <ActionsBarItem
+                disabled={selectedFiles.length === 0 || selectedFiles.length > 1}
+                onClick={() => {
+                  messageHandler.send(DashboardMessage.rename, selectedFiles[0]);
+                  setSelectedFiles([]);
+                }}
+              >
+                <RenameIcon className="w-4 h-4 mr-2" aria-hidden="true" />
+                <span>{l10n.t(LocalizationKey.commonRename)}</span>
+              </ActionsBarItem>
+            )
+          }
 
           {
             view === NavigationType.Media && (

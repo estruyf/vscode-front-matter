@@ -168,6 +168,10 @@ export enum LocalizationKey {
    */
   commonScripts = 'common.scripts',
   /**
+   * Rename
+   */
+  commonRename = 'common.rename',
+  /**
    * Loading content
    */
   loadingInitPages = 'loading.initPages',
@@ -1680,6 +1684,22 @@ export enum LocalizationKey {
    * Failed to rename file: {0}
    */
   commandsArticleUpdateSlugError = 'commands.article.updateSlug.error',
+  /**
+   * The file did not exist
+   */
+  commandsArticleRenameFileNotExistsError = 'commands.article.rename.fileNotExists.error',
+  /**
+   * A file with the name "{0}" already exists
+   */
+  commandsArticleRenameFileExistsError = 'commands.article.rename.fileExists.error',
+  /**
+   * Rename: {0}
+   */
+  commandsArticleRenameFileNameTitle = 'commands.article.rename.fileName.title',
+  /**
+   * File name
+   */
+  commandsArticleRenameFileNamePrompt = 'commands.article.rename.fileName.prompt',
   /**
    * Cache cleared
    */

@@ -41,6 +41,7 @@
   "common.translate": "Translate",
   "common.languages": "Languages",
   "common.scripts": "Scripts",
+  "common.rename": "Rename",
 
   "loading.initPages": "Loading content",
 
@@ -525,6 +526,10 @@
 
   "commands.article.setDate.error": "Something failed while parsing the date format. Check your \"{0}\" setting.",
   "commands.article.updateSlug.error": "Failed to rename file: {0}",
+  "commands.article.rename.fileNotExists.error": "The file did not exist",
+  "commands.article.rename.fileExists.error": "A file with the name \"{0}\" already exists",
+  "commands.article.rename.fileName.title": "Rename: {0}",
+  "commands.article.rename.fileName.prompt": "File name",
 
   "commands.cache.cleared": "Cache cleared",
 
