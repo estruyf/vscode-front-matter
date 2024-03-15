@@ -124,10 +124,10 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
 
   return (
     <div className={`w-full sticky top-0 z-20 bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]`}>
-      <div className={`overflow-x-auto mb-0 border-b flex justify-between bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)] border-[var(--frontmatter-border)]`}>
+      <div className={`px-4 overflow-x-auto mb-0 border-b flex justify-between bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)] border-[var(--frontmatter-border)]`}>
         <Tabs onNavigate={updateView} />
 
-        <div className='flex items-center space-x-2 pr-4'>
+        <div className='flex items-center space-x-2'>
           <ProjectSwitcher />
 
           {
