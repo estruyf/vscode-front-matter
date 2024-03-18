@@ -9,6 +9,7 @@
 ### 🎨 Enhancements
 
 - [#773](https://github.com/estruyf/vscode-front-matter/issues/773): Added the ability to rename content files
+- [#777](https://github.com/estruyf/vscode-front-matter/issues/777): Show an error in the metadata panel if something went wrong while parsing the front matter
 
 ### ⚡️ Optimizations
 

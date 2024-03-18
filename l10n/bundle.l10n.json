@@ -466,6 +466,7 @@
   "panel.globalSettings.action.server.placeholder": "Example: {0}",
 
   "panel.metadata.title": "Metadata",
+  "panel.metadata.focusProblems": "Check the problems view for more information",
 
   "panel.otherActions.title": "Other actions",
   "panel.otherActions.writingSettings.enabled": "Writing settings enabled",
@@ -768,6 +769,7 @@
   "listeners.panel.dataListener.aiSuggestTaxonomy.noEditor.error": "No active editor",
   "listeners.panel.dataListener.aiSuggestTaxonomy.noData.error": "No article data",
   "listeners.panel.dataListener.getDataFileEntries.noDataFiles.error": "Couldn't find data file entries",
+  "listeners.panel.dataListener.pushMetadata.frontMatter.error": "Something went wrong while parsing your front matter. Please check the contents of your file.",
 
 
   "listeners.panel.taxonomyListener.aiSuggestTaxonomy.noEditor.error": "No active editor",

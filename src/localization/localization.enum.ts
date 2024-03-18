@@ -1505,6 +1505,10 @@ export enum LocalizationKey {
    */
   panelMetadataTitle = 'panel.metadata.title',
   /**
+   * Check the output for more information
+   */
+  panelMetadataFocusProblems = 'panel.metadata.focusProblems',
+  /**
    * Other actions
    */
   panelOtherActionsTitle = 'panel.otherActions.title',
@@ -2536,6 +2540,10 @@ export enum LocalizationKey {
    * Couldn't find data file entries
    */
   listenersPanelDataListenerGetDataFileEntriesNoDataFilesError = 'listeners.panel.dataListener.getDataFileEntries.noDataFiles.error',
+  /**
+   * Something went wrong while parsing your front matter. Please check the contents of your file.
+   */
+  listenersPanelDataListenerPushMetadataFrontMatterError = 'listeners.panel.dataListener.pushMetadata.frontMatter.error',
   /**
    * No active editor
    */

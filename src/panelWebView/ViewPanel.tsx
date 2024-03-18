@@ -86,7 +86,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
     return <Spinner />;
   }
 
-  if (!metadata || Object.keys(metadata || {}).length === 0) {
+  if (!metadata) {
     return <BaseView mode={mode} settings={settings} folderAndFiles={folderAndFiles} />;
   }
 

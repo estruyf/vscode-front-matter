@@ -28,7 +28,7 @@ import {
   SETTING_TAXONOMY_CONTENT_TYPES
 } from '../../constants';
 import { Article, Preview } from '../../commands';
-import { ParsedFrontMatter } from '../../parsers';
+import { FrontMatterParser, ParsedFrontMatter } from '../../parsers';
 import { Field, Mode, PostMessageData, ContentType as IContentType } from '../../models';
 import { encodeEmoji, fieldWhenClause } from '../../utils';
 import { PanelProvider } from '../../panelWebView/PanelProvider';
@@ -198,6 +198,26 @@ export class DataListener extends BaseListener {
     try {
       if (filePath) {
         articleDetails = await ArticleHelper.getDetails(filePath);
+
+        if (!articleDetails) {
+          try {
+            const contents = await ArticleHelper.getContents(filePath);
+            if (contents) {
+              FrontMatterParser.fromFile(contents);
+            }
+          } catch (e) {
+            this.sendMsg(Command.metadata, {
+              fmError: l10n.t(
+                LocalizationKey.listenersPanelDataListenerPushMetadataFrontMatterError
+              ),
+              fmErrorMessage: (e as Error).message
+            });
+            return;
+          }
+        }
+      } else {
+        this.sendMsg(Command.metadata, undefined);
+        return;
       }
     } catch (e) {
       Logger.error(`DataListener::pushMetadata: ${(e as Error).message}`);
