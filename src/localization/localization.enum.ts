@@ -1505,7 +1505,7 @@ export enum LocalizationKey {
    */
   panelMetadataTitle = 'panel.metadata.title',
   /**
-   * Check the output for more information
+   * Check the problems view for more information
    */
   panelMetadataFocusProblems = 'panel.metadata.focusProblems',
   /**
