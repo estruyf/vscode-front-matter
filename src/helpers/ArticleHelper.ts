@@ -741,15 +741,17 @@ export class ArticleHelper {
    * Get the details of the current article
    * @returns
    */
-  public static async getDetails(filePath: string) {
+  public static async getDetails(
+    filePath: string
+  ): Promise<Article | 'nofilepath' | 'nodata' | 'notsupported'> {
     const baseUrl = Settings.get<string>(SETTING_SITE_BASEURL);
     if (!filePath) {
-      return null;
+      return 'nofilepath';
     }
 
     const document = await workspace.openTextDocument(filePath);
     if (!ArticleHelper.isSupportedFile(document)) {
-      return null;
+      return 'notsupported';
     }
 
     const article = await ArticleHelper.getFrontMatterByPath(filePath);
@@ -805,7 +807,7 @@ export class ArticleHelper {
       };
     }
 
-    return null;
+    return 'nodata';
   }
 
   /**

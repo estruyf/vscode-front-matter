@@ -199,7 +199,7 @@ export class DataListener extends BaseListener {
       if (filePath) {
         articleDetails = await ArticleHelper.getDetails(filePath);
 
-        if (!articleDetails) {
+        if (!articleDetails || articleDetails === 'nodata') {
           try {
             const contents = await ArticleHelper.getContents(filePath);
             if (contents) {
@@ -214,6 +214,10 @@ export class DataListener extends BaseListener {
             });
             return;
           }
+        } else if (articleDetails === 'notsupported' || articleDetails === 'nofilepath') {
+          // No file or invalid file format
+          this.sendMsg(Command.metadata, undefined);
+          return;
         }
       } else {
         this.sendMsg(Command.metadata, undefined);
