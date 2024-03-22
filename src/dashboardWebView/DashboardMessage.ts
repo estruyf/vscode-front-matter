@@ -75,7 +75,6 @@ export enum DashboardMessage {
   getState = 'getState',
   runCustomScript = 'runCustomScript',
   sendTelemetry = 'sendTelemetry',
-  logError = 'logError',
   showNotification = 'showNotification',
 
   // Settings

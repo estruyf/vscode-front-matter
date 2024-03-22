@@ -224,7 +224,9 @@ export class DataListener extends BaseListener {
         return;
       }
     } catch (e) {
-      Logger.error(`DataListener::pushMetadata: ${(e as Error).message}`);
+      if (filePath) {
+        Logger.error(`DataListener::pushMetadata: ${(e as Error).message}`);
+      }
       this.sendMsg(Command.metadata, undefined);
       return;
     }

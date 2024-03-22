@@ -63,7 +63,7 @@ export const Navigation: React.FunctionComponent<INavigationProps> = ({
   }, [settings?.draftField?.type, tabInfo]);
 
   return (
-    <nav className="flex-1 -mb-px flex space-x-6 xl:space-x-8" aria-label="Tabs">
+    <nav className="flex-1 -mb-px flex space-x-2 xl:space-x-4" aria-label="Tabs">
       {settings?.draftField?.type === 'boolean' ? (
         tabs.map((tab) => (
           <NavigationItem

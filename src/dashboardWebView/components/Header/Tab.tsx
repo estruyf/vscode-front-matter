@@ -15,8 +15,6 @@ export const Tab: React.FunctionComponent<ITabProps> = ({
 }: React.PropsWithChildren<ITabProps>) => {
   const location = useLocation();
 
-  console.log(location.pathname, navigationType);
-
   return (
     <button
       className={cn(`h-full flex items-center py-2 px-1 text-sm font-medium text-center border-b-2 border-transparent hover:border-[var(--vscode-tab-activeForeground)] hover:text-[var(--vscode-tab-activeForeground)] ${location.pathname === `/${navigationType}`

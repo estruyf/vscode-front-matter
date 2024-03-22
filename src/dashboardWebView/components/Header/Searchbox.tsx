@@ -1,9 +1,8 @@
-import { MagnifyingGlassIcon, XCircleIcon } from '@heroicons/react/24/solid';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useDebounce } from '../../../hooks/useDebounce';
 import { SearchAtom, SearchReadyAtom } from '../../state';
-import { RefreshDashboardData } from './RefreshDashboardData';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { TextField } from '../Common/TextField';
@@ -58,8 +57,6 @@ export const Searchbox: React.FunctionComponent<ISearchboxProps> = ({
           onReset={reset}
         />
       </div>
-
-      <RefreshDashboardData />
     </div>
   );
 };

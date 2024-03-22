@@ -208,7 +208,6 @@ export class ArticleHelper {
       validateInput: async (value) => {
         try {
           const newFileUri = Uri.joinPath(Uri.file(folderPath), `${value}${fileExtension}`);
-          console.log(newFileUri.fsPath);
           const exists = await workspace.fs.readFile(newFileUri);
           if (exists && value !== fileNameWithoutExt) {
             return l10n.t(LocalizationKey.commandsArticleRenameFileExistsError, value);

@@ -27,20 +27,20 @@ export const Tabs: React.FunctionComponent<ITabsProps> = ({
     >
       <li role="presentation">
         <Tab navigationType={NavigationType.Contents} onNavigate={onNavigate}>
-          <PageIcon className={`h-4 w-auto mr-2`} />
+          <PageIcon className={`h-4 w-auto mr-2 text-[var(--frontmatter-secondary-text)]`} />
           <span>{l10n.t(LocalizationKey.dashboardHeaderTabsContents)}</span>
         </Tab>
       </li>
       <li role="presentation">
         <Tab navigationType={NavigationType.Media} onNavigate={onNavigate}>
-          <PhotoIcon className={`h-4 w-auto mr-2`} />
+          <PhotoIcon className={`h-4 w-auto mr-2 text-[var(--frontmatter-secondary-text)]`} />
           <span>{l10n.t(LocalizationKey.dashboardHeaderTabsMedia)}</span>
         </Tab>
       </li>
       <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.dashboard.snippets.view}>
         <li role="presentation">
           <Tab navigationType={NavigationType.Snippets} onNavigate={onNavigate}>
-            <ScissorsIcon className={`h-4 w-auto mr-2`} />
+            <ScissorsIcon className={`h-4 w-auto mr-2 text-[var(--frontmatter-secondary-text)]`} />
             <span>{l10n.t(LocalizationKey.dashboardHeaderTabsSnippets)}</span>
           </Tab>
         </li>
@@ -48,7 +48,7 @@ export const Tabs: React.FunctionComponent<ITabsProps> = ({
       <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.dashboard.data.view}>
         <li role="presentation">
           <Tab navigationType={NavigationType.Data} onNavigate={onNavigate}>
-            <CircleStackIcon className={`h-4 w-auto mr-2`} />
+            <CircleStackIcon className={`h-4 w-auto mr-2 text-[var(--frontmatter-secondary-text)]`} />
             <span>{l10n.t(LocalizationKey.dashboardHeaderTabsData)}</span>
           </Tab>
         </li>
@@ -56,7 +56,7 @@ export const Tabs: React.FunctionComponent<ITabsProps> = ({
       <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.dashboard.taxonomy.view}>
         <li role="presentation">
           <Tab navigationType={NavigationType.Taxonomy} onNavigate={onNavigate}>
-            <TagIcon className={`h-4 w-auto mr-2`} />
+            <TagIcon className={`h-4 w-auto mr-2 text-[var(--frontmatter-secondary-text)]`} />
             <span>{l10n.t(LocalizationKey.dashboardHeaderTabsTaxonomies)}</span>
           </Tab>
         </li>

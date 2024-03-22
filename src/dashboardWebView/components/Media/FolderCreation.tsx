@@ -18,6 +18,7 @@ import { parseWinPath } from '../../../helpers/parseWinPath';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import useMediaFolder from '../../hooks/useMediaFolder';
+import { RefreshDashboardData } from '../Header/RefreshDashboardData';
 
 export interface IFolderCreationProps { }
 
@@ -107,7 +108,7 @@ export const FolderCreation: React.FunctionComponent<IFolderCreationProps> = (
   }
 
   return (
-    <div className="flex flex-1 justify-start">
+    <div className="flex flex-1 justify-start space-x-2">
       {renderPostAssetsButton}
       <button
         className={`inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium focus:outline-none rounded text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50`}
@@ -117,6 +118,8 @@ export const FolderCreation: React.FunctionComponent<IFolderCreationProps> = (
         <FolderPlusIcon className={`mr-2 h-6 w-6`} />
         <span className={``}>{l10n.t(LocalizationKey.dashboardMediaFolderCreationFolderCreate)}</span>
       </button>
+
+      <RefreshDashboardData />
     </div>
   );
 };

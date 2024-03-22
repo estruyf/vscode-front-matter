@@ -32,6 +32,7 @@ import { Link } from '../Common/Link';
 import { SPONSOR_LINK } from '../../../constants';
 import { Filters } from './Filters';
 import { ActionsBar } from './ActionsBar';
+import { RefreshDashboardData } from './RefreshDashboardData';
 
 export interface IHeaderProps {
   header?: React.ReactNode;
@@ -163,13 +164,15 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
       {location.pathname === routePaths.contents && (
         <>
           <div className={`px-4 mt-2 mb-2 flex items-center justify-between`}>
-            <div className={`flex items-center justify-start space-x-4 flex-1`}>
+            <div className={`flex items-center justify-start space-x-2 flex-1`}>
               <ChoiceButton
                 title={l10n.t(LocalizationKey.dashboardHeaderHeaderCreateContent)}
                 choices={choiceOptions}
                 onClick={createContent}
                 disabled={!settings?.initialized}
               />
+
+              <RefreshDashboardData />
             </div>
 
             <Searchbox />

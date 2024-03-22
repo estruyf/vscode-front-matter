@@ -9,7 +9,7 @@ import { Contents } from './Contents/Contents';
 import { Media } from './Media/Media';
 import { DataView } from './DataView';
 import { Snippets } from './SnippetsView/Snippets';
-import { FEATURE_FLAG } from '../../constants';
+import { FEATURE_FLAG, GeneralCommands } from '../../constants';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { TaxonomyView } from './TaxonomyView';
 import { Route, Routes, useNavigate } from 'react-router-dom';
@@ -18,7 +18,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { UnknownView } from './UnknownView';
 import { ErrorBoundary } from '@sentry/react';
 import { ErrorView } from './ErrorView';
-import { DashboardMessage } from '../DashboardMessage';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
 import { SettingsView } from './SettingsView/SettingsView';
@@ -100,7 +99,7 @@ export const App: React.FunctionComponent<IAppProps> = ({
       fallback={<ErrorView />}
       onError={(error: Error, componentStack: string, eventId: string) => {
         Messenger.send(
-          DashboardMessage.logError,
+          GeneralCommands.toVSCode.logging.error,
           `Event ID: ${eventId}
 Message: ${error.message}
 
