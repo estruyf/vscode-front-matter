@@ -75,6 +75,11 @@
         "key": "alt+d"
       },
       {
+        "command": "workbench.action.webview.reloadWebviewAction",
+        "key": "ctrl+r",
+        "mac": "cmd+r",
+        "when": "activeWebviewPanelId == frontMatterDashboard"
+      }, {
         "command": "frontMatter.insertMedia",
         "key": "ctrl+shift+i",
         "mac": "cmd+shift+i",
