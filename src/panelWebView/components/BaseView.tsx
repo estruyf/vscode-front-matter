@@ -12,6 +12,7 @@ import * as l10n from "@vscode/l10n"
 import { LocalizationKey } from '../../localization';
 import { InitializeAction } from './InitializeAction';
 import { Actions } from './Actions';
+import { CustomView } from './CustomView';
 
 export interface IBaseViewProps {
   settings: PanelSettings | undefined;
@@ -55,6 +56,8 @@ const BaseView: React.FunctionComponent<IBaseViewProps> = ({
         {settings?.isInitialized && (
           <>
             <GitAction settings={settings} />
+
+            <CustomView />
 
             <FeatureFlag features={mode?.features || [...allPanelValues]} flag={FEATURE_FLAG.panel.globalSettings}>
               <GlobalSettings settings={settings} isBase />

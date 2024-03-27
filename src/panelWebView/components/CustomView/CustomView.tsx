@@ -4,7 +4,7 @@ import { CustomPanelViewResult } from '../../../models';
 import { Collapsible } from '../Collapsible';
 
 export interface ICustomViewProps {
-  metadata: any;
+  metadata?: any;
 }
 
 export const CustomView: React.FunctionComponent<ICustomViewProps> = ({ metadata }: React.PropsWithChildren<ICustomViewProps>) => {

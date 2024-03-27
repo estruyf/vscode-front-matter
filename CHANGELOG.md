@@ -11,6 +11,7 @@
 - [#773](https://github.com/estruyf/vscode-front-matter/issues/773): Added the ability to rename content files
 - [#777](https://github.com/estruyf/vscode-front-matter/issues/777): Show an error in the metadata panel if something went wrong while parsing the front matter
 - [#778](https://github.com/estruyf/vscode-front-matter/issues/778): Added the ability to open a file or webpage when custom scripts is completed
+- [#783](https://github.com/estruyf/vscode-front-matter/issues/783): Always show the custom panel view
 
 ### ⚡️ Optimizations
 
