@@ -272,7 +272,7 @@ export enum LocalizationKey {
    */
   settingsIntegrationsViewDeeplIntputLabel = 'settings.integrationsView.deepl.intput.label',
   /**
-   * Enter your Azure Translator API key
+   * Enter your Deepl API key
    */
   settingsIntegrationsViewDeeplIntputPlaceholder = 'settings.integrationsView.deepl.intput.placeholder',
   /**
