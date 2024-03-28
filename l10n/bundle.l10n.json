@@ -73,7 +73,7 @@
 
   "settings.integrationsView.deepl.title": "DeepL",
   "settings.integrationsView.deepl.intput.label": "API key",
-  "settings.integrationsView.deepl.intput.placeholder": "Enter your Azure Translator API key",
+  "settings.integrationsView.deepl.intput.placeholder": "Enter your Deepl API key",
 
   "settings.integrationsView.azure.title": "Azure AI Translator Service",
   "settings.integrationsView.azure.intput.label": "Subscription key",
