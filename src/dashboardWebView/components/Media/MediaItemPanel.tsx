@@ -32,7 +32,7 @@ export const MediaItemPanel: React.FunctionComponent<IMediaItemPanelProps> = ({ 
 
       setSelectedItemAction(undefined);
     }
-  }, [allMedia, selectedItemAction])
+  }, [allMedia, selectedItemAction]);
 
   if (showDetails && media) {
     return (

@@ -25,6 +25,7 @@ import { NewForm } from './NewForm';
 import SnippetForm, { SnippetFormHandle } from './SnippetForm';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { openFile } from '../../utils';
 
 export interface IItemProps {
   snippetKey: string;
@@ -65,7 +66,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   };
 
   const showFile = useCallback(() => {
-    Messenger.send(DashboardMessage.openFile, snippet.sourcePath);
+    openFile(snippet.sourcePath);
   }, [snippet]);
 
   const onOpenEdit = useCallback(() => {

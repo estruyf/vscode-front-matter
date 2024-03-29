@@ -1,22 +1,20 @@
 import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
-import { EyeIcon, GlobeEuropeAfricaIcon, CommandLineIcon, TrashIcon, EllipsisVerticalIcon, LanguageIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, GlobeEuropeAfricaIcon, CommandLineIcon, TrashIcon, LanguageIcon, EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { CustomScript, I18nConfig, ScriptType } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
-import { QuickAction } from '../Menu';
-import { Alert } from '../Modals/Alert';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { SettingsSelector } from '../../state';
+import { SelectedItemActionAtom, SettingsSelector } from '../../state';
 import { COMMAND_NAME, GeneralCommands } from '../../../constants';
 import { PinIcon } from '../Icons/PinIcon';
 import { PinnedItemsAtom } from '../../state/atom/PinnedItems';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from '../../../components/shadcn/Dropdown';
 import { RenameIcon } from '../../../components/icons/RenameIcon';
+import { openFile, openOnWebsite } from '../../utils';
 
 export interface IContentActionsProps {
-  title: string;
   path: string;
   relPath: string;
   scripts: CustomScript[] | undefined;
@@ -33,7 +31,6 @@ export interface IContentActionsProps {
 }
 
 export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
-  title,
   path,
   relPath,
   scripts,
@@ -43,8 +40,8 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
   translations,
   locale
 }: React.PropsWithChildren<IContentActionsProps>) => {
+  const [, setSelectedItemAction] = useRecoilState(SelectedItemActionAtom);
   const [pinnedItems, setPinnedItems] = useRecoilState(PinnedItemsAtom);
-  const [showDeletionAlert, setShowDeletionAlert] = React.useState(false);
   const settings = useRecoilValue(SettingsSelector);
 
   const onView = (e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
@@ -52,35 +49,19 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
     onOpen();
   };
 
-  const onDelete = (e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
+  const onDelete = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
-    setShowDeletionAlert(true);
-  };
+    setSelectedItemAction({ path, action: 'delete' });
+  }, [path]);
 
   const onRename = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     messageHandler.send(DashboardMessage.rename, path);
   }, [path])
 
-  const onDeleteConfirm = () => {
-    if (path) {
-      Messenger.send(DashboardMessage.deleteFile, path);
-    }
-    setShowDeletionAlert(false);
-  };
-
-  const onOpenFile = (filePath: string) => {
-    messageHandler.send(DashboardMessage.openFile, filePath);
-  }
-
-  const openOnWebsite = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
+  const onOpenWebsite = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
-    if (settings?.websiteUrl && path) {
-      Messenger.send(GeneralCommands.toVSCode.openOnWebsite, {
-        websiteUrl: settings.websiteUrl,
-        filePath: path
-      });
-    }
+    openOnWebsite(settings?.websiteUrl, path);
   }, [settings?.websiteUrl, path]);
 
   const pinItem = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
@@ -153,7 +134,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
 
         <DropdownMenuPortal>
           <DropdownMenuSubContent>
-            <DropdownMenuItem onClick={() => onOpenFile(crntLocale.path)}>
+            <DropdownMenuItem onClick={() => openFile(crntLocale.path)}>
               <span>{crntLocale.locale.title || crntLocale.locale.locale}</span>
             </DropdownMenuItem>
 
@@ -163,7 +144,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
               otherLocales.map(([key, value]) => (
                 <DropdownMenuItem
                   key={key}
-                  onClick={() => onOpenFile(value.path)}
+                  onClick={() => openFile(value.path)}
                 >
                   <span>{value.locale.title || value.locale.locale}</span>
                 </DropdownMenuItem>
@@ -178,41 +159,19 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
   return (
     <>
       <div
-        className={`${listView ? '' : 'group/card absolute top-6 right-0'
+        className={`${listView ? '' : 'group/card absolute top-6 right-2'
           } flex flex-col space-y-4`}
       >
         <div
-          className={`flex items-center border border-transparent rounded-full ${listView ? '' : 'p-2 -mt-4'
+          className={`flex items-center border border-transparent rounded-full ${listView ? '' : 'p-1 -mt-3'
             } group-hover/card:bg-[var(--vscode-sideBar-background)] group-hover/card:border-[var(--frontmatter-border)]`}
         >
           <div className={`relative flex text-left`}>
-            {!listView && (
-              <div className="hidden group-hover/card:flex">
-                <QuickAction title={l10n.t(LocalizationKey.dashboardContentsContentActionsMenuItemView)} onClick={onView}>
-                  <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
-                </QuickAction>
-
-                {
-                  settings?.websiteUrl && (
-                    <QuickAction title={l10n.t(LocalizationKey.commonOpenOnWebsite)} onClick={openOnWebsite}>
-                      <GlobeEuropeAfricaIcon className={`w-4 h-4`} aria-hidden="true" />
-                    </QuickAction>
-                  )
-                }
-
-                <QuickAction
-                  title={l10n.t(LocalizationKey.commonDelete)}
-                  className={`hover:text-[var(--vscode-statusBarItem-errorBackground)]`}
-                  onClick={onDelete}>
-                  <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
-                </QuickAction>
-              </div>
-            )}
-
             <DropdownMenu>
-              <DropdownMenuTrigger className='text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)] data-[state=open]:text-[var(--vscode-tab-activeForeground)] focus:outline-none'>
+              <DropdownMenuTrigger
+                className='text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)] data-[state=open]:text-[var(--vscode-tab-activeForeground)] focus:outline-none'>
                 <span className="sr-only">{l10n.t(LocalizationKey.dashboardContentsContentActionsActionMenuButtonTitle)}</span>
-                <EllipsisVerticalIcon className="w-4 h-4" aria-hidden="true" />
+                <EllipsisHorizontalIcon className="w-4 h-4" aria-hidden="true" />
               </DropdownMenuTrigger>
 
               <DropdownMenuContent align="end">
@@ -233,7 +192,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
 
                 {
                   settings?.websiteUrl && (
-                    <DropdownMenuItem onClick={openOnWebsite}>
+                    <DropdownMenuItem onClick={onOpenWebsite}>
                       <GlobeEuropeAfricaIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
                       <span>{l10n.t(LocalizationKey.commonOpenOnWebsite)}</span>
                     </DropdownMenuItem>
@@ -263,17 +222,6 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
           </div>
         </div>
       </div>
-
-      {showDeletionAlert && (
-        <Alert
-          title={l10n.t(LocalizationKey.dashboardContentsContentActionsAlertTitle, title)}
-          description={l10n.t(LocalizationKey.dashboardContentsContentActionsAlertDescription, title)}
-          okBtnText={l10n.t(LocalizationKey.commonDelete)}
-          cancelBtnText={l10n.t(LocalizationKey.commonCancel)}
-          dismiss={() => setShowDeletionAlert(false)}
-          trigger={onDeleteConfirm}
-        />
-      )}
     </>
   );
 };

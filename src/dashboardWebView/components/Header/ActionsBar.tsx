@@ -14,6 +14,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { useFilesContext } from '../../providers/FilesProvider';
 import { COMMAND_NAME, GeneralCommands } from '../../../constants';
 import { RenameIcon } from '../../../components/icons/RenameIcon';
+import { openFile } from '../../utils';
 
 export interface IActionsBarProps {
   view: NavigationType;
@@ -32,7 +33,7 @@ export const ActionsBar: React.FunctionComponent<IActionsBarProps> = ({
   const viewFile = React.useCallback(() => {
     if (selectedFiles.length === 1) {
       if (view === NavigationType.Contents) {
-        messageHandler.send(DashboardMessage.openFile, selectedFiles[0]);
+        openFile(selectedFiles[0]);
       } else if (view === NavigationType.Media) {
         setSelectedItemAction({ path: selectedFiles[0], action: 'view' })
       }
@@ -107,7 +108,7 @@ export const ActionsBar: React.FunctionComponent<IActionsBarProps> = ({
 
                 <DropdownMenuContent align='start'>
 
-                  <DropdownMenuItem onClick={() => messageHandler.send(DashboardMessage.openFile, crntLocale.path)}>
+                  <DropdownMenuItem onClick={() => openFile(crntLocale.path)}>
                     <span>{crntLocale.locale.title || crntLocale.locale.locale}</span>
                   </DropdownMenuItem>
 
@@ -117,7 +118,7 @@ export const ActionsBar: React.FunctionComponent<IActionsBarProps> = ({
                     otherLocales.map(([key, value]) => (
                       <DropdownMenuItem
                         key={key}
-                        onClick={() => messageHandler.send(DashboardMessage.openFile, value.path)}
+                        onClick={() => openFile(value.path)}
                       >
                         <span>{value.locale.title || value.locale.locale}</span>
                       </DropdownMenuItem>

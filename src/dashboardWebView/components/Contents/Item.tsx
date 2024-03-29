@@ -1,10 +1,8 @@
 import { useRecoilValue } from 'recoil';
 import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIcon';
-import { DashboardMessage } from '../../DashboardMessage';
 import { Page } from '../../models/Page';
 import { SettingsSelector, ViewSelector } from '../../state';
 import { DateField } from '../Common/DateField';
-import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardViewType } from '../../models';
 import { ContentActions } from './ContentActions';
 import { useMemo } from 'react';
@@ -18,6 +16,8 @@ import { routePaths } from '../..';
 import useCard from '../../hooks/useCard';
 import { I18nLabel } from './I18nLabel';
 import { ItemSelection } from '../Common/ItemSelection';
+import { openFile } from '../../utils';
+import { FooterActions } from './FooterActions';
 
 export interface IItemProps extends Page { }
 
@@ -41,9 +41,9 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     pageData
   });
 
-  const openFile = () => {
-    Messenger.send(DashboardMessage.openFile, pageData.fmFilePath);
-  };
+  const onOpenFile = React.useCallback(() => {
+    openFile(pageData.fmFilePath);
+  }, [pageData.fmFilePath]);
 
   const tags: string[] | undefined = useMemo(() => {
     if (!settings?.dashboardState?.contents?.tags) {
@@ -92,9 +92,9 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
     return (
       dateHtml ? (
-        <div className='mr-4' dangerouslySetInnerHTML={{ __html: dateHtml }} />
+        <div className='mr-6' dangerouslySetInnerHTML={{ __html: dateHtml }} />
       ) : (
-        cardFields?.date && pageData.date ? <DateField className={`mr-4`} value={pageData.date} format={pageData.fmDateFormat} /> : null
+        cardFields?.date && pageData.date ? <DateField className={`mr-6`} value={pageData.date} format={pageData.fmDateFormat} /> : null
       )
     )
   }, [dateHtml, cardFields?.date, pageData]);
@@ -111,7 +111,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
         >
           <button
             title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
-            onClick={openFile}
+            onClick={onOpenFile}
             className={`relative h-36 w-full overflow-hidden border-b cursor-pointer border-[var(--frontmatter-border)]`}
           >
             {
@@ -147,21 +147,20 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             }
 
             <ContentActions
-              title={pageData.title}
               path={pageData.fmFilePath}
               relPath={pageData.fmRelFileWsPath}
               locale={pageData.fmLocale}
               isDefaultLocale={pageData.fmDefaultLocale}
               translations={pageData.fmTranslations}
               scripts={settings?.scripts}
-              onOpen={openFile}
+              onOpen={onOpenFile}
             />
 
             <I18nLabel page={pageData} />
 
             <button
               title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
-              onClick={openFile}
+              onClick={onOpenFile}
               className={`text-left block`}>
               {
                 titleHtml ? (
@@ -178,7 +177,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               (escapedDescription || descriptionHtml) && (
                 <button
                   title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
-                  onClick={openFile}
+                  onClick={onOpenFile}
                   className={`mt-2 text-left block`}>
                   {
                     descriptionHtml ? (
@@ -225,6 +224,10 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               <div className="placeholder__card__footer p-4 w-full" dangerouslySetInnerHTML={{ __html: footerHtml }} />
             )
           }
+
+          <FooterActions
+            filePath={pageData.fmFilePath}
+            websiteUrl={settings?.websiteUrl} />
         </div>
       </li>
     );
@@ -239,16 +242,15 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
             <button
               title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
-              onClick={openFile}>
+              onClick={onOpenFile}>
               {escapedTitle}
             </button>
 
             <ContentActions
-              title={escapedTitle || ""}
               path={pageData.fmFilePath}
               relPath={pageData.fmRelFileWsPath}
               scripts={settings?.scripts}
-              onOpen={openFile}
+              onOpen={onOpenFile}
               listView
             />
           </div>

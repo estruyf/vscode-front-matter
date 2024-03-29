@@ -16,6 +16,7 @@ import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
 import { ExtensionState } from '../../../constants';
 import { LinkButton } from '../Common/LinkButton';
+import { openFile } from '../../utils';
 
 export interface ITaxonomyTaggingProps {
   taxonomy: string | null;
@@ -125,7 +126,7 @@ export const TaxonomyTagging: React.FunctionComponent<ITaxonomyTaggingProps> = (
   }, [untaggedPages, pageMappings.tagged]);
 
   const onFileView = (filePath: string) => {
-    Messenger.send(DashboardMessage.openFile, filePath);
+    openFile(filePath);
   }
 
   React.useEffect(() => {

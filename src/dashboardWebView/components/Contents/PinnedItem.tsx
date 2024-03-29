@@ -2,12 +2,11 @@ import * as React from 'react';
 import { Page } from '../../models';
 import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIcon';
 import { ContentActions } from './ContentActions';
-import { DashboardMessage } from '../../DashboardMessage';
-import { messageHandler } from '@estruyf/vscode/dist/client';
 import useCard from '../../hooks/useCard';
 import { SettingsSelector } from '../../state';
 import { useRecoilValue } from 'recoil';
 import { ItemSelection } from '../Common/ItemSelection';
+import { openFile } from '../../utils';
 
 export interface IPinnedItemProps extends Page { }
 
@@ -17,13 +16,13 @@ export const PinnedItem: React.FunctionComponent<IPinnedItemProps> = ({
   const settings = useRecoilValue(SettingsSelector);
   const { escapedTitle } = useCard(pageData, settings?.dashboardState?.contents?.cardFields);
 
-  const openFile = React.useCallback(() => {
-    messageHandler.send(DashboardMessage.openFile, pageData.fmFilePath);
+  const onOpenFile = React.useCallback(() => {
+    openFile(pageData.fmFilePath);
   }, [pageData.fmFilePath]);
 
   return (
     <li className='group flex w-full border border-[var(--frontmatter-border)] rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] relative'>
-      <button onClick={openFile} className='relative h-full w-1/3'>
+      <button onClick={onOpenFile} className='relative h-full w-1/3'>
         {
           pageData["fmPreviewImage"] ? (
             <img
@@ -44,11 +43,10 @@ export const PinnedItem: React.FunctionComponent<IPinnedItemProps> = ({
 
       <ItemSelection filePath={pageData.fmFilePath} />
 
-      <button onClick={openFile} className='relative w-2/3 p-4 pr-6 text-left flex items-start'>
+      <button onClick={onOpenFile} className='relative w-2/3 p-4 pr-6 text-left flex items-start'>
         <p className='font-bold'>{escapedTitle}</p>
 
         <ContentActions
-          title={pageData.title}
           path={pageData.fmFilePath}
           relPath={pageData.fmRelFileWsPath}
           scripts={settings?.scripts}
