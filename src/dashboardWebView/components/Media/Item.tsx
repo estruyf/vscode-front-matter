@@ -32,6 +32,7 @@ import { getRelPath } from '../../utils';
 import { Snippet } from '../../../models';
 import useMediaInfo from '../../hooks/useMediaInfo';
 import { ItemSelection } from '../Common/ItemSelection';
+import { FooterActions } from './FooterActions';
 
 export interface IItemProps {
   media: MediaInfo;
@@ -185,13 +186,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     }
   }, [media.vsPath]);
 
-  const updateMetadata = useCallback(() => {
-    setSelectedItemAction({
-      path: media.fsPath,
-      action: 'edit'
-    });
-  }, [media]);
-
   const renderMediaIcon = useMemo(() => {
     const path = media.fsPath;
     const extension = path.split('.').pop();
@@ -265,7 +259,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
   return (
     <>
-      <li className={`group relative shadow-md hover:shadow-xl dark:shadow-none border rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--frontmatter-border)]`}>
+      <li className={`group flex flex-col relative shadow-md hover:shadow-xl dark:shadow-none border rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--frontmatter-border)]`}>
         <button
           className={`group/button relative block w-full aspect-w-10 aspect-h-7 overflow-hidden h-48 ${isImage ? 'cursor-pointer' : 'cursor-default'} border-b border-[var(--frontmatter-border)]`}
           onClick={hasViewData ? undefined : openLightbox}
@@ -318,7 +312,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             </div>
           )}
         </button>
-        <div className={`relative py-4 pl-4 pr-12`}>
+
+        <div className={`relative py-4 pl-4 pr-12 grow`}>
           <ItemMenu
             media={media}
             relPath={relPath}
@@ -327,9 +322,14 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             snippets={mediaSnippets}
             scripts={settings?.scripts}
             insertIntoArticle={insertIntoArticle}
-            insertSnippet={insertSnippet}
-            showUpdateMedia={updateMetadata}
-            showMediaDetails={() => setSelectedItemAction({ path: media.fsPath, action: 'view' })}
+            showUpdateMedia={() => setSelectedItemAction({
+              path: media.fsPath,
+              action: 'edit'
+            })}
+            showMediaDetails={() => setSelectedItemAction({
+              path: media.fsPath,
+              action: 'view'
+            })}
             processSnippet={processSnippet}
             onDelete={() => setShowAlert(true)} />
 
@@ -371,6 +371,15 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             </p>
           )}
         </div>
+
+        <FooterActions
+          media={media}
+          relPath={relPath}
+          snippets={mediaSnippets}
+          viewData={viewData?.data}
+          insertIntoArticle={insertIntoArticle}
+          insertSnippet={insertSnippet}
+          onDelete={() => setShowAlert(true)} />
       </li>
 
       {showSnippetSelection && (

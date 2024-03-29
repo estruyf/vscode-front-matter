@@ -1,3 +1,4 @@
+import { darkenColor } from './darkenColor';
 import { preserveColor } from './preserveColor';
 
 export const updateCssVariables = () => {
@@ -75,4 +76,11 @@ export const updateCssVariables = () => {
       preserveColor(buttonHoverBackground) || 'var(--vscode-button-hoverBackground)'
     );
   }
+
+  // Darken the background of a color
+  const sideBarBg = styles.getPropertyValue('--vscode-sideBar-background');
+  document.documentElement.style.setProperty(
+    '--frontmatter-sideBar-background',
+    darkenColor(sideBarBg, 2) || 'var(--vscode-sideBar-background)'
+  );
 };

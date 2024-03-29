@@ -1,13 +1,13 @@
 import * as React from 'react';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
-import { QuickAction } from '../Menu';
-import { ClipboardIcon, CodeBracketIcon, CommandLineIcon, EllipsisVerticalIcon, EyeIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { ClipboardIcon, CodeBracketIcon, CommandLineIcon, EllipsisHorizontalIcon, EyeIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { CustomScript, MediaInfo, ScriptType, Snippet, ViewData } from '../../../models';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../../components/shadcn/Dropdown';
 import { messageHandler } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
 import { parseWinPath } from '../../../helpers/parseWinPath';
+import { copyToClipboard } from '../../utils';
 
 export interface IItemMenuProps {
   media: MediaInfo;
@@ -17,7 +17,6 @@ export interface IItemMenuProps {
   snippets: Snippet[];
   scripts?: CustomScript[];
   insertIntoArticle: () => void;
-  insertSnippet: () => void;
   showUpdateMedia: () => void;
   showMediaDetails: () => void;
   processSnippet: (snippet: Snippet) => void;
@@ -32,17 +31,14 @@ export const ItemMenu: React.FunctionComponent<IItemMenuProps> = ({
   snippets,
   scripts,
   insertIntoArticle,
-  insertSnippet,
   showUpdateMedia,
   showMediaDetails,
   processSnippet,
   onDelete,
 }: React.PropsWithChildren<IItemMenuProps>) => {
 
-  const copyToClipboard = React.useCallback(() => {
-    if (relPath) {
-      messageHandler.send(DashboardMessage.copyToClipboard, parseWinPath(relPath) || '');
-    }
+  const onCopyToClipboard = React.useCallback(() => {
+    copyToClipboard(parseWinPath(relPath) || '');
   }, [relPath]);
 
   const runCustomScript = React.useCallback((script: CustomScript) => {
@@ -75,65 +71,20 @@ export const ItemMenu: React.FunctionComponent<IItemMenuProps> = ({
 
   return (
     <div className={`group/actions absolute top-4 right-4 flex flex-col space-y-4`}>
-      <div className={`flex items-center border border-transparent rounded-full p-2 -mr-2 -mt-2 group-hover/actions:bg-[var(--vscode-sideBar-background)] group-hover/actions:border-[var(--frontmatter-border)]`}>
+      <div className={`flex items-center border border-transparent rounded-full p-1 -mr-2 -mt-1 group-hover/actions:bg-[var(--vscode-sideBar-background)] group-hover/actions:border-[var(--frontmatter-border)]`}>
         <div className="relative z-10 flex text-left">
-          <div className="hidden group-hover/actions:flex">
-            <QuickAction title={l10n.t(LocalizationKey.dashboardMediaItemMenuItemView)} onClick={showMediaDetails}>
-              <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
-              <span className='sr-only'>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemView)}</span>
-            </QuickAction>
-
-            <QuickAction title={l10n.t(LocalizationKey.dashboardMediaItemMenuItemEditMetadata)} onClick={showUpdateMedia}>
-              <PencilIcon className={`w-4 h-4`} aria-hidden="true" />
-              <span className='sr-only'>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemEditMetadata)}</span>
-            </QuickAction>
-
-            {viewData?.filePath ? (
-              <>
-                <QuickAction
-                  title={
-                    viewData.metadataInsert && viewData.fieldName
-                      ? l10n.t(LocalizationKey.dashboardMediaItemQuickActionInsertField, viewData.fieldName)
-                      : l10n.t(LocalizationKey.dashboardMediaItemQuickActionInsertMarkdown)
-                  }
-                  onClick={insertIntoArticle}
-                >
-                  <PlusIcon className={`w-4 h-4`} aria-hidden="true" />
-                </QuickAction>
-
-                {viewData?.position && snippets.length > 0 && (
-                  <QuickAction title={l10n.t(LocalizationKey.commonInsertSnippet)} onClick={insertSnippet}>
-                    <CodeBracketIcon className={`w-4 h-4`} aria-hidden="true" />
-                  </QuickAction>
-                )}
-              </>
-            ) : (
-              <>
-                {
-                  relPath && (
-                    <QuickAction title={l10n.t(LocalizationKey.dashboardMediaItemQuickActionCopyPath)} onClick={copyToClipboard}>
-                      <ClipboardIcon className={`w-4 h-4`} aria-hidden="true" />
-                    </QuickAction>
-                  )
-                }
-              </>
-            )}
-
-            <QuickAction
-              title={l10n.t(LocalizationKey.dashboardMediaItemQuickActionDelete)}
-              className={`hover:text-[var(--vscode-statusBarItem-errorBackground)]`}
-              onClick={onDelete}>
-              <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
-            </QuickAction>
-          </div>
-
           <DropdownMenu>
             <DropdownMenuTrigger className='text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)]'>
               <span className="sr-only">{l10n.t(LocalizationKey.commonMenu)}</span>
-              <EllipsisVerticalIcon className="w-4 h-4" aria-hidden="true" />
+              <EllipsisHorizontalIcon className="w-4 h-4" aria-hidden="true" />
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={showMediaDetails}>
+                <EyeIcon className="mr-2 h-4 w-4" aria-hidden={true} />
+                <span>{l10n.t(LocalizationKey.commonView)}</span>
+              </DropdownMenuItem>
+
               <DropdownMenuItem onClick={showUpdateMedia}>
                 <PencilIcon className="mr-2 h-4 w-4" aria-hidden={true} />
                 <span>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemEditMetadata)}</span>
@@ -165,7 +116,7 @@ export const ItemMenu: React.FunctionComponent<IItemMenuProps> = ({
                   </>
                 ) : (
                   <>
-                    <DropdownMenuItem onClick={copyToClipboard}>
+                    <DropdownMenuItem onClick={onCopyToClipboard}>
                       <ClipboardIcon className="mr-2 h-4 w-4" aria-hidden={true} />
                       <span>{l10n.t(LocalizationKey.dashboardMediaItemQuickActionCopyPath)}</span>
                     </DropdownMenuItem>

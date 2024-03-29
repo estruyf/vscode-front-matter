@@ -28,3 +28,11 @@ export const openOnWebsite = (websiteUrl?: string, filePath?: string) => {
     filePath
   });
 };
+
+export const copyToClipboard = (value: string) => {
+  if (!value) {
+    return;
+  }
+
+  messageHandler.send(DashboardMessage.copyToClipboard, value);
+};

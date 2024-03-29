@@ -19,11 +19,12 @@ export const FooterActions: React.FunctionComponent<IFooterActionsProps> = ({
   const [, setSelectedItemAction] = useRecoilState(SelectedItemActionAtom);
 
   return (
-    <div className={`py-2 w-full flex items-center justify-evenly border-t border-t-[var(--frontmatter-border)]`}>
+    <div className={`py-2 w-full flex items-center justify-evenly border-t border-t-[var(--frontmatter-border)] bg-[var(--frontmatter-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)]`}>
       <QuickAction
         title={l10n.t(LocalizationKey.dashboardContentsContentActionsMenuItemView)}
         className={`text-[var(--frontmatter-secondary-text)]`}
         onClick={() => openFile(filePath)}>
+        <span className={`sr-only`}>{l10n.t(LocalizationKey.dashboardContentsContentActionsMenuItemView)}</span>
         <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
       </QuickAction>
 
@@ -33,6 +34,7 @@ export const FooterActions: React.FunctionComponent<IFooterActionsProps> = ({
             title={l10n.t(LocalizationKey.commonOpenOnWebsite)}
             className={`text-[var(--frontmatter-secondary-text)]`}
             onClick={() => openOnWebsite(websiteUrl, filePath)}>
+            <span className={`sr-only`}>{l10n.t(LocalizationKey.commonOpenOnWebsite)}</span>
             <GlobeEuropeAfricaIcon className={`w-4 h-4`} aria-hidden="true" />
           </QuickAction>
         )
@@ -42,6 +44,7 @@ export const FooterActions: React.FunctionComponent<IFooterActionsProps> = ({
         title={l10n.t(LocalizationKey.commonDelete)}
         className={`text-[var(--frontmatter-secondary-text)] hover:text-[var(--vscode-statusBarItem-errorBackground)]`}
         onClick={() => setSelectedItemAction({ path: filePath, action: 'delete' })}>
+        <span className={`sr-only`}>{l10n.t(LocalizationKey.commonDelete)}</span>
         <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
       </QuickAction>
     </div>
