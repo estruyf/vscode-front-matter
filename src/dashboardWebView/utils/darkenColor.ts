@@ -57,7 +57,9 @@ export const darkenColor = (color: string | undefined, percentage: number) => {
       // Check if the color is in rgba format
       if (color.startsWith('rgba')) {
         // Extract the alpha value
-        const alpha = Number(color.match(/[\d\.]+$/));
+        const alphaMatch = color.match(/[\d\.]+(?=\))/);
+        const alpha = alphaMatch ? Number(alphaMatch[0]) : 1;
+        console.log('alpha:', alpha);
 
         return `rgba(${darkenedR}, ${darkenedG}, ${darkenedB}, ${alpha})`;
       }

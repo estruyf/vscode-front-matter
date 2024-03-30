@@ -11,13 +11,14 @@ import * as React from 'react';
 import useExtensibility from '../../hooks/useExtensibility';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
-import { useNavigate } from 'react-router-dom';
-import { routePaths } from '../..';
 import useCard from '../../hooks/useCard';
 import { I18nLabel } from './I18nLabel';
 import { ItemSelection } from '../Common/ItemSelection';
 import { openFile } from '../../utils';
 import { FooterActions } from './FooterActions';
+import useSelectedItems from '../../hooks/useSelectedItems';
+import { cn } from '../../../utils/cn';
+import { Tags } from './Tags';
 
 export interface IItemProps extends Page { }
 
@@ -26,12 +27,12 @@ const PREVIEW_IMAGE_FIELD = 'fmPreviewImage';
 export const Item: React.FunctionComponent<IItemProps> = ({
   ...pageData
 }: React.PropsWithChildren<IItemProps>) => {
+  const { selectedFiles } = useSelectedItems();
   const view = useRecoilValue(ViewSelector);
   const settings = useRecoilValue(SettingsSelector);
   const draftField = useMemo(() => settings?.draftField, [settings]);
   const cardFields = useMemo(() => settings?.dashboardState?.contents?.cardFields, [settings?.dashboardState?.contents?.cardFields]);
   const { escapedTitle, escapedDescription } = useCard(pageData, settings?.dashboardState?.contents?.cardFields);
-  const navigate = useNavigate();
   const { titleHtml, descriptionHtml, dateHtml, statusHtml, tagsHtml, imageHtml, footerHtml } = useExtensibility({
     fmFilePath: pageData.fmFilePath,
     date: pageData.date,
@@ -40,6 +41,8 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     type: pageData.type,
     pageData
   });
+
+  const isSelected = useMemo(() => selectedFiles.includes(pageData.fmFilePath), [selectedFiles, pageData.fmFilePath]);
 
   const onOpenFile = React.useCallback(() => {
     openFile(pageData.fmFilePath);
@@ -107,12 +110,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     return (
       <li className="relative">
         <div
-          className={`group flex flex-col items-start content-start h-full w-full text-left shadow-md dark:shadow-none hover:shadow-xl border rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--frontmatter-border)]`}
+          className={cn(`group flex flex-col items-start content-start h-full w-full text-left shadow-md dark:shadow-none hover:shadow-xl border rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] border-[var(--frontmatter-border)]`, isSelected && `border-[var(--frontmatter-border-active)]`)}
         >
           <button
             title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
             onClick={onOpenFile}
-            className={`relative h-36 w-full overflow-hidden border-b cursor-pointer border-[var(--frontmatter-border)]`}
+            className={`relative rounded h-36 w-full overflow-hidden border-b cursor-pointer border-[var(--frontmatter-border)]`}
           >
             {
               imageHtml ?
@@ -139,9 +142,9 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           <div className="relative p-4 w-full grow">
             {
               (statusPlaceholder || datePlaceholder) && (
-                <div className={`flex justify-between items-center ${hasDraftOrDate ? `mb-2` : ``}`}>
-                  {statusPlaceholder}
-                  {datePlaceholder}
+                <div className={`space-y-2 ${hasDraftOrDate ? `mb-2` : ``}`}>
+                  <div>{statusPlaceholder}</div>
+                  <div>{datePlaceholder}</div>
                 </div>
               )
             }
@@ -183,7 +186,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
                     descriptionHtml ? (
                       <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
                     ) : (
-                      <p className={`text-xs text-[vara(--vscode-titleBar-activeForeground)]`}>{escapedDescription}</p>
+                      <p className={`text-xs text-[var(--frontmatter-secondary-text)]`}>{escapedDescription}</p>
                     )
                   }
                 </button>
@@ -194,27 +197,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
               tagsHtml ? (
                 <div className="mt-2" dangerouslySetInnerHTML={{ __html: tagsHtml }} />
               ) : (
-                tags && tags.length > 0 && (
-                  <div className="mt-2">
-                    {tags.map(
-                      (tag, index) => tag && (
-                        <button
-                          key={index}
-                          className={`inline-block mr-1 mt-1 text-xs text-[var(--vscode-textPreformat-foreground)] hover:brightness-75 hover:underline hover:underline-offset-1`}
-                          title={l10n.t(LocalizationKey.commonFilterValue, tag)}
-                          onClick={() => {
-                            const tagField = settings?.dashboardState.contents.tags;
-                            if (tagField) {
-                              navigate(`${routePaths.contents}?taxonomy=${tagField}&value=${tag}`);
-                            }
-                          }}
-                        >
-                          #{tag}
-                        </button>
-                      )
-                    )}
-                  </div>
-                )
+                <Tags values={tags} tagField={settings?.dashboardState?.contents?.tags} />
               )
             }
           </div>
@@ -238,7 +221,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           className={`px-5 cursor-pointer w-full text-left grid grid-cols-12 gap-x-4 sm:gap-x-6 xl:gap-x-8 py-2 border-b hover:bg-opacity-70 border-[var(--frontmatter-border)] hover:bg-[var(--vscode-sideBar-background)]`}
         >
           <div className="col-span-8 font-bold truncate flex items-center space-x-4">
-            <ItemSelection filePath={pageData.fmFilePath} isRowItem />
+            <ItemSelection filePath={pageData.fmFilePath} show />
 
             <button
               title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
