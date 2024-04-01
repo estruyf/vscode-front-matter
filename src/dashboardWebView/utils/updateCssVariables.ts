@@ -1,5 +1,4 @@
-import { darkenColor } from './darkenColor';
-import { preserveColor } from './preserveColor';
+import { darkenColor, opacityColor, preserveColor } from '.';
 
 export const updateCssVariables = (isDarkTheme: boolean = true) => {
   const styles = getComputedStyle(document.documentElement);
@@ -50,6 +49,17 @@ export const updateCssVariables = (isDarkTheme: boolean = true) => {
   document.documentElement.style.setProperty(
     '--frontmatter-list-selected-text',
     'var(--vscode-list-activeSelectionForeground)'
+  );
+
+  // Navigation
+  const tabActiveForeground = styles.getPropertyValue('--vscode-tab-activeForeground');
+  document.documentElement.style.setProperty(
+    '--frontmatter-nav-active',
+    preserveColor(tabActiveForeground) || 'var(--vscode-tab-activeForeground)'
+  );
+  document.documentElement.style.setProperty(
+    '--frontmatter-nav-inactive',
+    opacityColor(tabActiveForeground, 0.6) || 'var(--vscode-tab-inactiveForeground)'
   );
 
   // Borders

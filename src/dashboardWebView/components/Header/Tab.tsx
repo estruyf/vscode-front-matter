@@ -17,10 +17,10 @@ export const Tab: React.FunctionComponent<ITabProps> = ({
 
   return (
     <button
-      className={cn(`h-full flex items-center py-2 px-1 text-sm font-medium text-center border-b-2 border-transparent hover:border-[var(--vscode-tab-activeForeground)] hover:text-[var(--vscode-tab-activeForeground)] ${location.pathname === `/${navigationType}`
+      className={cn(`h-full flex items-center py-2 px-1 text-sm font-medium text-center border-b-2 border-transparent hover:text-[var(--vscode-tab-activeForeground)] ${location.pathname === `/${navigationType}`
         ?
-        `text-[var(--vscode-tab-activeForeground)] border-[var(--vscode-tab-activeForeground)]` :
-        `text-[var(--vscode-tab-inactiveForeground)]`
+        `text-[var(--frontmatter-nav-active)] border-[var(--frontmatter-nav-active)]` :
+        `text-[var(--frontmatter-nav-inactive)]`
         }`)}
       type="button"
       role="tab"
