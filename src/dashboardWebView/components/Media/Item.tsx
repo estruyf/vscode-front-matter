@@ -333,39 +333,39 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             processSnippet={processSnippet}
             onDelete={() => setShowAlert(true)} />
 
-          <p className={`text-sm font-bold pointer-events-none flex items-center break-all text-[var(--vscode-foreground)]}`}>
+          <p className={`text-sm font-bold pointer-events-none flex items-center break-all text-[var(--frontmatter-text)]`}>
             {basename(parseWinPath(media.fsPath) || '')}
           </p>
           {!isImage && media.metadata.title && (
             <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start`}>
-              <b className={`mr-2`}>
+              <b className={`mr-2 text-[var(--frontmatter-text)]`}>
                 {l10n.t(LocalizationKey.dashboardMediaCommonTitle)}:
               </b>
-              <span className={`block mt-1 text-xs text-[var(--vscode-foreground)]`}>{media.metadata.title}</span>
+              <span className={`block mt-1 text-xs text-[var(--frontmatter-secondary-text)]`}>{media.metadata.title}</span>
             </p>
           )}
           {media.metadata.caption && (
             <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start`}>
-              <b className={`mr-2`}>
+              <b className={`mr-2 text-[var(--frontmatter-text)]`}>
                 {l10n.t(LocalizationKey.dashboardMediaCommonCaption)}:
               </b>
-              <span className={`block mt-1 text-xs text-[var(--vscode-foreground)]`}>{media.metadata.caption}</span>
+              <span className={`block mt-1 text-xs text-[var(--frontmatter-secondary-text)]`}>{media.metadata.caption}</span>
             </p>
           )}
           {!media.metadata.caption && media.metadata.alt && (
             <p className={`mt-2 text-xs font-medium pointer-events-none  flex flex-col items-start`}>
-              <b className={`mr-2`}>
+              <b className={`mr-2 text-[var(--frontmatter-text)]`}>
                 {l10n.t(LocalizationKey.dashboardMediaCommonAlt)}:
               </b>
-              <span className={`block mt-1 text-xs text-[var(--vscode-foreground)]`}>{media.metadata.alt}</span>
+              <span className={`block mt-1 text-xs text-[var(--frontmatter-secondary-text)]`}>{media.metadata.alt}</span>
             </p>
           )}
           {(media?.size || media?.dimensions) && (
             <p className={`mt-2 text-xs font-medium pointer-events-none flex flex-col items-start`}>
-              <b className={`mr-1`}>
+              <b className={`mr-1 text-[var(--frontmatter-text)]`}>
                 {l10n.t(LocalizationKey.dashboardMediaCommonSize)}:
               </b>
-              <span className={`block mt-1 text-xs text-[var(--vscode-foreground)]`}>
+              <span className={`block mt-1 text-xs text-[var(--frontmatter-secondary-text)]`}>
                 {mediaDetails}
               </span>
             </p>
@@ -377,6 +377,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           relPath={relPath}
           snippets={mediaSnippets}
           viewData={viewData?.data}
+          scripts={settings?.scripts}
           insertIntoArticle={insertIntoArticle}
           insertSnippet={insertSnippet}
           onDelete={() => setShowAlert(true)} />

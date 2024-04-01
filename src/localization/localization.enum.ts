@@ -152,6 +152,10 @@ export enum LocalizationKey {
    */
   commonOpenWithValue = 'common.openWithValue',
   /**
+   * Open custom actions
+   */
+  commonOpenCustomActions = 'common.openCustomActions',
+  /**
    * View
    */
   commonView = 'common.view',

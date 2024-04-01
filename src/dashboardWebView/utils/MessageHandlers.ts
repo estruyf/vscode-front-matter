@@ -1,6 +1,7 @@
 import { messageHandler } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../DashboardMessage';
 import { GeneralCommands } from '../../constants';
+import { CustomScript } from '../../models';
 
 export const openFile = (filePath?: string) => {
   if (!filePath) {
@@ -35,4 +36,12 @@ export const copyToClipboard = (value: string) => {
   }
 
   messageHandler.send(DashboardMessage.copyToClipboard, value);
+};
+
+export const runCustomScript = (script: CustomScript, path: string) => {
+  if (!script) {
+    return;
+  }
+
+  messageHandler.send(DashboardMessage.runCustomScript, { script, path });
 };

@@ -1,13 +1,14 @@
 import * as React from 'react';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
-import { ClipboardIcon, CodeBracketIcon, CommandLineIcon, EllipsisHorizontalIcon, EyeIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { CustomScript, MediaInfo, ScriptType, Snippet, ViewData } from '../../../models';
+import { ClipboardIcon, CodeBracketIcon, EllipsisHorizontalIcon, EyeIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { CustomScript, MediaInfo, Snippet, ViewData } from '../../../models';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../../components/shadcn/Dropdown';
 import { messageHandler } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
 import { parseWinPath } from '../../../helpers/parseWinPath';
 import { copyToClipboard } from '../../utils';
+import { CustomActions } from './CustomActions';
 
 export interface IItemMenuProps {
   media: MediaInfo;
@@ -41,33 +42,12 @@ export const ItemMenu: React.FunctionComponent<IItemMenuProps> = ({
     copyToClipboard(parseWinPath(relPath) || '');
   }, [relPath]);
 
-  const runCustomScript = React.useCallback((script: CustomScript) => {
-    messageHandler.send(DashboardMessage.runCustomScript, {
-      script,
-      path: media.fsPath
-    });
-  }, [media]);
-
   const revealMedia = React.useCallback(() => {
     messageHandler.send(DashboardMessage.revealMedia, {
       file: media.fsPath,
       folder: selectedFolder
     });
   }, [selectedFolder]);
-
-  const customScriptActions = React.useMemo(() => {
-    return (scripts || [])
-      .filter((script) => script.type === ScriptType.MediaFile && !script.hidden)
-      .map((script) => (
-        <DropdownMenuItem
-          key={script.title}
-          onClick={() => runCustomScript(script)}
-        >
-          <CommandLineIcon className="mr-2 h-4 w-4" aria-hidden={true} />
-          <span>{script.title}</span>
-        </DropdownMenuItem>
-      ));
-  }, [scripts]);
 
   return (
     <div className={`group/actions absolute top-4 right-4 flex flex-col space-y-4`}>
@@ -111,20 +91,18 @@ export const ItemMenu: React.FunctionComponent<IItemMenuProps> = ({
                         </DropdownMenuItem>
                       ))
                     }
-
-                    {customScriptActions}
                   </>
                 ) : (
-                  <>
-                    <DropdownMenuItem onClick={onCopyToClipboard}>
-                      <ClipboardIcon className="mr-2 h-4 w-4" aria-hidden={true} />
-                      <span>{l10n.t(LocalizationKey.dashboardMediaItemQuickActionCopyPath)}</span>
-                    </DropdownMenuItem>
-
-                    {customScriptActions}
-                  </>
+                  <DropdownMenuItem onClick={onCopyToClipboard}>
+                    <ClipboardIcon className="mr-2 h-4 w-4" aria-hidden={true} />
+                    <span>{l10n.t(LocalizationKey.dashboardMediaItemQuickActionCopyPath)}</span>
+                  </DropdownMenuItem>
                 )
               }
+
+              <CustomActions
+                filePath={media.fsPath}
+                scripts={scripts} />
 
               <DropdownMenuItem onClick={revealMedia}>
                 <EyeIcon className="mr-2 h-4 w-4" aria-hidden={true} />

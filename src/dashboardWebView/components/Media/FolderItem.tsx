@@ -37,7 +37,7 @@ export const FolderItem: React.FunctionComponent<IFolderItemProps> = ({
         <div className="relative mr-4">
           <FolderIcon className={`h-12 w-12`} />
           {isContentFolder && (
-            <span className={`font-extrabold absolute bottom-3 left-1/2 transform -translate-x-1/2 text-[var(--vscode-foreground)]`}>
+            <span className={`font-extrabold absolute bottom-3 left-1/2 transform -translate-x-1/2 text-[var(--frontmatter-text)]`}>
               C
             </span>
           )}

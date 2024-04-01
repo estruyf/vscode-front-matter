@@ -110,7 +110,7 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
             >
               {l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputIsMediaSnippetCheckboxLabel)}
             </label>
-            <p id="isMediaSnippet-description" className={`text-[var(--vscode-foreground)] text-left`}>
+            <p id="isMediaSnippet-description" className={`text-[var(--frontmatter-text)] text-left`}>
               {l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputIsMediaSnippetCheckboxDescription)}
             </p>
             <p>

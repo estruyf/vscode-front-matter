@@ -54,6 +54,7 @@ export const PinnedItem: React.FunctionComponent<IPinnedItemProps> = ({
         <ContentActions
           path={pageData.fmFilePath}
           relPath={pageData.fmRelFileWsPath}
+          contentType={pageData.fmContentType}
           scripts={settings?.scripts}
           onOpen={openFile}
         />

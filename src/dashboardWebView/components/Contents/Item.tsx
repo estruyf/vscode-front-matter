@@ -152,6 +152,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             <ContentActions
               path={pageData.fmFilePath}
               relPath={pageData.fmRelFileWsPath}
+              contentType={pageData.fmContentType}
               locale={pageData.fmLocale}
               isDefaultLocale={pageData.fmDefaultLocale}
               translations={pageData.fmTranslations}
@@ -210,7 +211,9 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
           <FooterActions
             filePath={pageData.fmFilePath}
-            websiteUrl={settings?.websiteUrl} />
+            contentType={pageData.fmContentType}
+            websiteUrl={settings?.websiteUrl}
+            scripts={settings?.scripts} />
         </div>
       </li>
     );
@@ -232,6 +235,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             <ContentActions
               path={pageData.fmFilePath}
               relPath={pageData.fmRelFileWsPath}
+              contentType={pageData.fmContentType}
               scripts={settings?.scripts}
               onOpen={onOpenFile}
               listView

@@ -62,7 +62,7 @@ export const RefreshDashboardData: React.FunctionComponent<IRefreshDashboardData
 
   return (
     <button
-      className={`mr-2 text-[var(--vscode-foreground)] hover:text-[var(--vscode-textLink-foreground)]`}
+      className={`mr-2 text-[var(--frontmatter-text)] hover:text-[var(--vscode-textLink-foreground)]`}
       title={l10n.t(LocalizationKey.dashboardHeaderRefreshDashboardLabel)}
       onClick={refresh}
     >

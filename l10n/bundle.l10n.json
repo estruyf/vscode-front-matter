@@ -37,6 +37,7 @@
   "common.back": "Back",
   "common.open": "Open",
   "common.openWithValue": "Open: {0}",
+  "common.openCustomActions": "Open custom actions",
   "common.view": "View",
   "common.translate": "Translate",
   "common.languages": "Languages",

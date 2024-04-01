@@ -177,7 +177,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (
           )}
 
           {isDragActive && (
-            <div className={`absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center z-50 text-[var(--vscode-foreground)] bg-[var(--vscode-editor-background)] opacity-75`}>
+            <div className={`absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center z-50 text-[var(--frontmatter-text)] bg-[var(--vscode-editor-background)] opacity-75`}>
               <ArrowUpTrayIcon className={`h-32`} />
               <p className={`text-xl max-w-md text-center`}>
                 {selectedFolder

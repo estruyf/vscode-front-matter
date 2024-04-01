@@ -10,7 +10,7 @@ export const DetailsItem: React.FunctionComponent<IDetailsItemProps> = ({ title,
     <>
       <div className="py-3 flex justify-between text-sm font-medium">
         <dt className={`text-[var(--vscode-editor-foreground)]`}>{title}</dt>
-        <dd className={`text-right text-[var(--vscode-foreground)]`}>
+        <dd className={`text-right text-[var(--frontmatter-text)]`}>
           {details}
         </dd>
       </div>

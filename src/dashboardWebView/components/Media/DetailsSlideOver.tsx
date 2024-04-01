@@ -147,7 +147,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
                         )}
                         <div className="mt-4 flex items-start justify-between">
                           <div>
-                            <h2 className={`text-lg font-medium text-[var(--vscode-foreground)]`}>
+                            <h2 className={`text-lg font-medium text-[var(--frontmatter-text)]`}>
                               {media.filename}
                             </h2>
                             <p className={`text-sm font-medium text-[var(--vscode-editor-foreground)]`}>
@@ -169,7 +169,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
 
                         {!showForm && (
                           <>
-                            <h3 className={`text-base flex items-center text-[var(--vscode-foreground)]`}>
+                            <h3 className={`text-base flex items-center text-[var(--frontmatter-text)]`}>
                               <span>{l10n.t(LocalizationKey.dashboardMediaMetadataPanelFormMetadataTitle)}</span>
                               <button onClick={onEdit}>
                                 <PencilSquareIcon className="w-4 h-4 ml-2" aria-hidden="true" />
@@ -185,7 +185,7 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
 
                       {!showForm && (
                         <div>
-                          <h3 className={`text-base text-[var(--vscode-foreground)]`}>
+                          <h3 className={`text-base text-[var(--frontmatter-text)]`}>
                             {l10n.t(LocalizationKey.dashboardMediaMetadataPanelFormInformationTitle)}
                           </h3>
                           <dl className={`mt-2 border-t border-b divide-y border-[var(--frontmatter-border)] divide-[var(--frontmatter-border)]`}>

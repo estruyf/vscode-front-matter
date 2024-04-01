@@ -6,16 +6,21 @@ import { LocalizationKey } from '../../../localization';
 import { openFile, openOnWebsite } from '../../utils';
 import { useRecoilState } from 'recoil';
 import { SelectedItemActionAtom } from '../../state';
-// import { ItemSelection } from '../Common/ItemSelection';
+import { CustomScript } from '../../../models';
+import { CustomActions } from './CustomActions';
 
 export interface IFooterActionsProps {
   filePath: string;
+  contentType: string;
   websiteUrl?: string;
+  scripts?: CustomScript[];
 }
 
 export const FooterActions: React.FunctionComponent<IFooterActionsProps> = ({
   filePath,
-  websiteUrl
+  contentType,
+  websiteUrl,
+  scripts
 }: React.PropsWithChildren<IFooterActionsProps>) => {
   const [, setSelectedItemAction] = useRecoilState(SelectedItemActionAtom);
 
@@ -42,6 +47,12 @@ export const FooterActions: React.FunctionComponent<IFooterActionsProps> = ({
           </QuickAction>
         )
       }
+
+      <CustomActions
+        filePath={filePath}
+        contentType={contentType}
+        scripts={scripts}
+        showTrigger />
 
       <QuickAction
         title={l10n.t(LocalizationKey.commonDelete)}

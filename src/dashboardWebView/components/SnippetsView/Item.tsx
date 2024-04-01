@@ -164,7 +164,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     <>
       <li className={`group relative overflow-hidden shadow-md hover:shadow-xl dark:shadow-none border p-4 space-y-2 rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] border-[var(--frontmatter-border)]`}>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <CodeBracketIcon className={`w-64 h-64 opacity-5 text-[var(--vscode-foreground)]`} />
+          <CodeBracketIcon className={`w-64 h-64 opacity-5 text-[var(--frontmatter-text)]`} />
         </div>
 
         <h2
@@ -244,7 +244,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           </div>
         </FeatureFlag>
 
-        <p className={`text-xs text-[var(--vscode-foreground)]`}>{snippet.description}</p>
+        <p className={`text-xs text-[var(--frontmatter-text)]`}>{snippet.description}</p>
       </li>
 
       {showInsertDialog && (

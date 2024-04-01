@@ -1,7 +1,7 @@
-import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
-import { EyeIcon, GlobeEuropeAfricaIcon, CommandLineIcon, TrashIcon, LanguageIcon, EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
+import { messageHandler } from '@estruyf/vscode/dist/client';
+import { EyeIcon, GlobeEuropeAfricaIcon, TrashIcon, LanguageIcon, EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
-import { CustomScript, I18nConfig, ScriptType } from '../../../models';
+import { CustomScript, I18nConfig } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
@@ -10,13 +10,16 @@ import { SelectedItemActionAtom, SettingsSelector } from '../../state';
 import { COMMAND_NAME, GeneralCommands } from '../../../constants';
 import { PinIcon } from '../Icons/PinIcon';
 import { PinnedItemsAtom } from '../../state/atom/PinnedItems';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from '../../../components/shadcn/Dropdown';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../../components/shadcn/Dropdown';
 import { RenameIcon } from '../../../components/icons/RenameIcon';
-import { openFile, openOnWebsite } from '../../utils';
+import { openOnWebsite } from '../../utils';
+import { CustomActions } from './CustomActions';
+import { TranslationMenu } from './TranslationMenu';
 
 export interface IContentActionsProps {
   path: string;
   relPath: string;
+  contentType: string;
   scripts: CustomScript[] | undefined;
   listView?: boolean;
   locale?: I18nConfig;
@@ -33,6 +36,7 @@ export interface IContentActionsProps {
 export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
   path,
   relPath,
+  contentType,
   scripts,
   onOpen,
   listView,
@@ -78,14 +82,6 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
     })
   }, [path]);
 
-  const runCustomScript = React.useCallback(
-    (e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>, script: CustomScript) => {
-      e.stopPropagation();
-      Messenger.send(DashboardMessage.runCustomScript, { script, path });
-    },
-    [path]
-  );
-
   const runCommand = React.useCallback((commandId: string) => {
     messageHandler.send(GeneralCommands.toVSCode.runCommand, {
       command: commandId,
@@ -96,65 +92,6 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
   const isPinned = React.useMemo(() => {
     return pinnedItems.includes(relPath);
   }, [pinnedItems, relPath]);
-
-  const customScriptActions = React.useMemo(() => {
-    return (scripts || [])
-      .filter(
-        (script) =>
-          (script.type === undefined || script.type === ScriptType.Content) &&
-          !script.bulk &&
-          !script.hidden
-      )
-      .map((script) => (
-        <DropdownMenuItem key={script.id || script.title} onClick={(e) => runCustomScript(e, script)}>
-          <CommandLineIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
-          <span>{script.title}</span>
-        </DropdownMenuItem>
-      ));
-  }, [scripts]);
-
-  const translationsMenu = React.useMemo(() => {
-    if (!locale || !translations || Object.keys(translations).length === 0) {
-      return null;
-    }
-
-    const crntLocale = translations[locale.locale];
-    const otherLocales = Object.entries(translations).filter(([key]) => key !== locale.locale);
-
-    if (otherLocales.length === 0) {
-      return null;
-    }
-
-    return (
-      <DropdownMenuSub>
-        <DropdownMenuSubTrigger>
-          <LanguageIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
-          <span>{l10n.t(LocalizationKey.dashboardContentsContentActionsTranslationsMenu)}</span>
-        </DropdownMenuSubTrigger>
-
-        <DropdownMenuPortal>
-          <DropdownMenuSubContent>
-            <DropdownMenuItem onClick={() => openFile(crntLocale.path)}>
-              <span>{crntLocale.locale.title || crntLocale.locale.locale}</span>
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
-
-            {
-              otherLocales.map(([key, value]) => (
-                <DropdownMenuItem
-                  key={key}
-                  onClick={() => openFile(value.path)}
-                >
-                  <span>{value.locale.title || value.locale.locale}</span>
-                </DropdownMenuItem>
-              ))
-            }
-          </DropdownMenuSubContent>
-        </DropdownMenuPortal>
-      </DropdownMenuSub>
-    );
-  }, [translations, locale, isDefaultLocale]);
 
   return (
     <>
@@ -208,9 +145,15 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
                   )
                 }
 
-                {translationsMenu}
+                <TranslationMenu
+                  isDefaultLocale={isDefaultLocale}
+                  locale={locale}
+                  translations={translations} />
 
-                {customScriptActions}
+                <CustomActions
+                  filePath={path}
+                  contentType={contentType}
+                  scripts={scripts} />
 
                 <DropdownMenuItem onClick={onDelete} className={`focus:bg-[var(--vscode-statusBarItem-errorBackground)] focus:text-[var(--vscode-statusBarItem-errorForeground)]`}>
                   <TrashIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
