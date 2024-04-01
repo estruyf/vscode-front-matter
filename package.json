@@ -50,8 +50,7 @@
   },
   "activationEvents": [
     "workspaceContains:**/.frontmatter",
-    "workspaceContains:**/frontmatter.json",
-    "onStartupFinished"
+    "workspaceContains:**/frontmatter.json"
   ],
   "main": "./dist/extension.js",
   "contributes": {

@@ -1,7 +1,7 @@
 import { darkenColor } from './darkenColor';
 import { preserveColor } from './preserveColor';
 
-export const updateCssVariables = () => {
+export const updateCssVariables = (isDarkTheme: boolean = true) => {
   const styles = getComputedStyle(document.documentElement);
 
   // Lightbox
@@ -82,5 +82,10 @@ export const updateCssVariables = () => {
   document.documentElement.style.setProperty(
     '--frontmatter-sideBar-background',
     darkenColor(sideBarBg, 2) || 'var(--vscode-sideBar-background)'
+  );
+
+  document.documentElement.style.setProperty(
+    '--frontmatter-border-active',
+    darkenColor(borderColor, isDarkTheme ? -30 : 30) || 'var(--vscode-activityBar-activeBorder)'
   );
 };

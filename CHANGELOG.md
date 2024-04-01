@@ -22,6 +22,7 @@
 - [#768](https://github.com/estruyf/vscode-front-matter/issues/768): Update broken link to the documentation
 - [#771](https://github.com/estruyf/vscode-front-matter/issues/771): Fix lowercase `data` tab label
 - [#782](https://github.com/estruyf/vscode-front-matter/issues/782): Fix for setting the correct view when inserting media or snippets
+- [#786](https://github.com/estruyf/vscode-front-matter/issues/786): Remove on startup as VSCode now triggers on known commands
 
 ## [10.0.2] - 2024-03-01
 

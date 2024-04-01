@@ -1,11 +1,12 @@
 import * as React from 'react';
 import * as l10n from '@vscode/l10n';
 import { QuickAction } from '../Menu';
-import { EyeIcon, GlobeEuropeAfricaIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, GlobeEuropeAfricaIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { LocalizationKey } from '../../../localization';
 import { openFile, openOnWebsite } from '../../utils';
 import { useRecoilState } from 'recoil';
 import { SelectedItemActionAtom } from '../../state';
+// import { ItemSelection } from '../Common/ItemSelection';
 
 export interface IFooterActionsProps {
   filePath: string;
@@ -19,7 +20,9 @@ export const FooterActions: React.FunctionComponent<IFooterActionsProps> = ({
   const [, setSelectedItemAction] = useRecoilState(SelectedItemActionAtom);
 
   return (
-    <div className={`py-2 w-full flex items-center justify-evenly border-t border-t-[var(--frontmatter-border)] bg-[var(--frontmatter-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)]`}>
+    <div className={`py-2 w-full flex items-center justify-evenly border-t border-t-[var(--frontmatter-border)] bg-[var(--frontmatter-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)] rounded`}>
+      {/* <ItemSelection filePath={filePath} show /> */}
+
       <QuickAction
         title={l10n.t(LocalizationKey.dashboardContentsContentActionsMenuItemView)}
         className={`text-[var(--frontmatter-secondary-text)]`}

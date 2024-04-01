@@ -52,7 +52,8 @@ export const routePaths: { [name: string]: string } = {
 };
 
 const mutationObserver = new MutationObserver((_, __) => {
-  updateCssVariables();
+  const darkMode = document.body.classList.contains('vscode-dark');
+  updateCssVariables(darkMode);
 });
 
 const elm = document.querySelector('#app');
@@ -67,7 +68,7 @@ if (elm) {
   const webviewUrl = elm?.getAttribute('data-webview-url');
   const isCrashDisabled = elm?.getAttribute('data-is-crash-disabled');
 
-  updateCssVariables();
+  updateCssVariables(document.body.classList.contains('vscode-dark'));
   mutationObserver.observe(document.body, { childList: false, attributes: true });
 
   if (isProd === 'true' && isCrashDisabled === 'false') {

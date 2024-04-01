@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as l10n from '@vscode/l10n';
 import { QuickAction } from '../Menu';
 import { LocalizationKey } from '../../../localization';
-import { ClipboardIcon, CodeBracketIcon, EyeIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { ClipboardIcon, CodeBracketIcon, EyeIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRecoilState } from 'recoil';
 import { SelectedItemActionAtom } from '../../state';
 import { MediaInfo, Snippet, ViewData } from '../../../models';

@@ -7,21 +7,26 @@ import { SettingsSelector } from '../../state';
 import { useRecoilValue } from 'recoil';
 import { ItemSelection } from '../Common/ItemSelection';
 import { openFile } from '../../utils';
+import useSelectedItems from '../../hooks/useSelectedItems';
+import { cn } from '../../../utils/cn';
 
 export interface IPinnedItemProps extends Page { }
 
 export const PinnedItem: React.FunctionComponent<IPinnedItemProps> = ({
   ...pageData
 }: React.PropsWithChildren<IPinnedItemProps>) => {
+  const { selectedFiles } = useSelectedItems();
   const settings = useRecoilValue(SettingsSelector);
   const { escapedTitle } = useCard(pageData, settings?.dashboardState?.contents?.cardFields);
+
+  const isSelected = React.useMemo(() => selectedFiles.includes(pageData.fmFilePath), [selectedFiles, pageData.fmFilePath]);
 
   const onOpenFile = React.useCallback(() => {
     openFile(pageData.fmFilePath);
   }, [pageData.fmFilePath]);
 
   return (
-    <li className='group flex w-full border border-[var(--frontmatter-border)] rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] relative'>
+    <li className={cn(`group flex w-full border border-[var(--frontmatter-border)] rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-sideBarTitle-foreground)] relative`, isSelected && `border-[var(--frontmatter-border-active)]`)}>
       <button onClick={onOpenFile} className='relative h-full w-1/3'>
         {
           pageData["fmPreviewImage"] ? (

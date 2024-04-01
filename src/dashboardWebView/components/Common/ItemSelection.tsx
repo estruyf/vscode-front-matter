@@ -5,27 +5,27 @@ import { useMemo } from 'react';
 
 export interface IItemSelectionProps {
   filePath: string;
-  isRowItem?: boolean;
+  show?: boolean;
 }
 
 export const ItemSelection: React.FunctionComponent<IItemSelectionProps> = ({
   filePath,
-  isRowItem
+  show
 }: React.PropsWithChildren<IItemSelectionProps>) => {
   const { onMultiSelect, selectedFiles } = useSelectedItems();
 
   const cssNames = useMemo(() => {
-    if (isRowItem) {
+    if (show) {
       return 'block';
     }
     return `${selectedFiles.includes(filePath) ? 'block' : 'hidden'} absolute top-2 left-2`;
-  }, [isRowItem, selectedFiles]);
+  }, [show, selectedFiles]);
 
   return (
     <div className={`${cssNames} group-hover:block`}>
       <VSCodeCheckbox
         style={{
-          boxShadow: isRowItem ? "" : "0 0 3px var(--frontmatter-border-preserve)"
+          boxShadow: show ? "" : "0 0 3px var(--frontmatter-border-preserve)"
         }}
         onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
           e.stopPropagation();
