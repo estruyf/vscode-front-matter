@@ -315,6 +315,26 @@ export class Folders {
 
     const contentFolders: ContentFolder[] = [];
 
+    // Check if wildcard is used
+    const wildcardFolders = folders.filter((f) => f.path.includes('*'));
+    if (wildcardFolders && wildcardFolders.length > 0) {
+      for (const folder of wildcardFolders) {
+        folders = folders.filter((f) => f.path !== folder.path);
+
+        const folderPath = Folders.absWsFolder(folder, wsFolder);
+        const subFolders = glob.sync(folderPath, { ignore: '**/node_modules/**' });
+        for (const subFolder of subFolders) {
+          const subFolderPath = parseWinPath(subFolder);
+
+          folders.push({
+            ...folder,
+            title: `${folder.title} (${subFolderPath.replace(wsFolder?.fsPath || '', '')})`,
+            path: subFolderPath
+          });
+        }
+      }
+    }
+
     folders.forEach((folder) => {
       if (!folder.title) {
         folder.title = basename(folder.path);
