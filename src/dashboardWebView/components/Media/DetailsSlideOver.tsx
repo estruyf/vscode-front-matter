@@ -67,23 +67,23 @@ export const DetailsSlideOver: React.FunctionComponent<IDetailsSlideOverProps> =
     fields?.forEach((field) => {
       if (field.name === "title") {
         items.push(
-          <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaCommonTitle)} details={media.metadata.title || ""} />
+          <DetailsItem key="title" title={l10n.t(LocalizationKey.dashboardMediaCommonTitle)} details={media.metadata.title || ""} />
         );
       } else if (field.name === "caption") {
         if (isImageFile) {
           items.push(
-            <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaCommonCaption)} details={media.metadata.caption || ""} />
+            <DetailsItem key="caption" title={l10n.t(LocalizationKey.dashboardMediaCommonCaption)} details={media.metadata.caption || ""} />
           );
         }
       } else if (field.name === "alt") {
         if (isImageFile) {
           items.push(
-            <DetailsItem title={l10n.t(LocalizationKey.dashboardMediaCommonAlt)} details={media.metadata.alt || ""} />
+            <DetailsItem key="alt" title={l10n.t(LocalizationKey.dashboardMediaCommonAlt)} details={media.metadata.alt || ""} />
           );
         }
       } else {
         items.push(
-          <DetailsItem title={field.title || field.name} details={(media.metadata[field.name] || "") as string} />
+          <DetailsItem key={field.name} title={field.title || field.name} details={(media.metadata[field.name] || "") as string} />
         );
       }
     });
