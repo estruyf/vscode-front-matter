@@ -19,6 +19,7 @@
 
 ### 🐞 Fixes
 
+- [#716](https://github.com/estruyf/vscode-front-matter/issues/716): Fix `dataFile` dropdown class
 - [#768](https://github.com/estruyf/vscode-front-matter/issues/768): Update broken link to the documentation
 - [#771](https://github.com/estruyf/vscode-front-matter/issues/771): Fix lowercase `data` tab label
 - [#782](https://github.com/estruyf/vscode-front-matter/issues/782): Fix for setting the correct view when inserting media or snippets

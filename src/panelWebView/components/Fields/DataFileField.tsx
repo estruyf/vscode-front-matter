@@ -166,7 +166,7 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
             </button>
 
             <ul
-              className={`metadata_field__choice_list ${isOpen ? 'open' : 'closed'}`}
+              className={`field_dropdown metadata_field__choice_list ${isOpen ? 'open' : 'closed'}`}
               style={{
                 bottom: getDropdownStyle(isOpen)
               }}
