@@ -7,7 +7,7 @@ import FieldBoundary from './ErrorBoundary/FieldBoundary';
 import { SymbolKeywordIcon } from './Icons/SymbolKeywordIcon';
 import { SeoFieldInfo } from './SeoFieldInfo';
 import { SeoKeywords } from './SeoKeywords';
-import { TagPicker } from './TagPicker';
+import { TagPicker } from './Fields/TagPicker';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
 import { VSCodeTable, VSCodeTableBody, VSCodeTableHead, VSCodeTableHeader, VSCodeTableRow } from './VSCode/VSCodeTable';

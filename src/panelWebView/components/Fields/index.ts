@@ -16,6 +16,7 @@ export * from './PreviewImage';
 export * from './PreviewImageField';
 export * from './RequiredAsterix';
 export * from './SlugField';
+export * from './TagPicker';
 export * from './TextField';
 export * from './Toggle';
 export * from './WrapperField';

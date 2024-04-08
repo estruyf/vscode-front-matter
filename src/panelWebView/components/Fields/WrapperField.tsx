@@ -11,7 +11,6 @@ import { ListUnorderedIcon } from '../Icons/ListUnorderedIcon';
 import { TagIcon } from '../Icons/TagIcon';
 import { JsonField } from '../JsonField';
 import { IMetadata } from '../Metadata';
-import { TagPicker } from '../TagPicker';
 import {
   ChoiceField,
   DataFileField,
@@ -27,7 +26,8 @@ import {
   PreviewImageValue,
   NumberField,
   CustomField,
-  FieldCollection
+  FieldCollection,
+  TagPicker
 } from '.';
 import { fieldWhenClause } from '../../../utils/fieldWhenClause';
 import { ContentTypeRelationshipField } from './ContentTypeRelationshipField';
