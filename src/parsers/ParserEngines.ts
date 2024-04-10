@@ -45,26 +45,7 @@ export const Engines = {
     },
     yaml: {
       parse: (value: string) => {
-        const lines = value.split('\n');
-        // Check if a line includes a colon and isn't wrapped in quotes, we need to add quotes to the value
-        for (const line of lines) {
-          const parts = line.split(':');
-          if (parts.length > 2) {
-            const key = parts[0].trim();
-            const value = parts.slice(1).join(':').trim();
-
-            if (
-              !value.startsWith('"') &&
-              !value.endsWith('"') &&
-              !value.includes("'") &&
-              !value.includes('"')
-            ) {
-              lines[lines.indexOf(line)] = `${key}: "${value}"`;
-            }
-          }
-        }
-
-        return yaml.parse(removeCarriageReturn(lines.join('\n')));
+        return yaml.parse(removeCarriageReturn(value));
       },
       stringify: (
         obj: any,
