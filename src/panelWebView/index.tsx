@@ -9,14 +9,8 @@ import { SentryInit } from '../utils/sentryInit';
 import './styles.css';
 
 // require('@vscode/codicons/dist/codicon.css');
-import '@bendera/vscode-webview-elements/dist/vscode-table.js';
-import '@bendera/vscode-webview-elements/dist/vscode-table-header.js';
-import '@bendera/vscode-webview-elements/dist/vscode-table-header-cell.js';
-import '@bendera/vscode-webview-elements/dist/vscode-table-body.js';
-import '@bendera/vscode-webview-elements/dist/vscode-table-row.js';
-import '@bendera/vscode-webview-elements/dist/vscode-table-cell.js';
-import '@bendera/vscode-webview-elements/dist/vscode-collapsible.js';
-import '@bendera/vscode-webview-elements/dist/vscode-label.js';
+import '@vscode-elements/elements/dist/vscode-collapsible/index.js';
+// import '@bendera/vscode-webview-elements/dist/vscode-label/index.js';
 // import '@bendera/vscode-webview-elements/dist/vscode-checkbox.js';
 
 // import '@vscode/webview-ui-toolkit/dist/esm/checkbox';

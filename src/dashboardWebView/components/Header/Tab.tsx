@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useLocation } from 'react-router-dom';
 import { NavigationType } from '../../models';
+import { cn } from '../../../utils/cn';
 
 export interface ITabProps {
   navigationType: NavigationType;
@@ -16,11 +17,11 @@ export const Tab: React.FunctionComponent<ITabProps> = ({
 
   return (
     <button
-      className={`h-full flex items-center py-2 px-4 text-sm font-medium text-center border-b-2 border-transparent hover:border-[var(--vscode-tab-activeForeground)] hover:text-[var(--vscode-tab-activeForeground)] ${location.pathname === `/${navigationType}`
+      className={cn(`h-full flex items-center py-2 px-1 text-sm font-medium text-center border-b-2 border-transparent hover:text-[var(--vscode-tab-activeForeground)] ${location.pathname === `/${navigationType}`
         ?
-        `text-[var(--vscode-tab-activeForeground)] border-[var(--vscode-tab-activeForeground)]` :
-        `text-[var(--vscode-tab-inactiveForeground)]`
-        }`}
+        `text-[var(--frontmatter-nav-active)] border-[var(--frontmatter-nav-active)]` :
+        `text-[var(--frontmatter-nav-inactive)]`
+        }`)}
       type="button"
       role="tab"
       aria-controls="profile"

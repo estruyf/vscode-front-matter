@@ -1,12 +1,12 @@
-import { RectangleStackIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { RectangleStackIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
-import { VsLabel } from '../VscodeComponents';
 import { DataBlockRecord } from '.';
 import { SortableContainer, SortEnd } from 'react-sortable-hoc';
 import { useCallback } from 'react';
 import { FieldGroup } from '../../../models';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { VSCodeLabel } from '../VSCode';
 
 export interface IDataBlockRecordsProps {
   fieldGroups?: FieldGroup[];
@@ -52,7 +52,7 @@ export const DataBlockRecords = ({
 
   return (
     <div className="json_data__list">
-      <VsLabel>
+      <VSCodeLabel>
         <div className={`metadata_field__label`}>
           <div>
             <RectangleStackIcon style={{ width: '16px', height: '16px' }} />
@@ -61,7 +61,7 @@ export const DataBlockRecords = ({
             </span>
           </div>
         </div>
-      </VsLabel>
+      </VSCodeLabel>
 
       <Container onSortEnd={onSort} useDragHandle>
         {records.map((v: any, idx: number) => (

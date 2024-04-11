@@ -152,6 +152,30 @@ export enum LocalizationKey {
    */
   commonOpenWithValue = 'common.openWithValue',
   /**
+   * Open custom actions
+   */
+  commonOpenCustomActions = 'common.openCustomActions',
+  /**
+   * View
+   */
+  commonView = 'common.view',
+  /**
+   * Translate
+   */
+  commonTranslate = 'common.translate',
+  /**
+   * Languages
+   */
+  commonLanguages = 'common.languages',
+  /**
+   * Scripts
+   */
+  commonScripts = 'common.scripts',
+  /**
+   * Rename
+   */
+  commonRename = 'common.rename',
+  /**
    * Loading content
    */
   loadingInitPages = 'loading.initPages',
@@ -252,7 +276,7 @@ export enum LocalizationKey {
    */
   settingsIntegrationsViewDeeplIntputLabel = 'settings.integrationsView.deepl.intput.label',
   /**
-   * Enter your Azure Translator API key
+   * Enter your Deepl API key
    */
   settingsIntegrationsViewDeeplIntputPlaceholder = 'settings.integrationsView.deepl.intput.placeholder',
   /**
@@ -484,6 +508,18 @@ export enum LocalizationKey {
    */
   dashboardFiltersLanguageFilterAll = 'dashboard.filters.languageFilter.all',
   /**
+   * {0} selected
+   */
+  dashboardHeaderActionsBarItemsSelected = 'dashboard.header.actionsBar.itemsSelected',
+  /**
+   * Delete selected files
+   */
+  dashboardHeaderActionsBarAlertDeleteTitle = 'dashboard.header.actionsBar.alertDelete.title',
+  /**
+   * Are you sure you want to delete the selected files?
+   */
+  dashboardHeaderActionsBarAlertDeleteDescription = 'dashboard.header.actionsBar.alertDelete.description',
+  /**
    * Home
    */
   dashboardHeaderBreadcrumbHome = 'dashboard.header.breadcrumb.home',
@@ -644,7 +680,7 @@ export enum LocalizationKey {
    */
   dashboardHeaderTabsSnippets = 'dashboard.header.tabs.snippets',
   /**
-   * data
+   * Data
    */
   dashboardHeaderTabsData = 'dashboard.header.tabs.data',
   /**
@@ -739,6 +775,14 @@ export enum LocalizationKey {
    * Create new folder
    */
   dashboardMediaFolderCreationFolderCreate = 'dashboard.media.folderCreation.folder.create',
+  /**
+   * Content directory
+   */
+  dashboardMediaFolderItemContentDirectory = 'dashboard.media.folderItem.contentDirectory',
+  /**
+   * Public directory
+   */
+  dashboardMediaFolderItemPublicDirectory = 'dashboard.media.folderItem.publicDirectory',
   /**
    * Insert image
    */
@@ -1465,6 +1509,10 @@ export enum LocalizationKey {
    */
   panelMetadataTitle = 'panel.metadata.title',
   /**
+   * Check the problems view for more information
+   */
+  panelMetadataFocusProblems = 'panel.metadata.focusProblems',
+  /**
    * Other actions
    */
   panelOtherActionsTitle = 'panel.otherActions.title',
@@ -1644,6 +1692,22 @@ export enum LocalizationKey {
    * Failed to rename file: {0}
    */
   commandsArticleUpdateSlugError = 'commands.article.updateSlug.error',
+  /**
+   * The file did not exist
+   */
+  commandsArticleRenameFileNotExistsError = 'commands.article.rename.fileNotExists.error',
+  /**
+   * A file with the name "{0}" already exists
+   */
+  commandsArticleRenameFileExistsError = 'commands.article.rename.fileExists.error',
+  /**
+   * Rename: {0}
+   */
+  commandsArticleRenameFileNameTitle = 'commands.article.rename.fileName.title',
+  /**
+   * File name
+   */
+  commandsArticleRenameFileNamePrompt = 'commands.article.rename.fileName.prompt',
   /**
    * Cache cleared
    */
@@ -2480,6 +2544,10 @@ export enum LocalizationKey {
    * Couldn't find data file entries
    */
   listenersPanelDataListenerGetDataFileEntriesNoDataFilesError = 'listeners.panel.dataListener.getDataFileEntries.noDataFiles.error',
+  /**
+   * Something went wrong while parsing your front matter. Please check the contents of your file.
+   */
+  listenersPanelDataListenerPushMetadataFrontMatterError = 'listeners.panel.dataListener.pushMetadata.frontMatter.error',
   /**
    * No active editor
    */

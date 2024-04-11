@@ -2,10 +2,10 @@ import * as React from 'react';
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { Field, PanelSettings } from '../../../models';
 import { PencilIcon } from '@heroicons/react/24/outline';
-import { VsLabel } from '../VscodeComponents';
 import { JsonFieldRecords, JsonFieldForm, JsonFieldSelector } from '.';
 import { SortEnd } from 'react-sortable-hoc';
 import { arrayMoveImmutable } from 'array-move';
+import { VSCodeLabel } from '../VSCode';
 
 export interface IJsonFieldProps {
   label: string;
@@ -101,12 +101,12 @@ export const JsonField: React.FunctionComponent<IJsonFieldProps> = ({
 
   return (
     <div className="json_data__field">
-      <VsLabel>
+      <VSCodeLabel>
         <div className={`metadata_field__label`}>
           <PencilIcon style={{ width: '16px', height: '16px' }} />{' '}
           <span style={{ lineHeight: '16px' }}>{label}</span>
         </div>
-      </VsLabel>
+      </VSCodeLabel>
 
       <JsonFieldSelector
         field={field}

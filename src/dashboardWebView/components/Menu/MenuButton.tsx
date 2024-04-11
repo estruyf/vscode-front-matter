@@ -14,7 +14,7 @@ export const MenuButton: React.FunctionComponent<IMenuButtonProps> = ({
   disabled
 }: React.PropsWithChildren<IMenuButtonProps>) => {
   return (
-    <div className={`group flex items-center ${disabled ? 'opacity-50' : ''}`}>
+    <div className={`group flex items-center shrink-0 ${disabled ? 'opacity-50' : ''}`}>
       <div className={`mr-2 font-medium flex items-center text-[var(--vscode-tab-inactiveForeground)]`}>
         {label}:
       </div>

@@ -24,7 +24,6 @@ import {
   ExtensionListener,
   SnippetListener,
   TaxonomyListener,
-  LogListener,
   LocalizationListener,
   SsgListener
 } from '../listeners/dashboard';
@@ -237,7 +236,6 @@ export class Dashboard {
       ModeListener.process(msg);
       GitListener.process(msg);
       TaxonomyListener.process(msg);
-      LogListener.process(msg);
       SsgListener.process(msg);
     });
   }

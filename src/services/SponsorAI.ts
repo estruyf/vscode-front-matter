@@ -1,11 +1,15 @@
-import { SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH } from '../constants';
+import {
+  SETTING_SEO_DESCRIPTION_LENGTH,
+  SETTING_SEO_TITLE_LENGTH,
+  WEBSITE_LINKS
+} from '../constants';
 import { Logger, Notifications, Settings, TaxonomyHelper } from '../helpers';
 import { TagType } from '../panelWebView/TagType';
 import { TaxonomyType } from '../models';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 
-const AI_URL = 'https://frontmatter.codes/api/ai';
+const AI_URL = WEBSITE_LINKS.api.ai;
 // const AI_URL = 'http://localhost:3000/api/ai';
 
 export class SponsorAi {

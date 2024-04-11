@@ -17,7 +17,7 @@ import { Container } from './SortableContainer';
 import { SortableItem } from './SortableItem';
 import { ChevronRightIcon, CircleStackIcon } from '@heroicons/react/24/outline';
 import { DataType } from '../../../models/DataType';
-import { TelemetryEvent } from '../../../constants';
+import { TelemetryEvent, WEBSITE_LINKS } from '../../../constants';
 import { NavigationItem } from '../Layout';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
@@ -265,7 +265,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
             <p className="text-xl mt-4">
               <a
                 className={`text-[var(--frontmatter-link)] hover:text-[var(--frontmatter-link-hover)]`}
-                href={`https://frontmatter.codes/docs/dashboard#data-files-view`}
+                href={WEBSITE_LINKS.docs.dataDashboard}
                 title={l10n.t(LocalizationKey.dashboardDataViewDataViewGetStartedLink)}
               >
                 {l10n.t(LocalizationKey.dashboardDataViewDataViewGetStartedLink)}

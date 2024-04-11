@@ -140,15 +140,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const remap = vscode.commands.registerCommand(COMMAND_NAME.remap, Settings.remap);
 
-  const setLastModifiedDate = vscode.commands.registerCommand(
-    COMMAND_NAME.setLastModifiedDate,
-    Article.setLastModifiedDate
-  );
-
-  const generateSlug = vscode.commands.registerCommand(
-    COMMAND_NAME.generateSlug,
-    Article.updateSlug
-  );
+  // Register all the article commands
+  Article.registerCommands(subscriptions);
 
   subscriptions.push(
     vscode.commands.registerCommand(COMMAND_NAME.initTemplate, () =>
@@ -291,16 +284,6 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand(COMMAND_NAME.chatbot, () => Chatbot.open(extensionPath))
   );
 
-  // Inserting an image in Markdown
-  subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.insertMedia, Article.insertMedia)
-  );
-
-  // Inserting a snippet in Markdown
-  subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.insertSnippet, Article.insertSnippet)
-  );
-
   // Create the editor experience for bulk scripts
   subscriptions.push(
     vscode.workspace.registerTextDocumentContentProvider(
@@ -340,8 +323,6 @@ export async function activate(context: vscode.ExtensionContext) {
     createCategory,
     exportTaxonomy,
     remap,
-    setLastModifiedDate,
-    generateSlug,
     createFromTemplate,
     createTemplate,
     registerFolder,

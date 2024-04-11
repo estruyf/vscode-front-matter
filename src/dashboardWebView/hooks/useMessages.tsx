@@ -15,8 +15,11 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
 import { NavigationType } from '../models';
 import { GeneralCommands } from '../../constants';
+import { useNavigate } from 'react-router-dom';
+import { routePaths } from '..';
 
 export default function useMessages() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useRecoilState(LoadingAtom);
   const [pages, setPages] = useState<Page[]>([]);
   const [settings, setSettings] = useRecoilState(SettingsAtom);
@@ -36,14 +39,19 @@ export default function useMessages() {
         setViewData(message.payload);
         if (message.payload?.type === NavigationType.Media) {
           setView(NavigationType.Media);
+          navigate(routePaths[NavigationType.Media]);
         } else if (message.payload?.type === NavigationType.Contents) {
           setView(NavigationType.Contents);
+          navigate(routePaths[NavigationType.Contents]);
         } else if (message.payload?.type === NavigationType.Data) {
           setView(NavigationType.Data);
+          navigate(routePaths[NavigationType.Data]);
         } else if (message.payload?.type === NavigationType.Taxonomy) {
           setView(NavigationType.Taxonomy);
+          navigate(routePaths[NavigationType.Taxonomy]);
         } else if (message.payload?.type === NavigationType.Snippets) {
           setView(NavigationType.Snippets);
+          navigate(routePaths[NavigationType.Snippets]);
         }
         break;
       case DashboardCommand.settings:

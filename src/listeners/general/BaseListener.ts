@@ -25,6 +25,15 @@ export abstract class BaseListener {
           commands.executeCommand(command, args);
         }
         break;
+      case GeneralCommands.toVSCode.logging.info:
+        Logger.info(msg.payload);
+        break;
+      case GeneralCommands.toVSCode.logging.warn:
+        Logger.warning(msg.payload);
+        break;
+      case GeneralCommands.toVSCode.logging.error:
+        Logger.error(msg.payload);
+        break;
     }
   }
 

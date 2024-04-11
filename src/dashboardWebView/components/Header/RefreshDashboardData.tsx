@@ -1,5 +1,4 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useCallback } from 'react';
 import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
@@ -18,6 +17,7 @@ import {
 } from '../../state';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { ArrowClockwiseIcon } from '../../../components/icons/ArrowClockwiseIcon';
 
 export interface IRefreshDashboardDataProps { }
 
@@ -62,11 +62,11 @@ export const RefreshDashboardData: React.FunctionComponent<IRefreshDashboardData
 
   return (
     <button
-      className={`mr-2 text-[var(--vscode-foreground)] hover:text-[var(--vscode-textLink-foreground)]`}
+      className={`mr-2 text-[var(--frontmatter-text)] hover:text-[var(--vscode-textLink-foreground)]`}
       title={l10n.t(LocalizationKey.dashboardHeaderRefreshDashboardLabel)}
       onClick={refresh}
     >
-      <ArrowPathIcon className={`h-5 w-5`} />
+      <ArrowClockwiseIcon className={`h-5 w-5`} />
       <span className="sr-only">{l10n.t(LocalizationKey.dashboardHeaderRefreshDashboardLabel)}</span>
     </button>
   );

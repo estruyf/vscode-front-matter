@@ -8,6 +8,7 @@ import { DashboardMessage } from '../../DashboardMessage';
 import { SettingsAtom, ViewDataSelector } from '../../state';
 import { SnippetInputField } from './SnippetInputField';
 import { SNIPPET } from '../../../constants/Snippet';
+import { GeneralCommands } from '../../../constants';
 
 export interface ISnippetFormProps {
   snippetKey?: string;
@@ -144,22 +145,17 @@ ${snippetBody}
     const allFields: SnippetField[] = [];
     const snippetFields = snippet.fields || [];
 
-    // Loop over all fields to check if they are present in the snippet
-    console.log('placeholders', placeholders);
-    console.log('snippetFields', snippetFields);
-
     for await (const field of snippetFields) {
-      console.log('field', field);
       const idx = placeholders.findIndex((fieldName) => fieldName === field.name);
       if (idx > -1) {
         try {
           const value = await insertPlaceholderValues(field.default || '');
-          console.log('value', value);
           allFields.push({
             ...field,
             value
           });
         } catch (e) {
+          messageHandler.send(GeneralCommands.toVSCode.logging.error, `SnippetForm: ${(e as Error).message}`);
           console.log('Error', (e as Error).message)
         }
       }

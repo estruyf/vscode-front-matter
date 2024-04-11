@@ -4,24 +4,25 @@ import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { HOME_PAGE_NAVIGATION_ID } from '../../../constants';
 import { parseWinPath } from '../../../helpers/parseWinPath';
-import { SearchAtom, SelectedMediaFolderAtom, SettingsAtom } from '../../state';
+import { SearchAtom, SettingsAtom } from '../../state';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import useMediaFolder from '../../hooks/useMediaFolder';
 
 export interface IBreadcrumbProps { }
 
 export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (
   _: React.PropsWithChildren<IBreadcrumbProps>
 ) => {
-  const [selectedFolder, setSelectedFolder] = useRecoilState(SelectedMediaFolderAtom);
+  const { selectedFolder, updateFolder } = useMediaFolder();
   const [, setSearchValue] = useRecoilState(SearchAtom);
   const [folders, setFolders] = React.useState<string[]>([]);
   const settings = useRecoilValue(SettingsAtom);
 
-  const updateFolder = (folder: string) => {
+  const updateMediaFolder = React.useCallback((folder: string) => {
     setSearchValue('');
-    setSelectedFolder(folder);
-  };
+    updateFolder(folder);
+  }, [updateFolder, setSearchValue]);
 
   React.useEffect(() => {
     if (!settings) {
@@ -79,11 +80,11 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (
   }, [selectedFolder, settings]);
 
   return (
-    <ol role="list" className="flex space-x-4 px-5 flex-1">
+    <ol role="list" className="flex space-x-2 px-4 flex-1">
       <li className="flex">
         <div className="flex items-center">
           <button
-            onClick={() => setSelectedFolder(HOME_PAGE_NAVIGATION_ID)}
+            onClick={() => updateMediaFolder(HOME_PAGE_NAVIGATION_ID)}
             className={`text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)]`}
           >
             <HomeIcon className="flex-shrink-0 h-5 w-5" aria-hidden="true" />
@@ -106,8 +107,8 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (
             </svg>
 
             <button
-              onClick={() => updateFolder(folder)}
-              className={`ml-4 text-sm font-medium text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)]`}
+              onClick={() => updateMediaFolder(folder)}
+              className={`ml-2 text-sm font-medium text-[var(--vscode-tab-inactiveForeground)] hover:text-[var(--vscode-tab-activeForeground)]`}
             >
               {basename(folder)}
             </button>
