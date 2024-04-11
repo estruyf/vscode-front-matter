@@ -1,6 +1,6 @@
 # Change Log
 
-## [10.1.0] - 2024-xx-xx
+## [10.1.0] - 2024-04-11 - [Release notes](https://beta.frontmatter.codes/updates/v10.1.0)
 
 ### ✨ New features
 
@@ -14,8 +14,6 @@
 - [#783](https://github.com/estruyf/vscode-front-matter/issues/783): Always show the custom panel view
 - [#785](https://github.com/estruyf/vscode-front-matter/issues/785): Adding common actions at the bottom of the content and media cards
 - [#787](https://github.com/estruyf/vscode-front-matter/issues/787): Support for glob patterns in the page folder paths
-
-### ⚡️ Optimizations
 
 ### 🐞 Fixes
 
