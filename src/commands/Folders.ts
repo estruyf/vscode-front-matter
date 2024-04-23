@@ -744,7 +744,12 @@ export class Folders {
   private static async findFiles(pattern: string): Promise<Uri[]> {
     return new Promise((resolve) => {
       glob(pattern, { ignore: '**/node_modules/**' }, (err, files) => {
-        const allFiles = files.map((file) => Uri.file(file));
+        if (err) {
+          Logger.error(`Folders:findFiles: ${err}`);
+          resolve([]);
+        }
+
+        const allFiles = (files || []).map((file) => Uri.file(file));
         resolve(allFiles);
       });
     });
