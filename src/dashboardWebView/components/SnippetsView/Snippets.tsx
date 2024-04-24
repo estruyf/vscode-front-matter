@@ -17,6 +17,7 @@ import { Item } from './Item';
 import { NewForm } from './NewForm';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { List } from '../Media/List';
 
 export interface ISnippetsProps { }
 
@@ -128,14 +129,13 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
         )}
 
         {(snippetKeys && snippetKeys.length > 0) ? (
-          <ul
-            role="list"
-            className={`grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8`}
+          <List
+            gap={4}
           >
             {snippetKeys.map((snippetKey: any, index: number) => (
               <Item key={index} snippetKey={snippetKey} snippet={snippets[snippetKey]} />
             ))}
-          </ul>
+          </List>
         ) : (
           <div className="w-full h-full flex items-center justify-center text-white">
             <div className={`flex flex-col items-center text-[var(--frontmatter-text)]`}>
