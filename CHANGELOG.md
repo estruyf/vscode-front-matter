@@ -1,5 +1,17 @@
 # Change Log
 
+## [10.2.0] - 2024-xx-xx
+
+### ✨ New features
+
+- [#797](https://github.com/estruyf/vscode-front-matter/issues/797): Adding common actions at the bottom of the snippet cards
+
+### 🎨 Enhancements
+
+### ⚡️ Optimizations
+
+### 🐞 Fixes
+
 ## [10.1.0] - 2024-04-11 - [Release notes](https://beta.frontmatter.codes/updates/v10.1.0)
 
 ### ✨ New features

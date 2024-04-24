@@ -2,13 +2,8 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import {
   CodeBracketIcon,
   DocumentTextIcon,
-  EllipsisHorizontalIcon,
-  EyeIcon,
-  PencilIcon,
   PhotoIcon,
-  PlusIcon,
-  TrashIcon
-} from '@heroicons/react/24/outline';
+} from '@heroicons/react/24/solid';
 import * as React from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
@@ -18,14 +13,13 @@ import { SnippetParser } from '../../../helpers/SnippetParser';
 import { Snippet, Snippets } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
 import { ModeAtom, SettingsSelector, ViewDataSelector } from '../../state';
-import { QuickAction } from '../Menu';
 import { Alert } from '../Modals/Alert';
 import { FormDialog } from '../Modals/FormDialog';
 import { NewForm } from './NewForm';
 import SnippetForm, { SnippetFormHandle } from './SnippetForm';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
-import { openFile } from '../../utils';
+import { FooterActions } from './FooterActions';
 
 export interface IItemProps {
   snippetKey: string;
@@ -64,10 +58,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     setSnippetOriginalBody('');
     setMediaSnippet(false);
   };
-
-  const showFile = useCallback(() => {
-    openFile(snippet.sourcePath);
-  }, [snippet]);
 
   const onOpenEdit = useCallback(() => {
     setSnippetTitle(snippet.title || snippetKey);
@@ -162,89 +152,41 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
   return (
     <>
-      <li className={`group relative overflow-hidden shadow-md hover:shadow-xl dark:shadow-none border p-4 space-y-2 rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] border-[var(--frontmatter-border)]`}>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <CodeBracketIcon className={`w-64 h-64 opacity-5 text-[var(--frontmatter-text)]`} />
+      <li className={`group flex flex-col relative overflow-hidden shadow-md hover:shadow-xl dark:shadow-none border space-y-2 rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] border-[var(--frontmatter-border)]`}>
+        <div className='p-4 grow'>
+          <h2
+            className="mt-2 mb-2 font-bold flex items-center"
+            title={snippet.isMediaSnippet ? 'Media snippet' : 'Content snippet'}
+          >
+            {snippet.isMediaSnippet ? (
+              <PhotoIcon className="w-5 h-5 mr-1" aria-hidden={true} />
+            ) : (
+              <DocumentTextIcon className="w-5 h-5 mr-1" aria-hidden={true} />
+            )}
+
+            {snippet.title || snippetKey}
+          </h2>
+
+          <p className={`text-xs text-[var(--frontmatter-text)]`}>{snippet.description}</p>
         </div>
-
-        <h2
-          className="mt-2 mb-2 font-bold flex items-center"
-          title={snippet.isMediaSnippet ? 'Media snippet' : 'Content snippet'}
-        >
-          {snippet.isMediaSnippet ? (
-            <PhotoIcon className="w-5 h-5 mr-1" aria-hidden={true} />
-          ) : (
-            <DocumentTextIcon className="w-5 h-5 mr-1" aria-hidden={true} />
-          )}
-
-          {snippet.title || snippetKey}
-        </h2>
 
         <FeatureFlag
           features={mode?.features || []}
           flag={FEATURE_FLAG.dashboard.snippets.manage}
           alternative={
-            insertToContent ? (
-              <div className={`absolute top-4 right-4 flex flex-col space-y-4`}>
-                <div className={`flex items-center border border-transparent rounded-full p-2 -mr-2 -mt-2 group-hover:bg-[var(--vscode-sideBar-background)] group-hover:border-[var(--frontmatter-border)]`}>
-                  <div className="group-hover:hidden">
-                    <EllipsisHorizontalIcon className="w-4 h-4" />
-                  </div>
-
-                  <div className="hidden group-hover:flex">
-                    <QuickAction
-                      title={l10n.t(LocalizationKey.commonInsertSnippet)}
-                      onClick={() => setShowInsertDialog(true)}>
-                      <PlusIcon className={`w-4 h-4`} aria-hidden="true" />
-                    </QuickAction>
-                  </div>
-                </div>
-              </div>
-            ) : undefined
+            <FooterActions
+              insertEnabled={!!(insertToContent && !snippet.isMediaSnippet)}
+              sourcePath={snippet.sourcePath}
+              onInsert={() => setShowInsertDialog(true)} />
           }
         >
-          <div className={`absolute top-4 right-4 flex flex-col space-y-4`}>
-            <div className={`flex items-center border border-transparent rounded-full p-2 -mr-2 -mt-2 group-hover:bg-[var(--vscode-sideBar-background)] group-hover:border-[var(--frontmatter-border)]`}>
-              <div className="group-hover:hidden">
-                <EllipsisHorizontalIcon className="w-4 h-4" />
-              </div>
-
-              <div className="hidden group-hover:flex">
-                {insertToContent && !snippet.isMediaSnippet && (
-                  <>
-                    <QuickAction title={l10n.t(LocalizationKey.commonInsertSnippet)} onClick={() => setShowInsertDialog(true)}>
-                      <PlusIcon className={`w-4 h-4`} aria-hidden="true" />
-                    </QuickAction>
-                  </>
-                )}
-
-                {!snippet.sourcePath ? (
-                  <>
-                    <QuickAction
-                      title={l10n.t(LocalizationKey.dashboardSnippetsViewItemQuickActionEditSnippet)}
-                      onClick={onOpenEdit}>
-                      <PencilIcon className={`w-4 h-4`} aria-hidden="true" />
-                    </QuickAction>
-
-                    <QuickAction
-                      title={l10n.t(LocalizationKey.dashboardSnippetsViewItemQuickActionDeleteSnippet)}
-                      onClick={() => setShowAlert(true)}>
-                      <TrashIcon className={`w-4 h-4`} aria-hidden="true" />
-                    </QuickAction>
-                  </>
-                ) : (
-                  <QuickAction
-                    title={l10n.t(LocalizationKey.dashboardSnippetsViewItemQuickActionViewSnippet)}
-                    onClick={showFile}>
-                    <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
-                  </QuickAction>
-                )}
-              </div>
-            </div>
-          </div>
+          <FooterActions
+            insertEnabled={!!(insertToContent && !snippet.isMediaSnippet)}
+            sourcePath={snippet.sourcePath}
+            onEdit={onOpenEdit}
+            onInsert={() => setShowInsertDialog(true)}
+            onDelete={() => setShowAlert(true)} />
         </FeatureFlag>
-
-        <p className={`text-xs text-[var(--frontmatter-text)]`}>{snippet.description}</p>
       </li>
 
       {showInsertDialog && (
