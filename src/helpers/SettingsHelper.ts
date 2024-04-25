@@ -250,6 +250,7 @@ export class Settings {
    */
   public static async onConfigChange() {
     const projectConfig = await Settings.projectConfigPath();
+    Logger.info(`Project config path: ${projectConfig}`);
 
     workspace.onDidChangeConfiguration(() => {
       Settings.triggerListeners();
