@@ -10,7 +10,7 @@ import { Media } from './Media/Media';
 import { DataView } from './DataView';
 import { Snippets } from './SnippetsView/Snippets';
 import { FEATURE_FLAG, GeneralCommands } from '../../constants';
-import { Messenger } from '@estruyf/vscode/dist/client';
+import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import { TaxonomyView } from './TaxonomyView';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { routePaths } from '..';
@@ -70,6 +70,8 @@ export const App: React.FunctionComponent<IAppProps> = ({
   }
 
   useEffect(() => {
+    messageHandler.send(GeneralCommands.toVSCode.logging.info, `DASHBOARD: loaded with view ${view}`);
+
     if (view && routePaths[view]) {
       navigate(routePaths[view]);
       return;
@@ -77,6 +79,16 @@ export const App: React.FunctionComponent<IAppProps> = ({
 
     navigate(routePaths[view]);
   }, [view]);
+
+  useEffect(() => {
+    if (settings && Object.keys(settings).length > 0) {
+      messageHandler.send(GeneralCommands.toVSCode.logging.info, `DASHBOARD: settings loaded`);
+    }
+
+    if (pages) {
+      messageHandler.send(GeneralCommands.toVSCode.logging.info, `DASHBOARD: pages loaded - ${pages.length} pages`);
+    }
+  }, [JSON.stringify(settings), JSON.stringify(pages)]);
 
   useEffect(() => {
     checkDevMode();

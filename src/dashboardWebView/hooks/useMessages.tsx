@@ -82,7 +82,7 @@ export default function useMessages() {
     return () => {
       Messenger.unlisten(messageListener);
     };
-  }, ['']);
+  }, []);
 
   return {
     loading,

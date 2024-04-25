@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { FeatureFlag } from '../../../components/features/FeatureFlag';
-import { FEATURE_FLAG, WEBSITE_LINKS } from '../../../constants';
+import { FEATURE_FLAG, GeneralCommands, WEBSITE_LINKS } from '../../../constants';
 import { TelemetryEvent } from '../../../constants/TelemetryEvent';
 import { SnippetParser } from '../../../helpers/SnippetParser';
 import { DashboardMessage } from '../../DashboardMessage';
@@ -84,6 +84,8 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
     Messenger.send(DashboardMessage.sendTelemetry, {
       event: TelemetryEvent.webviewSnippetsView
     });
+
+    Messenger.send(GeneralCommands.toVSCode.logging.info, "DASHBOARD: Snippets view loaded");
   }, []);
 
   return (

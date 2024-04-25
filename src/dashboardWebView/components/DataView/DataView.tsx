@@ -17,7 +17,7 @@ import { Container } from './SortableContainer';
 import { SortableItem } from './SortableItem';
 import { ChevronRightIcon, CircleStackIcon } from '@heroicons/react/24/outline';
 import { DataType } from '../../../models/DataType';
-import { TelemetryEvent, WEBSITE_LINKS } from '../../../constants';
+import { GeneralCommands, TelemetryEvent, WEBSITE_LINKS } from '../../../constants';
 import { NavigationItem } from '../Layout';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
@@ -128,6 +128,8 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
     Messenger.send(DashboardMessage.sendTelemetry, {
       event: TelemetryEvent.webviewDataView
     });
+
+    Messenger.send(GeneralCommands.toVSCode.logging.info, "DASHBOARD: Data view loaded");
 
     return () => {
       Messenger.unlisten(messageListener);

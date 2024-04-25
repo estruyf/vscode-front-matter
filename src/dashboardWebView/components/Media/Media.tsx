@@ -20,7 +20,7 @@ import { DashboardMessage } from '../../DashboardMessage';
 import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMatterIcon';
 import { FolderItem } from './FolderItem';
 import useMedia from '../../hooks/useMedia';
-import { STATIC_FOLDER_PLACEHOLDER, TelemetryEvent } from '../../../constants';
+import { GeneralCommands, STATIC_FOLDER_PLACEHOLDER, TelemetryEvent } from '../../../constants';
 import { PageLayout } from '../Layout/PageLayout';
 import { parseWinPath } from '../../../helpers/parseWinPath';
 import { basename, extname, join } from 'path';
@@ -153,6 +153,8 @@ export const Media: React.FunctionComponent<IMediaProps> = (
     Messenger.send(DashboardMessage.sendTelemetry, {
       event: TelemetryEvent.webviewMediaView
     });
+
+    Messenger.send(GeneralCommands.toVSCode.logging.info, "DASHBOARD: Media view loaded");
   }, []);
 
   const { getRootProps, isDragActive } = useDropzone({

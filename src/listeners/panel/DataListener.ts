@@ -196,7 +196,7 @@ export class DataListener extends BaseListener {
     let articleDetails = null;
 
     try {
-      if (filePath) {
+      if (filePath && !filePath.startsWith('extension-output-eliostruyf')) {
         articleDetails = await ArticleHelper.getDetails(filePath);
 
         if (!articleDetails || articleDetails === 'nodata') {
