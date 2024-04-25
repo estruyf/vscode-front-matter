@@ -130,7 +130,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
     });
 
     Messenger.send(GeneralCommands.toVSCode.logging.info, {
-      message: 'DataView loaded',
+      message: 'Data view loaded',
       location: 'DASHBOARD'
     });
 

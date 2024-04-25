@@ -65,10 +65,10 @@ export class GitListener {
       }
     | undefined
   > {
-    Logger.info('GitListener:getSettings:start');
+    Logger.verbose('GitListener:getSettings:start');
     const gitActions = Settings.get<boolean>(SETTING_GIT_ENABLED);
     if (gitActions) {
-      Logger.info('GitListener:getSettings:end:enabled');
+      Logger.verbose('GitListener:getSettings:end:enabled');
       return {
         isGitRepo: gitActions ? await GitListener.isGitRepository() : false,
         actions: gitActions || false,
@@ -81,7 +81,7 @@ export class GitListener {
       };
     }
 
-    Logger.info('GitListener:getSettings:end:disabled');
+    Logger.verbose('GitListener:getSettings:end:disabled');
     return;
   }
 

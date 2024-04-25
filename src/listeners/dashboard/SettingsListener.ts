@@ -199,9 +199,11 @@ export class SettingsListener extends BaseListener {
    * Retrieve the settings for the dashboard
    */
   public static async getSettings(clear: boolean = false) {
-    Logger.info(`SettingsListener:getSettings:start - clear: ${clear}`);
+    Logger.verbose(`SettingsListener:getSettings:start - clear: ${clear}`);
     const settings = await DashboardSettings.get(clear);
-    Logger.info(`SettingsListener:getSettings:end - setting keys: ${Object.keys(settings).length}`);
+    Logger.verbose(
+      `SettingsListener:getSettings:end - setting keys: ${Object.keys(settings).length}`
+    );
 
     this.sendMsg(DashboardCommand.settings, settings);
   }

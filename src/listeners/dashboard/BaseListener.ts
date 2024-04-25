@@ -15,9 +15,9 @@ export abstract class BaseListener {
   public static sendMsg(command: DashboardCommand, payload: any) {
     if (command === DashboardCommand.loading) {
       const loadingType = payload ? `- ${JSON.stringify(payload)}` : '- Turn off';
-      Logger.info(`Sending message to dashboard: ${command} ${loadingType}`);
+      Logger.verbose(`Sending message to dashboard: ${command} ${loadingType}`);
     } else {
-      Logger.info(`Sending message to dashboard: ${command}`);
+      Logger.verbose(`Sending message to dashboard: ${command}`);
     }
 
     Dashboard.postWebviewMessage({

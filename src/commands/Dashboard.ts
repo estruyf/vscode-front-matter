@@ -34,6 +34,7 @@ import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 import { DashboardMessage } from '../dashboardWebView/DashboardMessage';
 import { NavigationType } from '../dashboardWebView/models';
+import { ignoreMsgCommand } from '../utils';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -222,7 +223,9 @@ export class Dashboard {
     });
 
     Dashboard.webview.webview.onDidReceiveMessage(async (msg) => {
-      Logger.info(`Receiving message from dashboard: ${msg.command}`);
+      if (!ignoreMsgCommand(msg.command)) {
+        Logger.verbose(`Receiving message from dashboard: ${msg.command}`);
+      }
 
       LocalizationListener.process(msg);
       DashboardListener.process(msg);

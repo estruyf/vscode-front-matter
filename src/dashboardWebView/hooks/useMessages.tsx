@@ -11,7 +11,7 @@ import {
   SearchReadyAtom,
   ModeAtom
 } from '../state';
-import { Messenger } from '@estruyf/vscode/dist/client';
+import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
 import { NavigationType } from '../models';
 import { GeneralCommands } from '../../constants';
@@ -30,6 +30,11 @@ export default function useMessages() {
 
   const messageListener = (event: MessageEvent<EventData<any>>) => {
     const message = event.data;
+
+    messageHandler.send(GeneralCommands.toVSCode.logging.verbose, {
+      message: `Message received: ${message.command}`,
+      location: 'DASHBOARD'
+    });
 
     switch (message.command) {
       case DashboardCommand.loading:
