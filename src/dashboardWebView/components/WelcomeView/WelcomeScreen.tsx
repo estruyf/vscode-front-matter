@@ -29,7 +29,10 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({
       event: TelemetryEvent.webviewWelcomeScreen
     });
 
-    Messenger.send(GeneralCommands.toVSCode.logging.info, "DASHBOARD: Welcome view loaded");
+    Messenger.send(GeneralCommands.toVSCode.logging.info, {
+      message: 'Welcome screen loaded',
+      location: "DASHBOARD"
+    });
 
     const crntState: any = Messenger.getState() || {};
     Messenger.setState({

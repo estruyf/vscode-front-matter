@@ -74,7 +74,9 @@ export class TaxonomyHelper {
    * @param options
    */
   public static async get(type: TaxonomyType): Promise<string[] | undefined> {
+    Logger.info(`TaxonomyHelper:get:start:${type}`);
     if (!TaxonomyHelper.db) {
+      Logger.info(`TaxonomyHelper:get:db-not-initialized`);
       return;
     }
 
@@ -84,6 +86,7 @@ export class TaxonomyHelper {
     if (await TaxonomyHelper.db.exists(tagType)) {
       taxonomy = await TaxonomyHelper.db.getObject<string[]>(tagType);
     }
+    Logger.info(`TaxonomyHelper:get:end:${type}`);
     return taxonomy;
   }
 

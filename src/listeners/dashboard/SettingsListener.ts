@@ -11,7 +11,7 @@ import {
 } from '../../constants';
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
-import { DashboardSettings, Extension, Notifications, Settings } from '../../helpers';
+import { DashboardSettings, Extension, Logger, Notifications, Settings } from '../../helpers';
 import { FrameworkDetector } from '../../helpers/FrameworkDetector';
 import { Framework, Template, PostMessageData, StaticFolder, LoadingType } from '../../models';
 import { BaseListener } from './BaseListener';
@@ -199,7 +199,9 @@ export class SettingsListener extends BaseListener {
    * Retrieve the settings for the dashboard
    */
   public static async getSettings(clear: boolean = false) {
+    Logger.info(`SettingsListener:getSettings:start - clear: ${clear}`);
     const settings = await DashboardSettings.get(clear);
+    Logger.info(`SettingsListener:getSettings:end - setting keys: ${Object.keys(settings).length}`);
 
     this.sendMsg(DashboardCommand.settings, settings);
   }

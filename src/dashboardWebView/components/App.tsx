@@ -70,7 +70,10 @@ export const App: React.FunctionComponent<IAppProps> = ({
   }
 
   useEffect(() => {
-    messageHandler.send(GeneralCommands.toVSCode.logging.info, `DASHBOARD: loaded with view ${view}`);
+    messageHandler.send(GeneralCommands.toVSCode.logging.info, {
+      message: `Loaded with view ${view}`,
+      location: 'DASHBOARD'
+    });
 
     if (view && routePaths[view]) {
       navigate(routePaths[view]);
@@ -82,11 +85,17 @@ export const App: React.FunctionComponent<IAppProps> = ({
 
   useEffect(() => {
     if (settings && Object.keys(settings).length > 0) {
-      messageHandler.send(GeneralCommands.toVSCode.logging.info, `DASHBOARD: settings loaded`);
+      messageHandler.send(GeneralCommands.toVSCode.logging.info, {
+        message: `Settings loaded`,
+        location: 'DASHBOARD'
+      });
     }
 
     if (pages) {
-      messageHandler.send(GeneralCommands.toVSCode.logging.info, `DASHBOARD: pages loaded - ${pages.length} pages`);
+      messageHandler.send(GeneralCommands.toVSCode.logging.info, {
+        message: `Pages loaded - ${pages.length} pages`,
+        location: 'DASHBOARD'
+      });
     }
   }, [JSON.stringify(settings), JSON.stringify(pages)]);
 
@@ -112,10 +121,13 @@ export const App: React.FunctionComponent<IAppProps> = ({
       onError={(error: Error, componentStack: string, eventId: string) => {
         Messenger.send(
           GeneralCommands.toVSCode.logging.error,
-          `Event ID: ${eventId}
+          {
+            message: `Event ID: ${eventId}
 Message: ${error.message}
 
-Stack: ${componentStack}`
+Stack: ${componentStack}`,
+            location: 'DASHBOARD'
+          }
         );
       }}
     >

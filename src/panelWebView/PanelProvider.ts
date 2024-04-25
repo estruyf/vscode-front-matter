@@ -100,7 +100,7 @@ export class PanelProvider implements WebviewViewProvider, Disposable {
     this.updateCurrentFile();
 
     webviewView.webview.onDidReceiveMessage(async (msg) => {
-      Logger.info(`Receiving message from webview to panel: ${msg.command}`);
+      Logger.info(`Receiving message from panel: ${msg.command}`);
 
       LocalizationListener.process(msg);
       FieldsListener.process(msg);

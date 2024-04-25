@@ -18,7 +18,7 @@ export class Notifications {
    * @returns
    */
   public static info(message: string, ...items: any): Thenable<string | undefined> {
-    Logger.info(`${EXTENSION_NAME}: ${message}`, 'INFO');
+    Logger.info(`${EXTENSION_NAME}: ${message}`, 'VSCODE', 'INFO');
 
     if (this.shouldShow('INFO')) {
       return window.showInformationMessage(`${EXTENSION_NAME}: ${message}`, ...items);
@@ -34,7 +34,7 @@ export class Notifications {
    * @returns
    */
   public static warning(message: string, ...items: any): Thenable<string | undefined> {
-    Logger.info(`${EXTENSION_NAME}: ${message}`, 'WARNING');
+    Logger.info(`${EXTENSION_NAME}: ${message}`, 'VSCODE', 'WARNING');
 
     if (this.shouldShow('WARNING')) {
       return window.showWarningMessage(`${EXTENSION_NAME}: ${message}`, ...items);
@@ -50,7 +50,7 @@ export class Notifications {
    * @returns
    */
   public static error(message: string, ...items: any): Thenable<string | undefined> {
-    Logger.info(`${EXTENSION_NAME}: ${message}`, 'ERROR');
+    Logger.info(`${EXTENSION_NAME}: ${message}`, 'VSCODE', 'ERROR');
 
     if (this.shouldShow('ERROR')) {
       return window.showErrorMessage(`${EXTENSION_NAME}: ${message}`, ...items);
@@ -66,7 +66,7 @@ export class Notifications {
    * @returns
    */
   public static errorWithOutput(message: string, ...items: any): Thenable<string | undefined> {
-    Logger.info(`${EXTENSION_NAME}: ${message}`, 'ERROR');
+    Logger.info(`${EXTENSION_NAME}: ${message}`, 'VSCODE', 'ERROR');
 
     if (this.shouldShow('ERROR')) {
       return window.showErrorMessage(

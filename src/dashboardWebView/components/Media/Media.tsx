@@ -154,7 +154,10 @@ export const Media: React.FunctionComponent<IMediaProps> = (
       event: TelemetryEvent.webviewMediaView
     });
 
-    Messenger.send(GeneralCommands.toVSCode.logging.info, "DASHBOARD: Media view loaded");
+    Messenger.send(GeneralCommands.toVSCode.logging.info, {
+      message: `Media view loaded`,
+      location: 'DASHBOARD'
+    });
   }, []);
 
   const { getRootProps, isDragActive } = useDropzone({

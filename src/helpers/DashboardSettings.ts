@@ -87,7 +87,7 @@ export class DashboardSettings {
   }
 
   public static async getSettings() {
-    Logger.info('Getting dashboard settings');
+    Logger.info('DashboardSettings:getSettings:start');
 
     try {
       const ext = Extension.getInstance();
@@ -171,9 +171,11 @@ export class DashboardSettings {
         lastUpdated: new Date().getTime()
       } as ISettings;
 
+      Logger.info('DashboardSettings:getSettings:end');
+
       return settings;
     } catch (error) {
-      Logger.error(`Error getting dashboard settings ${(error as Error).message}`);
+      Logger.error(`DashboardSettings:getSettings:error ${(error as Error).message}`);
       return {} as ISettings;
     }
   }
@@ -183,6 +185,7 @@ export class DashboardSettings {
    * @returns
    */
   private static async getDataFiles(): Promise<DataFile[]> {
+    Logger.info('DashboardSettings:getDataFiles:start');
     const wsPath = parseWinPath(Folders.getWorkspaceFolder()?.fsPath);
     const files = Settings.get<DataFile[]>(SETTING_DATA_FILES);
     const folders = Settings.get<DataFolder[]>(SETTING_DATA_FOLDERS);
@@ -228,6 +231,7 @@ export class DashboardSettings {
       }
     }
 
+    Logger.info('DashboardSettings:getDataFiles:end');
     return clonedFiles;
   }
 }

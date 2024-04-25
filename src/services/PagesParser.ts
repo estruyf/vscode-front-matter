@@ -77,7 +77,7 @@ export class PagesParser {
    * Parse all pages in the workspace
    */
   public static async parsePages() {
-    Logger.info('PagesParser::parsePages: Start');
+    Logger.info('PagesParser:parsePages:start');
     i18n.clearFiles();
     const ext = Extension.getInstance();
 
@@ -115,7 +115,7 @@ export class PagesParser {
                 continue;
               }
 
-              Logger.error(`PagesParser::parsePages: ${file.filePath} - ${error.message}`);
+              Logger.error(`PagesParser:parsePages: ${file.filePath} - ${error.message}`);
               Notifications.error(
                 l10n.t(
                   LocalizationKey.servicesPagesParserParsePagesFileError,
@@ -124,7 +124,7 @@ export class PagesParser {
               );
             }
           } else {
-            Logger.info(`PagesParser::parsePages: Skipping file ${file.filePath}`);
+            Logger.info(`PagesParser:parsePages: Skipping file ${file.filePath}`);
           }
         }
       }
@@ -138,7 +138,7 @@ export class PagesParser {
     PagesParser.allPages = [...pages];
     PagesParser.pagesStatusBar.hide();
 
-    Logger.info('PagesParser::parsePages: End');
+    Logger.info('PagesParser::parsePages:end');
   }
 
   /**

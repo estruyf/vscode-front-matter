@@ -60,7 +60,10 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({
   }, [pageItems, selectedItemAction]);
 
   useEffect(() => {
-    messageHandler.send(GeneralCommands.toVSCode.logging.info, `DASHBOARD: Contents view loaded with ${pageItems.length} pages`);
+    messageHandler.send(GeneralCommands.toVSCode.logging.info, {
+      message: `Contents view loaded with ${pageItems.length} pages`,
+      location: 'DASHBOARD'
+    });
   }, [JSON.stringify(pageItems)]);
 
   useEffect(() => {

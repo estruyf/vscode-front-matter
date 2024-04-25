@@ -129,7 +129,10 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
       event: TelemetryEvent.webviewDataView
     });
 
-    Messenger.send(GeneralCommands.toVSCode.logging.info, "DASHBOARD: Data view loaded");
+    Messenger.send(GeneralCommands.toVSCode.logging.info, {
+      message: 'DataView loaded',
+      location: 'DASHBOARD'
+    });
 
     return () => {
       Messenger.unlisten(messageListener);

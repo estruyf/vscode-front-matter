@@ -85,7 +85,10 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
       event: TelemetryEvent.webviewSnippetsView
     });
 
-    Messenger.send(GeneralCommands.toVSCode.logging.info, "DASHBOARD: Snippets view loaded");
+    Messenger.send(GeneralCommands.toVSCode.logging.info, {
+      message: `Snippets view loaded`,
+      location: 'DASHBOARD'
+    });
   }, []);
 
   return (

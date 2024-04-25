@@ -545,9 +545,11 @@ export class Folders {
    * Find the content folders
    */
   public static async getContentFolders() {
+    Logger.info('Folders:getContentFolders:start');
     // Find folders that contain files
     const wsFolder = Folders.getWorkspaceFolder();
     if (!wsFolder) {
+      Logger.error('Folders:getContentFolders:workspaceFolderNotFound');
       return [];
     }
 
@@ -568,7 +570,7 @@ export class Folders {
         folders = [...folders, ...(await this.findFolders(pattern))];
       } catch (e) {
         Logger.error(
-          `Something went wrong while searching for folders with pattern "${pattern}": ${
+          `Folders:getContentFolders:error: Something went wrong while searching for folders with pattern "${pattern}": ${
             (e as Error).message
           }`
         );
@@ -581,6 +583,8 @@ export class Folders {
     }
 
     const uniqueFolders = [...new Set(folders)];
+
+    Logger.info('Folders:getContentFolders:end');
     return uniqueFolders.map((folder) => relative(wsFolder?.path || '', folder));
   }
 

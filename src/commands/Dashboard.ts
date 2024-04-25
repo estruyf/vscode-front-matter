@@ -222,7 +222,7 @@ export class Dashboard {
     });
 
     Dashboard.webview.webview.onDidReceiveMessage(async (msg) => {
-      Logger.info(`Receiving message from webview: ${msg.command}`);
+      Logger.info(`Receiving message from dashboard: ${msg.command}`);
 
       LocalizationListener.process(msg);
       DashboardListener.process(msg);

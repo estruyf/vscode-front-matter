@@ -155,7 +155,10 @@ ${snippetBody}
             value
           });
         } catch (e) {
-          messageHandler.send(GeneralCommands.toVSCode.logging.error, `SnippetForm: ${(e as Error).message}`);
+          messageHandler.send(GeneralCommands.toVSCode.logging.error, {
+            message: `SnippetForm: ${(e as Error).message}`,
+            location: 'DASHBOARD'
+          });
           console.log('Error', (e as Error).message)
         }
       }

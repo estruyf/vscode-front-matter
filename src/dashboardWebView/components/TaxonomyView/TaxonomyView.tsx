@@ -57,7 +57,10 @@ export const TaxonomyView: React.FunctionComponent<ITaxonomyViewProps> = ({
       event: TelemetryEvent.webviewTaxonomyDashboard
     });
 
-    Messenger.send(GeneralCommands.toVSCode.logging.info, "DASHBOARD: Taxonomy view loaded");
+    Messenger.send(GeneralCommands.toVSCode.logging.info, {
+      message: 'Taxonomy view loaded',
+      location: 'DASHBOARD'
+    });
   }, []);
 
   return (
