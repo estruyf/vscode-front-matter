@@ -731,10 +731,17 @@ export class Folders {
    * @returns
    */
   private static findFolders(pattern: string): Promise<string[]> {
+    Logger.verbose(`Folders:findFolders:start - ${pattern}`);
     return new Promise((resolve) => {
       glob(pattern, { ignore: '**/node_modules/**', dot: true }, (err, files) => {
-        const allFolders = files.map((file) => dirname(file));
+        if (err) {
+          Logger.error(`Folders:findFolders:error - ${err?.message || err}`);
+          resolve([]);
+        }
+
+        const allFolders = (files || []).map((file) => dirname(file));
         const uniqueFolders = [...new Set(allFolders)];
+        Logger.verbose(`Folders:findFolders:end - ${uniqueFolders.length}`);
         resolve(uniqueFolders);
       });
     });
@@ -746,14 +753,16 @@ export class Folders {
    * @returns
    */
   private static async findFiles(pattern: string): Promise<Uri[]> {
+    Logger.verbose(`Folders:findFiles:start - ${pattern}`);
     return new Promise((resolve) => {
       glob(pattern, { ignore: '**/node_modules/**' }, (err, files) => {
         if (err) {
-          Logger.error(`Folders:findFiles: ${err}`);
+          Logger.error(`Folders:findFiles:error - ${err?.message || err}`);
           resolve([]);
         }
 
         const allFiles = (files || []).map((file) => Uri.file(file));
+        Logger.verbose(`Folders:findFiles:end - ${allFiles.length}`);
         resolve(allFiles);
       });
     });

@@ -27,7 +27,7 @@ export class Logger {
   public static info(
     message: string,
     location: LoggerLocation = 'VSCODE',
-    type: 'INFO' | 'WARNING' | 'ERROR' = 'INFO'
+    type: 'VERBOSE' | 'INFO' | 'WARNING' | 'ERROR' = 'INFO'
   ): void {
     if (!Logger.channel) {
       Logger.getInstance();
@@ -44,5 +44,9 @@ export class Logger {
 
   public static error(message: string, location: LoggerLocation = 'VSCODE'): void {
     Logger.info(message, location, 'ERROR');
+  }
+
+  public static verbose(message: string, location: LoggerLocation = 'VSCODE'): void {
+    Logger.info(message, location, 'VERBOSE');
   }
 }

@@ -138,7 +138,7 @@ export class PagesParser {
     PagesParser.allPages = [...pages];
     PagesParser.pagesStatusBar.hide();
 
-    Logger.info('PagesParser::parsePages:end');
+    Logger.info('PagesParser:parsePages:end');
   }
 
   /**
