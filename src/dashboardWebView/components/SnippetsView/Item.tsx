@@ -1,8 +1,7 @@
+import * as l10n from '@vscode/l10n';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import {
   CodeBracketIcon,
-  DocumentTextIcon,
-  PhotoIcon,
 } from '@heroicons/react/24/solid';
 import * as React from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
@@ -17,9 +16,9 @@ import { Alert } from '../Modals/Alert';
 import { FormDialog } from '../Modals/FormDialog';
 import { NewForm } from './NewForm';
 import SnippetForm, { SnippetFormHandle } from './SnippetForm';
-import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { FooterActions } from './FooterActions';
+import { ItemMenu } from './ItemMenu';
 
 export interface IItemProps {
   snippetKey: string;
@@ -153,19 +152,39 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   return (
     <>
       <li className={`group flex flex-col relative overflow-hidden shadow-md hover:shadow-xl dark:shadow-none border space-y-2 rounded bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] border-[var(--frontmatter-border)]`}>
-        <div className='p-4 grow'>
+        <div className='p-4 grow space-y-2'>
           <h2
-            className="mt-2 mb-2 font-bold flex items-center"
+            className="font-bold flex items-center"
             title={snippet.isMediaSnippet ? 'Media snippet' : 'Content snippet'}
           >
-            {snippet.isMediaSnippet ? (
-              <PhotoIcon className="w-5 h-5 mr-1" aria-hidden={true} />
-            ) : (
-              <DocumentTextIcon className="w-5 h-5 mr-1" aria-hidden={true} />
-            )}
+            <CodeBracketIcon className="w-5 h-5 mr-2" aria-hidden={true} />
 
             {snippet.title || snippetKey}
           </h2>
+
+          <FeatureFlag
+            features={mode?.features || []}
+            flag={FEATURE_FLAG.dashboard.snippets.manage}
+            alternative={
+              <ItemMenu
+                insertEnabled={!!(insertToContent && !snippet.isMediaSnippet)}
+                sourcePath={snippet.sourcePath}
+                onInsert={() => setShowInsertDialog(true)} />
+            }
+          >
+            <ItemMenu
+              insertEnabled={!!(insertToContent && !snippet.isMediaSnippet)}
+              sourcePath={snippet.sourcePath}
+              onEdit={onOpenEdit}
+              onInsert={() => setShowInsertDialog(true)}
+              onDelete={() => setShowAlert(true)} />
+          </FeatureFlag>
+
+          <div className='inline-block mr-1 mt-1 text-xs text-[var(--vscode-button-secondaryForeground)] bg-[var(--vscode-button-secondaryBackground)] border border-[var(--frontmatter-border)] rounded px-1 py-0.5'>
+            {
+              snippet.isMediaSnippet ? l10n.t(LocalizationKey.dashboardSnippetsViewItemTypeContent) : l10n.t(LocalizationKey.dashboardSnippetsViewItemTypeMedia)
+            }
+          </div>
 
           <p className={`text-xs text-[var(--frontmatter-text)]`}>{snippet.description}</p>
         </div>

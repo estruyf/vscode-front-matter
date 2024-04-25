@@ -888,6 +888,14 @@ export enum LocalizationKey {
    */
   dashboardPreviewButtonOpenTitle = 'dashboard.preview.button.open.title',
   /**
+   * Content snippet
+   */
+  dashboardSnippetsViewItemTypeContent = 'dashboard.snippetsView.item.type.content',
+  /**
+   * Media snippet
+   */
+  dashboardSnippetsViewItemTypeMedia = 'dashboard.snippetsView.item.type.media',
+  /**
    * Edit snippet
    */
   dashboardSnippetsViewItemQuickActionEditSnippet = 'dashboard.snippetsView.item.quickAction.editSnippet',
