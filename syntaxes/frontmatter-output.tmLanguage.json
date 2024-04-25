@@ -1,0 +1,97 @@
+{
+  "scopeName": "frontmatter.project.output",
+  "patterns": [{
+      "include": "#info-log"
+    },
+    {
+      "include": "#warn-log"
+    },
+    {
+      "include": "#error-log"
+    },
+    {
+      "include": "#verbose-log"
+    },
+    {
+      "include": "#info-date"
+    }
+  ],
+  "repository": {
+    "verbose-log": {
+      "begin": "\\[\"VERBOSE\" *",
+      "beginCaptures": {
+        "0": {
+          "name": "token.debug-token.begin"
+        }
+      },
+      "end": "[\\s\\S\\N]*?(?=\\[)",
+      "endCaptures": {
+        "0": {
+          "name": "token.debug-token.end"
+        }
+      },
+      "patterns": [{
+        "match": "[\\s\\S\\N]",
+        "name": "token.debug-token"
+      }]
+    },
+    "info-log": {
+      "begin": "\\[\"INFO\" *",
+      "beginCaptures": {
+        "0": {
+          "name": "token.info-token.begin"
+        }
+      },
+      "end": "[\\s\\S\\N]*?(?=\\[)",
+      "endCaptures": {
+        "0": {
+          "name": "token.info-token.end"
+        }
+      },
+      "patterns": [{
+        "match": "[\\s\\S\\N]",
+        "name": "token.info-token"
+      }]
+    },
+    "warn-log": {
+      "begin": "\\[\"WARNING\" *",
+      "beginCaptures": {
+        "0": {
+          "name": "token.warn-token.begin"
+        }
+      },
+      "end": "[\\s\\S\\N]*?(?=\\[)",
+      "endCaptures": {
+        "0": {
+          "name": "token.warn-token.end"
+        }
+      },
+      "patterns": [{
+        "match": "[\\s\\S\\N]",
+        "name": "token.warn-token"
+      }]
+    },
+    "error-log": {
+      "begin": "\\[\"ERROR\" *",
+      "beginCaptures": {
+        "0": {
+          "name": "token.error-token.begin"
+        }
+      },
+      "end": "[\\s\\S\\N]*?(?=\\[)",
+      "endCaptures": {
+        "0": {
+          "name": "token.error-token.end"
+        }
+      },
+      "patterns": [{
+        "match": "[\\s\\S\\N]",
+        "name": "token.error-token"
+      }]
+    },
+    "info-date": {
+      "match": "\\[((\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2}(?:\\.\\d*)?)((-(\\d{2}):(\\d{2})|Z)?))\\]",
+      "name": "comment.line"
+    }
+  }
+}

@@ -345,7 +345,7 @@ const handleAutoDateUpdate = (e: vscode.TextDocumentWillSaveEvent) => {
 };
 
 const triggerPageUpdate = (location: string) => {
-  Logger.info(`Trigger page update: ${location}`);
+  Logger.verbose(`Trigger page update: ${location}`);
   pageUpdateDebouncer(() => {
     StatusListener.verify(collection);
   }, 1000);
