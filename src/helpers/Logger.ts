@@ -27,7 +27,7 @@ export class Logger {
       Logger.getInstance();
     }
 
-    Logger.channel?.appendLine(`["${type}" - ${format(new Date(), 'HH:MM:ss')}]  ${message}`);
+    Logger.channel?.appendLine(`["${type}" - ${format(new Date(), 'HH:mm:ss')}]  ${message}`);
   }
 
   public static warning(message: string): void {
