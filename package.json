@@ -1988,6 +1988,16 @@
         "frontMatter.website.host": {
           "type": "string",
           "markdownDescription": "%setting.frontMatter.website.host.markdownDescription%"
+        },
+        "frontMatter.logging": {
+          "type": "string",
+          "default": "info",
+          "enum": [
+            "error",
+            "warn",
+            "info",
+            "verbose"
+          ]
         }
       }
     },

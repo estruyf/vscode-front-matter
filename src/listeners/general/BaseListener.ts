@@ -25,6 +25,9 @@ export abstract class BaseListener {
           commands.executeCommand(command, args);
         }
         break;
+      case GeneralCommands.toVSCode.logging.verbose:
+        Logger.verbose(msg.payload.message, msg.payload.location);
+        break;
       case GeneralCommands.toVSCode.logging.info:
         Logger.info(msg.payload.message, msg.payload.location);
         break;
@@ -43,7 +46,7 @@ export abstract class BaseListener {
    * @param data
    */
   public static sendMsg(command: string, payload: any) {
-    Logger.info(`Sending message to webview (panel&dashboard): ${command}`);
+    Logger.verbose(`Sending message to webview (panel&dashboard): ${command}`);
 
     const extPath = Extension.getInstance().extensionPath;
     const panel = PanelProvider.getInstance(extPath);

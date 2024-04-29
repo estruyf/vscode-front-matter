@@ -27,7 +27,8 @@ export const GeneralCommands = {
     logging: {
       info: 'logInfo',
       warn: 'logWarn',
-      error: 'logError'
+      error: 'logError',
+      verbose: 'logVerbose'
     },
     runCommand: 'runCommand',
     getLocalization: 'getLocalization',

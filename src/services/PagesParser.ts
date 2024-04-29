@@ -77,7 +77,7 @@ export class PagesParser {
    * Parse all pages in the workspace
    */
   public static async parsePages() {
-    Logger.info('PagesParser:parsePages:start');
+    Logger.verbose('PagesParser:parsePages:start');
     i18n.clearFiles();
     Folders.clearCached();
     const ext = Extension.getInstance();
@@ -93,7 +93,7 @@ export class PagesParser {
       PagesParser.pagesStatusBar.show();
 
       for (const folder of folderInfo) {
-        Logger.info(`PagesParser::parsePages: Parsing folder ${folder.title} - ${folder.files}`);
+        Logger.verbose(`PagesParser:parsePages: Parsing folder ${folder.title} - ${folder.files}`);
         for (const file of folder.lastModified) {
           if (isValidFile(file.fileName)) {
             try {
@@ -140,7 +140,7 @@ export class PagesParser {
     PagesParser.pagesStatusBar.hide();
 
     Folders.clearCached();
-    Logger.info('PagesParser:parsePages:end');
+    Logger.verbose('PagesParser:parsePages:end');
   }
 
   /**

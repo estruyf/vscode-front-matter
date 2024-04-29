@@ -565,7 +565,7 @@ export class Folders {
    * Find the content folders
    */
   public static async getContentFolders() {
-    Logger.info('Folders:getContentFolders:start');
+    Logger.verbose('Folders:getContentFolders:start');
     // Find folders that contain files
     const wsFolder = Folders.getWorkspaceFolder();
     if (!wsFolder) {
@@ -604,7 +604,7 @@ export class Folders {
 
     const uniqueFolders = [...new Set(folders)];
 
-    Logger.info('Folders:getContentFolders:end');
+    Logger.verbose('Folders:getContentFolders:end');
     return uniqueFolders.map((folder) => relative(wsFolder?.path || '', folder));
   }
 

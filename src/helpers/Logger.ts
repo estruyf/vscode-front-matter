@@ -1,7 +1,8 @@
 import { Extension } from './Extension';
 import { commands, OutputChannel, window } from 'vscode';
 import { format } from 'date-fns';
-import { COMMAND_NAME } from '../constants';
+import { COMMAND_NAME, SETTING_LOGGING } from '../constants';
+import { Settings } from '.';
 
 export type LoggerLocation = 'VSCODE' | 'DASHBOARD' | 'PANEL';
 
@@ -33,9 +34,19 @@ export class Logger {
       Logger.getInstance();
     }
 
-    Logger.channel?.appendLine(
-      `["${type}" - ${format(new Date(), 'HH:mm:ss')}] ${location} | ${message}`
-    );
+    const loggingLevel = Settings.get(SETTING_LOGGING) || 'info';
+
+    const logMessage = `["${type}" - ${format(new Date(), 'HH:mm:ss')}] ${location} | ${message}`;
+
+    if (loggingLevel === 'verbose') {
+      Logger.log(logMessage);
+    } else if (loggingLevel === 'info' && type !== 'VERBOSE') {
+      Logger.log(logMessage);
+    } else if (loggingLevel === 'warning' && (type === 'WARNING' || type === 'ERROR')) {
+      Logger.log(logMessage);
+    } else if (loggingLevel === 'error' && type === 'ERROR') {
+      Logger.log(logMessage);
+    }
   }
 
   public static warning(message: string, location: LoggerLocation = 'VSCODE'): void {
@@ -48,5 +59,9 @@ export class Logger {
 
   public static verbose(message: string, location: LoggerLocation = 'VSCODE'): void {
     Logger.info(message, location, 'VERBOSE');
+  }
+
+  private static log(message: string) {
+    Logger.channel?.appendLine(message);
   }
 }

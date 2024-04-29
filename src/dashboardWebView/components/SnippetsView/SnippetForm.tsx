@@ -159,7 +159,6 @@ ${snippetBody}
             message: `SnippetForm: ${(e as Error).message}`,
             location: 'DASHBOARD'
           });
-          console.log('Error', (e as Error).message)
         }
       }
     }

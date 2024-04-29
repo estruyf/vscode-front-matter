@@ -29,6 +29,7 @@ import { Telemetry } from '../helpers/Telemetry';
 import { GitListener, ModeListener } from '../listeners/general';
 import { Folders } from '../commands';
 import { basename } from 'path';
+import { ignoreMsgCommand } from '../utils';
 
 export class PanelProvider implements WebviewViewProvider, Disposable {
   public static readonly viewType = 'frontMatter.explorer';
@@ -100,7 +101,9 @@ export class PanelProvider implements WebviewViewProvider, Disposable {
     this.updateCurrentFile();
 
     webviewView.webview.onDidReceiveMessage(async (msg) => {
-      Logger.info(`Receiving message from panel: ${msg.command}`);
+      if (!ignoreMsgCommand(msg.command)) {
+        Logger.info(`Receiving message from panel: ${msg.command}`);
+      }
 
       LocalizationListener.process(msg);
       FieldsListener.process(msg);

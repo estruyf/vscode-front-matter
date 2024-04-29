@@ -70,7 +70,7 @@ export const App: React.FunctionComponent<IAppProps> = ({
   }
 
   useEffect(() => {
-    messageHandler.send(GeneralCommands.toVSCode.logging.info, {
+    messageHandler.send(GeneralCommands.toVSCode.logging.verbose, {
       message: `Loaded with view ${view}`,
       location: 'DASHBOARD'
     });
@@ -85,14 +85,14 @@ export const App: React.FunctionComponent<IAppProps> = ({
 
   useEffect(() => {
     if (settings && Object.keys(settings).length > 0) {
-      messageHandler.send(GeneralCommands.toVSCode.logging.info, {
+      messageHandler.send(GeneralCommands.toVSCode.logging.verbose, {
         message: `Settings loaded`,
         location: 'DASHBOARD'
       });
     }
 
     if (pages) {
-      messageHandler.send(GeneralCommands.toVSCode.logging.info, {
+      messageHandler.send(GeneralCommands.toVSCode.logging.verbose, {
         message: `Pages loaded - ${pages.length} pages`,
         location: 'DASHBOARD'
       });
