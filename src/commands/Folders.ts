@@ -32,6 +32,13 @@ import { LocalizationKey } from '../localization';
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
 export class Folders {
+  private static _folders: ContentFolder[] = [];
+
+  public static clearCached() {
+    Logger.verbose(`Folders:clearCached`);
+    Folders._folders = [];
+  }
+
   /**
    * Add a media folder
    * @returns
@@ -282,6 +289,7 @@ export class Folders {
    * Get the registered folders information
    */
   public static async getInfo(limit?: number): Promise<FolderInfo[] | null> {
+    Logger.verbose('Folders:getInfo:start');
     const supportedFiles = Settings.get<string[]>(SETTING_CONTENT_SUPPORTED_FILETYPES);
     const folders = Folders.get();
 
@@ -295,9 +303,11 @@ export class Folders {
         }
       }
 
+      Logger.verbose('Folders:getInfo:end');
       return folderInfo;
     }
 
+    Logger.verbose('Folders:getInfo:end - no folders found');
     return null;
   }
 
@@ -306,6 +316,13 @@ export class Folders {
    * @returns
    */
   public static get(): ContentFolder[] {
+    Logger.verbose('Folders:get:start');
+
+    if (Folders._folders.length > 0) {
+      Logger.verbose('Folders:get:end - cached folders');
+      return Folders._folders;
+    }
+
     const wsFolder = Folders.getWorkspaceFolder();
     let folders: ContentFolder[] = Settings.get(SETTING_CONTENT_PAGE_FOLDERS) as ContentFolder[];
     const i18nSettings = Settings.get<I18nConfig[]>(SETTING_CONTENT_I18N);
@@ -323,6 +340,7 @@ export class Folders {
 
         const folderPath = Folders.absWsFolder(folder, wsFolder);
         const subFolders = glob.sync(folderPath, { ignore: '**/node_modules/**' });
+        // const subFolders = await Folders.findFolders(folderPath);
         for (const subFolder of subFolders) {
           const subFolderPath = parseWinPath(subFolder);
 
@@ -417,7 +435,9 @@ export class Folders {
       }
     });
 
-    return contentFolders.filter((folder) => folder !== null) as ContentFolder[];
+    Logger.verbose('Folders:get:end');
+    Folders._folders = contentFolders.filter((folder) => folder !== null) as ContentFolder[];
+    return Folders._folders;
   }
 
   /**

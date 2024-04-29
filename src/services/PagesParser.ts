@@ -79,6 +79,7 @@ export class PagesParser {
   public static async parsePages() {
     Logger.info('PagesParser:parsePages:start');
     i18n.clearFiles();
+    Folders.clearCached();
     const ext = Extension.getInstance();
 
     // Update the dashboard with the fresh data
@@ -138,6 +139,7 @@ export class PagesParser {
     PagesParser.allPages = [...pages];
     PagesParser.pagesStatusBar.hide();
 
+    Folders.clearCached();
     Logger.info('PagesParser:parsePages:end');
   }
 

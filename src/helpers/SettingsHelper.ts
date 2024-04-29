@@ -1139,6 +1139,9 @@ export class Settings {
    */
   private static async reloadConfig(debounced: boolean = true) {
     Logger.info(`Reloading config...`);
+    // Clear the folder cache as we need to see the latest folders
+    Folders.clearCached();
+
     if (Settings.readConfigPromise === undefined) {
       Settings.readConfigPromise = Settings.readConfig();
     }

@@ -15,6 +15,7 @@
 ### 🐞 Fixes
 
 - [#796](https://github.com/estruyf/vscode-front-matter/issues/796): Fix issue in retrieving folders/files on dashboard load
+- [#801](https://github.com/estruyf/vscode-front-matter/issues/801): Faster folder processing on updates
 
 ## [10.1.0] - 2024-04-11 - [Release notes](https://beta.frontmatter.codes/updates/v10.1.0)
 
