@@ -97,7 +97,7 @@ export class PanelSettings {
         },
         dataTypes: Settings.get<DataType[]>(SETTING_DATA_TYPES),
         fieldGroups: Settings.get<FieldGroup[]>(SETTING_TAXONOMY_FIELD_GROUPS),
-        contentFolders: Folders.get(),
+        contentFolders: await Folders.get(),
         websiteUrl: Settings.get<string>(SETTING_WEBSITE_URL) || '',
         disabledActions: Settings.get<PanelAction[]>(SETTING_PANEL_ACTIONS_DISABLED) || []
       };

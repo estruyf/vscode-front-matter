@@ -38,7 +38,7 @@ export const processArticlePlaceholdersFromPath = async (
   }
 
   if (value.includes('{{slug}}') && filePath) {
-    const contentType = article ? ArticleHelper.getContentType(article) : undefined;
+    const contentType = article ? await ArticleHelper.getContentType(article) : undefined;
     if (contentType) {
       const regex = new RegExp('{{slug}}', 'g');
       value = value.replace(

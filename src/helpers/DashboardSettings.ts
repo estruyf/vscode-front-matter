@@ -115,7 +115,7 @@ export class DashboardSettings {
         contentTypes: ContentType.getAll() || [],
         draftField: Settings.get<DraftField>(SETTING_CONTENT_DRAFT_FIELD),
         customSorting: Settings.get<SortingSetting[]>(SETTING_CONTENT_SORTING),
-        contentFolders: Folders.get(),
+        contentFolders: await Folders.get(),
         filters:
           Settings.get<(FilterType | { title: string; name: string })[]>(SETTING_CONTENT_FILTERS),
         crntFramework: Settings.get<string>(SETTING_FRAMEWORK_ID),

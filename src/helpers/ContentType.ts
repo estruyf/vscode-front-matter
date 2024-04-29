@@ -58,8 +58,8 @@ export class ContentType {
    * @param data
    * @returns
    */
-  public static getDraftStatus(article: ParsedFrontMatter) {
-    const contentType = ArticleHelper.getContentType(article);
+  public static async getDraftStatus(article: ParsedFrontMatter) {
+    const contentType = await ArticleHelper.getContentType(article);
     const draftSetting = ContentType.getDraftField();
 
     const draftField = contentType.fields.find((f) => f.type === 'draft');
@@ -94,7 +94,8 @@ export class ContentType {
     }
 
     const contentTypes = ContentType.getAll();
-    const folders = Folders.get().filter((f) => !f.disableCreation);
+    let folders = await Folders.get();
+    folders = folders.filter((f) => !f.disableCreation);
     const folder = folders.find((f) => f.path === selectedFolder.path);
 
     if (!folder) {
@@ -314,7 +315,7 @@ export class ContentType {
       return;
     }
 
-    const contentType = ArticleHelper.getContentType(article);
+    const contentType = await ArticleHelper.getContentType(article);
     const updatedFields = ContentType.generateFields(article.data, contentType.fields);
 
     const contentTypes = ContentType.getAll() || [];
@@ -531,8 +532,10 @@ export class ContentType {
   /**
    * Find the required fields
    */
-  public static findEmptyRequiredFields(article: ParsedFrontMatter): Field[][] | undefined {
-    const contentType = ArticleHelper.getContentType(article);
+  public static async findEmptyRequiredFields(
+    article: ParsedFrontMatter
+  ): Promise<Field[][] | undefined> {
+    const contentType = await ArticleHelper.getContentType(article);
     if (!contentType) {
       return;
     }
@@ -950,7 +953,7 @@ export class ContentType {
           path: newFilePath
         };
 
-        data = ArticleHelper.updateDates(article);
+        data = await ArticleHelper.updateDates(article);
 
         if (isTypeSet) {
           delete data.type;

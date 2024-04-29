@@ -176,7 +176,7 @@ export class Template {
         newFilePath
       );
 
-      const article = Article.updateDate(frontMatter);
+      const article = await Article.updateDate(frontMatter);
 
       if (!article) {
         return;

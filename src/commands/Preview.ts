@@ -237,11 +237,11 @@ export class Preview {
 
     let contentType: ContentType | undefined = undefined;
     if (article?.data) {
-      contentType = ArticleHelper.getContentType(article);
+      contentType = await ArticleHelper.getContentType(article);
     }
 
     // Check if there is a pathname defined on content folder level
-    const folders = Folders.get();
+    const folders = await Folders.get();
     if (folders.length > 0) {
       const foldersWithPath = folders.filter((folder) => folder.previewPath);
 
@@ -321,7 +321,7 @@ export class Preview {
       pathname = article?.data ? processFmPlaceholders(pathname, article?.data) : pathname;
 
       try {
-        const articleDate = ArticleHelper.getDate(article);
+        const articleDate = await ArticleHelper.getDate(article);
         slug = join(
           format(articleDate || new Date(), DateHelper.formatUpdate(pathname) as string),
           slug

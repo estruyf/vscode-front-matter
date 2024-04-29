@@ -7,7 +7,7 @@ import { Settings } from '../helpers/SettingsHelper';
 
 export class Diagnostics {
   public static async show() {
-    const folders = Folders.get();
+    const folders = await Folders.get();
     const projectName = Folders.getProjectFolderName();
     const wsFolder = Folders.getWorkspaceFolder();
 

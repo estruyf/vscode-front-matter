@@ -80,7 +80,7 @@ export class Article {
       return;
     }
 
-    article = this.updateDate(article);
+    article = await this.updateDate(article);
 
     try {
       ArticleHelper.update(editor, article);
@@ -95,8 +95,8 @@ export class Article {
    * Update the date in the front matter
    * @param article
    */
-  public static updateDate(article: ParsedFrontMatter) {
-    article.data = ArticleHelper.updateDates(article);
+  public static async updateDate(article: ParsedFrontMatter) {
+    article.data = await ArticleHelper.updateDates(article);
     return article;
   }
 
@@ -109,7 +109,7 @@ export class Article {
       return;
     }
 
-    const updatedArticle = this.setLastModifiedDateInner(editor.document);
+    const updatedArticle = await this.setLastModifiedDateInner(editor.document);
 
     if (typeof updatedArticle === 'undefined') {
       return;
@@ -119,7 +119,7 @@ export class Article {
   }
 
   public static async setLastModifiedDateOnSave(document: TextDocument): Promise<TextEdit[]> {
-    const updatedArticle = this.setLastModifiedDateInner(document);
+    const updatedArticle = await this.setLastModifiedDateInner(document);
 
     if (typeof updatedArticle === 'undefined') {
       return [];
@@ -130,7 +130,9 @@ export class Article {
     return [update];
   }
 
-  private static setLastModifiedDateInner(document: TextDocument): ParsedFrontMatter | undefined {
+  private static async setLastModifiedDateInner(
+    document: TextDocument
+  ): Promise<ParsedFrontMatter | undefined> {
     const article = ArticleHelper.getFrontMatterFromDocument(document);
 
     // Only set the date, if there is already front matter set
@@ -139,7 +141,7 @@ export class Article {
     }
 
     const cloneArticle = Object.assign({}, article);
-    const dateField = ArticleHelper.getModifiedDateField(article);
+    const dateField = await ArticleHelper.getModifiedDateField(article);
     try {
       const fieldName = dateField?.name || DefaultFields.LastModified;
       cloneArticle.data[fieldName] = Article.formatDate(new Date(), dateField?.dateFormat);
@@ -195,8 +197,12 @@ export class Article {
     }
 
     let filePrefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
-    const contentType = ArticleHelper.getContentType(article);
-    filePrefix = ArticleHelper.getFilePrefix(filePrefix, editor.document.uri.fsPath, contentType);
+    const contentType = await ArticleHelper.getContentType(article);
+    filePrefix = await ArticleHelper.getFilePrefix(
+      filePrefix,
+      editor.document.uri.fsPath,
+      contentType
+    );
 
     const titleField = 'title';
     const articleTitle: string = article.data[titleField];
@@ -344,7 +350,7 @@ export class Article {
       const autoUpdate = Settings.get(SETTING_AUTO_UPDATE_DATE);
 
       // Is article located in one of the content folders
-      const folders = Folders.get();
+      const folders = await Folders.get();
       const documentPath = parseWinPath(document.fileName);
       const folder = folders.find((f) => documentPath.startsWith(f.path));
       if (!folder) {
@@ -385,7 +391,7 @@ export class Article {
 
     const article = ArticleHelper.getFrontMatter(editor);
     const contentType =
-      article && article.data ? ArticleHelper.getContentType(article) : DEFAULT_CONTENT_TYPE;
+      article && article.data ? await ArticleHelper.getContentType(article) : DEFAULT_CONTENT_TYPE;
 
     const position = editor.selection.active;
     const selectionText = editor.document.getText(editor.selection);
@@ -463,7 +469,7 @@ export class Article {
     }
 
     const article = ArticleHelper.getFrontMatter(editor);
-    const contentType = article ? ArticleHelper.getContentType(article) : undefined;
+    const contentType = article ? await ArticleHelper.getContentType(article) : undefined;
 
     await commands.executeCommand(COMMAND_NAME.dashboard, {
       type: NavigationType.Snippets,
