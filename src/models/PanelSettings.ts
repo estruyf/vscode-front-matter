@@ -189,6 +189,7 @@ export interface Slug {
 
 export interface FolderInfo {
   title: string;
+  path: string;
   files: number;
   lastModified: FileInfo[];
   locale?: string;
@@ -199,6 +200,7 @@ export interface FileInfo extends FileStat {
   filePath: string;
   fileName: string;
   folderName: string | undefined;
+  folderPath: string;
 }
 
 export interface CustomScript {

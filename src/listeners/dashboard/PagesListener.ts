@@ -69,7 +69,7 @@ export class PagesListener extends BaseListener {
       if (ArticleHelper.isSupportedFile(doc)) {
         Logger.info(`File saved ${doc.uri.fsPath}`);
         // Optimize the list of recently changed files
-        DataListener.getFoldersAndFiles();
+        DataListener.getFoldersAndFiles(doc.uri);
         // Trigger the metadata update
         this.watcherExec(doc.uri);
       }

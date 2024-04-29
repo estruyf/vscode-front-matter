@@ -672,6 +672,27 @@ export class Folders {
     return;
   }
 
+  /**
+   * Retrieves the file stats for a given file.
+   * @param file - The URI of the file.
+   * @param folderPath - The path of the folder containing the file.
+   * @returns An object containing the file path, file name, folder name, folder path, and file stats.
+   */
+  public static async getFileStats(file: Uri, folderPath: string) {
+    const fileName = basename(file.fsPath);
+    const folderName = dirname(file.fsPath).split(sep).pop();
+
+    const stats = await workspace.fs.stat(file);
+
+    return {
+      filePath: file.fsPath,
+      fileName,
+      folderName,
+      folderPath,
+      ...stats
+    };
+  }
+
   private static async getFilesByFolder(
     folder: ContentFolder,
     supportedFiles: string[] | undefined,
@@ -707,17 +728,8 @@ export class Folders {
 
           for (const file of files) {
             try {
-              const fileName = basename(file.fsPath);
-              const folderName = dirname(file.fsPath).split(sep).pop();
-
-              const stats = await workspace.fs.stat(file);
-
-              fileStats.push({
-                filePath: file.fsPath,
-                fileName,
-                folderName,
-                ...stats
-              });
+              const fileInfo = await Folders.getFileStats(file, folderPath);
+              fileStats.push(fileInfo);
             } catch (error) {
               // Skip the file
             }
@@ -731,6 +743,7 @@ export class Folders {
 
           return {
             title: folder.title,
+            path: folderPath,
             files: files.length,
             lastModified: fileStats,
             locale: folder.locale,

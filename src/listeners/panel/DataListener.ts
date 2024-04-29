@@ -5,7 +5,7 @@ import { Folders } from '../../commands/Folders';
 import { Command } from '../../panelWebView/Command';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
-import { authentication, commands, window } from 'vscode';
+import { Uri, authentication, commands, window } from 'vscode';
 import {
   ArticleHelper,
   Extension,
@@ -14,7 +14,8 @@ import {
   ContentType,
   processArticlePlaceholdersFromData,
   processTimePlaceholders,
-  processFmPlaceholders
+  processFmPlaceholders,
+  parseWinPath
 } from '../../helpers';
 import {
   COMMAND_NAME,
@@ -29,7 +30,13 @@ import {
 } from '../../constants';
 import { Article, Preview } from '../../commands';
 import { FrontMatterParser, ParsedFrontMatter } from '../../parsers';
-import { Field, Mode, PostMessageData, ContentType as IContentType } from '../../models';
+import {
+  Field,
+  Mode,
+  PostMessageData,
+  ContentType as IContentType,
+  FolderInfo
+} from '../../models';
 import { encodeEmoji, fieldWhenClause } from '../../utils';
 import { PanelProvider } from '../../panelWebView/PanelProvider';
 import { MessageHandlerData } from '@estruyf/vscode';
@@ -37,11 +44,13 @@ import { SponsorAi } from '../../services/SponsorAI';
 import { Terminal } from '../../services';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
+import { parse } from 'path';
 
 const FILE_LIMIT = 10;
 
 export class DataListener extends BaseListener {
   private static lastMetadataUpdate: any = {};
+  private static folderInfo: FolderInfo[] | null = null;
 
   /**
    * Process the messages for the dashboard views
@@ -158,7 +167,8 @@ export class DataListener extends BaseListener {
   /**
    * Retrieve the information about the registered folders and its files
    */
-  public static async getFoldersAndFiles() {
+  public static async getFoldersAndFiles(file?: Uri) {
+    Logger.verbose('DataListener:getFoldersAndFiles:start');
     const mode = Settings.get<string | null>(SETTING_GLOBAL_ACTIVE_MODE);
     const modes = Settings.get<Mode[]>(SETTING_GLOBAL_MODES);
 
@@ -175,9 +185,41 @@ export class DataListener extends BaseListener {
       }
     }
 
-    const folders = (await Folders.getInfo(FILE_LIMIT)) || null;
+    if (file && DataListener.folderInfo && DataListener.folderInfo.length > 0) {
+      Logger.verbose('DataListener:getFoldersAndFiles:updateFile');
+      const folderPath = parseWinPath(parse(file.fsPath).dir);
+      const folderInfo = DataListener.folderInfo.find((f) => parseWinPath(f.path) === folderPath);
+      if (folderInfo) {
+        // Check if file exists
+        let fileInfo = folderInfo.lastModified.find(
+          (f) => parseWinPath(f.filePath) === parseWinPath(file.fsPath)
+        );
 
-    this.sendMsg(Command.folderInfo, folders);
+        if (fileInfo) {
+          folderInfo.lastModified = folderInfo.lastModified.filter(
+            (f) => parseWinPath(f.filePath) !== parseWinPath(file.fsPath)
+          );
+        }
+
+        fileInfo = await Folders.getFileStats(file, folderInfo.path);
+        if (fileInfo) {
+          folderInfo.lastModified.unshift(fileInfo);
+
+          // Limit the amount of files
+          if (folderInfo.lastModified.length > FILE_LIMIT) {
+            folderInfo.lastModified = folderInfo.lastModified.slice(0, FILE_LIMIT);
+          }
+
+          Logger.verbose('DataListener:getFoldersAndFiles:end - with file update only');
+          this.sendMsg(Command.folderInfo, DataListener.folderInfo);
+          return;
+        }
+      }
+    }
+
+    Logger.verbose('DataListener:getFoldersAndFiles:end');
+    DataListener.folderInfo = (await Folders.getInfo(FILE_LIMIT)) || null;
+    this.sendMsg(Command.folderInfo, DataListener.folderInfo);
   }
 
   /**
