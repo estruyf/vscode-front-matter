@@ -18,6 +18,10 @@ export class Logger {
     });
   }
 
+  public static getLevel(): string {
+    return Settings.get(SETTING_LOGGING) || 'info';
+  }
+
   public static getInstance(): Logger {
     if (!Logger.instance) {
       Logger.instance = new Logger();
@@ -34,7 +38,7 @@ export class Logger {
       Logger.getInstance();
     }
 
-    const loggingLevel = Settings.get(SETTING_LOGGING) || 'info';
+    const loggingLevel = Logger.getLevel();
 
     const logMessage = `["${type}" - ${format(new Date(), 'HH:mm:ss')}] ${location} | ${message}`;
 
