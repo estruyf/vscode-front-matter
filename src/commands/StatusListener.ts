@@ -102,13 +102,13 @@ export class StatusListener {
    * @param article
    * @param collection
    */
-  private static verifyRequiredFields(
+  private static async verifyRequiredFields(
     editor: vscode.TextEditor,
     article: ParsedFrontMatter,
     collection: vscode.DiagnosticCollection
   ) {
     // Check for missing fields
-    const emptyFields = ContentType.findEmptyRequiredFields(article);
+    const emptyFields = await ContentType.findEmptyRequiredFields(article);
     const fieldsToReport = [];
 
     if (emptyFields && emptyFields.length > 0) {

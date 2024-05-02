@@ -80,7 +80,7 @@ export class PagesListener extends BaseListener {
    * Start watching the folders in the current workspace for content changes
    */
   public static async startWatchers() {
-    const folders = Folders.get();
+    const folders = await Folders.get();
 
     if (!folders || folders.length === 0) {
       return;
@@ -124,7 +124,7 @@ export class PagesListener extends BaseListener {
     if (!article) {
       return;
     }
-    const contentType = ArticleHelper.getContentType(article);
+    const contentType = await ArticleHelper.getContentType(article);
 
     Logger.info(`Deleting file: ${path}`);
 

@@ -34,7 +34,7 @@ export class LocalizationListener extends BaseListener {
       return;
     }
 
-    const config = i18n.getAll();
+    const config = await i18n.getAll();
     this.sendRequest(command as any, requestId, config);
   }
 }

@@ -105,7 +105,8 @@ export class Folders {
       return;
     }
 
-    const folders = Folders.get().filter((f) => !f.disableCreation);
+    let folders = await Folders.get();
+    folders = folders.filter((f) => !f.disableCreation);
     const location = folders.find((f) => f.path === selectedFolder.path);
     if (location) {
       const folderPath = Folders.getFolderPath(Uri.file(location.path));
@@ -129,7 +130,7 @@ export class Folders {
     if (folder && folder.fsPath) {
       const wslPath = folder.fsPath.replace(/\//g, '\\');
 
-      let folders = Folders.get();
+      let folders = await Folders.get();
 
       const exists = folders.find(
         (f) => f.path.includes(folder.fsPath) || f.path.includes(wslPath)
@@ -178,7 +179,7 @@ export class Folders {
    */
   public static async unregister(folder: Uri) {
     if (folder && folder.path) {
-      let folders = Folders.get();
+      let folders = await Folders.get();
       folders = folders.filter((f) => f.path !== folder.fsPath);
       await Folders.update(folders);
 
@@ -291,7 +292,7 @@ export class Folders {
   public static async getInfo(limit?: number): Promise<FolderInfo[] | null> {
     Logger.verbose('Folders:getInfo:start');
     const supportedFiles = Settings.get<string[]>(SETTING_CONTENT_SUPPORTED_FILETYPES);
-    const folders = Folders.get();
+    const folders = await Folders.get();
 
     if (folders && folders.length > 0) {
       const folderInfo: FolderInfo[] = [];
@@ -315,7 +316,7 @@ export class Folders {
    * Get the folder settings
    * @returns
    */
-  public static get(): ContentFolder[] {
+  public static async get(): Promise<ContentFolder[]> {
     Logger.verbose('Folders:get:start');
 
     if (Folders._folders.length > 0) {
@@ -339,8 +340,7 @@ export class Folders {
         folders = folders.filter((f) => f.path !== folder.path);
 
         const folderPath = Folders.absWsFolder(folder, wsFolder);
-        const subFolders = glob.sync(folderPath, { ignore: '**/node_modules/**' });
-        // const subFolders = await Folders.findFolders(folderPath);
+        const subFolders = await Folders.findFolders(folderPath);
         for (const subFolder of subFolders) {
           const subFolderPath = parseWinPath(subFolder);
 
@@ -371,11 +371,11 @@ export class Folders {
             ),
             l10n.t(LocalizationKey.commandsFoldersGetNotificationErrorRemoveAction),
             l10n.t(LocalizationKey.commandsFoldersGetNotificationErrorCreateAction)
-          ).then((answer) => {
+          ).then(async (answer) => {
             if (
               answer === l10n.t(LocalizationKey.commandsFoldersGetNotificationErrorRemoveAction)
             ) {
-              const folders = Folders.get();
+              const folders = await Folders.get();
               Folders.update(folders.filter((f) => f.path !== folder.path));
             } else if (
               answer === l10n.t(LocalizationKey.commandsFoldersGetNotificationErrorCreateAction)
@@ -613,8 +613,8 @@ export class Folders {
    * @param folderPath
    * @returns
    */
-  public static getFilePrefixByFolderPath(folderPath: string) {
-    const folders = Folders.get();
+  public static async getFilePrefixByFolderPath(folderPath: string) {
+    const folders = await Folders.get();
     const pageFolder = folders.find((f) => parseWinPath(f.path) === parseWinPath(folderPath));
 
     if (pageFolder && typeof pageFolder.filePrefix !== 'undefined') {
@@ -629,8 +629,8 @@ export class Folders {
    * @param filePath
    * @returns
    */
-  public static getFilePrefixBeFilePath(filePath: string) {
-    const folders = Folders.get();
+  public static async getFilePrefixBeFilePath(filePath: string) {
+    const folders = await Folders.get();
     if (folders.length > 0) {
       filePath = parseWinPath(filePath);
 
@@ -658,8 +658,10 @@ export class Folders {
    * @param filePath - The file path to match against the page folders.
    * @returns The page folder that matches the file path, or undefined if no match is found.
    */
-  public static getPageFolderByFilePath(filePath: string): ContentFolder | undefined {
-    const folders = Folders.get();
+  public static async getPageFolderByFilePath(
+    filePath: string
+  ): Promise<ContentFolder | undefined> {
+    const folders = await Folders.get();
     const parsedPath = parseWinPath(filePath);
     const pageFolderMatches = folders
       .filter((folder) => parsedPath && folder.path && parsedPath.includes(folder.path))
@@ -763,21 +765,19 @@ export class Folders {
    * @param pattern
    * @returns
    */
-  private static findFolders(pattern: string): Promise<string[]> {
+  private static async findFolders(pattern: string): Promise<string[]> {
     Logger.verbose(`Folders:findFolders:start - ${pattern}`);
-    return new Promise((resolve) => {
-      glob(pattern, { ignore: '**/node_modules/**', dot: true }, (err, files) => {
-        if (err) {
-          Logger.error(`Folders:findFolders:error - ${err?.message || err}`);
-          resolve([]);
-        }
 
-        const allFolders = (files || []).map((file) => dirname(file));
-        const uniqueFolders = [...new Set(allFolders)];
-        Logger.verbose(`Folders:findFolders:end - ${uniqueFolders.length}`);
-        resolve(uniqueFolders);
-      });
-    });
+    try {
+      const files = await glob(pattern, { ignore: '**/node_modules/**', dot: true });
+      const allFolders = (files || []).map((file) => dirname(file));
+      const uniqueFolders = [...new Set(allFolders)];
+      Logger.verbose(`Folders:findFolders:end - ${uniqueFolders.length}`);
+      return uniqueFolders;
+    } catch (e) {
+      Logger.error(`Folders:findFolders:error - ${(e as Error).message}`);
+      return [];
+    }
   }
 
   /**
@@ -787,17 +787,15 @@ export class Folders {
    */
   private static async findFiles(pattern: string): Promise<Uri[]> {
     Logger.verbose(`Folders:findFiles:start - ${pattern}`);
-    return new Promise((resolve) => {
-      glob(pattern, { ignore: '**/node_modules/**' }, (err, files) => {
-        if (err) {
-          Logger.error(`Folders:findFiles:error - ${err?.message || err}`);
-          resolve([]);
-        }
 
-        const allFiles = (files || []).map((file) => Uri.file(file));
-        Logger.verbose(`Folders:findFiles:end - ${allFiles.length}`);
-        resolve(allFiles);
-      });
-    });
+    try {
+      const files = await glob(pattern, { ignore: '**/node_modules/**' });
+      const allFiles = (files || []).map((file) => Uri.file(file));
+      Logger.verbose(`Folders:findFiles:end - ${allFiles.length}`);
+      return allFiles;
+    } catch (e) {
+      Logger.error(`Folders:findFiles:error - ${(e as Error).message}`);
+      return [];
+    }
   }
 }

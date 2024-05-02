@@ -359,7 +359,7 @@ export class ArticleHelper {
       return false;
     }
 
-    const contentType = ArticleHelper.getContentType(article);
+    const contentType = await ArticleHelper.getContentType(article);
     return !!contentType.pageBundle;
   }
 
@@ -379,13 +379,14 @@ export class ArticleHelper {
   /**
    * Get date from front matter
    */
-  public static getDate(article: ParsedFrontMatter | null | undefined) {
+  public static async getDate(article: ParsedFrontMatter | null | undefined) {
     if (!article || !article.data) {
       return;
     }
 
     const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
-    const dateField = ArticleHelper.getPublishDateField(article) || DefaultFields.PublishingDate;
+    const dateField =
+      (await ArticleHelper.getPublishDateField(article)) || DefaultFields.PublishingDate;
 
     if (typeof article.data[dateField] !== 'undefined') {
       if (dateFormat && typeof dateFormat === 'string') {
@@ -404,12 +405,12 @@ export class ArticleHelper {
    * @param article
    * @returns
    */
-  public static getPublishDateField(article: ParsedFrontMatter | null) {
+  public static async getPublishDateField(article: ParsedFrontMatter | null) {
     if (!article || !article.data) {
       return;
     }
 
-    const articleCt = ArticleHelper.getContentType(article);
+    const articleCt = await ArticleHelper.getContentType(article);
     const pubDateField = articleCt.fields.find((f) => f.isPublishDate);
 
     return (
@@ -424,12 +425,14 @@ export class ArticleHelper {
    * @param article
    * @returns
    */
-  public static getModifiedDateField(article: ParsedFrontMatter | null): Field | undefined {
+  public static async getModifiedDateField(
+    article: ParsedFrontMatter | null
+  ): Promise<Field | undefined> {
     if (!article || !article.data) {
       return;
     }
 
-    const articleCt = ArticleHelper.getContentType(article);
+    const articleCt = await ArticleHelper.getContentType(article);
     const modDateField = articleCt.fields.find((f) => f.isModifiedDate);
 
     return modDateField;
@@ -447,7 +450,7 @@ export class ArticleHelper {
    * Retrieve the content type of the current file
    * @param updatedMetadata
    */
-  public static getContentType(article: ParsedFrontMatter): IContentType {
+  public static async getContentType(article: ParsedFrontMatter): Promise<IContentType> {
     const contentTypes = ArticleHelper.getContentTypes();
 
     if (!contentTypes || !article.data) {
@@ -460,7 +463,7 @@ export class ArticleHelper {
     if (article.data.type) {
       contentType = contentTypes.find((ct) => ct.name === article.data.type);
     } else if (!contentType && article.path) {
-      const pageFolder = Folders.getPageFolderByFilePath(article.path);
+      const pageFolder = await Folders.getPageFolderByFilePath(article.path);
       if (pageFolder && pageFolder.contentTypes?.length === 1) {
         const contentTypeName = pageFolder.contentTypes[0];
         contentType = contentTypes.find((ct) => ct.name === contentTypeName);
@@ -488,8 +491,8 @@ export class ArticleHelper {
    * Update all dates in the metadata
    * @param metadata
    */
-  public static updateDates(article: ParsedFrontMatter) {
-    const contentType = ArticleHelper.getContentType(article);
+  public static async updateDates(article: ParsedFrontMatter) {
+    const contentType = await ArticleHelper.getContentType(article);
     const dateFields = contentType.fields.filter((field) => field.type === 'datetime');
 
     for (const dateField of dateFields) {
@@ -529,7 +532,7 @@ export class ArticleHelper {
     const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
 
     let prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
-    prefix = ArticleHelper.getFilePrefix(prefix, folderPath, contentType);
+    prefix = await ArticleHelper.getFilePrefix(prefix, folderPath, contentType);
 
     // Name of the file or folder to create
     let sanitizedName = ArticleHelper.sanitize(titleValue);
@@ -588,18 +591,18 @@ export class ArticleHelper {
    * @param contentType
    * @returns
    */
-  public static getFilePrefix(
+  public static async getFilePrefix(
     prefix: string | null | undefined,
     filePath?: string,
     contentType?: IContentType
-  ): string | undefined {
+  ): Promise<string | undefined> {
     if (!prefix) {
       prefix = undefined;
     }
 
     // Retrieve the file prefix from the folder
     if (filePath) {
-      const filePrefixOnFolder = Folders.getFilePrefixByFolderPath(filePath);
+      const filePrefixOnFolder = await Folders.getFilePrefixByFolderPath(filePath);
       if (typeof filePrefixOnFolder !== 'undefined') {
         prefix = filePrefixOnFolder;
       }

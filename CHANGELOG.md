@@ -13,6 +13,8 @@
 
 ### ⚡️ Optimizations
 
+- [#802](https://github.com/estruyf/vscode-front-matter/issues/802): Update `glob` to the latest version and remove the sync method
+
 ### 🐞 Fixes
 
 - [#796](https://github.com/estruyf/vscode-front-matter/issues/796): Fix issue in retrieving folders/files on dashboard load

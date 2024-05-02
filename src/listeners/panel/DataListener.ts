@@ -293,7 +293,7 @@ export class DataListener extends BaseListener {
 
     if (keys.length > 0 && contentTypes && wsFolder) {
       // Get the current content type
-      const contentType = ArticleHelper.getContentType({
+      const contentType = await ArticleHelper.getContentType({
         content: '',
         data: updatedMetadata,
         path: filePath
@@ -361,7 +361,7 @@ export class DataListener extends BaseListener {
       return;
     }
 
-    const contentType = ArticleHelper.getContentType(article);
+    const contentType = await ArticleHelper.getContentType(article);
     const sourceField = ContentType.findFieldByName(contentType.fields, field);
 
     if (!value && field !== titleField && contentType.clearEmpty) {
@@ -381,7 +381,7 @@ export class DataListener extends BaseListener {
     const fieldsWithEmojiEncoding = contentType.fields.filter((f) => f.encodeEmoji);
 
     // Support multi-level fields
-    const parentObj = DataListener.getParentObject(article.data, article, parents, blockData);
+    const parentObj = await DataListener.getParentObject(article.data, article, parents, blockData);
 
     // Check multi-image fields
     const multiImageFieldsArray = imageFields.find((f: Field[]) => {
@@ -491,7 +491,7 @@ export class DataListener extends BaseListener {
    * @param blockData
    * @returns
    */
-  public static getParentObject(
+  public static async getParentObject(
     data: any,
     article: ParsedFrontMatter,
     parents: string[] | undefined,
@@ -499,7 +499,7 @@ export class DataListener extends BaseListener {
   ) {
     let parentObj = data;
     let allParents = Object.assign([], parents);
-    const contentType = ArticleHelper.getContentType(article);
+    const contentType = await ArticleHelper.getContentType(article);
     let selectedIndexes: number[] = [];
     if (blockData?.selectedIndex) {
       if (typeof blockData.selectedIndex === 'string') {
