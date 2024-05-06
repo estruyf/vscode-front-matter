@@ -13,12 +13,12 @@ import { Snippet, Snippets } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
 import { ModeAtom, SettingsSelector, ViewDataSelector } from '../../state';
 import { Alert } from '../Modals/Alert';
-import { FormDialog } from '../Modals/FormDialog';
 import { NewForm } from './NewForm';
 import SnippetForm, { SnippetFormHandle } from './SnippetForm';
 import { LocalizationKey } from '../../../localization';
 import { FooterActions } from './FooterActions';
 import { ItemMenu } from './ItemMenu';
+import { SlideOver } from '../Modals/SlideOver';
 
 export interface IItemProps {
   snippetKey: string;
@@ -209,9 +209,9 @@ export const Item: React.FunctionComponent<IItemProps> = ({
       </li>
 
       {showInsertDialog && (
-        <FormDialog
+        <SlideOver
           title={l10n.t(LocalizationKey.dashboardSnippetsViewItemInsertFormDialogTitle, snippet.title || snippetKey)}
-          description={l10n.t(LocalizationKey.dashboardSnippetsViewItemInsertFormDialogDescription, (snippet.title || snippetKey).toLowerCase())}
+          description={snippet.description || l10n.t(LocalizationKey.dashboardSnippetsViewItemInsertFormDialogDescription, (snippet.title || snippetKey).toLowerCase())}
           isSaveDisabled={!insertToContent}
           trigger={insertToArticle}
           dismiss={() => setShowInsertDialog(false)}
@@ -225,11 +225,11 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             filePath={viewData?.data?.filePath}
             fieldInfo={viewData?.data?.snippetInfo?.fields}
             selection={viewData?.data?.selection} />
-        </FormDialog>
+        </SlideOver>
       )}
 
       {showEditDialog && (
-        <FormDialog
+        <SlideOver
           title={l10n.t(LocalizationKey.dashboardSnippetsViewItemEditFormDialogTitle, snippet.title || snippetKey)}
           description={l10n.t(LocalizationKey.dashboardSnippetsViewItemEditFormDialogDescription, (snippet.title || snippetKey).toLowerCase())}
           isSaveDisabled={!snippetTitle || !snippetOriginalBody}
@@ -248,7 +248,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
             onDescriptionUpdate={(value: string) => setSnippetDescription(value)}
             onBodyUpdate={(value: string) => setSnippetOriginalBody(value)}
           />
-        </FormDialog>
+        </SlideOver>
       )}
 
       {showAlert && (

@@ -11,13 +11,13 @@ import { DashboardMessage } from '../../DashboardMessage';
 import { ModeAtom, SettingsSelector, ViewDataSelector } from '../../state';
 import { FilterInput } from '../Header/FilterInput';
 import { PageLayout } from '../Layout/PageLayout';
-import { FormDialog } from '../Modals/FormDialog';
 import { SponsorMsg } from '../Layout/SponsorMsg';
 import { Item } from './Item';
 import { NewForm } from './NewForm';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { List } from '../Media/List';
+import { SlideOver } from '../Modals/SlideOver';
 
 export interface ISnippetsProps { }
 
@@ -162,7 +162,7 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
         )}
 
         {showCreateDialog && (
-          <FormDialog
+          <SlideOver
             title={l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsFormDialogTitle)}
             description={``}
             isSaveDisabled={!snippetTitle || !snippetBody}
@@ -181,7 +181,7 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
               onDescriptionUpdate={(value: string) => setSnippetDescription(value)}
               onBodyUpdate={(value: string) => setSnippetBody(value)}
             />
-          </FormDialog>
+          </SlideOver>
         )}
       </div>
 
