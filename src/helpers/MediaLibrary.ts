@@ -6,7 +6,7 @@ import { Folders, WORKSPACE_PLACEHOLDER } from '../commands/Folders';
 import { Notifications } from './Notifications';
 import { parseWinPath } from './parseWinPath';
 import { LocalStore } from '../constants';
-import { existsAsync, renameAsync } from '../utils';
+import { existsAsync, isWindows, renameAsync } from '../utils';
 import { existsSync, mkdirSync, renameSync } from 'fs';
 import { lookup } from 'mime-types';
 import * as l10n from '@vscode/l10n';
@@ -176,9 +176,8 @@ export class MediaLibrary {
 
   public parsePath(path: string) {
     const wsFolder = Folders.getWorkspaceFolder();
-    const isWindows = process.platform === 'win32';
     let absPath = path.replace(parseWinPath(wsFolder?.fsPath || ''), WORKSPACE_PLACEHOLDER);
-    absPath = isWindows ? absPath.split('\\').join('/') : absPath;
+    absPath = isWindows() ? absPath.split('\\').join('/') : absPath;
     return absPath.toLowerCase();
   }
 

@@ -25,7 +25,7 @@ import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
 import { Telemetry } from '../helpers/Telemetry';
 import { glob } from 'glob';
 import { mkdirAsync } from '../utils/mkdirAsync';
-import { existsAsync } from '../utils';
+import { existsAsync, isWindows } from '../utils';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 
@@ -495,11 +495,10 @@ export class Folders {
    */
   public static getAbsFilePath(filePath: string): string {
     const wsFolder = Folders.getWorkspaceFolder();
-    const isWindows = process.platform === 'win32';
 
     if (filePath.includes(WORKSPACE_PLACEHOLDER)) {
       let absPath = filePath.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ''));
-      absPath = isWindows ? absPath.split('/').join('\\') : absPath;
+      absPath = isWindows() ? absPath.split('/').join('\\') : absPath;
       return parseWinPath(absPath);
     }
 
@@ -513,7 +512,6 @@ export class Folders {
    */
   public static getAbsFolderPath(folderPath: string): string {
     const wsFolder = Folders.getWorkspaceFolder();
-    const isWindows = process.platform === 'win32';
 
     let absPath = '';
     if (folderPath.includes(WORKSPACE_PLACEHOLDER)) {
@@ -522,7 +520,7 @@ export class Folders {
       absPath = join(parseWinPath(wsFolder?.fsPath || ''), folderPath);
     }
 
-    absPath = isWindows ? absPath.split('/').join('\\') : absPath;
+    absPath = isWindows() ? absPath.split('/').join('\\') : absPath;
     return parseWinPath(absPath);
   }
 
@@ -533,14 +531,13 @@ export class Folders {
    * @returns
    */
   private static absWsFolder(folder: ContentFolder, wsFolder?: Uri) {
-    const isWindows = process.platform === 'win32';
     let absPath = folder.path.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ''));
 
     if (absPath.includes('../')) {
       absPath = join(absPath);
     }
 
-    absPath = isWindows ? absPath.split('/').join('\\') : absPath;
+    absPath = isWindows() ? absPath.split('/').join('\\') : absPath;
 
     return parseWinPath(absPath);
   }
@@ -552,12 +549,11 @@ export class Folders {
    * @returns
    */
   public static relWsFolder(folder: ContentFolder, wsFolder?: Uri) {
-    const isWindows = process.platform === 'win32';
     let absPath = parseWinPath(folder.path).replace(
       parseWinPath(wsFolder?.fsPath || ''),
       WORKSPACE_PLACEHOLDER
     );
-    absPath = isWindows ? absPath.split('\\').join('/') : absPath;
+    absPath = isWindows() ? absPath.split('\\').join('/') : absPath;
     return absPath;
   }
 
@@ -702,6 +698,7 @@ export class Folders {
   ): Promise<FolderInfo | undefined> {
     try {
       const folderPath = parseWinPath(folder.path);
+      const folderUri = Uri.file(folderPath);
 
       if (typeof folderPath === 'string') {
         let files: Uri[] = [];
@@ -720,7 +717,7 @@ export class Folders {
           let foundFiles = await Folders.findFiles(filePath);
 
           // Make sure these file are coming from the folder path (this could be an issue in multi-root workspaces)
-          foundFiles = foundFiles.filter((f) => parseWinPath(f.fsPath).startsWith(folderPath));
+          foundFiles = foundFiles.filter((f) => parseWinPath(f.fsPath).startsWith(parseWinPath(folderUri.fsPath)));
 
           files = [...files, ...foundFiles];
         }
@@ -769,6 +766,7 @@ export class Folders {
     Logger.verbose(`Folders:findFolders:start - ${pattern}`);
 
     try {
+      pattern = isWindows() ? parseWinPath(pattern) : pattern;
       const files = await glob(pattern, { ignore: '**/node_modules/**', dot: true });
       const allFolders = (files || []).map((file) => dirname(file));
       const uniqueFolders = [...new Set(allFolders)];
@@ -789,7 +787,8 @@ export class Folders {
     Logger.verbose(`Folders:findFiles:start - ${pattern}`);
 
     try {
-      const files = await glob(pattern, { ignore: '**/node_modules/**' });
+      pattern = isWindows() ? parseWinPath(pattern) : pattern;
+      const files = await glob(pattern, { ignore: '**/node_modules/**', dot: true });
       const allFiles = (files || []).map((file) => Uri.file(file));
       Logger.verbose(`Folders:findFiles:end - ${allFiles.length}`);
       return allFiles;

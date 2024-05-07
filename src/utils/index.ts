@@ -7,6 +7,7 @@ export * from './fieldWhenClause';
 export * from './flattenObjectKeys';
 export * from './getLocalizationFile';
 export * from './ignoreMsgCommand';
+export * from './isWindows';
 export * from './mkdirAsync';
 export * from './readFileAsync';
 export * from './readdirAsync';

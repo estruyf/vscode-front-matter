@@ -62,7 +62,7 @@ ${JSON.stringify(Settings.globalConfig, null, 2)}
   };
 
   private static async allProjectFiles() {
-    const allFiles = await workspace.findFiles(`**/*.*`);
+    const allFiles = await workspace.findFiles(`**/*.*`, '**/node_modules/**');
     return `Total files found: ${allFiles.length}`;
   }
 
