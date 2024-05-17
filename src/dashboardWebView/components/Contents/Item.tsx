@@ -115,7 +115,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           <button
             title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
             onClick={onOpenFile}
-            className={`relative rounded h-36 w-full overflow-hidden border-b cursor-pointer border-[var(--frontmatter-border)]`}
+            className={`relative rounded-t h-36 w-full overflow-hidden border-b cursor-pointer border-[var(--frontmatter-border)]`}
           >
             {
               imageHtml ?

@@ -25,7 +25,7 @@ export const FooterActions: React.FunctionComponent<IFooterActionsProps> = ({
   const [, setSelectedItemAction] = useRecoilState(SelectedItemActionAtom);
 
   return (
-    <div className={`py-2 w-full flex items-center justify-evenly border-t border-t-[var(--frontmatter-border)] bg-[var(--frontmatter-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)] rounded`}>
+    <div className={`py-2 w-full flex items-center justify-evenly border-t border-t-[var(--frontmatter-border)] bg-[var(--frontmatter-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)] rounded-b`}>
       {/* <ItemSelection filePath={filePath} show /> */}
 
       <QuickAction
