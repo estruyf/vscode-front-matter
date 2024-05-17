@@ -291,6 +291,13 @@ export class Article {
       return;
     }
 
+    const file = parseWinPath(editor.document.fileName);
+    if (!isValidFile(file)) {
+      return;
+    }
+
+    const parsedFile = parse(file);
+
     const slugTemplate = Settings.get<string>(SETTING_SLUG_TEMPLATE);
     if (slugTemplate) {
       if (slugTemplate === '{{title}}') {
@@ -305,14 +312,6 @@ export class Article {
         }
       }
     }
-
-    const file = parseWinPath(editor.document.fileName);
-
-    if (!isValidFile(file)) {
-      return;
-    }
-
-    const parsedFile = parse(file);
 
     if (parsedFile.name.toLowerCase() !== 'index') {
       return parsedFile.name;

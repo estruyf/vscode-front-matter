@@ -21,6 +21,7 @@
 - [#796](https://github.com/estruyf/vscode-front-matter/issues/796): Fix issue in retrieving folders/files on dashboard load
 - [#801](https://github.com/estruyf/vscode-front-matter/issues/801): Faster folder processing on updates
 - [#804](https://github.com/estruyf/vscode-front-matter/issues/804): Fix blinking of the front matter content area
+- [#806](https://github.com/estruyf/vscode-front-matter/issues/804): Fix preview URL for `index.md` files in root of the page folder path
 
 ## [10.1.0] - 2024-04-11 - [Release notes](https://beta.frontmatter.codes/updates/v10.1.0)
 

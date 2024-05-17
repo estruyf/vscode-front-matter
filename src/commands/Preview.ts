@@ -312,7 +312,7 @@ export class Preview {
         pathname = processPathPlaceholders(pathname, relativePath, filePath, selectedFolder);
 
         const file = parse(filePath);
-        if (file.name.toLowerCase() === 'index' && pathname.endsWith(slug)) {
+        if (file.name.toLowerCase() === 'index' && (pathname.endsWith(slug) || !pathname)) {
           slug = '';
         }
       }
