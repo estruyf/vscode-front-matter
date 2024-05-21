@@ -313,12 +313,15 @@ export class Article {
       }
     }
 
+    const suffix = Settings.get(SETTING_SLUG_SUFFIX) as string;
+    const prefix = Settings.get(SETTING_SLUG_PREFIX) as string;
+
     if (parsedFile.name.toLowerCase() !== 'index') {
-      return parsedFile.name;
+      return `${prefix}${parsedFile.name}${suffix}`;
     }
 
     const folderName = basename(dirname(file));
-    return folderName;
+    return `${prefix}${folderName}${suffix}`;
   }
 
   /**

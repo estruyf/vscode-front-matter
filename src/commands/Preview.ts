@@ -19,13 +19,13 @@ import { ContentFolder, ContentType, PreviewSettings } from '../models';
 import { format } from 'date-fns';
 import { DateHelper } from '../helpers/DateHelper';
 import { Article } from '.';
-import { urlJoin } from 'url-join-ts';
 import { WebviewHelper } from '@estruyf/vscode';
 import { Folders } from './Folders';
 import { ParsedFrontMatter } from '../parsers';
 import { getLocalizationFile } from '../utils/getLocalizationFile';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
+import { joinUrl } from '../utils';
 
 export class Preview {
   public static filePath: string | undefined = undefined;
@@ -65,7 +65,7 @@ export class Preview {
     const localhostUrl = await this.getLocalServerUrl();
 
     if (browserLiteCommand) {
-      const pageUrl = urlJoin(localhostUrl.toString(), slug || '');
+      const pageUrl = joinUrl(localhostUrl.toString(), slug || '');
       commands.executeCommand(browserLiteCommand, pageUrl);
       return;
     }
@@ -177,7 +177,7 @@ export class Preview {
           <title>Front Matter Preview</title>
         </head>
         <body style="width:100%;height:100%;margin:0;padding:0;overflow:hidden">
-          <div id="app" data-type="preview" data-url="${urlJoin(
+          <div id="app" data-type="preview" data-url="${joinUrl(
             localhostUrl.toString(),
             slug || ''
           )}" data-isProd="${isProd}" data-environment="${
@@ -208,7 +208,7 @@ export class Preview {
 
       webView.webview.postMessage({
         command: PreviewCommands.toWebview.updateUrl,
-        payload: urlJoin(localhost.toString(), slug || '')
+        payload: joinUrl(localhost.toString(), slug || '')
       });
     }
   }
@@ -312,7 +312,10 @@ export class Preview {
         pathname = processPathPlaceholders(pathname, relativePath, filePath, selectedFolder);
 
         const file = parse(filePath);
-        if (file.name.toLowerCase() === 'index' && (pathname.endsWith(slug) || !pathname)) {
+        if (
+          file.name.toLowerCase() === 'index' &&
+          (pathname.endsWith(slug) || !pathname || pathname === '/')
+        ) {
           slug = '';
         }
       }
