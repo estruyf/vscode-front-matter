@@ -602,7 +602,7 @@ export class ArticleHelper {
 
     // Retrieve the file prefix from the folder
     if (filePath) {
-      const filePrefixOnFolder = await Folders.getFilePrefixByFolderPath(filePath);
+      const filePrefixOnFolder = await Folders.getFilePrefixBeFilePath(filePath);
       if (typeof filePrefixOnFolder !== 'undefined') {
         prefix = filePrefixOnFolder;
       }

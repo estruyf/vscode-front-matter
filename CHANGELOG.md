@@ -22,6 +22,7 @@
 - [#801](https://github.com/estruyf/vscode-front-matter/issues/801): Faster folder processing on updates
 - [#804](https://github.com/estruyf/vscode-front-matter/issues/804): Fix blinking of the front matter content area
 - [#806](https://github.com/estruyf/vscode-front-matter/issues/804): Fix preview URL for `index.md` files in root of the page folder path
+- [#809](https://github.com/estruyf/vscode-front-matter/issues/809): Fix retrieving the `filePrefix` when updating the file name on slug change
 
 ## [10.1.0] - 2024-04-11 - [Release notes](https://beta.frontmatter.codes/updates/v10.1.0)
 
