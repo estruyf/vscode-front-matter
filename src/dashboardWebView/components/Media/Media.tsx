@@ -150,6 +150,8 @@ export const Media: React.FunctionComponent<IMediaProps> = (
   );
 
   useEffect(() => {
+    Messenger.send(DashboardMessage.setTitle, l10n.t(LocalizationKey.dashboardHeaderTabsMedia));
+
     Messenger.send(DashboardMessage.sendTelemetry, {
       event: TelemetryEvent.webviewMediaView
     });

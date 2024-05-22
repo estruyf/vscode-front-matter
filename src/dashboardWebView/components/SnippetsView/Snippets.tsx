@@ -81,6 +81,8 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
   };
 
   useEffect(() => {
+    Messenger.send(DashboardMessage.setTitle, l10n.t(LocalizationKey.dashboardHeaderTabsSnippets));
+
     Messenger.send(DashboardMessage.sendTelemetry, {
       event: TelemetryEvent.webviewSnippetsView
     });

@@ -125,6 +125,8 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
   useEffect(() => {
     Messenger.listen(messageListener);
 
+    Messenger.send(DashboardMessage.setTitle, l10n.t(LocalizationKey.dashboardHeaderTabsData));
+
     Messenger.send(DashboardMessage.sendTelemetry, {
       event: TelemetryEvent.webviewDataView
     });

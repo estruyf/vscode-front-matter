@@ -70,6 +70,8 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({
     Messenger.send(DashboardMessage.sendTelemetry, {
       event: TelemetryEvent.webviewContentsView
     });
+
+    Messenger.send(DashboardMessage.setTitle, l10n.t(LocalizationKey.dashboardHeaderTabsContents));
   }, []);
 
   return (

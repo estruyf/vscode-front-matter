@@ -11,6 +11,7 @@
 - [#798](https://github.com/estruyf/vscode-front-matter/issues/798): Changed dialog to slide-over for the snippet forms
 - [#799](https://github.com/estruyf/vscode-front-matter/issues/799): Added `frontMatter.logging` setting to define the logging output. Options are `info`, `warn`, `error`, and `verbose`. Default is `info`.
 - [#800](https://github.com/estruyf/vscode-front-matter/issues/800): Add colors for the Front Matter CMS output
+- [#810](https://github.com/estruyf/vscode-front-matter/issues/810): Update the tab title based on the view
 
 ### ⚡️ Optimizations
 

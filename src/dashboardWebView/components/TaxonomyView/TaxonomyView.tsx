@@ -53,6 +53,8 @@ export const TaxonomyView: React.FunctionComponent<ITaxonomyViewProps> = ({
   }, [settings?.tags, settings?.categories, settings?.customTaxonomy]);
 
   useEffect(() => {
+    Messenger.send(DashboardMessage.setTitle, l10n.t(LocalizationKey.dashboardHeaderTabsTaxonomies));
+
     Messenger.send(DashboardMessage.sendTelemetry, {
       event: TelemetryEvent.webviewTaxonomyDashboard
     });

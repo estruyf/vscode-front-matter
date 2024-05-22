@@ -2,12 +2,24 @@ import { StopIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { useEffect } from 'react';
+import { Messenger } from '@estruyf/vscode/dist/client';
+import { DashboardMessage } from '../../DashboardMessage';
+import { TelemetryEvent } from '../../../constants';
 
 export interface IUnknownViewProps { }
 
 export const UnknownView: React.FunctionComponent<IUnknownViewProps> = (
   _: React.PropsWithChildren<IUnknownViewProps>
 ) => {
+  useEffect(() => {
+    Messenger.send(DashboardMessage.setTitle, "Unknown View");
+
+    Messenger.send(DashboardMessage.sendTelemetry, {
+      event: TelemetryEvent.webviewUnknown
+    });
+  }, []);
+
   return (
     <div className={`w-full h-full flex items-center justify-center`}>
       <div className={`flex flex-col items-center text-[var(--frontmatter-text)]`}>

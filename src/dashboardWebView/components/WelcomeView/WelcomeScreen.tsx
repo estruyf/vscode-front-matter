@@ -34,6 +34,8 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({
       location: "DASHBOARD"
     });
 
+    Messenger.send(DashboardMessage.setTitle, "Welcome to Front Matter");
+
     const crntState: any = Messenger.getState() || {};
     Messenger.setState({
       ...crntState,

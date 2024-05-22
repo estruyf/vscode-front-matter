@@ -45,6 +45,13 @@ export class Dashboard {
     return Dashboard._viewData;
   }
 
+  public static setTitle(title: string) {
+    if (title && Dashboard.webview) {
+      Dashboard.webview.title =
+        title || `Front Matter ${l10n.t(LocalizationKey.commandsDashboardTitle)}`;
+    }
+  }
+
   /**
    * Init the dashboard
    */

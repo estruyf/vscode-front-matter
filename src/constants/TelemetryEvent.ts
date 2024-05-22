@@ -47,6 +47,8 @@ export const TelemetryEvent = {
   webviewContentsView: 'webviewContentsView',
   webviewSnippetsView: 'webviewSnippetsView',
   webviewTaxonomyDashboard: 'webviewTaxonomyDashboard',
+  webviewSettings: 'webviewSettings',
+  webviewUnknown: 'webviewUnknown',
 
   // Git
   gitSync: 'gitSync',
