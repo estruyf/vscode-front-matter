@@ -2397,6 +2397,10 @@ export enum LocalizationKey {
    */
   helpersSettingsHelperRefreshConfigSuccess = 'helpers.settingsHelper.refreshConfig.success',
   /**
+   * Cannot update setting "{0}" because you've extended or split the Front Matter CMS configuration. Please manually add your changes. Check the output for the setting update.
+   */
+  helpersSettingsHelperSafeUpdateWarning = 'helpers.settingsHelper.safeUpdate.warning',
+  /**
    * Rename the {0}
    */
   helpersTaxonomyHelperRenameInputTitle = 'helpers.taxonomyHelper.rename.input.title',

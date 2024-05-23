@@ -398,7 +398,7 @@ export class Settings {
         Settings.extendedConfig.dynamic
       ) {
         Notifications.warningWithOutput(
-          `Cannot update setting "${configKey}" because you've extended or split the Front Matter CMS configuration. Please manually add your changes. Check the output for the setting update.`
+          l10n.t(LocalizationKey.helpersSettingsHelperSafeUpdateWarning, configKey)
         );
 
         Logger.info(`Updating setting: ${configKey}`, 'SETTING');

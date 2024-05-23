@@ -727,6 +727,7 @@
   "helpers.settingsHelper.readConfig.progress.title": "{0}: Reading dynamic config file...",
   "helpers.settingsHelper.readConfig.error": "Error reading your configuration.",
   "helpers.settingsHelper.refreshConfig.success": "Settings have been refreshed.",
+  "helpers.settingsHelper.safeUpdate.warning": "Cannot update setting \"{0}\" because you've extended or split the Front Matter CMS configuration. Please manually add your changes. Check the output for the setting update.",
 
   "helpers.taxonomyHelper.rename.input.title": "Rename the {0}",
   "helpers.taxonomyHelper.rename.validate.equalValue": "The new value must be different from the old one.",
