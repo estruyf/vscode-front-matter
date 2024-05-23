@@ -280,7 +280,7 @@ export class ContentType {
       pageBundle = pageBundleAnswer === l10n.t(LocalizationKey.commonYes);
     }
 
-    const fields = ContentType.generateFields(content.data);
+    const fields = await ContentType.generateFields(content.data);
 
     // Update the type field in the page
     if (!overrideBool && editor) {
@@ -344,7 +344,7 @@ export class ContentType {
     }
 
     const contentType = await ArticleHelper.getContentType(article);
-    const updatedFields = ContentType.generateFields(article.data, contentType.fields);
+    const updatedFields = await ContentType.generateFields(article.data, contentType.fields);
 
     const contentTypes = ContentType.getAll() || [];
     const index = contentTypes.findIndex((ct) => ct.name === contentType.name);
@@ -744,7 +744,7 @@ export class ContentType {
    * @param fields
    * @returns
    */
-  private static generateFields(data: any, fields: any[] = []) {
+  private static async generateFields(data: any, fields: any[] = []) {
     for (const field in data) {
       const fieldData = data[field];
 
@@ -782,15 +782,38 @@ export class ContentType {
         fieldData.length > 0 &&
         typeof fieldData[0] === 'object'
       ) {
-        const newFields = ContentType.generateFields(fieldData);
+        const newFields = await ContentType.generateFields(fieldData);
+
+        // Combine all the fields for the field group
+        const blockFields: Field[] = [];
+        for (const newField of newFields) {
+          for (const field of newField.fields) {
+            if (blockFields.some((f) => f.name === field.name)) {
+              continue;
+            }
+
+            blockFields.push(field);
+          }
+        }
+
+        // Generate a new field group
+        const fieldGroups = Settings.get<FieldGroup[]>(SETTING_TAXONOMY_FIELD_GROUPS) || [];
+        const fieldGroupName = `${field}_group`;
+        const newFieldGroup: FieldGroup = {
+          id: fieldGroupName,
+          fields: blockFields
+        };
+        fieldGroups.push(newFieldGroup);
+        await Settings.update(SETTING_TAXONOMY_FIELD_GROUPS, fieldGroups, true);
+
         fields.push({
           title: field,
           name: field,
           type: 'block',
-          fields: newFields
+          fieldGroup: [fieldGroupName]
         } as Field);
       } else if (fieldData && fieldData instanceof Object) {
-        const newFields = ContentType.generateFields(fieldData);
+        const newFields = await ContentType.generateFields(fieldData);
         fields.push({
           title: field,
           name: field,
