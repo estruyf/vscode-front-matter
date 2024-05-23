@@ -17,6 +17,7 @@
 - [#808](https://github.com/estruyf/vscode-front-matter/issues/808): Add support to generate field groups and `block` fields in content type generation
 - [#810](https://github.com/estruyf/vscode-front-matter/issues/810): Update the tab title based on the view
 - [#811](https://github.com/estruyf/vscode-front-matter/issues/811): Added `panel.gitActions` view mode option to hide the Git actions in the panel
+- [#812](https://github.com/estruyf/vscode-front-matter/issues/812): Added the `{{locale}}` placeholder which can be used in the `previewPath` property
 
 ### ⚡️ Optimizations
 

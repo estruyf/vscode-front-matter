@@ -1,6 +1,3 @@
-import { processFmPlaceholders } from './../helpers/processFmPlaceholders';
-import { processPathPlaceholders } from './../helpers/processPathPlaceholders';
-import { Telemetry } from './../helpers/Telemetry';
 import {
   SETTING_PREVIEW_HOST,
   SETTING_PREVIEW_PATHNAME,
@@ -12,13 +9,22 @@ import {
   GeneralCommands,
   SETTING_PREVIEW_TRAILING_SLASH
 } from './../constants';
-import { ArticleHelper } from './../helpers/ArticleHelper';
 import { join, parse } from 'path';
 import { commands, env, Uri, ViewColumn, window, WebviewPanel, extensions } from 'vscode';
-import { Extension, parseWinPath, processTimePlaceholders, Settings } from '../helpers';
+import {
+  ArticleHelper,
+  DateHelper,
+  Extension,
+  parseWinPath,
+  processI18nPlaceholders,
+  processTimePlaceholders,
+  processFmPlaceholders,
+  processPathPlaceholders,
+  Settings,
+  Telemetry
+} from '../helpers';
 import { ContentFolder, ContentType, PreviewSettings } from '../models';
 import { format } from 'date-fns';
-import { DateHelper } from '../helpers/DateHelper';
 import { Article } from '.';
 import { WebviewHelper } from '@estruyf/vscode';
 import { Folders } from './Folders';
@@ -311,6 +317,7 @@ export class Preview {
         const folderPath = wsFolder ? parseWinPath(wsFolder.fsPath) : '';
         const relativePath = filePath.replace(folderPath, '');
         pathname = processPathPlaceholders(pathname, relativePath, filePath, selectedFolder);
+        pathname = processI18nPlaceholders(pathname, selectedFolder);
 
         const file = parse(filePath);
         if (file.name.toLowerCase() === 'index') {
