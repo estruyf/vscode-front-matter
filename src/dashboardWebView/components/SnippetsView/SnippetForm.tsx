@@ -199,7 +199,10 @@ ${snippetBody}
                   {field.title || field.name}
                 </label>
                 <div className="mt-1">
-                  <SnippetInputField field={field} fieldInfo={fieldInfo} onValueChange={onTextChange} />
+                  <SnippetInputField
+                    field={field}
+                    fieldInfo={fieldInfo}
+                    onValueChange={onTextChange} />
                 </div>
               </div>
             )

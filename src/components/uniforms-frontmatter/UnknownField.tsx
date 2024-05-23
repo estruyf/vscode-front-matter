@@ -8,7 +8,7 @@ import { LocalizationKey } from '../../localization';
 export type UnknownFieldProps = HTMLFieldProps<
   string,
   HTMLDivElement,
-  { inputRef?: Ref<HTMLInputElement> }
+  { inputRef?: Ref<HTMLInputElement>, description?: string }
 >;
 
 function UnknownField({
@@ -30,6 +30,12 @@ function UnknownField({
       <LabelField label={label} id={id} required={props.required} />
 
       <div className={`text-[var(--vscode-errorForeground)]`}>{l10n.t(LocalizationKey.fieldUnknown)}</div>
+
+      {
+        props.description && (
+          <span className='block text-xs text-[var(--vscode--settings-headerForeground)] opacity-75 mt-2 mx-2'>{props.description}</span>
+        )
+      }
     </div>
   );
 }

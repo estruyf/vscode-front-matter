@@ -6,7 +6,7 @@ import { LabelField } from './LabelField';
 export type LongTextFieldProps = HTMLFieldProps<
   string,
   HTMLDivElement,
-  { inputRef?: Ref<HTMLTextAreaElement> }
+  { inputRef?: Ref<HTMLTextAreaElement>, description?: string }
 >;
 
 function LongText({
@@ -36,6 +36,12 @@ function LongText({
         ref={inputRef}
         value={value ?? ''}
       />
+
+      {
+        props.description && (
+          <span className='block text-xs text-[var(--vscode--settings-headerForeground)] opacity-75 mt-2 mx-2'>{props.description}</span>
+        )
+      }
     </div>
   );
 }
