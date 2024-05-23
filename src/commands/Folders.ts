@@ -1,6 +1,7 @@
 import { STATIC_FOLDER_PLACEHOLDER } from './../constants/StaticFolderPlaceholder';
 import { Questions } from './../helpers/Questions';
 import {
+  COMMAND_NAME,
   SETTING_CONTENT_I18N,
   SETTING_CONTENT_PAGE_FOLDERS,
   SETTING_CONTENT_STATIC_FOLDER,
@@ -14,7 +15,7 @@ import { ContentFolder, FileInfo, FolderInfo, I18nConfig, StaticFolder } from '.
 import uniqBy = require('lodash.uniqby');
 import { Template } from './Template';
 import { Notifications } from '../helpers/Notifications';
-import { Logger, Settings, processTimePlaceholders } from '../helpers';
+import { Extension, Logger, Settings, processTimePlaceholders } from '../helpers';
 import { existsSync } from 'fs';
 import { format } from 'date-fns';
 import { Dashboard } from './Dashboard';
@@ -33,6 +34,13 @@ export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
 export class Folders {
   private static _folders: ContentFolder[] = [];
+
+  public static async registerCommands() {
+    const ext = Extension.getInstance();
+    const subscriptions = ext.subscriptions;
+
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.createByTemplate, Folders.create));
+  }
 
   public static clearCached() {
     Logger.verbose(`Folders:clearCached`);
@@ -717,7 +725,9 @@ export class Folders {
           let foundFiles = await Folders.findFiles(filePath);
 
           // Make sure these file are coming from the folder path (this could be an issue in multi-root workspaces)
-          foundFiles = foundFiles.filter((f) => parseWinPath(f.fsPath).startsWith(parseWinPath(folderUri.fsPath)));
+          foundFiles = foundFiles.filter((f) =>
+            parseWinPath(f.fsPath).startsWith(parseWinPath(folderUri.fsPath))
+          );
 
           files = [...files, ...foundFiles];
         }

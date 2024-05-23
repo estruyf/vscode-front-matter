@@ -42,6 +42,25 @@ categories: []
     const ext = Extension.getInstance();
     const subscriptions = ext.subscriptions;
 
+    // Initialize command
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.init, async (cb: Function) => {
+        await Project.init();
+
+        if (cb) {
+          cb();
+        }
+      })
+    );
+
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.initTemplate, () => Project.createSampleTemplate(true))
+    );
+
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.registerFolder, Folders.register));
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.unregisterFolder, Folders.unregister));
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.createFolder, Folders.addMediaFolder));
+
     subscriptions.push(commands.registerCommand(COMMAND_NAME.switchProject, Project.switchProject));
   }
 

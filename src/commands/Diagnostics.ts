@@ -1,12 +1,24 @@
 import { Folders } from './Folders';
-import { ViewColumn, workspace } from 'vscode';
+import { ViewColumn, commands, workspace } from 'vscode';
 import ContentProvider from '../providers/ContentProvider';
 import { join } from 'path';
 import { ContentFolder } from '../models';
 import { Settings } from '../helpers/SettingsHelper';
-import { DEFAULT_FILE_TYPES, SETTING_CONTENT_SUPPORTED_FILETYPES } from '../constants';
+import {
+  COMMAND_NAME,
+  DEFAULT_FILE_TYPES,
+  SETTING_CONTENT_SUPPORTED_FILETYPES
+} from '../constants';
+import { Extension } from '../helpers';
 
 export class Diagnostics {
+  public static async registerCommands() {
+    const ext = Extension.getInstance();
+    const subscriptions = ext.subscriptions;
+
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.diagnostics, Diagnostics.show));
+  }
+
   public static async show() {
     const folders = await Folders.get();
     const projectName = Folders.getProjectFolderName();

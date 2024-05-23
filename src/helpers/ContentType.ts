@@ -3,12 +3,14 @@ import { PagesListener } from './../listeners/dashboard';
 import {
   ArticleHelper,
   CustomScript,
+  Extension,
   Logger,
   Settings,
   processArticlePlaceholdersFromData,
   processTimePlaceholders
 } from '.';
 import {
+  COMMAND_NAME,
   DefaultFieldValues,
   EXTENSION_NAME,
   FEATURE_FLAG,
@@ -40,6 +42,32 @@ import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 
 export class ContentType {
+  /**
+   * Registers the commands related to content types.
+   *
+   * @param subscriptions - The array of subscriptions to which the commands will be added.
+   */
+  public static async registerCommands() {
+    const ext = Extension.getInstance();
+    const subscriptions = ext.subscriptions;
+
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.createByContentType, ContentType.createContent)
+    );
+
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.generateContentType, ContentType.generate)
+    );
+
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.addMissingFields, ContentType.addMissingFields)
+    );
+
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.setContentType, ContentType.setContentType)
+    );
+  }
+
   /**
    * Retrieve the draft field
    * @returns

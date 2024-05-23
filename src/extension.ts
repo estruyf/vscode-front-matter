@@ -16,7 +16,6 @@ import { PagesListener } from './listeners/dashboard';
 import { ModeSwitch } from './services/ModeSwitch';
 import { PagesParser } from './services/PagesParser';
 import { ContentType, Telemetry, Extension } from './helpers';
-import { TaxonomyType } from './models';
 import * as l10n from '@vscode/l10n';
 import {
   Backers,
@@ -93,7 +92,12 @@ export async function activate(context: vscode.ExtensionContext) {
   Dashboard.init();
   Dashboard.registerCommands();
 
+  // Multilingual commands
   i18n.register();
+
+  // Setting commands
+  Settings.registerCommands();
+  SettingsHelper.registerCommands();
 
   if (!extension.getVersion().usedVersion) {
     vscode.commands.executeCommand(COMMAND_NAME.dashboard);
@@ -129,101 +133,23 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  const createTag = vscode.commands.registerCommand(COMMAND_NAME.createTag, () => {
-    Settings.create(TaxonomyType.Tag);
-  });
-
-  const createCategory = vscode.commands.registerCommand(COMMAND_NAME.createCategory, () => {
-    Settings.create(TaxonomyType.Category);
-  });
-
-  const exportTaxonomy = vscode.commands.registerCommand(
-    COMMAND_NAME.exportTaxonomy,
-    Settings.export
-  );
-
-  const remap = vscode.commands.registerCommand(COMMAND_NAME.remap, Settings.remap);
-
   // Register all the article commands
   Article.registerCommands(subscriptions);
-
-  subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.initTemplate, () =>
-      Project.createSampleTemplate(true)
-    )
-  );
-
-  // Register project folders
-  const registerFolder = vscode.commands.registerCommand(
-    COMMAND_NAME.registerFolder,
-    Folders.register
-  );
-
-  const unregisterFolder = vscode.commands.registerCommand(
-    COMMAND_NAME.unregisterFolder,
-    Folders.unregister
-  );
-
-  const createFolder = vscode.commands.registerCommand(
-    COMMAND_NAME.createFolder,
-    Folders.addMediaFolder
-  );
 
   /**
    * Template creation
    */
-  const createTemplate = vscode.commands.registerCommand(
-    COMMAND_NAME.createTemplate,
-    Template.generate
-  );
-  const createFromTemplate = vscode.commands.registerCommand(
-    COMMAND_NAME.createFromTemplate,
-    (folder: vscode.Uri) => {
-      const folderPath = Folders.getFolderPath(folder);
-      if (folderPath) {
-        Template.create(folderPath);
-      }
-    }
-  );
+  Template.registerCommands();
 
   /**
    * Content creation
    */
-  const createByContentType = vscode.commands.registerCommand(
-    COMMAND_NAME.createByContentType,
-    ContentType.createContent
-  );
-  const createByTemplate = vscode.commands.registerCommand(
-    COMMAND_NAME.createByTemplate,
-    Folders.create
-  );
-  const createContent = vscode.commands.registerCommand(COMMAND_NAME.createContent, Content.create);
+  ContentType.registerCommands();
+  Content.registerCommands();
+  Folders.registerCommands();
 
-  subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.generateContentType, ContentType.generate)
-  );
-
-  subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.addMissingFields, ContentType.addMissingFields)
-  );
-
-  subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.setContentType, ContentType.setContentType)
-  );
-
-  // Initialize command
-  subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.init, async (cb: Function) => {
-      await Project.init();
-
-      if (cb) {
-        cb();
-      }
-    })
-  );
-
-  // Settings promotion command
-  subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.promote, SettingsHelper.promote));
+  // Project commands
+  Project.registerCommands();
 
   // Collapse all sections in the webview
   const collapseAll = vscode.commands.registerCommand(COMMAND_NAME.collapseSections, () => {
@@ -303,7 +229,7 @@ export async function activate(context: vscode.ExtensionContext) {
   ModeSwitch.register();
 
   // Diagnostics
-  subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.diagnostics, Diagnostics.show));
+  Diagnostics.registerCommands();
 
   // Git
   GitListener.init();
@@ -315,29 +241,8 @@ export async function activate(context: vscode.ExtensionContext) {
   // Cache commands
   Cache.registerCommands();
 
-  // Project switching
-  Project.registerCommands();
-
   // Subscribe all commands
-  subscriptions.push(
-    insertTags,
-    PanelView,
-    insertCategories,
-    createTag,
-    createCategory,
-    exportTaxonomy,
-    remap,
-    createFromTemplate,
-    createTemplate,
-    registerFolder,
-    unregisterFolder,
-    createContent,
-    createByContentType,
-    createByTemplate,
-    collapseAll,
-    createFolder,
-    fmStatusBarItem
-  );
+  subscriptions.push(insertTags, PanelView, insertCategories, collapseAll, fmStatusBarItem);
 
   console.log(`𝖥𝗋𝗈𝗇𝗍 𝖬𝖺𝗍𝗍𝖾𝗋 𝖢𝖬𝖲 𝖺𝖼𝗍𝗂𝗏𝖺𝗍𝖾𝖽! 𝖱𝖾𝖺𝖽𝗒 𝗍𝗈 𝗌𝗍𝖺𝗋𝗍 𝗐𝗋𝗂𝗍𝗂𝗇𝗀... 👩‍💻🧑‍💻👨‍💻`);
 }

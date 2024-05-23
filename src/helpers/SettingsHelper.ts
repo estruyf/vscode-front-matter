@@ -78,6 +78,13 @@ export class Settings {
   private static project: Project | undefined = undefined;
   private static configDebouncer = debounceCallback();
 
+  public static async registerCommands() {
+    const ext = Extension.getInstance();
+    const subscriptions = ext.subscriptions;
+
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.promote, Settings.promote));
+  }
+
   public static async init() {
     const allCommands = await commands.getCommands(true);
     await Settings.readConfig();
