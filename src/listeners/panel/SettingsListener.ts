@@ -75,7 +75,7 @@ export class SettingsListener extends BaseListener {
    * @param value
    */
   private static async updateSetting(setting: string, value: any) {
-    await Settings.update(setting, value);
+    await Settings.safeUpdate(setting, value);
     this.getSettings();
   }
 

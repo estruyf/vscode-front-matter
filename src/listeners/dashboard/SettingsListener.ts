@@ -101,7 +101,7 @@ export class SettingsListener extends BaseListener {
       if (typeof setting.name !== 'undefined' && typeof setting.value !== 'undefined') {
         const value = Settings.get(setting.name);
         if (value !== setting.value) {
-          await Settings.update(setting.name, setting.value, true);
+          await Settings.safeUpdate(setting.name, setting.value, true);
         }
       }
     }
@@ -190,7 +190,7 @@ export class SettingsListener extends BaseListener {
    */
   private static async update(data: { name: string; value: any; global?: boolean }) {
     if (data.name) {
-      await Settings.update(data.name, data.value, data.global);
+      await Settings.safeUpdate(data.name, data.value, data.global);
       this.getSettings(true);
     }
   }
@@ -213,7 +213,7 @@ export class SettingsListener extends BaseListener {
    * @param frameworkId
    */
   public static async setFramework(frameworkId: string | null) {
-    await Settings.update(SETTING_FRAMEWORK_ID, frameworkId, true);
+    await Settings.safeUpdate(SETTING_FRAMEWORK_ID, frameworkId, true);
 
     if (frameworkId) {
       const allFrameworks = FrameworkDetector.getAll();
@@ -222,16 +222,16 @@ export class SettingsListener extends BaseListener {
       );
       if (framework) {
         if (framework.static && typeof framework.static === 'string') {
-          await Settings.update(SETTING_CONTENT_STATIC_FOLDER, framework.static, true);
+          await Settings.safeUpdate(SETTING_CONTENT_STATIC_FOLDER, framework.static, true);
         }
 
         if (framework.server) {
-          await Settings.update(SETTING_PREVIEW_HOST, framework.server, true);
+          await Settings.safeUpdate(SETTING_PREVIEW_HOST, framework.server, true);
         }
 
         await FrameworkDetector.checkDefaultSettings(framework);
       } else {
-        await Settings.update(SETTING_CONTENT_STATIC_FOLDER, '', true);
+        await Settings.safeUpdate(SETTING_CONTENT_STATIC_FOLDER, '', true);
       }
     }
 
@@ -239,7 +239,7 @@ export class SettingsListener extends BaseListener {
   }
 
   public static async addAssetsFolder(assetFolder: string | StaticFolder) {
-    await Settings.update(SETTING_CONTENT_STATIC_FOLDER, assetFolder, true);
+    await Settings.safeUpdate(SETTING_CONTENT_STATIC_FOLDER, assetFolder, true);
     SettingsListener.getSettings(true);
   }
 

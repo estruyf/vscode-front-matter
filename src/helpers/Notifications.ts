@@ -44,6 +44,30 @@ export class Notifications {
   }
 
   /**
+   * Show a warning notification to the user with a link to the output channel
+   * @param message
+   * @param items
+   * @returns
+   */
+  public static warningWithOutput(message: string, ...items: any): Thenable<string | undefined> {
+    Logger.info(`${EXTENSION_NAME}: ${message}`, 'VSCODE', 'WARNING');
+
+    if (this.shouldShow('WARNING')) {
+      return window.showWarningMessage(
+        `${EXTENSION_NAME}: ${message} ${l10n.t(
+          LocalizationKey.notificationsOutputChannelDescription,
+          `[${l10n.t(LocalizationKey.notificationsOutputChannelLink)}](command:${
+            COMMAND_NAME.showOutputChannel
+          })`
+        )}`,
+        ...items
+      );
+    }
+
+    return Promise.resolve(undefined);
+  }
+
+  /**
    * Show an error notification to the user
    * @param message
    * @param items

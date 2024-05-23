@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { COMMAND_NAME, SETTING_LOGGING } from '../constants';
 import { Settings } from '.';
 
-export type LoggerLocation = 'VSCODE' | 'DASHBOARD' | 'PANEL';
+export type LoggerLocation = 'VSCODE' | 'DASHBOARD' | 'PANEL' | 'SETTING';
 
 export class Logger {
   private static instance: Logger;

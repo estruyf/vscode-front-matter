@@ -82,7 +82,7 @@ categories: []
       await Settings.createTeamSettings();
 
       // Add the default content type
-      await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, [DEFAULT_CONTENT_TYPE], true);
+      await Settings.safeUpdate(SETTING_TAXONOMY_CONTENT_TYPES, [DEFAULT_CONTENT_TYPE], true);
 
       if (sampleTemplate !== undefined) {
         await Project.createSampleTemplate();

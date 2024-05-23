@@ -467,9 +467,8 @@ export class Folders {
           path: Folders.relWsFolder(folder, wsFolder)
         };
 
-        if (detail['$schema'] || detail.extended) {
-          return null;
-        }
+        delete detail['$schema'];
+        delete detail.extended;
 
         if (detail.locale && detail.locale === detail.defaultLocale) {
           // Check if the folder was on the original list
@@ -490,7 +489,7 @@ export class Folders {
       })
       .filter((folder) => folder !== null);
 
-    await Settings.update(SETTING_CONTENT_PAGE_FOLDERS, folderDetails, true);
+    await Settings.safeUpdate(SETTING_CONTENT_PAGE_FOLDERS, folderDetails, true);
 
     // Reinitialize the folder listeners
     PagesListener.startWatchers();

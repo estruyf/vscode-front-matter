@@ -303,7 +303,7 @@ export class ContentType {
       contentTypes.push(newContentType);
     }
 
-    await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
+    await Settings.safeUpdate(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
 
     const configPath = await Settings.projectConfigPath();
     const notificationAction = await Notifications.info(
@@ -350,7 +350,7 @@ export class ContentType {
     const index = contentTypes.findIndex((ct) => ct.name === contentType.name);
     contentTypes[index].fields = updatedFields;
 
-    await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
+    await Settings.safeUpdate(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
 
     const configPath = await Settings.projectConfigPath();
     const notificationAction = await Notifications.info(
@@ -804,7 +804,7 @@ export class ContentType {
           fields: blockFields
         };
         fieldGroups.push(newFieldGroup);
-        await Settings.update(SETTING_TAXONOMY_FIELD_GROUPS, fieldGroups, true);
+        await Settings.safeUpdate(SETTING_TAXONOMY_FIELD_GROUPS, fieldGroups, true);
 
         fields.push({
           title: field,

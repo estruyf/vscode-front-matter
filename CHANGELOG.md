@@ -10,6 +10,7 @@
 
 - [#441](https://github.com/estruyf/vscode-front-matter/issues/441): Show input descriptions for snippet and data forms
 - [#442](https://github.com/estruyf/vscode-front-matter/issues/442): Hide sidebar on data view when data file is selecte + show dropdown of data files
+- [#788](https://github.com/estruyf/vscode-front-matter/issues/788): Show a warning on setting update when it exists in an extended configuration
 - [#798](https://github.com/estruyf/vscode-front-matter/issues/798): Changed dialog to slide-over for the snippet forms
 - [#799](https://github.com/estruyf/vscode-front-matter/issues/799): Added `frontMatter.logging` setting to define the logging output. Options are `info`, `warn`, `error`, and `verbose`. Default is `info`.
 - [#800](https://github.com/estruyf/vscode-front-matter/issues/800): Add colors for the Front Matter CMS output

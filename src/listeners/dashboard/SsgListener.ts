@@ -97,7 +97,7 @@ export class SsgListener extends BaseListener {
     }
 
     contentTypes.push(contentType);
-    await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
+    await Settings.safeUpdate(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
 
     SsgListener.sendRequest(command as any, requestId, {});
     SettingsListener.getSettings(true);

@@ -236,7 +236,7 @@ export class Extension {
           }
         );
 
-        await Settings.update(
+        await Settings.safeUpdate(
           SETTING_TEMPLATES_ENABLED,
           answer?.toLocaleLowerCase() === l10n.t(LocalizationKey.commonYes),
           true
@@ -266,7 +266,7 @@ export class Extension {
 
           return f;
         });
-      await Settings.update(SETTING_CONTENT_PAGE_FOLDERS, folders, true);
+      await Settings.safeUpdate(SETTING_CONTENT_PAGE_FOLDERS, folders, true);
     }
 
     // The tags and categories settings need to be moved to the database
