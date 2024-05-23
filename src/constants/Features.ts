@@ -6,7 +6,8 @@ export const FEATURE_FLAG = {
     metadata: 'panel.metadata',
     recentlyModified: 'panel.recentlyModified',
     otherActions: 'panel.otherActions',
-    contentType: 'panel.contentType'
+    contentType: 'panel.contentType',
+    gitActions: 'panel.gitActions'
   },
   dashboard: {
     snippets: {

@@ -12,7 +12,7 @@ import { useRecoilState } from 'recoil';
 import { PanelSettingsAtom } from '../state';
 
 export default function useMessages() {
-  const [metadata, setMetadata] = useState<any>({});
+  const [metadata, setMetadata] = useState<any>(undefined);
   const [settings, setSettings] = useRecoilState(PanelSettingsAtom);
   const [loading, setLoading] = useState<boolean>(false);
   const [focusElm, setFocus] = useState<TagType | null>(null);
