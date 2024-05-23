@@ -21,6 +21,9 @@ import { GeneralCommands, TelemetryEvent, WEBSITE_LINKS } from '../../../constan
 import { NavigationItem } from '../Layout';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { DropdownMenu, DropdownMenuContent } from '../../../components/shadcn/Dropdown';
+import { MenuButton, MenuItem } from '../Menu';
+import { Transition } from '@headlessui/react';
 
 export interface IDataViewProps { }
 
@@ -168,38 +171,71 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
     <div className="flex flex-col h-full overflow-auto inset-y-0">
       <Header settings={settings} />
 
-      {settings?.dataFiles && settings.dataFiles.length > 0 ? (
-        <div className="relative w-full flex-grow mx-auto overflow-hidden">
-          <div className={`flex w-64 flex-col absolute inset-y-0`}>
-            <aside
-              className={`flex flex-col flex-grow overflow-y-auto border-r py-6 px-4 overflow-auto border-[var(--frontmatter-border)]`}
-            >
-              <h2 className={`text-lg text-[var(--frontmatter-text)]`}>
-                {l10n.t(LocalizationKey.dashboardDataViewDataViewSelect)}
-              </h2>
-
-              <nav className={`flex-1 py-4 -mx-4`}>
-                <div
-                  className={`divide-y border-t border-b divide-[var(--frontmatter-border)] border-[var(--frontmatter-border)]`}
+      {dataFiles && dataFiles.length > 0 ? (
+        <div className={`relative w-full flex-grow mx-auto overflow-hidden`}>
+          {
+            !selectedData && (
+              <div className={`flex w-64 flex-col absolute inset-y-0`}>
+                <aside
+                  className={`flex flex-col flex-grow overflow-y-auto border-r py-6 px-4 overflow-auto border-[var(--frontmatter-border)]`}
                 >
-                  {dataFiles &&
-                    dataFiles.length > 0 &&
-                    dataFiles.map((dataFile, idx) => (
-                      <NavigationItem
-                        key={`${dataFile.id}-${idx}`}
-                        isSelected={selectedData?.id === dataFile.id}
-                        onClick={() => setSchema(dataFile)}
-                      >
-                        <ChevronRightIcon className="-ml-1 w-5 mr-2" />
-                        <span>{dataFile.title}</span>
-                      </NavigationItem>
-                    ))}
-                </div>
-              </nav>
-            </aside>
-          </div>
+                  <h2 className={`text-lg text-[var(--frontmatter-text)]`}>
+                    {l10n.t(LocalizationKey.dashboardDataViewDataViewSelect)}
+                  </h2>
 
-          <section className={`pl-64 flex min-w-0 h-full`}>
+                  <nav className={`flex-1 py-4 -mx-4`}>
+                    <div
+                      className={`divide-y border-t border-b divide-[var(--frontmatter-border)] border-[var(--frontmatter-border)]`}
+                    >
+                      {dataFiles &&
+                        dataFiles.length > 0 &&
+                        dataFiles.map((dataFile, idx) => (
+                          <NavigationItem
+                            key={`${dataFile.id}-${idx}`}
+                            onClick={() => setSchema(dataFile)}
+                          >
+                            <ChevronRightIcon className="-ml-1 w-5 mr-2" />
+                            <span>{dataFile.title}</span>
+                          </NavigationItem>
+                        ))}
+                    </div>
+                  </nav>
+                </aside>
+              </div>
+            )
+          }
+
+          <Transition
+            as={`div`}
+            show={!!selectedData}
+            enter="transition ease transform"
+            enterFrom="opacity-0"
+            enterTo="opacity-100">
+            <div className={`w-full px-4 py-2 border-b border-[var(--frontmatter-border)]`}>
+              {selectedData && (
+                <DropdownMenu>
+                  <MenuButton
+                    label={l10n.t(LocalizationKey.dashboardDataViewDataViewSelect)}
+                    title={selectedData.title}
+                  />
+
+                  <DropdownMenuContent>
+                    {dataFiles.map((dataFile) => (
+                      <MenuItem
+                        key={dataFile.id}
+                        title={dataFile.title}
+                        value={dataFile}
+                        isCurrent={selectedData.id === dataFile.id}
+                        onClick={() => setSchema(dataFile)}
+                      />
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
+          </Transition>
+
+          <section className={`flex min-w-0 h-full ease transition-[padding] ${selectedData ? "" : "pl-64"}`}>
             {selectedData ? (
               <>
                 {!selectedData.singleEntry && (
