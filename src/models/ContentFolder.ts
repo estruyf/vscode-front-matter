@@ -7,6 +7,7 @@ export interface ContentFolder {
   disableCreation?: boolean;
   excludeSubdir?: boolean;
   previewPath?: string;
+  trailingSlash?: boolean;
   filePrefix?: string;
   contentTypes?: string[];
   originalPath?: string;

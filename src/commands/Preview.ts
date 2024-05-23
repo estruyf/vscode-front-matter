@@ -9,7 +9,8 @@ import {
   PreviewCommands,
   SETTING_EXPERIMENTAL,
   SETTING_DATE_FORMAT,
-  GeneralCommands
+  GeneralCommands,
+  SETTING_PREVIEW_TRAILING_SLASH
 } from './../constants';
 import { ArticleHelper } from './../helpers/ArticleHelper';
 import { join, parse } from 'path';
@@ -312,11 +313,14 @@ export class Preview {
         pathname = processPathPlaceholders(pathname, relativePath, filePath, selectedFolder);
 
         const file = parse(filePath);
-        if (
-          file.name.toLowerCase() === 'index' &&
-          (pathname.endsWith(slug) || !pathname || pathname === '/')
-        ) {
-          slug = '';
+        if (file.name.toLowerCase() === 'index') {
+          const cleanPathName = pathname.endsWith('/')
+            ? pathname.substring(0, pathname.length - 1)
+            : pathname;
+
+          if (cleanPathName.endsWith(slug) || !pathname || pathname === '/') {
+            slug = '';
+          }
         }
       }
 
@@ -340,6 +344,24 @@ export class Preview {
     // Verify if the slug doesn't end with _index or index
     if (slug.endsWith('_index') || slug.endsWith('index')) {
       slug = slug.substring(0, slug.endsWith('_index') ? slug.length - 6 : slug.length - 5);
+    }
+
+    // Add the trailing slash
+    let trailingSlash = false;
+    if (settings.trailingSlash !== undefined) {
+      trailingSlash = settings.trailingSlash;
+    }
+
+    if (selectedFolder && selectedFolder.trailingSlash !== undefined) {
+      trailingSlash = selectedFolder.trailingSlash;
+    }
+
+    if (contentType && contentType.trailingSlash !== undefined) {
+      trailingSlash = contentType.trailingSlash;
+    }
+
+    if (trailingSlash && !slug.endsWith('/')) {
+      slug = `${slug}/`;
     }
 
     return slug;
@@ -378,10 +400,12 @@ export class Preview {
   public static getSettings(): PreviewSettings {
     const host = Settings.get<string>(SETTING_PREVIEW_HOST);
     const pathname = Settings.get<string>(SETTING_PREVIEW_PATHNAME);
+    const trailingSlash = Settings.get<boolean>(SETTING_PREVIEW_TRAILING_SLASH);
 
     return {
       host,
-      pathname
+      pathname,
+      trailingSlash
     };
   }
 

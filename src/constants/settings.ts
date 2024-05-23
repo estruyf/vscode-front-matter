@@ -52,6 +52,7 @@ export const SETTING_PANEL_ACTIONS_DISABLED = 'panel.actions.disabled';
 
 export const SETTING_PREVIEW_HOST = 'preview.host';
 export const SETTING_PREVIEW_PATHNAME = 'preview.pathName';
+export const SETTING_PREVIEW_TRAILING_SLASH = 'preview.trailingSlash';
 
 export const SETTING_CUSTOM_SCRIPTS = 'custom.scripts';
 

@@ -59,6 +59,7 @@ export interface ContentType {
 
   fileType?: 'md' | 'mdx' | string;
   previewPath?: string | null;
+  trailingSlash?: boolean; // Add this property for trailing slash option
   slugTemplate?: string;
   pageBundle?: boolean;
   defaultFileName?: string;
@@ -229,6 +230,7 @@ export interface EnvironmentScript {
 export interface PreviewSettings {
   host: string | undefined;
   pathname: string | undefined;
+  trailingSlash: boolean | undefined;
 }
 
 export interface CustomTaxonomy {

@@ -321,7 +321,7 @@ export class Article {
     }
 
     const folderName = basename(dirname(file));
-    return `${prefix}${folderName}${suffix}`;
+    return folderName;
   }
 
   /**
