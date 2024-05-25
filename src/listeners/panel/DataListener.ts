@@ -345,6 +345,7 @@ export class DataListener extends BaseListener {
       return;
     }
 
+    let beforeValue: any;
     const titleField = (Settings.get(SETTING_SEO_TITLE_FIELD) as string) || DefaultFields.Title;
 
     const editor = window.activeTextEditor;
@@ -435,6 +436,7 @@ export class DataListener extends BaseListener {
           [field]: value
         });
       } else {
+        beforeValue = parentObj[field];
         parentObj[field] = value;
       }
     }
@@ -479,6 +481,13 @@ export class DataListener extends BaseListener {
     } else if (filePath) {
       await ArticleHelper.updateByPath(filePath, article);
     }
+
+    Logger.verbose(
+      `DataListener:updateMetadata: "${field}" - Before value: ${JSON.stringify(
+        beforeValue
+      )} - After value: ${JSON.stringify(value)}`,
+      'VSCODE'
+    );
 
     this.pushMetadata(article.data);
   }
@@ -686,6 +695,7 @@ export class DataListener extends BaseListener {
     let { field, value, data, contentType } = articleData;
 
     value = value || '';
+    const valueBefore = value;
     if (field) {
       const crntFile = window.activeTextEditor?.document;
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
@@ -699,6 +709,13 @@ export class DataListener extends BaseListener {
         crntFile?.uri.fsPath || ''
       );
     }
+
+    Logger.verbose(
+      `DataListener:updatePlaceholder: "${field}" - Before value: ${JSON.stringify(
+        valueBefore
+      )} - After value: ${JSON.stringify(value)}`,
+      'VSCODE'
+    );
 
     this.sendRequest(Command.updatePlaceholder, requestId, { field, value });
   }
