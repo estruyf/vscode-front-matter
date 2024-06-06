@@ -33,7 +33,10 @@ export class Diagnostics {
 
     const fileTypes = Diagnostics.getFileTypes();
 
-    const logging = `# Front Matter CMS - Diagnostics
+    const logging = `# ${Extension.getInstance().displayName} - Diagnostics
+
+Beta: \`${Extension.getInstance().isBetaVersion()}\`
+Version: \`${Extension.getInstance().version}\`
     
 ## Project name
 

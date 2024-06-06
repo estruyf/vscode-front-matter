@@ -166,7 +166,7 @@ export async function activate(context: vscode.ExtensionContext) {
     -100
   );
   fmStatusBarItem.command = COMMAND_NAME.dashboard;
-  fmStatusBarItem.text = `$(fm-logo)`;
+  fmStatusBarItem.text = `$(fm-logo) ${extension.getVersion().installedVersion}`;
   fmStatusBarItem.tooltip = EXTENSION_NAME;
   fmStatusBarItem.show();
 
