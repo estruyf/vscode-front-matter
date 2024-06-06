@@ -44,7 +44,8 @@ import {
   SETTING_PROJECTS,
   SETTING_TAXONOMY_TAGS,
   SETTING_TAXONOMY_CATEGORIES,
-  SETTING_CONTENT_FILTERS
+  SETTING_CONTENT_FILTERS,
+  SETTING_CONTENT_I18N
 } from '../constants';
 import { Folders } from '../commands/Folders';
 import { join, basename, dirname, parse } from 'path';
@@ -991,6 +992,10 @@ ${JSON.stringify(value, null, 2)}`,
     // Projects
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_PROJECTS)) {
       Settings.updateGlobalConfigArraySetting(SETTING_PROJECTS, 'name', configJson);
+    }
+    // i18n
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_I18N)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_I18N, 'locale', configJson);
     }
     // Snippets
     else if (
