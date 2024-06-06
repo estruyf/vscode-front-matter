@@ -241,6 +241,9 @@ export async function activate(context: vscode.ExtensionContext) {
   // Cache commands
   Cache.registerCommands();
 
+  // GitHub Copilot integration
+  Chatbot.register();
+
   // Subscribe all commands
   subscriptions.push(insertTags, PanelView, insertCategories, collapseAll, fmStatusBarItem);
 
