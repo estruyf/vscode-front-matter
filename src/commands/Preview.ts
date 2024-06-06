@@ -13,7 +13,6 @@ import { join, parse } from 'path';
 import { commands, env, Uri, ViewColumn, window, WebviewPanel, extensions } from 'vscode';
 import {
   ArticleHelper,
-  DateHelper,
   Extension,
   parseWinPath,
   processI18nPlaceholders,
@@ -21,10 +20,10 @@ import {
   processFmPlaceholders,
   processPathPlaceholders,
   Settings,
-  Telemetry
+  Telemetry,
+  processDateTimePlaceholders
 } from '../helpers';
 import { ContentFolder, ContentType, PreviewSettings } from '../models';
-import { format } from 'date-fns';
 import { Article } from '.';
 import { WebviewHelper } from '@estruyf/vscode';
 import { Folders } from './Folders';
@@ -342,10 +341,8 @@ export class Preview {
 
       try {
         const articleDate = await ArticleHelper.getDate(article);
-        slug = join(
-          format(articleDate || new Date(), DateHelper.formatUpdate(pathname) as string),
-          slug
-        );
+        pathname = processDateTimePlaceholders(pathname, dateFormat, articleDate);
+        slug = join(pathname, slug);
       } catch (error) {
         slug = join(pathname, slug);
       }
