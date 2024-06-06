@@ -33,6 +33,7 @@ import { getLocalizationFile } from '../utils/getLocalizationFile';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 import { joinUrl } from '../utils';
+import { i18n } from './i18n';
 
 export class Preview {
   public static filePath: string | undefined = undefined;
@@ -296,6 +297,11 @@ export class Preview {
 
     if (!slug) {
       slug = Article.getSlug();
+    }
+
+    const locale = await i18n.getLocale(filePath);
+    if (locale && locale.path === slug) {
+      slug = '';
     }
 
     if (pathname) {
