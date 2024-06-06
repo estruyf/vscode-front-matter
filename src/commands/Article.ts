@@ -127,6 +127,11 @@ export class Article {
 
     const update = ArticleHelper.generateUpdate(document, updatedArticle);
 
+    if (update) {
+      const editor = window.activeTextEditor;
+      await editor?.edit((builder) => builder.replace(update.range, update.newText));
+    }
+
     return [update];
   }
 
