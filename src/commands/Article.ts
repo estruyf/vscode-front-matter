@@ -127,11 +127,6 @@ export class Article {
 
     const update = ArticleHelper.generateUpdate(document, updatedArticle);
 
-    if (update) {
-      const editor = window.activeTextEditor;
-      await editor?.edit((builder) => builder.replace(update.range, update.newText));
-    }
-
     return [update];
   }
 
@@ -357,7 +352,7 @@ export class Article {
       const autoUpdate = Settings.get(SETTING_AUTO_UPDATE_DATE);
 
       // Is article located in one of the content folders
-      const folders = await Folders.get();
+      const folders = Folders.getCached();
       const documentPath = parseWinPath(document.fileName);
       const folder = folders.find((f) => documentPath.startsWith(f.path));
       if (!folder) {
