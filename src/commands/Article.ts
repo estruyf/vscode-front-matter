@@ -380,6 +380,10 @@ export class Article {
   public static formatDate(dateValue: Date, fieldDateFormat?: string): string {
     const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
 
+    Logger.verbose(`Article:formatDate:Start`);
+    Logger.verbose(`Article:formatDate:DateValue - ${dateValue}`);
+    Logger.verbose(`Article:formatDate:FieldDateFormat - ${fieldDateFormat}`);
+    Logger.verbose(`Article:formatDate:DateFormat - ${dateFormat}`);
     if (fieldDateFormat) {
       return format(dateValue, DateHelper.formatUpdate(fieldDateFormat) as string);
     } else if (dateFormat && typeof dateFormat === 'string') {
