@@ -71,7 +71,7 @@ export class PagesListener extends BaseListener {
         // Optimize the list of recently changed files
         DataListener.getFoldersAndFiles(doc.uri);
         // Trigger the metadata update
-        this.watcherExec(doc.uri);
+        this.watcherExec(doc.uri, 'save');
       }
     });
   }
@@ -103,9 +103,9 @@ export class PagesListener extends BaseListener {
         false,
         false
       );
-      watcher.onDidCreate(async (uri: Uri) => this.watcherExec(uri));
-      watcher.onDidChange(async (uri: Uri) => this.watcherExec(uri));
-      watcher.onDidDelete(async (uri: Uri) => this.watcherExec(uri));
+      watcher.onDidCreate(async (uri: Uri) => this.watcherExec(uri, 'create'));
+      watcher.onDidChange(async (uri: Uri) => this.watcherExec(uri, 'change'));
+      watcher.onDidDelete(async (uri: Uri) => this.watcherExec(uri, 'delete'));
       this.watchers[folderUri.fsPath] = watcher;
     }
   }
@@ -162,10 +162,10 @@ export class PagesListener extends BaseListener {
    * Watcher for processing page updates
    * @param file
    */
-  private static async watcherExec(file: Uri) {
+  private static async watcherExec(file: Uri, type?: 'create' | 'change' | 'delete' | 'save') {
     const progressFile = async (file: Uri) => {
       const ext = Extension.getInstance();
-      Logger.info(`File watcher execution for: ${file.fsPath}`);
+      Logger.info(`File watcher execution for (${type}): ${file.fsPath}`);
 
       const pageIdx = this.lastPages.findIndex((p) => p.fmFilePath === file.fsPath);
       if (pageIdx !== -1) {

@@ -27,6 +27,7 @@ import { CustomPlaceholder, Field } from '../models';
 import { format } from 'date-fns';
 import {
   ArticleHelper,
+  Logger,
   Settings,
   SlugHelper,
   processArticlePlaceholdersFromData,
@@ -133,6 +134,7 @@ export class Article {
   private static async setLastModifiedDateInner(
     document: TextDocument
   ): Promise<ParsedFrontMatter | undefined> {
+    Logger.verbose(`Article:setLastModifiedDateInner:Start`);
     const article = ArticleHelper.getFrontMatterFromDocument(document);
 
     // Only set the date, if there is already front matter set
@@ -142,9 +144,16 @@ export class Article {
 
     const cloneArticle = Object.assign({}, article);
     const dateField = await ArticleHelper.getModifiedDateField(article);
+    Logger.verbose(`Article:setLastModifiedDateInner:DateField - ${JSON.stringify(dateField)}`);
+
     try {
       const fieldName = dateField?.name || DefaultFields.LastModified;
-      cloneArticle.data[fieldName] = Article.formatDate(new Date(), dateField?.dateFormat);
+      const fieldValue = Article.formatDate(new Date(), dateField?.dateFormat);
+      cloneArticle.data[fieldName] = fieldValue;
+      Logger.verbose(
+        `Article:setLastModifiedDateInner:DateField name - ${fieldName} - value - ${fieldValue}`
+      );
+      Logger.verbose(`Article:setLastModifiedDateInner:End`);
       return cloneArticle;
     } catch (e: unknown) {
       Notifications.error(
