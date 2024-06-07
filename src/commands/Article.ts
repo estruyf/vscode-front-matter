@@ -381,14 +381,15 @@ export class Article {
     const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
 
     Logger.verbose(`Article:formatDate:Start`);
-    Logger.verbose(`Article:formatDate:DateValue - ${dateValue}`);
-    Logger.verbose(`Article:formatDate:FieldDateFormat - ${fieldDateFormat}`);
-    Logger.verbose(`Article:formatDate:DateFormat - ${dateFormat}`);
+
     if (fieldDateFormat) {
+      Logger.verbose(`Article:formatDate:FieldDateFormat - ${fieldDateFormat}`);
       return format(dateValue, DateHelper.formatUpdate(fieldDateFormat) as string);
     } else if (dateFormat && typeof dateFormat === 'string') {
+      Logger.verbose(`Article:formatDate:DateFormat - ${dateFormat}`);
       return format(dateValue, DateHelper.formatUpdate(dateFormat) as string);
     } else {
+      Logger.verbose(`Article:formatDate:toISOString - ${dateValue}`);
       return typeof dateValue.toISOString === 'function'
         ? dateValue.toISOString()
         : dateValue?.toString();
