@@ -250,9 +250,7 @@ export class Preview {
     // Check if there is a pathname defined on content folder level
     const folders = await Folders.get();
     if (folders.length > 0) {
-      const foldersWithPath = folders.filter((folder) => folder.previewPath);
-
-      for (const folder of foldersWithPath) {
+      for (const folder of folders) {
         const folderPath = parseWinPath(folder.path);
         if (filePath.startsWith(folderPath)) {
           if (!selectedFolder || selectedFolder.path.length < folderPath.length) {

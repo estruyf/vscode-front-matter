@@ -1176,7 +1176,7 @@
           "scope": "Site preview"
         },
         "frontMatter.preview.trailingSlash": {
-          "type": "string",
+          "type": "boolean",
           "default": "",
           "markdownDescription": "%setting.frontMatter.preview.trailingSlash.markdownDescription%",
           "scope": "Site preview"
