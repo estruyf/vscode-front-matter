@@ -1,6 +1,6 @@
 # Change Log
 
-## [10.2.0] - 2024-xx-xx
+## [10.2.0] - 2024-xx-xx - [Release notes](https://beta.frontmatter.codes/updates/v10.2.0)
 
 ### ✨ New features
 
