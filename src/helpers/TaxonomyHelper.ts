@@ -74,7 +74,9 @@ export class TaxonomyHelper {
    * @param options
    */
   public static async get(type: TaxonomyType): Promise<string[] | undefined> {
+    Logger.verbose(`TaxonomyHelper:get:start:${type}`);
     if (!TaxonomyHelper.db) {
+      Logger.info(`TaxonomyHelper:get:db-not-initialized`);
       return;
     }
 
@@ -84,6 +86,7 @@ export class TaxonomyHelper {
     if (await TaxonomyHelper.db.exists(tagType)) {
       taxonomy = await TaxonomyHelper.db.getObject<string[]>(tagType);
     }
+    Logger.verbose(`TaxonomyHelper:get:end:${type}`);
     return taxonomy;
   }
 
@@ -344,7 +347,7 @@ export class TaxonomyHelper {
           if (mdFile) {
             try {
               const article = FrontMatterParser.fromFile(mdFile);
-              const contentType = ArticleHelper.getContentType(article);
+              const contentType = await ArticleHelper.getContentType(article);
 
               let fieldNames: string[] = this.getFieldsHierarchy(taxonomyType, contentType);
 
@@ -479,7 +482,7 @@ export class TaxonomyHelper {
           if (mdFile) {
             try {
               const article = FrontMatterParser.fromFile(mdFile);
-              const contentType = ArticleHelper.getContentType(article);
+              const contentType = await ArticleHelper.getContentType(article);
 
               let oldFieldNames: string[] = this.getFieldsHierarchy(oldType, contentType);
               let newFieldNames: string[] = this.getFieldsHierarchy(newType, contentType, true);

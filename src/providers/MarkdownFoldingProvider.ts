@@ -80,12 +80,20 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
       const range = MarkdownFoldingProvider.getFrontMatterRange();
 
       if (range) {
-        if (MarkdownFoldingProvider.decType !== null) {
-          MarkdownFoldingProvider.decType.dispose();
-        }
+        const start = MarkdownFoldingProvider.start;
+        const end = MarkdownFoldingProvider.end;
 
         if (fmHighlight) {
-          MarkdownFoldingProvider.decType = new FrontMatterDecorationProvider().get();
+          if (
+            MarkdownFoldingProvider.decType !== null &&
+            (range.start.line !== start || range.end.line !== end)
+          ) {
+            MarkdownFoldingProvider.decType.dispose();
+          }
+
+          MarkdownFoldingProvider.decType = !MarkdownFoldingProvider.decType
+            ? new FrontMatterDecorationProvider().get()
+            : MarkdownFoldingProvider.decType;
           window.activeTextEditor?.setDecorations(MarkdownFoldingProvider.decType, [range]);
         }
       }

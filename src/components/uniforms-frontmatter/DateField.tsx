@@ -9,7 +9,7 @@ const dateFormat = (value?: Date) => value?.toISOString().slice(0, -8);
 export type DateFieldProps = HTMLFieldProps<
   Date,
   HTMLDivElement,
-  { inputRef?: Ref<HTMLInputElement>; max?: Date; min?: Date }
+  { inputRef?: Ref<HTMLInputElement>; max?: Date; min?: Date, description?: string }
 >;
 
 function Date({
@@ -50,6 +50,12 @@ function Date({
         type="datetime-local"
         value={dateFormat(value) ?? ''}
       />
+
+      {
+        props.description && (
+          <span className='block text-xs text-[var(--vscode--settings-headerForeground)] opacity-75 mt-2 mx-2'>{props.description}</span>
+        )
+      }
     </div>
   );
 }

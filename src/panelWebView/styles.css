@@ -1142,7 +1142,7 @@ vscode-divider {
   align-items: center;
   justify-content: center;
   height: 100%;
-  font-size: 2em;
+  font-size: 1.25rem;
   opacity: 0.8;
   text-align: center;
   padding: 1rem 1.25rem;

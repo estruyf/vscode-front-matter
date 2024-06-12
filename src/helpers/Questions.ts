@@ -131,7 +131,8 @@ export class Questions {
   public static async SelectContentFolder(
     showWarning: boolean = true
   ): Promise<FolderQuickPickItem | undefined> {
-    let folders = Folders.get().filter((f) => !f.disableCreation);
+    let folders = await Folders.get();
+    folders = folders.filter((f) => !f.disableCreation);
 
     let selectedFolder: FolderQuickPickItem | undefined;
     if (folders.length > 1) {
@@ -149,16 +150,13 @@ export class Questions {
         } as FolderQuickPickItem;
       });
 
-      selectedFolder = await window.showQuickPick(
-        folderOptions,
-        {
-          title: l10n.t(LocalizationKey.helpersQuestionsSelectContentFolderQuickPickTitle),
-          placeHolder: l10n.t(
-            LocalizationKey.helpersQuestionsSelectContentFolderQuickPickPlaceholder
-          ),
-          ignoreFocusOut: true
-        }
-      );
+      selectedFolder = await window.showQuickPick(folderOptions, {
+        title: l10n.t(LocalizationKey.helpersQuestionsSelectContentFolderQuickPickTitle),
+        placeHolder: l10n.t(
+          LocalizationKey.helpersQuestionsSelectContentFolderQuickPickPlaceholder
+        ),
+        ignoreFocusOut: true
+      });
     } else if (folders.length === 1) {
       selectedFolder = {
         label: folders[0].title,
@@ -213,7 +211,9 @@ export class Questions {
     }));
 
     if (options.length === 0) {
-      Notifications.error(LocalizationKey.helpersQuestionsSelectContentTypeQuickPickErrorNoContentTypes);
+      Notifications.error(
+        LocalizationKey.helpersQuestionsSelectContentTypeQuickPickErrorNoContentTypes
+      );
       return;
     }
 

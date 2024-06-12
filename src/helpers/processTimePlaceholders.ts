@@ -4,10 +4,10 @@ import { DateHelper } from './DateHelper';
 /**
  * Replace the time placeholders
  * @param value
- * @param title
+ * @param dateFormat
  * @returns
  */
-export const processTimePlaceholders = (value: string, dateFormat?: string) => {
+export const processTimePlaceholders = (value: string, dateFormat?: string, articleDate?: Date) => {
   if (value && typeof value === 'string') {
     if (value.includes('{{now}}')) {
       const regex = new RegExp('{{now}}', 'g');
@@ -15,46 +15,46 @@ export const processTimePlaceholders = (value: string, dateFormat?: string) => {
       if (dateFormat && typeof dateFormat === 'string') {
         value = value.replace(
           regex,
-          format(new Date(), DateHelper.formatUpdate(dateFormat) as string)
+          format(articleDate || new Date(), DateHelper.formatUpdate(dateFormat) as string)
         );
       } else {
-        value = value.replace(regex, new Date().toISOString());
+        value = value.replace(regex, (articleDate || new Date()).toISOString());
       }
     }
 
     if (value.includes('{{year}}')) {
       const regex = new RegExp('{{year}}', 'g');
-      value = value.replace(regex, format(new Date(), 'yyyy'));
+      value = value.replace(regex, format(articleDate || new Date(), 'yyyy'));
     }
 
     if (value.includes('{{month}}')) {
       const regex = new RegExp('{{month}}', 'g');
-      value = value.replace(regex, format(new Date(), 'MM'));
+      value = value.replace(regex, format(articleDate || new Date(), 'MM'));
     }
 
     if (value.includes('{{day}}')) {
       const regex = new RegExp('{{day}}', 'g');
-      value = value.replace(regex, format(new Date(), 'dd'));
+      value = value.replace(regex, format(articleDate || new Date(), 'dd'));
     }
 
     if (value.includes('{{hour12}}')) {
       const regex = new RegExp('{{hour12}}', 'g');
-      value = value.replace(regex, format(new Date(), 'hh'));
+      value = value.replace(regex, format(articleDate || new Date(), 'hh'));
     }
 
     if (value.includes('{{hour24}}')) {
       const regex = new RegExp('{{hour24}}', 'g');
-      value = value.replace(regex, format(new Date(), 'HH'));
+      value = value.replace(regex, format(articleDate || new Date(), 'HH'));
     }
 
     if (value.includes('{{ampm}}')) {
       const regex = new RegExp('{{ampm}}', 'g');
-      value = value.replace(regex, format(new Date(), 'aaa'));
+      value = value.replace(regex, format(articleDate || new Date(), 'aaa'));
     }
 
     if (value.includes('{{minute}}')) {
       const regex = new RegExp('{{minute}}', 'g');
-      value = value.replace(regex, format(new Date(), 'mm'));
+      value = value.replace(regex, format(articleDate || new Date(), 'mm'));
     }
   }
 

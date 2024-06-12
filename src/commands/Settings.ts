@@ -1,14 +1,37 @@
 import { TaxonomyHelper } from './../helpers/TaxonomyHelper';
 import * as vscode from 'vscode';
 import { TaxonomyType } from '../models';
-import { EXTENSION_NAME } from '../constants';
-import { ArticleHelper, FilesHelper } from '../helpers';
+import { COMMAND_NAME, EXTENSION_NAME } from '../constants';
+import { ArticleHelper, Extension, FilesHelper } from '../helpers';
 import { FrontMatterParser } from '../parsers';
 import { Notifications } from '../helpers/Notifications';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 
 export class Settings {
+  public static async registerCommands() {
+    const ext = Extension.getInstance();
+    const subscriptions = ext.subscriptions;
+
+    subscriptions.push(
+      vscode.commands.registerCommand(COMMAND_NAME.createTag, () => {
+        Settings.create(TaxonomyType.Tag);
+      })
+    );
+
+    subscriptions.push(
+      vscode.commands.registerCommand(COMMAND_NAME.createCategory, () => {
+        Settings.create(TaxonomyType.Category);
+      })
+    );
+
+    subscriptions.push(
+      vscode.commands.registerCommand(COMMAND_NAME.exportTaxonomy, Settings.export)
+    );
+
+    subscriptions.push(vscode.commands.registerCommand(COMMAND_NAME.remap, Settings.remap));
+  }
+
   /**
    * Create a new taxonomy
    *

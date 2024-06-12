@@ -2,12 +2,13 @@ import { Questions } from './../helpers/Questions';
 import * as vscode from 'vscode';
 import * as path from 'path';
 import {
+  COMMAND_NAME,
   SETTING_CONTENT_DEFAULT_FILETYPE,
   SETTING_TEMPLATES_FOLDER,
   TelemetryEvent
 } from '../constants';
-import { ArticleHelper, Settings } from '../helpers';
-import { Article } from '.';
+import { ArticleHelper, Extension, Settings } from '../helpers';
+import { Article, Folders } from '.';
 import { Notifications } from '../helpers/Notifications';
 import { Project } from './Project';
 import { ContentType } from '../helpers/ContentType';
@@ -20,6 +21,24 @@ import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 
 export class Template {
+  public static async registerCommands() {
+    const ext = Extension.getInstance();
+    const subscriptions = ext.subscriptions;
+
+    subscriptions.push(
+      vscode.commands.registerCommand(COMMAND_NAME.createTemplate, Template.generate)
+    );
+
+    subscriptions.push(
+      vscode.commands.registerCommand(COMMAND_NAME.createFromTemplate, (folder: vscode.Uri) => {
+        const folderPath = Folders.getFolderPath(folder);
+        if (folderPath) {
+          Template.create(folderPath);
+        }
+      })
+    );
+  }
+
   /**
    * Generate a template
    */
@@ -176,7 +195,7 @@ export class Template {
         newFilePath
       );
 
-      const article = Article.updateDate(frontMatter);
+      const article = await Article.updateDate(frontMatter);
 
       if (!article) {
         return;

@@ -7,11 +7,12 @@ export interface ContentFolder {
   disableCreation?: boolean;
   excludeSubdir?: boolean;
   previewPath?: string;
+  trailingSlash?: boolean;
   filePrefix?: string;
   contentTypes?: string[];
   originalPath?: string;
-  $schema?: string;
-  extended?: boolean;
+  $schema?: string; // Extended config
+  extended?: boolean; // Extended config
 
   locale?: string;
   localeTitle?: string;

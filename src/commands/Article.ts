@@ -27,6 +27,7 @@ import { CustomPlaceholder, Field } from '../models';
 import { format } from 'date-fns';
 import {
   ArticleHelper,
+  Logger,
   Settings,
   SlugHelper,
   processArticlePlaceholdersFromData,
@@ -80,7 +81,7 @@ export class Article {
       return;
     }
 
-    article = this.updateDate(article);
+    article = await this.updateDate(article);
 
     try {
       ArticleHelper.update(editor, article);
@@ -95,8 +96,8 @@ export class Article {
    * Update the date in the front matter
    * @param article
    */
-  public static updateDate(article: ParsedFrontMatter) {
-    article.data = ArticleHelper.updateDates(article);
+  public static async updateDate(article: ParsedFrontMatter) {
+    article.data = await ArticleHelper.updateDates(article);
     return article;
   }
 
@@ -109,7 +110,7 @@ export class Article {
       return;
     }
 
-    const updatedArticle = this.setLastModifiedDateInner(editor.document);
+    const updatedArticle = await this.setLastModifiedDateInner(editor.document);
 
     if (typeof updatedArticle === 'undefined') {
       return;
@@ -119,7 +120,7 @@ export class Article {
   }
 
   public static async setLastModifiedDateOnSave(document: TextDocument): Promise<TextEdit[]> {
-    const updatedArticle = this.setLastModifiedDateInner(document);
+    const updatedArticle = await this.setLastModifiedDateInner(document);
 
     if (typeof updatedArticle === 'undefined') {
       return [];
@@ -130,7 +131,10 @@ export class Article {
     return [update];
   }
 
-  private static setLastModifiedDateInner(document: TextDocument): ParsedFrontMatter | undefined {
+  private static async setLastModifiedDateInner(
+    document: TextDocument
+  ): Promise<ParsedFrontMatter | undefined> {
+    Logger.verbose(`Article:setLastModifiedDateInner:Start`);
     const article = ArticleHelper.getFrontMatterFromDocument(document);
 
     // Only set the date, if there is already front matter set
@@ -139,10 +143,17 @@ export class Article {
     }
 
     const cloneArticle = Object.assign({}, article);
-    const dateField = ArticleHelper.getModifiedDateField(article);
+    const dateField = await ArticleHelper.getModifiedDateField(article);
+    Logger.verbose(`Article:setLastModifiedDateInner:DateField - ${JSON.stringify(dateField)}`);
+
     try {
       const fieldName = dateField?.name || DefaultFields.LastModified;
-      cloneArticle.data[fieldName] = Article.formatDate(new Date(), dateField?.dateFormat);
+      const fieldValue = Article.formatDate(new Date(), dateField?.dateFormat);
+      cloneArticle.data[fieldName] = fieldValue;
+      Logger.verbose(
+        `Article:setLastModifiedDateInner:DateField name - ${fieldName} - value - ${fieldValue}`
+      );
+      Logger.verbose(`Article:setLastModifiedDateInner:End`);
       return cloneArticle;
     } catch (e: unknown) {
       Notifications.error(
@@ -195,8 +206,12 @@ export class Article {
     }
 
     let filePrefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
-    const contentType = ArticleHelper.getContentType(article);
-    filePrefix = ArticleHelper.getFilePrefix(filePrefix, editor.document.uri.fsPath, contentType);
+    const contentType = await ArticleHelper.getContentType(article);
+    filePrefix = await ArticleHelper.getFilePrefix(
+      filePrefix,
+      editor.document.uri.fsPath,
+      contentType
+    );
 
     const titleField = 'title';
     const articleTitle: string = article.data[titleField];
@@ -285,6 +300,13 @@ export class Article {
       return;
     }
 
+    const file = parseWinPath(editor.document.fileName);
+    if (!isValidFile(file)) {
+      return;
+    }
+
+    const parsedFile = parse(file);
+
     const slugTemplate = Settings.get<string>(SETTING_SLUG_TEMPLATE);
     if (slugTemplate) {
       if (slugTemplate === '{{title}}') {
@@ -300,16 +322,11 @@ export class Article {
       }
     }
 
-    const file = parseWinPath(editor.document.fileName);
-
-    if (!isValidFile(file)) {
-      return;
-    }
-
-    const parsedFile = parse(file);
+    const suffix = Settings.get(SETTING_SLUG_SUFFIX) as string;
+    const prefix = Settings.get(SETTING_SLUG_PREFIX) as string;
 
     if (parsedFile.name.toLowerCase() !== 'index') {
-      return parsedFile.name;
+      return `${prefix}${parsedFile.name}${suffix}`;
     }
 
     const folderName = basename(dirname(file));
@@ -344,7 +361,7 @@ export class Article {
       const autoUpdate = Settings.get(SETTING_AUTO_UPDATE_DATE);
 
       // Is article located in one of the content folders
-      const folders = Folders.get();
+      const folders = Folders.getCached();
       const documentPath = parseWinPath(document.fileName);
       const folder = folders.find((f) => documentPath.startsWith(f.path));
       if (!folder) {
@@ -363,11 +380,16 @@ export class Article {
   public static formatDate(dateValue: Date, fieldDateFormat?: string): string {
     const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
 
+    Logger.verbose(`Article:formatDate:Start`);
+
     if (fieldDateFormat) {
+      Logger.verbose(`Article:formatDate:FieldDateFormat - ${fieldDateFormat}`);
       return format(dateValue, DateHelper.formatUpdate(fieldDateFormat) as string);
     } else if (dateFormat && typeof dateFormat === 'string') {
+      Logger.verbose(`Article:formatDate:DateFormat - ${dateFormat}`);
       return format(dateValue, DateHelper.formatUpdate(dateFormat) as string);
     } else {
+      Logger.verbose(`Article:formatDate:toISOString - ${dateValue}`);
       return typeof dateValue.toISOString === 'function'
         ? dateValue.toISOString()
         : dateValue?.toString();
@@ -385,7 +407,7 @@ export class Article {
 
     const article = ArticleHelper.getFrontMatter(editor);
     const contentType =
-      article && article.data ? ArticleHelper.getContentType(article) : DEFAULT_CONTENT_TYPE;
+      article && article.data ? await ArticleHelper.getContentType(article) : DEFAULT_CONTENT_TYPE;
 
     const position = editor.selection.active;
     const selectionText = editor.document.getText(editor.selection);
@@ -463,7 +485,7 @@ export class Article {
     }
 
     const article = ArticleHelper.getFrontMatter(editor);
-    const contentType = article ? ArticleHelper.getContentType(article) : undefined;
+    const contentType = article ? await ArticleHelper.getContentType(article) : undefined;
 
     await commands.executeCommand(COMMAND_NAME.dashboard, {
       type: NavigationType.Snippets,

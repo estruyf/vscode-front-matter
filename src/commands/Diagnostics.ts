@@ -1,13 +1,26 @@
 import { Folders } from './Folders';
-import { ViewColumn, workspace } from 'vscode';
+import { ViewColumn, commands, workspace } from 'vscode';
 import ContentProvider from '../providers/ContentProvider';
 import { join } from 'path';
 import { ContentFolder } from '../models';
 import { Settings } from '../helpers/SettingsHelper';
+import {
+  COMMAND_NAME,
+  DEFAULT_FILE_TYPES,
+  SETTING_CONTENT_SUPPORTED_FILETYPES
+} from '../constants';
+import { Extension } from '../helpers';
 
 export class Diagnostics {
+  public static async registerCommands() {
+    const ext = Extension.getInstance();
+    const subscriptions = ext.subscriptions;
+
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.diagnostics, Diagnostics.show));
+  }
+
   public static async show() {
-    const folders = Folders.get();
+    const folders = await Folders.get();
     const projectName = Folders.getProjectFolderName();
     const wsFolder = Folders.getWorkspaceFolder();
 
@@ -18,27 +31,38 @@ export class Diagnostics {
 
     const all = await Diagnostics.allProjectFiles();
 
-    const logging = `# Project name
+    const fileTypes = Diagnostics.getFileTypes();
+
+    const logging = `# ${Extension.getInstance().displayName} - Diagnostics
+
+Beta: \`${Extension.getInstance().isBetaVersion()}\`
+Version: \`${Extension.getInstance().version}\`
+    
+## Project name
 
 ${projectName}
 
-# Folders
+## Workspace folder
 
-${folders.map((f) => `- ${f.title}: "${f.path}"`).join('\n')}
+\`${wsFolder ? wsFolder.fsPath : 'No workspace folder'}\`
 
-# Workspace folder
-
-${wsFolder ? wsFolder.fsPath : 'No workspace folder'}
-
-# Total files
+## Total files
 
 ${all}
 
-# Folders to search files
+## Folders
 
+| Title | Path |
+| ----- | ---- |
+${folders.map((f) => `| ${f.title} | \`${f.path}\` |`).join('\n')}
+
+### Files in folders
+
+| Project start length | Search in | ${fileTypes.join(` | `)} |
+|--- | --- | --- | --- | --- |
 ${folderData.join('\n')}
 
-# Complete frontmatter.json config
+## Complete frontmatter.json config
 
 \`\`\`json
 ${JSON.stringify(Settings.globalConfig, null, 2)}
@@ -48,8 +72,12 @@ ${JSON.stringify(Settings.globalConfig, null, 2)}
     ContentProvider.show(logging, `${projectName} diagnostics`, 'markdown', ViewColumn.One);
   }
 
+  private static getFileTypes = (): string[] => {
+    return Settings.get<string[]>(SETTING_CONTENT_SUPPORTED_FILETYPES) || DEFAULT_FILE_TYPES;
+  };
+
   private static async allProjectFiles() {
-    const allFiles = await workspace.findFiles(`**/*.*`);
+    const allFiles = await workspace.findFiles(`**/*.*`, '**/node_modules/**');
     return `Total files found: ${allFiles.length}`;
   }
 
@@ -59,22 +87,19 @@ ${JSON.stringify(Settings.globalConfig, null, 2)}
     projectStart = projectStart?.replace(/\\/g, '/');
     projectStart = projectStart?.startsWith('/') ? projectStart.substring(1) : projectStart;
 
-    const mdFiles = await workspace.findFiles(
-      join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.md')
-    );
-    const mdxFiles = await workspace.findFiles(
-      join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.mdx')
-    );
-    const markdownFiles = await workspace.findFiles(
-      join(projectStart, folder.excludeSubdir ? '/' : '**/', '*.markdown')
+    const fileTypes = Diagnostics.getFileTypes();
+    const fileTypeLengths = await Promise.all(
+      fileTypes.map(async (ft) => {
+        const path = join(projectStart || '', folder.excludeSubdir ? '/' : '**/', `*.${ft}`);
+        const files = await workspace.findFiles(path, '**/node_modules/**');
+        return (files || []).length;
+      })
     );
 
-    return `- Project start length: ${projectStart.length} | Search in: "${join(
+    return `| ${projectStart.length} | \`${join(
       projectStart,
       folder.excludeSubdir ? '/' : '**/',
       '*.*'
-    )}" | mdFiles: ${mdFiles.length} | mdxFiles: ${mdxFiles.length} | markdownFiles: ${
-      markdownFiles.length
-    }`;
+    )}\` | ${fileTypeLengths.join(` | `)} |`;
   }
 }

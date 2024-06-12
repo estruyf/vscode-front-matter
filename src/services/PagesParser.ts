@@ -77,7 +77,9 @@ export class PagesParser {
    * Parse all pages in the workspace
    */
   public static async parsePages() {
+    Logger.verbose('PagesParser:parsePages:start');
     i18n.clearFiles();
+    Folders.clearCached();
     const ext = Extension.getInstance();
 
     // Update the dashboard with the fresh data
@@ -91,6 +93,7 @@ export class PagesParser {
       PagesParser.pagesStatusBar.show();
 
       for (const folder of folderInfo) {
+        Logger.verbose(`PagesParser:parsePages: Parsing folder ${folder.title} - ${folder.files}`);
         for (const file of folder.lastModified) {
           if (isValidFile(file.fileName)) {
             try {
@@ -113,7 +116,7 @@ export class PagesParser {
                 continue;
               }
 
-              Logger.error(`PagesParser::parsePages: ${file.filePath} - ${error.message}`);
+              Logger.error(`PagesParser:parsePages: ${file.filePath} - ${error.message}`);
               Notifications.error(
                 l10n.t(
                   LocalizationKey.servicesPagesParserParsePagesFileError,
@@ -121,6 +124,8 @@ export class PagesParser {
                 )
               );
             }
+          } else {
+            Logger.info(`PagesParser:parsePages: Skipping file ${file.filePath}`);
           }
         }
       }
@@ -133,6 +138,9 @@ export class PagesParser {
     this.initialized = true;
     PagesParser.allPages = [...pages];
     PagesParser.pagesStatusBar.hide();
+
+    Folders.clearCached();
+    Logger.verbose('PagesParser:parsePages:end');
   }
 
   /**
@@ -180,9 +188,10 @@ export class PagesParser {
       const descriptionField =
         (Settings.get(SETTING_SEO_DESCRIPTION_FIELD) as string) || DefaultFields.Description;
 
-      const dateField = ArticleHelper.getPublishDateField(article) || DefaultFields.PublishingDate;
+      const dateField =
+        (await ArticleHelper.getPublishDateField(article)) || DefaultFields.PublishingDate;
 
-      const contentType = ArticleHelper.getContentType(article);
+      const contentType = await ArticleHelper.getContentType(article);
       let dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
       const ctDateField = ContentType.findFieldByName(contentType.fields, dateField);
       if (ctDateField && ctDateField.dateFormat) {
@@ -193,7 +202,7 @@ export class PagesParser {
         ? DateHelper.tryParse(article?.data[dateField], dateFormat)
         : undefined;
 
-      const modifiedField = ArticleHelper.getModifiedDateField(article);
+      const modifiedField = await ArticleHelper.getModifiedDateField(article);
       const modifiedFieldValue =
         modifiedField?.name && article?.data[modifiedField.name]
           ? DateHelper.tryParse(article?.data[modifiedField.name])?.getTime()
@@ -226,7 +235,7 @@ export class PagesParser {
         fmRelFileWsPath: FilesHelper.absToRelPath(filePath),
         fmRelFilePath: parseWinPath(filePath).replace(wsFolder?.fsPath || '', ''),
         fmFileName: fileName,
-        fmDraft: ContentType.getDraftStatus(article),
+        fmDraft: await ContentType.getDraftStatus(article),
         fmModified: modifiedFieldValue ? modifiedFieldValue : fileMtime,
         fmPublished: dateFieldValue ? dateFieldValue.getTime() : null,
         fmYear: dateFieldValue ? dateFieldValue.getFullYear() : null,

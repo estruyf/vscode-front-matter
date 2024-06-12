@@ -1,6 +1,7 @@
 import { STATIC_FOLDER_PLACEHOLDER } from './../constants/StaticFolderPlaceholder';
 import { Questions } from './../helpers/Questions';
 import {
+  COMMAND_NAME,
   SETTING_CONTENT_I18N,
   SETTING_CONTENT_PAGE_FOLDERS,
   SETTING_CONTENT_STATIC_FOLDER,
@@ -14,7 +15,7 @@ import { ContentFolder, FileInfo, FolderInfo, I18nConfig, StaticFolder } from '.
 import uniqBy = require('lodash.uniqby');
 import { Template } from './Template';
 import { Notifications } from '../helpers/Notifications';
-import { Logger, Settings, processTimePlaceholders } from '../helpers';
+import { Extension, Logger, Settings, processTimePlaceholders } from '../helpers';
 import { existsSync } from 'fs';
 import { format } from 'date-fns';
 import { Dashboard } from './Dashboard';
@@ -25,13 +26,27 @@ import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
 import { Telemetry } from '../helpers/Telemetry';
 import { glob } from 'glob';
 import { mkdirAsync } from '../utils/mkdirAsync';
-import { existsAsync } from '../utils';
+import { existsAsync, isWindows } from '../utils';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
 export class Folders {
+  private static _folders: ContentFolder[] = [];
+
+  public static async registerCommands() {
+    const ext = Extension.getInstance();
+    const subscriptions = ext.subscriptions;
+
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.createByTemplate, Folders.create));
+  }
+
+  public static clearCached() {
+    Logger.verbose(`Folders:clearCached`);
+    Folders._folders = [];
+  }
+
   /**
    * Add a media folder
    * @returns
@@ -98,7 +113,8 @@ export class Folders {
       return;
     }
 
-    const folders = Folders.get().filter((f) => !f.disableCreation);
+    let folders = await Folders.get();
+    folders = folders.filter((f) => !f.disableCreation);
     const location = folders.find((f) => f.path === selectedFolder.path);
     if (location) {
       const folderPath = Folders.getFolderPath(Uri.file(location.path));
@@ -122,7 +138,7 @@ export class Folders {
     if (folder && folder.fsPath) {
       const wslPath = folder.fsPath.replace(/\//g, '\\');
 
-      let folders = Folders.get();
+      let folders = await Folders.get();
 
       const exists = folders.find(
         (f) => f.path.includes(folder.fsPath) || f.path.includes(wslPath)
@@ -171,7 +187,7 @@ export class Folders {
    */
   public static async unregister(folder: Uri) {
     if (folder && folder.path) {
-      let folders = Folders.get();
+      let folders = await Folders.get();
       folders = folders.filter((f) => f.path !== folder.fsPath);
       await Folders.update(folders);
 
@@ -282,8 +298,9 @@ export class Folders {
    * Get the registered folders information
    */
   public static async getInfo(limit?: number): Promise<FolderInfo[] | null> {
+    Logger.verbose('Folders:getInfo:start');
     const supportedFiles = Settings.get<string[]>(SETTING_CONTENT_SUPPORTED_FILETYPES);
-    const folders = Folders.get();
+    const folders = await Folders.get();
 
     if (folders && folders.length > 0) {
       const folderInfo: FolderInfo[] = [];
@@ -295,9 +312,11 @@ export class Folders {
         }
       }
 
+      Logger.verbose('Folders:getInfo:end');
       return folderInfo;
     }
 
+    Logger.verbose('Folders:getInfo:end - no folders found');
     return null;
   }
 
@@ -305,7 +324,14 @@ export class Folders {
    * Get the folder settings
    * @returns
    */
-  public static get(): ContentFolder[] {
+  public static async get(): Promise<ContentFolder[]> {
+    Logger.verbose('Folders:get:start');
+
+    if (Folders._folders.length > 0) {
+      Logger.verbose('Folders:get:end - cached folders');
+      return Folders._folders;
+    }
+
     const wsFolder = Folders.getWorkspaceFolder();
     let folders: ContentFolder[] = Settings.get(SETTING_CONTENT_PAGE_FOLDERS) as ContentFolder[];
     const i18nSettings = Settings.get<I18nConfig[]>(SETTING_CONTENT_I18N);
@@ -322,7 +348,7 @@ export class Folders {
         folders = folders.filter((f) => f.path !== folder.path);
 
         const folderPath = Folders.absWsFolder(folder, wsFolder);
-        const subFolders = glob.sync(folderPath, { ignore: '**/node_modules/**' });
+        const subFolders = await Folders.findFolders(folderPath);
         for (const subFolder of subFolders) {
           const subFolderPath = parseWinPath(subFolder);
 
@@ -353,11 +379,11 @@ export class Folders {
             ),
             l10n.t(LocalizationKey.commandsFoldersGetNotificationErrorRemoveAction),
             l10n.t(LocalizationKey.commandsFoldersGetNotificationErrorCreateAction)
-          ).then((answer) => {
+          ).then(async (answer) => {
             if (
               answer === l10n.t(LocalizationKey.commandsFoldersGetNotificationErrorRemoveAction)
             ) {
-              const folders = Folders.get();
+              const folders = await Folders.get();
               Folders.update(folders.filter((f) => f.path !== folder.path));
             } else if (
               answer === l10n.t(LocalizationKey.commandsFoldersGetNotificationErrorCreateAction)
@@ -417,7 +443,17 @@ export class Folders {
       }
     });
 
-    return contentFolders.filter((folder) => folder !== null) as ContentFolder[];
+    Logger.verbose('Folders:get:end');
+    Folders._folders = contentFolders.filter((folder) => folder !== null) as ContentFolder[];
+    return Folders._folders;
+  }
+
+  /**
+   * Get the cached folder settings
+   * @returns {ContentFolder[]} - The cached folder settings
+   */
+  public static getCached(): ContentFolder[] {
+    return Folders._folders;
   }
 
   /**
@@ -439,9 +475,8 @@ export class Folders {
           path: Folders.relWsFolder(folder, wsFolder)
         };
 
-        if (detail['$schema'] || detail.extended) {
-          return null;
-        }
+        delete detail['$schema'];
+        delete detail.extended;
 
         if (detail.locale && detail.locale === detail.defaultLocale) {
           // Check if the folder was on the original list
@@ -462,7 +497,7 @@ export class Folders {
       })
       .filter((folder) => folder !== null);
 
-    await Settings.update(SETTING_CONTENT_PAGE_FOLDERS, folderDetails, true);
+    await Settings.safeUpdate(SETTING_CONTENT_PAGE_FOLDERS, folderDetails, true);
 
     // Reinitialize the folder listeners
     PagesListener.startWatchers();
@@ -475,11 +510,10 @@ export class Folders {
    */
   public static getAbsFilePath(filePath: string): string {
     const wsFolder = Folders.getWorkspaceFolder();
-    const isWindows = process.platform === 'win32';
 
     if (filePath.includes(WORKSPACE_PLACEHOLDER)) {
       let absPath = filePath.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ''));
-      absPath = isWindows ? absPath.split('/').join('\\') : absPath;
+      absPath = isWindows() ? absPath.split('/').join('\\') : absPath;
       return parseWinPath(absPath);
     }
 
@@ -493,7 +527,6 @@ export class Folders {
    */
   public static getAbsFolderPath(folderPath: string): string {
     const wsFolder = Folders.getWorkspaceFolder();
-    const isWindows = process.platform === 'win32';
 
     let absPath = '';
     if (folderPath.includes(WORKSPACE_PLACEHOLDER)) {
@@ -502,7 +535,7 @@ export class Folders {
       absPath = join(parseWinPath(wsFolder?.fsPath || ''), folderPath);
     }
 
-    absPath = isWindows ? absPath.split('/').join('\\') : absPath;
+    absPath = isWindows() ? absPath.split('/').join('\\') : absPath;
     return parseWinPath(absPath);
   }
 
@@ -513,14 +546,13 @@ export class Folders {
    * @returns
    */
   private static absWsFolder(folder: ContentFolder, wsFolder?: Uri) {
-    const isWindows = process.platform === 'win32';
     let absPath = folder.path.replace(WORKSPACE_PLACEHOLDER, parseWinPath(wsFolder?.fsPath || ''));
 
     if (absPath.includes('../')) {
       absPath = join(absPath);
     }
 
-    absPath = isWindows ? absPath.split('/').join('\\') : absPath;
+    absPath = isWindows() ? absPath.split('/').join('\\') : absPath;
 
     return parseWinPath(absPath);
   }
@@ -532,12 +564,11 @@ export class Folders {
    * @returns
    */
   public static relWsFolder(folder: ContentFolder, wsFolder?: Uri) {
-    const isWindows = process.platform === 'win32';
     let absPath = parseWinPath(folder.path).replace(
       parseWinPath(wsFolder?.fsPath || ''),
       WORKSPACE_PLACEHOLDER
     );
-    absPath = isWindows ? absPath.split('\\').join('/') : absPath;
+    absPath = isWindows() ? absPath.split('\\').join('/') : absPath;
     return absPath;
   }
 
@@ -545,9 +576,11 @@ export class Folders {
    * Find the content folders
    */
   public static async getContentFolders() {
+    Logger.verbose('Folders:getContentFolders:start');
     // Find folders that contain files
     const wsFolder = Folders.getWorkspaceFolder();
     if (!wsFolder) {
+      Logger.error('Folders:getContentFolders:workspaceFolderNotFound');
       return [];
     }
 
@@ -568,7 +601,7 @@ export class Folders {
         folders = [...folders, ...(await this.findFolders(pattern))];
       } catch (e) {
         Logger.error(
-          `Something went wrong while searching for folders with pattern "${pattern}": ${
+          `Folders:getContentFolders:error: Something went wrong while searching for folders with pattern "${pattern}": ${
             (e as Error).message
           }`
         );
@@ -581,6 +614,8 @@ export class Folders {
     }
 
     const uniqueFolders = [...new Set(folders)];
+
+    Logger.verbose('Folders:getContentFolders:end');
     return uniqueFolders.map((folder) => relative(wsFolder?.path || '', folder));
   }
 
@@ -589,8 +624,8 @@ export class Folders {
    * @param folderPath
    * @returns
    */
-  public static getFilePrefixByFolderPath(folderPath: string) {
-    const folders = Folders.get();
+  public static async getFilePrefixByFolderPath(folderPath: string) {
+    const folders = await Folders.get();
     const pageFolder = folders.find((f) => parseWinPath(f.path) === parseWinPath(folderPath));
 
     if (pageFolder && typeof pageFolder.filePrefix !== 'undefined') {
@@ -605,8 +640,8 @@ export class Folders {
    * @param filePath
    * @returns
    */
-  public static getFilePrefixBeFilePath(filePath: string) {
-    const folders = Folders.get();
+  public static async getFilePrefixBeFilePath(filePath: string) {
+    const folders = await Folders.get();
     if (folders.length > 0) {
       filePath = parseWinPath(filePath);
 
@@ -634,8 +669,10 @@ export class Folders {
    * @param filePath - The file path to match against the page folders.
    * @returns The page folder that matches the file path, or undefined if no match is found.
    */
-  public static getPageFolderByFilePath(filePath: string): ContentFolder | undefined {
-    const folders = Folders.get();
+  public static async getPageFolderByFilePath(
+    filePath: string
+  ): Promise<ContentFolder | undefined> {
+    const folders = await Folders.get();
     const parsedPath = parseWinPath(filePath);
     const pageFolderMatches = folders
       .filter((folder) => parsedPath && folder.path && parsedPath.includes(folder.path))
@@ -648,6 +685,27 @@ export class Folders {
     return;
   }
 
+  /**
+   * Retrieves the file stats for a given file.
+   * @param file - The URI of the file.
+   * @param folderPath - The path of the folder containing the file.
+   * @returns An object containing the file path, file name, folder name, folder path, and file stats.
+   */
+  public static async getFileStats(file: Uri, folderPath: string) {
+    const fileName = basename(file.fsPath);
+    const folderName = dirname(file.fsPath).split(sep).pop();
+
+    const stats = await workspace.fs.stat(file);
+
+    return {
+      filePath: file.fsPath,
+      fileName,
+      folderName,
+      folderPath,
+      ...stats
+    };
+  }
+
   private static async getFilesByFolder(
     folder: ContentFolder,
     supportedFiles: string[] | undefined,
@@ -655,6 +713,7 @@ export class Folders {
   ): Promise<FolderInfo | undefined> {
     try {
       const folderPath = parseWinPath(folder.path);
+      const folderUri = Uri.file(folderPath);
 
       if (typeof folderPath === 'string') {
         let files: Uri[] = [];
@@ -673,7 +732,9 @@ export class Folders {
           let foundFiles = await Folders.findFiles(filePath);
 
           // Make sure these file are coming from the folder path (this could be an issue in multi-root workspaces)
-          foundFiles = foundFiles.filter((f) => parseWinPath(f.fsPath).startsWith(folderPath));
+          foundFiles = foundFiles.filter((f) =>
+            parseWinPath(f.fsPath).startsWith(parseWinPath(folderUri.fsPath))
+          );
 
           files = [...files, ...foundFiles];
         }
@@ -683,17 +744,8 @@ export class Folders {
 
           for (const file of files) {
             try {
-              const fileName = basename(file.fsPath);
-              const folderName = dirname(file.fsPath).split(sep).pop();
-
-              const stats = await workspace.fs.stat(file);
-
-              fileStats.push({
-                filePath: file.fsPath,
-                fileName,
-                folderName,
-                ...stats
-              });
+              const fileInfo = await Folders.getFileStats(file, folderPath);
+              fileStats.push(fileInfo);
             } catch (error) {
               // Skip the file
             }
@@ -707,6 +759,7 @@ export class Folders {
 
           return {
             title: folder.title,
+            path: folderPath,
             files: files.length,
             lastModified: fileStats,
             locale: folder.locale,
@@ -726,14 +779,20 @@ export class Folders {
    * @param pattern
    * @returns
    */
-  private static findFolders(pattern: string): Promise<string[]> {
-    return new Promise((resolve) => {
-      glob(pattern, { ignore: '**/node_modules/**', dot: true }, (err, files) => {
-        const allFolders = files.map((file) => dirname(file));
-        const uniqueFolders = [...new Set(allFolders)];
-        resolve(uniqueFolders);
-      });
-    });
+  private static async findFolders(pattern: string): Promise<string[]> {
+    Logger.verbose(`Folders:findFolders:start - ${pattern}`);
+
+    try {
+      pattern = isWindows() ? parseWinPath(pattern) : pattern;
+      const files = await glob(pattern, { ignore: '**/node_modules/**', dot: true });
+      const allFolders = (files || []).map((file) => dirname(file));
+      const uniqueFolders = [...new Set(allFolders)];
+      Logger.verbose(`Folders:findFolders:end - ${uniqueFolders.length}`);
+      return uniqueFolders;
+    } catch (e) {
+      Logger.error(`Folders:findFolders:error - ${(e as Error).message}`);
+      return [];
+    }
   }
 
   /**
@@ -742,11 +801,17 @@ export class Folders {
    * @returns
    */
   private static async findFiles(pattern: string): Promise<Uri[]> {
-    return new Promise((resolve) => {
-      glob(pattern, { ignore: '**/node_modules/**' }, (err, files) => {
-        const allFiles = files.map((file) => Uri.file(file));
-        resolve(allFiles);
-      });
-    });
+    Logger.verbose(`Folders:findFiles:start - ${pattern}`);
+
+    try {
+      pattern = isWindows() ? parseWinPath(pattern) : pattern;
+      const files = await glob(pattern, { ignore: '**/node_modules/**', dot: true });
+      const allFiles = (files || []).map((file) => Uri.file(file));
+      Logger.verbose(`Folders:findFiles:end - ${allFiles.length}`);
+      return allFiles;
+    } catch (e) {
+      Logger.error(`Folders:findFiles:error - ${(e as Error).message}`);
+      return [];
+    }
   }
 }

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Actions } from './components/Actions';
-import { BaseView } from './components/BaseView';
 import { GlobalSettings } from './components/GlobalSettings';
 import { OtherActions } from './components/OtherActions';
 import { SeoStatus } from './components/SeoStatus';
@@ -18,6 +17,7 @@ import { usePrevious } from './hooks/usePrevious';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 import { InitializeAction } from './components/InitializeAction';
+import { DEFAULT_PANEL_FEATURE_FLAGS } from '../constants/DefaultFeatureFlags';
 
 export interface IViewPanelProps { }
 
@@ -38,15 +38,27 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
   const prevMediaSelection = usePrevious(mediaSelecting);
   const [scrollY, setScrollY] = useState(0);
 
-  const allPanelValues = useMemo(() => {
-    return Object.values(FEATURE_FLAG.panel).filter(v => v !== FEATURE_FLAG.panel.globalSettings)
-  }, [FEATURE_FLAG.panel]);
-
   const scollListener = useCallback((e: Event) => {
     if (!mediaSelecting) {
       setScrollY(window.scrollY);
     }
   }, [mediaSelecting]);
+
+  const isSomethingShown = useMemo(() => {
+    const panelModeValues = (mode?.features || DEFAULT_PANEL_FEATURE_FLAGS).filter(v => v.startsWith('panel.'));
+
+    if (panelModeValues.length === 0) {
+      return false;
+    }
+
+    if (panelModeValues.includes(FEATURE_FLAG.panel.globalSettings) ||
+      panelModeValues.includes(FEATURE_FLAG.panel.actions) ||
+      panelModeValues.includes(FEATURE_FLAG.panel.recentlyModified) ||
+      panelModeValues.includes(FEATURE_FLAG.panel.otherActions) ||
+      panelModeValues.includes(FEATURE_FLAG.panel.gitActions)) {
+      return true;
+    }
+  }, [mode?.features]);
 
   useEffect(() => {
     if (prevMediaSelection && !mediaSelecting) {
@@ -86,13 +98,8 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
     return <Spinner />;
   }
 
-  if (!metadata) {
-    return <BaseView mode={mode} settings={settings} folderAndFiles={folderAndFiles} />;
-  }
-
   return (
     <div className="frontmatter">
-      <InitializeAction settings={settings} />
       {
         isDevMode && (
           <div className="developer__bar">
@@ -112,18 +119,22 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
         )
       }
 
+      <InitializeAction settings={settings} />
+
       <div className={`ext_actions`}>
-        <GitAction settings={settings} />
+        <FeatureFlag features={mode?.features || DEFAULT_PANEL_FEATURE_FLAGS} flag={FEATURE_FLAG.panel.gitActions}>
+          <GitAction settings={settings} />
+        </FeatureFlag>
 
         {!loading && (<CustomView metadata={metadata} />)}
 
-        <FeatureFlag features={mode?.features || [...allPanelValues]} flag={FEATURE_FLAG.panel.globalSettings}>
-          <GlobalSettings settings={settings} />
+        <FeatureFlag features={mode?.features || DEFAULT_PANEL_FEATURE_FLAGS} flag={FEATURE_FLAG.panel.globalSettings}>
+          <GlobalSettings settings={settings} isBase={!metadata} />
         </FeatureFlag>
 
         {
-          !loading && settings && settings.seo && (
-            <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.seo}>
+          !loading && metadata && settings && settings.seo && (
+            <FeatureFlag features={mode?.features || DEFAULT_PANEL_FEATURE_FLAGS} flag={FEATURE_FLAG.panel.seo}>
               <SeoStatus
                 seo={settings.seo}
                 data={metadata}
@@ -134,33 +145,44 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
           )
         }
 
-        {!loading && settings && metadata && (
-          <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.actions}>
-            <Actions metadata={metadata} settings={settings} scripts={settings.scripts} />
+        {!loading && settings && (
+          <FeatureFlag features={mode?.features || DEFAULT_PANEL_FEATURE_FLAGS} flag={FEATURE_FLAG.panel.actions}>
+            <Actions
+              metadata={metadata}
+              settings={settings}
+              scripts={metadata ? settings.scripts : settings.scripts.filter((s) => s.bulk && (s.type === 'content' || !s.type))} />
           </FeatureFlag>
         )}
 
         {
-          !loading && (
-            <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.metadata}>
+          !loading && metadata && (
+            <FeatureFlag features={mode?.features || DEFAULT_PANEL_FEATURE_FLAGS} flag={FEATURE_FLAG.panel.metadata}>
               <Metadata
                 settings={settings}
                 metadata={metadata}
                 focusElm={focusElm}
                 unsetFocus={unsetFocus}
-                features={mode?.features || []}
+                features={mode?.features || DEFAULT_PANEL_FEATURE_FLAGS}
               />
             </FeatureFlag>
           )
         }
 
-        <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.recentlyModified}>
-          <FolderAndFiles data={folderAndFiles} />
+        <FeatureFlag features={mode?.features || DEFAULT_PANEL_FEATURE_FLAGS} flag={FEATURE_FLAG.panel.recentlyModified}>
+          <FolderAndFiles data={folderAndFiles} isBase={!metadata} />
         </FeatureFlag>
 
-        <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.panel.otherActions}>
-          <OtherActions settings={settings} isFile={true} />
+        <FeatureFlag features={mode?.features || DEFAULT_PANEL_FEATURE_FLAGS} flag={FEATURE_FLAG.panel.otherActions}>
+          <OtherActions settings={settings} isFile={!!metadata} isBase={!metadata} />
         </FeatureFlag>
+
+        {
+          !isSomethingShown && (
+            <div className={`base__empty`}>
+              {l10n.t(LocalizationKey.panelBaseViewEmpty)}
+            </div>
+          )
+        }
       </div>
 
       <SponsorMsg isBacker={settings?.isBacker} />

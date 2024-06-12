@@ -8,9 +8,9 @@ import { Spinner } from '../Common/Spinner';
 import { SponsorMsg } from '../Layout/SponsorMsg';
 import usePages from '../../hooks/usePages';
 import { useCallback, useEffect, useState } from 'react';
-import { Messenger } from '@estruyf/vscode/dist/client';
+import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
-import { TelemetryEvent } from '../../../constants';
+import { GeneralCommands, TelemetryEvent } from '../../../constants';
 import { PageLayout } from '../Layout/PageLayout';
 import { FilesProvider } from '../../providers/FilesProvider';
 import { Alert } from '../Modals/Alert';
@@ -60,9 +60,18 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({
   }, [pageItems, selectedItemAction]);
 
   useEffect(() => {
+    messageHandler.send(GeneralCommands.toVSCode.logging.info, {
+      message: `Contents view loaded with ${pageItems.length} pages`,
+      location: 'DASHBOARD'
+    });
+  }, [JSON.stringify(pageItems)]);
+
+  useEffect(() => {
     Messenger.send(DashboardMessage.sendTelemetry, {
       event: TelemetryEvent.webviewContentsView
     });
+
+    Messenger.send(DashboardMessage.setTitle, l10n.t(LocalizationKey.dashboardHeaderTabsContents));
   }, []);
 
   return (

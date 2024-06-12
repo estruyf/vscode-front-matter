@@ -13,7 +13,12 @@ export abstract class BaseListener {
    * @param data
    */
   public static sendMsg(command: DashboardCommand, payload: any) {
-    Logger.info(`Sending message to dashboard: ${command}`);
+    if (command === DashboardCommand.loading) {
+      const loadingType = payload ? `- ${JSON.stringify(payload)}` : '- Turn off';
+      Logger.verbose(`Sending message to dashboard: ${command} ${loadingType}`);
+    } else {
+      Logger.verbose(`Sending message to dashboard: ${command}`);
+    }
 
     Dashboard.postWebviewMessage({
       command,

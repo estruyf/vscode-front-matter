@@ -44,7 +44,8 @@ import {
   SETTING_PROJECTS,
   SETTING_TAXONOMY_TAGS,
   SETTING_TAXONOMY_CATEGORIES,
-  SETTING_CONTENT_FILTERS
+  SETTING_CONTENT_FILTERS,
+  SETTING_CONTENT_I18N
 } from '../constants';
 import { Folders } from '../commands/Folders';
 import { join, basename, dirname, parse } from 'path';
@@ -77,6 +78,15 @@ export class Settings {
   private static readConfigPromise: Promise<void> | undefined = undefined;
   private static project: Project | undefined = undefined;
   private static configDebouncer = debounceCallback();
+  private static hasExtendedConfig: boolean = false;
+  private static extendedConfig: { extended: any[]; splitted: any[]; dynamic: boolean } = {} as any;
+
+  public static async registerCommands() {
+    const ext = Extension.getInstance();
+    const subscriptions = ext.subscriptions;
+
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.promote, Settings.promote));
+  }
 
   public static async init() {
     const allCommands = await commands.getCommands(true);
@@ -250,6 +260,7 @@ export class Settings {
    */
   public static async onConfigChange() {
     const projectConfig = await Settings.projectConfigPath();
+    Logger.info(`Project config path: ${projectConfig}`);
 
     workspace.onDidChangeConfiguration(() => {
       Settings.triggerListeners();
@@ -367,11 +378,53 @@ export class Settings {
   }
 
   /**
+   * Safely updates a setting value.
+   *
+   * @param name - The name of the setting.
+   * @param value - The new value for the setting.
+   * @param updateGlobal - Indicates whether to update the global setting or not. Default is `false`.
+   * @returns A promise that resolves when the setting is updated.
+   */
+  public static async safeUpdate<T>(
+    name: string,
+    value: T,
+    updateGlobal: boolean = false
+  ): Promise<void> {
+    if (Settings.hasExtendedConfig) {
+      const configKey = `${CONFIG_KEY}.${name}`;
+
+      if (
+        Settings.extendedConfig.extended.includes(configKey) ||
+        Settings.extendedConfig.splitted.includes(configKey) ||
+        Settings.extendedConfig.dynamic
+      ) {
+        Notifications.warningWithOutput(
+          l10n.t(LocalizationKey.helpersSettingsHelperSafeUpdateWarning, configKey)
+        );
+
+        Logger.info(`Updating setting: ${configKey}`, 'SETTING');
+        Logger.info(
+          `New value: 
+${JSON.stringify(value, null, 2)}`,
+          'SETTING'
+        );
+        return;
+      }
+    }
+
+    await Settings.update<T>(name, value, updateGlobal);
+  }
+
+  /**
    * String update config setting
    * @param name
    * @param value
    */
-  public static async update<T>(name: string, value: T, updateGlobal: boolean = false) {
+  public static async update<T>(
+    name: string,
+    value: T,
+    updateGlobal: boolean = false
+  ): Promise<void> {
     const fmConfig = await Settings.projectConfigPath();
 
     if (updateGlobal) {
@@ -415,7 +468,7 @@ export class Settings {
 
       const workspaceSettingValue = Settings.hasWorkspaceSettings<ContentType[]>(name);
       if (workspaceSettingValue) {
-        await Settings.update(name, undefined);
+        await Settings.safeUpdate(name, undefined);
       }
 
       // Make sure to reload the whole config + all the data files
@@ -507,7 +560,7 @@ export class Settings {
     customTaxonomies[taxIdx].options.push(option);
     customTaxonomies[taxIdx].options = [...new Set(customTaxonomies[taxIdx].options)];
     customTaxonomies[taxIdx].options = customTaxonomies[taxIdx].options.sort().filter((o) => !!o);
-    await Settings.update(SETTING_TAXONOMY_CUSTOM, customTaxonomies, true);
+    await Settings.safeUpdate(SETTING_TAXONOMY_CUSTOM, customTaxonomies, true);
   }
 
   /**
@@ -524,7 +577,7 @@ export class Settings {
       customTaxonomies[taxIdx].options = options;
     }
 
-    await Settings.update(SETTING_TAXONOMY_CUSTOM, customTaxonomies, true);
+    await Settings.safeUpdate(SETTING_TAXONOMY_CUSTOM, customTaxonomies, true);
   }
 
   /**
@@ -540,8 +593,8 @@ export class Settings {
         const setting = Settings.config.inspect(settingName);
 
         if (setting && typeof setting.workspaceValue !== 'undefined') {
-          await Settings.update(settingName, setting.workspaceValue, true);
-          await Settings.update(settingName, undefined);
+          await Settings.safeUpdate(settingName, setting.workspaceValue, true);
+          await Settings.safeUpdate(settingName, undefined);
         }
       }
     }
@@ -644,6 +697,13 @@ export class Settings {
    */
   private static async readConfig() {
     try {
+      Settings.hasExtendedConfig = false;
+      Settings.extendedConfig = {
+        extended: [],
+        splitted: [],
+        dynamic: false
+      };
+
       const fmConfig = await Settings.projectConfigPath();
       if (fmConfig && (await existsAsync(fmConfig))) {
         const localConfig = await readFileAsync(fmConfig, 'utf8');
@@ -663,6 +723,8 @@ export class Settings {
       );
       if (configFiles.length === 0) {
         Logger.info(`No ".frontmatter/config" config files found.`);
+      } else {
+        Settings.hasExtendedConfig = true;
       }
 
       // Sort the files by fsPath
@@ -699,6 +761,8 @@ export class Settings {
                     );
 
                     if (dynamicConfig) {
+                      Settings.hasExtendedConfig = true;
+                      Settings.extendedConfig.dynamic = true;
                       Settings.globalConfig = dynamicConfig;
                       Logger.info(`Dynamic config file loaded`);
                     }
@@ -730,11 +794,17 @@ export class Settings {
       return;
     }
 
+    Settings.hasExtendedConfig = true;
     const originalConfig = Object.assign({}, Settings.globalConfig);
     const extendsConfig: string[] = Settings.globalConfig[extendsConfigName];
     for (const externalConfig of extendsConfig) {
       if (externalConfig.endsWith(`.json`)) {
         const config = await Settings.getExternalConfig(externalConfig);
+
+        // Store the config keys
+        const keys = Object.keys(config);
+        Settings.extendedConfig.extended.push(...keys);
+
         await Settings.extendConfig(config, originalConfig);
       }
     }
@@ -769,6 +839,7 @@ export class Settings {
         Settings.globalConfig = {};
       }
 
+      Settings.extendedConfig.splitted.push(`${CONFIG_KEY}.${relSettingName}`);
       Settings.updateGlobalConfigSetting(relSettingName, configJson, configFilePath, filePath);
     } catch (e) {
       Logger.error(`Error reading config file: ${configFile.fsPath}`);
@@ -921,6 +992,10 @@ export class Settings {
     // Projects
     else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_PROJECTS)) {
       Settings.updateGlobalConfigArraySetting(SETTING_PROJECTS, 'name', configJson);
+    }
+    // i18n
+    else if (Settings.isEqualOrStartsWith(relSettingName, SETTING_CONTENT_I18N)) {
+      Settings.updateGlobalConfigArraySetting(SETTING_CONTENT_I18N, 'locale', configJson);
     }
     // Snippets
     else if (
@@ -1138,6 +1213,9 @@ export class Settings {
    */
   private static async reloadConfig(debounced: boolean = true) {
     Logger.info(`Reloading config...`);
+    // Clear the folder cache as we need to see the latest folders
+    Folders.clearCached();
+
     if (Settings.readConfigPromise === undefined) {
       Settings.readConfigPromise = Settings.readConfig();
     }

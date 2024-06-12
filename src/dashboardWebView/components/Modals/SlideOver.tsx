@@ -5,7 +5,7 @@ import { Fragment, useRef } from 'react';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 
-export interface ISnippetSlideOverProps {
+export interface ISlideOverProps {
   title: string;
   description: string;
   okBtnText: string;
@@ -16,7 +16,7 @@ export interface ISnippetSlideOverProps {
   trigger: () => void;
 }
 
-export const SnippetSlideOver: React.FunctionComponent<ISnippetSlideOverProps> = ({
+export const SlideOver: React.FunctionComponent<ISlideOverProps> = ({
   title,
   description,
   okBtnText,
@@ -25,7 +25,7 @@ export const SnippetSlideOver: React.FunctionComponent<ISnippetSlideOverProps> =
   dismiss,
   trigger,
   children
-}: React.PropsWithChildren<ISnippetSlideOverProps>) => {
+}: React.PropsWithChildren<ISlideOverProps>) => {
   const cancelButtonRef = useRef(null);
 
   return (
@@ -46,11 +46,12 @@ export const SnippetSlideOver: React.FunctionComponent<ISnippetSlideOverProps> =
             >
               <div className="pointer-events-auto w-screen max-w-md">
                 <div className={`flex h-full flex-col overflow-y-scroll border-l pb-6 shadow-xl bg-[var(--vscode-sideBar-background)] border-[var(--frontmatter-border)]`}>
-                  <div className="py-6 sticky top-0 z-10 px-4 sm:px-6 bg-[var(--vscode-sideBar-background)]">
+                  <div className="py-6 sticky top-0 z-10 px-4 sm:px-6 bg-[var(--vscode-sideBar-background)] text-[var(--vscode-sideBarTitle-foreground)]">
                     <div className="flex items-start justify-between">
-                      <Dialog.Title className={`text-lg font-medium text-[var(--vscode-editor-foreground)]`}>
+                      <Dialog.Title className={`text-lg font-medium`}>
                         {title}
                       </Dialog.Title>
+
                       <div className="ml-3 flex h-7 items-center">
                         <button
                           type="button"
@@ -62,12 +63,14 @@ export const SnippetSlideOver: React.FunctionComponent<ISnippetSlideOverProps> =
                         </button>
                       </div>
                     </div>
+
+                    <div className="mt-1">
+                      <p className="text-sm">{description}</p>
+                    </div>
                   </div>
 
                   <div className="relative flex-1 px-4 sm:px-6">
                     <div className="space-y-4">
-                      <p className="text-sm">{description}</p>
-
                       <div>
                         {children}
                       </div>

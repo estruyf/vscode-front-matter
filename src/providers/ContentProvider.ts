@@ -25,8 +25,6 @@ export default class ContentProvider implements TextDocumentContentProvider {
     outputType?: string,
     column: ViewColumn = ViewColumn.Beside
   ) {
-    const apiData = JSON.stringify(data, null, 2);
-
     const uri = Uri.parse(`${ContentProvider.scheme}:${title} output`);
 
     const doc = await workspace.openTextDocument(uri);

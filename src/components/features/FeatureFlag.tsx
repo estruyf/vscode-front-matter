@@ -12,7 +12,7 @@ export const FeatureFlag: React.FunctionComponent<IFeatureFlagProps> = ({
   alternative,
   children
 }: React.PropsWithChildren<IFeatureFlagProps>) => {
-  if (!features || (features.length > 0 && !features.includes(flag))) {
+  if (!features || features.length === 0 || (features.length > 0 && !features.includes(flag))) {
     if (alternative) {
       return alternative;
     }

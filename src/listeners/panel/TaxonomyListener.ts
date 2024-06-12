@@ -134,7 +134,7 @@ export class TaxonomyListener extends BaseListener {
    * @param tagType
    * @param values
    */
-  private static updateTags(
+  private static async updateTags(
     fieldName: string,
     values: string[],
     parents: string[],
@@ -148,7 +148,12 @@ export class TaxonomyListener extends BaseListener {
 
     const article = ArticleHelper.getFrontMatter(editor);
     if (article && article.data) {
-      const parentObj = DataListener.getParentObject(article.data, article, parents, blockData);
+      const parentObj = await DataListener.getParentObject(
+        article.data,
+        article,
+        parents,
+        blockData
+      );
 
       if (renderAsString) {
         if (values.length === 0) {
@@ -170,7 +175,7 @@ export class TaxonomyListener extends BaseListener {
    * Update the tags in the current document
    * @param data
    */
-  private static updateCustomTaxonomy(data: CustomTaxonomyData) {
+  private static async updateCustomTaxonomy(data: CustomTaxonomyData) {
     if (!data?.id || !data?.name) {
       return;
     }
@@ -182,7 +187,7 @@ export class TaxonomyListener extends BaseListener {
 
     const article = ArticleHelper.getFrontMatter(editor);
     if (article && article.data) {
-      const parentObj = DataListener.getParentObject(
+      const parentObj = await DataListener.getParentObject(
         article.data,
         article,
         data.parents,

@@ -888,6 +888,14 @@ export enum LocalizationKey {
    */
   dashboardPreviewButtonOpenTitle = 'dashboard.preview.button.open.title',
   /**
+   * Content snippet
+   */
+  dashboardSnippetsViewItemTypeContent = 'dashboard.snippetsView.item.type.content',
+  /**
+   * Media snippet
+   */
+  dashboardSnippetsViewItemTypeMedia = 'dashboard.snippetsView.item.type.media',
+  /**
    * Edit snippet
    */
   dashboardSnippetsViewItemQuickActionEditSnippet = 'dashboard.snippetsView.item.quickAction.editSnippet',
@@ -2388,6 +2396,10 @@ export enum LocalizationKey {
    * Settings have been refreshed.
    */
   helpersSettingsHelperRefreshConfigSuccess = 'helpers.settingsHelper.refreshConfig.success',
+  /**
+   * Cannot update setting "{0}" because you've extended or split the Front Matter CMS configuration. Please manually add your changes. Check the output for the setting update.
+   */
+  helpersSettingsHelperSafeUpdateWarning = 'helpers.settingsHelper.safeUpdate.warning',
   /**
    * Rename the {0}
    */
