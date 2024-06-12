@@ -10,7 +10,9 @@
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
-      "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}", "--disable-extension=eliostruyf.vscode-front-matter"
+      ],
       "outFiles": ["${workspaceFolder}/dist/**/*.js"],
       "preLaunchTask": "npm: build:ext"
     },
@@ -19,7 +21,9 @@
 			"type": "extensionHost",
 			"request": "launch",
 			"runtimeExecutable": "${execPath}",
-      "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}", "--disable-extension=eliostruyf.vscode-front-matter"
+      ],
       "outFiles": ["${workspaceFolder}/dist/**/*.js"]
     }
   ]
