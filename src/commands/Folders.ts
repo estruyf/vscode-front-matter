@@ -449,6 +449,14 @@ export class Folders {
   }
 
   /**
+   * Get the cached folder settings
+   * @returns {ContentFolder[]} - The cached folder settings
+   */
+  public static getCached(): ContentFolder[] {
+    return Folders._folders;
+  }
+
+  /**
    * Update the folder settings
    * @param folders
    */

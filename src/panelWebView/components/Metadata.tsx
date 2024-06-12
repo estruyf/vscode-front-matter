@@ -12,6 +12,7 @@ import { FEATURE_FLAG, GeneralCommands } from '../../constants';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
+import { DEFAULT_PANEL_FEATURE_FLAGS } from '../../constants/DefaultFeatureFlags';
 
 export interface IMetadata {
   [prop: string]: string[] | string | null | IMetadata;
@@ -95,7 +96,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
       id={`tags`}
       title={`${l10n.t(LocalizationKey.panelMetadataTitle)}${contentType?.name ? ` (${contentType?.name})` : ""}`}
       className={`inherit z-20`}>
-      <FeatureFlag features={features || []} flag={FEATURE_FLAG.panel.contentType}>
+      <FeatureFlag features={features || DEFAULT_PANEL_FEATURE_FLAGS} flag={FEATURE_FLAG.panel.contentType}>
         <ContentTypeValidator fields={contentType?.fields || []} metadata={metadata} />
       </FeatureFlag>
 

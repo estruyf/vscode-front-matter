@@ -1,6 +1,6 @@
 # Change Log
 
-## [10.2.0] - 2024-xx-xx
+## [10.2.0] - 2024-xx-xx - [Release notes](https://beta.frontmatter.codes/updates/v10.2.0)
 
 ### ✨ New features
 
@@ -9,15 +9,15 @@
 ### 🎨 Enhancements
 
 - [#441](https://github.com/estruyf/vscode-front-matter/issues/441): Show input descriptions for snippet and data forms
-- [#442](https://github.com/estruyf/vscode-front-matter/issues/442): Hide sidebar on data view when data file is selecte + show dropdown of data files
+- [#442](https://github.com/estruyf/vscode-front-matter/issues/442): Hide sidebar on data view when data file is selected + show dropdown of data files
 - [#788](https://github.com/estruyf/vscode-front-matter/issues/788): Show a warning on setting update when it exists in an extended configuration
 - [#798](https://github.com/estruyf/vscode-front-matter/issues/798): Changed dialog to slide-over for the snippet forms
-- [#799](https://github.com/estruyf/vscode-front-matter/issues/799): Added `frontMatter.logging` setting to define the logging output. Options are `info`, `warn`, `error`, and `verbose`. Default is `info`.
+- [#799](https://github.com/estruyf/vscode-front-matter/issues/799): Added `frontMatter.logging` setting to define the logging output. Options are `info`, `warn`, `error`, and `verbose`. The default is `info`.
 - [#800](https://github.com/estruyf/vscode-front-matter/issues/800): Add colors for the Front Matter CMS output
 - [#808](https://github.com/estruyf/vscode-front-matter/issues/808): Add support to generate field groups and `block` fields in content type generation
 - [#810](https://github.com/estruyf/vscode-front-matter/issues/810): Update the tab title based on the view
 - [#811](https://github.com/estruyf/vscode-front-matter/issues/811): Added `panel.gitActions` view mode option to hide the Git actions in the panel
-- [#812](https://github.com/estruyf/vscode-front-matter/issues/812): Added the `{{locale}}` placeholder which can be used in the `previewPath` property
+- [#812](https://github.com/estruyf/vscode-front-matter/issues/812): Added the `{{locale}}` placeholder, which can be used in the `previewPath` property
 
 ### ⚡️ Optimizations
 

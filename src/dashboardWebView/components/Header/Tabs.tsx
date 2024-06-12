@@ -9,6 +9,7 @@ import { Tab } from './Tab';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { PageIcon } from '../../../panelWebView/components/Icons';
+import { DEFAULT_DASHBOARD_FEATURE_FLAGS } from '../../../constants/DefaultFeatureFlags';
 
 export interface ITabsProps {
   onNavigate: (navigationType: NavigationType) => void;
@@ -18,12 +19,6 @@ export const Tabs: React.FunctionComponent<ITabsProps> = ({
   onNavigate
 }: React.PropsWithChildren<ITabsProps>) => {
   const mode = useRecoilValue(ModeAtom);
-
-  const allDashboardVIews = [
-    FEATURE_FLAG.dashboard.snippets.view,
-    FEATURE_FLAG.dashboard.data.view,
-    FEATURE_FLAG.dashboard.taxonomy.view
-  ];
 
   return (
     <ul
@@ -43,7 +38,7 @@ export const Tabs: React.FunctionComponent<ITabsProps> = ({
           <span>{l10n.t(LocalizationKey.dashboardHeaderTabsMedia)}</span>
         </Tab>
       </li>
-      <FeatureFlag features={mode?.features || [...allDashboardVIews]} flag={FEATURE_FLAG.dashboard.snippets.view}>
+      <FeatureFlag features={mode?.features || DEFAULT_DASHBOARD_FEATURE_FLAGS} flag={FEATURE_FLAG.dashboard.snippets.view}>
         <li role="presentation">
           <Tab navigationType={NavigationType.Snippets} onNavigate={onNavigate}>
             <ScissorsIcon className={`h-4 w-auto mr-2`} />
@@ -51,7 +46,7 @@ export const Tabs: React.FunctionComponent<ITabsProps> = ({
           </Tab>
         </li>
       </FeatureFlag>
-      <FeatureFlag features={mode?.features || [...allDashboardVIews]} flag={FEATURE_FLAG.dashboard.data.view}>
+      <FeatureFlag features={mode?.features || DEFAULT_DASHBOARD_FEATURE_FLAGS} flag={FEATURE_FLAG.dashboard.data.view}>
         <li role="presentation">
           <Tab navigationType={NavigationType.Data} onNavigate={onNavigate}>
             <CircleStackIcon className={`h-4 w-auto mr-2`} />
@@ -59,7 +54,7 @@ export const Tabs: React.FunctionComponent<ITabsProps> = ({
           </Tab>
         </li>
       </FeatureFlag>
-      <FeatureFlag features={mode?.features || [...allDashboardVIews]} flag={FEATURE_FLAG.dashboard.taxonomy.view}>
+      <FeatureFlag features={mode?.features || DEFAULT_DASHBOARD_FEATURE_FLAGS} flag={FEATURE_FLAG.dashboard.taxonomy.view}>
         <li role="presentation">
           <Tab navigationType={NavigationType.Taxonomy} onNavigate={onNavigate}>
             <TagIcon className={`h-4 w-auto mr-2`} />

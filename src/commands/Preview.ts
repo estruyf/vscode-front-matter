@@ -13,7 +13,6 @@ import { join, parse } from 'path';
 import { commands, env, Uri, ViewColumn, window, WebviewPanel, extensions } from 'vscode';
 import {
   ArticleHelper,
-  DateHelper,
   Extension,
   parseWinPath,
   processI18nPlaceholders,
@@ -21,10 +20,10 @@ import {
   processFmPlaceholders,
   processPathPlaceholders,
   Settings,
-  Telemetry
+  Telemetry,
+  processDateTimePlaceholders
 } from '../helpers';
 import { ContentFolder, ContentType, PreviewSettings } from '../models';
-import { format } from 'date-fns';
 import { Article } from '.';
 import { WebviewHelper } from '@estruyf/vscode';
 import { Folders } from './Folders';
@@ -33,6 +32,7 @@ import { getLocalizationFile } from '../utils/getLocalizationFile';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 import { joinUrl } from '../utils';
+import { i18n } from './i18n';
 
 export class Preview {
   public static filePath: string | undefined = undefined;
@@ -250,9 +250,7 @@ export class Preview {
     // Check if there is a pathname defined on content folder level
     const folders = await Folders.get();
     if (folders.length > 0) {
-      const foldersWithPath = folders.filter((folder) => folder.previewPath);
-
-      for (const folder of foldersWithPath) {
+      for (const folder of folders) {
         const folderPath = parseWinPath(folder.path);
         if (filePath.startsWith(folderPath)) {
           if (!selectedFolder || selectedFolder.path.length < folderPath.length) {
@@ -298,6 +296,11 @@ export class Preview {
       slug = Article.getSlug();
     }
 
+    const locale = await i18n.getLocale(filePath);
+    if (locale && locale.path === slug) {
+      slug = '';
+    }
+
     if (pathname) {
       // Known placeholders
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
@@ -336,10 +339,8 @@ export class Preview {
 
       try {
         const articleDate = await ArticleHelper.getDate(article);
-        slug = join(
-          format(articleDate || new Date(), DateHelper.formatUpdate(pathname) as string),
-          slug
-        );
+        pathname = processDateTimePlaceholders(pathname, dateFormat, articleDate);
+        slug = join(pathname, slug);
       } catch (error) {
         slug = join(pathname, slug);
       }

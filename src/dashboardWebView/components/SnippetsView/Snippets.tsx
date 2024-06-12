@@ -18,6 +18,7 @@ import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { List } from '../Media/List';
 import { SlideOver } from '../Modals/SlideOver';
+import { DEFAULT_DASHBOARD_FEATURE_FLAGS } from '../../../constants/DefaultFeatureFlags';
 
 export interface ISnippetsProps { }
 
@@ -96,7 +97,9 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
   return (
     <PageLayout
       header={
-        <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.dashboard.snippets.manage}>
+        <FeatureFlag
+          features={mode?.features || DEFAULT_DASHBOARD_FEATURE_FLAGS}
+          flag={FEATURE_FLAG.dashboard.snippets.manage}>
           <div
             className={`py-3 px-4 flex items-center justify-between border-b border-[var(--frontmatter-border)]`}
             aria-label={l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsAriaLabel)}
