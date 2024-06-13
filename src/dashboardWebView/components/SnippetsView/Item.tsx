@@ -19,6 +19,7 @@ import { LocalizationKey } from '../../../localization';
 import { FooterActions } from './FooterActions';
 import { ItemMenu } from './ItemMenu';
 import { SlideOver } from '../Modals/SlideOver';
+import { DEFAULT_DASHBOARD_FEATURE_FLAGS } from '../../../constants/DefaultFeatureFlags';
 
 export interface IItemProps {
   snippetKey: string;
@@ -163,7 +164,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
           </h2>
 
           <FeatureFlag
-            features={mode?.features || []}
+            features={mode?.features || DEFAULT_DASHBOARD_FEATURE_FLAGS}
             flag={FEATURE_FLAG.dashboard.snippets.manage}
             alternative={
               <ItemMenu
@@ -190,7 +191,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
         </div>
 
         <FeatureFlag
-          features={mode?.features || []}
+          features={mode?.features || DEFAULT_DASHBOARD_FEATURE_FLAGS}
           flag={FEATURE_FLAG.dashboard.snippets.manage}
           alternative={
             <FooterActions
