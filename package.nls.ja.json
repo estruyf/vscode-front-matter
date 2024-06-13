@@ -73,13 +73,21 @@
   "setting.frontMatter.content.pageFolders.items.properties.path.description": "フォルダーのパス",
   "setting.frontMatter.content.pageFolders.items.properties.excludeSubdir.description": "サブディレクトリを除外する",
   "setting.frontMatter.content.pageFolders.items.properties.previewPath.description": "フォルダーのカスタム プレビュー パスを定義します。",
+<<<<<<< HEAD
   "setting.frontMatter.content.pageFolders.items.properties.trailingSlash.description": "🚧: Specify if you want to add a trailing slash to the preview URL.",
+=======
+  "setting.frontMatter.content.pageFolders.items.properties.trailingSlash.description": "プレビュー用URLに末尾のスラッシュを加えるかどうかを設定します。",
+>>>>>>> main
   "setting.frontMatter.content.pageFolders.items.properties.filePrefix.description": "ファイル名の接頭辞を定義します。",
   "setting.frontMatter.content.pageFolders.items.properties.contentTypes.description": "現在の場所に使用できる記事タイプを定義します。定義しない場合は、全ての記事タイプを使用できます。",
   "setting.frontMatter.content.pageFolders.items.properties.disableCreation.description": "フォルダー内の新しい記事の作成を無効にします。",
   "setting.frontMatter.content.pageFolders.items.properties.defaultLocale.description": "ページフォルダー用デフォルトのロケールIDを設定します。このフォルダー内の全ての記事が`frontMatter.content.i18n`で設定された言語へ翻訳可能になります。",
   "setting.frontMatter.content.pageFolders.items.properties.locales.description": "ページフォルダーで利用するロケールを設定します。この設定は記事の翻訳に使用されます。",
+<<<<<<< HEAD
   "setting.frontMatter.content.pageFolders.items.properties.slugTemplate.description": "🚧: Defines a custom slug template.",
+=======
+  "setting.frontMatter.content.pageFolders.items.properties.slugTemplate.description": "カスタムスラッグのテンプレートを定義します。",
+>>>>>>> main
   "setting.frontMatter.content.i18n.markdownDescription": "ウェブサイトで利用するロケールを設定します。この設定はページフォルダーレベルの設定より優先されます。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.content.i18n)",
   "setting.frontMatter.content.i18n.items.properties.title.description": "言語名",
   "setting.frontMatter.content.i18n.items.properties.locale.description": "言語コード",
@@ -177,7 +185,11 @@
   "setting.frontMatter.panel.freeform.markdownDescription": "未登録のタグ/カテゴリーをタグピッカーに入力可能にするかどうかを設定します（有効にすると、後で保存するオプションが使えます）。規定値はtrue。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.panel.freeform)",
   "setting.frontMatter.panel.actions.disabled.markdownDescription": "パネル内で非表示にしたいコマンドを設定します。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.panel.actions.disabled)",
   "setting.frontMatter.preview.host.markdownDescription": "プレビュー表示に使用するホストのURLを設定します（例：`http://localhost:1313`）。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.preview.host)",
+<<<<<<< HEAD
   "setting.frontMatter.preview.trailingSlash.markdownDescription": "🚧: Specify if you want to add a trailing slash to the preview URL. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.preview.trailingslash)",
+=======
+  "setting.frontMatter.preview.trailingSlash.markdownDescription": "プレビュー用URLに末尾のスラッシュを加えるかどうかを設定します。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.preview.trailingslash)",
+>>>>>>> main
   "setting.frontMatter.preview.pathName.markdownDescription": "ホストパスとスラッグの間に追加したいパスを設定します。例えば、パスに`yyyy/MM`などの日付を含めたい場合等に使えます。日付は記事の日付フィールドの値に基づいて生成されます。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.preview.pathname)",
   "setting.frontMatter.site.baseURL.markdownDescription": "ベースURLを設定します。これはSEOチェックに利用されます。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.site.baseurl)",
   "setting.frontMatter.taxonomy.alignFilename.markdownDescription": "ファイル生成時にファイル名をスラッグに合わせます。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.taxonomy.alignfilename)",
@@ -232,7 +244,11 @@
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.when.properties.caseSensitive.description": "比較で大文字と小文字を区別するかどうかを指定します。デフォルト: true",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.pageBundle.description": "新しい記事を作成するときにフォルダーを作成するかどうかを指定します。",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.previewPath.description": "記事タイプのカスタム プレビュー パスを定義します。",
+<<<<<<< HEAD
   "setting.frontMatter.taxonomy.contentTypes.items.properties.trailingSlash.description": "🚧: Specify if you want to add a trailing slash to the preview URL.",
+=======
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.trailingSlash.description": "プレビュー用URLに末尾のスラッシュを加えるかどうかを設定します。",
+>>>>>>> main
   "setting.frontMatter.taxonomy.contentTypes.items.properties.slugTemplate.description": "記事タイプのカスタムスラッグのテンプレートを設定します。",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.template.description": "新しい記事の作成に使用できるオプションのテンプレート。",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.postScript.description": "新しい記事の作成後に使用できるオプションのポストスクリプト。",
