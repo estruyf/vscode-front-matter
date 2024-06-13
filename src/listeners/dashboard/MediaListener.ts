@@ -183,7 +183,7 @@ export class MediaListener extends BaseListener {
    */
   private static delete(data: { file: string; page: number; folder: string | null }) {
     try {
-      MediaHelpers.deleteFile(data);
+      MediaHelpers.deleteFile(data.file);
       this.sendMediaFiles(data.page || 0, data.folder || '');
     } catch {}
   }

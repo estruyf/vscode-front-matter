@@ -2,7 +2,7 @@ import { Settings } from './SettingsHelper';
 import { CommandType, EnvironmentType } from './../models/PanelSettings';
 import { CustomScript as ICustomScript, ScriptType } from '../models/PanelSettings';
 import { window, env as vscodeEnv, ProgressLocation, Uri, commands } from 'vscode';
-import { ArticleHelper, Logger, Telemetry } from '.';
+import { ArticleHelper, Logger, MediaHelpers, Telemetry } from '.';
 import { Folders, WORKSPACE_PLACEHOLDER } from '../commands/Folders';
 import { exec, execSync } from 'child_process';
 import * as os from 'os';
@@ -269,7 +269,13 @@ export class CustomScript {
   ): Promise<void> {
     if (output) {
       try {
-        const data = JSON.parse(output);
+        const data: {
+          frontmatter?: { [key: string]: any };
+          fmAction?: 'open' | 'copyMediaMetadata' | 'copyMediaMetadataAndDelete' | 'deleteMedia';
+          fmPath?: string;
+          fmSourcePath?: string;
+          fmDestinationPath?: string;
+        } = JSON.parse(output);
 
         if (data.frontmatter) {
           let article = null;
@@ -305,6 +311,21 @@ export class CustomScript {
           if (data.fmAction === 'open' && data.fmPath) {
             const uri = data.fmPath.startsWith(`http`) ? data.fmPath : Uri.file(data.fmPath);
             commands.executeCommand('vscode.open', uri);
+          } else if (
+            data.fmAction === 'copyMediaMetadata' &&
+            data.fmSourcePath &&
+            data.fmDestinationPath
+          ) {
+            await MediaHelpers.copyMetadata(data.fmSourcePath, data.fmDestinationPath);
+          } else if (
+            data.fmAction === 'copyMediaMetadataAndDelete' &&
+            data.fmSourcePath &&
+            data.fmDestinationPath
+          ) {
+            await MediaHelpers.copyMetadata(data.fmSourcePath, data.fmDestinationPath);
+            await MediaHelpers.deleteFile(data.fmSourcePath);
+          } else if (data.fmAction === 'deleteMedia' && data.fmPath) {
+            await MediaHelpers.deleteFile(data.fmPath);
           }
         } else {
           Logger.error(`No frontmatter found.`);

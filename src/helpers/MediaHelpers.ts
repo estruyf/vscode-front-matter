@@ -348,15 +348,7 @@ export class MediaHelpers {
    * @param data
    * @returns
    */
-  public static async deleteFile({
-    file,
-    page,
-    folder
-  }: {
-    file: string;
-    page: number;
-    folder: string | null;
-  }) {
+  public static async deleteFile(file: string) {
     if (!file) {
       return;
     }
@@ -494,6 +486,18 @@ export class MediaHelpers {
 
     // Check if filename needs to be updated
     await mediaLib.updateFilename(file, filename);
+  }
+
+  /**
+   * Copies the metadata from the source media to the target media.
+   *
+   * @param source - The path of the source media.
+   * @param target - The path of the target media.
+   */
+  public static async copyMetadata(source: string, target: string) {
+    const mediaLib = MediaLibrary.getInstance();
+    const metadata = await mediaLib.get(source);
+    mediaLib.set(target, metadata);
   }
 
   /**

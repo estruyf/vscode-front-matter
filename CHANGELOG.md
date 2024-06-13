@@ -1,5 +1,15 @@
 # Change Log
 
+## [10.3.0] - 2024-xx-xx
+
+### ✨ New features
+
+### 🎨 Enhancements
+
+- [#819](https://github.com/estruyf/vscode-front-matter/issues/819): Added new extensibility support for media scripts
+
+### 🐞 Fixes
+
 ## [10.2.0] - 2024-06-12 - [Release notes](https://beta.frontmatter.codes/updates/v10.2.0)
 
 ### ✨ New features
