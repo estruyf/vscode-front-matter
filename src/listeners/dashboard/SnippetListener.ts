@@ -71,7 +71,7 @@ export class SnippetListener extends BaseListener {
 
     snippets[title] = snippetContent;
 
-    await Settings.update(SETTING_CONTENT_SNIPPETS, snippets, true);
+    await Settings.safeUpdate(SETTING_CONTENT_SNIPPETS, snippets, true);
     SettingsListener.getSettings(true);
   }
 
@@ -93,7 +93,7 @@ export class SnippetListener extends BaseListener {
       return acc;
     }, {} as Snippets);
 
-    await Settings.update(SETTING_CONTENT_SNIPPETS, snippetsToStore, true);
+    await Settings.safeUpdate(SETTING_CONTENT_SNIPPETS, snippetsToStore, true);
     SettingsListener.getSettings(true);
   }
 

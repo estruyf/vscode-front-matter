@@ -411,7 +411,7 @@
   }
 
   .question {
-    @apply relative ml-auto mr-3 w-5/6 rounded-full rounded-br-none bg-teal-900 py-2 px-4 text-whisper-500;
+    @apply relative ml-auto mr-3 w-5/6 rounded-full rounded-br-none bg-teal-900 px-4 py-2 text-whisper-500;
 
     &:after {
       --size: 1rem;

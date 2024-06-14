@@ -1,21 +1,21 @@
 import * as React from 'react';
-import { Tags } from './Tags';
-import { usePrevious } from '../hooks/usePrevious';
-import { CommandToCode } from '../CommandToCode';
-import { TagType } from '../TagType';
+import { Tags } from '../Tags';
+import { usePrevious } from '../../hooks/usePrevious';
+import { CommandToCode } from '../../CommandToCode';
+import { TagType } from '../../TagType';
 import Downshift from 'downshift';
-import { AddIcon } from './Icons/AddIcon';
-import { BlockFieldData, CustomTaxonomyData } from '../../models';
+import { AddIcon } from '../Icons/AddIcon';
+import { BlockFieldData, CustomTaxonomyData } from '../../../models';
 import { useCallback, useEffect, useMemo } from 'react';
 import { messageHandler, Messenger } from '@estruyf/vscode/dist/client';
-import { FieldMessage } from './Fields/FieldMessage';
-import { FieldTitle } from './Fields/FieldTitle';
+import { FieldMessage } from '../Fields/FieldMessage';
+import { FieldTitle } from '../Fields/FieldTitle';
 import { useRecoilValue } from 'recoil';
-import { PanelSettingsAtom } from '../state';
+import { PanelSettingsAtom } from '../../state';
 import { SparklesIcon } from '@heroicons/react/24/outline';
 import * as l10n from '@vscode/l10n';
-import { LocalizationKey } from '../../localization';
-import useDropdownStyle from '../hooks/useDropdownStyle';
+import { LocalizationKey } from '../../../localization';
+import useDropdownStyle from '../../hooks/useDropdownStyle';
 
 export interface ITagPickerProps {
   type: TagType;

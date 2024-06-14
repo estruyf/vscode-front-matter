@@ -1,5 +1,15 @@
 // Place your settings in this file to overwrite default and user settings.
 {
+  "commitHelper.messages": [
+    {
+      "type": "👨‍💻 apps",
+      "values": ["#search", "#profile"]
+    },
+    {
+      "type": "⚙️ tasks",
+      "values": ["#build", "#deploy", "#skip"]
+    }
+  ],
   "workbench.colorCustomizations": {
     "titleBar.activeBackground": "#15c2cb",
     "titleBar.inactiveBackground": "#44ffd299",

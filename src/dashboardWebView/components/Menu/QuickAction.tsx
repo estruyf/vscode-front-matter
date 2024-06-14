@@ -18,7 +18,7 @@ export const QuickAction: React.FunctionComponent<IQuickActionProps> = ({
       type="button"
       title={title}
       onClick={onClick}
-      className={cn(`px-2 group inline-flex justify-center text-sm font-medium text-[var(--vscode-foreground)] hover:text-[var(--frontmatter-button-hoverBackground)]`, className)}
+      className={cn(`px-2 group inline-flex justify-center text-sm font-medium text-[var(--frontmatter-text)] hover:text-[var(--frontmatter-button-hoverBackground)]`, className)}
     >
       {children}
       <span className="sr-only">{title}</span>

@@ -20,6 +20,9 @@ export class DashboardListener extends BaseListener {
     super.process(msg);
 
     switch (msg.command) {
+      case DashboardMessage.setTitle:
+        Dashboard.setTitle(msg.payload);
+        break;
       case DashboardMessage.getViewType:
         if (Dashboard.viewData) {
           this.sendMsg(DashboardCommand.viewData, Dashboard.viewData);

@@ -1,14 +1,15 @@
-import { CircleStackIcon, PhotoIcon, ScissorsIcon, TagIcon } from '@heroicons/react/24/outline';
+import { PhotoIcon, ScissorsIcon, TagIcon, CircleStackIcon } from '@heroicons/react/24/solid';
 import * as React from 'react';
 import { useRecoilValue } from 'recoil';
 import { FeatureFlag } from '../../../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../../../constants';
-import { MarkdownIcon } from '../../../panelWebView/components/Icons/MarkdownIcon';
 import { NavigationType } from '../../models';
 import { ModeAtom } from '../../state';
 import { Tab } from './Tab';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { PageIcon } from '../../../panelWebView/components/Icons';
+import { DEFAULT_DASHBOARD_FEATURE_FLAGS } from '../../../constants/DefaultFeatureFlags';
 
 export interface ITabsProps {
   onNavigate: (navigationType: NavigationType) => void;
@@ -21,42 +22,42 @@ export const Tabs: React.FunctionComponent<ITabsProps> = ({
 
   return (
     <ul
-      className="flex items-center justify-start h-full"
+      className="flex items-center justify-start h-full space-x-4"
       data-tabs-toggle="#myTabContent"
       role="tablist"
     >
-      <li className="mr-2" role="presentation">
+      <li role="presentation">
         <Tab navigationType={NavigationType.Contents} onNavigate={onNavigate}>
-          <MarkdownIcon className={`h-6 w-auto mr-2`} />
+          <PageIcon className={`h-4 w-auto mr-2`} />
           <span>{l10n.t(LocalizationKey.dashboardHeaderTabsContents)}</span>
         </Tab>
       </li>
-      <li className="mr-2" role="presentation">
+      <li role="presentation">
         <Tab navigationType={NavigationType.Media} onNavigate={onNavigate}>
-          <PhotoIcon className={`h-6 w-auto mr-2`} />
+          <PhotoIcon className={`h-4 w-auto mr-2`} />
           <span>{l10n.t(LocalizationKey.dashboardHeaderTabsMedia)}</span>
         </Tab>
       </li>
-      <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.dashboard.snippets.view}>
-        <li className="mr-2" role="presentation">
+      <FeatureFlag features={mode?.features || DEFAULT_DASHBOARD_FEATURE_FLAGS} flag={FEATURE_FLAG.dashboard.snippets.view}>
+        <li role="presentation">
           <Tab navigationType={NavigationType.Snippets} onNavigate={onNavigate}>
-            <ScissorsIcon className={`h-6 w-auto mr-2`} />
+            <ScissorsIcon className={`h-4 w-auto mr-2`} />
             <span>{l10n.t(LocalizationKey.dashboardHeaderTabsSnippets)}</span>
           </Tab>
         </li>
       </FeatureFlag>
-      <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.dashboard.data.view}>
-        <li className="mr-2" role="presentation">
+      <FeatureFlag features={mode?.features || DEFAULT_DASHBOARD_FEATURE_FLAGS} flag={FEATURE_FLAG.dashboard.data.view}>
+        <li role="presentation">
           <Tab navigationType={NavigationType.Data} onNavigate={onNavigate}>
-            <CircleStackIcon className={`h-6 w-auto mr-2`} />
+            <CircleStackIcon className={`h-4 w-auto mr-2`} />
             <span>{l10n.t(LocalizationKey.dashboardHeaderTabsData)}</span>
           </Tab>
         </li>
       </FeatureFlag>
-      <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.dashboard.taxonomy.view}>
-        <li className="mr-2" role="presentation">
+      <FeatureFlag features={mode?.features || DEFAULT_DASHBOARD_FEATURE_FLAGS} flag={FEATURE_FLAG.dashboard.taxonomy.view}>
+        <li role="presentation">
           <Tab navigationType={NavigationType.Taxonomy} onNavigate={onNavigate}>
-            <TagIcon className={`h-6 w-auto mr-2`} />
+            <TagIcon className={`h-4 w-auto mr-2`} />
             <span>{l10n.t(LocalizationKey.dashboardHeaderTabsTaxonomies)}</span>
           </Tab>
         </li>

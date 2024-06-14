@@ -247,14 +247,6 @@
   background-color: var(--vscode-button-secondaryHoverBackground);
 }
 
-.table__cell {
-  overflow: hidden;
-}
-
-.table__title {
-  text-transform: capitalize;
-}
-
 .table__cell__seo_details {
   padding: 10px;
 }
@@ -279,11 +271,6 @@
 
 .table__cell__validation div span + span {
   margin-left: 0.5rem;
-}
-
-.seo__status__note {
-  font-size: 10px;
-  padding: 3px 0;
 }
 
 /* Fields */
@@ -364,7 +351,7 @@ input:checked + .field__toggle__slider:before {
 }
 
 /* File list */
-.file_list vscode-label {
+.file_list label {
   border-bottom: 1px solid var(--vscode-foreground);
 }
 

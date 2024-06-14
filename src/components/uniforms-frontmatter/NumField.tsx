@@ -6,7 +6,7 @@ import { LabelField } from './LabelField';
 export type NumFieldProps = HTMLFieldProps<
   number,
   HTMLDivElement,
-  { decimal?: boolean; inputRef?: Ref<HTMLInputElement> }
+  { decimal?: boolean; inputRef?: Ref<HTMLInputElement>, description?: string }
 >;
 
 function Num({
@@ -47,6 +47,12 @@ function Num({
         type="number"
         value={value ?? ''}
       />
+
+      {
+        props.description && (
+          <span className='block text-xs text-[var(--vscode--settings-headerForeground)] opacity-75 mt-2 mx-2'>{props.description}</span>
+        )
+      }
     </div>
   );
 }

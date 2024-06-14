@@ -244,7 +244,7 @@ export class FrameworkDetector {
         });
       }
 
-      await Settings.update(SETTING_CONTENT_STATIC_FOLDER, assetFoler, true);
+      await Settings.safeUpdate(SETTING_CONTENT_STATIC_FOLDER, assetFoler, true);
     } catch (e) {
       Logger.error(
         `Something failed while processing your Hexo configuration. ${(e as Error).message}`

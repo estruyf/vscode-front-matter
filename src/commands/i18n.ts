@@ -48,10 +48,10 @@ export class i18n {
    *
    * @returns An array of I18nConfig settings.
    */
-  public static getAll() {
+  public static async getAll() {
     const i18nSettings = Settings.get<I18nConfig[]>(SETTING_CONTENT_I18N) || [];
 
-    const folders = Folders.get();
+    const folders = await Folders.get();
     if (folders) {
       for (const folder of folders) {
         if (folder.locales) {
@@ -77,7 +77,7 @@ export class i18n {
     }
 
     const i18nSettings = Settings.get<I18nConfig[]>(SETTING_CONTENT_I18N);
-    let pageFolder = Folders.getPageFolderByFilePath(filePath);
+    let pageFolder = await Folders.getPageFolderByFilePath(filePath);
     if (!pageFolder) {
       pageFolder = await i18n.getPageFolder(filePath);
     }
@@ -100,7 +100,7 @@ export class i18n {
       return false;
     }
 
-    const pageFolder = Folders.getPageFolderByFilePath(filePath);
+    const pageFolder = await Folders.getPageFolderByFilePath(filePath);
     if (!pageFolder || !pageFolder.locale) {
       return false;
     }
@@ -119,7 +119,7 @@ export class i18n {
       return false;
     }
 
-    const pageFolder = Folders.getPageFolderByFilePath(filePath);
+    const pageFolder = await Folders.getPageFolderByFilePath(filePath);
     if (!pageFolder || !pageFolder.defaultLocale) {
       return false;
     }
@@ -155,7 +155,7 @@ export class i18n {
       return;
     }
 
-    let pageFolder = Folders.getPageFolderByFilePath(filePath);
+    let pageFolder = await Folders.getPageFolderByFilePath(filePath);
 
     const fileInfo = await i18n.getFileInfo(filePath);
 
@@ -217,7 +217,7 @@ export class i18n {
       };
     } = {};
 
-    let pageFolder = Folders.getPageFolderByFilePath(filePath);
+    let pageFolder = await Folders.getPageFolderByFilePath(filePath);
     const fileInfo = await i18n.getFileInfo(filePath);
 
     if (pageFolder && pageFolder.defaultLocale && pageFolder.localeSourcePath) {
@@ -272,7 +272,7 @@ export class i18n {
       fileUri = Uri.file(fileUri);
     }
 
-    const pageFolder = Folders.getPageFolderByFilePath(fileUri.fsPath);
+    const pageFolder = await Folders.getPageFolderByFilePath(fileUri.fsPath);
     if (!pageFolder || !pageFolder.localeSourcePath) {
       Notifications.error(l10n.t(LocalizationKey.commandsI18nCreateErrorNoContentFolder));
       return;
@@ -331,7 +331,7 @@ export class i18n {
       return;
     }
 
-    const contentType = ArticleHelper.getContentType(article);
+    const contentType = await ArticleHelper.getContentType(article);
     if (!contentType) {
       Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoContentType));
       return;
@@ -482,7 +482,7 @@ export class i18n {
    * @returns A promise that resolves to the ContentFolder object representing the page folder, or undefined if not found.
    */
   private static async getPageFolder(filePath: string): Promise<ContentFolder | undefined> {
-    const folders = Folders.get();
+    const folders = await Folders.get();
 
     const localeFolders = folders?.filter((folder) => folder.defaultLocale);
     if (!localeFolders) {

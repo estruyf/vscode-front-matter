@@ -4,19 +4,21 @@ import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { FeatureFlag } from '../../../components/features/FeatureFlag';
-import { FEATURE_FLAG } from '../../../constants';
+import { FEATURE_FLAG, GeneralCommands, WEBSITE_LINKS } from '../../../constants';
 import { TelemetryEvent } from '../../../constants/TelemetryEvent';
 import { SnippetParser } from '../../../helpers/SnippetParser';
 import { DashboardMessage } from '../../DashboardMessage';
 import { ModeAtom, SettingsSelector, ViewDataSelector } from '../../state';
 import { FilterInput } from '../Header/FilterInput';
 import { PageLayout } from '../Layout/PageLayout';
-import { FormDialog } from '../Modals/FormDialog';
 import { SponsorMsg } from '../Layout/SponsorMsg';
 import { Item } from './Item';
 import { NewForm } from './NewForm';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { List } from '../Media/List';
+import { SlideOver } from '../Modals/SlideOver';
+import { DEFAULT_DASHBOARD_FEATURE_FLAGS } from '../../../constants/DefaultFeatureFlags';
 
 export interface ISnippetsProps { }
 
@@ -80,15 +82,24 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
   };
 
   useEffect(() => {
+    Messenger.send(DashboardMessage.setTitle, l10n.t(LocalizationKey.dashboardHeaderTabsSnippets));
+
     Messenger.send(DashboardMessage.sendTelemetry, {
       event: TelemetryEvent.webviewSnippetsView
+    });
+
+    Messenger.send(GeneralCommands.toVSCode.logging.info, {
+      message: `Snippets view loaded`,
+      location: 'DASHBOARD'
     });
   }, []);
 
   return (
     <PageLayout
       header={
-        <FeatureFlag features={mode?.features || []} flag={FEATURE_FLAG.dashboard.snippets.manage}>
+        <FeatureFlag
+          features={mode?.features || DEFAULT_DASHBOARD_FEATURE_FLAGS}
+          flag={FEATURE_FLAG.dashboard.snippets.manage}>
           <div
             className={`py-3 px-4 flex items-center justify-between border-b border-[var(--frontmatter-border)]`}
             aria-label={l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsAriaLabel)}
@@ -128,14 +139,13 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
         )}
 
         {(snippetKeys && snippetKeys.length > 0) ? (
-          <ul
-            role="list"
-            className={`grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8`}
+          <List
+            gap={4}
           >
             {snippetKeys.map((snippetKey: any, index: number) => (
               <Item key={index} snippetKey={snippetKey} snippet={snippets[snippetKey]} />
             ))}
-          </ul>
+          </List>
         ) : (
           <div className="w-full h-full flex items-center justify-center text-white">
             <div className={`flex flex-col items-center text-[var(--frontmatter-text)]`}>
@@ -146,7 +156,7 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
               <p className="text-xl mt-4">
                 <a
                   className={`text-[var(--frontmatter-link)] hover:text-[var(--frontmatter-link-hover)]`}
-                  href={`https://frontmatter.codes/docs/snippets`}
+                  href={WEBSITE_LINKS.docs.snippets}
                   title={l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsReadMore)}
                 >
                   {l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsReadMore)}
@@ -157,7 +167,7 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
         )}
 
         {showCreateDialog && (
-          <FormDialog
+          <SlideOver
             title={l10n.t(LocalizationKey.dashboardSnippetsViewSnippetsFormDialogTitle)}
             description={``}
             isSaveDisabled={!snippetTitle || !snippetBody}
@@ -176,7 +186,7 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
               onDescriptionUpdate={(value: string) => setSnippetDescription(value)}
               onBodyUpdate={(value: string) => setSnippetBody(value)}
             />
-          </FormDialog>
+          </SlideOver>
         )}
       </div>
 

@@ -6,7 +6,7 @@ import { LabelField } from './LabelField';
 export type TextFieldProps = HTMLFieldProps<
   string,
   HTMLDivElement,
-  { inputRef?: Ref<HTMLInputElement> }
+  { inputRef?: Ref<HTMLInputElement>, description?: string }
 >;
 
 function Text({
@@ -40,6 +40,12 @@ function Text({
         type={type}
         value={value ?? ''}
       />
+
+      {
+        props.description && (
+          <span className='block text-xs text-[var(--vscode--settings-headerForeground)] opacity-75 mt-2 mx-2'>{props.description}</span>
+        )
+      }
     </div>
   );
 }

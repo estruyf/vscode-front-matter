@@ -1,6 +1,3 @@
-import { processFmPlaceholders } from './../helpers/processFmPlaceholders';
-import { processPathPlaceholders } from './../helpers/processPathPlaceholders';
-import { Telemetry } from './../helpers/Telemetry';
 import {
   SETTING_PREVIEW_HOST,
   SETTING_PREVIEW_PATHNAME,
@@ -9,23 +6,33 @@ import {
   PreviewCommands,
   SETTING_EXPERIMENTAL,
   SETTING_DATE_FORMAT,
-  GeneralCommands
+  GeneralCommands,
+  SETTING_PREVIEW_TRAILING_SLASH
 } from './../constants';
-import { ArticleHelper } from './../helpers/ArticleHelper';
 import { join, parse } from 'path';
 import { commands, env, Uri, ViewColumn, window, WebviewPanel, extensions } from 'vscode';
-import { Extension, parseWinPath, processTimePlaceholders, Settings } from '../helpers';
+import {
+  ArticleHelper,
+  Extension,
+  parseWinPath,
+  processI18nPlaceholders,
+  processTimePlaceholders,
+  processFmPlaceholders,
+  processPathPlaceholders,
+  Settings,
+  Telemetry,
+  processDateTimePlaceholders
+} from '../helpers';
 import { ContentFolder, ContentType, PreviewSettings } from '../models';
-import { format } from 'date-fns';
-import { DateHelper } from '../helpers/DateHelper';
 import { Article } from '.';
-import { urlJoin } from 'url-join-ts';
 import { WebviewHelper } from '@estruyf/vscode';
 import { Folders } from './Folders';
 import { ParsedFrontMatter } from '../parsers';
 import { getLocalizationFile } from '../utils/getLocalizationFile';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
+import { joinUrl } from '../utils';
+import { i18n } from './i18n';
 
 export class Preview {
   public static filePath: string | undefined = undefined;
@@ -65,7 +72,7 @@ export class Preview {
     const localhostUrl = await this.getLocalServerUrl();
 
     if (browserLiteCommand) {
-      const pageUrl = urlJoin(localhostUrl.toString(), slug || '');
+      const pageUrl = joinUrl(localhostUrl.toString(), slug || '');
       commands.executeCommand(browserLiteCommand, pageUrl);
       return;
     }
@@ -177,7 +184,7 @@ export class Preview {
           <title>Front Matter Preview</title>
         </head>
         <body style="width:100%;height:100%;margin:0;padding:0;overflow:hidden">
-          <div id="app" data-type="preview" data-url="${urlJoin(
+          <div id="app" data-type="preview" data-url="${joinUrl(
             localhostUrl.toString(),
             slug || ''
           )}" data-isProd="${isProd}" data-environment="${
@@ -208,7 +215,7 @@ export class Preview {
 
       webView.webview.postMessage({
         command: PreviewCommands.toWebview.updateUrl,
-        payload: urlJoin(localhost.toString(), slug || '')
+        payload: joinUrl(localhost.toString(), slug || '')
       });
     }
   }
@@ -237,15 +244,13 @@ export class Preview {
 
     let contentType: ContentType | undefined = undefined;
     if (article?.data) {
-      contentType = ArticleHelper.getContentType(article);
+      contentType = await ArticleHelper.getContentType(article);
     }
 
     // Check if there is a pathname defined on content folder level
-    const folders = Folders.get();
+    const folders = await Folders.get();
     if (folders.length > 0) {
-      const foldersWithPath = folders.filter((folder) => folder.previewPath);
-
-      for (const folder of foldersWithPath) {
+      for (const folder of folders) {
         const folderPath = parseWinPath(folder.path);
         if (filePath.startsWith(folderPath)) {
           if (!selectedFolder || selectedFolder.path.length < folderPath.length) {
@@ -291,6 +296,11 @@ export class Preview {
       slug = Article.getSlug();
     }
 
+    const locale = await i18n.getLocale(filePath);
+    if (locale && locale.path === slug) {
+      slug = '';
+    }
+
     if (pathname) {
       // Known placeholders
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
@@ -310,10 +320,17 @@ export class Preview {
         const folderPath = wsFolder ? parseWinPath(wsFolder.fsPath) : '';
         const relativePath = filePath.replace(folderPath, '');
         pathname = processPathPlaceholders(pathname, relativePath, filePath, selectedFolder);
+        pathname = processI18nPlaceholders(pathname, selectedFolder);
 
         const file = parse(filePath);
-        if (file.name.toLowerCase() === 'index' && pathname.endsWith(slug)) {
-          slug = '';
+        if (file.name.toLowerCase() === 'index') {
+          const cleanPathName = pathname.endsWith('/')
+            ? pathname.substring(0, pathname.length - 1)
+            : pathname;
+
+          if (cleanPathName.endsWith(slug) || !pathname || pathname === '/') {
+            slug = '';
+          }
         }
       }
 
@@ -321,11 +338,9 @@ export class Preview {
       pathname = article?.data ? processFmPlaceholders(pathname, article?.data) : pathname;
 
       try {
-        const articleDate = ArticleHelper.getDate(article);
-        slug = join(
-          format(articleDate || new Date(), DateHelper.formatUpdate(pathname) as string),
-          slug
-        );
+        const articleDate = await ArticleHelper.getDate(article);
+        pathname = processDateTimePlaceholders(pathname, dateFormat, articleDate);
+        slug = join(pathname, slug);
       } catch (error) {
         slug = join(pathname, slug);
       }
@@ -337,6 +352,24 @@ export class Preview {
     // Verify if the slug doesn't end with _index or index
     if (slug.endsWith('_index') || slug.endsWith('index')) {
       slug = slug.substring(0, slug.endsWith('_index') ? slug.length - 6 : slug.length - 5);
+    }
+
+    // Add the trailing slash
+    let trailingSlash = false;
+    if (settings.trailingSlash !== undefined) {
+      trailingSlash = settings.trailingSlash;
+    }
+
+    if (selectedFolder && selectedFolder.trailingSlash !== undefined) {
+      trailingSlash = selectedFolder.trailingSlash;
+    }
+
+    if (contentType && contentType.trailingSlash !== undefined) {
+      trailingSlash = contentType.trailingSlash;
+    }
+
+    if (trailingSlash && !slug.endsWith('/')) {
+      slug = `${slug}/`;
     }
 
     return slug;
@@ -375,10 +408,12 @@ export class Preview {
   public static getSettings(): PreviewSettings {
     const host = Settings.get<string>(SETTING_PREVIEW_HOST);
     const pathname = Settings.get<string>(SETTING_PREVIEW_PATHNAME);
+    const trailingSlash = Settings.get<boolean>(SETTING_PREVIEW_TRAILING_SLASH);
 
     return {
       host,
-      pathname
+      pathname,
+      trailingSlash
     };
   }
 

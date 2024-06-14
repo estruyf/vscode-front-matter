@@ -54,6 +54,9 @@ export class PagesListener extends BaseListener {
       case DashboardMessage.deleteFile:
         this.deletePage(msg.payload);
         break;
+      case DashboardMessage.rename:
+        ArticleHelper.rename(msg.payload);
+        break;
     }
   }
 
@@ -66,9 +69,9 @@ export class PagesListener extends BaseListener {
       if (ArticleHelper.isSupportedFile(doc)) {
         Logger.info(`File saved ${doc.uri.fsPath}`);
         // Optimize the list of recently changed files
-        DataListener.getFoldersAndFiles();
+        DataListener.getFoldersAndFiles(doc.uri);
         // Trigger the metadata update
-        this.watcherExec(doc.uri);
+        this.watcherExec(doc.uri, 'save');
       }
     });
   }
@@ -77,7 +80,7 @@ export class PagesListener extends BaseListener {
    * Start watching the folders in the current workspace for content changes
    */
   public static async startWatchers() {
-    const folders = Folders.get();
+    const folders = await Folders.get();
 
     if (!folders || folders.length === 0) {
       return;
@@ -100,9 +103,9 @@ export class PagesListener extends BaseListener {
         false,
         false
       );
-      watcher.onDidCreate(async (uri: Uri) => this.watcherExec(uri));
-      watcher.onDidChange(async (uri: Uri) => this.watcherExec(uri));
-      watcher.onDidDelete(async (uri: Uri) => this.watcherExec(uri));
+      watcher.onDidCreate(async (uri: Uri) => this.watcherExec(uri, 'create'));
+      watcher.onDidChange(async (uri: Uri) => this.watcherExec(uri, 'change'));
+      watcher.onDidDelete(async (uri: Uri) => this.watcherExec(uri, 'delete'));
       this.watchers[folderUri.fsPath] = watcher;
     }
   }
@@ -121,7 +124,7 @@ export class PagesListener extends BaseListener {
     if (!article) {
       return;
     }
-    const contentType = ArticleHelper.getContentType(article);
+    const contentType = await ArticleHelper.getContentType(article);
 
     Logger.info(`Deleting file: ${path}`);
 
@@ -159,10 +162,10 @@ export class PagesListener extends BaseListener {
    * Watcher for processing page updates
    * @param file
    */
-  private static async watcherExec(file: Uri) {
+  private static async watcherExec(file: Uri, type?: 'create' | 'change' | 'delete' | 'save') {
     const progressFile = async (file: Uri) => {
       const ext = Extension.getInstance();
-      Logger.info(`File watcher execution for: ${file.fsPath}`);
+      Logger.info(`File watcher execution for (${type}): ${file.fsPath}`);
 
       const pageIdx = this.lastPages.findIndex((p) => p.fmFilePath === file.fsPath);
       if (pageIdx !== -1) {

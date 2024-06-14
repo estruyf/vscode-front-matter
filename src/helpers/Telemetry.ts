@@ -1,8 +1,11 @@
 import { workspace } from 'vscode';
 import { Extension, Settings } from '.';
-import { EXTENSION_BETA_ID, EXTENSION_ID, SETTING_TELEMETRY_DISABLE } from '../constants';
-
-const METRICS_URL = 'https://frontmatter.codes/api/metrics';
+import {
+  EXTENSION_BETA_ID,
+  EXTENSION_ID,
+  SETTING_TELEMETRY_DISABLE,
+  WEBSITE_LINKS
+} from '../constants';
 
 export class Telemetry {
   private static instance: Telemetry;
@@ -77,7 +80,7 @@ export class Telemetry {
 
     // Set a new timeout
     instance.timeout = setTimeout(async () => {
-      await fetch(METRICS_URL, {
+      await fetch(WEBSITE_LINKS.api.metrics, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

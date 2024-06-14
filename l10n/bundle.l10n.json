@@ -37,6 +37,12 @@
   "common.back": "Back",
   "common.open": "Open",
   "common.openWithValue": "Open: {0}",
+  "common.openCustomActions": "Open custom actions",
+  "common.view": "View",
+  "common.translate": "Translate",
+  "common.languages": "Languages",
+  "common.scripts": "Scripts",
+  "common.rename": "Rename",
 
   "loading.initPages": "Loading content",
 
@@ -68,7 +74,7 @@
 
   "settings.integrationsView.deepl.title": "DeepL",
   "settings.integrationsView.deepl.intput.label": "API key",
-  "settings.integrationsView.deepl.intput.placeholder": "Enter your Azure Translator API key",
+  "settings.integrationsView.deepl.intput.placeholder": "Enter your Deepl API key",
 
   "settings.integrationsView.azure.title": "Azure AI Translator Service",
   "settings.integrationsView.azure.intput.label": "Subscription key",
@@ -146,6 +152,10 @@
   "dashboard.filters.languageFilter.label": "Locale",
   "dashboard.filters.languageFilter.all": "All",
 
+  "dashboard.header.actionsBar.itemsSelected": "{0} selected",
+  "dashboard.header.actionsBar.alertDelete.title": "Delete selected files",
+  "dashboard.header.actionsBar.alertDelete.description": "Are you sure you want to delete the selected files?",
+
   "dashboard.header.breadcrumb.home": "Home",
 
   "dashboard.header.clearFilters.title": "Clear filters, grouping, and sorting",
@@ -199,7 +209,7 @@
   "dashboard.header.tabs.contents": "Contents",
   "dashboard.header.tabs.media": "Media",
   "dashboard.header.tabs.snippets": "Snippets",
-  "dashboard.header.tabs.data": "data",
+  "dashboard.header.tabs.data": "Data",
   "dashboard.header.tabs.taxonomies": "Taxonomies",
 
   "dashboard.header.viewSwitch.toGrid": "Change to grid",
@@ -228,6 +238,9 @@
 
   "dashboard.media.folderCreation.hexo.create": "Create post asset folder",
   "dashboard.media.folderCreation.folder.create": "Create new folder",
+
+  "dashboard.media.folderItem.contentDirectory": "Content directory",
+  "dashboard.media.folderItem.publicDirectory": "Public directory",
 
   "dashboard.media.item.buttom.insert.image": "Insert image",
   "dashboard.media.item.buttom.insert.snippet": "Insert snippet",
@@ -261,6 +274,8 @@
   "dashboard.preview.button.refresh.title": "Refresh",
   "dashboard.preview.button.open.title": "Open",
 
+  "dashboard.snippetsView.item.type.content": "Content snippet",
+  "dashboard.snippetsView.item.type.media": "Media snippet",
   "dashboard.snippetsView.item.quickAction.editSnippet": "Edit snippet",
   "dashboard.snippetsView.item.quickAction.deleteSnippet": "Delete snippet",
   "dashboard.snippetsView.item.quickAction.viewSnippet": "View snippet file",
@@ -454,6 +469,7 @@
   "panel.globalSettings.action.server.placeholder": "Example: {0}",
 
   "panel.metadata.title": "Metadata",
+  "panel.metadata.focusProblems": "Check the problems view for more information",
 
   "panel.otherActions.title": "Other actions",
   "panel.otherActions.writingSettings.enabled": "Writing settings enabled",
@@ -514,6 +530,10 @@
 
   "commands.article.setDate.error": "Something failed while parsing the date format. Check your \"{0}\" setting.",
   "commands.article.updateSlug.error": "Failed to rename file: {0}",
+  "commands.article.rename.fileNotExists.error": "The file did not exist",
+  "commands.article.rename.fileExists.error": "A file with the name \"{0}\" already exists",
+  "commands.article.rename.fileName.title": "Rename: {0}",
+  "commands.article.rename.fileName.prompt": "File name",
 
   "commands.cache.cleared": "Cache cleared",
 
@@ -707,6 +727,7 @@
   "helpers.settingsHelper.readConfig.progress.title": "{0}: Reading dynamic config file...",
   "helpers.settingsHelper.readConfig.error": "Error reading your configuration.",
   "helpers.settingsHelper.refreshConfig.success": "Settings have been refreshed.",
+  "helpers.settingsHelper.safeUpdate.warning": "Cannot update setting \"{0}\" because you've extended or split the Front Matter CMS configuration. Please manually add your changes. Check the output for the setting update.",
 
   "helpers.taxonomyHelper.rename.input.title": "Rename the {0}",
   "helpers.taxonomyHelper.rename.validate.equalValue": "The new value must be different from the old one.",
@@ -752,6 +773,7 @@
   "listeners.panel.dataListener.aiSuggestTaxonomy.noEditor.error": "No active editor",
   "listeners.panel.dataListener.aiSuggestTaxonomy.noData.error": "No article data",
   "listeners.panel.dataListener.getDataFileEntries.noDataFiles.error": "Couldn't find data file entries",
+  "listeners.panel.dataListener.pushMetadata.frontMatter.error": "Something went wrong while parsing your front matter. Please check the contents of your file.",
 
 
   "listeners.panel.taxonomyListener.aiSuggestTaxonomy.noEditor.error": "No active editor",

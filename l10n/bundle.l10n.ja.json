@@ -3,8 +3,8 @@
   "common.edit": "編集",
   "common.delete": "削除",
   "common.cancel": "キャンセル",
-  "common.clear": "クリア",
   "common.apply": "適用",
+  "common.clear": "クリア",
   "common.clear.value": "値をクリア",
   "common.search": "検索",
   "common.save": "保存",
@@ -35,6 +35,16 @@
   "common.no": "いいえ",
   "common.openSettings": "設定を開く",
   "common.back": "戻る",
+  "common.open": "開く",
+  "common.openWithValue": "開く: {0}",
+  "common.openCustomActions": "カスタムコマンドを開く",
+  "common.view": "表示",
+  "common.translate": "翻訳する",
+  "common.languages": "言語",
+  "common.scripts": "スクリプト",
+  "common.rename": "ファイル名を変更する",
+
+  "loading.initPages": "記事を読み込んでいます",
 
   "notifications.outputChannel.link": "出力ウィンドウ",
   "notifications.outputChannel.description": "詳細は{0}を確認してください。",
@@ -42,17 +52,35 @@
   "settings.view.common": "一般",
   "settings.view.contentFolders": "記事フォルダー",
   "settings.view.astro": "Astro",
+  "settings.view.integration": "統合機能",
+
   "settings.openOnStartup": "起動時にダッシュボードを開く",
   "settings.contentTypes": "記事タイプ",
   "settings.contentFolders": "記事フォルダー",
   "settings.diagnostic": "診断",
   "settings.diagnostic.description": "診断プログラムを実行して、Front Matter CMS構成全体を確認できます。",
   "settings.diagnostic.link": "完全診断を実行する",
+  "settings.git": "Git同期",
+  "settings.git.enabled": "Git同期を有効にして、変更内容をリポジトリと簡単に同期させます。",
+  "settings.git.commitMessage": "コミットメッセージ",
+  "settings.git.submoduleInfo": "Gitサブモジュールを使用している場合は、サブモジュールの設定についてドキュメントを参照してください。",
+  "settings.git.submoduleLink": "Gitサブモジュールについて確認する",
+  "settings.integration.title": "統合機能",
 
   "settings.commonSettings.website.title": "ウェブサイトとSSGの設定",
   "settings.commonSettings.previewUrl": "プレビュー用URL",
   "settings.commonSettings.websiteUrl": "ウェブサイトのURL",
   "settings.commonSettings.startCommand": "SSG/フレームワーク起動コマンド",
+
+  "settings.integrationsView.deepl.title": "DeepL",
+  "settings.integrationsView.deepl.intput.label": "API key",
+  "settings.integrationsView.deepl.intput.placeholder": "DeepL API keyを入力",
+
+  "settings.integrationsView.azure.title": "Azure AI Translator",
+  "settings.integrationsView.azure.intput.label": "サブスクリプションキー",
+  "settings.integrationsView.azure.intput.placeholder": "Azure AI Translatorのサブスクリプションキーを入力",
+  "settings.integrationsView.azure.region.label": "リージョン",
+  "settings.integrationsView.azure.region.placeholder": "Azure AI Translatorのリージョンを入力 例: westeurope",
 
   "developer.title": "開発モード",
   "developer.reload.title": "ダッシュボードを再読み込み",
@@ -81,6 +109,8 @@
   "dashboard.contents.contentActions.menuItem.view": "開く",
   "dashboard.contents.contentActions.alert.title": "削除: {0}",
   "dashboard.contents.contentActions.alert.description": "本当に\"{0}\"を削除しますか？",
+  "dashboard.contents.contentActions.translations.create": "翻訳する",
+  "dashboard.contents.contentActions.translations.menu": "翻訳版",
 
   "dashboard.contents.item.invalidTitle": "<無効なタイトル>",
   "dashboard.contents.item.invalidDescription": "<無効なディスクリプション>",
@@ -108,6 +138,7 @@
   "dashboard.dataView.dataView.getStarted": "データタイプを選択して開始する",
   "dashboard.dataView.dataView.noDataFiles": "データファイルが見つかりませんでした",
   "dashboard.dataView.dataView.getStarted.link": "データファイルの利用方法について確認する",
+  "dashboard.dataView.dataView.update.message": "データエントリーを更新しました。",
 
   "dashboard.dataView.emptyView.heading": "最初にデータタイプを選んでください",
 
@@ -117,6 +148,13 @@
   "dashboard.dataView.sortableItem.alert.description": "本当にこのデータアイテムを削除しますか？",
 
   "dashboard.errorView.description": "ダッシュボードを一旦閉じてからやり直してください。",
+
+  "dashboard.filters.languageFilter.label": "ロケール",
+  "dashboard.filters.languageFilter.all": "全て",
+
+  "dashboard.header.actionsBar.itemsSelected": "{0}件を選択中",
+  "dashboard.header.actionsBar.alertDelete.title": "選択ファイルを削除",
+  "dashboard.header.actionsBar.alertDelete.description": "選択したファイルを本当に削除しますか？",
 
   "dashboard.header.breadcrumb.home": "ホーム",
 
@@ -201,10 +239,17 @@
   "dashboard.media.folderCreation.hexo.create": "Assetフォルダーを作成",
   "dashboard.media.folderCreation.folder.create": "新規フォルダーを作成",
 
+  "dashboard.media.folderItem.contentDirectory": "コンテンツディレクトリー",
+  "dashboard.media.folderItem.publicDirectory": "Publicディレクトリー",
+
+  "dashboard.media.item.buttom.insert.image": "画像を挿入",
+  "dashboard.media.item.buttom.insert.snippet": "スニペットを挿入",
+
   "dashboard.media.item.quickAction.insert.field": "この画像を\"{0}\"フィールドに追加",
   "dashboard.media.item.quickAction.insert.markdown": "画像をMarkdown記法で挿入",
   "dashboard.media.item.quickAction.copy.path": "ファイルパスをコピー",
   "dashboard.media.item.quickAction.delete": "ファイルを削除",
+  "dashboard.media.item.menuItem.view": "メタデータの詳細を表示",
   "dashboard.media.item.menuItem.edit.metadata": "メタデータを編集",
   "dashboard.media.item.menuItem.insert.image": "画像を挿入",
   "dashboard.media.item.menuItem.reveal.media": "メディアの場所を表示",
@@ -275,6 +320,8 @@
   "dashboard.steps.stepsToGetStarted.contentFolders.information.description": "エクスプローラーでフォルダー名を右クリックして「フォルダーを登録」を選択する方法でも、フォルダーの登録が可能です。",
   "dashboard.steps.stepsToGetStarted.tags.name": "全てのタグとカテゴリーをインポート（オプション）",
   "dashboard.steps.stepsToGetStarted.tags.description": "Front Matterに記事用フォルダーが登録されました。記事から全てのタグとカテゴリーをインポートしますか？",
+  "dashboard.steps.stepsToGetStarted.git.name": "Git同期を有効化しますか？",
+  "dashboard.steps.stepsToGetStarted.git.description": "Git同期を有効にして、変更内容をリポジトリと簡単に同期させます。",
   "dashboard.steps.stepsToGetStarted.showDashboard.name": "ダッシュボードを開く",
   "dashboard.steps.stepsToGetStarted.showDashboard.description": "全ての設定が終わると、ダッシュボードが表示できるようになります。",
   "dashboard.steps.stepsToGetStarted.template.name": "設定用のテンプレートを使用する",
@@ -283,6 +330,7 @@
   "dashboard.steps.stepsToGetStarted.astroContentTypes.name": "Astroコンテンツコレクションのコンテンツタイプを作成する",
 
   "dashboard.taxonomyView.button.add.title": "\"{0}\"をタクソノミーに追加",
+  "dashboard.taxonomyView.button.tag.title": "タグを追加",
   "dashboard.taxonomyView.button.edit.title": "\"{0}\"を編集",
   "dashboard.taxonomyView.button.merge.title": "\"{0}\"をマージ",
   "dashboard.taxonomyView.button.move.title": "他のタクソノミーへ移行",
@@ -328,6 +376,11 @@
 
   "dashboard.configuration.astro.astroContentTypes.empty": "Astroコンテンツコレクションが見つかりません。",
   "dashboard.configuration.astro.astroContentTypes.description": "以下のAstroコンテンツコレクションは、コンテンツタイプを生成するために使用できます。",
+
+  "panel.git.gitAction.title": "変更の反映",
+  "panel.git.gitAction.branch.select": "ブランチを選択",
+  "panel.git.gitAction.input.placeholder": "コミットメッセージ",
+  "panel.git.gitAction.button.fetch": "フェッチ",
 
   "panel.contentType.contentTypeValidator.title": "記事タイプ",
   "panel.contentType.contentTypeValidator.hint": "記事タイプのフィールドは設定と異なります。この記事の記事タイプを、作成・更新または設定しますか？",
@@ -414,6 +467,7 @@
   "panel.globalSettings.action.server.placeholder": "例: {0}",
 
   "panel.metadata.title": "メタデータ",
+  "panel.metadata.focusProblems": "詳細を「問題」表示で確認してください。",
 
   "panel.otherActions.title": "他のコマンド",
   "panel.otherActions.writingSettings.enabled": "ライティング設定が有効",
@@ -474,6 +528,10 @@
 
   "commands.article.setDate.error": "日付の表示形式の解析中に何らかの問題が発生しました。\"{0}\"の設定を確認してください。",
   "commands.article.updateSlug.error": "ファイル名を変更できませんでした。: {0}",
+  "commands.article.rename.fileNotExists.error": "ファイルが存在しません。",
+  "commands.article.rename.fileExists.error": "\"{0}\" というファイル名は既に存在しています。",
+  "commands.article.rename.fileName.title": "ファイル名を変更: {0}",
+  "commands.article.rename.fileName.prompt": "ファイル名",
 
   "commands.cache.cleared": "キャッシュがクリアされました。",
 
@@ -500,6 +558,19 @@
   "commands.folders.get.notificationError.title": "\"{0}\"フォルダーが存在しません。このフォルダーを設定から削除してください。",
   "commands.folders.get.notificationError.remove.action": "フォルダー設定を削除",
   "commands.folders.get.notificationError.create.action": "フォルダーを作成",
+
+  "commands.i18n.create.warning.noFileSelected": "ファイルが選択されていません。",
+  "commands.i18n.create.warning.noFile": "ファイルが取得できませんでした。",
+  "commands.i18n.create.warning.noContentType": "現在のファイルの記事タイプを取得できませんでした。",
+  "commands.i18n.create.warning.noConfig": "i18nの設定が見つかりません。",
+  "commands.i18n.create.error.noLocaleDefinition": "現在のファイルのロケールを取得できませんでした。",
+  "commands.i18n.create.error.noLocales": "現在のファイルは利用可能なすべての言語に翻訳されています。",
+  "commands.i18n.create.error.noContentFolder": "現在のファイルの記事フォルダーを指定できませんでした。",
+  "commands.i18n.create.error.fileExists": "そのi18n翻訳は既に存在しています。",
+  "commands.i18n.create.success.created": "\"{0}\" i18n記事ファイルを作成しました。",
+  "commands.i18n.create.quickPick.title": "言語別の記事を作成",
+  "commands.i18n.create.quickPick.placeHolder": "どの言語で記事を作成しますか？",
+  "commands.i18n.translate.progress.title": "記事を翻訳しています...",
 
   "commands.preview.panel.title": "プレビュー: {0}",
   "commands.preview.askUserToPickFolder.title": "プレビュー用の記事フォルダーを選択してください。",
@@ -611,9 +682,6 @@
   "helpers.extension.getVersion.changelog": "変更履歴を確認する",
   "helpers.extension.getVersion.starIt": "⭐️を付ける",
   "helpers.extension.getVersion.update.notification": "{0} が v{1} に更新されました！新機能をチェックしてください！",
-  "helpers.extension.migrateSettings.deprecated.warning": "\"{0}\"及び\"{1}\"の設定は非推奨になりました。代わりに\"isPublishDate\"と\"isModifiedDate\"の日付フィールドを使用してください。",
-  "helpers.extension.migrateSettings.deprecated.warning.hide": "非表示にする",
-  "helpers.extension.migrateSettings.deprecated.warning.seeGuide": "移行ガイドを読む",
   "helpers.extension.migrateSettings.templates.quickPick.title": "{0} - テンプレート",
   "helpers.extension.migrateSettings.templates.quickPick.placeholder": "テンプレート機能の使用を継続しますか？",
   "helpers.extension.checkIfExtensionCanRun.warning": "Front MatterのBETA版は安定版がインストールされている場合は利用できません。BETA版のみがインストールされていることを確認してください。",
@@ -648,6 +716,7 @@
   "helpers.questions.selectContentType.quickPick.title": "記事タイプ",
   "helpers.questions.selectContentType.quickPick.placeholder": "新規作成する記事の記事タイプを選択してください。",
   "helpers.questions.selectContentType.noSelection.warning": "記事タイプが選択されていません。",
+  "helpers.questions.selectContentType.quickPick.error.noContentTypes": "このフォルダーには、一致する記事タイプが設定されていません。",
 
   "helpers.seoHelper.checkLength.diagnostic.message": "記事{0}の文字数が{1}文字を超えています（現在の文字数: {2}）。SEOの観点上、{1}文字以内に収めることが推奨されます。",
 
@@ -690,6 +759,7 @@
   "listeners.dashboard.settingsListener.triggerTemplate.progress.title": "テンプレートをダウンロードして初期化しています...",
   "listeners.dashboard.settingsListener.triggerTemplate.download.error": "テンプレートのダウンロードに失敗しました。",
   "listeners.dashboard.settingsListener.triggerTemplate.init.error": "テンプレートの初期化に失敗しました。",
+  "listeners.dashboard.settingsListener.setSecretValue.message": "設定が更新されました。",
 
   "listeners.dashboard.snippetListener.addSnippet.missingFields.warning": "スニペットのタイトルまたはbodyが空です。",
   "listeners.dashboard.snippetListener.addSnippet.exists.warning": "同じタイトルのスニペットが既に存在しています。",
@@ -700,6 +770,7 @@
   "listeners.panel.dataListener.aiSuggestTaxonomy.noEditor.error": "アクティブなエディターがありません。",
   "listeners.panel.dataListener.aiSuggestTaxonomy.noData.error": "記事データがありません。",
   "listeners.panel.dataListener.getDataFileEntries.noDataFiles.error": "データファイルのエントリーが見つかりませんでした。",
+  "listeners.panel.dataListener.pushMetadata.frontMatter.error": "front matterの解析中にエラーが発生しまいｓた。ファイルの内容を確認してください。",
 
 
   "listeners.panel.taxonomyListener.aiSuggestTaxonomy.noEditor.error": "アクティブなエディターがありません。",

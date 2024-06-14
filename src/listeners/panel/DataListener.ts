@@ -5,7 +5,7 @@ import { Folders } from '../../commands/Folders';
 import { Command } from '../../panelWebView/Command';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
-import { authentication, commands, window } from 'vscode';
+import { Uri, authentication, commands, window } from 'vscode';
 import {
   ArticleHelper,
   Extension,
@@ -14,7 +14,8 @@ import {
   ContentType,
   processArticlePlaceholdersFromData,
   processTimePlaceholders,
-  processFmPlaceholders
+  processFmPlaceholders,
+  parseWinPath
 } from '../../helpers';
 import {
   COMMAND_NAME,
@@ -28,8 +29,14 @@ import {
   SETTING_TAXONOMY_CONTENT_TYPES
 } from '../../constants';
 import { Article, Preview } from '../../commands';
-import { ParsedFrontMatter } from '../../parsers';
-import { Field, Mode, PostMessageData, ContentType as IContentType } from '../../models';
+import { FrontMatterParser, ParsedFrontMatter } from '../../parsers';
+import {
+  Field,
+  Mode,
+  PostMessageData,
+  ContentType as IContentType,
+  FolderInfo
+} from '../../models';
 import { encodeEmoji, fieldWhenClause } from '../../utils';
 import { PanelProvider } from '../../panelWebView/PanelProvider';
 import { MessageHandlerData } from '@estruyf/vscode';
@@ -37,11 +44,13 @@ import { SponsorAi } from '../../services/SponsorAI';
 import { Terminal } from '../../services';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
+import { parse } from 'path';
 
 const FILE_LIMIT = 10;
 
 export class DataListener extends BaseListener {
   private static lastMetadataUpdate: any = {};
+  private static folderInfo: FolderInfo[] | null = null;
 
   /**
    * Process the messages for the dashboard views
@@ -158,7 +167,8 @@ export class DataListener extends BaseListener {
   /**
    * Retrieve the information about the registered folders and its files
    */
-  public static async getFoldersAndFiles() {
+  public static async getFoldersAndFiles(file?: Uri) {
+    Logger.verbose('DataListener:getFoldersAndFiles:start');
     const mode = Settings.get<string | null>(SETTING_GLOBAL_ACTIVE_MODE);
     const modes = Settings.get<Mode[]>(SETTING_GLOBAL_MODES);
 
@@ -175,9 +185,41 @@ export class DataListener extends BaseListener {
       }
     }
 
-    const folders = (await Folders.getInfo(FILE_LIMIT)) || null;
+    if (file && DataListener.folderInfo && DataListener.folderInfo.length > 0) {
+      Logger.verbose('DataListener:getFoldersAndFiles:updateFile');
+      const folderPath = parseWinPath(parse(file.fsPath).dir);
+      const folderInfo = DataListener.folderInfo.find((f) => parseWinPath(f.path) === folderPath);
+      if (folderInfo) {
+        // Check if file exists
+        let fileInfo = folderInfo.lastModified.find(
+          (f) => parseWinPath(f.filePath) === parseWinPath(file.fsPath)
+        );
 
-    this.sendMsg(Command.folderInfo, folders);
+        if (fileInfo) {
+          folderInfo.lastModified = folderInfo.lastModified.filter(
+            (f) => parseWinPath(f.filePath) !== parseWinPath(file.fsPath)
+          );
+        }
+
+        fileInfo = await Folders.getFileStats(file, folderInfo.path);
+        if (fileInfo) {
+          folderInfo.lastModified.unshift(fileInfo);
+
+          // Limit the amount of files
+          if (folderInfo.lastModified.length > FILE_LIMIT) {
+            folderInfo.lastModified = folderInfo.lastModified.slice(0, FILE_LIMIT);
+          }
+
+          Logger.verbose('DataListener:getFoldersAndFiles:end - with file update only');
+          this.sendMsg(Command.folderInfo, DataListener.folderInfo);
+          return;
+        }
+      }
+    }
+
+    Logger.verbose('DataListener:getFoldersAndFiles:end');
+    DataListener.folderInfo = (await Folders.getInfo(FILE_LIMIT)) || null;
+    this.sendMsg(Command.folderInfo, DataListener.folderInfo);
   }
 
   /**
@@ -196,11 +238,39 @@ export class DataListener extends BaseListener {
     let articleDetails = null;
 
     try {
-      if (filePath) {
+      if (filePath && !filePath.startsWith('extension-output-eliostruyf')) {
         articleDetails = await ArticleHelper.getDetails(filePath);
+
+        if (!articleDetails || articleDetails === 'nodata') {
+          try {
+            const contents = await ArticleHelper.getContents(filePath);
+            if (contents) {
+              FrontMatterParser.fromFile(contents);
+            }
+          } catch (e) {
+            this.sendMsg(Command.metadata, {
+              fmError: l10n.t(
+                LocalizationKey.listenersPanelDataListenerPushMetadataFrontMatterError
+              ),
+              fmErrorMessage: (e as Error).message
+            });
+            return;
+          }
+        } else if (articleDetails === 'notsupported' || articleDetails === 'nofilepath') {
+          // No file or invalid file format
+          this.sendMsg(Command.metadata, undefined);
+          return;
+        }
+      } else {
+        this.sendMsg(Command.metadata, undefined);
+        return;
       }
     } catch (e) {
-      Logger.error(`DataListener::pushMetadata: ${(e as Error).message}`);
+      if (filePath) {
+        Logger.error(`DataListener::pushMetadata: ${(e as Error).message}`);
+      }
+      this.sendMsg(Command.metadata, undefined);
+      return;
     }
 
     if (articleDetails) {
@@ -223,7 +293,7 @@ export class DataListener extends BaseListener {
 
     if (keys.length > 0 && contentTypes && wsFolder) {
       // Get the current content type
-      const contentType = ArticleHelper.getContentType({
+      const contentType = await ArticleHelper.getContentType({
         content: '',
         data: updatedMetadata,
         path: filePath
@@ -275,6 +345,7 @@ export class DataListener extends BaseListener {
       return;
     }
 
+    let beforeValue: any;
     const titleField = (Settings.get(SETTING_SEO_TITLE_FIELD) as string) || DefaultFields.Title;
 
     const editor = window.activeTextEditor;
@@ -291,7 +362,7 @@ export class DataListener extends BaseListener {
       return;
     }
 
-    const contentType = ArticleHelper.getContentType(article);
+    const contentType = await ArticleHelper.getContentType(article);
     const sourceField = ContentType.findFieldByName(contentType.fields, field);
 
     if (!value && field !== titleField && contentType.clearEmpty) {
@@ -311,7 +382,7 @@ export class DataListener extends BaseListener {
     const fieldsWithEmojiEncoding = contentType.fields.filter((f) => f.encodeEmoji);
 
     // Support multi-level fields
-    const parentObj = DataListener.getParentObject(article.data, article, parents, blockData);
+    const parentObj = await DataListener.getParentObject(article.data, article, parents, blockData);
 
     // Check multi-image fields
     const multiImageFieldsArray = imageFields.find((f: Field[]) => {
@@ -365,6 +436,7 @@ export class DataListener extends BaseListener {
           [field]: value
         });
       } else {
+        beforeValue = parentObj[field];
         parentObj[field] = value;
       }
     }
@@ -410,6 +482,13 @@ export class DataListener extends BaseListener {
       await ArticleHelper.updateByPath(filePath, article);
     }
 
+    Logger.verbose(
+      `DataListener:updateMetadata: "${field}" - Before value: ${JSON.stringify(
+        beforeValue
+      )} - After value: ${JSON.stringify(value)}`,
+      'VSCODE'
+    );
+
     this.pushMetadata(article.data);
   }
 
@@ -421,7 +500,7 @@ export class DataListener extends BaseListener {
    * @param blockData
    * @returns
    */
-  public static getParentObject(
+  public static async getParentObject(
     data: any,
     article: ParsedFrontMatter,
     parents: string[] | undefined,
@@ -429,7 +508,7 @@ export class DataListener extends BaseListener {
   ) {
     let parentObj = data;
     let allParents = Object.assign([], parents);
-    const contentType = ArticleHelper.getContentType(article);
+    const contentType = await ArticleHelper.getContentType(article);
     let selectedIndexes: number[] = [];
     if (blockData?.selectedIndex) {
       if (typeof blockData.selectedIndex === 'string') {
@@ -616,6 +695,7 @@ export class DataListener extends BaseListener {
     let { field, value, data, contentType } = articleData;
 
     value = value || '';
+    const valueBefore = value;
     if (field) {
       const crntFile = window.activeTextEditor?.document;
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
@@ -629,6 +709,13 @@ export class DataListener extends BaseListener {
         crntFile?.uri.fsPath || ''
       );
     }
+
+    Logger.verbose(
+      `DataListener:updatePlaceholder: "${field}" - Before value: ${JSON.stringify(
+        valueBefore
+      )} - After value: ${JSON.stringify(value)}`,
+      'VSCODE'
+    );
 
     this.sendRequest(Command.updatePlaceholder, requestId, { field, value });
   }

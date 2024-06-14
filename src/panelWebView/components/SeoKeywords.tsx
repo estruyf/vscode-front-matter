@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { SeoKeywordInfo } from './SeoKeywordInfo';
-import { VsTable, VsTableBody, VsTableHeader, VsTableHeaderCell } from './VscodeComponents';
 import { ErrorBoundary } from '@sentry/react';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
+import { VSCodeTable, VSCodeTableBody, VSCodeTableHead, VSCodeTableHeader, VSCodeTableRow } from './VSCode/VSCodeTable';
 
 export interface ISeoKeywordsProps {
   keywords: string[] | null;
@@ -54,16 +54,19 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({
     <div className={`seo__status__keywords`}>
       <h4>{l10n.t(LocalizationKey.panelSeoKeywordsTitle)}</h4>
 
-      <VsTable bordered columns={['30%', 'auto']}>
-        <VsTableHeader slot="header">
-          <VsTableHeaderCell className={`table__cell`}>
-            {l10n.t(LocalizationKey.panelSeoKeywordsHeaderKeyword)}
-          </VsTableHeaderCell>
-          <VsTableHeaderCell className={`table__cell`}>
-            {l10n.t(LocalizationKey.panelSeoKeywordsHeaderDetails)}
-          </VsTableHeaderCell>
-        </VsTableHeader>
-        <VsTableBody slot="body">
+      <VSCodeTable>
+        <VSCodeTableHeader>
+          <VSCodeTableRow>
+            <VSCodeTableHead>
+              {l10n.t(LocalizationKey.panelSeoKeywordsHeaderKeyword)}
+            </VSCodeTableHead>
+            <VSCodeTableHead>
+              {l10n.t(LocalizationKey.panelSeoKeywordsHeaderDetails)}
+            </VSCodeTableHead>
+          </VSCodeTableRow>
+        </VSCodeTableHeader>
+
+        <VSCodeTableBody>
           {validateKeywords().map((keyword, index) => {
             return (
               <ErrorBoundary key={keyword} fallback={<div />}>
@@ -71,11 +74,11 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({
               </ErrorBoundary>
             );
           })}
-        </VsTableBody>
-      </VsTable>
+        </VSCodeTableBody>
+      </VSCodeTable>
 
       {data.wordCount && (
-        <div className={`seo__status__note`}>
+        <div className={`text-xs mt-2`}>
           {l10n.t(LocalizationKey.panelSeoKeywordsDensity)}
         </div>
       )}

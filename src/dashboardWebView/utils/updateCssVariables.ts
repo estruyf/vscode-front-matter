@@ -1,6 +1,6 @@
-import { preserveColor } from './preserveColor';
+import { darkenColor, opacityColor, preserveColor } from '.';
 
-export const updateCssVariables = () => {
+export const updateCssVariables = (isDarkTheme: boolean = true) => {
   const styles = getComputedStyle(document.documentElement);
 
   // Lightbox
@@ -51,8 +51,24 @@ export const updateCssVariables = () => {
     'var(--vscode-list-activeSelectionForeground)'
   );
 
+  // Navigation
+  const tabActiveForeground = styles.getPropertyValue('--vscode-tab-activeForeground');
+  document.documentElement.style.setProperty(
+    '--frontmatter-nav-active',
+    preserveColor(tabActiveForeground) || 'var(--vscode-tab-activeForeground)'
+  );
+  document.documentElement.style.setProperty(
+    '--frontmatter-nav-inactive',
+    opacityColor(tabActiveForeground, 0.6) || 'var(--vscode-tab-inactiveForeground)'
+  );
+
   // Borders
+  const borderColor = styles.getPropertyValue('--vscode-panel-border');
   document.documentElement.style.setProperty('--frontmatter-border', 'var(--vscode-panel-border)');
+  document.documentElement.style.setProperty(
+    '--frontmatter-border-preserve',
+    preserveColor(borderColor) || 'var(--vscode-panel-border)'
+  );
 
   // Other colors which should be preserved (no opacity)
   const buttonBackground = styles.getPropertyValue('--vscode-button-background');
@@ -70,4 +86,16 @@ export const updateCssVariables = () => {
       preserveColor(buttonHoverBackground) || 'var(--vscode-button-hoverBackground)'
     );
   }
+
+  // Darken the background of a color
+  const sideBarBg = styles.getPropertyValue('--vscode-sideBar-background');
+  document.documentElement.style.setProperty(
+    '--frontmatter-sideBar-background',
+    darkenColor(sideBarBg, 2) || 'var(--vscode-sideBar-background)'
+  );
+
+  document.documentElement.style.setProperty(
+    '--frontmatter-border-active',
+    darkenColor(borderColor, isDarkTheme ? -30 : 30) || 'var(--vscode-activityBar-activeBorder)'
+  );
 };

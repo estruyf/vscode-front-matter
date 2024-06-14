@@ -12,6 +12,7 @@ import { Chatbot } from './components/Chatbot/Chatbot';
 import { updateCssVariables } from './utils';
 import { I10nProvider } from './providers/I10nProvider';
 import { SentryInit } from '../utils/sentryInit';
+import { WEBSITE_LINKS } from '../constants';
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
@@ -51,7 +52,8 @@ export const routePaths: { [name: string]: string } = {
 };
 
 const mutationObserver = new MutationObserver((_, __) => {
-  updateCssVariables();
+  const darkMode = document.body.classList.contains('vscode-dark');
+  updateCssVariables(darkMode);
 });
 
 const elm = document.querySelector('#app');
@@ -66,7 +68,7 @@ if (elm) {
   const webviewUrl = elm?.getAttribute('data-webview-url');
   const isCrashDisabled = elm?.getAttribute('data-is-crash-disabled');
 
-  updateCssVariables();
+  updateCssVariables(document.body.classList.contains('vscode-dark'));
   mutationObserver.observe(document.body, { childList: false, attributes: true });
 
   if (isProd === 'true' && isCrashDisabled === 'false') {
@@ -91,7 +93,7 @@ if (elm) {
     render(
       <I10nProvider>
         <SettingsProvider
-          aiUrl='https://frontmatter.codes'
+          aiUrl={WEBSITE_LINKS.root}
           experimental={experimental === 'true'}
           version={version || ""}>
           <Chatbot />

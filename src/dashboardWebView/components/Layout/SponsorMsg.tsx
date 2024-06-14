@@ -36,7 +36,7 @@ export const SponsorMsg: React.FunctionComponent<ISponsorMsgProps> = ({
   return (
     <footer
       className={`w-full px-4 py-2 text-center space-x-8 flex items-center border-t ${isBacker ? 'justify-center' : 'justify-between'
-        } bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)] border-[var(--frontmatter-border)]`}
+        } bg-[var(--vscode-editor-background)] text-[var(--frontmatter-secondary-text)] border-[var(--frontmatter-border)]`}
     >
       {isBacker ? (
         <span>

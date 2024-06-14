@@ -30,6 +30,7 @@ export enum DashboardMessage {
   getPinnedItems = 'getPinnedItems',
   pinItem = 'pinItem',
   unpinItem = 'unpinItem',
+  rename = 'rename',
 
   // Media Dashboard
   getMedia = 'getMedia',
@@ -74,8 +75,8 @@ export enum DashboardMessage {
   getState = 'getState',
   runCustomScript = 'runCustomScript',
   sendTelemetry = 'sendTelemetry',
-  logError = 'logError',
   showNotification = 'showNotification',
+  setTitle = 'setTitle',
 
   // Settings
   getSettings = 'getSettings',

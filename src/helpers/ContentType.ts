@@ -3,12 +3,14 @@ import { PagesListener } from './../listeners/dashboard';
 import {
   ArticleHelper,
   CustomScript,
+  Extension,
   Logger,
   Settings,
   processArticlePlaceholdersFromData,
   processTimePlaceholders
 } from '.';
 import {
+  COMMAND_NAME,
   DefaultFieldValues,
   EXTENSION_NAME,
   FEATURE_FLAG,
@@ -41,6 +43,32 @@ import { LocalizationKey } from '../localization';
 
 export class ContentType {
   /**
+   * Registers the commands related to content types.
+   *
+   * @param subscriptions - The array of subscriptions to which the commands will be added.
+   */
+  public static async registerCommands() {
+    const ext = Extension.getInstance();
+    const subscriptions = ext.subscriptions;
+
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.createByContentType, ContentType.createContent)
+    );
+
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.generateContentType, ContentType.generate)
+    );
+
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.addMissingFields, ContentType.addMissingFields)
+    );
+
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.setContentType, ContentType.setContentType)
+    );
+  }
+
+  /**
    * Retrieve the draft field
    * @returns
    */
@@ -58,8 +86,8 @@ export class ContentType {
    * @param data
    * @returns
    */
-  public static getDraftStatus(article: ParsedFrontMatter) {
-    const contentType = ArticleHelper.getContentType(article);
+  public static async getDraftStatus(article: ParsedFrontMatter) {
+    const contentType = await ArticleHelper.getContentType(article);
     const draftSetting = ContentType.getDraftField();
 
     const draftField = contentType.fields.find((f) => f.type === 'draft');
@@ -94,7 +122,8 @@ export class ContentType {
     }
 
     const contentTypes = ContentType.getAll();
-    const folders = Folders.get().filter((f) => !f.disableCreation);
+    let folders = await Folders.get();
+    folders = folders.filter((f) => !f.disableCreation);
     const folder = folders.find((f) => f.path === selectedFolder.path);
 
     if (!folder) {
@@ -251,7 +280,7 @@ export class ContentType {
       pageBundle = pageBundleAnswer === l10n.t(LocalizationKey.commonYes);
     }
 
-    const fields = ContentType.generateFields(content.data);
+    const fields = await ContentType.generateFields(content.data);
 
     // Update the type field in the page
     if (!overrideBool && editor) {
@@ -274,7 +303,7 @@ export class ContentType {
       contentTypes.push(newContentType);
     }
 
-    await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
+    await Settings.safeUpdate(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
 
     const configPath = await Settings.projectConfigPath();
     const notificationAction = await Notifications.info(
@@ -314,14 +343,14 @@ export class ContentType {
       return;
     }
 
-    const contentType = ArticleHelper.getContentType(article);
-    const updatedFields = ContentType.generateFields(article.data, contentType.fields);
+    const contentType = await ArticleHelper.getContentType(article);
+    const updatedFields = await ContentType.generateFields(article.data, contentType.fields);
 
     const contentTypes = ContentType.getAll() || [];
     const index = contentTypes.findIndex((ct) => ct.name === contentType.name);
     contentTypes[index].fields = updatedFields;
 
-    await Settings.update(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
+    await Settings.safeUpdate(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
 
     const configPath = await Settings.projectConfigPath();
     const notificationAction = await Notifications.info(
@@ -531,8 +560,10 @@ export class ContentType {
   /**
    * Find the required fields
    */
-  public static findEmptyRequiredFields(article: ParsedFrontMatter): Field[][] | undefined {
-    const contentType = ArticleHelper.getContentType(article);
+  public static async findEmptyRequiredFields(
+    article: ParsedFrontMatter
+  ): Promise<Field[][] | undefined> {
+    const contentType = await ArticleHelper.getContentType(article);
     if (!contentType) {
       return;
     }
@@ -713,7 +744,7 @@ export class ContentType {
    * @param fields
    * @returns
    */
-  private static generateFields(data: any, fields: any[] = []) {
+  private static async generateFields(data: any, fields: any[] = []) {
     for (const field in data) {
       const fieldData = data[field];
 
@@ -751,15 +782,38 @@ export class ContentType {
         fieldData.length > 0 &&
         typeof fieldData[0] === 'object'
       ) {
-        const newFields = ContentType.generateFields(fieldData);
+        const newFields = await ContentType.generateFields(fieldData);
+
+        // Combine all the fields for the field group
+        const blockFields: Field[] = [];
+        for (const newField of newFields) {
+          for (const field of newField.fields) {
+            if (blockFields.some((f) => f.name === field.name)) {
+              continue;
+            }
+
+            blockFields.push(field);
+          }
+        }
+
+        // Generate a new field group
+        const fieldGroups = Settings.get<FieldGroup[]>(SETTING_TAXONOMY_FIELD_GROUPS) || [];
+        const fieldGroupName = `${field}_group`;
+        const newFieldGroup: FieldGroup = {
+          id: fieldGroupName,
+          fields: blockFields
+        };
+        fieldGroups.push(newFieldGroup);
+        await Settings.safeUpdate(SETTING_TAXONOMY_FIELD_GROUPS, fieldGroups, true);
+
         fields.push({
           title: field,
           name: field,
           type: 'block',
-          fields: newFields
+          fieldGroup: [fieldGroupName]
         } as Field);
       } else if (fieldData && fieldData instanceof Object) {
-        const newFields = ContentType.generateFields(fieldData);
+        const newFields = await ContentType.generateFields(fieldData);
         fields.push({
           title: field,
           name: field,
@@ -950,7 +1004,7 @@ export class ContentType {
           path: newFilePath
         };
 
-        data = ArticleHelper.updateDates(article);
+        data = await ArticleHelper.updateDates(article);
 
         if (isTypeSet) {
           delete data.type;

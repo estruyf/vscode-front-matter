@@ -66,7 +66,7 @@ const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({
 
   return (
     <VsCollapsible title={title} onClick={triggerClick} open={isOpen}>
-      <div className={`section collapsible__body ${className || ''}`} slot="body">
+      <div className={`section collapsible__body ${className || ''}`}>
         {children}
       </div>
     </VsCollapsible>

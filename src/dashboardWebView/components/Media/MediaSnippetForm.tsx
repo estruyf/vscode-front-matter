@@ -6,7 +6,7 @@ import { ViewDataSelector } from '../../state';
 import SnippetForm, { SnippetFormHandle } from '../SnippetsView/SnippetForm';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
-import { SnippetSlideOver } from './SnippetSlideOver';
+import { SlideOver } from '../Modals/SlideOver';
 
 export interface IMediaSnippetFormProps {
   media: MediaInfo;
@@ -32,7 +32,7 @@ export const MediaSnippetForm: React.FunctionComponent<IMediaSnippetFormProps> =
   };
 
   return (
-    <SnippetSlideOver
+    <SlideOver
       title={l10n.t(LocalizationKey.dashboardMediaMediaSnippetFormFormDialogTitle, media.metadata.title || media.filename)}
       description={l10n.t(LocalizationKey.dashboardMediaMediaSnippetFormFormDialogDescription, media.metadata.title || media.filename)}
       isSaveDisabled={false}
@@ -48,6 +48,6 @@ export const MediaSnippetForm: React.FunctionComponent<IMediaSnippetFormProps> =
         selection={viewData?.data?.selection}
         onInsert={onInsert}
       />
-    </SnippetSlideOver>
+    </SlideOver>
   );
 };

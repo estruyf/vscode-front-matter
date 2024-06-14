@@ -56,9 +56,19 @@ export class GitListener {
    *   requiresCommitMessage: string[]
    * }>} The Git settings.
    */
-  public static async getSettings() {
+  public static async getSettings(): Promise<
+    | {
+        isGitRepo: boolean;
+        actions: boolean;
+        disabledBranches: string[];
+        requiresCommitMessage: string[];
+      }
+    | undefined
+  > {
+    Logger.verbose('GitListener:getSettings:start');
     const gitActions = Settings.get<boolean>(SETTING_GIT_ENABLED);
     if (gitActions) {
+      Logger.verbose('GitListener:getSettings:end:enabled');
       return {
         isGitRepo: gitActions ? await GitListener.isGitRepository() : false,
         actions: gitActions || false,
@@ -71,6 +81,7 @@ export class GitListener {
       };
     }
 
+    Logger.verbose('GitListener:getSettings:end:disabled');
     return;
   }
 

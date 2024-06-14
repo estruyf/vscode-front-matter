@@ -1,6 +1,6 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
-import { GeneralCommands } from '../../../constants';
+import { GeneralCommands, WEBSITE_LINKS } from '../../../constants';
 import { SnippetInput } from './SnippetInput';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
@@ -30,7 +30,7 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
   const openLink = () => {
     Messenger.send(
       GeneralCommands.toVSCode.openLink,
-      'https://frontmatter.codes/docs/snippets#placeholders'
+      WEBSITE_LINKS.docs.snippetsPlaceholders
     );
   };
 
@@ -110,7 +110,7 @@ export const NewForm: React.FunctionComponent<INewFormProps> = ({
             >
               {l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputIsMediaSnippetCheckboxLabel)}
             </label>
-            <p id="isMediaSnippet-description" className={`text-[var(--vscode-foreground)] text-left`}>
+            <p id="isMediaSnippet-description" className={`text-[var(--frontmatter-text)] text-left`}>
               {l10n.t(LocalizationKey.dashboardSnippetsViewNewFormSnippetInputIsMediaSnippetCheckboxDescription)}
             </p>
             <p>

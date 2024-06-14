@@ -36,7 +36,7 @@ import {
 import { format, parse } from 'date-fns';
 import { Notifications } from './Notifications';
 import { Article } from '../commands';
-import { join, parse as parseFile } from 'path';
+import { dirname, join, parse as parseFile } from 'path';
 import { EditorHelper } from '@estruyf/vscode';
 import sanitize from '../helpers/Sanitize';
 import { Field, ContentType as IContentType } from '../models';
@@ -184,6 +184,52 @@ export class ArticleHelper {
   }
 
   /**
+   * Renames a file.
+   * @param filePath - The path of the file to be renamed.
+   */
+  public static async rename(filePath: string) {
+    filePath = parseWinPath(filePath);
+    const fileUri = Uri.file(filePath);
+    const file = workspace.openTextDocument(fileUri);
+    if (!file) {
+      Notifications.error(l10n.t(LocalizationKey.commandsArticleRenameFileNotExistsError));
+      return;
+    }
+
+    const folderPath = dirname(fileUri.fsPath);
+    const fileName = parseFile(filePath).base;
+    const fileNameWithoutExt = parseFile(filePath).name;
+    const fileExtension = parseFile(filePath).ext;
+    const newFileName = await window.showInputBox({
+      title: l10n.t(LocalizationKey.commandsArticleRenameFileNameTitle, fileName),
+      prompt: l10n.t(LocalizationKey.commandsArticleRenameFileNamePrompt),
+      value: fileNameWithoutExt,
+      ignoreFocusOut: true,
+      validateInput: async (value) => {
+        try {
+          const newFileUri = Uri.joinPath(Uri.file(folderPath), `${value}${fileExtension}`);
+          const exists = await workspace.fs.readFile(newFileUri);
+          if (exists && value !== fileNameWithoutExt) {
+            return l10n.t(LocalizationKey.commandsArticleRenameFileExistsError, value);
+          }
+        } catch (e) {
+          // File does not exist
+        }
+        return undefined;
+      }
+    });
+
+    if (!newFileName) {
+      return;
+    }
+
+    const newFileUri = Uri.joinPath(Uri.file(folderPath), `${newFileName}${fileExtension}`);
+    await workspace.fs.rename(fileUri, newFileUri, {
+      overwrite: true
+    });
+  }
+
+  /**
    * Generate the update to be applied to the article.
    * @param article
    */
@@ -313,7 +359,7 @@ export class ArticleHelper {
       return false;
     }
 
-    const contentType = ArticleHelper.getContentType(article);
+    const contentType = await ArticleHelper.getContentType(article);
     return !!contentType.pageBundle;
   }
 
@@ -333,13 +379,14 @@ export class ArticleHelper {
   /**
    * Get date from front matter
    */
-  public static getDate(article: ParsedFrontMatter | null | undefined) {
+  public static async getDate(article: ParsedFrontMatter | null | undefined) {
     if (!article || !article.data) {
       return;
     }
 
     const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
-    const dateField = ArticleHelper.getPublishDateField(article) || DefaultFields.PublishingDate;
+    const dateField =
+      (await ArticleHelper.getPublishDateField(article)) || DefaultFields.PublishingDate;
 
     if (typeof article.data[dateField] !== 'undefined') {
       if (dateFormat && typeof dateFormat === 'string') {
@@ -358,12 +405,12 @@ export class ArticleHelper {
    * @param article
    * @returns
    */
-  public static getPublishDateField(article: ParsedFrontMatter | null) {
+  public static async getPublishDateField(article: ParsedFrontMatter | null) {
     if (!article || !article.data) {
       return;
     }
 
-    const articleCt = ArticleHelper.getContentType(article);
+    const articleCt = await ArticleHelper.getContentType(article);
     const pubDateField = articleCt.fields.find((f) => f.isPublishDate);
 
     return (
@@ -378,12 +425,14 @@ export class ArticleHelper {
    * @param article
    * @returns
    */
-  public static getModifiedDateField(article: ParsedFrontMatter | null): Field | undefined {
+  public static async getModifiedDateField(
+    article: ParsedFrontMatter | null
+  ): Promise<Field | undefined> {
     if (!article || !article.data) {
       return;
     }
 
-    const articleCt = ArticleHelper.getContentType(article);
+    const articleCt = await ArticleHelper.getContentType(article);
     const modDateField = articleCt.fields.find((f) => f.isModifiedDate);
 
     return modDateField;
@@ -401,7 +450,7 @@ export class ArticleHelper {
    * Retrieve the content type of the current file
    * @param updatedMetadata
    */
-  public static getContentType(article: ParsedFrontMatter): IContentType {
+  public static async getContentType(article: ParsedFrontMatter): Promise<IContentType> {
     const contentTypes = ArticleHelper.getContentTypes();
 
     if (!contentTypes || !article.data) {
@@ -414,7 +463,7 @@ export class ArticleHelper {
     if (article.data.type) {
       contentType = contentTypes.find((ct) => ct.name === article.data.type);
     } else if (!contentType && article.path) {
-      const pageFolder = Folders.getPageFolderByFilePath(article.path);
+      const pageFolder = await Folders.getPageFolderByFilePath(article.path);
       if (pageFolder && pageFolder.contentTypes?.length === 1) {
         const contentTypeName = pageFolder.contentTypes[0];
         contentType = contentTypes.find((ct) => ct.name === contentTypeName);
@@ -442,8 +491,8 @@ export class ArticleHelper {
    * Update all dates in the metadata
    * @param metadata
    */
-  public static updateDates(article: ParsedFrontMatter) {
-    const contentType = ArticleHelper.getContentType(article);
+  public static async updateDates(article: ParsedFrontMatter) {
+    const contentType = await ArticleHelper.getContentType(article);
     const dateFields = contentType.fields.filter((field) => field.type === 'datetime');
 
     for (const dateField of dateFields) {
@@ -483,7 +532,7 @@ export class ArticleHelper {
     const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
 
     let prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
-    prefix = ArticleHelper.getFilePrefix(prefix, folderPath, contentType);
+    prefix = await ArticleHelper.getFilePrefix(prefix, folderPath, contentType);
 
     // Name of the file or folder to create
     let sanitizedName = ArticleHelper.sanitize(titleValue);
@@ -542,18 +591,18 @@ export class ArticleHelper {
    * @param contentType
    * @returns
    */
-  public static getFilePrefix(
+  public static async getFilePrefix(
     prefix: string | null | undefined,
     filePath?: string,
     contentType?: IContentType
-  ): string | undefined {
+  ): Promise<string | undefined> {
     if (!prefix) {
       prefix = undefined;
     }
 
     // Retrieve the file prefix from the folder
     if (filePath) {
-      const filePrefixOnFolder = Folders.getFilePrefixByFolderPath(filePath);
+      const filePrefixOnFolder = await Folders.getFilePrefixBeFilePath(filePath);
       if (typeof filePrefixOnFolder !== 'undefined') {
         prefix = filePrefixOnFolder;
       }
@@ -694,15 +743,17 @@ export class ArticleHelper {
    * Get the details of the current article
    * @returns
    */
-  public static async getDetails(filePath: string) {
+  public static async getDetails(
+    filePath: string
+  ): Promise<Article | 'nofilepath' | 'nodata' | 'notsupported'> {
     const baseUrl = Settings.get<string>(SETTING_SITE_BASEURL);
     if (!filePath) {
-      return null;
+      return 'nofilepath';
     }
 
     const document = await workspace.openTextDocument(filePath);
     if (!ArticleHelper.isSupportedFile(document)) {
-      return null;
+      return 'notsupported';
     }
 
     const article = await ArticleHelper.getFrontMatterByPath(filePath);
@@ -758,7 +809,7 @@ export class ArticleHelper {
       };
     }
 
-    return null;
+    return 'nodata';
   }
 
   /**

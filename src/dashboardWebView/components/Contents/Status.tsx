@@ -34,7 +34,7 @@ export const Status: React.FunctionComponent<IStatusProps> = ({
     if (draftValue) {
       return (
         <span
-          className={`inline-block px-1 py-1 leading-none rounded-sm font-semibold uppercase tracking-wide text-[0.7rem] text-[var(--vscode-badge-foreground)] bg-[var(--vscode-badge-background)]`}
+          className={`inline-block px-[3px] py-[2px] rounded font-semibold uppercase tracking-wide text-[0.7rem] text-[var(--vscode-badge-foreground)] bg-[var(--vscode-badge-background)]`}
         >
           {draftValue}
         </span>
@@ -51,7 +51,7 @@ export const Status: React.FunctionComponent<IStatusProps> = ({
   return (
     <span
       className={`draft__status
-        inline-block px-1 py-1 leading-none rounded-sm font-semibold uppercase tracking-wide text-[0.7rem] 
+        inline-block px-[3px] py-[2px] rounded font-semibold uppercase tracking-wide text-[0.7rem] 
         ${draftValue ?
           'bg-[var(--vscode-statusBarItem-errorBackground)] text-[var(--vscode-statusBarItem-errorForeground)]' :
           isFuture ?

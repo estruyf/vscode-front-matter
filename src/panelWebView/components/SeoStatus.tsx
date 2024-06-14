@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useEffect } from 'react';
 import { SEO } from '../../models/PanelSettings';
 import { TagType } from '../TagType';
 import { ArticleDetails } from './ArticleDetails';
@@ -8,10 +7,10 @@ import FieldBoundary from './ErrorBoundary/FieldBoundary';
 import { SymbolKeywordIcon } from './Icons/SymbolKeywordIcon';
 import { SeoFieldInfo } from './SeoFieldInfo';
 import { SeoKeywords } from './SeoKeywords';
-import { TagPicker } from './TagPicker';
-import { VsTable, VsTableBody, VsTableHeader, VsTableHeaderCell } from './VscodeComponents';
+import { TagPicker } from './Fields/TagPicker';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
+import { VSCodeTable, VSCodeTableBody, VSCodeTableHead, VSCodeTableHeader, VSCodeTableRow } from './VSCode/VSCodeTable';
 
 export interface ISeoStatusProps {
   seo: SEO;
@@ -27,90 +26,61 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
   unsetFocus
 }: React.PropsWithChildren<ISeoStatusProps>) => {
   const { title, slug } = data;
-  const [isOpen, setIsOpen] = React.useState(true);
-  const tableRef = React.useRef<HTMLElement>();
-  const pushUpdate = React.useRef((value: boolean) => {
-    setTimeout(() => {
-      setIsOpen(value);
-    }, 10);
-  }).current;
 
   const { descriptionField, titleField } = seo;
 
-  // Workaround for lit components not updating render
-  useEffect(() => {
-    setTimeout(() => {
-      let height = 0;
-
-      tableRef.current?.childNodes.forEach((elm: any) => {
-        height += elm.clientHeight;
-      });
-
-      if (height > 0 && tableRef.current) {
-        tableRef.current.style.height = `${height}px`;
-      }
-    }, 10);
-  }, [title, data[titleField], data[descriptionField], data?.articleDetails?.wordCount]);
-
-  const renderContent = () => {
-    if (!isOpen) {
-      return null;
-    }
-
+  const tableContent = React.useMemo(() => {
     return (
       <div>
         <div className={`seo__status__details`}>
           <h4>{l10n.t(LocalizationKey.panelSeoStatusTitle)}</h4>
 
-          <VsTable ref={tableRef} bordered zebra>
-            <VsTableHeader slot="header">
-              <VsTableHeaderCell className={`table__cell`}>
-                {l10n.t(LocalizationKey.panelSeoStatusHeaderProperty)}
-              </VsTableHeaderCell>
-              <VsTableHeaderCell className={`table__cell`}>
-                {l10n.t(LocalizationKey.panelSeoStatusHeaderLength)}
-              </VsTableHeaderCell>
-              <VsTableHeaderCell className={`table__cell`}>
-                {l10n.t(LocalizationKey.panelSeoStatusHeaderValid)}
-              </VsTableHeaderCell>
-            </VsTableHeader>
-            <VsTableBody slot="body">
-              {data[titleField] && seo.title > 0 && (
+          <VSCodeTable>
+            <VSCodeTableHeader>
+              <VSCodeTableRow>
+                <VSCodeTableHead>{l10n.t(LocalizationKey.panelSeoStatusHeaderProperty)}</VSCodeTableHead>
+                <VSCodeTableHead>{l10n.t(LocalizationKey.panelSeoStatusHeaderLength)}</VSCodeTableHead>
+                <VSCodeTableHead>{l10n.t(LocalizationKey.panelSeoStatusHeaderValid)}</VSCodeTableHead>
+              </VSCodeTableRow>
+            </VSCodeTableHeader>
+
+            <VSCodeTableBody>
+              {data[titleField] && seo.title > 0 ? (
                 <SeoFieldInfo
                   title={titleField}
                   value={data[titleField].length}
                   recommendation={l10n.t(LocalizationKey.panelSeoStatusSeoFieldInfoCharacters, seo.title)}
                   isValid={data[titleField].length <= seo.title}
                 />
-              )}
+              ) : null}
 
-              {slug && seo.slug > 0 && (
+              {slug && seo.slug > 0 ? (
                 <SeoFieldInfo
                   title={`slug`}
                   value={slug.length}
                   recommendation={l10n.t(LocalizationKey.panelSeoStatusSeoFieldInfoCharacters, seo.slug)}
                   isValid={slug.length <= seo.slug}
                 />
-              )}
+              ) : null}
 
-              {data[descriptionField] && seo.description > 0 && (
+              {data[descriptionField] && seo.description > 0 ? (
                 <SeoFieldInfo
                   title={descriptionField}
                   value={data[descriptionField].length}
                   recommendation={l10n.t(LocalizationKey.panelSeoStatusSeoFieldInfoCharacters, seo.description)}
                   isValid={data[descriptionField].length <= seo.description}
                 />
-              )}
+              ) : null}
 
-              {seo.content > 0 && data?.articleDetails?.wordCount > 0 && (
+              {seo.content > 0 && data?.articleDetails?.wordCount > 0 ? (
                 <SeoFieldInfo
                   title={l10n.t(LocalizationKey.panelSeoStatusSeoFieldInfoArticle)}
                   value={data?.articleDetails?.wordCount}
                   recommendation={l10n.t(LocalizationKey.panelSeoStatusSeoFieldInfoWords, seo.content)}
                 />
-              )}
-            </VsTableBody>
-          </VsTable>
+              ) : null}
+            </VSCodeTableBody>
+          </VSCodeTable>
         </div>
 
         <SeoKeywords
@@ -139,10 +109,10 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
         <ArticleDetails details={data.articleDetails} />
       </div>
     );
-  };
+  }, [data, seo, focusElm, unsetFocus]);
 
   return (
-    <Collapsible id={`seo`} title={l10n.t(LocalizationKey.panelSeoStatusCollapsibleTitle)} sendUpdate={pushUpdate}>
+    <Collapsible id={`seo`} title={l10n.t(LocalizationKey.panelSeoStatusCollapsibleTitle)}>
       {!title && !data[descriptionField] ? (
         <div className={`seo__status__empty`}>
           <p>
@@ -150,7 +120,7 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
           </p>
         </div>
       ) : (
-        renderContent()
+        tableContent
       )}
     </Collapsible>
   );

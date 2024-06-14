@@ -20,7 +20,7 @@ export const Spinner: React.FunctionComponent<ISpinnerProps> = (
 
       {
         type === 'initPages' && (
-          <div className='spinner-msg h-full text-2xl flex justify-center items-center text-[var(--vscode-foreground)]'>
+          <div className='spinner-msg h-full text-2xl flex justify-center items-center text-[var(--frontmatter-text)]'>
             <span>{l10n.t(LocalizationKey.loadingInitPages)}</span>
             <span className='dots'></span>
           </div>

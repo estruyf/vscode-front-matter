@@ -9,8 +9,8 @@ import { Contents } from './Contents/Contents';
 import { Media } from './Media/Media';
 import { DataView } from './DataView';
 import { Snippets } from './SnippetsView/Snippets';
-import { FEATURE_FLAG } from '../../constants';
-import { Messenger } from '@estruyf/vscode/dist/client';
+import { FEATURE_FLAG, GeneralCommands } from '../../constants';
+import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import { TaxonomyView } from './TaxonomyView';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { routePaths } from '..';
@@ -18,7 +18,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { UnknownView } from './UnknownView';
 import { ErrorBoundary } from '@sentry/react';
 import { ErrorView } from './ErrorView';
-import { DashboardMessage } from '../DashboardMessage';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
 import { SettingsView } from './SettingsView/SettingsView';
@@ -55,7 +54,27 @@ export const App: React.FunctionComponent<IAppProps> = ({
     return isAllowed(mode?.features || [], FEATURE_FLAG.dashboard.taxonomy.view);
   }, [mode?.features]);
 
+  const checkDevMode = (retry: number = 0) => {
+    if (!window.fmExternal) {
+      if (retry < 5) {
+        setTimeout(() => checkDevMode(retry + 1), 150);
+      } else {
+        setIsDevMode(false);
+        return;
+      }
+    }
+
+    if (window.fmExternal && window.fmExternal.isDevelopment) {
+      setIsDevMode(true);
+    }
+  }
+
   useEffect(() => {
+    messageHandler.send(GeneralCommands.toVSCode.logging.verbose, {
+      message: `Loaded with view ${view}`,
+      location: 'DASHBOARD'
+    });
+
     if (view && routePaths[view]) {
       navigate(routePaths[view]);
       return;
@@ -65,9 +84,23 @@ export const App: React.FunctionComponent<IAppProps> = ({
   }, [view]);
 
   useEffect(() => {
-    if (window.fmExternal && window.fmExternal.isDevelopment) {
-      setIsDevMode(true);
+    if (settings && Object.keys(settings).length > 0) {
+      messageHandler.send(GeneralCommands.toVSCode.logging.verbose, {
+        message: `Settings loaded`,
+        location: 'DASHBOARD'
+      });
     }
+
+    if (pages) {
+      messageHandler.send(GeneralCommands.toVSCode.logging.verbose, {
+        message: `Pages loaded - ${pages.length} pages`,
+        location: 'DASHBOARD'
+      });
+    }
+  }, [JSON.stringify(settings), JSON.stringify(pages)]);
+
+  useEffect(() => {
+    checkDevMode();
   }, []);
 
   if (!settings) {
@@ -87,11 +120,14 @@ export const App: React.FunctionComponent<IAppProps> = ({
       fallback={<ErrorView />}
       onError={(error: Error, componentStack: string, eventId: string) => {
         Messenger.send(
-          DashboardMessage.logError,
-          `Event ID: ${eventId}
+          GeneralCommands.toVSCode.logging.error,
+          {
+            message: `Event ID: ${eventId}
 Message: ${error.message}
 
-Stack: ${componentStack}`
+Stack: ${componentStack}`,
+            location: 'DASHBOARD'
+          }
         );
       }}
     >

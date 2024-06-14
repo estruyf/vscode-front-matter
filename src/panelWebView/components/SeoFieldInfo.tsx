@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ValidInfo } from './ValidInfo';
-import { VsTableCell, VsTableRow } from './VscodeComponents';
+import { VSCodeTableCell, VSCodeTableRow } from './VSCode/VSCodeTable';
 
 export interface ISeoFieldInfoProps {
   title: string;
@@ -16,15 +16,11 @@ const SeoFieldInfo: React.FunctionComponent<ISeoFieldInfoProps> = ({
   isValid
 }: React.PropsWithChildren<ISeoFieldInfoProps>) => {
   return (
-    <VsTableRow>
-      <VsTableCell className={`table__cell table__title`}>{title}</VsTableCell>
-      <VsTableCell className={`table__cell`}>
-        {value}/{recommendation}
-      </VsTableCell>
-      <VsTableCell className={`table__cell table__cell__validation`}>
-        {isValid !== undefined ? <ValidInfo label={undefined} isValid={isValid} /> : <span>-</span>}
-      </VsTableCell>
-    </VsTableRow>
+    <VSCodeTableRow>
+      <VSCodeTableCell className={`capitalize`}>{title}</VSCodeTableCell>
+      <VSCodeTableCell>{value}/{recommendation}</VSCodeTableCell>
+      <VSCodeTableCell>{isValid !== undefined ? <ValidInfo label={undefined} isValid={isValid} /> : <span>-</span>}</VSCodeTableCell>
+    </VSCodeTableRow>
   );
 };
 

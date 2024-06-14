@@ -1,3 +1,13 @@
+import {
+  Position,
+  TextDocument,
+  TextDocumentWillSaveEvent,
+  TextEdit,
+  Uri,
+  commands,
+  window,
+  workspace
+} from 'vscode';
 import { Folders } from './Folders';
 import { DEFAULT_CONTENT_TYPE } from './../constants/ContentType';
 import { isValidFile } from './../helpers/isValidFile';
@@ -13,11 +23,11 @@ import {
   TelemetryEvent,
   SETTING_SLUG_TEMPLATE
 } from './../constants';
-import * as vscode from 'vscode';
 import { CustomPlaceholder, Field } from '../models';
 import { format } from 'date-fns';
 import {
   ArticleHelper,
+  Logger,
   Settings,
   SlugHelper,
   processArticlePlaceholdersFromData,
@@ -33,17 +43,35 @@ import { Telemetry } from '../helpers/Telemetry';
 import { ParsedFrontMatter } from '../parsers';
 import { MediaListener } from '../listeners/panel';
 import { NavigationType } from '../dashboardWebView/models';
-import { Position } from 'vscode';
 import { SNIPPET } from '../constants/Snippet';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 
 export class Article {
   /**
+   * Registers the commands for the Article class.
+   *
+   * @param subscriptions - The array of subscriptions to register the commands with.
+   */
+  public static async registerCommands(subscriptions: unknown[]) {
+    subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.setLastModifiedDate, Article.setLastModifiedDate)
+    );
+
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.generateSlug, Article.updateSlug));
+
+    // Inserting an image in Markdown
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.insertMedia, Article.insertMedia));
+
+    // Inserting a snippet in Markdown
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.insertSnippet, Article.insertSnippet));
+  }
+
+  /**
    * Sets the article date
    */
   public static async setDate() {
-    const editor = vscode.window.activeTextEditor;
+    const editor = window.activeTextEditor;
     if (!editor) {
       return;
     }
@@ -53,7 +81,7 @@ export class Article {
       return;
     }
 
-    article = this.updateDate(article);
+    article = await this.updateDate(article);
 
     try {
       ArticleHelper.update(editor, article);
@@ -68,8 +96,8 @@ export class Article {
    * Update the date in the front matter
    * @param article
    */
-  public static updateDate(article: ParsedFrontMatter) {
-    article.data = ArticleHelper.updateDates(article);
+  public static async updateDate(article: ParsedFrontMatter) {
+    article.data = await ArticleHelper.updateDates(article);
     return article;
   }
 
@@ -77,12 +105,12 @@ export class Article {
    * Sets the article lastmod date
    */
   public static async setLastModifiedDate() {
-    const editor = vscode.window.activeTextEditor;
+    const editor = window.activeTextEditor;
     if (!editor) {
       return;
     }
 
-    const updatedArticle = this.setLastModifiedDateInner(editor.document);
+    const updatedArticle = await this.setLastModifiedDateInner(editor.document);
 
     if (typeof updatedArticle === 'undefined') {
       return;
@@ -91,10 +119,8 @@ export class Article {
     ArticleHelper.update(editor, updatedArticle as ParsedFrontMatter);
   }
 
-  public static async setLastModifiedDateOnSave(
-    document: vscode.TextDocument
-  ): Promise<vscode.TextEdit[]> {
-    const updatedArticle = this.setLastModifiedDateInner(document);
+  public static async setLastModifiedDateOnSave(document: TextDocument): Promise<TextEdit[]> {
+    const updatedArticle = await this.setLastModifiedDateInner(document);
 
     if (typeof updatedArticle === 'undefined') {
       return [];
@@ -105,9 +131,10 @@ export class Article {
     return [update];
   }
 
-  private static setLastModifiedDateInner(
-    document: vscode.TextDocument
-  ): ParsedFrontMatter | undefined {
+  private static async setLastModifiedDateInner(
+    document: TextDocument
+  ): Promise<ParsedFrontMatter | undefined> {
+    Logger.verbose(`Article:setLastModifiedDateInner:Start`);
     const article = ArticleHelper.getFrontMatterFromDocument(document);
 
     // Only set the date, if there is already front matter set
@@ -116,10 +143,17 @@ export class Article {
     }
 
     const cloneArticle = Object.assign({}, article);
-    const dateField = ArticleHelper.getModifiedDateField(article);
+    const dateField = await ArticleHelper.getModifiedDateField(article);
+    Logger.verbose(`Article:setLastModifiedDateInner:DateField - ${JSON.stringify(dateField)}`);
+
     try {
       const fieldName = dateField?.name || DefaultFields.LastModified;
-      cloneArticle.data[fieldName] = Article.formatDate(new Date(), dateField?.dateFormat);
+      const fieldValue = Article.formatDate(new Date(), dateField?.dateFormat);
+      cloneArticle.data[fieldName] = fieldValue;
+      Logger.verbose(
+        `Article:setLastModifiedDateInner:DateField name - ${fieldName} - value - ${fieldValue}`
+      );
+      Logger.verbose(`Article:setLastModifiedDateInner:End`);
       return cloneArticle;
     } catch (e: unknown) {
       Notifications.error(
@@ -160,7 +194,7 @@ export class Article {
     Telemetry.send(TelemetryEvent.generateSlug);
 
     const updateFileName = Settings.get(SETTING_SLUG_UPDATE_FILE_NAME) as string;
-    const editor = vscode.window.activeTextEditor;
+    const editor = window.activeTextEditor;
 
     if (!editor) {
       return;
@@ -172,8 +206,12 @@ export class Article {
     }
 
     let filePrefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
-    const contentType = ArticleHelper.getContentType(article);
-    filePrefix = ArticleHelper.getFilePrefix(filePrefix, editor.document.uri.fsPath, contentType);
+    const contentType = await ArticleHelper.getContentType(article);
+    filePrefix = await ArticleHelper.getFilePrefix(
+      filePrefix,
+      editor.document.uri.fsPath,
+      contentType
+    );
 
     const titleField = 'title';
     const articleTitle: string = article.data[titleField];
@@ -219,7 +257,7 @@ export class Article {
       // Check if the file name should be updated by the slug
       // This is required for systems like Jekyll
       if (updateFileName) {
-        const editor = vscode.window.activeTextEditor;
+        const editor = window.activeTextEditor;
         if (editor) {
           const ext = extname(editor.document.fileName);
           const fileName = basename(editor.document.fileName);
@@ -237,7 +275,7 @@ export class Article {
           try {
             await editor.document.save();
 
-            await vscode.workspace.fs.rename(editor.document.uri, vscode.Uri.file(newPath), {
+            await workspace.fs.rename(editor.document.uri, Uri.file(newPath), {
               overwrite: false
             });
           } catch (e: unknown) {
@@ -257,10 +295,17 @@ export class Article {
    * Retrieve the slug from the front matter
    */
   public static getSlug() {
-    const editor = vscode.window.activeTextEditor;
+    const editor = window.activeTextEditor;
     if (!editor) {
       return;
     }
+
+    const file = parseWinPath(editor.document.fileName);
+    if (!isValidFile(file)) {
+      return;
+    }
+
+    const parsedFile = parse(file);
 
     const slugTemplate = Settings.get<string>(SETTING_SLUG_TEMPLATE);
     if (slugTemplate) {
@@ -277,16 +322,11 @@ export class Article {
       }
     }
 
-    const file = parseWinPath(editor.document.fileName);
-
-    if (!isValidFile(file)) {
-      return;
-    }
-
-    const parsedFile = parse(file);
+    const suffix = Settings.get(SETTING_SLUG_SUFFIX) as string;
+    const prefix = Settings.get(SETTING_SLUG_PREFIX) as string;
 
     if (parsedFile.name.toLowerCase() !== 'index') {
-      return parsedFile.name;
+      return `${prefix}${parsedFile.name}${suffix}`;
     }
 
     const folderName = basename(dirname(file));
@@ -297,7 +337,7 @@ export class Article {
    * Toggle the page its draft mode
    */
   public static async toggleDraft() {
-    const editor = vscode.window.activeTextEditor;
+    const editor = window.activeTextEditor;
     if (!editor) {
       return;
     }
@@ -315,13 +355,13 @@ export class Article {
    * Article auto updater
    * @param event
    */
-  public static async autoUpdate(event: vscode.TextDocumentWillSaveEvent) {
+  public static async autoUpdate(event: TextDocumentWillSaveEvent) {
     const document = event.document;
     if (document && ArticleHelper.isSupportedFile(document)) {
       const autoUpdate = Settings.get(SETTING_AUTO_UPDATE_DATE);
 
       // Is article located in one of the content folders
-      const folders = Folders.get();
+      const folders = Folders.getCached();
       const documentPath = parseWinPath(document.fileName);
       const folder = folders.find((f) => documentPath.startsWith(f.path));
       if (!folder) {
@@ -340,11 +380,16 @@ export class Article {
   public static formatDate(dateValue: Date, fieldDateFormat?: string): string {
     const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
 
+    Logger.verbose(`Article:formatDate:Start`);
+
     if (fieldDateFormat) {
+      Logger.verbose(`Article:formatDate:FieldDateFormat - ${fieldDateFormat}`);
       return format(dateValue, DateHelper.formatUpdate(fieldDateFormat) as string);
     } else if (dateFormat && typeof dateFormat === 'string') {
+      Logger.verbose(`Article:formatDate:DateFormat - ${dateFormat}`);
       return format(dateValue, DateHelper.formatUpdate(dateFormat) as string);
     } else {
+      Logger.verbose(`Article:formatDate:toISOString - ${dateValue}`);
       return typeof dateValue.toISOString === 'function'
         ? dateValue.toISOString()
         : dateValue?.toString();
@@ -355,19 +400,19 @@ export class Article {
    * Insert an image from the media dashboard into the article
    */
   public static async insertMedia() {
-    const editor = vscode.window.activeTextEditor;
+    const editor = window.activeTextEditor;
     if (!editor) {
       return;
     }
 
     const article = ArticleHelper.getFrontMatter(editor);
     const contentType =
-      article && article.data ? ArticleHelper.getContentType(article) : DEFAULT_CONTENT_TYPE;
+      article && article.data ? await ArticleHelper.getContentType(article) : DEFAULT_CONTENT_TYPE;
 
     const position = editor.selection.active;
     const selectionText = editor.document.getText(editor.selection);
 
-    await vscode.commands.executeCommand(COMMAND_NAME.dashboard, {
+    await commands.executeCommand(COMMAND_NAME.dashboard, {
       type: 'media',
       data: {
         pageBundle: !!contentType.pageBundle,
@@ -386,7 +431,7 @@ export class Article {
    * Insert a snippet into the article
    */
   public static async insertSnippet() {
-    const editor = vscode.window.activeTextEditor;
+    const editor = window.activeTextEditor;
     if (!editor) {
       return;
     }
@@ -440,9 +485,9 @@ export class Article {
     }
 
     const article = ArticleHelper.getFrontMatter(editor);
-    const contentType = article ? ArticleHelper.getContentType(article) : undefined;
+    const contentType = article ? await ArticleHelper.getContentType(article) : undefined;
 
-    await vscode.commands.executeCommand(COMMAND_NAME.dashboard, {
+    await commands.executeCommand(COMMAND_NAME.dashboard, {
       type: NavigationType.Snippets,
       data: {
         fileTitle: article?.data.title || '',

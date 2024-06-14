@@ -6,13 +6,13 @@ import { FolderInfo } from '../../models/PanelSettings';
 import { Command } from '../Command';
 import { CommandToCode } from '../CommandToCode';
 import { TagType } from '../TagType';
-import { Messenger } from '@estruyf/vscode/dist/client';
+import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
 import { useRecoilState } from 'recoil';
 import { PanelSettingsAtom } from '../state';
 
 export default function useMessages() {
-  const [metadata, setMetadata] = useState<any>({});
+  const [metadata, setMetadata] = useState<any>(undefined);
   const [settings, setSettings] = useRecoilState(PanelSettingsAtom);
   const [loading, setLoading] = useState<boolean>(false);
   const [focusElm, setFocus] = useState<TagType | null>(null);
@@ -22,6 +22,11 @@ export default function useMessages() {
 
   const messageListener = (event: MessageEvent<EventData<any>>) => {
     const message = event.data;
+
+    messageHandler.send(GeneralCommands.toVSCode.logging.verbose, {
+      message: `Message received: ${message.command}`,
+      location: 'PANEL'
+    });
 
     switch (message.command) {
       case Command.metadata:

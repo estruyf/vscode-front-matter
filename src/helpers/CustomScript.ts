@@ -1,7 +1,7 @@
 import { Settings } from './SettingsHelper';
 import { CommandType, EnvironmentType } from './../models/PanelSettings';
 import { CustomScript as ICustomScript, ScriptType } from '../models/PanelSettings';
-import { window, env as vscodeEnv, ProgressLocation } from 'vscode';
+import { window, env as vscodeEnv, ProgressLocation, Uri, commands } from 'vscode';
 import { ArticleHelper, Logger, Telemetry } from '.';
 import { Folders, WORKSPACE_PLACEHOLDER } from '../commands/Folders';
 import { exec, execSync } from 'child_process';
@@ -300,6 +300,11 @@ export class CustomScript {
             Notifications.info(
               l10n.t(LocalizationKey.helpersCustomScriptShowOutputFrontMatterSuccess, script.title)
             );
+          }
+        } else if (data.fmAction) {
+          if (data.fmAction === 'open' && data.fmPath) {
+            const uri = data.fmPath.startsWith(`http`) ? data.fmPath : Uri.file(data.fmPath);
+            commands.executeCommand('vscode.open', uri);
           }
         } else {
           Logger.error(`No frontmatter found.`);

@@ -17,10 +17,13 @@ import { Container } from './SortableContainer';
 import { SortableItem } from './SortableItem';
 import { ChevronRightIcon, CircleStackIcon } from '@heroicons/react/24/outline';
 import { DataType } from '../../../models/DataType';
-import { TelemetryEvent } from '../../../constants';
+import { GeneralCommands, TelemetryEvent, WEBSITE_LINKS } from '../../../constants';
 import { NavigationItem } from '../Layout';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import { DropdownMenu, DropdownMenuContent } from '../../../components/shadcn/Dropdown';
+import { MenuButton, MenuItem } from '../Menu';
+import { Transition } from '@headlessui/react';
 
 export interface IDataViewProps { }
 
@@ -125,8 +128,15 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
   useEffect(() => {
     Messenger.listen(messageListener);
 
+    Messenger.send(DashboardMessage.setTitle, l10n.t(LocalizationKey.dashboardHeaderTabsData));
+
     Messenger.send(DashboardMessage.sendTelemetry, {
       event: TelemetryEvent.webviewDataView
+    });
+
+    Messenger.send(GeneralCommands.toVSCode.logging.info, {
+      message: 'Data view loaded',
+      location: 'DASHBOARD'
     });
 
     return () => {
@@ -161,38 +171,71 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
     <div className="flex flex-col h-full overflow-auto inset-y-0">
       <Header settings={settings} />
 
-      {settings?.dataFiles && settings.dataFiles.length > 0 ? (
-        <div className="relative w-full flex-grow mx-auto overflow-hidden">
-          <div className={`flex w-64 flex-col absolute inset-y-0`}>
-            <aside
-              className={`flex flex-col flex-grow overflow-y-auto border-r py-6 px-4 overflow-auto border-[var(--frontmatter-border)]`}
-            >
-              <h2 className={`text-lg text-[var(--frontmatter-text)]`}>
-                {l10n.t(LocalizationKey.dashboardDataViewDataViewSelect)}
-              </h2>
-
-              <nav className={`flex-1 py-4 -mx-4`}>
-                <div
-                  className={`divide-y border-t border-b divide-[var(--frontmatter-border)] border-[var(--frontmatter-border)]`}
+      {dataFiles && dataFiles.length > 0 ? (
+        <div className={`relative w-full flex-grow mx-auto overflow-hidden`}>
+          {
+            !selectedData && (
+              <div className={`flex w-64 flex-col absolute inset-y-0`}>
+                <aside
+                  className={`flex flex-col flex-grow overflow-y-auto border-r py-6 px-4 overflow-auto border-[var(--frontmatter-border)]`}
                 >
-                  {dataFiles &&
-                    dataFiles.length > 0 &&
-                    dataFiles.map((dataFile, idx) => (
-                      <NavigationItem
-                        key={`${dataFile.id}-${idx}`}
-                        isSelected={selectedData?.id === dataFile.id}
-                        onClick={() => setSchema(dataFile)}
-                      >
-                        <ChevronRightIcon className="-ml-1 w-5 mr-2" />
-                        <span>{dataFile.title}</span>
-                      </NavigationItem>
-                    ))}
-                </div>
-              </nav>
-            </aside>
-          </div>
+                  <h2 className={`text-lg text-[var(--frontmatter-text)]`}>
+                    {l10n.t(LocalizationKey.dashboardDataViewDataViewSelect)}
+                  </h2>
 
-          <section className={`pl-64 flex min-w-0 h-full`}>
+                  <nav className={`flex-1 py-4 -mx-4`}>
+                    <div
+                      className={`divide-y border-t border-b divide-[var(--frontmatter-border)] border-[var(--frontmatter-border)]`}
+                    >
+                      {dataFiles &&
+                        dataFiles.length > 0 &&
+                        dataFiles.map((dataFile, idx) => (
+                          <NavigationItem
+                            key={`${dataFile.id}-${idx}`}
+                            onClick={() => setSchema(dataFile)}
+                          >
+                            <ChevronRightIcon className="-ml-1 w-5 mr-2" />
+                            <span>{dataFile.title}</span>
+                          </NavigationItem>
+                        ))}
+                    </div>
+                  </nav>
+                </aside>
+              </div>
+            )
+          }
+
+          <Transition
+            as={`div`}
+            show={!!selectedData}
+            enter="transition ease transform"
+            enterFrom="opacity-0"
+            enterTo="opacity-100">
+            <div className={`w-full px-4 py-2 border-b border-[var(--frontmatter-border)]`}>
+              {selectedData && (
+                <DropdownMenu>
+                  <MenuButton
+                    label={l10n.t(LocalizationKey.dashboardDataViewDataViewSelect)}
+                    title={selectedData.title}
+                  />
+
+                  <DropdownMenuContent>
+                    {dataFiles.map((dataFile) => (
+                      <MenuItem
+                        key={dataFile.id}
+                        title={dataFile.title}
+                        value={dataFile}
+                        isCurrent={selectedData.id === dataFile.id}
+                        onClick={() => setSchema(dataFile)}
+                      />
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
+          </Transition>
+
+          <section className={`flex min-w-0 h-full ease transition-[padding] ${selectedData ? "" : "pl-64"}`}>
             {selectedData ? (
               <>
                 {!selectedData.singleEntry && (
@@ -265,7 +308,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
             <p className="text-xl mt-4">
               <a
                 className={`text-[var(--frontmatter-link)] hover:text-[var(--frontmatter-link-hover)]`}
-                href={`https://frontmatter.codes/docs/dashboard#data-files-view`}
+                href={WEBSITE_LINKS.docs.dataDashboard}
                 title={l10n.t(LocalizationKey.dashboardDataViewDataViewGetStartedLink)}
               >
                 {l10n.t(LocalizationKey.dashboardDataViewDataViewGetStartedLink)}

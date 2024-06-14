@@ -32,6 +32,8 @@ export * from './isValidFile';
 export * from './openFileInEditor';
 export * from './parseWinPath';
 export * from './processArticlePlaceholders';
+export * from './processDateTimePlaceholders';
 export * from './processFmPlaceholders';
+export * from './processI18nPlaceholders';
 export * from './processPathPlaceholders';
 export * from './processTimePlaceholders';

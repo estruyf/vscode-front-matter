@@ -24,6 +24,12 @@ export const GeneralCommands = {
     content: {
       locales: 'getContentLocales'
     },
+    logging: {
+      info: 'logInfo',
+      warn: 'logWarn',
+      error: 'logError',
+      verbose: 'logVerbose'
+    },
     runCommand: 'runCommand',
     getLocalization: 'getLocalization',
     openOnWebsite: 'openOnWebsite'
