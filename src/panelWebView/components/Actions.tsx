@@ -53,7 +53,7 @@ const Actions: React.FunctionComponent<IActionsProps> = ({
     }
 
     if (settings?.preview?.host && !disableActions.includes(`preview`)) {
-      if ((metadata && metadata.slug) || !metadata) {
+      if ((metadata && typeof metadata.slug !== "undefined") || !metadata) {
         allActions.push(<Preview key="preview" />);
       }
     }

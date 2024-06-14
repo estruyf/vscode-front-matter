@@ -11,7 +11,14 @@ import {
 } from './../constants';
 import { commands, Uri, workspace, window } from 'vscode';
 import { basename, dirname, join, relative, sep } from 'path';
-import { ContentFolder, FileInfo, FolderInfo, I18nConfig, StaticFolder } from '../models';
+import {
+  ContentFolder,
+  ContentType,
+  FileInfo,
+  FolderInfo,
+  I18nConfig,
+  StaticFolder
+} from '../models';
 import uniqBy = require('lodash.uniqby');
 import { Template } from './Template';
 import { Notifications } from '../helpers/Notifications';
@@ -29,6 +36,7 @@ import { mkdirAsync } from '../utils/mkdirAsync';
 import { existsAsync, isWindows } from '../utils';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
+import { Preview } from './Preview';
 
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
@@ -640,7 +648,7 @@ export class Folders {
    * @param filePath
    * @returns
    */
-  public static async getFilePrefixBeFilePath(filePath: string) {
+  public static async getFilePrefixBeFilePath(filePath: string): Promise<string | undefined> {
     const folders = await Folders.get();
     if (folders.length > 0) {
       filePath = parseWinPath(filePath);
@@ -672,7 +680,7 @@ export class Folders {
   public static async getPageFolderByFilePath(
     filePath: string
   ): Promise<ContentFolder | undefined> {
-    const folders = await Folders.get();
+    const folders = Folders.getCached();
     const parsedPath = parseWinPath(filePath);
     const pageFolderMatches = folders
       .filter((folder) => parsedPath && folder.path && parsedPath.includes(folder.path))
@@ -683,6 +691,49 @@ export class Folders {
     }
 
     return;
+  }
+
+  /**
+   * Retrieves the folder associated with the specified content type and file path.
+   * If a single matching folder is found, it is returned. If multiple matching folders are found,
+   * the user is prompted to select one. If no matching folders are found, the user is prompted to
+   * select a folder with a preview path.
+   *
+   * @param contentType - The content type to match.
+   * @param filePath - The file path to match.
+   * @returns A Promise that resolves to the selected ContentFolder, or undefined if no matching folder is found.
+   */
+  public static async getFolderByContentType(
+    contentType: ContentType,
+    filePath: string
+  ): Promise<ContentFolder | undefined> {
+    if (!contentType) {
+      return;
+    }
+
+    const folders = Folders.getCached();
+    let selectedFolder: ContentFolder | undefined;
+
+    // Try to find the folder by content type
+    let crntFolders = folders.filter(
+      (folder) =>
+        folder.contentTypes?.includes((contentType as ContentType).name) && folder.previewPath
+    );
+
+    // Use file path to find the folder
+    if (crntFolders.length > 0) {
+      crntFolders = crntFolders.filter((folder) => filePath?.startsWith(folder.path));
+    }
+
+    if (crntFolders && crntFolders.length === 1) {
+      selectedFolder = crntFolders[0];
+    } else if (crntFolders && crntFolders.length > 1) {
+      selectedFolder = await Preview.askUserToPickFolder(crntFolders);
+    } else {
+      selectedFolder = await Preview.askUserToPickFolder(folders.filter((f) => f.previewPath));
+    }
+
+    return selectedFolder;
   }
 
   /**
