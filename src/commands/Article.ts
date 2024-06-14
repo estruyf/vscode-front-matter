@@ -294,7 +294,7 @@ export class Article {
   /**
    * Retrieve the slug from the front matter
    */
-  public static getSlug() {
+  public static getSlug(pathname?: string) {
     const editor = window.activeTextEditor;
     if (!editor) {
       return;
@@ -327,6 +327,10 @@ export class Article {
 
     if (parsedFile.name.toLowerCase() !== 'index') {
       return `${prefix}${parsedFile.name}${suffix}`;
+    }
+
+    if (parsedFile.name.toLowerCase() === 'index' && pathname) {
+      return ``;
     }
 
     const folderName = basename(dirname(file));

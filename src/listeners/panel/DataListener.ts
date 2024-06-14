@@ -307,9 +307,21 @@ export class DataListener extends BaseListener {
 
       // Check slug
       if (!slugField && !updatedMetadata[DefaultFields.Slug]) {
-        const slug = Article.getSlug();
+        let pathname = contentType.previewPath || '';
+        if (!pathname) {
+          const selectedFolder = await Folders.getPageFolderByFilePath(filePath);
+          if (selectedFolder && selectedFolder.previewPath) {
+            pathname = selectedFolder.previewPath;
+          }
+        }
 
-        if (slug) {
+        if (!pathname) {
+          pathname = Preview.getSettings().pathname || '';
+        }
+
+        const slug = Article.getSlug(pathname);
+
+        if (typeof slug !== 'undefined') {
           updatedMetadata[DefaultFields.Slug] = slug;
         }
       }
