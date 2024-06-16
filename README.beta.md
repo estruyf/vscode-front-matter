@@ -195,14 +195,6 @@ You can open showcase issues for the following things:
 
 <br />
 
-<p align="center" title="Powered by Vercel">
-  <a href="https://vercel.com/?utm_source=vscode-frontmatter&utm_campaign=oss">
-    <img src="https://frontmatter.codes/assets/sponsors/powered-by-vercel.png" alt="Powered by Vercel" height="44px" />
-   </a>
-</p>
-
-<br />
-
 <p align="center">
   <a href="http://bejs.io/" title="Supported by the BEJS Community">
     <img src="https://frontmatter.codes/assets/sponsors/bejs-community.png" alt="Supported by the BEJS Community" height="50px"/>
