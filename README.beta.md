@@ -187,9 +187,9 @@ You can open showcase issues for the following things:
 
 <br />
 
-<p align="center" title="Powered by Vercel">
-  <a href="https://run.events/?utm_source=frontmatter&utm_campaign=oss">
-    <img src="https://frontmatter.codes/assets/sponsors/runevents-purple.webp" alt="run.events - Event Management Platform" height="50px" />
+<p align="center" title="Powered by Netlify">
+  <a href="https://www.netlify.com?utm_source=vscode-frontmatter&utm_campaign=oss">
+    <img src="https://frontmatter.codes/assets/sponsors/netlify-dark.png" alt="Deploys by Netlify" height="51px" />
    </a>
 </p>
 
