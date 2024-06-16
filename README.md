@@ -177,7 +177,7 @@ You can open showcase issues for the following things:
   </a>
 </p>
 
-## 🖤 Backers & Sponsors 👇 🤘
+## 💚 Backers & Sponsors 👇 🤘
 
 <p align="center">
   <img src="https://frontmatter.codes/api/img-sponsors" alt="Front Matter sponsors" />
