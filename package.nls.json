@@ -50,7 +50,7 @@
   "command.frontMatter.cache.clear": "Clear cache",
   "command.frontMatter.i18n.create": "Create new translation",
   "settings.configuration.title": "Front Matter: use frontmatter.json for shared team settings",
-  "setting.frontMatter.projects.markdownDescription": "Specify the list of projects to load in the Front Matter CMS. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.projects)",
+  "setting.frontMatter.projects.markdownDescription": "Specify the list of projects to load in the Front Matter CMS. [Docs](https://frontmatter.codes/docs/settings/overview#frontmatter.projects) - [Docs in VS Code](command:simpleBrowser.show?%5B%22https://frontmatter.codes/docs/settings/overview%23frontmatter.projects%22%5D)",
   "setting.frontMatter.projects.items.properties.name.markdownDescription": "Specify the name of the project.",
   "setting.frontMatter.projects.items.properties.default.markdownDescription": "Specify if this project is the default project to load.",
   "setting.frontMatter.sponsors.ai.enabled.markdownDescription": "Specify if you want to enable AI suggestions. [Check in the docs](https://frontmatter.codes/docs/settings/overview#frontmatter.sponsors.ai.enabled)",
