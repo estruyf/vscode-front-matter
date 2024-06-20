@@ -209,6 +209,16 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand(COMMAND_NAME.preview, () => Preview.open(extensionPath))
   );
 
+  // Open docs
+  subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_NAME.docs, () => {
+      vscode.commands.executeCommand(
+        `simpleBrowser.show`,
+        `https://${extension.isBetaVersion() ? `beta.` : ``}frontmatter.codes/docs`
+      );
+    })
+  );
+
   // Chat to the bot
   subscriptions.push(
     vscode.commands.registerCommand(COMMAND_NAME.chatbot, () => Chatbot.open(extensionPath))

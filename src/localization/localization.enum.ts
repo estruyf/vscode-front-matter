@@ -176,6 +176,10 @@ export enum LocalizationKey {
    */
   commonRename = 'common.rename',
   /**
+   * Documentation
+   */
+  commonDocs = 'common.docs',
+  /**
    * Loading content
    */
   loadingInitPages = 'loading.initPages',

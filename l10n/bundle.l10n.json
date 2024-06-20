@@ -43,6 +43,7 @@
   "common.languages": "Languages",
   "common.scripts": "Scripts",
   "common.rename": "Rename",
+  "common.docs": "Documentation",
 
   "loading.initPages": "Loading content",
 
