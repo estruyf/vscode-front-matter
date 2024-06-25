@@ -5,7 +5,16 @@ import { Folders } from '../../commands/Folders';
 import { Command } from '../../panelWebView/Command';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
-import { Uri, authentication, commands, window } from 'vscode';
+import {
+  CancellationTokenSource,
+  LanguageModelChatMessage,
+  LanguageModelChatResponse,
+  Uri,
+  authentication,
+  commands,
+  lm,
+  window
+} from 'vscode';
 import {
   ArticleHelper,
   Extension,
@@ -25,6 +34,7 @@ import {
   SETTING_DATE_FORMAT,
   SETTING_GLOBAL_ACTIVE_MODE,
   SETTING_GLOBAL_MODES,
+  SETTING_SEO_DESCRIPTION_LENGTH,
   SETTING_SEO_TITLE_FIELD,
   SETTING_TAXONOMY_CONTENT_TYPES
 } from '../../constants';
@@ -104,6 +114,84 @@ export class DataListener extends BaseListener {
       case CommandToCode.aiSuggestDescription:
         this.aiSuggestTaxonomy(msg.command, msg.requestId);
         break;
+      case CommandToCode.copilotDescription:
+        this.copilotSuggestion(msg.command, msg.requestId);
+        break;
+    }
+  }
+
+  private static async copilotSuggestion(command: string, requestId?: string) {
+    if (!command || !requestId) {
+      return;
+    }
+
+    const article = ArticleHelper.getActiveFile();
+    if (!article) {
+      return;
+    }
+
+    const articleDetails = await ArticleHelper.getFrontMatterByPath(article);
+    if (!articleDetails) {
+      return;
+    }
+
+    const extPath = Extension.getInstance().extensionPath;
+    const panel = PanelProvider.getInstance(extPath);
+
+    const [model] = await lm.selectChatModels({
+      vendor: 'copilot',
+      // family: 'gpt-4'
+    });
+
+    // TODO: Create settings for: copilot.description.message, copilot.family, 
+
+    const chars = Settings.get<number>(SETTING_SEO_DESCRIPTION_LENGTH) || 160;
+    const messages = [
+      LanguageModelChatMessage.User(
+        `You are a CMS expert for Front Matter CMS and your task is to assist the user to generate a SEO friendly abstract/description for their article. When the user provides a title and/or content, you should use this information to generate the description.
+        
+        IMPORTANT: You are only allowed to respond with a text that should not exceed ${chars} characters in length.`
+      )
+    ];
+
+    if (articleDetails && articleDetails.data?.title) {
+      messages.push(LanguageModelChatMessage.User(
+        `The title of the blog post is """${articleDetails.data.title}""".`
+      ));
+    }
+
+    if (articleDetails && articleDetails.content) {
+      messages.push(LanguageModelChatMessage.User(
+        `The content of the blog post is: """${articleDetails.content}""".`
+      ));
+    }
+
+    let chatResponse: LanguageModelChatResponse | undefined;
+
+    try {
+      chatResponse = await model.sendRequest(messages, {}, new CancellationTokenSource().token);
+    } catch (err) {
+      Logger.error(`DataListener:copilotSuggestion:: ${(err as Error).message}`);
+      panel.getWebview()?.postMessage({
+        command,
+        requestId,
+        error: l10n.t(LocalizationKey.listenersPanelDataListenerAiSuggestTaxonomyNoDataError)
+      } as MessageHandlerData<string>);
+      return;
+    }
+
+    let allFragments = [];
+    for await (const fragment of chatResponse.text) {
+      allFragments.push(fragment);
+    }
+
+    if (allFragments.length > 0) {
+      const description = allFragments.join('');
+      panel.getWebview()?.postMessage({
+        command,
+        requestId,
+        payload: description.trim()
+      } as MessageHandlerData<string>);
     }
   }
 

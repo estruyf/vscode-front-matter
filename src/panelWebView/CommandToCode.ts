@@ -42,6 +42,7 @@ export enum CommandToCode {
   stopServer = 'stop-server',
   aiSuggestTaxonomy = 'ai-suggest-taxonomy',
   aiSuggestDescription = 'ai-suggest-description',
+  copilotDescription = 'copilot-suggest-description',
   searchByType = 'search-by-type',
   processMediaData = 'process-media-data',
   isServerStarted = 'is-server-started'

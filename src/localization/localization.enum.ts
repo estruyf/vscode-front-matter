@@ -1397,6 +1397,10 @@ export enum LocalizationKey {
    */
   panelFieldsTextFieldAiMessage = 'panel.fields.textField.ai.message',
   /**
+   * Use Copilot to suggest {0}
+   */
+  panelFieldsTextFieldCopilotMessage = 'panel.fields.textField.copilot.message',
+  /**
    * Generating suggestion...
    */
   panelFieldsTextFieldAiGenerate = 'panel.fields.textField.ai.generate',

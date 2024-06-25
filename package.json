@@ -26,7 +26,7 @@
   },
   "qna": "https://github.com/estruyf/vscode-front-matter/discussions",
   "engines": {
-    "vscode": "^1.73.0"
+    "vscode": "^1.90.0"
   },
   "l10n": "./l10n",
   "categories": [
@@ -2779,7 +2779,7 @@
     "@types/react": "17.0.0",
     "@types/react-datepicker": "^4.8.0",
     "@types/react-dom": "17.0.0",
-    "@types/vscode": "^1.73.0",
+    "@types/vscode": "^1.90.0",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
     "@vscode-elements/elements": "^1.2.0",

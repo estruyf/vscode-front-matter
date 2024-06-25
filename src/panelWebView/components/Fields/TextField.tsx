@@ -11,6 +11,7 @@ import { CommandToCode } from '../../CommandToCode';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { useDebounce } from '../../../hooks/useDebounce';
+import { CopilotIcon } from '../Icons';
 
 const DEBOUNCE_TIME = 300;
 
@@ -91,9 +92,9 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
     }
   }, [showRequiredState, isValid]);
 
-  const suggestDescription = () => {
+  const suggestDescription = (type: "ai" | "copilot") => {
     setLoading(true);
-    messageHandler.request<string>(CommandToCode.aiSuggestDescription).then((suggestion) => {
+    messageHandler.request<string>(type === "copilot" ? CommandToCode.copilotDescription : CommandToCode.aiSuggestDescription).then((suggestion) => {
       setLoading(false);
 
       if (suggestion) {
@@ -106,19 +107,38 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   };
 
   const actionElement = useMemo(() => {
-    if (!settings?.aiEnabled || settings.seo.descriptionField !== name) {
+    if (settings.seo.descriptionField !== name) {
       return;
     }
 
     return (
-      <button
-        className='metadata_field__title__action'
-        title={l10n.t(LocalizationKey.panelFieldsTextFieldAiMessage, label?.toLowerCase())}
-        type='button'
-        onClick={() => suggestDescription()}
-        disabled={loading}>
-        <SparklesIcon />
-      </button>
+      <div className='flex gap-4'>
+        {
+          settings?.aiEnabled && (
+            <button
+              className='metadata_field__title__action inline-block text-[var(--vscode-editor-foreground)] disabled:opacity-50'
+              title={l10n.t(LocalizationKey.panelFieldsTextFieldAiMessage, label?.toLowerCase())}
+              type='button'
+              onClick={() => suggestDescription("ai")}
+              disabled={loading}>
+              <SparklesIcon />
+            </button>
+          )
+        }
+
+        {
+          settings?.copilotEnabled && (
+            <button
+              className='metadata_field__title__action inline-block text-[var(--vscode-editor-foreground)] disabled:opacity-50'
+              title={l10n.t(LocalizationKey.panelFieldsTextFieldCopilotMessage, label?.toLowerCase())}
+              type='button'
+              onClick={() => suggestDescription("copilot")}
+              disabled={loading}>
+              <CopilotIcon />
+            </button>
+          )
+        }
+      </div>
     );
   }, [settings?.aiEnabled, name]);
 
@@ -145,7 +165,11 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
         )
       }
 
-      <FieldTitle label={label} actionElement={actionElement} icon={<PencilIcon />} required={required} />
+      <FieldTitle
+        label={label}
+        actionElement={actionElement}
+        icon={<PencilIcon />}
+        required={required} />
 
       {wysiwyg ? (
         <React.Suspense fallback={<div>{l10n.t(LocalizationKey.panelFieldsTextFieldLoading)}</div>}>

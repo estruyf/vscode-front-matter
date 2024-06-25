@@ -431,6 +431,7 @@
   "panel.fields.slugField.generate": "Generate slug",
 
   "panel.fields.textField.ai.message": "Use Front Matter AI to suggest {0}",
+  "panel.fields.textField.copilot.message": "Use Copilot to suggest {0}",
   "panel.fields.textField.ai.generate": "Generating suggestion...",
   "panel.fields.textField.loading": "Loading field",
   "panel.fields.textField.limit": "Field limit reached {0}",
