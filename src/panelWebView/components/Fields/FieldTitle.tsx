@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useMemo } from 'react';
 import { RequiredAsterix } from './RequiredAsterix';
-import { VSCodeLabel } from '../VSCode';
 
 export interface IFieldTitleProps {
   label: string | JSX.Element;
@@ -23,16 +22,14 @@ export const FieldTitle: React.FunctionComponent<IFieldTitleProps> = ({
   }, [icon]);
 
   return (
-    <VSCodeLabel>
-      <div className={`metadata_field__label ${className || ''}`}>
-        <div>
-          {Icon}
-          <span style={{ lineHeight: '16px' }}>{label}</span>
-          <RequiredAsterix required={required} />
-        </div>
+    <div className='flex items-center justify-between w-full mb-2'>
+      <label className={`metadata_field__label text-base text-[var(--vscode-foreground)] ${className || ''}`}>
+        {Icon}
+        <span style={{ lineHeight: '16px' }}>{label}</span>
+        <RequiredAsterix required={required} />
+      </label>
 
-        {actionElement}
-      </div>
-    </VSCodeLabel>
+      {actionElement}
+    </div>
   );
 };

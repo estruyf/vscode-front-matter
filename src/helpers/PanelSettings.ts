@@ -45,6 +45,7 @@ import {
   TaxonomyType
 } from '../models';
 import { Folders } from '../commands';
+import { Copilot } from '../services/Copilot';
 
 export class PanelSettings {
   public static async get(): Promise<IPanelSettings> {
@@ -53,6 +54,7 @@ export class PanelSettings {
     try {
       return {
         aiEnabled: Settings.get<boolean>(SETTING_SPONSORS_AI_ENABLED) || false,
+        copilotEnabled: await Copilot.isInstalled(),
         git: await GitListener.getSettings(),
         seo: {
           title: (Settings.get(SETTING_SEO_TITLE_LENGTH) as number) || -1,

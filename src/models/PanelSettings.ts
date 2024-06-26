@@ -29,6 +29,7 @@ export interface PanelSettings {
   fieldGroups: FieldGroup[] | undefined;
   commaSeparatedFields: string[];
   aiEnabled: boolean;
+  copilotEnabled: boolean;
   contentFolders: ContentFolder[];
   websiteUrl: string;
   disabledActions: PanelAction[];

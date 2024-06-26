@@ -5,7 +5,12 @@ import { Folders } from '../../commands/Folders';
 import { Command } from '../../panelWebView/Command';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
-import { Uri, authentication, commands, window } from 'vscode';
+import {
+  Uri,
+  authentication,
+  commands,
+  window
+} from 'vscode';
 import {
   ArticleHelper,
   Extension,
@@ -45,6 +50,7 @@ import { Terminal } from '../../services';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
 import { parse } from 'path';
+import { Copilot } from '../../services/Copilot';
 
 const FILE_LIMIT = 10;
 
@@ -104,9 +110,62 @@ export class DataListener extends BaseListener {
       case CommandToCode.aiSuggestDescription:
         this.aiSuggestTaxonomy(msg.command, msg.requestId);
         break;
+      case CommandToCode.copilotSuggestDescription:
+        this.copilotSuggestDescription(msg.command, msg.requestId);
+        break;
     }
   }
 
+  /**
+   * Executes a Copilot suggestion command.
+   * @param command - The command to execute.
+   * @param requestId - The optional request ID.
+   * @returns A Promise that resolves when the suggestion command is executed.
+   */
+  private static async copilotSuggestDescription(command: string, requestId?: string) {
+    if (!command || !requestId) {
+      return;
+    }
+
+    const article = ArticleHelper.getActiveFile();
+    if (!article) {
+      return;
+    }
+
+    const articleDetails = await ArticleHelper.getFrontMatterByPath(article);
+    if (!articleDetails) {
+      return;
+    }
+
+    const extPath = Extension.getInstance().extensionPath;
+    const panel = PanelProvider.getInstance(extPath);
+
+    const titleField = (Settings.get(SETTING_SEO_TITLE_FIELD) as string) || DefaultFields.Title;
+    const description = await Copilot.suggestDescription(
+      articleDetails.data[titleField],
+      articleDetails.content
+    );
+
+    if (description) {
+      panel.getWebview()?.postMessage({
+        command,
+        requestId,
+        payload: description
+      } as MessageHandlerData<string>);
+    } else {
+      panel.getWebview()?.postMessage({
+        command,
+        requestId,
+        error: l10n.t(LocalizationKey.servicesCopilotGetChatResponseError)
+      } as MessageHandlerData<string>);
+    }
+  }
+
+  /**
+   * Suggests taxonomy using AI.
+   * @param command - The command string.
+   * @param requestId - The optional request ID.
+   */
   private static async aiSuggestTaxonomy(command: string, requestId?: string) {
     if (!command || !requestId) {
       return;

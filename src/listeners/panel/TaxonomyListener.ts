@@ -15,6 +15,7 @@ import { PanelProvider } from '../../panelWebView/PanelProvider';
 import { MessageHandlerData } from '@estruyf/vscode';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
+import { Copilot } from '../../services/Copilot';
 
 export class TaxonomyListener extends BaseListener {
   /**
@@ -66,9 +67,72 @@ export class TaxonomyListener extends BaseListener {
       case CommandToCode.aiSuggestTaxonomy:
         this.aiSuggestTaxonomy(msg.command, msg.requestId, msg.payload);
         break;
+      case CommandToCode.copilotSuggestTaxonomy:
+        this.copilotSuggestTaxonomy(msg.command, msg.requestId, msg.payload);
+        break;
     }
   }
 
+
+  /**
+   * Suggests a taxonomy for a given command, request ID, and tag type.
+   * 
+   * @param command - The command to execute.
+   * @param requestId - The ID of the request.
+   * @param type - The type of the tag.
+   * @returns A Promise that resolves to void.
+   */
+  private static async copilotSuggestTaxonomy(command: string, requestId?: string, type?: TagType) {
+    if (!command || !requestId || !type) {
+      return;
+    }
+
+    const article = ArticleHelper.getActiveFile();
+    if (!article) {
+      return;
+    }
+
+    const articleDetails = await ArticleHelper.getFrontMatterByPath(article);
+    if (!articleDetails) {
+      return;
+    }
+
+    const extPath = Extension.getInstance().extensionPath;
+    const panel = PanelProvider.getInstance(extPath);
+
+    const titleField = (Settings.get(SETTING_SEO_TITLE_FIELD) as string) || DefaultFields.Title;
+    const descriptionField = (Settings.get(SETTING_SEO_DESCRIPTION_FIELD) as string) || DefaultFields.Description;
+
+    const tags = await Copilot.suggestTaxonomy(
+      articleDetails.data[titleField],
+      type,
+      articleDetails.data[descriptionField],
+      articleDetails.content
+    );
+
+    if (tags) {
+      panel.getWebview()?.postMessage({
+        command,
+        requestId,
+        payload: tags
+      } as MessageHandlerData<string[]>);
+    } else {
+      panel.getWebview()?.postMessage({
+        command,
+        requestId,
+        error: l10n.t(LocalizationKey.servicesCopilotGetChatResponseError)
+      } as MessageHandlerData<string>);
+    }
+  }
+
+  /**
+   * Suggests taxonomy based on the provided command, request ID, and tag type.
+   * 
+   * @param command - The command to execute.
+   * @param requestId - The ID of the request.
+   * @param type - The type of tag.
+   * @returns A Promise that resolves to void.
+   */
   private static async aiSuggestTaxonomy(command: string, requestId?: string, type?: TagType) {
     if (!command || !requestId || !type) {
       return;
