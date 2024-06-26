@@ -4,6 +4,8 @@
 
 ### ✨ New features
 
+- [#823](https://github.com/estruyf/vscode-front-matter/issues/823): Integrated GitHub Copilot support for titles, descriptions, and tags
+
 ### 🎨 Enhancements
 
 - [#819](https://github.com/estruyf/vscode-front-matter/issues/819): Added new extensibility support for media scripts
