@@ -22,8 +22,8 @@ export const FieldTitle: React.FunctionComponent<IFieldTitleProps> = ({
   }, [icon]);
 
   return (
-    <div className='flex items-center justify-between w-full'>
-      <label className={`metadata_field__label text-base text-[var(--vscode-foreground)] py-2 ${className || ''}`}>
+    <div className='flex items-center justify-between w-full mb-2'>
+      <label className={`metadata_field__label text-base text-[var(--vscode-foreground)] ${className || ''}`}>
         {Icon}
         <span style={{ lineHeight: '16px' }}>{label}</span>
         <RequiredAsterix required={required} />

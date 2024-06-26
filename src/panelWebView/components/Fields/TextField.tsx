@@ -92,18 +92,23 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
     }
   }, [showRequiredState, isValid]);
 
-  const suggestDescription = (type: "ai" | "copilot") => {
+  const suggestDescription = (type: 'ai' | 'copilot') => {
     setLoading(true);
-    messageHandler.request<string>(type === "copilot" ? CommandToCode.copilotDescription : CommandToCode.aiSuggestDescription).then((suggestion) => {
-      setLoading(false);
+    messageHandler
+      .request<string>(
+        type === 'copilot' ? CommandToCode.copilotSuggestDescription : CommandToCode.aiSuggestDescription
+      )
+      .then((suggestion) => {
+        setLoading(false);
 
-      if (suggestion) {
-        setText(suggestion);
-        onChange(suggestion);
-      }
-    }).catch(() => {
-      setLoading(false);
-    });
+        if (suggestion) {
+          setText(suggestion);
+          onChange(suggestion);
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   };
 
   const actionElement = useMemo(() => {
@@ -112,38 +117,36 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
     }
 
     return (
-      <div className='flex gap-4'>
-        {
-          settings?.aiEnabled && (
-            <button
-              className='metadata_field__title__action inline-block text-[var(--vscode-editor-foreground)] disabled:opacity-50'
-              title={l10n.t(LocalizationKey.panelFieldsTextFieldAiMessage, label?.toLowerCase())}
-              type='button'
-              onClick={() => suggestDescription("ai")}
-              disabled={loading}>
-              <SparklesIcon />
-            </button>
-          )
-        }
+      <div className="flex gap-4">
+        {settings?.aiEnabled && (
+          <button
+            className="metadata_field__title__action inline-block text-[var(--vscode-editor-foreground)] disabled:opacity-50"
+            title={l10n.t(LocalizationKey.panelFieldsTextFieldAiMessage, label?.toLowerCase())}
+            type="button"
+            onClick={() => suggestDescription('ai')}
+            disabled={loading}
+          >
+            <SparklesIcon />
+          </button>
+        )}
 
-        {
-          settings?.copilotEnabled && (
-            <button
-              className='metadata_field__title__action inline-block text-[var(--vscode-editor-foreground)] disabled:opacity-50'
-              title={l10n.t(LocalizationKey.panelFieldsTextFieldCopilotMessage, label?.toLowerCase())}
-              type='button'
-              onClick={() => suggestDescription("copilot")}
-              disabled={loading}>
-              <CopilotIcon />
-            </button>
-          )
-        }
+        {settings?.copilotEnabled && (
+          <button
+            className="metadata_field__title__action inline-block text-[var(--vscode-editor-foreground)] disabled:opacity-50"
+            title={l10n.t(LocalizationKey.panelFieldsTextFieldCopilotMessage, label?.toLowerCase())}
+            type="button"
+            onClick={() => suggestDescription('copilot')}
+            disabled={loading}
+          >
+            <CopilotIcon />
+          </button>
+        )}
       </div>
     );
   }, [settings?.aiEnabled, name]);
 
   useEffect(() => {
-    if (text !== value && (lastUpdated === null || (Date.now() - DEBOUNCE_TIME) > lastUpdated)) {
+    if (text !== value && (lastUpdated === null || Date.now() - DEBOUNCE_TIME > lastUpdated)) {
       setText(value || null);
     }
     setLastUpdated(null);
@@ -157,46 +160,49 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
 
   return (
     <div className={`metadata_field`}>
-      {
-        loading && (
-          <div className='metadata_field__loading'>
-            {l10n.t(LocalizationKey.panelFieldsTextFieldAiGenerate)}
-          </div>
-        )
-      }
-
       <FieldTitle
         label={label}
         actionElement={actionElement}
         icon={<PencilIcon />}
-        required={required} />
+        required={required}
+      />
 
-      {wysiwyg ? (
-        <React.Suspense fallback={<div>{l10n.t(LocalizationKey.panelFieldsTextFieldLoading)}</div>}>
-          <WysiwygField text={text || ''} onChange={onTextChange} />
-        </React.Suspense>
-      ) : singleLine ? (
-        <input
-          className={`metadata_field__input`}
-          value={text || ''}
-          onChange={(e) => onTextChange(e.currentTarget.value)}
-          placeholder={placeholder}
-          style={{
-            border
-          }}
-        />
-      ) : (
-        <textarea
-          className={`metadata_field__textarea`}
-          rows={rows || 2}
-          value={text || ''}
-          onChange={(e) => onTextChange(e.currentTarget.value)}
-          placeholder={placeholder}
-          style={{
-            border
-          }}
-        />
-      )}
+      <div className='relative'>
+        {loading && (
+          <div className="metadata_field__loading">
+            {l10n.t(LocalizationKey.panelFieldsTextFieldAiGenerate)}
+          </div>
+        )}
+
+        {wysiwyg ? (
+          <React.Suspense
+            fallback={<div>{l10n.t(LocalizationKey.panelFieldsTextFieldLoading)}</div>}
+          >
+            <WysiwygField text={text || ''} onChange={onTextChange} />
+          </React.Suspense>
+        ) : singleLine ? (
+          <input
+            className={`metadata_field__input`}
+            value={text || ''}
+            onChange={(e) => onTextChange(e.currentTarget.value)}
+            placeholder={placeholder}
+            style={{
+              border
+            }}
+          />
+        ) : (
+          <textarea
+            className={`metadata_field__textarea`}
+            rows={rows || 2}
+            value={text || ''}
+            onChange={(e) => onTextChange(e.currentTarget.value)}
+            placeholder={placeholder}
+            style={{
+              border
+            }}
+          />
+        )}
+      </div>
 
       {limit && limit > 0 && (text || '').length > limit && (
         <div className={`metadata_field__limit`}>

@@ -316,7 +316,6 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
 
   &.metadata_field__alert {
     justify-content: flex-start;
@@ -371,7 +370,7 @@ button {
   width: calc(100% + 2.5em);
   background-color: var(--vscode-button-secondaryBackground);
   color: var(--vscode-button-secondaryForeground);
-  top: 32px;
+  top: 0;
   left: -1.25rem;
   right: 0;
   bottom: 0;

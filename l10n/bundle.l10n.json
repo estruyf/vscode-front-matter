@@ -522,6 +522,7 @@
   "panel.tagPicker.inputPlaceholder.empty": "Pick your {0}",
   "panel.tagPicker.inputPlaceholder.disabled": "You have reached the limit of {0}",
   "panel.tagPicker.ai.suggest": "Use Front Matter AI to suggest {0}",
+  "panel.tagPicker.copilot.suggest": "Use GitHub Copilot to suggest {0}",
   "panel.tagPicker.ai.generating": "Generating suggestions...",
   "panel.tagPicker.limit": "Max.: {0}",
   "panel.tagPicker.unkown": "Add the unknown tag",
@@ -705,9 +706,11 @@
   "helpers.questions.contentTitle.aiInput.placeholder": "What would you like to write about?",
   "helpers.questions.contentTitle.aiInput.quickPick.title.separator": "your title/description",
   "helpers.questions.contentTitle.aiInput.quickPick.ai.separator": "AI generated title",
+  "helpers.questions.contentTitle.aiInput.quickPick.copilot.separator": "GitHub Copilot suggestions",
   "helpers.questions.contentTitle.aiInput.select.title": "Select a title",
   "helpers.questions.contentTitle.aiInput.select.placeholder": "Select a title for your content",
   "helpers.questions.contentTitle.aiInput.failed": "Failed fetching the AI title. Please try to use your own title or try again later.",
+  "helpers.questions.contentTitle.copilotInput.failed": "Failed fetching the GitHub Copilot title suggestions. Please try to use your own title or try again later.",
   "helpers.questions.contentTitle.aiInput.warning": "You did not specify a title for your content.",
   "helpers.questions.contentTitle.titleInput.title": "Content title",
   "helpers.questions.contentTitle.titleInput.prompt": "What would you like to use as a title for the content to create?",
@@ -780,6 +783,8 @@
 
   "listeners.panel.taxonomyListener.aiSuggestTaxonomy.noEditor.error": "No active editor",
   "listeners.panel.taxonomyListener.aiSuggestTaxonomy.noData.error": "No article data",
+
+  "services.copilot.getChatResponse.error": "Failed to get a response from the GitHub Copilot.",
 
   "services.modeSwitch.switchMode.quickPick.placeholder": "Select the mode you want to use",
   "services.modeSwitch.switchMode.quickPick.title": "{0}: Mode selection",
