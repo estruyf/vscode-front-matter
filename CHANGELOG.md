@@ -13,6 +13,8 @@
 
 ### 🐞 Fixes
 
+- [#827](https://github.com/estruyf/vscode-front-matter/issues/827): Fix for `frontmatter.json` file which gets created when already present in a sub-folder
+
 ## [10.2.0] - 2024-06-12 - [Release notes](https://beta.frontmatter.codes/updates/v10.2.0)
 
 ### ✨ New features

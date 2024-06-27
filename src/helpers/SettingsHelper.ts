@@ -516,7 +516,9 @@ ${JSON.stringify(value, null, 2)}`,
       }frontmatter.codes/frontmatter.schema.json`
     };
 
-    if (wsFolder) {
+    const projectFile = await Settings.projectConfigPath();
+
+    if (wsFolder && !projectFile) {
       const configPath = join(wsFolder.fsPath, Settings.globalFile);
       if (!(await existsAsync(configPath))) {
         await writeFileAsync(configPath, JSON.stringify(initialConfig, null, 2), 'utf8');
