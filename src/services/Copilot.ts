@@ -7,7 +7,11 @@ import {
   version as VscodeVersion
 } from 'vscode';
 import { Logger, Settings, TaxonomyHelper } from '../helpers';
-import { SETTING_SEO_DESCRIPTION_LENGTH, SETTING_SEO_TITLE_LENGTH } from '../constants';
+import {
+  SETTING_COPILOT_FAMILY,
+  SETTING_SEO_DESCRIPTION_LENGTH,
+  SETTING_SEO_TITLE_LENGTH
+} from '../constants';
 import { TagType } from '../panelWebView/TagType';
 import { TaxonomyType } from '../models';
 
@@ -198,8 +202,8 @@ export class Copilot {
    */
   private static async getModel() {
     const [model] = await lm.selectChatModels({
-      vendor: 'copilot'
-      // family: 'gpt-4'
+      vendor: 'copilot',
+      family: Settings.get<string>(SETTING_COPILOT_FAMILY) || 'gpt-3.5-turbo'
     });
 
     return model;

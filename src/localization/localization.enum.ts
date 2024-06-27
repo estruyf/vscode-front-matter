@@ -2321,7 +2321,7 @@ export enum LocalizationKey {
    */
   helpersQuestionsContentTitleAiInputQuickPickAiSeparator = 'helpers.questions.contentTitle.aiInput.quickPick.ai.separator',
   /**
-   * GitHub Copilot generated title
+   * GitHub Copilot suggestions
    */
   helpersQuestionsContentTitleAiInputQuickPickCopilotSeparator = 'helpers.questions.contentTitle.aiInput.quickPick.copilot.separator',
   /**

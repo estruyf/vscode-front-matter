@@ -2034,6 +2034,11 @@
             "info",
             "verbose"
           ]
+        },
+        "frontMatter.copilot.family": {
+          "type": "string",
+          "default": "gpt-3.5-turbo",
+          "markdownDescription": "%setting.frontMatter.copilot.family.markdownDescription%"
         }
       }
     },
