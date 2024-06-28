@@ -2,14 +2,13 @@ import { PencilIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useRecoilState } from 'recoil';
-import { BaseFieldProps, PanelSettings } from '../../../models';
+import { BaseFieldProps, CustomScript, PanelSettings } from '../../../models';
 import { RequiredFieldsAtom } from '../../state';
 import { FieldTitle } from './FieldTitle';
 import { FieldMessage } from './FieldMessage';
 import { messageHandler } from '@estruyf/vscode/dist/client';
 import { CommandToCode } from '../../CommandToCode';
-import * as l10n from '@vscode/l10n';
-import { LocalizationKey } from '../../../localization';
+import { LocalizationKey, localize } from '../../../localization';
 import { useDebounce } from '../../../hooks/useDebounce';
 import { CopilotIcon } from '../Icons';
 
@@ -23,6 +22,7 @@ export interface ITextFieldProps extends BaseFieldProps<string> {
   name: string;
   placeholder?: string;
   settings: PanelSettings;
+  action?: CustomScript;
   onChange: (txtValue: string) => void;
 }
 
@@ -40,11 +40,12 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   name,
   settings,
   onChange,
+  action,
   required
 }: React.PropsWithChildren<ITextFieldProps>) => {
   const [, setRequiredFields] = useRecoilState(RequiredFieldsAtom);
   const [text, setText] = React.useState<string | null | undefined>(undefined);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<string | undefined>(undefined);
   const [lastUpdated, setLastUpdated] = React.useState<number | null>(null);
   const debouncedText = useDebounce<string | null | undefined>(text, DEBOUNCE_TIME);
 
@@ -93,13 +94,14 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   }, [showRequiredState, isValid]);
 
   const suggestDescription = (type: 'ai' | 'copilot') => {
-    setLoading(true);
+    setLoading(localize(LocalizationKey.panelFieldsTextFieldAiGenerate));
+
     messageHandler
       .request<string>(
         type === 'copilot' ? CommandToCode.copilotSuggestDescription : CommandToCode.aiSuggestDescription
       )
       .then((suggestion) => {
-        setLoading(false);
+        setLoading(undefined);
 
         if (suggestion) {
           setText(suggestion);
@@ -107,7 +109,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
         }
       })
       .catch(() => {
-        setLoading(false);
+        setLoading(undefined);
       });
   };
 
@@ -117,14 +119,14 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
     }
 
     return (
-      <div className="flex gap-4">
+      <>
         {settings?.aiEnabled && (
           <button
             className="metadata_field__title__action inline-block text-[var(--vscode-editor-foreground)] disabled:opacity-50"
-            title={l10n.t(LocalizationKey.panelFieldsTextFieldAiMessage, label?.toLowerCase())}
+            title={localize(LocalizationKey.panelFieldsTextFieldAiMessage, label?.toLowerCase())}
             type="button"
             onClick={() => suggestDescription('ai')}
-            disabled={loading}
+            disabled={!!loading}
           >
             <SparklesIcon />
           </button>
@@ -133,17 +135,17 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
         {settings?.copilotEnabled && (
           <button
             className="metadata_field__title__action inline-block text-[var(--vscode-editor-foreground)] disabled:opacity-50"
-            title={l10n.t(LocalizationKey.panelFieldsTextFieldCopilotMessage, label?.toLowerCase())}
+            title={localize(LocalizationKey.panelFieldsTextFieldCopilotMessage, label?.toLowerCase())}
             type="button"
             onClick={() => suggestDescription('copilot')}
-            disabled={loading}
+            disabled={!!loading}
           >
             <CopilotIcon />
           </button>
         )}
-      </div>
+      </>
     );
-  }, [settings?.aiEnabled, name]);
+  }, [settings?.aiEnabled, settings?.copilotEnabled, name, action, loading]);
 
   useEffect(() => {
     if (text !== value && (lastUpdated === null || Date.now() - DEBOUNCE_TIME > lastUpdated)) {
@@ -165,18 +167,22 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
         actionElement={actionElement}
         icon={<PencilIcon />}
         required={required}
+        isDisabled={!!loading}
+        customAction={action}
+        triggerLoading={(message) => setLoading(message)}
+        onChange={onTextChange}
       />
 
       <div className='relative'>
         {loading && (
           <div className="metadata_field__loading">
-            {l10n.t(LocalizationKey.panelFieldsTextFieldAiGenerate)}
+            {loading}
           </div>
         )}
 
         {wysiwyg ? (
           <React.Suspense
-            fallback={<div>{l10n.t(LocalizationKey.panelFieldsTextFieldLoading)}</div>}
+            fallback={<div>{localize(LocalizationKey.panelFieldsTextFieldLoading)}</div>}
           >
             <WysiwygField text={text || ''} onChange={onTextChange} />
           </React.Suspense>
@@ -206,7 +212,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
 
       {limit && limit > 0 && (text || '').length > limit && (
         <div className={`metadata_field__limit`}>
-          {l10n.t(LocalizationKey.panelFieldsTextFieldLimit, `${(text || '').length}/${limit}`)}
+          {localize(LocalizationKey.panelFieldsTextFieldLimit, `${(text || '').length}/${limit}`)}
         </div>
       )}
 

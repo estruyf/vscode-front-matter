@@ -141,6 +141,9 @@ export interface Field {
 
   // When clause
   when?: WhenClause;
+
+  // Custom action
+  action?: CustomScript;
 }
 
 export interface NumberOptions {

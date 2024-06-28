@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { useMemo } from 'react';
 import { RequiredAsterix } from './RequiredAsterix';
+import { CustomScript } from '../../../models';
+import { FieldCustomAction } from './FieldCustomAction';
 
 export interface IFieldTitleProps {
   label: string | JSX.Element;
@@ -8,6 +10,10 @@ export interface IFieldTitleProps {
   className?: string;
   required?: boolean;
   actionElement?: JSX.Element;
+  customAction?: CustomScript;
+  isDisabled?: boolean;
+  triggerLoading?: (message?: string) => void;
+  onChange?: (value: any) => void;
 }
 
 export const FieldTitle: React.FunctionComponent<IFieldTitleProps> = ({
@@ -16,6 +22,10 @@ export const FieldTitle: React.FunctionComponent<IFieldTitleProps> = ({
   className,
   required,
   actionElement,
+  customAction,
+  isDisabled,
+  triggerLoading,
+  onChange,
 }: React.PropsWithChildren<IFieldTitleProps>) => {
   const Icon = useMemo(() => {
     return icon ? React.cloneElement(icon, { style: { width: '16px', height: '16px' } }) : null;
@@ -29,7 +39,19 @@ export const FieldTitle: React.FunctionComponent<IFieldTitleProps> = ({
         <RequiredAsterix required={required} />
       </label>
 
-      {actionElement}
+      <div className="flex gap-4">
+        {
+          customAction && onChange && (
+            <FieldCustomAction
+              action={customAction}
+              disabled={isDisabled}
+              triggerLoading={triggerLoading}
+              onChange={onChange} />
+          )
+        }
+
+        {actionElement}
+      </div>
     </div>
   );
 };

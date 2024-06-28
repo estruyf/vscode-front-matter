@@ -5,7 +5,7 @@ import { CommandToCode } from '../../CommandToCode';
 import { TagType } from '../../TagType';
 import Downshift from 'downshift';
 import { AddIcon } from '../Icons/AddIcon';
-import { BlockFieldData, CustomTaxonomyData } from '../../../models';
+import { BlockFieldData, CustomScript, CustomTaxonomyData } from '../../../models';
 import { useCallback, useEffect, useMemo } from 'react';
 import { messageHandler, Messenger } from '@estruyf/vscode/dist/client';
 import { FieldMessage } from '../Fields/FieldMessage';
@@ -13,8 +13,7 @@ import { FieldTitle } from '../Fields/FieldTitle';
 import { useRecoilValue } from 'recoil';
 import { PanelSettingsAtom } from '../../state';
 import { SparklesIcon } from '@heroicons/react/24/outline';
-import * as l10n from '@vscode/l10n';
-import { LocalizationKey } from '../../../localization';
+import { LocalizationKey, localize } from '../../../localization';
 import useDropdownStyle from '../../hooks/useDropdownStyle';
 import { CopilotIcon } from '../Icons';
 
@@ -37,6 +36,7 @@ export interface ITagPickerProps {
   limit?: number;
   required?: boolean;
   renderAsString?: boolean;
+  action?: CustomScript;
 }
 
 const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
@@ -56,7 +56,8 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
   blockData,
   limit,
   required,
-  renderAsString
+  renderAsString,
+  action
 }: React.PropsWithChildren<ITagPickerProps>) => {
   const [selected, setSelected] = React.useState<string[]>([]);
   const [inputValue, setInputValue] = React.useState<string>('');
@@ -65,7 +66,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
   const { getDropdownStyle } = useDropdownStyle(inputRef as any);
   const dsRef = React.useRef<Downshift<string> | null>(null);
   const settings = useRecoilValue(PanelSettingsAtom);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<string | undefined>(undefined);
 
   /**
    * Removes an option
@@ -249,25 +250,29 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
     [options, inputRef, selected, freeform]
   );
 
+  const updateTaxonomy = (values: string[]) => {
+    if (values && values instanceof Array && values.length > 0) {
+      const uniqValues = Array.from(new Set([...selected, ...values]));
+      setSelected(uniqValues);
+      sendUpdate(uniqValues);
+      setInputValue('');
+    }
+  }
+
   const suggestTaxonomy = useCallback(
     (aiType: 'ai' | 'copilot', type: TagType) => {
-      setLoading(true);
+      setLoading(localize(LocalizationKey.panelTagPickerAiGenerating));
 
       const command =
         aiType === 'ai' ? CommandToCode.aiSuggestTaxonomy : CommandToCode.copilotSuggestTaxonomy;
       messageHandler
         .request<string[]>(command, type)
         .then((values) => {
-          setLoading(false);
-          if (values && values instanceof Array && values.length > 0) {
-            const uniqValues = Array.from(new Set([...selected, ...values]));
-            setSelected(uniqValues);
-            sendUpdate(uniqValues);
-            setInputValue('');
-          }
+          setLoading(undefined);
+          updateTaxonomy(values)
         })
         .catch(() => {
-          setLoading(false);
+          setLoading(undefined);
         });
     },
     [selected]
@@ -286,13 +291,13 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
 
   const inputPlaceholder = useMemo((): string => {
     if (checkIsDisabled()) {
-      return l10n.t(
+      return localize(
         LocalizationKey.panelTagPickerInputPlaceholderDisabled,
         `${limit} ${label || type.toLowerCase()}`
       );
     }
 
-    return l10n.t(LocalizationKey.panelTagPickerInputPlaceholderEmpty, label || type.toLowerCase());
+    return localize(LocalizationKey.panelTagPickerInputPlaceholderEmpty, label || type.toLowerCase());
   }, [label, type, checkIsDisabled]);
 
   const showRequiredState = useMemo(() => {
@@ -305,17 +310,17 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
     }
 
     return (
-      <div className="flex gap-4">
+      <>
         {settings?.aiEnabled && (
           <button
             className="metadata_field__title__action"
-            title={l10n.t(
+            title={localize(
               LocalizationKey.panelTagPickerAiSuggest,
               label?.toLowerCase() || type.toLowerCase()
             )}
             type="button"
             onClick={() => suggestTaxonomy('ai', type)}
-            disabled={loading}
+            disabled={!!loading}
           >
             <SparklesIcon />
           </button>
@@ -324,18 +329,18 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
         {settings?.copilotEnabled && (
           <button
             className="metadata_field__title__action"
-            title={l10n.t(
+            title={localize(
               LocalizationKey.panelTagPickerCopilotSuggest,
               label?.toLowerCase() || type.toLowerCase()
             )}
             type="button"
             onClick={() => suggestTaxonomy('copilot', type)}
-            disabled={loading}
+            disabled={!!loading}
           >
             <CopilotIcon />
           </button>
         )}
-      </div>
+      </>
     );
   }, [settings?.aiEnabled, settings?.copilotEnabled, label, type]);
 
@@ -376,7 +381,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
               <>
                 {` `}
                 <span style={{ fontWeight: 'lighter' }}>
-                  ({l10n.t(LocalizationKey.panelTagPickerLimit, limit)})
+                  ({localize(LocalizationKey.panelTagPickerLimit, limit)})
                 </span>
               </>
             ) : (
@@ -387,12 +392,16 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
         actionElement={actionElement}
         icon={icon}
         required={required}
+        isDisabled={!!loading}
+        customAction={action}
+        triggerLoading={(message) => setLoading(message)}
+        onChange={updateTaxonomy}
       />
 
       <div className="relative">
         {loading && (
           <div className="metadata_field__loading">
-            {l10n.t(LocalizationKey.panelTagPickerAiGenerating)}
+            {loading}
           </div>
         )}
 
@@ -418,9 +427,8 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
             <>
               <div
                 {...getRootProps(undefined, { suppressRefError: true })}
-                className={`article__tags__input ${freeform ? 'freeform' : ''} ${
-                  showRequiredState ? 'required' : ''
-                }`}
+                className={`article__tags__input ${freeform ? 'freeform' : ''} ${showRequiredState ? 'required' : ''
+                  }`}
               >
                 <input
                   {...getInputProps({
@@ -443,7 +451,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
                 {freeform && (
                   <button
                     className={`article__tags__input__button`}
-                    title={l10n.t(LocalizationKey.panelTagPickerUnkown)}
+                    title={localize(LocalizationKey.panelTagPickerUnkown)}
                     disabled={!inputValue || checkIsDisabled()}
                     onClick={() => insertUnkownTag(closeMenu)}
                   >

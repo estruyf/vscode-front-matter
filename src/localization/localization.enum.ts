@@ -1417,6 +1417,14 @@ export enum LocalizationKey {
    */
   panelFieldsWrapperFieldUnknown = 'panel.fields.wrapperField.unknown',
   /**
+   * Custom action
+   */
+  panelFieldsFieldCustomActionButtonTitle = 'panel.fields.fieldCustomAction.button.title',
+  /**
+   * Executing field action...
+   */
+  panelFieldsFieldCustomActionExecuting = 'panel.fields.fieldCustomAction.executing',
+  /**
    * Actions
    */
   panelActionsTitle = 'panel.actions.title',

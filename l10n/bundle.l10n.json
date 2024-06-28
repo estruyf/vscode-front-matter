@@ -438,6 +438,9 @@
 
   "panel.fields.wrapperField.unknown": "Unkown field type: {0}",
 
+  "panel.fields.fieldCustomAction.button.title": "Custom action",
+  "panel.fields.fieldCustomAction.executing": "Executing field action...",
+
   "panel.actions.title": "Actions",
 
   "panel.articleDetails.title": "More details",

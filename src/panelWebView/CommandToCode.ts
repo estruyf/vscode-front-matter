@@ -46,5 +46,6 @@ export enum CommandToCode {
   copilotSuggestTaxonomy = 'copilot-suggest-taxonomy',
   searchByType = 'search-by-type',
   processMediaData = 'process-media-data',
-  isServerStarted = 'is-server-started'
+  isServerStarted = 'is-server-started',
+  runFieldAction = 'run-field-action'
 }

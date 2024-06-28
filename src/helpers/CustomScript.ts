@@ -67,11 +67,11 @@ export class CustomScript {
    * @param path
    * @returns
    */
-  private static async singleRun(
+  public static async singleRun(
     wsPath: string,
     script: ICustomScript,
     path: string | null = null
-  ): Promise<void> {
+  ): Promise<any> {
     let articlePath: string | null = path;
     let article: ParsedFrontMatter | null | undefined = null;
 
@@ -99,7 +99,7 @@ export class CustomScript {
             articlePath as string,
             script
           );
-          await CustomScript.showOutput(output, script, articlePath);
+          return await CustomScript.showOutput(output, script, articlePath);
         }
       );
     } else {
@@ -133,7 +133,7 @@ export class CustomScript {
         title: l10n.t(LocalizationKey.helpersCustomScriptExecuting, script.title),
         cancellable: false
       },
-      async (progress, token) => {
+      async (_, __) => {
         for await (const folder of folders) {
           if (folder.lastModified.length > 0) {
             for await (const file of folder.lastModified) {
@@ -266,15 +266,21 @@ export class CustomScript {
     output: string | null,
     script: ICustomScript,
     articlePath?: string | null
-  ): Promise<void> {
+  ): Promise<any> {
     if (output) {
       try {
         const data: {
           frontmatter?: { [key: string]: any };
-          fmAction?: 'open' | 'copyMediaMetadata' | 'copyMediaMetadataAndDelete' | 'deleteMedia';
+          fmAction?:
+            | 'open'
+            | 'copyMediaMetadata'
+            | 'copyMediaMetadataAndDelete'
+            | 'deleteMedia'
+            | 'fieldAction';
           fmPath?: string;
           fmSourcePath?: string;
           fmDestinationPath?: string;
+          fmFieldValue?: any;
         } = JSON.parse(output);
 
         if (data.frontmatter) {
@@ -326,6 +332,8 @@ export class CustomScript {
             await MediaHelpers.deleteFile(data.fmSourcePath);
           } else if (data.fmAction === 'deleteMedia' && data.fmPath) {
             await MediaHelpers.deleteFile(data.fmPath);
+          } else if (data.fmAction === 'fieldAction') {
+            return data.fmFieldValue || undefined;
           }
         } else {
           Logger.error(`No frontmatter found.`);
