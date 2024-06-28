@@ -345,6 +345,7 @@ button {
   &:disabled {
     opacity: 0.5;
     color: var(--vscode-disabledForeground);
+    background: none;
   }
 
   svg {
