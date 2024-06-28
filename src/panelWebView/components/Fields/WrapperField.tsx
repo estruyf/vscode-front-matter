@@ -216,7 +216,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           value={(fieldValue as string) || null}
           required={!!field.required}
           settings={settings}
-          action={field.action}
+          actions={field.actions}
         />
       </FieldBoundary>
     );
@@ -252,6 +252,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           multiple={field.multiple}
           blockData={blockData}
           onChange={onFieldChange}
+          actions={field.actions}
         />
       </FieldBoundary>
     );
@@ -308,7 +309,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           limit={field.taxonomyLimit}
           renderAsString={field.singleValueAsString}
           required={!!field.required}
-          action={field.action}
+          actions={field.actions}
         />
       </FieldBoundary>
     );

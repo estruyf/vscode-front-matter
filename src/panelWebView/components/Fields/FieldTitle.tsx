@@ -10,7 +10,7 @@ export interface IFieldTitleProps {
   className?: string;
   required?: boolean;
   actionElement?: JSX.Element;
-  customAction?: CustomScript;
+  customActions?: CustomScript[];
   isDisabled?: boolean;
   triggerLoading?: (message?: string) => void;
   onChange?: (value: any) => void;
@@ -22,7 +22,7 @@ export const FieldTitle: React.FunctionComponent<IFieldTitleProps> = ({
   className,
   required,
   actionElement,
-  customAction,
+  customActions,
   isDisabled,
   triggerLoading,
   onChange,
@@ -40,17 +40,17 @@ export const FieldTitle: React.FunctionComponent<IFieldTitleProps> = ({
       </label>
 
       <div className="flex gap-4">
+        {actionElement}
+
         {
-          customAction && onChange && (
+          customActions && onChange && (
             <FieldCustomAction
-              action={customAction}
+              actions={customActions}
               disabled={isDisabled}
               triggerLoading={triggerLoading}
               onChange={onChange} />
           )
         }
-
-        {actionElement}
       </div>
     </div>
   );

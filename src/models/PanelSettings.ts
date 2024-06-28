@@ -143,7 +143,7 @@ export interface Field {
   when?: WhenClause;
 
   // Custom action
-  action?: CustomScript;
+  actions?: CustomScript[];
 }
 
 export interface NumberOptions {

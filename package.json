@@ -1550,8 +1550,12 @@
                         }
                       }
                     },
-                    "action": {
-                      "$ref": "#customscript"
+                    "actions": {
+                      "type": "array",
+                      "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.actions.description%",
+                      "items": {
+                        "$ref": "#customscript"
+                      }
                     }
                   },
                   "additionalProperties": false,
@@ -2660,22 +2664,22 @@
           "when": "view == frontMatter.explorer"
         },
         {
-          "command": "frontMatter.collapseSections",
-          "group": "navigation@1",
-          "when": "view == frontMatter.explorer"
-        },
-        {
           "command": "frontMatter.mode.switch",
-          "group": "navigation@2",
+          "group": "navigation@1",
           "when": "view == frontMatter.explorer && frontMatter:has:modes == true"
         },
         {
           "command": "frontMatter.project.switch",
-          "group": "navigation@3",
+          "group": "navigation@2",
           "when": "view == frontMatter.explorer && frontMatter:project:switch:enabled"
         },
         {
           "command": "frontMatter.settings.refresh",
+          "group": "navigation@3",
+          "when": "view == frontMatter.explorer"
+        },
+        {
+          "command": "frontMatter.collapseSections",
           "group": "navigation@4",
           "when": "view == frontMatter.explorer"
         },

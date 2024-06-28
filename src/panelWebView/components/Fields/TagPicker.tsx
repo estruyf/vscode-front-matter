@@ -36,7 +36,7 @@ export interface ITagPickerProps {
   limit?: number;
   required?: boolean;
   renderAsString?: boolean;
-  action?: CustomScript;
+  actions?: CustomScript[];
 }
 
 const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
@@ -57,7 +57,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
   limit,
   required,
   renderAsString,
-  action
+  actions
 }: React.PropsWithChildren<ITagPickerProps>) => {
   const [selected, setSelected] = React.useState<string[]>([]);
   const [inputValue, setInputValue] = React.useState<string>('');
@@ -393,7 +393,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
         icon={icon}
         required={required}
         isDisabled={!!loading}
-        customAction={action}
+        customActions={actions}
         triggerLoading={(message) => setLoading(message)}
         onChange={updateTaxonomy}
       />

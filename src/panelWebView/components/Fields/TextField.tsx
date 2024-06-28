@@ -22,7 +22,7 @@ export interface ITextFieldProps extends BaseFieldProps<string> {
   name: string;
   placeholder?: string;
   settings: PanelSettings;
-  action?: CustomScript;
+  actions?: CustomScript[];
   onChange: (txtValue: string) => void;
 }
 
@@ -40,7 +40,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   name,
   settings,
   onChange,
-  action,
+  actions,
   required
 }: React.PropsWithChildren<ITextFieldProps>) => {
   const [, setRequiredFields] = useRecoilState(RequiredFieldsAtom);
@@ -145,7 +145,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
         )}
       </>
     );
-  }, [settings?.aiEnabled, settings?.copilotEnabled, name, action, loading]);
+  }, [settings?.aiEnabled, settings?.copilotEnabled, name, actions, loading]);
 
   useEffect(() => {
     if (text !== value && (lastUpdated === null || Date.now() - DEBOUNCE_TIME > lastUpdated)) {
@@ -168,7 +168,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
         icon={<PencilIcon />}
         required={required}
         isDisabled={!!loading}
-        customAction={action}
+        customActions={actions}
         triggerLoading={(message) => setLoading(message)}
         onChange={onTextChange}
       />
