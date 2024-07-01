@@ -241,7 +241,7 @@ export class Questions {
 
     if (options.length === 0) {
       Notifications.error(
-        LocalizationKey.helpersQuestionsSelectContentTypeQuickPickErrorNoContentTypes
+        l10n.t(LocalizationKey.helpersQuestionsSelectContentTypeQuickPickErrorNoContentTypes)
       );
       return;
     }
