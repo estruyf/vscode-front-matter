@@ -31,7 +31,7 @@ import { ParsedFrontMatter } from '../parsers';
 import { getLocalizationFile } from '../utils/getLocalizationFile';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
-import { joinUrl } from '../utils';
+import { getTitleField, joinUrl } from '../utils';
 import { i18n } from './i18n';
 
 export class Preview {
@@ -77,11 +77,13 @@ export class Preview {
       return;
     }
 
+    const titleField = getTitleField();
+
     // Create the preview webview
     const webView = window.createWebviewPanel(
       'frontMatterPreview',
-      article?.data?.title
-        ? l10n.t(LocalizationKey.commandsPreviewPanelTitle, article?.data.title)
+      article?.data && article?.data[titleField]
+        ? l10n.t(LocalizationKey.commandsPreviewPanelTitle, article?.data[titleField])
         : 'Front Matter Preview',
       {
         viewColumn: ViewColumn.Beside,

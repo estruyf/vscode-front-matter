@@ -12,6 +12,7 @@ import {
 import {
   COMMAND_NAME,
   DefaultFieldValues,
+  DefaultFields,
   EXTENSION_NAME,
   FEATURE_FLAG,
   SETTING_CONTENT_DRAFT_FIELD,
@@ -37,7 +38,7 @@ import { DEFAULT_CONTENT_TYPE_NAME } from '../constants/ContentType';
 import { Telemetry } from './Telemetry';
 import { basename } from 'path';
 import { ParsedFrontMatter } from '../parsers';
-import { encodeEmoji, existsAsync, fieldWhenClause, writeFileAsync } from '../utils';
+import { encodeEmoji, existsAsync, fieldWhenClause, getTitleField, writeFileAsync } from '../utils';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 
@@ -950,8 +951,11 @@ export class ContentType {
         }
 
         titleValue = titleValue.trim();
+
+        const titleFieldName = getTitleField();
+
         // Check if the title needs to encode the emoji's used in it
-        const titleField = contentType.fields.find((f) => f.name === 'title');
+        const titleField = contentType.fields.find((f) => f.name === titleFieldName);
         if (titleField && titleField.encodeEmoji) {
           titleValue = encodeEmoji(titleValue);
         }
@@ -1058,6 +1062,7 @@ export class ContentType {
     isRoot: boolean = true
   ): Promise<any> {
     if (obj.fields) {
+      const titleField = getTitleField();
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
 
       for (const field of obj.fields) {
@@ -1066,7 +1071,7 @@ export class ContentType {
           continue;
         }
 
-        if (field.name === 'title') {
+        if (field.name === titleField) {
           if (field.default) {
             data[field.name] = processArticlePlaceholdersFromData(
               field.default as string,

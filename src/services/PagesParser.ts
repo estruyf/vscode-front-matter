@@ -9,8 +9,6 @@ import {
   DefaultFields,
   DEFAULT_CONTENT_TYPE_NAME,
   ExtensionState,
-  SETTING_SEO_DESCRIPTION_FIELD,
-  SETTING_SEO_TITLE_FIELD,
   SETTING_DATE_FORMAT
 } from '../constants';
 import { Page } from '../dashboardWebView/models';
@@ -25,7 +23,7 @@ import {
   Notifications,
   Settings
 } from '../helpers';
-import { existsAsync } from '../utils';
+import { existsAsync, getDescriptionField, getTitleField } from '../utils';
 import { Article, Cache } from '../commands';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
@@ -183,10 +181,8 @@ export class PagesParser {
     if (article?.data) {
       const wsFolder = Folders.getWorkspaceFolder();
 
-      const titleField = (Settings.get(SETTING_SEO_TITLE_FIELD) as string) || DefaultFields.Title;
-
-      const descriptionField =
-        (Settings.get(SETTING_SEO_DESCRIPTION_FIELD) as string) || DefaultFields.Description;
+      const titleField = getTitleField();
+      const descriptionField = getDescriptionField();
 
       const dateField =
         (await ArticleHelper.getPublishDateField(article)) || DefaultFields.PublishingDate;

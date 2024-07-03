@@ -48,7 +48,7 @@ import { Link, Parent } from 'mdast-util-from-markdown/lib';
 import { Content } from 'mdast';
 import { CustomScript } from './CustomScript';
 import { Folders } from '../commands/Folders';
-import { existsAsync } from '../utils';
+import { existsAsync, getTitleField } from '../utils';
 import { mkdirAsync } from '../utils/mkdirAsync';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
@@ -635,11 +635,12 @@ export class ArticleHelper {
   ) {
     const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
     const fmData = Object.assign({}, data);
+    const titleField = getTitleField();
 
     for (const fieldName of Object.keys(fmData)) {
       const fieldValue = fmData[fieldName];
 
-      if (fieldName === 'title' && (fieldValue === null || fieldValue === '')) {
+      if (fieldName === titleField && (fieldValue === null || fieldValue === '')) {
         fmData[fieldName] = title;
       }
 

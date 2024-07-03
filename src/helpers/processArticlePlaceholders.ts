@@ -1,4 +1,5 @@
 import { ContentType } from '../models';
+import { getTitleField } from '../utils';
 import { ArticleHelper } from './ArticleHelper';
 import { SlugHelper } from './SlugHelper';
 
@@ -7,16 +8,17 @@ export const processArticlePlaceholdersFromData = (
   data: { [key: string]: any },
   contentType: ContentType
 ): string => {
-  if (value.includes('{{title}}') && data.title) {
+  const titleField = getTitleField();
+  if (value.includes('{{title}}') && data[titleField]) {
     const regex = new RegExp('{{title}}', 'g');
-    value = value.replace(regex, data.title || '');
+    value = value.replace(regex, data[titleField] || '');
   }
 
   if (value.includes('{{slug}}')) {
     const regex = new RegExp('{{slug}}', 'g');
     value = value.replace(
       regex,
-      SlugHelper.createSlug(data.title || '', data, contentType.slugTemplate) || ''
+      SlugHelper.createSlug(data[titleField] || '', data, contentType.slugTemplate) || ''
     );
   }
 
@@ -32,9 +34,11 @@ export const processArticlePlaceholdersFromPath = async (
     return value;
   }
 
+  const titleField = getTitleField();
+
   if (value.includes('{{title}}')) {
     const regex = new RegExp('{{title}}', 'g');
-    value = value.replace(regex, article.data.title || '');
+    value = value.replace(regex, article.data[titleField] || '');
   }
 
   if (value.includes('{{slug}}') && filePath) {
@@ -43,8 +47,11 @@ export const processArticlePlaceholdersFromPath = async (
       const regex = new RegExp('{{slug}}', 'g');
       value = value.replace(
         regex,
-        SlugHelper.createSlug(article.data.title || '', article.data, contentType.slugTemplate) ||
-          ''
+        SlugHelper.createSlug(
+          article.data[titleField] || '',
+          article.data,
+          contentType.slugTemplate
+        ) || ''
       );
     }
   }

@@ -5,12 +5,7 @@ import { Folders } from '../../commands/Folders';
 import { Command } from '../../panelWebView/Command';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
-import {
-  Uri,
-  authentication,
-  commands,
-  window
-} from 'vscode';
+import { Uri, authentication, commands, window } from 'vscode';
 import {
   ArticleHelper,
   Extension,
@@ -30,7 +25,6 @@ import {
   SETTING_DATE_FORMAT,
   SETTING_GLOBAL_ACTIVE_MODE,
   SETTING_GLOBAL_MODES,
-  SETTING_SEO_TITLE_FIELD,
   SETTING_TAXONOMY_CONTENT_TYPES
 } from '../../constants';
 import { Article, Preview } from '../../commands';
@@ -42,7 +36,7 @@ import {
   ContentType as IContentType,
   FolderInfo
 } from '../../models';
-import { encodeEmoji, fieldWhenClause } from '../../utils';
+import { encodeEmoji, fieldWhenClause, getTitleField } from '../../utils';
 import { PanelProvider } from '../../panelWebView/PanelProvider';
 import { MessageHandlerData } from '@estruyf/vscode';
 import { SponsorAi } from '../../services/SponsorAI';
@@ -140,7 +134,7 @@ export class DataListener extends BaseListener {
     const extPath = Extension.getInstance().extensionPath;
     const panel = PanelProvider.getInstance(extPath);
 
-    const titleField = (Settings.get(SETTING_SEO_TITLE_FIELD) as string) || DefaultFields.Title;
+    const titleField = getTitleField();
     const description = await Copilot.suggestDescription(
       articleDetails.data[titleField],
       articleDetails.content
@@ -199,7 +193,7 @@ export class DataListener extends BaseListener {
       return;
     }
 
-    const titleField = (Settings.get(SETTING_SEO_TITLE_FIELD) as string) || DefaultFields.Title;
+    const titleField = getTitleField();
 
     const suggestion = await SponsorAi.getDescription(
       githubAuth.accessToken,
@@ -417,7 +411,7 @@ export class DataListener extends BaseListener {
     }
 
     let beforeValue: any;
-    const titleField = (Settings.get(SETTING_SEO_TITLE_FIELD) as string) || DefaultFields.Title;
+    const titleField = getTitleField();
 
     const editor = window.activeTextEditor;
 
@@ -774,9 +768,11 @@ export class DataListener extends BaseListener {
         data && contentType ? processArticlePlaceholdersFromData(value, data, contentType) : value;
       value = processTimePlaceholders(value, dateFormat);
       value = processFmPlaceholders(value, data);
+
+      const titleField = getTitleField();
       value = await ArticleHelper.processCustomPlaceholders(
         value,
-        data.title || '',
+        data[titleField] || '',
         crntFile?.uri.fsPath || ''
       );
     }

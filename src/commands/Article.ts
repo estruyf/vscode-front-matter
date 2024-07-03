@@ -46,6 +46,7 @@ import { NavigationType } from '../dashboardWebView/models';
 import { SNIPPET } from '../constants/Snippet';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
+import { getTitleField } from '../utils';
 
 export class Article {
   /**
@@ -213,7 +214,7 @@ export class Article {
       contentType
     );
 
-    const titleField = 'title';
+    const titleField = getTitleField();
     const articleTitle: string = article.data[titleField];
     const slugInfo = Article.generateSlug(articleTitle, article, contentType.slugTemplate);
 
@@ -307,17 +308,18 @@ export class Article {
 
     const parsedFile = parse(file);
 
+    const titleField = getTitleField();
     const slugTemplate = Settings.get<string>(SETTING_SLUG_TEMPLATE);
     if (slugTemplate) {
       if (slugTemplate === '{{title}}') {
         const article = ArticleHelper.getFrontMatter(editor);
-        if (article?.data?.title) {
-          return article.data.title.toLowerCase().replace(/\s/g, '-');
+        if (article?.data && article.data[titleField]) {
+          return article.data[titleField].toLowerCase().replace(/\s/g, '-');
         }
       } else {
         const article = ArticleHelper.getFrontMatter(editor);
         if (article?.data) {
-          return SlugHelper.createSlug(article.data.title, article.data, slugTemplate);
+          return SlugHelper.createSlug(article.data[titleField], article.data, slugTemplate);
         }
       }
     }
@@ -490,11 +492,12 @@ export class Article {
 
     const article = ArticleHelper.getFrontMatter(editor);
     const contentType = article ? await ArticleHelper.getContentType(article) : undefined;
+    const tileField = getTitleField();
 
     await commands.executeCommand(COMMAND_NAME.dashboard, {
       type: NavigationType.Snippets,
       data: {
-        fileTitle: article?.data.title || '',
+        fileTitle: article?.data[tileField] || '',
         filePath: editor.document.uri.fsPath,
         fieldName: basename(editor.document.uri.fsPath),
         contentType,

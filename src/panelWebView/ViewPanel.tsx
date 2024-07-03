@@ -137,7 +137,8 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
             <FeatureFlag features={mode?.features || DEFAULT_PANEL_FEATURE_FLAGS} flag={FEATURE_FLAG.panel.seo}>
               <SeoStatus
                 seo={settings.seo}
-                data={metadata}
+                metadata={metadata}
+                settings={settings}
                 focusElm={focusElm}
                 unsetFocus={unsetFocus}
               />

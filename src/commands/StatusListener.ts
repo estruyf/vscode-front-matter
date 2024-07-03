@@ -3,15 +3,12 @@ import {
   CONTEXT,
   EXTENSION_NAME,
   NOTIFICATION_TYPE,
-  SETTING_SEO_DESCRIPTION_FIELD,
   SETTING_SEO_DESCRIPTION_LENGTH,
-  SETTING_SEO_TITLE_FIELD,
   SETTING_SEO_TITLE_LENGTH
 } from './../constants';
 import * as vscode from 'vscode';
 import { ArticleHelper, Notifications, SeoHelper, Settings } from '../helpers';
 import { PanelProvider } from '../panelWebView/PanelProvider';
-import { DefaultFields } from '../constants';
 import { ContentType } from '../helpers/ContentType';
 import { DataListener } from '../listeners/panel';
 import { commands } from 'vscode';
@@ -20,6 +17,7 @@ import { Preview } from './Preview';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 import { i18n } from './i18n';
+import { getDescriptionField, getTitleField } from '../utils';
 
 export class StatusListener {
   /**
@@ -56,12 +54,10 @@ export class StatusListener {
           collection.clear();
 
           // Retrieve the SEO config properties
-          const titleLength = (Settings.get(SETTING_SEO_TITLE_LENGTH) as number) || -1;
-          const descLength = (Settings.get(SETTING_SEO_DESCRIPTION_LENGTH) as number) || -1;
-          const titleField =
-            (Settings.get(SETTING_SEO_TITLE_FIELD) as string) || DefaultFields.Title;
-          const descriptionField =
-            (Settings.get(SETTING_SEO_DESCRIPTION_FIELD) as string) || DefaultFields.Description;
+          const titleLength = Settings.get<number>(SETTING_SEO_TITLE_LENGTH) || -1;
+          const descLength = Settings.get<number>(SETTING_SEO_DESCRIPTION_LENGTH) || -1;
+          const titleField = getTitleField();
+          const descriptionField = getDescriptionField();
 
           if (editor && article.data[titleField] && titleLength > -1) {
             SeoHelper.checkLength(editor, collection, article, titleField, titleLength);
