@@ -3,7 +3,6 @@ import {
   CONTEXT,
   ExtensionState,
   SETTING_EXPERIMENTAL,
-  SETTING_EXTENSIBILITY_SCRIPTS,
   COMMAND_NAME,
   TelemetryEvent
 } from '../constants';
@@ -34,7 +33,7 @@ import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 import { DashboardMessage } from '../dashboardWebView/DashboardMessage';
 import { NavigationType } from '../dashboardWebView/models';
-import { ignoreMsgCommand } from '../utils';
+import { getExtensibilityScripts, ignoreMsgCommand } from '../utils';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -307,20 +306,8 @@ export class Dashboard {
 
     // Get experimental setting
     const experimental = SettingsHelper.get(SETTING_EXPERIMENTAL);
-    const extensibilityScripts = SettingsHelper.get<string[]>(SETTING_EXTENSIBILITY_SCRIPTS) || [];
 
-    const scriptsToLoad: string[] = [];
-    if (experimental) {
-      for (const script of extensibilityScripts) {
-        if (script.startsWith('https://')) {
-          scriptsToLoad.push(script);
-        } else {
-          const absScriptPath = Folders.getAbsFilePath(script);
-          const scriptUri = webView.asWebviewUri(Uri.file(absScriptPath));
-          scriptsToLoad.push(scriptUri.toString());
-        }
-      }
-    }
+    const scriptsToLoad: string[] = getExtensibilityScripts(webView);
 
     const csp = [
       `default-src 'none';`,

@@ -9,7 +9,7 @@ import {
   FieldsListener,
   LocalizationListener
 } from './../listeners/panel';
-import { SETTING_EXPERIMENTAL, SETTING_EXTENSIBILITY_SCRIPTS, TelemetryEvent } from '../constants';
+import { SETTING_EXPERIMENTAL, TelemetryEvent } from '../constants';
 import {
   CancellationToken,
   Disposable,
@@ -29,7 +29,7 @@ import { Telemetry } from '../helpers/Telemetry';
 import { GitListener, ModeListener } from '../listeners/general';
 import { Folders } from '../commands';
 import { basename } from 'path';
-import { ignoreMsgCommand } from '../utils';
+import { getExtensibilityScripts, ignoreMsgCommand } from '../utils';
 
 export class PanelProvider implements WebviewViewProvider, Disposable {
   public static readonly viewType = 'frontMatter.explorer';
@@ -242,20 +242,8 @@ export class PanelProvider implements WebviewViewProvider, Disposable {
 
     // Get experimental setting
     const experimental = Settings.get(SETTING_EXPERIMENTAL);
-    const extensibilityScripts = Settings.get<string[]>(SETTING_EXTENSIBILITY_SCRIPTS) || [];
 
-    const scriptsToLoad: string[] = [];
-    if (experimental) {
-      for (const script of extensibilityScripts) {
-        if (script.startsWith('https://')) {
-          scriptsToLoad.push(script);
-        } else {
-          const absScriptPath = Folders.getAbsFilePath(script);
-          const scriptUri = webView.asWebviewUri(Uri.file(absScriptPath));
-          scriptsToLoad.push(scriptUri.toString());
-        }
-      }
-    }
+    const scriptsToLoad: string[] = getExtensibilityScripts(webView);
 
     const csp = [
       `default-src 'none';`,
@@ -289,9 +277,9 @@ export class PanelProvider implements WebviewViewProvider, Disposable {
       <body>
         <div id="app" data-isProd="${isProd}" data-environment="${
       isBeta ? 'BETA' : 'main'
-    }" data-version="${
-      version.usedVersion
-    }" data-is-crash-disabled="${!Telemetry.isVscodeEnabled()}"></div>
+    }" data-version="${version.usedVersion}" ${
+      experimental ? `data-experimental="${experimental}"` : ''
+    } data-is-crash-disabled="${!Telemetry.isVscodeEnabled()}"></div>
 
       ${(scriptsToLoad || [])
         .map((script) => {

@@ -5,6 +5,7 @@ export * from './existsAsync';
 export * from './fetchWithTimeout';
 export * from './fieldWhenClause';
 export * from './flattenObjectKeys';
+export * from './getExtensibilityScripts';
 export * from './getLocalizationFile';
 export * from './ignoreMsgCommand';
 export * from './isWindows';
