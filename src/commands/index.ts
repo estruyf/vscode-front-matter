@@ -10,5 +10,7 @@ export * from './Preview';
 export * from './Project';
 export * from './Settings';
 export * from './StatusListener';
+export * from './Taxonomy';
 export * from './Template';
 export * from './Wysiwyg';
+export * from './i18n';
