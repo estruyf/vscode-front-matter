@@ -5,5 +5,6 @@ export const DefaultFields = {
   Title: `title`,
   Slug: `slug`,
   Type: `type`,
-  ContentType: `fmContentType`
+  ContentType: `fmContentType`,
+  Keywords: `keywords`
 };
