@@ -186,7 +186,7 @@ export class ContentType {
                 fields.splice(fieldIdx, 1, ...fieldGroup.fields);
               }
             } else if (field && field.type === 'fields') {
-              fields = field.fields || [];
+              field.fields = field.fields || [];
             }
           }
         }
