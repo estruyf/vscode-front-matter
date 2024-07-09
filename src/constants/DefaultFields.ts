@@ -3,5 +3,7 @@ export const DefaultFields = {
   LastModified: `lastmod`,
   Description: `description`,
   Title: `title`,
-  Slug: `slug`
+  Slug: `slug`,
+  Type: `type`,
+  ContentType: `fmContentType`
 };

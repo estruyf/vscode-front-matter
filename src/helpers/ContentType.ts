@@ -285,7 +285,7 @@ export class ContentType {
 
     // Update the type field in the page
     if (!overrideBool && editor) {
-      content.data['type'] = contentTypeName;
+      content.data[DefaultFields.ContentType] = contentTypeName;
       ArticleHelper.update(editor, content);
     }
 
@@ -403,7 +403,7 @@ export class ContentType {
       return;
     }
 
-    content.data.type = ctAnswer;
+    content.data[DefaultFields.ContentType] = ctAnswer;
 
     const editor = window.activeTextEditor;
     ArticleHelper.update(editor!, content);
@@ -995,12 +995,8 @@ export class ContentType {
           contentType
         );
 
-        let isTypeSet = false;
-        if (data.type) {
-          isTypeSet = true;
-        } else {
-          data.type = contentType.name;
-        }
+        // Set the content type
+        data[DefaultFields.ContentType] = contentType.name;
 
         const article: ParsedFrontMatter = {
           content: '',
@@ -1010,12 +1006,11 @@ export class ContentType {
 
         data = await ArticleHelper.updateDates(article);
 
-        if (isTypeSet) {
-          delete data.type;
-        }
-
         if (contentType.name !== DEFAULT_CONTENT_TYPE_NAME) {
-          data['type'] = contentType.name;
+          data[DefaultFields.ContentType] = contentType.name;
+        } else {
+          // Default content type, remove the content type field
+          delete data[DefaultFields.ContentType];
         }
 
         const content = ArticleHelper.stringifyFrontMatter(templateData?.content || ``, data);

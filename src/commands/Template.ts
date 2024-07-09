@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import {
   COMMAND_NAME,
+  DefaultFields,
   SETTING_CONTENT_DEFAULT_FILETYPE,
   SETTING_TEMPLATES_FOLDER,
   TelemetryEvent
@@ -163,8 +164,14 @@ export class Template {
 
     const templateData = await ArticleHelper.getFrontMatterByPath(template.fsPath);
     let contentType: IContentType | undefined;
-    if (templateData && templateData.data && templateData.data.type) {
-      contentType = contentTypes?.find((t) => t.name === templateData.data.type);
+    if (templateData && templateData.data) {
+      if (templateData.data[DefaultFields.ContentType]) {
+        contentType = contentTypes?.find(
+          (t) => t.name === templateData.data[DefaultFields.ContentType]
+        );
+      } else if (templateData.data[DefaultFields.Type]) {
+        contentType = contentTypes?.find((t) => t.name === templateData.data[DefaultFields.Type]);
+      }
     }
 
     const fileExtension = extname(template.fsPath).replace('.', '');

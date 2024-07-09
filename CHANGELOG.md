@@ -9,6 +9,7 @@
 
 ### 🎨 Enhancements
 
+- [#467](https://github.com/estruyf/vscode-front-matter/issues/467): New `fmContentType` metadata field to link content type (fallback to the `type` field)
 - [#819](https://github.com/estruyf/vscode-front-matter/issues/819): Added new extensibility support for media scripts
 - [#822](https://github.com/estruyf/vscode-front-matter/issues/822): Added docs to the panel & dashboard views
 - [#829](https://github.com/estruyf/vscode-front-matter/issues/829): UI extensibility is now generally available

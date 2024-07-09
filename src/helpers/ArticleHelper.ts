@@ -460,8 +460,10 @@ export class ArticleHelper {
     let contentType: IContentType | undefined = undefined;
 
     // Get content type by type name in the front matter
-    if (article.data.type) {
-      contentType = contentTypes.find((ct) => ct.name === article.data.type);
+    if (article.data[DefaultFields.ContentType]) {
+      contentType = contentTypes.find((ct) => ct.name === article.data[DefaultFields.ContentType]);
+    } else if (article.data[DefaultFields.Type]) {
+      contentType = contentTypes.find((ct) => ct.name === article.data[DefaultFields.Type]);
     } else if (!contentType && article.path) {
       const pageFolder = await Folders.getPageFolderByFilePath(article.path);
       if (pageFolder && pageFolder.contentTypes?.length === 1) {

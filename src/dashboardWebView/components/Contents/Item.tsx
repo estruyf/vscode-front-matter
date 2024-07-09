@@ -38,7 +38,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     date: pageData.date,
     title: pageData.title,
     description: pageData.description,
-    type: pageData.type,
+    type: pageData.fmContentType,
     pageData
   });
 
