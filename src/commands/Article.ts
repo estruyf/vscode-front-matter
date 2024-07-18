@@ -20,7 +20,6 @@ import {
   SETTING_SLUG_PREFIX,
   SETTING_SLUG_SUFFIX,
   SETTING_CONTENT_PLACEHOLDERS,
-  TelemetryEvent,
   SETTING_SLUG_TEMPLATE
 } from './../constants';
 import { CustomPlaceholder, Field } from '../models';
@@ -39,7 +38,6 @@ import { COMMAND_NAME, DefaultFields } from '../constants';
 import { DashboardData, SnippetInfo, SnippetRange } from '../models/DashboardData';
 import { DateHelper } from '../helpers/DateHelper';
 import { parseWinPath } from '../helpers/parseWinPath';
-import { Telemetry } from '../helpers/Telemetry';
 import { ParsedFrontMatter } from '../parsers';
 import { MediaListener } from '../listeners/panel';
 import { NavigationType } from '../dashboardWebView/models';
@@ -192,8 +190,6 @@ export class Article {
    * Generate the slug based on the article title
    */
   public static async updateSlug() {
-    Telemetry.send(TelemetryEvent.generateSlug);
-
     const updateFileName = Settings.get(SETTING_SLUG_UPDATE_FILE_NAME) as string;
     const editor = window.activeTextEditor;
 

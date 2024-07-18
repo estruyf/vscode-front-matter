@@ -1,11 +1,10 @@
-import { Telemetry } from '../../helpers/Telemetry';
 import { MediaHelpers } from '../../helpers/MediaHelpers';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { BaseListener } from './BaseListener';
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { SortingOption } from '../../dashboardWebView/models';
 import { commands, env, Uri } from 'vscode';
-import { COMMAND_NAME, TelemetryEvent } from '../../constants';
+import { COMMAND_NAME } from '../../constants';
 import * as os from 'os';
 import { Folders } from '../../commands';
 import { PostMessageData, UnmappedMedia } from '../../models';
@@ -24,31 +23,25 @@ export class MediaListener extends BaseListener {
         this.sendMediaFiles(page, folder, sorting);
         break;
       case DashboardMessage.refreshMedia:
-        Telemetry.send(TelemetryEvent.refreshMedia);
         MediaHelpers.resetMedia();
         this.sendMediaFiles(0, msg?.payload?.folder);
         break;
       case DashboardMessage.uploadMedia:
-        Telemetry.send(TelemetryEvent.uploadMedia);
         this.store(msg?.payload);
         break;
       case DashboardMessage.deleteMedia:
-        Telemetry.send(TelemetryEvent.deleteMedia);
         this.delete(msg?.payload);
         break;
       case DashboardMessage.revealMedia:
         this.openFileInFinder(msg?.payload?.file);
         break;
       case DashboardMessage.insertMedia:
-        Telemetry.send(TelemetryEvent.insertMediaToContent);
         MediaHelpers.insertMediaToMarkdown(msg?.payload);
         break;
       case DashboardMessage.insertFile:
-        Telemetry.send(TelemetryEvent.insertFileToContent);
         MediaHelpers.insertMediaToMarkdown(msg?.payload);
         break;
       case DashboardMessage.updateMediaMetadata:
-        Telemetry.send(TelemetryEvent.updateMediaMetadata);
         this.update(msg.payload);
         break;
       case DashboardMessage.getUnmappedMedia:

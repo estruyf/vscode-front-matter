@@ -1985,11 +1985,6 @@
           },
           "scope": "Taxonomy"
         },
-        "frontMatter.telemetry.disable": {
-          "type": "boolean",
-          "default": false,
-          "markdownDescription": "%setting.frontMatter.telemetry.disable.markdownDescription%"
-        },
         "frontMatter.templates.enabled": {
           "type": "boolean",
           "default": false,

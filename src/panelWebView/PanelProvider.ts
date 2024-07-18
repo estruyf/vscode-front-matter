@@ -9,7 +9,7 @@ import {
   FieldsListener,
   LocalizationListener
 } from './../listeners/panel';
-import { SETTING_EXPERIMENTAL, TelemetryEvent } from '../constants';
+import { SETTING_EXPERIMENTAL } from '../constants';
 import {
   CancellationToken,
   Disposable,
@@ -27,7 +27,6 @@ import { WebviewHelper } from '@estruyf/vscode';
 import { Extension } from '../helpers/Extension';
 import { Telemetry } from '../helpers/Telemetry';
 import { GitListener, ModeListener } from '../listeners/general';
-import { Folders } from '../commands';
 import { basename } from 'path';
 import { getExtensibilityScripts, ignoreMsgCommand } from '../utils';
 
@@ -120,7 +119,6 @@ export class PanelProvider implements WebviewViewProvider, Disposable {
 
     webviewView.onDidChangeVisibility(() => {
       if (this.visible) {
-        Telemetry.send(TelemetryEvent.openPanelWebview);
         DataListener.getFileData();
       }
     });

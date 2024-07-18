@@ -10,8 +10,7 @@ import {
   SETTING_GIT_SUBMODULE_BRANCH,
   SETTING_GIT_SUBMODULE_FOLDER,
   SETTING_GIT_SUBMODULE_PULL,
-  SETTING_GIT_SUBMODULE_PUSH,
-  TelemetryEvent
+  SETTING_GIT_SUBMODULE_PUSH
 } from './../../constants';
 import { Settings } from './../../helpers/SettingsHelper';
 import { Dashboard } from '../../commands/Dashboard';
@@ -22,8 +21,7 @@ import {
   Logger,
   Notifications,
   parseWinPath,
-  processTimePlaceholders,
-  Telemetry
+  processTimePlaceholders
 } from '../../helpers';
 import { GeneralCommands } from './../../constants/GeneralCommands';
 import simpleGit, { SimpleGit } from 'simple-git';
@@ -157,8 +155,6 @@ export class GitListener {
   public static async sync(commitMsg?: string, isSync: boolean = true) {
     try {
       this.sendMsg(GeneralCommands.toWebview.git.syncingStart, isSync ? 'syncing' : 'fetching');
-
-      Telemetry.send(isSync ? TelemetryEvent.gitSync : TelemetryEvent.gitFetch);
 
       await this.pull();
 

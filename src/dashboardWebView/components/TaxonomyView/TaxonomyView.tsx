@@ -3,7 +3,7 @@ import { ChevronRightIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import { GeneralCommands, TelemetryEvent } from '../../../constants';
+import { GeneralCommands } from '../../../constants';
 import { TaxonomyData } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
 import { Page, PageMappings } from '../../models';
@@ -54,10 +54,6 @@ export const TaxonomyView: React.FunctionComponent<ITaxonomyViewProps> = ({
 
   useEffect(() => {
     Messenger.send(DashboardMessage.setTitle, l10n.t(LocalizationKey.dashboardHeaderTabsTaxonomies));
-
-    Messenger.send(DashboardMessage.sendTelemetry, {
-      event: TelemetryEvent.webviewTaxonomyDashboard
-    });
 
     Messenger.send(GeneralCommands.toVSCode.logging.info, {
       message: 'Taxonomy view loaded',

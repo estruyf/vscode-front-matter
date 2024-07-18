@@ -209,18 +209,7 @@ You can open showcase issues for the following things:
 
 ## 📊 Telemetry
 
-The Front Matter CMS extension collects telemetry data to help us build a better understand which features from the CMS are used. The extension respects the `telemetry.enableTelemetry` setting which you can learn more about in the [Visual Studio Code FAQ](https://aka.ms/vscode-remote/telemetry), or you can only disable it for the extension by configuring the `frontMatter.telemetry.disable` setting.
-
-We only collect the following data:
-
-- Type of event
-- Extension title (main or beta)
-- Extension version
-
-No user-specific data is collected, you can check the telemetry implementation in the following files:
-
-- [Telemetry class](https://github.com/estruyf/vscode-front-matter/blob/59528a3db01be8d34dc40638e6cf827090e31986/src/helpers/Telemetry.ts)
-- [Metrics API](https://github.com/FrontMatter/web-documentation-nextjs/blob/main/pages/api/metrics.ts)
+The Front Matter CMS extension only uses telemetry on application crashes. The extension respects the `telemetry.enableTelemetry` setting which you can learn more about in the [Visual Studio Code FAQ](https://aka.ms/vscode-remote/telemetry).
 
 For crash reports in the webviews, we make use of Sentry to help us understand what went wrong. This data is only used to fix issues and improve the extension. You can find more information about the Sentry implementation in the following files:
 

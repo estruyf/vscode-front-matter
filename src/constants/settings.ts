@@ -45,8 +45,6 @@ export const SETTING_TEMPLATES_FOLDER = 'templates.folder';
 export const SETTING_TEMPLATES_PREFIX = 'templates.prefix';
 export const SETTING_TEMPLATES_ENABLED = 'templates.enabled';
 
-export const SETTING_TELEMETRY_DISABLE = 'telemetry.disable';
-
 export const SETTING_PANEL_FREEFORM = 'panel.freeform';
 export const SETTING_PANEL_ACTIONS_DISABLED = 'panel.actions.disabled';
 

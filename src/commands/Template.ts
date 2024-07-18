@@ -5,8 +5,7 @@ import {
   COMMAND_NAME,
   DefaultFields,
   SETTING_CONTENT_DEFAULT_FILETYPE,
-  SETTING_TEMPLATES_FOLDER,
-  TelemetryEvent
+  SETTING_TEMPLATES_FOLDER
 } from '../constants';
 import { ArticleHelper, Extension, Settings } from '../helpers';
 import { Article, Folders } from '.';
@@ -16,7 +15,6 @@ import { ContentType } from '../helpers/ContentType';
 import { ContentType as IContentType } from '../models';
 import { PagesListener } from '../listeners/dashboard';
 import { extname } from 'path';
-import { Telemetry } from '../helpers/Telemetry';
 import { writeFileAsync, copyFileAsync } from '../utils';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
@@ -223,8 +221,6 @@ export class Template {
     }
 
     Notifications.info(l10n.t(LocalizationKey.commandsTemplateCreateSuccess));
-
-    Telemetry.send(TelemetryEvent.createContentFromTemplate);
 
     // Trigger a refresh for the dashboard
     PagesListener.refresh();

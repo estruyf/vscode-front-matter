@@ -19,8 +19,7 @@ import {
   SETTING_DATE_FORMAT,
   SETTING_FRAMEWORK_ID,
   SETTING_TAXONOMY_CONTENT_TYPES,
-  SETTING_TAXONOMY_FIELD_GROUPS,
-  TelemetryEvent
+  SETTING_TAXONOMY_FIELD_GROUPS
 } from '../constants';
 import {
   ContentType as IContentType,
@@ -204,8 +203,6 @@ export class ContentType {
       return;
     }
 
-    Telemetry.send(TelemetryEvent.generateContentType);
-
     const content = ArticleHelper.getCurrent();
 
     const editor = window.activeTextEditor;
@@ -333,8 +330,6 @@ export class ContentType {
       return;
     }
 
-    Telemetry.send(TelemetryEvent.addMissingFields);
-
     const article = ArticleHelper.getCurrent();
 
     if (!article || !article.data) {
@@ -377,8 +372,6 @@ export class ContentType {
     if (!(await ContentType.verify())) {
       return;
     }
-
-    Telemetry.send(TelemetryEvent.setContentType);
 
     const content = ArticleHelper.getCurrent();
     const contentTypes = ContentType.getAll() || [];
@@ -1033,8 +1026,6 @@ export class ContentType {
         await commands.executeCommand('vscode.open', Uri.file(newFilePath));
 
         Notifications.info(l10n.t(LocalizationKey.helpersContentTypeCreateSuccess));
-
-        Telemetry.send(TelemetryEvent.createContentFromContentType);
 
         // Trigger a refresh for the dashboard
         PagesListener.refresh();

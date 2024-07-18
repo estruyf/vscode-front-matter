@@ -10,7 +10,7 @@ import usePages from '../../hooks/usePages';
 import { useCallback, useEffect, useState } from 'react';
 import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
-import { GeneralCommands, TelemetryEvent } from '../../../constants';
+import { GeneralCommands } from '../../../constants';
 import { PageLayout } from '../Layout/PageLayout';
 import { FilesProvider } from '../../providers/FilesProvider';
 import { Alert } from '../Modals/Alert';
@@ -67,10 +67,6 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({
   }, [JSON.stringify(pageItems)]);
 
   useEffect(() => {
-    Messenger.send(DashboardMessage.sendTelemetry, {
-      event: TelemetryEvent.webviewContentsView
-    });
-
     Messenger.send(DashboardMessage.setTitle, l10n.t(LocalizationKey.dashboardHeaderTabsContents));
   }, []);
 

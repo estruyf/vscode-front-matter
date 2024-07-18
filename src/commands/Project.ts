@@ -1,5 +1,4 @@
 import { DEFAULT_CONTENT_TYPE } from './../constants/ContentType';
-import { Telemetry } from './../helpers/Telemetry';
 import { workspace, Uri, commands, window } from 'vscode';
 import { join } from 'path';
 import { Notifications } from '../helpers/Notifications';
@@ -16,8 +15,7 @@ import {
 import {
   COMMAND_NAME,
   SETTING_CONTENT_DEFAULT_FILETYPE,
-  SETTING_TAXONOMY_CONTENT_TYPES,
-  TelemetryEvent
+  SETTING_TAXONOMY_CONTENT_TYPES
 } from '../constants';
 import { SettingsListener } from '../listeners/dashboard';
 import { existsAsync, writeFileAsync } from '../utils';
@@ -95,8 +93,6 @@ categories: []
 
       // Initialize the taxonomy database
       TaxonomyHelper.initDb();
-
-      Telemetry.send(TelemetryEvent.initialization);
 
       // Check if you can find the framework
       const wsFolder = Folders.getWorkspaceFolder();

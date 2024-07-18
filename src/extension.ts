@@ -1,6 +1,6 @@
 import { GitListener } from './listeners/general/GitListener';
 import * as vscode from 'vscode';
-import { COMMAND_NAME, CONTEXT, EXTENSION_NAME, TelemetryEvent } from './constants';
+import { COMMAND_NAME, CONTEXT, EXTENSION_NAME } from './constants';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
 import { PanelProvider } from './panelWebView/PanelProvider';
 import {
@@ -80,9 +80,6 @@ export async function activate(context: vscode.ExtensionContext) {
   extension.migrateSettings();
 
   SettingsHelper.checkToPromote();
-
-  // Sends the activation event
-  Telemetry.send(TelemetryEvent.activate);
 
   // Start listening to the folders for content changes.
   // This will make sure the dashboard is up to date

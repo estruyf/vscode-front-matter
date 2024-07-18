@@ -6,8 +6,7 @@ import {
   SETTING_CONTENT_PAGE_FOLDERS,
   SETTING_CONTENT_STATIC_FOLDER,
   SETTING_CONTENT_SUPPORTED_FILETYPES,
-  SETTING_DATE_FORMAT,
-  TelemetryEvent
+  SETTING_DATE_FORMAT
 } from './../constants';
 import { commands, Uri, workspace, window } from 'vscode';
 import { basename, dirname, join, relative, sep } from 'path';
@@ -107,8 +106,6 @@ export class Folders {
       MediaHelpers.resetMedia();
       MediaListener.sendMediaFiles(0, folderPath);
     }
-
-    Telemetry.send(TelemetryEvent.addMediaFolder);
   }
 
   /**
@@ -183,8 +180,6 @@ export class Folders {
 
       Notifications.info(l10n.t(LocalizationKey.commandsFoldersCreateSuccess));
 
-      Telemetry.send(TelemetryEvent.registerFolder);
-
       SettingsListener.getSettings(true);
     }
   }
@@ -198,8 +193,6 @@ export class Folders {
       let folders = await Folders.get();
       folders = folders.filter((f) => f.path !== folder.fsPath);
       await Folders.update(folders);
-
-      Telemetry.send(TelemetryEvent.unregisterFolder);
     }
   }
 

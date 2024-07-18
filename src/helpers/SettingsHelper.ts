@@ -1,5 +1,4 @@
 import { parseWinPath } from './parseWinPath';
-import { Telemetry } from './Telemetry';
 import { Notifications } from './Notifications';
 import {
   commands,
@@ -18,7 +17,6 @@ import {
   CONTEXT,
   ExtensionState,
   SETTING_TAXONOMY_CUSTOM,
-  TelemetryEvent,
   COMMAND_NAME,
   SETTING_TAXONOMY_CONTENT_TYPES,
   SETTING_CONTENT_PAGE_FOLDERS,
@@ -602,8 +600,6 @@ ${JSON.stringify(value, null, 2)}`,
     }
 
     Notifications.info(l10n.t(LocalizationKey.helpersSettingsHelperPromoteSuccess));
-
-    Telemetry.send(TelemetryEvent.promoteSettings);
   }
 
   /**

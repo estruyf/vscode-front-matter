@@ -1,6 +1,6 @@
 import { BookOpenIcon, HeartIcon, StarIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
-import { DOCUMENTATION_LINK, GITHUB_LINK, GeneralCommands, REVIEW_LINK, SPONSOR_LINK, TelemetryEvent } from '../../../constants';
+import { DOCUMENTATION_LINK, GITHUB_LINK, GeneralCommands, REVIEW_LINK, SPONSOR_LINK } from '../../../constants';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMatterIcon';
 import { GitHubIcon } from '../../../panelWebView/components/Icons/GitHubIcon';
@@ -25,9 +25,6 @@ export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({
 
   React.useEffect(() => {
     setView(NavigationType.Welcome);
-    Messenger.send(DashboardMessage.sendTelemetry, {
-      event: TelemetryEvent.webviewWelcomeScreen
-    });
 
     Messenger.send(GeneralCommands.toVSCode.logging.info, {
       message: 'Welcome screen loaded',

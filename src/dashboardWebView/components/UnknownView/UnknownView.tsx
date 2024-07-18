@@ -5,7 +5,6 @@ import { LocalizationKey } from '../../../localization';
 import { useEffect } from 'react';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
-import { TelemetryEvent } from '../../../constants';
 
 export interface IUnknownViewProps { }
 
@@ -14,10 +13,6 @@ export const UnknownView: React.FunctionComponent<IUnknownViewProps> = (
 ) => {
   useEffect(() => {
     Messenger.send(DashboardMessage.setTitle, "Unknown View");
-
-    Messenger.send(DashboardMessage.sendTelemetry, {
-      event: TelemetryEvent.webviewUnknown
-    });
   }, []);
 
   return (

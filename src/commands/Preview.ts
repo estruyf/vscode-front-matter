@@ -2,7 +2,6 @@ import {
   SETTING_PREVIEW_HOST,
   SETTING_PREVIEW_PATHNAME,
   CONTEXT,
-  TelemetryEvent,
   PreviewCommands,
   SETTING_EXPERIMENTAL,
   SETTING_DATE_FORMAT,
@@ -20,7 +19,6 @@ import {
   processFmPlaceholders,
   processPathPlaceholders,
   Settings,
-  Telemetry,
   processDateTimePlaceholders
 } from '../helpers';
 import { ContentFolder, ContentType, PreviewSettings } from '../models';
@@ -199,8 +197,6 @@ export class Preview {
         </body>
       </html>
     `;
-
-    Telemetry.send(TelemetryEvent.openPreview);
   }
 
   /**
