@@ -16,6 +16,7 @@ export * from './MediaTotalAtom';
 export * from './ModeAtom';
 export * from './MultiSelectedItemsAtom';
 export * from './PageAtom';
+export * from './PagedItems';
 export * from './PinnedItems';
 export * from './SearchAtom';
 export * from './SearchReadyAtom';

@@ -516,6 +516,10 @@ export enum LocalizationKey {
    */
   dashboardHeaderActionsBarItemsSelected = 'dashboard.header.actionsBar.itemsSelected',
   /**
+   * Select all
+   */
+  dashboardHeaderActionsBarSelectAll = 'dashboard.header.actionsBar.selectAll',
+  /**
    * Delete selected files
    */
   dashboardHeaderActionsBarAlertDeleteTitle = 'dashboard.header.actionsBar.alertDelete.title',

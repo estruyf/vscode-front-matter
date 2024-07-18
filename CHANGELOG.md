@@ -14,6 +14,7 @@
 - [#821](https://github.com/estruyf/vscode-front-matter/issues/821): Added URI handler to support command links from the documentation
 - [#822](https://github.com/estruyf/vscode-front-matter/issues/822): Added docs to the panel & dashboard views
 - [#829](https://github.com/estruyf/vscode-front-matter/issues/829): UI extensibility is now generally available
+- [#831](https://github.com/estruyf/vscode-front-matter/issues/831): Added "select all" action bar button to the content and media dashboards
 
 ### 🐞 Fixes
 

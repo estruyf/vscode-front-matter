@@ -154,6 +154,7 @@
   "dashboard.filters.languageFilter.all": "All",
 
   "dashboard.header.actionsBar.itemsSelected": "{0} selected",
+  "dashboard.header.actionsBar.selectAll": "Select all",
   "dashboard.header.actionsBar.alertDelete.title": "Delete selected files",
   "dashboard.header.actionsBar.alertDelete.description": "Are you sure you want to delete the selected files?",
 

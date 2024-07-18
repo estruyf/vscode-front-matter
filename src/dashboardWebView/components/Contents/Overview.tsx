@@ -6,7 +6,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { groupBy } from '../../../helpers/GroupBy';
 import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMatterIcon';
 import { GroupOption } from '../../constants/GroupOption';
-import { GroupingSelector, PageAtom, ViewSelector } from '../../state';
+import { GroupingSelector, PageAtom, PagedItems, ViewSelector } from '../../state';
 import { Item } from './Item';
 import { List } from './List';
 import usePagination from '../../hooks/usePagination';
@@ -34,6 +34,7 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
   const page = useRecoilValue(PageAtom);
   const { pageSetNr } = usePagination(settings?.dashboardState.contents.pagination);
   const view = useRecoilValue(ViewSelector);
+  const [, setPagedItems] = useRecoilState(PagedItems);
 
   const pagedPages = useMemo(() => {
     if (pageSetNr) {
@@ -99,6 +100,10 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
 
     return { groupKeys, groupedPages };
   }, [pages, grouping, settings?.draftField]);
+
+  React.useEffect(() => {
+    setPagedItems(pagedPages.map((page) => page.fmFilePath));
+  }, [pagedPages]);
 
   React.useEffect(() => {
     messageHandler.request<string[]>(DashboardMessage.getPinnedItems).then((items) => {

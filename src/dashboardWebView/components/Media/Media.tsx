@@ -1,10 +1,11 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   LoadingAtom,
   MediaFoldersAtom,
+  PagedItems,
   SelectedMediaFolderAtom,
   SettingsSelector,
   ViewDataSelector
@@ -41,6 +42,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (
   const selectedFolder = useRecoilValue(SelectedMediaFolderAtom);
   const folders = useRecoilValue(MediaFoldersAtom);
   const loading = useRecoilValue(LoadingAtom);
+  const [, setPagedItems] = useRecoilState(PagedItems);
 
   const currentStaticFolder = useMemo(() => {
     if (settings?.staticFolder) {
@@ -126,6 +128,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (
       });
     }
 
+    setPagedItems(mediaFiles.map((m) => m.fsPath));
     return mediaFiles;
   }, [media, viewData, currentStaticFolder, settings?.staticFolder]);
 
