@@ -22,17 +22,19 @@ export class Backers {
     const githubAuth = await authentication.getSession('github', ['read:user'], { silent: true });
     if (githubAuth && githubAuth.accessToken) {
       try {
-        const isBeta = ext.isBetaVersion();
-        const response = await fetch(`${WEBSITE_LINKS.api.url}/api/v2/backers`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            accept: 'application/json'
-          },
-          body: JSON.stringify({
-            token: githubAuth.accessToken
-          })
-        });
+        const response = await fetch(
+          `${WEBSITE_LINKS.api.baseUrl}${WEBSITE_LINKS.api.endpoints.backers}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              accept: 'application/json'
+            },
+            body: JSON.stringify({
+              token: githubAuth.accessToken
+            })
+          }
+        );
 
         if (response.ok) {
           const prevData = await ext.getState<boolean>(CONTEXT.backer, 'global');

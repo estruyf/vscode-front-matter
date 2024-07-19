@@ -14,9 +14,16 @@ export const DOCS_SUBMODULES = 'https://frontmatter.codes/docs/git-integration#g
 export const WEBSITE_LINKS = {
   root: 'https://frontmatter.codes',
   api: {
-    url: 'https://fontmatter-fncs.azurewebsites.net',
-    metrics: 'https://frontmatter.codes/api/metrics',
-    ai: 'https://frontmatter.codes/api/ai'
+    baseUrl: 'https://fontmatter-fncs.azurewebsites.net',
+    endpoints: {
+      ai: '/api/ai',
+      chat: {
+        init: '/api/ai-init',
+        message: '/api/ai-chat',
+        feedback: '/api/ai-feedback'
+      },
+      backers: '/api/backers'
+    }
   },
   docs: {
     dataDashboard: 'https://frontmatter.codes/docs/dashboard/datafiles-view',

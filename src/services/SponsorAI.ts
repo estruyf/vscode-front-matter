@@ -9,7 +9,7 @@ import { TaxonomyType } from '../models';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 
-const AI_URL = `${WEBSITE_LINKS.api.url}/api/ai`;
+const AI_URL = `${WEBSITE_LINKS.api.baseUrl}${WEBSITE_LINKS.api.endpoints.ai}`;
 // const AI_URL = 'http://localhost:3000/api/ai';
 
 export class SponsorAi {

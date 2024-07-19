@@ -93,7 +93,7 @@ if (elm) {
     render(
       <I10nProvider>
         <SettingsProvider
-          aiUrl={WEBSITE_LINKS.api.url}
+          aiUrl={WEBSITE_LINKS.api.baseUrl}
           experimental={experimental === 'true'}
           version={version || ""}>
           <Chatbot />
