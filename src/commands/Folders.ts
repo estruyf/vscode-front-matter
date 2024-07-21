@@ -828,7 +828,7 @@ export class Folders {
     try {
       pattern = isWindows() ? parseWinPath(pattern) : pattern;
       const folders = await glob(pattern, {
-        ignore: '**/node_modules/**',
+        ignore: 'node_modules/**',
         dot: true
       });
 
@@ -865,7 +865,7 @@ export class Folders {
 
     try {
       pattern = isWindows() ? parseWinPath(pattern) : pattern;
-      const files = await glob(pattern, { ignore: '**/node_modules/**', dot: true });
+      const files = await glob(pattern, { ignore: 'node_modules/**', dot: true });
       const allFiles = (files || []).map((file) => Uri.file(file));
       Logger.verbose(`Folders:findFiles:end - ${allFiles.length}`);
       return allFiles;
