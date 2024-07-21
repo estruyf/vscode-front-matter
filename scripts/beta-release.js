@@ -5,7 +5,9 @@ const core = require('@actions/core');
 const packageJson = require('../package.json');
 const version = packageJson.version.split('.');
 
-packageJson.version = `${version[0]}.${version[1]}.${process.argv[process.argv.length - 1]}`;
+packageJson.version = `${version[0]}.${version[1]}.${process.argv[
+  process.argv.length - 1
+].substring(0, 9)}`;
 packageJson.preview = true;
 packageJson.name = 'vscode-front-matter-beta';
 packageJson.displayName = `${packageJson.displayName} (BETA)`;
