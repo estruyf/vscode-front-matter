@@ -21,6 +21,7 @@
 
 - [#827](https://github.com/estruyf/vscode-front-matter/issues/827): Fix for `frontmatter.json` file which gets created when already present in a sub-folder
 - [#830](https://github.com/estruyf/vscode-front-matter/issues/830): Fix for using the SEO title field setting to change the title field reference
+- [#832](https://github.com/estruyf/vscode-front-matter/issues/832): Fix for finding folders with wildcards in the path
 
 ## [10.2.0] - 2024-06-12 - [Release notes](https://beta.frontmatter.codes/updates/v10.2.0)
 

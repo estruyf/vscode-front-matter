@@ -29,10 +29,9 @@ import { parseWinPath } from '../helpers/parseWinPath';
 import { MediaHelpers } from '../helpers/MediaHelpers';
 import { MediaListener, PagesListener, SettingsListener } from '../listeners/dashboard';
 import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
-import { Telemetry } from '../helpers/Telemetry';
 import { glob } from 'glob';
 import { mkdirAsync } from '../utils/mkdirAsync';
-import { existsAsync, isWindows } from '../utils';
+import { existsAsync, isWindows, lstatAsync } from '../utils';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 import { Preview } from './Preview';
@@ -828,9 +827,26 @@ export class Folders {
 
     try {
       pattern = isWindows() ? parseWinPath(pattern) : pattern;
-      const files = await glob(pattern, { ignore: '**/node_modules/**', dot: true });
-      const allFolders = (files || []).map((file) => dirname(file));
-      const uniqueFolders = [...new Set(allFolders)];
+      const folders = await glob(pattern, {
+        ignore: '**/node_modules/**',
+        dot: true
+      });
+
+      const onlyFolders = [];
+      for (const folder of folders) {
+        try {
+          const stats = await lstatAsync(folder);
+          if (stats.isDirectory()) {
+            onlyFolders.push(folder);
+          } else {
+            onlyFolders.push(dirname(folder));
+          }
+        } catch (e) {
+          continue;
+        }
+      }
+
+      const uniqueFolders = [...new Set(onlyFolders)];
       Logger.verbose(`Folders:findFolders:end - ${uniqueFolders.length}`);
       return uniqueFolders;
     } catch (e) {

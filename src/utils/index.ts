@@ -12,6 +12,7 @@ export * from './getTitleField';
 export * from './ignoreMsgCommand';
 export * from './isWindows';
 export * from './joinUrl';
+export * from './lstatAsync';
 export * from './mkdirAsync';
 export * from './readFileAsync';
 export * from './readdirAsync';
