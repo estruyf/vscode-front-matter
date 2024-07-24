@@ -16,13 +16,17 @@ export const WEBSITE_LINKS = {
   api: {
     baseUrl: 'https://fontmatter-fncs.azurewebsites.net',
     endpoints: {
-      ai: '/api/ai',
+      ai: {
+        description: '/api/ai/description',
+        taxonomy: '/api/ai/taxonomy',
+        title: '/api/ai/title'
+      },
       chat: {
         init: '/api/ai-init',
         message: '/api/ai-chat',
         feedback: '/api/ai-feedback'
       },
-      backers: '/api/backers'
+      backers: '/api/v2/backers'
     }
   },
   docs: {
