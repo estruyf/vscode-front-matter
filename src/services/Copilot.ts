@@ -24,8 +24,9 @@ export class Copilot {
    * @returns A promise that resolves to a boolean indicating whether the extension is installed.
    */
   public static async isInstalled(): Promise<boolean> {
-    if (!VscodeVersion.includes('insider')) {
-      // At the moment Copilot is only available in the insider version of VS Code
+    const version = VscodeVersion.split('.').map((v) => parseInt(v));
+    // GitHub Copilot requires VS Code version 1.92 or higher
+    if (version[0] < 1 || (version[0] === 1 && version[1] < 92)) {
       return false;
     }
 
