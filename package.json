@@ -1229,9 +1229,15 @@
               "fileType": {
                 "type": "string",
                 "default": "",
-                "enum": [
-                  "md",
-                  "mdx"
+                "oneOf": [{
+                    "enum": [
+                      "md",
+                      "mdx"
+                    ]
+                  },
+                  {
+                    "type": "string"
+                  }
                 ],
                 "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fileType.description%"
               },
