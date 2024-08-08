@@ -9,7 +9,6 @@ import { TaxonomyType } from '../models';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 
-const AI_URL = WEBSITE_LINKS.api.ai;
 // const AI_URL = 'http://localhost:3000/api/ai';
 
 export class SponsorAi {
@@ -28,7 +27,7 @@ export class SponsorAi {
       }, 10000);
       const signal = controller.signal;
 
-      const response = await fetch(`${AI_URL}/title`, {
+      const response = await fetch(`${WEBSITE_LINKS.api.root}/ai/title`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -66,7 +65,7 @@ export class SponsorAi {
         articleContent = articleContent.substring(0, 2000);
       }
 
-      const response = await fetch(`${AI_URL}/description`, {
+      const response = await fetch(`${WEBSITE_LINKS.api.root}/ai/description`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -129,7 +128,7 @@ export class SponsorAi {
         taxonomy: optionsString
       });
 
-      const response = await fetch(`${AI_URL}/taxonomy`, {
+      const response = await fetch(`${WEBSITE_LINKS.api.root}/ai/taxonomy`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

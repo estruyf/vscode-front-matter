@@ -36,7 +36,7 @@ export const Chatbot: React.FunctionComponent<IChatbotProps> = ({ }: React.Props
       setLocaleReady(true);
     });
 
-    const initResponse = await fetch(`${aiUrl}/api/ai-init`);
+    const initResponse = await fetch(`${aiUrl}/ai-init`);
 
     if (!initResponse.ok) {
       return;
@@ -70,7 +70,7 @@ export const Chatbot: React.FunctionComponent<IChatbotProps> = ({ }: React.Props
       return;
     }
 
-    const response = await fetch(`${aiUrl}/api/ai-chat`, {
+    const response = await fetch(`${aiUrl}/ai-chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

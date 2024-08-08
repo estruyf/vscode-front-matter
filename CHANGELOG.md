@@ -1,5 +1,9 @@
 # Change Log
 
+## [10.2.1] - 2024-08-08
+
+- [#820](https://github.com/estruyf/vscode-front-matter/issues/820): Update API links to the new API URL
+
 ## [10.2.0] - 2024-06-12 - [Release notes](https://beta.frontmatter.codes/updates/v10.2.0)
 
 ### ✨ New features

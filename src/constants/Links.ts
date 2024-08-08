@@ -14,8 +14,8 @@ export const DOCS_SUBMODULES = 'https://frontmatter.codes/docs/git-integration#g
 export const WEBSITE_LINKS = {
   root: 'https://frontmatter.codes',
   api: {
-    metrics: 'https://frontmatter.codes/api/metrics',
-    ai: 'https://frontmatter.codes/api/ai'
+    root: 'https://api.frontmatter.codes',
+    metrics: 'https://api.frontmatter.codes/metrics'
   },
   docs: {
     dataDashboard: 'https://frontmatter.codes/docs/dashboard/datafiles-view',

@@ -28,7 +28,7 @@ export const Feedback: React.FunctionComponent<IFeedbackProps> = ({
   }, []);
 
   const callVote = useCallback(async (vote: boolean) => {
-    await fetch(`${aiUrl}/api/ai-feedback`, {
+    await fetch(`${aiUrl}/ai-feedback`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
