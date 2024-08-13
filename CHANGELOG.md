@@ -4,7 +4,7 @@
 
 ### ✨ New features
 
-- [#823](https://github.com/estruyf/vscode-front-matter/issues/823): Integrated GitHub Copilot support for titles, descriptions, and tags
+- [#823](https://github.com/estruyf/vscode-front-matter/issues/823): Integrated GitHub Copilot support for titles, descriptions, and taxonomy field suggestions
 - [#824](https://github.com/estruyf/vscode-front-matter/issues/824): Added the ability to link custom actions to fields
 
 ### 🎨 Enhancements
