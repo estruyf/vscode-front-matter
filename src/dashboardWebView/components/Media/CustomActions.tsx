@@ -33,6 +33,9 @@ export const CustomActions: React.FunctionComponent<ICustomActionsProps> = ({
       ));
   }, [scripts]);
 
+  if (!customActions.length) {
+    return null;
+  }
 
   if (showTrigger) {
     return (

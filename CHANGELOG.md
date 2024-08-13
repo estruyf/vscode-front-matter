@@ -1,6 +1,6 @@
 # Change Log
 
-## [10.3.0] - 2024-xx-xx
+## [10.3.0] - 2024-xx-xx - [Release notes](https://beta.frontmatter.codes/updates/v10.3.0)
 
 ### ✨ New features
 
@@ -22,6 +22,10 @@
 - [#827](https://github.com/estruyf/vscode-front-matter/issues/827): Fix for `frontmatter.json` file which gets created when already present in a sub-folder
 - [#830](https://github.com/estruyf/vscode-front-matter/issues/830): Fix for using the SEO title field setting to change the title field reference
 - [#832](https://github.com/estruyf/vscode-front-matter/issues/832): Fix for finding folders with wildcards in the path
+
+## [10.2.1] - 2024-08-08
+
+- [#820](https://github.com/estruyf/vscode-front-matter/issues/820): Update API links to the new API URL
 
 ## [10.2.0] - 2024-06-12 - [Release notes](https://beta.frontmatter.codes/updates/v10.2.0)
 
