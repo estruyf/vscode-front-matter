@@ -2,7 +2,6 @@ import {
   SETTING_PREVIEW_HOST,
   SETTING_PREVIEW_PATHNAME,
   CONTEXT,
-  TelemetryEvent,
   PreviewCommands,
   SETTING_EXPERIMENTAL,
   SETTING_DATE_FORMAT,
@@ -20,7 +19,6 @@ import {
   processFmPlaceholders,
   processPathPlaceholders,
   Settings,
-  Telemetry,
   processDateTimePlaceholders
 } from '../helpers';
 import { ContentFolder, ContentType, PreviewSettings } from '../models';
@@ -31,7 +29,7 @@ import { ParsedFrontMatter } from '../parsers';
 import { getLocalizationFile } from '../utils/getLocalizationFile';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
-import { joinUrl } from '../utils';
+import { getTitleField, joinUrl } from '../utils';
 import { i18n } from './i18n';
 
 export class Preview {
@@ -77,11 +75,13 @@ export class Preview {
       return;
     }
 
+    const titleField = getTitleField();
+
     // Create the preview webview
     const webView = window.createWebviewPanel(
       'frontMatterPreview',
-      article?.data?.title
-        ? l10n.t(LocalizationKey.commandsPreviewPanelTitle, article?.data.title)
+      article?.data && article?.data[titleField]
+        ? l10n.t(LocalizationKey.commandsPreviewPanelTitle, article?.data[titleField])
         : 'Front Matter Preview',
       {
         viewColumn: ViewColumn.Beside,
@@ -197,8 +197,6 @@ export class Preview {
         </body>
       </html>
     `;
-
-    Telemetry.send(TelemetryEvent.openPreview);
   }
 
   /**
@@ -247,42 +245,15 @@ export class Preview {
       contentType = await ArticleHelper.getContentType(article);
     }
 
-    // Check if there is a pathname defined on content folder level
-    const folders = await Folders.get();
-    if (folders.length > 0) {
-      for (const folder of folders) {
-        const folderPath = parseWinPath(folder.path);
-        if (filePath.startsWith(folderPath)) {
-          if (!selectedFolder || selectedFolder.path.length < folderPath.length) {
-            selectedFolder = folder;
-          }
-        }
-      }
+    // Get the folder of the article by the file path
+    selectedFolder = await Folders.getPageFolderByFilePath(filePath);
 
-      if (!selectedFolder && article?.data && contentType && !contentType.previewPath) {
-        // Try to find the folder by content type
-        let crntFolders = folders.filter(
-          (folder) =>
-            folder.contentTypes?.includes((contentType as ContentType).name) && folder.previewPath
-        );
+    if (!selectedFolder && contentType) {
+      selectedFolder = await Folders.getFolderByContentType(contentType, filePath);
+    }
 
-        // Use file path to find the folder
-        if (crntFolders.length > 0) {
-          crntFolders = crntFolders.filter((folder) => filePath?.startsWith(folder.path));
-        }
-
-        if (crntFolders && crntFolders.length === 1) {
-          selectedFolder = crntFolders[0];
-        } else if (crntFolders && crntFolders.length > 1) {
-          selectedFolder = await Preview.askUserToPickFolder(crntFolders);
-        } else {
-          selectedFolder = await Preview.askUserToPickFolder(folders.filter((f) => f.previewPath));
-        }
-      }
-
-      if (selectedFolder && selectedFolder.previewPath) {
-        pathname = selectedFolder.previewPath;
-      }
+    if (selectedFolder && selectedFolder.previewPath) {
+      pathname = selectedFolder.previewPath;
     }
 
     // Check if there is a pathname defined on content type level
@@ -293,7 +264,7 @@ export class Preview {
     }
 
     if (!slug) {
-      slug = Article.getSlug();
+      slug = Article.getSlug(pathname);
     }
 
     const locale = await i18n.getLocale(filePath);
@@ -372,7 +343,7 @@ export class Preview {
       slug = `${slug}/`;
     }
 
-    return slug;
+    return join(slug);
   }
 
   /**
@@ -422,7 +393,7 @@ export class Preview {
    * @param crntFolders
    * @returns
    */
-  private static async askUserToPickFolder(
+  public static async askUserToPickFolder(
     crntFolders: ContentFolder[]
   ): Promise<ContentFolder | undefined> {
     let selectedFolder: ContentFolder | undefined = undefined;

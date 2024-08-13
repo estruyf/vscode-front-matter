@@ -45,8 +45,6 @@ export const SETTING_TEMPLATES_FOLDER = 'templates.folder';
 export const SETTING_TEMPLATES_PREFIX = 'templates.prefix';
 export const SETTING_TEMPLATES_ENABLED = 'templates.enabled';
 
-export const SETTING_TELEMETRY_DISABLE = 'telemetry.disable';
-
 export const SETTING_PANEL_FREEFORM = 'panel.freeform';
 export const SETTING_PANEL_ACTIONS_DISABLED = 'panel.actions.disabled';
 
@@ -114,6 +112,8 @@ export const SETTING_GIT_SUBMODULE_FOLDER = 'git.submodule.folder';
 export const SETTING_SNIPPETS_WRAPPER = 'snippets.wrapper.enabled';
 
 export const SETTING_WEBSITE_URL = 'website.host';
+
+export const SETTING_COPILOT_FAMILY = 'copilot.family';
 
 export const SETTING_LOGGING = 'logging';
 

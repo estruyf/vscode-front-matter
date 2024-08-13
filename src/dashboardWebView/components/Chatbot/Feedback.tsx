@@ -3,6 +3,7 @@ import { HandThumbDownIcon, HandThumbUpIcon } from '@heroicons/react/24/outline'
 import { HandThumbDownIcon as ThumbDownSolidIcon, HandThumbUpIcon as ThumbUpSolidIcon } from '@heroicons/react/24/solid';
 import { useCallback } from 'react';
 import { useSettingsContext } from '../../providers/SettingsProvider';
+import { WEBSITE_LINKS } from '../../../constants';
 
 export interface IFeedbackProps {
   answerId: number;
@@ -28,7 +29,7 @@ export const Feedback: React.FunctionComponent<IFeedbackProps> = ({
   }, []);
 
   const callVote = useCallback(async (vote: boolean) => {
-    await fetch(`${aiUrl}/ai-feedback`, {
+    await fetch(`${aiUrl}${WEBSITE_LINKS.api.endpoints.chat.feedback}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

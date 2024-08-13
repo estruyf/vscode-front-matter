@@ -10,7 +10,7 @@ import { AiInitResponse } from './models/AiInitResponse';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { messageHandler } from '@estruyf/vscode/dist/client';
-import { GeneralCommands } from '../../../constants';
+import { GeneralCommands, WEBSITE_LINKS } from '../../../constants';
 
 export interface IChatbotProps { }
 
@@ -36,7 +36,7 @@ export const Chatbot: React.FunctionComponent<IChatbotProps> = ({ }: React.Props
       setLocaleReady(true);
     });
 
-    const initResponse = await fetch(`${aiUrl}/ai-init`);
+    const initResponse = await fetch(`${aiUrl}${WEBSITE_LINKS.api.endpoints.chat.init}`);
 
     if (!initResponse.ok) {
       return;
@@ -70,7 +70,7 @@ export const Chatbot: React.FunctionComponent<IChatbotProps> = ({ }: React.Props
       return;
     }
 
-    const response = await fetch(`${aiUrl}/ai-chat`, {
+    const response = await fetch(`${aiUrl}${WEBSITE_LINKS.api.endpoints.chat.message}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -3,7 +3,7 @@ import { PhotoIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo } from 'react';
 import { DefaultFieldValues } from '../../../constants';
-import { BaseFieldProps, BlockFieldData } from '../../../models';
+import { BaseFieldProps, BlockFieldData, CustomScript } from '../../../models';
 import { CommandToCode } from '../../CommandToCode';
 import { FieldTitle } from './FieldTitle';
 import { PreviewImage } from './PreviewImage';
@@ -23,6 +23,7 @@ export interface IPreviewImageFieldProps
   parents?: string[];
   multiple?: boolean;
   blockData?: BlockFieldData;
+  actions?: CustomScript[];
   onChange: (value: string | string[] | null) => void;
 }
 
@@ -36,8 +37,10 @@ export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps>
   filePath,
   multiple,
   parents,
+  actions,
   required
 }: React.PropsWithChildren<IPreviewImageFieldProps>) => {
+  const [loading, setLoading] = React.useState<string | undefined>(undefined);
   const [imageData, setImageData] = React.useState<PreviewImageValue | PreviewImageValue[] | null>(null);
 
   const selectImage = useCallback(() => {
@@ -95,7 +98,14 @@ export const PreviewImageField: React.FunctionComponent<IPreviewImageFieldProps>
 
   return (
     <div className={`metadata_field`}>
-      <FieldTitle label={label} icon={<PhotoIcon />} required={required} />
+      <FieldTitle
+        label={label}
+        icon={<PhotoIcon />}
+        required={required}
+        isDisabled={!!loading}
+        customActions={actions}
+        triggerLoading={(message) => setLoading(message)}
+        onChange={(value: string) => onChange(value)} />
 
       <div
         className={`metadata_field__preview_image ${multiple && imageData && (imageData as PreviewImageValue[]).length > 0

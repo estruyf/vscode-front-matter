@@ -1,4 +1,5 @@
 export * from './ContentType';
+export * from './DefaultFeatureFlags';
 export * from './DefaultFieldValues';
 export * from './DefaultFields';
 export * from './DefaultFileTypes';
@@ -17,7 +18,6 @@ export * from './SentryIgnore';
 export * from './Snippet';
 export * from './SsgScripts';
 export * from './StaticFolderPlaceholder';
-export * from './TelemetryEvent';
 export * from './Templates';
 export * from './charCode';
 export * from './charMap';

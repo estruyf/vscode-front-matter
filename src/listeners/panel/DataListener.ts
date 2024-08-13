@@ -25,7 +25,6 @@ import {
   SETTING_DATE_FORMAT,
   SETTING_GLOBAL_ACTIVE_MODE,
   SETTING_GLOBAL_MODES,
-  SETTING_SEO_TITLE_FIELD,
   SETTING_TAXONOMY_CONTENT_TYPES
 } from '../../constants';
 import { Article, Preview } from '../../commands';
@@ -37,7 +36,7 @@ import {
   ContentType as IContentType,
   FolderInfo
 } from '../../models';
-import { encodeEmoji, fieldWhenClause } from '../../utils';
+import { encodeEmoji, fieldWhenClause, getTitleField } from '../../utils';
 import { PanelProvider } from '../../panelWebView/PanelProvider';
 import { MessageHandlerData } from '@estruyf/vscode';
 import { SponsorAi } from '../../services/SponsorAI';
@@ -45,6 +44,7 @@ import { Terminal } from '../../services';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
 import { parse } from 'path';
+import { Copilot } from '../../services/Copilot';
 
 const FILE_LIMIT = 10;
 
@@ -104,9 +104,62 @@ export class DataListener extends BaseListener {
       case CommandToCode.aiSuggestDescription:
         this.aiSuggestTaxonomy(msg.command, msg.requestId);
         break;
+      case CommandToCode.copilotSuggestDescription:
+        this.copilotSuggestDescription(msg.command, msg.requestId);
+        break;
     }
   }
 
+  /**
+   * Executes a Copilot suggestion command.
+   * @param command - The command to execute.
+   * @param requestId - The optional request ID.
+   * @returns A Promise that resolves when the suggestion command is executed.
+   */
+  private static async copilotSuggestDescription(command: string, requestId?: string) {
+    if (!command || !requestId) {
+      return;
+    }
+
+    const article = ArticleHelper.getActiveFile();
+    if (!article) {
+      return;
+    }
+
+    const articleDetails = await ArticleHelper.getFrontMatterByPath(article);
+    if (!articleDetails) {
+      return;
+    }
+
+    const extPath = Extension.getInstance().extensionPath;
+    const panel = PanelProvider.getInstance(extPath);
+
+    const titleField = getTitleField();
+    const description = await Copilot.suggestDescription(
+      articleDetails.data[titleField],
+      articleDetails.content
+    );
+
+    if (description) {
+      panel.getWebview()?.postMessage({
+        command,
+        requestId,
+        payload: description
+      } as MessageHandlerData<string>);
+    } else {
+      panel.getWebview()?.postMessage({
+        command,
+        requestId,
+        error: l10n.t(LocalizationKey.servicesCopilotGetChatResponseError)
+      } as MessageHandlerData<string>);
+    }
+  }
+
+  /**
+   * Suggests taxonomy using AI.
+   * @param command - The command string.
+   * @param requestId - The optional request ID.
+   */
   private static async aiSuggestTaxonomy(command: string, requestId?: string) {
     if (!command || !requestId) {
       return;
@@ -140,7 +193,7 @@ export class DataListener extends BaseListener {
       return;
     }
 
-    const titleField = (Settings.get(SETTING_SEO_TITLE_FIELD) as string) || DefaultFields.Title;
+    const titleField = getTitleField();
 
     const suggestion = await SponsorAi.getDescription(
       githubAuth.accessToken,
@@ -307,9 +360,21 @@ export class DataListener extends BaseListener {
 
       // Check slug
       if (!slugField && !updatedMetadata[DefaultFields.Slug]) {
-        const slug = Article.getSlug();
+        let pathname = contentType.previewPath || '';
+        if (!pathname) {
+          const selectedFolder = await Folders.getPageFolderByFilePath(filePath);
+          if (selectedFolder && selectedFolder.previewPath) {
+            pathname = selectedFolder.previewPath;
+          }
+        }
 
-        if (slug) {
+        if (!pathname) {
+          pathname = Preview.getSettings().pathname || '';
+        }
+
+        const slug = Article.getSlug(pathname);
+
+        if (typeof slug !== 'undefined') {
           updatedMetadata[DefaultFields.Slug] = slug;
         }
       }
@@ -346,7 +411,7 @@ export class DataListener extends BaseListener {
     }
 
     let beforeValue: any;
-    const titleField = (Settings.get(SETTING_SEO_TITLE_FIELD) as string) || DefaultFields.Title;
+    const titleField = getTitleField();
 
     const editor = window.activeTextEditor;
 
@@ -703,9 +768,11 @@ export class DataListener extends BaseListener {
         data && contentType ? processArticlePlaceholdersFromData(value, data, contentType) : value;
       value = processTimePlaceholders(value, dateFormat);
       value = processFmPlaceholders(value, data);
+
+      const titleField = getTitleField();
       value = await ArticleHelper.processCustomPlaceholders(
         value,
-        data.title || '',
+        data[titleField] || '',
         crntFile?.uri.fsPath || ''
       );
     }

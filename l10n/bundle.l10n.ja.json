@@ -274,6 +274,8 @@
   "dashboard.preview.button.refresh.title": "更新",
   "dashboard.preview.button.open.title": "開く",
 
+  "dashboard.snippetsView.item.type.content": "コンテンツ用スニペット",
+  "dashboard.snippetsView.item.type.media": "メディア用スニペット",
   "dashboard.snippetsView.item.quickAction.editSnippet": "スニペットを編集",
   "dashboard.snippetsView.item.quickAction.deleteSnippet": "スニペットを削除",
   "dashboard.snippetsView.item.quickAction.viewSnippet": "スニペットファイルの表示",
@@ -725,6 +727,7 @@
   "helpers.settingsHelper.readConfig.progress.title": "{0}: 動的な設定ファイルを読み込んでいます...",
   "helpers.settingsHelper.readConfig.error": "設定の読み込みでエラーが発生しました。",
   "helpers.settingsHelper.refreshConfig.success": "設定を再読み込みしました。",
+  "helpers.settingsHelper.safeUpdate.warning": "Front Matter CMSの構成が拡張または分割されているため、\"{0}\"の設定を更新できませんでした。手動で更新を加えてください。更新情報についての出力を確認してください。",
 
   "helpers.taxonomyHelper.rename.input.title": "タクソノミー名を変更 {0}",
   "helpers.taxonomyHelper.rename.validate.equalValue": "現在のファイル名とは別のファイル名を入力してください。",

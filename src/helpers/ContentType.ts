@@ -12,14 +12,14 @@ import {
 import {
   COMMAND_NAME,
   DefaultFieldValues,
+  DefaultFields,
   EXTENSION_NAME,
   FEATURE_FLAG,
   SETTING_CONTENT_DRAFT_FIELD,
   SETTING_DATE_FORMAT,
   SETTING_FRAMEWORK_ID,
   SETTING_TAXONOMY_CONTENT_TYPES,
-  SETTING_TAXONOMY_FIELD_GROUPS,
-  TelemetryEvent
+  SETTING_TAXONOMY_FIELD_GROUPS
 } from '../constants';
 import {
   ContentType as IContentType,
@@ -37,7 +37,7 @@ import { DEFAULT_CONTENT_TYPE_NAME } from '../constants/ContentType';
 import { Telemetry } from './Telemetry';
 import { basename } from 'path';
 import { ParsedFrontMatter } from '../parsers';
-import { encodeEmoji, existsAsync, fieldWhenClause, writeFileAsync } from '../utils';
+import { encodeEmoji, existsAsync, fieldWhenClause, getTitleField, writeFileAsync } from '../utils';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 
@@ -185,7 +185,7 @@ export class ContentType {
                 fields.splice(fieldIdx, 1, ...fieldGroup.fields);
               }
             } else if (field && field.type === 'fields') {
-              fields = field.fields || [];
+              field.fields = field.fields || [];
             }
           }
         }
@@ -202,8 +202,6 @@ export class ContentType {
     if (!(await ContentType.verify())) {
       return;
     }
-
-    Telemetry.send(TelemetryEvent.generateContentType);
 
     const content = ArticleHelper.getCurrent();
 
@@ -284,7 +282,7 @@ export class ContentType {
 
     // Update the type field in the page
     if (!overrideBool && editor) {
-      content.data['type'] = contentTypeName;
+      content.data[DefaultFields.ContentType] = contentTypeName;
       ArticleHelper.update(editor, content);
     }
 
@@ -332,8 +330,6 @@ export class ContentType {
       return;
     }
 
-    Telemetry.send(TelemetryEvent.addMissingFields);
-
     const article = ArticleHelper.getCurrent();
 
     if (!article || !article.data) {
@@ -377,8 +373,6 @@ export class ContentType {
       return;
     }
 
-    Telemetry.send(TelemetryEvent.setContentType);
-
     const content = ArticleHelper.getCurrent();
     const contentTypes = ContentType.getAll() || [];
 
@@ -402,7 +396,7 @@ export class ContentType {
       return;
     }
 
-    content.data.type = ctAnswer;
+    content.data[DefaultFields.ContentType] = ctAnswer;
 
     const editor = window.activeTextEditor;
     ArticleHelper.update(editor!, content);
@@ -950,8 +944,11 @@ export class ContentType {
         }
 
         titleValue = titleValue.trim();
+
+        const titleFieldName = getTitleField();
+
         // Check if the title needs to encode the emoji's used in it
-        const titleField = contentType.fields.find((f) => f.name === 'title');
+        const titleField = contentType.fields.find((f) => f.name === titleFieldName);
         if (titleField && titleField.encodeEmoji) {
           titleValue = encodeEmoji(titleValue);
         }
@@ -991,12 +988,8 @@ export class ContentType {
           contentType
         );
 
-        let isTypeSet = false;
-        if (data.type) {
-          isTypeSet = true;
-        } else {
-          data.type = contentType.name;
-        }
+        // Set the content type
+        data[DefaultFields.ContentType] = contentType.name;
 
         const article: ParsedFrontMatter = {
           content: '',
@@ -1006,12 +999,11 @@ export class ContentType {
 
         data = await ArticleHelper.updateDates(article);
 
-        if (isTypeSet) {
-          delete data.type;
-        }
-
         if (contentType.name !== DEFAULT_CONTENT_TYPE_NAME) {
-          data['type'] = contentType.name;
+          data[DefaultFields.ContentType] = contentType.name;
+        } else {
+          // Default content type, remove the content type field
+          delete data[DefaultFields.ContentType];
         }
 
         const content = ArticleHelper.stringifyFrontMatter(templateData?.content || ``, data);
@@ -1035,8 +1027,6 @@ export class ContentType {
 
         Notifications.info(l10n.t(LocalizationKey.helpersContentTypeCreateSuccess));
 
-        Telemetry.send(TelemetryEvent.createContentFromContentType);
-
         // Trigger a refresh for the dashboard
         PagesListener.refresh();
       }
@@ -1058,6 +1048,7 @@ export class ContentType {
     isRoot: boolean = true
   ): Promise<any> {
     if (obj.fields) {
+      const titleField = getTitleField();
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
 
       for (const field of obj.fields) {
@@ -1066,7 +1057,7 @@ export class ContentType {
           continue;
         }
 
-        if (field.name === 'title') {
+        if (field.name === titleField) {
           if (field.default) {
             data[field.name] = processArticlePlaceholdersFromData(
               field.default as string,

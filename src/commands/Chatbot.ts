@@ -1,5 +1,4 @@
-import { Telemetry } from './../helpers/Telemetry';
-import { TelemetryEvent, PreviewCommands, GeneralCommands } from './../constants';
+import { PreviewCommands, GeneralCommands } from './../constants';
 import { join } from 'path';
 import { commands, Uri, ViewColumn, window } from 'vscode';
 import { Extension } from '../helpers';
@@ -116,7 +115,5 @@ export class Chatbot {
         </body>
       </html>
     `;
-
-    Telemetry.send(TelemetryEvent.openChatbot);
   }
 }

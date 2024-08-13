@@ -12,7 +12,7 @@ import {
 import { COMMAND_NAME, SETTING_CONTENT_I18N } from '../constants';
 import { ContentFolder, Field, I18nConfig, ContentType as IContentType } from '../models';
 import { join, parse } from 'path';
-import { existsAsync } from '../utils';
+import { existsAsync, getDescriptionField, getTitleField } from '../utils';
 import { Folders } from '.';
 import { ParsedFrontMatter } from '../parsers';
 import { PagesListener } from '../listeners/dashboard';
@@ -412,8 +412,11 @@ export class i18n {
         },
         async () => {
           try {
-            const title = article.data.title || '';
-            const description = article.data.description || '';
+            const titleField = getTitleField();
+            const descriptionField = getDescriptionField();
+
+            const title = article.data[titleField] || '';
+            const description = article.data[descriptionField] || '';
             const content = article.content || '';
 
             const text = [title, description, content];
@@ -428,8 +431,8 @@ export class i18n {
               return;
             }
 
-            article.data.title = article.data.title ? translations[0] : '';
-            article.data.description = article.data.description ? translations[1] : '';
+            article.data[titleField] = article.data[titleField] ? translations[0] : '';
+            article.data[descriptionField] = article.data[descriptionField] ? translations[1] : '';
             article.content = article.content ? translations[2] : '';
           } catch (error) {
             Notifications.error(`${(error as Error).message}`);

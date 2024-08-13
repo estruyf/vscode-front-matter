@@ -10,7 +10,6 @@ import { Preview } from '../commands/Preview';
 import { Project } from '../commands/Project';
 import {
   CONTEXT,
-  DefaultFields,
   SETTING_CONTENT_DRAFT_FIELD,
   SETTING_CONTENT_FRONTMATTER_HIGHLIGHT,
   SETTING_DATA_TYPES,
@@ -22,7 +21,6 @@ import {
   SETTING_DATE_FORMAT,
   SETTING_PANEL_FREEFORM,
   SETTING_SEO_CONTENT_MIN_LENGTH,
-  SETTING_SEO_DESCRIPTION_FIELD,
   SETTING_SEO_DESCRIPTION_LENGTH,
   SETTING_SEO_SLUG_LENGTH,
   SETTING_SEO_TITLE_LENGTH,
@@ -30,8 +28,7 @@ import {
   SETTING_SLUG_SUFFIX,
   SETTING_SLUG_UPDATE_FILE_NAME,
   SETTING_TAXONOMY_CUSTOM,
-  SETTING_TAXONOMY_FIELD_GROUPS,
-  SETTING_SEO_TITLE_FIELD
+  SETTING_TAXONOMY_FIELD_GROUPS
 } from '../constants';
 import { GitListener } from '../listeners/general';
 import {
@@ -45,6 +42,8 @@ import {
   TaxonomyType
 } from '../models';
 import { Folders } from '../commands';
+import { Copilot } from '../services/Copilot';
+import { getDescriptionField, getTitleField } from '../utils';
 
 export class PanelSettings {
   public static async get(): Promise<IPanelSettings> {
@@ -53,15 +52,15 @@ export class PanelSettings {
     try {
       return {
         aiEnabled: Settings.get<boolean>(SETTING_SPONSORS_AI_ENABLED) || false,
+        copilotEnabled: await Copilot.isInstalled(),
         git: await GitListener.getSettings(),
         seo: {
           title: (Settings.get(SETTING_SEO_TITLE_LENGTH) as number) || -1,
           slug: (Settings.get(SETTING_SEO_SLUG_LENGTH) as number) || -1,
           description: (Settings.get(SETTING_SEO_DESCRIPTION_LENGTH) as number) || -1,
           content: (Settings.get(SETTING_SEO_CONTENT_MIN_LENGTH) as number) || -1,
-          titleField: (Settings.get(SETTING_SEO_TITLE_FIELD) as string) || DefaultFields.Title,
-          descriptionField:
-            (Settings.get(SETTING_SEO_DESCRIPTION_FIELD) as string) || DefaultFields.Description
+          titleField: getTitleField(),
+          descriptionField: getDescriptionField()
         },
         slug: {
           prefix: Settings.get(SETTING_SLUG_PREFIX) || '',

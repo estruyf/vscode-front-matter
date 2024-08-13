@@ -5,7 +5,7 @@ import { CommandToCode } from '../../CommandToCode';
 import { TagType } from '../../TagType';
 import Downshift from 'downshift';
 import { AddIcon } from '../Icons/AddIcon';
-import { BlockFieldData, CustomTaxonomyData } from '../../../models';
+import { BlockFieldData, CustomScript, CustomTaxonomyData } from '../../../models';
 import { useCallback, useEffect, useMemo } from 'react';
 import { messageHandler, Messenger } from '@estruyf/vscode/dist/client';
 import { FieldMessage } from '../Fields/FieldMessage';
@@ -13,9 +13,9 @@ import { FieldTitle } from '../Fields/FieldTitle';
 import { useRecoilValue } from 'recoil';
 import { PanelSettingsAtom } from '../../state';
 import { SparklesIcon } from '@heroicons/react/24/outline';
-import * as l10n from '@vscode/l10n';
-import { LocalizationKey } from '../../../localization';
+import { LocalizationKey, localize } from '../../../localization';
 import useDropdownStyle from '../../hooks/useDropdownStyle';
+import { CopilotIcon } from '../Icons';
 
 export interface ITagPickerProps {
   type: TagType;
@@ -36,6 +36,7 @@ export interface ITagPickerProps {
   limit?: number;
   required?: boolean;
   renderAsString?: boolean;
+  actions?: CustomScript[];
 }
 
 const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
@@ -55,7 +56,8 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
   blockData,
   limit,
   required,
-  renderAsString
+  renderAsString,
+  actions
 }: React.PropsWithChildren<ITagPickerProps>) => {
   const [selected, setSelected] = React.useState<string[]>([]);
   const [inputValue, setInputValue] = React.useState<string>('');
@@ -64,7 +66,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
   const { getDropdownStyle } = useDropdownStyle(inputRef as any);
   const dsRef = React.useRef<Downshift<string> | null>(null);
   const settings = useRecoilValue(PanelSettingsAtom);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<string | undefined>(undefined);
 
   /**
    * Removes an option
@@ -98,39 +100,42 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
    * Send an update to VSCode
    * @param values
    */
-  const sendUpdate = useCallback((values: string[]) => {
-    if (type === TagType.tags) {
-      Messenger.send(CommandToCode.updateTags, {
-        fieldName,
-        values,
-        renderAsString,
-        parents,
-        blockData
-      });
-    } else if (type === TagType.categories) {
-      Messenger.send(CommandToCode.updateCategories, {
-        fieldName,
-        values,
-        renderAsString,
-        parents,
-        blockData
-      });
-    } else if (type === TagType.keywords) {
-      Messenger.send(CommandToCode.updateKeywords, {
-        values,
-        parents
-      });
-    } else if (type === TagType.custom) {
-      Messenger.send(CommandToCode.updateCustomTaxonomy, {
-        id: taxonomyId,
-        name: fieldName,
-        options: values,
-        renderAsString,
-        parents,
-        blockData
-      } as CustomTaxonomyData);
-    }
-  }, [renderAsString]);
+  const sendUpdate = useCallback(
+    (values: string[]) => {
+      if (type === TagType.tags) {
+        Messenger.send(CommandToCode.updateTags, {
+          fieldName,
+          values,
+          renderAsString,
+          parents,
+          blockData
+        });
+      } else if (type === TagType.categories) {
+        Messenger.send(CommandToCode.updateCategories, {
+          fieldName,
+          values,
+          renderAsString,
+          parents,
+          blockData
+        });
+      } else if (type === TagType.keywords) {
+        Messenger.send(CommandToCode.updateKeywords, {
+          values,
+          parents
+        });
+      } else if (type === TagType.custom) {
+        Messenger.send(CommandToCode.updateCustomTaxonomy, {
+          id: taxonomyId,
+          name: fieldName,
+          options: values,
+          renderAsString,
+          parents,
+          blockData
+        } as CustomTaxonomyData);
+      }
+    },
+    [renderAsString]
+  );
 
   /**
    * Triggers the focus to the input when command is executed
@@ -182,19 +187,24 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
    * @param option
    * @param inputValue
    */
-  const filterList = useCallback((option: string, inputValue: string | null) => {
-    if (typeof option !== 'string') {
-      return false;
-    }
+  const filterList = useCallback(
+    (option: string, inputValue: string | null) => {
+      if (typeof option !== 'string') {
+        return false;
+      }
 
-    if (!(selected instanceof Array)) {
-      return true;
-    }
+      if (!(selected instanceof Array)) {
+        return true;
+      }
 
-    return (
-      option && !selected.includes(option) && option.toLowerCase().includes((inputValue || '').toLowerCase())
-    );
-  }, [selected]);
+      return (
+        option &&
+        !selected.includes(option) &&
+        option.toLowerCase().includes((inputValue || '').toLowerCase())
+      );
+    },
+    [selected]
+  );
 
   /**
    * Add the new item to the data
@@ -240,20 +250,33 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
     [options, inputRef, selected, freeform]
   );
 
-  const suggestTaxonomy = useCallback((type: TagType) => {
-    setLoading(true);
-    messageHandler.request<string[]>(CommandToCode.aiSuggestTaxonomy, type).then((values) => {
-      setLoading(false);
-      if (values && values instanceof Array && values.length > 0) {
-        const uniqValues = Array.from(new Set([...selected, ...values]));
-        setSelected(uniqValues);
-        sendUpdate(uniqValues);
-        setInputValue('');
-      }
-    }).catch(() => {
-      setLoading(false);
-    });
-  }, [selected]);
+  const updateTaxonomy = (values: string[]) => {
+    if (values && values instanceof Array && values.length > 0) {
+      const uniqValues = Array.from(new Set([...selected, ...values]));
+      setSelected(uniqValues);
+      sendUpdate(uniqValues);
+      setInputValue('');
+    }
+  }
+
+  const suggestTaxonomy = useCallback(
+    (aiType: 'ai' | 'copilot', type: TagType) => {
+      setLoading(localize(LocalizationKey.panelTagPickerAiGenerating));
+
+      const command =
+        aiType === 'ai' ? CommandToCode.aiSuggestTaxonomy : CommandToCode.copilotSuggestTaxonomy;
+      messageHandler
+        .request<string[]>(command, type)
+        .then((values) => {
+          setLoading(undefined);
+          updateTaxonomy(values)
+        })
+        .catch(() => {
+          setLoading(undefined);
+        });
+    },
+    [selected]
+  );
 
   /**
    * Check if the input is disabled
@@ -268,10 +291,13 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
 
   const inputPlaceholder = useMemo((): string => {
     if (checkIsDisabled()) {
-      return l10n.t(LocalizationKey.panelTagPickerInputPlaceholderDisabled, `${limit} ${label || type.toLowerCase()}`);
+      return localize(
+        LocalizationKey.panelTagPickerInputPlaceholderDisabled,
+        `${limit} ${label || type.toLowerCase()}`
+      );
     }
 
-    return l10n.t(LocalizationKey.panelTagPickerInputPlaceholderEmpty, (label || type.toLowerCase()));
+    return localize(LocalizationKey.panelTagPickerInputPlaceholderEmpty, label || type.toLowerCase());
   }, [label, type, checkIsDisabled]);
 
   const showRequiredState = useMemo(() => {
@@ -279,25 +305,44 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
   }, [required, selected]);
 
   const actionElement = useMemo(() => {
-    if (!settings?.aiEnabled) {
-      return;
-    }
-
     if (type !== TagType.tags && type !== TagType.categories) {
       return;
     }
 
     return (
-      <button
-        className='metadata_field__title__action'
-        title={l10n.t(LocalizationKey.panelTagPickerAiSuggest, (label?.toLowerCase() || type.toLowerCase()))}
-        type='button'
-        onClick={() => suggestTaxonomy(type)}
-        disabled={loading}>
-        <SparklesIcon />
-      </button>
+      <>
+        {settings?.aiEnabled && (
+          <button
+            className="metadata_field__title__action"
+            title={localize(
+              LocalizationKey.panelTagPickerAiSuggest,
+              label?.toLowerCase() || type.toLowerCase()
+            )}
+            type="button"
+            onClick={() => suggestTaxonomy('ai', type)}
+            disabled={!!loading}
+          >
+            <SparklesIcon />
+          </button>
+        )}
+
+        {settings?.copilotEnabled && (
+          <button
+            className="metadata_field__title__action"
+            title={localize(
+              LocalizationKey.panelTagPickerCopilotSuggest,
+              label?.toLowerCase() || type.toLowerCase()
+            )}
+            type="button"
+            onClick={() => suggestTaxonomy('copilot', type)}
+            disabled={!!loading}
+          >
+            <CopilotIcon />
+          </button>
+        )}
+      </>
     );
-  }, [settings?.aiEnabled, label, type]);
+  }, [settings?.aiEnabled, settings?.copilotEnabled, label, type]);
 
   const sortedSelectedTags = useMemo(() => {
     const safeSelected = selected || [];
@@ -328,13 +373,6 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
 
   return (
     <div className={`article__tags metadata_field`}>
-      {
-        loading && (
-          <div className='metadata_field__loading'>
-            {l10n.t(LocalizationKey.panelTagPickerAiGenerating)}
-          </div>
-        )
-      }
       <FieldTitle
         label={
           <>
@@ -342,7 +380,9 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
             {limit !== undefined && limit > 0 ? (
               <>
                 {` `}
-                <span style={{ fontWeight: 'lighter' }}>({l10n.t(LocalizationKey.panelTagPickerLimit, limit)})</span>
+                <span style={{ fontWeight: 'lighter' }}>
+                  ({localize(LocalizationKey.panelTagPickerLimit, limit)})
+                </span>
               </>
             ) : (
               ``
@@ -352,81 +392,91 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
         actionElement={actionElement}
         icon={icon}
         required={required}
+        isDisabled={!!loading}
+        customActions={actions}
+        triggerLoading={(message) => setLoading(message)}
+        onChange={updateTaxonomy}
       />
 
-      <Downshift
-        ref={dsRef}
-        onChange={(selected) => onSelect(selected || '')}
-        itemToString={(item) => (item ? item : '')}
-        inputValue={inputValue}
-        onInputValueChange={(value) => setInputValue(value)}
-      >
-        {({
-          getInputProps,
-          getItemProps,
-          getMenuProps,
-          isOpen,
-          inputValue,
-          getRootProps,
-          openMenu,
-          closeMenu,
-          clearSelection,
-          highlightedIndex
-        }) => (
-          <>
-            <div
-              {...getRootProps(undefined, { suppressRefError: true })}
-              className={`article__tags__input ${freeform ? 'freeform' : ''} ${showRequiredState ? 'required' : ''
-                }`}
-            >
-              <input
-                {...getInputProps({
-                  ref: inputRef,
-                  onFocus: openMenu as any,
-                  onClick: openMenu as any,
-                  onKeyDown: (e) => onEnterData(e, closeMenu, highlightedIndex),
-                  onBlur: () => {
-                    closeMenu();
-                    unsetFocus();
-                    if (!inputValue) {
-                      clearSelection();
-                    }
-                  },
-                  disabled: checkIsDisabled()
-                })}
-                placeholder={inputPlaceholder}
-              />
+      <div className="relative">
+        {loading && (
+          <div className="metadata_field__loading">
+            {loading}
+          </div>
+        )}
 
-              {freeform && (
-                <button
-                  className={`article__tags__input__button`}
-                  title={l10n.t(LocalizationKey.panelTagPickerUnkown)}
-                  disabled={!inputValue || checkIsDisabled()}
-                  onClick={() => insertUnkownTag(closeMenu)}
-                >
-                  <AddIcon />
-                </button>
-              )}
-            </div>
+        <Downshift
+          ref={dsRef}
+          onChange={(selected) => onSelect(selected || '')}
+          itemToString={(item) => (item ? item : '')}
+          inputValue={inputValue}
+          onInputValueChange={(value) => setInputValue(value)}
+        >
+          {({
+            getInputProps,
+            getItemProps,
+            getMenuProps,
+            isOpen,
+            inputValue,
+            getRootProps,
+            openMenu,
+            closeMenu,
+            clearSelection,
+            highlightedIndex
+          }) => (
+            <>
+              <div
+                {...getRootProps(undefined, { suppressRefError: true })}
+                className={`article__tags__input ${freeform ? 'freeform' : ''} ${showRequiredState ? 'required' : ''
+                  }`}
+              >
+                <input
+                  {...getInputProps({
+                    ref: inputRef,
+                    onFocus: openMenu as any,
+                    onClick: openMenu as any,
+                    onKeyDown: (e) => onEnterData(e, closeMenu, highlightedIndex),
+                    onBlur: () => {
+                      closeMenu();
+                      unsetFocus();
+                      if (!inputValue) {
+                        clearSelection();
+                      }
+                    },
+                    disabled: checkIsDisabled()
+                  })}
+                  placeholder={inputPlaceholder}
+                />
 
-            <ul
-              className={`field_dropdown article__tags__dropbox ${isOpen ? 'open' : 'closed'}`}
-              style={{
-                bottom: getDropdownStyle(isOpen)
-              }}
-              {...getMenuProps()}
-            >
-              {
-                options
+                {freeform && (
+                  <button
+                    className={`article__tags__input__button`}
+                    title={localize(LocalizationKey.panelTagPickerUnkown)}
+                    disabled={!inputValue || checkIsDisabled()}
+                    onClick={() => insertUnkownTag(closeMenu)}
+                  >
+                    <AddIcon />
+                  </button>
+                )}
+              </div>
+
+              <ul
+                className={`field_dropdown article__tags__dropbox ${isOpen ? 'open' : 'closed'}`}
+                style={{
+                  bottom: getDropdownStyle(isOpen)
+                }}
+                {...getMenuProps()}
+              >
+                {options
                   .filter((option) => filterList(option, inputValue))
                   .map((item, index) => (
                     <li {...getItemProps({ key: item, index, item })}>{item}</li>
-                  ))
-              }
-            </ul>
-          </>
-        )}
-      </Downshift>
+                  ))}
+              </ul>
+            </>
+          )}
+        </Downshift>
+      </div>
 
       <FieldMessage
         name={(label || type).toLowerCase()}

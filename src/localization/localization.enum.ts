@@ -176,6 +176,10 @@ export enum LocalizationKey {
    */
   commonRename = 'common.rename',
   /**
+   * Documentation
+   */
+  commonDocs = 'common.docs',
+  /**
    * Loading content
    */
   loadingInitPages = 'loading.initPages',
@@ -511,6 +515,10 @@ export enum LocalizationKey {
    * {0} selected
    */
   dashboardHeaderActionsBarItemsSelected = 'dashboard.header.actionsBar.itemsSelected',
+  /**
+   * Select all
+   */
+  dashboardHeaderActionsBarSelectAll = 'dashboard.header.actionsBar.selectAll',
   /**
    * Delete selected files
    */
@@ -1393,6 +1401,10 @@ export enum LocalizationKey {
    */
   panelFieldsTextFieldAiMessage = 'panel.fields.textField.ai.message',
   /**
+   * Use Copilot to suggest {0}
+   */
+  panelFieldsTextFieldCopilotMessage = 'panel.fields.textField.copilot.message',
+  /**
    * Generating suggestion...
    */
   panelFieldsTextFieldAiGenerate = 'panel.fields.textField.ai.generate',
@@ -1408,6 +1420,14 @@ export enum LocalizationKey {
    * Unkown field type: {0}
    */
   panelFieldsWrapperFieldUnknown = 'panel.fields.wrapperField.unknown',
+  /**
+   * Custom action
+   */
+  panelFieldsFieldCustomActionButtonTitle = 'panel.fields.fieldCustomAction.button.title',
+  /**
+   * Executing field action...
+   */
+  panelFieldsFieldCustomActionExecuting = 'panel.fields.fieldCustomAction.executing',
   /**
    * Actions
    */
@@ -1672,6 +1692,10 @@ export enum LocalizationKey {
    * Use Front Matter AI to suggest {0}
    */
   panelTagPickerAiSuggest = 'panel.tagPicker.ai.suggest',
+  /**
+   * Use GitHub Copilot to suggest {0}
+   */
+  panelTagPickerCopilotSuggest = 'panel.tagPicker.copilot.suggest',
   /**
    * Generating suggestions...
    */
@@ -2309,6 +2333,10 @@ export enum LocalizationKey {
    */
   helpersQuestionsContentTitleAiInputQuickPickAiSeparator = 'helpers.questions.contentTitle.aiInput.quickPick.ai.separator',
   /**
+   * GitHub Copilot suggestions
+   */
+  helpersQuestionsContentTitleAiInputQuickPickCopilotSeparator = 'helpers.questions.contentTitle.aiInput.quickPick.copilot.separator',
+  /**
    * Select a title
    */
   helpersQuestionsContentTitleAiInputSelectTitle = 'helpers.questions.contentTitle.aiInput.select.title',
@@ -2320,6 +2348,10 @@ export enum LocalizationKey {
    * Failed fetching the AI title. Please try to use your own title or try again later.
    */
   helpersQuestionsContentTitleAiInputFailed = 'helpers.questions.contentTitle.aiInput.failed',
+  /**
+   * Failed fetching the GitHub Copilot title suggestions. Please try to use your own title or try again later.
+   */
+  helpersQuestionsContentTitleCopilotInputFailed = 'helpers.questions.contentTitle.copilotInput.failed',
   /**
    * You did not specify a title for your content.
    */
@@ -2568,6 +2600,10 @@ export enum LocalizationKey {
    * No article data
    */
   listenersPanelTaxonomyListenerAiSuggestTaxonomyNoDataError = 'listeners.panel.taxonomyListener.aiSuggestTaxonomy.noData.error',
+  /**
+   * Failed to get a response from the GitHub Copilot.
+   */
+  servicesCopilotGetChatResponseError = 'services.copilot.getChatResponse.error',
   /**
    * Select the mode you want to use
    */

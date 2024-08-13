@@ -8,7 +8,7 @@ import { AstroContentTypes } from '../Configuration/Astro/AstroContentTypes';
 import { ContentFolders } from '../Configuration/Common/ContentFolders';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
-import { COMMAND_NAME, TelemetryEvent } from '../../../constants';
+import { COMMAND_NAME } from '../../../constants';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import { VSCodePanelTab, VSCodePanelView, VSCodePanels } from '@vscode/webview-ui-toolkit/react';
 import { CommonSettings } from './CommonSettings';
@@ -25,10 +25,6 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (_: Rea
 
   useEffect(() => {
     Messenger.send(DashboardMessage.setTitle, l10n.t(LocalizationKey.commonSettings));
-
-    Messenger.send(DashboardMessage.sendTelemetry, {
-      event: TelemetryEvent.webviewSettings
-    });
   }, []);
 
   return (

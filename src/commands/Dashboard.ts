@@ -3,9 +3,7 @@ import {
   CONTEXT,
   ExtensionState,
   SETTING_EXPERIMENTAL,
-  SETTING_EXTENSIBILITY_SCRIPTS,
-  COMMAND_NAME,
-  TelemetryEvent
+  COMMAND_NAME
 } from '../constants';
 import { join } from 'path';
 import { commands, Uri, ViewColumn, Webview, WebviewPanel, window } from 'vscode';
@@ -18,7 +16,6 @@ import {
   DashboardListener,
   MediaListener,
   SettingsListener,
-  TelemetryListener,
   DataListener,
   PagesListener,
   ExtensionListener,
@@ -29,12 +26,11 @@ import {
 } from '../listeners/dashboard';
 import { MediaListener as PanelMediaListener } from '../listeners/panel';
 import { GitListener, ModeListener } from '../listeners/general';
-import { Folders } from './Folders';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 import { DashboardMessage } from '../dashboardWebView/DashboardMessage';
 import { NavigationType } from '../dashboardWebView/models';
-import { ignoreMsgCommand } from '../utils';
+import { getExtensibilityScripts, ignoreMsgCommand } from '../utils';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -67,7 +63,6 @@ export class Dashboard {
 
     subscriptions.push(
       commands.registerCommand(COMMAND_NAME.dashboard, (data?: DashboardData) => {
-        Telemetry.send(TelemetryEvent.openContentDashboard);
         if (!data) {
           Dashboard.open({ type: NavigationType.Contents });
         } else {
@@ -78,35 +73,30 @@ export class Dashboard {
 
     subscriptions.push(
       commands.registerCommand(COMMAND_NAME.dashboardMedia, () => {
-        Telemetry.send(TelemetryEvent.openMediaDashboard);
         Dashboard.open({ type: NavigationType.Media });
       })
     );
 
     subscriptions.push(
       commands.registerCommand(COMMAND_NAME.dashboardSnippets, () => {
-        Telemetry.send(TelemetryEvent.openSnippetsDashboard);
         Dashboard.open({ type: NavigationType.Snippets });
       })
     );
 
     subscriptions.push(
       commands.registerCommand(COMMAND_NAME.dashboardData, () => {
-        Telemetry.send(TelemetryEvent.openDataDashboard);
         Dashboard.open({ type: NavigationType.Data });
       })
     );
 
     subscriptions.push(
       commands.registerCommand(COMMAND_NAME.dashboardTaxonomy, () => {
-        Telemetry.send(TelemetryEvent.openTaxonomyDashboard);
         Dashboard.open({ type: NavigationType.Taxonomy });
       })
     );
 
     subscriptions.push(
       commands.registerCommand(COMMAND_NAME.dashboardClose, () => {
-        Telemetry.send(TelemetryEvent.closeDashboard);
         Dashboard.close();
       })
     );
@@ -241,7 +231,6 @@ export class Dashboard {
       PagesListener.process(msg);
       SettingsListener.process(msg);
       DataListener.process(msg);
-      TelemetryListener.process(msg);
       SnippetListener.process(msg);
       ModeListener.process(msg);
       GitListener.process(msg);
@@ -307,20 +296,8 @@ export class Dashboard {
 
     // Get experimental setting
     const experimental = SettingsHelper.get(SETTING_EXPERIMENTAL);
-    const extensibilityScripts = SettingsHelper.get<string[]>(SETTING_EXTENSIBILITY_SCRIPTS) || [];
 
-    const scriptsToLoad: string[] = [];
-    if (experimental) {
-      for (const script of extensibilityScripts) {
-        if (script.startsWith('https://')) {
-          scriptsToLoad.push(script);
-        } else {
-          const absScriptPath = Folders.getAbsFilePath(script);
-          const scriptUri = webView.asWebviewUri(Uri.file(absScriptPath));
-          scriptsToLoad.push(scriptUri.toString());
-        }
-      }
-    }
+    const scriptsToLoad: string[] = getExtensibilityScripts(webView);
 
     const csp = [
       `default-src 'none';`,

@@ -2,15 +2,15 @@ import { PencilIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useRecoilState } from 'recoil';
-import { BaseFieldProps, PanelSettings } from '../../../models';
+import { BaseFieldProps, CustomScript, PanelSettings } from '../../../models';
 import { RequiredFieldsAtom } from '../../state';
 import { FieldTitle } from './FieldTitle';
 import { FieldMessage } from './FieldMessage';
 import { messageHandler } from '@estruyf/vscode/dist/client';
 import { CommandToCode } from '../../CommandToCode';
-import * as l10n from '@vscode/l10n';
-import { LocalizationKey } from '../../../localization';
+import { LocalizationKey, localize } from '../../../localization';
 import { useDebounce } from '../../../hooks/useDebounce';
+import { CopilotIcon } from '../Icons';
 
 const DEBOUNCE_TIME = 300;
 
@@ -22,6 +22,7 @@ export interface ITextFieldProps extends BaseFieldProps<string> {
   name: string;
   placeholder?: string;
   settings: PanelSettings;
+  actions?: CustomScript[];
   onChange: (txtValue: string) => void;
 }
 
@@ -39,11 +40,12 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   name,
   settings,
   onChange,
+  actions,
   required
 }: React.PropsWithChildren<ITextFieldProps>) => {
   const [, setRequiredFields] = useRecoilState(RequiredFieldsAtom);
   const [text, setText] = React.useState<string | null | undefined>(undefined);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<string | undefined>(undefined);
   const [lastUpdated, setLastUpdated] = React.useState<number | null>(null);
   const debouncedText = useDebounce<string | null | undefined>(text, DEBOUNCE_TIME);
 
@@ -91,39 +93,62 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
     }
   }, [showRequiredState, isValid]);
 
-  const suggestDescription = () => {
-    setLoading(true);
-    messageHandler.request<string>(CommandToCode.aiSuggestDescription).then((suggestion) => {
-      setLoading(false);
+  const suggestDescription = (type: 'ai' | 'copilot') => {
+    setLoading(localize(LocalizationKey.panelFieldsTextFieldAiGenerate));
 
-      if (suggestion) {
-        setText(suggestion);
-        onChange(suggestion);
-      }
-    }).catch(() => {
-      setLoading(false);
-    });
+    messageHandler
+      .request<string>(
+        type === 'copilot' ? CommandToCode.copilotSuggestDescription : CommandToCode.aiSuggestDescription
+      )
+      .then((suggestion) => {
+        setLoading(undefined);
+
+        if (suggestion) {
+          setText(suggestion);
+          onChange(suggestion);
+        }
+      })
+      .catch(() => {
+        setLoading(undefined);
+      });
   };
 
   const actionElement = useMemo(() => {
-    if (!settings?.aiEnabled || settings.seo.descriptionField !== name) {
+    if (settings.seo.descriptionField !== name) {
       return;
     }
 
     return (
-      <button
-        className='metadata_field__title__action'
-        title={l10n.t(LocalizationKey.panelFieldsTextFieldAiMessage, label?.toLowerCase())}
-        type='button'
-        onClick={() => suggestDescription()}
-        disabled={loading}>
-        <SparklesIcon />
-      </button>
+      <>
+        {settings?.aiEnabled && (
+          <button
+            className="metadata_field__title__action inline-block text-[var(--vscode-editor-foreground)] disabled:opacity-50"
+            title={localize(LocalizationKey.panelFieldsTextFieldAiMessage, label?.toLowerCase())}
+            type="button"
+            onClick={() => suggestDescription('ai')}
+            disabled={!!loading}
+          >
+            <SparklesIcon />
+          </button>
+        )}
+
+        {settings?.copilotEnabled && (
+          <button
+            className="metadata_field__title__action inline-block text-[var(--vscode-editor-foreground)] disabled:opacity-50"
+            title={localize(LocalizationKey.panelFieldsTextFieldCopilotMessage, label?.toLowerCase())}
+            type="button"
+            onClick={() => suggestDescription('copilot')}
+            disabled={!!loading}
+          >
+            <CopilotIcon />
+          </button>
+        )}
+      </>
     );
-  }, [settings?.aiEnabled, name]);
+  }, [settings?.aiEnabled, settings?.copilotEnabled, name, actions, loading]);
 
   useEffect(() => {
-    if (text !== value && (lastUpdated === null || (Date.now() - DEBOUNCE_TIME) > lastUpdated)) {
+    if (text !== value && (lastUpdated === null || Date.now() - DEBOUNCE_TIME > lastUpdated)) {
       setText(value || null);
     }
     setLastUpdated(null);
@@ -137,46 +162,57 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
 
   return (
     <div className={`metadata_field`}>
-      {
-        loading && (
-          <div className='metadata_field__loading'>
-            {l10n.t(LocalizationKey.panelFieldsTextFieldAiGenerate)}
+      <FieldTitle
+        label={label}
+        actionElement={actionElement}
+        icon={<PencilIcon />}
+        required={required}
+        isDisabled={!!loading}
+        customActions={actions}
+        triggerLoading={(message) => setLoading(message)}
+        onChange={onTextChange}
+      />
+
+      <div className='relative'>
+        {loading && (
+          <div className="metadata_field__loading">
+            {loading}
           </div>
-        )
-      }
+        )}
 
-      <FieldTitle label={label} actionElement={actionElement} icon={<PencilIcon />} required={required} />
-
-      {wysiwyg ? (
-        <React.Suspense fallback={<div>{l10n.t(LocalizationKey.panelFieldsTextFieldLoading)}</div>}>
-          <WysiwygField text={text || ''} onChange={onTextChange} />
-        </React.Suspense>
-      ) : singleLine ? (
-        <input
-          className={`metadata_field__input`}
-          value={text || ''}
-          onChange={(e) => onTextChange(e.currentTarget.value)}
-          placeholder={placeholder}
-          style={{
-            border
-          }}
-        />
-      ) : (
-        <textarea
-          className={`metadata_field__textarea`}
-          rows={rows || 2}
-          value={text || ''}
-          onChange={(e) => onTextChange(e.currentTarget.value)}
-          placeholder={placeholder}
-          style={{
-            border
-          }}
-        />
-      )}
+        {wysiwyg ? (
+          <React.Suspense
+            fallback={<div>{localize(LocalizationKey.panelFieldsTextFieldLoading)}</div>}
+          >
+            <WysiwygField text={text || ''} onChange={onTextChange} />
+          </React.Suspense>
+        ) : singleLine ? (
+          <input
+            className={`metadata_field__input`}
+            value={text || ''}
+            onChange={(e) => onTextChange(e.currentTarget.value)}
+            placeholder={placeholder}
+            style={{
+              border
+            }}
+          />
+        ) : (
+          <textarea
+            className={`metadata_field__textarea`}
+            rows={rows || 2}
+            value={text || ''}
+            onChange={(e) => onTextChange(e.currentTarget.value)}
+            placeholder={placeholder}
+            style={{
+              border
+            }}
+          />
+        )}
+      </div>
 
       {limit && limit > 0 && (text || '').length > limit && (
         <div className={`metadata_field__limit`}>
-          {l10n.t(LocalizationKey.panelFieldsTextFieldLimit, `${(text || '').length}/${limit}`)}
+          {localize(LocalizationKey.panelFieldsTextFieldLimit, `${(text || '').length}/${limit}`)}
         </div>
       )}
 

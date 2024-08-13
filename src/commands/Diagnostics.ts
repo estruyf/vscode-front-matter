@@ -1,5 +1,5 @@
 import { Folders } from './Folders';
-import { ViewColumn, commands, workspace } from 'vscode';
+import { ViewColumn, commands, version, workspace } from 'vscode';
 import ContentProvider from '../providers/ContentProvider';
 import { join } from 'path';
 import { ContentFolder } from '../models';
@@ -37,6 +37,8 @@ export class Diagnostics {
 
 Beta: \`${Extension.getInstance().isBetaVersion()}\`
 Version: \`${Extension.getInstance().version}\`
+OS: \`${process.platform}\`
+VSCode version: \`${version}\`
     
 ## Project name
 

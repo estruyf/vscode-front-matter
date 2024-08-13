@@ -1,10 +1,11 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   LoadingAtom,
   MediaFoldersAtom,
+  PagedItems,
   SelectedMediaFolderAtom,
   SettingsSelector,
   ViewDataSelector
@@ -20,7 +21,7 @@ import { DashboardMessage } from '../../DashboardMessage';
 import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMatterIcon';
 import { FolderItem } from './FolderItem';
 import useMedia from '../../hooks/useMedia';
-import { GeneralCommands, STATIC_FOLDER_PLACEHOLDER, TelemetryEvent } from '../../../constants';
+import { STATIC_FOLDER_PLACEHOLDER, } from '../../../constants';
 import { PageLayout } from '../Layout/PageLayout';
 import { parseWinPath } from '../../../helpers/parseWinPath';
 import { basename, extname, join } from 'path';
@@ -41,6 +42,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (
   const selectedFolder = useRecoilValue(SelectedMediaFolderAtom);
   const folders = useRecoilValue(MediaFoldersAtom);
   const loading = useRecoilValue(LoadingAtom);
+  const [, setPagedItems] = useRecoilState(PagedItems);
 
   const currentStaticFolder = useMemo(() => {
     if (settings?.staticFolder) {
@@ -126,6 +128,7 @@ export const Media: React.FunctionComponent<IMediaProps> = (
       });
     }
 
+    setPagedItems(mediaFiles.map((m) => m.fsPath));
     return mediaFiles;
   }, [media, viewData, currentStaticFolder, settings?.staticFolder]);
 
@@ -151,15 +154,6 @@ export const Media: React.FunctionComponent<IMediaProps> = (
 
   useEffect(() => {
     Messenger.send(DashboardMessage.setTitle, l10n.t(LocalizationKey.dashboardHeaderTabsMedia));
-
-    Messenger.send(DashboardMessage.sendTelemetry, {
-      event: TelemetryEvent.webviewMediaView
-    });
-
-    Messenger.send(GeneralCommands.toVSCode.logging.info, {
-      message: `Media view loaded`,
-      location: 'DASHBOARD'
-    });
   }, []);
 
   const { getRootProps, isDragActive } = useDropzone({

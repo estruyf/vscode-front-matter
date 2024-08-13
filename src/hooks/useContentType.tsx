@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { DEFAULT_CONTENT_TYPE, DEFAULT_CONTENT_TYPE_NAME } from '../constants/ContentType';
 import { Settings } from '../dashboardWebView/models';
 import { ContentType, PanelSettings } from '../models';
+import { DefaultFields } from '../constants';
 
 export default function useContentType(
   settings: PanelSettings | Settings | undefined | null,
@@ -13,8 +14,12 @@ export default function useContentType(
     if (settings && metadata) {
       let contentTypeName = DEFAULT_CONTENT_TYPE_NAME;
 
-      if (metadata?.type) {
-        contentTypeName = metadata.type;
+      if (metadata) {
+        if (metadata[DefaultFields.ContentType]) {
+          contentTypeName = metadata[DefaultFields.ContentType];
+        } else if (metadata[DefaultFields.Type]) {
+          contentTypeName = metadata[DefaultFields.Type];
+        }
       }
 
       // Get the content type by the folder name

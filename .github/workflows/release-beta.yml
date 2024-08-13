@@ -2,7 +2,7 @@ name: BETA Release
 on:
   push:
     branches:
-      - dev
+      - beta
   workflow_dispatch:
 
 env:

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SEO } from '../../models/PanelSettings';
+import { PanelSettings, SEO } from '../../models/PanelSettings';
 import { TagType } from '../TagType';
 import { ArticleDetails } from './ArticleDetails';
 import { Collapsible } from './Collapsible';
@@ -8,49 +8,55 @@ import { SymbolKeywordIcon } from './Icons/SymbolKeywordIcon';
 import { SeoFieldInfo } from './SeoFieldInfo';
 import { SeoKeywords } from './SeoKeywords';
 import { TagPicker } from './Fields/TagPicker';
-import * as l10n from '@vscode/l10n';
-import { LocalizationKey } from '../../localization';
+import { LocalizationKey, localize } from '../../localization';
 import { VSCodeTable, VSCodeTableBody, VSCodeTableHead, VSCodeTableHeader, VSCodeTableRow } from './VSCode/VSCodeTable';
+import useContentType from '../../hooks/useContentType';
 
 export interface ISeoStatusProps {
   seo: SEO;
-  data: any;
+  metadata: any;
+  settings: PanelSettings | undefined;
   focusElm: TagType | null;
   unsetFocus: () => void;
 }
 
 const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
-  data,
+  metadata,
   seo,
+  settings,
   focusElm,
   unsetFocus
 }: React.PropsWithChildren<ISeoStatusProps>) => {
-  const { title, slug } = data;
+  const contentType = useContentType(settings, metadata);
+  const { slug } = metadata;
 
   const { descriptionField, titleField } = seo;
 
   const tableContent = React.useMemo(() => {
+    const titleFieldName = contentType?.fields.find(f => f.name === titleField)?.title || titleField;
+    const descriptionFieldName = contentType?.fields.find(f => f.name === descriptionField)?.title || descriptionField;
+
     return (
       <div>
         <div className={`seo__status__details`}>
-          <h4>{l10n.t(LocalizationKey.panelSeoStatusTitle)}</h4>
+          <h4>{localize(LocalizationKey.panelSeoStatusTitle)}</h4>
 
           <VSCodeTable>
             <VSCodeTableHeader>
               <VSCodeTableRow>
-                <VSCodeTableHead>{l10n.t(LocalizationKey.panelSeoStatusHeaderProperty)}</VSCodeTableHead>
-                <VSCodeTableHead>{l10n.t(LocalizationKey.panelSeoStatusHeaderLength)}</VSCodeTableHead>
-                <VSCodeTableHead>{l10n.t(LocalizationKey.panelSeoStatusHeaderValid)}</VSCodeTableHead>
+                <VSCodeTableHead>{localize(LocalizationKey.panelSeoStatusHeaderProperty)}</VSCodeTableHead>
+                <VSCodeTableHead>{localize(LocalizationKey.panelSeoStatusHeaderLength)}</VSCodeTableHead>
+                <VSCodeTableHead>{localize(LocalizationKey.panelSeoStatusHeaderValid)}</VSCodeTableHead>
               </VSCodeTableRow>
             </VSCodeTableHeader>
 
             <VSCodeTableBody>
-              {data[titleField] && seo.title > 0 ? (
+              {metadata[titleField] && seo.title > 0 ? (
                 <SeoFieldInfo
-                  title={titleField}
-                  value={data[titleField].length}
-                  recommendation={l10n.t(LocalizationKey.panelSeoStatusSeoFieldInfoCharacters, seo.title)}
-                  isValid={data[titleField].length <= seo.title}
+                  title={titleFieldName}
+                  value={metadata[titleField].length}
+                  recommendation={localize(LocalizationKey.panelSeoStatusSeoFieldInfoCharacters, seo.title)}
+                  isValid={metadata[titleField].length <= seo.title}
                 />
               ) : null}
 
@@ -58,25 +64,25 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
                 <SeoFieldInfo
                   title={`slug`}
                   value={slug.length}
-                  recommendation={l10n.t(LocalizationKey.panelSeoStatusSeoFieldInfoCharacters, seo.slug)}
+                  recommendation={localize(LocalizationKey.panelSeoStatusSeoFieldInfoCharacters, seo.slug)}
                   isValid={slug.length <= seo.slug}
                 />
               ) : null}
 
-              {data[descriptionField] && seo.description > 0 ? (
+              {metadata[descriptionField] && seo.description > 0 ? (
                 <SeoFieldInfo
-                  title={descriptionField}
-                  value={data[descriptionField].length}
-                  recommendation={l10n.t(LocalizationKey.panelSeoStatusSeoFieldInfoCharacters, seo.description)}
-                  isValid={data[descriptionField].length <= seo.description}
+                  title={descriptionFieldName}
+                  value={metadata[descriptionField].length}
+                  recommendation={localize(LocalizationKey.panelSeoStatusSeoFieldInfoCharacters, seo.description)}
+                  isValid={metadata[descriptionField].length <= seo.description}
                 />
               ) : null}
 
-              {seo.content > 0 && data?.articleDetails?.wordCount > 0 ? (
+              {seo.content > 0 && metadata?.articleDetails?.wordCount > 0 ? (
                 <SeoFieldInfo
-                  title={l10n.t(LocalizationKey.panelSeoStatusSeoFieldInfoArticle)}
-                  value={data?.articleDetails?.wordCount}
-                  recommendation={l10n.t(LocalizationKey.panelSeoStatusSeoFieldInfoWords, seo.content)}
+                  title={localize(LocalizationKey.panelSeoStatusSeoFieldInfoArticle)}
+                  value={metadata?.articleDetails?.wordCount}
+                  recommendation={localize(LocalizationKey.panelSeoStatusSeoFieldInfoWords, seo.content)}
                 />
               ) : null}
             </VSCodeTableBody>
@@ -84,20 +90,20 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
         </div>
 
         <SeoKeywords
-          keywords={data?.keywords}
-          title={title}
-          description={data[descriptionField]}
-          slug={data.slug}
-          headings={data?.articleDetails?.headingsText}
-          wordCount={data?.articleDetails?.wordCount}
-          content={data?.articleDetails?.content}
+          keywords={metadata?.keywords}
+          title={metadata[titleField]}
+          description={metadata[descriptionField]}
+          slug={metadata.slug}
+          headings={metadata?.articleDetails?.headingsText}
+          wordCount={metadata?.articleDetails?.wordCount}
+          content={metadata?.articleDetails?.content}
         />
 
         <FieldBoundary fieldName={`Keywords`}>
           <TagPicker
             type={TagType.keywords}
             icon={<SymbolKeywordIcon />}
-            crntSelected={(data.keywords as string[]) || []}
+            crntSelected={(metadata.keywords as string[]) || []}
             options={[]}
             freeform={true}
             focussed={focusElm === TagType.keywords}
@@ -106,17 +112,17 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
           />
         </FieldBoundary>
 
-        <ArticleDetails details={data.articleDetails} />
+        <ArticleDetails details={metadata.articleDetails} />
       </div>
     );
-  }, [data, seo, focusElm, unsetFocus]);
+  }, [contentType, metadata, seo, focusElm, unsetFocus]);
 
   return (
-    <Collapsible id={`seo`} title={l10n.t(LocalizationKey.panelSeoStatusCollapsibleTitle)}>
-      {!title && !data[descriptionField] ? (
+    <Collapsible id={`seo`} title={localize(LocalizationKey.panelSeoStatusCollapsibleTitle)}>
+      {!metadata[titleField] && !metadata[descriptionField] ? (
         <div className={`seo__status__empty`}>
           <p>
-            {l10n.t(LocalizationKey.panelSeoStatusRequired, "Title", descriptionField)}
+            {localize(LocalizationKey.panelSeoStatusRequired, titleField, descriptionField)}
           </p>
         </div>
       ) : (

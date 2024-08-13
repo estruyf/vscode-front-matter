@@ -14,7 +14,7 @@ import { ChoiceButton } from '../Common/ChoiceButton';
 import { MediaHeaderBottom } from '../Media/MediaHeaderBottom';
 import { Tabs } from './Tabs';
 import { CustomScript } from '../../../models';
-import { ArrowTopRightOnSquareIcon, BoltIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { ArrowTopRightOnSquareIcon, BoltIcon, BookOpenIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { HeartIcon } from '@heroicons/react/24/solid';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { routePaths } from '../..';
@@ -29,7 +29,7 @@ import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { SettingsLink } from '../SettingsView/SettingsLink';
 import { Link } from '../Common/Link';
-import { SPONSOR_LINK } from '../../../constants';
+import { COMMAND_NAME, GeneralCommands, SPONSOR_LINK } from '../../../constants';
 import { Filters } from './Filters';
 import { ActionsBar } from './ActionsBar';
 import { RefreshDashboardData } from './RefreshDashboardData';
@@ -156,6 +156,16 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
               </Link>
             )
           }
+
+          <button
+            className="inline-flex items-center hover:text-[var(--vscode-textLink-activeForeground)]"
+            title={l10n.t(LocalizationKey.commonDocs)}
+            onClick={() => Messenger.send(GeneralCommands.toVSCode.runCommand, {
+              command: COMMAND_NAME.docs
+            })}>
+            <span className='sr-only'>{l10n.t(LocalizationKey.commonDocs)}</span>
+            <BookOpenIcon className='w-4 h-4' aria-hidden="true" />
+          </button>
 
           <SettingsLink onNavigate={updateView} />
         </div>

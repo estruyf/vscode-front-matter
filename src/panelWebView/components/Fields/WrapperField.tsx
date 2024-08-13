@@ -211,11 +211,12 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           singleLine={field.single}
           limit={limit}
           wysiwyg={field.wysiwyg}
-          rows={3}
+          rows={4}
           onChange={onFieldChange}
           value={(fieldValue as string) || null}
           required={!!field.required}
           settings={settings}
+          actions={field.actions}
         />
       </FieldBoundary>
     );
@@ -251,6 +252,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           multiple={field.multiple}
           blockData={blockData}
           onChange={onFieldChange}
+          actions={field.actions}
         />
       </FieldBoundary>
     );
@@ -307,6 +309,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           limit={field.taxonomyLimit}
           renderAsString={field.singleValueAsString}
           required={!!field.required}
+          actions={field.actions}
         />
       </FieldBoundary>
     );

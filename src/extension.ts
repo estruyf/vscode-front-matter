@@ -1,8 +1,7 @@
 import { GitListener } from './listeners/general/GitListener';
 import * as vscode from 'vscode';
-import { COMMAND_NAME, CONTEXT, EXTENSION_NAME, TelemetryEvent } from './constants';
+import { COMMAND_NAME, CONTEXT, EXTENSION_NAME } from './constants';
 import { MarkdownFoldingProvider } from './providers/MarkdownFoldingProvider';
-import { TagType } from './panelWebView/TagType';
 import { PanelProvider } from './panelWebView/PanelProvider';
 import {
   DashboardSettings,
@@ -31,11 +30,13 @@ import {
   Article,
   Settings,
   StatusListener,
-  Chatbot
+  Chatbot,
+  Taxonomy
 } from './commands';
 import { join } from 'path';
 import { Terminal } from './services';
 import { i18n } from './commands/i18n';
+import { UriHandler } from './providers/UriHandler';
 
 let pageUpdateDebouncer: { (fnc: any, time: number): void };
 let editDebounce: { (fnc: any, time: number): void };
@@ -54,6 +55,7 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.commands.executeCommand('setContext', CONTEXT.isDevelopment, true);
   }
 
+  // Sponsor check
   Backers.init(context).then(() => {});
 
   // Make sure the EN language file is loaded
@@ -78,9 +80,6 @@ export async function activate(context: vscode.ExtensionContext) {
   extension.migrateSettings();
 
   SettingsHelper.checkToPromote();
-
-  // Sends the activation event
-  Telemetry.send(TelemetryEvent.activate);
 
   // Start listening to the folders for content changes.
   // This will make sure the dashboard is up to date
@@ -118,32 +117,16 @@ export async function activate(context: vscode.ExtensionContext) {
   // Folding the front matter of markdown files
   MarkdownFoldingProvider.register();
 
-  const insertTags = vscode.commands.registerCommand(COMMAND_NAME.insertTags, async () => {
-    await vscode.commands.executeCommand('workbench.view.extension.frontmatter-explorer');
-    await vscode.commands.executeCommand('workbench.action.focusSideBar');
-    explorerSidebar.triggerInputFocus(TagType.tags);
-  });
-
-  const insertCategories = vscode.commands.registerCommand(
-    COMMAND_NAME.insertCategories,
-    async () => {
-      await vscode.commands.executeCommand('workbench.view.extension.frontmatter-explorer');
-      await vscode.commands.executeCommand('workbench.action.focusSideBar');
-      explorerSidebar.triggerInputFocus(TagType.categories);
-    }
-  );
+  // Register the taxonomy commands
+  Taxonomy.registerCommands(subscriptions);
 
   // Register all the article commands
   Article.registerCommands(subscriptions);
 
-  /**
-   * Template creation
-   */
+  // Template creation
   Template.registerCommands();
 
-  /**
-   * Content creation
-   */
+  // Content creation
   ContentType.registerCommands();
   Content.registerCommands();
   Folders.registerCommands();
@@ -209,6 +192,16 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand(COMMAND_NAME.preview, () => Preview.open(extensionPath))
   );
 
+  // Open docs
+  subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_NAME.docs, () => {
+      vscode.commands.executeCommand(
+        `simpleBrowser.show`,
+        `https://${extension.isBetaVersion() ? `beta.` : ``}frontmatter.codes/docs`
+      );
+    })
+  );
+
   // Chat to the bot
   subscriptions.push(
     vscode.commands.registerCommand(COMMAND_NAME.chatbot, () => Chatbot.open(extensionPath))
@@ -241,8 +234,11 @@ export async function activate(context: vscode.ExtensionContext) {
   // Cache commands
   Cache.registerCommands();
 
+  // Register the URI handler
+  UriHandler.register();
+
   // Subscribe all commands
-  subscriptions.push(insertTags, PanelView, insertCategories, collapseAll, fmStatusBarItem);
+  subscriptions.push(PanelView, collapseAll, fmStatusBarItem);
 
   console.log(`𝖥𝗋𝗈𝗇𝗍 𝖬𝖺𝗍𝗍𝖾𝗋 𝖢𝖬𝖲 𝖺𝖼𝗍𝗂𝗏𝖺𝗍𝖾𝖽! 𝖱𝖾𝖺𝖽𝗒 𝗍𝗈 𝗌𝗍𝖺𝗋𝗍 𝗐𝗋𝗂𝗍𝗂𝗇𝗀... 👩‍💻🧑‍💻👨‍💻`);
 }

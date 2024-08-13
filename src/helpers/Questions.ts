@@ -9,6 +9,7 @@ import { SponsorAi } from '../services/SponsorAI';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 import { ContentFolder } from '../models';
+import { Copilot } from '../services/Copilot';
 
 interface FolderQuickPickItem extends QuickPickItem {
   path: string;
@@ -41,11 +42,12 @@ export class Questions {
   public static async ContentTitle(showWarning: boolean = true): Promise<string | undefined> {
     const aiEnabled = Settings.get<boolean>(SETTING_SPONSORS_AI_ENABLED);
     let title: string | undefined = '';
+    const isCopilotInstalled = await Copilot.isInstalled();
 
-    if (aiEnabled) {
-      const githubAuth = await authentication.getSession('github', ['read:user'], { silent: true });
+    let aiTitles: string[] | undefined;
 
-      if (githubAuth && githubAuth.account.label) {
+    if (aiEnabled || isCopilotInstalled) {
+      if (isCopilotInstalled) {
         title = await window.showInputBox({
           title: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputTitle),
           prompt: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputPrompt),
@@ -55,54 +57,81 @@ export class Questions {
 
         if (title) {
           try {
-            const aiTitles = await SponsorAi.getTitles(githubAuth.accessToken, title);
-
-            if (aiTitles && aiTitles.length > 0) {
-              const options: QuickPickItem[] = [
-                {
-                  label: `✏️ ${l10n.t(
-                    LocalizationKey.helpersQuestionsContentTitleAiInputQuickPickTitleSeparator
-                  )}`,
-                  kind: QuickPickItemKind.Separator
-                },
-                {
-                  label: title
-                },
-                {
-                  label: `🤖 ${l10n.t(
-                    LocalizationKey.helpersQuestionsContentTitleAiInputQuickPickAiSeparator
-                  )}`,
-                  kind: QuickPickItemKind.Separator
-                },
-                ...aiTitles.map((d: string) => ({
-                  label: d
-                }))
-              ];
-
-              const selectedTitle = await window.showQuickPick(options, {
-                title: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputSelectTitle),
-                placeHolder: l10n.t(
-                  LocalizationKey.helpersQuestionsContentTitleAiInputSelectPlaceholder
-                ),
-                ignoreFocusOut: true
-              });
-
-              if (selectedTitle) {
-                title = selectedTitle.label;
-              } else if (!selectedTitle) {
-                // Reset the title, so the user can enter their own title
-                title = undefined;
-              }
-            }
+            aiTitles = await Copilot.suggestTitles(title);
           } catch (e) {
             Logger.error((e as Error).message);
-            Notifications.error(l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputFailed));
+            Notifications.error(
+              l10n.t(LocalizationKey.helpersQuestionsContentTitleCopilotInputFailed)
+            );
             title = undefined;
           }
-        } else if (!title && showWarning) {
-          Notifications.warning(l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputWarning));
-          return;
         }
+      } else {
+        const githubAuth = await authentication.getSession('github', ['read:user'], {
+          silent: true
+        });
+
+        if (githubAuth && githubAuth.account.label) {
+          title = await window.showInputBox({
+            title: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputTitle),
+            prompt: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputPrompt),
+            placeHolder: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputPlaceholder),
+            ignoreFocusOut: true
+          });
+
+          if (title) {
+            try {
+              aiTitles = await SponsorAi.getTitles(githubAuth.accessToken, title);
+            } catch (e) {
+              Logger.error((e as Error).message);
+              Notifications.error(
+                l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputFailed)
+              );
+              title = undefined;
+            }
+          }
+        }
+      }
+
+      if (title && aiTitles && aiTitles.length > 0) {
+        const options: QuickPickItem[] = [
+          {
+            label: `✏️ ${l10n.t(
+              LocalizationKey.helpersQuestionsContentTitleAiInputQuickPickTitleSeparator
+            )}`,
+            kind: QuickPickItemKind.Separator
+          },
+          {
+            label: title
+          },
+          {
+            label: `🤖 ${l10n.t(
+              isCopilotInstalled
+                ? LocalizationKey.helpersQuestionsContentTitleAiInputQuickPickCopilotSeparator
+                : LocalizationKey.helpersQuestionsContentTitleAiInputQuickPickAiSeparator
+            )}`,
+            kind: QuickPickItemKind.Separator
+          },
+          ...aiTitles.map((d: string) => ({
+            label: d
+          }))
+        ];
+
+        const selectedTitle = await window.showQuickPick(options, {
+          title: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputSelectTitle),
+          placeHolder: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputSelectPlaceholder),
+          ignoreFocusOut: true
+        });
+
+        if (selectedTitle) {
+          title = selectedTitle.label;
+        } else if (!selectedTitle) {
+          // Reset the title, so the user can enter their own title
+          title = undefined;
+        }
+      } else if (!title && showWarning) {
+        Notifications.warning(l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputWarning));
+        return;
       }
     }
 
@@ -212,7 +241,7 @@ export class Questions {
 
     if (options.length === 0) {
       Notifications.error(
-        LocalizationKey.helpersQuestionsSelectContentTypeQuickPickErrorNoContentTypes
+        l10n.t(LocalizationKey.helpersQuestionsSelectContentTypeQuickPickErrorNoContentTypes)
       );
       return;
     }

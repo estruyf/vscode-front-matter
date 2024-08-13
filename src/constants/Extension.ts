@@ -1,10 +1,10 @@
-const extensionName = 'frontMatter';
+export const EXTENSION_COMMAND_PREFIX = 'frontMatter';
 
 export const EXTENSION_ID = 'eliostruyf.vscode-front-matter';
 export const EXTENSION_BETA_ID = 'eliostruyf.vscode-front-matter-beta';
 
 export const getCommandName = (command: string) => {
-  return `${extensionName}.${command}`;
+  return `${EXTENSION_COMMAND_PREFIX}.${command}`;
 };
 
 export const COMMAND_NAME = {
@@ -27,6 +27,7 @@ export const COMMAND_NAME = {
   initTemplate: getCommandName('initTemplate'),
   collapseSections: getCommandName('collapseSections'),
   preview: getCommandName('preview'),
+  docs: getCommandName('docs'),
   chatbot: getCommandName('chatbot'),
   dashboard: getCommandName('dashboard'),
   dashboardMedia: getCommandName('dashboard.media'),

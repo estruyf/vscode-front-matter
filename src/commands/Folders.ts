@@ -6,12 +6,18 @@ import {
   SETTING_CONTENT_PAGE_FOLDERS,
   SETTING_CONTENT_STATIC_FOLDER,
   SETTING_CONTENT_SUPPORTED_FILETYPES,
-  SETTING_DATE_FORMAT,
-  TelemetryEvent
+  SETTING_DATE_FORMAT
 } from './../constants';
 import { commands, Uri, workspace, window } from 'vscode';
 import { basename, dirname, join, relative, sep } from 'path';
-import { ContentFolder, FileInfo, FolderInfo, I18nConfig, StaticFolder } from '../models';
+import {
+  ContentFolder,
+  ContentType,
+  FileInfo,
+  FolderInfo,
+  I18nConfig,
+  StaticFolder
+} from '../models';
 import uniqBy = require('lodash.uniqby');
 import { Template } from './Template';
 import { Notifications } from '../helpers/Notifications';
@@ -23,12 +29,12 @@ import { parseWinPath } from '../helpers/parseWinPath';
 import { MediaHelpers } from '../helpers/MediaHelpers';
 import { MediaListener, PagesListener, SettingsListener } from '../listeners/dashboard';
 import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
-import { Telemetry } from '../helpers/Telemetry';
 import { glob } from 'glob';
 import { mkdirAsync } from '../utils/mkdirAsync';
-import { existsAsync, isWindows } from '../utils';
+import { existsAsync, isWindows, lstatAsync } from '../utils';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
+import { Preview } from './Preview';
 
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
@@ -99,8 +105,6 @@ export class Folders {
       MediaHelpers.resetMedia();
       MediaListener.sendMediaFiles(0, folderPath);
     }
-
-    Telemetry.send(TelemetryEvent.addMediaFolder);
   }
 
   /**
@@ -175,8 +179,6 @@ export class Folders {
 
       Notifications.info(l10n.t(LocalizationKey.commandsFoldersCreateSuccess));
 
-      Telemetry.send(TelemetryEvent.registerFolder);
-
       SettingsListener.getSettings(true);
     }
   }
@@ -190,8 +192,6 @@ export class Folders {
       let folders = await Folders.get();
       folders = folders.filter((f) => f.path !== folder.fsPath);
       await Folders.update(folders);
-
-      Telemetry.send(TelemetryEvent.unregisterFolder);
     }
   }
 
@@ -640,7 +640,7 @@ export class Folders {
    * @param filePath
    * @returns
    */
-  public static async getFilePrefixBeFilePath(filePath: string) {
+  public static async getFilePrefixBeFilePath(filePath: string): Promise<string | undefined> {
     const folders = await Folders.get();
     if (folders.length > 0) {
       filePath = parseWinPath(filePath);
@@ -672,7 +672,7 @@ export class Folders {
   public static async getPageFolderByFilePath(
     filePath: string
   ): Promise<ContentFolder | undefined> {
-    const folders = await Folders.get();
+    const folders = Folders.getCached();
     const parsedPath = parseWinPath(filePath);
     const pageFolderMatches = folders
       .filter((folder) => parsedPath && folder.path && parsedPath.includes(folder.path))
@@ -683,6 +683,49 @@ export class Folders {
     }
 
     return;
+  }
+
+  /**
+   * Retrieves the folder associated with the specified content type and file path.
+   * If a single matching folder is found, it is returned. If multiple matching folders are found,
+   * the user is prompted to select one. If no matching folders are found, the user is prompted to
+   * select a folder with a preview path.
+   *
+   * @param contentType - The content type to match.
+   * @param filePath - The file path to match.
+   * @returns A Promise that resolves to the selected ContentFolder, or undefined if no matching folder is found.
+   */
+  public static async getFolderByContentType(
+    contentType: ContentType,
+    filePath: string
+  ): Promise<ContentFolder | undefined> {
+    if (!contentType) {
+      return;
+    }
+
+    const folders = Folders.getCached();
+    let selectedFolder: ContentFolder | undefined;
+
+    // Try to find the folder by content type
+    let crntFolders = folders.filter(
+      (folder) =>
+        folder.contentTypes?.includes((contentType as ContentType).name) && folder.previewPath
+    );
+
+    // Use file path to find the folder
+    if (crntFolders.length > 0) {
+      crntFolders = crntFolders.filter((folder) => filePath?.startsWith(folder.path));
+    }
+
+    if (crntFolders && crntFolders.length === 1) {
+      selectedFolder = crntFolders[0];
+    } else if (crntFolders && crntFolders.length > 1) {
+      selectedFolder = await Preview.askUserToPickFolder(crntFolders);
+    } else {
+      selectedFolder = await Preview.askUserToPickFolder(folders.filter((f) => f.previewPath));
+    }
+
+    return selectedFolder;
   }
 
   /**
@@ -784,9 +827,26 @@ export class Folders {
 
     try {
       pattern = isWindows() ? parseWinPath(pattern) : pattern;
-      const files = await glob(pattern, { ignore: '**/node_modules/**', dot: true });
-      const allFolders = (files || []).map((file) => dirname(file));
-      const uniqueFolders = [...new Set(allFolders)];
+      const folders = await glob(pattern, {
+        ignore: 'node_modules/**',
+        dot: true
+      });
+
+      const onlyFolders = [];
+      for (const folder of folders) {
+        try {
+          const stats = await lstatAsync(folder);
+          if (stats.isDirectory()) {
+            onlyFolders.push(folder);
+          } else {
+            onlyFolders.push(dirname(folder));
+          }
+        } catch (e) {
+          continue;
+        }
+      }
+
+      const uniqueFolders = [...new Set(onlyFolders)];
       Logger.verbose(`Folders:findFolders:end - ${uniqueFolders.length}`);
       return uniqueFolders;
     } catch (e) {
@@ -805,7 +865,7 @@ export class Folders {
 
     try {
       pattern = isWindows() ? parseWinPath(pattern) : pattern;
-      const files = await glob(pattern, { ignore: '**/node_modules/**', dot: true });
+      const files = await glob(pattern, { ignore: 'node_modules/**', dot: true });
       const allFiles = (files || []).map((file) => Uri.file(file));
       Logger.verbose(`Folders:findFiles:end - ${allFiles.length}`);
       return allFiles;

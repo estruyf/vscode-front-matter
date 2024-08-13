@@ -93,27 +93,29 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
 
   return (
     <Collapsible
-      id={`tags`}
+      id={`metadata`}
       title={`${l10n.t(LocalizationKey.panelMetadataTitle)}${contentType?.name ? ` (${contentType?.name})` : ""}`}
       className={`inherit z-20`}>
       <FeatureFlag features={features || DEFAULT_PANEL_FEATURE_FLAGS} flag={FEATURE_FLAG.panel.contentType}>
         <ContentTypeValidator fields={contentType?.fields || []} metadata={metadata} />
       </FeatureFlag>
 
-      {
-        metadata.fmError && metadata.fmErrorMessage ? (
-          <div className={`space-y-4`}>
-            <p className={`text-[var(--vscode-errorForeground)]`}>{metadata.fmError}</p>
+      <div className='metadata_fields space-y-6'>
+        {
+          metadata.fmError && metadata.fmErrorMessage ? (
+            <div className={`space-y-4`}>
+              <p className={`text-[var(--vscode-errorForeground)]`}>{metadata.fmError}</p>
 
-            <button
-              title={l10n.t(LocalizationKey.panelMetadataFocusProblems)}
-              onClick={focusProblems}
-              type={`button`}>
-              {l10n.t(LocalizationKey.panelMetadataFocusProblems)}
-            </button>
-          </div>
-        ) : allFields
-      }
+              <button
+                title={l10n.t(LocalizationKey.panelMetadataFocusProblems)}
+                onClick={focusProblems}
+                type={`button`}>
+                {l10n.t(LocalizationKey.panelMetadataFocusProblems)}
+              </button>
+            </div>
+          ) : allFields
+        }
+      </div>
     </Collapsible>
   );
 };

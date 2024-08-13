@@ -8,13 +8,14 @@ import { IMetadata } from '../Metadata';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { VSCodeLabel } from '../VSCode';
+import { DefaultFields } from '../../../constants';
 
 export interface IContentTypeValidatorProps {
   fields: Field[];
   metadata: IMetadata;
 }
 
-const fieldsToIgnore = [`filePath`, `articleDetails`, `slug`, `keywords`, `type`];
+const fieldsToIgnore = [`filePath`, `articleDetails`, DefaultFields.Slug, DefaultFields.Keywords, DefaultFields.Type, DefaultFields.ContentType];
 
 export const ContentTypeValidator: React.FunctionComponent<IContentTypeValidatorProps> = ({
   fields,

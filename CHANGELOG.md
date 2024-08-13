@@ -1,5 +1,28 @@
 # Change Log
 
+## [10.3.0] - 2024-08-13 - [Release notes](https://beta.frontmatter.codes/updates/v10.3.0)
+
+### ✨ New features
+
+- [#823](https://github.com/estruyf/vscode-front-matter/issues/823): Integrated GitHub Copilot support for titles, descriptions, and taxonomy field suggestions
+- [#824](https://github.com/estruyf/vscode-front-matter/issues/824): Added the ability to link custom actions to fields
+
+### 🎨 Enhancements
+
+- [#467](https://github.com/estruyf/vscode-front-matter/issues/467): New `fmContentType` metadata field to link content type (fallback to the `type` field)
+- [#819](https://github.com/estruyf/vscode-front-matter/issues/819): Added new extensibility support for media scripts
+- [#820](https://github.com/estruyf/vscode-front-matter/issues/820): Moving the website and API to different hosts
+- [#821](https://github.com/estruyf/vscode-front-matter/issues/821): Added URI handler to support command links from the documentation
+- [#822](https://github.com/estruyf/vscode-front-matter/issues/822): Added docs to the panel & dashboard views
+- [#829](https://github.com/estruyf/vscode-front-matter/issues/829): UI extensibility is now generally available
+- [#831](https://github.com/estruyf/vscode-front-matter/issues/831): Added "select all" action bar button to the content and media dashboards
+
+### 🐞 Fixes
+
+- [#827](https://github.com/estruyf/vscode-front-matter/issues/827): Fix for `frontmatter.json` file which gets created when already present in a sub-folder
+- [#830](https://github.com/estruyf/vscode-front-matter/issues/830): Fix for using the SEO title field setting to change the title field reference
+- [#832](https://github.com/estruyf/vscode-front-matter/issues/832): Fix for finding folders with wildcards in the path
+
 ## [10.2.1] - 2024-08-08
 
 - [#820](https://github.com/estruyf/vscode-front-matter/issues/820): Update API links to the new API URL

@@ -5,7 +5,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { FeatureFlag } from '../../../components/features/FeatureFlag';
 import { FEATURE_FLAG, GeneralCommands, WEBSITE_LINKS } from '../../../constants';
-import { TelemetryEvent } from '../../../constants/TelemetryEvent';
 import { SnippetParser } from '../../../helpers/SnippetParser';
 import { DashboardMessage } from '../../DashboardMessage';
 import { ModeAtom, SettingsSelector, ViewDataSelector } from '../../state';
@@ -83,10 +82,6 @@ export const Snippets: React.FunctionComponent<ISnippetsProps> = (
 
   useEffect(() => {
     Messenger.send(DashboardMessage.setTitle, l10n.t(LocalizationKey.dashboardHeaderTabsSnippets));
-
-    Messenger.send(DashboardMessage.sendTelemetry, {
-      event: TelemetryEvent.webviewSnippetsView
-    });
 
     Messenger.send(GeneralCommands.toVSCode.logging.info, {
       message: `Snippets view loaded`,

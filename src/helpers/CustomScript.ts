@@ -2,7 +2,7 @@ import { Settings } from './SettingsHelper';
 import { CommandType, EnvironmentType } from './../models/PanelSettings';
 import { CustomScript as ICustomScript, ScriptType } from '../models/PanelSettings';
 import { window, env as vscodeEnv, ProgressLocation, Uri, commands } from 'vscode';
-import { ArticleHelper, Logger, Telemetry } from '.';
+import { ArticleHelper, Logger, MediaHelpers } from '.';
 import { Folders, WORKSPACE_PLACEHOLDER } from '../commands/Folders';
 import { exec, execSync } from 'child_process';
 import * as os from 'os';
@@ -12,7 +12,6 @@ import ContentProvider from '../providers/ContentProvider';
 import { Dashboard } from '../commands/Dashboard';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { ParsedFrontMatter } from '../parsers';
-import { TelemetryEvent } from '../constants/TelemetryEvent';
 import { SETTING_CUSTOM_SCRIPTS } from '../constants';
 import { existsAsync } from '../utils';
 import * as l10n from '@vscode/l10n';
@@ -40,12 +39,8 @@ export class CustomScript {
       const wsPath = wsFolder.fsPath;
 
       if (script.type === ScriptType.MediaFile || script.type === ScriptType.MediaFolder) {
-        Telemetry.send(TelemetryEvent.runMediaScript);
-
         await CustomScript.runMediaScript(wsPath, path, script);
       } else {
-        Telemetry.send(TelemetryEvent.runCustomScript);
-
         if (script.bulk) {
           // Run script on all files
           await CustomScript.bulkRun(wsPath, script);
@@ -67,11 +62,11 @@ export class CustomScript {
    * @param path
    * @returns
    */
-  private static async singleRun(
+  public static async singleRun(
     wsPath: string,
     script: ICustomScript,
     path: string | null = null
-  ): Promise<void> {
+  ): Promise<any> {
     let articlePath: string | null = path;
     let article: ParsedFrontMatter | null | undefined = null;
 
@@ -99,7 +94,7 @@ export class CustomScript {
             articlePath as string,
             script
           );
-          await CustomScript.showOutput(output, script, articlePath);
+          return await CustomScript.showOutput(output, script, articlePath);
         }
       );
     } else {
@@ -133,7 +128,7 @@ export class CustomScript {
         title: l10n.t(LocalizationKey.helpersCustomScriptExecuting, script.title),
         cancellable: false
       },
-      async (progress, token) => {
+      async (_, __) => {
         for await (const folder of folders) {
           if (folder.lastModified.length > 0) {
             for await (const file of folder.lastModified) {
@@ -266,10 +261,22 @@ export class CustomScript {
     output: string | null,
     script: ICustomScript,
     articlePath?: string | null
-  ): Promise<void> {
+  ): Promise<any> {
     if (output) {
       try {
-        const data = JSON.parse(output);
+        const data: {
+          frontmatter?: { [key: string]: any };
+          fmAction?:
+            | 'open'
+            | 'copyMediaMetadata'
+            | 'copyMediaMetadataAndDelete'
+            | 'deleteMedia'
+            | 'fieldAction';
+          fmPath?: string;
+          fmSourcePath?: string;
+          fmDestinationPath?: string;
+          fmFieldValue?: any;
+        } = JSON.parse(output);
 
         if (data.frontmatter) {
           let article = null;
@@ -305,6 +312,23 @@ export class CustomScript {
           if (data.fmAction === 'open' && data.fmPath) {
             const uri = data.fmPath.startsWith(`http`) ? data.fmPath : Uri.file(data.fmPath);
             commands.executeCommand('vscode.open', uri);
+          } else if (
+            data.fmAction === 'copyMediaMetadata' &&
+            data.fmSourcePath &&
+            data.fmDestinationPath
+          ) {
+            await MediaHelpers.copyMetadata(data.fmSourcePath, data.fmDestinationPath);
+          } else if (
+            data.fmAction === 'copyMediaMetadataAndDelete' &&
+            data.fmSourcePath &&
+            data.fmDestinationPath
+          ) {
+            await MediaHelpers.copyMetadata(data.fmSourcePath, data.fmDestinationPath);
+            await MediaHelpers.deleteFile(data.fmSourcePath);
+          } else if (data.fmAction === 'deleteMedia' && data.fmPath) {
+            await MediaHelpers.deleteFile(data.fmPath);
+          } else if (data.fmAction === 'fieldAction') {
+            return data.fmFieldValue || undefined;
           }
         } else {
           Logger.error(`No frontmatter found.`);
