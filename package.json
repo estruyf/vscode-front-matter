@@ -2654,226 +2654,229 @@
           "when": "frontMatter:file:isValid == true"
         }
       ],
-      "view/title": [{
+      <<
+      << << < HEAD "view/title": [{
           "command": "frontMatter.docs",
           "group": "navigation@-1",
           "when": "view == frontMatter.explorer"
-        },
-        {
-          "command": "frontMatter.chatbot",
-          "group": "navigation@0",
-          "when": "view == frontMatter.explorer"
-        },
-        {
-          "command": "frontMatter.mode.switch",
-          "group": "navigation@1",
-          "when": "view == frontMatter.explorer && frontMatter:has:modes == true"
-        },
-        {
-          "command": "frontMatter.project.switch",
-          "group": "navigation@2",
-          "when": "view == frontMatter.explorer && frontMatter:project:switch:enabled"
-        },
-        {
-          "command": "frontMatter.settings.refresh",
-          "group": "navigation@3",
-          "when": "view == frontMatter.explorer"
-        },
-        {
-          "command": "frontMatter.collapseSections",
-          "group": "navigation@4",
-          "when": "view == frontMatter.explorer"
-        },
-        {
-          "command": "frontMatter.dashboard",
-          "group": "navigation@5",
-          "when": "view == frontMatter.explorer || view == explorer"
-        }
-      ]
-    },
-    "languages": [{
-      "id": "frontmatter.project.output",
-      "mimetypes": [
-        "text/x-code-output"
-      ]
-    }],
-    "grammars": [{
-        "path": "./syntaxes/hugo.tmLanguage.json",
-        "scopeName": "frontmatter.markdown.hugo",
-        "injectTo": [
-          "text.html.markdown"
+        }, ===
+        === =
+        "view/title": [ >>>
+          >>> > 1 a97a11c1c4ed3823dcfad8cfa760d891c8fe906 {
+            "command": "frontMatter.chatbot",
+            "group": "navigation@0",
+            "when": "view == frontMatter.explorer"
+          },
+          {
+            "command": "frontMatter.mode.switch",
+            "group": "navigation@1",
+            "when": "view == frontMatter.explorer && frontMatter:has:modes == true"
+          },
+          {
+            "command": "frontMatter.project.switch",
+            "group": "navigation@2",
+            "when": "view == frontMatter.explorer && frontMatter:project:switch:enabled"
+          },
+          {
+            "command": "frontMatter.settings.refresh",
+            "group": "navigation@3",
+            "when": "view == frontMatter.explorer"
+          },
+          {
+            "command": "frontMatter.collapseSections",
+            "group": "navigation@4",
+            "when": "view == frontMatter.explorer"
+          },
+          {
+            "command": "frontMatter.dashboard",
+            "group": "navigation@5",
+            "when": "view == frontMatter.explorer || view == explorer"
+          }
         ]
       },
-      {
-        "language": "frontmatter.project.output",
-        "scopeName": "frontmatter.project.output",
-        "path": "./syntaxes/frontmatter-output.tmLanguage.json"
-      }
-    ],
-    "walkthroughs": [{
-      "id": "frontmatter.welcome",
-      "title": "Get started with Front Matter",
-      "description": "Discover the features of Front Matter and learn how to use the CMS for your SSG or static site.",
-      "steps": [{
-          "id": "frontmatter.welcome.init",
-          "title": "Get started",
-          "description": "Initial steps to get started.\n[Open dashboard](command:frontMatter.dashboard)",
-          "media": {
-            "markdown": "assets/walkthrough/get-started.md"
-          },
-          "completionEvents": [
-            "onContext:frontMatterInitialized"
+      "languages": [{
+        "id": "frontmatter.project.output",
+        "mimetypes": [
+          "text/x-code-output"
+        ]
+      }],
+      "grammars": [{
+          "path": "./syntaxes/hugo.tmLanguage.json",
+          "scopeName": "frontmatter.markdown.hugo",
+          "injectTo": [
+            "text.html.markdown"
           ]
         },
         {
-          "id": "frontmatter.welcome.documentation",
-          "title": "Documentation",
-          "description": "Check out the documentation for Front Matter.\n[View our documentation](https://frontmatter.codes/docs)",
-          "media": {
-            "markdown": "assets/walkthrough/documentation.md"
-          },
-          "completionEvents": [
-            "onLink:https://frontmatter.codes/docs"
-          ]
-        },
-        {
-          "id": "frontmatter.welcome.supporter",
-          "title": "Support the project",
-          "description": "Become a supporter.\n[Support the project](https://github.com/sponsors/estruyf)",
-          "media": {
-            "markdown": "assets/walkthrough/support-the-project.md"
-          },
-          "completionEvents": [
-            "onLink:https://github.com/sponsors/estruyf"
-          ]
+          "language": "frontmatter.project.output",
+          "scopeName": "frontmatter.project.output",
+          "path": "./syntaxes/frontmatter-output.tmLanguage.json"
         }
-      ]
-    }]
-  },
-  "scripts": {
-    "dev:ext": "npm run clean && npm run localization:generate && npm-run-all --parallel watch:*",
-    "vscode:prepublish": "npm run clean && npm run localization:generate && npm-run-all --parallel prod:*",
-    "build:ext": "npm run clean && npm-run-all --parallel dev:build:*",
-    "watch:ext": "webpack --mode development --watch --config ./webpack/extension.config.js",
-    "watch:dashboard": "webpack serve --mode development --config ./webpack/dashboard.config.js",
-    "watch:panel": "webpack serve --mode development --config ./webpack/panel.config.js",
-    "dev:build:ext": "webpack --mode development --config ./webpack/extension.config.js",
-    "dev:build:dashboard": "webpack --mode development --config ./webpack/dashboard.config.js",
-    "dev:build:panel": "webpack --mode development --config ./webpack/panel.config.js",
-    "prod:ext": "webpack --mode production --config ./webpack/extension.config.js",
-    "prod:dashboard": "webpack --mode production --config ./webpack/dashboard.config.js",
-    "prod:panel": "webpack --mode production --config ./webpack/panel.config.js",
-    "test-compile": "tsc -p ./",
-    "clean": "rimraf dist",
-    "lint": "eslint --max-warnings=0 ./src/{commands,components}",
-    "prettier": "prettier --write ./src",
-    "localization:watch": "node ./scripts/watch-localization.js",
-    "localization:generate": "node scripts/generate-localization-enum.js",
-    "localization:sync": "node scripts/sync-localization.js",
-    "localization:find": "node scripts/find-localization.js"
-  },
-  "devDependencies": {
-    "@actions/core": "^1.10.0",
-    "@estruyf/vscode": "^1.1.0",
-    "@headlessui/react": "^1.7.18",
-    "@heroicons/react": "^2.1.1",
-    "@iarna/toml": "2.2.3",
-    "@octokit/rest": "^18.12.0",
-    "@sentry/react": "^6.19.7",
-    "@sentry/tracing": "^6.19.7",
-    "@tailwindcss/forms": "^0.5.3",
-    "@types/invariant": "^2.2.35",
-    "@types/js-yaml": "^4.0.9",
-    "@types/lodash.omit": "^4.5.7",
-    "@types/lodash.uniqby": "4.7.6",
-    "@types/lodash.xor": "^4.5.7",
-    "@types/mdast": "^3.0.10",
-    "@types/mime-types": "^2.1.1",
-    "@types/mustache": "^4.2.2",
-    "@types/node": "^18.17.1",
-    "@types/react": "17.0.0",
-    "@types/react-datepicker": "^4.8.0",
-    "@types/react-dom": "17.0.0",
-    "@types/vscode": "^1.90.0",
-    "@typescript-eslint/eslint-plugin": "^5.50.0",
-    "@typescript-eslint/parser": "^5.50.0",
-    "@vscode-elements/elements": "^1.2.0",
-    "@vscode/l10n": "^0.0.14",
-    "@vscode/webview-ui-toolkit": "^1.2.2",
-    "@webpack-cli/serve": "^1.7.0",
-    "ajv": "^8.12.0",
-    "array-move": "^4.0.0",
-    "assert": "^2.0.0",
-    "autoprefixer": "^10.4.13",
-    "cheerio": "1.0.0-rc.12",
-    "clsx": "^2.1.0",
-    "css-loader": "5.2.7",
-    "date-fns": "2.23.0",
-    "dotenv": "^16.3.1",
-    "downshift": "6.0.6",
-    "eslint": "^8.33.0",
-    "fuse.js": "6.5.3",
-    "github-directory-downloader": "^1.3.6",
-    "glob": "^10.3.12",
-    "gray-matter": "4.0.3",
-    "html-loader": "1.3.2",
-    "html-webpack-plugin": "4.5.0",
-    "image-size": "^1.0.2",
-    "invariant": "^2.2.4",
-    "js-yaml": "^4.1.0",
-    "jsonc-parser": "^3.2.0",
-    "lodash-es": "^4.17.21",
-    "lodash.omit": "^4.5.0",
-    "lodash.uniqby": "4.7.0",
-    "lodash.xor": "^4.5.0",
-    "mdast-util-from-markdown": "1.0.0",
-    "mime-types": "^2.1.35",
-    "mustache": "^4.2.0",
-    "node-json-db": "^2.2.0",
-    "npm-run-all": "^4.1.5",
-    "path-browserify": "^1.0.1",
-    "postcss": "^8.4.21",
-    "postcss-loader": "^7.0.2",
-    "prettier": "^2.8.3",
-    "prettier-plugin-tailwindcss": "^0.2.2",
-    "process": "^0.11.10",
-    "react": "17.0.1",
-    "react-datepicker": "4.2.1",
-    "react-dom": "17.0.1",
-    "react-dropzone": "^11.7.1",
-    "react-markdown": "^8.0.7",
-    "react-quill": "^2.0.0",
-    "react-router-dom": "^6.8.0",
-    "react-sortable-hoc": "^2.0.0",
-    "recoil": "^0.7.7",
-    "remark-gfm": "^3.0.1",
-    "rimraf": "^3.0.2",
-    "semver": "^7.3.8",
-    "simple-git": "^3.16.0",
-    "style-loader": "2.0.0",
-    "tailwind-merge": "^2.2.1",
-    "tailwindcss": "^3.2.4",
-    "tailwindcss-animate": "^1.0.7",
-    "ts-loader": "^9.4.2",
-    "typescript": "^4.9.5",
-    "uniforms": "^3.10.2",
-    "uniforms-antd": "^3.10.2",
-    "uniforms-bridge-json-schema": "^3.10.2",
-    "uniforms-unstyled": "^3.10.2",
-    "url-join-ts": "^1.0.5",
-    "wc-react": "github:estruyf/wc-react",
-    "webpack": "^5.75.0",
-    "webpack-bundle-analyzer": "^4.7.0",
-    "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.11.1",
-    "webpack-ignore-dynamic-require": "^1.0.0",
-    "yaml": "^2.2.1",
-    "yawn-yaml": "^1.5.0"
-  },
-  "vsce": {
-    "dependencies": false
-  },
-  "dependencies": {
-    "@radix-ui/react-dropdown-menu": "^2.0.6"
+      ],
+      "walkthroughs": [{
+        "id": "frontmatter.welcome",
+        "title": "Get started with Front Matter",
+        "description": "Discover the features of Front Matter and learn how to use the CMS for your SSG or static site.",
+        "steps": [{
+            "id": "frontmatter.welcome.init",
+            "title": "Get started",
+            "description": "Initial steps to get started.\n[Open dashboard](command:frontMatter.dashboard)",
+            "media": {
+              "markdown": "assets/walkthrough/get-started.md"
+            },
+            "completionEvents": [
+              "onContext:frontMatterInitialized"
+            ]
+          },
+          {
+            "id": "frontmatter.welcome.documentation",
+            "title": "Documentation",
+            "description": "Check out the documentation for Front Matter.\n[View our documentation](https://frontmatter.codes/docs)",
+            "media": {
+              "markdown": "assets/walkthrough/documentation.md"
+            },
+            "completionEvents": [
+              "onLink:https://frontmatter.codes/docs"
+            ]
+          },
+          {
+            "id": "frontmatter.welcome.supporter",
+            "title": "Support the project",
+            "description": "Become a supporter.\n[Support the project](https://github.com/sponsors/estruyf)",
+            "media": {
+              "markdown": "assets/walkthrough/support-the-project.md"
+            },
+            "completionEvents": [
+              "onLink:https://github.com/sponsors/estruyf"
+            ]
+          }
+        ]
+      }]
+    },
+    "scripts": {
+      "dev:ext": "npm run clean && npm run localization:generate && npm-run-all --parallel watch:*",
+      "vscode:prepublish": "npm run clean && npm run localization:generate && npm-run-all --parallel prod:*",
+      "build:ext": "npm run clean && npm-run-all --parallel dev:build:*",
+      "watch:ext": "webpack --mode development --watch --config ./webpack/extension.config.js",
+      "watch:dashboard": "webpack serve --mode development --config ./webpack/dashboard.config.js",
+      "watch:panel": "webpack serve --mode development --config ./webpack/panel.config.js",
+      "dev:build:ext": "webpack --mode development --config ./webpack/extension.config.js",
+      "dev:build:dashboard": "webpack --mode development --config ./webpack/dashboard.config.js",
+      "dev:build:panel": "webpack --mode development --config ./webpack/panel.config.js",
+      "prod:ext": "webpack --mode production --config ./webpack/extension.config.js",
+      "prod:dashboard": "webpack --mode production --config ./webpack/dashboard.config.js",
+      "prod:panel": "webpack --mode production --config ./webpack/panel.config.js",
+      "test-compile": "tsc -p ./",
+      "clean": "rimraf dist",
+      "lint": "eslint --max-warnings=0 ./src/{commands,components}",
+      "prettier": "prettier --write ./src",
+      "localization:watch": "node ./scripts/watch-localization.js",
+      "localization:generate": "node scripts/generate-localization-enum.js",
+      "localization:sync": "node scripts/sync-localization.js",
+      "localization:find": "node scripts/find-localization.js"
+    },
+    "devDependencies": {
+      "@actions/core": "^1.10.0",
+      "@estruyf/vscode": "^1.1.0",
+      "@headlessui/react": "^1.7.18",
+      "@heroicons/react": "^2.1.1",
+      "@iarna/toml": "2.2.3",
+      "@octokit/rest": "^18.12.0",
+      "@sentry/react": "^6.19.7",
+      "@sentry/tracing": "^6.19.7",
+      "@tailwindcss/forms": "^0.5.3",
+      "@types/invariant": "^2.2.35",
+      "@types/js-yaml": "^4.0.9",
+      "@types/lodash.omit": "^4.5.7",
+      "@types/lodash.uniqby": "4.7.6",
+      "@types/lodash.xor": "^4.5.7",
+      "@types/mdast": "^3.0.10",
+      "@types/mime-types": "^2.1.1",
+      "@types/mustache": "^4.2.2",
+      "@types/node": "^18.17.1",
+      "@types/react": "17.0.0",
+      "@types/react-datepicker": "^4.8.0",
+      "@types/react-dom": "17.0.0",
+      "@types/vscode": "^1.90.0",
+      "@typescript-eslint/eslint-plugin": "^5.50.0",
+      "@typescript-eslint/parser": "^5.50.0",
+      "@vscode-elements/elements": "^1.2.0",
+      "@vscode/l10n": "^0.0.14",
+      "@vscode/webview-ui-toolkit": "^1.2.2",
+      "@webpack-cli/serve": "^1.7.0",
+      "ajv": "^8.12.0",
+      "array-move": "^4.0.0",
+      "assert": "^2.0.0",
+      "autoprefixer": "^10.4.13",
+      "cheerio": "1.0.0-rc.12",
+      "clsx": "^2.1.0",
+      "css-loader": "5.2.7",
+      "date-fns": "2.23.0",
+      "dotenv": "^16.3.1",
+      "downshift": "6.0.6",
+      "eslint": "^8.33.0",
+      "fuse.js": "6.5.3",
+      "github-directory-downloader": "^1.3.6",
+      "glob": "^10.3.12",
+      "gray-matter": "4.0.3",
+      "html-loader": "1.3.2",
+      "html-webpack-plugin": "4.5.0",
+      "image-size": "^1.0.2",
+      "invariant": "^2.2.4",
+      "js-yaml": "^4.1.0",
+      "jsonc-parser": "^3.2.0",
+      "lodash-es": "^4.17.21",
+      "lodash.omit": "^4.5.0",
+      "lodash.uniqby": "4.7.0",
+      "lodash.xor": "^4.5.0",
+      "mdast-util-from-markdown": "1.0.0",
+      "mime-types": "^2.1.35",
+      "mustache": "^4.2.0",
+      "node-json-db": "^2.2.0",
+      "npm-run-all": "^4.1.5",
+      "path-browserify": "^1.0.1",
+      "postcss": "^8.4.21",
+      "postcss-loader": "^7.0.2",
+      "prettier": "^2.8.3",
+      "prettier-plugin-tailwindcss": "^0.2.2",
+      "process": "^0.11.10",
+      "react": "17.0.1",
+      "react-datepicker": "4.2.1",
+      "react-dom": "17.0.1",
+      "react-dropzone": "^11.7.1",
+      "react-markdown": "^8.0.7",
+      "react-quill": "^2.0.0",
+      "react-router-dom": "^6.8.0",
+      "react-sortable-hoc": "^2.0.0",
+      "recoil": "^0.7.7",
+      "remark-gfm": "^3.0.1",
+      "rimraf": "^3.0.2",
+      "semver": "^7.3.8",
+      "simple-git": "^3.16.0",
+      "style-loader": "2.0.0",
+      "tailwind-merge": "^2.2.1",
+      "tailwindcss": "^3.2.4",
+      "tailwindcss-animate": "^1.0.7",
+      "ts-loader": "^9.4.2",
+      "typescript": "^4.9.5",
+      "uniforms": "^3.10.2",
+      "uniforms-antd": "^3.10.2",
+      "uniforms-bridge-json-schema": "^3.10.2",
+      "uniforms-unstyled": "^3.10.2",
+      "url-join-ts": "^1.0.5",
+      "wc-react": "github:estruyf/wc-react",
+      "webpack": "^5.75.0",
+      "webpack-bundle-analyzer": "^4.7.0",
+      "webpack-cli": "^4.10.0",
+      "webpack-dev-server": "^4.11.1",
+      "webpack-ignore-dynamic-require": "^1.0.0",
+      "yaml": "^2.2.1",
+      "yawn-yaml": "^1.5.0"
+    },
+    "vsce": {
+      "dependencies": false
+    },
+    "dependencies": {
+      "@radix-ui/react-dropdown-menu": "^2.0.6"
+    }
   }
-}
