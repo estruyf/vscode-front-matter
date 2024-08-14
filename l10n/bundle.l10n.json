@@ -140,6 +140,9 @@
   "dashboard.dataView.dataView.noDataFiles": "No data files found",
   "dashboard.dataView.dataView.getStarted.link": "Read more to get started using data files",
   "dashboard.dataView.dataView.update.message": "Updated your data entries",
+  "dashboard.dataView.dataView.createNew": "Create new data file",
+  "dashboard.dataView.dataView.selectDataFolder": "Select data folder",
+  "dashboard.dataView.dataView.closeSelectedDataFile": "Close data file",
 
   "dashboard.dataView.emptyView.heading": "Select your date type first",
 
@@ -783,6 +786,9 @@
   "listeners.panel.dataListener.aiSuggestTaxonomy.noData.error": "No article data",
   "listeners.panel.dataListener.getDataFileEntries.noDataFiles.error": "Couldn't find data file entries",
   "listeners.panel.dataListener.pushMetadata.frontMatter.error": "Something went wrong while parsing your front matter. Please check the contents of your file.",
+  "listeners.panel.dataListener.createDataFile.inputTitle": "What is the name of the data file?",
+  "listeners.panel.dataListener.createDataFile.error": "No data file id or path defined.",
+  "listeners.panel.dataListener.createDataFile.noFileName": "No filename provided.",
 
 
   "listeners.panel.taxonomyListener.aiSuggestTaxonomy.noEditor.error": "No active editor",

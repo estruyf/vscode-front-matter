@@ -5,6 +5,7 @@ import {
   ContentType,
   CustomScript,
   CustomTaxonomy,
+  DataFolder,
   DraftField,
   FilterType,
   Framework,
@@ -43,6 +44,7 @@ export interface Settings {
   dashboardState: DashboardState;
   scripts: CustomScript[];
   dataFiles: DataFile[] | undefined;
+  dataFolders: DataFolder[];
   dataTypes: DataType[] | undefined;
   isBacker: boolean | undefined;
   snippets: Snippets | undefined;

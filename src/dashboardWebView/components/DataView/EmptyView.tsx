@@ -1,12 +1,18 @@
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import * as l10n from '@vscode/l10n';
-import { LocalizationKey } from '../../../localization';
+import { LocalizationKey, localize } from '../../../localization';
+import { DataFolder } from '../../../models';
+import { DropdownMenu, DropdownMenuContent } from '../../../components/shadcn/Dropdown';
+import { MenuButton, MenuItem } from '../Menu';
 
-export interface IEmptyViewProps { }
+export interface IEmptyViewProps {
+  folders: DataFolder[];
+  onCreate: (folder: DataFolder) => void;
+}
 
 export const EmptyView: React.FunctionComponent<IEmptyViewProps> = (
-  props: React.PropsWithChildren<IEmptyViewProps>
+  { folders, onCreate }: React.PropsWithChildren<IEmptyViewProps>
 ) => {
 
   return (
@@ -15,6 +21,32 @@ export const EmptyView: React.FunctionComponent<IEmptyViewProps> = (
       <h2 className={`text-xl text-[var(--frontmatter-secondary-text)]`}>
         {l10n.t(LocalizationKey.dashboardDataViewEmptyViewHeading)}
       </h2>
+
+      {
+        onCreate && folders && folders.length > 0 && (
+          <div className='mt-4'>
+            <DropdownMenu>
+              <MenuButton
+                label={localize(LocalizationKey.dashboardDataViewDataViewCreateNew)}
+                title={localize(LocalizationKey.dashboardDataViewDataViewSelectDataFolder)}
+                className={`text-lg`}
+                labelClass={`font-normal text-[var(--frontmatter-secondary-text)]`}
+              />
+
+              <DropdownMenuContent>
+                {folders.map((folder) => (
+                  <MenuItem
+                    key={folder.id}
+                    title={folder.id}
+                    value={folder}
+                    onClick={() => onCreate(folder)}
+                  />
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        )
+      }
     </div>
   );
 };

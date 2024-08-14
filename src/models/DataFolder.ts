@@ -5,4 +5,6 @@ export interface DataFolder {
   schema?: any;
   type?: string;
   singleEntry?: boolean;
+  enableFileCreation?: boolean;
+  fileType?: 'json' | 'yaml';
 }

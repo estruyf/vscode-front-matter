@@ -6,6 +6,8 @@
 
 ### 🎨 Enhancements
 
+- [#834](https://github.com/estruyf/vscode-front-matter/issues/834): Added the ability to create new data files for a data folder
+
 ### 🐞 Fixes
 
 ## [10.3.0] - 2024-08-13 - [Release notes](https://beta.frontmatter.codes/updates/v10.3.0)

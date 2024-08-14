@@ -480,6 +480,18 @@ export enum LocalizationKey {
    */
   dashboardDataViewDataViewUpdateMessage = 'dashboard.dataView.dataView.update.message',
   /**
+   * Create new data file
+   */
+  dashboardDataViewDataViewCreateNew = 'dashboard.dataView.dataView.createNew',
+  /**
+   * Select data folder
+   */
+  dashboardDataViewDataViewSelectDataFolder = 'dashboard.dataView.dataView.selectDataFolder',
+  /**
+   * Close data file
+   */
+  dashboardDataViewDataViewCloseSelectedDataFile = 'dashboard.dataView.dataView.closeSelectedDataFile',
+  /**
    * Select your date type first
    */
   dashboardDataViewEmptyViewHeading = 'dashboard.dataView.emptyView.heading',
@@ -2592,6 +2604,18 @@ export enum LocalizationKey {
    * Something went wrong while parsing your front matter. Please check the contents of your file.
    */
   listenersPanelDataListenerPushMetadataFrontMatterError = 'listeners.panel.dataListener.pushMetadata.frontMatter.error',
+  /**
+   * What is the name of the data file?
+   */
+  listenersPanelDataListenerCreateDataFileInputTitle = 'listeners.panel.dataListener.createDataFile.inputTitle',
+  /**
+   * No data file id or path defined.
+   */
+  listenersPanelDataListenerCreateDataFileError = 'listeners.panel.dataListener.createDataFile.error',
+  /**
+   * No filename provided.
+   */
+  listenersPanelDataListenerCreateDataFileNoFileName = 'listeners.panel.dataListener.createDataFile.noFileName',
   /**
    * No active editor
    */
