@@ -182,7 +182,7 @@ You can open showcase issues for the following things:
 ## 💚 Backers & Sponsors 👇 🤘
 
 <p align="center">
-  <img src="https://frontmatter.codes/api/img-sponsors" alt="Front Matter sponsors" />
+  <img src="https://api.frontmatter.codes/img-sponsors" alt="Front Matter sponsors" />
 </p>
 
 <br />
