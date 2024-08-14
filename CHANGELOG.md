@@ -6,6 +6,7 @@
 
 ### 🎨 Enhancements
 
+- [#833](https://github.com/estruyf/vscode-front-matter/issues/833): Added support for Asciidoc files
 - [#834](https://github.com/estruyf/vscode-front-matter/issues/834): Added the ability to create new data files for a data folder
 
 ### 🐞 Fixes

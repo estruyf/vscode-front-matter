@@ -18,6 +18,8 @@ enum MarkupType {
   hyperlink
 }
 
+type DocType = 'markdown' | 'asciidoc';
+
 export class Wysiwyg {
   /**
    * Registers the markup commands for the WYSIWYG controls
@@ -148,6 +150,15 @@ export class Wysiwyg {
   }
 
   /**
+   * Retrieves the document type based on the file extension.
+   * @param filePath - The path of the file.
+   * @returns The document type ('asciidoc' or 'markdown').
+   */
+  public static getDocType(filePath: string): DocType {
+    return filePath.endsWith('.adoc') ? 'asciidoc' : 'markdown';
+  }
+
+  /**
    * Add the markup to the content
    * @param type
    * @returns
@@ -161,11 +172,12 @@ export class Wysiwyg {
     const selection = editor.selection;
     const hasTextSelection = !selection.isEmpty;
 
+    const docType: DocType = Wysiwyg.getDocType(editor.document.fileName);
     if (type === MarkupType.hyperlink) {
-      return this.addHyperlink(editor, selection);
+      return this.addHyperlink(editor, selection, docType);
     }
 
-    const markers = this.getMarkers(type);
+    const markers = this.getMarkers(type, docType);
     if (!markers) {
       return;
     }
@@ -175,13 +187,13 @@ export class Wysiwyg {
     if (hasTextSelection) {
       // Replace the selection and surround with the markup
       const selectionText = editor.document.getText(selection);
-      const txt = await this.insertText(markers, type, selectionText);
+      const txt = await this.insertText(markers, type, selectionText, docType);
 
       editor.edit((builder) => {
         builder.replace(selection, txt);
       });
     } else {
-      const txt = await this.insertText(markers, type);
+      const txt = await this.insertText(markers, type, null, docType);
 
       // Insert the markers where cursor is located.
       const markerLength = this.isMarkupWrapping(type) ? txt.length + 1 : markers.length;
@@ -198,6 +210,10 @@ export class Wysiwyg {
         newPosition = crntSelection.with(crntSelection.line + 1, 0);
       }
 
+      if (type === MarkupType.blockquote && docType === 'asciidoc') {
+        newPosition = crntSelection.with(crntSelection.line + 1, 0);
+      }
+
       editor.selection = new Selection(newPosition, newPosition);
     }
   }
@@ -206,7 +222,11 @@ export class Wysiwyg {
    * Add a hyperlink to the content
    * @returns void
    */
-  private static async addHyperlink(editor: TextEditor, selection: Selection) {
+  private static async addHyperlink(
+    editor: TextEditor,
+    selection: Selection,
+    docType: DocType = 'markdown'
+  ) {
     const hasTextSelection = !selection.isEmpty;
     const linkText = hasTextSelection ? editor.document.getText(selection) : '';
 
@@ -227,7 +247,14 @@ export class Wysiwyg {
     });
 
     if (link) {
-      const txt = `[${text || link}](${link})`;
+      let txt = `[${text || link}](${link})`;
+
+      if (docType === 'asciidoc') {
+        txt = !link.startsWith('http') ? `link:${link}` : link;
+        if (text) {
+          txt = `${txt}[${text}]`;
+        }
+      }
 
       if (hasTextSelection) {
         editor.edit((builder) => {
@@ -255,14 +282,23 @@ export class Wysiwyg {
    * @param type
    * @returns
    */
-  private static isMarkupWrapping(type: MarkupType) {
-    return (
-      type === MarkupType.blockquote ||
-      type === MarkupType.heading ||
-      type === MarkupType.unorderedList ||
-      type === MarkupType.orderedList ||
-      type === MarkupType.taskList
-    );
+  private static isMarkupWrapping(type: MarkupType, docType: DocType = 'markdown') {
+    if (docType === 'markdown') {
+      return (
+        type === MarkupType.blockquote ||
+        type === MarkupType.heading ||
+        type === MarkupType.unorderedList ||
+        type === MarkupType.orderedList ||
+        type === MarkupType.taskList
+      );
+    } else if (docType === 'asciidoc') {
+      return (
+        type === MarkupType.heading ||
+        type === MarkupType.unorderedList ||
+        type === MarkupType.orderedList ||
+        type === MarkupType.taskList
+      );
+    }
   }
 
   /**
@@ -271,11 +307,12 @@ export class Wysiwyg {
   private static async insertText(
     marker: string | undefined,
     type: MarkupType,
-    text: string | null = null
+    text: string | null = null,
+    docType: DocType = 'markdown'
   ) {
-    const crntText = text || this.lineBreak(type);
+    const crntText = text || this.lineBreak(type, docType);
 
-    if (this.isMarkupWrapping(type)) {
+    if (this.isMarkupWrapping(type, docType)) {
       if (type === MarkupType.heading) {
         const headingLvl = await window.showQuickPick(
           ['Heading 1', 'Heading 2', 'Heading 3', 'Heading 4', 'Heading 5', 'Heading 6'],
@@ -298,8 +335,11 @@ export class Wysiwyg {
         return lines.join('\n');
       }
 
-      if (type === MarkupType.orderedList) {
+      if (type === MarkupType.orderedList && docType === 'markdown') {
         const lines = crntText.split('\n').map((line, idx) => `${idx + 1}. ${line}`);
+        return lines.join('\n');
+      } else if (type === MarkupType.orderedList && docType === 'asciidoc') {
+        const lines = crntText.split('\n').map((line) => `${marker} ${line}`);
         return lines.join('\n');
       }
 
@@ -314,8 +354,10 @@ export class Wysiwyg {
    * @param type
    * @returns
    */
-  private static lineBreak(type: MarkupType) {
+  private static lineBreak(type: MarkupType, docType: DocType = 'markdown') {
     if (type === MarkupType.codeblock) {
+      return `\n\n`;
+    } else if (type === MarkupType.blockquote && docType === 'asciidoc') {
       return `\n\n`;
     }
     return '';
@@ -326,30 +368,57 @@ export class Wysiwyg {
    * @param type
    * @returns
    */
-  private static getMarkers(type: MarkupType) {
-    switch (type) {
-      case MarkupType.bold:
-        return `**`;
-      case MarkupType.italic:
-        return `*`;
-      case MarkupType.strikethrough:
-        return `~~`;
-      case MarkupType.code:
-        return '`';
-      case MarkupType.codeblock:
-        return '```';
-      case MarkupType.blockquote:
-        return '>';
-      case MarkupType.heading:
-        return '#';
-      case MarkupType.unorderedList:
-        return '-';
-      case MarkupType.orderedList:
-        return '1.';
-      case MarkupType.taskList:
-        return '- [ ]';
-      default:
-        return;
+  private static getMarkers(type: MarkupType, docType: DocType = 'markdown') {
+    if (docType === 'markdown') {
+      switch (type) {
+        case MarkupType.bold:
+          return `**`;
+        case MarkupType.italic:
+          return `*`;
+        case MarkupType.strikethrough:
+          return `~~`;
+        case MarkupType.code:
+          return '`';
+        case MarkupType.codeblock:
+          return '```';
+        case MarkupType.blockquote:
+          return '>';
+        case MarkupType.heading:
+          return '#';
+        case MarkupType.unorderedList:
+          return '-';
+        case MarkupType.orderedList:
+          return '1.';
+        case MarkupType.taskList:
+          return '- [ ]';
+        default:
+          return;
+      }
+    } else if (docType === 'asciidoc') {
+      switch (type) {
+        case MarkupType.bold:
+          return `*`;
+        case MarkupType.italic:
+          return `_`;
+        case MarkupType.strikethrough:
+          return `~`;
+        case MarkupType.code:
+          return '`';
+        case MarkupType.codeblock:
+          return '----';
+        case MarkupType.blockquote:
+          return '____';
+        case MarkupType.heading:
+          return '=';
+        case MarkupType.unorderedList:
+          return '*';
+        case MarkupType.orderedList:
+          return '.';
+        case MarkupType.taskList:
+          return '* [ ]';
+        default:
+          return;
+      }
     }
   }
 }
