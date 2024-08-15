@@ -1,8 +1,7 @@
 import { commands, window, Selection, QuickPickItem, TextEditor } from 'vscode';
 import { COMMAND_NAME, CONTEXT, SETTING_CONTENT_WYSIWYG } from '../constants';
 import { Settings } from '../helpers';
-import * as l10n from '@vscode/l10n';
-import { LocalizationKey } from '../localization';
+import { LocalizationKey, localize } from '../localization';
 
 enum MarkupType {
   bold = 1,
@@ -85,45 +84,45 @@ export class Wysiwyg {
       commands.registerCommand(COMMAND_NAME.options, async () => {
         const qpItems: QuickPickItem[] = [
           {
-            label: `$(list-unordered) ${LocalizationKey.commandsWysiwygCommandUnorderedListLabel}`,
-            detail: LocalizationKey.commandsWysiwygCommandUnorderedListDetail,
+            label: `$(list-unordered) ${localize(LocalizationKey.commandsWysiwygCommandUnorderedListLabel)}`,
+            detail: localize(LocalizationKey.commandsWysiwygCommandUnorderedListDetail),
             alwaysShow: true
           },
           {
-            label: `$(list-ordered) ${LocalizationKey.commandsWysiwygCommandOrderedListLabel}`,
-            detail: LocalizationKey.commandsWysiwygCommandOrderedListDetail,
+            label: `$(list-ordered) ${localize(LocalizationKey.commandsWysiwygCommandOrderedListLabel)}`,
+            detail: localize(LocalizationKey.commandsWysiwygCommandOrderedListDetail),
             alwaysShow: true
           },
           {
-            label: `$(tasklist) ${LocalizationKey.commandsWysiwygCommandTaskListLabel}`,
-            detail: LocalizationKey.commandsWysiwygCommandTaskListDetail,
+            label: `$(tasklist) ${localize(LocalizationKey.commandsWysiwygCommandTaskListLabel)}`,
+            detail: localize(LocalizationKey.commandsWysiwygCommandTaskListDetail),
             alwaysShow: true
           },
           {
-            label: `$(code) ${LocalizationKey.commandsWysiwygCommandCodeLabel}`,
-            detail: LocalizationKey.commandsWysiwygCommandCodeDetail,
+            label: `$(code) ${localize(LocalizationKey.commandsWysiwygCommandCodeLabel)}`,
+            detail: localize(LocalizationKey.commandsWysiwygCommandCodeDetail),
             alwaysShow: true
           },
           {
-            label: `$(symbol-namespace) ${LocalizationKey.commandsWysiwygCommandCodeblockLabel}`,
-            detail: LocalizationKey.commandsWysiwygCommandCodeblockDetail,
+            label: `$(symbol-namespace) ${localize(LocalizationKey.commandsWysiwygCommandCodeblockLabel)}`,
+            detail: localize(LocalizationKey.commandsWysiwygCommandCodeblockDetail),
             alwaysShow: true
           },
           {
-            label: `$(quote) ${LocalizationKey.commandsWysiwygCommandBlockquoteLabel}`,
-            detail: LocalizationKey.commandsWysiwygCommandBlockquoteDetail,
+            label: `$(quote) ${localize(LocalizationKey.commandsWysiwygCommandBlockquoteLabel)}`,
+            detail: localize(LocalizationKey.commandsWysiwygCommandBlockquoteDetail),
             alwaysShow: true
           },
           {
-            label: `$(symbol-text) ${LocalizationKey.commandsWysiwygCommandStrikethroughLabel}`,
-            detail: LocalizationKey.commandsWysiwygCommandStrikethroughDetail,
+            label: `$(symbol-text) ${localize(LocalizationKey.commandsWysiwygCommandStrikethroughLabel)}`,
+            detail: localize(LocalizationKey.commandsWysiwygCommandStrikethroughDetail),
             alwaysShow: true
           }
         ];
 
         const option = await window.showQuickPick([...qpItems], {
-          title: l10n.t(LocalizationKey.commandsWysiwygQuickPickTitle),
-          placeHolder: l10n.t(LocalizationKey.commandsWysiwygQuickPickPlaceholder),
+          title: localize(LocalizationKey.commandsWysiwygQuickPickTitle),
+          placeHolder: localize(LocalizationKey.commandsWysiwygQuickPickPlaceholder),
           canPickMany: false,
           ignoreFocusOut: true
         });
@@ -231,17 +230,17 @@ export class Wysiwyg {
     const linkText = hasTextSelection ? editor.document.getText(selection) : '';
 
     const link = await window.showInputBox({
-      title: l10n.t(LocalizationKey.commandsWysiwygAddHyperlinkHyperlinkInputTitle),
-      placeHolder: l10n.t(LocalizationKey.commandsWysiwygAddHyperlinkHyperlinkInputPrompt),
-      prompt: l10n.t(LocalizationKey.commandsWysiwygAddHyperlinkHyperlinkInputPrompt),
+      title: localize(LocalizationKey.commandsWysiwygAddHyperlinkHyperlinkInputTitle),
+      placeHolder: localize(LocalizationKey.commandsWysiwygAddHyperlinkHyperlinkInputPrompt),
+      prompt: localize(LocalizationKey.commandsWysiwygAddHyperlinkHyperlinkInputPrompt),
       value: linkText,
       ignoreFocusOut: true
     });
 
     const text = await window.showInputBox({
-      title: l10n.t(LocalizationKey.commandsWysiwygAddHyperlinkTextInputTitle),
-      prompt: l10n.t(LocalizationKey.commandsWysiwygAddHyperlinkTextInputPrompt),
-      placeHolder: l10n.t(LocalizationKey.commandsWysiwygAddHyperlinkTextInputPrompt),
+      title: localize(LocalizationKey.commandsWysiwygAddHyperlinkTextInputTitle),
+      prompt: localize(LocalizationKey.commandsWysiwygAddHyperlinkTextInputPrompt),
+      placeHolder: localize(LocalizationKey.commandsWysiwygAddHyperlinkTextInputPrompt),
       value: linkText,
       ignoreFocusOut: true
     });
@@ -317,8 +316,8 @@ export class Wysiwyg {
         const headingLvl = await window.showQuickPick(
           ['Heading 1', 'Heading 2', 'Heading 3', 'Heading 4', 'Heading 5', 'Heading 6'],
           {
-            title: l10n.t(LocalizationKey.commandsWysiwygInsertTextHeadingInputTitle),
-            placeHolder: l10n.t(LocalizationKey.commandsWysiwygInsertTextHeadingInputPlaceholder),
+            title: localize(LocalizationKey.commandsWysiwygInsertTextHeadingInputTitle),
+            placeHolder: localize(LocalizationKey.commandsWysiwygInsertTextHeadingInputPlaceholder),
             canPickMany: false,
             ignoreFocusOut: true
           }
