@@ -437,6 +437,8 @@ export class DataListener extends BaseListener {
         if (!sourceField.default) {
           value = undefined;
         }
+      } else if (sourceField?.type === 'number') {
+        // We don't have to do anything for numbers, we can leave the 0 value
       } else {
         value = undefined;
       }

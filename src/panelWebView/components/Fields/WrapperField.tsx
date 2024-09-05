@@ -129,7 +129,11 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
     } else {
       // Did not contain a placeholder, so value can be set
       if (fieldValue === undefined || value !== fieldValue) {
-        setFieldValue(value || null);
+        if (typeof value === 'number') {
+          setFieldValue(value);
+        } else {
+          setFieldValue(value || null);
+        }
       }
     }
   }, [field, parent]);
