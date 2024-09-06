@@ -1993,7 +1993,8 @@
           "scope": "Taxonomy"
         },
         "frontMatter.taxonomy.slugTemplate": {
-          "type": "string",
+          "type": ["string", "null"],
+          "default": null,
           "markdownDescription": "%setting.frontMatter.taxonomy.slugTemplate.markdownDescription%",
           "scope": "Taxonomy"
         },

@@ -175,7 +175,7 @@ export class Article {
     if (article?.data) {
       const slug = SlugHelper.createSlug(title, article?.data, slugTemplate);
 
-      if (slug) {
+      if (typeof slug === 'string') {
         return {
           slug,
           slugWithPrefixAndSuffix: `${prefix}${slug}${suffix}`
@@ -214,7 +214,11 @@ export class Article {
     const articleTitle: string = article.data[titleField];
     const slugInfo = Article.generateSlug(articleTitle, article, contentType.slugTemplate);
 
-    if (slugInfo && slugInfo.slug && slugInfo.slugWithPrefixAndSuffix) {
+    if (
+      slugInfo &&
+      typeof slugInfo.slug === 'string' &&
+      typeof slugInfo.slugWithPrefixAndSuffix === 'string'
+    ) {
       article.data['slug'] = slugInfo.slugWithPrefixAndSuffix;
 
       if (contentType) {

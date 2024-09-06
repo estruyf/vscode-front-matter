@@ -131,6 +131,8 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       if (fieldValue === undefined || value !== fieldValue) {
         if (typeof value === 'number') {
           setFieldValue(value);
+        } else if (field.type === "slug") {
+          setFieldValue(value);
         } else {
           setFieldValue(value || null);
         }

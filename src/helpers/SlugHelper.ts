@@ -17,11 +17,11 @@ export class SlugHelper {
       return null;
     }
 
-    if (!slugTemplate) {
-      slugTemplate = Settings.get<string>(SETTING_SLUG_TEMPLATE) || undefined;
+    if (slugTemplate === undefined || slugTemplate === null) {
+      slugTemplate = Settings.get<string>(SETTING_SLUG_TEMPLATE);
     }
 
-    if (slugTemplate) {
+    if (typeof slugTemplate === 'string') {
       if (slugTemplate.includes('{{title}}')) {
         const regex = new RegExp('{{title}}', 'g');
         slugTemplate = slugTemplate.replace(regex, articleTitle.toLowerCase().replace(/\s/g, '-'));

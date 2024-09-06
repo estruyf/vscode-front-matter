@@ -46,7 +46,7 @@ export const SlugField: React.FunctionComponent<ISlugFieldProps> = ({
     if (text !== value) {
       setText(value);
     }
-  }, [value]);
+  }, [text, value]);
 
   useEffect(() => {
     if (titleValue) {
@@ -54,7 +54,7 @@ export const SlugField: React.FunctionComponent<ISlugFieldProps> = ({
         title: titleValue,
         slugTemplate
       }).then((slug) => {
-        if (slug.slugWithPrefixAndSuffix) {
+        if (typeof slug.slugWithPrefixAndSuffix === "string") {
           setSlug(slug.slugWithPrefixAndSuffix);
         }
       }).catch((_) => {
