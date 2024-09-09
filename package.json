@@ -2020,7 +2020,7 @@
         },
         "frontMatter.templates.prefix": {
           "type": "string",
-          "default": "yyyy-MM-dd",
+          "default": "{{date|yyyy-MM-dd}}",
           "markdownDescription": "%setting.frontMatter.templates.prefix.markdownDescription%",
           "scope": "Templates"
         },

@@ -310,7 +310,7 @@ export class Preview {
 
       try {
         const articleDate = await ArticleHelper.getDate(article);
-        pathname = processDateTimePlaceholders(pathname, dateFormat, articleDate);
+        pathname = processDateTimePlaceholders(pathname, articleDate);
         slug = join(pathname, slug);
       } catch (error) {
         slug = join(pathname, slug);

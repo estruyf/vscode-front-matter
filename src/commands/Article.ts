@@ -202,16 +202,20 @@ export class Article {
       return;
     }
 
+    const titleField = getTitleField();
+    const articleTitle: string = article.data[titleField];
+    const articleDate = await ArticleHelper.getDate(article);
+
     let filePrefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
     const contentType = await ArticleHelper.getContentType(article);
     filePrefix = await ArticleHelper.getFilePrefix(
       filePrefix,
       editor.document.uri.fsPath,
-      contentType
+      contentType,
+      articleTitle,
+      articleDate
     );
 
-    const titleField = getTitleField();
-    const articleTitle: string = article.data[titleField];
     const slugInfo = Article.generateSlug(articleTitle, article, contentType.slugTemplate);
 
     if (
