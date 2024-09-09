@@ -15,7 +15,8 @@ import {
   processArticlePlaceholdersFromData,
   processTimePlaceholders,
   processFmPlaceholders,
-  parseWinPath
+  parseWinPath,
+  Questions
 } from '../../helpers';
 import {
   COMMAND_NAME,
@@ -107,6 +108,24 @@ export class DataListener extends BaseListener {
       case CommandToCode.copilotSuggestDescription:
         this.copilotSuggestDescription(msg.command, msg.requestId);
         break;
+      case CommandToCode.copilotSuggestTitle:
+        this.copilotSuggestTitle(msg.command, msg.requestId, msg.payload);
+        break;
+    }
+  }
+
+  private static async copilotSuggestTitle(command: string, requestId?: string, title?: string) {
+    if (!command || !requestId || !title) {
+      return;
+    }
+
+    const aiTitles = await Copilot.suggestTitles(title);
+    title = await Questions.pickTitleSuggestions(title, aiTitles || [], true);
+
+    if (title) {
+      this.sendRequest(command, requestId, title);
+    } else {
+      this.sendRequestError(command, requestId, 'Failed to suggest title');
     }
   }
 

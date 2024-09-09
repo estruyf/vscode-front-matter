@@ -47,7 +47,7 @@ export class Copilot {
         
         IMPORTANT: You are only allowed to respond with a text that should not exceed ${chars} characters in length.
         
-        Desired format: just a string, e.g. "My first blog post". Each suggestion is separated by a new line.`
+        Desired format: just a string and wrapped in double quotes, e.g. "My first blog post". Each suggestion is separated by a new line.`
       ),
       LanguageModelChatMessage.User(`The title of the blog post is """${title}""".`)
     ];

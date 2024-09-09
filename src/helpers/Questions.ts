@@ -93,46 +93,12 @@ export class Questions {
         }
       }
 
-      if (title && aiTitles && aiTitles.length > 0) {
-        const options: QuickPickItem[] = [
-          {
-            label: `✏️ ${l10n.t(
-              LocalizationKey.helpersQuestionsContentTitleAiInputQuickPickTitleSeparator
-            )}`,
-            kind: QuickPickItemKind.Separator
-          },
-          {
-            label: title
-          },
-          {
-            label: `🤖 ${l10n.t(
-              isCopilotInstalled
-                ? LocalizationKey.helpersQuestionsContentTitleAiInputQuickPickCopilotSeparator
-                : LocalizationKey.helpersQuestionsContentTitleAiInputQuickPickAiSeparator
-            )}`,
-            kind: QuickPickItemKind.Separator
-          },
-          ...aiTitles.map((d: string) => ({
-            label: d
-          }))
-        ];
-
-        const selectedTitle = await window.showQuickPick(options, {
-          title: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputSelectTitle),
-          placeHolder: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputSelectPlaceholder),
-          ignoreFocusOut: true
-        });
-
-        if (selectedTitle) {
-          title = selectedTitle.label;
-        } else if (!selectedTitle) {
-          // Reset the title, so the user can enter their own title
-          title = undefined;
-        }
-      } else if (!title && showWarning) {
-        Notifications.warning(l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputWarning));
-        return;
-      }
+      title = await this.pickTitleSuggestions(
+        title,
+        aiTitles || [],
+        isCopilotInstalled,
+        showWarning
+      );
     }
 
     if (!title) {
@@ -146,6 +112,56 @@ export class Questions {
 
     if (!title && showWarning) {
       Notifications.warning(l10n.t(LocalizationKey.helpersQuestionsContentTitleTitleInputWarning));
+      return;
+    }
+
+    return title;
+  }
+
+  public static async pickTitleSuggestions(
+    title: string | undefined,
+    aiTitles: string[],
+    isCopilotInstalled: boolean,
+    showWarning: boolean = true
+  ): Promise<string | undefined> {
+    if (title && aiTitles && aiTitles.length > 0) {
+      const options: QuickPickItem[] = [
+        {
+          label: `✏️ ${l10n.t(
+            LocalizationKey.helpersQuestionsContentTitleAiInputQuickPickTitleSeparator
+          )}`,
+          kind: QuickPickItemKind.Separator
+        },
+        {
+          label: title
+        },
+        {
+          label: `🤖 ${l10n.t(
+            isCopilotInstalled
+              ? LocalizationKey.helpersQuestionsContentTitleAiInputQuickPickCopilotSeparator
+              : LocalizationKey.helpersQuestionsContentTitleAiInputQuickPickAiSeparator
+          )}`,
+          kind: QuickPickItemKind.Separator
+        },
+        ...aiTitles.map((d: string) => ({
+          label: d
+        }))
+      ];
+
+      const selectedTitle = await window.showQuickPick(options, {
+        title: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputSelectTitle),
+        placeHolder: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputSelectPlaceholder),
+        ignoreFocusOut: true
+      });
+
+      if (selectedTitle) {
+        title = selectedTitle.label;
+      } else if (!selectedTitle) {
+        // Reset the title, so the user can enter their own title
+        title = undefined;
+      }
+    } else if (!title && showWarning) {
+      Notifications.warning(l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputWarning));
       return;
     }
 
