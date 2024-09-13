@@ -32,6 +32,7 @@ import {
   parseWinPath,
   processArticlePlaceholdersFromPath,
   processDateTimePlaceholders,
+  processFilePrefixPlaceholders,
   processI18nPlaceholders,
   processTimePlaceholders
 } from '.';
@@ -631,6 +632,7 @@ export class ArticleHelper {
 
     if (prefix && typeof prefix === 'string') {
       prefix = await ArticleHelper.processCustomPlaceholders(prefix, title, filePath, true);
+      prefix = await processFilePrefixPlaceholders(prefix, filePath);
 
       let selectedFolder: ContentFolder | undefined | null = null;
       if (filePath) {

@@ -4,6 +4,8 @@
 
 ### ✨ New features
 
+- [#844](https://github.com/estruyf/vscode-front-matter/issues/844): New `{{filePrefix.index}}` placeholder to add the index number of the file in the folder
+
 ### 🎨 Enhancements
 
 - [#833](https://github.com/estruyf/vscode-front-matter/issues/833): Added support for Asciidoc files
