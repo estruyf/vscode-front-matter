@@ -4,11 +4,11 @@ import { CommandToCode } from '../CommandToCode';
 import { useDebounce } from '../../hooks/useDebounce';
 import { Collapsible } from './Collapsible';
 import useStartCommand from '../hooks/useStartCommand';
-import { VSCodeCheckbox } from '@vscode/webview-ui-toolkit/react';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
 import { VSCodeLabel } from './VSCode';
+import { Checkbox as VSCodeCheckbox } from 'vscrui';
 
 export interface IGlobalSettingsProps {
   settings: PanelSettings | undefined;
@@ -81,7 +81,7 @@ const GlobalSettings: React.FunctionComponent<IGlobalSettingsProps> = ({
           <VSCodeLabel>
             {l10n.t(LocalizationKey.panelGlobalSettingsActionModifiedDateLabel)}
           </VSCodeLabel>
-          <VSCodeCheckbox checked={modifiedDateUpdate} onClick={onDateCheck}>
+          <VSCodeCheckbox className='!flex' checked={modifiedDateUpdate} onChange={onDateCheck}>
             {l10n.t(LocalizationKey.panelGlobalSettingsActionModifiedDateDescription)}
           </VSCodeCheckbox>
         </div>
@@ -89,7 +89,7 @@ const GlobalSettings: React.FunctionComponent<IGlobalSettingsProps> = ({
           <VSCodeLabel>
             {l10n.t(LocalizationKey.panelGlobalSettingsActionFrontMatterLabel)}
           </VSCodeLabel>
-          <VSCodeCheckbox checked={fmHighlighting} onClick={onHighlightCheck}>
+          <VSCodeCheckbox className='!flex' checked={fmHighlighting} onChange={onHighlightCheck}>
             {l10n.t(LocalizationKey.panelGlobalSettingsActionFrontMatterDescription)}
           </VSCodeCheckbox>
         </div>

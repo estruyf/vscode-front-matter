@@ -21,29 +21,30 @@ const config = [{
     extensions: ['.ts', '.js', '.tsx', '.jsx'],
     fallback: {
       "assert": require.resolve("assert"),
-      "path": require.resolve("path-browserify")
+      "path": require.resolve("path-browserify"),
+      "process/browser": require.resolve("process/browser"),
     }
   },
   module: {
     rules: [{
-        test: /\.(ts|tsx)$/,
-        exclude: /node_modules/,
-        use: [{
-          loader: 'ts-loader'
-        }]
-      },
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader', 'postcss-loader']
-      },
-      {
-        test: /\.mjs$/,
-        include: /node_modules/,
-        type: 'javascript/auto',
-        resolve: {
-          fullySpecified: false
-        }
+      test: /\.(ts|tsx)$/,
+      exclude: /node_modules/,
+      use: [{
+        loader: 'ts-loader'
+      }]
+    },
+    {
+      test: /\.css$/,
+      use: ['style-loader', 'css-loader', 'postcss-loader']
+    },
+    {
+      test: /\.mjs$/,
+      include: /node_modules/,
+      type: 'javascript/auto',
+      resolve: {
+        fullySpecified: false
       }
+    }
     ]
   },
   performance: {

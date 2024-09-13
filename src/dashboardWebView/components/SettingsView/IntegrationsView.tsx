@@ -4,7 +4,7 @@ import { messageHandler } from '@estruyf/vscode/dist/client';
 import { LocalizationKey } from '../../../localization';
 import { GeneralCommands, ExtensionState } from '../../../constants';
 import { SettingsInput } from './SettingsInput';
-import { VSCodeButton } from '@vscode/webview-ui-toolkit/react';
+import { Button as VSCodeButton } from 'vscrui';
 
 export interface IIntegrationsViewProps { }
 
