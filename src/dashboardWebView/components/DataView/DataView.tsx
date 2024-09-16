@@ -172,6 +172,8 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
       .filter((folder) => folder.enableFileCreation);
   }, [settings?.dataFolders]);
 
+  const hasOnlyDataCreationFolders = useMemo(() => (!dataFiles || dataFiles.length === 0) && (fileCreationFolders && fileCreationFolders.length > 0), [dataFiles, fileCreationFolders]);
+
   useEffect(() => {
     Messenger.listen(messageListener);
 
@@ -187,14 +189,16 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
     };
   }, []);
 
+  console.log('DataView render', settings?.dataFolders);
+
   return (
     <div className="flex flex-col h-full overflow-auto inset-y-0">
       <Header settings={settings} />
 
-      {dataFiles && dataFiles.length > 0 ? (
+      {(dataFiles && dataFiles.length > 0) || (fileCreationFolders && fileCreationFolders.length > 0) ? (
         <div className={`relative w-full flex-grow mx-auto overflow-hidden`}>
           {
-            !selectedData && (
+            !selectedData && (dataFiles && dataFiles.length > 0) && (
               <div className={`flex w-64 flex-col absolute inset-y-0`}>
                 <aside
                   className={`flex flex-col flex-grow overflow-y-auto border-r py-6 px-4 overflow-auto border-[var(--frontmatter-border)]`}
@@ -207,6 +211,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
                     <div
                       className={`divide-y border-t border-b divide-[var(--frontmatter-border)] border-[var(--frontmatter-border)]`}
                     >
+
                       {dataFiles &&
                         dataFiles.length > 0 &&
                         dataFiles.map((dataFile, idx) => (
@@ -232,76 +237,82 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
             enterFrom="opacity-0"
             enterTo="opacity-100">
             <div className={`w-full px-4 py-2 border-b border-[var(--frontmatter-border)]`}>
-              {selectedData && (
-                <div className={`flex justify-between`}>
-                  <div className={`flex gap-4`}>
-                    <DropdownMenu>
-                      <MenuButton
-                        label={localize(LocalizationKey.dashboardDataViewDataViewSelect)}
-                        title={selectedData.title}
-                      />
+              <div className={`flex justify-between`}>
+                <div className={`flex gap-4`}>
+                  {
+                    selectedData && (
+                      <DropdownMenu>
+                        <MenuButton
+                          label={localize(LocalizationKey.dashboardDataViewDataViewSelect)}
+                          title={selectedData.title}
+                        />
 
-                      <DropdownMenuContent>
-                        {dataFiles.map((dataFile) => (
-                          <MenuItem
-                            key={dataFile.id}
-                            title={dataFile.title}
-                            value={dataFile}
-                            isCurrent={selectedData.id === dataFile.id}
-                            onClick={() => setSchema(dataFile)}
-                          />
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                        <DropdownMenuContent>
+                          {dataFiles.map((dataFile) => (
+                            <MenuItem
+                              key={dataFile.id}
+                              title={dataFile.title}
+                              value={dataFile}
+                              isCurrent={selectedData.id === dataFile.id}
+                              onClick={() => setSchema(dataFile)}
+                            />
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )
+                  }
 
-                    {
-                      fileCreationFolders && fileCreationFolders.length > 0 && (
-                        <DropdownMenu>
-                          <MenuButton
-                            label={localize(LocalizationKey.dashboardDataViewDataViewCreateNew)}
-                            title={localize(LocalizationKey.dashboardDataViewDataViewSelectDataFolder)}
-                          />
+                  {
+                    fileCreationFolders && fileCreationFolders.length > 0 && (
+                      <DropdownMenu>
+                        <MenuButton
+                          label={localize(LocalizationKey.dashboardDataViewDataViewCreateNew)}
+                          title={localize(LocalizationKey.dashboardDataViewDataViewSelectDataFolder)}
+                        />
 
-                          <DropdownMenuContent>
-                            {fileCreationFolders.map((folder) => (
-                              <MenuItem
-                                key={folder.id}
-                                title={folder.id}
-                                value={folder}
-                                onClick={() => createDataFile(folder)}
-                              />
-                            ))}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      )
-                    }
-                  </div>
-
-                  <div className={`flex gap-2`}>
-                    <ActionsBarItem
-                      className='flex items-center'
-                      onClick={() => openFile(selectedData.file)}
-                      title={localize(LocalizationKey.commonView)}
-                    >
-                      <EyeIcon className="w-4 h-4 mr-1" aria-hidden="true" />
-                      <span>{localize(LocalizationKey.commonView)}</span>
-                    </ActionsBarItem>
-
-                    <ActionsBarItem
-                      className='flex items-center hover:text-[var(--vscode-statusBarItem-warningBackground)]'
-                      onClick={() => setSelectedData(null)}
-                      title={localize(LocalizationKey.dashboardDataViewDataViewCloseSelectedDataFile)}
-                    >
-                      <XMarkIcon className="w-4 h-4 mr-1" aria-hidden="true" />
-                      <span>{localize(LocalizationKey.dashboardDataViewDataViewCloseSelectedDataFile)}</span>
-                    </ActionsBarItem>
-                  </div>
+                        <DropdownMenuContent>
+                          {fileCreationFolders.map((folder) => (
+                            <MenuItem
+                              key={folder.id}
+                              title={folder.id}
+                              value={folder}
+                              onClick={() => createDataFile(folder)}
+                            />
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )
+                  }
                 </div>
-              )}
+
+                {
+                  selectedData && (
+                    <div className={`flex gap-2`}>
+                      <ActionsBarItem
+                        className='flex items-center'
+                        onClick={() => openFile(selectedData.file)}
+                        title={localize(LocalizationKey.commonView)}
+                      >
+                        <EyeIcon className="w-4 h-4 mr-1" aria-hidden="true" />
+                        <span>{localize(LocalizationKey.commonView)}</span>
+                      </ActionsBarItem>
+
+                      <ActionsBarItem
+                        className='flex items-center hover:text-[var(--vscode-statusBarItem-warningBackground)]'
+                        onClick={() => setSelectedData(null)}
+                        title={localize(LocalizationKey.dashboardDataViewDataViewCloseSelectedDataFile)}
+                      >
+                        <XMarkIcon className="w-4 h-4 mr-1" aria-hidden="true" />
+                        <span>{localize(LocalizationKey.dashboardDataViewDataViewCloseSelectedDataFile)}</span>
+                      </ActionsBarItem>
+                    </div>
+                  )
+                }
+              </div>
             </div>
           </Transition>
 
-          <section className={`flex min-w-0 h-full ease transition-[padding] ${selectedData ? "" : "pl-64"}`}>
+          <section className={`flex min-w-0 h-full ease transition-[padding] ${selectedData ? "" : hasOnlyDataCreationFolders ? "" : "pl-64"}`}>
             {selectedData ? (
               <>
                 {!selectedData.singleEntry && (

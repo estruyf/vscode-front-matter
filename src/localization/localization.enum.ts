@@ -496,6 +496,10 @@ export enum LocalizationKey {
    */
   dashboardDataViewEmptyViewHeading = 'dashboard.dataView.emptyView.heading',
   /**
+   * Start by creating a new data file
+   */
+  dashboardDataViewEmptyViewHeadingCreate = 'dashboard.dataView.emptyView.heading.create',
+  /**
    * Edit "{0}"
    */
   dashboardDataViewSortableItemEditButtonTitle = 'dashboard.dataView.sortableItem.editButton.title',
