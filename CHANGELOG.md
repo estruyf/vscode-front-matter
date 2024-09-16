@@ -12,6 +12,7 @@
 - [#834](https://github.com/estruyf/vscode-front-matter/issues/834): Added the ability to create new data files for a data folder
 - [#841](https://github.com/estruyf/vscode-front-matter/issues/841): Enable placeholders for file prefixes
 - [#846](https://github.com/estruyf/vscode-front-matter/issues/846): Added GitHub Copilot action for title field
+- [#848](https://github.com/estruyf/vscode-front-matter/issues/848): Set the default GitHub Copilot model to `gpt-4o-mini`
 
 ### 🐞 Fixes
 
