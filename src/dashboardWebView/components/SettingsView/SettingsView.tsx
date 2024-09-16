@@ -10,18 +10,86 @@ import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { COMMAND_NAME } from '../../../constants';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
-import { VSCodePanelTab, VSCodePanelView, VSCodePanels } from '@vscode/webview-ui-toolkit/react';
 import { CommonSettings } from './CommonSettings';
 import { IntegrationsView } from './IntegrationsView';
 import { useEffect } from 'react';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
+import { ITab, IView, Panels as VSCodePanels } from 'vscrui';
 
 export interface ISettingsViewProps { }
 
 export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (_: React.PropsWithChildren<ISettingsViewProps>) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const settings = useRecoilValue(SettingsSelector);
+
+  const tabs: ITab[] = React.useMemo(() => {
+    let temp = [
+      { id: "view-1", label: l10n.t(LocalizationKey.settingsViewCommon) },
+      { id: "view-2", label: l10n.t(LocalizationKey.settingsViewContentFolders) }
+    ];
+
+    if (settings?.crntFramework === 'astro') {
+      temp.push({ id: "view-3", label: l10n.t(LocalizationKey.settingsViewAstro) });
+    }
+
+    return [
+      ...temp,
+      { id: "view-4", label: l10n.t(LocalizationKey.settingsViewIntegration) }
+    ];
+  }, [settings]);
+
+  const views: IView[] = React.useMemo(() => {
+    if (!settings) {
+      return [];
+    }
+
+    let temp = [
+      {
+        id: "view-1",
+        content: <CommonSettings />
+      },
+      {
+        id: "view-2",
+        content: (
+          <div className='py-4'>
+            <h2 className='text-xl mb-2'>{l10n.t(LocalizationKey.settingsContentFolders)}</h2>
+
+            <ContentFolders
+              settings={settings}
+              triggerLoading={(isLoading) => setLoading(isLoading)} />
+          </div>
+        )
+      }
+    ];
+
+    if (settings?.crntFramework === 'astro') {
+      temp.push({
+        id: "view-3",
+        content: (
+          <div className='py-4'>
+            <h2 className='text-xl mb-2'>{l10n.t(LocalizationKey.settingsContentTypes)}</h2>
+
+            <AstroContentTypes
+              settings={settings}
+              triggerLoading={(isLoading) => setLoading(isLoading)}
+              setStatus={_ => null} />
+          </div>
+        )
+      });
+    }
+
+    temp.push({
+      id: "view-4",
+      content: (
+        <IntegrationsView />
+      )
+    });
+
+    return [
+      ...temp
+    ];
+  }, [settings]);
 
   useEffect(() => {
     Messenger.send(DashboardMessage.setTitle, l10n.t(LocalizationKey.commonSettings));
@@ -52,51 +120,11 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (_: Rea
               </a>
             </div>
 
-            <VSCodePanels className={`mt-4`}>
-              <VSCodePanelTab id="view-1">{l10n.t(LocalizationKey.settingsViewCommon)}</VSCodePanelTab>
-              <VSCodePanelTab id="view-2">{l10n.t(LocalizationKey.settingsViewContentFolders)}</VSCodePanelTab>
-
-              {
-                settings?.crntFramework === 'astro' && (
-                  <VSCodePanelTab id="view-3">{l10n.t(LocalizationKey.settingsViewAstro)}</VSCodePanelTab>
-                )
-              }
-
-              <VSCodePanelTab id="view-4">{l10n.t(LocalizationKey.settingsViewIntegration)}</VSCodePanelTab>
-
-              <VSCodePanelView id="view-1">
-                <CommonSettings />
-              </VSCodePanelView>
-
-              <VSCodePanelView id="view-2">
-                <div className='py-4'>
-                  <h2 className='text-xl mb-2'>{l10n.t(LocalizationKey.settingsContentFolders)}</h2>
-
-                  <ContentFolders
-                    settings={settings}
-                    triggerLoading={(isLoading) => setLoading(isLoading)} />
-                </div>
-              </VSCodePanelView>
-
-              {
-                settings?.crntFramework === 'astro' && (
-                  <VSCodePanelView id="view-3">
-                    <div className='py-4'>
-                      <h2 className='text-xl mb-2'>{l10n.t(LocalizationKey.settingsContentTypes)}</h2>
-
-                      <AstroContentTypes
-                        settings={settings}
-                        triggerLoading={(isLoading) => setLoading(isLoading)}
-                        setStatus={_ => null} />
-                    </div>
-                  </VSCodePanelView>
-                )
-              }
-
-              <VSCodePanelView id="view-4">
-                <IntegrationsView />
-              </VSCodePanelView>
-            </VSCodePanels>
+            <VSCodePanels
+              className={`mt-4`}
+              tabs={tabs}
+              views={views}
+            />
           </div>
         )
       }
