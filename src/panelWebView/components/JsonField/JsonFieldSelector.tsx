@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { Field } from '../../../models';
 import { DataType } from '../../../models/DataType';
-import { VSCodeDropdown, VSCodeOption } from '@vscode/webview-ui-toolkit/react';
+import { Dropdown as VSCodeDropdown, DropdownOption } from 'vscrui';
 
 export interface IJsonFieldSelectorProps {
   field: Field;
@@ -22,6 +22,12 @@ export const JsonFieldSelector: React.FunctionComponent<IJsonFieldSelectorProps>
   onSchemaUpdate
 }: React.PropsWithChildren<IJsonFieldSelectorProps>) => {
   const [options, setOptions] = useState<string[]>([]);
+
+  const onChange = (selection: DropdownOption) => {
+    onSetDataType(
+      selection.value === EMPTY_OPTION ? null : selection.value
+    );
+  };
 
   const onSchemaSet = useCallback((dataType: string) => {
     if (dataTypes && dataType !== EMPTY_OPTION) {
@@ -63,23 +69,12 @@ export const JsonFieldSelector: React.FunctionComponent<IJsonFieldSelectorProps>
       <h3>Block type</h3>
       <VSCodeDropdown
         value={selectedDataType ?? EMPTY_OPTION}
-        onChange={(event: any) =>
-          onSetDataType(
-            event.currentTarget.value === EMPTY_OPTION ? null : event.currentTarget.value
-          )
-        }
-        style={{
-          width: '100%',
-          marginBottom: '1rem'
-        }}
-      >
-        <VSCodeOption value={EMPTY_OPTION}>&nbsp;</VSCodeOption>
-        {options.map((o) => (
-          <VSCodeOption key={o} value={o}>
-            {o}
-          </VSCodeOption>
-        ))}
-      </VSCodeDropdown>
+        onChange={(selection) => onChange(selection as DropdownOption)}
+        className='!block mb-4'
+        options={[
+          { value: EMPTY_OPTION, label: '\u00A0' },
+          ...options.map((o) => ({ value: o, label: o }))
+        ]} />
     </div>
   );
 };

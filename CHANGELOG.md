@@ -19,6 +19,10 @@
 - [#842](https://github.com/estruyf/vscode-front-matter/issues/842): Allow to set the `frontMatter.taxonomy.slugTemplate` setting to an empty string
 - [#845](https://github.com/estruyf/vscode-front-matter/issues/845): Fix empty values for number fields
 
+### 🚧 Work in progress
+
+- [#837](https://github.com/estruyf/vscode-front-matter/issues/837): Replacing the VSCode Webview UI Toolkit with [vscrui](https://github.com/estruyf/vscrui) due to the deprecation of the VSCode Webview UI Toolkit library
+
 ## [10.3.0] - 2024-08-13 - [Release notes](https://beta.frontmatter.codes/updates/v10.3.0)
 
 ### ✨ New features
