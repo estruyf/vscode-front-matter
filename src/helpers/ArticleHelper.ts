@@ -551,7 +551,11 @@ export class ArticleHelper {
     // Create a folder with the `index.md` file
     if (contentType?.pageBundle) {
       if (prefix && typeof prefix === 'string') {
-        sanitizedName = `${prefix}-${sanitizedName}`;
+        if (prefix.endsWith('/')) {
+          sanitizedName = `${prefix}${sanitizedName}`;
+        } else {
+          sanitizedName = `${prefix}-${sanitizedName}`;
+        }
       }
 
       const newFolder = join(folderPath, sanitizedName);

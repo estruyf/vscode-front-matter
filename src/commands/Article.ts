@@ -272,7 +272,11 @@ export class Article {
 
           let newFileName = `${slugName}${ext}`;
           if (filePrefix && typeof filePrefix === 'string') {
-            newFileName = `${filePrefix}-${newFileName}`;
+            if (filePrefix.endsWith('/')) {
+              newFileName = `${filePrefix}${newFileName}`;
+            } else {
+              newFileName = `${filePrefix}-${newFileName}`;
+            }
           }
 
           const newPath = editor.document.uri.fsPath.replace(fileName, newFileName);
