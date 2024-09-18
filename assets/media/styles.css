@@ -75,7 +75,7 @@
 }
 
 .frontmatter h3 {
-  margin-bottom: 1rem;
+  /* margin-bottom: 1rem; */
 }
 
 .frontmatter p,
@@ -224,6 +224,7 @@
   text-decoration: none;
   width: 100%;
   white-space: nowrap;
+  border-radius: 0.25rem;
 }
 
 .ext_link_block button.active {

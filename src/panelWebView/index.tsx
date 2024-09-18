@@ -5,10 +5,9 @@ import { ViewPanel } from './ViewPanel';
 import { RecoilRoot } from 'recoil';
 import { I10nProvider } from '../dashboardWebView/providers/I10nProvider';
 import { SentryInit } from '../utils/sentryInit';
+import 'vscrui/dist/codicon.css';
 
 import './styles.css';
-
-import '@vscode-elements/elements/dist/vscode-collapsible/index.js';
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
