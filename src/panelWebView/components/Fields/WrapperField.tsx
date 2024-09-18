@@ -153,7 +153,9 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       onSendUpdate(field.name, field.default, parentFields);
     }
 
-    return null;
+    if (field.hidden) {
+      return null;
+    }
   }
 
   // Conditional fields

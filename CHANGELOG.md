@@ -18,6 +18,7 @@
 
 - [#842](https://github.com/estruyf/vscode-front-matter/issues/842): Allow to set the `frontMatter.taxonomy.slugTemplate` setting to an empty string
 - [#845](https://github.com/estruyf/vscode-front-matter/issues/845): Fix empty values for number fields
+- [#849](https://github.com/estruyf/vscode-front-matter/issues/849): Show fields which are not empty in the metadata panel
 
 ### 🚧 Work in progress
 
