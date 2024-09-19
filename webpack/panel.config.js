@@ -58,7 +58,12 @@ const config = [{
   performance: {
     hints: false
   },
-  plugins: [],
+  plugins: [
+    new WebpackManifestPlugin({
+      publicPath: "",
+      fileName: "panel.manifest.json"
+    })
+  ],
   devServer: {
     compress: true,
     port: 9001,
@@ -92,11 +97,6 @@ module.exports = (env, argv) => {
         analyzerMode: 'static',
         reportFilename: "viewpanel.html",
         openAnalyzer: false
-      }));
-
-      configItem.plugins.push(new WebpackManifestPlugin({
-        publicPath: "",
-        fileName: "panel.manifest.json"
       }));
 
       configItem.optimization = {

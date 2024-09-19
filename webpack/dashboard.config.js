@@ -56,6 +56,10 @@ const config = [{
       // because the `util` package expects there to be a global variable named `process`.
       // Thanks to https://stackoverflow.com/a/65018686/14239942
       process: 'process/browser'
+    }),
+    new WebpackManifestPlugin({
+      publicPath: "",
+      fileName: "dashboard.manifest.json"
     })
   ],
   devServer: {
@@ -80,11 +84,6 @@ module.exports = (env, argv) => {
         analyzerMode: 'static',
         reportFilename: "dashboard.html",
         openAnalyzer: false
-      }));
-
-      configItem.plugins.push(new WebpackManifestPlugin({
-        publicPath: "",
-        fileName: "dashboard.manifest.json"
       }));
 
       configItem.optimization = {
