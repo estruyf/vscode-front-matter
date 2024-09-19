@@ -1,5 +1,3 @@
-//@ts-check
-
 'use strict';
 
 const path = require('path');
@@ -7,13 +5,15 @@ const {
   ProvidePlugin
 } = require('webpack');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const WebpackManifestPlugin = require('webpack-manifest-plugin').WebpackManifestPlugin;
 
 const config = [{
   name: 'dashboard',
   target: 'web',
   entry: './src/dashboardWebView/index.tsx',
   output: {
-    filename: 'dashboardWebView.js',
+    filename: 'dashboard.[name].js',
+    chunkFilename: '[name].[contenthash].js',
     path: path.resolve(__dirname, '../dist')
   },
   devtool: 'source-map',
@@ -81,6 +81,17 @@ module.exports = (env, argv) => {
         reportFilename: "dashboard.html",
         openAnalyzer: false
       }));
+
+      configItem.plugins.push(new WebpackManifestPlugin({
+        publicPath: "",
+        fileName: "dashboard.manifest.json"
+      }));
+
+      configItem.optimization = {
+        splitChunks: {
+          chunks: 'all',
+        },
+      };
     }
   }
 

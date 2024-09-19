@@ -9,6 +9,7 @@ export * from './getDescriptionField';
 export * from './getExtensibilityScripts';
 export * from './getLocalizationFile';
 export * from './getTitleField';
+export * from './getWebviewJsFiles';
 export * from './ignoreMsgCommand';
 export * from './isWindows';
 export * from './joinUrl';
