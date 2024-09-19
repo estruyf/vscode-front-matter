@@ -1,5 +1,6 @@
 import { FileType, Uri, workspace } from 'vscode';
 import { parse } from 'path';
+import { isValidFile } from './isValidFile';
 
 /**
  * Processes file prefix placeholders in a given string value.
@@ -15,7 +16,13 @@ export const processFilePrefixPlaceholders = async (value: string, folderPath?: 
   // Example: {{filePrefix.index}} or {{filePrefix.index|chars:4,zeros:true}}
   if (value && value.includes('{{filePrefix.index') && folderPath) {
     const dirContent = await workspace.fs.readDirectory(Uri.file(folderPath));
-    const files = dirContent.filter(([_, type]) => type === FileType.File);
+    const files = dirContent.filter(
+      ([filePath, type]) =>
+        type === FileType.File &&
+        !filePath.startsWith('.') &&
+        isValidFile(filePath) &&
+        !filePath.includes('_index.')
+    );
 
     let chars = 3;
     let idxValue = files.length + 1;
