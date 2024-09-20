@@ -2918,7 +2918,7 @@
     "uniforms-bridge-json-schema": "^3.10.2",
     "uniforms-unstyled": "^3.10.2",
     "url-join-ts": "^1.0.5",
-    "vscrui": "^0.1.0-beta.1093954",
+    "vscrui": "^0.1.0-beta.1094721",
     "wc-react": "github:estruyf/wc-react",
     "webpack": "^5.75.0",
     "webpack-bundle-analyzer": "^4.10.2",
