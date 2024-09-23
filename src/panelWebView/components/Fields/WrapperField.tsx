@@ -94,7 +94,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
     }
 
     if (field.type === 'datetime') {
-      value = getDate(value) || undefined;
+      value = value ? getDate(value) : undefined;
     }
 
     if (value === undefined && field.default) {

@@ -500,7 +500,7 @@ export class ArticleHelper {
     const dateFields = contentType.fields.filter((field) => field.type === 'datetime');
 
     for (const dateField of dateFields) {
-      if (typeof article?.data[dateField.name] !== 'undefined') {
+      if (article?.data[dateField.name]) {
         article.data[dateField.name] = Article.formatDate(new Date(), dateField.dateFormat);
       }
     }

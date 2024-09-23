@@ -73,7 +73,7 @@ const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({
       title={title}
       onClick={triggerClick}
       open={isOpen}>
-      <div className={`section collapsible__body ${className || ''}`}>
+      <div className={`section collapsible__body overflow-y-auto ${className || ''}`}>
         {children}
       </div>
     </VSCodePane>
