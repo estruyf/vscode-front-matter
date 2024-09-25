@@ -175,7 +175,7 @@ export class Article {
     if (article?.data) {
       const slug = SlugHelper.createSlug(title, article?.data, slugTemplate);
 
-      if (slug) {
+      if (typeof slug === 'string') {
         return {
           slug,
           slugWithPrefixAndSuffix: `${prefix}${slug}${suffix}`
@@ -202,19 +202,27 @@ export class Article {
       return;
     }
 
+    const titleField = getTitleField();
+    const articleTitle: string = article.data[titleField];
+    const articleDate = await ArticleHelper.getDate(article);
+
     let filePrefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
     const contentType = await ArticleHelper.getContentType(article);
     filePrefix = await ArticleHelper.getFilePrefix(
       filePrefix,
       editor.document.uri.fsPath,
-      contentType
+      contentType,
+      articleTitle,
+      articleDate
     );
 
-    const titleField = getTitleField();
-    const articleTitle: string = article.data[titleField];
     const slugInfo = Article.generateSlug(articleTitle, article, contentType.slugTemplate);
 
-    if (slugInfo && slugInfo.slug && slugInfo.slugWithPrefixAndSuffix) {
+    if (
+      slugInfo &&
+      typeof slugInfo.slug === 'string' &&
+      typeof slugInfo.slugWithPrefixAndSuffix === 'string'
+    ) {
       article.data['slug'] = slugInfo.slugWithPrefixAndSuffix;
 
       if (contentType) {
@@ -264,7 +272,11 @@ export class Article {
 
           let newFileName = `${slugName}${ext}`;
           if (filePrefix && typeof filePrefix === 'string') {
-            newFileName = `${filePrefix}-${newFileName}`;
+            if (filePrefix.endsWith('/')) {
+              newFileName = `${filePrefix}${newFileName}`;
+            } else {
+              newFileName = `${filePrefix}-${newFileName}`;
+            }
           }
 
           const newPath = editor.document.uri.fsPath.replace(fileName, newFileName);

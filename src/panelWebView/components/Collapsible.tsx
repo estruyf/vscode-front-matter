@@ -1,8 +1,8 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Command } from '../Command';
-import { VsCollapsible } from './VscodeComponents';
+import { Pane as VSCodePane } from 'vscrui';
 
 export interface ICollapsibleProps {
   id: string;
@@ -19,10 +19,16 @@ const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({
   className
 }: React.PropsWithChildren<ICollapsibleProps>) => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const collapseKey = `collapse-${id}`;
+  const collapseKey = useMemo(() => `collapse_${id}`, [id]);
 
   useEffect(() => {
+    if (!collapseKey) {
+      return;
+    }
+
     const prevState: any = Messenger.getState();
+    console.log(collapseKey, prevState[collapseKey]);
+
     if (
       !prevState ||
       !prevState[collapseKey] ||
@@ -31,6 +37,9 @@ const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({
     ) {
       setIsOpen(true);
       updateStorage(true);
+    } else {
+      setIsOpen(false);
+      updateStorage(false);
     }
 
     window.addEventListener('message', (event) => {
@@ -40,7 +49,7 @@ const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({
         updateStorage(false);
       }
     });
-  }, ['']);
+  }, [collapseKey]);
 
   const updateStorage = (value: boolean) => {
     const prevState: any = Messenger.getState();
@@ -50,26 +59,24 @@ const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({
     });
   };
 
-  // This is a work around for a lit-element issue of duplicate slot names
-  const triggerClick = (e: React.MouseEvent<HTMLElement>) => {
-    if ((e.target as Node).nodeName.toUpperCase() === 'VSCODE-COLLAPSIBLE') {
-      setIsOpen((prev) => {
-        if (sendUpdate) {
-          sendUpdate(!prev);
-        }
-
-        updateStorage(!prev);
-        return !prev;
-      });
+  const triggerClick = (open: boolean) => {
+    if (sendUpdate) {
+      sendUpdate(open);
     }
+
+    updateStorage(open);
+    setIsOpen(open);
   };
 
   return (
-    <VsCollapsible title={title} onClick={triggerClick} open={isOpen}>
-      <div className={`section collapsible__body ${className || ''}`}>
+    <VSCodePane
+      title={title}
+      onClick={triggerClick}
+      open={isOpen}>
+      <div className={`section collapsible__body overflow-y-auto ${className || ''}`}>
         {children}
       </div>
-    </VsCollapsible>
+    </VSCodePane>
   );
 };
 

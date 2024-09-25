@@ -42,5 +42,6 @@ runs:
 
     - uses: actions/upload-artifact@v4
       with:
+        include-hidden-files: true
         name: ${{ inputs.PACKAGE_NAME }}
         path: .

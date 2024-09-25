@@ -5,8 +5,7 @@ import { DashboardMessage } from '../../DashboardMessage';
 import { SETTING_DASHBOARD_OPENONSTART } from '../../../constants';
 import * as l10n from "@vscode/l10n"
 import { LocalizationKey } from '../../../localization';
-import { VSCodeCheckbox } from '@vscode/webview-ui-toolkit/react';
-
+import { Checkbox as VSCodeCheckbox } from 'vscrui';
 
 export interface IStartupProps {
   settings: Settings | null;
@@ -31,7 +30,7 @@ export const Startup: React.FunctionComponent<IStartupProps> = ({
 
   return (
     <VSCodeCheckbox
-      onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.checked)}
+      onChange={onChange}
       checked={isChecked}>
       {l10n.t(LocalizationKey.dashboardHeaderStartupLabel)}
     </VSCodeCheckbox>

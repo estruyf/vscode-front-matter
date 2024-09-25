@@ -94,7 +94,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
     }
 
     if (field.type === 'datetime') {
-      value = getDate(value) || undefined;
+      value = value ? getDate(value) : undefined;
     }
 
     if (value === undefined && field.default) {
@@ -129,7 +129,13 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
     } else {
       // Did not contain a placeholder, so value can be set
       if (fieldValue === undefined || value !== fieldValue) {
-        setFieldValue(value || null);
+        if (typeof value === 'number') {
+          setFieldValue(value);
+        } else if (field.type === "slug") {
+          setFieldValue(value);
+        } else {
+          setFieldValue(value || null);
+        }
       }
     }
   }, [field, parent]);
@@ -147,7 +153,9 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       onSendUpdate(field.name, field.default, parentFields);
     }
 
-    return null;
+    if (field.hidden) {
+      return null;
+    }
   }
 
   // Conditional fields

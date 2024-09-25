@@ -33,6 +33,7 @@ export * from './openFileInEditor';
 export * from './parseWinPath';
 export * from './processArticlePlaceholders';
 export * from './processDateTimePlaceholders';
+export * from './processFilePrefixPlaceholders';
 export * from './processFmPlaceholders';
 export * from './processI18nPlaceholders';
 export * from './processPathPlaceholders';

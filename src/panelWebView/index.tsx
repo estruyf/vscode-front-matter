@@ -5,15 +5,9 @@ import { ViewPanel } from './ViewPanel';
 import { RecoilRoot } from 'recoil';
 import { I10nProvider } from '../dashboardWebView/providers/I10nProvider';
 import { SentryInit } from '../utils/sentryInit';
+import 'vscrui/dist/codicon.css';
 
 import './styles.css';
-
-// require('@vscode/codicons/dist/codicon.css');
-import '@vscode-elements/elements/dist/vscode-collapsible/index.js';
-// import '@bendera/vscode-webview-elements/dist/vscode-label/index.js';
-// import '@bendera/vscode-webview-elements/dist/vscode-checkbox.js';
-
-// import '@vscode/webview-ui-toolkit/dist/esm/checkbox';
 
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;

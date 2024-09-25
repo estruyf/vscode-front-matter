@@ -1,22 +1,22 @@
-//@ts-check
-
 'use strict';
 
 const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const WebpackManifestPlugin = require('webpack-manifest-plugin').WebpackManifestPlugin;
 
 const config = [{
   name: 'panel',
   target: 'web',
   entry: './src/panelWebView/index.tsx',
   output: {
-    filename: 'panelWebView.js',
+    filename: 'panel.[name].js',
+    chunkFilename: '[name].[contenthash].js',
     path: path.resolve(__dirname, '../dist')
   },
   devtool: 'source-map',
   resolve: {
     extensions: ['.ts', '.js', '.tsx', '.jsx'],
-    fallback: { 
+    fallback: {
       "path": require.resolve("path-browserify")
     }
   },
@@ -58,7 +58,12 @@ const config = [{
   performance: {
     hints: false
   },
-  plugins: [],
+  plugins: [
+    new WebpackManifestPlugin({
+      publicPath: "",
+      fileName: "panel.manifest.json"
+    })
+  ],
   devServer: {
     compress: true,
     port: 9001,
@@ -73,7 +78,7 @@ const config = [{
           if (error.message === "ResizeObserver loop limit exceeded") {
             return false;
           }
-  
+
           return true;
         }
       }
@@ -87,12 +92,18 @@ module.exports = (env, argv) => {
 
     if (argv.mode === 'production') {
       configItem.devtool = "hidden-source-map";
-      
+
       configItem.plugins.push(new BundleAnalyzerPlugin({
         analyzerMode: 'static',
         reportFilename: "viewpanel.html",
         openAnalyzer: false
       }));
+
+      configItem.optimization = {
+        splitChunks: {
+          chunks: 'all',
+        },
+      };
     }
   }
 

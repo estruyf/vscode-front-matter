@@ -17,7 +17,7 @@ import { TaxonomyType } from '../models';
 
 export class Copilot {
   private static personality =
-    'You are a CMS expert for Front Matter CMS and your task is to assist the user to help generate content for their article.';
+    'You are a CMS expert specializing in Front Matter CMS. Your task is to assist the user in generating optimized content for their article.';
 
   /**
    * Checks if the GitHub Copilot extension is installed.
@@ -39,32 +39,35 @@ export class Copilot {
       return;
     }
 
-    const chars = Settings.get<number>(SETTING_SEO_TITLE_LENGTH) || 60;
-    const messages = [
-      LanguageModelChatMessage.User(Copilot.personality),
-      LanguageModelChatMessage.User(
-        `The user wants you to create a SEO friendly title. You should give the user a couple of suggestions based on the provided title.
-        
-        IMPORTANT: You are only allowed to respond with a text that should not exceed ${chars} characters in length.
-        
-        Desired format: just a string, e.g. "My first blog post". Each suggestion is separated by a new line.`
-      ),
-      LanguageModelChatMessage.User(`The title of the blog post is """${title}""".`)
-    ];
+    try {
+      const chars = Settings.get<number>(SETTING_SEO_TITLE_LENGTH) || 60;
+      const messages = [
+        LanguageModelChatMessage.User(Copilot.personality),
+        LanguageModelChatMessage.User(
+          `Generate an SEO-friendly title based on the provided one. Offer a few suggestions, ensuring each does not exceed ${chars} characters.
+  
+  Each title suggestion should have the following response format: a single string wrapped in double quotes, e.g., "My first blog post" with each suggestion on a new line.`
+        ),
+        LanguageModelChatMessage.User(`The title of the blog post is """${title}""".`)
+      ];
 
-    const chatResponse = await this.getChatResponse(messages);
-    if (!chatResponse) {
-      return;
+      const chatResponse = await this.getChatResponse(messages);
+      if (!chatResponse) {
+        return;
+      }
+
+      let titles = chatResponse.split('\n').map((title) => title.trim());
+      // Remove 1. or - from the beginning of the title
+      titles = titles.map((title) => title.replace(/^\d+\.\s+|-/, '').trim());
+      // Only take the titles wrapped in quotes
+      titles = titles.filter((title) => title.startsWith('"') && title.endsWith('"'));
+      // Remove the quotes from the beginning and end of the title
+      titles = titles.map((title) => title.slice(1, -1));
+      return titles;
+    } catch (err) {
+      Logger.error(`Copilot:suggestTitles:: ${(err as Error).message}`);
+      return [];
     }
-
-    let titles = chatResponse.split('\n').map((title) => title.trim());
-    // Remove 1. or - from the beginning of the title
-    titles = titles.map((title) => title.replace(/^\d+\.\s+|-/, '').trim());
-    // Only take the titles wrapped in quotes
-    titles = titles.filter((title) => title.startsWith('"') && title.endsWith('"'));
-    // Remove the quotes from the beginning and end of the title
-    titles = titles.map((title) => title.slice(1, -1));
-    return titles;
   }
 
   /**
@@ -79,25 +82,38 @@ export class Copilot {
       return;
     }
 
-    const chars = Settings.get<number>(SETTING_SEO_DESCRIPTION_LENGTH) || 160;
-    const messages = [
-      LanguageModelChatMessage.User(Copilot.personality),
-      LanguageModelChatMessage.User(
-        `The user wants you to create a SEO friendly abstract/description. When the user provides a title and/or content, you should use this information to generate the description.
-        
-        IMPORTANT: You are only allowed to respond with a text that should not exceed ${chars} characters in length.`
-      ),
-      LanguageModelChatMessage.User(`The title of the blog post is """${title}""".`)
-    ];
+    try {
+      const chars = Settings.get<number>(SETTING_SEO_DESCRIPTION_LENGTH) || 160;
+      const messages = [
+        LanguageModelChatMessage.User(Copilot.personality),
+        LanguageModelChatMessage.User(
+          `Generate an SEO-friendly description using the provided title and/or content. Ensure the description does not exceed ${chars} characters.
 
-    if (content) {
-      messages.push(
-        LanguageModelChatMessage.User(`The content of the blog post is: """${content}""".`)
-      );
+Response format: a single string wrapped in double quotes, e.g., "Boost your website's performance with these easy-to-follow speed optimization tips.".`
+        ),
+        LanguageModelChatMessage.User(`The title of the blog post is """${title}""".`)
+      ];
+
+      if (content) {
+        messages.push(
+          LanguageModelChatMessage.User(`The content of the blog post is: """${content}""".`)
+        );
+      }
+
+      const chatResponse = await this.getChatResponse(messages);
+
+      if (!chatResponse) {
+        return;
+      }
+
+      let description = chatResponse.trim();
+      description = description.startsWith('"') ? description.slice(1) : description;
+      description = description.endsWith('"') ? description.slice(0, -1) : description;
+      return description;
+    } catch (err) {
+      Logger.error(`Copilot:suggestDescription:: ${(err as Error).message}`);
+      return '';
     }
-
-    const chatResponse = await this.getChatResponse(messages);
-    return chatResponse;
   }
 
   /**
@@ -119,58 +135,70 @@ export class Copilot {
       return;
     }
 
-    const messages = [
-      LanguageModelChatMessage.User(Copilot.personality),
-      LanguageModelChatMessage.User(
-        `The user wants you to suggest some taxonomy tags. When the user provides a title, description, list of available taxonomy tags, and/or content, you should use this information to generate the tags.
-        
-        IMPORTANT: You are only allowed to respond with a list of tags separated by commas. Example: tag1, tag2, tag3.`
-      ),
-      LanguageModelChatMessage.User(`The title of the blog post is """${title}""".`)
-    ];
+    try {
+      let type = tagType === TagType.tags ? 'tags' : 'categories';
+      if (tagType === TagType.custom) {
+        type = 'tags';
+      }
 
-    if (description) {
-      messages.push(
-        LanguageModelChatMessage.User(`The description of the blog post is: """${description}""".`)
-      );
-    }
-
-    let options =
-      tagType === TagType.tags
-        ? await TaxonomyHelper.get(TaxonomyType.Tag)
-        : await TaxonomyHelper.get(TaxonomyType.Category);
-    const optionsString = options?.join(',') || '';
-
-    if (optionsString) {
-      messages.push(
+      const messages = [
+        LanguageModelChatMessage.User(Copilot.personality),
         LanguageModelChatMessage.User(
-          `The available taxonomy tags are: ${optionsString}. Please select the tags that are relevant to the article. You are allowed to suggest a maximum of 5 tags and suggest new tags if necessary.`
-        )
-      );
+          `Generate relevant taxonomy ${type} based on the provided title, description, available ${type}, and/or content. Respond with a list of ${type} separated by commas.
+
+Example: SEO, website optimization, digital marketing.`
+        ),
+        LanguageModelChatMessage.User(`The title of the blog post is """${title}""".`)
+      ];
+
+      if (description) {
+        messages.push(
+          LanguageModelChatMessage.User(
+            `The description of the blog post is: """${description}""".`
+          )
+        );
+      }
+
+      let options =
+        tagType === TagType.tags
+          ? await TaxonomyHelper.get(TaxonomyType.Tag)
+          : await TaxonomyHelper.get(TaxonomyType.Category);
+      const optionsString = options?.join(',') || '';
+
+      if (optionsString) {
+        messages.push(
+          LanguageModelChatMessage.User(
+            `Based on the provided title, description, and/or content, select relevant ${tagType} from the available taxonomy list: ${optionsString}. You may suggest up to 5 tags and include new ones if necessary.`
+          )
+        );
+      }
+
+      if (content) {
+        messages.push(
+          LanguageModelChatMessage.User(`The content of the blog post is: """${content}""".`)
+        );
+      }
+
+      const chatResponse = await this.getChatResponse(messages);
+
+      if (!chatResponse) {
+        return;
+      }
+
+      // If the chat response contains a colon character, we take the text after the colon as the response.
+      if (chatResponse.includes(':')) {
+        return chatResponse
+          .split(':')[1]
+          .split(',')
+          .map((tag) => tag.trim());
+      }
+
+      // Otherwise, we split the response by commas.
+      return chatResponse.split(',').map((tag) => tag.trim());
+    } catch (err) {
+      Logger.error(`Copilot:suggestTaxonomy:: ${(err as Error).message}`);
+      return [];
     }
-
-    if (content) {
-      messages.push(
-        LanguageModelChatMessage.User(`The content of the blog post is: """${content}""".`)
-      );
-    }
-
-    const chatResponse = await this.getChatResponse(messages);
-
-    if (!chatResponse) {
-      return;
-    }
-
-    // If the chat response contains a colon character, we take the text after the colon as the response.
-    if (chatResponse.includes(':')) {
-      return chatResponse
-        .split(':')[1]
-        .split(',')
-        .map((tag) => tag.trim());
-    }
-
-    // Otherwise, we split the response by commas.
-    return chatResponse.split(',').map((tag) => tag.trim());
   }
 
   /**
@@ -202,9 +230,11 @@ export class Copilot {
    * @returns A Promise that resolves to the chat model.
    */
   private static async getModel() {
+    // const models = await lm.selectChatModels();
+    // console.log(models);
     const [model] = await lm.selectChatModels({
       vendor: 'copilot',
-      family: Settings.get<string>(SETTING_COPILOT_FAMILY) || 'gpt-3.5-turbo'
+      family: Settings.get<string>(SETTING_COPILOT_FAMILY) || 'gpt-4o-mini'
     });
 
     return model;

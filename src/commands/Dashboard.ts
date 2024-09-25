@@ -30,7 +30,7 @@ import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 import { DashboardMessage } from '../dashboardWebView/DashboardMessage';
 import { NavigationType } from '../dashboardWebView/models';
-import { getExtensibilityScripts, ignoreMsgCommand } from '../utils';
+import { getExtensibilityScripts, getWebviewJsFiles, ignoreMsgCommand } from '../utils';
 
 export class Dashboard {
   private static webview: WebviewPanel | null = null;
@@ -274,18 +274,17 @@ export class Dashboard {
    * @param webView
    */
   private static async getWebviewContent(webView: Webview, extensionPath: Uri): Promise<string> {
-    const dashboardFile = 'dashboardWebView.js';
+    const webviewFile = 'dashboard.main.js';
     const localPort = `9000`;
     const localServerUrl = `localhost:${localPort}`;
 
-    let scriptUri = '';
     const isProd = Extension.getInstance().isProductionMode;
+
+    let scriptUris = [];
     if (isProd) {
-      scriptUri = webView
-        .asWebviewUri(Uri.joinPath(extensionPath, 'dist', dashboardFile))
-        .toString();
+      scriptUris = await getWebviewJsFiles('dashboard', webView);
     } else {
-      scriptUri = `http://${localServerUrl}/${dashboardFile}`;
+      scriptUris.push(`http://${localServerUrl}/${webviewFile}`);
     }
 
     const nonce = WebviewHelper.getNonce();
@@ -351,7 +350,9 @@ export class Dashboard {
           })
           .join('')}
           
-        <script ${isProd ? `nonce="${nonce}"` : ''} src="${scriptUri}"></script>
+          ${scriptUris
+            .map((uri) => `<script ${isProd ? `nonce="${nonce}"` : ''} src="${uri}"></script>`)
+            .join('\n')}
 
         <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759&slug=${`dashboard-${version.installedVersion}`}" alt="Daily usage" />
       </body>

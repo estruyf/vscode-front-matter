@@ -1,5 +1,4 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
-import { VSCodeButton, VSCodeDivider } from '@vscode/webview-ui-toolkit/react';
 import * as React from 'react';
 import { useMemo } from 'react';
 import { Field } from '../../../models';
@@ -9,6 +8,7 @@ import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { VSCodeLabel } from '../VSCode';
 import { DefaultFields } from '../../../constants';
+import { Button as VSCodeButton, Divider as VSCodeDivider } from 'vscrui';
 
 export interface IContentTypeValidatorProps {
   fields: Field[];
@@ -77,16 +77,16 @@ export const ContentTypeValidator: React.FunctionComponent<IContentTypeValidator
       {l10n.t(LocalizationKey.panelContentTypeContentTypeValidatorHint).split(`\n`).map(s => (<p className="inline_hint" key={s}>{s}</p>))}
 
 
-      <div className="hint__buttons">
-        <VSCodeButton style={{ "--border-width": 0 }} appearance={`secondary`} onClick={generateContentType}>
+      <div className="hint__buttons space-y-2">
+        <VSCodeButton appearance={`secondary`} onClick={generateContentType}>
           {l10n.t(LocalizationKey.panelContentTypeContentTypeValidatorButtonCreate)}
         </VSCodeButton>
 
-        <VSCodeButton style={{ "--border-width": 0 }} appearance={`secondary`} onClick={addMissingFields}>
+        <VSCodeButton appearance={`secondary`} onClick={addMissingFields}>
           {l10n.t(LocalizationKey.panelContentTypeContentTypeValidatorButtonAdd)}
         </VSCodeButton>
 
-        <VSCodeButton style={{ "--border-width": 0 }} appearance={`secondary`} onClick={setContentType}>
+        <VSCodeButton appearance={`secondary`} onClick={setContentType}>
           {l10n.t(LocalizationKey.panelContentTypeContentTypeValidatorButtonChange)}
         </VSCodeButton>
       </div>

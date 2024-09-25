@@ -17,7 +17,7 @@ import { TemplateItem } from './TemplateItem';
 import { Spinner } from '../Common/Spinner';
 import { AstroContentTypes } from '../Configuration/Astro/AstroContentTypes';
 import { ContentFolders } from '../Configuration/Common/ContentFolders';
-import { VSCodeCheckbox } from '@vscode/webview-ui-toolkit/react';
+import { Checkbox as VSCodeCheckbox } from 'vscrui';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuSeparator } from '../../../components/shadcn/Dropdown';
 
 export interface IStepsToGetStartedProps {
@@ -239,7 +239,7 @@ export const StepsToGetStarted: React.FunctionComponent<IStepsToGetStartedProps>
         description: (
           <div className='mt-1'>
             <VSCodeCheckbox
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateSetting(SETTING_GIT_ENABLED, e.target.checked)}
+              onChange={(value) => updateSetting(SETTING_GIT_ENABLED, value)}
               checked={isGitEnabled}>
               {l10n.t(LocalizationKey.dashboardStepsStepsToGetStartedGitDescription)}
             </VSCodeCheckbox>

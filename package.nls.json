@@ -145,6 +145,8 @@
   "setting.frontMatter.data.folders.items.properties.path.description": "Path to the folder to load files.",
   "setting.frontMatter.data.folders.items.properties.type.description": "If you are using data types, you can specify your type ID.",
   "setting.frontMatter.data.folders.items.properties.singleEntry.description": "If you want to use a single entry for your data files in the folder.",
+  "setting.frontMatter.data.folders.items.properties.enableFileCreation.description": "Enable the creation of new data files in the folder.",
+  "setting.frontMatter.data.folders.items.properties.fileType.description": "Defines the file type for when the file creation is enabled. JSON is the default.",
   "setting.frontMatter.data.types.markdownDescription": "Specify the data types. These types can be used in for your data files. [Docs](https://frontmatter.codes/docs/settings/overview#frontmatter.data.types) - [View in VS Code](command:simpleBrowser.show?%5B%22https://frontmatter.codes/docs/settings/overview%23frontmatter.data.types%22%5D)",
   "setting.frontMatter.data.types.items.properties.id.description": "Your unique ID you want to use for your data type.",
   "setting.frontMatter.file.preserveCasing.markdownDescription": "Specify if you want to preserve the casing of your file names from the title. [Docs](https://frontmatter.codes/docs/settings/overview#frontmatter.file.preservecasing) - [View in VS Code](command:simpleBrowser.show?%5B%22https://frontmatter.codes/docs/settings/overview%23frontmatter.file.preservecasing%22%5D)",

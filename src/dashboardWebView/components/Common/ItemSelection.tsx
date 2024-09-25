@@ -1,6 +1,6 @@
 import * as React from 'react';
 import useSelectedItems from '../../hooks/useSelectedItems';
-import { VSCodeCheckbox } from '@vscode/webview-ui-toolkit/react';
+import { Checkbox as VSCodeCheckbox } from 'vscrui';
 import { useMemo } from 'react';
 
 export interface IItemSelectionProps {
@@ -24,11 +24,8 @@ export const ItemSelection: React.FunctionComponent<IItemSelectionProps> = ({
   return (
     <div className={`${cssNames} group-hover:block`}>
       <VSCodeCheckbox
-        style={{
-          boxShadow: show ? "" : "0 0 3px var(--frontmatter-border-preserve)"
-        }}
-        onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-          e.stopPropagation();
+        className={show ? "" : " shadow-[0_0_3px_var(--frontmatter-border-preserve)]"}
+        onChange={() => {
           onMultiSelect(filePath);
         }}
         checked={selectedFiles.includes(filePath)} />

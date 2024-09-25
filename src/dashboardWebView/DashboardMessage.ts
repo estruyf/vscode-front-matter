@@ -50,6 +50,7 @@ export enum DashboardMessage {
   // Data dashboard
   getDataEntries = 'getDataEntries',
   putDataEntries = 'putDataEntries',
+  createDataFile = 'createDataFile',
 
   // Snippets dashboard
   insertSnippet = 'insertSnippet',

@@ -6,17 +6,17 @@ import { getTaxonomyField } from '../../../helpers/getTaxonomyField';
 import { Sorting } from '../../../helpers/Sorting';
 import { ArrowLeftIcon, EyeIcon } from '@heroicons/react/24/outline';
 import { Button } from '../Common/Button';
-import { VSCodeCheckbox } from '@vscode/webview-ui-toolkit/react';
 import { FilterInput } from './FilterInput';
 import { useDebounce } from '../../../hooks/useDebounce';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { sortPages } from '../../../utils/sortPages';
-import { Messenger, messageHandler } from '@estruyf/vscode/dist/client';
+import { messageHandler } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
 import { ExtensionState } from '../../../constants';
 import { LinkButton } from '../Common/LinkButton';
 import { openFile } from '../../utils';
+import { Checkbox as VSCodeCheckbox } from 'vscrui';
 
 export interface ITaxonomyTaggingProps {
   taxonomy: string | null;
@@ -122,8 +122,12 @@ export const TaxonomyTagging: React.FunctionComponent<ITaxonomyTaggingProps> = (
   }, [pageMappings, untaggedPages]);
 
   const checkIfChecked = React.useCallback((page: Page) => {
-    return (!untaggedPages.find((p: Page) => p.fmFilePath === page.fmFilePath) && !pageMappings.untagged.find((p: Page) => p.fmFilePath === page.fmFilePath)) || pageMappings.tagged.find((p: Page) => p.fmFilePath === page.fmFilePath);
-  }, [untaggedPages, pageMappings.tagged]);
+    const isUntagged = untaggedPages.some((p) => p.fmFilePath === page.fmFilePath);
+    const isTagged = pageMappings.tagged.some((p) => p.fmFilePath === page.fmFilePath);
+    const isInUntagged = pageMappings.untagged.some((p) => p.fmFilePath === page.fmFilePath);
+
+    return (!isUntagged && !isInUntagged) || isTagged;
+  }, [untaggedPages, pageMappings.tagged, pageMappings.untagged]);
 
   const onFileView = (filePath: string) => {
     openFile(filePath);
@@ -193,7 +197,7 @@ export const TaxonomyTagging: React.FunctionComponent<ITaxonomyTaggingProps> = (
                 <td className={`pl-6 py-2 w-[25px]`}>
                   <VSCodeCheckbox
                     title={l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyTaggingCheckbox, value)}
-                    onClick={() => onCheckboxClick(page)}
+                    onChange={() => onCheckboxClick(page)}
                     checked={checkIfChecked(page)}>
                     <span className='sr-only'>
                       {l10n.t(LocalizationKey.dashboardTaxonomyViewTaxonomyTaggingCheckbox, value)}

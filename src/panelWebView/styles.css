@@ -478,14 +478,9 @@ button {
   margin-bottom: 1rem;
 }
 
-.hint__buttons vscode-button {
+.hint__buttons button {
   display: block;
-  margin-bottom: 0.5rem;
   text-align: center;
-}
-
-.hint__buttons vscode-button:last-child {
-  margin-bottom: 0;
 }
 
 vscode-divider {

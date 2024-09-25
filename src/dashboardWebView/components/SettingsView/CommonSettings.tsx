@@ -5,7 +5,7 @@ import { Startup } from '../Header/Startup';
 import { useRecoilValue } from 'recoil';
 import { SettingsSelector } from '../../state';
 import { SettingsInput } from './SettingsInput';
-import { VSCodeButton } from '@vscode/webview-ui-toolkit/react';
+import { Button as VSCodeButton } from 'vscrui';
 import { DOCS_SUBMODULES, FrameworkDetectors, GIT_CONFIG, SETTING_FRAMEWORK_START, SETTING_GIT_COMMIT_MSG, SETTING_GIT_ENABLED, SETTING_PREVIEW_HOST, SETTING_WEBSITE_URL } from '../../../constants';
 import { messageHandler } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';

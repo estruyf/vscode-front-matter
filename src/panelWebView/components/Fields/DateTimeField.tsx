@@ -76,7 +76,7 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({
 
       <div className={`metadata_field__datetime`}>
         <DatePicker
-          selected={(DateHelper.tryParse(dateValue, format) as Date) || new Date()}
+          selected={(DateHelper.tryParse(dateValue, format) as Date) || null}
           onChange={onDateChange}
           timeInputLabel={l10n.t(LocalizationKey.panelFieldsDateTimeFieldTime)}
           dateFormat={DateHelper.formatUpdate(format) || DEFAULT_FORMAT}

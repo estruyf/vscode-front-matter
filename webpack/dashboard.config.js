@@ -1,5 +1,3 @@
-//@ts-check
-
 'use strict';
 
 const path = require('path');
@@ -7,13 +5,15 @@ const {
   ProvidePlugin
 } = require('webpack');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const WebpackManifestPlugin = require('webpack-manifest-plugin').WebpackManifestPlugin;
 
 const config = [{
   name: 'dashboard',
   target: 'web',
   entry: './src/dashboardWebView/index.tsx',
   output: {
-    filename: 'dashboardWebView.js',
+    filename: 'dashboard.[name].js',
+    chunkFilename: '[name].[contenthash].js',
     path: path.resolve(__dirname, '../dist')
   },
   devtool: 'source-map',
@@ -21,29 +21,30 @@ const config = [{
     extensions: ['.ts', '.js', '.tsx', '.jsx'],
     fallback: {
       "assert": require.resolve("assert"),
-      "path": require.resolve("path-browserify")
+      "path": require.resolve("path-browserify"),
+      "process/browser": require.resolve("process/browser"),
     }
   },
   module: {
     rules: [{
-        test: /\.(ts|tsx)$/,
-        exclude: /node_modules/,
-        use: [{
-          loader: 'ts-loader'
-        }]
-      },
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader', 'postcss-loader']
-      },
-      {
-        test: /\.mjs$/,
-        include: /node_modules/,
-        type: 'javascript/auto',
-        resolve: {
-          fullySpecified: false
-        }
+      test: /\.(ts|tsx)$/,
+      exclude: /node_modules/,
+      use: [{
+        loader: 'ts-loader'
+      }]
+    },
+    {
+      test: /\.css$/,
+      use: ['style-loader', 'css-loader', 'postcss-loader']
+    },
+    {
+      test: /\.mjs$/,
+      include: /node_modules/,
+      type: 'javascript/auto',
+      resolve: {
+        fullySpecified: false
       }
+    }
     ]
   },
   performance: {
@@ -55,6 +56,10 @@ const config = [{
       // because the `util` package expects there to be a global variable named `process`.
       // Thanks to https://stackoverflow.com/a/65018686/14239942
       process: 'process/browser'
+    }),
+    new WebpackManifestPlugin({
+      publicPath: "",
+      fileName: "dashboard.manifest.json"
     })
   ],
   devServer: {
@@ -80,6 +85,12 @@ module.exports = (env, argv) => {
         reportFilename: "dashboard.html",
         openAnalyzer: false
       }));
+
+      configItem.optimization = {
+        splitChunks: {
+          chunks: 'all',
+        },
+      };
     }
   }
 

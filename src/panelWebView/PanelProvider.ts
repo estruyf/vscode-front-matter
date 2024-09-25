@@ -28,7 +28,7 @@ import { Extension } from '../helpers/Extension';
 import { Telemetry } from '../helpers/Telemetry';
 import { GitListener, ModeListener } from '../listeners/general';
 import { basename } from 'path';
-import { getExtensibilityScripts, ignoreMsgCommand } from '../utils';
+import { getExtensibilityScripts, getWebviewJsFiles, ignoreMsgCommand } from '../utils';
 
 export class PanelProvider implements WebviewViewProvider, Disposable {
   public static readonly viewType = 'frontMatter.explorer';
@@ -89,7 +89,7 @@ export class PanelProvider implements WebviewViewProvider, Disposable {
       enableCommandUris: true
     };
 
-    webviewView.webview.html = this.getWebviewContent(webviewView.webview);
+    webviewView.webview.html = await this.getWebviewContent(webviewView.webview);
 
     this.disposable = Disposable.from(
       webviewView.onDidDispose(() => {
@@ -206,12 +206,11 @@ export class PanelProvider implements WebviewViewProvider, Disposable {
    * Retrieve the webview HTML contents
    * @param webView
    */
-  private getWebviewContent(webView: Webview): string {
+  private async getWebviewContent(webView: Webview): Promise<string> {
     const ext = Extension.getInstance();
-    const dashboardFile = 'panelWebView.js';
+    const webviewFile = 'panel.main.js';
     const localPort = `9001`;
     const localServerUrl = `localhost:${localPort}`;
-    const extensionPath = ext.extensionPath;
 
     const styleVSCodeUri = webView.asWebviewUri(
       Uri.joinPath(this.extPath, 'assets/media', 'vscode.css')
@@ -228,14 +227,12 @@ export class PanelProvider implements WebviewViewProvider, Disposable {
     const version = ext.getVersion();
     const isBeta = ext.isBetaVersion();
 
-    let scriptUri = '';
     const isProd = Extension.getInstance().isProductionMode;
+    let scriptUris = [];
     if (isProd) {
-      scriptUri = webView
-        .asWebviewUri(Uri.joinPath(extensionPath, 'dist', dashboardFile))
-        .toString();
+      scriptUris = await getWebviewJsFiles('panel', webView);
     } else {
-      scriptUri = `http://${localServerUrl}/${dashboardFile}`;
+      scriptUris.push(`http://${localServerUrl}/${webviewFile}`);
     }
 
     // Get experimental setting
@@ -252,7 +249,7 @@ export class PanelProvider implements WebviewViewProvider, Disposable {
         isProd ? `'nonce-${nonce}'` : `http://${localServerUrl} http://0.0.0.0:${localPort}`
       }`,
       `style-src ${webView.cspSource} 'self' 'unsafe-inline' https://*`,
-      `font-src ${webView.cspSource}`,
+      `font-src ${webView.cspSource} data:;`,
       `connect-src https://o1022172.ingest.sentry.io https://* ${
         isProd
           ? ``
@@ -285,7 +282,9 @@ export class PanelProvider implements WebviewViewProvider, Disposable {
         })
         .join('')}
 
-        <script ${isProd ? `nonce="${nonce}"` : ''} src="${scriptUri}"></script>
+        ${scriptUris
+          .map((uri) => `<script ${isProd ? `nonce="${nonce}"` : ''} src="${uri}"></script>`)
+          .join('\n')}
 
         <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759&slug=${`panel-${version.installedVersion}`}" alt="Daily usage" />
       </body>

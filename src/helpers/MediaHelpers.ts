@@ -32,6 +32,7 @@ import { lookup } from 'mime-types';
 import { existsAsync, readdirAsync, unlinkAsync, writeFileAsync } from '../utils';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
+import { Wysiwyg } from '../commands';
 
 export class MediaHelpers {
   private static media: MediaInfo[] = [];
@@ -439,12 +440,23 @@ export class MediaHelpers {
 
             const caption = isFile ? `${data.title || ''}` : `${data.alt || data.caption || ''}`;
 
-            const snippet =
-              data.snippet ||
-              `${isFile ? '' : '!'}[${caption}](${FrameworkDetector.relAssetPathUpdate(
-                relPath,
-                editor.document.fileName
-              ).replace(/ /g, '%20')})`;
+            const docType = Wysiwyg.getDocType(filePath);
+
+            let snippet = data.snippet || '';
+            if (!data.Snippet) {
+              if (docType === 'markdown') {
+                snippet = `${isFile ? '' : '!'}[${caption}](${FrameworkDetector.relAssetPathUpdate(
+                  relPath,
+                  editor.document.fileName
+                ).replace(/ /g, '%20')})`;
+              } else if (docType === 'asciidoc') {
+                snippet = `${isFile ? 'link:' : 'image:'}${FrameworkDetector.relAssetPathUpdate(
+                  relPath,
+                  editor.document.fileName
+                ).replace(/ /g, '%20')}${caption ? `[${caption}]` : ''}`;
+              }
+            }
+
             if (selection !== undefined) {
               builder.replace(selection, snippet);
             } else {

@@ -58,6 +58,7 @@ import { parseWinPath } from './parseWinPath';
 import { TaxonomyHelper } from './TaxonomyHelper';
 import { ContentType } from './ContentType';
 import { Logger } from './Logger';
+import { DataListener } from '../listeners/dashboard';
 
 export class DashboardSettings {
   private static cachedSettings: ISettings | undefined = undefined;
@@ -158,6 +159,7 @@ export class DashboardSettings {
           }
         },
         dataFiles: await this.getDataFiles(),
+        dataFolders: Settings.get<DataFolder[]>(SETTING_DATA_FOLDERS) || [],
         dataTypes: Settings.get<DataType[]>(SETTING_DATA_TYPES),
         snippets: Settings.get<Snippets>(SETTING_CONTENT_SNIPPETS),
         snippetsWrapper: Settings.get<boolean>(SETTING_SNIPPETS_WRAPPER),
@@ -217,16 +219,7 @@ export class DashboardSettings {
 
         const dataFiles = [...dataJsonFiles, ...dataYmlFiles, ...dataYamlFiles];
         for (let dataFile of dataFiles) {
-          clonedFiles.push({
-            id: basename(dataFile.fsPath),
-            title: basename(dataFile.fsPath),
-            file: dataFile.fsPath,
-            fileType: dataFile.fsPath.endsWith('.json') ? 'json' : 'yaml',
-            labelField: folder.labelField,
-            schema: folder.schema,
-            type: folder.type,
-            singleEntry: typeof folder.singleEntry === 'boolean' ? folder.singleEntry : false
-          } as DataFile);
+          clonedFiles.push(DataListener.createDataFileObject(dataFile.fsPath, folder));
         }
       }
     }

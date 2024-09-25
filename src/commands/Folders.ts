@@ -558,6 +558,22 @@ export class Folders {
   }
 
   /**
+   * Converts a given file path to a workspace-relative path.
+   *
+   * @param path - The file path to convert.
+   * @returns The workspace-relative path.
+   */
+  public static wsPath(path: string) {
+    const wsFolder = Folders.getWorkspaceFolder();
+    let absPath = parseWinPath(path).replace(
+      parseWinPath(wsFolder?.fsPath || ''),
+      WORKSPACE_PLACEHOLDER
+    );
+    absPath = isWindows() ? absPath.split('\\').join('/') : absPath;
+    return absPath;
+  }
+
+  /**
    * Generate relative folder path
    * @param folder
    * @param wsFolder

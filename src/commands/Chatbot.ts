@@ -6,6 +6,7 @@ import { WebviewHelper } from '@estruyf/vscode';
 import { getLocalizationFile } from '../utils/getLocalizationFile';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
+import { getWebviewJsFiles } from '../utils';
 
 export class Chatbot {
   /**
@@ -56,7 +57,7 @@ export class Chatbot {
       }
     });
 
-    const dashboardFile = 'dashboardWebView.js';
+    const webviewFile = 'dashboard.main.js';
     const localPort = `9000`;
     const localServerUrl = `localhost:${localPort}`;
 
@@ -66,7 +67,6 @@ export class Chatbot {
     const isProd = ext.isProductionMode;
     const version = ext.getVersion();
     const isBeta = ext.isBetaVersion();
-    const extensionUri = ext.extensionPath;
 
     const csp = [
       `default-src 'none';`,
@@ -82,13 +82,11 @@ export class Chatbot {
       }`
     ];
 
-    let scriptUri = '';
+    let scriptUris = [];
     if (isProd) {
-      scriptUri = webView.webview
-        .asWebviewUri(Uri.joinPath(extensionUri, 'dist', dashboardFile))
-        .toString();
+      scriptUris = await getWebviewJsFiles('dashboard', webView.webview);
     } else {
-      scriptUri = `http://${localServerUrl}/${dashboardFile}`;
+      scriptUris.push(`http://${localServerUrl}/${webviewFile}`);
     }
 
     // By default, the chatbot is seen as experimental
@@ -111,7 +109,11 @@ export class Chatbot {
       experimental ? `data-experimental="${experimental}"` : ''
     } style="width:100%;height:100%;margin:0;padding:0;"></div>
 
-          <script ${isProd ? `nonce="${nonce}"` : ''} src="${scriptUri}"></script>
+          ${scriptUris
+            .map((uri) => `<script ${isProd ? `nonce="${nonce}"` : ''} src="${uri}"></script>`)
+            .join('\n')}
+
+          <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759&slug=${`chatbot-${version.installedVersion}`}" alt="Daily usage" />
         </body>
       </html>
     `;

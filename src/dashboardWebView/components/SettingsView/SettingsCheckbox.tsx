@@ -1,5 +1,5 @@
-import { VSCodeCheckbox } from '@vscode/webview-ui-toolkit/react';
 import * as React from 'react';
+import { Checkbox as VSCodeCheckbox } from 'vscrui';
 
 export interface ISettingsCheckboxProps {
   label: string;
@@ -27,7 +27,7 @@ export const SettingsCheckbox: React.FunctionComponent<ISettingsCheckboxProps> =
 
   return (
     <VSCodeCheckbox
-      onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateValue(e.target.checked)}
+      onChange={updateValue}
       checked={isEnabled}>
       {label}
     </VSCodeCheckbox>

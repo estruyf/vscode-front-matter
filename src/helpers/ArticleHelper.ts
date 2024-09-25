@@ -31,6 +31,9 @@ import {
   isValidFile,
   parseWinPath,
   processArticlePlaceholdersFromPath,
+  processDateTimePlaceholders,
+  processFilePrefixPlaceholders,
+  processI18nPlaceholders,
   processTimePlaceholders
 } from '.';
 import { format, parse } from 'date-fns';
@@ -39,8 +42,7 @@ import { Article } from '../commands';
 import { dirname, join, parse as parseFile } from 'path';
 import { EditorHelper } from '@estruyf/vscode';
 import sanitize from '../helpers/Sanitize';
-import { Field, ContentType as IContentType } from '../models';
-import { DateHelper } from './DateHelper';
+import { ContentFolder, Field, ContentType as IContentType } from '../models';
 import { DiagnosticSeverity, Position, window, Range } from 'vscode';
 import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
 import { fromMarkdown } from 'mdast-util-from-markdown';
@@ -498,7 +500,7 @@ export class ArticleHelper {
     const dateFields = contentType.fields.filter((field) => field.type === 'datetime');
 
     for (const dateField of dateFields) {
-      if (typeof article?.data[dateField.name] !== 'undefined') {
+      if (article?.data[dateField.name]) {
         article.data[dateField.name] = Article.formatDate(new Date(), dateField.dateFormat);
       }
     }
@@ -534,7 +536,13 @@ export class ArticleHelper {
     const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
 
     let prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
-    prefix = await ArticleHelper.getFilePrefix(prefix, folderPath, contentType);
+    prefix = await ArticleHelper.getFilePrefix(
+      prefix,
+      folderPath,
+      contentType,
+      titleValue,
+      new Date()
+    );
 
     // Name of the file or folder to create
     let sanitizedName = ArticleHelper.sanitize(titleValue);
@@ -543,7 +551,11 @@ export class ArticleHelper {
     // Create a folder with the `index.md` file
     if (contentType?.pageBundle) {
       if (prefix && typeof prefix === 'string') {
-        sanitizedName = `${prefix}-${sanitizedName}`;
+        if (prefix.endsWith('/')) {
+          sanitizedName = `${prefix}${sanitizedName}`;
+        } else {
+          sanitizedName = `${prefix}-${sanitizedName}`;
+        }
       }
 
       const newFolder = join(folderPath, sanitizedName);
@@ -596,10 +608,17 @@ export class ArticleHelper {
   public static async getFilePrefix(
     prefix: string | null | undefined,
     filePath?: string,
-    contentType?: IContentType
+    contentType?: IContentType,
+    title?: string,
+    articleDate?: Date
   ): Promise<string | undefined> {
     if (!prefix) {
       prefix = undefined;
+    }
+
+    // Replace the default date format
+    if (prefix === 'yyyy-MM-dd') {
+      prefix = '{{date|yyyy-MM-dd}}';
     }
 
     // Retrieve the file prefix from the folder
@@ -615,9 +634,27 @@ export class ArticleHelper {
       prefix = contentType.filePrefix;
     }
 
-    // Process the prefix date formatting
     if (prefix && typeof prefix === 'string') {
-      prefix = `${format(new Date(), DateHelper.formatUpdate(prefix) as string)}`;
+      prefix = await ArticleHelper.processCustomPlaceholders(prefix, title, filePath, true);
+      prefix = await processFilePrefixPlaceholders(prefix, filePath);
+
+      let selectedFolder: ContentFolder | undefined | null = null;
+      if (filePath) {
+        // Get the folder of the article by the file path
+        selectedFolder = await Folders.getPageFolderByFilePath(filePath);
+
+        if (!selectedFolder && contentType) {
+          selectedFolder = await Folders.getFolderByContentType(contentType, filePath);
+        }
+
+        if (selectedFolder) {
+          prefix = processI18nPlaceholders(prefix, selectedFolder);
+        }
+      }
+
+      const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
+      prefix = processTimePlaceholders(prefix, dateFormat);
+      prefix = processDateTimePlaceholders(prefix, articleDate);
     }
 
     return prefix;
@@ -667,7 +704,8 @@ export class ArticleHelper {
   public static async processCustomPlaceholders(
     value: string,
     title: string | undefined,
-    filePath: string | undefined
+    filePath: string | undefined,
+    skipFileCheck = false
   ) {
     if (value && typeof value === 'string') {
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
@@ -711,7 +749,7 @@ export class ArticleHelper {
               let updatedValue = placeHolderValue;
 
               // Check if the file already exists, during creation it might not exist yet
-              if (filePath && (await existsAsync(filePath))) {
+              if (filePath && (await existsAsync(filePath)) && !skipFileCheck) {
                 updatedValue = await processArticlePlaceholdersFromPath(placeHolderValue, filePath);
               }
 

@@ -8,11 +8,7 @@ import { DateHelper } from './DateHelper';
  * @param articleDate
  * @returns
  */
-export const processDateTimePlaceholders = (
-  value: string,
-  dateFormat?: string,
-  articleDate?: Date
-) => {
+export const processDateTimePlaceholders = (value: string, articleDate?: Date) => {
   if (value && typeof value === 'string') {
     if (value.includes(`{{date|`)) {
       const regex = /{{date\|[^}]*}}/g;

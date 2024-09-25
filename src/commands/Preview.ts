@@ -29,7 +29,7 @@ import { ParsedFrontMatter } from '../parsers';
 import { getLocalizationFile } from '../utils/getLocalizationFile';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
-import { getTitleField, joinUrl } from '../utils';
+import { getTitleField, getWebviewJsFiles, joinUrl } from '../utils';
 import { i18n } from './i18n';
 
 export class Preview {
@@ -134,7 +134,7 @@ export class Preview {
       }
     });
 
-    const dashboardFile = 'dashboardWebView.js';
+    const webviewFile = 'dashboard.main.js';
     const localPort = `9000`;
     const localServerUrl = `localhost:${localPort}`;
 
@@ -144,7 +144,6 @@ export class Preview {
     const isProd = ext.isProductionMode;
     const version = ext.getVersion();
     const isBeta = ext.isBetaVersion();
-    const extensionUri = ext.extensionPath;
 
     const csp = [
       `default-src 'none';`,
@@ -161,13 +160,11 @@ export class Preview {
       `frame-src ${localhostUrl} ${cspSource} http: https:;`
     ];
 
-    let scriptUri = '';
+    let scriptUris = [];
     if (isProd) {
-      scriptUri = webView.webview
-        .asWebviewUri(Uri.joinPath(extensionUri, 'dist', dashboardFile))
-        .toString();
+      scriptUris = await getWebviewJsFiles('dashboard', webView.webview);
     } else {
-      scriptUri = `http://${localServerUrl}/${dashboardFile}`;
+      scriptUris.push(`http://${localServerUrl}/${webviewFile}`);
     }
 
     // Get experimental setting
@@ -193,7 +190,11 @@ export class Preview {
       experimental ? `data-experimental="${experimental}"` : ''
     } style="width:100%;height:100%;margin:0;padding:0;"></div>
 
-          <script ${isProd ? `nonce="${nonce}"` : ''} src="${scriptUri}"></script>
+        ${scriptUris
+          .map((uri) => `<script ${isProd ? `nonce="${nonce}"` : ''} src="${uri}"></script>`)
+          .join('\n')}
+
+          <img style="display:none" src="https://api.visitorbadge.io/api/combined?user=estruyf&repo=frontmatter-usage&countColor=%23263759&slug=${`preview-${version.installedVersion}`}" alt="Daily usage" />
         </body>
       </html>
     `;
@@ -310,7 +311,7 @@ export class Preview {
 
       try {
         const articleDate = await ArticleHelper.getDate(article);
-        pathname = processDateTimePlaceholders(pathname, dateFormat, articleDate);
+        pathname = processDateTimePlaceholders(pathname, articleDate);
         slug = join(pathname, slug);
       } catch (error) {
         slug = join(pathname, slug);

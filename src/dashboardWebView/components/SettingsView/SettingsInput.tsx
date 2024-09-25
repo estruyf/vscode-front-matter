@@ -1,5 +1,5 @@
-import { VSCodeTextField } from '@vscode/webview-ui-toolkit/react';
 import * as React from 'react';
+import { TextField as VSCodeTextField } from 'vscrui';
 
 export interface ISettingsInputProps {
   label: string;
@@ -21,13 +21,10 @@ export const SettingsInput: React.FunctionComponent<ISettingsInputProps> = ({
 
   return (
     <VSCodeTextField
-      className='w-full p-0 m-0 bg-inherit border-0 focus:border-0 outline-none focus:outline-none shadow-none'
-      style={{
-        boxShadow: 'none'
-      }}
+      className='w-full p-0 m-0 bg-inherit'
       value={value || fallback || ""}
       placeholder={placeholder}
-      onInput={(e: React.ChangeEvent<HTMLInputElement>) => onChange(name, e.target.value)}>
+      onChange={(value: string) => onChange(name, value)}>
       {label}
     </VSCodeTextField>
   );

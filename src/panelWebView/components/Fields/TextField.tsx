@@ -93,6 +93,25 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
     }
   }, [showRequiredState, isValid]);
 
+
+  const suggestTitle = () => {
+    setLoading(localize(LocalizationKey.panelFieldsTextFieldAiGenerate));
+
+    messageHandler
+      .request<string>(CommandToCode.copilotSuggestTitle, text)
+      .then((suggestion) => {
+        setLoading(undefined);
+
+        if (suggestion) {
+          setText(suggestion);
+          onChange(suggestion);
+        }
+      })
+      .catch(() => {
+        setLoading(undefined);
+      });
+  };
+
   const suggestDescription = (type: 'ai' | 'copilot') => {
     setLoading(localize(LocalizationKey.panelFieldsTextFieldAiGenerate));
 
@@ -114,13 +133,13 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   };
 
   const actionElement = useMemo(() => {
-    if (settings.seo.descriptionField !== name) {
+    if (settings.seo.descriptionField !== name && settings.seo.titleField !== name) {
       return;
     }
 
     return (
       <>
-        {settings?.aiEnabled && (
+        {settings?.aiEnabled && settings.seo.descriptionField === name && (
           <button
             className="metadata_field__title__action inline-block text-[var(--vscode-editor-foreground)] disabled:opacity-50"
             title={localize(LocalizationKey.panelFieldsTextFieldAiMessage, label?.toLowerCase())}
@@ -137,7 +156,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
             className="metadata_field__title__action inline-block text-[var(--vscode-editor-foreground)] disabled:opacity-50"
             title={localize(LocalizationKey.panelFieldsTextFieldCopilotMessage, label?.toLowerCase())}
             type="button"
-            onClick={() => suggestDescription('copilot')}
+            onClick={() => settings.seo.descriptionField === name ? suggestDescription('copilot') : suggestTitle()}
             disabled={!!loading}
           >
             <CopilotIcon />
@@ -145,7 +164,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
         )}
       </>
     );
-  }, [settings?.aiEnabled, settings?.copilotEnabled, name, actions, loading]);
+  }, [settings?.aiEnabled, settings?.copilotEnabled, settings?.seo, name, actions, loading]);
 
   useEffect(() => {
     if (text !== value && (lastUpdated === null || Date.now() - DEBOUNCE_TIME > lastUpdated)) {
