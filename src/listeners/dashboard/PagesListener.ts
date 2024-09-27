@@ -97,7 +97,7 @@ export class PagesListener extends BaseListener {
     // Recreate all the watchers
     for (const folder of folders) {
       const folderUri = Uri.parse(folder.path);
-      let watcher = workspace.createFileSystemWatcher(
+      const watcher = workspace.createFileSystemWatcher(
         new RelativePattern(folderUri, '**/*'),
         false,
         false,
@@ -200,7 +200,7 @@ export class PagesListener extends BaseListener {
   /**
    * Retrieve all the markdown pages
    */
-  public static async getPagesData(clear: boolean = false, cb?: (pages: Page[]) => void) {
+  public static async getPagesData(clear = false, cb?: (pages: Page[]) => void) {
     const ext = Extension.getInstance();
 
     // Get data from the cache

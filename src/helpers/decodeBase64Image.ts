@@ -8,7 +8,7 @@ export const decodeBase64 = (dataString: string) => {
   const typePart = dataParts[0].split(':').pop() as string;
   const dataPart = dataParts.pop() as string;
 
-  let response: any = {};
+  const response: any = {};
 
   response.type = typePart;
   response.data = Buffer.from(dataPart, 'base64');

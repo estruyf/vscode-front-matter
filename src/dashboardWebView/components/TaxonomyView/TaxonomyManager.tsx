@@ -80,7 +80,7 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
   }, [data, taxonomy, debounceFilterValue]);
 
   const unmappedItems = useMemo(() => {
-    let unmapped: string[] = [];
+    const unmapped: string[] = [];
 
     if (!pages || !settings?.contentTypes || !taxonomy) {
       return unmapped;
@@ -100,7 +100,7 @@ export const TaxonomyManager: React.FunctionComponent<ITaxonomyManagerProps> = (
           return false;
         }
 
-        let fieldName = getTaxonomyField(taxonomy, contentType);
+        const fieldName = getTaxonomyField(taxonomy, contentType);
 
         if (fieldName && page[fieldName]) {
           values = page[fieldName];

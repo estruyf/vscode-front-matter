@@ -20,7 +20,8 @@ export const Preview: React.FunctionComponent<IPreviewProps> = ({
 
   const onRefresh = () => {
     if (iframeRef.current?.src) {
-      iframeRef.current.src = iframeRef.current.src;
+      const url = iframeRef.current.src;
+      iframeRef.current.src = url;
     }
   };
 
@@ -34,10 +35,12 @@ export const Preview: React.FunctionComponent<IPreviewProps> = ({
       navUrl = `https://${navUrl}`;
       setCrntUrl(navUrl);
     }
-    iframeRef.current!.src = navUrl;
+    if (iframeRef.current) {
+      iframeRef.current.src = navUrl;
+    }
   };
 
-  const msgListener = (message: MessageEvent<EventData<any>>) => {
+  const msgListener = (message: MessageEvent<EventData<string>>) => {
     if (message.data.command === PreviewCommands.toWebview.updateUrl) {
       setCrntUrl(message.data.payload);
     }

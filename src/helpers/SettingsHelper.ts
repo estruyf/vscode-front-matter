@@ -67,7 +67,7 @@ export class Settings {
   public static globalConfigPath: string | undefined = undefined;
   public static globalConfig: any;
   private static config: WorkspaceConfiguration;
-  private static isInitialized: boolean = false;
+  private static isInitialized = false;
   private static listeners: { id: string; callback: (global?: any) => void }[] = [];
   private static fileCreationWatcher: FileSystemWatcher | undefined;
   private static fileChangeWatcher: FileSystemWatcher | undefined;
@@ -76,7 +76,7 @@ export class Settings {
   private static readConfigPromise: Promise<void> | undefined = undefined;
   private static project: Project | undefined = undefined;
   private static configDebouncer = debounceCallback();
-  private static hasExtendedConfig: boolean = false;
+  private static hasExtendedConfig = false;
   private static extendedConfig: { extended: any[]; splitted: any[]; dynamic: boolean } = {} as any;
 
   public static async registerCommands() {
@@ -335,7 +335,7 @@ export class Settings {
   /**
    * Retrieve a setting from global and local config
    */
-  public static get<T>(name: string, merging: boolean = false): T | undefined {
+  public static get<T>(name: string, merging = false): T | undefined {
     if (!Settings.config) {
       return;
     }
@@ -383,11 +383,7 @@ export class Settings {
    * @param updateGlobal - Indicates whether to update the global setting or not. Default is `false`.
    * @returns A promise that resolves when the setting is updated.
    */
-  public static async safeUpdate<T>(
-    name: string,
-    value: T,
-    updateGlobal: boolean = false
-  ): Promise<void> {
+  public static async safeUpdate<T>(name: string, value: T, updateGlobal = false): Promise<void> {
     if (Settings.hasExtendedConfig) {
       const configKey = `${CONFIG_KEY}.${name}`;
 
@@ -418,11 +414,7 @@ ${JSON.stringify(value, null, 2)}`,
    * @param name
    * @param value
    */
-  public static async update<T>(
-    name: string,
-    value: T,
-    updateGlobal: boolean = false
-  ): Promise<void> {
+  public static async update<T>(name: string, value: T, updateGlobal = false): Promise<void> {
     const fmConfig = await Settings.projectConfigPath();
 
     if (updateGlobal) {
@@ -571,7 +563,7 @@ ${JSON.stringify(value, null, 2)}`,
    */
   public static async updateCustomTaxonomyOptions(id: string, options: string[]) {
     const customTaxonomies = Settings.get<CustomTaxonomy[]>(SETTING_TAXONOMY_CUSTOM, true) || [];
-    let taxIdx = customTaxonomies?.findIndex((o) => o.id === id);
+    const taxIdx = customTaxonomies?.findIndex((o) => o.id === id);
 
     if (taxIdx !== -1) {
       customTaxonomies[taxIdx].options = options;
@@ -753,7 +745,7 @@ ${JSON.stringify(value, null, 2)}`,
                 Logger.info(`Reading dynamic config file: ${absFilePath}`);
                 if (absFilePath) {
                   if (await existsAsync(absFilePath)) {
-                    const configFunction = require(absFilePath);
+                    const configFunction = await import(absFilePath);
                     const dynamicConfig = await configFunction(
                       Object.assign({}, Settings.globalConfig)
                     );
@@ -858,7 +850,7 @@ ${JSON.stringify(value, null, 2)}`,
 
     // We need to loop through the config to make sure the objects and arrays are merged
     for (const key in config) {
-      if (config.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(config, key)) {
         const value = config[key];
         const settingName = key.replace(`${CONFIG_KEY}.`, '');
 
@@ -1209,7 +1201,7 @@ ${JSON.stringify(value, null, 2)}`,
    * Reload the config
    * @param debounced
    */
-  private static async reloadConfig(debounced: boolean = true) {
+  private static async reloadConfig(debounced = true) {
     Logger.info(`Reloading config...`);
     // Clear the folder cache as we need to see the latest folders
     Folders.clearCached();

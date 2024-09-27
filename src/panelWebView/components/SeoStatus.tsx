@@ -14,6 +14,7 @@ import useContentType from '../../hooks/useContentType';
 
 export interface ISeoStatusProps {
   seo: SEO;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata: any;
   settings: PanelSettings | undefined;
   focusElm: TagType | null;

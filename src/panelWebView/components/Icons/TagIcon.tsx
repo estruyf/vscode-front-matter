@@ -1,10 +1,8 @@
 import * as React from 'react';
 
-export interface ITagIconProps {}
+export interface ITagIconProps { }
 
-export const TagIcon: React.FunctionComponent<ITagIconProps> = (
-  props: React.PropsWithChildren<ITagIconProps>
-) => {
+export const TagIcon: React.FunctionComponent<ITagIconProps> = () => {
   return (
     <svg
       width="16"

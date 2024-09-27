@@ -1,10 +1,8 @@
 import * as React from 'react';
 
-export interface ISettingsIconProps {}
+export interface ISettingsIconProps { }
 
-export const SettingsIcon: React.FunctionComponent<ISettingsIconProps> = (
-  props: React.PropsWithChildren<ISettingsIconProps>
-) => {
+export const SettingsIcon: React.FunctionComponent<ISettingsIconProps> = () => {
   return (
     <svg
       width="16"

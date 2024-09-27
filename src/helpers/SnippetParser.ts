@@ -4,8 +4,8 @@ import { SnippetField } from '../models';
 export class SnippetParser {
   public static getPlaceholders(
     value: string[] | string,
-    openingTags: string = '[[',
-    closingTags: string = ']]'
+    openingTags = '[[',
+    closingTags = ']]'
   ): string[] {
     const template = SnippetParser.template(value);
     const parseTree = Mustache.parse(template, [openingTags, closingTags]);
@@ -29,9 +29,9 @@ export class SnippetParser {
 
   public static render(
     value: string[] | string,
-    data: any,
-    openingTags: string = '[[',
-    closingTags: string = ']]'
+    data: unknown,
+    openingTags = '[[',
+    closingTags = ']]'
   ): string {
     const template = SnippetParser.template(value);
     return Mustache.render(template, data, undefined, [openingTags, closingTags]);
@@ -40,8 +40,8 @@ export class SnippetParser {
   public static getFields(
     value: string[] | string,
     fields: SnippetField[],
-    openingTags: string = '[[',
-    closingTags: string = ']]'
+    openingTags = '[[',
+    closingTags = ']]'
   ) {
     const placeholders = SnippetParser.getPlaceholders(value, openingTags, closingTags);
 

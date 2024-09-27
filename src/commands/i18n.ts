@@ -403,8 +403,8 @@ export class i18n {
     sourceLocale: I18nConfig,
     targetLocale: I18nConfig
   ) {
-    return new Promise<ParsedFrontMatter>(async (resolve) => {
-      await window.withProgress(
+    return new Promise<ParsedFrontMatter>((resolve) => {
+      window.withProgress(
         {
           location: ProgressLocation.Notification,
           title: l10n.t(LocalizationKey.commandsI18nTranslateProgressTitle),

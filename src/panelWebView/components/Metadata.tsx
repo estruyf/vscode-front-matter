@@ -40,6 +40,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSendUpdate = React.useCallback((field: string | undefined, value: any, parents: string[]) => {
     if (!field) {
       return;
@@ -58,6 +59,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
     parent: IMetadata,
     parentFields: string[] = [],
     blockData?: BlockFieldData,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onFieldUpdate?: (field: string | undefined, value: any, parents: string[]) => void,
     parentBlock?: string | null
   ): (JSX.Element | null)[] | undefined => {

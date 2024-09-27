@@ -17,7 +17,7 @@ export const processDateTimePlaceholders = (value: string, articleDate?: Date) =
         for (const match of matches) {
           const placeholderParts = match.split('|');
           if (placeholderParts.length > 1) {
-            let dateFormat = placeholderParts[1].trim().replace('}}', '');
+            const dateFormat = placeholderParts[1].trim().replace('}}', '');
 
             if (dateFormat) {
               if (dateFormat && typeof dateFormat === 'string') {

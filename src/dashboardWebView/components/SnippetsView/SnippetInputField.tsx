@@ -31,7 +31,7 @@ export const SnippetInputField: React.FunctionComponent<ISnippetInputFieldProps>
         <div className="relative">
           <select
             name={field.name}
-            value={field.value || ''}
+            value={field.value as string || ''}
             className={`block w-full sm:text-sm pr-2 appearance-none disabled:opacity-50 rounded bg-[var(--vscode-input-background)] text-[var(--vscode-input-foreground)] placeholder-[var(--vscode-input-placeholderForeground)] border-[var(--frontmatter-border)] focus:border-[var(--vscode-focusBorder)] focus:outline-0`}
             style={{
               boxShadow: "none"
@@ -69,7 +69,7 @@ export const SnippetInputField: React.FunctionComponent<ISnippetInputFieldProps>
     return (
       <TextField
         name={field.name}
-        value={field.value || ''}
+        value={field.value as string || ''}
         description={field.description}
         onChange={(e) => onValueChange(field, e)}
         rows={4}
@@ -81,7 +81,7 @@ export const SnippetInputField: React.FunctionComponent<ISnippetInputFieldProps>
   return (
     <TextField
       name={field.name}
-      value={field.value || ''}
+      value={field.value as string || ''}
       description={field.description}
       onChange={(e) => onValueChange(field, e)}
     />

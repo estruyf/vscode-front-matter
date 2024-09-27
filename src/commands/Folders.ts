@@ -401,8 +401,8 @@ export class Folders {
           folder.locales && folder.locales.length > 0 ? folder.locales : i18nSettings;
 
         let defaultLocale;
-        let sourcePath = folderPath;
-        let localeFolders: ContentFolder[] = [];
+        const sourcePath = folderPath;
+        const localeFolders: ContentFolder[] = [];
 
         if (i18nConfig && i18nConfig.length > 0) {
           for (const i18n of i18nConfig) {

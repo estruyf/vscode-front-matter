@@ -26,10 +26,6 @@ const OtherActions: React.FunctionComponent<IOtherActionsProps> = ({
   settings,
   isBase
 }: React.PropsWithChildren<IOtherActionsProps>) => {
-  const openSettings = () => {
-    Messenger.send(CommandToCode.openSettings);
-  };
-
   const openFile = () => {
     Messenger.send(CommandToCode.openFile);
   };

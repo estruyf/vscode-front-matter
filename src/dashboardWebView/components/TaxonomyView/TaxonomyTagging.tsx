@@ -70,7 +70,7 @@ export const TaxonomyTagging: React.FunctionComponent<ITaxonomyTaggingProps> = (
           continue;
         }
 
-        let fieldName = getTaxonomyField(taxonomy, contentType);
+        const fieldName = getTaxonomyField(taxonomy, contentType);
 
         if (fieldName && (!page[fieldName] || page[fieldName].indexOf(value) === -1)) {
           untagged.push(page);
@@ -78,7 +78,7 @@ export const TaxonomyTagging: React.FunctionComponent<ITaxonomyTaggingProps> = (
       }
     }
 
-    untagged = untagged.sort(Sorting.number('fmPublished')).reverse();
+    untagged = untagged.sort(Sorting.numerically('fmPublished')).reverse();
 
     if (debounceFilterValue) {
       return untagged.filter((p) => p.title.toLowerCase().includes(debounceFilterValue.toLowerCase()));

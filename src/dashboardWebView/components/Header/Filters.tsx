@@ -36,7 +36,7 @@ export const Filters: React.FunctionComponent<IFiltersProps> = (_: React.PropsWi
           activeItem={crntFilters[filterName]}
           items={values}
           onClick={(value) => setCrntFilters((prev) => {
-            let clone = Object.assign({}, prev);
+            const clone = Object.assign({}, prev);
             if (!clone[filterName] && value) {
               clone[filterName] = value;
             } else {

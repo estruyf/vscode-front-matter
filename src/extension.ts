@@ -39,6 +39,7 @@ import { i18n } from './commands/i18n';
 import { UriHandler } from './providers/UriHandler';
 
 let pageUpdateDebouncer: { (fnc: any, time: number): void };
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 let editDebounce: { (fnc: any, time: number): void };
 let collection: vscode.DiagnosticCollection;
 
@@ -56,7 +57,7 @@ export async function activate(context: vscode.ExtensionContext) {
   }
 
   // Sponsor check
-  Backers.init(context).then(() => {});
+  Backers.init(context);
 
   // Make sure the EN language file is loaded
   if (!vscode.l10n.uri) {
@@ -143,7 +144,7 @@ export async function activate(context: vscode.ExtensionContext) {
   SettingsHelper.startListening();
 
   // Create the status bar
-  let fmStatusBarItem = vscode.window.createStatusBarItem(
+  const fmStatusBarItem = vscode.window.createStatusBarItem(
     'fm-statusBarItem',
     vscode.StatusBarAlignment.Right,
     -100
@@ -243,6 +244,7 @@ export async function activate(context: vscode.ExtensionContext) {
   console.log(`𝖥𝗋𝗈𝗇𝗍 𝖬𝖺𝗍𝗍𝖾𝗋 𝖢𝖬𝖲 𝖺𝖼𝗍𝗂𝗏𝖺𝗍𝖾𝖽! 𝖱𝖾𝖺𝖽𝗒 𝗍𝗈 𝗌𝗍𝖺𝗋𝗍 𝗐𝗋𝗂𝗍𝗂𝗇𝗀... 👩‍💻🧑‍💻👨‍💻`);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 export function deactivate() {}
 
 const handleAutoDateUpdate = (e: vscode.TextDocumentWillSaveEvent) => {

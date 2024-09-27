@@ -5,6 +5,7 @@ import { Logger } from '../../helpers/Logger';
 import { PostMessageData } from '../../models';
 
 export abstract class BaseListener {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   public static process(msg: PostMessageData) {}
 
   /**

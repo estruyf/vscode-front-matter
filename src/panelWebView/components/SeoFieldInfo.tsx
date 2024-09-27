@@ -4,8 +4,8 @@ import { VSCodeTableCell, VSCodeTableRow } from './VSCode/VSCodeTable';
 
 export interface ISeoFieldInfoProps {
   title: string;
-  value: any;
-  recommendation: any;
+  value: string;
+  recommendation: string;
   isValid?: boolean;
 }
 

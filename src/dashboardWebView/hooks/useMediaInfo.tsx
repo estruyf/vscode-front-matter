@@ -42,7 +42,7 @@ export default function useMediaInfo(media?: MediaInfo) {
   }, [media]);
 
   const mediaDetails = useMemo(() => {
-    let sizeDetails = [];
+    const sizeDetails = [];
 
     if (mediaDimensions) {
       sizeDetails.push(mediaDimensions);

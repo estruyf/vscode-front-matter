@@ -11,7 +11,7 @@ export default function useStartCommand(settings?: PanelSettings) {
       return;
     }
 
-    let command: string = '';
+    let command = '';
     if (settings?.framework) {
       const framework = FrameworkDetectors.find((f) => f.framework.name === settings.framework);
       if (framework?.commands?.start) {

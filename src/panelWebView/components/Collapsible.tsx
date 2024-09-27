@@ -26,7 +26,7 @@ const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({
       return;
     }
 
-    const prevState: any = Messenger.getState();
+    const prevState = Messenger.getState() as { [key: string]: string };
 
     if (
       !prevState ||
@@ -51,7 +51,7 @@ const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({
   }, [collapseKey]);
 
   const updateStorage = (value: boolean) => {
-    const prevState: any = Messenger.getState();
+    const prevState = Messenger.getState() as { [key: string]: string };
     Messenger.setState({
       ...prevState,
       [collapseKey]: value.toString()

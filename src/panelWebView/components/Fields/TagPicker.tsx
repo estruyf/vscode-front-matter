@@ -175,7 +175,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
    * Inserts a tag which is not known
    * @param closeMenu
    */
-  const insertUnkownTag = (closeMenu: (cb?: any) => void) => {
+  const insertUnkownTag = (closeMenu: (cb?: unknown) => void) => {
     if (inputValue) {
       onSelect(inputValue);
       closeMenu();
@@ -211,7 +211,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
    * @param e
    */
   const onEnterData = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>, closeMenu: Function, highlightedIndex: any) => {
+    (e: React.KeyboardEvent<HTMLInputElement>, closeMenu: () => void, highlightedIndex: number | null) => {
       if (
         e.key === 'Enter' &&
         e.type === 'keydown' &&
@@ -433,8 +433,8 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
                 <input
                   {...getInputProps({
                     ref: inputRef,
-                    onFocus: openMenu as any,
-                    onClick: openMenu as any,
+                    onFocus: openMenu as () => void,
+                    onClick: openMenu as () => void,
                     onKeyDown: (e) => onEnterData(e, closeMenu, highlightedIndex),
                     onBlur: () => {
                       closeMenu();
@@ -453,7 +453,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
                     className={`article__tags__input__button`}
                     title={localize(LocalizationKey.panelTagPickerUnkown)}
                     disabled={!inputValue || checkIsDisabled()}
-                    onClick={() => insertUnkownTag(closeMenu)}
+                    onClick={() => insertUnkownTag(closeMenu as (cb?: unknown) => void)}
                   >
                     <AddIcon />
                   </button>

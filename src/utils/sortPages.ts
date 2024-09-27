@@ -9,13 +9,13 @@ export const sortPages = (pages: Page[], sorting: SortingOption | null) => {
   } else if (sorting && sorting.id === SortOption.FileNameDesc) {
     pages = pages.sort(Sorting.alphabetically('fmFileName')).reverse();
   } else if (sorting && sorting.id === SortOption.PublishedAsc) {
-    pages = pages.sort(Sorting.number('fmPublished'));
+    pages = pages.sort(Sorting.numerically('fmPublished'));
   } else if (sorting && sorting.id === SortOption.LastModifiedAsc) {
-    pages = pages.sort(Sorting.number('fmModified'));
+    pages = pages.sort(Sorting.numerically('fmModified'));
   } else if (sorting && sorting.id === SortOption.PublishedDesc) {
-    pages = pages.sort(Sorting.number('fmPublished')).reverse();
+    pages = pages.sort(Sorting.numerically('fmPublished')).reverse();
   } else if (sorting && sorting.id === SortOption.LastModifiedDesc) {
-    pages = pages.sort(Sorting.number('fmModified')).reverse();
+    pages = pages.sort(Sorting.numerically('fmModified')).reverse();
   } else if (sorting && sorting.id && sorting.name) {
     const { order, name, type } = sorting;
 
@@ -24,14 +24,14 @@ export const sortPages = (pages: Page[], sorting: SortingOption | null) => {
     } else if (type === SortType.date) {
       pages = pages.sort(Sorting.date(name));
     } else if (type === SortType.number) {
-      pages = pages.sort(Sorting.number(name));
+      pages = pages.sort(Sorting.numerically(name));
     }
 
     if (order === SortOrder.desc) {
       pages = pages.reverse();
     }
   } else {
-    pages = pages.sort(Sorting.number('fmModified')).reverse();
+    pages = pages.sort(Sorting.numerically('fmModified')).reverse();
   }
 
   return pages;

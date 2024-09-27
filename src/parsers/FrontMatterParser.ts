@@ -42,7 +42,8 @@ export class FrontMatterParser {
    * @param options
    * @returns
    */
-  public static toFile(content: string, metadata: Object, originalContent?: string, options?: any) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public static toFile(content: string, metadata: any, originalContent?: string, options?: any) {
     // Stringify to YAML if the format was not set
     const format = getFormatOpts(this.getLanguageFromContent(originalContent));
 

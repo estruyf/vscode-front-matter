@@ -41,7 +41,7 @@ export const TaxonomyLookup: React.FunctionComponent<ITaxonomyLookupProps> = ({
         return false;
       }
 
-      let fieldName = getTaxonomyField(taxonomy, contentType);
+      const fieldName = getTaxonomyField(taxonomy, contentType);
 
       return fieldName && page[fieldName] ? page[fieldName].includes(value) : false;
     }).length;

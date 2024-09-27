@@ -54,7 +54,7 @@ export const App: React.FunctionComponent<IAppProps> = ({
     return isAllowed(mode?.features || [], FEATURE_FLAG.dashboard.taxonomy.view);
   }, [mode?.features]);
 
-  const checkDevMode = (retry: number = 0) => {
+  const checkDevMode = (retry = 0) => {
     if (!window.fmExternal) {
       if (retry < 5) {
         setTimeout(() => checkDevMode(retry + 1), 150);

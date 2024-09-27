@@ -273,7 +273,7 @@ export class TaxonomyHelper {
     oldValue: string,
     newValue?: string,
     pages?: Page[],
-    needsSettingsUpdate: boolean = true
+    needsSettingsUpdate = true
   ) {
     // Retrieve all the markdown files
     const allFiles = pages
@@ -349,7 +349,7 @@ export class TaxonomyHelper {
               const article = FrontMatterParser.fromFile(mdFile);
               const contentType = await ArticleHelper.getContentType(article);
 
-              let fieldNames: string[] = this.getFieldsHierarchy(taxonomyType, contentType);
+              const fieldNames: string[] = this.getFieldsHierarchy(taxonomyType, contentType);
 
               if (fieldNames.length > 0 && article && article.data) {
                 const { data } = article;
@@ -484,8 +484,8 @@ export class TaxonomyHelper {
               const article = FrontMatterParser.fromFile(mdFile);
               const contentType = await ArticleHelper.getContentType(article);
 
-              let oldFieldNames: string[] = this.getFieldsHierarchy(oldType, contentType);
-              let newFieldNames: string[] = this.getFieldsHierarchy(newType, contentType, true);
+              const oldFieldNames: string[] = this.getFieldsHierarchy(oldType, contentType);
+              const newFieldNames: string[] = this.getFieldsHierarchy(newType, contentType, true);
 
               if (oldFieldNames.length > 0 && newFieldNames.length > 0 && article && article.data) {
                 const { data } = article;
@@ -559,7 +559,7 @@ export class TaxonomyHelper {
   private static getFieldsHierarchy(
     taxonomyType: TaxonomyType | string,
     contentType: IContentType,
-    fallback: boolean = false
+    fallback = false
   ): string[] {
     let fieldNames: string[] = [];
     if (taxonomyType === TaxonomyType.Tag) {

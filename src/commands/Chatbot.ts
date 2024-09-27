@@ -33,26 +33,31 @@ export class Chatbot {
 
     const cspSource = webView.webview.cspSource;
 
+    const fetchLocalization = async (requestId: string) => {
+      if (!requestId) {
+        return;
+      }
+
+      const fileContents = await getLocalizationFile();
+
+      webView.webview.postMessage({
+        command: GeneralCommands.toVSCode.getLocalization,
+        requestId,
+        payload: fileContents
+      });
+    };
+
     webView.webview.onDidReceiveMessage(async (message) => {
-      switch (message.command) {
+      const { command, requestId, payload, data } = message;
+
+      switch (command) {
         case PreviewCommands.toVSCode.open:
-          if (message.data) {
-            commands.executeCommand('vscode.open', message.data);
+          if (payload || data) {
+            commands.executeCommand('vscode.open', payload || data);
           }
-          return;
+          break;
         case GeneralCommands.toVSCode.getLocalization:
-          const { requestId } = message;
-          if (!requestId) {
-            return;
-          }
-
-          const fileContents = await getLocalizationFile();
-
-          webView.webview.postMessage({
-            command: GeneralCommands.toVSCode.getLocalization,
-            requestId,
-            payload: fileContents
-          });
+          fetchLocalization(requestId);
           return;
       }
     });

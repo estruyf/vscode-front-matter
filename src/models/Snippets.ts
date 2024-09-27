@@ -19,5 +19,5 @@ export type SnippetSpecialPlaceholders = 'FM_SELECTED_TEXT' | string;
 
 export interface SnippetField extends Field {
   default?: SnippetSpecialPlaceholders;
-  value?: any;
+  value?: unknown;
 }

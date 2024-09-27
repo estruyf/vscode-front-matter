@@ -36,7 +36,7 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
   const [crntSelected, setCrntSelected] = React.useState<string | string[] | null>(value);
   const [filter, setFilter] = React.useState<string | undefined>(undefined);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
-  const { getDropdownStyle } = useDropdownStyle(inputRef as any, '6px');
+  const { getDropdownStyle } = useDropdownStyle(inputRef, '6px');
 
   /**
    * Check the required state
@@ -53,7 +53,7 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
    * @param type 
    * @returns 
    */
-  const getValue = (value: Page, type: string = "path") => {
+  const getValue = (value: Page, type = "path") => {
     if (type === 'path') {
       return value.fmRelFilePath || value.fmFilePath;
     }

@@ -32,7 +32,7 @@ export class PagesParser {
   public static allPages: Page[] = [];
   public static cachedPages: Page[] | undefined = undefined;
   private static parser: Promise<void> | undefined;
-  private static initialized: boolean = false;
+  private static initialized = false;
   private static pagesStatusBar = window.createStatusBarItem(StatusBarAlignment.Left);
 
   /**
@@ -266,7 +266,7 @@ export class PagesParser {
         }
       }
       // Retrieve the tags from the artilce
-      let tagParents = ContentType.findFieldsByTypeDeep(contentType.fields, 'tags');
+      const tagParents = ContentType.findFieldsByTypeDeep(contentType.fields, 'tags');
       if (tagParents.length > 0) {
         const firstField = tagParents[0];
         if (firstField.length > 0) {
@@ -279,7 +279,7 @@ export class PagesParser {
       }
 
       // Retrieve the categories from the artilce
-      let categoryParents = ContentType.findFieldsByTypeDeep(contentType.fields, 'categories');
+      const categoryParents = ContentType.findFieldsByTypeDeep(contentType.fields, 'categories');
       if (categoryParents.length > 0) {
         const firstField = categoryParents[0];
         if (firstField.length > 0) {
@@ -355,7 +355,7 @@ export class PagesParser {
               }
 
               if (previewUri) {
-                let previewPath: string = '';
+                let previewPath = '';
 
                 const Webview = Dashboard.getWebview();
                 if (Webview) {

@@ -1,4 +1,5 @@
 import * as React from 'react';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const ReactQuill = require('react-quill');
 import 'react-quill/dist/quill.snow.css';
 

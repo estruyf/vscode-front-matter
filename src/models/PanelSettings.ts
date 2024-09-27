@@ -169,6 +169,7 @@ export enum WhenOperator {
 export interface WhenClause {
   fieldRef: string;
   operator: WhenOperator;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
   caseSensitive?: boolean;
 }

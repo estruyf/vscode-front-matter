@@ -1,10 +1,8 @@
 import * as React from 'react';
 
-export interface IToggleIconProps {}
+export interface IToggleIconProps { }
 
-export const ToggleIcon: React.FunctionComponent<IToggleIconProps> = (
-  props: React.PropsWithChildren<IToggleIconProps>
-) => {
+export const ToggleIcon: React.FunctionComponent<IToggleIconProps> = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

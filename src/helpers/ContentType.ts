@@ -564,7 +564,7 @@ export class ContentType {
 
     const allRequiredFields = ContentType.findRequiredFieldsDeep(contentType.fields);
 
-    let emptyFields: Field[][] = [];
+    const emptyFields: Field[][] = [];
 
     for (const fields of allRequiredFields) {
       const fieldValue = this.getFieldValue(
@@ -656,7 +656,7 @@ export class ContentType {
       return [];
     }
 
-    let foundBlocks = [];
+    const foundBlocks = [];
     for (const group of groups) {
       const block = blocks.find((block) => block.id === group);
       if (!block) {
@@ -960,11 +960,12 @@ export class ContentType {
           templateData = await ArticleHelper.getFrontMatterByPath(templatePath);
         }
 
-        let newFilePath: string | undefined = await ArticleHelper.createContent(
+        const newFilePath: string | undefined = await ArticleHelper.createContent(
           contentType,
           folderPath,
           titleValue
         );
+
         if (!newFilePath) {
           return;
         }
@@ -1045,7 +1046,7 @@ export class ContentType {
     filePath: string,
     clearEmpty: boolean,
     contentType: IContentType,
-    isRoot: boolean = true
+    isRoot = true
   ): Promise<any> {
     if (obj.fields) {
       const titleField = getTitleField();
@@ -1106,7 +1107,7 @@ export class ContentType {
                 filePath
               );
             } else if (defaultValue && Array.isArray(defaultValue)) {
-              let defaultValues = [];
+              const defaultValues = [];
               for (let value of defaultValue as string[]) {
                 if (typeof value === 'string') {
                   value = await ContentType.processFieldPlaceholders(

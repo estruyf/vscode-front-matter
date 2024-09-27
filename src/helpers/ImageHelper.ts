@@ -17,7 +17,7 @@ export class ImageHelper {
    * @returns
    */
   public static allRelToAbs(field: Field, value: string | string[] | undefined) {
-    let filePath =
+    const filePath =
       window.activeTextEditor?.document.uri.fsPath ||
       Preview.filePath ||
       ArticleHelper.getActiveFile();
@@ -54,7 +54,7 @@ export class ImageHelper {
    */
   public static relToAbs(filePath: string, value: string) {
     const wsFolder = Folders.getWorkspaceFolder();
-    let staticFolder = Folders.getStaticFolderRelativePath();
+    const staticFolder = Folders.getStaticFolderRelativePath();
 
     if (staticFolder === STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
       const editor = window.activeTextEditor;

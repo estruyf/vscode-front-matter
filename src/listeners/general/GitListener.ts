@@ -30,6 +30,8 @@ import { Event, commands, extensions } from 'vscode';
 import { GitAPIState, GitRepository, PostMessageData } from '../../models';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
+import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
+import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 
 export class GitListener {
   private static gitAPI: {
@@ -39,7 +41,7 @@ export class GitListener {
     getAPI: (version: number) => any;
     repositories: GitRepository[];
   } | null = null;
-  private static isRegistered: boolean = false;
+  private static isRegistered = false;
   private static client: SimpleGit | null = null;
   private static subClient: SimpleGit | null = null;
   private static repository: GitRepository | null = null;
@@ -123,6 +125,7 @@ export class GitListener {
         break;
       case GeneralCommands.toVSCode.git.selectBranch:
         this.selectBranch();
+        break;
       case GeneralCommands.toVSCode.git.isRepo:
         this.checkIsGitRepo(msg.command, msg.requestId);
         break;
@@ -135,7 +138,11 @@ export class GitListener {
     }
 
     const isRepo = await GitListener.isGitRepository();
-    Dashboard.postWebviewMessage({ command: command as any, payload: isRepo, requestId });
+    Dashboard.postWebviewMessage({
+      command: command as DashboardCommand | DashboardMessage,
+      payload: isRepo,
+      requestId
+    });
   }
 
   /**
@@ -152,7 +159,7 @@ export class GitListener {
    * @param commitMsg The commit message for the push operation.
    * @param isSync Determines whether to perform a sync operation (default: true) or a fetch operation.
    */
-  public static async sync(commitMsg?: string, isSync: boolean = true) {
+  public static async sync(commitMsg?: string, isSync = true) {
     try {
       this.sendMsg(GeneralCommands.toWebview.git.syncingStart, isSync ? 'syncing' : 'fetching');
 
@@ -320,7 +327,7 @@ export class GitListener {
    * @param submoduleFolder The path to the submodule folder.
    * @returns The Git client instance or null if it cannot be retrieved.
    */
-  private static getClient(submoduleFolder: string = ''): SimpleGit | null {
+  private static getClient(submoduleFolder = ''): SimpleGit | null {
     if (!submoduleFolder && this.client) {
       return this.client;
     } else if (submoduleFolder && this.subClient) {

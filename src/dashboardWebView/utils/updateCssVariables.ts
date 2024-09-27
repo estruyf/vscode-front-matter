@@ -1,6 +1,6 @@
 import { darkenColor, opacityColor, preserveColor } from '.';
 
-export const updateCssVariables = (isDarkTheme: boolean = true) => {
+export const updateCssVariables = (isDarkTheme = true) => {
   const styles = getComputedStyle(document.documentElement);
 
   // Lightbox

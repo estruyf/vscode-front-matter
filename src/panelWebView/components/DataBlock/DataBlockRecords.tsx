@@ -10,7 +10,7 @@ import { VSCodeLabel } from '../VSCode';
 
 export interface IDataBlockRecordsProps {
   fieldGroups?: FieldGroup[];
-  records: any[];
+  records: unknown[];
   selectedIndex: number | null;
   onAdd: () => void;
   onSort: (obj: SortEnd) => void;
@@ -18,7 +18,7 @@ export interface IDataBlockRecordsProps {
   onDelete: (id: number) => void;
 }
 
-const Container = SortableContainer(({ children }: React.PropsWithChildren<any>) => {
+const Container = SortableContainer(({ children }: React.PropsWithChildren<unknown>) => {
   return <ul>{children}</ul>;
 });
 
@@ -27,11 +27,10 @@ export const DataBlockRecords = ({
   records,
   selectedIndex,
   onSort,
-  onAdd,
   onEdit,
   onDelete
 }: React.PropsWithChildren<IDataBlockRecordsProps>) => {
-  const getLabel = useCallback((record: any) => {
+  const getLabel = useCallback((record) => {
     if (record.fieldGroup) {
       if (fieldGroups) {
         const fieldGroup = fieldGroups.find((f) => f.id === record.fieldGroup);
@@ -64,7 +63,7 @@ export const DataBlockRecords = ({
       </VSCodeLabel>
 
       <Container onSortEnd={onSort} useDragHandle>
-        {records.map((v: any, idx: number) => (
+        {records.map((v: unknown, idx: number) => (
           <DataBlockRecord
             key={idx}
             id={idx}

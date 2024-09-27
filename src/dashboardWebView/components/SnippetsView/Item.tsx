@@ -75,7 +75,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
       return;
     }
 
-    let snippets: Snippets = Object.assign({}, settings?.snippets || {});
+    const snippets: Snippets = Object.assign({}, settings?.snippets || {});
     const snippetLines = snippetOriginalBody.split('\n');
 
     const crntSnippet = Object.assign({}, snippets[snippetKey]);

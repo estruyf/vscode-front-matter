@@ -12,6 +12,7 @@ import { useRecoilState } from 'recoil';
 import { PanelSettingsAtom } from '../state';
 
 export default function useMessages() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [metadata, setMetadata] = useState<any>(undefined);
   const [settings, setSettings] = useRecoilState(PanelSettingsAtom);
   const [loading, setLoading] = useState<boolean>(false);
@@ -20,6 +21,7 @@ export default function useMessages() {
   const [mediaSelecting, setMediaSelecting] = useState<DashboardData | undefined>(undefined);
   const [mode, setMode] = useState<Mode | undefined>(undefined);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const messageListener = (event: MessageEvent<EventData<any>>) => {
     const message = event.data;
 

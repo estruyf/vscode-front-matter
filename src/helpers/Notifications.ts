@@ -162,7 +162,7 @@ export class Notifications {
    * @returns
    */
   private static shouldShow(level: NotificationType): boolean {
-    let levels = Settings.get<string[]>(SETTING_GLOBAL_NOTIFICATIONS);
+    const levels = Settings.get<string[]>(SETTING_GLOBAL_NOTIFICATIONS);
 
     if (!levels) {
       return true;

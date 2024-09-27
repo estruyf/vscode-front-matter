@@ -10,7 +10,7 @@ export interface IFoldersFilterProps { }
 
 export const FoldersFilter: React.FunctionComponent<
   IFoldersFilterProps
-> = ({ }: React.PropsWithChildren<IFoldersFilterProps>) => {
+> = () => {
   const DEFAULT_TYPE = l10n.t(LocalizationKey.dashboardHeaderFoldersDefault);
   const [crntFolder, setCrntFolder] = useRecoilState(FolderAtom);
   const settings = useRecoilValue(SettingsSelector);

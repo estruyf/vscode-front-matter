@@ -11,7 +11,7 @@ export const processPathPlaceholders = (
     const relPathToken = '{{pathToken.relPath}}';
     if (value.includes(relPathToken) && contentFolder?.path) {
       const dirName = dirname(filePath);
-      let relPath = relative(contentFolder.path, dirName);
+      const relPath = relative(contentFolder.path, dirName);
       value = value.replace(relPathToken, relPath);
     }
 

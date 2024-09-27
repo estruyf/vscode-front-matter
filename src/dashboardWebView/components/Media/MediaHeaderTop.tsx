@@ -23,7 +23,7 @@ export interface IMediaHeaderTopProps { }
 
 export const MediaHeaderTop: React.FunctionComponent<
   IMediaHeaderTopProps
-> = ({ }: React.PropsWithChildren<IMediaHeaderTopProps>) => {
+> = () => {
   const [lastUpdated, setLastUpdated] = React.useState<string | null>(null);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const crntSorting = useRecoilValue(SortingSelector);

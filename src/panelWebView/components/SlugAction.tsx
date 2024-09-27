@@ -9,7 +9,7 @@ export interface ISlugActionProps { }
 
 const SlugAction: React.FunctionComponent<
   ISlugActionProps
-> = ({ }: React.PropsWithChildren<ISlugActionProps>) => {
+> = () => {
   const optimize = () => {
     Messenger.send(CommandToCode.updateSlug);
   };

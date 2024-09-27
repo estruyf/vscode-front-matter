@@ -6,8 +6,6 @@ import { ThemeColor } from 'vscode';
 import { ArticleHelper } from '../helpers';
 import { commands, DecorationOptions, languages, TextEditorDecorationType } from 'vscode';
 import {
-  CancellationToken,
-  FoldingContext,
   FoldingRange,
   FoldingRangeKind,
   FoldingRangeProvider,
@@ -49,11 +47,7 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
     }
   }
 
-  public async provideFoldingRanges(
-    document: TextDocument,
-    context: FoldingContext,
-    token: CancellationToken
-  ): Promise<FoldingRange[]> {
+  public async provideFoldingRanges(document: TextDocument): Promise<FoldingRange[]> {
     const ranges: FoldingRange[] = [];
 
     const range = MarkdownFoldingProvider.getFrontMatterRange(document);
@@ -66,7 +60,7 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
     return ranges;
   }
 
-  public static triggerHighlighting(configChange: boolean = false) {
+  public static triggerHighlighting(configChange = false) {
     const activeDoc = window.activeTextEditor?.document;
 
     if (configChange && this.crntDecoration) {

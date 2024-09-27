@@ -69,7 +69,7 @@ export class SlugHelper {
       return '';
     }
 
-    const punctuationless = value?.replace(/[\.,-\/#!$@%\^&\*;:{}=\-_`'"~()+\?<>]/g, ' ');
+    const punctuationless = value?.replace(/[.,-/#!$@%^&*;:{}=\-_`'"~()+?<>]/g, ' ');
     // Remove double spaces
     return punctuationless?.replace(/\s{2,}/g, ' ');
   }

@@ -1,8 +1,10 @@
 'use strict';
 
+/* eslint-disable */
 const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const WebpackManifestPlugin = require('webpack-manifest-plugin').WebpackManifestPlugin;
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 const config = [{
   name: 'panel',
@@ -62,6 +64,11 @@ const config = [{
     new WebpackManifestPlugin({
       publicPath: "",
       fileName: "panel.manifest.json"
+    }),
+    new ESLintPlugin({
+      extensions: ['ts', 'tsx'],
+      exclude: ['node_modules', 'dist'],
+      emitWarning: false,
     })
   ],
   devServer: {

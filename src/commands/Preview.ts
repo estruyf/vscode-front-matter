@@ -110,27 +110,32 @@ export class Preview {
       webView.dispose();
     });
 
+    const fetchLocalization = async (requestId: string) => {
+      if (!requestId) {
+        return;
+      }
+
+      const fileContents = await getLocalizationFile();
+
+      webView.webview.postMessage({
+        command: GeneralCommands.toVSCode.getLocalization,
+        requestId,
+        payload: fileContents
+      });
+    };
+
     webView.webview.onDidReceiveMessage(async (message) => {
-      switch (message.command) {
+      const { command, payload, requestId } = message;
+
+      switch (command) {
         case PreviewCommands.toVSCode.open:
-          if (message.payload) {
-            commands.executeCommand('vscode.open', message.payload);
+          if (payload) {
+            commands.executeCommand('vscode.open', payload);
           }
-          return;
+          break;
         case GeneralCommands.toVSCode.getLocalization:
-          const { requestId } = message;
-          if (!requestId) {
-            return;
-          }
-
-          const fileContents = await getLocalizationFile();
-
-          webView.webview.postMessage({
-            command: GeneralCommands.toVSCode.getLocalization,
-            requestId,
-            payload: fileContents
-          });
-          return;
+          fetchLocalization(requestId);
+          break;
       }
     });
 

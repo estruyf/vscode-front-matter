@@ -11,10 +11,11 @@ import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { messageHandler } from '@estruyf/vscode/dist/client';
 import { GeneralCommands, WEBSITE_LINKS } from '../../../constants';
+import { l10nJsonFormat } from '@vscode/l10n';
 
 export interface IChatbotProps { }
 
-export const Chatbot: React.FunctionComponent<IChatbotProps> = ({ }: React.PropsWithChildren<IChatbotProps>) => {
+export const Chatbot: React.FunctionComponent<IChatbotProps> = () => {
   const { aiUrl } = useSettingsContext();
   const [company, setCompany] = React.useState<string | undefined>(undefined);
   const [chatId, setChatId] = React.useState<number | undefined>(undefined);
@@ -27,7 +28,7 @@ export const Chatbot: React.FunctionComponent<IChatbotProps> = ({ }: React.Props
 
   const init = async () => {
     setLoading(true);
-    messageHandler.request<any>(GeneralCommands.toVSCode.getLocalization).then((data) => {
+    messageHandler.request<l10nJsonFormat>(GeneralCommands.toVSCode.getLocalization).then((data) => {
       if (data) {
         l10n.config({
           contents: data

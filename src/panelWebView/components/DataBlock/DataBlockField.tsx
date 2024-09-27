@@ -16,7 +16,7 @@ export interface IDataBlockFieldProps {
   settings: PanelSettings;
   field: Field;
   parentFields: string[];
-  value: any;
+  value: unknown[];
   blockData: BlockFieldData | undefined;
   filePath: string;
   fieldsRenderer: (
@@ -24,10 +24,10 @@ export interface IDataBlockFieldProps {
     parent: IMetadata,
     parentFields: string[],
     blockData?: BlockFieldData,
-    onFieldUpdate?: (field: string | undefined, value: any, parents: string[]) => void,
+    onFieldUpdate?: (field: string | undefined, value: unknown, parents: string[]) => void,
     parentBlock?: string | null
   ) => (JSX.Element | null)[] | undefined;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: unknown) => void;
   parentBlock: string | null | undefined;
   required?: boolean;
 }
@@ -48,7 +48,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
 }: React.PropsWithChildren<IDataBlockFieldProps>) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<FieldGroup | undefined | null>(null);
-  const [selectedBlockData, setSelectedBlockData] = useState<any | null>(null);
+  const [selectedBlockData, setSelectedBlockData] = useState<unknown | null>(null);
   const [hideSubBlock, setHideSubBlock] = useState<boolean>(true);
 
   const SELECTION_STATE_KEY = useMemo(
@@ -61,19 +61,20 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
   );
 
   const onFieldUpdate = useCallback(
-    (crntField: string | undefined, crntValue: any, parents: string[]) => {
-      const dataClone: any[] = Object.assign([], value);
+    (crntField: string | undefined, crntValue: unknown, parents: string[]) => {
+      const dataClone: unknown[] = Object.assign([], value);
 
       if (!crntField) {
         return;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let data: any = {};
       if (selectedIndex !== null && selectedIndex !== undefined) {
         data = Object.assign({}, dataClone[selectedIndex]);
       }
 
-      let parentObj: any = data;
+      let parentObj: { [key: string]: unknown } = data;
 
       if (parents.length > 1) {
         // Get last parent
@@ -85,7 +86,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
           if (!parentObj[lastParent]) {
             parentObj[lastParent] = {};
           }
-          parentObj = parentObj[lastParent];
+          parentObj = parentObj[lastParent] as { [key: string]: unknown };
         }
       }
 
@@ -125,7 +126,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
 
   const deleteItem = useCallback(
     (index: number) => {
-      const dataClone: any[] = Object.assign([], value);
+      const dataClone: unknown[] = Object.assign([], value);
 
       if (!value) {
         return;
@@ -204,7 +205,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
       // Show the form
       onShowForm();
 
-      const fieldData = value[index];
+      const fieldData = value[index] as { fieldGroup?: string };
       if (index !== null && settings?.fieldGroups) {
         const fieldGroup = fieldData?.fieldGroup;
         const group = settings?.fieldGroups.find((group) => group.id === fieldGroup);
@@ -244,13 +245,13 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
   // Storing the state to local storage (does not need to be persistent)
   const updateSelectionState = useCallback(
     (value: number | undefined) => {
-      localStorage.setItem(SELECTION_STATE_KEY, value as any);
+      localStorage.setItem(SELECTION_STATE_KEY, value?.toString() || '');
     },
     [SELECTION_STATE_KEY]
   );
 
   const getSelectedIndex = useCallback(() => {
-    let crntValue = [];
+    const crntValue = [];
 
     if (blockData?.selectedIndex !== null && blockData?.selectedIndex !== undefined) {
       crntValue.push(blockData.selectedIndex);

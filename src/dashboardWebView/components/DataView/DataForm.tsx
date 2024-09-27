@@ -53,7 +53,7 @@ export const DataForm: React.FunctionComponent<IDataFormProps> = ({
       };
     } catch (error) {
       setError((error as Error).message);
-      return () => { };
+      return () => void 0;
     }
   };
 

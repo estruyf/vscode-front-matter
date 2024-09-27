@@ -14,6 +14,7 @@ import { I10nProvider } from './providers/I10nProvider';
 import { SentryInit } from '../utils/sentryInit';
 import { WEBSITE_LINKS } from '../constants';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare const acquireVsCodeApi: <T = unknown>() => {
   getState: () => T;
   setState: (data: T) => void;
@@ -119,4 +120,8 @@ if (elm) {
 }
 
 // Webpack HMR
-if ((module as any).hot) (module as any).hot.accept();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+if ((module as any).hot) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (module as any).hot.accept();
+}

@@ -26,7 +26,7 @@ export const StartServerButton: React.FunctionComponent<IStartServerButtonProps>
     Messenger.send(CommandToCode.stopServer);
   };
 
-  const messageListener = (message: MessageEvent<EventData<any>>) => {
+  const messageListener = (message: MessageEvent<EventData<boolean>>) => {
     const { command, payload } = message.data;
 
     if (command === Command.serverStarted) {

@@ -1,10 +1,8 @@
 import * as React from 'react';
 
-export interface IAddIconProps {}
+export interface IAddIconProps { }
 
-export const AddIcon: React.FunctionComponent<IAddIconProps> = (
-  props: React.PropsWithChildren<IAddIconProps>
-) => {
+export const AddIcon: React.FunctionComponent<IAddIconProps> = () => {
   return (
     <svg
       width="16"

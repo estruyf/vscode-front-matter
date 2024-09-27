@@ -21,9 +21,7 @@ import { DEFAULT_PANEL_FEATURE_FLAGS } from '../constants/DefaultFeatureFlags';
 
 export interface IViewPanelProps { }
 
-export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
-  { }: React.PropsWithChildren<IViewPanelProps>
-) => {
+export const ViewPanel: React.FunctionComponent<IViewPanelProps> = () => {
   const [isDevMode, setIsDevMode] = useState(false);
   const {
     loading,
@@ -38,7 +36,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = (
   const prevMediaSelection = usePrevious(mediaSelecting);
   const [scrollY, setScrollY] = useState(0);
 
-  const scollListener = useCallback((e: Event) => {
+  const scollListener = useCallback(() => {
     if (!mediaSelecting) {
       setScrollY(window.scrollY);
     }

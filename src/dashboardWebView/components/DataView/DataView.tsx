@@ -68,15 +68,14 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
   );
 
   const onSubmit = useCallback(
-    (data: any) => {
+    (data: unknown) => {
       if (selectedData?.singleEntry) {
         // Needs to add a single entry
         updateData(data);
         return;
       }
 
-      debugger
-      const dataClone: any[] = Object.assign([], dataEntries);
+      const dataClone: unknown[] = Object.assign([], dataEntries);
       if (selectedIndex !== null && selectedIndex !== undefined) {
         dataClone[selectedIndex] = data;
       } else {
@@ -140,7 +139,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
     return dataEntries && selectedIndex !== null && selectedIndex !== undefined
       ? dataEntries[selectedIndex]
       : null;
-  }, [selectedData, , dataEntries, selectedIndex]);
+  }, [selectedData, dataEntries, selectedIndex]);
 
   // Retrieve the data files, check if they have a schema or ID, if not, they shouldn't be shown
   const dataFiles = useMemo(() => {
