@@ -27,7 +27,6 @@ const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({
     }
 
     const prevState: any = Messenger.getState();
-    console.log(collapseKey, prevState[collapseKey]);
 
     if (
       !prevState ||

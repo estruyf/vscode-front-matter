@@ -1,5 +1,9 @@
 # Change Log
 
+## [10.4.1] - 2024-09-27
+
+- [#855](https://github.com/estruyf/vscode-front-matter/issues/855): Fix in panel sections
+
 ## [10.4.0] - 2024-09-25 - [Release notes](https://beta.frontmatter.codes/updates/v10.4.0)
 
 ### ✨ New features

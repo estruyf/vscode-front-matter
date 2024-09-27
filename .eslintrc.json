@@ -12,6 +12,7 @@
     "no-throw-literal": "error",
     "no-unused-expressions": "error",
     "curly": "error",
-    "class-methods-use-this": "warn"
+    "class-methods-use-this": "warn",
+    "no-console": "warn"
   }
 }
