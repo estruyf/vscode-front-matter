@@ -144,7 +144,7 @@
   "dashboard.dataView.dataView.selectDataFolder": "Select data folder",
   "dashboard.dataView.dataView.closeSelectedDataFile": "Close data file",
 
-  "dashboard.dataView.emptyView.heading": "Select your date type first",
+  "dashboard.dataView.emptyView.heading": "Select your data type first",
   "dashboard.dataView.emptyView.heading.create": "Start by creating a new data file",
 
   "dashboard.dataView.sortableItem.editButton.title": "Edit \"{0}\"",
