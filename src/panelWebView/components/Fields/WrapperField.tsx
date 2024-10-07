@@ -497,6 +497,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           required={!!field.required}
           contentTypeName={field.contentTypeName}
           contentTypeValue={field.contentTypeValue}
+          sameContentLocale={field.sameContentLocale}
           multiSelect={field.multiple}
           onChange={onFieldChange}
         />

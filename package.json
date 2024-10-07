@@ -1543,6 +1543,11 @@
                       "default": "path",
                       "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.contentTypeValue.description%"
                     },
+                    "sameContentLocale": {
+                      "type": "boolean",
+                      "default": true,
+                      "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.sameContentLocale.description%"
+                    },
                     "when": {
                       "type": "object",
                       "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.when.description%",

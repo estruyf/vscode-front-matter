@@ -135,6 +135,7 @@ export interface Field {
   // Content relationship
   contentTypeName?: string;
   contentTypeValue?: 'path' | 'slug';
+  sameContentLocale?: boolean;
 
   // Custom field
   customType?: string;
