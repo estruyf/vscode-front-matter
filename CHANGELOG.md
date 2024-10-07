@@ -1,5 +1,19 @@
 # Change Log
 
+## [10.5.0] - 2024-xx-xx
+
+### ✨ New features
+
+### 🎨 Enhancements
+
+- [#850](https://github.com/estruyf/vscode-front-matter/issues/850): Extended the i18n/language button to open or create new language files (thanks to [Dennis Zoma](https://github.com/wottpal))
+
+### ⚡️ Optimizations
+
+### 🐞 Fixes
+
+- [#860](https://github.com/estruyf/vscode-front-matter/issues/860): Fix typo on the data screen
+
 ## [10.4.1] - 2024-09-27
 
 - [#855](https://github.com/estruyf/vscode-front-matter/issues/855): Fix in panel sections
