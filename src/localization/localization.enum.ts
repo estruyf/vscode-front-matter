@@ -1885,6 +1885,26 @@ export enum LocalizationKey {
    */
   commandsI18nCreateQuickPickPlaceHolder = 'commands.i18n.create.quickPick.placeHolder',
   /**
+   * Open or create translation
+   */
+  commandsI18nCreateOrOpenQuickPickTitle = 'commands.i18n.createOrOpen.quickPick.title',
+  /**
+   * Existing translations
+   */
+  commandsI18nCreateOrOpenQuickPickCategoryExisting = 'commands.i18n.createOrOpen.quickPick.category.existing',
+  /**
+   * Open "{0}"
+   */
+  commandsI18nCreateOrOpenQuickPickActionOpen = 'commands.i18n.createOrOpen.quickPick.action.open',
+  /**
+   * New translations
+   */
+  commandsI18nCreateOrOpenQuickPickCategoryNew = 'commands.i18n.createOrOpen.quickPick.category.new',
+  /**
+   * Create "{0}"
+   */
+  commandsI18nCreateOrOpenQuickPickActionCreate = 'commands.i18n.createOrOpen.quickPick.action.create',
+  /**
    * Translating content...
    */
   commandsI18nTranslateProgressTitle = 'commands.i18n.translate.progress.title',

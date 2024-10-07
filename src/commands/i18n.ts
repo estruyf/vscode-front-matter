@@ -1,4 +1,14 @@
-import { ProgressLocation, Uri, commands, window, workspace } from 'vscode';
+import {
+  ProgressLocation,
+  QuickPickItem,
+  QuickPickItemKind,
+  QuickPickOptions,
+  ThemeIcon,
+  Uri,
+  commands,
+  window,
+  workspace
+} from 'vscode';
 import {
   ArticleHelper,
   ContentType,
@@ -32,6 +42,7 @@ export class i18n {
     const subscriptions = Extension.getInstance().subscriptions;
 
     subscriptions.push(commands.registerCommand(COMMAND_NAME.i18n.create, i18n.create));
+    subscriptions.push(commands.registerCommand(COMMAND_NAME.i18n.createOrOpen, i18n.createOrOpen));
 
     i18n.clearFiles();
   }
@@ -380,6 +391,181 @@ export class i18n {
     );
 
     await openFileInEditor(newFilePath);
+
+    PagesListener.refresh();
+
+    Notifications.info(
+      l10n.t(
+        LocalizationKey.commandsI18nCreateSuccessCreated,
+        sourceLocale.title || sourceLocale.locale
+      )
+    );
+  }
+
+  /**
+   * This method handles the process of creating a new translation file if it doesn't exist,
+   * or opening an existing translation file if it's already present.
+   * @param filePath The path of the file where the new content file should be created or being switched to. Behaves like `create` if not provided.
+   */
+  private static async createOrOpen(fileUri?: Uri | string) {
+    if (!fileUri) {
+      const filePath = ArticleHelper.getActiveFile();
+      fileUri = filePath ? Uri.file(filePath) : undefined;
+    }
+
+    if (!fileUri) {
+      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoFileSelected));
+      return;
+    }
+
+    if (typeof fileUri === 'string') {
+      fileUri = Uri.file(fileUri);
+    }
+
+    const pageFolder = await Folders.getPageFolderByFilePath(fileUri.fsPath);
+    if (!pageFolder || !pageFolder.localeSourcePath) {
+      Notifications.error(l10n.t(LocalizationKey.commandsI18nCreateErrorNoContentFolder));
+      return;
+    }
+
+    let article = await ArticleHelper.getFrontMatterByPath(fileUri.fsPath);
+    if (!article) {
+      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoFile));
+      return;
+    }
+
+    const contentType = await ArticleHelper.getContentType(article);
+    if (!contentType) {
+      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoContentType));
+      return;
+    }
+
+    const i18nSettings = await i18n.getSettings(fileUri.fsPath);
+    if (!i18nSettings) {
+      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoConfig));
+      return;
+    }
+
+    const sourceLocale = await i18n.getLocale(fileUri.fsPath);
+    if (!sourceLocale || !sourceLocale.locale) {
+      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateErrorNoLocaleDefinition));
+      return;
+    }
+
+    // Determine translation file paths
+    const fileInfo = parse(fileUri.fsPath);
+    let pageBundleDir = '';
+    if (await ArticleHelper.isPageBundle(fileUri.fsPath)) {
+      const dir = ArticleHelper.getPageFolderFromBundlePath(fileUri.fsPath);
+      pageBundleDir = fileUri.fsPath.replace(dir, '');
+      pageBundleDir = join(parse(pageBundleDir).dir);
+    }
+
+    // Gather target locales & metadata
+    const translations = (await i18n.getTranslations(fileUri.fsPath)) || {};
+    const targetLocales = i18nSettings
+      .filter((i18n) => {
+        return i18n.path && i18n.locale !== sourceLocale.locale;
+      })
+      .map((i18n) => {
+        return {
+          ...i18n,
+          dir: join(pageFolder.localeSourcePath!, i18n.path!, pageBundleDir),
+          absolutePath: join(
+            pageFolder.localeSourcePath!,
+            i18n.path!,
+            pageBundleDir,
+            fileInfo.base
+          ),
+          relativePath: join(i18n.path!, pageBundleDir, fileInfo.base)
+        };
+      })
+      .sort((a, b) => (a.title || a.locale).localeCompare(b.title || b.locale));
+
+    if (targetLocales.length === 0) {
+      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateErrorNoLocales));
+      return;
+    }
+
+    // Configure quick pick items & options
+    const existingTargetLocales = targetLocales.filter((i18n) => translations[i18n.locale]);
+    const newTargetLocales = targetLocales.filter((i18n) => !translations[i18n.locale]);
+    const quickPickItems: QuickPickItem[] = [
+      ...(existingTargetLocales.length
+        ? [
+            {
+              label: l10n.t(LocalizationKey.commandsI18nCreateOrOpenQuickPickCategoryExisting),
+              kind: QuickPickItemKind.Separator
+            },
+            ...existingTargetLocales.map((i18n) => ({
+              label: i18n.title || i18n.locale,
+              detail: l10n.t(LocalizationKey.commandsI18nCreateOrOpenQuickPickActionOpen, i18n.relativePath)
+            }))
+          ]
+        : []),
+      ...(newTargetLocales.length
+        ? [
+            {
+              label: l10n.t(LocalizationKey.commandsI18nCreateOrOpenQuickPickCategoryNew),
+              kind: QuickPickItemKind.Separator
+            },
+            ...newTargetLocales.map((i18n) => ({
+              label: i18n.title || i18n.locale,
+              detail: `$(file-add) ${l10n.t(LocalizationKey.commandsI18nCreateOrOpenQuickPickActionCreate, i18n.relativePath)}`
+            }))
+          ]
+        : [])
+    ];
+    const quickPickOptions: QuickPickOptions = {
+      title: l10n.t(LocalizationKey.commandsI18nCreateOrOpenQuickPickTitle),
+      ignoreFocusOut: true,
+      matchOnDetail: true
+    };
+
+    const localeItem = await window.showQuickPick<QuickPickItem>(quickPickItems, quickPickOptions);
+    const locale = localeItem?.label;
+    if (!locale) {
+      return;
+    }
+
+    const targetLocale = targetLocales.find(
+      (i18n) => i18n.title === locale || i18n.locale === locale
+    );
+    if (!targetLocale || !targetLocale.path) {
+      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoConfig));
+      return;
+    }
+
+    // If it exists, open the translation file
+    if (await existsAsync(targetLocale.absolutePath)) {
+      await openFileInEditor(targetLocale.absolutePath);
+      return;
+    }
+
+    // If it doesn't exist, create the new translation file & update front matter
+    if (!(await existsAsync(targetLocale.dir))) {
+      await workspace.fs.createDirectory(Uri.file(targetLocale.dir));
+    }
+
+    article = await i18n.updateFrontMatter(
+      article,
+      fileUri.fsPath,
+      contentType,
+      sourceLocale,
+      targetLocale,
+      targetLocale.dir
+    );
+    if (sourceLocale?.locale) {
+      article = await i18n.translate(article, sourceLocale, targetLocale);
+    }
+
+    const newFileUri = Uri.file(targetLocale.absolutePath);
+    await workspace.fs.writeFile(
+      newFileUri,
+      Buffer.from(ArticleHelper.stringifyFrontMatter(article.content, article.data))
+    );
+
+    await openFileInEditor(targetLocale.absolutePath);
 
     PagesListener.refresh();
 
