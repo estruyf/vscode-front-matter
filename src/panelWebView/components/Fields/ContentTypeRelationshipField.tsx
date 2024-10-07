@@ -12,20 +12,25 @@ import { FieldTitle } from './FieldTitle';
 import { FieldMessage } from './FieldMessage';
 import { ChoiceButton } from './ChoiceButton';
 import useDropdownStyle from '../../hooks/useDropdownStyle';
+import useMessages from '../../hooks/useMessages';
 
 export interface IContentTypeRelationshipFieldProps extends BaseFieldProps<string | string[]> {
   contentTypeName?: string;
   contentTypeValue?: string;
+  sameContentLocale?: boolean;
   multiSelect?: boolean;
   onChange: (value: string | string[]) => void;
 }
 
-export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeRelationshipFieldProps> = ({
+export const ContentTypeRelationshipField: React.FunctionComponent<
+  IContentTypeRelationshipFieldProps
+> = ({
   label,
   description,
   value,
   contentTypeName,
   contentTypeValue,
+  sameContentLocale,
   multiSelect,
   onChange,
   required
@@ -37,6 +42,7 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
   const [filter, setFilter] = React.useState<string | undefined>(undefined);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   const { getDropdownStyle } = useDropdownStyle(inputRef as any, '6px');
+  const { metadata } = useMessages();
 
   /**
    * Check the required state
@@ -49,11 +55,11 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
 
   /**
    * Retrieve the value based on the field setting
-   * @param value 
-   * @param type 
-   * @returns 
+   * @param value
+   * @param type
+   * @returns
    */
-  const getValue = (value: Page, type: string = "path") => {
+  const getValue = (value: Page, type: string = 'path') => {
     if (type === 'path') {
       return value.fmRelFilePath || value.fmFilePath;
     }
@@ -64,20 +70,21 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
   /**
    * Retrieve choice value to display
    */
-  const getChoiceValue = useCallback((value: string) => {
-    const choice = pages.find(
-      (p: Page) => getValue(p, contentTypeValue) === value
-    );
+  const getChoiceValue = useCallback(
+    (value: string) => {
+      const choice = pages.find((p: Page) => getValue(p, contentTypeValue) === value);
 
-    if (choice) {
-      return choice.title;
-    }
-    return '';
-  }, [pages, choices, contentTypeValue]);
+      if (choice) {
+        return choice.title;
+      }
+      return '';
+    },
+    [pages, choices, contentTypeValue]
+  );
 
   /**
    * On selecting an option
-   * @param txtValue 
+   * @param txtValue
    */
   const onSelect = (option: string) => {
     setFilter(undefined);
@@ -98,25 +105,28 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
 
   /**
    * Remove a selected value
-   * @param txtValue 
+   * @param txtValue
    */
-  const removeSelected = useCallback((txtValue: string) => {
-    if (multiSelect) {
-      const newValue = [...(crntSelected || [])].filter((v) => v !== txtValue);
-      setCrntSelected(newValue);
-      onChange(newValue);
-    } else {
-      setCrntSelected('');
-      onChange('');
-    }
-  }, [multiSelect, crntSelected, onChange]);
+  const removeSelected = useCallback(
+    (txtValue: string) => {
+      if (multiSelect) {
+        const newValue = [...(crntSelected || [])].filter((v) => v !== txtValue);
+        setCrntSelected(newValue);
+        onChange(newValue);
+      } else {
+        setCrntSelected('');
+        onChange('');
+      }
+    },
+    [multiSelect, crntSelected, onChange]
+  );
 
   /**
    * Retrieve the available choices
    */
   const availableChoices = useMemo(() => {
     return pages.filter((page: Page) => {
-      const value = contentTypeValue === "slug" ? page.slug : page.fmFilePath;
+      const value = contentTypeValue === 'slug' ? page.slug : page.fmFilePath;
 
       let toShow = true;
 
@@ -148,93 +158,93 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
    * Retrieve the pages based on the content type
    */
   useEffect(() => {
-    if (contentTypeName) {
+    if (contentTypeName && metadata?.filePath) {
       setLoading(true);
       messageHandler
-        .request<Page[]>(CommandToCode.searchByType, contentTypeName)
+        .request<Page[]>(CommandToCode.searchByType, {
+          type: contentTypeName,
+          sameLocale: sameContentLocale ?? true,
+          activePath: metadata?.filePath
+        })
         .then((pages: Page[]) => {
           setPages(pages || []);
-          setChoices((pages || []).map(page => page.title))
-        }).finally(() => {
+          setChoices((pages || []).map((page) => page.title));
+        })
+        .finally(() => {
           setLoading(false);
         });
     }
-  }, [contentTypeName]);
+  }, [contentTypeName, sameContentLocale, metadata?.filePath]);
 
   return (
     <div className={`metadata_field ${showRequiredState ? 'required' : ''}`}>
-      <FieldTitle
-        label={label}
-        icon={<DocumentPlusIcon />}
-        required={required} />
+      <FieldTitle label={label} icon={<DocumentPlusIcon />} required={required} />
 
-      {
-        loading ? (
-          <div className='metadata_field__wrapper'>
-            <div className='metadata_field__loading'>
-              {l10n.t(LocalizationKey.panelFieldsContentTypeRelationshipFieldLoading)}
-            </div>
+      {loading ? (
+        <div className="metadata_field__wrapper">
+          <div className="metadata_field__loading">
+            {l10n.t(LocalizationKey.panelFieldsContentTypeRelationshipFieldLoading)}
           </div>
-        ) : (
-          <Combobox
-            value={crntSelected}
-            onChange={onSelect}
-          >
-            {({ open }) => (
-              <div className="relative">
+        </div>
+      ) : (
+        <Combobox value={crntSelected} onChange={onSelect}>
+          {({ open }) => (
+            <div className="relative">
+              <div className="relative w-full cursor-default overflow-hidden rounded border border-solid border-[var(--vscode-inputValidation-infoBorder)] text-left focus:outline-none">
+                <Combobox.Input
+                  className="w-full border-none py-2 pl-3 pr-10 leading-5 text-[var(--vscode-input-foreground)] focus:ring-0"
+                  onChange={(e) => setFilter(e.target.value)}
+                  value={filter || ''}
+                  placeholder={l10n.t(LocalizationKey.panelFieldsChoiceFieldSelect, label)}
+                  ref={inputRef}
+                />
 
-                <div className="relative w-full cursor-default overflow-hidden text-left focus:outline-none border border-solid border-[var(--vscode-inputValidation-infoBorder)] rounded">
-                  <Combobox.Input
-                    className="w-full border-none py-2 pl-3 pr-10 leading-5 focus:ring-0 text-[var(--vscode-input-foreground)]"
-                    onChange={(e) => setFilter(e.target.value)}
-                    value={filter || ""}
-                    placeholder={l10n.t(LocalizationKey.panelFieldsChoiceFieldSelect, label)}
-                    ref={inputRef} />
-
-                  <Combobox.Button
-                    className="absolute inset-y-0 right-0 flex items-center w-8 bg-inherit rounded-none text-[var(--vscode-input-foreground)] hover:text-[var(--vscode-button-foreground)]">
-                    <ChevronDownIcon
-                      className="h-5 w-5"
-                      aria-hidden="true"
-                    />
-                  </Combobox.Button>
-                </div>
-
-                <Transition
-                  as={Fragment}
-                  leave="transition ease-in duration-100"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
-                  afterLeave={() => setFilter('')}
-                >
-                  <Combobox.Options
-                    className="field_dropdown absolute max-h-60 w-full shadow-lg overflow-auto py-1 px-0 space-y-1 text-base focus:outline-none z-50 bg-[var(--vscode-dropdown-background)] text-[var(--vscode-dropdown-foreground)] border border-solid border-[var(--vscode-dropdown-border)]"
-                    style={{
-                      bottom: getDropdownStyle(open)
-                    }}
-                  >
-                    {availableChoices.map((choice) => (
-                      <Combobox.Option
-                        key={choice.fmFilePath}
-                        value={getValue(choice, contentTypeValue)}
-                        className={({ active }) => `py-[var(--input-padding-vertical)] px-[var(--input-padding-horizontal)] list-none cursor-pointer hover:text-[var(--vscode-button-foreground)] hover:bg-[var(--vscode-button-hoverBackground)] ${active ? "text-[var(--vscode-button-foreground)] bg-[var(--vscode-button-hoverBackground)] " : ""}`}>
-                        {choice.title}
-                        <div className='text-xs opacity-60 mt-0.5'>{choice.slug}</div>
-                      </Combobox.Option>
-                    ))}
-
-                    {availableChoices.length === 0 ? (
-                      <div className="relative cursor-default select-none text-center">
-                        {l10n.t(LocalizationKey.commonNoResults)}
-                      </div>
-                    ) : null}
-                  </Combobox.Options>
-                </Transition>
+                <Combobox.Button className="absolute inset-y-0 right-0 flex w-8 items-center rounded-none bg-inherit text-[var(--vscode-input-foreground)] hover:text-[var(--vscode-button-foreground)]">
+                  <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+                </Combobox.Button>
               </div>
-            )}
-          </Combobox>
-        )
-      }
+
+              <Transition
+                as={Fragment}
+                leave="transition ease-in duration-100"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+                afterLeave={() => setFilter('')}
+              >
+                <Combobox.Options
+                  className="field_dropdown absolute z-50 max-h-60 w-full space-y-1 overflow-auto border border-solid border-[var(--vscode-dropdown-border)] bg-[var(--vscode-dropdown-background)] px-0 py-1 text-base text-[var(--vscode-dropdown-foreground)] shadow-lg focus:outline-none"
+                  style={{
+                    bottom: getDropdownStyle(open)
+                  }}
+                >
+                  {availableChoices.map((choice) => (
+                    <Combobox.Option
+                      key={choice.fmFilePath}
+                      value={getValue(choice, contentTypeValue)}
+                      className={({ active }) =>
+                        `cursor-pointer list-none px-[var(--input-padding-horizontal)] py-[var(--input-padding-vertical)] hover:bg-[var(--vscode-button-hoverBackground)] hover:text-[var(--vscode-button-foreground)] ${
+                          active
+                            ? 'bg-[var(--vscode-button-hoverBackground)] text-[var(--vscode-button-foreground)] '
+                            : ''
+                        }`
+                      }
+                    >
+                      {choice.title}
+                      <div className="mt-0.5 text-xs opacity-60">{choice.slug}</div>
+                    </Combobox.Option>
+                  ))}
+
+                  {availableChoices.length === 0 ? (
+                    <div className="relative cursor-default select-none text-center">
+                      {l10n.t(LocalizationKey.commonNoResults)}
+                    </div>
+                  ) : null}
+                </Combobox.Options>
+              </Transition>
+            </div>
+          )}
+        </Combobox>
+      )}
 
       <FieldMessage
         name={label.toLowerCase()}
@@ -242,29 +252,26 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
         showRequired={showRequiredState}
       />
 
-      {
-        pages.length > 0 && (
-          crntSelected instanceof Array
-            ? crntSelected.map((value: string) => (
+      {pages.length > 0 &&
+        (crntSelected instanceof Array
+          ? crntSelected.map((value: string) => (
               <ChoiceButton
                 key={value}
                 value={value}
-                className='w-full mr-0 flex justify-between'
+                className="mr-0 flex w-full justify-between"
                 title={getChoiceValue(value)}
                 onClick={removeSelected}
               />
             ))
-            : crntSelected && (
+          : crntSelected && (
               <ChoiceButton
                 key={crntSelected}
                 value={crntSelected}
-                className='w-full mr-0 flex justify-between'
+                className="mr-0 flex w-full justify-between"
                 title={getChoiceValue(crntSelected)}
                 onClick={removeSelected}
               />
-            )
-        )
-      }
+            ))}
     </div>
-  )
+  );
 };

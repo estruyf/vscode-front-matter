@@ -257,7 +257,7 @@ export class PagesListener extends BaseListener {
    */
   private static async createSearchIndex(pages: Page[]) {
     const pagesIndex = Fuse.createIndex(
-      ['title', 'slug', 'description', 'fmBody', 'type', 'fmContentType'],
+      ['title', 'slug', 'description', 'fmBody', 'type', 'fmContentType', 'fmLocale.locale'],
       pages
     );
     await Extension.getInstance().setState(

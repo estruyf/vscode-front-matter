@@ -228,6 +228,7 @@
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.required.description": "Specify if the field is required",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.contentTypeName.description": "Specify the content type name to filter content for the contentRelationship field",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.contentTypeValue.description": "Specify the value to insert for the contentRelationship field",
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.sameContentLocale.description": "Specify if you only want to show the content with the same locale",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.when.description": "Specify the conditions to show the field",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.when.properties.fieldRef.description": "The field ID to use",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.when.properties.operator.description": "The operator to use",
