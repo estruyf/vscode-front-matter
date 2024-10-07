@@ -2394,6 +2394,15 @@
         "category": "Front Matter"
       },
       {
+        "command": "frontMatter.i18n.createOrOpen",
+        "title": "%command.frontMatter.i18n.createOrOpen%",
+        "category": "Front Matter",
+        "icon": {
+          "light": "assets/icons/i18n-light.svg",
+          "dark": "assets/icons/i18n-dark.svg"
+        }
+      },
+      {
         "command": "frontMatter.i18n.create",
         "title": "%command.frontMatter.i18n.create%",
         "category": "Front Matter",
@@ -2448,7 +2457,7 @@
           "when": "frontMatter:file:isValid == true"
         },
         {
-          "command": "frontMatter.i18n.create",
+          "command": "frontMatter.i18n.createOrOpen",
           "group": "navigation@-127",
           "when": "frontMatter:file:isValid && frontMatter:i18n:enabled"
         },
