@@ -3,7 +3,6 @@ import {
   QuickPickItem,
   QuickPickItemKind,
   QuickPickOptions,
-  ThemeIcon,
   Uri,
   commands,
   window,
@@ -26,8 +25,7 @@ import { existsAsync, getDescriptionField, getTitleField } from '../utils';
 import { Folders } from '.';
 import { ParsedFrontMatter } from '../parsers';
 import { PagesListener } from '../listeners/dashboard';
-import * as l10n from '@vscode/l10n';
-import { LocalizationKey } from '../localization';
+import { LocalizationKey, localize } from '../localization';
 import { Translations } from '../services/Translations';
 
 export class i18n {
@@ -275,7 +273,7 @@ export class i18n {
     }
 
     if (!fileUri) {
-      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoFileSelected));
+      Notifications.warning(localize(LocalizationKey.commandsI18nCreateWarningNoFileSelected));
       return;
     }
 
@@ -285,19 +283,19 @@ export class i18n {
 
     const pageFolder = await Folders.getPageFolderByFilePath(fileUri.fsPath);
     if (!pageFolder || !pageFolder.localeSourcePath) {
-      Notifications.error(l10n.t(LocalizationKey.commandsI18nCreateErrorNoContentFolder));
+      Notifications.error(localize(LocalizationKey.commandsI18nCreateErrorNoContentFolder));
       return;
     }
 
     const i18nSettings = await i18n.getSettings(fileUri.fsPath);
     if (!i18nSettings) {
-      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoConfig));
+      Notifications.warning(localize(LocalizationKey.commandsI18nCreateWarningNoConfig));
       return;
     }
 
     const sourceLocale = await i18n.getLocale(fileUri.fsPath);
     if (!sourceLocale || !sourceLocale.locale) {
-      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateErrorNoLocaleDefinition));
+      Notifications.warning(localize(LocalizationKey.commandsI18nCreateErrorNoLocaleDefinition));
       return;
     }
 
@@ -311,15 +309,15 @@ export class i18n {
     });
 
     if (targetLocales.length === 0) {
-      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateErrorNoLocales));
+      Notifications.warning(localize(LocalizationKey.commandsI18nCreateErrorNoLocales));
       return;
     }
 
     const locale = await window.showQuickPick(
       targetLocales.map((i18n) => i18n.title || i18n.locale),
       {
-        title: l10n.t(LocalizationKey.commandsI18nCreateQuickPickTitle),
-        placeHolder: l10n.t(LocalizationKey.commandsI18nCreateQuickPickPlaceHolder),
+        title: localize(LocalizationKey.commandsI18nCreateQuickPickTitle),
+        placeHolder: localize(LocalizationKey.commandsI18nCreateQuickPickPlaceHolder),
         ignoreFocusOut: true
       }
     );
@@ -332,19 +330,19 @@ export class i18n {
       (i18n) => i18n.title === locale || i18n.locale === locale
     );
     if (!targetLocale || !targetLocale.path) {
-      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoConfig));
+      Notifications.warning(localize(LocalizationKey.commandsI18nCreateWarningNoConfig));
       return;
     }
 
     let article = await ArticleHelper.getFrontMatterByPath(fileUri.fsPath);
     if (!article) {
-      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoFile));
+      Notifications.warning(localize(LocalizationKey.commandsI18nCreateWarningNoFile));
       return;
     }
 
     const contentType = await ArticleHelper.getContentType(article);
     if (!contentType) {
-      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoContentType));
+      Notifications.warning(localize(LocalizationKey.commandsI18nCreateWarningNoContentType));
       return;
     }
 
@@ -376,7 +374,7 @@ export class i18n {
 
     const newFilePath = join(i18nDir, fileInfo.base);
     if (await existsAsync(newFilePath)) {
-      Notifications.error(l10n.t(LocalizationKey.commandsI18nCreateErrorFileExists));
+      Notifications.error(localize(LocalizationKey.commandsI18nCreateErrorFileExists));
       return;
     }
 
@@ -395,7 +393,7 @@ export class i18n {
     PagesListener.refresh();
 
     Notifications.info(
-      l10n.t(
+      localize(
         LocalizationKey.commandsI18nCreateSuccessCreated,
         sourceLocale.title || sourceLocale.locale
       )
@@ -414,7 +412,7 @@ export class i18n {
     }
 
     if (!fileUri) {
-      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoFileSelected));
+      Notifications.warning(localize(LocalizationKey.commandsI18nCreateWarningNoFileSelected));
       return;
     }
 
@@ -424,31 +422,31 @@ export class i18n {
 
     const pageFolder = await Folders.getPageFolderByFilePath(fileUri.fsPath);
     if (!pageFolder || !pageFolder.localeSourcePath) {
-      Notifications.error(l10n.t(LocalizationKey.commandsI18nCreateErrorNoContentFolder));
+      Notifications.error(localize(LocalizationKey.commandsI18nCreateErrorNoContentFolder));
       return;
     }
 
     let article = await ArticleHelper.getFrontMatterByPath(fileUri.fsPath);
     if (!article) {
-      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoFile));
+      Notifications.warning(localize(LocalizationKey.commandsI18nCreateWarningNoFile));
       return;
     }
 
     const contentType = await ArticleHelper.getContentType(article);
     if (!contentType) {
-      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoContentType));
+      Notifications.warning(localize(LocalizationKey.commandsI18nCreateWarningNoContentType));
       return;
     }
 
     const i18nSettings = await i18n.getSettings(fileUri.fsPath);
     if (!i18nSettings) {
-      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoConfig));
+      Notifications.warning(localize(LocalizationKey.commandsI18nCreateWarningNoConfig));
       return;
     }
 
     const sourceLocale = await i18n.getLocale(fileUri.fsPath);
     if (!sourceLocale || !sourceLocale.locale) {
-      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateErrorNoLocaleDefinition));
+      Notifications.warning(localize(LocalizationKey.commandsI18nCreateErrorNoLocaleDefinition));
       return;
     }
 
@@ -483,7 +481,7 @@ export class i18n {
       .sort((a, b) => (a.title || a.locale).localeCompare(b.title || b.locale));
 
     if (targetLocales.length === 0) {
-      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateErrorNoLocales));
+      Notifications.warning(localize(LocalizationKey.commandsI18nCreateErrorNoLocales));
       return;
     }
 
@@ -494,30 +492,36 @@ export class i18n {
       ...(existingTargetLocales.length
         ? [
             {
-              label: l10n.t(LocalizationKey.commandsI18nCreateOrOpenQuickPickCategoryExisting),
+              label: localize(LocalizationKey.commandsI18nCreateOrOpenQuickPickCategoryExisting),
               kind: QuickPickItemKind.Separator
             },
             ...existingTargetLocales.map((i18n) => ({
               label: i18n.title || i18n.locale,
-              detail: l10n.t(LocalizationKey.commandsI18nCreateOrOpenQuickPickActionOpen, i18n.relativePath)
+              detail: localize(
+                LocalizationKey.commandsI18nCreateOrOpenQuickPickActionOpen,
+                i18n.relativePath
+              )
             }))
           ]
         : []),
       ...(newTargetLocales.length
         ? [
             {
-              label: l10n.t(LocalizationKey.commandsI18nCreateOrOpenQuickPickCategoryNew),
+              label: localize(LocalizationKey.commandsI18nCreateOrOpenQuickPickCategoryNew),
               kind: QuickPickItemKind.Separator
             },
             ...newTargetLocales.map((i18n) => ({
               label: i18n.title || i18n.locale,
-              detail: `$(file-add) ${l10n.t(LocalizationKey.commandsI18nCreateOrOpenQuickPickActionCreate, i18n.relativePath)}`
+              detail: `$(file-add) ${localize(
+                LocalizationKey.commandsI18nCreateOrOpenQuickPickActionCreate,
+                i18n.relativePath
+              )}`
             }))
           ]
         : [])
     ];
     const quickPickOptions: QuickPickOptions = {
-      title: l10n.t(LocalizationKey.commandsI18nCreateOrOpenQuickPickTitle),
+      title: localize(LocalizationKey.commandsI18nCreateOrOpenQuickPickTitle),
       ignoreFocusOut: true,
       matchOnDetail: true
     };
@@ -532,7 +536,7 @@ export class i18n {
       (i18n) => i18n.title === locale || i18n.locale === locale
     );
     if (!targetLocale || !targetLocale.path) {
-      Notifications.warning(l10n.t(LocalizationKey.commandsI18nCreateWarningNoConfig));
+      Notifications.warning(localize(LocalizationKey.commandsI18nCreateWarningNoConfig));
       return;
     }
 
@@ -570,7 +574,7 @@ export class i18n {
     PagesListener.refresh();
 
     Notifications.info(
-      l10n.t(
+      localize(
         LocalizationKey.commandsI18nCreateSuccessCreated,
         sourceLocale.title || sourceLocale.locale
       )
@@ -593,7 +597,7 @@ export class i18n {
       window.withProgress(
         {
           location: ProgressLocation.Notification,
-          title: l10n.t(LocalizationKey.commandsI18nTranslateProgressTitle),
+          title: localize(LocalizationKey.commandsI18nTranslateProgressTitle),
           cancellable: false
         },
         async () => {
