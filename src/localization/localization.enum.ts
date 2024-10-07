@@ -492,7 +492,7 @@ export enum LocalizationKey {
    */
   dashboardDataViewDataViewCloseSelectedDataFile = 'dashboard.dataView.dataView.closeSelectedDataFile',
   /**
-   * Select your date type first
+   * Select your data type first
    */
   dashboardDataViewEmptyViewHeading = 'dashboard.dataView.emptyView.heading',
   /**

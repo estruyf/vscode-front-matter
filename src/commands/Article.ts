@@ -375,7 +375,7 @@ export class Article {
       const autoUpdate = Settings.get(SETTING_AUTO_UPDATE_DATE);
 
       // Is article located in one of the content folders
-      const folders = Folders.getCached();
+      const folders = await Folders.getCachedOrFresh();
       const documentPath = parseWinPath(document.fileName);
       const folder = folders.find((f) => documentPath.startsWith(f.path));
       if (!folder) {
