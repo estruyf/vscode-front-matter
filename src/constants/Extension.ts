@@ -70,7 +70,8 @@ export const COMMAND_NAME = {
 
   // i18n
   i18n: {
-    create: getCommandName('i18n.create')
+    create: getCommandName('i18n.create'),
+    createOrOpen: getCommandName('i18n.createOrOpen')
   },
 
   // Project
