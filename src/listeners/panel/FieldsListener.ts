@@ -36,7 +36,8 @@ export class FieldsListener extends BaseListener {
 
     PagesListener.getPagesData(false, async (pages) => {
       const fuseOptions: Fuse.IFuseOptions<Page> = {
-        keys: [{ name: 'fmContentType', weight: 1 }]
+        keys: [{ name: 'fmContentType', weight: 1 }],
+        threshold: 0,
       };
 
       const pagesIndex = await Extension.getInstance().getState<Fuse.FuseIndex<Page>>(
