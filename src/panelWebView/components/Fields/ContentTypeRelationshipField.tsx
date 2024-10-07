@@ -219,6 +219,7 @@ export const ContentTypeRelationshipField: React.FunctionComponent<IContentTypeR
                         value={getValue(choice, contentTypeValue)}
                         className={({ active }) => `py-[var(--input-padding-vertical)] px-[var(--input-padding-horizontal)] list-none cursor-pointer hover:text-[var(--vscode-button-foreground)] hover:bg-[var(--vscode-button-hoverBackground)] ${active ? "text-[var(--vscode-button-foreground)] bg-[var(--vscode-button-hoverBackground)] " : ""}`}>
                         {choice.title}
+                        <div className='text-xs opacity-60 mt-0.5'>{choice.slug}</div>
                       </Combobox.Option>
                     ))}
 
