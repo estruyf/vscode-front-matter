@@ -909,7 +909,7 @@ export class Folders {
             // path can be a folder name or a wildcard.
             // If its a folder name, we need to add a wildcard to the end
             path = path.includes('*') ? path : join(path, '**');
-            return join(folderPath, path);
+            return parseWinPath(join(folderPath, path));
           })
         ],
         dot: true
