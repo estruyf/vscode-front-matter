@@ -203,7 +203,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
           <React.Suspense
             fallback={<div>{localize(LocalizationKey.panelFieldsTextFieldLoading)}</div>}
           >
-            <WysiwygField text={text || ''} onChange={onTextChange} />
+            <WysiwygField text={text || ''} type='Markdown' onChange={onTextChange} />
           </React.Suspense>
         ) : singleLine ? (
           <input
