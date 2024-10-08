@@ -10,7 +10,6 @@ import { DashboardMessage } from '../../DashboardMessage';
 import { SponsorMsg } from '../Layout/SponsorMsg';
 import { EventData } from '@estruyf/vscode';
 import { DashboardCommand } from '../../DashboardCommand';
-import { Button } from '../Common/Button';
 import { arrayMoveImmutable } from 'array-move';
 import { EmptyView } from './EmptyView';
 import { Container } from './SortableContainer';
@@ -27,12 +26,11 @@ import { DataFolder } from '../../../models';
 import { ActionsBarItem } from '../Header/ActionsBarItem';
 import { Spinner } from '../Common/Spinner';
 import { openFile } from '../../utils/MessageHandlers';
+import { Button } from 'vscrui';
 
 export interface IDataViewProps { }
 
-export const DataView: React.FunctionComponent<IDataViewProps> = (
-  _: React.PropsWithChildren<IDataViewProps>
-) => {
+export const DataView: React.FunctionComponent<IDataViewProps> = () => {
   const [selectedData, setSelectedData] = useState<DataFile | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [dataEntries, setDataEntries] = useState<any | any[] | null>(null);
@@ -188,8 +186,6 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
     };
   }, []);
 
-  console.log('DataView render', settings?.dataFolders);
-
   return (
     <div className="flex flex-col h-full overflow-auto inset-y-0">
       <Header settings={settings} />
@@ -338,7 +334,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
                               />
                             ))}
                           </Container>
-                          <Button className="mt-4" onClick={() => setSelectedIndex(null)}>
+                          <Button className="mt-4 !py-2" onClick={() => setSelectedIndex(null)}>
                             {localize(LocalizationKey.dashboardDataViewDataViewAdd)}
                           </Button>
                         </>

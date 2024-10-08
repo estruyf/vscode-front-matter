@@ -5,7 +5,7 @@ import { SettingsSelector } from '../../state';
 import { getTaxonomyField } from '../../../helpers/getTaxonomyField';
 import { Sorting } from '../../../helpers/Sorting';
 import { ArrowLeftIcon, EyeIcon } from '@heroicons/react/24/outline';
-import { Button } from '../Common/Button';
+import { Button } from 'vscrui';
 import { FilterInput } from './FilterInput';
 import { useDebounce } from '../../../hooks/useDebounce';
 import * as l10n from '@vscode/l10n';
@@ -229,8 +229,8 @@ export const TaxonomyTagging: React.FunctionComponent<ITaxonomyTaggingProps> = (
       </div>
 
       <div className='flex justify-end space-x-2'>
-        <Button onClick={onDismiss} secondary>{l10n.t(LocalizationKey.commonCancel)}</Button>
-        <Button onClick={() => onContentMapping(value, pageMappings)}>{l10n.t(LocalizationKey.commonApply)}</Button>
+        <Button className='!py-2' onClick={onDismiss} appearance='secondary'>{l10n.t(LocalizationKey.commonCancel)}</Button>
+        <Button className='!py-2' onClick={() => onContentMapping(value, pageMappings)}>{l10n.t(LocalizationKey.commonApply)}</Button>
       </div>
     </div>
   );
