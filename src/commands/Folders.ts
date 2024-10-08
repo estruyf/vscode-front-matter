@@ -801,7 +801,11 @@ export class Folders {
             filePath = `*${fileType.startsWith('.') ? '' : '.'}${fileType}`;
           }
 
-          let foundFiles = await Folders.findFiles(filePath);
+          let foundFiles = await Folders.findFiles(
+            filePath,
+            join(folderPath, folder.excludeSubdir ? '/' : '**'),
+            folder.excludePaths
+          );
 
           // Make sure these file are coming from the folder path (this could be an issue in multi-root workspaces)
           foundFiles = foundFiles.filter((f) =>
@@ -889,12 +893,27 @@ export class Folders {
    * @param pattern
    * @returns
    */
-  private static async findFiles(pattern: string): Promise<Uri[]> {
+  private static async findFiles(
+    pattern: string,
+    folderPath: string,
+    excludePaths: string[] = []
+  ): Promise<Uri[]> {
     Logger.verbose(`Folders:findFiles:start - ${pattern}`);
 
     try {
       pattern = isWindows() ? parseWinPath(pattern) : pattern;
-      const files = await glob(pattern, { ignore: 'node_modules/**', dot: true });
+      const files = await glob(pattern, {
+        ignore: [
+          'node_modules/**',
+          ...excludePaths.map((path) => {
+            // path can be a folder name or a wildcard.
+            // If its a folder name, we need to add a wildcard to the end
+            path = path.includes('*') ? path : join(path, '**');
+            return join(folderPath, path);
+          })
+        ],
+        dot: true
+      });
       const allFiles = (files || []).map((file) => Uri.file(file));
       Logger.verbose(`Folders:findFiles:end - ${allFiles.length}`);
       return allFiles;

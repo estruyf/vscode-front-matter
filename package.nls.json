@@ -74,6 +74,7 @@
   "setting.frontMatter.content.pageFolders.items.properties.title.description": "Name of the folder",
   "setting.frontMatter.content.pageFolders.items.properties.path.description": "Path of the folder",
   "setting.frontMatter.content.pageFolders.items.properties.excludeSubdir.description": "Exclude sub-directories",
+  "setting.frontMatter.content.pageFolders.items.properties.excludePaths.description": "Exclude paths (e.g. api, _*.*)",
   "setting.frontMatter.content.pageFolders.items.properties.previewPath.description": "Defines a custom preview path for the folder.",
   "setting.frontMatter.content.pageFolders.items.properties.trailingSlash.description": "Specify if you want to add a trailing slash to the preview URL.",
   "setting.frontMatter.content.pageFolders.items.properties.filePrefix.description": "Defines a prefix for the file name.",
