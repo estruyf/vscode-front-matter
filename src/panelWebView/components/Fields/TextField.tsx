@@ -16,7 +16,6 @@ const DEBOUNCE_TIME = 300;
 
 export interface ITextFieldProps extends BaseFieldProps<string> {
   singleLine: boolean | undefined;
-  wysiwyg: boolean | undefined;
   limit: number | undefined;
   rows?: number;
   name: string;
@@ -26,12 +25,9 @@ export interface ITextFieldProps extends BaseFieldProps<string> {
   onChange: (txtValue: string) => void;
 }
 
-const WysiwygField = React.lazy(() => import('./WysiwygField'));
-
 export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   placeholder,
   singleLine,
-  wysiwyg,
   limit,
   label,
   description,
@@ -199,13 +195,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
           </div>
         )}
 
-        {wysiwyg ? (
-          <React.Suspense
-            fallback={<div>{localize(LocalizationKey.panelFieldsTextFieldLoading)}</div>}
-          >
-            <WysiwygField text={text || ''} type='Markdown' onChange={onTextChange} />
-          </React.Suspense>
-        ) : singleLine ? (
+        {singleLine ? (
           <input
             className={`metadata_field__input`}
             value={text || ''}

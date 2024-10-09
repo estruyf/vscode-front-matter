@@ -103,7 +103,7 @@ export interface Field {
   type: FieldType;
   choices?: string[] | Choice[];
   single?: boolean;
-  wysiwyg?: boolean;
+  wysiwyg?: boolean | string;
   multiple?: boolean;
   isPreviewImage?: boolean;
   hidden?: boolean;

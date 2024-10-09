@@ -2,9 +2,7 @@
 
 /* eslint-disable */
 const path = require('path');
-const {
-  ProvidePlugin
-} = require('webpack');
+const { ProvidePlugin } = require('webpack');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const WebpackManifestPlugin = require('webpack-manifest-plugin').WebpackManifestPlugin;
 const ESLintPlugin = require('eslint-webpack-plugin');
