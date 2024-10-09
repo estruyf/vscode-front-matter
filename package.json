@@ -284,9 +284,12 @@
                 "description": "%setting.frontMatter.content.pageFolders.items.properties.excludeSubdir.description%"
               },
               "excludePaths": {
-                "type": "boolean",
+                "type": "array",
                 "default": false,
-                "description": "%setting.frontMatter.content.pageFolders.items.properties.excludePaths.description%"
+                "description": "%setting.frontMatter.content.pageFolders.items.properties.excludePaths.description%",
+                "items": {
+                  "type": "string"
+                }
               },
               "previewPath": {
                 "type": [
