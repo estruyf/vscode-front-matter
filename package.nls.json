@@ -204,7 +204,7 @@
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.choices.items.properties.id.description": "The choice ID",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.choices.items.properties.title.description": "The choice title",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.single.description": "Is a single line field",
-  "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.wysiwyg.description": "Is a WYSIWYG field (HTML output)",
+  "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.wysiwyg.description": "Is a WYSIWYG field. You can set it to markdown or HTML.",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.multiple.description": "Do you allow to select multiple values?",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.isPreviewImage.description": "Specify if the image field can be used as preview. Be aware, you can only have one preview image per content type.",
   "setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.hidden.description": "Do you want to hide the field from the metadata section?",
