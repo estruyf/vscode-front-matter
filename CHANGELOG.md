@@ -9,6 +9,7 @@
 - [#840](https://github.com/estruyf/vscode-front-matter/issues/840): Added the `excludePaths` option for the content folder settings
 - [#850](https://github.com/estruyf/vscode-front-matter/issues/850): Extended the i18n/language button to open or create new language files (thanks to [Dennis Zoma](https://github.com/wottpal))
 - [#851](https://github.com/estruyf/vscode-front-matter/issues/851): Added `sameContentLocale` option to `contentRelationship` field (thanks to [Dennis Zoma](https://github.com/wottpal))
+- [#866](https://github.com/estruyf/vscode-front-matter/issues/866): Support Markdown in the WYSIWYG `string` field
 
 ### ⚡️ Optimizations
 
