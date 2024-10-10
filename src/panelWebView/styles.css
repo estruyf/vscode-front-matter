@@ -991,7 +991,11 @@ vscode-divider {
 /* Quill changes */
 .ql-toolbar.ql-snow,
 .ql-container.ql-snow {
-  border-color: var(--vscode-inputValidation-infoBorder) !important;
+  border: 0;
+}
+
+.ql-toolbar.ql-snow {
+  border-bottom: 1px solid var(--vscode-inputValidation-infoBorder);
 }
 
 .ql-toolbar.ql-snow {
@@ -1023,6 +1027,7 @@ vscode-divider {
 .ql-editor {
   background-color: var(--vscode-input-background) !important;
   padding: var(--input-padding-vertical) var(--input-padding-horizontal) !important;
+  min-height: 100px;
 }
 
 .ql-snow.ql-toolbar button:hover,

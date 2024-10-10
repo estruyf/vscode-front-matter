@@ -1366,7 +1366,14 @@
                       "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.single.description%"
                     },
                     "wysiwyg": {
-                      "type": "boolean",
+                      "type": [
+                        "boolean",
+                        "string"
+                      ],
+                      "enum": [
+                        "html",
+                        "markdown"
+                      ],
                       "default": false,
                       "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.wysiwyg.description%"
                     },
@@ -2887,7 +2894,14 @@
     "react-router-dom": "^6.8.0",
     "react-sortable-hoc": "^2.0.0",
     "recoil": "^0.7.7",
-    "remark-gfm": "^3.0.1",
+    "rehype-parse": "^9.0.1",
+    "rehype-remark": "^10.0.0",
+    "rehype-stringify": "^10.0.1",
+    "remark": "^15.0.1",
+    "remark-gfm": "^4.0.0",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.1",
+    "remark-stringify": "^11.0.0",
     "rimraf": "^3.0.2",
     "semver": "^7.3.8",
     "simple-git": "^3.16.0",
@@ -2897,6 +2911,7 @@
     "tailwindcss-animate": "^1.0.7",
     "ts-loader": "^9.4.2",
     "typescript": "^4.9.5",
+    "unified": "^11.0.5",
     "uniforms": "^3.10.2",
     "uniforms-antd": "^3.10.2",
     "uniforms-bridge-json-schema": "^3.10.2",
