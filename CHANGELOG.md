@@ -17,6 +17,7 @@
 
 - [#858](https://github.com/estruyf/vscode-front-matter/issues/858): Fix button styling on the data screen
 - [#860](https://github.com/estruyf/vscode-front-matter/issues/860): Fix typo on the data screen
+- [#870](https://github.com/estruyf/vscode-front-matter/issues/870): Fix data number field styling
 
 ## [10.4.1] - 2024-09-27
 
