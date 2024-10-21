@@ -5,7 +5,7 @@ import { SettingsSelector } from '../../state';
 import { getTaxonomyField } from '../../../helpers/getTaxonomyField';
 import { Sorting } from '../../../helpers/Sorting';
 import { ArrowLeftIcon, EyeIcon } from '@heroicons/react/24/outline';
-import { Button } from '../Common/Button';
+import { Button } from 'vscrui';
 import { FilterInput } from './FilterInput';
 import { useDebounce } from '../../../hooks/useDebounce';
 import * as l10n from '@vscode/l10n';
@@ -70,7 +70,7 @@ export const TaxonomyTagging: React.FunctionComponent<ITaxonomyTaggingProps> = (
           continue;
         }
 
-        let fieldName = getTaxonomyField(taxonomy, contentType);
+        const fieldName = getTaxonomyField(taxonomy, contentType);
 
         if (fieldName && (!page[fieldName] || page[fieldName].indexOf(value) === -1)) {
           untagged.push(page);
@@ -78,7 +78,7 @@ export const TaxonomyTagging: React.FunctionComponent<ITaxonomyTaggingProps> = (
       }
     }
 
-    untagged = untagged.sort(Sorting.number('fmPublished')).reverse();
+    untagged = untagged.sort(Sorting.numerically('fmPublished')).reverse();
 
     if (debounceFilterValue) {
       return untagged.filter((p) => p.title.toLowerCase().includes(debounceFilterValue.toLowerCase()));
@@ -229,8 +229,8 @@ export const TaxonomyTagging: React.FunctionComponent<ITaxonomyTaggingProps> = (
       </div>
 
       <div className='flex justify-end space-x-2'>
-        <Button onClick={onDismiss} secondary>{l10n.t(LocalizationKey.commonCancel)}</Button>
-        <Button onClick={() => onContentMapping(value, pageMappings)}>{l10n.t(LocalizationKey.commonApply)}</Button>
+        <Button className='!py-2' onClick={onDismiss} appearance='secondary'>{l10n.t(LocalizationKey.commonCancel)}</Button>
+        <Button className='!py-2' onClick={() => onContentMapping(value, pageMappings)}>{l10n.t(LocalizationKey.commonApply)}</Button>
       </div>
     </div>
   );

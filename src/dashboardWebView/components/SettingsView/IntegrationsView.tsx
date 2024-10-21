@@ -8,7 +8,7 @@ import { Button as VSCodeButton } from 'vscrui';
 
 export interface IIntegrationsViewProps { }
 
-export const IntegrationsView: React.FunctionComponent<IIntegrationsViewProps> = ({ }: React.PropsWithChildren<IIntegrationsViewProps>) => {
+export const IntegrationsView: React.FunctionComponent<IIntegrationsViewProps> = () => {
   const [deeplApiKey, setDeeplApiKey] = React.useState<string>('');
   const [azureApiKey, setAzureApiKey] = React.useState<string>('');
   const [azureRegion, setAzureRegion] = React.useState<string>('');

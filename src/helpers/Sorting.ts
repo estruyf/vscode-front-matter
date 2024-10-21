@@ -7,6 +7,7 @@ export class Sorting {
    * @returns
    */
   public static alphabetically = (property: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (a: any, b: any) => {
       if (a[property] < b[property]) {
         return -1;
@@ -24,6 +25,7 @@ export class Sorting {
    * @returns
    */
   public static numerically = (property: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (a: any, b: any) => {
       return a[property] - b[property];
     };
@@ -35,6 +37,7 @@ export class Sorting {
    * @returns
    */
   public static date = (property: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (a: any, b: any) => {
       const dateA = DateHelper.tryParse(a[property]);
       const dateB = DateHelper.tryParse(b[property]);
@@ -49,13 +52,16 @@ export class Sorting {
    * @returns
    */
   public static dateWithFallback = (property: string, fallback: string) => {
-    return (a: any, b: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (a: any, b: any): number => {
       const dateA = DateHelper.tryParse(a[property]);
       const dateB = DateHelper.tryParse(b[property]);
 
       // Sort by date
-      var dCount = (dateA || new Date(0)).getTime() - (dateB || new Date(0)).getTime();
-      if (dCount) return dCount;
+      const dCount = (dateA || new Date(0)).getTime() - (dateB || new Date(0)).getTime();
+      if (dCount) {
+        return dCount;
+      }
 
       // If there is a tie, sort by fallback property
       if (a[fallback] < b[fallback]) {
@@ -65,17 +71,6 @@ export class Sorting {
         return 1;
       }
       return 0;
-    };
-  };
-
-  /**
-   * Sort by number
-   * @param property
-   * @returns
-   */
-  public static number = (property: string) => {
-    return (a: any, b: any) => {
-      return a[property] - b[property];
     };
   };
 }

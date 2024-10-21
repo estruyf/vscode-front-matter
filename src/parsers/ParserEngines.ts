@@ -72,7 +72,7 @@ export const Engines = {
 
             // Update all the new values
             for (const key in obj) {
-              let value = obj[key];
+              const value = obj[key];
               docYaml.set(key, removeCarriageReturn(value));
             }
 
@@ -83,7 +83,7 @@ export const Engines = {
               }
             }
 
-            let updatedValue = docYaml.toJSON();
+            const updatedValue = docYaml.toJSON();
 
             const quoteStrings = Settings.get(SETTING_QUOTE_STRINGS);
 
@@ -143,6 +143,8 @@ const getMatter = (value: string): string | null => {
 };
 
 const startsWith = (str: string, substr: string, len: number) => {
-  if (typeof len !== 'number') len = substr.length;
+  if (typeof len !== 'number') {
+    len = substr.length;
+  }
   return str.slice(0, len) === substr;
 };

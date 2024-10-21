@@ -198,7 +198,7 @@ export class SettingsListener extends BaseListener {
   /**
    * Retrieve the settings for the dashboard
    */
-  public static async getSettings(clear: boolean = false) {
+  public static async getSettings(clear = false) {
     Logger.verbose(`SettingsListener:getSettings:start - clear: ${clear}`);
     const settings = await DashboardSettings.get(clear);
     Logger.verbose(
@@ -315,7 +315,7 @@ export class SettingsListener extends BaseListener {
   private static async copyTemplateFiles(
     files: [string, FileType][],
     templateFileLocation: string,
-    extRelPath: string = ''
+    extRelPath = ''
   ) {
     const wsFolder = Folders.getWorkspaceFolder();
     if (!wsFolder) {

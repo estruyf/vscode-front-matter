@@ -2,9 +2,7 @@ import * as React from 'react';
 
 export interface ICenterIconProps { }
 
-export const CenterIcon: React.FunctionComponent<ICenterIconProps> = (
-  props: React.PropsWithChildren<ICenterIconProps>
-) => {
+export const CenterIcon: React.FunctionComponent<ICenterIconProps> = () => {
   return (
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
       <rect

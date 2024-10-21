@@ -13,6 +13,8 @@
     "no-unused-expressions": "error",
     "curly": "error",
     "class-methods-use-this": "warn",
-    "no-console": "warn"
+    "no-console": "warn",
+    "@typescript-eslint/no-empty-interface": "off",
+    "no-extra-boolean-cast": "off"
   }
 }

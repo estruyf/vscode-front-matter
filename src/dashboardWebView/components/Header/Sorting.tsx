@@ -165,7 +165,7 @@ export const Sorting: React.FunctionComponent<ISortingProps> = ({
         }
       }
 
-      let sort = allOptions.find((x) => x.id === crntSortingOption?.id) || sortOptions[0];
+      const sort = allOptions.find((x) => x.id === crntSortingOption?.id) || sortOptions[0];
       setCrntSort(sort);
     };
 

@@ -45,8 +45,9 @@ export class MediaHelpers {
    * @returns
    */
   public static async getMedia(
-    page: number = 0,
-    requestedFolder: string = '',
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    page = 0,
+    requestedFolder = '',
     sort: SortingOption | null = null
   ) {
     const wsFolder = Folders.getWorkspaceFolder();

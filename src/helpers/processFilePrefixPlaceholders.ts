@@ -25,7 +25,7 @@ export const processFilePrefixPlaceholders = async (value: string, folderPath?: 
     );
 
     let chars = 3;
-    let idxValue = files.length + 1;
+    const idxValue = files.length + 1;
 
     if (value.includes('{{filePrefix.index}}')) {
       const regex = new RegExp('{{filePrefix.index}}', 'g');
@@ -40,7 +40,7 @@ export const processFilePrefixPlaceholders = async (value: string, folderPath?: 
         for (const match of matches) {
           const placeholderParts = match.split('|');
           if (placeholderParts.length > 1) {
-            let options = placeholderParts[1].trim().replace('}}', '').split(',');
+            const options = placeholderParts[1].trim().replace('}}', '').split(',');
 
             for (const option of options) {
               if (option.startsWith('zeros:')) {

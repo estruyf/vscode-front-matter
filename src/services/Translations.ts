@@ -102,7 +102,7 @@ export class Translations {
         target_lang: target
       });
 
-      let host = deeplAuthKey.endsWith(':fx') ? 'api-free.deepl.com' : 'api.deepl.com';
+      const host = deeplAuthKey.endsWith(':fx') ? 'api-free.deepl.com' : 'api.deepl.com';
 
       const response = await fetch(`https://${host}/v2/translate`, {
         method: 'POST',

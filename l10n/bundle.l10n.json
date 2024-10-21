@@ -144,7 +144,7 @@
   "dashboard.dataView.dataView.selectDataFolder": "Select data folder",
   "dashboard.dataView.dataView.closeSelectedDataFile": "Close data file",
 
-  "dashboard.dataView.emptyView.heading": "Select your date type first",
+  "dashboard.dataView.emptyView.heading": "Select your data type first",
   "dashboard.dataView.emptyView.heading.create": "Start by creating a new data file",
 
   "dashboard.dataView.sortableItem.editButton.title": "Edit \"{0}\"",
@@ -583,8 +583,13 @@
   "commands.i18n.create.success.created": "Created \"{0}\" i18n content file.",
   "commands.i18n.create.quickPick.title": "Create content for locale",
   "commands.i18n.create.quickPick.placeHolder": "To which locale do you want to create a new content?",
+  "commands.i18n.createOrOpen.quickPick.title": "Open or create translation",
+  "commands.i18n.createOrOpen.quickPick.category.existing": "Existing translations",
+  "commands.i18n.createOrOpen.quickPick.action.open": "Open \"{0}\"",
+  "commands.i18n.createOrOpen.quickPick.category.new": "New translations",
+  "commands.i18n.createOrOpen.quickPick.action.create": "Create \"{0}\"",
   "commands.i18n.translate.progress.title": "Translating content...",
-
+  
   "commands.preview.panel.title": "Preview: {0}",
   "commands.preview.askUserToPickFolder.title": "Select the folder of the article to preview",
 

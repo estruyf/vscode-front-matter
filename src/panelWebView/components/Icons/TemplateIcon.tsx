@@ -1,10 +1,8 @@
 import * as React from 'react';
 
-export interface ITemplateIconProps {}
+export interface ITemplateIconProps { }
 
-export const TemplateIcon: React.FunctionComponent<ITemplateIconProps> = (
-  props: React.PropsWithChildren<ITemplateIconProps>
-) => {
+export const TemplateIcon: React.FunctionComponent<ITemplateIconProps> = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

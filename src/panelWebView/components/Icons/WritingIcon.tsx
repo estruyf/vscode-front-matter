@@ -1,10 +1,8 @@
 import * as React from 'react';
 
-export interface IWritingIconProps {}
+export interface IWritingIconProps { }
 
-export const WritingIcon: React.FunctionComponent<IWritingIconProps> = (
-  props: React.PropsWithChildren<IWritingIconProps>
-) => {
+export const WritingIcon: React.FunctionComponent<IWritingIconProps> = () => {
   return (
     <svg
       width="16"

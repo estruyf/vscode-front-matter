@@ -42,7 +42,7 @@ categories: []
 
     // Initialize command
     subscriptions.push(
-      commands.registerCommand(COMMAND_NAME.init, async (cb: Function) => {
+      commands.registerCommand(COMMAND_NAME.init, async (cb: () => void) => {
         await Project.init();
 
         if (cb) {

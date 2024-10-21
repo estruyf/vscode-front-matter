@@ -35,7 +35,7 @@ const Actions: React.FunctionComponent<IActionsProps> = ({
   };
 
   const actions = React.useMemo(() => {
-    let allActions: JSX.Element[] = [];
+    const allActions: JSX.Element[] = [];
 
     if (!disableActions.includes(`openDashboard`)) {
       allActions.push(

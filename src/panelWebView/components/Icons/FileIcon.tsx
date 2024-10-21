@@ -1,10 +1,8 @@
 import * as React from 'react';
 
-export interface IFileIconProps {}
+export interface IFileIconProps { }
 
-export const FileIcon: React.FunctionComponent<IFileIconProps> = (
-  props: React.PropsWithChildren<IFileIconProps>
-) => {
+export const FileIcon: React.FunctionComponent<IFileIconProps> = () => {
   return (
     <svg
       width="16"

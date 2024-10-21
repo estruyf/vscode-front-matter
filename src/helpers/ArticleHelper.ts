@@ -356,7 +356,7 @@ export class ArticleHelper {
    * @returns A boolean indicating whether the file is a page bundle or not.
    */
   public static async isPageBundle(filePath: string) {
-    let article = await ArticleHelper.getFrontMatterByPath(filePath);
+    const article = await ArticleHelper.getFrontMatterByPath(filePath);
     if (!article) {
       return false;
     }
@@ -913,7 +913,7 @@ export class ArticleHelper {
       const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
 
       if (fileContents) {
-        let article = FrontMatterParser.fromFile(fileContents);
+        const article = FrontMatterParser.fromFile(fileContents);
 
         if (article?.data) {
           if (commaSeparated) {

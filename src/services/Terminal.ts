@@ -84,7 +84,7 @@ export class Terminal {
    * @returns
    */
   public static findLocalServerTerminal() {
-    let terminals = window.terminals;
+    const terminals = window.terminals;
     if (terminals) {
       const localServerTerminal = terminals.find((t) => t.name === Terminal.terminalName);
       return localServerTerminal;

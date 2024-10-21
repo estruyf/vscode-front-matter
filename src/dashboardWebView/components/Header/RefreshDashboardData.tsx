@@ -21,9 +21,7 @@ import { ArrowClockwiseIcon } from '../../../components/icons/ArrowClockwiseIcon
 
 export interface IRefreshDashboardDataProps { }
 
-export const RefreshDashboardData: React.FunctionComponent<IRefreshDashboardDataProps> = (
-  { }: React.PropsWithChildren<IRefreshDashboardDataProps>
-) => {
+export const RefreshDashboardData: React.FunctionComponent<IRefreshDashboardDataProps> = () => {
   const view = useRecoilValue(DashboardViewAtom);
   const [, setLoading] = useRecoilState(LoadingAtom);
   const resetSearch = useResetRecoilState(SearchAtom);

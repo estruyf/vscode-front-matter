@@ -7,7 +7,7 @@ import { LocalizationKey } from '../../localization';
 
 export interface IPreviewProps { }
 
-const Preview: React.FunctionComponent<IPreviewProps> = (_: React.PropsWithChildren<IPreviewProps>) => {
+const Preview: React.FunctionComponent<IPreviewProps> = () => {
   const open = () => {
     Messenger.send(CommandToCode.openPreview);
   };

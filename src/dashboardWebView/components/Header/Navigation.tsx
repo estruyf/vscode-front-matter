@@ -37,9 +37,7 @@ const NavigationItem: React.FunctionComponent<INavigationItemProps> = ({
   )
 };
 
-export const Navigation: React.FunctionComponent<INavigationProps> = ({
-
-}: React.PropsWithChildren<INavigationProps>) => {
+export const Navigation: React.FunctionComponent<INavigationProps> = () => {
   const [crntTab, setCrntTab] = useRecoilState(TabAtom);
   const tabInfo = useRecoilValue(TabInfoAtom);
   const settings = useRecoilValue(SettingsAtom);

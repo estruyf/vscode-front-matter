@@ -1,10 +1,8 @@
 import * as React from 'react';
 
-export interface IListUnorderedIconProps {}
+export interface IListUnorderedIconProps { }
 
-export const ListUnorderedIcon: React.FunctionComponent<IListUnorderedIconProps> = (
-  props: React.PropsWithChildren<IListUnorderedIconProps>
-) => {
+export const ListUnorderedIcon: React.FunctionComponent<IListUnorderedIconProps> = () => {
   return (
     <svg
       width="16"

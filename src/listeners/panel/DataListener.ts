@@ -349,7 +349,7 @@ export class DataListener extends BaseListener {
       metadata.articleDetails = articleDetails;
     }
 
-    let updatedMetadata = Object.assign({}, metadata);
+    const updatedMetadata = Object.assign({}, metadata);
     if (commaSeparated) {
       for (const key of commaSeparated) {
         if (updatedMetadata[key] && typeof updatedMetadata[key] === 'string') {
@@ -587,13 +587,14 @@ export class DataListener extends BaseListener {
    * @returns
    */
   public static async getParentObject(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any,
     article: ParsedFrontMatter,
     parents: string[] | undefined,
     blockData?: BlockFieldData
   ) {
     let parentObj = data;
-    let allParents = Object.assign([], parents);
+    const allParents = Object.assign([], parents);
     const contentType = await ArticleHelper.getContentType(article);
     let selectedIndexes: number[] = [];
     if (blockData?.selectedIndex) {
@@ -611,7 +612,7 @@ export class DataListener extends BaseListener {
       parentObj = article.data;
 
       // Loop through the parents of the block field
-      for (const parent of blockData?.parentFields) {
+      for (const parent of blockData?.parentFields ?? []) {
         if (!parentObj) {
           continue;
         }
@@ -769,6 +770,7 @@ export class DataListener extends BaseListener {
     articleData: {
       field: string;
       value: string;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       data: { [key: string]: any };
       contentType?: IContentType;
     },
@@ -778,7 +780,8 @@ export class DataListener extends BaseListener {
       return;
     }
 
-    let { field, value, data, contentType } = articleData;
+    const { field, data, contentType } = articleData;
+    let { value } = articleData;
 
     value = value || '';
     const valueBefore = value;

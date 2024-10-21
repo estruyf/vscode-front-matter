@@ -9,7 +9,7 @@ import { LocalizationKey } from '../../../localization';
 
 export interface ILanguageFilterProps { }
 
-export const LanguageFilter: React.FunctionComponent<ILanguageFilterProps> = ({ }: React.PropsWithChildren<ILanguageFilterProps>) => {
+export const LanguageFilter: React.FunctionComponent<ILanguageFilterProps> = () => {
   const locales = useRecoilValue(LocalesAtom);
   const [crntLocale, setCrntLocale] = useRecoilState(LocaleAtom);
 

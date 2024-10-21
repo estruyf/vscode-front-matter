@@ -63,7 +63,7 @@ import { DataListener } from '../listeners/dashboard';
 export class DashboardSettings {
   private static cachedSettings: ISettings | undefined = undefined;
 
-  public static async get(clear: boolean = false) {
+  public static async get(clear = false) {
     if (!this.cachedSettings || clear) {
       this.cachedSettings = await this.getSettings();
     }
@@ -192,9 +192,9 @@ export class DashboardSettings {
     const files = Settings.get<DataFile[]>(SETTING_DATA_FILES);
     const folders = Settings.get<DataFolder[]>(SETTING_DATA_FOLDERS);
 
-    let clonedFiles = Object.assign([], files);
+    const clonedFiles = Object.assign([], files);
     if (folders) {
-      for (let folder of folders) {
+      for (const folder of folders) {
         if (!folder.path) {
           continue;
         }
@@ -218,7 +218,7 @@ export class DashboardSettings {
         );
 
         const dataFiles = [...dataJsonFiles, ...dataYmlFiles, ...dataYamlFiles];
-        for (let dataFile of dataFiles) {
+        for (const dataFile of dataFiles) {
           clonedFiles.push(DataListener.createDataFileObject(dataFile.fsPath, folder));
         }
       }

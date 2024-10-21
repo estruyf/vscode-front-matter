@@ -24,7 +24,7 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (_: Rea
   const settings = useRecoilValue(SettingsSelector);
 
   const tabs: ITab[] = React.useMemo(() => {
-    let temp = [
+    const temp = [
       { id: "view-1", label: l10n.t(LocalizationKey.settingsViewCommon) },
       { id: "view-2", label: l10n.t(LocalizationKey.settingsViewContentFolders) }
     ];
@@ -44,7 +44,7 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (_: Rea
       return [];
     }
 
-    let temp = [
+    const temp = [
       {
         id: "view-1",
         content: <CommonSettings />

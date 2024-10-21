@@ -1,5 +1,20 @@
 # Change Log
 
+## [10.5.0] - 2024-10-21 - [Release notes](https://beta.frontmatter.codes/updates/v10.5.0)
+
+### 🎨 Enhancements
+
+- [#840](https://github.com/estruyf/vscode-front-matter/issues/840): Added the `excludePaths` option for the content folder settings
+- [#850](https://github.com/estruyf/vscode-front-matter/issues/850): Extended the i18n/language button to open or create new language files (thanks to [Dennis Zoma](https://github.com/wottpal))
+- [#851](https://github.com/estruyf/vscode-front-matter/issues/851): Added `sameContentLocale` option to `contentRelationship` field (thanks to [Dennis Zoma](https://github.com/wottpal))
+- [#866](https://github.com/estruyf/vscode-front-matter/issues/866): Support Markdown in the WYSIWYG `string` field
+
+### 🐞 Fixes
+
+- [#858](https://github.com/estruyf/vscode-front-matter/issues/858): Fix button styling on the data screen
+- [#860](https://github.com/estruyf/vscode-front-matter/issues/860): Fix typo on the data screen
+- [#870](https://github.com/estruyf/vscode-front-matter/issues/870): Fix data number field styling
+
 ## [10.4.1] - 2024-09-27
 
 - [#855](https://github.com/estruyf/vscode-front-matter/issues/855): Fix in panel sections

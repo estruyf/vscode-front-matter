@@ -39,7 +39,7 @@ import { Preview } from './Preview';
 export const WORKSPACE_PLACEHOLDER = `[[workspace]]`;
 
 export class Folders {
-  private static _folders: ContentFolder[] = [];
+  private static _folders: ContentFolder[] | undefined = undefined;
 
   public static async registerCommands() {
     const ext = Extension.getInstance();
@@ -50,7 +50,7 @@ export class Folders {
 
   public static clearCached() {
     Logger.verbose(`Folders:clearCached`);
-    Folders._folders = [];
+    Folders._folders = undefined;
   }
 
   /**
@@ -327,7 +327,7 @@ export class Folders {
   public static async get(): Promise<ContentFolder[]> {
     Logger.verbose('Folders:get:start');
 
-    if (Folders._folders.length > 0) {
+    if (Folders._folders && Folders._folders.length > 0) {
       Logger.verbose('Folders:get:end - cached folders');
       return Folders._folders;
     }
@@ -401,8 +401,8 @@ export class Folders {
           folder.locales && folder.locales.length > 0 ? folder.locales : i18nSettings;
 
         let defaultLocale;
-        let sourcePath = folderPath;
-        let localeFolders: ContentFolder[] = [];
+        const sourcePath = folderPath;
+        const localeFolders: ContentFolder[] = [];
 
         if (i18nConfig && i18nConfig.length > 0) {
           for (const i18n of i18nConfig) {
@@ -452,8 +452,21 @@ export class Folders {
    * Get the cached folder settings
    * @returns {ContentFolder[]} - The cached folder settings
    */
-  public static getCached(): ContentFolder[] {
+  public static getCached(): ContentFolder[] | undefined {
     return Folders._folders;
+  }
+
+  /**
+   * Retrieves the cached content folders if available, otherwise fetches fresh content folders.
+   *
+   * @returns {Promise<ContentFolder[]>} A promise that resolves to an array of content folders.
+   */
+  public static async getCachedOrFresh(): Promise<ContentFolder[]> {
+    if (Folders._folders && Folders._folders.length > 0) {
+      return Folders._folders;
+    }
+
+    return await Folders.get();
   }
 
   /**
@@ -688,7 +701,7 @@ export class Folders {
   public static async getPageFolderByFilePath(
     filePath: string
   ): Promise<ContentFolder | undefined> {
-    const folders = Folders.getCached();
+    const folders = await Folders.getCachedOrFresh();
     const parsedPath = parseWinPath(filePath);
     const pageFolderMatches = folders
       .filter((folder) => parsedPath && folder.path && parsedPath.includes(folder.path))
@@ -719,7 +732,7 @@ export class Folders {
       return;
     }
 
-    const folders = Folders.getCached();
+    const folders = await Folders.getCachedOrFresh();
     let selectedFolder: ContentFolder | undefined;
 
     // Try to find the folder by content type
@@ -788,7 +801,11 @@ export class Folders {
             filePath = `*${fileType.startsWith('.') ? '' : '.'}${fileType}`;
           }
 
-          let foundFiles = await Folders.findFiles(filePath);
+          let foundFiles = await Folders.findFiles(
+            filePath,
+            join(folderPath, folder.excludeSubdir ? '/' : '**'),
+            folder.excludePaths
+          );
 
           // Make sure these file are coming from the folder path (this could be an issue in multi-root workspaces)
           foundFiles = foundFiles.filter((f) =>
@@ -876,12 +893,27 @@ export class Folders {
    * @param pattern
    * @returns
    */
-  private static async findFiles(pattern: string): Promise<Uri[]> {
+  private static async findFiles(
+    pattern: string,
+    folderPath: string,
+    excludePaths: string[] = []
+  ): Promise<Uri[]> {
     Logger.verbose(`Folders:findFiles:start - ${pattern}`);
 
     try {
       pattern = isWindows() ? parseWinPath(pattern) : pattern;
-      const files = await glob(pattern, { ignore: 'node_modules/**', dot: true });
+      const files = await glob(pattern, {
+        ignore: [
+          'node_modules/**',
+          ...excludePaths.map((path) => {
+            // path can be a folder name or a wildcard.
+            // If its a folder name, we need to add a wildcard to the end
+            path = path.includes('*') ? path : join(path, '**');
+            return parseWinPath(join(folderPath, path));
+          })
+        ],
+        dot: true
+      });
       const allFiles = (files || []).map((file) => Uri.file(file));
       Logger.verbose(`Folders:findFiles:end - ${allFiles.length}`);
       return allFiles;

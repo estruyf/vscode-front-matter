@@ -11,12 +11,12 @@ export interface IGroupingProps { }
 
 export const Grouping: React.FunctionComponent<
   IGroupingProps
-> = ({ }: React.PropsWithChildren<IGroupingProps>) => {
+> = () => {
   const [group, setGroup] = useRecoilState(GroupingAtom);
   const pages = useRecoilValue(AllPagesAtom);
 
   const GROUP_OPTIONS = React.useMemo(() => {
-    let options: { name: string, id: GroupOption }[] = [];
+    const options: { name: string, id: GroupOption }[] = [];
 
     if (pages.length > 0) {
       if (pages.some((x) => x.fmYear)) {

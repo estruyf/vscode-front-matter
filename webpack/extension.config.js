@@ -2,9 +2,12 @@
 
 'use strict';
 
+
+/* eslint-disable */
 const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const IgnoreDynamicRequire = require('webpack-ignore-dynamic-require');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 const config = [
   {
@@ -58,7 +61,11 @@ const config = [
       }
     },
     plugins: [
-      new IgnoreDynamicRequire()
+      new IgnoreDynamicRequire(),
+      new ESLintPlugin({
+        extensions: ['ts'],
+        emitWarning: false,
+      })
     ]
   }
 ];

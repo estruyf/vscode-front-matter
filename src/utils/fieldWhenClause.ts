@@ -14,7 +14,7 @@ export const fieldWhenClause = (field: Field, parent: IMetadata, allFields?: Fie
     return true;
   }
 
-  let parentField = allFields?.find((f) => f.name === when.fieldRef);
+  const parentField = allFields?.find((f) => f.name === when.fieldRef);
   if (parentField && parentField.when) {
     const renderParent = fieldWhenClause(parentField, parent, allFields);
     if (!renderParent) {
@@ -22,7 +22,7 @@ export const fieldWhenClause = (field: Field, parent: IMetadata, allFields?: Fie
     }
   }
 
-  let whenValue = parent[when.fieldRef];
+  const whenValue = parent[when.fieldRef];
   if (when.caseSensitive || typeof when.caseSensitive === 'undefined') {
     return caseSensitive(when, field, whenValue);
   } else {
@@ -42,7 +42,9 @@ const caseInsensitive = (
   field: Field,
   whenValue: string | IMetadata | string[] | null
 ) => {
-  whenValue = lowerValue(whenValue);
+  if (whenValue) {
+    whenValue = lowerValue(whenValue);
+  }
 
   const whenClone = Object.assign({}, when);
   whenClone.value = lowerValue(whenClone.value);
@@ -131,7 +133,7 @@ const caseSensitive = (
  * @param value - The string or array of strings to convert to lowercase.
  * @returns The converted string or array of strings.
  */
-const lowerValue = (value: string | string[] | any) => {
+const lowerValue = (value: string | string[] | IMetadata) => {
   if (typeof value === 'string') {
     value = value.toLowerCase();
   } else if (value instanceof Array) {

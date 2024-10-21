@@ -1,10 +1,8 @@
 import * as React from 'react';
 
-export interface IArchiveIconProps {}
+export interface IArchiveIconProps { }
 
-export const ArchiveIcon: React.FunctionComponent<IArchiveIconProps> = (
-  props: React.PropsWithChildren<IArchiveIconProps>
-) => {
+export const ArchiveIcon: React.FunctionComponent<IArchiveIconProps> = () => {
   return (
     <svg
       width="16"

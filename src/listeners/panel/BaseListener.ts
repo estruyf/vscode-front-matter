@@ -5,7 +5,8 @@ import { Command } from '../../panelWebView/Command';
 import { PostMessageData } from '../../models';
 
 export abstract class BaseListener {
-  public static process(msg: PostMessageData) {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+  public static process(_: PostMessageData) {}
 
   /**
    * Send a message to the webview

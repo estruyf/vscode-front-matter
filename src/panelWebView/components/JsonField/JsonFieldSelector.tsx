@@ -9,6 +9,7 @@ export interface IJsonFieldSelectorProps {
   dataTypes: DataType[] | undefined;
   selectedDataType: string | null;
   onSetDataType: (dataType: string | null) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSchemaUpdate: (schema: any) => void;
 }
 

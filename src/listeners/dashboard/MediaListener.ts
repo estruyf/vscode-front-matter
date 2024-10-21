@@ -17,9 +17,10 @@ export class MediaListener extends BaseListener {
   public static async process(msg: PostMessageData) {
     super.process(msg);
 
+    const { page, folder, sorting } = msg.payload ?? {};
+
     switch (msg.command) {
       case DashboardMessage.getMedia:
-        const { page, folder, sorting } = msg?.payload;
         this.sendMediaFiles(page, folder, sorting);
         break;
       case DashboardMessage.refreshMedia:
@@ -67,11 +68,7 @@ export class MediaListener extends BaseListener {
    * @param folder
    * @param sorting
    */
-  public static async sendMediaFiles(
-    page: number = 0,
-    folder: string = '',
-    sorting: SortingOption | null = null
-  ) {
+  public static async sendMediaFiles(page = 0, folder = '', sorting: SortingOption | null = null) {
     MediaLibrary.reset();
     const files = await MediaHelpers.getMedia(page, folder, sorting);
     this.sendMsg(DashboardCommand.media, files);
@@ -143,7 +140,7 @@ export class MediaListener extends BaseListener {
     }
 
     if (unmappedFiles && unmappedFiles.length > 0) {
-      this.sendRequest(command as any, requestId, unmappedFiles);
+      this.sendRequest(command as DashboardCommand, requestId, unmappedFiles);
     }
   }
 
@@ -151,6 +148,7 @@ export class MediaListener extends BaseListener {
    * Store the file and send a message after multiple uploads
    * @param data
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private static async store(data: any) {
     try {
       const { folder } = data;
@@ -167,7 +165,9 @@ export class MediaListener extends BaseListener {
         this.sendMediaFiles(0, folder || '');
         delete this.timers[folderPath];
       }, 500);
-    } catch {}
+    } catch {
+      // Do nothing
+    }
   }
 
   /**
@@ -178,13 +178,16 @@ export class MediaListener extends BaseListener {
     try {
       MediaHelpers.deleteFile(data.file);
       this.sendMediaFiles(data.page || 0, data.folder || '');
-    } catch {}
+    } catch {
+      // Do nothing
+    }
   }
 
   /**
    * Update media metadata
    * @param data
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private static async update(data: any) {
     try {
       const { page, folder } = data;
@@ -192,6 +195,8 @@ export class MediaListener extends BaseListener {
       await MediaHelpers.updateMetadata(data);
 
       this.sendMediaFiles(page || 0, folder || '');
-    } catch {}
+    } catch {
+      // Do nothing
+    }
   }
 }

@@ -39,7 +39,7 @@ export class Questions {
    * @param showWarning
    * @returns
    */
-  public static async ContentTitle(showWarning: boolean = true): Promise<string | undefined> {
+  public static async ContentTitle(showWarning = true): Promise<string | undefined> {
     const aiEnabled = Settings.get<boolean>(SETTING_SPONSORS_AI_ENABLED);
     let title: string | undefined = '';
     const isCopilotInstalled = await Copilot.isInstalled();
@@ -122,7 +122,7 @@ export class Questions {
     title: string | undefined,
     aiTitles: string[],
     isCopilotInstalled: boolean,
-    showWarning: boolean = true
+    showWarning = true
   ): Promise<string | undefined> {
     if (title && aiTitles && aiTitles.length > 0) {
       const options: QuickPickItem[] = [
@@ -174,7 +174,7 @@ export class Questions {
    * @returns
    */
   public static async SelectContentFolder(
-    showWarning: boolean = true
+    showWarning = true
   ): Promise<FolderQuickPickItem | undefined> {
     let folders = await Folders.get();
     folders = folders.filter((f) => !f.disableCreation);
@@ -230,7 +230,7 @@ export class Questions {
    */
   public static async SelectContentType(
     allowedCts: string[],
-    showWarning: boolean = true
+    showWarning = true
   ): Promise<string | undefined> {
     let contentTypes = ContentType.getAll();
     if (!contentTypes || contentTypes.length === 0) {

@@ -159,7 +159,7 @@ Example: SEO, website optimization, digital marketing.`
         );
       }
 
-      let options =
+      const options =
         tagType === TagType.tags
           ? await TaxonomyHelper.get(TaxonomyType.Tag)
           : await TaxonomyHelper.get(TaxonomyType.Category);
@@ -217,7 +217,7 @@ Example: SEO, website optimization, digital marketing.`
       return;
     }
 
-    let allFragments = [];
+    const allFragments = [];
     for await (const fragment of chatResponse.text) {
       allFragments.push(fragment);
     }

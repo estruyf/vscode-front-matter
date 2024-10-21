@@ -10,7 +10,6 @@ import { DashboardMessage } from '../../DashboardMessage';
 import { SponsorMsg } from '../Layout/SponsorMsg';
 import { EventData } from '@estruyf/vscode';
 import { DashboardCommand } from '../../DashboardCommand';
-import { Button } from '../Common/Button';
 import { arrayMoveImmutable } from 'array-move';
 import { EmptyView } from './EmptyView';
 import { Container } from './SortableContainer';
@@ -27,12 +26,11 @@ import { DataFolder } from '../../../models';
 import { ActionsBarItem } from '../Header/ActionsBarItem';
 import { Spinner } from '../Common/Spinner';
 import { openFile } from '../../utils/MessageHandlers';
+import { Button } from 'vscrui';
 
 export interface IDataViewProps { }
 
-export const DataView: React.FunctionComponent<IDataViewProps> = (
-  _: React.PropsWithChildren<IDataViewProps>
-) => {
+export const DataView: React.FunctionComponent<IDataViewProps> = () => {
   const [selectedData, setSelectedData] = useState<DataFile | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [dataEntries, setDataEntries] = useState<any | any[] | null>(null);
@@ -68,15 +66,14 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
   );
 
   const onSubmit = useCallback(
-    (data: any) => {
+    (data: unknown) => {
       if (selectedData?.singleEntry) {
         // Needs to add a single entry
         updateData(data);
         return;
       }
 
-      debugger
-      const dataClone: any[] = Object.assign([], dataEntries);
+      const dataClone: unknown[] = Object.assign([], dataEntries);
       if (selectedIndex !== null && selectedIndex !== undefined) {
         dataClone[selectedIndex] = data;
       } else {
@@ -140,7 +137,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
     return dataEntries && selectedIndex !== null && selectedIndex !== undefined
       ? dataEntries[selectedIndex]
       : null;
-  }, [selectedData, , dataEntries, selectedIndex]);
+  }, [selectedData, dataEntries, selectedIndex]);
 
   // Retrieve the data files, check if they have a schema or ID, if not, they shouldn't be shown
   const dataFiles = useMemo(() => {
@@ -188,8 +185,6 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
       Messenger.unlisten(messageListener);
     };
   }, []);
-
-  console.log('DataView render', settings?.dataFolders);
 
   return (
     <div className="flex flex-col h-full overflow-auto inset-y-0">
@@ -339,7 +334,7 @@ export const DataView: React.FunctionComponent<IDataViewProps> = (
                               />
                             ))}
                           </Container>
-                          <Button className="mt-4" onClick={() => setSelectedIndex(null)}>
+                          <Button className="mt-4 !py-2" onClick={() => setSelectedIndex(null)}>
                             {localize(LocalizationKey.dashboardDataViewDataViewAdd)}
                           </Button>
                         </>

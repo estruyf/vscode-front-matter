@@ -1,10 +1,8 @@
 import * as React from 'react';
 
-export interface ISymbolKeywordIconProps {}
+export interface ISymbolKeywordIconProps { }
 
-export const SymbolKeywordIcon: React.FunctionComponent<ISymbolKeywordIconProps> = (
-  props: React.PropsWithChildren<ISymbolKeywordIconProps>
-) => {
+export const SymbolKeywordIcon: React.FunctionComponent<ISymbolKeywordIconProps> = () => {
   return (
     <svg
       width="16"

@@ -293,7 +293,7 @@ export class Extension {
     propKey: string,
     propValue: T,
     type: 'workspace' | 'global' = 'global',
-    setState: boolean = false
+    setState = false
   ): Promise<void> {
     if (this.isFileStorageNeeded(propKey)) {
       let storageUri: Uri | undefined = undefined;

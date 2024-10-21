@@ -80,6 +80,7 @@ export class SponsorAi {
             token: token,
             nrOfCharacters: Settings.get<number>(SETTING_SEO_DESCRIPTION_LENGTH) || 160
           }),
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           signal: signal as any
         }
       );
@@ -118,7 +119,7 @@ export class SponsorAi {
       }, 10000);
       const signal = controller.signal;
 
-      let options =
+      const options =
         type === TagType.tags
           ? await TaxonomyHelper.get(TaxonomyType.Tag)
           : await TaxonomyHelper.get(TaxonomyType.Category);

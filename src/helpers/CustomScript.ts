@@ -72,7 +72,9 @@ export class CustomScript {
 
     if (!path) {
       const editor = window.activeTextEditor;
-      if (!editor) return;
+      if (!editor) {
+        return;
+      }
 
       articlePath = editor.document.uri.fsPath;
       article = ArticleHelper.getFrontMatter(editor);
@@ -120,7 +122,7 @@ export class CustomScript {
       return;
     }
 
-    let output: string[] = [];
+    const output: string[] = [];
 
     window.withProgress(
       {
@@ -283,7 +285,9 @@ export class CustomScript {
           const editor = window.activeTextEditor;
 
           if (!articlePath) {
-            if (!editor) return;
+            if (!editor) {
+              return;
+            }
 
             articlePath = editor.document.uri.fsPath;
             article = ArticleHelper.getFrontMatter(editor);
@@ -469,7 +473,7 @@ export class CustomScript {
    * @returns
    */
   private static async executeScriptAsync(fullScript: string, wsPath: string): Promise<string> {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       exec(fullScript, { cwd: wsPath }, (error, stdout) => {
         if (error) {
           Logger.error(error.message);

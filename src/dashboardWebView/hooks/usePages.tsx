@@ -159,8 +159,6 @@ export default function usePages(pages: Page[]) {
 
         if (tab !== Tab.All) {
           crntPages = crntPages.filter((page) => page.fmDraft === tab);
-        } else {
-          crntPages = crntPages;
         }
       } else {
         // Draft field is a boolean field
@@ -194,8 +192,6 @@ export default function usePages(pages: Page[]) {
             crntPages = drafts;
           } else if (tab === Tab.Scheduled) {
             crntPages = scheduled;
-          } else {
-            crntPages = crntPages;
           }
         }
       }
@@ -240,11 +236,11 @@ export default function usePages(pages: Page[]) {
   };
 
   useEffect(() => {
-    let usedSorting = sorting;
+    const usedSorting = sorting;
 
     const startPageProcessing = () => {
       // Check if search needs to be performed
-      let searchedPages = pages;
+      const searchedPages = pages;
       if (search) {
         Messenger.send(DashboardMessage.searchPages, { query: search });
       } else {

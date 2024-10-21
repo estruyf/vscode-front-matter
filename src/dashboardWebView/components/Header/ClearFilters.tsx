@@ -21,16 +21,16 @@ import { useEffect, useMemo } from 'react';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 
-export const guardRecoilDefaultValue = (candidate: any): candidate is DefaultValue => {
-  if (candidate instanceof DefaultValue) return true;
+export const guardRecoilDefaultValue = (candidate: unknown): candidate is DefaultValue => {
+  if (candidate instanceof DefaultValue) {
+    return true;
+  }
   return false;
 };
 
 export interface IClearFiltersProps { }
 
-export const ClearFilters: React.FunctionComponent<IClearFiltersProps> = (
-  _: React.PropsWithChildren<IClearFiltersProps>
-) => {
+export const ClearFilters: React.FunctionComponent<IClearFiltersProps> = () => {
   const [show, setShow] = React.useState(false);
 
   const folder = useRecoilValue(FolderSelector);
@@ -75,7 +75,9 @@ export const ClearFilters: React.FunctionComponent<IClearFiltersProps> = (
     }
   }, [folder, tag, category, locale, hasCustomFilters]);
 
-  if (!show) return null;
+  if (!show) {
+    return null;
+  }
 
   return (
     <button

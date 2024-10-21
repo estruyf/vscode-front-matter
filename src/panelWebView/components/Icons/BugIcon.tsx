@@ -1,10 +1,8 @@
 import * as React from 'react';
 
-export interface IBugIconProps {}
+export interface IBugIconProps { }
 
-export const BugIcon: React.FunctionComponent<IBugIconProps> = (
-  props: React.PropsWithChildren<IBugIconProps>
-) => {
+export const BugIcon: React.FunctionComponent<IBugIconProps> = () => {
   return (
     <svg
       width="16"

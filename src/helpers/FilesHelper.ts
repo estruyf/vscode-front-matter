@@ -38,7 +38,7 @@ export class FilesHelper {
    */
   public static relToAbsPath(filePath: string): string {
     const wsFolder = Folders.getWorkspaceFolder();
-    let absPath = join(parseWinPath(wsFolder?.fsPath || ''), filePath);
+    const absPath = join(parseWinPath(wsFolder?.fsPath || ''), filePath);
     return parseWinPath(absPath);
   }
 

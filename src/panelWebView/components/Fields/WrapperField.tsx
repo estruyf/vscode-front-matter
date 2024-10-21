@@ -27,12 +27,14 @@ import {
   NumberField,
   CustomField,
   FieldCollection,
-  TagPicker
+  TagPicker,
+  WYSIWYGType
 } from '.';
 import { fieldWhenClause } from '../../../utils/fieldWhenClause';
 import { ContentTypeRelationshipField } from './ContentTypeRelationshipField';
-import * as l10n from '@vscode/l10n';
-import { LocalizationKey } from '../../../localization';
+import { LocalizationKey, localize } from '../../../localization';
+import { GeneralCommands } from '../../../constants';
+const WysiwygField = React.lazy(() => import('./WysiwygField'));
 
 export interface IWrapperFieldProps {
   field: Field;
@@ -210,24 +212,43 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       limit = settings?.seo.description;
     }
 
-    return (
-      <FieldBoundary key={field.name} fieldName={field.title || field.name}>
-        <TextField
-          name={field.name}
-          label={field.title || field.name}
-          description={field.description}
-          singleLine={field.single}
-          limit={limit}
-          wysiwyg={field.wysiwyg}
-          rows={4}
-          onChange={onFieldChange}
-          value={(fieldValue as string) || null}
-          required={!!field.required}
-          settings={settings}
-          actions={field.actions}
-        />
-      </FieldBoundary>
-    );
+    if (field.wysiwyg) {
+      return (
+        <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+          <React.Suspense
+            fallback={<div>{localize(LocalizationKey.panelFieldsTextFieldLoading)}</div>}
+          >
+            <WysiwygField
+              name={field.name}
+              label={field.title || field.name}
+              description={field.description}
+              limit={limit}
+              type={typeof field.wysiwyg === 'boolean' ? 'html' : field.wysiwyg.toLowerCase() as WYSIWYGType}
+              onChange={onFieldChange}
+              value={(fieldValue as string) || null}
+              required={!!field.required} />
+          </React.Suspense>
+        </FieldBoundary>
+      );
+    } else {
+      return (
+        <FieldBoundary key={field.name} fieldName={field.title || field.name}>
+          <TextField
+            name={field.name}
+            label={field.title || field.name}
+            description={field.description}
+            singleLine={field.single}
+            limit={limit}
+            rows={4}
+            onChange={onFieldChange}
+            value={(fieldValue as string) || null}
+            required={!!field.required}
+            settings={settings}
+            actions={field.actions}
+          />
+        </FieldBoundary>
+      );
+    }
   } else if (field.type === 'number') {
     let nrValue: number | null = field.numberOptions?.isDecimal ? parseFloat(fieldValue as string) : parseInt(fieldValue as string);
     if (isNaN(nrValue)) {
@@ -497,6 +518,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           required={!!field.required}
           contentTypeName={field.contentTypeName}
           contentTypeValue={field.contentTypeValue}
+          sameContentLocale={field.sameContentLocale}
           multiSelect={field.multiple}
           onChange={onFieldChange}
         />
@@ -555,7 +577,10 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
       </FieldBoundary>
     );
   } else {
-    console.warn(l10n.t(LocalizationKey.panelFieldsWrapperFieldUnknown, field.type));
+    messageHandler.send(GeneralCommands.toVSCode.logging.verbose, {
+      message: localize(LocalizationKey.panelFieldsWrapperFieldUnknown, field.type),
+      location: 'PANEL'
+    });
     return null;
   }
 };

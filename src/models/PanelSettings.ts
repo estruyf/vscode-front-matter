@@ -103,7 +103,7 @@ export interface Field {
   type: FieldType;
   choices?: string[] | Choice[];
   single?: boolean;
-  wysiwyg?: boolean;
+  wysiwyg?: boolean | string;
   multiple?: boolean;
   isPreviewImage?: boolean;
   hidden?: boolean;
@@ -135,6 +135,7 @@ export interface Field {
   // Content relationship
   contentTypeName?: string;
   contentTypeValue?: 'path' | 'slug';
+  sameContentLocale?: boolean;
 
   // Custom field
   customType?: string;
@@ -169,6 +170,7 @@ export enum WhenOperator {
 export interface WhenClause {
   fieldRef: string;
   operator: WhenOperator;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
   caseSensitive?: boolean;
 }

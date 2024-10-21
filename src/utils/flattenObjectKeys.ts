@@ -1,6 +1,7 @@
 import { join } from 'path';
 
-export const flattenObjectKeys = (obj: any, crntKey: string = '') => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const flattenObjectKeys = (obj: any, crntKey = '') => {
   let toReturn: string[] = [];
   const keys = Object.keys(obj);
 

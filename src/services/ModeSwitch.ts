@@ -12,7 +12,7 @@ import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 
 export class ModeSwitch {
-  private static isInit: boolean = false;
+  private static isInit = false;
   private static statusBarElm: StatusBarItem;
   private static currentMode: string;
 

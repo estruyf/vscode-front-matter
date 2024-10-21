@@ -1,8 +1,11 @@
 'use strict';
 
+/* eslint-disable */
 const path = require('path');
+const { ProvidePlugin } = require('webpack');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const WebpackManifestPlugin = require('webpack-manifest-plugin').WebpackManifestPlugin;
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 const config = [{
   name: 'panel',
@@ -17,7 +20,7 @@ const config = [{
   resolve: {
     extensions: ['.ts', '.js', '.tsx', '.jsx'],
     fallback: {
-      "path": require.resolve("path-browserify")
+      "path": require.resolve("path-browserify"),
     }
   },
   module: {
@@ -62,7 +65,18 @@ const config = [{
     new WebpackManifestPlugin({
       publicPath: "",
       fileName: "panel.manifest.json"
-    })
+    }),
+    new ESLintPlugin({
+      extensions: ['ts', 'tsx'],
+      exclude: ['node_modules', 'dist'],
+      emitWarning: false,
+    }),
+    new ProvidePlugin({
+      // Make a global `process` variable that points to the `process` package,
+      // because the `util` package expects there to be a global variable named `process`.
+      // Thanks to https://stackoverflow.com/a/65018686/14239942
+      process: 'process/browser'
+    }),
   ],
   devServer: {
     compress: true,

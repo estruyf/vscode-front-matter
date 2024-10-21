@@ -1,10 +1,8 @@
 import * as React from 'react';
 
-export interface IRocketIconProps {}
+export interface IRocketIconProps { }
 
-export const RocketIcon: React.FunctionComponent<IRocketIconProps> = (
-  props: React.PropsWithChildren<IRocketIconProps>
-) => {
+export const RocketIcon: React.FunctionComponent<IRocketIconProps> = () => {
   return (
     <svg
       width="16"

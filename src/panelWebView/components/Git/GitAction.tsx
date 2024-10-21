@@ -38,8 +38,6 @@ export const GitAction: React.FunctionComponent<IGitActionProps> = ({
 
     if (command === GeneralCommands.toWebview.git.syncingStart) {
       setIsSyncing(payload || "syncing");
-    } else if (command === GeneralCommands.toWebview.git.syncingStart) {
-      setIsSyncing("syncing");
     } else if (command === GeneralCommands.toWebview.git.syncingEnd) {
       setCommitMessage(undefined);
       setIsSyncing("idle");
