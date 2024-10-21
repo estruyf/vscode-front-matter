@@ -1,8 +1,6 @@
 # Change Log
 
-## [10.5.0] - 2024-xx-xx
-
-### ✨ New features
+## [10.5.0] - 2024-10-21 - [Release notes](https://beta.frontmatter.codes/updates/v10.5.0)
 
 ### 🎨 Enhancements
 
@@ -10,8 +8,6 @@
 - [#850](https://github.com/estruyf/vscode-front-matter/issues/850): Extended the i18n/language button to open or create new language files (thanks to [Dennis Zoma](https://github.com/wottpal))
 - [#851](https://github.com/estruyf/vscode-front-matter/issues/851): Added `sameContentLocale` option to `contentRelationship` field (thanks to [Dennis Zoma](https://github.com/wottpal))
 - [#866](https://github.com/estruyf/vscode-front-matter/issues/866): Support Markdown in the WYSIWYG `string` field
-
-### ⚡️ Optimizations
 
 ### 🐞 Fixes
 
