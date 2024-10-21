@@ -20,7 +20,7 @@ runs:
   steps:
     - uses: actions/setup-node@v4
       with:
-        node-version: 18
+        node-version: 20
         registry-url: https://registry.npmjs.org/
         cache: 'npm'
 
