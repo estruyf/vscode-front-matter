@@ -131,7 +131,8 @@
 }
 
 .article__tags__dropbox.open {
-  border: 1px solid rgba(0, 0, 0, 0.9);
+  border: 1px solid var(--vscode-focusBorder);
+  width: 100%;
 }
 
 .article__tags ul {

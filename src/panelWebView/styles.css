@@ -839,6 +839,8 @@ vscode-divider {
   bottom: 0;
   width: auto;
 
+  border-radius: 0 0.25rem 0.25rem 0;
+
   &:disabled {
     background: none;
     filter: brightness(100%);
@@ -946,6 +948,8 @@ vscode-divider {
 
   display: flex;
   align-items: center;
+
+  border-radius: 0 0.25rem 0.25rem 0;
 
   span {
     margin-right: 0.5rem;
