@@ -15,7 +15,8 @@ export interface IFieldCollectionProps {
     parentFields: string[],
     blockData?: BlockFieldData,
     onFieldUpdate?: (field: string | undefined, value: any, parents: string[]) => void,
-    parentBlock?: string | null
+    parentBlock?: string | null,
+    triggerUpdateOnDefault?: boolean
   ) => (JSX.Element | null)[] | undefined;
   onChange: (field: string | undefined, value: any, parents: string[]) => void;
 }

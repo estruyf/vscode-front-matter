@@ -55,8 +55,10 @@ export interface IWrapperFieldProps {
     parentFields: string[],
     blockData?: BlockFieldData,
     onFieldUpdate?: (field: string | undefined, value: any, parents: string[]) => void,
-    parentBlock?: string | null
+    parentBlock?: string | null,
+    triggerUpdateOnDefault?: boolean
   ) => (JSX.Element | null)[] | undefined;
+  triggerUpdateOnDefault?: boolean;
 }
 
 export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
@@ -72,7 +74,8 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
   parentBlock,
   onSendUpdate,
   unsetFocus,
-  renderFields
+  renderFields,
+  triggerUpdateOnDefault
 }: React.PropsWithChildren<IWrapperFieldProps>) => {
   const [fieldValue, setFieldValue] = useState<any | undefined>(undefined);
   const [customFields, setCustomFields] = useState<{
@@ -110,7 +113,9 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
         value = getDate(value) || null;
       }
 
-      //onSendUpdate(field.name, value, parentFields);
+      if (triggerUpdateOnDefault) {
+        onSendUpdate(field.name, value, parentFields);
+      }
     }
 
     // Check if the field value contains a placeholder
@@ -140,7 +145,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
         }
       }
     }
-  }, [field, parent]);
+  }, [field, parent, triggerUpdateOnDefault]);
 
   useEffect(() => {
     if (window.fmExternal && window.fmExternal.getCustomFields) {
@@ -437,7 +442,9 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
               subMetadata,
               [...parentFields, field.name],
               blockData,
-              onSendUpdate
+              onSendUpdate,
+              null,
+              true
             )}
           </div>
         </FieldBoundary>
