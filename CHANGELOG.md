@@ -13,6 +13,7 @@
 ### 🐞 Fixes
 
 - [#874](https://github.com/estruyf/vscode-front-matter/issues/874): Fix media snippet markup insertion to article content's
+- [#875](https://github.com/estruyf/vscode-front-matter/issues/875): Clean up the exclamation marks from the file name when creating new content
 
 ## [10.5.0] - 2024-10-21 - [Release notes](https://beta.frontmatter.codes/updates/v10.5.0)
 
