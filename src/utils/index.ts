@@ -20,6 +20,7 @@ export * from './readdirAsync';
 export * from './renameAsync';
 export * from './rmdirAsync';
 export * from './sentryInit';
+export * from './sleep';
 export * from './sortPages';
 export * from './unlinkAsync';
 export * from './writeFileAsync';

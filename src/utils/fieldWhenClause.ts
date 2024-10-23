@@ -22,7 +22,17 @@ export const fieldWhenClause = (field: Field, parent: IMetadata, allFields?: Fie
     }
   }
 
-  const whenValue = parent[when.fieldRef];
+  let whenValue = parent[when.fieldRef];
+
+  // If the value is not yet set, check if the field has a default value.
+  if (
+    typeof whenValue === 'undefined' &&
+    parentField &&
+    typeof parentField.default !== 'undefined'
+  ) {
+    whenValue = parentField.default as string | IMetadata | string[] | null;
+  }
+
   if (when.caseSensitive || typeof when.caseSensitive === 'undefined') {
     return caseSensitive(when, field, whenValue);
   } else {
@@ -61,7 +71,7 @@ const caseInsensitive = (
  */
 const caseSensitive = (
   when: WhenClause,
-  field: Field,
+  _: Field,
   whenValue: string | IMetadata | string[] | null
 ) => {
   switch (when.operator) {

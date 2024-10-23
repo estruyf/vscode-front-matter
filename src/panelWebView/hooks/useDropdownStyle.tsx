@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 export default function useDropdownStyle(inputRef: React.MutableRefObject<HTMLInputElement | null>, inputHeight?: string) {
-  const bottomStyle = `calc(100% - ${inputHeight || '38px'})`;
+  const bottomStyle = `calc(100% - ${inputHeight || '5px'})`;
   const listItemHeight = 28;
 
   const getDropdownStyle = useCallback((isOpen) => {

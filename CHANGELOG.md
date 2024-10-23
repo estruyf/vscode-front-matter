@@ -1,5 +1,17 @@
 # Change Log
 
+## [10.5.1] - 2024-10-23
+
+### 🎨 Enhancements
+
+- [#873](https://github.com/estruyf/vscode-front-matter/issues/873): Add retry logic to get the AI model for calling GitHub Copilot
+
+### 🐞 Fixes
+
+- [#872](https://github.com/estruyf/vscode-front-matter/issues/872): Check the default field value as well for the field's `when` clause
+- [#874](https://github.com/estruyf/vscode-front-matter/issues/874): Fix media snippet markup insertion to article content's
+- [#875](https://github.com/estruyf/vscode-front-matter/issues/875): Clean up the exclamation marks from the file name when creating new content
+
 ## [10.5.0] - 2024-10-21 - [Release notes](https://beta.frontmatter.codes/updates/v10.5.0)
 
 ### 🎨 Enhancements

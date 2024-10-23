@@ -4,7 +4,8 @@ import {
   LanguageModelChatResponse,
   extensions,
   lm,
-  version as VscodeVersion
+  version as VscodeVersion,
+  LanguageModelChat
 } from 'vscode';
 import { Logger, Settings, TaxonomyHelper } from '../helpers';
 import {
@@ -14,6 +15,7 @@ import {
 } from '../constants';
 import { TagType } from '../panelWebView/TagType';
 import { TaxonomyType } from '../models';
+import { sleep } from '../utils';
 
 export class Copilot {
   private static personality =
@@ -51,7 +53,7 @@ export class Copilot {
         LanguageModelChatMessage.User(`The title of the blog post is """${title}""".`)
       ];
 
-      const chatResponse = await this.getChatResponse(messages);
+      const chatResponse = await Copilot.getChatResponse(messages);
       if (!chatResponse) {
         return;
       }
@@ -100,7 +102,7 @@ Response format: a single string wrapped in double quotes, e.g., "Boost your web
         );
       }
 
-      const chatResponse = await this.getChatResponse(messages);
+      const chatResponse = await Copilot.getChatResponse(messages);
 
       if (!chatResponse) {
         return;
@@ -179,7 +181,7 @@ Example: SEO, website optimization, digital marketing.`
         );
       }
 
-      const chatResponse = await this.getChatResponse(messages);
+      const chatResponse = await Copilot.getChatResponse(messages);
 
       if (!chatResponse) {
         return;
@@ -211,6 +213,9 @@ Example: SEO, website optimization, digital marketing.`
 
     try {
       const model = await this.getModel();
+      if (!model) {
+        return;
+      }
       chatResponse = await model.sendRequest(messages, {}, new CancellationTokenSource().token);
     } catch (err) {
       Logger.error(`Copilot:getChatResponse:: ${(err as Error).message}`);
@@ -229,13 +234,18 @@ Example: SEO, website optimization, digital marketing.`
    * Retrieves the chat model for the Copilot service.
    * @returns A Promise that resolves to the chat model.
    */
-  private static async getModel() {
+  private static async getModel(retry = 0): Promise<LanguageModelChat | undefined> {
     // const models = await lm.selectChatModels();
     // console.log(models);
     const [model] = await lm.selectChatModels({
       vendor: 'copilot',
       family: Settings.get<string>(SETTING_COPILOT_FAMILY) || 'gpt-4o-mini'
     });
+
+    if ((!model || !model.sendRequest) && retry <= 5) {
+      await sleep(1000);
+      return Copilot.getModel(retry + 1);
+    }
 
     return model;
   }

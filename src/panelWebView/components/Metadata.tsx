@@ -61,7 +61,8 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
     blockData?: BlockFieldData,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onFieldUpdate?: (field: string | undefined, value: any, parents: string[]) => void,
-    parentBlock?: string | null
+    parentBlock?: string | null,
+    triggerUpdateOnDefault?: boolean
   ): (JSX.Element | null)[] | undefined => {
     if (!ctFields || !settings) {
       return;
@@ -83,6 +84,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
         onSendUpdate={onFieldUpdate || onSendUpdate}
         unsetFocus={unsetFocus}
         renderFields={renderFields}
+        triggerUpdateOnDefault={triggerUpdateOnDefault}
       />
     ));
   };

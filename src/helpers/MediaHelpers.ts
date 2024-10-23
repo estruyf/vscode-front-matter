@@ -18,7 +18,7 @@ import {
   SETTING_MEDIA_SUPPORTED_MIMETYPES
 } from '../constants';
 import { SortingOption } from '../dashboardWebView/models';
-import { MediaInfo, MediaPaths, SortOrder, SortType } from '../models';
+import { BlockFieldData, MediaInfo, MediaPaths, SortOrder, SortType } from '../models';
 import { basename, join, parse, dirname, relative } from 'path';
 import { statSync } from 'fs';
 import { Uri, workspace, window, Position } from 'vscode';
@@ -376,7 +376,18 @@ export class MediaHelpers {
    * Insert an image into the front matter or contents
    * @param data
    */
-  public static async insertMediaToMarkdown(data: any) {
+  public static async insertMediaToMarkdown(data: {
+    file: string;
+    relPath: string;
+    snippet: string;
+    position: Position;
+    title?: string;
+    alt?: string;
+    caption?: string;
+    fieldName: string;
+    parents: string[];
+    blockData: BlockFieldData;
+  }) {
     if (data?.file && data?.relPath) {
       await EditorHelper.showFile(data.file);
       Dashboard.resetViewData();
@@ -444,7 +455,7 @@ export class MediaHelpers {
             const docType = Wysiwyg.getDocType(filePath);
 
             let snippet = data.snippet || '';
-            if (!data.Snippet) {
+            if (!snippet) {
               if (docType === 'markdown') {
                 snippet = `${isFile ? '' : '!'}[${caption}](${FrameworkDetector.relAssetPathUpdate(
                   relPath,

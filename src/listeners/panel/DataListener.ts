@@ -115,7 +115,12 @@ export class DataListener extends BaseListener {
   }
 
   private static async copilotSuggestTitle(command: string, requestId?: string, title?: string) {
-    if (!command || !requestId || !title) {
+    if (!command || !requestId) {
+      return;
+    }
+
+    if (!title) {
+      this.sendRequestError(command, requestId, 'No title provided');
       return;
     }
 
