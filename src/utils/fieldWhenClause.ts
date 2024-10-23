@@ -14,9 +14,6 @@ export const fieldWhenClause = (field: Field, parent: IMetadata, allFields?: Fie
     return true;
   }
 
-  // eslint-disable-next-line no-debugger
-  debugger;
-
   const parentField = allFields?.find((f) => f.name === when.fieldRef);
   if (parentField && parentField.when) {
     const renderParent = fieldWhenClause(parentField, parent, allFields);
