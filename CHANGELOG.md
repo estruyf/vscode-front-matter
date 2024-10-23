@@ -2,13 +2,9 @@
 
 ## [10.5.1] - 2024-10-23
 
-### ✨ New features
-
 ### 🎨 Enhancements
 
 - [#873](https://github.com/estruyf/vscode-front-matter/issues/873): Add retry logic to get the AI model for calling GitHub Copilot
-
-### ⚡️ Optimizations
 
 ### 🐞 Fixes
 
