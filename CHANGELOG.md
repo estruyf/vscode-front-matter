@@ -1,5 +1,11 @@
 # Change Log
 
+## [10.x.x] - 2024-xx-xx
+
+### 🐞 Fixes
+
+- [#876](https://github.com/estruyf/vscode-front-matter/issues/876): Fix snippet type on the snippet card
+
 ## [10.5.1] - 2024-10-23
 
 ### 🎨 Enhancements
