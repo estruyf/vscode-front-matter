@@ -14,6 +14,9 @@ export const fieldWhenClause = (field: Field, parent: IMetadata, allFields?: Fie
     return true;
   }
 
+  // eslint-disable-next-line no-debugger
+  debugger;
+
   const parentField = allFields?.find((f) => f.name === when.fieldRef);
   if (parentField && parentField.when) {
     const renderParent = fieldWhenClause(parentField, parent, allFields);
@@ -23,9 +26,16 @@ export const fieldWhenClause = (field: Field, parent: IMetadata, allFields?: Fie
   }
 
   let whenValue = parent[when.fieldRef];
-  if (whenValue === undefined) {
-    whenValue = field.default as string | IMetadata | string[] | null;
+
+  // If the value is not yet set, check if the field has a default value.
+  if (
+    typeof whenValue === 'undefined' &&
+    parentField &&
+    typeof parentField.default !== 'undefined'
+  ) {
+    whenValue = parentField.default as string | IMetadata | string[] | null;
   }
+
   if (when.caseSensitive || typeof when.caseSensitive === 'undefined') {
     return caseSensitive(when, field, whenValue);
   } else {
