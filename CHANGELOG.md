@@ -12,6 +12,7 @@
 
 ### 🐞 Fixes
 
+- [#872](https://github.com/estruyf/vscode-front-matter/issues/872): Check the default field value as well for the field's `when` clause
 - [#874](https://github.com/estruyf/vscode-front-matter/issues/874): Fix media snippet markup insertion to article content's
 - [#875](https://github.com/estruyf/vscode-front-matter/issues/875): Clean up the exclamation marks from the file name when creating new content
 
