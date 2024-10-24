@@ -2,6 +2,10 @@
 
 ## [10.x.x] - 2024-xx-xx
 
+### 🎨 Enhancements
+
+- [#878](https://github.com/estruyf/vscode-front-matter/issues/878): Allow the `select all` button to work on other pages when there is a selection present
+
 ### 🐞 Fixes
 
 - [#876](https://github.com/estruyf/vscode-front-matter/issues/876): Fix snippet type on the snippet card
