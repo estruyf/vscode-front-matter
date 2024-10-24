@@ -14,7 +14,7 @@ import ContentProvider from './providers/ContentProvider';
 import { PagesListener } from './listeners/dashboard';
 import { ModeSwitch } from './services/ModeSwitch';
 import { PagesParser } from './services/PagesParser';
-import { ContentType, Telemetry, Extension } from './helpers';
+import { ContentType, Extension } from './helpers';
 import * as l10n from '@vscode/l10n';
 import {
   Backers,
@@ -121,8 +121,9 @@ export async function activate(context: vscode.ExtensionContext) {
   // Register the taxonomy commands
   Taxonomy.registerCommands(subscriptions);
 
-  // Register all the article commands
+  // Register all the article commands and listeners
   Article.registerCommands(subscriptions);
+  Article.registerListeners(subscriptions);
 
   // Template creation
   Template.registerCommands();
@@ -181,9 +182,6 @@ export async function activate(context: vscode.ExtensionContext) {
   // Automatically run the command
   triggerPageUpdate(`main`);
 
-  // Listener for file edit changes
-  subscriptions.push(vscode.workspace.onWillSaveTextDocument(handleAutoDateUpdate));
-
   // Listener for file saves
   subscriptions.push(PagesListener.saveFileWatcher());
 
@@ -241,15 +239,12 @@ export async function activate(context: vscode.ExtensionContext) {
   // Subscribe all commands
   subscriptions.push(PanelView, collapseAll, fmStatusBarItem);
 
+  // eslint-disable-next-line no-console
   console.log(`𝖥𝗋𝗈𝗇𝗍 𝖬𝖺𝗍𝗍𝖾𝗋 𝖢𝖬𝖲 𝖺𝖼𝗍𝗂𝗏𝖺𝗍𝖾𝖽! 𝖱𝖾𝖺𝖽𝗒 𝗍𝗈 𝗌𝗍𝖺𝗋𝗍 𝗐𝗋𝗂𝗍𝗂𝗇𝗀... 👩‍💻🧑‍💻👨‍💻`);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 export function deactivate() {}
-
-const handleAutoDateUpdate = (e: vscode.TextDocumentWillSaveEvent) => {
-  Article.autoUpdate(e);
-};
 
 const triggerPageUpdate = (location: string) => {
   Logger.verbose(`Trigger page update: ${location}`);

@@ -9,6 +9,7 @@
 ### 🐞 Fixes
 
 - [#876](https://github.com/estruyf/vscode-front-matter/issues/876): Fix snippet type on the snippet card
+- [#879](https://github.com/estruyf/vscode-front-matter/issues/879): Fix for auto updating last modified date on save
 
 ## [10.5.1] - 2024-10-23
 

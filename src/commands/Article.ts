@@ -52,7 +52,7 @@ export class Article {
    *
    * @param subscriptions - The array of subscriptions to register the commands with.
    */
-  public static async registerCommands(subscriptions: unknown[]) {
+  public static registerCommands(subscriptions: unknown[]) {
     subscriptions.push(
       commands.registerCommand(COMMAND_NAME.setLastModifiedDate, Article.setLastModifiedDate)
     );
@@ -64,6 +64,15 @@ export class Article {
 
     // Inserting a snippet in Markdown
     subscriptions.push(commands.registerCommand(COMMAND_NAME.insertSnippet, Article.insertSnippet));
+  }
+
+  /**
+   * Registers event listeners for the Article class.
+   *
+   * @param subscriptions - An array to which the event listener will be added.
+   */
+  public static registerListeners(subscriptions: unknown[]) {
+    subscriptions.push(workspace.onWillSaveTextDocument(Article.autoUpdate));
   }
 
   /**
@@ -369,15 +378,15 @@ export class Article {
    * Article auto updater
    * @param event
    */
-  public static async autoUpdate(event: TextDocumentWillSaveEvent) {
+  public static autoUpdate(event: TextDocumentWillSaveEvent) {
     const document = event.document;
     if (document && ArticleHelper.isSupportedFile(document)) {
       const autoUpdate = Settings.get(SETTING_AUTO_UPDATE_DATE);
 
       // Is article located in one of the content folders
-      const folders = await Folders.getCachedOrFresh();
+      const folders = Folders.getCached();
       const documentPath = parseWinPath(document.fileName);
-      const folder = folders.find((f) => documentPath.startsWith(f.path));
+      const folder = folders?.find((f) => documentPath.startsWith(f.path));
       if (!folder) {
         return;
       }
