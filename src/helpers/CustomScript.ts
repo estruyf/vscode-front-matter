@@ -1,7 +1,7 @@
 import { Settings } from './SettingsHelper';
 import { CommandType } from './../models/PanelSettings';
 import { CustomScript as ICustomScript, ScriptType } from '../models/PanelSettings';
-import { window, env as vscodeEnv, ProgressLocation, Uri, commands, workspace } from 'vscode';
+import { window, env as vscodeEnv, ProgressLocation, Uri, commands } from 'vscode';
 import { ArticleHelper, Logger, MediaHelpers } from '.';
 import { Folders, WORKSPACE_PLACEHOLDER } from '../commands/Folders';
 import { exec, execSync } from 'child_process';
@@ -13,10 +13,8 @@ import { Dashboard } from '../commands/Dashboard';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { ParsedFrontMatter } from '../parsers';
 import { SETTING_CUSTOM_SCRIPTS } from '../constants';
-import { existsAsync, getPlatform } from '../utils';
-import * as l10n from '@vscode/l10n';
-import { LocalizationKey } from '../localization';
-import { ShellSetting } from '../models';
+import { evaluateCommand, existsAsync, getPlatform } from '../utils';
+import { LocalizationKey, localize } from '../localization';
 
 export class CustomScript {
   /**
@@ -102,7 +100,7 @@ export class CustomScript {
       );
     } else {
       Notifications.warning(
-        l10n.t(LocalizationKey.helpersCustomScriptSingleRunArticleWarning, script.title)
+        localize(LocalizationKey.helpersCustomScriptSingleRunArticleWarning, script.title)
       );
     }
   }
@@ -118,7 +116,7 @@ export class CustomScript {
 
     if (!folders || folders.length === 0) {
       Notifications.warning(
-        l10n.t(LocalizationKey.helpersCustomScriptBulkRunNoFilesWarning, script.title)
+        localize(LocalizationKey.helpersCustomScriptBulkRunNoFilesWarning, script.title)
       );
       return;
     }
@@ -128,7 +126,7 @@ export class CustomScript {
     window.withProgress(
       {
         location: ProgressLocation.Notification,
-        title: l10n.t(LocalizationKey.helpersCustomScriptExecuting, script.title),
+        title: localize(LocalizationKey.helpersCustomScriptExecuting, script.title),
         cancellable: false
       },
       async (_, __) => {
@@ -174,7 +172,7 @@ export class CustomScript {
   ): Promise<void> {
     if (!path) {
       Notifications.error(
-        l10n.t(LocalizationKey.helpersCustomScriptRunMediaScriptNoFolderWarning, script.title)
+        localize(LocalizationKey.helpersCustomScriptRunMediaScriptNoFolderWarning, script.title)
       );
       return;
     }
@@ -183,7 +181,7 @@ export class CustomScript {
       window.withProgress(
         {
           location: ProgressLocation.Notification,
-          title: l10n.t(LocalizationKey.helpersCustomScriptExecuting, script.title),
+          title: localize(LocalizationKey.helpersCustomScriptExecuting, script.title),
           cancellable: false
         },
         async () => {
@@ -310,7 +308,10 @@ export class CustomScript {
               throw new Error(`Couldn't update article.`);
             }
             Notifications.info(
-              l10n.t(LocalizationKey.helpersCustomScriptShowOutputFrontMatterSuccess, script.title)
+              localize(
+                LocalizationKey.helpersCustomScriptShowOutputFrontMatterSuccess,
+                script.title
+              )
             );
           }
         } else if (data.fmAction) {
@@ -346,10 +347,12 @@ export class CustomScript {
           window
             .showInformationMessage(
               `${script.title}: ${output}`,
-              l10n.t(LocalizationKey.helpersCustomScriptShowOutputCopyOutputAction)
+              localize(LocalizationKey.helpersCustomScriptShowOutputCopyOutputAction)
             )
             .then((value) => {
-              if (value === l10n.t(LocalizationKey.helpersCustomScriptShowOutputCopyOutputAction)) {
+              if (
+                value === localize(LocalizationKey.helpersCustomScriptShowOutputCopyOutputAction)
+              ) {
                 vscodeEnv.clipboard.writeText(output);
               }
             });
@@ -357,7 +360,7 @@ export class CustomScript {
       }
     } else {
       Notifications.info(
-        l10n.t(LocalizationKey.helpersCustomScriptShowOutputSuccess, script.title)
+        localize(LocalizationKey.helpersCustomScriptShowOutputSuccess, script.title)
       );
     }
   }
@@ -383,7 +386,7 @@ export class CustomScript {
     }
 
     if (script.command === CommandType.Node && platform !== 'windows') {
-      command = await CustomScript.evaluateCommand(CommandType.Node);
+      command = await evaluateCommand(CommandType.Node);
     }
 
     let scriptPath = join(wsPath, script.script);
@@ -399,7 +402,7 @@ export class CustomScript {
           command = environment.command;
 
           if (command === CommandType.Node && platform !== 'windows') {
-            command = await CustomScript.evaluateCommand(CommandType.Node);
+            command = await evaluateCommand(CommandType.Node);
           }
 
           scriptPath = join(wsPath, environment.script);
@@ -420,7 +423,7 @@ export class CustomScript {
     }
 
     const fullScript = `${command} "${scriptPath}" ${args}`;
-    Logger.info(l10n.t(LocalizationKey.helpersCustomScriptExecuting, fullScript));
+    Logger.info(localize(LocalizationKey.helpersCustomScriptExecuting, fullScript));
 
     const output: string = await CustomScript.executeScriptAsync(fullScript, wsPath);
 
@@ -503,68 +506,8 @@ export class CustomScript {
 
       return true;
     } catch (e) {
-      Logger.error(l10n.t(LocalizationKey.helpersCustomScriptValidateCommandError, command));
+      Logger.error(localize(LocalizationKey.helpersCustomScriptValidateCommandError, command));
       return false;
     }
-  }
-
-  /**
-   * Evaluate the command dynamically using `which` command
-   * @param command
-   * @returns
-   */
-  private static async evaluateCommand(command: string): Promise<string> {
-    const shell = CustomScript.getShellPath();
-    let shellPath: string | undefined = undefined;
-    if (typeof shell !== 'string' && !!shell) {
-      shellPath = shell.path;
-    } else {
-      shellPath = shell || undefined;
-    }
-
-    return new Promise((resolve, reject) => {
-      exec(`which ${command}`, { shell: shellPath }, (error, stdout) => {
-        if (error) {
-          Logger.error(`Error evaluating command: ${command}`);
-          reject(error);
-          return;
-        }
-
-        resolve(stdout.trim());
-      });
-    });
-  }
-
-  /**
-   * Retrieves the shell path configuration based on the current platform and terminal settings.
-   *
-   * This method checks for the following configurations in order:
-   * 1. `integrated.automationProfile.<platform>`: Returns the automation profile if it exists.
-   * 2. `integrated.defaultProfile.<platform>` and `integrated.profiles.<platform>`: Returns the shell setting from the default profile if it exists.
-   * 3. `integrated.shell.<platform>`: Returns the shell setting if the above configurations are not found.
-   *
-   * @returns {string | ShellSetting | undefined} The shell path configuration or undefined if not found.
-   */
-  private static getShellPath(): string | ShellSetting | undefined {
-    const platform = getPlatform();
-    const terminalSettings = workspace.getConfiguration('terminal');
-
-    const automationProfile = terminalSettings.get<string | ShellSetting>(
-      `integrated.automationProfile.${platform}`
-    );
-    if (!!automationProfile) {
-      return automationProfile;
-    }
-
-    const defaultProfile = terminalSettings.get<string>(`integrated.defaultProfile.${platform}`);
-    const profiles = terminalSettings.get<{ [prop: string]: ShellSetting }>(
-      `integrated.profiles.${platform}`
-    );
-
-    if (defaultProfile && profiles && profiles[defaultProfile]) {
-      return profiles[defaultProfile];
-    }
-
-    return terminalSettings.get(`integrated.shell.${platform}`);
   }
 }

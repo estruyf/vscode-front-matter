@@ -1,12 +1,7 @@
 import { workspace, window, ThemeIcon, TerminalOptions } from 'vscode';
 import { Folders } from '../commands';
-import * as l10n from '@vscode/l10n';
-import { LocalizationKey } from '../localization';
-import { getPlatform } from '../utils';
-
-interface ShellSetting {
-  path: string;
-}
+import { LocalizationKey, localize } from '../localization';
+import { getShellPath } from '../utils';
 
 export class Terminal {
   public static readonly terminalName: string = 'Local server';
@@ -15,7 +10,7 @@ export class Terminal {
    * Return the shell path for the current platform
    */
   public static get shell() {
-    const shell: string | { path: string } | undefined = Terminal.getShellPath();
+    const shell: string | { path: string } | undefined = getShellPath();
     let shellPath: string | undefined = undefined;
 
     if (typeof shell !== 'string' && !!shell) {
@@ -47,7 +42,7 @@ export class Terminal {
       const terminalOptions: TerminalOptions = {
         name: Terminal.terminalName,
         iconPath: new ThemeIcon('server-environment'),
-        message: l10n.t(
+        message: localize(
           LocalizationKey.servicesTerminalOpenLocalServerTerminalTerminalOptionMessage
         )
       };
@@ -89,32 +84,5 @@ export class Terminal {
       const localServerTerminal = terminals.find((t) => t.name === Terminal.terminalName);
       return localServerTerminal;
     }
-  }
-
-  /**
-   * Retrieve the automation profile for the current platform
-   * @returns
-   */
-  private static getShellPath(): string | ShellSetting | undefined {
-    const platform = getPlatform();
-    const terminalSettings = workspace.getConfiguration('terminal');
-
-    const automationProfile = terminalSettings.get<string | ShellSetting>(
-      `integrated.automationProfile.${platform}`
-    );
-    if (!!automationProfile) {
-      return automationProfile;
-    }
-
-    const defaultProfile = terminalSettings.get<string>(`integrated.defaultProfile.${platform}`);
-    const profiles = terminalSettings.get<{ [prop: string]: ShellSetting }>(
-      `integrated.profiles.${platform}`
-    );
-
-    if (defaultProfile && profiles && profiles[defaultProfile]) {
-      return profiles[defaultProfile];
-    }
-
-    return terminalSettings.get(`integrated.shell.${platform}`);
   }
 }
