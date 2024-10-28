@@ -42,6 +42,7 @@ function Select({
   ...props
 }: SelectFieldProps) {
   const multiple = fieldType === Array;
+
   return (
     <div className="autoform__select_field" {...filterDOMProps(props)}>
       <LabelField label={label} id={id} required={required} />
@@ -84,11 +85,12 @@ function Select({
           }}
           ref={inputRef}
           value={value ?? ''}
+          className='text-[var(--vscode-foreground)] bg-[var(--vscode-list-activeSelectionBackground)] rounded-[2px] active:border-transparent disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none'
           style={{ width: '100%', padding: '0.5rem' }}
         >
-          {(!!placeholder || !required || value === undefined) && !multiple && (
+          {(!required || value === undefined) && !multiple && (
             <option value="" disabled={required} hidden={required}>
-              {placeholder || label}
+              {""}
             </option>
           )}
 
