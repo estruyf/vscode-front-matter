@@ -5,6 +5,7 @@
 ### 🎨 Enhancements
 
 - [#878](https://github.com/estruyf/vscode-front-matter/issues/878): Allow the `select all` button to work on other pages when there is a selection present
+- [#882](https://github.com/estruyf/vscode-front-matter/issues/882): Dynamic evaluation of the `node` executable path
 
 ### 🐞 Fixes
 

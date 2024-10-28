@@ -8,6 +8,7 @@ export * from './flattenObjectKeys';
 export * from './getDescriptionField';
 export * from './getExtensibilityScripts';
 export * from './getLocalizationFile';
+export * from './getPlatform';
 export * from './getTitleField';
 export * from './getWebviewJsFiles';
 export * from './ignoreMsgCommand';

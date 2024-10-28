@@ -1,7 +1,7 @@
 import { Settings } from './SettingsHelper';
-import { CommandType, EnvironmentType } from './../models/PanelSettings';
+import { CommandType } from './../models/PanelSettings';
 import { CustomScript as ICustomScript, ScriptType } from '../models/PanelSettings';
-import { window, env as vscodeEnv, ProgressLocation, Uri, commands } from 'vscode';
+import { window, env as vscodeEnv, ProgressLocation, Uri, commands, workspace } from 'vscode';
 import { ArticleHelper, Logger, MediaHelpers } from '.';
 import { Folders, WORKSPACE_PLACEHOLDER } from '../commands/Folders';
 import { exec, execSync } from 'child_process';
@@ -13,9 +13,10 @@ import { Dashboard } from '../commands/Dashboard';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { ParsedFrontMatter } from '../parsers';
 import { SETTING_CUSTOM_SCRIPTS } from '../constants';
-import { existsAsync } from '../utils';
+import { existsAsync, getPlatform } from '../utils';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
+import { ShellSetting } from '../models';
 
 export class CustomScript {
   /**
@@ -373,12 +374,16 @@ export class CustomScript {
     wsPath: string,
     args: string
   ): Promise<string> {
-    const osType = os.type();
+    const platform = getPlatform();
 
     // Check the command to use
     let command = script.nodeBin || 'node';
     if (script.command && script.command !== CommandType.Node) {
       command = script.command;
+    }
+
+    if (script.command === CommandType.Node && platform !== 'windows') {
+      command = await CustomScript.evaluateCommand(CommandType.Node);
     }
 
     let scriptPath = join(wsPath, script.script);
@@ -388,19 +393,15 @@ export class CustomScript {
 
     // Check if there is an environments overwrite required
     if (script.environments) {
-      let crntType: EnvironmentType | null = null;
-      if (osType === 'Windows_NT') {
-        crntType = 'windows';
-      } else if (osType === 'Darwin') {
-        crntType = 'macos';
-      } else {
-        crntType = 'linux';
-      }
-
-      const environment = script.environments.find((e) => e.type === crntType);
+      const environment = script.environments.find((e) => e.type === platform);
       if (environment && environment.script && environment.command) {
         if (await CustomScript.validateCommand(environment.command)) {
           command = environment.command;
+
+          if (command === CommandType.Node && platform !== 'windows') {
+            command = await CustomScript.evaluateCommand(CommandType.Node);
+          }
+
           scriptPath = join(wsPath, environment.script);
           if (environment.script.includes(WORKSPACE_PLACEHOLDER)) {
             scriptPath = Folders.getAbsFilePath(environment.script);
@@ -414,7 +415,7 @@ export class CustomScript {
       throw new Error(`Script not found: ${scriptPath}`);
     }
 
-    if (osType === 'Windows_NT' && command.toLowerCase() === 'powershell') {
+    if (platform === 'windows' && command.toLowerCase() === 'powershell') {
       command = `${command} -File`;
     }
 
@@ -505,5 +506,65 @@ export class CustomScript {
       Logger.error(l10n.t(LocalizationKey.helpersCustomScriptValidateCommandError, command));
       return false;
     }
+  }
+
+  /**
+   * Evaluate the command dynamically using `which` command
+   * @param command
+   * @returns
+   */
+  private static async evaluateCommand(command: string): Promise<string> {
+    const shell = CustomScript.getShellPath();
+    let shellPath: string | undefined = undefined;
+    if (typeof shell !== 'string' && !!shell) {
+      shellPath = shell.path;
+    } else {
+      shellPath = shell || undefined;
+    }
+
+    return new Promise((resolve, reject) => {
+      exec(`which ${command}`, { shell: shellPath }, (error, stdout) => {
+        if (error) {
+          Logger.error(`Error evaluating command: ${command}`);
+          reject(error);
+          return;
+        }
+
+        resolve(stdout.trim());
+      });
+    });
+  }
+
+  /**
+   * Retrieves the shell path configuration based on the current platform and terminal settings.
+   *
+   * This method checks for the following configurations in order:
+   * 1. `integrated.automationProfile.<platform>`: Returns the automation profile if it exists.
+   * 2. `integrated.defaultProfile.<platform>` and `integrated.profiles.<platform>`: Returns the shell setting from the default profile if it exists.
+   * 3. `integrated.shell.<platform>`: Returns the shell setting if the above configurations are not found.
+   *
+   * @returns {string | ShellSetting | undefined} The shell path configuration or undefined if not found.
+   */
+  private static getShellPath(): string | ShellSetting | undefined {
+    const platform = getPlatform();
+    const terminalSettings = workspace.getConfiguration('terminal');
+
+    const automationProfile = terminalSettings.get<string | ShellSetting>(
+      `integrated.automationProfile.${platform}`
+    );
+    if (!!automationProfile) {
+      return automationProfile;
+    }
+
+    const defaultProfile = terminalSettings.get<string>(`integrated.defaultProfile.${platform}`);
+    const profiles = terminalSettings.get<{ [prop: string]: ShellSetting }>(
+      `integrated.profiles.${platform}`
+    );
+
+    if (defaultProfile && profiles && profiles[defaultProfile]) {
+      return profiles[defaultProfile];
+    }
+
+    return terminalSettings.get(`integrated.shell.${platform}`);
   }
 }

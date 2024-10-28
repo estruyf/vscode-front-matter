@@ -1,8 +1,8 @@
 import { workspace, window, ThemeIcon, TerminalOptions } from 'vscode';
-import * as os from 'os';
 import { Folders } from '../commands';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
+import { getPlatform } from '../utils';
 
 interface ShellSetting {
   path: string;
@@ -96,7 +96,7 @@ export class Terminal {
    * @returns
    */
   private static getShellPath(): string | ShellSetting | undefined {
-    const platform = Terminal.getPlatform();
+    const platform = getPlatform();
     const terminalSettings = workspace.getConfiguration('terminal');
 
     const automationProfile = terminalSettings.get<string | ShellSetting>(
@@ -117,19 +117,4 @@ export class Terminal {
 
     return terminalSettings.get(`integrated.shell.${platform}`);
   }
-
-  /**
-   * Get the current platform
-   * @returns
-   */
-  private static getPlatform = (): 'windows' | 'linux' | 'osx' => {
-    const platform = os.platform();
-    if (platform === 'win32') {
-      return 'windows';
-    } else if (platform === 'darwin') {
-      return 'osx';
-    }
-
-    return 'linux';
-  };
 }
