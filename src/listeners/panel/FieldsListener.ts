@@ -39,8 +39,9 @@ export class FieldsListener extends BaseListener {
       return;
     }
 
+    const isLocaleEnabled = await i18n.isLocaleEnabled(data.activePath);
     const activeLocale = await i18n.getLocale(data.activePath);
-    if (!activeLocale?.locale) {
+    if (isLocaleEnabled && !activeLocale?.locale) {
       return;
     }
 
@@ -48,7 +49,7 @@ export class FieldsListener extends BaseListener {
       const fuseOptions: Fuse.IFuseOptions<Page> = {
         keys: [
           { name: 'fmContentType', weight: 1 },
-          ...(data.sameLocale ? [{ name: 'fmLocale.locale', weight: 1 }] : [])
+          ...(isLocaleEnabled && data.sameLocale ? [{ name: 'fmLocale.locale', weight: 1 }] : [])
         ],
         findAllMatches: true,
         threshold: 0
@@ -62,8 +63,10 @@ export class FieldsListener extends BaseListener {
       const fuse = new Fuse(pages || [], fuseOptions, fuseIndex);
       const results = fuse.search({
         $and: [
-          { fmContentType: data.type! },
-          ...(data.sameLocale ? [{ 'fmLocale.locale': activeLocale.locale }] : [])
+          { fmContentType: data.type ?? '' },
+          ...(isLocaleEnabled && activeLocale?.locale && data.sameLocale
+            ? [{ 'fmLocale.locale': activeLocale.locale }]
+            : [])
         ]
       });
       const pageResults = results.map((page) => page.item);
