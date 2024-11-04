@@ -6,6 +6,7 @@
 
 - [#878](https://github.com/estruyf/vscode-front-matter/issues/878): Allow the `select all` button to work on other pages when there is a selection present
 - [#882](https://github.com/estruyf/vscode-front-matter/issues/882): Dynamic evaluation of the `node` executable path
+- [#884](https://github.com/estruyf/vscode-front-matter/issues/884): Hide WYSIWYG actions when the file is in git diff mode
 
 ### 🐞 Fixes
 
