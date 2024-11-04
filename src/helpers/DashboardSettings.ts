@@ -1,5 +1,5 @@
 import { GitListener } from './../listeners/general/GitListener';
-import { basename, join } from 'path';
+import { join } from 'path';
 import { workspace } from 'vscode';
 import { Folders } from '../commands/Folders';
 import { Project } from '../commands/Project';
@@ -23,7 +23,6 @@ import {
   SETTING_MEDIA_SUPPORTED_MIMETYPES,
   SETTING_TAXONOMY_CUSTOM,
   SETTING_TEMPLATES_ENABLED,
-  SETTING_GIT_ENABLED,
   SETTING_DASHBOARD_CONTENT_PAGINATION,
   SETTING_SNIPPETS_WRAPPER,
   SETTING_DASHBOARD_CONTENT_CARD_DATE,
