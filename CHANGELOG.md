@@ -1,5 +1,20 @@
 # Change Log
 
+## [10.6.0] - 2024-11-06 - [Release notes](https://beta.frontmatter.codes/updates/v10.6.0)
+
+### 🎨 Enhancements
+
+- [#878](https://github.com/estruyf/vscode-front-matter/issues/878): Allow the `select all` button to work on other pages when there is a selection present
+- [#882](https://github.com/estruyf/vscode-front-matter/issues/882): Dynamic evaluation of the `node` executable path
+- [#884](https://github.com/estruyf/vscode-front-matter/issues/884): Hide WYSIWYG actions when the file is in git diff mode
+
+### 🐞 Fixes
+
+- [#859](https://github.com/estruyf/vscode-front-matter/issues/859): Fix label in the data view dropdown field
+- [#876](https://github.com/estruyf/vscode-front-matter/issues/876): Fix snippet type on the snippet card
+- [#879](https://github.com/estruyf/vscode-front-matter/issues/879): Fix for auto updating last modified date on save
+- [#885](https://github.com/estruyf/vscode-front-matter/issues/885): Fix content relationship for none i18n content
+
 ## [10.5.1] - 2024-10-23
 
 ### 🎨 Enhancements

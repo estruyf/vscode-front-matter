@@ -10,7 +10,7 @@ import { LanguageFilter } from '../Filters/LanguageFilter';
 
 export interface IFiltersProps { }
 
-export const Filters: React.FunctionComponent<IFiltersProps> = (_: React.PropsWithChildren<IFiltersProps>) => {
+export const Filters: React.FunctionComponent<IFiltersProps> = () => {
   const [crntFilters, setCrntFilters] = useRecoilState(FiltersAtom);
   const [crntTag, setCrntTag] = useRecoilState(TagAtom);
   const [crntCategory, setCrntCategory] = useRecoilState(CategoryAtom);

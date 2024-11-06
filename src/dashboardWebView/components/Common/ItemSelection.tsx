@@ -25,6 +25,9 @@ export const ItemSelection: React.FunctionComponent<IItemSelectionProps> = ({
     <div className={`${cssNames} group-hover:block`}>
       <VSCodeCheckbox
         className={show ? "" : " shadow-[0_0_3px_var(--frontmatter-border-preserve)]"}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
         onChange={() => {
           onMultiSelect(filePath);
         }}

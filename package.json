@@ -3,7 +3,7 @@
   "displayName": "Front Matter CMS",
   "description": "Front Matter is a CMS that runs within Visual Studio Code. It gives you the power and control of a full-blown CMS while also providing you the flexibility and speed of the static site generator of your choice like: Hugo, Jekyll, Docusaurus, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "10.5.1",
+  "version": "10.6.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -31,7 +31,7 @@
   "l10n": "./l10n",
   "categories": [
     "AI",
-    "Other"
+    "Visualization"
   ],
   "keywords": [
     "Front Matter",
@@ -2421,32 +2421,32 @@
       "editor/title": [{
           "command": "frontMatter.markup.heading",
           "group": "navigation@-133",
-          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg && activeEditor == 'workbench.editors.files.textFileEditor'"
         },
         {
           "command": "frontMatter.markup.bold",
           "group": "navigation@-132",
-          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg && activeEditor == 'workbench.editors.files.textFileEditor'"
         },
         {
           "command": "frontMatter.markup.italic",
           "group": "navigation@-131",
-          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg && activeEditor == 'workbench.editors.files.textFileEditor'"
         },
         {
           "command": "frontMatter.markup.hyperlink",
           "group": "navigation@-130",
-          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg && activeEditor == 'workbench.editors.files.textFileEditor'"
         },
         {
           "command": "frontMatter.insertSnippet",
           "group": "navigation@-129",
-          "when": "frontMatter:file:isValid == true && frontMatter:dashboard:snippets:enabled"
+          "when": "frontMatter:file:isValid == true && frontMatter:dashboard:snippets:enabled && activeEditor == 'workbench.editors.files.textFileEditor'"
         },
         {
           "command": "frontMatter.insertMedia",
           "group": "navigation@-128",
-          "when": "frontMatter:file:isValid == true"
+          "when": "frontMatter:file:isValid == true && activeEditor == 'workbench.editors.files.textFileEditor'"
         },
         {
           "command": "frontMatter.i18n.createOrOpen",
@@ -2456,37 +2456,37 @@
         {
           "command": "frontMatter.markup.options",
           "group": "navigation@-126",
-          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg && activeEditor == 'workbench.editors.files.textFileEditor'"
         },
         {
           "command": "frontMatter.markup.orderedlist",
           "group": "1_markup@1",
-          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg && activeEditor == 'workbench.editors.files.textFileEditor'"
         },
         {
           "command": "frontMatter.markup.unorderedlist",
           "group": "1_markup@2",
-          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg && activeEditor == 'workbench.editors.files.textFileEditor'"
         },
         {
           "command": "frontMatter.markup.tasklist",
           "group": "1_markup@3",
-          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg && activeEditor == 'workbench.editors.files.textFileEditor'"
         },
         {
           "command": "frontMatter.markup.code",
           "group": "1_markup@4",
-          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg && activeEditor == 'workbench.editors.files.textFileEditor'"
         },
         {
           "command": "frontMatter.markup.codeblock",
           "group": "1_markup@5",
-          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg && activeEditor == 'workbench.editors.files.textFileEditor'"
         },
         {
           "command": "frontMatter.markup.blockquote",
           "group": "1_markup@6",
-          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg"
+          "when": "frontMatter:file:isValid == true && frontMatter:markdown:wysiwyg && activeEditor == 'workbench.editors.files.textFileEditor'"
         },
         {
           "command": "frontMatter.dashboard",

@@ -183,7 +183,7 @@ export const Item: React.FunctionComponent<IItemProps> = ({
 
           <div className='inline-block mr-1 mt-1 text-xs text-[var(--vscode-button-secondaryForeground)] bg-[var(--vscode-button-secondaryBackground)] border border-[var(--frontmatter-border)] rounded px-1 py-0.5'>
             {
-              snippet.isMediaSnippet ? l10n.t(LocalizationKey.dashboardSnippetsViewItemTypeContent) : l10n.t(LocalizationKey.dashboardSnippetsViewItemTypeMedia)
+              snippet.isMediaSnippet ? l10n.t(LocalizationKey.dashboardSnippetsViewItemTypeMedia) : l10n.t(LocalizationKey.dashboardSnippetsViewItemTypeContent)
             }
           </div>
 
