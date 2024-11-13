@@ -204,6 +204,34 @@ Example: SEO, website optimization, digital marketing.`
   }
 
   /**
+   * Prompts the Copilot service with a given message and returns the response.
+   *
+   * @param {string} prompt - The message to send to the Copilot service.
+   * @returns {Promise<string | undefined>} - The response from the Copilot service, or undefined if no prompt is provided or an error occurs.
+   *
+   * @throws {Error} - Logs an error message if an exception occurs during the process.
+   */
+  public static async promptCopilot(prompt: string): Promise<string | undefined> {
+    if (!prompt) {
+      return;
+    }
+
+    try {
+      const messages = [LanguageModelChatMessage.User(prompt)];
+
+      const chatResponse = await Copilot.getChatResponse(messages);
+      if (!chatResponse) {
+        return;
+      }
+
+      return chatResponse;
+    } catch (err) {
+      Logger.error(`Copilot:promptCopilot:: ${(err as Error).message}`);
+      return '';
+    }
+  }
+
+  /**
    * Retrieves the chat response from the language model.
    * @param messages - The chat messages to send to the language model.
    * @returns The concatenated text fragments from the chat response.

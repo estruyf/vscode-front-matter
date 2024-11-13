@@ -1,5 +1,13 @@
 # Change Log
 
+## [10.7.0] - 2024-xx-xx
+
+### 🎨 Enhancements
+
+- [#888](https://github.com/estruyf/vscode-front-matter/issues/888): Added the ability to prompt GitHub Copilot from a custom script/action
+
+### 🐞 Fixes
+
 ## [10.6.0] - 2024-11-06 - [Release notes](https://beta.frontmatter.codes/updates/v10.6.0)
 
 ### 🎨 Enhancements
