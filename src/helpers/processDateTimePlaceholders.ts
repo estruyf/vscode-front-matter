@@ -1,5 +1,4 @@
-import { format } from 'date-fns';
-import { DateHelper } from './DateHelper';
+import { formatInTimezone } from '../utils';
 
 /**
  * Replace the datetime placeholders
@@ -21,10 +20,8 @@ export const processDateTimePlaceholders = (value: string, articleDate?: Date) =
 
             if (dateFormat) {
               if (dateFormat && typeof dateFormat === 'string') {
-                value = value.replace(
-                  match,
-                  format(articleDate || new Date(), DateHelper.formatUpdate(dateFormat) as string)
-                );
+                const formattedDate = formatInTimezone(articleDate || new Date(), dateFormat);
+                value = value.replace(match, formattedDate);
               } else {
                 value = value.replace(match, (articleDate || new Date()).toISOString());
               }

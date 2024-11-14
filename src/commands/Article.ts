@@ -23,7 +23,6 @@ import {
   SETTING_SLUG_TEMPLATE
 } from './../constants';
 import { CustomPlaceholder, Field } from '../models';
-import { format } from 'date-fns';
 import {
   ArticleHelper,
   Logger,
@@ -44,7 +43,7 @@ import { NavigationType } from '../dashboardWebView/models';
 import { SNIPPET } from '../constants/Snippet';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
-import { getTitleField } from '../utils';
+import { formatInTimezone, getTitleField } from '../utils';
 
 export class Article {
   /**
@@ -407,10 +406,10 @@ export class Article {
 
     if (fieldDateFormat) {
       Logger.verbose(`Article:formatDate:FieldDateFormat - ${fieldDateFormat}`);
-      return format(dateValue, DateHelper.formatUpdate(fieldDateFormat) as string);
+      return formatInTimezone(dateValue, DateHelper.formatUpdate(fieldDateFormat) as string);
     } else if (dateFormat && typeof dateFormat === 'string') {
       Logger.verbose(`Article:formatDate:DateFormat - ${dateFormat}`);
-      return format(dateValue, DateHelper.formatUpdate(dateFormat) as string);
+      return formatInTimezone(dateValue, DateHelper.formatUpdate(dateFormat) as string);
     } else {
       Logger.verbose(`Article:formatDate:toISOString - ${dateValue}`);
       return typeof dateValue.toISOString === 'function'

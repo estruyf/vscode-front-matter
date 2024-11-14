@@ -13,6 +13,7 @@ export const SETTING_GLOBAL_NOTIFICATIONS = 'global.notifications';
 export const SETTING_GLOBAL_NOTIFICATIONS_DISABLED = 'global.disabledNotifications';
 export const SETTING_GLOBAL_MODES = 'global.modes';
 export const SETTING_GLOBAL_ACTIVE_MODE = 'global.activeMode';
+export const SETTING_GLOBAL_TIMEZONE = 'global.timezone';
 
 export const SETTING_TAXONOMY_TAGS = 'taxonomy.tags';
 export const SETTING_TAXONOMY_CATEGORIES = 'taxonomy.categories';

@@ -1056,7 +1056,7 @@
             "error"
           ],
           "markdownDescription": "%setting.frontMatter.global.notifications.markdownDescription%",
-          "scope": "Templates"
+          "scope": "Global"
         },
         "frontMatter.global.disabledNotifications": {
           "type": "array",
@@ -1065,6 +1065,12 @@
           "enum": [
             "requiredFieldValidation"
           ]
+        },
+        "frontMatter.global.timezone": {
+          "default": "UTC",
+          "type": "string",
+          "markdownDescription": "%setting.frontMatter.global.timezone.markdownDescription%",
+          "scope": "Global"
         },
         "frontMatter.media.defaultSorting": {
           "type": "string",
@@ -2855,7 +2861,8 @@
     "cheerio": "1.0.0-rc.12",
     "clsx": "^2.1.0",
     "css-loader": "5.2.7",
-    "date-fns": "2.23.0",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
     "dotenv": "^16.3.1",
     "downshift": "6.0.6",
     "eslint": "^8.33.0",
