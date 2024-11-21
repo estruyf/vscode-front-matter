@@ -124,11 +124,25 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = () => {
           <GitAction settings={settings} />
         </FeatureFlag>
 
-        {!loading && (<CustomView metadata={metadata} />)}
-
         <FeatureFlag features={mode?.features || DEFAULT_PANEL_FEATURE_FLAGS} flag={FEATURE_FLAG.panel.globalSettings}>
           <GlobalSettings settings={settings} isBase={!metadata} />
         </FeatureFlag>
+
+        {
+          !loading && metadata && (
+            <FeatureFlag features={mode?.features || DEFAULT_PANEL_FEATURE_FLAGS} flag={FEATURE_FLAG.panel.metadata}>
+              <Metadata
+                settings={settings}
+                metadata={metadata}
+                focusElm={focusElm}
+                unsetFocus={unsetFocus}
+                features={mode?.features || DEFAULT_PANEL_FEATURE_FLAGS}
+              />
+            </FeatureFlag>
+          )
+        }
+
+        {!loading && (<CustomView metadata={metadata} />)}
 
         {
           !loading && metadata && settings && settings.seo && (
@@ -152,20 +166,6 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = () => {
               scripts={metadata ? settings.scripts : settings.scripts.filter((s) => s.bulk && (s.type === 'content' || !s.type))} />
           </FeatureFlag>
         )}
-
-        {
-          !loading && metadata && (
-            <FeatureFlag features={mode?.features || DEFAULT_PANEL_FEATURE_FLAGS} flag={FEATURE_FLAG.panel.metadata}>
-              <Metadata
-                settings={settings}
-                metadata={metadata}
-                focusElm={focusElm}
-                unsetFocus={unsetFocus}
-                features={mode?.features || DEFAULT_PANEL_FEATURE_FLAGS}
-              />
-            </FeatureFlag>
-          )
-        }
 
         <FeatureFlag features={mode?.features || DEFAULT_PANEL_FEATURE_FLAGS} flag={FEATURE_FLAG.panel.recentlyModified}>
           <FolderAndFiles data={folderAndFiles} isBase={!metadata} />
