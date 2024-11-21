@@ -448,9 +448,6 @@
 
   "panel.actions.title": "Actions",
 
-  "panel.articleDetails.title": "More details",
-  "panel.articleDetails.type": "Type",
-  "panel.articleDetails.total": "Total",
   "panel.articleDetails.headings": "Headings",
   "panel.articleDetails.paragraphs": "Paragraphs",
   "panel.articleDetails.internalLinks": "Internal links",
@@ -499,18 +496,17 @@
 
   "panel.seoDetails.recommended": "Recommended",
 
-  "panel.seoKeywordInfo.density": "Keyword usage {0} *",
+  "panel.seoKeywords.density": "Keyword density",
   "panel.seoKeywordInfo.validInfo.label": "Used in heading(s)",
   "panel.seoKeywordInfo.validInfo.content": "Content",
 
   "panel.seoKeywords.title": "Keywords",
   "panel.seoKeywords.header.keyword": "Keyword",
   "panel.seoKeywords.header.details": "Details",
-  "panel.seoKeywords.density": "* A keyword density of 1-1.5% is sufficient in most cases.",
+  "panel.seoKeywords.density.description": "* A keyword density of 1-1.5% is sufficient in most cases.",
 
-  "panel.seoStatus.title": "Recommendations",
+  "panel.seoStatus.title": "Insights",
   "panel.seoStatus.header.property": "Property",
-  "panel.seoStatus.header.length": "Length",
   "panel.seoStatus.header.valid": "Valid",
   "panel.seoStatus.seoFieldInfo.characters": "{0} chars",
   "panel.seoStatus.seoFieldInfo.words": "{0} words",
@@ -589,7 +585,7 @@
   "commands.i18n.createOrOpen.quickPick.category.new": "New translations",
   "commands.i18n.createOrOpen.quickPick.action.create": "Create \"{0}\"",
   "commands.i18n.translate.progress.title": "Translating content...",
-  
+
   "commands.preview.panel.title": "Preview: {0}",
   "commands.preview.askUserToPickFolder.title": "Select the folder of the article to preview",
 

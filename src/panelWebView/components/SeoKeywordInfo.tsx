@@ -1,7 +1,5 @@
 import * as React from 'react';
 import { ValidInfo } from './ValidInfo';
-import * as l10n from '@vscode/l10n';
-import { LocalizationKey } from '../../localization';
 import { VSCodeTableCell, VSCodeTableRow } from './VSCode/VSCodeTable';
 
 export interface ISeoKeywordInfoProps {
@@ -31,14 +29,14 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
     const pattern = new RegExp(`(^${keyword.toLowerCase()}(?=\\s|$))|(\\s${keyword.toLowerCase()}(?=\\s|$))`, 'ig');
     const count = (content.match(pattern) || []).length;
     const density = (count / wordCount) * 100;
-    const densityTitle = l10n.t(LocalizationKey.panelSeoKeywordInfoDensity, `${density.toFixed(2)}%`);
+    const densityTitle = `${density.toFixed(2)}% *`;
 
     if (density < 0.75) {
-      return <ValidInfo label={densityTitle} isValid={false} />;
+      return <ValidInfo label={densityTitle} isValid={false} className='text-xs' />;
     } else if (density >= 0.75 && density < 1.5) {
-      return <ValidInfo label={densityTitle} isValid={true} />;
+      return <ValidInfo label={densityTitle} isValid={true} className='text-xs' />;
     } else {
-      return <ValidInfo label={densityTitle} isValid={false} />;
+      return <ValidInfo label={densityTitle} isValid={false} className='text-xs' />;
     }
   };
 
@@ -63,7 +61,7 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
     }
 
     const exists = headings.filter((heading) => validateKeywords(heading, keyword));
-    return <ValidInfo label={l10n.t(LocalizationKey.panelSeoKeywordInfoValidInfoLabel)} isValid={exists.length > 0} />;
+    return <ValidInfo isValid={exists.length > 0} />;
   };
 
   if (!keyword || typeof keyword !== 'string') {
@@ -73,39 +71,35 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
   return (
     <VSCodeTableRow>
       <VSCodeTableCell>{keyword}</VSCodeTableCell>
-      <VSCodeTableCell className={` table__cell__validation`}>
-        <div className='flex items-center'>
-          <ValidInfo
-            label={l10n.t(LocalizationKey.commonTitle)}
-            isValid={!!title && title.toLowerCase().includes(keyword.toLowerCase())}
-          />
-        </div>
-        <div className='flex items-center'>
-          <ValidInfo
-            label={l10n.t(LocalizationKey.commonDescription)}
-            isValid={!!description && description.toLowerCase().includes(keyword.toLowerCase())}
-          />
-        </div>
-        <div className='flex items-center'>
-          <ValidInfo
-            label={l10n.t(LocalizationKey.commonSlug)}
-            isValid={
-              !!slug &&
-              (slug.toLowerCase().includes(keyword.toLowerCase()) ||
-                slug.toLowerCase().includes(keyword.replace(/ /g, '-').toLowerCase()))
-            }
-          />
-        </div>
-        <div className='flex items-center'>
-          <ValidInfo
-            label={l10n.t(LocalizationKey.panelSeoKeywordInfoValidInfoContent)}
-            isValid={!!content && content.toLowerCase().includes(keyword.toLowerCase())}
-          />
-        </div>
-        {headings && headings.length > 0 &&
-          <div className='flex items-center'>{checkHeadings()}</div>}
-        {wordCount &&
-          <div className='flex items-center'>{density()}</div>}
+      <VSCodeTableCell className={`text-center`}>
+        <ValidInfo
+          isValid={!!title && title.toLowerCase().includes(keyword.toLowerCase())}
+        />
+      </VSCodeTableCell>
+      <VSCodeTableCell className={`text-center`}>
+        <ValidInfo
+          isValid={!!description && description.toLowerCase().includes(keyword.toLowerCase())}
+        />
+      </VSCodeTableCell>
+      <VSCodeTableCell className={`text-center`}>
+        <ValidInfo
+          isValid={
+            !!slug &&
+            (slug.toLowerCase().includes(keyword.toLowerCase()) ||
+              slug.toLowerCase().includes(keyword.replace(/ /g, '-').toLowerCase()))
+          }
+        />
+      </VSCodeTableCell>
+      <VSCodeTableCell className={`text-center`}>
+        <ValidInfo
+          isValid={!!content && content.toLowerCase().includes(keyword.toLowerCase())}
+        />
+      </VSCodeTableCell>
+      <VSCodeTableCell className={`text-center`}>
+        {checkHeadings()}
+      </VSCodeTableCell>
+      <VSCodeTableCell className={`text-center`}>
+        {density()}
       </VSCodeTableCell>
     </VSCodeTableRow>
   );

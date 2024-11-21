@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { SeoKeywordInfo } from './SeoKeywordInfo';
 import { ErrorBoundary } from '@sentry/react';
-import * as l10n from '@vscode/l10n';
-import { LocalizationKey } from '../../localization';
+import { Tooltip } from 'react-tooltip'
+import { LocalizationKey, localize } from '../../localization';
 import { VSCodeTable, VSCodeTableBody, VSCodeTableHead, VSCodeTableHeader, VSCodeTableRow } from './VSCode/VSCodeTable';
+import { Icon } from 'vscrui';
 
 export interface ISeoKeywordsProps {
   keywords: string[] | null;
@@ -21,6 +22,8 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({
   ...data
 }: React.PropsWithChildren<ISeoKeywordsProps>) => {
   const [isReady, setIsReady] = React.useState(false);
+
+  const tooltipClasses = `!py-[2px] !px-[8px] !rounded-[3px] !border-[var(--vscode-editorHoverWidget-border)] !border !border-solid !bg-[var(--vscode-editorHoverWidget-background)] !text-[var(--vscode-editorHoverWidget-foreground)] !font-normal !opacity-100`;
 
   const validateKeywords = () => {
     if (!keywords) {
@@ -51,17 +54,106 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({
   }
 
   return (
-    <div className={`seo__status__keywords`}>
-      <h4>{l10n.t(LocalizationKey.panelSeoKeywordsTitle)}</h4>
+    <section className={`seo__keywords mb-8`}>
+      <h4 className='!text-left'>{localize(LocalizationKey.panelSeoKeywordsTitle)}</h4>
 
       <VSCodeTable>
         <VSCodeTableHeader>
-          <VSCodeTableRow>
+          <VSCodeTableRow className={`border-t border-t-[var(--vscode-editorGroup-border)]`}>
             <VSCodeTableHead>
-              {l10n.t(LocalizationKey.panelSeoKeywordsHeaderKeyword)}
+              {localize(LocalizationKey.panelSeoKeywordsHeaderKeyword)}
             </VSCodeTableHead>
-            <VSCodeTableHead>
-              {l10n.t(LocalizationKey.panelSeoKeywordsHeaderDetails)}
+            <VSCodeTableHead className='text-center'>
+              <div
+                className='flex items-center justify-center h-full'
+              >
+                <Icon
+                  className='!text-[var(--vscode-foreground)]'
+                  name='quote'
+                  data-tooltip-id="tooltip-title"
+                  data-tooltip-content={localize(LocalizationKey.commonTitle)} />
+                <Tooltip id="tooltip-title" className={tooltipClasses} style={{
+                  fontSize: '12px',
+                  lineHeight: '19px'
+                }} />
+              </div>
+            </VSCodeTableHead>
+            <VSCodeTableHead className='text-center'>
+              <div
+                className='flex items-center justify-center h-full'
+              >
+                <Icon
+                  className='!text-[var(--vscode-foreground)]'
+                  name='note'
+                  data-tooltip-id="tooltip-description"
+                  data-tooltip-content={localize(LocalizationKey.commonDescription)} />
+                <Tooltip id="tooltip-description" className={tooltipClasses} style={{
+                  fontSize: '12px',
+                  lineHeight: '19px'
+                }} />
+              </div>
+            </VSCodeTableHead>
+            <VSCodeTableHead className='text-center'>
+              <div
+                className='flex items-center justify-center h-full'
+              >
+                <Icon
+                  className='!text-[var(--vscode-foreground)]'
+                  name='link'
+                  data-tooltip-id="tooltip-slug"
+                  data-tooltip-content={localize(LocalizationKey.commonSlug)} />
+                <Tooltip id="tooltip-slug" className={tooltipClasses} style={{
+                  fontSize: '12px',
+                  lineHeight: '19px'
+                }} />
+              </div>
+            </VSCodeTableHead>
+            <VSCodeTableHead className='text-center'>
+              <div
+                className='flex items-center justify-center h-full'
+              >
+                <Icon
+                  className='!text-[var(--vscode-foreground)]'
+                  name='book'
+                  data-tooltip-id="tooltip-content"
+                  data-tooltip-content={localize(LocalizationKey.panelSeoKeywordInfoValidInfoContent)} />
+                <Tooltip id="tooltip-content" className={tooltipClasses} style={{
+                  fontSize: '12px',
+                  lineHeight: '19px'
+                }} />
+              </div>
+            </VSCodeTableHead>
+            <VSCodeTableHead className='text-center'>
+              <div
+                className='flex items-center justify-center h-full'
+              >
+                <span
+                  className='text-[var(--vscode-foreground)] cursor-default select-none'
+                  data-tooltip-id="tooltip-heading"
+                  data-tooltip-content={localize(LocalizationKey.panelSeoKeywordInfoValidInfoLabel)}
+                >
+                  H1
+                </span>
+                <Tooltip id="tooltip-heading" className={tooltipClasses} style={{
+                  fontSize: '12px',
+                  lineHeight: '19px'
+                }} />
+              </div>
+            </VSCodeTableHead>
+            <VSCodeTableHead className='text-center'>
+              <div
+                className='flex items-center justify-center h-full'
+              >
+                <Icon
+                  className='!text-[var(--vscode-foreground)]'
+                  name='percentage'
+                  data-tooltip-id="tooltip-density"
+                  data-tooltip-content={localize(LocalizationKey.panelSeoKeywordsDensity)} />
+                <Tooltip id="tooltip-density" className={tooltipClasses} style={{
+                  fontSize: '12px',
+                  lineHeight: '19px'
+                }} />
+              </div>
             </VSCodeTableHead>
           </VSCodeTableRow>
         </VSCodeTableHeader>
@@ -79,10 +171,10 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({
 
       {data.wordCount && (
         <div className={`text-xs mt-2`}>
-          {l10n.t(LocalizationKey.panelSeoKeywordsDensity)}
+          {localize(LocalizationKey.panelSeoKeywordsDensityDescription)}
         </div>
       )}
-    </div>
+    </section>
   );
 };
 

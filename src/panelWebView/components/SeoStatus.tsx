@@ -4,13 +4,13 @@ import { TagType } from '../TagType';
 import { ArticleDetails } from './ArticleDetails';
 import { Collapsible } from './Collapsible';
 import FieldBoundary from './ErrorBoundary/FieldBoundary';
-import { SymbolKeywordIcon } from './Icons/SymbolKeywordIcon';
 import { SeoFieldInfo } from './SeoFieldInfo';
 import { SeoKeywords } from './SeoKeywords';
 import { TagPicker } from './Fields/TagPicker';
 import { LocalizationKey, localize } from '../../localization';
-import { VSCodeTable, VSCodeTableBody, VSCodeTableHead, VSCodeTableHeader, VSCodeTableRow } from './VSCode/VSCodeTable';
+import { VSCodeTable, VSCodeTableBody } from './VSCode/VSCodeTable';
 import useContentType from '../../hooks/useContentType';
+import { Icon } from 'vscrui';
 
 export interface ISeoStatusProps {
   seo: SEO;
@@ -38,19 +38,11 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
     const descriptionFieldName = contentType?.fields.find(f => f.name === descriptionField)?.title || descriptionField;
 
     return (
-      <div>
-        <div className={`seo__status__details`}>
-          <h4>{localize(LocalizationKey.panelSeoStatusTitle)}</h4>
+      <div className='space-y-8'>
+        <section className={`seo__insights`}>
+          <h4 className='!text-left'>{localize(LocalizationKey.panelSeoStatusTitle)}</h4>
 
           <VSCodeTable>
-            <VSCodeTableHeader>
-              <VSCodeTableRow>
-                <VSCodeTableHead>{localize(LocalizationKey.panelSeoStatusHeaderProperty)}</VSCodeTableHead>
-                <VSCodeTableHead>{localize(LocalizationKey.panelSeoStatusHeaderLength)}</VSCodeTableHead>
-                <VSCodeTableHead>{localize(LocalizationKey.panelSeoStatusHeaderValid)}</VSCodeTableHead>
-              </VSCodeTableRow>
-            </VSCodeTableHeader>
-
             <VSCodeTableBody>
               {metadata[titleField] && seo.title > 0 ? (
                 <SeoFieldInfo
@@ -58,6 +50,7 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
                   value={metadata[titleField].length}
                   recommendation={localize(LocalizationKey.panelSeoStatusSeoFieldInfoCharacters, seo.title)}
                   isValid={metadata[titleField].length <= seo.title}
+                  className={`border-t border-t-[var(--vscode-editorGroup-border)]`}
                 />
               ) : null}
 
@@ -86,9 +79,11 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
                   recommendation={localize(LocalizationKey.panelSeoStatusSeoFieldInfoWords, seo.content)}
                 />
               ) : null}
+
+              <ArticleDetails details={metadata.articleDetails} />
             </VSCodeTableBody>
           </VSCodeTable>
-        </div>
+        </section>
 
         <SeoKeywords
           keywords={metadata?.keywords}
@@ -103,7 +98,7 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
         <FieldBoundary fieldName={`Keywords`}>
           <TagPicker
             type={TagType.keywords}
-            icon={<SymbolKeywordIcon />}
+            icon={<Icon name="symbol-keyword" className='mr-2' />}
             crntSelected={(metadata.keywords as string[]) || []}
             options={[]}
             freeform={true}
@@ -112,8 +107,6 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
             disableConfigurable
           />
         </FieldBoundary>
-
-        <ArticleDetails details={metadata.articleDetails} />
       </div>
     );
   }, [contentType, metadata, seo, focusElm, unsetFocus]);

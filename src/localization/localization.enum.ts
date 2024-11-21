@@ -1449,18 +1449,6 @@ export enum LocalizationKey {
    */
   panelActionsTitle = 'panel.actions.title',
   /**
-   * More details
-   */
-  panelArticleDetailsTitle = 'panel.articleDetails.title',
-  /**
-   * Type
-   */
-  panelArticleDetailsType = 'panel.articleDetails.type',
-  /**
-   * Total
-   */
-  panelArticleDetailsTotal = 'panel.articleDetails.total',
-  /**
    * Headings
    */
   panelArticleDetailsHeadings = 'panel.articleDetails.headings',
@@ -1613,9 +1601,9 @@ export enum LocalizationKey {
    */
   panelSeoDetailsRecommended = 'panel.seoDetails.recommended',
   /**
-   * Keyword usage {0} *
+   * Keyword density
    */
-  panelSeoKeywordInfoDensity = 'panel.seoKeywordInfo.density',
+  panelSeoKeywordsDensity = 'panel.seoKeywords.density',
   /**
    * Used in heading(s)
    */
@@ -1639,19 +1627,15 @@ export enum LocalizationKey {
   /**
    * * A keyword density of 1-1.5% is sufficient in most cases.
    */
-  panelSeoKeywordsDensity = 'panel.seoKeywords.density',
+  panelSeoKeywordsDensityDescription = 'panel.seoKeywords.density.description',
   /**
-   * Recommendations
+   * Insights
    */
   panelSeoStatusTitle = 'panel.seoStatus.title',
   /**
    * Property
    */
   panelSeoStatusHeaderProperty = 'panel.seoStatus.header.property',
-  /**
-   * Length
-   */
-  panelSeoStatusHeaderLength = 'panel.seoStatus.header.length',
   /**
    * Valid
    */
