@@ -38,7 +38,7 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
     const descriptionFieldName = contentType?.fields.find(f => f.name === descriptionField)?.title || descriptionField;
 
     return (
-      <div className='space-y-8'>
+      <div className='seo space-y-8'>
         <section className={`seo__insights`}>
           <h4 className='!text-left'>{localize(LocalizationKey.panelSeoStatusTitle)}</h4>
 
@@ -85,28 +85,30 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
           </VSCodeTable>
         </section>
 
-        <SeoKeywords
-          keywords={metadata?.keywords}
-          title={metadata[titleField]}
-          description={metadata[descriptionField]}
-          slug={metadata.slug}
-          headings={metadata?.articleDetails?.headingsText}
-          wordCount={metadata?.articleDetails?.wordCount}
-          content={metadata?.articleDetails?.content}
-        />
-
-        <FieldBoundary fieldName={`Keywords`}>
-          <TagPicker
-            type={TagType.keywords}
-            icon={<Icon name="symbol-keyword" className='mr-2' />}
-            crntSelected={(metadata.keywords as string[]) || []}
-            options={[]}
-            freeform={true}
-            focussed={focusElm === TagType.keywords}
-            unsetFocus={unsetFocus}
-            disableConfigurable
+        <section className={`seo__keywords`}>
+          <SeoKeywords
+            keywords={metadata?.keywords}
+            title={metadata[titleField]}
+            description={metadata[descriptionField]}
+            slug={metadata.slug}
+            headings={metadata?.articleDetails?.headingsText}
+            wordCount={metadata?.articleDetails?.wordCount}
+            content={metadata?.articleDetails?.content}
           />
-        </FieldBoundary>
+
+          <FieldBoundary fieldName={`Keywords`}>
+            <TagPicker
+              type={TagType.keywords}
+              icon={<Icon name="symbol-keyword" className='mr-2' />}
+              crntSelected={(metadata.keywords as string[]) || []}
+              options={[]}
+              freeform={true}
+              focussed={focusElm === TagType.keywords}
+              unsetFocus={unsetFocus}
+              disableConfigurable
+            />
+          </FieldBoundary>
+        </section>
       </div>
     );
   }, [contentType, metadata, seo, focusElm, unsetFocus]);

@@ -1,7 +1,6 @@
 import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
-import * as l10n from '@vscode/l10n';
-import { LocalizationKey } from '../../localization';
+import { LocalizationKey, localize } from '../../localization';
 
 export interface ITagProps {
   className: string;
@@ -14,16 +13,14 @@ export interface ITagProps {
   onRemove: (tags: string) => void;
 }
 
-const Tag: React.FunctionComponent<ITagProps> = (props: React.PropsWithChildren<ITagProps>) => {
-  const { value, title, onRemove, onCreate, disableConfigurable } = props;
-
+const Tag: React.FunctionComponent<ITagProps> = ({ value, title, onRemove, onCreate, disableConfigurable, className }: React.PropsWithChildren<ITagProps>) => {
   return (
     <>
-      <div className={`tag`}>
+      <div className={`tag ${className || ""}`}>
         {!disableConfigurable && onCreate && (
           <button
             className={`tag__create`}
-            title={l10n.t(LocalizationKey.panelTagAdd, value)}
+            title={localize(LocalizationKey.panelTagAdd, value)}
             type={`button`}
             onClick={() => onCreate(value)}
           >

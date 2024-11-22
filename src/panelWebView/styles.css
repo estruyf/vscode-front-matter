@@ -1180,3 +1180,15 @@ vscode-divider {
     }
   }
 }
+
+/* SEO */
+.seo {
+  .article__tags label,
+  .article__tags__items {
+    display: none;
+  }
+
+  .article__tags {
+    margin-bottom: 0;
+  }
+}

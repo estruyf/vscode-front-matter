@@ -1,8 +1,13 @@
 import * as React from 'react';
 import { ValidInfo } from './ValidInfo';
 import { VSCodeTableCell, VSCodeTableRow } from './VSCode/VSCodeTable';
+import { Tag } from './Tag';
+import { LocalizationKey, localize } from '../../localization';
+import { Messenger } from '@estruyf/vscode/dist/client';
+import { CommandToCode } from '../CommandToCode';
 
 export interface ISeoKeywordInfoProps {
+  keywords: string[];
   keyword: string;
   title: string;
   description: string;
@@ -14,6 +19,7 @@ export interface ISeoKeywordInfoProps {
 
 const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
   keyword,
+  keywords,
   title,
   description,
   slug,
@@ -64,13 +70,32 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
     return <ValidInfo isValid={exists.length > 0} />;
   };
 
+  const onRemove = React.useCallback((tag: string) => {
+    const newSelection = keywords.filter((s) => s !== tag);
+    Messenger.send(CommandToCode.updateKeywords, {
+      values: newSelection,
+      parents: undefined
+    });
+  }, [keywords]);
+
   if (!keyword || typeof keyword !== 'string') {
     return null;
   }
 
   return (
     <VSCodeTableRow>
-      <VSCodeTableCell>{keyword}</VSCodeTableCell>
+      <VSCodeTableCell>
+        <div className='flex h-full items-center'>
+          <Tag
+            value={keyword}
+            className={`!mx-0 !my-1 !px-2 !py-1`}
+            onRemove={onRemove}
+            onCreate={() => void 0}
+            title={localize(LocalizationKey.panelTagsTagWarning, keyword)}
+            disableConfigurable={true}
+          />
+        </div>
+      </VSCodeTableCell>
       <VSCodeTableCell className={`text-center`}>
         <ValidInfo
           isValid={!!title && title.toLowerCase().includes(keyword.toLowerCase())}

@@ -41,6 +41,10 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({
     return [];
   };
 
+  const validKeywords = React.useMemo(() => {
+    return validateKeywords();
+  }, [keywords]);
+
   // Workaround for lit components not updating render
   React.useEffect(() => {
     setIsReady(false);
@@ -54,7 +58,7 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({
   }
 
   return (
-    <section className={`seo__keywords mb-8`}>
+    <section className={`seo__keywords__table`}>
       <h4 className='!text-left'>{localize(LocalizationKey.panelSeoKeywordsTitle)}</h4>
 
       <VSCodeTable>
@@ -159,10 +163,10 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({
         </VSCodeTableHeader>
 
         <VSCodeTableBody>
-          {validateKeywords().map((keyword, index) => {
+          {validKeywords.map((keyword, index) => {
             return (
               <ErrorBoundary key={keyword} fallback={<div />}>
-                <SeoKeywordInfo key={index} keyword={keyword} {...data} />
+                <SeoKeywordInfo key={index} keywords={validKeywords} keyword={keyword} {...data} />
               </ErrorBoundary>
             );
           })}
