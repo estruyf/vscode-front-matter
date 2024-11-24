@@ -59,8 +59,6 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({
 
   return (
     <section className={`seo__keywords__table`}>
-      <h4 className='!text-left'>{localize(LocalizationKey.panelSeoKeywordsTitle)}</h4>
-
       <VSCodeTable>
         <VSCodeTableHeader>
           <VSCodeTableRow className={`border-t border-t-[var(--vscode-editorGroup-border)]`}>

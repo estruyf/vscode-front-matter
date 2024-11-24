@@ -86,6 +86,8 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
         </section>
 
         <section className={`seo__keywords`}>
+          <h4 className='!text-left'>{localize(LocalizationKey.panelSeoKeywordsTitle)}</h4>
+
           <SeoKeywords
             keywords={metadata?.keywords}
             title={metadata[titleField]}
