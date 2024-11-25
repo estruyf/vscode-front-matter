@@ -1601,6 +1601,14 @@ export enum LocalizationKey {
    */
   panelSeoDetailsRecommended = 'panel.seoDetails.recommended',
   /**
+   * Checks
+   */
+  panelSeoKeywordsChecks = 'panel.seoKeywords.checks',
+  /**
+   * Freq.
+   */
+  panelSeoKeywordsDensityTableTitle = 'panel.seoKeywords.density.tableTitle',
+  /**
    * Keyword density
    */
   panelSeoKeywordsDensity = 'panel.seoKeywords.density',

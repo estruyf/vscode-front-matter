@@ -5,6 +5,7 @@ import { Tag } from './Tag';
 import { LocalizationKey, localize } from '../../localization';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { CommandToCode } from '../CommandToCode';
+import { Tooltip } from 'react-tooltip'
 
 export interface ISeoKeywordInfoProps {
   keywords: string[];
@@ -27,6 +28,9 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
   wordCount,
   headings
 }: React.PropsWithChildren<ISeoKeywordInfoProps>) => {
+
+  const tooltipClasses = `!py-[2px] !px-[8px] !rounded-[3px] !border-[var(--vscode-editorHoverWidget-border)] !border !border-solid !bg-[var(--vscode-editorHoverWidget-background)] !text-[var(--vscode-editorHoverWidget-foreground)] !font-normal !opacity-100 shadow-[0_2px_8px_var(--vscode-widget-shadow)] !z-[9999]`;
+
   const density = () => {
     if (!wordCount) {
       return null;
@@ -35,7 +39,7 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
     const pattern = new RegExp(`(^${keyword.toLowerCase()}(?=\\s|$))|(\\s${keyword.toLowerCase()}(?=\\s|$))`, 'ig');
     const count = (content.match(pattern) || []).length;
     const density = (count / wordCount) * 100;
-    const densityTitle = `${density.toFixed(2)}% *`;
+    const densityTitle = `${density.toFixed(2)}* %`;
 
     if (density < 0.75) {
       return <ValidInfo label={densityTitle} isValid={false} className='text-xs' />;
@@ -67,7 +71,7 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
     }
 
     const exists = headings.filter((heading) => validateKeywords(heading, keyword));
-    return <ValidInfo isValid={exists.length > 0} />;
+    return exists.length > 0;
   };
 
   const onRemove = React.useCallback((tag: string) => {
@@ -77,6 +81,50 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
       parents: undefined
     });
   }, [keywords]);
+
+  const checks = React.useMemo(() => {
+    return {
+      title: !!title && title.toLowerCase().includes(keyword.toLowerCase()),
+      description: !!description && description.toLowerCase().includes(keyword.toLowerCase()),
+      slug:
+        !!slug &&
+        (slug.toLowerCase().includes(keyword.toLowerCase()) ||
+          slug.toLowerCase().includes(keyword.replace(/ /g, '-').toLowerCase())),
+      content: !!content && content.toLowerCase().includes(keyword.toLowerCase()),
+      heading: checkHeadings()
+    };
+  }, [title, description, slug, content, headings, wordCount]);
+
+  const tooltipContent = React.useMemo(() => {
+    return (
+      <>
+        <span className='inline-flex items-center gap-1'>{localize(LocalizationKey.commonTitle)}: <ValidInfo isValid={checks.title} /></span><br />
+        <span className='inline-flex items-center gap-1'>{localize(LocalizationKey.commonDescription)}: <ValidInfo isValid={checks.description} /></span><br />
+        <span className='inline-flex items-center gap-1'>{localize(LocalizationKey.commonSlug)}: <ValidInfo isValid={checks.slug} /></span><br />
+        <span className='inline-flex items-center gap-1'>{localize(LocalizationKey.panelSeoKeywordInfoValidInfoContent)}: <ValidInfo isValid={checks.content} /></span><br />
+        <span className='inline-flex items-center gap-1'>{localize(LocalizationKey.panelSeoKeywordInfoValidInfoLabel)}: <ValidInfo isValid={!!checks.heading} /></span>
+      </>
+    )
+  }, [checks]);
+
+  const checksMarkup = React.useMemo(() => {
+    const validData = Object.values(checks).filter((check) => check).length;
+    const totalChecks = Object.values(checks).length;
+
+    const isValid = validData === totalChecks;
+
+    return (
+      <div 
+        className={`inline-flex py-1 px-[4px] rounded-[3px] justify-center items-center text-[12px] leading-[16px] border border-solid ${isValid ? "text-[#1f883d] border-[#1f883d]" : "text-[var(--vscode-statusBarItem-warningBackground)] border-[var(--vscode-statusBarItem-warningBackground)]"}`}
+        data-tooltip-id={`tooltip-checks-${keyword}`}
+      >
+        <ValidInfo isValid={isValid} />
+        <span className='mr-[1px]'>{validData}</span>
+        <span>/</span>
+        <span className='ml-[1px]'>{totalChecks}</span>
+      </div>
+    );
+  }, [checks]);
 
   if (!keyword || typeof keyword !== 'string') {
     return null;
@@ -88,7 +136,7 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
         <div className='flex h-full items-center'>
           <Tag
             value={keyword}
-            className={`!mx-0 !my-1 !px-2 !py-1`}
+            className={`!w-full !justify-between !mx-0 !my-1 !px-2 !py-1`}
             onRemove={onRemove}
             onCreate={() => void 0}
             title={localize(LocalizationKey.panelTagsTagWarning, keyword)}
@@ -96,32 +144,17 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
           />
         </div>
       </VSCodeTableCell>
-      <VSCodeTableCell className={`text-center`}>
-        <ValidInfo
-          isValid={!!title && title.toLowerCase().includes(keyword.toLowerCase())}
-        />
-      </VSCodeTableCell>
-      <VSCodeTableCell className={`text-center`}>
-        <ValidInfo
-          isValid={!!description && description.toLowerCase().includes(keyword.toLowerCase())}
-        />
-      </VSCodeTableCell>
-      <VSCodeTableCell className={`text-center`}>
-        <ValidInfo
-          isValid={
-            !!slug &&
-            (slug.toLowerCase().includes(keyword.toLowerCase()) ||
-              slug.toLowerCase().includes(keyword.replace(/ /g, '-').toLowerCase()))
-          }
-        />
-      </VSCodeTableCell>
-      <VSCodeTableCell className={`text-center`}>
-        <ValidInfo
-          isValid={!!content && content.toLowerCase().includes(keyword.toLowerCase())}
-        />
-      </VSCodeTableCell>
-      <VSCodeTableCell className={`text-center`}>
-        {checkHeadings()}
+      <VSCodeTableCell>
+        {checksMarkup}
+
+        <Tooltip 
+          id={`tooltip-checks-${keyword}`}
+          className={tooltipClasses} 
+          style={{
+            fontSize: '12px',
+            lineHeight: '19px'
+          }}
+          render={() => tooltipContent} />
       </VSCodeTableCell>
       <VSCodeTableCell className={`text-center`}>
         {density()}

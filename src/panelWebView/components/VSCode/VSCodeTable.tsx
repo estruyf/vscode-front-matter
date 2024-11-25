@@ -3,9 +3,9 @@ import { cn } from "../../../utils/cn"
 
 const VSCodeTable = React.forwardRef<
   HTMLTableElement,
-  React.HTMLAttributes<HTMLTableElement>
->(({ className, ...props }, ref) => (
-  <div className="relative w-full overflow-auto">
+  React.HTMLAttributes<HTMLTableElement> & { disableOverflow?: boolean }
+>(({ className, disableOverflow, ...props }, ref) => (
+  <div className={`relative w-full ${disableOverflow ? "" : "overflow-auto"}`}>
     <table
       ref={ref}
       className={cn("w-full text-base border-collapse indent-0 [&_tr:nth-child(2n)]:bg-[var(--vscode-keybindingTable-rowsBackground)]", className)}
