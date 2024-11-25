@@ -497,7 +497,7 @@
   "panel.seoDetails.recommended": "Recommended",
 
   "panel.seoKeywords.checks": "Checks",
-  "panel.seoKeywords.density.tableTitle": "Freq.",
+  "panel.seoKeywords.density.tableTitle": "Frequency",
   "panel.seoKeywords.density": "Keyword density",
   "panel.seoKeywordInfo.validInfo.label": "Used in heading(s)",
   "panel.seoKeywordInfo.validInfo.content": "Content",

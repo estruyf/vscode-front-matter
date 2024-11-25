@@ -42,11 +42,11 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
     const densityTitle = `${density.toFixed(2)}* %`;
 
     if (density < 0.75) {
-      return <ValidInfo label={densityTitle} isValid={false} className='text-[12px]' />;
+      return <span className='text-[12px] text-[var(--vscode-statusBarItem-warningBackground)]'>{densityTitle}</span>;
     } else if (density >= 0.75 && density < 1.5) {
-      return <ValidInfo label={densityTitle} isValid={true} className='text-[12px]' />;
+      return <span className='text-[12px] text-[#1f883d]'>{densityTitle}</span>;
     } else {
-      return <ValidInfo label={densityTitle} isValid={false} className='text-[12px]' />;
+      return <span className='text-[12px] text-[var(--vscode-statusBarItem-warningBackground)]'>{densityTitle}</span>;
     }
   };
 
@@ -144,7 +144,7 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
           />
         </div>
       </VSCodeTableCell>
-      <VSCodeTableCell>
+      <VSCodeTableCell className={`text-center`}>
         {checksMarkup}
 
         <Tooltip 

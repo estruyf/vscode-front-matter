@@ -68,20 +68,16 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({
               {localize(LocalizationKey.panelSeoKeywordsChecks)}
             </VSCodeTableHead>
             
-            <VSCodeTableHead className='text-center'>
-              <div
-                className='flex items-center justify-center h-full'
-              >
-                <span
-                  data-tooltip-id="tooltip-density"
-                  data-tooltip-content={localize(LocalizationKey.panelSeoKeywordsDensity)}>
-                  {localize(LocalizationKey.panelSeoKeywordsDensityTableTitle)}
-                </span>
-                <Tooltip id="tooltip-density" className={tooltipClasses} style={{
-                  fontSize: '12px',
-                  lineHeight: '19px'
-                }} />
-              </div>
+            <VSCodeTableHead>
+              <span
+                data-tooltip-id="tooltip-density"
+                data-tooltip-content={localize(LocalizationKey.panelSeoKeywordsDensity)}>
+                {localize(LocalizationKey.panelSeoKeywordsDensityTableTitle)}
+              </span>
+              <Tooltip id="tooltip-density" className={tooltipClasses} style={{
+                fontSize: '12px',
+                lineHeight: '19px'
+              }} />
             </VSCodeTableHead>
           </VSCodeTableRow>
         </VSCodeTableHeader>
