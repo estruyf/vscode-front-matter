@@ -42,11 +42,11 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
     const densityTitle = `${density.toFixed(2)}* %`;
 
     if (density < 0.75) {
-      return <ValidInfo label={densityTitle} isValid={false} className='text-xs' />;
+      return <ValidInfo label={densityTitle} isValid={false} className='text-[12px]' />;
     } else if (density >= 0.75 && density < 1.5) {
-      return <ValidInfo label={densityTitle} isValid={true} className='text-xs' />;
+      return <ValidInfo label={densityTitle} isValid={true} className='text-[12px]' />;
     } else {
-      return <ValidInfo label={densityTitle} isValid={false} className='text-xs' />;
+      return <ValidInfo label={densityTitle} isValid={false} className='text-[12px]' />;
     }
   };
 
