@@ -5,9 +5,15 @@ import { ViewPanel } from './ViewPanel';
 import { RecoilRoot } from 'recoil';
 import { I10nProvider } from '../dashboardWebView/providers/I10nProvider';
 import { SentryInit } from '../utils/sentryInit';
+import { updateCssVariables } from '../dashboardWebView/utils/updateCssVariables';
 import 'vscrui/dist/codicon.css';
 
 import './styles.css';
+
+const mutationObserver = new MutationObserver((_, __) => {
+  const darkMode = document.body.classList.contains('vscode-dark');
+  updateCssVariables(darkMode);
+});
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare const acquireVsCodeApi: <T = unknown>() => {
@@ -23,6 +29,9 @@ if (elm) {
   const environment = elm?.getAttribute('data-environment');
   const isProd = elm?.getAttribute('data-isProd');
   const isCrashDisabled = elm?.getAttribute('data-is-crash-disabled');
+
+  updateCssVariables(document.body.classList.contains('vscode-dark'));
+  mutationObserver.observe(document.body, { childList: false, attributes: true });
 
   if (isProd === 'true' && isCrashDisabled === 'false') {
     Sentry.init(SentryInit(version, environment));

@@ -29,7 +29,7 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
   headings
 }: React.PropsWithChildren<ISeoKeywordInfoProps>) => {
 
-  const tooltipClasses = `!py-[2px] !px-[8px] !rounded-[3px] !border-[var(--vscode-editorHoverWidget-border)] !border !border-solid !bg-[var(--vscode-editorHoverWidget-background)] !text-[var(--vscode-editorHoverWidget-foreground)] !font-normal !opacity-100 shadow-[0_2px_8px_var(--vscode-widget-shadow)] !z-[9999]`;
+  const tooltipClasses = `!py-[2px] !px-[8px] !rounded-[3px] !border-[var(--vscode-editorHoverWidget-border)] !border !border-solid !bg-[var(--vscode-editorHoverWidget-background)] !text-[var(--vscode-editorHoverWidget-foreground)] !font-normal !opacity-100 shadow-[0_2px_8px_var(--vscode-widget-shadow)] text-left`;
 
   const density = () => {
     if (!wordCount) {
@@ -44,7 +44,7 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
     if (density < 0.75) {
       return <span className='text-[12px] text-[var(--vscode-statusBarItem-warningBackground)]'>{densityTitle}</span>;
     } else if (density >= 0.75 && density < 1.5) {
-      return <span className='text-[12px] text-[#1f883d]'>{densityTitle}</span>;
+      return <span className='text-[12px] text-[var(--vscode-charts-green)]'>{densityTitle}</span>;
     } else {
       return <span className='text-[12px] text-[var(--vscode-statusBarItem-warningBackground)]'>{densityTitle}</span>;
     }
@@ -98,11 +98,12 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
   const tooltipContent = React.useMemo(() => {
     return (
       <>
-        <span className='inline-flex items-center gap-1'>{localize(LocalizationKey.commonTitle)}: <ValidInfo isValid={checks.title} /></span><br />
-        <span className='inline-flex items-center gap-1'>{localize(LocalizationKey.commonDescription)}: <ValidInfo isValid={checks.description} /></span><br />
-        <span className='inline-flex items-center gap-1'>{localize(LocalizationKey.commonSlug)}: <ValidInfo isValid={checks.slug} /></span><br />
-        <span className='inline-flex items-center gap-1'>{localize(LocalizationKey.panelSeoKeywordInfoValidInfoContent)}: <ValidInfo isValid={checks.content} /></span><br />
-        <span className='inline-flex items-center gap-1'>{localize(LocalizationKey.panelSeoKeywordInfoValidInfoLabel)}: <ValidInfo isValid={!!checks.heading} /></span>
+        <b>Keyword present in:</b><br />
+        <span className='inline-flex items-center gap-1'><ValidInfo isValid={checks.title} /> {localize(LocalizationKey.commonTitle)}</span><br />
+        <span className='inline-flex items-center gap-1'><ValidInfo isValid={checks.description} /> {localize(LocalizationKey.commonDescription)}</span><br />
+        <span className='inline-flex items-center gap-1'><ValidInfo isValid={checks.slug} /> {localize(LocalizationKey.commonSlug)}</span><br />
+        <span className='inline-flex items-center gap-1'><ValidInfo isValid={checks.content} /> {localize(LocalizationKey.panelSeoKeywordInfoValidInfoContent)}</span><br />
+        <span className='inline-flex items-center gap-1'><ValidInfo isValid={!!checks.heading} /> {localize(LocalizationKey.panelSeoKeywordInfoValidInfoLabel)}</span>
       </>
     )
   }, [checks]);
@@ -115,7 +116,7 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
 
     return (
       <div 
-        className={`inline-flex py-1 px-[4px] rounded-[3px] justify-center items-center text-[12px] leading-[16px] border border-solid ${isValid ? "text-[#1f883d] border-[#1f883d]" : "text-[var(--vscode-statusBarItem-warningBackground)] border-[var(--vscode-statusBarItem-warningBackground)]"}`}
+        className={`inline-flex py-1 px-[4px] rounded-[3px] justify-center items-center text-[12px] leading-[16px] border border-solid ${isValid ? "text-[--vscode-charts-green] border-[--vscode-charts-green] bg-[--frontmatter-success-background]" : "text-[var(--vscode-statusBarItem-warningBackground)] border-[var(--vscode-statusBarItem-warningBackground)] bg-[--frontmatter-warning-background]"}`}
         data-tooltip-id={`tooltip-checks-${keyword}`}
       >
         <ValidInfo isValid={isValid} />

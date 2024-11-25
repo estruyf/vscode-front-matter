@@ -15,7 +15,7 @@ const ValidInfo: React.FunctionComponent<IValidInfoProps> = ({
   return (
     <div className='inline-flex items-center h-full'>
       {isValid ? (
-        <CheckIcon className={`h-4 w-4 text-[#1f883d] mr-2`} />
+        <CheckIcon className={`h-4 w-4 text-[var(--vscode-charts-green)] mr-2`} />
       ) : (
         <ExclamationTriangleIcon className={`h-4 w-4 text-[var(--vscode-statusBarItem-warningBackground)] mr-2`} />
       )}
