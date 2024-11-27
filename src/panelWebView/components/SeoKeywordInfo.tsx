@@ -40,14 +40,8 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
     const count = (content.match(pattern) || []).length;
     const density = (count / wordCount) * 100;
     const densityTitle = `${density.toFixed(2)}* %`;
-
-    if (density < 0.75) {
-      return <span className='text-[12px] text-[var(--vscode-statusBarItem-warningBackground)]'>{densityTitle}</span>;
-    } else if (density >= 0.75 && density < 1.5) {
-      return <span className='text-[12px] text-[var(--vscode-charts-green)]'>{densityTitle}</span>;
-    } else {
-      return <span className='text-[12px] text-[var(--vscode-statusBarItem-warningBackground)]'>{densityTitle}</span>;
-    }
+    const color = (density >= 0.75 && density < 1.5) ? "--vscode-charts-green" : "--vscode-charts-yellow";
+    return <span className={`text-[12px] text-[var(${color})]`} title="Recommended frequency: 0.75% - 1.5%">{densityTitle}</span>;
   };
 
   const validateKeywords = (heading: string, keyword: string) => {
@@ -98,7 +92,7 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
   const tooltipContent = React.useMemo(() => {
     return (
       <>
-        <b>Keyword present in:</b><br />
+        <h4>Keyword present in:</h4>
         <span className='inline-flex items-center gap-1'><ValidInfo isValid={checks.title} /> {localize(LocalizationKey.commonTitle)}</span><br />
         <span className='inline-flex items-center gap-1'><ValidInfo isValid={checks.description} /> {localize(LocalizationKey.commonDescription)}</span><br />
         <span className='inline-flex items-center gap-1'><ValidInfo isValid={checks.slug} /> {localize(LocalizationKey.commonSlug)}</span><br />
@@ -116,7 +110,10 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
 
     return (
       <div 
-        className={`inline-flex py-1 px-[4px] rounded-[3px] justify-center items-center text-[12px] leading-[16px] border border-solid ${isValid ? "text-[--vscode-charts-green] border-[--vscode-charts-green] bg-[--frontmatter-success-background]" : "text-[var(--vscode-statusBarItem-warningBackground)] border-[var(--vscode-statusBarItem-warningBackground)] bg-[--frontmatter-warning-background]"}`}
+        className={`inline-flex py-1 px-2 rounded-[3px] justify-center items-center text-[12px] leading-[16px] border border-solid 
+          ${isValid 
+            ? "text-[var(--vscode-charts-green)] border-[var(--vscode-charts-green)] bg-[var(--frontmatter-success-background)]" 
+            : "text-[var(--vscode-charts-yellow)] border-[var(--vscode-charts-yellow)] bg-[var(--frontmatter-warning-background)]"}`}
         data-tooltip-id={`tooltip-checks-${keyword}`}
       >
         <ValidInfo isValid={isValid} />
@@ -137,7 +134,7 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
         <div className='flex h-full items-center'>
           <Tag
             value={keyword}
-            className={`!w-full !justify-between !mx-0 !my-1 !px-2 !py-1`}
+            className={`!w-full !justify-between !mx-0 !my-1 !px-2 !py-0.5`}
             onRemove={onRemove}
             onCreate={() => void 0}
             title={localize(LocalizationKey.panelTagsTagWarning, keyword)}
