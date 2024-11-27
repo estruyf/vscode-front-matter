@@ -23,15 +23,28 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({
     totalMedia
   );
 
-  const getButtons = useCallback((): number[] => {
+  const buttons = useMemo((): JSX.Element[] => {
     const maxButtons = 5;
-    const buttons: number[] = [];
+    const buttons: JSX.Element[] = [];
     const start = page - maxButtons;
     const end = page + maxButtons;
 
     for (let i = start; i < end; i++) {
       if (i >= 0 && i <= totalPagesNr) {
-        buttons.push(i);
+        buttons.push(
+          <button
+          key={i}
+          disabled={i === page}
+          onClick={() => {
+            setPage(i);
+          }}
+          className={`max-h-8 rounded ${page === i
+            ? `px-2 bg-[var(--vscode-list-activeSelectionBackground)] text-[var(--vscode-list-activeSelectionForeground)]`
+            : `text-[var(--vscode-editor-foreground)] hover:text-[var(--vscode-list-activeSelectionForeground)]`}`}
+        >
+          {i + 1}
+        </button>
+        );
       }
     }
     return buttons;
@@ -67,20 +80,7 @@ export const Pagination: React.FunctionComponent<IPaginationProps> = ({
         }}
       />
 
-      {getButtons().map((button) => (
-        <button
-          key={button}
-          disabled={button === page}
-          onClick={() => {
-            setPage(button);
-          }}
-          className={`max-h-8 rounded ${page === button
-            ? `px-2 bg-[var(--vscode-list-activeSelectionBackground)] text-[var(--vscode-list-activeSelectionForeground)]`
-            : `text-[var(--vscode-editor-foreground)] hover:text-[var(--vscode-list-activeSelectionForeground)]`}`}
-        >
-          {button + 1}
-        </button>
-      ))}
+      {buttons}
 
       <PaginationButton
         title={l10n.t(LocalizationKey.dashboardHeaderPaginationNext)}

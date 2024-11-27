@@ -187,7 +187,7 @@
 
   "dashboard.header.pagination.first": "First",
   "dashboard.header.pagination.previous": "Previous",
-  "dashboard.header.pagination.next": "next",
+  "dashboard.header.pagination.next": "Next",
   "dashboard.header.pagination.last": "Last",
 
   "dashboard.header.paginationStatus.text": "Showing {0} to {1} of {2} results",
