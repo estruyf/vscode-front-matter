@@ -1613,7 +1613,7 @@ export enum LocalizationKey {
    */
   panelSeoKeywordsDensity = 'panel.seoKeywords.density',
   /**
-   * Used in heading(s)
+   * Heading(s)
    */
   panelSeoKeywordInfoValidInfoLabel = 'panel.seoKeywordInfo.validInfo.label',
   /**
