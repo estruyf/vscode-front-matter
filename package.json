@@ -484,6 +484,34 @@
             "additionalProperties": false
           }
         },
+        "frontMatter.content.grouping": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "%setting.frontMatter.content.grouping.markdownDescription%",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "%setting.frontMatter.content.grouping.items.properties.id.description%"
+              },
+              "title": {
+                "type": "string",
+                "description": "%setting.frontMatter.content.grouping.items.properties.title.description%"
+              },
+              "name": {
+                "type": "string",
+                "description": "%setting.frontMatter.content.grouping.items.properties.name.description%"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "title",
+              "name"
+            ]
+          },
+          "scope": "Content"
+        },
         "frontMatter.content.sorting": {
           "type": "array",
           "default": [],

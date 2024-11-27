@@ -41,6 +41,7 @@ export interface Settings {
   draftField: DraftField | null | undefined;
   customSorting: SortingSetting[] | undefined;
   filters: (FilterType | { title: string; name: string })[] | undefined;
+  grouping: { title: string; name: string }[] | undefined;
   dashboardState: DashboardState;
   scripts: CustomScript[];
   dataFiles: DataFile[] | undefined;

@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { GroupOption } from '../../constants/GroupOption';
-import { AllPagesAtom, GroupingAtom } from '../../state';
+import { AllPagesAtom, GroupingAtom, SettingsAtom } from '../../state';
 import { MenuButton, MenuItem } from '../Menu';
-import * as l10n from '@vscode/l10n';
-import { LocalizationKey } from '../../../localization';
+import { LocalizationKey, localize } from '../../../localization';
 import { DropdownMenu, DropdownMenuContent } from '../../../components/shadcn/Dropdown';
 
 export interface IGroupingProps { }
@@ -12,28 +11,34 @@ export interface IGroupingProps { }
 export const Grouping: React.FunctionComponent<
   IGroupingProps
 > = () => {
+  const settings = useRecoilValue(SettingsAtom);
   const [group, setGroup] = useRecoilState(GroupingAtom);
   const pages = useRecoilValue(AllPagesAtom);
 
   const GROUP_OPTIONS = React.useMemo(() => {
-    const options: { name: string, id: GroupOption }[] = [];
+    const options: { name: string, id?: GroupOption | string }[] = [];
 
     if (pages.length > 0) {
+      if (settings?.grouping) {
+        const groups = settings.grouping.map((g) => ({ name: g.title, id: g.name }));
+        options.push(...groups);
+      }
+
       if (pages.some((x) => x.fmYear)) {
-        options.push({ name: l10n.t(LocalizationKey.dashboardHeaderGroupingOptionYear), id: GroupOption.Year })
+        options.push({ name: localize(LocalizationKey.dashboardHeaderGroupingOptionYear), id: GroupOption.Year })
       }
 
       if (pages.some((x) => x.fmDraft)) {
-        options.push({ name: l10n.t(LocalizationKey.dashboardHeaderGroupingOptionDraft), id: GroupOption.Draft })
+        options.push({ name: localize(LocalizationKey.dashboardHeaderGroupingOptionDraft), id: GroupOption.Draft })
       }
     }
 
     if (options.length > 0) {
-      options.unshift({ name: l10n.t(LocalizationKey.dashboardHeaderGroupingOptionNone), id: GroupOption.none })
+      options.unshift({ name: localize(LocalizationKey.dashboardHeaderGroupingOptionNone), id: GroupOption.none })
     }
 
     return options;
-  }, [pages])
+  }, [pages, settings?.grouping])
 
   const crntGroup = GROUP_OPTIONS.find((x) => x.id === group);
 
@@ -43,7 +48,7 @@ export const Grouping: React.FunctionComponent<
 
   return (
     <DropdownMenu>
-      <MenuButton label={l10n.t(LocalizationKey.dashboardHeaderGroupingMenuButtonLabel)} title={crntGroup?.name || ''} />
+      <MenuButton label={localize(LocalizationKey.dashboardHeaderGroupingMenuButtonLabel)} title={crntGroup?.name || ''} />
 
       <DropdownMenuContent>
         {GROUP_OPTIONS.map((option) => (

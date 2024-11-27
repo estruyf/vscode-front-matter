@@ -4,6 +4,7 @@
 
 ### 🎨 Enhancements
 
+- [#405](https://github.com/estruyf/vscode-front-matter/issues/405): Added new `frontMatter.content.grouping` setting which allows you to define custom "group by" options
 - [#705](https://github.com/estruyf/vscode-front-matter/issues/705): UX improvements for the panel view
 - [#887](https://github.com/estruyf/vscode-front-matter/issues/887): Added new `frontMatter.global.timezone` setting, by default it is set to `UTC` for date formatting
 - [#888](https://github.com/estruyf/vscode-front-matter/issues/888): Added the ability to prompt GitHub Copilot from a custom script/action
