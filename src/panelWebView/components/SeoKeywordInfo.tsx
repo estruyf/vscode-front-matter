@@ -110,7 +110,7 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
 
     return (
       <div 
-        className={`inline-flex py-1 px-2 rounded-[3px] justify-center items-center text-[12px] leading-[16px] border border-solid 
+        className={`inline-flex py-0.5 px-2 my-1 rounded-[3px] justify-center items-center text-[12px] leading-[16px] border border-solid 
           ${isValid 
             ? "text-[var(--vscode-charts-green)] border-[var(--vscode-charts-green)] bg-[var(--frontmatter-success-background)]" 
             : "text-[var(--vscode-charts-yellow)] border-[var(--vscode-charts-yellow)] bg-[var(--frontmatter-warning-background)]"}`}
