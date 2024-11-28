@@ -501,6 +501,7 @@
   "panel.seoKeywords.density": "Keyword density",
   "panel.seoKeywordInfo.validInfo.label": "Heading(s)",
   "panel.seoKeywordInfo.validInfo.content": "Content",
+  "panel.seoKeywordInfo.density.tooltip": "Recommended frequency: 0.75% - 1.5%",
 
   "panel.seoKeywords.title": "Keywords",
   "panel.seoKeywords.header.keyword": "Keyword",

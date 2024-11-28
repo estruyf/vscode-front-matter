@@ -72,7 +72,7 @@ const VSCodeTableHead = React.forwardRef<
   <th
     ref={ref}
     className={cn(
-      "h-6 px-2 py-2 text-left align-middle font-bold",
+      "h-6 px-2 py-2 text-left align-middle font-bold cursor-default",
       className
     )}
     {...props}
