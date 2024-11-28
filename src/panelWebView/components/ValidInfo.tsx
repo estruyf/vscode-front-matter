@@ -17,7 +17,7 @@ const ValidInfo: React.FunctionComponent<IValidInfoProps> = ({
       {isValid ? (
         <CheckIcon className={`h-6 w-6 text-[var(--vscode-charts-green)] mr-2`} />
       ) : (
-        <ExclamationTriangleIcon className={`h-6 w-6 text-[var(--vscode-charts-yellow)] mr-2`} />
+        <ExclamationTriangleIcon className={`h-6 w-6 text-[var(--vscode-notificationsWarningIcon-foreground)] mr-2`} />
       )}
       {label && <span className={className || ""}><b>{label}</b></span>}
     </div>

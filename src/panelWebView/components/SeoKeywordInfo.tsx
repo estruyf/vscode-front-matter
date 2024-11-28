@@ -38,7 +38,7 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
     const count = (content.match(pattern) || []).length;
     const density = (count / wordCount) * 100;
     const densityTitle = `${density.toFixed(2)}* %`;
-    const color = (density >= 0.75 && density < 1.5) ? "--vscode-charts-green" : "--vscode-charts-yellow";
+    const color = (density >= 0.75 && density < 1.5) ? "--vscode-charts-green" : "--vscode-notificationsWarningIcon-foreground";
     return (
       <span 
         className={`text-[12px] text-[var(${color})] cursor-default`} 
@@ -118,7 +118,7 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
         className={`inline-flex py-0.5 px-2 my-1 rounded-[3px] justify-center items-center text-[12px] leading-[16px] border border-solid cursor-default 
           ${isValid 
             ? "text-[var(--vscode-charts-green)] border-[var(--vscode-charts-green)] bg-[var(--frontmatter-success-background)]" 
-            : "text-[var(--vscode-charts-yellow)] border-[var(--vscode-charts-yellow)] bg-[var(--frontmatter-warning-background)]"}`}
+            : "text-[var(--vscode-notificationsWarningIcon-foreground)] border-[var(--vscode-notificationsWarningIcon-foreground)] bg-[var(--frontmatter-warning-background)]"}`}
         data-tooltip-id={`tooltip-checks-${keyword}`}
       >
         <ValidInfo isValid={isValid} />
