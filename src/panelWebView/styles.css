@@ -895,14 +895,29 @@ vscode-divider {
   color: var(--vscode-inputValidation-infoForeground, #fff);
 }
 
+.tag {
+  transition: all 100ms;
+}
+
+.tag:has(.tag__delete:hover) {
+  background-color: var(--vscode-inputValidation-errorBackground);
+  color: var(--vscode-inputValidation-errorForeground);
+}
+
 .tag .tag__delete {
   margin-left: 0.25rem;
+
+  & svg {
+    stroke-width: 3;
+  }
 }
 
 .tag .tag__delete:hover {
-  background-color: var(--vscode-inputValidation-errorBackground);
   color: var(--vscode-inputValidation-errorForeground, #000);
-  border-radius: 2px;
+
+  & svg {
+    color: var(--vscode-charts-red);
+  }
 }
 
 .vscode-dark .tag .tag__delete:hover {
@@ -911,7 +926,8 @@ vscode-divider {
 
 .tag .tag__value {
   flex-grow: 1;
-  white-space: nowrap;
+  white-space: pre-wrap;
+  font-weight: 600;
 }
 
 /* Slug field */
