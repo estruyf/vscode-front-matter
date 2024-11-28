@@ -3,7 +3,6 @@ import { PanelSettings } from '../../models';
 import { CommandToCode } from '../CommandToCode';
 import { Collapsible } from './Collapsible';
 import { BugIcon } from './Icons/BugIcon';
-import { CenterIcon } from './Icons/CenterIcon';
 import { FileIcon } from './Icons/FileIcon';
 import { FolderOpenedIcon } from './Icons/FolderOpenedIcon';
 import { TemplateIcon } from './Icons/TemplateIcon';
