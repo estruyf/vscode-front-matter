@@ -14,6 +14,7 @@ import { Messenger } from '@estruyf/vscode/dist/client';
 import { BookOpenIcon } from '@heroicons/react/24/outline';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
+import { Icon } from 'vscrui';
 
 export interface IOtherActionsProps {
   isFile: boolean;
@@ -65,7 +66,7 @@ const OtherActions: React.FunctionComponent<IOtherActionsProps> = ({
         </OtherActionButton>
 
         <OtherActionButton onClick={() => Messenger.send(CommandToCode.toggleCenterMode)}>
-          <CenterIcon /> <span>{l10n.t(LocalizationKey.panelOtherActionsCenterMode)}</span>
+          <Icon name='layout-centered' className='mr-2' /> <span>{l10n.t(LocalizationKey.panelOtherActionsCenterMode)}</span>
         </OtherActionButton>
 
         <OtherActionButton onClick={createAsTemplate} disabled={!isFile}>

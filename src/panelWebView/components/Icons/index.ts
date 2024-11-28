@@ -2,7 +2,6 @@ export * from './AddIcon';
 export * from './ArchiveIcon';
 export * from './BranchIcon';
 export * from './BugIcon';
-export * from './CenterIcon';
 export * from './CopilotIcon';
 export * from './FileIcon';
 export * from './FolderOpenedIcon';
