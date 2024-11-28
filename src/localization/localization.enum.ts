@@ -616,7 +616,7 @@ export enum LocalizationKey {
    */
   dashboardHeaderPaginationPrevious = 'dashboard.header.pagination.previous',
   /**
-   * next
+   * Next
    */
   dashboardHeaderPaginationNext = 'dashboard.header.pagination.next',
   /**
@@ -1620,6 +1620,10 @@ export enum LocalizationKey {
    * Content
    */
   panelSeoKeywordInfoValidInfoContent = 'panel.seoKeywordInfo.validInfo.content',
+  /**
+   * Recommended frequency: 0.75% - 1.5%
+   */
+  panelSeoKeywordInfoDensityTooltip = 'panel.seoKeywordInfo.density.tooltip',
   /**
    * Keywords
    */
