@@ -85,9 +85,7 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({
         <VSCodeTableBody>
           {validKeywords.map((keyword, index) => {
             return (
-              <ErrorBoundary key={`${keyword}-${index}`} fallback={<div />}>
-                <SeoKeywordInfo keywords={validKeywords} keyword={keyword} {...data} />
-              </ErrorBoundary>
+              <SeoKeywordInfo key={`${keyword}-${index}`} keywords={validKeywords} keyword={keyword} {...data} />
             );
           })}
         </VSCodeTableBody>
