@@ -35,9 +35,7 @@ import { SortOption } from '../../constants/SortOption';
 
 export interface IMediaProps { }
 
-export const Media: React.FunctionComponent<IMediaProps> = (
-  _: React.PropsWithChildren<IMediaProps>
-) => {
+export const Media: React.FunctionComponent<IMediaProps> = () => {
   const { media } = useMedia();
   const settings = useRecoilValue(SettingsSelector);
   const viewData = useRecoilValue(ViewDataSelector);
