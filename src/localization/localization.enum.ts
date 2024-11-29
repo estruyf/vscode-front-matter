@@ -2577,6 +2577,14 @@ export enum LocalizationKey {
    */
   listenersDashboardDashboardListenerPinItemCoundNotUnPinError = 'listeners.dashboard.dashboardListener.pinItem.coundNotUnPin.error',
   /**
+   * Deleting folder...
+   */
+  listenersDashboardMediaListenersDeleteMediaFolderProgressTitle = 'listeners.dashboard.mediaListeners.deleteMediaFolder.progress.title',
+  /**
+   * Updating folder...
+   */
+  listenersDashboardMediaListenersUpdateMediaFolderProgressTitle = 'listeners.dashboard.mediaListeners.updateMediaFolder.progress.title',
+  /**
    * Template files copied.
    */
   listenersDashboardSettingsListenerTriggerTemplateNotification = 'listeners.dashboard.settingsListener.triggerTemplate.notification',

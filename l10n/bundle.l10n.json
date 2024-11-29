@@ -776,6 +776,9 @@
   "listeners.dashboard.dashboardListener.pinItem.coundNotPin.error": "Could not pin item.",
   "listeners.dashboard.dashboardListener.pinItem.coundNotUnPin.error": "Could not unpin item.",
 
+  "listeners.dashboard.mediaListeners.deleteMediaFolder.progress.title": "Deleting folder...",
+  "listeners.dashboard.mediaListeners.updateMediaFolder.progress.title": "Updating folder...",
+
   "listeners.dashboard.settingsListener.triggerTemplate.notification": "Template files copied.",
   "listeners.dashboard.settingsListener.triggerTemplate.progress.title": "Downloading and initializing the template...",
   "listeners.dashboard.settingsListener.triggerTemplate.download.error": "Failed to download the template.",

@@ -3,7 +3,7 @@ import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { BaseListener } from './BaseListener';
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { SortingOption } from '../../dashboardWebView/models';
-import { commands, env, Uri, window, workspace } from 'vscode';
+import { commands, env, ProgressLocation, Uri, window, workspace } from 'vscode';
 import { COMMAND_NAME } from '../../constants';
 import * as os from 'os';
 import { Folders } from '../../commands';
@@ -11,6 +11,7 @@ import { PostMessageData, UnmappedMedia } from '../../models';
 import { FilesHelper, MediaLibrary } from '../../helpers';
 import { existsAsync, flattenObjectKeys } from '../../utils';
 import { join, parse } from 'path';
+import { LocalizationKey, localize } from '../../localization';
 
 export class MediaListener extends BaseListener {
   private static timers: { [folder: string]: any } = {};
@@ -74,19 +75,25 @@ export class MediaListener extends BaseListener {
       return;
     }
 
-    const folderPath = parse(msg.folder).dir;
+    window.withProgress({
+      location: ProgressLocation.Notification,
+      title: localize(LocalizationKey.listenersDashboardMediaListenersDeleteMediaFolderProgressTitle),
+      cancellable: false
+    }, async () => {
+      const folderPath = parse(msg.folder).dir;
 
-    const mediaLib = MediaLibrary.getInstance();
-    const parsedPath = mediaLib.parsePath(msg.folder);
-    const mediaFiles = await mediaLib.getAllByPath(parsedPath);
+      const mediaLib = MediaLibrary.getInstance();
+      const parsedPath = mediaLib.parsePath(msg.folder);
+      const mediaFiles = await mediaLib.getAllByPath(parsedPath);
 
-    for (const fileName of Object.keys(mediaFiles)) {
-      const filePath = join(msg.folder, fileName);
-      await mediaLib.remove(filePath);
-    }
+      for (const fileName of Object.keys(mediaFiles)) {
+        const filePath = join(msg.folder, fileName);
+        await mediaLib.remove(filePath);
+      }
 
-    await workspace.fs.delete(Uri.file(msg.folder), { recursive: true, useTrash: false });
-    this.sendMediaFiles(0, folderPath);
+      await workspace.fs.delete(Uri.file(msg.folder), { recursive: true, useTrash: false });
+      await MediaListener.sendMediaFiles(0, folderPath);
+    });
   }
 
   public static async updateMediaFolder(msg: {
@@ -98,35 +105,41 @@ export class MediaListener extends BaseListener {
       return;
     }
 
-    const folderName = parse(msg.folder).base;
-    
-    const newFolderName = await window.showInputBox({
-      prompt: 'Enter new folder name',
-      value: folderName
+    window.withProgress({
+      location: ProgressLocation.Notification,
+      title: localize(LocalizationKey.listenersDashboardMediaListenersUpdateMediaFolderProgressTitle),
+      cancellable: false
+    }, async () => {
+      const folderName = parse(msg.folder).base;
+      
+      const newFolderName = await window.showInputBox({
+        prompt: 'Enter new folder name',
+        value: folderName
+      });
+
+      if (!newFolderName || newFolderName === folderName) {
+        return;
+      }
+
+      const newFolderPath = join(parse(msg.folder).dir, newFolderName);
+      
+      // Get all media files from the folder
+      const mediaLib = MediaLibrary.getInstance();
+      const parsedPath = mediaLib.parsePath(msg.folder);
+      const mediaFiles = await mediaLib.getAllByPath(parsedPath);
+
+      // Update the folder
+      await workspace.fs.rename(Uri.file(msg.folder), Uri.file(newFolderPath), { overwrite: false });
+
+      // Update the media files
+      for (const fileName of Object.keys(mediaFiles)) {
+        const newFilePath = join(newFolderPath, fileName);
+        const oldFilePath = join(msg.folder, fileName);
+        await mediaLib.rename(oldFilePath, newFilePath);
+      }
+
+      await this.sendMediaFiles(0, parse(msg.folder).dir);
     });
-
-    if (!newFolderName || newFolderName === folderName) {
-      return;
-    }
-
-    const newFolderPath = join(parse(msg.folder).dir, newFolderName);
-    
-    // Get all media files from the folder
-    const mediaLib = MediaLibrary.getInstance();
-    const parsedPath = mediaLib.parsePath(msg.folder);
-    const mediaFiles = await mediaLib.getAllByPath(parsedPath);
-
-    // Update the folder
-    await workspace.fs.rename(Uri.file(msg.folder), Uri.file(newFolderPath), { overwrite: false });
-
-    // Update the media files
-    for (const fileName of Object.keys(mediaFiles)) {
-      const newFilePath = join(newFolderPath, fileName);
-      const oldFilePath = join(msg.folder, fileName);
-      await mediaLib.rename(oldFilePath, newFilePath);
-    }
-
-    this.sendMediaFiles(0, parse(msg.folder).dir);
   }
 
   /**
