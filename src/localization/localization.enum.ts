@@ -808,6 +808,10 @@ export enum LocalizationKey {
    */
   dashboardMediaFolderItemPublicDirectory = 'dashboard.media.folderItem.publicDirectory',
   /**
+   * Are you sure you want to delete the folder ({0})?
+   */
+  dashboardMediaFolderItemDeleteDescription = 'dashboard.media.folderItem.deleteDescription',
+  /**
    * Insert image
    */
   dashboardMediaItemButtomInsertImage = 'dashboard.media.item.buttom.insert.image',

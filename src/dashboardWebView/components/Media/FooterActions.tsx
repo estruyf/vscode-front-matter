@@ -1,7 +1,6 @@
 import * as React from 'react';
-import * as l10n from '@vscode/l10n';
 import { QuickAction } from '../Menu';
-import { LocalizationKey } from '../../../localization';
+import { LocalizationKey, localize } from '../../../localization';
 import { ClipboardIcon, CodeBracketIcon, EyeIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { useRecoilState } from 'recoil';
 import { SelectedItemActionAtom } from '../../state';
@@ -36,25 +35,25 @@ export const FooterActions: React.FunctionComponent<IFooterActionsProps> = ({
   return (
     <div className={`py-2 w-full flex items-center justify-evenly border-t border-t-[var(--frontmatter-border)] bg-[var(--frontmatter-sideBar-background)] group-hover:bg-[var(--vscode-list-hoverBackground)]`}>
       <QuickAction
-        title={l10n.t(LocalizationKey.dashboardMediaItemMenuItemView)}
+        title={localize(LocalizationKey.dashboardMediaItemMenuItemView)}
         className={`text-[var(--frontmatter-secondary-text)]`}
         onClick={() => setSelectedItemAction({
           path: media.fsPath,
           action: 'view'
         })}>
         <EyeIcon className={`w-4 h-4`} aria-hidden="true" />
-        <span className='sr-only'>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemView)}</span>
+        <span className='sr-only'>{localize(LocalizationKey.dashboardMediaItemMenuItemView)}</span>
       </QuickAction>
 
       <QuickAction
-        title={l10n.t(LocalizationKey.dashboardMediaItemMenuItemEditMetadata)}
+        title={localize(LocalizationKey.dashboardMediaItemMenuItemEditMetadata)}
         className={`text-[var(--frontmatter-secondary-text)]`}
         onClick={() => setSelectedItemAction({
           path: media.fsPath,
           action: 'edit'
         })}>
         <PencilIcon className={`w-4 h-4`} aria-hidden="true" />
-        <span className='sr-only'>{l10n.t(LocalizationKey.dashboardMediaItemMenuItemEditMetadata)}</span>
+        <span className='sr-only'>{localize(LocalizationKey.dashboardMediaItemMenuItemEditMetadata)}</span>
       </QuickAction>
 
       {viewData?.filePath ? (
@@ -62,8 +61,8 @@ export const FooterActions: React.FunctionComponent<IFooterActionsProps> = ({
           <QuickAction
             title={
               viewData.metadataInsert && viewData.fieldName
-                ? l10n.t(LocalizationKey.dashboardMediaItemQuickActionInsertField, viewData.fieldName)
-                : l10n.t(LocalizationKey.dashboardMediaItemQuickActionInsertMarkdown)
+                ? localize(LocalizationKey.dashboardMediaItemQuickActionInsertField, viewData.fieldName)
+                : localize(LocalizationKey.dashboardMediaItemQuickActionInsertMarkdown)
             }
             className={`text-[var(--frontmatter-secondary-text)]`}
             onClick={insertIntoArticle}
@@ -73,7 +72,7 @@ export const FooterActions: React.FunctionComponent<IFooterActionsProps> = ({
 
           {viewData?.position && snippets.length > 0 && (
             <QuickAction
-              title={l10n.t(LocalizationKey.commonInsertSnippet)}
+              title={localize(LocalizationKey.commonInsertSnippet)}
               className={`text-[var(--frontmatter-secondary-text)]`}
               onClick={insertSnippet}>
               <CodeBracketIcon className={`w-4 h-4`} aria-hidden="true" />
@@ -85,7 +84,7 @@ export const FooterActions: React.FunctionComponent<IFooterActionsProps> = ({
           {
             relPath && (
               <QuickAction
-                title={l10n.t(LocalizationKey.dashboardMediaItemQuickActionCopyPath)}
+                title={localize(LocalizationKey.dashboardMediaItemQuickActionCopyPath)}
                 className={`text-[var(--frontmatter-secondary-text)]`}
                 onClick={() => copyToClipboard(parseWinPath(relPath) || '')}>
                 <ClipboardIcon className={`w-4 h-4`} aria-hidden="true" />
@@ -101,7 +100,7 @@ export const FooterActions: React.FunctionComponent<IFooterActionsProps> = ({
         showTrigger />
 
       <QuickAction
-        title={l10n.t(LocalizationKey.dashboardMediaItemQuickActionDelete)}
+        title={localize(LocalizationKey.dashboardMediaItemQuickActionDelete)}
         className={`text-[var(--frontmatter-secondary-text)] hover:text-[var(--vscode-statusBarItem-errorBackground)]`}
         onClick={onDelete}>
         <TrashIcon className={`w-4 h-4`} aria-hidden="true" />

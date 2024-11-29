@@ -247,6 +247,7 @@
 
   "dashboard.media.folderItem.contentDirectory": "Content directory",
   "dashboard.media.folderItem.publicDirectory": "Public directory",
+  "dashboard.media.folderItem.deleteDescription": "Are you sure you want to delete the folder ({0})?",
 
   "dashboard.media.item.buttom.insert.image": "Insert image",
   "dashboard.media.item.buttom.insert.snippet": "Insert snippet",
