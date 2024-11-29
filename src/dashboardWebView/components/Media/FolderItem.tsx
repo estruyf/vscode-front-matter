@@ -47,7 +47,7 @@ export const FolderItem: React.FunctionComponent<IFolderItemProps> = ({
   return (
     <>
       <li
-        className={`flex flex-col group relative text-[var(--vscode-sideBarTitle-foreground)] hover:text-[var(--vscode-list-activeSelectionForeground)] dark:shadow-none bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] border border-[var(--frontmatter-border)] rounded`}
+        className={`flex flex-col group relative text-[var(--vscode-sideBarTitle-foreground)] hover:text-[var(--vscode-list-activeSelectionForeground)] shadow-md hover:shadow-xl dark:shadow-none bg-[var(--vscode-sideBar-background)] hover:bg-[var(--vscode-list-hoverBackground)] border border-[var(--frontmatter-border)] rounded`}
       >
         <button
           title={isContentFolder ? localize(LocalizationKey.dashboardMediaFolderItemContentDirectory) : localize(LocalizationKey.dashboardMediaFolderItemPublicDirectory)}
