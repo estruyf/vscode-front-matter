@@ -808,6 +808,10 @@ export enum LocalizationKey {
    */
   dashboardMediaFolderItemPublicDirectory = 'dashboard.media.folderItem.publicDirectory',
   /**
+   * Are you sure you want to delete the folder ({0})?
+   */
+  dashboardMediaFolderItemDeleteDescription = 'dashboard.media.folderItem.deleteDescription',
+  /**
    * Insert image
    */
   dashboardMediaItemButtomInsertImage = 'dashboard.media.item.buttom.insert.image',
@@ -2572,6 +2576,14 @@ export enum LocalizationKey {
    * Could not unpin item.
    */
   listenersDashboardDashboardListenerPinItemCoundNotUnPinError = 'listeners.dashboard.dashboardListener.pinItem.coundNotUnPin.error',
+  /**
+   * Deleting folder...
+   */
+  listenersDashboardMediaListenersDeleteMediaFolderProgressTitle = 'listeners.dashboard.mediaListeners.deleteMediaFolder.progress.title',
+  /**
+   * Updating folder...
+   */
+  listenersDashboardMediaListenersUpdateMediaFolderProgressTitle = 'listeners.dashboard.mediaListeners.updateMediaFolder.progress.title',
   /**
    * Template files copied.
    */

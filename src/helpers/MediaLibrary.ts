@@ -132,6 +132,15 @@ export class MediaLibrary {
     }
   }
 
+  public async getAllByPath(path: string) {
+    try {
+      const data = await this.db?.getData(path);
+      return data;
+    } catch {
+      return undefined;
+    }
+  }
+
   public set(id: string, metadata: any): void {
     const fileId = this.parsePath(id);
     this.db?.push(fileId, metadata, true);
