@@ -860,7 +860,7 @@ export class Folders {
     try {
       pattern = isWindows() ? parseWinPath(pattern) : pattern;
       const folders = await glob(pattern, {
-        ignore: 'node_modules/**',
+        ignore: '**/node_modules/**',
         dot: true
       });
 
@@ -903,7 +903,7 @@ export class Folders {
       pattern = isWindows() ? parseWinPath(pattern) : pattern;
       const files = await glob(pattern, {
         ignore: [
-          'node_modules/**',
+          '**/node_modules/**',
           ...excludePaths.map((path) => {
             // path can be a folder name or a wildcard.
             // If its a folder name, we need to add a wildcard to the end
