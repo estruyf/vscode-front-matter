@@ -49,7 +49,6 @@ export async function activate(context: vscode.ExtensionContext) {
   const extension = Extension.getInstance(context);
 
   Logger.info(`Activating ${EXTENSION_NAME} version ${Extension.getInstance().version}...`);
-  Logger.info(`Logging level: ${Logger.getLevel()}`);
 
   // Set development context
   if (!Extension.getInstance().isProductionMode) {

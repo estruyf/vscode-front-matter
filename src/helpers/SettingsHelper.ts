@@ -132,6 +132,8 @@ export class Settings {
       Settings.config = workspace.getConfiguration(CONFIG_KEY);
     });
 
+    Logger.info(`Logging level: ${Logger.getLevel()}`);
+
     Settings.onConfigChange();
   }
 
