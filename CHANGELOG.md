@@ -12,6 +12,8 @@
 
 ### 🐞 Fixes
 
+- [#895](https://github.com/estruyf/vscode-front-matter/issues/895): Fix issue with array values in filters
+
 ## [10.6.0] - 2024-11-06 - [Release notes](https://beta.frontmatter.codes/updates/v10.6.0)
 
 ### 🎨 Enhancements
