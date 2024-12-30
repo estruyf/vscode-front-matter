@@ -256,9 +256,6 @@ export class PagesParser {
         draft: article?.data.draft
       };
 
-      Logger.verbose(`PagesParser:processPageContent::FrontMatter: ${JSON.stringify(article.data)}`);
-      Logger.verbose(`PagesParser:processPageContent::Page: ${JSON.stringify(page)}`);
-
       let previewFieldParents = ContentType.findPreviewField(contentType.fields);
       if (previewFieldParents.length === 0) {
         const previewField = contentType.fields.find(
