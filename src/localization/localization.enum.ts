@@ -616,7 +616,7 @@ export enum LocalizationKey {
    */
   dashboardHeaderPaginationPrevious = 'dashboard.header.pagination.previous',
   /**
-   * next
+   * Next
    */
   dashboardHeaderPaginationNext = 'dashboard.header.pagination.next',
   /**
@@ -807,6 +807,10 @@ export enum LocalizationKey {
    * Public directory
    */
   dashboardMediaFolderItemPublicDirectory = 'dashboard.media.folderItem.publicDirectory',
+  /**
+   * Are you sure you want to delete the folder ({0})?
+   */
+  dashboardMediaFolderItemDeleteDescription = 'dashboard.media.folderItem.deleteDescription',
   /**
    * Insert image
    */
@@ -1449,18 +1453,6 @@ export enum LocalizationKey {
    */
   panelActionsTitle = 'panel.actions.title',
   /**
-   * More details
-   */
-  panelArticleDetailsTitle = 'panel.articleDetails.title',
-  /**
-   * Type
-   */
-  panelArticleDetailsType = 'panel.articleDetails.type',
-  /**
-   * Total
-   */
-  panelArticleDetailsTotal = 'panel.articleDetails.total',
-  /**
    * Headings
    */
   panelArticleDetailsHeadings = 'panel.articleDetails.headings',
@@ -1613,17 +1605,29 @@ export enum LocalizationKey {
    */
   panelSeoDetailsRecommended = 'panel.seoDetails.recommended',
   /**
-   * Keyword usage {0} *
+   * Checks
    */
-  panelSeoKeywordInfoDensity = 'panel.seoKeywordInfo.density',
+  panelSeoKeywordsChecks = 'panel.seoKeywords.checks',
   /**
-   * Used in heading(s)
+   * Frequency
+   */
+  panelSeoKeywordsDensityTableTitle = 'panel.seoKeywords.density.tableTitle',
+  /**
+   * Keyword density
+   */
+  panelSeoKeywordsDensity = 'panel.seoKeywords.density',
+  /**
+   * Heading(s)
    */
   panelSeoKeywordInfoValidInfoLabel = 'panel.seoKeywordInfo.validInfo.label',
   /**
    * Content
    */
   panelSeoKeywordInfoValidInfoContent = 'panel.seoKeywordInfo.validInfo.content',
+  /**
+   * Recommended frequency: 0.75% - 1.5%
+   */
+  panelSeoKeywordInfoDensityTooltip = 'panel.seoKeywordInfo.density.tooltip',
   /**
    * Keywords
    */
@@ -1639,19 +1643,15 @@ export enum LocalizationKey {
   /**
    * * A keyword density of 1-1.5% is sufficient in most cases.
    */
-  panelSeoKeywordsDensity = 'panel.seoKeywords.density',
+  panelSeoKeywordsDensityDescription = 'panel.seoKeywords.density.description',
   /**
-   * Recommendations
+   * Insights
    */
   panelSeoStatusTitle = 'panel.seoStatus.title',
   /**
    * Property
    */
   panelSeoStatusHeaderProperty = 'panel.seoStatus.header.property',
-  /**
-   * Length
-   */
-  panelSeoStatusHeaderLength = 'panel.seoStatus.header.length',
   /**
    * Valid
    */
@@ -2576,6 +2576,14 @@ export enum LocalizationKey {
    * Could not unpin item.
    */
   listenersDashboardDashboardListenerPinItemCoundNotUnPinError = 'listeners.dashboard.dashboardListener.pinItem.coundNotUnPin.error',
+  /**
+   * Deleting folder...
+   */
+  listenersDashboardMediaListenersDeleteMediaFolderProgressTitle = 'listeners.dashboard.mediaListeners.deleteMediaFolder.progress.title',
+  /**
+   * Updating folder...
+   */
+  listenersDashboardMediaListenersUpdateMediaFolderProgressTitle = 'listeners.dashboard.mediaListeners.updateMediaFolder.progress.title',
   /**
    * Template files copied.
    */

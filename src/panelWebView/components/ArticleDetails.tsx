@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
-import { VSCodeTable, VSCodeTableBody, VSCodeTableCell, VSCodeTableHead, VSCodeTableHeader, VSCodeTableRow } from './VSCode/VSCodeTable';
+import { VSCodeTableCell, VSCodeTableRow } from './VSCode/VSCodeTable';
 
 export interface IArticleDetailsProps {
   details: {
@@ -22,59 +22,42 @@ const ArticleDetails: React.FunctionComponent<IArticleDetailsProps> = ({
   }
 
   return (
-    <div className={`seo__status__details valid`}>
-      <h4>{l10n.t(LocalizationKey.panelArticleDetailsTitle)}</h4>
+    <>
+      {details?.headings !== undefined && (
+        <VSCodeTableRow>
+          <VSCodeTableCell>{l10n.t(LocalizationKey.panelArticleDetailsHeadings)}</VSCodeTableCell>
+          <VSCodeTableCell>{details.headings}</VSCodeTableCell>
+        </VSCodeTableRow>
+      )}
 
-      <VSCodeTable>
-        <VSCodeTableHeader>
-          <VSCodeTableRow>
-            <VSCodeTableHead>
-              {l10n.t(LocalizationKey.panelArticleDetailsType)}
-            </VSCodeTableHead>
-            <VSCodeTableHead>
-              {l10n.t(LocalizationKey.panelArticleDetailsTotal)}
-            </VSCodeTableHead>
-          </VSCodeTableRow>
-        </VSCodeTableHeader>
+      {details?.paragraphs !== undefined && (
+        <VSCodeTableRow>
+          <VSCodeTableCell>{l10n.t(LocalizationKey.panelArticleDetailsParagraphs)}</VSCodeTableCell>
+          <VSCodeTableCell>{details.paragraphs}</VSCodeTableCell>
+        </VSCodeTableRow>
+      )}
 
-        <VSCodeTableBody>
-          {details?.headings !== undefined && (
-            <VSCodeTableRow>
-              <VSCodeTableCell>{l10n.t(LocalizationKey.panelArticleDetailsHeadings)}</VSCodeTableCell>
-              <VSCodeTableCell>{details.headings}</VSCodeTableCell>
-            </VSCodeTableRow>
-          )}
+      {details?.internalLinks !== undefined && (
+        <VSCodeTableRow>
+          <VSCodeTableCell>{l10n.t(LocalizationKey.panelArticleDetailsInternalLinks)}</VSCodeTableCell>
+          <VSCodeTableCell>{details.internalLinks}</VSCodeTableCell>
+        </VSCodeTableRow>
+      )}
 
-          {details?.paragraphs !== undefined && (
-            <VSCodeTableRow>
-              <VSCodeTableCell>{l10n.t(LocalizationKey.panelArticleDetailsParagraphs)}</VSCodeTableCell>
-              <VSCodeTableCell>{details.paragraphs}</VSCodeTableCell>
-            </VSCodeTableRow>
-          )}
+      {details?.externalLinks !== undefined && (
+        <VSCodeTableRow>
+          <VSCodeTableCell>{l10n.t(LocalizationKey.panelArticleDetailsExternalLinks)}</VSCodeTableCell>
+          <VSCodeTableCell>{details.externalLinks}</VSCodeTableCell>
+        </VSCodeTableRow>
+      )}
 
-          {details?.internalLinks !== undefined && (
-            <VSCodeTableRow>
-              <VSCodeTableCell>{l10n.t(LocalizationKey.panelArticleDetailsInternalLinks)}</VSCodeTableCell>
-              <VSCodeTableCell>{details.internalLinks}</VSCodeTableCell>
-            </VSCodeTableRow>
-          )}
-
-          {details?.externalLinks !== undefined && (
-            <VSCodeTableRow>
-              <VSCodeTableCell>{l10n.t(LocalizationKey.panelArticleDetailsExternalLinks)}</VSCodeTableCell>
-              <VSCodeTableCell>{details.externalLinks}</VSCodeTableCell>
-            </VSCodeTableRow>
-          )}
-
-          {details?.images !== undefined && (
-            <VSCodeTableRow>
-              <VSCodeTableCell>{l10n.t(LocalizationKey.panelArticleDetailsImages)}</VSCodeTableCell>
-              <VSCodeTableCell>{details.images}</VSCodeTableCell>
-            </VSCodeTableRow>
-          )}
-        </VSCodeTableBody>
-      </VSCodeTable>
-    </div>
+      {details?.images !== undefined && (
+        <VSCodeTableRow>
+          <VSCodeTableCell>{l10n.t(LocalizationKey.panelArticleDetailsImages)}</VSCodeTableCell>
+          <VSCodeTableCell>{details.images}</VSCodeTableCell>
+        </VSCodeTableRow>
+      )}
+    </>
   );
 };
 

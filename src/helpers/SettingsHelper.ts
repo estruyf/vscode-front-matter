@@ -43,7 +43,8 @@ import {
   SETTING_TAXONOMY_TAGS,
   SETTING_TAXONOMY_CATEGORIES,
   SETTING_CONTENT_FILTERS,
-  SETTING_CONTENT_I18N
+  SETTING_CONTENT_I18N,
+  SETTING_CONTENT_GROUPING
 } from '../constants';
 import { Folders } from '../commands/Folders';
 import { join, basename, dirname, parse } from 'path';
@@ -130,6 +131,8 @@ export class Settings {
     Settings.attachListener('settings-init', async () => {
       Settings.config = workspace.getConfiguration(CONFIG_KEY);
     });
+
+    Logger.info(`Logging level: ${Logger.getLevel()}`);
 
     Settings.onConfigChange();
   }
@@ -867,7 +870,8 @@ ${JSON.stringify(value, null, 2)}`,
           settingName === SETTING_GLOBAL_NOTIFICATIONS_DISABLED ||
           settingName === SETTING_MEDIA_SUPPORTED_MIMETYPES ||
           settingName === SETTING_COMMA_SEPARATED_FIELDS ||
-          settingName === SETTING_CONTENT_FILTERS
+          settingName === SETTING_CONTENT_FILTERS || 
+          settingName === SETTING_CONTENT_GROUPING
         ) {
           if (typeof originalConfig[key] === 'undefined') {
             Settings.globalConfig[key] = value;

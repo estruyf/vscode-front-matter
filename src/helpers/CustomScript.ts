@@ -15,6 +15,8 @@ import { ParsedFrontMatter } from '../parsers';
 import { SETTING_CUSTOM_SCRIPTS } from '../constants';
 import { evaluateCommand, existsAsync, getPlatform } from '../utils';
 import { LocalizationKey, localize } from '../localization';
+import { ScriptAction } from '../models';
+import { Copilot } from '../services/Copilot';
 
 export class CustomScript {
   /**
@@ -267,12 +269,7 @@ export class CustomScript {
       try {
         const data: {
           frontmatter?: { [key: string]: any };
-          fmAction?:
-            | 'open'
-            | 'copyMediaMetadata'
-            | 'copyMediaMetadataAndDelete'
-            | 'deleteMedia'
-            | 'fieldAction';
+          fmAction?: ScriptAction;
           fmPath?: string;
           fmSourcePath?: string;
           fmDestinationPath?: string;
@@ -425,14 +422,31 @@ export class CustomScript {
     const fullScript = `${command} "${scriptPath}" ${args}`;
     Logger.info(localize(LocalizationKey.helpersCustomScriptExecuting, fullScript));
 
+    const output = await CustomScript.processExecution(fullScript, wsPath);
+    return output;
+  }
+
+  // Recursive function to process the execution of the script
+  private static async processExecution(fullScript: string, wsPath: string): Promise<string> {
     const output: string = await CustomScript.executeScriptAsync(fullScript, wsPath);
 
     try {
       const data = JSON.parse(output);
-      if (data.questions) {
+      const { questions, fmAction, fmPrompt } = data as {
+        questions?: {
+          name: string;
+          message: string;
+          default?: string;
+          options?: string[];
+        }[];
+        fmAction?: ScriptAction;
+        fmPrompt?: any; // When the 'promptCopilot' action is used
+      };
+
+      if (questions) {
         const answers: string[] = [];
 
-        for (const question of data.questions) {
+        for (const question of questions) {
           if (question.name && question.message) {
             let answer;
             if (question.options) {
@@ -460,7 +474,16 @@ export class CustomScript {
 
         if (answers.length > 0) {
           const newScript = `${fullScript} ${answers.join(' ')}`;
-          return await CustomScript.executeScriptAsync(newScript, wsPath);
+          return await CustomScript.processExecution(newScript, wsPath);
+        }
+      } else if (fmAction) {
+        if (fmAction === 'promptCopilot' && fmPrompt) {
+          const response = await Copilot.promptCopilot(fmPrompt);
+          if (response) {
+            const promptResponse = `promptResponse="${response}"`;
+            const newScript = `${fullScript} ${promptResponse}`;
+            return await CustomScript.processExecution(newScript, wsPath);
+          }
         }
       }
     } catch (error) {

@@ -107,7 +107,14 @@ export default function usePages(pages: Page[]) {
         for (const filter of filterNames) {
           const filterValue = filters[filter];
           if (filterValue) {
-            pagesSorted = pagesSorted.filter((page) => page[filter] === filterValue);
+            pagesSorted = pagesSorted.filter((page) => {
+              const value = page[filter];
+              if (Array.isArray(value)) {
+                return value.includes(filterValue);
+              } else {
+                return value === filterValue;
+              }
+            });
           }
         }
       }

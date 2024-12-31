@@ -187,7 +187,7 @@
 
   "dashboard.header.pagination.first": "First",
   "dashboard.header.pagination.previous": "Previous",
-  "dashboard.header.pagination.next": "next",
+  "dashboard.header.pagination.next": "Next",
   "dashboard.header.pagination.last": "Last",
 
   "dashboard.header.paginationStatus.text": "Showing {0} to {1} of {2} results",
@@ -247,6 +247,7 @@
 
   "dashboard.media.folderItem.contentDirectory": "Content directory",
   "dashboard.media.folderItem.publicDirectory": "Public directory",
+  "dashboard.media.folderItem.deleteDescription": "Are you sure you want to delete the folder ({0})?",
 
   "dashboard.media.item.buttom.insert.image": "Insert image",
   "dashboard.media.item.buttom.insert.snippet": "Insert snippet",
@@ -448,9 +449,6 @@
 
   "panel.actions.title": "Actions",
 
-  "panel.articleDetails.title": "More details",
-  "panel.articleDetails.type": "Type",
-  "panel.articleDetails.total": "Total",
   "panel.articleDetails.headings": "Headings",
   "panel.articleDetails.paragraphs": "Paragraphs",
   "panel.articleDetails.internalLinks": "Internal links",
@@ -499,18 +497,20 @@
 
   "panel.seoDetails.recommended": "Recommended",
 
-  "panel.seoKeywordInfo.density": "Keyword usage {0} *",
-  "panel.seoKeywordInfo.validInfo.label": "Used in heading(s)",
+  "panel.seoKeywords.checks": "Checks",
+  "panel.seoKeywords.density.tableTitle": "Frequency",
+  "panel.seoKeywords.density": "Keyword density",
+  "panel.seoKeywordInfo.validInfo.label": "Heading(s)",
   "panel.seoKeywordInfo.validInfo.content": "Content",
+  "panel.seoKeywordInfo.density.tooltip": "Recommended frequency: 0.75% - 1.5%",
 
   "panel.seoKeywords.title": "Keywords",
   "panel.seoKeywords.header.keyword": "Keyword",
   "panel.seoKeywords.header.details": "Details",
-  "panel.seoKeywords.density": "* A keyword density of 1-1.5% is sufficient in most cases.",
+  "panel.seoKeywords.density.description": "* A keyword density of 1-1.5% is sufficient in most cases.",
 
-  "panel.seoStatus.title": "Recommendations",
+  "panel.seoStatus.title": "Insights",
   "panel.seoStatus.header.property": "Property",
-  "panel.seoStatus.header.length": "Length",
   "panel.seoStatus.header.valid": "Valid",
   "panel.seoStatus.seoFieldInfo.characters": "{0} chars",
   "panel.seoStatus.seoFieldInfo.words": "{0} words",
@@ -589,7 +589,7 @@
   "commands.i18n.createOrOpen.quickPick.category.new": "New translations",
   "commands.i18n.createOrOpen.quickPick.action.create": "Create \"{0}\"",
   "commands.i18n.translate.progress.title": "Translating content...",
-  
+
   "commands.preview.panel.title": "Preview: {0}",
   "commands.preview.askUserToPickFolder.title": "Select the folder of the article to preview",
 
@@ -775,6 +775,9 @@
   "listeners.dashboard.dashboardListener.pinItem.noPath.error": "No path provided.",
   "listeners.dashboard.dashboardListener.pinItem.coundNotPin.error": "Could not pin item.",
   "listeners.dashboard.dashboardListener.pinItem.coundNotUnPin.error": "Could not unpin item.",
+
+  "listeners.dashboard.mediaListeners.deleteMediaFolder.progress.title": "Deleting folder...",
+  "listeners.dashboard.mediaListeners.updateMediaFolder.progress.title": "Updating folder...",
 
   "listeners.dashboard.settingsListener.triggerTemplate.notification": "Template files copied.",
   "listeners.dashboard.settingsListener.triggerTemplate.progress.title": "Downloading and initializing the template...",

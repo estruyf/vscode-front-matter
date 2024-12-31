@@ -24,17 +24,35 @@ export const Filters: React.FunctionComponent<IFiltersProps> = () => {
     return otherFilters?.map((filter) => {
       const filterName = typeof filter === "string" ? filter : filter.name;
       const filterTitle = typeof filter === "string" ? firstToUpper(filter) : filter.title;
-      const values = filterValues?.[filterName];
+      let values = filterValues?.[filterName];
       if (!values || values.length === 0) {
         return null;
       }
+
+      // Get all the unique values
+      const individualValues = new Set<string>();
+      values.forEach((value) => {
+        if (value.length === 0) {
+          return;
+        }
+
+        if (Array.isArray(value)) {
+          value.forEach((v) => individualValues.add(v));
+        }
+
+        if (typeof value === "string") {
+          individualValues.add(value);
+        }
+      });
+
+      values = Array.from(individualValues);
 
       return (
         <Filter
           key={filterName}
           label={filterTitle}
           activeItem={crntFilters[filterName]}
-          items={values}
+          items={values as string[]}
           onClick={(value) => setCrntFilters((prev) => {
             const clone = Object.assign({}, prev);
             if (!clone[filterName] && value) {

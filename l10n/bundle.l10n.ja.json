@@ -438,9 +438,6 @@
 
   "panel.actions.title": "コマンド",
 
-  "panel.articleDetails.title": "詳細",
-  "panel.articleDetails.type": "項目",
-  "panel.articleDetails.total": "数",
   "panel.articleDetails.headings": "見出し",
   "panel.articleDetails.paragraphs": "パラグラフ",
   "panel.articleDetails.internalLinks": "内部リンク",
@@ -489,18 +486,15 @@
 
   "panel.seoDetails.recommended": "推奨",
 
-  "panel.seoKeywordInfo.density": "キーワード出現率 {0} *",
   "panel.seoKeywordInfo.validInfo.label": "見出しへの利用",
   "panel.seoKeywordInfo.validInfo.content": "本文",
 
   "panel.seoKeywords.title": "キーワード",
   "panel.seoKeywords.header.keyword": "キーワード",
   "panel.seoKeywords.header.details": "詳細",
-  "panel.seoKeywords.density": "* キーワード出現率は通常1~1.5%で十分です。",
+  "panel.seoKeywords.density.description": "* キーワード出現率は通常1~1.5%で十分です。",
 
-  "panel.seoStatus.title": "推奨項目",
   "panel.seoStatus.header.property": "項目",
-  "panel.seoStatus.header.length": "長さ",
   "panel.seoStatus.header.valid": "有効",
   "panel.seoStatus.seoFieldInfo.characters": "{0} 文字",
   "panel.seoStatus.seoFieldInfo.words": "{0} 語",

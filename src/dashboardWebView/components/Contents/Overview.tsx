@@ -10,8 +10,7 @@ import { GroupingSelector, PageAtom, PagedItems, ViewSelector } from '../../stat
 import { Item } from './Item';
 import { List } from './List';
 import usePagination from '../../hooks/usePagination';
-import * as l10n from '@vscode/l10n';
-import { LocalizationKey } from '../../../localization';
+import { LocalizationKey, localize } from '../../../localization';
 import { PinnedItemsAtom } from '../../state/atom/PinnedItems';
 import { messageHandler } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
@@ -54,13 +53,18 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
 
   const groupName = useCallback(
     (groupId, groupedPages) => {
+      const count = groupedPages[groupId].length;
       if (grouping === GroupOption.Draft) {
-        return `${groupId} (${groupedPages[groupId].length})`;
+        return `${groupId} (${count})`;
+      } else if (typeof grouping === 'string') {
+        const group = settings?.grouping?.find((g) => g.name === grouping);
+        const prefix = group?.title ? `${group.title}: ` : '';
+        return `${prefix}${groupId} (${count})`;
       }
 
-      return `${GroupOption[grouping]}: ${groupId} (${groupedPages[groupId].length})`;
+      return `${GroupOption[grouping]}: ${groupId} (${count})`;
     },
-    [grouping]
+    [grouping, settings?.grouping]
   );
 
   const { groupKeys, groupedPages } = useMemo(() => {
@@ -68,7 +72,18 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
       return { groupKeys: [], groupedPages: {} };
     }
 
-    let groupedPages = groupBy(pages, grouping === GroupOption.Year ? 'fmYear' : 'fmDraft');
+    let groupName: string | undefined;
+    if (grouping === GroupOption.Year) {
+      groupName = 'fmYear';
+    } else if (grouping === GroupOption.Draft) {
+      groupName = 'fmDraft';
+    } else if (typeof grouping === 'string') {
+      groupName = grouping;
+    } else {
+      return { groupKeys: [], groupedPages: {} };
+    }
+
+    let groupedPages = groupBy(pages, groupName);
     let groupKeys = Object.keys(groupedPages);
 
     if (grouping === GroupOption.Year) {
@@ -96,6 +111,8 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
           ...groupedPages,
         }
       }
+    } else {
+      groupKeys = groupKeys.sort();
     }
 
     return { groupKeys, groupedPages };
@@ -127,9 +144,11 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
             className={`h-32 mx-auto opacity-90 mb-8 text-[var(--vscode-editor-foreground)]`}
           />
           {settings && settings?.contentFolders?.length > 0 ? (
-            <p className={`text-xl font-medium`}>{l10n.t(LocalizationKey.dashboardContentsOverviewNoMarkdown)}</p>
+            <p className={`text-xl font-medium`}>{localize(LocalizationKey.dashboardContentsOverviewNoMarkdown)}</p>
+            
           ) : (
-            <p className={`text-lg font-medium`}>{l10n.t(LocalizationKey.dashboardContentsOverviewNoFolders)}</p>
+            <p className={`text-lg font-medium`}>{localize(LocalizationKey.dashboardContentsOverviewNoFolders)}</p>
+            
           )}
         </div>
       </div>
@@ -176,7 +195,8 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
           <div className='mb-8'>
             <h1 className='text-xl flex space-x-2 items-center mb-4'>
               <PinIcon className={`-rotate-45`} />
-              <span>{l10n.t(LocalizationKey.dashboardContentsOverviewPinned)}</span>
+              <span>{localize(LocalizationKey.dashboardContentsOverviewPinned)}</span>
+              
             </h1>
             <List>
               {pinnedPages.map((page, idx) => (

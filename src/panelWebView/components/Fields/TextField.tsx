@@ -78,13 +78,10 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
 
   const border = useMemo(() => {
     if (showRequiredState) {
-      updateRequired(false);
       return '1px solid var(--vscode-inputValidation-errorBorder)';
     } else if (!isValid) {
-      updateRequired(true);
       return '1px solid var(--vscode-inputValidation-warningBorder)';
     } else {
-      updateRequired(true);
       return '1px solid var(--vscode-inputValidation-infoBorder)';
     }
   }, [showRequiredState, isValid]);
@@ -161,6 +158,16 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
       </>
     );
   }, [settings?.aiEnabled, settings?.copilotEnabled, settings?.seo, name, actions, loading]);
+
+  useEffect(() => {
+    if (showRequiredState) {
+      updateRequired(false);
+    } else if (!isValid) {
+      updateRequired(true);
+    } else {
+      updateRequired(true);
+    }
+  }, [showRequiredState, isValid]);
 
   useEffect(() => {
     if (text !== value && (lastUpdated === null || Date.now() - DEBOUNCE_TIME > lastUpdated)) {

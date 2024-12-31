@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Tag } from './Tag';
-import * as l10n from '@vscode/l10n';
-import { LocalizationKey } from '../../localization';
+import { LocalizationKey, localize } from '../../localization';
 
 export interface ITagsProps {
   values: string[];
@@ -34,7 +33,7 @@ const Tags: React.FunctionComponent<ITagsProps> = (props: React.PropsWithChildre
           value={t}
           className={`article__tags__items__pill_exists`}
           onRemove={onRemove}
-          title={l10n.t(LocalizationKey.commonRemoveValue, t)}
+          title={localize(LocalizationKey.commonRemoveValue, t)}
         />
       ))}
       {unknownTags.map((t, idx) => (
@@ -44,7 +43,7 @@ const Tags: React.FunctionComponent<ITagsProps> = (props: React.PropsWithChildre
           className={`article__tags__items__pill_notexists`}
           onRemove={onRemove}
           onCreate={onCreate}
-          title={l10n.t(LocalizationKey.panelTagsTagWarning, t)}
+          title={localize(LocalizationKey.panelTagsTagWarning, t)}
           disableConfigurable={disableConfigurable}
         />
       ))}

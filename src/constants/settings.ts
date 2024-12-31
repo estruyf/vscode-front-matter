@@ -13,6 +13,7 @@ export const SETTING_GLOBAL_NOTIFICATIONS = 'global.notifications';
 export const SETTING_GLOBAL_NOTIFICATIONS_DISABLED = 'global.disabledNotifications';
 export const SETTING_GLOBAL_MODES = 'global.modes';
 export const SETTING_GLOBAL_ACTIVE_MODE = 'global.activeMode';
+export const SETTING_GLOBAL_TIMEZONE = 'global.timezone';
 
 export const SETTING_TAXONOMY_TAGS = 'taxonomy.tags';
 export const SETTING_TAXONOMY_CATEGORIES = 'taxonomy.categories';
@@ -61,6 +62,7 @@ export const SETTING_CONTENT_STATIC_FOLDER = 'content.publicFolder';
 export const SETTING_CONTENT_FRONTMATTER_HIGHLIGHT = 'content.fmHighlight';
 export const SETTING_CONTENT_DRAFT_FIELD = 'content.draftField';
 export const SETTING_CONTENT_SORTING = 'content.sorting';
+export const SETTING_CONTENT_GROUPING = 'content.grouping';
 export const SETTING_CONTENT_FILTERS = 'content.filters';
 export const SETTING_CONTENT_WYSIWYG = 'content.wysiwyg';
 export const SETTING_CONTENT_PLACEHOLDERS = 'content.placeholders';

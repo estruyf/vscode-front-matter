@@ -8,6 +8,7 @@ import {
   ExtensionState,
   SETTING_CONTENT_DRAFT_FIELD,
   SETTING_CONTENT_FILTERS,
+  SETTING_CONTENT_GROUPING,
   SETTING_CONTENT_SORTING,
   SETTING_CONTENT_SORTING_DEFAULT,
   SETTING_DASHBOARD_OPENONSTART,
@@ -118,6 +119,8 @@ export class DashboardSettings {
         contentFolders: await Folders.get(),
         filters:
           Settings.get<(FilterType | { title: string; name: string })[]>(SETTING_CONTENT_FILTERS),
+        grouping:
+          Settings.get<{ title: string; name: string }[]>(SETTING_CONTENT_GROUPING),
         crntFramework: Settings.get<string>(SETTING_FRAMEWORK_ID),
         framework: !isInitialized && wsFolder ? await FrameworkDetector.get(wsFolder.fsPath) : null,
         scripts: Settings.get<CustomScript[]>(SETTING_CUSTOM_SCRIPTS) || [],

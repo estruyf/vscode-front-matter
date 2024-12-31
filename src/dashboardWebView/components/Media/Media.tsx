@@ -8,6 +8,7 @@ import {
   PagedItems,
   SelectedMediaFolderAtom,
   SettingsSelector,
+  SortingAtom,
   ViewDataSelector
 } from '../../state';
 import { Spinner } from '../Common/Spinner';
@@ -30,18 +31,18 @@ import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { MediaItemPanel } from './MediaItemPanel';
 import { FilesProvider } from '../../providers/FilesProvider';
+import { SortOption } from '../../constants/SortOption';
 
 export interface IMediaProps { }
 
-export const Media: React.FunctionComponent<IMediaProps> = (
-  _: React.PropsWithChildren<IMediaProps>
-) => {
+export const Media: React.FunctionComponent<IMediaProps> = () => {
   const { media } = useMedia();
   const settings = useRecoilValue(SettingsSelector);
   const viewData = useRecoilValue(ViewDataSelector);
   const selectedFolder = useRecoilValue(SelectedMediaFolderAtom);
   const folders = useRecoilValue(MediaFoldersAtom);
   const loading = useRecoilValue(LoadingAtom);
+  const crntSorting = useRecoilValue(SortingAtom);
   const [, setPagedItems] = useRecoilState(PagedItems);
 
   const currentStaticFolder = useMemo(() => {
@@ -85,11 +86,18 @@ export const Media: React.FunctionComponent<IMediaProps> = (
       currentStaticFolder &&
       settings?.staticFolder !== STATIC_FOLDER_PLACEHOLDER.hexo.placeholder
     ) {
-      return folders.filter((f) => parseWinPath(f).includes(currentStaticFolder));
+      const allFolders = folders.filter((f) => parseWinPath(f).includes(currentStaticFolder));
+      if (crntSorting && crntSorting.id === SortOption.FileNameAsc) {
+        return allFolders.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+      } else if (crntSorting && crntSorting.id === SortOption.FileNameDesc) {
+        return allFolders.sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
+      } else {
+        return allFolders;
+      }
     }
 
     return undefined;
-  }, [folders, viewData, currentStaticFolder, settings?.staticFolder]);
+  }, [folders, viewData, currentStaticFolder, settings?.staticFolder, crntSorting]);
 
   const allMedia = useMemo(() => {
     let mediaFiles: MediaInfo[] = Object.assign([], media);

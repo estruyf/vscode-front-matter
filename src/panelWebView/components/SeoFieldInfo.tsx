@@ -7,19 +7,20 @@ export interface ISeoFieldInfoProps {
   value: string;
   recommendation: string;
   isValid?: boolean;
+  className?: string;
 }
 
 const SeoFieldInfo: React.FunctionComponent<ISeoFieldInfoProps> = ({
   title,
   value,
   recommendation,
-  isValid
+  isValid,
+  className
 }: React.PropsWithChildren<ISeoFieldInfoProps>) => {
   return (
-    <VSCodeTableRow>
+    <VSCodeTableRow className={className || ""}>
       <VSCodeTableCell className={`capitalize`}>{title}</VSCodeTableCell>
-      <VSCodeTableCell>{value}/{recommendation}</VSCodeTableCell>
-      <VSCodeTableCell>{isValid !== undefined ? <ValidInfo label={undefined} isValid={isValid} /> : <span>-</span>}</VSCodeTableCell>
+      <VSCodeTableCell className='flex items-center text-nowrap'>{isValid !== undefined ? <ValidInfo label={undefined} isValid={isValid} /> : <span className='inline-block w-4 mr-2'>&mdash;</span>} {value}/{recommendation}</VSCodeTableCell>
     </VSCodeTableRow>
   );
 };

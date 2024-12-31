@@ -22,6 +22,7 @@ export * from './Mode';
 export * from './PanelSettings';
 export * from './PostMessageData';
 export * from './Project';
+export * from './ScriptAction';
 export * from './ShellSetting';
 export * from './Snippets';
 export * from './SortOrder';

@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { SeoKeywordInfo } from './SeoKeywordInfo';
 import { ErrorBoundary } from '@sentry/react';
-import * as l10n from '@vscode/l10n';
-import { LocalizationKey } from '../../localization';
+import { LocalizationKey, localize } from '../../localization';
 import { VSCodeTable, VSCodeTableBody, VSCodeTableHead, VSCodeTableHeader, VSCodeTableRow } from './VSCode/VSCodeTable';
+import { Tooltip } from 'react-tooltip'
 
 export interface ISeoKeywordsProps {
   keywords: string[] | null;
@@ -22,6 +22,8 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({
 }: React.PropsWithChildren<ISeoKeywordsProps>) => {
   const [isReady, setIsReady] = React.useState(false);
 
+  const tooltipClasses = `!py-[2px] !px-[8px] !rounded-[3px] !border-[var(--vscode-editorHoverWidget-border)] !border !border-solid !bg-[var(--vscode-editorHoverWidget-background)] !text-[var(--vscode-editorHoverWidget-foreground)] !font-normal !opacity-100 shadow-[0_2px_8px_var(--vscode-widget-shadow)]`;
+
   const validateKeywords = () => {
     if (!keywords) {
       return [];
@@ -38,6 +40,10 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({
     return [];
   };
 
+  const validKeywords = React.useMemo(() => {
+    return validateKeywords();
+  }, [keywords]);
+
   // Workaround for lit components not updating render
   React.useEffect(() => {
     setIsReady(false);
@@ -51,38 +57,46 @@ const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({
   }
 
   return (
-    <div className={`seo__status__keywords`}>
-      <h4>{l10n.t(LocalizationKey.panelSeoKeywordsTitle)}</h4>
-
-      <VSCodeTable>
+    <section className={`seo__keywords__table`}>
+      <VSCodeTable disableOverflow>
         <VSCodeTableHeader>
-          <VSCodeTableRow>
+          <VSCodeTableRow className={`border-t border-t-[var(--vscode-editorGroup-border)]`}>
             <VSCodeTableHead>
-              {l10n.t(LocalizationKey.panelSeoKeywordsHeaderKeyword)}
+              {localize(LocalizationKey.panelSeoKeywordsHeaderKeyword)}
             </VSCodeTableHead>
-            <VSCodeTableHead>
-              {l10n.t(LocalizationKey.panelSeoKeywordsHeaderDetails)}
+            <VSCodeTableHead className={`text-center`}>
+              {localize(LocalizationKey.panelSeoKeywordsChecks)}
+            </VSCodeTableHead>
+            
+            <VSCodeTableHead className={`text-center`}>
+              <span
+                data-tooltip-id="tooltip-density"
+                data-tooltip-content={localize(LocalizationKey.panelSeoKeywordsDensity)}>
+                {localize(LocalizationKey.panelSeoKeywordsDensityTableTitle)}
+              </span>
+              <Tooltip id="tooltip-density" className={tooltipClasses} style={{
+                fontSize: '12px',
+                lineHeight: '19px'
+              }} />
             </VSCodeTableHead>
           </VSCodeTableRow>
         </VSCodeTableHeader>
 
         <VSCodeTableBody>
-          {validateKeywords().map((keyword, index) => {
+          {validKeywords.map((keyword, index) => {
             return (
-              <ErrorBoundary key={keyword} fallback={<div />}>
-                <SeoKeywordInfo key={index} keyword={keyword} {...data} />
-              </ErrorBoundary>
+              <SeoKeywordInfo key={`${keyword}-${index}`} keywords={validKeywords} keyword={keyword} {...data} />
             );
           })}
         </VSCodeTableBody>
       </VSCodeTable>
 
       {data.wordCount && (
-        <div className={`text-xs mt-2`}>
-          {l10n.t(LocalizationKey.panelSeoKeywordsDensity)}
+        <div className={`text-xs my-2`}>
+          {localize(LocalizationKey.panelSeoKeywordsDensityDescription)}
         </div>
       )}
-    </div>
+    </section>
   );
 };
 

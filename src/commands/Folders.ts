@@ -23,7 +23,6 @@ import { Template } from './Template';
 import { Notifications } from '../helpers/Notifications';
 import { Extension, Logger, Settings, processTimePlaceholders } from '../helpers';
 import { existsSync } from 'fs';
-import { format } from 'date-fns';
 import { Dashboard } from './Dashboard';
 import { parseWinPath } from '../helpers/parseWinPath';
 import { MediaHelpers } from '../helpers/MediaHelpers';
@@ -31,7 +30,7 @@ import { MediaListener, PagesListener, SettingsListener } from '../listeners/das
 import { DEFAULT_FILE_TYPES } from '../constants/DefaultFileTypes';
 import { glob } from 'glob';
 import { mkdirAsync } from '../utils/mkdirAsync';
-import { existsAsync, isWindows, lstatAsync } from '../utils';
+import { existsAsync, formatInTimezone, isWindows, lstatAsync } from '../utils';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 import { Preview } from './Preview';
@@ -85,7 +84,7 @@ export class Folders {
       prompt: l10n.t(LocalizationKey.commandsFoldersAddMediaFolderInputBoxPrompt),
       value: startPath,
       ignoreFocusOut: true,
-      placeHolder: `${format(new Date(), `yyyy/MM`)}`
+      placeHolder: `${formatInTimezone(new Date(), `yyyy/MM`)}`
     });
 
     if (!folderName) {
@@ -861,7 +860,7 @@ export class Folders {
     try {
       pattern = isWindows() ? parseWinPath(pattern) : pattern;
       const folders = await glob(pattern, {
-        ignore: 'node_modules/**',
+        ignore: '**/node_modules/**',
         dot: true
       });
 
@@ -904,7 +903,7 @@ export class Folders {
       pattern = isWindows() ? parseWinPath(pattern) : pattern;
       const files = await glob(pattern, {
         ignore: [
-          'node_modules/**',
+          '**/node_modules/**',
           ...excludePaths.map((path) => {
             // path can be a folder name or a wildcard.
             // If its a folder name, we need to add a wildcard to the end

@@ -98,4 +98,17 @@ export const updateCssVariables = (isDarkTheme = true) => {
     '--frontmatter-border-active',
     darkenColor(borderColor, isDarkTheme ? -30 : 30) || 'var(--vscode-activityBar-activeBorder)'
   );
+
+  // SEO - Success/Warning colors
+  const successColor = styles.getPropertyValue('--vscode-charts-green');
+  document.documentElement.style.setProperty(
+    '--frontmatter-success-background',
+    opacityColor(successColor, 0.05) || 'var(--vscode-charts-green)'
+  );
+
+  const warningColor = styles.getPropertyValue('--vscode-statusBarItem-warningBackground');
+  document.documentElement.style.setProperty(
+    '--frontmatter-warning-background',
+    opacityColor(warningColor, 0.05) || 'var(--vscode-statusBarItem-warningBackground)'
+  );
 };

@@ -10,12 +10,6 @@
       "values": ["#build", "#deploy", "#skip"]
     }
   ],
-  "workbench.colorCustomizations": {
-    "titleBar.activeBackground": "#15c2cb",
-    "titleBar.inactiveBackground": "#44ffd299",
-    "titleBar.activeForeground": "#0E131F",
-    "titleBar.inactiveForeground": "#0E131F99"
-  },
   "files.exclude": {
     "out": false // set this to true to hide the "out" folder with the compiled JS files
   },

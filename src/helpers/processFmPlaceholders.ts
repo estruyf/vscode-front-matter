@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { formatInTimezone } from '../utils';
 
 export const processFmPlaceholders = (value: string, fmData: { [key: string]: any }) => {
   // Example: {{fm.date}} or {{fm.date | dateFormat 'DD.MM.YYYY'}}
@@ -27,7 +27,7 @@ export const processFmPlaceholders = (value: string, fmData: { [key: string]: an
 
             // Parse the date value and format it
             if (fieldValue) {
-              const formattedDate = format(new Date(fieldValue), dateFormat);
+              const formattedDate = formatInTimezone(new Date(fieldValue), dateFormat);
               value = value.replace(match, formattedDate);
             }
           } else if (fieldValue) {
