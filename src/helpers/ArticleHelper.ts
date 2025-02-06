@@ -572,7 +572,7 @@ export class ArticleHelper {
         await mkdirAsync(newFolder, { recursive: true });
         newFilePath = join(
           newFolder,
-          `${sanitize(contentType.defaultFileName ?? `index`)}.${
+          `${sanitize(contentType.defaultFileName || `index`, { isFileName: true })}.${
             fileExtension || contentType.fileType || fileType
           }`
         );

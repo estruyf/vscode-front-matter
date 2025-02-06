@@ -1,5 +1,17 @@
 # Change Log
 
+## [10.8.0] - 2025-02-xx
+
+### ✨ New features
+
+### 🎨 Enhancements
+
+### ⚡️ Optimizations
+
+### 🐞 Fixes
+
+- [#914](https://github.com/estruyf/vscode-front-matter/issues/914): Fix sanitizing of default filenames with an `_` in it
+
 ## [10.7.0] - 2024-12-31 - [Release notes](https://beta.frontmatter.codes/updates/v10.7.0)
 
 ### 🎨 Enhancements
