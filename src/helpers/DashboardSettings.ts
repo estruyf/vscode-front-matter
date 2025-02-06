@@ -31,7 +31,8 @@ import {
   SETTING_DASHBOARD_CONTENT_CARD_STATE,
   SETTING_DASHBOARD_CONTENT_CARD_DESCRIPTION,
   SETTING_WEBSITE_URL,
-  SETTING_MEDIA_CONTENTTYPES
+  SETTING_MEDIA_CONTENTTYPES,
+  SETTING_PANEL_OPEN_ON_SUPPORTED_FILE
 } from '../constants';
 import {
   DashboardViewType,
@@ -108,6 +109,7 @@ export class DashboardSettings {
         categories: (await TaxonomyHelper.get(TaxonomyType.Category)) || [],
         customTaxonomy: Settings.get(SETTING_TAXONOMY_CUSTOM, true) || [],
         openOnStart: Settings.get(SETTING_DASHBOARD_OPENONSTART),
+        openPanelForSupportedFiles: Settings.get(SETTING_PANEL_OPEN_ON_SUPPORTED_FILE),
         versionInfo: ext.getVersion(),
         pageViewType: await ext.getState<DashboardViewType | undefined>(
           ExtensionState.PagesView,
@@ -119,8 +121,7 @@ export class DashboardSettings {
         contentFolders: await Folders.get(),
         filters:
           Settings.get<(FilterType | { title: string; name: string })[]>(SETTING_CONTENT_FILTERS),
-        grouping:
-          Settings.get<{ title: string; name: string }[]>(SETTING_CONTENT_GROUPING),
+        grouping: Settings.get<{ title: string; name: string }[]>(SETTING_CONTENT_GROUPING),
         crntFramework: Settings.get<string>(SETTING_FRAMEWORK_ID),
         framework: !isInitialized && wsFolder ? await FrameworkDetector.get(wsFolder.fsPath) : null,
         scripts: Settings.get<CustomScript[]>(SETTING_CUSTOM_SCRIPTS) || [],

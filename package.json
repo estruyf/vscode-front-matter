@@ -1214,6 +1214,12 @@
           },
           "scope": "Media"
         },
+        "frontMatter.panel.openOnSupportedFile": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "%setting.frontMatter.panel.openOnSupportedFile.markdownDescription%",
+          "scope": "Dashboard"
+        },
         "frontMatter.panel.freeform": {
           "type": "boolean",
           "default": true,

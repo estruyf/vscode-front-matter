@@ -6,6 +6,8 @@
 
 ### 🎨 Enhancements
 
+- [#915](https://github.com/estruyf/vscode-front-matter/issues/915): Added a new setting `frontMatter.panel.openOnSupportedFile` which allows you to open the panel view on supported files
+
 ### ⚡️ Optimizations
 
 ### 🐞 Fixes

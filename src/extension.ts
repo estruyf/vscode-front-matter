@@ -245,13 +245,14 @@ export async function activate(context: vscode.ExtensionContext) {
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 export function deactivate() {}
 
-const triggerPageUpdate = (location: string) => {
+const triggerPageUpdate = async (location: string) => {
   Logger.verbose(`Trigger page update: ${location}`);
   pageUpdateDebouncer(() => {
     StatusListener.verify(collection);
   }, 1000);
 
   if (location === 'onDidChangeActiveTextEditor') {
+    await PanelProvider.openOnSupportedFile();
     PanelProvider.getInstance()?.updateCurrentFile();
   }
 };

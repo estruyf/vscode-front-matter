@@ -9,9 +9,10 @@ import {
   FieldsListener,
   LocalizationListener
 } from './../listeners/panel';
-import { SETTING_EXPERIMENTAL } from '../constants';
+import { SETTING_EXPERIMENTAL, SETTING_PANEL_OPEN_ON_SUPPORTED_FILE } from '../constants';
 import {
   CancellationToken,
+  commands,
   Disposable,
   Uri,
   Webview,
@@ -134,6 +135,21 @@ export class PanelProvider implements WebviewViewProvider, Disposable {
     Settings.attachListener('panel-listener', () => {
       SettingsListener.getSettings();
     });
+  }
+
+  /**
+   * Opens the panel if the active file is supported.
+   *
+   * @returns {Promise<void>} A promise that resolves when the command execution is complete.
+   */
+  public static async openOnSupportedFile(): Promise<void> {
+    const openPanel = Settings.get<boolean>(SETTING_PANEL_OPEN_ON_SUPPORTED_FILE);
+    if (openPanel) {
+      const activeFile = ArticleHelper.getActiveFile();
+      if (activeFile) {
+        await commands.executeCommand('frontMatter.explorer.focus');
+      }
+    }
   }
 
   /**

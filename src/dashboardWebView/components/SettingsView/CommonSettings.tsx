@@ -6,11 +6,12 @@ import { useRecoilValue } from 'recoil';
 import { SettingsSelector } from '../../state';
 import { SettingsInput } from './SettingsInput';
 import { Button as VSCodeButton } from 'vscrui';
-import { DOCS_SUBMODULES, FrameworkDetectors, GIT_CONFIG, SETTING_FRAMEWORK_START, SETTING_GIT_COMMIT_MSG, SETTING_GIT_ENABLED, SETTING_PREVIEW_HOST, SETTING_WEBSITE_URL } from '../../../constants';
+import { DOCS_SUBMODULES, FrameworkDetectors, GIT_CONFIG, SETTING_FRAMEWORK_START, SETTING_GIT_COMMIT_MSG, SETTING_GIT_ENABLED, SETTING_PANEL_OPEN_ON_SUPPORTED_FILE, SETTING_PREVIEW_HOST, SETTING_WEBSITE_URL } from '../../../constants';
 import { messageHandler } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
 import { SettingsCheckbox } from './SettingsCheckbox';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import { BooleanOption } from '../Header/BooleanOption';
 
 export interface ICommonSettingsProps { }
 
@@ -71,6 +72,15 @@ export const CommonSettings: React.FunctionComponent<ICommonSettingsProps> = (pr
         <h2 className='text-xl mb-2'>{l10n.t(LocalizationKey.settingsOpenOnStartup)}</h2>
 
         <Startup settings={settings} />
+      </div>
+
+      <div className='py-4'>
+        <h2 className='text-xl mb-2'>{l10n.t(LocalizationKey.settingsOpenPanelForSupportedFiles)}</h2>
+
+        <BooleanOption
+          label={l10n.t(LocalizationKey.settingsOpenPanelForSupportedFilesLabel)}
+          name={SETTING_PANEL_OPEN_ON_SUPPORTED_FILE}
+          value={settings?.openPanelForSupportedFiles} />
       </div>
 
       <div className='py-4'>
