@@ -13,6 +13,7 @@
 ### 🐞 Fixes
 
 - [#909](https://github.com/estruyf/vscode-front-matter/issues/909): Schema fix for the view modes
+- [#913](https://github.com/estruyf/vscode-front-matter/issues/913): Fix for relative media paths in page bundles
 - [#914](https://github.com/estruyf/vscode-front-matter/issues/914): Fix sanitizing of default filenames with an `_` in it
 
 ## [10.7.0] - 2024-12-31 - [Release notes](https://beta.frontmatter.codes/updates/v10.7.0)
