@@ -91,8 +91,9 @@ export const FolderCreation: React.FunctionComponent<IFolderCreationProps> = (
 
   if (scripts.length > 0) {
     return (
-      <div className="flex flex-1 justify-start">
+      <div className="flex flex-1 justify-start space-x-2">
         {renderPostAssetsButton}
+
         <ChoiceButton
           title={l10n.t(LocalizationKey.dashboardMediaFolderCreationFolderCreate)}
           choices={scripts.map((s) => ({
@@ -103,6 +104,8 @@ export const FolderCreation: React.FunctionComponent<IFolderCreationProps> = (
           onClick={onFolderCreation}
           disabled={!settings?.initialized}
         />
+
+        <RefreshDashboardData />
       </div>
     );
   }

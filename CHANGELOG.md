@@ -13,6 +13,7 @@
 ### 🐞 Fixes
 
 - Fix for media folder parsing on Windows
+- Refresh button was not available on the media dashboard when having custom scripts defined
 - [#909](https://github.com/estruyf/vscode-front-matter/issues/909): Schema fix for the view modes
 - [#913](https://github.com/estruyf/vscode-front-matter/issues/913): Fix for relative media paths in page bundles
 - [#914](https://github.com/estruyf/vscode-front-matter/issues/914): Fix sanitizing of default filenames with an `_` in it
