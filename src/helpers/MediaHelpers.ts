@@ -422,7 +422,7 @@ export class MediaHelpers {
 
         // If the image exists in a content folder, the relative path needs to be used
         if (existsInContent) {
-          const relImgPath = relative(fileDir, imgDir);
+          const relImgPath = parseWinPath(relative(fileDir, imgDir));
 
           relPath = join(relImgPath, basename(relPath));
 
