@@ -1,4 +1,4 @@
-import { isWindows } from '../utils';
+import { isWindows } from '../utils/isWindows';
 
 export const parseWinPath = (path: string | undefined): string => {
   path = path?.split(`\\`).join(`/`) || '';
