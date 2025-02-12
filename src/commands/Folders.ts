@@ -636,15 +636,23 @@ export class Folders {
       }
     }
 
+    // For Windows, we need to make sure the drive letter is lowercased for consistency
+    if (isWindows()) {
+      folders = folders.map((folder) => parseWinPath(folder));
+    }
+
     // Filter out the workspace folder
     if (wsFolder) {
-      folders = folders.filter((folder) => folder !== wsFolder.fsPath);
+      folders = folders.filter((folder) => folder !== parseWinPath(wsFolder.fsPath));
     }
 
     const uniqueFolders = [...new Set(folders)];
+    const relativeFolderPaths = uniqueFolders.map((folder) =>
+      relative(parseWinPath(wsFolder.fsPath), folder)
+    );
 
     Logger.verbose('Folders:getContentFolders:end');
-    return uniqueFolders.map((folder) => relative(wsFolder?.path || '', folder));
+    return relativeFolderPaths;
   }
 
   /**
