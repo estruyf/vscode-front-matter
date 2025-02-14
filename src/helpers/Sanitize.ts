@@ -1,17 +1,23 @@
 const illegalRe = (isFileName: boolean) =>
-  isFileName ? /[/?<>\\:*|"!.,;{}[\]()+=~`@#$%^&]/g : /[/?<>\\:*|"!.,;{}[\]()_+=~`@#$%^&]/g;
+  isFileName ? /[/?<>\\:*|"!.,;{}[\]()+=~`@#$%^&']/g : /[/?<>\\:*|"!.,;{}[\]()_+=~`@#$%^&']/g;
 // eslint-disable-next-line no-control-regex
 const controlRe = /[\x00-\x1f\x80-\x9f]/g;
 const reservedRe = /^\.+$/;
 const windowsReservedRe = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
 const windowsTrailingRe = /[. ]+$/;
 
+function normalizeSpecialChars(input: string): string {
+  return input.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
 function sanitize(input: string, replacement: string, isFileName?: boolean) {
   if (typeof input !== 'string') {
     throw new Error('Input must be string');
   }
 
-  const sanitized = input
+  const normalizedInput = normalizeSpecialChars(input);
+
+  const sanitized = normalizedInput
     .replace(illegalRe(isFileName || false), replacement)
     .replace(controlRe, replacement)
     .replace(reservedRe, replacement)
