@@ -2,14 +2,11 @@
 
 ## [10.8.0] - 2025-02-xx
 
-### ✨ New features
-
 ### 🎨 Enhancements
 
 - [#915](https://github.com/estruyf/vscode-front-matter/issues/915): Added a new setting `frontMatter.panel.openOnSupportedFile` which allows you to open the panel view on supported files
 - [#921](https://github.com/estruyf/vscode-front-matter/issues/921): Improve the filename sanitization
-
-### ⚡️ Optimizations
+- [#922](https://github.com/estruyf/vscode-front-matter/issues/922): Added `{{fileName}}` and `{{sluggedFileName}}` placeholders for the slug template setting
 
 ### 🐞 Fixes
 

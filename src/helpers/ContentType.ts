@@ -1063,7 +1063,8 @@ export class ContentType {
             data[field.name] = processArticlePlaceholdersFromData(
               field.default as string,
               data,
-              contentType
+              contentType,
+              filePath
             );
             data[field.name] = processTimePlaceholders(
               data[field.name],
