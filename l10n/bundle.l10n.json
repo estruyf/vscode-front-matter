@@ -56,6 +56,8 @@
   "settings.view.integration": "Integration",
 
   "settings.openOnStartup": "Open dashboard on startup",
+  "settings.openPanelForSupportedFiles": "Open panel for supported files",
+  "settings.openPanelForSupportedFiles.label": "Do you want to open the panel for supported files?",
   "settings.contentTypes": "Content types",
   "settings.contentFolders": "Content folders",
   "settings.diagnostic": "Diagnostic",
@@ -798,7 +800,6 @@
   "listeners.panel.dataListener.createDataFile.inputTitle": "What is the name of the data file?",
   "listeners.panel.dataListener.createDataFile.error": "No data file id or path defined.",
   "listeners.panel.dataListener.createDataFile.noFileName": "No filename provided.",
-
 
   "listeners.panel.taxonomyListener.aiSuggestTaxonomy.noEditor.error": "No active editor",
   "listeners.panel.taxonomyListener.aiSuggestTaxonomy.noData.error": "No article data",

@@ -31,6 +31,7 @@ export interface Settings {
   categories: string[];
   customTaxonomy: CustomTaxonomy[];
   openOnStart: boolean | null;
+  openPanelForSupportedFiles: boolean | null;
   versionInfo: VersionInfo;
   pageViewType: DashboardViewType | undefined;
   contentTypes: ContentType[];

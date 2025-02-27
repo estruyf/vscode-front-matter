@@ -7,7 +7,7 @@ import {
   PlusIcon,
   VideoCameraIcon,
 } from '@heroicons/react/24/outline';
-import { basename } from 'path';
+import { basename, parse } from 'path';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -55,8 +55,17 @@ export const Item: React.FunctionComponent<IItemProps> = ({
   const { mediaFolder, mediaDetails, isAudio, isImage, isVideo } = useMediaInfo(media);
 
   const relPath = useMemo(() => {
+    if (viewData?.data?.pageBundle && viewData?.data?.filePath) {
+      const articlePath = viewData?.data?.filePath;
+      const articleDir = parse(parseWinPath(articlePath)).dir;
+
+      const mediaPath = parseWinPath(media.fsPath);
+      if (mediaPath.startsWith(articleDir)) {
+        return getRelPath(media.fsPath, undefined, articleDir);
+      }
+    }
     return getRelPath(media.fsPath, settings?.staticFolder, settings?.wsFolder);
-  }, [media.fsPath, settings?.staticFolder, settings?.wsFolder]);
+  }, [media.fsPath, settings?.staticFolder, settings?.wsFolder, viewData?.data?.pageBundle, viewData?.data?.filePath]);
 
   const hasViewData = useMemo(() => {
     return viewData?.data?.filePath !== undefined;

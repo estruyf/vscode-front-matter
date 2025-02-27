@@ -1,5 +1,6 @@
 import { dirname, relative } from 'path';
 import { ContentFolder } from '../models';
+import { parseWinPath } from './parseWinPath';
 
 export const processPathPlaceholders = (
   value: string,
@@ -11,7 +12,7 @@ export const processPathPlaceholders = (
     const relPathToken = '{{pathToken.relPath}}';
     if (value.includes(relPathToken) && contentFolder?.path) {
       const dirName = dirname(filePath);
-      const relPath = relative(contentFolder.path, dirName);
+      const relPath = parseWinPath(relative(contentFolder.path, dirName));
       value = value.replace(relPathToken, relPath);
     }
 

@@ -572,7 +572,7 @@ export class ArticleHelper {
         await mkdirAsync(newFolder, { recursive: true });
         newFilePath = join(
           newFolder,
-          `${sanitize(contentType.defaultFileName ?? `index`)}.${
+          `${sanitize(contentType.defaultFileName || `index`, { isFileName: true })}.${
             fileExtension || contentType.fileType || fileType
           }`
         );
@@ -684,7 +684,7 @@ export class ArticleHelper {
       }
 
       if (fieldName === 'slug' && (fieldValue === null || fieldValue === '')) {
-        fmData[fieldName] = SlugHelper.createSlug(title, fmData, slugTemplate);
+        fmData[fieldName] = SlugHelper.createSlug(title, fmData, filePath, slugTemplate);
       }
 
       fmData[fieldName] = await processArticlePlaceholdersFromPath(fmData[fieldName], filePath);

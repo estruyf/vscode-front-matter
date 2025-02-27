@@ -1,4 +1,5 @@
 import { urlJoin } from 'url-join-ts';
+import { parseWinPath } from '../helpers';
 
 export const joinUrl = (baseUrl: string | undefined, ...paths: any[]): string => {
   const url = urlJoin(baseUrl, ...paths);
@@ -9,5 +10,5 @@ export const joinUrl = (baseUrl: string | undefined, ...paths: any[]): string =>
     return url + '/';
   }
 
-  return url;
+  return parseWinPath(url);
 };

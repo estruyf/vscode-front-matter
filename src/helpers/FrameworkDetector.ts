@@ -137,7 +137,7 @@ export class FrameworkDetector {
       const assetDir = dirname(absAssetPath);
       const fileName = parse(absAssetPath);
 
-      relAssetPath = relative(fileDir, assetDir);
+      relAssetPath = parseWinPath(relative(fileDir, assetDir));
       relAssetPath = join(relAssetPath, `${fileName.name}${fileName.ext}`);
     }
     // Support for HEXO image folder
@@ -197,7 +197,7 @@ export class FrameworkDetector {
       const assetDir = dirname(absAssetPath);
       const fileName = parse(absAssetPath);
 
-      let relAssetPath = relative(fileDir, assetDir);
+      let relAssetPath = parseWinPath(relative(fileDir, assetDir));
       relAssetPath = join(relAssetPath, `${fileName.name}${fileName.ext}`);
       return parseWinPath(relAssetPath);
     }

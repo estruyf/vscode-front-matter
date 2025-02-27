@@ -4,10 +4,10 @@ export const FEATURE_FLAG = {
     seo: 'panel.seo',
     actions: 'panel.actions',
     metadata: 'panel.metadata',
-    recentlyModified: 'panel.recentlyModified',
-    otherActions: 'panel.otherActions',
     contentType: 'panel.contentType',
-    gitActions: 'panel.gitActions'
+    gitActions: 'panel.gitActions',
+    recentlyModified: 'panel.recentlyModified',
+    otherActions: 'panel.otherActions'
   },
   dashboard: {
     snippets: {

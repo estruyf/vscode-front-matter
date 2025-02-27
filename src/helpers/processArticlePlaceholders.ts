@@ -6,7 +6,8 @@ import { SlugHelper } from './SlugHelper';
 export const processArticlePlaceholdersFromData = (
   value: string,
   data: { [key: string]: any },
-  contentType: ContentType
+  contentType: ContentType,
+  filePath?: string
 ): string => {
   const titleField = getTitleField();
   if (value.includes('{{title}}') && data[titleField]) {
@@ -18,7 +19,7 @@ export const processArticlePlaceholdersFromData = (
     const regex = new RegExp('{{slug}}', 'g');
     value = value.replace(
       regex,
-      SlugHelper.createSlug(data[titleField] || '', data, contentType.slugTemplate) || ''
+      SlugHelper.createSlug(data[titleField] || '', data, filePath, contentType.slugTemplate) || ''
     );
   }
 
@@ -50,6 +51,7 @@ export const processArticlePlaceholdersFromPath = async (
         SlugHelper.createSlug(
           article.data[titleField] || '',
           article.data,
+          filePath,
           contentType.slugTemplate
         ) || ''
       );

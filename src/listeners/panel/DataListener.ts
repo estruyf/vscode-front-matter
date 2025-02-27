@@ -794,7 +794,9 @@ export class DataListener extends BaseListener {
       const crntFile = window.activeTextEditor?.document;
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
       value =
-        data && contentType ? processArticlePlaceholdersFromData(value, data, contentType) : value;
+        data && contentType
+          ? processArticlePlaceholdersFromData(value, data, contentType, crntFile?.uri.fsPath)
+          : value;
       value = processTimePlaceholders(value, dateFormat);
       value = processFmPlaceholders(value, data);
 

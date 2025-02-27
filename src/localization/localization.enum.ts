@@ -212,6 +212,14 @@ export enum LocalizationKey {
    */
   settingsOpenOnStartup = 'settings.openOnStartup',
   /**
+   * Open panel for supported files
+   */
+  settingsOpenPanelForSupportedFiles = 'settings.openPanelForSupportedFiles',
+  /**
+   * Do you want to open the panel for supported files?
+   */
+  settingsOpenPanelForSupportedFilesLabel = 'settings.openPanelForSupportedFiles.label',
+  /**
    * Content types
    */
   settingsContentTypes = 'settings.contentTypes',

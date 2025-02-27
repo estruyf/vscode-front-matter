@@ -263,7 +263,9 @@ Example: SEO, website optimization, digital marketing.`
    * @returns A Promise that resolves to the chat model.
    */
   private static async getModel(retry = 0): Promise<LanguageModelChat | undefined> {
-    // const models = await lm.selectChatModels();
+    // const models = await lm.selectChatModels({
+    //   vendor: 'copilot'
+    // });
     // console.log(models);
     const [model] = await lm.selectChatModels({
       vendor: 'copilot',

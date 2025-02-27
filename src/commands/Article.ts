@@ -172,7 +172,12 @@ export class Article {
   /**
    * Generate the new slug
    */
-  public static generateSlug(title: string, article?: ParsedFrontMatter, slugTemplate?: string) {
+  public static generateSlug(
+    title: string,
+    article?: ParsedFrontMatter,
+    filePath?: string,
+    slugTemplate?: string
+  ) {
     if (!title) {
       return;
     }
@@ -181,7 +186,7 @@ export class Article {
     const suffix = Settings.get(SETTING_SLUG_SUFFIX) as string;
 
     if (article?.data) {
-      const slug = SlugHelper.createSlug(title, article?.data, slugTemplate);
+      const slug = SlugHelper.createSlug(title, article?.data, filePath, slugTemplate);
 
       if (typeof slug === 'string') {
         return {
@@ -224,7 +229,12 @@ export class Article {
       articleDate
     );
 
-    const slugInfo = Article.generateSlug(articleTitle, article, contentType.slugTemplate);
+    const slugInfo = Article.generateSlug(
+      articleTitle,
+      article,
+      editor.document.uri.fsPath,
+      contentType.slugTemplate
+    );
 
     if (
       slugInfo &&
@@ -255,7 +265,8 @@ export class Article {
             article.data[pField.name] = processArticlePlaceholdersFromData(
               article.data[pField.name],
               article.data,
-              contentType
+              contentType,
+              editor.document.uri.fsPath
             );
             article.data[pField.name] = processTimePlaceholders(
               article.data[pField.name],
@@ -335,7 +346,7 @@ export class Article {
       } else {
         const article = ArticleHelper.getFrontMatter(editor);
         if (article?.data) {
-          return SlugHelper.createSlug(article.data[titleField], article.data, slugTemplate);
+          return SlugHelper.createSlug(article.data[titleField], article.data, file, slugTemplate);
         }
       }
     }

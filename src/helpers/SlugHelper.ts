@@ -1,6 +1,7 @@
-import { Settings } from '.';
+import { parseWinPath, Settings } from '.';
 import { stopWords, charMap, SETTING_DATE_FORMAT, SETTING_SLUG_TEMPLATE } from '../constants';
 import { processTimePlaceholders, processFmPlaceholders } from '.';
+import { parse } from 'path';
 
 export class SlugHelper {
   /**
@@ -11,6 +12,7 @@ export class SlugHelper {
   public static createSlug(
     articleTitle: string,
     articleData: { [key: string]: any },
+    filePath?: string,
     slugTemplate?: string
   ): string | null {
     if (!articleTitle) {
@@ -28,6 +30,16 @@ export class SlugHelper {
       } else if (slugTemplate.includes('{{seoTitle}}')) {
         const regex = new RegExp('{{seoTitle}}', 'g');
         slugTemplate = slugTemplate.replace(regex, SlugHelper.slugify(articleTitle));
+      } else if (slugTemplate.includes(`{{fileName}}`)) {
+        const file = parse(filePath || '');
+        const fileName = file.name;
+        const regex = new RegExp('{{fileName}}', 'g');
+        slugTemplate = slugTemplate.replace(regex, fileName);
+      } else if (slugTemplate.includes(`{{sluggedFileName}}`)) {
+        const file = parse(filePath || '');
+        const fileName = SlugHelper.slugify(file.name);
+        const regex = new RegExp('{{sluggedFileName}}', 'g');
+        slugTemplate = slugTemplate.replace(regex, fileName);
       }
 
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
