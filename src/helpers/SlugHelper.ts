@@ -40,6 +40,11 @@ export class SlugHelper {
         const fileName = SlugHelper.slugify(file.name);
         const regex = new RegExp('{{sluggedFileName}}', 'g');
         slugTemplate = slugTemplate.replace(regex, fileName);
+      } else if (slugTemplate.includes(`{{slugifiedFileName}}`)) {
+        const file = parse(filePath || '');
+        const fileName = SlugHelper.slugify(file.name);
+        const regex = new RegExp('{{slugifiedFileName}}', 'g');
+        slugTemplate = slugTemplate.replace(regex, fileName);
       }
 
       const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;

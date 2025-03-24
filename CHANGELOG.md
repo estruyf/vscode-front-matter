@@ -1,5 +1,17 @@
 # Change Log
 
+## [10.9.0] - 2025-xx-xx
+
+### ✨ New features
+
+### 🎨 Enhancements
+
+### ⚡️ Optimizations
+
+- [#922](https://github.com/estruyf/vscode-front-matter/issues/922): Added the `{{slugifiedFileName}}` for better naming
+
+### 🐞 Fixes
+
 ## [10.8.0] - 2025-02-27 - [Release notes](https://beta.frontmatter.codes/updates/v10.8.0)
 
 ### 🎨 Enhancements
