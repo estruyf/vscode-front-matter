@@ -193,6 +193,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           required={!!field.required}
           format={field.dateFormat || settings?.date?.format}
           onChange={onFieldChange}
+          timezone={settings?.date?.timezone}
         />
       </FieldBoundary>
     );

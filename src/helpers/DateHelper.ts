@@ -1,4 +1,5 @@
 import { parse, parseISO, parseJSON, format } from 'date-fns';
+import { formatInTimeZone } from 'date-fns-tz';
 
 export class DateHelper {
   public static formatUpdate(value: string | null | undefined): string | null {
@@ -17,6 +18,20 @@ export class DateHelper {
     }
 
     return format(date, DateHelper.formatUpdate(dateFormat) as string);
+  }
+
+  public static formatInTimezone(
+    date?: Date,
+    dateFormat?: string,
+    timezone?: string
+  ): string | null {
+    if (!date || !dateFormat) {
+      return null;
+    }
+
+    return timezone
+      ? formatInTimeZone(date, timezone, DateHelper.formatUpdate(dateFormat) as string)
+      : format(date, DateHelper.formatUpdate(dateFormat) as string);
   }
 
   public static tryParse(date: any, format?: string): Date | null {

@@ -1,4 +1,5 @@
 import {
+  SETTING_GLOBAL_TIMEZONE,
   SETTING_PANEL_ACTIONS_DISABLED,
   SETTING_SPONSORS_AI_ENABLED,
   SETTING_WEBSITE_URL
@@ -68,7 +69,8 @@ export class PanelSettings {
           updateFileName: !!Settings.get<boolean>(SETTING_SLUG_UPDATE_FILE_NAME)
         },
         date: {
-          format: Settings.get<string>(SETTING_DATE_FORMAT) || ''
+          format: Settings.get<string>(SETTING_DATE_FORMAT) || '',
+          timezone: Settings.get<string>(SETTING_GLOBAL_TIMEZONE) || ''
         },
         tags: (await TaxonomyHelper.get(TaxonomyType.Tag)) || [],
         categories: (await TaxonomyHelper.get(TaxonomyType.Category)) || [],

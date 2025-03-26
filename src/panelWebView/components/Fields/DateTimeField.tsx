@@ -11,6 +11,7 @@ import { LocalizationKey } from '../../../localization';
 
 export interface IDateTimeFieldProps extends BaseFieldProps<Date | null> {
   format?: string;
+  timezone?: string;
   onChange: (date: string) => void;
 }
 
@@ -30,6 +31,7 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({
   value,
   required,
   format,
+  timezone,
   onChange
 }: React.PropsWithChildren<IDateTimeFieldProps>) => {
   const DEFAULT_FORMAT = 'MM/dd/yyyy HH:mm';
@@ -38,7 +40,7 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({
   const onDateChange = React.useCallback((date: Date) => {
     setDateValue(date);
     if (format) {
-      onChange(DateHelper.format(date, format) || "");
+      onChange(DateHelper.formatInTimezone(date, format, timezone) || "");
     } else {
       onChange(date.toISOString());
     }

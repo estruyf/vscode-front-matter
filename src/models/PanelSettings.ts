@@ -177,6 +177,7 @@ export interface WhenClause {
 
 export interface DateInfo {
   format: string;
+  timezone?: string;
 }
 
 export interface SEO {
