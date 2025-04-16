@@ -371,7 +371,7 @@
 
   "dashboard.welcomeScreen.title": "Manage your static site with Front Matter",
   "dashboard.welcomeScreen.thanks": "Thank you for using Front Matter!",
-  "dashboard.welcomeScreen.description": "We try to aim to make Front Matter as easy to use as possible, but if you have any questions or suggestions. Please don't hesitate to reach out to us on GitHub.",
+  "dashboard.welcomeScreen.description": "We aim to make Front Matter as easy to use as possible. If you have any questions or suggestions, please contact us on GitHub.",
   "dashboard.welcomeScreen.link.github.title": "GitHub",
   "dashboard.welcomeScreen.link.github.label": "GitHub",
   "dashboard.welcomeScreen.link.documentation.label": "Documentation",
