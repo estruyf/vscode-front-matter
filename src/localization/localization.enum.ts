@@ -1236,7 +1236,7 @@ export enum LocalizationKey {
    */
   dashboardWelcomeScreenThanks = 'dashboard.welcomeScreen.thanks',
   /**
-   * We try to aim to make Front Matter as easy to use as possible, but if you have any questions or suggestions. Please don't hesitate to reach out to us on GitHub.
+   * We aim to make Front Matter as easy to use as possible. If you have any questions or suggestions, please contact us on GitHub.
    */
   dashboardWelcomeScreenDescription = 'dashboard.welcomeScreen.description',
   /**
