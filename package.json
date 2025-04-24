@@ -2972,7 +2972,7 @@
     "react-dropzone": "^11.7.1",
     "react-markdown": "^8.0.7",
     "react-quill": "^2.0.0",
-    "react-router-dom": "^6.8.0",
+    "react-router-dom": "^7.5.2",
     "react-sortable-hoc": "^2.0.0",
     "react-tooltip": "^5.28.0",
     "recoil": "^0.7.7",
