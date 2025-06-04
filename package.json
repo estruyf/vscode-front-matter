@@ -3004,7 +3004,7 @@
     "webpack": "^5.75.0",
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.11.1",
+    "webpack-dev-server": "^5.2.1",
     "webpack-ignore-dynamic-require": "^1.0.0",
     "webpack-manifest-plugin": "^5.0.0",
     "yaml": "^2.2.1",
