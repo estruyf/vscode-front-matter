@@ -149,12 +149,17 @@ export class ArticleHelper {
    * @returns A promise that resolves to the contents of the file, or undefined if the file does not exist.
    */
   public static async getContents(filePath: string): Promise<string | undefined> {
-    const file = await workspace.fs.readFile(Uri.file(parseWinPath(filePath)));
-    if (!file) {
+    try {
+      const file = await workspace.fs.readFile(Uri.file(parseWinPath(filePath)));
+      if (!file) {
+        return undefined;
+      }
+
+      return new TextDecoder().decode(file);
+    } catch (error) {
+      Logger.error(`ArticleHelper.getContents: Failed to read file ${filePath}: ${error}`);
       return undefined;
     }
-
-    return new TextDecoder().decode(file);
   }
 
   /**
