@@ -408,7 +408,7 @@ export class ContentType {
    * @param parents
    * @returns
    */
-  public static getFieldValue(data: any, parents: string[]): string | string[] {
+  public static getFieldValue(data: any, parents: string[]): any {
     let fieldValue = [];
     let crntPageData = data;
 
@@ -575,7 +575,8 @@ export class ContentType {
         fieldValue === null ||
         fieldValue === undefined ||
         fieldValue === '' ||
-        fieldValue.length === 0 ||
+        (Array.isArray(fieldValue) && fieldValue.length === 0) ||
+        (typeof fieldValue === 'string' && fieldValue.length === 0) ||
         fieldValue === DefaultFieldValues.faultyCustomPlaceholder
       ) {
         emptyFields.push(fields);
