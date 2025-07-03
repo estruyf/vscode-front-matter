@@ -117,7 +117,7 @@ In version v2 we released the re-designed sidebar panel with improved SEO suppor
 You can get the extension via:
 
 - The VS Code marketplace: [VS Code Marketplace - Front Matter](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter).
-- The extension CLI: `ext install eliostruyf.vscode-front-matter`
+- The extension CLI: `code --install-extension eliostruyf.vscode-front-matter`
 - Or by clicking on the following link: <a href="" title="open extension in VS Code" data-vscode="vscode:extension/eliostruyf.vscode-front-matter">open extension in VS Code</a>
 
 > **Info**: The docs can be found on [frontmatter.codes](https://frontmatter.codes).
@@ -129,7 +129,7 @@ If you have the courage to test out the beta features, we made available a beta 
 - Uninstall the main Front Matter version
 - Install the beta version
   - VS Code marketplace: [VS Code Marketplace - Front Matter BETA](https://marketplace.visualstudio.com/items?itemName=eliostruyf.vscode-front-matter-beta).
-  - The extension CLI: `ext install eliostruyf.vscode-front-matter-beta`
+  - The extension CLI: `code --install-extension eliostruyf.vscode-front-matter-beta`
   - Or by clicking on the following link: <a href="" title="open extension in VS Code" data-vscode="vscode:extension/eliostruyf.vscode-front-matter-beta">open extension in VS Code</a>
 
 > **Info**: The BETA docs can be found on [beta.frontmatter.codes](https://beta.frontmatter.codes).
