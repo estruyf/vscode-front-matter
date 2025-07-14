@@ -40,11 +40,13 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({
   const onDateChange = React.useCallback((date: Date) => {
     setDateValue(date);
     if (format) {
+      // Always use DateHelper.formatInTimezone when a format is provided
       onChange(DateHelper.formatInTimezone(date, format, timezone) || "");
     } else {
+      // Only fallback to ISO string if no format is provided
       onChange(date.toISOString());
     }
-  }, [format, onChange]);
+  }, [format, timezone, onChange]);
 
   const showRequiredState = useMemo(() => {
     return required && !dateValue;
