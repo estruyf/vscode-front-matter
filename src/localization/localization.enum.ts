@@ -1108,7 +1108,7 @@ export enum LocalizationKey {
    */
   dashboardStepsStepsToGetStartedGitName = 'dashboard.steps.stepsToGetStarted.git.name',
   /**
-   * Enable Git synchronization to eaily sync your changes with your repository.
+   * Enable Git synchronization to easily sync your changes with your repository.
    */
   dashboardStepsStepsToGetStartedGitDescription = 'dashboard.steps.stepsToGetStarted.git.description',
   /**
