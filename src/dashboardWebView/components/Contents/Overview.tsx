@@ -9,6 +9,7 @@ import { GroupOption } from '../../constants/GroupOption';
 import { GroupingSelector, PageAtom, PagedItems, ViewSelector } from '../../state';
 import { Item } from './Item';
 import { List } from './List';
+import { StructureView } from './StructureView';
 import usePagination from '../../hooks/usePagination';
 import { LocalizationKey, localize } from '../../../localization';
 import { PinnedItemsAtom } from '../../state/atom/PinnedItems';
@@ -153,6 +154,11 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
         </div>
       </div>
     );
+  }
+
+  // Handle Structure view first - it overrides all other display modes
+  if (view === DashboardViewType.Structure) {
+    return <StructureView pages={pages} />;
   }
 
   if (grouping !== GroupOption.none) {
