@@ -3,6 +3,7 @@ import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Choice, SnippetField, SnippetInfoField } from '../../../models';
 import { useEffect } from 'react';
 import { TextField } from '../Common/TextField';
+import { NumberField } from '../Common/NumberField';
 
 export interface ISnippetInputFieldProps {
   field: SnippetField;
@@ -74,6 +75,17 @@ export const SnippetInputField: React.FunctionComponent<ISnippetInputFieldProps>
         onChange={(e) => onValueChange(field, e)}
         rows={4}
         multiline
+      />
+    );
+  }
+
+  if (field.type === 'number') {
+    return (
+      <NumberField
+        name={field.name}
+        value={field.value as string || ''}
+        description={field.description}
+        onChange={(e) => onValueChange(field, e)}
       />
     );
   }
