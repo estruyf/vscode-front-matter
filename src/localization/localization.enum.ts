@@ -1633,6 +1633,10 @@ export enum LocalizationKey {
    */
   panelSeoKeywordInfoValidInfoContent = 'panel.seoKeywordInfo.validInfo.content',
   /**
+   * First paragraph
+   */
+  panelSeoKeywordInfoValidInfoFirstParagraph = 'panel.seoKeywordInfo.validInfo.firstParagraph',
+  /**
    * Recommended frequency: 0.75% - 1.5%
    */
   panelSeoKeywordInfoDensityTooltip = 'panel.seoKeywordInfo.density.tooltip',
