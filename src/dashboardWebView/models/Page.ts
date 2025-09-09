@@ -1,4 +1,4 @@
-import { I18nConfig } from '../../models';
+import { ContentFolder, I18nConfig } from '../../models';
 
 export interface Page {
   // Properties for caching
@@ -20,15 +20,16 @@ export interface Page {
   fmCategories: string[];
   fmContentType: string;
   fmDateFormat: string | undefined;
+  fmPageFolder: ContentFolder | undefined;
 
   // i18n fields
   fmDefaultLocale?: boolean;
   fmLocale?: I18nConfig;
-  fmTranslations?: { 
+  fmTranslations?: {
     [locale: string]: {
       locale: I18nConfig;
       path: string;
-    }
+    };
   };
 
   title: string;
