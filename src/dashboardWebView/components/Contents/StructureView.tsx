@@ -38,7 +38,9 @@ export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
       }
       
       const folderPath = page.fmFolder;
-      const parts = folderPath.split('/').filter(part => part.length > 0);
+      // Normalize path separators and remove leading/trailing slashes
+      const normalizedPath = folderPath.replace(/\\/g, '/').replace(/^\/+|\/+$/g, '');
+      const parts = normalizedPath.split('/').filter(part => part.length > 0);
       
       let currentPath = '';
       let currentNode = root;
@@ -70,9 +72,14 @@ export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
       if (!page.fmFolder) {
         root.pages.push(page);
       } else {
-        const folderNode = folderMap.get(page.fmFolder);
+        // Normalize the folder path for lookup
+        const normalizedPath = page.fmFolder.replace(/\\/g, '/').replace(/^\/+|\/+$/g, '');
+        const folderNode = folderMap.get(normalizedPath);
         if (folderNode) {
           folderNode.pages.push(page);
+        } else {
+          // If folder not found, add to root as fallback
+          root.pages.push(page);
         }
       }
     });
