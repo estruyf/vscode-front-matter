@@ -3,7 +3,7 @@ import { ChevronRightIcon, FolderIcon } from '@heroicons/react/24/solid';
 import * as React from 'react';
 import { useMemo } from 'react';
 import { Page } from '../../models';
-import { Item } from './Item';
+import { StructureItem } from './StructureItem';
 
 export interface IStructureViewProps {
   pages: Page[];
@@ -112,7 +112,7 @@ export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
               <ul className="space-y-2">
                 {node.pages.map((page, idx) => (
                   <li key={`${page.slug}-${idx}`}>
-                    <Item {...page} />
+                    <StructureItem {...page} />
                   </li>
                 ))}
               </ul>
@@ -156,7 +156,7 @@ export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
                   <ul className="space-y-1 mb-3">
                     {node.pages.map((page, idx) => (
                       <li key={`${page.slug}-${idx}`} style={{ paddingLeft: `${paddingLeft + 20}px` }}>
-                        <Item {...page} />
+                        <StructureItem {...page} />
                       </li>
                     ))}
                   </ul>

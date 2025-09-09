@@ -250,49 +250,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
         </div>
       </li>
     );
-  } else if (view === DashboardViewType.Structure) {
-    return (
-      <div className="relative">
-        <div
-          className={cn(`flex items-center space-x-3 py-1 px-2 rounded cursor-pointer hover:bg-[var(--vscode-list-hoverBackground)] text-[var(--vscode-editor-foreground)]`, isSelected && `bg-[var(--vscode-list-activeSelectionBackground)]`)}
-        >
-          <ItemSelection filePath={pageData.fmFilePath} show />
-          
-          <MarkdownIcon className="w-4 h-4 text-[var(--vscode-symbolIcon-fileForeground)] flex-shrink-0" />
-          
-          <button
-            title={escapedTitle ? l10n.t(LocalizationKey.commonOpenWithValue, escapedTitle) : l10n.t(LocalizationKey.commonOpen)}
-            onClick={onOpenFile}
-            className="flex-1 text-left truncate font-medium"
-          >
-            {escapedTitle}
-          </button>
-
-          <div className="flex items-center space-x-2 flex-shrink-0">
-            {pageData.date && (
-              <DateField 
-                value={pageData.date} 
-                format={pageData.fmDateFormat}
-                className="text-xs text-[var(--vscode-descriptionForeground)]"
-              />
-            )}
-            
-            {draftField && draftField.name && typeof pageData[draftField.name] !== "undefined" && (
-              <Status draft={pageData[draftField.name]} published={pageData.fmPublished} />
-            )}
-
-            <ContentActions
-              path={pageData.fmFilePath}
-              relPath={pageData.fmRelFileWsPath}
-              contentType={pageData.fmContentType}
-              scripts={settings?.scripts}
-              onOpen={onOpenFile}
-              listView
-            />
-          </div>
-        </div>
-      </div>
-    );
   }
 
   return null;
