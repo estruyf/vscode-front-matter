@@ -20,7 +20,6 @@ interface FolderNode {
 export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
   pages
 }: React.PropsWithChildren<IStructureViewProps>) => {
-
   const folderTree = useMemo(() => {
     const root: FolderNode = {
       name: '',
@@ -125,15 +124,6 @@ export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
       }
     }
 
-    // Sort folders and pages
-    const sortNode = (node: FolderNode) => {
-      node.children.sort((a, b) => a.name.localeCompare(b.name));
-      node.pages.sort((a, b) => a.title.localeCompare(b.title));
-      node.children.forEach(sortNode);
-    };
-
-    sortNode(root);
-
     return root;
   }, [pages]);
 
@@ -150,13 +140,13 @@ export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
     if (isRoot) {
       // For root node, render children and pages directly
       return (
-        <div>
+        <div className='space-y-4'>
           {/* Root level folders */}
           {node.children.map(child => renderFolderNode(child, depth + 1))}
 
           {/* Root level pages */}
           {node.pages.length > 0 && (
-            <div className="mb-6">
+            <div>
               <h3 className="text-lg font-medium mb-3 text-[var(--vscode-editor-foreground)]">
                 Root Files
               </h3>
