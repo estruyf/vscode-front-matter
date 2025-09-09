@@ -16,6 +16,7 @@ export interface ISeoKeywordInfoProps {
   content: string;
   wordCount?: number;
   headings?: string[];
+  firstParagraph?: string;
 }
 
 const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
@@ -26,7 +27,8 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
   slug,
   content,
   wordCount,
-  headings
+  headings,
+  firstParagraph
 }: React.PropsWithChildren<ISeoKeywordInfoProps>) => {
 
   const density = () => {
@@ -90,9 +92,10 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
         (slug.toLowerCase().includes(keyword.toLowerCase()) ||
           slug.toLowerCase().includes(keyword.replace(/ /g, '-').toLowerCase())),
       content: !!content && content.toLowerCase().includes(keyword.toLowerCase()),
-      heading: checkHeadings()
+      heading: checkHeadings(),
+      firstParagraph: !!firstParagraph && firstParagraph.toLowerCase().includes(keyword.toLowerCase())
     };
-  }, [title, description, slug, content, headings, wordCount]);
+  }, [title, description, slug, content, headings, wordCount, firstParagraph]);
 
   const tooltipContent = React.useMemo(() => {
     return (
@@ -102,7 +105,8 @@ const SeoKeywordInfo: React.FunctionComponent<ISeoKeywordInfoProps> = ({
         <span className='inline-flex items-center gap-1'><ValidInfo isValid={checks.description} /> {localize(LocalizationKey.commonDescription)}</span><br />
         <span className='inline-flex items-center gap-1'><ValidInfo isValid={checks.slug} /> {localize(LocalizationKey.commonSlug)}</span><br />
         <span className='inline-flex items-center gap-1'><ValidInfo isValid={checks.content} /> {localize(LocalizationKey.panelSeoKeywordInfoValidInfoContent)}</span><br />
-        <span className='inline-flex items-center gap-1'><ValidInfo isValid={!!checks.heading} /> {localize(LocalizationKey.panelSeoKeywordInfoValidInfoLabel)}</span>
+        <span className='inline-flex items-center gap-1'><ValidInfo isValid={!!checks.heading} /> {localize(LocalizationKey.panelSeoKeywordInfoValidInfoLabel)}</span><br />
+        <span className='inline-flex items-center gap-1'><ValidInfo isValid={checks.firstParagraph} /> {localize(LocalizationKey.panelSeoKeywordInfoValidInfoFirstParagraph)}</span>
       </>
     )
   }, [checks]);
