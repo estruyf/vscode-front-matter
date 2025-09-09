@@ -222,6 +222,7 @@
 
   "dashboard.header.viewSwitch.toGrid": "Change to grid",
   "dashboard.header.viewSwitch.toList": "Change to list",
+  "dashboard.header.viewSwitch.toStructure": "Change to structure",
 
   "dashboard.layout.sponsor.support.msg": "Support Front Matter",
   "dashboard.layout.sponsor.review.label": "Review",

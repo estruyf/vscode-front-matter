@@ -219,6 +219,7 @@ export class PagesParser {
       const isDefaultLanguage = await i18n.isDefaultLanguage(filePath);
       const locale = await i18n.getLocale(filePath);
       const translations = await i18n.getTranslations(filePath);
+      const pageFolder = await Folders.getPageFolderByFilePath(filePath);
 
       const page: Page = {
         ...article.data,
@@ -241,6 +242,7 @@ export class PagesParser {
         fmContentType: contentType.name || DEFAULT_CONTENT_TYPE_NAME,
         fmBody: article?.content || '',
         fmDateFormat: dateFormat,
+        fmPageFolder: pageFolder,
         // i18n properties
         fmDefaultLocale: isDefaultLanguage,
         fmLocale: locale,

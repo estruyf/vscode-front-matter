@@ -728,6 +728,10 @@ export enum LocalizationKey {
    */
   dashboardHeaderViewSwitchToList = 'dashboard.header.viewSwitch.toList',
   /**
+   * Change to structure
+   */
+  dashboardHeaderViewSwitchToStructure = 'dashboard.header.viewSwitch.toStructure',
+  /**
    * Support Front Matter
    */
   dashboardLayoutSponsorSupportMsg = 'dashboard.layout.sponsor.support.msg',

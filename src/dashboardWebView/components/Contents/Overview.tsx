@@ -9,6 +9,7 @@ import { GroupOption } from '../../constants/GroupOption';
 import { GroupingSelector, PageAtom, PagedItems, ViewSelector } from '../../state';
 import { Item } from './Item';
 import { List } from './List';
+import { StructureView } from './StructureView';
 import usePagination from '../../hooks/usePagination';
 import { LocalizationKey, localize } from '../../../localization';
 import { PinnedItemsAtom } from '../../state/atom/PinnedItems';
@@ -145,14 +146,19 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
           />
           {settings && settings?.contentFolders?.length > 0 ? (
             <p className={`text-xl font-medium`}>{localize(LocalizationKey.dashboardContentsOverviewNoMarkdown)}</p>
-            
+
           ) : (
             <p className={`text-lg font-medium`}>{localize(LocalizationKey.dashboardContentsOverviewNoFolders)}</p>
-            
+
           )}
         </div>
       </div>
     );
+  }
+
+  // Handle Structure view first - it overrides all other display modes
+  if (view === DashboardViewType.Structure) {
+    return <StructureView pages={pages} />;
   }
 
   if (grouping !== GroupOption.none) {
@@ -196,7 +202,7 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
             <h1 className='text-xl flex space-x-2 items-center mb-4'>
               <PinIcon className={`-rotate-45`} />
               <span>{localize(LocalizationKey.dashboardContentsOverviewPinned)}</span>
-              
+
             </h1>
             <List>
               {pinnedPages.map((page, idx) => (

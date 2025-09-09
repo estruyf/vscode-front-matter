@@ -214,6 +214,7 @@
 
   "dashboard.header.viewSwitch.toGrid": "グリッド表示",
   "dashboard.header.viewSwitch.toList": "リスト表示",
+  "dashboard.header.viewSwitch.toStructure": "構造表示",
 
   "dashboard.layout.sponsor.support.msg": "Front Matterをサポートする",
   "dashboard.layout.sponsor.review.label": "評価する",
