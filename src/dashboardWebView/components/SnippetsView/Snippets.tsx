@@ -21,9 +21,7 @@ import { DEFAULT_DASHBOARD_FEATURE_FLAGS } from '../../../constants/DefaultFeatu
 
 export interface ISnippetsProps { }
 
-export const Snippets: React.FunctionComponent<ISnippetsProps> = (
-  _: React.PropsWithChildren<ISnippetsProps>
-) => {
+export const Snippets: React.FunctionComponent<ISnippetsProps> = () => {
   const settings = useRecoilValue(SettingsSelector);
   const viewData = useRecoilValue(ViewDataSelector);
   const mode = useRecoilValue(ModeAtom);

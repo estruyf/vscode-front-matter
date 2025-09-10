@@ -807,7 +807,8 @@ export class ArticleHelper {
       const elms: Parent[] | Link[] = this.getAllElms(mdTree);
 
       const headings = elms.filter((node) => node.type === 'heading');
-      const paragraphs = elms.filter((node) => node.type === 'paragraph').length;
+      const paragraphNodes = elms.filter((node) => node.type === 'paragraph');
+      const paragraphs = paragraphNodes.length;
       const images = elms.filter((node) => node.type === 'image').length;
       const links: string[] = elms
         .filter((node) => node.type === 'link')
@@ -836,6 +837,21 @@ export class ArticleHelper {
         }
       }
 
+      // Extract first paragraph text for SEO keyword checking
+      let firstParagraph = '';
+      if (paragraphNodes.length > 0) {
+        const firstParagraphNode = paragraphNodes[0];
+        const extractTextFromNode = (node: any): string => {
+          if (node.type === 'text') {
+            return node.value || '';
+          } else if (node.children && Array.isArray(node.children)) {
+            return node.children.map(extractTextFromNode).join('');
+          }
+          return '';
+        };
+        firstParagraph = extractTextFromNode(firstParagraphNode);
+      }
+
       const wordCount = this.wordCount(0, mdTree);
 
       return {
@@ -846,7 +862,8 @@ export class ArticleHelper {
         internalLinks,
         externalLinks: externalLinks.length,
         wordCount,
-        content: article.content
+        content: article.content,
+        firstParagraph
       };
     }
 

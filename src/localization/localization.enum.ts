@@ -1112,7 +1112,7 @@ export enum LocalizationKey {
    */
   dashboardStepsStepsToGetStartedGitName = 'dashboard.steps.stepsToGetStarted.git.name',
   /**
-   * Enable Git synchronization to eaily sync your changes with your repository.
+   * Enable Git synchronization to easily sync your changes with your repository.
    */
   dashboardStepsStepsToGetStartedGitDescription = 'dashboard.steps.stepsToGetStarted.git.description',
   /**
@@ -1636,6 +1636,10 @@ export enum LocalizationKey {
    * Content
    */
   panelSeoKeywordInfoValidInfoContent = 'panel.seoKeywordInfo.validInfo.content',
+  /**
+   * First paragraph
+   */
+  panelSeoKeywordInfoValidInfoFirstParagraph = 'panel.seoKeywordInfo.validInfo.firstParagraph',
   /**
    * Recommended frequency: 0.75% - 1.5%
    */

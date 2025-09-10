@@ -146,10 +146,10 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
           />
           {settings && settings?.contentFolders?.length > 0 ? (
             <p className={`text-xl font-medium`}>{localize(LocalizationKey.dashboardContentsOverviewNoMarkdown)}</p>
-            
+
           ) : (
             <p className={`text-lg font-medium`}>{localize(LocalizationKey.dashboardContentsOverviewNoFolders)}</p>
-            
+
           )}
         </div>
       </div>
@@ -202,7 +202,7 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
             <h1 className='text-xl flex space-x-2 items-center mb-4'>
               <PinIcon className={`-rotate-45`} />
               <span>{localize(LocalizationKey.dashboardContentsOverviewPinned)}</span>
-              
+
             </h1>
             <List>
               {pinnedPages.map((page, idx) => (

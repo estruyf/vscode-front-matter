@@ -1,5 +1,17 @@
 # Change Log
 
+## [10.10.0] - 2025-xx-xx
+
+### 🎨 Enhancements
+
+- [#937](https://github.com/estruyf/vscode-front-matter/issues/937): Dashboard "Structure" view for documentation sites
+- [#965](https://github.com/estruyf/vscode-front-matter/issues/965): Added SEO support for the keyword in the first paragraph
+- [#973](https://github.com/estruyf/vscode-front-matter/issues/973): Support for number fields in the snippets
+
+### 🐞 Fixes
+
+- [#969](https://github.com/estruyf/vscode-front-matter/issues/969): Fix typo on welcome screen
+
 ## [10.9.0] - 2025-07-01 - [Release notes](https://beta.frontmatter.codes/updates/v10.9.0)
 
 ### 🎨 Enhancements
