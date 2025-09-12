@@ -23,6 +23,7 @@ export const COMMAND_NAME = {
   createContent: getCommandName('createContent'),
   createByContentType: getCommandName('createByContentType'),
   createByTemplate: getCommandName('createByTemplate'),
+  createContentInFolder: getCommandName('createContentInFolder'),
   createTemplate: getCommandName('createTemplate'),
   initTemplate: getCommandName('initTemplate'),
   collapseSections: getCommandName('collapseSections'),

@@ -23,6 +23,7 @@ export enum DashboardMessage {
   createContent = 'createContent',
   createByContentType = 'createByContentType',
   createByTemplate = 'createByTemplate',
+  createContentInFolder = 'createContentInFolder',
   refreshPages = 'refreshPages',
   searchPages = 'searchPages',
   openFile = 'openFile',

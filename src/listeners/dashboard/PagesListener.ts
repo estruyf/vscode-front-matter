@@ -45,6 +45,9 @@ export class PagesListener extends BaseListener {
       case DashboardMessage.createByTemplate:
         await commands.executeCommand(COMMAND_NAME.createByTemplate);
         break;
+      case DashboardMessage.createContentInFolder:
+        await commands.executeCommand(COMMAND_NAME.createContentInFolder, msg.payload);
+        break;
       case DashboardMessage.refreshPages:
         this.getPagesData(true);
         break;

@@ -1,10 +1,12 @@
 import { Disclosure } from '@headlessui/react';
-import { ChevronRightIcon, FolderIcon } from '@heroicons/react/24/solid';
+import { ChevronRightIcon, FolderIcon, PlusIcon } from '@heroicons/react/24/solid';
 import * as React from 'react';
 import { useMemo } from 'react';
 import { Page } from '../../models';
 import { StructureItem } from './StructureItem';
 import { parseWinPath } from '../../../helpers/parseWinPath';
+import { messageHandler } from '@estruyf/vscode/dist/client';
+import { DashboardMessage } from '../../DashboardMessage';
 
 export interface IStructureViewProps {
   pages: Page[];
@@ -20,6 +22,31 @@ interface FolderNode {
 export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
   pages
 }: React.PropsWithChildren<IStructureViewProps>) => {
+  
+  const createContentInFolder = React.useCallback((folderPath: string, nodePagesOnly: Page[]) => {
+    // Find a page from this folder to get the base content folder information
+    // First try to find from the specific folder, then from all pages if not found
+    let samplePage = nodePagesOnly.find(page => page.fmPageFolder);
+    
+    if (!samplePage) {
+      // If no pages in this specific folder, find any page that has the same base folder structure
+      samplePage = pages.find(page => {
+        if (!page.fmFolder || !page.fmPageFolder) return false;
+        const normalizedFmFolder = page.fmFolder.replace(/\\/g, '/').replace(/^\/+|\/+$/g, '');
+        return folderPath.startsWith(normalizedFmFolder) || normalizedFmFolder.startsWith(folderPath.split('/')[0]);
+      });
+    }
+
+    if (samplePage && samplePage.fmPageFolder) {
+      // Construct the full folder path by combining the base content folder with the structure path
+      const baseFolderPath = samplePage.fmPageFolder.path.replace(/\\/g, '/').replace(/\/+$/, '');
+      const relativePath = folderPath.replace(/^\/+|\/+$/g, '');
+      const fullFolderPath = `${baseFolderPath}/${relativePath}`;
+      
+      messageHandler.send(DashboardMessage.createContentInFolder, { folderPath: fullFolderPath });
+    }
+  }, [pages]);
+
   const folderTree = useMemo(() => {
     const root: FolderNode = {
       name: '',
@@ -168,24 +195,37 @@ export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
         <Disclosure defaultOpen={depth <= 1}>
           {({ open }) => (
             <>
-              <Disclosure.Button
-                className="flex items-center w-full text-left"
-                style={{ paddingLeft: `${paddingLeft}px` }}
-              >
-                <ChevronRightIcon
-                  className={`w-4 h-4 mr-2 transform transition-transform ${open ? 'rotate-90' : ''
-                    }`}
-                />
-                <FolderIcon className="w-4 h-4 mr-2 text-[var(--vscode-symbolIcon-folderForeground)]" />
-                <span className="font-medium text-[var(--vscode-editor-foreground)]">
-                  {node.name}
-                  {node.pages.length > 0 && (
-                    <span className="ml-2 text-sm text-[var(--vscode-descriptionForeground)]">
-                      ({node.pages.length} {node.pages.length === 1 ? 'file' : 'files'})
-                    </span>
-                  )}
-                </span>
-              </Disclosure.Button>
+              <div className="flex items-center justify-between w-full group">
+                <Disclosure.Button
+                  className="flex items-center flex-1 text-left"
+                  style={{ paddingLeft: `${paddingLeft}px` }}
+                >
+                  <ChevronRightIcon
+                    className={`w-4 h-4 mr-2 transform transition-transform ${open ? 'rotate-90' : ''
+                      }`}
+                  />
+                  <FolderIcon className="w-4 h-4 mr-2 text-[var(--vscode-symbolIcon-folderForeground)]" />
+                  <span className="font-medium text-[var(--vscode-editor-foreground)]">
+                    {node.name}
+                    {node.pages.length > 0 && (
+                      <span className="ml-2 text-sm text-[var(--vscode-descriptionForeground)]">
+                        ({node.pages.length} {node.pages.length === 1 ? 'file' : 'files'})
+                      </span>
+                    )}
+                  </span>
+                </Disclosure.Button>
+                
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    createContentInFolder(node.path, node.pages);
+                  }}
+                  className="opacity-0 group-hover:opacity-100 p-1 ml-2 mr-2 rounded hover:bg-[var(--vscode-list-hoverBackground)] transition-opacity"
+                  title="Create content in this folder"
+                >
+                  <PlusIcon className="w-4 h-4 text-[var(--vscode-editor-foreground)]" />
+                </button>
+              </div>
 
               <Disclosure.Panel className="mt-2">
                 {/* Child folders */}

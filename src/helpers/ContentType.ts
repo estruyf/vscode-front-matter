@@ -56,6 +56,10 @@ export class ContentType {
     );
 
     subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.createContentInFolder, ContentType.createContentInFolder)
+    );
+
+    subscriptions.push(
       commands.registerCommand(COMMAND_NAME.generateContentType, ContentType.generate)
     );
 
@@ -140,6 +144,45 @@ export class ContentType {
       const contentType = contentTypes.find((ct) => ct.name === selectedContentType);
       if (folderPath && contentType) {
         ContentType.create(contentType, folderPath);
+      }
+    }
+  }
+
+  /**
+   * Create content in a specific folder based on content types
+   * @param folderData - Object containing folder path information
+   * @returns
+   */
+  public static async createContentInFolder(folderData: { folderPath: string }) {
+    if (!folderData || !folderData.folderPath) {
+      return;
+    }
+
+    const contentTypes = ContentType.getAll();
+    let folders = await Folders.get();
+    folders = folders.filter((f) => !f.disableCreation);
+    
+    // Find the folder that matches the provided path
+    const folder = folders.find((f) => {
+      const folderPath = Folders.getFolderPath(Uri.file(f.path));
+      // Check if the folderData.folderPath is within this content folder
+      return folderData.folderPath.includes(folderPath || '');
+    });
+
+    if (!folder) {
+      return;
+    }
+
+    const selectedContentType = await Questions.SelectContentType(folder.contentTypes || []);
+    if (!selectedContentType) {
+      return;
+    }
+
+    if (contentTypes && folder) {
+      const contentType = contentTypes.find((ct) => ct.name === selectedContentType);
+      if (contentType) {
+        // Use the specific folder path provided instead of the base folder path
+        ContentType.create(contentType, folderData.folderPath);
       }
     }
   }
