@@ -60,6 +60,10 @@ export class ContentType {
     );
 
     subscriptions.push(
+      commands.registerCommand(COMMAND_NAME.structureCreateContentInFolder, ContentType.structureCreateContentInFolder)
+    );
+
+    subscriptions.push(
       commands.registerCommand(COMMAND_NAME.generateContentType, ContentType.generate)
     );
 
@@ -185,6 +189,28 @@ export class ContentType {
         ContentType.create(contentType, folderData.folderPath);
       }
     }
+  }
+
+  /**
+   * Create content in a specific folder from Structure view context menu
+   * @param webviewContext - The webview context data containing folder path
+   */
+  public static async structureCreateContentInFolder(webviewContext?: any) {
+    let folderPath: string | undefined;
+    
+    // VS Code webview context menu passes the element's data attributes
+    // The data-folder-path attribute will be available in the context
+    if (webviewContext) {
+      folderPath = webviewContext.folderPath || webviewContext['folder-path'];
+    }
+    
+    if (!folderPath) {
+      Notifications.warning('Unable to determine folder path for content creation.');
+      return;
+    }
+
+    // Reuse the existing createContentInFolder logic
+    await ContentType.createContentInFolder({ folderPath });
   }
 
   /**

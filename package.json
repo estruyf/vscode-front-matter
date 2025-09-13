@@ -2247,6 +2247,11 @@
         "category": "Front Matter"
       },
       {
+        "command": "frontMatter.structure.createContentInFolder",
+        "title": "Create Content in Folder",
+        "category": "Front Matter"
+      },
+      {
         "command": "frontMatter.createTag",
         "title": "%command.frontMatter.createTag%",
         "category": "Front Matter"
@@ -2484,6 +2489,11 @@
         {
           "command": "workbench.action.webview.openDeveloperTools",
           "when": "frontMatter:isDevelopment"
+        },
+        {
+          "command": "frontMatter.structure.createContentInFolder",
+          "when": "webview == frontMatterDashboard && webviewItem == folder",
+          "group": "1_structure@1"
         }
       ],
       "editor/title": [

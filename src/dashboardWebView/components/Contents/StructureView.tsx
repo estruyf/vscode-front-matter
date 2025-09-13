@@ -1,7 +1,7 @@
 import { Disclosure } from '@headlessui/react';
 import { ChevronRightIcon, FolderIcon, PlusIcon } from '@heroicons/react/24/solid';
 import * as React from 'react';
-import { useMemo } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { Page } from '../../models';
 import { StructureItem } from './StructureItem';
 import { parseWinPath } from '../../../helpers/parseWinPath';
@@ -19,9 +19,22 @@ interface FolderNode {
   pages: Page[];
 }
 
+interface ContextMenuState {
+  visible: boolean;
+  x: number;
+  y: number;
+  folderPath: string;
+}
+
 export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
   pages
 }: React.PropsWithChildren<IStructureViewProps>) => {
+  const [contextMenu, setContextMenu] = useState<ContextMenuState>({
+    visible: false,
+    x: 0,
+    y: 0,
+    folderPath: ''
+  });
   
   const createContentInFolder = React.useCallback((folderPath: string, nodePagesOnly: Page[]) => {
     // Find a page from this folder to get the base content folder information
@@ -31,7 +44,9 @@ export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
     if (!samplePage) {
       // If no pages in this specific folder, find any page that has the same base folder structure
       samplePage = pages.find(page => {
-        if (!page.fmFolder || !page.fmPageFolder) return false;
+        if (!page.fmFolder || !page.fmPageFolder) {
+          return false;
+        }
         const normalizedFmFolder = page.fmFolder.replace(/\\/g, '/').replace(/^\/+|\/+$/g, '');
         return folderPath.startsWith(normalizedFmFolder) || normalizedFmFolder.startsWith(folderPath.split('/')[0]);
       });
@@ -46,6 +61,38 @@ export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
       messageHandler.send(DashboardMessage.createContentInFolder, { folderPath: fullFolderPath });
     }
   }, [pages]);
+
+  const handleContextMenu = useCallback((e: React.MouseEvent, folderPath: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    setContextMenu({
+      visible: true,
+      x: e.clientX,
+      y: e.clientY,
+      folderPath
+    });
+  }, []);
+
+  const hideContextMenu = useCallback(() => {
+    setContextMenu(prev => ({ ...prev, visible: false }));
+  }, []);
+
+  const handleCreateContent = useCallback(() => {
+    if (contextMenu.folderPath) {
+      createContentInFolder(contextMenu.folderPath, []);
+    }
+    hideContextMenu();
+  }, [contextMenu.folderPath, createContentInFolder, hideContextMenu]);
+
+  // Close context menu when clicking outside
+  React.useEffect(() => {
+    const handleClick = () => hideContextMenu();
+    if (contextMenu.visible) {
+      document.addEventListener('click', handleClick);
+      return () => document.removeEventListener('click', handleClick);
+    }
+  }, [contextMenu.visible, hideContextMenu]);
 
   const folderTree = useMemo(() => {
     const root: FolderNode = {
@@ -195,7 +242,13 @@ export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
         <Disclosure defaultOpen={depth <= 1}>
           {({ open }) => (
             <>
-              <div className="flex items-center justify-between w-full group">
+              <div 
+                className="flex items-center justify-between w-full group"
+                onContextMenu={(e) => handleContextMenu(e, node.path)}
+                data-webview-item="folder"
+                data-webview-item-element="name"
+                data-folder-path={node.path}
+              >
                 <Disclosure.Button
                   className="flex items-center flex-1 text-left"
                   style={{ paddingLeft: `${paddingLeft}px` }}
@@ -252,6 +305,26 @@ export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
   return (
     <div className="structure-view">
       {renderFolderNode(folderTree)}
+      
+      {/* Custom Context Menu */}
+      {contextMenu.visible && (
+        <div
+          className="fixed bg-[var(--vscode-menu-background)] border border-[var(--vscode-menu-border)] rounded shadow-lg py-1 z-50"
+          style={{
+            left: `${contextMenu.x}px`,
+            top: `${contextMenu.y}px`,
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            className="w-full px-3 py-2 text-left text-[var(--vscode-menu-foreground)] hover:bg-[var(--vscode-menu-selectionBackground)] hover:text-[var(--vscode-menu-selectionForeground)] flex items-center space-x-2"
+            onClick={handleCreateContent}
+          >
+            <PlusIcon className="w-4 h-4" />
+            <span>Create Content in Folder</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 };
