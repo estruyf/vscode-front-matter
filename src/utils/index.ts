@@ -28,3 +28,4 @@ export * from './sleep';
 export * from './sortPages';
 export * from './unlinkAsync';
 export * from './writeFileAsync';
+export * from '../helpers/ContentTypeSchemaGenerator';

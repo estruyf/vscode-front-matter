@@ -7,7 +7,7 @@ import {
   SETTING_SEO_TITLE_LENGTH
 } from './../constants';
 import * as vscode from 'vscode';
-import { ArticleHelper, Notifications, SeoHelper, Settings } from '../helpers';
+import { ArticleHelper, Notifications, SeoHelper, Settings, FrontMatterValidator } from '../helpers';
 import { PanelProvider } from '../panelWebView/PanelProvider';
 import { ContentType } from '../helpers/ContentType';
 import { DataListener } from '../listeners/panel';
@@ -20,6 +20,7 @@ import { i18n } from './i18n';
 import { getDescriptionField, getTitleField } from '../utils';
 
 export class StatusListener {
+  private static validator: FrontMatterValidator = new FrontMatterValidator();
   /**
    * Update the text of the status bar
    *
@@ -70,6 +71,9 @@ export class StatusListener {
           // Check the required fields
           if (editor) {
             StatusListener.verifyRequiredFields(editor, article, collection);
+            
+            // Schema validation
+            await StatusListener.verifySchemaValidation(editor, article, collection);
           }
         }
 
@@ -170,6 +174,71 @@ export class StatusListener {
           )
         );
       }
+    }
+  }
+
+  /**
+   * Verify schema validation
+   * @param editor Text editor
+   * @param article Parsed front matter
+   * @param collection Diagnostic collection
+   */
+  private static async verifySchemaValidation(
+    editor: vscode.TextEditor,
+    article: ParsedFrontMatter,
+    collection: vscode.DiagnosticCollection
+  ) {
+    try {
+      const contentType = await ArticleHelper.getContentType(article);
+      if (!contentType || !contentType.fields || contentType.fields.length === 0) {
+        return;
+      }
+
+      // Validate against schema
+      const errors = StatusListener.validator.validate(article.data, contentType);
+
+      if (errors.length === 0) {
+        return;
+      }
+
+      const text = editor.document.getText();
+      const schemaDiagnostics: vscode.Diagnostic[] = [];
+
+      for (const error of errors) {
+        // Find the field in the document
+        const fieldPath = error.field.split('.');
+        const fieldName = fieldPath[fieldPath.length - 1];
+
+        // Try to find the field location in the document
+        const fieldIdx = text.indexOf(fieldName);
+
+        if (fieldIdx !== -1) {
+          const posStart = editor.document.positionAt(fieldIdx);
+          const posEnd = editor.document.positionAt(fieldIdx + fieldName.length);
+
+          const diagnostic: vscode.Diagnostic = {
+            code: '',
+            message: error.message,
+            range: new vscode.Range(posStart, posEnd),
+            severity: vscode.DiagnosticSeverity.Warning,
+            source: EXTENSION_NAME
+          };
+
+          schemaDiagnostics.push(diagnostic);
+        }
+      }
+
+      if (schemaDiagnostics.length > 0) {
+        if (collection.has(editor.document.uri)) {
+          const otherDiag = collection.get(editor.document.uri) || [];
+          collection.set(editor.document.uri, [...otherDiag, ...schemaDiagnostics]);
+        } else {
+          collection.set(editor.document.uri, [...schemaDiagnostics]);
+        }
+      }
+    } catch (error) {
+      // Silently fail validation errors to not disrupt the user experience
+      console.error('Schema validation error:', error);
     }
   }
 
