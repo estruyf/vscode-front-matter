@@ -1,11 +1,10 @@
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { TagType } from '../../panelWebView/TagType';
 import { BaseListener } from './BaseListener';
-import { authentication, window } from 'vscode';
+import { window } from 'vscode';
 import { ArticleHelper, Extension, Settings, TaxonomyHelper } from '../../helpers';
 import { BlockFieldData, CustomTaxonomyData, PostMessageData, TaxonomyType } from '../../models';
 import { DataListener } from '.';
-import { SponsorAi } from '../../services/SponsorAI';
 import { PanelProvider } from '../../panelWebView/PanelProvider';
 import { MessageHandlerData } from '@estruyf/vscode';
 import * as l10n from '@vscode/l10n';
@@ -59,9 +58,6 @@ export class TaxonomyListener extends BaseListener {
         break;
       case CommandToCode.addToCustomTaxonomy:
         this.addCustomTaxonomy(msg.payload);
-        break;
-      case CommandToCode.aiSuggestTaxonomy:
-        this.aiSuggestTaxonomy(msg.command, msg.requestId, msg.payload);
         break;
       case CommandToCode.copilotSuggestTaxonomy:
         this.copilotSuggestTaxonomy(msg.command, msg.requestId, msg.payload);
@@ -118,73 +114,6 @@ export class TaxonomyListener extends BaseListener {
         error: l10n.t(LocalizationKey.servicesCopilotGetChatResponseError)
       } as MessageHandlerData<string>);
     }
-  }
-
-  /**
-   * Suggests taxonomy based on the provided command, request ID, and tag type.
-   *
-   * @param command - The command to execute.
-   * @param requestId - The ID of the request.
-   * @param type - The type of tag.
-   * @returns A Promise that resolves to void.
-   */
-  private static async aiSuggestTaxonomy(command: string, requestId?: string, type?: TagType) {
-    if (!command || !requestId || !type) {
-      return;
-    }
-
-    const extPath = Extension.getInstance().extensionPath;
-    const panel = PanelProvider.getInstance(extPath);
-
-    const editor = window.activeTextEditor;
-    if (!editor) {
-      panel.getWebview()?.postMessage({
-        command,
-        requestId,
-        error: l10n.t(LocalizationKey.listenersPanelTaxonomyListenerAiSuggestTaxonomyNoDataError)
-      } as MessageHandlerData<string>);
-      return;
-    }
-
-    const article = ArticleHelper.getFrontMatter(editor);
-    if (!article || !article.data) {
-      panel.getWebview()?.postMessage({
-        command,
-        requestId,
-        error: l10n.t(LocalizationKey.listenersPanelTaxonomyListenerAiSuggestTaxonomyNoEditorError)
-      } as MessageHandlerData<string>);
-      return;
-    }
-
-    const githubAuth = await authentication.getSession('github', ['read:user'], { silent: true });
-    if (!githubAuth || !githubAuth.accessToken) {
-      return;
-    }
-
-    const titleField = getTitleField();
-    const descriptionField = getDescriptionField();
-
-    const suggestions = await SponsorAi.getTaxonomySuggestions(
-      githubAuth.accessToken,
-      article.data[titleField] || '',
-      article.data[descriptionField] || '',
-      type
-    );
-
-    if (!suggestions) {
-      panel.getWebview()?.postMessage({
-        command,
-        requestId,
-        error: l10n.t(LocalizationKey.listenersPanelTaxonomyListenerAiSuggestTaxonomyNoDataError)
-      } as MessageHandlerData<string>);
-      return;
-    }
-
-    panel.getWebview()?.postMessage({
-      command,
-      requestId,
-      payload: suggestions || []
-    } as MessageHandlerData<string[]>);
   }
 
   /**

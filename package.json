@@ -139,11 +139,10 @@
             }
           }
         },
-        "frontMatter.sponsors.ai.enabled": {
+        "frontMatter.ai.enabled": {
           "type": "boolean",
-          "default": false,
-          "markdownDescription": "%setting.frontMatter.sponsors.ai.enabled.markdownDescription%",
-          "scope": "Sponsors"
+          "default": true,
+          "markdownDescription": "%setting.frontMatter.ai.enabled.markdownDescription%"
         },
         "frontMatter.extensibility.scripts": {
           "type": "array",
