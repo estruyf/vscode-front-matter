@@ -203,14 +203,19 @@ export class StatusListener {
 
       const text = editor.document.getText();
       const schemaDiagnostics: vscode.Diagnostic[] = [];
+      
+      // Find the front matter section (between --- markers)
+      const frontMatterMatch = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+      const frontMatterEnd = frontMatterMatch ? frontMatterMatch[0].length : text.length;
 
       for (const error of errors) {
         // Find the field in the document
         const fieldPath = error.field.split('.');
         const fieldName = fieldPath[fieldPath.length - 1];
 
-        // Try to find the field location in the document
-        const fieldIdx = text.indexOf(fieldName);
+        // Try to find the field location in the front matter section only
+        const searchText = text.substring(0, frontMatterEnd);
+        const fieldIdx = searchText.indexOf(fieldName);
 
         if (fieldIdx !== -1) {
           const posStart = editor.document.positionAt(fieldIdx);
@@ -238,7 +243,7 @@ export class StatusListener {
       }
     } catch (error) {
       // Silently fail validation errors to not disrupt the user experience
-      console.error('Schema validation error:', error);
+      // Logger can be used here if needed for debugging
     }
   }
 

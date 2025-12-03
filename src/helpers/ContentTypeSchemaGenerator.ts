@@ -254,7 +254,7 @@ export class ContentTypeSchemaGenerator {
     }
 
     const fieldGroupIds = Array.isArray(field.fieldGroup) ? field.fieldGroup : [field.fieldGroup];
-    const fieldGroups = Settings.get(SETTING_TAXONOMY_FIELD_GROUPS) as any[];
+    const fieldGroups = Settings.get(SETTING_TAXONOMY_FIELD_GROUPS) as { id: string; fields: Field[] }[] | undefined;
 
     if (!fieldGroups || fieldGroups.length === 0) {
       return schemas;
