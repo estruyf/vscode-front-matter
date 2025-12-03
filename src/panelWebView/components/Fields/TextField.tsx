@@ -105,13 +105,11 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
       });
   };
 
-  const suggestDescription = (type: 'ai' | 'copilot') => {
+  const suggestDescription = () => {
     setLoading(localize(LocalizationKey.panelFieldsTextFieldAiGenerate));
 
     messageHandler
-      .request<string>(
-        type === 'copilot' ? CommandToCode.copilotSuggestDescription : CommandToCode.aiSuggestDescription
-      )
+      .request<string>(CommandToCode.copilotSuggestDescription)
       .then((suggestion) => {
         setLoading(undefined);
 
@@ -132,24 +130,12 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
 
     return (
       <>
-        {settings?.aiEnabled && settings.seo.descriptionField === name && (
-          <button
-            className="metadata_field__title__action inline-block text-[var(--vscode-editor-foreground)] disabled:opacity-50"
-            title={localize(LocalizationKey.panelFieldsTextFieldAiMessage, label?.toLowerCase())}
-            type="button"
-            onClick={() => suggestDescription('ai')}
-            disabled={!!loading}
-          >
-            <SparklesIcon />
-          </button>
-        )}
-
-        {settings?.copilotEnabled && (
+        {settings?.aiEnabled && settings?.copilotEnabled && (
           <button
             className="metadata_field__title__action inline-block text-[var(--vscode-editor-foreground)] disabled:opacity-50"
             title={localize(LocalizationKey.panelFieldsTextFieldCopilotMessage, label?.toLowerCase())}
             type="button"
-            onClick={() => settings.seo.descriptionField === name ? suggestDescription('copilot') : suggestTitle()}
+            onClick={() => settings.seo.descriptionField === name ? suggestDescription() : suggestTitle()}
             disabled={!!loading}
           >
             <CopilotIcon />

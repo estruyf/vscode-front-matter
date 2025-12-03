@@ -260,13 +260,11 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
   }
 
   const suggestTaxonomy = useCallback(
-    (aiType: 'ai' | 'copilot', type: TagType) => {
+    (type: TagType) => {
       setLoading(localize(LocalizationKey.panelTagPickerAiGenerating));
 
-      const command =
-        aiType === 'ai' ? CommandToCode.aiSuggestTaxonomy : CommandToCode.copilotSuggestTaxonomy;
       messageHandler
-        .request<string[]>(command, type)
+        .request<string[]>(CommandToCode.copilotSuggestTaxonomy, type)
         .then((values) => {
           setLoading(undefined);
           updateTaxonomy(values)
@@ -311,22 +309,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
 
     return (
       <>
-        {settings?.aiEnabled && (
-          <button
-            className="metadata_field__title__action"
-            title={localize(
-              LocalizationKey.panelTagPickerAiSuggest,
-              label?.toLowerCase() || type.toLowerCase()
-            )}
-            type="button"
-            onClick={() => suggestTaxonomy('ai', type)}
-            disabled={!!loading}
-          >
-            <SparklesIcon />
-          </button>
-        )}
-
-        {settings?.copilotEnabled && (
+        {settings?.aiEnabled && settings?.copilotEnabled && (
           <button
             className="metadata_field__title__action"
             title={localize(
@@ -334,7 +317,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
               label?.toLowerCase() || type.toLowerCase()
             )}
             type="button"
-            onClick={() => suggestTaxonomy('copilot', type)}
+            onClick={() => suggestTaxonomy(type)}
             disabled={!!loading}
           >
             <CopilotIcon />
