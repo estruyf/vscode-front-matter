@@ -24,6 +24,36 @@ export interface JSONSchema {
 
 /**
  * Generates JSON Schema from Front Matter Content Type definitions
+ * 
+ * This utility converts Front Matter content type definitions into JSON Schema format
+ * which can then be used for validation. It handles all field types supported by
+ * Front Matter CMS including nested fields, blocks, and field groups.
+ * 
+ * Field Type Mappings:
+ * - string, slug, image, file, customField → string
+ * - number → number (with optional min/max)
+ * - boolean, draft → boolean
+ * - datetime → string with date-time format
+ * - choice → string with enum (or array if multiple)
+ * - tags, categories, taxonomy, list → array of strings
+ * - fields → nested object with properties
+ * - block → array of objects with oneOf for field groups
+ * - json → any valid JSON type
+ * - dataFile, contentRelationship → string or array
+ * 
+ * Features:
+ * - Required field validation
+ * - Type validation
+ * - Enum/choice validation
+ * - Number range validation (min/max)
+ * - Nested object support
+ * - Block field support with multiple field group options
+ * 
+ * Usage:
+ * ```typescript
+ * const schema = ContentTypeSchemaGenerator.generateSchema(contentType);
+ * // Use schema for validation with AJV or other JSON Schema validators
+ * ```
  */
 export class ContentTypeSchemaGenerator {
   /**

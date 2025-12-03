@@ -209,13 +209,25 @@ export class StatusListener {
       const frontMatterEnd = frontMatterMatch ? frontMatterMatch[0].length : text.length;
 
       for (const error of errors) {
-        // Find the field in the document
-        const fieldPath = error.field.split('.');
-        const fieldName = fieldPath[fieldPath.length - 1];
+        // For required field errors, use the missing property name
+        let fieldName = '';
+        if (error.keyword === 'required' && error.params?.missingProperty) {
+          fieldName = error.params.missingProperty;
+        } else {
+          // Find the field in the document
+          const fieldPath = error.field.split('.');
+          fieldName = fieldPath[fieldPath.length - 1];
+        }
+
+        if (!fieldName || fieldName === 'root') {
+          continue; // Skip if we can't determine field name
+        }
 
         // Try to find the field location in the front matter section only
+        // Note: This is a simple implementation that may match partial strings
+        // Future improvement: Use YAML AST parsing for exact field locations
         const searchText = text.substring(0, frontMatterEnd);
-        const fieldIdx = searchText.indexOf(fieldName);
+        const fieldIdx = searchText.indexOf(`${fieldName}:`);
 
         if (fieldIdx !== -1) {
           const posStart = editor.document.positionAt(fieldIdx);

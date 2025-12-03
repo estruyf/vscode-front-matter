@@ -14,6 +14,26 @@ export interface ValidationError {
 
 /**
  * Validates front matter data against content type schemas
+ * 
+ * This validator uses JSON Schema validation (via AJV) to ensure that front matter
+ * in markdown files conforms to the structure defined in content types.
+ * 
+ * Features:
+ * - Automatic schema generation from content type definitions
+ * - Type validation (string, number, boolean, datetime, arrays, etc.)
+ * - Required field validation
+ * - Enum/choice validation
+ * - Number range validation (min/max)
+ * - Nested object validation
+ * 
+ * Usage:
+ * ```typescript
+ * const validator = new FrontMatterValidator();
+ * const errors = validator.validate(frontMatterData, contentType);
+ * if (errors.length > 0) {
+ *   // Handle validation errors
+ * }
+ * ```
  */
 export class FrontMatterValidator {
   private ajv: Ajv;
