@@ -1,6 +1,8 @@
-import { ContentType, Field, FieldType } from '../models';
+import { ContentType, Field, FieldType, CustomTaxonomy } from '../models';
 import { Settings } from '../helpers/SettingsHelper';
-import { SETTING_TAXONOMY_FIELD_GROUPS } from '../constants';
+import { SETTING_TAXONOMY_FIELD_GROUPS, SETTING_TAXONOMY_CUSTOM } from '../constants';
+import { TaxonomyHelper } from './TaxonomyHelper';
+import { TaxonomyType } from '../models/TaxonomyType';
 
 /**
  * JSON Schema type definition
@@ -61,7 +63,7 @@ export class ContentTypeSchemaGenerator {
    * @param contentType The content type to generate schema from
    * @returns JSON Schema object
    */
-  public static generateSchema(contentType: ContentType): JSONSchema {
+  public static async generateSchema(contentType: ContentType): Promise<JSONSchema> {
     const schema: JSONSchema = {
       $schema: 'http://json-schema.org/draft-07/schema#',
       type: 'object',
@@ -75,7 +77,7 @@ export class ContentTypeSchemaGenerator {
 
     // Process each field in the content type
     for (const field of contentType.fields) {
-      const fieldSchema = this.generateFieldSchema(field);
+      const fieldSchema = await this.generateFieldSchema(field);
       if (fieldSchema && schema.properties) {
         schema.properties[field.name] = fieldSchema;
 
@@ -99,7 +101,7 @@ export class ContentTypeSchemaGenerator {
    * @param field The field to generate schema from
    * @returns JSON Schema object for the field
    */
-  private static generateFieldSchema(field: Field): JSONSchema | null {
+  private static async generateFieldSchema(field: Field): Promise<JSONSchema | null> {
     // Skip divider and heading fields as they are UI-only
     if (field.type === 'divider' || field.type === 'heading') {
       return null;
@@ -166,9 +168,53 @@ export class ContentTypeSchemaGenerator {
         }
         break;
 
-      case 'tags':
-      case 'categories':
-      case 'taxonomy':
+      case 'tags': {
+        schema.type = 'array';
+        schema.items = {
+          type: 'string'
+        };
+        
+        // Get available tags and add as enum for validation
+        const availableTags = await TaxonomyHelper.get(TaxonomyType.Tag);
+        if (availableTags && availableTags.length > 0) {
+          schema.items.enum = availableTags;
+        }
+        break;
+      }
+
+      case 'categories': {
+        schema.type = 'array';
+        schema.items = {
+          type: 'string'
+        };
+        
+        // Get available categories and add as enum for validation
+        const availableCategories = await TaxonomyHelper.get(TaxonomyType.Category);
+        if (availableCategories && availableCategories.length > 0) {
+          schema.items.enum = availableCategories;
+        }
+        break;
+      }
+
+      case 'taxonomy': {
+        schema.type = 'array';
+        schema.items = {
+          type: 'string'
+        };
+        
+        // Get custom taxonomy options if taxonomyId is specified
+        if (field.taxonomyId) {
+          const customTaxonomies = Settings.get<CustomTaxonomy[]>(SETTING_TAXONOMY_CUSTOM);
+          if (customTaxonomies && customTaxonomies.length > 0) {
+            const taxonomy = customTaxonomies.find((t) => t.id === field.taxonomyId);
+            if (taxonomy && taxonomy.options && taxonomy.options.length > 0) {
+              schema.items.enum = taxonomy.options;
+            }
+          }
+        }
+        break;
+      }
+
       case 'list':
         schema.type = 'array';
         schema.items = {
@@ -183,7 +229,7 @@ export class ContentTypeSchemaGenerator {
 
         if (field.fields && field.fields.length > 0) {
           for (const subField of field.fields) {
-            const subFieldSchema = this.generateFieldSchema(subField);
+            const subFieldSchema = await this.generateFieldSchema(subField);
             if (subFieldSchema && schema.properties) {
               schema.properties[subField.name] = subFieldSchema;
 
@@ -208,7 +254,7 @@ export class ContentTypeSchemaGenerator {
         };
 
         // Try to get the field group schemas
-        const blockSchemas = this.getBlockFieldGroupSchemas(field);
+        const blockSchemas = await this.getBlockFieldGroupSchemas(field);
         if (blockSchemas.length > 0) {
           schema.items = {
             oneOf: blockSchemas
@@ -276,7 +322,7 @@ export class ContentTypeSchemaGenerator {
    * @param field The block field
    * @returns Array of JSON Schemas for each field group
    */
-  private static getBlockFieldGroupSchemas(field: Field): JSONSchema[] {
+  private static async getBlockFieldGroupSchemas(field: Field): Promise<JSONSchema[]> {
     const schemas: JSONSchema[] = [];
 
     if (!field.fieldGroup) {
@@ -300,7 +346,7 @@ export class ContentTypeSchemaGenerator {
         };
 
         for (const groupField of fieldGroup.fields) {
-          const fieldSchema = this.generateFieldSchema(groupField);
+          const fieldSchema = await this.generateFieldSchema(groupField);
           if (fieldSchema && groupSchema.properties) {
             groupSchema.properties[groupField.name] = fieldSchema;
 

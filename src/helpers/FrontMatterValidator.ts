@@ -55,13 +55,13 @@ export class FrontMatterValidator {
    * @param contentType The content type to validate against
    * @returns Array of validation errors (empty if valid)
    */
-  public validate(data: any, contentType: ContentType): ValidationError[] {
+  public async validate(data: any, contentType: ContentType): Promise<ValidationError[]> {
     if (!contentType || !contentType.fields || contentType.fields.length === 0) {
       return [];
     }
 
     // Get or generate schema
-    const schema = this.getSchema(contentType);
+    const schema = await this.getSchema(contentType);
     if (!schema) {
       return [];
     }
@@ -83,7 +83,7 @@ export class FrontMatterValidator {
    * @param contentType The content type
    * @returns JSON Schema
    */
-  private getSchema(contentType: ContentType): JSONSchema | null {
+  private async getSchema(contentType: ContentType): Promise<JSONSchema | null> {
     // Check cache first
     const cacheKey = contentType.name;
     if (this.schemaCache.has(cacheKey)) {
@@ -91,7 +91,7 @@ export class FrontMatterValidator {
     }
 
     // Generate new schema
-    const schema = ContentTypeSchemaGenerator.generateSchema(contentType);
+    const schema = await ContentTypeSchemaGenerator.generateSchema(contentType);
     this.schemaCache.set(cacheKey, schema);
 
     return schema;

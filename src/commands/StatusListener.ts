@@ -195,7 +195,7 @@ export class StatusListener {
       }
 
       // Validate against schema
-      const errors = StatusListener.validator.validate(article.data, contentType);
+      const errors = await StatusListener.validator.validate(article.data, contentType);
 
       if (errors.length === 0) {
         return;
