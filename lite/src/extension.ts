@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { DashboardProvider } from './DashboardProvider';
+import { isVirtualWorkspace } from './utils';
 
 /**
  * Lite version of Front Matter CMS for virtual workspaces
@@ -14,7 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
   outputChannel.appendLine('Front Matter Lite activated for virtual workspace');
 
   // Register Dashboard Webview Provider
-  const dashboardProvider = new DashboardProvider(context.extensionUri);
+  const dashboardProvider = new DashboardProvider(context.extensionUri, outputChannel);
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
       DashboardProvider.viewType,
@@ -157,7 +158,13 @@ export function activate(context: vscode.ExtensionContext) {
           await vscode.workspace.fs.stat(fileUri);
           vscode.window.showErrorMessage(`File "${fileName}.md" already exists`);
           return;
-        } catch {
+        } catch (error) {
+          // Only proceed if the error is FileNotFound
+          if (error instanceof vscode.FileSystemError && error.code !== 'FileNotFound') {
+            vscode.window.showErrorMessage(`Error checking file: ${error.message}`);
+            outputChannel.appendLine(`Error checking file: ${error}`);
+            return;
+          }
           // File doesn't exist, continue
         }
 
@@ -192,24 +199,18 @@ Your content here...
   );
 
   // Check if running in virtual workspace
-  if (vscode.workspace.workspaceFolders) {
-    const isVirtual = vscode.workspace.workspaceFolders.some(
-      folder => folder.uri.scheme !== 'file'
-    );
-    
-    if (isVirtual) {
-      outputChannel.appendLine('Running in virtual workspace mode');
-      vscode.window.showInformationMessage(
-        'Front Matter Lite is running in virtual workspace mode. Some features may be limited.',
-        'Learn More'
-      ).then(selection => {
-        if (selection === 'Learn More') {
-          vscode.env.openExternal(
-            vscode.Uri.parse('https://frontmatter.codes/docs/virtual-workspaces')
-          );
-        }
-      });
-    }
+  if (isVirtualWorkspace()) {
+    outputChannel.appendLine('Running in virtual workspace mode');
+    vscode.window.showInformationMessage(
+      'Front Matter Lite is running in virtual workspace mode. Some features may be limited.',
+      'Learn More'
+    ).then(selection => {
+      if (selection === 'Learn More') {
+        vscode.env.openExternal(
+          vscode.Uri.parse('https://frontmatter.codes/docs/virtual-workspaces')
+        );
+      }
+    });
   }
 
   outputChannel.appendLine('Front Matter Lite: All commands registered');

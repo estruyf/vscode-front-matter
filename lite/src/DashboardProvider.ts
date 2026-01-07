@@ -3,8 +3,14 @@ import * as vscode from 'vscode';
 export class DashboardProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = 'frontMatterLite.dashboard';
   private _view?: vscode.WebviewView;
+  private _outputChannel: vscode.OutputChannel;
 
-  constructor(private readonly _extensionUri: vscode.Uri) {}
+  constructor(
+    private readonly _extensionUri: vscode.Uri,
+    outputChannel: vscode.OutputChannel
+  ) {
+    this._outputChannel = outputChannel;
+  }
 
   public resolveWebviewView(
     webviewView: vscode.WebviewView,
@@ -38,9 +44,13 @@ export class DashboardProvider implements vscode.WebviewViewProvider {
           break;
         }
         case 'openFile': {
-          const uri = vscode.Uri.parse(data.uri);
-          const doc = await vscode.workspace.openTextDocument(uri);
-          await vscode.window.showTextDocument(doc);
+          try {
+            const uri = vscode.Uri.parse(data.uri);
+            const doc = await vscode.workspace.openTextDocument(uri);
+            await vscode.window.showTextDocument(doc);
+          } catch (error) {
+            vscode.window.showErrorMessage(`Failed to open file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          }
           break;
         }
       }
@@ -68,6 +78,7 @@ export class DashboardProvider implements vscode.WebviewViewProvider {
 
         const folderUri = vscode.Uri.joinPath(workspaceFolders[0].uri, folder.path);
         const pattern = new vscode.RelativePattern(folderUri, '**/*.{md,mdx,markdown}');
+        // Note: Limited to 100 files per folder to prevent performance issues in large repositories
         const files = await vscode.workspace.findFiles(pattern, '**/node_modules/**', 100);
 
         for (const file of files) {
@@ -80,7 +91,8 @@ export class DashboardProvider implements vscode.WebviewViewProvider {
           });
         }
       } catch (error) {
-        console.error(`Error scanning folder ${folder.path}:`, error);
+        const errorMsg = `Error scanning folder ${folder.path}: ${error instanceof Error ? error.message : 'Unknown error'}`;
+        this._outputChannel.appendLine(errorMsg);
       }
     }
 
