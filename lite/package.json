@@ -1,0 +1,141 @@
+{
+  "name": "vscode-front-matter-lite",
+  "displayName": "Front Matter CMS (Lite)",
+  "description": "Front Matter CMS lite version for virtual workspaces (github.dev, vscode.dev). Provides basic content management features with limited functionality compared to the full extension.",
+  "icon": "assets/frontmatter-teal-128x128.png",
+  "version": "10.9.0",
+  "preview": true,
+  "publisher": "eliostruyf",
+  "galleryBanner": {
+    "color": "#0e131f",
+    "theme": "dark"
+  },
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "Front Matter",
+    "CMS",
+    "Markdown",
+    "Web Extension",
+    "Virtual Workspace"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/estruyf/vscode-front-matter"
+  },
+  "capabilities": {
+    "virtualWorkspaces": true,
+    "untrustedWorkspaces": {
+      "supported": true
+    }
+  },
+  "browser": "./dist/extension-web.js",
+  "activationEvents": [
+    "workspaceContains:**/.frontmatter",
+    "workspaceContains:**/frontmatter.json"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "frontMatter.lite.dashboard",
+        "title": "Open Dashboard (Lite)",
+        "category": "Front Matter Lite"
+      },
+      {
+        "command": "frontMatter.lite.registerFolder",
+        "title": "Register Content Folder (Lite)",
+        "category": "Front Matter Lite"
+      },
+      {
+        "command": "frontMatter.lite.createContent",
+        "title": "Create Content (Lite)",
+        "category": "Front Matter Lite"
+      }
+    ],
+    "configuration": {
+      "title": "Front Matter Lite",
+      "type": "object",
+      "properties": {
+        "frontMatter.content.pageFolders": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "Configure the folders that contain your content",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "The title of the folder"
+              },
+              "path": {
+                "type": "string",
+                "description": "The path to the folder"
+              }
+            },
+            "required": [
+              "title",
+              "path"
+            ]
+          }
+        },
+        "frontMatter.taxonomy.contentTypes": {
+          "type": "array",
+          "default": [
+            {
+              "name": "default",
+              "fields": [
+                {
+                  "title": "Title",
+                  "name": "title",
+                  "type": "string"
+                },
+                {
+                  "title": "Description",
+                  "name": "description",
+                  "type": "string"
+                },
+                {
+                  "title": "Publishing date",
+                  "name": "date",
+                  "type": "datetime"
+                },
+                {
+                  "title": "Tags",
+                  "name": "tags",
+                  "type": "tags"
+                }
+              ]
+            }
+          ],
+          "markdownDescription": "Configure your content types"
+        }
+      }
+    },
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "frontMatter.lite.registerFolder",
+          "when": "explorerResourceIsFolder",
+          "group": "frontmatter@1"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "webpack --mode production --config ./webpack.config.js",
+    "dev": "webpack --mode development --watch --config ./webpack.config.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.90.0",
+    "ts-loader": "^9.4.2",
+    "typescript": "^4.9.5",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^4.10.0"
+  }
+}
