@@ -97,6 +97,15 @@ export class PanelProvider implements vscode.WebviewViewProvider {
     }
   }
 
+  /**
+   * Parse front matter from markdown content
+   * Note: This is a simplified YAML parser that handles basic key: value pairs
+   * Limitations:
+   * - Only supports bracket-style arrays: [item1, item2]
+   * - Does not support dash-style arrays (- item)
+   * - Does not handle multiline values
+   * - May not handle special YAML characters in strings
+   */
   private _parseFrontMatter(content: string): Record<string, any> {
     const frontMatterRegex = /^---\s*\n([\s\S]*?)\n---/;
     const match = content.match(frontMatterRegex);
@@ -160,11 +169,14 @@ export class PanelProvider implements vscode.WebviewViewProvider {
         const key = line.substring(0, colonIndex).trim();
         if (key === field) {
           // Format the value
+          // Note: String values with special characters should ideally be quoted
+          // This simple implementation may not handle all YAML edge cases
           let formattedValue: string;
           if (Array.isArray(value)) {
             formattedValue = `[${value.map(v => `"${v}"`).join(', ')}]`;
           } else if (typeof value === 'string') {
-            formattedValue = value;
+            // Add quotes if value contains special characters
+            formattedValue = value.match(/[:\[\]{}]/) ? `"${value}"` : value;
           } else {
             formattedValue = String(value);
           }
@@ -181,7 +193,8 @@ export class PanelProvider implements vscode.WebviewViewProvider {
         if (Array.isArray(value)) {
           formattedValue = `[${value.map(v => `"${v}"`).join(', ')}]`;
         } else if (typeof value === 'string') {
-          formattedValue = value;
+          // Add quotes if value contains special characters
+          formattedValue = value.match(/[:\[\]{}]/) ? `"${value}"` : value;
         } else {
           formattedValue = String(value);
         }
