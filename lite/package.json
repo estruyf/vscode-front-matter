@@ -40,6 +40,24 @@
     "workspaceContains:**/frontmatter.json"
   ],
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "frontmatter-lite",
+          "title": "Front Matter Lite",
+          "icon": "$(file-text)"
+        }
+      ]
+    },
+    "views": {
+      "frontmatter-lite": [
+        {
+          "type": "webview",
+          "id": "frontMatterLite.dashboard",
+          "name": "Dashboard"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "frontMatter.lite.dashboard",

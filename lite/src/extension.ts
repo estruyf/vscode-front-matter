@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { DashboardProvider } from './DashboardProvider';
 
 /**
  * Lite version of Front Matter CMS for virtual workspaces
@@ -12,12 +13,20 @@ export function activate(context: vscode.ExtensionContext) {
   outputChannel = vscode.window.createOutputChannel('Front Matter Lite');
   outputChannel.appendLine('Front Matter Lite activated for virtual workspace');
 
+  // Register Dashboard Webview Provider
+  const dashboardProvider = new DashboardProvider(context.extensionUri);
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      DashboardProvider.viewType,
+      dashboardProvider
+    )
+  );
+
   // Register Dashboard command
   context.subscriptions.push(
     vscode.commands.registerCommand('frontMatter.lite.dashboard', async () => {
-      vscode.window.showInformationMessage(
-        'Front Matter Lite Dashboard: This feature is under development for virtual workspaces'
-      );
+      // Focus on the dashboard view
+      vscode.commands.executeCommand('frontMatterLite.dashboard.focus');
     })
   );
 
