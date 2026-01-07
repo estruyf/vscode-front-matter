@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { DashboardProvider } from './DashboardProvider';
+import { PanelProvider } from './PanelProvider';
 import { isVirtualWorkspace } from './utils';
 
 /**
@@ -13,6 +14,15 @@ let outputChannel: vscode.OutputChannel;
 export function activate(context: vscode.ExtensionContext) {
   outputChannel = vscode.window.createOutputChannel('Front Matter Lite');
   outputChannel.appendLine('Front Matter Lite activated for virtual workspace');
+
+  // Register Panel Webview Provider
+  const panelProvider = new PanelProvider(context.extensionUri, outputChannel);
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      PanelProvider.viewType,
+      panelProvider
+    )
+  );
 
   // Register Dashboard Webview Provider
   const dashboardProvider = new DashboardProvider(context.extensionUri, outputChannel);

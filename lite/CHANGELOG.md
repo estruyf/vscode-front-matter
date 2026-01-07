@@ -5,6 +5,11 @@ All notable changes to the Front Matter Lite extension will be documented in thi
 ## [Unreleased]
 
 ### Added
+- **Metadata Panel** - Edit front matter fields directly in the sidebar panel
+  - View and edit all front matter fields for the current markdown file
+  - Support for text, textarea, date, and array fields (tags/categories)
+  - Auto-save changes to the file
+  - Refresh button to reload metadata
 - Initial release of Front Matter Lite for virtual workspaces
 - Dashboard webview with folder and file listing
 - Register content folders via context menu
@@ -19,6 +24,7 @@ All notable changes to the Front Matter Lite extension will be documented in thi
 ### Features
 - ✅ Register content folders
 - ✅ Create new markdown files with front matter
+- ✅ **Edit front matter metadata in panel**
 - ✅ View registered folders
 - ✅ List content files
 - ✅ Open files from dashboard

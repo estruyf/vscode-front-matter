@@ -16,6 +16,7 @@ The lite version provides core content management functionality:
 
 ### ✅ Supported Features
 
+- **Metadata Panel** - View and edit front matter for the currently open markdown file
 - **Register Content Folders** - Right-click on folders in the Explorer to register them as content folders
 - **Create Content** - Create new markdown files with front matter
 - **View Configuration** - Manage your content folder settings
@@ -24,7 +25,7 @@ The lite version provides core content management functionality:
 
 The following features from the full extension are not available in the lite version due to virtual workspace limitations:
 
-- **Dashboard** - Full dashboard UI (under development)
+- **Dashboard** - Full dashboard UI (basic version available)
 - **Media Management** - File upload and media library
 - **Local Server Preview** - Starting/stopping local dev servers
 - **Git Integration** - Advanced git operations
@@ -39,6 +40,18 @@ The following features from the full extension are not available in the lite ver
 3. Start managing your content!
 
 ## Usage
+
+### Edit Front Matter Metadata
+
+1. Open a markdown file in the editor
+2. The **Metadata** panel in the Front Matter Lite sidebar shows all front matter fields
+3. Edit fields directly in the panel:
+   - **Title** - Edit the page title
+   - **Description** - Edit the description (multiline)
+   - **Date** - Use the date picker to set publish date
+   - **Tags/Categories** - Add or remove tags by typing and pressing Enter
+   - **Other fields** - Edit any custom front matter fields
+4. Changes are saved automatically to the file
 
 ### Register a Content Folder
 

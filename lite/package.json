@@ -53,6 +53,11 @@
       "frontmatter-lite": [
         {
           "type": "webview",
+          "id": "frontMatterLite.panel",
+          "name": "Metadata"
+        },
+        {
+          "type": "webview",
           "id": "frontMatterLite.dashboard",
           "name": "Dashboard"
         }
