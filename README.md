@@ -260,14 +260,6 @@ You can open showcase issues for the following things:
    </a>
 </p>
 
-<br />
-
-<p align="center">
-  <a href="http://bejs.io/" title="Supported by the BEJS Community">
-    <img src="https://frontmatter.codes/assets/sponsors/bejs-community.png" alt="Supported by the BEJS Community" height="50px"/>
-   </a>
-</p>
-
 ## 📊 Telemetry
 
 The Front Matter CMS extension only uses telemetry on application crashes. The
