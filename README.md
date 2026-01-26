@@ -9,9 +9,10 @@
 > **📢 2026 Open Source Priorities Update**
 > 
 > I love working with and creating open source products, but after careful
-> evaluation and working with a coach, I've decided to prioritize monetizing the
-> tools I've built. While I'm grateful for all the support and sponsors I've
-> received, I need to focus my time and effort more strategically.
+> evaluation and working with a coach, I've decided to focus my efforts on
+> creating a better revenue stream. As open-source isn't providing me a
+> sustainable income, I need to focus my time and effort more strategically on
+> how to make my work sustainable.
 > 
 > **Front Matter CMS will continue to be maintained** as I use it daily.
 > However, major changes will only happen if there's a personal reason, a
@@ -19,7 +20,7 @@
 > take longer to be addressed.
 > 
 > I'm shifting focus to open source projects that I can learn from or that have
-> different outcomes—like **Demo Time**, which I use when presenting at
+> different outcomes, like **Demo Time**, which I use when presenting at
 > conferences. If you or your company would like to sponsor my work on Front
 > Matter CMS or other projects, I'd love to discuss how we can collaborate to
 > make it even better!
