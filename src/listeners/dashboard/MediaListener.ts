@@ -75,25 +75,30 @@ export class MediaListener extends BaseListener {
       return;
     }
 
-    window.withProgress({
-      location: ProgressLocation.Notification,
-      title: localize(LocalizationKey.listenersDashboardMediaListenersDeleteMediaFolderProgressTitle),
-      cancellable: false
-    }, async () => {
-      const folderPath = parse(msg.folder).dir;
+    window.withProgress(
+      {
+        location: ProgressLocation.Notification,
+        title: localize(
+          LocalizationKey.listenersDashboardMediaListenersDeleteMediaFolderProgressTitle
+        ),
+        cancellable: false
+      },
+      async () => {
+        const folderPath = parse(msg.folder).dir;
 
-      const mediaLib = MediaLibrary.getInstance();
-      const parsedPath = mediaLib.parsePath(msg.folder);
-      const mediaFiles = await mediaLib.getAllByPath(parsedPath);
+        const mediaLib = MediaLibrary.getInstance();
+        const parsedPath = MediaLibrary.parsePath(msg.folder);
+        const mediaFiles = await mediaLib.getAllByPath(parsedPath);
 
-      for (const fileName of Object.keys(mediaFiles)) {
-        const filePath = join(msg.folder, fileName);
-        await mediaLib.remove(filePath);
+        for (const fileName of Object.keys(mediaFiles)) {
+          const filePath = join(msg.folder, fileName);
+          await mediaLib.remove(filePath);
+        }
+
+        await workspace.fs.delete(Uri.file(msg.folder), { recursive: true, useTrash: false });
+        await MediaListener.sendMediaFiles(0, folderPath);
       }
-
-      await workspace.fs.delete(Uri.file(msg.folder), { recursive: true, useTrash: false });
-      await MediaListener.sendMediaFiles(0, folderPath);
-    });
+    );
   }
 
   public static async updateMediaFolder(msg: {
@@ -105,41 +110,48 @@ export class MediaListener extends BaseListener {
       return;
     }
 
-    window.withProgress({
-      location: ProgressLocation.Notification,
-      title: localize(LocalizationKey.listenersDashboardMediaListenersUpdateMediaFolderProgressTitle),
-      cancellable: false
-    }, async () => {
-      const folderName = parse(msg.folder).base;
-      
-      const newFolderName = await window.showInputBox({
-        prompt: 'Enter new folder name',
-        value: folderName
-      });
+    window.withProgress(
+      {
+        location: ProgressLocation.Notification,
+        title: localize(
+          LocalizationKey.listenersDashboardMediaListenersUpdateMediaFolderProgressTitle
+        ),
+        cancellable: false
+      },
+      async () => {
+        const folderName = parse(msg.folder).base;
 
-      if (!newFolderName || newFolderName === folderName) {
-        return;
+        const newFolderName = await window.showInputBox({
+          prompt: 'Enter new folder name',
+          value: folderName
+        });
+
+        if (!newFolderName || newFolderName === folderName) {
+          return;
+        }
+
+        const newFolderPath = join(parse(msg.folder).dir, newFolderName);
+
+        // Get all media files from the folder
+        const mediaLib = MediaLibrary.getInstance();
+        const parsedPath = MediaLibrary.parsePath(msg.folder);
+        const mediaFiles = await mediaLib.getAllByPath(parsedPath);
+
+        // Update the folder
+        await workspace.fs.rename(Uri.file(msg.folder), Uri.file(newFolderPath), {
+          overwrite: false
+        });
+
+        // Update the media files
+        for (const fileName of Object.keys(mediaFiles)) {
+          const newFilePath = join(newFolderPath, fileName);
+          const oldFilePath = join(msg.folder, fileName);
+          await mediaLib.rename(oldFilePath, newFilePath);
+        }
+
+        await this.sendMediaFiles(0, parse(msg.folder).dir);
       }
-
-      const newFolderPath = join(parse(msg.folder).dir, newFolderName);
-      
-      // Get all media files from the folder
-      const mediaLib = MediaLibrary.getInstance();
-      const parsedPath = mediaLib.parsePath(msg.folder);
-      const mediaFiles = await mediaLib.getAllByPath(parsedPath);
-
-      // Update the folder
-      await workspace.fs.rename(Uri.file(msg.folder), Uri.file(newFolderPath), { overwrite: false });
-
-      // Update the media files
-      for (const fileName of Object.keys(mediaFiles)) {
-        const newFilePath = join(newFolderPath, fileName);
-        const oldFilePath = join(msg.folder, fileName);
-        await mediaLib.rename(oldFilePath, newFilePath);
-      }
-
-      await this.sendMediaFiles(0, parse(msg.folder).dir);
-    });
+    );
   }
 
   /**
@@ -205,7 +217,7 @@ export class MediaListener extends BaseListener {
     for (const file of filesEndingWith) {
       const absPath = FilesHelper.relToAbsPath(file);
       if (!(await existsAsync(absPath))) {
-        const parsedPath = mediaLib.parsePath(absPath);
+        const parsedPath = MediaLibrary.parsePath(absPath);
         const metadata = await mediaLib.get(parsedPath);
         if (metadata) {
           unmappedFiles.push({

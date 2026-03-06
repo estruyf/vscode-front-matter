@@ -113,7 +113,7 @@ export class MediaLibrary {
 
   public async get(id: string): Promise<MediaRecord | undefined> {
     try {
-      const fileId = this.parsePath(id);
+      const fileId = MediaLibrary.parsePath(id);
       if (await this.db?.exists(fileId)) {
         return await this.db?.getData(fileId);
       }
@@ -142,13 +142,13 @@ export class MediaLibrary {
   }
 
   public set(id: string, metadata: any): void {
-    const fileId = this.parsePath(id);
+    const fileId = MediaLibrary.parsePath(id);
     this.db?.push(fileId, metadata, true);
   }
 
   public async rename(oldId: string, newId: string): Promise<void> {
-    const fileId = this.parsePath(oldId);
-    const newFileId = this.parsePath(newId);
+    const fileId = MediaLibrary.parsePath(oldId);
+    const newFileId = MediaLibrary.parsePath(newId);
     const data = await this.get(fileId);
     if (data) {
       this.db?.delete(fileId);
@@ -157,7 +157,7 @@ export class MediaLibrary {
   }
 
   public async remove(path: string): Promise<void> {
-    const fileId = this.parsePath(path);
+    const fileId = MediaLibrary.parsePath(path);
     await this.db?.delete(fileId);
   }
 
@@ -183,9 +183,12 @@ export class MediaLibrary {
     }
   }
 
-  public parsePath(path: string) {
+  public static parsePath(path: string) {
     const wsFolder = Folders.getWorkspaceFolder();
-    let absPath = path.replace(parseWinPath(wsFolder?.fsPath || ''), WORKSPACE_PLACEHOLDER);
+    let absPath = parseWinPath(path).replace(
+      parseWinPath(wsFolder?.fsPath || ''),
+      WORKSPACE_PLACEHOLDER
+    );
     absPath = isWindows() ? absPath.split('\\').join('/') : absPath;
     return absPath.toLowerCase();
   }
