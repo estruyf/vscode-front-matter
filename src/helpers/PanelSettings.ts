@@ -68,7 +68,7 @@ export class PanelSettings {
         },
         date: {
           format: Settings.get<string>(SETTING_DATE_FORMAT) || '',
-          timezone: Settings.get<string>(SETTING_GLOBAL_TIMEZONE) || ''
+          timezone: Settings.get<string>(SETTING_GLOBAL_TIMEZONE) || 'UTC'
         },
         tags: (await TaxonomyHelper.get(TaxonomyType.Tag)) || [],
         categories: (await TaxonomyHelper.get(TaxonomyType.Category)) || [],
