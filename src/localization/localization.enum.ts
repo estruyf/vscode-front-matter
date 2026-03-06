@@ -339,38 +339,7 @@ export enum LocalizationKey {
    * Unknown field
    */
   fieldUnknown = 'field.unknown',
-  /**
-   * Answer
-   */
-  dashboardChatbotAnswerAnswer = 'dashboard.chatbot.answer.answer',
-  /**
-   * Resources
-   */
-  dashboardChatbotAnswerResources = 'dashboard.chatbot.answer.resources',
-  /**
-   * Warning: Anwers might be wrong. In case of doubt, please consult the docs.
-   */
-  dashboardChatbotAnswerWarning = 'dashboard.chatbot.answer.warning',
-  /**
-   * Assistent is getting ready
-   */
-  dashboardChatbotChatbotLoading = 'dashboard.chatbot.chatbot.loading',
-  /**
-   * I'm ready, what do you want to know?
-   */
-  dashboardChatbotChatbotReady = 'dashboard.chatbot.chatbot.ready',
-  /**
-   * How can I configure Front Matter?
-   */
-  dashboardChatbotChatboxPlaceholder = 'dashboard.chatbot.chatbox.placeholder',
-  /**
-   * Ask Front Matter AI
-   */
-  dashboardChatbotHeaderHeading = 'dashboard.chatbot.header.heading',
-  /**
-   * Our AI, powered by mendable.ai, has processed the documentation and can assist you with any queries regarding Front Matter. Go ahead and ask away!
-   */
-  dashboardChatbotHeaderDescription = 'dashboard.chatbot.header.description',
+
   /**
    * Open options
    */
@@ -1776,10 +1745,6 @@ export enum LocalizationKey {
    * Cache cleared
    */
   commandsCacheCleared = 'commands.cache.cleared',
-  /**
-   * Ask me anything
-   */
-  commandsChatbotTitle = 'commands.chatbot.title',
   /**
    * Create content by content type
    */

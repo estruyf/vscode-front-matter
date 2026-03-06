@@ -2386,15 +2386,6 @@
         "icon": "$(book)"
       },
       {
-        "command": "frontMatter.chatbot",
-        "title": "%command.frontMatter.chatbot%",
-        "category": "Front Matter",
-        "icon": {
-          "light": "assets/icons/chatbot-light.svg",
-          "dark": "assets/icons/chatbot-dark.svg"
-        }
-      },
-      {
         "command": "frontMatter.promoteSettings",
         "title": "%command.frontMatter.promoteSettings%",
         "category": "Front Matter"
@@ -2560,11 +2551,6 @@
           "command": "frontMatter.dashboard.close",
           "group": "navigation@-98",
           "when": "frontMatter:enabled == true && frontMatter:dashboard:open == true"
-        },
-        {
-          "command": "frontMatter.chatbot",
-          "group": "navigation@-97",
-          "when": "resourceFilename == 'frontmatter.json'"
         }
       ],
       "explorer/context": [
@@ -2772,11 +2758,6 @@
         {
           "command": "frontMatter.docs",
           "group": "navigation@-1",
-          "when": "view == frontMatter.explorer"
-        },
-        {
-          "command": "frontMatter.chatbot",
-          "group": "navigation@0",
           "when": "view == frontMatter.explorer"
         },
         {

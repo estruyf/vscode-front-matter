@@ -30,7 +30,6 @@ import {
   Article,
   Settings,
   StatusListener,
-  Chatbot,
   Taxonomy
 } from './commands';
 import { join } from 'path';
@@ -198,11 +197,6 @@ export async function activate(context: vscode.ExtensionContext) {
         `https://${extension.isBetaVersion() ? `beta.` : ``}frontmatter.codes/docs`
       );
     })
-  );
-
-  // Chat to the bot
-  subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_NAME.chatbot, () => Chatbot.open(extensionPath))
   );
 
   // Create the editor experience for bulk scripts
