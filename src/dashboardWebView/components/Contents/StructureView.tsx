@@ -1,10 +1,16 @@
 import { Disclosure } from '@headlessui/react';
-import { ChevronRightIcon, FolderIcon } from '@heroicons/react/24/solid';
+import { ChevronRightIcon, FolderIcon, PlusIcon, HomeIcon, ArrowLeftIcon } from '@heroicons/react/24/solid';
 import * as React from 'react';
 import { useMemo } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { Page } from '../../models';
 import { StructureItem } from './StructureItem';
 import { parseWinPath } from '../../../helpers/parseWinPath';
+import { SelectedStructureFolderAtom, SettingsSelector } from '../../state';
+import { Messenger } from '@estruyf/vscode/dist/client';
+import { DashboardMessage } from '../../DashboardMessage';
+import * as l10n from '@vscode/l10n';
+import { LocalizationKey } from '../../../localization';
 
 export interface IStructureViewProps {
   pages: Page[];
@@ -20,6 +26,9 @@ interface FolderNode {
 export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
   pages
 }: React.PropsWithChildren<IStructureViewProps>) => {
+  const [selectedFolder, setSelectedFolder] = useRecoilState(SelectedStructureFolderAtom);
+  const settings = useRecoilValue(SettingsSelector);
+
   const folderTree = useMemo(() => {
     const root: FolderNode = {
       name: '',
@@ -31,9 +40,8 @@ export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
     const folderMap = new Map<string, FolderNode>();
     folderMap.set('', root);
 
-    // Helper to compute the normalized folder path for a page.
-    // It ensures the page's folder starts with the `fmFolder` segment and
-    // preserves any subpaths after that segment (so subfolders are created).
+    // Helper to compute the normalized workspace-relative folder path for a page.
+    // This returns the actual folder path relative to the workspace, not just titles.
     const computeNormalizedFolderPath = (page: Page): string => {
       if (!page.fmFolder) {
         return '';
@@ -41,31 +49,16 @@ export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
 
       const fmFolder = page.fmFolder.replace(/\\/g, '/').replace(/^\/+|\/+$/g, '');
 
-      // If we have a file path, use its directory (exclude the filename) to compute
-      // the relative path. This avoids treating filenames as folder segments.
-      const filePath = page.fmFilePath ? parseWinPath(page.fmFilePath).replace(/^\/+|\/+$/g, '') : '';
-      const fileDir = filePath && filePath.includes('/') ? filePath.substring(0, filePath.lastIndexOf('/')).replace(/^\/+|\/+$/g, '') : '';
-
-      if (fileDir) {
-        // If the content folder is known, and the file directory starts with it,
-        // replace that root with the fmFolder (preserving subfolders after it).
-        if (page.fmPageFolder?.path) {
-          const contentFolderPath = parseWinPath(page.fmPageFolder.path).replace(/^\/+|\/+$/g, '');
-          if (fileDir.startsWith(contentFolderPath)) {
-            const rel = fileDir.substring(contentFolderPath.length).replace(/^\/+|\/+$/g, '');
-            return rel ? `${fmFolder}/${rel}` : fmFolder;
-          }
-        }
-
-        // Otherwise try to find fmFolder as a directory segment in the fileDir
-        const segments = fileDir.split('/').filter(Boolean);
-        const fmIndex = segments.indexOf(fmFolder);
-        if (fmIndex >= 0) {
-          return segments.slice(fmIndex).join('/');
+      // Use fmRelFilePath which is already workspace-relative
+      if (page.fmRelFilePath) {
+        const relPath = parseWinPath(page.fmRelFilePath).replace(/^\/+|\/+$/g, '');
+        const relDir = relPath.includes('/') ? relPath.substring(0, relPath.lastIndexOf('/')).replace(/^\/+|\/+$/g, '') : '';
+        if (relDir) {
+          return relDir;
         }
       }
 
-      // Fallback: just use the fmFolder name
+      // Fallback: use fmFolder title if we can't determine the path
       return fmFolder;
     };
 
@@ -127,6 +120,57 @@ export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
     return root;
   }, [pages]);
 
+  // Filter the folder tree based on the selected folder
+  const displayedNode = useMemo(() => {
+    if (!selectedFolder) {
+      return folderTree;
+    }
+
+    // Find the selected folder node in the tree
+    const findNode = (node: FolderNode, path: string): FolderNode | null => {
+      if (node.path === path) {
+        return node;
+      }
+      for (const child of node.children) {
+        const found = findNode(child, path);
+        if (found) {
+          return found;
+        }
+      }
+      return null;
+    };
+
+    const foundNode = findNode(folderTree, selectedFolder);
+    return foundNode || folderTree;
+  }, [folderTree, selectedFolder]);
+
+  const handleFolderClick = (folderPath: string) => {
+    setSelectedFolder(folderPath);
+  };
+
+  const handleBackClick = () => {
+    if (!selectedFolder) {
+      return;
+    }
+
+    // Navigate to parent folder
+    const parts = selectedFolder.split('/');
+    if (parts.length > 1) {
+      const parentPath = parts.slice(0, -1).join('/');
+      setSelectedFolder(parentPath);
+    } else {
+      setSelectedFolder(null);
+    }
+  };
+
+  const handleHomeClick = () => {
+    setSelectedFolder(null);
+  };
+
+  const handleCreateContent = () => {
+    Messenger.send(DashboardMessage.createContentInFolder, { folderPath: selectedFolder });
+  };
+
   const renderFolderNode = (node: FolderNode, depth = 0): React.ReactNode => {
     const hasContent = node.pages.length > 0 || node.children.length > 0;
 
@@ -168,24 +212,32 @@ export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
         <Disclosure defaultOpen={depth <= 1}>
           {({ open }) => (
             <>
-              <Disclosure.Button
-                className="flex items-center w-full text-left"
-                style={{ paddingLeft: `${paddingLeft}px` }}
-              >
-                <ChevronRightIcon
-                  className={`w-4 h-4 mr-2 transform transition-transform ${open ? 'rotate-90' : ''
-                    }`}
-                />
-                <FolderIcon className="w-4 h-4 mr-2 text-[var(--vscode-symbolIcon-folderForeground)]" />
-                <span className="font-medium text-[var(--vscode-editor-foreground)]">
-                  {node.name}
-                  {node.pages.length > 0 && (
-                    <span className="ml-2 text-sm text-[var(--vscode-descriptionForeground)]">
-                      ({node.pages.length} {node.pages.length === 1 ? 'file' : 'files'})
-                    </span>
-                  )}
-                </span>
-              </Disclosure.Button>
+              <div className="flex items-center w-full" style={{ paddingLeft: `${paddingLeft}px` }}>
+                <Disclosure.Button
+                  className="flex items-center flex-1 text-left hover:bg-[var(--vscode-list-hoverBackground)] rounded px-2 py-1"
+                >
+                  <ChevronRightIcon
+                    className={`w-4 h-4 mr-2 transform transition-transform ${open ? 'rotate-90' : ''
+                      }`}
+                  />
+                  <FolderIcon className="w-4 h-4 mr-2 text-[var(--vscode-symbolIcon-folderForeground)]" />
+                  <span className="font-medium text-[var(--vscode-editor-foreground)]">
+                    {node.name}
+                    {node.pages.length > 0 && (
+                      <span className="ml-2 text-sm text-[var(--vscode-descriptionForeground)]">
+                        ({node.pages.length} {node.pages.length === 1 ? 'file' : 'files'})
+                      </span>
+                    )}
+                  </span>
+                </Disclosure.Button>
+                <button
+                  onClick={() => handleFolderClick(node.path)}
+                  className="p-1 hover:bg-[var(--vscode-list-hoverBackground)] rounded"
+                  title={l10n.t(LocalizationKey.commonOpen)}
+                >
+                  <ChevronRightIcon className="w-4 h-4 text-[var(--vscode-descriptionForeground)]" />
+                </button>
+              </div>
 
               <Disclosure.Panel className="mt-2">
                 {/* Child folders */}
@@ -211,7 +263,61 @@ export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
 
   return (
     <div className="structure-view">
-      {renderFolderNode(folderTree)}
+      {/* Toolbar */}
+      <div className="mb-4 pb-3 border-b border-[var(--frontmatter-border)]">
+        {/* Breadcrumb navigation */}
+        {selectedFolder && (
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={handleHomeClick}
+                className="p-1 hover:bg-[var(--vscode-list-hoverBackground)] rounded"
+                title="Home"
+              >
+                <HomeIcon className="w-4 h-4 text-[var(--vscode-descriptionForeground)]" />
+              </button>
+              <button
+                onClick={handleBackClick}
+                className="flex items-center space-x-1 px-2 py-1 hover:bg-[var(--vscode-list-hoverBackground)] rounded text-sm"
+                title={l10n.t(LocalizationKey.commonBack) || 'Back'}
+              >
+                <ArrowLeftIcon className="w-3 h-3" />
+                <span>{l10n.t(LocalizationKey.commonBack) || 'Back'}</span>
+              </button>
+              <span className="text-sm text-[var(--vscode-descriptionForeground)]">
+                / {selectedFolder.split('/').join(' / ')}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Create content button */}
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={handleCreateContent}
+            disabled={!settings?.initialized}
+            className="inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium focus:outline-none rounded text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50"
+            title={selectedFolder 
+              ? l10n.t(LocalizationKey.dashboardHeaderHeaderCreateContent) + ` in ${selectedFolder}`
+              : l10n.t(LocalizationKey.dashboardHeaderHeaderCreateContent)}
+          >
+            <PlusIcon className="w-4 h-4 mr-1" />
+            <span>
+              {selectedFolder 
+                ? `${l10n.t(LocalizationKey.dashboardHeaderHeaderCreateContent)} here`
+                : l10n.t(LocalizationKey.dashboardHeaderHeaderCreateContent)}
+            </span>
+          </button>
+          {selectedFolder && (
+            <span className="text-xs text-[var(--vscode-descriptionForeground)]">
+              in {selectedFolder}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Folder tree */}
+      {renderFolderNode(displayedNode)}
     </div>
   );
 };

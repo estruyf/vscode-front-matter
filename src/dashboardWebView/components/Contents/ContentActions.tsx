@@ -1,5 +1,12 @@
 import { messageHandler } from '@estruyf/vscode/dist/client';
-import { EyeIcon, GlobeEuropeAfricaIcon, TrashIcon, LanguageIcon, EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
+import {
+  EyeIcon,
+  GlobeEuropeAfricaIcon,
+  TrashIcon,
+  LanguageIcon,
+  EllipsisHorizontalIcon,
+  ArrowRightCircleIcon
+} from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { CustomScript, I18nConfig } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
@@ -56,6 +63,11 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
   const onDelete = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     setSelectedItemAction({ path, action: 'delete' });
+  }, [path]);
+
+  const onMove = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    setSelectedItemAction({ path, action: 'move' });
   }, [path]);
 
   const onRename = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
@@ -120,6 +132,11 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
                 <DropdownMenuItem onClick={onView}>
                   <EyeIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
                   <span>{l10n.t(LocalizationKey.dashboardContentsContentActionsMenuItemView)}</span>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem onClick={onMove}>
+                  <ArrowRightCircleIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
+                  <span>Move to folder</span>
                 </DropdownMenuItem>
 
                 <DropdownMenuItem onClick={onRename}>
