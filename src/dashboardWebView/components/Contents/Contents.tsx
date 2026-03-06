@@ -66,7 +66,7 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({
 
       if (pageItem) {
         setPage(pageItem);
-        
+
         if (selectedItemAction.action === 'delete') {
           setShowDeletionAlert(true);
         } else if (selectedItemAction.action === 'move') {

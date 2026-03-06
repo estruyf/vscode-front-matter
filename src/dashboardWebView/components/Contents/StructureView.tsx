@@ -297,13 +297,13 @@ export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
             onClick={handleCreateContent}
             disabled={!settings?.initialized}
             className="inline-flex items-center px-3 py-1 border border-transparent text-xs leading-4 font-medium focus:outline-none rounded text-[var(--vscode-button-foreground)] bg-[var(--frontmatter-button-background)] hover:bg-[var(--vscode-button-hoverBackground)] disabled:opacity-50"
-            title={selectedFolder 
+            title={selectedFolder
               ? l10n.t(LocalizationKey.dashboardHeaderHeaderCreateContent) + ` in ${selectedFolder}`
               : l10n.t(LocalizationKey.dashboardHeaderHeaderCreateContent)}
           >
             <PlusIcon className="w-4 h-4 mr-1" />
             <span>
-              {selectedFolder 
+              {selectedFolder
                 ? `${l10n.t(LocalizationKey.dashboardHeaderHeaderCreateContent)} here`
                 : l10n.t(LocalizationKey.dashboardHeaderHeaderCreateContent)}
             </span>

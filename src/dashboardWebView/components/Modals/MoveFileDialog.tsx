@@ -86,9 +86,8 @@ export const MoveFileDialog: React.FunctionComponent<IMoveFileDialogProps> = ({
     return (
       <div key={node.path}>
         <div
-          className={`flex items-center py-1 px-2 cursor-pointer hover:bg-[var(--vscode-list-hoverBackground)] rounded ${
-            isSelected ? 'bg-[var(--vscode-list-activeSelectionBackground)]' : ''
-          }`}
+          className={`flex items-center py-1 px-2 cursor-pointer hover:bg-[var(--vscode-list-hoverBackground)] rounded ${isSelected ? 'bg-[var(--vscode-list-activeSelectionBackground)]' : ''
+            }`}
           style={{ paddingLeft: `${paddingLeft}px` }}
           onClick={() => setSelectedFolder(node.path)}
         >
@@ -101,9 +100,8 @@ export const MoveFileDialog: React.FunctionComponent<IMoveFileDialogProps> = ({
               className="mr-1"
             >
               <ChevronRightIcon
-                className={`w-3 h-3 transform transition-transform ${
-                  isExpanded ? 'rotate-90' : ''
-                }`}
+                className={`w-3 h-3 transform transition-transform ${isExpanded ? 'rotate-90' : ''
+                  }`}
               />
             </button>
           )}

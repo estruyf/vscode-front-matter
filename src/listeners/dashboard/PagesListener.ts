@@ -12,7 +12,14 @@ import {
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { Page } from '../../dashboardWebView/models';
-import { ArticleHelper, Extension, Logger, parseWinPath, Settings, ContentType } from '../../helpers';
+import {
+  ArticleHelper,
+  Extension,
+  Logger,
+  parseWinPath,
+  Settings,
+  ContentType
+} from '../../helpers';
 import { BaseListener } from './BaseListener';
 import { DataListener } from '../panel';
 import Fuse from 'fuse.js';
@@ -385,7 +392,7 @@ export class PagesListener extends BaseListener {
       const article = await ArticleHelper.getFrontMatterByPath(filePath);
       if (article) {
         const contentType = await ArticleHelper.getContentType(article);
-        
+
         if (contentType.pageBundle) {
           // Move the entire folder
           const sourceFolder = parseWinPath(filePath).substring(
@@ -437,7 +444,7 @@ export class PagesListener extends BaseListener {
     }
 
     const { folderPath } = payload;
-    
+
     // Get all content folders
     let folders = await Folders.get();
     folders = folders.filter((f) => !f.disableCreation);
@@ -460,8 +467,10 @@ export class PagesListener extends BaseListener {
         }
 
         const absoluteFolderPath = Folders.getFolderPath(Uri.file(folder.path));
-        const relativeFolderPath = parseWinPath(absoluteFolderPath).replace(parseWinPath(wsFolder.fsPath), '').replace(/^\/+|\/+$/g, '');
-        
+        const relativeFolderPath = parseWinPath(absoluteFolderPath)
+          .replace(parseWinPath(wsFolder.fsPath), '')
+          .replace(/^\/+|\/+$/g, '');
+
         // Check if the folderPath starts with this content folder
         if (folderPath === relativeFolderPath || folderPath.startsWith(relativeFolderPath + '/')) {
           targetFolder = folder;
@@ -489,7 +498,7 @@ export class PagesListener extends BaseListener {
 
     // Get the folder path
     let absoluteFolderPath = Folders.getFolderPath(Uri.file(targetFolder.path));
-    
+
     // Add the subfolder if any
     if (subPath) {
       absoluteFolderPath = join(absoluteFolderPath, subPath);
@@ -497,13 +506,15 @@ export class PagesListener extends BaseListener {
 
     // Check if templates are enabled
     const templatesEnabled = Settings.get('dashboardState.contents.templatesEnabled');
-    
+
     if (templatesEnabled) {
       // Use the template creation flow
       await Template.create(absoluteFolderPath);
     } else {
       // Use the content type creation flow
-      const selectedContentType = await Questions.SelectContentType(targetFolder.contentTypes || []);
+      const selectedContentType = await Questions.SelectContentType(
+        targetFolder.contentTypes || []
+      );
       if (!selectedContentType) {
         return;
       }
