@@ -194,7 +194,7 @@ export async function activate(context: vscode.ExtensionContext) {
   subscriptions.push(
     vscode.commands.registerCommand(COMMAND_NAME.docs, () => {
       vscode.commands.executeCommand(
-        `simpleBrowser.show`,
+        `workbench.action.browser.open`,
         `https://${extension.isBetaVersion() ? `beta.` : ``}frontmatter.codes/docs`
       );
     })
