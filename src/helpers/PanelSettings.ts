@@ -1,7 +1,6 @@
 import {
   SETTING_GLOBAL_TIMEZONE,
   SETTING_PANEL_ACTIONS_DISABLED,
-  SETTING_SPONSORS_AI_ENABLED,
   SETTING_WEBSITE_URL
 } from './../constants/settings';
 import { workspace } from 'vscode';
@@ -52,7 +51,6 @@ export class PanelSettings {
 
     try {
       return {
-        aiEnabled: Settings.get<boolean>(SETTING_SPONSORS_AI_ENABLED) || false,
         copilotEnabled: await Copilot.isInstalled(),
         git: await GitListener.getSettings(),
         seo: {

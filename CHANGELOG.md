@@ -2,11 +2,17 @@
 
 ## [10.10.0] - 2025-xx-xx
 
+- [#983](https://github.com/estruyf/vscode-front-matter/issues/983): Removal of the `frontMatter.sponsors.ai.enabled` features
+
 ### 🎨 Enhancements
 
 - [#937](https://github.com/estruyf/vscode-front-matter/issues/937): Dashboard "Structure" view for documentation sites *WIP*
 - [#965](https://github.com/estruyf/vscode-front-matter/issues/965): Added SEO support for the keyword in the first paragraph
 - [#973](https://github.com/estruyf/vscode-front-matter/issues/973): Support for number fields in the snippets
+
+### 🐞 Fixes
+
+- [#984](https://github.com/estruyf/vscode-front-matter/issues/984): Fix in `frontMatter.global.timezone` is invalid
 - [#1004](https://github.com/estruyf/vscode-front-matter/issues/1004): Fix for `mediaDB.json` containing full paths on Windows instead of relative paths
 
 ### 🐞 Fixes

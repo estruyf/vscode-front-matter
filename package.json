@@ -139,12 +139,6 @@
             }
           }
         },
-        "frontMatter.sponsors.ai.enabled": {
-          "type": "boolean",
-          "default": false,
-          "markdownDescription": "%setting.frontMatter.sponsors.ai.enabled.markdownDescription%",
-          "scope": "Sponsors"
-        },
         "frontMatter.extensibility.scripts": {
           "type": "array",
           "markdownDescription": "%setting.frontMatter.extensibility.scripts.markdownDescription%",
