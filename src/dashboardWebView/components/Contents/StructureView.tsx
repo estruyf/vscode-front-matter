@@ -212,30 +212,28 @@ export const StructureView: React.FunctionComponent<IStructureViewProps> = ({
         <Disclosure defaultOpen={depth <= 1}>
           {({ open }) => (
             <>
-              <div className="flex items-center w-full" style={{ paddingLeft: `${paddingLeft}px` }}>
-                <Disclosure.Button
-                  className="flex items-center flex-1 text-left hover:bg-[var(--vscode-list-hoverBackground)] rounded px-2 py-1"
-                >
+              <div className="flex items-center w-full gap-1" style={{ paddingLeft: `${paddingLeft}px` }}>
+                <Disclosure.Button className="flex items-center text-left hover:bg-[var(--vscode-list-hoverBackground)] rounded px-2 py-1 transition-colors">
                   <ChevronRightIcon
-                    className={`w-4 h-4 mr-2 transform transition-transform ${open ? 'rotate-90' : ''
-                      }`}
+                    className={`w-4 h-4 transform transition-transform ${open ? 'rotate-90' : ''}`}
                   />
-                  <FolderIcon className="w-4 h-4 mr-2 text-[var(--vscode-symbolIcon-folderForeground)]" />
-                  <span className="font-medium text-[var(--vscode-editor-foreground)]">
-                    {node.name}
+                </Disclosure.Button>
+
+                <button
+                  onClick={() => handleFolderClick(node.path)}
+                  className="flex items-center flex-1 px-2 py-1 hover:bg-[var(--vscode-list-hoverBackground)] rounded transition-colors"
+                  title={l10n.t(LocalizationKey.commonOpen)}
+                >
+                  <FolderIcon className="w-4 h-4 mr-2 flex-shrink-0 text-[var(--vscode-symbolIcon-folderForeground)]" />
+                  <span className="flex items-center font-medium text-[var(--vscode-editor-foreground)] flex-1">
+                    <span className="mr-2">{node.name}</span>
                     {node.pages.length > 0 && (
-                      <span className="ml-2 text-sm text-[var(--vscode-descriptionForeground)]">
+                      <span className="text-sm text-[var(--vscode-descriptionForeground)]">
                         ({node.pages.length} {node.pages.length === 1 ? 'file' : 'files'})
                       </span>
                     )}
                   </span>
-                </Disclosure.Button>
-                <button
-                  onClick={() => handleFolderClick(node.path)}
-                  className="p-1 hover:bg-[var(--vscode-list-hoverBackground)] rounded"
-                  title={l10n.t(LocalizationKey.commonOpen)}
-                >
-                  <ChevronRightIcon className="w-4 h-4 text-[var(--vscode-descriptionForeground)]" />
+                  <ChevronRightIcon className="w-4 h-4 flex-shrink-0 text-[var(--vscode-descriptionForeground)]" />
                 </button>
               </div>
 

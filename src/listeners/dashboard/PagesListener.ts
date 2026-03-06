@@ -12,13 +12,15 @@ import {
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { Page } from '../../dashboardWebView/models';
+import { ContentFolder } from '../../models/ContentFolder';
 import {
   ArticleHelper,
   Extension,
   Logger,
   parseWinPath,
   Settings,
-  ContentType
+  ContentType,
+  Notifications
 } from '../../helpers';
 import { BaseListener } from './BaseListener';
 import { DataListener } from '../panel';
@@ -445,11 +447,10 @@ export class PagesListener extends BaseListener {
 
     const { folderPath } = payload;
 
-    // Get all content folders
-    let folders = await Folders.get();
-    folders = folders.filter((f) => !f.disableCreation);
+    // Get all content folders (including those with disableCreation)
+    const allFolders = await Folders.get();
 
-    if (!folders || folders.length === 0) {
+    if (!allFolders || allFolders.length === 0) {
       await commands.executeCommand(COMMAND_NAME.createContent);
       return;
     }
@@ -460,7 +461,11 @@ export class PagesListener extends BaseListener {
     if (folderPath) {
       // The folderPath is a relative path like "content/posts" or "blog/en"
       // We need to find the matching content folder and determine the subfolder
-      for (const folder of folders) {
+      Logger.info(`[createContentInFolder] folderPath: ${folderPath}`);
+
+      let bestMatch: { folder: ContentFolder; subPath: string; matchLength: number } | null = null;
+
+      for (const folder of allFolders) {
         const wsFolder = Folders.getWorkspaceFolder();
         if (!wsFolder) {
           continue;
@@ -471,25 +476,56 @@ export class PagesListener extends BaseListener {
           .replace(parseWinPath(wsFolder.fsPath), '')
           .replace(/^\/+|\/+$/g, '');
 
-        // Check if the folderPath starts with this content folder
+        Logger.info(
+          `[createContentInFolder] Checking folder: ${folder.title}, relativePath: ${relativeFolderPath}`
+        );
+
+        // Check if the folderPath matches or starts with this content folder
         if (folderPath === relativeFolderPath || folderPath.startsWith(relativeFolderPath + '/')) {
-          targetFolder = folder;
-          // Extract the subfolder part
-          if (folderPath !== relativeFolderPath) {
-            subPath = folderPath.substring(relativeFolderPath.length).replace(/^\/+|\/+$/g, '');
+          const currentSubPath =
+            folderPath !== relativeFolderPath
+              ? folderPath.substring(relativeFolderPath.length).replace(/^\/+|\/+$/g, '')
+              : '';
+
+          // Keep track of the best (longest/most specific) match
+          if (!bestMatch || relativeFolderPath.length > bestMatch.matchLength) {
+            bestMatch = {
+              folder,
+              subPath: currentSubPath,
+              matchLength: relativeFolderPath.length
+            };
           }
-          break;
+        }
+      }
+
+      if (bestMatch) {
+        targetFolder = bestMatch.folder;
+        subPath = bestMatch.subPath;
+        Logger.info(
+          `[createContentInFolder] Best match: ${targetFolder.title}, subPath: ${subPath}`
+        );
+
+        // Check if content creation is disabled for this folder
+        if (targetFolder.disableCreation) {
+          Notifications.error(`Content creation is disabled for folder: ${targetFolder.title}`);
+          return;
         }
       }
     }
 
     if (!targetFolder) {
-      // If no folder matches, let the user select one
+      // If no folder matches, let the user select one (filter out disabled folders)
+      const availableFolders = allFolders.filter((f) => !f.disableCreation);
+      if (availableFolders.length === 0) {
+        await commands.executeCommand(COMMAND_NAME.createContent);
+        return;
+      }
+
       const selectedFolder = await Questions.SelectContentFolder();
       if (!selectedFolder) {
         return;
       }
-      targetFolder = folders.find((f) => f.path === selectedFolder.path);
+      targetFolder = allFolders.find((f) => f.path === selectedFolder.path);
     }
 
     if (!targetFolder) {
