@@ -956,8 +956,25 @@ export class ContentType {
         let templatePath = contentType.template;
         let templateData: ParsedFrontMatter | null | undefined = null;
         if (templatePath) {
-          templatePath = Folders.getAbsFilePath(templatePath);
-          templateData = await ArticleHelper.getFrontMatterByPath(templatePath);
+          try {
+            templatePath = Folders.getAbsFilePath(templatePath);
+            templateData = await ArticleHelper.getFrontMatterByPath(templatePath);
+            if (!templateData) {
+              Logger.warning(
+                `ContentType.create: Template file not found or could not be parsed: ${templatePath}`
+              );
+              Notifications.warning(
+                l10n.t(LocalizationKey.commonError) + ` Template not found: ${templatePath}`
+              );
+            }
+          } catch (error) {
+            Logger.error(
+              `ContentType.create: Error loading template from ${templatePath}: ${error}`
+            );
+            Notifications.error(
+              l10n.t(LocalizationKey.commonError) + ` Template loading failed: ${templatePath}`
+            );
+          }
         }
 
         const newFilePath: string | undefined = await ArticleHelper.createContent(

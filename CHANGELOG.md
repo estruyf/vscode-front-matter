@@ -15,6 +15,7 @@
 
 ### 🐞 Fixes
 
+- [#950](https://github.com/estruyf/vscode-front-matter/issues/950): Fix for template is not applied to new content type when created
 - [#958](https://github.com/estruyf/vscode-front-matter/issues/958): Fix variable frontmatter leads to error
 - [#984](https://github.com/estruyf/vscode-front-matter/issues/984): Fix in `frontMatter.global.timezone` is invalid
 - [#1004](https://github.com/estruyf/vscode-front-matter/issues/1004): Fix for `mediaDB.json` containing full paths on Windows instead of relative paths
