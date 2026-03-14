@@ -4,7 +4,6 @@
 
 - Removed the chatbot command and all related code and references
 - [#983](https://github.com/estruyf/vscode-front-matter/issues/983): Removal of the `frontMatter.sponsors.ai.enabled` features
-- [#1006](https://github.com/estruyf/vscode-front-matter/issues/1006): Fix output channel colorizer schema to only apply to the Front Matter output channel
 
 ### 🎨 Enhancements
 
@@ -17,6 +16,7 @@
 
 - [#984](https://github.com/estruyf/vscode-front-matter/issues/984): Fix in `frontMatter.global.timezone` is invalid
 - [#1004](https://github.com/estruyf/vscode-front-matter/issues/1004): Fix for `mediaDB.json` containing full paths on Windows instead of relative paths
+- [#1006](https://github.com/estruyf/vscode-front-matter/issues/1006): Fix output channel colorizer schema to only apply to the Front Matter output channel
 
 ### 🐞 Fixes
 
