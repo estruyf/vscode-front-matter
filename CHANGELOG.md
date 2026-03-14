@@ -7,6 +7,7 @@
 - [#937](https://github.com/estruyf/vscode-front-matter/issues/937): Dashboard "Structure" view for documentation sites
 - [#965](https://github.com/estruyf/vscode-front-matter/issues/965): Added SEO support for the keyword in the first paragraph
 - [#973](https://github.com/estruyf/vscode-front-matter/issues/973): Support for number fields in the snippets
+- [#990](https://github.com/estruyf/vscode-front-matter/issues/990): Schema and validation for front matter in markdown files. It can be turned off by the `frontMatter.validation.enabled` setting.
 
 ### 🐞 Fixes
 

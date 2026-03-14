@@ -13,18 +13,21 @@ import {
   Notifications,
   SeoHelper,
   Settings,
-  FrontMatterValidator
+  FrontMatterValidator,
+  ValidationError
 } from '../helpers';
 import { PanelProvider } from '../panelWebView/PanelProvider';
 import { ContentType } from '../helpers/ContentType';
 import { DataListener } from '../listeners/panel';
 import { commands } from 'vscode';
 import { Field } from '../models';
+import { FrontMatterParser } from '../parsers';
 import { Preview } from './Preview';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 import { i18n } from './i18n';
 import { getDescriptionField, getTitleField } from '../utils';
+import * as yaml from 'yaml';
 
 export class StatusListener {
   private static _validator: FrontMatterValidator | undefined;
@@ -220,82 +223,14 @@ export class StatusListener {
       const text = editor.document.getText();
       const schemaDiagnostics: vscode.Diagnostic[] = [];
 
-      // Find the front matter section (between --- markers)
-      const frontMatterMatch = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-      const frontMatterEnd = frontMatterMatch ? frontMatterMatch[0].length : text.length;
-
       for (const error of errors) {
-        // For required field errors, use the missing property name
-        let fieldName = '';
-        let arrayIndex: number | undefined;
-        if (error.keyword === 'required' && error.params?.missingProperty) {
-          fieldName = error.params.missingProperty;
-        } else {
-          // Find the field in the document
-          const fieldPath = error.field.split('.');
-          // If the last segment is a numeric index (e.g. tags.0), use the parent
-          // field name and track which array item to highlight
-          const lastSegment = fieldPath[fieldPath.length - 1];
-          if (/^\d+$/.test(lastSegment)) {
-            arrayIndex = parseInt(lastSegment, 10);
-            fieldName = fieldPath[fieldPath.length - 2] || '';
-          } else {
-            fieldName = lastSegment;
-          }
-        }
+        const range = StatusListener.findSchemaErrorRange(editor.document, text, error);
 
-        if (!fieldName || fieldName === 'root') {
-          continue; // Skip if we can't determine field name
-        }
-
-        // Try to find the field location in the front matter section only
-        const searchText = text.substring(0, frontMatterEnd);
-        const fieldIdx = searchText.indexOf(`${fieldName}:`);
-
-        if (fieldIdx !== -1) {
-          let posStart: vscode.Position;
-          let posEnd: vscode.Position;
-
-          // Default range: the field name itself
-          posStart = editor.document.positionAt(fieldIdx);
-          posEnd = editor.document.positionAt(fieldIdx + fieldName.length);
-
-          if (arrayIndex !== undefined) {
-            // Walk lines after the field to find the Nth array item (lines starting with '  - ')
-            const afterField = text.indexOf('\n', fieldIdx) + 1;
-            let remaining = arrayIndex;
-            let searchFrom = afterField;
-            while (searchFrom < frontMatterEnd) {
-              const lineEnd = text.indexOf('\n', searchFrom);
-              const line = text.substring(searchFrom, lineEnd === -1 ? frontMatterEnd : lineEnd);
-              if (/^\s*-\s/.test(line)) {
-                if (remaining === 0) {
-                  // Found the right item — highlight the value after '- '
-                  const valueOffset = line.indexOf('- ') + 2;
-                  const rawItemValue = line.substring(valueOffset).trim();
-                  const isQuoted =
-                    rawItemValue.length > 1 &&
-                    ((rawItemValue.startsWith('"') && rawItemValue.endsWith('"')) ||
-                      (rawItemValue.startsWith("'") && rawItemValue.endsWith("'")));
-                  const itemValue = isQuoted ? rawItemValue.slice(1, -1) : rawItemValue;
-                  const valueStartOffset = searchFrom + valueOffset + (isQuoted ? 1 : 0);
-                  posStart = editor.document.positionAt(valueStartOffset);
-                  posEnd = editor.document.positionAt(valueStartOffset + itemValue.length);
-                  break;
-                }
-                remaining--;
-              } else if (line.trim() && !/^\s/.test(line)) {
-                // Hit a new top-level field — stop searching
-                break;
-              }
-              searchFrom = (lineEnd === -1 ? frontMatterEnd : lineEnd) + 1;
-            }
-          }
-
+        if (range) {
           const diagnostic: vscode.Diagnostic = {
             code: '',
             message: error.message,
-            range: new vscode.Range(posStart, posEnd),
+            range,
             severity: vscode.DiagnosticSeverity.Warning,
             source: EXTENSION_NAME
           };
@@ -316,6 +251,188 @@ export class StatusListener {
       // Silently fail validation errors to not disrupt the user experience
       // Logger can be used here if needed for debugging
     }
+  }
+
+  private static findSchemaErrorRange(
+    document: vscode.TextDocument,
+    text: string,
+    error: ValidationError
+  ): vscode.Range | undefined {
+    const language = FrontMatterParser.getLanguageFromContent(text);
+
+    if (language === 'yaml') {
+      const yamlRange = StatusListener.findYamlSchemaErrorRange(document, text, error);
+      if (yamlRange) {
+        return yamlRange;
+      }
+    }
+
+    return StatusListener.findTextSchemaErrorRange(document, text, error);
+  }
+
+  private static findYamlSchemaErrorRange(
+    document: vscode.TextDocument,
+    text: string,
+    error: ValidationError
+  ): vscode.Range | undefined {
+    const frontMatter = StatusListener.getYamlFrontMatter(text);
+    if (!frontMatter) {
+      return undefined;
+    }
+
+    const path = StatusListener.getValidationPath(error);
+    if (path.length === 0) {
+      return undefined;
+    }
+
+    const doc = yaml.parseDocument(frontMatter.content);
+    const node = doc.getIn(path, true) as { range?: [number, number, number] } | null;
+
+    if (!node?.range || node.range.length < 2) {
+      return undefined;
+    }
+
+    const normalizedRange = StatusListener.normalizeYamlNodeRange(frontMatter.content, node.range);
+    if (!normalizedRange) {
+      return undefined;
+    }
+
+    return new vscode.Range(
+      document.positionAt(frontMatter.startOffset + normalizedRange.start),
+      document.positionAt(frontMatter.startOffset + normalizedRange.end)
+    );
+  }
+
+  private static findTextSchemaErrorRange(
+    document: vscode.TextDocument,
+    text: string,
+    error: ValidationError
+  ): vscode.Range | undefined {
+    const path = StatusListener.getValidationPath(error);
+    const fieldName = path.length > 0 ? String(path[path.length - 1]) : '';
+    const arrayIndex =
+      typeof path[path.length - 1] === 'number' ? (path[path.length - 1] as number) : undefined;
+    const searchFieldName =
+      arrayIndex !== undefined ? String(path[path.length - 2] || '') : fieldName;
+
+    if (!searchFieldName || searchFieldName === 'root') {
+      return undefined;
+    }
+
+    const frontMatterMatch = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+    const frontMatterEnd = frontMatterMatch ? frontMatterMatch[0].length : text.length;
+    const searchText = text.substring(0, frontMatterEnd);
+    const fieldIdx = searchText.indexOf(`${searchFieldName}:`);
+
+    if (fieldIdx === -1) {
+      return undefined;
+    }
+
+    let posStart = document.positionAt(fieldIdx);
+    let posEnd = document.positionAt(fieldIdx + searchFieldName.length);
+
+    if (arrayIndex !== undefined) {
+      const afterField = text.indexOf('\n', fieldIdx) + 1;
+      let remaining = arrayIndex;
+      let searchFrom = afterField;
+      while (searchFrom < frontMatterEnd) {
+        const lineEnd = text.indexOf('\n', searchFrom);
+        const line = text.substring(searchFrom, lineEnd === -1 ? frontMatterEnd : lineEnd);
+        if (/^\s*-\s/.test(line)) {
+          if (remaining === 0) {
+            const valueOffset = line.indexOf('- ') + 2;
+            const rawItemValue = line.substring(valueOffset).trim();
+            const isQuoted =
+              rawItemValue.length > 1 &&
+              ((rawItemValue.startsWith('"') && rawItemValue.endsWith('"')) ||
+                (rawItemValue.startsWith("'") && rawItemValue.endsWith("'")));
+            const itemValue = isQuoted ? rawItemValue.slice(1, -1) : rawItemValue;
+            const valueStartOffset = searchFrom + valueOffset + (isQuoted ? 1 : 0);
+            posStart = document.positionAt(valueStartOffset);
+            posEnd = document.positionAt(valueStartOffset + itemValue.length);
+            break;
+          }
+          remaining--;
+        } else if (line.trim() && !/^\s/.test(line)) {
+          break;
+        }
+        searchFrom = (lineEnd === -1 ? frontMatterEnd : lineEnd) + 1;
+      }
+    }
+
+    return new vscode.Range(posStart, posEnd);
+  }
+
+  private static getValidationPath(error: ValidationError): Array<string | number> {
+    const path =
+      error.field && error.field !== 'root'
+        ? error.field
+            .split('.')
+            .filter(Boolean)
+            .map((segment) => (/^\d+$/.test(segment) ? parseInt(segment, 10) : segment))
+        : [];
+
+    if (error.keyword === 'required' && typeof error.params?.missingProperty === 'string') {
+      return [...path, error.params.missingProperty];
+    }
+
+    if (
+      error.keyword === 'additionalProperties' &&
+      typeof error.params?.additionalProperty === 'string'
+    ) {
+      return [...path, error.params.additionalProperty];
+    }
+
+    return path;
+  }
+
+  private static getYamlFrontMatter(
+    text: string
+  ): { content: string; startOffset: number } | undefined {
+    const openMatch = text.match(/^---\r?\n/);
+    if (!openMatch) {
+      return undefined;
+    }
+
+    const startOffset = openMatch[0].length;
+    const closeMatch = /\r?\n---/.exec(text.slice(startOffset));
+    const endOffset = closeMatch ? startOffset + closeMatch.index : text.length;
+
+    return {
+      content: text.slice(startOffset, endOffset),
+      startOffset
+    };
+  }
+
+  private static normalizeYamlNodeRange(
+    source: string,
+    range: [number, number, number]
+  ): { start: number; end: number } | undefined {
+    let start = range[0];
+    let end = range[1];
+
+    if (start >= end) {
+      return undefined;
+    }
+
+    let value = source.slice(start, end);
+    const leadingWhitespace = value.match(/^\s*/)?.[0].length || 0;
+    const trailingWhitespace = value.match(/\s*$/)?.[0].length || 0;
+
+    start += leadingWhitespace;
+    end -= trailingWhitespace;
+    value = source.slice(start, end);
+
+    if (
+      value.length > 1 &&
+      ((value.startsWith('"') && value.endsWith('"')) ||
+        (value.startsWith("'") && value.endsWith("'")))
+    ) {
+      start += 1;
+      end -= 1;
+    }
+
+    return start < end ? { start, end } : undefined;
   }
 
   /**
