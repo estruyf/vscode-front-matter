@@ -201,7 +201,7 @@ export class PagesParser {
       const modifiedField = await ArticleHelper.getModifiedDateField(article);
       const modifiedFieldValue =
         modifiedField?.name && article?.data[modifiedField.name]
-          ? DateHelper.tryParse(article?.data[modifiedField.name])?.getTime()
+          ? DateHelper.tryParse(article?.data[modifiedField.name], modifiedField.dateFormat)?.getTime()
           : undefined;
 
       const staticFolder = Folders.getStaticFolderRelativePath();
