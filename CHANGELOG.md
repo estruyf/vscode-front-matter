@@ -4,6 +4,7 @@
 
 - Removed the chatbot command and all related code and references
 - [#983](https://github.com/estruyf/vscode-front-matter/issues/983): Removal of the `frontMatter.sponsors.ai.enabled` features
+- [#1006](https://github.com/estruyf/vscode-front-matter/issues/1006): Fix output channel colorizer schema to only apply to the Front Matter output channel
 
 ### 🎨 Enhancements
 

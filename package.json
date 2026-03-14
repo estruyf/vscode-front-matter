@@ -2789,10 +2789,7 @@
     },
     "languages": [
       {
-        "id": "frontmatter.project.output",
-        "mimetypes": [
-          "text/x-code-output"
-        ]
+        "id": "frontmatter.project.output"
       }
     ],
     "grammars": [
