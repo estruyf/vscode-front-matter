@@ -219,7 +219,6 @@ export class PagesParser {
       const isDefaultLanguage = await i18n.isDefaultLanguage(filePath);
       const locale = await i18n.getLocale(filePath);
       const translations = await i18n.getTranslations(filePath);
-      const pageFolder = await Folders.getPageFolderByFilePath(filePath);
 
       const page: Page = {
         ...article.data,
@@ -242,7 +241,6 @@ export class PagesParser {
         fmContentType: contentType.name || DEFAULT_CONTENT_TYPE_NAME,
         fmBody: article?.content || '',
         fmDateFormat: dateFormat,
-        fmPageFolder: pageFolder,
         // i18n properties
         fmDefaultLocale: isDefaultLanguage,
         fmLocale: locale,
@@ -255,7 +253,8 @@ export class PagesParser {
           Article.generateSlug(escapedTitle, article, contentType.slugTemplate)
             ?.slugWithPrefixAndSuffix,
         date: article?.data[dateField] || '',
-        draft: article?.data.draft
+        draft: article?.data.draft,
+        fmPageFolder: undefined
       };
 
       let previewFieldParents = ContentType.findPreviewField(contentType.fields);
@@ -335,38 +334,52 @@ export class PagesParser {
 
           // Revalidate as the array could have been empty
           if (fieldValue) {
-            // Check if the value already starts with https - if that is the case, it is an external image
-            if (fieldValue.startsWith('http')) {
-              page.fmPreviewImage = fieldValue;
+            // Handle both string and object formats for the field value
+            let imageValue: string | undefined;
+            if (typeof fieldValue === 'string') {
+              imageValue = fieldValue;
+            } else if (typeof fieldValue === 'object' && fieldValue.src) {
+              // Handle object format like { src: "filename.jpg", title: "title" }
+              imageValue = fieldValue.src;
             } else {
-              let staticPath = join(wsFolder.fsPath, staticFolder || '', fieldValue);
+              // Skip processing if the value is neither a string nor an object with src
+              imageValue = undefined;
+            }
 
-              if (staticFolder === STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
-                const crntFilePath = parseWinPath(filePath);
-                const pathWithoutExtension = crntFilePath.replace(extname(crntFilePath), '');
-                staticPath = join(pathWithoutExtension, fieldValue);
-              }
+            if (imageValue) {
+              // Check if the value already starts with https - if that is the case, it is an external image
+              if (imageValue.startsWith('http')) {
+                page.fmPreviewImage = imageValue;
+              } else {
+                let staticPath = join(wsFolder.fsPath, staticFolder || '', imageValue);
 
-              const contentFolderPath = join(dirname(filePath), fieldValue);
-
-              let previewUri = null;
-              if (await existsAsync(staticPath)) {
-                previewUri = Uri.file(staticPath);
-              } else if (await existsAsync(contentFolderPath)) {
-                previewUri = Uri.file(contentFolderPath);
-              }
-
-              if (previewUri) {
-                let previewPath = '';
-
-                const Webview = Dashboard.getWebview();
-                if (Webview) {
-                  previewPath = Webview.asWebviewUri(previewUri).toString();
-                } else {
-                  previewPath = PagesParser.getWebviewUri(previewUri).toString();
+                if (staticFolder === STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
+                  const crntFilePath = parseWinPath(filePath);
+                  const pathWithoutExtension = crntFilePath.replace(extname(crntFilePath), '');
+                  staticPath = join(pathWithoutExtension, imageValue);
                 }
 
-                page['fmPreviewImage'] = previewPath || '';
+                const contentFolderPath = join(dirname(filePath), imageValue);
+
+                let previewUri = null;
+                if (await existsAsync(staticPath)) {
+                  previewUri = Uri.file(staticPath);
+                } else if (await existsAsync(contentFolderPath)) {
+                  previewUri = Uri.file(contentFolderPath);
+                }
+
+                if (previewUri) {
+                  let previewPath = '';
+
+                  const Webview = Dashboard.getWebview();
+                  if (Webview) {
+                    previewPath = Webview.asWebviewUri(previewUri).toString();
+                  } else {
+                    previewPath = PagesParser.getWebviewUri(previewUri).toString();
+                  }
+
+                  page['fmPreviewImage'] = previewPath || '';
+                }
               }
             }
           }
