@@ -2110,6 +2110,12 @@
           "markdownDescription": "%setting.frontMatter.templates.prefix.markdownDescription%",
           "scope": "Templates"
         },
+        "frontMatter.validation.enabled": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "%setting.frontMatter.validation.enabled.markdownDescription%",
+          "scope": "Validation"
+        },
         "frontMatter.website.host": {
           "type": "string",
           "markdownDescription": "%setting.frontMatter.website.host.markdownDescription%"

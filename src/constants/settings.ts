@@ -120,6 +120,8 @@ export const SETTING_COPILOT_FAMILY = 'copilot.family';
 
 export const SETTING_LOGGING = 'logging';
 
+export const SETTING_VALIDATION_ENABLED = 'validation.enabled';
+
 /**
  * Sponsors only settings
  */

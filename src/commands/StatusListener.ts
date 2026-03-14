@@ -4,7 +4,8 @@ import {
   EXTENSION_NAME,
   NOTIFICATION_TYPE,
   SETTING_SEO_DESCRIPTION_LENGTH,
-  SETTING_SEO_TITLE_LENGTH
+  SETTING_SEO_TITLE_LENGTH,
+  SETTING_VALIDATION_ENABLED
 } from './../constants';
 import * as vscode from 'vscode';
 import { ArticleHelper, Notifications, SeoHelper, Settings, FrontMatterValidator } from '../helpers';
@@ -20,7 +21,13 @@ import { i18n } from './i18n';
 import { getDescriptionField, getTitleField } from '../utils';
 
 export class StatusListener {
-  private static validator: FrontMatterValidator = new FrontMatterValidator();
+  private static _validator: FrontMatterValidator | undefined;
+  private static get validator(): FrontMatterValidator {
+    if (!StatusListener._validator) {
+      StatusListener._validator = new FrontMatterValidator();
+    }
+    return StatusListener._validator;
+  }
   /**
    * Update the text of the status bar
    *
@@ -73,7 +80,10 @@ export class StatusListener {
             StatusListener.verifyRequiredFields(editor, article, collection);
             
             // Schema validation
-            await StatusListener.verifySchemaValidation(editor, article, collection);
+            const validationEnabled = Settings.get<boolean>(SETTING_VALIDATION_ENABLED, true);
+            if (validationEnabled) {
+              await StatusListener.verifySchemaValidation(editor, article, collection);
+            }
           }
         }
 
@@ -211,12 +221,21 @@ export class StatusListener {
       for (const error of errors) {
         // For required field errors, use the missing property name
         let fieldName = '';
+        let arrayIndex: number | undefined;
         if (error.keyword === 'required' && error.params?.missingProperty) {
           fieldName = error.params.missingProperty;
         } else {
           // Find the field in the document
           const fieldPath = error.field.split('.');
-          fieldName = fieldPath[fieldPath.length - 1];
+          // If the last segment is a numeric index (e.g. tags.0), use the parent
+          // field name and track which array item to highlight
+          const lastSegment = fieldPath[fieldPath.length - 1];
+          if (/^\d+$/.test(lastSegment)) {
+            arrayIndex = parseInt(lastSegment, 10);
+            fieldName = fieldPath[fieldPath.length - 2] || '';
+          } else {
+            fieldName = lastSegment;
+          }
         }
 
         if (!fieldName || fieldName === 'root') {
@@ -224,14 +243,48 @@ export class StatusListener {
         }
 
         // Try to find the field location in the front matter section only
-        // Note: This is a simple implementation that may match partial strings
-        // Future improvement: Use YAML AST parsing for exact field locations
         const searchText = text.substring(0, frontMatterEnd);
         const fieldIdx = searchText.indexOf(`${fieldName}:`);
 
         if (fieldIdx !== -1) {
-          const posStart = editor.document.positionAt(fieldIdx);
-          const posEnd = editor.document.positionAt(fieldIdx + fieldName.length);
+          let posStart: vscode.Position;
+          let posEnd: vscode.Position;
+
+          // Default range: the field name itself
+          posStart = editor.document.positionAt(fieldIdx);
+          posEnd = editor.document.positionAt(fieldIdx + fieldName.length);
+
+          if (arrayIndex !== undefined) {
+            // Walk lines after the field to find the Nth array item (lines starting with '  - ')
+            const afterField = text.indexOf('\n', fieldIdx) + 1;
+            let remaining = arrayIndex;
+            let searchFrom = afterField;
+            while (searchFrom < frontMatterEnd) {
+              const lineEnd = text.indexOf('\n', searchFrom);
+              const line = text.substring(searchFrom, lineEnd === -1 ? frontMatterEnd : lineEnd);
+              if (/^\s*-\s/.test(line)) {
+                if (remaining === 0) {
+                  // Found the right item — highlight the value after '- '
+                  const valueOffset = line.indexOf('- ') + 2;
+                    const rawItemValue = line.substring(valueOffset).trim();
+                    const isQuoted =
+                      rawItemValue.length > 1 &&
+                      ((rawItemValue.startsWith('"') && rawItemValue.endsWith('"')) ||
+                        (rawItemValue.startsWith('\'') && rawItemValue.endsWith('\'')));
+                    const itemValue = isQuoted ? rawItemValue.slice(1, -1) : rawItemValue;
+                    const valueStartOffset = searchFrom + valueOffset + (isQuoted ? 1 : 0);
+                    posStart = editor.document.positionAt(valueStartOffset);
+                    posEnd = editor.document.positionAt(valueStartOffset + itemValue.length);
+                  break;
+                }
+                remaining--;
+              } else if (line.trim() && !/^\s/.test(line)) {
+                // Hit a new top-level field — stop searching
+                break;
+              }
+              searchFrom = (lineEnd === -1 ? frontMatterEnd : lineEnd) + 1;
+            }
+          }
 
           const diagnostic: vscode.Diagnostic = {
             code: '',
