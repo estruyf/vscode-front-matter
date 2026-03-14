@@ -8,7 +8,13 @@ import {
   SETTING_VALIDATION_ENABLED
 } from './../constants';
 import * as vscode from 'vscode';
-import { ArticleHelper, Notifications, SeoHelper, Settings, FrontMatterValidator } from '../helpers';
+import {
+  ArticleHelper,
+  Notifications,
+  SeoHelper,
+  Settings,
+  FrontMatterValidator
+} from '../helpers';
 import { PanelProvider } from '../panelWebView/PanelProvider';
 import { ContentType } from '../helpers/ContentType';
 import { DataListener } from '../listeners/panel';
@@ -78,7 +84,7 @@ export class StatusListener {
           // Check the required fields
           if (editor) {
             StatusListener.verifyRequiredFields(editor, article, collection);
-            
+
             // Schema validation
             const validationEnabled = Settings.get<boolean>(SETTING_VALIDATION_ENABLED, true);
             if (validationEnabled) {
@@ -213,7 +219,7 @@ export class StatusListener {
 
       const text = editor.document.getText();
       const schemaDiagnostics: vscode.Diagnostic[] = [];
-      
+
       // Find the front matter section (between --- markers)
       const frontMatterMatch = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
       const frontMatterEnd = frontMatterMatch ? frontMatterMatch[0].length : text.length;
@@ -266,15 +272,15 @@ export class StatusListener {
                 if (remaining === 0) {
                   // Found the right item — highlight the value after '- '
                   const valueOffset = line.indexOf('- ') + 2;
-                    const rawItemValue = line.substring(valueOffset).trim();
-                    const isQuoted =
-                      rawItemValue.length > 1 &&
-                      ((rawItemValue.startsWith('"') && rawItemValue.endsWith('"')) ||
-                        (rawItemValue.startsWith('\'') && rawItemValue.endsWith('\'')));
-                    const itemValue = isQuoted ? rawItemValue.slice(1, -1) : rawItemValue;
-                    const valueStartOffset = searchFrom + valueOffset + (isQuoted ? 1 : 0);
-                    posStart = editor.document.positionAt(valueStartOffset);
-                    posEnd = editor.document.positionAt(valueStartOffset + itemValue.length);
+                  const rawItemValue = line.substring(valueOffset).trim();
+                  const isQuoted =
+                    rawItemValue.length > 1 &&
+                    ((rawItemValue.startsWith('"') && rawItemValue.endsWith('"')) ||
+                      (rawItemValue.startsWith("'") && rawItemValue.endsWith("'")));
+                  const itemValue = isQuoted ? rawItemValue.slice(1, -1) : rawItemValue;
+                  const valueStartOffset = searchFrom + valueOffset + (isQuoted ? 1 : 0);
+                  posStart = editor.document.positionAt(valueStartOffset);
+                  posEnd = editor.document.positionAt(valueStartOffset + itemValue.length);
                   break;
                 }
                 remaining--;
