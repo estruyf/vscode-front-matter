@@ -18,6 +18,7 @@
 - [#950](https://github.com/estruyf/vscode-front-matter/issues/950): Fix for template is not applied to new content type when created
 - [#958](https://github.com/estruyf/vscode-front-matter/issues/958): Fix variable frontmatter leads to error
 - [#964](https://github.com/estruyf/vscode-front-matter/issues/964): Fix settings page for dark themes
+- [#972](https://github.com/estruyf/vscode-front-matter/issues/972): Fix content view sorting for Modified Date not working as expected
 - [#984](https://github.com/estruyf/vscode-front-matter/issues/984): Fix in `frontMatter.global.timezone` is invalid
 - [#1004](https://github.com/estruyf/vscode-front-matter/issues/1004): Fix for `mediaDB.json` containing full paths on Windows instead of relative paths
 - [#1006](https://github.com/estruyf/vscode-front-matter/issues/1006): Fix output channel colorizer schema to only apply to the Front Matter output channel
