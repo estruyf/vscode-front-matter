@@ -502,7 +502,9 @@ export class ArticleHelper {
    */
   public static async updateDates(article: ParsedFrontMatter) {
     const contentType = await ArticleHelper.getContentType(article);
-    const dateFields = contentType.fields.filter((field) => field.type === 'datetime');
+    const dateFields = contentType.fields.filter(
+      (field) => field.type === 'datetime' && !field.isPublishDate
+    );
 
     for (const dateField of dateFields) {
       if (article?.data[dateField.name]) {

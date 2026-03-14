@@ -40,7 +40,10 @@ export const Engines = {
         return toml.parse(value);
       },
       stringify: (value: any) => {
-        return toml.stringify(value);
+        const result = toml.stringify(value);
+        // Preserve the original datetime format by removing unnecessary zero milliseconds
+        // e.g. 2025-09-12T10:00:00.000Z -> 2025-09-12T10:00:00Z
+        return result.replace(/(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})\.000([Z+-][\d:]*)?\b/g, '$1$2');
       }
     },
     yaml: {
