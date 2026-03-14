@@ -150,7 +150,10 @@ export class Article {
     }
 
     const cloneArticle = Object.assign({}, article);
-    const dateField = await ArticleHelper.getModifiedDateField(article);
+
+    // Fetch content type once and derive modified date field from it
+    const contentType = await ArticleHelper.getContentType(article);
+    const dateField = contentType.fields.find((f) => f.isModifiedDate);
     Logger.verbose(`Article:setLastModifiedDateInner:DateField - ${JSON.stringify(dateField)}`);
 
     try {
@@ -160,6 +163,21 @@ export class Article {
       Logger.verbose(
         `Article:setLastModifiedDateInner:DateField name - ${fieldName} - value - ${fieldValue}`
       );
+
+      // Reformat other datetime fields that contain Date objects (e.g. from TOML parsing)
+      // using their configured dateFormat, so the format is preserved on save
+      for (const field of contentType.fields) {
+        if (field.type === 'datetime' && field.name !== fieldName) {
+          const value = cloneArticle.data[field.name];
+          if (value instanceof Date) {
+            cloneArticle.data[field.name] = Article.formatDate(value, field.dateFormat);
+            Logger.verbose(
+              `Article:setLastModifiedDateInner:Reformat field - ${field.name} - value - ${cloneArticle.data[field.name]}`
+            );
+          }
+        }
+      }
+
       Logger.verbose(`Article:setLastModifiedDateInner:End`);
       return cloneArticle;
     } catch (e: unknown) {
