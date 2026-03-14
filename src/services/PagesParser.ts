@@ -333,32 +333,19 @@ export class PagesParser {
 
           // Revalidate as the array could have been empty
           if (fieldValue) {
-            // Handle both string and object formats for the field value
-            let imageValue: string;
-            if (typeof fieldValue === 'string') {
-              imageValue = fieldValue;
-            } else if (typeof fieldValue === 'object' && fieldValue.src) {
-              // Handle object format like { src: "filename.jpg", title: "title" }
-              imageValue = fieldValue.src;
+            // Check if the value already starts with https - if that is the case, it is an external image
+            if (fieldValue.startsWith('http')) {
+              page.fmPreviewImage = fieldValue;
             } else {
-              // Skip processing if the value is neither a string nor an object with src
-              imageValue = null;
-            }
+              let staticPath = join(wsFolder.fsPath, staticFolder || '', fieldValue);
 
-            if (imageValue) {
-              // Check if the value already starts with https - if that is the case, it is an external image
-              if (imageValue.startsWith('http')) {
-                page.fmPreviewImage = imageValue;
-              } else {
-                let staticPath = join(wsFolder.fsPath, staticFolder || '', imageValue);
+              if (staticFolder === STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
+                const crntFilePath = parseWinPath(filePath);
+                const pathWithoutExtension = crntFilePath.replace(extname(crntFilePath), '');
+                staticPath = join(pathWithoutExtension, fieldValue);
+              }
 
-                if (staticFolder === STATIC_FOLDER_PLACEHOLDER.hexo.placeholder) {
-                  const crntFilePath = parseWinPath(filePath);
-                  const pathWithoutExtension = crntFilePath.replace(extname(crntFilePath), '');
-                  staticPath = join(pathWithoutExtension, imageValue);
-                }
-
-                const contentFolderPath = join(dirname(filePath), imageValue);
+              const contentFolderPath = join(dirname(filePath), fieldValue);
 
               let previewUri = null;
               if (await existsAsync(staticPath)) {
@@ -379,7 +366,6 @@ export class PagesParser {
 
                 page['fmPreviewImage'] = previewPath || '';
               }
-            }
             }
           }
         }
