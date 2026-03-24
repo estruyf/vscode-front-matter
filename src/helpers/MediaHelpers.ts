@@ -214,7 +214,7 @@ export class MediaHelpers {
     if (selectedFolder) {
       if (await existsAsync(selectedFolder)) {
         foldersFromSelection = (await readdirAsync(selectedFolder, { withFileTypes: true }))
-          .filter((dir) => dir.isDirectory())
+          .filter((dir) => dir.isDirectory() && !dir.name.startsWith('.'))
           .map((dir) => parseWinPath(join(selectedFolder, dir.name)));
       }
     }
@@ -225,7 +225,7 @@ export class MediaHelpers {
         const contentPath = contentFolder.path;
         if (contentPath && (await existsAsync(contentPath))) {
           const subFolders = (await readdirAsync(contentPath, { withFileTypes: true }))
-            .filter((dir) => dir.isDirectory())
+            .filter((dir) => dir.isDirectory() && !dir.name.startsWith('.'))
             .map((dir) => parseWinPath(join(contentPath, dir.name)));
           allContentFolders = [...allContentFolders, ...subFolders];
         }
@@ -243,7 +243,7 @@ export class MediaHelpers {
 
     if (staticPath && (await existsAsync(staticPath))) {
       allFolders = (await readdirAsync(staticPath, { withFileTypes: true }))
-        .filter((dir) => dir.isDirectory())
+        .filter((dir) => dir.isDirectory() && !dir.name.startsWith('.'))
         .map((dir) => parseWinPath(join(staticPath, dir.name)));
     }
 
