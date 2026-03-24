@@ -28,7 +28,6 @@ export const COMMAND_NAME = {
   collapseSections: getCommandName('collapseSections'),
   preview: getCommandName('preview'),
   docs: getCommandName('docs'),
-  chatbot: getCommandName('chatbot'),
   dashboard: getCommandName('dashboard'),
   dashboardMedia: getCommandName('dashboard.media'),
   dashboardSnippets: getCommandName('dashboard.snippets'),

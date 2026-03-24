@@ -1,11 +1,8 @@
-import { authentication, QuickPickItem, QuickPickItemKind, window } from 'vscode';
+import { QuickPickItem, QuickPickItemKind, window } from 'vscode';
 import { Folders } from '../commands/Folders';
-import { SETTING_SPONSORS_AI_ENABLED } from '../constants';
 import { ContentType } from './ContentType';
 import { Notifications } from './Notifications';
-import { Settings } from './SettingsHelper';
 import { Logger } from './Logger';
-import { SponsorAi } from '../services/SponsorAI';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 import { ContentFolder } from '../models';
@@ -40,56 +37,28 @@ export class Questions {
    * @returns
    */
   public static async ContentTitle(showWarning = true): Promise<string | undefined> {
-    const aiEnabled = Settings.get<boolean>(SETTING_SPONSORS_AI_ENABLED);
     let title: string | undefined = '';
     const isCopilotInstalled = await Copilot.isInstalled();
 
     let aiTitles: string[] | undefined;
 
-    if (aiEnabled || isCopilotInstalled) {
-      if (isCopilotInstalled) {
-        title = await window.showInputBox({
-          title: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputTitle),
-          prompt: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputPrompt),
-          placeHolder: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputPlaceholder),
-          ignoreFocusOut: true
-        });
+    if (isCopilotInstalled) {
+      title = await window.showInputBox({
+        title: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputTitle),
+        prompt: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputPrompt),
+        placeHolder: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputPlaceholder),
+        ignoreFocusOut: true
+      });
 
-        if (title) {
-          try {
-            aiTitles = await Copilot.suggestTitles(title);
-          } catch (e) {
-            Logger.error((e as Error).message);
-            Notifications.error(
-              l10n.t(LocalizationKey.helpersQuestionsContentTitleCopilotInputFailed)
-            );
-            title = undefined;
-          }
-        }
-      } else {
-        const githubAuth = await authentication.getSession('github', ['read:user'], {
-          silent: true
-        });
-
-        if (githubAuth && githubAuth.account.label) {
-          title = await window.showInputBox({
-            title: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputTitle),
-            prompt: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputPrompt),
-            placeHolder: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputPlaceholder),
-            ignoreFocusOut: true
-          });
-
-          if (title) {
-            try {
-              aiTitles = await SponsorAi.getTitles(githubAuth.accessToken, title);
-            } catch (e) {
-              Logger.error((e as Error).message);
-              Notifications.error(
-                l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputFailed)
-              );
-              title = undefined;
-            }
-          }
+      if (title) {
+        try {
+          aiTitles = await Copilot.suggestTitles(title);
+        } catch (e) {
+          Logger.error((e as Error).message);
+          Notifications.error(
+            l10n.t(LocalizationKey.helpersQuestionsContentTitleCopilotInputFailed)
+          );
+          title = undefined;
         }
       }
 

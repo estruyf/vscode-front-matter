@@ -38,3 +38,5 @@ export * from './processFmPlaceholders';
 export * from './processI18nPlaceholders';
 export * from './processPathPlaceholders';
 export * from './processTimePlaceholders';
+export * from './ContentTypeSchemaGenerator';
+export * from './FrontMatterValidator';

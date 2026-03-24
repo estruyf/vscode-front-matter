@@ -19,7 +19,7 @@ export const SelectItem: React.FunctionComponent<ISelectItemProps> = ({
 }: React.PropsWithChildren<ISelectItemProps>) => {
   return (
     <div
-      className={`text-sm flex items-center ${isSelected ? 'text-[var(--vscode-textLink-foreground)]' : ''}`}
+      className={`text-sm flex items-center ${isSelected ? 'text-[var(--vscode-textLink-foreground)]' : 'text-[var(--frontmatter-text)]'}`}
     >
       <button
         onClick={onClick}

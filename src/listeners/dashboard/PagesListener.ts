@@ -1,5 +1,5 @@
 import { PostMessageData } from './../../models/PostMessageData';
-import { basename } from 'path';
+import { basename, join } from 'path';
 import { commands, FileSystemWatcher, RelativePattern, TextDocument, Uri, workspace } from 'vscode';
 import { Dashboard } from '../../commands/Dashboard';
 import { Folders } from '../../commands/Folders';
@@ -12,13 +12,24 @@ import {
 import { DashboardCommand } from '../../dashboardWebView/DashboardCommand';
 import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { Page } from '../../dashboardWebView/models';
-import { ArticleHelper, Extension, Logger, parseWinPath, Settings } from '../../helpers';
+import { ContentFolder } from '../../models/ContentFolder';
+import {
+  ArticleHelper,
+  Extension,
+  Logger,
+  parseWinPath,
+  Settings,
+  ContentType,
+  Notifications
+} from '../../helpers';
 import { BaseListener } from './BaseListener';
 import { DataListener } from '../panel';
 import Fuse from 'fuse.js';
 import { PagesParser } from '../../services/PagesParser';
 import { unlinkAsync, rmdirAsync } from '../../utils';
 import { LoadingType } from '../../models';
+import { Questions } from '../../helpers/Questions';
+import { Template } from '../../commands/Template';
 
 export class PagesListener extends BaseListener {
   private static watchers: { [path: string]: FileSystemWatcher } = {};
@@ -45,6 +56,9 @@ export class PagesListener extends BaseListener {
       case DashboardMessage.createByTemplate:
         await commands.executeCommand(COMMAND_NAME.createByTemplate);
         break;
+      case DashboardMessage.createContentInFolder:
+        await this.createContentInFolder(msg.payload);
+        break;
       case DashboardMessage.refreshPages:
         this.getPagesData(true);
         break;
@@ -56,6 +70,9 @@ export class PagesListener extends BaseListener {
         break;
       case DashboardMessage.rename:
         ArticleHelper.rename(msg.payload);
+        break;
+      case DashboardMessage.moveFile:
+        await this.moveFile(msg.payload);
         break;
     }
   }
@@ -304,6 +321,246 @@ export class PagesListener extends BaseListener {
     const pageResults = results.map((page) => page.item);
 
     this.sendMsg(DashboardCommand.searchPages, pageResults);
+  }
+
+  /**
+   * Move a file to a different folder
+   * @param payload
+   */
+  private static async moveFile(payload: { filePath: string; destinationFolder: string }) {
+    if (!payload || !payload.filePath || !payload.destinationFolder) {
+      return;
+    }
+
+    const { filePath, destinationFolder } = payload;
+
+    try {
+      const wsFolder = Folders.getWorkspaceFolder();
+      if (!wsFolder) {
+        Logger.error('Workspace folder not found');
+        return;
+      }
+
+      // Get all content folders
+      const folders = await Folders.get();
+      if (!folders || folders.length === 0) {
+        Logger.error('No content folders found');
+        return;
+      }
+
+      // Find the destination folder
+      let targetFolderPath = '';
+      for (const folder of folders) {
+        const absoluteFolderPath = Folders.getFolderPath(Uri.file(folder.path));
+        const relativeFolderPath = parseWinPath(absoluteFolderPath)
+          .replace(parseWinPath(wsFolder.fsPath), '')
+          .replace(/^\/+|\/+$/g, '');
+
+        if (
+          destinationFolder === relativeFolderPath ||
+          destinationFolder.startsWith(relativeFolderPath + '/')
+        ) {
+          targetFolderPath = absoluteFolderPath;
+          // Add subfolder if any
+          if (destinationFolder !== relativeFolderPath) {
+            const subPath = destinationFolder
+              .substring(relativeFolderPath.length)
+              .replace(/^\/+|\/+$/g, '');
+            targetFolderPath = join(targetFolderPath, subPath);
+          }
+          break;
+        }
+      }
+
+      if (!targetFolderPath) {
+        Logger.error('Target folder not found');
+        return;
+      }
+
+      // Get the file name
+      const fileName = basename(filePath);
+      const newFilePath = join(targetFolderPath, fileName);
+
+      // Check if target already exists
+      try {
+        await workspace.fs.stat(Uri.file(newFilePath));
+        Logger.error(`File already exists at destination: ${newFilePath}`);
+        return;
+      } catch {
+        // File doesn't exist, which is good
+      }
+
+      // Check if it's a page bundle
+      const article = await ArticleHelper.getFrontMatterByPath(filePath);
+      if (article) {
+        const contentType = await ArticleHelper.getContentType(article);
+
+        if (contentType.pageBundle) {
+          // Move the entire folder
+          const sourceFolder = parseWinPath(filePath).substring(
+            0,
+            parseWinPath(filePath).lastIndexOf('/')
+          );
+          const folderName = basename(sourceFolder);
+          const newFolderPath = join(targetFolderPath, folderName);
+
+          // Move the folder
+          await workspace.fs.rename(Uri.file(sourceFolder), Uri.file(newFolderPath), {
+            overwrite: false
+          });
+
+          Logger.info(`Moved page bundle from ${sourceFolder} to ${newFolderPath}`);
+        } else {
+          // Move just the file
+          await workspace.fs.rename(Uri.file(filePath), Uri.file(newFilePath), {
+            overwrite: false
+          });
+
+          Logger.info(`Moved file from ${filePath} to ${newFilePath}`);
+        }
+      } else {
+        // Move just the file
+        await workspace.fs.rename(Uri.file(filePath), Uri.file(newFilePath), {
+          overwrite: false
+        });
+
+        Logger.info(`Moved file from ${filePath} to ${newFilePath}`);
+      }
+
+      // Refresh the pages data
+      this.getPagesData(true);
+    } catch (error) {
+      Logger.error(`Error moving file: ${(error as Error).message}`);
+    }
+  }
+
+  /**
+   * Create content in a specific folder
+   * @param payload
+   */
+  private static async createContentInFolder(payload: { folderPath: string | null }) {
+    if (!payload) {
+      // Fall back to regular content creation
+      await commands.executeCommand(COMMAND_NAME.createContent);
+      return;
+    }
+
+    const { folderPath } = payload;
+
+    // Get all content folders (including those with disableCreation)
+    const allFolders = await Folders.get();
+
+    if (!allFolders || allFolders.length === 0) {
+      await commands.executeCommand(COMMAND_NAME.createContent);
+      return;
+    }
+
+    let targetFolder = null;
+    let subPath = '';
+
+    if (folderPath) {
+      // The folderPath is a relative path like "content/posts" or "blog/en"
+      // We need to find the matching content folder and determine the subfolder
+      Logger.info(`[createContentInFolder] folderPath: ${folderPath}`);
+
+      let bestMatch: { folder: ContentFolder; subPath: string; matchLength: number } | null = null;
+
+      for (const folder of allFolders) {
+        const wsFolder = Folders.getWorkspaceFolder();
+        if (!wsFolder) {
+          continue;
+        }
+
+        const absoluteFolderPath = Folders.getFolderPath(Uri.file(folder.path));
+        const relativeFolderPath = parseWinPath(absoluteFolderPath)
+          .replace(parseWinPath(wsFolder.fsPath), '')
+          .replace(/^\/+|\/+$/g, '');
+
+        Logger.info(
+          `[createContentInFolder] Checking folder: ${folder.title}, relativePath: ${relativeFolderPath}`
+        );
+
+        // Check if the folderPath matches or starts with this content folder
+        if (folderPath === relativeFolderPath || folderPath.startsWith(relativeFolderPath + '/')) {
+          const currentSubPath =
+            folderPath !== relativeFolderPath
+              ? folderPath.substring(relativeFolderPath.length).replace(/^\/+|\/+$/g, '')
+              : '';
+
+          // Keep track of the best (longest/most specific) match
+          if (!bestMatch || relativeFolderPath.length > bestMatch.matchLength) {
+            bestMatch = {
+              folder,
+              subPath: currentSubPath,
+              matchLength: relativeFolderPath.length
+            };
+          }
+        }
+      }
+
+      if (bestMatch) {
+        targetFolder = bestMatch.folder;
+        subPath = bestMatch.subPath;
+        Logger.info(
+          `[createContentInFolder] Best match: ${targetFolder.title}, subPath: ${subPath}`
+        );
+
+        // Check if content creation is disabled for this folder
+        if (targetFolder.disableCreation) {
+          Notifications.error(`Content creation is disabled for folder: ${targetFolder.title}`);
+          return;
+        }
+      }
+    }
+
+    if (!targetFolder) {
+      // If no folder matches, let the user select one (filter out disabled folders)
+      const availableFolders = allFolders.filter((f) => !f.disableCreation);
+      if (availableFolders.length === 0) {
+        await commands.executeCommand(COMMAND_NAME.createContent);
+        return;
+      }
+
+      const selectedFolder = await Questions.SelectContentFolder();
+      if (!selectedFolder) {
+        return;
+      }
+      targetFolder = allFolders.find((f) => f.path === selectedFolder.path);
+    }
+
+    if (!targetFolder) {
+      return;
+    }
+
+    // Get the folder path
+    let absoluteFolderPath = Folders.getFolderPath(Uri.file(targetFolder.path));
+
+    // Add the subfolder if any
+    if (subPath) {
+      absoluteFolderPath = join(absoluteFolderPath, subPath);
+    }
+
+    // Check if templates are enabled
+    const templatesEnabled = Settings.get('dashboardState.contents.templatesEnabled');
+
+    if (templatesEnabled) {
+      // Use the template creation flow
+      await Template.create(absoluteFolderPath);
+    } else {
+      // Use the content type creation flow
+      const selectedContentType = await Questions.SelectContentType(
+        targetFolder.contentTypes || []
+      );
+      if (!selectedContentType) {
+        return;
+      }
+
+      const contentTypes = ContentType.getAll();
+      const contentType = contentTypes?.find((ct) => ct.name === selectedContentType);
+      if (contentType) {
+        ContentType['create'](contentType, absoluteFolderPath);
+      }
+    }
   }
 
   /**

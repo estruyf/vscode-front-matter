@@ -52,7 +52,6 @@
   "setting.frontMatter.projects.markdownDescription": "Geben Sie die Liste der Projekte an, die in Front Matter CMS geladen werden sollen. [Dokumentation prüfen](https://frontmatter.codes/docs/settings/overview#frontmatter.projects)",
   "setting.frontMatter.projects.items.properties.name.markdownDescription": "Geben Sie den Namen des Projekts an.",
   "setting.frontMatter.projects.items.properties.default.markdownDescription": "Geben Sie an, ob dieses Projekt das Standardprojekt zum Laden ist.",
-  "setting.frontMatter.sponsors.ai.enabled.markdownDescription": "Geben Sie an, ob Sie KI-Vorschläge aktivieren möchten. [Dokumentation prüfen](https://frontmatter.codes/docs/settings/overview#frontmatter.sponsors.ai.enabled)",
   "setting.frontMatter.extensibility.scripts.markdownDescription": "Geben Sie die Liste der Skripte an, die in Front Matter CMS geladen werden sollen. [Dokumentation prüfen](https://frontmatter.codes/docs/settings/overview#frontmatter.extensibility.scripts)",
   "setting.frontMatter.experimental.markdownDescription": "Geben Sie an, ob Sie experimentelle Funktionen aktivieren möchten. [Dokumentation prüfen](https://frontmatter.codes/docs/settings/overview#frontmatter.experimental)",
   "setting.frontMatter.extends.markdownDescription": "Geben Sie die Liste der Pfade/URLs an, um die Front Matter CMS-Konfiguration zu erweitern. [Dokumentation prüfen](https://frontmatter.codes/docs/settings/overview#frontmatter.extends)",

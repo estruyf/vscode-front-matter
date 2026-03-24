@@ -222,6 +222,7 @@
 
   "dashboard.header.viewSwitch.toGrid": "切换到网格视图",
   "dashboard.header.viewSwitch.toList": "切换到列表视图",
+  "dashboard.header.viewSwitch.toStructure": "切换到结构视图",
 
   "dashboard.layout.sponsor.support.msg": "支持 Front Matter",
   "dashboard.layout.sponsor.review.label": "评价",

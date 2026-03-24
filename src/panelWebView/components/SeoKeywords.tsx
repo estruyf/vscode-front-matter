@@ -14,6 +14,7 @@ export interface ISeoKeywordsProps {
   content: string;
   headings?: string[];
   wordCount?: number;
+  firstParagraph?: string;
 }
 
 const SeoKeywords: React.FunctionComponent<ISeoKeywordsProps> = ({

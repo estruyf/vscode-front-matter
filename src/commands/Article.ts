@@ -37,7 +37,7 @@ import { COMMAND_NAME, DefaultFields } from '../constants';
 import { DashboardData, SnippetInfo, SnippetRange } from '../models/DashboardData';
 import { DateHelper } from '../helpers/DateHelper';
 import { parseWinPath } from '../helpers/parseWinPath';
-import { ParsedFrontMatter } from '../parsers';
+import { FrontMatterParser, ParsedFrontMatter } from '../parsers';
 import { MediaListener } from '../listeners/panel';
 import { NavigationType } from '../dashboardWebView/models';
 import { SNIPPET } from '../constants/Snippet';
@@ -149,23 +149,58 @@ export class Article {
       return;
     }
 
+    const documentText = document.getText();
+    const isToml = FrontMatterParser.getLanguageFromContent(documentText) === 'toml';
     const cloneArticle = Object.assign({}, article);
-    const dateField = await ArticleHelper.getModifiedDateField(article);
+
+    let contentType;
+    const dateField = isToml
+      ? ((contentType = await ArticleHelper.getContentType(article)),
+        contentType.fields.find((f) => f.isModifiedDate))
+      : await ArticleHelper.getModifiedDateField(article);
+
+    if (isToml) {
+      Logger.verbose(
+        `Article:setLastModifiedDateInner:TOML - updating all datetime fields to preserve format`
+      );
+    }
+
     Logger.verbose(`Article:setLastModifiedDateInner:DateField - ${JSON.stringify(dateField)}`);
 
     try {
       const fieldName = dateField?.name || DefaultFields.LastModified;
       const fieldValue = Article.formatDate(new Date(), dateField?.dateFormat);
       cloneArticle.data[fieldName] = fieldValue;
+
       Logger.verbose(
         `Article:setLastModifiedDateInner:DateField name - ${fieldName} - value - ${fieldValue}`
       );
+
+      if (isToml && contentType) {
+        // TOML parser returns datetime literals as Date objects.
+        // Reformat them using each field dateFormat to preserve expected output on save.
+        for (const field of contentType.fields) {
+          if (field.type === 'datetime' && field.name !== fieldName) {
+            const value = cloneArticle.data[field.name];
+            if (value instanceof Date) {
+              cloneArticle.data[field.name] = Article.formatDate(value, field.dateFormat);
+              Logger.verbose(
+                `Article:setLastModifiedDateInner:Reformat field - ${field.name} - value - ${
+                  cloneArticle.data[field.name]
+                }`
+              );
+            }
+          }
+        }
+      }
+
       Logger.verbose(`Article:setLastModifiedDateInner:End`);
       return cloneArticle;
     } catch (e: unknown) {
       Notifications.error(
         l10n.t(LocalizationKey.commandsArticleSetDateError, `${CONFIG_KEY}${SETTING_DATE_FORMAT}`)
       );
+      return;
     }
   }
 

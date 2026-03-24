@@ -22,6 +22,7 @@ export * from './SearchAtom';
 export * from './SearchReadyAtom';
 export * from './SelectedItemActionAtom';
 export * from './SelectedMediaFolderAtom';
+export * from './SelectedStructureFolderAtom';
 export * from './SettingsAtom';
 export * from './SortingAtom';
 export * from './TabAtom';

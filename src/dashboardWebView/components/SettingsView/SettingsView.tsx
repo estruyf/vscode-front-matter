@@ -52,7 +52,7 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (_: Rea
       {
         id: "view-2",
         content: (
-          <div className='py-4'>
+          <div className='py-4 text-[var(--frontmatter-text)]'>
             <h2 className='text-xl mb-2'>{l10n.t(LocalizationKey.settingsContentFolders)}</h2>
 
             <ContentFolders
@@ -67,7 +67,7 @@ export const SettingsView: React.FunctionComponent<ISettingsViewProps> = (_: Rea
       temp.push({
         id: "view-3",
         content: (
-          <div className='py-4'>
+          <div className='py-4 text-[var(--frontmatter-text)]'>
             <h2 className='text-xl mb-2'>{l10n.t(LocalizationKey.settingsContentTypes)}</h2>
 
             <AstroContentTypes

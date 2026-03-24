@@ -11,6 +11,7 @@ export interface IArticleDetailsProps {
     internalLinks: number;
     externalLinks: number;
     images: number;
+    firstParagraph?: string;
   };
 }
 

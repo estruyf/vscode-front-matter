@@ -8,6 +8,7 @@ export * from './MediaTotalSelector';
 export * from './PageSelector';
 export * from './SearchSelector';
 export * from './SelectedMediaFolderSelector';
+export * from './SelectedStructureFolderSelector';
 export * from './SettingsSelector';
 export * from './SortingSelector';
 export * from './TabSelector';

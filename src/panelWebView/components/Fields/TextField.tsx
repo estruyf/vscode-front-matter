@@ -1,4 +1,4 @@
-import { PencilIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import { PencilIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useRecoilState } from 'recoil';
@@ -132,18 +132,6 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
 
     return (
       <>
-        {settings?.aiEnabled && settings.seo.descriptionField === name && (
-          <button
-            className="metadata_field__title__action inline-block text-[var(--vscode-editor-foreground)] disabled:opacity-50"
-            title={localize(LocalizationKey.panelFieldsTextFieldAiMessage, label?.toLowerCase())}
-            type="button"
-            onClick={() => suggestDescription('ai')}
-            disabled={!!loading}
-          >
-            <SparklesIcon />
-          </button>
-        )}
-
         {settings?.copilotEnabled && (
           <button
             className="metadata_field__title__action inline-block text-[var(--vscode-editor-foreground)] disabled:opacity-50"
@@ -157,7 +145,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
         )}
       </>
     );
-  }, [settings?.aiEnabled, settings?.copilotEnabled, settings?.seo, name, actions, loading]);
+  }, [settings?.copilotEnabled, settings?.seo, name, actions, loading]);
 
   useEffect(() => {
     if (showRequiredState) {

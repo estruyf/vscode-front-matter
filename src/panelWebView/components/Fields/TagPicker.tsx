@@ -12,7 +12,7 @@ import { FieldMessage } from '../Fields/FieldMessage';
 import { FieldTitle } from '../Fields/FieldTitle';
 import { useRecoilValue } from 'recoil';
 import { PanelSettingsAtom } from '../../state';
-import { SparklesIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import { LocalizationKey, localize } from '../../../localization';
 import useDropdownStyle from '../../hooks/useDropdownStyle';
 import { CopilotIcon } from '../Icons';
@@ -311,21 +311,6 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
 
     return (
       <>
-        {settings?.aiEnabled && (
-          <button
-            className="metadata_field__title__action"
-            title={localize(
-              LocalizationKey.panelTagPickerAiSuggest,
-              label?.toLowerCase() || type.toLowerCase()
-            )}
-            type="button"
-            onClick={() => suggestTaxonomy('ai', type)}
-            disabled={!!loading}
-          >
-            <SparklesIcon />
-          </button>
-        )}
-
         {settings?.copilotEnabled && (
           <button
             className="metadata_field__title__action"
@@ -342,7 +327,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
         )}
       </>
     );
-  }, [settings?.aiEnabled, settings?.copilotEnabled, label, type]);
+  }, [settings?.copilotEnabled, label, type]);
 
   const sortedSelectedTags = useMemo(() => {
     const safeSelected = selected || [];

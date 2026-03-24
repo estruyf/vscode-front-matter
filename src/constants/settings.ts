@@ -120,10 +120,7 @@ export const SETTING_COPILOT_FAMILY = 'copilot.family';
 
 export const SETTING_LOGGING = 'logging';
 
-/**
- * Sponsors only settings
- */
-export const SETTING_SPONSORS_AI_ENABLED = 'sponsors.ai.enabled';
+export const SETTING_VALIDATION_ENABLED = 'validation.enabled';
 
 /**
  * Project override support

@@ -53,7 +53,6 @@
   "setting.frontMatter.projects.markdownDescription": "Front Matter CMSを利用するプロジェクトを設定します。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.projects)",
   "setting.frontMatter.projects.items.properties.name.markdownDescription": "プロジェクトの名前を指定します。",
   "setting.frontMatter.projects.items.properties.default.markdownDescription": "このプロジェクトを読み込む既定のプロジェクトにするかどうかを指定します。",
-  "setting.frontMatter.sponsors.ai.enabled.markdownDescription": "AIによる提案を利用します。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.sponsors.ai.enabled)",
   "setting.frontMatter.extensibility.scripts.markdownDescription": "Front Matter CMSで読み込むスクリプトのリストを指定します。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.extensibility.scripts)",
   "setting.frontMatter.experimental.markdownDescription": "実験的な機能をオンにします。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.experimental)",
   "setting.frontMatter.extends.markdownDescription": "Front Matter CMSの構成を拡張するパス/URLのリストを設定します。[ドキュメントを確認](https://frontmatter.codes/docs/settings/overview#frontmatter.extends)",

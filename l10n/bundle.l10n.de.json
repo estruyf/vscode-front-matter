@@ -109,6 +109,7 @@
   "dashboard.header.tabs.taxonomies": "Taxonomien",
   "dashboard.header.viewSwitch.toGrid": "Zur Rasteransicht wechseln",
   "dashboard.header.viewSwitch.toList": "Zur Listenansicht wechseln",
+  "dashboard.header.viewSwitch.toStructure": "Zur Strukturansicht wechseln",
   "dashboard.layout.sponsor.support.msg": "Unterstützen Sie Front Matter",
   "dashboard.layout.sponsor.review.label": "Bewerten",
   "dashboard.layout.sponsor.review.msg": "Bewerten Sie Front Matter",
