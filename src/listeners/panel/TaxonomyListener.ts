@@ -5,6 +5,8 @@ import { authentication, window } from 'vscode';
 import { ArticleHelper, Extension, Settings, TaxonomyHelper } from '../../helpers';
 import { BlockFieldData, CustomTaxonomyData, PostMessageData, TaxonomyType } from '../../models';
 import { DataListener } from '.';
+import { SettingsListener as PanelSettingsListener } from '.';
+import { SettingsListener as DashboardSettingsListener } from '../dashboard';
 import { SponsorAi } from '../../services/SponsorAI';
 import { PanelProvider } from '../../panelWebView/PanelProvider';
 import { MessageHandlerData } from '@estruyf/vscode';
@@ -279,6 +281,9 @@ export class TaxonomyListener extends BaseListener {
     }
 
     await Settings.updateCustomTaxonomy(data.id, data.option);
+
+    PanelSettingsListener.getSettings();
+    DashboardSettingsListener.getSettings(true);
   }
 
   /**

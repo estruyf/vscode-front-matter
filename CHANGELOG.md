@@ -1,6 +1,6 @@
 # Change Log
 
-## [10.10.0] - 2025-xx-xx
+## [10.10.0] - 2026-xx-xx
 
 - Removed the chatbot command and all related code and references
 - [#983](https://github.com/estruyf/vscode-front-matter/issues/983): Removal of the `frontMatter.sponsors.ai.enabled` features
@@ -12,21 +12,19 @@
 - [#973](https://github.com/estruyf/vscode-front-matter/issues/973): Support for number fields in the snippets
 - [#990](https://github.com/estruyf/vscode-front-matter/issues/990): Schema and validation for front matter in markdown files. It can be turned off by the `frontMatter.validation.enabled` setting.
 - [#1005](https://github.com/estruyf/vscode-front-matter/issues/1005): Support the integrated VSCode browser for the preview command
+- [#1017](https://github.com/estruyf/vscode-front-matter/issues/1017): Allow adding new values for custom taxonomy fields
 
 ### 🐞 Fixes
 
 - [#950](https://github.com/estruyf/vscode-front-matter/issues/950): Fix for template is not applied to new content type when created
 - [#958](https://github.com/estruyf/vscode-front-matter/issues/958): Fix variable frontmatter leads to error
 - [#964](https://github.com/estruyf/vscode-front-matter/issues/964): Fix settings page for dark themes
+- [#969](https://github.com/estruyf/vscode-front-matter/issues/969): Fix typo on welcome screen
 - [#972](https://github.com/estruyf/vscode-front-matter/issues/972): Fix content view sorting for Modified Date not working as expected
 - [#979](https://github.com/estruyf/vscode-front-matter/issues/979): Fix unwanted automatic updates in the publishDate field of TOML front matter
 - [#984](https://github.com/estruyf/vscode-front-matter/issues/984): Fix in `frontMatter.global.timezone` is invalid
 - [#1004](https://github.com/estruyf/vscode-front-matter/issues/1004): Fix for `mediaDB.json` containing full paths on Windows instead of relative paths
 - [#1006](https://github.com/estruyf/vscode-front-matter/issues/1006): Fix output channel colorizer schema to only apply to the Front Matter output channel
-
-### 🐞 Fixes
-
-- [#969](https://github.com/estruyf/vscode-front-matter/issues/969): Fix typo on welcome screen
 
 ## [10.9.0] - 2025-07-01 - [Release notes](https://beta.frontmatter.codes/updates/v10.9.0)
 
