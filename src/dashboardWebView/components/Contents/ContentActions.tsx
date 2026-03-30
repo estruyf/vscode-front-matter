@@ -5,7 +5,8 @@ import {
   TrashIcon,
   LanguageIcon,
   EllipsisHorizontalIcon,
-  ArrowRightCircleIcon
+  ArrowRightCircleIcon,
+  ArrowPathIcon
 } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { CustomScript, I18nConfig } from '../../../models';
@@ -75,6 +76,11 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
     messageHandler.send(DashboardMessage.rename, path);
   }, [path])
 
+  const onSmartRename = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    messageHandler.send(DashboardMessage.smartRename, path);
+  }, [path])
+
   const onOpenWebsite = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     openOnWebsite(settings?.websiteUrl, path);
@@ -142,6 +148,11 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
                 <DropdownMenuItem onClick={onRename}>
                   <RenameIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
                   <span>{l10n.t(LocalizationKey.commonRename)}</span>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem onClick={onSmartRename}>
+                  <ArrowPathIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
+                  <span>{l10n.t(LocalizationKey.dashboardContentsContentActionsMenuItemSmartRename)}</span>
                 </DropdownMenuItem>
 
                 {

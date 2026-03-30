@@ -4,6 +4,7 @@ import { Collapsible } from './Collapsible';
 import { CustomScript } from './CustomScript';
 import { Preview } from './Preview';
 import { SlugAction } from './SlugAction';
+import { SmartRenameAction } from './SmartRenameAction';
 import { StartServerButton } from './StartServerButton';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
@@ -50,6 +51,10 @@ const Actions: React.FunctionComponent<IActionsProps> = ({
 
     if (metadata?.title && !disableActions.includes(`optimizeSlug`)) {
       allActions.push(<SlugAction key="optimizeSlug" />);
+    }
+
+    if (metadata?.title && !disableActions.includes(`smartRename`)) {
+      allActions.push(<SmartRenameAction key="smartRename" />);
     }
 
     if (settings?.preview?.host && !disableActions.includes(`preview`)) {

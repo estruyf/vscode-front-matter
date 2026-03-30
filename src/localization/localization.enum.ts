@@ -1697,6 +1697,10 @@ export enum LocalizationKey {
    */
   panelSlugActionTitle = 'panel.slugAction.title',
   /**
+   * Smart rename
+   */
+  panelSmartRenameActionTitle = 'panel.smartRenameAction.title',
+  /**
    * Loading...
    */
   panelSpinnerLoading = 'panel.spinner.loading',
@@ -1772,6 +1776,26 @@ export enum LocalizationKey {
    * File name
    */
   commandsArticleRenameFileNamePrompt = 'commands.article.rename.fileName.prompt',
+  /**
+   * The filename is already in sync with the front matter
+   */
+  commandsArticleSmartRenameAlreadyInSync = 'commands.article.smartRename.alreadyInSync',
+  /**
+   * File renamed from "{0}" to "{1}"
+   */
+  commandsArticleSmartRenameSuccess = 'commands.article.smartRename.success',
+  /**
+   * Unable to generate a new filename from the front matter
+   */
+  commandsArticleSmartRenameUnableToGenerate = 'commands.article.smartRename.unableToGenerate',
+  /**
+   * A file with the name "{0}" already exists
+   */
+  commandsArticleSmartRenameFileExistsError = 'commands.article.smartRename.fileExists.error',
+  /**
+   * Smart rename
+   */
+  dashboardContentsContentActionsMenuItemSmartRename = 'dashboard.contents.contentActions.menuItem.smartRename',
   /**
    * Cache cleared
    */

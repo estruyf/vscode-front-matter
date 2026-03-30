@@ -524,6 +524,8 @@
 
   "panel.slugAction.title": "Optimize slug",
 
+  "panel.smartRenameAction.title": "Smart rename",
+
   "panel.spinner.loading": "Loading...",
 
   "panel.startServerbutton.start": "Start server",
@@ -549,6 +551,13 @@
   "commands.article.rename.fileExists.error": "A file with the name \"{0}\" already exists",
   "commands.article.rename.fileName.title": "Rename: {0}",
   "commands.article.rename.fileName.prompt": "File name",
+
+  "commands.article.smartRename.alreadyInSync": "The filename is already in sync with the front matter",
+  "commands.article.smartRename.success": "File renamed from \"{0}\" to \"{1}\"",
+  "commands.article.smartRename.unableToGenerate": "Unable to generate a new filename from the front matter",
+  "commands.article.smartRename.fileExists.error": "A file with the name \"{0}\" already exists",
+
+  "dashboard.contents.contentActions.menuItem.smartRename": "Smart rename",
 
   "commands.cache.cleared": "Cache cleared",
 
