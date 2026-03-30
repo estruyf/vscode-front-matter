@@ -74,6 +74,9 @@ export class PagesListener extends BaseListener {
       case DashboardMessage.moveFile:
         await this.moveFile(msg.payload);
         break;
+      case DashboardMessage.smartRename:
+        ArticleHelper.smartRename(msg.payload);
+        break;
     }
   }
 

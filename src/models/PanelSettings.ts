@@ -38,6 +38,7 @@ export type PanelAction =
   | 'openDashboard'
   | 'createContent'
   | 'optimizeSlug'
+  | 'smartRename'
   | 'preview'
   | 'openOnWebsite'
   | 'startStopServer'

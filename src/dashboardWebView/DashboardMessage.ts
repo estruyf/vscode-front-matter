@@ -32,6 +32,7 @@ export enum DashboardMessage {
   pinItem = 'pinItem',
   unpinItem = 'unpinItem',
   rename = 'rename',
+  smartRename = 'smartRename',
   moveFile = 'moveFile',
 
   // Media Dashboard

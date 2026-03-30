@@ -7,6 +7,7 @@
 
 ### 🎨 Enhancements
 
+- [#545](https://github.com/estruyf/vscode-front-matter/issues/545): Add smart rename action to sync filename with front matter data
 - [#937](https://github.com/estruyf/vscode-front-matter/issues/937): Dashboard "Structure" view for documentation sites *WIP*
 - [#965](https://github.com/estruyf/vscode-front-matter/issues/965): Added SEO support for the keyword in the first paragraph
 - [#973](https://github.com/estruyf/vscode-front-matter/issues/973): Support for number fields in the snippets

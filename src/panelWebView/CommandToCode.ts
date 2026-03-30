@@ -48,5 +48,6 @@ export enum CommandToCode {
   searchByType = 'search-by-type',
   processMediaData = 'process-media-data',
   isServerStarted = 'is-server-started',
-  runFieldAction = 'run-field-action'
+  runFieldAction = 'run-field-action',
+  smartRename = 'smart-rename'
 }

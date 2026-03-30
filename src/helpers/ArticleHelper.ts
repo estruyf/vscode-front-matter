@@ -237,6 +237,146 @@ export class ArticleHelper {
   }
 
   /**
+   * Smart rename a file based on its front matter title and publish date.
+   * Regenerates the expected filename using the same logic as content creation.
+   * @param filePath - The path of the file to be renamed.
+   */
+  public static async smartRename(filePath?: string) {
+    if (!filePath) {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return;
+      }
+      filePath = editor.document.uri.fsPath;
+    }
+
+    filePath = parseWinPath(filePath);
+    const fileUri = Uri.file(filePath);
+
+    const article = await ArticleHelper.getFrontMatterByPath(filePath);
+    if (!article || !article.data) {
+      Notifications.error(
+        l10n.t(LocalizationKey.commandsArticleRenameFileNotExistsError)
+      );
+      return;
+    }
+
+    const titleField = getTitleField();
+    const title: string = article.data[titleField];
+    if (!title) {
+      Notifications.warning(
+        l10n.t(LocalizationKey.commandsArticleSmartRenameUnableToGenerate)
+      );
+      return;
+    }
+
+    const contentType = await ArticleHelper.getContentType(article);
+    const articleDate = await ArticleHelper.getDate(article);
+
+    let filePrefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
+    filePrefix = await ArticleHelper.getFilePrefix(
+      filePrefix,
+      filePath,
+      contentType,
+      title,
+      articleDate
+    );
+
+    const sanitizedName = ArticleHelper.sanitize(title);
+    const parsed = parseFile(filePath);
+    const folderPath = dirname(fileUri.fsPath);
+
+    let newFileName: string;
+    if (contentType?.pageBundle) {
+      // For page bundles, the folder name should be updated
+      if (filePrefix && typeof filePrefix === 'string') {
+        if (filePrefix.endsWith('/')) {
+          newFileName = `${filePrefix}${sanitizedName}`;
+        } else {
+          newFileName = `${filePrefix}-${sanitizedName}`;
+        }
+      } else {
+        newFileName = sanitizedName;
+      }
+
+      const parentFolder = dirname(folderPath);
+      const currentFolderName = parseFile(folderPath).base;
+
+      if (currentFolderName === newFileName) {
+        Notifications.info(
+          l10n.t(LocalizationKey.commandsArticleSmartRenameAlreadyInSync)
+        );
+        return;
+      }
+
+      const newFolderPath = join(parentFolder, newFileName);
+      if (await existsAsync(newFolderPath)) {
+        Notifications.error(
+          l10n.t(LocalizationKey.commandsArticleSmartRenameFileExistsError, newFileName)
+        );
+        return;
+      }
+
+      await workspace.fs.rename(Uri.file(folderPath), Uri.file(newFolderPath), {
+        overwrite: false
+      });
+
+      Notifications.info(
+        l10n.t(
+          LocalizationKey.commandsArticleSmartRenameSuccess,
+          currentFolderName,
+          newFileName
+        )
+      );
+    } else {
+      // For regular files, rename the file
+      let newFileBase = `${sanitizedName}${parsed.ext}`;
+      if (filePrefix && typeof filePrefix === 'string') {
+        if (filePrefix.endsWith('/')) {
+          newFileBase = `${filePrefix}${newFileBase}`;
+        } else {
+          newFileBase = `${filePrefix}-${newFileBase}`;
+        }
+      }
+
+      if (parsed.base === newFileBase) {
+        Notifications.info(
+          l10n.t(LocalizationKey.commandsArticleSmartRenameAlreadyInSync)
+        );
+        return;
+      }
+
+      const newFileUri = Uri.joinPath(Uri.file(folderPath), newFileBase);
+      if (await existsAsync(newFileUri.fsPath)) {
+        Notifications.error(
+          l10n.t(LocalizationKey.commandsArticleSmartRenameFileExistsError, newFileBase)
+        );
+        return;
+      }
+
+      // Close the document if it's open in an editor before renaming
+      const openEditors = vscode.window.visibleTextEditors.filter(
+        (e) => parseWinPath(e.document.uri.fsPath) === filePath
+      );
+      for (const editor of openEditors) {
+        await editor.document.save();
+      }
+
+      await workspace.fs.rename(fileUri, newFileUri, {
+        overwrite: false
+      });
+
+      Notifications.info(
+        l10n.t(
+          LocalizationKey.commandsArticleSmartRenameSuccess,
+          parsed.base,
+          newFileBase
+        )
+      );
+    }
+  }
+
+  /**
    * Generate the update to be applied to the article.
    * @param article
    */
