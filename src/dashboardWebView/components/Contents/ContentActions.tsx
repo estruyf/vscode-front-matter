@@ -74,12 +74,12 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
   const onRename = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     messageHandler.send(DashboardMessage.rename, path);
-  }, [path])
+  }, [path]);
 
   const onSmartRename = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     messageHandler.send(DashboardMessage.smartRename, path);
-  }, [path])
+  }, [path]);
 
   const onOpenWebsite = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
