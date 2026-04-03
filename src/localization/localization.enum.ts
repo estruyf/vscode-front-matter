@@ -728,6 +728,10 @@ export enum LocalizationKey {
    */
   dashboardHeaderViewSwitchToList = 'dashboard.header.viewSwitch.toList',
   /**
+   * Change to structure
+   */
+  dashboardHeaderViewSwitchToStructure = 'dashboard.header.viewSwitch.toStructure',
+  /**
    * Support Front Matter
    */
   dashboardLayoutSponsorSupportMsg = 'dashboard.layout.sponsor.support.msg',
@@ -1108,7 +1112,7 @@ export enum LocalizationKey {
    */
   dashboardStepsStepsToGetStartedGitName = 'dashboard.steps.stepsToGetStarted.git.name',
   /**
-   * Enable Git synchronization to eaily sync your changes with your repository.
+   * Enable Git synchronization to easily sync your changes with your repository.
    */
   dashboardStepsStepsToGetStartedGitDescription = 'dashboard.steps.stepsToGetStarted.git.description',
   /**
@@ -1633,6 +1637,10 @@ export enum LocalizationKey {
    */
   panelSeoKeywordInfoValidInfoContent = 'panel.seoKeywordInfo.validInfo.content',
   /**
+   * First paragraph
+   */
+  panelSeoKeywordInfoValidInfoFirstParagraph = 'panel.seoKeywordInfo.validInfo.firstParagraph',
+  /**
    * Recommended frequency: 0.75% - 1.5%
    */
   panelSeoKeywordInfoDensityTooltip = 'panel.seoKeywordInfo.density.tooltip',
@@ -1688,6 +1696,10 @@ export enum LocalizationKey {
    * Optimize slug
    */
   panelSlugActionTitle = 'panel.slugAction.title',
+  /**
+   * Smart rename
+   */
+  panelSmartRenameActionTitle = 'panel.smartRenameAction.title',
   /**
    * Loading...
    */
@@ -1764,6 +1776,26 @@ export enum LocalizationKey {
    * File name
    */
   commandsArticleRenameFileNamePrompt = 'commands.article.rename.fileName.prompt',
+  /**
+   * The filename is already in sync with the front matter
+   */
+  commandsArticleSmartRenameAlreadyInSync = 'commands.article.smartRename.alreadyInSync',
+  /**
+   * File renamed from "{0}" to "{1}"
+   */
+  commandsArticleSmartRenameSuccess = 'commands.article.smartRename.success',
+  /**
+   * Unable to generate a new filename from the front matter
+   */
+  commandsArticleSmartRenameUnableToGenerate = 'commands.article.smartRename.unableToGenerate',
+  /**
+   * A file with the name "{0}" already exists
+   */
+  commandsArticleSmartRenameFileExistsError = 'commands.article.smartRename.fileExists.error',
+  /**
+   * Smart rename
+   */
+  dashboardContentsContentActionsMenuItemSmartRename = 'dashboard.contents.contentActions.menuItem.smartRename',
   /**
    * Cache cleared
    */

@@ -34,7 +34,6 @@ import { Folders } from '../commands/Folders';
 import { Questions } from './Questions';
 import { Notifications } from './Notifications';
 import { DEFAULT_CONTENT_TYPE_NAME } from '../constants/ContentType';
-import { Telemetry } from './Telemetry';
 import { basename } from 'path';
 import { ParsedFrontMatter } from '../parsers';
 import { encodeEmoji, existsAsync, fieldWhenClause, getTitleField, writeFileAsync } from '../utils';
@@ -408,7 +407,7 @@ export class ContentType {
    * @param parents
    * @returns
    */
-  public static getFieldValue(data: any, parents: string[]): string | string[] {
+  public static getFieldValue(data: any, parents: string[]): any {
     let fieldValue = [];
     let crntPageData = data;
 
@@ -575,7 +574,8 @@ export class ContentType {
         fieldValue === null ||
         fieldValue === undefined ||
         fieldValue === '' ||
-        fieldValue.length === 0 ||
+        (Array.isArray(fieldValue) && fieldValue.length === 0) ||
+        (typeof fieldValue === 'string' && fieldValue.length === 0) ||
         fieldValue === DefaultFieldValues.faultyCustomPlaceholder
       ) {
         emptyFields.push(fields);
@@ -956,8 +956,25 @@ export class ContentType {
         let templatePath = contentType.template;
         let templateData: ParsedFrontMatter | null | undefined = null;
         if (templatePath) {
-          templatePath = Folders.getAbsFilePath(templatePath);
-          templateData = await ArticleHelper.getFrontMatterByPath(templatePath);
+          try {
+            templatePath = Folders.getAbsFilePath(templatePath);
+            templateData = await ArticleHelper.getFrontMatterByPath(templatePath);
+            if (!templateData) {
+              Logger.warning(
+                `ContentType.create: Template file not found or could not be parsed: ${templatePath}`
+              );
+              Notifications.warning(
+                l10n.t(LocalizationKey.commonError) + ` Template not found: ${templatePath}`
+              );
+            }
+          } catch (error) {
+            Logger.error(
+              `ContentType.create: Error loading template from ${templatePath}: ${error}`
+            );
+            Notifications.error(
+              l10n.t(LocalizationKey.commonError) + ` Template loading failed: ${templatePath}`
+            );
+          }
         }
 
         const newFilePath: string | undefined = await ArticleHelper.createContent(

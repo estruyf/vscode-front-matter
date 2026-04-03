@@ -1,5 +1,13 @@
 import { messageHandler } from '@estruyf/vscode/dist/client';
-import { EyeIcon, GlobeEuropeAfricaIcon, TrashIcon, LanguageIcon, EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
+import {
+  EyeIcon,
+  GlobeEuropeAfricaIcon,
+  TrashIcon,
+  LanguageIcon,
+  EllipsisHorizontalIcon,
+  ArrowRightCircleIcon,
+  ArrowPathIcon
+} from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { CustomScript, I18nConfig } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
@@ -58,10 +66,20 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
     setSelectedItemAction({ path, action: 'delete' });
   }, [path]);
 
+  const onMove = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    setSelectedItemAction({ path, action: 'move' });
+  }, [path]);
+
   const onRename = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     messageHandler.send(DashboardMessage.rename, path);
-  }, [path])
+  }, [path]);
+
+  const onSmartRename = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    messageHandler.send(DashboardMessage.smartRename, path);
+  }, [path]);
 
   const onOpenWebsite = React.useCallback((e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
@@ -122,9 +140,19 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
                   <span>{l10n.t(LocalizationKey.dashboardContentsContentActionsMenuItemView)}</span>
                 </DropdownMenuItem>
 
+                <DropdownMenuItem onClick={onMove}>
+                  <ArrowRightCircleIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
+                  <span>Move to folder</span>
+                </DropdownMenuItem>
+
                 <DropdownMenuItem onClick={onRename}>
                   <RenameIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
                   <span>{l10n.t(LocalizationKey.commonRename)}</span>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem onClick={onSmartRename}>
+                  <ArrowPathIcon className={`mr-2 h-4 w-4`} aria-hidden={true} />
+                  <span>{l10n.t(LocalizationKey.dashboardContentsContentActionsMenuItemSmartRename)}</span>
                 </DropdownMenuItem>
 
                 {

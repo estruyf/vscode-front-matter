@@ -96,6 +96,7 @@ const SeoStatus: React.FunctionComponent<ISeoStatusProps> = ({
             headings={metadata?.articleDetails?.headingsText}
             wordCount={metadata?.articleDetails?.wordCount}
             content={metadata?.articleDetails?.content}
+            firstParagraph={metadata?.articleDetails?.firstParagraph}
           />
 
           <FieldBoundary fieldName={`Keywords`}>

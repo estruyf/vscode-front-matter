@@ -67,7 +67,7 @@ export const CommonSettings: React.FunctionComponent<ICommonSettingsProps> = (pr
   }, [settings?.lastUpdated]);
 
   return (
-    <div className='w-full divide-y divide-[var(--frontmatter-border)]'>
+    <div className='w-full divide-y divide-[var(--frontmatter-border)] text-[var(--frontmatter-text)]'>
       <div className='py-4'>
         <h2 className='text-xl mb-2'>{l10n.t(LocalizationKey.settingsOpenOnStartup)}</h2>
 

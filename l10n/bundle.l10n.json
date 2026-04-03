@@ -222,6 +222,7 @@
 
   "dashboard.header.viewSwitch.toGrid": "Change to grid",
   "dashboard.header.viewSwitch.toList": "Change to list",
+  "dashboard.header.viewSwitch.toStructure": "Change to structure",
 
   "dashboard.layout.sponsor.support.msg": "Support Front Matter",
   "dashboard.layout.sponsor.review.label": "Review",
@@ -332,7 +333,7 @@
   "dashboard.steps.stepsToGetStarted.tags.name": "Import all tags and categories (optional)",
   "dashboard.steps.stepsToGetStarted.tags.description": "Now that Front Matter knows all the content folders. Would you like to import all tags and categories from the available content?",
   "dashboard.steps.stepsToGetStarted.git.name": "Do you want to enable Git synchronization?",
-  "dashboard.steps.stepsToGetStarted.git.description": "Enable Git synchronization to eaily sync your changes with your repository.",
+  "dashboard.steps.stepsToGetStarted.git.description": "Enable Git synchronization to easily sync your changes with your repository.",
   "dashboard.steps.stepsToGetStarted.showDashboard.name": "Show the dashboard",
   "dashboard.steps.stepsToGetStarted.showDashboard.description": "Once all actions are completed, the dashboard can be loaded.",
   "dashboard.steps.stepsToGetStarted.template.name": "Use a configuration template",
@@ -504,6 +505,7 @@
   "panel.seoKeywords.density": "Keyword density",
   "panel.seoKeywordInfo.validInfo.label": "Heading(s)",
   "panel.seoKeywordInfo.validInfo.content": "Content",
+  "panel.seoKeywordInfo.validInfo.firstParagraph": "First paragraph",
   "panel.seoKeywordInfo.density.tooltip": "Recommended frequency: 0.75% - 1.5%",
 
   "panel.seoKeywords.title": "Keywords",
@@ -521,6 +523,8 @@
   "panel.seoStatus.required": "{0} or {1} is required.",
 
   "panel.slugAction.title": "Optimize slug",
+
+  "panel.smartRenameAction.title": "Smart rename",
 
   "panel.spinner.loading": "Loading...",
 
@@ -547,6 +551,13 @@
   "commands.article.rename.fileExists.error": "A file with the name \"{0}\" already exists",
   "commands.article.rename.fileName.title": "Rename: {0}",
   "commands.article.rename.fileName.prompt": "File name",
+
+  "commands.article.smartRename.alreadyInSync": "The filename is already in sync with the front matter",
+  "commands.article.smartRename.success": "File renamed from \"{0}\" to \"{1}\"",
+  "commands.article.smartRename.unableToGenerate": "Unable to generate a new filename from the front matter",
+  "commands.article.smartRename.fileExists.error": "A file with the name \"{0}\" already exists",
+
+  "dashboard.contents.contentActions.menuItem.smartRename": "Smart rename",
 
   "commands.cache.cleared": "Cache cleared",
 

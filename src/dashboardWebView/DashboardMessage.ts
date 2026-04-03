@@ -23,6 +23,7 @@ export enum DashboardMessage {
   createContent = 'createContent',
   createByContentType = 'createByContentType',
   createByTemplate = 'createByTemplate',
+  createContentInFolder = 'createContentInFolder',
   refreshPages = 'refreshPages',
   searchPages = 'searchPages',
   openFile = 'openFile',
@@ -31,6 +32,8 @@ export enum DashboardMessage {
   pinItem = 'pinItem',
   unpinItem = 'unpinItem',
   rename = 'rename',
+  smartRename = 'smartRename',
+  moveFile = 'moveFile',
 
   // Media Dashboard
   getMedia = 'getMedia',

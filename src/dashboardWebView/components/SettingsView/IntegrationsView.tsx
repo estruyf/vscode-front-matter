@@ -71,7 +71,7 @@ export const IntegrationsView: React.FunctionComponent<IIntegrationsViewProps> =
   }, []);
 
   return (
-    <div className='w-full divide-y divide-[var(--frontmatter-border)]'>
+    <div className='w-full divide-y divide-[var(--frontmatter-border)] text-[var(--frontmatter-text)]'>
       <div className='py-4 space-y-4'>
         <h2 className='text-xl mb-2'>{l10n.t(LocalizationKey.settingsIntegrationsViewDeeplTitle)}</h2>
 

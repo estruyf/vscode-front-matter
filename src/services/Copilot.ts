@@ -33,7 +33,8 @@ export class Copilot {
     }
 
     const copilotExt = extensions.getExtension(`GitHub.copilot`);
-    return !!copilotExt;
+    const copilotChatExt = extensions.getExtension(`GitHub.copilot-chat`);
+    return !!copilotExt || !!copilotChatExt;
   }
 
   public static async suggestTitles(title: string): Promise<string[] | undefined> {
@@ -269,7 +270,7 @@ Example: SEO, website optimization, digital marketing.`
     // console.log(models);
     const [model] = await lm.selectChatModels({
       vendor: 'copilot',
-      family: Settings.get<string>(SETTING_COPILOT_FAMILY) || 'gpt-4o-mini'
+      family: Settings.get<string>(SETTING_COPILOT_FAMILY) || 'gpt-4.1'
     });
 
     if ((!model || !model.sendRequest) && retry <= 5) {

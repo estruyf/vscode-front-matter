@@ -28,7 +28,6 @@ export interface PanelSettings {
   dataTypes: DataType[] | undefined;
   fieldGroups: FieldGroup[] | undefined;
   commaSeparatedFields: string[];
-  aiEnabled: boolean;
   copilotEnabled: boolean;
   contentFolders: ContentFolder[];
   websiteUrl: string;
@@ -39,6 +38,7 @@ export type PanelAction =
   | 'openDashboard'
   | 'createContent'
   | 'optimizeSlug'
+  | 'smartRename'
   | 'preview'
   | 'openOnWebsite'
   | 'startStopServer'

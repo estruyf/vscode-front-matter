@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { ViewAtom, SettingsSelector } from '../../state';
-import { Bars4Icon, Squares2X2Icon } from '@heroicons/react/24/solid';
+import { Bars4Icon, Squares2X2Icon, FolderIcon } from '@heroicons/react/24/solid';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
 import { DashboardViewType } from '../../models';
@@ -16,9 +16,7 @@ export const ViewSwitch: React.FunctionComponent<IViewSwitchProps> = (
   const [view, setView] = useRecoilState(ViewAtom);
   const settings = useRecoilValue(SettingsSelector);
 
-  const toggleView = () => {
-    const newView =
-      view === DashboardViewType.Grid ? DashboardViewType.List : DashboardViewType.Grid;
+  const handleViewChange = (newView: DashboardViewType) => {
     setView(newView);
     Messenger.send(DashboardMessage.setPageViewType, newView);
   };
@@ -36,7 +34,7 @@ export const ViewSwitch: React.FunctionComponent<IViewSwitchProps> = (
           }`}
         title={l10n.t(LocalizationKey.dashboardHeaderViewSwitchToGrid)}
         type={`button`}
-        onClick={toggleView}
+        onClick={() => handleViewChange(DashboardViewType.Grid)}
       >
         <Squares2X2Icon className={`w-4 h-4`} />
         <span className={`sr-only`}>
@@ -44,15 +42,27 @@ export const ViewSwitch: React.FunctionComponent<IViewSwitchProps> = (
         </span>
       </button>
       <button
-        className={`flex items-center px-2 py-1 rounded-r-sm ${view === DashboardViewType.List ? `bg-[var(--frontmatter-button-background)] text-[var(--vscode-button-foreground)]` : 'text-[var(--vscode-button-secondaryForeground)] hover:bg-[var(--vscode-button-secondaryHoverBackground)]'
+        className={`flex items-center px-2 py-1 ${view === DashboardViewType.List ? `bg-[var(--frontmatter-button-background)] text-[var(--vscode-button-foreground)]` : 'text-[var(--vscode-button-secondaryForeground)] hover:bg-[var(--vscode-button-secondaryHoverBackground)]'
           }`}
         title={l10n.t(LocalizationKey.dashboardHeaderViewSwitchToList)}
         type={`button`}
-        onClick={toggleView}
+        onClick={() => handleViewChange(DashboardViewType.List)}
       >
         <Bars4Icon className={`w-4 h-4`} />
         <span className={`sr-only`}>
           {l10n.t(LocalizationKey.dashboardHeaderViewSwitchToList)}
+        </span>
+      </button>
+      <button
+        className={`flex items-center px-2 py-1 rounded-r-sm ${view === DashboardViewType.Structure ? `bg-[var(--frontmatter-button-background)] text-[var(--vscode-button-foreground)]` : 'text-[var(--vscode-button-secondaryForeground)] hover:bg-[var(--vscode-button-secondaryHoverBackground)]'
+          }`}
+        title={l10n.t(LocalizationKey.dashboardHeaderViewSwitchToStructure)}
+        type={`button`}
+        onClick={() => handleViewChange(DashboardViewType.Structure)}
+      >
+        <FolderIcon className={`w-4 h-4`} />
+        <span className={`sr-only`}>
+          {l10n.t(LocalizationKey.dashboardHeaderViewSwitchToStructure)}
         </span>
       </button>
     </div>

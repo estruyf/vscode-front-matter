@@ -25,6 +25,9 @@ export class ArticleListener extends BaseListener {
       case CommandToCode.publish:
         Article.toggleDraft();
         break;
+      case CommandToCode.smartRename:
+        ArticleHelper.smartRename();
+        break;
     }
   }
 

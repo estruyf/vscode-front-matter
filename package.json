@@ -3,7 +3,7 @@
   "displayName": "Front Matter CMS",
   "description": "Front Matter is a CMS that runs within Visual Studio Code. It gives you the power and control of a full-blown CMS while also providing you the flexibility and speed of the static site generator of your choice like: Hugo, Jekyll, Docusaurus, NextJs, Gatsby, and many more...",
   "icon": "assets/frontmatter-teal-128x128.png",
-  "version": "10.9.0",
+  "version": "10.10.0",
   "preview": false,
   "publisher": "eliostruyf",
   "galleryBanner": {
@@ -138,12 +138,6 @@
               }
             }
           }
-        },
-        "frontMatter.sponsors.ai.enabled": {
-          "type": "boolean",
-          "default": false,
-          "markdownDescription": "%setting.frontMatter.sponsors.ai.enabled.markdownDescription%",
-          "scope": "Sponsors"
         },
         "frontMatter.extensibility.scripts": {
           "type": "array",
@@ -2110,6 +2104,12 @@
           "markdownDescription": "%setting.frontMatter.templates.prefix.markdownDescription%",
           "scope": "Templates"
         },
+        "frontMatter.validation.enabled": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "%setting.frontMatter.validation.enabled.markdownDescription%",
+          "scope": "Validation"
+        },
         "frontMatter.website.host": {
           "type": "string",
           "markdownDescription": "%setting.frontMatter.website.host.markdownDescription%"
@@ -2392,15 +2392,6 @@
         "icon": "$(book)"
       },
       {
-        "command": "frontMatter.chatbot",
-        "title": "%command.frontMatter.chatbot%",
-        "category": "Front Matter",
-        "icon": {
-          "light": "assets/icons/chatbot-light.svg",
-          "dark": "assets/icons/chatbot-dark.svg"
-        }
-      },
-      {
         "command": "frontMatter.promoteSettings",
         "title": "%command.frontMatter.promoteSettings%",
         "category": "Front Matter"
@@ -2566,11 +2557,6 @@
           "command": "frontMatter.dashboard.close",
           "group": "navigation@-98",
           "when": "frontMatter:enabled == true && frontMatter:dashboard:open == true"
-        },
-        {
-          "command": "frontMatter.chatbot",
-          "group": "navigation@-97",
-          "when": "resourceFilename == 'frontmatter.json'"
         }
       ],
       "explorer/context": [
@@ -2781,11 +2767,6 @@
           "when": "view == frontMatter.explorer"
         },
         {
-          "command": "frontMatter.chatbot",
-          "group": "navigation@0",
-          "when": "view == frontMatter.explorer"
-        },
-        {
           "command": "frontMatter.mode.switch",
           "group": "navigation@1",
           "when": "view == frontMatter.explorer && frontMatter:has:modes == true"
@@ -2814,10 +2795,7 @@
     },
     "languages": [
       {
-        "id": "frontmatter.project.output",
-        "mimetypes": [
-          "text/x-code-output"
-        ]
+        "id": "frontmatter.project.output"
       }
     ],
     "grammars": [
@@ -2878,7 +2856,7 @@
     ]
   },
   "scripts": {
-    "dev:ext": "npm run clean && npm run localization:generate && npm-run-all --parallel watch:*",
+    "dev": "npm run clean && npm run localization:generate && npm-run-all --parallel watch:*",
     "vscode:prepublish": "npm run clean && npm run localization:generate && npm-run-all --parallel prod:*",
     "build:ext": "npm run clean && npm-run-all --parallel dev:build:*",
     "watch:ext": "webpack --mode development --watch --config ./webpack/extension.config.js",

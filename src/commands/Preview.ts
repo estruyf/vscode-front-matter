@@ -54,6 +54,7 @@ export class Preview {
       return;
     }
 
+    const integratedBrowserCommand = await this.getIntegratedBrowserCommand();
     const browserLiteCommand = await this.getBrowserLiteCommand();
 
     const editor = window.activeTextEditor;
@@ -68,6 +69,12 @@ export class Preview {
     const article = editor ? ArticleHelper.getFrontMatter(editor) : null;
     const slug = await this.getContentSlug(article, editor?.document.uri.fsPath);
     const localhostUrl = await this.getLocalServerUrl();
+
+    if (integratedBrowserCommand) {
+      const pageUrl = joinUrl(localhostUrl.toString(), slug || '');
+      commands.executeCommand(integratedBrowserCommand, pageUrl);
+      return;
+    }
 
     if (browserLiteCommand) {
       const pageUrl = joinUrl(localhostUrl.toString(), slug || '');
@@ -364,6 +371,17 @@ export class Preview {
       if (hasCommand) {
         return 'browse-lite.open';
       }
+    }
+    return undefined;
+  }
+
+  /**
+   * Check if Browser Lite is installed
+   */
+  private static async getIntegratedBrowserCommand() {
+    const allCommands = await commands.getCommands(true);
+    if (allCommands.includes(`workbench.action.browser.open`)) {
+      return `workbench.action.browser.open`;
     }
     return undefined;
   }

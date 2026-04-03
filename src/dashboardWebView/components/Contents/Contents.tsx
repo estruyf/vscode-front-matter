@@ -14,6 +14,7 @@ import { GeneralCommands } from '../../../constants';
 import { PageLayout } from '../Layout/PageLayout';
 import { FilesProvider } from '../../providers/FilesProvider';
 import { Alert } from '../Modals/Alert';
+import { MoveFileDialog } from '../Modals/MoveFileDialog';
 import { LocalizationKey } from '../../../localization';
 import { deletePage } from '../../utils';
 
@@ -28,12 +29,14 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({
   const settings = useRecoilValue(SettingsSelector);
   const { pageItems } = usePages(pages);
   const [showDeletionAlert, setShowDeletionAlert] = React.useState(false);
+  const [showMoveDialog, setShowMoveDialog] = React.useState(false);
   const [page, setPage] = useState<Page | undefined>(undefined);
   const [selectedItemAction, setSelectedItemAction] = useRecoilState(SelectedItemActionAtom);
 
   const pageFolders = [...new Set(pageItems.map((page) => page.fmFolder))];
 
   const onDismiss = useCallback(() => {
+    setShowMoveDialog(false);
     setShowDeletionAlert(false);
     setSelectedItemAction(undefined);
   }, []);
@@ -46,13 +49,29 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({
     setSelectedItemAction(undefined);
   }, [page]);
 
-  useEffect(() => {
-    if (selectedItemAction && selectedItemAction.path && selectedItemAction.action === 'delete') {
-      const page = pageItems.find((p) => p.fmFilePath === selectedItemAction.path);
+  const onMoveConfirm = useCallback((destinationFolder: string) => {
+    if (page) {
+      Messenger.send(DashboardMessage.moveFile, {
+        filePath: page.fmFilePath,
+        destinationFolder
+      });
+    }
+    setShowMoveDialog(false);
+    setSelectedItemAction(undefined);
+  }, [page]);
 
-      if (page) {
-        setPage(page);
-        setShowDeletionAlert(true);
+  useEffect(() => {
+    if (selectedItemAction && selectedItemAction.path) {
+      const pageItem = pageItems.find((p) => p.fmFilePath === selectedItemAction.path);
+
+      if (pageItem) {
+        setPage(pageItem);
+
+        if (selectedItemAction.action === 'delete') {
+          setShowDeletionAlert(true);
+        } else if (selectedItemAction.action === 'move') {
+          setShowMoveDialog(true);
+        }
       }
 
       setSelectedItemAction(undefined);
@@ -84,6 +103,15 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({
         />
 
         <img className='hidden' src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Ffrontmatter.codes%2Fmetrics%2Fdashboards&slug=content" alt="Content metrics" />
+
+        {showMoveDialog && page && (
+          <MoveFileDialog
+            page={page}
+            availableFolders={pageFolders}
+            dismiss={onDismiss}
+            trigger={onMoveConfirm}
+          />
+        )}
 
         {showDeletionAlert && page && (
           <Alert

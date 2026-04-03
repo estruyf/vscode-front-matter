@@ -109,6 +109,7 @@
   "dashboard.header.tabs.taxonomies": "Taxonomies",
   "dashboard.header.viewSwitch.toGrid": "Afficher en grille",
   "dashboard.header.viewSwitch.toList": "Afficher en liste",
+  "dashboard.header.viewSwitch.toStructure": "Afficher en structure",
   "dashboard.layout.sponsor.support.msg": "Soutenir Front Matter",
   "dashboard.layout.sponsor.review.label": "Donnez votre avis",
   "dashboard.layout.sponsor.review.msg": "Donnez votre avis sur Front Matter",

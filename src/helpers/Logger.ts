@@ -12,7 +12,7 @@ export class Logger {
 
   private constructor() {
     const displayName = Extension.getInstance().displayName;
-    Logger.channel = window.createOutputChannel(displayName);
+    Logger.channel = window.createOutputChannel(displayName, 'frontmatter.project.output');
     commands.registerCommand(COMMAND_NAME.showOutputChannel, () => {
       Logger.channel?.show();
     });
