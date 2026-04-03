@@ -1,6 +1,6 @@
 # Change Log
 
-## [10.10.0] - 2026-xx-xx
+## [10.10.0] - 2026-04-03 - [Release notes](https://beta.frontmatter.codes/updates/v10.10.0)
 
 - Removed the chatbot command and all related code and references
 - [#983](https://github.com/estruyf/vscode-front-matter/issues/983): Removal of the `frontMatter.sponsors.ai.enabled` features
