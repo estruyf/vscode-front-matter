@@ -26,11 +26,11 @@ export interface JSONSchema {
 
 /**
  * Generates JSON Schema from Front Matter Content Type definitions
- * 
+ *
  * This utility converts Front Matter content type definitions into JSON Schema format
  * which can then be used for validation. It handles all field types supported by
  * Front Matter CMS including nested fields, blocks, and field groups.
- * 
+ *
  * Field Type Mappings:
  * - string, slug, image, file, customField → string
  * - number → number (with optional min/max)
@@ -42,7 +42,7 @@ export interface JSONSchema {
  * - block → array of objects with oneOf for field groups
  * - json → any valid JSON type
  * - dataFile, contentRelationship → string or array
- * 
+ *
  * Features:
  * - Required field validation
  * - Type validation
@@ -50,7 +50,7 @@ export interface JSONSchema {
  * - Number range validation (min/max)
  * - Nested object support
  * - Block field support with multiple field group options
- * 
+ *
  * Usage:
  * ```typescript
  * const schema = ContentTypeSchemaGenerator.generateSchema(contentType);
@@ -181,7 +181,7 @@ export class ContentTypeSchemaGenerator {
         schema.items = {
           type: 'string'
         };
-        
+
         // Get available tags and add as enum for validation
         const availableTags = await TaxonomyHelper.get(TaxonomyType.Tag);
         if (availableTags && availableTags.length > 0) {
@@ -195,7 +195,7 @@ export class ContentTypeSchemaGenerator {
         schema.items = {
           type: 'string'
         };
-        
+
         // Get available categories and add as enum for validation
         const availableCategories = await TaxonomyHelper.get(TaxonomyType.Category);
         if (availableCategories && availableCategories.length > 0) {
@@ -209,7 +209,7 @@ export class ContentTypeSchemaGenerator {
         schema.items = {
           type: 'string'
         };
-        
+
         // Get custom taxonomy options if taxonomyId is specified
         if (field.taxonomyId) {
           const customTaxonomies = Settings.get<CustomTaxonomy[]>(SETTING_TAXONOMY_CUSTOM);
@@ -315,7 +315,9 @@ export class ContentTypeSchemaGenerator {
    * @param choices Array of choice strings or objects
    * @returns Array of choice values
    */
-  private static extractChoiceValues(choices: (string | { id?: string | null; title: string })[]): string[] {
+  private static extractChoiceValues(
+    choices: (string | { id?: string | null; title: string })[]
+  ): string[] {
     return choices.map((choice) => {
       if (typeof choice === 'string') {
         return choice;
@@ -338,7 +340,9 @@ export class ContentTypeSchemaGenerator {
     }
 
     const fieldGroupIds = Array.isArray(field.fieldGroup) ? field.fieldGroup : [field.fieldGroup];
-    const fieldGroups = Settings.get(SETTING_TAXONOMY_FIELD_GROUPS) as { id: string; fields: Field[] }[] | undefined;
+    const fieldGroups = Settings.get(SETTING_TAXONOMY_FIELD_GROUPS) as
+      | { id: string; fields: Field[] }[]
+      | undefined;
 
     if (!fieldGroups || fieldGroups.length === 0) {
       return schemas;
