@@ -123,10 +123,18 @@ export class ContentTypeSchemaGenerator {
     switch (field.type) {
       case 'string':
       case 'slug':
-      case 'image':
-      case 'file':
       case 'customField':
         schema.type = 'string';
+        break;
+
+      case 'image':
+      case 'file':
+        if (field.multiple) {
+          schema.type = 'array';
+          schema.items = { type: 'string' };
+        } else {
+          schema.type = 'string';
+        }
         break;
 
       case 'number':
