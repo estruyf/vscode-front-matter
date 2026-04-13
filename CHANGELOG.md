@@ -5,6 +5,7 @@
 ### 🐞 Fixes
 
 - [#1023](https://github.com/estruyf/vscode-front-matter/issues/1023): Fix validation errors for image, file, and keywords fields
+- [#1024](https://github.com/estruyf/vscode-front-matter/issues/1024): Re-add the `frontMatter.copilot.enabled` setting to allow users to disable the GitHub Copilot integration
 
 ## [10.10.0] - 2026-04-03 - [Release notes](https://beta.frontmatter.codes/updates/v10.10.0)
 

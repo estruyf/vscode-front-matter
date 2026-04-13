@@ -117,6 +117,7 @@ export const SETTING_SNIPPETS_WRAPPER = 'snippets.wrapper.enabled';
 export const SETTING_WEBSITE_URL = 'website.host';
 
 export const SETTING_COPILOT_FAMILY = 'copilot.family';
+export const SETTING_COPILOT_ENABLED = 'copilot.enabled';
 
 export const SETTING_LOGGING = 'logging';
 

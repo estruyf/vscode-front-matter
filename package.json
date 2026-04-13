@@ -2128,6 +2128,11 @@
           "type": "string",
           "default": "gpt-4o-mini",
           "markdownDescription": "%setting.frontMatter.copilot.family.markdownDescription%"
+        },
+        "frontMatter.copilot.enabled": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "%setting.frontMatter.copilot.enabled.markdownDescription%"
         }
       }
     },

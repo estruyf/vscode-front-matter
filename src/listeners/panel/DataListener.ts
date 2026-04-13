@@ -26,7 +26,8 @@ import {
   SETTING_DATE_FORMAT,
   SETTING_GLOBAL_ACTIVE_MODE,
   SETTING_GLOBAL_MODES,
-  SETTING_TAXONOMY_CONTENT_TYPES
+  SETTING_TAXONOMY_CONTENT_TYPES,
+  SETTING_COPILOT_ENABLED
 } from '../../constants';
 import { Article, Preview } from '../../commands';
 import { FrontMatterParser, ParsedFrontMatter } from '../../parsers';
@@ -124,6 +125,15 @@ export class DataListener extends BaseListener {
       return;
     }
 
+    // Check if Copilot is enabled and installed
+    const copilotEnabled = Settings.get<boolean>(SETTING_COPILOT_ENABLED) !== false;
+    const isCopilotInstalled = await Copilot.isInstalled();
+
+    if (!copilotEnabled || !isCopilotInstalled) {
+      this.sendRequestError(command, requestId, 'Copilot is not enabled or installed');
+      return;
+    }
+
     const aiTitles = await Copilot.suggestTitles(title);
     title = await Questions.pickTitleSuggestions(title, aiTitles || [], true);
 
@@ -142,6 +152,21 @@ export class DataListener extends BaseListener {
    */
   private static async copilotSuggestDescription(command: string, requestId?: string) {
     if (!command || !requestId) {
+      return;
+    }
+
+    // Check if Copilot is enabled and installed
+    const copilotEnabled = Settings.get<boolean>(SETTING_COPILOT_ENABLED) !== false;
+    const isCopilotInstalled = await Copilot.isInstalled();
+
+    if (!copilotEnabled || !isCopilotInstalled) {
+      const extPath = Extension.getInstance().extensionPath;
+      const panel = PanelProvider.getInstance(extPath);
+      panel.getWebview()?.postMessage({
+        command,
+        requestId,
+        error: l10n.t(LocalizationKey.servicesCopilotGetChatResponseError)
+      } as MessageHandlerData<string>);
       return;
     }
 

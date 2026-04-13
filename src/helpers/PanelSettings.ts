@@ -1,7 +1,8 @@
 import {
   SETTING_GLOBAL_TIMEZONE,
   SETTING_PANEL_ACTIONS_DISABLED,
-  SETTING_WEBSITE_URL
+  SETTING_WEBSITE_URL,
+  SETTING_COPILOT_ENABLED
 } from './../constants/settings';
 import { workspace } from 'vscode';
 import { ContentType, Extension, Logger, Settings, TaxonomyHelper } from '.';
@@ -51,6 +52,7 @@ export class PanelSettings {
 
     try {
       return {
+        aiEnabled: Settings.get<boolean>(SETTING_COPILOT_ENABLED) !== false,
         copilotEnabled: await Copilot.isInstalled(),
         git: await GitListener.getSettings(),
         seo: {

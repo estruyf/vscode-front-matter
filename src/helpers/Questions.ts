@@ -1,8 +1,10 @@
 import { QuickPickItem, QuickPickItemKind, window } from 'vscode';
 import { Folders } from '../commands/Folders';
+import { SETTING_COPILOT_ENABLED } from '../constants';
 import { ContentType } from './ContentType';
 import { Notifications } from './Notifications';
 import { Logger } from './Logger';
+import { Settings } from './SettingsHelper';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
 import { ContentFolder } from '../models';
@@ -37,12 +39,14 @@ export class Questions {
    * @returns
    */
   public static async ContentTitle(showWarning = true): Promise<string | undefined> {
+    const copilotEnabled = Settings.get<boolean>(SETTING_COPILOT_ENABLED) !== false;
     let title: string | undefined = '';
     const isCopilotInstalled = await Copilot.isInstalled();
 
     let aiTitles: string[] | undefined;
 
-    if (isCopilotInstalled) {
+    // Only show AI suggestions if both the setting is enabled and Copilot is installed
+    if (copilotEnabled && isCopilotInstalled) {
       title = await window.showInputBox({
         title: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputTitle),
         prompt: l10n.t(LocalizationKey.helpersQuestionsContentTitleAiInputPrompt),
