@@ -1,6 +1,6 @@
 import { PencilIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useRecoilState } from 'recoil';
 import { BaseFieldProps, CustomScript, PanelSettings } from '../../../models';
 import { RequiredFieldsAtom } from '../../state';
@@ -13,6 +13,12 @@ import { useDebounce } from '../../../hooks/useDebounce';
 import { CopilotIcon } from '../Icons';
 
 const DEBOUNCE_TIME = 300;
+// How long a local edit keeps precedence over incoming values that are not the echo of our own update.
+// This covers slow round trips (the value we get back could be the echo of an older update) without
+// blocking external changes (ex. editing the front matter in the editor) forever.
+const EXTERNAL_UPDATE_GRACE = 1500;
+
+const normalize = (val: string | null | undefined): string => val || '';
 
 export interface ITextFieldProps extends BaseFieldProps<string> {
   singleLine: boolean | undefined;
@@ -42,12 +48,25 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   const [, setRequiredFields] = useRecoilState(RequiredFieldsAtom);
   const [text, setText] = React.useState<string | null | undefined>(undefined);
   const [loading, setLoading] = React.useState<string | undefined>(undefined);
-  const [lastUpdated, setLastUpdated] = React.useState<number | null>(null);
+  // Timestamp of the last local edit, null when the field is in sync with the front matter
+  const lastTypedRef = useRef<number | null>(null);
+  // Last value we sent to, or accepted from, the extension host. Used to recognize the echo of our own update.
+  const lastSentRef = useRef<string | undefined>(undefined);
   const debouncedText = useDebounce<string | null | undefined>(text, DEBOUNCE_TIME);
 
   const onTextChange = (txtValue: string) => {
     setText(txtValue);
-    setLastUpdated(Date.now());
+    lastTypedRef.current = Date.now();
+  };
+
+  /**
+   * Apply a value that was generated for the user (ex. AI suggestion) and send it right away
+   */
+  const applyValue = (txtValue: string) => {
+    setText(txtValue);
+    lastTypedRef.current = null;
+    lastSentRef.current = normalize(txtValue);
+    onChange(txtValue);
   };
 
   let isValid = true;
@@ -96,8 +115,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
         setLoading(undefined);
 
         if (suggestion) {
-          setText(suggestion);
-          onChange(suggestion);
+          applyValue(suggestion);
         }
       })
       .catch(() => {
@@ -116,8 +134,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
         setLoading(undefined);
 
         if (suggestion) {
-          setText(suggestion);
-          onChange(suggestion);
+          applyValue(suggestion);
         }
       })
       .catch(() => {
@@ -158,18 +175,50 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   }, [showRequiredState, isValid]);
 
   useEffect(() => {
-    if (text !== value && (lastUpdated === null || Date.now() - DEBOUNCE_TIME > lastUpdated)) {
+    const incoming = normalize(value);
+
+    if (lastSentRef.current !== undefined && incoming === lastSentRef.current) {
+      // Echo of our own update. When nothing was typed since, the field is in sync again.
+      if (normalize(text) === incoming) {
+        lastTypedRef.current = null;
+      }
+      return;
+    }
+
+    // Could be the (stale) echo of an older update or an external change. While the user is
+    // typing, the local text wins; otherwise the incoming value is applied.
+    const hasPendingEdit =
+      lastTypedRef.current !== null && Date.now() - lastTypedRef.current < EXTERNAL_UPDATE_GRACE;
+    if (hasPendingEdit) {
+      return;
+    }
+
+    // Accept the incoming value as the new baseline for local edits
+    lastTypedRef.current = null;
+    lastSentRef.current = incoming;
+    if (normalize(text) !== incoming) {
       setText(value || null);
     }
-    setLastUpdated(null);
   }, [value]);
 
   useEffect(() => {
-    if (debouncedText !== undefined && value !== debouncedText && lastUpdated !== null) {
-      onChange(debouncedText || '');
-      setLastUpdated(null);
+    if (debouncedText === undefined || lastTypedRef.current === null) {
+      // Not a local edit (ex. text was set from the incoming value)
+      return;
     }
-  }, [debouncedText, value, lastUpdated, onChange]);
+
+    const outgoing = normalize(debouncedText);
+    const baseline = lastSentRef.current !== undefined ? lastSentRef.current : normalize(value);
+    if (outgoing === baseline) {
+      if (baseline === normalize(value)) {
+        lastTypedRef.current = null;
+      }
+      return;
+    }
+
+    lastSentRef.current = outgoing;
+    onChange(outgoing);
+  }, [debouncedText]);
 
   return (
     <div className={`metadata_field`}>

@@ -15,7 +15,6 @@ import rehypeParse from "rehype-parse";
 import rehypeRemark from "rehype-remark";
 import rehypeStringify from 'rehype-stringify'
 
-import { differenceInSeconds } from "date-fns";
 import { BaseFieldProps } from '../../../models';
 import { FieldMessage, FieldTitle } from '.';
 import { LocalizationKey, localize } from '../../../localization';
@@ -24,6 +23,10 @@ import { RequiredFieldsAtom } from '../../state';
 import { useDebounce } from '../../../hooks/useDebounce';
 
 const DEBOUNCE_TIME = 500;
+// How long a local edit keeps precedence over incoming values that are not the echo of our own update
+const EXTERNAL_UPDATE_GRACE = 2000;
+
+const normalize = (val: string | null | undefined): string => val || '';
 
 function markdownToHtml(markdownText: string) {
   const file = unified()
@@ -66,13 +69,16 @@ const WysiwygField: React.FunctionComponent<IWysiwygFieldProps> = ({
   required
 }: React.PropsWithChildren<IWysiwygFieldProps>) => {
   const [, setRequiredFields] = useRecoilState(RequiredFieldsAtom);
-  const [lastUpdated, setLastUpdated] = React.useState<number | null>(null);
+  // Timestamp of the last local edit, null when the field is in sync with the front matter
+  const lastTypedRef = React.useRef<number | null>(null);
+  // Last value we sent to, or accepted from, the extension host. Used to recognize the echo of our own update.
+  const lastSentRef = React.useRef<string | undefined>(undefined);
   const [text, setText] = React.useState<string | null | undefined>(type === "html" ? value : markdownToHtml(value || ""));
   const debouncedText = useDebounce<string | null | undefined>(text, DEBOUNCE_TIME);
 
   const onTextChange = (newValue: string) => {
     setText(newValue);
-    setLastUpdated(Date.now());
+    lastTypedRef.current = Date.now();
   }
 
   const modules = React.useMemo(() => {
@@ -138,20 +144,47 @@ const WysiwygField: React.FunctionComponent<IWysiwygFieldProps> = ({
    * Update the text value when the value changes
    */
   React.useEffect(() => {
-    if (text !== value && (lastUpdated === null || differenceInSeconds(Date.now(), lastUpdated) > 2)) {
-      setText(type === "html" ? value : markdownToHtml(value || ""));
+    const incoming = normalize(value);
+
+    if (lastSentRef.current !== undefined && incoming === lastSentRef.current) {
+      // Echo of our own update, the local text is at least as recent
+      lastTypedRef.current = null;
+      return;
     }
-    setLastUpdated(null);
+
+    // Could be the (stale) echo of an older update or an external change. While the user is
+    // typing, the local text wins; otherwise the incoming value is applied.
+    const hasPendingEdit =
+      lastTypedRef.current !== null && Date.now() - lastTypedRef.current < EXTERNAL_UPDATE_GRACE;
+    if (hasPendingEdit) {
+      return;
+    }
+
+    lastTypedRef.current = null;
+    lastSentRef.current = incoming;
+    setText(type === "html" ? value : markdownToHtml(value || ""));
   }, [value]);
 
   /**
    * Update the value when the debounced text changes
    */
   React.useEffect(() => {
-    if (debouncedText !== undefined && value !== debouncedText && lastUpdated !== null) {
-      const valueToUpdate = type === "html" ? debouncedText : htmlToMarkdown(debouncedText || "");
-      onChange(valueToUpdate || "");
+    if (debouncedText === undefined || lastTypedRef.current === null) {
+      // Not a local edit (ex. text was set from the incoming value)
+      return;
     }
+
+    const outgoing = normalize(type === "html" ? debouncedText : htmlToMarkdown(debouncedText || ""));
+    const baseline = lastSentRef.current !== undefined ? lastSentRef.current : normalize(value);
+    if (outgoing === baseline) {
+      if (baseline === normalize(value)) {
+        lastTypedRef.current = null;
+      }
+      return;
+    }
+
+    lastSentRef.current = outgoing;
+    onChange(outgoing);
   }, [debouncedText]);
 
   return (

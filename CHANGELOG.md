@@ -6,6 +6,10 @@
 
 - [#1061](https://github.com/estruyf/vscode-front-matter/issues/1061): Added the `searchable` property on `choice` fields to show a searchable input instead of a dropdown, useful when you have many choices
 
+### 🐞 Fixes
+
+- [#1062](https://github.com/estruyf/vscode-front-matter/issues/1062): Fix dropped characters and sluggish typing in `string` and `wysiwyg` fields when the front matter update round trip is slower than the typing speed
+
 ## [10.12.0] - 2026-08-21 - [Release notes](https://beta.frontmatter.codes/updates/v10.12.0)
 
 ### 🎨 Enhancements
