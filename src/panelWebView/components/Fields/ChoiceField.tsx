@@ -14,6 +14,7 @@ import useDropdownStyle from '../../hooks/useDropdownStyle';
 export interface IChoiceFieldProps extends BaseFieldProps<string | string[]> {
   choices: string[] | Choice[];
   multiSelect?: boolean;
+  searchable?: boolean;
   onChange: (value: string | string[]) => void;
 }
 
@@ -23,10 +24,12 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({
   value,
   choices,
   multiSelect,
+  searchable,
   onChange,
   required
 }: React.PropsWithChildren<IChoiceFieldProps>) => {
   const [crntSelected, setCrntSelected] = React.useState<string | string[] | null>(value);
+  const [inputValue, setInputValue] = React.useState<string>('');
   const dsRef = React.useRef<Downshift<string> | null>(null);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   const { getDropdownStyle } = useDropdownStyle(inputRef as any);
@@ -84,6 +87,18 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({
       return true;
     });
 
+  /**
+   * Filters the choices by the typed search value (matches on title and ID)
+   */
+  const search = searchable ? (inputValue || '').toLowerCase() : '';
+  const filteredChoices = !search
+    ? (availableChoices as Array<string | Choice>)
+    : (availableChoices as Array<string | Choice>).filter(
+      (choice) =>
+        getValue(choice, 'title').toLowerCase().includes(search) ||
+        getValue(choice, 'id').toLowerCase().includes(search)
+    );
+
   const showRequiredState = useMemo(() => {
     return (
       required && ((crntSelected instanceof Array && crntSelected.length === 0) || !crntSelected)
@@ -102,24 +117,62 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({
 
       <Downshift
         ref={dsRef}
-        onSelect={(selected) => onValueChange(selected || '')}
+        onSelect={(selected) => {
+          onValueChange(selected || '');
+          setInputValue('');
+        }}
         itemToString={(item) => (item ? item : '')}
+        inputValue={inputValue}
+        onStateChange={(changes) => {
+          // Only track what the user types, ignore the value Downshift sets on selection
+          if (changes.type === Downshift.stateChangeTypes.changeInput) {
+            setInputValue(changes.inputValue || '');
+          }
+        }}
       >
-        {({ getToggleButtonProps, getItemProps, getMenuProps, isOpen, getRootProps }) => (
+        {({
+          getToggleButtonProps,
+          getInputProps,
+          getItemProps,
+          getMenuProps,
+          isOpen,
+          getRootProps,
+          openMenu,
+          closeMenu
+        }) => (
           <div
             {...getRootProps(undefined, { suppressRefError: true })}
             ref={inputRef}
             className={`metadata_field__choice`}
           >
-            <button
-              {...getToggleButtonProps({
-                className: `metadata_field__choice__toggle`,
-                disabled: availableChoices.length === 0
-              })}
-            >
-              <span>{l10n.t(LocalizationKey.panelFieldsChoiceFieldSelect, label)}</span>
-              <ChevronDownIcon className="icon" />
-            </button>
+            {searchable ? (
+              <div
+                className={`article__tags__input metadata_field__choice__search ${showRequiredState ? 'required' : ''}`}
+              >
+                <input
+                  {...getInputProps({
+                    onFocus: openMenu as () => void,
+                    onClick: openMenu as () => void,
+                    onBlur: () => {
+                      closeMenu();
+                      setInputValue('');
+                    },
+                    disabled: availableChoices.length === 0
+                  })}
+                  placeholder={l10n.t(LocalizationKey.panelFieldsChoiceFieldSearch, label)}
+                />
+              </div>
+            ) : (
+              <button
+                {...getToggleButtonProps({
+                  className: `metadata_field__choice__toggle`,
+                  disabled: availableChoices.length === 0
+                })}
+              >
+                <span>{l10n.t(LocalizationKey.panelFieldsChoiceFieldSelect, label)}</span>
+                <ChevronDownIcon className="icon" />
+              </button>
+            )}
 
             <ul
               className={`field_dropdown metadata_field__choice_list ${isOpen ? 'open' : 'closed'}`}
@@ -129,7 +182,7 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({
               {...getMenuProps()}
             >
               {
-                availableChoices.map((choice, index) => (
+                filteredChoices.map((choice, index) => (
                   <li
                     {...getItemProps({
                       key: getValue(choice, 'id'),

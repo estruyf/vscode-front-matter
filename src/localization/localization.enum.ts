@@ -1425,6 +1425,10 @@ export enum LocalizationKey {
    */
   panelFieldsChoiceFieldClear = 'panel.fields.choiceField.clear',
   /**
+   * Search {0}
+   */
+  panelFieldsChoiceFieldSearch = 'panel.fields.choiceField.search',
+  /**
    * Fetching possible values...
    */
   panelFieldsContentTypeRelationshipFieldLoading = 'panel.fields.contentTypeRelationshipField.loading',

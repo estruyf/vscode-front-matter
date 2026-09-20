@@ -1,5 +1,11 @@
 # Change Log
 
+## [10.13.0] - 2026-xx-xx
+
+### 🎨 Enhancements
+
+- [#1061](https://github.com/estruyf/vscode-front-matter/issues/1061): Added the `searchable` property on `choice` fields to show a searchable input instead of a dropdown, useful when you have many choices
+
 ## [10.12.0] - 2026-08-21 - [Release notes](https://beta.frontmatter.codes/updates/v10.12.0)
 
 ### 🎨 Enhancements

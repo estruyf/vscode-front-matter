@@ -1488,6 +1488,11 @@
                       "default": false,
                       "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.multiple.description%"
                     },
+                    "searchable": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "%setting.frontMatter.taxonomy.contentTypes.items.properties.fields.items.properties.searchable.description%"
+                    },
                     "isPreviewImage": {
                       "type": "boolean",
                       "default": false,
