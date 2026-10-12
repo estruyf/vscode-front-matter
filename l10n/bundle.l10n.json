@@ -429,6 +429,7 @@
 
   "panel.fields.choiceField.select": "Select {0}",
   "panel.fields.choiceField.clear": "Clear value",
+  "panel.fields.choiceField.search": "Search {0}",
 
   "panel.fields.contentTypeRelationshipField.loading": "Fetching possible values...",
 

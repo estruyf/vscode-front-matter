@@ -1,0 +1,29 @@
+{
+  "name": "promo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The Front Matter CMS promo and tour, cut from a scripted capture of the real extension running in VS Code against a demo site, with Remotion.",
+  "license": "MIT",
+  "scripts": {
+    "capture": "node scripts/capture.mjs",
+    "start": "remotion studio",
+    "render": "remotion render Promo out/promo.mp4 --codec=h264 --crf=17",
+    "render:tour": "remotion render Tour out/tour.mp4 --codec=h264 --crf=17",
+    "web": "node scripts/web.mjs",
+    "typecheck": "tsc --noEmit",
+    "vsix": "cd .. && npx --yes @vscode/vsce package --no-dependencies -o promo/.cache/front-matter.vsix",
+    "covers": "node scripts/covers.mjs"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.518",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.518"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.0",
+    "playwright": "1.62.1",
+    "typescript": "5.9.3",
+    "@vscode/test-electron": "^2.5.2"
+  }
+}

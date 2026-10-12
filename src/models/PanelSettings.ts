@@ -106,6 +106,7 @@ export interface Field {
   single?: boolean;
   wysiwyg?: boolean | string;
   multiple?: boolean;
+  searchable?: boolean;
   isPreviewImage?: boolean;
   hidden?: boolean;
   taxonomyId?: string;

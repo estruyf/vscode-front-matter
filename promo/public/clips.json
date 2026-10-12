@@ -1,0 +1,14 @@
+{
+  "edit": {
+    "frames": 374,
+    "fps": 30
+  },
+  "create": {
+    "frames": 256,
+    "fps": 30
+  },
+  "snippet": {
+    "frames": 249,
+    "fps": 30
+  }
+}

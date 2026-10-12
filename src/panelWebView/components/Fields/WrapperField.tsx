@@ -326,6 +326,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           required={!!field.required}
           choices={choices}
           multiSelect={field.multiple}
+          searchable={!!field.searchable}
           onChange={onFieldChange}
         />
       </FieldBoundary>
