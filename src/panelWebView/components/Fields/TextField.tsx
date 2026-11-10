@@ -186,7 +186,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
         )}
       </>
     );
-  }, [settings?.copilotEnabled, settings?.seo, name, actions, loading]);
+  }, [settings?.copilotEnabled, settings?.seo, name, actions, loading, text]);
 
   useEffect(() => {
     if (showRequiredState) {

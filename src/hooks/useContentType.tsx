@@ -44,7 +44,13 @@ export default function useContentType(
 
       setContentType(ct || DEFAULT_CONTENT_TYPE);
     }
-  }, [settings?.contentTypes, metadata?.type]);
+  }, [
+    settings?.contentTypes,
+    settings?.contentFolders,
+    metadata?.[DefaultFields.ContentType],
+    metadata?.[DefaultFields.Type],
+    metadata?.filePath
+  ]);
 
   return contentType;
 }
