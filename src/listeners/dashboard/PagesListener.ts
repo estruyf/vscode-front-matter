@@ -30,6 +30,7 @@ import { unlinkAsync, rmdirAsync } from '../../utils';
 import { LoadingType } from '../../models';
 import { Questions } from '../../helpers/Questions';
 import { Template } from '../../commands/Template';
+import { debounceCallback } from '../../helpers/DebounceCallback';
 
 type WatcherType = 'create' | 'change' | 'delete' | 'save';
 
@@ -39,6 +40,7 @@ export class PagesListener extends BaseListener {
   private static watchersQueued: { [path: string]: WatcherType } = {};
   private static lastPages: Page[] = [];
   private static searchIndex: Fuse.FuseIndex<Page> | undefined;
+  private static searchIndexDebouncer = debounceCallback();
 
   /**
    * Process the messages for the dashboard views
@@ -178,11 +180,10 @@ export class PagesListener extends BaseListener {
     this.lastPages = this.lastPages.filter((p) => p.fmFilePath !== path);
     this.sendPageData(this.lastPages);
 
+    this.updateSearchIndex();
+
     const ext = Extension.getInstance();
-    await Promise.all([
-      ext.setState(ExtensionState.Dashboard.Pages.Cache, this.lastPages, 'workspace'),
-      this.createSearchIndex(this.lastPages)
-    ]);
+    await ext.setState(ExtensionState.Dashboard.Pages.Cache, this.lastPages, 'workspace');
   }
 
   /**
@@ -221,10 +222,8 @@ export class PagesListener extends BaseListener {
         if (Dashboard.isOpen) {
           this.sendPageData(this.lastPages);
         }
-        await Promise.all([
-          ext.setState(ExtensionState.Dashboard.Pages.Cache, this.lastPages, 'workspace'),
-          this.createSearchIndex(this.lastPages)
-        ]);
+        this.updateSearchIndex();
+        await ext.setState(ExtensionState.Dashboard.Pages.Cache, this.lastPages, 'workspace');
       } else {
         this.getPagesData(true);
       }
@@ -310,6 +309,15 @@ export class PagesListener extends BaseListener {
         return rest;
       })
     );
+  }
+
+  /**
+   * Rebuild the search index once the page changes settle. Until then, searches let Fuse index
+   * the current pages, so that they never use an index of outdated pages.
+   */
+  private static updateSearchIndex() {
+    this.searchIndex = undefined;
+    this.searchIndexDebouncer(() => this.createSearchIndex(this.lastPages), 1000);
   }
 
   /**
