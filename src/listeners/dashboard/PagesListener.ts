@@ -1,5 +1,5 @@
 import { PostMessageData } from './../../models/PostMessageData';
-import { basename, join } from 'path';
+import { basename, extname, join } from 'path';
 import { commands, FileSystemWatcher, RelativePattern, TextDocument, Uri, workspace } from 'vscode';
 import { Dashboard } from '../../commands/Dashboard';
 import { Folders } from '../../commands/Folders';
@@ -20,7 +20,8 @@ import {
   parseWinPath,
   Settings,
   ContentType,
-  Notifications
+  Notifications,
+  isValidFile
 } from '../../helpers';
 import { BaseListener } from './BaseListener';
 import { DataListener } from '../panel';
@@ -97,6 +98,16 @@ export class PagesListener extends BaseListener {
   }
 
   /**
+   * Skip files that can never be a page (images, data files, ...). Paths without an extension
+   * are kept, as these can be (page bundle) folders.
+   * @param uri
+   * @returns
+   */
+  private static shouldWatch(uri: Uri) {
+    return !extname(uri.fsPath) || isValidFile(uri.fsPath);
+  }
+
+  /**
    * Start watching the folders in the current workspace for content changes
    */
   public static async startWatchers() {
@@ -123,9 +134,9 @@ export class PagesListener extends BaseListener {
         false,
         false
       );
-      watcher.onDidCreate(async (uri: Uri) => this.watcherExec(uri, 'create'));
-      watcher.onDidChange(async (uri: Uri) => this.watcherExec(uri, 'change'));
-      watcher.onDidDelete(async (uri: Uri) => this.watcherExec(uri, 'delete'));
+      watcher.onDidCreate(async (uri: Uri) => this.shouldWatch(uri) && this.watcherExec(uri, 'create'));
+      watcher.onDidChange(async (uri: Uri) => this.shouldWatch(uri) && this.watcherExec(uri, 'change'));
+      watcher.onDidDelete(async (uri: Uri) => this.shouldWatch(uri) && this.watcherExec(uri, 'delete'));
       this.watchers[folderUri.fsPath] = watcher;
     }
   }

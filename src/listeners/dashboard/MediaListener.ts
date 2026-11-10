@@ -30,7 +30,7 @@ export class MediaListener extends BaseListener {
         this.sendMediaFiles(page, folder, sorting);
         break;
       case DashboardMessage.refreshMedia:
-        MediaHelpers.resetMedia();
+        MediaHelpers.resetMedia(false);
         this.sendMediaFiles(0, msg?.payload?.folder);
         break;
       case DashboardMessage.uploadMedia:
@@ -260,7 +260,7 @@ export class MediaListener extends BaseListener {
       }
 
       this.timers[folderPath] = setTimeout(() => {
-        MediaHelpers.resetMedia();
+        MediaHelpers.resetMedia(false);
         this.sendMediaFiles(0, folder || '');
         delete this.timers[folderPath];
       }, 500);
@@ -312,7 +312,7 @@ export class MediaListener extends BaseListener {
       dimensions = undefined;
     }
 
-    MediaHelpers.resetMedia();
+    MediaHelpers.resetMedia(false);
     this.sendRequest(command as DashboardCommand, requestId, {
       filename: parse(fsPath).base,
       fsPath,

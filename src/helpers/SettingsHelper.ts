@@ -74,6 +74,7 @@ export class Settings {
   private static fileChangeWatcher: FileSystemWatcher | undefined;
   private static fileSaveListener: Disposable;
   private static fileDeleteListener: Disposable;
+  private static configChangeListener: Disposable | undefined;
   private static readConfigPromise: Promise<void> | undefined = undefined;
   private static project: Project | undefined = undefined;
   private static configDebouncer = debounceCallback();
@@ -263,8 +264,19 @@ export class Settings {
     const projectConfig = await Settings.projectConfigPath();
     Logger.info(`Project config path: ${projectConfig}`);
 
-    workspace.onDidChangeConfiguration(() => {
-      Settings.triggerListeners();
+    if (Settings.configChangeListener) {
+      Settings.configChangeListener.dispose();
+    }
+
+    // Only react to the settings the extension depends on (git path, markdown writing settings)
+    Settings.configChangeListener = workspace.onDidChangeConfiguration((e) => {
+      if (
+        e.affectsConfiguration(CONFIG_KEY) ||
+        e.affectsConfiguration('git.path') ||
+        e.affectsConfiguration('editor', { languageId: 'markdown' })
+      ) {
+        Settings.triggerListeners();
+      }
     });
 
     if (projectConfig && !(await existsAsync(projectConfig))) {

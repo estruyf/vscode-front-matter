@@ -4,7 +4,7 @@ import { QuickAction } from '../Menu';
 import { EyeIcon, GlobeEuropeAfricaIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { LocalizationKey } from '../../../localization';
 import { openFile, openOnWebsite } from '../../utils';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { SelectedItemActionAtom } from '../../state';
 import { CustomScript } from '../../../models';
 import { CustomActions } from './CustomActions';
@@ -27,7 +27,7 @@ export const FooterActions: React.FunctionComponent<IFooterActionsProps> = ({
   compact,
   onMenuOpenChange,
 }: React.PropsWithChildren<IFooterActionsProps>) => {
-  const [, setSelectedItemAction] = useRecoilState(SelectedItemActionAtom);
+  const setSelectedItemAction = useSetRecoilState(SelectedItemActionAtom);
 
   const actions = (
     <>

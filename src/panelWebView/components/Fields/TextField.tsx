@@ -1,7 +1,7 @@
 import { PencilIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { BaseFieldProps, CustomScript, PanelSettings } from '../../../models';
 import { RequiredFieldsAtom } from '../../state';
 import { FieldTitle } from './FieldTitle';
@@ -45,7 +45,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   actions,
   required
 }: React.PropsWithChildren<ITextFieldProps>) => {
-  const [, setRequiredFields] = useRecoilState(RequiredFieldsAtom);
+  const setRequiredFields = useSetRecoilState(RequiredFieldsAtom);
   const [text, setText] = React.useState<string | null | undefined>(undefined);
   const [loading, setLoading] = React.useState<string | undefined>(undefined);
   // Timestamp of the last local edit, null when the field is in sync with the front matter
