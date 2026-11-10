@@ -3,7 +3,7 @@ import { DashboardMessage } from '../../dashboardWebView/DashboardMessage';
 import { AstroCollection, AstroField, ContentType, Field, PostMessageData } from '../../models';
 import { BaseListener } from './BaseListener';
 import { exec } from 'child_process';
-import { Extension, Logger, Settings } from '../../helpers';
+import { Extension, Logger, parseWinPath, Settings } from '../../helpers';
 import { Folders } from '../../commands';
 import {
   DEFAULT_CONTENT_TYPE_NAME,
@@ -13,7 +13,7 @@ import {
 import { SettingsListener } from './SettingsListener';
 import { Terminal } from '../../services';
 import { evaluateCommand, existsAsync, getPlatform, readFileAsync } from '../../utils';
-import { join } from 'path';
+import { dirname, join } from 'path';
 
 export class SsgListener extends BaseListener {
   /**
@@ -167,8 +167,12 @@ export class SsgListener extends BaseListener {
           const vitePackage = JSON.parse(await readFileAsync(vitePackageFile.fsPath, 'utf8')) as {
             main: string;
           };
-          const viteFolder = vitePackageFile.fsPath.replace('/package.json', '');
-          const vitePath = join(viteFolder, vitePackage.main).replace(wsFolder.fsPath, '../..');
+          const viteFolder = dirname(vitePackageFile.fsPath);
+          // Use forward slashes, as the path is used as an import in the script
+          const vitePath = parseWinPath(join(viteFolder, vitePackage.main)).replace(
+            parseWinPath(wsFolder.fsPath),
+            '../..'
+          );
 
           // Update the vite reference, as it is not a direct dependency of the project
           let scriptContents = await readFileAsync(scriptPath.fsPath, 'utf8');
