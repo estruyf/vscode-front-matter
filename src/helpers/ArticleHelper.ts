@@ -666,8 +666,6 @@ export class ArticleHelper {
     titleValue: string,
     fileExtension?: string
   ): Promise<string | undefined> {
-    FrontMatterParser.currentContent = null;
-
     const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
 
     let prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
