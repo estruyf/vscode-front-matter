@@ -5,7 +5,15 @@ import { Folders } from '../../commands/Folders';
 import { Command } from '../../panelWebView/Command';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
-import { TextEditor, Uri, authentication, commands, window } from 'vscode';
+import {
+  TextEditor,
+  Uri,
+  WorkspaceEdit,
+  authentication,
+  commands,
+  window,
+  workspace
+} from 'vscode';
 import {
   ArticleHelper,
   Extension,
@@ -735,14 +743,16 @@ export class DataListener extends BaseListener {
     let beforeValue: any;
     const titleField = getTitleField();
 
-    // Read the latest contents, as a previous update could have changed the file
+    // Read the latest contents, as a previous update could have changed the file.
+    // When the file is open without being visible, its document is used to keep unsaved changes.
     const editor = DataListener.getEditorForFile(filePath);
-    const version = editor?.document.version;
+    const document = editor?.document || DataListener.getOpenDocument(filePath);
+    const version = document?.version;
 
     let article;
 
-    if (editor) {
-      article = ArticleHelper.getFrontMatter(editor);
+    if (document) {
+      article = ArticleHelper.getFrontMatterFromDocument(document);
     } else {
       article = await ArticleHelper.getFrontMatterByPath(filePath);
     }
@@ -882,6 +892,13 @@ export class DataListener extends BaseListener {
       if (editor.document.version !== version || !(await ArticleHelper.update(editor, article))) {
         return false;
       }
+    } else if (document) {
+      const update = ArticleHelper.generateUpdate(document, article);
+      const workspaceEdit = new WorkspaceEdit();
+      workspaceEdit.replace(document.uri, update.range, update.newText);
+      if (document.version !== version || !(await workspace.applyEdit(workspaceEdit))) {
+        return false;
+      }
     } else {
       await ArticleHelper.updateByPath(filePath, article);
     }
@@ -945,6 +962,16 @@ export class DataListener extends BaseListener {
     }
 
     return window.visibleTextEditors.find((e) => isFileEditor(e));
+  }
+
+  /**
+   * Retrieve the document of the file when it is open, but not shown in an editor
+   * @param filePath
+   */
+  private static getOpenDocument(filePath: string) {
+    return workspace.textDocuments.find(
+      (doc) => !doc.isClosed && parseWinPath(doc.uri.fsPath) === parseWinPath(filePath)
+    );
   }
 
   /**
