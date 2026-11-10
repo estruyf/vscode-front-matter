@@ -91,7 +91,7 @@ export class Article {
     article = await this.updateDate(article);
 
     try {
-      ArticleHelper.update(editor, article);
+      await ArticleHelper.update(editor, article);
     } catch (e) {
       Notifications.error(
         l10n.t(LocalizationKey.commandsArticleSetDateError, `${CONFIG_KEY}${SETTING_DATE_FORMAT}`)
@@ -123,7 +123,7 @@ export class Article {
       return;
     }
 
-    ArticleHelper.update(editor, updatedArticle as ParsedFrontMatter);
+    await ArticleHelper.update(editor, updatedArticle as ParsedFrontMatter);
   }
 
   public static async setLastModifiedDateOnSave(document: TextDocument): Promise<TextEdit[]> {
@@ -311,7 +311,7 @@ export class Article {
         }
       }
 
-      ArticleHelper.update(editor, article);
+      await ArticleHelper.update(editor, article);
 
       // Check if the file name should be updated by the slug
       // This is required for systems like Jekyll
@@ -422,7 +422,7 @@ export class Article {
 
     const newDraftStatus = !article.data['draft'];
     article.data['draft'] = newDraftStatus;
-    ArticleHelper.update(editor, article);
+    await ArticleHelper.update(editor, article);
   }
 
   /**

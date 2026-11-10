@@ -131,8 +131,9 @@ export class Template {
       return;
     }
 
+    // Keep the template URI on the item, multiple templates can have a similar file name
     const selectedTemplate = await vscode.window.showQuickPick(
-      templates.map((t) => path.basename(t.fsPath)),
+      templates.map((t) => ({ label: path.basename(t.fsPath), template: t })),
       {
         title: l10n.t(LocalizationKey.commandsTemplateCreateSelectTemplateTitle),
         placeHolder: l10n.t(LocalizationKey.commandsTemplateCreateSelectTemplatePlaceholder),
@@ -152,7 +153,7 @@ export class Template {
     }
 
     // Start the template read
-    const template = templates.find((t) => t.fsPath.endsWith(selectedTemplate));
+    const template = selectedTemplate.template;
     if (!template) {
       Notifications.warning(
         l10n.t(LocalizationKey.commandsTemplateCreateSelectTemplateNotFoundWarning)
@@ -215,7 +216,7 @@ export class Template {
       await vscode.commands.executeCommand('vscode.open', vscode.Uri.file(newFilePath));
     }
 
-    const txtDoc = await vscode.workspace.openTextDocument(vscode.Uri.parse(newFilePath));
+    const txtDoc = await vscode.workspace.openTextDocument(vscode.Uri.file(newFilePath));
     if (txtDoc) {
       vscode.window.showTextDocument(txtDoc);
     }
