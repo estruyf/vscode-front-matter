@@ -356,14 +356,18 @@ export class Article {
 
   /**
    * Retrieve the slug from the front matter
+   * @param pathname
+   * @param filePath - Path of the file, when not provided the active editor is used
+   * @param article - Front matter of the file
    */
-  public static getSlug(pathname?: string) {
-    const editor = window.activeTextEditor;
-    if (!editor) {
+  public static getSlug(pathname?: string, filePath?: string, article?: ParsedFrontMatter | null) {
+    const editor = filePath ? undefined : window.activeTextEditor;
+    filePath = filePath || editor?.document.fileName;
+    if (!filePath) {
       return;
     }
 
-    const file = parseWinPath(editor.document.fileName);
+    const file = parseWinPath(filePath);
     if (!isValidFile(file)) {
       return;
     }
@@ -373,13 +377,15 @@ export class Article {
     const titleField = getTitleField();
     const slugTemplate = Settings.get<string>(SETTING_SLUG_TEMPLATE);
     if (slugTemplate) {
+      if (editor) {
+        article = ArticleHelper.getFrontMatter(editor);
+      }
+
       if (slugTemplate === '{{title}}') {
-        const article = ArticleHelper.getFrontMatter(editor);
         if (article?.data && article.data[titleField]) {
           return article.data[titleField].toLowerCase().replace(/\s/g, '-');
         }
       } else {
-        const article = ArticleHelper.getFrontMatter(editor);
         if (article?.data) {
           return SlugHelper.createSlug(article.data[titleField], article.data, file, slugTemplate);
         }
