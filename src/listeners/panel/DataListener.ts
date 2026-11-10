@@ -446,10 +446,7 @@ export class DataListener extends BaseListener {
    */
   public static async pushMetadata(metadata: any) {
     const wsFolder = Folders.getWorkspaceFolder();
-    const filePath =
-      window.activeTextEditor?.document.uri.fsPath ||
-      Preview.filePath ||
-      ArticleHelper.getActiveFile();
+    const filePath = DataListener.getCurrentFilePath();
     const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
     const contentTypes = Settings.get<string>(SETTING_TAXONOMY_CONTENT_TYPES);
 
@@ -458,6 +455,11 @@ export class DataListener extends BaseListener {
     try {
       if (filePath && !filePath.startsWith('extension-output-eliostruyf')) {
         articleDetails = await ArticleHelper.getDetails(filePath);
+
+        // Another file became active in the meantime, its own update will refresh the panel
+        if (!DataListener.isCurrentFile(filePath)) {
+          return;
+        }
 
         if (!articleDetails || articleDetails === 'nodata') {
           try {
@@ -543,6 +545,10 @@ export class DataListener extends BaseListener {
           updatedMetadata[DefaultFields.Slug] = slug;
         }
       }
+    }
+
+    if (filePath && !DataListener.isCurrentFile(filePath)) {
+      return;
     }
 
     if (filePath && updatedMetadata[DefaultFields.Slug]) {
@@ -645,7 +651,13 @@ export class DataListener extends BaseListener {
 
       const minReadability = Settings.get<number>(SETTING_CONTENT_HEALTH_MIN_READABILITY) ?? 0;
 
+      // Skip the results when the panel shows another file by now
+      if (!DataListener.isCurrentFile(filePath)) {
+        return;
+      }
+
       DataListener.sendMsg(Command.contentHealth, {
+        filePath,
         internalLinks,
         brokenExternalLinks,
         readability,

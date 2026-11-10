@@ -65,6 +65,7 @@ export class PanelProvider implements WebviewViewProvider, Disposable {
   public dispose() {
     if (this.disposable) {
       this.disposable.dispose();
+      this.disposable = null;
     }
   }
 
@@ -85,6 +86,9 @@ export class PanelProvider implements WebviewViewProvider, Disposable {
   ): Promise<void> {
     this.panel = webviewView;
 
+    // Remove the listeners of a previously resolved view
+    this.dispose();
+
     webviewView.webview.options = {
       enableScripts: true,
       enableCommandUris: true
@@ -92,15 +96,17 @@ export class PanelProvider implements WebviewViewProvider, Disposable {
 
     webviewView.webview.html = await this.getWebviewContent(webviewView.webview);
 
-    this.disposable = Disposable.from(
-      webviewView.onDidDispose(() => {
-        webviewView.webview.html = '';
-      }, this)
-    );
+    const disposeListener = webviewView.onDidDispose(() => {
+      webviewView.webview.html = '';
+
+      if (this.panel === webviewView) {
+        this.dispose();
+      }
+    }, this);
 
     this.updateCurrentFile();
 
-    webviewView.webview.onDidReceiveMessage(async (msg) => {
+    const msgListener = webviewView.webview.onDidReceiveMessage(async (msg) => {
       if (!ignoreMsgCommand(msg.command)) {
         Logger.info(`Receiving message from panel: ${msg.command}`);
       }
@@ -118,19 +124,23 @@ export class PanelProvider implements WebviewViewProvider, Disposable {
       GitListener.process(msg);
     });
 
-    webviewView.onDidChangeVisibility(() => {
+    const visibilityListener = webviewView.onDidChangeVisibility(() => {
       if (this.visible) {
         DataListener.getFileData();
       }
     });
 
-    window.onDidChangeActiveTextEditor(() => {
+    // The metadata of the new file gets pushed by the `updateCurrentFile` call from the extension
+    const editorListener = window.onDidChangeActiveTextEditor(() => {
       this.sendMessage({ command: Command.loading, payload: true });
-
-      if (this.visible) {
-        DataListener.getFileData();
-      }
     }, this);
+
+    this.disposable = Disposable.from(
+      disposeListener,
+      msgListener,
+      visibilityListener,
+      editorListener
+    );
 
     Settings.attachListener('panel-listener', () => {
       SettingsListener.getSettings();
