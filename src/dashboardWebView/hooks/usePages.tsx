@@ -39,7 +39,6 @@ export default function usePages(pages: Page[]) {
   const [tabInfo, setTabInfo] = useRecoilState(TabInfoAtom);
   const [locales, setLocales] = useRecoilState(LocalesAtom);
   const [, setFilterValues] = useRecoilState(FilterValuesAtom);
-  const [, setPage] = useRecoilState(PageAtom);
   const settings = useRecoilValue(SettingsSelector);
   const tab = useRecoilValue(TabSelector);
   const folder = useRecoilValue(FolderSelector);
@@ -48,6 +47,7 @@ export default function usePages(pages: Page[]) {
   const locale = useRecoilValue(LocaleAtom);
   const category = useRecoilValue(CategorySelector);
   const filters = useRecoilValue(FiltersAtom);
+  const [, setPage] = useRecoilState(PageAtom);
   const tabPrevious = usePrevious(tab);
 
   /**
