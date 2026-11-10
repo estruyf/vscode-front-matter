@@ -41,6 +41,7 @@
 - [#1074](https://github.com/estruyf/vscode-front-matter/pull/1074): Opening a file with a markdown `wysiwyg` field no longer rewrites its front matter
 - [#1074](https://github.com/estruyf/vscode-front-matter/pull/1074): Fix block fields losing changes or writing into the wrong record, and hidden fields with a default overwriting the stored value
 - [#1074](https://github.com/estruyf/vscode-front-matter/pull/1074): Clearing a nested field no longer removes its sibling fields, and Copilot tag suggestions no longer replace your existing tags
+- [#1074](https://github.com/estruyf/vscode-front-matter/pull/1074): Fix nested fields named `title` (ex. `seo.meta.title`) not being removed when cleared with `clearEmpty`
 
 ## [10.13.0] - 2026-10-12 - [Release notes](https://beta.frontmatter.codes/updates/v10.13.0)
 
