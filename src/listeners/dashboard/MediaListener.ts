@@ -168,7 +168,7 @@ export class MediaListener extends BaseListener {
    * @param sorting
    */
   public static async sendMediaFiles(page = 0, folder = '', sorting: SortingOption | null = null) {
-    MediaLibrary.reset();
+    await MediaLibrary.reset();
     const files = await MediaHelpers.getMedia(page, folder, sorting);
     this.sendMsg(DashboardCommand.media, files);
   }
