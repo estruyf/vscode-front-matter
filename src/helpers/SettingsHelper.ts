@@ -422,12 +422,7 @@ ${JSON.stringify(value, null, 2)}`,
 
     if (updateGlobal) {
       if (fmConfig && (await existsAsync(fmConfig))) {
-        const localConfig = await readFileAsync(fmConfig, 'utf8');
-        Settings.globalConfig = jsoncParser.parse(localConfig);
-        Settings.globalConfig[`${CONFIG_KEY}.${name}`] = value;
-
-        const content = JSON.stringify(Settings.globalConfig, null, 2);
-        await writeFileAsync(fmConfig, content, 'utf8');
+        await Settings.writeProjectSetting(fmConfig, name, value);
 
         const workspaceSettingValue = Settings.hasWorkspaceSettings<ContentType[]>(name);
         if (workspaceSettingValue) {
@@ -452,12 +447,7 @@ ${JSON.stringify(value, null, 2)}`,
     const fmConfig = await Settings.projectConfigPath();
 
     if (fmConfig && (await existsAsync(fmConfig))) {
-      const localConfig = await readFileAsync(fmConfig, 'utf8');
-      Settings.globalConfig = jsoncParser.parse(localConfig);
-      delete Settings.globalConfig[`${CONFIG_KEY}.${name}`];
-
-      const content = JSON.stringify(Settings.globalConfig, null, 2);
-      await writeFileAsync(fmConfig, content, 'utf8');
+      await Settings.writeProjectSetting(fmConfig, name, undefined);
 
       const workspaceSettingValue = Settings.hasWorkspaceSettings<ContentType[]>(name);
       if (workspaceSettingValue) {
@@ -471,6 +461,29 @@ ${JSON.stringify(value, null, 2)}`,
     }
 
     await Settings.config.update(name, undefined);
+  }
+
+  /**
+   * Update a single setting in the frontmatter.json file. Only the setting itself gets rewritten,
+   * so the comments and formatting of the rest of the file are preserved.
+   * @param fmConfig - Path to the frontmatter.json file
+   * @param name - Name of the setting without the `frontMatter.` prefix
+   * @param value - New value, `undefined` removes the setting
+   */
+  private static async writeProjectSetting(fmConfig: string, name: string, value: unknown) {
+    const localConfig = await readFileAsync(fmConfig, 'utf8');
+
+    const edits = jsoncParser.modify(localConfig, [`${CONFIG_KEY}.${name}`], value, {
+      formattingOptions: {
+        tabSize: 2,
+        insertSpaces: true,
+        eol: localConfig.includes('\r\n') ? '\r\n' : '\n'
+      }
+    });
+    const content = jsoncParser.applyEdits(localConfig, edits);
+
+    Settings.globalConfig = jsoncParser.parse(content);
+    await writeFileAsync(fmConfig, content, 'utf8');
   }
 
   /**

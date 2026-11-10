@@ -79,7 +79,10 @@ export class Template {
         return;
       }
 
-      await Project.init(false);
+      // Only make sure the config file and templates folder exist, a full project initialization
+      // would overwrite the content types, framework, and static folder settings
+      await Settings.createTeamSettings();
+      await Project.createSampleTemplate();
       const templatePath = Project.templatePath();
       if (templatePath) {
         const fileContents = ArticleHelper.stringifyFrontMatter(
