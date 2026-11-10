@@ -277,11 +277,21 @@ export class DataListener extends BaseListener {
 
     const article = ArticleHelper.getActiveFile();
     if (!article) {
+      this.sendRequestError(
+        command,
+        requestId,
+        l10n.t(LocalizationKey.listenersPanelDataListenerAiSuggestTaxonomyNoEditorError)
+      );
       return;
     }
 
     const articleDetails = await ArticleHelper.getFrontMatterByPath(article);
     if (!articleDetails) {
+      this.sendRequestError(
+        command,
+        requestId,
+        l10n.t(LocalizationKey.listenersPanelDataListenerAiSuggestTaxonomyNoDataError)
+      );
       return;
     }
 
@@ -344,6 +354,7 @@ export class DataListener extends BaseListener {
 
     const githubAuth = await authentication.getSession('github', ['read:user'], { silent: true });
     if (!githubAuth || !githubAuth.accessToken) {
+      this.sendRequestError(command, requestId, 'No GitHub session found');
       return;
     }
 
@@ -1078,7 +1089,16 @@ export class DataListener extends BaseListener {
    * @param data
    */
   private static async getDataFileEntries(command: string, requestId: string, data: any) {
-    if (!command || !requestId || !data) {
+    if (!command || !requestId) {
+      return;
+    }
+
+    if (!data) {
+      this.sendRequestError(
+        command,
+        requestId,
+        l10n.t(LocalizationKey.listenersPanelDataListenerGetDataFileEntriesNoDataFilesError)
+      );
       return;
     }
 
@@ -1142,7 +1162,12 @@ export class DataListener extends BaseListener {
     },
     requestId?: string
   ) {
-    if (!command || !requestId || !articleData) {
+    if (!command || !requestId) {
+      return;
+    }
+
+    if (!articleData) {
+      this.sendRequestError(command, requestId, 'No article data provided');
       return;
     }
 
@@ -1152,21 +1177,27 @@ export class DataListener extends BaseListener {
     value = value || '';
     const valueBefore = value;
     if (field) {
-      const crntFile = window.activeTextEditor?.document;
-      const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
-      value =
-        data && contentType
-          ? processArticlePlaceholdersFromData(value, data, contentType, crntFile?.uri.fsPath)
-          : value;
-      value = processTimePlaceholders(value, dateFormat);
-      value = processFmPlaceholders(value, data);
+      try {
+        const crntFile = window.activeTextEditor?.document;
+        const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
+        value =
+          data && contentType
+            ? processArticlePlaceholdersFromData(value, data, contentType, crntFile?.uri.fsPath)
+            : value;
+        value = processTimePlaceholders(value, dateFormat);
+        value = processFmPlaceholders(value, data);
 
-      const titleField = getTitleField();
-      value = await ArticleHelper.processCustomPlaceholders(
-        value,
-        data[titleField] || '',
-        crntFile?.uri.fsPath || ''
-      );
+        const titleField = getTitleField();
+        value = await ArticleHelper.processCustomPlaceholders(
+          value,
+          data[titleField] || '',
+          crntFile?.uri.fsPath || ''
+        );
+      } catch (e) {
+        Logger.error(`DataListener::updatePlaceholder: ${(e as Error).message}`);
+        this.sendRequestError(command, requestId, (e as Error).message);
+        return;
+      }
     }
 
     Logger.verbose(

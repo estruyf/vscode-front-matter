@@ -103,11 +103,21 @@ export class TaxonomyListener extends BaseListener {
 
     const article = ArticleHelper.getActiveFile();
     if (!article) {
+      this.sendRequestError(
+        command,
+        requestId,
+        l10n.t(LocalizationKey.listenersPanelTaxonomyListenerAiSuggestTaxonomyNoEditorError)
+      );
       return;
     }
 
     const articleDetails = await ArticleHelper.getFrontMatterByPath(article);
     if (!articleDetails) {
+      this.sendRequestError(
+        command,
+        requestId,
+        l10n.t(LocalizationKey.listenersPanelTaxonomyListenerAiSuggestTaxonomyNoDataError)
+      );
       return;
     }
 
@@ -160,7 +170,7 @@ export class TaxonomyListener extends BaseListener {
       panel.getWebview()?.postMessage({
         command,
         requestId,
-        error: l10n.t(LocalizationKey.listenersPanelTaxonomyListenerAiSuggestTaxonomyNoDataError)
+        error: l10n.t(LocalizationKey.listenersPanelTaxonomyListenerAiSuggestTaxonomyNoEditorError)
       } as MessageHandlerData<string>);
       return;
     }
@@ -170,13 +180,14 @@ export class TaxonomyListener extends BaseListener {
       panel.getWebview()?.postMessage({
         command,
         requestId,
-        error: l10n.t(LocalizationKey.listenersPanelTaxonomyListenerAiSuggestTaxonomyNoEditorError)
+        error: l10n.t(LocalizationKey.listenersPanelTaxonomyListenerAiSuggestTaxonomyNoDataError)
       } as MessageHandlerData<string>);
       return;
     }
 
     const githubAuth = await authentication.getSession('github', ['read:user'], { silent: true });
     if (!githubAuth || !githubAuth.accessToken) {
+      this.sendRequestError(command, requestId, 'No GitHub session found');
       return;
     }
 

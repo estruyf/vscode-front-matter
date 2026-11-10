@@ -48,6 +48,8 @@ export class ArticleListener extends BaseListener {
     const slug = Article.generateSlug(title, article, article?.path, slugTemplate);
     if (slug) {
       this.sendRequest(command, requestId, slug);
+    } else {
+      this.sendRequestError(command, requestId, 'Failed to generate the slug');
     }
   }
 }
