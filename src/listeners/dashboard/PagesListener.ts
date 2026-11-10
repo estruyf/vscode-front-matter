@@ -31,10 +31,14 @@ import { LoadingType } from '../../models';
 import { Questions } from '../../helpers/Questions';
 import { Template } from '../../commands/Template';
 
+type WatcherType = 'create' | 'change' | 'delete' | 'save';
+
 export class PagesListener extends BaseListener {
   private static watchers: { [path: string]: FileSystemWatcher } = {};
-  private static watchersPromises: { [path: string]: Promise<void> } = {};
+  private static watchersPromises: { [path: string]: Promise<void> | undefined } = {};
+  private static watchersQueued: { [path: string]: WatcherType } = {};
   private static lastPages: Page[] = [];
+  private static searchIndex: Fuse.FuseIndex<Page> | undefined;
 
   /**
    * Process the messages for the dashboard views
@@ -116,7 +120,7 @@ export class PagesListener extends BaseListener {
 
     // Recreate all the watchers
     for (const folder of folders) {
-      const folderUri = Uri.parse(folder.path);
+      const folderUri = Uri.file(folder.path);
       const watcher = workspace.createFileSystemWatcher(
         new RelativePattern(folderUri, '**/*'),
         false,
@@ -175,46 +179,84 @@ export class PagesListener extends BaseListener {
     this.sendPageData(this.lastPages);
 
     const ext = Extension.getInstance();
-    await ext.setState(ExtensionState.Dashboard.Pages.Cache, this.lastPages, 'workspace');
+    await Promise.all([
+      ext.setState(ExtensionState.Dashboard.Pages.Cache, this.lastPages, 'workspace'),
+      this.createSearchIndex(this.lastPages)
+    ]);
   }
 
   /**
    * Watcher for processing page updates
    * @param file
    */
-  private static async watcherExec(file: Uri, type?: 'create' | 'change' | 'delete' | 'save') {
-    const progressFile = async (file: Uri) => {
+  private static async watcherExec(file: Uri, type: WatcherType) {
+    const progressFile = async (file: Uri, type: WatcherType) => {
       const ext = Extension.getInstance();
       Logger.info(`File watcher execution for (${type}): ${file.fsPath}`);
 
       const pageIdx = this.lastPages.findIndex((p) => p.fmFilePath === file.fsPath);
       if (pageIdx !== -1) {
-        const stats = await workspace.fs.stat(file);
-        const crntPage = this.lastPages[pageIdx];
-        const updatedPage = await PagesParser.processPageContent(
-          file.fsPath,
-          stats.mtime,
-          basename(file.fsPath),
-          crntPage.fmFolder
-        );
-        if (updatedPage) {
-          this.lastPages[pageIdx] = updatedPage;
-          if (Dashboard.isOpen) {
-            this.sendPageData(this.lastPages);
+        if (type === 'delete') {
+          // The file no longer exists, so it can only be removed from the pages
+          this.lastPages.splice(pageIdx, 1);
+        } else {
+          const stats = await workspace.fs.stat(file);
+          const crntPage = this.lastPages[pageIdx];
+          const updatedPage = await PagesParser.processPageContent(
+            file.fsPath,
+            stats.mtime,
+            basename(file.fsPath),
+            crntPage.fmFolder
+          );
+
+          // The pages could have been refreshed in the meantime
+          const updatedIdx = this.lastPages.findIndex((p) => p.fmFilePath === file.fsPath);
+          if (!updatedPage || updatedIdx === -1) {
+            return;
           }
-          await ext.setState(ExtensionState.Dashboard.Pages.Cache, this.lastPages, 'workspace');
+
+          this.lastPages[updatedIdx] = updatedPage;
         }
+
+        if (Dashboard.isOpen) {
+          this.sendPageData(this.lastPages);
+        }
+        await Promise.all([
+          ext.setState(ExtensionState.Dashboard.Pages.Cache, this.lastPages, 'workspace'),
+          this.createSearchIndex(this.lastPages)
+        ]);
       } else {
         this.getPagesData(true);
       }
     };
 
-    const watcherPromise = this.watchersPromises[file.fsPath];
-    if (!watcherPromise) {
-      this.watchersPromises[file.fsPath] = progressFile(file);
+    const filePath = file.fsPath;
+    if (this.watchersPromises[filePath]) {
+      // The file is still being processed, process it once more afterwards with the latest change
+      this.watchersQueued[filePath] = type;
+      return this.watchersPromises[filePath];
     }
-    await this.watchersPromises[file.fsPath];
-    delete this.watchersPromises[file.fsPath];
+
+    const processFile = async () => {
+      let crntType: WatcherType | undefined = type;
+      try {
+        while (crntType) {
+          delete this.watchersQueued[filePath];
+          try {
+            await progressFile(file, crntType);
+          } catch (e) {
+            Logger.error(`PagesListener:watcherExec: ${filePath} - ${(e as Error)?.message || e}`);
+          }
+          crntType = this.watchersQueued[filePath];
+        }
+      } finally {
+        delete this.watchersPromises[filePath];
+        delete this.watchersQueued[filePath];
+      }
+    };
+
+    this.watchersPromises[filePath] = processFile();
+    return this.watchersPromises[filePath];
   }
 
   /**
@@ -246,9 +288,8 @@ export class PagesListener extends BaseListener {
       this.lastPages = pages;
       this.sendPageData(pages);
 
-      this.sendMsg(DashboardCommand.searchReady, true);
-
       await this.createSearchIndex(pages);
+      this.sendMsg(DashboardCommand.searchReady, true);
       this.sendMsg(DashboardCommand.loading, undefined as LoadingType);
 
       if (cb) {
@@ -280,6 +321,8 @@ export class PagesListener extends BaseListener {
       ['title', 'slug', 'description', 'fmBody', 'type', 'fmContentType', 'fmLocale.locale'],
       pages
     );
+    // Keep the index in memory, so that it always matches the last pages
+    this.searchIndex = pagesIndex;
     await Extension.getInstance().setState(
       ExtensionState.Dashboard.Pages.Index,
       pagesIndex.toJSON(),
@@ -303,7 +346,7 @@ export class PagesListener extends BaseListener {
       fieldKeys.push({ name: cardTitle as string, weight: 1 });
     }
     const cardDescription = Settings.get(SETTING_DASHBOARD_CONTENT_CARD_DESCRIPTION);
-    if (cardTitle) {
+    if (cardDescription) {
       fieldKeys.push({ name: cardDescription as string, weight: 0.5 });
     }
 
@@ -314,16 +357,17 @@ export class PagesListener extends BaseListener {
       threshold: 0.1
     };
 
-    const pagesIndex = await Extension.getInstance().getState<Fuse.FuseIndex<Page>>(
-      ExtensionState.Dashboard.Pages.Index,
-      'workspace'
-    );
-    const fuseIndex = Fuse.parseIndex(pagesIndex);
-    const fuse = new Fuse(this.lastPages, fuseOptions, fuseIndex);
-    const results = fuse.search(data.query || '');
-    const pageResults = results.map((page) => page.item);
+    try {
+      // Without an index (pages not loaded yet), Fuse creates one for the current pages
+      const fuse = new Fuse(this.lastPages, fuseOptions, this.searchIndex);
+      const results = fuse.search(data?.query || '');
+      const pageResults = results.map((page) => page.item);
 
-    this.sendMsg(DashboardCommand.searchPages, pageResults);
+      this.sendMsg(DashboardCommand.searchPages, pageResults);
+    } catch (e) {
+      Logger.error(`PagesListener:searchPages: ${(e as Error)?.message || e}`);
+      this.sendMsg(DashboardCommand.searchPages, []);
+    }
   }
 
   /**
