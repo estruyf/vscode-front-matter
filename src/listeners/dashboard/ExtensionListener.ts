@@ -16,7 +16,7 @@ export class ExtensionListener extends BaseListener {
         openFileInEditor(msg.payload);
         break;
       case DashboardMessage.initializeProject:
-        commands.executeCommand(COMMAND_NAME.init, SettingsListener.getSettings);
+        commands.executeCommand(COMMAND_NAME.init, () => SettingsListener.getSettings(true));
         break;
       case DashboardMessage.copyToClipboard:
         env.clipboard.writeText(msg.payload);

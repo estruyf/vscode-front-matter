@@ -112,8 +112,6 @@ export class Settings {
       }
     }
 
-    Settings.listeners = [];
-
     if (!Settings.isInitialized) {
       Settings.isInitialized = true;
 
@@ -309,7 +307,14 @@ export class Settings {
     }
 
     Settings.fileDeleteListener = workspace.onDidDeleteFiles(async (e) => {
-      const needCallback = e?.files.find(async (f) => await Settings.checkProjectConfig(f.fsPath));
+      let needCallback = false;
+      for (const file of e?.files || []) {
+        if (await Settings.checkProjectConfig(file.fsPath)) {
+          needCallback = true;
+          break;
+        }
+      }
+
       if (needCallback) {
         await Settings.reloadConfig(false);
       }
@@ -392,7 +397,10 @@ export class Settings {
 
       if (
         Settings.extendedConfig.extended.includes(configKey) ||
-        Settings.extendedConfig.splitted.includes(configKey) ||
+        // Split config keys are stored in lowercase, and can be a sub-folder of the setting
+        Settings.extendedConfig.splitted.some((key) =>
+          Settings.isEqualOrStartsWith(key, configKey)
+        ) ||
         Settings.extendedConfig.dynamic
       ) {
         Notifications.warningWithOutput(
