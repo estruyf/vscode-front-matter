@@ -10,6 +10,7 @@ import {
   FolderSelector,
   LocaleAtom,
   LocalesAtom,
+  PageAtom,
   SearchSelector,
   SettingsSelector,
   SortingAtom,
@@ -38,6 +39,7 @@ export default function usePages(pages: Page[]) {
   const [tabInfo, setTabInfo] = useRecoilState(TabInfoAtom);
   const [locales, setLocales] = useRecoilState(LocalesAtom);
   const [, setFilterValues] = useRecoilState(FilterValuesAtom);
+  const [, setPage] = useRecoilState(PageAtom);
   const settings = useRecoilValue(SettingsSelector);
   const tab = useRecoilValue(TabSelector);
   const folder = useRecoilValue(FolderSelector);
@@ -210,7 +212,7 @@ export default function usePages(pages: Page[]) {
       // Set the tab information
       setTabInfo(draftTypes);
 
-      if (Object.keys(filters).length === 0) {
+      if (!Object.keys(filters).some((name) => filters[name])) {
         const availableFilters = (settings?.filters || []).filter((f) => f !== 'contentFolders' && f !== 'tags' && f !== 'categories');
         if (availableFilters.length > 0) {
           const allFilters: { [filter: string]: string[]; } = {};
@@ -299,13 +301,18 @@ export default function usePages(pages: Page[]) {
     processByTab(sortedPages);
   }, [sortedPages, tab]);
 
+  // Start from the first page when the shown pages change
+  useEffect(() => {
+    setPage(0);
+  }, [tab, search, folder, tag, category, locale, filters, sorting]);
+
   useEffect(() => {
     Messenger.listen(searchListener);
 
     return () => {
       Messenger.unlisten(searchListener);
     };
-  }, []);
+  }, [processPages]);
 
   return {
     pageItems
