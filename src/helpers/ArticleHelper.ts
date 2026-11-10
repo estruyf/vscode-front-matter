@@ -1070,6 +1070,14 @@ export class ArticleHelper {
    * @returns
    */
   private static parseFile(fileContents: string, fileName: string): ParsedFrontMatter | null {
+    // The diagnostics belong to the parsed file, which is not always the active one
+    const editor = window.activeTextEditor;
+    const document =
+      editor && parseWinPath(editor.document.fileName) === parseWinPath(fileName)
+        ? editor.document
+        : undefined;
+    const fileUri = document?.uri || Uri.file(fileName);
+
     try {
       const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
 
@@ -1087,11 +1095,7 @@ export class ArticleHelper {
 
           this.notifiedFiles = this.notifiedFiles.filter((n) => n !== fileName);
 
-          if (window.activeTextEditor?.document.uri) {
-            Extension.getInstance().diagnosticCollection.delete(
-              window.activeTextEditor.document.uri
-            );
-          }
+          Extension.getInstance().diagnosticCollection.delete(fileUri);
 
           return article;
         }
@@ -1108,33 +1112,31 @@ export class ArticleHelper {
 
       Logger.error(`ArticleHelper::parseFile: ${fileName} - ${error.message}`);
 
-      const editor = window.activeTextEditor;
-      if (editor?.document.uri) {
-        let fmRange = null;
+      const lines = fileContents.split('\n');
+      let fmRange = null;
 
-        if (error?.mark && typeof error.mark.line !== 'undefined') {
-          const curLineText = editor.document.lineAt(error.mark.line - 1);
-          const lastCharPos = new Position(
-            error.mark.line - 1,
-            Math.max(curLineText.text.length, 0)
-          );
-          fmRange = new Range(new Position(error.mark.line - 1, 0), lastCharPos);
-        } else {
-          fmRange = MarkdownFoldingProvider.getFrontMatterRange(editor.document);
-        }
+      if (error?.mark && typeof error.mark.line !== 'undefined') {
+        const curLineText = lines[error.mark.line - 1] || '';
+        const lastCharPos = new Position(error.mark.line - 1, Math.max(curLineText.length, 0));
+        fmRange = new Range(new Position(error.mark.line - 1, 0), lastCharPos);
+      } else if (document) {
+        fmRange = MarkdownFoldingProvider.getFrontMatterRange(document);
+      } else {
+        // The file is not shown in the editor, mark the start of the front matter
+        fmRange = new Range(new Position(0, 0), new Position(0, lines[0].length));
+      }
 
-        if (fmRange) {
-          Extension.getInstance().diagnosticCollection.set(editor.document.uri, [
-            {
-              severity: DiagnosticSeverity.Error,
-              message: `${error.name ? `${error.name}: ` : ''}${l10n.t(
-                LocalizationKey.helpersArticleHelperParseFileDiagnosticError,
-                fileName
-              )}`,
-              range: fmRange
-            }
-          ]);
-        }
+      if (fmRange) {
+        Extension.getInstance().diagnosticCollection.set(fileUri, [
+          {
+            severity: DiagnosticSeverity.Error,
+            message: `${error.name ? `${error.name}: ` : ''}${l10n.t(
+              LocalizationKey.helpersArticleHelperParseFileDiagnosticError,
+              fileName
+            )}`,
+            range: fmRange
+          }
+        ]);
       }
     }
     return null;
