@@ -716,12 +716,17 @@ export class ArticleHelper {
       let newFileName = `${sanitizedName}.${fileExtension || contentType?.fileType || fileType}`;
 
       if (prefix && typeof prefix === 'string') {
-        newFileName = `${prefix}-${newFileName}`;
+        if (prefix.endsWith('/')) {
+          newFileName = `${prefix}${newFileName}`;
+        } else {
+          newFileName = `${prefix}-${newFileName}`;
+        }
       }
 
       newFilePath = join(folderPath, newFileName);
 
-      await mkdirAsync(folderPath, { recursive: true });
+      // The prefix can contain folders
+      await mkdirAsync(dirname(newFilePath), { recursive: true });
 
       if (await existsAsync(newFilePath)) {
         Notifications.warning(

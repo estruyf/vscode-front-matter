@@ -28,20 +28,29 @@ export class SlugHelper {
         const regex = new RegExp('{{title}}', 'g');
         const separator = (Settings.get(SETTING_FILE_SLUG_SEPARATOR) as string) || '-';
         slugTemplate = slugTemplate.replace(regex, articleTitle.toLowerCase().replace(/\s/g, separator));
-      } else if (slugTemplate.includes('{{seoTitle}}')) {
+      }
+
+      // The template can contain multiple placeholders
+      if (slugTemplate.includes('{{seoTitle}}')) {
         const regex = new RegExp('{{seoTitle}}', 'g');
         slugTemplate = slugTemplate.replace(regex, SlugHelper.slugify(articleTitle));
-      } else if (slugTemplate.includes(`{{fileName}}`)) {
+      }
+
+      if (slugTemplate.includes(`{{fileName}}`)) {
         const file = parse(filePath || '');
         const fileName = file.name;
         const regex = new RegExp('{{fileName}}', 'g');
         slugTemplate = slugTemplate.replace(regex, fileName);
-      } else if (slugTemplate.includes(`{{sluggedFileName}}`)) {
+      }
+
+      if (slugTemplate.includes(`{{sluggedFileName}}`)) {
         const file = parse(filePath || '');
         const fileName = SlugHelper.slugify(file.name);
         const regex = new RegExp('{{sluggedFileName}}', 'g');
         slugTemplate = slugTemplate.replace(regex, fileName);
-      } else if (slugTemplate.includes(`{{slugifiedFileName}}`)) {
+      }
+
+      if (slugTemplate.includes(`{{slugifiedFileName}}`)) {
         const file = parse(filePath || '');
         const fileName = SlugHelper.slugify(file.name);
         const regex = new RegExp('{{slugifiedFileName}}', 'g');
