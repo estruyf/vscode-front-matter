@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { BlockFieldData, Field, FieldGroup, PanelSettings } from '../../../models';
 import { PencilIcon } from '@heroicons/react/24/outline';
 import { DataBlockRecords, DataBlockSelector } from '.';
@@ -9,6 +9,9 @@ import { IMetadata } from '../Metadata';
 import { FieldTitle } from '../Fields/FieldTitle';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+
+// How long a local update keeps precedence over incoming values that are not the echo of our own update
+const EXTERNAL_UPDATE_GRACE = 1500;
 
 export interface IDataBlockFieldProps {
   label: string;
@@ -50,6 +53,15 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
   const [selectedGroup, setSelectedGroup] = useState<FieldGroup | undefined | null>(null);
   const [selectedBlockData, setSelectedBlockData] = useState<unknown | null>(null);
   const [hideSubBlock, setHideSubBlock] = useState<boolean>(true);
+  // Changes when another record gets edited, so that the record fields do not keep the state of the previous record
+  const [recordKey, setRecordKey] = useState<number>(0);
+  const recordKeyRef = useRef<number>(recordKey);
+  recordKeyRef.current = recordKey;
+  // Record of which the changes were cancelled, pending updates of its fields are ignored
+  const cancelledRecordRef = useRef<number | null>(null);
+  // Last data we submitted. Updates build on it until the extension host sends it back, otherwise
+  // a second update before the echo of the first one would drop the first one.
+  const localValueRef = useRef<{ data: unknown[]; time: number } | null>(null);
 
   const SELECTION_STATE_KEY = useMemo(
     () => `${filePath}-data-selection-${field.name}`,
@@ -60,11 +72,31 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
     [filePath, field.name]
   );
 
+  /**
+   * Retrieve the most recent data, which is the local data when the echo of our update did not come back yet
+   */
+  const getCurrentValue = useCallback((): unknown[] => {
+    const localValue = localValueRef.current;
+    if (localValue && Date.now() - localValue.time < EXTERNAL_UPDATE_GRACE) {
+      return localValue.data;
+    }
+
+    return value;
+  }, [value]);
+
+  const submitValue = useCallback(
+    (data: unknown[]) => {
+      localValueRef.current = { data, time: Date.now() };
+      onSubmit(data);
+    },
+    [onSubmit]
+  );
+
   const onFieldUpdate = useCallback(
     (crntField: string | undefined, crntValue: unknown, parents: string[]) => {
-      const dataClone: unknown[] = Object.assign([], value);
+      const dataClone: unknown[] = Object.assign([], getCurrentValue());
 
-      if (!crntField) {
+      if (!crntField || cancelledRecordRef.current === recordKey) {
         return;
       }
 
@@ -121,29 +153,34 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
           fieldGroup: selectedGroup?.id
         });
 
-        const newIndex = dataClone.length - 1;
-        setSelectedIndex(newIndex);
-        updateSelectionState(newIndex);
+        // Only select the new record when it is still being edited (the update can be sent
+        // by its fields when they unmount, after another record got selected)
+        if (recordKey === recordKeyRef.current) {
+          const newIndex = dataClone.length - 1;
+          setSelectedIndex(newIndex);
+          updateSelectionState(newIndex);
+        }
       }
 
-      onSubmit(dataClone);
+      submitValue(dataClone);
     },
-    [selectedGroup?.id, selectedIndex, value, onSubmit]
+    [selectedGroup?.id, selectedIndex, recordKey, getCurrentValue, submitValue]
   );
 
   const deleteItem = useCallback(
     (index: number) => {
-      const dataClone: unknown[] = Object.assign([], value);
+      const crntValue = getCurrentValue();
+      const dataClone: unknown[] = Object.assign([], crntValue);
 
-      if (!value) {
+      if (!crntValue) {
         return;
       }
 
       dataClone.splice(index, 1);
-      onSubmit(dataClone);
+      submitValue(dataClone);
       onAdd();
     },
-    [value, selectedIndex, onSubmit]
+    [getCurrentValue, selectedIndex, submitValue]
   );
 
   /**
@@ -163,7 +200,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
    * Store the current state + show the form
    */
   const onShowForm = () => {
-    const dataClone = Object.assign([], value);
+    const dataClone = Object.assign([], getCurrentValue());
     localStorage.setItem(DATA_STATE_KEY, JSON.stringify(dataClone));
     setHideSubBlock(false);
   };
@@ -175,7 +212,8 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
     const prevState = localStorage.getItem(DATA_STATE_KEY);
     if (prevState) {
       const dataClone = JSON.parse(prevState);
-      onSubmit(dataClone);
+      cancelledRecordRef.current = recordKey;
+      submitValue(dataClone);
     }
     setHideSubBlock(true);
     onAdd();
@@ -197,6 +235,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
     setSelectedIndex(null);
     setSelectedGroup(null);
     setSelectedBlockData({});
+    setRecordKey((prevKey) => prevKey + 1);
 
     updateSelectionState(undefined);
   }, [setSelectedIndex, setSelectedGroup, setSelectedBlockData]);
@@ -208,6 +247,7 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
     (index: number) => {
       updateSelectionState(index);
       setSelectedIndex(index);
+      setRecordKey((prevKey) => prevKey + 1);
 
       // Show the form
       onShowForm();
@@ -228,7 +268,8 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
    */
   const onSort = useCallback(
     ({ oldIndex, newIndex }: SortEnd) => {
-      if (!value || value.length === 0) {
+      const crntValue = getCurrentValue();
+      if (!crntValue || crntValue.length === 0) {
         return null;
       }
 
@@ -236,10 +277,10 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
         setSelectedIndex(newIndex);
       }
 
-      const newEntries = arrayMoveImmutable(value, oldIndex, newIndex);
-      onSubmit(newEntries);
+      const newEntries = arrayMoveImmutable(crntValue, oldIndex, newIndex);
+      submitValue(newEntries);
     },
-    [value, selectedIndex]
+    [getCurrentValue, selectedIndex, submitValue]
   );
 
   // Retrieving the state from local storage (does not need to be persistent)
@@ -277,6 +318,13 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
       setSelectedBlockData(fieldData);
     }
   }, [selectedIndex, value, setSelectedBlockData]);
+
+  useEffect(() => {
+    // The echo of our last update, the incoming value is up to date again
+    if (localValueRef.current && JSON.stringify(localValueRef.current.data) === JSON.stringify(value)) {
+      localValueRef.current = null;
+    }
+  }, [value]);
 
   useEffect(() => {
     if (parentBlock) {
@@ -318,19 +366,22 @@ export const DataBlockField: React.FunctionComponent<IDataBlockFieldProps> = ({
             onGroupChange={onGroupChange}
           />
 
-          {selectedGroup?.fields &&
-            fieldsRenderer(
-              selectedGroup?.fields,
-              Object.assign({}, selectedBlockData) || {},
-              [...parentFields, field.name],
-              {
-                parentFields: [...parentFields, field.name],
-                blockType: selectedGroup?.id || undefined,
-                selectedIndex: getSelectedIndex()
-              },
-              onFieldUpdate,
-              `${field.name}-${selectedGroup?.id}-${selectedIndex || 0}`
-            )}
+          {selectedGroup?.fields && (
+            <React.Fragment key={recordKey}>
+              {fieldsRenderer(
+                selectedGroup?.fields,
+                Object.assign({}, selectedBlockData) || {},
+                [...parentFields, field.name],
+                {
+                  parentFields: [...parentFields, field.name],
+                  blockType: selectedGroup?.id || undefined,
+                  selectedIndex: getSelectedIndex()
+                },
+                onFieldUpdate,
+                `${field.name}-${selectedGroup?.id}-${selectedIndex || 0}`
+              )}
+            </React.Fragment>
+          )}
 
           <div className={`block_field__form__buttons`}>
             <button
