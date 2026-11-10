@@ -5,7 +5,7 @@ import { Folders } from '../../commands/Folders';
 import { Command } from '../../panelWebView/Command';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
-import { Uri, authentication, commands, window } from 'vscode';
+import { TextEditor, Uri, authentication, commands, window } from 'vscode';
 import {
   ArticleHelper,
   Extension,
@@ -16,7 +16,8 @@ import {
   processTimePlaceholders,
   processFmPlaceholders,
   parseWinPath,
-  Questions
+  Questions,
+  isValidFile
 } from '../../helpers';
 import {
   COMMAND_NAME,
@@ -59,9 +60,19 @@ import { getRelPath } from '../../dashboardWebView/utils';
 
 const FILE_LIMIT = 10;
 
+interface MetadataUpdate {
+  field: string;
+  value: any;
+  parents?: string[];
+  filePath?: string;
+  blockData?: BlockFieldData;
+  fieldData?: { multiple: boolean; value: string[] };
+}
+
 export class DataListener extends BaseListener {
   private static lastMetadataUpdate: any = {};
   private static folderInfo: FolderInfo[] | null = null;
+  private static updateQueue: { [filePath: string]: Promise<void> } = {};
 
   /**
    * Process the messages for the dashboard views
@@ -638,34 +649,78 @@ export class DataListener extends BaseListener {
   /**
    * Update the metadata of the article
    */
-  public static async updateMetadata({
-    field,
-    parents,
-    value,
-    filePath,
-    blockData
-  }: {
-    field: string;
-    value: any;
-    parents?: string[];
-    filePath?: string;
-    blockData?: BlockFieldData;
-    fieldData?: { multiple: boolean; value: string[] };
-  }) {
-    if (!field) {
+  public static async updateMetadata(data: MetadataUpdate) {
+    if (!data.field) {
       return;
     }
 
+    // Update the file for which the panel sent the update, which is not always the active editor
+    const editor = DataListener.getEditorForFile(data.filePath);
+    const filePath = editor?.document.uri.fsPath || data.filePath;
+    if (!filePath) {
+      return;
+    }
+
+    // Never write front matter into files which are not supported
+    if (editor ? !ArticleHelper.isSupportedFile(editor.document) : !isValidFile(filePath)) {
+      return;
+    }
+
+    return DataListener.queueUpdate(filePath, () =>
+      DataListener.applyMetadataUpdate(data, filePath)
+    );
+  }
+
+  /**
+   * Queue the front matter updates per file, so that each update starts from the result of
+   * the previous one instead of overwriting it.
+   * When an update returns `false` (the document changed in the meantime), it runs once more.
+   * @param filePath
+   * @param update
+   */
+  public static queueUpdate(filePath: string, update: () => Promise<boolean | void>) {
+    const key = parseWinPath(filePath);
+    const next = (DataListener.updateQueue[key] || Promise.resolve())
+      .then(async () => {
+        if ((await update()) === false) {
+          await update();
+        }
+      })
+      .catch((e) => {
+        Logger.error(`DataListener::queueUpdate: ${(e as Error).message}`);
+      });
+
+    DataListener.updateQueue[key] = next;
+    next.then(() => {
+      // Clean up when no other update was queued in the meantime
+      if (DataListener.updateQueue[key] === next) {
+        delete DataListener.updateQueue[key];
+      }
+    });
+
+    return next;
+  }
+
+  /**
+   * Apply the metadata update to the file
+   * @returns `false` when the update could not be applied
+   */
+  private static async applyMetadataUpdate(
+    { field, parents, value, blockData }: MetadataUpdate,
+    filePath: string
+  ) {
     let beforeValue: any;
     const titleField = getTitleField();
 
-    const editor = window.activeTextEditor;
+    // Read the latest contents, as a previous update could have changed the file
+    const editor = DataListener.getEditorForFile(filePath);
+    const version = editor?.document.version;
 
     let article;
 
     if (editor) {
       article = ArticleHelper.getFrontMatter(editor);
-    } else if (filePath) {
+    } else {
       article = await ArticleHelper.getFrontMatterByPath(filePath);
     }
 
@@ -794,8 +849,11 @@ export class DataListener extends BaseListener {
     }
 
     if (editor) {
-      ArticleHelper.update(editor, article);
-    } else if (filePath) {
+      // The document changed while processing the update, so it has to start over
+      if (editor.document.version !== version || !(await ArticleHelper.update(editor, article))) {
+        return false;
+      }
+    } else {
       await ArticleHelper.updateByPath(filePath, article);
     }
 
@@ -806,7 +864,51 @@ export class DataListener extends BaseListener {
       'VSCODE'
     );
 
-    this.pushMetadata(article.data);
+    // Only refresh the panel when it still shows this file
+    if (DataListener.isCurrentFile(filePath)) {
+      this.pushMetadata(article.data);
+    }
+  }
+
+  /**
+   * Retrieve the editor of the file, the active editor is preferred.
+   * Without a file path, the active editor is returned.
+   * @param filePath
+   */
+  private static getEditorForFile(filePath?: string) {
+    const editor = window.activeTextEditor;
+    if (!filePath) {
+      return editor;
+    }
+
+    const isFileEditor = (crntEditor?: TextEditor) =>
+      !!crntEditor && parseWinPath(crntEditor.document.uri.fsPath) === parseWinPath(filePath);
+
+    if (isFileEditor(editor)) {
+      return editor;
+    }
+
+    return window.visibleTextEditors.find((e) => isFileEditor(e));
+  }
+
+  /**
+   * Retrieve the path of the file which the panel shows
+   */
+  private static getCurrentFilePath() {
+    return (
+      window.activeTextEditor?.document.uri.fsPath ||
+      Preview.filePath ||
+      ArticleHelper.getActiveFile()
+    );
+  }
+
+  /**
+   * Check if the file is the one which the panel shows
+   * @param filePath
+   */
+  private static isCurrentFile(filePath: string) {
+    const crntFilePath = DataListener.getCurrentFilePath();
+    return !!crntFilePath && parseWinPath(crntFilePath) === parseWinPath(filePath);
   }
 
   /**
