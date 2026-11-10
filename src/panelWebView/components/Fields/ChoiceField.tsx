@@ -10,6 +10,7 @@ import { FieldMessage } from './FieldMessage';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import useDropdownStyle from '../../hooks/useDropdownStyle';
+import useLocalChange from '../../hooks/useLocalChange';
 
 export interface IChoiceFieldProps extends BaseFieldProps<string | string[]> {
   choices: string[] | Choice[];
@@ -33,26 +34,27 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({
   const dsRef = React.useRef<Downshift<string> | null>(null);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   const { getDropdownStyle } = useDropdownStyle(inputRef as any);
+  const { trackChange, isStaleValue } = useLocalChange();
+
+  const updateValue = (newValue: string | string[]) => {
+    setCrntSelected(newValue);
+    trackChange(newValue);
+    onChange(newValue);
+  };
 
   const onValueChange = (txtValue: string) => {
     if (multiSelect) {
-      const newValue = [...((crntSelected || []) as string[]), txtValue];
-      setCrntSelected(newValue);
-      onChange(newValue);
+      updateValue([...((crntSelected || []) as string[]), txtValue]);
     } else {
-      setCrntSelected(txtValue);
-      onChange(txtValue);
+      updateValue(txtValue);
     }
   };
 
   const removeSelected = (txtValue: string) => {
     if (multiSelect) {
-      const newValue = [...(crntSelected || [])].filter((v) => v !== txtValue);
-      setCrntSelected(newValue);
-      onChange(newValue);
+      updateValue([...(crntSelected || [])].filter((v) => v !== txtValue));
     } else {
-      setCrntSelected('');
-      onChange('');
+      updateValue('');
     }
   };
 
@@ -106,6 +108,10 @@ export const ChoiceField: React.FunctionComponent<IChoiceFieldProps> = ({
   }, [required, crntSelected]);
 
   useEffect(() => {
+    if (isStaleValue(value)) {
+      return;
+    }
+
     if (crntSelected !== value) {
       setCrntSelected(value);
     }
