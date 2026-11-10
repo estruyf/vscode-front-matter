@@ -1,0 +1,172 @@
+{
+  "$schema": "https://beta.frontmatter.codes/frontmatter.schema.json",
+  // Sample project to test the code review fixes (#1068 - #1074), see README.md.
+  // The comments in this file are on purpose: they must survive every settings update (#1069).
+
+  "frontMatter.framework.id": "other",
+  "frontMatter.website.host": "https://example.com",
+  "frontMatter.preview.host": "localhost:1313",
+  "frontMatter.content.publicFolder": "public",
+  "frontMatter.content.autoUpdateDate": true,
+  "frontMatter.templates.enabled": true,
+  "frontMatter.contentHealth.enabled": true,
+  "frontMatter.contentHealth.checkExternalLinks": true,
+
+  /* Content folders: a plain folder next to a folder with the same prefix (blog / blog-archive),
+     a wildcard, an i18n folder, file prefixes, and folders with their own content type */
+  "frontMatter.content.pageFolders": [
+    { "title": "blog", "path": "[[workspace]]/content/blog" },
+    { "title": "archive", "path": "[[workspace]]/content/blog-archive" },
+    { "title": "docs", "path": "[[workspace]]/content/docs/*" },
+    {
+      "title": "i18n",
+      "path": "[[workspace]]/content/i18n",
+      "defaultLocale": "en",
+      "locales": [
+        { "title": "English", "locale": "en", "path": "en" },
+        { "title": "Dutch", "locale": "nl", "path": "nl" }
+      ]
+    },
+    { "title": "news", "path": "[[workspace]]/content/news", "contentTypes": ["news"], "filePrefix": "{{filePrefix.index|zeros:3}}" },
+    { "title": "yearly", "path": "[[workspace]]/content/yearly", "filePrefix": "{{year}}/" },
+    { "title": "recipes", "path": "[[workspace]]/content/recipes", "contentTypes": ["recipe"] },
+    { "title": "fields", "path": "[[workspace]]/content/fields", "contentTypes": ["fields-demo"] }
+  ],
+
+  "frontMatter.taxonomy.categories": ["news", "tutorial"],
+
+  // Custom filter on the dashboard (author)
+  "frontMatter.content.filters": ["contentFolders", "tags", "categories", { "title": "Author", "name": "author" }],
+
+  "frontMatter.taxonomy.fieldGroups": [
+    {
+      "id": "highlight",
+      "labelField": "title",
+      "fields": [
+        { "title": "Title", "name": "title", "type": "string" },
+        { "title": "Tags", "name": "tags", "type": "tags" },
+        { "title": "Body", "name": "body", "type": "string" }
+      ]
+    },
+    {
+      "id": "seo-fields",
+      "fields": [
+        { "title": "SEO title", "name": "seoTitle", "type": "string" },
+        { "title": "SEO description", "name": "seoDescription", "type": "string" }
+      ]
+    }
+  ],
+
+  "frontMatter.taxonomy.contentTypes": [
+    {
+      "name": "default",
+      "pageBundle": true,
+      "clearEmpty": true,
+      "previewPath": "blog",
+      "fields": [
+        { "title": "Title", "name": "title", "type": "string", "required": true },
+        { "title": "Description", "name": "description", "type": "string" },
+        { "title": "Publishing date", "name": "date", "type": "datetime", "isPublishDate": true },
+        { "title": "Last modified", "name": "lastmod", "type": "datetime", "isModifiedDate": true },
+        { "title": "Slug", "name": "slug", "type": "slug", "editable": true },
+        { "title": "Author", "name": "author", "type": "string" },
+        { "title": "Summary", "name": "summary", "type": "string", "wysiwyg": "markdown" },
+        { "title": "Weight", "name": "weight", "type": "number", "numberOptions": { "isDecimal": true } },
+        { "title": "Tags", "name": "tags", "type": "tags" },
+        { "title": "Categories", "name": "categories", "type": "categories" },
+        { "title": "Draft", "name": "draft", "type": "draft" },
+        { "title": "SEO group", "name": "seoGroup", "type": "fieldCollection", "fieldGroup": "seo-fields" },
+        {
+          "title": "SEO", "name": "seo", "type": "fields",
+          "fields": [
+            { "title": "Meta", "name": "meta", "type": "fields", "fields": [
+              { "title": "Meta title", "name": "title", "type": "string" }
+            ] },
+            { "title": "Canonical", "name": "canonical", "type": "string" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "news",
+      "pageBundle": false,
+      "slugTemplate": "{{title}}-{{fileName}}",
+      "previewPath": "news/{{fm.eventDate|yyyy}}",
+      "fields": [
+        { "title": "Title", "name": "title", "type": "string" },
+        { "title": "Event date (text)", "name": "eventDate", "type": "string" },
+        { "title": "Slug", "name": "slug", "type": "slug", "editable": true }
+      ]
+    },
+    {
+      "name": "recipe",
+      "pageBundle": false,
+      "fields": [
+        { "title": "Title", "name": "title", "type": "string" },
+        { "title": "Labels", "name": "labels", "type": "tags" }
+      ]
+    },
+    {
+      "name": "fields-demo",
+      "pageBundle": false,
+      "clearEmpty": true,
+      "fields": [
+        { "title": "Title", "name": "title", "type": "string" },
+        { "title": "Body (html)", "name": "bodyHtml", "type": "string", "wysiwyg": "html" },
+        { "title": "Body (markdown)", "name": "bodyMarkdown", "type": "string", "wysiwyg": "markdown" },
+        { "title": "Price", "name": "price", "type": "number", "numberOptions": { "isDecimal": true } },
+        { "title": "Slug", "name": "slug", "type": "slug", "editable": true },
+        { "title": "Colors", "name": "colors", "type": "choice", "multiple": true, "choices": ["red", "green", "blue", "yellow"] },
+        { "title": "Event", "name": "event", "type": "datetime" },
+        { "title": "Steps", "name": "steps", "type": "list" },
+        { "title": "Related post", "name": "related", "type": "contentRelationship", "contentTypeName": "default", "contentTypeValue": "slug" },
+        { "title": "Tags", "name": "tags", "type": "tags" },
+        {
+          "title": "Meta", "name": "meta", "type": "fields",
+          "fields": [
+            { "title": "Source (hidden, default panel)", "name": "source", "type": "string", "hidden": true, "default": "panel" },
+            { "title": "Note", "name": "note", "type": "string" }
+          ]
+        },
+        { "title": "Highlights", "name": "highlights", "type": "block", "fieldGroup": ["highlight"] }
+      ]
+    }
+  ],
+
+  "frontMatter.content.placeholders": [
+    { "id": "authorLine", "script": "./scripts/placeholder.js", "command": "node" }
+  ],
+
+  "frontMatter.custom.scripts": [
+    { "id": "echo-args", "title": "Echo args", "script": "./scripts/echo-args.js", "command": "node" },
+    { "id": "ask-question", "title": "Ask a question", "script": "./scripts/ask-question.js", "command": "node" },
+    { "id": "bulk-echo", "title": "Bulk echo", "script": "./scripts/echo-args.js", "command": "node", "bulk": true },
+    { "id": "media-info", "title": "Media info", "script": "./scripts/media-info.js", "command": "node", "type": "mediaFile" }
+  ],
+
+  "frontMatter.content.snippets": {
+    "Media figure": {
+      "description": "The only media snippet (#1073 single media snippet insert)",
+      "body": "<figure><img src=\"[[&mediaUrl]]\" alt=\"[[&filename]]\" /></figure>",
+      "isMediaSnippet": true
+    }
+  },
+
+  "frontMatter.data.folders": [
+    {
+      "id": "team",
+      "path": "[[workspace]]/data/team",
+      "labelField": "name",
+      "enableFileCreation": true,
+      "schema": {
+        "title": "Team member",
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string", "title": "Name" },
+          "role": { "type": "string", "title": "Role" }
+        }
+      }
+    }
+  ]
+}

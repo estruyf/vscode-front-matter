@@ -1,0 +1,8 @@
+{
+  "name": "recipe",
+  "pageBundle": false,
+  "fields": [
+    { "title": "Title", "name": "title", "type": "string" },
+    { "title": "Labels", "name": "labels", "type": "tags" }
+  ]
+}
