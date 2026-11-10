@@ -844,8 +844,14 @@ export class DataListener extends BaseListener {
       delete parentObj[field];
     }
 
-    if (Object.keys(parentObj).length === 0 && field !== titleField && contentType.clearEmpty) {
-      delete article.data[parents![0]];
+    if (
+      Object.keys(parentObj).length === 0 &&
+      field !== titleField &&
+      contentType.clearEmpty &&
+      parents &&
+      parents.length > 0
+    ) {
+      DataListener.removeEmptyParents(article.data, parents);
     }
 
     if (editor) {
@@ -867,6 +873,33 @@ export class DataListener extends BaseListener {
     // Only refresh the panel when it still shows this file
     if (DataListener.isCurrentFile(filePath)) {
       this.pushMetadata(article.data);
+    }
+  }
+
+  /**
+   * Remove the parent objects which became empty, starting from the deepest one
+   * @param data
+   * @param parents
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private static removeEmptyParents(data: any, parents: string[]) {
+    for (let i = parents.length - 1; i >= 0; i--) {
+      let parentObj = data;
+      for (const parent of parents.slice(0, i)) {
+        parentObj = parentObj?.[parent];
+      }
+
+      const crntObj = parentObj?.[parents[i]];
+      if (
+        !crntObj ||
+        typeof crntObj !== 'object' ||
+        Array.isArray(crntObj) ||
+        Object.keys(crntObj).length > 0
+      ) {
+        return;
+      }
+
+      delete parentObj[parents[i]];
     }
   }
 
