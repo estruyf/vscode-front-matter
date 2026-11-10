@@ -48,6 +48,7 @@ export class TaxonomyListener extends BaseListener {
           TagType.keywords.toLowerCase(),
           msg.payload?.values || [],
           msg.payload?.parents || [],
+          typeof msg.payload?.renderAsString !== 'undefined' ? msg.payload?.renderAsString : false,
           msg.payload?.blockData
         );
         break;

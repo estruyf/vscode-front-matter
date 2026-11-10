@@ -45,7 +45,7 @@ export class ArticleListener extends BaseListener {
     }
 
     const article = ArticleHelper.getFrontMatterFromCurrentDocument();
-    const slug = Article.generateSlug(title, article, slugTemplate);
+    const slug = Article.generateSlug(title, article, article?.path, slugTemplate);
     if (slug) {
       this.sendRequest(command, requestId, slug);
     }
