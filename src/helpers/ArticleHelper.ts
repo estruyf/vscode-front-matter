@@ -198,7 +198,10 @@ export class ArticleHelper {
   public static async rename(filePath: string) {
     filePath = parseWinPath(filePath);
     const fileUri = Uri.file(filePath);
-    const file = workspace.openTextDocument(fileUri);
+    const file = await workspace.openTextDocument(fileUri).then(
+      (doc) => doc,
+      () => undefined
+    );
     if (!file) {
       Notifications.error(l10n.t(LocalizationKey.commandsArticleRenameFileNotExistsError));
       return;

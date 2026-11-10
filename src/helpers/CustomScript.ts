@@ -125,7 +125,7 @@ export class CustomScript {
 
     const output: string[] = [];
 
-    window.withProgress(
+    await window.withProgress(
       {
         location: ProgressLocation.Notification,
         title: localize(LocalizationKey.helpersCustomScriptExecuting, script.title),
@@ -179,31 +179,31 @@ export class CustomScript {
       return;
     }
 
-    return new Promise((resolve, reject) => {
-      window.withProgress(
-        {
-          location: ProgressLocation.Notification,
-          title: localize(LocalizationKey.helpersCustomScriptExecuting, script.title),
-          cancellable: false
-        },
-        async () => {
-          try {
-            const output = await CustomScript.executeScript(script, wsPath, [wsPath, path]);
+    await window.withProgress(
+      {
+        location: ProgressLocation.Notification,
+        title: localize(LocalizationKey.helpersCustomScriptExecuting, script.title),
+        cancellable: false
+      },
+      async () => {
+        try {
+          const output = await CustomScript.executeScript(script, wsPath, [wsPath, path]);
 
-            await CustomScript.showOutput(output, script);
+          await CustomScript.showOutput(output, script);
 
-            Dashboard.postWebviewMessage({
-              command: DashboardCommand.mediaUpdate
-            });
+          Dashboard.postWebviewMessage({
+            command: DashboardCommand.mediaUpdate
+          });
 
-            return;
-          } catch (e) {
-            Notifications.errorWithOutput(`${script.title} -`);
-            return;
-          }
+          return;
+        } catch (e) {
+          Notifications.errorWithOutput(
+            `${script.title} - ${typeof e === 'string' ? e : (e as Error).message}`
+          );
+          return;
         }
-      );
-    });
+      }
+    );
   }
 
   /**
