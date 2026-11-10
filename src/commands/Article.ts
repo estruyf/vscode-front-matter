@@ -428,18 +428,28 @@ export class Article {
     if (document && ArticleHelper.isSupportedFile(document)) {
       const autoUpdate = Settings.get(SETTING_AUTO_UPDATE_DATE);
 
-      // Is article located in one of the content folders
-      const folders = Folders.getCached();
-      const documentPath = parseWinPath(document.fileName);
-      const folder = folders?.find((f) => documentPath.startsWith(f.path));
-      if (!folder) {
-        return;
-      }
-
       if (autoUpdate) {
-        event.waitUntil(Article.setLastModifiedDateOnSave(document));
+        event.waitUntil(Article.setLastModifiedDateInContentFolder(document));
       }
     }
+  }
+
+  /**
+   * Set the last modified date when the article is located in one of the content folders
+   * @param document
+   */
+  private static async setLastModifiedDateInContentFolder(
+    document: TextDocument
+  ): Promise<TextEdit[]> {
+    // The cached folders get cleared on settings changes, so retrieve them when needed
+    const folders = await Folders.getCachedOrFresh();
+    const documentPath = parseWinPath(document.fileName);
+    const folder = folders.find((f) => Folders.isInFolder(documentPath, f.path));
+    if (!folder) {
+      return [];
+    }
+
+    return Article.setLastModifiedDateOnSave(document);
   }
 
   /**
