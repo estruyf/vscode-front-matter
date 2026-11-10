@@ -92,7 +92,8 @@ export class i18n {
    * @returns An array of I18nConfig settings.
    */
   public static async getAll() {
-    const i18nSettings = Settings.get<I18nConfig[]>(SETTING_CONTENT_I18N) || [];
+    // Copy the settings, so that the folder locales are not added to the settings
+    const i18nSettings = [...(Settings.get<I18nConfig[]>(SETTING_CONTENT_I18N) || [])];
 
     const folders = await Folders.get();
     if (folders) {

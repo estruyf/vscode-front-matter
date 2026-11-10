@@ -150,11 +150,11 @@ export class ContentType {
   public static getAll() {
     const cts = Settings.get<IContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES);
 
-    for (const ct of cts || []) {
-      ct.fields = ContentType.mergeFields(ct.fields || []);
-    }
-
-    return cts;
+    // Return copies, so that changes to the content types are not applied to the settings
+    return cts?.map((ct) => ({
+      ...ct,
+      fields: ContentType.mergeFields(ct.fields || [])
+    }));
   }
 
   /**
@@ -185,20 +185,23 @@ export class ContentType {
       }
 
       if (field.type === 'fields') {
-        if ((!field.fields || field.fields.length === 0) && field.fieldGroup) {
+        let subFields = field.fields;
+        if ((!subFields || subFields.length === 0) && field.fieldGroup) {
           const groupIds = Array.isArray(field.fieldGroup) ? field.fieldGroup : [field.fieldGroup];
 
           for (const groupId of groupIds) {
             const fieldGroup = fieldGroups.find((fg) => fg.id === groupId);
             if (fieldGroup?.fields && fieldGroup.fields.length > 0) {
-              field.fields = fieldGroup.fields;
+              subFields = fieldGroup.fields;
               break;
             }
           }
         }
 
-        if (field.fields && field.fields.length > 0) {
-          field.fields = ContentType.mergeFields(field.fields);
+        if (subFields && subFields.length > 0) {
+          // Create a new field, so that the merged fields are not added to the settings
+          mergedFields.push({ ...field, fields: ContentType.mergeFields(subFields) });
+          continue;
         }
       }
 
@@ -305,11 +308,12 @@ export class ContentType {
       fields
     };
 
-    const contentTypes = ContentType.getAll() || [];
+    // Use the configured content types, the merged field groups should not be saved
+    const contentTypes = [...(Settings.get<IContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES) || [])];
+    const index = contentTypes.findIndex((ct) => ct.name === contentTypeName);
 
-    if (overrideBool) {
-      const index = contentTypes.findIndex((ct) => ct.name === contentTypeName);
-      contentTypes[index].fields = fields;
+    if (overrideBool && index > -1) {
+      contentTypes[index] = { ...contentTypes[index], fields };
     } else {
       contentTypes.push(newContentType);
     }
@@ -355,9 +359,15 @@ export class ContentType {
     const contentType = await ArticleHelper.getContentType(article);
     const updatedFields = await ContentType.generateFields(article.data, contentType.fields);
 
-    const contentTypes = ContentType.getAll() || [];
+    // Use the configured content types, the merged field groups should not be saved
+    const contentTypes = [...(Settings.get<IContentType[]>(SETTING_TAXONOMY_CONTENT_TYPES) || [])];
     const index = contentTypes.findIndex((ct) => ct.name === contentType.name);
-    contentTypes[index].fields = updatedFields;
+    if (index > -1) {
+      contentTypes[index] = { ...contentTypes[index], fields: updatedFields };
+    } else {
+      // The content type is the default fallback which is not in the settings yet
+      contentTypes.push({ ...contentType, fields: updatedFields });
+    }
 
     await Settings.safeUpdate(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
 
