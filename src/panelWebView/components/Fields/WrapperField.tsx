@@ -161,7 +161,8 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
   }, []);
 
   if (field.hidden || fieldValue === undefined) {
-    if (field.hidden && fieldValue === undefined && field.default && parentFields.length > 0) {
+    // Only store the default when the field has no value yet, otherwise the stored value gets overwritten
+    if (field.hidden && fieldValue === undefined && parent[field.name] === undefined && field.default && parentFields.length > 0) {
       onSendUpdate(field.name, field.default, parentFields);
     }
 
@@ -549,6 +550,7 @@ export const WrapperField: React.FunctionComponent<IWrapperFieldProps> = ({
           contentTypeValue={field.contentTypeValue}
           sameContentLocale={field.sameContentLocale}
           multiSelect={field.multiple}
+          filePath={metadata.filePath as string}
           onChange={onFieldChange}
         />
       </FieldBoundary>

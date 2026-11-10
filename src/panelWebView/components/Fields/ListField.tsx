@@ -83,6 +83,8 @@ export const ListField: React.FunctionComponent<IListFieldProps> = ({
       } else {
         setList(value);
       }
+    } else {
+      setList(null);
     }
   }, [value]);
 
