@@ -1,5 +1,18 @@
 # Change Log
 
+## [10.14.0] - 2026-xx-xx
+
+### ⚠️ Breaking changes
+
+- Custom scripts, placeholder scripts, and media scripts no longer run through a shell. Front matter values, file paths, answers, and Copilot responses are passed as separate arguments, which prevents command injection. Scripts receive the same arguments, with these differences:
+  - On Windows, `.cmd` and `.bat` commands like `npx`, `npm`, `yarn`, or `pnpm` are no longer supported as the `command`. Use `node` (or another executable) and point the `script` to the JavaScript file instead
+  - Shell expansions in the `command` like `~`, `$HOME`, or `%USERPROFILE%` are no longer resolved. Use the full path instead
+  - The front matter JSON is passed as-is: single quotes are no longer encoded as `%27` on macOS/Linux, and PowerShell scripts no longer receive the JSON wrapped in single quotes
+
+### 🐞 Fixes
+
+- [#1067](https://github.com/estruyf/vscode-front-matter/issues/1067): Fix OS command injection in custom scripts via front matter values, file names, and script answers ([GHSA-w6cx-493p-x4jx](https://github.com/estruyf/vscode-front-matter/security/advisories/GHSA-w6cx-493p-x4jx)) thanks to [Dostxodjayev Abdullox](https://github.com/squeeze440) for reporting
+
 ## [10.13.0] - 2026-10-12 - [Release notes](https://beta.frontmatter.codes/updates/v10.13.0)
 
 ### 🎨 Enhancements

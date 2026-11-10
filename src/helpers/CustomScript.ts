@@ -4,9 +4,9 @@ import { CustomScript as ICustomScript, ScriptType } from '../models/PanelSettin
 import { window, env as vscodeEnv, ProgressLocation, Uri, commands } from 'vscode';
 import { ArticleHelper, Logger, MediaHelpers } from '.';
 import { Folders, WORKSPACE_PLACEHOLDER } from '../commands/Folders';
-import { exec, execSync } from 'child_process';
-import * as os from 'os';
-import { join } from 'path';
+import { execFile, execSync } from 'child_process';
+import { existsSync } from 'fs';
+import { isAbsolute, join } from 'path';
 import { Notifications } from './Notifications';
 import ContentProvider from '../providers/ContentProvider';
 import { Dashboard } from '../commands/Dashboard';
@@ -188,11 +188,7 @@ export class CustomScript {
         },
         async () => {
           try {
-            const output = await CustomScript.executeScript(
-              script,
-              wsPath,
-              `"${wsPath}" "${path}"`
-            );
+            const output = await CustomScript.executeScript(script, wsPath, [wsPath, path]);
 
             await CustomScript.showOutput(output, script);
 
@@ -225,25 +221,14 @@ export class CustomScript {
     script: ICustomScript
   ): Promise<string | null> {
     try {
-      let articleData = '';
-      if (os.type() === 'Windows_NT') {
-        const jsonData = JSON.stringify(article?.data);
+      // The arguments are passed to the process as-is (no shell), so no escaping is required
+      const articleData = JSON.stringify(article?.data || {});
 
-        if (script.command && script.command.toLowerCase() === 'powershell') {
-          articleData = `'${jsonData.replace(/"/g, `\\"`)}'`;
-        } else {
-          articleData = `"${jsonData.replace(/"/g, `\\"`)}"`;
-        }
-      } else {
-        articleData = JSON.stringify(article?.data).replace(/'/g, '%27');
-        articleData = `'${articleData}'`;
-      }
-
-      const output = await CustomScript.executeScript(
-        script,
+      const output = await CustomScript.executeScript(script, wsPath, [
         wsPath,
-        `"${wsPath}" "${contentPath}" ${articleData}`
-      );
+        contentPath,
+        articleData
+      ]);
       return output;
     } catch (e) {
       if (typeof e === 'string') {
@@ -366,13 +351,13 @@ export class CustomScript {
    * Execute script
    * @param script
    * @param wsPath
-   * @param args
+   * @param args - passed as separate arguments to the script, never through a shell
    * @returns
    */
   public static async executeScript(
     script: ICustomScript,
     wsPath: string,
-    args: string
+    args: string[]
   ): Promise<string> {
     const platform = getPlatform();
 
@@ -415,20 +400,51 @@ export class CustomScript {
       throw new Error(`Script not found: ${scriptPath}`);
     }
 
-    if (platform === 'windows' && command.toLowerCase() === 'powershell') {
-      command = `${command} -File`;
+    // The command can contain its own arguments (e.g. `python3 -u`)
+    const [file, ...commandArgs] = CustomScript.splitCommand(command);
+
+    if (platform === 'windows' && file.toLowerCase() === 'powershell') {
+      commandArgs.push('-File');
     }
 
-    const fullScript = `${command} "${scriptPath}" ${args}`;
-    Logger.info(localize(LocalizationKey.helpersCustomScriptExecuting, fullScript));
-
-    const output = await CustomScript.processExecution(fullScript, wsPath);
+    const output = await CustomScript.processExecution(
+      file,
+      [...commandArgs, scriptPath, ...args],
+      wsPath
+    );
     return output;
   }
 
+  /**
+   * Split a command into the executable and its arguments.
+   * An absolute path to an executable (e.g. the evaluated node path) is never split.
+   * @param command
+   * @returns
+   */
+  private static splitCommand(command: string): string[] {
+    const trimmed = command.trim();
+    if (isAbsolute(trimmed) && existsSync(trimmed)) {
+      return [trimmed];
+    }
+
+    const parts: string[] = [];
+    const regex = /"([^"]*)"|'([^']*)'|(\S+)/g;
+    let match: RegExpExecArray | null;
+    while ((match = regex.exec(trimmed)) !== null) {
+      parts.push(match[1] ?? match[2] ?? match[3]);
+    }
+    return parts;
+  }
+
   // Recursive function to process the execution of the script
-  private static async processExecution(fullScript: string, wsPath: string): Promise<string> {
-    const output: string = await CustomScript.executeScriptAsync(fullScript, wsPath);
+  private static async processExecution(
+    file: string,
+    args: string[],
+    wsPath: string
+  ): Promise<string> {
+    Logger.info(localize(LocalizationKey.helpersCustomScriptExecuting, [file, ...args].join(' ')));
+
+    const output: string = await CustomScript.executeScriptAsync(file, args, wsPath);
 
     try {
       const data = JSON.parse(output);
@@ -465,7 +481,7 @@ export class CustomScript {
             }
 
             if (answer) {
-              answers.push(`${question.name}="${answer}"`);
+              answers.push(`${question.name}=${answer}`);
             } else {
               return '';
             }
@@ -473,16 +489,17 @@ export class CustomScript {
         }
 
         if (answers.length > 0) {
-          const newScript = `${fullScript} ${answers.join(' ')}`;
-          return await CustomScript.processExecution(newScript, wsPath);
+          return await CustomScript.processExecution(file, [...args, ...answers], wsPath);
         }
       } else if (fmAction) {
         if (fmAction === 'promptCopilot' && fmPrompt) {
           const response = await Copilot.promptCopilot(fmPrompt);
           if (response) {
-            const promptResponse = `promptResponse="${response}"`;
-            const newScript = `${fullScript} ${promptResponse}`;
-            return await CustomScript.processExecution(newScript, wsPath);
+            return await CustomScript.processExecution(
+              file,
+              [...args, `promptResponse=${response}`],
+              wsPath
+            );
           }
         }
       }
@@ -494,16 +511,33 @@ export class CustomScript {
   }
 
   /**
-   * Execute script async
-   * @param fullScript
+   * Execute script async.
+   * Uses `execFile` without a shell, so the arguments (front matter, file paths, answers, ...)
+   * cannot be interpreted as shell syntax by cmd.exe or sh.
+   * @param file
+   * @param args
    * @param wsPath
    * @returns
    */
-  private static async executeScriptAsync(fullScript: string, wsPath: string): Promise<string> {
+  private static async executeScriptAsync(
+    file: string,
+    args: string[],
+    wsPath: string
+  ): Promise<string> {
     return new Promise((resolve, reject) => {
-      exec(fullScript, { cwd: wsPath }, (error, stdout) => {
+      execFile(file, args, { cwd: wsPath, windowsHide: true }, (error, stdout) => {
         if (error) {
           Logger.error(error.message);
+
+          // Windows `.cmd`/`.bat` shims (npx, npm, ...) can only be started through a shell
+          const code = (error as NodeJS.ErrnoException).code;
+          if (getPlatform() === 'windows' && (code === 'ENOENT' || code === 'EINVAL')) {
+            reject(
+              localize(LocalizationKey.helpersCustomScriptExecuteScriptWindowsCommandError, file)
+            );
+            return;
+          }
+
           reject(error.message);
           return;
         }

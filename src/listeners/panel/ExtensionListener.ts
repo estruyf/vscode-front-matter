@@ -2,7 +2,7 @@ import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
 import { Range, Selection, TextEditorRevealType, commands, env as vscodeEnv, window } from 'vscode';
 import * as os from 'os';
-import { exec } from 'child_process';
+import { exec, execFile } from 'child_process';
 import { Folders } from '../../commands/Folders';
 import { COMMAND_NAME } from '../../constants';
 import { openFileInEditor } from '../../helpers';
@@ -107,13 +107,13 @@ export class ExtensionListener extends BaseListener {
     if (wsFolder) {
       const wsPath = wsFolder.fsPath;
       if (os.type() === 'Darwin') {
-        exec(`open ${wsPath}`);
+        execFile('open', [wsPath]);
       } else if (os.type() === 'Windows_NT') {
-        exec(`explorer ${wsPath}`);
+        execFile('explorer', [wsPath]);
       } else if (os.type() === 'Linux' && vscodeEnv.remoteName?.toLowerCase() === 'wsl') {
         exec('explorer.exe `wslpath -w "$PWD"`');
       } else {
-        exec(`xdg-open ${wsPath}`);
+        execFile('xdg-open', [wsPath]);
       }
     }
   }
