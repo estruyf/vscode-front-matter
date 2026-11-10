@@ -76,9 +76,14 @@ const WysiwygField: React.FunctionComponent<IWysiwygFieldProps> = ({
   const [text, setText] = React.useState<string | null | undefined>(type === "html" ? value : markdownToHtml(value || ""));
   const debouncedText = useDebounce<string | null | undefined>(text, DEBOUNCE_TIME);
 
-  const onTextChange = (newValue: string) => {
+  const onTextChange = (newValue: string, _delta: unknown, source: string) => {
     setText(newValue);
-    lastTypedRef.current = Date.now();
+
+    // Quill also emits changes when it normalizes a value that was set programmatically
+    // (source "api"). Only user edits may be written back, otherwise opening a file rewrites it.
+    if (source === 'user') {
+      lastTypedRef.current = Date.now();
+    }
   }
 
   const modules = React.useMemo(() => {

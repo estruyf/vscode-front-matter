@@ -1,5 +1,11 @@
 # Change Log
 
+## [10.14.0] - 2026-xx-xx
+
+### 🐞 Fixes
+
+- Fix opening a file in the panel rewriting the markdown of `wysiwyg` fields (ex. `-` bullets changed to `*`) without any edit
+
 ## [10.13.0] - 2026-10-12 - [Release notes](https://beta.frontmatter.codes/updates/v10.13.0)
 
 ### 🎨 Enhancements
