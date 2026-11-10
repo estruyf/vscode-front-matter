@@ -4,7 +4,13 @@ import {
 } from './../constants/settings';
 import { ThemeColor } from 'vscode';
 import { ArticleHelper } from '../helpers';
-import { commands, DecorationOptions, languages, TextEditorDecorationType } from 'vscode';
+import {
+  commands,
+  DecorationOptions,
+  Disposable,
+  languages,
+  TextEditorDecorationType
+} from 'vscode';
 import {
   FoldingRange,
   FoldingRangeKind,
@@ -29,19 +35,23 @@ export class MarkdownFoldingProvider implements FoldingRangeProvider {
   private static decType: TextEditorDecorationType | null = null;
   private static crntDecoration: TextEditorDecorationType | null = null;
 
-  public static register() {
+  public static register(subscriptions: Disposable[]) {
     const supportedFiles = Settings.get<string[]>(SETTING_CONTENT_SUPPORTED_FILETYPES);
 
-    languages.registerFoldingRangeProvider(
-      { language: 'markdown', scheme: 'file' },
-      new MarkdownFoldingProvider()
+    subscriptions.push(
+      languages.registerFoldingRangeProvider(
+        { language: 'markdown', scheme: 'file' },
+        new MarkdownFoldingProvider()
+      )
     );
 
     for (const fileExt of supportedFiles || []) {
       if (fileExt !== 'md' && fileExt !== 'markdown') {
-        languages.registerFoldingRangeProvider(
-          { pattern: `**/*.${fileExt}`, scheme: 'file' },
-          new MarkdownFoldingProvider()
+        subscriptions.push(
+          languages.registerFoldingRangeProvider(
+            { pattern: `**/*.${fileExt}`, scheme: 'file' },
+            new MarkdownFoldingProvider()
+          )
         );
       }
     }

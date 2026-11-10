@@ -6,6 +6,7 @@ import {
 } from './../constants/settings';
 import { commands, StatusBarAlignment, StatusBarItem, window } from 'vscode';
 import { Settings } from '../helpers/SettingsHelper';
+import { Extension } from '../helpers/Extension';
 import { COMMAND_NAME, CONTEXT } from '../constants';
 import { Mode } from '../models';
 import * as l10n from '@vscode/l10n';
@@ -21,10 +22,13 @@ export class ModeSwitch {
       ModeSwitch.statusBarElm = window.createStatusBarItem(StatusBarAlignment.Left, 100);
       ModeSwitch.statusBarElm.tooltip = 'Switch between the different modes of Front Matter';
       ModeSwitch.statusBarElm.command = COMMAND_NAME.modeSwitch;
+      Extension.getInstance().subscriptions.push(ModeSwitch.statusBarElm);
     }
 
     if (!ModeSwitch.isInit) {
-      commands.registerCommand(COMMAND_NAME.modeSwitch, ModeSwitch.switchMode);
+      Extension.getInstance().subscriptions.push(
+        commands.registerCommand(COMMAND_NAME.modeSwitch, ModeSwitch.switchMode)
+      );
 
       const mode = Settings.get<string | null>(SETTING_GLOBAL_ACTIVE_MODE);
       if (mode) {
