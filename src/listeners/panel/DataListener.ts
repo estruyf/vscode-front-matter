@@ -763,10 +763,12 @@ export class DataListener extends BaseListener {
 
     const contentType = await ArticleHelper.getContentType(article);
     const sourceField = ContentType.findFieldByName(contentType.fields, field);
+    // Only the top-level title is kept when empty, nested fields can have the same name
+    const isTitleField = field === titleField && !(parents && parents.length > 0);
 
     if (
       (value === undefined || value === null || value === '' || value === false) &&
-      field !== titleField &&
+      !isTitleField &&
       contentType.clearEmpty
     ) {
       // Check if the draft or boolean field needs to be cleared
@@ -879,7 +881,7 @@ export class DataListener extends BaseListener {
 
     if (
       Object.keys(parentObj).length === 0 &&
-      field !== titleField &&
+      !isTitleField &&
       contentType.clearEmpty &&
       parents &&
       parents.length > 0
