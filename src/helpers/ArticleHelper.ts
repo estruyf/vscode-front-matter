@@ -609,13 +609,11 @@ export class ArticleHelper {
     }
 
     if (contentType) {
-      if (!contentType.fields) {
-        contentType.fields = DEFAULT_CONTENT_TYPE.fields;
-      }
-
-      contentType.fields = ContentType.mergeFields(contentType.fields);
-
-      return contentType;
+      // Return a copy, the content type is the object of the settings, which should not change
+      return {
+        ...contentType,
+        fields: ContentType.mergeFields(contentType.fields || DEFAULT_CONTENT_TYPE.fields)
+      };
     }
 
     return DEFAULT_CONTENT_TYPE;

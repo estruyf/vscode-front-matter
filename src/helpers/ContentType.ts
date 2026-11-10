@@ -299,7 +299,7 @@ export class ContentType {
     // Update the type field in the page
     if (!overrideBool && editor) {
       content.data[DefaultFields.ContentType] = contentTypeName;
-      ArticleHelper.update(editor, content);
+      await ArticleHelper.update(editor, content);
     }
 
     const newContentType: IContentType = {
@@ -422,7 +422,7 @@ export class ContentType {
     content.data[DefaultFields.ContentType] = ctAnswer;
 
     const editor = window.activeTextEditor;
-    ArticleHelper.update(editor!, content);
+    await ArticleHelper.update(editor!, content);
   }
 
   /**
