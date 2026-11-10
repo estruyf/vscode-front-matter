@@ -857,7 +857,7 @@ export class ArticleHelper {
                 let output: string | any = await CustomScript.executeScript(
                   script,
                   wsFolder?.fsPath || '',
-                  `'${wsFolder?.fsPath}' '${filePath}' '${title}'`
+                  [`${wsFolder?.fsPath}`, `${filePath}`, `${title}`]
                 );
 
                 if (output) {
@@ -890,8 +890,8 @@ export class ArticleHelper {
               if (value === `{{${placeholder.id}}}`) {
                 value = updatedValue;
               } else {
-                const regex = new RegExp(`{{${placeholder.id}}}`, 'g');
-                value = value.replace(regex, updatedValue);
+                // Replace literally, the ID is no regex and the value can contain `$` patterns
+                value = value.split(`{{${placeholder.id}}}`).join(updatedValue);
               }
             } catch (e) {
               Notifications.error(
