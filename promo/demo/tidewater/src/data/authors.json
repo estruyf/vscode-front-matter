@@ -1,0 +1,30 @@
+[
+  {
+    "id": "mara-lindqvist",
+    "name": "Mara Lindqvist",
+    "role": "Founder, content strategy",
+    "avatar": "/images/avatars/mara.jpg",
+    "bio": "Plans content models and migrations. Has opinions about headings."
+  },
+  {
+    "id": "jonas-peeters",
+    "name": "Jonas Peeters",
+    "role": "Lead developer",
+    "avatar": "/images/avatars/jonas.jpg",
+    "bio": "Builds the sites and the pipelines that deploy them."
+  },
+  {
+    "id": "aiko-tanaka",
+    "name": "Aiko Tanaka",
+    "role": "Design lead",
+    "avatar": "/images/avatars/aiko.jpg",
+    "bio": "Runs the design system and every accessibility review."
+  },
+  {
+    "id": "sam-okafor",
+    "name": "Sam Okafor",
+    "role": "Content editor",
+    "avatar": "/images/avatars/sam.jpg",
+    "bio": "Edits everything that goes out, including this."
+  }
+]

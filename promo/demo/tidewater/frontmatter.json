@@ -1,0 +1,313 @@
+{
+  "$schema": "https://frontmatter.codes/frontmatter.schema.json",
+  "frontMatter.framework.id": "astro",
+  "frontMatter.content.publicFolder": "public",
+  "frontMatter.dashboard.openOnStart": true,
+  "frontMatter.panel.openOnSupportedFile": true,
+  "frontMatter.content.pageFolders": [
+    {
+      "title": "Journal",
+      "path": "[[workspace]]/src/content/blog",
+      "contentTypes": [
+        "post"
+      ]
+    },
+    {
+      "title": "Handbook",
+      "path": "[[workspace]]/src/content/handbook",
+      "contentTypes": [
+        "guide"
+      ]
+    }
+  ],
+  "frontMatter.taxonomy.contentTypes": [
+    {
+      "name": "post",
+      "previewPath": "/blog",
+      "pageBundle": false,
+      "fields": [
+        {
+          "title": "Title",
+          "name": "title",
+          "type": "string",
+          "single": true,
+          "required": true
+        },
+        {
+          "title": "Description",
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "title": "Publishing date",
+          "name": "pubDate",
+          "type": "datetime",
+          "default": "{{now}}",
+          "isPublishDate": true
+        },
+        {
+          "title": "Hero image",
+          "name": "heroImage",
+          "type": "image",
+          "isPreviewImage": true
+        },
+        {
+          "title": "Author",
+          "name": "author",
+          "type": "dataFile",
+          "dataFileId": "authors",
+          "dataFileKey": "id",
+          "dataFileValue": "name"
+        },
+        {
+          "title": "Category",
+          "name": "category",
+          "type": "choice",
+          "choices": [
+            "Engineering",
+            "Design",
+            "Studio",
+            "Case study"
+          ]
+        },
+        {
+          "title": "Tags",
+          "name": "tags",
+          "type": "tags"
+        },
+        {
+          "title": "Featured",
+          "name": "featured",
+          "type": "boolean"
+        },
+        {
+          "title": "Draft",
+          "name": "draft",
+          "type": "draft"
+        }
+      ]
+    },
+    {
+      "name": "guide",
+      "previewPath": "/handbook",
+      "pageBundle": false,
+      "fields": [
+        {
+          "title": "Title",
+          "name": "title",
+          "type": "string",
+          "single": true,
+          "required": true
+        },
+        {
+          "title": "Description",
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "title": "Last reviewed",
+          "name": "lastReviewed",
+          "type": "datetime",
+          "default": "{{now}}",
+          "isPublishDate": true
+        },
+        {
+          "title": "Cover",
+          "name": "cover",
+          "type": "image",
+          "isPreviewImage": true
+        },
+        {
+          "title": "Order",
+          "name": "order",
+          "type": "number"
+        },
+        {
+          "title": "Tags",
+          "name": "tags",
+          "type": "tags"
+        },
+        {
+          "title": "Draft",
+          "name": "draft",
+          "type": "draft"
+        }
+      ]
+    }
+  ],
+  "frontMatter.content.snippets": {
+    "Callout": {
+      "title": "Callout",
+      "description": "A highlighted note, tip or warning inside a post.",
+      "body": [
+        "<Callout type=\"[[type]]\">",
+        "[[&selection]]",
+        "</Callout>"
+      ],
+      "fields": [
+        {
+          "name": "type",
+          "title": "Type",
+          "type": "choice",
+          "choices": [
+            "note",
+            "tip",
+            "warning"
+          ],
+          "default": "note"
+        },
+        {
+          "name": "selection",
+          "title": "Text",
+          "type": "string",
+          "default": "FM_SELECTED_TEXT"
+        }
+      ]
+    },
+    "Figure": {
+      "title": "Figure",
+      "description": "An image with a caption, inserted from the media dashboard.",
+      "isMediaSnippet": true,
+      "body": [
+        "<figure>",
+        "  <img src=\"[[&mediaUrl]]\" alt=\"[[alt]]\" />",
+        "  <figcaption>[[caption]]</figcaption>",
+        "</figure>"
+      ]
+    },
+    "Video embed": {
+      "title": "Video embed",
+      "description": "A responsive embed for a hosted video.",
+      "body": "<VideoEmbed id=\"[[id]]\" title=\"[[title]]\" />",
+      "fields": [
+        {
+          "name": "id",
+          "title": "Video ID",
+          "type": "string"
+        },
+        {
+          "name": "title",
+          "title": "Title",
+          "type": "string"
+        }
+      ]
+    },
+    "Pull quote": {
+      "title": "Pull quote",
+      "description": "A quote set large, with who said it.",
+      "body": [
+        "<PullQuote cite=\"[[cite]]\">",
+        "  [[&selection]]",
+        "</PullQuote>"
+      ],
+      "fields": [
+        {
+          "name": "selection",
+          "title": "Quote",
+          "type": "string",
+          "default": "FM_SELECTED_TEXT"
+        },
+        {
+          "name": "cite",
+          "title": "Who said it",
+          "type": "string"
+        }
+      ]
+    },
+    "Related posts": {
+      "title": "Related posts",
+      "description": "Links to up to three other posts from the journal.",
+      "body": "<RelatedPosts slugs={[[[slugs]]]} />",
+      "fields": [
+        {
+          "name": "slugs",
+          "title": "Post slugs",
+          "type": "string"
+        }
+      ]
+    },
+    "Before / after": {
+      "title": "Before / after",
+      "description": "Two images side by side with a slider between them.",
+      "body": "<BeforeAfter before=\"[[before]]\" after=\"[[after]]\" />",
+      "fields": [
+        {
+          "name": "before",
+          "title": "Before image",
+          "type": "image"
+        },
+        {
+          "name": "after",
+          "title": "After image",
+          "type": "image"
+        }
+      ]
+    }
+  },
+  "frontMatter.data.files": [
+    {
+      "id": "authors",
+      "title": "Authors",
+      "file": "[[workspace]]/src/data/authors.json",
+      "fileType": "json",
+      "labelField": "name",
+      "schema": {
+        "title": "Author",
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "ID"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "avatar": {
+            "type": "string",
+            "title": "Avatar"
+          },
+          "bio": {
+            "type": "string",
+            "title": "Bio"
+          }
+        }
+      }
+    },
+    {
+      "id": "navigation",
+      "title": "Navigation",
+      "file": "[[workspace]]/src/data/navigation.json",
+      "fileType": "json",
+      "labelField": "label",
+      "schema": {
+        "title": "Link",
+        "type": "object",
+        "required": [
+          "label",
+          "href"
+        ],
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "href": {
+            "type": "string",
+            "title": "URL"
+          }
+        }
+      }
+    }
+  ],
+  "frontMatter.content.defaultSorting": "PublishedDesc",
+  "frontMatter.snippets.wrapper.enabled": false
+}

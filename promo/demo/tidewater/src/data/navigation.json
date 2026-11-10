@@ -1,0 +1,18 @@
+[
+  {
+    "label": "Work",
+    "href": "/work"
+  },
+  {
+    "label": "Journal",
+    "href": "/blog"
+  },
+  {
+    "label": "Handbook",
+    "href": "/handbook"
+  },
+  {
+    "label": "Contact",
+    "href": "/contact"
+  }
+]

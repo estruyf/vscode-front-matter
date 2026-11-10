@@ -113,76 +113,79 @@ export class SsgListener extends BaseListener {
       return;
     }
 
-    // https://github.com/withastro/astro/blob/defab70cb2a0c67d5e9153542490d2749046b151/packages/astro/src/content/utils.ts#L450
-    let contentConfig = await workspace.findFiles(`**/src/content/config.*`);
-    
-    // Also search for content.config.* files (newer pattern)
-    if (contentConfig.length === 0) {
-      contentConfig = await workspace.findFiles(`**/content.config.*`);
-    }
-
-    if (contentConfig.length === 0) {
-      SsgListener.sendRequest(command as any, requestId, []);
-      return;
-    }
-
-    const contentConfigFile = contentConfig[0];
-    if (
-      !contentConfigFile.fsPath.endsWith('.js') &&
-      !contentConfigFile.fsPath.endsWith('.mjs') &&
-      !contentConfigFile.fsPath.endsWith('.ts') &&
-      !contentConfigFile.fsPath.endsWith('.mts')
-    ) {
-      SsgListener.sendRequest(command as any, requestId, []);
-      return;
-    }
-
-    const scriptPath = Uri.joinPath(
-      Extension.getInstance().extensionPath,
-      SsgScripts.folder,
-      SsgScripts.astroContentCollectionScript
-    );
-
-    const wsFolder = Folders.getWorkspaceFolder();
-    if (!wsFolder) {
-      SsgListener.sendRequest(command as any, requestId, []);
-      return;
-    }
-
-    const tempLocation = Uri.joinPath(wsFolder, '/.frontmatter/temp');
-    const tempScriptPath = Uri.joinPath(tempLocation, SsgScripts.astroContentCollectionScript);
-    await workspace.fs.createDirectory(tempLocation);
-
-    // Check if the workspace uses pnpm
-    if (await existsAsync(Uri.joinPath(wsFolder, 'node_modules/.pnpm').fsPath)) {
-      const vitePackageFiles = await workspace.findFiles(
-        `**/node_modules/.pnpm/vite@*/node_modules/vite/package.json`
-      );
-      if (vitePackageFiles.length > 0) {
-        const vitePackageFile = vitePackageFiles[0];
-        const vitePackage = JSON.parse(await readFileAsync(vitePackageFile.fsPath, 'utf8')) as {
-          main: string;
-        };
-        const viteFolder = vitePackageFile.fsPath.replace('/package.json', '');
-        const vitePath = join(viteFolder, vitePackage.main).replace(wsFolder.fsPath, '../..');
-
-        // Update the vite reference, as it is not a direct dependency of the project
-        let scriptContents = await readFileAsync(scriptPath.fsPath, 'utf8');
-        scriptContents = scriptContents.replace(`'vite'`, `'${vitePath}'`);
-        await workspace.fs.writeFile(tempScriptPath, Buffer.from(scriptContents, 'utf8'));
-      }
-    } else {
-      workspace.fs.copy(scriptPath, tempScriptPath, { overwrite: true });
-    }
-
-    let nodeExecPath = 'node';
-    const platform = getPlatform();
-    if (platform !== 'windows') {
-      nodeExecPath = await evaluateCommand('node');
-    }
-    const fullScript = `${nodeExecPath} "${tempScriptPath.fsPath}" "${contentConfigFile.fsPath}"`;
+    let tempLocation: Uri | undefined;
 
     try {
+      // https://github.com/withastro/astro/blob/defab70cb2a0c67d5e9153542490d2749046b151/packages/astro/src/content/utils.ts#L450
+      let contentConfig = await workspace.findFiles(`**/src/content/config.*`);
+
+      // Also search for content.config.* files (newer pattern)
+      if (contentConfig.length === 0) {
+        contentConfig = await workspace.findFiles(`**/content.config.*`);
+      }
+
+      if (contentConfig.length === 0) {
+        SsgListener.sendRequest(command as any, requestId, []);
+        return;
+      }
+
+      const contentConfigFile = contentConfig[0];
+      if (
+        !contentConfigFile.fsPath.endsWith('.js') &&
+        !contentConfigFile.fsPath.endsWith('.mjs') &&
+        !contentConfigFile.fsPath.endsWith('.ts') &&
+        !contentConfigFile.fsPath.endsWith('.mts')
+      ) {
+        SsgListener.sendRequest(command as any, requestId, []);
+        return;
+      }
+
+      const scriptPath = Uri.joinPath(
+        Extension.getInstance().extensionPath,
+        SsgScripts.folder,
+        SsgScripts.astroContentCollectionScript
+      );
+
+      const wsFolder = Folders.getWorkspaceFolder();
+      if (!wsFolder) {
+        SsgListener.sendRequest(command as any, requestId, []);
+        return;
+      }
+
+      const preparedLocation = Uri.joinPath(wsFolder, '/.frontmatter/temp');
+      const tempScriptPath = Uri.joinPath(preparedLocation, SsgScripts.astroContentCollectionScript);
+      await workspace.fs.createDirectory(preparedLocation);
+      tempLocation = preparedLocation;
+
+      // Check if the workspace uses pnpm
+      if (await existsAsync(Uri.joinPath(wsFolder, 'node_modules/.pnpm').fsPath)) {
+        const vitePackageFiles = await workspace.findFiles(
+          `**/node_modules/.pnpm/vite@*/node_modules/vite/package.json`
+        );
+        if (vitePackageFiles.length > 0) {
+          const vitePackageFile = vitePackageFiles[0];
+          const vitePackage = JSON.parse(await readFileAsync(vitePackageFile.fsPath, 'utf8')) as {
+            main: string;
+          };
+          const viteFolder = vitePackageFile.fsPath.replace('/package.json', '');
+          const vitePath = join(viteFolder, vitePackage.main).replace(wsFolder.fsPath, '../..');
+
+          // Update the vite reference, as it is not a direct dependency of the project
+          let scriptContents = await readFileAsync(scriptPath.fsPath, 'utf8');
+          scriptContents = scriptContents.replace(`'vite'`, `'${vitePath}'`);
+          await workspace.fs.writeFile(tempScriptPath, Buffer.from(scriptContents, 'utf8'));
+        }
+      } else {
+        await workspace.fs.copy(scriptPath, tempScriptPath, { overwrite: true });
+      }
+
+      let nodeExecPath = 'node';
+      const platform = getPlatform();
+      if (platform !== 'windows') {
+        nodeExecPath = await evaluateCommand('node');
+      }
+      const fullScript = `${nodeExecPath} "${tempScriptPath.fsPath}" "${contentConfigFile.fsPath}"`;
+
       const result: string = await SsgListener.executeScript(fullScript, wsFolder?.fsPath || '');
       if (result) {
         const tempJsonPath = Uri.joinPath(tempLocation, SsgScripts.astroContentCollectionJSON);
@@ -191,14 +194,22 @@ export class SsgListener extends BaseListener {
           let collections: AstroCollection[] = JSON.parse(contents);
           collections = collections.filter((c) => c.type === 'content');
           SsgListener.sendRequest(command as any, requestId, collections);
+          return;
         }
       }
+      SsgListener.sendRequest(command as any, requestId, []);
     } catch (error) {
       Logger.error((error as Error).message);
       SsgListener.sendRequest(command as any, requestId, []);
       return;
     } finally {
-      await workspace.fs.delete(tempLocation, { recursive: true, useTrash: false });
+      if (tempLocation) {
+        try {
+          await workspace.fs.delete(tempLocation, { recursive: true, useTrash: false });
+        } catch (error) {
+          Logger.error((error as Error).message);
+        }
+      }
     }
   }
 

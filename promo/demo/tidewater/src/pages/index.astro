@@ -1,0 +1,9 @@
+---
+import { getCollection } from 'astro:content';
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+<h1>Tidewater</h1>
+<ul>
+  {posts.map((post) => <li><a href={`/blog/${post.id}/`}>{post.data.title}</a></li>)}
+</ul>

@@ -1,0 +1,13 @@
+node_modules/
+.DS_Store
+
+# The renders, and everything `npm run capture` produces. All of it is
+# regenerable from demo/ and scripts/, and none of it is small. clips.json is the
+# exception: it is a manifest rather than media, and src/components/Shot.tsx
+# imports it, so a fresh checkout has to typecheck without a capture first.
+out/
+public/shots/
+public/clips/
+
+# The pinned VS Code build, the packaged extension and the throwaway profiles.
+.cache/
