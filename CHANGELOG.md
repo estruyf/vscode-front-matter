@@ -12,6 +12,12 @@
 - [#1068](https://github.com/estruyf/vscode-front-matter/pull/1068): Fewer re-renders in the dashboard and panel, including when scrolling the panel
 - [#1068](https://github.com/estruyf/vscode-front-matter/pull/1068): Images and videos in the media dashboard are now loaded lazily
 
+### 🐞 Fixes
+
+- [#1069](https://github.com/estruyf/vscode-front-matter/pull/1069): Fix "Create template from current file" replacing your content types with the default content type and overwriting the framework, static folder, and preview host settings. Initializing a project no longer replaces existing content types either
+- [#1069](https://github.com/estruyf/vscode-front-matter/pull/1069): Fix the tag or category being deleted from all content when cancelling the remap command
+- [#1069](https://github.com/estruyf/vscode-front-matter/pull/1069): Keep the comments and formatting in `frontmatter.json` when the extension updates a setting
+
 ## [10.13.0] - 2026-10-12 - [Release notes](https://beta.frontmatter.codes/updates/v10.13.0)
 
 ### 🎨 Enhancements
