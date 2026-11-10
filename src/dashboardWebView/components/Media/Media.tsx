@@ -144,9 +144,12 @@ export const Media: React.FunctionComponent<IMediaProps> = () => {
       });
     }
 
-    setPagedItems(mediaFiles.map((m) => m.fsPath));
     return mediaFiles;
   }, [media, viewData, currentStaticFolder, settings?.staticFolder]);
+
+  useEffect(() => {
+    setPagedItems(allMedia.map((m) => m.fsPath));
+  }, [allMedia]);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {

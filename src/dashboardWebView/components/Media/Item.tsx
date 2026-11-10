@@ -115,15 +115,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     }
   }, [media, settings, viewData, relPath]);
 
-  const insertSnippet = useCallback(() => {
-    if (mediaSnippets.length === 1) {
-      processSnippet(mediaSnippets[0]);
-    } else {
-      // Show dialog to select
-      setShowSnippetSelection(true);
-    }
-  }, [mediaSnippets]);
-
   /**
    * Process the snippet
    */
@@ -158,6 +149,15 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     },
     [media, settings, viewData, mediaSnippets, relPath]
   );
+
+  const insertSnippet = useCallback(() => {
+    if (mediaSnippets.length === 1) {
+      processSnippet(mediaSnippets[0]);
+    } else {
+      // Show dialog to select
+      setShowSnippetSelection(true);
+    }
+  }, [mediaSnippets, processSnippet]);
 
   /**
    * Insert the media snippet

@@ -79,7 +79,7 @@ export const MediaHeaderTop: React.FunctionComponent<
     return () => {
       Messenger.unlisten(mediaUpdate);
     };
-  }, []);
+  }, [page, selectedFolder, crntSorting]);
 
   return (
     <nav
