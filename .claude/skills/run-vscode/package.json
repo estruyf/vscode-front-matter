@@ -1,0 +1,9 @@
+{
+  "name": "run-vscode-driver",
+  "private": true,
+  "type": "module",
+  "description": "Playwright (CDP) driver for running Front Matter CMS in a real VS Code window",
+  "dependencies": {
+    "playwright-core": "1.48.2"
+  }
+}
