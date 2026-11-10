@@ -1,5 +1,17 @@
 # Change Log
 
+## [10.14.0] - 2026-xx-xx
+
+### ⚡️ Optimizations
+
+- [#1068](https://github.com/estruyf/vscode-front-matter/pull/1068): Only refresh the dashboard, panel, and preview when a Front Matter, `git.path`, or Markdown editor setting changes, instead of on every VS Code setting change
+- [#1068](https://github.com/estruyf/vscode-front-matter/pull/1068): Changes to images and other non-content files in your content folders no longer trigger a full re-parse of all pages
+- [#1068](https://github.com/estruyf/vscode-front-matter/pull/1068): Refreshing the media dashboard, uploading, or pasting media now scans the media files once instead of twice
+- [#1068](https://github.com/estruyf/vscode-front-matter/pull/1068): Faster dashboard loading for sites with many pages by looking up cached pages by path
+- [#1068](https://github.com/estruyf/vscode-front-matter/pull/1068): Smaller extension bundle and faster activation by removing the unused GitHub (`@octokit/rest`) credentials code
+- [#1068](https://github.com/estruyf/vscode-front-matter/pull/1068): Fewer re-renders in the dashboard and panel, including when scrolling the panel
+- [#1068](https://github.com/estruyf/vscode-front-matter/pull/1068): Images and videos in the media dashboard are now loaded lazily
+
 ## [10.13.0] - 2026-10-12 - [Release notes](https://beta.frontmatter.codes/updates/v10.13.0)
 
 ### 🎨 Enhancements
