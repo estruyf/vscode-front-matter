@@ -26,6 +26,7 @@
 - [#1070](https://github.com/estruyf/vscode-front-matter/pull/1070): Fix media metadata being written multiple times after refreshing the media dashboard, and media script notifications that never closed
 - [#1071](https://github.com/estruyf/vscode-front-matter/pull/1071): Registering or unregistering a content folder no longer rewrites your `pageFolders` setting (expanded wildcards, frozen `{{year}}`, doubled locale paths), and now works on Windows
 - [#1071](https://github.com/estruyf/vscode-front-matter/pull/1071): Settings from `.frontmatter/config` files are no longer copied into `frontmatter.json`, and generating content types no longer writes field groups inline
+- [#1071](https://github.com/estruyf/vscode-front-matter/pull/1071): When the content types can't be saved (split or extended config), "Generate content type" no longer assigns the unsaved content type to the page, and neither it nor "Add missing fields" reports success
 - [#1071](https://github.com/estruyf/vscode-front-matter/pull/1071): Fix files in `content/blog-archive` being treated as part of `content/blog`
 - [#1071](https://github.com/estruyf/vscode-front-matter/pull/1071): Fix "Open on website" from the dashboard, preview slugs ending in `index`, bold and hyperlink insertion without a selection, and creating content from a template on Windows
 - [#1071](https://github.com/estruyf/vscode-front-matter/pull/1071): Fix the last modified date not being updated after a settings change, and content validation not picking up content type changes until a restart
