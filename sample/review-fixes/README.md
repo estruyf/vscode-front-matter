@@ -136,7 +136,12 @@ Scripts and media library:
 - [ ] **Add missing fields.** Add `extra: test` to the front matter of `post-01.md` and use **Add missing fields** from the panel's content type warning.
   - The default content type gets an `extra` field.
   - `seoGroup` is still a `fieldCollection` reference, not inlined `seoTitle` / `seoDescription` fields.
-- [ ] **Split config** (opt-in). Copy `extras/split-config/recipe.json` to `.frontmatter/config/taxonomy/contentTypes/recipe.json` and reload the window. Run **Generate content type from current file** on `content/recipes/pancakes.md`: you get the "update manually" warning, and `frontmatter.json` is unchanged. Delete the copied file afterwards.
+- [ ] **Split config** (opt-in). Copy `extras/split-config/recipe.json` to `.frontmatter/config/taxonomy/contentTypes/recipe.json` and reload the window. Run **Generate content type from current file** on `content/recipes/pancakes.md` (answer **no** to overriding the default, enter any name).
+  - You get the "Cannot update setting … because you've extended or split the configuration" warning.
+  - No "has been generated" message appears.
+  - `frontmatter.json` and `pancakes.md` are unchanged; the page doesn't get the unsaved content type.
+
+  Delete the copied file afterwards.
 - [ ] **Open on website.** Close all editors. On the dashboard, use **Open on website** on `Search index`. It opens `https://example.com/blog/search-index`, without an error and without the slug of another file.
 - [ ] **Preview slug.** **Preview content** on `search-index.md`. The URL ends in `search-index`, not `search-`.
 - [ ] **Create tag.** Open `content/recipes/waffles.md`, run **Create tag** with `fresh`, and add it to the page. `labels` gets `fresh`, and no `tag:` key is added.
