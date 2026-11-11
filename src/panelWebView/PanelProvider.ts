@@ -207,6 +207,12 @@ export class PanelProvider implements WebviewViewProvider, Disposable {
       crntPanel.updateTitle(fileName);
     } else {
       crntPanel.updateTitle(undefined);
+
+      // The active editor has no front matter (ex. a JavaScript file). Clear the panel right away,
+      // otherwise it shows the previous file until the debounced status check runs.
+      if (window.activeTextEditor) {
+        DataListener.pushMetadata(null);
+      }
     }
   }
 
