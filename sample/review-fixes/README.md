@@ -44,7 +44,7 @@ git checkout -- sample/review-fixes && git clean -fd -- sample/review-fixes
 | Path | Used for |
 |---|---|
 | `frontmatter.json` | Commented config: the comments must survive every settings update |
-| `content/blog` | 30 pages (2 pages on the dashboard): `post-01` – `post-20`, `hello` / `hello-world`, `search-index`, `$(touch fm-pwned).md`, `injection-payloads.md` (shell payloads in the front matter), `wysiwyg-variety.md` (markdown that Quill would rewrite), `broken-front-matter.md`, `links.md`, `my post.md`, `string-tags.md` |
+| `content/blog` | 31 pages (2 pages on the dashboard): `post-01` – `post-20`, `hello` / `hello-world`, `search-index`, `$(touch fm-pwned).md`, `injection-payloads.md` (shell payloads in the front matter), `wysiwyg-variety.md` and `stars-style.md` (markdown in two styles that edits must keep), `broken-front-matter.md`, `links.md`, `my post.md`, `string-tags.md` |
 | `content/blog-archive` | A folder whose name starts with `blog` |
 | `content/docs/*` | Wildcard content folder |
 | `content/i18n/{en,nl}` | i18n content folder |
@@ -267,9 +267,9 @@ In every check, no `fm-pwned` file may appear anywhere in the project, and `scri
 
 On macOS/Linux, the same checks pass on `beta`. The differences are on Windows (the error message and `windowsHide`) and in the changelog.
 
-## #1077 – Wysiwyg markdown not rewritten on open
+## #1077 – Wysiwyg markdown keeps its style when edited
 
-#1077 is the same fix as the wysiwyg part of #1074 (already merged) and conflicts with `beta`. Test it on its own branch:
+Opening a file no longer rewrites markdown `wysiwyg` fields; that's fixed on `beta` by #1074. #1077 was merged with `beta` and now fixes the other half: **editing** the field rewrote the rest of the value (`-` to `*`, `_italic_` to `*italic*`, `__bold__` to `**bold**`, `snake_case` to `snake\_case`, `|-` to `|`). Test it on its own branch:
 
 ```bash
 git fetch origin
@@ -277,11 +277,8 @@ git switch -c test/1077 origin/fix/wysiwyg-markdown-reformat
 git merge --no-edit origin/chore/review-fixes-sample
 ```
 
-This branch was made before #1074 was merged, so pages with hidden fields that have a default (`content/fields/demo.md`) are still saved on open by that older bug. Use the pages in `content/blog`.
-
-- [ ] **Opening.** Open `content/blog/wysiwyg-variety.md` (`|-`, `-` bullets, `_italic_`, `__bold__`, an ordered list and a link). The file is unchanged.
-- [ ] **Switching files.** Switch to `post-01.md`. Both files are unchanged.
-- [ ] **Switching via a non-content file.** Switch to `src/app.js` and back to `wysiwyg-variety.md`. The file is unchanged.
-- [ ] **Typing and toolbar.** Type in **Summary**, and use **Bold** in its toolbar. Both are saved. Once you edit the field, the whole value is re-serialized (`|`, `*` bullets, `*italic*`, `**bold**`). That is expected and not part of the fix.
-
-The same checks pass on `beta` (#1074).
+- [ ] **Opening.** Open `content/blog/wysiwyg-variety.md`, `content/blog/stars-style.md` and `post-01.md`. None of the files change.
+- [ ] **Editing, `-` style.** In `wysiwyg-variety.md`, type a word at the end of a line in **Summary**. Only that line changes. The `-` bullets, `_italic_`, `__bold__` and `|-` stay as they are.
+- [ ] **Editing, `*` style.** In `stars-style.md`, type a word in **Summary**. Only that line changes. The `*` bullets, `*italic*`, `**bold**`, `snake_case_words` and `|` stay as they are.
+- [ ] **Toolbar.** Select a word and click **Bold** in the field's toolbar. The word gets the same strong marker the value already uses (`__` in `wysiwyg-variety.md`, `**` in `stars-style.md`).
+- [ ] **New value.** Clear **Summary** in a page and type new text. It is saved (a new value gets a trailing newline, `|`).
