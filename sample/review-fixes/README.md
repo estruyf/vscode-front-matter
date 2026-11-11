@@ -228,9 +228,15 @@ Other fields and commands:
 - [ ] **Hanging requests.** Relationship field on an i18n page without a locale, Copilot buttons without a GitHub session: no endless spinners.
 - [ ] **Reveal project folder.** It opens Finder or Explorer (also for a workspace path with spaces).
 
-## #1076 – Custom scripts without a shell
+## #1076 – Windows script errors and the security advisory
 
-#1076 fixes the same command injection as #1070 (already merged), in a different way, and it conflicts with `beta`. Test it on its own branch:
+The command injection is fixed on `beta` by #1070. #1076 was rebased onto it and now adds:
+- a localized Windows error for `.cmd`/`.bat` commands;
+- `windowsHide`;
+- `''` instead of `"undefined"` for missing placeholder arguments;
+- the #1067 advisory credit and breaking-change notes.
+
+Test it on its own branch:
 
 ```bash
 git fetch origin
@@ -238,29 +244,28 @@ git switch -c test/1076 origin/fix/custom-script-command-injection
 git merge --no-edit origin/chore/review-fixes-sample
 ```
 
-This branch was made before #1070 was merged, so content creation from the `article` template fails on its `draft: true` value (a separate bug fixed in #1070). Use the `placeholder` template instead.
-
 In every check, no `fm-pwned` file may appear anywhere in the project, and `script-output.json` shows exactly what the script received.
 
 - [ ] **Front matter payloads.** Open `content/blog/injection-payloads.md` and run **Echo args**. In the last entry of `script-output.json`:
   - `frontMatterParses` is `true`;
-  - `description` and `author` arrive exactly as in the file (`"`, `&`, `;`, `$(…)`, backticks);
-  - `singleQuotesEncoded` is `false`. This is a behaviour difference: on `beta` (#1070) it is `true`, because `'` is still sent as `%27`.
+  - `description` and `author` arrive as in the file (`"`, `&`, `;`, `$(…)`, backticks);
+  - `singleQuotesEncoded` is `true`: on macOS/Linux, `'` is still sent as `%27`, for existing scripts.
 - [ ] **File name.** Open `content/blog/$(touch fm-pwned).md` and run **Echo args**. `filePath` ends in `$(touch fm-pwned).md`.
 - [ ] **Bulk mode.** Run **Bulk echo** from the **Create content** dropdown (⚡). It runs for every page, including the two above.
 - [ ] **Command with an argument.** Run **Python echo** (`"command": "python3 -u"`). `interpreterOptions` is `["-u"]`.
 - [ ] **Answers.** Run **Ask a question** and accept the default answer. It is recorded as ``message=it's "quoted" $(touch fm-pwned) `ls` ``.
 - [ ] **Copilot output** (needs GitHub Copilot). Run **Copilot prompt**. The response is recorded as `promptResponse=…` with the quotes and `$(…)` intact.
-- [ ] **Placeholder script.** Choose **Create content › Create by template**, then **blog**, then **placeholder**, and enter the title `Rock & Roll's "best" $(touch fm-pwned)`. The new page gets `author: "Written by the team: Rock & Roll's \"best\" $(touch fm-pwned)"`.
+- [ ] **Placeholder script.** Choose **Create content › Create by template**, then **blog**, then **placeholder** (or **article**), and enter the title `Rock & Roll's "best" $(touch fm-pwned)`. The new page gets `author: "Written by the team: Rock & Roll's \"best\" $(touch fm-pwned)"`.
 - [ ] **Media script.** In **Media › images**, run **Media info** on `$(touch fm-pwned).png`. `mediaPath` ends in `$(touch fm-pwned).png`.
 - [ ] **Reveal project folder.** In the panel's **Other actions**, click **Reveal project folder**. Finder opens the sample folder.
 - [ ] **Windows only:**
   - **Windows npx check** shows the new error that `.cmd`/`.bat` commands like `npx` are not supported.
+  - No console window flashes while a script runs.
   - A PowerShell script receives plain JSON.
   - `injection-payloads.md` (`"` and `&`) works as above.
-- [ ] **Breaking by design:** a `command` with `~` or `$HOME` is no longer expanded.
+- [ ] **Changelog.** The 10.14.0 section has a **Breaking changes** section (Windows only) and the #1067 security entry with the reporter credit.
 
-The same checks pass on `beta` with #1070, except for the `%27` difference and the Windows `.cmd` message (#1070 shows a plain "command failed").
+On macOS/Linux, the same checks pass on `beta`. The differences are on Windows (the error message and `windowsHide`) and in the changelog.
 
 ## #1077 – Wysiwyg markdown not rewritten on open
 
