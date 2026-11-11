@@ -391,7 +391,7 @@ export class Settings {
    * @param updateGlobal - Indicates whether to update the global setting or not. Default is `false`.
    * @returns A promise that resolves when the setting is updated.
    */
-  public static async safeUpdate<T>(name: string, value: T, updateGlobal = false): Promise<void> {
+  public static async safeUpdate<T>(name: string, value: T, updateGlobal = false): Promise<boolean> {
     if (Settings.hasExtendedConfig) {
       const configKey = `${CONFIG_KEY}.${name}`;
 
@@ -413,11 +413,12 @@ export class Settings {
 ${JSON.stringify(value, null, 2)}`,
           'SETTING'
         );
-        return;
+        return false;
       }
     }
 
     await Settings.update<T>(name, value, updateGlobal);
+    return true;
   }
 
   /**

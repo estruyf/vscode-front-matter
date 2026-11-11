@@ -296,12 +296,6 @@ export class ContentType {
 
     const fields = await ContentType.generateFields(content.data);
 
-    // Update the type field in the page
-    if (!overrideBool && editor) {
-      content.data[DefaultFields.ContentType] = contentTypeName;
-      await ArticleHelper.update(editor, content);
-    }
-
     const newContentType: IContentType = {
       name: contentTypeName,
       pageBundle,
@@ -318,7 +312,16 @@ export class ContentType {
       contentTypes.push(newContentType);
     }
 
-    await Settings.safeUpdate(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
+    // The settings could not be updated (ex. split config), so the page should not refer to it
+    if (!(await Settings.safeUpdate(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true))) {
+      return;
+    }
+
+    // Update the type field in the page
+    if (!overrideBool && editor) {
+      content.data[DefaultFields.ContentType] = contentTypeName;
+      await ArticleHelper.update(editor, content);
+    }
 
     const configPath = await Settings.projectConfigPath();
     const notificationAction = await Notifications.info(
@@ -369,7 +372,10 @@ export class ContentType {
       contentTypes.push({ ...contentType, fields: updatedFields });
     }
 
-    await Settings.safeUpdate(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true);
+    // The settings could not be updated (ex. split config), the warning explains why
+    if (!(await Settings.safeUpdate(SETTING_TAXONOMY_CONTENT_TYPES, contentTypes, true))) {
+      return;
+    }
 
     const configPath = await Settings.projectConfigPath();
     const notificationAction = await Notifications.info(
