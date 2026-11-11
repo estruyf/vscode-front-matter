@@ -188,7 +188,7 @@ Field editing:
 
 Switching files:
 
-- [ ] **Focused non-content file.** Open `src/app.js` next to `post-01.md`, focus `app.js`, and edit a panel field. Only `post-01.md` changes.
+- [ ] **Switching to a non-content file.** With `post-01.md` open in the panel, open `src/app.js`. The panel switches to the general view right away. It no longer shows the front matter of `post-01.md` again for a second before switching. Switching back to `post-01.md` shows its fields again.
 - [ ] **Type, then switch.** Type in **Description**, then open another file right away. The last characters are saved into `post-01.md`.
 - [ ] **Unsaved changes in a background tab.** Without autosave, change `post-01.md` in the editor (unsaved), focus another tab, and edit a panel field. The unsaved change is kept, and you get no "file is newer" conflict when saving.
 
