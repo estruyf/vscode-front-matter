@@ -40,14 +40,48 @@ function markdownToHtml(markdownText: string) {
   return htmlContents.replace(/<del>/g, '<s>').replace(/<\/del>/g, '</s>');
 }
 
-function htmlToMarkdown(htmlText: string) {
+interface MarkdownStyle {
+  bullet?: '-' | '*' | '+';
+  bulletOrdered?: '.' | ')';
+  emphasis?: '_' | '*';
+  strong?: '_' | '*';
+  trailingNewline: boolean;
+}
+
+/**
+ * Detect the markdown style of the stored value, so that an edit keeps the markers the content
+ * already uses instead of the remark-stringify defaults (`*` bullets, `*emphasis*`, ...)
+ */
+function getMarkdownStyle(markdown: string): MarkdownStyle {
+  return {
+    bullet: markdown.match(/^[ \t]*([-*+])[ \t]/m)?.[1] as MarkdownStyle['bullet'],
+    bulletOrdered: markdown.match(/^[ \t]*\d+([.)])[ \t]/m)?.[1] as MarkdownStyle['bulletOrdered'],
+    emphasis: /(^|[^_\w])_(?!_)\S/m.test(markdown) ? '_' : /(^|[^*\w])\*(?!\*)\S/m.test(markdown) ? '*' : undefined,
+    strong: /__\S/.test(markdown) ? '_' : /\*\*\S/.test(markdown) ? '*' : undefined,
+    // A new value keeps the default trailing newline
+    trailingNewline: markdown ? markdown.endsWith('\n') : true
+  };
+}
+
+function htmlToMarkdown(htmlText: string, style?: MarkdownStyle) {
   const file = unified()
     .use(rehypeParse, { emitParseErrors: true, duplicateAttribute: false })
     .use(rehypeRemark)
     .use(remarkGfm)
-    .use(remarkStringify)
+    .use(remarkStringify, {
+      bullet: style?.bullet,
+      bulletOrdered: style?.bulletOrdered,
+      emphasis: style?.emphasis,
+      strong: style?.strong
+    })
     .processSync(htmlText);
-  return String(file);
+
+  // Underscores inside a word never start emphasis, so they don't need the escape
+  let markdown = String(file).replace(/(\w)\\_(?=\w)/g, '$1_');
+  if (style && !style.trailingNewline) {
+    markdown = markdown.replace(/\n$/, '');
+  }
+  return markdown;
 }
 
 export type WYSIWYGType = "html" | "markdown";
@@ -78,7 +112,7 @@ const WysiwygField: React.FunctionComponent<IWysiwygFieldProps> = ({
   /**
    * Convert the editor HTML to the value that gets stored in the front matter
    */
-  const toFieldValue = (html: string | null | undefined) => normalize(type === "html" ? html : htmlToMarkdown(html || ""));
+  const toFieldValue = (html: string | null | undefined) => normalize(type === "html" ? html : htmlToMarkdown(html || "", getMarkdownStyle(normalize(value))));
 
   /**
    * Send the text to the extension host when it is a local edit that was not sent yet
