@@ -49,6 +49,7 @@
 - [#1074](https://github.com/estruyf/vscode-front-matter/pull/1074): Fix lost edits when panel updates overlap, and front matter being written into the focused file (ex. a `.ts` file) instead of the file the panel shows
 - [#1074](https://github.com/estruyf/vscode-front-matter/pull/1074): Fix lost or reverted input in `wysiwyg`, `slug`, `number`, `choice`, `datetime`, and relationship fields, and the last characters being lost when switching files while typing
 - [#1074](https://github.com/estruyf/vscode-front-matter/pull/1074): Opening a file with a markdown `wysiwyg` field no longer rewrites its front matter
+- [#1077](https://github.com/estruyf/vscode-front-matter/pull/1077): Editing a markdown `wysiwyg` field keeps the list bullets, emphasis and strong markers, and line endings the value already uses, instead of rewriting the whole value (ex. `-` bullets to `*`, `_italic_` to `*italic*`, `snake_case` to `snake\_case`)
 - [#1074](https://github.com/estruyf/vscode-front-matter/pull/1074): Fix block fields losing changes or writing into the wrong record, and hidden fields with a default overwriting the stored value
 - [#1074](https://github.com/estruyf/vscode-front-matter/pull/1074): Clearing a nested field no longer removes its sibling fields, and Copilot tag suggestions no longer replace your existing tags
 - [#1074](https://github.com/estruyf/vscode-front-matter/pull/1074): Fix nested fields named `title` (ex. `seo.meta.title`) not being removed when cleared with `clearEmpty`
