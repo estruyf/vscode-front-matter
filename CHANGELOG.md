@@ -36,6 +36,7 @@
 - [#1073](https://github.com/estruyf/vscode-front-matter/pull/1073): Fix taxonomy tagging removing the tag from the wrong page, and its filter not hiding rows
 - [#1073](https://github.com/estruyf/vscode-front-matter/pull/1073): Fix data entries being saved into the wrong data file, unsaved data form edits being reset, and creating a data file overwriting an existing one
 - [#1073](https://github.com/estruyf/vscode-front-matter/pull/1073): Fix wrong media paths when the file name contains the static folder name (ex. `public-logo.png`)
+- [#1073](https://github.com/estruyf/vscode-front-matter/pull/1073): The media dashboard always shows the item count next to the refresh button, also in folders without media files
 - [#1074](https://github.com/estruyf/vscode-front-matter/pull/1074): Fix lost edits when panel updates overlap, and front matter being written into the focused file (ex. a `.ts` file) instead of the file the panel shows
 - [#1074](https://github.com/estruyf/vscode-front-matter/pull/1074): Fix lost or reverted input in `wysiwyg`, `slug`, `number`, `choice`, `datetime`, and relationship fields, and the last characters being lost when switching files while typing
 - [#1074](https://github.com/estruyf/vscode-front-matter/pull/1074): Opening a file with a markdown `wysiwyg` field no longer rewrites its front matter
