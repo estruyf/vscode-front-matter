@@ -862,7 +862,7 @@ export class ArticleHelper {
                 let output: string | any = await CustomScript.executeScript(
                   script,
                   wsFolder?.fsPath || '',
-                  [`${wsFolder?.fsPath}`, `${filePath}`, `${title}`]
+                  [wsFolder?.fsPath || '', filePath || '', title || '']
                 );
 
                 if (output) {

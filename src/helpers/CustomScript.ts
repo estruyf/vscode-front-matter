@@ -499,20 +499,38 @@ export class CustomScript {
     const execution = await resolveCommand(command, args);
 
     return new Promise((resolve, reject) => {
-      execFile(execution.file, execution.args, { cwd: wsPath }, (error, stdout) => {
-        if (error) {
-          Logger.error(error.message);
-          reject(error.message);
-          return;
-        }
+      execFile(
+        execution.file,
+        execution.args,
+        { cwd: wsPath, windowsHide: true },
+        (error, stdout) => {
+          if (error) {
+            Logger.error(error.message);
 
-        if (stdout && stdout.endsWith(`\n`)) {
-          // Remove empty line at the end of the string
-          stdout = stdout.slice(0, -1);
-        }
+            // Windows `.cmd`/`.bat` shims (npx, npm, ...) can only be started through a shell
+            const code = (error as NodeJS.ErrnoException).code;
+            if (getPlatform() === 'windows' && (code === 'ENOENT' || code === 'EINVAL')) {
+              reject(
+                localize(
+                  LocalizationKey.helpersCustomScriptExecuteScriptWindowsCommandError,
+                  command
+                )
+              );
+              return;
+            }
 
-        resolve(stdout);
-      });
+            reject(error.message);
+            return;
+          }
+
+          if (stdout && stdout.endsWith(`\n`)) {
+            // Remove empty line at the end of the string
+            stdout = stdout.slice(0, -1);
+          }
+
+          resolve(stdout);
+        }
+      );
     });
   }
 
