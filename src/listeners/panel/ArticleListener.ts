@@ -1,4 +1,4 @@
-import { Article } from '../../commands';
+import { Article, Preview } from '../../commands';
 import { ArticleHelper } from '../../helpers';
 import { PostMessageData } from '../../models';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
@@ -35,7 +35,7 @@ export class ArticleListener extends BaseListener {
    * Generate a slug
    * @param title
    */
-  private static generateSlug(
+  private static async generateSlug(
     command: CommandToCode,
     { title, slugTemplate }: { title: string; slugTemplate?: string },
     requestId?: string
@@ -44,7 +44,12 @@ export class ArticleListener extends BaseListener {
       return;
     }
 
-    const article = ArticleHelper.getFrontMatterFromCurrentDocument();
+    // Without an active text editor, the panel shows the previewed file
+    let article = ArticleHelper.getFrontMatterFromCurrentDocument();
+    if (!article && Preview.filePath) {
+      article = await ArticleHelper.getFrontMatterByPath(Preview.filePath);
+    }
+
     const slug = Article.generateSlug(title, article, article?.path, slugTemplate);
     if (slug) {
       this.sendRequest(command, requestId, slug);

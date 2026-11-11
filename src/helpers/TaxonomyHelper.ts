@@ -347,7 +347,8 @@ export class TaxonomyHelper {
 
           if (mdFile) {
             try {
-              const article = FrontMatterParser.fromFile(mdFile);
+              // The path is needed to get the content type of the folder
+              const article = { ...FrontMatterParser.fromFile(mdFile), path: file.fsPath };
               const contentType = await ArticleHelper.getContentType(article);
 
               const fieldNames: string[] = this.getFieldsHierarchy(taxonomyType, contentType);
@@ -356,7 +357,7 @@ export class TaxonomyHelper {
                 const { data } = article;
                 let taxonomies: string | string[] = ContentType.getFieldValue(data, fieldNames);
                 if (typeof taxonomies === 'string') {
-                  taxonomies = taxonomies.split(`,`);
+                  taxonomies = taxonomies.split(`,`).map((t) => t.trim());
                 }
 
                 let needsFileUpdate = false;
@@ -482,7 +483,8 @@ export class TaxonomyHelper {
 
           if (mdFile) {
             try {
-              const article = FrontMatterParser.fromFile(mdFile);
+              // The path is needed to get the content type of the folder
+              const article = { ...FrontMatterParser.fromFile(mdFile), path: file.fsPath };
               const contentType = await ArticleHelper.getContentType(article);
 
               const oldFieldNames: string[] = this.getFieldsHierarchy(oldType, contentType);
@@ -496,10 +498,10 @@ export class TaxonomyHelper {
                   ContentType.getFieldValue(data, newFieldNames) || [];
 
                 if (typeof oldTaxonomies === 'string') {
-                  oldTaxonomies = oldTaxonomies.split(',');
+                  oldTaxonomies = oldTaxonomies.split(',').map((t) => t.trim());
                 }
                 if (typeof newTaxonomies === 'string') {
-                  newTaxonomies = newTaxonomies.split(',');
+                  newTaxonomies = newTaxonomies.split(',').map((t) => t.trim());
                 }
 
                 if (oldTaxonomies && oldTaxonomies.length > 0) {

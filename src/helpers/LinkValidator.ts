@@ -61,7 +61,7 @@ export class LinkValidator {
   }
 
   /**
-   * Validate external HTTP(S) URLs via HEAD requests (with caching).
+   * Validate external HTTP(S) URLs via HEAD requests, falling back to GET (with caching).
    */
   public static async validateExternalLinks(urls: string[]): Promise<LinkValidationResult[]> {
     const results: LinkValidationResult[] = [];
@@ -73,7 +73,7 @@ export class LinkValidator {
         continue;
       }
 
-      const ok = await LinkValidator.headRequest(url);
+      const ok = await LinkValidator.isReachable(url);
       LinkValidator.externalCache.set(url, { ok, checkedAt: Date.now() });
       results.push({ url, exists: ok, internal: false });
     }
@@ -192,6 +192,16 @@ export class LinkValidator {
       } catch {
         // Keep the original string if URL parsing fails.
       }
+    } else if (/^[a-z][a-z0-9+.-]+:/i.test(cleanUrl)) {
+      // Other schemes (mailto:, tel:, data:, ...) are no files
+      return undefined;
+    }
+
+    // Links to files with spaces or special characters are URL encoded
+    try {
+      cleanUrl = decodeURIComponent(cleanUrl);
+    } catch {
+      // Keep the original string if it is not validly encoded.
     }
 
     return parseWinPath(cleanUrl);
@@ -367,9 +377,21 @@ export class LinkValidator {
     }
   }
 
-  private static async headRequest(url: string): Promise<boolean> {
+  private static async isReachable(url: string): Promise<boolean> {
     try {
       const res = await fetch(url, { method: 'HEAD', signal: AbortSignal.timeout(5000) });
+      if (res.ok) {
+        return true;
+      }
+    } catch {
+      return false;
+    }
+
+    // Not all servers support HEAD requests (405, 403, ...), retry with GET
+    try {
+      const res = await fetch(url, { method: 'GET', signal: AbortSignal.timeout(5000) });
+      // Only the status is needed, skip downloading the body
+      res.body?.cancel().catch(() => undefined);
       return res.ok;
     } catch {
       return false;

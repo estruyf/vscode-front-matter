@@ -30,6 +30,11 @@ export const processArticlePlaceholdersFromPath = async (
   value: string,
   filePath: string
 ): Promise<string> => {
+  // Front matter values can be booleans, numbers, null, ...
+  if (typeof value !== 'string') {
+    return value;
+  }
+
   const article = await ArticleHelper.getFrontMatterByPath(filePath);
   if (!article) {
     return value;

@@ -199,7 +199,10 @@ export class ArticleHelper {
   public static async rename(filePath: string) {
     filePath = parseWinPath(filePath);
     const fileUri = Uri.file(filePath);
-    const file = workspace.openTextDocument(fileUri);
+    const file = await workspace.openTextDocument(fileUri).then(
+      (doc) => doc,
+      () => undefined
+    );
     if (!file) {
       Notifications.error(l10n.t(LocalizationKey.commandsArticleRenameFileNotExistsError));
       return;
@@ -662,8 +665,6 @@ export class ArticleHelper {
     titleValue: string,
     fileExtension?: string
   ): Promise<string | undefined> {
-    FrontMatterParser.currentContent = null;
-
     const fileType = Settings.get<string>(SETTING_CONTENT_DEFAULT_FILETYPE);
 
     let prefix = Settings.get<string>(SETTING_TEMPLATES_PREFIX);
@@ -712,12 +713,17 @@ export class ArticleHelper {
       let newFileName = `${sanitizedName}.${fileExtension || contentType?.fileType || fileType}`;
 
       if (prefix && typeof prefix === 'string') {
-        newFileName = `${prefix}-${newFileName}`;
+        if (prefix.endsWith('/')) {
+          newFileName = `${prefix}${newFileName}`;
+        } else {
+          newFileName = `${prefix}-${newFileName}`;
+        }
       }
 
       newFilePath = join(folderPath, newFileName);
 
-      await mkdirAsync(folderPath, { recursive: true });
+      // The prefix can contain folders
+      await mkdirAsync(dirname(newFilePath), { recursive: true });
 
       if (await existsAsync(newFilePath)) {
         Notifications.warning(
@@ -856,7 +862,7 @@ export class ArticleHelper {
                 let output: string | any = await CustomScript.executeScript(
                   script,
                   wsFolder?.fsPath || '',
-                  `'${wsFolder?.fsPath}' '${filePath}' '${title}'`
+                  [`${wsFolder?.fsPath}`, `${filePath}`, `${title}`]
                 );
 
                 if (output) {
@@ -889,8 +895,8 @@ export class ArticleHelper {
               if (value === `{{${placeholder.id}}}`) {
                 value = updatedValue;
               } else {
-                const regex = new RegExp(`{{${placeholder.id}}}`, 'g');
-                value = value.replace(regex, updatedValue);
+                // Replace literally, the ID is no regex and the value can contain `$` patterns
+                value = value.split(`{{${placeholder.id}}}`).join(updatedValue);
               }
             } catch (e) {
               Notifications.error(
@@ -1061,6 +1067,14 @@ export class ArticleHelper {
    * @returns
    */
   private static parseFile(fileContents: string, fileName: string): ParsedFrontMatter | null {
+    // The diagnostics belong to the parsed file, which is not always the active one
+    const editor = window.activeTextEditor;
+    const document =
+      editor && parseWinPath(editor.document.fileName) === parseWinPath(fileName)
+        ? editor.document
+        : undefined;
+    const fileUri = document?.uri || Uri.file(fileName);
+
     try {
       const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
 
@@ -1078,11 +1092,7 @@ export class ArticleHelper {
 
           this.notifiedFiles = this.notifiedFiles.filter((n) => n !== fileName);
 
-          if (window.activeTextEditor?.document.uri) {
-            Extension.getInstance().diagnosticCollection.delete(
-              window.activeTextEditor.document.uri
-            );
-          }
+          Extension.getInstance().diagnosticCollection.delete(fileUri);
 
           return article;
         }
@@ -1099,33 +1109,31 @@ export class ArticleHelper {
 
       Logger.error(`ArticleHelper::parseFile: ${fileName} - ${error.message}`);
 
-      const editor = window.activeTextEditor;
-      if (editor?.document.uri) {
-        let fmRange = null;
+      const lines = fileContents.split('\n');
+      let fmRange = null;
 
-        if (error?.mark && typeof error.mark.line !== 'undefined') {
-          const curLineText = editor.document.lineAt(error.mark.line - 1);
-          const lastCharPos = new Position(
-            error.mark.line - 1,
-            Math.max(curLineText.text.length, 0)
-          );
-          fmRange = new Range(new Position(error.mark.line - 1, 0), lastCharPos);
-        } else {
-          fmRange = MarkdownFoldingProvider.getFrontMatterRange(editor.document);
-        }
+      if (error?.mark && typeof error.mark.line !== 'undefined') {
+        const curLineText = lines[error.mark.line - 1] || '';
+        const lastCharPos = new Position(error.mark.line - 1, Math.max(curLineText.length, 0));
+        fmRange = new Range(new Position(error.mark.line - 1, 0), lastCharPos);
+      } else if (document) {
+        fmRange = MarkdownFoldingProvider.getFrontMatterRange(document);
+      } else {
+        // The file is not shown in the editor, mark the start of the front matter
+        fmRange = new Range(new Position(0, 0), new Position(0, lines[0].length));
+      }
 
-        if (fmRange) {
-          Extension.getInstance().diagnosticCollection.set(editor.document.uri, [
-            {
-              severity: DiagnosticSeverity.Error,
-              message: `${error.name ? `${error.name}: ` : ''}${l10n.t(
-                LocalizationKey.helpersArticleHelperParseFileDiagnosticError,
-                fileName
-              )}`,
-              range: fmRange
-            }
-          ]);
-        }
+      if (fmRange) {
+        Extension.getInstance().diagnosticCollection.set(fileUri, [
+          {
+            severity: DiagnosticSeverity.Error,
+            message: `${error.name ? `${error.name}: ` : ''}${l10n.t(
+              LocalizationKey.helpersArticleHelperParseFileDiagnosticError,
+              fileName
+            )}`,
+            range: fmRange
+          }
+        ]);
       }
     }
     return null;

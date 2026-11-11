@@ -4,7 +4,7 @@ import { CustomScript as ICustomScript, ScriptType } from '../models/PanelSettin
 import { window, env as vscodeEnv, ProgressLocation, Uri, commands } from 'vscode';
 import { ArticleHelper, Logger, MediaHelpers } from '.';
 import { Folders, WORKSPACE_PLACEHOLDER } from '../commands/Folders';
-import { exec, execSync } from 'child_process';
+import { execFile, execSync } from 'child_process';
 import * as os from 'os';
 import { join } from 'path';
 import { Notifications } from './Notifications';
@@ -13,7 +13,7 @@ import { Dashboard } from '../commands/Dashboard';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { ParsedFrontMatter } from '../parsers';
 import { SETTING_CUSTOM_SCRIPTS } from '../constants';
-import { evaluateCommand, existsAsync, getPlatform } from '../utils';
+import { evaluateCommand, existsAsync, getPlatform, resolveCommand } from '../utils';
 import { LocalizationKey, localize } from '../localization';
 import { ScriptAction } from '../models';
 import { Copilot } from '../services/Copilot';
@@ -125,7 +125,7 @@ export class CustomScript {
 
     const output: string[] = [];
 
-    window.withProgress(
+    await window.withProgress(
       {
         location: ProgressLocation.Notification,
         title: localize(LocalizationKey.helpersCustomScriptExecuting, script.title),
@@ -179,35 +179,31 @@ export class CustomScript {
       return;
     }
 
-    return new Promise((resolve, reject) => {
-      window.withProgress(
-        {
-          location: ProgressLocation.Notification,
-          title: localize(LocalizationKey.helpersCustomScriptExecuting, script.title),
-          cancellable: false
-        },
-        async () => {
-          try {
-            const output = await CustomScript.executeScript(
-              script,
-              wsPath,
-              `"${wsPath}" "${path}"`
-            );
+    await window.withProgress(
+      {
+        location: ProgressLocation.Notification,
+        title: localize(LocalizationKey.helpersCustomScriptExecuting, script.title),
+        cancellable: false
+      },
+      async () => {
+        try {
+          const output = await CustomScript.executeScript(script, wsPath, [wsPath, path]);
 
-            await CustomScript.showOutput(output, script);
+          await CustomScript.showOutput(output, script);
 
-            Dashboard.postWebviewMessage({
-              command: DashboardCommand.mediaUpdate
-            });
+          Dashboard.postWebviewMessage({
+            command: DashboardCommand.mediaUpdate
+          });
 
-            return;
-          } catch (e) {
-            Notifications.errorWithOutput(`${script.title} -`);
-            return;
-          }
+          return;
+        } catch (e) {
+          Notifications.errorWithOutput(
+            `${script.title} - ${typeof e === 'string' ? e : (e as Error).message}`
+          );
+          return;
         }
-      );
-    });
+      }
+    );
   }
 
   /**
@@ -225,25 +221,17 @@ export class CustomScript {
     script: ICustomScript
   ): Promise<string | null> {
     try {
-      let articleData = '';
-      if (os.type() === 'Windows_NT') {
-        const jsonData = JSON.stringify(article?.data);
-
-        if (script.command && script.command.toLowerCase() === 'powershell') {
-          articleData = `'${jsonData.replace(/"/g, `\\"`)}'`;
-        } else {
-          articleData = `"${jsonData.replace(/"/g, `\\"`)}"`;
-        }
-      } else {
-        articleData = JSON.stringify(article?.data).replace(/'/g, '%27');
-        articleData = `'${articleData}'`;
+      let articleData = JSON.stringify(article?.data);
+      if (os.type() !== 'Windows_NT') {
+        // Keep the single quotes encoded, as existing scripts received them this way
+        articleData = articleData.replace(/'/g, '%27');
       }
 
-      const output = await CustomScript.executeScript(
-        script,
+      const output = await CustomScript.executeScript(script, wsPath, [
         wsPath,
-        `"${wsPath}" "${contentPath}" ${articleData}`
-      );
+        contentPath,
+        articleData
+      ]);
       return output;
     } catch (e) {
       if (typeof e === 'string') {
@@ -372,7 +360,7 @@ export class CustomScript {
   public static async executeScript(
     script: ICustomScript,
     wsPath: string,
-    args: string
+    args: string[]
   ): Promise<string> {
     const platform = getPlatform();
 
@@ -419,16 +407,21 @@ export class CustomScript {
       command = `${command} -File`;
     }
 
-    const fullScript = `${command} "${scriptPath}" ${args}`;
+    const scriptArgs = [scriptPath, ...args];
+    const fullScript = `${command} ${scriptArgs.map((arg) => `"${arg}"`).join(' ')}`;
     Logger.info(localize(LocalizationKey.helpersCustomScriptExecuting, fullScript));
 
-    const output = await CustomScript.processExecution(fullScript, wsPath);
+    const output = await CustomScript.processExecution(command, scriptArgs, wsPath);
     return output;
   }
 
   // Recursive function to process the execution of the script
-  private static async processExecution(fullScript: string, wsPath: string): Promise<string> {
-    const output: string = await CustomScript.executeScriptAsync(fullScript, wsPath);
+  private static async processExecution(
+    command: string,
+    args: string[],
+    wsPath: string
+  ): Promise<string> {
+    const output: string = await CustomScript.executeScriptAsync(command, args, wsPath);
 
     try {
       const data = JSON.parse(output);
@@ -465,7 +458,7 @@ export class CustomScript {
             }
 
             if (answer) {
-              answers.push(`${question.name}="${answer}"`);
+              answers.push(`${question.name}=${answer}`);
             } else {
               return '';
             }
@@ -473,16 +466,14 @@ export class CustomScript {
         }
 
         if (answers.length > 0) {
-          const newScript = `${fullScript} ${answers.join(' ')}`;
-          return await CustomScript.processExecution(newScript, wsPath);
+          return await CustomScript.processExecution(command, [...args, ...answers], wsPath);
         }
       } else if (fmAction) {
         if (fmAction === 'promptCopilot' && fmPrompt) {
           const response = await Copilot.promptCopilot(fmPrompt);
           if (response) {
-            const promptResponse = `promptResponse="${response}"`;
-            const newScript = `${fullScript} ${promptResponse}`;
-            return await CustomScript.processExecution(newScript, wsPath);
+            const promptResponse = `promptResponse=${response}`;
+            return await CustomScript.processExecution(command, [...args, promptResponse], wsPath);
           }
         }
       }
@@ -494,14 +485,21 @@ export class CustomScript {
   }
 
   /**
-   * Execute script async
-   * @param fullScript
+   * Execute script async, the arguments are not passed through a shell
+   * @param command
+   * @param args
    * @param wsPath
    * @returns
    */
-  private static async executeScriptAsync(fullScript: string, wsPath: string): Promise<string> {
+  private static async executeScriptAsync(
+    command: string,
+    args: string[],
+    wsPath: string
+  ): Promise<string> {
+    const execution = await resolveCommand(command, args);
+
     return new Promise((resolve, reject) => {
-      exec(fullScript, { cwd: wsPath }, (error, stdout) => {
+      execFile(execution.file, execution.args, { cwd: wsPath }, (error, stdout) => {
         if (error) {
           Logger.error(error.message);
           reject(error.message);

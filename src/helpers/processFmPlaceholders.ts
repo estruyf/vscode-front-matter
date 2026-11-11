@@ -1,4 +1,5 @@
 import { formatInTimezone } from '../utils';
+import { DateHelper } from './DateHelper';
 
 export const processFmPlaceholders = (value: string, fmData: { [key: string]: any }) => {
   // Example: {{fm.date}} or {{fm.date | dateFormat 'DD.MM.YYYY'}}
@@ -25,9 +26,10 @@ export const processFmPlaceholders = (value: string, fmData: { [key: string]: an
               dateFormat = dateFormat.substring(1, dateFormat.length - 1);
             }
 
-            // Parse the date value and format it
-            if (fieldValue) {
-              const formattedDate = formatInTimezone(new Date(fieldValue), dateFormat);
+            // Parse the date value and format it (formatting an invalid date throws)
+            const date = fieldValue ? new Date(fieldValue) : undefined;
+            if (date && DateHelper.isValid(date)) {
+              const formattedDate = formatInTimezone(date, dateFormat);
               value = value.replace(match, formattedDate);
             }
           } else if (fieldValue) {

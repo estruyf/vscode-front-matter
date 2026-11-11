@@ -1,6 +1,6 @@
 import * as yaml from 'yaml';
 import * as toml from '@iarna/toml';
-import { Format, FrontMatterParser } from '.';
+import { Format } from '.';
 import { SETTING_QUOTE_STRINGS } from '../constants';
 import { Settings } from '../helpers';
 
@@ -55,14 +55,22 @@ export const Engines = {
           skipInvalid?: true;
           noCompatMode?: true;
           lineWidth?: number;
+          originalContent?: string;
         }
       ) => {
-        // Do our own parsing to keep the comments
-        if (FrontMatterParser.currentContent) {
-          const originalContent = FrontMatterParser.currentContent;
-          FrontMatterParser.currentContent = null;
+        const quoteStrings = Settings.get(SETTING_QUOTE_STRINGS);
+        const stringifyOptions: yaml.CreateNodeOptions & yaml.ToStringOptions = {
+          lineWidth: options?.lineWidth || 5000,
+          defaultStringType: quoteStrings ? 'QUOTE_DOUBLE' : 'PLAIN',
+          defaultKeyType: 'PLAIN',
+          keepUndefined: false,
+          indent: options?.indent || 2,
+          indentSeq: options?.noArrayIndent ? false : true
+        };
 
-          let frontMatter = getMatter(originalContent);
+        // Do our own parsing to keep the comments, based on the content of the file being written
+        if (options?.originalContent) {
+          let frontMatter = getMatter(options.originalContent);
           if (frontMatter) {
             if (typeof frontMatter === 'string' && frontMatter.endsWith(`\r`)) {
               frontMatter = frontMatter.substring(0, frontMatter.length - 1);
@@ -85,20 +93,11 @@ export const Engines = {
 
             const updatedValue = docYaml.toJSON();
 
-            const quoteStrings = Settings.get(SETTING_QUOTE_STRINGS);
-
-            return yaml.stringify(updatedValue, {
-              lineWidth: options?.lineWidth || 5000,
-              defaultStringType: quoteStrings ? 'QUOTE_DOUBLE' : 'PLAIN',
-              defaultKeyType: 'PLAIN',
-              keepUndefined: false,
-              indent: options?.indent || 2,
-              indentSeq: options?.noArrayIndent ? false : true
-            });
+            return yaml.stringify(updatedValue, stringifyOptions);
           }
         }
 
-        return yaml.stringify(obj, options);
+        return yaml.stringify(obj, stringifyOptions);
       }
     }
   }
