@@ -1,12 +1,12 @@
-import { commands, Uri, window } from 'vscode';
+import { commands, Disposable, Uri, window } from 'vscode';
 import { EXTENSION_COMMAND_PREFIX } from '../constants';
 
 export class UriHandler {
   /**
    * Register the URI handler
    */
-  public static register() {
-    window.registerUriHandler({
+  public static register(subscriptions: Disposable[]) {
+    const handler = window.registerUriHandler({
       handleUri(uri: Uri) {
         const queryParams = new URLSearchParams(uri.query);
         if (!queryParams.has('command')) {
@@ -31,5 +31,7 @@ export class UriHandler {
         commands.executeCommand(command, args);
       }
     });
+
+    subscriptions.push(handler);
   }
 }

@@ -168,11 +168,12 @@ export class ArticleHelper {
    *
    * @param editor
    * @param article
+   * @returns `false` when the edit could not be applied (ex: the document changed in the meantime)
    */
   public static async update(editor: vscode.TextEditor, article: ParsedFrontMatter) {
     const update = this.generateUpdate(editor.document, article);
 
-    await editor.edit((builder) => builder.replace(update.range, update.newText));
+    return await editor.edit((builder) => builder.replace(update.range, update.newText));
   }
 
   /**

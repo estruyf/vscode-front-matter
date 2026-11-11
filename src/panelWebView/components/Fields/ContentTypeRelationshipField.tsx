@@ -12,13 +12,14 @@ import { FieldTitle } from './FieldTitle';
 import { FieldMessage } from './FieldMessage';
 import { ChoiceButton } from './ChoiceButton';
 import useDropdownStyle from '../../hooks/useDropdownStyle';
-import useMessages from '../../hooks/useMessages';
+import useLocalChange from '../../hooks/useLocalChange';
 
 export interface IContentTypeRelationshipFieldProps extends BaseFieldProps<string | string[]> {
   contentTypeName?: string;
   contentTypeValue?: string;
   sameContentLocale?: boolean;
   multiSelect?: boolean;
+  filePath?: string;
   onChange: (value: string | string[]) => void;
 }
 
@@ -32,6 +33,7 @@ export const ContentTypeRelationshipField: React.FunctionComponent<
   contentTypeValue,
   sameContentLocale,
   multiSelect,
+  filePath,
   onChange,
   required
 }: React.PropsWithChildren<IContentTypeRelationshipFieldProps>) => {
@@ -42,7 +44,7 @@ export const ContentTypeRelationshipField: React.FunctionComponent<
     const [filter, setFilter] = React.useState<string | undefined>(undefined);
     const inputRef = React.useRef<HTMLInputElement | null>(null);
     const { getDropdownStyle } = useDropdownStyle(inputRef as any, '6px');
-    const { metadata } = useMessages();
+    const { trackChange, isStaleValue } = useLocalChange();
 
     /**
      * Check the required state
@@ -86,6 +88,12 @@ export const ContentTypeRelationshipField: React.FunctionComponent<
      * On selecting an option
      * @param txtValue
      */
+    const updateValue = (newValue: string | string[]) => {
+      setCrntSelected(newValue);
+      trackChange(newValue);
+      onChange(newValue);
+    };
+
     const onSelect = (option: string) => {
       setFilter(undefined);
 
@@ -93,13 +101,10 @@ export const ContentTypeRelationshipField: React.FunctionComponent<
         if (option) {
           const crntValue = typeof crntSelected === 'string' ? [crntSelected] : crntSelected;
           const newValue = [...((crntValue || []) as string[]), option];
-          const uniqueValues = [...new Set(newValue)];
-          setCrntSelected(uniqueValues);
-          onChange(uniqueValues);
+          updateValue([...new Set(newValue)]);
         }
       } else if (option) {
-        setCrntSelected(option);
-        onChange(option);
+        updateValue(option);
       }
     };
 
@@ -112,13 +117,15 @@ export const ContentTypeRelationshipField: React.FunctionComponent<
         if (multiSelect) {
           const newValue = [...(crntSelected || [])].filter((v) => v !== txtValue);
           setCrntSelected(newValue);
+          trackChange(newValue);
           onChange(newValue);
         } else {
           setCrntSelected('');
+          trackChange('');
           onChange('');
         }
       },
-      [multiSelect, crntSelected, onChange]
+      [multiSelect, crntSelected, onChange, trackChange]
     );
 
     /**
@@ -127,18 +134,21 @@ export const ContentTypeRelationshipField: React.FunctionComponent<
     const availableChoices = useMemo(() => {
       return pages.filter((page: Page) => {
         const value = contentTypeValue === 'slug' ? page.slug : page.fmFilePath;
+        // Exact matches only, a partial match would hide "hello-world" when "hello" is selected
+        const isSelected = (crntValue: string) =>
+          crntValue === `${value}` || crntValue === getValue(page, contentTypeValue);
 
         let toShow = true;
 
         if (typeof crntSelected === 'string') {
-          toShow = crntSelected !== `${value}` && !value.includes(crntSelected);
+          toShow = !isSelected(crntSelected);
         } else if (crntSelected instanceof Array) {
-          const selected = crntSelected.filter((v) => v === `${value}` || value.includes(v));
+          const selected = crntSelected.filter(isSelected);
           toShow = selected.length === 0;
         }
 
         if (toShow && filter) {
-          return page.title.toLowerCase().includes(filter);
+          return page.title.toLowerCase().includes(filter.toLowerCase());
         }
 
         return toShow;
@@ -149,6 +159,10 @@ export const ContentTypeRelationshipField: React.FunctionComponent<
      * Retrieve the selected value
      */
     useEffect(() => {
+      if (isStaleValue(value)) {
+        return;
+      }
+
       if (crntSelected !== value) {
         setCrntSelected(value);
       }
@@ -158,13 +172,13 @@ export const ContentTypeRelationshipField: React.FunctionComponent<
      * Retrieve the pages based on the content type
      */
     useEffect(() => {
-      if (contentTypeName && metadata?.filePath) {
+      if (contentTypeName && filePath) {
         setLoading(true);
         messageHandler
           .request<Page[]>(CommandToCode.searchByType, {
             type: contentTypeName,
             sameLocale: sameContentLocale ?? true,
-            activePath: metadata?.filePath
+            activePath: filePath
           })
           .then((pages: Page[]) => {
             setPages(pages || []);
@@ -174,7 +188,7 @@ export const ContentTypeRelationshipField: React.FunctionComponent<
             setLoading(false);
           });
       }
-    }, [contentTypeName, sameContentLocale, metadata?.filePath]);
+    }, [contentTypeName, sameContentLocale, filePath]);
 
     return (
       <div className={`metadata_field ${showRequiredState ? 'required' : ''}`}>

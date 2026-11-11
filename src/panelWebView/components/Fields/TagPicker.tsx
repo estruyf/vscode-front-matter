@@ -134,7 +134,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
         } as CustomTaxonomyData);
       }
     },
-    [renderAsString]
+    [type, fieldName, taxonomyId, renderAsString, parents, blockData]
   );
 
   /**
@@ -247,7 +247,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
         closeMenu();
       }
     },
-    [options, inputRef, selected, freeform]
+    [options, inputRef, selected, freeform, sendUpdate]
   );
 
   const updateTaxonomy = (values: string[]) => {
@@ -275,7 +275,7 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
           setLoading(undefined);
         });
     },
-    [selected]
+    [selected, sendUpdate]
   );
 
   /**
@@ -327,13 +327,14 @@ const TagPicker: React.FunctionComponent<ITagPickerProps> = ({
         )}
       </>
     );
-  }, [settings?.copilotEnabled, label, type]);
+  }, [settings?.copilotEnabled, label, type, loading, suggestTaxonomy]);
 
   const sortedSelectedTags = useMemo(() => {
     const safeSelected = selected || [];
 
     if (safeSelected instanceof Array && safeSelected.length > 0) {
-      return (selected || []).sort((a: string, b: string) => {
+      // Sort a copy, sorting the state in place changes the order in which the values are stored
+      return [...safeSelected].sort((a: string, b: string) => {
         const aString = typeof a === 'string' ? a : `${a}`;
         const bString = typeof b === 'string' ? b : `${b}`;
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import JSONSchemaBridge from 'uniforms-bridge-json-schema';
 import { AutoFields, AutoForm, ErrorsField } from '../../../components/uniforms-frontmatter';
 import { JsonFieldControls } from './JsonFieldControls';
@@ -21,6 +21,8 @@ export const JsonFieldForm: React.FunctionComponent<IJsonFieldFormProps> = ({
   onClear
 }: React.PropsWithChildren<IJsonFieldFormProps>) => {
   const [bridge, setBridge] = useState<JSONSchemaBridge | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const formRef = useRef<any>(null);
 
   const ajv = new Ajv({ allErrors: true, useDefaults: true, strict: false });
 
@@ -41,6 +43,23 @@ export const JsonFieldForm: React.FunctionComponent<IJsonFieldFormProps> = ({
     }
   }, [schema]);
 
+  /**
+   * Reset the form when another record or schema gets selected. Resetting it on every render
+   * would wipe the unsaved changes whenever the panel re-renders.
+   */
+  useEffect(() => {
+    formRef.current?.reset();
+  }, [bridge, JSON.stringify(model)]);
+
+  const onSubmit = (data: unknown) => {
+    onUpdate(data);
+
+    if (!model) {
+      // Clear the form after a new record got added
+      formRef.current?.reset();
+    }
+  };
+
   if (!bridge || !schema) {
     return null;
   }
@@ -50,8 +69,8 @@ export const JsonFieldForm: React.FunctionComponent<IJsonFieldFormProps> = ({
       <AutoForm
         schema={bridge}
         model={model || {}}
-        onSubmit={onUpdate}
-        ref={(form) => form?.reset()}
+        onSubmit={onSubmit}
+        ref={formRef}
       >
         {label && <h3>{label}</h3>}
 
