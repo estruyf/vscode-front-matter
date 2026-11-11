@@ -91,11 +91,10 @@ export const MediaHeaderTop: React.FunctionComponent<
           {l10n.t(LocalizationKey.dashboardHeaderTabsMedia)}
         </h1>
         <div className="mt-0.5 flex items-center gap-2 flex-wrap" style={{ color: 'var(--fm-text-lo)' }}>
-          {totalMedia > 0 && (
-            <p className="text-xs leading-tight mt-0.5" style={{ fontFamily: 'var(--fm-mono)', color: 'var(--fm-text-lo)' }}>
-              {totalMedia} {totalMedia === 1 ? 'item' : 'items'}{` `}&middot;{` `}
-            </p>
-          )}
+          {/* Always show the count, otherwise the refresh button is left on its own line */}
+          <p className="text-xs leading-tight mt-0.5" style={{ fontFamily: 'var(--fm-mono)', color: 'var(--fm-text-lo)' }}>
+            {totalMedia || 0} {totalMedia === 1 ? 'item' : 'items'}{` `}&middot;{` `}
+          </p>
 
           <RefreshDashboardData />
         </div>
