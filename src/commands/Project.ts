@@ -79,8 +79,14 @@ categories: []
     try {
       await Settings.createTeamSettings();
 
-      // Add the default content type
-      await Settings.safeUpdate(SETTING_TAXONOMY_CONTENT_TYPES, [DEFAULT_CONTENT_TYPE], true);
+      // Add the default content type, unless the project already defines its own content types
+      const contentTypes = Settings.inspect(SETTING_TAXONOMY_CONTENT_TYPES);
+      if (
+        typeof contentTypes?.teamValue === 'undefined' &&
+        typeof contentTypes?.workspaceValue === 'undefined'
+      ) {
+        await Settings.safeUpdate(SETTING_TAXONOMY_CONTENT_TYPES, [DEFAULT_CONTENT_TYPE], true);
+      }
 
       if (sampleTemplate !== undefined) {
         await Project.createSampleTemplate();

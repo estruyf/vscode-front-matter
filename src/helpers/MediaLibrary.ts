@@ -1,6 +1,7 @@
 import { MediaHelpers } from './MediaHelpers';
 import { Disposable, workspace } from 'vscode';
 import { JsonDB } from 'node-json-db';
+import { writeLockAsync } from 'node-json-db/dist/lock/Lock';
 import { createJsonDb } from './JsonDbHelper';
 import { basename, dirname, join, parse } from 'path';
 import { Folders, WORKSPACE_PLACEHOLDER } from '../commands/Folders';
@@ -20,8 +21,10 @@ interface MediaRecord {
 
 export class MediaLibrary {
   private db: JsonDB | undefined;
-  private renameFilesListener: Disposable | undefined;
-  private removeFilesListener: Disposable | undefined;
+  private wsPath: string | undefined;
+  // Static, so that the listeners of a previous instance get disposed
+  private static renameFilesListener: Disposable | undefined;
+  private static removeFilesListener: Disposable | undefined;
   private static instance: MediaLibrary;
 
   private constructor() {
@@ -29,6 +32,8 @@ export class MediaLibrary {
     if (!wsFolder) {
       return;
     }
+
+    this.wsPath = wsFolder.fsPath;
 
     // In version 8.4.0 we moved to a new database location
     // This is to ensure that the database is moved to the new location
@@ -59,11 +64,11 @@ export class MediaLibrary {
 
     this.db = createJsonDb(dbPath);
 
-    if (this.renameFilesListener) {
-      this.renameFilesListener.dispose();
+    if (MediaLibrary.renameFilesListener) {
+      MediaLibrary.renameFilesListener.dispose();
     }
 
-    this.renameFilesListener = workspace.onDidRenameFiles((e) => {
+    MediaLibrary.renameFilesListener = workspace.onDidRenameFiles((e) => {
       e.files.forEach(async (f) => {
         const path = f.oldUri.path.toLowerCase();
         if (MediaLibrary.isMediaFile(path)) {
@@ -73,11 +78,11 @@ export class MediaLibrary {
       });
     });
 
-    if (this.removeFilesListener) {
-      this.removeFilesListener.dispose();
+    if (MediaLibrary.removeFilesListener) {
+      MediaLibrary.removeFilesListener.dispose();
     }
 
-    this.removeFilesListener = workspace.onDidDeleteFiles((e) => {
+    MediaLibrary.removeFilesListener = workspace.onDidDeleteFiles((e) => {
       e.files.forEach(async (f) => {
         const path = f.path.toLowerCase();
         if (MediaLibrary.isMediaFile(path)) {
@@ -96,7 +101,22 @@ export class MediaLibrary {
     return MediaLibrary.instance;
   }
 
-  public static reset() {
+  public static async reset() {
+    const wsFolder = Folders.getWorkspaceFolder();
+    const instance = MediaLibrary.instance;
+
+    // Reload the database of the same workspace folder instead of creating a new instance
+    if (instance?.db && instance.wsPath === wsFolder?.fsPath) {
+      const db = instance.db;
+      try {
+        // Use the database lock, so pending writes finish first and none start during the reload
+        await writeLockAsync(() => db.reload());
+      } catch {
+        // The database could not be read, it gets loaded again on the next access
+      }
+      return;
+    }
+
     MediaLibrary.instance = new MediaLibrary();
   }
 

@@ -30,7 +30,7 @@ export class MediaListener extends BaseListener {
         this.sendMediaFiles(page, folder, sorting);
         break;
       case DashboardMessage.refreshMedia:
-        MediaHelpers.resetMedia();
+        MediaHelpers.resetMedia(false);
         this.sendMediaFiles(0, msg?.payload?.folder);
         break;
       case DashboardMessage.uploadMedia:
@@ -40,7 +40,7 @@ export class MediaListener extends BaseListener {
         await this.storePastedMedia(msg);
         break;
       case DashboardMessage.deleteMedia:
-        this.delete(msg?.payload);
+        await this.delete(msg?.payload);
         break;
       case DashboardMessage.revealMedia:
         this.openFileInFinder(msg?.payload?.file);
@@ -168,7 +168,7 @@ export class MediaListener extends BaseListener {
    * @param sorting
    */
   public static async sendMediaFiles(page = 0, folder = '', sorting: SortingOption | null = null) {
-    MediaLibrary.reset();
+    await MediaLibrary.reset();
     const files = await MediaHelpers.getMedia(page, folder, sorting);
     this.sendMsg(DashboardCommand.media, files);
   }
@@ -180,9 +180,9 @@ export class MediaListener extends BaseListener {
   private static openFileInFinder(file: string) {
     if (file) {
       if (os.type() === 'Linux' && env.remoteName?.toLowerCase() === 'wsl') {
-        commands.executeCommand('remote-wsl.revealInExplorer', Uri.parse(file));
+        commands.executeCommand('remote-wsl.revealInExplorer', Uri.file(file));
       } else {
-        commands.executeCommand('revealFileInOS', Uri.parse(file));
+        commands.executeCommand('revealFileInOS', Uri.file(file));
       }
     }
   }
@@ -213,33 +213,36 @@ export class MediaListener extends BaseListener {
       return;
     }
 
-    const mediaLib = MediaLibrary.getInstance();
-    const allMetadata = await mediaLib.getAll();
-    const allFilePaths = flattenObjectKeys(allMetadata);
+    try {
+      const mediaLib = MediaLibrary.getInstance();
+      const allMetadata = await mediaLib.getAll();
+      const allFilePaths = flattenObjectKeys(allMetadata);
 
-    const filesEndingWith = allFilePaths.filter((f) => f.endsWith(payload));
+      const filesEndingWith = allFilePaths.filter((f) => f.endsWith(payload));
 
-    // Check if the files exist
-    const unmappedFiles: UnmappedMedia[] = [];
-    for (const file of filesEndingWith) {
-      const absPath = FilesHelper.relToAbsPath(file);
-      if (!(await existsAsync(absPath))) {
-        const parsedPath = MediaLibrary.parsePath(absPath);
-        const metadata = await mediaLib.get(parsedPath);
-        if (metadata) {
-          unmappedFiles.push({
-            file,
-            absPath,
-            metadata: {
-              ...(metadata as { [key: string]: any })
-            }
-          } as UnmappedMedia);
+      // Check if the files exist
+      const unmappedFiles: UnmappedMedia[] = [];
+      for (const file of filesEndingWith) {
+        const absPath = FilesHelper.relToAbsPath(file);
+        if (!(await existsAsync(absPath))) {
+          const parsedPath = MediaLibrary.parsePath(absPath);
+          const metadata = await mediaLib.get(parsedPath);
+          if (metadata) {
+            unmappedFiles.push({
+              file,
+              absPath,
+              metadata: {
+                ...(metadata as { [key: string]: any })
+              }
+            } as UnmappedMedia);
+          }
         }
       }
-    }
 
-    if (unmappedFiles && unmappedFiles.length > 0) {
+      // Always reply, the dashboard waits for the response
       this.sendRequest(command as DashboardCommand, requestId, unmappedFiles);
+    } catch (e) {
+      this.sendError(command as DashboardCommand, requestId, (e as Error)?.message || e);
     }
   }
 
@@ -260,7 +263,7 @@ export class MediaListener extends BaseListener {
       }
 
       this.timers[folderPath] = setTimeout(() => {
-        MediaHelpers.resetMedia();
+        MediaHelpers.resetMedia(false);
         this.sendMediaFiles(0, folder || '');
         delete this.timers[folderPath];
       }, 500);
@@ -312,7 +315,7 @@ export class MediaListener extends BaseListener {
       dimensions = undefined;
     }
 
-    MediaHelpers.resetMedia();
+    MediaHelpers.resetMedia(false);
     this.sendRequest(command as DashboardCommand, requestId, {
       filename: parse(fsPath).base,
       fsPath,
@@ -329,10 +332,10 @@ export class MediaListener extends BaseListener {
    * Delete a media file
    * @param data
    */
-  private static delete(data: { file: string; page: number; folder: string | null }) {
+  private static async delete(data: { file: string; page: number; folder: string | null }) {
     try {
-      MediaHelpers.deleteFile(data.file);
-      this.sendMediaFiles(data.page || 0, data.folder || '');
+      await MediaHelpers.deleteFile(data.file);
+      await this.sendMediaFiles(data.page || 0, data.folder || '');
     } catch {
       // Do nothing
     }

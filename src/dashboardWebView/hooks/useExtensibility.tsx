@@ -23,6 +23,9 @@ export default function useExtensibility(options: {
       return;
     }
 
+    // Ignore results of scripts that were started for previous data
+    let cancelled = false;
+
     if (window.fmExternal.getCardFooter) {
       window.fmExternal.getCardFooter(options.fmFilePath, {
         fmFilePath: options.fmFilePath,
@@ -32,6 +35,10 @@ export default function useExtensibility(options: {
         type: options.type,
         ...options.pageData
       }).then(htmlContent => {
+        if (cancelled) {
+          return;
+        }
+
         if (htmlContent) {
           setFooterHtml(htmlContent);
         } else {
@@ -50,6 +57,10 @@ export default function useExtensibility(options: {
         type: options.type,
         ...options.pageData
       }).then(htmlContent => {
+        if (cancelled) {
+          return;
+        }
+
         if (htmlContent) {
           setImageHtml(htmlContent);
         } else {
@@ -67,6 +78,10 @@ export default function useExtensibility(options: {
         type: options.type,
         ...options.pageData
       }).then(htmlContent => {
+        if (cancelled) {
+          return;
+        }
+
         if (htmlContent) {
           setTitleHtml(htmlContent);
         } else {
@@ -84,6 +99,10 @@ export default function useExtensibility(options: {
         type: options.type,
         ...options.pageData
       }).then(htmlContent => {
+        if (cancelled) {
+          return;
+        }
+
         if (htmlContent) {
           setDescriptionHtml(htmlContent);
         } else {
@@ -101,6 +120,10 @@ export default function useExtensibility(options: {
         type: options.type,
         ...options.pageData
       }).then(htmlContent => {
+        if (cancelled) {
+          return;
+        }
+
         if (htmlContent) {
           setDateHtml(htmlContent);
         } else {
@@ -118,6 +141,10 @@ export default function useExtensibility(options: {
         type: options.type,
         ...options.pageData
       }).then(htmlContent => {
+        if (cancelled) {
+          return;
+        }
+
         if (htmlContent) {
           setStatusHtml(htmlContent);
         } else {
@@ -135,6 +162,10 @@ export default function useExtensibility(options: {
         type: options.type,
         ...options.pageData
       }).then(htmlContent => {
+        if (cancelled) {
+          return;
+        }
+
         if (htmlContent) {
           setTagsHtml(htmlContent);
         } else {
@@ -142,7 +173,19 @@ export default function useExtensibility(options: {
         }
       });
     }
-  }, [options]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    options.fmFilePath,
+    options.date,
+    options.title,
+    options.description,
+    options.type,
+    JSON.stringify(options.pageData),
+    webviewUrl
+  ]);
 
   return {
     titleHtml,

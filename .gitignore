@@ -14,4 +14,5 @@ localization.log
 localization.md
 .env
 
-.claude
+.claude/*
+!.claude/skills/

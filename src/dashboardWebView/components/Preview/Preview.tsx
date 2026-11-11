@@ -65,7 +65,7 @@ export const Preview: React.FunctionComponent<IPreviewProps> = ({
     return () => {
       Messenger.unlisten(msgListener);
     };
-  })
+  }, [])
 
   return (
     <div className="w-full h-full bg-white">

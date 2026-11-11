@@ -1,7 +1,7 @@
 import { PencilIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { BaseFieldProps, CustomScript, PanelSettings } from '../../../models';
 import { RequiredFieldsAtom } from '../../state';
 import { FieldTitle } from './FieldTitle';
@@ -45,14 +45,38 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   actions,
   required
 }: React.PropsWithChildren<ITextFieldProps>) => {
-  const [, setRequiredFields] = useRecoilState(RequiredFieldsAtom);
+  const setRequiredFields = useSetRecoilState(RequiredFieldsAtom);
   const [text, setText] = React.useState<string | null | undefined>(undefined);
   const [loading, setLoading] = React.useState<string | undefined>(undefined);
   // Timestamp of the last local edit, null when the field is in sync with the front matter
   const lastTypedRef = useRef<number | null>(null);
   // Last value we sent to, or accepted from, the extension host. Used to recognize the echo of our own update.
   const lastSentRef = useRef<string | undefined>(undefined);
-  const debouncedText = useDebounce<string | null | undefined>(text, DEBOUNCE_TIME);
+
+  /**
+   * Send the text to the extension host when it is a local edit that was not sent yet
+   */
+  const sendText = (crntText: string | null | undefined) => {
+    if (crntText === undefined || lastTypedRef.current === null) {
+      // Not a local edit (ex. text was set from the incoming value)
+      return;
+    }
+
+    const outgoing = normalize(crntText);
+    const baseline = lastSentRef.current !== undefined ? lastSentRef.current : normalize(value);
+    if (outgoing === baseline) {
+      if (baseline === normalize(value)) {
+        lastTypedRef.current = null;
+      }
+      return;
+    }
+
+    lastSentRef.current = outgoing;
+    onChange(outgoing);
+  };
+
+  // A pending edit is sent when the field unmounts before the debounce time passed (ex. switching files)
+  const debouncedText = useDebounce<string | null | undefined>(text, DEBOUNCE_TIME, sendText);
 
   const onTextChange = (txtValue: string) => {
     setText(txtValue);
@@ -162,7 +186,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
         )}
       </>
     );
-  }, [settings?.copilotEnabled, settings?.seo, name, actions, loading]);
+  }, [settings?.copilotEnabled, settings?.seo, name, actions, loading, text]);
 
   useEffect(() => {
     if (showRequiredState) {
@@ -202,22 +226,7 @@ export const TextField: React.FunctionComponent<ITextFieldProps> = ({
   }, [value]);
 
   useEffect(() => {
-    if (debouncedText === undefined || lastTypedRef.current === null) {
-      // Not a local edit (ex. text was set from the incoming value)
-      return;
-    }
-
-    const outgoing = normalize(debouncedText);
-    const baseline = lastSentRef.current !== undefined ? lastSentRef.current : normalize(value);
-    if (outgoing === baseline) {
-      if (baseline === normalize(value)) {
-        lastTypedRef.current = null;
-      }
-      return;
-    }
-
-    lastSentRef.current = outgoing;
-    onChange(outgoing);
+    sendText(debouncedText);
   }, [debouncedText]);
 
   return (

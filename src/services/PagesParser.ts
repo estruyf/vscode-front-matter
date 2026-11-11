@@ -2,7 +2,7 @@ import { i18n } from './../commands/i18n';
 import { STATIC_FOLDER_PLACEHOLDER } from './../constants/StaticFolderPlaceholder';
 import { parseWinPath } from './../helpers/parseWinPath';
 import { dirname, extname, join } from 'path';
-import { StatusBarAlignment, Uri, window } from 'vscode';
+import { StatusBarAlignment, StatusBarItem, Uri, window } from 'vscode';
 import { Dashboard } from '../commands/Dashboard';
 import { Folders } from '../commands/Folders';
 import {
@@ -30,17 +30,18 @@ import { LocalizationKey } from '../localization';
 
 export class PagesParser {
   public static allPages: Page[] = [];
-  public static cachedPages: Page[] | undefined = undefined;
+  public static cachedPages: Map<string, Page> | undefined = undefined;
   private static parser: Promise<void> | undefined;
   private static initialized = false;
-  private static pagesStatusBar = window.createStatusBarItem(StatusBarAlignment.Left);
+  private static parseId = 0;
+  private static statusBarItem: StatusBarItem | undefined;
 
   /**
    * Start the page parser
    */
   public static start() {
     if (!this.parser) {
-      this.parser = this.parsePages();
+      this.startParser();
     }
   }
 
@@ -50,22 +51,70 @@ export class PagesParser {
    */
   public static getPages(cb: (pages: Page[]) => void) {
     if (this.parser) {
-      this.parser.then(() => cb(PagesParser.allPages));
+      this.whenParsed(cb);
     } else if (!PagesParser.initialized) {
-      this.parser = this.parsePages();
-      this.parser.then(() => cb(PagesParser.allPages));
+      this.startParser();
+      this.whenParsed(cb);
     } else if (PagesParser.allPages === undefined || PagesParser.allPages.length === 0) {
-      this.parser = this.parsePages();
-      this.parser.then(() => cb(PagesParser.allPages));
+      this.startParser();
+      this.whenParsed(cb);
     } else {
       cb(PagesParser.allPages);
     }
   }
 
   /**
+   * Start a new parse, the parser is cleared once it finished (also when it failed)
+   */
+  private static startParser() {
+    const parser = this.parsePages()
+      .catch((error) => {
+        Logger.error(`PagesParser:startParser: ${(error as Error)?.message || error}`);
+      })
+      .finally(() => {
+        // Only clear the parser when it was not replaced by a new parse
+        if (!this.parser || this.parser === parser) {
+          this.parser = undefined;
+          PagesParser.pagesStatusBar.hide();
+        }
+      });
+    this.parser = parser;
+  }
+
+  /**
+   * Wait for the current parse to finish
+   * @param cb
+   */
+  private static whenParsed(cb: (pages: Page[]) => void) {
+    const parseId = PagesParser.parseId;
+    this.parser?.then(() => {
+      // The pages were reset during the parse, wait for the new results
+      if (parseId !== PagesParser.parseId) {
+        PagesParser.getPages(cb);
+        return;
+      }
+
+      cb(PagesParser.allPages);
+    });
+  }
+
+  /**
+   * Status bar item which shows the parsing progress
+   */
+  private static get pagesStatusBar() {
+    if (!PagesParser.statusBarItem) {
+      PagesParser.statusBarItem = window.createStatusBarItem(StatusBarAlignment.Left);
+      Extension.getInstance().subscriptions.push(PagesParser.statusBarItem);
+    }
+    return PagesParser.statusBarItem;
+  }
+
+  /**
    * Reset the cache
    */
   public static async reset() {
+    // Invalidate the parse which might still be running
+    PagesParser.parseId++;
     this.parser = undefined;
     PagesParser.allPages = [];
     await Cache.clear(false);
@@ -76,6 +125,7 @@ export class PagesParser {
    */
   public static async parsePages() {
     Logger.verbose('PagesParser:parsePages:start');
+    const parseId = ++PagesParser.parseId;
     i18n.clearFiles();
     Folders.clearCached();
     const ext = Extension.getInstance();
@@ -83,6 +133,7 @@ export class PagesParser {
     // Update the dashboard with the fresh data
     const folderInfo = await Folders.getInfo();
     const pages: Page[] = [];
+    const pagePaths = new Set<string>();
 
     if (folderInfo) {
       PagesParser.pagesStatusBar.text = `$(sync~spin) ${l10n.t(
@@ -93,6 +144,11 @@ export class PagesParser {
       for (const folder of folderInfo) {
         Logger.verbose(`PagesParser:parsePages: Parsing folder ${folder.title} - ${folder.files}`);
         for (const file of folder.lastModified) {
+          // Stop when the pages were reset, a new parse takes over
+          if (parseId !== PagesParser.parseId) {
+            return;
+          }
+
           if (isValidFile(file.fileName)) {
             try {
               let page = await PagesParser.getCachedPage(file.filePath, file.mtime);
@@ -106,11 +162,12 @@ export class PagesParser {
                 );
               }
 
-              if (page && !pages.find((p) => p.fmFilePath === page?.fmFilePath)) {
+              if (page && !pagePaths.has(page.fmFilePath)) {
+                pagePaths.add(page.fmFilePath);
                 pages.push(page);
               }
             } catch (error: any) {
-              if ((error as Error)?.message.toLowerCase() === 'webview is disposed') {
+              if ((error as Error)?.message?.toLowerCase() === 'webview is disposed') {
                 continue;
               }
 
@@ -132,7 +189,11 @@ export class PagesParser {
     await ext.setState(ExtensionState.Dashboard.Pages.Cache, pages, 'workspace');
     PagesParser.cachedPages = undefined;
 
-    this.parser = undefined;
+    // The pages were reset during the parse, the new parse provides the pages
+    if (parseId !== PagesParser.parseId) {
+      return;
+    }
+
     this.initialized = true;
     PagesParser.allPages = [...pages];
     PagesParser.pagesStatusBar.hide();
@@ -153,13 +214,20 @@ export class PagesParser {
   ): Promise<Page | undefined> {
     if (!PagesParser.cachedPages) {
       const ext = Extension.getInstance();
-      PagesParser.cachedPages =
+      const cache =
         (await ext.getState<Page[]>(ExtensionState.Dashboard.Pages.Cache, 'workspace')) || [];
+
+      // Index the cache by path, so the lookup per file does not have to scan all pages
+      PagesParser.cachedPages = new Map();
+      for (const cachedPage of cache) {
+        if (!PagesParser.cachedPages.has(cachedPage.fmCachePath)) {
+          PagesParser.cachedPages.set(cachedPage.fmCachePath, cachedPage);
+        }
+      }
     }
 
-    return PagesParser.cachedPages.find(
-      (p) => p.fmCachePath === parseWinPath(filePath) && p.fmCacheModifiedTime === modifiedTime
-    );
+    const page = PagesParser.cachedPages.get(parseWinPath(filePath));
+    return page?.fmCacheModifiedTime === modifiedTime ? page : undefined;
   }
 
   /**
@@ -250,7 +318,7 @@ export class PagesParser {
         description: escapedDescription,
         slug:
           article?.data.slug ||
-          Article.generateSlug(escapedTitle, article, contentType.slugTemplate)
+          Article.generateSlug(escapedTitle, article, filePath, contentType.slugTemplate)
             ?.slugWithPrefixAndSuffix,
         date: article?.data[dateField] || '',
         draft: article?.data.draft,

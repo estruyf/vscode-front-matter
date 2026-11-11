@@ -13,7 +13,7 @@ import { FeatureFlag } from '../components/features/FeatureFlag';
 import { FEATURE_FLAG } from '../constants/Features';
 import { GitAction } from './components/Git/GitAction';
 import { CustomView } from './components/CustomView';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePrevious } from './hooks/usePrevious';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../localization';
@@ -36,11 +36,12 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = () => {
     contentHealth
   } = useMessages();
   const prevMediaSelection = usePrevious(mediaSelecting);
-  const [scrollY, setScrollY] = useState(0);
+  // A ref instead of state, as updating state on every scroll event re-renders the whole panel
+  const scrollY = useRef(0);
 
   const scollListener = useCallback(() => {
     if (!mediaSelecting) {
-      setScrollY(window.scrollY);
+      scrollY.current = window.scrollY;
     }
   }, [mediaSelecting]);
 
@@ -64,7 +65,7 @@ export const ViewPanel: React.FunctionComponent<IViewPanelProps> = () => {
     if (prevMediaSelection && !mediaSelecting) {
       setTimeout(() => {
         window.scrollTo({
-          top: scrollY,
+          top: scrollY.current,
         })
       }, 10);
     }

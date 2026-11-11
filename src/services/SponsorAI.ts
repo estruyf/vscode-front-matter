@@ -17,9 +17,10 @@ export class SponsorAi {
    * @returns
    */
   public static async getTitles(token: string, title: string) {
+    let timeout: NodeJS.Timeout | undefined;
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => {
+      timeout = setTimeout(() => {
         Notifications.warning(l10n.t(LocalizationKey.servicesSponsorAiGetTitlesWarning));
         controller.abort();
       }, 10000);
@@ -43,19 +44,27 @@ export class SponsorAi {
       );
       clearTimeout(timeout);
 
+      if (!response.ok) {
+        return undefined;
+      }
+
       const data: string[] = await response.json();
 
       return data || [];
     } catch (e) {
       Logger.error(`Sponsor AI: ${(e as Error).message}`);
       return undefined;
+    } finally {
+      // Also clear the timeout when the request failed
+      clearTimeout(timeout);
     }
   }
 
   public static async getDescription(token: string, title: string, content: string) {
+    let timeout: NodeJS.Timeout | undefined;
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => {
+      timeout = setTimeout(() => {
         Notifications.warning(l10n.t(LocalizationKey.servicesSponsorAiGetDescriptionWarning));
         controller.abort();
       }, 10000);
@@ -86,12 +95,19 @@ export class SponsorAi {
       );
       clearTimeout(timeout);
 
+      if (!response.ok) {
+        return undefined;
+      }
+
       const data: string = await response.text();
 
       return data || '';
     } catch (e) {
       Logger.error(`Sponsor AI: ${(e as Error).message}`);
       return undefined;
+    } finally {
+      // Also clear the timeout when the request failed
+      clearTimeout(timeout);
     }
   }
 
@@ -109,9 +125,10 @@ export class SponsorAi {
     description: string,
     type: TagType
   ) {
+    let timeout: NodeJS.Timeout | undefined;
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => {
+      timeout = setTimeout(() => {
         Notifications.warning(
           l10n.t(LocalizationKey.servicesSponsorAiGetTaxonomySuggestionsWarning)
         );
@@ -157,6 +174,9 @@ export class SponsorAi {
     } catch (e) {
       Logger.error(`Sponsor AI: ${(e as Error).message}`);
       return undefined;
+    } finally {
+      // Also clear the timeout when the request failed
+      clearTimeout(timeout);
     }
   }
 }

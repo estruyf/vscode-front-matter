@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Tab } from '../constants/Tab';
 import { Page } from '../models/Page';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   AllPagesAtom,
   CategorySelector,
@@ -10,6 +10,7 @@ import {
   FolderSelector,
   LocaleAtom,
   LocalesAtom,
+  PageAtom,
   SearchSelector,
   SettingsSelector,
   SortingAtom,
@@ -33,11 +34,11 @@ import { NavigationType } from '../models/NavigationType';
 export default function usePages(pages: Page[]) {
   const [sortedPages, setSortedPages] = useState<Page[]>([]);
   const [pageItems, setPageItems] = useRecoilState(AllPagesAtom);
-  const [, setLastSync] = useRecoilState(LastSyncAtom);
+  const setLastSync = useSetRecoilState(LastSyncAtom);
   const [sorting, setSorting] = useRecoilState(SortingAtom);
   const [tabInfo, setTabInfo] = useRecoilState(TabInfoAtom);
   const [locales, setLocales] = useRecoilState(LocalesAtom);
-  const [, setFilterValues] = useRecoilState(FilterValuesAtom);
+  const setFilterValues = useSetRecoilState(FilterValuesAtom);
   const settings = useRecoilValue(SettingsSelector);
   const tab = useRecoilValue(TabSelector);
   const folder = useRecoilValue(FolderSelector);
@@ -46,6 +47,7 @@ export default function usePages(pages: Page[]) {
   const locale = useRecoilValue(LocaleAtom);
   const category = useRecoilValue(CategorySelector);
   const filters = useRecoilValue(FiltersAtom);
+  const [, setPage] = useRecoilState(PageAtom);
   const tabPrevious = usePrevious(tab);
 
   /**
@@ -210,7 +212,7 @@ export default function usePages(pages: Page[]) {
       // Set the tab information
       setTabInfo(draftTypes);
 
-      if (Object.keys(filters).length === 0) {
+      if (!Object.keys(filters).some((name) => filters[name])) {
         const availableFilters = (settings?.filters || []).filter((f) => f !== 'contentFolders' && f !== 'tags' && f !== 'categories');
         if (availableFilters.length > 0) {
           const allFilters: { [filter: string]: string[]; } = {};
@@ -299,13 +301,18 @@ export default function usePages(pages: Page[]) {
     processByTab(sortedPages);
   }, [sortedPages, tab]);
 
+  // Start from the first page when the shown pages change
+  useEffect(() => {
+    setPage(0);
+  }, [tab, search, folder, tag, category, locale, filters, sorting]);
+
   useEffect(() => {
     Messenger.listen(searchListener);
 
     return () => {
       Messenger.unlisten(searchListener);
     };
-  }, []);
+  }, [processPages]);
 
   return {
     pageItems

@@ -18,7 +18,7 @@ import rehypeStringify from 'rehype-stringify'
 import { BaseFieldProps } from '../../../models';
 import { FieldMessage, FieldTitle } from '.';
 import { LocalizationKey, localize } from '../../../localization';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { RequiredFieldsAtom } from '../../state';
 import { useDebounce } from '../../../hooks/useDebounce';
 
@@ -40,14 +40,48 @@ function markdownToHtml(markdownText: string) {
   return htmlContents.replace(/<del>/g, '<s>').replace(/<\/del>/g, '</s>');
 }
 
-function htmlToMarkdown(htmlText: string) {
+interface MarkdownStyle {
+  bullet?: '-' | '*' | '+';
+  bulletOrdered?: '.' | ')';
+  emphasis?: '_' | '*';
+  strong?: '_' | '*';
+  trailingNewline: boolean;
+}
+
+/**
+ * Detect the markdown style of the stored value, so that an edit keeps the markers the content
+ * already uses instead of the remark-stringify defaults (`*` bullets, `*emphasis*`, ...)
+ */
+function getMarkdownStyle(markdown: string): MarkdownStyle {
+  return {
+    bullet: markdown.match(/^[ \t]*([-*+])[ \t]/m)?.[1] as MarkdownStyle['bullet'],
+    bulletOrdered: markdown.match(/^[ \t]*\d+([.)])[ \t]/m)?.[1] as MarkdownStyle['bulletOrdered'],
+    emphasis: /(^|[^_\w])_(?!_)\S/m.test(markdown) ? '_' : /(^|[^*\w])\*(?!\*)\S/m.test(markdown) ? '*' : undefined,
+    strong: /__\S/.test(markdown) ? '_' : /\*\*\S/.test(markdown) ? '*' : undefined,
+    // A new value keeps the default trailing newline
+    trailingNewline: markdown ? markdown.endsWith('\n') : true
+  };
+}
+
+function htmlToMarkdown(htmlText: string, style?: MarkdownStyle) {
   const file = unified()
     .use(rehypeParse, { emitParseErrors: true, duplicateAttribute: false })
     .use(rehypeRemark)
     .use(remarkGfm)
-    .use(remarkStringify)
+    .use(remarkStringify, {
+      bullet: style?.bullet,
+      bulletOrdered: style?.bulletOrdered,
+      emphasis: style?.emphasis,
+      strong: style?.strong
+    })
     .processSync(htmlText);
-  return String(file);
+
+  // Underscores inside a word never start emphasis, so they don't need the escape
+  let markdown = String(file).replace(/(\w)\\_(?=\w)/g, '$1_');
+  if (style && !style.trailingNewline) {
+    markdown = markdown.replace(/\n$/, '');
+  }
+  return markdown;
 }
 
 export type WYSIWYGType = "html" | "markdown";
@@ -68,17 +102,52 @@ const WysiwygField: React.FunctionComponent<IWysiwygFieldProps> = ({
   limit,
   required
 }: React.PropsWithChildren<IWysiwygFieldProps>) => {
-  const [, setRequiredFields] = useRecoilState(RequiredFieldsAtom);
+  const setRequiredFields = useSetRecoilState(RequiredFieldsAtom);
   // Timestamp of the last local edit, null when the field is in sync with the front matter
   const lastTypedRef = React.useRef<number | null>(null);
   // Last value we sent to, or accepted from, the extension host. Used to recognize the echo of our own update.
   const lastSentRef = React.useRef<string | undefined>(undefined);
   const [text, setText] = React.useState<string | null | undefined>(type === "html" ? value : markdownToHtml(value || ""));
-  const debouncedText = useDebounce<string | null | undefined>(text, DEBOUNCE_TIME);
 
-  const onTextChange = (newValue: string) => {
+  /**
+   * Convert the editor HTML to the value that gets stored in the front matter
+   */
+  const toFieldValue = (html: string | null | undefined) => normalize(type === "html" ? html : htmlToMarkdown(html || "", getMarkdownStyle(normalize(value))));
+
+  /**
+   * Send the text to the extension host when it is a local edit that was not sent yet
+   */
+  const sendText = (crntText: string | null | undefined) => {
+    if (crntText === undefined || lastTypedRef.current === null) {
+      // Not a local edit (ex. text was set from the incoming value)
+      return;
+    }
+
+    const outgoing = toFieldValue(crntText);
+    const baseline = lastSentRef.current !== undefined ? lastSentRef.current : normalize(value);
+    if (outgoing === baseline) {
+      if (baseline === normalize(value)) {
+        lastTypedRef.current = null;
+      }
+      return;
+    }
+
+    lastSentRef.current = outgoing;
+    onChange(outgoing);
+  };
+
+  // A pending edit is sent when the field unmounts before the debounce time passed (ex. switching files)
+  const debouncedText = useDebounce<string | null | undefined>(text, DEBOUNCE_TIME, sendText);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onTextChange = (newValue: string, _delta: any, source: string) => {
     setText(newValue);
-    lastTypedRef.current = Date.now();
+
+    // Quill also triggers a change when it normalizes the HTML of the value we passed (source "api"),
+    // only changes made by the user should be sent back to the front matter.
+    if (source === 'user') {
+      lastTypedRef.current = Date.now();
+    }
   }
 
   const modules = React.useMemo(() => {
@@ -147,8 +216,10 @@ const WysiwygField: React.FunctionComponent<IWysiwygFieldProps> = ({
     const incoming = normalize(value);
 
     if (lastSentRef.current !== undefined && incoming === lastSentRef.current) {
-      // Echo of our own update, the local text is at least as recent
-      lastTypedRef.current = null;
+      // Echo of our own update. When nothing was typed since, the field is in sync again.
+      if (toFieldValue(text) === incoming) {
+        lastTypedRef.current = null;
+      }
       return;
     }
 
@@ -169,22 +240,7 @@ const WysiwygField: React.FunctionComponent<IWysiwygFieldProps> = ({
    * Update the value when the debounced text changes
    */
   React.useEffect(() => {
-    if (debouncedText === undefined || lastTypedRef.current === null) {
-      // Not a local edit (ex. text was set from the incoming value)
-      return;
-    }
-
-    const outgoing = normalize(type === "html" ? debouncedText : htmlToMarkdown(debouncedText || ""));
-    const baseline = lastSentRef.current !== undefined ? lastSentRef.current : normalize(value);
-    if (outgoing === baseline) {
-      if (baseline === normalize(value)) {
-        lastTypedRef.current = null;
-      }
-      return;
-    }
-
-    lastSentRef.current = outgoing;
-    onChange(outgoing);
+    sendText(debouncedText);
   }, [debouncedText]);
 
   return (

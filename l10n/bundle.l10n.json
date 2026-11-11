@@ -747,6 +747,7 @@
   "helpers.customScript.showOutput.copyOutput.action": "Copy output",
   "helpers.customScript.showOutput.success": "{0}: Executed your custom script.",
   "helpers.customScript.validateCommand.error": "Invalid command: {0}",
+  "helpers.customScript.executeScript.windowsCommand.error": "{0}: The command could not be started. Scripts no longer run through a shell, so `.cmd` and `.bat` commands like `npx` or `npm` are not supported. Use an executable like `node`, `python`, or `powershell`, or the full path to an `.exe`.",
 
   "helpers.dataFileHelper.process.error": "Something went wrong while processing the data file.",
 

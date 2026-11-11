@@ -1,6 +1,6 @@
 import { Folders } from '../../commands';
 import { SETTING_CUSTOM_SCRIPTS } from '../../constants';
-import { CustomScript, Notifications, Settings } from '../../helpers';
+import { CustomScript, Logger, Notifications, Settings } from '../../helpers';
 import { CustomScript as ICustomScript, PostMessageData } from '../../models';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
@@ -29,12 +29,18 @@ export class ScriptListener extends BaseListener {
     }
 
     const script = payload as ICustomScript;
-    if (script.script) {
-      const wsFolder = Folders.getWorkspaceFolder();
-      if (!wsFolder) {
-        return;
-      }
+    if (!script.script) {
+      this.sendRequestError(command, requestId, 'No script provided');
+      return;
+    }
 
+    const wsFolder = Folders.getWorkspaceFolder();
+    if (!wsFolder) {
+      this.sendRequestError(command, requestId, 'No workspace folder found');
+      return;
+    }
+
+    try {
       const fieldValue = await CustomScript.singleRun(wsFolder.fsPath, script);
 
       if (fieldValue) {
@@ -43,6 +49,9 @@ export class ScriptListener extends BaseListener {
         Notifications.error('The script did not return a field value');
         this.sendRequestError(command, requestId, 'The script did not return a field value');
       }
+    } catch (e) {
+      Logger.error(`ScriptListener::runFieldAction: ${(e as Error).message}`);
+      this.sendRequestError(command, requestId, (e as Error).message);
     }
   }
 

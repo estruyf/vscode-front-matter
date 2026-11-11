@@ -35,13 +35,20 @@ export class FieldsListener extends BaseListener {
     requestId?: string,
     data?: { type?: string; sameLocale?: boolean; activePath?: string }
   ) {
-    if (!data?.type || !data?.activePath || !requestId) {
+    if (!requestId) {
+      return;
+    }
+
+    if (!data?.type || !data?.activePath) {
+      this.sendRequestError(command, requestId, 'No content type or file path provided');
       return;
     }
 
     const isLocaleEnabled = await i18n.isLocaleEnabled(data.activePath);
     const activeLocale = await i18n.getLocale(data.activePath);
     if (isLocaleEnabled && !activeLocale?.locale) {
+      // Without the locale of the file, there are no pages to match
+      this.sendRequest(command, requestId, []);
       return;
     }
 
@@ -62,7 +69,8 @@ export class FieldsListener extends BaseListener {
         ExtensionState.Dashboard.Pages.Index,
         'workspace'
       );
-      const fuseIndex = Fuse.parseIndex(pagesIndex);
+      // The index is missing after the cache was cleared, Fuse creates it when not provided
+      const fuseIndex = pagesIndex ? Fuse.parseIndex(pagesIndex) : undefined;
       const fuse = new Fuse(pages || [], fuseOptions, fuseIndex);
 
       const andExpression: Fuse.Expression[] = [{ fmContentType: data.type ?? '' }];

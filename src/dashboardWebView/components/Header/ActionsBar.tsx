@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { NavigationType, Page } from '../../models';
 import { CommandLineIcon, PencilIcon, TrashIcon, ChevronDownIcon, XMarkIcon, EyeIcon, LanguageIcon, CheckIcon } from '@heroicons/react/24/outline';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { MultiSelectedItemsAtom, PagedItems, SelectedItemActionAtom, SelectedMediaFolderSelector, SettingsSelector } from '../../state';
 import { ActionsBarItem } from './ActionsBarItem';
 import { LocalizationKey, localize } from '../../../localization';
@@ -23,7 +23,7 @@ export const ActionsBar: React.FunctionComponent<IActionsBarProps> = ({
   view
 }: React.PropsWithChildren<IActionsBarProps>) => {
   const [selectedFiles, setSelectedFiles] = useRecoilState(MultiSelectedItemsAtom);
-  const [, setSelectedItemAction] = useRecoilState(SelectedItemActionAtom);
+  const setSelectedItemAction = useSetRecoilState(SelectedItemActionAtom);
   const [showAlert, setShowAlert] = React.useState(false);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const settings = useRecoilValue(SettingsSelector);

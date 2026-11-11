@@ -80,12 +80,16 @@ export const TaxonomyTagging: React.FunctionComponent<ITaxonomyTaggingProps> = (
 
     untagged = untagged.sort(Sorting.numerically('fmPublished')).reverse();
 
+    return untagged;
+  }, [sortedPages, taxonomy, value]);
+
+  const filteredPages = React.useMemo(() => {
     if (debounceFilterValue) {
-      return untagged.filter((p) => p.title.toLowerCase().includes(debounceFilterValue.toLowerCase()));
+      return sortedPages.filter((p) => p.title?.toLowerCase().includes(debounceFilterValue.toLowerCase()));
     }
 
-    return untagged;
-  }, [sortedPages, taxonomy, value, debounceFilterValue]);
+    return sortedPages;
+  }, [sortedPages, debounceFilterValue]);
 
   const onCheckboxClick = React.useCallback((page: Page) => {
     const untaggedPage = untaggedPages.find((p: Page) => p.fmFilePath === page.fmFilePath);
@@ -114,7 +118,7 @@ export const TaxonomyTagging: React.FunctionComponent<ITaxonomyTaggingProps> = (
       if (untaggedIdx === -1) {
         clonedPageMappings.untagged.push(page);
       } else {
-        clonedPageMappings.untagged.splice(taggedIdx, 1);
+        clonedPageMappings.untagged.splice(untaggedIdx, 1);
       }
     }
 
@@ -192,7 +196,7 @@ export const TaxonomyTagging: React.FunctionComponent<ITaxonomyTaggingProps> = (
             </tr>
           </thead>
           <tbody className={`divide-y divide-[var(--frontmatter-border)]`}>
-            {untaggedPages && sortedPages && sortedPages.map((page) => (
+            {untaggedPages && filteredPages && filteredPages.map((page) => (
               <tr key={page.fmFilePath}>
                 <td className={`pl-6 py-2 w-[25px]`}>
                   <VSCodeCheckbox
