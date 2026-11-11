@@ -20,6 +20,7 @@
 - [#1070](https://github.com/estruyf/vscode-front-matter/pull/1070): Security: custom scripts no longer pass file paths, titles, answers, or Copilot output through a shell, so file names or titles can no longer run commands. On Windows, scripts now run without `cmd.exe`, so a `command` like `npx` or `pnpm` is no longer supported
 - [#1070](https://github.com/estruyf/vscode-front-matter/pull/1070): Fix content creation from a template failing on boolean, number, or empty values, and file prefixes ending in `/` (ex. `{{year}}/`)
 - [#1070](https://github.com/estruyf/vscode-front-matter/pull/1070): Fix `{{filePrefix.index}}` in Smart Rename and Update Slug, slug templates with multiple placeholders, and invalid dates in `{{fm.x|format}}` placeholders
+- [#1070](https://github.com/estruyf/vscode-front-matter/pull/1070): Fix slug generation in the panel while the page is shown in the preview
 - [#1070](https://github.com/estruyf/vscode-front-matter/pull/1070): Fix false broken links in the content health check for `%20` links, `mailto:` and `tel:` links, and sites that reject HEAD requests
 - [#1070](https://github.com/estruyf/vscode-front-matter/pull/1070): Fix taxonomy rename, merge, delete, and move skipping files that get their content type from their folder
 - [#1070](https://github.com/estruyf/vscode-front-matter/pull/1070): Front matter errors found by the dashboard are now reported on the broken file instead of the open editor, and the front matter formatting no longer depends on which file was read last
