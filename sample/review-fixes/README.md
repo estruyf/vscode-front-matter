@@ -112,7 +112,9 @@ Scripts and media library:
 - [ ] **Media script.** In the media dashboard, open `images`, then run **Media info** from the menu of `public-logo.png`.
   - The progress notification closes.
   - `script-output.json` records the media path.
-- [ ] **Bulk script.** On the dashboard, select two posts and run **Bulk echo**. The progress notification closes after both.
+- [ ] **Bulk script.** Bulk scripts run on all content and are listed in the dashboard's **Create content** dropdown (the chevron, ⚡ icon), not in the selection's Scripts menu. Run **Bulk echo** from there.
+  - The progress notification closes when it has finished.
+  - `script-output.json` has an entry for every page.
 - [ ] **Media metadata.** In the media dashboard, edit the metadata of `hero.png` (title `Hero`). Refresh the media view 3 times, then rename `hero.png` in the Explorer. `.frontmatter/database/mediaDb.json` has one entry with the new path, and the title is kept.
 - [ ] **Windows only.** Paths with an uppercase drive letter (an absolute `C:\…` media folder or script output) match the content folders.
 
@@ -167,7 +169,7 @@ Scripts and media library:
 - [ ] **Media path.** In the media dashboard, use **Copy media path** on `images/public-logo.png`. You get `/images/public-logo.png`, not `-logo.png`. Pasting the image into a markdown file inserts the same path.
 - [ ] **Media snippet.** In `post-01.md`, use **Insert media**, pick `hero.png`, and insert it with **Media figure**. The snippet lands at the cursor in `post-01.md`. Repeat from `post-02.md`: it lands in `post-02.md`, not in `post-01.md`.
 - [ ] **Media script in a subfolder.** In the media dashboard, open `images/sub` and run **Media info** on `inside-subfolder.png`. The view stays in `sub`.
-- [ ] **Bulk scripts.** With the dashboard open, add another `"bulk": true` script to `frontmatter.json`. It shows up without reloading the window.
+- [ ] **Bulk scripts.** With the dashboard open, add another `"bulk": true` script to `frontmatter.json`. It shows up in the **Create content** dropdown (the chevron, ⚡ icon) without reloading the window. Bulk scripts are never listed in the selection's Scripts menu.
 - [ ] **Preview URL.** In the preview, type in the URL bar. Typing stays smooth (no localization requests on every keystroke).
 
 ## #1074 – Panel
