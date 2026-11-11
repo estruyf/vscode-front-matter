@@ -44,7 +44,7 @@ git checkout -- sample/review-fixes && git clean -fd -- sample/review-fixes
 | Path | Used for |
 |---|---|
 | `frontmatter.json` | Commented config: the comments must survive every settings update |
-| `content/blog` | 28 pages (2 pages on the dashboard): `post-01` – `post-20`, `hello` / `hello-world`, `search-index`, `$(touch fm-pwned).md`, `broken-front-matter.md`, `links.md`, `my post.md`, `string-tags.md` |
+| `content/blog` | 30 pages (2 pages on the dashboard): `post-01` – `post-20`, `hello` / `hello-world`, `search-index`, `$(touch fm-pwned).md`, `injection-payloads.md` (shell payloads in the front matter), `wysiwyg-variety.md` (markdown that Quill would rewrite), `broken-front-matter.md`, `links.md`, `my post.md`, `string-tags.md` |
 | `content/blog-archive` | A folder whose name starts with `blog` |
 | `content/docs/*` | Wildcard content folder |
 | `content/i18n/{en,nl}` | i18n content folder |
@@ -54,10 +54,10 @@ git checkout -- sample/review-fixes && git clean -fd -- sample/review-fixes
 | `content/recipes` | Content type from the folder (`recipe`), taxonomy field named `labels`, comma separated values |
 | `content/fields/demo.md` | Every panel field type: html/markdown wysiwyg, decimal number, slug, multi choice, datetime, list, relationship, tags, nested fields with a hidden default, block field |
 | `content/to-register` | A folder that is not registered yet |
-| `.frontmatter/templates` | `article.md` (`draft: true`, number, empty value, `{{authorLine}}` script placeholder), `post.md` and `blog-post.md` |
+| `.frontmatter/templates` | `article.md` (`draft: true`, number, empty value, `{{authorLine}}` script placeholder), `placeholder.md` (only text values and `{{authorLine}}`), `post.md` and `blog-post.md` |
 | `data/team` | Data folder with file creation enabled and no `fileType` |
-| `public/images` | `public-logo.png` (static folder name in the file name), `hero.png`, `sub/inside-subfolder.png` |
-| `scripts` | Custom scripts that record their arguments in `script-output.json` |
+| `public/images` | `public-logo.png` (static folder name in the file name), `hero.png`, `$(touch fm-pwned).png`, `sub/inside-subfolder.png` |
+| `scripts` | Custom scripts that record their arguments in `script-output.json`: Echo args, Ask a question, Bulk echo, Media info, Python echo (`python3 -u`), Copilot prompt, Windows npx check |
 | `src/app.js` | A non-content file to focus while editing (not `.ts`, so the repo's TypeScript build ignores it) |
 | `extras/split-config` | A content type to copy into `.frontmatter/config` for the split config test |
 
@@ -227,3 +227,56 @@ Other fields and commands:
 - [ ] **Health results.** Switch quickly between `links.md` and `post-01.md`. The content health of one file is never shown for the other.
 - [ ] **Hanging requests.** Relationship field on an i18n page without a locale, Copilot buttons without a GitHub session: no endless spinners.
 - [ ] **Reveal project folder.** It opens Finder or Explorer (also for a workspace path with spaces).
+
+## #1076 – Custom scripts without a shell
+
+#1076 fixes the same command injection as #1070 (already merged), in a different way, and it conflicts with `beta`. Test it on its own branch:
+
+```bash
+git fetch origin
+git switch -c test/1076 origin/fix/custom-script-command-injection
+git merge --no-edit origin/chore/review-fixes-sample
+```
+
+This branch was made before #1070 was merged, so content creation from the `article` template fails on its `draft: true` value (a separate bug fixed in #1070). Use the `placeholder` template instead.
+
+In every check, no `fm-pwned` file may appear anywhere in the project, and `script-output.json` shows exactly what the script received.
+
+- [ ] **Front matter payloads.** Open `content/blog/injection-payloads.md` and run **Echo args**. In the last entry of `script-output.json`:
+  - `frontMatterParses` is `true`;
+  - `description` and `author` arrive exactly as in the file (`"`, `&`, `;`, `$(…)`, backticks);
+  - `singleQuotesEncoded` is `false`. This is a behaviour difference: on `beta` (#1070) it is `true`, because `'` is still sent as `%27`.
+- [ ] **File name.** Open `content/blog/$(touch fm-pwned).md` and run **Echo args**. `filePath` ends in `$(touch fm-pwned).md`.
+- [ ] **Bulk mode.** Run **Bulk echo** from the **Create content** dropdown (⚡). It runs for every page, including the two above.
+- [ ] **Command with an argument.** Run **Python echo** (`"command": "python3 -u"`). `interpreterOptions` is `["-u"]`.
+- [ ] **Answers.** Run **Ask a question** and accept the default answer. It is recorded as `message=it's "quoted" $(touch fm-pwned) \`ls\``.
+- [ ] **Copilot output** (needs GitHub Copilot). Run **Copilot prompt**. The response is recorded as `promptResponse=…` with the quotes and `$(…)` intact.
+- [ ] **Placeholder script.** Choose **Create content › Create by template**, then **blog**, then **placeholder**, and enter the title `Rock & Roll's "best" $(touch fm-pwned)`. The new page gets `author: "Written by the team: Rock & Roll's \"best\" $(touch fm-pwned)"`.
+- [ ] **Media script.** In **Media › images**, run **Media info** on `$(touch fm-pwned).png`. `mediaPath` ends in `$(touch fm-pwned).png`.
+- [ ] **Reveal project folder.** In the panel's **Other actions**, click **Reveal project folder**. Finder opens the sample folder.
+- [ ] **Windows only:**
+  - **Windows npx check** shows the new error that `.cmd`/`.bat` commands like `npx` are not supported.
+  - A PowerShell script receives plain JSON.
+  - `injection-payloads.md` (`"` and `&`) works as above.
+- [ ] **Breaking by design:** a `command` with `~` or `$HOME` is no longer expanded.
+
+The same checks pass on `beta` with #1070, except for the `%27` difference and the Windows `.cmd` message (#1070 shows a plain "command failed").
+
+## #1077 – Wysiwyg markdown not rewritten on open
+
+#1077 is the same fix as the wysiwyg part of #1074 (already merged) and conflicts with `beta`. Test it on its own branch:
+
+```bash
+git fetch origin
+git switch -c test/1077 origin/fix/wysiwyg-markdown-reformat
+git merge --no-edit origin/chore/review-fixes-sample
+```
+
+This branch was made before #1074 was merged, so pages with hidden fields that have a default (`content/fields/demo.md`) are still saved on open by that older bug. Use the pages in `content/blog`.
+
+- [ ] **Opening.** Open `content/blog/wysiwyg-variety.md` (`|-`, `-` bullets, `_italic_`, `__bold__`, an ordered list and a link). The file is unchanged.
+- [ ] **Switching files.** Switch to `post-01.md`. Both files are unchanged.
+- [ ] **Switching via a non-content file.** Switch to `src/app.js` and back to `wysiwyg-variety.md`. The file is unchanged.
+- [ ] **Typing and toolbar.** Type in **Summary**, and use **Bold** in its toolbar. Both are saved. Once you edit the field, the whole value is re-serialized (`|`, `*` bullets, `*italic*`, `**bold**`). That is expected and not part of the fix.
+
+The same checks pass on `beta` (#1074).

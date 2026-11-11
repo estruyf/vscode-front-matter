@@ -151,7 +151,19 @@
     { "id": "echo-args", "title": "Echo args", "script": "./scripts/echo-args.js", "command": "node" },
     { "id": "ask-question", "title": "Ask a question", "script": "./scripts/ask-question.js", "command": "node" },
     { "id": "bulk-echo", "title": "Bulk echo", "script": "./scripts/echo-args.js", "command": "node", "bulk": true },
-    { "id": "media-info", "title": "Media info", "script": "./scripts/media-info.js", "command": "node", "type": "mediaFile" }
+    { "id": "media-info", "title": "Media info", "script": "./scripts/media-info.js", "command": "node", "type": "mediaFile" },
+    // #1076: a command with its own argument (split into "python3" and "-u")
+    { "id": "python-echo", "title": "Python echo", "script": "./scripts/echo-args.py", "command": "python3 -u" },
+    // #1076: Copilot output is passed to the script as an argument (needs GitHub Copilot)
+    { "id": "copilot-prompt", "title": "Copilot prompt", "script": "./scripts/copilot-prompt.js", "command": "node" },
+    // #1076: on Windows this uses "npx" (a .cmd shim), which should show the new "not supported" error
+    {
+      "id": "windows-npx",
+      "title": "Windows npx check",
+      "script": "./scripts/echo-args.js",
+      "command": "node",
+      "environments": [{ "type": "windows", "script": "./scripts/echo-args.js", "command": "npx" }]
+    }
   ],
 
   "frontMatter.content.snippets": {
