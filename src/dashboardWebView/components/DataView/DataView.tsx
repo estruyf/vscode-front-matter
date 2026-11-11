@@ -3,7 +3,7 @@ import { Header } from '../Header';
 import { useRecoilValue } from 'recoil';
 import { SettingsSelector } from '../../state';
 import { DataForm } from './DataForm';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DataFile } from '../../../models/DataFile';
 import { messageHandler, Messenger } from '@estruyf/vscode/dist/client';
 import { DashboardMessage } from '../../DashboardMessage';
@@ -35,9 +35,11 @@ export const DataView: React.FunctionComponent<IDataViewProps> = () => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [dataEntries, setDataEntries] = useState<any | any[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const selectedFileRef = useRef<string | undefined>(undefined);
   const settings = useRecoilValue(SettingsSelector);
 
   const setSchema = (dataFile: DataFile) => {
+    selectedFileRef.current = dataFile.file;
     setSelectedData(dataFile);
     setSelectedIndex(null);
     setDataEntries(null);
@@ -47,7 +49,11 @@ export const DataView: React.FunctionComponent<IDataViewProps> = () => {
 
   const messageListener = (message: MessageEvent<EventData<any>>) => {
     if (message.data.command === DashboardCommand.dataFileEntries) {
-      setDataEntries(message.data.payload);
+      const { file, entries } = message.data.payload || {};
+      // Only use the entries of the currently selected data file
+      if (file === selectedFileRef.current) {
+        setDataEntries(entries);
+      }
     }
   };
 

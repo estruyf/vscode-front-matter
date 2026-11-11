@@ -84,10 +84,13 @@ export const Filters: React.FunctionComponent<IFiltersProps> = () => {
       return;
     }
 
-    setCrntFilters({});
+    // Fall back to the configured defaults instead of wiping them
+    const { tags, categories, ...customFilters } = settings?.dashboardState?.contents?.defaults?.filters || {};
+    delete customFilters.contentFolders;
+    setCrntFilters(customFilters);
 
-    setCrntTag('');
-    setCrntCategory('');
+    setCrntTag(tags || '');
+    setCrntCategory(categories || '');
   }, [location.search]);
 
   return (

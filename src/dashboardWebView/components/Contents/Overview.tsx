@@ -31,7 +31,7 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
   const [isReady, setIsReady] = React.useState<boolean>(false);
   const [pinnedItems, setPinnedItems] = useRecoilState(PinnedItemsAtom);
   const grouping = useRecoilValue(GroupingSelector);
-  const page = useRecoilValue(PageAtom);
+  const [page, setPage] = useRecoilState(PageAtom);
   const { pageSetNr } = usePagination(settings?.dashboardState.contents.pagination);
   const view = useRecoilValue(ViewSelector);
   const [, setPagedItems] = useRecoilState(PagedItems);
@@ -123,6 +123,13 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
     setPagedItems(pagedPages.map((page) => page.fmFilePath));
   }, [pagedPages]);
 
+  // Move back to the last available page when the list shrinks
+  React.useEffect(() => {
+    if (pageSetNr && page > 0 && page * pageSetNr >= pages.length) {
+      setPage(Math.max(0, Math.ceil(pages.length / pageSetNr) - 1));
+    }
+  }, [pages.length, page, pageSetNr]);
+
   React.useEffect(() => {
     messageHandler.request<string[]>(DashboardMessage.getPinnedItems).then((items) => {
       setIsReady(true);
@@ -181,7 +188,7 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
                   <Disclosure.Panel>
                     <List>
                       {groupedPages[groupId].map((page: Page) => (
-                        <Item key={`${page.slug}-${idx}`} {...page} />
+                        <Item key={page.fmFilePath} {...page} />
                       ))}
                     </List>
                   </Disclosure.Panel>
@@ -208,14 +215,14 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
 
           {view === DashboardViewType.List ? (
             <List>
-              {pinnedPages.map((page, idx) => (
-                <Item key={`${page.slug}-${idx}`} {...page} />
+              {pinnedPages.map((page) => (
+                <Item key={page.fmFilePath} {...page} />
               ))}
             </List>
           ) : (
             <ul role="list" className="flex flex-wrap gap-2">
-              {pinnedPages.map((page, idx) => (
-                <PinnedItem key={`${page.slug}-${idx}`} {...page} />
+              {pinnedPages.map((page) => (
+                <PinnedItem key={page.fmFilePath} {...page} />
               ))}
             </ul>
           )}
@@ -224,8 +231,8 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
 
       <div className={pinnedItems.length > 0 ? 'pt-6' : ''}>
         <List>
-          {pagedPages.map((page, idx) => (
-            <Item key={`${page.slug}-${idx}`} {...page} />
+          {pagedPages.map((page) => (
+            <Item key={page.fmFilePath} {...page} />
           ))}
         </List>
       </div>

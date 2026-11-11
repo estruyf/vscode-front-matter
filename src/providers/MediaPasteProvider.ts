@@ -283,7 +283,11 @@ export class MediaPasteProvider implements DocumentPasteEditProvider<MediaPasteE
       parseWinPath(absMediaPath).split(parseWinPath(wsFolder?.fsPath || '')).pop() || '';
 
     if (staticFolder && staticFolder !== '/') {
-      relPath = relPath.split(parseWinPath(staticFolder)).pop() || relPath;
+      // Only strip the static folder when it is the leading path segment
+      const staticFolderParsed = `/${parseWinPath(staticFolder).replace(/^\.?\/+|\/+$/g, '')}`;
+      if (relPath.startsWith(`${staticFolderParsed}/`)) {
+        relPath = relPath.substring(staticFolderParsed.length);
+      }
     }
 
     return FrameworkDetector.relAssetPathUpdate(relPath, filePath);
