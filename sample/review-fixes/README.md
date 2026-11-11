@@ -94,14 +94,17 @@ Security (macOS/Linux; on Windows also check the limitation in the PR):
 Placeholders and file names:
 
 - [ ] **Template values.** The same `article` template, with `draft: true`, `weight: 1` and an empty `image:`, creates the file without an error.
-- [ ] **File prefix index.** Create content in the `news` folder. The new file name starts with the next index (`003-…`). Then open `content/news/002-second-news.md` and use **Smart rename** in the panel: no "FileNotADirectory" error, and the file keeps index `002`.
+- [ ] **File prefix index.** Do the Smart Rename part first: the index counts the other files in the folder.
+  1. Open `content/news/002-second-news.md` and click **Smart rename** in the panel. You get "The filename is already in sync with the front matter", which means the `002-` prefix was computed without the old "FileNotADirectory" error.
+  2. Change the **Title** to `Second news updated` and click **Smart rename** again. The file is renamed to `002-second-news-updated.md`, keeping index `002`.
+  3. Choose **Create content › Create by content type**, then **news**, and enter a title. The new file name starts with the next index (`003-…`).
 - [ ] **Slug template.** Open `content/news/002-second-news.md` and regenerate the slug (the button next to the slug field). The slug contains the title and the file name, with no literal `{{fileName}}`.
 - [ ] **Text date.** On the dashboard, preview **First news** (`eventDate: 15-03-2024`, used in `previewPath`). The preview opens without a "RangeError: Invalid time value".
-- [ ] **Prefix ending in `/`.** Create content in the `yearly` folder titled `Year test` (answer **No** to page bundle). It is created as `content/yearly/<year>/year-test.md`.
+- [ ] **Prefix ending in `/`.** Choose **Create content › Create by content type**, then **yearly**, then **recipe** (no page bundles), and enter the title `Year test`. It is created as `content/yearly/<year>/year-test.md`; before the fix it failed with `<year>/-year-test.md`. With `default` (page bundles) you get `content/yearly/<year>/year-test/index.md`, which already worked before the fix.
 
 Content health, taxonomy and parsing:
 
-- [ ] **Links.** Open `content/blog/links.md` and look at **Content health** in the panel. Only `does-not-exist.md` is reported. The `%20` link, `mailto:` and `tel:` are not.
+- [ ] **Links.** The internal link check is experimental: add `"frontMatter.experimental": true` to `frontmatter.json` (remove it afterwards). Open `content/blog/links.md` and look at **Content health** in the panel. Only `does-not-exist.md` is reported as broken. The `%20` link, `mailto:` and `tel:` are not.
 - [ ] **Taxonomy rename.** In the Taxonomies dashboard, rename the tag `breakfast` to `brunch`. Both `content/recipes/pancakes.md` (comma separated string) and `waffles.md` (list) are updated in their `labels` field.
 - [ ] **Diagnostics.** Open `content/blog/post-01.md`, then refresh the dashboard (it also parses `broken-front-matter.md`).
   - `post-01.md` gets no "front matter error" squiggle.
