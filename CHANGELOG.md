@@ -2,6 +2,13 @@
 
 ## [10.14.0] - 2026-xx-xx
 
+### ⚠️ Breaking changes
+
+- Custom scripts, placeholder scripts, and media scripts no longer pass front matter values, file paths, titles, answers, or Copilot responses through a shell. They are passed as separate arguments, which prevents command injection. Scripts receive the same arguments, with these differences on Windows:
+  - `.cmd` and `.bat` commands like `npx`, `npm`, `yarn`, or `pnpm` are no longer supported as the `command`. Use `node` (or another executable) and point the `script` to the JavaScript file instead
+  - Environment variables in the `command` like `%USERPROFILE%` are no longer resolved. Use the full path instead
+  - PowerShell scripts receive the front matter JSON as is, no longer wrapped in single quotes
+
 ### ⚡️ Optimizations
 
 - [#1068](https://github.com/estruyf/vscode-front-matter/pull/1068): Only refresh the dashboard, panel, and preview when a Front Matter, `git.path`, or Markdown editor setting changes, instead of on every VS Code setting change
@@ -17,7 +24,7 @@
 - [#1069](https://github.com/estruyf/vscode-front-matter/pull/1069): Fix "Create template from current file" replacing your content types with the default content type and overwriting the framework, static folder, and preview host settings. Initializing a project no longer replaces existing content types either
 - [#1069](https://github.com/estruyf/vscode-front-matter/pull/1069): Fix the tag or category being deleted from all content when cancelling the remap command
 - [#1069](https://github.com/estruyf/vscode-front-matter/pull/1069): Keep the comments and formatting in `frontmatter.json` when the extension updates a setting
-- [#1070](https://github.com/estruyf/vscode-front-matter/pull/1070): Security: custom scripts no longer pass file paths, titles, answers, or Copilot output through a shell, so file names or titles can no longer run commands. On Windows, scripts now run without `cmd.exe`, so a `command` like `npx` or `pnpm` is no longer supported
+- [#1067](https://github.com/estruyf/vscode-front-matter/issues/1067): Fix OS command injection in custom scripts via front matter values, file names, titles, script answers, and Copilot responses ([GHSA-w6cx-493p-x4jx](https://github.com/estruyf/vscode-front-matter/security/advisories/GHSA-w6cx-493p-x4jx)) thanks to [Dostxodjayev Abdullox](https://github.com/squeeze440) for reporting
 - [#1070](https://github.com/estruyf/vscode-front-matter/pull/1070): Fix content creation from a template failing on boolean, number, or empty values, and file prefixes ending in `/` (ex. `{{year}}/`)
 - [#1070](https://github.com/estruyf/vscode-front-matter/pull/1070): Fix `{{filePrefix.index}}` in Smart Rename and Update Slug, slug templates with multiple placeholders, and invalid dates in `{{fm.x|format}}` placeholders
 - [#1070](https://github.com/estruyf/vscode-front-matter/pull/1070): Fix slug generation in the panel while the page is shown in the preview
