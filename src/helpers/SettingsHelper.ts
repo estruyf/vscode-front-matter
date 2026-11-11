@@ -112,8 +112,6 @@ export class Settings {
       }
     }
 
-    Settings.listeners = [];
-
     if (!Settings.isInitialized) {
       Settings.isInitialized = true;
 
@@ -309,7 +307,14 @@ export class Settings {
     }
 
     Settings.fileDeleteListener = workspace.onDidDeleteFiles(async (e) => {
-      const needCallback = e?.files.find(async (f) => await Settings.checkProjectConfig(f.fsPath));
+      let needCallback = false;
+      for (const file of e?.files || []) {
+        if (await Settings.checkProjectConfig(file.fsPath)) {
+          needCallback = true;
+          break;
+        }
+      }
+
       if (needCallback) {
         await Settings.reloadConfig(false);
       }
@@ -386,13 +391,16 @@ export class Settings {
    * @param updateGlobal - Indicates whether to update the global setting or not. Default is `false`.
    * @returns A promise that resolves when the setting is updated.
    */
-  public static async safeUpdate<T>(name: string, value: T, updateGlobal = false): Promise<void> {
+  public static async safeUpdate<T>(name: string, value: T, updateGlobal = false): Promise<boolean> {
     if (Settings.hasExtendedConfig) {
       const configKey = `${CONFIG_KEY}.${name}`;
 
       if (
         Settings.extendedConfig.extended.includes(configKey) ||
-        Settings.extendedConfig.splitted.includes(configKey) ||
+        // Split config keys are stored in lowercase, and can be a sub-folder of the setting
+        Settings.extendedConfig.splitted.some((key) =>
+          Settings.isEqualOrStartsWith(key, configKey)
+        ) ||
         Settings.extendedConfig.dynamic
       ) {
         Notifications.warningWithOutput(
@@ -405,11 +413,12 @@ export class Settings {
 ${JSON.stringify(value, null, 2)}`,
           'SETTING'
         );
-        return;
+        return false;
       }
     }
 
     await Settings.update<T>(name, value, updateGlobal);
+    return true;
   }
 
   /**
