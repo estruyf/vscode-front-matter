@@ -249,7 +249,7 @@ In every check, no `fm-pwned` file may appear anywhere in the project, and `scri
 - [ ] **File name.** Open `content/blog/$(touch fm-pwned).md` and run **Echo args**. `filePath` ends in `$(touch fm-pwned).md`.
 - [ ] **Bulk mode.** Run **Bulk echo** from the **Create content** dropdown (⚡). It runs for every page, including the two above.
 - [ ] **Command with an argument.** Run **Python echo** (`"command": "python3 -u"`). `interpreterOptions` is `["-u"]`.
-- [ ] **Answers.** Run **Ask a question** and accept the default answer. It is recorded as `message=it's "quoted" $(touch fm-pwned) \`ls\``.
+- [ ] **Answers.** Run **Ask a question** and accept the default answer. It is recorded as ``message=it's "quoted" $(touch fm-pwned) `ls` ``.
 - [ ] **Copilot output** (needs GitHub Copilot). Run **Copilot prompt**. The response is recorded as `promptResponse=…` with the quotes and `$(…)` intact.
 - [ ] **Placeholder script.** Choose **Create content › Create by template**, then **blog**, then **placeholder**, and enter the title `Rock & Roll's "best" $(touch fm-pwned)`. The new page gets `author: "Written by the team: Rock & Roll's \"best\" $(touch fm-pwned)"`.
 - [ ] **Media script.** In **Media › images**, run **Media info** on `$(touch fm-pwned).png`. `mediaPath` ends in `$(touch fm-pwned).png`.
