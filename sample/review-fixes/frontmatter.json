@@ -99,6 +99,16 @@
       ]
     },
     {
+      // Sub content with page bundles: the only flow that asks "create as page bundle?" (#1071)
+      "name": "guide",
+      "pageBundle": true,
+      "allowAsSubContent": true,
+      "fields": [
+        { "title": "Title", "name": "title", "type": "string" },
+        { "title": "Description", "name": "description", "type": "string" }
+      ]
+    },
+    {
       "name": "recipe",
       "pageBundle": false,
       "fields": [

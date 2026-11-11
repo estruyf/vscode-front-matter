@@ -50,6 +50,7 @@ git checkout -- sample/review-fixes && git clean -fd -- sample/review-fixes
 | `content/i18n/{en,nl}` | i18n content folder |
 | `content/news` | Content type `news`: `slugTemplate: {{title}}-{{fileName}}`, a text date in `previewPath`, file prefix `{{filePrefix.index\|zeros:3}}` |
 | `content/yearly` | File prefix `{{year}}/` |
+| `guide` content type | Sub content with page bundles, for the page bundle question |
 | `content/recipes` | Content type from the folder (`recipe`), taxonomy field named `labels`, comma separated values |
 | `content/fields/demo.md` | Every panel field type: html/markdown wysiwyg, decimal number, slug, multi choice, datetime, list, relationship, tags, nested fields with a hidden default, block field |
 | `content/to-register` | A folder that is not registered yet |
@@ -127,7 +128,11 @@ Scripts and media library:
 
   Then choose **Unregister folder**: the entry is removed again, and the other entries are unchanged.
 - [ ] **Folder boundaries.** On the dashboard, choose **Showing › blog**. `Old archived post` (from `blog-archive`) is not included. The panel's **Recently modified** also lists `blog-archive` separately.
-- [ ] **Page bundle answer.** Create content in `blog` (default content type, `pageBundle: true`) and answer **No** to page bundle. Create a second one: the page bundle question is asked again.
+- [ ] **Page bundle answer.** The page bundle question is only asked for sub content, so this uses the `guide` content type (`allowAsSubContent`, `pageBundle: true`).
+  1. Choose **Create content › Create by content type**, pick **blog**, then **guide**.
+  2. Answer **Yes** to creating it as sub content, and select `content/blog` in the folder dialog.
+  3. Answer **No** to the page bundle question, then enter a title.
+  4. Repeat. The page bundle question is asked again; before the fix, the first "No" stuck for the session.
 - [ ] **Add missing fields.** Add `extra: test` to the front matter of `post-01.md` and use **Add missing fields** from the panel's content type warning.
   - The default content type gets an `extra` field.
   - `seoGroup` is still a `fieldCollection` reference, not inlined `seoTitle` / `seoDescription` fields.
