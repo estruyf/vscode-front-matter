@@ -118,7 +118,7 @@ export const Header: React.FunctionComponent<IHeaderProps> = ({
     }
 
     return [];
-  }, [settings?.dashboardState?.contents?.templatesEnabled]);
+  }, [settings?.dashboardState?.contents?.templatesEnabled, settings?.scripts]);
 
   return (
     <div className={`w-full sticky top-0 z-20 bg-[var(--vscode-editor-background)] text-[var(--vscode-editor-foreground)]`}>

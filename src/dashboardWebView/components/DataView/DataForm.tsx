@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Ajv from 'ajv';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { JSONSchemaBridge } from 'uniforms-bridge-json-schema';
 import { AutoFields, AutoForm, ErrorsField } from '../../../components/uniforms-frontmatter';
 import { ErrorBoundary } from '@sentry/react';
@@ -23,6 +23,7 @@ export const DataForm: React.FunctionComponent<IDataFormProps> = ({
 }: React.PropsWithChildren<IDataFormProps>) => {
   const [bridge, setBridge] = useState<JSONSchemaBridge | null>(null);
   const [error, setError] = useState<string | undefined>(undefined);
+  const formRef = useRef<any>(null);
 
   const ajv = new Ajv({
     allErrors: true,
@@ -63,6 +64,11 @@ export const DataForm: React.FunctionComponent<IDataFormProps> = ({
     setBridge(bridge);
   }, [schema]);
 
+  // Only reset the form when another entry or schema is shown, not on every render
+  useEffect(() => {
+    formRef.current?.reset();
+  }, [model, bridge]);
+
   if (!bridge) {
     return null;
   }
@@ -91,8 +97,14 @@ export const DataForm: React.FunctionComponent<IDataFormProps> = ({
         <AutoForm
           schema={bridge}
           model={model || {}}
-          onSubmit={onSubmit}
-          ref={(form: any) => form?.reset()}
+          onSubmit={(data) => {
+            onSubmit(data);
+            // Clear the form after adding a new entry
+            if (!model) {
+              formRef.current?.reset();
+            }
+          }}
+          ref={formRef}
         >
           <div className={`fields`}>
             <AutoFields />

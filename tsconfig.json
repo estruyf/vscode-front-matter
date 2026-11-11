@@ -20,6 +20,7 @@
 		"node_modules",
 		".vscode-test",
 		"docs",
-		"promo"
+		"promo",
+		"sample"
 	]
 }

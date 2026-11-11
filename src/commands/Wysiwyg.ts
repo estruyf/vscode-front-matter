@@ -194,15 +194,15 @@ export class Wysiwyg {
     } else {
       const txt = await this.insertText(markers, type, null, docType);
 
-      // Insert the markers where cursor is located.
-      const markerLength = this.isMarkupWrapping(type) ? txt.length + 1 : markers.length;
+      // Insert the markers where cursor is located, and move the cursor after the opening marker
+      const markerLength = this.isMarkupWrapping(type) ? txt.length : markers.length;
       let newPosition = crntSelection.with(
         crntSelection.line,
         crntSelection.character + markerLength
       );
 
       await editor.edit((builder) => {
-        builder.insert(newPosition, txt);
+        builder.insert(crntSelection, txt);
       });
 
       if (type === MarkupType.codeblock) {
@@ -268,7 +268,7 @@ export class Wysiwyg {
         );
 
         await editor.edit((builder) => {
-          builder.insert(newPosition, txt);
+          builder.insert(crntSelection, txt);
         });
 
         editor.selection = new Selection(newPosition, newPosition);

@@ -10,7 +10,7 @@ import {
 import { basename } from 'path';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { parseWinPath } from '../../../helpers/parseWinPath';
 import { SnippetParser } from '../../../helpers/SnippetParser';
 import { MediaInfo } from '../../../models/MediaPaths';
@@ -42,8 +42,8 @@ export interface IItemProps {
 export const Item: React.FunctionComponent<IItemProps> = ({
   media,
 }: React.PropsWithChildren<IItemProps>) => {
-  const [, setLightbox] = useRecoilState(LightboxAtom);
-  const [, setSelectedItemAction] = useRecoilState(SelectedItemActionAtom);
+  const setLightbox = useSetRecoilState(LightboxAtom);
+  const setSelectedItemAction = useSetRecoilState(SelectedItemActionAtom);
   const [showAlert, setShowAlert] = useState(false);
   const [showSnippetSelection, setShowSnippetSelection] = useState(false);
   const [snippet, setSnippet] = useState<Snippet | undefined>(undefined);
@@ -115,15 +115,6 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     }
   }, [media, settings, viewData, relPath]);
 
-  const insertSnippet = useCallback(() => {
-    if (mediaSnippets.length === 1) {
-      processSnippet(mediaSnippets[0]);
-    } else {
-      // Show dialog to select
-      setShowSnippetSelection(true);
-    }
-  }, [mediaSnippets]);
-
   /**
    * Process the snippet
    */
@@ -158,6 +149,15 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     },
     [media, settings, viewData, mediaSnippets, relPath]
   );
+
+  const insertSnippet = useCallback(() => {
+    if (mediaSnippets.length === 1) {
+      processSnippet(mediaSnippets[0]);
+    } else {
+      // Show dialog to select
+      setShowSnippetSelection(true);
+    }
+  }, [mediaSnippets, processSnippet]);
 
   /**
    * Insert the media snippet
@@ -228,12 +228,12 @@ export const Item: React.FunctionComponent<IItemProps> = ({
     }
 
     if (isVideo) {
-      return <video src={media.vsPath} className="mx-auto object-cover" controls muted />;
+      return <video src={media.vsPath} className="mx-auto object-cover" controls muted preload="metadata" />;
     }
 
     if (isImage) {
       return (
-        <img src={media.vsPath} alt={basename(media.fsPath)} className="mx-auto object-cover" />
+        <img src={media.vsPath} alt={basename(media.fsPath)} className="mx-auto object-cover" loading="lazy" />
       );
     }
 

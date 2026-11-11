@@ -2,9 +2,57 @@
 
 ## [10.14.0] - 2026-xx-xx
 
+### ⚠️ Breaking changes
+
+- Custom scripts, placeholder scripts, and media scripts no longer pass front matter values, file paths, titles, answers, or Copilot responses through a shell. They are passed as separate arguments, which prevents command injection. Scripts receive the same arguments, with these differences on Windows:
+  - `.cmd` and `.bat` commands like `npx`, `npm`, `yarn`, or `pnpm` are no longer supported as the `command`. Use `node` (or another executable) and point the `script` to the JavaScript file instead
+  - Environment variables in the `command` like `%USERPROFILE%` are no longer resolved. Use the full path instead
+  - PowerShell scripts receive the front matter JSON as is, no longer wrapped in single quotes
+
+### ⚡️ Optimizations
+
+- [#1068](https://github.com/estruyf/vscode-front-matter/pull/1068): Only refresh the dashboard, panel, and preview when a Front Matter, `git.path`, or Markdown editor setting changes, instead of on every VS Code setting change
+- [#1068](https://github.com/estruyf/vscode-front-matter/pull/1068): Changes to images and other non-content files in your content folders no longer trigger a full re-parse of all pages
+- [#1068](https://github.com/estruyf/vscode-front-matter/pull/1068): Refreshing the media dashboard, uploading, or pasting media now scans the media files once instead of twice
+- [#1068](https://github.com/estruyf/vscode-front-matter/pull/1068): Faster dashboard loading for sites with many pages by looking up cached pages by path
+- [#1068](https://github.com/estruyf/vscode-front-matter/pull/1068): Smaller extension bundle and faster activation by removing the unused GitHub (`@octokit/rest`) credentials code
+- [#1068](https://github.com/estruyf/vscode-front-matter/pull/1068): Fewer re-renders in the dashboard and panel, including when scrolling the panel
+- [#1068](https://github.com/estruyf/vscode-front-matter/pull/1068): Images and videos in the media dashboard are now loaded lazily
+
 ### 🐞 Fixes
 
-- Fix opening a file in the panel rewriting the markdown of `wysiwyg` fields (ex. `-` bullets changed to `*`) without any edit
+- [#1069](https://github.com/estruyf/vscode-front-matter/pull/1069): Fix "Create template from current file" replacing your content types with the default content type and overwriting the framework, static folder, and preview host settings. Initializing a project no longer replaces existing content types either
+- [#1069](https://github.com/estruyf/vscode-front-matter/pull/1069): Fix the tag or category being deleted from all content when cancelling the remap command
+- [#1069](https://github.com/estruyf/vscode-front-matter/pull/1069): Keep the comments and formatting in `frontmatter.json` when the extension updates a setting
+- [#1067](https://github.com/estruyf/vscode-front-matter/issues/1067): Fix OS command injection in custom scripts via front matter values, file names, titles, script answers, and Copilot responses ([GHSA-w6cx-493p-x4jx](https://github.com/estruyf/vscode-front-matter/security/advisories/GHSA-w6cx-493p-x4jx)) thanks to [Dostxodjayev Abdullox](https://github.com/squeeze440) for reporting
+- [#1070](https://github.com/estruyf/vscode-front-matter/pull/1070): Fix content creation from a template failing on boolean, number, or empty values, and file prefixes ending in `/` (ex. `{{year}}/`)
+- [#1070](https://github.com/estruyf/vscode-front-matter/pull/1070): Fix `{{filePrefix.index}}` in Smart Rename and Update Slug, slug templates with multiple placeholders, and invalid dates in `{{fm.x|format}}` placeholders
+- [#1070](https://github.com/estruyf/vscode-front-matter/pull/1070): Fix slug generation in the panel while the page is shown in the preview
+- [#1070](https://github.com/estruyf/vscode-front-matter/pull/1070): Fix false broken links in the content health check for `%20` links, `mailto:` and `tel:` links, and sites that reject HEAD requests
+- [#1070](https://github.com/estruyf/vscode-front-matter/pull/1070): Fix taxonomy rename, merge, delete, and move skipping files that get their content type from their folder
+- [#1070](https://github.com/estruyf/vscode-front-matter/pull/1070): Front matter errors found by the dashboard are now reported on the broken file instead of the open editor, and the front matter formatting no longer depends on which file was read last
+- [#1070](https://github.com/estruyf/vscode-front-matter/pull/1070): Fix media metadata being written multiple times after refreshing the media dashboard, and media script notifications that never closed
+- [#1071](https://github.com/estruyf/vscode-front-matter/pull/1071): Registering or unregistering a content folder no longer rewrites your `pageFolders` setting (expanded wildcards, frozen `{{year}}`, doubled locale paths), and now works on Windows
+- [#1071](https://github.com/estruyf/vscode-front-matter/pull/1071): Settings from `.frontmatter/config` files are no longer copied into `frontmatter.json`, and generating content types no longer writes field groups inline
+- [#1071](https://github.com/estruyf/vscode-front-matter/pull/1071): When the content types can't be saved (split or extended config), "Generate content type" no longer assigns the unsaved content type to the page, and neither it nor "Add missing fields" reports success
+- [#1071](https://github.com/estruyf/vscode-front-matter/pull/1071): Fix files in `content/blog-archive` being treated as part of `content/blog`
+- [#1071](https://github.com/estruyf/vscode-front-matter/pull/1071): Fix "Open on website" from the dashboard, preview slugs ending in `index`, bold and hyperlink insertion without a selection, and creating content from a template on Windows
+- [#1071](https://github.com/estruyf/vscode-front-matter/pull/1071): Fix the last modified date not being updated after a settings change, and content validation not picking up content type changes until a restart
+- [#1072](https://github.com/estruyf/vscode-front-matter/pull/1072): Fix dashboard pages no longer updating after a page was deleted, search returning wrong or no results after deleting a page or clearing the cache, and the dashboard not loading again after a failed parse
+- [#1072](https://github.com/estruyf/vscode-front-matter/pull/1072): Fix dashboard slugs ignoring the content type `slugTemplate`, and content watchers not working on Windows
+- [#1072](https://github.com/estruyf/vscode-front-matter/pull/1072): Fix spinners that never stopped when a template download failed or Git is not installed
+- [#1073](https://github.com/estruyf/vscode-front-matter/pull/1073): Fix dashboard search ignoring the selected folder, tag, category, and filters, an empty page after searching from another page, and default filters not being applied
+- [#1073](https://github.com/estruyf/vscode-front-matter/pull/1073): Fix taxonomy tagging removing the tag from the wrong page, and its filter not hiding rows
+- [#1073](https://github.com/estruyf/vscode-front-matter/pull/1073): Fix data entries being saved into the wrong data file, unsaved data form edits being reset, and creating a data file overwriting an existing one
+- [#1073](https://github.com/estruyf/vscode-front-matter/pull/1073): Fix wrong media paths when the file name contains the static folder name (ex. `public-logo.png`)
+- [#1073](https://github.com/estruyf/vscode-front-matter/pull/1073): The media dashboard always shows the item count next to the refresh button, also in folders without media files
+- [#1074](https://github.com/estruyf/vscode-front-matter/pull/1074): Fix lost edits when panel updates overlap, and front matter being written into the focused file (ex. a `.ts` file) instead of the file the panel shows
+- [#1074](https://github.com/estruyf/vscode-front-matter/pull/1074): Fix lost or reverted input in `wysiwyg`, `slug`, `number`, `choice`, `datetime`, and relationship fields, and the last characters being lost when switching files while typing
+- [#1074](https://github.com/estruyf/vscode-front-matter/pull/1074): Opening a file with a markdown `wysiwyg` field no longer rewrites its front matter
+- [#1074](https://github.com/estruyf/vscode-front-matter/pull/1074): Fix block fields losing changes or writing into the wrong record, and hidden fields with a default overwriting the stored value
+- [#1074](https://github.com/estruyf/vscode-front-matter/pull/1074): Clearing a nested field no longer removes its sibling fields, and Copilot tag suggestions no longer replace your existing tags
+- [#1074](https://github.com/estruyf/vscode-front-matter/pull/1074): Fix nested fields named `title` (ex. `seo.meta.title`) not being removed when cleared with `clearEmpty`
+- [#1074](https://github.com/estruyf/vscode-front-matter/pull/1074): The panel no longer shows the front matter of the previous file for a second when you switch to a file without front matter
 
 ## [10.13.0] - 2026-10-12 - [Release notes](https://beta.frontmatter.codes/updates/v10.13.0)
 

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { QuickAction } from '../Menu';
 import { LocalizationKey, localize } from '../../../localization';
 import { ClipboardIcon, CodeBracketIcon, EyeIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { SelectedItemActionAtom } from '../../state';
 import { CustomScript, MediaInfo, Snippet, ViewData } from '../../../models';
 import { copyToClipboard } from '../../utils';
@@ -32,7 +32,7 @@ export const FooterActions: React.FunctionComponent<IFooterActionsProps> = ({
   onDelete,
   onMenuOpenChange,
 }: React.PropsWithChildren<IFooterActionsProps>) => {
-  const [, setSelectedItemAction] = useRecoilState(SelectedItemActionAtom);
+  const setSelectedItemAction = useSetRecoilState(SelectedItemActionAtom);
 
   return (
     <div className="w-full flex items-center justify-end gap-0.5 px-2 py-2 border-t border-[var(--fm-border)]">

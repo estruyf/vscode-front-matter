@@ -1,6 +1,7 @@
 import Ajv, { ErrorObject } from 'ajv';
 import { ContentType } from '../models';
 import { ContentTypeSchemaGenerator, JSONSchema } from './ContentTypeSchemaGenerator';
+import { Settings } from './SettingsHelper';
 
 /**
  * Validation error with location information
@@ -47,6 +48,9 @@ export class FrontMatterValidator {
       allowUnionTypes: true
     });
     this.schemaCache = new Map();
+
+    // The content types can change, so the schemas need to be generated again
+    Settings.attachListener('frontmatter-validator', () => this.clearCache());
   }
 
   /**

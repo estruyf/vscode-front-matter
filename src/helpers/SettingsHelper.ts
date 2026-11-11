@@ -74,6 +74,7 @@ export class Settings {
   private static fileChangeWatcher: FileSystemWatcher | undefined;
   private static fileSaveListener: Disposable;
   private static fileDeleteListener: Disposable;
+  private static configChangeListener: Disposable | undefined;
   private static readConfigPromise: Promise<void> | undefined = undefined;
   private static project: Project | undefined = undefined;
   private static configDebouncer = debounceCallback();
@@ -111,8 +112,6 @@ export class Settings {
         Settings.project = projects[0];
       }
     }
-
-    Settings.listeners = [];
 
     if (!Settings.isInitialized) {
       Settings.isInitialized = true;
@@ -263,8 +262,19 @@ export class Settings {
     const projectConfig = await Settings.projectConfigPath();
     Logger.info(`Project config path: ${projectConfig}`);
 
-    workspace.onDidChangeConfiguration(() => {
-      Settings.triggerListeners();
+    if (Settings.configChangeListener) {
+      Settings.configChangeListener.dispose();
+    }
+
+    // Only react to the settings the extension depends on (git path, markdown writing settings)
+    Settings.configChangeListener = workspace.onDidChangeConfiguration((e) => {
+      if (
+        e.affectsConfiguration(CONFIG_KEY) ||
+        e.affectsConfiguration('git.path') ||
+        e.affectsConfiguration('editor', { languageId: 'markdown' })
+      ) {
+        Settings.triggerListeners();
+      }
     });
 
     if (projectConfig && !(await existsAsync(projectConfig))) {
@@ -309,7 +319,14 @@ export class Settings {
     }
 
     Settings.fileDeleteListener = workspace.onDidDeleteFiles(async (e) => {
-      const needCallback = e?.files.find(async (f) => await Settings.checkProjectConfig(f.fsPath));
+      let needCallback = false;
+      for (const file of e?.files || []) {
+        if (await Settings.checkProjectConfig(file.fsPath)) {
+          needCallback = true;
+          break;
+        }
+      }
+
       if (needCallback) {
         await Settings.reloadConfig(false);
       }
@@ -386,13 +403,16 @@ export class Settings {
    * @param updateGlobal - Indicates whether to update the global setting or not. Default is `false`.
    * @returns A promise that resolves when the setting is updated.
    */
-  public static async safeUpdate<T>(name: string, value: T, updateGlobal = false): Promise<void> {
+  public static async safeUpdate<T>(name: string, value: T, updateGlobal = false): Promise<boolean> {
     if (Settings.hasExtendedConfig) {
       const configKey = `${CONFIG_KEY}.${name}`;
 
       if (
         Settings.extendedConfig.extended.includes(configKey) ||
-        Settings.extendedConfig.splitted.includes(configKey) ||
+        // Split config keys are stored in lowercase, and can be a sub-folder of the setting
+        Settings.extendedConfig.splitted.some((key) =>
+          Settings.isEqualOrStartsWith(key, configKey)
+        ) ||
         Settings.extendedConfig.dynamic
       ) {
         Notifications.warningWithOutput(
@@ -405,11 +425,12 @@ export class Settings {
 ${JSON.stringify(value, null, 2)}`,
           'SETTING'
         );
-        return;
+        return false;
       }
     }
 
     await Settings.update<T>(name, value, updateGlobal);
+    return true;
   }
 
   /**
@@ -422,12 +443,7 @@ ${JSON.stringify(value, null, 2)}`,
 
     if (updateGlobal) {
       if (fmConfig && (await existsAsync(fmConfig))) {
-        const localConfig = await readFileAsync(fmConfig, 'utf8');
-        Settings.globalConfig = jsoncParser.parse(localConfig);
-        Settings.globalConfig[`${CONFIG_KEY}.${name}`] = value;
-
-        const content = JSON.stringify(Settings.globalConfig, null, 2);
-        await writeFileAsync(fmConfig, content, 'utf8');
+        await Settings.writeProjectSetting(fmConfig, name, value);
 
         const workspaceSettingValue = Settings.hasWorkspaceSettings<ContentType[]>(name);
         if (workspaceSettingValue) {
@@ -452,12 +468,7 @@ ${JSON.stringify(value, null, 2)}`,
     const fmConfig = await Settings.projectConfigPath();
 
     if (fmConfig && (await existsAsync(fmConfig))) {
-      const localConfig = await readFileAsync(fmConfig, 'utf8');
-      Settings.globalConfig = jsoncParser.parse(localConfig);
-      delete Settings.globalConfig[`${CONFIG_KEY}.${name}`];
-
-      const content = JSON.stringify(Settings.globalConfig, null, 2);
-      await writeFileAsync(fmConfig, content, 'utf8');
+      await Settings.writeProjectSetting(fmConfig, name, undefined);
 
       const workspaceSettingValue = Settings.hasWorkspaceSettings<ContentType[]>(name);
       if (workspaceSettingValue) {
@@ -471,6 +482,29 @@ ${JSON.stringify(value, null, 2)}`,
     }
 
     await Settings.config.update(name, undefined);
+  }
+
+  /**
+   * Update a single setting in the frontmatter.json file. Only the setting itself gets rewritten,
+   * so the comments and formatting of the rest of the file are preserved.
+   * @param fmConfig - Path to the frontmatter.json file
+   * @param name - Name of the setting without the `frontMatter.` prefix
+   * @param value - New value, `undefined` removes the setting
+   */
+  private static async writeProjectSetting(fmConfig: string, name: string, value: unknown) {
+    const localConfig = await readFileAsync(fmConfig, 'utf8');
+
+    const edits = jsoncParser.modify(localConfig, [`${CONFIG_KEY}.${name}`], value, {
+      formattingOptions: {
+        tabSize: 2,
+        insertSpaces: true,
+        eol: localConfig.includes('\r\n') ? '\r\n' : '\n'
+      }
+    });
+    const content = jsoncParser.applyEdits(localConfig, edits);
+
+    Settings.globalConfig = jsoncParser.parse(content);
+    await writeFileAsync(fmConfig, content, 'utf8');
   }
 
   /**

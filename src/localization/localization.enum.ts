@@ -2489,6 +2489,10 @@ export enum LocalizationKey {
    */
   helpersCustomScriptValidateCommandError = 'helpers.customScript.validateCommand.error',
   /**
+   * {0}: The command could not be started. Scripts no longer run through a shell, so `.cmd` and `.bat` commands like `npx` or `npm` are not supported. Use an executable like `node`, `python`, or `powershell`, or the full path to an `.exe`.
+   */
+  helpersCustomScriptExecuteScriptWindowsCommandError = 'helpers.customScript.executeScript.windowsCommand.error',
+  /**
    * Something went wrong while processing the data file.
    */
   helpersDataFileHelperProcessError = 'helpers.dataFileHelper.process.error',

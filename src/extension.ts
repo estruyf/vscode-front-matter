@@ -86,6 +86,7 @@ export async function activate(context: vscode.ExtensionContext) {
   PagesListener.startWatchers();
 
   collection = vscode.languages.createDiagnosticCollection('frontMatter');
+  subscriptions.push(collection);
 
   // Pages dashboard
   Dashboard.init();
@@ -115,7 +116,7 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   // Folding the front matter of markdown files
-  MarkdownFoldingProvider.register();
+  MarkdownFoldingProvider.register(subscriptions);
 
   // Pasting media into the content files
   MediaPasteProvider.register(subscriptions);
@@ -232,7 +233,7 @@ export async function activate(context: vscode.ExtensionContext) {
   Cache.registerCommands();
 
   // Register the URI handler
-  UriHandler.register();
+  UriHandler.register(subscriptions);
 
   // Subscribe all commands
   subscriptions.push(PanelView, collapseAll, fmStatusBarItem);

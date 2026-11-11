@@ -1,7 +1,7 @@
 import { HomeIcon } from '@heroicons/react/24/outline';
 import { basename, join } from 'path';
 import * as React from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { HOME_PAGE_NAVIGATION_ID } from '../../../constants';
 import { parseWinPath } from '../../../helpers/parseWinPath';
 import { SearchAtom, SettingsAtom } from '../../state';
@@ -15,7 +15,7 @@ export const Breadcrumb: React.FunctionComponent<IBreadcrumbProps> = (
   _: React.PropsWithChildren<IBreadcrumbProps>
 ) => {
   const { selectedFolder, updateFolder } = useMediaFolder();
-  const [, setSearchValue] = useRecoilState(SearchAtom);
+  const setSearchValue = useSetRecoilState(SearchAtom);
   const [folders, setFolders] = React.useState<string[]>([]);
   const settings = useRecoilValue(SettingsAtom);
 

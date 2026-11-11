@@ -89,7 +89,7 @@ const Metadata: React.FunctionComponent<IMetadataProps> = ({
     ));
   };
 
-  const allFields = React.useMemo(() => renderFields(contentType?.fields || [], metadata), [contentType?.fields, JSON.stringify(metadata)]);
+  const allFields = React.useMemo(() => renderFields(contentType?.fields || [], metadata), [contentType, settings, focusElm, JSON.stringify(metadata)]);
 
   if (!settings) {
     return null;

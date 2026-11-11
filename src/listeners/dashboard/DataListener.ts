@@ -20,7 +20,7 @@ export class DataListener extends BaseListener {
     switch (msg.command) {
       case DashboardMessage.getDataEntries:
         if (!(msg?.payload as DataFile).file) {
-          this.sendMsg(DashboardCommand.dataFileEntries, []);
+          this.sendMsg(DashboardCommand.dataFileEntries, { file: undefined, entries: [] });
         }
 
         this.processDataFile(msg?.payload);
@@ -105,7 +105,8 @@ export class DataListener extends BaseListener {
    */
   private static async processDataFile(msgData: DataFile) {
     const entries = await DataFileHelper.process(msgData);
-    this.sendMsg(DashboardCommand.dataFileEntries, entries);
+    // Include the file so the dashboard can ignore entries of a previously selected file
+    this.sendMsg(DashboardCommand.dataFileEntries, { file: msgData.file, entries });
   }
 
   /**
@@ -128,10 +129,19 @@ export class DataListener extends BaseListener {
       return;
     }
 
+    const absPath = Folders.getAbsFilePath(dataFolder.path);
+    const fileType = dataFolder.fileType || 'json';
+
     const fileName = await window.showInputBox({
       title: localize(LocalizationKey.listenersPanelDataListenerCreateDataFileInputTitle),
       prompt: localize(LocalizationKey.listenersPanelDataListenerCreateDataFileInputTitle),
-      ignoreFocusOut: true
+      ignoreFocusOut: true,
+      validateInput: async (value) => {
+        if (value && (await existsAsync(join(absPath, `${value}.${fileType}`)))) {
+          return localize(LocalizationKey.commandsArticleRenameFileExistsError, value);
+        }
+        return undefined;
+      }
     });
 
     if (!fileName || fileName.trim() === '') {
@@ -143,17 +153,22 @@ export class DataListener extends BaseListener {
       return;
     }
 
-    const absPath = Folders.getAbsFilePath(dataFolder.path);
     if (!(await existsAsync(absPath))) {
-      const dirPath = dirname(absPath);
-      if (!(await existsAsync(dirPath))) {
-        await mkdirAsync(dirPath, { recursive: true });
-      }
+      await mkdirAsync(absPath, { recursive: true });
     }
 
-    // Check the file type and create the file
-    const filePath = join(absPath, `${fileName}.${dataFolder.fileType || 'json'}`);
-    await writeFileAsync(filePath, dataFolder.fileType === 'json' ? '{}' : '', 'utf8');
+    // Check the file type and create the file, without overwriting an existing one
+    const filePath = join(absPath, `${fileName}.${fileType}`);
+    if (await existsAsync(filePath)) {
+      this.sendError(
+        command as DashboardCommand,
+        requestId,
+        localize(LocalizationKey.commandsArticleRenameFileExistsError, fileName)
+      );
+      return;
+    }
+
+    await writeFileAsync(filePath, fileType === 'json' ? '{}' : '', 'utf8');
 
     // Update the settings
     await SettingsListener.getSettings(true);
