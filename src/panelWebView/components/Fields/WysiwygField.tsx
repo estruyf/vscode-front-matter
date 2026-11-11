@@ -74,11 +74,46 @@ const WysiwygField: React.FunctionComponent<IWysiwygFieldProps> = ({
   // Last value we sent to, or accepted from, the extension host. Used to recognize the echo of our own update.
   const lastSentRef = React.useRef<string | undefined>(undefined);
   const [text, setText] = React.useState<string | null | undefined>(type === "html" ? value : markdownToHtml(value || ""));
-  const debouncedText = useDebounce<string | null | undefined>(text, DEBOUNCE_TIME);
 
-  const onTextChange = (newValue: string) => {
+  /**
+   * Convert the editor HTML to the value that gets stored in the front matter
+   */
+  const toFieldValue = (html: string | null | undefined) => normalize(type === "html" ? html : htmlToMarkdown(html || ""));
+
+  /**
+   * Send the text to the extension host when it is a local edit that was not sent yet
+   */
+  const sendText = (crntText: string | null | undefined) => {
+    if (crntText === undefined || lastTypedRef.current === null) {
+      // Not a local edit (ex. text was set from the incoming value)
+      return;
+    }
+
+    const outgoing = toFieldValue(crntText);
+    const baseline = lastSentRef.current !== undefined ? lastSentRef.current : normalize(value);
+    if (outgoing === baseline) {
+      if (baseline === normalize(value)) {
+        lastTypedRef.current = null;
+      }
+      return;
+    }
+
+    lastSentRef.current = outgoing;
+    onChange(outgoing);
+  };
+
+  // A pending edit is sent when the field unmounts before the debounce time passed (ex. switching files)
+  const debouncedText = useDebounce<string | null | undefined>(text, DEBOUNCE_TIME, sendText);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onTextChange = (newValue: string, _delta: any, source: string) => {
     setText(newValue);
-    lastTypedRef.current = Date.now();
+
+    // Quill also triggers a change when it normalizes the HTML of the value we passed (source "api"),
+    // only changes made by the user should be sent back to the front matter.
+    if (source === 'user') {
+      lastTypedRef.current = Date.now();
+    }
   }
 
   const modules = React.useMemo(() => {
@@ -147,8 +182,10 @@ const WysiwygField: React.FunctionComponent<IWysiwygFieldProps> = ({
     const incoming = normalize(value);
 
     if (lastSentRef.current !== undefined && incoming === lastSentRef.current) {
-      // Echo of our own update, the local text is at least as recent
-      lastTypedRef.current = null;
+      // Echo of our own update. When nothing was typed since, the field is in sync again.
+      if (toFieldValue(text) === incoming) {
+        lastTypedRef.current = null;
+      }
       return;
     }
 
@@ -169,22 +206,7 @@ const WysiwygField: React.FunctionComponent<IWysiwygFieldProps> = ({
    * Update the value when the debounced text changes
    */
   React.useEffect(() => {
-    if (debouncedText === undefined || lastTypedRef.current === null) {
-      // Not a local edit (ex. text was set from the incoming value)
-      return;
-    }
-
-    const outgoing = normalize(type === "html" ? debouncedText : htmlToMarkdown(debouncedText || ""));
-    const baseline = lastSentRef.current !== undefined ? lastSentRef.current : normalize(value);
-    if (outgoing === baseline) {
-      if (baseline === normalize(value)) {
-        lastTypedRef.current = null;
-      }
-      return;
-    }
-
-    lastSentRef.current = outgoing;
-    onChange(outgoing);
+    sendText(debouncedText);
   }, [debouncedText]);
 
   return (

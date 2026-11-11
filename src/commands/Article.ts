@@ -91,7 +91,7 @@ export class Article {
     article = await this.updateDate(article);
 
     try {
-      ArticleHelper.update(editor, article);
+      await ArticleHelper.update(editor, article);
     } catch (e) {
       Notifications.error(
         l10n.t(LocalizationKey.commandsArticleSetDateError, `${CONFIG_KEY}${SETTING_DATE_FORMAT}`)
@@ -123,7 +123,7 @@ export class Article {
       return;
     }
 
-    ArticleHelper.update(editor, updatedArticle as ParsedFrontMatter);
+    await ArticleHelper.update(editor, updatedArticle as ParsedFrontMatter);
   }
 
   public static async setLastModifiedDateOnSave(document: TextDocument): Promise<TextEdit[]> {
@@ -311,7 +311,7 @@ export class Article {
         }
       }
 
-      ArticleHelper.update(editor, article);
+      await ArticleHelper.update(editor, article);
 
       // Check if the file name should be updated by the slug
       // This is required for systems like Jekyll
@@ -356,14 +356,18 @@ export class Article {
 
   /**
    * Retrieve the slug from the front matter
+   * @param pathname
+   * @param filePath - Path of the file, when not provided the active editor is used
+   * @param article - Front matter of the file
    */
-  public static getSlug(pathname?: string) {
-    const editor = window.activeTextEditor;
-    if (!editor) {
+  public static getSlug(pathname?: string, filePath?: string, article?: ParsedFrontMatter | null) {
+    const editor = filePath ? undefined : window.activeTextEditor;
+    filePath = filePath || editor?.document.fileName;
+    if (!filePath) {
       return;
     }
 
-    const file = parseWinPath(editor.document.fileName);
+    const file = parseWinPath(filePath);
     if (!isValidFile(file)) {
       return;
     }
@@ -373,13 +377,15 @@ export class Article {
     const titleField = getTitleField();
     const slugTemplate = Settings.get<string>(SETTING_SLUG_TEMPLATE);
     if (slugTemplate) {
+      if (editor) {
+        article = ArticleHelper.getFrontMatter(editor);
+      }
+
       if (slugTemplate === '{{title}}') {
-        const article = ArticleHelper.getFrontMatter(editor);
         if (article?.data && article.data[titleField]) {
           return article.data[titleField].toLowerCase().replace(/\s/g, '-');
         }
       } else {
-        const article = ArticleHelper.getFrontMatter(editor);
         if (article?.data) {
           return SlugHelper.createSlug(article.data[titleField], article.data, file, slugTemplate);
         }
@@ -416,7 +422,7 @@ export class Article {
 
     const newDraftStatus = !article.data['draft'];
     article.data['draft'] = newDraftStatus;
-    ArticleHelper.update(editor, article);
+    await ArticleHelper.update(editor, article);
   }
 
   /**
@@ -428,18 +434,28 @@ export class Article {
     if (document && ArticleHelper.isSupportedFile(document)) {
       const autoUpdate = Settings.get(SETTING_AUTO_UPDATE_DATE);
 
-      // Is article located in one of the content folders
-      const folders = Folders.getCached();
-      const documentPath = parseWinPath(document.fileName);
-      const folder = folders?.find((f) => documentPath.startsWith(f.path));
-      if (!folder) {
-        return;
-      }
-
       if (autoUpdate) {
-        event.waitUntil(Article.setLastModifiedDateOnSave(document));
+        event.waitUntil(Article.setLastModifiedDateInContentFolder(document));
       }
     }
+  }
+
+  /**
+   * Set the last modified date when the article is located in one of the content folders
+   * @param document
+   */
+  private static async setLastModifiedDateInContentFolder(
+    document: TextDocument
+  ): Promise<TextEdit[]> {
+    // The cached folders get cleared on settings changes, so retrieve them when needed
+    const folders = await Folders.getCachedOrFresh();
+    const documentPath = parseWinPath(document.fileName);
+    const folder = folders.find((f) => Folders.isInFolder(documentPath, f.path));
+    if (!folder) {
+      return [];
+    }
+
+    return Article.setLastModifiedDateOnSave(document);
   }
 
   /**

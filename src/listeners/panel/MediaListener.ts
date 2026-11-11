@@ -47,6 +47,7 @@ export class MediaListener extends BaseListener {
         Preview.filePath ||
         ArticleHelper.getActiveFile();
       if (!filePath) {
+        this.sendRequestError(command, requestId, 'No active file found');
         return;
       }
 
@@ -71,6 +72,8 @@ export class MediaListener extends BaseListener {
       this.sendRequest(command, requestId, imageData);
       return;
     }
+
+    this.sendRequestError(command, requestId, 'Unsupported media data');
   }
 
   private static generateUrl(

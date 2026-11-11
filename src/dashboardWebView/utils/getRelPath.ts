@@ -12,8 +12,11 @@ export const getRelPath = (path: string, staticFolder?: string, wsFolder?: strin
     if (staticFolder === '/') {
       return relPath;
     } else if (staticFolder && relPath) {
-      const staticFolderParsed = parseWinPath(staticFolder);
-      relPath = relPath.split(staticFolderParsed).pop();
+      // Only strip the static folder when it is the leading path segment
+      const staticFolderParsed = `/${parseWinPath(staticFolder).replace(/^\.?\/+|\/+$/g, '')}`;
+      if (relPath.startsWith(`${staticFolderParsed}/`)) {
+        relPath = relPath.substring(staticFolderParsed.length);
+      }
     }
   }
   return relPath;
