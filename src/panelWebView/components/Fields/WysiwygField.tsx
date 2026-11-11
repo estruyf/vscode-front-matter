@@ -18,7 +18,7 @@ import rehypeStringify from 'rehype-stringify'
 import { BaseFieldProps } from '../../../models';
 import { FieldMessage, FieldTitle } from '.';
 import { LocalizationKey, localize } from '../../../localization';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { RequiredFieldsAtom } from '../../state';
 import { useDebounce } from '../../../hooks/useDebounce';
 
@@ -68,7 +68,7 @@ const WysiwygField: React.FunctionComponent<IWysiwygFieldProps> = ({
   limit,
   required
 }: React.PropsWithChildren<IWysiwygFieldProps>) => {
-  const [, setRequiredFields] = useRecoilState(RequiredFieldsAtom);
+  const setRequiredFields = useSetRecoilState(RequiredFieldsAtom);
   // Timestamp of the last local edit, null when the field is in sync with the front matter
   const lastTypedRef = React.useRef<number | null>(null);
   // Last value we sent to, or accepted from, the extension host. Used to recognize the echo of our own update.

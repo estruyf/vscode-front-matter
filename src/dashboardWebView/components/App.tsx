@@ -97,7 +97,7 @@ export const App: React.FunctionComponent<IAppProps> = ({
         location: 'DASHBOARD'
       });
     }
-  }, [JSON.stringify(settings), JSON.stringify(pages)]);
+  }, [settings, pages]);
 
   useEffect(() => {
     checkDevMode();

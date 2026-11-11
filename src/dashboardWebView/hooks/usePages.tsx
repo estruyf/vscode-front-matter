@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Tab } from '../constants/Tab';
 import { Page } from '../models/Page';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   AllPagesAtom,
   CategorySelector,
@@ -34,11 +34,11 @@ import { NavigationType } from '../models/NavigationType';
 export default function usePages(pages: Page[]) {
   const [sortedPages, setSortedPages] = useState<Page[]>([]);
   const [pageItems, setPageItems] = useRecoilState(AllPagesAtom);
-  const [, setLastSync] = useRecoilState(LastSyncAtom);
+  const setLastSync = useSetRecoilState(LastSyncAtom);
   const [sorting, setSorting] = useRecoilState(SortingAtom);
   const [tabInfo, setTabInfo] = useRecoilState(TabInfoAtom);
   const [locales, setLocales] = useRecoilState(LocalesAtom);
-  const [, setFilterValues] = useRecoilState(FilterValuesAtom);
+  const setFilterValues = useSetRecoilState(FilterValuesAtom);
   const settings = useRecoilValue(SettingsSelector);
   const tab = useRecoilValue(TabSelector);
   const folder = useRecoilValue(FolderSelector);

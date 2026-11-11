@@ -2,7 +2,7 @@ import { Disclosure } from '@headlessui/react';
 import { ChevronRightIcon } from '@heroicons/react/24/solid';
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { groupBy } from '../../../helpers/GroupBy';
 import { FrontMatterIcon } from '../../../panelWebView/components/Icons/FrontMatterIcon';
 import { GroupOption } from '../../constants/GroupOption';
@@ -34,7 +34,7 @@ export const Overview: React.FunctionComponent<IOverviewProps> = ({
   const [page, setPage] = useRecoilState(PageAtom);
   const { pageSetNr } = usePagination(settings?.dashboardState.contents.pagination);
   const view = useRecoilValue(ViewSelector);
-  const [, setPagedItems] = useRecoilState(PagedItems);
+  const setPagedItems = useSetRecoilState(PagedItems);
 
   const pagedPages = useMemo(() => {
     if (pageSetNr) {

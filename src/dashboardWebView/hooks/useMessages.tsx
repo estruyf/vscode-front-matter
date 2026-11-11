@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { DashboardCommand } from '../DashboardCommand';
 import { DashboardMessage } from '../DashboardMessage';
 import { Page } from '../models/Page';
@@ -30,14 +30,14 @@ export default function useMessages() {
   const [pages, setPages] = useState<Page[]>([]);
   const [settings, setSettings] = useRecoilState(SettingsAtom);
   const [viewData, setViewData] = useRecoilState(ViewDataAtom);
-  const [, setMode] = useRecoilState(ModeAtom);
-  const [, setView] = useRecoilState(DashboardViewAtom);
-  const [, setSearchReady] = useRecoilState(SearchReadyAtom);
-  const [, setGrouping] = useRecoilState(GroupingAtom);
-  const [, setFolder] = useRecoilState(FolderAtom);
-  const [, setFilters] = useRecoilState(FiltersAtom);
-  const [, setTag] = useRecoilState(TagAtom);
-  const [, setCategory] = useRecoilState(CategoryAtom);
+  const setMode = useSetRecoilState(ModeAtom);
+  const setView = useSetRecoilState(DashboardViewAtom);
+  const setSearchReady = useSetRecoilState(SearchReadyAtom);
+  const setGrouping = useSetRecoilState(GroupingAtom);
+  const setFolder = useSetRecoilState(FolderAtom);
+  const setFilters = useSetRecoilState(FiltersAtom);
+  const setTag = useSetRecoilState(TagAtom);
+  const setCategory = useSetRecoilState(CategoryAtom);
   const defaultsApplied = useRef(false);
 
   const messageListener = (event: MessageEvent<EventData<any>>) => {

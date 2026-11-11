@@ -30,7 +30,7 @@ import { LocalizationKey } from '../localization';
 
 export class PagesParser {
   public static allPages: Page[] = [];
-  public static cachedPages: Page[] | undefined = undefined;
+  public static cachedPages: Map<string, Page> | undefined = undefined;
   private static parser: Promise<void> | undefined;
   private static initialized = false;
   private static parseId = 0;
@@ -133,6 +133,7 @@ export class PagesParser {
     // Update the dashboard with the fresh data
     const folderInfo = await Folders.getInfo();
     const pages: Page[] = [];
+    const pagePaths = new Set<string>();
 
     if (folderInfo) {
       PagesParser.pagesStatusBar.text = `$(sync~spin) ${l10n.t(
@@ -161,7 +162,8 @@ export class PagesParser {
                 );
               }
 
-              if (page && !pages.find((p) => p.fmFilePath === page?.fmFilePath)) {
+              if (page && !pagePaths.has(page.fmFilePath)) {
+                pagePaths.add(page.fmFilePath);
                 pages.push(page);
               }
             } catch (error: any) {
@@ -212,13 +214,20 @@ export class PagesParser {
   ): Promise<Page | undefined> {
     if (!PagesParser.cachedPages) {
       const ext = Extension.getInstance();
-      PagesParser.cachedPages =
+      const cache =
         (await ext.getState<Page[]>(ExtensionState.Dashboard.Pages.Cache, 'workspace')) || [];
+
+      // Index the cache by path, so the lookup per file does not have to scan all pages
+      PagesParser.cachedPages = new Map();
+      for (const cachedPage of cache) {
+        if (!PagesParser.cachedPages.has(cachedPage.fmCachePath)) {
+          PagesParser.cachedPages.set(cachedPage.fmCachePath, cachedPage);
+        }
+      }
     }
 
-    return PagesParser.cachedPages.find(
-      (p) => p.fmCachePath === parseWinPath(filePath) && p.fmCacheModifiedTime === modifiedTime
-    );
+    const page = PagesParser.cachedPages.get(parseWinPath(filePath));
+    return page?.fmCacheModifiedTime === modifiedTime ? page : undefined;
   }
 
   /**

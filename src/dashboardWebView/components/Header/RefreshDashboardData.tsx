@@ -1,7 +1,7 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
 import { useCallback } from 'react';
-import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
+import { useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
 import { DashboardMessage } from '../../DashboardMessage';
 import { NavigationType } from '../../models';
 import {
@@ -23,7 +23,7 @@ export interface IRefreshDashboardDataProps { }
 
 export const RefreshDashboardData: React.FunctionComponent<IRefreshDashboardDataProps> = () => {
   const view = useRecoilValue(DashboardViewAtom);
-  const [, setLoading] = useRecoilState(LoadingAtom);
+  const setLoading = useSetRecoilState(LoadingAtom);
   const resetSearch = useResetRecoilState(SearchAtom);
   const resetSorting = useResetRecoilState(SortingAtom);
   const resetFolder = useResetRecoilState(FolderAtom);
