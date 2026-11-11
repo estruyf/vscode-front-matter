@@ -236,7 +236,8 @@ export class Settings {
         ),
         ignoreFocusOut: true
       });
-      if (deleteAnswer === 'no') {
+      // Only delete on an explicit "yes", cancelling the quick pick returns undefined
+      if (deleteAnswer !== 'yes') {
         return;
       }
     }
