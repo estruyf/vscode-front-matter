@@ -11,7 +11,7 @@ import { WelcomeLink } from './WelcomeLink';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import { DashboardViewAtom } from '../../state';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { NavigationType } from '../../models';
 
 export interface IWelcomeScreenProps {
@@ -21,7 +21,7 @@ export interface IWelcomeScreenProps {
 export const WelcomeScreen: React.FunctionComponent<IWelcomeScreenProps> = ({
   settings
 }: React.PropsWithChildren<IWelcomeScreenProps>) => {
-  const [, setView] = useRecoilState(DashboardViewAtom);
+  const setView = useSetRecoilState(DashboardViewAtom);
 
   React.useEffect(() => {
     setView(NavigationType.Welcome);

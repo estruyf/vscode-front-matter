@@ -97,7 +97,7 @@ export const Contents: React.FunctionComponent<IContentsProps> = ({
       message: `Contents view loaded with ${pageItems.length} pages`,
       location: 'DASHBOARD'
     });
-  }, [JSON.stringify(pageItems)]);
+  }, [pageItems.length]);
 
   useEffect(() => {
     Messenger.send(DashboardMessage.setTitle, l10n.t(LocalizationKey.dashboardHeaderTabsContents));

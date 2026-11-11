@@ -78,7 +78,11 @@ export class Settings {
           return;
         }
 
-        const matterProp: string = taxonomy;
+        // Use the taxonomy field of the content type, or the default `tags`/`categories` field
+        const fieldType = type === TaxonomyType.Tag ? 'tags' : 'categories';
+        const contentType = await ArticleHelper.getContentType(article);
+        const matterProp: string =
+          contentType.fields.find((f) => f.type === fieldType)?.name || fieldType;
         // Add the selected options to the options array
         if (article.data[matterProp]) {
           const propData: string[] = article.data[matterProp];
@@ -89,7 +93,7 @@ export class Settings {
           article.data[matterProp] = [newOption];
         }
 
-        ArticleHelper.update(editor, article);
+        await ArticleHelper.update(editor, article);
       }
     }
   }
@@ -115,13 +119,12 @@ export class Settings {
         let tags: string[] = [];
         let categories: string[] = [];
 
-        // Set the initial progress
-        const progressNr = allMdFiles.length / 100;
+        // Set the initial progress, the increment gets added to the total on each report
+        const progressNr = 100 / allMdFiles.length;
         progress.report({ increment: 0 });
 
-        let i = 0;
         for (const file of allMdFiles) {
-          progress.report({ increment: ++i / progressNr });
+          progress.report({ increment: progressNr });
           const mdFile = await vscode.workspace.openTextDocument(file);
           if (mdFile) {
             const txtData = mdFile.getText();
@@ -132,11 +135,12 @@ export class Settings {
                   const { data } = article;
                   const mdTags = data['tags'];
                   const mdCategories = data['categories'];
+                  // The values can be a single string or an array of strings
                   if (mdTags) {
-                    tags = [...tags, ...mdTags];
+                    tags = tags.concat(mdTags);
                   }
                   if (mdCategories) {
-                    categories = [...categories, ...mdCategories];
+                    categories = categories.concat(mdCategories);
                   }
                 }
               } catch (e) {
@@ -236,7 +240,8 @@ export class Settings {
         ),
         ignoreFocusOut: true
       });
-      if (deleteAnswer === 'no') {
+      // Only delete on an explicit "yes", cancelling the quick pick returns undefined
+      if (deleteAnswer !== 'yes') {
         return;
       }
     }

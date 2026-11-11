@@ -86,7 +86,7 @@ export class StatusListener {
 
           // Check the required fields
           if (editor) {
-            StatusListener.verifyRequiredFields(editor, article, collection);
+            await StatusListener.verifyRequiredFields(editor, article, collection);
 
             // Schema validation
             const validationEnabled = Settings.get<boolean>(SETTING_VALIDATION_ENABLED, true);

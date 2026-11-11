@@ -1,7 +1,7 @@
 import { EventData } from '@estruyf/vscode';
 import { Messenger } from '@estruyf/vscode/dist/client';
 import * as React from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { useDebounce } from '../../../hooks/useDebounce';
 import { usePrevious } from '../../../panelWebView/hooks/usePrevious';
 import { DashboardCommand } from '../../DashboardCommand';
@@ -28,7 +28,7 @@ export const MediaHeaderTop: React.FunctionComponent<
   const [lastUpdated, setLastUpdated] = React.useState<string | null>(null);
   const selectedFolder = useRecoilValue(SelectedMediaFolderSelector);
   const crntSorting = useRecoilValue(SortingSelector);
-  const [, setLoading] = useRecoilState(LoadingAtom);
+  const setLoading = useSetRecoilState(LoadingAtom);
   const [page, setPage] = useRecoilState(PageAtom);
   const settings = useRecoilValue(SettingsSelector);
   const totalMedia = useRecoilValue(MediaTotalSelector);
@@ -79,7 +79,7 @@ export const MediaHeaderTop: React.FunctionComponent<
     return () => {
       Messenger.unlisten(mediaUpdate);
     };
-  }, []);
+  }, [page, selectedFolder, crntSorting]);
 
   return (
     <nav
@@ -91,11 +91,10 @@ export const MediaHeaderTop: React.FunctionComponent<
           {l10n.t(LocalizationKey.dashboardHeaderTabsMedia)}
         </h1>
         <div className="mt-0.5 flex items-center gap-2 flex-wrap" style={{ color: 'var(--fm-text-lo)' }}>
-          {totalMedia > 0 && (
-            <p className="text-xs leading-tight mt-0.5" style={{ fontFamily: 'var(--fm-mono)', color: 'var(--fm-text-lo)' }}>
-              {totalMedia} {totalMedia === 1 ? 'item' : 'items'}{` `}&middot;{` `}
-            </p>
-          )}
+          {/* Always show the count, otherwise the refresh button is left on its own line */}
+          <p className="text-xs leading-tight mt-0.5" style={{ fontFamily: 'var(--fm-mono)', color: 'var(--fm-text-lo)' }}>
+            {totalMedia || 0} {totalMedia === 1 ? 'item' : 'items'}{` `}&middot;{` `}
+          </p>
 
           <RefreshDashboardData />
         </div>

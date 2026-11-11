@@ -26,7 +26,7 @@ import {
 import { GeneralCommands } from './../../constants/GeneralCommands';
 import simpleGit, { SimpleGit } from 'simple-git';
 import { Folders } from '../../commands/Folders';
-import { Event, commands, extensions, workspace } from 'vscode';
+import { Disposable, Event, commands, extensions, workspace } from 'vscode';
 import { GitAPIState, GitRepository, PostMessageData } from '../../models';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../localization';
@@ -43,8 +43,9 @@ export class GitListener {
   } | null = null;
   private static isRegistered = false;
   private static client: SimpleGit | null = null;
-  private static subClient: SimpleGit | null = null;
+  private static subClients: { [folder: string]: SimpleGit } = {};
   private static repository: GitRepository | null = null;
+  private static repoListeners: { [path: string]: Disposable } = {};
   private static branchName: string | null = null;
 
   /**
@@ -191,7 +192,14 @@ export class GitListener {
       return false;
     }
 
-    const isRepo = await git.checkIsRepo();
+    let isRepo = false;
+    try {
+      isRepo = await git.checkIsRepo();
+    } catch (e) {
+      // Happens when git is not installed or cannot be executed
+      Logger.error(`GitListener:isGitRepository: ${(e as Error)?.message || e}`);
+      return false;
+    }
 
     if (!isRepo) {
       Logger.warning(`Current workspace is not a GIT repository`);
@@ -335,8 +343,8 @@ export class GitListener {
   private static getClient(submoduleFolder = ''): SimpleGit | null {
     if (!submoduleFolder && this.client) {
       return this.client;
-    } else if (submoduleFolder && this.subClient) {
-      return this.subClient;
+    } else if (submoduleFolder && this.subClients[submoduleFolder]) {
+      return this.subClients[submoduleFolder];
     }
 
     const wsFolder = Folders.getWorkspaceFolder();
@@ -348,8 +356,8 @@ export class GitListener {
     };
 
     if (submoduleFolder) {
-      this.subClient = simpleGit(options);
-      return this.subClient;
+      this.subClients[submoduleFolder] = simpleGit(options);
+      return this.subClients[submoduleFolder];
     } else {
       this.client = simpleGit(options);
       return this.client;
@@ -411,6 +419,12 @@ export class GitListener {
 
         GitListener.gitAPI.onDidCloseRepository((repo: GitRepository) => {
           Logger.info(`Closed repo: ${repo?.state?.HEAD?.name}`);
+
+          const repoPath = repo?.rootUri?.fsPath;
+          if (repoPath && GitListener.repoListeners[repoPath]) {
+            GitListener.repoListeners[repoPath].dispose();
+            delete GitListener.repoListeners[repoPath];
+          }
         });
       }
     }
@@ -461,9 +475,13 @@ export class GitListener {
 
         this.sendMsg(GeneralCommands.toWebview.git.branchName, GitListener.branchName);
 
-        repo.state.onDidChange(() => {
-          GitListener.triggerBranchChange(repo);
-        });
+        // Only listen once per repository, the listener handles all following branch changes
+        const repoPath = repo.rootUri.fsPath;
+        if (!GitListener.repoListeners[repoPath]) {
+          GitListener.repoListeners[repoPath] = repo.state.onDidChange(() => {
+            GitListener.triggerBranchChange(repo);
+          });
+        }
       }
     }
   }

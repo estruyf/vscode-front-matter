@@ -139,13 +139,9 @@ export class Folders {
     const contentType = folderInfo instanceof Uri ? undefined : folderInfo.contentType;
 
     if (folder && folder.fsPath) {
-      const wslPath = folder.fsPath.replace(/\//g, '\\');
+      const folders = await Folders.get();
 
-      let folders = await Folders.get();
-
-      const exists = folders.find(
-        (f) => f.path.includes(folder.fsPath) || f.path.includes(wslPath)
-      );
+      const exists = folders.find((f) => Folders.isInFolder(f.path, folder.fsPath));
 
       if (exists) {
         Notifications.warning(l10n.t(LocalizationKey.commandsFoldersCreateFolderExistsWarning));
@@ -171,10 +167,13 @@ export class Folders {
         contentFolder.contentTypes = typeof contentType === 'string' ? [contentType] : contentType;
       }
 
-      folders.push(contentFolder);
+      // Add the folder to the configured folders, the resolved folders contain the expanded
+      // wildcard, placeholder, and locale paths which should not be written to the settings
+      let configFolders = [...Folders.getConfigFolders()];
+      configFolders.push(contentFolder);
 
-      folders = uniqBy(folders, (f) => f.path);
-      await Folders.update(folders);
+      configFolders = uniqBy(configFolders, (f) => f.path);
+      await Folders.update(configFolders);
 
       Notifications.info(l10n.t(LocalizationKey.commandsFoldersCreateSuccess));
 
@@ -188,9 +187,25 @@ export class Folders {
    */
   public static async unregister(folder: Uri) {
     if (folder && folder.path) {
-      let folders = await Folders.get();
-      folders = folders.filter((f) => f.path !== folder.fsPath);
-      await Folders.update(folders);
+      const wsFolder = Folders.getWorkspaceFolder();
+      const folderPath = parseWinPath(folder.fsPath);
+
+      // Configured paths of the content folders which resolve to the folder (ex. locale folders)
+      const folders = await Folders.get();
+      const originalPaths = folders
+        .filter((f) => parseWinPath(f.path) === folderPath)
+        .map((f) => f.originalPath);
+
+      const configFolders = Folders.getConfigFolders();
+      const updatedFolders = configFolders.filter(
+        (f) =>
+          !originalPaths.includes(f.path) &&
+          parseWinPath(Folders.absWsFolder(f, wsFolder)) !== folderPath
+      );
+
+      if (updatedFolders.length !== configFolders.length) {
+        await Folders.update(updatedFolders);
+      }
     }
   }
 
@@ -337,8 +352,8 @@ export class Folders {
     let folders: ContentFolder[] = Settings.get(SETTING_CONTENT_PAGE_FOLDERS) as ContentFolder[];
     const i18nSettings = Settings.get<I18nConfig[]>(SETTING_CONTENT_I18N);
 
-    // Filter out folders without a path
-    folders = folders.filter((f) => f.path);
+    // Filter out folders without a path, and copy them to not change the settings
+    folders = folders.filter((f) => f.path).map((f) => ({ ...f }));
 
     const contentFolders: ContentFolder[] = [];
 
@@ -384,8 +399,7 @@ export class Folders {
             if (
               answer === l10n.t(LocalizationKey.commandsFoldersGetNotificationErrorRemoveAction)
             ) {
-              const folders = await Folders.get();
-              Folders.update(folders.filter((f) => f.path !== folder.path));
+              Folders.update(Folders.getConfigFolders().filter((f) => f.path !== folder.path));
             } else if (
               answer === l10n.t(LocalizationKey.commandsFoldersGetNotificationErrorCreateAction)
             ) {
@@ -447,6 +461,14 @@ export class Folders {
     Logger.verbose('Folders:get:end');
     Folders._folders = contentFolders.filter((folder) => folder !== null) as ContentFolder[];
     return Folders._folders;
+  }
+
+  /**
+   * Get the content folders as they are configured in the settings
+   * @returns {ContentFolder[]} - The configured content folders
+   */
+  public static getConfigFolders(): ContentFolder[] {
+    return (Settings.get(SETTING_CONTENT_PAGE_FOLDERS) as ContentFolder[]) || [];
   }
 
   /**
@@ -515,6 +537,26 @@ export class Folders {
 
     // Reinitialize the folder listeners
     PagesListener.startWatchers();
+  }
+
+  /**
+   * Check if the path is the folder itself or is located in the folder
+   * @param path
+   * @param folderPath
+   * @returns
+   */
+  public static isInFolder(path: string, folderPath: string): boolean {
+    const parsedPath = parseWinPath(path);
+    const parsedFolderPath = parseWinPath(folderPath);
+
+    if (parsedPath === parsedFolderPath) {
+      return true;
+    }
+
+    // Only match on complete folder names (ex. `content/blog-archive` is not in `content/blog`)
+    return parsedPath.startsWith(
+      parsedFolderPath.endsWith('/') ? parsedFolderPath : `${parsedFolderPath}/`
+    );
   }
 
   /**
@@ -702,7 +744,7 @@ export class Folders {
       let selectedFolder: ContentFolder | null = null;
       for (const folder of folders) {
         const folderPath = parseWinPath(folder.path);
-        if (filePath.startsWith(folderPath)) {
+        if (Folders.isInFolder(filePath, folderPath)) {
           if (!selectedFolder || selectedFolder.path.length < folderPath.length) {
             selectedFolder = folder;
           }
@@ -729,7 +771,7 @@ export class Folders {
     const folders = await Folders.getCachedOrFresh();
     const parsedPath = parseWinPath(filePath);
     const pageFolderMatches = folders
-      .filter((folder) => parsedPath && folder.path && parsedPath.includes(folder.path))
+      .filter((folder) => parsedPath && folder.path && Folders.isInFolder(parsedPath, folder.path))
       .sort((a, b) => b.path.length - a.path.length);
 
     if (pageFolderMatches.length > 0 && pageFolderMatches[0]) {
@@ -768,7 +810,9 @@ export class Folders {
 
     // Use file path to find the folder
     if (crntFolders.length > 0) {
-      crntFolders = crntFolders.filter((folder) => filePath?.startsWith(folder.path));
+      crntFolders = crntFolders.filter(
+        (folder) => filePath && Folders.isInFolder(filePath, folder.path)
+      );
     }
 
     if (crntFolders && crntFolders.length === 1) {

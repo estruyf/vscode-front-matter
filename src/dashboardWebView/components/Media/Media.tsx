@@ -1,7 +1,7 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   LoadingAtom,
   MediaFoldersAtom,
@@ -48,7 +48,7 @@ export const Media: React.FunctionComponent<IMediaProps> = () => {
   const folders = useRecoilValue(MediaFoldersAtom);
   const loading = useRecoilValue(LoadingAtom);
   const crntSorting = useRecoilValue(SortingAtom);
-  const [, setPagedItems] = useRecoilState(PagedItems);
+  const setPagedItems = useSetRecoilState(PagedItems);
   const totalMedia = useRecoilValue(MediaTotalSelector);
   const { pageSetNr } = usePagination(settings?.dashboardState.contents.pagination);
   const showFooterPagination = totalMedia > pageSetNr;
@@ -144,9 +144,12 @@ export const Media: React.FunctionComponent<IMediaProps> = () => {
       });
     }
 
-    setPagedItems(mediaFiles.map((m) => m.fsPath));
     return mediaFiles;
   }, [media, viewData, currentStaticFolder, settings?.staticFolder]);
+
+  useEffect(() => {
+    setPagedItems(allMedia.map((m) => m.fsPath));
+  }, [allMedia]);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {

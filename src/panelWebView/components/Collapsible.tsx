@@ -43,13 +43,19 @@ const Collapsible: React.FunctionComponent<ICollapsibleProps> = ({
       updateStorage(false);
     }
 
-    window.addEventListener('message', (event) => {
+    const messageListener = (event: MessageEvent) => {
       const message = event.data;
       if (message.command === Command.closeSections) {
         setIsOpen(false);
         updateStorage(false);
       }
-    });
+    };
+
+    window.addEventListener('message', messageListener);
+
+    return () => {
+      window.removeEventListener('message', messageListener);
+    };
   }, [collapseKey]);
 
   const updateStorage = (value: boolean) => {

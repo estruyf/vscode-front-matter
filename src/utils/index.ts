@@ -22,6 +22,7 @@ export * from './mkdirAsync';
 export * from './readFileAsync';
 export * from './readdirAsync';
 export * from './renameAsync';
+export * from './resolveCommand';
 export * from './rmdirAsync';
 export * from './sentryInit';
 export * from './sleep';

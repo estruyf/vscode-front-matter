@@ -5,7 +5,15 @@ import { Folders } from '../../commands/Folders';
 import { Command } from '../../panelWebView/Command';
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
-import { Uri, authentication, commands, window } from 'vscode';
+import {
+  TextEditor,
+  Uri,
+  WorkspaceEdit,
+  authentication,
+  commands,
+  window,
+  workspace
+} from 'vscode';
 import {
   ArticleHelper,
   Extension,
@@ -16,7 +24,8 @@ import {
   processTimePlaceholders,
   processFmPlaceholders,
   parseWinPath,
-  Questions
+  Questions,
+  isValidFile
 } from '../../helpers';
 import {
   COMMAND_NAME,
@@ -59,9 +68,19 @@ import { getRelPath } from '../../dashboardWebView/utils';
 
 const FILE_LIMIT = 10;
 
+interface MetadataUpdate {
+  field: string;
+  value: any;
+  parents?: string[];
+  filePath?: string;
+  blockData?: BlockFieldData;
+  fieldData?: { multiple: boolean; value: string[] };
+}
+
 export class DataListener extends BaseListener {
   private static lastMetadataUpdate: any = {};
   private static folderInfo: FolderInfo[] | null = null;
+  private static updateQueue: { [filePath: string]: Promise<void> } = {};
 
   /**
    * Process the messages for the dashboard views
@@ -266,11 +285,21 @@ export class DataListener extends BaseListener {
 
     const article = ArticleHelper.getActiveFile();
     if (!article) {
+      this.sendRequestError(
+        command,
+        requestId,
+        l10n.t(LocalizationKey.listenersPanelDataListenerAiSuggestTaxonomyNoEditorError)
+      );
       return;
     }
 
     const articleDetails = await ArticleHelper.getFrontMatterByPath(article);
     if (!articleDetails) {
+      this.sendRequestError(
+        command,
+        requestId,
+        l10n.t(LocalizationKey.listenersPanelDataListenerAiSuggestTaxonomyNoDataError)
+      );
       return;
     }
 
@@ -333,6 +362,7 @@ export class DataListener extends BaseListener {
 
     const githubAuth = await authentication.getSession('github', ['read:user'], { silent: true });
     if (!githubAuth || !githubAuth.accessToken) {
+      this.sendRequestError(command, requestId, 'No GitHub session found');
       return;
     }
 
@@ -424,10 +454,7 @@ export class DataListener extends BaseListener {
    */
   public static async pushMetadata(metadata: any) {
     const wsFolder = Folders.getWorkspaceFolder();
-    const filePath =
-      window.activeTextEditor?.document.uri.fsPath ||
-      Preview.filePath ||
-      ArticleHelper.getActiveFile();
+    const filePath = DataListener.getCurrentFilePath();
     const commaSeparated = Settings.get<string[]>(SETTING_COMMA_SEPARATED_FIELDS);
     const contentTypes = Settings.get<string>(SETTING_TAXONOMY_CONTENT_TYPES);
 
@@ -436,6 +463,11 @@ export class DataListener extends BaseListener {
     try {
       if (filePath && !filePath.startsWith('extension-output-eliostruyf')) {
         articleDetails = await ArticleHelper.getDetails(filePath);
+
+        // Another file became active in the meantime, its own update will refresh the panel
+        if (!DataListener.isCurrentFile(filePath)) {
+          return;
+        }
 
         if (!articleDetails || articleDetails === 'nodata') {
           try {
@@ -521,6 +553,10 @@ export class DataListener extends BaseListener {
           updatedMetadata[DefaultFields.Slug] = slug;
         }
       }
+    }
+
+    if (filePath && !DataListener.isCurrentFile(filePath)) {
+      return;
     }
 
     if (filePath && updatedMetadata[DefaultFields.Slug]) {
@@ -623,7 +659,13 @@ export class DataListener extends BaseListener {
 
       const minReadability = Settings.get<number>(SETTING_CONTENT_HEALTH_MIN_READABILITY) ?? 0;
 
+      // Skip the results when the panel shows another file by now
+      if (!DataListener.isCurrentFile(filePath)) {
+        return;
+      }
+
       DataListener.sendMsg(Command.contentHealth, {
+        filePath,
         internalLinks,
         brokenExternalLinks,
         readability,
@@ -638,34 +680,80 @@ export class DataListener extends BaseListener {
   /**
    * Update the metadata of the article
    */
-  public static async updateMetadata({
-    field,
-    parents,
-    value,
-    filePath,
-    blockData
-  }: {
-    field: string;
-    value: any;
-    parents?: string[];
-    filePath?: string;
-    blockData?: BlockFieldData;
-    fieldData?: { multiple: boolean; value: string[] };
-  }) {
-    if (!field) {
+  public static async updateMetadata(data: MetadataUpdate) {
+    if (!data.field) {
       return;
     }
 
+    // Update the file for which the panel sent the update, which is not always the active editor
+    const editor = DataListener.getEditorForFile(data.filePath);
+    const filePath = editor?.document.uri.fsPath || data.filePath;
+    if (!filePath) {
+      return;
+    }
+
+    // Never write front matter into files which are not supported
+    if (editor ? !ArticleHelper.isSupportedFile(editor.document) : !isValidFile(filePath)) {
+      return;
+    }
+
+    return DataListener.queueUpdate(filePath, () =>
+      DataListener.applyMetadataUpdate(data, filePath)
+    );
+  }
+
+  /**
+   * Queue the front matter updates per file, so that each update starts from the result of
+   * the previous one instead of overwriting it.
+   * When an update returns `false` (the document changed in the meantime), it runs once more.
+   * @param filePath
+   * @param update
+   */
+  public static queueUpdate(filePath: string, update: () => Promise<boolean | void>) {
+    const key = parseWinPath(filePath);
+    const next = (DataListener.updateQueue[key] || Promise.resolve())
+      .then(async () => {
+        if ((await update()) === false) {
+          await update();
+        }
+      })
+      .catch((e) => {
+        Logger.error(`DataListener::queueUpdate: ${(e as Error).message}`);
+      });
+
+    DataListener.updateQueue[key] = next;
+    next.then(() => {
+      // Clean up when no other update was queued in the meantime
+      if (DataListener.updateQueue[key] === next) {
+        delete DataListener.updateQueue[key];
+      }
+    });
+
+    return next;
+  }
+
+  /**
+   * Apply the metadata update to the file
+   * @returns `false` when the update could not be applied
+   */
+  private static async applyMetadataUpdate(
+    { field, parents, value, blockData }: MetadataUpdate,
+    filePath: string
+  ) {
     let beforeValue: any;
     const titleField = getTitleField();
 
-    const editor = window.activeTextEditor;
+    // Read the latest contents, as a previous update could have changed the file.
+    // When the file is open without being visible, its document is used to keep unsaved changes.
+    const editor = DataListener.getEditorForFile(filePath);
+    const document = editor?.document || DataListener.getOpenDocument(filePath);
+    const version = document?.version;
 
     let article;
 
-    if (editor) {
-      article = ArticleHelper.getFrontMatter(editor);
-    } else if (filePath) {
+    if (document) {
+      article = ArticleHelper.getFrontMatterFromDocument(document);
+    } else {
       article = await ArticleHelper.getFrontMatterByPath(filePath);
     }
 
@@ -675,10 +763,12 @@ export class DataListener extends BaseListener {
 
     const contentType = await ArticleHelper.getContentType(article);
     const sourceField = ContentType.findFieldByName(contentType.fields, field);
+    // Only the top-level title is kept when empty, nested fields can have the same name
+    const isTitleField = field === titleField && !(parents && parents.length > 0);
 
     if (
       (value === undefined || value === null || value === '' || value === false) &&
-      field !== titleField &&
+      !isTitleField &&
       contentType.clearEmpty
     ) {
       // Check if the draft or boolean field needs to be cleared
@@ -789,13 +879,29 @@ export class DataListener extends BaseListener {
       delete parentObj[field];
     }
 
-    if (Object.keys(parentObj).length === 0 && field !== titleField && contentType.clearEmpty) {
-      delete article.data[parents![0]];
+    if (
+      Object.keys(parentObj).length === 0 &&
+      !isTitleField &&
+      contentType.clearEmpty &&
+      parents &&
+      parents.length > 0
+    ) {
+      DataListener.removeEmptyParents(article.data, parents);
     }
 
     if (editor) {
-      ArticleHelper.update(editor, article);
-    } else if (filePath) {
+      // The document changed while processing the update, so it has to start over
+      if (editor.document.version !== version || !(await ArticleHelper.update(editor, article))) {
+        return false;
+      }
+    } else if (document) {
+      const update = ArticleHelper.generateUpdate(document, article);
+      const workspaceEdit = new WorkspaceEdit();
+      workspaceEdit.replace(document.uri, update.range, update.newText);
+      if (document.version !== version || !(await workspace.applyEdit(workspaceEdit))) {
+        return false;
+      }
+    } else {
       await ArticleHelper.updateByPath(filePath, article);
     }
 
@@ -806,7 +912,88 @@ export class DataListener extends BaseListener {
       'VSCODE'
     );
 
-    this.pushMetadata(article.data);
+    // Only refresh the panel when it still shows this file
+    if (DataListener.isCurrentFile(filePath)) {
+      this.pushMetadata(article.data);
+    }
+  }
+
+  /**
+   * Remove the parent objects which became empty, starting from the deepest one
+   * @param data
+   * @param parents
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private static removeEmptyParents(data: any, parents: string[]) {
+    for (let i = parents.length - 1; i >= 0; i--) {
+      let parentObj = data;
+      for (const parent of parents.slice(0, i)) {
+        parentObj = parentObj?.[parent];
+      }
+
+      const crntObj = parentObj?.[parents[i]];
+      if (
+        !crntObj ||
+        typeof crntObj !== 'object' ||
+        Array.isArray(crntObj) ||
+        Object.keys(crntObj).length > 0
+      ) {
+        return;
+      }
+
+      delete parentObj[parents[i]];
+    }
+  }
+
+  /**
+   * Retrieve the editor of the file, the active editor is preferred.
+   * Without a file path, the active editor is returned.
+   * @param filePath
+   */
+  private static getEditorForFile(filePath?: string) {
+    const editor = window.activeTextEditor;
+    if (!filePath) {
+      return editor;
+    }
+
+    const isFileEditor = (crntEditor?: TextEditor) =>
+      !!crntEditor && parseWinPath(crntEditor.document.uri.fsPath) === parseWinPath(filePath);
+
+    if (isFileEditor(editor)) {
+      return editor;
+    }
+
+    return window.visibleTextEditors.find((e) => isFileEditor(e));
+  }
+
+  /**
+   * Retrieve the document of the file when it is open, but not shown in an editor
+   * @param filePath
+   */
+  private static getOpenDocument(filePath: string) {
+    return workspace.textDocuments.find(
+      (doc) => !doc.isClosed && parseWinPath(doc.uri.fsPath) === parseWinPath(filePath)
+    );
+  }
+
+  /**
+   * Retrieve the path of the file which the panel shows
+   */
+  private static getCurrentFilePath() {
+    return (
+      window.activeTextEditor?.document.uri.fsPath ||
+      Preview.filePath ||
+      ArticleHelper.getActiveFile()
+    );
+  }
+
+  /**
+   * Check if the file is the one which the panel shows
+   * @param filePath
+   */
+  private static isCurrentFile(filePath: string) {
+    const crntFilePath = DataListener.getCurrentFilePath();
+    return !!crntFilePath && parseWinPath(crntFilePath) === parseWinPath(filePath);
   }
 
   /**
@@ -943,7 +1130,16 @@ export class DataListener extends BaseListener {
    * @param data
    */
   private static async getDataFileEntries(command: string, requestId: string, data: any) {
-    if (!command || !requestId || !data) {
+    if (!command || !requestId) {
+      return;
+    }
+
+    if (!data) {
+      this.sendRequestError(
+        command,
+        requestId,
+        l10n.t(LocalizationKey.listenersPanelDataListenerGetDataFileEntriesNoDataFilesError)
+      );
       return;
     }
 
@@ -1007,7 +1203,12 @@ export class DataListener extends BaseListener {
     },
     requestId?: string
   ) {
-    if (!command || !requestId || !articleData) {
+    if (!command || !requestId) {
+      return;
+    }
+
+    if (!articleData) {
+      this.sendRequestError(command, requestId, 'No article data provided');
       return;
     }
 
@@ -1017,21 +1218,27 @@ export class DataListener extends BaseListener {
     value = value || '';
     const valueBefore = value;
     if (field) {
-      const crntFile = window.activeTextEditor?.document;
-      const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
-      value =
-        data && contentType
-          ? processArticlePlaceholdersFromData(value, data, contentType, crntFile?.uri.fsPath)
-          : value;
-      value = processTimePlaceholders(value, dateFormat);
-      value = processFmPlaceholders(value, data);
+      try {
+        const crntFile = window.activeTextEditor?.document;
+        const dateFormat = Settings.get(SETTING_DATE_FORMAT) as string;
+        value =
+          data && contentType
+            ? processArticlePlaceholdersFromData(value, data, contentType, crntFile?.uri.fsPath)
+            : value;
+        value = processTimePlaceholders(value, dateFormat);
+        value = processFmPlaceholders(value, data);
 
-      const titleField = getTitleField();
-      value = await ArticleHelper.processCustomPlaceholders(
-        value,
-        data[titleField] || '',
-        crntFile?.uri.fsPath || ''
-      );
+        const titleField = getTitleField();
+        value = await ArticleHelper.processCustomPlaceholders(
+          value,
+          data[titleField] || '',
+          crntFile?.uri.fsPath || ''
+        );
+      } catch (e) {
+        Logger.error(`DataListener::updatePlaceholder: ${(e as Error).message}`);
+        this.sendRequestError(command, requestId, (e as Error).message);
+        return;
+      }
     }
 
     Logger.verbose(

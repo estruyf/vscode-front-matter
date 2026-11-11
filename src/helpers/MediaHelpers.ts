@@ -284,11 +284,12 @@ export class MediaHelpers {
 
   /**
    * Reset media array
+   * @param sendMediaFiles - Set to false when the caller sends the media files itself
    */
-  public static resetMedia() {
+  public static resetMedia(sendMediaFiles = true) {
     MediaHelpers.media = [];
 
-    if (Dashboard.isOpen) {
+    if (sendMediaFiles && Dashboard.isOpen) {
       DashboardMediaListener.sendMediaFiles();
     }
   }

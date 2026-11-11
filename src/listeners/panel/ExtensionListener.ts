@@ -1,8 +1,16 @@
 import { CommandToCode } from '../../panelWebView/CommandToCode';
 import { BaseListener } from './BaseListener';
-import { Range, Selection, TextEditorRevealType, commands, env as vscodeEnv, window } from 'vscode';
+import {
+  Range,
+  Selection,
+  TextEditorRevealType,
+  Uri,
+  commands,
+  env as vscodeEnv,
+  window
+} from 'vscode';
 import * as os from 'os';
-import { exec, execFile } from 'child_process';
+import { exec } from 'child_process';
 import { Folders } from '../../commands/Folders';
 import { COMMAND_NAME } from '../../constants';
 import { openFileInEditor } from '../../helpers';
@@ -105,15 +113,11 @@ export class ExtensionListener extends BaseListener {
   private static openFolder() {
     const wsFolder = Folders.getWorkspaceFolder();
     if (wsFolder) {
-      const wsPath = wsFolder.fsPath;
-      if (os.type() === 'Darwin') {
-        execFile('open', [wsPath]);
-      } else if (os.type() === 'Windows_NT') {
-        execFile('explorer', [wsPath]);
-      } else if (os.type() === 'Linux' && vscodeEnv.remoteName?.toLowerCase() === 'wsl') {
+      if (os.type() === 'Linux' && vscodeEnv.remoteName?.toLowerCase() === 'wsl') {
         exec('explorer.exe `wslpath -w "$PWD"`');
       } else {
-        execFile('xdg-open', [wsPath]);
+        // Let the OS open the folder, the path is never passed through a shell
+        vscodeEnv.openExternal(Uri.file(wsFolder.fsPath));
       }
     }
   }

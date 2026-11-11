@@ -48,6 +48,7 @@ export class TaxonomyListener extends BaseListener {
           TagType.keywords.toLowerCase(),
           msg.payload?.values || [],
           msg.payload?.parents || [],
+          typeof msg.payload?.renderAsString !== 'undefined' ? msg.payload?.renderAsString : false,
           msg.payload?.blockData
         );
         break;
@@ -102,11 +103,21 @@ export class TaxonomyListener extends BaseListener {
 
     const article = ArticleHelper.getActiveFile();
     if (!article) {
+      this.sendRequestError(
+        command,
+        requestId,
+        l10n.t(LocalizationKey.listenersPanelTaxonomyListenerAiSuggestTaxonomyNoEditorError)
+      );
       return;
     }
 
     const articleDetails = await ArticleHelper.getFrontMatterByPath(article);
     if (!articleDetails) {
+      this.sendRequestError(
+        command,
+        requestId,
+        l10n.t(LocalizationKey.listenersPanelTaxonomyListenerAiSuggestTaxonomyNoDataError)
+      );
       return;
     }
 
@@ -159,7 +170,7 @@ export class TaxonomyListener extends BaseListener {
       panel.getWebview()?.postMessage({
         command,
         requestId,
-        error: l10n.t(LocalizationKey.listenersPanelTaxonomyListenerAiSuggestTaxonomyNoDataError)
+        error: l10n.t(LocalizationKey.listenersPanelTaxonomyListenerAiSuggestTaxonomyNoEditorError)
       } as MessageHandlerData<string>);
       return;
     }
@@ -169,13 +180,14 @@ export class TaxonomyListener extends BaseListener {
       panel.getWebview()?.postMessage({
         command,
         requestId,
-        error: l10n.t(LocalizationKey.listenersPanelTaxonomyListenerAiSuggestTaxonomyNoEditorError)
+        error: l10n.t(LocalizationKey.listenersPanelTaxonomyListenerAiSuggestTaxonomyNoDataError)
       } as MessageHandlerData<string>);
       return;
     }
 
     const githubAuth = await authentication.getSession('github', ['read:user'], { silent: true });
     if (!githubAuth || !githubAuth.accessToken) {
+      this.sendRequestError(command, requestId, 'No GitHub session found');
       return;
     }
 
@@ -218,33 +230,41 @@ export class TaxonomyListener extends BaseListener {
     blockData?: BlockFieldData
   ) {
     const editor = window.activeTextEditor;
-    if (!editor) {
+    if (!editor || !ArticleHelper.isSupportedFile(editor.document)) {
       return '';
     }
 
-    const article = ArticleHelper.getFrontMatter(editor);
-    if (article && article.data) {
-      const parentObj = await DataListener.getParentObject(
-        article.data,
-        article,
-        parents,
-        blockData
-      );
+    return DataListener.queueUpdate(editor.document.uri.fsPath, async () => {
+      // Read the latest contents, as a previous update could have changed the file
+      const version = editor.document.version;
+      const article = ArticleHelper.getFrontMatter(editor);
+      if (article && article.data) {
+        const parentObj = await DataListener.getParentObject(
+          article.data,
+          article,
+          parents,
+          blockData
+        );
 
-      if (renderAsString) {
-        if (values.length === 0) {
-          parentObj[fieldName] = '';
-        } else if (values.length === 1) {
-          parentObj[fieldName] = values[0];
+        if (renderAsString) {
+          if (values.length === 0) {
+            parentObj[fieldName] = '';
+          } else if (values.length === 1) {
+            parentObj[fieldName] = values[0];
+          } else {
+            parentObj[fieldName] = values || [];
+          }
         } else {
           parentObj[fieldName] = values || [];
         }
-      } else {
-        parentObj[fieldName] = values || [];
+
+        // The document changed while processing the update, so it has to start over
+        if (editor.document.version !== version || !(await ArticleHelper.update(editor, article))) {
+          return false;
+        }
+        DataListener.pushMetadata(article!.data);
       }
-      ArticleHelper.update(editor, article);
-      DataListener.pushMetadata(article!.data);
-    }
+    });
   }
 
   /**
@@ -255,36 +275,44 @@ export class TaxonomyListener extends BaseListener {
     if (!data?.id || !data?.name) {
       return;
     }
+    const { name } = data;
 
     const editor = window.activeTextEditor;
-    if (!editor) {
+    if (!editor || !ArticleHelper.isSupportedFile(editor.document)) {
       return '';
     }
 
-    const article = ArticleHelper.getFrontMatter(editor);
-    if (article && article.data) {
-      const parentObj = await DataListener.getParentObject(
-        article.data,
-        article,
-        data.parents,
-        data.blockData
-      );
+    return DataListener.queueUpdate(editor.document.uri.fsPath, async () => {
+      // Read the latest contents, as a previous update could have changed the file
+      const version = editor.document.version;
+      const article = ArticleHelper.getFrontMatter(editor);
+      if (article && article.data) {
+        const parentObj = await DataListener.getParentObject(
+          article.data,
+          article,
+          data.parents,
+          data.blockData
+        );
 
-      if (data.renderAsString) {
-        if (!data.options || data.options.length === 0) {
-          parentObj[data.name] = '';
-        } else if (data.options.length === 1) {
-          parentObj[data.name] = data.options[0];
+        if (data.renderAsString) {
+          if (!data.options || data.options.length === 0) {
+            parentObj[name] = '';
+          } else if (data.options.length === 1) {
+            parentObj[name] = data.options[0];
+          } else {
+            parentObj[name] = data.options || [] || [];
+          }
         } else {
-          parentObj[data.name] = data.options || [] || [];
+          parentObj[name] = data.options || [];
         }
-      } else {
-        parentObj[data.name] = data.options || [];
-      }
 
-      ArticleHelper.update(editor, article);
-      DataListener.pushMetadata(article!.data);
-    }
+        // The document changed while processing the update, so it has to start over
+        if (editor.document.version !== version || !(await ArticleHelper.update(editor, article))) {
+          return false;
+        }
+        DataListener.pushMetadata(article!.data);
+      }
+    });
   }
 
   /**

@@ -8,6 +8,7 @@ import { FieldMessage } from './FieldMessage';
 import { FieldTitle } from './FieldTitle';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
+import useLocalChange from '../../hooks/useLocalChange';
 
 export interface IDateTimeFieldProps extends BaseFieldProps<Date | null> {
   format?: string;
@@ -36,9 +37,11 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({
 }: React.PropsWithChildren<IDateTimeFieldProps>) => {
   const DEFAULT_FORMAT = 'MM/dd/yyyy HH:mm';
   const [dateValue, setDateValue] = React.useState<Date | null>(null);
+  const { trackChange, isStaleValue } = useLocalChange();
 
   const onDateChange = React.useCallback((date: Date) => {
     setDateValue(date);
+    trackChange(date);
     if (format) {
       // Always use DateHelper.formatInTimezone when a format is provided
       onChange(DateHelper.formatInTimezone(date, format, timezone) || "");
@@ -46,7 +49,7 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({
       // Only fallback to ISO string if no format is provided
       onChange(date.toISOString());
     }
-  }, [format, timezone, onChange]);
+  }, [format, timezone, onChange, trackChange]);
 
   const showRequiredState = useMemo(() => {
     return required && !dateValue;
@@ -66,13 +69,17 @@ export const DateTimeField: React.FunctionComponent<IDateTimeFieldProps> = ({
   }, [format]);
 
   useEffect(() => {
+    if (isStaleValue(value)) {
+      return;
+    }
+
     const crntValue = DateHelper.tryParse(value, format);
     const stateValue = DateHelper.tryParse(dateValue, format);
 
     if (crntValue?.toISOString() !== stateValue?.toISOString()) {
       setDateValue(value);
     }
-  }, [value, dateValue]);
+  }, [value]);
 
   return (
     <div className={`metadata_field`}>

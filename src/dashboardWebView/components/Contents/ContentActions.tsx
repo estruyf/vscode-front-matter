@@ -13,7 +13,7 @@ import { CustomScript, I18nConfig } from '../../../models';
 import { DashboardMessage } from '../../DashboardMessage';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { SelectedItemActionAtom, SettingsSelector } from '../../state';
 import { COMMAND_NAME, GeneralCommands } from '../../../constants';
 import { PinIcon } from '../Icons/PinIcon';
@@ -54,7 +54,7 @@ export const ContentActions: React.FunctionComponent<IContentActionsProps> = ({
   locale,
   onMenuOpenChange
 }: React.PropsWithChildren<IContentActionsProps>) => {
-  const [, setSelectedItemAction] = useRecoilState(SelectedItemActionAtom);
+  const setSelectedItemAction = useSetRecoilState(SelectedItemActionAtom);
   const [pinnedItems, setPinnedItems] = useRecoilState(PinnedItemsAtom);
   const settings = useRecoilValue(SettingsSelector);
 

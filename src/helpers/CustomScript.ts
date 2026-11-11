@@ -5,15 +5,15 @@ import { window, env as vscodeEnv, ProgressLocation, Uri, commands } from 'vscod
 import { ArticleHelper, Logger, MediaHelpers } from '.';
 import { Folders, WORKSPACE_PLACEHOLDER } from '../commands/Folders';
 import { execFile, execSync } from 'child_process';
-import { existsSync } from 'fs';
-import { isAbsolute, join } from 'path';
+import * as os from 'os';
+import { join } from 'path';
 import { Notifications } from './Notifications';
 import ContentProvider from '../providers/ContentProvider';
 import { Dashboard } from '../commands/Dashboard';
 import { DashboardCommand } from '../dashboardWebView/DashboardCommand';
 import { ParsedFrontMatter } from '../parsers';
 import { SETTING_CUSTOM_SCRIPTS } from '../constants';
-import { evaluateCommand, existsAsync, getPlatform } from '../utils';
+import { evaluateCommand, existsAsync, getPlatform, resolveCommand } from '../utils';
 import { LocalizationKey, localize } from '../localization';
 import { ScriptAction } from '../models';
 import { Copilot } from '../services/Copilot';
@@ -125,7 +125,7 @@ export class CustomScript {
 
     const output: string[] = [];
 
-    window.withProgress(
+    await window.withProgress(
       {
         location: ProgressLocation.Notification,
         title: localize(LocalizationKey.helpersCustomScriptExecuting, script.title),
@@ -179,31 +179,31 @@ export class CustomScript {
       return;
     }
 
-    return new Promise((resolve, reject) => {
-      window.withProgress(
-        {
-          location: ProgressLocation.Notification,
-          title: localize(LocalizationKey.helpersCustomScriptExecuting, script.title),
-          cancellable: false
-        },
-        async () => {
-          try {
-            const output = await CustomScript.executeScript(script, wsPath, [wsPath, path]);
+    await window.withProgress(
+      {
+        location: ProgressLocation.Notification,
+        title: localize(LocalizationKey.helpersCustomScriptExecuting, script.title),
+        cancellable: false
+      },
+      async () => {
+        try {
+          const output = await CustomScript.executeScript(script, wsPath, [wsPath, path]);
 
-            await CustomScript.showOutput(output, script);
+          await CustomScript.showOutput(output, script);
 
-            Dashboard.postWebviewMessage({
-              command: DashboardCommand.mediaUpdate
-            });
+          Dashboard.postWebviewMessage({
+            command: DashboardCommand.mediaUpdate
+          });
 
-            return;
-          } catch (e) {
-            Notifications.errorWithOutput(`${script.title} -`);
-            return;
-          }
+          return;
+        } catch (e) {
+          Notifications.errorWithOutput(
+            `${script.title} - ${typeof e === 'string' ? e : (e as Error).message}`
+          );
+          return;
         }
-      );
-    });
+      }
+    );
   }
 
   /**
@@ -221,8 +221,11 @@ export class CustomScript {
     script: ICustomScript
   ): Promise<string | null> {
     try {
-      // The arguments are passed to the process as-is (no shell), so no escaping is required
-      const articleData = JSON.stringify(article?.data || {});
+      let articleData = JSON.stringify(article?.data);
+      if (os.type() !== 'Windows_NT') {
+        // Keep the single quotes encoded, as existing scripts received them this way
+        articleData = articleData.replace(/'/g, '%27');
+      }
 
       const output = await CustomScript.executeScript(script, wsPath, [
         wsPath,
@@ -351,7 +354,7 @@ export class CustomScript {
    * Execute script
    * @param script
    * @param wsPath
-   * @param args - passed as separate arguments to the script, never through a shell
+   * @param args
    * @returns
    */
   public static async executeScript(
@@ -400,51 +403,25 @@ export class CustomScript {
       throw new Error(`Script not found: ${scriptPath}`);
     }
 
-    // The command can contain its own arguments (e.g. `python3 -u`)
-    const [file, ...commandArgs] = CustomScript.splitCommand(command);
-
-    if (platform === 'windows' && file.toLowerCase() === 'powershell') {
-      commandArgs.push('-File');
+    if (platform === 'windows' && command.toLowerCase() === 'powershell') {
+      command = `${command} -File`;
     }
 
-    const output = await CustomScript.processExecution(
-      file,
-      [...commandArgs, scriptPath, ...args],
-      wsPath
-    );
+    const scriptArgs = [scriptPath, ...args];
+    const fullScript = `${command} ${scriptArgs.map((arg) => `"${arg}"`).join(' ')}`;
+    Logger.info(localize(LocalizationKey.helpersCustomScriptExecuting, fullScript));
+
+    const output = await CustomScript.processExecution(command, scriptArgs, wsPath);
     return output;
-  }
-
-  /**
-   * Split a command into the executable and its arguments.
-   * An absolute path to an executable (e.g. the evaluated node path) is never split.
-   * @param command
-   * @returns
-   */
-  private static splitCommand(command: string): string[] {
-    const trimmed = command.trim();
-    if (isAbsolute(trimmed) && existsSync(trimmed)) {
-      return [trimmed];
-    }
-
-    const parts: string[] = [];
-    const regex = /"([^"]*)"|'([^']*)'|(\S+)/g;
-    let match: RegExpExecArray | null;
-    while ((match = regex.exec(trimmed)) !== null) {
-      parts.push(match[1] ?? match[2] ?? match[3]);
-    }
-    return parts;
   }
 
   // Recursive function to process the execution of the script
   private static async processExecution(
-    file: string,
+    command: string,
     args: string[],
     wsPath: string
   ): Promise<string> {
-    Logger.info(localize(LocalizationKey.helpersCustomScriptExecuting, [file, ...args].join(' ')));
-
-    const output: string = await CustomScript.executeScriptAsync(file, args, wsPath);
+    const output: string = await CustomScript.executeScriptAsync(command, args, wsPath);
 
     try {
       const data = JSON.parse(output);
@@ -489,17 +466,14 @@ export class CustomScript {
         }
 
         if (answers.length > 0) {
-          return await CustomScript.processExecution(file, [...args, ...answers], wsPath);
+          return await CustomScript.processExecution(command, [...args, ...answers], wsPath);
         }
       } else if (fmAction) {
         if (fmAction === 'promptCopilot' && fmPrompt) {
           const response = await Copilot.promptCopilot(fmPrompt);
           if (response) {
-            return await CustomScript.processExecution(
-              file,
-              [...args, `promptResponse=${response}`],
-              wsPath
-            );
+            const promptResponse = `promptResponse=${response}`;
+            return await CustomScript.processExecution(command, [...args, promptResponse], wsPath);
           }
         }
       }
@@ -511,33 +485,23 @@ export class CustomScript {
   }
 
   /**
-   * Execute script async.
-   * Uses `execFile` without a shell, so the arguments (front matter, file paths, answers, ...)
-   * cannot be interpreted as shell syntax by cmd.exe or sh.
-   * @param file
+   * Execute script async, the arguments are not passed through a shell
+   * @param command
    * @param args
    * @param wsPath
    * @returns
    */
   private static async executeScriptAsync(
-    file: string,
+    command: string,
     args: string[],
     wsPath: string
   ): Promise<string> {
+    const execution = await resolveCommand(command, args);
+
     return new Promise((resolve, reject) => {
-      execFile(file, args, { cwd: wsPath, windowsHide: true }, (error, stdout) => {
+      execFile(execution.file, execution.args, { cwd: wsPath }, (error, stdout) => {
         if (error) {
           Logger.error(error.message);
-
-          // Windows `.cmd`/`.bat` shims (npx, npm, ...) can only be started through a shell
-          const code = (error as NodeJS.ErrnoException).code;
-          if (getPlatform() === 'windows' && (code === 'ENOENT' || code === 'EINVAL')) {
-            reject(
-              localize(LocalizationKey.helpersCustomScriptExecuteScriptWindowsCommandError, file)
-            );
-            return;
-          }
-
           reject(error.message);
           return;
         }

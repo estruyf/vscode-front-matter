@@ -15,8 +15,6 @@ export interface ParsedFrontMatter {
 }
 
 export class FrontMatterParser {
-  public static currentContent: string | null = null;
-
   /**
    * Convert the current content to a Front Matter object
    * @param content
@@ -24,7 +22,6 @@ export class FrontMatterParser {
    */
   public static fromFile(content: string): ParsedFrontMatter {
     const format = getFormatOpts(this.getLanguageFromContent(content));
-    FrontMatterParser.currentContent = content;
     const result = matter(content, { ...Engines, ...format });
     // in the absent of a body when serializing an entry we use an empty one
     // when calling `toFile`, so we don't want to add it when parsing.
@@ -51,7 +48,9 @@ export class FrontMatterParser {
     const file = matter.stringify(content, metadata, {
       ...Engines,
       ...options,
-      ...format
+      ...format,
+      // The YAML engine updates the front matter of the file being written
+      originalContent
     });
     return trimLastLineBreak && file.slice(-1) === '\n' ? file.substring(0, file.length - 1) : file;
   }

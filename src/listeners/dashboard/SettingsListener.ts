@@ -256,10 +256,18 @@ export class SettingsListener extends BaseListener {
    * @param template
    */
   private static async triggerTemplate(requestId?: string, template?: Template) {
+    // The dashboard keeps loading until it receives a response
+    const sendFailed = () => {
+      if (requestId) {
+        this.sendRequest(DashboardMessage.triggerTemplate, requestId, false);
+      }
+    };
+
     if (template && template.url) {
       const wsFolder = Folders.getWorkspaceFolder();
 
       if (!wsFolder) {
+        sendFailed();
         return;
       }
 
@@ -281,6 +289,7 @@ export class SettingsListener extends BaseListener {
                   LocalizationKey.listenersDashboardSettingsListenerTriggerTemplateDownloadError
                 )
               );
+              sendFailed();
               return;
             }
 
@@ -299,9 +308,12 @@ export class SettingsListener extends BaseListener {
             Notifications.error(
               l10n.t(LocalizationKey.listenersDashboardSettingsListenerTriggerTemplateInitError)
             );
+            sendFailed();
           }
         }
       );
+    } else {
+      sendFailed();
     }
   }
 

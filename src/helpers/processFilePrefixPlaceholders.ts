@@ -1,5 +1,5 @@
 import { FileType, Uri, workspace } from 'vscode';
-import { parse } from 'path';
+import { basename, dirname } from 'path';
 import { isValidFile } from './isValidFile';
 
 /**
@@ -9,20 +9,36 @@ import { isValidFile } from './isValidFile';
  * with the appropriate index number based on the number of files in the directory of the given file path.
  *
  * @param value - The string containing the placeholders to be replaced.
- * @param folderPath - The path of the file whose directory will be used to determine the index number.
+ * @param folderPath - The path of the folder (or of a file in it) used to determine the index number.
  * @returns A promise that resolves to the string with the placeholders replaced by the index number.
  */
 export const processFilePrefixPlaceholders = async (value: string, folderPath?: string) => {
   // Example: {{filePrefix.index}} or {{filePrefix.index|chars:4,zeros:true}}
   if (value && value.includes('{{filePrefix.index') && folderPath) {
-    const dirContent = await workspace.fs.readDirectory(Uri.file(folderPath));
-    const files = dirContent.filter(
-      ([filePath, type]) =>
-        type === FileType.File &&
-        !filePath.startsWith('.') &&
-        isValidFile(filePath) &&
-        !filePath.includes('_index.')
-    );
+    let files: [string, FileType][] = [];
+
+    try {
+      // For an existing file, use its folder and do not count the file itself
+      let dirPath = folderPath;
+      let currentFile: string | undefined;
+      const stat = await workspace.fs.stat(Uri.file(folderPath));
+      if (stat.type & FileType.File) {
+        dirPath = dirname(folderPath);
+        currentFile = basename(folderPath);
+      }
+
+      const dirContent = await workspace.fs.readDirectory(Uri.file(dirPath));
+      files = dirContent.filter(
+        ([filePath, type]) =>
+          type === FileType.File &&
+          filePath !== currentFile &&
+          !filePath.startsWith('.') &&
+          isValidFile(filePath) &&
+          !filePath.includes('_index.')
+      );
+    } catch {
+      // The folder does not exist yet, so it contains no files
+    }
 
     let chars = 3;
     const idxValue = files.length + 1;

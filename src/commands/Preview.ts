@@ -277,7 +277,7 @@ export class Preview {
     }
 
     if (!slug) {
-      slug = Article.getSlug(pathname);
+      slug = Article.getSlug(pathname, filePath, article) || '';
     }
 
     const locale = await i18n.getLocale(filePath);
@@ -333,9 +333,10 @@ export class Preview {
     // Make sure there are no backslashes in the slug
     slug = parseWinPath(slug);
 
-    // Verify if the slug doesn't end with _index or index
-    if (slug.endsWith('_index') || slug.endsWith('index')) {
-      slug = slug.substring(0, slug.endsWith('_index') ? slug.length - 6 : slug.length - 5);
+    // Verify if the slug doesn't end with _index or index (ex. `search-index` is kept)
+    const slugName = slug.split('/').pop();
+    if (slugName === '_index' || slugName === 'index') {
+      slug = slug.substring(0, slug.length - slugName.length);
     }
 
     // Add the trailing slash

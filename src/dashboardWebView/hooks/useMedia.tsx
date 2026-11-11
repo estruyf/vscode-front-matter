@@ -1,7 +1,7 @@
 import { Messenger } from '@estruyf/vscode/dist/client';
 import { EventData } from '@estruyf/vscode/dist/models';
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { MediaInfo, MediaPaths } from '../../models';
 import { DashboardCommand } from '../DashboardCommand';
 import {
@@ -36,11 +36,11 @@ export default function useMedia() {
   const [page, setPage] = useRecoilState(PageAtom);
   const [searchedMedia, setSearchedMedia] = useState<MediaInfo[]>([]);
   const { updateFolder } = useMediaFolder();
-  const [, setTotal] = useRecoilState(MediaTotalAtom);
-  const [, setFolders] = useRecoilState(MediaFoldersAtom);
-  const [, setAllContentFolders] = useRecoilState(AllContentFoldersAtom);
-  const [, setAllStaticFolders] = useRecoilState(AllStaticFoldersAtom);
-  const [, setLoading] = useRecoilState(LoadingAtom);
+  const setTotal = useSetRecoilState(MediaTotalAtom);
+  const setFolders = useSetRecoilState(MediaFoldersAtom);
+  const setAllContentFolders = useSetRecoilState(AllContentFoldersAtom);
+  const setAllStaticFolders = useSetRecoilState(AllStaticFoldersAtom);
+  const setLoading = useSetRecoilState(LoadingAtom);
   const search = useRecoilValue(SearchAtom);
   const prevSearch = usePrevious<string>(search);
   const settings = useRecoilValue(SettingsAtom);

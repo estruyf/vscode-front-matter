@@ -10,6 +10,7 @@ import { FieldMessage } from './FieldMessage';
 import * as l10n from '@vscode/l10n';
 import { LocalizationKey } from '../../../localization';
 import useDropdownStyle from '../../hooks/useDropdownStyle';
+import useLocalChange from '../../hooks/useLocalChange';
 
 export interface IDataFileFieldProps {
   label: string;
@@ -41,6 +42,7 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
   const dsRef = React.useRef<Downshift<string> | null>(null);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   const { getDropdownStyle } = useDropdownStyle(inputRef as any);
+  const { trackChange, isStaleValue } = useLocalChange();
 
   const hasAdditionalFields = useMemo(
     () => !!dataFileAdditionalFields && dataFileAdditionalFields.length > 0,
@@ -76,26 +78,34 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
     [hasAdditionalFields, dataEntries, dataFileKey, dataFileAdditionalFields]
   );
 
+  const emitValue = useCallback(
+    (newValue: string | string[] | Record<string, unknown> | Record<string, unknown>[]) => {
+      trackChange(newValue);
+      onChange(newValue);
+    },
+    [onChange, trackChange]
+  );
+
   const onValueChange = useCallback(
     (txtValue: string) => {
       if (multiSelect) {
         const newKeys = [...((crntSelected || []) as string[]), txtValue];
         setCrntSelected(newKeys);
         if (hasAdditionalFields) {
-          onChange(newKeys.map(buildEmitValue) as Record<string, unknown>[]);
+          emitValue(newKeys.map(buildEmitValue) as Record<string, unknown>[]);
         } else {
-          onChange(newKeys);
+          emitValue(newKeys);
         }
       } else {
         setCrntSelected(txtValue);
         if (hasAdditionalFields) {
-          onChange(buildEmitValue(txtValue) as Record<string, unknown>);
+          emitValue(buildEmitValue(txtValue) as Record<string, unknown>);
         } else {
-          onChange(txtValue);
+          emitValue(txtValue);
         }
       }
     },
-    [crntSelected, multiSelect, onChange, hasAdditionalFields, buildEmitValue]
+    [crntSelected, multiSelect, emitValue, hasAdditionalFields, buildEmitValue]
   );
 
   const removeSelected = useCallback(
@@ -104,16 +114,16 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
         const newKeys = [...(crntSelected || [])].filter((v) => v !== txtValue) as string[];
         setCrntSelected(newKeys);
         if (hasAdditionalFields) {
-          onChange(newKeys.map(buildEmitValue) as Record<string, unknown>[]);
+          emitValue(newKeys.map(buildEmitValue) as Record<string, unknown>[]);
         } else {
-          onChange(newKeys);
+          emitValue(newKeys);
         }
       } else {
         setCrntSelected('');
-        onChange('');
+        emitValue('');
       }
     },
-    [crntSelected, multiSelect, onChange, hasAdditionalFields, buildEmitValue]
+    [crntSelected, multiSelect, emitValue, hasAdditionalFields, buildEmitValue]
   );
 
   const allChoices = useMemo(() => {
@@ -165,6 +175,10 @@ export const DataFileField: React.FunctionComponent<IDataFileFieldProps> = ({
   }, [required, crntSelected]);
 
   useEffect(() => {
+    if (isStaleValue(selected)) {
+      return;
+    }
+
     if (selected !== undefined && selected !== null && selected !== '') {
       if (multiSelect) {
         const keys = (Array.isArray(selected) ? selected : [selected]).map(extractKey);
